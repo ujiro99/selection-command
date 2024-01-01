@@ -1,0 +1,25 @@
+{
+  "name": "test-extension",
+  "manifest_version": 2,
+  "version": "1.0.0",
+  "description": "test-extension | サンプルアプリ",
+  "icons": {
+    "128": "logo192.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "browser_action": {
+    "default_popup": "options_page.html"
+  },
+  "content_scripts" : [
+    {
+      "matches": [ "<all_urls>" ],
+      "js": ["/src/content_script.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["/src/background_script.js", "/src/hot_reload.js"]
+  },
+  "options_page": "options_page.html"
+}
