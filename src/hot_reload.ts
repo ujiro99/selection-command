@@ -1,9 +1,9 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const reload = () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     if (tabs[0]) {
       chrome.tabs.reload(tabs[0].id as number);
     }
@@ -24,8 +24,8 @@ const main = async (): Promise<any> => {
             reload();
           }
         });
-      }
-      const errCallback = () => lastModified = -1;
+      };
+      const errCallback = () => (lastModified = -1);
       while (true) {
         dir.getFile('reload', { create: false }, successCallback, errCallback);
         await sleep(1000);
@@ -36,4 +36,3 @@ const main = async (): Promise<any> => {
 
 main();
 export {};
-
