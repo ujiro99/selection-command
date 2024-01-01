@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "esbuild src/* --bundle '--define:process.env.NODE_ENV=\"production\"' --outdir=dist/src --sourcemap && yarn reload",
+    "build": "cross-env NODE_ENV=production esbuild src/* --bundle --outdir=dist/src --sourcemap && yarn reload",
     "watch": "node watch.js",
-    "reload": "touch dist/reload",
+    "reload": "nodetouch dist/reload",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
     "prepare": "husky install"
@@ -30,17 +30,19 @@
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "12.1.5",
     "@testing-library/user-event": "13.5.0",
+    "@types/chrome": "0.0.248",
     "@types/jest": "27.5.2",
     "@types/node": "14.18.63",
     "@types/react": "17.0.69",
     "@types/react-dom": "17.0.22",
-    "@types/chrome": "0.0.248",
     "chokidar": "3.5.3",
+    "cross-env": "^7.0.3",
     "esbuild": "0.19.5",
     "husky": "7.0.4",
     "prettier": "2.8.8",
     "pretty-quick": "3.1.3",
     "shelljs": "0.8.5",
+    "touch": "^3.1.0",
     "typescript": "4.9.5"
   }
 }
