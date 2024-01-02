@@ -1,3 +1,4 @@
+import 'mv3-hot-reload/background';
 import browser from 'webextension-polyfill';
 
 const main = async () => {
