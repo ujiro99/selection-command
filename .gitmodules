@@ -1,0 +1,3 @@
+[submodule "lib/mv3-hot-reload"]
+	path = lib/mv3-hot-reload
+	url = git@github.com:ujiro99/mv3-hot-reload.git

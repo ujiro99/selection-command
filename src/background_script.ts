@@ -1,5 +1,10 @@
-import 'mv3-hot-reload/background';
 import browser from 'webextension-polyfill';
+import * as mv3 from 'mv3-hot-reload';
+
+mv3.utils.setConfig({
+  isDev: true,
+});
+mv3.background.init();
 
 const main = async () => {
   let { count } = await browser.storage.local.get('count');

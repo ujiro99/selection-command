@@ -1,4 +1,5 @@
-import 'mv3-hot-reload/content';
+import * as mv3 from 'mv3-hot-reload';
+mv3.content.init();
 
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
