@@ -1,0 +1,10 @@
+:global {
+  #selection-popup {
+    background-color: red;
+    color: white;
+  }
+}
+
+.popup {
+  background-color: #fff;
+}
