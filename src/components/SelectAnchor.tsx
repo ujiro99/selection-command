@@ -4,6 +4,13 @@ type Props = {
   isSelected: boolean
 }
 
+function getLineHeight() {
+  const s = document.getSelection()
+  const e = s?.focusNode?.parentElement
+  if (e == null) return
+  return window.getComputedStyle(e).getPropertyValue('line-height')
+}
+
 export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
     const [isMouseDown, setIsMouseDown] = useState(false)
@@ -65,7 +72,9 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       position: 'absolute',
       top: mousePosition.top,
       left: mousePosition.left,
+      height: getLineHeight(),
       pointerEvents: 'none',
+      transform: 'translateY(-50%)',
     } as React.CSSProperties
 
     return <div style={styles} ref={ref}></div>
