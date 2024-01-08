@@ -1,23 +1,27 @@
-import React, { useState, useRef } from 'react'
+import React, { useRef } from 'react'
 import { PageFrame } from './PageFrame'
 import { item, itemImg } from './Menu.module.css'
+import { OPEN_MODE } from '../const'
 
 type MenuItemProps = {
+  menuId: number
   title: string
   url: string
   iconUrl: string
-  openInPopup: boolean
+  openMode: OPEN_MODE
+  currentMenuId: number
+  onSelect: Function
 }
 
 export function MenuItem(props: MenuItemProps): JSX.Element {
-  const [open, setOpen] = useState(false)
+  const open = props.currentMenuId === props.menuId
   const buttonRef = useRef(null)
 
   function handleClick() {
-    setOpen(true)
+    props.onSelect(props.menuId)
   }
 
-  if (props.openInPopup) {
+  if (props.openMode === OPEN_MODE.POPUP) {
     return (
       <>
         <button className={item} ref={buttonRef} onClick={handleClick}>
@@ -30,7 +34,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   }
 
   return (
-    <a href={props.url} className={item} target="_blank">
+    <a href={props.url} className={item} target="_blank" onClick={handleClick}>
       <img className={itemImg} src={props.iconUrl} />
       {props.title}
     </a>
