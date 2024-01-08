@@ -18,8 +18,6 @@ export function PageFrame(props: PageFrameProps): JSX.Element {
     return <></>
   }
 
-  console.log(props.positionElm)
-
   return (
     <Popover>
       <Transition

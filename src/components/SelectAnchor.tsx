@@ -1,4 +1,5 @@
 import React, { useState, useEffect, forwardRef } from 'react'
+import { APP_ID } from '../const'
 
 type Props = {
   isSelected: boolean
@@ -11,6 +12,13 @@ function getLineHeight() {
   return window.getComputedStyle(e).getPropertyValue('line-height')
 }
 
+function isPopup(elm: Element): Boolean {
+  if (elm == null) return false
+  if (elm.id === APP_ID) return true
+  if (elm.nodeName === 'body') return false
+  return isPopup(elm.parentElement as Element)
+}
+
 export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
     const [isMouseDown, setIsMouseDown] = useState(false)
@@ -20,8 +28,10 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     })
 
     useEffect(() => {
-      const onDown = () => {
-        setIsMouseDown(true)
+      const onDown = (e: MouseEvent) => {
+        if (!isPopup(e.target as Element)) {
+          setIsMouseDown(true)
+        }
       }
       const onUp = () => {
         setIsMouseDown(false)

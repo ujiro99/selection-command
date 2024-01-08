@@ -31,6 +31,13 @@ export function Menu(props: MenuProps): JSX.Element {
       iconUrl: 'https://valkyrie.tokyo/wp-content/uploads/2017/08/eijiro.png',
       openInPopup: true,
     },
+    {
+      id: 4,
+      title: 'sample',
+      searchUrl: 'https://v8.dev/features/import-assertions',
+      iconUrl: 'https://valkyrie.tokyo/wp-content/uploads/2017/08/eijiro.png',
+      openInPopup: true,
+    },
   ]
 
   function toUrl(searchUrl: string, text: string): string {
