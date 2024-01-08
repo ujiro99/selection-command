@@ -150,7 +150,6 @@
 .delay-1000 {
   transition-delay: 1000ms;
 }
-
 .popup-from {
   transform: translateY(0px);
 }

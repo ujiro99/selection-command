@@ -1,0 +1,9 @@
+.page {
+  width: 400px;
+  height: 500px;
+
+  > iframe {
+    width: 100%;
+    height: 100%;
+  }
+}

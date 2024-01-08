@@ -1,29 +1,29 @@
 import React, { useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
-import { popup } from './Popup.module.css'
-import { Menu } from './Menu'
+import { page } from './PageFrame.module.css'
 
-type PopupProps = {
+type PageFrameProps = {
   positionElm: Element | null
-  selectionText: string
+  url: string
 }
 
-export function Popup(props: PopupProps): JSX.Element {
+export function PageFrame(props: PageFrameProps): JSX.Element {
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const { styles, attributes } = usePopper(props.positionElm, popperElement, {
-    placement: 'top-start',
+    placement: 'right-start',
   })
-  let visible = props.selectionText.length > 0 && props.positionElm != null
 
-  const sidePanel = async () => {
-    return await chrome.runtime.sendMessage({ command: 'openSidePanel' })
+  if (props.positionElm == null) {
+    return <></>
   }
+
+  console.log(props.positionElm)
 
   return (
     <Popover>
       <Transition
-        show={visible}
+        show={true}
         enter="transition duration-400 delay-300 ease-out"
         enterFrom="transform popup-from opacity-0"
         enterTo="transform popup-to opacity-100"
@@ -37,8 +37,8 @@ export function Popup(props: PopupProps): JSX.Element {
           {...attributes.popper}
           static
         >
-          <div className={popup}>
-            <Menu selectionText={props.selectionText} />
+          <div className={page}>
+            <iframe src={props.url}></iframe>
           </div>
         </Popover.Panel>
       </Transition>

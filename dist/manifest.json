@@ -19,5 +19,9 @@
   "background": {
     "service_worker": "/src/background_script.js"
   },
+  "permissions": ["sidePanel", "storage"],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
   "options_page": "options_page.html"
 }
