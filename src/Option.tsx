@@ -16,9 +16,7 @@ export function Option() {
   const [settings, setSettings] = useState<string>('')
 
   useEffect(() => {
-    ;(async () => {
-      setDefaultVal(await getSettings())
-    })()
+    ;(async () => setDefaultVal(await getSettings()))()
   }, [])
 
   useEffect(() => {
@@ -49,7 +47,7 @@ export function Option() {
   }
 
   const onClickReset = () => {
-    UseSettings.reset()
+    UseSettings.reset().then(() => location.reload())
   }
 
   return (
