@@ -1,0 +1,8 @@
+{
+  "extName": {
+    "message": "Selection Command"
+  },
+  "extDescription": {
+    "message": "On a web page, you can set your own commands for the selected text."
+  }
+}

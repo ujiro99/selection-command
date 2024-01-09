@@ -1,0 +1,8 @@
+{
+  "extName": {
+    "message": "Selection Command"
+  },
+  "extDescription": {
+    "message": "Webページ上で選択したテキストに対して、独自のコマンドを設定できます"
+  }
+}

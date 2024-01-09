@@ -1,5 +1,5 @@
 {
-  "name": "selection-popup",
+  "name": "Selection Command",
   "version": "0.1.0",
   "scripts": {
     "build": "cross-env NODE_ENV=production esbuild src/* --bundle --outdir=dist/src --sourcemap",
