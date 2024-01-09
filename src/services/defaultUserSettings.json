@@ -1,7 +1,5 @@
-declare module '*.module.css'
-
-
-  "command": [
+{
+  "commands": [
     {
       "title": "Google",
       "searchUrl": "https://google.com/search?q=%s",
@@ -22,3 +20,4 @@ declare module '*.module.css'
     }
   ],
   "popupPlacement": "top-start"
+}

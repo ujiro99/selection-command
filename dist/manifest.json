@@ -7,7 +7,6 @@
   "icons": {
     "128": "logo192.png"
   },
-  "permissions": ["storage"],
   "action": {
     "default_popup": "options_page.html"
   },

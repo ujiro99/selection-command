@@ -1,7 +1,12 @@
-import * as mv3 from 'mv3-hot-reload';
-mv3.content.init();
+import * as mv3 from 'mv3-hot-reload'
+import { Option } from './Option'
+mv3.content.init()
 
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import { createRoot } from 'react-dom/client'
 
-ReactDOM.render(<h1>React is here 3!</h1>, document.querySelector('#root'));
+const dom = document.querySelector('#root')
+if (dom != null) {
+  const root = createRoot(dom)
+  root.render(<Option />)
+}
