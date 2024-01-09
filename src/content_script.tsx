@@ -9,13 +9,23 @@ import './app.css'
 
 const rootDom = document.createElement('div')
 rootDom.id = APP_ID
-document.body.append(rootDom)
-const shadowOpen = rootDom.attachShadow({ mode: 'open' })
-const root = createRoot(shadowOpen)
+document.body.insertAdjacentElement('afterend', rootDom)
+const shadow = rootDom.attachShadow({ mode: 'closed' })
+const root = createRoot(shadow)
 root.render(<App />)
 
+// Putting styles into ShadowDom
+const url = chrome.runtime.getURL('/src/content_script.css')
+fetch(url)
+  .then((res) => res.text())
+  .then((css) => {
+    let style = document.createElement('style')
+    style.append(document.createTextNode(css))
+    shadow.insertBefore(style, shadow.firstChild)
+  })
+
 function App() {
-  let [positionElm, setPositionElm] = useState<Element>()
+  let [positionElm, setPositionElm] = useState<Element | null>(null)
   let [selectionText, setSelectionText] = useState('')
   let isSelected = selectionText.length > 0
 

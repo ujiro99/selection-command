@@ -23,5 +23,11 @@
   "side_panel": {
     "default_path": "sidepanel.html"
   },
+  "web_accessible_resources": [
+    {
+      "resources": ["src/content_script.css"],
+      "matches": ["https://*/*", "http://*/*"]
+    }
+  ],
   "options_page": "options_page.html"
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
-import { page } from './PageFrame.module.css'
+import { page, iframe } from './PageFrame.module.css'
 
 type PageFrameProps = {
   positionElm: Element | null
@@ -22,7 +22,7 @@ export function PageFrame(props: PageFrameProps): JSX.Element {
     <Popover>
       <Transition
         show={true}
-        enter="transition duration-400 delay-300 ease-out"
+        enter="transition duration-300 ease-out"
         enterFrom="transform popup-from opacity-0"
         enterTo="transform popup-to opacity-100"
         leave="transition duration-100 ease-out"
@@ -35,8 +35,8 @@ export function PageFrame(props: PageFrameProps): JSX.Element {
           {...attributes.popper}
           static
         >
-          <div className={page}>
-            <iframe src={props.url}></iframe>
+          <div className={page + ' shadow-xl'}>
+            <iframe className={iframe} src={props.url}></iframe>
           </div>
         </Popover.Panel>
       </Transition>

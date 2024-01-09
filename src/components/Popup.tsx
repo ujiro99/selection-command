@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
-import { popup } from './Popup.module.css'
+import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './Menu'
 
 type PopupProps = {
@@ -21,10 +21,10 @@ export function Popup(props: PopupProps): JSX.Element {
   }
 
   return (
-    <Popover>
+    <Popover className={popupContianer}>
       <Transition
         show={visible}
-        enter="transition duration-400 delay-300 ease-out"
+        enter="transition duration-300 delay-300 ease-out"
         enterFrom="transform popup-from opacity-0"
         enterTo="transform popup-to opacity-100"
         leave="transition duration-100 ease-out"
@@ -37,7 +37,7 @@ export function Popup(props: PopupProps): JSX.Element {
           {...attributes.popper}
           static
         >
-          <div className={popup}>
+          <div className={popup + ' shadow-xl'}>
             <Menu selectionText={props.selectionText} />
           </div>
         </Popover.Panel>

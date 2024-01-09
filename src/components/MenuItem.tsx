@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { PageFrame } from './PageFrame'
-import { item, itemImg } from './Menu.module.css'
+import { item, button, itemImg } from './Menu.module.css'
 import { OPEN_MODE } from '../const'
 
 type MenuItemProps = {
@@ -24,7 +24,11 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   if (props.openMode === OPEN_MODE.POPUP) {
     return (
       <>
-        <button className={item} ref={buttonRef} onClick={handleClick}>
+        <button
+          className={item + ' ' + button}
+          ref={buttonRef}
+          onClick={handleClick}
+        >
           <img className={itemImg} src={props.iconUrl} />
           {props.title}
         </button>

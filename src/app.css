@@ -24,135 +24,41 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.duration-0 {
-  transition-duration: 0s;
-}
-.duration-75 {
-  transition-duration: 75ms;
-}
+
 .duration-100 {
   transition-duration: 100ms;
 }
-.duration-150 {
-  transition-duration: 150ms;
-}
-.duration-200 {
-  transition-duration: 200ms;
-}
+
 .duration-300 {
   transition-duration: 300ms;
 }
-.duration-500 {
-  transition-duration: 500ms;
-}
-.duration-700 {
-  transition-duration: 700ms;
-}
-.duration-1000 {
-  transition-duration: 1000ms;
-}
+
 .ease-out {
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
+
 .opacity-0 {
   opacity: 0;
 }
-.opacity-5 {
-  opacity: 0.05;
-}
-.opacity-10 {
-  opacity: 0.1;
-}
-.opacity-15 {
-  opacity: 0.15;
-}
-.opacity-20 {
-  opacity: 0.2;
-}
-.opacity-25 {
-  opacity: 0.25;
-}
-.opacity-30 {
-  opacity: 0.3;
-}
-.opacity-35 {
-  opacity: 0.35;
-}
-.opacity-40 {
-  opacity: 0.4;
-}
-.opacity-45 {
-  opacity: 0.45;
-}
-.opacity-50 {
-  opacity: 0.5;
-}
-.opacity-55 {
-  opacity: 0.55;
-}
-.opacity-60 {
-  opacity: 0.6;
-}
-.opacity-65 {
-  opacity: 0.65;
-}
-.opacity-70 {
-  opacity: 0.7;
-}
-.opacity-75 {
-  opacity: 0.75;
-}
-.opacity-80 {
-  opacity: 0.8;
-}
-.opacity-85 {
-  opacity: 0.85;
-}
-.opacity-90 {
-  opacity: 0.9;
-}
-.opacity-95 {
-  opacity: 0.95;
-}
+
 .opacity-100 {
   opacity: 1;
 }
-.scale-100 {
-  transform: scale(1);
-}
-.scale-95 {
-  transform: scale(0.95);
-}
-.delay-0 {
-  transition-delay: 0s;
-}
-.delay-75 {
-  transition-delay: 75ms;
-}
-.delay-100 {
-  transition-delay: 100ms;
-}
-.delay-150 {
-  transition-delay: 150ms;
-}
-.delay-200 {
-  transition-delay: 200ms;
-}
+
 .delay-300 {
   transition-delay: 300ms;
 }
-.delay-500 {
-  transition-delay: 500ms;
+
+.shadow-xl {
+  box-shadow:
+    0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
-.delay-700 {
-  transition-delay: 700ms;
-}
-.delay-1000 {
-  transition-delay: 1000ms;
-}
+
 .popup-from {
   transform: translateY(0px);
 }
+
 .popup-to {
   transform: translateY(-5px);
 }
