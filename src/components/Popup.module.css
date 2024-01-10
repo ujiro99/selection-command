@@ -1,6 +1,7 @@
 .popup {
-  background-color: white;
+  background-color: #f9f9f9;
   border-radius: 6px;
+  border: solid 1px #e9e9e9;
 }
 
 /* To display the popup at the top of html, add maximum value of z-index. */

@@ -1,5 +1,5 @@
 .menu {
-  padding: 2px;
+  padding: 2px 3px;
 }
 
 .list {
@@ -17,7 +17,7 @@
 }
 
 .item {
-  padding: 4px;
+  padding: 4px 5px 4px 4px;
   margin: 2px;
   display: flex;
   align-items: center;
@@ -40,5 +40,5 @@
 .itemImg {
   width: 1em;
   height: 1em;
-  margin-right: 4px;
+  margin-right: 6px;
 }

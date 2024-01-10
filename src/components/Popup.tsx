@@ -25,21 +25,20 @@ export function Popup(props: PopupProps): JSX.Element {
       <Transition
         show={visible}
         enter="transition duration-300 delay-300 ease-out"
-        enterFrom="transform popup-from opacity-0"
-        enterTo="transform popup-to opacity-100"
+        enterFrom="popup-from opacity-0"
+        enterTo="popup-to opacity-100"
         leave="transition duration-100 ease-out"
-        leaveFrom="transform popup-to opacity-100"
-        leaveTo="transform popup-from opacity-0"
+        leaveFrom="popup-to opacity-100"
+        leaveTo="popup-from opacity-0"
       >
         <Popover.Panel
           ref={setPopperElement}
           style={styles.popper}
           {...attributes.popper}
+          className={popup + ' shadow-xl'}
           static
         >
-          <div className={popup + ' shadow-xl'}>
-            <Menu selectionText={props.selectionText} />
-          </div>
+          <Menu selectionText={props.selectionText} />
         </Popover.Panel>
       </Transition>
     </Popover>
