@@ -2,14 +2,8 @@ import React, { useState, useEffect, forwardRef } from 'react'
 import { APP_ID } from '../const'
 
 type Props = {
-  isSelected: boolean
-}
-
-function getLineHeight() {
-  const s = document.getSelection()
-  const e = s?.focusNode?.parentElement
-  if (e == null) return
-  return window.getComputedStyle(e).getPropertyValue('line-height')
+  rect: DOMRect | undefined
+  selectionText: string
 }
 
 function isPopup(elm: Element): Boolean {
@@ -21,11 +15,10 @@ function isPopup(elm: Element): Boolean {
 
 export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
+    const rect = props.rect
+    const text = props.selectionText
+    const selected = text != null && text.length > 0
     const [isMouseDown, setIsMouseDown] = useState(false)
-    const [mousePosition, setMousePosition] = useState({
-      left: 0,
-      top: 0,
-    })
 
     useEffect(() => {
       const onDown = (e: MouseEvent) => {
@@ -44,47 +37,16 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       }
     }, [])
 
-    useEffect(() => {
-      const onDblClick = (e: MouseEvent) => {
-        setMousePosition({
-          left: e.pageX,
-          top: e.pageY,
-        })
-      }
-      document.addEventListener('dblclick', onDblClick)
-      return () => {
-        document.removeEventListener('dblclick', onDblClick)
-      }
-    }, [isMouseDown])
-
-    useEffect(() => {
-      const onMove = (e: MouseEvent) => {
-        setMousePosition({
-          left: e.pageX,
-          top: e.pageY,
-        })
-      }
-      if (isMouseDown) {
-        document.addEventListener('mousemove', onMove)
-      } else {
-        document.removeEventListener('mousemove', onMove)
-      }
-      return () => {
-        document.removeEventListener('mousemove', onMove)
-      }
-    }, [isMouseDown])
-
-    if (!props.isSelected || isMouseDown) {
-      return
-    }
+    if (rect == null || isMouseDown || !selected) return null
 
     const styles = {
       position: 'absolute',
-      top: mousePosition.top,
-      left: mousePosition.left,
-      height: getLineHeight(),
+      top: window.scrollY + rect.top,
+      left: window.scrollX + rect.left,
+      height: rect.height,
+      width: rect.width,
       pointerEvents: 'none',
-      transform: 'translateY(-50%)',
+      padding: '4px', // adjust position of the Popup
     } as React.CSSProperties
 
     return <div style={styles} ref={ref}></div>

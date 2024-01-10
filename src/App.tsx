@@ -14,7 +14,7 @@ export const context = createContext<UseSettingsType>({} as UseSettingsType)
 export function App(props: AppProps) {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [selectionText, setSelectionText] = useState('')
-  const isSelected = selectionText.length > 0
+  const [rect, setRect] = useState<DOMRect>()
   const settings = props.settings
 
   useEffect(() => {
@@ -22,8 +22,10 @@ export function App(props: AppProps) {
       const s = document.getSelection()
       if (s == null || s.rangeCount == 0) {
         setSelectionText('')
+        setRect(undefined)
       } else {
         setSelectionText(s.toString())
+        setRect(s.getRangeAt(0).getBoundingClientRect())
       }
     }
     document.addEventListener('selectionchange', onSelectionchange)
@@ -34,7 +36,11 @@ export function App(props: AppProps) {
 
   return (
     <context.Provider value={settings}>
-      <SelectAnchor isSelected={isSelected} ref={setPositionElm} />
+      <SelectAnchor
+        rect={rect}
+        selectionText={selectionText}
+        ref={setPositionElm}
+      />
       <Popup positionElm={positionElm} selectionText={selectionText} />
     </context.Provider>
   )

@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
+import { context } from '../App'
 import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './Menu'
 
@@ -9,10 +10,12 @@ type PopupProps = {
   selectionText: string
 }
 
-export function Popup(props: PopupProps): JSX.Element {
+export function Popup(props: PopupProps) {
+  const settings = useContext(context)
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
+
   const { styles, attributes } = usePopper(props.positionElm, popperElement, {
-    placement: 'top-start',
+    placement: settings.popupPlacement,
   })
   let visible = props.selectionText.length > 0 && props.positionElm != null
 
