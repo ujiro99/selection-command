@@ -1,0 +1,51 @@
+{
+  "title": "UserSettingSchema",
+  "type": "object",
+  "required": ["commands", "popupPlacement"],
+  "properties": {
+    "commands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["title", "searchUrl", "iconUrl", "openMode"],
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "searchUrl": {
+            "type": "string"
+          },
+          "iconUrl": {
+            "type": "string"
+          },
+          "openMode": {
+            "type": "string",
+            "enum": ["popup", "tab"]
+          }
+        }
+      }
+    },
+    "popupPlacement": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "auto-start",
+        "auto-end",
+        "top",
+        "top-start",
+        "top-end",
+        "bottom",
+        "bottom-start",
+        "bottom-end",
+        "right",
+        "right-start",
+        "right-end",
+        "left",
+        "left-start",
+        "left-end"
+      ]
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import * as mv3 from 'mv3-hot-reload'
-import { Option } from './Option'
+import { Option } from './components/Option'
 mv3.content.init()
 
 import React from 'react'

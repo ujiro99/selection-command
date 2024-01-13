@@ -1,9 +1,7 @@
-import browser from 'webextension-polyfill'
 import * as mv3 from 'mv3-hot-reload'
+import { isDebug } from './const'
 
-mv3.utils.setConfig({
-  isDev: true,
-})
+mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {

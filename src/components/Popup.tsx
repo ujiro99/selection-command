@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
-import { context } from '../App'
+import { context } from './App'
 import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './Menu'
 

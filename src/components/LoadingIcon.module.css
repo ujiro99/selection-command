@@ -1,0 +1,57 @@
+.LoadingIcon {
+  position: absolute;
+  right: 30px;
+  top: 40px;
+}
+
+.LoadingIcon {
+  --color: #bbb;
+  --border-width: 2px;
+
+  user-select: none;
+
+  .icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: solid var(--border-width) var(--color);
+    border-right: solid var(--border-width) transparent;
+
+    animation: spin 1s linear infinite;
+
+    &::before {
+      content: '';
+      box-sizing: content-box;
+      position: absolute;
+      display: block;
+      height: 100%;
+      width: 100%;
+      left: calc(-1 * var(--border-width));
+      top: calc(-1 * var(--border-width));
+      border-radius: 50%;
+      transform-origin: center;
+      transform: rotate(45deg);
+      border: solid var(--border-width) var(--color);
+      border-right: solid var(--border-width) transparent;
+    }
+  }
+
+  .children {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #555;
+    line-height: 1.6em;
+    white-space: nowrap;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

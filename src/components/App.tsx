@@ -1,9 +1,9 @@
 import React, { useState, useEffect, createContext } from 'react'
-import { SelectAnchor } from './components/SelectAnchor'
-import { Popup } from './components/Popup'
-import { UseSettingsType } from './services/userSettings'
+import { SelectAnchor } from './SelectAnchor'
+import { Popup } from './Popup'
+import { UseSettingsType } from '../services/userSettings'
 
-import './app.css'
+import './App.css'
 
 type AppProps = {
   settings: UseSettingsType

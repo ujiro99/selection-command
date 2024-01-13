@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { MenuItem } from './MenuItem'
 import { menu, list } from './Menu.module.css'
-import { context } from '../App'
+import { context } from './App'
 
 type MenuProps = {
   selectionText: string

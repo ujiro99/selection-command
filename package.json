@@ -2,7 +2,7 @@
   "name": "selection-command",
   "version": "0.1.0",
   "scripts": {
-    "build": "cross-env NODE_ENV=production esbuild src/* --bundle --outdir=dist/src --sourcemap",
+    "build": "node build.js",
     "watch:src": "node watch.js",
     "watch:dist": "mv3-hot-reload",
     "dev": "concurrently yarn:watch:*",
@@ -48,6 +48,7 @@
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "esbuild": "^0.19.11",
+    "glob": "^10.3.10",
     "husky": "^8.0.3",
     "mv3-hot-reload": "file:lib/mv3-hot-reload",
     "prettier": "^3.1.1",

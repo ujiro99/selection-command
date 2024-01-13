@@ -1,6 +1,14 @@
-export const APP_ID = 'selection-popup'
+export const APP_ID = process.env.NAME
+export const VERSION = process.env.VERSION
 
 export enum OPEN_MODE {
   POPUP = 'popup',
   TAB = 'tab',
 }
+
+/**
+ * Setting value to switch the debug log output from this module.
+ * true: enables all log. | false: disables debug log.
+ */
+const environment = process.env.NODE_ENV || 'development'
+export const isDebug = environment === 'development'

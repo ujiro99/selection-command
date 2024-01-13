@@ -4,7 +4,7 @@ mv3.content.init()
 import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { APP_ID } from './const'
-import { App } from './App'
+import { App } from './components/App'
 import { UseSettings } from './services/userSettings'
 
 const rootDom = document.createElement('div')

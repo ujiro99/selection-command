@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
-import { Storage, STORAGE_KEY } from './services/storage'
-import { UseSettings } from './services/userSettings'
+import Ajv from 'ajv'
+
+const ajv = new Ajv({ allErrors: true, verbose: true })
+
+import { Storage, STORAGE_KEY } from '../services/storage'
+import { UseSettings } from '../services/userSettings'
+import { LoadingIcon } from './LoadingIcon'
+import { sleep } from '../services/util'
+import * as i18n from '../services/i18n'
 
 import { option, textarea, menu, button } from './Option.module.css'
 
@@ -11,9 +18,24 @@ async function getSettings(): Promise<string> {
 }
 
 export function Option() {
+  const [settings, setSettings] = useState<string>('')
   const [defaultVal, setDefaultVal] = useState<string>('')
   const [timeoutID, setTimeoutID] = useState<number>()
-  const [settings, setSettings] = useState<string>('')
+  const [iconVisible, setIconVisible] = useState(false)
+
+  const updateSettings = async () => {
+    try {
+      const settingObj = JSON.parse(settings)
+      setIconVisible(true)
+      await Storage.set(STORAGE_KEY.USER, settingObj)
+      await sleep(1000)
+      setIconVisible(false)
+    } catch {
+      if (defaultVal != null && defaultVal.length > 0) {
+        console.log('failed to update settings!')
+      }
+    }
+  }
 
   useEffect(() => {
     ;(async () => setDefaultVal(await getSettings()))()
@@ -24,14 +46,7 @@ export function Option() {
     if (timeoutID) clearTimeout(timeoutID)
     const newTimeoutId = window.setTimeout(() => {
       if (unmounted) return
-      try {
-        const settingObj = JSON.parse(settings)
-        Storage.set(STORAGE_KEY.USER, settingObj).then(() => {
-          console.log('option saved!')
-        })
-      } catch {
-        // do nothing
-      }
+      updateSettings()
       setTimeoutID(undefined)
     }, 1 * 500 /* ms */)
     setTimeoutID(newTimeoutId)
@@ -52,6 +67,11 @@ export function Option() {
 
   return (
     <div className={option}>
+      {iconVisible && (
+        <LoadingIcon>
+          <span>{i18n.t('saving')}</span>
+        </LoadingIcon>
+      )}
       <TextareaAutosize
         className={textarea}
         defaultValue={defaultVal}
