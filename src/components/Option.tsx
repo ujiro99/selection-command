@@ -17,12 +17,14 @@ export function Option() {
   const [settings, setSettings] = useState<UseSettingsType>()
   const [defaultVal, setDefaultVal] = useState<UseSettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
+  const [iframeHeight, setIframeHeight] = useState<number>()
   const [iconVisible, setIconVisible] = useState(false)
   const iframeRef = useRef(null)
 
   const updateSettings = async () => {
     try {
       console.log(settings)
+      if (settings == null) return
       setIconVisible(true)
       await Storage.set(STORAGE_KEY.USER, settings)
       await sleep(1000)
@@ -62,6 +64,8 @@ export function Option() {
 
       if (command === 'changed') {
         setSettings(value)
+      } else if (command === 'setHeight') {
+        setIframeHeight(value)
       }
     }
     window.addEventListener('message', func)
@@ -107,6 +111,7 @@ export function Option() {
         ref={iframeRef}
         className={css.editorFrame}
         onLoad={onLoadIfame}
+        height={iframeHeight}
       ></iframe>
     </div>
   )
