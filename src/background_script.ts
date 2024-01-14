@@ -26,3 +26,9 @@ const openSidePanel = async (tabId: number) => {
     enabled: true,
   })
 }
+
+chrome.action.onClicked.addListener((tab) => {
+  chrome.tabs.create({
+    url: 'options_page.html',
+  })
+})

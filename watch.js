@@ -25,12 +25,16 @@ const main = async () => {
       'src/background_script.ts',
       'src/content_script.tsx',
       'src/options_page.tsx',
+      'src/sandbox.tsx',
     ],
     outdir: 'dist/src',
     minify: false,
     bundle: true,
     tsconfig: './tsconfig.json',
     plugins: [cleanup(['*'])],
+    loader: {
+      '.svg': 'text',
+    },
     logLevel: 'info',
     define: {
       'process.env.NAME': `"${package.name}"`,

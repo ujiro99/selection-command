@@ -1,6 +1,13 @@
+.title {
+  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-size: 2.2rem;
+  margin-top: 30px;
+}
+
 .option {
   width: 600px;
-  height: 600px;
+  margin: 20px auto;
+  color: rgb(31 41 55);
 }
 
 .textarea {
@@ -15,4 +22,10 @@
 
 .button {
   padding: 4px;
+}
+
+.editorFrame {
+  width: 100%;
+  height: 80vh;
+  border: none;
 }

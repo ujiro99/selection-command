@@ -24,12 +24,16 @@ const main = () => {
         'src/background_script.ts',
         'src/content_script.tsx',
         'src/options_page.tsx',
+        'src/sandbox.tsx',
       ],
       outdir: 'dist/src',
       minify: true,
       bundle: true,
       tsconfig: './tsconfig.json',
       plugins: [cleanup(['*'])],
+      loader: {
+        '.svg': 'text',
+      },
       define: {
         'process.env.NAME': `"${package.name}"`,
         'process.env.VERSION': `"${package.version}"`,

@@ -1,37 +1,34 @@
-import React, { useState, useEffect } from 'react'
-import TextareaAutosize from 'react-textarea-autosize'
-import Ajv from 'ajv'
+import React, { useState, useEffect, useRef } from 'react'
 
-const ajv = new Ajv({ allErrors: true, verbose: true })
-
-import { Storage, STORAGE_KEY } from '../services/storage'
-import { UseSettings } from '../services/userSettings'
 import { LoadingIcon } from './LoadingIcon'
+import { Storage, STORAGE_KEY } from '../services/storage'
+import { UseSettings, UseSettingsType } from '../services/userSettings'
 import { sleep } from '../services/util'
 import * as i18n from '../services/i18n'
+import { APP_ID } from '../const'
 
-import { option, textarea, menu, button } from './Option.module.css'
+import css from './Option.module.css'
 
-async function getSettings(): Promise<string> {
-  let obj = await Storage.get(STORAGE_KEY.USER)
-  return JSON.stringify(obj, null, '  ')
+async function getSettings(): Promise<UseSettingsType> {
+  return (await Storage.get(STORAGE_KEY.USER)) as UseSettingsType
 }
 
 export function Option() {
-  const [settings, setSettings] = useState<string>('')
-  const [defaultVal, setDefaultVal] = useState<string>('')
+  const [settings, setSettings] = useState<UseSettingsType>()
+  const [defaultVal, setDefaultVal] = useState<UseSettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
   const [iconVisible, setIconVisible] = useState(false)
+  const iframeRef = useRef(null)
 
   const updateSettings = async () => {
     try {
-      const settingObj = JSON.parse(settings)
+      console.log(settings)
       setIconVisible(true)
-      await Storage.set(STORAGE_KEY.USER, settingObj)
+      await Storage.set(STORAGE_KEY.USER, settings)
       await sleep(1000)
       setIconVisible(false)
     } catch {
-      if (defaultVal != null && defaultVal.length > 0) {
+      if (defaultVal != null) {
         console.log('failed to update settings!')
       }
     }
@@ -57,31 +54,60 @@ export function Option() {
     }
   }, [settings])
 
-  const onChange = ({ target: { value } }) => {
-    setSettings(value)
-  }
+  useEffect(() => {
+    const func = (event) => {
+      const command = event.data.command
+      const value = event.data.value
+      console.log(command, value)
+
+      if (command === 'changed') {
+        setSettings(value)
+      }
+    }
+    window.addEventListener('message', func)
+    return () => {
+      window.removeEventListener('message', func)
+    }
+  }, [])
 
   const onClickReset = () => {
     UseSettings.reset().then(() => location.reload())
   }
 
+  const onLoadIfame = () => {
+    if (iframeRef.current != null) {
+      let message = {
+        command: 'start',
+        value: defaultVal,
+      }
+      console.log('send message', message)
+      iframeRef.current.contentWindow.postMessage(message, '*')
+    } else {
+      console.log('frame null')
+      console.log(iframeRef)
+    }
+  }
+
   return (
-    <div className={option}>
+    <div className={css.option}>
       {iconVisible && (
         <LoadingIcon>
           <span>{i18n.t('saving')}</span>
         </LoadingIcon>
       )}
-      <TextareaAutosize
-        className={textarea}
-        defaultValue={defaultVal}
-        onChange={onChange}
-      />
-      <div className={menu}>
-        <button onClick={onClickReset} className={button}>
+      <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
+      <div className={css.menu}>
+        <button onClick={onClickReset} className={css.button}>
           Reset
         </button>
       </div>
+      <iframe
+        id="sandbox"
+        src="sandbox.html"
+        ref={iframeRef}
+        className={css.editorFrame}
+        onLoad={onLoadIfame}
+      ></iframe>
     </div>
   )
 }

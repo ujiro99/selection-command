@@ -7,9 +7,6 @@
   "icons": {
     "128": "icon128.png"
   },
-  "action": {
-    "default_popup": "options_page.html"
-  },
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
@@ -19,15 +16,19 @@
   "background": {
     "service_worker": "/src/background_script.js"
   },
-  "permissions": ["sidePanel", "storage"],
+  "options_page": "options_page.html",
+  "sandbox": {
+    "pages": ["sandbox.html"]
+  },
   "side_panel": {
     "default_path": "sidepanel.html"
   },
+  "action": {},
+  "permissions": ["sidePanel", "storage", "tabs"],
   "web_accessible_resources": [
     {
       "matches": ["http://*/*", "https://*/*"],
       "resources": ["src/content_script.css"]
     }
-  ],
-  "options_page": "options_page.html"
+  ]
 }

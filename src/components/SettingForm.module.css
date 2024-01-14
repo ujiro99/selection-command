@@ -1,0 +1,224 @@
+:root {
+  --butotn-height: 30px;
+  --button-radius: 10px;
+  --font-color: #333;
+}
+
+:global {
+  .form-group {
+    display: flex;
+    margin-bottom: 8px;
+  }
+
+  .row {
+    padding: 10px 0 10px 10px;
+    margin: auto;
+  }
+
+  .col-xs-9 {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .col-xs-3 {
+    display: inline-block;
+    margin-left: 12px;
+  }
+
+  .btn-group {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    flex-direction: column;
+    height: calc(var(--butotn-height) * 3);
+  }
+
+  .array-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    legend {
+      display: none;
+    }
+  }
+
+  .array-item > .col-xs-9 > .form-group {
+    border: solid 1px rgb(209 213 219);
+    padding: 12px 14px 12px 20px;
+    border-radius: 4px;
+
+    .form-control {
+      border: none;
+      border-radius: 0px;
+      outline: none;
+      padding: 6px 12px;
+    }
+
+    & > fieldset > .form-group:first-of-type .form-control {
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+
+    & > fieldset > .form-group:last-of-type .form-control {
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  fieldset > .form-group {
+    margin-bottom: 0;
+  }
+
+  .control-label {
+    flex: 1;
+    font-size: 1rem;
+    line-height: 2;
+  }
+
+  .form-control {
+    flex: 2;
+    font-size: 0.9rem;
+    border: solid 1px rgb(209 213 219);
+    padding: 8px 14px;
+    border-radius: 4px;
+    background: #f5f5f5;
+    color: var(--font-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      'Helvetica Neue', Arial, sans-serif;
+  }
+
+  select.form-control {
+    cursor: pointer;
+  }
+
+  .required {
+    color: rgb(239 68 68);
+    margin-left: 2px;
+  }
+
+  #root__title {
+    display: none;
+  }
+
+  #root > .form-group {
+    padding: 20px;
+  }
+
+  #root > .form-group + .form-group {
+    border-top: 1px solid #d1d5db;
+  }
+
+  .array-item-list + button {
+    margin: 0 auto;
+  }
+
+  /* hidden submit button */
+  .rjsf > div:last-child {
+    display: none;
+  }
+
+  legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    font-size: 21px;
+    line-height: inherit;
+    border: 0;
+  }
+  fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+    color: var(--font-color);
+  }
+  label {
+    display: inline-block;
+    max-width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+      'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  }
+}
+
+.button,
+.buttonItems {
+  border: solid 1px rgb(209 213 219);
+  background-color: #f5f5f5;
+  transition: background-color ease-out 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e5e5e5;
+  }
+
+  svg {
+    fill: #555;
+  }
+}
+
+.button {
+  width: 74px;
+  height: 34px;
+  border-radius: var(--button-radius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  > span {
+    margin-left: 4px;
+    margin-bottom: -2px;
+  }
+}
+
+.buttonItems {
+  padding: 6px;
+  width: 36px;
+  height: var(--butotn-height);
+
+  & + & {
+    border-top: none;
+  }
+  &:first-child {
+    border-top-left-radius: var(--button-radius);
+    border-top-right-radius: var(--button-radius);
+  }
+  &:last-child {
+    border-bottom-left-radius: var(--button-radius);
+    border-bottom-right-radius: var(--button-radius);
+  }
+  &[disabled] {
+    cursor: not-allowed;
+    &:hover {
+      background-color: #f5f5f5;
+    }
+    svg {
+      fill: #9ca3af;
+    }
+  }
+}
+
+.buttonItemsDanger {
+  svg {
+    fill: rgb(251 113 133);
+  }
+
+  &:hover svg {
+    fill: rgb(225 29 72);
+  }
+}
