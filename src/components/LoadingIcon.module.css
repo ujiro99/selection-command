@@ -1,7 +1,7 @@
 .LoadingIcon {
-  position: absolute;
-  right: 30px;
+  position: fixed;
   top: 40px;
+  right: calc(50% - 320px);
 }
 
 .LoadingIcon {

@@ -18,7 +18,6 @@ export function SettingFrom() {
     const func = (event) => {
       const command = event.data.command
       const value = event.data.value
-
       console.log(event.data)
 
       if (command === 'start') {

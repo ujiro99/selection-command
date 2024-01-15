@@ -21,10 +21,12 @@ export const UseSettings = {
   get: async (): Promise<UseSettingsType> => {
     let obj = (await Storage.get(STORAGE_KEY.USER)) as UseSettingsType
     // Assigning IDs to each command
-    obj.commands = obj.commands.map((c, idx) => {
-      c.id = idx
-      return c
-    })
+    obj.commands = obj.commands
+      .map((c, idx) => {
+        c.id = idx
+        return c
+      })
+      .filter((c) => c.searchUrl != null)
     return obj
   },
 
