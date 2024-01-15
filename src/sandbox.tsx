@@ -15,7 +15,6 @@ if (dom != null) {
 // start observing a DOM node to notify a height of iframe.
 const resizeObserver = new ResizeObserver((entries) => {
   var height = entries[0].target.scrollHeight
-  console.log(height)
   window.parent.postMessage(
     {
       command: 'setHeight',

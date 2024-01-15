@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
 import { UseSettings, UseSettingsType } from '../services/userSettings'
-import { sleep } from '../services/util'
+import { sleep, toDataURL } from '../services/util'
 import * as i18n from '../services/i18n'
 import { APP_ID } from '../const'
 
@@ -23,9 +23,19 @@ export function Option() {
 
   const updateSettings = async () => {
     try {
-      console.log(settings)
       if (settings == null) return
       setIconVisible(true)
+
+      // Convert iconUrl to DataURL
+      const iconUrls = await Promise.all(
+        settings.commands.map((c) => toDataURL(c.iconUrl)),
+      )
+      settings.commands = settings.commands.map((c, idx) => {
+        c.iconUrl = iconUrls[idx]
+        return c
+      })
+
+      console.log(settings)
       await Storage.set(STORAGE_KEY.USER, settings)
       await sleep(1000)
       setIconVisible(false)
