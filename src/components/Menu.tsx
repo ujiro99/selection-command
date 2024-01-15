@@ -15,7 +15,9 @@ export function Menu(props: MenuProps): JSX.Element {
   const [currentId, setCurrentId] = useState(NOT_SELECTED)
 
   function toUrl(searchUrl: string, text: string): string {
-    return searchUrl.replace('%s', text)
+    let textEscaped = text.replaceAll(' ', '+')
+    textEscaped = encodeURI(textEscaped)
+    return searchUrl.replace('%s', textEscaped)
   }
 
   return (
