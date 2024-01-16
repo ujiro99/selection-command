@@ -1,6 +1,6 @@
 .page {
   width: 400px;
-  height: 500px;
+  height: var(--frameHeight);
   margin-right: 4px;
 }
 

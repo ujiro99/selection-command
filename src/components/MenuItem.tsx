@@ -32,7 +32,11 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           <img className={itemImg} src={props.iconUrl} />
           {props.title}
         </button>
-        {open && <PageFrame url={props.url} positionElm={buttonRef.current} />}
+        <PageFrame
+          visible={open}
+          url={props.url}
+          positionElm={buttonRef.current}
+        />
       </>
     )
   }

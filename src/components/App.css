@@ -1,3 +1,7 @@
+:host {
+  --frameHeight: 500px;
+}
+
 .fade-enter {
   animation: 0.2s fade forwards;
 }
@@ -61,4 +65,23 @@
 
 .popup-to {
   transform: translateY(-5px);
+}
+
+.collapse-wrap {
+  transition: opacity 400ms;
+}
+
+.collapse-wrap > * {
+  transition-property: height;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 400ms;
+  overflow: hidden;
+}
+
+.collapse-from > * {
+  height: 0;
+}
+
+.collapse-to > * {
+  height: var(--frameHeight);
 }

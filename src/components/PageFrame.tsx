@@ -4,6 +4,7 @@ import { usePopper } from 'react-popper'
 import { page, iframe } from './PageFrame.module.css'
 
 type PageFrameProps = {
+  visible: boolean
   positionElm: Element | null
   url: string
 }
@@ -19,15 +20,12 @@ export function PageFrame(props: PageFrameProps): JSX.Element {
   }
 
   return (
-    <Popover>
+    <Popover className="page-frame">
       <Transition
-        show={true}
-        enter="transition duration-300 ease-out"
-        enterFrom="transform popup-from opacity-0"
-        enterTo="transform popup-to opacity-100"
-        leave="transition duration-100 ease-out"
-        leaveFrom="transform popup-to opacity-100"
-        leaveTo="transform popup-from opacity-0"
+        show={props.visible}
+        enter="collapse-wrap"
+        enterFrom="collapse-from"
+        enterTo="collapse-to"
       >
         <Popover.Panel
           ref={setPopperElement}
