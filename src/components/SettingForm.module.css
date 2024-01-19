@@ -222,3 +222,24 @@
     fill: rgb(225 29 72);
   }
 }
+
+.iconUrl {
+  position: relative;
+}
+
+.iconUrlInput {
+  width: calc(100% - 1.5em);
+  background: inherit;
+  border: inherit;
+  outline: inherit;
+  font-family: inherit;
+  padding: 0 0 0 1.5em;
+}
+
+.iconUrlPreview {
+  width: 1em;
+  height: 1em;
+  position: absolute;
+  left: 0.8em;
+  top: 9px;
+}

@@ -18,6 +18,7 @@
             "type": "string"
           },
           "iconUrl": {
+            "$id": "#/commands/iconUrl",
             "type": "string"
           },
           "openMode": {

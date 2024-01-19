@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { IconButtonProps } from '@rjsf/utils'
+import { IconButtonProps, FieldProps, RegistryFieldsType } from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
 import Form from '@rjsf/core'
 import classNames from 'classnames'
@@ -10,20 +10,22 @@ import { Icon } from '../components/Icon'
 import * as css from './SettingForm.module.css'
 
 export function SettingFrom() {
-  const [parent, setParent] = useState()
-  const [origin, setOrigin] = useState()
+  const [parent, setParent] = useState<MessageEventSource>()
+  const [origin, setOrigin] = useState('')
   const [defaultData, setDefaultData] = useState()
 
   useEffect(() => {
-    const func = (event) => {
+    const func = (event: MessageEvent) => {
       const command = event.data.command
       const value = event.data.value
-      console.log(event.data)
+      console.debug(event.data)
 
       if (command === 'start') {
-        setParent(event.source)
-        setOrigin(event.origin)
-        setDefaultData(value)
+        if (event.source != null) {
+          setParent(event.source)
+          setOrigin(event.origin)
+          setDefaultData(value)
+        }
       }
     }
     window.addEventListener('message', func)
@@ -33,30 +35,29 @@ export function SettingFrom() {
   }, [])
 
   const onChange = (arg) => {
-    if (parent) {
+    if (parent != null) {
       parent.postMessage({ command: 'changed', value: arg.formData }, origin)
     }
   }
 
   const log = (type: any) => console.log.bind(console, type)
   return (
-    <>
-      <Form
-        schema={userSettingSchema}
-        validator={validator}
-        formData={defaultData}
-        onChange={onChange}
-        onError={log('errors')}
-        templates={{
-          ButtonTemplates: {
-            AddButton,
-            MoveDownButton,
-            MoveUpButton,
-            RemoveButton,
-          },
-        }}
-      />
-    </>
+    <Form
+      schema={userSettingSchema}
+      validator={validator}
+      formData={defaultData}
+      onChange={onChange}
+      onError={log('errors')}
+      fields={fields}
+      templates={{
+        ButtonTemplates: {
+          AddButton,
+          MoveDownButton,
+          MoveUpButton,
+          RemoveButton,
+        },
+      }}
+    />
   )
 }
 
@@ -98,4 +99,24 @@ function RemoveButton(props: IconButtonProps) {
       <Icon name="delete" sandbox />
     </button>
   )
+}
+
+const IconUrlField = function (props: FieldProps) {
+  return (
+    <label className={css.iconUrl + ' form-control'}>
+      <img className={css.iconUrlPreview} src={props.formData} />
+      <input
+        id={props.idSchema.$id}
+        type="text"
+        className={css.iconUrlInput}
+        defaultValue={props.formData}
+        required={props.required}
+        onChange={(event) => props.onChange(event.target.value)}
+      />
+    </label>
+  )
+}
+
+const fields: RegistryFieldsType = {
+  '#/commands/iconUrl': IconUrlField,
 }
