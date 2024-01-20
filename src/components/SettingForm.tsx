@@ -1,18 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import { IconButtonProps, FieldProps, RegistryFieldsType } from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
-import Form from '@rjsf/core'
+import Form, { IChangeEvent } from '@rjsf/core'
 import classNames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
+import { UseSettingsType } from '../services/userSettings'
+
 import { Icon } from '../components/Icon'
 
 import * as css from './SettingForm.module.css'
 
+function getFaviconUrl(urlStr: string): string {
+  const url = new URL(urlStr)
+  const domain = url.hostname
+  const favUrl = `https://s2.googleusercontent.com/s2/favicons?domain=${domain}&sz=128`
+  return favUrl
+}
+
 export function SettingFrom() {
   const [parent, setParent] = useState<MessageEventSource>()
   const [origin, setOrigin] = useState('')
-  const [defaultData, setDefaultData] = useState()
+  const [defaultData, setDefaultData] = useState<UseSettingsType>()
 
   useEffect(() => {
     const func = (event: MessageEvent) => {
@@ -34,10 +43,19 @@ export function SettingFrom() {
     }
   }, [])
 
-  const onChange = (arg) => {
+  const onChange = (arg: IChangeEvent) => {
     if (parent != null) {
       parent.postMessage({ command: 'changed', value: arg.formData }, origin)
     }
+
+    // update iconURL when searchUrl setted
+    const data = arg.formData as UseSettingsType
+    data.commands.forEach((command) => {
+      if (command.iconUrl == '' && command.searchUrl != null) {
+        command.iconUrl = getFaviconUrl(command.searchUrl)
+      }
+    })
+    setDefaultData(data)
   }
 
   const log = (type: any) => console.log.bind(console, type)
@@ -109,7 +127,7 @@ const IconUrlField = function (props: FieldProps) {
         id={props.idSchema.$id}
         type="text"
         className={css.iconUrlInput}
-        defaultValue={props.formData}
+        value={props.formData}
         required={props.required}
         onChange={(event) => props.onChange(event.target.value)}
       />

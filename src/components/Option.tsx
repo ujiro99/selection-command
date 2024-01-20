@@ -35,7 +35,7 @@ export function Option() {
         return c
       })
 
-      console.log(settings)
+      console.debug('update settings', settings)
       await Storage.set(STORAGE_KEY.USER, settings)
       await sleep(1000)
       setIconVisible(false)
@@ -97,8 +97,8 @@ export function Option() {
       console.log('send message', message)
       iframeRef.current.contentWindow.postMessage(message, '*')
     } else {
-      console.log('frame null')
-      console.log(iframeRef)
+      console.warn('frame null')
+      console.warn(iframeRef)
     }
   }
 

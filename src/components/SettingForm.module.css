@@ -237,9 +237,9 @@
 }
 
 .iconUrlPreview {
-  width: 1em;
-  height: 1em;
+  width: 1.2em;
+  height: 1.2em;
   position: absolute;
-  left: 0.8em;
-  top: 9px;
+  left: 0.7em;
+  top: 8px;
 }

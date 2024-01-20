@@ -6,18 +6,23 @@ export function sleep(msec: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, msec))
 }
 
-export function toDataURL(url: string): Promise<string> {
-  const xhr = new XMLHttpRequest()
+export function toDataURL(src: string, outputFormat?: string) {
   return new Promise((resolve) => {
-    xhr.onload = function () {
-      let reader = new FileReader()
-      reader.onloadend = function () {
-        resolve(reader.result as string)
-      }
-      reader.readAsDataURL(xhr.response)
+    let img = new Image()
+    img.crossOrigin = 'Anonymous'
+    img.onload = function () {
+      let canvas = document.createElement('canvas')
+      let ctx = canvas.getContext('2d')
+      ctx.drawImage(this, 0, 0)
+      let dataURL = canvas.toDataURL(outputFormat)
+      resolve(dataURL)
     }
-    xhr.open('GET', url)
-    xhr.responseType = 'blob'
-    xhr.send()
+    img.src = src
   })
+}
+
+export function toUrl(searchUrl: string, text: string): string {
+  let textEscaped = text.replaceAll(' ', '+')
+  textEscaped = encodeURI(textEscaped)
+  return searchUrl.replace('%s', textEscaped)
 }

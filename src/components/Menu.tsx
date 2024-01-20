@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'
 import { MenuItem } from './MenuItem'
 import { menu, list } from './Menu.module.css'
 import { context } from './App'
+import { toUrl } from '../services/util'
 
 type MenuProps = {
   selectionText: string
@@ -13,12 +14,6 @@ export function Menu(props: MenuProps): JSX.Element {
   const settings = useContext(context)
   const commands = settings.commands
   const [currentId, setCurrentId] = useState(NOT_SELECTED)
-
-  function toUrl(searchUrl: string, text: string): string {
-    let textEscaped = text.replaceAll(' ', '+')
-    textEscaped = encodeURI(textEscaped)
-    return searchUrl.replace('%s', textEscaped)
-  }
 
   return (
     <div className={menu}>
