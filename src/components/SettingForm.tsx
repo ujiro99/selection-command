@@ -44,10 +44,6 @@ export function SettingFrom() {
   }, [])
 
   const onChange = (arg: IChangeEvent) => {
-    if (parent != null) {
-      parent.postMessage({ command: 'changed', value: arg.formData }, origin)
-    }
-
     // update iconURL when searchUrl setted
     const data = arg.formData as UseSettingsType
     data.commands.forEach((command) => {
@@ -55,6 +51,10 @@ export function SettingFrom() {
         command.iconUrl = getFaviconUrl(command.searchUrl)
       }
     })
+
+    if (parent != null) {
+      parent.postMessage({ command: 'changed', value: data }, origin)
+    }
     setDefaultData(data)
   }
 

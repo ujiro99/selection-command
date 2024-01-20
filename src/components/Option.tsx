@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { CSSTransition } from 'react-transition-group'
 
 import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
@@ -11,6 +12,10 @@ import css from './Option.module.css'
 
 async function getSettings(): Promise<UseSettingsType> {
   return (await Storage.get(STORAGE_KEY.USER)) as UseSettingsType
+}
+
+function isBase64(str: string): boolean {
+  return /base64/.test(str)
 }
 
 export function Option() {
@@ -27,13 +32,15 @@ export function Option() {
       setIconVisible(true)
 
       // Convert iconUrl to DataURL
-      const iconUrls = await Promise.all(
-        settings.commands.map((c) => toDataURL(c.iconUrl)),
+      await Promise.all(
+        settings.commands.map(async (c) => {
+          if (isBase64(c.iconUrl)) return
+
+          let dataUrl = await toDataURL(c.iconUrl)
+          console.debug('dataUrl', dataUrl)
+          c.iconUrl = dataUrl
+        }),
       )
-      settings.commands = settings.commands.map((c, idx) => {
-        c.iconUrl = iconUrls[idx]
-        return c
-      })
 
       console.debug('update settings', settings)
       await Storage.set(STORAGE_KEY.USER, settings)
@@ -104,11 +111,16 @@ export function Option() {
 
   return (
     <div className={css.option}>
-      {iconVisible && (
+      <CSSTransition
+        in={iconVisible}
+        timeout={300}
+        classNames="drop-in"
+        unmountOnExit
+      >
         <LoadingIcon>
           <span>{i18n.t('saving')}</span>
         </LoadingIcon>
-      )}
+      </CSSTransition>
       <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
       <div className={css.menu}>
         <button onClick={onClickReset} className={css.button}>

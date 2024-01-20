@@ -1,14 +1,20 @@
 .LoadingIcon {
   position: fixed;
   top: 40px;
-  right: calc(50% - 320px);
+  right: calc(50% - 340px);
 }
 
 .LoadingIcon {
-  --color: #bbb;
+  --color: #e5e5e5;
   --border-width: 2px;
 
   user-select: none;
+  padding: 8px 12px 22px;
+  background: #555;
+  border-radius: 4px;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
 
   .icon {
     width: 20px;
@@ -41,8 +47,8 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 10px;
-    color: #555;
-    line-height: 1.6em;
+    color: var(--color);
+    line-height: 1.9em;
     white-space: nowrap;
   }
 }
