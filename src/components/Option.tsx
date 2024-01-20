@@ -3,15 +3,15 @@ import { CSSTransition } from 'react-transition-group'
 
 import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
-import { UseSettings, UseSettingsType } from '../services/userSettings'
+import { UserSettings, UserSettingsType } from '../services/userSettings'
 import { sleep, toDataURL } from '../services/util'
 import * as i18n from '../services/i18n'
 import { APP_ID } from '../const'
 
 import css from './Option.module.css'
 
-async function getSettings(): Promise<UseSettingsType> {
-  return (await Storage.get(STORAGE_KEY.USER)) as UseSettingsType
+async function getSettings(): Promise<UserSettingsType> {
+  return (await Storage.get(STORAGE_KEY.USER)) as UserSettingsType
 }
 
 function isBase64(str: string): boolean {
@@ -19,8 +19,8 @@ function isBase64(str: string): boolean {
 }
 
 export function Option() {
-  const [settings, setSettings] = useState<UseSettingsType>()
-  const [defaultVal, setDefaultVal] = useState<UseSettingsType>()
+  const [settings, setSettings] = useState<UserSettingsType>()
+  const [defaultVal, setDefaultVal] = useState<UserSettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
   const [iframeHeight, setIframeHeight] = useState<number>()
   const [iconVisible, setIconVisible] = useState(false)
@@ -92,7 +92,7 @@ export function Option() {
   }, [])
 
   const onClickReset = () => {
-    UseSettings.reset().then(() => location.reload())
+    UserSettings.reset().then(() => location.reload())
   }
 
   const onLoadIfame = () => {

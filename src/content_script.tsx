@@ -5,14 +5,14 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { APP_ID } from './const'
 import { App } from './components/App'
-import { UseSettings } from './services/userSettings'
+import { UserSettings } from './services/userSettings'
 
 const rootDom = document.createElement('div')
 rootDom.id = APP_ID
 document.body.insertAdjacentElement('afterend', rootDom)
 const shadow = rootDom.attachShadow({ mode: 'closed' })
 
-UseSettings.get().then((settings) => {
+UserSettings.get().then((settings) => {
   const root = createRoot(shadow)
   root.render(<App settings={settings} />)
 })

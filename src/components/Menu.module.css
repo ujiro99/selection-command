@@ -16,6 +16,13 @@
   }
 }
 
+.menuHorizontal {
+  .list {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
 .item {
   padding: 4px 5px 4px 4px;
   margin: 2px;
@@ -42,4 +49,17 @@
   width: 1.2em;
   height: 1.2em;
   margin-right: 6px;
+}
+
+.itemOnlyIcon {
+  padding: 4px;
+
+  .itemTitle {
+    display: none;
+  }
+  .itemImg {
+    width: 1.4em;
+    height: 1.4em;
+    margin-right: 0;
+  }
 }

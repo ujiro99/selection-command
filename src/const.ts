@@ -11,6 +11,11 @@ export enum POPUP_ENABLED {
   DISABLE = 'Disable',
 }
 
+export enum STYLE {
+  VERTICAL = 'vertical',
+  HORIZONTAL = 'horizontal',
+}
+
 /**
  * Setting value to switch the debug log output from this module.
  * true: enables all log. | false: disables debug log.

@@ -1,10 +1,10 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
-import { context } from './App'
 import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './Menu'
 import { POPUP_ENABLED } from '../const'
+import { useSetting } from '../hooks/useSetting'
 
 type PopupProps = {
   positionElm: Element | null
@@ -12,20 +12,20 @@ type PopupProps = {
 }
 
 export function Popup(props: PopupProps) {
-  const settings = useContext(context)
-  const pageRule = settings.pageRules.find((rule) => {
-    const re = new RegExp(rule.urlPattern)
-    return window.location.href.match(re) != null
-  })
-
-  let placement = settings.popupPlacement
-  if (pageRule != null) {
-    placement = pageRule.popupPlacement
-  }
+  const { settings, pageRule } = useSetting()
+  const placement = settings.popupPlacement
 
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const { styles, attributes } = usePopper(props.positionElm, popperElement, {
     placement: placement,
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [0, 10],
+        },
+      },
+    ],
   })
 
   let visible = props.selectionText.length > 0 && props.positionElm != null

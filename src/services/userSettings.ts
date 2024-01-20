@@ -1,7 +1,7 @@
 import { Placement } from '@popperjs/core'
 import { Storage, STORAGE_KEY } from './storage'
 import UseSetting from './defaultUserSettings.json'
-import { OPEN_MODE, POPUP_ENABLED } from '../const'
+import { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
 
 export type Command = {
   id: number
@@ -17,15 +17,16 @@ export type PageRule = {
   popupPlacement: Placement
 }
 
-export type UseSettingsType = {
+export type UserSettingsType = {
   popupPlacement: Placement
   commands: Array<Command>
   pageRules: Array<PageRule>
+  style: STYLE
 }
 
-export const UseSettings = {
-  get: async (): Promise<UseSettingsType> => {
-    let obj = (await Storage.get(STORAGE_KEY.USER)) as UseSettingsType
+export const UserSettings = {
+  get: async (): Promise<UserSettingsType> => {
+    let obj = (await Storage.get(STORAGE_KEY.USER)) as UserSettingsType
     // Assigning IDs to each command
     obj.commands = obj.commands
       .map((c, idx) => {

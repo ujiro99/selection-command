@@ -1,8 +1,10 @@
 import React, { useState, useContext } from 'react'
+import classNames from 'classnames'
 import { MenuItem } from './MenuItem'
-import { menu, list } from './Menu.module.css'
+import { menu, list, menuHorizontal } from './Menu.module.css'
 import { context } from './App'
 import { toUrl } from '../services/util'
+import { STYLE } from '../const'
 
 type MenuProps = {
   selectionText: string
@@ -15,8 +17,10 @@ export function Menu(props: MenuProps): JSX.Element {
   const commands = settings.commands
   const [currentId, setCurrentId] = useState(NOT_SELECTED)
 
+  const isHorizontal = settings.direction == STYLE.HORIZONTAL
+
   return (
-    <div className={menu}>
+    <div className={classNames(menu, { [menuHorizontal]: isHorizontal })}>
       <ul className={list}>
         {commands.map((obj) => {
           return (
@@ -29,6 +33,7 @@ export function Menu(props: MenuProps): JSX.Element {
                 openMode={obj.openMode}
                 currentMenuId={currentId}
                 onSelect={setCurrentId}
+                onlyIcon={isHorizontal}
               />
             </li>
           )

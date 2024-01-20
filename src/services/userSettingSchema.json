@@ -6,6 +6,11 @@
     "popupPlacement": {
       "$ref": "#/definitions/popupPlacement"
     },
+    "style": {
+      "type": "string",
+      "default": "vertical",
+      "enum": ["vertical", "horizontal"]
+    },
     "commands": {
       "type": "array",
       "minItems": 1,

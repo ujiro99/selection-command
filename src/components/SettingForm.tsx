@@ -5,7 +5,7 @@ import Form, { IChangeEvent } from '@rjsf/core'
 import classNames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
-import { UseSettingsType } from '../services/userSettings'
+import { UserSettingsType } from '../services/userSettings'
 
 import { Icon } from '../components/Icon'
 
@@ -21,7 +21,7 @@ function getFaviconUrl(urlStr: string): string {
 export function SettingFrom() {
   const [parent, setParent] = useState<MessageEventSource>()
   const [origin, setOrigin] = useState('')
-  const [defaultData, setDefaultData] = useState<UseSettingsType>()
+  const [defaultData, setDefaultData] = useState<UserSettingsType>()
 
   useEffect(() => {
     const func = (event: MessageEvent) => {
@@ -45,7 +45,7 @@ export function SettingFrom() {
 
   const onChange = (arg: IChangeEvent) => {
     // update iconURL when searchUrl setted
-    const data = arg.formData as UseSettingsType
+    const data = arg.formData as UserSettingsType
     data.commands.forEach((command) => {
       if (command.iconUrl == '' && command.searchUrl != null) {
         command.iconUrl = getFaviconUrl(command.searchUrl)

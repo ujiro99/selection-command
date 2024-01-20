@@ -1,15 +1,15 @@
 import React, { useState, useEffect, createContext } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
-import { UseSettingsType } from '../services/userSettings'
+import { UserSettingsType } from '../services/userSettings'
 
 import './App.css'
 
 type AppProps = {
-  settings: UseSettingsType
+  settings: UserSettingsType
 }
 
-export const context = createContext<UseSettingsType>({} as UseSettingsType)
+export const context = createContext<UserSettingsType>({} as UserSettingsType)
 
 export function App(props: AppProps) {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
