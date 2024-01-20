@@ -2,6 +2,8 @@ const fs = require('fs')
 const { globSync } = require('glob')
 const esbuild = require('esbuild')
 
+const package = JSON.parse(fs.readFileSync('package.json'))
+
 function cleanup({ pattern = '*' }) {
   return {
     name: 'esbuild:cleanup',

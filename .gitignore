@@ -10,7 +10,7 @@
 
 # production
 /dist/src
-/dist/reload
+/build
 
 # misc
 .DS_Store

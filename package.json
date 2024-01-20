@@ -9,7 +9,8 @@
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
     "prepare": "husky install",
-    "preinstall": "cd ./lib/mv3-hot-reload && yarn install"
+    "preinstall": "cd ./lib/mv3-hot-reload && yarn install",
+    "zip": "npm-build-zip --source=dist --destination=build"
   },
   "author": "ujiro99",
   "license": "MIT",
@@ -55,6 +56,7 @@
     "glob": "^10.3.10",
     "husky": "^8.0.3",
     "mv3-hot-reload": "file:lib/mv3-hot-reload",
+    "npm-build-zip": "^1.0.4",
     "prettier": "^3.1.1",
     "pretty-quick": "^3.1.3",
     "typescript": "^5.3.3"

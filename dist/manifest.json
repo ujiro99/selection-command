@@ -20,11 +20,8 @@
   "sandbox": {
     "pages": ["sandbox.html"]
   },
-  "side_panel": {
-    "default_path": "sidepanel.html"
-  },
   "action": {},
-  "permissions": ["sidePanel", "storage", "tabs"],
+  "permissions": ["storage", "tabs"],
   "web_accessible_resources": [
     {
       "matches": ["http://*/*", "https://*/*"],
