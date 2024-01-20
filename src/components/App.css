@@ -18,6 +18,10 @@
   transition-duration: 100ms;
 }
 
+.duration-200 {
+  transition-duration: 200ms;
+}
+
 .duration-300 {
   transition-duration: 300ms;
 }
@@ -36,6 +40,10 @@
 
 .delay-300 {
   transition-delay: 300ms;
+}
+
+.delay-350 {
+  transition-delay: 350ms;
 }
 
 .shadow-xl {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Placement } from '@popperjs/core'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
 
@@ -63,7 +62,7 @@ export function Tooltip(props: PopupProps) {
     <Popover>
       <Transition
         show={visible}
-        enter="transition duration-100 ease-out"
+        enter="transition duration-200 delay-350 ease-out"
         enterFrom="transform scale-95 opacity-0"
         enterTo="transform scale-100 opacity-100"
         leave="transition duration-75 ease-out"
