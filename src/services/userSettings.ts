@@ -1,7 +1,7 @@
 import { Placement } from '@popperjs/core'
 import { Storage, STORAGE_KEY } from './storage'
 import UseSetting from './defaultUserSettings.json'
-import { OPEN_MODE } from '../const'
+import { OPEN_MODE, POPUP_ENABLED } from '../const'
 
 export type Command = {
   id: number
@@ -11,10 +11,16 @@ export type Command = {
   openMode: OPEN_MODE
 }
 
-export type UseSettingsType = {
-  commands: Array<Command>
+export type PageRule = {
+  urlPattern: string
+  popupEnabled: POPUP_ENABLED
   popupPlacement: Placement
-  ignoreUrls: Array<string>
+}
+
+export type UseSettingsType = {
+  popupPlacement: Placement
+  commands: Array<Command>
+  pageRules: Array<PageRule>
 }
 
 export const UseSettings = {

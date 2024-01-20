@@ -4,6 +4,7 @@ import { usePopper } from 'react-popper'
 import { context } from './App'
 import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './Menu'
+import { POPUP_ENABLED } from '../const'
 
 type PopupProps = {
   positionElm: Element | null
@@ -12,12 +13,26 @@ type PopupProps = {
 
 export function Popup(props: PopupProps) {
   const settings = useContext(context)
-  const [popperElement, setPopperElement] = useState<HTMLDivElement>()
-
-  const { styles, attributes } = usePopper(props.positionElm, popperElement, {
-    placement: settings.popupPlacement,
+  const pageRule = settings.pageRules.find((rule) => {
+    const re = new RegExp(rule.urlPattern)
+    return window.location.href.match(re) != null
   })
+
+  let placement = settings.popupPlacement
+  if (pageRule != null) {
+    placement = pageRule.popupPlacement
+  }
+
+  const [popperElement, setPopperElement] = useState<HTMLDivElement>()
+  const { styles, attributes } = usePopper(props.positionElm, popperElement, {
+    placement: placement,
+  })
+
   let visible = props.selectionText.length > 0 && props.positionElm != null
+  if (pageRule != null) {
+    visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
+    console.debug('visible', visible, pageRule.popupEnabled)
+  }
 
   const sidePanel = async () => {
     return await chrome.runtime.sendMessage({ command: 'openSidePanel' })

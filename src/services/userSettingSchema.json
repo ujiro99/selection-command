@@ -3,6 +3,9 @@
   "type": "object",
   "required": ["commands", "popupPlacement"],
   "properties": {
+    "popupPlacement": {
+      "$ref": "#/definitions/popupPlacement"
+    },
     "commands": {
       "type": "array",
       "minItems": 1,
@@ -23,13 +26,38 @@
           },
           "openMode": {
             "type": "string",
-            "enum": ["popup", "tab"]
+            "enum": ["popup", "tab"],
+            "default": "popup"
           }
         }
       }
     },
+    "pageRules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["urlPattern", "popupEnabled", "popupPlacement"],
+        "additionalProperties": false,
+        "properties": {
+          "urlPattern": {
+            "type": "string"
+          },
+          "popupEnabled": {
+            "type": "string",
+            "enum": ["Enable", "Disable"],
+            "default": "Enable"
+          },
+          "popupPlacement": {
+            "$ref": "#/definitions/popupPlacement"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
     "popupPlacement": {
       "type": "string",
+      "default": "top-end",
       "enum": [
         "auto",
         "auto-start",

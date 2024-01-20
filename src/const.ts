@@ -6,6 +6,11 @@ export enum OPEN_MODE {
   TAB = 'tab',
 }
 
+export enum POPUP_ENABLED {
+  ENABLE = 'Enable',
+  DISABLE = 'Disable',
+}
+
 /**
  * Setting value to switch the debug log output from this module.
  * true: enables all log. | false: disables debug log.
