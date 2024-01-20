@@ -24,6 +24,7 @@
   font-size: 12px;
   color: rgb(75 85 99);
   text-decoration: none;
+  line-height: 18px;
 
   &:hover {
     color: rgb(3 7 18);
