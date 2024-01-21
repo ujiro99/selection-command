@@ -1,0 +1,70 @@
+.dialog {
+  composes: shadow-xl from 'Common.module.css';
+  position: fixed;
+  display: flex;
+  background: #fff;
+  border: 1px solid var(--baseBorderColor);
+  border-radius: 6px;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--font-color);
+}
+
+.dialogTransition {
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.dialogFrom {
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0.5;
+}
+
+.dialogTo {
+  transform: translateX(-50%) translateY(0px);
+  opacity: 1;
+}
+
+.panel {
+  padding: 30px 40px;
+  font-family: var(--font-family);
+}
+
+.title {
+  font-size: 2rem;
+  margin-top: 0;
+}
+
+.description {
+  font-size: 1.2rem;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.button,
+.buttonCancel {
+  composes: button from 'Option.module.css';
+  font-size: 1rem;
+}
+
+.dialog .button,
+.dialog .buttonCancel {
+  padding: 3px 8px 7px;
+}
+
+.dialog .button {
+  color: #fff;
+  background-color: #1597c9;
+  border-color: #1597c9;
+
+  &:hover {
+    background-color: #0f7ea9;
+    border-color: #0f7ea9;
+  }
+}

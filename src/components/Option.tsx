@@ -7,7 +7,9 @@ import { UserSettings, UserSettingsType } from '../services/userSettings'
 import { sleep, toDataURL } from '../services/util'
 import * as i18n from '../services/i18n'
 import { APP_ID } from '../const'
+import { Dialog } from './Dialog'
 
+import './App.css'
 import css from './Option.module.css'
 
 async function getSettings(): Promise<UserSettingsType> {
@@ -18,13 +20,28 @@ function isBase64(str: string): boolean {
   return /base64/.test(str)
 }
 
+function getTimestamp() {
+  let date = new Date()
+  let year = date.getFullYear()
+  let month = (date.getMonth() + 1).toString().padStart(2, '0')
+  let day = date.getDate().toString().padStart(2, '0')
+  let hours = date.getHours().toString().padStart(2, '0')
+  let minutes = date.getMinutes().toString().padStart(2, '0')
+  return year + month + day + '_' + hours + minutes
+}
+
 export function Option() {
   const [settings, setSettings] = useState<UserSettingsType>()
   const [defaultVal, setDefaultVal] = useState<UserSettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
   const [iframeHeight, setIframeHeight] = useState<number>()
   const [iconVisible, setIconVisible] = useState(false)
+  const [resetDialog, setResetDialog] = useState(false)
+  const [importDialog, setImportDialog] = useState(false)
+  const [importJson, setImportJson] = useState<UserSettingsType>()
+
   const iframeRef = useRef(null)
+  const inputFile = useRef(null)
 
   const updateSettings = async () => {
     try {
@@ -91,8 +108,55 @@ export function Option() {
     }
   }, [])
 
-  const onClickReset = () => {
-    UserSettings.reset().then(() => location.reload())
+  const handleReset = () => {
+    setResetDialog(true)
+  }
+
+  const handleResetClose = (ret: boolean) => {
+    if (ret) {
+      UserSettings.reset().then(() => location.reload())
+    }
+    setResetDialog(false)
+  }
+
+  const handleExport = () => {
+    const text = JSON.stringify(defaultVal, null, 2)
+    const blob = new Blob([text], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    document.body.appendChild(a)
+    a.download = `${APP_ID}_${getTimestamp()}.json`
+    a.href = url
+    a.click()
+    a.remove()
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImport = () => {
+    if (inputFile == null || inputFile.current == null) return
+    const files = inputFile.current.files
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        if (e.target != null) {
+          const text = e.target.result as string
+          const json = JSON.parse(text)
+          setImportJson(json)
+        }
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  const handleImportClose = (ret: boolean) => {
+    if (ret && importJson != null) {
+      ;(async () => {
+        await Storage.set(STORAGE_KEY.USER, importJson)
+        location.reload()
+      })()
+    }
+    setImportDialog(false)
   }
 
   const onLoadIfame = () => {
@@ -123,10 +187,48 @@ export function Option() {
       </CSSTransition>
       <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
       <div className={css.menu}>
-        <button onClick={onClickReset} className={css.button}>
+        <button onClick={handleReset} className={css.button}>
           Reset
         </button>
+        <button onClick={handleExport} className={css.button}>
+          Export
+        </button>
+        <button onClick={() => setImportDialog(true)} className={css.button}>
+          Import
+        </button>
       </div>
+      <Dialog
+        open={resetDialog}
+        onClose={handleResetClose}
+        title={'Reset settings?'}
+        description={() => (
+          <span>
+            Is it okay to reset all settings to default?
+            <br />
+            This operation cannot be undone. <br />※ We recommend{' '}
+            <b>"Export"</b> beforehand.
+          </span>
+        )}
+        okText={'Reset'}
+      />
+      <Dialog
+        open={importDialog}
+        onClose={handleImportClose}
+        title={'Import settings'}
+        description={() => (
+          <span>Please select the settings file(*.json) to import.</span>
+        )}
+        okText={'Import'}
+      >
+        <input
+          type="file"
+          name="settings"
+          accept=".json"
+          onChange={handleImport}
+          ref={inputFile}
+          className={css.button + ' ' + css.buttonImport}
+        ></input>
+      </Dialog>
       <iframe
         id="sandbox"
         src="sandbox.html"

@@ -1,5 +1,11 @@
 @import url('Animation.css');
 
+:root {
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-color: rgb(31 41 55);
+}
+
 .title {
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   font-size: 2.2rem;
@@ -9,7 +15,7 @@
 .option {
   width: 600px;
   margin: 20px auto;
-  color: rgb(31 41 55);
+  color: var(--font-color);
 }
 
 .textarea {
@@ -23,7 +29,18 @@
 }
 
 .button {
-  padding: 4px;
+  composes: button from 'Common.module.css';
+  padding: 6px 8px 9px;
+  border-radius: 6px;
+  font-family: var(--font-family);
+}
+
+.button + .button {
+  margin-left: 8px;
+}
+
+.buttonImport {
+  width: calc(100% - 15px);
 }
 
 .editorFrame {

@@ -1,0 +1,20 @@
+.button {
+  border: solid 1px rgb(209 213 219);
+  background-color: #f5f5f5;
+  transition: background-color ease-out 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e5e5e5;
+  }
+
+  svg {
+    fill: #555;
+  }
+}
+
+.shadow-xl {
+  box-shadow:
+    0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+}

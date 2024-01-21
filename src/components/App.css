@@ -1,6 +1,7 @@
 @import url('Animation.css');
 
-:host {
+:host,
+:root {
   --frameHeight: 500px;
   --baseBgColor: #f9f9f9;
   --baseBorderColor: #e9e9e9;
