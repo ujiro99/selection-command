@@ -1,23 +1,49 @@
 {
   "commands": [
     {
-      "title": "Google",
+      "iconUrl": "https://www.google.com/favicon.ico",
+      "openMode": "tab",
       "searchUrl": "https://google.com/search?q=%s",
-      "iconUrl": "https://static-00.iconduck.com/assets.00/google-icon-2048x2048-czn3g8x8.png",
-      "openMode": "tab"
+      "title": "Google"
     },
     {
-      "title": "Google Image",
+      "iconUrl": "https://www.google.com/favicon.ico",
+      "openMode": "tab",
       "searchUrl": "https://google.com/search?q=%s&tbm=isch",
-      "iconUrl": "https://static-00.iconduck.com/assets.00/google-icon-2048x2048-czn3g8x8.png",
-      "openMode": "tab"
+      "title": "Google Image"
     },
     {
-      "title": "英辞郎",
-      "searchUrl": "https://eow.alc.co.jp/search?q=%s",
-      "iconUrl": "https://valkyrie.tokyo/wp-content/uploads/2017/08/eijiro.png",
-      "openMode": "popup"
+      "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+      "openMode": "tab",
+      "searchUrl": "https://drive.google.com/drive/search?q=%s",
+      "title": "Drive"
+    },
+    {
+      "iconUrl": "https://www.amazon.com/favicon.ico",
+      "openMode": "tab",
+      "searchUrl": "https://www.amazon.com/s?k=%s",
+      "title": "Amazon"
+    },
+    {
+      "iconUrl": "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
+      "openMode": "tab",
+      "searchUrl": "https://www.netflix.com/search?q=%s",
+      "title": "Netflix"
+    },
+    {
+      "iconUrl": "https://ssl.gstatic.com/translate/favicon.ico",
+      "openMode": "tab",
+      "searchUrl": "https://translate.google.co.jp/?hl=ja&sl=auto&text=%s&op=translate",
+      "title": "en to ja"
+    },
+    {
+      "iconUrl": "https://s.pinimg.com/webapp/favicon-22eb868c.png",
+      "openMode": "tab",
+      "searchUrl": "https://www.pinterest.com/search/pins/?q=%s",
+      "title": "Pinterest"
     }
   ],
-  "popupPlacement": "top-start"
+  "pageRules": [],
+  "popupPlacement": "top-start",
+  "style": "horizontal"
 }
