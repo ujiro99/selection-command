@@ -1,5 +1,5 @@
 .popup {
-  background-color: var(--baseColor);
+  background-color: var(--baseBgColor);
   border-radius: 6px;
   border: solid 1px var(--baseBorderColor);
 }
