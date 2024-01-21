@@ -47,7 +47,7 @@ export function SettingFrom() {
     // update iconURL when searchUrl setted
     const data = arg.formData as UserSettingsType
     data.commands.forEach((command) => {
-      if (command.iconUrl == '' && command.searchUrl != null) {
+      if (!command.iconUrl && command.searchUrl != null) {
         command.iconUrl = getFaviconUrl(command.searchUrl)
       }
     })

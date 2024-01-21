@@ -51,6 +51,7 @@ export function Option() {
       // Convert iconUrl to DataURL
       await Promise.all(
         settings.commands.map(async (c) => {
+          if (!c.iconUrl) return
           if (isBase64(c.iconUrl)) return
 
           let dataUrl = await toDataURL(c.iconUrl)
