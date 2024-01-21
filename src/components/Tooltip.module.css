@@ -12,6 +12,7 @@
 
 .arrow {
   position: absolute;
+  z-index: -1;
 }
 
 .arrow:before {
@@ -21,7 +22,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
   transform: rotate(45deg);
   background: var(--baseBgColor);
 }
