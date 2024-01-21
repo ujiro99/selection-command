@@ -25,6 +25,7 @@ type MenuItemProps = {
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const open = props.currentMenuId === props.menuId
   const elmRef = useRef(null)
+  const onlyIcon = props.onlyIcon
 
   function handleClick() {
     props.onSelect(props.menuId)
@@ -35,7 +36,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       <>
         <button
           className={classNames(item, button, {
-            [itemOnlyIcon]: props.onlyIcon,
+            [itemOnlyIcon]: onlyIcon,
           })}
           ref={elmRef}
           onClick={handleClick}
@@ -48,7 +49,9 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           url={props.url}
           positionElm={elmRef.current}
         />
-        <Tooltip positionElm={elmRef.current}>{props.title}</Tooltip>
+        {onlyIcon && (
+          <Tooltip positionElm={elmRef.current}>{props.title}</Tooltip>
+        )}
       </>
     )
   }
@@ -57,7 +60,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     <a
       href={props.url}
       className={classNames(item, {
-        [itemOnlyIcon]: props.onlyIcon,
+        [itemOnlyIcon]: onlyIcon,
       })}
       ref={elmRef}
       target="_blank"
@@ -65,7 +68,9 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     >
       <img className={itemImg} src={props.iconUrl} />
       <span className={itemTitle}>{props.title}</span>
-      <Tooltip positionElm={elmRef.current}>{props.title}</Tooltip>
+      {onlyIcon && (
+        <Tooltip positionElm={elmRef.current}>{props.title}</Tooltip>
+      )}
     </a>
   )
 }

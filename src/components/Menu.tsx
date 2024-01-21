@@ -17,7 +17,7 @@ export function Menu(props: MenuProps): JSX.Element {
   const commands = settings.commands
   const [currentId, setCurrentId] = useState(NOT_SELECTED)
 
-  const isHorizontal = settings.direction == STYLE.HORIZONTAL
+  const isHorizontal = settings.style == STYLE.HORIZONTAL
 
   return (
     <div className={classNames(menu, { [menuHorizontal]: isHorizontal })}>
