@@ -20,6 +20,7 @@ let windowIdHistory = [] as number[]
 
 Ipc.addListener(Command.openPopup, function (param: any, sender) {
   const open = async () => {
+    const current = await chrome.windows.getCurrent()
     const window = await chrome.windows.create({
       url: param.url,
       width: 600,
@@ -27,6 +28,7 @@ Ipc.addListener(Command.openPopup, function (param: any, sender) {
       top: param.top,
       left: param.left,
       type: 'popup',
+      incognito: current.incognito,
     })
     lastWindowId = window.id
     // console.log('window create', lastWindowId)
