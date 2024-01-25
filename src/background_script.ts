@@ -1,19 +1,45 @@
 import * as mv3 from 'mv3-hot-reload'
 import { isDebug } from './const'
+import { Ipc, Command } from './services/ipc'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
 
-chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-  if (msg.command == 'openSidePanel') {
-    const tabId = sender?.tab?.id
-    if (tabId != null) {
-      openSidePanel(tabId).then(() => {
-        sendResponse(true)
-      })
-    } else {
-      sendResponse(false)
-    }
+Ipc.addListener(Command.openSidePanel, function (param, sender) {
+  const tabId = sender?.tab?.id
+  if (tabId != null) {
+    openSidePanel(tabId).then(() => {
+      return true
+    })
+  }
+  return false
+})
+
+let lastWindowId: number | undefined
+let windowIdHistory = [] as number[]
+
+Ipc.addListener(Command.openPopup, function (param: any, sender) {
+  const open = async () => {
+    const window = await chrome.windows.create({
+      url: param.url,
+      width: 600,
+      height: 700,
+      top: param.top,
+      left: param.left,
+      type: 'popup',
+    })
+    lastWindowId = window.id
+    // console.log('window create', lastWindowId)
+  }
+  open()
+  return false
+})
+
+chrome.windows.onFocusChanged.addListener((windowId: number) => {
+  windowIdHistory.push(windowId)
+  const beforeWindowId = windowIdHistory[windowIdHistory.length - 2]
+  if (beforeWindowId != null && beforeWindowId == lastWindowId) {
+    chrome.windows.remove(lastWindowId)
   }
 })
 

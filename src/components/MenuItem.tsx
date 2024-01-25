@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import classNames from 'classnames'
+import { Ipc, Command } from '../services/ipc'
 import { Tooltip } from './Tooltip'
-import { PageFrame } from './PageFrame'
 import {
   item,
   button,
@@ -19,6 +19,7 @@ type MenuItemProps = {
   openMode: OPEN_MODE
   currentMenuId: number
   onSelect: Function
+  menuRef: React.RefObject<HTMLDivElement>
   onlyIcon: boolean
 }
 
@@ -29,6 +30,17 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
 
   function handleClick() {
     props.onSelect(props.menuId)
+    if (props.openMode === OPEN_MODE.POPUP) {
+      if (props.menuRef.current) {
+        const rect = props.menuRef.current.getBoundingClientRect()
+        console.log('open popup', rect)
+        Ipc.send(Command.openPopup, {
+          url: props.url,
+          top: Math.floor(window.screenTop + rect.top),
+          left: Math.floor(window.screenLeft + rect.right + 10),
+        })
+      }
+    }
   }
 
   if (props.openMode === OPEN_MODE.POPUP) {
@@ -44,11 +56,6 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           <img className={itemImg} src={props.iconUrl} />
           <span className={itemTitle}>{props.title}</span>
         </button>
-        <PageFrame
-          visible={open}
-          url={props.url}
-          positionElm={elmRef.current}
-        />
         {onlyIcon && (
           <Tooltip positionElm={elmRef.current}>{props.title}</Tooltip>
         )}

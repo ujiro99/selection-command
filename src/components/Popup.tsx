@@ -34,10 +34,6 @@ export function Popup(props: PopupProps) {
     console.debug('visible', visible, pageRule.popupEnabled)
   }
 
-  const sidePanel = async () => {
-    return await chrome.runtime.sendMessage({ command: 'openSidePanel' })
-  }
-
   return (
     <Popover className={popupContianer}>
       <Transition
