@@ -88,8 +88,17 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
 
   return (
     <Popover className={css.folder} ref={menuRef}>
-      <img className={css.folderIcon} src={props.folder.iconUrl} />
-      {!props.folder.onlyIcon && <span>{props.folder.title}</span>}
+      {props.folder.onlyIcon ? (
+        <img
+          className={css.folderIcon + ' ' + css.folderIconOnly}
+          src={props.folder.iconUrl}
+        />
+      ) : (
+        <>
+          <img className={css.folderIcon} src={props.folder.iconUrl} />
+          <span>{props.folder.title}</span>
+        </>
+      )}
       {visible && <div className="cover" style={safeAreaStyles} />}
       <Transition
         show={visible}

@@ -172,12 +172,9 @@ const FolderField = (folders: string[]) => {
 }
 
 const OnlyIconField = function (props: FieldProps) {
-  console.debug(props)
   return (
     <>
-      <label className="control-label" htmlFor={props.idSchema.$id}>
-        {props.schema.name}
-      </label>
+      <label className="control-label">{props.schema.name}</label>
       <label className={'form-control'}>
         <input
           id={props.idSchema.$id}
