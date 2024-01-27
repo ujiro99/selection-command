@@ -9,6 +9,13 @@ export type Command = {
   searchUrl: string
   iconUrl: string
   openMode: OPEN_MODE
+  parentFolder: string
+}
+
+export type CommandFolder = {
+  title: string
+  iconUrl: string
+  onlyIcon: boolean
 }
 
 export type PageRule = {
@@ -20,6 +27,7 @@ export type PageRule = {
 export type UserSettingsType = {
   popupPlacement: Placement
   commands: Array<Command>
+  folders: Array<CommandFolder>
   pageRules: Array<PageRule>
   style: STYLE
 }
@@ -34,6 +42,7 @@ export const UserSettings = {
         return c
       })
       .filter((c) => c.searchUrl != null)
+    obj.folders = obj.folders.filter((folder) => !!folder.title)
     return obj
   },
 

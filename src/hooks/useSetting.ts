@@ -8,7 +8,7 @@ type useSettingReturn = {
 }
 
 export function useSetting(): useSettingReturn {
-  const settings = useContext(context)
+  const { settings } = useContext(context)
   const pageRule = settings.pageRules.find((rule) => {
     const re = new RegExp(rule.urlPattern)
     return window.location.href.match(re) != null

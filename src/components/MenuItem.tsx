@@ -12,24 +12,19 @@ import {
 import { OPEN_MODE } from '../const'
 
 type MenuItemProps = {
-  menuId: number
   title: string
   url: string
   iconUrl: string
   openMode: OPEN_MODE
-  currentMenuId: number
-  onSelect: Function
-  menuRef: React.RefObject<HTMLDivElement>
+  menuRef: React.RefObject<Element>
   onlyIcon: boolean
 }
 
 export function MenuItem(props: MenuItemProps): JSX.Element {
-  const open = props.currentMenuId === props.menuId
   const elmRef = useRef(null)
   const onlyIcon = props.onlyIcon
 
   function handleClick() {
-    props.onSelect(props.menuId)
     if (props.openMode === OPEN_MODE.POPUP) {
       if (props.menuRef.current) {
         const rect = props.menuRef.current.getBoundingClientRect()

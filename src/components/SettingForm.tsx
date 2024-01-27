@@ -58,6 +58,15 @@ export function SettingFrom() {
     setDefaultData(data)
   }
 
+  const folders = defaultData?.folders.map((folder) => folder.title) ?? []
+
+  const fields: RegistryFieldsType = {
+    '#/commands/iconUrl': IconUrlField,
+    '#/commands/parentFolder': FolderField(folders),
+    '#/commandFolder/iconUrl': IconUrlField,
+    '#/commandFolder/onlyIcon': OnlyIconField,
+  }
+
   const log = (type: any) => console.log.bind(console, type)
   return (
     <Form
@@ -135,6 +144,49 @@ const IconUrlField = function (props: FieldProps) {
   )
 }
 
-const fields: RegistryFieldsType = {
-  '#/commands/iconUrl': IconUrlField,
+const FolderField = (folders: string[]) => {
+  return (props: FieldProps) => {
+    return (
+      <label className={css.folder + ' form-control'}>
+        <select
+          id={props.idSchema.$id}
+          className={css.folderInput}
+          value={props.formData}
+          required={props.required}
+          onChange={(event) => props.onChange(event.target.value)}
+        >
+          <option key="" value="">
+            -- none --
+          </option>
+          {folders.map((folder) => {
+            return (
+              <option key={folder} value={folder}>
+                {folder}
+              </option>
+            )
+          })}
+        </select>
+      </label>
+    )
+  }
+}
+
+const OnlyIconField = function (props: FieldProps) {
+  console.debug(props)
+  return (
+    <>
+      <label className="control-label" htmlFor={props.idSchema.$id}>
+        {props.schema.name}
+      </label>
+      <label className={'form-control'}>
+        <input
+          id={props.idSchema.$id}
+          type="checkbox"
+          checked={props.formData}
+          required={props.required}
+          onChange={(event) => props.onChange(event.target.checked)}
+        />
+      </label>
+    </>
+  )
 }

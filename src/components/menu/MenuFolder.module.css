@@ -1,0 +1,17 @@
+.folder {
+  composes: item from '../Menu.module.css';
+  cursor: default;
+  font-weight: 500;
+  position: relative;
+  height: 18px;
+}
+
+.popup {
+  composes: popup from '../Popup.module.css';
+}
+
+.folderIcon {
+  width: 1.2em;
+  height: 1.2em;
+  margin-right: 4px;
+}

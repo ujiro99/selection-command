@@ -18,6 +18,12 @@
         "$ref": "#/definitions/command"
       }
     },
+    "folders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/commandFolder"
+      }
+    },
     "pageRules": {
       "type": "array",
       "items": {
@@ -64,6 +70,7 @@
     },
     "command": {
       "type": "object",
+      "name": "Command",
       "required": ["title", "searchUrl", "iconUrl", "openMode"],
       "additionalProperties": false,
       "properties": {
@@ -81,6 +88,30 @@
           "type": "string",
           "enum": ["popup", "tab"],
           "default": "popup"
+        },
+        "parentFolder": {
+          "$id": "#/commands/parentFolder",
+          "type": "string"
+        }
+      }
+    },
+    "commandFolder": {
+      "type": "object",
+      "name": "Folder",
+      "required": ["title"],
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "$id": "#/commandFolder/iconUrl",
+          "type": "string"
+        },
+        "onlyIcon": {
+          "name": "OnlyIcon",
+          "$id": "#/commandFolder/onlyIcon",
+          "type": "boolean"
         }
       }
     }

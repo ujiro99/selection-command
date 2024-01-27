@@ -14,6 +14,13 @@ type PopupProps = {
 export function Popup(props: PopupProps) {
   const { settings, pageRule } = useSetting()
   const placement = settings.popupPlacement
+  const isBottom = placement.startsWith('bottom')
+  let enterFrom = 'pop-up-from'
+  let enterTo = 'pop-up-to'
+  if (isBottom) {
+    enterFrom = 'pop-down-from'
+    enterTo = 'pop-down-to'
+  }
 
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const { styles, attributes } = usePopper(props.positionElm, popperElement, {
@@ -22,18 +29,11 @@ export function Popup(props: PopupProps) {
       {
         name: 'offset',
         options: {
-          offset: [0, 10],
+          offset: [0, isBottom ? 0 : 8],
         },
       },
     ],
   })
-
-  let enterFrom = 'pop-up-from'
-  let enterTo = 'pop-up-to'
-  if (placement.startsWith('bottom')) {
-    enterFrom = 'pop-down-from'
-    enterTo = 'pop-down-to'
-  }
 
   let visible = props.selectionText.length > 0 && props.positionElm != null
   if (pageRule != null) {
@@ -53,7 +53,7 @@ export function Popup(props: PopupProps) {
           ref={setPopperElement}
           style={styles.popper}
           {...attributes.popper}
-          className={popup + ' shadow-xl'}
+          className={popup}
           static
         >
           <Menu selectionText={props.selectionText} />

@@ -3,6 +3,7 @@
   border-radius: 6px;
   border: solid 1px var(--baseBorderColor);
   font-family: var(--font-family);
+  composes: shadow-xl from './Common.module.css';
 }
 
 /* To display the popup at the top of html, add maximum value of z-index. */

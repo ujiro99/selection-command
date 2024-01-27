@@ -232,3 +232,20 @@
   left: 0.7em;
   top: 8px;
 }
+
+.folder {
+  padding: 0px 12px !important;
+}
+
+.folderInput {
+  width: 100%;
+  height: 30px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  option {
+    font-size: 1.1em;
+  }
+}

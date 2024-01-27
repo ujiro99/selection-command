@@ -9,7 +9,12 @@ type AppProps = {
   settings: UserSettingsType
 }
 
-export const context = createContext<UserSettingsType>({} as UserSettingsType)
+type ContextType = {
+  settings: UserSettingsType
+  selectionText: string
+}
+
+export const context = createContext<ContextType>({} as ContextType)
 
 export function App(props: AppProps) {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
@@ -35,7 +40,7 @@ export function App(props: AppProps) {
   }, [])
 
   return (
-    <context.Provider value={settings}>
+    <context.Provider value={{ settings, selectionText }}>
       <SelectAnchor
         rect={rect}
         selectionText={selectionText}

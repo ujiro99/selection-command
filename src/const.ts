@@ -16,6 +16,8 @@ export enum STYLE {
   HORIZONTAL = 'horizontal',
 }
 
+export const ROOT_FOLDER = ''
+
 /**
  * Setting value to switch the debug log output from this module.
  * true: enables all log. | false: disables debug log.

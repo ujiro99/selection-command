@@ -1,25 +1,39 @@
-import React, { useState, useContext, useRef } from 'react'
+import React, { useContext, useRef } from 'react'
 import classNames from 'classnames'
-import { MenuItem } from './MenuItem'
+import { MenuFolder } from './menu/MenuFolder'
 import { context } from './App'
-import { toUrl } from '../services/util'
 import { STYLE } from '../const'
 import { menu, list, menuHorizontal } from './Menu.module.css'
 import { OptionButton } from './menu/OptionButton'
+import { Command, CommandFolder } from '../services/userSettings'
 
-type MenuProps = {
-  selectionText: string
+type ItemObj = {
+  [folderName: string]: Command[]
 }
 
-const NOT_SELECTED = -1
-
-export function Menu(props: MenuProps): JSX.Element {
+export function Menu(): JSX.Element {
   const menuRef = useRef(null)
-  const settings = useContext(context)
+  const { settings } = useContext(context)
   const commands = settings.commands
-  const [currentId, setCurrentId] = useState(NOT_SELECTED)
-
+  const folders = settings.folders
   const isHorizontal = settings.style == STYLE.HORIZONTAL
+
+  const itemObj = commands.reduce((pre, cur) => {
+    let f = cur.parentFolder
+    const found = folders.find((obj) => obj.title === f)
+    if (found != null) {
+      pre[found.title] = pre[found.title] ? [...pre[found.title], cur] : [cur]
+      return pre
+    }
+    return pre
+  }, {} as ItemObj)
+
+  const items = Object.keys(itemObj).map((key) => {
+    return {
+      folder: folders.find((obj) => obj.title === key) as CommandFolder,
+      commands: itemObj[key],
+    }
+  })
 
   return (
     <div
@@ -27,23 +41,11 @@ export function Menu(props: MenuProps): JSX.Element {
       ref={menuRef}
     >
       <ul className={list}>
-        {commands.map((obj) => {
-          return (
-            <li key={'menu_' + obj.id}>
-              <MenuItem
-                menuId={obj.id}
-                title={obj.title}
-                url={toUrl(obj.searchUrl, props.selectionText)}
-                iconUrl={obj.iconUrl}
-                openMode={obj.openMode}
-                currentMenuId={currentId}
-                onSelect={setCurrentId}
-                menuRef={menuRef}
-                onlyIcon={isHorizontal}
-              />
-            </li>
-          )
-        })}
+        {items.map((item) => (
+          <li key={'menu_' + item.folder.title}>
+            <MenuFolder folder={item.folder} commands={item.commands} />
+          </li>
+        ))}
         <li>
           <OptionButton onlyIcon={isHorizontal} />
         </li>
