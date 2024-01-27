@@ -19,11 +19,13 @@
   animation: 0.4s drop-in forwards;
   animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
+
 .drop-in-exit {
   animation: 0.3s drop-in forwards;
   animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
   animation-direction: reverse;
 }
+
 @keyframes drop-in {
   0% {
     opacity: 0;
@@ -33,4 +35,20 @@
     opacity: 1;
     transform: translateY(0px);
   }
+}
+
+.pop-up-from {
+  transform: translateY(5px);
+  opacity: 0;
+}
+
+.pop-up-to,
+.pop-down-to {
+  transform: translateY(0px);
+  opacity: 1;
+}
+
+.pop-down-from {
+  transform: translateY(-5px);
+  opacity: 0;
 }

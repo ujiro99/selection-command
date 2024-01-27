@@ -1,5 +1,5 @@
 .menu {
-  padding: 2px 3px;
+  padding: 2px;
 }
 
 .list {
@@ -14,18 +14,25 @@
       background-color: rgb(229 231 235);
     }
   }
+  > li + li {
+    margin-top: 2px;
+  }
 }
 
 .menuHorizontal {
   .list {
     display: flex;
     flex-direction: row;
+
+    > li + li {
+      margin-top: 0;
+      margin-left: 2px;
+    }
   }
 }
 
 .item {
   padding: 4px 5px 4px 4px;
-  margin: 2px;
   display: flex;
   align-items: center;
   font-size: 12px;
@@ -61,5 +68,21 @@
     width: 1.4em;
     height: 1.4em;
     margin-right: 0;
+  }
+}
+
+.moreButton {
+  position: relative;
+  height: 100%;
+  padding: 2px;
+}
+
+.moreIcon {
+  fill: #848d97;
+  width: 1.4em;
+  height: 1.4em;
+
+  &:hover {
+    fill: rgb(3 7 18);
   }
 }

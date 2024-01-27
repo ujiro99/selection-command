@@ -1,6 +1,7 @@
 export enum Command {
   openPopup = 'openPopup',
   openSidePanel = 'openSidePanel',
+  openOption = 'openOption',
 }
 
 type Request = {
@@ -8,7 +9,7 @@ type Request = {
   param: unknown
 }
 
-type IpcCallback = (
+export type IpcCallback = (
   param: unknown,
   sender: chrome.runtime.MessageSender,
 ) => boolean

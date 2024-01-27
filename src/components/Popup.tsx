@@ -28,6 +28,13 @@ export function Popup(props: PopupProps) {
     ],
   })
 
+  let enterFrom = 'pop-up-from'
+  let enterTo = 'pop-up-to'
+  if (placement.startsWith('bottom')) {
+    enterFrom = 'pop-down-from'
+    enterTo = 'pop-down-to'
+  }
+
   let visible = props.selectionText.length > 0 && props.positionElm != null
   if (pageRule != null) {
     visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
@@ -39,11 +46,8 @@ export function Popup(props: PopupProps) {
       <Transition
         show={visible}
         enter="transition duration-300 delay-300 ease-out"
-        enterFrom="popup-from opacity-0"
-        enterTo="popup-to opacity-100"
-        leave="transition duration-100 ease-out"
-        leaveFrom="popup-to opacity-100"
-        leaveTo="popup-from opacity-0"
+        enterFrom={enterFrom}
+        enterTo={enterTo}
       >
         <Popover.Panel
           ref={setPopperElement}

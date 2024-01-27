@@ -1,10 +1,11 @@
 import React, { useState, useContext, useRef } from 'react'
 import classNames from 'classnames'
 import { MenuItem } from './MenuItem'
-import { menu, list, menuHorizontal } from './Menu.module.css'
 import { context } from './App'
 import { toUrl } from '../services/util'
 import { STYLE } from '../const'
+import { menu, list, menuHorizontal } from './Menu.module.css'
+import { OptionButton } from './menu/OptionButton'
 
 type MenuProps = {
   selectionText: string
@@ -43,6 +44,9 @@ export function Menu(props: MenuProps): JSX.Element {
             </li>
           )
         })}
+        <li>
+          <OptionButton onlyIcon={isHorizontal} />
+        </li>
       </ul>
     </div>
   )

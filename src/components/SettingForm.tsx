@@ -83,7 +83,7 @@ function AddButton(props: IconButtonProps) {
   const { icon, uiSchema, ...btnProps } = props
   return (
     <button {...btnProps} className={css.button}>
-      <Icon name="plus" sandbox />
+      <Icon name="plus" />
       <span>Add</span>
     </button>
   )
@@ -93,7 +93,7 @@ function MoveUpButton(props: IconButtonProps) {
   const { icon, uiSchema, ...btnProps } = props
   return (
     <button {...btnProps} className={css.buttonItems}>
-      <Icon name="arrow-up" sandbox />
+      <Icon name="arrow-up" />
     </button>
   )
 }
@@ -102,7 +102,7 @@ function MoveDownButton(props: IconButtonProps) {
   const { icon, uiSchema, ...btnProps } = props
   return (
     <button {...btnProps} className={css.buttonItems}>
-      <Icon name="arrow-down" sandbox />
+      <Icon name="arrow-down" />
     </button>
   )
 }
@@ -114,7 +114,7 @@ function RemoveButton(props: IconButtonProps) {
       {...btnProps}
       className={classNames(css.buttonItems, css.buttonItemsDanger)}
     >
-      <Icon name="delete" sandbox />
+      <Icon name="delete" />
     </button>
   )
 }

@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client'
 import { APP_ID } from './const'
 import { App } from './components/App'
 import { UserSettings } from './services/userSettings'
+import icons from '../dist/icons.svg'
 
 const rootDom = document.createElement('div')
 rootDom.id = APP_ID
@@ -17,7 +18,7 @@ UserSettings.get().then((settings) => {
   root.render(<App settings={settings} />)
 })
 
-// Putting styles into ShadowDom
+// Putting styles and icons into ShadowDom
 const url = chrome.runtime.getURL('/src/content_script.css')
 fetch(url)
   .then((res) => res.text())
@@ -25,4 +26,5 @@ fetch(url)
     let style = document.createElement('style')
     style.append(document.createTextNode(css))
     shadow.insertBefore(style, shadow.firstChild)
+    style.insertAdjacentHTML('afterend', icons)
   })

@@ -33,7 +33,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     if (props.openMode === OPEN_MODE.POPUP) {
       if (props.menuRef.current) {
         const rect = props.menuRef.current.getBoundingClientRect()
-        console.log('open popup', rect)
+        console.debug('open popup', rect)
         Ipc.send(Command.openPopup, {
           url: props.url,
           top: Math.floor(window.screenTop + rect.top),

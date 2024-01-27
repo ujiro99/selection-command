@@ -4,10 +4,13 @@
     0 20px 25px -5px rgb(0 0 0 / 0.1),
     0 8px 10px -6px rgb(0 0 0 / 0.1);
 
-  background: var(--baseBgColor);
+  background: var(--gray-800);
+  color: #fff;
   border-radius: 6px;
-  padding: 6px 8px;
+  padding: 4px 8px;
   font-size: 12px;
+  white-space: pre;
+  min-width: 15px;
 }
 
 .arrow {
@@ -23,7 +26,7 @@
   top: 0;
   left: 0;
   transform: rotate(45deg);
-  background: var(--baseBgColor);
+  background: var(--gray-800);
 }
 
 .tooltip[data-popper-placement^='top'] > .arrow {
@@ -32,4 +35,20 @@
 
 .tooltip[data-popper-placement^='bottom'] > .arrow {
   top: -3px;
+}
+
+.popupFrom {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.popupTo,
+.popdownTo {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.popdownFrom {
+  opacity: 0;
+  transform: translateY(-5px);
 }
