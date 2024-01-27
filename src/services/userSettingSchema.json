@@ -15,26 +15,7 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "type": "object",
-        "required": ["title", "searchUrl", "iconUrl", "openMode"],
-        "additionalProperties": false,
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "searchUrl": {
-            "type": "string"
-          },
-          "iconUrl": {
-            "$id": "#/commands/iconUrl",
-            "type": "string"
-          },
-          "openMode": {
-            "type": "string",
-            "enum": ["popup", "tab"],
-            "default": "popup"
-          }
-        }
+        "$ref": "#/definitions/command"
       }
     },
     "pageRules": {
@@ -80,6 +61,28 @@
         "left-start",
         "left-end"
       ]
+    },
+    "command": {
+      "type": "object",
+      "required": ["title", "searchUrl", "iconUrl", "openMode"],
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "searchUrl": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "$id": "#/commands/iconUrl",
+          "type": "string"
+        },
+        "openMode": {
+          "type": "string",
+          "enum": ["popup", "tab"],
+          "default": "popup"
+        }
+      }
     }
   }
 }
