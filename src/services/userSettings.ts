@@ -9,10 +9,11 @@ export type Command = {
   searchUrl: string
   iconUrl: string
   openMode: OPEN_MODE
-  parentFolder: string
+  parentFolderId: string
 }
 
 export type CommandFolder = {
+  id: string
   title: string
   iconUrl: string
   onlyIcon: boolean

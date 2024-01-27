@@ -5,7 +5,7 @@ import Form, { IChangeEvent } from '@rjsf/core'
 import classNames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
-import { UserSettingsType } from '../services/userSettings'
+import { UserSettingsType, CommandFolder } from '../services/userSettings'
 
 import { Icon } from '../components/Icon'
 
@@ -58,13 +58,22 @@ export function SettingFrom() {
     setDefaultData(data)
   }
 
-  const folders = defaultData?.folders.map((folder) => folder.title) ?? []
+  const folders = defaultData?.folders ?? []
 
   const fields: RegistryFieldsType = {
     '#/commands/iconUrl': IconUrlField,
-    '#/commands/parentFolder': FolderField(folders),
+    '#/commands/parentFolderId': FolderField(folders),
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
+    ArraySchemaField: CustomArraySchemaField,
+  }
+
+  const uiSchema = {
+    folders: {
+      items: {
+        id: { 'ui:widget': 'hidden' },
+      },
+    },
   }
 
   const log = (type: any) => console.log.bind(console, type)
@@ -75,6 +84,7 @@ export function SettingFrom() {
       formData={defaultData}
       onChange={onChange}
       onError={log('errors')}
+      uiSchema={uiSchema}
       fields={fields}
       templates={{
         ButtonTemplates: {
@@ -144,8 +154,9 @@ const IconUrlField = function (props: FieldProps) {
   )
 }
 
-const FolderField = (folders: string[]) => {
+const FolderField = (folders: CommandFolder[]) => {
   return (props: FieldProps) => {
+    // console.debug('FolderField', props)
     return (
       <label className={css.folder + ' form-control'}>
         <select
@@ -160,8 +171,8 @@ const FolderField = (folders: string[]) => {
           </option>
           {folders.map((folder) => {
             return (
-              <option key={folder} value={folder}>
-                {folder}
+              <option key={folder.id} value={folder.id}>
+                {folder.title}
               </option>
             )
           })}
@@ -186,4 +197,18 @@ const OnlyIconField = function (props: FieldProps) {
       </label>
     </>
   )
+}
+
+const CustomArraySchemaField = function (props: FieldProps) {
+  const { index, registry, schema } = props
+  const { SchemaField } = registry.fields
+  const name = schema.name ?? index
+
+  if (name === 'Folder') {
+    if (props.formData.id == null) {
+      props.formData.id = crypto.randomUUID()
+    }
+  }
+
+  return <SchemaField {...props} name={name} />
 }

@@ -80,8 +80,8 @@
           "enum": ["popup", "tab"],
           "default": "popup"
         },
-        "parentFolder": {
-          "$id": "#/commands/parentFolder",
+        "parentFolderId": {
+          "$id": "#/commands/parentFolderId",
           "type": "string"
         }
       }
@@ -92,6 +92,9 @@
       "required": ["title"],
       "additionalProperties": false,
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "title": {
           "type": "string"
         },
