@@ -60,6 +60,10 @@
   opacity: 1;
 }
 
+.delay-250 {
+  transition-delay: 250ms;
+}
+
 .delay-300 {
   transition-delay: 300ms;
 }

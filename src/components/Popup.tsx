@@ -45,7 +45,7 @@ export function Popup(props: PopupProps) {
     <Popover className={popupContianer}>
       <Transition
         show={visible}
-        enter="transition duration-300 delay-300 ease-out"
+        enter="transition duration-300 delay-250 ease-out"
         enterFrom={enterFrom}
         enterTo={enterTo}
       >
