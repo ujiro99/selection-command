@@ -3,7 +3,7 @@
   cursor: default;
   font-weight: 500;
   position: relative;
-  height: 18px;
+  height: 19px;
 }
 
 .popup {
@@ -26,4 +26,10 @@
 .folderIconOnly {
   margin-left: 2px;
   margin-right: 2px;
+}
+
+.folderHorizontal {
+  .folderIcon.folderIconOnly {
+    margin-right: 2px;
+  }
 }
