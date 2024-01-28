@@ -2,21 +2,15 @@
   "commands": [
     {
       "iconUrl": "https://www.google.com/favicon.ico",
-      "openMode": "tab",
+      "openMode": "popup",
       "searchUrl": "https://google.com/search?q=%s",
       "title": "Google"
     },
     {
       "iconUrl": "https://www.google.com/favicon.ico",
-      "openMode": "tab",
+      "openMode": "popup",
       "searchUrl": "https://google.com/search?q=%s&tbm=isch",
       "title": "Google Image"
-    },
-    {
-      "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
-      "openMode": "tab",
-      "searchUrl": "https://drive.google.com/drive/search?q=%s",
-      "title": "Drive"
     },
     {
       "iconUrl": "https://www.amazon.com/favicon.ico",
@@ -25,22 +19,51 @@
       "title": "Amazon"
     },
     {
+      "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+      "openMode": "tab",
+      "parentFolderId": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
+      "searchUrl": "https://drive.google.com/drive/search?q=%s",
+      "title": "Drive"
+    },
+    {
       "iconUrl": "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
       "openMode": "tab",
+      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246",
       "searchUrl": "https://www.netflix.com/search?q=%s",
       "title": "Netflix"
     },
     {
       "iconUrl": "https://ssl.gstatic.com/translate/favicon.ico",
       "openMode": "tab",
+      "parentFolderId": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
       "searchUrl": "https://translate.google.co.jp/?hl=ja&sl=auto&text=%s&op=translate",
       "title": "en to ja"
     },
     {
       "iconUrl": "https://s.pinimg.com/webapp/favicon-22eb868c.png",
       "openMode": "tab",
+      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246",
       "searchUrl": "https://www.pinterest.com/search/pins/?q=%s",
       "title": "Pinterest"
+    },
+    {
+      "iconUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAAAXNSR0IArs4c6QAABtpJREFUeF7tnT2PFEcQht/5D4gDJGwkYmQ7cOLAlrFkSwSWHDjClg4JpxBwARk4IziSS40EEpYInDlAOpKTSZ0YQYp0EPD5I9ZXy9S6Z3Zmd6Z3pttT9U6yd7vTXV31Plv9sTPTBXi4jkDh2ns6DwLgHAICQACcR8C5+8wABMB5BJy7zwxAAJxHwLn7zAAEwHkEnLvPDEAAnEfAufvMAATAeQScu88MQACcR8C5+8wABMB5BJy7zwxAAGxEYAZ8NLYnBfBybBup60+WAQKBzpRO1gU7Gziv5+hbpzoGZgvAWwBjvXZpxqvaSYe1/5/X/leo5uelhmwwAEqBvwSgQn5ROipi6HGyJYLHu0TWwDnvAIiv8lo/XgOQ+MirHgKzAiWACDwCzOFQoEQDUAp+CcAPAD4xIM6UXFCQHpWA3C2AxzEO9AZgBvwE4HZJcoxNlhkvAvcA9IKhMwCl8Dv8to+n3oA1Cwg3unQTawEIUv3NARvIqsaPwBMAV9Z1DSsBKMX/DcC347eXFkaKwM8F8Htb3a0AUPyR5EhfrQwYr7VB0AgAxU+v0sgWW7uDNgBuHDWIff7IqiSuXqaMv9QHhksAzABZzPmD07zE8oxvrrEraAJgn4O+8dXIZGEpC1QA4Lc/kyzpzEoW+DGcGtYBYN+fToxclm4WwK9qfAFAOfKXD7ZztYx2k0SgskpYB+BPLvUmESGnEZkSfq+zgRAAjv5zypLW9lc6DggBkF/57qdtB61lisBieTgEgAPATGpkMLsYCIYA3OUAMIMUeUwuBoJzALj2n0eFjFYXC0IhAJwBZFQksWlZEPpcZgIhAH9z/T+xDHnNfVwH4EXe9tB64gjMp4JhBpg+AOfOAadPAw8fJo7lJM1VAJBFoL8m6UbY6AsXgJ0d4Ngx4OJF4OnTybs0ogPztQDNADYWgQSAW7cAyQRy7O0BV6+OGMNJVz1fC7ANgOjz/j2wvc1uYZnVCgA2VgHrGSB0WrLB/j5B+C8m9wrgkmYA+wBoNnjwALhzh+MD4FEBfKcA2FgGXpUBwmwgg8Pr171nA8cAMBtIBJ4UwKeaAWxcCNo1A9SzwcGBx9nCuwLYIgAKg0Cwu+upWyAASzMjmTLKINHJ2sHROkChGeAfE9cCxnQBTWs5TgaJBGDdQp7xboEArAPA/mxBfhKeXxHELmAdDDazAQFYp3vlcxkkPntmabZAAHoBoCfLINHG2gEBiAJAxwZv3kz9ugMCEA2AFpz22gEB2BiAEITpXXcgl4VxFrAxBNMdExCAjcSfdvoX1wlANAA21gU4BugNgKZ7G1cVEYBeANi7rpAAdALA7q+DBGAtAIbvLeCvgavUl0He+fNr+ZjyCSEAfq8JrCvo6EYSAhCKr3N6G6P7TomJAGiYbMzpO4kenMSLQud3D4v4jr71bQD4ujNIomBvTt83A1RuDPFxb6CEyO6cvi8AlVvDfABgeE7fV33Ubg61DYCDOX0EAJXbw20+IcTRnD4CgMoDIuw8I0geEXPixIdbvHyO7ruyYBAAeTbQ5ct8Ekg3BCoPiZKt3Kf/mLhujvOsDxFYek4gnxTqC40lAPisYD8AND4rmHsEOweAG0b5AaD6uHjxewbYWAzyI+Imns4XgaQC7hm0SRinW7Zxyxgbi0HTFSVlyxs3jeK2cSklyGersn1sfeNIzgTyCZPKcvPGkRwIpop/djvNW8eWAMivgre5d1B2kcZswKL/r8wCSgDkNwF2A2OGP2/dkv6vtG4fz24grzoJrFe2jl/KAMwCCSTIZ6Iy+NNmLGYBYbtmAKeE+YQaw7JM/a7JJlH1yhsB4IBwDA2y1lkZ+IUtaQWghICrg1l1G8R4q/iNY4C6yRnAqeEgOmSpZKX4nQDgwDCLcJsaXZrutVW4sgtoyAbSJeyZ2Ftg0xD/P8uL8LtNg71BANBKym7hGwCfATjJlcNsNMjoXg552vv9PsKvnAZ2dWcGyMrhmaN9h78uX0+VZbfKV4FDj+Nd6+V58wiouK+DeLwt/34F4PDoyt4DeZVt4GNj1qsL6GKkhEJOFTDkEEjkOBuU18/kLYVGP1Z4QnMCkgQiBKrenFSAqTBt4dB2hsLJuSpeWE6EDA8RVY/n5R8q7kZCtzV2cAC6QBKeEwATvh0CUq9SgZLA6N99zQ59/rpvYCjswvYm39yhHMgOwFCOsJ64CBCAuLiZKUUAzEgZ5wgBiIubmVIEwIyUcY4QgLi4mSlFAMxIGecIAYiLm5lSBMCMlHGOEIC4uJkpRQDMSBnnCAGIi5uZUgTAjJRxjhCAuLiZKUUAzEgZ5wgBiIubmVIEwIyUcY4QgLi4mSlFAMxIGefIv2W+KHgRlCRZAAAAAElFTkSuQmCC",
+      "openMode": "tab",
+      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246",
+      "searchUrl": "https://www.youtube.com/results?search_query=%s",
+      "title": "Youtube"
+    }
+  ],
+  "folders": [
+    {
+      "iconUrl": "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
+      "id": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
+      "title": "Work"
+    },
+    {
+      "iconUrl": "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
+      "id": "a3495269-0a4d-4866-a519-bca75ed1c246",
+      "title": "Media"
     }
   ],
   "pageRules": [],
