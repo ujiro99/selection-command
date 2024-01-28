@@ -12,6 +12,7 @@ import {
   itemHorizontal,
   apiIcon,
   apiIconLoading,
+  apiIconError,
 } from '../Menu.module.css'
 import { Icon } from '../Icon'
 import { OPEN_MODE } from '../../const'
@@ -66,9 +67,13 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         fetchOptions: props.fetchOptions,
         variables: props.variables,
       })
-        .then((res) => {
-          setSendState(SendState.SUCCESS)
-          console.info(res)
+        .then(({ ok, res }) => {
+          if (ok) {
+            setSendState(SendState.SUCCESS)
+          } else {
+            console.error(res)
+            setSendState(SendState.FAIL)
+          }
           return sleep(1000)
         })
         .then(() => {
@@ -122,7 +127,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             <Icon className={itemImg + ' ' + apiIcon} name="check" />
           )}
           {sendState === SendState.FAIL && (
-            <Icon className={itemImg + ' ' + apiIcon} name="error" />
+            <Icon className={itemImg + ' ' + apiIconError} name="error" />
           )}
           <span className={itemTitle}>{props.title}</span>
         </button>

@@ -85,19 +85,14 @@ const commandFuncs = {
         text: escape(escape(selectionText)),
       })
       const opt = JSON.parse(str)
-      fetch(url, opt)
-        .then((res) => {
-          return res.json()
-        })
-        .then((res) => {
-          response(res)
-        })
-        .catch((e) => {
-          response(false)
-        })
+      ;(async () => {
+        const res = await fetch(url, opt)
+        const json = await res.json()
+        response({ ok: res.ok, res: json })
+      })()
     } catch (e) {
       console.error(e)
-      response(false)
+      response({ ok: false, res: e })
     }
     // return async
     return true
