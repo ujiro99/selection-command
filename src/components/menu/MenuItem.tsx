@@ -1,15 +1,15 @@
 import React, { useRef } from 'react'
 import classNames from 'classnames'
-import { Ipc, Command } from '../services/ipc'
-import { Tooltip } from './Tooltip'
+import { Ipc, Command } from '../../services/ipc'
+import { Tooltip } from '../Tooltip'
 import {
   item,
   button,
   itemImg,
   itemTitle,
   itemOnlyIcon,
-} from './Menu.module.css'
-import { OPEN_MODE } from '../const'
+} from '../Menu.module.css'
+import { OPEN_MODE } from '../../const'
 
 type MenuItemProps = {
   title: string

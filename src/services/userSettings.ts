@@ -15,8 +15,8 @@ export type Command = {
 export type CommandFolder = {
   id: string
   title: string
-  iconUrl: string
-  onlyIcon: boolean
+  iconUrl?: string
+  onlyIcon?: boolean
 }
 
 export type PageRule = {

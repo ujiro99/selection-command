@@ -32,7 +32,7 @@
 }
 
 .item {
-  padding: 4px 5px 4px 4px;
+  padding: 4px;
   display: flex;
   align-items: center;
   font-size: 12px;
@@ -59,11 +59,10 @@
 }
 
 .itemOnlyIcon {
-  padding: 4px;
-
   .itemTitle {
     display: none;
   }
+
   .itemImg {
     width: 1.6em;
     height: 1.6em;
