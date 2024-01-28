@@ -37,6 +37,20 @@
   }
 }
 
+.rotate {
+  animation: 1s rotate forwards infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 .pop-up-from {
   transform: translateY(5px);
   opacity: 0;

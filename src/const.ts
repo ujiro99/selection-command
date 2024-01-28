@@ -4,6 +4,7 @@ export const VERSION = process.env.VERSION
 export enum OPEN_MODE {
   POPUP = 'popup',
   TAB = 'tab',
+  API = 'api',
 }
 
 export enum POPUP_ENABLED {

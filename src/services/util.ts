@@ -28,3 +28,16 @@ export function toUrl(searchUrl: string, text: string): string {
   textEscaped = encodeURI(textEscaped)
   return searchUrl.replace('%s', textEscaped)
 }
+
+export function escape(str: string) {
+  return str
+    .replace(/[\\]/g, '\\\\')
+    .replace(/[\/]/g, '\\/')
+    .replace(/[\b]/g, '\\b')
+    .replace(/[\f]/g, '\\f')
+    .replace(/[\n]/g, '\\n')
+    .replace(/[\r]/g, '\\r')
+    .replace(/[\t]/g, '\\t')
+    .replace(/[\"]/g, '\\"')
+    .replace(/\\'/g, "\\'")
+}

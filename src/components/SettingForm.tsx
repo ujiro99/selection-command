@@ -63,15 +63,33 @@ export function SettingFrom() {
   const fields: RegistryFieldsType = {
     '#/commands/iconUrl': IconUrlField,
     '#/commands/parentFolderId': FolderField(folders),
+    '#/commands/fetchOptions': FetchOptionField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
     ArraySchemaField: CustomArraySchemaField,
   }
 
   const uiSchema = {
+    commands: {
+      items: {
+        'ui:classNames': 'commandItem',
+        variables: {
+          'ui:classNames': 'variables',
+          items: {
+            'ui:classNames': 'variableItem',
+          },
+        },
+      },
+    },
     folders: {
       items: {
         id: { 'ui:widget': 'hidden' },
+        'ui:classNames': 'folderItem',
+      },
+    },
+    pageRules: {
+      items: {
+        'ui:classNames': 'pageRuleItem',
       },
     },
   }
@@ -180,6 +198,20 @@ const FolderField = (folders: CommandFolder[]) => {
       </label>
     )
   }
+}
+
+const FetchOptionField = (props: FieldProps) => {
+  return (
+    <label className={css.fetchOption + ' form-control'}>
+      <textarea
+        id={props.idSchema.$id}
+        className={css.fetchOptionInput}
+        value={props.formData}
+        required={props.required}
+        onChange={(event) => props.onChange(event.target.value)}
+      ></textarea>
+    </label>
+  )
 }
 
 const OnlyIconField = function (props: FieldProps) {

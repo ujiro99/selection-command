@@ -1,25 +1,27 @@
-export enum Command {
+export enum IpcCommand {
   openPopup = 'openPopup',
   openSidePanel = 'openSidePanel',
   openOption = 'openOption',
+  execApi = 'execApi',
 }
 
 type Request = {
-  command: Command
+  command: IpcCommand
   param: unknown
 }
 
 export type IpcCallback = (
   param: unknown,
   sender: chrome.runtime.MessageSender,
+  response?: (response?: any) => void,
 ) => boolean
 
 export const Ipc = {
-  async send(command: Command, param?: unknown) {
+  async send(command: IpcCommand, param?: unknown) {
     return await chrome.runtime.sendMessage({ command, param })
   },
 
-  addListener(command: Command, callback: IpcCallback) {
+  addListener(command: IpcCommand, callback: IpcCallback) {
     chrome.runtime.onMessage.addListener(
       (
         request: Request,
@@ -32,7 +34,7 @@ export const Ipc = {
 
         if (command === cmd) {
           // must return "true" if response is async.
-          return callback(prm, sender)
+          return callback(prm, sender, sendResponse)
         }
 
         return false

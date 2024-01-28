@@ -100,3 +100,12 @@
     margin-left: 0;
   }
 }
+
+.apiIcon,
+.apiIconLoading {
+  fill: #666;
+}
+
+.apiIconLoading {
+  cursor: wait;
+}

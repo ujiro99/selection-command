@@ -1,14 +1,41 @@
 import * as mv3 from 'mv3-hot-reload'
 import { isDebug } from './const'
-import { Ipc, Command, IpcCallback } from './services/ipc'
+import { Ipc, IpcCommand, IpcCallback } from './services/ipc'
+import { CommandVariable } from './services/userSettings'
+import { escape } from './services/util'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
 
 type Sender = chrome.runtime.MessageSender
 
+export type execApiProps = {
+  url: string
+  pageUrl: string
+  pageTitle: string
+  selectionText: string
+  fetchOptions: string
+  variables: CommandVariable[]
+}
+
+function bindVariables(
+  str: string,
+  variables: CommandVariable[],
+  obj: {},
+): string {
+  let arr = [...variables]
+  Object.entries(obj).forEach(([key, value]) => {
+    arr.push({ name: key, value: value })
+  })
+  arr.forEach((v) => {
+    const re = new RegExp(`\\$\\{${v.name}\\}`, 'g')
+    str = str.replace(re, v.value)
+  })
+  return str
+}
+
 const commandFuncs = {
-  [Command.openSidePanel]: (param: unknown, sender: Sender): boolean => {
+  [IpcCommand.openSidePanel]: (param: unknown, sender: Sender): boolean => {
     const tabId = sender?.tab?.id
     if (tabId != null) {
       openSidePanel(tabId).then(() => {
@@ -18,7 +45,7 @@ const commandFuncs = {
     return false
   },
 
-  [Command.openPopup]: (param: unknown, sender: Sender): boolean => {
+  [IpcCommand.openPopup]: (param: unknown, sender: Sender): boolean => {
     const open = async () => {
       const current = await chrome.windows.getCurrent()
       const window = await chrome.windows.create({
@@ -37,16 +64,48 @@ const commandFuncs = {
     return false
   },
 
-  [Command.openOption]: (param: unknown, sender: Sender): boolean => {
+  [IpcCommand.openOption]: (param: unknown, sender: Sender): boolean => {
     chrome.tabs.create({
       url: 'options_page.html',
     })
     return false
   },
+
+  [IpcCommand.execApi]: (
+    param: execApiProps,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const { url, pageUrl, pageTitle, selectionText, fetchOptions, variables } =
+      param
+    try {
+      const str = bindVariables(fetchOptions, variables, {
+        pageUrl,
+        pageTitle,
+        text: escape(escape(selectionText)),
+      })
+      const opt = JSON.parse(str)
+      fetch(url, opt)
+        .then((res) => {
+          return res.json()
+        })
+        .then((res) => {
+          response(res)
+        })
+        .catch((e) => {
+          response(false)
+        })
+    } catch (e) {
+      console.error(e)
+      response(false)
+    }
+    // return async
+    return true
+  },
 } as { [key: string]: IpcCallback }
 
-Object.keys(Command).forEach((key) => {
-  const command = Command[key as keyof typeof Command]
+Object.keys(IpcCommand).forEach((key) => {
+  const command = IpcCommand[key as keyof typeof IpcCommand]
   Ipc.addListener(command, commandFuncs[key])
 })
 

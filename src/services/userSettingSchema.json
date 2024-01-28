@@ -77,12 +77,50 @@
         },
         "openMode": {
           "type": "string",
-          "enum": ["popup", "tab"],
+          "enum": ["popup", "tab", "api"],
           "default": "popup"
         },
         "parentFolderId": {
           "$id": "#/commands/parentFolderId",
           "type": "string"
+        }
+      },
+      "dependencies": {
+        "openMode": {
+          "oneOf": [
+            {
+              "properties": {
+                "openMode": {
+                  "enum": ["popup"]
+                }
+              }
+            },
+            {
+              "properties": {
+                "openMode": {
+                  "enum": ["tab"]
+                }
+              }
+            },
+            {
+              "properties": {
+                "openMode": {
+                  "enum": ["api"]
+                },
+                "fetchOptions": {
+                  "$id": "#/commands/fetchOptions",
+                  "type": "string"
+                },
+                "variables": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/commandVariable"
+                  }
+                }
+              },
+              "required": ["fetchOptions", "variables"]
+            }
+          ]
         }
       }
     },
@@ -106,6 +144,20 @@
           "name": "OnlyIcon",
           "$id": "#/commandFolder/onlyIcon",
           "type": "boolean"
+        }
+      }
+    },
+    "commandVariable": {
+      "type": "object",
+      "name": "Variable",
+      "required": ["name", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
         }
       }
     }

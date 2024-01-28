@@ -9,7 +9,9 @@ export type Command = {
   searchUrl: string
   iconUrl: string
   openMode: OPEN_MODE
-  parentFolderId: string
+  parentFolderId?: string
+  fetchOptions?: string
+  variables?: Array<CommandVariable>
 }
 
 export type CommandFolder = {
@@ -17,6 +19,11 @@ export type CommandFolder = {
   title: string
   iconUrl?: string
   onlyIcon?: boolean
+}
+
+export type CommandVariable = {
+  name: string
+  value: string
 }
 
 export type PageRule = {

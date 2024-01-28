@@ -83,6 +83,8 @@ function ItemsToMenu(props: {
             openMode={obj.openMode}
             menuRef={menuRef}
             onlyIcon={isHorizontal}
+            fetchOptions={obj.fetchOptions}
+            variables={obj.variables}
           />
         </li>
       ))
