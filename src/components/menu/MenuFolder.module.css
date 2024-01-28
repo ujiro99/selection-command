@@ -13,7 +13,14 @@
 .folderIcon {
   width: 15px;
   height: 15px;
-  margin-right: 4px;
+  margin-right: 7px;
+  margin-left: 1px;
+}
+
+.folderHorizontal {
+  .folderIcon {
+    margin-right: 4px;
+  }
 }
 
 .folderIconOnly {

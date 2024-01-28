@@ -25,9 +25,13 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
   const { settings, selectionText } = useContext(context)
   const isHorizontal = settings.style == STYLE.HORIZONTAL
   const isBottom = settings.popupPlacement.startsWith('bottom')
+  let placement = settings.popupPlacement
+  if (!isHorizontal) {
+    placement = 'right-start'
+  }
 
   const { styles, attributes } = usePopper(folderRef.current, popperElm, {
-    placement: settings.popupPlacement,
+    placement: placement,
     modifiers: [
       {
         name: 'offset',
@@ -87,7 +91,12 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
   }
 
   return (
-    <Popover className={css.folder} ref={folderRef}>
+    <Popover
+      className={classNames(css.folder, {
+        [css.folderHorizontal]: isHorizontal,
+      })}
+      ref={folderRef}
+    >
       {props.folder.onlyIcon ? (
         <img
           className={css.folderIcon + ' ' + css.folderIconOnly}

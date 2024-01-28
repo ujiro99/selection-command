@@ -3,11 +3,12 @@ import classNames from 'classnames'
 import { Ipc, Command } from '../../services/ipc'
 import { Tooltip } from '../Tooltip'
 import {
-  item,
   button,
+  item,
   itemImg,
   itemTitle,
   itemOnlyIcon,
+  itemHorizontal,
 } from '../Menu.module.css'
 import { OPEN_MODE } from '../../const'
 
@@ -44,6 +45,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         <button
           className={classNames(item, button, {
             [itemOnlyIcon]: onlyIcon,
+            [itemHorizontal]: onlyIcon,
           })}
           ref={elmRef}
           onClick={handleClick}
@@ -63,6 +65,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       href={props.url}
       className={classNames(item, {
         [itemOnlyIcon]: onlyIcon,
+        [itemHorizontal]: onlyIcon,
       })}
       ref={elmRef}
       target="_blank"

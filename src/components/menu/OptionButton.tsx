@@ -6,6 +6,7 @@ import {
   button,
   moreButton,
   moreIcon,
+  moreButtonHorizontal,
   itemTitle,
   itemOnlyIcon,
 } from '../Menu.module.css'
@@ -31,6 +32,7 @@ export function OptionButton(props: Props): JSX.Element {
       <button
         className={classNames(item, button, moreButton, {
           [itemOnlyIcon]: onlyIcon,
+          [moreButtonHorizontal]: onlyIcon,
         })}
         onClick={openOption}
         ref={elmRef}
