@@ -80,9 +80,9 @@
           "enum": ["popup", "tab", "api"],
           "default": "popup"
         },
-        "parentFolderId": {
-          "$id": "#/commands/parentFolderId",
-          "type": "string"
+        "parentFolder": {
+          "$id": "#/commands/parentFolder",
+          "$ref": "#/definitions/folderOptions"
         }
       },
       "dependencies": {
@@ -146,6 +146,15 @@
           "type": "boolean"
         }
       }
+    },
+    "folderOptions": {
+      "enumNames": [""],
+      "enum": [
+        {
+          "id": "",
+          "name": ""
+        }
+      ]
     },
     "commandVariable": {
       "type": "object",

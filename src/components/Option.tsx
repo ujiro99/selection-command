@@ -28,7 +28,6 @@ function getTimestamp() {
 
 export function Option() {
   const [settings, setSettings] = useState<UserSettingsType>()
-  const [defaultVal, setDefaultVal] = useState<UserSettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
   const [iframeHeight, setIframeHeight] = useState<number>()
   const [iconVisible, setIconVisible] = useState(false)
@@ -61,21 +60,9 @@ export function Option() {
       await sleep(1000)
       setIconVisible(false)
     } catch {
-      if (defaultVal != null) {
-        console.log('failed to update settings!')
-      }
+      console.log('failed to update settings!')
     }
   }
-
-  useEffect(() => {
-    ;(async () => {
-      const data = await Storage.get(STORAGE_KEY.USER)
-      setDefaultVal(data as UserSettingsType)
-    })()
-    Storage.addListener(STORAGE_KEY.USER, (value) => {
-      setDefaultVal(value)
-    })
-  }, [])
 
   useEffect(() => {
     let unmounted = false
@@ -122,8 +109,9 @@ export function Option() {
     setResetDialog(false)
   }
 
-  const handleExport = () => {
-    const text = JSON.stringify(defaultVal, null, 2)
+  const handleExport = async () => {
+    const data = await Storage.get(STORAGE_KEY.USER)
+    const text = JSON.stringify(data, null, 2)
     const blob = new Blob([text], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -162,11 +150,12 @@ export function Option() {
     setImportDialog(false)
   }
 
-  const onLoadIfame = () => {
+  const onLoadIfame = async () => {
+    const data = await Storage.get(STORAGE_KEY.USER)
     if (iframeRef.current != null) {
       let message = {
         command: 'start',
-        value: defaultVal,
+        value: data,
       }
       console.debug('send message', message)
       iframeRef.current.contentWindow.postMessage(message, '*')

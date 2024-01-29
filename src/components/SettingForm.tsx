@@ -5,7 +5,11 @@ import Form, { IChangeEvent } from '@rjsf/core'
 import classNames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
-import { UserSettingsType, CommandFolder } from '../services/userSettings'
+import {
+  UserSettingsType,
+  CommandFolder,
+  FolderOption,
+} from '../services/userSettings'
 
 import { Icon } from '../components/Icon'
 
@@ -18,10 +22,15 @@ function getFaviconUrl(urlStr: string): string {
   return favUrl
 }
 
+type folderOptionsType = {
+  enumNames: string[]
+  enum: FolderOption[]
+}
+
 export function SettingFrom() {
   const [parent, setParent] = useState<MessageEventSource>()
   const [origin, setOrigin] = useState('')
-  const [defaultData, setDefaultData] = useState<UserSettingsType>()
+  const [settingData, setSettingData] = useState<UserSettingsType>()
 
   useEffect(() => {
     const func = (event: MessageEvent) => {
@@ -33,7 +42,7 @@ export function SettingFrom() {
         if (event.source != null) {
           setParent(event.source)
           setOrigin(event.origin)
-          setDefaultData(value)
+          setSettingData(value)
         }
       }
     }
@@ -55,15 +64,30 @@ export function SettingFrom() {
     if (parent != null) {
       parent.postMessage({ command: 'changed', value: data }, origin)
     }
-    setDefaultData(data)
+    setSettingData(data)
   }
 
-  const folders = defaultData?.folders ?? []
+  // Create folder options
+  if (settingData) {
+    const folders = settingData.folders
+    const folderOptions: folderOptionsType = folders.reduce(
+      (acc, cur) => {
+        acc.enumNames.push(cur.title)
+        acc.enum.push({
+          id: cur.id,
+          name: cur.title,
+        })
+        return acc
+      },
+      { enumNames: [], enum: [] } as folderOptionsType,
+    )
+    userSettingSchema.definitions.folderOptions = folderOptions
+  }
 
   const fields: RegistryFieldsType = {
     '#/commands/iconUrl': IconUrlField,
-    '#/commands/parentFolderId': FolderField(folders),
     '#/commands/fetchOptions': FetchOptionField,
+    '#/commands/parentFolder': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
     ArraySchemaField: CustomArraySchemaField,
@@ -99,7 +123,7 @@ export function SettingFrom() {
     <Form
       schema={userSettingSchema}
       validator={validator}
-      formData={defaultData}
+      formData={settingData}
       onChange={onChange}
       onError={log('errors')}
       uiSchema={uiSchema}
@@ -172,32 +196,30 @@ const IconUrlField = function (props: FieldProps) {
   )
 }
 
-const FolderField = (folders: CommandFolder[]) => {
-  return (props: FieldProps) => {
-    // console.debug('FolderField', props)
-    return (
-      <label className={css.folder + ' form-control'}>
-        <select
-          id={props.idSchema.$id}
-          className={css.folderInput}
-          value={props.formData}
-          required={props.required}
-          onChange={(event) => props.onChange(event.target.value)}
-        >
-          <option key="" value="">
-            -- none --
+const FolderField = (props: FieldProps) => {
+  const { formData, schema } = props
+  const folderOptions = schema.enum as FolderOption[]
+
+  return (
+    <label className={css.folder + ' form-control'}>
+      <select
+        id={props.idSchema.$id}
+        className={css.folderInput}
+        value={formData?.id}
+        required={props.required}
+        onChange={(event) => props.onChange(event.target.value)}
+      >
+        <option key="" value="">
+          -- none --
+        </option>
+        {folderOptions.map((folder) => (
+          <option key={folder.id} value={folder.id}>
+            {folder.name}
           </option>
-          {folders.map((folder) => {
-            return (
-              <option key={folder.id} value={folder.id}>
-                {folder.title}
-              </option>
-            )
-          })}
-        </select>
-      </label>
-    )
-  }
+        ))}
+      </select>
+    </label>
+  )
 }
 
 const FetchOptionField = (props: FieldProps) => {

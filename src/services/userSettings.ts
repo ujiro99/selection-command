@@ -9,9 +9,14 @@ export type Command = {
   searchUrl: string
   iconUrl: string
   openMode: OPEN_MODE
-  parentFolderId?: string
+  parentFolder?: FolderOption
   fetchOptions?: string
   variables?: Array<CommandVariable>
+}
+
+export type FolderOption = {
+  id: string
+  name: string
 }
 
 export type CommandFolder = {
