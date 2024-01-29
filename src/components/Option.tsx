@@ -12,10 +12,6 @@ import { Dialog } from './Dialog'
 import './App.css'
 import css from './Option.module.css'
 
-async function getSettings(): Promise<UserSettingsType> {
-  return (await Storage.get(STORAGE_KEY.USER)) as UserSettingsType
-}
-
 function isBase64(str: string): boolean {
   return /base64/.test(str)
 }
@@ -72,7 +68,13 @@ export function Option() {
   }
 
   useEffect(() => {
-    ;(async () => setDefaultVal(await getSettings()))()
+    ;(async () => {
+      const data = await Storage.get(STORAGE_KEY.USER)
+      setDefaultVal(data as UserSettingsType)
+    })()
+    Storage.addListener(STORAGE_KEY.USER, (value) => {
+      setDefaultVal(value)
+    })
   }, [])
 
   useEffect(() => {
@@ -95,7 +97,7 @@ export function Option() {
     const func = (event) => {
       const command = event.data.command
       const value = event.data.value
-      console.log(command, value)
+      // console.log(command, value)
 
       if (command === 'changed') {
         setSettings(value)
@@ -166,7 +168,7 @@ export function Option() {
         command: 'start',
         value: defaultVal,
       }
-      console.log('send message', message)
+      console.debug('send message', message)
       iframeRef.current.contentWindow.postMessage(message, '*')
     } else {
       console.warn('frame null')
