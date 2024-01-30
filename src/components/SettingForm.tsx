@@ -199,6 +199,12 @@ const FolderField = (props: FieldProps) => {
   const { formData, schema } = props
   const folderOptions = schema.enum as FolderOption[]
 
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = event.target.value
+    const folder = folderOptions.find((folder) => folder.id === id)
+    props.onChange(folder)
+  }
+
   return (
     <label className={css.folder + ' form-control'}>
       <select
@@ -206,7 +212,7 @@ const FolderField = (props: FieldProps) => {
         className={css.folderInput}
         value={formData?.id}
         required={props.required}
-        onChange={(event) => props.onChange(event.target.value)}
+        onChange={onChange}
       >
         <option key="" value="">
           -- none --
