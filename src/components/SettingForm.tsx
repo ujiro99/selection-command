@@ -5,11 +5,7 @@ import Form, { IChangeEvent } from '@rjsf/core'
 import classNames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
-import {
-  UserSettingsType,
-  CommandFolder,
-  FolderOption,
-} from '../services/userSettings'
+import { UserSettingsType, FolderOption } from '../services/userSettings'
 
 import { Icon } from '../components/Icon'
 
@@ -52,14 +48,17 @@ export function SettingFrom() {
     }
   }, [])
 
-  const onChange = (arg: IChangeEvent) => {
-    // update iconURL when searchUrl setted
+  const onChange = (arg: IChangeEvent, id?: string) => {
     const data = arg.formData as UserSettingsType
-    data.commands.forEach((command) => {
-      if (!command.iconUrl && command.searchUrl != null) {
-        command.iconUrl = getFaviconUrl(command.searchUrl)
-      }
-    })
+
+    // update iconURL when searchUrl setted
+    if (id && id.endsWith('searchUrl')) {
+      data.commands.forEach((command) => {
+        if (!command.iconUrl && command.searchUrl) {
+          command.iconUrl = getFaviconUrl(command.searchUrl)
+        }
+      })
+    }
 
     if (parent != null) {
       parent.postMessage({ command: 'changed', value: data }, origin)
