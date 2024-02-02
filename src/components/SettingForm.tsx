@@ -11,13 +11,6 @@ import { Icon } from '../components/Icon'
 
 import * as css from './SettingForm.module.css'
 
-function getFaviconUrl(urlStr: string): string {
-  const url = new URL(urlStr)
-  const domain = url.hostname
-  const favUrl = `https://s2.googleusercontent.com/s2/favicons?domain=${domain}&sz=128`
-  return favUrl
-}
-
 type folderOptionsType = {
   enumNames: string[]
   enum: FolderOption[]
@@ -32,14 +25,15 @@ export function SettingFrom() {
     const func = (event: MessageEvent) => {
       const command = event.data.command
       const value = event.data.value
-      console.debug(event.data)
-
+      console.debug('recv message', command, value)
       if (command === 'start') {
         if (event.source != null) {
           setParent(event.source)
           setOrigin(event.origin)
           setSettingData(value)
         }
+      } else if (command === 'changed') {
+        setSettingData(value)
       }
     }
     window.addEventListener('message', func)
@@ -48,22 +42,33 @@ export function SettingFrom() {
     }
   }, [])
 
-  const onChange = (arg: IChangeEvent, id?: string) => {
-    const data = arg.formData as UserSettingsType
+  const sendMessage = (command: string, value: any) => {
+    if (parent != null) {
+      console.debug('send message', command, value)
+      parent.postMessage({ command, value }, origin)
+    }
+  }
 
+  const updateSettings = (data: UserSettingsType) => {
+    sendMessage('changed', data)
+    setSettingData(data)
+  }
+
+  const onChange = (arg: IChangeEvent, id?: string) => {
     // update iconURL when searchUrl setted
     if (id && id.endsWith('searchUrl')) {
+      const data = arg.formData as UserSettingsType
       data.commands.forEach((command) => {
         if (!command.iconUrl && command.searchUrl) {
-          command.iconUrl = getFaviconUrl(command.searchUrl)
+          sendMessage('fetchIconUrl', {
+            searchUrl: command.searchUrl,
+            settings: data,
+          })
+          return
         }
       })
     }
-
-    if (parent != null) {
-      parent.postMessage({ command: 'changed', value: data }, origin)
-    }
-    setSettingData(data)
+    updateSettings(arg.formData)
   }
 
   // Create folder options
@@ -81,6 +86,7 @@ export function SettingFrom() {
       { enumNames: [], enum: [] } as folderOptionsType,
     )
     userSettingSchema.definitions.folderOptions = folderOptions
+    console.log('settingData', settingData)
   }
 
   const fields: RegistryFieldsType = {

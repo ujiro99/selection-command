@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group'
 import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
 import { UserSettings, UserSettingsType } from '../services/userSettings'
-import { sleep, toDataURL } from '../services/util'
+import { sleep, toDataURL, toUrl } from '../services/util'
 import * as i18n from '../services/i18n'
 import { APP_ID } from '../const'
 import { Dialog } from './Dialog'
@@ -14,6 +14,33 @@ import css from './Option.module.css'
 
 function isBase64(str: string): boolean {
   return /base64/.test(str)
+}
+
+function getFaviconUrl(urlStr: string): string {
+  const url = new URL(urlStr)
+  const domain = url.hostname
+  const favUrl = `https://s2.googleusercontent.com/s2/favicons?domain=${domain}&sz=128`
+  return favUrl
+}
+
+const fetchIconUrl = async (url: string) => {
+  const urlStr = toUrl(url, 'test')
+  const res = await fetch(urlStr)
+  const text = await res.text()
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(text, 'text/html')
+  const icons = doc.querySelectorAll(
+    'link[rel="icon"], link[rel="shortcut icon"]',
+  )
+  if (icons.length === 0) {
+    return getFaviconUrl(url)
+  }
+  const iconUrl = icons[icons.length - 1].getAttribute('href')
+  if (iconUrl?.startsWith('/')) {
+    const origin = new URL(urlStr).origin
+    return `${origin}${iconUrl}`
+  }
+  return iconUrl
 }
 
 function getTimestamp() {
@@ -81,15 +108,27 @@ export function Option() {
   }, [settings])
 
   useEffect(() => {
-    const func = (event) => {
+    const func = async (event: MessageEvent) => {
       const command = event.data.command
       const value = event.data.value
-      // console.log(command, value)
-
       if (command === 'changed') {
         setSettings(value)
       } else if (command === 'setHeight') {
         setIframeHeight(value)
+      } else if (command === 'fetchIconUrl') {
+        const { searchUrl, settings } = value
+        const url = await fetchIconUrl(searchUrl)
+        if (url && settings) {
+          settings.commands.forEach((command) => {
+            if (!command.iconUrl && command.searchUrl) {
+              if (command.searchUrl === searchUrl) {
+                command.iconUrl = url
+              }
+            }
+          })
+          setSettings(settings)
+          sendMessage('changed', settings)
+        }
       }
     }
     window.addEventListener('message', func)
@@ -150,19 +189,19 @@ export function Option() {
     setImportDialog(false)
   }
 
-  const onLoadIfame = async () => {
-    const data = await Storage.get(STORAGE_KEY.USER)
+  const sendMessage = (command: string, value: any) => {
     if (iframeRef.current != null) {
-      let message = {
-        command: 'start',
-        value: data,
-      }
-      console.debug('send message', message)
+      let message = { command, value }
       iframeRef.current.contentWindow.postMessage(message, '*')
     } else {
       console.warn('frame null')
       console.warn(iframeRef)
     }
+  }
+
+  const onLoadIfame = async () => {
+    const data = await Storage.get(STORAGE_KEY.USER)
+    sendMessage('start', data)
   }
 
   return (
