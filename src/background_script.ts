@@ -1,13 +1,22 @@
 import * as mv3 from 'mv3-hot-reload'
 import { isDebug } from './const'
 import { Ipc, IpcCommand, IpcCallback } from './services/ipc'
-import { CommandVariable } from './services/userSettings'
 import { escape } from './services/util'
+import { UserSettings, CommandVariable } from './services/userSettings'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
 
 type Sender = chrome.runtime.MessageSender
+
+export type openPopupProps = {
+  commandId: number
+  url: string
+  top: number
+  left: number
+  width: number
+  height: number
+}
 
 export type execApiProps = {
   url: string
@@ -45,19 +54,24 @@ const commandFuncs = {
     return false
   },
 
-  [IpcCommand.openPopup]: (param: unknown, sender: Sender): boolean => {
+  [IpcCommand.openPopup]: (param: openPopupProps): boolean => {
     const open = async () => {
       const current = await chrome.windows.getCurrent()
       const window = await chrome.windows.create({
         url: param.url,
-        width: 600,
-        height: 700,
+        width: param.width,
+        height: param.height,
         top: param.top,
         left: param.left,
         type: 'popup',
         incognito: current.incognito,
       })
-      lastWindowId = window.id
+      if (window.id) {
+        lastWindow = {
+          id: window.id,
+          commandId: param.commandId,
+        }
+      }
       // console.log('window create', lastWindowId)
     }
     open()
@@ -104,14 +118,20 @@ Object.keys(IpcCommand).forEach((key) => {
   Ipc.addListener(command, commandFuncs[key])
 })
 
-let lastWindowId: number | undefined
+type LastWindow = {
+  id: number
+  commandId: number
+}
+
+let lastWindow: LastWindow | null = null
 let windowIdHistory = [] as number[]
 
 chrome.windows.onFocusChanged.addListener((windowId: number) => {
   windowIdHistory.push(windowId)
   const beforeWindowId = windowIdHistory[windowIdHistory.length - 2]
-  if (beforeWindowId != null && beforeWindowId == lastWindowId) {
-    chrome.windows.remove(lastWindowId)
+  if (beforeWindowId && beforeWindowId == lastWindow?.id) {
+    chrome.windows.remove(lastWindow?.id)
+    windowIdHistory = windowIdHistory.filter((id) => id != lastWindow?.id)
   }
 })
 
@@ -125,8 +145,30 @@ const openSidePanel = async (tabId: number) => {
   })
 }
 
+const updateWindowSize = async (
+  commandId: number,
+  width: number,
+  height: number,
+) => {
+  const obj = await UserSettings.get()
+  const found = obj.commands.find((c) => c.id === commandId)
+  if (found) {
+    found.popupOption = {
+      width,
+      height,
+    }
+  }
+  await UserSettings.set(obj)
+}
+
 chrome.action.onClicked.addListener((tab) => {
   chrome.tabs.create({
     url: 'options_page.html',
   })
+})
+
+chrome.windows.onBoundsChanged.addListener((window) => {
+  if (lastWindow && lastWindow.id === window.id) {
+    updateWindowSize(lastWindow.commandId, window.width, window.height)
+  }
 })

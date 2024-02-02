@@ -1,26 +1,19 @@
 import React, { useState, useEffect, createContext } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
-import { UserSettingsType } from '../services/userSettings'
 
 import './App.css'
 
-type AppProps = {
-  settings: UserSettingsType
-}
-
 type ContextType = {
-  settings: UserSettingsType
   selectionText: string
 }
 
 export const context = createContext<ContextType>({} as ContextType)
 
-export function App(props: AppProps) {
+export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [selectionText, setSelectionText] = useState('')
   const [rect, setRect] = useState<DOMRect>()
-  const settings = props.settings
 
   useEffect(() => {
     const onSelectionchange = () => {
@@ -40,7 +33,7 @@ export function App(props: AppProps) {
   }, [])
 
   return (
-    <context.Provider value={{ settings, selectionText }}>
+    <context.Provider value={{ selectionText }}>
       <SelectAnchor
         rect={rect}
         selectionText={selectionText}

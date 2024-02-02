@@ -92,8 +92,12 @@
               "properties": {
                 "openMode": {
                   "enum": ["popup"]
+                },
+                "popupOption": {
+                  "$ref": "#/definitions/popupOption"
                 }
-              }
+              },
+              "required": ["popupOption"]
             },
             {
               "properties": {
@@ -144,6 +148,21 @@
           "name": "OnlyIcon",
           "$id": "#/commandFolder/onlyIcon",
           "type": "boolean"
+        }
+      }
+    },
+    "popupOption": {
+      "type": "object",
+      "required": ["width", "height"],
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "type": "number",
+          "default": 600
+        },
+        "height": {
+          "type": "number",
+          "default": 700
         }
       }
     },

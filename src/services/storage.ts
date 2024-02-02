@@ -16,7 +16,7 @@ export const Storage = {
    *
    * @param {STORAGE_KEY} key of item in storage.
    */
-  get: (key: STORAGE_KEY): Promise<unknown> => {
+  get: <T>(key: STORAGE_KEY): Promise<T> => {
     return new Promise((resolve, reject) => {
       chrome.storage.local.get('' + key, function (result) {
         if (chrome.runtime.lastError != null) {

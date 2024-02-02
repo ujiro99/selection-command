@@ -7,6 +7,7 @@ import { context } from '../App'
 import { toUrl } from '../../services/util'
 import { STYLE } from '../../const'
 import { Command, CommandFolder } from '../../services/userSettings'
+import { useSetting } from '../../hooks/useSetting'
 import { menu, list, menuHorizontal } from '../Menu.module.css'
 import { sleep } from '../../services/util'
 import * as css from './MenuFolder.module.css'
@@ -22,13 +23,14 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
   const [visible, setVisible] = useState(false)
   const [safeAreaStyles, setSafeAreaStyles] = useState<React.CSSProperties>({})
   const folderRef = useRef(null)
-  const { settings, selectionText } = useContext(context)
-  const isHorizontal = settings.style == STYLE.HORIZONTAL
-  const isBottom = settings.popupPlacement.startsWith('bottom')
-  let placement = settings.popupPlacement
+  const { selectionText } = useContext(context)
+  const { settings } = useSetting()
+  const isHorizontal = settings.style === STYLE.HORIZONTAL
+  let placement = settings.popupPlacement ?? 'top'
   if (!isHorizontal) {
     placement = 'right-start'
   }
+  const isBottom = placement.startsWith('bottom')
 
   const { styles, attributes } = usePopper(folderRef.current, popperElm, {
     placement: placement,
@@ -166,6 +168,7 @@ function InnerMenu({
               openMode={obj.openMode}
               menuRef={menuRef}
               onlyIcon={isHorizontal}
+              command={obj}
             />
           </li>
         ))}

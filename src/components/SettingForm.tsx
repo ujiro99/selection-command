@@ -102,6 +102,7 @@ export function SettingFrom() {
     commands: {
       items: {
         'ui:classNames': 'commandItem',
+        popupOption: { 'ui:widget': 'hidden' },
         variables: {
           'ui:classNames': 'variables',
           items: {

@@ -10,8 +10,14 @@ export type Command = {
   iconUrl: string
   openMode: OPEN_MODE
   parentFolder?: FolderOption
+  popupOption?: PopupOption
   fetchOptions?: string
   variables?: Array<CommandVariable>
+}
+
+export type PopupOption = {
+  width: number
+  height: number
 }
 
 export type FolderOption = {
@@ -47,7 +53,7 @@ export type UserSettingsType = {
 
 export const UserSettings = {
   get: async (): Promise<UserSettingsType> => {
-    let obj = (await Storage.get(STORAGE_KEY.USER)) as UserSettingsType
+    let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
     // Assigning IDs to each command
     obj.commands = obj.commands
       .map((c, idx) => {
@@ -57,6 +63,11 @@ export const UserSettings = {
       .filter((c) => c.searchUrl != null)
     obj.folders = obj.folders.filter((folder) => !!folder.title)
     return obj
+  },
+
+  set: async (data: UserSettingsType): Promise<boolean> => {
+    await Storage.set(STORAGE_KEY.USER, data)
+    return true
   },
 
   reset: async () => {

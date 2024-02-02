@@ -12,6 +12,7 @@ type PopupProps = {
 }
 
 export function Popup(props: PopupProps) {
+  const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const { settings, pageRule } = useSetting()
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
@@ -22,7 +23,6 @@ export function Popup(props: PopupProps) {
     enterTo = 'pop-down-to'
   }
 
-  const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const { styles, attributes } = usePopper(props.positionElm, popperElement, {
     placement: placement,
     modifiers: [
@@ -56,7 +56,7 @@ export function Popup(props: PopupProps) {
           className={popup}
           static
         >
-          <Menu selectionText={props.selectionText} />
+          <Menu />
         </Popover.Panel>
       </Transition>
     </Popover>

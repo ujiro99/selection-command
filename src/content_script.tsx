@@ -5,18 +5,14 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import { APP_ID } from './const'
 import { App } from './components/App'
-import { UserSettings } from './services/userSettings'
 import icons from '../dist/icons.svg'
 
 const rootDom = document.createElement('div')
 rootDom.id = APP_ID
 document.body.insertAdjacentElement('afterend', rootDom)
 const shadow = rootDom.attachShadow({ mode: 'closed' })
-
-UserSettings.get().then((settings) => {
-  const root = createRoot(shadow)
-  root.render(<App settings={settings} />)
-})
+const root = createRoot(shadow)
+root.render(<App />)
 
 // Putting styles and icons into ShadowDom
 const url = chrome.runtime.getURL('/src/content_script.css')

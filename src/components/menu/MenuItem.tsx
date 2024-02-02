@@ -16,7 +16,7 @@ import {
 } from '../Menu.module.css'
 import { Icon } from '../Icon'
 import { OPEN_MODE } from '../../const'
-import { CommandVariable } from '../../services/userSettings'
+import { Command } from '../../services/userSettings'
 import { sleep } from '../../services/util'
 
 type MenuItemProps = {
@@ -26,8 +26,7 @@ type MenuItemProps = {
   openMode: OPEN_MODE
   menuRef: React.RefObject<Element>
   onlyIcon: boolean
-  fetchOptions?: string
-  variables?: CommandVariable[]
+  command: Command
 }
 
 enum SendState {
@@ -49,9 +48,12 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         const rect = props.menuRef.current.getBoundingClientRect()
         console.debug('open popup', rect)
         Ipc.send(IpcCommand.openPopup, {
+          commandId: props.command.id,
           url: props.url,
           top: Math.floor(window.screenTop + rect.top),
           left: Math.floor(window.screenLeft + rect.right + 10),
+          height: props.command.popupOption?.height,
+          width: props.command.popupOption?.width,
         })
       }
     } else if (props.openMode === OPEN_MODE.API) {
@@ -64,8 +66,8 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         pageUrl: window.location.href,
         pageTitle: document.title,
         selectionText: selectionText,
-        fetchOptions: props.fetchOptions,
-        variables: props.variables,
+        fetchOptions: props.command.fetchOptions,
+        variables: props.command.variables,
       })
         .then(({ ok, res }) => {
           if (ok) {

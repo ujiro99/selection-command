@@ -6,8 +6,13 @@ import { OptionButton } from './menu/OptionButton'
 import { MenuFolder } from './menu/MenuFolder'
 import { MenuItem } from './menu/MenuItem'
 import { menu, list, menuHorizontal } from './Menu.module.css'
-import { Command, CommandFolder } from '../services/userSettings'
+import {
+  Command,
+  CommandFolder,
+  UserSettingsType,
+} from '../services/userSettings'
 import { toUrl } from '../services/util'
+import { useSetting } from '../hooks/useSetting'
 
 type ItemObj = {
   folder: CommandFolder
@@ -20,7 +25,7 @@ function isRoot(folder: CommandFolder): boolean {
 
 export function Menu(): JSX.Element {
   const menuRef = useRef(null)
-  const { settings } = useContext(context)
+  const { settings } = useSetting()
   const commands = settings.commands
   const folders = settings.folders
   const isHorizontal = settings.style == STYLE.HORIZONTAL
@@ -55,7 +60,7 @@ export function Menu(): JSX.Element {
       ref={menuRef}
     >
       <ul className={list}>
-        <ItemsToMenu items={items} menuRef={menuRef} />
+        <ItemsToMenu items={items} menuRef={menuRef} settings={settings} />
         <li>
           <OptionButton onlyIcon={isHorizontal} />
         </li>
@@ -67,10 +72,11 @@ export function Menu(): JSX.Element {
 function ItemsToMenu(props: {
   items: ItemObj[]
   menuRef: React.RefObject<HTMLDivElement>
+  settings: UserSettingsType
 }) {
   const { items, menuRef } = props
-  const { settings, selectionText } = useContext(context)
-  const isHorizontal = settings.style == STYLE.HORIZONTAL
+  const { selectionText } = useContext(context)
+  const isHorizontal = props.settings.style == STYLE.HORIZONTAL
 
   return items.map((item) => {
     if (isRoot(item.folder)) {
@@ -83,8 +89,7 @@ function ItemsToMenu(props: {
             openMode={obj.openMode}
             menuRef={menuRef}
             onlyIcon={isHorizontal}
-            fetchOptions={obj.fetchOptions}
-            variables={obj.variables}
+            command={obj}
           />
         </li>
       ))

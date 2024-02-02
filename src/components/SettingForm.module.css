@@ -120,6 +120,9 @@
   .rjsf > div:last-child {
     display: none;
   }
+  .hidden {
+    display: none;
+  }
 
   legend {
     display: block;
