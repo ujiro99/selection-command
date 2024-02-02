@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
-import { UserSettingsType, PageRule } from '../services/userSettings'
-import { Storage, STORAGE_KEY } from '../services/storage'
+import {
+  UserSettings,
+  UserSettingsType,
+  PageRule,
+} from '../services/userSettings'
 import { STYLE } from '../const'
 
 type useSettingReturn = {
@@ -20,12 +23,11 @@ export function useSetting(): useSettingReturn {
   const [settings, setSettings] = useState<UserSettingsType>(emptySettings)
 
   useEffect(() => {
-    const getSettings = async () => {
-      const data = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    ;(async () => {
+      const data = await UserSettings.get()
       setSettings(data)
-    }
-    getSettings()
-    Storage.addListener(STORAGE_KEY.USER, setSettings)
+    })()
+    UserSettings.onChanged(setSettings)
   }, [])
 
   let pageRule

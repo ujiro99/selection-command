@@ -73,4 +73,8 @@ export const UserSettings = {
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, UseSetting)
   },
+
+  onChanged: (callback: (data: UserSettingsType) => void) => {
+    Storage.addListener(STORAGE_KEY.USER, callback)
+  },
 }
