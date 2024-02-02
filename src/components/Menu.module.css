@@ -66,6 +66,8 @@
 }
 
 .itemOnlyIcon {
+  padding-right: 4px;
+
   .itemTitle {
     display: none;
   }

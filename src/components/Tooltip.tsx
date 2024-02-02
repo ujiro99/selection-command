@@ -13,12 +13,13 @@ import {
 } from './Tooltip.module.css'
 
 type PopupProps = {
-  positionElm: Element | null
+  positionRef: React.RefObject<Element>
   children: React.ReactNode
 }
 
 export function Tooltip(props: PopupProps) {
   const { settings } = useSetting()
+  const positionElm = props.positionRef?.current
   const popupPlacement = settings.popupPlacement
   let placement = 'top'
   let enterFrom = popupFrom
@@ -32,7 +33,7 @@ export function Tooltip(props: PopupProps) {
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const [visible, setVisible] = useState(false)
   const [arrowElm, setArrowElm] = useState(null)
-  const { styles, attributes } = usePopper(props.positionElm, popperElement, {
+  const { styles, attributes } = usePopper(positionElm, popperElement, {
     placement: placement,
     modifiers: [
       {
@@ -56,19 +57,19 @@ export function Tooltip(props: PopupProps) {
   }
 
   useEffect(() => {
-    if (props.positionElm == null) {
+    if (positionElm == null) {
       return
     }
-    props.positionElm.addEventListener('mouseenter', toggleVisible)
-    props.positionElm.addEventListener('mouseleave', toggleVisible)
+    positionElm.addEventListener('mouseenter', toggleVisible)
+    positionElm.addEventListener('mouseleave', toggleVisible)
     return () => {
-      if (props.positionElm == null) {
+      if (positionElm == null) {
         return
       }
-      props.positionElm.removeEventListener('mouseenter', toggleVisible)
-      props.positionElm.removeEventListener('mouseleave', toggleVisible)
+      positionElm.removeEventListener('mouseenter', toggleVisible)
+      positionElm.removeEventListener('mouseleave', toggleVisible)
     }
-  }, [props.positionElm])
+  }, [positionElm])
 
   return (
     <Popover>

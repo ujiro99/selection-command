@@ -40,7 +40,7 @@ export function OptionButton(props: Props): JSX.Element {
         <Icon name="more-vert" className={moreIcon} />
         <span className={itemTitle}>{title}</span>
       </button>
-      {onlyIcon && <Tooltip positionElm={elmRef.current}>{title}</Tooltip>}
+      {onlyIcon && <Tooltip positionRef={elmRef}>{title}</Tooltip>}
     </>
   )
 }

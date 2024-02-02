@@ -98,9 +98,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           <img className={itemImg} src={props.iconUrl} />
           <span className={itemTitle}>{props.title}</span>
         </button>
-        {onlyIcon && (
-          <Tooltip positionElm={elmRef.current}>{props.title}</Tooltip>
-        )}
+        {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}
       </>
     )
   }
@@ -133,9 +131,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           )}
           <span className={itemTitle}>{props.title}</span>
         </button>
-        {onlyIcon && (
-          <Tooltip positionElm={elmRef.current}>{props.title}</Tooltip>
-        )}
+        {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}
       </>
     )
   }
@@ -153,9 +149,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     >
       <img className={itemImg} src={props.iconUrl} />
       <span className={itemTitle}>{props.title}</span>
-      {onlyIcon && (
-        <Tooltip positionElm={elmRef.current}>{props.title}</Tooltip>
-      )}
+      {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}
     </a>
   )
 }
