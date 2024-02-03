@@ -2,10 +2,12 @@ import UseSetting from './defaultUserSettings.json'
 
 export enum STORAGE_KEY {
   USER = 0,
+  BG,
 }
 
 const DEFAULTS = {
   [STORAGE_KEY.USER]: UseSetting,
+  [STORAGE_KEY.BG]: Object,
 }
 
 type onChangedCallback = (newVal: any, oldVal: any) => void

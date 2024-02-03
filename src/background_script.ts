@@ -3,9 +3,33 @@ import { isDebug } from './const'
 import { Ipc, BgCommand, SidePanelCommand, IpcCallback } from './services/ipc'
 import { escape } from './services/util'
 import { UserSettings, CommandVariable } from './services/userSettings'
+import { Storage, STORAGE_KEY } from './services/storage'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
+
+type LastWindow = {
+  id: number
+  commandId: number
+}
+
+type BgVariables = {
+  lastWindow: LastWindow | null
+  windowIdHistory: number[]
+  sidePanelTabId: number
+}
+type BgVarKey = keyof BgVariables
+
+const bgVar = {
+  get: async <T>(key: BgVarKey): Promise<T> => {
+    const obj = await Storage.get<BgVariables>(STORAGE_KEY.BG)
+    return obj[key] as T
+  },
+  set: async (key: BgVarKey, value: any) => {
+    const obj = await Storage.get<BgVariables>(STORAGE_KEY.BG)
+    return await Storage.set(STORAGE_KEY.BG, { ...obj, [key]: value })
+  },
+}
 
 type Sender = chrome.runtime.MessageSender
 
@@ -43,11 +67,9 @@ function bindVariables(
   return str
 }
 
-let sidePanelTabId: number
-
 const commandFuncs = {
   [BgCommand.openSidePanel]: (param: unknown, sender: Sender): boolean => {
-    console.log('openSidePanel', sender?.tab?.id)
+    console.info('open sidePanel', sender?.tab?.id)
     const tabId = sender?.tab?.id
     const { url } = param as { url: string }
     if (tabId != null) {
@@ -61,7 +83,7 @@ const commandFuncs = {
   [BgCommand.enableSidePanel]: (param: unknown, sender: Sender): boolean => {
     const tabId = sender?.tab?.id
     if (tabId != null) {
-      sidePanelTabId = tabId
+      bgVar.set('sidePanelTabId', tabId)
       chrome.sidePanel.setOptions({
         tabId,
         path: 'sidepanel.html',
@@ -84,10 +106,10 @@ const commandFuncs = {
         incognito: current.incognito,
       })
       if (window.id) {
-        lastWindow = {
+        bgVar.set('lastWindow', {
           id: window.id,
           commandId: param.commandId,
-        }
+        })
       }
       // console.log('window create', lastWindowId)
     }
@@ -133,23 +155,6 @@ const commandFuncs = {
 Object.keys(BgCommand).forEach((key) => {
   const command = BgCommand[key as keyof typeof BgCommand]
   Ipc.addListener(command, commandFuncs[key])
-})
-
-type LastWindow = {
-  id: number
-  commandId: number
-}
-
-let lastWindow: LastWindow | null = null
-let windowIdHistory = [] as number[]
-
-chrome.windows.onFocusChanged.addListener((windowId: number) => {
-  windowIdHistory.push(windowId)
-  const beforeWindowId = windowIdHistory[windowIdHistory.length - 2]
-  if (beforeWindowId && beforeWindowId == lastWindow?.id) {
-    chrome.windows.remove(lastWindow?.id)
-    windowIdHistory = windowIdHistory.filter((id) => id != lastWindow?.id)
-  }
 })
 
 const openSidePanel = async (tabId: number, url: string) => {
@@ -211,13 +216,29 @@ chrome.action.onClicked.addListener((tab) => {
   })
 })
 
-chrome.windows.onBoundsChanged.addListener((window) => {
-  if (lastWindow && lastWindow.id === window.id) {
-    updateWindowSize(lastWindow.commandId, window.width, window.height)
+chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
+  let windowIdHistory = (await bgVar.get<number[]>('windowIdHistory')) ?? []
+  windowIdHistory.push(windowId)
+  const beforeWindowId = windowIdHistory[windowIdHistory.length - 2]
+  let lastWindow = await bgVar.get<LastWindow>('lastWindow')
+  if (beforeWindowId && beforeWindowId == lastWindow?.id) {
+    chrome.windows.remove(lastWindow?.id)
+    windowIdHistory = windowIdHistory.filter((id) => id != lastWindow?.id)
   }
+  bgVar.set('windowIdHistory', windowIdHistory)
+})
+
+chrome.windows.onBoundsChanged.addListener((window) => {
+  bgVar.get<LastWindow>('lastWindow').then((lastWindow) => {
+    if (lastWindow && lastWindow.id === window.id) {
+      updateWindowSize(lastWindow.commandId, window.width, window.height)
+    }
+  })
 })
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  let sidePanelTabId = await bgVar.get('sidePanelTabId')
+  // console.debug('onActivated', tabId, sidePanelTabId)
   if (tabId !== sidePanelTabId) {
     // Disables the side panel on all other sites
     await chrome.sidePanel.setOptions({
