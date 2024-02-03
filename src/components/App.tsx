@@ -22,7 +22,7 @@ export function App() {
         setSelectionText('')
         setRect(undefined)
       } else {
-        setSelectionText(s.toString())
+        setSelectionText(s.toString().trim())
         setRect(s.getRangeAt(0).getBoundingClientRect())
       }
     }
