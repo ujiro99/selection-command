@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { IconButtonProps, FieldProps, RegistryFieldsType } from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
 import Form, { IChangeEvent } from '@rjsf/core'
-import classNames from 'classnames'
+import classnames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
 import { UserSettingsType, FolderOption } from '../services/userSettings'
@@ -93,6 +93,7 @@ export function SettingFrom() {
   const fields: RegistryFieldsType = {
     '#/commands/iconUrl': IconUrlField,
     '#/commands/fetchOptions': FetchOptionField,
+    '#/commands/openMode': OpenModeField,
     '#/commands/parentFolder': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
@@ -181,7 +182,7 @@ function RemoveButton(props: IconButtonProps) {
   return (
     <button
       {...btnProps}
-      className={classNames(css.buttonItems, css.buttonItemsDanger)}
+      className={classnames(css.buttonItems, css.buttonItemsDanger)}
     >
       <Icon name="delete" />
     </button>
@@ -204,6 +205,36 @@ const IconUrlField = function (props: FieldProps) {
   )
 }
 
+const OpenModeField = (props: FieldProps) => {
+  const { formData, schema } = props
+  const options = schema.enum
+
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    props.onChange(event.target.value)
+  }
+
+  return (
+    <label className={classnames(css.selectContainer, 'form-control')}>
+      <select
+        id={props.idSchema.$id}
+        className={css.select}
+        value={formData}
+        required={props.required}
+        onChange={onChange}
+      >
+        <option key="" value="">
+          -- none --
+        </option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
 const FolderField = (props: FieldProps) => {
   const { formData, schema, registry } = props
   const folderOptions = schema.enum as FolderOption[]
@@ -219,11 +250,11 @@ const FolderField = (props: FieldProps) => {
   )
 
   return (
-    <label className={css.folder + ' form-control'}>
+    <label className={classnames(css.selectContainer, 'form-control')}>
       {folder && <img className={css.iconUrlPreview} src={folder.iconUrl} />}
       <select
         id={props.idSchema.$id}
-        className={css.folderInput}
+        className={css.select}
         value={formData?.id}
         required={props.required}
         onChange={onChange}

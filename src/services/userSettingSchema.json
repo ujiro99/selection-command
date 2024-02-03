@@ -76,6 +76,7 @@
           "type": "string"
         },
         "openMode": {
+          "$id": "#/commands/openMode",
           "type": "string",
           "enum": ["popup", "tab", "api", "sidePanel"],
           "default": "popup"
