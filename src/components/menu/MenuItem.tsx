@@ -43,8 +43,6 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   const { selectionText } = useContext(context)
 
   function handleClick() {
-    console.debug('handleClick', props.openMode)
-
     if (props.openMode === OPEN_MODE.POPUP) {
       if (props.menuRef.current) {
         const rect = props.menuRef.current.getBoundingClientRect()

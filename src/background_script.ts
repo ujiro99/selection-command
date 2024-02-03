@@ -43,6 +43,8 @@ function bindVariables(
   return str
 }
 
+let sidePanelTabId: number
+
 const commandFuncs = {
   [BgCommand.openSidePanel]: (param: unknown, sender: Sender): boolean => {
     console.log('openSidePanel', sender?.tab?.id)
@@ -51,6 +53,19 @@ const commandFuncs = {
     if (tabId != null) {
       openSidePanel(tabId, url).then(() => {
         return true
+      })
+    }
+    return false
+  },
+
+  [BgCommand.enableSidePanel]: (param: unknown, sender: Sender): boolean => {
+    const tabId = sender?.tab?.id
+    if (tabId != null) {
+      sidePanelTabId = tabId
+      chrome.sidePanel.setOptions({
+        tabId,
+        path: 'sidepanel.html',
+        enabled: true,
       })
     }
     return false
@@ -137,14 +152,8 @@ chrome.windows.onFocusChanged.addListener((windowId: number) => {
   }
 })
 
-// top level await is available in ES modules loaded from script tags
 const openSidePanel = async (tabId: number, url: string) => {
   await chrome.sidePanel.open({ tabId })
-  await chrome.sidePanel.setOptions({
-    tabId,
-    path: 'sidepanel.html',
-    enabled: true,
-  })
   await updateRules(tabId)
   Ipc.addListener(SidePanelCommand.onLoad, () => {
     Ipc.send(SidePanelCommand.setUrl, { url })
@@ -205,5 +214,15 @@ chrome.action.onClicked.addListener((tab) => {
 chrome.windows.onBoundsChanged.addListener((window) => {
   if (lastWindow && lastWindow.id === window.id) {
     updateWindowSize(lastWindow.commandId, window.width, window.height)
+  }
+})
+
+chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  if (tabId !== sidePanelTabId) {
+    // Disables the side panel on all other sites
+    await chrome.sidePanel.setOptions({
+      tabId,
+      enabled: false,
+    })
   }
 })

@@ -5,6 +5,7 @@ import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './Menu'
 import { POPUP_ENABLED } from '../const'
 import { useSetting } from '../hooks/useSetting'
+import { Ipc, BgCommand } from '../services/ipc'
 
 type PopupProps = {
   positionElm: Element | null
@@ -39,6 +40,10 @@ export function Popup(props: PopupProps) {
   if (pageRule != null) {
     visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
     console.debug('visible', visible, pageRule.popupEnabled)
+  }
+
+  if (visible) {
+    Ipc.send(BgCommand.enableSidePanel)
   }
 
   return (
