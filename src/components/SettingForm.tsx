@@ -80,6 +80,7 @@ export function SettingFrom() {
         acc.enum.push({
           id: cur.id,
           name: cur.title,
+          iconUrl: cur.iconUrl,
         })
         return acc
       },
@@ -103,6 +104,7 @@ export function SettingFrom() {
       items: {
         'ui:classNames': 'commandItem',
         popupOption: { 'ui:widget': 'hidden' },
+        openMode: { 'ui:title': 'Open Mode' },
         variables: {
           'ui:classNames': 'variables',
           items: {
@@ -203,7 +205,7 @@ const IconUrlField = function (props: FieldProps) {
 }
 
 const FolderField = (props: FieldProps) => {
-  const { formData, schema } = props
+  const { formData, schema, registry } = props
   const folderOptions = schema.enum as FolderOption[]
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -212,8 +214,13 @@ const FolderField = (props: FieldProps) => {
     props.onChange(folder)
   }
 
+  const folder = registry.rootSchema.definitions.folderOptions.enum.find(
+    (e) => e.id === formData?.id,
+  )
+
   return (
     <label className={css.folder + ' form-control'}>
+      {folder && <img className={css.iconUrlPreview} src={folder.iconUrl} />}
       <select
         id={props.idSchema.$id}
         className={css.folderInput}

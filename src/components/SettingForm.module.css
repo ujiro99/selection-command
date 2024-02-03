@@ -220,44 +220,50 @@
 }
 
 .iconUrl {
-  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .iconUrlInput {
-  width: calc(100% - 1.5em);
+  flex: 1;
   background: inherit;
   border: inherit;
   outline: inherit;
   font-family: inherit;
-  padding: 0 0 0 1.5em;
+  padding: 0 0 0 0.5em;
 }
 
 .iconUrlPreview {
   width: 1.2em;
   height: 1.2em;
-  position: absolute;
-  left: 0.7em;
-  top: 8px;
+}
+
+.iconUrl .iconUrlPreview {
+  margin-bottom: -3px;
 }
 
 .folder {
   padding: 0px 12px !important;
+  display: flex;
+  align-items: center;
 }
 
 .folderInput {
-  width: 100%;
+  flex: 1;
   height: 30px;
   background: transparent;
   border: none;
   outline: none;
   cursor: pointer;
+  color: var(--font-color);
 
   option {
     font-size: 1.1em;
   }
 }
 
-.fetchOption {
+.iconUrlPreview + .folderInput {
+  padding-left: 0.3em;
 }
 
 .fetchOptionInput {
