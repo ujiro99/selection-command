@@ -85,6 +85,12 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     } else if (props.openMode === OPEN_MODE.SIDE_PANEL) {
       Ipc.send(BgCommand.openSidePanel, {
         url: props.url,
+      }).then(() => {
+        const func = () => {
+          Ipc.send(BgCommand.disableSidePanel)
+          window.removeEventListener('click', func)
+        }
+        window.addEventListener('click', func)
       })
     }
   }

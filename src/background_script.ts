@@ -68,31 +68,6 @@ function bindVariables(
 }
 
 const commandFuncs = {
-  [BgCommand.openSidePanel]: (param: unknown, sender: Sender): boolean => {
-    console.info('open sidePanel', sender?.tab?.id)
-    const tabId = sender?.tab?.id
-    const { url } = param as { url: string }
-    if (tabId != null) {
-      openSidePanel(tabId, url).then(() => {
-        return true
-      })
-    }
-    return false
-  },
-
-  [BgCommand.enableSidePanel]: (param: unknown, sender: Sender): boolean => {
-    const tabId = sender?.tab?.id
-    if (tabId != null) {
-      bgVar.set('sidePanelTabId', tabId)
-      chrome.sidePanel.setOptions({
-        tabId,
-        path: 'sidepanel.html',
-        enabled: true,
-      })
-    }
-    return false
-  },
-
   [BgCommand.openPopup]: (param: openPopupProps): boolean => {
     const open = async () => {
       const current = await chrome.windows.getCurrent()
@@ -115,6 +90,50 @@ const commandFuncs = {
     }
     open()
     return false
+  },
+
+  [BgCommand.enableSidePanel]: (param: unknown, sender: Sender): boolean => {
+    const tabId = sender?.tab?.id
+    if (tabId != null) {
+      console.debug('enable sidePanel', tabId)
+      bgVar.set('sidePanelTabId', tabId)
+      chrome.sidePanel.setOptions({
+        tabId,
+        path: 'sidepanel.html',
+        enabled: true,
+      })
+    }
+    return false
+  },
+
+  [BgCommand.disableSidePanel]: (param: unknown, sender: Sender): boolean => {
+    const tabId = sender?.tab?.id
+    if (tabId != null) {
+      console.debug('disable sidePanel', tabId)
+      bgVar.set('sidePanelTabId', null)
+      chrome.sidePanel.setOptions({
+        tabId,
+        enabled: false,
+      })
+    }
+    return false
+  },
+
+  [BgCommand.openSidePanel]: (
+    param: unknown,
+    sender: Sender,
+    response,
+  ): boolean => {
+    console.debug('open sidePanel', sender?.tab?.id)
+    const tabId = sender?.tab?.id
+    const { url } = param as { url: string }
+    if (tabId != null) {
+      openSidePanel(tabId, url).then((ret) => {
+        console.log('ret openSidePanel', ret)
+        response && response(ret)
+      })
+    }
+    return true
   },
 
   [BgCommand.openOption]: (param: unknown, sender: Sender): boolean => {
@@ -160,9 +179,13 @@ Object.keys(BgCommand).forEach((key) => {
 const openSidePanel = async (tabId: number, url: string) => {
   await chrome.sidePanel.open({ tabId })
   await updateRules(tabId)
-  Ipc.addListener(SidePanelCommand.onLoad, () => {
-    Ipc.send(SidePanelCommand.setUrl, { url })
-    return false
+  return new Promise((resolve) => {
+    Ipc.addListener(SidePanelCommand.onLoad, () => {
+      Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
+        resolve(ret)
+      })
+      return true
+    })
   })
 }
 
@@ -241,6 +264,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   // console.debug('onActivated', tabId, sidePanelTabId)
   if (tabId !== sidePanelTabId) {
     // Disables the side panel on all other sites
+    console.debug('disable sidePanel', tabId)
     await chrome.sidePanel.setOptions({
       tabId,
       enabled: false,

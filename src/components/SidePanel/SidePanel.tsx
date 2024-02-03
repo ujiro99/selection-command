@@ -7,11 +7,19 @@ export function SidePanel() {
   const [url, setUrl] = useState('')
 
   useEffect(() => {
-    Ipc.addListener(SidePanelCommand.setUrl, (param: unknown) => {
-      const { url } = param
-      setUrl(url)
-      return false
-    })
+    Ipc.addListener(
+      SidePanelCommand.setUrl,
+      (
+        param: unknown,
+        _: chrome.runtime.MessageSender,
+        response?: (response?: any) => void,
+      ) => {
+        const { url } = param
+        setUrl(url)
+        response && response(url)
+        return false
+      },
+    )
     Ipc.send(SidePanelCommand.onLoad)
   }, [])
 

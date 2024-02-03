@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
 import { popup, popupContianer } from './Popup.module.css'
@@ -39,12 +39,11 @@ export function Popup(props: PopupProps) {
   let visible = props.selectionText.length > 0 && props.positionElm != null
   if (pageRule != null) {
     visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
-    console.debug('visible', visible, pageRule.popupEnabled)
   }
 
-  if (visible) {
-    Ipc.send(BgCommand.enableSidePanel)
-  }
+  useEffect(() => {
+    visible && Ipc.send(BgCommand.enableSidePanel)
+  }, [visible])
 
   return (
     <Popover className={popupContianer}>
