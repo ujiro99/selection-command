@@ -76,8 +76,8 @@
 
   .control-label {
     flex: 1;
-    font-size: 1rem;
-    line-height: 2;
+    font-size: 1.1em;
+    line-height: 2.2;
   }
 
   .form-control {
@@ -269,6 +269,9 @@
 
 .iconUrlPreview + .select {
   padding-left: 0.3em;
+}
+
+.fetchOption {
 }
 
 .fetchOptionInput {

@@ -10,5 +10,83 @@
   },
   "labelOption": {
     "message": "オプション"
+  },
+  "labelCancel": {
+    "message": "キャンセル"
+  },
+  "Option_Reset": {
+    "message": "リセット"
+  },
+  "Option_Reset_description": {
+    "message": "全ての設定をデフォルトにリセットしてもよろしいですか？\nこの操作は元に戻すことができません。\n※ 事前に<b>「エクスポート」</b>することをお勧めします。"
+  },
+  "Option_Import_description": {
+    "message": "インポートする設定ファイル(<pre>*.json</pre>)を選択してください。"
+  },
+  "Option_Export": {
+    "message": "エクスポート"
+  },
+  "Option_Import": {
+    "message": "インポート"
+  },
+  "Option_Add": {
+    "message": " 追加"
+  },
+  "Option_popupPlacement": {
+    "message": "メニュー表示位置"
+  },
+  "Option_style": {
+    "message": "メニュースタイル"
+  },
+  "Option_commands": {
+    "message": "コマンド"
+  },
+  "Option_title": {
+    "message": "タイトル"
+  },
+  "Option_searchUrl": {
+    "message": "検索URL"
+  },
+  "Option_iconUrl": {
+    "message": "アイコンURL"
+  },
+  "Option_openMode": {
+    "message": "Open Mode"
+  },
+  "Option_openMode_popup": {
+    "message": "Popup"
+  },
+  "Option_openMode_tab": {
+    "message": "Tab"
+  },
+  "Option_openMode_api": {
+    "message": "API"
+  },
+  "Option_openMode_sidePanel": {
+    "message": "Side Panel"
+  },
+  "Option_parentFolder": {
+    "message": "親フォルダ"
+  },
+  "Option_fetchOptions": {
+    "message": "Fetchオプション"
+  },
+  "Option_variables": {
+    "message": "Fetch変数"
+  },
+  "Option_folders": {
+    "message": "フォルダ"
+  },
+  "Option_onlyIcon": {
+    "message": "アイコンのみ表示"
+  },
+  "Option_pageRules": {
+    "message": "ページルール"
+  },
+  "Option_urlPattern": {
+    "message": "URLパターン"
+  },
+  "Option_popupEnabled": {
+    "message": "ポップアップ有効化"
   }
 }

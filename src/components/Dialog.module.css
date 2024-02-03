@@ -38,7 +38,16 @@
 }
 
 .description {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  white-space: pre;
+
+  pre {
+    display: inline;
+    background: #eee;
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 0.9em;
+  }
 }
 
 .buttonContainer {
@@ -55,7 +64,7 @@
 
 .dialog .button,
 .dialog .buttonCancel {
-  padding: 3px 8px 7px;
+  padding: 5px 8px 6px;
 }
 
 .dialog .button {

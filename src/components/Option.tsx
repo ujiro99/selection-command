@@ -5,9 +5,10 @@ import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
 import { UserSettings, UserSettingsType } from '../services/userSettings'
 import { sleep, toDataURL, toUrl } from '../services/util'
-import * as i18n from '../services/i18n'
+import { t } from '../services/i18n'
 import { APP_ID } from '../const'
 import { Dialog } from './Dialog'
+import messages from '../../dist/_locales/en/messages.json'
 
 import './App.css'
 import css from './Option.module.css'
@@ -41,6 +42,16 @@ const fetchIconUrl = async (url: string) => {
     return `${origin}${iconUrl}`
   }
   return iconUrl
+}
+
+const getTranslation = () => {
+  let obj = {} as { [key: string]: string }
+  Object.keys(messages).forEach((key) => {
+    if (key.startsWith('Option_')) {
+      obj[key] = t(key)
+    }
+  })
+  return obj
 }
 
 function getTimestamp() {
@@ -200,8 +211,12 @@ export function Option() {
   }
 
   const onLoadIfame = async () => {
-    const data = await Storage.get(STORAGE_KEY.USER)
-    sendMessage('start', data)
+    const settings = await Storage.get(STORAGE_KEY.USER)
+    const translation = getTranslation()
+    sendMessage('start', {
+      settings,
+      translation,
+    })
   }
 
   return (
@@ -213,19 +228,19 @@ export function Option() {
         unmountOnExit
       >
         <LoadingIcon>
-          <span>{i18n.t('saving')}</span>
+          <span>{t('saving')}</span>
         </LoadingIcon>
       </CSSTransition>
       <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
       <div className={css.menu}>
         <button onClick={handleReset} className={css.button}>
-          Reset
+          {t('Option_Reset')}
         </button>
         <button onClick={handleExport} className={css.button}>
-          Export
+          {t('Option_Export')}
         </button>
         <button onClick={() => setImportDialog(true)} className={css.button}>
-          Import
+          {t('Option_Import')}
         </button>
       </div>
       <Dialog
@@ -233,23 +248,22 @@ export function Option() {
         onClose={handleResetClose}
         title={'Reset settings?'}
         description={() => (
-          <span>
-            Is it okay to reset all settings to default?
-            <br />
-            This operation cannot be undone. <br />※ We recommend{' '}
-            <b>"Export"</b> beforehand.
-          </span>
+          <span
+            dangerouslySetInnerHTML={{ __html: t('Option_Reset_Description') }}
+          />
         )}
-        okText={'Reset'}
+        okText={t('Option_Reset')}
       />
       <Dialog
         open={importDialog}
         onClose={handleImportClose}
         title={'Import settings'}
         description={() => (
-          <span>Please select the settings file(*.json) to import.</span>
+          <span
+            dangerouslySetInnerHTML={{ __html: t('Option_Import_Description') }}
+          />
         )}
-        okText={'Import'}
+        okText={t('Option_Import')}
       >
         <input
           type="file"

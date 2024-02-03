@@ -16,10 +16,19 @@ type folderOptionsType = {
   enum: FolderOption[]
 }
 
+type Translation = {
+  [key: string]: string
+}
+
 export function SettingFrom() {
   const [parent, setParent] = useState<MessageEventSource>()
   const [origin, setOrigin] = useState('')
+  const [trans, setTrans] = useState<Translation>({})
   const [settingData, setSettingData] = useState<UserSettingsType>()
+
+  const t = (key: string) => {
+    return trans[`Option_${key}`]
+  }
 
   useEffect(() => {
     const func = (event: MessageEvent) => {
@@ -27,10 +36,12 @@ export function SettingFrom() {
       const value = event.data.value
       console.debug('recv message', command, value)
       if (command === 'start') {
+        const { settings, translation } = value
         if (event.source != null) {
           setParent(event.source)
           setOrigin(event.origin)
-          setSettingData(value)
+          setSettingData(settings)
+          setTrans(translation)
         }
       } else if (command === 'changed') {
         setSettingData(value)
@@ -101,13 +112,34 @@ export function SettingFrom() {
   }
 
   const uiSchema = {
+    popupPlacement: {
+      'ui:title': t('popupPlacement'),
+    },
+    style: {
+      'ui:title': t('style'),
+    },
     commands: {
+      'ui:title': t('commands'),
       items: {
         'ui:classNames': 'commandItem',
         popupOption: { 'ui:widget': 'hidden' },
-        openMode: { 'ui:title': 'Open Mode' },
+        title: { 'ui:title': t('title') },
+        searchUrl: { 'ui:title': t('searchUrl') },
+        iconUrl: { 'ui:title': t('iconUrl') },
+        openMode: {
+          'ui:title': t('openMode'),
+          enum: {
+            popup: { 'ui:title': t('openMode_popup') },
+            tab: { 'ui:title': t('openMode_tab') },
+            api: { 'ui:title': t('openMode_api') },
+            sidePanel: { 'ui:title': t('openMode_sidePanel') },
+          },
+        },
+        parentFolder: { 'ui:title': t('parentFolder') },
+        fetchOptions: { 'ui:title': t('fetchOptions') },
         variables: {
           'ui:classNames': 'variables',
+          'ui:title': t('variables'),
           items: {
             'ui:classNames': 'variableItem',
           },
@@ -115,15 +147,26 @@ export function SettingFrom() {
       },
     },
     folders: {
+      'ui:title': t('folders'),
       items: {
         id: { 'ui:widget': 'hidden' },
         'ui:classNames': 'folderItem',
+        title: { 'ui:title': t('title') },
+        iconUrl: { 'ui:title': t('iconUrl') },
+        onlyIcon: { 'ui:title': t('onlyIcon') },
       },
     },
     pageRules: {
+      'ui:title': t('pageRules'),
       items: {
         'ui:classNames': 'pageRuleItem',
+        urlPattern: { 'ui:title': t('urlPattern') },
+        popupEnabled: { 'ui:title': t('popupEnabled') },
+        popupPlacement: { 'ui:title': t('popupPlacement') },
       },
+    },
+    AddButton: {
+      'ui:title': t('Add'),
     },
   }
 
@@ -206,8 +249,13 @@ const IconUrlField = function (props: FieldProps) {
 }
 
 const OpenModeField = (props: FieldProps) => {
-  const { formData, schema } = props
-  const options = schema.enum
+  const { formData, schema, uiSchema } = props
+  const options = schema.enum.map((e: string) => ({
+    name: uiSchema ? uiSchema.enum[e]['ui:title'] : e,
+    value: e as string,
+  }))
+
+  console.log('options', options)
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.onChange(event.target.value)
@@ -226,8 +274,8 @@ const OpenModeField = (props: FieldProps) => {
           -- none --
         </option>
         {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.value} value={option.value}>
+            {option.name}
           </option>
         ))}
       </select>
@@ -287,9 +335,13 @@ const FetchOptionField = (props: FieldProps) => {
 }
 
 const OnlyIconField = function (props: FieldProps) {
+  let title = 'Only Icon'
+  if (props.uiSchema) {
+    title = props.uiSchema['ui:title'] ?? title
+  }
   return (
     <>
-      <label className="control-label">{props.schema.name}</label>
+      <label className="control-label">{title}</label>
       <label className={'form-control'}>
         <input
           id={props.idSchema.$id}

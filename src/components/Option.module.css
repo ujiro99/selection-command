@@ -30,7 +30,8 @@
 
 .button {
   composes: button from 'Common.module.css';
-  padding: 6px 8px 9px;
+  padding: 6px 8px 6px;
+  line-height: 1.2;
   border-radius: 6px;
   font-family: var(--font-family);
 }

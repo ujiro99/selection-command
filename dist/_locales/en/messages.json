@@ -10,5 +10,83 @@
   },
   "labelOption": {
     "message": "Option"
+  },
+  "labelCancel": {
+    "message": "Cancel"
+  },
+  "Option_Reset": {
+    "message": "Reset"
+  },
+  "Option_Reset_description": {
+    "message": "Is it okay to reset all settings to default?\nThis operation cannot be undone.\n※ We recommend <b>\"Export\"</b> beforehand."
+  },
+  "Option_Import_description": {
+    "message": "Please select the settings file(<pre>*.json</pre>) to import."
+  },
+  "Option_Export": {
+    "message": "Export"
+  },
+  "Option_Import": {
+    "message": "Import"
+  },
+  "Option_Add": {
+    "message": "Add"
+  },
+  "Option_popupPlacement": {
+    "message": "Menu Display Position"
+  },
+  "Option_style": {
+    "message": "Menu Style "
+  },
+  "Option_commands": {
+    "message": "Commands"
+  },
+  "Option_title": {
+    "message": "Title"
+  },
+  "Option_searchUrl": {
+    "message": "Search URL"
+  },
+  "Option_iconUrl": {
+    "message": "Icon URL"
+  },
+  "Option_openMode": {
+    "message": "Open Mode"
+  },
+  "Option_openMode_popup": {
+    "message": "Popup"
+  },
+  "Option_openMode_tab": {
+    "message": "Tab"
+  },
+  "Option_openMode_api": {
+    "message": "API"
+  },
+  "Option_openMode_sidePanel": {
+    "message": "Side Panel"
+  },
+  "Option_parentFolder": {
+    "message": "Parent Folder"
+  },
+  "Option_fetchOptions": {
+    "message": "Fetch Options"
+  },
+  "Option_variables": {
+    "message": "Fetch Variables"
+  },
+  "Option_folders": {
+    "message": "Folders"
+  },
+  "Option_onlyIcon": {
+    "message": "Display icon only"
+  },
+  "Option_pageRules": {
+    "message": "Page Rules"
+  },
+  "Option_urlPattern": {
+    "message": "URL Pattern"
+  },
+  "Option_popupEnabled": {
+    "message": "Popup Enabled"
   }
 }

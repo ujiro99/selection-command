@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { Dialog as HDialog, Transition } from '@headlessui/react'
+import { t } from '../services/i18n'
 
 import css from './Dialog.module.css'
 
@@ -39,7 +40,7 @@ export function Dialog(props: Props) {
               className={css.buttonCancel}
               onClick={() => props.onClose(false)}
             >
-              Cancel
+              {t('labelCancel')}
             </button>
           </div>
         </HDialog.Panel>
