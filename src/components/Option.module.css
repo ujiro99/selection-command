@@ -6,10 +6,21 @@
   --font-color: rgb(31 41 55);
 }
 
+.titleHeader {
+  margin-top: 45px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.version {
+  font-size: 1rem;
+  line-height: 24px;
+}
+
 .title {
   font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   font-size: 2.2rem;
-  margin-top: 30px;
+  margin: 0;
 }
 
 .option {

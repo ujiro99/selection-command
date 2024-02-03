@@ -6,7 +6,7 @@ import { Storage, STORAGE_KEY } from '../services/storage'
 import { UserSettings, UserSettingsType } from '../services/userSettings'
 import { sleep, toDataURL, toUrl } from '../services/util'
 import { t } from '../services/i18n'
-import { APP_ID } from '../const'
+import { APP_ID, VERSION } from '../const'
 import { Dialog } from './Dialog'
 import messages from '../../dist/_locales/en/messages.json'
 
@@ -231,7 +231,10 @@ export function Option() {
           <span>{t('saving')}</span>
         </LoadingIcon>
       </CSSTransition>
-      <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
+      <header className={css.titleHeader}>
+        <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
+        <span className={css.version}>Version: {VERSION}</span>
+      </header>
       <div className={css.menu}>
         <button onClick={handleReset} className={css.button}>
           {t('Option_Reset')}
