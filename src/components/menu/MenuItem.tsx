@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext } from 'react'
 import classNames from 'classnames'
 import { context } from '../App'
-import { Ipc, IpcCommand } from '../../services/ipc'
+import { Ipc, BgCommand } from '../../services/ipc'
 import { Tooltip } from '../Tooltip'
 import {
   button,
@@ -43,11 +43,13 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   const { selectionText } = useContext(context)
 
   function handleClick() {
+    console.debug('handleClick', props.openMode)
+
     if (props.openMode === OPEN_MODE.POPUP) {
       if (props.menuRef.current) {
         const rect = props.menuRef.current.getBoundingClientRect()
         console.debug('open popup', rect)
-        Ipc.send(IpcCommand.openPopup, {
+        Ipc.send(BgCommand.openPopup, {
           commandId: props.command.id,
           url: props.url,
           top: Math.floor(window.screenTop + rect.top),
@@ -61,7 +63,8 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         return
       }
       setSendState(SendState.SENDING)
-      Ipc.send(IpcCommand.execApi, {
+
+      Ipc.send(BgCommand.execApi, {
         url: props.url,
         pageUrl: window.location.href,
         pageTitle: document.title,
@@ -81,6 +84,10 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         .then(() => {
           setSendState(SendState.NONE)
         })
+    } else if (props.openMode === OPEN_MODE.SIDE_PANEL) {
+      Ipc.send(BgCommand.openSidePanel, {
+        url: props.url,
+      })
     }
   }
 
@@ -129,6 +136,25 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           {sendState === SendState.FAIL && (
             <Icon className={itemImg + ' ' + apiIconError} name="error" />
           )}
+          <span className={itemTitle}>{props.title}</span>
+        </button>
+        {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}
+      </>
+    )
+  }
+
+  if (props.openMode === OPEN_MODE.SIDE_PANEL) {
+    return (
+      <>
+        <button
+          className={classNames(item, button, {
+            [itemOnlyIcon]: onlyIcon,
+            [itemHorizontal]: onlyIcon,
+          })}
+          ref={elmRef}
+          onClick={handleClick}
+        >
+          <img className={itemImg} src={props.iconUrl} />
           <span className={itemTitle}>{props.title}</span>
         </button>
         {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}

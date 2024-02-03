@@ -10,7 +10,7 @@ import {
   itemTitle,
   itemOnlyIcon,
 } from '../Menu.module.css'
-import { Ipc, IpcCommand } from '../../services/ipc'
+import { Ipc, BgCommand } from '../../services/ipc'
 import { t } from '../../services/i18n'
 import { Tooltip } from '../Tooltip'
 
@@ -24,7 +24,7 @@ export function OptionButton(props: Props): JSX.Element {
   const title = t('labelOption')
 
   const openOption = () => {
-    Ipc.send(IpcCommand.openOption)
+    Ipc.send(BgCommand.openOption)
   }
 
   return (

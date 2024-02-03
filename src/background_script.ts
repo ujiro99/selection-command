@@ -1,6 +1,6 @@
 import * as mv3 from 'mv3-hot-reload'
 import { isDebug } from './const'
-import { Ipc, IpcCommand, IpcCallback } from './services/ipc'
+import { Ipc, BgCommand, SidePanelCommand, IpcCallback } from './services/ipc'
 import { escape } from './services/util'
 import { UserSettings, CommandVariable } from './services/userSettings'
 
@@ -44,17 +44,19 @@ function bindVariables(
 }
 
 const commandFuncs = {
-  [IpcCommand.openSidePanel]: (param: unknown, sender: Sender): boolean => {
+  [BgCommand.openSidePanel]: (param: unknown, sender: Sender): boolean => {
+    console.log('openSidePanel', sender?.tab?.id)
     const tabId = sender?.tab?.id
+    const { url } = param as { url: string }
     if (tabId != null) {
-      openSidePanel(tabId).then(() => {
+      openSidePanel(tabId, url).then(() => {
         return true
       })
     }
     return false
   },
 
-  [IpcCommand.openPopup]: (param: openPopupProps): boolean => {
+  [BgCommand.openPopup]: (param: openPopupProps): boolean => {
     const open = async () => {
       const current = await chrome.windows.getCurrent()
       const window = await chrome.windows.create({
@@ -78,14 +80,14 @@ const commandFuncs = {
     return false
   },
 
-  [IpcCommand.openOption]: (param: unknown, sender: Sender): boolean => {
+  [BgCommand.openOption]: (param: unknown, sender: Sender): boolean => {
     chrome.tabs.create({
       url: 'options_page.html',
     })
     return false
   },
 
-  [IpcCommand.execApi]: (
+  [BgCommand.execApi]: (
     param: execApiProps,
     sender: Sender,
     response: (res: unknown) => void,
@@ -113,8 +115,8 @@ const commandFuncs = {
   },
 } as { [key: string]: IpcCallback }
 
-Object.keys(IpcCommand).forEach((key) => {
-  const command = IpcCommand[key as keyof typeof IpcCommand]
+Object.keys(BgCommand).forEach((key) => {
+  const command = BgCommand[key as keyof typeof BgCommand]
   Ipc.addListener(command, commandFuncs[key])
 })
 
@@ -136,12 +138,45 @@ chrome.windows.onFocusChanged.addListener((windowId: number) => {
 })
 
 // top level await is available in ES modules loaded from script tags
-const openSidePanel = async (tabId: number) => {
+const openSidePanel = async (tabId: number, url: string) => {
   await chrome.sidePanel.open({ tabId })
   await chrome.sidePanel.setOptions({
     tabId,
     path: 'sidepanel.html',
     enabled: true,
+  })
+  await updateRules(tabId)
+  Ipc.addListener(SidePanelCommand.onLoad, () => {
+    Ipc.send(SidePanelCommand.setUrl, { url })
+    return false
+  })
+}
+
+const updateRules = async (tabId: number) => {
+  let rules = await chrome.declarativeNetRequest.getSessionRules()
+  const removeIds = rules.map((r) => r.id)
+  console.debug('sessionRules', rules)
+  const newRules = [
+    {
+      id: tabId,
+      action: {
+        type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+        responseHeaders: [
+          {
+            header: 'X-Frame-Options',
+            operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+          },
+        ],
+      },
+      condition: {
+        resourceTypes: [chrome.declarativeNetRequest.ResourceType.SUB_FRAME],
+        tabIds: [chrome.tabs.TAB_ID_NONE],
+      },
+    },
+  ]
+  await chrome.declarativeNetRequest.updateSessionRules({
+    addRules: newRules,
+    removeRuleIds: removeIds,
   })
 }
 

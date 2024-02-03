@@ -1,9 +1,16 @@
-export enum IpcCommand {
+export enum BgCommand {
   openPopup = 'openPopup',
   openSidePanel = 'openSidePanel',
   openOption = 'openOption',
   execApi = 'execApi',
 }
+
+export enum SidePanelCommand {
+  onLoad = 'onLoad',
+  setUrl = 'setUrl',
+}
+
+type IpcCommand = BgCommand | SidePanelCommand
 
 type Request = {
   command: IpcCommand

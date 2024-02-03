@@ -21,7 +21,11 @@
     "pages": ["sandbox.html"]
   },
   "action": {},
-  "permissions": ["storage", "tabs"],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "permissions": ["storage", "tabs", "sidePanel", "declarativeNetRequest"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "web_accessible_resources": [
     {
       "matches": ["http://*/*", "https://*/*"],

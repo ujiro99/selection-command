@@ -77,7 +77,7 @@
         },
         "openMode": {
           "type": "string",
-          "enum": ["popup", "tab", "api"],
+          "enum": ["popup", "tab", "api", "sidePanel"],
           "default": "popup"
         },
         "parentFolder": {
