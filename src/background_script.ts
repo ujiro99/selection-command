@@ -17,7 +17,6 @@ type BgVariables = {
   lastWindow: LastWindow | null
   windowIdHistory: number[]
   sidePanelTabId: number
-  sidePanelOpened: boolean
 }
 type BgVarKey = keyof BgVariables
 
@@ -97,7 +96,6 @@ const commandFuncs = {
     const tabId = sender?.tab?.id
     if (tabId != null) {
       console.debug('enable sidePanel', tabId)
-      bgVar.set('sidePanelTabId', tabId)
       chrome.sidePanel.setOptions({
         tabId,
         path: 'sidepanel.html',
@@ -112,7 +110,6 @@ const commandFuncs = {
     if (tabId != null) {
       console.debug('disable sidePanel', tabId)
       bgVar.set('sidePanelTabId', null)
-      bgVar.set('sidePanelOpened', false)
       chrome.sidePanel.setOptions({
         tabId,
         enabled: false,
@@ -181,19 +178,33 @@ Object.keys(BgCommand).forEach((key) => {
 const openSidePanel = async (tabId: number, url: string) => {
   await chrome.sidePanel.open({ tabId })
   await updateRules(tabId)
-  const sidePanelOpened = await bgVar.get('sidePanelOpened')
+  const sidePanelTabId = await bgVar.get<number>('sidePanelTabId')
   return new Promise((resolve) => {
-    if (sidePanelOpened) {
+    if (sidePanelTabId === tabId) {
+      // console.warn(1)
+      // If SidePanel was already opened.
       Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
         resolve(ret)
       })
     } else {
+      // console.warn(2)
+      // Close the last opened SidePanel .
+      if (sidePanelTabId != null) {
+        console.debug('disable sidePanel', sidePanelTabId)
+        chrome.sidePanel.setOptions({
+          tabId: sidePanelTabId,
+          enabled: false,
+        })
+      }
+      // Open the new SidePanel.
       Ipc.addListener(SidePanelCommand.onLoad, () => {
+        // console.warn(3)
         Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
           resolve(ret)
+          bgVar.set('sidePanelTabId', tabId)
         })
-        bgVar.set('sidePanelOpened', true)
-        return true
+        // return sync
+        return false
       })
     }
   })
@@ -250,6 +261,10 @@ chrome.action.onClicked.addListener((tab) => {
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
+  // Force close the menu
+  Ipc.sendAllTab(BgCommand.closeMenu)
+
+  // Close popup window when focus changed
   let windowIdHistory = (await bgVar.get<number[]>('windowIdHistory')) ?? []
   windowIdHistory.push(windowId)
   const beforeWindowId = windowIdHistory[windowIdHistory.length - 2]
@@ -270,6 +285,9 @@ chrome.windows.onBoundsChanged.addListener((window) => {
 })
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+  // Force close the menu
+  Ipc.sendAllTab(BgCommand.closeMenu)
+
   let sidePanelTabId = await bgVar.get('sidePanelTabId')
   // console.debug('onActivated', tabId, sidePanelTabId)
   if (tabId !== sidePanelTabId) {

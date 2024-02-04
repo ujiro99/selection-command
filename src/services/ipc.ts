@@ -1,5 +1,6 @@
 export enum BgCommand {
   openPopup = 'openPopup',
+  closeMenu = 'closeMenu',
   enableSidePanel = 'enableSidePanel',
   disableSidePanel = 'disableSidePanel',
   openSidePanel = 'openSidePanel',
@@ -28,6 +29,13 @@ export type IpcCallback = (
 export const Ipc = {
   async send(command: IpcCommand, param?: unknown) {
     return await chrome.runtime.sendMessage({ command, param })
+  },
+
+  async sendAllTab(command: IpcCommand, param?: unknown) {
+    const tabs = await chrome.tabs.query({ url: ['http://*/*', 'https://*/*'] })
+    return tabs.map(async (tab) => {
+      return tab.id && chrome.tabs.sendMessage(tab.id, { command, param })
+    })
   },
 
   addListener(command: IpcCommand, callback: IpcCallback) {

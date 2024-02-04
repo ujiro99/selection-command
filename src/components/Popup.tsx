@@ -14,6 +14,7 @@ type PopupProps = {
 
 export function Popup(props: PopupProps) {
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
+  const [forceHide, setForceHide] = useState<boolean>(false)
   const { settings, pageRule } = useSetting()
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
@@ -40,6 +41,18 @@ export function Popup(props: PopupProps) {
   if (pageRule != null) {
     visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
   }
+  visible = visible && !forceHide
+
+  useEffect(() => {
+    Ipc.addListener(BgCommand.closeMenu, () => {
+      setForceHide(true)
+      return false
+    })
+  }, [])
+
+  useEffect(() => {
+    setForceHide(false)
+  }, [props.selectionText])
 
   useEffect(() => {
     visible && Ipc.send(BgCommand.enableSidePanel)
