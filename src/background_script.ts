@@ -107,14 +107,16 @@ const commandFuncs = {
 
   [BgCommand.disableSidePanel]: (param: unknown, sender: Sender): boolean => {
     const tabId = sender?.tab?.id
-    if (tabId != null) {
-      console.debug('disable sidePanel', tabId)
-      bgVar.set('sidePanelTabId', null)
-      chrome.sidePanel.setOptions({
-        tabId,
-        enabled: false,
-      })
-    }
+    bgVar.get('sidePanelTabId').then((sidePanelTabId) => {
+      if (tabId && tabId === sidePanelTabId) {
+        console.debug('disable sidePanel', tabId)
+        bgVar.set('sidePanelTabId', null)
+        chrome.sidePanel.setOptions({
+          tabId,
+          enabled: false,
+        })
+      }
+    })
     return false
   },
 
@@ -181,13 +183,11 @@ const openSidePanel = async (tabId: number, url: string) => {
   const sidePanelTabId = await bgVar.get<number>('sidePanelTabId')
   return new Promise((resolve) => {
     if (sidePanelTabId === tabId) {
-      // console.warn(1)
       // If SidePanel was already opened.
       Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
         resolve(ret)
       })
     } else {
-      // console.warn(2)
       // Close the last opened SidePanel .
       if (sidePanelTabId != null) {
         console.debug('disable sidePanel', sidePanelTabId)
@@ -198,7 +198,6 @@ const openSidePanel = async (tabId: number, url: string) => {
       }
       // Open the new SidePanel.
       Ipc.addListener(SidePanelCommand.onLoad, () => {
-        // console.warn(3)
         Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
           resolve(ret)
           bgVar.set('sidePanelTabId', tabId)

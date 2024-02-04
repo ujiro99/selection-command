@@ -15,6 +15,7 @@ export function SidePanel() {
         response?: (response?: any) => void,
       ) => {
         const { url } = param
+        console.debug('setUrl', url)
         setUrl(url)
         response && response(url)
         return false
