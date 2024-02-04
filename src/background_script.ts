@@ -17,6 +17,7 @@ type BgVariables = {
   lastWindow: LastWindow | null
   windowIdHistory: number[]
   sidePanelTabId: number
+  sidePanelOpened: boolean
 }
 type BgVarKey = keyof BgVariables
 
@@ -111,6 +112,7 @@ const commandFuncs = {
     if (tabId != null) {
       console.debug('disable sidePanel', tabId)
       bgVar.set('sidePanelTabId', null)
+      bgVar.set('sidePanelOpened', false)
       chrome.sidePanel.setOptions({
         tabId,
         enabled: false,
@@ -124,12 +126,12 @@ const commandFuncs = {
     sender: Sender,
     response,
   ): boolean => {
-    console.debug('open sidePanel', sender?.tab?.id)
+    console.debug('open sidePanel', param)
     const tabId = sender?.tab?.id
     const { url } = param as { url: string }
     if (tabId != null) {
       openSidePanel(tabId, url).then((ret) => {
-        console.log('ret openSidePanel', ret)
+        console.debug('ret openSidePanel', ret)
         response && response(ret)
       })
     }
@@ -179,13 +181,21 @@ Object.keys(BgCommand).forEach((key) => {
 const openSidePanel = async (tabId: number, url: string) => {
   await chrome.sidePanel.open({ tabId })
   await updateRules(tabId)
+  const sidePanelOpened = await bgVar.get('sidePanelOpened')
   return new Promise((resolve) => {
-    Ipc.addListener(SidePanelCommand.onLoad, () => {
+    if (sidePanelOpened) {
       Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
         resolve(ret)
       })
-      return true
-    })
+    } else {
+      Ipc.addListener(SidePanelCommand.onLoad, () => {
+        Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
+          resolve(ret)
+        })
+        bgVar.set('sidePanelOpened', true)
+        return true
+      })
+    }
   })
 }
 

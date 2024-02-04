@@ -42,7 +42,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   const onlyIcon = props.onlyIcon
   const { selectionText } = useContext(context)
 
-  function handleClick() {
+  function handleClick(e: React.MouseEvent) {
     if (props.openMode === OPEN_MODE.POPUP) {
       if (props.menuRef.current) {
         const rect = props.menuRef.current.getBoundingClientRect()
@@ -86,13 +86,16 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       Ipc.send(BgCommand.openSidePanel, {
         url: props.url,
       }).then(() => {
-        const func = () => {
-          Ipc.send(BgCommand.disableSidePanel)
-          window.removeEventListener('click', func)
-        }
-        window.addEventListener('click', func)
+        window.addEventListener(
+          'click',
+          () => Ipc.send(BgCommand.disableSidePanel),
+          {
+            once: true,
+          },
+        )
       })
     }
+    e.stopPropagation()
   }
 
   if (props.openMode === OPEN_MODE.POPUP) {
