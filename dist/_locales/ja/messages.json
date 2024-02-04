@@ -41,6 +41,9 @@
   "Option_commands": {
     "message": "コマンド"
   },
+  "Option_commands_desc": {
+    "message": "URL中の`%s`を、選択したテキストに置き換えて実行します。"
+  },
   "Option_title": {
     "message": "タイトル"
   },
@@ -77,11 +80,17 @@
   "Option_folders": {
     "message": "フォルダ"
   },
+  "Option_folders_desc": {
+    "message": "コマンドをフォルダへ分類することができます。"
+  },
   "Option_onlyIcon": {
     "message": "アイコンのみ表示"
   },
   "Option_pageRules": {
     "message": "ページルール"
+  },
+  "Option_pageRules_desc": {
+    "message": "サイト毎の設定値です。"
   },
   "Option_urlPattern": {
     "message": "URLパターン"

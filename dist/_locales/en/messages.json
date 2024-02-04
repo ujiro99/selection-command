@@ -41,6 +41,9 @@
   "Option_commands": {
     "message": "Commands"
   },
+  "Option_commands_desc": {
+    "message": "Replace `%s` in the URL with the selected text and execute."
+  },
   "Option_title": {
     "message": "Title"
   },
@@ -77,11 +80,17 @@
   "Option_folders": {
     "message": "Folders"
   },
+  "Option_folders_desc": {
+    "message": "Commands can be classified into folders."
+  },
   "Option_onlyIcon": {
     "message": "Display icon only"
   },
   "Option_pageRules": {
     "message": "Page Rules"
+  },
+  "Option_pageRules_desc": {
+    "message": "Site-specific settings."
   },
   "Option_urlPattern": {
     "message": "URL Pattern"

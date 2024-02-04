@@ -120,11 +120,14 @@ export function SettingFrom() {
     },
     commands: {
       'ui:title': t('commands'),
+      'ui:description': t('searchUrl') + ': ' + t('commands_desc'),
       items: {
         'ui:classNames': 'commandItem',
         popupOption: { 'ui:widget': 'hidden' },
         title: { 'ui:title': t('title') },
-        searchUrl: { 'ui:title': t('searchUrl') },
+        searchUrl: {
+          'ui:title': t('searchUrl'),
+        },
         iconUrl: { 'ui:title': t('iconUrl') },
         openMode: {
           'ui:title': t('openMode'),
@@ -148,6 +151,7 @@ export function SettingFrom() {
     },
     folders: {
       'ui:title': t('folders'),
+      'ui:description': t('folders_desc'),
       items: {
         id: { 'ui:widget': 'hidden' },
         'ui:classNames': 'folderItem',
@@ -158,6 +162,7 @@ export function SettingFrom() {
     },
     pageRules: {
       'ui:title': t('pageRules'),
+      'ui:description': t('pageRules_desc'),
       items: {
         'ui:classNames': 'pageRuleItem',
         urlPattern: { 'ui:title': t('urlPattern') },
