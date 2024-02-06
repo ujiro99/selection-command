@@ -37,7 +37,11 @@ const fetchIconUrl = async (url: string) => {
     return getFaviconUrl(url)
   }
   const iconUrl = icons[icons.length - 1].getAttribute('href')
-  if (iconUrl?.startsWith('/')) {
+  // console.debug('iconUrl', iconUrl)
+  if (iconUrl?.startsWith('//')) {
+    const protocol = new URL(urlStr).protocol
+    return `${protocol}${iconUrl}`
+  } else if (iconUrl?.startsWith('/')) {
     const origin = new URL(urlStr).origin
     return `${origin}${iconUrl}`
   }
