@@ -106,7 +106,7 @@ export function SettingFrom() {
     '#/style': SelectField,
     '#/commands/iconUrl': IconUrlField,
     '#/commands/fetchOptions': FetchOptionField,
-    '#/commands/openMode': OpenModeField,
+    '#/commands/openMode': SelectField,
     '#/commands/parentFolder': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
@@ -266,44 +266,16 @@ const IconUrlField = function (props: FieldProps) {
 
 const SelectField = (props: FieldProps) => {
   const { formData, schema, uiSchema } = props
-  const options = schema.enum.map((e: string) =>
-    uiSchema && uiSchema.enum && uiSchema.enum[e]
-      ? uiSchema.enum[e]['ui:title']
-      : e,
-  )
+  const options = schema.enum.map((e: string) => {
+    let name =
+      uiSchema && uiSchema.enum && uiSchema.enum[e]
+        ? uiSchema.enum[e]['ui:title']
+        : e
+    return { name, value: e }
+  })
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.onChange(event.target.value)
   }
-  return (
-    <label className={classnames(css.selectContainer, 'form-control')}>
-      <select
-        id={props.idSchema.$id}
-        className={css.select}
-        value={formData}
-        required={props.required}
-        onChange={onChange}
-      >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </label>
-  )
-}
-
-const OpenModeField = (props: FieldProps) => {
-  const { formData, schema, uiSchema } = props
-  const options = schema.enum.map((e: string) => ({
-    name: uiSchema ? uiSchema.enum[e]['ui:title'] : e,
-    value: e as string,
-  }))
-
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    props.onChange(event.target.value)
-  }
-
   return (
     <label className={classnames(css.selectContainer, 'form-control')}>
       <select

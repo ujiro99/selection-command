@@ -32,8 +32,7 @@
 }
 
 .item {
-  padding: 4px;
-  padding-right: 6px;
+  padding: 4px 8px 4px 6px;
   display: flex;
   align-items: center;
   font-size: 12px;

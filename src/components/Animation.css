@@ -66,3 +66,20 @@
   transform: translateY(-5px);
   opacity: 0;
 }
+
+.pop-right-from {
+  transform: translateX(-10px);
+  opacity: 0;
+}
+.pop-right-to {
+  transform: translateX(-5px);
+  opacity: 1;
+}
+.pop-left-from {
+  transform: translateX(10px);
+  opacity: 0;
+}
+.pop-left-to {
+  transform: translateX(5px);
+  opacity: 1;
+}

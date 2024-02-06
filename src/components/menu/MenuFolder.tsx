@@ -18,6 +18,54 @@ type MenuFolderProps = {
   menuRef: React.RefObject<Element>
 }
 
+type Placement = 'top' | 'bottom' | 'left' | 'right'
+
+const calcSafeAreaHorizontal = (
+  popperElm: Element,
+  folderElm: Element,
+  dataPlacement: Placement,
+) => {
+  const pRect = popperElm.getBoundingClientRect()
+  const mRect = folderElm.getBoundingClientRect()
+  const left = pRect.left - mRect.left
+  const width = pRect.width
+  const height = 12
+  let top = -height
+  if (dataPlacement === 'bottom') {
+    top = mRect.height
+  }
+  return { top, left, width, height }
+}
+
+const calcSafeAreaVertical = (
+  popperElm: Element,
+  folderElm: Element,
+  dataPlacement: Placement,
+) => {
+  const pRect = popperElm.getBoundingClientRect()
+  const mRect = folderElm.getBoundingClientRect()
+  const width = 12
+  const height = pRect.height
+  const top = 0
+  let left = pRect.left - mRect.left - 5
+  if (dataPlacement === 'left') {
+    left = -10
+  }
+  return { top, left, width, height }
+}
+
+const calcSafeArea = (
+  popperElm: Element,
+  folderElm: Element,
+  dataPlacement: Placement,
+) => {
+  if (dataPlacement === 'top' || dataPlacement === 'bottom') {
+    return calcSafeAreaHorizontal(popperElm, folderElm, dataPlacement)
+  } else {
+    return calcSafeAreaVertical(popperElm, folderElm, dataPlacement)
+  }
+}
+
 export function MenuFolder(props: MenuFolderProps): JSX.Element {
   const [popperElm, setPopperElm] = useState(null)
   const [visible, setVisible] = useState(false)
@@ -30,7 +78,6 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
   if (!isHorizontal) {
     placement = 'right-start'
   }
-  const isBottom = placement.startsWith('bottom')
   const onlyIcon = props.folder.onlyIcon && isHorizontal
 
   const { styles, attributes } = usePopper(folderRef.current, popperElm, {
@@ -44,6 +91,18 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
       },
     ],
   })
+
+  let dataPlacement = 'left' as Placement
+  if (attributes.popper) {
+    let attr = attributes.popper['data-popper-placement']
+    if (attr.startsWith('top')) {
+      dataPlacement = 'top'
+    } else if (attr.startsWith('bottom')) {
+      dataPlacement = 'bottom'
+    } else if (attr.startsWith('right')) {
+      dataPlacement = 'right'
+    }
+  }
 
   const toggleVisible = () => {
     setVisible((visible) => !visible)
@@ -66,21 +125,13 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
     ;(async () => {
       await sleep(50)
       if (visible && popperElm != null && folderRef.current != null) {
-        const pRect = popperElm.getBoundingClientRect()
-        const mRect = folderRef.current.getBoundingClientRect()
-        const left = pRect.left - mRect.left
-        const width = pRect.width
-        const height = 12
-        let top = -height
-        if (isBottom) {
-          top = mRect.height
-        }
+        const area = calcSafeArea(popperElm, folderRef.current, dataPlacement)
         setSafeAreaStyles({
           position: 'absolute',
-          top: top + 'px',
-          left: left + 'px',
-          width: width + 'px',
-          height: height + 'px',
+          top: area.top + 'px',
+          left: area.left + 'px',
+          width: area.width + 'px',
+          height: area.height + 'px',
         })
       }
     })()
@@ -88,7 +139,13 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
 
   let enterFrom = 'pop-up-from'
   let enterTo = 'pop-up-to'
-  if (isBottom) {
+  if (dataPlacement === 'right') {
+    enterFrom = 'pop-right-from'
+    enterTo = 'pop-right-to'
+  } else if (dataPlacement === 'left') {
+    enterFrom = 'pop-left-from'
+    enterTo = 'pop-left-to'
+  } else if (dataPlacement === 'bottom') {
     enterFrom = 'pop-down-from'
     enterTo = 'pop-down-to'
   }
