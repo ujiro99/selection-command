@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, useRef } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
-import classNames from 'classnames'
+import classnames from 'classnames'
 import { MenuItem } from './MenuItem'
 import { context } from '../App'
 import { toUrl } from '../../services/util'
@@ -31,6 +31,7 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
     placement = 'right-start'
   }
   const isBottom = placement.startsWith('bottom')
+  const onlyIcon = props.folder.onlyIcon && isHorizontal
 
   const { styles, attributes } = usePopper(folderRef.current, popperElm, {
     placement: placement,
@@ -94,22 +95,18 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
 
   return (
     <Popover
-      className={classNames(css.folder, {
+      className={classnames(css.folder, {
         [css.folderHorizontal]: isHorizontal,
       })}
       ref={folderRef}
     >
-      {props.folder.onlyIcon ? (
-        <img
-          className={css.folderIcon + ' ' + css.folderIconOnly}
-          src={props.folder.iconUrl}
-        />
-      ) : (
-        <>
-          <img className={css.folderIcon} src={props.folder.iconUrl} />
-          <span>{props.folder.title}</span>
-        </>
-      )}
+      <img
+        className={classnames(css.folderIcon, {
+          [css.folderIconOnly]: onlyIcon,
+        })}
+        src={props.folder.iconUrl}
+      />
+      {!onlyIcon && <span>{props.folder.title}</span>}
       {visible && <div className="cover" style={safeAreaStyles} />}
       <Transition
         show={visible}
@@ -154,7 +151,7 @@ function InnerMenu({
 }: InnerMenuProps): JSX.Element {
   return (
     <div
-      className={classNames(menu, {
+      className={classnames(menu, {
         [menuHorizontal]: isHorizontal,
       })}
     >

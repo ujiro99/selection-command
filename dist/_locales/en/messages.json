@@ -36,7 +36,13 @@
     "message": "Menu Display Position"
   },
   "Option_style": {
-    "message": "Menu Style "
+    "message": "Menu Style"
+  },
+  "Option_style_vertical": {
+    "message": "Vertical"
+  },
+  "Option_style_horizontal": {
+    "message": "Horizontal"
   },
   "Option_commands": {
     "message": "Commands"
@@ -85,6 +91,9 @@
   },
   "Option_onlyIcon": {
     "message": "Display icon only"
+  },
+  "Option_onlyIcon_desc": {
+    "message": "* Effective only when horizontal"
   },
   "Option_pageRules": {
     "message": "Page Rules"

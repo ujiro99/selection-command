@@ -4,9 +4,11 @@
   "required": ["commands", "popupPlacement"],
   "properties": {
     "popupPlacement": {
+      "$id": "#/popupPlacement",
       "$ref": "#/definitions/popupPlacement"
     },
     "style": {
+      "$id": "#/style",
       "type": "string",
       "default": "vertical",
       "enum": ["vertical", "horizontal"]

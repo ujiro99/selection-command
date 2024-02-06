@@ -102,6 +102,8 @@ export function SettingFrom() {
   }
 
   const fields: RegistryFieldsType = {
+    '#/popupPlacement': SelectField,
+    '#/style': SelectField,
     '#/commands/iconUrl': IconUrlField,
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': OpenModeField,
@@ -113,10 +115,16 @@ export function SettingFrom() {
 
   const uiSchema = {
     popupPlacement: {
+      'ui:classNames': 'popupPlacement',
       'ui:title': t('popupPlacement'),
     },
     style: {
+      'ui:classNames': 'style',
       'ui:title': t('style'),
+      enum: {
+        vertical: { 'ui:title': t('style_vertical') },
+        horizontal: { 'ui:title': t('style_horizontal') },
+      },
     },
     commands: {
       'ui:title': t('commands'),
@@ -157,7 +165,10 @@ export function SettingFrom() {
         'ui:classNames': 'folderItem',
         title: { 'ui:title': t('title') },
         iconUrl: { 'ui:title': t('iconUrl') },
-        onlyIcon: { 'ui:title': t('onlyIcon') },
+        onlyIcon: {
+          'ui:title': t('onlyIcon'),
+          'ui:description': t('onlyIcon_desc'),
+        },
       },
     },
     pageRules: {
@@ -253,14 +264,41 @@ const IconUrlField = function (props: FieldProps) {
   )
 }
 
+const SelectField = (props: FieldProps) => {
+  const { formData, schema, uiSchema } = props
+  const options = schema.enum.map((e: string) =>
+    uiSchema && uiSchema.enum && uiSchema.enum[e]
+      ? uiSchema.enum[e]['ui:title']
+      : e,
+  )
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    props.onChange(event.target.value)
+  }
+  return (
+    <label className={classnames(css.selectContainer, 'form-control')}>
+      <select
+        id={props.idSchema.$id}
+        className={css.select}
+        value={formData}
+        required={props.required}
+        onChange={onChange}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
 const OpenModeField = (props: FieldProps) => {
   const { formData, schema, uiSchema } = props
   const options = schema.enum.map((e: string) => ({
     name: uiSchema ? uiSchema.enum[e]['ui:title'] : e,
     value: e as string,
   }))
-
-  console.log('options', options)
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.onChange(event.target.value)
@@ -275,9 +313,6 @@ const OpenModeField = (props: FieldProps) => {
         required={props.required}
         onChange={onChange}
       >
-        <option key="" value="">
-          -- none --
-        </option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.name}
@@ -340,14 +375,20 @@ const FetchOptionField = (props: FieldProps) => {
 }
 
 const OnlyIconField = function (props: FieldProps) {
+  console.log('OnlyIconField', props)
   let title = 'Only Icon'
+  let desc = ''
   if (props.uiSchema) {
     title = props.uiSchema['ui:title'] ?? title
+    desc = props.uiSchema['ui:description'] ?? desc
   }
   return (
     <>
-      <label className="control-label">{title}</label>
-      <label className={'form-control'}>
+      <label className="control-label has-description">
+        <p className="title">{title}</p>
+        <p className="desc">{desc}</p>
+      </label>
+      <label className="form-control checkbox">
         <input
           id={props.idSchema.$id}
           type="checkbox"

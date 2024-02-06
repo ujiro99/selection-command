@@ -75,9 +75,27 @@
   }
 
   .control-label {
-    flex: 1;
+    flex: 1.1;
     font-size: 1.1em;
     line-height: 2.2;
+  }
+
+  .popupPlacement .control-label,
+  .style .control-label {
+    line-height: 2.6;
+  }
+
+  .has-description {
+    .title {
+      margin: 6px 0 0 0;
+      line-height: 1.1;
+    }
+
+    .desc {
+      margin: 0;
+      font-size: 10px;
+      line-height: 1.8;
+    }
   }
 
   .form-control {
@@ -160,6 +178,14 @@
     font-size: 1.2em;
     color: var(--font-color);
     margin: 10px 0;
+  }
+
+  .checkbox {
+    display: flex;
+  }
+
+  .checkbox > input {
+    margin: 0;
   }
 }
 

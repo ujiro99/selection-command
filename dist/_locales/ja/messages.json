@@ -38,6 +38,12 @@
   "Option_style": {
     "message": "メニュースタイル"
   },
+  "Option_style_vertical": {
+    "message": "縦並び"
+  },
+  "Option_style_horizontal": {
+    "message": "横並び"
+  },
   "Option_commands": {
     "message": "コマンド"
   },
@@ -85,6 +91,9 @@
   },
   "Option_onlyIcon": {
     "message": "アイコンのみ表示"
+  },
+  "Option_onlyIcon_desc": {
+    "message": "※ 横並びのときのみ有効"
   },
   "Option_pageRules": {
     "message": "ページルール"
