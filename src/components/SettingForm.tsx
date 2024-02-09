@@ -97,7 +97,10 @@ export function SettingFrom() {
         })
         return acc
       },
-      { enumNames: [], enum: [] } as folderOptionsType,
+      {
+        enumNames: ['-- none --'],
+        enum: [{ id: '', name: '-- none --' }],
+      } as folderOptionsType,
     )
     userSettingSchema.definitions.folderOptions = folderOptions
     console.debug('settingData', settingData)
@@ -328,9 +331,6 @@ const FolderField = (props: FieldProps) => {
         required={props.required}
         onChange={onChange}
       >
-        <option key="" value="">
-          -- none --
-        </option>
         {folderOptions.map((folder) => (
           <option key={folder.id} value={folder.id}>
             {folder.name}
@@ -356,7 +356,6 @@ const FetchOptionField = (props: FieldProps) => {
 }
 
 const OnlyIconField = function (props: FieldProps) {
-  console.log('OnlyIconField', props)
   let title = 'Only Icon'
   let desc = ''
   if (props.uiSchema) {

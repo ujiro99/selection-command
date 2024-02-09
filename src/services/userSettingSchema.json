@@ -126,6 +126,13 @@
                 }
               },
               "required": ["fetchOptions", "variables"]
+            },
+            {
+              "properties": {
+                "openMode": {
+                  "enum": ["sidePanel"]
+                }
+              }
             }
           ]
         }
