@@ -92,7 +92,14 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
     ],
   })
 
-  let dataPlacement = 'left' as Placement
+  let dataPlacement = 'right' as Placement
+  if (isHorizontal) {
+    if (placement.startsWith('top')) {
+      dataPlacement = 'top'
+    } else {
+      dataPlacement = 'bottom'
+    }
+  }
   if (attributes.popper) {
     let attr = attributes.popper['data-popper-placement']
     if (attr.startsWith('top')) {
@@ -101,6 +108,8 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
       dataPlacement = 'bottom'
     } else if (attr.startsWith('right')) {
       dataPlacement = 'right'
+    } else if (attr.startsWith('left')) {
+      dataPlacement = 'left'
     }
   }
 
