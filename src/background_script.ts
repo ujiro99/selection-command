@@ -51,6 +51,11 @@ export type execApiProps = {
   variables: CommandVariable[]
 }
 
+export type openTabProps = {
+  url: string
+  active: boolean
+}
+
 function bindVariables(
   str: string,
   variables: CommandVariable[],
@@ -140,6 +145,14 @@ const commandFuncs = {
   [BgCommand.openOption]: (param: unknown, sender: Sender): boolean => {
     chrome.tabs.create({
       url: 'options_page.html',
+    })
+    return false
+  },
+
+  [BgCommand.openTab]: (param: openTabProps, sender: Sender): boolean => {
+    chrome.tabs.create({
+      url: param.url,
+      active: param.active,
     })
     return false
   },

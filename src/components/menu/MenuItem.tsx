@@ -10,8 +10,8 @@ import {
   itemTitle,
   itemOnlyIcon,
   itemHorizontal,
-  apiIcon,
   apiIconLoading,
+  apiIconSuccess,
   apiIconError,
 } from '../Menu.module.css'
 import { Icon } from '../Icon'
@@ -20,10 +20,7 @@ import { Command } from '../../services/userSettings'
 import { sleep } from '../../services/util'
 
 type MenuItemProps = {
-  title: string
   url: string
-  iconUrl: string
-  openMode: OPEN_MODE
   menuRef: React.RefObject<Element>
   onlyIcon: boolean
   command: Command
@@ -40,10 +37,16 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   const elmRef = useRef(null)
   const [sendState, setSendState] = useState<SendState>(SendState.NONE)
   const onlyIcon = props.onlyIcon
+  const { openMode, openModeSecondary, iconUrl, title } = props.command
   const { selectionText } = useContext(context)
 
   function handleClick(e: React.MouseEvent) {
-    if (props.openMode === OPEN_MODE.POPUP) {
+    let mode = openMode
+    if (e.ctrlKey && openModeSecondary) {
+      mode = openModeSecondary
+    }
+
+    if (mode === OPEN_MODE.POPUP) {
       if (props.menuRef.current) {
         const rect = props.menuRef.current.getBoundingClientRect()
         console.debug('open popup', rect)
@@ -56,7 +59,13 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           width: props.command.popupOption?.width,
         })
       }
-    } else if (props.openMode === OPEN_MODE.API) {
+    } else if (mode === OPEN_MODE.TAB) {
+      const background = e.ctrlKey && !openModeSecondary
+      Ipc.send(BgCommand.openTab, {
+        url: props.url,
+        active: !background,
+      })
+    } else if (mode === OPEN_MODE.API) {
       if (sendState !== SendState.NONE) {
         return
       }
@@ -77,12 +86,12 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
             console.error(res)
             setSendState(SendState.FAIL)
           }
-          return sleep(1000)
+          return sleep(1500)
         })
         .then(() => {
           setSendState(SendState.NONE)
         })
-    } else if (props.openMode === OPEN_MODE.SIDE_PANEL) {
+    } else if (mode === OPEN_MODE.SIDE_PANEL) {
       Ipc.send(BgCommand.openSidePanel, {
         url: props.url,
       }).then(() => {
@@ -98,91 +107,46 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     e.stopPropagation()
   }
 
-  if (props.openMode === OPEN_MODE.POPUP) {
-    return (
-      <>
-        <button
-          className={classNames(item, button, {
-            [itemOnlyIcon]: onlyIcon,
-            [itemHorizontal]: onlyIcon,
-          })}
-          ref={elmRef}
-          onClick={handleClick}
-        >
-          <img className={itemImg} src={props.iconUrl} />
-          <span className={itemTitle}>{props.title}</span>
-        </button>
-        {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}
-      </>
-    )
-  }
-
-  if (props.openMode === OPEN_MODE.API) {
-    return (
-      <>
-        <button
-          className={classNames(item, button, {
-            [itemOnlyIcon]: onlyIcon,
-            [itemHorizontal]: onlyIcon,
-          })}
-          ref={elmRef}
-          onClick={handleClick}
-        >
-          {sendState === SendState.NONE && (
-            <img className={itemImg} src={props.iconUrl} />
-          )}
-          {sendState === SendState.SENDING && (
-            <Icon
-              className={itemImg + ' ' + apiIconLoading + ' rotate'}
-              name="refresh"
-            />
-          )}
-          {sendState === SendState.SUCCESS && (
-            <Icon className={itemImg + ' ' + apiIcon} name="check" />
-          )}
-          {sendState === SendState.FAIL && (
-            <Icon className={itemImg + ' ' + apiIconError} name="error" />
-          )}
-          <span className={itemTitle}>{props.title}</span>
-        </button>
-        {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}
-      </>
-    )
-  }
-
-  if (props.openMode === OPEN_MODE.SIDE_PANEL) {
-    return (
-      <>
-        <button
-          className={classNames(item, button, {
-            [itemOnlyIcon]: onlyIcon,
-            [itemHorizontal]: onlyIcon,
-          })}
-          ref={elmRef}
-          onClick={handleClick}
-        >
-          <img className={itemImg} src={props.iconUrl} />
-          <span className={itemTitle}>{props.title}</span>
-        </button>
-        {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}
-      </>
-    )
-  }
-
   return (
-    <a
-      href={props.url}
-      className={classNames(item, {
-        [itemOnlyIcon]: onlyIcon,
-        [itemHorizontal]: onlyIcon,
-      })}
-      ref={elmRef}
-      target="_blank"
-      onClick={handleClick}
-    >
-      <img className={itemImg} src={props.iconUrl} />
-      <span className={itemTitle}>{props.title}</span>
-      {onlyIcon && <Tooltip positionRef={elmRef}>{props.title}</Tooltip>}
-    </a>
+    <>
+      <button
+        className={classNames(item, button, {
+          [itemOnlyIcon]: onlyIcon,
+          [itemHorizontal]: onlyIcon,
+        })}
+        ref={elmRef}
+        onClick={handleClick}
+      >
+        <ImageStatus status={sendState} iconUrl={iconUrl} />
+        <span className={itemTitle}>{title}</span>
+      </button>
+      {onlyIcon && <Tooltip positionRef={elmRef}>{title}</Tooltip>}
+    </>
+  )
+}
+
+type ImageStatusProps = {
+  status: SendState
+  iconUrl: string
+}
+
+function ImageStatus(props: ImageStatusProps): JSX.Element {
+  const { iconUrl, status } = props
+  return (
+    <>
+      {status === SendState.NONE && <img className={itemImg} src={iconUrl} />}
+      {status === SendState.SENDING && (
+        <Icon
+          className={itemImg + ' ' + apiIconLoading + ' rotate'}
+          name="refresh"
+        />
+      )}
+      {status === SendState.SUCCESS && (
+        <Icon className={itemImg + ' ' + apiIconSuccess} name="check" />
+      )}
+      {status === SendState.FAIL && (
+        <Icon className={itemImg + ' ' + apiIconError} name="error" />
+      )}
+    </>
   )
 }

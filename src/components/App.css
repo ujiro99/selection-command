@@ -13,6 +13,10 @@
   --gray-800: rgb(31 41 55);
   --gray-900: rgb(17 24 39);
 
+  --blue-300: rgb(147 197 253);
+  --blue-400: rgb(96 165 250);
+  --blue-500: rgb(59 130 246);
+
   --frameHeight: 500px;
   --baseBgColor: #ffffff;
   --baseBorderColor: var(--gray-100);

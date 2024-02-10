@@ -83,10 +83,7 @@ function ItemsToMenu(props: {
       return item.commands.map((obj, idx) => (
         <li key={`menu_${obj.title}_${idx}`}>
           <MenuItem
-            title={obj.title}
             url={toUrl(obj.searchUrl, selectionText)}
-            iconUrl={obj.iconUrl}
-            openMode={obj.openMode}
             menuRef={menuRef}
             onlyIcon={isHorizontal}
             command={obj}

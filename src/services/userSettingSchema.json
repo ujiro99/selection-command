@@ -1,7 +1,7 @@
 {
   "title": "UserSettingSchema",
   "type": "object",
-  "required": ["commands", "popupPlacement"],
+  "required": ["commands", "popupPlacement", "style"],
   "properties": {
     "popupPlacement": {
       "$id": "#/popupPlacement",
@@ -79,9 +79,13 @@
         },
         "openMode": {
           "$id": "#/commands/openMode",
-          "type": "string",
-          "enum": ["popup", "tab", "api", "sidePanel"],
+          "$ref": "#/definitions/openMode",
           "default": "popup"
+        },
+        "openModeSecondary": {
+          "$id": "#/commands/openModeSecondary",
+          "$ref": "#/definitions/openMode",
+          "default": "tab"
         },
         "parentFolder": {
           "$id": "#/commands/parentFolder",
@@ -184,6 +188,10 @@
           "name": ""
         }
       ]
+    },
+    "openMode": {
+      "type": "string",
+      "enum": ["popup", "tab", "api", "sidePanel"]
     },
     "commandVariable": {
       "type": "object",
