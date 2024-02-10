@@ -9,6 +9,7 @@ export type Command = {
   searchUrl: string
   iconUrl: string
   openMode: OPEN_MODE
+  openModeSecondary?: OPEN_MODE
   parentFolder?: FolderOption
   popupOption?: PopupOption
   fetchOptions?: string

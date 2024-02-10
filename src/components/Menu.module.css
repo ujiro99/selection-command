@@ -48,7 +48,7 @@
 }
 
 .itemHorizontal {
-  padding-right: 4px;
+  padding-left: 4px;
 }
 
 .button {
@@ -102,13 +102,13 @@
   }
 }
 
-.apiIcon,
 .apiIconLoading {
   fill: #666;
+  cursor: wait;
 }
 
-.apiIconLoading {
-  cursor: wait;
+.apiIconSuccess {
+  fill: var(--blue-500);
 }
 
 .apiIconError {

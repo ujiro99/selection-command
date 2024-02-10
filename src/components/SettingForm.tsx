@@ -3,11 +3,13 @@ import { IconButtonProps, FieldProps, RegistryFieldsType } from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
 import Form, { IChangeEvent } from '@rjsf/core'
 import classnames from 'classnames'
+import platform from 'platform'
 
 import userSettingSchema from '../services/userSettingSchema.json'
 import { UserSettingsType, FolderOption } from '../services/userSettings'
 
 import { Icon } from '../components/Icon'
+import { OPEN_MODE } from '../const'
 
 import * as css from './SettingForm.module.css'
 
@@ -95,10 +97,20 @@ export function SettingFrom() {
         })
         return acc
       },
-      { enumNames: [], enum: [] } as folderOptionsType,
+      {
+        enumNames: ['-- none --'],
+        enum: [{ id: '', name: '-- none --' }],
+      } as folderOptionsType,
     )
     userSettingSchema.definitions.folderOptions = folderOptions
-    console.log('settingData', settingData)
+    console.debug('settingData', settingData)
+  }
+
+  // SidePanel is not supported in browsers other than Chrome
+  if (platform.name !== 'Chrome') {
+    const modes = userSettingSchema.definitions.command.properties.openMode.enum
+    userSettingSchema.definitions.command.properties.openMode.enum =
+      modes.filter((e) => e != OPEN_MODE.SIDE_PANEL)
   }
 
   const fields: RegistryFieldsType = {
@@ -107,6 +119,7 @@ export function SettingFrom() {
     '#/commands/iconUrl': IconUrlField,
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': SelectField,
+    '#/commands/openModeSecondary': SelectField,
     '#/commands/parentFolder': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
@@ -139,6 +152,15 @@ export function SettingFrom() {
         iconUrl: { 'ui:title': t('iconUrl') },
         openMode: {
           'ui:title': t('openMode'),
+          enum: {
+            popup: { 'ui:title': t('openMode_popup') },
+            tab: { 'ui:title': t('openMode_tab') },
+            api: { 'ui:title': t('openMode_api') },
+            sidePanel: { 'ui:title': t('openMode_sidePanel') },
+          },
+        },
+        openModeSecondary: {
+          'ui:title': t('openModeSecondary'),
           enum: {
             popup: { 'ui:title': t('openMode_popup') },
             tab: { 'ui:title': t('openMode_tab') },
@@ -264,8 +286,14 @@ const IconUrlField = function (props: FieldProps) {
   )
 }
 
+type Option = {
+  name: string
+  value: string
+}
+
 const SelectField = (props: FieldProps) => {
-  const { formData, schema, uiSchema } = props
+  console.debug('SelectField', props)
+  const { formData, schema, uiSchema, required } = props
   const options = schema.enum.map((e: string) => {
     let name =
       uiSchema && uiSchema.enum && uiSchema.enum[e]
@@ -273,6 +301,9 @@ const SelectField = (props: FieldProps) => {
         : e
     return { name, value: e }
   })
+  if (!required) {
+    options.unshift({ name: '-- none --', value: '' })
+  }
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.onChange(event.target.value)
   }
@@ -285,7 +316,7 @@ const SelectField = (props: FieldProps) => {
         required={props.required}
         onChange={onChange}
       >
-        {options.map((option) => (
+        {options.map((option: Option) => (
           <option key={option.value} value={option.value}>
             {option.name}
           </option>
@@ -319,9 +350,6 @@ const FolderField = (props: FieldProps) => {
         required={props.required}
         onChange={onChange}
       >
-        <option key="" value="">
-          -- none --
-        </option>
         {folderOptions.map((folder) => (
           <option key={folder.id} value={folder.id}>
             {folder.name}
@@ -347,7 +375,6 @@ const FetchOptionField = (props: FieldProps) => {
 }
 
 const OnlyIconField = function (props: FieldProps) {
-  console.log('OnlyIconField', props)
   let title = 'Only Icon'
   let desc = ''
   if (props.uiSchema) {

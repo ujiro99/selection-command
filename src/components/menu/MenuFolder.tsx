@@ -92,7 +92,14 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
     ],
   })
 
-  let dataPlacement = 'left' as Placement
+  let dataPlacement = 'right' as Placement
+  if (isHorizontal) {
+    if (placement.startsWith('top')) {
+      dataPlacement = 'top'
+    } else {
+      dataPlacement = 'bottom'
+    }
+  }
   if (attributes.popper) {
     let attr = attributes.popper['data-popper-placement']
     if (attr.startsWith('top')) {
@@ -101,22 +108,23 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
       dataPlacement = 'bottom'
     } else if (attr.startsWith('right')) {
       dataPlacement = 'right'
+    } else if (attr.startsWith('left')) {
+      dataPlacement = 'left'
     }
   }
 
-  const toggleVisible = () => {
-    setVisible((visible) => !visible)
-  }
+  const show = () => setVisible(true)
+  const hide = () => setVisible(false)
 
   useEffect(() => {
     if (folderRef.current != null) {
-      folderRef.current.addEventListener('mouseenter', toggleVisible)
-      folderRef.current.addEventListener('mouseleave', toggleVisible)
+      folderRef.current.addEventListener('mouseenter', show)
+      folderRef.current.addEventListener('mouseleave', hide)
     }
     return () => {
       if (folderRef.current != null) {
-        folderRef.current.removeEventListener('mouseenter', toggleVisible)
-        folderRef.current.removeEventListener('mouseleave', toggleVisible)
+        folderRef.current.removeEventListener('mouseenter', show)
+        folderRef.current.removeEventListener('mouseleave', hide)
       }
     }
   }, [folderRef.current])
@@ -154,15 +162,11 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
     <Popover
       className={classnames(css.folder, {
         [css.folderHorizontal]: isHorizontal,
+        [css.folderIconOnly]: onlyIcon,
       })}
       ref={folderRef}
     >
-      <img
-        className={classnames(css.folderIcon, {
-          [css.folderIconOnly]: onlyIcon,
-        })}
-        src={props.folder.iconUrl}
-      />
+      <img className={classnames(css.folderIcon)} src={props.folder.iconUrl} />
       {!onlyIcon && <span>{props.folder.title}</span>}
       {visible && <div className="cover" style={safeAreaStyles} />}
       <Transition
@@ -216,10 +220,7 @@ function InnerMenu({
         {commands.map((obj) => (
           <li key={'menu_' + obj.id}>
             <MenuItem
-              title={obj.title}
               url={toUrl(obj.searchUrl, selectionText)}
-              iconUrl={obj.iconUrl}
-              openMode={obj.openMode}
               menuRef={menuRef}
               onlyIcon={isHorizontal}
               command={obj}
