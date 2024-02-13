@@ -60,7 +60,8 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         })
       }
     } else if (mode === OPEN_MODE.TAB) {
-      const background = e.ctrlKey && !openModeSecondary
+      const background =
+        e.ctrlKey && (!openModeSecondary || openMode === openModeSecondary)
       Ipc.send(BgCommand.openTab, {
         url: props.url,
         active: !background,
