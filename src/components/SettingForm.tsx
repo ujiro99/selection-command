@@ -108,9 +108,10 @@ export function SettingFrom() {
 
   // SidePanel is not supported in browsers other than Chrome
   if (platform.name !== 'Chrome') {
-    const modes = userSettingSchema.definitions.command.properties.openMode.enum
-    userSettingSchema.definitions.command.properties.openMode.enum =
-      modes.filter((e) => e != OPEN_MODE.SIDE_PANEL)
+    const modes = userSettingSchema.definitions.openMode.enum
+    userSettingSchema.definitions.openMode.enum = modes.filter(
+      (e) => e != OPEN_MODE.SIDE_PANEL,
+    )
   }
 
   const fields: RegistryFieldsType = {
