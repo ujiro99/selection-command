@@ -64,28 +64,17 @@
     "command": {
       "type": "object",
       "name": "Command",
-      "required": ["title", "searchUrl", "iconUrl", "openMode"],
+      "required": ["iconUrl", "openMode"],
       "additionalProperties": false,
       "properties": {
-        "title": {
-          "type": "string"
-        },
-        "searchUrl": {
-          "type": "string"
-        },
-        "iconUrl": {
-          "$id": "#/commands/iconUrl",
-          "type": "string"
-        },
         "openMode": {
           "$id": "#/commands/openMode",
           "$ref": "#/definitions/openMode",
           "default": "popup"
         },
-        "openModeSecondary": {
-          "$id": "#/commands/openModeSecondary",
-          "$ref": "#/definitions/openMode",
-          "default": "tab"
+        "iconUrl": {
+          "$id": "#/commands/iconUrl",
+          "type": "string"
         },
         "parentFolder": {
           "$id": "#/commands/parentFolder",
@@ -100,23 +89,68 @@
                 "openMode": {
                   "enum": ["popup"]
                 },
+                "openModeSecondary": {
+                  "$id": "#/commands/openModeSecondary_popup",
+                  "$ref": "#/definitions/openModeSecondary",
+                  "default": "tab"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "searchUrl": {
+                  "type": "string"
+                },
                 "popupOption": {
                   "$ref": "#/definitions/popupOption"
                 }
               },
-              "required": ["popupOption"]
+              "required": ["title", "searchUrl", "popupOption"]
             },
             {
               "properties": {
                 "openMode": {
                   "enum": ["tab"]
+                },
+                "openModeSecondary": {
+                  "$id": "#/commands/openModeSecondary_tab",
+                  "$ref": "#/definitions/openModeSecondary",
+                  "default": "tab"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "searchUrl": {
+                  "type": "string"
                 }
-              }
+              },
+              "required": ["title", "searchUrl"]
+            },
+            {
+              "properties": {
+                "openMode": {
+                  "enum": ["sidePanel"]
+                },
+                "openModeSecondary": {
+                  "$id": "#/commands/openModeSecondary_sidePanel",
+                  "$ref": "#/definitions/openModeSecondary",
+                  "default": "tab"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "searchUrl": {
+                  "type": "string"
+                }
+              },
+              "required": ["title", "searchUrl"]
             },
             {
               "properties": {
                 "openMode": {
                   "enum": ["api"]
+                },
+                "title": {
+                  "type": "string"
                 },
                 "fetchOptions": {
                   "$id": "#/commands/fetchOptions",
@@ -129,12 +163,12 @@
                   }
                 }
               },
-              "required": ["fetchOptions", "variables"]
+              "required": ["title", "fetchOptions", "variables"]
             },
             {
               "properties": {
                 "openMode": {
-                  "enum": ["sidePanel"]
+                  "enum": ["preview"]
                 }
               }
             }
@@ -191,7 +225,11 @@
     },
     "openMode": {
       "type": "string",
-      "enum": ["popup", "tab", "api", "sidePanel"]
+      "enum": ["popup", "tab", "sidePanel", "api", "preview"]
+    },
+    "openModeSecondary": {
+      "type": "string",
+      "enum": ["popup", "tab", "sidePanel"]
     },
     "commandVariable": {
       "type": "object",

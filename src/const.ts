@@ -6,6 +6,7 @@ export enum OPEN_MODE {
   TAB = 'tab',
   API = 'api',
   SIDE_PANEL = 'sidePanel',
+  PREVIEW = 'preview',
 }
 
 export enum POPUP_ENABLED {

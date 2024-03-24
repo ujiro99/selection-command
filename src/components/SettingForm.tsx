@@ -127,11 +127,13 @@ export function SettingFrom() {
     '#/commands/iconUrl': IconUrlField,
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': SelectField,
-    '#/commands/openModeSecondary': SelectField,
     '#/commands/parentFolder': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
     ArraySchemaField: CustomArraySchemaField,
+  }
+  for (const type of ['popup', 'tab', 'sidePanel']) {
+    fields[`#/commands/openModeSecondary_${type}`] = SelectField
   }
 
   const uiSchema = {
@@ -152,6 +154,15 @@ export function SettingFrom() {
       'ui:description': `${t('searchUrl')}: ${t('commands_desc')}`,
       items: {
         'ui:classNames': 'commandItem',
+        'ui:order': [
+          'openMode',
+          'openModeSecondary',
+          'title',
+          'searchUrl',
+          'iconUrl',
+          'parentFolder',
+          '*',
+        ],
         popupOption: { 'ui:widget': 'hidden' },
         title: { 'ui:title': t('title') },
         searchUrl: {
@@ -165,6 +176,7 @@ export function SettingFrom() {
             tab: { 'ui:title': t('openMode_tab') },
             api: { 'ui:title': t('openMode_api') },
             sidePanel: { 'ui:title': t('openMode_sidePanel') },
+            preview: { 'ui:title': t('openMode_preview') },
           },
         },
         openModeSecondary: {
@@ -172,7 +184,6 @@ export function SettingFrom() {
           enum: {
             popup: { 'ui:title': t('openMode_popup') },
             tab: { 'ui:title': t('openMode_tab') },
-            api: { 'ui:title': t('openMode_api') },
             sidePanel: { 'ui:title': t('openMode_sidePanel') },
           },
         },
