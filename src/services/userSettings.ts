@@ -1,7 +1,7 @@
-import { Placement } from '@popperjs/core'
+import type { Placement } from '@popperjs/core'
 import { Storage, STORAGE_KEY } from './storage'
 import UseSetting from './defaultUserSettings.json'
-import { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
+import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
 
 export type Command = {
   id: number
@@ -24,6 +24,7 @@ export type PopupOption = {
 export type FolderOption = {
   id: string
   name: string
+  iconUrl: string
 }
 
 export type CommandFolder = {

@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { IconButtonProps, FieldProps, RegistryFieldsType } from '@rjsf/utils'
+import React from 'react'
+import { useState, useEffect } from 'react'
+import type {
+  IconButtonProps,
+  FieldProps,
+  RegistryFieldsType,
+} from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
-import Form, { IChangeEvent } from '@rjsf/core'
+import Form from '@rjsf/core'
+import type { IChangeEvent } from '@rjsf/core'
 import classnames from 'classnames'
 import platform from 'platform'
 
 import userSettingSchema from '../services/userSettingSchema.json'
-import { UserSettingsType, FolderOption } from '../services/userSettings'
+import type { UserSettingsType, FolderOption } from '../services/userSettings'
 
 import { Icon } from '../components/Icon'
 import { OPEN_MODE } from '../const'
@@ -16,6 +22,7 @@ import * as css from './SettingForm.module.css'
 type folderOptionsType = {
   enumNames: string[]
   enum: FolderOption[]
+  iconUrl: string
 }
 
 type Translation = {
@@ -69,9 +76,9 @@ export function SettingFrom() {
 
   const onChange = (arg: IChangeEvent, id?: string) => {
     // update iconURL when searchUrl setted
-    if (id && id.endsWith('searchUrl')) {
+    if (id?.endsWith('searchUrl')) {
       const data = arg.formData as UserSettingsType
-      data.commands.forEach((command) => {
+      for (const command of data.commands) {
         if (!command.iconUrl && command.searchUrl) {
           sendMessage('fetchIconUrl', {
             searchUrl: command.searchUrl,
@@ -79,7 +86,7 @@ export function SettingFrom() {
           })
           return
         }
-      })
+      }
     }
     updateSettings(arg.formData)
   }
@@ -93,7 +100,7 @@ export function SettingFrom() {
         acc.enum.push({
           id: cur.id,
           name: cur.title,
-          iconUrl: cur.iconUrl,
+          iconUrl: cur.iconUrl ?? '',
         })
         return acc
       },
@@ -110,7 +117,7 @@ export function SettingFrom() {
   if (platform.name !== 'Chrome') {
     const modes = userSettingSchema.definitions.openMode.enum
     userSettingSchema.definitions.openMode.enum = modes.filter(
-      (e) => e != OPEN_MODE.SIDE_PANEL,
+      (e) => e !== OPEN_MODE.SIDE_PANEL,
     )
   }
 
@@ -142,7 +149,7 @@ export function SettingFrom() {
     },
     commands: {
       'ui:title': t('commands'),
-      'ui:description': t('searchUrl') + ': ' + t('commands_desc'),
+      'ui:description': `${t('searchUrl')}: ${t('commands_desc')}`,
       items: {
         'ui:classNames': 'commandItem',
         popupOption: { 'ui:widget': 'hidden' },
@@ -234,7 +241,7 @@ export function SettingFrom() {
 function AddButton(props: IconButtonProps) {
   const { icon, uiSchema, ...btnProps } = props
   return (
-    <button {...btnProps} className={css.button}>
+    <button type="button" {...btnProps} className={css.button}>
       <Icon name="plus" />
       <span>Add</span>
     </button>
@@ -244,7 +251,7 @@ function AddButton(props: IconButtonProps) {
 function MoveUpButton(props: IconButtonProps) {
   const { icon, uiSchema, ...btnProps } = props
   return (
-    <button {...btnProps} className={css.buttonItems}>
+    <button type="button" {...btnProps} className={css.buttonItems}>
       <Icon name="arrow-up" />
     </button>
   )
@@ -253,7 +260,7 @@ function MoveUpButton(props: IconButtonProps) {
 function MoveDownButton(props: IconButtonProps) {
   const { icon, uiSchema, ...btnProps } = props
   return (
-    <button {...btnProps} className={css.buttonItems}>
+    <button type="button" {...btnProps} className={css.buttonItems}>
       <Icon name="arrow-down" />
     </button>
   )
@@ -263,6 +270,7 @@ function RemoveButton(props: IconButtonProps) {
   const { icon, uiSchema, ...btnProps } = props
   return (
     <button
+      type="button"
       {...btnProps}
       className={classnames(css.buttonItems, css.buttonItemsDanger)}
     >
@@ -271,10 +279,16 @@ function RemoveButton(props: IconButtonProps) {
   )
 }
 
-const IconUrlField = function (props: FieldProps) {
+const IconUrlField = (props: FieldProps) => {
   return (
-    <label className={css.iconUrl + ' form-control'}>
-      <img className={css.iconUrlPreview} src={props.formData} />
+    <label className={`${css.iconUrl} form-control`}>
+      {props.formData && (
+        <img
+          className={css.iconUrlPreview}
+          src={props.formData}
+          alt="icon preview"
+        />
+      )}
       <input
         id={props.idSchema.$id}
         type="text"
@@ -293,13 +307,9 @@ type Option = {
 }
 
 const SelectField = (props: FieldProps) => {
-  console.debug('SelectField', props)
   const { formData, schema, uiSchema, required } = props
   const options = schema.enum.map((e: string) => {
-    let name =
-      uiSchema && uiSchema.enum && uiSchema.enum[e]
-        ? uiSchema.enum[e]['ui:title']
-        : e
+    const name = uiSchema?.enum?.[e] ? uiSchema.enum[e]['ui:title'] : e
     return { name, value: e }
   })
   if (!required) {
@@ -343,7 +353,13 @@ const FolderField = (props: FieldProps) => {
 
   return (
     <label className={classnames(css.selectContainer, 'form-control')}>
-      {folder && <img className={css.iconUrlPreview} src={folder.iconUrl} />}
+      {folder?.iconUrl && (
+        <img
+          className={css.iconUrlPreview}
+          src={folder.iconUrl}
+          alt="icon preview"
+        />
+      )}
       <select
         id={props.idSchema.$id}
         className={css.select}
@@ -363,19 +379,19 @@ const FolderField = (props: FieldProps) => {
 
 const FetchOptionField = (props: FieldProps) => {
   return (
-    <label className={css.fetchOption + ' form-control'}>
+    <label className={`${css.fetchOption} form-control`}>
       <textarea
         id={props.idSchema.$id}
         className={css.fetchOptionInput}
         value={props.formData}
         required={props.required}
         onChange={(event) => props.onChange(event.target.value)}
-      ></textarea>
+      />
     </label>
   )
 }
 
-const OnlyIconField = function (props: FieldProps) {
+const OnlyIconField = (props: FieldProps) => {
   let title = 'Only Icon'
   let desc = ''
   if (props.uiSchema) {
@@ -401,7 +417,7 @@ const OnlyIconField = function (props: FieldProps) {
   )
 }
 
-const CustomArraySchemaField = function (props: FieldProps) {
+const CustomArraySchemaField = (props: FieldProps) => {
   const { index, registry, schema } = props
   const { SchemaField } = registry.fields
   const name = schema.name ?? index
