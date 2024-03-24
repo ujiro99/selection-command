@@ -16,7 +16,7 @@ import {
 } from '../Menu.module.css'
 import { Icon } from '../Icon'
 import { OPEN_MODE } from '../../const'
-import { Command } from '../../services/userSettings'
+import type { Command } from '../../services/userSettings'
 import { sleep } from '../../services/util'
 
 type MenuItemProps = {
@@ -27,10 +27,10 @@ type MenuItemProps = {
 }
 
 enum SendState {
-  NONE,
-  SENDING,
-  SUCCESS,
-  FAIL,
+  NONE = 0,
+  SENDING = 1,
+  SUCCESS = 2,
+  FAIL = 3,
 }
 
 export function MenuItem(props: MenuItemProps): JSX.Element {
@@ -111,6 +111,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   return (
     <>
       <button
+        type="button"
         className={classNames(item, button, {
           [itemOnlyIcon]: onlyIcon,
           [itemHorizontal]: onlyIcon,
@@ -135,18 +136,20 @@ function ImageStatus(props: ImageStatusProps): JSX.Element {
   const { iconUrl, status } = props
   return (
     <>
-      {status === SendState.NONE && <img className={itemImg} src={iconUrl} />}
+      {status === SendState.NONE && (
+        <img className={itemImg} src={iconUrl} alt="Api icon" />
+      )}
       {status === SendState.SENDING && (
         <Icon
-          className={itemImg + ' ' + apiIconLoading + ' rotate'}
+          className={`${itemImg} ${apiIconLoading} rotate`}
           name="refresh"
         />
       )}
       {status === SendState.SUCCESS && (
-        <Icon className={itemImg + ' ' + apiIconSuccess} name="check" />
+        <Icon className={`${itemImg} ${apiIconSuccess}`} name="check" />
       )}
       {status === SendState.FAIL && (
-        <Icon className={itemImg + ' ' + apiIconError} name="error" />
+        <Icon className={`${itemImg} ${apiIconError}`} name="error" />
       )}
     </>
   )
