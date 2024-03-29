@@ -1,6 +1,5 @@
-import React, { useContext, useRef } from 'react'
+import React, { useRef } from 'react'
 import classNames from 'classnames'
-import { context } from './App'
 import { STYLE, ROOT_FOLDER } from '../const'
 import { OptionButton } from './menu/OptionButton'
 import { MenuFolder } from './menu/MenuFolder'
@@ -11,7 +10,6 @@ import type {
   CommandFolder,
   UserSettingsType,
 } from '../services/userSettings'
-import { toUrl } from '../services/util'
 import { useSetting } from '../hooks/useSetting'
 
 type ItemObj = {
@@ -75,16 +73,14 @@ function ItemsToMenu(props: {
   settings: UserSettingsType
 }): JSX.Element {
   const { items, menuRef } = props
-  const { selectionText } = useContext(context)
   const isHorizontal = props.settings.style === STYLE.HORIZONTAL
   return (
     <>
-      {items.map((item) => {
+      {items.map((item) =>
         isRoot(item.folder) ? (
           item.commands.map((obj, idx) => (
             <li key={`menu_${obj.title}_${idx}`}>
               <MenuItem
-                url={toUrl(obj.searchUrl, selectionText)}
                 menuRef={menuRef}
                 onlyIcon={isHorizontal}
                 command={obj}
@@ -99,8 +95,8 @@ function ItemsToMenu(props: {
               menuRef={menuRef}
             />
           </li>
-        )
-      })}
+        ),
+      )}
     </>
   )
 }

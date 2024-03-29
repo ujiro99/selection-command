@@ -74,8 +74,8 @@
   "Option_openMode_sidePanel": {
     "message": "Side Panel"
   },
-  "Option_openMode_preview": {
-    "message": "Preview"
+  "Option_openMode_linkPopup": {
+    "message": "Link Popup"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Click"

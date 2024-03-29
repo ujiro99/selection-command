@@ -6,6 +6,10 @@ export function sleep(msec: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, msec))
 }
 
+function uniq<T>(array: Array<T>): Array<T> {
+  return array.filter((elem, index, self) => self.indexOf(elem) === index)
+}
+
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   return new Promise((resolve) => {
     let img = new Image()
@@ -26,7 +30,44 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
 export function toUrl(searchUrl: string, text: string): string {
   let textEscaped = text.replaceAll(' ', '+')
   textEscaped = encodeURI(textEscaped)
-  return searchUrl.replace('%s', textEscaped)
+  return searchUrl?.replace('%s', textEscaped)
+}
+
+export function linksInSelection(): string[] {
+  const selection = document.getSelection()
+  if (!selection || selection.rangeCount === 0) {
+    return []
+  }
+  const range = selection.getRangeAt(0)
+  if (!range) {
+    return []
+  }
+  const link = linkAtContainer(range)
+  let links = linksInRange(range)
+  links = link ? [link, ...links] : links
+  return uniq(links)
+}
+
+function linkAtContainer(range: Range): string | undefined {
+  let parent = range.commonAncestorContainer as HTMLElement | null
+  while (parent) {
+    if (parent.tagName === 'A') {
+      return (parent as HTMLAnchorElement).href
+    }
+    parent = parent.parentElement
+  }
+}
+
+function linksInRange(range: Range): string[] {
+  const anchors = range.cloneContents().querySelectorAll('a')
+  if (!anchors) {
+    return []
+  }
+  const links = []
+  for (const a of anchors) {
+    links.push(a.href)
+  }
+  return links
 }
 
 export function escape(str: string) {

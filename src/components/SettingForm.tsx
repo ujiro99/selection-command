@@ -155,9 +155,9 @@ export function SettingFrom() {
       items: {
         'ui:classNames': 'commandItem',
         'ui:order': [
+          'title',
           'openMode',
           'openModeSecondary',
-          'title',
           'searchUrl',
           'iconUrl',
           'parentFolder',
@@ -176,7 +176,7 @@ export function SettingFrom() {
             tab: { 'ui:title': t('openMode_tab') },
             api: { 'ui:title': t('openMode_api') },
             sidePanel: { 'ui:title': t('openMode_sidePanel') },
-            preview: { 'ui:title': t('openMode_preview') },
+            linkPopup: { 'ui:title': t('openMode_linkPopup') },
           },
         },
         openModeSecondary: {

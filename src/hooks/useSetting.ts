@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react'
-import {
-  UserSettings,
-  UserSettingsType,
-  PageRule,
-} from '../services/userSettings'
+import { UserSettings } from '../services/userSettings'
+import type { UserSettingsType, PageRule } from '../services/userSettings'
 import { STYLE } from '../const'
 
 type useSettingReturn = {
@@ -30,7 +27,7 @@ export function useSetting(): useSettingReturn {
     UserSettings.onChanged(setSettings)
   }, [])
 
-  let pageRule
+  let pageRule: PageRule | undefined
   if (settings != null) {
     pageRule = settings.pageRules.find((rule) => {
       const re = new RegExp(rule.urlPattern)

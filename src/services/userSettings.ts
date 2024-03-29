@@ -55,14 +55,12 @@ export type UserSettingsType = {
 
 export const UserSettings = {
   get: async (): Promise<UserSettingsType> => {
-    let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    const obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
     // Assigning IDs to each command
-    obj.commands = obj.commands
-      .map((c, idx) => {
-        c.id = idx
-        return c
-      })
-      .filter((c) => c.searchUrl != null)
+    obj.commands = obj.commands.map((c, idx) => {
+      c.id = idx
+      return c
+    })
     obj.folders = obj.folders.filter((folder) => !!folder.title)
     return obj
   },

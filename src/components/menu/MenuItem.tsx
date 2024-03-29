@@ -17,10 +17,9 @@ import {
 import { Icon } from '../Icon'
 import { OPEN_MODE } from '../../const'
 import type { Command } from '../../services/userSettings'
-import { sleep } from '../../services/util'
+import { toUrl, sleep, linksInSelection } from '../../services/util'
 
 type MenuItemProps = {
-  url: string
   menuRef: React.RefObject<Element>
   onlyIcon: boolean
   command: Command
@@ -37,8 +36,33 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   const elmRef = useRef(null)
   const [sendState, setSendState] = useState<SendState>(SendState.NONE)
   const onlyIcon = props.onlyIcon
-  const { openMode, openModeSecondary, iconUrl, title } = props.command
+  const { openMode, openModeSecondary, iconUrl, title: _title } = props.command
   const { selectionText } = useContext(context)
+  let title = _title
+  let enable = true
+  let links: string[]
+
+  if (openMode === OPEN_MODE.LINK_POPUP) {
+    links = linksInSelection()
+    console.debug('links', links)
+    enable = links.length > 0
+    title = `${links.length} links`
+  }
+
+  const openPopup = (url: string) => {
+    if (props.menuRef.current) {
+      const rect = props.menuRef.current.getBoundingClientRect()
+      console.debug('open popup', rect)
+      Ipc.send(BgCommand.openPopup, {
+        commandId: props.command.id,
+        url: url,
+        top: Math.floor(window.screenTop + rect.top),
+        left: Math.floor(window.screenLeft + rect.right + 10),
+        height: props.command.popupOption?.height,
+        width: props.command.popupOption?.width,
+      })
+    }
+  }
 
   function handleClick(e: React.MouseEvent) {
     let mode = openMode
@@ -46,24 +70,15 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       mode = openModeSecondary
     }
 
+    const url = toUrl(props.command.searchUrl, selectionText)
+
     if (mode === OPEN_MODE.POPUP) {
-      if (props.menuRef.current) {
-        const rect = props.menuRef.current.getBoundingClientRect()
-        console.debug('open popup', rect)
-        Ipc.send(BgCommand.openPopup, {
-          commandId: props.command.id,
-          url: props.url,
-          top: Math.floor(window.screenTop + rect.top),
-          left: Math.floor(window.screenLeft + rect.right + 10),
-          height: props.command.popupOption?.height,
-          width: props.command.popupOption?.width,
-        })
-      }
+      openPopup(url)
     } else if (mode === OPEN_MODE.TAB) {
       const background =
         e.ctrlKey && (!openModeSecondary || openMode === openModeSecondary)
       Ipc.send(BgCommand.openTab, {
-        url: props.url,
+        url: url,
         active: !background,
       })
     } else if (mode === OPEN_MODE.API) {
@@ -73,7 +88,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       setSendState(SendState.SENDING)
 
       Ipc.send(BgCommand.execApi, {
-        url: props.url,
+        url: url,
         pageUrl: window.location.href,
         pageTitle: document.title,
         selectionText: selectionText,
@@ -94,7 +109,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         })
     } else if (mode === OPEN_MODE.SIDE_PANEL) {
       Ipc.send(BgCommand.openSidePanel, {
-        url: props.url,
+        url: url,
       }).then(() => {
         window.addEventListener(
           'click',
@@ -104,6 +119,9 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           },
         )
       })
+    } else if (mode === OPEN_MODE.LINK_POPUP) {
+      const url = links[0]
+      url && openPopup(url)
     }
     e.stopPropagation()
   }
@@ -118,6 +136,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         })}
         ref={elmRef}
         onClick={handleClick}
+        disabled={!enable}
       >
         <ImageStatus status={sendState} iconUrl={iconUrl} />
         <span className={itemTitle}>{title}</span>
