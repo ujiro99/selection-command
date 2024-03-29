@@ -15,20 +15,25 @@ type LastWindow = {
   commandId: number
 }
 
-type BgVariables = {
-  lastWindow: LastWindow | null
-  windowIdHistory: number[]
-  sidePanelTabId: number
+enum BgKey {
+  lastWindow = 'lastWindow',
+  windowIdHistory = 'windowIdHistory',
+  sidePanelTabId = 'sidePanelTabId',
 }
-type BgVarKey = keyof BgVariables
+
+type BgTypes = {
+  [BgKey.lastWindow]: LastWindow | null
+  [BgKey.windowIdHistory]: number[]
+  [BgKey.sidePanelTabId]: number
+}
 
 const bgVar = {
-  get: async <T>(key: BgVarKey): Promise<T> => {
-    const obj = await Storage.get<BgVariables>(STORAGE_KEY.BG)
+  get: async <T>(key: BgKey): Promise<T> => {
+    const obj = await Storage.get<BgTypes>(STORAGE_KEY.BG)
     return obj[key] as T
   },
-  set: async (key: BgVarKey, value: unknown) => {
-    const obj = await Storage.get<BgVariables>(STORAGE_KEY.BG)
+  set: async (key: BgKey, value: BgTypes[BgKey]) => {
+    const obj = await Storage.get<BgTypes>(STORAGE_KEY.BG)
     return await Storage.set(STORAGE_KEY.BG, { ...obj, [key]: value })
   },
 }
@@ -89,7 +94,7 @@ const commandFuncs = {
         incognito: current.incognito,
       })
       if (window.id) {
-        bgVar.set('lastWindow', {
+        bgVar.set(BgKey.lastWindow, {
           id: window.id,
           commandId: param.commandId,
         })
@@ -115,10 +120,10 @@ const commandFuncs = {
 
   [BgCommand.disableSidePanel]: (param: unknown, sender: Sender): boolean => {
     const tabId = sender?.tab?.id
-    bgVar.get('sidePanelTabId').then((sidePanelTabId) => {
+    bgVar.get(BgKey.sidePanelTabId).then((sidePanelTabId) => {
       if (tabId && tabId === sidePanelTabId) {
         console.debug('disable sidePanel', tabId)
-        bgVar.set('sidePanelTabId', null)
+        bgVar.set(BgKey.sidePanelTabId, null)
         chrome.sidePanel.setOptions({
           tabId,
           enabled: false,
@@ -196,7 +201,7 @@ for (const key in BgCommand) {
 const openSidePanel = async (tabId: number, url: string) => {
   await chrome.sidePanel.open({ tabId })
   await updateRules(tabId)
-  const sidePanelTabId = await bgVar.get<number>('sidePanelTabId')
+  const sidePanelTabId = await bgVar.get<number>(BgKey.sidePanelTabId)
   return new Promise((resolve) => {
     if (sidePanelTabId === tabId) {
       // If SidePanel was already opened.
@@ -216,7 +221,7 @@ const openSidePanel = async (tabId: number, url: string) => {
       Ipc.addListener(SidePanelCommand.onLoad, () => {
         Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
           resolve(ret)
-          bgVar.set('sidePanelTabId', tabId)
+          bgVar.set(BgKey.sidePanelTabId, tabId)
         })
         // return sync
         return false
@@ -280,19 +285,19 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   Ipc.sendAllTab(BgCommand.closeMenu)
 
   // Close popup window when focus changed
-  let windowIdHistory = (await bgVar.get<number[]>('windowIdHistory')) ?? []
+  let windowIdHistory = (await bgVar.get<number[]>(BgKey.windowIdHistory)) ?? []
   windowIdHistory.push(windowId)
   const beforeWindowId = windowIdHistory[windowIdHistory.length - 2]
-  const lastWindow = await bgVar.get<LastWindow>('lastWindow')
+  const lastWindow = await bgVar.get<LastWindow>(BgKey.lastWindow)
   if (beforeWindowId && beforeWindowId === lastWindow?.id) {
     chrome.windows.remove(lastWindow?.id)
     windowIdHistory = windowIdHistory.filter((id) => id !== lastWindow?.id)
   }
-  bgVar.set('windowIdHistory', windowIdHistory)
+  bgVar.set(BgKey.windowIdHistory, windowIdHistory)
 })
 
 chrome.windows.onBoundsChanged.addListener((window) => {
-  bgVar.get<LastWindow>('lastWindow').then((lastWindow) => {
+  bgVar.get<LastWindow>(BgKey.lastWindow).then((lastWindow) => {
     if (lastWindow?.id === window.id && window.width && window.height) {
       updateWindowSize(lastWindow.commandId, window.width, window.height)
     }
@@ -303,7 +308,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   // Force close the menu
   Ipc.sendAllTab(BgCommand.closeMenu)
 
-  const sidePanelTabId = await bgVar.get('sidePanelTabId')
+  const sidePanelTabId = await bgVar.get<number>(BgKey.sidePanelTabId)
   // console.debug('onActivated', tabId, sidePanelTabId)
   if (tabId !== sidePanelTabId) {
     // Disables the side panel on all other sites
