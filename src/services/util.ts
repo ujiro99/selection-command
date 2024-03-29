@@ -70,7 +70,7 @@ function linksInRange(range: Range): string[] {
   return links
 }
 
-export function escape(str: string) {
+export function escapeJson(str: string) {
   return str
     .replace(/[\\]/g, '\\\\')
     .replace(/[\/]/g, '\\/')

@@ -1,8 +1,10 @@
 import * as mv3 from 'mv3-hot-reload'
 import { isDebug } from './const'
-import { Ipc, BgCommand, SidePanelCommand, IpcCallback } from './services/ipc'
-import { escape } from './services/util'
-import { UserSettings, CommandVariable } from './services/userSettings'
+import { Ipc, BgCommand, SidePanelCommand } from './services/ipc'
+import type { IpcCallback } from './services/ipc'
+import { escapeJson } from './services/util'
+import { UserSettings } from './services/userSettings'
+import type { CommandVariable } from './services/userSettings'
 import { Storage, STORAGE_KEY } from './services/storage'
 
 mv3.utils.setConfig({ isDev: isDebug })
@@ -25,7 +27,7 @@ const bgVar = {
     const obj = await Storage.get<BgVariables>(STORAGE_KEY.BG)
     return obj[key] as T
   },
-  set: async (key: BgVarKey, value: any) => {
+  set: async (key: BgVarKey, value: unknown) => {
     const obj = await Storage.get<BgVariables>(STORAGE_KEY.BG)
     return await Storage.set(STORAGE_KEY.BG, { ...obj, [key]: value })
   },
@@ -59,17 +61,18 @@ export type openTabProps = {
 function bindVariables(
   str: string,
   variables: CommandVariable[],
-  obj: {},
+  obj: { [key: string]: string },
 ): string {
-  let arr = [...variables]
-  Object.entries(obj).forEach(([key, value]) => {
+  const arr = [...variables]
+  for (const [key, value] of Object.entries(obj)) {
     arr.push({ name: key, value: value })
-  })
-  arr.forEach((v) => {
+  }
+  let res = str
+  for (const v of arr) {
     const re = new RegExp(`\\$\\{${v.name}\\}`, 'g')
-    str = str.replace(re, v.value)
-  })
-  return str
+    res = res.replace(re, v.value)
+  }
+  return res
 }
 
 const commandFuncs = {
@@ -136,7 +139,7 @@ const commandFuncs = {
     if (tabId != null) {
       openSidePanel(tabId, url).then((ret) => {
         console.debug('ret openSidePanel', ret)
-        response && response(ret)
+        response?.(ret)
       })
     }
     return true
@@ -168,7 +171,7 @@ const commandFuncs = {
       const str = bindVariables(fetchOptions, variables, {
         pageUrl,
         pageTitle,
-        text: escape(escape(selectionText)),
+        text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
       ;(async () => {
@@ -185,10 +188,10 @@ const commandFuncs = {
   },
 } as { [key: string]: IpcCallback }
 
-Object.keys(BgCommand).forEach((key) => {
+for (const key in BgCommand) {
   const command = BgCommand[key as keyof typeof BgCommand]
   Ipc.addListener(command, commandFuncs[key])
-})
+}
 
 const openSidePanel = async (tabId: number, url: string) => {
   await chrome.sidePanel.open({ tabId })
@@ -223,7 +226,7 @@ const openSidePanel = async (tabId: number, url: string) => {
 }
 
 const updateRules = async (tabId: number) => {
-  let rules = await chrome.declarativeNetRequest.getSessionRules()
+  const rules = await chrome.declarativeNetRequest.getSessionRules()
   const removeIds = rules.map((r) => r.id)
   console.debug('sessionRules', rules)
   const newRules = [
@@ -266,7 +269,7 @@ const updateWindowSize = async (
   await UserSettings.set(obj)
 }
 
-chrome.action.onClicked.addListener((tab) => {
+chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
     url: 'options_page.html',
   })
@@ -280,17 +283,17 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   let windowIdHistory = (await bgVar.get<number[]>('windowIdHistory')) ?? []
   windowIdHistory.push(windowId)
   const beforeWindowId = windowIdHistory[windowIdHistory.length - 2]
-  let lastWindow = await bgVar.get<LastWindow>('lastWindow')
-  if (beforeWindowId && beforeWindowId == lastWindow?.id) {
+  const lastWindow = await bgVar.get<LastWindow>('lastWindow')
+  if (beforeWindowId && beforeWindowId === lastWindow?.id) {
     chrome.windows.remove(lastWindow?.id)
-    windowIdHistory = windowIdHistory.filter((id) => id != lastWindow?.id)
+    windowIdHistory = windowIdHistory.filter((id) => id !== lastWindow?.id)
   }
   bgVar.set('windowIdHistory', windowIdHistory)
 })
 
 chrome.windows.onBoundsChanged.addListener((window) => {
   bgVar.get<LastWindow>('lastWindow').then((lastWindow) => {
-    if (lastWindow && lastWindow.id === window.id) {
+    if (lastWindow?.id === window.id && window.width && window.height) {
       updateWindowSize(lastWindow.commandId, window.width, window.height)
     }
   })
@@ -300,7 +303,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   // Force close the menu
   Ipc.sendAllTab(BgCommand.closeMenu)
 
-  let sidePanelTabId = await bgVar.get('sidePanelTabId')
+  const sidePanelTabId = await bgVar.get('sidePanelTabId')
   // console.debug('onActivated', tabId, sidePanelTabId)
   if (tabId !== sidePanelTabId) {
     // Disables the side panel on all other sites
