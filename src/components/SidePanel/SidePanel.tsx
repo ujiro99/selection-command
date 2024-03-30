@@ -17,7 +17,7 @@ export function SidePanel() {
         const { url } = param
         console.debug('setUrl', url)
         setUrl(url)
-        response && response(url)
+        response?.(url)
         return false
       },
     )

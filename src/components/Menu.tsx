@@ -1,17 +1,15 @@
-import React, { useContext, useRef } from 'react'
+import React, { useRef } from 'react'
 import classNames from 'classnames'
-import { context } from './App'
 import { STYLE, ROOT_FOLDER } from '../const'
 import { OptionButton } from './menu/OptionButton'
 import { MenuFolder } from './menu/MenuFolder'
 import { MenuItem } from './menu/MenuItem'
 import { menu, list, menuHorizontal } from './Menu.module.css'
-import {
+import type {
   Command,
   CommandFolder,
   UserSettingsType,
 } from '../services/userSettings'
-import { toUrl } from '../services/util'
 import { useSetting } from '../hooks/useSetting'
 
 type ItemObj = {
@@ -28,7 +26,7 @@ export function Menu(): JSX.Element {
   const { settings } = useSetting()
   const commands = settings.commands
   const folders = settings.folders
-  const isHorizontal = settings.style == STYLE.HORIZONTAL
+  const isHorizontal = settings.style === STYLE.HORIZONTAL
 
   const items = commands.reduce((pre, cur, idx) => {
     const found = folders.find((obj) => obj.id === cur.parentFolder?.id)
@@ -73,33 +71,32 @@ function ItemsToMenu(props: {
   items: ItemObj[]
   menuRef: React.RefObject<HTMLDivElement>
   settings: UserSettingsType
-}) {
+}): JSX.Element {
   const { items, menuRef } = props
-  const { selectionText } = useContext(context)
-  const isHorizontal = props.settings.style == STYLE.HORIZONTAL
-
-  return items.map((item) => {
-    if (isRoot(item.folder)) {
-      return item.commands.map((obj, idx) => (
-        <li key={`menu_${obj.title}_${idx}`}>
-          <MenuItem
-            url={toUrl(obj.searchUrl, selectionText)}
-            menuRef={menuRef}
-            onlyIcon={isHorizontal}
-            command={obj}
-          />
-        </li>
-      ))
-    } else {
-      return (
-        <li key={'folder_' + item.folder.title}>
-          <MenuFolder
-            folder={item.folder}
-            commands={item.commands}
-            menuRef={menuRef}
-          />
-        </li>
-      )
-    }
-  })
+  const isHorizontal = props.settings.style === STYLE.HORIZONTAL
+  return (
+    <>
+      {items.map((item) =>
+        isRoot(item.folder) ? (
+          item.commands.map((obj, idx) => (
+            <li key={`menu_${obj.title}_${idx}`}>
+              <MenuItem
+                menuRef={menuRef}
+                onlyIcon={isHorizontal}
+                command={obj}
+              />
+            </li>
+          ))
+        ) : (
+          <li key={`folder_${item.folder.title}`}>
+            <MenuFolder
+              folder={item.folder}
+              commands={item.commands}
+              menuRef={menuRef}
+            />
+          </li>
+        ),
+      )}
+    </>
+  )
 }

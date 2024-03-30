@@ -1,5 +1,5 @@
 export enum BgCommand {
-  openPopup = 'openPopup',
+  openPopups = 'openPopups',
   openTab = 'openTab',
   closeMenu = 'closeMenu',
   enableSidePanel = 'enableSidePanel',

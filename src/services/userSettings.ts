@@ -1,7 +1,7 @@
-import { Placement } from '@popperjs/core'
+import type { Placement } from '@popperjs/core'
 import { Storage, STORAGE_KEY } from './storage'
 import UseSetting from './defaultUserSettings.json'
-import { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
+import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
 
 export type Command = {
   id: number
@@ -24,6 +24,7 @@ export type PopupOption = {
 export type FolderOption = {
   id: string
   name: string
+  iconUrl: string
 }
 
 export type CommandFolder = {
@@ -54,14 +55,12 @@ export type UserSettingsType = {
 
 export const UserSettings = {
   get: async (): Promise<UserSettingsType> => {
-    let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    const obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
     // Assigning IDs to each command
-    obj.commands = obj.commands
-      .map((c, idx) => {
-        c.id = idx
-        return c
-      })
-      .filter((c) => c.searchUrl != null)
+    obj.commands = obj.commands.map((c, idx) => {
+      c.id = idx
+      return c
+    })
     obj.folders = obj.folders.filter((folder) => !!folder.title)
     return obj
   },

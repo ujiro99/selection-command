@@ -18,7 +18,7 @@ export function App() {
   useEffect(() => {
     const onSelectionchange = () => {
       const s = document.getSelection()
-      if (s == null || s.rangeCount == 0) {
+      if (s == null || s.rangeCount === 0) {
         setSelectionText('')
         setRect(undefined)
       } else {

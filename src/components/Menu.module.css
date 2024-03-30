@@ -13,6 +13,9 @@
     &:hover {
       background-color: rgb(229 231 235);
     }
+    &:hover:has(:disabled) {
+      background-color: #fff;
+    }
   }
   > li + li {
     margin-top: 2px;
@@ -44,6 +47,11 @@
 
   &:hover {
     color: rgb(3 7 18);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
   }
 }
 
