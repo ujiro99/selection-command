@@ -17,7 +17,12 @@ import {
 import { Icon } from '../Icon'
 import { OPEN_MODE } from '../../const'
 import type { Command } from '../../services/userSettings'
-import { toUrl, sleep, linksInSelection } from '../../services/util'
+import {
+  toUrl,
+  sleep,
+  linksInSelection,
+  getSceenSize,
+} from '../../services/util'
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -57,9 +62,10 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         commandId: props.command.id,
         urls: urls,
         top: Math.floor(window.screenTop + rect.top),
-        left: Math.floor(window.screenLeft + rect.right + 10),
+        left: Math.floor(window.screenLeft + rect.left + 20),
         height: props.command.popupOption?.height,
         width: props.command.popupOption?.width,
+        screen: getSceenSize(),
       })
     }
   }

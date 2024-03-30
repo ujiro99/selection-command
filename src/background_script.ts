@@ -58,6 +58,7 @@ export type openPopupsProps = {
   left: number
   width: number
   height: number
+  screen: { w: number; h: number }
 }
 
 export type execApiProps = {
@@ -94,20 +95,31 @@ function bindVariables(
 const commandFuncs = {
   [BgCommand.openPopups]: (param: openPopupsProps): boolean => {
     const open = async () => {
+      const { top, left, width, height, screen } = param
       const current = await chrome.windows.getCurrent()
       const offset = 50
       const windows = await Promise.all(
-        param.urls.reverse().map((url, idx) =>
-          chrome.windows.create({
+        param.urls.reverse().map((url, idx) => {
+          // If the window extends beyond the screen size,
+          // return the display position to the center.
+          let l = left + offset * idx
+          if (screen.w < l + width) {
+            l = Math.floor((screen.w - width) / 2)
+          }
+          let t = top + offset * idx
+          if (screen.h < t + height) {
+            t = Math.floor((screen.h - height) / 2)
+          }
+          return chrome.windows.create({
             url,
-            width: param.width,
-            height: param.height,
-            top: param.top + offset * idx,
-            left: param.left + offset * idx,
+            width: width,
+            height: height,
+            top: t + offset * idx,
+            left: l + offset * idx,
             type: 'popup',
             incognito: current.incognito,
-          }),
-        ),
+          })
+        }),
       )
       if (windows?.length > 0) {
         const layer = windows.map((w) => ({
