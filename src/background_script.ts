@@ -306,32 +306,33 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Close popup windows when focus changed to lower stack window
   const stack = data.windowStack
   const idx = stack.map((s) => s.findIndex((w) => w.id === windowId))
+  let deleteStack = [] as WindowLayer[]
 
+  // Close all window.
   const closeAll = idx.every((i) => i < 0)
   if (closeAll && stack.length > 0) {
-    for (const layer of stack) {
+    deleteStack = stack
+    data.windowStack = []
+  }
+
+  // Close windows up to the window stack in focus.
+  for (let i = idx.length - 2; i >= 0; i--) {
+    if (idx[i] >= 0) {
+      deleteStack = stack.splice(i + 1)
+      data.windowStack = stack
+      break
+    }
+  }
+
+  // execute close
+  if (deleteStack.length > 0) {
+    for (const layer of deleteStack) {
       for (const window of layer) {
         chrome.windows.remove(window.id)
       }
     }
-    data.windowStack = []
   }
 
-  // Delete windows up to the window stack in focus
-  for (let i = idx.length - 2; i >= 0; i--) {
-    if (idx[i] >= 0) {
-      const layers = stack.splice(i + 1)
-      if (layers) {
-        for (const layer of layers) {
-          for (const window of layer) {
-            chrome.windows.remove(window.id)
-          }
-        }
-        data.windowStack = stack
-      }
-      break
-    }
-  }
   BgData.set(data)
 })
 
