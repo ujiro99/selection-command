@@ -21,11 +21,9 @@ class BgData {
   private static instance: BgData
 
   public sidePanelTabId: number | null
-  public lastWindow: WindowType | null
   public windowStack: WindowLayer[]
 
   private constructor() {
-    this.lastWindow = null
     this.windowStack = []
     this.sidePanelTabId = null
 
@@ -53,9 +51,9 @@ const data = BgData.get()
 
 type Sender = chrome.runtime.MessageSender
 
-export type openPopupProps = {
+export type openPopupsProps = {
   commandId: number
-  url: string
+  urls: string[]
   top: number
   left: number
   width: number
@@ -94,27 +92,31 @@ function bindVariables(
 }
 
 const commandFuncs = {
-  [BgCommand.openPopup]: (param: openPopupProps): boolean => {
+  [BgCommand.openPopups]: (param: openPopupsProps): boolean => {
     const open = async () => {
       const current = await chrome.windows.getCurrent()
-      const window = await chrome.windows.create({
-        url: param.url,
-        width: param.width,
-        height: param.height,
-        top: param.top,
-        left: param.left,
-        type: 'popup',
-        incognito: current.incognito,
-      })
-      if (window.id) {
-        data.lastWindow = {
-          id: window.id,
+      const offset = 50
+      const windows = await Promise.all(
+        param.urls.reverse().map((url, idx) =>
+          chrome.windows.create({
+            url,
+            width: param.width,
+            height: param.height,
+            top: param.top + offset * idx,
+            left: param.left + offset * idx,
+            type: 'popup',
+            incognito: current.incognito,
+          }),
+        ),
+      )
+      if (windows?.length > 0) {
+        const layer = windows.map((w) => ({
+          id: w.id,
           commandId: param.commandId,
-        }
-        data.windowStack.push([{ id: window.id, commandId: param.commandId }])
+        })) as WindowLayer
+        data.windowStack.push(layer)
         BgData.set(data)
       }
-      console.log('openPopup', data.windowStack)
     }
     open()
     return false
@@ -337,14 +339,14 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 })
 
 chrome.windows.onBoundsChanged.addListener((window) => {
-  const lastWindow = data.lastWindow
-  if (
-    lastWindow &&
-    lastWindow?.id === window.id &&
-    window.width &&
-    window.height
-  ) {
-    updateWindowSize(lastWindow.commandId, window.width, window.height)
+  for (const layer of data.windowStack) {
+    const w = layer.find((v) => v.id === window.id)
+    if (w) {
+      if (w.id === window.id && window.width && window.height) {
+        updateWindowSize(w.commandId, window.width, window.height)
+        return
+      }
+    }
   }
 })
 

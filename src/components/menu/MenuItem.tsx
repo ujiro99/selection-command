@@ -49,13 +49,13 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     title = `${links.length} links`
   }
 
-  const openPopup = (url: string) => {
+  const openPopups = (urls: string[]) => {
     if (props.menuRef.current) {
       const rect = props.menuRef.current.getBoundingClientRect()
       console.debug('open popup', rect)
-      Ipc.send(BgCommand.openPopup, {
+      Ipc.send(BgCommand.openPopups, {
         commandId: props.command.id,
-        url: url,
+        urls: urls,
         top: Math.floor(window.screenTop + rect.top),
         left: Math.floor(window.screenLeft + rect.right + 10),
         height: props.command.popupOption?.height,
@@ -73,7 +73,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     const url = toUrl(props.command.searchUrl, selectionText)
 
     if (mode === OPEN_MODE.POPUP) {
-      openPopup(url)
+      openPopups([url])
     } else if (mode === OPEN_MODE.TAB) {
       const background =
         e.ctrlKey && (!openModeSecondary || openMode === openModeSecondary)
@@ -120,8 +120,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         )
       })
     } else if (mode === OPEN_MODE.LINK_POPUP) {
-      const url = links[0]
-      url && openPopup(url)
+      openPopups(links)
     }
     e.stopPropagation()
   }
