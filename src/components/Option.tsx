@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group'
 import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
 import { UserSettings } from '../services/userSettings'
-import type { UserSettingsType } from '../services/userSettings'
+import type { UserSettingsType, ImageCache } from '../services/userSettings'
 import { sleep, toDataURL, toUrl, isBase64 } from '../services/util'
 import { t } from '../services/i18n'
 import { APP_ID, VERSION } from '../const'
@@ -90,17 +90,15 @@ export function Option() {
       setIconVisible(true)
 
       // Convert iconUrl to DataURL for cache.
+      const urls = await UserSettings.urls()
       const caches = await UserSettings.getCaches()
-      const iconUrls = settings.commands.map((c) => c.iconUrl)
-      const folderIconUrls = settings.folders.map((f) => f.iconUrl)
-      const urls = [...iconUrls, ...folderIconUrls] as string[]
       const noCacheUrls = urls
         .filter((url) => url != null)
         .filter((url) => !isBase64(url) && caches.images[url] == null)
       const newCaches = await Promise.all(
         noCacheUrls.map(async (url) => {
           const dataUrl = await toDataURL(url)
-          console.debug('dataUrl', dataUrl)
+          console.debug('dataUrl for ', url)
           return [url, dataUrl]
         }),
       )
@@ -108,20 +106,11 @@ export function Option() {
         caches.images[iconUrl] = dataUrl
       }
 
-      // Remove old cache.
-      for (const key of Object.keys(caches.images)) {
-        if (!urls.includes(key)) {
-          delete caches.images[key]
-        }
-      }
-
-      console.debug('update settings', settings, caches)
-      await UserSettings.set(settings)
-      await UserSettings.setCaches(caches)
+      await UserSettings.set(settings, caches)
       await sleep(1000)
       setIconVisible(false)
     } catch (e) {
-      console.error('Failed to update settings!')
+      console.error('Failed to update settings!', settings, caches)
       console.error(e)
     }
   }
@@ -218,7 +207,19 @@ export function Option() {
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
       ;(async () => {
-        await Storage.set(STORAGE_KEY.USER, importJson)
+        // for back compatibility
+        // cache image data url to local storage
+        const caches = {} as ImageCache
+        for (const c of importJson.commands) {
+          if (!c.iconUrl) continue
+          if (isBase64(c.iconUrl)) {
+            const id = crypto.randomUUID()
+            const data = c.iconUrl
+            caches[id] = data
+            c.iconUrl = id
+          }
+        }
+        await UserSettings.set(importJson, { images: caches })
         location.reload()
       })()
     }

@@ -63,7 +63,7 @@ export type Caches = {
   images: ImageCache
 }
 
-type ImageCache = {
+export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
 }
 
@@ -84,22 +84,32 @@ export const UserSettings = {
     return obj
   },
 
-  set: async (data: UserSettingsType): Promise<boolean> => {
+  set: async (data: UserSettingsType, caches?: Caches): Promise<boolean> => {
+    console.debug('update settings', data, caches)
     // image data url to cache id.
-    const caches = await UserSettings.getCaches()
-    for (const c of data.commands) {
-      if (!c.iconUrl) continue
-      if (isBase64(c.iconUrl)) {
-        const cache = Object.entries(caches.images).find(
-          ([k, v]) => v === c.iconUrl,
-        )
-        if (cache) {
-          c.iconUrl = cache[0]
+    if (caches) {
+      for (const c of data.commands) {
+        if (!c.iconUrl) continue
+        if (isBase64(c.iconUrl)) {
+          const cache = Object.entries(caches.images).find(
+            ([k, v]) => v === c.iconUrl,
+          )
+          if (cache) {
+            c.iconUrl = cache[0]
+          }
+        }
+      }
+      const urls = getUrls(data)
+      // remove unused caches
+      for (const key in caches.images) {
+        if (!urls.includes(key)) {
+          console.debug('remove unused cache', key)
+          delete caches.images[key]
         }
       }
     }
-
     await Storage.set(STORAGE_KEY.USER, data)
+    await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
     return true
   },
 
@@ -115,9 +125,15 @@ export const UserSettings = {
     return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES, STORAGE_AREA.LOCAL)
   },
 
-  setCaches: async (caches: Caches) => {
-    Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
+  urls: async (): Promise<string[]> => {
+    return getUrls(await UserSettings.get())
   },
+}
+
+const getUrls = (settings: UserSettingsType): string[] => {
+  const iconUrls = settings.commands.map((c) => c.iconUrl)
+  const folderIconUrls = settings.folders.map((f) => f.iconUrl)
+  return [...iconUrls, ...folderIconUrls] as string[]
 }
 
 export const migrate = async () => {
