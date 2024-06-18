@@ -11,17 +11,19 @@ function uniq<T>(array: Array<T>): Array<T> {
 }
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
-  return new Promise((resolve) => {
-    let img = new Image()
+  return new Promise((resolve, reject) => {
+    const img = new Image()
     img.crossOrigin = 'Anonymous'
+    const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
     img.onload = function () {
-      let canvas = document.createElement('canvas')
-      let ctx = canvas.getContext('2d')
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
       canvas.height = this.naturalHeight
       canvas.width = this.naturalWidth
       ctx.drawImage(this, 0, 0)
-      let dataURL = canvas.toDataURL(outputFormat)
+      const dataURL = canvas.toDataURL(outputFormat)
       resolve(dataURL)
+      clearTimeout(id)
     }
     img.src = src
   })

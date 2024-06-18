@@ -99,7 +99,7 @@ export const UserSettings = {
           }
         }
       }
-      const urls = getUrls(data)
+      const urls = UserSettings.getUrls(data)
       // remove unused caches
       for (const key in caches.images) {
         if (!urls.includes(key)) {
@@ -125,15 +125,11 @@ export const UserSettings = {
     return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES, STORAGE_AREA.LOCAL)
   },
 
-  urls: async (): Promise<string[]> => {
-    return getUrls(await UserSettings.get())
+  getUrls: (settings: UserSettingsType): string[] => {
+    const iconUrls = settings.commands.map((c) => c.iconUrl)
+    const folderIconUrls = settings.folders.map((f) => f.iconUrl)
+    return [...iconUrls, ...folderIconUrls] as string[]
   },
-}
-
-const getUrls = (settings: UserSettingsType): string[] => {
-  const iconUrls = settings.commands.map((c) => c.iconUrl)
-  const folderIconUrls = settings.folders.map((f) => f.iconUrl)
-  return [...iconUrls, ...folderIconUrls] as string[]
 }
 
 export const migrate = async () => {

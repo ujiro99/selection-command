@@ -90,15 +90,20 @@ export function Option() {
       setIconVisible(true)
 
       // Convert iconUrl to DataURL for cache.
-      const urls = await UserSettings.urls()
+      const urls = UserSettings.getUrls(settings)
       const caches = await UserSettings.getCaches()
       const noCacheUrls = urls
         .filter((url) => url != null)
         .filter((url) => !isBase64(url) && caches.images[url] == null)
       const newCaches = await Promise.all(
         noCacheUrls.map(async (url) => {
-          const dataUrl = await toDataURL(url)
-          console.debug('dataUrl for ', url)
+          let dataUrl = ''
+          try {
+            dataUrl = await toDataURL(url)
+          } catch (e) {
+            console.warn('Failed to convert to data url', url)
+            console.warn(e)
+          }
           return [url, dataUrl]
         }),
       )
@@ -108,10 +113,11 @@ export function Option() {
 
       await UserSettings.set(settings, caches)
       await sleep(1000)
-      setIconVisible(false)
     } catch (e) {
-      console.error('Failed to update settings!', settings, caches)
+      console.error('Failed to update settings!', settings)
       console.error(e)
+    } finally {
+      setIconVisible(false)
     }
   }
 
@@ -141,6 +147,7 @@ export function Option() {
         setIframeHeight(value)
       } else if (command === 'fetchIconUrl') {
         const { searchUrl, settings } = value
+        console.log('fetchIconUrl', searchUrl)
         const url = await fetchIconUrl(searchUrl)
         if (url && settings) {
           for (const command of settings.commands) {
