@@ -3,8 +3,9 @@ import { CSSTransition } from 'react-transition-group'
 
 import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
-import { UserSettings, UserSettingsType } from '../services/userSettings'
-import { sleep, toDataURL, toUrl } from '../services/util'
+import { UserSettings } from '../services/userSettings'
+import type { UserSettingsType } from '../services/userSettings'
+import { sleep, toDataURL, toUrl, isBase64 } from '../services/util'
 import { t } from '../services/i18n'
 import { APP_ID, VERSION } from '../const'
 import { Dialog } from './Dialog'
@@ -12,10 +13,6 @@ import messages from '../../dist/_locales/en/messages.json'
 
 import './App.css'
 import css from './Option.module.css'
-
-function isBase64(str: string): boolean {
-  return /base64/.test(str)
-}
 
 function getFaviconUrl(urlStr: string): string {
   const url = new URL(urlStr)
@@ -98,11 +95,12 @@ export function Option() {
       )
 
       console.debug('update settings', settings)
-      await Storage.set(STORAGE_KEY.USER, settings)
+      await UserSettings.set(settings)
       await sleep(1000)
       setIconVisible(false)
-    } catch {
-      console.log('failed to update settings!')
+    } catch (e) {
+      console.error('Failed to update settings!')
+      console.error(e)
     }
   }
 
@@ -215,7 +213,7 @@ export function Option() {
   }
 
   const onLoadIfame = async () => {
-    const settings = await Storage.get(STORAGE_KEY.USER)
+    const settings = await UserSettings.get()
     const translation = getTranslation()
     sendMessage('start', {
       settings,
