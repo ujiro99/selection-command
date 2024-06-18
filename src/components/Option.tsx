@@ -3,8 +3,9 @@ import { CSSTransition } from 'react-transition-group'
 
 import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
-import { UserSettings, UserSettingsType } from '../services/userSettings'
-import { sleep, toDataURL, toUrl } from '../services/util'
+import { UserSettings } from '../services/userSettings'
+import type { UserSettingsType, ImageCache } from '../services/userSettings'
+import { sleep, toDataURL, toUrl, isBase64 } from '../services/util'
 import { t } from '../services/i18n'
 import { APP_ID, VERSION } from '../const'
 import { Dialog } from './Dialog'
@@ -13,10 +14,6 @@ import messages from '../../dist/_locales/en/messages.json'
 import './App.css'
 import css from './Option.module.css'
 
-function isBase64(str: string): boolean {
-  return /base64/.test(str)
-}
-
 function getFaviconUrl(urlStr: string): string {
   const url = new URL(urlStr)
   const domain = url.hostname
@@ -24,7 +21,13 @@ function getFaviconUrl(urlStr: string): string {
   return favUrl
 }
 
-const fetchIconUrl = async (url: string) => {
+/**
+ * Get favicon url from url.
+ *
+ * @param {string} url
+ * @returns {Promise<string>} favicon url
+ */
+const fetchIconUrl = async (url: string): Promise<string> => {
   const urlStr = toUrl(url, 'test')
   const res = await fetch(urlStr)
   const text = await res.text()
@@ -41,31 +44,32 @@ const fetchIconUrl = async (url: string) => {
   if (iconUrl?.startsWith('//')) {
     const protocol = new URL(urlStr).protocol
     return `${protocol}${iconUrl}`
-  } else if (iconUrl?.startsWith('/')) {
+  }
+  if (iconUrl?.startsWith('/')) {
     const origin = new URL(urlStr).origin
     return `${origin}${iconUrl}`
   }
-  return iconUrl
+  return getFaviconUrl(url)
 }
 
 const getTranslation = () => {
-  let obj = {} as { [key: string]: string }
-  Object.keys(messages).forEach((key) => {
+  const obj = {} as { [key: string]: string }
+  for (const key in messages) {
     if (key.startsWith('Option_')) {
       obj[key] = t(key)
     }
-  })
+  }
   return obj
 }
 
 function getTimestamp() {
-  let date = new Date()
-  let year = date.getFullYear()
-  let month = (date.getMonth() + 1).toString().padStart(2, '0')
-  let day = date.getDate().toString().padStart(2, '0')
-  let hours = date.getHours().toString().padStart(2, '0')
-  let minutes = date.getMinutes().toString().padStart(2, '0')
-  return year + month + day + '_' + hours + minutes
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  return `${year}${month}${day}_${hours}${minutes}`
 }
 
 export function Option() {
@@ -77,32 +81,37 @@ export function Option() {
   const [importDialog, setImportDialog] = useState(false)
   const [importJson, setImportJson] = useState<UserSettingsType>()
 
-  const iframeRef = useRef(null)
-  const inputFile = useRef(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const inputFile = useRef<HTMLInputElement>(null)
 
   const updateSettings = async () => {
     try {
       if (settings == null) return
       setIconVisible(true)
 
-      // Convert iconUrl to DataURL
-      await Promise.all(
-        settings.commands.map(async (c) => {
-          if (!c.iconUrl) return
-          if (isBase64(c.iconUrl)) return
-
-          let dataUrl = await toDataURL(c.iconUrl)
-          console.debug('dataUrl', dataUrl)
-          c.iconUrl = dataUrl
+      // Convert iconUrl to DataURL for cache.
+      const urls = await UserSettings.urls()
+      const caches = await UserSettings.getCaches()
+      const noCacheUrls = urls
+        .filter((url) => url != null)
+        .filter((url) => !isBase64(url) && caches.images[url] == null)
+      const newCaches = await Promise.all(
+        noCacheUrls.map(async (url) => {
+          const dataUrl = await toDataURL(url)
+          console.debug('dataUrl for ', url)
+          return [url, dataUrl]
         }),
       )
+      for (const [iconUrl, dataUrl] of newCaches) {
+        caches.images[iconUrl] = dataUrl
+      }
 
-      console.debug('update settings', settings)
-      await Storage.set(STORAGE_KEY.USER, settings)
+      await UserSettings.set(settings, caches)
       await sleep(1000)
       setIconVisible(false)
-    } catch {
-      console.log('failed to update settings!')
+    } catch (e) {
+      console.error('Failed to update settings!', settings, caches)
+      console.error(e)
     }
   }
 
@@ -134,13 +143,13 @@ export function Option() {
         const { searchUrl, settings } = value
         const url = await fetchIconUrl(searchUrl)
         if (url && settings) {
-          settings.commands.forEach((command) => {
+          for (const command of settings.commands) {
             if (!command.iconUrl && command.searchUrl) {
               if (command.searchUrl === searchUrl) {
                 command.iconUrl = url
               }
             }
-          })
+          }
           setSettings(settings)
           sendMessage('changed', settings)
         }
@@ -180,6 +189,7 @@ export function Option() {
   const handleImport = () => {
     if (inputFile == null || inputFile.current == null) return
     const files = inputFile.current.files
+    if (files == null) return
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
       const reader = new FileReader()
@@ -197,16 +207,28 @@ export function Option() {
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
       ;(async () => {
-        await Storage.set(STORAGE_KEY.USER, importJson)
+        // for back compatibility
+        // cache image data url to local storage
+        const caches = {} as ImageCache
+        for (const c of importJson.commands) {
+          if (!c.iconUrl) continue
+          if (isBase64(c.iconUrl)) {
+            const id = crypto.randomUUID()
+            const data = c.iconUrl
+            caches[id] = data
+            c.iconUrl = id
+          }
+        }
+        await UserSettings.set(importJson, { images: caches })
         location.reload()
       })()
     }
     setImportDialog(false)
   }
 
-  const sendMessage = (command: string, value: any) => {
-    if (iframeRef.current != null) {
-      let message = { command, value }
+  const sendMessage = (command: string, value: unknown) => {
+    if (iframeRef.current != null && iframeRef.current.contentWindow != null) {
+      const message = { command, value }
       iframeRef.current.contentWindow.postMessage(message, '*')
     } else {
       console.warn('frame null')
@@ -215,7 +237,7 @@ export function Option() {
   }
 
   const onLoadIfame = async () => {
-    const settings = await Storage.get(STORAGE_KEY.USER)
+    const settings = await UserSettings.get()
     const translation = getTranslation()
     sendMessage('start', {
       settings,
@@ -240,13 +262,17 @@ export function Option() {
         <span className={css.version}>Version: {VERSION}</span>
       </header>
       <div className={css.menu}>
-        <button onClick={handleReset} className={css.button}>
+        <button onClick={handleReset} className={css.button} type="button">
           {t('Option_Reset')}
         </button>
-        <button onClick={handleExport} className={css.button}>
+        <button onClick={handleExport} className={css.button} type="button">
           {t('Option_Export')}
         </button>
-        <button onClick={() => setImportDialog(true)} className={css.button}>
+        <button
+          onClick={() => setImportDialog(true)}
+          className={css.button}
+          type="button"
+        >
           {t('Option_Import')}
         </button>
       </div>
@@ -278,17 +304,18 @@ export function Option() {
           accept=".json"
           onChange={handleImport}
           ref={inputFile}
-          className={css.button + ' ' + css.buttonImport}
-        ></input>
+          className={`${css.button} ${css.buttonImport}`}
+        />
       </Dialog>
       <iframe
+        title="SettingForm"
         id="sandbox"
         src="sandbox.html"
         ref={iframeRef}
         className={css.editorFrame}
         onLoad={onLoadIfame}
         height={iframeHeight}
-      ></iframe>
+      />
     </div>
   )
 }

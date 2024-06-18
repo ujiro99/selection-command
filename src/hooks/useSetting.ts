@@ -21,7 +21,24 @@ export function useSetting(): useSettingReturn {
 
   useEffect(() => {
     ;(async () => {
+      const caches = await UserSettings.getCaches()
       const data = await UserSettings.get()
+      // use image cache if available
+      for (const command of data.commands) {
+        const cache = caches.images[command.iconUrl]
+        if (cache != null) {
+          command.iconUrl = cache
+        }
+      }
+      for (const folder of data.folders) {
+        if (!folder.iconUrl) {
+          continue
+        }
+        const cache = caches.images[folder.iconUrl]
+        if (cache != null) {
+          folder.iconUrl = cache
+        }
+      }
       setSettings(data)
     })()
     UserSettings.onChanged(setSettings)

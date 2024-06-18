@@ -3,7 +3,7 @@ import { isDebug } from './const'
 import { Ipc, BgCommand, SidePanelCommand } from './services/ipc'
 import type { IpcCallback } from './services/ipc'
 import { escapeJson } from './services/util'
-import { UserSettings } from './services/userSettings'
+import { UserSettings, migrate } from './services/userSettings'
 import type { CommandVariable } from './services/userSettings'
 import { Storage, STORAGE_KEY } from './services/storage'
 
@@ -375,5 +375,13 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
       tabId,
       enabled: false,
     })
+  }
+})
+
+chrome.runtime.onInstalled.addListener((details) => {
+  // migration
+  if (!(details.reason === 'update' && details.previousVersion === '0.5.0')) {
+    migrate()
+    return
   }
 })

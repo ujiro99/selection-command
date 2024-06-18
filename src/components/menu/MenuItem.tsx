@@ -16,7 +16,7 @@ import {
 } from '../Menu.module.css'
 import { Icon } from '../Icon'
 import { OPEN_MODE } from '../../const'
-import type { Command } from '../../services/userSettings'
+import type { Command } from '@/services/userSettings'
 import {
   toUrl,
   sleep,
@@ -161,7 +161,7 @@ function ImageStatus(props: ImageStatusProps): JSX.Element {
   return (
     <>
       {status === SendState.NONE && (
-        <img className={itemImg} src={iconUrl} alt="Api icon" />
+        <img className={itemImg} src={iconUrl} alt="icon" />
       )}
       {status === SendState.SENDING && (
         <Icon

@@ -86,3 +86,24 @@ export function escapeJson(str: string) {
     .replace(/[\"]/g, '\\"')
     .replace(/\\'/g, "\\'")
 }
+
+/**
+ * Check if the string is a base64 string.
+ *
+ * @param {string} str The string to check.
+ * @returns {boolean} True if the string is a base64 string.
+ */
+export function isBase64(str: string): boolean {
+  return /base64/.test(str)
+}
+
+/**
+ * Check if the string is a URL.
+ *
+ * @param {string} str The string to check.
+ * @returns {boolean} True if the string is a URL.
+ * @see https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
+ */
+export function isUrl(str: string): boolean {
+  return /^https?:\/\//.test(str)
+}
