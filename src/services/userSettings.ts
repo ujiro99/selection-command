@@ -148,5 +148,5 @@ const migrate060 = async () => {
     [LOCAL_STORAGE_KEY.CACHES]: { images: caches },
   })
   await Storage.set(STORAGE_KEY.USER, settings)
-  // await chrome.storage.local.remove(USER)
+  await chrome.storage.local.remove(`${STORAGE_KEY.USER}`)
 }
