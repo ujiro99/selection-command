@@ -21,7 +21,13 @@ function getFaviconUrl(urlStr: string): string {
   return favUrl
 }
 
-const fetchIconUrl = async (url: string) => {
+/**
+ * Get favicon url from url.
+ *
+ * @param {string} url
+ * @returns {Promise<string>} favicon url
+ */
+const fetchIconUrl = async (url: string): Promise<string> => {
   const urlStr = toUrl(url, 'test')
   const res = await fetch(urlStr)
   const text = await res.text()
@@ -38,31 +44,32 @@ const fetchIconUrl = async (url: string) => {
   if (iconUrl?.startsWith('//')) {
     const protocol = new URL(urlStr).protocol
     return `${protocol}${iconUrl}`
-  } else if (iconUrl?.startsWith('/')) {
+  }
+  if (iconUrl?.startsWith('/')) {
     const origin = new URL(urlStr).origin
     return `${origin}${iconUrl}`
   }
-  return iconUrl
+  return getFaviconUrl(url)
 }
 
 const getTranslation = () => {
-  let obj = {} as { [key: string]: string }
-  Object.keys(messages).forEach((key) => {
+  const obj = {} as { [key: string]: string }
+  for (const key in messages) {
     if (key.startsWith('Option_')) {
       obj[key] = t(key)
     }
-  })
+  }
   return obj
 }
 
 function getTimestamp() {
-  let date = new Date()
-  let year = date.getFullYear()
-  let month = (date.getMonth() + 1).toString().padStart(2, '0')
-  let day = date.getDate().toString().padStart(2, '0')
-  let hours = date.getHours().toString().padStart(2, '0')
-  let minutes = date.getMinutes().toString().padStart(2, '0')
-  return year + month + day + '_' + hours + minutes
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  const hours = date.getHours().toString().padStart(2, '0')
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  return `${year}${month}${day}_${hours}${minutes}`
 }
 
 export function Option() {
@@ -74,8 +81,8 @@ export function Option() {
   const [importDialog, setImportDialog] = useState(false)
   const [importJson, setImportJson] = useState<UserSettingsType>()
 
-  const iframeRef = useRef(null)
-  const inputFile = useRef(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const inputFile = useRef<HTMLInputElement>(null)
 
   const updateSettings = async () => {
     try {
@@ -147,13 +154,13 @@ export function Option() {
         const { searchUrl, settings } = value
         const url = await fetchIconUrl(searchUrl)
         if (url && settings) {
-          settings.commands.forEach((command) => {
+          for (const command of settings.commands) {
             if (!command.iconUrl && command.searchUrl) {
               if (command.searchUrl === searchUrl) {
                 command.iconUrl = url
               }
             }
-          })
+          }
           setSettings(settings)
           sendMessage('changed', settings)
         }
@@ -193,6 +200,7 @@ export function Option() {
   const handleImport = () => {
     if (inputFile == null || inputFile.current == null) return
     const files = inputFile.current.files
+    if (files == null) return
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
       const reader = new FileReader()
@@ -217,9 +225,9 @@ export function Option() {
     setImportDialog(false)
   }
 
-  const sendMessage = (command: string, value: any) => {
-    if (iframeRef.current != null) {
-      let message = { command, value }
+  const sendMessage = (command: string, value: unknown) => {
+    if (iframeRef.current != null && iframeRef.current.contentWindow != null) {
+      const message = { command, value }
       iframeRef.current.contentWindow.postMessage(message, '*')
     } else {
       console.warn('frame null')
@@ -253,13 +261,17 @@ export function Option() {
         <span className={css.version}>Version: {VERSION}</span>
       </header>
       <div className={css.menu}>
-        <button onClick={handleReset} className={css.button}>
+        <button onClick={handleReset} className={css.button} type="button">
           {t('Option_Reset')}
         </button>
-        <button onClick={handleExport} className={css.button}>
+        <button onClick={handleExport} className={css.button} type="button">
           {t('Option_Export')}
         </button>
-        <button onClick={() => setImportDialog(true)} className={css.button}>
+        <button
+          onClick={() => setImportDialog(true)}
+          className={css.button}
+          type="button"
+        >
           {t('Option_Import')}
         </button>
       </div>
@@ -291,17 +303,18 @@ export function Option() {
           accept=".json"
           onChange={handleImport}
           ref={inputFile}
-          className={css.button + ' ' + css.buttonImport}
-        ></input>
+          className={`${css.button} ${css.buttonImport}`}
+        />
       </Dialog>
       <iframe
+        title="SettingForm"
         id="sandbox"
         src="sandbox.html"
         ref={iframeRef}
         className={css.editorFrame}
         onLoad={onLoadIfame}
         height={iframeHeight}
-      ></iframe>
+      />
     </div>
   )
 }
