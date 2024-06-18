@@ -1,6 +1,6 @@
 import * as mv3 from 'mv3-hot-reload'
 import { isDebug } from './const'
-import { Ipc, BgCommand, SidePanelCommand } from './services/ipc'
+import { Ipc, BgCommand } from './services/ipc'
 import type { IpcCallback } from './services/ipc'
 import { escapeJson } from './services/util'
 import { UserSettings, migrate } from './services/userSettings'
@@ -20,12 +20,10 @@ type WindowLayer = WindowType[]
 class BgData {
   private static instance: BgData
 
-  public sidePanelTabId: number | null
   public windowStack: WindowLayer[]
 
   private constructor() {
     this.windowStack = []
-    this.sidePanelTabId = null
 
     Storage.get<BgData>(STORAGE_KEY.BG).then((val: BgData) => {
       if (val) {
@@ -134,50 +132,6 @@ const commandFuncs = {
     return false
   },
 
-  [BgCommand.enableSidePanel]: (param: unknown, sender: Sender): boolean => {
-    const tabId = sender?.tab?.id
-    if (tabId != null) {
-      console.debug('enable sidePanel', tabId)
-      chrome.sidePanel.setOptions({
-        tabId,
-        path: 'sidepanel.html',
-        enabled: true,
-      })
-    }
-    return false
-  },
-
-  [BgCommand.disableSidePanel]: (param: unknown, sender: Sender): boolean => {
-    const tabId = sender?.tab?.id
-    if (tabId && tabId === data.sidePanelTabId) {
-      console.debug('disable sidePanel', tabId)
-      data.sidePanelTabId = null
-      BgData.set(data)
-      chrome.sidePanel.setOptions({
-        tabId,
-        enabled: false,
-      })
-    }
-    return false
-  },
-
-  [BgCommand.openSidePanel]: (
-    param: unknown,
-    sender: Sender,
-    response,
-  ): boolean => {
-    console.debug('open sidePanel', param)
-    const tabId = sender?.tab?.id
-    const { url } = param as { url: string }
-    if (tabId != null) {
-      openSidePanel(tabId, url).then((ret) => {
-        console.debug('ret openSidePanel', ret)
-        response?.(ret)
-      })
-    }
-    return true
-  },
-
   [BgCommand.openOption]: (param: unknown, sender: Sender): boolean => {
     chrome.tabs.create({
       url: 'options_page.html',
@@ -224,39 +178,6 @@ const commandFuncs = {
 for (const key in BgCommand) {
   const command = BgCommand[key as keyof typeof BgCommand]
   Ipc.addListener(command, commandFuncs[key])
-}
-
-const openSidePanel = async (tabId: number, url: string) => {
-  await chrome.sidePanel.open({ tabId })
-  await updateRules(tabId)
-  const sidePanelTabId = data.sidePanelTabId
-  return new Promise((resolve) => {
-    if (sidePanelTabId === tabId) {
-      // If SidePanel was already opened.
-      Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
-        resolve(ret)
-      })
-    } else {
-      // Close the last opened SidePanel .
-      if (sidePanelTabId != null) {
-        console.debug('disable sidePanel', sidePanelTabId)
-        chrome.sidePanel.setOptions({
-          tabId: sidePanelTabId,
-          enabled: false,
-        })
-      }
-      // Open the new SidePanel.
-      Ipc.addListener(SidePanelCommand.onLoad, () => {
-        Ipc.send(SidePanelCommand.setUrl, { url }).then((ret) => {
-          resolve(ret)
-          data.sidePanelTabId = tabId
-          BgData.set(data)
-        })
-        // return sync
-        return false
-      })
-    }
-  })
 }
 
 const updateRules = async (tabId: number) => {
@@ -365,17 +286,6 @@ chrome.windows.onBoundsChanged.addListener((window) => {
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   // Force close the menu
   Ipc.sendAllTab(BgCommand.closeMenu)
-
-  const sidePanelTabId = data.sidePanelTabId
-  // console.debug('onActivated', tabId, sidePanelTabId)
-  if (tabId !== sidePanelTabId) {
-    // Disables the side panel on all other sites
-    console.debug('disable sidePanel', tabId)
-    await chrome.sidePanel.setOptions({
-      tabId,
-      enabled: false,
-    })
-  }
 })
 
 chrome.runtime.onInstalled.addListener((details) => {

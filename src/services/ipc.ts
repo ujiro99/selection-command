@@ -2,19 +2,11 @@ export enum BgCommand {
   openPopups = 'openPopups',
   openTab = 'openTab',
   closeMenu = 'closeMenu',
-  enableSidePanel = 'enableSidePanel',
-  disableSidePanel = 'disableSidePanel',
-  openSidePanel = 'openSidePanel',
   openOption = 'openOption',
   execApi = 'execApi',
 }
 
-export enum SidePanelCommand {
-  onLoad = 'onLoad',
-  setUrl = 'setUrl',
-}
-
-type IpcCommand = BgCommand | SidePanelCommand
+type IpcCommand = BgCommand
 
 type Request = {
   command: IpcCommand
@@ -33,7 +25,9 @@ export const Ipc = {
   },
 
   async sendAllTab(command: IpcCommand, param?: unknown) {
-    const tabs = await chrome.tabs.query({ url: ['http://*/*', 'https://*/*'] })
+    const tabs = await chrome.tabs.query({
+      url: ['http://*/*', 'https://*/*'],
+    })
     return tabs.map(async (tab) => {
       return tab.id && chrome.tabs.sendMessage(tab.id, { command, param })
     })

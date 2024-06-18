@@ -25,7 +25,6 @@ const main = async () => {
       'src/background_script.ts',
       'src/content_script.tsx',
       'src/options_page.tsx',
-      'src/sidepanel.tsx',
       'src/sandbox.tsx',
     ],
     outdir: 'dist/src',

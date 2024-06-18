@@ -54,10 +54,6 @@ export function Popup(props: PopupProps) {
     setForceHide(false)
   }, [props.selectionText])
 
-  useEffect(() => {
-    visible && Ipc.send(BgCommand.enableSidePanel)
-  }, [visible])
-
   return (
     <Popover className={popupContianer}>
       <Transition
