@@ -19,7 +19,7 @@ export enum STORAGE_AREA {
   LOCAL = 'local',
 }
 
-type onChangedCallback = (newVal: unknown, oldVal: unknown) => void
+export type onChangedCallback = (newVal: unknown, oldVal: unknown) => void
 
 function isStorageKey(key: string | number): key is STORAGE_KEY {
   return Object.values(STORAGE_KEY).includes(key)

@@ -1,6 +1,7 @@
 import type { Placement } from '@popperjs/core'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
-import UseSetting from './defaultUserSettings.json'
+import type { onChangedCallback } from './storage'
+import DefaultSetting from './defaultUserSettings.json'
 import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
 import { isBase64, isUrl } from '@/services/util'
 
@@ -58,7 +59,7 @@ enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
 }
 
-type Caches = {
+export type Caches = {
   images: ImageCache
 }
 
@@ -68,10 +69,7 @@ type ImageCache = {
 
 export const UserSettings = {
   get: async (): Promise<UserSettingsType> => {
-    const caches = await Storage.get<Caches>(
-      LOCAL_STORAGE_KEY.CACHES,
-      STORAGE_AREA.LOCAL,
-    )
+    const caches = await UserSettings.getCaches()
     const obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
     obj.commands = obj.commands.map((c, idx) => {
       // Assigning IDs to each command
@@ -87,12 +85,8 @@ export const UserSettings = {
   },
 
   set: async (data: UserSettingsType): Promise<boolean> => {
-    const caches = await Storage.get<Caches>(
-      LOCAL_STORAGE_KEY.CACHES,
-      STORAGE_AREA.LOCAL,
-    )
-
     // image data url to cache id.
+    const caches = await UserSettings.getCaches()
     for (const c of data.commands) {
       if (!c.iconUrl) continue
       if (isBase64(c.iconUrl)) {
@@ -110,11 +104,19 @@ export const UserSettings = {
   },
 
   reset: async () => {
-    await Storage.set(STORAGE_KEY.USER, UseSetting)
+    await Storage.set(STORAGE_KEY.USER, DefaultSetting)
   },
 
   onChanged: (callback: (data: UserSettingsType) => void) => {
-    Storage.addListener(STORAGE_KEY.USER, callback)
+    Storage.addListener(STORAGE_KEY.USER, callback as onChangedCallback)
+  },
+
+  getCaches: async (): Promise<Caches> => {
+    return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES, STORAGE_AREA.LOCAL)
+  },
+
+  setCaches: async (caches: Caches) => {
+    Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
   },
 }
 

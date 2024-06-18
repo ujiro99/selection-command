@@ -82,20 +82,35 @@ export function Option() {
       if (settings == null) return
       setIconVisible(true)
 
-      // Convert iconUrl to DataURL
-      await Promise.all(
-        settings.commands.map(async (c) => {
-          if (!c.iconUrl) return
-          if (isBase64(c.iconUrl)) return
-
-          let dataUrl = await toDataURL(c.iconUrl)
+      // Convert iconUrl to DataURL for cache.
+      const caches = await UserSettings.getCaches()
+      const iconUrls = settings.commands.map((c) => c.iconUrl)
+      const folderIconUrls = settings.folders.map((f) => f.iconUrl)
+      const urls = [...iconUrls, ...folderIconUrls] as string[]
+      const noCacheUrls = urls
+        .filter((url) => url != null)
+        .filter((url) => !isBase64(url) && caches.images[url] == null)
+      const newCaches = await Promise.all(
+        noCacheUrls.map(async (url) => {
+          const dataUrl = await toDataURL(url)
           console.debug('dataUrl', dataUrl)
-          c.iconUrl = dataUrl
+          return [url, dataUrl]
         }),
       )
+      for (const [iconUrl, dataUrl] of newCaches) {
+        caches.images[iconUrl] = dataUrl
+      }
 
-      console.debug('update settings', settings)
+      // Remove old cache.
+      for (const key of Object.keys(caches.images)) {
+        if (!urls.includes(key)) {
+          delete caches.images[key]
+        }
+      }
+
+      console.debug('update settings', settings, caches)
       await UserSettings.set(settings)
+      await UserSettings.setCaches(caches)
       await sleep(1000)
       setIconVisible(false)
     } catch (e) {
