@@ -143,10 +143,8 @@ const migrate060 = async () => {
     'Update the storage location of the configuration data to the cloud.',
   )
   // moveStorageSync
-  const settings = await Storage.get<UserSettingsType>(
-    STORAGE_KEY.USER,
-    STORAGE_AREA.LOCAL,
-  )
+  const res = await chrome.storage.local.get(`${STORAGE_KEY.USER}`)
+  const settings = res[`${STORAGE_KEY.USER}`]
   if (!settings) return
 
   // cache image data url to local storage
