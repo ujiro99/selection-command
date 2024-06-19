@@ -2,14 +2,14 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { getSceenSize } from '@/services/util'
 import type { Command } from '@/services/userSettings'
 
-interface PopupProps {
+interface Props {
   urls: string[]
   command: Command
   menuElm: Element | null
 }
 
 export const Popup = {
-  execute({ urls, command, menuElm }: PopupProps) {
+  execute({ urls, command, menuElm }: Props) {
     if (menuElm) {
       const rect = menuElm.getBoundingClientRect()
       console.debug('open popup', rect)

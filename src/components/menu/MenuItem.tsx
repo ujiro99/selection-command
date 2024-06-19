@@ -65,11 +65,11 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         menuElm: props.menuRef.current,
       })
     } else if (mode === OPEN_MODE.TAB) {
-      const background =
-        e.ctrlKey && (!openModeSecondary || openMode === openModeSecondary)
-      Ipc.send(BgCommand.openTab, {
-        url: url,
-        active: !background,
+      actions[OPEN_MODE.TAB].execute({
+        urls: [url],
+        command: props.command,
+        menuElm: props.menuRef.current,
+        e,
       })
     } else if (mode === OPEN_MODE.API) {
       if (sendState !== SendState.NONE) {
