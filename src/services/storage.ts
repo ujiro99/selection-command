@@ -12,6 +12,9 @@ export enum LOCAL_STORAGE_KEY {
 const DEFAULTS = {
   [STORAGE_KEY.USER]: UseSetting,
   [STORAGE_KEY.BG]: {},
+  [LOCAL_STORAGE_KEY.CACHES]: {
+    images: {},
+  },
 }
 
 export enum STORAGE_AREA {
@@ -20,10 +23,6 @@ export enum STORAGE_AREA {
 }
 
 export type onChangedCallback = (newVal: unknown, oldVal: unknown) => void
-
-function isStorageKey(key: string | number): key is STORAGE_KEY {
-  return Object.values(STORAGE_KEY).includes(key)
-}
 
 export const Storage = {
   /**
@@ -40,12 +39,7 @@ export const Storage = {
         if (chrome.runtime.lastError != null) {
           reject(chrome.runtime.lastError)
         } else {
-          let val: T
-          if (isStorageKey(key)) {
-            val = result[key] ?? DEFAULTS[key]
-          } else {
-            val = result[key]
-          }
+          const val = result[key] ?? DEFAULTS[key]
           resolve(val)
         }
       })
