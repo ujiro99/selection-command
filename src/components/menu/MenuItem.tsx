@@ -1,6 +1,7 @@
 import React, { useState, useRef, useContext } from 'react'
 import classNames from 'classnames'
 import { context } from '@/components/App'
+import { actions } from '@/action'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { Tooltip } from '../Tooltip'
 import {
@@ -17,12 +18,7 @@ import {
 import { Icon } from '../Icon'
 import { OPEN_MODE } from '../../const'
 import type { Command } from '@/services/userSettings'
-import {
-  toUrl,
-  sleep,
-  linksInSelection,
-  getSceenSize,
-} from '../../services/util'
+import { toUrl, sleep, linksInSelection } from '../../services/util'
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -54,22 +50,6 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     title = `${links.length} links`
   }
 
-  const openPopups = (urls: string[]) => {
-    if (props.menuRef.current) {
-      const rect = props.menuRef.current.getBoundingClientRect()
-      console.debug('open popup', rect)
-      Ipc.send(BgCommand.openPopups, {
-        commandId: props.command.id,
-        urls: urls,
-        top: Math.floor(window.screenTop + rect.top),
-        left: Math.floor(window.screenLeft + rect.left + 20),
-        height: props.command.popupOption?.height,
-        width: props.command.popupOption?.width,
-        screen: getSceenSize(),
-      })
-    }
-  }
-
   function handleClick(e: React.MouseEvent) {
     let mode = openMode
     if (e.ctrlKey && openModeSecondary) {
@@ -79,7 +59,11 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
     const url = toUrl(props.command.searchUrl, selectionText)
 
     if (mode === OPEN_MODE.POPUP) {
-      openPopups([url])
+      actions[OPEN_MODE.POPUP].execute({
+        urls: [url],
+        command: props.command,
+        menuElm: props.menuRef.current,
+      })
     } else if (mode === OPEN_MODE.TAB) {
       const background =
         e.ctrlKey && (!openModeSecondary || openMode === openModeSecondary)
@@ -114,7 +98,11 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           setSendState(SendState.NONE)
         })
     } else if (mode === OPEN_MODE.LINK_POPUP) {
-      openPopups(links)
+      actions[OPEN_MODE.LINK_POPUP].execute({
+        urls: links,
+        command: props.command,
+        menuElm: props.menuRef.current,
+      })
     }
     e.stopPropagation()
   }
