@@ -2,14 +2,15 @@ import React, { useContext, useState, useEffect, useRef } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
 import classnames from 'classnames'
+
 import { MenuItem } from './MenuItem'
 import { context } from '../App'
-import { toUrl } from '../../services/util'
-import { STYLE } from '../../const'
-import { Command, CommandFolder } from '../../services/userSettings'
-import { useSetting } from '../../hooks/useSetting'
 import { menu, list, menuHorizontal } from '../Menu.module.css'
-import { sleep } from '../../services/util'
+import { STYLE } from '@/const'
+import { toUrl, sleep } from '@/services/util'
+import type { Command, CommandFolder } from '@/services/userSettings'
+import { useSetting } from '@/hooks/useSetting'
+
 import * as css from './MenuFolder.module.css'
 
 type MenuFolderProps = {
@@ -61,13 +62,12 @@ const calcSafeArea = (
 ) => {
   if (dataPlacement === 'top' || dataPlacement === 'bottom') {
     return calcSafeAreaHorizontal(popperElm, folderElm, dataPlacement)
-  } else {
-    return calcSafeAreaVertical(popperElm, folderElm, dataPlacement)
   }
+  return calcSafeAreaVertical(popperElm, folderElm, dataPlacement)
 }
 
 export function MenuFolder(props: MenuFolderProps): JSX.Element {
-  const [popperElm, setPopperElm] = useState(null)
+  const [popperElm, setPopperElm] = useState<HTMLDivElement>()
   const [visible, setVisible] = useState(false)
   const [safeAreaStyles, setSafeAreaStyles] = useState<React.CSSProperties>({})
   const folderRef = useRef(null)
@@ -101,7 +101,7 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
     }
   }
   if (attributes.popper) {
-    let attr = attributes.popper['data-popper-placement']
+    const attr = attributes.popper['data-popper-placement']
     if (attr.startsWith('top')) {
       dataPlacement = 'top'
     } else if (attr.startsWith('bottom')) {
@@ -136,10 +136,10 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
         const area = calcSafeArea(popperElm, folderRef.current, dataPlacement)
         setSafeAreaStyles({
           position: 'absolute',
-          top: area.top + 'px',
-          left: area.left + 'px',
-          width: area.width + 'px',
-          height: area.height + 'px',
+          top: `${area.top}px`,
+          left: `${area.left}px`,
+          width: `${area.width}px`,
+          height: `${area.height}`,
         })
       }
     })()
@@ -166,7 +166,11 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
       })}
       ref={folderRef}
     >
-      <img className={classnames(css.folderIcon)} src={props.folder.iconUrl} />
+      <img
+        className={classnames(css.folderIcon)}
+        src={props.folder.iconUrl}
+        alt={props.folder.title}
+      />
       {!onlyIcon && <span>{props.folder.title}</span>}
       {visible && <div className="cover" style={safeAreaStyles} />}
       <Transition
@@ -218,7 +222,7 @@ function InnerMenu({
     >
       <ul className={list}>
         {commands.map((obj) => (
-          <li key={'menu_' + obj.id}>
+          <li key={`menu_${obj.id}`}>
             <MenuItem
               url={toUrl(obj.searchUrl, selectionText)}
               menuRef={menuRef}

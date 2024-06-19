@@ -36,6 +36,7 @@ export function OptionButton(props: Props): JSX.Element {
         })}
         onClick={openOption}
         ref={elmRef}
+        type="button"
       >
         <Icon name="more-vert" className={moreIcon} />
         <span className={itemTitle}>{title}</span>
