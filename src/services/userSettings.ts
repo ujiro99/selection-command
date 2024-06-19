@@ -84,28 +84,30 @@ export const UserSettings = {
     return obj
   },
 
-  set: async (data: UserSettingsType, caches?: Caches): Promise<boolean> => {
-    console.debug('update settings', data, caches)
+  set: async (data: UserSettingsType, newCaches?: Caches): Promise<boolean> => {
     // image data url to cache id.
-    if (caches) {
-      for (const c of data.commands) {
-        if (!c.iconUrl) continue
-        if (isBase64(c.iconUrl)) {
-          const cache = Object.entries(caches.images).find(
-            ([k, v]) => v === c.iconUrl,
-          )
-          if (cache) {
-            c.iconUrl = cache[0]
-          }
+    let caches = newCaches
+    if (!caches) {
+      caches = await UserSettings.getCaches()
+    }
+    // console.debug('update settings', data, caches)
+    for (const c of data.commands) {
+      if (!c.iconUrl) continue
+      if (isBase64(c.iconUrl)) {
+        const cache = Object.entries(caches.images).find(
+          ([k, v]) => v === c.iconUrl,
+        )
+        if (cache) {
+          c.iconUrl = cache[0]
         }
       }
-      const urls = UserSettings.getUrls(data)
-      // remove unused caches
-      for (const key in caches.images) {
-        if (!urls.includes(key)) {
-          console.debug('remove unused cache', key)
-          delete caches.images[key]
-        }
+    }
+    const urls = UserSettings.getUrls(data)
+    // remove unused caches
+    for (const key in caches.images) {
+      if (!urls.includes(key)) {
+        console.debug('remove unused cache', key)
+        delete caches.images[key]
       }
     }
     await Storage.set(STORAGE_KEY.USER, data)
