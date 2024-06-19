@@ -5,7 +5,6 @@ export enum OPEN_MODE {
   POPUP = 'popup',
   TAB = 'tab',
   API = 'api',
-  SIDE_PANEL = 'sidePanel',
   LINK_POPUP = 'linkPopup',
 }
 

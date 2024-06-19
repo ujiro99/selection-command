@@ -28,14 +28,9 @@
     ]
   },
   "action": {},
-  "side_panel": {
-    "default_path": "sidepanel.html"
-  },
   "permissions": [
     "storage",
-    "tabs",
-    "sidePanel",
-    "declarativeNetRequest"
+    "tabs"
   ],
   "host_permissions": [
     "http://*/*",

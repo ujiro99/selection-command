@@ -180,34 +180,6 @@ for (const key in BgCommand) {
   Ipc.addListener(command, commandFuncs[key])
 }
 
-const updateRules = async (tabId: number) => {
-  const rules = await chrome.declarativeNetRequest.getSessionRules()
-  const removeIds = rules.map((r) => r.id)
-  console.debug('sessionRules', rules)
-  const newRules = [
-    {
-      id: tabId,
-      action: {
-        type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
-        responseHeaders: [
-          {
-            header: 'X-Frame-Options',
-            operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
-          },
-        ],
-      },
-      condition: {
-        resourceTypes: [chrome.declarativeNetRequest.ResourceType.SUB_FRAME],
-        tabIds: [chrome.tabs.TAB_ID_NONE],
-      },
-    },
-  ]
-  await chrome.declarativeNetRequest.updateSessionRules({
-    addRules: newRules,
-    removeRuleIds: removeIds,
-  })
-}
-
 const updateWindowSize = async (
   commandId: number,
   width: number,
