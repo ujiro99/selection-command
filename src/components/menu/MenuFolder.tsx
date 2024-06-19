@@ -5,12 +5,12 @@ import classnames from 'classnames'
 
 import { MenuItem } from './MenuItem'
 import { context } from '../App'
-import { menu, list, menuHorizontal } from '../Menu.module.css'
 import { STYLE } from '@/const'
 import { toUrl, sleep } from '@/services/util'
 import type { Command, CommandFolder } from '@/services/userSettings'
 import { useSetting } from '@/hooks/useSetting'
 
+import { menu, list, menuHorizontal } from './Menu.module.css'
 import * as css from './MenuFolder.module.css'
 
 type MenuFolderProps = {

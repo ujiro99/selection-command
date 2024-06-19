@@ -1,5 +1,5 @@
 .folder {
-  composes: item from '../Menu.module.css';
+  composes: item from './Menu.module.css';
   cursor: default;
   font-weight: 500;
   position: relative;

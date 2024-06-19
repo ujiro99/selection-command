@@ -1,16 +1,16 @@
 import React, { useRef } from 'react'
 import classNames from 'classnames'
-import { STYLE, ROOT_FOLDER } from '../const'
-import { OptionButton } from './menu/OptionButton'
-import { MenuFolder } from './menu/MenuFolder'
-import { MenuItem } from './menu/MenuItem'
+import { STYLE, ROOT_FOLDER } from '@/const'
+import { OptionButton } from './OptionButton'
+import { MenuFolder } from './MenuFolder'
+import { MenuItem } from './MenuItem'
 import { menu, list, menuHorizontal } from './Menu.module.css'
 import type {
   Command,
   CommandFolder,
   UserSettingsType,
-} from '../services/userSettings'
-import { useSetting } from '../hooks/useSetting'
+} from '@/services/userSettings'
+import { useSetting } from '@/hooks/useSetting'
 
 type ItemObj = {
   folder: CommandFolder

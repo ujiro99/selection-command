@@ -9,7 +9,7 @@ import {
   moreButtonHorizontal,
   itemTitle,
   itemOnlyIcon,
-} from '../Menu.module.css'
+} from './Menu.module.css'
 import { Ipc, BgCommand } from '../../services/ipc'
 import { t } from '../../services/i18n'
 import { Tooltip } from '../Tooltip'

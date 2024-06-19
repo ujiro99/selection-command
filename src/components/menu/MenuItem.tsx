@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext } from 'react'
 import classNames from 'classnames'
-import { context } from '../App'
-import { Ipc, BgCommand } from '../../services/ipc'
+import { context } from '@/components/App'
+import { Ipc, BgCommand } from '@/services/ipc'
 import { Tooltip } from '../Tooltip'
 import {
   button,
@@ -13,7 +13,7 @@ import {
   apiIconLoading,
   apiIconSuccess,
   apiIconError,
-} from '../Menu.module.css'
+} from './Menu.module.css'
 import { Icon } from '../Icon'
 import { OPEN_MODE } from '../../const'
 import type { Command } from '@/services/userSettings'
@@ -113,18 +113,6 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         .then(() => {
           setSendState(SendState.NONE)
         })
-    } else if (mode === OPEN_MODE.SIDE_PANEL) {
-      Ipc.send(BgCommand.openSidePanel, {
-        url: url,
-      }).then(() => {
-        window.addEventListener(
-          'click',
-          () => Ipc.send(BgCommand.disableSidePanel),
-          {
-            once: true,
-          },
-        )
-      })
     } else if (mode === OPEN_MODE.LINK_POPUP) {
       openPopups(links)
     }
