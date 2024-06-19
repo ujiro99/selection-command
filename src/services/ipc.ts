@@ -4,6 +4,8 @@ export enum BgCommand {
   closeMenu = 'closeMenu',
   openOption = 'openOption',
   execApi = 'execApi',
+  canOpenInTab = 'canOpenInTab',
+  openInTab = 'openInTab',
 }
 
 type IpcCommand = BgCommand
@@ -16,12 +18,16 @@ type Request = {
 export type IpcCallback = (
   param: unknown,
   sender: chrome.runtime.MessageSender,
-  response?: (response?: any) => void,
+  response?: (response?: unknown) => void,
 ) => boolean
 
 export const Ipc = {
   async send(command: IpcCommand, param?: unknown) {
     return await chrome.runtime.sendMessage({ command, param })
+  },
+
+  async sendTab(tabId: number, command: IpcCommand, param?: unknown) {
+    return await chrome.tabs.sendMessage(tabId, { command, param })
   },
 
   async sendAllTab(command: IpcCommand, param?: unknown) {

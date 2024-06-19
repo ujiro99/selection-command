@@ -1,0 +1,39 @@
+.OpenInTab {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  z-index: 2147483647;
+}
+
+.OpenInTab__button {
+  background: #f9f9f9;
+  border-radius: 6px;
+  border: none;
+  filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+    drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--gray-400);
+  font-size: 12px;
+  transition:
+    color 250ms,
+    background-color 250ms;
+}
+.OpenInTab__button:hover {
+  color: var(--gray-700);
+  background: #fff;
+}
+
+.OpenInTab__icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  padding-bottom: 2px;
+  fill: var(--gray-400);
+  transition: fill 250ms;
+}
+.OpenInTab__icon:hover {
+  fill: var(--gray-700);
+}

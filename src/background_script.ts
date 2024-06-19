@@ -2,10 +2,10 @@ import * as mv3 from 'mv3-hot-reload'
 import { isDebug } from './const'
 import { Ipc, BgCommand } from './services/ipc'
 import type { IpcCallback } from './services/ipc'
-import { escapeJson } from './services/util'
+import { escapeJson, sleep } from './services/util'
 import { UserSettings, migrate } from './services/userSettings'
 import type { CommandVariable } from './services/userSettings'
-import { Storage, STORAGE_KEY } from './services/storage'
+import { Storage, STORAGE_KEY, STORAGE_AREA } from './services/storage'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
@@ -13,6 +13,7 @@ mv3.background.init()
 type WindowType = {
   id: number
   commandId: number
+  srcWindowId: number
 }
 
 type WindowLayer = WindowType[]
@@ -25,11 +26,13 @@ class BgData {
   private constructor() {
     this.windowStack = []
 
-    Storage.get<BgData>(STORAGE_KEY.BG).then((val: BgData) => {
-      if (val) {
-        BgData.instance = val
-      }
-    })
+    Storage.get<BgData>(STORAGE_KEY.BG, STORAGE_AREA.LOCAL).then(
+      (val: BgData) => {
+        if (val) {
+          BgData.instance = val
+        }
+      },
+    )
   }
 
   public static get(): BgData {
@@ -41,7 +44,7 @@ class BgData {
 
   public static set(val: BgData) {
     BgData.instance = val
-    Storage.set(STORAGE_KEY.BG, BgData.instance)
+    Storage.set(STORAGE_KEY.BG, BgData.instance, STORAGE_AREA.LOCAL)
   }
 }
 
@@ -129,6 +132,7 @@ const commandFuncs = {
         const layer = windows.map((w) => ({
           id: w.id,
           commandId: param.commandId,
+          srcWindowId: current.id,
         })) as WindowLayer
         data.windowStack.push(layer)
         BgData.set(data)
@@ -182,6 +186,44 @@ const commandFuncs = {
     // return async
     return true
   },
+
+  [BgCommand.canOpenInTab]: (
+    param: unknown,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    for (const layer of data.windowStack) {
+      for (const window of layer) {
+        if (window.id === sender.tab?.windowId) {
+          // found!
+          response(true)
+          break
+        }
+      }
+    }
+    return false
+  },
+
+  [BgCommand.openInTab]: (param: unknown, sender: Sender): boolean => {
+    let w: WindowType | undefined
+    for (const layer of data.windowStack) {
+      for (const window of layer) {
+        if (window.id === sender.tab?.windowId) {
+          w = window
+          break
+        }
+      }
+    }
+    if (!w) {
+      console.warn('window not found', sender.tab?.windowId)
+      return false
+    }
+    chrome.tabs.create({
+      url: sender.url,
+      windowId: w.srcWindowId,
+    })
+    return false
+  },
 } as { [key: string]: IpcCallback }
 
 for (const key in BgCommand) {
@@ -215,9 +257,6 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     return
   }
-
-  // Force close the menu
-  // Ipc.sendAllTab(BgCommand.closeMenu)
 
   // Close popup windows when focus changed to lower stack window
   const stack = data.windowStack
@@ -264,7 +303,7 @@ chrome.windows.onBoundsChanged.addListener((window) => {
   }
 })
 
-chrome.tabs.onActivated.addListener(async ({ tabId }) => {
+chrome.tabs.onActivated.addListener(async () => {
   // Force close the menu
   Ipc.sendAllTab(BgCommand.closeMenu)
 })

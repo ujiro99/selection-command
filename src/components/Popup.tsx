@@ -4,8 +4,8 @@ import { usePopper } from 'react-popper'
 import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './menu/Menu'
 import { POPUP_ENABLED } from '../const'
-import { useSetting } from '../hooks/useSetting'
-import { Ipc, BgCommand } from '../services/ipc'
+import { useSetting } from '@/hooks/useSetting'
+import { Ipc, BgCommand } from '@/services/ipc'
 
 type PopupProps = {
   positionElm: Element | null
@@ -14,7 +14,7 @@ type PopupProps = {
 
 export function Popup(props: PopupProps) {
   const [popperElement, setPopperElement] = useState<HTMLDivElement>()
-  const [forceHide, setForceHide] = useState<boolean>(false)
+  const [forceHide, setForceHide] = useState(false)
   const { settings, pageRule } = useSetting()
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
