@@ -9,13 +9,11 @@ import validator from '@rjsf/validator-ajv8'
 import Form from '@rjsf/core'
 import type { IChangeEvent } from '@rjsf/core'
 import classnames from 'classnames'
-import platform from 'platform'
 
 import userSettingSchema from '../services/userSettingSchema.json'
 import type { UserSettingsType, FolderOption } from '../services/userSettings'
 
 import { Icon } from '../components/Icon'
-import { OPEN_MODE } from '../const'
 
 import * as css from './SettingForm.module.css'
 
@@ -111,14 +109,6 @@ export function SettingFrom() {
     )
     userSettingSchema.definitions.folderOptions = folderOptions
     console.debug('settingData', settingData)
-  }
-
-  // SidePanel is not supported in browsers other than Chrome
-  if (platform.name !== 'Chrome') {
-    const modes = userSettingSchema.definitions.openMode.enum
-    userSettingSchema.definitions.openMode.enum = modes.filter(
-      (e) => e !== OPEN_MODE.SIDE_PANEL,
-    )
   }
 
   const fields: RegistryFieldsType = {

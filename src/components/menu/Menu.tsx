@@ -1,7 +1,6 @@
 import React, { useRef } from 'react'
 import classNames from 'classnames'
 import { STYLE, ROOT_FOLDER } from '@/const'
-import { OptionButton } from './OptionButton'
 import { MenuFolder } from './MenuFolder'
 import { MenuItem } from './MenuItem'
 import { menu, list, menuHorizontal } from './Menu.module.css'
@@ -11,6 +10,7 @@ import type {
   UserSettingsType,
 } from '@/services/userSettings'
 import { useSetting } from '@/hooks/useSetting'
+import { OptionItem } from './OptionItem'
 
 type ItemObj = {
   folder: CommandFolder
@@ -29,13 +29,13 @@ export function Menu(): JSX.Element {
   const isHorizontal = settings.style === STYLE.HORIZONTAL
 
   const items = commands.reduce((pre, cur, idx) => {
-    const found = folders.find((obj) => obj.id === cur.parentFolder?.id)
-    if (found) {
+    const folder = folders.find((obj) => obj.id === cur.parentFolder?.id)
+    if (folder) {
       const f = pre.find((obj) => obj.folder.id === cur.parentFolder?.id)
       if (f) {
         f.commands.push(cur)
       } else {
-        pre.push({ folder: found, commands: [cur] })
+        pre.push({ folder, commands: [cur] })
       }
     } else {
       // insert the command to the root folder
@@ -52,6 +52,9 @@ export function Menu(): JSX.Element {
     return pre
   }, [] as ItemObj[])
 
+  // Add option menu.
+  items.push(OptionItem)
+
   return (
     <div
       className={classNames(menu, { [menuHorizontal]: isHorizontal })}
@@ -59,9 +62,6 @@ export function Menu(): JSX.Element {
     >
       <ul className={list}>
         <ItemsToMenu items={items} menuRef={menuRef} settings={settings} />
-        <li>
-          <OptionButton onlyIcon={isHorizontal} />
-        </li>
       </ul>
     </div>
   )

@@ -211,7 +211,6 @@ type InnerMenuProps = {
 function InnerMenu({
   isHorizontal,
   commands,
-  selectionText,
   menuRef,
 }: InnerMenuProps): JSX.Element {
   return (
@@ -223,12 +222,7 @@ function InnerMenu({
       <ul className={list}>
         {commands.map((obj) => (
           <li key={`menu_${obj.id}`}>
-            <MenuItem
-              url={toUrl(obj.searchUrl, selectionText)}
-              menuRef={menuRef}
-              onlyIcon={isHorizontal}
-              command={obj}
-            />
+            <MenuItem menuRef={menuRef} onlyIcon={isHorizontal} command={obj} />
           </li>
         ))}
       </ul>

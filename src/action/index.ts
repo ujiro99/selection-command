@@ -3,6 +3,7 @@ import { Popup } from './popup'
 import { Tab } from './tab'
 import { Api } from './api'
 import { LinkPopup } from './linkPopup'
+import { Option } from './option'
 import type { Command } from '@/services/userSettings'
 
 export enum ExecState {
@@ -25,4 +26,5 @@ export const actions = {
   [OPEN_MODE.TAB]: Tab,
   [OPEN_MODE.API]: Api,
   [OPEN_MODE.LINK_POPUP]: LinkPopup,
+  [OPEN_MODE.OPTION]: Option,
 }
