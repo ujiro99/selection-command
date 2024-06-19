@@ -5,7 +5,7 @@ import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
 import { UserSettings } from '../services/userSettings'
 import type { UserSettingsType, ImageCache } from '../services/userSettings'
-import { sleep, toDataURL, toUrl, isBase64 } from '../services/util'
+import { sleep, toDataURL, toUrl, isBase64, isUrl } from '../services/util'
 import { t } from '../services/i18n'
 import { APP_ID, VERSION } from '../const'
 import { Dialog } from './Dialog'
@@ -180,7 +180,17 @@ export function Option() {
   }
 
   const handleExport = async () => {
-    const data = await Storage.get(STORAGE_KEY.USER)
+    const data = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+
+    // for back compatibility
+    // cache key to image data url
+    const caches = await UserSettings.getCaches()
+    for (const c of data.commands) {
+      if (!c.iconUrl) continue
+      if (isBase64(c.iconUrl) || isUrl(c.iconUrl)) continue
+      c.iconUrl = caches.images[c.iconUrl]
+    }
+
     const text = JSON.stringify(data, null, 2)
     const blob = new Blob([text], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
