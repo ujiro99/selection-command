@@ -90,6 +90,12 @@ function bindVariables(
   return res
 }
 
+async function getCurrentTab() {
+  const queryOptions = { active: true, lastFocusedWindow: true }
+  const [tab] = await chrome.tabs.query(queryOptions)
+  return tab
+}
+
 const commandFuncs = {
   [BgCommand.openPopups]: (param: openPopupsProps): boolean => {
     const open = async () => {
@@ -140,9 +146,12 @@ const commandFuncs = {
   },
 
   [BgCommand.openTab]: (param: openTabProps, sender: Sender): boolean => {
-    chrome.tabs.create({
-      url: param.url,
-      active: param.active,
+    getCurrentTab().then((tab) => {
+      const index = tab.index
+      chrome.tabs.create({
+        ...param,
+        index: index + 1,
+      })
     })
     return false
   },
