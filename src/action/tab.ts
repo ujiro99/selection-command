@@ -1,20 +1,15 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import type { Command } from '@/services/userSettings'
-
-interface Props {
-  urls: string[]
-  command: Command
-  menuElm: Element | null
-  e: React.MouseEvent
-}
+import { toUrl } from '@/services/util'
+import type { ExecProps } from './index'
 
 export const Tab = {
-  execute({ urls, command, e }: Props) {
+  execute({ selectionText, command, e }: ExecProps) {
+    const url = toUrl(command.searchUrl, selectionText)
     const { openMode, openModeSecondary } = command
     const background =
       e.ctrlKey && (!openModeSecondary || openMode === openModeSecondary)
     Ipc.send(BgCommand.openTab, {
-      url: urls[0],
+      url,
       active: !background,
     })
   },

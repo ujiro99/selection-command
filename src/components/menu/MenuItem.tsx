@@ -2,7 +2,6 @@ import React, { useState, useRef, useContext } from 'react'
 import classNames from 'classnames'
 import { context } from '@/components/App'
 import { actions } from '@/action'
-import { Ipc, BgCommand } from '@/services/ipc'
 import { Tooltip } from '../Tooltip'
 import {
   button,
@@ -16,9 +15,10 @@ import {
   apiIconError,
 } from './Menu.module.css'
 import { Icon } from '../Icon'
-import { OPEN_MODE } from '../../const'
 import type { Command } from '@/services/userSettings'
-import { toUrl, sleep, linksInSelection } from '../../services/util'
+import { linksInSelection } from '@/services/util'
+import { OPEN_MODE } from '@/const'
+import { ExecState } from '@/action'
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -26,84 +26,40 @@ type MenuItemProps = {
   command: Command
 }
 
-enum SendState {
-  NONE = 0,
-  SENDING = 1,
-  SUCCESS = 2,
-  FAIL = 3,
-}
-
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const elmRef = useRef(null)
-  const [sendState, setSendState] = useState<SendState>(SendState.NONE)
+  const [execState, setExecState] = useState<ExecState>(ExecState.NONE)
   const onlyIcon = props.onlyIcon
   const { openMode, openModeSecondary, iconUrl, title: _title } = props.command
   const { selectionText } = useContext(context)
   let title = _title
   let enable = true
-  let links: string[]
 
   if (openMode === OPEN_MODE.LINK_POPUP) {
-    links = linksInSelection()
+    const links = linksInSelection()
     console.debug('links', links)
     enable = links.length > 0
     title = `${links.length} links`
   }
 
   function handleClick(e: React.MouseEvent) {
+    if (execState !== ExecState.NONE) {
+      return
+    }
+
     let mode = openMode
     if (e.ctrlKey && openModeSecondary) {
       mode = openModeSecondary
     }
 
-    const url = toUrl(props.command.searchUrl, selectionText)
+    actions[mode].execute({
+      selectionText,
+      command: props.command,
+      menuElm: props.menuRef.current,
+      e,
+      changeState: setExecState,
+    })
 
-    if (mode === OPEN_MODE.POPUP) {
-      actions[OPEN_MODE.POPUP].execute({
-        urls: [url],
-        command: props.command,
-        menuElm: props.menuRef.current,
-      })
-    } else if (mode === OPEN_MODE.TAB) {
-      actions[OPEN_MODE.TAB].execute({
-        urls: [url],
-        command: props.command,
-        menuElm: props.menuRef.current,
-        e,
-      })
-    } else if (mode === OPEN_MODE.API) {
-      if (sendState !== SendState.NONE) {
-        return
-      }
-      setSendState(SendState.SENDING)
-
-      Ipc.send(BgCommand.execApi, {
-        url: url,
-        pageUrl: window.location.href,
-        pageTitle: document.title,
-        selectionText: selectionText,
-        fetchOptions: props.command.fetchOptions,
-        variables: props.command.variables,
-      })
-        .then(({ ok, res }) => {
-          if (ok) {
-            setSendState(SendState.SUCCESS)
-          } else {
-            console.error(res)
-            setSendState(SendState.FAIL)
-          }
-          return sleep(1500)
-        })
-        .then(() => {
-          setSendState(SendState.NONE)
-        })
-    } else if (mode === OPEN_MODE.LINK_POPUP) {
-      actions[OPEN_MODE.LINK_POPUP].execute({
-        urls: links,
-        command: props.command,
-        menuElm: props.menuRef.current,
-      })
-    }
     e.stopPropagation()
   }
 
@@ -119,7 +75,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
         onClick={handleClick}
         disabled={!enable}
       >
-        <ImageStatus status={sendState} iconUrl={iconUrl} />
+        <ImageWithState state={execState} iconUrl={iconUrl} />
         <span className={itemTitle}>{title}</span>
       </button>
       {onlyIcon && <Tooltip positionRef={elmRef}>{title}</Tooltip>}
@@ -127,28 +83,28 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   )
 }
 
-type ImageStatusProps = {
-  status: SendState
+type ImageProps = {
+  state: ExecState
   iconUrl: string
 }
 
-function ImageStatus(props: ImageStatusProps): JSX.Element {
-  const { iconUrl, status } = props
+function ImageWithState(props: ImageProps): JSX.Element {
+  const { iconUrl, state: status } = props
   return (
     <>
-      {status === SendState.NONE && (
+      {status === ExecState.NONE && (
         <img className={itemImg} src={iconUrl} alt="icon" />
       )}
-      {status === SendState.SENDING && (
+      {status === ExecState.EXECUTING && (
         <Icon
           className={`${itemImg} ${apiIconLoading} rotate`}
           name="refresh"
         />
       )}
-      {status === SendState.SUCCESS && (
+      {status === ExecState.SUCCESS && (
         <Icon className={`${itemImg} ${apiIconSuccess}`} name="check" />
       )}
-      {status === SendState.FAIL && (
+      {status === ExecState.FAIL && (
         <Icon className={`${itemImg} ${apiIconError}`} name="error" />
       )}
     </>
