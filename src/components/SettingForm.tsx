@@ -12,6 +12,7 @@ import classnames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
 import type { UserSettingsType, FolderOption } from '../services/userSettings'
+import { OPTION_MSG } from './Option'
 
 import { Icon } from '../components/Icon'
 
@@ -42,7 +43,7 @@ export function SettingFrom() {
       const command = event.data.command
       const value = event.data.value
       console.debug('recv message', command, value)
-      if (command === 'start') {
+      if (command === OPTION_MSG.START) {
         const { settings, translation } = value
         if (event.source != null) {
           setParent(event.source)
@@ -50,7 +51,7 @@ export function SettingFrom() {
           setSettingData(settings)
           setTrans(translation)
         }
-      } else if (command === 'changed') {
+      } else if (command === OPTION_MSG.CHANGED) {
         setSettingData(value)
       }
     }
@@ -60,7 +61,7 @@ export function SettingFrom() {
     }
   }, [])
 
-  const sendMessage = (command: string, value: any) => {
+  const sendMessage = (command: OPTION_MSG, value: any) => {
     if (parent != null) {
       console.debug('send message', command, value)
       parent.postMessage({ command, value }, origin)
@@ -68,7 +69,7 @@ export function SettingFrom() {
   }
 
   const updateSettings = (data: UserSettingsType) => {
-    sendMessage('changed', data)
+    sendMessage(OPTION_MSG.CHANGED, data)
     setSettingData(data)
   }
 
@@ -78,7 +79,7 @@ export function SettingFrom() {
       const data = arg.formData as UserSettingsType
       for (const command of data.commands) {
         if (!command.iconUrl && command.searchUrl) {
-          sendMessage('fetchIconUrl', {
+          sendMessage(OPTION_MSG.FETCH_ICON_URL, {
             searchUrl: command.searchUrl,
             settings: data,
           })

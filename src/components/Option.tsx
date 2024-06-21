@@ -72,6 +72,13 @@ function getTimestamp() {
   return `${year}${month}${day}_${hours}${minutes}`
 }
 
+export enum OPTION_MSG {
+  START = 'start',
+  CHANGED = 'changed',
+  SET_HEIGHT = 'setHeight',
+  FETCH_ICON_URL = 'fetchIconUrl',
+}
+
 export function Option() {
   const [settings, setSettings] = useState<UserSettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
@@ -141,11 +148,11 @@ export function Option() {
     const func = async (event: MessageEvent) => {
       const command = event.data.command
       const value = event.data.value
-      if (command === 'changed') {
+      if (command === OPTION_MSG.CHANGED) {
         setSettings(value)
-      } else if (command === 'setHeight') {
+      } else if (command === OPTION_MSG.SET_HEIGHT) {
         setIframeHeight(value)
-      } else if (command === 'fetchIconUrl') {
+      } else if (command === OPTION_MSG.FETCH_ICON_URL) {
         const { searchUrl, settings } = value
         console.log('fetchIconUrl', searchUrl)
         const url = await fetchIconUrl(searchUrl)
@@ -158,7 +165,7 @@ export function Option() {
             }
           }
           setSettings(settings)
-          sendMessage('changed', settings)
+          sendMessage(OPTION_MSG.CHANGED, settings)
         }
       }
     }
@@ -243,7 +250,7 @@ export function Option() {
     setImportDialog(false)
   }
 
-  const sendMessage = (command: string, value: unknown) => {
+  const sendMessage = (command: OPTION_MSG, value: unknown) => {
     if (iframeRef.current != null && iframeRef.current.contentWindow != null) {
       const message = { command, value }
       iframeRef.current.contentWindow.postMessage(message, '*')
@@ -256,7 +263,7 @@ export function Option() {
   const onLoadIfame = async () => {
     const settings = await UserSettings.get()
     const translation = getTranslation()
-    sendMessage('start', {
+    sendMessage(OPTION_MSG.START, {
       settings,
       translation,
     })
