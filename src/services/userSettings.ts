@@ -16,11 +16,17 @@ export type Command = {
   popupOption?: PopupOption
   fetchOptions?: string
   variables?: Array<CommandVariable>
+  spaceEncoding?: SPACE_ENCODING
 }
 
 export type PopupOption = {
   width: number
   height: number
+}
+
+export enum SPACE_ENCODING {
+  PLUS = 'plus',
+  PERCENT = 'percent',
 }
 
 export type FolderOption = {

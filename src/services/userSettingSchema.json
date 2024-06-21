@@ -120,6 +120,10 @@
                 "searchUrl": {
                   "type": "string"
                 },
+                "spaceEncoding": {
+                  "$id": "#/commands/spaceEncoding_popup",
+                  "$ref": "#/definitions/spaceEncoding"
+                },
                 "popupOption": {
                   "$ref": "#/definitions/popupOption"
                 }
@@ -143,6 +147,10 @@
                 },
                 "searchUrl": {
                   "type": "string"
+                },
+                "spaceEncoding": {
+                  "$id": "#/commands/spaceEncoding_tab",
+                  "$ref": "#/definitions/spaceEncoding"
                 }
               },
               "required": [
@@ -261,6 +269,14 @@
       "enum": [
         "popup",
         "tab"
+      ]
+    },
+    "spaceEncoding": {
+      "type": "string",
+      "default": "plus",
+      "enum": [
+        "plus",
+        "percent"
       ]
     },
     "commandVariable": {

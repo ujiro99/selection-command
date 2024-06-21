@@ -124,6 +124,7 @@ export function SettingFrom() {
   }
   for (const type of ['popup', 'tab', 'sidePanel']) {
     fields[`#/commands/openModeSecondary_${type}`] = SelectField
+    fields[`#/commands/spaceEncoding_${type}`] = SelectField
   }
 
   const uiSchema = {
@@ -157,6 +158,13 @@ export function SettingFrom() {
         title: { 'ui:title': t('title') },
         searchUrl: {
           'ui:title': t('searchUrl'),
+        },
+        spaceEncoding: {
+          'ui:title': t('spaceEncoding'),
+          enum: {
+            plus: { 'ui:title': t('spaceEncoding_plus') },
+            percent: { 'ui:title': t('spaceEncoding_percent') },
+          },
         },
         iconUrl: { 'ui:title': t('iconUrl') },
         openMode: {

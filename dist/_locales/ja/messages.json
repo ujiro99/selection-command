@@ -59,6 +59,15 @@
   "Option_iconUrl": {
     "message": "アイコンURL"
   },
+  "Option_spaceEncoding": {
+    "message": "スペースのエンコード"
+  },
+  "Option_spaceEncoding_plus": {
+    "message": "Plus (+)"
+  },
+  "Option_spaceEncoding_percent": {
+    "message": "Percent (%20)"
+  },
   "Option_openMode": {
     "message": "Open Mode"
   },

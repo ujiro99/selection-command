@@ -1,3 +1,5 @@
+import { SPACE_ENCODING } from '@/services/userSettings'
+
 /**
  * Stops processing for the specified time.
  * @param {number} msec Sleep time in millisconds
@@ -29,8 +31,17 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   })
 }
 
-export function toUrl(searchUrl: string, text: string): string {
-  let textEscaped = text.replaceAll(' ', '+')
+export function toUrl(
+  searchUrl: string,
+  text: string,
+  spaceEncoding?: SPACE_ENCODING,
+): string {
+  let textEscaped = text
+  if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
+    textEscaped = text.replaceAll(' ', '+')
+  } else if (spaceEncoding === SPACE_ENCODING.PERCENT) {
+    // do nothing
+  }
   textEscaped = encodeURI(textEscaped)
   return searchUrl?.replace('%s', textEscaped)
 }
