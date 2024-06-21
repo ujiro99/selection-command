@@ -151,7 +151,12 @@ const migrate060 = async () => {
   // moveStorageSync
   const res = await chrome.storage.local.get(`${STORAGE_KEY.USER}`)
   const settings = res[`${STORAGE_KEY.USER}`]
-  if (!settings) return
+  const sync = await chrome.storage.sync.get(`${STORAGE_KEY.USER}`)
+  const syncSettings = sync[`${STORAGE_KEY.USER}`]
+  if (!settings || syncSettings) {
+    console.warn('Allready finished.')
+    return
+  }
 
   // cache image data url to local storage
   const caches = {} as ImageCache
@@ -169,4 +174,5 @@ const migrate060 = async () => {
   })
   await Storage.set(STORAGE_KEY.USER, settings)
   await chrome.storage.local.remove(`${STORAGE_KEY.USER}`)
+  console.warn('Successfully finished.')
 }
