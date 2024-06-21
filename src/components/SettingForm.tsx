@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState, useEffect } from 'react'
 import type {
   IconButtonProps,
@@ -33,6 +33,7 @@ export function SettingFrom() {
   const [origin, setOrigin] = useState('')
   const [trans, setTrans] = useState<Translation>({})
   const [settingData, setSettingData] = useState<UserSettingsType>()
+  const formRef = useRef<Form>(null)
 
   const t = (key: string) => {
     return trans[`Option_${key}`]
@@ -51,15 +52,27 @@ export function SettingFrom() {
           setSettingData(settings)
           setTrans(translation)
         }
-      } else if (command === OPTION_MSG.CHANGED) {
-        setSettingData(value)
+      } else if (command === OPTION_MSG.RES_FETCH_ICON_URL) {
+        const { iconUrl, searchUrl } = value
+        if (!settingData) return
+        const commands = settingData.commands.map((cmd) => {
+          if (cmd.searchUrl === searchUrl) {
+            cmd.iconUrl = iconUrl
+          }
+          return cmd
+        })
+        const newSettings = { ...settingData, commands }
+        updateSettings(newSettings)
+        // For some reason, updating data here does not update the Form display.
+        // So update via ref.
+        formRef.current?.setState({ formData: newSettings })
       }
     }
     window.addEventListener('message', func)
     return () => {
       window.removeEventListener('message', func)
     }
-  }, [])
+  }, [settingData])
 
   const sendMessage = (command: OPTION_MSG, value: any) => {
     if (parent != null) {
@@ -73,12 +86,13 @@ export function SettingFrom() {
     setSettingData(data)
   }
 
-  const onChange = (arg: IChangeEvent, id?: string) => {
-    // update iconURL when searchUrl setted
+  const onChangeForm = (arg: IChangeEvent, id?: string) => {
+    // update iconURL when searchUrl chagned
     if (id?.endsWith('searchUrl')) {
       const data = arg.formData as UserSettingsType
       for (const command of data.commands) {
         if (!command.iconUrl && command.searchUrl) {
+          setSettingData(data)
           sendMessage(OPTION_MSG.FETCH_ICON_URL, {
             searchUrl: command.searchUrl,
             settings: data,
@@ -112,10 +126,18 @@ export function SettingFrom() {
     console.debug('settingData', settingData)
   }
 
+  const autofill = (cmdIdx: number) => {
+    const searchUrl = settingData?.commands[cmdIdx].searchUrl
+    if (!searchUrl) return
+    sendMessage(OPTION_MSG.FETCH_ICON_URL, {
+      searchUrl: searchUrl,
+    })
+  }
+
   const fields: RegistryFieldsType = {
     '#/popupPlacement': SelectField,
     '#/style': SelectField,
-    '#/commands/iconUrl': IconUrlField,
+    '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': SelectField,
     '#/commands/parentFolder': FolderField,
@@ -230,7 +252,7 @@ export function SettingFrom() {
       schema={userSettingSchema}
       validator={validator}
       formData={settingData}
-      onChange={onChange}
+      onChange={onChangeForm}
       onError={log('errors')}
       uiSchema={uiSchema}
       fields={fields}
@@ -242,6 +264,7 @@ export function SettingFrom() {
           RemoveButton,
         },
       }}
+      ref={formRef}
     />
   )
 }
@@ -308,6 +331,26 @@ const IconUrlField = (props: FieldProps) => {
     </label>
   )
 }
+
+const IconUrlFieldWithAutofill =
+  (onClick: (cmdIdx: number) => void) => (props: FieldProps) => {
+    const cmdIdx = Number(props.idSchema.$id.split('_')[2])
+
+    const exec = () => {
+      onClick(cmdIdx)
+    }
+
+    return (
+      <>
+        <IconUrlField {...props} />
+        {!props.formData && (
+          <button type="button" className={css.iconUrlAutoFill} onClick={exec}>
+            検出
+          </button>
+        )}
+      </>
+    )
+  }
 
 type Option = {
   name: string
@@ -387,7 +430,7 @@ const FolderField = (props: FieldProps) => {
 
 const FetchOptionField = (props: FieldProps) => {
   return (
-    <label className={`${css.fetchOption} form-control`}>
+    <label className="form-control">
       <textarea
         id={props.idSchema.$id}
         className={css.fetchOptionInput}
