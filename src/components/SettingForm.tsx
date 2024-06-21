@@ -122,7 +122,7 @@ export function SettingFrom() {
     '#/commandFolder/onlyIcon': OnlyIconField,
     ArraySchemaField: CustomArraySchemaField,
   }
-  for (const type of ['popup', 'tab', 'sidePanel']) {
+  for (const type of ['popup', 'tab']) {
     fields[`#/commands/openModeSecondary_${type}`] = SelectField
     fields[`#/commands/spaceEncoding_${type}`] = SelectField
   }
@@ -173,7 +173,6 @@ export function SettingFrom() {
             popup: { 'ui:title': t('openMode_popup') },
             tab: { 'ui:title': t('openMode_tab') },
             api: { 'ui:title': t('openMode_api') },
-            sidePanel: { 'ui:title': t('openMode_sidePanel') },
             linkPopup: { 'ui:title': t('openMode_linkPopup') },
           },
         },
@@ -182,7 +181,6 @@ export function SettingFrom() {
           enum: {
             popup: { 'ui:title': t('openMode_popup') },
             tab: { 'ui:title': t('openMode_tab') },
-            sidePanel: { 'ui:title': t('openMode_sidePanel') },
           },
         },
         parentFolder: { 'ui:title': t('parentFolder') },

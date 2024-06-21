@@ -80,9 +80,6 @@
   "Option_openMode_api": {
     "message": "API"
   },
-  "Option_openMode_sidePanel": {
-    "message": "Side Panel"
-  },
   "Option_openMode_linkPopup": {
     "message": "Link Popup"
   },
