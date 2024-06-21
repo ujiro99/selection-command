@@ -59,6 +59,9 @@
   "Option_iconUrl": {
     "message": "Icon URL"
   },
+  "Option_iconUrl_autofill": {
+    "message": "Autofill"
+  },
   "Option_spaceEncoding": {
     "message": "Space Encoding"
   },

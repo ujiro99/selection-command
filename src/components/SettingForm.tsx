@@ -189,7 +189,10 @@ export function SettingFrom() {
             percent: { 'ui:title': t('spaceEncoding_percent') },
           },
         },
-        iconUrl: { 'ui:title': t('iconUrl') },
+        iconUrl: {
+          'ui:title': t('iconUrl'),
+          'ui:button': t('iconUrl_autofill'),
+        },
         openMode: {
           'ui:title': t('openMode'),
           enum: {
@@ -334,10 +337,13 @@ const IconUrlField = (props: FieldProps) => {
 
 const IconUrlFieldWithAutofill =
   (onClick: (cmdIdx: number) => void) => (props: FieldProps) => {
+    const btnLabel = props.uiSchema ? props.uiSchema['ui:button'] : 'autofill'
     const cmdIdx = Number(props.idSchema.$id.split('_')[2])
+    const [clicked, setClicked] = useState(false)
 
     const exec = () => {
       onClick(cmdIdx)
+      setClicked(true)
     }
 
     return (
@@ -345,7 +351,11 @@ const IconUrlFieldWithAutofill =
         <IconUrlField {...props} />
         {!props.formData && (
           <button type="button" className={css.iconUrlAutoFill} onClick={exec}>
-            検出
+            {clicked ? (
+              <Icon name="refresh" className={css.iconUrlAutoFillLoading} />
+            ) : (
+              btnLabel
+            )}
           </button>
         )}
       </>

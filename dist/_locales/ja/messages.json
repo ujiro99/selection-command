@@ -59,6 +59,9 @@
   "Option_iconUrl": {
     "message": "アイコンURL"
   },
+  "Option_iconUrl_autofill": {
+    "message": "自動検出"
+  },
   "Option_spaceEncoding": {
     "message": "スペースのエンコード"
   },
