@@ -33,11 +33,29 @@ export function SettingFrom() {
   const [origin, setOrigin] = useState('')
   const [trans, setTrans] = useState<Translation>({})
   const [settingData, setSettingData] = useState<UserSettingsType>()
+  const [timeoutID, setTimeoutID] = useState<number>()
   const formRef = useRef<Form>(null)
 
   const t = (key: string) => {
     return trans[`Option_${key}`]
   }
+
+  // Save after 500 ms to storage.
+  useEffect(() => {
+    let unmounted = false
+    if (timeoutID) clearTimeout(timeoutID)
+    const newTimeoutId = window.setTimeout(() => {
+      if (unmounted) return
+      sendMessage(OPTION_MSG.CHANGED, settingData)
+      setTimeoutID(undefined)
+    }, 1 * 500 /* ms */)
+    setTimeoutID(newTimeoutId)
+
+    return () => {
+      unmounted = true
+      clearTimeout(timeoutID)
+    }
+  }, [settingData])
 
   useEffect(() => {
     const func = (event: MessageEvent) => {
@@ -62,7 +80,7 @@ export function SettingFrom() {
           return cmd
         })
         const newSettings = { ...settingData, commands }
-        updateSettings(newSettings)
+        setSettingData(newSettings)
         // For some reason, updating data here does not update the Form display.
         // So update via ref.
         formRef.current?.setState({ formData: newSettings })
@@ -81,11 +99,6 @@ export function SettingFrom() {
     }
   }
 
-  const updateSettings = (data: UserSettingsType) => {
-    sendMessage(OPTION_MSG.CHANGED, data)
-    setSettingData(data)
-  }
-
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
     // update iconURL when searchUrl chagned
     if (id?.endsWith('searchUrl')) {
@@ -101,7 +114,7 @@ export function SettingFrom() {
         }
       }
     }
-    updateSettings(arg.formData)
+    setSettingData(arg.formData)
   }
 
   // Create folder options
@@ -123,7 +136,6 @@ export function SettingFrom() {
       } as folderOptionsType,
     )
     userSettingSchema.definitions.folderOptions = folderOptions
-    console.debug('settingData', settingData)
   }
 
   const autofill = (cmdIdx: number) => {
