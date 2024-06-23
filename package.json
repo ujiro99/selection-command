@@ -26,7 +26,7 @@
     ]
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.17",
+    "@headlessui/react": "^2.1.0",
     "@popperjs/core": "^2.11.8",
     "@rjsf/core": "^5.18.4",
     "@rjsf/utils": "^5.18.4",

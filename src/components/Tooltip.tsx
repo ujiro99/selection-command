@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Popover, Transition } from '@headlessui/react'
-import { usePopper } from 'react-popper'
+import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import type { Placement } from '@popperjs/core'
 
 import { useSetting } from '../hooks/useSetting'
@@ -31,27 +30,8 @@ export function Tooltip(props: PopupProps) {
     enterTo = popdownTo
   }
 
-  const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const [visible, setVisible] = useState(false)
   const [arrowElm, setArrowElm] = useState(null)
-  const { styles, attributes } = usePopper(positionElm, popperElement, {
-    placement: placement,
-    modifiers: [
-      {
-        name: 'arrow',
-        options: {
-          element: arrowElm,
-          padding: 10,
-        },
-      },
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 5],
-        },
-      },
-    ],
-  })
 
   const toggleVisible = () => {
     setVisible((visible) => !visible)
@@ -83,16 +63,10 @@ export function Tooltip(props: PopupProps) {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <Popover.Panel
-          ref={setPopperElement}
-          style={styles.popper}
-          {...attributes.popper}
-          className={tooltip}
-          static
-        >
+        <PopoverPanel className={tooltip} static>
           {props.children}
-          <div className={arrow} ref={setArrowElm} style={styles.arrow} />
-        </Popover.Panel>
+          <div className={arrow} ref={setArrowElm} />
+        </PopoverPanel>
       </Transition>
     </Popover>
   )
