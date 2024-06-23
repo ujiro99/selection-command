@@ -164,6 +164,9 @@
                     "api"
                   ]
                 },
+                "searchUrl": {
+                  "type": "string"
+                },
                 "fetchOptions": {
                   "$id": "#/commands/fetchOptions",
                   "type": "string"
@@ -176,6 +179,7 @@
                 }
               },
               "required": [
+                "searchUrl",
                 "fetchOptions",
                 "variables"
               ]
