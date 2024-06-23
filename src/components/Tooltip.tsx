@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Popover, Transition } from '@headlessui/react'
 import { usePopper } from 'react-popper'
+import type { Placement } from '@popperjs/core'
 
 import { useSetting } from '../hooks/useSetting'
 import {
@@ -21,7 +22,7 @@ export function Tooltip(props: PopupProps) {
   const { settings } = useSetting()
   const positionElm = props.positionRef?.current
   const popupPlacement = settings.popupPlacement
-  let placement = 'top'
+  let placement = 'top' as Placement
   let enterFrom = popupFrom
   let enterTo = popupTo
   if (popupPlacement.startsWith('bottom')) {
