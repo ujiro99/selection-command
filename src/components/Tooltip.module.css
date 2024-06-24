@@ -1,9 +1,8 @@
 .tooltip {
-  position: relative;
+  position: absolute;
   box-shadow:
     0 20px 25px -5px rgb(0 0 0 / 0.1),
     0 8px 10px -6px rgb(0 0 0 / 0.1);
-
   background: var(--gray-800);
   font-weight: 400;
   color: #fff;
@@ -12,6 +11,41 @@
   font-size: 12px;
   white-space: pre;
   min-width: 15px;
+  z-index: 0;
+}
+
+.tooltip[data-closed] {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.tooltip[data-closed][data-placement='bottom'] {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+.tooltip[data-enter] {
+  transition-duration: 75;
+  transition-delay: 350ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.tooltip[data-leave] {
+  transition-duration: 50ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.tooltip[data-placement='top'] {
+  top: -28px;
+}
+
+.tooltip[data-placement='bottom'] {
+  top: 36px;
+}
+
+.tooltipTrigger {
+  padding: 0;
+  background: none;
 }
 
 .arrow {
@@ -30,26 +64,10 @@
   background: var(--gray-800);
 }
 
-.tooltip[data-popper-placement^='top'] > .arrow {
+.tooltip[data-placement^='top']>.arrow {
   bottom: 8px;
 }
 
-.tooltip[data-popper-placement^='bottom'] > .arrow {
+.tooltip[data-placement^='bottom']>.arrow {
   top: -3px;
-}
-
-.popupFrom {
-  opacity: 0;
-  transform: translateY(5px);
-}
-
-.popupTo,
-.popdownTo {
-  opacity: 1;
-  transform: translateY(0px);
-}
-
-.popdownFrom {
-  opacity: 0;
-  transform: translateY(-5px);
 }
