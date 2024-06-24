@@ -26,25 +26,31 @@ export function Tooltip(props: PopupProps) {
   if (popupPlacement.startsWith('bottom')) {
     placement = 'bottom'
   }
-  const [isHover, setIsHover] = useState(false)
   const [visible, setVisible] = useState(false)
 
+  const show = () => setVisible(true)
+  const hide = () => setVisible(false)
+
   useEffect(() => {
-    setVisible(isHover)
-  }, [isHover])
+    if (positionRef.current != null) {
+      positionRef.current.addEventListener('mouseenter', show)
+      positionRef.current.addEventListener('mouseleave', hide)
+    }
+    return () => {
+      if (positionRef.current != null) {
+        positionRef.current.removeEventListener('mouseenter', show)
+        positionRef.current.removeEventListener('mouseleave', hide)
+      }
+    }
+  }, [positionRef.current])
 
   const MyPopoverButton = forwardRef(function (props, ref) {
     return <div className={tooltipTrigger} ref={ref} {...props} />
   })
 
   return (
-    <Popover>
-      <PopoverButton as={MyPopoverButton} ref={positionRef}>
-        {({ hover }) => {
-          setIsHover(hover)
-          return <>{props.children}</>
-        }}
-      </PopoverButton>
+    <Popover ref={positionRef}>
+      <PopoverButton as={MyPopoverButton}>{props.children}</PopoverButton>
       <Transition show={visible && props.disabled}>
         <PopoverPanel
           className={classNames(tooltip, 'transition')}
