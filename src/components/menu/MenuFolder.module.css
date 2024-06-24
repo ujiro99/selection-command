@@ -10,6 +10,11 @@
   composes: popup from '../Popup.module.css';
 }
 
+.folderTransition {
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
 .folderIcon {
   width: 15px;
   height: 15px;
@@ -19,6 +24,7 @@
 
 .folderHorizontal {
   padding: 4px 6px;
+
   .folderIcon {
     margin-right: 4px;
   }

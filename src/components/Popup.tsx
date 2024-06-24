@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'
-import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './menu/Menu'
 import { POPUP_ENABLED } from '../const'
 import { useSetting } from '@/hooks/useSetting'
 import { Ipc, BgCommand } from '@/services/ipc'
+
+import { popup, popupContianer, popupTransition } from './Popup.module.css'
 
 type PopupProps = {
   positionElm: Element | null
@@ -57,7 +58,7 @@ export function Popup(props: PopupProps) {
           data-placement={placement}
           static
         >
-          <div className={`${popup} transition`}>
+          <div className={`${popup} ${popupTransition} transition`}>
             <Menu />
           </div>
         </PopoverPanel>

@@ -4,9 +4,20 @@
   border-radius: 6px;
   border: solid 1px var(--baseBorderColor);
   font-family: var(--font-family);
+}
+
+.popupTransition {
   transition-delay: 250ms;
   transition-duration: 300ms;
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+div[data-placement='right']>.popup {
+  transform: translateX(-5px);
+}
+
+div[data-placement='left']>.popup {
+  transform: translateX(5px);
 }
 
 div[data-closed]>.popup {
@@ -15,8 +26,15 @@ div[data-closed]>.popup {
 }
 
 div[data-closed][data-placement='bottom']>.popup {
-  opacity: 0;
   transform: translateY(-5px);
+}
+
+div[data-closed][data-placement='right']>.popup {
+  transform: translateX(-10px);
+}
+
+div[data-closed][data-placement='left']>.popup {
+  transform: translateX(10px);
 }
 
 /* To display the popup at the top of html, add maximum value of z-index. */

@@ -1,10 +1,12 @@
 .fade-enter {
   animation: 0.2s fade forwards;
 }
+
 .fade-exit {
   animation: 0.1s fade forwards;
   animation-direction: reverse;
 }
+
 @keyframes fade {
   from {
     opacity: 0;
@@ -31,6 +33,7 @@
     opacity: 0;
     transform: translateY(-40px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0px);
@@ -46,40 +49,8 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
-}
-
-.pop-up-from {
-  transform: translateY(5px);
-  opacity: 0;
-}
-
-.pop-up-to,
-.pop-down-to {
-  transform: translateY(0px);
-  opacity: 1;
-}
-
-.pop-down-from {
-  transform: translateY(-5px);
-  opacity: 0;
-}
-
-.pop-right-from {
-  transform: translateX(-10px);
-  opacity: 0;
-}
-.pop-right-to {
-  transform: translateX(-5px);
-  opacity: 1;
-}
-.pop-left-from {
-  transform: translateX(10px);
-  opacity: 0;
-}
-.pop-left-to {
-  transform: translateX(5px);
-  opacity: 1;
 }
