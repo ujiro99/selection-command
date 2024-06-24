@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Popover, Transition } from '@headlessui/react'
-import { usePopper } from 'react-popper'
+import { Popover, PopoverPanel, Transition } from '@headlessui/react'
+import { useFloating } from '@floating-ui/react'
+import { offset } from '@floating-ui/dom'
 import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './menu/Menu'
 import { POPUP_ENABLED } from '../const'
@@ -13,28 +14,15 @@ type PopupProps = {
 }
 
 export function Popup(props: PopupProps) {
-  const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const [forceHide, setForceHide] = useState(false)
   const { settings, pageRule } = useSetting()
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
-  let enterFrom = 'pop-up-from'
-  let enterTo = 'pop-up-to'
-  if (isBottom) {
-    enterFrom = 'pop-down-from'
-    enterTo = 'pop-down-to'
-  }
 
-  const { styles, attributes } = usePopper(props.positionElm, popperElement, {
+  const { refs, floatingStyles } = useFloating({
     placement: placement,
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, isBottom ? 0 : 8],
-        },
-      },
-    ],
+    elements: { reference: props.positionElm },
+    middleware: [isBottom ? offset(0) : offset(15)],
   })
 
   let visible = props.selectionText.length > 0 && props.positionElm != null
@@ -56,21 +44,17 @@ export function Popup(props: PopupProps) {
 
   return (
     <Popover className={popupContianer}>
-      <Transition
-        show={visible}
-        enter="transition duration-300 delay-250 ease-out"
-        enterFrom={enterFrom}
-        enterTo={enterTo}
-      >
-        <Popover.Panel
-          ref={setPopperElement}
-          style={styles.popper}
-          {...attributes.popper}
-          className={popup}
+      <Transition show={visible}>
+        <PopoverPanel
+          ref={refs.setFloating}
+          style={floatingStyles}
+          data-placement={placement}
           static
         >
-          <Menu />
-        </Popover.Panel>
+          <div className={`${popup} transition`}>
+            <Menu />
+          </div>
+        </PopoverPanel>
       </Transition>
     </Popover>
   )

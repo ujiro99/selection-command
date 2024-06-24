@@ -25,7 +25,7 @@
 }
 
 .tooltip[data-enter] {
-  transition-duration: 75;
+  transition-duration: 75ms;
   transition-delay: 350ms;
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }

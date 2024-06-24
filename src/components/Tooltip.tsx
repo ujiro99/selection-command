@@ -47,9 +47,8 @@ export function Tooltip(props: PopupProps) {
       <Transition show={visible}>
         <PopoverPanel
           className={classNames(tooltip, 'transition')}
-          transition
-          static
           data-placement={placement}
+          static
         >
           {props.text}
           <div className={arrow} ref={arrowRef} />

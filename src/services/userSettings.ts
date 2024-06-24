@@ -1,4 +1,4 @@
-import type { Placement } from '@popperjs/core'
+import type { Placement } from '@floating-ui/react'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import type { onChangedCallback } from './storage'
 import DefaultSetting from './defaultUserSettings.json'

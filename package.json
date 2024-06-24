@@ -26,6 +26,7 @@
     ]
   },
   "dependencies": {
+    "@floating-ui/react": "^0.26.17",
     "@headlessui/react": "^2.1.0",
     "@popperjs/core": "^2.11.8",
     "@rjsf/core": "^5.18.4",
