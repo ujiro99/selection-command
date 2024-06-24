@@ -4,6 +4,7 @@
   font-weight: 500;
   position: relative;
   height: 20px;
+  padding-right: 0;
 }
 
 .popup {
@@ -13,6 +14,12 @@
 .folderTransition {
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.folderItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .folderIcon {
@@ -39,4 +46,16 @@
 
 .folderHorizontal.folderIconOnly {
   padding: 4px;
+}
+
+.title {
+  flex: 1;
+  min-width: 4em;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: var(--gray-400);
+  transition: fill 250ms;
 }

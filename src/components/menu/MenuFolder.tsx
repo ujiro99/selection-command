@@ -6,6 +6,7 @@ import classnames from 'classnames'
 
 import { MenuItem } from './MenuItem'
 import { context } from '../App'
+import { Icon } from '@/components/Icon'
 import { STYLE } from '@/const'
 import { sleep } from '@/services/util'
 import type { Command, CommandFolder } from '@/services/userSettings'
@@ -154,13 +155,17 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
       })}
       ref={folderRef}
     >
-      <img
-        className={classnames(css.folderIcon)}
-        src={props.folder.iconUrl}
-        alt={props.folder.title}
-      />
-      {!onlyIcon && <span>{props.folder.title}</span>}
-      {visible && <div className="cover" style={safeAreaStyles} />}
+      <div className={css.folderItem}>
+        <img
+          className={classnames(css.folderIcon)}
+          src={props.folder.iconUrl}
+          alt={props.folder.title}
+        />
+        {!onlyIcon && <span className={css.title}>{props.folder.title}</span>}
+        {!isHorizontal && <Icon name="chevron" className={css.icon} />}
+      </div>
+
+      {visible && <div className="safeArea" style={safeAreaStyles} />}
       <Transition show={visible}>
         <PopoverPanel
           ref={refs.setFloating}
