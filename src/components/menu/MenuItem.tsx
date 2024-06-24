@@ -65,7 +65,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
 
   return (
     <>
-      <Tooltip text={title}>
+      <Tooltip text={title} disabled={onlyIcon}>
         <button
           type="button"
           className={classNames(item, button, {

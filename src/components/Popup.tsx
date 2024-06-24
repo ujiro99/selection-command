@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Popover, PopoverPanel, Transition } from '@headlessui/react'
-import { useFloating } from '@floating-ui/react'
+import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'
 import { popup, popupContianer } from './Popup.module.css'
 import { Menu } from './menu/Menu'
@@ -22,7 +22,13 @@ export function Popup(props: PopupProps) {
   const { refs, floatingStyles } = useFloating({
     placement: placement,
     elements: { reference: props.positionElm },
-    middleware: [isBottom ? offset(0) : offset(15)],
+    whileElementsMounted: autoUpdate,
+    middleware: [
+      isBottom ? offset(5) : offset(15),
+      flip({
+        fallbackPlacements: ['top', 'bottom'],
+      }),
+    ],
   })
 
   let visible = props.selectionText.length > 0 && props.positionElm != null

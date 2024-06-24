@@ -13,6 +13,7 @@ import { tooltip, tooltipTrigger, arrow } from './Tooltip.module.css'
 type PopupProps = {
   children: React.ReactNode
   text: string
+  disabled?: boolean
 }
 
 export function Tooltip(props: PopupProps) {
@@ -44,7 +45,7 @@ export function Tooltip(props: PopupProps) {
           return <>{props.children}</>
         }}
       </PopoverButton>
-      <Transition show={visible}>
+      <Transition show={visible && props.disabled}>
         <PopoverPanel
           className={classNames(tooltip, 'transition')}
           data-placement={placement}
