@@ -48,6 +48,40 @@
   background: none;
 }
 
+.tooltip[data-closed] {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.tooltip[data-closed][data-placement='bottom'] {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+.tooltip[data-enter] {
+  transition-duration: 75;
+  transition-delay: 350ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.tooltip[data-leave] {
+  transition-duration: 50ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+
+.tooltip[data-placement='top'] {
+  top: -28px;
+}
+
+.tooltip[data-placement='bottom'] {
+  top: 36px;
+}
+
+.tooltipTrigger {
+  padding: 0;
+  background: none;
+}
+
 .arrow {
   position: absolute;
   z-index: -1;
