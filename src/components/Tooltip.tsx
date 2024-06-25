@@ -1,97 +1,65 @@
-import React, { useState, useEffect } from 'react'
-import { Popover, Transition } from '@headlessui/react'
-import { usePopper } from 'react-popper'
-
-import { useSetting } from '../hooks/useSetting'
+import React, { useState, useRef, useEffect, forwardRef } from 'react'
 import {
-  tooltip,
-  arrow,
-  popupFrom,
-  popupTo,
-  popdownFrom,
-  popdownTo,
-} from './Tooltip.module.css'
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+  Transition,
+} from '@headlessui/react'
+import classNames from 'classnames'
+
+import { useSetting } from '@/hooks/useSetting'
+import { tooltip, tooltipTrigger, arrow } from './Tooltip.module.css'
 
 type PopupProps = {
-  positionRef: React.RefObject<Element>
   children: React.ReactNode
+  text: string
+  disabled?: boolean
 }
 
 export function Tooltip(props: PopupProps) {
+  const positionRef = useRef<HTMLButtonElement>(null)
+  const arrowRef = useRef<HTMLDivElement>(null)
+
   const { settings } = useSetting()
-  const positionElm = props.positionRef?.current
   const popupPlacement = settings.popupPlacement
   let placement = 'top'
-  let enterFrom = popupFrom
-  let enterTo = popupTo
   if (popupPlacement.startsWith('bottom')) {
     placement = 'bottom'
-    enterFrom = popdownFrom
-    enterTo = popdownTo
   }
-
-  const [popperElement, setPopperElement] = useState<HTMLDivElement>()
   const [visible, setVisible] = useState(false)
-  const [arrowElm, setArrowElm] = useState(null)
-  const { styles, attributes } = usePopper(positionElm, popperElement, {
-    placement: placement,
-    modifiers: [
-      {
-        name: 'arrow',
-        options: {
-          element: arrowElm,
-          padding: 10,
-        },
-      },
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 5],
-        },
-      },
-    ],
-  })
 
-  const toggleVisible = () => {
-    setVisible((visible) => !visible)
-  }
+  const show = () => setVisible(true)
+  const hide = () => setVisible(false)
 
   useEffect(() => {
-    if (positionElm == null) {
-      return
+    if (positionRef.current != null) {
+      positionRef.current.addEventListener('mouseenter', show)
+      positionRef.current.addEventListener('mouseleave', hide)
     }
-    positionElm.addEventListener('mouseenter', toggleVisible)
-    positionElm.addEventListener('mouseleave', toggleVisible)
     return () => {
-      if (positionElm == null) {
-        return
+      if (positionRef.current != null) {
+        positionRef.current.removeEventListener('mouseenter', show)
+        positionRef.current.removeEventListener('mouseleave', hide)
       }
-      positionElm.removeEventListener('mouseenter', toggleVisible)
-      positionElm.removeEventListener('mouseleave', toggleVisible)
     }
-  }, [positionElm])
+  }, [positionRef.current])
+
+  const MyPopoverButton = forwardRef(function (props, ref) {
+    return <div className={tooltipTrigger} ref={ref} {...props} />
+  })
 
   return (
-    <Popover>
-      <Transition
-        show={visible}
-        enter="transition duration-75 delay-350 ease-out"
-        enterFrom={enterFrom}
-        enterTo={enterTo}
-        leave="transition duration-50 ease-out"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
-        <Popover.Panel
-          ref={setPopperElement}
-          style={styles.popper}
-          {...attributes.popper}
-          className={tooltip}
+    <Popover ref={positionRef}>
+      <PopoverButton as={MyPopoverButton}>{props.children}</PopoverButton>
+      <Transition show={visible && props.disabled}>
+        <PopoverPanel
+          className={classNames(tooltip, 'transition')}
+          data-placement={placement}
           static
         >
-          {props.children}
-          <div className={arrow} ref={setArrowElm} style={styles.arrow} />
-        </Popover.Panel>
+          {props.text}
+          <div className={arrow} ref={arrowRef} />
+        </PopoverPanel>
       </Transition>
     </Popover>
   )

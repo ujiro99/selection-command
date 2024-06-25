@@ -5,7 +5,9 @@ import type { ExecProps } from './index'
 export const Popup = {
   execute({ selectionText, command, menuElm }: ExecProps) {
     if (menuElm) {
-      const urls = [toUrl(command.searchUrl, selectionText)]
+      const urls = [
+        toUrl(command.searchUrl, selectionText, command.spaceEncoding),
+      ]
       const rect = menuElm.getBoundingClientRect()
       console.debug('open popup', rect)
       Ipc.send(BgCommand.openPopups, {

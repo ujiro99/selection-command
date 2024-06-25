@@ -59,6 +59,18 @@
   "Option_iconUrl": {
     "message": "Icon URL"
   },
+  "Option_iconUrl_autofill": {
+    "message": "Autofill"
+  },
+  "Option_spaceEncoding": {
+    "message": "Space Encoding"
+  },
+  "Option_spaceEncoding_plus": {
+    "message": "Plus (+)"
+  },
+  "Option_spaceEncoding_percent": {
+    "message": "Percent (%20)"
+  },
   "Option_openMode": {
     "message": "Open Mode"
   },
@@ -70,9 +82,6 @@
   },
   "Option_openMode_api": {
     "message": "API"
-  },
-  "Option_openMode_sidePanel": {
-    "message": "Side Panel"
   },
   "Option_openMode_linkPopup": {
     "message": "Link Popup"

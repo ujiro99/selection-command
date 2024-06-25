@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useState, useEffect } from 'react'
 import type {
   IconButtonProps,
@@ -12,6 +12,7 @@ import classnames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
 import type { UserSettingsType, FolderOption } from '../services/userSettings'
+import { OPTION_MSG } from './Option'
 
 import { Icon } from '../components/Icon'
 
@@ -32,17 +33,36 @@ export function SettingFrom() {
   const [origin, setOrigin] = useState('')
   const [trans, setTrans] = useState<Translation>({})
   const [settingData, setSettingData] = useState<UserSettingsType>()
+  const [timeoutID, setTimeoutID] = useState<number>()
+  const formRef = useRef<Form>(null)
 
   const t = (key: string) => {
     return trans[`Option_${key}`]
   }
+
+  // Save after 500 ms to storage.
+  useEffect(() => {
+    let unmounted = false
+    if (timeoutID) clearTimeout(timeoutID)
+    const newTimeoutId = window.setTimeout(() => {
+      if (unmounted) return
+      sendMessage(OPTION_MSG.CHANGED, settingData)
+      setTimeoutID(undefined)
+    }, 1 * 500 /* ms */)
+    setTimeoutID(newTimeoutId)
+
+    return () => {
+      unmounted = true
+      clearTimeout(timeoutID)
+    }
+  }, [settingData])
 
   useEffect(() => {
     const func = (event: MessageEvent) => {
       const command = event.data.command
       const value = event.data.value
       console.debug('recv message', command, value)
-      if (command === 'start') {
+      if (command === OPTION_MSG.START) {
         const { settings, translation } = value
         if (event.source != null) {
           setParent(event.source)
@@ -50,35 +70,43 @@ export function SettingFrom() {
           setSettingData(settings)
           setTrans(translation)
         }
-      } else if (command === 'changed') {
-        setSettingData(value)
+      } else if (command === OPTION_MSG.RES_FETCH_ICON_URL) {
+        const { iconUrl, searchUrl } = value
+        if (!settingData) return
+        const commands = settingData.commands.map((cmd) => {
+          if (cmd.searchUrl === searchUrl) {
+            cmd.iconUrl = iconUrl
+          }
+          return cmd
+        })
+        const newSettings = { ...settingData, commands }
+        setSettingData(newSettings)
+        // For some reason, updating data here does not update the Form display.
+        // So update via ref.
+        formRef.current?.setState({ formData: newSettings })
       }
     }
     window.addEventListener('message', func)
     return () => {
       window.removeEventListener('message', func)
     }
-  }, [])
+  }, [settingData])
 
-  const sendMessage = (command: string, value: any) => {
+  const sendMessage = (command: OPTION_MSG, value: any) => {
     if (parent != null) {
       console.debug('send message', command, value)
       parent.postMessage({ command, value }, origin)
     }
   }
 
-  const updateSettings = (data: UserSettingsType) => {
-    sendMessage('changed', data)
-    setSettingData(data)
-  }
-
-  const onChange = (arg: IChangeEvent, id?: string) => {
-    // update iconURL when searchUrl setted
+  const onChangeForm = (arg: IChangeEvent, id?: string) => {
+    // update iconURL when searchUrl chagned
     if (id?.endsWith('searchUrl')) {
       const data = arg.formData as UserSettingsType
       for (const command of data.commands) {
         if (!command.iconUrl && command.searchUrl) {
-          sendMessage('fetchIconUrl', {
+          setSettingData(data)
+          sendMessage(OPTION_MSG.FETCH_ICON_URL, {
             searchUrl: command.searchUrl,
             settings: data,
           })
@@ -86,7 +114,7 @@ export function SettingFrom() {
         }
       }
     }
-    updateSettings(arg.formData)
+    setSettingData(arg.formData)
   }
 
   // Create folder options
@@ -108,13 +136,20 @@ export function SettingFrom() {
       } as folderOptionsType,
     )
     userSettingSchema.definitions.folderOptions = folderOptions
-    console.debug('settingData', settingData)
+  }
+
+  const autofill = (cmdIdx: number) => {
+    const searchUrl = settingData?.commands[cmdIdx].searchUrl
+    if (!searchUrl) return
+    sendMessage(OPTION_MSG.FETCH_ICON_URL, {
+      searchUrl: searchUrl,
+    })
   }
 
   const fields: RegistryFieldsType = {
     '#/popupPlacement': SelectField,
     '#/style': SelectField,
-    '#/commands/iconUrl': IconUrlField,
+    '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': SelectField,
     '#/commands/parentFolder': FolderField,
@@ -122,8 +157,9 @@ export function SettingFrom() {
     '#/commandFolder/onlyIcon': OnlyIconField,
     ArraySchemaField: CustomArraySchemaField,
   }
-  for (const type of ['popup', 'tab', 'sidePanel']) {
+  for (const type of ['popup', 'tab']) {
     fields[`#/commands/openModeSecondary_${type}`] = SelectField
+    fields[`#/commands/spaceEncoding_${type}`] = SelectField
   }
 
   const uiSchema = {
@@ -158,14 +194,23 @@ export function SettingFrom() {
         searchUrl: {
           'ui:title': t('searchUrl'),
         },
-        iconUrl: { 'ui:title': t('iconUrl') },
+        spaceEncoding: {
+          'ui:title': t('spaceEncoding'),
+          enum: {
+            plus: { 'ui:title': t('spaceEncoding_plus') },
+            percent: { 'ui:title': t('spaceEncoding_percent') },
+          },
+        },
+        iconUrl: {
+          'ui:title': t('iconUrl'),
+          'ui:button': t('iconUrl_autofill'),
+        },
         openMode: {
           'ui:title': t('openMode'),
           enum: {
             popup: { 'ui:title': t('openMode_popup') },
             tab: { 'ui:title': t('openMode_tab') },
             api: { 'ui:title': t('openMode_api') },
-            sidePanel: { 'ui:title': t('openMode_sidePanel') },
             linkPopup: { 'ui:title': t('openMode_linkPopup') },
           },
         },
@@ -174,7 +219,6 @@ export function SettingFrom() {
           enum: {
             popup: { 'ui:title': t('openMode_popup') },
             tab: { 'ui:title': t('openMode_tab') },
-            sidePanel: { 'ui:title': t('openMode_sidePanel') },
           },
         },
         parentFolder: { 'ui:title': t('parentFolder') },
@@ -223,7 +267,7 @@ export function SettingFrom() {
       schema={userSettingSchema}
       validator={validator}
       formData={settingData}
-      onChange={onChange}
+      onChange={onChangeForm}
       onError={log('errors')}
       uiSchema={uiSchema}
       fields={fields}
@@ -235,6 +279,7 @@ export function SettingFrom() {
           RemoveButton,
         },
       }}
+      ref={formRef}
     />
   )
 }
@@ -301,6 +346,33 @@ const IconUrlField = (props: FieldProps) => {
     </label>
   )
 }
+
+const IconUrlFieldWithAutofill =
+  (onClick: (cmdIdx: number) => void) => (props: FieldProps) => {
+    const btnLabel = props.uiSchema ? props.uiSchema['ui:button'] : 'autofill'
+    const cmdIdx = Number(props.idSchema.$id.split('_')[2])
+    const [clicked, setClicked] = useState(false)
+
+    const exec = () => {
+      onClick(cmdIdx)
+      setClicked(true)
+    }
+
+    return (
+      <>
+        <IconUrlField {...props} />
+        {!props.formData && (
+          <button type="button" className={css.iconUrlAutoFill} onClick={exec}>
+            {clicked ? (
+              <Icon name="refresh" className={css.iconUrlAutoFillLoading} />
+            ) : (
+              btnLabel
+            )}
+          </button>
+        )}
+      </>
+    )
+  }
 
 type Option = {
   name: string
@@ -380,7 +452,7 @@ const FolderField = (props: FieldProps) => {
 
 const FetchOptionField = (props: FieldProps) => {
   return (
-    <label className={`${css.fetchOption} form-control`}>
+    <label className="form-control">
       <textarea
         id={props.idSchema.$id}
         className={css.fetchOptionInput}

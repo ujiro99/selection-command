@@ -72,11 +72,17 @@ function getTimestamp() {
   return `${year}${month}${day}_${hours}${minutes}`
 }
 
+export enum OPTION_MSG {
+  START = 'start',
+  CHANGED = 'changed',
+  SET_HEIGHT = 'setHeight',
+  FETCH_ICON_URL = 'fetchIconUrl',
+  RES_FETCH_ICON_URL = 'resFetchIconUrl',
+}
+
 export function Option() {
-  const [settings, setSettings] = useState<UserSettingsType>()
-  const [timeoutID, setTimeoutID] = useState<number>()
   const [iframeHeight, setIframeHeight] = useState<number>()
-  const [iconVisible, setIconVisible] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [resetDialog, setResetDialog] = useState(false)
   const [importDialog, setImportDialog] = useState(false)
   const [importJson, setImportJson] = useState<UserSettingsType>()
@@ -84,10 +90,10 @@ export function Option() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const inputFile = useRef<HTMLInputElement>(null)
 
-  const updateSettings = async () => {
+  const updateSettings = async (settings: UserSettingsType) => {
+    if (isSaving) return
     try {
-      if (settings == null) return
-      setIconVisible(true)
+      setIsSaving(true)
 
       // Convert iconUrl to DataURL for cache.
       const urls = UserSettings.getUrls(settings)
@@ -117,48 +123,24 @@ export function Option() {
       console.error('Failed to update settings!', settings)
       console.error(e)
     } finally {
-      setIconVisible(false)
+      setIsSaving(false)
     }
   }
-
-  useEffect(() => {
-    let unmounted = false
-    if (timeoutID) clearTimeout(timeoutID)
-    const newTimeoutId = window.setTimeout(() => {
-      if (unmounted) return
-      updateSettings()
-      setTimeoutID(undefined)
-    }, 1 * 500 /* ms */)
-    setTimeoutID(newTimeoutId)
-
-    return () => {
-      unmounted = true
-      clearTimeout(timeoutID)
-    }
-  }, [settings])
 
   useEffect(() => {
     const func = async (event: MessageEvent) => {
       const command = event.data.command
       const value = event.data.value
-      if (command === 'changed') {
-        setSettings(value)
-      } else if (command === 'setHeight') {
+      if (command === OPTION_MSG.CHANGED) {
+        updateSettings(value)
+      } else if (command === OPTION_MSG.SET_HEIGHT) {
         setIframeHeight(value)
-      } else if (command === 'fetchIconUrl') {
-        const { searchUrl, settings } = value
+      } else if (command === OPTION_MSG.FETCH_ICON_URL) {
+        const { searchUrl } = value
         console.log('fetchIconUrl', searchUrl)
-        const url = await fetchIconUrl(searchUrl)
-        if (url && settings) {
-          for (const command of settings.commands) {
-            if (!command.iconUrl && command.searchUrl) {
-              if (command.searchUrl === searchUrl) {
-                command.iconUrl = url
-              }
-            }
-          }
-          setSettings(settings)
-          sendMessage('changed', settings)
+        const iconUrl = await fetchIconUrl(searchUrl)
+        if (iconUrl) {
+          sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, { searchUrl, iconUrl })
         }
       }
     }
@@ -223,9 +205,9 @@ export function Option() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ;(async () => {
+      ; (async () => {
         // for back compatibility
-        // cache image data url to local storage
+        //cache image data url to local storage
         const caches = {} as ImageCache
         for (const c of importJson.commands) {
           if (!c.iconUrl) continue
@@ -243,7 +225,7 @@ export function Option() {
     setImportDialog(false)
   }
 
-  const sendMessage = (command: string, value: unknown) => {
+  const sendMessage = (command: OPTION_MSG, value: unknown) => {
     if (iframeRef.current != null && iframeRef.current.contentWindow != null) {
       const message = { command, value }
       iframeRef.current.contentWindow.postMessage(message, '*')
@@ -256,7 +238,7 @@ export function Option() {
   const onLoadIfame = async () => {
     const settings = await UserSettings.get()
     const translation = getTranslation()
-    sendMessage('start', {
+    sendMessage(OPTION_MSG.START, {
       settings,
       translation,
     })
@@ -265,7 +247,7 @@ export function Option() {
   return (
     <div className={css.option}>
       <CSSTransition
-        in={iconVisible}
+        in={isSaving}
         timeout={300}
         classNames="drop-in"
         unmountOnExit

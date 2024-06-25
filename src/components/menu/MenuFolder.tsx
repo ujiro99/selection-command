@@ -1,12 +1,14 @@
 import React, { useContext, useState, useEffect, useRef } from 'react'
-import { Popover, Transition } from '@headlessui/react'
-import { usePopper } from 'react-popper'
+import { Popover, PopoverPanel, Transition } from '@headlessui/react'
+import { useFloating, flip, autoUpdate, Placement } from '@floating-ui/react'
+import { offset } from '@floating-ui/dom'
 import classnames from 'classnames'
 
 import { MenuItem } from './MenuItem'
 import { context } from '../App'
+import { Icon } from '@/components/Icon'
 import { STYLE } from '@/const'
-import { toUrl, sleep } from '@/services/util'
+import { sleep } from '@/services/util'
 import type { Command, CommandFolder } from '@/services/userSettings'
 import { useSetting } from '@/hooks/useSetting'
 
@@ -18,8 +20,6 @@ type MenuFolderProps = {
   commands: Command[]
   menuRef: React.RefObject<Element>
 }
-
-type Placement = 'top' | 'bottom' | 'left' | 'right'
 
 const calcSafeAreaHorizontal = (
   popperElm: Element,
@@ -67,48 +67,42 @@ const calcSafeArea = (
 }
 
 export function MenuFolder(props: MenuFolderProps): JSX.Element {
-  const [popperElm, setPopperElm] = useState<HTMLDivElement>()
   const [visible, setVisible] = useState(false)
   const [safeAreaStyles, setSafeAreaStyles] = useState<React.CSSProperties>({})
-  const folderRef = useRef(null)
+  const folderRef = useRef<HTMLDivElement>(null)
   const { selectionText } = useContext(context)
   const { settings } = useSetting()
   const isHorizontal = settings.style === STYLE.HORIZONTAL
-  let placement = settings.popupPlacement ?? 'top'
+  let popupPlacement = settings.popupPlacement ?? 'top'
   if (!isHorizontal) {
-    placement = 'right-start'
+    popupPlacement = 'right-start'
   }
   const onlyIcon = props.folder.onlyIcon && isHorizontal
 
-  const { styles, attributes } = usePopper(folderRef.current, popperElm, {
-    placement: placement,
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [0, 5],
-        },
-      },
-    ],
+  const { refs, floatingStyles, placement } = useFloating({
+    open: visible,
+    placement: popupPlacement,
+    elements: { reference: folderRef.current },
+    whileElementsMounted: autoUpdate,
+    middleware: [offset(5), flip()],
   })
 
   let dataPlacement = 'right' as Placement
   if (isHorizontal) {
-    if (placement.startsWith('top')) {
+    if (popupPlacement.startsWith('top')) {
       dataPlacement = 'top'
     } else {
       dataPlacement = 'bottom'
     }
   }
-  if (attributes.popper) {
-    const attr = attributes.popper['data-popper-placement']
-    if (attr.startsWith('top')) {
+  if (placement) {
+    if (placement.startsWith('top')) {
       dataPlacement = 'top'
-    } else if (attr.startsWith('bottom')) {
+    } else if (placement.startsWith('bottom')) {
       dataPlacement = 'bottom'
-    } else if (attr.startsWith('right')) {
+    } else if (placement.startsWith('right')) {
       dataPlacement = 'right'
-    } else if (attr.startsWith('left')) {
+    } else if (placement.startsWith('left')) {
       dataPlacement = 'left'
     }
   }
@@ -132,31 +126,26 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
   useEffect(() => {
     ;(async () => {
       await sleep(50)
-      if (visible && popperElm != null && folderRef.current != null) {
-        const area = calcSafeArea(popperElm, folderRef.current, dataPlacement)
+      if (
+        visible &&
+        refs.floating.current != null &&
+        folderRef.current != null
+      ) {
+        const area = calcSafeArea(
+          refs.floating.current,
+          folderRef.current,
+          dataPlacement,
+        )
         setSafeAreaStyles({
           position: 'absolute',
           top: `${area.top}px`,
           left: `${area.left}px`,
           width: `${area.width}px`,
-          height: `${area.height}`,
+          height: `${area.height}px`,
         })
       }
     })()
-  }, [visible, popperElm, folderRef.current])
-
-  let enterFrom = 'pop-up-from'
-  let enterTo = 'pop-up-to'
-  if (dataPlacement === 'right') {
-    enterFrom = 'pop-right-from'
-    enterTo = 'pop-right-to'
-  } else if (dataPlacement === 'left') {
-    enterFrom = 'pop-left-from'
-    enterTo = 'pop-left-to'
-  } else if (dataPlacement === 'bottom') {
-    enterFrom = 'pop-down-from'
-    enterTo = 'pop-down-to'
-  }
+  }, [visible, refs.floating.current, folderRef.current, dataPlacement])
 
   return (
     <Popover
@@ -166,36 +155,33 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
       })}
       ref={folderRef}
     >
-      <img
-        className={classnames(css.folderIcon)}
-        src={props.folder.iconUrl}
-        alt={props.folder.title}
-      />
-      {!onlyIcon && <span>{props.folder.title}</span>}
-      {visible && <div className="cover" style={safeAreaStyles} />}
-      <Transition
-        show={visible}
-        enter="transition duration-200 ease-out"
-        enterFrom={enterFrom}
-        enterTo={enterTo}
-        leave="transition duration-100 ease-out"
-        leaveFrom={enterTo}
-        leaveTo={enterFrom}
-      >
-        <Popover.Panel
-          ref={setPopperElm}
-          className={css.popup}
-          style={styles.popper}
-          {...attributes.popper}
+      <div className={css.folderItem}>
+        <img
+          className={classnames(css.folderIcon)}
+          src={props.folder.iconUrl}
+          alt={props.folder.title}
+        />
+        {!onlyIcon && <span className={css.title}>{props.folder.title}</span>}
+        {!isHorizontal && <Icon name="chevron" className={css.icon} />}
+      </div>
+
+      {visible && <div className="safeArea" style={safeAreaStyles} />}
+      <Transition show={visible}>
+        <PopoverPanel
+          ref={refs.setFloating}
+          style={floatingStyles}
+          data-placement={dataPlacement}
           static
         >
-          <InnerMenu
-            isHorizontal={isHorizontal}
-            commands={props.commands}
-            selectionText={selectionText}
-            menuRef={props.menuRef}
-          />
-        </Popover.Panel>
+          <div className={classnames(css.popup, css.folderTransition)}>
+            <InnerMenu
+              isHorizontal={isHorizontal}
+              commands={props.commands}
+              selectionText={selectionText}
+              menuRef={props.menuRef}
+            />
+          </div>
+        </PopoverPanel>
       </Transition>
     </Popover>
   )
