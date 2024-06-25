@@ -337,6 +337,7 @@ chrome.tabs.onActivated.addListener(async () => {
 
 chrome.runtime.onInstalled.addListener((details) => {
   // migration
+  console.log('onInstalled', details)
   if (!(details.reason === 'update' && details.previousVersion === '0.5.0')) {
     migrate()
     return
