@@ -53,6 +53,10 @@
   min-width: 4em;
 }
 
+.folderHorizontal .title {
+  min-width: 0;
+}
+
 .icon {
   width: 20px;
   height: 20px;
