@@ -204,7 +204,11 @@ const commandFuncs = {
     return false
   },
 
-  [BgCommand.openInTab]: (param: unknown, sender: Sender): boolean => {
+  [BgCommand.openInTab]: (
+    param: unknown,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
     let w: WindowType | undefined
     for (const layer of data.windowStack) {
       for (const window of layer) {
@@ -216,13 +220,36 @@ const commandFuncs = {
     }
     if (!w) {
       console.warn('window not found', sender.tab?.windowId)
+      response(false)
       return false
     }
-    chrome.tabs.create({
-      url: sender.url,
-      windowId: w.srcWindowId,
-    })
-    return false
+
+    let targetId: number | undefined
+    chrome.windows
+      .get(w.srcWindowId)
+      .then(async (window) => {
+        targetId = window.id
+      })
+      .catch(async () => {
+        const current = await chrome.windows.getCurrent()
+        targetId = current.id
+        console.warn(
+          `source window(${w.srcWindowId}) not found, use current(${current.id}) instead.`,
+        )
+      })
+      .finally(() => {
+        if (targetId) {
+          chrome.tabs.create({
+            url: sender.url,
+            windowId: targetId,
+          })
+          response(true)
+        }
+        response(false)
+      })
+
+    // return async
+    return true
   },
 } as { [key: string]: IpcCallback }
 
