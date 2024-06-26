@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { UserSettings } from '../services/userSettings'
 import type { UserSettingsType, PageRule } from '../services/userSettings'
-import { STYLE } from '../const'
+import { isEmpty } from '@/services/util'
+import { STYLE } from '@/const'
 
 type useSettingReturn = {
   settings: UserSettingsType
@@ -26,7 +27,7 @@ export function useSetting(): useSettingReturn {
       // use image cache if available
       for (const command of data.commands) {
         const cache = caches.images[command.iconUrl]
-        if (cache != null) {
+        if (!isEmpty(cache)) {
           command.iconUrl = cache
         }
       }
@@ -35,7 +36,7 @@ export function useSetting(): useSettingReturn {
           continue
         }
         const cache = caches.images[folder.iconUrl]
-        if (cache != null) {
+        if (!isEmpty(cache)) {
           folder.iconUrl = cache
         }
       }

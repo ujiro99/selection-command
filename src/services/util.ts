@@ -120,3 +120,10 @@ export function isBase64(str: string): boolean {
 export function isUrl(str: string): boolean {
   return /^https?:\/\//.test(str)
 }
+
+/**
+ * Check if the string is empty.
+ */
+export function isEmpty(str: string): boolean {
+  return !str?.length
+}
