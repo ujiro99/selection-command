@@ -5,7 +5,16 @@ import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
 import { UserSettings } from '../services/userSettings'
 import type { UserSettingsType, ImageCache } from '../services/userSettings'
-import { sleep, toDataURL, toUrl, isBase64, isUrl } from '../services/util'
+import {
+  sleep,
+  toDataURL,
+  toUrl,
+  isBase64,
+  isUrl,
+  isEmpty,
+  hasSubdomain,
+  getLowerDomainUrl,
+} from '@/services/util'
 import { t } from '../services/i18n'
 import { APP_ID, VERSION } from '../const'
 import { Dialog } from './Dialog'
@@ -14,11 +23,44 @@ import messages from '../../dist/_locales/en/messages.json'
 import './App.css'
 import css from './Option.module.css'
 
-function getFaviconUrl(urlStr: string): string {
+const getFaviconFromGoogle = (urlStr: string): string => {
   const url = new URL(urlStr)
   const domain = url.hostname
   const favUrl = `https://s2.googleusercontent.com/s2/favicons?domain=${domain}&sz=128`
   return favUrl
+}
+
+const getFaviconFromDom = async (
+  urlStr: string,
+): Promise<string | undefined> => {
+  try {
+    const res = await fetch(urlStr)
+    const text = await res.text()
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(text, 'text/html')
+    const icons = doc.querySelectorAll(
+      'link[rel="icon"], link[rel="shortcut icon"]',
+    )
+    console.debug('icons', icons)
+    if (icons.length > 0) {
+      const iconUrl = icons[icons.length - 1].getAttribute('href')
+      // console.debug('iconUrl', iconUrl)
+      if (iconUrl?.startsWith('http')) {
+        return iconUrl
+      }
+      if (iconUrl?.startsWith('//')) {
+        const protocol = new URL(urlStr).protocol
+        return `${protocol}${iconUrl}`
+      }
+      if (iconUrl?.startsWith('/')) {
+        const origin = new URL(urlStr).origin
+        return `${origin}${iconUrl}`
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to fetch icon', urlStr)
+  }
+  return
 }
 
 /**
@@ -29,27 +71,20 @@ function getFaviconUrl(urlStr: string): string {
  */
 const fetchIconUrl = async (url: string): Promise<string> => {
   const urlStr = toUrl(url, 'test')
-  const res = await fetch(urlStr)
-  const text = await res.text()
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(text, 'text/html')
-  const icons = doc.querySelectorAll(
-    'link[rel="icon"], link[rel="shortcut icon"]',
-  )
-  if (icons.length === 0) {
-    return getFaviconUrl(url)
+  const faviconUrl = await getFaviconFromDom(urlStr)
+  if (faviconUrl) {
+    return faviconUrl
   }
-  const iconUrl = icons[icons.length - 1].getAttribute('href')
-  // console.debug('iconUrl', iconUrl)
-  if (iconUrl?.startsWith('//')) {
-    const protocol = new URL(urlStr).protocol
-    return `${protocol}${iconUrl}`
+  // Try to get favicon from root domain.
+  if (hasSubdomain(urlStr)) {
+    const rootDomainUrl = getLowerDomainUrl(urlStr)
+    const faviconUrl = await getFaviconFromDom(rootDomainUrl)
+    if (faviconUrl) {
+      return faviconUrl
+    }
   }
-  if (iconUrl?.startsWith('/')) {
-    const origin = new URL(urlStr).origin
-    return `${origin}${iconUrl}`
-  }
-  return getFaviconUrl(url)
+  // Try to get favicon from googleusercontent.com
+  return getFaviconFromGoogle(url)
 }
 
 const getTranslation = () => {
@@ -99,7 +134,7 @@ export function Option() {
       const urls = UserSettings.getUrls(settings)
       const caches = await UserSettings.getCaches()
       const noCacheUrls = urls
-        .filter((url) => url != null)
+        .filter((url) => !isEmpty(url))
         .filter((url) => !isBase64(url) && caches.images[url] == null)
       const newCaches = await Promise.all(
         noCacheUrls.map(async (url) => {
@@ -205,7 +240,7 @@ export function Option() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ; (async () => {
+      ;(async () => {
         // for back compatibility
         //cache image data url to local storage
         const caches = {} as ImageCache

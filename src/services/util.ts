@@ -120,3 +120,52 @@ export function isBase64(str: string): boolean {
 export function isUrl(str: string): boolean {
   return /^https?:\/\//.test(str)
 }
+
+/**
+ * Check if the string is empty.
+ */
+export function isEmpty(str: string): boolean {
+  return !str?.length
+}
+
+/**
+ * Check if the URL has a subdomain.
+ *
+ * @param {string} url The URL to check.
+ * @returns {boolean} True if the URL has a subdomain.
+ */
+export function hasSubdomain(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url)
+    const hostname = parsedUrl.hostname
+    const parts = hostname.split('.')
+
+    // In general, if a hostname is split into three or more parts, it is considered a subdomain
+    return parts.length > 2
+  } catch (error) {
+    console.error('Invalid URL:', error)
+    return false
+  }
+}
+
+/**
+ *  Get a URL for a domain one level down.
+ *
+ * @param {string} url The URL to get the root domain.
+ * @returns {string} The domain URL. If the URL has no subdomain, the URL itself is returned.
+ */
+export function getLowerDomainUrl(url: string): string {
+  if (!hasSubdomain(url)) {
+    return url
+  }
+  try {
+    const parsed = new URL(url)
+    const hostname = parsed.hostname
+    const parts = hostname.split('.')
+
+    return `${parsed.protocol}//${parts.slice(1).join('.')}`
+  } catch (error) {
+    console.error('Invalid URL:', error)
+    return ''
+  }
+}
