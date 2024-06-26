@@ -80,7 +80,7 @@ export const UserSettings = {
     obj.commands = obj.commands.map((c, idx) => {
       // Assigning IDs to each command
       c.id = idx
-      // cache id to image data url .
+      // CacheId to image data url for Option screen.
       if (!isUrl(c.iconUrl)) {
         c.iconUrl = caches.images[c.iconUrl]
       }
