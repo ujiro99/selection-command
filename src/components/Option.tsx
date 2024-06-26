@@ -5,7 +5,14 @@ import { LoadingIcon } from './LoadingIcon'
 import { Storage, STORAGE_KEY } from '../services/storage'
 import { UserSettings } from '../services/userSettings'
 import type { UserSettingsType, ImageCache } from '../services/userSettings'
-import { sleep, toDataURL, toUrl, isBase64, isUrl } from '../services/util'
+import {
+  sleep,
+  toDataURL,
+  toUrl,
+  isBase64,
+  isUrl,
+  isEmpty,
+} from '@/services/util'
 import { t } from '../services/i18n'
 import { APP_ID, VERSION } from '../const'
 import { Dialog } from './Dialog'
@@ -99,7 +106,7 @@ export function Option() {
       const urls = UserSettings.getUrls(settings)
       const caches = await UserSettings.getCaches()
       const noCacheUrls = urls
-        .filter((url) => url != null)
+        .filter((url) => !isEmpty(url))
         .filter((url) => !isBase64(url) && caches.images[url] == null)
       const newCaches = await Promise.all(
         noCacheUrls.map(async (url) => {
@@ -205,7 +212,7 @@ export function Option() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ; (async () => {
+      ;(async () => {
         // for back compatibility
         //cache image data url to local storage
         const caches = {} as ImageCache
