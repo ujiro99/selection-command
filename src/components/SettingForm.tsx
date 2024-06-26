@@ -362,7 +362,12 @@ const IconUrlFieldWithAutofill =
       <>
         <IconUrlField {...props} />
         {!props.formData && (
-          <button type="button" className={css.iconUrlAutoFill} onClick={exec}>
+          <button
+            type="button"
+            className={css.iconUrlAutoFill}
+            onClick={exec}
+            disabled={clicked}
+          >
             {clicked ? (
               <Icon name="refresh" className={css.iconUrlAutoFillLoading} />
             ) : (
