@@ -221,7 +221,8 @@
         },
         "iconUrl": {
           "$id": "#/commandFolder/iconUrl",
-          "type": "string"
+          "type": "string",
+          "default": "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-512.png"
         },
         "onlyIcon": {
           "name": "OnlyIcon",
@@ -262,10 +263,7 @@
     "openMode": {
       "type": "string",
       "enum": [
-        "popup",
-        "tab",
-        "api",
-        "linkPopup"
+        ""
       ]
     },
     "openModeSecondary": {

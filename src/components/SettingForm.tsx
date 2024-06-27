@@ -13,6 +13,7 @@ import classnames from 'classnames'
 import userSettingSchema from '../services/userSettingSchema.json'
 import type { UserSettingsType, FolderOption } from '../services/userSettings'
 import { OPTION_MSG } from './Option'
+import { OPEN_MODE } from '@/const'
 
 import { Icon } from '../components/Icon'
 
@@ -117,27 +118,6 @@ export function SettingFrom() {
     setSettingData(arg.formData)
   }
 
-  // Create folder options
-  if (settingData) {
-    const folders = settingData.folders
-    const folderOptions: folderOptionsType = folders.reduce(
-      (acc, cur) => {
-        acc.enumNames.push(cur.title)
-        acc.enum.push({
-          id: cur.id,
-          name: cur.title,
-          iconUrl: cur.iconUrl ?? '',
-        })
-        return acc
-      },
-      {
-        enumNames: ['-- none --'],
-        enum: [{ id: '', name: '-- none --' }],
-      } as folderOptionsType,
-    )
-    userSettingSchema.definitions.folderOptions = folderOptions
-  }
-
   const autofill = (cmdIdx: number) => {
     const searchUrl = settingData?.commands[cmdIdx].searchUrl
     if (!searchUrl) return
@@ -161,6 +141,8 @@ export function SettingFrom() {
     fields[`#/commands/openModeSecondary_${type}`] = SelectField
     fields[`#/commands/spaceEncoding_${type}`] = SelectField
   }
+
+  type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
 
   const uiSchema = {
     popupPlacement: {
@@ -207,12 +189,7 @@ export function SettingFrom() {
         },
         openMode: {
           'ui:title': t('openMode'),
-          enum: {
-            popup: { 'ui:title': t('openMode_popup') },
-            tab: { 'ui:title': t('openMode_tab') },
-            api: { 'ui:title': t('openMode_api') },
-            linkPopup: { 'ui:title': t('openMode_linkPopup') },
-          },
+          enum: {} as ModeMap,
         },
         openModeSecondary: {
           'ui:title': t('openModeSecondary'),
@@ -260,6 +237,40 @@ export function SettingFrom() {
       'ui:title': t('Add'),
     },
   }
+
+  // Add folder options to schema.
+  if (settingData) {
+    const folders = settingData.folders
+    const folderOptions: folderOptionsType = folders.reduce(
+      (acc, cur) => {
+        acc.enumNames.push(cur.title)
+        acc.enum.push({
+          id: cur.id,
+          name: cur.title,
+          iconUrl: cur.iconUrl ?? '',
+        })
+        return acc
+      },
+      {
+        enumNames: ['-- none --'],
+        enum: [{ id: '', name: '-- none --' }],
+      } as folderOptionsType,
+    )
+    userSettingSchema.definitions.folderOptions = folderOptions
+  }
+
+  // Add openModes to schema and uiSchema.
+  const modes = Object.values(OPEN_MODE).filter(
+    (mode) => mode !== OPEN_MODE.OPTION,
+  )
+  const modeMap = {} as ModeMap
+  for (const mode of modes) {
+    modeMap[mode] = {
+      'ui:title': t(`openMode_${mode}`),
+    }
+  }
+  userSettingSchema.definitions.openMode.enum = modes
+  uiSchema.commands.items.openMode.enum = modeMap
 
   const log = (type: any) => console.log.bind(console, type)
   return (

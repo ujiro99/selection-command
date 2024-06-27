@@ -33,9 +33,9 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       }
       const onUp = (e: MouseEvent) => {
         if (!isPopup(e.target as Element)) {
-        setIsMouseDown(false)
-        setEndPoint({ x: e.x, y: e.y })
-      }
+          setIsMouseDown(false)
+          setEndPoint({ x: e.x, y: e.y })
+        }
       }
       document.addEventListener('mousedown', onDown)
       document.addEventListener('mouseup', onUp)
