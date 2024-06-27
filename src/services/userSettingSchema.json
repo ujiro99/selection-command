@@ -200,6 +200,35 @@
                   "default": "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png"
                 }
               }
+            },
+            {
+              "properties": {
+                "openMode": {
+                  "enum": [
+                    "copy"
+                  ]
+                },
+                "copyOption": {
+                  "$id": "#/commands/copyOption",
+                  "type": "string",
+                  "enum": [
+                    "default",
+                    "text"
+                  ],
+                  "default": "default"
+                },
+                "title": {
+                  "type": "string",
+                  "default": "Copy text"
+                },
+                "iconUrl": {
+                  "type": "string",
+                  "default": "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png"
+                }
+              },
+              "required": [
+                "copyOption"
+              ]
             }
           ]
         }

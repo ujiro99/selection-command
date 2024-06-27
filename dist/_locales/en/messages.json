@@ -86,11 +86,23 @@
   "Option_openMode_linkPopup": {
     "message": "Link Popup"
   },
+  "Option_openMode_copy": {
+    "message": "Copy text"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Click"
   },
   "Option_parentFolder": {
     "message": "Parent Folder"
+  },
+  "Option_copyOption": {
+    "message": "Copy format"
+  },
+  "Option_copyOption_default": {
+    "message": "Default"
+  },
+  "Option_copyOption_text": {
+    "message": "Plain text"
   },
   "Option_fetchOptions": {
     "message": "Fetch Options"

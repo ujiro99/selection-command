@@ -26,24 +26,35 @@ type MenuItemProps = {
   command: Command
 }
 
+type ItemState = {
+  state: ExecState
+  message?: string
+}
+
 export function MenuItem(props: MenuItemProps): JSX.Element {
   const elmRef = useRef(null)
-  const [execState, setExecState] = useState<ExecState>(ExecState.NONE)
+  const [itemState, setItemState] = useState<ItemState>({
+    state: ExecState.NONE,
+  })
   const onlyIcon = props.onlyIcon
-  const { openMode, openModeSecondary, iconUrl, title: _title } = props.command
+  const { openMode, openModeSecondary, iconUrl, title } = props.command
   const { selectionText } = useContext(context)
-  let title = _title
+  let message = itemState.message || title
   let enable = true
 
   if (openMode === OPEN_MODE.LINK_POPUP) {
     const links = linksInSelection()
     console.debug('links', links)
     enable = links.length > 0
-    title = `${links.length} links`
+    message = `${links.length} links`
+  }
+
+  const onChangeState = (state: ExecState, message?: string) => {
+    setItemState({ state, message })
   }
 
   function handleClick(e: React.MouseEvent) {
-    if (execState !== ExecState.NONE) {
+    if (itemState.state !== ExecState.NONE) {
       return
     }
 
@@ -57,7 +68,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       command: props.command,
       menuElm: props.menuRef.current,
       e,
-      changeState: setExecState,
+      changeState: onChangeState,
     })
 
     e.stopPropagation()
@@ -65,7 +76,7 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
 
   return (
     <>
-      <Tooltip text={title} disabled={onlyIcon}>
+      <Tooltip text={message} disabled={onlyIcon}>
         <button
           type="button"
           className={classNames(item, button, {
@@ -76,8 +87,8 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
           onClick={handleClick}
           disabled={!enable}
         >
-          <ImageWithState state={execState} iconUrl={iconUrl} />
-          <span className={itemTitle}>{title}</span>
+          <ImageWithState state={itemState.state} iconUrl={iconUrl} />
+          <span className={itemTitle}>{message}</span>
         </button>
       </Tooltip>
     </>

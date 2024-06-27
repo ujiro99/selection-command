@@ -86,11 +86,23 @@
   "Option_openMode_linkPopup": {
     "message": "Link Popup"
   },
+  "Option_openMode_copy": {
+    "message": "Copy text"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"
   },
   "Option_parentFolder": {
     "message": "親フォルダ"
+  },
+  "Option_copyOption": {
+    "message": "コピーフォーマット"
+  },
+  "Option_copyOption_default": {
+    "message": "標準"
+  },
+  "Option_copyOption_text": {
+    "message": "プレーンテキスト"
   },
   "Option_fetchOptions": {
     "message": "Fetchオプション"

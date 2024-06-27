@@ -17,10 +17,10 @@ export const Api = {
     })
       .then(({ ok, res }) => {
         if (ok) {
-          changeState(ExecState.SUCCESS)
+          changeState(ExecState.SUCCESS, 'Success!')
         } else {
           console.error(res)
-          changeState(ExecState.FAIL)
+          changeState(ExecState.FAIL, 'Failed...')
         }
         return sleep(1500)
       })
