@@ -19,7 +19,7 @@ export interface ExecProps {
   command: Command
   menuElm: Element | null
   e: React.MouseEvent
-  changeState: (state: ExecState) => void
+  changeState: (state: ExecState, message?: string) => void
 }
 
 export const actions = {

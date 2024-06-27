@@ -14,7 +14,7 @@ export const Copy = {
     changeState(ExecState.EXECUTING)
 
     setClipboard(selectionText).then(async () => {
-      changeState(ExecState.SUCCESS)
+      changeState(ExecState.SUCCESS, 'Copied!')
       await sleep(500)
       changeState(ExecState.NONE)
     })
