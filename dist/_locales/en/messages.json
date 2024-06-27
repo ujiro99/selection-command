@@ -86,6 +86,9 @@
   "Option_openMode_linkPopup": {
     "message": "Link Popup"
   },
+  "Option_openMode_copy": {
+    "message": "Copy text"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Click"
   },
