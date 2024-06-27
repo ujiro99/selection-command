@@ -101,6 +101,27 @@ export function SettingFrom() {
   }
 
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
+    if (id?.endsWith('openMode')) {
+      const data = arg.formData as UserSettingsType
+      data.commands
+        .filter(
+          (c) => c.openMode !== OPEN_MODE.POPUP && c.openMode !== OPEN_MODE.TAB,
+        )
+        .map((c) => {
+          delete c.openModeSecondary
+          delete c.spaceEncoding
+        })
+      data.commands
+        .filter(
+          (c) =>
+            c.openMode !== OPEN_MODE.POPUP &&
+            c.openMode !== OPEN_MODE.LINK_POPUP,
+        )
+        .map((c) => {
+          delete c.popupOption
+        })
+    }
+
     // update iconURL when searchUrl chagned
     if (id?.endsWith('searchUrl')) {
       const data = arg.formData as UserSettingsType
@@ -132,6 +153,7 @@ export function SettingFrom() {
     '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': SelectField,
+    '#/commands/copyOption': SelectField,
     '#/commands/parentFolder': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
@@ -200,6 +222,13 @@ export function SettingFrom() {
         },
         parentFolder: { 'ui:title': t('parentFolder') },
         fetchOptions: { 'ui:title': t('fetchOptions') },
+        copyOption: {
+          'ui:title': t('copyOption'),
+          enum: {
+            default: { 'ui:title': t('copyOption_default') },
+            text: { 'ui:title': t('copyOption_text') },
+          },
+        },
         variables: {
           'ui:classNames': 'variables',
           'ui:title': t('variables'),

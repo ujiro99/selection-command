@@ -208,6 +208,15 @@
                     "copy"
                   ]
                 },
+                "copyOption": {
+                  "$id": "#/commands/copyOption",
+                  "type": "string",
+                  "enum": [
+                    "default",
+                    "text"
+                  ],
+                  "default": "default"
+                },
                 "title": {
                   "type": "string",
                   "default": "Copy text"
@@ -216,7 +225,10 @@
                   "type": "string",
                   "default": "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png"
                 }
-              }
+              },
+              "required": [
+                "copyOption"
+              ]
             }
           ]
         }

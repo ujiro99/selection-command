@@ -10,13 +10,27 @@ async function setClipboard(text: string) {
 }
 
 export const Copy = {
-  execute({ selectionText, changeState }: ExecProps) {
+  async execute({ selectionText, changeState, e, command }: ExecProps) {
     changeState(ExecState.EXECUTING)
 
-    setClipboard(selectionText).then(async () => {
-      changeState(ExecState.SUCCESS, 'Copied!')
-      await sleep(500)
-      changeState(ExecState.NONE)
-    })
+    // Toggled by Ctrl key
+    let mode = command.copyOption ?? 'default'
+    if (e.ctrlKey) {
+      if (mode === 'default') {
+        mode = 'text'
+      } else {
+        mode = 'default'
+      }
+    }
+
+    if (mode === 'default') {
+      document.execCommand('copy')
+    } else if (mode === 'text') {
+      await setClipboard(selectionText)
+    }
+
+    changeState(ExecState.SUCCESS, 'Copied!')
+    await sleep(500)
+    changeState(ExecState.NONE)
   },
 }

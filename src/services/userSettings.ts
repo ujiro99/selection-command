@@ -14,6 +14,7 @@ export type Command = {
   openModeSecondary?: OPEN_MODE
   parentFolder?: FolderOption
   popupOption?: PopupOption
+  copyOption?: CopyOption
   fetchOptions?: string
   variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
@@ -23,6 +24,8 @@ export type PopupOption = {
   width: number
   height: number
 }
+
+export type CopyOption = 'default' | 'text'
 
 export enum SPACE_ENCODING {
   PLUS = 'plus',

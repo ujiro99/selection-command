@@ -95,6 +95,15 @@
   "Option_parentFolder": {
     "message": "Parent Folder"
   },
+  "Option_copyOption": {
+    "message": "Copy format"
+  },
+  "Option_copyOption_default": {
+    "message": "Default"
+  },
+  "Option_copyOption_text": {
+    "message": "Plain text"
+  },
   "Option_fetchOptions": {
     "message": "Fetch Options"
   },
