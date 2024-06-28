@@ -78,8 +78,8 @@ export type ImageCache = {
 
 export const UserSettings = {
   get: async (): Promise<UserSettingsType> => {
-    const caches = await UserSettings.getCaches()
     const obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    const caches = await UserSettings.getCaches()
     obj.commands = obj.commands.map((c, idx) => {
       // Assigning IDs to each command
       c.id = idx
@@ -147,7 +147,7 @@ export const migrate = async () => {
   await migrate060()
 }
 
-const migrate060 = async () => {
+export const migrate060 = async () => {
   console.warn(
     'Update the storage location of the configuration data to the cloud.',
   )
