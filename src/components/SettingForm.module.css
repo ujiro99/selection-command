@@ -349,6 +349,11 @@
   svg {
     fill: #555;
   }
+
+  &:disabled {
+    background-color: #e5e5e5;
+    cursor: not-allowed;
+  }
 }
 
 .iconUrlAutoFillLoading {
