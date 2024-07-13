@@ -95,7 +95,7 @@ export function SettingFrom() {
 
   const sendMessage = (command: OPTION_MSG, value: any) => {
     if (parent != null) {
-      console.debug('send message', command, value)
+      console.debug('sendMessage:', command, value)
       parent.postMessage({ command, value }, origin)
     }
   }
