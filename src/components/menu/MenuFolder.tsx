@@ -12,7 +12,7 @@ import { sleep } from '@/services/util'
 import type { Command, CommandFolder } from '@/services/userSettings'
 import { useSetting } from '@/hooks/useSetting'
 
-import { menu, list, menuHorizontal } from './Menu.module.css'
+import { menu, list, folder, menuHorizontal } from './Menu.module.css'
 import * as css from './MenuFolder.module.css'
 
 type MenuFolderProps = {
@@ -124,7 +124,7 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
   }, [folderRef.current])
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       await sleep(50)
       if (
         visible &&
@@ -149,7 +149,7 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
 
   return (
     <Popover
-      className={classnames(css.folder, {
+      className={classnames(css.folder, folder, {
         [css.folderHorizontal]: isHorizontal,
         [css.folderIconOnly]: onlyIcon,
       })}

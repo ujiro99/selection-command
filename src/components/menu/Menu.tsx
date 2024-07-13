@@ -60,9 +60,7 @@ export function Menu(): JSX.Element {
       className={classNames(menu, { [menuHorizontal]: isHorizontal })}
       ref={menuRef}
     >
-      <ul className={list}>
-        <ItemsToMenu items={items} menuRef={menuRef} settings={settings} />
-      </ul>
+      <ItemsToMenu items={items} menuRef={menuRef} settings={settings} />
     </div>
   )
 }
@@ -75,7 +73,7 @@ function ItemsToMenu(props: {
   const { items, menuRef } = props
   const isHorizontal = props.settings.style === STYLE.HORIZONTAL
   return (
-    <>
+    <ul className={list}>
       {items.map((item) =>
         isRoot(item.folder) ? (
           item.commands.map((obj, idx) => (
@@ -97,6 +95,6 @@ function ItemsToMenu(props: {
           </li>
         ),
       )}
-    </>
+    </ul>
   )
 }

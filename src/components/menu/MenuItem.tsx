@@ -75,23 +75,21 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
   }
 
   return (
-    <>
-      <Tooltip text={message} disabled={onlyIcon}>
-        <button
-          type="button"
-          className={classNames(item, button, {
-            [itemOnlyIcon]: onlyIcon,
-            [itemHorizontal]: onlyIcon,
-          })}
-          ref={elmRef}
-          onClick={handleClick}
-          disabled={!enable}
-        >
-          <ImageWithState state={itemState.state} iconUrl={iconUrl} />
-          <span className={itemTitle}>{message}</span>
-        </button>
-      </Tooltip>
-    </>
+    <Tooltip text={message} disabled={onlyIcon}>
+      <button
+        type="button"
+        className={classNames(item, button, {
+          [itemOnlyIcon]: onlyIcon,
+          [itemHorizontal]: onlyIcon,
+        })}
+        ref={elmRef}
+        onClick={handleClick}
+        disabled={!enable}
+      >
+        <ImageWithState state={itemState.state} iconUrl={iconUrl} />
+        <span className={itemTitle}>{message}</span>
+      </button>
+    </Tooltip>
   )
 }
 
