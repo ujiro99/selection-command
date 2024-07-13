@@ -1,5 +1,5 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { getSceenSize, linksInSelection } from '@/services/util'
+import { getScreenSize, linksInSelection } from '@/services/util'
 import type { ExecProps } from './index'
 
 export const LinkPopup = {
@@ -13,7 +13,7 @@ export const LinkPopup = {
         left: Math.floor(window.screenLeft + rect.left + 20),
         height: command.popupOption?.height,
         width: command.popupOption?.width,
-        screen: getSceenSize(),
+        screen: getScreenSize(),
       })
     }
   },

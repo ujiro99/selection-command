@@ -83,7 +83,7 @@ function linksInRange(range: Range): string[] {
   return links
 }
 
-export function getSceenSize(): { w: number; h: number } {
+export function getScreenSize(): { w: number; h: number } {
   return { w: window.screen.width, h: window.screen.height }
 }
 
