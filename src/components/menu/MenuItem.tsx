@@ -14,6 +14,7 @@ import {
   apiIconSuccess,
   apiIconError,
 } from './Menu.module.css'
+import { ResultPopup } from './ResultPopup'
 import { Icon } from '../Icon'
 import type { Command } from '@/services/userSettings'
 import { linksInSelection } from '@/services/util'
@@ -31,14 +32,15 @@ type ItemState = {
   message?: string
 }
 
-export function MenuItem(props: MenuItemProps): JSX.Element {
+export function MenuItem(props: MenuItemProps): React.ReactNode {
   const elmRef = useRef(null)
   const [itemState, setItemState] = useState<ItemState>({
     state: ExecState.NONE,
   })
+  const [result, setResult] = useState<React.ReactNode>()
   const onlyIcon = props.onlyIcon
   const { openMode, openModeSecondary, iconUrl, title } = props.command
-  const { selectionText } = useContext(context)
+  const { selectionText, target } = useContext(context)
   let message = itemState.message || title
   let enable = true
 
@@ -63,33 +65,49 @@ export function MenuItem(props: MenuItemProps): JSX.Element {
       mode = openModeSecondary
     }
 
-    actions[mode].execute({
-      selectionText,
-      command: props.command,
-      menuElm: props.menuRef.current,
-      e,
-      changeState: onChangeState,
-    })
+    actions[mode]
+      .execute({
+        selectionText,
+        command: props.command,
+        menuElm: props.menuRef.current,
+        e,
+        changeState: onChangeState,
+        target,
+      })
+      .then((res) => {
+        if (res) {
+          setResult(res)
+        }
+      })
 
     e.stopPropagation()
   }
 
   return (
-    <Tooltip text={message} disabled={onlyIcon}>
-      <button
-        type="button"
-        className={classNames(item, button, {
-          [itemOnlyIcon]: onlyIcon,
-          [itemHorizontal]: onlyIcon,
-        })}
-        ref={elmRef}
-        onClick={handleClick}
-        disabled={!enable}
+    <>
+      <Tooltip text={message} disabled={onlyIcon}>
+        <button
+          type="button"
+          className={classNames(item, button, {
+            [itemOnlyIcon]: onlyIcon,
+            [itemHorizontal]: onlyIcon,
+          })}
+          ref={elmRef}
+          onClick={handleClick}
+          disabled={!enable}
+        >
+          <ImageWithState state={itemState.state} iconUrl={iconUrl} />
+          <span className={itemTitle}>{message}</span>
+        </button>
+      </Tooltip>
+      <ResultPopup
+        visible={result != null}
+        positionRef={elmRef}
+        onClose={() => setResult(undefined)}
       >
-        <ImageWithState state={itemState.state} iconUrl={iconUrl} />
-        <span className={itemTitle}>{message}</span>
-      </button>
-    </Tooltip>
+        {result}
+      </ResultPopup>
+    </>
   )
 }
 

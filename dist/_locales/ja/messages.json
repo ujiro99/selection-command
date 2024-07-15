@@ -84,10 +84,13 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Link Popup"
+    "message": "リンクを開く"
   },
   "Option_openMode_copy": {
-    "message": "Copy text"
+    "message": "テキストコピー"
+  },
+  "Option_openMode_getTextStyles": {
+    "message": "テキストのスタイル取得"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"

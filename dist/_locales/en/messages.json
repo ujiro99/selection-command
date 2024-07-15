@@ -89,6 +89,9 @@
   "Option_openMode_copy": {
     "message": "Copy text"
   },
+  "Option_openMode_getTextStyles": {
+    "message": "Get text styles"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Click"
   },

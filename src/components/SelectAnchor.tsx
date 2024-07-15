@@ -1,5 +1,6 @@
-import React, { useState, useEffect, forwardRef } from 'react'
-import { APP_ID } from '../const'
+import React, { useState, useEffect, forwardRef, useContext } from 'react'
+import { APP_ID } from '@/const'
+import { context } from '@/components/App'
 
 function isPopup(elm: Element): boolean {
   if (elm == null) return false
@@ -20,6 +21,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
     const text = props.selectionText
     const selected = text != null && text.length > 0
+    const { setTarget } = useContext(context)
     const [isMouseDown, setIsMouseDown] = useState(false)
     const [startPoint, setStartPoint] = useState<Point>({} as Point)
     const [endPoint, setEndPoint] = useState<Point>({} as Point)
@@ -29,6 +31,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
         if (!isPopup(e.target as Element)) {
           setIsMouseDown(true)
           setStartPoint({ x: e.x, y: e.y })
+          setTarget(e.target as Element)
         }
       }
       const onUp = (e: MouseEvent) => {

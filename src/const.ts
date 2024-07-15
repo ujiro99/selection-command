@@ -8,6 +8,7 @@ export enum OPEN_MODE {
   LINK_POPUP = 'linkPopup',
   COPY = 'copy',
   OPTION = 'option',
+  GET_TEXT_STYLES = 'getTextStyles',
 }
 
 export enum POPUP_ENABLED {

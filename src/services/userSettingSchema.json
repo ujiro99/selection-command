@@ -229,6 +229,23 @@
               "required": [
                 "copyOption"
               ]
+            },
+            {
+              "properties": {
+                "openMode": {
+                  "enum": [
+                    "getTextStyles"
+                  ]
+                },
+                "title": {
+                  "type": "string",
+                  "default": "Get Text Styles"
+                },
+                "iconUrl": {
+                  "type": "string",
+                  "default": "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png"
+                }
+              }
             }
           ]
         }
