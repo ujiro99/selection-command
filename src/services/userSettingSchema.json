@@ -243,7 +243,7 @@
                 },
                 "iconUrl": {
                   "type": "string",
-                  "default": "https://cdn0.iconfinder.com/data/icons/phosphor-regular-vol-3/256/paint-brush-1024.png"
+                  "default": "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png"
                 }
               }
             }
