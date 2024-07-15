@@ -1,7 +1,9 @@
 import React from 'react'
 import type { ExecProps } from './index'
+import classNames from 'classnames'
 
 import {
+  resultPopupButton,
   resultTable,
   resultTableContainer,
   resultTableHeader,
@@ -22,47 +24,51 @@ const toProp = (str: string) => {
 
 export const GetStyles = {
   async execute({ target }: ExecProps) {
-    if (target) {
-      const styles = getFontCSS(target as HTMLElement)
-      const ret = Object.entries(styles).map(([key, value]) => ({
-        key,
-        value,
-      }))
-
-      const cssCopy = () => {
-        const copyText = ret
-          .map((item) => `${toProp(item.key)}: ${item.value};`)
-          .join('\n')
-        navigator.clipboard.writeText(copyText)
-      }
-
-      return (
-        <div className={resultTableContainer}>
-          <button className={resultTableCopy} onClick={cssCopy}>
-            <Icon name="copy" />
-            Copy
-          </button>
-          <table className={resultTable}>
-            <thead className={resultTableHeader}>
-              <tr key="table-header">
-                <th>Property</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody className={resultTableBody}>
-              {ret.map((item) => {
-                return (
-                  <tr key={item.key}>
-                    <td className={resultTableProperty}>{toName(item.key)}</td>
-                    <td className={resultTableValue}>{item.value}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      )
+    if (!target) {
+      return
     }
+
+    const styles = getFontCSS(target as HTMLElement)
+    const ret = Object.entries(styles).map(([key, value]) => ({
+      key,
+      value,
+    }))
+
+    const cssCopy = () => {
+      const copyText = ret
+        .map((item) => `${toProp(item.key)}: ${item.value};`)
+        .join('\n')
+      navigator.clipboard.writeText(copyText)
+    }
+
+    return (
+      <div className={resultTableContainer}>
+        <button
+          className={classNames(resultTableCopy, resultPopupButton)}
+          onClick={cssCopy}
+        >
+          <Icon name="copy" />
+        </button>
+        <table className={resultTable}>
+          <thead className={resultTableHeader}>
+            <tr key="table-header">
+              <th>Property</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody className={resultTableBody}>
+            {ret.map((item) => {
+              return (
+                <tr key={item.key}>
+                  <td className={resultTableProperty}>{toName(item.key)}</td>
+                  <td className={resultTableValue}>{item.value}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    )
   },
 }
 

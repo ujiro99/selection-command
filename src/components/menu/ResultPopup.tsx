@@ -1,21 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
+import classNames from 'classnames'
 import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'
-import { useSetting } from '@/hooks/useSetting'
 
+import { useSetting } from '@/hooks/useSetting'
+import { Icon } from '@/components/Icon'
 import {
   popup,
   popupContianer,
   popupTransition,
 } from '@/components/Popup.module.css'
-
-import { resultPopup } from './ResultPopup.module.css'
+import {
+  resultPopup,
+  resultPopupButton,
+  closeButton,
+} from './ResultPopup.module.css'
 
 type PopupProps = {
   visible: boolean
   positionRef: React.RefObject<Element>
   children: React.ReactNode
+  onClose: () => void
 }
 
 export function ResultPopup(props: PopupProps) {
@@ -43,10 +49,14 @@ export function ResultPopup(props: PopupProps) {
           data-placement={placement}
           static
         >
-          <div
-            className={`${popup} ${popupTransition} ${resultPopup} transition`}
-          >
+          <div className={`${popup} ${resultPopup}`}>
             {props.children}
+            <button
+              className={classNames(closeButton, resultPopupButton)}
+              onClick={props.onClose}
+            >
+              <Icon name="close" />
+            </button>
           </div>
         </PopoverPanel>
       </Transition>

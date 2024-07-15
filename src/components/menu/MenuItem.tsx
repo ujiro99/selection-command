@@ -100,7 +100,11 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           <span className={itemTitle}>{message}</span>
         </button>
       </Tooltip>
-      <ResultPopup visible={result != null} positionRef={elmRef}>
+      <ResultPopup
+        visible={result != null}
+        positionRef={elmRef}
+        onClose={() => setResult(undefined)}
+      >
         {result}
       </ResultPopup>
     </>
