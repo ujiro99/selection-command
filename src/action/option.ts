@@ -1,7 +1,7 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 
 export const Option = {
-  execute() {
+  async execute() {
     Ipc.send(BgCommand.openOption)
   },
 }

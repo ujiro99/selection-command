@@ -3,7 +3,7 @@ import { getScreenSize, toUrl } from '@/services/util'
 import type { ExecProps } from './index'
 
 export const Popup = {
-  execute({ selectionText, command, menuElm }: ExecProps) {
+  async execute({ selectionText, command, menuElm }: ExecProps) {
     if (menuElm) {
       const urls = [
         toUrl(command.searchUrl, selectionText, command.spaceEncoding),

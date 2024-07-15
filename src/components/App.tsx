@@ -7,12 +7,15 @@ import './App.css'
 
 type ContextType = {
   selectionText: string
+  target: Element
+  setTarget: (elm: Element) => void
 }
 
 export const context = createContext<ContextType>({} as ContextType)
 
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
+  const [target, setTarget] = useState<Element>()
   const [selectionText, setSelectionText] = useState('')
 
   useEffect(() => {
@@ -31,7 +34,7 @@ export function App() {
   }, [])
 
   return (
-    <context.Provider value={{ selectionText }}>
+    <context.Provider value={{ selectionText, target, setTarget }}>
       <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
       <Popup positionElm={positionElm} selectionText={selectionText} />
       <OpenInTab />

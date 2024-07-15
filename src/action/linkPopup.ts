@@ -3,7 +3,7 @@ import { getScreenSize, linksInSelection } from '@/services/util'
 import type { ExecProps } from './index'
 
 export const LinkPopup = {
-  execute({ command, menuElm }: ExecProps) {
+  async execute({ command, menuElm }: ExecProps) {
     if (menuElm) {
       const rect = menuElm.getBoundingClientRect()
       Ipc.send(BgCommand.openPopups, {

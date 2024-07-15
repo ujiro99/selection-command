@@ -4,7 +4,7 @@ import { ExecState } from './index'
 import type { ExecProps } from './index'
 
 export const Api = {
-  execute({ command, selectionText, changeState }: ExecProps) {
+  async execute({ command, selectionText, changeState }: ExecProps) {
     changeState(ExecState.EXECUTING)
 
     Ipc.send(BgCommand.execApi, {

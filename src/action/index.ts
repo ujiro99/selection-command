@@ -5,6 +5,7 @@ import { Api } from './api'
 import { LinkPopup } from './linkPopup'
 import { Copy } from './copy'
 import { Option } from './option'
+import { GetStyles as GetTextStyles } from './getStyles'
 import type { Command } from '@/services/userSettings'
 
 export enum ExecState {
@@ -18,6 +19,7 @@ export interface ExecProps {
   selectionText: string
   command: Command
   menuElm: Element | null
+  target: Element | undefined
   e: React.MouseEvent
   changeState: (state: ExecState, message?: string) => void
 }
@@ -28,5 +30,6 @@ export const actions = {
   [OPEN_MODE.API]: Api,
   [OPEN_MODE.LINK_POPUP]: LinkPopup,
   [OPEN_MODE.COPY]: Copy,
+  [OPEN_MODE.GET_TEXT_STYLES]: GetTextStyles,
   [OPEN_MODE.OPTION]: Option,
 }
