@@ -54,10 +54,11 @@
 }
 
 .resultTableHeader {
-  color: var(--gray-400);
+  color: var(--gray-800);
 
   th {
-    padding: 0 0 4px;
+    padding: 0 0 6px;
+    font-weight: 500;
   }
 }
 
@@ -71,11 +72,12 @@
 
 td.resultTableProperty {
   padding-right: 10px;
+  color: var(--gray-500);
 }
 
 .resultTableValue {
   font-family: monospace;
-  color: var(--gray-500);
+  color: var(--gray-800);
   font-weight: 600;
 }
 

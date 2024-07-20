@@ -14,8 +14,8 @@ import {
   apiIconSuccess,
   apiIconError,
 } from './Menu.module.css'
-import { ResultPopup } from './ResultPopup'
-import { Icon } from '../Icon'
+import { Icon } from '@/components/Icon'
+import { ResultPopup } from '@/components/result/ResultPopup'
 import type { Command } from '@/services/userSettings'
 import { linksInSelection } from '@/services/util'
 import { OPEN_MODE } from '@/const'
