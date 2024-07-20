@@ -61,7 +61,8 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     }
 
     let mode = openMode
-    if (e.ctrlKey && openModeSecondary) {
+    const useSecondary = e.metaKey || e.ctrlKey
+    if (useSecondary && openModeSecondary) {
       mode = openModeSecondary
     }
 
@@ -70,7 +71,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         selectionText,
         command: props.command,
         menuElm: props.menuRef.current,
-        e,
+        useSecondary,
         changeState: onChangeState,
         target,
       })
