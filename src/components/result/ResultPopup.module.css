@@ -76,7 +76,7 @@ td.resultTableProperty {
 }
 
 .resultTableValue {
-  font-family: monospace;
+  font-family: var(--font-monospace);
   color: var(--gray-800);
   font-weight: 600;
 }
