@@ -2,7 +2,6 @@
   composes: item from './Menu.module.css';
   cursor: default;
   font-weight: 500;
-  position: relative;
   height: 20px;
   padding-right: 0;
 }
