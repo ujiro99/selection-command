@@ -8,21 +8,26 @@
 }
 
 .resultPopupButton {
+  --icon-size: 14px;
+  --padding: 4px;
+
   cursor: pointer;
-  color: var(--gray-400);
-  font-size: 10px;
   transition:
     color,
     fill,
     background ease-out 0.2s;
-  background: #fff;
   border: none;
   border-radius: 6px;
-  padding: 4px;
+  background: transparent;
+  width: calc(var(--icon-size) + var(--padding) * 2);
+  height: calc(var(--icon-size) + var(--padding) * 2);
+  padding: var(--padding);
+  font-size: 10px;
+  color: var(--gray-400);
 
   svg {
-    width: 16px;
-    height: 14px;
+    width: var(--icon-size);
+    height: var(--icon-size);
     color: var(--gray-400);
     fill: var(--gray-400);
   }
@@ -34,6 +39,10 @@
     svg {
       color: var(--gray-600);
       fill: var(--gray-600);
+    }
+
+    svg.buttonSuccess {
+      fill: var(--blue-500);
     }
   }
 }
@@ -83,6 +92,6 @@ td.resultTableProperty {
 
 .resultTableCopy {
   position: absolute;
-  top: -4px;
-  right: 17px;
+  top: -5px;
+  right: 16px;
 }

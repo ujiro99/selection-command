@@ -1,5 +1,6 @@
-import React from 'react'
-import classNames from 'classnames'
+import React, { useState } from 'react'
+import { sleep } from '@/services/util'
+import { ExecState } from '@/action'
 
 import {
   resultPopupButton,
@@ -10,8 +11,10 @@ import {
   resultTableProperty,
   resultTableValue,
   resultTableCopy,
+  buttonSuccess,
 } from '@/components/result/ResultPopup.module.css'
 import { Icon } from '@/components/Icon'
+import { Tooltip } from '@/components/Tooltip'
 
 const toName = (str: string) => {
   return str.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())
@@ -26,26 +29,39 @@ type Props = {
 }
 
 export function TextStyle({ styles }: Props) {
+  const [status, setStatus] = useState(ExecState.NONE)
+  const message = status === ExecState.SUCCESS ? 'Copied!' : 'Copy'
   const styleArr = Object.entries(styles).map(([key, value]) => ({
     key,
     value,
   }))
 
-  const cssCopy = () => {
+  const cssCopy = async () => {
     const copyText = styleArr
       .map((item) => `${toProp(item.key)}: ${item.value};`)
       .join('\n')
     navigator.clipboard.writeText(copyText)
+    setStatus(ExecState.SUCCESS)
+    await sleep(500)
+    setStatus(ExecState.NONE)
   }
 
   return (
     <div className={resultTableContainer}>
-      <button
-        className={classNames(resultTableCopy, resultPopupButton)}
-        onClick={cssCopy}
-      >
-        <Icon name="copy" />
-      </button>
+      <div className={resultTableCopy}>
+        <Tooltip text={message}>
+          <button
+            className={resultPopupButton}
+            onClick={cssCopy}
+            disabled={status === ExecState.SUCCESS}
+          >
+            {status === ExecState.NONE && <Icon name="copy" />}
+            {status === ExecState.SUCCESS && (
+              <Icon name="check" className={buttonSuccess} />
+            )}
+          </button>
+        </Tooltip>
+      </div>
       <table className={resultTable}>
         <thead className={resultTableHeader}>
           <tr key="table-header">

@@ -86,7 +86,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 
   return (
     <>
-      <Tooltip text={message} disabled={onlyIcon}>
+      <Tooltip text={message} disabled={!onlyIcon}>
         <button
           type="button"
           className={classNames(item, button, {

@@ -98,10 +98,10 @@
   background: var(--gray-800);
 }
 
-.tooltip[data-placement^='top']>.arrow {
+.tooltip[data-placement^='top'] > .arrow {
   bottom: 8px;
 }
 
-.tooltip[data-placement^='bottom']>.arrow {
+.tooltip[data-placement^='bottom'] > .arrow {
   top: -3px;
 }
