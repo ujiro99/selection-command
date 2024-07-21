@@ -6,6 +6,7 @@ import { Menu } from './menu/Menu'
 import { POPUP_ENABLED } from '../const'
 import { useSetting } from '@/hooks/useSetting'
 import { Ipc, BgCommand } from '@/services/ipc'
+import { hexToHsl } from '@/services/util'
 
 import { popup, popupContianer, popupTransition } from './Popup.module.css'
 
@@ -22,6 +23,16 @@ export function Popup(props: PopupProps) {
   const styles =
     settings.userStyles &&
     settings.userStyles.reduce((acc, cur) => {
+      if (cur.name === 'background-color') {
+        const hsl = hexToHsl(cur.value)
+        return {
+          ...acc,
+          [`--${cur.name}`]: cur.value,
+          '--background-color-h': `${hsl[0]}deg`,
+          '--background-color-s': `${hsl[1]}%`,
+          '--background-color-l': `${hsl[2]}%`,
+        }
+      }
       return { ...acc, [`--${cur.name}`]: cur.value }
     }, {})
 

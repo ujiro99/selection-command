@@ -9,14 +9,18 @@
 
   > li {
     border-radius: 4px;
-    transition: ease-out 0.2s background-color;
+    transition: ease-out 0.15s background;
 
     &:hover {
-      background-color: rgb(229 231 235);
+      background: hsl(
+        var(--bg-color-h),
+        var(--bg-color-s),
+        calc(var(--bg-color-l) - 6%)
+      );
     }
 
     &:hover:has(:disabled):not(:has(.folder)) {
-      background-color: #fff;
+      background-color: var(--bg-color);
     }
   }
 

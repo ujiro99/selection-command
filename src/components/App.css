@@ -18,8 +18,6 @@
   --blue-500: rgb(59 130 246);
 
   --frameHeight: 500px;
-  --baseBgColor: #ffffff;
-  --baseBorderColor: var(--gray-100);
 
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
