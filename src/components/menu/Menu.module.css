@@ -38,13 +38,16 @@
 }
 
 .item {
-  padding: 4px 8px 4px 6px;
+  padding: var(--padding) calc(var(--padding) * 2) var(--padding)
+    calc(var(--padding) * 1.5);
   display: flex;
   align-items: center;
-  font-size: calc(var(--ui-scale, 1) * 12px);
+  font-size: var(--font-size);
+  height: max(var(--font-size), var(--image-size));
+  box-sizing: content-box;
   color: rgb(75 85 99);
+  line-height: 1;
   text-decoration: none;
-  line-height: 1.6;
   text-wrap: nowrap;
   white-space: pre;
   font-family: var(--font-family);
@@ -67,59 +70,35 @@
 }
 
 .itemImg {
-  width: 1.4em;
-  height: 1.4em;
+  width: var(--image-size);
+  height: var(--image-size);
 }
 
 .itemOnlyIcon {
-  padding-right: 4px;
+  padding-right: var(--padding);
 
   .itemTitle {
     display: none;
-  }
-
-  .itemImg {
-    width: 1.6em;
-    height: 1.6em;
   }
 }
 
 .itemTitle {
   margin-left: 0.6em;
-  margin-right: 0.3em;
+  margin-right: 0.4em;
 }
 
 .itemHorizontal {
-  padding-left: 4px;
+  padding-left: var(--padding);
 
   .itemTitle {
     margin-left: 0.3em;
+    margin-right: 0;
   }
 }
 
 .moreButton {
   position: relative;
   height: 100%;
-}
-
-.moreIcon {
-  fill: #848d97;
-  width: 1.4em;
-  height: 1.4em;
-  margin-right: 5px;
-
-  &:hover {
-    fill: rgb(3 7 18);
-  }
-}
-
-.moreButtonHorizontal {
-  padding: 2px;
-
-  .moreIcon {
-    margin-right: 0;
-    margin-left: 0;
-  }
 }
 
 .apiIconLoading {

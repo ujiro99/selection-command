@@ -1,7 +1,6 @@
 .folder {
   composes: item from './Menu.module.css';
   cursor: default;
-  font-weight: 500;
   padding-right: 0px;
 }
 
@@ -20,7 +19,7 @@
 }
 
 .folderHorizontal {
-  padding-right: 4px;
+  padding-right: var(--padding);
 }
 
 .folderHorizontal .title {
@@ -28,8 +27,8 @@
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 1.4em;
+  height: 1.4em;
   fill: var(--gray-400);
   transition: fill 250ms;
 }

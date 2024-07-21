@@ -4,11 +4,18 @@
   border-radius: 6px;
   border: solid 1px var(--baseBorderColor);
   font-family: var(--font-family);
+
+  /* CSS variable interface */
+  --font-size: calc(var(--font-scale, 1) * 12px);
+  --image-size: calc(var(--image-scale, 1) * 16px);
+  --padding: calc(var(--padding-scale, 1) * 4px);
+  --delay: var(--popup-delay, 250ms);
+  --duration: var(--popup-duration, 100ms);
 }
 
 .popupTransition {
-  transition-delay: var(--popup-delay, 250ms);
-  transition-duration: var(--popup-duration, 100ms);
+  transition-delay: var(--delay);
+  transition-duration: var(--duration);
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
