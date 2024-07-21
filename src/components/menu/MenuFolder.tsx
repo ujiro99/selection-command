@@ -10,7 +10,16 @@ import { STYLE } from '@/const'
 import type { Command, CommandFolder } from '@/services/userSettings'
 import { useSetting } from '@/hooks/useSetting'
 
-import { menu, list, folder, menuHorizontal } from './Menu.module.css'
+import {
+  menu,
+  list,
+  folder,
+  menuHorizontal,
+  itemImg,
+  itemOnlyIcon,
+  itemHorizontal,
+  itemTitle,
+} from './Menu.module.css'
 import * as css from './MenuFolder.module.css'
 
 type MenuFolderProps = {
@@ -78,20 +87,23 @@ export function MenuFolder(props: MenuFolderProps): JSX.Element {
   return (
     <Popover
       className={classnames(css.folder, folder, {
+        [itemHorizontal]: isHorizontal,
         [css.folderHorizontal]: isHorizontal,
-        [css.folderIconOnly]: onlyIcon,
+        [itemOnlyIcon]: onlyIcon,
       })}
       ref={folderRef}
     >
-      <div className={css.folderItem}>
-        <img
-          className={classnames(css.folderIcon)}
-          src={props.folder.iconUrl}
-          alt={props.folder.title}
-        />
-        {!onlyIcon && <span className={css.title}>{props.folder.title}</span>}
-        {!isHorizontal && <Icon name="chevron" className={css.icon} />}
-      </div>
+      <img
+        className={itemImg}
+        src={props.folder.iconUrl}
+        alt={props.folder.title}
+      />
+      {!onlyIcon && (
+        <span className={classnames(itemTitle, css.title)}>
+          {props.folder.title}
+        </span>
+      )}
+      {!isHorizontal && <Icon name="chevron" className={css.icon} />}
 
       <Transition show={visible}>
         <PopoverPanel
