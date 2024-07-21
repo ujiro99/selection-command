@@ -7,33 +7,33 @@
 }
 
 .popupTransition {
-  transition-delay: 250ms;
-  transition-duration: 300ms;
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-delay: var(--popup-delay, 250ms);
+  transition-duration: var(--popup-duration, 100ms);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-div[data-placement='right']>.popup {
+div[data-placement='right'] > .popup {
   transform: translateX(-5px);
 }
 
-div[data-placement='left']>.popup {
+div[data-placement='left'] > .popup {
   transform: translateX(5px);
 }
 
-div[data-closed]>.popup {
+div[data-closed] > .popup {
   opacity: 0;
   transform: translateY(5px);
 }
 
-div[data-closed][data-placement='bottom']>.popup {
+div[data-closed][data-placement='bottom'] > .popup {
   transform: translateY(-5px);
 }
 
-div[data-closed][data-placement='right']>.popup {
+div[data-closed][data-placement='right'] > .popup {
   transform: translateX(-10px);
 }
 
-div[data-closed][data-placement='left']>.popup {
+div[data-closed][data-placement='left'] > .popup {
   transform: translateX(10px);
 }
 

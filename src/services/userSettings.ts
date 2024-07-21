@@ -56,12 +56,18 @@ export type PageRule = {
   popupPlacement: Placement
 }
 
+export type StyleVariable = {
+  name: string
+  value: string
+}
+
 export type UserSettingsType = {
   popupPlacement: Placement
   commands: Array<Command>
   folders: Array<CommandFolder>
   pageRules: Array<PageRule>
   style: STYLE
+  userStyles: Array<StyleVariable>
 }
 
 enum LOCAL_STORAGE_KEY {

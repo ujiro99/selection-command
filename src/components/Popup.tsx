@@ -19,6 +19,11 @@ export function Popup(props: PopupProps) {
   const { settings, pageRule } = useSetting()
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
+  const styles =
+    settings.userStyles &&
+    settings.userStyles.reduce((acc, cur) => {
+      return { ...acc, [`--${cur.name}`]: cur.value }
+    }, {})
 
   const { refs, floatingStyles } = useFloating({
     placement: placement,
@@ -58,7 +63,7 @@ export function Popup(props: PopupProps) {
           data-placement={placement}
           static
         >
-          <div className={`${popup} ${popupTransition} transition`}>
+          <div className={`${popup} ${popupTransition}`} style={styles}>
             <Menu />
           </div>
         </PopoverPanel>
