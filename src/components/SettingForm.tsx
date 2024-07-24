@@ -325,7 +325,7 @@ export function SettingFrom() {
 
   // Add userStyles to schema and uiSchema.
   const sv = Object.values(STYLE_VARIABLE)
-  const used = settingData?.userStyles.map((s) => s.name) ?? []
+  const used = settingData?.userStyles?.map((s) => s.name) ?? []
   const svMap = {} as UserStyleMap
   for (const s of sv) {
     svMap[s] = {

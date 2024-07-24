@@ -23,6 +23,7 @@ export function Popup(props: PopupProps) {
   const styles =
     settings.userStyles &&
     settings.userStyles.reduce((acc, cur) => {
+      if (cur.value == null) return acc
       if (cur.name === 'background-color') {
         const hsl = hexToHsl(cur.value)
         return {
