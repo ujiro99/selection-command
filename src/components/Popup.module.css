@@ -14,8 +14,8 @@
   --font-size: calc(var(--font-scale, 1) * 12px);
   --image-size: calc(var(--image-scale, 1) * 16px);
   --padding: calc(var(--padding-scale, 1) * 4px);
-  --delay: var(--popup-delay, 250ms);
-  --duration: var(--popup-duration, 100ms);
+  --delay: calc(var(--popup-delay, 250) * 1ms);
+  --duration: calc(var(--popup-duration, 100) * 1ms);
 }
 
 .popupTransition {
