@@ -56,8 +56,18 @@ export type PageRule = {
   popupPlacement: Placement
 }
 
+export enum STYLE_VARIABLE {
+  BACKGROUND_COLOR = 'background-color',
+  BORDER_COLOR = 'border-color',
+  FONT_SCALE = 'font-scale',
+  IMAGE_SCALE = 'image-scale',
+  PADDING_SCALE = 'padding-scale',
+  POPUP_DELAY = 'popup-delay',
+  POPUP_DURATION = 'popup-duration',
+}
+
 export type StyleVariable = {
-  name: string
+  name: STYLE_VARIABLE
   value: string
 }
 

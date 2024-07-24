@@ -289,13 +289,14 @@
       }
     },
     "styleVariable": {
+      "$id": "#/styleVariable",
       "type": "object",
       "name": "styleVariable",
       "required": ["name", "value"],
-      "additionalProperties": false,
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "enum": [""]
         },
         "value": {
           "type": "string"

@@ -11,7 +11,12 @@ import type { IChangeEvent } from '@rjsf/core'
 import classnames from 'classnames'
 
 import userSettingSchema from '../services/userSettingSchema.json'
-import type { UserSettingsType, FolderOption } from '../services/userSettings'
+import type { UserSettingsType, FolderOption } from '@/services/userSettings'
+import { STYLE_VARIABLE } from '@/services/userSettings'
+import {
+  UserStyleField,
+  UserStyleMap,
+} from '@/components/option/UserStyleField'
 import { OPTION_MSG } from './Option'
 import { OPEN_MODE } from '@/const'
 
@@ -27,6 +32,12 @@ type folderOptionsType = {
 
 type Translation = {
   [key: string]: string
+}
+
+type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
+
+const toKey = (str: string) => {
+  return str.replace(/-/g, '_')
 }
 
 export function SettingFrom() {
@@ -157,14 +168,13 @@ export function SettingFrom() {
     '#/commands/parentFolder': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
+    '#/styleVariable': UserStyleField,
     ArraySchemaField: CustomArraySchemaField,
   }
   for (const type of ['popup', 'tab']) {
     fields[`#/commands/openModeSecondary_${type}`] = SelectField
     fields[`#/commands/spaceEncoding_${type}`] = SelectField
   }
-
-  type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
 
   const uiSchema = {
     popupPlacement: {
@@ -262,6 +272,18 @@ export function SettingFrom() {
         popupPlacement: { 'ui:title': t('popupPlacement') },
       },
     },
+    userStyles: {
+      'ui:title': t('userStyles'),
+      'ui:description': t('userStyles_desc'),
+      items: {
+        'ui:classNames': 'userStyles',
+        name: {
+          'ui:title': t('userStyles_name'),
+          enum: {} as UserStyleMap,
+        },
+        value: { 'ui:title': t('userStyles_value') },
+      },
+    },
     AddButton: {
       'ui:title': t('Add'),
     },
@@ -300,6 +322,21 @@ export function SettingFrom() {
   }
   userSettingSchema.definitions.openMode.enum = modes
   uiSchema.commands.items.openMode.enum = modeMap
+
+  // Add userStyles to schema and uiSchema.
+  const sv = Object.values(STYLE_VARIABLE)
+  const used = settingData?.userStyles.map((s) => s.name) ?? []
+  const svMap = {} as UserStyleMap
+  for (const s of sv) {
+    svMap[s] = {
+      'ui:title': t(`userStyles_option_${toKey(s)}`),
+      'ui:description': t(`userStyles_desc_${toKey(s)}`),
+      used: used.includes(s) ? 'used' : '',
+    }
+  }
+
+  userSettingSchema.definitions.styleVariable.properties.name.enum = sv
+  uiSchema.userStyles.items.name.enum = svMap
 
   const log = (type: any) => console.log.bind(console, type)
   return (

@@ -136,5 +136,59 @@
   },
   "Option_popupEnabled": {
     "message": "ポップアップ有効化"
+  },
+  "Option_userStyles": {
+    "message": "ユーザースタイル"
+  },
+  "Option_userStyles_desc": {
+    "message": "ポップアップの表示をカスタマイズできます。"
+  },
+  "Option_userStyles_name": {
+    "message": "設定名"
+  },
+  "Option_userStyles_value": {
+    "message": "設定値"
+  },
+  "Option_userStyles_option_background_color": {
+    "message": "背景色"
+  },
+  "Option_userStyles_desc_background_color": {
+    "message": "メニューの背景色を指定します。デフォルト: #FFFFFF"
+  },
+  "Option_userStyles_option_border_color": {
+    "message": "枠線色"
+  },
+  "Option_userStyles_desc_border_color": {
+    "message": "メニューの枠線色を指定します。デフォルト: #F3F4F6"
+  },
+  "Option_userStyles_option_font_scale": {
+    "message": "文字サイズの倍率"
+  },
+  "Option_userStyles_desc_font_scale": {
+    "message": "文字サイズの倍率を指定します。デフォルト: 1"
+  },
+  "Option_userStyles_option_image_scale": {
+    "message": "アイコンサイズの倍率"
+  },
+  "Option_userStyles_desc_image_scale": {
+    "message": "アイコンサイズの倍率を指定します。デフォルト: 1"
+  },
+  "Option_userStyles_option_padding_scale": {
+    "message": "余白サイズの倍率"
+  },
+  "Option_userStyles_desc_padding_scale": {
+    "message": "余白サイズの倍率を指定します。デフォルト: 1"
+  },
+  "Option_userStyles_option_popup_delay": {
+    "message": "表示遅延(ms)"
+  },
+  "Option_userStyles_desc_popup_delay": {
+    "message": "表示が開始されるまでの時間を指定します。デフォルト: 250"
+  },
+  "Option_userStyles_option_popup_duration": {
+    "message": "表示アニメーション時間(ms)"
+  },
+  "Option_userStyles_desc_popup_duration": {
+    "message": "表示開始時のアニメーション時間を指定します。デフォルト: 100"
   }
 }
