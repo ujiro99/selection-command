@@ -14,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: 'true'
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -29,5 +31,5 @@ jobs:
           zip -r chrome-ext.zip dist
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "chrome-ext.zip"
+          artifacts: 'chrome-ext.zip'
           token: ${{ secrets.GITHUB_TOKEN }}
