@@ -60,6 +60,8 @@ div[data-closed][data-placement='left'] > .popup {
   font-size: 12px;
   font-family: 'Press Start 2P', system-ui;
   color: #444;
+  margin-left: 6px;
+  letter-spacing: 0.4px;
 }
 
 @keyframes marquee {
