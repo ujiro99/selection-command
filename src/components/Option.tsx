@@ -16,9 +16,10 @@ import {
   getLowerDomainUrl,
 } from '@/services/util'
 import { t } from '../services/i18n'
-import { APP_ID, VERSION } from '../const'
+import { APP_ID, VERSION, OPTION_MSG } from '../const'
 import { Dialog } from './Dialog'
 import messages from '../../dist/_locales/en/messages.json'
+import { Popup } from '@/components/Popup'
 
 import './App.css'
 import css from './Option.module.css'
@@ -107,14 +108,6 @@ function getTimestamp() {
   return `${year}${month}${day}_${hours}${minutes}`
 }
 
-export enum OPTION_MSG {
-  START = 'start',
-  CHANGED = 'changed',
-  SET_HEIGHT = 'setHeight',
-  FETCH_ICON_URL = 'fetchIconUrl',
-  RES_FETCH_ICON_URL = 'resFetchIconUrl',
-}
-
 export function Option() {
   const [iframeHeight, setIframeHeight] = useState<number>()
   const [isSaving, setIsSaving] = useState(false)
@@ -124,6 +117,7 @@ export function Option() {
 
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const inputFile = useRef<HTMLInputElement>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
 
   const updateSettings = async (settings: UserSettingsType) => {
     if (isSaving) return
@@ -291,6 +285,13 @@ export function Option() {
           <span>{t('saving')}</span>
         </LoadingIcon>
       </CSSTransition>
+      <div className={css.preview} ref={previewRef}>
+        <Popup
+          positionElm={previewRef.current}
+          selectionText=""
+          isPreview={true}
+        />
+      </div>
       <header className={css.titleHeader}>
         <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
         <span className={css.version}>Version: {VERSION}</span>
@@ -341,6 +342,7 @@ export function Option() {
           className={`${css.button} ${css.buttonImport}`}
         />
       </Dialog>
+
       <iframe
         title="SettingForm"
         id="sandbox"

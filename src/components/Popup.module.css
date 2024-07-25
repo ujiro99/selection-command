@@ -1,39 +1,43 @@
 .popup {
   composes: shadow-xl from './Common.module.css';
-  background-color: var(--baseBgColor);
+  background-color: var(--bg-color);
   border-radius: 6px;
-  border: solid 1px var(--baseBorderColor);
+  border: solid 1px var(--bd-color);
   font-family: var(--font-family);
+
+  /* CSS variable interface */
+  --bg-color: var(--background-color, #ffffff);
+  --bg-color-h: var(--background-color-h, 0deg);
+  --bg-color-s: var(--background-color-s, 0%);
+  --bg-color-l: var(--background-color-l, 100%);
+  --bd-color: var(--border-color, var(--gray-100));
+  --font-size: calc(var(--font-scale, 1) * 12px);
+  --image-size: calc(var(--image-scale, 1) * 16px);
+  --padding: calc(var(--padding-scale, 1) * 4px);
+  --delay: calc(var(--popup-delay, 250) * 1ms);
+  --duration: calc(var(--popup-duration, 100) * 1ms);
 }
 
 .popupTransition {
-  transition-delay: 250ms;
-  transition-duration: 300ms;
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-delay: var(--delay);
+  transition-duration: var(--duration);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-div[data-placement='right']>.popup {
-  transform: translateX(-5px);
-}
-
-div[data-placement='left']>.popup {
-  transform: translateX(5px);
-}
-
-div[data-closed]>.popup {
+div[data-closed] > .popup {
   opacity: 0;
   transform: translateY(5px);
 }
 
-div[data-closed][data-placement='bottom']>.popup {
+div[data-closed][data-placement='bottom'] > .popup {
   transform: translateY(-5px);
 }
 
-div[data-closed][data-placement='right']>.popup {
+div[data-closed][data-placement='right'] > .popup {
   transform: translateX(-10px);
 }
 
-div[data-closed][data-placement='left']>.popup {
+div[data-closed][data-placement='left'] > .popup {
   transform: translateX(10px);
 }
 
@@ -42,4 +46,30 @@ div[data-closed][data-placement='left']>.popup {
   position: absolute;
   z-index: 2147483647;
   width: 100%;
+}
+
+.previewContainer {
+  position: relative;
+
+  & > div {
+    transform: translate(0, 0) !important;
+  }
+}
+
+.previewLabel {
+  font-size: 12px;
+  font-family: 'Press Start 2P', system-ui;
+  color: #444;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }

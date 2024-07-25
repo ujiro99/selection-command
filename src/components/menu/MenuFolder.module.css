@@ -1,10 +1,7 @@
 .folder {
   composes: item from './Menu.module.css';
   cursor: default;
-  font-weight: 500;
-  position: relative;
-  height: 20px;
-  padding-right: 0;
+  padding-right: 0px;
 }
 
 .popup {
@@ -16,41 +13,13 @@
   transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
-.folderItem {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.folderIcon {
-  width: 15px;
-  height: 15px;
-  margin-right: 7px;
-  margin-left: 1px;
-}
-
-.folderHorizontal {
-  padding: 4px 6px;
-
-  .folderIcon {
-    margin-right: 4px;
-  }
-}
-
-.folderIconOnly {
-  .folderIcon {
-    margin-left: 2px;
-    margin-right: 2px;
-  }
-}
-
-.folderHorizontal.folderIconOnly {
-  padding: 4px;
-}
-
 .title {
   flex: 1;
   min-width: 4em;
+}
+
+.folderHorizontal {
+  padding-right: var(--padding);
 }
 
 .folderHorizontal .title {
@@ -58,8 +27,8 @@
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 1.4em;
+  height: 1.4em;
   fill: var(--gray-400);
   transition: fill 250ms;
 }

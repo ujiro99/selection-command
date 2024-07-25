@@ -56,12 +56,28 @@ export type PageRule = {
   popupPlacement: Placement
 }
 
+export enum STYLE_VARIABLE {
+  BACKGROUND_COLOR = 'background-color',
+  BORDER_COLOR = 'border-color',
+  FONT_SCALE = 'font-scale',
+  IMAGE_SCALE = 'image-scale',
+  PADDING_SCALE = 'padding-scale',
+  POPUP_DELAY = 'popup-delay',
+  POPUP_DURATION = 'popup-duration',
+}
+
+export type StyleVariable = {
+  name: STYLE_VARIABLE
+  value: string
+}
+
 export type UserSettingsType = {
   popupPlacement: Placement
   commands: Array<Command>
   folders: Array<CommandFolder>
   pageRules: Array<PageRule>
   style: STYLE
+  userStyles: Array<StyleVariable>
 }
 
 enum LOCAL_STORAGE_KEY {

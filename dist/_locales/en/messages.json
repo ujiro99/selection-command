@@ -136,5 +136,59 @@
   },
   "Option_popupEnabled": {
     "message": "Popup Enabled"
+  },
+  "Option_userStyles": {
+    "message": "User Styles"
+  },
+  "Option_userStyles_desc": {
+    "message": "You can customize the display of pop-ups."
+  },
+  "Option_userStyles_name": {
+    "message": "Property name"
+  },
+  "Option_userStyles_value": {
+    "message": "Value"
+  },
+  "Option_userStyles_option_background_color": {
+    "message": "Background Color"
+  },
+  "Option_userStyles_desc_background_color": {
+    "message": "Specify the background color of the menu. Default: #FFFFFF"
+  },
+  "Option_userStyles_option_border_color": {
+    "message": "Border Color"
+  },
+  "Option_userStyles_desc_border_color": {
+    "message": "Specify the border color of the menu. Default: #F3F4F6"
+  },
+  "Option_userStyles_option_font_scale": {
+    "message": "Font size scaling"
+  },
+  "Option_userStyles_desc_font_scale": {
+    "message": "Specify the font size scaling. Default: 1"
+  },
+  "Option_userStyles_option_image_scale": {
+    "message": "Icon size scaling"
+  },
+  "Option_userStyles_desc_image_scale": {
+    "message": "Specify the icon size scaling. Default: 1"
+  },
+  "Option_userStyles_option_padding_scale": {
+    "message": "Margin size scaling"
+  },
+  "Option_userStyles_desc_padding_scale": {
+    "message": "Specify the margin size scaling. Default: 1"
+  },
+  "Option_userStyles_option_popup_delay": {
+    "message": "Display delay [ms]"
+  },
+  "Option_userStyles_desc_popup_delay": {
+    "message": "Specify the amount of time before the display begins. Default: 250"
+  },
+  "Option_userStyles_option_popup_duration": {
+    "message": "Display animation time [ms]"
+  },
+  "Option_userStyles_desc_popup_duration": {
+    "message": "Specify the display animation time. Default: 100"
   }
 }

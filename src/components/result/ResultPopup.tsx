@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import classNames from 'classnames'
 import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import { useFloating, flip, autoUpdate } from '@floating-ui/react'
@@ -6,11 +6,7 @@ import { offset } from '@floating-ui/dom'
 
 import { useSetting } from '@/hooks/useSetting'
 import { Icon } from '@/components/Icon'
-import {
-  popup,
-  popupContianer,
-  popupTransition,
-} from '@/components/Popup.module.css'
+import { popup, popupContianer } from '@/components/Popup.module.css'
 import {
   resultPopup,
   resultPopupButton,

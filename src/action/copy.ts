@@ -10,12 +10,16 @@ async function setClipboard(text: string) {
 }
 
 export const Copy = {
-  async execute({ selectionText, changeState, e, command }: ExecProps) {
+  async execute({
+    selectionText,
+    changeState,
+    useSecondary,
+    command,
+  }: ExecProps) {
     changeState(ExecState.EXECUTING)
 
-    // Toggled by Ctrl key
     let mode = command.copyOption ?? 'default'
-    if (e.ctrlKey) {
+    if (useSecondary) {
       if (mode === 'default') {
         mode = 'text'
       } else {

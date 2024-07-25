@@ -1,4 +1,5 @@
 @import url('Animation.css');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 :root {
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -18,7 +19,7 @@
 }
 
 .title {
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-family: var(--font-monospace);
   font-size: 2.2rem;
   margin: 0;
 }
@@ -29,9 +30,15 @@
   color: var(--font-color);
 }
 
+.preview {
+  position: fixed;
+  top: 164px;
+  right: calc(50% - 480px);
+}
+
 .textarea {
   width: 100%;
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-family: var(--font-monospace);
   font-size: 16px;
 }
 

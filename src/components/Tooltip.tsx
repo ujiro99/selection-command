@@ -51,7 +51,7 @@ export function Tooltip(props: PopupProps) {
   return (
     <Popover ref={positionRef}>
       <PopoverButton as={MyPopoverButton}>{props.children}</PopoverButton>
-      <Transition show={visible && props.disabled}>
+      <Transition show={visible && !props.disabled}>
         <PopoverPanel
           className={classNames(tooltip, 'transition')}
           data-placement={placement}

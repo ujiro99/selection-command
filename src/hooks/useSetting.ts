@@ -15,6 +15,7 @@ const emptySettings: UserSettingsType = {
   pageRules: [],
   style: STYLE.HORIZONTAL,
   popupPlacement: 'top',
+  userStyles: [],
 }
 
 export function useSetting(): useSettingReturn {

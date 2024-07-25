@@ -20,7 +20,7 @@ export interface ExecProps {
   command: Command
   menuElm: Element | null
   target: Element | undefined
-  e: React.MouseEvent
+  useSecondary: boolean
   changeState: (state: ExecState, message?: string) => void
 }
 
