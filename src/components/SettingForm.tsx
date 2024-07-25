@@ -17,8 +17,7 @@ import {
   UserStyleField,
   UserStyleMap,
 } from '@/components/option/UserStyleField'
-import { OPTION_MSG } from './Option'
-import { OPEN_MODE } from '@/const'
+import { OPEN_MODE, OPTION_MSG } from '@/const'
 
 import { Icon } from '../components/Icon'
 

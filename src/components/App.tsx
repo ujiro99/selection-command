@@ -7,7 +7,7 @@ import './App.css'
 
 type ContextType = {
   selectionText: string
-  target: Element
+  target: Element | undefined
   setTarget: (elm: Element) => void
 }
 

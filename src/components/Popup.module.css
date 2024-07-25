@@ -47,3 +47,29 @@ div[data-closed][data-placement='left'] > .popup {
   z-index: 2147483647;
   width: 100%;
 }
+
+.previewContainer {
+  position: relative;
+
+  & > div {
+    transform: translate(0, 0) !important;
+  }
+}
+
+.previewLabel {
+  font-size: 12px;
+  font-family: 'Press Start 2P', system-ui;
+  color: #444;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
