@@ -29,4 +29,3 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           artifacts: 'chrome-ext.zip'
-          token: ${{ secrets.GITHUB_TOKEN }}
