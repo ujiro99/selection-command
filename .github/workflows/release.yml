@@ -25,7 +25,7 @@ jobs:
           CI: true
       - name: archive
         run: |
-          zip -r chrome-ext.zip dist
+          zip -r chrome-ext.zip dist/
       - uses: ncipollo/release-action@v1
         with:
           artifacts: 'chrome-ext.zip'
