@@ -42,7 +42,8 @@ export function toUrl(
   } else if (spaceEncoding === SPACE_ENCODING.PERCENT) {
     // do nothing
   }
-  textEscaped = encodeURI(textEscaped)
+  textEscaped = text.replaceAll('/', '\\/')
+  textEscaped = encodeURIComponent(textEscaped)
   return searchUrl?.replace('%s', textEscaped)
 }
 
