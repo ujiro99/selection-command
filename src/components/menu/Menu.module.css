@@ -7,16 +7,14 @@
   margin: 0;
   padding: 0;
 
-  > li {
+  >li {
     border-radius: 4px;
     transition: ease-out 0.15s background;
 
     &:hover {
-      background: hsl(
-        var(--bg-color-h),
-        var(--bg-color-s),
-        calc(var(--bg-color-l) - 6%)
-      );
+      background: hsl(var(--bg-color-h),
+          var(--bg-color-s),
+          calc(var(--bg-color-l) - 6%));
     }
 
     &:hover:has(:disabled):not(:has(.folder)) {
@@ -24,7 +22,7 @@
     }
   }
 
-  > li + li {
+  >li+li {
     margin-top: 2px;
   }
 }
@@ -34,7 +32,7 @@
     display: flex;
     flex-direction: row;
 
-    > li + li {
+    >li+li {
       margin-top: 0;
       margin-left: 2px;
     }
@@ -42,8 +40,7 @@
 }
 
 .item {
-  padding: var(--padding) calc(var(--padding) * 2) var(--padding)
-    calc(var(--padding) * 1.5);
+  padding: var(--padding) calc(var(--padding) * 2) var(--padding) calc(var(--padding) * 1.5);
   display: flex;
   align-items: center;
   font-size: var(--font-size);
@@ -67,7 +64,6 @@
 }
 
 .button {
-  width: 100%;
   background: none;
   border: none;
   cursor: pointer;
