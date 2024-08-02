@@ -118,6 +118,7 @@ export function Option() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const inputFile = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
+  const loadingRef = useRef<HTMLDivElement>(null)
 
   const updateSettings = async (settings: UserSettingsType) => {
     if (isSaving) return
@@ -280,8 +281,9 @@ export function Option() {
         timeout={300}
         classNames="drop-in"
         unmountOnExit
+        nodeRef={loadingRef}
       >
-        <LoadingIcon>
+        <LoadingIcon ref={loadingRef}>
           <span>{t('saving')}</span>
         </LoadingIcon>
       </CSSTransition>
