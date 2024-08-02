@@ -251,6 +251,7 @@ const commandFuncs = {
             url: sender.url,
             windowId: targetId,
           })
+          chrome.windows.remove(sender.tab?.windowId as number)
           response(true)
         }
         response(false)
