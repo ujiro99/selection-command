@@ -45,6 +45,7 @@ export function SettingFrom() {
   const [trans, setTrans] = useState<Translation>({})
   const [settingData, setSettingData] = useState<UserSettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
+  const settingRef = useRef<UserSettingsType>()
   const formRef = useRef<Form>(null)
 
   const t = (key: string) => {
@@ -57,7 +58,10 @@ export function SettingFrom() {
     if (timeoutID) clearTimeout(timeoutID)
     const newTimeoutId = window.setTimeout(() => {
       if (unmounted) return
-      sendMessage(OPTION_MSG.CHANGED, settingData)
+      if (settingRef.current) {
+        sendMessage(OPTION_MSG.CHANGED, settingData)
+      }
+      settingRef.current = settingData
       setTimeoutID(undefined)
     }, 1 * 500 /* ms */)
     setTimeoutID(newTimeoutId)
