@@ -13,8 +13,8 @@ export const Popup = {
       Ipc.send(BgCommand.openPopups, {
         commandId: command.id,
         urls: urls,
-        top: Math.floor(window.screenTop + rect.top - screen.availTop),
-        left: Math.floor(window.screenLeft + rect.left + 50 - screen.availLeft),
+        top: Math.floor(window.screenTop + rect.top),
+        left: Math.floor(window.screenLeft + rect.left),
         height: command.popupOption?.height,
         width: command.popupOption?.width,
         screen: getScreenSize(),

@@ -2,7 +2,8 @@ import * as mv3 from 'mv3-hot-reload'
 import { isDebug } from './const'
 import { Ipc, BgCommand } from './services/ipc'
 import type { IpcCallback } from './services/ipc'
-import { escapeJson } from './services/util'
+import { escapeJson } from '@/services/util'
+import type { ScreenSize } from '@/services/util'
 import { UserSettings, migrate } from './services/userSettings'
 import type { CommandVariable } from './services/userSettings'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './services/storage'
@@ -59,7 +60,7 @@ export type openPopupsProps = {
   left: number
   width: number
   height: number
-  screen: { w: number; h: number }
+  screen: ScreenSize
 }
 
 export type execApiProps = {
@@ -107,22 +108,29 @@ const commandFuncs = {
       const offset = 50
       const windows = await Promise.all(
         param.urls.reverse().map((url, idx) => {
+          let t = top + offset * idx
+          let l = left + offset * (idx + 1)
+
           // If the window extends beyond the screen size,
           // return the display position to the center.
-          let l = left + offset * idx
-          if (screen.w < l + width) {
-            l = Math.floor((screen.w - width) / 2)
+          if (screen.height < t + height - screen.top) {
+            t =
+              Math.floor((screen.height - height) / 2) +
+              screen.top +
+              offset * idx
           }
-          let t = top + offset * idx
-          if (screen.h < t + height) {
-            t = Math.floor((screen.h - height) / 2)
+          if (screen.width < l + width - screen.left) {
+            l =
+              Math.floor((screen.width - width) / 2) +
+              screen.left +
+              offset * (idx + 1)
           }
           return chrome.windows.create({
             url,
             width: width,
             height: height,
-            top: t + offset * idx,
-            left: l + offset * idx,
+            top: t,
+            left: l,
             type: 'popup',
             incognito: current.incognito,
           })
@@ -174,11 +182,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-      ;(async () => {
-        const res = await fetch(url, opt)
-        const json = await res.json()
-        response({ ok: res.ok, res: json })
-      })()
+        ; (async () => {
+          const res = await fetch(url, opt)
+          const json = await res.json()
+          response({ ok: res.ok, res: json })
+        })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
