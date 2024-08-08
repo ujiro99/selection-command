@@ -1,6 +1,6 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { Option } from './components/Option'
+import { Option } from '@/components/option/Option'
 import icons from '../dist/icons.svg'
 
 const dom = document.querySelector('#root')

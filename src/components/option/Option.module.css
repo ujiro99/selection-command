@@ -1,4 +1,4 @@
-@import url('Animation.css');
+@import url('../Animation.css');
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 :root {
@@ -47,7 +47,7 @@
 }
 
 .button {
-  composes: button from 'Common.module.css';
+  composes: button from '../Common.module.css';
   padding: 6px 8px 6px;
   line-height: 1.2;
   border-radius: 6px;

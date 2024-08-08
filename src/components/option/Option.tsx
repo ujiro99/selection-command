@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
-import { LoadingIcon } from './LoadingIcon'
-import { Storage, STORAGE_KEY } from '../services/storage'
-import { UserSettings } from '../services/userSettings'
-import type { UserSettingsType, ImageCache } from '../services/userSettings'
+import { Storage, STORAGE_KEY } from '@/services/storage'
+import { UserSettings } from '@/services/userSettings'
+import type { UserSettingsType, ImageCache } from '@/services/userSettings'
 import {
   sleep,
   toDataURL,
@@ -15,13 +14,14 @@ import {
   hasSubdomain,
   getLowerDomainUrl,
 } from '@/services/util'
-import { t } from '../services/i18n'
-import { APP_ID, VERSION, OPTION_MSG } from '../const'
+import { t } from '@/services/i18n'
+import { APP_ID, VERSION, OPTION_MSG } from '@/const'
 import { Dialog } from './Dialog'
-import messages from '../../dist/_locales/en/messages.json'
-import { Popup } from '@/components/Popup'
+import messages from '@/../dist/_locales/en/messages.json'
 
-import './App.css'
+import { Popup } from '@/components/Popup'
+import { LoadingIcon } from './LoadingIcon'
+import '@/components/App.css'
 import css from './Option.module.css'
 
 const getFaviconFromGoogle = (urlStr: string): string => {

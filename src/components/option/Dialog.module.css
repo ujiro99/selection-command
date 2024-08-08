@@ -1,5 +1,5 @@
 .dialog {
-  composes: shadow-xl from 'Common.module.css';
+  composes: shadow-xl from '../Common.module.css';
   position: fixed;
   display: flex;
   background: #fff;

@@ -201,7 +201,7 @@
 
 .button,
 .buttonItems {
-  composes: button from 'Common.module.css';
+  composes: button from '../Common.module.css';
 }
 
 .button {

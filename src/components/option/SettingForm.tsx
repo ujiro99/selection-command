@@ -10,7 +10,7 @@ import Form from '@rjsf/core'
 import type { IChangeEvent } from '@rjsf/core'
 import classnames from 'classnames'
 
-import userSettingSchema from '../services/userSettingSchema.json'
+import userSettingSchema from '@/services/userSettingSchema.json'
 import type { UserSettingsType, FolderOption } from '@/services/userSettings'
 import { STYLE_VARIABLE } from '@/services/userSettings'
 import {
@@ -19,7 +19,7 @@ import {
 } from '@/components/option/UserStyleField'
 import { OPEN_MODE, OPTION_MSG } from '@/const'
 
-import { Icon } from '../components/Icon'
+import { Icon } from '@/components/Icon'
 
 import * as css from './SettingForm.module.css'
 
