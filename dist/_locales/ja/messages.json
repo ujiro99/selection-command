@@ -14,6 +14,9 @@
   "labelCancel": {
     "message": "キャンセル"
   },
+  "labelAddPageRule": {
+    "message": "ページルールを追加"
+  },
   "Option_Reset": {
     "message": "リセット"
   },

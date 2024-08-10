@@ -18,5 +18,13 @@ export const OptionItem = {
         'https://cdn4.iconfinder.com/data/icons/music-ui-solid-24px/24/settings-3-1024.png',
       openMode: OPEN_MODE.OPTION,
     },
+    {
+      id: 2,
+      title: t('labelAddPageRule'),
+      searchUrl: '',
+      iconUrl:
+        'https://cdn1.iconfinder.com/data/icons/freeline/32/add_cross_new_plus_create-512.png',
+      openMode: OPEN_MODE.ADD_PAGE_RULE,
+    },
   ],
 }

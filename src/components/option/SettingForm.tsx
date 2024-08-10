@@ -18,7 +18,6 @@ import {
   UserStyleMap,
 } from '@/components/option/UserStyleField'
 import { OPEN_MODE, OPTION_MSG } from '@/const'
-
 import { Icon } from '@/components/Icon'
 import { TableOfContents } from '@/components/option/TableOfContents'
 
@@ -53,6 +52,13 @@ export function SettingFrom() {
     return trans[`Option_${key}`]
   }
 
+  const jump = () => {
+    const hash = document.location.hash
+    if (!hash) return
+    const menu = document.querySelector(hash)
+    menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   // Save after 500 ms to storage.
   useEffect(() => {
     let unmounted = false
@@ -85,6 +91,8 @@ export function SettingFrom() {
           setOrigin(event.origin)
           setSettingData(settings)
           setTrans(translation)
+          // Page scrolls to the hash.
+          setTimeout(jump, 10)
         }
       } else if (command === OPTION_MSG.RES_FETCH_ICON_URL) {
         const { iconUrl, searchUrl } = value

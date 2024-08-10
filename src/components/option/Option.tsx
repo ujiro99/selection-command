@@ -271,6 +271,14 @@ export function Option() {
     })
   }
 
+  const sandboxUrl = () => {
+    if (document.location.hash) {
+      return `sandbox.html${document.location.hash}`
+    } else {
+      return `sandbox.html`
+    }
+  }
+
   return (
     <div className={css.option}>
       <CSSTransition
@@ -351,7 +359,7 @@ export function Option() {
       <iframe
         title="SettingForm"
         id="sandbox"
-        src="sandbox.html"
+        src={sandboxUrl()}
         ref={iframeRef}
         className={css.editorFrame}
         onLoad={onLoadIfame}

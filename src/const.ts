@@ -9,6 +9,7 @@ export enum OPEN_MODE {
   COPY = 'copy',
   OPTION = 'option',
   GET_TEXT_STYLES = 'getTextStyles',
+  ADD_PAGE_RULE = 'addPageRule',
 }
 
 export enum POPUP_ENABLED {

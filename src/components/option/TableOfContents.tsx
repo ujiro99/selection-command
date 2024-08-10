@@ -9,8 +9,8 @@ type Prop = {
 export const TableOfContents = ({ properties, labels }: Prop) => {
   const jump = (e: React.SyntheticEvent<HTMLButtonElement>) => {
     const target = e.currentTarget.dataset.target
-    const title = document.querySelector(`#root_${target}`)
-    title?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    const menu = document.querySelector(`#root_${target}`)
+    menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (

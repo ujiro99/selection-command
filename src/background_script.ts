@@ -1,5 +1,5 @@
 import * as mv3 from 'mv3-hot-reload'
-import { isDebug } from './const'
+import { isDebug, POPUP_ENABLED } from '@/const'
 import { Ipc, BgCommand } from './services/ipc'
 import type { IpcCallback } from './services/ipc'
 import { escapeJson } from '@/services/util'
@@ -75,6 +75,10 @@ export type execApiProps = {
 export type openTabProps = {
   url: string
   active: boolean
+}
+
+export type addPageRuleProps = {
+  url: string
 }
 
 function bindVariables(
@@ -154,6 +158,30 @@ const commandFuncs = {
     chrome.tabs.create({
       url: 'options_page.html',
     })
+    return false
+  },
+
+  [BgCommand.addPageRule]: (param: addPageRuleProps): boolean => {
+    const add = async () => {
+      const settings = await UserSettings.get()
+      const pageRules = settings.pageRules ?? []
+      if (pageRules.find((r) => r.urlPattern === param.url) == null) {
+        pageRules.push({
+          urlPattern: param.url,
+          popupEnabled: POPUP_ENABLED.ENABLE,
+          popupPlacement: 'top-start',
+        })
+      }
+      const newData = {
+        ...settings,
+        pageRules,
+      }
+      await UserSettings.set(newData)
+      chrome.tabs.create({
+        url: `options_page.html#root_pageRules`,
+      })
+    }
+    add()
     return false
   },
 
