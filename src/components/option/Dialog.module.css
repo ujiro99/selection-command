@@ -58,13 +58,21 @@
 
 .button,
 .buttonCancel {
-  composes: button from 'Option.module.css';
+  composes: button from '../Common.module.css';
+  padding: 6px 8px 6px;
+  line-height: 1.2;
+  border-radius: 6px;
+  font-family: var(--font-family);
   font-size: 1rem;
 }
 
 .dialog .button,
 .dialog .buttonCancel {
   padding: 5px 8px 6px;
+}
+
+.dialog .buttonCancel {
+  margin-left: 8px;
 }
 
 .dialog .button {

@@ -109,7 +109,6 @@ function getTimestamp() {
 }
 
 export function Option() {
-  const [iframeHeight, setIframeHeight] = useState<number>()
   const [isSaving, setIsSaving] = useState(false)
   const [resetDialog, setResetDialog] = useState(false)
   const [importDialog, setImportDialog] = useState(false)
@@ -163,8 +162,6 @@ export function Option() {
       const value = event.data.value
       if (command === OPTION_MSG.CHANGED) {
         updateSettings(value)
-      } else if (command === OPTION_MSG.SET_HEIGHT) {
-        setIframeHeight(value)
       } else if (command === OPTION_MSG.FETCH_ICON_URL) {
         const { searchUrl } = value
         console.log('fetchIconUrl', searchUrl)
@@ -294,23 +291,24 @@ export function Option() {
           isPreview={true}
         />
       </div>
-      <header className={css.titleHeader}>
-        <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
-        <span className={css.version}>Version: {VERSION}</span>
-      </header>
       <div className={css.menu}>
-        <button onClick={handleReset} className={css.button} type="button">
-          {t('Option_Reset')}
-        </button>
-        <button onClick={handleExport} className={css.button} type="button">
-          {t('Option_Export')}
-        </button>
+        <p className={css.menuLabel}>
+          <span>Import</span>
+          <span className={css.menuLabel2}>/</span>
+          <span>Export</span>
+        </p>
         <button
           onClick={() => setImportDialog(true)}
-          className={css.button}
+          className={css.menuButton}
           type="button"
         >
           {t('Option_Import')}
+        </button>
+        <button onClick={handleExport} className={css.menuButton} type="button">
+          {t('Option_Export')}
+        </button>
+        <button onClick={handleReset} className={css.menuButton} type="button">
+          {t('Option_Reset')}
         </button>
       </div>
       <Dialog
@@ -345,6 +343,11 @@ export function Option() {
         />
       </Dialog>
 
+      <header className={css.titleHeader}>
+        <h1 className={css.title}>{APP_ID?.replace('-', ' ')}</h1>
+        <span className={css.version}>Version: {VERSION}</span>
+      </header>
+
       <iframe
         title="SettingForm"
         id="sandbox"
@@ -352,7 +355,6 @@ export function Option() {
         ref={iframeRef}
         className={css.editorFrame}
         onLoad={onLoadIfame}
-        height={iframeHeight}
       />
     </div>
   )

@@ -11,16 +11,3 @@ if (dom != null) {
   // Putting icons.svg
   dom.insertAdjacentHTML('afterend', icons)
 }
-
-// start observing a DOM node to notify a height of iframe.
-const resizeObserver = new ResizeObserver((entries) => {
-  const height = entries[0].target.scrollHeight
-  window.parent.postMessage(
-    {
-      command: 'setHeight',
-      value: height + 20,
-    },
-    '*',
-  )
-})
-resizeObserver.observe(document.body)

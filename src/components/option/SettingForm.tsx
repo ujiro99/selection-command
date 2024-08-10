@@ -20,6 +20,7 @@ import {
 import { OPEN_MODE, OPTION_MSG } from '@/const'
 
 import { Icon } from '@/components/Icon'
+import { TableOfContents } from '@/components/option/TableOfContents'
 
 import * as css from './SettingForm.module.css'
 
@@ -341,26 +342,33 @@ export function SettingFrom() {
   userSettingSchema.definitions.styleVariable.properties.name.enum = sv
   uiSchema.userStyles.items.name.enum = svMap
 
+  const properties = Object.keys(userSettingSchema.properties)
+  const labels = properties.reduce((a, p) => ({ ...a, [p]: t(p) }), {})
+
   const log = (type: any) => console.log.bind(console, type)
   return (
-    <Form
-      schema={userSettingSchema}
-      validator={validator}
-      formData={settingData}
-      onChange={onChangeForm}
-      onError={log('errors')}
-      uiSchema={uiSchema}
-      fields={fields}
-      templates={{
-        ButtonTemplates: {
-          AddButton,
-          MoveDownButton,
-          MoveUpButton,
-          RemoveButton,
-        },
-      }}
-      ref={formRef}
-    />
+    <>
+      <TableOfContents properties={properties} labels={labels} />
+      <Form
+        className={css.form}
+        schema={userSettingSchema}
+        validator={validator}
+        formData={settingData}
+        onChange={onChangeForm}
+        onError={log('errors')}
+        uiSchema={uiSchema}
+        fields={fields}
+        templates={{
+          ButtonTemplates: {
+            AddButton,
+            MoveDownButton,
+            MoveUpButton,
+            RemoveButton,
+          },
+        }}
+        ref={formRef}
+      />
+    </>
   )
 }
 
