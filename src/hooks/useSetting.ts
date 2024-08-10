@@ -22,29 +22,33 @@ export function useSetting(): useSettingReturn {
   const [settings, setSettings] = useState<UserSettingsType>(emptySettings)
 
   useEffect(() => {
-    ;(async () => {
-      const caches = await UserSettings.getCaches()
-      const data = await UserSettings.get()
-      // use image cache if available
-      for (const command of data.commands) {
-        const cache = caches.images[command.iconUrl]
-        if (!isEmpty(cache)) {
-          command.iconUrl = cache
-        }
-      }
-      for (const folder of data.folders) {
-        if (!folder.iconUrl) {
-          continue
-        }
-        const cache = caches.images[folder.iconUrl]
-        if (!isEmpty(cache)) {
-          folder.iconUrl = cache
-        }
-      }
-      setSettings(data)
-    })()
-    UserSettings.onChanged(setSettings)
+    updateSettings()
+    UserSettings.onChanged(updateSettings)
   }, [])
+
+  const updateSettings = async () => {
+    const caches = await UserSettings.getCaches()
+    const data = await UserSettings.get()
+    // use image cache if available
+    data.commands = data.commands.map((c) => {
+      const cache = caches.images[c.iconUrl]
+      let iconUrl = c.iconUrl
+      if (!isEmpty(cache)) {
+        iconUrl = cache
+      }
+      return { ...c, iconUrl }
+    })
+    data.folders = data.folders.map((f) => {
+      if (!f.iconUrl) return f
+      const cache = caches.images[f.iconUrl]
+      let iconUrl = f.iconUrl
+      if (!isEmpty(cache)) {
+        iconUrl = cache
+      }
+      return { ...f, iconUrl }
+    })
+    setSettings(data)
+  }
 
   let pageRule: PageRule | undefined
   if (settings != null) {

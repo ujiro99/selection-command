@@ -30,6 +30,7 @@ export enum OPTION_MSG {
 }
 
 export const ROOT_FOLDER = ''
+export const OPTION_FOLDER = 'option'
 
 /**
  * Setting value to switch the debug log output from this module.

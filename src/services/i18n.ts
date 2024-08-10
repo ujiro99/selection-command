@@ -3,5 +3,8 @@ export function getUILanguage(): string {
 }
 
 export function t(key: string, params?: string[]): string {
-  return chrome.i18n.getMessage(key, params)
+  if (chrome.i18n) {
+    return chrome.i18n.getMessage(key, params)
+  }
+  return key
 }

@@ -324,7 +324,7 @@ export function SettingFrom() {
 
   // Add openModes to schema and uiSchema.
   const modes = Object.values(OPEN_MODE).filter(
-    (mode) => mode !== OPEN_MODE.OPTION,
+    (mode) => mode !== OPEN_MODE.OPTION && mode !== OPEN_MODE.ADD_PAGE_RULE,
   )
   const modeMap = {} as ModeMap
   for (const mode of modes) {

@@ -3,14 +3,12 @@ import { CSSTransition } from 'react-transition-group'
 
 import { Storage, STORAGE_KEY } from '@/services/storage'
 import { UserSettings } from '@/services/userSettings'
-import type { UserSettingsType, ImageCache } from '@/services/userSettings'
+import type { UserSettingsType } from '@/services/userSettings'
 import {
   sleep,
-  toDataURL,
   toUrl,
   isBase64,
   isUrl,
-  isEmpty,
   hasSubdomain,
   getLowerDomainUrl,
 } from '@/services/util'
@@ -123,30 +121,7 @@ export function Option() {
     if (isSaving) return
     try {
       setIsSaving(true)
-
-      // Convert iconUrl to DataURL for cache.
-      const urls = UserSettings.getUrls(settings)
-      const caches = await UserSettings.getCaches()
-      const noCacheUrls = urls
-        .filter((url) => !isEmpty(url))
-        .filter((url) => !isBase64(url) && caches.images[url] == null)
-      const newCaches = await Promise.all(
-        noCacheUrls.map(async (url) => {
-          let dataUrl = ''
-          try {
-            dataUrl = await toDataURL(url)
-          } catch (e) {
-            console.warn('Failed to convert to data url', url)
-            console.warn(e)
-          }
-          return [url, dataUrl]
-        }),
-      )
-      for (const [iconUrl, dataUrl] of newCaches) {
-        caches.images[iconUrl] = dataUrl
-      }
-
-      await UserSettings.set(settings, caches)
+      await UserSettings.set(settings)
       await sleep(1000)
     } catch (e) {
       console.error('Failed to update settings!', settings)
@@ -233,19 +208,7 @@ export function Option() {
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
       ;(async () => {
-        // for back compatibility
-        //cache image data url to local storage
-        const caches = {} as ImageCache
-        for (const c of importJson.commands) {
-          if (!c.iconUrl) continue
-          if (isBase64(c.iconUrl)) {
-            const id = crypto.randomUUID()
-            const data = c.iconUrl
-            caches[id] = data
-            c.iconUrl = id
-          }
-        }
-        await UserSettings.set(importJson, { images: caches })
+        await UserSettings.set(importJson)
         location.reload()
       })()
     }
@@ -263,7 +226,7 @@ export function Option() {
   }
 
   const onLoadIfame = async () => {
-    const settings = await UserSettings.get()
+    const settings = await UserSettings.get(true)
     const translation = getTranslation()
     sendMessage(OPTION_MSG.START, {
       settings,

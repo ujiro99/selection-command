@@ -10,7 +10,6 @@ import type {
   UserSettingsType,
 } from '@/services/userSettings'
 import { useSetting } from '@/hooks/useSetting'
-import { OptionItem } from './OptionItem'
 
 type ItemObj = {
   folder: CommandFolder
@@ -51,9 +50,6 @@ export function Menu(): JSX.Element {
     }
     return pre
   }, [] as ItemObj[])
-
-  // Add option menu.
-  items.push(OptionItem)
 
   return (
     <div

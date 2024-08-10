@@ -1,9 +1,9 @@
-import { OPEN_MODE } from '@/const'
+import { OPEN_MODE, OPTION_FOLDER } from '@/const'
 import { t } from '@/services/i18n'
 
-export const OptionItem = {
+export const OptionSettings = {
   folder: {
-    id: 'option',
+    id: OPTION_FOLDER,
     title: 'Option',
     iconUrl:
       'https://cdn0.iconfinder.com/data/icons/evericons-24px-vol-1/24/more-vertical-1024.png',
@@ -17,6 +17,11 @@ export const OptionItem = {
       iconUrl:
         'https://cdn4.iconfinder.com/data/icons/music-ui-solid-24px/24/settings-3-1024.png',
       openMode: OPEN_MODE.OPTION,
+      parentFolder: {
+        id: OPTION_FOLDER,
+        name: 'Option',
+        iconUrl: '',
+      },
     },
     {
       id: 2,
@@ -25,6 +30,11 @@ export const OptionItem = {
       iconUrl:
         'https://cdn1.iconfinder.com/data/icons/freeline/32/add_cross_new_plus_create-512.png',
       openMode: OPEN_MODE.ADD_PAGE_RULE,
+      parentFolder: {
+        id: OPTION_FOLDER,
+        name: 'Option',
+        iconUrl: '',
+      },
     },
   ],
 }
