@@ -172,11 +172,10 @@ const commandFuncs = {
           popupPlacement: 'top-start',
         })
       }
-      const newData = {
+      await UserSettings.set({
         ...settings,
         pageRules,
-      }
-      await UserSettings.set(newData)
+      })
       chrome.tabs.create({
         url: `options_page.html#root_pageRules`,
       })
