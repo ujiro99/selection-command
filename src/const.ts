@@ -1,4 +1,4 @@
-export const APP_ID = process.env.NAME
+export const APP_ID = process.env.NAME as string
 export const VERSION = process.env.VERSION
 
 export enum OPEN_MODE {
@@ -9,6 +9,7 @@ export enum OPEN_MODE {
   COPY = 'copy',
   OPTION = 'option',
   GET_TEXT_STYLES = 'getTextStyles',
+  ADD_PAGE_RULE = 'addPageRule',
 }
 
 export enum POPUP_ENABLED {
@@ -24,12 +25,12 @@ export enum STYLE {
 export enum OPTION_MSG {
   START = 'start',
   CHANGED = 'changed',
-  SET_HEIGHT = 'setHeight',
   FETCH_ICON_URL = 'fetchIconUrl',
   RES_FETCH_ICON_URL = 'resFetchIconUrl',
 }
 
 export const ROOT_FOLDER = ''
+export const OPTION_FOLDER = 'option'
 
 /**
  * Setting value to switch the debug log output from this module.

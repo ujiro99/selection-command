@@ -1,0 +1,23 @@
+.container {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  color: #444;
+  left: calc(50% - 560px);
+}
+
+.label {
+  font-family: var(--font-monospace);
+  font-size: 1.2rem;
+  margin-left: 10px;
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+.item {
+  list-style: none;
+}
+
+.button {
+  composes: menuButton from './Option.module.css';
+}

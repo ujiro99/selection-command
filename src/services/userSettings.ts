@@ -3,7 +3,9 @@ import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import type { onChangedCallback } from './storage'
 import DefaultSetting from './defaultUserSettings.json'
 import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
-import { isBase64, isUrl } from '@/services/util'
+import { OPTION_FOLDER } from '../const'
+import { isBase64, isEmpty, toDataURL } from '@/services/util'
+import { OptionSettings } from '@/services/optionSettings'
 
 export type Command = {
   id: number
@@ -93,48 +95,60 @@ export type ImageCache = {
 }
 
 export const UserSettings = {
-  get: async (): Promise<UserSettingsType> => {
+  get: async (excludeOptions = false): Promise<UserSettingsType> => {
     const obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
-    const caches = await UserSettings.getCaches()
     obj.commands = obj.commands.map((c, idx) => {
       // Assigning IDs to each command
       c.id = idx
-      // CacheId to image data url for Option screen.
-      if (!isUrl(c.iconUrl)) {
-        c.iconUrl = caches.images[c.iconUrl]
-      }
       return c
     })
     obj.folders = obj.folders.filter((folder) => !!folder.title)
+    if (!excludeOptions) {
+      // Remove once to avoid duplication.
+      removeOptionSettings(obj)
+      // Add option settings
+      obj.commands.push(...OptionSettings.commands)
+      obj.folders.push(OptionSettings.folder)
+    }
     return obj
   },
 
-  set: async (data: UserSettingsType, newCaches?: Caches): Promise<boolean> => {
-    // image data url to cache id.
-    let caches = newCaches
-    if (!caches) {
-      caches = await UserSettings.getCaches()
-    }
-    // console.debug('update settings', data, caches)
-    for (const c of data.commands) {
-      if (!c.iconUrl) continue
-      if (isBase64(c.iconUrl)) {
-        const cache = Object.entries(caches.images).find(
-          ([k, v]) => v === c.iconUrl,
-        )
-        if (cache) {
-          c.iconUrl = cache[0]
-        }
-      }
-    }
-    const urls = UserSettings.getUrls(data)
+  set: async (data: UserSettingsType): Promise<boolean> => {
+    // console.debug('update settings', data)
     // remove unused caches
+    const urls = UserSettings.getUrls(data)
+    const caches = await UserSettings.getCaches()
     for (const key in caches.images) {
       if (!urls.includes(key)) {
         console.debug('remove unused cache', key)
         delete caches.images[key]
       }
     }
+
+    // Convert iconUrl to DataURL for cache.
+    const noCacheUrls = urls
+      .filter((url) => !isEmpty(url))
+      .filter((url) => !isBase64(url) && caches.images[url] == null)
+    const newCaches = await Promise.all(
+      noCacheUrls.map(async (url) => {
+        let dataUrl = ''
+        try {
+          dataUrl = await toDataURL(url)
+        } catch (e) {
+          console.warn('Failed to convert to data url', url)
+          console.warn(e)
+        }
+        return [url, dataUrl]
+      }),
+    )
+    for (const [iconUrl, dataUrl] of newCaches) {
+      if (isEmpty(dataUrl)) continue
+      caches.images[iconUrl] = dataUrl
+    }
+
+    // Settings for options are kept separate from user set values.
+    removeOptionSettings(data)
+
     await Storage.set(STORAGE_KEY.USER, data)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
     return true
@@ -155,8 +169,21 @@ export const UserSettings = {
   getUrls: (settings: UserSettingsType): string[] => {
     const iconUrls = settings.commands.map((c) => c.iconUrl)
     const folderIconUrls = settings.folders.map((f) => f.iconUrl)
-    return [...iconUrls, ...folderIconUrls] as string[]
+    const optionIconUrls = OptionSettings.commands.map((c) => c.iconUrl)
+    return [
+      ...iconUrls,
+      ...folderIconUrls,
+      ...optionIconUrls,
+      OptionSettings.folder.iconUrl,
+    ] as string[]
   },
+}
+
+const removeOptionSettings = (data: UserSettingsType): void => {
+  data.commands = data.commands.filter(
+    (c) => c.parentFolder?.id !== OPTION_FOLDER,
+  )
+  data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
 }
 
 export const migrate = async () => {

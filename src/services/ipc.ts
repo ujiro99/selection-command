@@ -3,6 +3,7 @@ export enum BgCommand {
   openTab = 'openTab',
   closeMenu = 'closeMenu',
   openOption = 'openOption',
+  addPageRule = 'addPageRule',
   execApi = 'execApi',
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',

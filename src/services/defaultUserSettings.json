@@ -29,7 +29,6 @@
     {
       "iconUrl": "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
       "openMode": "tab",
-      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246",
       "searchUrl": "https://www.youtube.com/results?search_query=%s",
       "title": "Youtube",
       "parentFolder": {
@@ -40,7 +39,6 @@
     {
       "iconUrl": "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
       "openMode": "tab",
-      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246",
       "searchUrl": "https://www.netflix.com/search?q=%s",
       "title": "Netflix",
       "parentFolder": {
@@ -51,7 +49,6 @@
     {
       "iconUrl": "https://s.pinimg.com/webapp/favicon-22eb868c.png",
       "openMode": "tab",
-      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246",
       "searchUrl": "https://www.pinterest.com/search/pins/?q=%s",
       "title": "Pinterest",
       "parentFolder": {
@@ -62,7 +59,6 @@
     {
       "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
       "openMode": "tab",
-      "parentFolderId": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
       "searchUrl": "https://drive.google.com/drive/search?q=%s",
       "title": "Drive",
       "parentFolder": {
@@ -73,7 +69,6 @@
     {
       "iconUrl": "https://ssl.gstatic.com/translate/favicon.ico",
       "openMode": "tab",
-      "parentFolderId": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
       "searchUrl": "https://translate.google.co.jp/?hl=ja&sl=auto&text=%s&op=translate",
       "title": "en to ja",
       "parentFolder": {

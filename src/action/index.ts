@@ -6,6 +6,7 @@ import { LinkPopup } from './linkPopup'
 import { Copy } from './copy'
 import { Option } from './option'
 import { GetStyles as GetTextStyles } from './getStyles'
+import { AddPageRule } from './addPageRule'
 import type { Command } from '@/services/userSettings'
 
 export enum ExecState {
@@ -32,4 +33,5 @@ export const actions = {
   [OPEN_MODE.COPY]: Copy,
   [OPEN_MODE.GET_TEXT_STYLES]: GetTextStyles,
   [OPEN_MODE.OPTION]: Option,
+  [OPEN_MODE.ADD_PAGE_RULE]: AddPageRule,
 }

@@ -10,7 +10,7 @@ import Form from '@rjsf/core'
 import type { IChangeEvent } from '@rjsf/core'
 import classnames from 'classnames'
 
-import userSettingSchema from '../services/userSettingSchema.json'
+import userSettingSchema from '@/services/userSettingSchema.json'
 import type { UserSettingsType, FolderOption } from '@/services/userSettings'
 import { STYLE_VARIABLE } from '@/services/userSettings'
 import {
@@ -18,8 +18,8 @@ import {
   UserStyleMap,
 } from '@/components/option/UserStyleField'
 import { OPEN_MODE, OPTION_MSG } from '@/const'
-
-import { Icon } from '../components/Icon'
+import { Icon } from '@/components/Icon'
+import { TableOfContents } from '@/components/option/TableOfContents'
 
 import * as css from './SettingForm.module.css'
 
@@ -50,6 +50,13 @@ export function SettingFrom() {
 
   const t = (key: string) => {
     return trans[`Option_${key}`]
+  }
+
+  const jump = () => {
+    const hash = document.location.hash
+    if (!hash) return
+    const menu = document.querySelector(hash)
+    menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   // Save after 500 ms to storage.
@@ -84,6 +91,8 @@ export function SettingFrom() {
           setOrigin(event.origin)
           setSettingData(settings)
           setTrans(translation)
+          // Page scrolls to the hash.
+          setTimeout(jump, 10)
         }
       } else if (command === OPTION_MSG.RES_FETCH_ICON_URL) {
         const { iconUrl, searchUrl } = value
@@ -315,7 +324,7 @@ export function SettingFrom() {
 
   // Add openModes to schema and uiSchema.
   const modes = Object.values(OPEN_MODE).filter(
-    (mode) => mode !== OPEN_MODE.OPTION,
+    (mode) => mode !== OPEN_MODE.OPTION && mode !== OPEN_MODE.ADD_PAGE_RULE,
   )
   const modeMap = {} as ModeMap
   for (const mode of modes) {
@@ -341,26 +350,33 @@ export function SettingFrom() {
   userSettingSchema.definitions.styleVariable.properties.name.enum = sv
   uiSchema.userStyles.items.name.enum = svMap
 
+  const properties = Object.keys(userSettingSchema.properties)
+  const labels = properties.reduce((a, p) => ({ ...a, [p]: t(p) }), {})
+
   const log = (type: any) => console.log.bind(console, type)
   return (
-    <Form
-      schema={userSettingSchema}
-      validator={validator}
-      formData={settingData}
-      onChange={onChangeForm}
-      onError={log('errors')}
-      uiSchema={uiSchema}
-      fields={fields}
-      templates={{
-        ButtonTemplates: {
-          AddButton,
-          MoveDownButton,
-          MoveUpButton,
-          RemoveButton,
-        },
-      }}
-      ref={formRef}
-    />
+    <>
+      <TableOfContents properties={properties} labels={labels} />
+      <Form
+        className={css.form}
+        schema={userSettingSchema}
+        validator={validator}
+        formData={settingData}
+        onChange={onChangeForm}
+        onError={log('errors')}
+        uiSchema={uiSchema}
+        fields={fields}
+        templates={{
+          ButtonTemplates: {
+            AddButton,
+            MoveDownButton,
+            MoveUpButton,
+            RemoveButton,
+          },
+        }}
+        ref={formRef}
+      />
+    </>
   )
 }
 

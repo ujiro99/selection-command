@@ -57,11 +57,11 @@ div[data-closed][data-placement='left'] > .popup {
 }
 
 .previewLabel {
-  font-size: 12px;
-  font-family: 'Press Start 2P', system-ui;
+  font-family: var(--font-monospace);
+  font-size: 1.2rem;
   color: #444;
-  margin-left: 6px;
-  letter-spacing: 0.4px;
+  margin-left: 4px;
+  margin-bottom: 12px;
 }
 
 @keyframes marquee {
