@@ -225,3 +225,17 @@ export function hexToHsl(hex: string): [number, number, number] {
   const [r, g, b] = hexToRgb(hex)
   return rgbToHsl(r, g, b)
 }
+
+/**
+ * Capitalize the first letter of each word in a string.
+ *
+ * @param {string} phrase The string to capitalize.
+ * @returns {string} The capitalized string.
+ */
+export function capitalize(phrase: string): string {
+  if (typeof phrase !== 'string' || !phrase) return phrase
+  return phrase
+    .split(' ')
+    .map((s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+    .join(' ')
+}

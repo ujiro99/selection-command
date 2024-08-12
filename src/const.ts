@@ -1,4 +1,4 @@
-export const APP_ID = process.env.NAME
+export const APP_ID = process.env.NAME as string
 export const VERSION = process.env.VERSION
 
 export enum OPEN_MODE {

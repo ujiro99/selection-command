@@ -46,8 +46,8 @@
 
 .menu {
   position: fixed;
-  top: 250px;
-  right: calc(50% - 570px);
+  top: 400px;
+  left: calc(50% - 560px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -90,7 +90,10 @@
 }
 
 .buttonImport {
+  composes: button from '../Common.module.css';
   width: calc(100% - 15px);
+  padding: 6px 8px;
+  border-radius: 4px;
 }
 
 .editorFrame {
