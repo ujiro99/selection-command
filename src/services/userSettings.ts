@@ -73,7 +73,13 @@ export type StyleVariable = {
   value: string
 }
 
+export enum STARTUP_METHOD {
+  TEXT_SELECTION = 'text-selection',
+  CONTEXT_MENU = 'context-menus',
+}
+
 export type UserSettingsType = {
+  startupMethod: STARTUP_METHOD
   popupPlacement: Placement
   commands: Array<Command>
   folders: Array<CommandFolder>
