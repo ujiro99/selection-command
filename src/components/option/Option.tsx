@@ -3,13 +3,7 @@ import { CSSTransition } from 'react-transition-group'
 
 import { UserSettings } from '@/services/userSettings'
 import type { UserSettingsType } from '@/services/userSettings'
-import {
-  sleep,
-  toUrl,
-  hasSubdomain,
-  getLowerDomainUrl,
-  capitalize,
-} from '@/services/util'
+import { sleep, toUrl, capitalize } from '@/services/util'
 import { t } from '@/services/i18n'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'
 import messages from '@/../dist/_locales/en/messages.json'
@@ -20,46 +14,6 @@ import { ImportExport } from '@/components/option/ImportExport'
 import '@/components/App.css'
 import css from './Option.module.css'
 
-const getFaviconFromGoogle = (urlStr: string): string => {
-  const url = new URL(urlStr)
-  const domain = url.hostname
-  const favUrl = `https://s2.googleusercontent.com/s2/favicons?domain=${domain}&sz=128`
-  return favUrl
-}
-
-const getFaviconFromDom = async (
-  urlStr: string,
-): Promise<string | undefined> => {
-  try {
-    const res = await fetch(urlStr)
-    const text = await res.text()
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(text, 'text/html')
-    const icons = doc.querySelectorAll(
-      'link[rel="icon"], link[rel="shortcut icon"]',
-    )
-    console.debug('icons', icons)
-    if (icons.length > 0) {
-      const iconUrl = icons[icons.length - 1].getAttribute('href')
-      // console.debug('iconUrl', iconUrl)
-      if (iconUrl?.startsWith('http')) {
-        return iconUrl
-      }
-      if (iconUrl?.startsWith('//')) {
-        const protocol = new URL(urlStr).protocol
-        return `${protocol}${iconUrl}`
-      }
-      if (iconUrl?.startsWith('/')) {
-        const origin = new URL(urlStr).origin
-        return `${origin}${iconUrl}`
-      }
-    }
-  } catch (e) {
-    console.warn('Failed to fetch icon', urlStr)
-  }
-  return
-}
-
 /**
  * Get favicon url from url.
  *
@@ -67,21 +21,39 @@ const getFaviconFromDom = async (
  * @returns {Promise<string>} favicon url
  */
 const fetchIconUrl = async (url: string): Promise<string> => {
-  const urlStr = toUrl(url, 'test')
-  const faviconUrl = await getFaviconFromDom(urlStr)
-  if (faviconUrl) {
-    return faviconUrl
-  }
-  // Try to get favicon from root domain.
-  if (hasSubdomain(urlStr)) {
-    const rootDomainUrl = getLowerDomainUrl(urlStr)
-    const faviconUrl = await getFaviconFromDom(rootDomainUrl)
-    if (faviconUrl) {
-      return faviconUrl
-    }
-  }
-  // Try to get favicon from googleusercontent.com
-  return getFaviconFromGoogle(url)
+  const p = new Promise<string>(async (resolve, reject) => {
+    let w: chrome.windows.Window
+    const timeoutId = setTimeout(() => {
+      chrome.windows.remove(w.id as number)
+      console.warn('timeout', url)
+      reject()
+    }, 5000)
+    chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+      if (tabId === w.tabs?.[0].id && changeInfo.status === 'complete') {
+        clearTimeout(timeoutId)
+        chrome.windows.remove(w.id as number)
+        if (tab.favIconUrl) {
+          resolve(tab.favIconUrl)
+        } else {
+          // retry
+          await sleep(100)
+          const t = await chrome.tabs.get(tabId)
+          if (tab.favIconUrl) {
+            resolve(t.favIconUrl as string)
+          } else {
+            // failed...
+            console.warn(tab)
+            reject()
+          }
+        }
+      }
+    })
+    w = await chrome.windows.create({
+      url: toUrl(url, 'test'),
+      state: 'minimized',
+    })
+  })
+  return p
 }
 
 const getTranslation = () => {
@@ -124,9 +96,15 @@ export function Option() {
       } else if (command === OPTION_MSG.FETCH_ICON_URL) {
         const { searchUrl } = value
         console.log('fetchIconUrl', searchUrl)
-        const iconUrl = await fetchIconUrl(searchUrl)
-        if (iconUrl) {
+        try {
+          const iconUrl = await fetchIconUrl(searchUrl)
           sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, { searchUrl, iconUrl })
+        } catch (e) {
+          console.warn('Failed to fetch icon', searchUrl)
+          sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, {
+            searchUrl,
+            iconUrl: null,
+          })
         }
       }
     }

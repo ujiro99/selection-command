@@ -452,6 +452,7 @@ const IconUrlFieldWithAutofill =
     const exec = () => {
       onClick(cmdIdx)
       setClicked(true)
+      setTimeout(() => setClicked(false), 5000)
     }
 
     return (
