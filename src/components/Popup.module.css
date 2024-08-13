@@ -61,7 +61,7 @@ div[data-closed][data-placement='left'] > .popup {
   font-size: 1.2rem;
   color: #444;
   margin-left: 4px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 @keyframes marquee {
