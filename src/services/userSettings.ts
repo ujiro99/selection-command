@@ -75,7 +75,8 @@ export type StyleVariable = {
 
 export enum STARTUP_METHOD {
   TEXT_SELECTION = 'text-selection',
-  CONTEXT_MENU = 'context-menus',
+  CONTEXT_MENU = 'context-menu',
+  KEYBOARD = 'keyboard',
 }
 
 export type UserSettingsType = {

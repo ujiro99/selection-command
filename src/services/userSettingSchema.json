@@ -3,6 +3,12 @@
   "type": "object",
   "required": ["commands", "popupPlacement", "style"],
   "properties": {
+    "startupMethod": {
+      "$id": "#/startupMethod",
+      "type": "string",
+      "default": "text-selection",
+      "enum": ["text-selection", "context-menu", "keyboard"]
+    },
     "popupPlacement": {
       "$id": "#/popupPlacement",
       "$ref": "#/definitions/popupPlacement"

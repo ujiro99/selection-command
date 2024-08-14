@@ -98,5 +98,6 @@
   ],
   "pageRules": [],
   "popupPlacement": "top-start",
-  "style": "horizontal"
+  "style": "horizontal",
+  "startupMethod": "text-selection"
 }

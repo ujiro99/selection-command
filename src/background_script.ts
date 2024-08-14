@@ -1,12 +1,13 @@
 import * as mv3 from 'mv3-hot-reload'
 import { isDebug, POPUP_ENABLED } from '@/const'
-import { Ipc, BgCommand } from './services/ipc'
-import type { IpcCallback } from './services/ipc'
+import { Ipc, BgCommand } from '@/services/ipc'
+import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/services/util'
 import type { ScreenSize } from '@/services/util'
-import { UserSettings, migrate } from './services/userSettings'
-import type { CommandVariable } from './services/userSettings'
-import { Storage, STORAGE_KEY, STORAGE_AREA } from './services/storage'
+import { UserSettings, migrate } from '@/services/userSettings'
+import type { CommandVariable } from '@/services/userSettings'
+import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
+import '@/services/contextMenus'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
