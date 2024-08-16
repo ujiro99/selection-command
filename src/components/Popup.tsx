@@ -6,7 +6,8 @@ import classnames from 'classnames'
 import { Menu } from './menu/Menu'
 import { POPUP_ENABLED } from '../const'
 import { useSetting } from '@/hooks/useSetting'
-import { Ipc, BgCommand } from '@/services/ipc'
+import { Ipc, TabCommand } from '@/services/ipc'
+import { STARTUP_METHOD } from '@/services/userSettings'
 import { hexToHsl } from '@/services/util'
 
 import {
@@ -63,7 +64,10 @@ export function Popup(props: PopupProps) {
     ],
   })
 
-  let visible = props.selectionText.length > 0 && props.positionElm != null
+  let visible =
+    props.selectionText.length > 0 &&
+    props.positionElm != null &&
+    settings.startupMethod !== STARTUP_METHOD.CONTEXT_MENU
   if (pageRule != null) {
     visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
   }
@@ -71,10 +75,13 @@ export function Popup(props: PopupProps) {
   visible = visible || isPreview
 
   useEffect(() => {
-    Ipc.addListener(BgCommand.closeMenu, () => {
+    Ipc.addListener(TabCommand.closeMenu, () => {
       setForceHide(true)
       return false
     })
+    return () => {
+      Ipc.removeListener(TabCommand.closeMenu)
+    }
   }, [])
 
   useEffect(() => {

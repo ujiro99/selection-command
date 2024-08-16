@@ -108,7 +108,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       </Tooltip>
       <ResultPopup
         visible={result != null}
-        positionRef={elmRef}
+        positionElm={elmRef.current}
         onClose={() => setResult(undefined)}
       >
         {result}

@@ -1,6 +1,6 @@
 import * as mv3 from 'mv3-hot-reload'
 import { isDebug, POPUP_ENABLED } from '@/const'
-import { Ipc, BgCommand } from '@/services/ipc'
+import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/services/util'
 import type { ScreenSize } from '@/services/util'
@@ -369,7 +369,8 @@ chrome.windows.onBoundsChanged.addListener((window) => {
 
 chrome.tabs.onActivated.addListener(async () => {
   // Force close the menu
-  Ipc.sendAllTab(BgCommand.closeMenu)
+  const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
+  ret.filter((v) => v).forEach((v) => console.debug(v))
 })
 
 chrome.runtime.onInstalled.addListener((details) => {
