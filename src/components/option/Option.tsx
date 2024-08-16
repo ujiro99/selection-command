@@ -10,7 +10,9 @@ import messages from '@/../dist/_locales/en/messages.json'
 
 import { Popup } from '@/components/Popup'
 import { LoadingIcon } from '@/components/option/LoadingIcon'
+import { TableOfContents } from '@/components/option/TableOfContents'
 import { ImportExport } from '@/components/option/ImportExport'
+
 import '@/components/App.css'
 import css from './Option.module.css'
 
@@ -133,6 +135,10 @@ export function Option() {
     })
   }
 
+  const onClickMenu = (hash: string) => {
+    sendMessage(OPTION_MSG.JUMP, { hash })
+  }
+
   const sandboxUrl = () => {
     if (document.location.hash) {
       return `sandbox.html${document.location.hash}`
@@ -155,7 +161,10 @@ export function Option() {
         </LoadingIcon>
       </CSSTransition>
 
-      <ImportExport />
+      <div className={css.menuContainer}>
+        <TableOfContents onClick={onClickMenu} />
+        <ImportExport />
+      </div>
 
       <div className={css.preview} ref={previewRef}>
         <Popup

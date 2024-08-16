@@ -2,7 +2,6 @@ import React, { useState, useEffect, createContext } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
 import { OpenInTab } from '@/components/OpenInTab'
-import { InvisibleItem } from '@/components/menu/InvisibleItem'
 
 import './App.css'
 
@@ -39,7 +38,6 @@ export function App() {
       <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
       <Popup positionElm={positionElm} selectionText={selectionText} />
       <OpenInTab />
-      <InvisibleItem positionElm={positionElm} />
     </context.Provider>
   )
 }

@@ -19,7 +19,6 @@ import {
 } from '@/components/option/UserStyleField'
 import { OPEN_MODE, OPTION_MSG } from '@/const'
 import { Icon } from '@/components/Icon'
-import { TableOfContents } from '@/components/option/TableOfContents'
 
 import * as css from './SettingForm.module.css'
 
@@ -52,8 +51,8 @@ export function SettingFrom() {
     return trans[`Option_${key}`]
   }
 
-  const jump = () => {
-    const hash = document.location.hash
+  const jump = (_hash: string) => {
+    const hash = _hash ?? document.location.hash
     if (!hash) return
     const menu = document.querySelector(hash)
     menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -108,6 +107,9 @@ export function SettingFrom() {
         // For some reason, updating data here does not update the Form display.
         // So update via ref.
         formRef.current?.setState({ formData: newSettings })
+      } else if (command === OPTION_MSG.JUMP) {
+        const { hash } = value
+        jump(hash)
       }
     }
     window.addEventListener('message', func)
@@ -360,13 +362,9 @@ export function SettingFrom() {
   userSettingSchema.definitions.styleVariable.properties.name.enum = sv
   uiSchema.userStyles.items.name.enum = svMap
 
-  const properties = Object.keys(userSettingSchema.properties)
-  const labels = properties.reduce((a, p) => ({ ...a, [p]: t(p) }), {})
-
   const log = (type: any) => console.log.bind(console, type)
   return (
     <>
-      <TableOfContents properties={properties} labels={labels} />
       <Form
         className={css.form}
         schema={userSettingSchema}

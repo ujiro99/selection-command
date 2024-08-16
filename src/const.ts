@@ -25,6 +25,7 @@ export enum STYLE {
 export enum OPTION_MSG {
   START = 'start',
   CHANGED = 'changed',
+  JUMP = 'jump',
   FETCH_ICON_URL = 'fetchIconUrl',
   RES_FETCH_ICON_URL = 'resFetchIconUrl',
 }

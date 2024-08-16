@@ -40,17 +40,21 @@
 
 .preview {
   position: fixed;
-  top: 120px;
-  right: calc(50% - 520px);
+  top: 130px;
+  right: calc(50% - 460px);
+}
+
+.menuContainer {
+  position: fixed;
+  top: 130px;
+  left: calc(50% - 550px);
 }
 
 .menu {
-  position: fixed;
-  top: 400px;
-  left: calc(50% - 560px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-top: 20px;
 }
 
 .menuLabel {
