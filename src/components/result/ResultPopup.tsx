@@ -15,7 +15,7 @@ import {
 
 type PopupProps = {
   visible: boolean
-  positionElm: Element | null
+  positionRef: React.RefObject<Element>
   children: React.ReactNode
   onClose: () => void
 }
@@ -26,7 +26,7 @@ export function ResultPopup(props: PopupProps) {
 
   const { refs, floatingStyles } = useFloating({
     placement: placement,
-    elements: { reference: props.positionElm },
+    elements: { reference: props.positionRef.current },
     whileElementsMounted: autoUpdate,
     middleware: [
       offset(5),
@@ -36,7 +36,7 @@ export function ResultPopup(props: PopupProps) {
     ],
   })
 
-  const visible = props.visible && props.positionElm != null
+  const visible = props.visible && props.positionRef.current != null
 
   return (
     <Popover className={popupContianer}>

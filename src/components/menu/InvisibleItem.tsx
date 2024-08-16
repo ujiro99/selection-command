@@ -1,10 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
+
 import { context } from '@/components/App'
-import { actions } from '@/action'
 import { ResultPopup } from '@/components/result/ResultPopup'
-import type { Command } from '@/services/userSettings'
-import { ExecState } from '@/action'
+import { Icon } from '@/components/Icon'
 import { useContextMenu } from '@/hooks/useContextMenu'
+import type { Command } from '@/services/userSettings'
+import { actions, ExecState } from '@/action'
+
+import {
+  iconWithState,
+  itemImg,
+  apiIconLoading,
+  apiIconSuccess,
+  apiIconError,
+} from './Menu.module.css'
 
 type InvisibleItemProps = {
   positionElm: Element | null
@@ -22,6 +31,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     state: ExecState.NONE,
   })
   const [result, setResult] = useState<React.ReactNode>()
+  const elmRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setResult(undefined)
@@ -59,14 +69,43 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   const visible = result != null && props.positionElm != null
 
   return (
-    <div>
+    <div ref={elmRef}>
+      <IconWithState state={itemState.state} positionElm={props.positionElm} />
       <ResultPopup
         visible={visible}
-        positionElm={props.positionElm}
+        positionRef={elmRef}
         onClose={() => setResult(undefined)}
       >
         {result}
       </ResultPopup>
+    </div>
+  )
+}
+
+type ImageProps = {
+  state: ExecState
+  positionElm: Element | null
+}
+
+function IconWithState(props: ImageProps): JSX.Element {
+  const { state: status } = props
+
+  if (status == ExecState.NONE) return <></>
+
+  return (
+    <div className={iconWithState}>
+      {status === ExecState.EXECUTING && (
+        <Icon
+          className={`${itemImg} ${apiIconLoading} rotate`}
+          name="refresh"
+        />
+      )}
+      {status === ExecState.SUCCESS && (
+        <Icon className={`${itemImg} ${apiIconSuccess}`} name="check" />
+      )}
+      {status === ExecState.FAIL && (
+        <Icon className={`${itemImg} ${apiIconError}`} name="error" />
+      )}
     </div>
   )
 }

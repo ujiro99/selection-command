@@ -9,6 +9,7 @@ import { useSetting } from '@/hooks/useSetting'
 import { Ipc, TabCommand } from '@/services/ipc'
 import { STARTUP_METHOD } from '@/services/userSettings'
 import { hexToHsl } from '@/services/util'
+import { InvisibleItem } from '@/components/menu/InvisibleItem'
 
 import {
   popup,
@@ -64,15 +65,14 @@ export function Popup(props: PopupProps) {
     ],
   })
 
-  let visible =
-    props.selectionText.length > 0 &&
-    props.positionElm != null &&
-    settings.startupMethod !== STARTUP_METHOD.CONTEXT_MENU
+  let visible = props.selectionText.length > 0 && props.positionElm != null
   if (pageRule != null) {
     visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
   }
   visible = visible && !forceHide
   visible = visible || isPreview
+
+  let menuVisible = settings.startupMethod !== STARTUP_METHOD.CONTEXT_MENU
 
   useEffect(() => {
     Ipc.addListener(TabCommand.closeMenu, () => {
@@ -108,7 +108,8 @@ export function Popup(props: PopupProps) {
             static
           >
             <div className={`${popup} ${popupTransition}`} style={styles}>
-              <Menu />
+              {menuVisible && <Menu />}
+              <InvisibleItem positionElm={props.positionElm} />
             </div>
           </PopoverPanel>
         </Transition>
