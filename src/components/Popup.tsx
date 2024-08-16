@@ -9,6 +9,7 @@ import { useSetting } from '@/hooks/useSetting'
 import { Ipc, TabCommand } from '@/services/ipc'
 import { STARTUP_METHOD } from '@/services/userSettings'
 import { hexToHsl } from '@/services/util'
+import { t } from '@/services/i18n'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 
 import {
@@ -17,6 +18,7 @@ import {
   popupTransition,
   previewContainer,
   previewLabel,
+  previewDescription,
 } from './Popup.module.css'
 
 type PopupProps = {
@@ -95,6 +97,9 @@ export function Popup(props: PopupProps) {
           <span>Preview...</span>
         </p>
       )}
+      {isPreview && !menuVisible && (
+        <p className={previewDescription}>{t('previewOnContextMenu')}</p>
+      )}
       <Popover
         className={classnames(popupContianer, {
           [previewContainer]: isPreview,
@@ -108,8 +113,11 @@ export function Popup(props: PopupProps) {
             static
           >
             <div className={`${popup} ${popupTransition}`} style={styles}>
-              {menuVisible && <Menu />}
-              <InvisibleItem positionElm={props.positionElm} />
+              {menuVisible ? (
+                <Menu />
+              ) : (
+                <InvisibleItem positionElm={props.positionElm} />
+              )}
             </div>
           </PopoverPanel>
         </Transition>

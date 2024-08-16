@@ -171,6 +171,7 @@ export function SettingFrom() {
   }
 
   const fields: RegistryFieldsType = {
+    '#/startupMethod': SelectField,
     '#/popupPlacement': SelectField,
     '#/style': SelectField,
     '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
@@ -189,6 +190,15 @@ export function SettingFrom() {
   }
 
   const uiSchema = {
+    startupMethod: {
+      'ui:classNames': 'startupMethod',
+      'ui:title': t('startupMethod'),
+      enum: {
+        'text-selection': { 'ui:title': t('startupMethod_text_selection') },
+        'context-menu': { 'ui:title': t('startupMethod_context_menu') },
+        keyboard: { 'ui:title': t('startupMethod_keyboard') },
+      },
+    },
     popupPlacement: {
       'ui:classNames': 'popupPlacement',
       'ui:title': t('popupPlacement'),

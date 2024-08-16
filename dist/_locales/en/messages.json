@@ -17,6 +17,9 @@
   "labelAddPageRule": {
     "message": "Add page rule."
   },
+  "previewOnContextMenu": {
+    "message": "When the Context Menu is selected, the pop-up menu is not displayed."
+  },
   "Option_Reset": {
     "message": "Reset"
   },
@@ -34,6 +37,18 @@
   },
   "Option_Add": {
     "message": "Add"
+  },
+  "Option_startupMethod": {
+    "message": "Startup Method"
+  },
+  "Option_startupMethod_text_selection": {
+    "message": "Text Select"
+  },
+  "Option_startupMethod_context_menu": {
+    "message": "Context Menu"
+  },
+  "Option_startupMethod_keyboard": {
+    "message": "Key Input"
   },
   "Option_popupPlacement": {
     "message": "Menu Display Position"

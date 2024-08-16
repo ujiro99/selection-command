@@ -17,6 +17,9 @@
   "labelAddPageRule": {
     "message": "ページルールを追加"
   },
+  "previewOnContextMenu": {
+    "message": "コンテキストメニュー選択時は、ポップアップメニューは表示されません。"
+  },
   "Option_Reset": {
     "message": "リセット"
   },
@@ -34,6 +37,18 @@
   },
   "Option_Add": {
     "message": " 追加"
+  },
+  "Option_startupMethod": {
+    "message": "起動方法"
+  },
+  "Option_startupMethod_text_selection": {
+    "message": "テキスト選択"
+  },
+  "Option_startupMethod_context_menu": {
+    "message": "コンテキストメニュー"
+  },
+  "Option_startupMethod_keyboard": {
+    "message": "キー入力"
   },
   "Option_popupPlacement": {
     "message": "メニュー表示位置"
