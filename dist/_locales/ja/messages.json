@@ -41,14 +41,29 @@
   "Option_startupMethod": {
     "message": "起動方法"
   },
-  "Option_startupMethod_text_selection": {
-    "message": "テキスト選択"
+  "Option_startupMethod_desc": {
+    "message": "ポップアップメニューを表示する方法を変更します。"
   },
-  "Option_startupMethod_context_menu": {
+  "Option_startupMethod_method": {
+    "message": "方法"
+  },
+  "Option_startupMethod_textSelection": {
+    "message": "テキスト選択 (デフォルト)"
+  },
+  "Option_startupMethod_contextMenu": {
     "message": "コンテキストメニュー"
   },
   "Option_startupMethod_keyboard": {
     "message": "キー入力"
+  },
+  "Option_startupMethod_rightClickHold": {
+    "message": "右クリック長押し"
+  },
+  "Option_startupMethod_param_keyboard": {
+    "message": "表示を切り替えるキー"
+  },
+  "Option_startupMethod_param_rightClickHold": {
+    "message": "長押し時間(ms)"
   },
   "Option_popupPlacement": {
     "message": "メニュー表示位置"

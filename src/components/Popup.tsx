@@ -4,10 +4,9 @@ import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'
 import classnames from 'classnames'
 import { Menu } from './menu/Menu'
-import { POPUP_ENABLED } from '../const'
+import { POPUP_ENABLED, STARTUP_METHOD } from '../const'
 import { useSetting } from '@/hooks/useSetting'
 import { Ipc, TabCommand } from '@/services/ipc'
-import { STARTUP_METHOD } from '@/services/userSettings'
 import { hexToHsl } from '@/services/util'
 import { t } from '@/services/i18n'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
@@ -74,7 +73,8 @@ export function Popup(props: PopupProps) {
   visible = visible && !forceHide
   visible = visible || isPreview
 
-  let menuVisible = settings.startupMethod !== STARTUP_METHOD.CONTEXT_MENU
+  let menuVisible =
+    settings.startupMethod.method !== STARTUP_METHOD.CONTEXT_MENU
 
   useEffect(() => {
     Ipc.addListener(TabCommand.closeMenu, () => {

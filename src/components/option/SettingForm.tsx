@@ -17,7 +17,7 @@ import {
   UserStyleField,
   UserStyleMap,
 } from '@/components/option/UserStyleField'
-import { OPEN_MODE, OPTION_MSG } from '@/const'
+import { OPEN_MODE, OPTION_MSG, STARTUP_METHOD } from '@/const'
 import { Icon } from '@/components/Icon'
 
 import * as css from './SettingForm.module.css'
@@ -32,6 +32,7 @@ type Translation = {
   [key: string]: string
 }
 
+type StartupMethodMap = Record<STARTUP_METHOD, { [key: string]: string }>
 type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
 
 const toKey = (str: string) => {
@@ -173,7 +174,9 @@ export function SettingFrom() {
   }
 
   const fields: RegistryFieldsType = {
-    '#/startupMethod': SelectField,
+    '#/startupMethod/method': SelectField,
+    '#/startupMethod/param/keyboard': SelectField,
+    '#/startupMethod/param/rightClickHold': InputNumberField,
     '#/popupPlacement': SelectField,
     '#/style': SelectField,
     '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
@@ -193,21 +196,30 @@ export function SettingFrom() {
 
   const uiSchema = {
     startupMethod: {
-      'ui:classNames': 'startupMethod',
       'ui:title': t('startupMethod'),
-      enum: {
-        'text-selection': { 'ui:title': t('startupMethod_text_selection') },
-        'context-menu': { 'ui:title': t('startupMethod_context_menu') },
-        keyboard: { 'ui:title': t('startupMethod_keyboard') },
+      'ui:description': t('startupMethod_desc'),
+      method: {
+        'ui:title': t('startupMethod_method'),
+        enum: {} as StartupMethodMap,
+      },
+      keyboardParam: {
+        'ui:classNames': 'startupMethodParam',
+        'ui:title': t('startupMethod_param_keyboard'),
+      },
+      rightClickHoldParam: {
+        'ui:classNames': 'startupMethodParam',
+        'ui:title': t('startupMethod_param_rightClickHold'),
       },
     },
     popupPlacement: {
       'ui:classNames': 'popupPlacement',
       'ui:title': t('popupPlacement'),
+      'ui:disabled': false,
     },
     style: {
       'ui:classNames': 'style',
       'ui:title': t('style'),
+      'ui:disabled': false,
       enum: {
         vertical: { 'ui:title': t('style_vertical') },
         horizontal: { 'ui:title': t('style_horizontal') },
@@ -332,6 +344,22 @@ export function SettingFrom() {
       } as folderOptionsType,
     )
     userSettingSchema.definitions.folderOptions = folderOptions
+  }
+
+  // Add startupMethod to schema and uiSchema.
+  const method = settingData?.startupMethod.method
+  const methods = Object.values(STARTUP_METHOD)
+  const methodMap = {} as StartupMethodMap
+  for (const m of methods) {
+    methodMap[m] = {
+      'ui:title': t(`startupMethod_${m}`),
+    }
+  }
+  userSettingSchema.definitions.startupMethodEnum.enum = methods
+  uiSchema.startupMethod.method.enum = methodMap
+  if (method === STARTUP_METHOD.CONTEXT_MENU) {
+    uiSchema.popupPlacement['ui:disabled'] = true
+    uiSchema.style['ui:disabled'] = true
   }
 
   // Add openModes to schema and uiSchema.
@@ -489,6 +517,28 @@ type Option = {
   value: string
 }
 
+const InputNumberField = (props: FieldProps) => {
+  const { formData, idSchema, required, schema } = props
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    props.onChange(event.target.value)
+  }
+  return (
+    <label className={classnames(css.selectContainer, 'form-control')}>
+      <input
+        id={idSchema.$id}
+        className={css.select}
+        value={formData ?? schema.default}
+        required={required}
+        onChange={onChange}
+        type="number"
+        max={schema.maximum}
+        min={schema.minimum}
+        step={schema.step}
+      />
+    </label>
+  )
+}
+
 const SelectField = (props: FieldProps) => {
   const { formData, schema, uiSchema, required } = props
   const options = schema.enum.map((e: string) => {
@@ -507,8 +557,9 @@ const SelectField = (props: FieldProps) => {
         id={props.idSchema.$id}
         className={css.select}
         value={formData}
-        required={props.required}
         onChange={onChange}
+        required={props.required}
+        disabled={props.disabled}
       >
         {options.map((option: Option) => (
           <option key={option.value} value={option.value}>

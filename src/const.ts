@@ -12,6 +12,13 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = 'addPageRule',
 }
 
+export enum STARTUP_METHOD {
+  TEXT_SELECTION = 'textSelection',
+  CONTEXT_MENU = 'contextMenu',
+  KEYBOARD = 'keyboard',
+  RIGHT_CLICK_HOLD = 'rightClickHold',
+}
+
 export enum POPUP_ENABLED {
   ENABLE = 'Enable',
   DISABLE = 'Disable',

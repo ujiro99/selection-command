@@ -99,5 +99,7 @@
   "pageRules": [],
   "popupPlacement": "top-start",
   "style": "horizontal",
-  "startupMethod": "text-selection"
+  "startupMethod": {
+    "method": "textSelection"
+  }
 }

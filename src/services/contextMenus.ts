@@ -1,6 +1,6 @@
-import { UserSettings, STARTUP_METHOD } from '@/services/userSettings'
+import { UserSettings } from '@/services/userSettings'
 import type { UserSettingsType, Command } from '@/services/userSettings'
-import { OPTION_FOLDER } from '@/const'
+import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
 
 chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
@@ -19,7 +19,7 @@ const ContextMenu = {
     chrome.contextMenus.removeAll()
     chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
     const settings = await UserSettings.get()
-    if (settings.startupMethod === STARTUP_METHOD.CONTEXT_MENU) {
+    if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
       console.debug('init context menu')
       ContextMenu.addMenus(settings)
       chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)

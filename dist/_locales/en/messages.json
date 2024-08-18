@@ -41,14 +41,29 @@
   "Option_startupMethod": {
     "message": "Startup Method"
   },
-  "Option_startupMethod_text_selection": {
-    "message": "Text Select"
+  "Option_startupMethod_desc": {
+    "message": "Change the way pop-up menu are displayed."
   },
-  "Option_startupMethod_context_menu": {
+  "Option_startupMethod_method": {
+    "message": "Method"
+  },
+  "Option_startupMethod_textSelection": {
+    "message": "Text Select (Default)"
+  },
+  "Option_startupMethod_contextMenu": {
     "message": "Context Menu"
   },
   "Option_startupMethod_keyboard": {
     "message": "Key Input"
+  },
+  "Option_startupMethod_rightClickHold": {
+    "message": "Right-Click Hold"
+  },
+  "Option_startupMethod_param_keyboard": {
+    "message": "Key to toggle display"
+  },
+  "Option_startupMethod_param_rightClickHold": {
+    "message": "Long press time(ms)"
   },
   "Option_popupPlacement": {
     "message": "Menu Display Position"
@@ -159,7 +174,7 @@
     "message": "User Styles"
   },
   "Option_userStyles_desc": {
-    "message": "You can customize the display of pop-ups."
+    "message": "You can customize the display of pop-up menu."
   },
   "Option_userStyles_name": {
     "message": "Property name"
