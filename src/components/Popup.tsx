@@ -4,9 +4,8 @@ import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'
 import classnames from 'classnames'
 import { Menu } from './menu/Menu'
-import { POPUP_ENABLED, STARTUP_METHOD } from '../const'
 import { useSetting } from '@/hooks/useSetting'
-import { Ipc, TabCommand } from '@/services/ipc'
+import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { hexToHsl } from '@/services/util'
 import { t } from '@/services/i18n'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
@@ -20,7 +19,7 @@ import {
   previewDescription,
 } from './Popup.module.css'
 
-type PopupProps = {
+export type PopupProps = {
   positionElm: Element | null
   selectionText: string
   isPreview?: boolean
@@ -32,8 +31,8 @@ type ContextType = {
 export const previewContext = createContext<ContextType>({} as ContextType)
 
 export function Popup(props: PopupProps) {
-  const [forceHide, setForceHide] = useState(false)
-  const { settings, pageRule } = useSetting()
+  const { settings } = useSetting()
+  const { visible, isContextMenu } = useDetectStartup(props)
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
   const isPreview = props.isPreview === true
@@ -66,30 +65,6 @@ export function Popup(props: PopupProps) {
     ],
   })
 
-  let visible = props.selectionText.length > 0 && props.positionElm != null
-  if (pageRule != null) {
-    visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
-  }
-  visible = visible && !forceHide
-  visible = visible || isPreview
-
-  let menuVisible =
-    settings.startupMethod.method !== STARTUP_METHOD.CONTEXT_MENU
-
-  useEffect(() => {
-    Ipc.addListener(TabCommand.closeMenu, () => {
-      setForceHide(true)
-      return false
-    })
-    return () => {
-      Ipc.removeListener(TabCommand.closeMenu)
-    }
-  }, [])
-
-  useEffect(() => {
-    setForceHide(false)
-  }, [props.selectionText])
-
   return (
     <previewContext.Provider value={{ isPreview }}>
       {isPreview && (
@@ -97,7 +72,7 @@ export function Popup(props: PopupProps) {
           <span>Preview...</span>
         </p>
       )}
-      {isPreview && !menuVisible && (
+      {isPreview && isContextMenu && (
         <p className={previewDescription}>{t('previewOnContextMenu')}</p>
       )}
       <Popover
@@ -113,7 +88,7 @@ export function Popup(props: PopupProps) {
             static
           >
             <div className={`${popup} ${popupTransition}`} style={styles}>
-              {menuVisible ? (
+              {!isContextMenu ? (
                 <Menu />
               ) : (
                 <InvisibleItem positionElm={props.positionElm} />
