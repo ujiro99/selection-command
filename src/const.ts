@@ -20,7 +20,7 @@ export enum STARTUP_METHOD {
 }
 
 export enum KEYBOARD {
-  CTRL = 'Ctrl',
+  CTRL = 'Control',
   ALT = 'Alt',
   SHIFT = 'Shift',
   META = 'Meta',

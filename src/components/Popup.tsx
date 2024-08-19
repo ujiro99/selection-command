@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import { Menu } from './menu/Menu'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
-import { hexToHsl } from '@/services/util'
+import { hexToHsl, isMac } from '@/services/util'
 import { t } from '@/services/i18n'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 
@@ -32,7 +32,7 @@ export const previewContext = createContext<ContextType>({} as ContextType)
 
 export function Popup(props: PopupProps) {
   const { settings } = useSetting()
-  const { visible, isContextMenu, isKeyboard } = useDetectStartup(props)
+  const { visible, isContextMenu } = useDetectStartup(props)
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
   const isPreview = props.isPreview === true
@@ -67,14 +67,7 @@ export function Popup(props: PopupProps) {
 
   return (
     <previewContext.Provider value={{ isPreview }}>
-      {isPreview && (
-        <p className={previewLabel}>
-          <span>Preview...</span>
-        </p>
-      )}
-      {isPreview && isContextMenu && (
-        <p className={previewDescription}>{t('previewOnContextMenu')}</p>
-      )}
+      {isPreview && <PopupPreview {...props} />}
       <Popover
         className={classnames(popupContianer, {
           [previewContainer]: isPreview,
@@ -98,5 +91,30 @@ export function Popup(props: PopupProps) {
         </Transition>
       </Popover>
     </previewContext.Provider>
+  )
+}
+
+export function PopupPreview(props: PopupProps) {
+  const { visible, isContextMenu, isKeyboard } = useDetectStartup(props)
+  const { settings } = useSetting()
+  const key = settings.startupMethod.keyboardParam
+
+  let os = isMac() ? 'mac' : 'windows'
+  const keyLabel = t(`Option_keyboardParam_${key}_${os}`)
+
+  return (
+    <>
+      <p className={previewLabel}>
+        <span>Preview...</span>
+      </p>
+      {isContextMenu && (
+        <p className={previewDescription}>{t('previewOnContextMenu')}</p>
+      )}
+      {!visible && isKeyboard && (
+        <p className={previewDescription}>
+          {t('previewOnKeyboard', [keyLabel])}
+        </p>
+      )}
+    </>
   )
 }

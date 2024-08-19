@@ -197,3 +197,11 @@ export function capitalize(phrase: string): string {
     .map((s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
     .join(' ')
 }
+
+/**
+ * Check if the user is using a Mac.
+ * @returns {boolean} True if the user is using a Mac.
+ */
+export function isMac(): boolean {
+  return navigator.userAgent.indexOf('Mac') !== -1
+}

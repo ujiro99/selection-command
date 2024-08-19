@@ -17,9 +17,10 @@ import {
   UserStyleField,
   UserStyleMap,
 } from '@/components/option/UserStyleField'
-import { OPEN_MODE, OPTION_MSG, STARTUP_METHOD } from '@/const'
+import { OPEN_MODE, OPTION_MSG, STARTUP_METHOD, KEYBOARD } from '@/const'
 import { Icon } from '@/components/Icon'
 import { useKeyboardProxy } from '@/hooks/option/useKeyboardProxy'
+import { isMac } from '@/services/util'
 
 import * as css from './SettingForm.module.css'
 
@@ -34,6 +35,7 @@ type Translation = {
 }
 
 type StartupMethodMap = Record<STARTUP_METHOD, { [key: string]: string }>
+type KeyboardMap = Record<KEYBOARD, { [key: string]: string }>
 type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
 
 const toKey = (str: string) => {
@@ -211,6 +213,7 @@ export function SettingFrom() {
       keyboardParam: {
         'ui:classNames': 'startupMethodParam',
         'ui:title': t('startupMethod_param_keyboard'),
+        enum: {} as KeyboardMap,
       },
       rightClickHoldParam: {
         'ui:classNames': 'startupMethodParam',
@@ -367,6 +370,15 @@ export function SettingFrom() {
     uiSchema.popupPlacement['ui:disabled'] = true
     uiSchema.style['ui:disabled'] = true
   }
+  // Key name per OS
+  const keyboardMap = {} as KeyboardMap
+  let os = isMac() ? 'mac' : 'windows'
+  for (const k of Object.values(KEYBOARD)) {
+    keyboardMap[k] = {
+      'ui:title': t(`keyboardParam_${k}_${os}`),
+    }
+  }
+  uiSchema.startupMethod.keyboardParam.enum = keyboardMap
 
   // Add openModes to schema and uiSchema.
   const modes = Object.values(OPEN_MODE).filter(

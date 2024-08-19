@@ -20,6 +20,15 @@
   "previewOnContextMenu": {
     "message": "When the Context Menu is selected, the pop-up menu is not displayed."
   },
+  "previewOnKeyboard": {
+    "message": "Toggle menu visibility using the $key$ key.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Ctrl / Alt / Shift"
+      }
+    }
+  },
   "Option_Reset": {
     "message": "Reset"
   },
@@ -61,6 +70,24 @@
   },
   "Option_startupMethod_param_keyboard": {
     "message": "Key to toggle display"
+  },
+  "Option_keyboardParam_Control_windows": {
+    "message": "Ctrl"
+  },
+  "Option_keyboardParam_Alt_windows": {
+    "message": "Alt"
+  },
+  "Option_keyboardParam_Shift_windows": {
+    "message": "Shift"
+  },
+  "Option_keyboardParam_Control_mac": {
+    "message": "Command(⌘)"
+  },
+  "Option_keyboardParam_Alt_mac": {
+    "message": "Option(⌥)"
+  },
+  "Option_keyboardParam_Shift_mac": {
+    "message": "Shift"
   },
   "Option_startupMethod_param_rightClickHold": {
     "message": "Long press time(ms)"

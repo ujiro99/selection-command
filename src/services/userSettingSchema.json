@@ -132,11 +132,11 @@
                   "$id": "#/startupMethod/param/keyboard",
                   "type": "string",
                   "enum": [
-                    "Ctrl",
+                    "Control",
                     "Alt",
                     "Shift"
                   ],
-                  "default": "Ctrl"
+                  "default": "Control"
                 }
               },
               "required": [
