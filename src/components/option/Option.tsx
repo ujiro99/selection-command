@@ -108,6 +108,8 @@ export function Option() {
             iconUrl: null,
           })
         }
+      } else if (command === OPTION_MSG.KEY_INPUT) {
+        window.dispatchEvent(new KeyboardEvent('keydown', { key: value }))
       }
     }
     window.addEventListener('message', func)

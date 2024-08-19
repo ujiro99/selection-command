@@ -3,7 +3,7 @@ import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import type { onChangedCallback } from './storage'
 import DefaultSetting from './defaultUserSettings.json'
 import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
-import { OPTION_FOLDER, STARTUP_METHOD } from '../const'
+import { OPTION_FOLDER, STARTUP_METHOD, KEYBOARD } from '../const'
 import { isBase64, isEmpty, toDataURL } from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
 
@@ -75,7 +75,7 @@ export type StyleVariable = {
 
 export type StartupMethod = {
   method: STARTUP_METHOD
-  keyboardParam?: string
+  keyboardParam?: KEYBOARD
   rightClickHoldParam?: number
 }
 

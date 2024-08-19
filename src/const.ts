@@ -19,6 +19,13 @@ export enum STARTUP_METHOD {
   RIGHT_CLICK_HOLD = 'rightClickHold',
 }
 
+export enum KEYBOARD {
+  CTRL = 'Ctrl',
+  ALT = 'Alt',
+  SHIFT = 'Shift',
+  META = 'Meta',
+}
+
 export enum POPUP_ENABLED {
   ENABLE = 'Enable',
   DISABLE = 'Disable',
@@ -35,6 +42,7 @@ export enum OPTION_MSG {
   JUMP = 'jump',
   FETCH_ICON_URL = 'fetchIconUrl',
   RES_FETCH_ICON_URL = 'resFetchIconUrl',
+  KEY_INPUT = 'key_input',
 }
 
 export const ROOT_FOLDER = ''

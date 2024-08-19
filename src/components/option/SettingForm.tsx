@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useCallback } from 'react'
 import { useState, useEffect } from 'react'
 import type {
   IconButtonProps,
@@ -19,6 +19,7 @@ import {
 } from '@/components/option/UserStyleField'
 import { OPEN_MODE, OPTION_MSG, STARTUP_METHOD } from '@/const'
 import { Icon } from '@/components/Icon'
+import { useKeyboardProxy } from '@/hooks/option/useKeyboardProxy'
 
 import * as css from './SettingForm.module.css'
 
@@ -48,6 +49,16 @@ export function SettingFrom() {
   const settingRef = useRef<UserSettingsType>()
   const formRef = useRef<Form>(null)
 
+  const sendMessage = useCallback(
+    (command: OPTION_MSG, value: any) => {
+      if (parent != null) {
+        console.debug('sendMessage:', command, value)
+        parent.postMessage({ command, value }, origin)
+      }
+    },
+    [parent, origin],
+  )
+
   const t = (key: string) => {
     return trans[`Option_${key}`]
   }
@@ -58,6 +69,8 @@ export function SettingFrom() {
     const menu = document.querySelector(hash)
     menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  useKeyboardProxy(sendMessage)
 
   // Save after 500 ms to storage.
   useEffect(() => {
@@ -118,13 +131,6 @@ export function SettingFrom() {
       window.removeEventListener('message', func)
     }
   }, [settingData])
-
-  const sendMessage = (command: OPTION_MSG, value: any) => {
-    if (parent != null) {
-      console.debug('sendMessage:', command, value)
-      parent.postMessage({ command, value }, origin)
-    }
-  }
 
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
     if (id?.endsWith('openMode')) {
