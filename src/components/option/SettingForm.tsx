@@ -156,6 +156,22 @@ export function SettingFrom() {
         })
     }
 
+    // If popup-delay is not set when key input is selected, set 0 ms.
+    if (id?.endsWith('method')) {
+      const data = arg.formData as UserSettingsType
+      if (data.startupMethod.method === STARTUP_METHOD.KEYBOARD) {
+        let userStyles = data.userStyles
+        if (!userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)) {
+          userStyles.push({ name: STYLE_VARIABLE.POPUP_DELAY, value: '0' })
+        }
+        setSettingData({
+          ...data,
+          userStyles,
+        })
+        return
+      }
+    }
+
     // update iconURL when searchUrl chagned
     if (id?.endsWith('searchUrl')) {
       const data = arg.formData as UserSettingsType
