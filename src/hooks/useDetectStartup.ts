@@ -60,8 +60,9 @@ export function useDetectStartup(props: Props) {
     visible = visible && detectKey
   }
 
-  let isContextMenu =
+  const isContextMenu =
     settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU
+  const isKeyboard = settings.startupMethod.method === STARTUP_METHOD.KEYBOARD
 
-  return { visible, isContextMenu }
+  return { visible, isContextMenu, isKeyboard }
 }

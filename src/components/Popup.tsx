@@ -32,7 +32,7 @@ export const previewContext = createContext<ContextType>({} as ContextType)
 
 export function Popup(props: PopupProps) {
   const { settings } = useSetting()
-  const { visible, isContextMenu } = useDetectStartup(props)
+  const { visible, isContextMenu, isKeyboard } = useDetectStartup(props)
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
   const isPreview = props.isPreview === true
