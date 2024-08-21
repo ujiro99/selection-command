@@ -154,9 +154,9 @@
                   "$id": "#/startupMethod/param/leftClickHold",
                   "type": "number",
                   "minimum": 50,
-                  "maximum": 1000,
+                  "maximum": 500,
                   "step": 10,
-                  "default": 500
+                  "default": 200
                 }
               },
               "required": [
