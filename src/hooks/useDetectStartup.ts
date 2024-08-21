@@ -9,10 +9,8 @@ type Props = PopupProps
 export function useDetectStartup(props: Props) {
   const { selectionText, positionElm, isPreview } = props
   const [hide, setHide] = useState(false)
-  const [detectKey, setDetectKey] = useState(false)
   const { settings, pageRule } = useSetting()
-
-  const startupMethod = settings.startupMethod
+  const { method } = settings.startupMethod
 
   let visible = selectionText.length > 0 && positionElm != null
   if (pageRule != null) {
@@ -33,21 +31,44 @@ export function useDetectStartup(props: Props) {
 
   useEffect(() => {
     setHide(false)
+  }, [props.selectionText])
+
+  const detectKey = useKeyboard(props)
+  if (method === STARTUP_METHOD.KEYBOARD) {
+    visible = visible && detectKey
+  }
+
+  const detectHold = useLeftClickHold(props)
+  if (method === STARTUP_METHOD.LEFT_CLICK_HOLD) {
+    visible = visible && detectHold
+  }
+
+  const isContextMenu = method === STARTUP_METHOD.CONTEXT_MENU
+  const isKeyboard = method === STARTUP_METHOD.KEYBOARD
+  const isLeftClickHold = method === STARTUP_METHOD.LEFT_CLICK_HOLD
+
+  return { visible, isContextMenu, isKeyboard, isLeftClickHold }
+}
+
+export function useKeyboard(props: Props) {
+  const { settings } = useSetting()
+  const [detectKey, setDetectKey] = useState(false)
+  const { method, keyboardParam } = settings.startupMethod
+
+  useEffect(() => {
     setDetectKey(false)
   }, [props.selectionText])
 
-  // Keyboard
   useEffect(() => {
-    if (startupMethod.method !== STARTUP_METHOD.KEYBOARD) {
+    if (method !== STARTUP_METHOD.KEYBOARD) {
       return
     }
-    const detectKey = startupMethod.keyboardParam
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === detectKey) {
+      if (event.key === keyboardParam) {
         setDetectKey((prev) => !prev)
       }
       // for Mac
-      if (detectKey === KEYBOARD.CTRL && event.key === KEYBOARD.META) {
+      if (keyboardParam === KEYBOARD.CTRL && event.key === KEYBOARD.META) {
         setDetectKey((prev) => !prev)
       }
     }
@@ -55,33 +76,18 @@ export function useDetectStartup(props: Props) {
     return () => {
       window.removeEventListener('keyup', handleKeyUp)
     }
-  }, [startupMethod])
+  }, [method, keyboardParam])
 
-  if (startupMethod.method === STARTUP_METHOD.KEYBOARD) {
-    visible = visible && detectKey
-  }
-
-  const detectHold = useLeftClickHold(props)
-  if (startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD) {
-    visible = visible && detectHold
-  }
-
-  const isContextMenu = startupMethod.method === STARTUP_METHOD.CONTEXT_MENU
-  const isKeyboard = startupMethod.method === STARTUP_METHOD.KEYBOARD
-  const isLeftClickHold =
-    startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD
-
-  return { visible, isContextMenu, isKeyboard, isLeftClickHold }
+  return detectKey
 }
 
 type useLeftClickHoldParam = {
   selectionText: string
 }
-
 export function useLeftClickHold(props: useLeftClickHoldParam) {
   const [detectHold, setDetectHold] = useState(false)
   const { settings } = useSetting()
-  const startupMethod = settings.startupMethod
+  const { method, leftClickHoldParam } = settings.startupMethod
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
@@ -90,7 +96,7 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
 
   // Left click hold
   useEffect(() => {
-    if (startupMethod.method !== STARTUP_METHOD.LEFT_CLICK_HOLD) {
+    if (method !== STARTUP_METHOD.LEFT_CLICK_HOLD) {
       return
     }
     const handleMouseDown = (event: MouseEvent) => {
@@ -102,7 +108,7 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
           // If there is a selection-text, start count of hold.
           timeoutRef.current = setTimeout(() => {
             setDetectHold(true)
-          }, startupMethod.leftClickHoldParam)
+          }, leftClickHoldParam)
         } else {
           setDetectHold(false)
         }
@@ -119,7 +125,7 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       window.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [startupMethod, detectHold, timeoutRef, props])
+  }, [method, leftClickHoldParam, detectHold, timeoutRef, props])
 
   return detectHold
 }
