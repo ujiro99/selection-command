@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 import { OPTION_MSG, KEYBOARD, STARTUP_METHOD } from '@/const'
 import type { UserSettingsType } from '@/services/userSettings'
 
@@ -8,7 +8,6 @@ export function useEventProxy(
   sendMessage: (msg: OPTION_MSG, value: any) => void,
   settings?: UserSettingsType,
 ) {
-  const [detectHold, setDetectHold] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   // Keyboard Event
@@ -34,9 +33,6 @@ export function useEventProxy(
         event: 'mousedown',
         button: event.button,
       })
-      timeoutRef.current = setTimeout(() => {
-        setDetectHold(true)
-      }, settings.startupMethod.leftClickHoldParam)
     }
     const handleMouseUp = (event: MouseEvent) => {
       sendMessage(OPTION_MSG.MOUSE, { event: 'mouseup', button: event.button })
@@ -49,20 +45,6 @@ export function useEventProxy(
       window.removeEventListener('mouseup', handleMouseUp)
     }
   }, [sendMessage, settings])
-
-  // ContextMenu Event
-  useEffect(() => {
-    const handleContextmenu = (event: MouseEvent) => {
-      if (detectHold) {
-        event.preventDefault()
-        setDetectHold(false)
-      }
-    }
-    document.addEventListener('contextmenu', handleContextmenu)
-    return () => {
-      document.removeEventListener('contextmenu', handleContextmenu)
-    }
-  }, [detectHold])
 }
 
 export function useEventProxyReceiver() {
