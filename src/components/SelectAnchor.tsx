@@ -43,9 +43,21 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
         if (!isPopup(e.target as Element)) {
           const endPoint = { x: e.x, y: e.y }
 
-          if (startPoint.x === endPoint.x && startPoint.y === endPoint.y) {
+          if (
+            startPoint.x === endPoint.x &&
+            startPoint.y === endPoint.y &&
+            !detectHold
+          ) {
             // Remove rect if it's a click
             setRect(undefined)
+            return
+          }
+
+          if (detectHold) {
+            // If hold detected, don't change rect.
+            e.preventDefault()
+            e.stopPropagation()
+            return
           }
 
           const start = { ...startPoint }
@@ -59,18 +71,20 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
             end.y = startPoint.y
           }
           setRect({ start, end })
-
-          if (detectHold) {
-            e.preventDefault()
-            e.stopPropagation()
-          }
         }
+      }
+      const onDbl = (e: MouseEvent) => {
+        const start = { x: e.x - 5, y: e.y - 5 }
+        const end = { x: e.x + 5, y: e.y + 5 }
+        setRect({ start, end })
       }
       document.addEventListener('mousedown', onDown)
       document.addEventListener('mouseup', onUp)
+      document.addEventListener('dblclick', onDbl)
       return () => {
         document.removeEventListener('mousedown', onDown)
         document.removeEventListener('mouseup', onUp)
+        document.removeEventListener('dblclick', onDbl)
       }
     }, [setTarget, startPoint, detectHold])
 
