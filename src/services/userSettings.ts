@@ -76,7 +76,7 @@ export type StyleVariable = {
 export type StartupMethod = {
   method: STARTUP_METHOD
   keyboardParam?: KEYBOARD
-  rightClickHoldParam?: number
+  leftClickHoldParam?: number
 }
 
 export type UserSettingsType = {
@@ -155,6 +155,12 @@ export const UserSettings = {
 
     // Settings for options are kept separate from user set values.
     removeOptionSettings(data)
+
+    if (data.startupMethod == null) {
+      data.startupMethod = DefaultSetting.startupMethod as {
+        method: STARTUP_METHOD
+      }
+    }
 
     await Storage.set(STORAGE_KEY.USER, data)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)

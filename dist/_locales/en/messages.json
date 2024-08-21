@@ -65,8 +65,8 @@
   "Option_startupMethod_keyboard": {
     "message": "Key Input"
   },
-  "Option_startupMethod_rightClickHold": {
-    "message": "Right-Click Hold"
+  "Option_startupMethod_leftClickHold": {
+    "message": "Left-Click Hold"
   },
   "Option_startupMethod_param_keyboard": {
     "message": "Key to toggle display"
@@ -89,7 +89,7 @@
   "Option_keyboardParam_Shift_mac": {
     "message": "Shift"
   },
-  "Option_startupMethod_param_rightClickHold": {
+  "Option_startupMethod_param_leftClickHold": {
     "message": "Long press time(ms)"
   },
   "Option_popupPlacement": {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react'
+import React, { createContext } from 'react'
 import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'

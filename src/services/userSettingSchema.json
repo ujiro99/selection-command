@@ -147,11 +147,11 @@
               "properties": {
                 "method": {
                   "enum": [
-                    "rightClickHold"
+                    "leftClickHold"
                   ]
                 },
-                "rightClickHoldParam": {
-                  "$id": "#/startupMethod/param/rightClickHold",
+                "leftClickHoldParam": {
+                  "$id": "#/startupMethod/param/leftClickHold",
                   "type": "number",
                   "minimum": 50,
                   "maximum": 1000,
@@ -160,7 +160,7 @@
                 }
               },
               "required": [
-                "rightClickHoldParam"
+                "leftClickHoldParam"
               ]
             }
           ]

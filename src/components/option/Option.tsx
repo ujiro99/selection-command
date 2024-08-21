@@ -12,6 +12,7 @@ import { Popup } from '@/components/Popup'
 import { LoadingIcon } from '@/components/option/LoadingIcon'
 import { TableOfContents } from '@/components/option/TableOfContents'
 import { ImportExport } from '@/components/option/ImportExport'
+import { useEventProxyReceiver } from '@/hooks/option/useEventProxy'
 
 import '@/components/App.css'
 import css from './Option.module.css'
@@ -75,6 +76,8 @@ export function Option() {
   const previewRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
 
+  useEventProxyReceiver()
+
   const updateSettings = async (settings: UserSettingsType) => {
     if (isSaving) return
     try {
@@ -108,8 +111,6 @@ export function Option() {
             iconUrl: null,
           })
         }
-      } else if (command === OPTION_MSG.KEY_INPUT) {
-        window.dispatchEvent(new KeyboardEvent('keydown', { key: value }))
       }
     }
     window.addEventListener('message', func)
@@ -171,7 +172,7 @@ export function Option() {
       <div className={css.preview} ref={previewRef}>
         <Popup
           positionElm={previewRef.current}
-          selectionText=""
+          selectionText="preview"
           isPreview={true}
         />
       </div>

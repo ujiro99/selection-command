@@ -19,7 +19,7 @@ import {
 } from '@/components/option/UserStyleField'
 import { OPEN_MODE, OPTION_MSG, STARTUP_METHOD, KEYBOARD } from '@/const'
 import { Icon } from '@/components/Icon'
-import { useKeyboardProxy } from '@/hooks/option/useKeyboardProxy'
+import { useEventProxy } from '@/hooks/option/useEventProxy'
 import { isMac } from '@/services/util'
 
 import * as css from './SettingForm.module.css'
@@ -72,7 +72,7 @@ export function SettingFrom() {
     menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  useKeyboardProxy(sendMessage)
+  useEventProxy(sendMessage, settingData)
 
   // Save after 500 ms to storage.
   useEffect(() => {
@@ -200,7 +200,7 @@ export function SettingFrom() {
   const fields: RegistryFieldsType = {
     '#/startupMethod/method': SelectField,
     '#/startupMethod/param/keyboard': SelectField,
-    '#/startupMethod/param/rightClickHold': InputNumberField,
+    '#/startupMethod/param/leftClickHold': InputNumberField,
     '#/popupPlacement': SelectField,
     '#/style': SelectField,
     '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
@@ -231,9 +231,9 @@ export function SettingFrom() {
         'ui:title': t('startupMethod_param_keyboard'),
         enum: {} as KeyboardMap,
       },
-      rightClickHoldParam: {
+      leftClickHoldParam: {
         'ui:classNames': 'startupMethodParam',
-        'ui:title': t('startupMethod_param_rightClickHold'),
+        'ui:title': t('startupMethod_param_leftClickHold'),
       },
     },
     popupPlacement: {

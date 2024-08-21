@@ -65,8 +65,8 @@
   "Option_startupMethod_keyboard": {
     "message": "キー入力"
   },
-  "Option_startupMethod_rightClickHold": {
-    "message": "右クリック長押し"
+  "Option_startupMethod_leftClickHold": {
+    "message": "左クリック長押し"
   },
   "Option_startupMethod_param_keyboard": {
     "message": "表示を切り替えるキー"
@@ -89,7 +89,7 @@
   "Option_keyboardParam_Shift_mac": {
     "message": "Shift"
   },
-  "Option_startupMethod_param_rightClickHold": {
+  "Option_startupMethod_param_leftClickHold": {
     "message": "長押し時間(ms)"
   },
   "Option_popupPlacement": {
