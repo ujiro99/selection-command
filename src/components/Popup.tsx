@@ -95,7 +95,8 @@ export function Popup(props: PopupProps) {
 }
 
 export function PopupPreview(props: PopupProps) {
-  const { visible, isContextMenu, isKeyboard } = useDetectStartup(props)
+  const { visible, isContextMenu, isKeyboard, isLeftClickHold } =
+    useDetectStartup(props)
   const { settings } = useSetting()
   const key = settings.startupMethod.keyboardParam
 
@@ -113,6 +114,11 @@ export function PopupPreview(props: PopupProps) {
       {!visible && isKeyboard && (
         <p className={previewDescription}>
           {t('previewOnKeyboard', [keyLabel])}
+        </p>
+      )}
+      {!visible && isLeftClickHold && (
+        <p className={previewDescription}>
+          {t('previewOnLeftClickHold', [keyLabel])}
         </p>
       )}
     </>

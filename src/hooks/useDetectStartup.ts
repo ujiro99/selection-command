@@ -68,8 +68,10 @@ export function useDetectStartup(props: Props) {
 
   const isContextMenu = startupMethod.method === STARTUP_METHOD.CONTEXT_MENU
   const isKeyboard = startupMethod.method === STARTUP_METHOD.KEYBOARD
+  const isLeftClickHold =
+    startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD
 
-  return { visible, isContextMenu, isKeyboard }
+  return { visible, isContextMenu, isKeyboard, isLeftClickHold }
 }
 
 type useLeftClickHoldParam = {
