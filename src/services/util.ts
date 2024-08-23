@@ -1,4 +1,4 @@
-import { SPACE_ENCODING } from '@/services/userSettings'
+import { SPACE_ENCODING, Version } from '@/services/userSettings'
 
 /**
  * Stops processing for the specified time.
@@ -22,7 +22,7 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
       const ctx = canvas.getContext('2d')
       canvas.height = this.naturalHeight
       canvas.width = this.naturalWidth
-      ctx.drawImage(this, 0, 0)
+      ctx?.drawImage(this, 0, 0)
       const dataURL = canvas.toDataURL(outputFormat)
       resolve(dataURL)
       clearTimeout(id)
@@ -204,4 +204,27 @@ export function capitalize(phrase: string): string {
  */
 export function isMac(): boolean {
   return navigator.userAgent.indexOf('Mac') !== -1
+}
+
+export enum VersionDiff {
+  New = 1,
+  Same = 0,
+  Old = -1,
+}
+/**
+ * Compare the version of the settings.
+ */
+export function versionDiff(a: Version, b: Version): VersionDiff {
+  if (!b) {
+    return VersionDiff.Old
+  }
+  const aVer = a.split('.').map((v) => Number.parseInt(v))
+  const bVer = b.split('.').map((v) => Number.parseInt(v))
+  for (let i = 0; i < aVer.length; i++) {
+    if (aVer[i] === bVer[i]) {
+      continue
+    }
+    return aVer[i] > bVer[i] ? VersionDiff.New : VersionDiff.Old
+  }
+  return VersionDiff.Same
 }

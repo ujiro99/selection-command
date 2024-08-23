@@ -2,10 +2,12 @@ import type { Placement } from '@floating-ui/react'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import type { onChangedCallback } from './storage'
 import DefaultSetting from './defaultUserSettings.json'
-import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
-import { OPTION_FOLDER, STARTUP_METHOD, KEYBOARD } from '../const'
+import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '@/const'
+import { OPTION_FOLDER, STARTUP_METHOD, KEYBOARD, VERSION } from '@/const'
 import { isBase64, isEmpty, toDataURL } from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
+
+export type Version = `${number}.${number}.${number}`
 
 export type Command = {
   id: number
@@ -80,6 +82,7 @@ export type StartupMethod = {
 }
 
 export type UserSettingsType = {
+  settingVersion: Version
   startupMethod: StartupMethod
   popupPlacement: Placement
   commands: Array<Command>
@@ -103,7 +106,10 @@ export type ImageCache = {
 
 export const UserSettings = {
   get: async (excludeOptions = false): Promise<UserSettingsType> => {
-    const obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    if (obj.settingVersion == null) {
+      obj = migrate073(obj)
+    }
     obj.commands = obj.commands.map((c, idx) => {
       // Assigning IDs to each command
       c.id = idx
@@ -156,12 +162,6 @@ export const UserSettings = {
     // Settings for options are kept separate from user set values.
     removeOptionSettings(data)
 
-    if (data.startupMethod == null) {
-      data.startupMethod = DefaultSetting.startupMethod as {
-        method: STARTUP_METHOD
-      }
-    }
-
     await Storage.set(STORAGE_KEY.USER, data)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
     return true
@@ -197,4 +197,14 @@ const removeOptionSettings = (data: UserSettingsType): void => {
     (c) => c.parentFolder?.id !== OPTION_FOLDER,
   )
   data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
+}
+
+const migrate073 = (data: UserSettingsType): UserSettingsType => {
+  data.settingVersion = VERSION as Version
+  if (data.startupMethod == null) {
+    data.startupMethod = DefaultSetting.startupMethod as {
+      method: STARTUP_METHOD
+    }
+  }
+  return data
 }
