@@ -4,7 +4,7 @@ import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/services/util'
 import type { ScreenSize } from '@/services/util'
-import { UserSettings, migrate } from '@/services/userSettings'
+import { UserSettings } from '@/services/userSettings'
 import type { CommandVariable } from '@/services/userSettings'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
@@ -371,13 +371,4 @@ chrome.tabs.onActivated.addListener(async () => {
   // Force close the menu
   const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
   ret.filter((v) => v).forEach((v) => console.debug(v))
-})
-
-chrome.runtime.onInstalled.addListener((details) => {
-  // migration
-  console.log('onInstalled', details)
-  if (details.reason === 'update' && details.previousVersion === '0.5.0') {
-    migrate()
-    return
-  }
 })

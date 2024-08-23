@@ -1,5 +1,4 @@
 import UseSetting from './defaultUserSettings.json'
-import { migrate060 } from './userSettings'
 
 export enum STORAGE_KEY {
   USER = 0,
@@ -39,15 +38,7 @@ export const Storage = {
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     } else {
-      if (key === STORAGE_KEY.USER) {
-        // for v0.5.0 -> v0.6.0
-        if (result[key] == null) {
-          await migrate060()
-          result = await chrome.storage[area].get(`${key}`)
-        }
-      }
-      const val = result[key] ?? DEFAULTS[key]
-      return val
+      return result[key] ?? DEFAULTS[key]
     }
   },
 
