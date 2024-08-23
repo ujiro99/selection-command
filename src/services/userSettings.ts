@@ -3,7 +3,7 @@ import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import type { onChangedCallback } from './storage'
 import DefaultSetting from './defaultUserSettings.json'
 import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
-import { OPTION_FOLDER } from '../const'
+import { OPTION_FOLDER, STARTUP_METHOD, KEYBOARD } from '../const'
 import { isBase64, isEmpty, toDataURL } from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
 
@@ -73,7 +73,14 @@ export type StyleVariable = {
   value: string
 }
 
+export type StartupMethod = {
+  method: STARTUP_METHOD
+  keyboardParam?: KEYBOARD
+  leftClickHoldParam?: number
+}
+
 export type UserSettingsType = {
+  startupMethod: StartupMethod
   popupPlacement: Placement
   commands: Array<Command>
   folders: Array<CommandFolder>
@@ -148,6 +155,12 @@ export const UserSettings = {
 
     // Settings for options are kept separate from user set values.
     removeOptionSettings(data)
+
+    if (data.startupMethod == null) {
+      data.startupMethod = DefaultSetting.startupMethod as {
+        method: STARTUP_METHOD
+      }
+    }
 
     await Storage.set(STORAGE_KEY.USER, data)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)

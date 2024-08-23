@@ -30,7 +30,8 @@
   "action": {},
   "permissions": [
     "storage",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ],
   "host_permissions": [
     "http://*/*",

@@ -34,7 +34,7 @@ type ItemState = {
 }
 
 export function MenuItem(props: MenuItemProps): React.ReactNode {
-  const elmRef = useRef(null)
+  const buttonRef = useRef(null)
   const [itemState, setItemState] = useState<ItemState>({
     state: ExecState.NONE,
   })
@@ -98,7 +98,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
             [itemOnlyIcon]: onlyIcon,
             [itemHorizontal]: onlyIcon,
           })}
-          ref={elmRef}
+          ref={buttonRef}
           onClick={handleClick}
           disabled={!enable}
         >
@@ -108,7 +108,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       </Tooltip>
       <ResultPopup
         visible={result != null}
-        positionRef={elmRef}
+        positionRef={buttonRef}
         onClose={() => setResult(undefined)}
       >
         {result}

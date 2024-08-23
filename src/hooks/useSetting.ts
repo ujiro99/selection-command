@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { UserSettings } from '../services/userSettings'
 import type { UserSettingsType, PageRule } from '../services/userSettings'
 import { isEmpty } from '@/services/util'
-import { STYLE } from '@/const'
+import { STYLE, STARTUP_METHOD } from '@/const'
 
 type useSettingReturn = {
   settings: UserSettingsType
@@ -16,6 +16,7 @@ const emptySettings: UserSettingsType = {
   style: STYLE.HORIZONTAL,
   popupPlacement: 'top',
   userStyles: [],
+  startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },
 }
 
 export function useSetting(): useSettingReturn {

@@ -1,8 +1,17 @@
 {
   "title": "UserSettingSchema",
   "type": "object",
-  "required": ["commands", "popupPlacement", "style"],
+  "required": [
+    "startupMethod",
+    "commands",
+    "popupPlacement",
+    "style"
+  ],
   "properties": {
+    "startupMethod": {
+      "$id": "#/startupMethod",
+      "$ref": "#/definitions/startupMethod"
+    },
     "popupPlacement": {
       "$id": "#/popupPlacement",
       "$ref": "#/definitions/popupPlacement"
@@ -11,7 +20,10 @@
       "$id": "#/style",
       "type": "string",
       "default": "vertical",
-      "enum": ["vertical", "horizontal"]
+      "enum": [
+        "vertical",
+        "horizontal"
+      ]
     },
     "commands": {
       "type": "array",
@@ -30,7 +42,11 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["urlPattern", "popupEnabled", "popupPlacement"],
+        "required": [
+          "urlPattern",
+          "popupEnabled",
+          "popupPlacement"
+        ],
         "additionalProperties": false,
         "properties": {
           "urlPattern": {
@@ -38,7 +54,10 @@
           },
           "popupEnabled": {
             "type": "string",
-            "enum": ["Enable", "Disable"],
+            "enum": [
+              "Enable",
+              "Disable"
+            ],
             "default": "Enable"
           },
           "popupPlacement": {
@@ -67,10 +86,95 @@
         "bottom-end"
       ]
     },
+    "startupMethod": {
+      "type": "object",
+      "name": "StartupMethod",
+      "additionalProperties": false,
+      "required": [
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "$id": "#/startupMethod/method",
+          "$ref": "#/definitions/startupMethodEnum",
+          "default": "textSelection"
+        }
+      },
+      "dependencies": {
+        "method": {
+          "oneOf": [
+            {
+              "properties": {
+                "method": {
+                  "enum": [
+                    "textSelection"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "method": {
+                  "enum": [
+                    "contextMenu"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "method": {
+                  "enum": [
+                    "keyboard"
+                  ]
+                },
+                "keyboardParam": {
+                  "$id": "#/startupMethod/param/keyboard",
+                  "type": "string",
+                  "enum": [
+                    "Control",
+                    "Alt",
+                    "Shift"
+                  ],
+                  "default": "Control"
+                }
+              },
+              "required": [
+                "keyboardParam"
+              ]
+            },
+            {
+              "properties": {
+                "method": {
+                  "enum": [
+                    "leftClickHold"
+                  ]
+                },
+                "leftClickHoldParam": {
+                  "$id": "#/startupMethod/param/leftClickHold",
+                  "type": "number",
+                  "minimum": 50,
+                  "maximum": 500,
+                  "step": 10,
+                  "default": 200
+                }
+              },
+              "required": [
+                "leftClickHoldParam"
+              ]
+            }
+          ]
+        }
+      }
+    },
     "command": {
       "type": "object",
       "name": "Command",
-      "required": ["title", "iconUrl", "openMode"],
+      "required": [
+        "title",
+        "iconUrl",
+        "openMode"
+      ],
       "additionalProperties": false,
       "properties": {
         "title": {
@@ -96,7 +200,9 @@
             {
               "properties": {
                 "openMode": {
-                  "enum": ["popup"]
+                  "enum": [
+                    "popup"
+                  ]
                 },
                 "openModeSecondary": {
                   "$id": "#/commands/openModeSecondary_popup",
@@ -114,12 +220,17 @@
                   "$ref": "#/definitions/popupOption"
                 }
               },
-              "required": ["searchUrl", "popupOption"]
+              "required": [
+                "searchUrl",
+                "popupOption"
+              ]
             },
             {
               "properties": {
                 "openMode": {
-                  "enum": ["tab"]
+                  "enum": [
+                    "tab"
+                  ]
                 },
                 "openModeSecondary": {
                   "$id": "#/commands/openModeSecondary_tab",
@@ -134,12 +245,16 @@
                   "$ref": "#/definitions/spaceEncoding"
                 }
               },
-              "required": ["searchUrl"]
+              "required": [
+                "searchUrl"
+              ]
             },
             {
               "properties": {
                 "openMode": {
-                  "enum": ["api"]
+                  "enum": [
+                    "api"
+                  ]
                 },
                 "searchUrl": {
                   "type": "string"
@@ -155,12 +270,18 @@
                   }
                 }
               },
-              "required": ["searchUrl", "fetchOptions", "variables"]
+              "required": [
+                "searchUrl",
+                "fetchOptions",
+                "variables"
+              ]
             },
             {
               "properties": {
                 "openMode": {
-                  "enum": ["linkPopup"]
+                  "enum": [
+                    "linkPopup"
+                  ]
                 },
                 "title": {
                   "type": "string",
@@ -175,12 +296,17 @@
             {
               "properties": {
                 "openMode": {
-                  "enum": ["copy"]
+                  "enum": [
+                    "copy"
+                  ]
                 },
                 "copyOption": {
                   "$id": "#/commands/copyOption",
                   "type": "string",
-                  "enum": ["default", "text"],
+                  "enum": [
+                    "default",
+                    "text"
+                  ],
                   "default": "default"
                 },
                 "title": {
@@ -192,12 +318,16 @@
                   "default": "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png"
                 }
               },
-              "required": ["copyOption"]
+              "required": [
+                "copyOption"
+              ]
             },
             {
               "properties": {
                 "openMode": {
-                  "enum": ["getTextStyles"]
+                  "enum": [
+                    "getTextStyles"
+                  ]
                 },
                 "title": {
                   "type": "string",
@@ -216,7 +346,9 @@
     "commandFolder": {
       "type": "object",
       "name": "Folder",
-      "required": ["title"],
+      "required": [
+        "title"
+      ],
       "additionalProperties": false,
       "properties": {
         "id": {
@@ -239,7 +371,10 @@
     },
     "popupOption": {
       "type": "object",
-      "required": ["width", "height"],
+      "required": [
+        "width",
+        "height"
+      ],
       "additionalProperties": false,
       "properties": {
         "width": {
@@ -253,7 +388,9 @@
       }
     },
     "folderOptions": {
-      "enumNames": [""],
+      "enumNames": [
+        ""
+      ],
       "enum": [
         {
           "id": "",
@@ -263,21 +400,38 @@
     },
     "openMode": {
       "type": "string",
-      "enum": [""]
+      "enum": [
+        ""
+      ]
     },
     "openModeSecondary": {
       "type": "string",
-      "enum": ["popup", "tab"]
+      "enum": [
+        "popup",
+        "tab"
+      ]
+    },
+    "startupMethodEnum": {
+      "type": "string",
+      "enum": [
+        ""
+      ]
     },
     "spaceEncoding": {
       "type": "string",
       "default": "plus",
-      "enum": ["plus", "percent"]
+      "enum": [
+        "plus",
+        "percent"
+      ]
     },
     "commandVariable": {
       "type": "object",
       "name": "Variable",
-      "required": ["name", "value"],
+      "required": [
+        "name",
+        "value"
+      ],
       "additionalProperties": false,
       "properties": {
         "name": {
@@ -292,11 +446,16 @@
       "$id": "#/styleVariable",
       "type": "object",
       "name": "styleVariable",
-      "required": ["name", "value"],
+      "required": [
+        "name",
+        "value"
+      ],
       "properties": {
         "name": {
           "type": "string",
-          "enum": [""]
+          "enum": [
+            ""
+          ]
         },
         "value": {
           "type": "string"

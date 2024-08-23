@@ -17,6 +17,21 @@
   "labelAddPageRule": {
     "message": "ページルールを追加"
   },
+  "previewOnContextMenu": {
+    "message": "コンテキストメニュー選択時は、ポップアップメニューは表示されません。"
+  },
+  "previewOnKeyboard": {
+    "message": "$key$ キーにより、メニュー表示を切り替えられます。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Ctrl / Alt / Shift"
+      }
+    }
+  },
+  "previewOnLeftClickHold": {
+    "message": "左クリック長押しによりメニューを表示します。クリックすると消えます。"
+  },
   "Option_Reset": {
     "message": "リセット"
   },
@@ -34,6 +49,51 @@
   },
   "Option_Add": {
     "message": " 追加"
+  },
+  "Option_startupMethod": {
+    "message": "起動方法"
+  },
+  "Option_startupMethod_desc": {
+    "message": "ポップアップメニューを表示する方法を変更します。"
+  },
+  "Option_startupMethod_method": {
+    "message": "方法"
+  },
+  "Option_startupMethod_textSelection": {
+    "message": "テキスト選択 (デフォルト)"
+  },
+  "Option_startupMethod_contextMenu": {
+    "message": "コンテキストメニュー"
+  },
+  "Option_startupMethod_keyboard": {
+    "message": "キー入力"
+  },
+  "Option_startupMethod_leftClickHold": {
+    "message": "左クリック長押し"
+  },
+  "Option_startupMethod_param_keyboard": {
+    "message": "表示を切り替えるキー"
+  },
+  "Option_keyboardParam_Control_windows": {
+    "message": "Ctrl"
+  },
+  "Option_keyboardParam_Alt_windows": {
+    "message": "Alt"
+  },
+  "Option_keyboardParam_Shift_windows": {
+    "message": "Shift"
+  },
+  "Option_keyboardParam_Control_mac": {
+    "message": "Command(⌘)"
+  },
+  "Option_keyboardParam_Alt_mac": {
+    "message": "Option(⌥)"
+  },
+  "Option_keyboardParam_Shift_mac": {
+    "message": "Shift"
+  },
+  "Option_startupMethod_param_leftClickHold": {
+    "message": "長押し時間(ms)"
   },
   "Option_popupPlacement": {
     "message": "メニュー表示位置"

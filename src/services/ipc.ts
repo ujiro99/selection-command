@@ -1,7 +1,6 @@
 export enum BgCommand {
   openPopups = 'openPopups',
   openTab = 'openTab',
-  closeMenu = 'closeMenu',
   openOption = 'openOption',
   addPageRule = 'addPageRule',
   execApi = 'execApi',
@@ -9,7 +8,12 @@ export enum BgCommand {
   openInTab = 'openInTab',
 }
 
-type IpcCommand = BgCommand
+export enum TabCommand {
+  executeAction = 'executeAction',
+  closeMenu = 'closeMenu',
+}
+
+type IpcCommand = BgCommand | TabCommand
 
 type Request = {
   command: IpcCommand
@@ -27,37 +31,51 @@ export const Ipc = {
     return await chrome.runtime.sendMessage({ command, param })
   },
 
-  async sendTab(tabId: number, command: IpcCommand, param?: unknown) {
+  async sendTab(
+    tabId: number,
+    command: IpcCommand,
+    param?: unknown,
+  ): Promise<any> {
     return await chrome.tabs.sendMessage(tabId, { command, param })
   },
 
-  async sendAllTab(command: IpcCommand, param?: unknown) {
+  async sendAllTab(command: IpcCommand, param?: unknown): Promise<any[]> {
     const tabs = await chrome.tabs.query({
       url: ['http://*/*', 'https://*/*'],
     })
-    return tabs.map(async (tab) => {
-      return tab.id && chrome.tabs.sendMessage(tab.id, { command, param })
-    })
+    const ps = tabs
+      .filter((t) => t.id != null)
+      .map((tab) => {
+        chrome.tabs.sendMessage(tab.id as number, { command, param })
+      })
+    return Promise.all(ps)
   },
 
+  listeners: {} as { [key: string]: IpcCallback },
+
   addListener(command: IpcCommand, callback: IpcCallback) {
-    chrome.runtime.onMessage.addListener(
-      (
-        request: Request,
-        sender: chrome.runtime.MessageSender,
-        sendResponse,
-      ) => {
-        // do not use async/await here !
-        const cmd = request.command
-        const prm = request.param
+    const listener = (
+      request: Request,
+      sender: chrome.runtime.MessageSender,
+      response: (response?: unknown) => void,
+    ) => {
+      // do not use async/await here !
+      const cmd = request.command
+      const prm = request.param
 
-        if (command === cmd) {
-          // must return "true" if response is async.
-          return callback(prm, sender, sendResponse)
-        }
+      if (command === cmd) {
+        // must return "true" if response is async.
+        return callback(prm, sender, response)
+      }
 
-        return false
-      },
-    )
+      return false
+    }
+    chrome.runtime.onMessage.addListener(listener)
+    Ipc.listeners[command] = callback
+  },
+
+  removeListener(command: IpcCommand) {
+    const listener = Ipc.listeners[command]
+    chrome.runtime.onMessage.removeListener(listener)
   },
 }

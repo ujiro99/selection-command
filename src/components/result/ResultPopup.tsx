@@ -26,7 +26,7 @@ export function ResultPopup(props: PopupProps) {
 
   const { refs, floatingStyles } = useFloating({
     placement: placement,
-    elements: { reference: props.positionRef?.current },
+    elements: { reference: props.positionRef.current },
     whileElementsMounted: autoUpdate,
     middleware: [
       offset(5),
@@ -36,9 +36,11 @@ export function ResultPopup(props: PopupProps) {
     ],
   })
 
+  const visible = props.visible && props.positionRef.current != null
+
   return (
     <Popover className={popupContianer}>
-      <Transition show={props.visible}>
+      <Transition show={visible}>
         <PopoverPanel
           ref={refs.setFloating}
           style={floatingStyles}

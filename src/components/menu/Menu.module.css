@@ -113,3 +113,10 @@
 .apiIconError {
   fill: rgb(220 38 38);
 }
+
+.iconWithState {
+  background: #fff;
+  padding: var(--padding);
+  border-radius: 6px;
+  line-height: 1;
+}

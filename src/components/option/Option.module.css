@@ -4,6 +4,7 @@
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
   --font-color: #444;
+  --menu-top: 150px;
 }
 
 :global {
@@ -40,17 +41,21 @@
 
 .preview {
   position: fixed;
-  top: 120px;
-  right: calc(50% - 520px);
+  top: var(--menu-top);
+  right: calc(50% - 460px);
+}
+
+.menuContainer {
+  position: fixed;
+  top: var(--menu-top);
+  left: calc(50% - 550px);
 }
 
 .menu {
-  position: fixed;
-  top: 400px;
-  left: calc(50% - 560px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-top: 30px;
 }
 
 .menuLabel {

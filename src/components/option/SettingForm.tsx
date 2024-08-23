@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useCallback } from 'react'
 import { useState, useEffect } from 'react'
 import type {
   IconButtonProps,
@@ -17,9 +17,10 @@ import {
   UserStyleField,
   UserStyleMap,
 } from '@/components/option/UserStyleField'
-import { OPEN_MODE, OPTION_MSG } from '@/const'
+import { OPEN_MODE, OPTION_MSG, STARTUP_METHOD, KEYBOARD } from '@/const'
 import { Icon } from '@/components/Icon'
-import { TableOfContents } from '@/components/option/TableOfContents'
+import { useEventProxy } from '@/hooks/option/useEventProxy'
+import { isMac } from '@/services/util'
 
 import * as css from './SettingForm.module.css'
 
@@ -33,6 +34,8 @@ type Translation = {
   [key: string]: string
 }
 
+type StartupMethodMap = Record<STARTUP_METHOD, { [key: string]: string }>
+type KeyboardMap = Record<KEYBOARD, { [key: string]: string }>
 type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
 
 const toKey = (str: string) => {
@@ -48,16 +51,28 @@ export function SettingFrom() {
   const settingRef = useRef<UserSettingsType>()
   const formRef = useRef<Form>(null)
 
+  const sendMessage = useCallback(
+    (command: OPTION_MSG, value: any) => {
+      if (parent != null) {
+        console.debug('sendMessage:', command, value)
+        parent.postMessage({ command, value }, origin)
+      }
+    },
+    [parent, origin],
+  )
+
   const t = (key: string) => {
     return trans[`Option_${key}`]
   }
 
-  const jump = () => {
-    const hash = document.location.hash
+  const jump = (_hash: string) => {
+    const hash = _hash ?? document.location.hash
     if (!hash) return
     const menu = document.querySelector(hash)
     menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  useEventProxy(sendMessage, settingData)
 
   // Save after 500 ms to storage.
   useEffect(() => {
@@ -108,6 +123,9 @@ export function SettingFrom() {
         // For some reason, updating data here does not update the Form display.
         // So update via ref.
         formRef.current?.setState({ formData: newSettings })
+      } else if (command === OPTION_MSG.JUMP) {
+        const { hash } = value
+        jump(hash)
       }
     }
     window.addEventListener('message', func)
@@ -115,13 +133,6 @@ export function SettingFrom() {
       window.removeEventListener('message', func)
     }
   }, [settingData])
-
-  const sendMessage = (command: OPTION_MSG, value: any) => {
-    if (parent != null) {
-      console.debug('sendMessage:', command, value)
-      parent.postMessage({ command, value }, origin)
-    }
-  }
 
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
     if (id?.endsWith('openMode')) {
@@ -143,6 +154,26 @@ export function SettingFrom() {
         .map((c) => {
           delete c.popupOption
         })
+    }
+
+    // If popup-delay is not set
+    // when the keyInput or leftClickHold is selected, set 0 ms.
+    if (id?.endsWith('method')) {
+      const data = arg.formData as UserSettingsType
+      if (
+        data.startupMethod.method === STARTUP_METHOD.KEYBOARD ||
+        data.startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD
+      ) {
+        let userStyles = data.userStyles
+        if (!userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)) {
+          userStyles.push({ name: STYLE_VARIABLE.POPUP_DELAY, value: '0' })
+        }
+        setSettingData({
+          ...data,
+          userStyles,
+        })
+        return
+      }
     }
 
     // update iconURL when searchUrl chagned
@@ -171,6 +202,9 @@ export function SettingFrom() {
   }
 
   const fields: RegistryFieldsType = {
+    '#/startupMethod/method': SelectField,
+    '#/startupMethod/param/keyboard': SelectField,
+    '#/startupMethod/param/leftClickHold': InputNumberField,
     '#/popupPlacement': SelectField,
     '#/style': SelectField,
     '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
@@ -189,13 +223,32 @@ export function SettingFrom() {
   }
 
   const uiSchema = {
+    startupMethod: {
+      'ui:title': t('startupMethod'),
+      'ui:description': t('startupMethod_desc'),
+      method: {
+        'ui:title': t('startupMethod_method'),
+        enum: {} as StartupMethodMap,
+      },
+      keyboardParam: {
+        'ui:classNames': 'startupMethodParam',
+        'ui:title': t('startupMethod_param_keyboard'),
+        enum: {} as KeyboardMap,
+      },
+      leftClickHoldParam: {
+        'ui:classNames': 'startupMethodParam',
+        'ui:title': t('startupMethod_param_leftClickHold'),
+      },
+    },
     popupPlacement: {
       'ui:classNames': 'popupPlacement',
       'ui:title': t('popupPlacement'),
+      'ui:disabled': false,
     },
     style: {
       'ui:classNames': 'style',
       'ui:title': t('style'),
+      'ui:disabled': false,
       enum: {
         vertical: { 'ui:title': t('style_vertical') },
         horizontal: { 'ui:title': t('style_horizontal') },
@@ -322,6 +375,31 @@ export function SettingFrom() {
     userSettingSchema.definitions.folderOptions = folderOptions
   }
 
+  // Add startupMethod to schema and uiSchema.
+  const method = settingData?.startupMethod.method
+  const methods = Object.values(STARTUP_METHOD)
+  const methodMap = {} as StartupMethodMap
+  for (const m of methods) {
+    methodMap[m] = {
+      'ui:title': t(`startupMethod_${m}`),
+    }
+  }
+  userSettingSchema.definitions.startupMethodEnum.enum = methods
+  uiSchema.startupMethod.method.enum = methodMap
+  if (method === STARTUP_METHOD.CONTEXT_MENU) {
+    uiSchema.popupPlacement['ui:disabled'] = true
+    uiSchema.style['ui:disabled'] = true
+  }
+  // Key name per OS
+  const keyboardMap = {} as KeyboardMap
+  let os = isMac() ? 'mac' : 'windows'
+  for (const k of Object.values(KEYBOARD)) {
+    keyboardMap[k] = {
+      'ui:title': t(`keyboardParam_${k}_${os}`),
+    }
+  }
+  uiSchema.startupMethod.keyboardParam.enum = keyboardMap
+
   // Add openModes to schema and uiSchema.
   const modes = Object.values(OPEN_MODE).filter(
     (mode) => mode !== OPEN_MODE.OPTION && mode !== OPEN_MODE.ADD_PAGE_RULE,
@@ -350,13 +428,9 @@ export function SettingFrom() {
   userSettingSchema.definitions.styleVariable.properties.name.enum = sv
   uiSchema.userStyles.items.name.enum = svMap
 
-  const properties = Object.keys(userSettingSchema.properties)
-  const labels = properties.reduce((a, p) => ({ ...a, [p]: t(p) }), {})
-
   const log = (type: any) => console.log.bind(console, type)
   return (
     <>
-      <TableOfContents properties={properties} labels={labels} />
       <Form
         className={css.form}
         schema={userSettingSchema}
@@ -481,6 +555,28 @@ type Option = {
   value: string
 }
 
+const InputNumberField = (props: FieldProps) => {
+  const { formData, idSchema, required, schema } = props
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    props.onChange(event.target.value)
+  }
+  return (
+    <label className={classnames(css.selectContainer, 'form-control')}>
+      <input
+        id={idSchema.$id}
+        className={css.select}
+        value={formData ?? schema.default}
+        required={required}
+        onChange={onChange}
+        type="number"
+        max={schema.maximum}
+        min={schema.minimum}
+        step={schema.step}
+      />
+    </label>
+  )
+}
+
 const SelectField = (props: FieldProps) => {
   const { formData, schema, uiSchema, required } = props
   const options = schema.enum.map((e: string) => {
@@ -499,8 +595,9 @@ const SelectField = (props: FieldProps) => {
         id={props.idSchema.$id}
         className={css.select}
         value={formData}
-        required={props.required}
         onChange={onChange}
+        required={props.required}
+        disabled={props.disabled}
       >
         {options.map((option: Option) => (
           <option key={option.value} value={option.value}>
