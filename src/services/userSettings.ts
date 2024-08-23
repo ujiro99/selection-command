@@ -2,10 +2,12 @@ import type { Placement } from '@floating-ui/react'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import type { onChangedCallback } from './storage'
 import DefaultSetting from './defaultUserSettings.json'
-import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '../const'
-import { OPTION_FOLDER, STARTUP_METHOD, KEYBOARD } from '../const'
+import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '@/const'
+import { OPTION_FOLDER, STARTUP_METHOD, KEYBOARD, VERSION } from '@/const'
 import { isBase64, isEmpty, toDataURL } from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
+
+export type Version = `${number}.${number}.${number}`
 
 export type Command = {
   id: number
@@ -80,6 +82,7 @@ export type StartupMethod = {
 }
 
 export type UserSettingsType = {
+  settingVersion: Version
   startupMethod: StartupMethod
   popupPlacement: Placement
   commands: Array<Command>
@@ -103,7 +106,10 @@ export type ImageCache = {
 
 export const UserSettings = {
   get: async (excludeOptions = false): Promise<UserSettingsType> => {
-    const obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    if (obj.settingVersion == null) {
+      obj = migrate073(obj)
+    }
     obj.commands = obj.commands.map((c, idx) => {
       // Assigning IDs to each command
       c.id = idx
@@ -156,12 +162,6 @@ export const UserSettings = {
     // Settings for options are kept separate from user set values.
     removeOptionSettings(data)
 
-    if (data.startupMethod == null) {
-      data.startupMethod = DefaultSetting.startupMethod as {
-        method: STARTUP_METHOD
-      }
-    }
-
     await Storage.set(STORAGE_KEY.USER, data)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
     return true
@@ -199,39 +199,12 @@ const removeOptionSettings = (data: UserSettingsType): void => {
   data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
 }
 
-export const migrate = async () => {
-  await migrate060()
-}
-
-export const migrate060 = async () => {
-  console.warn(
-    'Update the storage location of the configuration data to the cloud.',
-  )
-  // moveStorageSync
-  const res = await chrome.storage.local.get(`${STORAGE_KEY.USER}`)
-  const settings = res[`${STORAGE_KEY.USER}`]
-  const sync = await chrome.storage.sync.get(`${STORAGE_KEY.USER}`)
-  const syncSettings = sync[`${STORAGE_KEY.USER}`]
-  if (!settings || syncSettings) {
-    console.warn('Allready finished.')
-    return
-  }
-
-  // cache image data url to local storage
-  const caches = {} as ImageCache
-  for (const c of settings.commands) {
-    if (!c.iconUrl) continue
-    if (isBase64(c.iconUrl)) {
-      const id = crypto.randomUUID()
-      const data = c.iconUrl
-      caches[id] = data
-      c.iconUrl = id
+const migrate073 = (data: UserSettingsType): UserSettingsType => {
+  data.settingVersion = VERSION as Version
+  if (data.startupMethod == null) {
+    data.startupMethod = DefaultSetting.startupMethod as {
+      method: STARTUP_METHOD
     }
   }
-  await chrome.storage.local.set({
-    [LOCAL_STORAGE_KEY.CACHES]: { images: caches },
-  })
-  await Storage.set(STORAGE_KEY.USER, settings)
-  await chrome.storage.local.remove(`${STORAGE_KEY.USER}`)
-  console.warn('Successfully finished.')
+  return data
 }
