@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext } from 'react'
 import classNames from 'classnames'
 import { context } from '@/components/App'
-import { previewContext } from '@/components/Popup'
+import { popupContext } from '@/components/Popup'
 import { actions } from '@/action'
 import { Tooltip } from '../Tooltip'
 import {
@@ -42,7 +42,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const onlyIcon = props.onlyIcon
   const { openMode, openModeSecondary, iconUrl, title } = props.command
   const { selectionText, target } = useContext(context)
-  const { isPreview } = useContext(previewContext)
+  const { isPreview, inTransition } = useContext(popupContext)
   let message = itemState.message || title
   let enable = true
 
@@ -91,7 +91,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 
   return (
     <>
-      <Tooltip text={message} disabled={!onlyIcon}>
+      <Tooltip text={message} disabled={!onlyIcon || inTransition}>
         <button
           type="button"
           className={classNames(item, button, {

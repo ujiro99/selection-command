@@ -1,4 +1,4 @@
-import React, { createContext } from 'react'
+import React, { useState, createContext, useCallback } from 'react'
 import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'
@@ -8,6 +8,7 @@ import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { hexToHsl, isMac } from '@/services/util'
 import { t } from '@/services/i18n'
+import { STYLE_VARIABLE } from '@/services/userSettings'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 
 import {
@@ -27,12 +28,14 @@ export type PopupProps = {
 
 type ContextType = {
   isPreview?: boolean
+  inTransition?: boolean
 }
-export const previewContext = createContext<ContextType>({} as ContextType)
+export const popupContext = createContext<ContextType>({} as ContextType)
 
-export function Popup(props: PopupProps) {
+export const Popup = (props: PopupProps) => {
   const { settings } = useSetting()
   const { visible, isContextMenu } = useDetectStartup(props)
+  const [inTransition, setInTransition] = useState(false)
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
   const isPreview = props.isPreview === true
@@ -65,15 +68,33 @@ export function Popup(props: PopupProps) {
     ],
   })
 
+  const onBeforeEnter = useCallback(() => {
+    setInTransition(true)
+  }, [])
+
+  const onAfterEnter = useCallback(() => {
+    const popupDuration = settings.userStyles?.find(
+      (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
+    )
+    const duration = popupDuration ? parseInt(popupDuration.value) : 100
+    setTimeout(() => {
+      setInTransition(false)
+    }, duration)
+  }, [settings.userStyles])
+
   return (
-    <previewContext.Provider value={{ isPreview }}>
+    <popupContext.Provider value={{ isPreview, inTransition }}>
       {isPreview && <PopupPreview {...props} />}
       <Popover
         className={classnames(popupContianer, {
           [previewContainer]: isPreview,
         })}
       >
-        <Transition show={visible}>
+        <Transition
+          show={visible}
+          beforeEnter={onBeforeEnter}
+          afterEnter={onAfterEnter}
+        >
           <PopoverPanel
             ref={refs.setFloating}
             style={floatingStyles}
@@ -90,7 +111,7 @@ export function Popup(props: PopupProps) {
           </PopoverPanel>
         </Transition>
       </Popover>
-    </previewContext.Provider>
+    </popupContext.Provider>
   )
 }
 

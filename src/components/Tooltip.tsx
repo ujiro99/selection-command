@@ -28,10 +28,14 @@ export function Tooltip(props: PopupProps) {
   }
   const [visible, setVisible] = useState(false)
 
-  const show = () => setVisible(true)
-  const hide = () => setVisible(false)
-
   useEffect(() => {
+    const show = () => {
+      if (props.disabled) return
+      setVisible(true)
+    }
+    const hide = () => {
+      setVisible(false)
+    }
     if (positionRef.current != null) {
       positionRef.current.addEventListener('mouseenter', show)
       positionRef.current.addEventListener('mouseleave', hide)
@@ -42,7 +46,7 @@ export function Tooltip(props: PopupProps) {
         positionRef.current.removeEventListener('mouseleave', hide)
       }
     }
-  }, [positionRef.current])
+  }, [positionRef.current, props.disabled])
 
   const MyPopoverButton = forwardRef(function (props, ref) {
     return <div className={tooltipTrigger} ref={ref} {...props} />
