@@ -38,7 +38,7 @@ export const Storage = {
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     } else {
-      return result[key] ?? DEFAULTS[key]
+      return result[key] ?? { ...DEFAULTS[key] }
     }
   },
 

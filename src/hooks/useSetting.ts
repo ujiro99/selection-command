@@ -10,6 +10,7 @@ type useSettingReturn = {
 }
 
 const emptySettings: UserSettingsType = {
+  settingVersion: '0.0.0',
   commands: [],
   folders: [],
   pageRules: [],
