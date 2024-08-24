@@ -2,6 +2,7 @@ import React, { useState, useEffect, forwardRef, useContext } from 'react'
 import { APP_ID } from '@/const'
 import { context } from '@/components/App'
 import { useLeftClickHold } from '@/hooks/useDetectStartup'
+import { MOUSE } from '@/const'
 
 function isPopup(elm: Element): boolean {
   if (elm == null) return false
@@ -34,12 +35,18 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       const onDown = (e: MouseEvent) => {
+        if (e.button !== MOUSE.LEFT) {
+          return
+        }
         if (!isPopup(e.target as Element)) {
           setStartPoint({ x: e.x, y: e.y })
           setTarget(e.target as Element)
         }
       }
       const onUp = (e: MouseEvent) => {
+        if (e.button !== MOUSE.LEFT) {
+          return
+        }
         if (!isPopup(e.target as Element)) {
           if (e.detail >= 3) {
             // With triple-clicking, the entire phrase is selected.
@@ -80,6 +87,9 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
         }
       }
       const onDbl = (e: MouseEvent) => {
+        if (e.button !== MOUSE.LEFT) {
+          return
+        }
         const start = { x: e.x - 5, y: e.y - 5 }
         const end = { x: e.x + 5, y: e.y + 5 }
         setRect({ start, end })
