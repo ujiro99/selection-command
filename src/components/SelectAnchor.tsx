@@ -41,8 +41,14 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       }
       const onUp = (e: MouseEvent) => {
         if (!isPopup(e.target as Element)) {
-          const endPoint = { x: e.x, y: e.y }
+          if (e.detail >= 3) {
+            // With triple-clicking, the entire phrase is selected.
+            // In this case, it is treated the same as a double click.
+            onDbl(e)
+            return
+          }
 
+          const endPoint = { x: e.x, y: e.y }
           if (
             startPoint.x === endPoint.x &&
             startPoint.y === endPoint.y &&
