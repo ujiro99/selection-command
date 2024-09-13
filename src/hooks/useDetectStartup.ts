@@ -38,7 +38,7 @@ export function useDetectStartup(props: Props) {
     visible = visible && detectKey
   }
 
-  const detectHold = useLeftClickHold(props)
+  const { detectHold } = useLeftClickHold(props)
   if (method === STARTUP_METHOD.LEFT_CLICK_HOLD) {
     visible = visible && detectHold
   }
@@ -81,17 +81,27 @@ export function useKeyboard(props: Props) {
   return detectKey
 }
 
+function hasAnchor(x, y): boolean {
+  const elements = document.elementsFromPoint(x, y)
+  const anchorElement = elements.find(
+    (element) => element.tagName.toLowerCase() === 'a',
+  )
+  return anchorElement != null
+}
+
 type useLeftClickHoldParam = {
   selectionText: string
 }
 export function useLeftClickHold(props: useLeftClickHoldParam) {
   const [detectHold, setDetectHold] = useState(false)
+  const [detectHoldLink, setDetectHoldLink] = useState(false)
+  const [position, setPosition] = useState({ x: 0, y: 0 })
   const { settings } = useSetting()
   const { method, leftClickHoldParam } = settings.startupMethod
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   useEffect(() => {
-    setDetectHold(false)
+    release()
   }, [props.selectionText])
 
   // Left click hold
@@ -103,14 +113,16 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       if (event.button === MOUSE.LEFT) {
         if (detectHold) {
           // If already in hold, click to release hold.
-          setDetectHold(false)
+          release()
         } else if (props.selectionText) {
           // If there is a selection-text, start count of hold.
           timeoutRef.current = setTimeout(() => {
             setDetectHold(true)
+            setDetectHoldLink(hasAnchor(event.clientX, event.clientY))
+            setPosition({ x: event.clientX, y: event.clientY })
           }, leftClickHoldParam)
         } else {
-          setDetectHold(false)
+          release()
         }
       }
     }
@@ -127,5 +139,11 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
     }
   }, [method, leftClickHoldParam, detectHold, timeoutRef, props])
 
-  return detectHold
+  const release = () => {
+    setDetectHold(false)
+    setDetectHoldLink(false)
+    setPosition(null)
+  }
+
+  return { detectHold, detectHoldLink, position }
 }

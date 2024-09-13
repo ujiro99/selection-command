@@ -31,7 +31,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const { setTarget } = useContext(context)
     const [startPoint, setStartPoint] = useState<Point>({} as Point)
     const [rect, setRect] = useState<Rect>()
-    const detectHold = useLeftClickHold(props)
+    const { detectHold } = useLeftClickHold(props)
 
     useEffect(() => {
       const onDown = (e: MouseEvent) => {
@@ -117,6 +117,25 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       padding: '4px', // adjust position of the Popup
     } as React.CSSProperties
 
-    return <div style={styles} ref={ref} />
+    return (
+      <>
+        <div style={styles} ref={ref} />
+        <LinkClickGuard {...props} />
+      </>
+    )
   },
 )
+
+const LinkClickGuard = (props: Props) => {
+  const { detectHoldLink, position } = useLeftClickHold(props)
+
+  const styles = {
+    position: 'absolute',
+    top: window.scrollY + position?.y - 5,
+    left: window.scrollX + position?.x - 5,
+    height: 10,
+    width: 10,
+  } as React.CSSProperties
+
+  return detectHoldLink && <div style={styles} />
+}
