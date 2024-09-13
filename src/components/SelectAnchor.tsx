@@ -31,7 +31,15 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const { setTarget } = useContext(context)
     const [startPoint, setStartPoint] = useState<Point>({} as Point)
     const [rect, setRect] = useState<Rect>()
+    const [offset, setOffset] = useState<Point>({} as Point)
     const { detectHold } = useLeftClickHold(props)
+
+    useEffect(() => {
+      const style = window.getComputedStyle(document.documentElement)
+      const x = parseInt(style.marginLeft, 10)
+      const y = parseInt(style.marginTop, 10)
+      setOffset({ x, y })
+    }, [])
 
     useEffect(() => {
       const onDown = (e: MouseEvent) => {
@@ -109,8 +117,8 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const { start, end } = rect
     const styles = {
       position: 'absolute',
-      top: window.scrollY + start.y,
-      left: window.scrollX + start.x,
+      top: window.scrollY + start.y - offset.y,
+      left: window.scrollX + start.x - offset.x,
       height: end.y - start.y,
       width: end.x - start.x,
       pointerEvents: 'none',
