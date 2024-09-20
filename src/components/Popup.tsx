@@ -47,13 +47,13 @@ export const Popup = (props: PopupProps) => {
         const hsl = hexToHsl(cur.value)
         return {
           ...acc,
-          [`--${cur.name}`]: cur.value,
-          '--background-color-h': `${hsl[0]}deg`,
-          '--background-color-s': `${hsl[1]}%`,
-          '--background-color-l': `${hsl[2]}%`,
+          [`--sc-${cur.name}`]: cur.value,
+          '--sc-background-color-h': `${hsl[0]}deg`,
+          '--sc-background-color-s': `${hsl[1]}%`,
+          '--sc-background-color-l': `${hsl[2]}%`,
         }
       }
-      return { ...acc, [`--${cur.name}`]: cur.value }
+      return { ...acc, [`--sc-${cur.name}`]: cur.value }
     }, {})
 
   const { refs, floatingStyles } = useFloating({
