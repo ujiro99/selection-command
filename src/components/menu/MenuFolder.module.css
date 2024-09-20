@@ -19,7 +19,7 @@
 }
 
 .folderHorizontal {
-  padding-right: var(--padding);
+  padding-right: var(--sc-padding);
 }
 
 .folderHorizontal .title {

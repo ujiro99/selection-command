@@ -12,13 +12,13 @@
     transition: ease-out 0.15s background;
 
     &:hover {
-      background: hsl(var(--bg-color-h),
-          var(--bg-color-s),
-          calc(var(--bg-color-l) - 6%));
+      background: hsl(var(--sc-bg-color-h),
+          var(--sc-bg-color-s),
+          calc(var(--sc-bg-color-l) - 6%));
     }
 
     &:hover:has(:disabled):not(:has(.folder)) {
-      background-color: var(--bg-color);
+      background-color: var(--sc-bg-color);
     }
   }
 
@@ -40,11 +40,11 @@
 }
 
 .item {
-  padding: var(--padding) calc(var(--padding) * 2) var(--padding) calc(var(--padding) * 1.5);
+  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding) calc(var(--sc-padding) * 1.5);
   display: flex;
   align-items: center;
-  font-size: var(--font-size);
-  height: max(var(--font-size), var(--image-size));
+  font-size: var(--sc-font-size);
+  height: max(var(--sc-font-size), var(--sc-image-size));
   box-sizing: content-box;
   color: rgb(75 85 99);
   line-height: 1;
@@ -70,12 +70,12 @@
 }
 
 .itemImg {
-  width: var(--image-size);
-  height: var(--image-size);
+  width: var(--sc-image-size);
+  height: var(--sc-image-size);
 }
 
 .itemOnlyIcon {
-  padding-right: var(--padding);
+  padding-right: var(--sc-padding);
 
   .itemTitle {
     display: none;
@@ -88,7 +88,7 @@
 }
 
 .itemHorizontal {
-  padding-left: var(--padding);
+  padding-left: var(--sc-padding);
 
   .itemTitle {
     margin-left: 0.3em;
@@ -116,7 +116,7 @@
 
 .iconWithState {
   background: #fff;
-  padding: var(--padding);
+  padding: var(--sc-padding);
   border-radius: 6px;
   line-height: 1;
 }

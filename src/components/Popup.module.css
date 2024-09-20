@@ -1,26 +1,26 @@
 .popup {
   composes: shadow-xl from './Common.module.css';
-  background-color: var(--bg-color);
+  background-color: var(--sc-bg-color);
   border-radius: 6px;
-  border: solid 1px var(--bd-color);
+  border: solid 1px var(--sc-bd-color);
   font-family: var(--font-family);
 
   /* CSS variable interface */
-  --bg-color: var(--background-color, #ffffff);
-  --bg-color-h: var(--background-color-h, 0deg);
-  --bg-color-s: var(--background-color-s, 0%);
-  --bg-color-l: var(--background-color-l, 100%);
-  --bd-color: var(--border-color, var(--gray-100));
-  --font-size: calc(var(--font-scale, 1) * 12px);
-  --image-size: calc(var(--image-scale, 1) * 16px);
-  --padding: calc(var(--padding-scale, 1) * 4px);
-  --delay: calc(var(--popup-delay, 250) * 1ms);
-  --duration: calc(var(--popup-duration, 100) * 1ms);
+  --sc-bg-color: var(--sc-background-color, #ffffff);
+  --sc-bg-color-h: var(--sc-background-color-h, 0deg);
+  --sc-bg-color-s: var(--sc-background-color-s, 0%);
+  --sc-bg-color-l: var(--sc-background-color-l, 100%);
+  --sc-bd-color: var(--sc-border-color, var(--gray-100));
+  --sc-font-size: calc(var(--sc-font-scale, 1) * 12px);
+  --sc-image-size: calc(var(--sc-image-scale, 1) * 16px);
+  --sc-padding: calc(var(--sc-padding-scale, 1) * 4px);
+  --sc-delay: calc(var(--sc-popup-delay, 250) * 1ms);
+  --sc-duration: calc(var(--sc-popup-duration, 100) * 1ms);
 }
 
 .popupTransition {
-  transition-delay: var(--delay);
-  transition-duration: var(--duration);
+  transition-delay: var(--sc-delay);
+  transition-duration: var(--sc-duration);
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
