@@ -28,9 +28,9 @@ export function Menu(): JSX.Element {
   const isHorizontal = settings.style === STYLE.HORIZONTAL
 
   const items = commands.reduce((pre, cur, idx) => {
-    const folder = folders.find((obj) => obj.id === cur.parentFolder?.id)
+    const folder = folders.find((obj) => obj.id === cur.parentFolderId)
     if (folder) {
-      const f = pre.find((obj) => obj.folder.id === cur.parentFolder?.id)
+      const f = pre.find((obj) => obj.folder.id === cur.parentFolderId)
       if (f) {
         f.commands.push(cur)
       } else {

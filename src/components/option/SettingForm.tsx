@@ -211,7 +211,7 @@ export function SettingFrom() {
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': SelectField,
     '#/commands/copyOption': SelectField,
-    '#/commands/parentFolder': FolderField,
+    '#/commands/parentFolderId': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': OnlyIconField,
     '#/styleVariable': UserStyleField,
@@ -265,7 +265,7 @@ export function SettingFrom() {
           'openModeSecondary',
           'searchUrl',
           'iconUrl',
-          'parentFolder',
+          'parentFolderId',
           '*',
         ],
         popupOption: { 'ui:widget': 'hidden' },
@@ -295,7 +295,7 @@ export function SettingFrom() {
             tab: { 'ui:title': t('openMode_tab') },
           },
         },
-        parentFolder: { 'ui:title': t('parentFolder') },
+        parentFolderId: { 'ui:title': t('parentFolderId') },
         fetchOptions: { 'ui:title': t('fetchOptions') },
         copyOption: {
           'ui:title': t('copyOption'),
@@ -614,13 +614,11 @@ const FolderField = (props: FieldProps) => {
   const folderOptions = schema.enum as FolderOption[]
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = event.target.value
-    const folder = folderOptions.find((folder) => folder.id === id)
-    props.onChange(folder)
+    props.onChange(event.target.value)
   }
 
   const folder = registry.rootSchema.definitions.folderOptions.enum.find(
-    (e) => e.id === formData?.id,
+    (e) => e.id === formData,
   )
 
   return (
@@ -635,7 +633,7 @@ const FolderField = (props: FieldProps) => {
       <select
         id={props.idSchema.$id}
         className={css.select}
-        value={formData?.id}
+        value={formData}
         required={props.required}
         onChange={onChange}
       >

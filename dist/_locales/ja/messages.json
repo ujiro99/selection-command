@@ -158,7 +158,7 @@
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"
   },
-  "Option_parentFolder": {
+  "Option_parentFolderId": {
     "message": "親フォルダ"
   },
   "Option_copyOption": {

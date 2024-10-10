@@ -11,70 +11,49 @@
       "openMode": "popup",
       "searchUrl": "https://google.com/search?q=%s&tbm=isch",
       "title": "Google Image",
-      "parentFolder": {
-        "id": "222d6489-4eca-48fd-8590-fceb30545bab",
-        "name": "Search"
-      }
+      "parentFolderId": "222d6489-4eca-48fd-8590-fceb30545bab"
     },
     {
       "iconUrl": "https://www.amazon.com/favicon.ico",
       "openMode": "tab",
       "searchUrl": "https://www.amazon.com/s?k=%s",
       "title": "Amazon",
-      "parentFolder": {
-        "id": "222d6489-4eca-48fd-8590-fceb30545bab",
-        "name": "Search"
-      }
+      "parentFolderId": "222d6489-4eca-48fd-8590-fceb30545bab"
     },
     {
       "iconUrl": "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
       "openMode": "tab",
       "searchUrl": "https://www.youtube.com/results?search_query=%s",
       "title": "Youtube",
-      "parentFolder": {
-        "id": "a3495269-0a4d-4866-a519-bca75ed1c246",
-        "name": "Media"
-      }
+      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246"
     },
     {
       "iconUrl": "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
       "openMode": "tab",
       "searchUrl": "https://www.netflix.com/search?q=%s",
       "title": "Netflix",
-      "parentFolder": {
-        "id": "a3495269-0a4d-4866-a519-bca75ed1c246",
-        "name": "Media"
-      }
+      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246"
     },
     {
       "iconUrl": "https://s.pinimg.com/webapp/favicon-22eb868c.png",
       "openMode": "tab",
       "searchUrl": "https://www.pinterest.com/search/pins/?q=%s",
       "title": "Pinterest",
-      "parentFolder": {
-        "id": "a3495269-0a4d-4866-a519-bca75ed1c246",
-        "name": "Media"
-      }
+      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246"
     },
     {
       "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
       "openMode": "tab",
       "searchUrl": "https://drive.google.com/drive/search?q=%s",
       "title": "Drive",
-      "parentFolder": {
-        "id": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
-        "name": "Work"
-      }
+      "parentFolderId": "01710cf1-ec8b-497f-8d1f-9cb716567bc4"
     },
     {
       "iconUrl": "https://ssl.gstatic.com/translate/favicon.ico",
       "openMode": "tab",
       "searchUrl": "https://translate.google.co.jp/?hl=ja&sl=auto&text=%s&op=translate",
       "title": "en to ja",
-      "parentFolder": {
-        "id": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
-        "name": "Work"
-      }
+      "parentFolderId": "01710cf1-ec8b-497f-8d1f-9cb716567bc4"
     }
   ],
   "folders": [

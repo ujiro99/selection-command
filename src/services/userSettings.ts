@@ -16,7 +16,7 @@ export type Command = {
   iconUrl: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
-  parentFolder?: FolderOption
+  parentFolderId?: string
   popupOption?: PopupOption
   copyOption?: CopyOption
   fetchOptions?: string
@@ -194,7 +194,7 @@ export const UserSettings = {
 
 const removeOptionSettings = (data: UserSettingsType): void => {
   data.commands = data.commands.filter(
-    (c) => c.parentFolder?.id !== OPTION_FOLDER,
+    (c) => c.parentFolderId !== OPTION_FOLDER,
   )
   data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
 }

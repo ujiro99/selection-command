@@ -3,6 +3,8 @@ import UseSetting from './defaultUserSettings.json'
 export enum STORAGE_KEY {
   USER = 0,
   BG = 1,
+  COMMANDS = 2,
+  COMMAND_COUNT = 3,
 }
 
 export enum LOCAL_STORAGE_KEY {
@@ -12,6 +14,8 @@ export enum LOCAL_STORAGE_KEY {
 const DEFAULTS = {
   [STORAGE_KEY.USER]: UseSetting,
   [STORAGE_KEY.BG]: {},
+  [STORAGE_KEY.COMMANDS]: [],
+  [STORAGE_KEY.COMMAND_COUNT]: 0,
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
@@ -38,7 +42,7 @@ export const Storage = {
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     } else {
-      return result[key] ?? { ...DEFAULTS[key] }
+      return result[key] ?? structuredClone(DEFAULTS[key])
     }
   },
 

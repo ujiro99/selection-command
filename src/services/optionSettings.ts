@@ -17,11 +17,7 @@ export const OptionSettings = {
       iconUrl:
         'https://cdn4.iconfinder.com/data/icons/music-ui-solid-24px/24/settings-3-1024.png',
       openMode: OPEN_MODE.OPTION,
-      parentFolder: {
-        id: OPTION_FOLDER,
-        name: 'Option',
-        iconUrl: '',
-      },
+      parentFolderId: OPTION_FOLDER,
     },
     {
       id: 2,
@@ -30,11 +26,7 @@ export const OptionSettings = {
       iconUrl:
         'https://cdn1.iconfinder.com/data/icons/freeline/32/add_cross_new_plus_create-512.png',
       openMode: OPEN_MODE.ADD_PAGE_RULE,
-      parentFolder: {
-        id: OPTION_FOLDER,
-        name: 'Option',
-        iconUrl: '',
-      },
+      parentFolderId: OPTION_FOLDER,
     },
   ],
 }

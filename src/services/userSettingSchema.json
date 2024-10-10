@@ -189,8 +189,8 @@
           "$id": "#/commands/iconUrl",
           "type": "string"
         },
-        "parentFolder": {
-          "$id": "#/commands/parentFolder",
+        "parentFolderId": {
+          "$id": "#/commands/parentFolderId",
           "$ref": "#/definitions/folderOptions"
         }
       },
