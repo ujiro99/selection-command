@@ -29,8 +29,6 @@ const main = () => {
         'src/sandbox.tsx',
       ],
       outdir: 'dist/src',
-      minifyWhitespace: true,
-      minifySyntax: true,
       bundle: true,
       tsconfig: './tsconfig.json',
       plugins: [cleanup(['*'])],
