@@ -210,11 +210,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-      ;(async () => {
-        const res = await fetch(url, opt)
-        const json = await res.json()
-        response({ ok: res.ok, res: json })
-      })()
+        ; (async () => {
+          const res = await fetch(url, opt)
+          const json = await res.json()
+          response({ ok: res.ok, res: json })
+        })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
@@ -372,3 +372,11 @@ chrome.tabs.onActivated.addListener(async () => {
   const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
   ret.filter((v) => v).forEach((v) => console.debug(v))
 })
+
+if (isDebug) {
+  chrome.action.setIcon({
+    path: {
+      128: '/icon128-dev.png',
+    },
+  })
+}
