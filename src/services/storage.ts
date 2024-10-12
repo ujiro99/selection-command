@@ -1,4 +1,4 @@
-import UseSetting from './defaultUserSettings.json'
+import DefaultSettings from './defaultUserSettings'
 
 export enum STORAGE_KEY {
   USER = 0,
@@ -12,7 +12,7 @@ export enum LOCAL_STORAGE_KEY {
 }
 
 const DEFAULTS = {
-  [STORAGE_KEY.USER]: UseSetting,
+  [STORAGE_KEY.USER]: DefaultSettings,
   [STORAGE_KEY.BG]: {},
   [STORAGE_KEY.COMMANDS]: [],
   [STORAGE_KEY.COMMAND_COUNT]: 0,

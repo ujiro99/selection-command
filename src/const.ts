@@ -42,6 +42,11 @@ export enum STYLE {
   HORIZONTAL = 'horizontal',
 }
 
+export enum SPACE_ENCODING {
+  PLUS = 'plus',
+  PERCENT = 'percent',
+}
+
 export enum OPTION_MSG {
   START = 'start',
   CHANGED = 'changed',
@@ -50,6 +55,16 @@ export enum OPTION_MSG {
   RES_FETCH_ICON_URL = 'resFetchIconUrl',
   KEY_INPUT = 'key_input',
   MOUSE = 'mouse',
+}
+
+export enum STYLE_VARIABLE {
+  BACKGROUND_COLOR = 'background-color',
+  BORDER_COLOR = 'border-color',
+  FONT_SCALE = 'font-scale',
+  IMAGE_SCALE = 'image-scale',
+  PADDING_SCALE = 'padding-scale',
+  POPUP_DELAY = 'popup-delay',
+  POPUP_DURATION = 'popup-duration',
 }
 
 export const ROOT_FOLDER = ''

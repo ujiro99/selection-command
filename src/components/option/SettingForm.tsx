@@ -11,13 +11,18 @@ import type { IChangeEvent } from '@rjsf/core'
 import classnames from 'classnames'
 
 import userSettingSchema from '@/services/userSettingSchema.json'
-import type { UserSettingsType, FolderOption } from '@/services/userSettings'
-import { STYLE_VARIABLE } from '@/services/userSettings'
 import {
   UserStyleField,
   UserStyleMap,
 } from '@/components/option/UserStyleField'
-import { OPEN_MODE, OPTION_MSG, STARTUP_METHOD, KEYBOARD } from '@/const'
+import {
+  OPEN_MODE,
+  OPTION_MSG,
+  STARTUP_METHOD,
+  KEYBOARD,
+  STYLE_VARIABLE,
+} from '@/const'
+import type { UserSettingsType, FolderOption } from '@/types'
 import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
 import { isMac } from '@/services/util'

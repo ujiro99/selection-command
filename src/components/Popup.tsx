@@ -8,8 +8,8 @@ import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { hexToHsl, isMac } from '@/services/util'
 import { t } from '@/services/i18n'
-import { STYLE_VARIABLE } from '@/services/userSettings'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
+import { STYLE_VARIABLE } from '@/const'
 
 import {
   popup,

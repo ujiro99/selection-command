@@ -1,96 +1,10 @@
-import type { Placement } from '@floating-ui/react'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import type { onChangedCallback } from './storage'
-import DefaultSetting from './defaultUserSettings.json'
-import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '@/const'
-import { OPTION_FOLDER, STARTUP_METHOD, KEYBOARD, VERSION } from '@/const'
+import DefaultSettings from './defaultUserSettings'
+import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
+import type { UserSettingsType, Version } from '@/types'
 import { isBase64, isEmpty, toDataURL } from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
-
-export type Version = `${number}.${number}.${number}`
-
-export type Command = {
-  id: number
-  title: string
-  searchUrl: string
-  iconUrl: string
-  openMode: OPEN_MODE
-  openModeSecondary?: OPEN_MODE
-  parentFolderId?: string
-  popupOption?: PopupOption
-  copyOption?: CopyOption
-  fetchOptions?: string
-  variables?: Array<CommandVariable>
-  spaceEncoding?: SPACE_ENCODING
-}
-
-export type PopupOption = {
-  width: number
-  height: number
-}
-
-export type CopyOption = 'default' | 'text'
-
-export enum SPACE_ENCODING {
-  PLUS = 'plus',
-  PERCENT = 'percent',
-}
-
-export type FolderOption = {
-  id: string
-  name: string
-  iconUrl: string
-}
-
-export type CommandFolder = {
-  id: string
-  title: string
-  iconUrl?: string
-  onlyIcon?: boolean
-}
-
-export type CommandVariable = {
-  name: string
-  value: string
-}
-
-export type PageRule = {
-  urlPattern: string
-  popupEnabled: POPUP_ENABLED
-  popupPlacement: Placement
-}
-
-export enum STYLE_VARIABLE {
-  BACKGROUND_COLOR = 'background-color',
-  BORDER_COLOR = 'border-color',
-  FONT_SCALE = 'font-scale',
-  IMAGE_SCALE = 'image-scale',
-  PADDING_SCALE = 'padding-scale',
-  POPUP_DELAY = 'popup-delay',
-  POPUP_DURATION = 'popup-duration',
-}
-
-export type StyleVariable = {
-  name: STYLE_VARIABLE
-  value: string
-}
-
-export type StartupMethod = {
-  method: STARTUP_METHOD
-  keyboardParam?: KEYBOARD
-  leftClickHoldParam?: number
-}
-
-export type UserSettingsType = {
-  settingVersion: Version
-  startupMethod: StartupMethod
-  popupPlacement: Placement
-  commands: Array<Command>
-  folders: Array<CommandFolder>
-  pageRules: Array<PageRule>
-  style: STYLE
-  userStyles: Array<StyleVariable>
-}
 
 enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
@@ -168,7 +82,7 @@ export const UserSettings = {
   },
 
   reset: async () => {
-    await Storage.set(STORAGE_KEY.USER, DefaultSetting)
+    await Storage.set(STORAGE_KEY.USER, DefaultSettings)
   },
 
   onChanged: (callback: (data: UserSettingsType) => void) => {
@@ -202,7 +116,7 @@ const removeOptionSettings = (data: UserSettingsType): void => {
 const migrate073 = (data: UserSettingsType): UserSettingsType => {
   data.settingVersion = VERSION as Version
   if (data.startupMethod == null) {
-    data.startupMethod = DefaultSetting.startupMethod as {
+    data.startupMethod = DefaultSettings.startupMethod as {
       method: STARTUP_METHOD
     }
   }

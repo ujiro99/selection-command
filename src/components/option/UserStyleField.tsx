@@ -1,7 +1,7 @@
 import React from 'react'
 import type { FieldProps } from '@rjsf/utils'
 
-import { STYLE_VARIABLE } from '@/services/userSettings'
+import { STYLE_VARIABLE } from '@/const'
 
 import {
   container,

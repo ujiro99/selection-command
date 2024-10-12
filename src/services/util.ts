@@ -1,4 +1,5 @@
-import { SPACE_ENCODING, Version } from '@/services/userSettings'
+import { SPACE_ENCODING } from '@/const'
+import type { Version } from '@/types'
 
 /**
  * Stops processing for the specified time.
@@ -211,6 +212,7 @@ export enum VersionDiff {
   Same = 0,
   Old = -1,
 }
+
 /**
  * Compare the version of the settings.
  */
