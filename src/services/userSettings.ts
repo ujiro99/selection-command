@@ -1,8 +1,7 @@
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
-import type { onChangedCallback } from './storage'
-import DefaultSettings from './defaultUserSettings'
+import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
 import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
-import type { UserSettingsType, Version } from '@/types'
+import type { UserSettingsType, Version, Command } from '@/types'
 import { isBase64, isEmpty, toDataURL } from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
 
@@ -24,11 +23,7 @@ export const UserSettings = {
     if (obj.settingVersion == null) {
       obj = migrate073(obj)
     }
-    obj.commands = obj.commands.map((c, idx) => {
-      // Assigning IDs to each command
-      c.id = idx
-      return c
-    })
+    obj.commands = await Storage.getCommands()
     obj.folders = obj.folders.filter((folder) => !!folder.title)
     if (!excludeOptions) {
       // Remove once to avoid duplication.
@@ -76,6 +71,8 @@ export const UserSettings = {
     // Settings for options are kept separate from user set values.
     removeOptionSettings(data)
 
+    await Storage.setCommands(data.commands)
+    data.commands = []
     await Storage.set(STORAGE_KEY.USER, data)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
     return true
@@ -83,10 +80,20 @@ export const UserSettings = {
 
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
+    await Storage.setCommands(DefaultCommands)
   },
 
   onChanged: (callback: (data: UserSettingsType) => void) => {
-    Storage.addListener(STORAGE_KEY.USER, callback as onChangedCallback)
+    Storage.addListener(STORAGE_KEY.USER, async (newVal: unknown) => {
+      const settings = newVal as UserSettingsType
+      settings.commands = await Storage.getCommands()
+      callback(settings)
+    })
+    Storage.addCommandListener(async (commands: Command[]) => {
+      const settings = await UserSettings.get()
+      settings.commands = commands
+      callback(settings)
+    })
   },
 
   getCaches: async (): Promise<Caches> => {

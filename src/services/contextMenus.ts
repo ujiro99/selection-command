@@ -1,5 +1,5 @@
 import { UserSettings } from '@/services/userSettings'
-import type { UserSettingsType, Command } from '@/services/userSettings'
+import type { UserSettingsType, Command } from '@/types'
 import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
 

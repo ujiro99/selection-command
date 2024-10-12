@@ -70,6 +70,8 @@ export enum STYLE_VARIABLE {
 export const ROOT_FOLDER = ''
 export const OPTION_FOLDER = 'option'
 
+export const COMMAND_MAX = 100
+
 /**
  * Setting value to switch the debug log output from this module.
  * true: enables all log. | false: disables debug log.

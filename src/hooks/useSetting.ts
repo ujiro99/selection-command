@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { UserSettings } from '../services/userSettings'
-import type { UserSettingsType, PageRule } from '../services/userSettings'
+import type { UserSettingsType, PageRule } from '@/types'
 import { isEmpty } from '@/services/util'
 import { STYLE, STARTUP_METHOD } from '@/const'
 

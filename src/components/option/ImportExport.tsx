@@ -39,6 +39,7 @@ export function ImportExport() {
 
   const handleExport = async () => {
     const data = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    data.commands = await Storage.getCommands()
 
     // for back compatibility
     // cache key to image data url

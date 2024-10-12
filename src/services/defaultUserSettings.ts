@@ -1,77 +1,9 @@
-import { UserSettingsType } from '@/types'
+import { UserSettingsType, Command } from '@/types'
 import { VERSION, OPEN_MODE, STARTUP_METHOD, STYLE } from '@/const'
 
 export default {
   settingVersion: VERSION,
-  commands: [
-    {
-      id: 0,
-      iconUrl: 'https://www.google.com/favicon.ico',
-      openMode: OPEN_MODE.POPUP,
-      searchUrl: 'https://google.com/search?q=%s',
-      title: 'Google',
-    },
-    {
-      id: 1,
-      iconUrl: 'https://www.google.com/favicon.ico',
-      openMode: OPEN_MODE.POPUP,
-      searchUrl: 'https://google.com/search?q=%s&tbm=isch',
-      title: 'Google Image',
-      parentFolderId: '222d6489-4eca-48fd-8590-fceb30545bab',
-    },
-    {
-      id: 2,
-      iconUrl: 'https://www.amazon.com/favicon.ico',
-      openMode: OPEN_MODE.TAB,
-      searchUrl: 'https://www.amazon.com/s?k=%s',
-      title: 'Amazon',
-      parentFolderId: '222d6489-4eca-48fd-8590-fceb30545bab',
-    },
-    {
-      id: 3,
-      iconUrl:
-        'https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png',
-      openMode: OPEN_MODE.TAB,
-      searchUrl: 'https://www.youtube.com/results?search_query=%s',
-      title: 'Youtube',
-      parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
-    },
-    {
-      id: 4,
-      iconUrl:
-        'https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico',
-      openMode: OPEN_MODE.TAB,
-      searchUrl: 'https://www.netflix.com/search?q=%s',
-      title: 'Netflix',
-      parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
-    },
-    {
-      id: 5,
-      iconUrl: 'https://s.pinimg.com/webapp/favicon-22eb868c.png',
-      openMode: OPEN_MODE.TAB,
-      searchUrl: 'https://www.pinterest.com/search/pins/?q=%s',
-      title: 'Pinterest',
-      parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
-    },
-    {
-      id: 6,
-      iconUrl:
-        'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png',
-      openMode: OPEN_MODE.TAB,
-      searchUrl: 'https://drive.google.com/drive/search?q=%s',
-      title: 'Drive',
-      parentFolderId: '01710cf1-ec8b-497f-8d1f-9cb716567bc4',
-    },
-    {
-      id: 7,
-      iconUrl: 'https://ssl.gstatic.com/translate/favicon.ico',
-      openMode: OPEN_MODE.TAB,
-      searchUrl:
-        'https://translate.google.co.jp/?hl=ja&sl=auto&text=%s&op=translate',
-      title: 'en to ja',
-      parentFolderId: '01710cf1-ec8b-497f-8d1f-9cb716567bc4',
-    },
-  ],
+  commands: [],
   folders: [
     {
       title: 'Search',
@@ -102,3 +34,72 @@ export default {
   },
   userStyles: [],
 } as UserSettingsType
+
+export const DefaultCommands = [
+  {
+    id: 0,
+    iconUrl: 'https://www.google.com/favicon.ico',
+    openMode: OPEN_MODE.POPUP,
+    searchUrl: 'https://google.com/search?q=%s',
+    title: 'Google',
+  },
+  {
+    id: 1,
+    iconUrl: 'https://www.google.com/favicon.ico',
+    openMode: OPEN_MODE.POPUP,
+    searchUrl: 'https://google.com/search?q=%s&tbm=isch',
+    title: 'Google Image',
+    parentFolderId: '222d6489-4eca-48fd-8590-fceb30545bab',
+  },
+  {
+    id: 2,
+    iconUrl: 'https://www.amazon.com/favicon.ico',
+    openMode: OPEN_MODE.TAB,
+    searchUrl: 'https://www.amazon.com/s?k=%s',
+    title: 'Amazon',
+    parentFolderId: '222d6489-4eca-48fd-8590-fceb30545bab',
+  },
+  {
+    id: 3,
+    iconUrl: 'https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png',
+    openMode: OPEN_MODE.TAB,
+    searchUrl: 'https://www.youtube.com/results?search_query=%s',
+    title: 'Youtube',
+    parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
+  },
+  {
+    id: 4,
+    iconUrl:
+      'https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico',
+    openMode: OPEN_MODE.TAB,
+    searchUrl: 'https://www.netflix.com/search?q=%s',
+    title: 'Netflix',
+    parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
+  },
+  {
+    id: 5,
+    iconUrl: 'https://s.pinimg.com/webapp/favicon-22eb868c.png',
+    openMode: OPEN_MODE.TAB,
+    searchUrl: 'https://www.pinterest.com/search/pins/?q=%s',
+    title: 'Pinterest',
+    parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
+  },
+  {
+    id: 6,
+    iconUrl:
+      'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png',
+    openMode: OPEN_MODE.TAB,
+    searchUrl: 'https://drive.google.com/drive/search?q=%s',
+    title: 'Drive',
+    parentFolderId: '01710cf1-ec8b-497f-8d1f-9cb716567bc4',
+  },
+  {
+    id: 7,
+    iconUrl: 'https://ssl.gstatic.com/translate/favicon.ico',
+    openMode: OPEN_MODE.TAB,
+    searchUrl:
+      'https://translate.google.co.jp/?hl=ja&sl=auto&text=%s&op=translate',
+    title: 'en to ja',
+    parentFolderId: '01710cf1-ec8b-497f-8d1f-9cb716567bc4',
+  },
+] as Command[]
