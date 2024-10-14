@@ -111,7 +111,7 @@
     "message": "Commands"
   },
   "Option_commands_desc": {
-    "message": "Replace `%s` in the URL with the selected text and execute."
+    "message": "Replace `%s` in the URL with the selected text and execute.\nMaximum number of commands: 100"
   },
   "Option_title": {
     "message": "Title"

@@ -111,7 +111,7 @@
     "message": "コマンド"
   },
   "Option_commands_desc": {
-    "message": "URL中の`%s`を、選択したテキストに置き換えて実行します。"
+    "message": "URL中の`%s`を、選択したテキストに置き換えて実行します。\n最大件数: 100件"
   },
   "Option_title": {
     "message": "タイトル"

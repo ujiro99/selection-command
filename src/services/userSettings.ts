@@ -124,7 +124,7 @@ export const UserSettings = {
 
 const removeOptionSettings = (data: UserSettingsType): void => {
   data.commands = data.commands.filter(
-    (c) => c.parentFolderId !== OPTION_FOLDER,
+    (c) => c?.parentFolderId !== OPTION_FOLDER,
   )
   data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
 }

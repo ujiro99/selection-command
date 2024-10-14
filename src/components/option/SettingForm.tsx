@@ -10,7 +10,7 @@ import Form from '@rjsf/core'
 import type { IChangeEvent } from '@rjsf/core'
 import classnames from 'classnames'
 
-import userSettingSchema from '@/services/userSettingSchema.json'
+import userSettingSchema from '@/services/userSettingSchema'
 import {
   UserStyleField,
   UserStyleMap,
