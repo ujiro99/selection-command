@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Dialog } from './Dialog'
-import type { UserSettingsType } from '@/services/userSettings'
+import type { UserSettingsType } from '@/types'
 
 import { Storage, STORAGE_KEY } from '@/services/storage'
 import { UserSettings } from '@/services/userSettings'

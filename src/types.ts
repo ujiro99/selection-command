@@ -18,6 +18,7 @@ export type Command = {
   iconUrl: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
+  parentFolder?: FolderOption // deprecated from v0.8.2
   parentFolderId?: string
   popupOption?: PopupOption
   copyOption?: CopyOption

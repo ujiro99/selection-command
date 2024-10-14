@@ -48,7 +48,8 @@ export const UserSettings = {
   },
 
   set: async (data: UserSettingsType): Promise<boolean> => {
-    // console.debug('update settings', data)
+    data = migrate081(data)
+
     // remove unused caches
     const urls = UserSettings.getUrls(data)
     const caches = await UserSettings.getCaches()
@@ -135,5 +136,17 @@ const migrate073 = (data: UserSettingsType): UserSettingsType => {
       method: STARTUP_METHOD
     }
   }
+  return data
+}
+
+const migrate081 = (data: UserSettingsType): UserSettingsType => {
+  // parentFolder -> parentFolderId
+  data.commands = data.commands.map((c) => {
+    if (c.parentFolder != null) {
+      c.parentFolderId = c.parentFolder.id
+      delete c.parentFolder
+    }
+    return c
+  })
   return data
 }
