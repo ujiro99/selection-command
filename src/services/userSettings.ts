@@ -17,6 +17,18 @@ export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
 }
 
+const callbacks = [] as ((data: UserSettingsType) => void)[]
+Storage.addListener(STORAGE_KEY.USER, async (newVal: unknown) => {
+  const settings = newVal as UserSettingsType
+  settings.commands = await Storage.getCommands()
+  callbacks.forEach((cb) => cb(settings))
+})
+Storage.addCommandListener(async (commands: Command[]) => {
+  const settings = await UserSettings.get()
+  settings.commands = commands
+  callbacks.forEach((cb) => cb(settings))
+})
+
 export const UserSettings = {
   get: async (excludeOptions = false): Promise<UserSettingsType> => {
     let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
@@ -83,17 +95,13 @@ export const UserSettings = {
     await Storage.setCommands(DefaultCommands)
   },
 
-  onChanged: (callback: (data: UserSettingsType) => void) => {
-    Storage.addListener(STORAGE_KEY.USER, async (newVal: unknown) => {
-      const settings = newVal as UserSettingsType
-      settings.commands = await Storage.getCommands()
-      callback(settings)
-    })
-    Storage.addCommandListener(async (commands: Command[]) => {
-      const settings = await UserSettings.get()
-      settings.commands = commands
-      callback(settings)
-    })
+  addChangedListener: (callback: (data: UserSettingsType) => void) => {
+    callbacks.push(callback)
+  },
+
+  removeChangedListener: (callback: (data: UserSettingsType) => void) => {
+    const idx = callbacks.indexOf(callback)
+    if (idx !== -1) callbacks.splice(idx, 1)
   },
 
   getCaches: async (): Promise<Caches> => {

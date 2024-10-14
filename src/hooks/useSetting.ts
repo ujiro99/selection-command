@@ -25,7 +25,10 @@ export function useSetting(): useSettingReturn {
 
   useEffect(() => {
     updateSettings()
-    UserSettings.onChanged(updateSettings)
+    UserSettings.addChangedListener(updateSettings)
+    return () => {
+      UserSettings.removeChangedListener(updateSettings)
+    }
   }, [])
 
   const updateSettings = async () => {

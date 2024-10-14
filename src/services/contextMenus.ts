@@ -4,7 +4,7 @@ import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
 
 chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
-UserSettings.onChanged(() => ContextMenu.init())
+UserSettings.addChangedListener(() => ContextMenu.init())
 
 const randId = (): string => {
   return crypto.getRandomValues(new Uint16Array(1))[0].toString()

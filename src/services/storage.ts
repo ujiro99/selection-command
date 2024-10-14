@@ -27,7 +27,24 @@ export enum STORAGE_AREA {
   LOCAL = 'local',
 }
 
-export type onChangedCallback = (newVal: unknown, oldVal: unknown) => void
+type changedCallback = (newVal: unknown, oldVal: unknown) => void
+const changedCallbacks = {} as { [key: string]: changedCallback[] }
+
+type commandChangedCallback = (commands: Command[]) => void
+const commandChangedCallbacks = [] as commandChangedCallback[]
+
+chrome.storage.onChanged.addListener((changes) => {
+  const commands = [] as Command[]
+  for (const [k, { oldValue, newValue }] of Object.entries(changes)) {
+    for (const [kk, callbacks] of Object.entries(changedCallbacks)) {
+      if (k === kk) callbacks.forEach((cb) => cb(newValue, oldValue))
+    }
+    if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
+  }
+  if (commands.length > 0) {
+    commandChangedCallbacks.forEach((cb) => cb(commands))
+  }
+})
 
 export const Storage = {
   /**
@@ -99,12 +116,13 @@ export const Storage = {
     })
   },
 
-  addListener: (key: STORAGE_KEY, cb: onChangedCallback) => {
-    chrome.storage.onChanged.addListener((changes) => {
-      for (const [k, { oldValue, newValue }] of Object.entries(changes)) {
-        if (k === `${key}`) cb(newValue, oldValue)
-      }
-    })
+  addListener: (key: STORAGE_KEY, cb: changedCallback) => {
+    changedCallbacks[key] = changedCallbacks[key] ?? []
+    changedCallbacks[key].push(cb)
+  },
+
+  removeListener: (key: STORAGE_KEY, cb: changedCallback) => {
+    changedCallbacks[key] = changedCallbacks[key]?.filter((f) => f !== cb)
   },
 
   commandKeys: async (): Promise<string[]> => {
@@ -175,13 +193,12 @@ export const Storage = {
     return true
   },
 
-  addCommandListener: (cb: (commands: Command[]) => void) => {
-    chrome.storage.onChanged.addListener((changes) => {
-      const commands = []
-      for (const [k, { newValue }] of Object.entries(changes)) {
-        if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
-      }
-      if (commands.length > 0) cb(commands)
-    })
+  addCommandListener: (cb: commandChangedCallback) => {
+    commandChangedCallbacks.push(cb)
+  },
+
+  removeCommandListener: (cb: commandChangedCallback) => {
+    const idx = commandChangedCallbacks.findIndex((f) => f === cb)
+    if (idx !== -1) commandChangedCallbacks.splice(idx, 1)
   },
 }
