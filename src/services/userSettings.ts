@@ -1,96 +1,9 @@
-import type { Placement } from '@floating-ui/react'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
-import type { onChangedCallback } from './storage'
-import DefaultSetting from './defaultUserSettings.json'
-import type { OPEN_MODE, POPUP_ENABLED, STYLE } from '@/const'
-import { OPTION_FOLDER, STARTUP_METHOD, KEYBOARD, VERSION } from '@/const'
+import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
+import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
+import type { UserSettingsType, Version, Command } from '@/types'
 import { isBase64, isEmpty, toDataURL } from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
-
-export type Version = `${number}.${number}.${number}`
-
-export type Command = {
-  id: number
-  title: string
-  searchUrl: string
-  iconUrl: string
-  openMode: OPEN_MODE
-  openModeSecondary?: OPEN_MODE
-  parentFolder?: FolderOption
-  popupOption?: PopupOption
-  copyOption?: CopyOption
-  fetchOptions?: string
-  variables?: Array<CommandVariable>
-  spaceEncoding?: SPACE_ENCODING
-}
-
-export type PopupOption = {
-  width: number
-  height: number
-}
-
-export type CopyOption = 'default' | 'text'
-
-export enum SPACE_ENCODING {
-  PLUS = 'plus',
-  PERCENT = 'percent',
-}
-
-export type FolderOption = {
-  id: string
-  name: string
-  iconUrl: string
-}
-
-export type CommandFolder = {
-  id: string
-  title: string
-  iconUrl?: string
-  onlyIcon?: boolean
-}
-
-export type CommandVariable = {
-  name: string
-  value: string
-}
-
-export type PageRule = {
-  urlPattern: string
-  popupEnabled: POPUP_ENABLED
-  popupPlacement: Placement
-}
-
-export enum STYLE_VARIABLE {
-  BACKGROUND_COLOR = 'background-color',
-  BORDER_COLOR = 'border-color',
-  FONT_SCALE = 'font-scale',
-  IMAGE_SCALE = 'image-scale',
-  PADDING_SCALE = 'padding-scale',
-  POPUP_DELAY = 'popup-delay',
-  POPUP_DURATION = 'popup-duration',
-}
-
-export type StyleVariable = {
-  name: STYLE_VARIABLE
-  value: string
-}
-
-export type StartupMethod = {
-  method: STARTUP_METHOD
-  keyboardParam?: KEYBOARD
-  leftClickHoldParam?: number
-}
-
-export type UserSettingsType = {
-  settingVersion: Version
-  startupMethod: StartupMethod
-  popupPlacement: Placement
-  commands: Array<Command>
-  folders: Array<CommandFolder>
-  pageRules: Array<PageRule>
-  style: STYLE
-  userStyles: Array<StyleVariable>
-}
 
 enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
@@ -104,17 +17,25 @@ export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
 }
 
+const callbacks = [] as ((data: UserSettingsType) => void)[]
+Storage.addListener(STORAGE_KEY.USER, async (newVal: unknown) => {
+  const settings = newVal as UserSettingsType
+  settings.commands = await Storage.getCommands()
+  callbacks.forEach((cb) => cb(settings))
+})
+Storage.addCommandListener(async (commands: Command[]) => {
+  const settings = await UserSettings.get()
+  settings.commands = commands
+  callbacks.forEach((cb) => cb(settings))
+})
+
 export const UserSettings = {
   get: async (excludeOptions = false): Promise<UserSettingsType> => {
     let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
     if (obj.settingVersion == null) {
       obj = migrate073(obj)
     }
-    obj.commands = obj.commands.map((c, idx) => {
-      // Assigning IDs to each command
-      c.id = idx
-      return c
-    })
+    obj.commands = await Storage.getCommands()
     obj.folders = obj.folders.filter((folder) => !!folder.title)
     if (!excludeOptions) {
       // Remove once to avoid duplication.
@@ -127,7 +48,8 @@ export const UserSettings = {
   },
 
   set: async (data: UserSettingsType): Promise<boolean> => {
-    // console.debug('update settings', data)
+    data = migrate081(data)
+
     // remove unused caches
     const urls = UserSettings.getUrls(data)
     const caches = await UserSettings.getCaches()
@@ -162,17 +84,25 @@ export const UserSettings = {
     // Settings for options are kept separate from user set values.
     removeOptionSettings(data)
 
+    await Storage.setCommands(data.commands)
+    data.commands = []
     await Storage.set(STORAGE_KEY.USER, data)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
     return true
   },
 
   reset: async () => {
-    await Storage.set(STORAGE_KEY.USER, DefaultSetting)
+    await Storage.set(STORAGE_KEY.USER, DefaultSettings)
+    await Storage.setCommands(DefaultCommands)
   },
 
-  onChanged: (callback: (data: UserSettingsType) => void) => {
-    Storage.addListener(STORAGE_KEY.USER, callback as onChangedCallback)
+  addChangedListener: (callback: (data: UserSettingsType) => void) => {
+    callbacks.push(callback)
+  },
+
+  removeChangedListener: (callback: (data: UserSettingsType) => void) => {
+    const idx = callbacks.indexOf(callback)
+    if (idx !== -1) callbacks.splice(idx, 1)
   },
 
   getCaches: async (): Promise<Caches> => {
@@ -194,7 +124,7 @@ export const UserSettings = {
 
 const removeOptionSettings = (data: UserSettingsType): void => {
   data.commands = data.commands.filter(
-    (c) => c.parentFolder?.id !== OPTION_FOLDER,
+    (c) => c?.parentFolderId !== OPTION_FOLDER,
   )
   data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
 }
@@ -202,9 +132,21 @@ const removeOptionSettings = (data: UserSettingsType): void => {
 const migrate073 = (data: UserSettingsType): UserSettingsType => {
   data.settingVersion = VERSION as Version
   if (data.startupMethod == null) {
-    data.startupMethod = DefaultSetting.startupMethod as {
+    data.startupMethod = DefaultSettings.startupMethod as {
       method: STARTUP_METHOD
     }
   }
+  return data
+}
+
+const migrate081 = (data: UserSettingsType): UserSettingsType => {
+  // parentFolder -> parentFolderId
+  data.commands = data.commands.map((c) => {
+    if (c.parentFolder != null) {
+      c.parentFolderId = c.parentFolder.id
+      delete c.parentFolder
+    }
+    return c
+  })
   return data
 }

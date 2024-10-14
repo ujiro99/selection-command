@@ -1,17 +1,22 @@
-import UseSetting from './defaultUserSettings.json'
+import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
+import { Command } from '@/types'
 
 export enum STORAGE_KEY {
   USER = 0,
   BG = 1,
+  COMMAND_COUNT = 2,
 }
 
 export enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
 }
 
+const CMD_PREFIX = 'cmd-'
+
 const DEFAULTS = {
-  [STORAGE_KEY.USER]: UseSetting,
+  [STORAGE_KEY.USER]: DefaultSettings,
   [STORAGE_KEY.BG]: {},
+  [STORAGE_KEY.COMMAND_COUNT]: DefaultCommands.length,
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
@@ -22,7 +27,24 @@ export enum STORAGE_AREA {
   LOCAL = 'local',
 }
 
-export type onChangedCallback = (newVal: unknown, oldVal: unknown) => void
+type changedCallback = (newVal: unknown, oldVal: unknown) => void
+const changedCallbacks = {} as { [key: string]: changedCallback[] }
+
+type commandChangedCallback = (commands: Command[]) => void
+const commandChangedCallbacks = [] as commandChangedCallback[]
+
+chrome.storage.onChanged.addListener((changes) => {
+  const commands = [] as Command[]
+  for (const [k, { oldValue, newValue }] of Object.entries(changes)) {
+    for (const [kk, callbacks] of Object.entries(changedCallbacks)) {
+      if (k === kk) callbacks.forEach((cb) => cb(newValue, oldValue))
+    }
+    if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
+  }
+  if (commands.length > 0) {
+    commandChangedCallbacks.forEach((cb) => cb(commands))
+  }
+})
 
 export const Storage = {
   /**
@@ -37,9 +59,8 @@ export const Storage = {
     let result = await chrome.storage[area].get(`${key}`)
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
-    } else {
-      return result[key] ?? { ...DEFAULTS[key] }
     }
+    return result[key] ?? structuredClone(DEFAULTS[key])
   },
 
   /**
@@ -48,20 +69,16 @@ export const Storage = {
    * @param {string} key key of item.
    * @param {any} value item.
    */
-  set: (
+  set: async (
     key: STORAGE_KEY | LOCAL_STORAGE_KEY,
     value: unknown,
     area = STORAGE_AREA.SYNC,
-  ): Promise<boolean | chrome.runtime.LastError> => {
-    return new Promise((resolve, reject) => {
-      chrome.storage[area].set({ [key]: value }, () => {
-        if (chrome.runtime.lastError != null) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve(true)
-        }
-      })
-    })
+  ): Promise<boolean> => {
+    await chrome.storage[area].set({ [key]: value })
+    if (chrome.runtime.lastError != null) {
+      throw chrome.runtime.lastError
+    }
+    return true
   },
 
   /**
@@ -99,11 +116,89 @@ export const Storage = {
     })
   },
 
-  addListener: (key: STORAGE_KEY, cb: onChangedCallback) => {
-    chrome.storage.onChanged.addListener((changes) => {
-      for (const [k, { oldValue, newValue }] of Object.entries(changes)) {
-        if (k === `${key}`) cb(newValue, oldValue)
-      }
-    })
+  addListener: (key: STORAGE_KEY, cb: changedCallback) => {
+    changedCallbacks[key] = changedCallbacks[key] ?? []
+    changedCallbacks[key].push(cb)
+  },
+
+  removeListener: (key: STORAGE_KEY, cb: changedCallback) => {
+    changedCallbacks[key] = changedCallbacks[key]?.filter((f) => f !== cb)
+  },
+
+  commandKeys: async (): Promise<string[]> => {
+    const count = await Storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
+    return Array.from({ length: count }, (_, i) => `${CMD_PREFIX}${i}`)
+  },
+
+  /**
+   * Get all commands from chrome sync storage.
+   *
+   * @returns {Promise<Command[]>} commands
+   * @throws {chrome.runtime.LastError} if error occurred
+   */
+  getCommands: async (): Promise<Command[]> => {
+    const keys = await Storage.commandKeys()
+    const res = await chrome.storage.sync.get(keys)
+    if (chrome.runtime.lastError != null) {
+      throw chrome.runtime.lastError
+    }
+    return keys.map((key) => res[key])
+  },
+
+  /**
+   * Set all commands to chrome sync storage.
+   *
+   * @returns {Promise<boolean>} true if success's
+   * @throws {chrome.runtime.LastError} if error occurred
+   */
+  setCommands: async (
+    commands: Command[],
+  ): Promise<boolean | chrome.runtime.LastError> => {
+    // Remove all commands first.
+    await Storage.removeCommands()
+    // Update command count.
+    const count = commands.length
+    await chrome.storage.sync.set({ [STORAGE_KEY.COMMAND_COUNT]: count })
+    if (chrome.runtime.lastError != null) {
+      throw chrome.runtime.lastError
+    }
+    // Update commands.
+    const data = commands.reduce(
+      (acc, cmd, i) => {
+        cmd.id = i // Assigning IDs to each command
+        acc[`${CMD_PREFIX}${i}`] = cmd
+        return acc
+      },
+      {} as { [key: string]: Command },
+    )
+    await chrome.storage.sync.set(data)
+    if (chrome.runtime.lastError != null) {
+      throw chrome.runtime.lastError
+    }
+    return true
+  },
+
+  /**
+   * Remove all commands from chrome sync storages.
+   *
+   * @returns {Promise<boolean>} true if success's
+   * @throws {chrome.runtime.LastError} if error occurred
+   */
+  removeCommands: async (): Promise<boolean> => {
+    const keys = await Storage.commandKeys()
+    await chrome.storage.sync.remove(keys)
+    if (chrome.runtime.lastError != null) {
+      throw chrome.runtime.lastError
+    }
+    return true
+  },
+
+  addCommandListener: (cb: commandChangedCallback) => {
+    commandChangedCallbacks.push(cb)
+  },
+
+  removeCommandListener: (cb: commandChangedCallback) => {
+    const idx = commandChangedCallbacks.findIndex((f) => f === cb)
+    if (idx !== -1) commandChangedCallbacks.splice(idx, 1)
   },
 }

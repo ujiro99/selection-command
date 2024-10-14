@@ -1,10 +1,10 @@
 import { UserSettings } from '@/services/userSettings'
-import type { UserSettingsType, Command } from '@/services/userSettings'
+import type { UserSettingsType, Command } from '@/types'
 import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
 
 chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
-UserSettings.onChanged(() => ContextMenu.init())
+UserSettings.addChangedListener(() => ContextMenu.init())
 
 const randId = (): string => {
   return crypto.getRandomValues(new Uint16Array(1))[0].toString()
@@ -37,11 +37,11 @@ const ContextMenu = {
     for (const command of commands) {
       // Add folder
       let folderId
-      if (command.parentFolder) {
-        folderId = folderIdObj[command.parentFolder.id]
+      if (command.parentFolderId) {
+        folderId = folderIdObj[command.parentFolderId]
         if (!folderId) {
           // If not exists, insert the folder.
-          const f = folder.find((obj) => obj.id === command.parentFolder?.id)
+          const f = folder.find((obj) => obj.id === command.parentFolderId)
           if (f) {
             if (f.id === OPTION_FOLDER) {
               // If the folder is Option menu, insert a separator.

@@ -1,5 +1,5 @@
 import React from 'react'
-import userSettingSchema from '@/services/userSettingSchema.json'
+import userSettingSchema from '@/services/userSettingSchema'
 import { container, item, button, label } from './TableOfContents.module.css'
 import { t } from '@/services/i18n'
 

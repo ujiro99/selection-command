@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { UserSettings } from '../services/userSettings'
-import type { UserSettingsType, PageRule } from '../services/userSettings'
+import type { UserSettingsType, PageRule } from '@/types'
 import { isEmpty } from '@/services/util'
 import { STYLE, STARTUP_METHOD } from '@/const'
 
@@ -25,7 +25,10 @@ export function useSetting(): useSettingReturn {
 
   useEffect(() => {
     updateSettings()
-    UserSettings.onChanged(updateSettings)
+    UserSettings.addChangedListener(updateSettings)
+    return () => {
+      UserSettings.removeChangedListener(updateSettings)
+    }
   }, [])
 
   const updateSettings = async () => {

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Dialog } from './Dialog'
-import type { UserSettingsType } from '@/services/userSettings'
+import type { UserSettingsType } from '@/types'
 
 import { Storage, STORAGE_KEY } from '@/services/storage'
 import { UserSettings } from '@/services/userSettings'
@@ -39,6 +39,7 @@ export function ImportExport() {
 
   const handleExport = async () => {
     const data = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    data.commands = await Storage.getCommands()
 
     // for back compatibility
     // cache key to image data url

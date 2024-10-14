@@ -186,6 +186,7 @@
     font-size: 1.2em;
     color: var(--font-color);
     margin: 10px 0;
+    white-space: pre-wrap;
   }
 
   .checkbox {

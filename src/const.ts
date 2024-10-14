@@ -42,6 +42,11 @@ export enum STYLE {
   HORIZONTAL = 'horizontal',
 }
 
+export enum SPACE_ENCODING {
+  PLUS = 'plus',
+  PERCENT = 'percent',
+}
+
 export enum OPTION_MSG {
   START = 'start',
   CHANGED = 'changed',
@@ -52,8 +57,20 @@ export enum OPTION_MSG {
   MOUSE = 'mouse',
 }
 
+export enum STYLE_VARIABLE {
+  BACKGROUND_COLOR = 'background-color',
+  BORDER_COLOR = 'border-color',
+  FONT_SCALE = 'font-scale',
+  IMAGE_SCALE = 'image-scale',
+  PADDING_SCALE = 'padding-scale',
+  POPUP_DELAY = 'popup-delay',
+  POPUP_DURATION = 'popup-duration',
+}
+
 export const ROOT_FOLDER = ''
 export const OPTION_FOLDER = 'option'
+
+export const COMMAND_MAX = 100
 
 /**
  * Setting value to switch the debug log output from this module.
