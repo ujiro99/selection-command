@@ -3,7 +3,7 @@ import { Dialog } from './Dialog'
 import type { UserSettingsType } from '@/types'
 
 import { Storage, STORAGE_KEY } from '@/services/storage'
-import { UserSettings } from '@/services/userSettings'
+import { UserSettings, migrate } from '@/services/userSettings'
 import { isBase64, isUrl } from '@/services/util'
 import { APP_ID } from '@/const'
 import { t } from '@/services/i18n'
@@ -83,7 +83,8 @@ export function ImportExport() {
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
       ;(async () => {
-        await UserSettings.set(importJson)
+        const data = migrate(importJson)
+        await UserSettings.set(data)
         location.reload()
       })()
     }

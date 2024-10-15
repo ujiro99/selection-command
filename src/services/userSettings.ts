@@ -38,12 +38,14 @@ Storage.addCommandListener(async (commands: Command[]) => {
 export const UserSettings = {
   get: async (excludeOptions = false): Promise<UserSettingsType> => {
     let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
-    if (obj.settingVersion == null) {
-      obj = migrate073(obj)
-    }
-    obj = await migrate081(obj)
 
-    obj.commands = await Storage.getCommands()
+    obj = migrate(obj)
+
+    const commands = await Storage.getCommands()
+    if (commands.length > 0) {
+      obj.commands = commands
+    }
+
     obj.folders = obj.folders.filter((folder) => !!folder.title)
     if (!excludeOptions) {
       // Remove once to avoid duplication.
@@ -56,8 +58,6 @@ export const UserSettings = {
   },
 
   set: async (data: UserSettingsType): Promise<boolean> => {
-    data = await migrate081(data)
-
     // remove unused caches
     const urls = UserSettings.getUrls(data)
     const caches = await UserSettings.getCaches()
@@ -137,8 +137,18 @@ const removeOptionSettings = (data: UserSettingsType): void => {
   data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
 }
 
+export const migrate = (data: UserSettingsType): UserSettingsType => {
+  if (data.settingVersion == null) {
+    data = migrate073(data)
+  }
+  if (versionDiff(data.settingVersion, '0.8.2') === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate082(data)
+  }
+  return data
+}
+
 const migrate073 = (data: UserSettingsType): UserSettingsType => {
-  data.settingVersion = VERSION as Version
   if (data.startupMethod == null) {
     data.startupMethod = DefaultSettings.startupMethod as {
       method: STARTUP_METHOD
@@ -147,18 +157,7 @@ const migrate073 = (data: UserSettingsType): UserSettingsType => {
   return data
 }
 
-const migrate081 = async (
-  data: UserSettingsType,
-): Promise<UserSettingsType> => {
-  if (versionDiff(data.settingVersion, '0.8.1') !== VersionDiff.Old) {
-    return data
-  }
-  console.debug('Migrate 0.8.1')
-  data.settingVersion = VERSION as Version
-
-  // Commands as a separate item in Storage
-  await Storage.setCommands(data.commands)
-
+const migrate082 = (data: UserSettingsType): UserSettingsType => {
   // parentFolder -> parentFolderId
   data.commands = data.commands.map((c) => {
     if (c.parentFolder != null) {

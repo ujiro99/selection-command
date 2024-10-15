@@ -223,7 +223,7 @@ export enum VersionDiff {
  *   If a < b, return VersionDiff.Old.
  */
 export function versionDiff(a: Version, b: Version): VersionDiff {
-  if (!b) {
+  if (!a || !b) {
     return VersionDiff.Old
   }
   const aVer = a.split('.').map((v) => Number.parseInt(v))
