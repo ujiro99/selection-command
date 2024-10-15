@@ -142,7 +142,7 @@ export const Storage = {
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }
-    return keys.map((key) => res[key])
+    return keys.map((key) => res[key]).filter((cmd) => cmd != null)
   },
 
   /**
