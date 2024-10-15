@@ -215,6 +215,12 @@ export enum VersionDiff {
 
 /**
  * Compare the version of the settings.
+ *
+ * @param {Version} a The version to compare.
+ * @param {Version} b The version to compare.
+ * @returns {VersionDiff} The result of the comparison.
+ *   If a > b, return VersionDiff.New.
+ *   If a < b, return VersionDiff.Old.
  */
 export function versionDiff(a: Version, b: Version): VersionDiff {
   if (!b) {

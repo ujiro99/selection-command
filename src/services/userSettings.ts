@@ -2,7 +2,13 @@ import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
 import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
 import type { UserSettingsType, Version, Command } from '@/types'
-import { isBase64, isEmpty, toDataURL } from '@/services/util'
+import {
+  isBase64,
+  isEmpty,
+  toDataURL,
+  versionDiff,
+  VersionDiff,
+} from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
 
 enum LOCAL_STORAGE_KEY {
@@ -35,6 +41,8 @@ export const UserSettings = {
     if (obj.settingVersion == null) {
       obj = migrate073(obj)
     }
+    obj = await migrate081(obj)
+
     obj.commands = await Storage.getCommands()
     obj.folders = obj.folders.filter((folder) => !!folder.title)
     if (!excludeOptions) {
@@ -48,7 +56,7 @@ export const UserSettings = {
   },
 
   set: async (data: UserSettingsType): Promise<boolean> => {
-    data = migrate081(data)
+    data = await migrate081(data)
 
     // remove unused caches
     const urls = UserSettings.getUrls(data)
@@ -139,7 +147,18 @@ const migrate073 = (data: UserSettingsType): UserSettingsType => {
   return data
 }
 
-const migrate081 = (data: UserSettingsType): UserSettingsType => {
+const migrate081 = async (
+  data: UserSettingsType,
+): Promise<UserSettingsType> => {
+  if (versionDiff(data.settingVersion, '0.8.1') !== VersionDiff.Old) {
+    return data
+  }
+  console.debug('Migrate 0.8.1')
+  data.settingVersion = VERSION as Version
+
+  // Commands as a separate item in Storage
+  await Storage.setCommands(data.commands)
+
   // parentFolder -> parentFolderId
   data.commands = data.commands.map((c) => {
     if (c.parentFolder != null) {
