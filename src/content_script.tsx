@@ -24,3 +24,11 @@ fetch(url)
     shadow.insertBefore(style, shadow.firstChild)
     style.insertAdjacentHTML('afterend', icons)
   })
+
+// Hide the rootDom while printing.
+window.addEventListener('beforeprint', () => {
+  rootDom.style.display = 'none'
+})
+window.addEventListener('afterprint', () => {
+  rootDom.style.display = 'block'
+})

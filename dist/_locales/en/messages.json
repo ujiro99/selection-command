@@ -111,7 +111,10 @@
     "message": "Commands"
   },
   "Option_commands_desc": {
-    "message": "Replace `%s` in the URL with the selected text and execute.\nMaximum number of commands: 100"
+    "message": "Replace `%s` in the URL with the selected text and execute."
+  },
+  "Option_commands_desc_count": {
+    "message": " / 100 Records"
   },
   "Option_title": {
     "message": "Title"

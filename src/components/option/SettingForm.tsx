@@ -261,7 +261,7 @@ export function SettingFrom() {
     },
     commands: {
       'ui:title': t('commands'),
-      'ui:description': `${t('searchUrl')}: ${t('commands_desc')}`,
+      'ui:description': `${t('searchUrl')}: ${t('commands_desc')} \n${settingData?.commands.length}${t('commands_desc_count')}`,
       items: {
         'ui:classNames': 'commandItem',
         'ui:order': [
@@ -435,27 +435,25 @@ export function SettingFrom() {
 
   const log = (type: any) => console.log.bind(console, type)
   return (
-    <>
-      <Form
-        className={css.form}
-        schema={userSettingSchema}
-        validator={validator}
-        formData={settingData}
-        onChange={onChangeForm}
-        onError={log('errors')}
-        uiSchema={uiSchema}
-        fields={fields}
-        templates={{
-          ButtonTemplates: {
-            AddButton,
-            MoveDownButton,
-            MoveUpButton,
-            RemoveButton,
-          },
-        }}
-        ref={formRef}
-      />
-    </>
+    <Form
+      className={css.form}
+      schema={userSettingSchema}
+      validator={validator}
+      formData={settingData}
+      onChange={onChangeForm}
+      onError={log('errors')}
+      uiSchema={uiSchema}
+      fields={fields}
+      templates={{
+        ButtonTemplates: {
+          AddButton,
+          MoveDownButton,
+          MoveUpButton,
+          RemoveButton,
+        },
+      }}
+      ref={formRef}
+    />
   )
 }
 
