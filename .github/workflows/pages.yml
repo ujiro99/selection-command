@@ -28,13 +28,15 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect package manager
         id: detect-package-manager
         run: |
-          cd pages
           if [ -f "${{ github.workspace }}/yarn.lock" ]; then
             echo "manager=yarn" >> $GITHUB_OUTPUT
             echo "command=install" >> $GITHUB_OUTPUT
