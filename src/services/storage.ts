@@ -179,6 +179,34 @@ export const Storage = {
   },
 
   /**
+   * Update commands to chrome sync storage.
+   *
+   * @returns {Promise<boolean>} true if success's
+   * @throws {chrome.runtime.LastError} if error occurred
+   */
+  updateCommands: async (
+    commands: Command[],
+  ): Promise<boolean | chrome.runtime.LastError> => {
+    const current = await Storage.getCommands()
+    // Update commands.
+    const newCommands = current.reduce(
+      (acc, cmd, i) => {
+        const newCmd = commands.find((c) => c.id === cmd.id)
+        if (newCmd) {
+          acc[`${CMD_PREFIX}${i}`] = newCmd
+        }
+        return acc
+      },
+      {} as { [key: string]: Command },
+    )
+    await chrome.storage.sync.set(newCommands)
+    if (chrome.runtime.lastError != null) {
+      throw chrome.runtime.lastError
+    }
+    return true
+  },
+
+  /**
    * Remove all commands from chrome sync storages.
    *
    * @returns {Promise<boolean>} true if success's

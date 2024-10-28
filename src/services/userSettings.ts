@@ -99,6 +99,11 @@ export const UserSettings = {
     return true
   },
 
+  updateCommands: async (commands: Command[]): Promise<boolean> => {
+    await Storage.updateCommands(commands)
+    return true
+  },
+
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
     await Storage.setCommands(DefaultCommands)
