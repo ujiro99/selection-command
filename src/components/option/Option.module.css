@@ -1,5 +1,3 @@
-@import url('../Animation.css');
-
 :root {
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
@@ -7,10 +5,8 @@
   --menu-top: 150px;
 }
 
-:global {
-  body {
-    margin: 0;
-  }
+:global body {
+  margin: 0;
 }
 
 .titleHeader {
@@ -27,8 +23,10 @@
 
 .title {
   font-family: var(--font-monospace);
+  font-weight: 600;
   font-size: 2.2rem;
   margin: 0;
+  line-height: 1.14;
 }
 
 .option {
@@ -96,6 +94,7 @@
 
 .buttonImport {
   composes: button from '../Common.module.css';
+
   width: calc(100% - 15px);
   padding: 6px 8px;
   border-radius: 4px;

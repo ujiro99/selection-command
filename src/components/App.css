@@ -1,3 +1,4 @@
+@import url('global.css');
 @import url('Animation.css');
 
 :host,
@@ -81,17 +82,17 @@
   transition: opacity 400ms;
 }
 
-.collapse-wrap > * {
+.collapse-wrap>* {
   transition-property: height;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 400ms;
   overflow: hidden;
 }
 
-.collapse-from > * {
+.collapse-from>* {
   height: 0;
 }
 
-.collapse-to > * {
+.collapse-to>* {
   height: var(--frameHeight);
 }

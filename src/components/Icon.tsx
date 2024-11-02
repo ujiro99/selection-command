@@ -1,5 +1,5 @@
 import React from 'react'
-import { icon } from './Icon.module.css'
+import styles from './Icon.module.css'
 
 type Props = {
   name: string
@@ -9,7 +9,7 @@ type Props = {
 export function Icon(props: Props): JSX.Element {
   const href = `#icon-${props.name}`
 
-  const className = props.className ?? icon
+  const className = props.className ?? styles.icon
 
   return (
     <svg className={className}>

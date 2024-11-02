@@ -1,8 +1,15 @@
 import React, { useState, createContext, useCallback } from 'react'
-import { Popover, PopoverPanel, Transition } from '@headlessui/react'
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from '@/components/ui/menubar'
 import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'
-import classnames from 'classnames'
 import { Menu } from './menu/Menu'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
@@ -11,14 +18,7 @@ import { t } from '@/services/i18n'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { STYLE_VARIABLE } from '@/const'
 
-import {
-  popup,
-  popupContianer,
-  popupTransition,
-  previewContainer,
-  previewLabel,
-  previewDescription,
-} from './Popup.module.css'
+import css from './Popup.module.css'
 
 export type PopupProps = {
   positionElm: Element | null
@@ -84,38 +84,57 @@ export const Popup = (props: PopupProps) => {
 
   return (
     <popupContext.Provider value={{ isPreview, inTransition }}>
-      {isPreview && <PopupPreview {...props} />}
-      <Popover
-        className={classnames(popupContianer, {
-          [previewContainer]: isPreview,
-        })}
+      {isPreview && <PreviewDesc {...props} />}
+
+      <Menubar>
+        <MenubarMenu>
+          <MenubarTrigger>File</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              New Tab ! <MenubarShortcut>⌘T</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>New Window</MenubarItem>
+            <MenubarSeparator />
+            <MenubarItem>Share</MenubarItem>
+            <MenubarSeparator />
+            <MenubarItem>Print</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
+
+      {/*
+    <Popover
+      className={classnames(css.popupContianer, {
+        [css.previewContainer]: isPreview,
+      })}
+    >
+      <Transition
+        show={visible}
+        beforeEnter={onBeforeEnter}
+        afterEnter={onAfterEnter}
       >
-        <Transition
-          show={visible}
-          beforeEnter={onBeforeEnter}
-          afterEnter={onAfterEnter}
+        <PopoverPanel
+          ref={refs.setFloating}
+          style={floatingStyles}
+          data-placement={placement}
+          static
         >
-          <PopoverPanel
-            ref={refs.setFloating}
-            style={floatingStyles}
-            data-placement={placement}
-            static
-          >
-            <div className={`${popup} ${popupTransition}`} style={styles}>
-              {!isContextMenu ? (
-                <Menu />
-              ) : (
-                <InvisibleItem positionElm={props.positionElm} />
-              )}
-            </div>
-          </PopoverPanel>
-        </Transition>
-      </Popover>
+          <div className={`${css.popup} ${css.popupTransition}`} style={styles}>
+            {!isContextMenu ? (
+              <Menu />
+            ) : (
+              <InvisibleItem positionElm={props.positionElm} />
+            )}
+          </div>
+        </PopoverPanel>
+      </Transition>
+    </Popover>
+*/}
     </popupContext.Provider>
   )
 }
 
-export function PopupPreview(props: PopupProps) {
+export function PreviewDesc(props: PopupProps) {
   const { visible, isContextMenu, isKeyboard, isLeftClickHold } =
     useDetectStartup(props)
   const { settings } = useSetting()
@@ -126,19 +145,19 @@ export function PopupPreview(props: PopupProps) {
 
   return (
     <>
-      <p className={previewLabel}>
+      <p className={css.previewLabel}>
         <span>Preview...</span>
       </p>
       {isContextMenu && (
-        <p className={previewDescription}>{t('previewOnContextMenu')}</p>
+        <p className={css.previewDescription}>{t('previewOnContextMenu')}</p>
       )}
       {!visible && isKeyboard && (
-        <p className={previewDescription}>
+        <p className={css.previewDescription}>
           {t('previewOnKeyboard', [keyLabel])}
         </p>
       )}
       {!visible && isLeftClickHold && (
-        <p className={previewDescription}>
+        <p className={css.previewDescription}>
           {t('previewOnLeftClickHold', [keyLabel])}
         </p>
       )}

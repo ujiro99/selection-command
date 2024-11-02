@@ -9,201 +9,197 @@
   --bgColor: #f5f5f5;
 }
 
-:global {
-  .form-group {
-    display: flex;
-    margin-bottom: 8px;
-  }
+:global .form-group {
+  display: flex;
+  margin-bottom: 8px;
+}
 
-  .row {
-    padding: 10px 0 10px 10px;
-    margin: auto;
-  }
+:global .row {
+  padding: 10px 0 10px 10px;
+  margin: auto;
+}
 
-  .col-xs-9 {
-    display: inline-block;
-    width: 100%;
-  }
+:global .col-xs-9 {
+  display: inline-block;
+  width: 100%;
+}
 
-  .col-xs-3 {
-    display: inline-block;
-    margin-left: 12px;
-  }
+:global .col-xs-3 {
+  display: inline-block;
+  margin-left: 12px;
+}
 
-  .btn-group {
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    flex-direction: column;
-    height: calc(var(--butotn-height) * 3);
-  }
+:global .btn-group {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  flex-direction: column;
+  height: calc(var(--butotn-height) * 3);
+}
 
-  .array-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
+:global .array-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
 
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  .commandItem>fieldset>legend,
-  .variableItem>fieldset>legend,
-  .folderItem>fieldset>legend,
-  .pageRuleItem>fieldset>legend {
-    display: none;
-  }
-
-  .array-item>.col-xs-9>.form-group {
-    border: solid 1px rgb(209 213 219);
-    padding: 12px 14px 12px 20px;
-    border-radius: 4px;
-
-    .form-control {
-      border: none;
-      border-radius: 0px;
-      outline: none;
-      padding: 6px 12px;
-    }
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  fieldset>.form-group {
+  &:last-child {
     margin-bottom: 0;
   }
+}
 
-  .control-label {
-    flex: 1.1;
-    font-size: 1.1em;
-    line-height: 2.2;
-    white-space: pre;
+:global .commandItem>fieldset>legend,
+:global .variableItem>fieldset>legend,
+:global .folderItem>fieldset>legend,
+:global .pageRuleItem>fieldset>legend {
+  display: none;
+}
+
+:global .array-item>.col-xs-9>.form-group {
+  border: solid 1px rgb(209 213 219);
+  padding: 12px 14px 12px 20px;
+  border-radius: 4px;
+
+  :global .form-control {
+    border: none;
+    border-radius: 0px;
+    outline: none;
+    padding: 6px 12px;
   }
 
-  .popupPlacement .control-label,
-  .style .control-label {
-    line-height: 2.6;
+  &:last-child {
+    margin-bottom: 0;
   }
+}
 
-  .has-description {
-    .title {
-      margin: 6px 0 0 0;
-      line-height: 1.1;
-    }
+:global fieldset>.form-group {
+  margin-bottom: 0;
+}
 
-    .desc {
-      margin: 0;
-      font-size: 10px;
-      line-height: 1.8;
-    }
-  }
+:global .control-label {
+  flex: 1.1;
+  font-size: 1.1em;
+  line-height: 2.2;
+  white-space: pre;
+}
 
-  .form-control {
-    flex: 2;
-    font-size: 0.9rem;
-    border: solid 1px rgb(209 213 219);
-    padding: 8px 14px;
-    border-radius: 4px;
-    background: var(--bgColor);
-    color: var(--font-color);
-    font-family: var(--font-family);
-  }
+:global .popupPlacement .control-label,
+:global .style .control-label {
+  line-height: 2.6;
+}
 
-  select.form-control {
-    cursor: pointer;
-  }
+:global .has-description .title {
+  margin: 6px 0 0 0;
+  line-height: 1.1;
+}
 
-  .required {
-    color: rgb(239 68 68);
-    margin-left: 2px;
-  }
+:global .has-description .desc {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.8;
+}
 
-  #root__title {
-    display: none;
-  }
+:global .form-control {
+  flex: 2;
+  font-size: 0.9rem;
+  border: solid 1px rgb(209 213 219);
+  padding: 8px 14px;
+  border-radius: 4px;
+  background: var(--bgColor);
+  color: var(--font-color);
+  font-family: var(--font-family);
+}
 
-  #root>.form-group {
-    padding: 20px;
-  }
+:global select.form-control {
+  cursor: pointer;
+}
 
-  #root>.form-group+.form-group {
-    border-top: 1px solid #d1d5db;
-  }
+:global .required {
+  color: rgb(239 68 68);
+  margin-left: 2px;
+}
 
-  .array-item-list+button {
-    margin: 0 auto;
-  }
+:global #root__title {
+  display: none;
+}
 
-  /* hidden submit button */
-  button[type='submit'] {
-    display: none;
-  }
+:global #root>.form-group {
+  padding: 20px;
+}
 
-  .hidden {
-    display: none;
-  }
+:global #root>.form-group+.form-group {
+  border-top: 1px solid #d1d5db;
+}
 
-  legend {
-    display: block;
-    width: 100%;
-    padding: 0;
-    font-size: 21px;
-    line-height: inherit;
-    border: 0;
-  }
+:global .array-item-list+button {
+  margin: 0 auto;
+}
 
-  fieldset {
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    width: 100%;
-    color: var(--font-color);
-  }
+/* hidden submit button */
+:global button[type='submit'] {
+  display: none;
+}
 
-  label {
-    display: inline-block;
-    max-width: 100%;
-    font-family: var(--font-family);
-  }
+:global .hidden {
+  display: none;
+}
 
-  .variables {
-    margin-top: 6px;
-  }
+:global legend {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font-size: 21px;
+  line-height: inherit;
+  border: 0;
+}
 
-  .variables .row {
-    padding: 5px 0 5px 0;
-  }
+:global fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 100%;
+  color: var(--font-color);
+}
 
-  .variables>fieldset>legend {
-    font-size: 1rem;
-  }
+:global label {
+  display: inline-block;
+  max-width: 100%;
+  font-family: var(--font-family);
+}
 
-  .field-description {
-    font-size: 1.2em;
-    color: var(--font-color);
-    margin: 10px 0;
-    white-space: pre-wrap;
-  }
+:global .variables {
+  margin-top: 6px;
+}
 
-  .checkbox {
-    display: flex;
-  }
+:global .variables .row {
+  padding: 5px 0 5px 0;
+}
 
-  .checkbox>input {
-    margin: 0;
-  }
+:global .variables>fieldset>legend {
+  font-size: 1rem;
+}
 
-  .commandItem>fieldset>.form-group {
-    position: relative;
-  }
+:global .field-description {
+  font-size: 1.2em;
+  color: var(--font-color);
+  margin: 10px 0;
+  white-space: pre-wrap;
+}
 
-  .startupMethodParam {
-    margin-top: 10px;
-  }
+:global .checkbox {
+  display: flex;
+}
+
+:global .checkbox>input {
+  margin: 0;
+}
+
+:global .commandItem>fieldset>.form-group {
+  position: relative;
+}
+
+:global .startupMethodParam {
+  margin-top: 10px;
 }
 
 .form {
