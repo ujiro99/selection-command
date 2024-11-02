@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { context } from '@/components/App'
 import { popupContext } from '@/components/Popup'
 import { actions } from '@/action'
@@ -17,10 +17,10 @@ import {
 } from './Menu.module.css'
 import { Icon } from '@/components/Icon'
 import { ResultPopup } from '@/components/result/ResultPopup'
-import type { Command } from '@/services/userSettings'
 import { linksInSelection } from '@/services/util'
 import { OPEN_MODE } from '@/const'
 import { ExecState } from '@/action'
+import type { Command } from '@/types'
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -94,7 +94,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       <Tooltip text={message} disabled={!onlyIcon || inTransition}>
         <button
           type="button"
-          className={classNames(item, button, {
+          className={clsx(item, button, {
             [itemOnlyIcon]: onlyIcon,
             [itemHorizontal]: onlyIcon,
           })}

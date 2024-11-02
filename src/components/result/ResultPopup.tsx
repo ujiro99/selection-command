@@ -1,17 +1,13 @@
 import React from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { Popover, PopoverPanel, Transition } from '@headlessui/react'
 import { useFloating, flip, autoUpdate } from '@floating-ui/react'
 import { offset } from '@floating-ui/dom'
 
 import { useSetting } from '@/hooks/useSetting'
 import { Icon } from '@/components/Icon'
-import { popup, popupContianer } from '@/components/Popup.module.css'
-import {
-  resultPopup,
-  resultPopupButton,
-  closeButton,
-} from './ResultPopup.module.css'
+import popupCss from '@/components/Popup.module.css'
+import css from './ResultPopup.module.css'
 
 type PopupProps = {
   visible: boolean
@@ -39,7 +35,7 @@ export function ResultPopup(props: PopupProps) {
   const visible = props.visible && props.positionRef.current != null
 
   return (
-    <Popover className={popupContianer}>
+    <Popover className={popupCss.popupContianer}>
       <Transition show={visible}>
         <PopoverPanel
           ref={refs.setFloating}
@@ -47,10 +43,10 @@ export function ResultPopup(props: PopupProps) {
           data-placement={placement}
           static
         >
-          <div className={`${popup} ${resultPopup}`}>
+          <div className={`${popupCss.popup} ${css.resultPopup}`}>
             {props.children}
             <button
-              className={classNames(closeButton, resultPopupButton)}
+              className={clsx(css.closeButton, css.resultPopupButton)}
               onClick={props.onClose}
             >
               <Icon name="close" />

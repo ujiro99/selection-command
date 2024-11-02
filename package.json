@@ -29,6 +29,7 @@
     "@floating-ui/react": "^0.26.17",
     "@headlessui/react": "^2.1.10",
     "@radix-ui/react-menubar": "^1.1.2",
+    "@radix-ui/react-popover": "^1.1.2",
     "@rjsf/core": "^5.21.2",
     "@rjsf/utils": "^5.21.2",
     "@rjsf/validator-ajv8": "^5.21.2",

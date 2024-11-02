@@ -1,14 +1,20 @@
-import React, { useRef } from 'react'
-import classNames from 'classnames'
+import React, { useState, useRef } from 'react'
+import clsx from 'clsx'
+
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from '@/components/ui/menubar'
+
 import { STYLE, ROOT_FOLDER } from '@/const'
-import { MenuFolder } from './MenuFolder'
 import { MenuItem } from './MenuItem'
-import { menu, list, menuHorizontal } from './Menu.module.css'
-import type {
-  Command,
-  CommandFolder,
-  UserSettingsType,
-} from '@/services/userSettings'
+import css from './Menu.module.css'
+import type { Command, CommandFolder } from '@/types'
 import { useSetting } from '@/hooks/useSetting'
 
 type ItemObj = {
@@ -20,8 +26,14 @@ function isRoot(folder: CommandFolder): boolean {
   return folder.id === ROOT_FOLDER
 }
 
+const onHover = (func: (val: any) => void, enterVal: any, leaveVal: any) => ({
+  onMouseEnter: () => func(enterVal),
+  onMouseLeave: () => func(leaveVal),
+})
+
 export function Menu(): JSX.Element {
   const menuRef = useRef(null)
+  const [value, setValue] = useState('')
   const { settings } = useSetting()
   const commands = settings.commands
   const folders = settings.folders
@@ -53,44 +65,33 @@ export function Menu(): JSX.Element {
 
   return (
     <div
-      className={classNames(menu, { [menuHorizontal]: isHorizontal })}
+      className={clsx(css.menu, { [css.menuHorizontal]: isHorizontal })}
       ref={menuRef}
     >
-      <ItemsToMenu items={items} menuRef={menuRef} settings={settings} />
+      <Menubar value={value}>
+        <MenubarMenu value="a">
+          <MenubarTrigger {...onHover(setValue, 'a', 'a')}>File</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>🎉</MenubarItem>
+            <MenubarItem>💡</MenubarItem>
+            <MenubarItem>😆</MenubarItem>
+            <MenubarItem>🍀</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+        <MenubarMenu value="b">
+          <MenubarTrigger {...onHover(setValue, 'b', '')}>B</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              New Tab ! <MenubarShortcut>⌘T</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>New Window</MenubarItem>
+            <MenubarSeparator />
+            <MenubarItem>Share</MenubarItem>
+            <MenubarSeparator />
+            <MenubarItem>Print</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
+      </Menubar>
     </div>
-  )
-}
-
-function ItemsToMenu(props: {
-  items: ItemObj[]
-  menuRef: React.RefObject<HTMLDivElement>
-  settings: UserSettingsType
-}): JSX.Element {
-  const { items, menuRef } = props
-  const isHorizontal = props.settings.style === STYLE.HORIZONTAL
-  return (
-    <ul className={list}>
-      {items.map((item) =>
-        isRoot(item.folder) ? (
-          item.commands.map((obj, idx) => (
-            <li key={`menu_${obj.title}_${idx}`}>
-              <MenuItem
-                menuRef={menuRef}
-                onlyIcon={isHorizontal}
-                command={obj}
-              />
-            </li>
-          ))
-        ) : (
-          <li key={`folder_${item.folder.title}`}>
-            <MenuFolder
-              folder={item.folder}
-              commands={item.commands}
-              menuRef={menuRef}
-            />
-          </li>
-        ),
-      )}
-    </ul>
   )
 }

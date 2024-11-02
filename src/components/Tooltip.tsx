@@ -5,10 +5,10 @@ import {
   PopoverPanel,
   Transition,
 } from '@headlessui/react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 
 import { useSetting } from '@/hooks/useSetting'
-import { tooltip, tooltipTrigger, arrow } from './Tooltip.module.css'
+import css from './Tooltip.module.css'
 
 type PopupProps = {
   children: React.ReactNode
@@ -49,7 +49,7 @@ export function Tooltip(props: PopupProps) {
   }, [positionRef.current, props.disabled])
 
   const MyPopoverButton = forwardRef(function (props, ref) {
-    return <div className={tooltipTrigger} ref={ref} {...props} />
+    return <div className={css.tooltipTrigger} ref={ref} {...props} />
   })
 
   return (
@@ -57,12 +57,12 @@ export function Tooltip(props: PopupProps) {
       <PopoverButton as={MyPopoverButton}>{props.children}</PopoverButton>
       <Transition show={visible && !props.disabled}>
         <PopoverPanel
-          className={classNames(tooltip, 'transition')}
+          className={clsx(css.tooltip, 'transition')}
           data-placement={placement}
           static
         >
           {props.text}
-          <div className={arrow} ref={arrowRef} />
+          <div className={css.arrow} ref={arrowRef} />
         </PopoverPanel>
       </Transition>
     </Popover>

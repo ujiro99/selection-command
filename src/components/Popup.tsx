@@ -1,15 +1,5 @@
-import React, { useState, createContext, useCallback } from 'react'
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from '@/components/ui/menubar'
-import { useFloating, flip, autoUpdate } from '@floating-ui/react'
-import { offset } from '@floating-ui/dom'
+import React, { useState, createContext, useCallback, useRef } from 'react'
+import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { Menu } from './menu/Menu'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
@@ -34,12 +24,16 @@ export const popupContext = createContext<ContextType>({} as ContextType)
 
 export const Popup = (props: PopupProps) => {
   const { settings } = useSetting()
+
+  const virtualRef = useRef<Element | null>(null)
+  if (props.positionElm) virtualRef.current = props.positionElm
+
   const { visible, isContextMenu } = useDetectStartup(props)
   const [inTransition, setInTransition] = useState(false)
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
   const isPreview = props.isPreview === true
-  const styles =
+  const userStyles =
     settings.userStyles &&
     settings.userStyles.reduce((acc, cur) => {
       if (cur.value == null) return acc
@@ -55,18 +49,6 @@ export const Popup = (props: PopupProps) => {
       }
       return { ...acc, [`--sc-${cur.name}`]: cur.value }
     }, {})
-
-  const { refs, floatingStyles } = useFloating({
-    placement: placement,
-    elements: { reference: props.positionElm },
-    whileElementsMounted: autoUpdate,
-    middleware: [
-      isBottom ? offset(5) : offset(15),
-      flip({
-        fallbackPlacements: ['top', 'bottom'],
-      }),
-    ],
-  })
 
   const onBeforeEnter = useCallback(() => {
     setInTransition(true)
@@ -85,51 +67,23 @@ export const Popup = (props: PopupProps) => {
   return (
     <popupContext.Provider value={{ isPreview, inTransition }}>
       {isPreview && <PreviewDesc {...props} />}
-
-      <Menubar>
-        <MenubarMenu>
-          <MenubarTrigger>File</MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem>
-              New Tab ! <MenubarShortcut>⌘T</MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem>New Window</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>Share</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>Print</MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-      </Menubar>
-
-      {/*
-    <Popover
-      className={classnames(css.popupContianer, {
-        [css.previewContainer]: isPreview,
-      })}
-    >
-      <Transition
-        show={visible}
-        beforeEnter={onBeforeEnter}
-        afterEnter={onAfterEnter}
-      >
-        <PopoverPanel
-          ref={refs.setFloating}
-          style={floatingStyles}
-          data-placement={placement}
-          static
-        >
-          <div className={`${css.popup} ${css.popupTransition}`} style={styles}>
-            {!isContextMenu ? (
-              <Menu />
-            ) : (
-              <InvisibleItem positionElm={props.positionElm} />
-            )}
+      <Popover open={visible}>
+        <PopoverAnchor virtualRef={virtualRef}></PopoverAnchor>
+        <PopoverContent side={isBottom ? 'bottom' : 'top'}>
+          <div>
+            <div
+              className={`${css.popup} ${css.popupTransition}`}
+              style={userStyles}
+            >
+              {!isContextMenu ? (
+                <Menu />
+              ) : (
+                <InvisibleItem positionElm={props.positionElm} />
+              )}
+            </div>
           </div>
-        </PopoverPanel>
-      </Transition>
-    </Popover>
-*/}
+        </PopoverContent>
+      </Popover>
     </popupContext.Provider>
   )
 }

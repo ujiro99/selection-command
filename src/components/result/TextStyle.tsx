@@ -2,17 +2,7 @@ import React, { useState } from 'react'
 import { sleep } from '@/services/util'
 import { ExecState } from '@/action'
 
-import {
-  resultPopupButton,
-  resultTable,
-  resultTableContainer,
-  resultTableHeader,
-  resultTableBody,
-  resultTableProperty,
-  resultTableValue,
-  resultTableCopy,
-  buttonSuccess,
-} from '@/components/result/ResultPopup.module.css'
+import css from '@/components/result/ResultPopup.module.css'
 import { Icon } from '@/components/Icon'
 import { Tooltip } from '@/components/Tooltip'
 
@@ -47,34 +37,34 @@ export function TextStyle({ styles }: Props) {
   }
 
   return (
-    <div className={resultTableContainer}>
-      <div className={resultTableCopy}>
+    <div className={css.resultTableContainer}>
+      <div className={css.resultTableCopy}>
         <Tooltip text={message}>
           <button
-            className={resultPopupButton}
+            className={css.resultPopupButton}
             onClick={cssCopy}
             disabled={status === ExecState.SUCCESS}
           >
             {status === ExecState.NONE && <Icon name="copy" />}
             {status === ExecState.SUCCESS && (
-              <Icon name="check" className={buttonSuccess} />
+              <Icon name="check" className={css.buttonSuccess} />
             )}
           </button>
         </Tooltip>
       </div>
-      <table className={resultTable}>
-        <thead className={resultTableHeader}>
+      <table className={css.resultTable}>
+        <thead className={css.resultTableHeader}>
           <tr key="table-header">
             <th>Property</th>
             <th>Value</th>
           </tr>
         </thead>
-        <tbody className={resultTableBody}>
+        <tbody className={css.resultTableBody}>
           {styleArr.map((item) => {
             return (
               <tr key={item.key}>
-                <td className={resultTableProperty}>{toName(item.key)}</td>
-                <td className={resultTableValue}>{item.value}</td>
+                <td className={css.resultTableProperty}>{toName(item.key)}</td>
+                <td className={css.resultTableValue}>{item.value}</td>
               </tr>
             )
           })}
