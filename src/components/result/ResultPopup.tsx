@@ -1,8 +1,6 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import clsx from 'clsx'
-import { Popover, PopoverPanel, Transition } from '@headlessui/react'
-import { useFloating, flip, autoUpdate } from '@floating-ui/react'
-import { offset } from '@floating-ui/dom'
+import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 
 import { useSetting } from '@/hooks/useSetting'
 import { Icon } from '@/components/Icon'
@@ -19,41 +17,27 @@ type PopupProps = {
 export function ResultPopup(props: PopupProps) {
   const { settings } = useSetting()
   const placement = settings.popupPlacement
-
-  const { refs, floatingStyles } = useFloating({
-    placement: placement,
-    elements: { reference: props.positionRef.current },
-    whileElementsMounted: autoUpdate,
-    middleware: [
-      offset(5),
-      flip({
-        fallbackPlacements: ['top', 'bottom'],
-      }),
-    ],
-  })
+  const isBottom = placement.startsWith('bottom')
 
   const visible = props.visible && props.positionRef.current != null
 
+  const virtualRef = useRef<Element | null>(null)
+  if (props.positionRef) virtualRef.current = props.positionRef.current
+
   return (
-    <Popover className={popupCss.popupContianer}>
-      <Transition show={visible}>
-        <PopoverPanel
-          ref={refs.setFloating}
-          style={floatingStyles}
-          data-placement={placement}
-          static
-        >
-          <div className={`${popupCss.popup} ${css.resultPopup}`}>
-            {props.children}
-            <button
-              className={clsx(css.closeButton, css.resultPopupButton)}
-              onClick={props.onClose}
-            >
-              <Icon name="close" />
-            </button>
-          </div>
-        </PopoverPanel>
-      </Transition>
+    <Popover open={visible}>
+      <PopoverAnchor virtualRef={virtualRef} />
+      <PopoverContent side={isBottom ? 'bottom' : 'top'}>
+        <div className={`${popupCss.popup} ${css.resultPopup}`}>
+          {props.children}
+          <button
+            className={clsx(css.closeButton, css.resultPopupButton)}
+            onClick={props.onClose}
+          >
+            <Icon name="close" />
+          </button>
+        </div>
+      </PopoverContent>
     </Popover>
   )
 }
