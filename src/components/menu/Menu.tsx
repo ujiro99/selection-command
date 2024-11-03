@@ -64,10 +64,7 @@ export function Menu(): JSX.Element {
   }, [] as ItemObj[])
 
   return (
-    <div
-      className={clsx(css.menu, { [css.menuHorizontal]: isHorizontal })}
-      ref={menuRef}
-    >
+    <div className={clsx({ [css.menuHorizontal]: isHorizontal })} ref={menuRef}>
       <Menubar value={value}>
         <MenubarMenu value="a">
           <MenubarTrigger {...onHover(setValue, 'a', 'a')}>File</MenubarTrigger>

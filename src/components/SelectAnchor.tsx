@@ -24,6 +24,9 @@ type Rect = {
 type Props = {
   selectionText: string
 }
+
+const PADDING = 20
+
 export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
     const text = props.selectionText
@@ -35,6 +38,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const { detectHold } = useLeftClickHold(props)
 
     useEffect(() => {
+      // Offset of the body
       const style = window.getComputedStyle(document.documentElement)
       const x = parseInt(style.marginLeft, 10)
       const y = parseInt(style.marginTop, 10)
@@ -117,12 +121,12 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const { start, end } = rect
     const styles = {
       position: 'absolute',
-      top: window.scrollY + start.y - offset.y,
-      left: window.scrollX + start.x - offset.x,
+      top: window.scrollY + start.y - offset.y - PADDING / 2,
+      left: window.scrollX + start.x - offset.x - PADDING / 2,
       height: end.y - start.y,
       width: end.x - start.x,
       pointerEvents: 'none',
-      padding: '4px', // adjust position of the Popup
+      padding: PADDING, // adjust position of the Popup
     } as React.CSSProperties
 
     return (

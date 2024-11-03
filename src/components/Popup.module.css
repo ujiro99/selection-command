@@ -1,7 +1,7 @@
 .popup {
+  @apply rounded-md;
   background-color: var(--sc-bg-color);
   border: solid 1px var(--sc-bd-color);
-  border-radius: 6px;
   font-family: var(--font-family);
 
   /* CSS variable interface */
