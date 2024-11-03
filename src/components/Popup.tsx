@@ -1,4 +1,5 @@
-import React, { useState, createContext, useCallback, useRef } from 'react'
+import React, { useState, useEffect, createContext, useRef } from 'react'
+import clsx from 'clsx'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { Menu } from './menu/Menu'
 import { useSetting } from '@/hooks/useSetting'
@@ -30,6 +31,7 @@ export const Popup = (props: PopupProps) => {
 
   const { visible, isContextMenu } = useDetectStartup(props)
   const [inTransition, setInTransition] = useState(false)
+  const [inEnter, setInEnter] = useState(false)
   const placement = settings.popupPlacement
   const isBottom = placement.startsWith('bottom')
   const isPreview = props.isPreview === true
@@ -50,38 +52,47 @@ export const Popup = (props: PopupProps) => {
       return { ...acc, [`--sc-${cur.name}`]: cur.value }
     }, {})
 
-  const onBeforeEnter = useCallback(() => {
-    setInTransition(true)
-  }, [])
-
-  const onAfterEnter = useCallback(() => {
-    const popupDuration = settings.userStyles?.find(
-      (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
-    )
-    const duration = popupDuration ? parseInt(popupDuration.value) : 100
-    setTimeout(() => {
+  useEffect(() => {
+    if (!visible) {
+      setInEnter(false)
       setInTransition(false)
-    }, duration)
-  }, [settings.userStyles])
+    } else {
+      const popupDuration = settings.userStyles?.find(
+        (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
+      )
+      const popupDelay = settings.userStyles?.find(
+        (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
+      )
+      const duration = popupDuration ? parseInt(popupDuration.value) : 150
+      const delay = popupDelay ? parseInt(popupDelay.value) : 250
+      setInTransition(true)
+      setInEnter(true)
+      setTimeout(() => {
+        setInTransition(false)
+      }, duration + delay)
+      setTimeout(() => {
+        setInEnter(false)
+      }, delay)
+    }
+  }, [visible])
 
   return (
-    <popupContext.Provider value={{ isPreview, inTransition }}>
+    <popupContext.Provider value={{ isPreview, inTransition: inTransition }}>
       {isPreview && <PreviewDesc {...props} />}
       <Popover open={visible}>
-        <PopoverAnchor virtualRef={virtualRef}></PopoverAnchor>
-        <PopoverContent side={isBottom ? 'bottom' : 'top'}>
-          <div>
-            <div
-              className={`${css.popup} ${css.popupTransition}`}
-              style={userStyles}
-            >
-              {!isContextMenu ? (
-                <Menu />
-              ) : (
-                <InvisibleItem positionElm={props.positionElm} />
-              )}
-            </div>
-          </div>
+        <PopoverAnchor virtualRef={virtualRef} />
+        <PopoverContent
+          side={isBottom ? 'bottom' : 'top'}
+          className={clsx(css.popup, {
+            [css.popupInEnter]: inEnter,
+          })}
+          style={userStyles}
+        >
+          {!isContextMenu ? (
+            <Menu />
+          ) : (
+            <InvisibleItem positionElm={props.positionElm} />
+          )}
         </PopoverContent>
       </Popover>
     </popupContext.Provider>

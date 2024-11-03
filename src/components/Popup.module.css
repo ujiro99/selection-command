@@ -1,8 +1,9 @@
 .popup {
-  @apply rounded-md;
   background-color: var(--sc-bg-color);
   border: solid 1px var(--sc-bd-color);
   font-family: var(--font-family);
+  animation-delay: var(--sc-delay);
+  animation-duration: var(--sc-duration) !important;
 
   /* CSS variable interface */
   --sc-bg-color: var(--sc-background-color, #ffffff);
@@ -14,37 +15,11 @@
   --sc-image-size: calc(var(--sc-image-scale, 1) * 16px);
   --sc-padding: calc(var(--sc-padding-scale, 1) * 4px);
   --sc-delay: calc(var(--sc-popup-delay, 250) * 1ms);
-  --sc-duration: calc(var(--sc-popup-duration, 100) * 1ms);
+  --sc-duration: calc(var(--sc-popup-duration, 150) * 1ms);
 }
 
-.popupTransition {
-  transition-delay: var(--sc-delay);
-  transition-duration: var(--sc-duration);
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-div[data-closed]>.popup {
-  opacity: 0;
-  transform: translateY(5px);
-}
-
-div[data-closed][data-placement='bottom']>.popup {
-  transform: translateY(-5px);
-}
-
-div[data-closed][data-placement='right']>.popup {
-  transform: translateX(-10px);
-}
-
-div[data-closed][data-placement='left']>.popup {
-  transform: translateX(10px);
-}
-
-/* To display the popup at the top of html, add maximum value of z-index. */
-.popupContianer {
-  position: absolute;
-  z-index: 2147483647;
-  width: 100%;
+.popupInEnter {
+  visibility: hidden;
 }
 
 .previewContainer {
