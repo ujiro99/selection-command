@@ -1,0 +1,25 @@
+.folder {
+  composes: item from './Menu.module.css';
+  cursor: default;
+  padding-right: 0px;
+}
+
+.title {
+  flex: 1;
+  min-width: 4em;
+}
+
+.folderHorizontal {
+  padding-right: var(--sc-padding);
+}
+
+.folderHorizontal .title {
+  min-width: 0;
+}
+
+.icon {
+  width: 1.4em;
+  height: 1.4em;
+  fill: var(--gray-400);
+  transition: fill 250ms;
+}

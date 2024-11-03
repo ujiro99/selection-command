@@ -4,17 +4,7 @@ import { context } from '@/components/App'
 import { popupContext } from '@/components/Popup'
 import { actions } from '@/action'
 import { Tooltip } from '../Tooltip'
-import {
-  button,
-  item,
-  itemImg,
-  itemTitle,
-  itemOnlyIcon,
-  itemHorizontal,
-  apiIconLoading,
-  apiIconSuccess,
-  apiIconError,
-} from './Menu.module.css'
+import css from './Menu.module.css'
 import { Icon } from '@/components/Icon'
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { linksInSelection } from '@/services/util'
@@ -94,16 +84,16 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       <Tooltip text={message} disabled={!onlyIcon || inTransition}>
         <button
           type="button"
-          className={clsx(item, button, {
-            [itemOnlyIcon]: onlyIcon,
-            [itemHorizontal]: onlyIcon,
+          className={clsx(css.item, css.button, {
+            [css.itemOnlyIcon]: onlyIcon,
+            [css.itemHorizontal]: onlyIcon,
           })}
           ref={buttonRef}
           onClick={handleClick}
           disabled={!enable}
         >
           <ImageWithState state={itemState.state} iconUrl={iconUrl} />
-          <span className={itemTitle}>{message}</span>
+          <span className={css.itemTitle}>{message}</span>
         </button>
       </Tooltip>
       <ResultPopup
@@ -127,19 +117,19 @@ function ImageWithState(props: ImageProps): JSX.Element {
   return (
     <>
       {status === ExecState.NONE && (
-        <img className={itemImg} src={iconUrl} alt="icon" />
+        <img className={css.itemImg} src={iconUrl} alt="icon" />
       )}
       {status === ExecState.EXECUTING && (
         <Icon
-          className={`${itemImg} ${apiIconLoading} rotate`}
+          className={`${css.itemImg} ${css.apiIconLoading} rotate`}
           name="refresh"
         />
       )}
       {status === ExecState.SUCCESS && (
-        <Icon className={`${itemImg} ${apiIconSuccess}`} name="check" />
+        <Icon className={`${css.itemImg} ${css.apiIconSuccess}`} name="check" />
       )}
       {status === ExecState.FAIL && (
-        <Icon className={`${itemImg} ${apiIconError}`} name="error" />
+        <Icon className={`${css.itemImg} ${css.apiIconError}`} name="error" />
       )}
     </>
   )

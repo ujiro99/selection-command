@@ -236,3 +236,19 @@ export function versionDiff(a: Version, b: Version): VersionDiff {
   }
   return VersionDiff.Same
 }
+
+export const onHover = (
+  func: (val: any) => void,
+  enterVal: any,
+  leaveVal?: any,
+) => {
+  if (typeof enterVal === 'string' && leaveVal === undefined) {
+    leaveVal = ''
+  } else if (typeof enterVal === 'boolean' && leaveVal === undefined) {
+    leaveVal = !enterVal
+  }
+  return {
+    onMouseEnter: () => func(enterVal),
+    onMouseLeave: () => func(leaveVal),
+  }
+}
