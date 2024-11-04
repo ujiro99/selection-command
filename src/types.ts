@@ -1,4 +1,3 @@
-import type { Placement } from '@floating-ui/react'
 import type {
   OPEN_MODE,
   POPUP_ENABLED,
@@ -51,6 +50,11 @@ export type CommandVariable = {
   name: string
   value: string
 }
+
+type Side = 'top' | 'right' | 'bottom' | 'left'
+type Alignment = 'start' | 'end'
+type AlignedPlacement = `${Side}-${Alignment}`
+export type Placement = Side | AlignedPlacement
 
 export type PageRule = {
   urlPattern: string
