@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { sleep } from '@/services/util'
 import { ExecState } from '@/action'
 
@@ -19,6 +19,7 @@ type Props = {
 }
 
 export function TextStyle({ styles }: Props) {
+  const buttonRef = useRef(null)
   const [status, setStatus] = useState(ExecState.NONE)
   const message = status === ExecState.SUCCESS ? 'Copied!' : 'Copy'
   const styleArr = Object.entries(styles).map(([key, value]) => ({
@@ -32,25 +33,25 @@ export function TextStyle({ styles }: Props) {
       .join('\n')
     navigator.clipboard.writeText(copyText)
     setStatus(ExecState.SUCCESS)
-    await sleep(500)
+    await sleep(1000)
     setStatus(ExecState.NONE)
   }
 
   return (
     <div className={css.resultTableContainer}>
       <div className={css.resultTableCopy}>
-        <Tooltip text={message}>
-          <button
-            className={css.resultPopupButton}
-            onClick={cssCopy}
-            disabled={status === ExecState.SUCCESS}
-          >
-            {status === ExecState.NONE && <Icon name="copy" />}
-            {status === ExecState.SUCCESS && (
-              <Icon name="check" className={css.buttonSuccess} />
-            )}
-          </button>
-        </Tooltip>
+        <button
+          className={css.resultPopupButton}
+          onClick={cssCopy}
+          disabled={status === ExecState.SUCCESS}
+          ref={buttonRef}
+        >
+          {status === ExecState.NONE && <Icon name="copy" />}
+          {status === ExecState.SUCCESS && (
+            <Icon name="check" className={css.buttonSuccess} />
+          )}
+        </button>
+        <Tooltip positionElm={buttonRef.current} text={message} />
       </div>
       <table className={css.resultTable}>
         <thead className={css.resultTableHeader}>
