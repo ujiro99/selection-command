@@ -45,22 +45,25 @@ export const Popup = (props: PopupProps) => {
       : placement.endsWith('end')
         ? 'end'
         : 'center'
+
   const userStyles =
     settings.userStyles &&
     settings.userStyles.reduce((acc, cur) => {
       if (cur.value == null) return acc
-      if (cur.name === 'background-color') {
+      if (cur.name === 'background-color' || cur.name === 'border-color') {
         const hsl = hexToHsl(cur.value)
         return {
           ...acc,
           [`--sc-${cur.name}`]: cur.value,
-          '--sc-background-color-h': `${hsl[0]}deg`,
-          '--sc-background-color-s': `${hsl[1]}%`,
-          '--sc-background-color-l': `${hsl[2]}%`,
+          [`--sc-${cur.name}-h`]: `${hsl[0]}deg`,
+          [`--sc-${cur.name}-s`]: `${hsl[1]}%`,
+          [`--sc-${cur.name}-l`]: `${hsl[2]}%`,
         }
       }
       return { ...acc, [`--sc-${cur.name}`]: cur.value }
     }, {})
+
+  console.log(userStyles)
 
   useEffect(() => {
     if (!visible) {
@@ -107,6 +110,13 @@ export const Popup = (props: PopupProps) => {
             <InvisibleItem positionElm={props.positionElm} />
           )}
         </PopoverContent>
+        <style>{`
+          :root, :host {
+            ${Object.entries(userStyles)
+            .map(([k, v]) => `${k}: ${v};`)
+            .join('\n')}
+          }
+        `}</style>
       </Popover>
     </popupContext.Provider>
   )

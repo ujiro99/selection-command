@@ -84,7 +84,7 @@ export function Menu(): JSX.Element {
         ) : (
           <MenubarMenu value={folder.id} key={idx}>
             <MenubarTrigger
-              className={clsx(css.folder, folderCss.folder, {
+              className={clsx(folderCss.folder, {
                 [css.itemHorizontal]: isHorizontal,
                 [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
                 [folderCss.folderHorizontal]: isHorizontal,

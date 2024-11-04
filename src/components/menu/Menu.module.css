@@ -7,21 +7,20 @@
 .item {
   display: flex;
   align-items: center;
-  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding) calc(var(--sc-padding) * 1.5);
-  height: calc(max(var(--sc-font-size), var(--sc-image-size)) + var(--sc-padding) * 2);
+  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding)
+    calc(var(--sc-padding) * 1.5);
+  height: calc(
+    max(var(--sc-font-size), var(--sc-image-size)) + var(--sc-padding) * 2
+  );
   box-sizing: border-box;
   width: 100%;
-  color: rgb(75 85 99);
   white-space: pre;
   line-height: 1;
   text-decoration: none;
   text-wrap: nowrap;
   font-size: var(--sc-font-size);
   font-family: var(--font-family);
-
-  &:hover {
-    color: rgb(3 7 18);
-  }
+  transition: ease-out 0.15s background;
 
   &:disabled {
     opacity: 0.4;

@@ -3,7 +3,6 @@
 @import 'tailwindcss/utilities';
 
 @layer base {
-
   :host,
   :root {
     --background: 0 0% 100%;

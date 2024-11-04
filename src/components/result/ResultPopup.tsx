@@ -27,8 +27,11 @@ export function ResultPopup(props: PopupProps) {
   return (
     <Popover open={visible}>
       <PopoverAnchor virtualRef={virtualRef} />
-      <PopoverContent side={isBottom ? 'bottom' : 'top'}>
-        <div className={`${popupCss.popup} ${css.resultPopup}`}>
+      <PopoverContent
+        side={isBottom ? 'bottom' : 'top'}
+        className="bg-background rounded-md border"
+      >
+        <div className={clsx(popupCss.popup, css.resultPopup)}>
           {props.children}
           <button
             className={clsx(css.closeButton, css.resultPopupButton)}
