@@ -71,9 +71,8 @@ const getTranslation = () => {
 
 export function Option() {
   const [isSaving, setIsSaving] = useState(false)
-
+  const [previewElm, setPreviewElm] = useState<Element | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  const previewRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
 
   useEventProxyReceiver()
@@ -169,9 +168,9 @@ export function Option() {
         <ImportExport />
       </div>
 
-      <div className={css.preview} ref={previewRef}>
+      <div className={css.preview} ref={setPreviewElm}>
         <Popup
-          positionElm={previewRef.current}
+          positionElm={previewElm}
           selectionText="preview"
           isPreview={true}
         />

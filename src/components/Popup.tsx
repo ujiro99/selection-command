@@ -25,16 +25,23 @@ export const popupContext = createContext<ContextType>({} as ContextType)
 
 export const Popup = (props: PopupProps) => {
   const { settings } = useSetting()
-
-  const virtualRef = useRef<Element | null>(null)
-  if (props.positionElm) virtualRef.current = props.positionElm
-
   const { visible, isContextMenu } = useDetectStartup(props)
   const [inTransition, setInTransition] = useState(false)
   const [inEnter, setInEnter] = useState(false)
   const placement = settings.popupPlacement
-  const isBottom = placement.startsWith('bottom')
   const isPreview = props.isPreview === true
+  const side = isPreview
+    ? 'bottom'
+    : placement.startsWith('top')
+      ? 'top'
+      : 'bottom'
+  const align = isPreview
+    ? 'start'
+    : placement.endsWith('start')
+      ? 'start'
+      : placement.endsWith('end')
+        ? 'end'
+        : 'center'
   const userStyles =
     settings.userStyles &&
     settings.userStyles.reduce((acc, cur) => {
@@ -80,9 +87,10 @@ export const Popup = (props: PopupProps) => {
     <popupContext.Provider value={{ isPreview, inTransition: inTransition }}>
       {isPreview && <PreviewDesc {...props} />}
       <Popover open={visible}>
-        <PopoverAnchor virtualRef={virtualRef} />
+        <PopoverAnchor virtualRef={{ current: props.positionElm }} />
         <PopoverContent
-          side={isBottom ? 'bottom' : 'top'}
+          side={side}
+          align={align}
           className={clsx(css.popup, {
             [css.popupInEnter]: inEnter,
           })}
