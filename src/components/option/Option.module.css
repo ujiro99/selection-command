@@ -95,9 +95,10 @@
 .buttonImport {
   composes: button from '../Common.module.css';
 
-  width: calc(100% - 15px);
+  width: 100%;
   padding: 6px 8px;
   border-radius: 4px;
+  font-size: 0.9rem;
 }
 
 .editorFrame {
