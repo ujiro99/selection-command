@@ -4,13 +4,14 @@ import { context } from '@/components/App'
 import { popupContext } from '@/components/Popup'
 import { actions } from '@/action'
 import { Tooltip } from '../Tooltip'
-import css from './Menu.module.css'
 import { Icon } from '@/components/Icon'
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { linksInSelection } from '@/services/util'
 import { OPEN_MODE } from '@/const'
 import { ExecState } from '@/action'
 import type { Command } from '@/types'
+
+import css from './Menu.module.css'
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -83,16 +84,20 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     <>
       <button
         type="button"
-        className={clsx(css.item, css.button, {
-          [css.itemOnlyIcon]: onlyIcon,
-          [css.itemHorizontal]: onlyIcon,
-        })}
+        className={clsx(
+          css.item,
+          css.button,
+          {
+            [css.itemHorizontal]: onlyIcon,
+          },
+          'rounded-sm hover:bg-accent',
+        )}
         ref={buttonRef}
         onClick={handleClick}
         disabled={!enable}
       >
         <ImageWithState state={itemState.state} iconUrl={iconUrl} />
-        <span className={css.itemTitle}>{message}</span>
+        {!onlyIcon && <span className={css.itemTitle}>{title}</span>}
       </button>
       <Tooltip
         text={message}

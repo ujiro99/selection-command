@@ -35,6 +35,7 @@ export function Menu(): JSX.Element {
   const folders = settings.folders
   const isHorizontal = settings.style === STYLE.HORIZONTAL
   const isBottom = settings.popupPlacement.startsWith('bottom')
+  const side = isHorizontal ? (isBottom ? 'bottom' : 'top') : 'right'
 
   const items = commands.reduce((pre, cur, idx) => {
     const folder = folders.find((obj) => obj.id === cur.parentFolderId)
@@ -65,7 +66,9 @@ export function Menu(): JSX.Element {
   return (
     <Menubar
       value={activeFolder}
-      className={clsx({ [css.menuHorizontal]: isHorizontal })}
+      className={clsx({
+        [css.menuVertical]: !isHorizontal,
+      })}
       ref={menuRef}
     >
       {items.map(({ folder, commands }, idx) =>
@@ -103,7 +106,8 @@ export function Menu(): JSX.Element {
               )}
             </MenubarTrigger>
             <MenubarContent
-              side={isBottom ? 'bottom' : 'top'}
+              side={side}
+              sideOffset={isHorizontal ? 0 : -2}
               className={clsx({ flex: isHorizontal })}
               {...onHover(setHoverContent, folder.id)}
             >

@@ -87,7 +87,7 @@ const MenubarContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Content>
 >(
   (
-    { className, align = 'start', alignOffset = -4, sideOffset = 0, ...props },
+    { className, align = 'start', alignOffset = -4, sideOffset, ...props },
     ref,
   ) => (
     <MenubarPrimitive.Content

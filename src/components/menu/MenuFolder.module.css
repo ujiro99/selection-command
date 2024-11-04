@@ -1,7 +1,7 @@
 .folder {
   composes: item from './Menu.module.css';
   cursor: default;
-  padding-right: 0px;
+  padding-right: calc(var(--sc-padding) / 2);
 }
 
 .title {
@@ -11,10 +11,10 @@
 
 .folderHorizontal {
   padding-right: var(--sc-padding);
-}
 
-.folderHorizontal .title {
-  min-width: 0;
+  .title {
+    min-width: 0;
+  }
 }
 
 .icon {
