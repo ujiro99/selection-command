@@ -564,10 +564,10 @@
   resolved "https://registry.npmjs.org/@radix-ui/rect/-/rect-1.1.0.tgz"
   integrity sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==
 
-"@rjsf/core@^5.21.2":
-  version "5.21.2"
-  resolved "https://registry.npmjs.org/@rjsf/core/-/core-5.21.2.tgz"
-  integrity sha512-0pTCdAQ1zb68wHPh6CkBFsKF/jgcjtIvBt7wu8BkyJNBkiVz2/XsfenmiqrKUBEyv9mo6sagdsaHxwBmQz8ctw==
+"@rjsf/core@^5.22.3":
+  version "5.22.3"
+  resolved "https://registry.yarnpkg.com/@rjsf/core/-/core-5.22.3.tgz#fde8c29cdab0c2cd94dce5ff2387d80887a7b780"
+  integrity sha512-YVunuas8RyetoPsy/bfkintjMo896APJMmFeYR7fiVQSvANY7Hvc7ySdQ7UmRhtzUyYwDCnplLv01exHpzXCAg==
   dependencies:
     lodash "^4.17.21"
     lodash-es "^4.17.21"
@@ -575,10 +575,10 @@
     nanoid "^3.3.7"
     prop-types "^15.8.1"
 
-"@rjsf/utils@^5.21.2":
-  version "5.21.2"
-  resolved "https://registry.npmjs.org/@rjsf/utils/-/utils-5.21.2.tgz"
-  integrity sha512-e/Fn5rOUQCyR+QqK7tyJyleojAOkwa7N606ohiQsq2DebQ4TWuw/PuODCp3HUPAjdiwEVa2fsnGe0rELL5NGLg==
+"@rjsf/utils@^5.22.3":
+  version "5.22.3"
+  resolved "https://registry.yarnpkg.com/@rjsf/utils/-/utils-5.22.3.tgz#c8c4b9b8cb8032fccfa30c0e9c1dcc0e8eeb0b4e"
+  integrity sha512-/aWtYX2ruK3x/bGsePc25UEbSsJvLUAMQO1i306RQ3QQzWn4hbyenBfT4iMxh6Kaly6kmKavBlB7knpooCx4OQ==
   dependencies:
     json-schema-merge-allof "^0.8.1"
     jsonpointer "^5.0.1"
@@ -586,10 +586,10 @@
     lodash-es "^4.17.21"
     react-is "^18.2.0"
 
-"@rjsf/validator-ajv8@^5.21.2":
-  version "5.21.2"
-  resolved "https://registry.npmjs.org/@rjsf/validator-ajv8/-/validator-ajv8-5.21.2.tgz"
-  integrity sha512-sm0WCkIRSrKLMPQcuQqZZP4uLKJ3UeI8vtfINyPIddtmCC7lGriCXLBwNANMFv5BPFK5A0CTHol7qyRBNFDlWQ==
+"@rjsf/validator-ajv8@^5.22.3":
+  version "5.22.3"
+  resolved "https://registry.yarnpkg.com/@rjsf/validator-ajv8/-/validator-ajv8-5.22.3.tgz#f2348adbb3450af7c1ab7333203a3f35e1de3715"
+  integrity sha512-fHu+oPOckpSHMwKdPCP/h8TtcOJ4I45RxFR//cN1c+um6OtpE/0t9JkVWAtbQlNJffIrzacnJjH5NpGwssxjrA==
   dependencies:
     ajv "^8.12.0"
     ajv-formats "^2.1.1"

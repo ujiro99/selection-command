@@ -452,6 +452,9 @@ export function SettingFrom() {
           RemoveButton,
         },
       }}
+      experimental_defaultFormStateBehavior={{
+        mergeDefaultsIntoFormData: 'useDefaultIfFormDataUndefined',
+      }}
       ref={formRef}
     />
   )
