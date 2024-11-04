@@ -8,6 +8,7 @@ import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { hexToHsl, isMac } from '@/services/util'
 import { t } from '@/services/i18n'
 import { STYLE_VARIABLE } from '@/const'
+import { Alignment, Side } from '@/types'
 
 import css from './Popup.module.css'
 
@@ -20,6 +21,8 @@ export type PopupProps = {
 type ContextType = {
   isPreview?: boolean
   inTransition?: boolean
+  side: Side
+  align: Alignment
 }
 export const popupContext = createContext<ContextType>({} as ContextType)
 
@@ -84,7 +87,9 @@ export const Popup = (props: PopupProps) => {
   }, [visible])
 
   return (
-    <popupContext.Provider value={{ isPreview, inTransition: inTransition }}>
+    <popupContext.Provider
+      value={{ isPreview, inTransition: inTransition, side, align }}
+    >
       {isPreview && <PreviewDesc {...props} />}
       <Popover open={visible}>
         <PopoverAnchor virtualRef={{ current: props.positionElm }} />

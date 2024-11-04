@@ -51,8 +51,8 @@ export type CommandVariable = {
   value: string
 }
 
-type Side = 'top' | 'right' | 'bottom' | 'left'
-type Alignment = 'start' | 'end'
+export type Side = 'top' | 'right' | 'bottom' | 'left'
+export type Alignment = 'start' | 'end' | 'center'
 type AlignedPlacement = `${Side}-${Alignment}`
 export type Placement = Side | AlignedPlacement
 

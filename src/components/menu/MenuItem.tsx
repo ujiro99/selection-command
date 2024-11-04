@@ -81,21 +81,24 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 
   return (
     <>
-      <Tooltip text={message} disabled={!onlyIcon || inTransition}>
-        <button
-          type="button"
-          className={clsx(css.item, css.button, {
-            [css.itemOnlyIcon]: onlyIcon,
-            [css.itemHorizontal]: onlyIcon,
-          })}
-          ref={buttonRef}
-          onClick={handleClick}
-          disabled={!enable}
-        >
-          <ImageWithState state={itemState.state} iconUrl={iconUrl} />
-          <span className={css.itemTitle}>{message}</span>
-        </button>
-      </Tooltip>
+      <button
+        type="button"
+        className={clsx(css.item, css.button, {
+          [css.itemOnlyIcon]: onlyIcon,
+          [css.itemHorizontal]: onlyIcon,
+        })}
+        ref={buttonRef}
+        onClick={handleClick}
+        disabled={!enable}
+      >
+        <ImageWithState state={itemState.state} iconUrl={iconUrl} />
+        <span className={css.itemTitle}>{message}</span>
+      </button>
+      <Tooltip
+        text={message}
+        positionElm={buttonRef.current}
+        disabled={!onlyIcon || inTransition}
+      />
       <ResultPopup
         visible={result != null}
         positionRef={buttonRef}
