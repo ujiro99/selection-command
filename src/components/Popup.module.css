@@ -1,7 +1,6 @@
 .popup {
   border: solid 1px var(--sc-bd-color);
   font-family: var(--font-family);
-  animation-delay: var(--sc-delay);
   animation-duration: var(--sc-duration) !important;
 
   /* CSS variable interface */
@@ -23,10 +22,6 @@
   --border: var(--sc-bd-color-h) var(--sc-bd-color-s) var(--sc-bd-color-l);
   --accent: var(--sc-bg-color-h) var(--sc-bg-color-s) calc(var(--sc-bg-color-l) - 6%);
   --accent-foreground: 224 71% 4%;
-}
-
-.popupInEnter {
-  visibility: hidden;
 }
 
 .previewContainer {

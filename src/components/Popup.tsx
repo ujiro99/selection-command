@@ -30,7 +30,7 @@ export const Popup = (props: PopupProps) => {
   const { settings } = useSetting()
   const { visible, isContextMenu } = useDetectStartup(props)
   const [inTransition, setInTransition] = useState(false)
-  const [inEnter, setInEnter] = useState(false)
+  const [shouldRender, setShouldRender] = useState(false)
   const placement = settings.popupPlacement
   const isPreview = props.isPreview === true
   const side = isPreview
@@ -64,8 +64,9 @@ export const Popup = (props: PopupProps) => {
     }, {})
 
   useEffect(() => {
+    let timer: NodeJS.Timeout
     if (!visible) {
-      setInEnter(false)
+      setShouldRender(false)
       setInTransition(false)
     } else {
       const popupDuration = settings.userStyles?.find(
@@ -77,40 +78,38 @@ export const Popup = (props: PopupProps) => {
       const duration = popupDuration ? parseInt(popupDuration.value) : 150
       const delay = popupDelay ? parseInt(popupDelay.value) : 250
       setInTransition(true)
-      setInEnter(true)
       setTimeout(() => {
         setInTransition(false)
       }, duration + delay)
-      setTimeout(() => {
-        setInEnter(false)
+      timer = setTimeout(() => {
+        setShouldRender(true)
       }, delay)
     }
+    return () => clearTimeout(timer)
   }, [visible])
 
   const noFocus = (e: Event) => e.preventDefault()
 
   return (
-    <popupContext.Provider
-      value={{ isPreview, inTransition: inTransition, side, align }}
-    >
+    <popupContext.Provider value={{ isPreview, inTransition, side, align }}>
       {isPreview && <PreviewDesc {...props} />}
       <Popover open={visible}>
         <PopoverAnchor virtualRef={{ current: props.positionElm }} />
-        <PopoverContent
-          side={side}
-          align={align}
-          className={clsx(css.popup, {
-            [css.popupInEnter]: inEnter,
-          })}
-          style={userStyles}
-          onOpenAutoFocus={noFocus}
-        >
-          {!isContextMenu ? (
-            <Menu />
-          ) : (
-            <InvisibleItem positionElm={props.positionElm} />
-          )}
-        </PopoverContent>
+        {shouldRender && (
+          <PopoverContent
+            side={side}
+            align={align}
+            className={clsx(css.popup)}
+            style={userStyles}
+            onOpenAutoFocus={noFocus}
+          >
+            {!isContextMenu ? (
+              <Menu />
+            ) : (
+              <InvisibleItem positionElm={props.positionElm} />
+            )}
+          </PopoverContent>
+        )}
       </Popover>
     </popupContext.Provider>
   )
