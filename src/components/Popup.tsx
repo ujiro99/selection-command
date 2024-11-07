@@ -63,8 +63,6 @@ export const Popup = (props: PopupProps) => {
       return { ...acc, [`--sc-${cur.name}`]: cur.value }
     }, {})
 
-  console.log(userStyles)
-
   useEffect(() => {
     if (!visible) {
       setInEnter(false)
@@ -113,8 +111,8 @@ export const Popup = (props: PopupProps) => {
         <style>{`
           :root, :host {
             ${Object.entries(userStyles)
-            .map(([k, v]) => `${k}: ${v};`)
-            .join('\n')}
+              .map(([k, v]) => `${k}: ${v};`)
+              .join('\n')}
           }
         `}</style>
       </Popover>

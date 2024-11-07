@@ -25,7 +25,7 @@ type Props = {
   selectionText: string
 }
 
-const PADDING = 20
+const PADDING = 16
 
 export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
@@ -121,12 +121,13 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const { start, end } = rect
     const styles = {
       position: 'absolute',
-      top: window.scrollY + start.y - offset.y - PADDING / 2,
-      left: window.scrollX + start.x - offset.x - PADDING / 2,
+      top: window.scrollY + start.y - offset.y - PADDING,
+      left: window.scrollX + start.x - offset.x - PADDING,
       height: end.y - start.y,
       width: end.x - start.x,
       pointerEvents: 'none',
       padding: PADDING, // adjust position of the Popup
+      zIndex: 2147483647,
     } as React.CSSProperties
 
     return (

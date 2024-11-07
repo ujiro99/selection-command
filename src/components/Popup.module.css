@@ -21,8 +21,7 @@
   --background: var(--sc-bg-color-h) var(--sc-bg-color-s) var(--sc-bg-color-l);
   --foreground: 222.2 47.4% 11.2%;
   --border: var(--sc-bd-color-h) var(--sc-bd-color-s) var(--sc-bd-color-l);
-  --accent: var(--sc-bg-color-h) var(--sc-bg-color-s)
-    calc(var(--sc-bg-color-l) - 6%);
+  --accent: var(--sc-bg-color-h) var(--sc-bg-color-s) calc(var(--sc-bg-color-l) - 6%);
   --accent-foreground: 224 71% 4%;
 }
 
@@ -33,7 +32,7 @@
 .previewContainer {
   position: relative;
 
-  & > div {
+  &>div {
     transform: translate(0, 0) !important;
   }
 }
