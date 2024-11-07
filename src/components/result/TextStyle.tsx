@@ -19,7 +19,7 @@ type Props = {
 }
 
 export function TextStyle({ styles }: Props) {
-  const buttonRef = useRef(null)
+  const [buttonElm, setButtonElm] = useState<HTMLButtonElement | null>(null)
   const [status, setStatus] = useState(ExecState.NONE)
   const message = status === ExecState.SUCCESS ? 'Copied!' : 'Copy'
   const styleArr = Object.entries(styles).map(([key, value]) => ({
@@ -44,14 +44,14 @@ export function TextStyle({ styles }: Props) {
           className={css.resultPopupButton}
           onClick={cssCopy}
           disabled={status === ExecState.SUCCESS}
-          ref={buttonRef}
+          ref={setButtonElm}
         >
           {status === ExecState.NONE && <Icon name="copy" />}
           {status === ExecState.SUCCESS && (
             <Icon name="check" className={css.buttonSuccess} />
           )}
         </button>
-        <Tooltip positionElm={buttonRef.current} text={message} />
+        <Tooltip positionElm={buttonElm} text={message} />
       </div>
       <table className={css.resultTable}>
         <thead className={css.resultTableHeader}>

@@ -14,25 +14,15 @@ type PopupProps = {
   disabled?: boolean
 }
 
-import css from './Tooltip.module.css'
-
 export function Tooltip(props: PopupProps) {
   const { side } = useContext(popupContext)
-  const [visible, setVisible] = useState(false)
-  const [inEnter, setInEnter] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [shouldRender, setShouldRender] = useState(false)
   const elm = props.positionElm
 
   useEffect(() => {
-    const show = () => {
-      setInEnter(true)
-      setVisible(true)
-      // 10 ms longer than the animation delay to suppress flickering.
-      setTimeout(() => {
-        setInEnter(false)
-      }, 310)
-    }
-    const hide = () => setVisible(false)
-
+    const show = () => setIsOpen(true)
+    const hide = () => setIsOpen(false)
     if (elm) {
       elm.addEventListener('mouseenter', show)
       elm.addEventListener('mouseleave', hide)
@@ -45,27 +35,37 @@ export function Tooltip(props: PopupProps) {
     }
   }, [elm])
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (isOpen) {
+      timer = setTimeout(() => {
+        setShouldRender(true)
+      }, 300)
+    } else {
+      setShouldRender(false)
+    }
+    return () => clearTimeout(timer)
+  }, [isOpen])
+
   if (props.disabled || !elm) {
     return null
   }
 
   return (
-    <Popover open={visible}>
+    <Popover open={isOpen}>
       <PopoverAnchor virtualRef={{ current: props.positionElm }} />
-      <PopoverContent
-        className={clsx(
-          'bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 text-xs text-white shadow-md',
-          css.enterDelay300,
-          {
-            [css.hidden]: inEnter,
-          },
-        )}
-        side={side}
-        arrowPadding={-1}
-      >
-        {props.text}
-        <PopoverArrow className="fill-gray-800" height={6} />
-      </PopoverContent>
+      {shouldRender && (
+        <PopoverContent
+          className={clsx(
+            'bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 text-xs text-white shadow-md',
+          )}
+          side={side}
+          arrowPadding={-1}
+        >
+          {props.text}
+          <PopoverArrow className="fill-gray-800" height={6} />
+        </PopoverContent>
+      )}
     </Popover>
   )
 }

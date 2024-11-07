@@ -1,7 +1,0 @@
-.enterDelay300[data-state='open'] {
-  animation-delay: 300ms;
-}
-
-.hidden {
-  visibility: hidden;
-}
