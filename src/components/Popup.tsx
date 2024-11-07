@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, useRef } from 'react'
+import React, { useState, useEffect, createContext } from 'react'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import clsx from 'clsx'
 import { Menu } from '@/components/menu/Menu'
@@ -87,6 +87,8 @@ export const Popup = (props: PopupProps) => {
     }
   }, [visible])
 
+  const noFocus = (e: Event) => e.preventDefault()
+
   return (
     <popupContext.Provider
       value={{ isPreview, inTransition: inTransition, side, align }}
@@ -101,6 +103,7 @@ export const Popup = (props: PopupProps) => {
             [css.popupInEnter]: inEnter,
           })}
           style={userStyles}
+          onOpenAutoFocus={noFocus}
         >
           {!isContextMenu ? (
             <Menu />
@@ -108,13 +111,6 @@ export const Popup = (props: PopupProps) => {
             <InvisibleItem positionElm={props.positionElm} />
           )}
         </PopoverContent>
-        <style>{`
-          :root, :host {
-            ${Object.entries(userStyles)
-              .map(([k, v]) => `${k}: ${v};`)
-              .join('\n')}
-          }
-        `}</style>
       </Popover>
     </popupContext.Provider>
   )
