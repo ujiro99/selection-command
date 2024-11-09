@@ -138,7 +138,7 @@ export function isUrl(str: string): boolean {
 /**
  * Check if the string is empty.
  */
-export function isEmpty(str: string): boolean {
+export function isEmpty(str: string | null): boolean {
   return !str?.length
 }
 

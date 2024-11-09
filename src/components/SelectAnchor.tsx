@@ -3,6 +3,7 @@ import { APP_ID } from '@/const'
 import { context } from '@/components/App'
 import { useLeftClickHold } from '@/hooks/useDetectStartup'
 import { MOUSE } from '@/const'
+import { isEmpty } from '@/services/util'
 
 function isPopup(elm: Element): boolean {
   if (elm == null) return false
@@ -16,26 +17,23 @@ type Point = {
   y: number
 }
 
-type Rect = {
-  start: Point
-  end: Point
-}
-
 type Props = {
   selectionText: string
+  removeDelay?: number
 }
 
 const PADDING = 16
 
 export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
-    const text = props.selectionText
-    const selected = text != null && text.length > 0
     const { setTarget } = useContext(context)
-    const [startPoint, setStartPoint] = useState<Point>({} as Point)
-    const [rect, setRect] = useState<Rect>()
+    const [isMouseDown, setIsMouseDown] = useState<boolean>(false)
+    const [isDragging, setIsDragging] = useState<boolean>(false)
+    const [point, setPoint] = useState<Point | null>(null)
     const [offset, setOffset] = useState<Point>({} as Point)
-    const { detectHold } = useLeftClickHold(props)
+    const [delayTO, setDelayTO] = useState<number | null>()
+    const { detectHold, position } = useLeftClickHold(props)
+    const selected = !isEmpty(props.selectionText)
 
     useEffect(() => {
       // Offset of the body
@@ -45,89 +43,132 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       setOffset({ x, y })
     }, [])
 
+    const isTargetEvent = (e: MouseEvent): boolean => {
+      return e.button === MOUSE.LEFT && !isPopup(e.target as Element)
+    }
+
+    // event / mode      | invisible | visible              |
+    // 1. mouse move     | none      | hide immediately     |
+    // 2. mouse hold     | show      | hide after animation |
+    // 3. drag           | show      | show(move)           |
+    // 4. click          | none      | hide after animation |
+    // 5. double click   | show      | show(move)           |
+    // 6. tripple click  | show      | show(move)           |
+
     useEffect(() => {
-      const onDown = (e: MouseEvent) => {
-        if (e.button !== MOUSE.LEFT) {
+      const onMouseDown = (e: MouseEvent) => {
+        setIsMouseDown(true)
+      }
+
+      const onMouseUp = (e: MouseEvent) => {
+        setIsMouseDown(false)
+        if (!isTargetEvent(e)) return
+        if (e.detail >= 3) {
+          // With triple-clicking, the entire phrase is selected.
+          // In this case, it is treated the same as a double click.
+          onDouble(e)
           return
         }
-        if (!isPopup(e.target as Element)) {
-          setStartPoint({ x: e.x, y: e.y })
-          setTarget(e.target as Element)
+        if (isDragging) {
+          onDrag(e)
+        }
+        if (detectHold) {
+          e.preventDefault()
+          e.stopPropagation()
         }
       }
-      const onUp = (e: MouseEvent) => {
-        if (e.button !== MOUSE.LEFT) {
+
+      const onClick = (e: MouseEvent) => {
+        if (!isTargetEvent(e)) return
+        if (isDragging) {
+          setIsDragging(false)
           return
         }
-        if (!isPopup(e.target as Element)) {
-          if (e.detail >= 3) {
-            // With triple-clicking, the entire phrase is selected.
-            // In this case, it is treated the same as a double click.
-            onDbl(e)
-            return
-          }
-
-          const endPoint = { x: e.x, y: e.y }
-          if (
-            startPoint.x === endPoint.x &&
-            startPoint.y === endPoint.y &&
-            !detectHold
-          ) {
-            // Remove rect if it's a click
-            setRect(undefined)
-            return
-          }
-
-          if (detectHold) {
-            // If hold detected, don't change rect.
-            e.preventDefault()
-            e.stopPropagation()
-            return
-          }
-
-          const start = { ...startPoint }
-          const end = { x: e.x, y: e.y }
-          if (startPoint.x > endPoint.x) {
-            start.x = endPoint.x
-            end.x = startPoint.x
-          }
-          if (startPoint.y > endPoint.y) {
-            start.y = endPoint.y
-            end.y = startPoint.y
-          }
-          setRect({ start, end })
+        if (!selected) {
+          releaseAnchor()
         }
       }
-      const onDbl = (e: MouseEvent) => {
-        if (e.button !== MOUSE.LEFT) {
-          return
-        }
-        const start = { x: e.x - 5, y: e.y - 5 }
-        const end = { x: e.x + 5, y: e.y + 5 }
-        setRect({ start, end })
+
+      const onDrag = (e: MouseEvent) => {
+        if (!isTargetEvent(e)) return
+        setAnchor({ x: e.clientX, y: e.clientY })
       }
-      document.addEventListener('mousedown', onDown)
-      document.addEventListener('mouseup', onUp)
-      document.addEventListener('dblclick', onDbl)
+
+      const onDouble = (e: MouseEvent) => {
+        if (!isTargetEvent(e)) return
+        setAnchor({ x: e.clientX, y: e.clientY })
+      }
+
+      document.addEventListener('mousedown', onMouseDown)
+      document.addEventListener('mouseup', onMouseUp)
+      document.addEventListener('click', onClick)
+      document.addEventListener('dblclick', onDouble)
       return () => {
-        document.removeEventListener('mousedown', onDown)
-        document.removeEventListener('mouseup', onUp)
-        document.removeEventListener('dblclick', onDbl)
+        document.removeEventListener('mousedown', onMouseDown)
+        document.removeEventListener('mouseup', onMouseUp)
+        document.removeEventListener('click', onClick)
+        document.removeEventListener('dblclick', onDouble)
       }
-    }, [setTarget, startPoint, detectHold])
+    }, [setTarget, delayTO, props.removeDelay, isDragging, point, selected])
 
-    if (rect == null || !selected) return null
+    useEffect(() => {
+      const onMouseMove = (e: MouseEvent) => {
+        if (!isTargetEvent(e)) return
+        setIsDragging(true)
+        if (point) {
+          releaseAnchor(true)
+        }
+      }
+      if (isMouseDown) {
+        document.addEventListener('mousemove', onMouseMove)
+      }
+      return () => {
+        document.removeEventListener('mousemove', onMouseMove)
+      }
+    }, [point, isMouseDown, setTarget, setIsDragging])
 
-    const { start, end } = rect
+    useEffect(() => {
+      if (detectHold) {
+        if (point) {
+          setAnchor(position)
+        } else {
+          releaseAnchor()
+        }
+      }
+    }, [detectHold, position, point])
+
+    const setAnchor = (point: Point) => {
+      clearTimeout(delayTO as number)
+      setPoint(point)
+      const s = document.getSelection()
+      setTarget(s?.getRangeAt(0)?.startContainer.parentElement as Element)
+    }
+
+    const releaseAnchor = (immediately = false) => {
+      clearTimeout(delayTO as number)
+      if (immediately) {
+        setPoint(null)
+        return
+      }
+      const to = window.setTimeout(() => {
+        setPoint(null)
+      }, props.removeDelay ?? 0)
+      setDelayTO(to)
+    }
+
+    if (point == null) return null
+
     const styles = {
       position: 'absolute',
-      top: window.scrollY + start.y - offset.y - PADDING,
-      left: window.scrollX + start.x - offset.x - PADDING,
-      height: end.y - start.y,
-      width: end.x - start.x,
+      top: window.scrollY + point.y - offset.y - PADDING,
+      left: window.scrollX + point.x - offset.x,
+      height: 40,
+      width: 40,
       pointerEvents: 'none',
       padding: PADDING, // adjust position of the Popup
       zIndex: 2147483647,
+      /// backgroundColor: 'rgba(255, 0, 0, 0.5)',
+      /// border: '1px solid red',
     } as React.CSSProperties
 
     return (

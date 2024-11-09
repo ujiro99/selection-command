@@ -7,7 +7,7 @@ import { Copy } from './copy'
 import { Option } from './option'
 import { GetStyles as GetTextStyles } from './getStyles'
 import { AddPageRule } from './addPageRule'
-import type { Command } from '@/services/userSettings'
+import type { Command } from '@/types'
 
 export enum ExecState {
   NONE = 0,
