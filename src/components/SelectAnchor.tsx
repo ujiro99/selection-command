@@ -1,4 +1,10 @@
-import React, { useState, useEffect, forwardRef, useContext } from 'react'
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useContext,
+  useCallback,
+} from 'react'
 import { APP_ID } from '@/const'
 import { context } from '@/components/App'
 import { useLeftClickHold } from '@/hooks/useDetectStartup'
@@ -22,7 +28,7 @@ type Props = {
   removeDelay?: number
 }
 
-const PADDING = 16
+const SIZE = 40
 
 export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
@@ -54,6 +60,31 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     // 4. click          | none      | hide after animation |
     // 5. double click   | show      | show(move)           |
     // 6. tripple click  | show      | show(move)           |
+
+    const setAnchor = useCallback(
+      (p: Point) => {
+        clearTimeout(delayTO as number)
+        setPoint(p)
+        const s = document.getSelection()
+        setTarget(s?.getRangeAt(0)?.startContainer.parentElement as Element)
+      },
+      [delayTO, setPoint, setTarget],
+    )
+
+    const releaseAnchor = useCallback(
+      (immediately = false) => {
+        clearTimeout(delayTO as number)
+        if (immediately) {
+          setPoint(null)
+          return
+        }
+        const to = window.setTimeout(() => {
+          setPoint(null)
+        }, props.removeDelay ?? 0)
+        setDelayTO(to)
+      },
+      [delayTO, setPoint, props.removeDelay],
+    )
 
     useEffect(() => {
       const onMouseDown = (e: MouseEvent) => {
@@ -109,7 +140,14 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
         document.removeEventListener('click', onClick)
         document.removeEventListener('dblclick', onDouble)
       }
-    }, [setTarget, delayTO, props.removeDelay, isDragging, point, selected])
+    }, [
+      isMouseDown,
+      isDragging,
+      detectHold,
+      selected,
+      releaseAnchor,
+      setAnchor,
+    ])
 
     useEffect(() => {
       const onMouseMove = (e: MouseEvent) => {
@@ -125,7 +163,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       return () => {
         document.removeEventListener('mousemove', onMouseMove)
       }
-    }, [point, isMouseDown, setTarget, setIsDragging])
+    }, [point, isMouseDown, setIsDragging, releaseAnchor])
 
     useEffect(() => {
       if (detectHold) {
@@ -135,40 +173,20 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
           releaseAnchor()
         }
       }
-    }, [detectHold, position, point])
-
-    const setAnchor = (point: Point) => {
-      clearTimeout(delayTO as number)
-      setPoint(point)
-      const s = document.getSelection()
-      setTarget(s?.getRangeAt(0)?.startContainer.parentElement as Element)
-    }
-
-    const releaseAnchor = (immediately = false) => {
-      clearTimeout(delayTO as number)
-      if (immediately) {
-        setPoint(null)
-        return
-      }
-      const to = window.setTimeout(() => {
-        setPoint(null)
-      }, props.removeDelay ?? 0)
-      setDelayTO(to)
-    }
+    }, [detectHold, position, point, setAnchor, releaseAnchor])
 
     if (point == null) return null
 
     const styles = {
       position: 'absolute',
-      top: window.scrollY + point.y - offset.y - PADDING,
-      left: window.scrollX + point.x - offset.x,
-      height: 40,
-      width: 40,
+      top: window.scrollY + point.y - offset.y - SIZE / 2,
+      left: window.scrollX + point.x - offset.x - SIZE / 2,
+      height: SIZE,
+      width: SIZE,
       pointerEvents: 'none',
-      padding: PADDING, // adjust position of the Popup
       zIndex: 2147483647,
-      /// backgroundColor: 'rgba(255, 0, 0, 0.5)',
-      /// border: '1px solid red',
+      // backgroundColor: 'rgba(255, 0, 0, 0.6)',
+      // border: '1px solid red',
     } as React.CSSProperties
 
     return (
