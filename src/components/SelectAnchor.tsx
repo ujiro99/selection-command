@@ -5,18 +5,10 @@ import React, {
   useContext,
   useCallback,
 } from 'react'
-import { APP_ID } from '@/const'
 import { context } from '@/components/App'
 import { useLeftClickHold } from '@/hooks/useDetectStartup'
 import { MOUSE } from '@/const'
-import { isEmpty } from '@/services/util'
-
-function isPopup(elm: Element): boolean {
-  if (elm == null) return false
-  if (elm.id === APP_ID) return true
-  if (elm.nodeName === 'body') return false
-  return isPopup(elm.parentElement as Element)
-}
+import { isEmpty, isPopup } from '@/services/util'
 
 type Point = {
   x: number
@@ -55,7 +47,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
 
     // event / mode      | invisible | visible              |
     // 1. mouse move     | none      | hide immediately     |
-    // 2. mouse hold     | show      | hide after animation |
+    // 2. mouse hold     | show      | none                 |
     // 3. drag           | show      | show(move)           |
     // 4. click          | none      | hide after animation |
     // 5. double click   | show      | show(move)           |
@@ -153,7 +145,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       const onMouseMove = (e: MouseEvent) => {
         if (!isTargetEvent(e)) return
         setIsDragging(true)
-        if (point) {
+        if (point != null) {
           releaseAnchor(true)
         }
       }
@@ -167,13 +159,11 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       if (detectHold) {
-        if (point) {
+        if (point == null) {
           setAnchor(position)
-        } else {
-          releaseAnchor()
         }
       }
-    }, [detectHold, position, point, setAnchor, releaseAnchor])
+    }, [detectHold, point, setAnchor])
 
     if (point == null) return null
 

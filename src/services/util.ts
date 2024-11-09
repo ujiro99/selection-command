@@ -1,4 +1,4 @@
-import { SPACE_ENCODING } from '@/const'
+import { APP_ID, SPACE_ENCODING } from '@/const'
 import type { Version } from '@/types'
 
 /**
@@ -140,6 +140,13 @@ export function isUrl(str: string): boolean {
  */
 export function isEmpty(str: string | null): boolean {
   return !str?.length
+}
+
+export function isPopup(elm: Element): boolean {
+  if (elm == null) return false
+  if (elm.id === APP_ID) return true
+  if (elm.nodeName === 'body') return false
+  return isPopup(elm.parentElement as Element)
 }
 
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
