@@ -11,7 +11,7 @@ import type {
 export type Version = `${number}.${number}.${number}`
 
 export type Command = {
-  id: number
+  id: number | string
   title: string
   searchUrl: string
   iconUrl: string

@@ -11,7 +11,7 @@ export const OptionSettings = {
   },
   commands: [
     {
-      id: 1,
+      id: '$$option-1',
       title: t('labelOption'),
       searchUrl: '',
       iconUrl:
@@ -20,7 +20,7 @@ export const OptionSettings = {
       parentFolderId: OPTION_FOLDER,
     },
     {
-      id: 2,
+      id: '$$option-2',
       title: t('labelAddPageRule'),
       searchUrl: '',
       iconUrl:
