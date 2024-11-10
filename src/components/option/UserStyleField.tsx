@@ -3,13 +3,7 @@ import type { FieldProps } from '@rjsf/utils'
 
 import { STYLE_VARIABLE } from '@/const'
 
-import {
-  container,
-  select,
-  styleVariable,
-  value,
-  description,
-} from './UserStyleField.module.css'
+import css from './UserStyleField.module.css'
 
 export type UserStyleMap = Record<STYLE_VARIABLE, { [key: string]: string }>
 
@@ -100,11 +94,11 @@ export function UserStyleField(props: FieldProps) {
   }
 
   return (
-    <div className={container}>
-      <div className={styleVariable}>
+    <div className={css.container}>
+      <div className={css.styleVariable}>
         <select
           id={props.idSchema.$id}
-          className={select}
+          className={css.select}
           value={formData?.name}
           required={props.required}
           onChange={onChangeName}
@@ -119,7 +113,7 @@ export function UserStyleField(props: FieldProps) {
           <input
             type={attr.type}
             id={props.idSchema.$id}
-            className={value}
+            className={css.value}
             value={formData?.value ?? attr.default}
             required={props.required}
             placeholder={`e.g. ${attr.default}`}
@@ -129,10 +123,10 @@ export function UserStyleField(props: FieldProps) {
             onChange={onChangeValue}
           />
         ) : (
-          <span className={value} />
+          <span className={css.value} />
         )}
       </div>
-      <p className={description}>
+      <p className={css.description}>
         <span>{desc}</span>
       </p>
     </div>

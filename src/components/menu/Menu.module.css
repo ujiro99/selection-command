@@ -1,61 +1,23 @@
-.menu {
-  padding: 2px;
-}
-
-.list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-
-  >li {
-    border-radius: 4px;
-    transition: ease-out 0.15s background;
-
-    &:hover {
-      background: hsl(var(--sc-bg-color-h),
-          var(--sc-bg-color-s),
-          calc(var(--sc-bg-color-l) - 6%));
-    }
-
-    &:hover:has(:disabled):not(:has(.folder)) {
-      background-color: var(--sc-bg-color);
-    }
-  }
-
-  >li+li {
-    margin-top: 2px;
-  }
-}
-
-.menuHorizontal {
-  .list {
-    display: flex;
-    flex-direction: row;
-
-    >li+li {
-      margin-top: 0;
-      margin-left: 2px;
-    }
-  }
+.menuVertical {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
 }
 
 .item {
-  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding) calc(var(--sc-padding) * 1.5);
   display: flex;
   align-items: center;
-  font-size: var(--sc-font-size);
-  height: max(var(--sc-font-size), var(--sc-image-size));
-  box-sizing: content-box;
-  color: rgb(75 85 99);
+  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding) calc(var(--sc-padding) * 1.5);
+  height: calc(max(var(--sc-font-size), var(--sc-image-size)) + var(--sc-padding) * 2);
+  box-sizing: border-box;
+  width: 100%;
+  white-space: pre;
   line-height: 1;
   text-decoration: none;
   text-wrap: nowrap;
-  white-space: pre;
+  font-size: var(--sc-font-size);
   font-family: var(--font-family);
-
-  &:hover {
-    color: rgb(3 7 18);
-  }
+  transition: ease-out 0.15s background;
 
   &:disabled {
     opacity: 0.4;
@@ -74,21 +36,16 @@
   height: var(--sc-image-size);
 }
 
-.itemOnlyIcon {
-  padding-right: var(--sc-padding);
-
-  .itemTitle {
-    display: none;
-  }
-}
-
 .itemTitle {
-  margin-left: 0.6em;
-  margin-right: 0.4em;
+  margin-left: calc(0.6em + var(--sc-padding) / 2);
+  margin-right: calc(0.4em + var(--sc-padding) / 2);
+  text-align: left;
 }
 
 .itemHorizontal {
   padding-left: var(--sc-padding);
+  padding-right: var(--sc-padding);
+  width: auto;
 
   .itemTitle {
     margin-left: 0.3em;

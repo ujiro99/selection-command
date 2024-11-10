@@ -1,5 +1,13 @@
-import React, { Fragment } from 'react'
-import { Dialog as HDialog, Transition } from '@headlessui/react'
+import React from 'react'
+import {
+  Dialog as DialogRoot,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+} from '@/components/ui/dialog'
+
 import { t } from '@/services/i18n'
 
 import css from './Dialog.module.css'
@@ -14,37 +22,33 @@ type Props = {
 }
 
 export function Dialog(props: Props) {
+  const onOpenChange = (open: boolean) => {
+    if (!open) {
+      props.onClose(false)
+    }
+  }
   return (
-    <Transition
-      show={props.open}
-      enter={css.dialogTransition}
-      enterFrom={css.dialogFrom}
-      enterTo={css.dialogTo}
-      leave={css.dialogTransition + ' duration-100'}
-      leaveFrom={css.dialogTo}
-      leaveTo={css.dialogFrom}
-      as={Fragment}
-    >
-      <HDialog onClose={props.onClose} className={css.dialog}>
-        <HDialog.Panel className={css.panel}>
-          <HDialog.Title className={css.title}>{props.title}</HDialog.Title>
-          <HDialog.Description className={css.description}>
+    <DialogRoot open={props.open} onOpenChange={onOpenChange}>
+      <DialogContent className={css.dialog}>
+        <DialogHeader>
+          <DialogTitle className={css.title}>{props.title}</DialogTitle>
+          <DialogDescription className={css.description}>
             {props.description()}
-          </HDialog.Description>
-          {props.children}
-          <div className={css.buttonContainer}>
-            <button className={css.button} onClick={() => props.onClose(true)}>
-              {props.okText}
-            </button>
-            <button
-              className={css.buttonCancel}
-              onClick={() => props.onClose(false)}
-            >
-              {t('labelCancel')}
-            </button>
-          </div>
-        </HDialog.Panel>
-      </HDialog>
-    </Transition>
+          </DialogDescription>
+        </DialogHeader>
+        {props.children}
+        <DialogFooter>
+          <button className={css.button} onClick={() => props.onClose(true)}>
+            {props.okText}
+          </button>
+          <button
+            className={css.buttonCancel}
+            onClick={() => props.onClose(false)}
+          >
+            {t('labelCancel')}
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   )
 }

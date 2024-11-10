@@ -1,26 +1,17 @@
 import React, { useState, useRef, useContext } from 'react'
-import classNames from 'classnames'
+import clsx from 'clsx'
 import { context } from '@/components/App'
 import { popupContext } from '@/components/Popup'
 import { actions } from '@/action'
 import { Tooltip } from '../Tooltip'
-import {
-  button,
-  item,
-  itemImg,
-  itemTitle,
-  itemOnlyIcon,
-  itemHorizontal,
-  apiIconLoading,
-  apiIconSuccess,
-  apiIconError,
-} from './Menu.module.css'
 import { Icon } from '@/components/Icon'
 import { ResultPopup } from '@/components/result/ResultPopup'
-import type { Command } from '@/services/userSettings'
 import { linksInSelection } from '@/services/util'
 import { OPEN_MODE } from '@/const'
 import { ExecState } from '@/action'
+import type { Command } from '@/types'
+
+import css from './Menu.module.css'
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -91,21 +82,29 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 
   return (
     <>
-      <Tooltip text={message} disabled={!onlyIcon || inTransition}>
-        <button
-          type="button"
-          className={classNames(item, button, {
-            [itemOnlyIcon]: onlyIcon,
-            [itemHorizontal]: onlyIcon,
-          })}
-          ref={buttonRef}
-          onClick={handleClick}
-          disabled={!enable}
-        >
-          <ImageWithState state={itemState.state} iconUrl={iconUrl} />
-          <span className={itemTitle}>{message}</span>
-        </button>
-      </Tooltip>
+      <button
+        type="button"
+        className={clsx(
+          css.item,
+          css.button,
+          {
+            [css.itemHorizontal]: onlyIcon,
+            ['hover:bg-accent']: !inTransition,
+          },
+          'rounded-sm ',
+        )}
+        ref={buttonRef}
+        onClick={handleClick}
+        disabled={!enable}
+      >
+        <ImageWithState state={itemState.state} iconUrl={iconUrl} />
+        {!onlyIcon && <span className={css.itemTitle}>{title}</span>}
+      </button>
+      <Tooltip
+        text={message}
+        positionElm={buttonRef.current}
+        disabled={!onlyIcon || inTransition}
+      />
       <ResultPopup
         visible={result != null}
         positionRef={buttonRef}
@@ -127,19 +126,19 @@ function ImageWithState(props: ImageProps): JSX.Element {
   return (
     <>
       {status === ExecState.NONE && (
-        <img className={itemImg} src={iconUrl} alt="icon" />
+        <img className={css.itemImg} src={iconUrl} alt="icon" />
       )}
       {status === ExecState.EXECUTING && (
         <Icon
-          className={`${itemImg} ${apiIconLoading} rotate`}
+          className={`${css.itemImg} ${css.apiIconLoading} rotate`}
           name="refresh"
         />
       )}
       {status === ExecState.SUCCESS && (
-        <Icon className={`${itemImg} ${apiIconSuccess}`} name="check" />
+        <Icon className={`${css.itemImg} ${css.apiIconSuccess}`} name="check" />
       )}
       {status === ExecState.FAIL && (
-        <Icon className={`${itemImg} ${apiIconError}`} name="error" />
+        <Icon className={`${css.itemImg} ${css.apiIconError}`} name="error" />
       )}
     </>
   )

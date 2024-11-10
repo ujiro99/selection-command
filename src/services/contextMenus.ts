@@ -6,24 +6,21 @@ import { Ipc, TabCommand } from '@/services/ipc'
 chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
 UserSettings.addChangedListener(() => ContextMenu.init())
 
-const randId = (): string => {
-  return crypto.getRandomValues(new Uint16Array(1))[0].toString()
-}
-
 export type executeActionProps = {
   command: Command
 }
 
 const ContextMenu = {
-  init: async () => {
-    chrome.contextMenus.removeAll()
-    chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
-    const settings = await UserSettings.get()
-    if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
-      console.debug('init context menu')
-      ContextMenu.addMenus(settings)
-      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-    }
+  init: () => {
+    chrome.contextMenus.removeAll(async () => {
+      chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
+      const settings = await UserSettings.get()
+      if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
+        console.debug('init context menu')
+        ContextMenu.addMenus(settings)
+        chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+      }
+    })
   },
 
   commandIdObj: {} as { [key: string | number]: Command },
@@ -46,15 +43,16 @@ const ContextMenu = {
             if (f.id === OPTION_FOLDER) {
               // If the folder is Option menu, insert a separator.
               chrome.contextMenus.create({
+                title: 'Option',
                 type: 'separator',
                 contexts,
-                id: randId(),
+                id: 'OptionSeparator',
               })
             }
             folderId = chrome.contextMenus.create({
               title: f.title,
               contexts,
-              id: randId(),
+              id: f.id,
             })
             folderIdObj[f.id] = folderId
           }
@@ -65,7 +63,7 @@ const ContextMenu = {
         title: command.title,
         parentId: folderId,
         contexts,
-        id: randId(),
+        id: `${command.id}`,
       })
       ContextMenu.commandIdObj[menuId] = command
     }

@@ -1,6 +1,6 @@
 import React from 'react'
 import userSettingSchema from '@/services/userSettingSchema'
-import { container, item, button, label } from './TableOfContents.module.css'
+import styles from './TableOfContents.module.css'
 import { t } from '@/services/i18n'
 
 type Props = {
@@ -21,11 +21,11 @@ export const TableOfContents = (props: Props) => {
   }
 
   return (
-    <ul className={container}>
-      <span className={label}>Menu</span>
+    <ul className={styles.container}>
+      <span className={styles.label}>Menu</span>
       {properties.map((p) => (
-        <li className={item} key={p}>
-          <button className={button} onClick={onClick} data-target={p}>
+        <li className={styles.item} key={p}>
+          <button className={styles.button} onClick={onClick} data-target={p}>
             <span>{labels[p]}</span>
           </button>
         </li>

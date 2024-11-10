@@ -1,15 +1,21 @@
-import React, { useRef } from 'react'
-import classNames from 'classnames'
+import React, { useState, useRef } from 'react'
+import clsx from 'clsx'
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from '@/components/ui/menubar'
+
 import { STYLE, ROOT_FOLDER } from '@/const'
-import { MenuFolder } from './MenuFolder'
 import { MenuItem } from './MenuItem'
-import { menu, list, menuHorizontal } from './Menu.module.css'
-import type {
-  Command,
-  CommandFolder,
-  UserSettingsType,
-} from '@/services/userSettings'
+import { Icon } from '@/components/Icon'
+import css from './Menu.module.css'
+import folderCss from './MenuFolder.module.css'
+import type { Command, CommandFolder } from '@/types'
 import { useSetting } from '@/hooks/useSetting'
+import { onHover } from '@/services/util'
 
 type ItemObj = {
   folder: CommandFolder
@@ -22,10 +28,14 @@ function isRoot(folder: CommandFolder): boolean {
 
 export function Menu(): JSX.Element {
   const menuRef = useRef(null)
+  const [hoverTrigger, setHoverTrigger] = useState('')
+  const [hoverContent, setHoverContent] = useState('')
   const { settings } = useSetting()
   const commands = settings.commands
   const folders = settings.folders
   const isHorizontal = settings.style === STYLE.HORIZONTAL
+  const isBottom = settings.popupPlacement.startsWith('bottom')
+  const side = isHorizontal ? (isBottom ? 'bottom' : 'top') : 'right'
 
   const items = commands.reduce((pre, cur, idx) => {
     const folder = folders.find((obj) => obj.id === cur.parentFolderId)
@@ -51,46 +61,69 @@ export function Menu(): JSX.Element {
     return pre
   }, [] as ItemObj[])
 
+  const activeFolder = hoverTrigger || hoverContent
+
   return (
-    <div
-      className={classNames(menu, { [menuHorizontal]: isHorizontal })}
+    <Menubar
+      value={activeFolder}
+      className={clsx({
+        [css.menuVertical]: !isHorizontal,
+      })}
       ref={menuRef}
     >
-      <ItemsToMenu items={items} menuRef={menuRef} settings={settings} />
-    </div>
-  )
-}
-
-function ItemsToMenu(props: {
-  items: ItemObj[]
-  menuRef: React.RefObject<HTMLDivElement>
-  settings: UserSettingsType
-}): JSX.Element {
-  const { items, menuRef } = props
-  const isHorizontal = props.settings.style === STYLE.HORIZONTAL
-  return (
-    <ul className={list}>
-      {items.map((item) =>
-        isRoot(item.folder) ? (
-          item.commands.map((obj, idx) => (
-            <li key={`menu_${obj.title}_${idx}`}>
-              <MenuItem
-                menuRef={menuRef}
-                onlyIcon={isHorizontal}
-                command={obj}
-              />
-            </li>
+      {items.map(({ folder, commands }, idx) =>
+        folder.id === ROOT_FOLDER ? (
+          commands.map((command) => (
+            <MenuItem
+              key={command.id}
+              menuRef={menuRef}
+              onlyIcon={isHorizontal}
+              command={command}
+            />
           ))
         ) : (
-          <li key={`folder_${item.folder.title}`}>
-            <MenuFolder
-              folder={item.folder}
-              commands={item.commands}
-              menuRef={menuRef}
-            />
-          </li>
+          <MenubarMenu value={folder.id} key={idx}>
+            <MenubarTrigger
+              className={clsx(folderCss.folder, {
+                [css.itemHorizontal]: isHorizontal,
+                [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
+                [folderCss.folderHorizontal]: isHorizontal,
+              })}
+              {...onHover(setHoverTrigger, folder.id)}
+            >
+              <img
+                className={css.itemImg}
+                src={folder.iconUrl}
+                alt={folder.title}
+              />
+              {!(folder.onlyIcon && isHorizontal) && (
+                <span className={clsx(css.itemTitle, folderCss.title)}>
+                  {folder.title}
+                </span>
+              )}
+              {!isHorizontal && (
+                <Icon name="chevron" className={folderCss.icon} />
+              )}
+            </MenubarTrigger>
+            <MenubarContent
+              side={side}
+              sideOffset={isHorizontal ? 0 : -2}
+              className={clsx({ flex: isHorizontal })}
+              {...onHover(setHoverContent, folder.id)}
+            >
+              {commands.map((command) => (
+                <MenubarItem key={command.id}>
+                  <MenuItem
+                    menuRef={menuRef}
+                    onlyIcon={isHorizontal}
+                    command={command}
+                  />
+                </MenubarItem>
+              ))}
+            </MenubarContent>
+          </MenubarMenu>
         ),
       )}
-    </ul>
+    </Menubar>
   )
 }

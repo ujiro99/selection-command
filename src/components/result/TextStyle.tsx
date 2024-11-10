@@ -1,18 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { sleep } from '@/services/util'
 import { ExecState } from '@/action'
 
-import {
-  resultPopupButton,
-  resultTable,
-  resultTableContainer,
-  resultTableHeader,
-  resultTableBody,
-  resultTableProperty,
-  resultTableValue,
-  resultTableCopy,
-  buttonSuccess,
-} from '@/components/result/ResultPopup.module.css'
+import css from '@/components/result/ResultPopup.module.css'
 import { Icon } from '@/components/Icon'
 import { Tooltip } from '@/components/Tooltip'
 
@@ -29,6 +19,7 @@ type Props = {
 }
 
 export function TextStyle({ styles }: Props) {
+  const [buttonElm, setButtonElm] = useState<HTMLButtonElement | null>(null)
   const [status, setStatus] = useState(ExecState.NONE)
   const message = status === ExecState.SUCCESS ? 'Copied!' : 'Copy'
   const styleArr = Object.entries(styles).map(([key, value]) => ({
@@ -42,39 +33,39 @@ export function TextStyle({ styles }: Props) {
       .join('\n')
     navigator.clipboard.writeText(copyText)
     setStatus(ExecState.SUCCESS)
-    await sleep(500)
+    await sleep(1000)
     setStatus(ExecState.NONE)
   }
 
   return (
-    <div className={resultTableContainer}>
-      <div className={resultTableCopy}>
-        <Tooltip text={message}>
-          <button
-            className={resultPopupButton}
-            onClick={cssCopy}
-            disabled={status === ExecState.SUCCESS}
-          >
-            {status === ExecState.NONE && <Icon name="copy" />}
-            {status === ExecState.SUCCESS && (
-              <Icon name="check" className={buttonSuccess} />
-            )}
-          </button>
-        </Tooltip>
+    <div className={css.resultTableContainer}>
+      <div className={css.resultTableCopy}>
+        <button
+          className={css.resultPopupButton}
+          onClick={cssCopy}
+          disabled={status === ExecState.SUCCESS}
+          ref={setButtonElm}
+        >
+          {status === ExecState.NONE && <Icon name="copy" />}
+          {status === ExecState.SUCCESS && (
+            <Icon name="check" className={css.buttonSuccess} />
+          )}
+        </button>
+        <Tooltip positionElm={buttonElm} text={message} />
       </div>
-      <table className={resultTable}>
-        <thead className={resultTableHeader}>
+      <table className={css.resultTable}>
+        <thead className={css.resultTableHeader}>
           <tr key="table-header">
             <th>Property</th>
             <th>Value</th>
           </tr>
         </thead>
-        <tbody className={resultTableBody}>
+        <tbody className={css.resultTableBody}>
           {styleArr.map((item) => {
             return (
               <tr key={item.key}>
-                <td className={resultTableProperty}>{toName(item.key)}</td>
-                <td className={resultTableValue}>{item.value}</td>
+                <td className={css.resultTableProperty}>{toName(item.key)}</td>
+                <td className={css.resultTableValue}>{item.value}</td>
               </tr>
             )
           })}

@@ -1,51 +1,27 @@
 .popup {
-  composes: shadow-xl from './Common.module.css';
-  background-color: var(--sc-bg-color);
-  border-radius: 6px;
   border: solid 1px var(--sc-bd-color);
   font-family: var(--font-family);
+  animation-duration: var(--sc-duration) !important;
 
   /* CSS variable interface */
-  --sc-bg-color: var(--sc-background-color, #ffffff);
   --sc-bg-color-h: var(--sc-background-color-h, 0deg);
   --sc-bg-color-s: var(--sc-background-color-s, 0%);
   --sc-bg-color-l: var(--sc-background-color-l, 100%);
-  --sc-bd-color: var(--sc-border-color, var(--gray-100));
+  --sc-bd-color-h: var(--sc-border-color-h, 220deg);
+  --sc-bd-color-s: var(--sc-border-color-s, 14%);
+  --sc-bd-color-l: var(--sc-border-color-l, 96%);
   --sc-font-size: calc(var(--sc-font-scale, 1) * 12px);
   --sc-image-size: calc(var(--sc-image-scale, 1) * 16px);
   --sc-padding: calc(var(--sc-padding-scale, 1) * 4px);
   --sc-delay: calc(var(--sc-popup-delay, 250) * 1ms);
-  --sc-duration: calc(var(--sc-popup-duration, 100) * 1ms);
-}
+  --sc-duration: calc(var(--sc-popup-duration, 150) * 1ms);
 
-.popupTransition {
-  transition-delay: var(--sc-delay);
-  transition-duration: var(--sc-duration);
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-div[data-closed]>.popup {
-  opacity: 0;
-  transform: translateY(5px);
-}
-
-div[data-closed][data-placement='bottom']>.popup {
-  transform: translateY(-5px);
-}
-
-div[data-closed][data-placement='right']>.popup {
-  transform: translateX(-10px);
-}
-
-div[data-closed][data-placement='left']>.popup {
-  transform: translateX(10px);
-}
-
-/* To display the popup at the top of html, add maximum value of z-index. */
-.popupContianer {
-  position: absolute;
-  z-index: 2147483647;
-  width: 100%;
+  /* Shadcn theme  */
+  --background: var(--sc-bg-color-h) var(--sc-bg-color-s) var(--sc-bg-color-l);
+  --foreground: 222.2 47.4% 11.2%;
+  --border: var(--sc-bd-color-h) var(--sc-bd-color-s) var(--sc-bd-color-l);
+  --accent: var(--sc-bg-color-h) var(--sc-bg-color-s) calc(var(--sc-bg-color-l) - 6%);
+  --accent-foreground: 224 71% 4%;
 }
 
 .previewContainer {

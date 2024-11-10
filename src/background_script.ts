@@ -308,6 +308,8 @@ const updateWindowSize = async (
       height,
     }
     await UserSettings.updateCommands([found])
+  } else {
+    console.warn('command not found', commandId)
   }
 }
 

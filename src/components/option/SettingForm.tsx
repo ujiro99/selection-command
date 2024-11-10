@@ -8,7 +8,7 @@ import type {
 import validator from '@rjsf/validator-ajv8'
 import Form from '@rjsf/core'
 import type { IChangeEvent } from '@rjsf/core'
-import classnames from 'classnames'
+import clsx from 'clsx'
 
 import userSettingSchema from '@/services/userSettingSchema'
 import {
@@ -27,7 +27,7 @@ import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
 import { isMac } from '@/services/util'
 
-import * as css from './SettingForm.module.css'
+import css from './SettingForm.module.css'
 
 type folderOptionsType = {
   enumNames: string[]
@@ -452,6 +452,9 @@ export function SettingFrom() {
           RemoveButton,
         },
       }}
+      experimental_defaultFormStateBehavior={{
+        mergeDefaultsIntoFormData: 'useDefaultIfFormDataUndefined',
+      }}
       ref={formRef}
     />
   )
@@ -491,7 +494,7 @@ function RemoveButton(props: IconButtonProps) {
     <button
       type="button"
       {...btnProps}
-      className={classnames(css.buttonItems, css.buttonItemsDanger)}
+      className={clsx(css.buttonItems, css.buttonItemsDanger)}
     >
       <Icon name="delete" />
     </button>
@@ -564,7 +567,7 @@ const InputNumberField = (props: FieldProps) => {
     props.onChange(event.target.value)
   }
   return (
-    <label className={classnames(css.selectContainer, 'form-control')}>
+    <label className={clsx(css.selectContainer, 'form-control')}>
       <input
         id={idSchema.$id}
         className={css.select}
@@ -593,7 +596,7 @@ const SelectField = (props: FieldProps) => {
     props.onChange(event.target.value)
   }
   return (
-    <label className={classnames(css.selectContainer, 'form-control')}>
+    <label className={clsx(css.selectContainer, 'form-control')}>
       <select
         id={props.idSchema.$id}
         className={css.select}
@@ -625,7 +628,7 @@ const FolderField = (props: FieldProps) => {
   )
 
   return (
-    <label className={classnames(css.selectContainer, 'form-control')}>
+    <label className={clsx(css.selectContainer, 'form-control')}>
       {folder?.iconUrl && (
         <img
           className={css.iconUrlPreview}

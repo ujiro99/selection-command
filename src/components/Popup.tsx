@@ -1,24 +1,16 @@
-import React, { useState, createContext, useCallback } from 'react'
-import { Popover, PopoverPanel, Transition } from '@headlessui/react'
-import { useFloating, flip, autoUpdate } from '@floating-ui/react'
-import { offset } from '@floating-ui/dom'
-import classnames from 'classnames'
-import { Menu } from './menu/Menu'
+import React, { useState, useEffect, createContext } from 'react'
+import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
+import clsx from 'clsx'
+import { Menu } from '@/components/menu/Menu'
+import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { hexToHsl, isMac } from '@/services/util'
 import { t } from '@/services/i18n'
-import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { STYLE_VARIABLE } from '@/const'
+import { Alignment, Side } from '@/types'
 
-import {
-  popup,
-  popupContianer,
-  popupTransition,
-  previewContainer,
-  previewLabel,
-  previewDescription,
-} from './Popup.module.css'
+import css from './Popup.module.css'
 
 export type PopupProps = {
   positionElm: Element | null
@@ -29,6 +21,8 @@ export type PopupProps = {
 type ContextType = {
   isPreview?: boolean
   inTransition?: boolean
+  side: Side
+  align: Alignment
 }
 export const popupContext = createContext<ContextType>({} as ContextType)
 
@@ -36,86 +30,96 @@ export const Popup = (props: PopupProps) => {
   const { settings } = useSetting()
   const { visible, isContextMenu } = useDetectStartup(props)
   const [inTransition, setInTransition] = useState(false)
+  const [shouldRender, setShouldRender] = useState(false)
   const placement = settings.popupPlacement
-  const isBottom = placement.startsWith('bottom')
   const isPreview = props.isPreview === true
-  const styles =
+  const side = isPreview
+    ? 'bottom'
+    : placement.startsWith('top')
+      ? 'top'
+      : 'bottom'
+  const align = isPreview
+    ? 'start'
+    : placement.endsWith('start')
+      ? 'start'
+      : placement.endsWith('end')
+        ? 'end'
+        : 'center'
+
+  const userStyles =
     settings.userStyles &&
     settings.userStyles.reduce((acc, cur) => {
       if (cur.value == null) return acc
-      if (cur.name === 'background-color') {
+      if (cur.name === 'background-color' || cur.name === 'border-color') {
         const hsl = hexToHsl(cur.value)
         return {
           ...acc,
           [`--sc-${cur.name}`]: cur.value,
-          '--sc-background-color-h': `${hsl[0]}deg`,
-          '--sc-background-color-s': `${hsl[1]}%`,
-          '--sc-background-color-l': `${hsl[2]}%`,
+          [`--sc-${cur.name}-h`]: `${hsl[0]}deg`,
+          [`--sc-${cur.name}-s`]: `${hsl[1]}%`,
+          [`--sc-${cur.name}-l`]: `${hsl[2]}%`,
         }
       }
       return { ...acc, [`--sc-${cur.name}`]: cur.value }
     }, {})
 
-  const { refs, floatingStyles } = useFloating({
-    placement: placement,
-    elements: { reference: props.positionElm },
-    whileElementsMounted: autoUpdate,
-    middleware: [
-      isBottom ? offset(5) : offset(15),
-      flip({
-        fallbackPlacements: ['top', 'bottom'],
-      }),
-    ],
-  })
-
-  const onBeforeEnter = useCallback(() => {
-    setInTransition(true)
-  }, [])
-
-  const onAfterEnter = useCallback(() => {
-    const popupDuration = settings.userStyles?.find(
-      (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
-    )
-    const duration = popupDuration ? parseInt(popupDuration.value) : 100
-    setTimeout(() => {
+  useEffect(() => {
+    let transitionTimer: NodeJS.Timeout
+    let delayTimer: NodeJS.Timeout
+    if (!visible) {
+      setShouldRender(false)
       setInTransition(false)
-    }, duration)
-  }, [settings.userStyles])
+    } else {
+      const popupDuration = settings.userStyles?.find(
+        (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
+      )
+      const popupDelay = settings.userStyles?.find(
+        (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
+      )
+      const duration = popupDuration ? parseInt(popupDuration.value) : 150
+      const delay = popupDelay ? parseInt(popupDelay.value) : 250
+      setInTransition(true)
+      transitionTimer = setTimeout(() => {
+        setInTransition(false)
+      }, duration + delay)
+      delayTimer = setTimeout(() => {
+        setShouldRender(true)
+      }, delay)
+    }
+    return () => {
+      clearTimeout(transitionTimer)
+      clearTimeout(delayTimer)
+    }
+  }, [visible])
+
+  const noFocus = (e: Event) => e.preventDefault()
 
   return (
-    <popupContext.Provider value={{ isPreview, inTransition }}>
-      {isPreview && <PopupPreview {...props} />}
-      <Popover
-        className={classnames(popupContianer, {
-          [previewContainer]: isPreview,
-        })}
-      >
-        <Transition
-          show={visible}
-          beforeEnter={onBeforeEnter}
-          afterEnter={onAfterEnter}
-        >
-          <PopoverPanel
-            ref={refs.setFloating}
-            style={floatingStyles}
-            data-placement={placement}
-            static
+    <popupContext.Provider value={{ isPreview, inTransition, side, align }}>
+      {isPreview && <PreviewDesc {...props} />}
+      <Popover open={visible}>
+        <PopoverAnchor virtualRef={{ current: props.positionElm }} />
+        {shouldRender && (
+          <PopoverContent
+            side={side}
+            align={align}
+            className={clsx(css.popup)}
+            style={userStyles}
+            onOpenAutoFocus={noFocus}
           >
-            <div className={`${popup} ${popupTransition}`} style={styles}>
-              {!isContextMenu ? (
-                <Menu />
-              ) : (
-                <InvisibleItem positionElm={props.positionElm} />
-              )}
-            </div>
-          </PopoverPanel>
-        </Transition>
+            {!isContextMenu ? (
+              <Menu />
+            ) : (
+              <InvisibleItem positionElm={props.positionElm} />
+            )}
+          </PopoverContent>
+        )}
       </Popover>
     </popupContext.Provider>
   )
 }
 
-export function PopupPreview(props: PopupProps) {
+export function PreviewDesc(props: PopupProps) {
   const { visible, isContextMenu, isKeyboard, isLeftClickHold } =
     useDetectStartup(props)
   const { settings } = useSetting()
@@ -126,19 +130,19 @@ export function PopupPreview(props: PopupProps) {
 
   return (
     <>
-      <p className={previewLabel}>
+      <p className={css.previewLabel}>
         <span>Preview...</span>
       </p>
       {isContextMenu && (
-        <p className={previewDescription}>{t('previewOnContextMenu')}</p>
+        <p className={css.previewDescription}>{t('previewOnContextMenu')}</p>
       )}
       {!visible && isKeyboard && (
-        <p className={previewDescription}>
+        <p className={css.previewDescription}>
           {t('previewOnKeyboard', [keyLabel])}
         </p>
       )}
       {!visible && isLeftClickHold && (
-        <p className={previewDescription}>
+        <p className={css.previewDescription}>
           {t('previewOnLeftClickHold', [keyLabel])}
         </p>
       )}

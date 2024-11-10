@@ -3,6 +3,7 @@ import type { PopupProps } from '@/components/Popup'
 import { useSetting } from '@/hooks/useSetting'
 import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD, MOUSE } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
+import { isPopup } from '@/services/util'
 
 type Props = PopupProps
 
@@ -81,7 +82,11 @@ export function useKeyboard(props: Props) {
   return detectKey
 }
 
-function hasAnchor(x, y): boolean {
+const isTargetEvent = (e: MouseEvent): boolean => {
+  return e.button === MOUSE.LEFT && !isPopup(e.target as Element)
+}
+
+function hasAnchor(x: number, y: number): boolean {
   const elements = document.elementsFromPoint(x, y)
   const anchorElement = elements.find(
     (element) => element.tagName.toLowerCase() === 'a',
@@ -110,26 +115,24 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       return
     }
     const handleMouseDown = (event: MouseEvent) => {
-      if (event.button === MOUSE.LEFT) {
-        if (detectHold) {
-          // If already in hold, click to release hold.
-          release()
-        } else if (props.selectionText) {
-          // If there is a selection-text, start count of hold.
-          timeoutRef.current = setTimeout(() => {
-            setDetectHold(true)
-            setDetectHoldLink(hasAnchor(event.clientX, event.clientY))
-            setPosition({ x: event.clientX, y: event.clientY })
-          }, leftClickHoldParam)
-        } else {
-          release()
-        }
+      if (!isTargetEvent(event)) return
+      if (detectHold) {
+        // If already in hold, click to release hold.
+        release()
+      } else if (props.selectionText) {
+        // If there is a selection-text, start count of hold.
+        timeoutRef.current = setTimeout(() => {
+          setDetectHold(true)
+          setDetectHoldLink(hasAnchor(event.clientX, event.clientY))
+          setPosition({ x: event.clientX, y: event.clientY })
+        }, leftClickHoldParam)
+      } else {
+        release()
       }
     }
     const handleMouseUp = (event: MouseEvent) => {
-      if (event.button === MOUSE.LEFT) {
-        clearTimeout(timeoutRef.current)
-      }
+      if (!isTargetEvent(event)) return
+      clearTimeout(timeoutRef.current)
     }
     window.addEventListener('mousedown', handleMouseDown)
     window.addEventListener('mouseup', handleMouseUp)

@@ -68,7 +68,7 @@ export enum STYLE_VARIABLE {
 }
 
 export const ROOT_FOLDER = ''
-export const OPTION_FOLDER = 'option'
+export const OPTION_FOLDER = 'OptionFolder'
 
 export const COMMAND_MAX = 100
 

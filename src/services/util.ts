@@ -1,4 +1,4 @@
-import { SPACE_ENCODING } from '@/const'
+import { APP_ID, SPACE_ENCODING } from '@/const'
 import type { Version } from '@/types'
 
 /**
@@ -138,8 +138,15 @@ export function isUrl(str: string): boolean {
 /**
  * Check if the string is empty.
  */
-export function isEmpty(str: string): boolean {
+export function isEmpty(str: string | null): boolean {
   return !str?.length
+}
+
+export function isPopup(elm: Element): boolean {
+  if (elm == null) return false
+  if (elm.id === APP_ID) return true
+  if (elm.nodeName === 'body') return false
+  return isPopup(elm.parentElement as Element)
 }
 
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
@@ -235,4 +242,20 @@ export function versionDiff(a: Version, b: Version): VersionDiff {
     return aVer[i] > bVer[i] ? VersionDiff.New : VersionDiff.Old
   }
   return VersionDiff.Same
+}
+
+export const onHover = (
+  func: (val: any) => void,
+  enterVal: any,
+  leaveVal?: any,
+) => {
+  if (typeof enterVal === 'string' && leaveVal === undefined) {
+    leaveVal = ''
+  } else if (typeof enterVal === 'boolean' && leaveVal === undefined) {
+    leaveVal = !enterVal
+  }
+  return {
+    onMouseEnter: () => func(enterVal),
+    onMouseLeave: () => func(leaveVal),
+  }
 }

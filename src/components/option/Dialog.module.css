@@ -1,45 +1,17 @@
 .dialog {
-  composes: shadow-xl from '../Common.module.css';
-  position: fixed;
-  display: flex;
-  background: #fff;
-  border: 1px solid var(--baseBorderColor);
-  border-radius: 6px;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
   color: var(--font-color);
-}
-
-.dialogTransition {
-  transition-property: transform, opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
-}
-
-.dialogFrom {
-  transform: translateX(-50%) translateY(20px);
-  opacity: 0.5;
-}
-
-.dialogTo {
-  transform: translateX(-50%) translateY(0px);
-  opacity: 1;
-}
-
-.panel {
+  background: #fff;
   padding: 30px 40px;
   font-family: var(--font-family);
 }
 
 .title {
   font-size: 2rem;
-  margin-top: 0;
 }
 
 .description {
   font-size: 1.1rem;
-  white-space: pre;
+  white-space: pre-wrap;
 
   pre {
     display: inline;
@@ -48,12 +20,6 @@
     border-radius: 6px;
     font-size: 0.9em;
   }
-}
-
-.buttonContainer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 30px;
 }
 
 .button,

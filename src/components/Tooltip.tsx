@@ -1,70 +1,71 @@
-import React, { useState, useRef, useEffect, forwardRef } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import clsx from 'clsx'
 import {
   Popover,
-  PopoverButton,
-  PopoverPanel,
-  Transition,
-} from '@headlessui/react'
-import classNames from 'classnames'
-
-import { useSetting } from '@/hooks/useSetting'
-import { tooltip, tooltipTrigger, arrow } from './Tooltip.module.css'
+  PopoverContent,
+  PopoverAnchor,
+  PopoverArrow,
+} from '@/components/ui/popover'
+import { popupContext } from '@/components/Popup'
 
 type PopupProps = {
-  children: React.ReactNode
   text: string
+  positionElm: Element | null
   disabled?: boolean
 }
 
 export function Tooltip(props: PopupProps) {
-  const positionRef = useRef<HTMLButtonElement>(null)
-  const arrowRef = useRef<HTMLDivElement>(null)
-
-  const { settings } = useSetting()
-  const popupPlacement = settings.popupPlacement
-  let placement = 'top'
-  if (popupPlacement.startsWith('bottom')) {
-    placement = 'bottom'
-  }
-  const [visible, setVisible] = useState(false)
+  const { side } = useContext(popupContext)
+  const [isOpen, setIsOpen] = useState(false)
+  const [shouldRender, setShouldRender] = useState(false)
+  const elm = props.positionElm
 
   useEffect(() => {
-    const show = () => {
-      if (props.disabled) return
-      setVisible(true)
-    }
-    const hide = () => {
-      setVisible(false)
-    }
-    if (positionRef.current != null) {
-      positionRef.current.addEventListener('mouseenter', show)
-      positionRef.current.addEventListener('mouseleave', hide)
+    const show = () => setIsOpen(true)
+    const hide = () => setIsOpen(false)
+    if (elm) {
+      elm.addEventListener('mouseenter', show)
+      elm.addEventListener('mouseleave', hide)
     }
     return () => {
-      if (positionRef.current != null) {
-        positionRef.current.removeEventListener('mouseenter', show)
-        positionRef.current.removeEventListener('mouseleave', hide)
+      if (elm) {
+        elm.removeEventListener('mouseenter', show)
+        elm.removeEventListener('mouseleave', hide)
       }
     }
-  }, [positionRef.current, props.disabled])
+  }, [elm])
 
-  const MyPopoverButton = forwardRef(function (props, ref) {
-    return <div className={tooltipTrigger} ref={ref} {...props} />
-  })
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (isOpen) {
+      timer = setTimeout(() => {
+        setShouldRender(true)
+      }, 300)
+    } else {
+      setShouldRender(false)
+    }
+    return () => clearTimeout(timer)
+  }, [isOpen])
+
+  if (props.disabled || !elm) {
+    return null
+  }
 
   return (
-    <Popover ref={positionRef}>
-      <PopoverButton as={MyPopoverButton}>{props.children}</PopoverButton>
-      <Transition show={visible && !props.disabled}>
-        <PopoverPanel
-          className={classNames(tooltip, 'transition')}
-          data-placement={placement}
-          static
+    <Popover open={isOpen}>
+      <PopoverAnchor virtualRef={{ current: props.positionElm }} />
+      {shouldRender && (
+        <PopoverContent
+          className={clsx(
+            'bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 text-xs text-white shadow-md',
+          )}
+          side={side}
+          arrowPadding={-1}
         >
           {props.text}
-          <div className={arrow} ref={arrowRef} />
-        </PopoverPanel>
-      </Transition>
+          <PopoverArrow className="fill-gray-800" height={6} />
+        </PopoverContent>
+      )}
     </Popover>
   )
 }

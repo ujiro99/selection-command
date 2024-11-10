@@ -1,17 +1,11 @@
-import React from 'react'
-import classNames from 'classnames'
-import { Popover, PopoverPanel, Transition } from '@headlessui/react'
-import { useFloating, flip, autoUpdate } from '@floating-ui/react'
-import { offset } from '@floating-ui/dom'
+import React, { useRef } from 'react'
+import clsx from 'clsx'
+import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 
 import { useSetting } from '@/hooks/useSetting'
 import { Icon } from '@/components/Icon'
-import { popup, popupContianer } from '@/components/Popup.module.css'
-import {
-  resultPopup,
-  resultPopupButton,
-  closeButton,
-} from './ResultPopup.module.css'
+import popupCss from '@/components/Popup.module.css'
+import css from './ResultPopup.module.css'
 
 type PopupProps = {
   visible: boolean
@@ -23,41 +17,30 @@ type PopupProps = {
 export function ResultPopup(props: PopupProps) {
   const { settings } = useSetting()
   const placement = settings.popupPlacement
-
-  const { refs, floatingStyles } = useFloating({
-    placement: placement,
-    elements: { reference: props.positionRef.current },
-    whileElementsMounted: autoUpdate,
-    middleware: [
-      offset(5),
-      flip({
-        fallbackPlacements: ['top', 'bottom'],
-      }),
-    ],
-  })
+  const isBottom = placement.startsWith('bottom')
 
   const visible = props.visible && props.positionRef.current != null
 
+  const virtualRef = useRef<Element | null>(null)
+  if (props.positionRef) virtualRef.current = props.positionRef.current
+
   return (
-    <Popover className={popupContianer}>
-      <Transition show={visible}>
-        <PopoverPanel
-          ref={refs.setFloating}
-          style={floatingStyles}
-          data-placement={placement}
-          static
-        >
-          <div className={`${popup} ${resultPopup}`}>
-            {props.children}
-            <button
-              className={classNames(closeButton, resultPopupButton)}
-              onClick={props.onClose}
-            >
-              <Icon name="close" />
-            </button>
-          </div>
-        </PopoverPanel>
-      </Transition>
+    <Popover open={visible}>
+      <PopoverAnchor virtualRef={virtualRef} />
+      <PopoverContent
+        side={isBottom ? 'bottom' : 'top'}
+        className="bg-background rounded-md border"
+      >
+        <div className={clsx(popupCss.popup, css.resultPopup)}>
+          {props.children}
+          <button
+            className={clsx(css.closeButton, css.resultPopupButton)}
+            onClick={props.onClose}
+          >
+            <Icon name="close" />
+          </button>
+        </div>
+      </PopoverContent>
     </Popover>
   )
 }

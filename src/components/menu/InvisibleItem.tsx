@@ -4,16 +4,10 @@ import { context } from '@/components/App'
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { Icon } from '@/components/Icon'
 import { useContextMenu } from '@/hooks/useContextMenu'
-import type { Command } from '@/services/userSettings'
+import type { Command } from '@/types'
 import { actions, ExecState } from '@/action'
 
-import {
-  iconWithState,
-  itemImg,
-  apiIconLoading,
-  apiIconSuccess,
-  apiIconError,
-} from './Menu.module.css'
+import css from './Menu.module.css'
 
 type InvisibleItemProps = {
   positionElm: Element | null
@@ -93,18 +87,18 @@ function IconWithState(props: ImageProps): JSX.Element {
   if (status == ExecState.NONE) return <></>
 
   return (
-    <div className={iconWithState}>
+    <div className={css.iconWithState}>
       {status === ExecState.EXECUTING && (
         <Icon
-          className={`${itemImg} ${apiIconLoading} rotate`}
+          className={`${css.itemImg} ${css.apiIconLoading} rotate`}
           name="refresh"
         />
       )}
       {status === ExecState.SUCCESS && (
-        <Icon className={`${itemImg} ${apiIconSuccess}`} name="check" />
+        <Icon className={`${css.itemImg} ${css.apiIconSuccess}`} name="check" />
       )}
       {status === ExecState.FAIL && (
-        <Icon className={`${itemImg} ${apiIconError}`} name="error" />
+        <Icon className={`${css.itemImg} ${css.apiIconError}`} name="error" />
       )}
     </div>
   )

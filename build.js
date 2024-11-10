@@ -1,6 +1,7 @@
 const fs = require('fs')
 const { globSync } = require('glob')
 const esbuild = require('esbuild')
+const { tailwindPlugin } = require('esbuild-plugin-tailwindcss')
 
 const package = JSON.parse(fs.readFileSync('package.json'))
 
@@ -29,9 +30,15 @@ const main = () => {
         'src/sandbox.tsx',
       ],
       outdir: 'dist/src',
+      minify: true,
       bundle: true,
       tsconfig: './tsconfig.json',
-      plugins: [cleanup(['*'])],
+      plugins: [
+        tailwindPlugin({
+          cssModulesEnabled: true,
+        }),
+        cleanup(['*']),
+      ],
       loader: {
         '.svg': 'text',
       },

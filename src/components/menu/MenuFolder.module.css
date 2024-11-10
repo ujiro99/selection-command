@@ -1,16 +1,8 @@
 .folder {
   composes: item from './Menu.module.css';
   cursor: default;
-  padding-right: 0px;
-}
-
-.popup {
-  composes: popup from '../Popup.module.css';
-}
-
-.folderTransition {
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  padding-right: calc(var(--sc-padding) / 2);
+  transition: ease-out 0.15s background;
 }
 
 .title {
@@ -20,10 +12,10 @@
 
 .folderHorizontal {
   padding-right: var(--sc-padding);
-}
 
-.folderHorizontal .title {
-  min-width: 0;
+  .title {
+    min-width: 0;
+  }
 }
 
 .icon {

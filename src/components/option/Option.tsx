@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
 import { UserSettings } from '@/services/userSettings'
-import type { UserSettingsType } from '@/services/userSettings'
+import type { UserSettingsType } from '@/types'
 import { sleep, toUrl, capitalize } from '@/services/util'
 import { t } from '@/services/i18n'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'
@@ -71,9 +71,8 @@ const getTranslation = () => {
 
 export function Option() {
   const [isSaving, setIsSaving] = useState(false)
-
+  const [previewElm, setPreviewElm] = useState<Element | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
-  const previewRef = useRef<HTMLDivElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
 
   useEventProxyReceiver()
@@ -169,9 +168,9 @@ export function Option() {
         <ImportExport />
       </div>
 
-      <div className={css.preview} ref={previewRef}>
+      <div className={css.preview} ref={setPreviewElm}>
         <Popup
-          positionElm={previewRef.current}
+          positionElm={previewElm}
           selectionText="preview"
           isPreview={true}
         />
