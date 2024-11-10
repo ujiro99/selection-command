@@ -64,7 +64,8 @@ export const Popup = (props: PopupProps) => {
     }, {})
 
   useEffect(() => {
-    let timer: NodeJS.Timeout
+    let transitionTimer: NodeJS.Timeout
+    let delayTimer: NodeJS.Timeout
     if (!visible) {
       setShouldRender(false)
       setInTransition(false)
@@ -78,14 +79,17 @@ export const Popup = (props: PopupProps) => {
       const duration = popupDuration ? parseInt(popupDuration.value) : 150
       const delay = popupDelay ? parseInt(popupDelay.value) : 250
       setInTransition(true)
-      setTimeout(() => {
+      transitionTimer = setTimeout(() => {
         setInTransition(false)
       }, duration + delay)
-      timer = setTimeout(() => {
+      delayTimer = setTimeout(() => {
         setShouldRender(true)
       }, delay)
     }
-    return () => clearTimeout(timer)
+    return () => {
+      clearTimeout(transitionTimer)
+      clearTimeout(delayTimer)
+    }
   }, [visible])
 
   const noFocus = (e: Event) => e.preventDefault()
