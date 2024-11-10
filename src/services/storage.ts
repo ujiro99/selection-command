@@ -13,10 +13,12 @@ export enum LOCAL_STORAGE_KEY {
 
 const CMD_PREFIX = 'cmd-'
 
+const DEFAULT_COUNT = -1
+
 const DEFAULTS = {
   [STORAGE_KEY.USER]: DefaultSettings,
   [STORAGE_KEY.BG]: {},
-  [STORAGE_KEY.COMMAND_COUNT]: DefaultCommands.length,
+  [STORAGE_KEY.COMMAND_COUNT]: DEFAULT_COUNT,
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
@@ -137,6 +139,10 @@ export const Storage = {
    * @throws {chrome.runtime.LastError} if error occurred
    */
   getCommands: async (): Promise<Command[]> => {
+    // If first time, return DefaultCommands.
+    const count = await Storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
+    if (count === DEFAULT_COUNT) return DefaultCommands
+
     const keys = await Storage.commandKeys()
     const res = await chrome.storage.sync.get(keys)
     if (chrome.runtime.lastError != null) {
@@ -188,6 +194,17 @@ export const Storage = {
     commands: Command[],
   ): Promise<boolean | chrome.runtime.LastError> => {
     const current = await Storage.getCommands()
+
+    // If update first time, set DefaultCommands.
+    const count = await Storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
+    if (count === DEFAULT_COUNT) {
+      console.debug('Update first time, set DefaultCommands.')
+      const newCommands = current.map((cmd) => {
+        return commands.find((c) => c.id === cmd.id) ?? cmd
+      })
+      return Storage.setCommands(newCommands)
+    }
+
     // Update commands.
     const newCommands = current.reduce(
       (acc, cmd, i) => {
