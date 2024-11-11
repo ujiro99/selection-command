@@ -37,7 +37,7 @@
 }
 
 .itemTitle {
-  margin-left: calc(0.6em + var(--sc-padding) / 2);
+  margin-left: calc(0.4em + var(--sc-padding) / 2);
   margin-right: calc(0.4em + var(--sc-padding) / 2);
   text-align: left;
 }

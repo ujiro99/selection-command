@@ -12,6 +12,9 @@ module.exports = {
         '2xl': '1400px',
       },
     },
+    fontSize: {
+      xs: '12px',
+    },
     extend: {
       colors: {
         border: 'hsl(var(--border))',
