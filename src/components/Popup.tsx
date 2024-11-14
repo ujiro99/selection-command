@@ -5,7 +5,7 @@ import { Menu } from '@/components/menu/Menu'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
-import { hexToHsl, isMac } from '@/services/util'
+import { hexToHsl, isMac, onHover } from '@/services/util'
 import { t } from '@/services/i18n'
 import { STYLE_VARIABLE } from '@/const'
 import { Alignment, Side } from '@/types'
@@ -28,9 +28,10 @@ export const popupContext = createContext<ContextType>({} as ContextType)
 
 export const Popup = (props: PopupProps) => {
   const { settings } = useSetting()
-  const { visible, isContextMenu } = useDetectStartup(props)
   const [inTransition, setInTransition] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
+  const [isHover, setIsHover] = useState(false)
+  const { visible, isContextMenu } = useDetectStartup({ ...props, isHover })
   const placement = settings.popupPlacement
   const isPreview = props.isPreview === true
   const side = isPreview
@@ -106,6 +107,7 @@ export const Popup = (props: PopupProps) => {
             className={clsx(css.popup)}
             style={userStyles}
             onOpenAutoFocus={noFocus}
+            {...onHover(setIsHover, true)}
           >
             {!isContextMenu ? (
               <Menu />

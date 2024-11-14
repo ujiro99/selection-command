@@ -18,6 +18,8 @@ export function App() {
   const [target, setTarget] = useState<Element>()
   const [selectionText, setSelectionText] = useState('')
 
+  console.log(selectionText)
+
   useEffect(() => {
     const onSelectionchange = () => {
       const s = document.getSelection()

@@ -5,10 +5,12 @@ import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD, MOUSE } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
 import { isPopup } from '@/services/util'
 
-type Props = PopupProps
+type Props = PopupProps & {
+  isHover?: boolean
+}
 
 export function useDetectStartup(props: Props) {
-  const { selectionText, positionElm, isPreview } = props
+  const { selectionText, positionElm, isPreview, isHover } = props
   const [hide, setHide] = useState(false)
   const { settings, pageRule } = useSetting()
   const { method } = settings.startupMethod
@@ -43,6 +45,9 @@ export function useDetectStartup(props: Props) {
   if (method === STARTUP_METHOD.LEFT_CLICK_HOLD) {
     visible = visible && detectHold
   }
+
+  visible = visible || isHover === true
+  console.log('visible', visible, isHover)
 
   const isContextMenu = method === STARTUP_METHOD.CONTEXT_MENU
   const isKeyboard = method === STARTUP_METHOD.KEYBOARD
