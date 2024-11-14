@@ -58,7 +58,11 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
         clearTimeout(delayTO as number)
         setPoint(p)
         const s = document.getSelection()
-        setTarget(s?.getRangeAt(0)?.startContainer.parentElement as Element)
+        if (s && s.rangeCount > 0) {
+          setTarget(s.getRangeAt(0).startContainer.parentElement as Element)
+        } else {
+          setTarget(undefined)
+        }
       },
       [delayTO, setPoint, setTarget],
     )

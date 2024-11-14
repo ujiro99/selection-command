@@ -8,7 +8,7 @@ import './App.css'
 type ContextType = {
   selectionText: string
   target: Element | undefined
-  setTarget: (elm: Element) => void
+  setTarget: (elm: Element | undefined) => void
 }
 
 export const context = createContext<ContextType>({} as ContextType)
