@@ -16,6 +16,7 @@ export type PopupProps = {
   positionElm: Element | null
   selectionText: string
   isPreview?: boolean
+  onHover?: Function
 }
 
 type ContextType = {
@@ -95,6 +96,11 @@ export const Popup = (props: PopupProps) => {
 
   const noFocus = (e: Event) => e.preventDefault()
 
+  const handleOnHover = (hover: boolean) => {
+    setIsHover(hover)
+    props.onHover?.(hover)
+  }
+
   return (
     <popupContext.Provider value={{ isPreview, inTransition, side, align }}>
       {isPreview && <PreviewDesc {...props} />}
@@ -107,7 +113,7 @@ export const Popup = (props: PopupProps) => {
             className={clsx(css.popup)}
             style={userStyles}
             onOpenAutoFocus={noFocus}
-            {...onHover(setIsHover, true)}
+            {...onHover(handleOnHover, true)}
           >
             {!isContextMenu ? (
               <Menu />

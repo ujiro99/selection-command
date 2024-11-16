@@ -101,6 +101,18 @@ export function getScreenSize(): ScreenSize {
   }
 }
 
+/**
+ * Get the text of the selected range.
+ * @returns {string} The text of the selected range.
+ */
+export function getSelectionText(): string {
+  const s = document.getSelection()
+  if (s != null && s.rangeCount > 0) {
+    return s.toString().trim()
+  }
+  return ''
+}
+
 export function escapeJson(str: string) {
   return str
     .replace(/[\\]/g, '\\\\')
