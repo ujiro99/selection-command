@@ -47,7 +47,6 @@ export function useDetectStartup(props: Props) {
   }
 
   visible = visible || isHover === true
-  console.log('visible', visible, isHover)
 
   const isContextMenu = method === STARTUP_METHOD.CONTEXT_MENU
   const isKeyboard = method === STARTUP_METHOD.KEYBOARD

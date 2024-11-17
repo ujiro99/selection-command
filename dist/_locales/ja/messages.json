@@ -255,6 +255,6 @@
     "message": "表示アニメーション時間(ms)"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "表示開始時のアニメーション時間を指定します。デフォルト: 100"
+    "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150"
   }
 }

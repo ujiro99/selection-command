@@ -255,6 +255,6 @@
     "message": "Display animation time [ms]"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Specify the display animation time. Default: 100"
+    "message": "Specify the display animation time. Default: 150"
   }
 }

@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import { context } from '@/components/App'
 import { useLeftClickHold } from '@/hooks/useDetectStartup'
-import { MOUSE } from '@/const'
+import { MOUSE, EXIT_DURATION } from '@/const'
 import { isEmpty, isPopup } from '@/services/util'
 
 type Point = {
@@ -17,7 +17,6 @@ type Point = {
 
 type Props = {
   selectionText: string
-  removeDelay?: number
 }
 
 const SIZE = 40
@@ -76,10 +75,10 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
         }
         const to = window.setTimeout(() => {
           setPoint(null)
-        }, props.removeDelay ?? 0)
+        }, EXIT_DURATION ?? 0)
         setDelayTO(to)
       },
-      [delayTO, setPoint, props.removeDelay],
+      [delayTO, setPoint],
     )
 
     useEffect(() => {
@@ -179,7 +178,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       width: SIZE,
       pointerEvents: 'none',
       zIndex: 2147483647,
-      // backgroundColor: 'rgba(255, 0, 0, 0.6)',
+      // backgroundColor: 'rgba(255, 0, 0, 0.3)',
       // border: '1px solid red',
     } as React.CSSProperties
 

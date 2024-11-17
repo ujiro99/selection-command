@@ -56,7 +56,7 @@ const Attributes: AttributeMap = {
   },
   [STYLE_VARIABLE.POPUP_DURATION]: {
     type: 'number',
-    default: 100,
+    default: 150,
     max: 1000,
     min: 0,
     step: 10,

@@ -34,11 +34,7 @@ export function App() {
 
   return (
     <context.Provider value={{ selectionText, target, setTarget }}>
-      <SelectAnchor
-        selectionText={selectionText}
-        removeDelay={150}
-        ref={setPositionElm}
-      />
+      <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
       <Popup
         positionElm={positionElm}
         selectionText={selectionText}
