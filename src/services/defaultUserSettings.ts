@@ -1,5 +1,6 @@
 import { UserSettingsType, Command } from '@/types'
 import { VERSION, OPEN_MODE, STARTUP_METHOD, STYLE } from '@/const'
+import DefaultSchema from '@/services/userSettingSchema'
 
 export default {
   settingVersion: VERSION,
@@ -42,6 +43,10 @@ export const DefaultCommands = [
     openMode: OPEN_MODE.POPUP,
     searchUrl: 'https://google.com/search?q=%s',
     title: 'Google',
+    popupOption: {
+      width: DefaultSchema.definitions.popupOption.properties.width.default,
+      height: DefaultSchema.definitions.popupOption.properties.height.default,
+    },
   },
   {
     id: 1,
@@ -50,6 +55,10 @@ export const DefaultCommands = [
     searchUrl: 'https://google.com/search?q=%s&tbm=isch',
     title: 'Google Image',
     parentFolderId: '222d6489-4eca-48fd-8590-fceb30545bab',
+    popupOption: {
+      width: DefaultSchema.definitions.popupOption.properties.width.default,
+      height: DefaultSchema.definitions.popupOption.properties.height.default,
+    },
   },
   {
     id: 2,
