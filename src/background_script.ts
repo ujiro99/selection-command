@@ -256,14 +256,16 @@ const commandFuncs = {
     }
     if (!w) {
       console.warn('window not found', sender.tab?.windowId)
-      response(false)
-      return false
+      chrome.tabs.create({ url: sender.url })
+      chrome.windows.remove(sender.tab?.windowId as number)
+      response(true)
+      return true
     }
 
     let targetId: number | undefined
     chrome.windows
       .get(w.srcWindowId)
-      .then(async (window) => {
+      .then((window) => {
         targetId = window.id
       })
       .catch(async () => {
@@ -327,27 +329,27 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Close popup windows when focus changed to lower stack window
   const stack = data.windowStack
   const idx = stack.map((s) => s.findIndex((w) => w.id === windowId))
-  let deleteStack = [] as WindowLayer[]
 
   // Close all window.
+  let closeStack = [] as WindowLayer[]
   const closeAll = idx.every((i) => i < 0)
   if (closeAll && stack.length > 0) {
-    deleteStack = stack
+    closeStack = stack
     data.windowStack = []
   }
 
   // Close windows up to the window stack in focus.
   for (let i = idx.length - 2; i >= 0; i--) {
     if (idx[i] >= 0) {
-      deleteStack = stack.splice(i + 1)
+      closeStack = stack.splice(i + 1)
       data.windowStack = stack
       break
     }
   }
 
   // execute close
-  if (deleteStack.length > 0) {
-    for (const layer of deleteStack) {
+  if (closeStack.length > 0) {
+    for (const layer of closeStack) {
       for (const window of layer) {
         chrome.windows.remove(window.id)
       }
