@@ -47,6 +47,10 @@ const toKey = (str: string) => {
   return str.replace(/-/g, '_')
 }
 
+const toCommandId = (id: string) => {
+  return Number(id.split('_')[2])
+}
+
 export function SettingFrom() {
   const [parent, setParent] = useState<MessageEventSource>()
   const [origin, setOrigin] = useState('')
@@ -184,16 +188,13 @@ export function SettingFrom() {
     // update iconURL when searchUrl chagned
     if (id?.endsWith('searchUrl')) {
       const data = arg.formData as UserSettingsType
-      for (const command of data.commands) {
-        if (!command.iconUrl && command.searchUrl) {
-          setSettingData(data)
-          sendMessage(OPTION_MSG.FETCH_ICON_URL, {
-            searchUrl: command.searchUrl,
-            settings: data,
-          })
-          return
-        }
-      }
+      const command = data.commands[toCommandId(id)]
+      setSettingData(data)
+      sendMessage(OPTION_MSG.FETCH_ICON_URL, {
+        searchUrl: command.searchUrl,
+        settings: data,
+      })
+      return
     }
     setSettingData(arg.formData)
   }
@@ -526,7 +527,7 @@ const IconUrlField = (props: FieldProps) => {
 const IconUrlFieldWithAutofill =
   (onClick: (cmdIdx: number) => void) => (props: FieldProps) => {
     const btnLabel = props.uiSchema ? props.uiSchema['ui:button'] : 'autofill'
-    const cmdIdx = Number(props.idSchema.$id.split('_')[2])
+    const cmdIdx = toCommandId(props.idSchema.$id)
     const [clicked, setClicked] = useState(false)
 
     const exec = () => {
