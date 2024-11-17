@@ -67,6 +67,8 @@ export enum STYLE_VARIABLE {
   POPUP_DURATION = 'popup-duration',
 }
 
+export const EXIT_DURATION = 100
+
 export const ROOT_FOLDER = ''
 export const OPTION_FOLDER = 'OptionFolder'
 

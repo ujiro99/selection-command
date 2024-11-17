@@ -5,9 +5,9 @@ import { Menu } from '@/components/menu/Menu'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
-import { hexToHsl, isMac } from '@/services/util'
+import { hexToHsl, isMac, onHover } from '@/services/util'
 import { t } from '@/services/i18n'
-import { STYLE_VARIABLE } from '@/const'
+import { STYLE_VARIABLE, EXIT_DURATION } from '@/const'
 import { Alignment, Side } from '@/types'
 
 import css from './Popup.module.css'
@@ -16,6 +16,7 @@ export type PopupProps = {
   positionElm: Element | null
   selectionText: string
   isPreview?: boolean
+  onHover?: Function
 }
 
 type ContextType = {
@@ -28,9 +29,10 @@ export const popupContext = createContext<ContextType>({} as ContextType)
 
 export const Popup = (props: PopupProps) => {
   const { settings } = useSetting()
-  const { visible, isContextMenu } = useDetectStartup(props)
   const [inTransition, setInTransition] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
+  const [isHover, setIsHover] = useState(false)
+  const { visible, isContextMenu } = useDetectStartup({ ...props, isHover })
   const placement = settings.popupPlacement
   const isPreview = props.isPreview === true
   const side = isPreview
@@ -67,17 +69,26 @@ export const Popup = (props: PopupProps) => {
     let transitionTimer: NodeJS.Timeout
     let delayTimer: NodeJS.Timeout
     if (!visible) {
-      setShouldRender(false)
-      setInTransition(false)
+      // Exit transition
+      setInTransition(true)
+      transitionTimer = setTimeout(() => {
+        setInTransition(false)
+      }, EXIT_DURATION)
+      delayTimer = setTimeout(() => {
+        setShouldRender(false)
+      }, EXIT_DURATION)
     } else {
+      // Enter transition
       const popupDuration = settings.userStyles?.find(
         (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
       )
       const popupDelay = settings.userStyles?.find(
         (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
       )
-      const duration = popupDuration ? parseInt(popupDuration.value) : 150
-      const delay = popupDelay ? parseInt(popupDelay.value) : 250
+      const duration = popupDuration?.value
+        ? parseInt(popupDuration.value)
+        : 150
+      const delay = popupDelay?.value ? parseInt(popupDelay.value) : 250
       setInTransition(true)
       transitionTimer = setTimeout(() => {
         setInTransition(false)
@@ -94,18 +105,24 @@ export const Popup = (props: PopupProps) => {
 
   const noFocus = (e: Event) => e.preventDefault()
 
+  const handleOnHover = (hover: boolean) => {
+    setIsHover(hover)
+    props.onHover?.(hover)
+  }
+
   return (
     <popupContext.Provider value={{ isPreview, inTransition, side, align }}>
       {isPreview && <PreviewDesc {...props} />}
       <Popover open={visible}>
         <PopoverAnchor virtualRef={{ current: props.positionElm }} />
-        {shouldRender && (
+        {shouldRender && props.positionElm && (
           <PopoverContent
             side={side}
             align={align}
             className={clsx(css.popup)}
             style={userStyles}
             onOpenAutoFocus={noFocus}
+            {...onHover(handleOnHover, true)}
           >
             {!isContextMenu ? (
               <Menu />

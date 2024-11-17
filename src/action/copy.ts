@@ -1,6 +1,6 @@
 import type { ExecProps } from './index'
 import { ExecState } from './index'
-import { sleep } from '@/services/util'
+import { sleep, getSelectionText, isEmpty } from '@/services/util'
 
 async function setClipboard(text: string) {
   const type = 'text/plain'
@@ -17,6 +17,7 @@ export const Copy = {
     command,
   }: ExecProps) {
     changeState(ExecState.EXECUTING)
+    const currentText = getSelectionText()
 
     let mode = command.copyOption ?? 'default'
     if (useSecondary) {
@@ -28,7 +29,11 @@ export const Copy = {
     }
 
     if (mode === 'default') {
-      document.execCommand('copy')
+      if (isEmpty(currentText)) {
+        await setClipboard(selectionText)
+      } else {
+        document.execCommand('copy')
+      }
     } else if (mode === 'text') {
       await setClipboard(selectionText)
     }
