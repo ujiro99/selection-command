@@ -210,11 +210,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-      ;(async () => {
-        const res = await fetch(url, opt)
-        const json = await res.json()
-        response({ ok: res.ok, res: json })
-      })()
+        ; (async () => {
+          const res = await fetch(url, opt)
+          const json = await res.json()
+          response({ ok: res.ok, res: json })
+        })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
@@ -384,3 +384,106 @@ if (isDebug) {
     },
   })
 }
+
+chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((details) => {
+  console.debug(details)
+})
+
+const updateRules = async () => {
+  const oldRules = await chrome.declarativeNetRequest.getDynamicRules()
+  const oldRuleIds = oldRules.map((rule) => rule.id)
+  chrome.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: oldRuleIds,
+    addRules: [
+      {
+        id: 1,
+        priority: 1,
+        action: {
+          type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+          responseHeaders: [
+            {
+              header: 'Content-Disposition',
+              operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+            },
+            {
+              header: 'Content-Type',
+              operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+              value: 'image/jpeg',
+            },
+          ],
+        },
+        condition: {
+          urlFilter: '*',
+          resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
+          responseHeaders: [
+            {
+              header: 'content-disposition',
+              values: ['attachment*jpg*'],
+            },
+            {
+              header: 'content-disposition',
+              values: ['attachment*jpeg*'],
+            },
+          ],
+        },
+      },
+      {
+        id: 2,
+        priority: 2,
+        action: {
+          type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+          responseHeaders: [
+            {
+              header: 'Content-Disposition',
+              operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+            },
+            {
+              header: 'Content-Type',
+              operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+              value: 'image/png',
+            },
+          ],
+        },
+        condition: {
+          urlFilter: '*',
+          resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
+          responseHeaders: [
+            {
+              header: 'content-disposition',
+              values: ['attachment*png*'],
+            },
+          ],
+        },
+      },
+      {
+        id: 3,
+        priority: 3,
+        action: {
+          type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+          responseHeaders: [
+            {
+              header: 'Content-Disposition',
+              operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
+            },
+            {
+              header: 'Content-Type',
+              operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+              value: 'application/pdf',
+            },
+          ],
+        },
+        condition: {
+          urlFilter: '*',
+          resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
+          responseHeaders: [
+            {
+              header: 'content-disposition',
+              values: ['attachment*pdf*'],
+            },
+          ],
+        },
+      },
+    ],
+  })
+}
+updateRules()
