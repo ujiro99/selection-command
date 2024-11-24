@@ -1,5 +1,5 @@
 import * as mv3 from 'mv3-hot-reload'
-import { isDebug, POPUP_ENABLED } from '@/const'
+import { isDebug, POPUP_ENABLED, POPUP_OFFSET } from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/services/util'
@@ -110,11 +110,10 @@ const commandFuncs = {
     const open = async () => {
       const { top, left, width, height, screen } = param
       const current = await chrome.windows.getCurrent()
-      const offset = 50
       const windows = await Promise.all(
         param.urls.reverse().map((url, idx) => {
-          let t = top + offset * idx
-          let l = left + offset * (idx + 1)
+          let t = top + POPUP_OFFSET * idx
+          let l = left + POPUP_OFFSET * idx
 
           // If the window extends beyond the screen size,
           // return the display position to the center.
@@ -122,13 +121,13 @@ const commandFuncs = {
             t =
               Math.floor((screen.height - height) / 2) +
               screen.top +
-              offset * idx
+              POPUP_OFFSET * idx
           }
           if (screen.width < l + width - screen.left) {
             l =
               Math.floor((screen.width - width) / 2) +
               screen.left +
-              offset * (idx + 1)
+              POPUP_OFFSET * idx
           }
           return chrome.windows.create({
             url,
@@ -210,11 +209,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-        ; (async () => {
-          const res = await fetch(url, opt)
-          const json = await res.json()
-          response({ ok: res.ok, res: json })
-        })()
+      ;(async () => {
+        const res = await fetch(url, opt)
+        const json = await res.json()
+        response({ ok: res.ok, res: json })
+      })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
@@ -390,7 +389,7 @@ chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((details) => {
 })
 
 const updateRules = async () => {
-  const oldRules = await chrome.declarativeNetRequest.getDynamicRules()
+  const oldRules = await chrome.declarativeNetRequest.getSessionRules()
   const oldRuleIds = oldRules.map((rule) => rule.id)
   chrome.declarativeNetRequest.updateSessionRules({
     removeRuleIds: oldRuleIds,

@@ -12,6 +12,10 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = 'addPageRule',
 }
 
+export enum DRAG_OPEN_MODE {
+  LINK_PREVIEW = 'linkPreview',
+}
+
 export enum STARTUP_METHOD {
   TEXT_SELECTION = 'textSelection',
   CONTEXT_MENU = 'contextMenu',
@@ -66,6 +70,8 @@ export enum STYLE_VARIABLE {
   POPUP_DELAY = 'popup-delay',
   POPUP_DURATION = 'popup-duration',
 }
+
+export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100
 

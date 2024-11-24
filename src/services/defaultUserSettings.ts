@@ -1,5 +1,11 @@
 import { UserSettingsType, Command } from '@/types'
-import { VERSION, OPEN_MODE, STARTUP_METHOD, STYLE } from '@/const'
+import {
+  VERSION,
+  OPEN_MODE,
+  DRAG_OPEN_MODE,
+  STARTUP_METHOD,
+  STYLE,
+} from '@/const'
 import DefaultSchema from '@/services/userSettingSchema'
 
 export default {
@@ -37,6 +43,16 @@ export default {
 } as UserSettingsType
 
 export const DefaultCommands = [
+  {
+    id: '$$drag-1',
+    title: 'Link Preview',
+    searchUrl: '',
+    openMode: DRAG_OPEN_MODE.LINK_PREVIEW,
+    popupOption: {
+      width: DefaultSchema.definitions.popupOption.properties.width.default,
+      height: DefaultSchema.definitions.popupOption.properties.height.default,
+    },
+  },
   {
     id: 0,
     iconUrl: 'https://www.google.com/favicon.ico',

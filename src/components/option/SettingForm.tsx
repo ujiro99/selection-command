@@ -25,7 +25,7 @@ import {
 import type { UserSettingsType, FolderOption } from '@/types'
 import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
-import { isMac } from '@/services/util'
+import { isMac, isMenuCommand } from '@/services/util'
 
 import css from './SettingForm.module.css'
 
@@ -81,6 +81,15 @@ export function SettingFrom() {
     menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const updateSettingData = (data: UserSettingsType) => {
+    if (settingData == null) return
+    console.log('updateSettingData', data.commands.length)
+    setSettingData(data)
+    // For some reason, updating data here does not update the Form display.
+    // So update via ref.
+    formRef.current?.setState({ formData: data })
+  }
+
   useEventProxy(sendMessage, settingData)
 
   // Save after 500 ms to storage.
@@ -129,8 +138,6 @@ export function SettingFrom() {
         })
         const newSettings = { ...settingData, commands }
         setSettingData(newSettings)
-        // For some reason, updating data here does not update the Form display.
-        // So update via ref.
         formRef.current?.setState({ formData: newSettings })
       } else if (command === OPTION_MSG.JUMP) {
         const { hash } = value
@@ -144,8 +151,9 @@ export function SettingFrom() {
   }, [settingData])
 
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
+    const data = arg.formData as UserSettingsType
+    // Remove unnecessary fields when openMode is not popup or tab.
     if (id?.endsWith('openMode')) {
-      const data = arg.formData as UserSettingsType
       data.commands
         .filter(
           (c) => c.openMode !== OPEN_MODE.POPUP && c.openMode !== OPEN_MODE.TAB,
@@ -168,7 +176,6 @@ export function SettingFrom() {
     // If popup-delay is not set
     // when the keyInput or leftClickHold is selected, set 0 ms.
     if (id?.endsWith('method')) {
-      const data = arg.formData as UserSettingsType
       if (
         data.startupMethod.method === STARTUP_METHOD.KEYBOARD ||
         data.startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD
@@ -177,7 +184,7 @@ export function SettingFrom() {
         if (!userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)) {
           userStyles.push({ name: STYLE_VARIABLE.POPUP_DELAY, value: '0' })
         }
-        setSettingData({
+        updateSettingData({
           ...data,
           userStyles,
         })
@@ -187,16 +194,15 @@ export function SettingFrom() {
 
     // update iconURL when searchUrl chagned
     if (id?.endsWith('searchUrl')) {
-      const data = arg.formData as UserSettingsType
       const command = data.commands[toCommandId(id)]
-      setSettingData(data)
+      updateSettingData(data)
       sendMessage(OPTION_MSG.FETCH_ICON_URL, {
         searchUrl: command.searchUrl,
         settings: data,
       })
       return
     }
-    setSettingData(arg.formData)
+    updateSettingData(data)
   }
 
   const autofill = (cmdIdx: number) => {

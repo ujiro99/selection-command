@@ -9,11 +9,7 @@ import { context } from '@/components/App'
 import { useLeftClickHold } from '@/hooks/useDetectStartup'
 import { MOUSE, EXIT_DURATION } from '@/const'
 import { isEmpty, isPopup } from '@/services/util'
-
-type Point = {
-  x: number
-  y: number
-}
+import { Point } from '@/types'
 
 type Props = {
   selectionText: string
@@ -60,7 +56,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
         if (s && s.rangeCount > 0) {
           setTarget(s.getRangeAt(0).startContainer.parentElement as Element)
         } else {
-          setTarget(undefined)
+          setTarget(null)
         }
       },
       [delayTO, setPoint, setTarget],

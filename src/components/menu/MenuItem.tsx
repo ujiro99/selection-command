@@ -7,7 +7,7 @@ import { Tooltip } from '../Tooltip'
 import { Icon } from '@/components/Icon'
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { linksInSelection } from '@/services/util'
-import { OPEN_MODE } from '@/const'
+import { OPEN_MODE, POPUP_OFFSET } from '@/const'
 import { ExecState } from '@/action'
 import type { Command } from '@/types'
 
@@ -55,18 +55,23 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     if (itemState.state !== ExecState.NONE) {
       return
     }
+    if (props.menuRef.current == null) {
+      return
+    }
 
-    let mode = openMode
+    let mode = openMode as OPEN_MODE
     const useSecondary = e.metaKey || e.ctrlKey
     if (useSecondary && openModeSecondary) {
       mode = openModeSecondary
     }
 
+    const rect = props.menuRef.current.getBoundingClientRect()
+
     actions[mode]
       .execute({
         selectionText,
         command: props.command,
-        menuElm: props.menuRef.current,
+        position: { x: rect.left + POPUP_OFFSET, y: rect.top },
         useSecondary,
         changeState: onChangeState,
         target,

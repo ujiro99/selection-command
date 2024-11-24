@@ -3,20 +3,22 @@ import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
 import { OpenInTab } from '@/components/OpenInTab'
 import { getSelectionText } from '@/services/util'
+import { useDetectDrag } from '@/hooks/useDetectDrag'
 
 import './App.css'
 
 type ContextType = {
   selectionText: string
-  target: Element | undefined
-  setTarget: (elm: Element | undefined) => void
+  target: Element | null
+  setTarget: (elm: Element | null) => void
 }
 
 export const context = createContext<ContextType>({} as ContextType)
 
 export function App() {
+  useDetectDrag()
   const [positionElm, setPositionElm] = useState<Element | null>(null)
-  const [target, setTarget] = useState<Element>()
+  const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
   const [selectionText, setSelectionText] = useState('')
 

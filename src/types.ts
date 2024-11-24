@@ -1,5 +1,6 @@
 import type {
   OPEN_MODE,
+  DRAG_OPEN_MODE,
   POPUP_ENABLED,
   STYLE,
   KEYBOARD,
@@ -10,12 +11,17 @@ import type {
 
 export type Version = `${number}.${number}.${number}`
 
+export type Point = {
+  x: number
+  y: number
+}
+
 export type Command = {
   id: number | string
   title: string
   searchUrl: string
   iconUrl: string
-  openMode: OPEN_MODE
+  openMode: OPEN_MODE | DRAG_OPEN_MODE
   openModeSecondary?: OPEN_MODE
   parentFolder?: FolderOption // deprecated from v0.8.2
   parentFolderId?: string

@@ -3,7 +3,7 @@ import { CSSTransition } from 'react-transition-group'
 
 import { UserSettings } from '@/services/userSettings'
 import type { UserSettingsType } from '@/types'
-import { sleep, toUrl, capitalize } from '@/services/util'
+import { sleep, toUrl, capitalize, isMenuCommand } from '@/services/util'
 import { t } from '@/services/i18n'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'
 import messages from '@/../dist/_locales/en/messages.json'
@@ -81,6 +81,9 @@ export function Option() {
     if (isSaving) return
     try {
       setIsSaving(true)
+      const current = await UserSettings.get(true)
+      const dragCommands = current.commands.filter((c) => !isMenuCommand(c))
+      settings.commands = [...settings.commands, ...dragCommands]
       await UserSettings.set(settings)
       await sleep(1000)
     } catch (e) {
@@ -130,7 +133,12 @@ export function Option() {
 
   const onLoadIfame = async () => {
     const settings = await UserSettings.get(true)
+    console.log('onLoadIfame ', settings.commands.length)
     const translation = getTranslation()
+
+    // Remove drag commands from settingData.
+    settings.commands = settings.commands.filter((c) => isMenuCommand(c))
+
     sendMessage(OPTION_MSG.START, {
       settings,
       translation,

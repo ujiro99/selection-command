@@ -1,5 +1,5 @@
-import { APP_ID, SPACE_ENCODING } from '@/const'
-import type { Version } from '@/types'
+import { APP_ID, SPACE_ENCODING, OPEN_MODE } from '@/const'
+import type { Version, Command } from '@/types'
 
 /**
  * Stops processing for the specified time.
@@ -154,11 +154,48 @@ export function isEmpty(str: string | null): boolean {
   return !str?.length
 }
 
+/**
+ * Check if the command is made for the popup menu.
+ * @param {Command} command The command to check.
+ * @returns {boolean} True if the command is made for the popup menu.
+ */
+const OpenModes = Object.values(OPEN_MODE)
+export function isMenuCommand(command: Command): boolean {
+  return OpenModes.includes(command.openMode as OPEN_MODE)
+}
+
 export function isPopup(elm: Element): boolean {
   if (elm == null) return false
   if (elm.id === APP_ID) return true
   if (elm.nodeName === 'body') return false
   return isPopup(elm.parentElement as Element)
+}
+
+/**
+ * Check if the element is an anchor element.
+ * @param {Element} elm The element to check.
+ * @returns {boolean} True if the element is an anchor element.
+ */
+export function isAnchorElement(elm: Element): boolean {
+  const f = findAnchorElement(elm)
+  return f != null
+}
+
+/**
+ * Find the anchor element from the specified element.
+ *
+ * @param {Element} elm The element to start searching.
+ * @returns {Element} The anchor element.
+ */
+export function findAnchorElement(elm: Element): Element | null {
+  if (elm == null) return null
+  if (
+    elm.tagName?.toLowerCase() === 'a' &&
+    (elm as HTMLAnchorElement).href != null
+  )
+    return elm
+  if (elm.nodeName === 'body') return null
+  return findAnchorElement(elm.parentElement as Element)
 }
 
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
