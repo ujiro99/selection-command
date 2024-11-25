@@ -28,6 +28,7 @@ export type Command = {
   popupOption?: PopupOption
   copyOption?: CopyOption
   fetchOptions?: string
+  dragOption?: DragOption
   variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
 }
@@ -38,6 +39,10 @@ export type PopupOption = {
 }
 
 export type CopyOption = 'default' | 'text'
+
+export type DragOption = {
+  threshold: number
+}
 
 export type FolderOption = {
   id: string

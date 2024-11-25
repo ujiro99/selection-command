@@ -16,11 +16,14 @@ const isTargetEvent = (e: MouseEvent): boolean => {
 
 export function useDetectDrag() {
   const [startPosition, setStartPosition] = useState<Point | null>()
+  const [dragPosition, setDragPosition] = useState<Point | null>()
   const [activate, setActivate] = useState(false)
+  const [progress, setProgress] = useState(0)
   const { settings } = useSetting()
   const command = settings.commands.find(
     (c) => c.openMode === DRAG_OPEN_MODE.LINK_PREVIEW,
   )
+  const threshold = command?.dragOption?.threshold || 200
 
   const onChangeState = (state: ExecState, message?: string) => {
     console.debug({ state, message })
@@ -42,24 +45,30 @@ export function useDetectDrag() {
         Math.pow(current.x - startPosition.x, 2) +
           Math.pow(current.y - startPosition.y, 2),
       )
-      if (distance > 100) {
+      if (distance > threshold) {
         setActivate(true)
+        setProgress(100)
+      } else {
+        setActivate(false)
+        setProgress(Math.floor((distance / threshold) * 100))
       }
+      setDragPosition(current)
     }
 
     const handleDragEnd = (e: MouseEvent) => {
       if (e.button !== MOUSE.LEFT) return
+      console.log('dragend')
       e.preventDefault()
       e.stopPropagation()
-
       if (activate && command) {
         const screen = getScreenSize()
         const position = { x: e.screenX, y: e.screenY }
         if (
           command.popupOption &&
-          command.popupOption.width + e.screenX > screen.width
+          command.popupOption.width + position.x - screen.left > screen.width
         ) {
-          position.x = screen.width - command.popupOption.width
+          position.x =
+            screen.width - command.popupOption.width + screen.left - 1
         }
         LinkPreview.execute({
           selectionText: '',
@@ -70,8 +79,9 @@ export function useDetectDrag() {
           target: e.target as Element,
         })
         setActivate(false)
-        setStartPosition(null)
       }
+      setStartPosition(null)
+      setDragPosition(null)
     }
 
     window.addEventListener('dragstart', handleDragStart)
@@ -83,4 +93,6 @@ export function useDetectDrag() {
       window.removeEventListener('dragover', handleDragOver)
     }
   }, [startPosition, activate, command])
+
+  return { progress, dragPosition }
 }

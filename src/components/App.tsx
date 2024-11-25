@@ -1,9 +1,9 @@
 import React, { useState, useEffect, createContext } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
+import { DragDetector } from './DragDetector'
 import { OpenInTab } from '@/components/OpenInTab'
 import { getSelectionText } from '@/services/util'
-import { useDetectDrag } from '@/hooks/useDetectDrag'
 
 import './App.css'
 
@@ -16,7 +16,6 @@ type ContextType = {
 export const context = createContext<ContextType>({} as ContextType)
 
 export function App() {
-  useDetectDrag()
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
@@ -42,6 +41,7 @@ export function App() {
         selectionText={selectionText}
         onHover={(v: boolean) => setIsHover(v)}
       />
+      <DragDetector />
       <OpenInTab />
     </context.Provider>
   )

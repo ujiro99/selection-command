@@ -52,6 +52,9 @@ export const DefaultCommands = [
       width: DefaultSchema.definitions.popupOption.properties.width.default,
       height: DefaultSchema.definitions.popupOption.properties.height.default,
     },
+    dragOption: {
+      threshold: 200,
+    },
   },
   {
     id: 0,
