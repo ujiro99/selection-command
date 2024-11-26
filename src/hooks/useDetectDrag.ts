@@ -65,10 +65,15 @@ export function useDetectDrag() {
         const position = { x: e.screenX, y: e.screenY }
         if (
           command.popupOption &&
+          command.popupOption.height + position.y - screen.top > screen.height
+        ) {
+          position.y = screen.height - command.popupOption.height + screen.top
+        }
+        if (
+          command.popupOption &&
           command.popupOption.width + position.x - screen.left > screen.width
         ) {
-          position.x =
-            screen.width - command.popupOption.width + screen.left - 1
+          position.x = screen.width - command.popupOption.width + screen.left
         }
         LinkPreview.execute({
           selectionText: '',
