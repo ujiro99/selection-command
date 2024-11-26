@@ -37,10 +37,13 @@ class BgData {
     )
   }
 
-  public static get(): BgData {
+  public static init() {
     if (!BgData.instance) {
       BgData.instance = new BgData()
     }
+  }
+
+  public static get(): BgData {
     return BgData.instance
   }
 
@@ -50,7 +53,8 @@ class BgData {
   }
 }
 
-const data = BgData.get()
+BgData.init()
+console.log('init', BgData.get())
 
 type Sender = chrome.runtime.MessageSender
 
@@ -146,7 +150,10 @@ const commandFuncs = {
           commandId: param.commandId,
           srcWindowId: current.id,
         })) as WindowLayer
+        const data = BgData.get()
         data.windowStack.push(layer)
+
+        console.log('openPopups', data)
         BgData.set(data)
       }
     }
@@ -227,6 +234,7 @@ const commandFuncs = {
     sender: Sender,
     response: (res: unknown) => void,
   ): boolean => {
+    const data = BgData.get()
     for (const layer of data.windowStack) {
       for (const window of layer) {
         if (window.id === sender.tab?.windowId) {
@@ -245,6 +253,8 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ): boolean => {
     let w: WindowType | undefined
+
+    const data = BgData.get()
     for (const layer of data.windowStack) {
       for (const window of layer) {
         if (window.id === sender.tab?.windowId) {
@@ -326,6 +336,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   }
 
   // Close popup windows when focus changed to lower stack window
+  const data = BgData.get()
   const stack = data.windowStack
   const idx = stack.map((s) => s.findIndex((w) => w.id === windowId))
 
@@ -355,10 +366,12 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     }
   }
 
+  console.log('onFocusChanged', data)
   BgData.set(data)
 })
 
 chrome.windows.onBoundsChanged.addListener((window) => {
+  const data = BgData.get()
   for (const layer of data.windowStack) {
     const w = layer.find((v) => v.id === window.id)
     if (w) {
