@@ -68,6 +68,10 @@ export type openPopupsProps = {
   screen: ScreenSize
 }
 
+export type openPopupAndClickProps = openPopupsProps & {
+  selector: string
+}
+
 export type execApiProps = {
   url: string
   pageUrl: string
@@ -109,55 +113,77 @@ async function getCurrentTab() {
   return tab
 }
 
+const openPopups = async (param: openPopupsProps): Promise<number[]> => {
+  const { top, left, width, height, screen } = param
+  const current = await chrome.windows.getCurrent()
+  const windows = await Promise.all(
+    param.urls.reverse().map((url, idx) => {
+      let t = top + POPUP_OFFSET * idx
+      let l = left + POPUP_OFFSET * idx
+
+      // If the window extends beyond the screen size,
+      // return the display position to the center.
+      if (screen.height < t + height - screen.top) {
+        t =
+          Math.floor((screen.height - height) / 2) +
+          screen.top +
+          POPUP_OFFSET * idx
+      }
+      if (screen.width < l + width - screen.left) {
+        l =
+          Math.floor((screen.width - width) / 2) +
+          screen.left +
+          POPUP_OFFSET * idx
+      }
+      return chrome.windows.create({
+        url,
+        width: width,
+        height: height,
+        top: t,
+        left: l,
+        type: 'popup',
+        incognito: current.incognito,
+      })
+    }),
+  )
+  if (windows?.length > 0) {
+    const layer = windows.map((w) => ({
+      id: w.id,
+      commandId: param.commandId,
+      srcWindowId: current.id,
+    })) as WindowLayer
+    const data = BgData.get()
+    data.windowStack.push(layer)
+
+    console.log('openPopups', data)
+    BgData.set(data)
+  }
+
+  const tabIds = windows.reduce((tabIds, w) => {
+    w.tabs?.forEach((t) => t.id && tabIds.push(t.id))
+    return tabIds
+  }, [] as number[])
+
+  return tabIds
+}
+
 const commandFuncs = {
   [BgCommand.openPopups]: (param: openPopupsProps): boolean => {
-    const open = async () => {
-      const { top, left, width, height, screen } = param
-      const current = await chrome.windows.getCurrent()
-      const windows = await Promise.all(
-        param.urls.reverse().map((url, idx) => {
-          let t = top + POPUP_OFFSET * idx
-          let l = left + POPUP_OFFSET * idx
+    openPopups(param)
+    return false
+  },
 
-          // If the window extends beyond the screen size,
-          // return the display position to the center.
-          if (screen.height < t + height - screen.top) {
-            t =
-              Math.floor((screen.height - height) / 2) +
-              screen.top +
-              POPUP_OFFSET * idx
-          }
-          if (screen.width < l + width - screen.left) {
-            l =
-              Math.floor((screen.width - width) / 2) +
-              screen.left +
-              POPUP_OFFSET * idx
-          }
-          return chrome.windows.create({
-            url,
-            width: width,
-            height: height,
-            top: t,
-            left: l,
-            type: 'popup',
-            incognito: current.incognito,
-          })
-        }),
-      )
-      if (windows?.length > 0) {
-        const layer = windows.map((w) => ({
-          id: w.id,
-          commandId: param.commandId,
-          srcWindowId: current.id,
-        })) as WindowLayer
-        const data = BgData.get()
-        data.windowStack.push(layer)
-
-        console.log('openPopups', data)
-        BgData.set(data)
+  [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
+    ;(async () => {
+      const tabIds = await openPopups(param)
+      if (tabIds.length > 0) {
+        await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
+          selector: (param as { selector: string }).selector,
+        })
+        return
       }
-    }
-    open()
+      console.debug('tab not found')
+    })()
     return false
   },
 
@@ -305,6 +331,16 @@ for (const key in BgCommand) {
   const command = BgCommand[key as keyof typeof BgCommand]
   Ipc.addListener(command, commandFuncs[key])
 }
+
+const getTabId = (
+  param: unknown,
+  sender: Sender,
+  response: (res: unknown) => void,
+) => {
+  response(sender.tab?.id)
+  return true
+}
+Ipc.addListener(TabCommand.getTabId, getTabId as IpcCallback)
 
 const updateWindowSize = async (
   commandId: number,

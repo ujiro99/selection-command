@@ -4,13 +4,19 @@ import { Point } from '@/types'
 import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
-import { isPopup, isAnchorElement, getScreenSize } from '@/services/util'
+import {
+  isPopup,
+  isAnchorElement,
+  isClickableElement,
+  getScreenSize,
+} from '@/services/util'
 
 const isTargetEvent = (e: MouseEvent): boolean => {
   return (
     e.button === MOUSE.LEFT &&
     !isPopup(e.target as Element) &&
-    isAnchorElement(e.target as Element)
+    (isAnchorElement(e.target as Element) ||
+      isClickableElement(e.target as Element))
   )
 }
 
@@ -29,8 +35,10 @@ export function useDetectDrag() {
     console.debug({ state, message })
   }
 
+  console.log(5)
   useEffect(() => {
     const handleDragStart = (e: MouseEvent) => {
+      console.log('dragstart')
       if (!isTargetEvent(e)) return
       setStartPosition({ x: e.clientX, y: e.clientY })
     }

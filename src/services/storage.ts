@@ -5,6 +5,7 @@ export enum STORAGE_KEY {
   USER = 0,
   BG = 1,
   COMMAND_COUNT = 2,
+  MESSAGE_QUEUE = 3,
 }
 
 export enum LOCAL_STORAGE_KEY {
@@ -19,6 +20,7 @@ const DEFAULTS = {
   [STORAGE_KEY.USER]: DefaultSettings,
   [STORAGE_KEY.BG]: {},
   [STORAGE_KEY.COMMAND_COUNT]: DEFAULT_COUNT,
+  [STORAGE_KEY.MESSAGE_QUEUE]: [],
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
@@ -29,8 +31,8 @@ export enum STORAGE_AREA {
   LOCAL = 'local',
 }
 
-type changedCallback = (newVal: unknown, oldVal: unknown) => void
-const changedCallbacks = {} as { [key: string]: changedCallback[] }
+export type ChangedCallback = (newVal: unknown, oldVal: unknown) => void
+const changedCallbacks = {} as { [key: string]: ChangedCallback[] }
 
 type commandChangedCallback = (commands: Command[]) => void
 const commandChangedCallbacks = [] as commandChangedCallback[]
@@ -118,12 +120,12 @@ export const Storage = {
     })
   },
 
-  addListener: (key: STORAGE_KEY, cb: changedCallback) => {
+  addListener: (key: STORAGE_KEY, cb: ChangedCallback) => {
     changedCallbacks[key] = changedCallbacks[key] ?? []
     changedCallbacks[key].push(cb)
   },
 
-  removeListener: (key: STORAGE_KEY, cb: changedCallback) => {
+  removeListener: (key: STORAGE_KEY, cb: ChangedCallback) => {
     changedCallbacks[key] = changedCallbacks[key]?.filter((f) => f !== cb)
   },
 

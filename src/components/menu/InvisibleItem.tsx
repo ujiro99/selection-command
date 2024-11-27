@@ -6,6 +6,7 @@ import { Icon } from '@/components/Icon'
 import { useContextMenu } from '@/hooks/useContextMenu'
 import type { Command } from '@/types'
 import { actions, ExecState } from '@/action'
+import { OPEN_MODE, POPUP_OFFSET } from '@/const'
 
 import css from './Menu.module.css'
 
@@ -39,11 +40,15 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     if (itemState.state !== ExecState.NONE) {
       return
     }
-    actions[command.openMode]
+    if (props.positionElm == null) {
+      return
+    }
+    const rect = props.positionElm.getBoundingClientRect()
+    actions[command.openMode as OPEN_MODE]
       .execute({
         selectionText,
         command: command,
-        menuElm: props.positionElm,
+        position: { x: rect.left + POPUP_OFFSET, y: rect.top },
         useSecondary: false,
         changeState: onChangeState,
         target,

@@ -172,13 +172,13 @@ export function isPopup(elm: Element): boolean {
 }
 
 /**
- * Check if the element is an anchor element.
+ * Check if the element is an anchor element, or contained.
+ *
  * @param {Element} elm The element to check.
  * @returns {boolean} True if the element is an anchor element.
  */
 export function isAnchorElement(elm: Element): boolean {
-  const f = findAnchorElement(elm)
-  return f != null
+  return findAnchorElement(elm) != null
 }
 
 /**
@@ -189,13 +189,84 @@ export function isAnchorElement(elm: Element): boolean {
  */
 export function findAnchorElement(elm: Element): Element | null {
   if (elm == null) return null
+  if (elm.nodeName === 'body') return null
   if (
     elm.tagName?.toLowerCase() === 'a' &&
     (elm as HTMLAnchorElement).href != null
   )
     return elm
-  if (elm.nodeName === 'body') return null
   return findAnchorElement(elm.parentElement as Element)
+}
+
+/**
+ * Check if the element is a clickable element or contained.
+ *
+ * @param {HTMLElement} elm The element to check.
+ * @returns {boolean} True if the element is clickable.
+ */
+export function isClickableElement(elm: Element | null): boolean {
+  return findClickableElement(elm) != null
+}
+
+/**
+ * Find the clickable element from the specified element.
+ *
+ * @param {Element} elm The element to start searching.
+ * @returns {Element} The clickable element.
+ */
+export function findClickableElement(elm: Element | null): Element | null {
+  if (elm == null) return null
+  if (elm.nodeName === 'body') return null
+
+  // 1. check style
+  const style = window.getComputedStyle(elm)
+  if (style.pointerEvents !== 'none') {
+    return elm
+  }
+
+  // 2. check onclick
+  if (
+    elm.hasAttribute('onclick') ||
+    typeof (elm as HTMLElement).onclick === 'function'
+  ) {
+    return elm
+  }
+
+  // 3. check tagName
+  const clickableTags = ['a', 'button', 'input']
+  if (
+    clickableTags.includes(elm.tagName.toLowerCase()) &&
+    !(elm as HTMLButtonElement).disabled
+  ) {
+    return elm
+  }
+
+  // 4. check parent
+  return findClickableElement(elm.parentElement)
+}
+
+export function getSelectorFromElement(el: Element): string {
+  if (!(el instanceof Element)) return ''
+  let path = []
+  while (el.nodeType === Node.ELEMENT_NODE) {
+    let selector = el.nodeName.toLowerCase()
+    if (el.id) {
+      selector += '#' + el.id
+      path.unshift(selector)
+      break
+    } else {
+      let sibling = el
+      let nth = 1
+      while ((sibling = sibling.previousElementSibling as Element)) {
+        if (sibling.nodeName.toLowerCase() === selector) nth++
+      }
+      if (nth !== 1) selector += `:nth-of-type(${nth})`
+    }
+    path.unshift(selector)
+    el = el.parentNode as Element
+  }
+
+  return path.join(' > ')
 }
 
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {

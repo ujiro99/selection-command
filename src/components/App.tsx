@@ -4,6 +4,7 @@ import { Popup } from './Popup'
 import { DragDetector } from './DragDetector'
 import { OpenInTab } from '@/components/OpenInTab'
 import { getSelectionText } from '@/services/util'
+import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 
 import './App.css'
 
@@ -16,6 +17,7 @@ type ContextType = {
 export const context = createContext<ContextType>({} as ContextType)
 
 export function App() {
+  useTabCommandReceiver()
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
