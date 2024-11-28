@@ -5,11 +5,13 @@ import css from './CircularProgress.module.css'
 interface CircularProgressProps {
   progress: number
   progressColor?: string
+  style?: React.CSSProperties
 }
 
 export const CircularProgress: React.FC<CircularProgressProps> = ({
   progress,
   progressColor = '#3498db',
+  style,
 }) => {
   const circleColor = '#e0e0e0'
   const strokeWidth = 10
@@ -25,7 +27,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   return (
     <div
       className={clsx(css.container, { [css.complete]: progress === 100 })}
-      style={{ width: size, height: size }}
+      style={{ width: size, height: size, ...style }}
     >
       {progress < 100 ? (
         <svg

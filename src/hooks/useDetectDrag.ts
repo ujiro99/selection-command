@@ -22,7 +22,8 @@ const isTargetEvent = (e: MouseEvent): boolean => {
 
 export function useDetectDrag() {
   const [startPosition, setStartPosition] = useState<Point | null>()
-  const [dragPosition, setDragPosition] = useState<Point | null>()
+  const [mousePosition, setMousePosition] = useState<Point | null>()
+  const [target, setTarget] = useState<Element | null>(null)
   const [activate, setActivate] = useState(false)
   const [progress, setProgress] = useState(0)
   const { settings } = useSetting()
@@ -35,15 +36,16 @@ export function useDetectDrag() {
     console.debug({ state, message })
   }
 
-  console.log(5)
   useEffect(() => {
-    const handleDragStart = (e: MouseEvent) => {
-      console.log('dragstart')
+    const handleMouseDown = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
       setStartPosition({ x: e.clientX, y: e.clientY })
+      setTarget(e.target as Element)
+      e.stopPropagation()
+      e.preventDefault()
     }
 
-    const handleDragOver = (e: DragEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
       if (e.button !== MOUSE.LEFT) return
       if (startPosition == null) return
       e.preventDefault()
@@ -60,12 +62,12 @@ export function useDetectDrag() {
         setActivate(false)
         setProgress(Math.floor((distance / threshold) * 100))
       }
-      setDragPosition(current)
+      setMousePosition(current)
     }
 
-    const handleDragEnd = (e: MouseEvent) => {
+    const handleMouseUp = (e: MouseEvent) => {
       if (e.button !== MOUSE.LEFT) return
-      console.log('dragend')
+      if (startPosition == null) return
       e.preventDefault()
       e.stopPropagation()
       if (activate && command) {
@@ -89,23 +91,24 @@ export function useDetectDrag() {
           position,
           useSecondary: false,
           changeState: onChangeState,
-          target: e.target as Element,
+          target,
         })
         setActivate(false)
       }
       setStartPosition(null)
-      setDragPosition(null)
+      setMousePosition(null)
+      setTarget(null)
     }
 
-    window.addEventListener('dragstart', handleDragStart)
-    window.addEventListener('dragend', handleDragEnd)
-    window.addEventListener('dragover', handleDragOver)
+    window.addEventListener('mousedown', handleMouseDown)
+    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('mousemove', handleMouseMove)
     return () => {
-      window.removeEventListener('dragstart', handleDragStart)
-      window.removeEventListener('dragend', handleDragEnd)
-      window.removeEventListener('dragover', handleDragOver)
+      window.removeEventListener('mousedown', handleMouseDown)
+      window.removeEventListener('mouseup', handleMouseUp)
+      window.removeEventListener('mousemove', handleMouseMove)
     }
   }, [startPosition, activate, command])
 
-  return { progress, dragPosition }
+  return { progress, mousePosition }
 }

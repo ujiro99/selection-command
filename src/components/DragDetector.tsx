@@ -3,25 +3,30 @@ import { useDetectDrag } from '@/hooks/useDetectDrag'
 import { CircularProgress } from '@/components/CircularProgress'
 
 export function DragDetector(): JSX.Element {
-  const { progress, dragPosition } = useDetectDrag()
+  const { progress, mousePosition } = useDetectDrag()
 
-  if (!dragPosition) return <></>
+  if (!mousePosition) return <></>
 
   const styles = {
     position: 'absolute',
-    top: window.scrollY + dragPosition.y - 30,
-    left: window.scrollX + dragPosition.x + 5,
-    height: 2,
-    width: 2,
-    pointerEvents: 'none',
+    height: 8,
+    width: 8,
+    top: window.scrollY + mousePosition.y - 4,
+    left: window.scrollX + mousePosition.x - 4,
     zIndex: 2147483647,
+    cursor: 'grabbing',
     // backgroundColor: 'rgba(255, 0, 0, 0.3)',
     // border: '1px solid red',
   } as React.CSSProperties
 
+  const circleStyles = {
+    top: -30,
+    left: 5,
+  }
+
   return (
     <div style={styles}>
-      <CircularProgress progress={progress} />
+      <CircularProgress style={circleStyles} progress={progress} />
     </div>
   )
 }

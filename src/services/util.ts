@@ -220,7 +220,7 @@ export function findClickableElement(elm: Element | null): Element | null {
 
   // 1. check style
   const style = window.getComputedStyle(elm)
-  if (style.pointerEvents !== 'none') {
+  if (style.pointerEvents !== 'none' && style.cursor === 'pointer') {
     return elm
   }
 
