@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { MOUSE, DRAG_OPEN_MODE } from '@/const'
+import { MOUSE, DRAG_OPEN_MODE, POPUP_ENABLED } from '@/const'
 import { Point } from '@/types'
 import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
@@ -27,7 +27,9 @@ export function useDetectDrag() {
   const [isDetecting, setIsDetecting] = useState(false)
   const [activate, setActivate] = useState(false)
   const [progress, setProgress] = useState(0)
-  const { settings } = useSetting()
+  const { settings, pageRule } = useSetting()
+  const enableDrag = pageRule?.popupEnabled !== POPUP_ENABLED.DISABLE
+
   const command = settings.commands.find(
     (c) => c.openMode === DRAG_OPEN_MODE.LINK_PREVIEW,
   )
@@ -50,7 +52,6 @@ export function useDetectDrag() {
     const handleMouseMove = (e: MouseEvent) => {
       if (e.button !== MOUSE.LEFT) return
       if (startPosition == null) return
-      e.preventDefault()
 
       const current = { x: e.clientX, y: e.clientY }
       const distance = Math.sqrt(
@@ -67,8 +68,6 @@ export function useDetectDrag() {
     const handleMouseUp = (e: MouseEvent) => {
       if (e.button !== MOUSE.LEFT) return
       if (startPosition == null) return
-      e.preventDefault()
-      e.stopPropagation()
       if (activate && command) {
         const screen = getScreenSize()
         const position = { x: e.screenX, y: e.screenY - 50 }
@@ -100,15 +99,17 @@ export function useDetectDrag() {
       setActivate(false)
     }
 
-    window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
-    window.addEventListener('mousemove', handleMouseMove)
+    if (enableDrag) {
+      window.addEventListener('mousedown', handleMouseDown)
+      window.addEventListener('mouseup', handleMouseUp)
+      window.addEventListener('mousemove', handleMouseMove)
+    }
     return () => {
       window.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mouseup', handleMouseUp)
       window.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [startPosition, activate, command, target])
+  }, [enableDrag, startPosition, activate, command, target])
 
   return { progress, mousePosition, isDetecting }
 }

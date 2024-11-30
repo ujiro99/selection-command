@@ -7,7 +7,7 @@ export function useTabCommandReceiver() {
 
   useEffect(() => {
     Ipc.send(TabCommand.getTabId).then((id) => {
-      console.log('getTabId', id)
+      // console.log('getTabId', id)
       setTabId(id)
     })
   }, [])
