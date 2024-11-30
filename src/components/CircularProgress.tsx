@@ -63,8 +63,13 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
           ></path>
         </svg>
       ) : (
-        <svg viewBox="0 0 100 100" width={size - 10} height={size - 10}>
-          <circle cx={100 / 2} cy={100 / 2} r={45} fill={progressColor} />
+        <svg viewBox={`0 0 ${viewBox} ${viewBox}`} width={size} height={size}>
+          <circle
+            cx={viewBox / 2}
+            cy={viewBox / 2}
+            r={30}
+            fill={progressColor}
+          />
         </svg>
       )}
     </div>

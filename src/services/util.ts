@@ -224,7 +224,7 @@ export function findClickableElement(elm: Element | null): Element | null {
     return elm
   }
 
-  // 2. check onclick
+  // 2. check onclick property
   if (
     elm.hasAttribute('onclick') ||
     typeof (elm as HTMLElement).onclick === 'function'
@@ -238,7 +238,14 @@ export function findClickableElement(elm: Element | null): Element | null {
     clickableTags.includes(elm.tagName.toLowerCase()) &&
     !(elm as HTMLButtonElement).disabled
   ) {
-    return elm
+    if (elm.tagName.toLowerCase() === 'input') {
+      const type = (elm as HTMLInputElement).type
+      if (type === 'button') {
+        return elm
+      }
+    } else {
+      return elm
+    }
   }
 
   // 4. check parent

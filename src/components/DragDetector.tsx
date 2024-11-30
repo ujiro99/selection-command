@@ -3,7 +3,7 @@ import { useDetectDrag } from '@/hooks/useDetectDrag'
 import { CircularProgress } from '@/components/CircularProgress'
 
 export function DragDetector(): JSX.Element {
-  const { progress, mousePosition } = useDetectDrag()
+  const { progress, mousePosition, isDetecting } = useDetectDrag()
 
   if (!mousePosition) return <></>
 
@@ -21,12 +21,14 @@ export function DragDetector(): JSX.Element {
 
   const circleStyles = {
     top: -30,
-    left: 5,
+    left: -15,
   }
 
   return (
     <div style={styles}>
-      <CircularProgress style={circleStyles} progress={progress} />
+      {isDetecting && (
+        <CircularProgress style={circleStyles} progress={progress} />
+      )}
     </div>
   )
 }

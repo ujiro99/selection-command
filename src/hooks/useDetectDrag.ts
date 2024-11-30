@@ -24,13 +24,15 @@ export function useDetectDrag() {
   const [startPosition, setStartPosition] = useState<Point | null>()
   const [mousePosition, setMousePosition] = useState<Point | null>()
   const [target, setTarget] = useState<Element | null>(null)
+  const [isDetecting, setIsDetecting] = useState(false)
   const [activate, setActivate] = useState(false)
   const [progress, setProgress] = useState(0)
   const { settings } = useSetting()
   const command = settings.commands.find(
     (c) => c.openMode === DRAG_OPEN_MODE.LINK_PREVIEW,
   )
-  const threshold = command?.dragOption?.threshold || 200
+  const playPixel = 20
+  const threshold = command?.dragOption?.threshold || 150
 
   const onChangeState = (state: ExecState, message?: string) => {
     console.debug({ state, message })
@@ -55,14 +57,11 @@ export function useDetectDrag() {
         Math.pow(current.x - startPosition.x, 2) +
           Math.pow(current.y - startPosition.y, 2),
       )
-      if (distance > threshold) {
-        setActivate(true)
-        setProgress(100)
-      } else {
-        setActivate(false)
-        setProgress(Math.floor((distance / threshold) * 100))
-      }
+
       setMousePosition(current)
+      setIsDetecting(distance > playPixel)
+      setActivate(distance > threshold)
+      setProgress(Math.min(Math.floor((distance / threshold) * 100), 100))
     }
 
     const handleMouseUp = (e: MouseEvent) => {
@@ -72,7 +71,7 @@ export function useDetectDrag() {
       e.stopPropagation()
       if (activate && command) {
         const screen = getScreenSize()
-        const position = { x: e.screenX, y: e.screenY }
+        const position = { x: e.screenX, y: e.screenY - 50 }
         if (
           command.popupOption &&
           command.popupOption.height + position.y - screen.top > screen.height
@@ -93,11 +92,12 @@ export function useDetectDrag() {
           changeState: onChangeState,
           target,
         })
-        setActivate(false)
       }
       setStartPosition(null)
-      setMousePosition(null)
       setTarget(null)
+      setMousePosition(null)
+      setIsDetecting(false)
+      setActivate(false)
     }
 
     window.addEventListener('mousedown', handleMouseDown)
@@ -108,7 +108,7 @@ export function useDetectDrag() {
       window.removeEventListener('mouseup', handleMouseUp)
       window.removeEventListener('mousemove', handleMouseMove)
     }
-  }, [startPosition, activate, command])
+  }, [startPosition, activate, command, target])
 
-  return { progress, mousePosition }
+  return { progress, mousePosition, isDetecting }
 }
