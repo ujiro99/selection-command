@@ -25,7 +25,7 @@ import {
 import type { UserSettingsType, FolderOption } from '@/types'
 import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
-import { isMac, isMenuCommand } from '@/services/util'
+import { isMac } from '@/services/util'
 
 import css from './SettingForm.module.css'
 
@@ -122,6 +122,7 @@ export function SettingFrom() {
         if (event.source != null) {
           setParent(event.source)
           setOrigin(event.origin)
+          console.log('start', settings)
           setSettingData(settings)
           setTrans(translation)
           // Page scrolls to the hash.
@@ -219,13 +220,15 @@ export function SettingFrom() {
     '#/startupMethod/param/leftClickHold': InputNumberField,
     '#/popupPlacement': SelectField,
     '#/style': SelectField,
+    '#/linkCommand/threshold': InputNumberField,
+    '#/linkCommand/showIndicator': CheckboxField,
     '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': SelectField,
     '#/commands/copyOption': SelectField,
     '#/commands/parentFolderId': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
-    '#/commandFolder/onlyIcon': OnlyIconField,
+    '#/commandFolder/onlyIcon': CheckboxField,
     '#/styleVariable': UserStyleField,
     ArraySchemaField: CustomArraySchemaField,
   }
@@ -323,6 +326,21 @@ export function SettingFrom() {
             'ui:classNames': 'variableItem',
           },
         },
+      },
+    },
+    linkCommand: {
+      'ui:title': t('linkCommand'),
+      'ui:description': t('linkCommand_desc'),
+      'ui:order': ['threshold', 'showIndicator'],
+      threshold: {
+        'ui:title': t('threshold'),
+        'ui:description': t('threshold_desc'),
+        'ui:classNames': 'linkCommandThreshold',
+      },
+      showIndicator: {
+        'ui:title': t('showIndicator'),
+        'ui:description': t('showIndicator_desc'),
+        'ui:classNames': 'linkCommandShowIndicator',
       },
     },
     folders: {
@@ -571,13 +589,13 @@ type Option = {
 const InputNumberField = (props: FieldProps) => {
   const { formData, idSchema, required, schema } = props
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    props.onChange(event.target.value)
+    props.onChange(Number(event.target.value))
   }
   return (
     <label className={clsx(css.selectContainer, 'form-control')}>
       <input
         id={idSchema.$id}
-        className={css.select}
+        className={css.number}
         value={formData ?? schema.default}
         required={required}
         onChange={onChange}
@@ -674,8 +692,8 @@ const FetchOptionField = (props: FieldProps) => {
   )
 }
 
-const OnlyIconField = (props: FieldProps) => {
-  let title = 'Only Icon'
+const CheckboxField = (props: FieldProps) => {
+  let title = props.name
   let desc = ''
   if (props.uiSchema) {
     title = props.uiSchema['ui:title'] ?? title

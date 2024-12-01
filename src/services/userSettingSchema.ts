@@ -27,6 +27,28 @@ export default {
         $ref: '#/definitions/command',
       },
     },
+    linkCommand: {
+      type: 'object',
+      required: ['threshold', 'showIndicator'],
+      additionalProperties: false,
+      properties: {
+        threshold: {
+          name: 'Threshold',
+          $id: '#/linkCommand/threshold',
+          type: 'number',
+          default: 150,
+          minimum: 50,
+          maximum: 400,
+          step: 10,
+        },
+        showIndicator: {
+          name: 'ShowIndicator',
+          $id: '#/linkCommand/showIndicator',
+          type: 'boolean',
+          default: true,
+        },
+      },
+    },
     folders: {
       type: 'array',
       items: {
@@ -50,6 +72,11 @@ export default {
           },
           popupPlacement: {
             $ref: '#/definitions/popupPlacement',
+          },
+          linkCommandEnabled: {
+            type: 'string',
+            enum: ['Enable', 'Disable'],
+            default: 'Enable',
           },
         },
       },

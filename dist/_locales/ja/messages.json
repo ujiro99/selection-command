@@ -179,6 +179,24 @@
   "Option_variables": {
     "message": "Fetch変数"
   },
+  "Option_linkCommand": {
+    "message": "リンクプレビュー"
+  },
+  "Option_linkCommand_desc": {
+    "message": "リンクをドラッグすると、ポップアップでプレビュー表示します。"
+  },
+  "Option_threshold": {
+    "message": "ドラッグ距離"
+  },
+  "Option_threshold_desc": {
+    "message": "表示するまでの距離[px]"
+  },
+  "Option_showIndicator": {
+    "message": "インジケータの表示"
+  },
+  "Option_showIndicator_desc": {
+    "message": "プレビューまでの残りを表示します。"
+  },
   "Option_folders": {
     "message": "フォルダ"
   },

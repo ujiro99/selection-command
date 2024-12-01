@@ -11,6 +11,10 @@ import DefaultSchema from '@/services/userSettingSchema'
 export default {
   settingVersion: VERSION,
   commands: [],
+  linkCommand: {
+    threshold: 150,
+    showIndicator: true,
+  },
   folders: [
     {
       title: 'Search',
@@ -47,13 +51,14 @@ export const DefaultCommands = [
     id: '$$drag-1',
     title: 'Link Preview',
     searchUrl: '',
-    openMode: DRAG_OPEN_MODE.LINK_PREVIEW,
+    openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
     popupOption: {
       width: DefaultSchema.definitions.popupOption.properties.width.default,
       height: DefaultSchema.definitions.popupOption.properties.height.default,
     },
-    dragOption: {
-      threshold: 200,
+    linkCommandOption: {
+      threshold: 150,
+      showIndicator: true,
     },
   },
   {

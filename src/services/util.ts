@@ -1,5 +1,5 @@
 import { APP_ID, SPACE_ENCODING, OPEN_MODE } from '@/const'
-import type { Version, Command } from '@/types'
+import type { Version, Command, LinkCommand } from '@/types'
 
 /**
  * Stops processing for the specified time.
@@ -162,6 +162,17 @@ export function isEmpty(str: string | null): boolean {
 const OpenModes = Object.values(OPEN_MODE)
 export function isMenuCommand(command: Command): boolean {
   return OpenModes.includes(command.openMode as OPEN_MODE)
+}
+
+/**
+ * Check if the command is link command.
+ * @param {Command|LinkCommand} command The command to check.
+ * @returns {boolean} True if the command is link command.
+ */
+export function isLinkCommand(
+  command: Command | LinkCommand,
+): command is LinkCommand {
+  return (command as LinkCommand).linkCommandOption !== undefined
 }
 
 export function isPopup(elm: Element): boolean {

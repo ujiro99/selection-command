@@ -13,7 +13,7 @@ export enum OPEN_MODE {
 }
 
 export enum DRAG_OPEN_MODE {
-  LINK_PREVIEW = 'linkPreview',
+  PREVIEW_POPUP = 'previewPopup',
 }
 
 export enum STARTUP_METHOD {
@@ -37,6 +37,11 @@ export enum MOUSE {
 }
 
 export enum POPUP_ENABLED {
+  ENABLE = 'Enable',
+  DISABLE = 'Disable',
+}
+
+export enum LINK_COMMAND_ENABLED {
   ENABLE = 'Enable',
   DISABLE = 'Disable',
 }

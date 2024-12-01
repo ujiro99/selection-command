@@ -179,6 +179,24 @@
   "Option_variables": {
     "message": "Fetch Variables"
   },
+  "Option_linkCommand": {
+    "message": "Link Preview"
+  },
+  "Option_linkCommand_desc": {
+    "message": "When you drag a link, a pop-up preview is displayed."
+  },
+  "Option_threshold": {
+    "message": "Drag distance"
+  },
+  "Option_threshold_desc": {
+    "message": "Drag distance to display[px]"
+  },
+  "Option_showIndicator": {
+    "message": "Display the indicator "
+  },
+  "Option_showIndicator_desc": {
+    "message": "Displays the remaining to the preview."
+  },
   "Option_folders": {
     "message": "Folders"
   },

@@ -8,6 +8,7 @@ import {
   toDataURL,
   versionDiff,
   VersionDiff,
+  isLinkCommand,
 } from '@/services/util'
 import { OptionSettings } from '@/services/optionSettings'
 
@@ -87,6 +88,15 @@ export const UserSettings = {
     for (const [iconUrl, dataUrl] of newCaches) {
       if (isEmpty(dataUrl)) continue
       caches.images[iconUrl] = dataUrl
+    }
+
+    // Restore a link command if not exists.
+    const linkCommands = data.commands.filter((c) => isLinkCommand(c))
+    if (linkCommands.length === 0) {
+      const defaultLinkCommand = DefaultCommands.find((c) => isLinkCommand(c))
+      if (defaultLinkCommand != null) {
+        data.commands.push(defaultLinkCommand)
+      }
     }
 
     // Settings for options are kept separate from user set values.

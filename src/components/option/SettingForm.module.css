@@ -54,6 +54,29 @@
   display: none;
 }
 
+:global .linkCommandThreshold {
+  position: relative;
+}
+
+:global .linkCommandThreshold>.control-label {
+  position: relative;
+  top: -2px;
+}
+
+:global .linkCommandThreshold>.field-description {
+  position: absolute;
+  top: 12px;
+  font-size: 11px;
+}
+
+:global .linkCommandThreshold input[type='number'] {
+  height: 36px;
+}
+
+:global .linkCommandShowIndicator {
+  margin-top: 10px;
+}
+
 :global .array-item>.col-xs-9>.form-group {
   border: solid 1px rgb(209 213 219);
   padding: 12px 14px 12px 20px;
@@ -94,7 +117,7 @@
 
 :global .has-description .desc {
   margin: 0;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.8;
 }
 
@@ -315,6 +338,25 @@
   border: none;
   outline: none;
   cursor: pointer;
+  color: var(--font-color);
+
+  option {
+    font-size: 1.1em;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.number {
+  flex: 1;
+  height: 30px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: text;
   color: var(--font-color);
 
   option {

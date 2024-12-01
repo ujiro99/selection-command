@@ -7,6 +7,7 @@ import type {
   STARTUP_METHOD,
   SPACE_ENCODING,
   STYLE_VARIABLE,
+  LINK_COMMAND_ENABLED,
 } from '@/const'
 
 export type Version = `${number}.${number}.${number}`
@@ -21,16 +22,20 @@ export type Command = {
   title: string
   searchUrl: string
   iconUrl: string
-  openMode: OPEN_MODE | DRAG_OPEN_MODE
+  openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
   parentFolder?: FolderOption // deprecated from v0.8.2
   parentFolderId?: string
   popupOption?: PopupOption
   copyOption?: CopyOption
   fetchOptions?: string
-  dragOption?: DragOption
   variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
+}
+
+export type LinkCommand = Command & {
+  openMode: DRAG_OPEN_MODE
+  linkCommandOption: DragOption
 }
 
 export type PopupOption = {
@@ -42,6 +47,7 @@ export type CopyOption = 'default' | 'text'
 
 export type DragOption = {
   threshold: number
+  showIndicator: boolean
 }
 
 export type FolderOption = {
@@ -71,6 +77,7 @@ export type PageRule = {
   urlPattern: string
   popupEnabled: POPUP_ENABLED
   popupPlacement: Placement
+  linkCommandEnabled: LINK_COMMAND_ENABLED
 }
 
 export type StyleVariable = {
@@ -88,7 +95,8 @@ export type UserSettingsType = {
   settingVersion: Version
   startupMethod: StartupMethod
   popupPlacement: Placement
-  commands: Array<Command>
+  commands: Array<Command | LinkCommand>
+  linkCommand: DragOption
   folders: Array<CommandFolder>
   pageRules: Array<PageRule>
   style: STYLE
