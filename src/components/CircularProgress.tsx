@@ -1,5 +1,8 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import clsx from 'clsx'
+import lottie from 'lottie-web'
+
+import anim from '@/lottie/rippled-circle.json'
 import css from './CircularProgress.module.css'
 
 interface CircularProgressProps {
@@ -13,6 +16,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   progressColor = '#3498db',
   style,
 }) => {
+  const completeDiv = useRef<HTMLDivElement>(null)
   const circleColor = '#e0e0e0'
   const strokeWidth = 10
   const size = 30
@@ -23,55 +27,74 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
   const strokeDashoffset =
     circumference - (normalizedProgress / 100) * circumference
   const progressRadius = (360 * progress) / 100 - 50
+  const isComplete = progress >= 100
+
+  useEffect(() => {
+    if (!completeDiv.current || !isComplete) return
+    lottie.loadAnimation({
+      container: completeDiv.current,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      animationData: anim,
+    })
+    lottie.setSpeed(4)
+    lottie.play()
+    return () => lottie.destroy()
+  }, [completeDiv.current, isComplete])
 
   return (
-    <div
-      className={clsx(css.container, { [css.complete]: progress === 100 })}
-      style={{ width: size, height: size, ...style }}
-    >
-      {progress < 100 ? (
-        <svg
-          viewBox={`0 0 ${viewBox} ${viewBox}`}
-          className={css.svg}
-          width={size}
-          height={size}
+    <>
+      {!isComplete && (
+        <div
+          className={clsx(css.container)}
+          style={{ width: size, height: size, ...style }}
         >
-          <circle
-            className={css.circle}
-            stroke={circleColor}
-            cx={viewBox / 2}
-            cy={viewBox / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-          />
-          <circle
-            className={css.progress}
-            stroke={progressColor}
-            cx={viewBox / 2}
-            cy={viewBox / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-          />
-          <path
-            d="M90,76 v +28 h +28"
-            stroke={progressColor}
-            strokeWidth={strokeWidth}
-            fill="none"
-            transform={`rotate(${progressRadius} ${viewBox / 2} ${viewBox / 2})`}
-          ></path>
-        </svg>
-      ) : (
-        <svg viewBox={`0 0 ${viewBox} ${viewBox}`} width={size} height={size}>
-          <circle
-            cx={viewBox / 2}
-            cy={viewBox / 2}
-            r={30}
-            fill={progressColor}
-          />
-        </svg>
+          <svg
+            viewBox={`0 0 ${viewBox} ${viewBox}`}
+            className={css.svg}
+            width={size}
+            height={size}
+          >
+            <circle
+              className={css.circle}
+              stroke={circleColor}
+              cx={viewBox / 2}
+              cy={viewBox / 2}
+              r={radius}
+              strokeWidth={strokeWidth}
+            />
+            <circle
+              className={css.progress}
+              stroke={progressColor}
+              cx={viewBox / 2}
+              cy={viewBox / 2}
+              r={radius}
+              strokeWidth={strokeWidth}
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+            />
+            <path
+              d="M90,76 v +28 h +28"
+              stroke={progressColor}
+              strokeWidth={strokeWidth}
+              fill="none"
+              transform={`rotate(${progressRadius} ${viewBox / 2} ${viewBox / 2})`}
+            ></path>
+          </svg>
+        </div>
       )}
-    </div>
+      <div
+        className={clsx(css.container)}
+        style={{
+          ...style,
+          width: size + 10,
+          height: size + 10,
+          left: Number(style?.left) - 10,
+          top: Number(style?.top) - 10,
+        }}
+        ref={completeDiv}
+      />
+    </>
   )
 }
