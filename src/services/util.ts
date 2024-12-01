@@ -218,13 +218,7 @@ export function findClickableElement(elm: Element | null): Element | null {
   if (elm == null) return null
   if (elm.nodeName === 'body') return null
 
-  // 1. check style
-  const style = window.getComputedStyle(elm)
-  if (style.pointerEvents !== 'none' && style.cursor === 'pointer') {
-    return elm
-  }
-
-  // 2. check onclick property
+  // 1. check onclick property
   if (
     elm.hasAttribute('onclick') ||
     typeof (elm as HTMLElement).onclick === 'function'
@@ -232,7 +226,7 @@ export function findClickableElement(elm: Element | null): Element | null {
     return elm
   }
 
-  // 3. check tagName
+  // 2. check tagName
   const clickableTags = ['a', 'button', 'input']
   if (
     clickableTags.includes(elm.tagName.toLowerCase()) &&
@@ -248,7 +242,7 @@ export function findClickableElement(elm: Element | null): Element | null {
     }
   }
 
-  // 4. check parent
+  // 3. check parent
   return findClickableElement(elm.parentElement)
 }
 
