@@ -17,7 +17,9 @@ export type Point = {
   y: number
 }
 
-export type Command = {
+export type Command = SelectionCommand | LinkCommand
+
+export type SelectionCommand = {
   id: number | string
   title: string
   searchUrl: string
@@ -33,7 +35,7 @@ export type Command = {
   spaceEncoding?: SPACE_ENCODING
 }
 
-export type LinkCommand = Command & {
+export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
   openMode: DRAG_OPEN_MODE
   linkCommandOption: DragOption
 }
@@ -95,7 +97,7 @@ export type UserSettingsType = {
   settingVersion: Version
   startupMethod: StartupMethod
   popupPlacement: Placement
-  commands: Array<Command | LinkCommand>
+  commands: Array<Command>
   linkCommand: DragOption
   folders: Array<CommandFolder>
   pageRules: Array<PageRule>

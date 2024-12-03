@@ -1,5 +1,10 @@
 import * as mv3 from 'mv3-hot-reload'
-import { isDebug, POPUP_ENABLED, POPUP_OFFSET } from '@/const'
+import {
+  isDebug,
+  LINK_COMMAND_ENABLED,
+  POPUP_ENABLED,
+  POPUP_OFFSET,
+} from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/services/util'
@@ -203,6 +208,7 @@ const commandFuncs = {
           urlPattern: param.url,
           popupEnabled: POPUP_ENABLED.ENABLE,
           popupPlacement: 'top-start',
+          linkCommandEnabled: LINK_COMMAND_ENABLED.ENABLE,
         })
       }
       await UserSettings.set({

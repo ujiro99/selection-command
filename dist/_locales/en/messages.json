@@ -221,6 +221,9 @@
   "Option_popupEnabled": {
     "message": "Popup Enabled"
   },
+  "Option_linkCommandEnabled": {
+    "message": "Link Preview Enabled"
+  },
   "Option_userStyles": {
     "message": "User Styles"
   },

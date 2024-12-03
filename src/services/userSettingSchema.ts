@@ -59,7 +59,12 @@ export default {
       type: 'array',
       items: {
         type: 'object',
-        required: ['urlPattern', 'popupEnabled', 'popupPlacement'],
+        required: [
+          'urlPattern',
+          'popupEnabled',
+          'popupPlacement',
+          'linkCommandEnabled',
+        ],
         additionalProperties: false,
         properties: {
           urlPattern: {

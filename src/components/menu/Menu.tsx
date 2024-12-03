@@ -31,7 +31,7 @@ export function Menu(): JSX.Element {
   const [hoverTrigger, setHoverTrigger] = useState('')
   const [hoverContent, setHoverContent] = useState('')
   const { settings } = useSetting()
-  const commands = settings.commands.filter((c) => isMenuCommand(c))
+  const commands = settings.commands.filter(isMenuCommand)
   const folders = settings.folders
   const isHorizontal = settings.style === STYLE.HORIZONTAL
   const isBottom = settings.popupPlacement.startsWith('bottom')

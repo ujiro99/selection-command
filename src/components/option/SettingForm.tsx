@@ -365,6 +365,7 @@ export function SettingFrom() {
         urlPattern: { 'ui:title': t('urlPattern') },
         popupEnabled: { 'ui:title': t('popupEnabled') },
         popupPlacement: { 'ui:title': t('popupPlacement') },
+        linkCommandEnabled: { 'ui:title': t('linkCommandEnabled') },
       },
     },
     userStyles: {
