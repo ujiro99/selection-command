@@ -172,6 +172,7 @@ const openPopups = async (param: openPopupsProps): Promise<number[]> => {
     w.tabs?.forEach((t) => t.id && tabIds.push(t.id))
     return tabIds
   }, [] as number[])
+  updateRules(tabIds)
 
   return tabIds
 }
@@ -447,7 +448,7 @@ chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((details) => {
   console.debug(details)
 })
 
-const updateRules = async () => {
+const updateRules = async (tabIds: number[]) => {
   const oldRules = await chrome.declarativeNetRequest.getSessionRules()
   const oldRuleIds = oldRules.map((rule) => rule.id)
   chrome.declarativeNetRequest.updateSessionRules({
@@ -471,7 +472,7 @@ const updateRules = async () => {
           ],
         },
         condition: {
-          urlFilter: '*',
+          tabIds,
           resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
           responseHeaders: [
             {
@@ -503,7 +504,7 @@ const updateRules = async () => {
           ],
         },
         condition: {
-          urlFilter: '*',
+          tabIds,
           resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
           responseHeaders: [
             {
@@ -531,7 +532,7 @@ const updateRules = async () => {
           ],
         },
         condition: {
-          urlFilter: '*',
+          tabIds,
           resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
           responseHeaders: [
             {
@@ -544,4 +545,3 @@ const updateRules = async () => {
     ],
   })
 }
-updateRules()
