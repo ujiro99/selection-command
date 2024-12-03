@@ -3,13 +3,12 @@ import { getScreenSize, toUrl } from '@/services/util'
 import { POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
 
-export const Popup = {
+export const Window = {
   async execute({ selectionText, command, position }: ExecProps) {
     if (position) {
       const urls = [
         toUrl(command.searchUrl, selectionText, command.spaceEncoding),
       ]
-      console.debug('open popup', position.x, position.y, urls)
       Ipc.send(BgCommand.openPopups, {
         commandId: command.id,
         urls: urls,
@@ -18,7 +17,7 @@ export const Popup = {
         height: command.popupOption?.height,
         width: command.popupOption?.width,
         screen: getScreenSize(),
-        type: POPUP_TYPE.POPUP,
+        type: POPUP_TYPE.NORMAL,
       })
     }
   },

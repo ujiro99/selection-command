@@ -4,6 +4,7 @@ import {
   LINK_COMMAND_ENABLED,
   POPUP_ENABLED,
   POPUP_OFFSET,
+  POPUP_TYPE,
 } from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
@@ -71,6 +72,7 @@ export type openPopupsProps = {
   width: number
   height: number
   screen: ScreenSize
+  type: POPUP_TYPE
 }
 
 export type openPopupAndClickProps = openPopupsProps & {
@@ -121,6 +123,7 @@ async function getCurrentTab() {
 const openPopups = async (param: openPopupsProps): Promise<number[]> => {
   const { top, left, width, height, screen } = param
   const current = await chrome.windows.getCurrent()
+  const type = param.type ?? POPUP_TYPE.POPUP
   const windows = await Promise.all(
     param.urls.reverse().map((url, idx) => {
       let t = top + POPUP_OFFSET * idx
@@ -146,21 +149,22 @@ const openPopups = async (param: openPopupsProps): Promise<number[]> => {
         height: height,
         top: t,
         left: l,
-        type: 'popup',
+        type: type,
         incognito: current.incognito,
       })
     }),
   )
   if (windows?.length > 0) {
-    const layer = windows.map((w) => ({
-      id: w.id,
-      commandId: param.commandId,
-      srcWindowId: current.id,
-    })) as WindowLayer
+    const layer = windows
+      .filter((w) => w.type === POPUP_TYPE.POPUP) // Don't add normal window to stack
+      .map((w) => ({
+        id: w.id,
+        commandId: param.commandId,
+        srcWindowId: current.id,
+      })) as WindowLayer
     const data = BgData.get()
     data.windowStack.push(layer)
-
-    console.log('openPopups', data)
+    console.debug('openPopups', data)
     BgData.set(data)
   }
 

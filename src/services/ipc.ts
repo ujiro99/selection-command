@@ -1,4 +1,4 @@
-import { Storage, STORAGE_KEY, ChangedCallback } from './storage'
+import { Storage, STORAGE_KEY } from './storage'
 
 export enum BgCommand {
   openPopups = 'openPopups',

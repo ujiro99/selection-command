@@ -143,6 +143,9 @@
   "Option_openMode_popup": {
     "message": "Popup"
   },
+  "Option_openMode_window": {
+    "message": "Window"
+  },
   "Option_openMode_tab": {
     "message": "Tab"
   },

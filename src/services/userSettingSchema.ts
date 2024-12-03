@@ -1,4 +1,4 @@
-import { COMMAND_MAX } from '@/const'
+import { COMMAND_MAX, OPEN_MODE } from '@/const'
 
 export default {
   title: 'UserSettingSchema',
@@ -198,7 +198,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['popup'],
+                  enum: [OPEN_MODE.POPUP],
                 },
                 openModeSecondary: {
                   $id: '#/commands/openModeSecondary_popup',
@@ -221,7 +221,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['tab'],
+                  enum: [OPEN_MODE.TAB],
                 },
                 openModeSecondary: {
                   $id: '#/commands/openModeSecondary_tab',
@@ -241,7 +241,30 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['api'],
+                  enum: [OPEN_MODE.WINDOW],
+                },
+                openModeSecondary: {
+                  $id: '#/commands/openModeSecondary_window',
+                  $ref: '#/definitions/openModeSecondary',
+                  default: 'tab',
+                },
+                searchUrl: {
+                  type: 'string',
+                },
+                spaceEncoding: {
+                  $id: '#/commands/spaceEncoding_window',
+                  $ref: '#/definitions/spaceEncoding',
+                },
+                popupOption: {
+                  $ref: '#/definitions/popupOption',
+                },
+              },
+              required: ['searchUrl', 'popupOption'],
+            },
+            {
+              properties: {
+                openMode: {
+                  enum: [OPEN_MODE.API],
                 },
                 searchUrl: {
                   type: 'string',
@@ -262,7 +285,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['linkPopup'],
+                  enum: [OPEN_MODE.LINK_POPUP],
                 },
                 title: {
                   type: 'string',
@@ -278,7 +301,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['copy'],
+                  enum: [OPEN_MODE.COPY],
                 },
                 copyOption: {
                   $id: '#/commands/copyOption',
@@ -301,7 +324,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['getTextStyles'],
+                  enum: [OPEN_MODE.GET_TEXT_STYLES],
                 },
                 title: {
                   type: 'string',
@@ -373,7 +396,7 @@ export default {
     },
     openModeSecondary: {
       type: 'string',
-      enum: ['popup', 'tab'],
+      enum: [OPEN_MODE.POPUP, OPEN_MODE.WINDOW, OPEN_MODE.TAB],
     },
     startupMethodEnum: {
       type: 'string',

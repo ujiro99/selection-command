@@ -3,6 +3,7 @@ export const VERSION = process.env.VERSION
 
 export enum OPEN_MODE {
   POPUP = 'popup',
+  WINDOW = 'window',
   TAB = 'tab',
   API = 'api',
   LINK_POPUP = 'linkPopup',
@@ -21,6 +22,11 @@ export enum STARTUP_METHOD {
   CONTEXT_MENU = 'contextMenu',
   KEYBOARD = 'keyboard',
   LEFT_CLICK_HOLD = 'leftClickHold',
+}
+
+export enum POPUP_TYPE {
+  NORMAL = 'normal',
+  POPUP = 'popup',
 }
 
 export enum KEYBOARD {

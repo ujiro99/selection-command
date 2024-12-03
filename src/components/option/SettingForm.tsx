@@ -153,11 +153,14 @@ export function SettingFrom() {
 
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
     const data = arg.formData as UserSettingsType
-    // Remove unnecessary fields when openMode is not popup or tab.
+    // Remove unnecessary fields when openMode is not popup or tab or window.
     if (id?.endsWith('openMode')) {
       data.commands
         .filter(
-          (c) => c.openMode !== OPEN_MODE.POPUP && c.openMode !== OPEN_MODE.TAB,
+          (c) =>
+            c.openMode !== OPEN_MODE.POPUP &&
+            c.openMode !== OPEN_MODE.WINDOW &&
+            c.openMode !== OPEN_MODE.TAB,
         )
         .map((c) => {
           delete c.openModeSecondary
@@ -167,6 +170,7 @@ export function SettingFrom() {
         .filter(
           (c) =>
             c.openMode !== OPEN_MODE.POPUP &&
+            c.openMode !== OPEN_MODE.WINDOW &&
             c.openMode !== OPEN_MODE.LINK_POPUP,
         )
         .map((c) => {
@@ -232,7 +236,7 @@ export function SettingFrom() {
     '#/styleVariable': UserStyleField,
     ArraySchemaField: CustomArraySchemaField,
   }
-  for (const type of ['popup', 'tab']) {
+  for (const type of [OPEN_MODE.POPUP, OPEN_MODE.WINDOW, OPEN_MODE.TAB]) {
     fields[`#/commands/openModeSecondary_${type}`] = SelectField
     fields[`#/commands/spaceEncoding_${type}`] = SelectField
   }
