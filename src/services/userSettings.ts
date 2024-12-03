@@ -38,24 +38,23 @@ Storage.addCommandListener(async (commands: Command[]) => {
 
 export const UserSettings = {
   get: async (excludeOptions = false): Promise<UserSettingsType> => {
-    let obj = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
-
-    obj = migrate(obj)
-
+    let data = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
     const commands = await Storage.getCommands()
     if (commands.length > 0) {
-      obj.commands = commands
+      data.commands = commands
     }
 
-    obj.folders = obj.folders.filter((folder) => !!folder.title)
+    data = migrate(data)
+
+    data.folders = data.folders.filter((folder) => !!folder.title)
     if (!excludeOptions) {
       // Remove once to avoid duplication.
-      removeOptionSettings(obj)
+      removeOptionSettings(data)
       // Add option settings
-      obj.commands.push(...OptionSettings.commands)
-      obj.folders.push(OptionSettings.folder)
+      data.commands.push(...OptionSettings.commands)
+      data.folders.push(OptionSettings.folder)
     }
-    return obj
+    return data
   },
 
   set: async (data: UserSettingsType): Promise<boolean> => {
@@ -91,9 +90,9 @@ export const UserSettings = {
     }
 
     // Restore a link command if not exists.
-    const linkCommands = data.commands.filter((c) => isLinkCommand(c))
+    const linkCommands = data.commands.filter(isLinkCommand)
     if (linkCommands.length === 0) {
-      const defaultLinkCommand = DefaultCommands.find((c) => isLinkCommand(c))
+      const defaultLinkCommand = DefaultCommands.find(isLinkCommand)
       if (defaultLinkCommand != null) {
         data.commands.push(defaultLinkCommand)
       }
@@ -157,8 +156,11 @@ export const migrate = (data: UserSettingsType): UserSettingsType => {
     data = migrate073(data)
   }
   if (versionDiff(data.settingVersion, '0.8.2') === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = migrate082(data)
+  }
+  if (versionDiff(data.settingVersion, '0.10.0') === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate0_10_0(data)
   }
   return data
 }
@@ -181,5 +183,18 @@ const migrate082 = (data: UserSettingsType): UserSettingsType => {
     }
     return c
   })
+  return data
+}
+
+const migrate0_10_0 = (data: UserSettingsType): UserSettingsType => {
+  // Add a link command if not exists.
+  const linkCommands = data.commands.filter(isLinkCommand)
+  if (linkCommands.length === 0) {
+    const defaultLinkCommand = DefaultCommands.find(isLinkCommand)
+    if (defaultLinkCommand != null) {
+      data.commands.push(defaultLinkCommand)
+      console.debug('migrate 0.10.0 link command')
+    }
+  }
   return data
 }

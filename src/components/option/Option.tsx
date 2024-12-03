@@ -40,7 +40,6 @@ const fetchIconUrl = async (url: string): Promise<string> => {
     chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       if (tabId === w.tabs?.[0].id && changeInfo.status === 'complete') {
         clearTimeout(timeoutId)
-        chrome.windows.remove(w.id as number)
         if (tab.favIconUrl) {
           resolve(tab.favIconUrl)
         } else {
@@ -55,6 +54,7 @@ const fetchIconUrl = async (url: string): Promise<string> => {
             reject()
           }
         }
+        chrome.windows.remove(w.id as number)
       }
     })
     w = await chrome.windows.create({
