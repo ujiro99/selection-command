@@ -17,11 +17,13 @@ import {
 } from '@/components/option/UserStyleField'
 import {
   OPEN_MODE,
+  DRAG_OPEN_MODE,
   OPTION_MSG,
   STARTUP_METHOD,
   KEYBOARD,
   STYLE_VARIABLE,
 } from '@/const'
+
 import type { UserSettingsType, FolderOption } from '@/types'
 import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
@@ -42,6 +44,7 @@ type Translation = {
 type StartupMethodMap = Record<STARTUP_METHOD, { [key: string]: string }>
 type KeyboardMap = Record<KEYBOARD, { [key: string]: string }>
 type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
+type DragOpenModeMap = Record<DRAG_OPEN_MODE, { [key: string]: string }>
 
 const toKey = (str: string) => {
   return str.replace(/-/g, '_')
@@ -224,8 +227,6 @@ export function SettingFrom() {
     '#/startupMethod/param/leftClickHold': InputNumberField,
     '#/popupPlacement': SelectField,
     '#/style': SelectField,
-    '#/linkCommand/threshold': InputNumberField,
-    '#/linkCommand/showIndicator': CheckboxField,
     '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
     '#/commands/fetchOptions': FetchOptionField,
     '#/commands/openMode': SelectField,
@@ -233,6 +234,9 @@ export function SettingFrom() {
     '#/commands/parentFolderId': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': CheckboxField,
+    '#/linkCommand/openMode': SelectField,
+    '#/linkCommand/threshold': InputNumberField,
+    '#/linkCommand/showIndicator': CheckboxField,
     '#/styleVariable': UserStyleField,
     ArraySchemaField: CustomArraySchemaField,
   }
@@ -335,7 +339,12 @@ export function SettingFrom() {
     linkCommand: {
       'ui:title': t('linkCommand'),
       'ui:description': t('linkCommand_desc'),
-      'ui:order': ['threshold', 'showIndicator'],
+      'ui:order': ['openMode', 'threshold', 'showIndicator'],
+      openMode: {
+        'ui:title': t('openMode'),
+        'ui:classNames': 'linkCommandOpenMode',
+        enum: {} as DragOpenModeMap,
+      },
       threshold: {
         'ui:title': t('threshold'),
         'ui:description': t('threshold_desc'),
@@ -447,6 +456,15 @@ export function SettingFrom() {
   }
   userSettingSchema.definitions.openMode.enum = modes
   uiSchema.commands.items.openMode.enum = modeMap
+
+  // Add linkCommand's openMode to uiSchema.
+  const dragOpenModeMap = {} as DragOpenModeMap
+  for (const mode of Object.values(DRAG_OPEN_MODE)) {
+    dragOpenModeMap[mode] = {
+      'ui:title': t(`openMode_${mode}`),
+    }
+  }
+  uiSchema.linkCommand.openMode.enum = dragOpenModeMap
 
   // Add userStyles to schema and uiSchema.
   const sv = Object.values(STYLE_VARIABLE)

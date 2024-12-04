@@ -149,7 +149,7 @@ const openPopups = async (param: openPopupsProps): Promise<number[]> => {
         height: height,
         top: t,
         left: l,
-        type: type,
+        type,
         incognito: current.incognito,
       })
     }),

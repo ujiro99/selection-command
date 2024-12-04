@@ -161,6 +161,12 @@
   "Option_openMode_getTextStyles": {
     "message": "テキストのスタイル取得"
   },
+  "Option_openMode_previewPopup": {
+    "message": "Popup"
+  },
+  "Option_openMode_previewWindow": {
+    "message": "Window"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"
   },

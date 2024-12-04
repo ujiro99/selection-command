@@ -15,6 +15,7 @@ export enum OPEN_MODE {
 
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = 'previewPopup',
+  PREVIEW_WINDOW = 'previewWindow',
 }
 
 export enum STARTUP_METHOD {

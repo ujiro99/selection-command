@@ -1,4 +1,4 @@
-import { COMMAND_MAX, OPEN_MODE } from '@/const'
+import { COMMAND_MAX, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
 
 export default {
   title: 'UserSettingSchema',
@@ -29,9 +29,16 @@ export default {
     },
     linkCommand: {
       type: 'object',
-      required: ['threshold', 'showIndicator'],
+      required: ['openMode', 'threshold', 'showIndicator'],
       additionalProperties: false,
       properties: {
+        openMode: {
+          name: 'OpenMode',
+          $id: '#/linkCommand/openMode',
+          type: 'string',
+          enum: [DRAG_OPEN_MODE.PREVIEW_POPUP, DRAG_OPEN_MODE.PREVIEW_WINDOW],
+          default: DRAG_OPEN_MODE.PREVIEW_POPUP,
+        },
         threshold: {
           name: 'Threshold',
           $id: '#/linkCommand/threshold',

@@ -52,6 +52,10 @@ export type DragOption = {
   showIndicator: boolean
 }
 
+type LinkCommandSettings = DragOption & {
+  openMode: DRAG_OPEN_MODE
+}
+
 export type FolderOption = {
   id: string
   name: string
@@ -98,7 +102,7 @@ export type UserSettingsType = {
   startupMethod: StartupMethod
   popupPlacement: Placement
   commands: Array<Command>
-  linkCommand: DragOption
+  linkCommand: LinkCommandSettings
   folders: Array<CommandFolder>
   pageRules: Array<PageRule>
   style: STYLE

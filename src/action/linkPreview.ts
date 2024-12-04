@@ -5,6 +5,7 @@ import {
   findClickableElement,
   getSelectorFromElement,
 } from '@/services/util'
+import { DRAG_OPEN_MODE, POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
 
 export const LinkPreview = {
@@ -12,6 +13,12 @@ export const LinkPreview = {
     if (position && target) {
       const elm = findAnchorElement(target) as HTMLAnchorElement
       const href = elm?.href
+
+      const type =
+        command.openMode === DRAG_OPEN_MODE.PREVIEW_POPUP
+          ? POPUP_TYPE.POPUP
+          : POPUP_TYPE.NORMAL
+
       if (href != null) {
         Ipc.send(BgCommand.openPopups, {
           commandId: command.id,
@@ -21,6 +28,7 @@ export const LinkPreview = {
           height: command.popupOption?.height,
           width: command.popupOption?.width,
           screen: getScreenSize(),
+          type,
         })
         return
       } else {
@@ -39,6 +47,7 @@ export const LinkPreview = {
           width: command.popupOption?.width,
           screen: getScreenSize(),
           selector,
+          type,
         })
         return
       }
