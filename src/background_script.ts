@@ -413,7 +413,6 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     }
   }
 
-  console.log('onFocusChanged', data)
   BgData.set(data)
 })
 
@@ -443,10 +442,6 @@ if (isDebug) {
     },
   })
 }
-
-chrome.declarativeNetRequest.onRuleMatchedDebug.addListener((details) => {
-  console.debug(details)
-})
 
 const updateRules = async (tabIds: number[]) => {
   const oldRules = await chrome.declarativeNetRequest.getSessionRules()
