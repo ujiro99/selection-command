@@ -83,7 +83,7 @@ export function ImportExport() {
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
       ;(async () => {
-        const data = migrate(importJson)
+        const data = await migrate(importJson)
         await UserSettings.set(data)
         location.reload()
       })()
