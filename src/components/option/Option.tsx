@@ -191,17 +191,17 @@ export function Option() {
         </LoadingIcon>
       </CSSTransition>
 
-      <div className={css.menuContainer}>
-        <TableOfContents onClick={onClickMenu} />
-        <ImportExport />
-      </div>
-
       <div className={css.preview} ref={setPreviewElm}>
         <Popup
           positionElm={previewElm}
           selectionText="preview"
           isPreview={true}
         />
+      </div>
+
+      <div className={css.menuContainer}>
+        <TableOfContents onClick={onClickMenu} />
+        <ImportExport />
       </div>
 
       <header className={css.titleHeader}>
