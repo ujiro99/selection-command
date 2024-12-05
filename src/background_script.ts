@@ -30,9 +30,11 @@ class BgData {
   private static instance: BgData
 
   public windowStack: WindowLayer[]
+  public normalWindows: WindowLayer
 
   private constructor() {
     this.windowStack = []
+    this.normalWindows = []
 
     Storage.get<BgData>(STORAGE_KEY.BG, STORAGE_AREA.LOCAL).then(
       (val: BgData) => {
@@ -155,16 +157,17 @@ const openPopups = async (param: openPopupsProps): Promise<number[]> => {
     }),
   )
   if (windows?.length > 0) {
-    const layer = windows
-      .filter((w) => w.type === POPUP_TYPE.POPUP) // Don't add normal window to stack
-      .map((w) => ({
-        id: w.id,
-        commandId: param.commandId,
-        srcWindowId: current.id,
-      })) as WindowLayer
+    const layer = windows.map((w) => ({
+      id: w.id,
+      commandId: param.commandId,
+      srcWindowId: current.id,
+    })) as WindowLayer
     const data = BgData.get()
-    data.windowStack.push(layer)
-    console.debug('openPopups', data)
+    if (type === POPUP_TYPE.POPUP) {
+      data.windowStack.push(layer)
+    } else {
+      data.normalWindows = layer
+    }
     BgData.set(data)
   }
 
@@ -416,9 +419,19 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   BgData.set(data)
 })
 
+chrome.windows.onRemoved.addListener((windowId: number) => {
+  const data = BgData.get()
+  const idx = data.normalWindows.findIndex((w) => w.id === windowId)
+  if (idx >= 0) {
+    data.normalWindows.splice(idx, 1)
+    BgData.set(data)
+    return
+  }
+})
+
 chrome.windows.onBoundsChanged.addListener((window) => {
   const data = BgData.get()
-  for (const layer of data.windowStack) {
+  for (const layer of [...data.windowStack, data.normalWindows]) {
     const w = layer.find((v) => v.id === window.id)
     if (w) {
       if (w.id === window.id && window.width && window.height) {
