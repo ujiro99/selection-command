@@ -1,4 +1,5 @@
 import { COMMAND_MAX, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
+import { PopupOption } from '@/services/defaultUserSettings'
 
 export default {
   title: 'UserSettingSchema',
@@ -380,11 +381,11 @@ export default {
       properties: {
         width: {
           type: 'number',
-          default: 600,
+          default: PopupOption.width,
         },
         height: {
           type: 'number',
-          default: 700,
+          default: PopupOption.height,
         },
       },
     },

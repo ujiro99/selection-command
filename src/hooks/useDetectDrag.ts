@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { MOUSE, LINK_COMMAND_ENABLED } from '@/const'
-import { Point } from '@/types'
+import { Point, DragOption } from '@/types'
 import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
+import { DefaultCommands, PopupOption } from '@/services/defaultUserSettings'
 import {
   isPopup,
   isAnchorElement,
@@ -21,6 +22,9 @@ const isTargetEvent = (e: MouseEvent): boolean => {
   )
 }
 
+const Default = DefaultCommands.find(isLinkCommand)
+  ?.linkCommandOption as DragOption
+
 export function useDetectDrag() {
   const [startPosition, setStartPosition] = useState<Point | null>()
   const [mousePosition, setMousePosition] = useState<Point | null>()
@@ -29,12 +33,13 @@ export function useDetectDrag() {
   const [activate, setActivate] = useState(false)
   const [progress, setProgress] = useState(0)
   const { settings, pageRule } = useSetting()
-  const command = settings.commands.find((c) => isLinkCommand(c))
-  const showIndicator = command?.linkCommandOption.showIndicator ?? true
+  const playPixel = 20
   const commandEnabled =
     pageRule?.linkCommandEnabled !== LINK_COMMAND_ENABLED.DISABLE
-  const playPixel = 20
-  const threshold = command?.linkCommandOption.threshold ?? 150
+  const command = settings.commands.find(isLinkCommand)
+  const showIndicator =
+    command?.linkCommandOption.showIndicator ?? Default.showIndicator
+  const threshold = command?.linkCommandOption.threshold ?? Default.threshold
 
   const onChangeState = (state: ExecState, message?: string) => {
     console.debug({ state, message })
@@ -58,7 +63,6 @@ export function useDetectDrag() {
         Math.pow(current.x - startPosition.x, 2) +
           Math.pow(current.y - startPosition.y, 2),
       )
-
       setMousePosition(current)
       setIsDetecting(showIndicator && distance > playPixel)
       setActivate(distance > threshold)
@@ -69,20 +73,12 @@ export function useDetectDrag() {
       if (e.button !== MOUSE.LEFT) return
       if (startPosition == null) return
       if (activate && command) {
+        const h = command.popupOption?.height ?? PopupOption.height
+        const w = command.popupOption?.width ?? PopupOption.width
         const screen = getScreenSize()
         const position = { x: e.screenX, y: e.screenY - 50 }
-        if (
-          command.popupOption &&
-          command.popupOption.height + position.y - screen.top > screen.height
-        ) {
-          position.y = screen.height - command.popupOption.height + screen.top
-        }
-        if (
-          command.popupOption &&
-          command.popupOption.width + position.x - screen.left > screen.width
-        ) {
-          position.x = screen.width - command.popupOption.width + screen.left
-        }
+        position.x = Math.min(position.x, screen.width - w + screen.left)
+        position.y = Math.min(position.y, screen.height - h + screen.top - 60)
         LinkPreview.execute({
           selectionText: '',
           command,
