@@ -15,7 +15,7 @@ import css from './Menu.module.css'
 import folderCss from './MenuFolder.module.css'
 import type { Command, CommandFolder } from '@/types'
 import { useSetting } from '@/hooks/useSetting'
-import { onHover } from '@/services/util'
+import { onHover, isMenuCommand } from '@/services/util'
 
 type ItemObj = {
   folder: CommandFolder
@@ -31,7 +31,7 @@ export function Menu(): JSX.Element {
   const [hoverTrigger, setHoverTrigger] = useState('')
   const [hoverContent, setHoverContent] = useState('')
   const { settings } = useSetting()
-  const commands = settings.commands
+  const commands = settings.commands.filter(isMenuCommand)
   const folders = settings.folders
   const isHorizontal = settings.style === STYLE.HORIZONTAL
   const isBottom = settings.popupPlacement.startsWith('bottom')

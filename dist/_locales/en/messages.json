@@ -143,6 +143,9 @@
   "Option_openMode_popup": {
     "message": "Popup"
   },
+  "Option_openMode_window": {
+    "message": "Window"
+  },
   "Option_openMode_tab": {
     "message": "Tab"
   },
@@ -157,6 +160,12 @@
   },
   "Option_openMode_getTextStyles": {
     "message": "Get text styles"
+  },
+  "Option_openMode_previewPopup": {
+    "message": "Popup"
+  },
+  "Option_openMode_previewWindow": {
+    "message": "Window"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Click"
@@ -178,6 +187,24 @@
   },
   "Option_variables": {
     "message": "Fetch Variables"
+  },
+  "Option_linkCommand": {
+    "message": "Link Preview"
+  },
+  "Option_linkCommand_desc": {
+    "message": "When you drag a link, a pop-up preview is displayed."
+  },
+  "Option_threshold": {
+    "message": "Drag distance"
+  },
+  "Option_threshold_desc": {
+    "message": "Drag distance to display[px]"
+  },
+  "Option_showIndicator": {
+    "message": "Display the indicator "
+  },
+  "Option_showIndicator_desc": {
+    "message": "Displays the remaining to the preview."
   },
   "Option_folders": {
     "message": "Folders"
@@ -202,6 +229,9 @@
   },
   "Option_popupEnabled": {
     "message": "Popup Enabled"
+  },
+  "Option_linkCommandEnabled": {
+    "message": "Link Preview Enabled"
   },
   "Option_userStyles": {
     "message": "User Styles"

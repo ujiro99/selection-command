@@ -1,0 +1,13 @@
+.container {
+  position: relative;
+  display: inline-block;
+  transform: rotate(-90deg);
+}
+
+.circle {
+  fill: none;
+}
+
+.progress {
+  fill: none;
+}

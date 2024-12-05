@@ -16,6 +16,10 @@ const emptySettings: UserSettingsType = {
   pageRules: [],
   style: STYLE.HORIZONTAL,
   popupPlacement: 'top',
+  linkCommand: {
+    threshold: 150,
+    showIndicator: true,
+  },
   userStyles: [],
   startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },
 }

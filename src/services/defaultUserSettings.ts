@@ -1,10 +1,20 @@
 import { UserSettingsType, Command } from '@/types'
-import { VERSION, OPEN_MODE, STARTUP_METHOD, STYLE } from '@/const'
-import DefaultSchema from '@/services/userSettingSchema'
+import {
+  VERSION,
+  OPEN_MODE,
+  DRAG_OPEN_MODE,
+  STARTUP_METHOD,
+  STYLE,
+} from '@/const'
 
 export default {
   settingVersion: VERSION,
   commands: [],
+  linkCommand: {
+    openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
+    threshold: 150,
+    showIndicator: true,
+  },
   folders: [
     {
       title: 'Search',
@@ -36,7 +46,26 @@ export default {
   userStyles: [],
 } as UserSettingsType
 
+export const PopupOption = {
+  width: 600,
+  height: 700,
+}
+
 export const DefaultCommands = [
+  {
+    id: '$$drag-1',
+    title: 'Link Preview',
+    searchUrl: '',
+    openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
+    popupOption: {
+      width: PopupOption.width,
+      height: PopupOption.height,
+    },
+    linkCommandOption: {
+      threshold: 150,
+      showIndicator: true,
+    },
+  },
   {
     id: 0,
     iconUrl: 'https://www.google.com/favicon.ico',
@@ -44,8 +73,8 @@ export const DefaultCommands = [
     searchUrl: 'https://google.com/search?q=%s',
     title: 'Google',
     popupOption: {
-      width: DefaultSchema.definitions.popupOption.properties.width.default,
-      height: DefaultSchema.definitions.popupOption.properties.height.default,
+      width: PopupOption.width,
+      height: PopupOption.height,
     },
   },
   {
@@ -56,8 +85,8 @@ export const DefaultCommands = [
     title: 'Google Image',
     parentFolderId: '222d6489-4eca-48fd-8590-fceb30545bab',
     popupOption: {
-      width: DefaultSchema.definitions.popupOption.properties.width.default,
-      height: DefaultSchema.definitions.popupOption.properties.height.default,
+      width: PopupOption.width,
+      height: PopupOption.height,
     },
   },
   {

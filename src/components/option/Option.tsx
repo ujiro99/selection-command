@@ -3,7 +3,13 @@ import { CSSTransition } from 'react-transition-group'
 
 import { UserSettings } from '@/services/userSettings'
 import type { UserSettingsType } from '@/types'
-import { sleep, toUrl, capitalize } from '@/services/util'
+import {
+  sleep,
+  toUrl,
+  capitalize,
+  isMenuCommand,
+  isLinkCommand,
+} from '@/services/util'
 import { t } from '@/services/i18n'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'
 import messages from '@/../dist/_locales/en/messages.json'
@@ -34,7 +40,6 @@ const fetchIconUrl = async (url: string): Promise<string> => {
     chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       if (tabId === w.tabs?.[0].id && changeInfo.status === 'complete') {
         clearTimeout(timeoutId)
-        chrome.windows.remove(w.id as number)
         if (tab.favIconUrl) {
           resolve(tab.favIconUrl)
         } else {
@@ -49,6 +54,7 @@ const fetchIconUrl = async (url: string): Promise<string> => {
             reject()
           }
         }
+        chrome.windows.remove(w.id as number)
       }
     })
     w = await chrome.windows.create({
@@ -81,6 +87,16 @@ export function Option() {
     if (isSaving) return
     try {
       setIsSaving(true)
+      const current = await UserSettings.get(true)
+      const linkCommands = current.commands.filter(isLinkCommand).map((c) => ({
+        ...c,
+        openMode: settings.linkCommand.openMode,
+        linkCommandOption: {
+          threshold: settings.linkCommand.threshold,
+          showIndicator: settings.linkCommand.showIndicator,
+        },
+      }))
+      settings.commands = [...settings.commands, ...linkCommands]
       await UserSettings.set(settings)
       await sleep(1000)
     } catch (e) {
@@ -131,6 +147,18 @@ export function Option() {
   const onLoadIfame = async () => {
     const settings = await UserSettings.get(true)
     const translation = getTranslation()
+
+    // Convert linkCommand option
+    const linkCommands = settings.commands.filter(isLinkCommand)
+    if (linkCommands.length > 0) {
+      const linkCommand = linkCommands[0]
+      settings.linkCommand = {
+        openMode: linkCommand.openMode,
+        ...linkCommand.linkCommandOption,
+      }
+    }
+    settings.commands = settings.commands.filter(isMenuCommand)
+
     sendMessage(OPTION_MSG.START, {
       settings,
       translation,
@@ -163,17 +191,17 @@ export function Option() {
         </LoadingIcon>
       </CSSTransition>
 
-      <div className={css.menuContainer}>
-        <TableOfContents onClick={onClickMenu} />
-        <ImportExport />
-      </div>
-
       <div className={css.preview} ref={setPreviewElm}>
         <Popup
           positionElm={previewElm}
           selectionText="preview"
           isPreview={true}
         />
+      </div>
+
+      <div className={css.menuContainer}>
+        <TableOfContents onClick={onClickMenu} />
+        <ImportExport />
       </div>
 
       <header className={css.titleHeader}>

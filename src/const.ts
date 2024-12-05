@@ -3,6 +3,7 @@ export const VERSION = process.env.VERSION
 
 export enum OPEN_MODE {
   POPUP = 'popup',
+  WINDOW = 'window',
   TAB = 'tab',
   API = 'api',
   LINK_POPUP = 'linkPopup',
@@ -12,11 +13,21 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = 'addPageRule',
 }
 
+export enum DRAG_OPEN_MODE {
+  PREVIEW_POPUP = 'previewPopup',
+  PREVIEW_WINDOW = 'previewWindow',
+}
+
 export enum STARTUP_METHOD {
   TEXT_SELECTION = 'textSelection',
   CONTEXT_MENU = 'contextMenu',
   KEYBOARD = 'keyboard',
   LEFT_CLICK_HOLD = 'leftClickHold',
+}
+
+export enum POPUP_TYPE {
+  NORMAL = 'normal',
+  POPUP = 'popup',
 }
 
 export enum KEYBOARD {
@@ -33,6 +44,11 @@ export enum MOUSE {
 }
 
 export enum POPUP_ENABLED {
+  ENABLE = 'Enable',
+  DISABLE = 'Disable',
+}
+
+export enum LINK_COMMAND_ENABLED {
   ENABLE = 'Enable',
   DISABLE = 'Disable',
 }
@@ -66,6 +82,8 @@ export enum STYLE_VARIABLE {
   POPUP_DELAY = 'popup-delay',
   POPUP_DURATION = 'popup-duration',
 }
+
+export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100
 

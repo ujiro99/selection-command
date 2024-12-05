@@ -143,6 +143,9 @@
   "Option_openMode_popup": {
     "message": "Popup"
   },
+  "Option_openMode_window": {
+    "message": "Window"
+  },
   "Option_openMode_tab": {
     "message": "Tab"
   },
@@ -157,6 +160,12 @@
   },
   "Option_openMode_getTextStyles": {
     "message": "テキストのスタイル取得"
+  },
+  "Option_openMode_previewPopup": {
+    "message": "Popup"
+  },
+  "Option_openMode_previewWindow": {
+    "message": "Window"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"
@@ -178,6 +187,24 @@
   },
   "Option_variables": {
     "message": "Fetch変数"
+  },
+  "Option_linkCommand": {
+    "message": "リンクプレビュー"
+  },
+  "Option_linkCommand_desc": {
+    "message": "リンクをドラッグすると、ポップアップでプレビュー表示します。"
+  },
+  "Option_threshold": {
+    "message": "ドラッグ距離"
+  },
+  "Option_threshold_desc": {
+    "message": "表示するまでの距離[px]"
+  },
+  "Option_showIndicator": {
+    "message": "インジケータの表示"
+  },
+  "Option_showIndicator_desc": {
+    "message": "プレビューまでの残りを表示します。"
   },
   "Option_folders": {
     "message": "フォルダ"
@@ -202,6 +229,9 @@
   },
   "Option_popupEnabled": {
     "message": "ポップアップ有効化"
+  },
+  "Option_linkCommandEnabled": {
+    "message": "リンクプレビュー有効化"
   },
   "Option_userStyles": {
     "message": "ユーザースタイル"

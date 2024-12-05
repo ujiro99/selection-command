@@ -1,4 +1,5 @@
-import { COMMAND_MAX } from '@/const'
+import { COMMAND_MAX, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
+import { PopupOption } from '@/services/defaultUserSettings'
 
 export default {
   title: 'UserSettingSchema',
@@ -27,6 +28,35 @@ export default {
         $ref: '#/definitions/command',
       },
     },
+    linkCommand: {
+      type: 'object',
+      required: ['openMode', 'threshold', 'showIndicator'],
+      additionalProperties: false,
+      properties: {
+        openMode: {
+          name: 'OpenMode',
+          $id: '#/linkCommand/openMode',
+          type: 'string',
+          enum: [DRAG_OPEN_MODE.PREVIEW_POPUP, DRAG_OPEN_MODE.PREVIEW_WINDOW],
+          default: DRAG_OPEN_MODE.PREVIEW_POPUP,
+        },
+        threshold: {
+          name: 'Threshold',
+          $id: '#/linkCommand/threshold',
+          type: 'number',
+          default: 150,
+          minimum: 50,
+          maximum: 400,
+          step: 10,
+        },
+        showIndicator: {
+          name: 'ShowIndicator',
+          $id: '#/linkCommand/showIndicator',
+          type: 'boolean',
+          default: true,
+        },
+      },
+    },
     folders: {
       type: 'array',
       items: {
@@ -37,7 +67,12 @@ export default {
       type: 'array',
       items: {
         type: 'object',
-        required: ['urlPattern', 'popupEnabled', 'popupPlacement'],
+        required: [
+          'urlPattern',
+          'popupEnabled',
+          'popupPlacement',
+          'linkCommandEnabled',
+        ],
         additionalProperties: false,
         properties: {
           urlPattern: {
@@ -50,6 +85,11 @@ export default {
           },
           popupPlacement: {
             $ref: '#/definitions/popupPlacement',
+          },
+          linkCommandEnabled: {
+            type: 'string',
+            enum: ['Enable', 'Disable'],
+            default: 'Enable',
           },
         },
       },
@@ -166,7 +206,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['popup'],
+                  enum: [OPEN_MODE.POPUP],
                 },
                 openModeSecondary: {
                   $id: '#/commands/openModeSecondary_popup',
@@ -189,7 +229,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['tab'],
+                  enum: [OPEN_MODE.TAB],
                 },
                 openModeSecondary: {
                   $id: '#/commands/openModeSecondary_tab',
@@ -209,7 +249,30 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['api'],
+                  enum: [OPEN_MODE.WINDOW],
+                },
+                openModeSecondary: {
+                  $id: '#/commands/openModeSecondary_window',
+                  $ref: '#/definitions/openModeSecondary',
+                  default: 'tab',
+                },
+                searchUrl: {
+                  type: 'string',
+                },
+                spaceEncoding: {
+                  $id: '#/commands/spaceEncoding_window',
+                  $ref: '#/definitions/spaceEncoding',
+                },
+                popupOption: {
+                  $ref: '#/definitions/popupOption',
+                },
+              },
+              required: ['searchUrl', 'popupOption'],
+            },
+            {
+              properties: {
+                openMode: {
+                  enum: [OPEN_MODE.API],
                 },
                 searchUrl: {
                   type: 'string',
@@ -230,7 +293,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['linkPopup'],
+                  enum: [OPEN_MODE.LINK_POPUP],
                 },
                 title: {
                   type: 'string',
@@ -246,7 +309,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['copy'],
+                  enum: [OPEN_MODE.COPY],
                 },
                 copyOption: {
                   $id: '#/commands/copyOption',
@@ -269,7 +332,7 @@ export default {
             {
               properties: {
                 openMode: {
-                  enum: ['getTextStyles'],
+                  enum: [OPEN_MODE.GET_TEXT_STYLES],
                 },
                 title: {
                   type: 'string',
@@ -318,11 +381,11 @@ export default {
       properties: {
         width: {
           type: 'number',
-          default: 600,
+          default: PopupOption.width,
         },
         height: {
           type: 'number',
-          default: 700,
+          default: PopupOption.height,
         },
       },
     },
@@ -341,7 +404,7 @@ export default {
     },
     openModeSecondary: {
       type: 'string',
-      enum: ['popup', 'tab'],
+      enum: [OPEN_MODE.POPUP, OPEN_MODE.WINDOW, OPEN_MODE.TAB],
     },
     startupMethodEnum: {
       type: 'string',

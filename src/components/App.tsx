@@ -1,22 +1,25 @@
 import React, { useState, useEffect, createContext } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
+import { DragDetector } from './DragDetector'
 import { OpenInTab } from '@/components/OpenInTab'
 import { getSelectionText } from '@/services/util'
+import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 
 import './App.css'
 
 type ContextType = {
   selectionText: string
-  target: Element | undefined
-  setTarget: (elm: Element | undefined) => void
+  target: Element | null
+  setTarget: (elm: Element | null) => void
 }
 
 export const context = createContext<ContextType>({} as ContextType)
 
 export function App() {
+  useTabCommandReceiver()
   const [positionElm, setPositionElm] = useState<Element | null>(null)
-  const [target, setTarget] = useState<Element>()
+  const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
   const [selectionText, setSelectionText] = useState('')
 
@@ -40,6 +43,7 @@ export function App() {
         selectionText={selectionText}
         onHover={(v: boolean) => setIsHover(v)}
       />
+      <DragDetector />
       <OpenInTab />
     </context.Provider>
   )

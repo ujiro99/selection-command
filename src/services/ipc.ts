@@ -1,5 +1,8 @@
+import { Storage, STORAGE_KEY } from './storage'
+
 export enum BgCommand {
   openPopups = 'openPopups',
+  openPopupAndClick = 'openPopupAndClick',
   openTab = 'openTab',
   openOption = 'openOption',
   addPageRule = 'addPageRule',
@@ -10,7 +13,13 @@ export enum BgCommand {
 
 export enum TabCommand {
   executeAction = 'executeAction',
+  clickElement = 'clickElement',
   closeMenu = 'closeMenu',
+  getTabId = 'getTabId',
+}
+
+export type ClickElementProps = {
+  selector: string
 }
 
 type IpcCommand = BgCommand | TabCommand
@@ -20,6 +29,12 @@ type Request = {
   param: unknown
 }
 
+export type Message = Request & {
+  tabId: number
+}
+
+export type MessageQueueCallback = (newMessage: Message) => void
+
 export type IpcCallback = (
   param: unknown,
   sender: chrome.runtime.MessageSender,
@@ -27,6 +42,20 @@ export type IpcCallback = (
 ) => boolean
 
 export const Ipc = {
+  init() {
+    Storage.addListener(STORAGE_KEY.MESSAGE_QUEUE, (newQueue) => {
+      for (const [tabId, listener] of Object.entries(Ipc.msgQueuelisteners)) {
+        const msgs = (newQueue as Message[]).filter(
+          (m) => m.tabId === Number(tabId),
+        )
+        msgs.forEach((m) => listener(m))
+        newQueue = (newQueue as Message[]).filter(
+          (m) => m.tabId !== Number(tabId),
+        )
+      }
+    })
+  },
+
   async send(command: IpcCommand, param?: unknown) {
     return await chrome.runtime.sendMessage({ command, param })
   },
@@ -78,4 +107,36 @@ export const Ipc = {
     const listener = Ipc.listeners[command]
     chrome.runtime.onMessage.removeListener(listener)
   },
+
+  async getTabId() {
+    return Ipc.send(TabCommand.getTabId)
+  },
+
+  async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {
+    const queue = await Storage.get<Message[]>(STORAGE_KEY.MESSAGE_QUEUE)
+    queue.push({ tabId, command, param })
+    return Storage.set(STORAGE_KEY.MESSAGE_QUEUE, queue)
+  },
+
+  async recvQueue(tabId: number) {
+    const queue = await Storage.get<Message[]>(STORAGE_KEY.MESSAGE_QUEUE)
+    const msgs = queue.filter((m) => m.tabId === tabId)
+    await Storage.set(
+      STORAGE_KEY.MESSAGE_QUEUE,
+      queue.filter((m) => m.tabId !== tabId),
+    )
+    return msgs
+  },
+
+  msgQueuelisteners: {} as { [tabId: number]: MessageQueueCallback },
+
+  addQueueListener(tabId: number, callback: MessageQueueCallback) {
+    Ipc.msgQueuelisteners[tabId] = callback
+  },
+
+  removeQueueListener(tabId: number) {
+    delete Ipc.msgQueuelisteners[tabId]
+  },
 }
+
+Ipc.init()

@@ -17,11 +17,13 @@ import {
 } from '@/components/option/UserStyleField'
 import {
   OPEN_MODE,
+  DRAG_OPEN_MODE,
   OPTION_MSG,
   STARTUP_METHOD,
   KEYBOARD,
   STYLE_VARIABLE,
 } from '@/const'
+
 import type { UserSettingsType, FolderOption } from '@/types'
 import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
@@ -42,6 +44,7 @@ type Translation = {
 type StartupMethodMap = Record<STARTUP_METHOD, { [key: string]: string }>
 type KeyboardMap = Record<KEYBOARD, { [key: string]: string }>
 type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
+type DragOpenModeMap = Record<DRAG_OPEN_MODE, { [key: string]: string }>
 
 const toKey = (str: string) => {
   return str.replace(/-/g, '_')
@@ -81,6 +84,15 @@ export function SettingFrom() {
     menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const updateSettingData = (data: UserSettingsType) => {
+    if (settingData == null) return
+    console.log('updateSettingData', data.commands.length)
+    setSettingData(data)
+    // For some reason, updating data here does not update the Form display.
+    // So update via ref.
+    formRef.current?.setState({ formData: data })
+  }
+
   useEventProxy(sendMessage, settingData)
 
   // Save after 500 ms to storage.
@@ -113,6 +125,7 @@ export function SettingFrom() {
         if (event.source != null) {
           setParent(event.source)
           setOrigin(event.origin)
+          console.log('start', settings)
           setSettingData(settings)
           setTrans(translation)
           // Page scrolls to the hash.
@@ -129,8 +142,6 @@ export function SettingFrom() {
         })
         const newSettings = { ...settingData, commands }
         setSettingData(newSettings)
-        // For some reason, updating data here does not update the Form display.
-        // So update via ref.
         formRef.current?.setState({ formData: newSettings })
       } else if (command === OPTION_MSG.JUMP) {
         const { hash } = value
@@ -144,11 +155,15 @@ export function SettingFrom() {
   }, [settingData])
 
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
+    const data = arg.formData as UserSettingsType
+    // Remove unnecessary fields when openMode is not popup or tab or window.
     if (id?.endsWith('openMode')) {
-      const data = arg.formData as UserSettingsType
       data.commands
         .filter(
-          (c) => c.openMode !== OPEN_MODE.POPUP && c.openMode !== OPEN_MODE.TAB,
+          (c) =>
+            c.openMode !== OPEN_MODE.POPUP &&
+            c.openMode !== OPEN_MODE.WINDOW &&
+            c.openMode !== OPEN_MODE.TAB,
         )
         .map((c) => {
           delete c.openModeSecondary
@@ -158,6 +173,7 @@ export function SettingFrom() {
         .filter(
           (c) =>
             c.openMode !== OPEN_MODE.POPUP &&
+            c.openMode !== OPEN_MODE.WINDOW &&
             c.openMode !== OPEN_MODE.LINK_POPUP,
         )
         .map((c) => {
@@ -168,7 +184,6 @@ export function SettingFrom() {
     // If popup-delay is not set
     // when the keyInput or leftClickHold is selected, set 0 ms.
     if (id?.endsWith('method')) {
-      const data = arg.formData as UserSettingsType
       if (
         data.startupMethod.method === STARTUP_METHOD.KEYBOARD ||
         data.startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD
@@ -177,7 +192,7 @@ export function SettingFrom() {
         if (!userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)) {
           userStyles.push({ name: STYLE_VARIABLE.POPUP_DELAY, value: '0' })
         }
-        setSettingData({
+        updateSettingData({
           ...data,
           userStyles,
         })
@@ -187,16 +202,15 @@ export function SettingFrom() {
 
     // update iconURL when searchUrl chagned
     if (id?.endsWith('searchUrl')) {
-      const data = arg.formData as UserSettingsType
       const command = data.commands[toCommandId(id)]
-      setSettingData(data)
+      updateSettingData(data)
       sendMessage(OPTION_MSG.FETCH_ICON_URL, {
         searchUrl: command.searchUrl,
         settings: data,
       })
       return
     }
-    setSettingData(arg.formData)
+    updateSettingData(data)
   }
 
   const autofill = (cmdIdx: number) => {
@@ -219,11 +233,14 @@ export function SettingFrom() {
     '#/commands/copyOption': SelectField,
     '#/commands/parentFolderId': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
-    '#/commandFolder/onlyIcon': OnlyIconField,
+    '#/commandFolder/onlyIcon': CheckboxField,
+    '#/linkCommand/openMode': SelectField,
+    '#/linkCommand/threshold': InputNumberField,
+    '#/linkCommand/showIndicator': CheckboxField,
     '#/styleVariable': UserStyleField,
     ArraySchemaField: CustomArraySchemaField,
   }
-  for (const type of ['popup', 'tab']) {
+  for (const type of [OPEN_MODE.POPUP, OPEN_MODE.WINDOW, OPEN_MODE.TAB]) {
     fields[`#/commands/openModeSecondary_${type}`] = SelectField
     fields[`#/commands/spaceEncoding_${type}`] = SelectField
   }
@@ -319,6 +336,26 @@ export function SettingFrom() {
         },
       },
     },
+    linkCommand: {
+      'ui:title': t('linkCommand'),
+      'ui:description': t('linkCommand_desc'),
+      'ui:order': ['openMode', 'threshold', 'showIndicator'],
+      openMode: {
+        'ui:title': t('openMode'),
+        'ui:classNames': 'linkCommandOpenMode',
+        enum: {} as DragOpenModeMap,
+      },
+      threshold: {
+        'ui:title': t('threshold'),
+        'ui:description': t('threshold_desc'),
+        'ui:classNames': 'linkCommandThreshold',
+      },
+      showIndicator: {
+        'ui:title': t('showIndicator'),
+        'ui:description': t('showIndicator_desc'),
+        'ui:classNames': 'linkCommandShowIndicator',
+      },
+    },
     folders: {
       'ui:title': t('folders'),
       'ui:description': t('folders_desc'),
@@ -341,6 +378,7 @@ export function SettingFrom() {
         urlPattern: { 'ui:title': t('urlPattern') },
         popupEnabled: { 'ui:title': t('popupEnabled') },
         popupPlacement: { 'ui:title': t('popupPlacement') },
+        linkCommandEnabled: { 'ui:title': t('linkCommandEnabled') },
       },
     },
     userStyles: {
@@ -418,6 +456,15 @@ export function SettingFrom() {
   }
   userSettingSchema.definitions.openMode.enum = modes
   uiSchema.commands.items.openMode.enum = modeMap
+
+  // Add linkCommand's openMode to uiSchema.
+  const dragOpenModeMap = {} as DragOpenModeMap
+  for (const mode of Object.values(DRAG_OPEN_MODE)) {
+    dragOpenModeMap[mode] = {
+      'ui:title': t(`openMode_${mode}`),
+    }
+  }
+  uiSchema.linkCommand.openMode.enum = dragOpenModeMap
 
   // Add userStyles to schema and uiSchema.
   const sv = Object.values(STYLE_VARIABLE)
@@ -565,13 +612,13 @@ type Option = {
 const InputNumberField = (props: FieldProps) => {
   const { formData, idSchema, required, schema } = props
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    props.onChange(event.target.value)
+    props.onChange(Number(event.target.value))
   }
   return (
     <label className={clsx(css.selectContainer, 'form-control')}>
       <input
         id={idSchema.$id}
-        className={css.select}
+        className={css.number}
         value={formData ?? schema.default}
         required={required}
         onChange={onChange}
@@ -668,8 +715,8 @@ const FetchOptionField = (props: FieldProps) => {
   )
 }
 
-const OnlyIconField = (props: FieldProps) => {
-  let title = 'Only Icon'
+const CheckboxField = (props: FieldProps) => {
+  let title = props.name
   let desc = ''
   if (props.uiSchema) {
     title = props.uiSchema['ui:title'] ?? title

@@ -1,5 +1,5 @@
-import { APP_ID, SPACE_ENCODING } from '@/const'
-import type { Version } from '@/types'
+import { APP_ID, SPACE_ENCODING, OPEN_MODE } from '@/const'
+import type { Version, Command, SelectionCommand, LinkCommand } from '@/types'
 
 /**
  * Stops processing for the specified time.
@@ -154,11 +154,129 @@ export function isEmpty(str: string | null): boolean {
   return !str?.length
 }
 
+/**
+ * Check if the command is made for the popup menu.
+ * @param {Command} command The command to check.
+ * @returns {boolean} True if the command is made for the popup menu.
+ */
+const OpenModes = Object.values(OPEN_MODE)
+export function isMenuCommand(command: Command): command is SelectionCommand {
+  return OpenModes.includes(command.openMode as OPEN_MODE)
+}
+
+/**
+ * Check if the command is link command.
+ * @param {Command|LinkCommand} command The command to check.
+ * @returns {boolean} True if the command is link command.
+ */
+export function isLinkCommand(command: Command): command is LinkCommand {
+  return (command as LinkCommand).linkCommandOption !== undefined
+}
+
 export function isPopup(elm: Element): boolean {
   if (elm == null) return false
   if (elm.id === APP_ID) return true
   if (elm.nodeName === 'body') return false
   return isPopup(elm.parentElement as Element)
+}
+
+/**
+ * Check if the element is an anchor element, or contained.
+ *
+ * @param {Element} elm The element to check.
+ * @returns {boolean} True if the element is an anchor element.
+ */
+export function isAnchorElement(elm: Element): boolean {
+  return findAnchorElement(elm) != null
+}
+
+/**
+ * Find the anchor element from the specified element.
+ *
+ * @param {Element} elm The element to start searching.
+ * @returns {Element} The anchor element.
+ */
+export function findAnchorElement(elm: Element): Element | null {
+  if (elm == null) return null
+  if (elm.nodeName === 'body') return null
+  if (
+    elm.tagName?.toLowerCase() === 'a' &&
+    (elm as HTMLAnchorElement).href != null
+  )
+    return elm
+  return findAnchorElement(elm.parentElement as Element)
+}
+
+/**
+ * Check if the element is a clickable element or contained.
+ *
+ * @param {HTMLElement} elm The element to check.
+ * @returns {boolean} True if the element is clickable.
+ */
+export function isClickableElement(elm: Element | null): boolean {
+  return findClickableElement(elm) != null
+}
+
+/**
+ * Find the clickable element from the specified element.
+ *
+ * @param {Element} elm The element to start searching.
+ * @returns {Element} The clickable element.
+ */
+export function findClickableElement(elm: Element | null): Element | null {
+  if (elm == null) return null
+  if (elm.nodeName === 'body') return null
+
+  // 1. check onclick property
+  if (
+    elm.hasAttribute('onclick') ||
+    typeof (elm as HTMLElement).onclick === 'function'
+  ) {
+    return elm
+  }
+
+  // 2. check tagName
+  const clickableTags = ['a', 'button', 'input']
+  if (
+    clickableTags.includes(elm.tagName.toLowerCase()) &&
+    !(elm as HTMLButtonElement).disabled
+  ) {
+    if (elm.tagName.toLowerCase() === 'input') {
+      const type = (elm as HTMLInputElement).type
+      if (type === 'button') {
+        return elm
+      }
+    } else {
+      return elm
+    }
+  }
+
+  // 3. check parent
+  return findClickableElement(elm.parentElement)
+}
+
+export function getSelectorFromElement(el: Element): string {
+  if (!(el instanceof Element)) return ''
+  let path = []
+  while (el.nodeType === Node.ELEMENT_NODE) {
+    let selector = el.nodeName.toLowerCase()
+    if (el.id) {
+      selector += '#' + el.id
+      path.unshift(selector)
+      break
+    } else {
+      let sibling = el
+      let nth = 1
+      while ((sibling = sibling.previousElementSibling as Element)) {
+        if (sibling.nodeName.toLowerCase() === selector) nth++
+      }
+      if (nth !== 1) selector += `:nth-of-type(${nth})`
+    }
+    path.unshift(selector)
+    el = el.parentNode as Element
+  }
+
+  return path.join(' > ')
 }
 
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {

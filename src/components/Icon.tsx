@@ -4,6 +4,7 @@ import styles from './Icon.module.css'
 type Props = {
   name: string
   className?: string
+  style?: React.CSSProperties
 }
 
 export function Icon(props: Props): JSX.Element {
@@ -12,7 +13,7 @@ export function Icon(props: Props): JSX.Element {
   const className = props.className ?? styles.icon
 
   return (
-    <svg className={className}>
+    <svg className={className} style={props.style}>
       <use xlinkHref={href} />
     </svg>
   )

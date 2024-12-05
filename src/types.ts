@@ -1,16 +1,25 @@
 import type {
   OPEN_MODE,
+  DRAG_OPEN_MODE,
   POPUP_ENABLED,
   STYLE,
   KEYBOARD,
   STARTUP_METHOD,
   SPACE_ENCODING,
   STYLE_VARIABLE,
+  LINK_COMMAND_ENABLED,
 } from '@/const'
 
 export type Version = `${number}.${number}.${number}`
 
-export type Command = {
+export type Point = {
+  x: number
+  y: number
+}
+
+export type Command = SelectionCommand | LinkCommand
+
+export type SelectionCommand = {
   id: number | string
   title: string
   searchUrl: string
@@ -26,12 +35,26 @@ export type Command = {
   spaceEncoding?: SPACE_ENCODING
 }
 
+export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
+  openMode: DRAG_OPEN_MODE
+  linkCommandOption: DragOption
+}
+
 export type PopupOption = {
   width: number
   height: number
 }
 
 export type CopyOption = 'default' | 'text'
+
+export type DragOption = {
+  threshold: number
+  showIndicator: boolean
+}
+
+type LinkCommandSettings = DragOption & {
+  openMode: DRAG_OPEN_MODE
+}
 
 export type FolderOption = {
   id: string
@@ -60,6 +83,7 @@ export type PageRule = {
   urlPattern: string
   popupEnabled: POPUP_ENABLED
   popupPlacement: Placement
+  linkCommandEnabled: LINK_COMMAND_ENABLED
 }
 
 export type StyleVariable = {
@@ -78,6 +102,7 @@ export type UserSettingsType = {
   startupMethod: StartupMethod
   popupPlacement: Placement
   commands: Array<Command>
+  linkCommand: LinkCommandSettings
   folders: Array<CommandFolder>
   pageRules: Array<PageRule>
   style: STYLE

@@ -2,6 +2,7 @@ import { UserSettings } from '@/services/userSettings'
 import type { UserSettingsType, Command } from '@/types'
 import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
+import { isMenuCommand } from '@/services/util'
 
 chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
 UserSettings.addChangedListener(() => ContextMenu.init())
@@ -28,7 +29,7 @@ const ContextMenu = {
   addMenus: async (settings: UserSettingsType) => {
     const contexts = ['selection'] as chrome.contextMenus.ContextType[]
 
-    const commands = settings.commands
+    const commands = settings.commands.filter(isMenuCommand)
     const folder = settings.folders
     const folderIdObj = {} as { [key: string]: string | number }
     for (const command of commands) {
