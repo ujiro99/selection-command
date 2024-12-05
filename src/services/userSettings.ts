@@ -44,7 +44,7 @@ export const UserSettings = {
       data.commands = commands
     }
 
-    data = migrate(data)
+    data = await migrate(data)
 
     data.folders = data.folders.filter((folder) => !!folder.title)
     if (!excludeOptions) {
@@ -151,7 +151,9 @@ const removeOptionSettings = (data: UserSettingsType): void => {
   data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
 }
 
-export const migrate = (data: UserSettingsType): UserSettingsType => {
+export const migrate = async (
+  data: UserSettingsType,
+): Promise<UserSettingsType> => {
   if (data.settingVersion == null) {
     data = migrate073(data)
   }
@@ -160,7 +162,7 @@ export const migrate = (data: UserSettingsType): UserSettingsType => {
   }
   if (versionDiff(data.settingVersion, '0.10.0') === VersionDiff.Old) {
     data.settingVersion = VERSION as Version
-    data = migrate0_10_0(data)
+    data = await migrate0_10_0(data)
   }
   return data
 }
@@ -186,13 +188,16 @@ const migrate082 = (data: UserSettingsType): UserSettingsType => {
   return data
 }
 
-const migrate0_10_0 = (data: UserSettingsType): UserSettingsType => {
+const migrate0_10_0 = async (
+  data: UserSettingsType,
+): Promise<UserSettingsType> => {
   // Add a link command if not exists.
   const linkCommands = data.commands.filter(isLinkCommand)
   if (linkCommands.length === 0) {
     const defaultLinkCommand = DefaultCommands.find(isLinkCommand)
     if (defaultLinkCommand != null) {
       data.commands.push(defaultLinkCommand)
+      await Storage.setCommands(data.commands)
       console.debug('migrate 0.10.0 link command')
     }
   }

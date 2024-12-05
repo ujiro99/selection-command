@@ -421,7 +421,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 
 chrome.windows.onRemoved.addListener((windowId: number) => {
   const data = BgData.get()
-  const idx = data.normalWindows.findIndex((w) => w.id === windowId)
+  const idx = data.normalWindows?.findIndex((w) => w.id === windowId)
   if (idx >= 0) {
     data.normalWindows.splice(idx, 1)
     BgData.set(data)
