@@ -183,7 +183,7 @@ const commandFuncs = {
   },
 
   [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    ;(async () => {
+    ; (async () => {
       const tabIds = await openPopups(param)
       if (tabIds.length > 0) {
         await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
@@ -252,11 +252,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-      ;(async () => {
-        const res = await fetch(url, opt)
-        const json = await res.json()
-        response({ ok: res.ok, res: json })
-      })()
+        ; (async () => {
+          const res = await fetch(url, opt)
+          const json = await res.json()
+          response({ ok: res.ok, res: json })
+        })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
