@@ -70,6 +70,7 @@ jobs:
           #
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
+          generator_config_file: pages/next.config.mjs
       - name: Check output
         run: |
           pwd

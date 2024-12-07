@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import nextConfig from '../../next.config'
+import nextConfig from '../../next.config.mjs'
 const BASE_PATH = nextConfig.basePath || ''
 
 export default function Home() {
@@ -9,7 +9,7 @@ export default function Home() {
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <Image
           className="dark:invert"
-          src={`/next.svg`}
+          src={`${BASE_PATH}/next.svg`}
           alt="Next.js logo"
           width={180}
           height={38}
