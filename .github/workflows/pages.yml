@@ -64,6 +64,7 @@ jobs:
           #
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
+          generator_config_file: pages/next.config.ts
       - name: Restore cache
         uses: actions/cache@v4
         with:
