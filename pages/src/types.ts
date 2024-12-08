@@ -1,6 +1,6 @@
 import type { OPEN_MODE, SPACE_ENCODING } from '@/const'
 
-export type Command = SelectionCommand
+export type Command = SelectionCommand & Analytics
 
 export type SelectionCommand = {
   id: string
@@ -12,6 +12,11 @@ export type SelectionCommand = {
   spaceEncoding: SPACE_ENCODING
   description: string
   tags: Tag[]
+}
+
+export type Analytics = {
+  id: string
+  download: string
 }
 
 export type Tag = {
