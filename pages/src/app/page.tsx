@@ -1,103 +1,88 @@
-import Image from 'next/image'
+import clsx from 'clsx'
+import { MousePointer, ChevronDown } from 'lucide-react'
+import { Image } from '@/components/Image'
+import { Badge } from '@/components/ui/badge'
 
-import nextConfig from '../../next.config.mjs'
-const BASE_PATH = nextConfig.basePath || ''
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
+
+import { getCommands } from '@/services/util'
+import css from './page.module.css'
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src={`${BASE_PATH}/next.svg`}
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{' '}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const commands = getCommands()
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src={`${BASE_PATH}/vercel.svg`}
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  return (
+    <div className="grid grid-rows-[20px_1fr_20px] justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <header className="flex items-center gap-1.5 text-3xl font-[family-name:var(--font-geist-mono)] font-medium">
+        Selection <span className="bg-[#1597C9]/20 px-2 rounded">Command</span>
+        <span className="font-extralight ml-1">Hub</span>
+        <MousePointer className={css.mouse} size={26} />
+      </header>
+      <main className="flex flex-col gap-8 mt-8 row-start-2 sm:items-start">
+        <ul className="text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+          {commands.map((cmd) => (
+            <li key={cmd.id} className={clsx('py-4', css.item)}>
+              <div className="text-left">
+                <p className="text-lg flex flex-row">
+                  <Image
+                    src={cmd.iconUrl}
+                    alt={cmd.title}
+                    className="inline-block w-7 h-7 mr-2"
+                  />
+                  {cmd.title}
+                </p>
+                <p className="text-stone-500 text-sm">{cmd.searchUrl}</p>
+                <p className="">{cmd.description}</p>
+
+                <Collapsible className="flex flex-col items-end	mt-[-8px]">
+                  <CollapsibleTrigger className="flex text-stone-500 hover:bg-stone-200 rounded">
+                    <ChevronDown />
+                  </CollapsibleTrigger>
+                  <CollapsibleContent
+                    className={clsx('w-full mt-1', css.details)}
+                  >
+                    <table className="w-full text-sm text-stone-600 bg-stone-100 rounded">
+                      <tbody>
+                        <tr>
+                          <td className="pl-3 pr-2 pt-1">Open Mode</td>
+                          <td className="pl-2 pr-3 pt-1">{cmd.openMode}</td>
+                        </tr>
+                        <tr>
+                          <td className="pl-3 pr-2">┗ Ctrl + クリック</td>
+                          <td className="pl-2 pr-3">{cmd.openModeSecondary}</td>
+                        </tr>
+                        <tr>
+                          <td className="pl-3 pr-2 pb-1">
+                            スペースのエンコーディング
+                          </td>
+                          <td className="pl-2 pr-3 pb-1">
+                            {cmd.spaceEncoding}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </CollapsibleContent>
+                </Collapsible>
+                <ul className="mt-2 flex gap-2">
+                  {cmd.tags.map((tag) => (
+                    <li key={tag.id}>
+                      <Badge className="bg-stone-200 hover:bg-stone-300 text-stone-800">
+                        {tag.name}
+                      </Badge>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src={`${BASE_PATH}/file.svg`}
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src={`${BASE_PATH}/window.svg`}
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src={`${BASE_PATH}/globe.svg`}
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+        © 2024 Selection Command
       </footer>
     </div>
   )
