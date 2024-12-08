@@ -6,6 +6,7 @@ import { Image } from '@/components/Image'
 import { Details } from '@/components/Details'
 import { Badge } from '@/components/ui/badge'
 import type { Command } from '@/types'
+import { cmd2text } from '@/services/util'
 
 type Props = {
   cmd: Command
@@ -13,7 +14,7 @@ type Props = {
 
 export function ListItem(props: Props): JSX.Element {
   const { cmd } = props
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
 
   const onClickDetail = () => {
     setOpen(!open)
@@ -40,7 +41,10 @@ export function ListItem(props: Props): JSX.Element {
             className="p-0.5 text-stone-500 hover:bg-stone-200 rounded cursor-pointer"
             size={28}
           />
-          <button className="flex items-center  text-stone-500 hover:bg-stone-200 rounded ">
+          <button
+            className="flex items-center  text-stone-500 hover:bg-stone-200 rounded"
+            data-command={cmd2text(cmd)}
+          >
             <ArrowDownToLine className="p-1" size={28} />
             <span className="p-1 pl-0 select-none">{cmd.download}</span>
           </button>

@@ -10,6 +10,17 @@ function generateUUID() {
   return `${hexData.slice(0, 8)}-${hexData.slice(8, 12)}-${hexData.slice(12, 16)}-${hexData.slice(16, 20)}-${hexData.slice(20, 32)}`
 }
 
+export function cmd2text(cmd: Command): string {
+  return JSON.stringify({
+    title: cmd.title,
+    searchUrl: cmd.searchUrl,
+    iconUrl: cmd.iconUrl,
+    openMode: cmd.openMode,
+    openModeSecondary: cmd.openModeSecondary,
+    spaceEncoding: cmd.spaceEncoding,
+  })
+}
+
 export function getCommands(): Command[] {
   return Commands.map((command) => {
     const a = Analytics.downloads.find((a) => a.id === command.id) ?? {
