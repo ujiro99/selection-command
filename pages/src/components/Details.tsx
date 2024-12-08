@@ -1,29 +1,30 @@
 import * as React from 'react'
-import clsx from 'clsx'
+import { ChevronDown } from 'lucide-react'
 import type { Command } from '@/types'
 
-import css from '@/app/page.module.css'
-
-import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 type Props = {
   command: Command
-  open: boolean
-  onOpenChange: (open: boolean) => void
   className?: string
 }
 
 export function Details(props: Props): JSX.Element {
   const { command: cmd } = props
   return (
-    <Collapsible
-      {...props}
-      className={clsx('flex flex-col items-end', props.className)}
-      open={props.open}
-      onOpenChange={props.onOpenChange}
-    >
-      <CollapsibleContent className={clsx('w-full mt-1 p-2', css.details)}>
-        <table className="w-full text-sm text-stone-700 bg-stone-200 rounded-md">
+    <Popover>
+      <PopoverTrigger>
+        <ChevronDown
+          className="p-0.5 text-stone-500 hover:bg-stone-200 rounded cursor-pointer"
+          size={28}
+        />
+      </PopoverTrigger>
+      <PopoverContent className="p-1 bg-inherit">
+        <table className="w-full text-sm bg-stone-50 text-stone-700 rounded-md">
           <tbody>
             <tr>
               <td className="pl-3 pr-2 pt-2">Open Mode</td>
@@ -39,7 +40,7 @@ export function Details(props: Props): JSX.Element {
             </tr>
           </tbody>
         </table>
-      </CollapsibleContent>
-    </Collapsible>
+      </PopoverContent>
+    </Popover>
   )
 }

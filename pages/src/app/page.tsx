@@ -15,7 +15,7 @@ export default function Home() {
         <span className="font-extralight ml-1">Hub</span>
         <MousePointer className={css.mouse} size={26} />
       </header>
-      <main className="w-[700px] flex flex-col gap-8 mt-8 row-start-2 sm:items-start">
+      <main className="w-[600px] flex flex-col gap-8 mt-8 row-start-2 sm:items-start">
         <ul className="w-full text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           {commands.map((cmd) => (
             <li key={cmd.id} className={clsx('px-2', css.item)}>
