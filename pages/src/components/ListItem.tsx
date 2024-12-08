@@ -1,7 +1,5 @@
-'use client'
-
-import React, { useState } from 'react'
-import { ChevronDown, ArrowDownToLine } from 'lucide-react'
+import React from 'react'
+import { ArrowDownToLine } from 'lucide-react'
 import { Image } from '@/components/Image'
 import { Details } from '@/components/Details'
 import { Badge } from '@/components/ui/badge'
@@ -14,12 +12,6 @@ type Props = {
 
 export function ListItem(props: Props): JSX.Element {
   const { cmd } = props
-  const [open, setOpen] = useState(false)
-
-  const onClickDetail = () => {
-    setOpen(!open)
-  }
-
   return (
     <>
       <div className="text-left flex flex-row">
@@ -36,11 +28,7 @@ export function ListItem(props: Props): JSX.Element {
           <p className="text-base">{cmd.description}</p>
         </div>
         <div className="flex items-center">
-          <ChevronDown
-            onClick={onClickDetail}
-            className="p-0.5 text-stone-500 hover:bg-stone-200 rounded cursor-pointer"
-            size={28}
-          />
+          <Details command={cmd} />
           <button
             className="flex items-center  text-stone-500 hover:bg-stone-200 rounded"
             data-command={cmd2text(cmd)}
@@ -50,7 +38,6 @@ export function ListItem(props: Props): JSX.Element {
           </button>
         </div>
       </div>
-      <Details open={open} onOpenChange={setOpen} command={cmd} className="" />
       <ul className="mt-3 flex gap-2">
         {cmd.tags.map((tag) => (
           <li key={tag.id}>
