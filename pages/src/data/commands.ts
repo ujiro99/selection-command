@@ -1,5 +1,6 @@
 export const Commands = [
   {
+    id: '1',
     title: 'Yahoo!検索',
     description: 'Yahoo!検索で選択キーワードを検索します',
     searchUrl: 'https://search.yahoo.co.jp/search?p=%s',
@@ -10,6 +11,7 @@ export const Commands = [
     tags: ['Search'],
   },
   {
+    id: '2',
     title: '英語 → 日本語',
     description: 'DeepLで英語を日本語に翻訳します',
     searchUrl: 'https://www.deepl.com/ja/translator#en/ja/%s',
@@ -20,6 +22,7 @@ export const Commands = [
     tags: ['Language', 'Translation', '翻訳', 'Tool', 'Japanese'],
   },
   {
+    id: '3',
     title: '日本語 → 英語',
     description: 'DeepLで英語を日本語に翻訳します',
     searchUrl: 'https://www.deepl.com/ja/translator#ja/en/%s',

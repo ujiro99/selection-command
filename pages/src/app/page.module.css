@@ -5,8 +5,12 @@
   fill: white;
 }
 
+.item {
+  @apply pb-5;
+}
+
 .item+.item {
-  @apply border-t;
+  @apply border-t py-5;
 }
 
 .details {
