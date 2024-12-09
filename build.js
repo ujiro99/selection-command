@@ -4,6 +4,12 @@ const esbuild = require('esbuild')
 const { tailwindPlugin } = require('esbuild-plugin-tailwindcss')
 
 const package = JSON.parse(fs.readFileSync('package.json'))
+const env = JSON.parse(fs.readFileSync('env.json'))
+
+const define = {}
+Object.keys(env).forEach(
+  (key) => (define[`process.env.${key}`] = `"${env[key]}"`),
+)
 
 function cleanup({ pattern = '*' }) {
   return {
@@ -46,6 +52,7 @@ const main = () => {
         'process.env.NAME': `"${package.name}"`,
         'process.env.VERSION': `"${package.version}"`,
         'process.env.NODE_ENV': '"production"',
+        ...define,
       },
     })
     .then(() => console.log('⚡Bundle build complete ⚡'))

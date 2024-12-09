@@ -108,3 +108,8 @@ export type UserSettingsType = {
   style: STYLE
   userStyles: Array<StyleVariable>
 }
+
+export type SessionData = {
+  session_id: string
+  timestamp: number
+}
