@@ -9,7 +9,7 @@
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
     "prepare": "husky install",
-    "preinstall": "cd ./lib/mv3-hot-reload && yarn install",
+    "preinstall": "cd ./lib/mv3-hot-reload && yarn install && ln -s ../mv3-hot-reload/out/bin/mv3-hot-reload.js ../../node_modules/.bin/mv3-hot-reload",
     "zip": "npm-build-zip --source=dist --destination=build"
   },
   "author": "ujiro99",

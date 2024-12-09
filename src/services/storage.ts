@@ -10,7 +10,14 @@ export enum STORAGE_KEY {
 
 export enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
+  CLIENT_ID = 'clientId',
 }
+
+export enum SESSION_STORAGE_KEY {
+  SESSION_DATA = 'sessionData',
+}
+
+type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
 
 const CMD_PREFIX = 'cmd-'
 
@@ -24,11 +31,14 @@ const DEFAULTS = {
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
+  [LOCAL_STORAGE_KEY.CLIENT_ID]: '',
+  [SESSION_STORAGE_KEY.SESSION_DATA]: null,
 }
 
 export enum STORAGE_AREA {
   SYNC = 'sync',
   LOCAL = 'local',
+  SESSION = 'session',
 }
 
 export type ChangedCallback = (newVal: unknown, oldVal: unknown) => void
@@ -56,10 +66,7 @@ export const Storage = {
    *
    * @param {STORAGE_KEY} key of item in storage.
    */
-  get: async <T>(
-    key: STORAGE_KEY | LOCAL_STORAGE_KEY,
-    area = STORAGE_AREA.SYNC,
-  ): Promise<T> => {
+  get: async <T>(key: KEY, area = STORAGE_AREA.SYNC): Promise<T> => {
     let result = await chrome.storage[area].get(`${key}`)
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
@@ -74,7 +81,7 @@ export const Storage = {
    * @param {any} value item.
    */
   set: async (
-    key: STORAGE_KEY | LOCAL_STORAGE_KEY,
+    key: KEY,
     value: unknown,
     area = STORAGE_AREA.SYNC,
   ): Promise<boolean> => {
@@ -91,7 +98,7 @@ export const Storage = {
    * @param {string} key key of item.
    */
   remove: (
-    key: STORAGE_KEY | LOCAL_STORAGE_KEY,
+    key: KEY,
     area = STORAGE_AREA.SYNC,
   ): Promise<boolean | chrome.runtime.LastError> => {
     return new Promise((resolve, reject) => {

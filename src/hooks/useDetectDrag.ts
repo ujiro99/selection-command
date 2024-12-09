@@ -12,6 +12,7 @@ import {
   isLinkCommand,
   getScreenSize,
 } from '@/services/util'
+import { sendEvent } from '@/services/analytics'
 
 const isTargetEvent = (e: MouseEvent): boolean => {
   return (
@@ -92,6 +93,7 @@ export function useDetectDrag() {
           changeState: onChangeState,
           target,
         })
+        sendEvent('link_command', 'link_preview')
       }
       setStartPosition(null)
       setTarget(null)
