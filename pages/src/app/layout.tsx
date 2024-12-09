@@ -27,6 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <GoogleTagManager gtmId="GTM-5RLTNM22" />
+      {/* Google Search Console verification */}
+      <meta
+        name="google-site-verification"
+        content="MhXlQWtyoEkz6jOLkdC4V2aXrZVn1xWFDyV3slv5QBA"
+      />
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-50`}
       >
