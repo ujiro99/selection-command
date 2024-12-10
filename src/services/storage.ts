@@ -180,7 +180,7 @@ export const Storage = {
     // Update commands.
     const data = commands.reduce(
       (acc, cmd, i) => {
-        cmd.id = i // Assigning IDs to each command
+        cmd.id = cmd.id ?? i // Assigning IDs to each command
         acc[`${CMD_PREFIX}${i}`] = cmd
         return acc
       },
