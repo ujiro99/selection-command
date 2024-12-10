@@ -11,7 +11,7 @@ import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/services/util'
 import type { ScreenSize } from '@/services/util'
 import { UserSettings } from '@/services/userSettings'
-import type { CommandVariable } from '@/types'
+import type { Command, CommandVariable } from '@/types'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
 
@@ -93,6 +93,10 @@ export type openTabProps = {
 
 export type addPageRuleProps = {
   url: string
+}
+
+type addCommandProps = {
+  command: string
 }
 
 function bindVariables(
@@ -183,7 +187,7 @@ const commandFuncs = {
   },
 
   [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    ;(async () => {
+    ; (async () => {
       const tabIds = await openPopups(param)
       if (tabIds.length > 0) {
         await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
@@ -227,6 +231,27 @@ const commandFuncs = {
     return false
   },
 
+  [BgCommand.addCommand]: (
+    param: addCommandProps,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const params = JSON.parse(param.command)
+    const cmd = {
+      id: params.id,
+      title: params.title,
+      searchUrl: params.searchUrl,
+      iconUrl: params.iconUrl,
+      openMode: params.openMode,
+      openModeSecondary: params.openModeSecondary,
+      spaceEncoding: params.spaceEncoding,
+    }
+    UserSettings.addCommands([cmd]).then(() => {
+      response(true)
+    })
+    return true
+  },
+
   [BgCommand.openTab]: (param: openTabProps, sender: Sender): boolean => {
     getCurrentTab().then((tab) => {
       const index = tab.index
@@ -252,11 +277,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-      ;(async () => {
-        const res = await fetch(url, opt)
-        const json = await res.json()
-        response({ ok: res.ok, res: json })
-      })()
+        ; (async () => {
+          const res = await fetch(url, opt)
+          const json = await res.json()
+          response({ ok: res.ok, res: json })
+        })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })

@@ -34,6 +34,7 @@ const main = () => {
         'src/content_script.tsx',
         'src/options_page.tsx',
         'src/sandbox.tsx',
+        'src/command_hub.tsx',
       ],
       outdir: 'dist/src',
       minify: true,
