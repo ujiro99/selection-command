@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import { Point } from '@/types'
 import { Ipc, BgCommand } from '@/services/ipc'
+import { useSetting } from '@/hooks/useSetting'
 import { sendEvent } from '@/services/analytics'
 import {
   Popover,
@@ -16,6 +17,8 @@ const TooltipDuration = 2000
 
 export const CommandHub = (): JSX.Element => {
   const [posision, setPosition] = useState<Point | null>(null)
+  const { settings } = useSetting()
+  const commands = settings.commands
   const [shouldRender, setShouldRender] = useState(false)
   const open = posision != null
   const ref = useRef<HTMLDivElement>(null)
@@ -23,6 +26,7 @@ export const CommandHub = (): JSX.Element => {
   useEffect(() => {
     document.querySelectorAll('button[data-command]').forEach((button) => {
       if (!(button instanceof HTMLButtonElement)) return
+      button.style.display = 'block' // show hidden buttons
       const command = button.dataset.command
       const id = button.dataset.id
       if (command == null) return
@@ -53,12 +57,26 @@ export const CommandHub = (): JSX.Element => {
     if (open) {
       timer = setTimeout(() => {
         setShouldRender(true)
-      }, 150)
+      }, 100)
     } else {
       setShouldRender(false)
     }
     return () => clearTimeout(timer)
   }, [open])
+
+  useEffect(() => {
+    const ids = commands.map((c) => c.id)
+    ids.forEach((id) => {
+      // hide installed buttons
+      const installed = document.querySelector(
+        `button[data-id="${id}"]`,
+      ) as HTMLElement
+      if (installed) installed.style.display = 'none'
+      // show installed label
+      const p = document.querySelector(`p[data-id="${id}"]`) as HTMLElement
+      if (p) p.style.display = 'block'
+    })
+  }, [commands])
 
   const styles = {
     position: 'absolute',
