@@ -16,6 +16,14 @@
       "js": [
         "/src/content_script.js"
       ]
+    },
+    {
+      "matches": [
+        "https://ujiro99.github.io/selection-command/*"
+      ],
+      "js": [
+        "/src/command_hub.js"
+      ]
     }
   ],
   "background": {
@@ -45,7 +53,8 @@
         "https://*/*"
       ],
       "resources": [
-        "src/content_script.css"
+        "src/content_script.css",
+        "src/command_hub.css"
       ]
     }
   ]

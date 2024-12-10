@@ -6,6 +6,7 @@ export enum BgCommand {
   openTab = 'openTab',
   openOption = 'openOption',
   addPageRule = 'addPageRule',
+  addCommand = 'addCommand',
   execApi = 'execApi',
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
@@ -56,7 +57,7 @@ export const Ipc = {
     })
   },
 
-  async send(command: IpcCommand, param?: unknown) {
+  async send(command: IpcCommand, param?: unknown): Promise<any> {
     return await chrome.runtime.sendMessage({ command, param })
   },
 
