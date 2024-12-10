@@ -1,4 +1,4 @@
-import { Storage, STORAGE_KEY } from './storage'
+import { Storage, SESSION_STORAGE_KEY, STORAGE_AREA } from './storage'
 
 export enum BgCommand {
   openPopups = 'openPopups',
@@ -43,7 +43,7 @@ export type IpcCallback = (
 
 export const Ipc = {
   init() {
-    Storage.addListener(STORAGE_KEY.MESSAGE_QUEUE, (newQueue) => {
+    Storage.addListener(SESSION_STORAGE_KEY.MESSAGE_QUEUE, (newQueue) => {
       for (const [tabId, listener] of Object.entries(Ipc.msgQueuelisteners)) {
         const msgs = (newQueue as Message[]).filter(
           (m) => m.tabId === Number(tabId),
@@ -113,17 +113,28 @@ export const Ipc = {
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {
-    const queue = await Storage.get<Message[]>(STORAGE_KEY.MESSAGE_QUEUE)
+    const queue = await Storage.get<Message[]>(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+      STORAGE_AREA.SESSION,
+    )
     queue.push({ tabId, command, param })
-    return Storage.set(STORAGE_KEY.MESSAGE_QUEUE, queue)
+    return Storage.set(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+      queue,
+      STORAGE_AREA.SESSION,
+    )
   },
 
   async recvQueue(tabId: number) {
-    const queue = await Storage.get<Message[]>(STORAGE_KEY.MESSAGE_QUEUE)
+    const queue = await Storage.get<Message[]>(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+      STORAGE_AREA.SESSION,
+    )
     const msgs = queue.filter((m) => m.tabId === tabId)
     await Storage.set(
-      STORAGE_KEY.MESSAGE_QUEUE,
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
       queue.filter((m) => m.tabId !== tabId),
+      STORAGE_AREA.SESSION,
     )
     return msgs
   },

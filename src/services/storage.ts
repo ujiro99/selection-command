@@ -5,7 +5,6 @@ export enum STORAGE_KEY {
   USER = 0,
   BG = 1,
   COMMAND_COUNT = 2,
-  MESSAGE_QUEUE = 3,
 }
 
 export enum LOCAL_STORAGE_KEY {
@@ -15,6 +14,7 @@ export enum LOCAL_STORAGE_KEY {
 
 export enum SESSION_STORAGE_KEY {
   SESSION_DATA = 'sessionData',
+  MESSAGE_QUEUE = 'messageQueue',
 }
 
 type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
@@ -27,12 +27,12 @@ const DEFAULTS = {
   [STORAGE_KEY.USER]: DefaultSettings,
   [STORAGE_KEY.BG]: {},
   [STORAGE_KEY.COMMAND_COUNT]: DEFAULT_COUNT,
-  [STORAGE_KEY.MESSAGE_QUEUE]: [],
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
   [LOCAL_STORAGE_KEY.CLIENT_ID]: '',
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
+  [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
 }
 
 export enum STORAGE_AREA {
@@ -127,12 +127,12 @@ export const Storage = {
     })
   },
 
-  addListener: (key: STORAGE_KEY, cb: ChangedCallback) => {
+  addListener: (key: KEY, cb: ChangedCallback) => {
     changedCallbacks[key] = changedCallbacks[key] ?? []
     changedCallbacks[key].push(cb)
   },
 
-  removeListener: (key: STORAGE_KEY, cb: ChangedCallback) => {
+  removeListener: (key: KEY, cb: ChangedCallback) => {
     changedCallbacks[key] = changedCallbacks[key]?.filter((f) => f !== cb)
   },
 
