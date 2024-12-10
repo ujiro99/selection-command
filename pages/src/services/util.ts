@@ -1,17 +1,13 @@
+import { v5 as uuidv5 } from 'uuid'
+import { createHash } from 'crypto'
 import { Commands } from '@/data/commands'
 import Analytics from '@/data/analytics.json'
-import { randomBytes } from 'crypto'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
 import { Command } from '@/types'
 
-function generateUUID() {
-  const randomData = randomBytes(16)
-  const hexData = randomData.toString('hex')
-  return `${hexData.slice(0, 8)}-${hexData.slice(8, 12)}-${hexData.slice(12, 16)}-${hexData.slice(16, 20)}-${hexData.slice(20, 32)}`
-}
-
 export function cmd2text(cmd: Command): string {
   return JSON.stringify({
+    id: cmd.id,
     title: cmd.title,
     searchUrl: cmd.searchUrl,
     iconUrl: cmd.iconUrl,
@@ -27,7 +23,7 @@ export function getCommands(): Command[] {
       download: 0,
     }
     const tags = command.tags.map((t) => ({
-      id: generateUUID(),
+      id: generateUUIDFromObject({ name: t }),
       name: t,
     }))
     return {
@@ -39,4 +35,12 @@ export function getCommands(): Command[] {
       download: a.download.toLocaleString(),
     }
   })
+}
+
+function generateUUIDFromObject(obj: object): string {
+  const objString = JSON.stringify(obj)
+  const hash = createHash('sha1').update(objString).digest('hex')
+  // UUIDv5 from https://ujiro99.github.io/selection-command/
+  const namespace = 'fe352db3-6a8e-5d07-9aaf-c45a2e9d9f5c'
+  return uuidv5(hash, namespace)
 }

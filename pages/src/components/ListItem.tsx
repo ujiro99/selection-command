@@ -29,8 +29,13 @@ export function ListItem(props: Props): JSX.Element {
         </div>
         <div className="flex items-center">
           <Details command={cmd} />
+          <p className="hidden text-stone-500" data-id={cmd.id}>
+            <span className="mx-2 select-none">Installed</span>
+            <span className="p-1 pl-0 select-none">{cmd.download}</span>
+          </p>
           <button
-            className="flex items-center  text-stone-500 hover:bg-stone-200 rounded"
+            className="flex items-center text-stone-500 hover:bg-stone-200 rounded"
+            data-id={cmd.id}
             data-command={cmd2text(cmd)}
           >
             <ArrowDownToLine className="p-1" size={28} />
