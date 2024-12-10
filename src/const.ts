@@ -84,6 +84,12 @@ export enum STYLE_VARIABLE {
   POPUP_DURATION = 'popup-duration',
 }
 
+export enum SCREEN {
+  CONTENT_SCRIPT = 'ContentScript',
+  OPTION = 'Option',
+  SERVICE_WORKER = 'ServiceWorker',
+}
+
 export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100

@@ -4,9 +4,11 @@ import {
   SESSION_STORAGE_KEY,
   STORAGE_AREA as AREA,
 } from './storage'
+import { isDebug, APP_ID, VERSION, SCREEN } from '@/const'
 import { SessionData } from '@/types'
 
 const GA_ENDPOINT = 'https://www.google-analytics.com/mp/collect'
+const GA_DEBUG_ENDPOINT = 'https://www.google-analytics.com/debug/mp/collect'
 const MEASUREMENT_ID = process.env.MEASUREMENT_ID
 const API_SECRET = process.env.API_SECRET
 const DEFAULT_ENGAGEMENT_TIME_IN_MSEC = 100
@@ -14,10 +16,15 @@ const SESSION_EXPIRATION_IN_MIN = 30
 
 // https://developer.chrome.com/docs/extensions/how-to/integrate/google-analytics-4?t
 
-export async function sendEvent(name: string, id: string) {
+export async function sendEvent(
+  name: string,
+  params: any,
+  screen = SCREEN.CONTENT_SCRIPT,
+) {
+  const endpoint = isDebug ? GA_DEBUG_ENDPOINT : GA_ENDPOINT
   try {
-    fetch(
-      `${GA_ENDPOINT}?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`,
+    const res = await fetch(
+      `${endpoint}?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`,
       {
         method: 'POST',
         body: JSON.stringify({
@@ -26,15 +33,21 @@ export async function sendEvent(name: string, id: string) {
             {
               name: name,
               params: {
-                id: id,
+                page_title: APP_ID,
+                app_version: VERSION,
+                screen: screen,
                 session_id: await getOrCreateSessionId(),
                 engagement_time_msec: DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
+                ...params,
               },
             },
           ],
         }),
       },
     )
+    if (isDebug) {
+      console.log(await res.text())
+    }
   } catch (e) {
     console.warn(e)
   }

@@ -83,7 +83,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         }
       })
 
-    sendEvent('selection_command', mode)
+    sendEvent('selection_command', { id: mode })
     e.stopPropagation()
   }
 

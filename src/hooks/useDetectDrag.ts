@@ -93,7 +93,7 @@ export function useDetectDrag() {
           changeState: onChangeState,
           target,
         })
-        sendEvent('link_command', 'link_preview')
+        sendEvent('link_command', { id: 'link_preview' })
       }
       setStartPosition(null)
       setTarget(null)
