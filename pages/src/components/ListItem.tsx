@@ -26,7 +26,7 @@ export function ListItem(props: Props): JSX.Element {
           <p className="text-base text-sm text-stone-500">{cmd.searchUrl}</p>
           <p className="text-base">{cmd.description}</p>
         </div>
-        <div className="flex items-center text-stone-500">
+        <div className="flex items-center text-stone-600">
           <p
             className="hidden px-2 py-0.5 bg-stone-200 rounded-md"
             data-id={cmd.id}

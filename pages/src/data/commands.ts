@@ -9,6 +9,7 @@ export const Commands = [
     openModeSecondary: 'tab',
     spaceEncoding: 'plus',
     tags: ['Search'],
+    addedAt: '2024-12-10T00:00:00.000Z',
   },
   {
     id: 'd458538c-efd1-5e0f-99b0-80db8167d2db',
@@ -20,6 +21,7 @@ export const Commands = [
     openModeSecondary: 'tab',
     spaceEncoding: 'percent',
     tags: ['Language', 'Translation', '翻訳', 'Tool', 'Japanese'],
+    addedAt: '2024-12-10T00:00:00.000Z',
   },
   {
     id: '17026810-b9ed-5f5a-8e02-569b4cef1dcb',
@@ -31,5 +33,6 @@ export const Commands = [
     openModeSecondary: 'tab',
     spaceEncoding: 'percent',
     tags: ['Language', 'Translation', 'Tool', 'Japanese'],
+    addedAt: '2024-12-10T00:00:00.000Z',
   },
 ]
