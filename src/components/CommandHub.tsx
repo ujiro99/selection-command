@@ -10,6 +10,7 @@ import {
   PopoverAnchor,
   PopoverArrow,
 } from '@/components/ui/popover'
+import { SCREEN } from '@/const'
 
 import './global.css'
 
@@ -33,7 +34,7 @@ export const CommandHub = (): JSX.Element => {
       button.addEventListener('click', (e) => {
         Ipc.send(BgCommand.addCommand, { command }).then((res) => {
           if (res) {
-            sendEvent('command_hub_add', { id })
+            sendEvent('command_hub_add', { id }, SCREEN.COMMAND_HUB)
             setPosition({ x: e.clientX, y: e.clientY })
           }
         })

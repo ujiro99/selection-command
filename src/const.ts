@@ -88,6 +88,7 @@ export enum SCREEN {
   CONTENT_SCRIPT = 'ContentScript',
   OPTION = 'Option',
   SERVICE_WORKER = 'ServiceWorker',
+  COMMAND_HUB = 'CommandHub',
 }
 
 export const POPUP_OFFSET = 50

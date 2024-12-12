@@ -11,7 +11,7 @@ import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/services/util'
 import type { ScreenSize } from '@/services/util'
 import { UserSettings } from '@/services/userSettings'
-import type { Command, CommandVariable } from '@/types'
+import type { CommandVariable } from '@/types'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
 
