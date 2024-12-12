@@ -53,6 +53,7 @@ export type DragOption = {
 }
 
 type LinkCommandSettings = DragOption & {
+  enabled: LINK_COMMAND_ENABLED
   openMode: DRAG_OPEN_MODE
 }
 
