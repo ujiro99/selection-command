@@ -153,6 +153,7 @@ export function Option() {
     if (linkCommands.length > 0) {
       const linkCommand = linkCommands[0]
       settings.linkCommand = {
+        enabled: settings.linkCommand.enabled,
         openMode: linkCommand.openMode,
         ...linkCommand.linkCommandOption,
       }

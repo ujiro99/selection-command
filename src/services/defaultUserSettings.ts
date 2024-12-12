@@ -5,12 +5,14 @@ import {
   DRAG_OPEN_MODE,
   STARTUP_METHOD,
   STYLE,
+  LINK_COMMAND_ENABLED,
 } from '@/const'
 
 export default {
   settingVersion: VERSION,
   commands: [],
   linkCommand: {
+    enabled: LINK_COMMAND_ENABLED.ENABLE,
     openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
     threshold: 150,
     showIndicator: true,

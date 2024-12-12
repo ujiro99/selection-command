@@ -234,6 +234,7 @@ export function SettingFrom() {
     '#/commands/parentFolderId': FolderField,
     '#/commandFolder/iconUrl': IconUrlField,
     '#/commandFolder/onlyIcon': CheckboxField,
+    '#/linkCommand/enabled': SelectField,
     '#/linkCommand/openMode': SelectField,
     '#/linkCommand/threshold': InputNumberField,
     '#/linkCommand/showIndicator': CheckboxField,
@@ -339,7 +340,11 @@ export function SettingFrom() {
     linkCommand: {
       'ui:title': t('linkCommand'),
       'ui:description': t('linkCommand_desc'),
-      'ui:order': ['openMode', 'threshold', 'showIndicator'],
+      'ui:order': ['enabled', 'openMode', 'threshold', 'showIndicator'],
+      enabled: {
+        'ui:title': t('linkCommandEnabled'),
+        'ui:classNames': 'linkCommandEnabled',
+      },
       openMode: {
         'ui:title': t('openMode'),
         'ui:classNames': 'linkCommandOpenMode',

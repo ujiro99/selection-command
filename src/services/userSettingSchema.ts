@@ -1,4 +1,9 @@
-import { COMMAND_MAX, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
+import {
+  COMMAND_MAX,
+  OPEN_MODE,
+  DRAG_OPEN_MODE,
+  LINK_COMMAND_ENABLED,
+} from '@/const'
 import { PopupOption } from '@/services/defaultUserSettings'
 
 export default {
@@ -30,9 +35,16 @@ export default {
     },
     linkCommand: {
       type: 'object',
-      required: ['openMode', 'threshold', 'showIndicator'],
+      required: ['enabled', 'openMode', 'threshold', 'showIndicator'],
       additionalProperties: false,
       properties: {
+        enabled: {
+          name: 'Enabled',
+          $id: '#/linkCommand/enabled',
+          type: 'string',
+          enum: [LINK_COMMAND_ENABLED.ENABLE, LINK_COMMAND_ENABLED.DISABLE],
+          default: LINK_COMMAND_ENABLED.ENABLE,
+        },
         openMode: {
           name: 'OpenMode',
           $id: '#/linkCommand/openMode',
@@ -88,8 +100,8 @@ export default {
           },
           linkCommandEnabled: {
             type: 'string',
-            enum: ['Enable', 'Disable'],
-            default: 'Enable',
+            enum: [LINK_COMMAND_ENABLED.ENABLE, LINK_COMMAND_ENABLED.DISABLE],
+            default: LINK_COMMAND_ENABLED.ENABLE,
           },
         },
       },
