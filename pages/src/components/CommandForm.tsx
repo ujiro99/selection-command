@@ -60,6 +60,10 @@ export function CommandForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      title: '',
+      searchUrl: '',
+      iconUrl: '',
+      description: '',
       openMode: OPEN_MODE.POPUP,
       openModeSecondary: OPEN_MODE.TAB,
       spaceEncoding: SPACE_ENCODING.PLUS,
@@ -122,6 +126,27 @@ export function CommandForm() {
 
         <FormField
           control={form.control}
+          name="iconUrl"
+          render={({ field }) => (
+            <FormItem className="flex items-center">
+              <div className="w-2/5">
+                <FormLabel>アイコンURL</FormLabel>
+                <FormDescription className="leading-tight">
+                  メニューのアイコンとして表示されます。
+                </FormDescription>
+              </div>
+              <div className="w-3/5">
+                <FormControl>
+                  <Input placeholder="Icon URL" {...field} />
+                </FormControl>
+                <FormMessage />
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem className="flex items-center">
@@ -154,27 +179,6 @@ export function CommandForm() {
           <CollapsibleContent
             className={clsx(css.CollapsibleContent, 'w-full space-y-3 pt-2')}
           >
-            <FormField
-              control={form.control}
-              name="iconUrl"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <div className="w-2/5">
-                    <FormLabel>アイコンURL</FormLabel>
-                    <FormDescription className="leading-tight">
-                      メニューのアイコンとして表示されます。
-                    </FormDescription>
-                  </div>
-                  <div className="w-3/5">
-                    <FormControl>
-                      <Input placeholder="Icon URL" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="openMode"

@@ -12,7 +12,8 @@ export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] justify-items-center min-h-screen p-8 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <header className="flex items-center gap-1.5 text-3xl font-[family-name:var(--font-geist-mono)] font-medium">
-        Selection <span className="bg-[#1597C9]/20 px-2 rounded">Command</span>
+        Selection{' '}
+        <span className="bg-[#1597C9]/20 px-2 py-0.5 rounded-lg">Command</span>
         <span className="font-extralight ml-1">Hub</span>
         <MousePointer className={css.mouse} size={26} />
       </header>

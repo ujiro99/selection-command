@@ -12,11 +12,11 @@ import {
 } from '@/components/ui/popover'
 import { SCREEN } from '@/const'
 
-import './global.css'
+import '@/components/global.css'
 
 const TooltipDuration = 2000
 
-export const CommandHub = (): JSX.Element => {
+export const DownloadLink = (): JSX.Element => {
   const [posision, setPosition] = useState<Point | null>(null)
   const { settings } = useSetting()
   const commands = settings.commands
@@ -97,7 +97,7 @@ export const CommandHub = (): JSX.Element => {
         {shouldRender && (
           <PopoverContent
             className={clsx(
-              'bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 text-xs text-white shadow-md',
+              'bg-stone-800 min-w-4 px-2 py-1.5 text-xs text-white shadow-md',
             )}
             side="top"
             arrowPadding={-1}
