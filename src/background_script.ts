@@ -212,7 +212,7 @@ const commandFuncs = {
           urlPattern: param.url,
           popupEnabled: POPUP_ENABLED.ENABLE,
           popupPlacement: 'top-start',
-          linkCommandEnabled: LINK_COMMAND_ENABLED.ENABLE,
+          linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
         })
       }
       await UserSettings.set({
