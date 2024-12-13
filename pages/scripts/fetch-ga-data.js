@@ -13,15 +13,45 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
 async function runReport() {
   const [response] = await analyticsDataClient.runReport({
     property: `properties/${propertyId}`,
-    dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],
-    metrics: [{ name: 'eventCount' }],
-    dimensions: [{ name: 'eventName' }],
+    dateRanges: [
+      {
+        startDate: '7daysAgo',
+        endDate: 'today',
+      },
+    ],
+    metrics: [
+      {
+        name: 'eventCount',
+      },
+    ],
+    dimensions: [
+      {
+        name: 'eventName',
+      },
+      {
+        name: 'customEvent:id',
+      },
+    ],
+    dimensionFilter: {
+      filter: {
+        fieldName: 'eventName',
+        stringFilter: {
+          value: 'command_hub_add',
+          matchType: 'EXACT',
+        },
+      },
+    },
   })
 
   const data = response.rows.reduce((acc, row) => {
-    acc[row.dimensionValues[0].value] = parseInt(row.metricValues[0].value)
+    const obj = {
+      eventName: row.dimensionValues[0].value,
+      eventId: row.dimensionValues[1].value,
+      eventCount: parseInt(row.metricValues[0].value),
+    }
+    acc.push(obj)
     return acc
-  }, {})
+  }, [])
 
   fs.writeFileSync('analytics.json', JSON.stringify(data, null, 2))
 }
