@@ -35,9 +35,11 @@ export function useDetectDrag() {
   const { settings, pageRule } = useSetting()
   const playPixel = 20
   const commandEnabled =
-    pageRule?.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
+    pageRule == null ||
+    pageRule.linkCommandEnabled == undefined ||
+    pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
       ? settings.linkCommand.enabled === LINK_COMMAND_ENABLED.ENABLE
-      : pageRule?.linkCommandEnabled === LINK_COMMAND_ENABLED.ENABLE
+      : pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.ENABLE
 
   const command = settings.commands.find(isLinkCommand)
   const showIndicator =
