@@ -194,6 +194,15 @@
   "Option_linkCommand_desc": {
     "message": "When you drag a link, a pop-up preview is displayed."
   },
+  "Option_linkCommand_enabledInherit": {
+    "message": "Inherit from global settings"
+  },
+  "Option_linkCommand_enabledEnable": {
+    "message": "Enabled"
+  },
+  "Option_linkCommand_enabledDisable": {
+    "message": "Disabled"
+  },
   "Option_threshold": {
     "message": "Drag distance"
   },

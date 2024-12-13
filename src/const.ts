@@ -51,6 +51,7 @@ export enum POPUP_ENABLED {
 export enum LINK_COMMAND_ENABLED {
   ENABLE = 'Enable',
   DISABLE = 'Disable',
+  INHERIT = 'Inherit',
 }
 
 export enum STYLE {

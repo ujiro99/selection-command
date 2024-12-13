@@ -22,6 +22,7 @@ import {
   STARTUP_METHOD,
   KEYBOARD,
   STYLE_VARIABLE,
+  LINK_COMMAND_ENABLED,
 } from '@/const'
 
 import type { UserSettingsType, FolderOption } from '@/types'
@@ -45,6 +46,10 @@ type StartupMethodMap = Record<STARTUP_METHOD, { [key: string]: string }>
 type KeyboardMap = Record<KEYBOARD, { [key: string]: string }>
 type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
 type DragOpenModeMap = Record<DRAG_OPEN_MODE, { [key: string]: string }>
+type LinkCommandEnabledMap = Record<
+  LINK_COMMAND_ENABLED,
+  { [key: string]: string }
+>
 
 const toKey = (str: string) => {
   return str.replace(/-/g, '_')
@@ -238,6 +243,7 @@ export function SettingFrom() {
     '#/linkCommand/openMode': SelectField,
     '#/linkCommand/threshold': InputNumberField,
     '#/linkCommand/showIndicator': CheckboxField,
+    '#/pageRules/linkCommandEnabled': SelectField,
     '#/styleVariable': UserStyleField,
     ArraySchemaField: CustomArraySchemaField,
   }
@@ -344,6 +350,7 @@ export function SettingFrom() {
       enabled: {
         'ui:title': t('linkCommandEnabled'),
         'ui:classNames': 'linkCommandEnabled',
+        enum: {} as LinkCommandEnabledMap,
       },
       openMode: {
         'ui:title': t('openMode'),
@@ -383,7 +390,10 @@ export function SettingFrom() {
         urlPattern: { 'ui:title': t('urlPattern') },
         popupEnabled: { 'ui:title': t('popupEnabled') },
         popupPlacement: { 'ui:title': t('popupPlacement') },
-        linkCommandEnabled: { 'ui:title': t('linkCommandEnabled') },
+        linkCommandEnabled: {
+          'ui:title': t('linkCommandEnabled'),
+          enum: {} as LinkCommandEnabledMap,
+        },
       },
     },
     userStyles: {
@@ -470,6 +480,24 @@ export function SettingFrom() {
     }
   }
   uiSchema.linkCommand.openMode.enum = dragOpenModeMap
+
+  const linkCommandEnabledMap = {} as LinkCommandEnabledMap
+  for (const option of Object.values(LINK_COMMAND_ENABLED)) {
+    if (option === LINK_COMMAND_ENABLED.INHERIT) {
+      linkCommandEnabledMap[option] = {
+        'ui:title':
+          t(`linkCommand_enabled${option}`) +
+          ': ' +
+          t(`linkCommand_enabled${settingData?.linkCommand.enabled}`),
+      }
+      continue
+    }
+    linkCommandEnabledMap[option] = {
+      'ui:title': t(`linkCommand_enabled${option}`),
+    }
+  }
+  uiSchema.linkCommand.enabled.enum = linkCommandEnabledMap
+  uiSchema.pageRules.items.linkCommandEnabled.enum = linkCommandEnabledMap
 
   // Add userStyles to schema and uiSchema.
   const sv = Object.values(STYLE_VARIABLE)

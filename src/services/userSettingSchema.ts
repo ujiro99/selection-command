@@ -99,9 +99,14 @@ export default {
             $ref: '#/definitions/popupPlacement',
           },
           linkCommandEnabled: {
+            $id: '#/pageRules/linkCommandEnabled',
             type: 'string',
-            enum: [LINK_COMMAND_ENABLED.ENABLE, LINK_COMMAND_ENABLED.DISABLE],
-            default: LINK_COMMAND_ENABLED.ENABLE,
+            enum: [
+              LINK_COMMAND_ENABLED.INHERIT,
+              LINK_COMMAND_ENABLED.ENABLE,
+              LINK_COMMAND_ENABLED.DISABLE,
+            ],
+            default: LINK_COMMAND_ENABLED.INHERIT,
           },
         },
       },

@@ -194,6 +194,15 @@
   "Option_linkCommand_desc": {
     "message": "リンクをドラッグすると、ポップアップでプレビュー表示します。"
   },
+  "Option_linkCommand_enabledInherit": {
+    "message": "全体設定から継承"
+  },
+  "Option_linkCommand_enabledEnable": {
+    "message": "有効"
+  },
+  "Option_linkCommand_enabledDisable": {
+    "message": "無効"
+  },
   "Option_threshold": {
     "message": "ドラッグ距離"
   },
