@@ -91,11 +91,13 @@ export default {
             type: 'string',
           },
           popupEnabled: {
+            $id: '#/pageRules/popupEnabled',
             type: 'string',
             enum: ['Enable', 'Disable'],
             default: 'Enable',
           },
           popupPlacement: {
+            $id: '#/pageRules/popupPlacement',
             $ref: '#/definitions/popupPlacement',
           },
           linkCommandEnabled: {

@@ -32,6 +32,12 @@
   "previewOnLeftClickHold": {
     "message": "Left-click and hold to display the menu. It disappears when clicked."
   },
+  "Option_Enable": {
+    "message": "Enabled"
+  },
+  "Option_Disable": {
+    "message": "Disabled"
+  },
   "Option_Reset": {
     "message": "Reset"
   },

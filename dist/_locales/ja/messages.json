@@ -32,6 +32,12 @@
   "previewOnLeftClickHold": {
     "message": "左クリック長押しによりメニューを表示します。クリックすると消えます。"
   },
+  "Option_Enable": {
+    "message": "有効"
+  },
+  "Option_Disable": {
+    "message": "無効"
+  },
   "Option_Reset": {
     "message": "リセット"
   },

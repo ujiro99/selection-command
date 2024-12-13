@@ -22,6 +22,7 @@ import {
   STARTUP_METHOD,
   KEYBOARD,
   STYLE_VARIABLE,
+  POPUP_ENABLED,
   LINK_COMMAND_ENABLED,
 } from '@/const'
 
@@ -46,6 +47,7 @@ type StartupMethodMap = Record<STARTUP_METHOD, { [key: string]: string }>
 type KeyboardMap = Record<KEYBOARD, { [key: string]: string }>
 type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
 type DragOpenModeMap = Record<DRAG_OPEN_MODE, { [key: string]: string }>
+type PopupEnabledMap = Record<POPUP_ENABLED, { [key: string]: string }>
 type LinkCommandEnabledMap = Record<
   LINK_COMMAND_ENABLED,
   { [key: string]: string }
@@ -243,6 +245,8 @@ export function SettingFrom() {
     '#/linkCommand/openMode': SelectField,
     '#/linkCommand/threshold': InputNumberField,
     '#/linkCommand/showIndicator': CheckboxField,
+    '#/pageRules/popupEnabled': SelectField,
+    '#/pageRules/popupPlacement': SelectField,
     '#/pageRules/linkCommandEnabled': SelectField,
     '#/styleVariable': UserStyleField,
     ArraySchemaField: CustomArraySchemaField,
@@ -388,7 +392,10 @@ export function SettingFrom() {
       items: {
         'ui:classNames': 'pageRuleItem',
         urlPattern: { 'ui:title': t('urlPattern') },
-        popupEnabled: { 'ui:title': t('popupEnabled') },
+        popupEnabled: {
+          'ui:title': t('popupEnabled'),
+          enum: {} as PopupEnabledMap,
+        },
         popupPlacement: { 'ui:title': t('popupPlacement') },
         linkCommandEnabled: {
           'ui:title': t('linkCommandEnabled'),
@@ -480,6 +487,14 @@ export function SettingFrom() {
     }
   }
   uiSchema.linkCommand.openMode.enum = dragOpenModeMap
+
+  const popupEnabledMap = {} as PopupEnabledMap
+  for (const option of Object.values(POPUP_ENABLED)) {
+    popupEnabledMap[option] = {
+      'ui:title': t(option),
+    }
+  }
+  uiSchema.pageRules.items.popupEnabled.enum = popupEnabledMap
 
   const linkCommandEnabledMap = {} as LinkCommandEnabledMap
   for (const option of Object.values(LINK_COMMAND_ENABLED)) {
