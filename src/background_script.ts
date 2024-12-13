@@ -32,22 +32,19 @@ class BgData {
   public windowStack: WindowLayer[]
   public normalWindows: WindowLayer
 
-  private constructor() {
-    this.windowStack = []
-    this.normalWindows = []
-
-    Storage.get<BgData>(STORAGE_KEY.BG, STORAGE_AREA.LOCAL).then(
-      (val: BgData) => {
-        if (val) {
-          BgData.instance = val
-        }
-      },
-    )
+  private constructor(val: BgData | undefined) {
+    this.windowStack = val?.windowStack ?? []
+    this.normalWindows = val?.normalWindows ?? []
   }
 
   public static init() {
     if (!BgData.instance) {
-      BgData.instance = new BgData()
+      Storage.get<BgData>(STORAGE_KEY.BG, STORAGE_AREA.LOCAL).then(
+        (val: BgData) => {
+          BgData.instance = new BgData(val)
+          console.debug('BgData initialized', BgData.instance)
+        },
+      )
     }
   }
 
@@ -62,7 +59,6 @@ class BgData {
 }
 
 BgData.init()
-console.log('init', BgData.get())
 
 type Sender = chrome.runtime.MessageSender
 

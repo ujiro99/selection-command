@@ -1,6 +1,11 @@
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
-import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
+import {
+  OPTION_FOLDER,
+  STARTUP_METHOD,
+  VERSION,
+  LINK_COMMAND_ENABLED,
+} from '@/const'
 import type { UserSettingsType, Version, Command } from '@/types'
 import {
   isBase64,
@@ -161,8 +166,11 @@ export const migrate = async (
     data = migrate082(data)
   }
   if (versionDiff(data.settingVersion, '0.10.0') === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = await migrate0_10_0(data)
+  }
+  if (versionDiff(data.settingVersion, '0.10.3') === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate0_10_3(data)
   }
   return data
 }
@@ -200,6 +208,19 @@ const migrate0_10_0 = async (
       await Storage.setCommands(data.commands)
       console.debug('migrate 0.10.0 link command')
     }
+  }
+  return data
+}
+
+const migrate0_10_3 = (data: UserSettingsType): UserSettingsType => {
+  // Add a linkCommand if not exists.
+  if (data.linkCommand == null) {
+    data.linkCommand = DefaultSettings.linkCommand
+    console.debug('migrate 0.10.3 link command')
+  }
+  if (data.linkCommand.enabled == null) {
+    data.linkCommand.enabled = DefaultSettings.linkCommand.enabled
+    console.debug('migrate 0.10.3 link command enabled')
   }
   return data
 }
