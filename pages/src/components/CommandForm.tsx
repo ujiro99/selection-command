@@ -1,12 +1,21 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import { DialogDescription } from '@/components/ui/dialog'
+
+import React, { useState, useEffect } from 'react'
+import { Image } from '@/components/Image'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import clsx from 'clsx'
 
-import { ChevronsUpDown, ChevronsDownUp, Send, RotateCw } from 'lucide-react'
+import {
+  ChevronsUpDown,
+  ChevronsDownUp,
+  Send,
+  Undo2,
+  RotateCw,
+} from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -58,6 +67,8 @@ const formSchema = z.object({
   }),
 })
 
+type FormValues = z.infer<typeof formSchema>
+
 const STORAGE_KEY = 'CommandShareFormData'
 
 let onChagneSearchUrlTO = 0
@@ -66,7 +77,76 @@ const toMessages = (data: Record<string, string>) => {
   return `\`\`\`\n${JSON.stringify(data, null, 2)}`
 }
 
+const enum STEP {
+  INPUT,
+  CONFIRM,
+  SENDING,
+  COMPLETE,
+}
+
 export function CommandForm() {
+  const [formData, setFormData] = useState<FormValues>({} as FormValues)
+  const [step, setStep] = useState<STEP>(STEP.INPUT)
+
+  const onInputSubmit = (values: FormValues) => {
+    if (!values) return
+    setFormData(values)
+    setStep(STEP.CONFIRM)
+  }
+
+  const onConfirmSubmit = () => {
+    setStep(STEP.SENDING)
+    // Send data to Google Apps Script
+    const url =
+      'https://script.google.com/macros/s/AKfycbxhdkl8vb0mxDlKqiHlF1ND461sIVp7nenuKOuNP4Shq1xMgvWyRQsg5Dl2Z0eRnxE/exec'
+    ;(async () => {
+      const ret = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'no-cors',
+        body: JSON.stringify({
+          title: formData.title,
+          message: toMessages(formData),
+        }),
+      })
+      console.debug(ret)
+      // Clear localStorage after form submission
+      sessionStorage.removeItem(STORAGE_KEY)
+      setStep(STEP.COMPLETE)
+    })()
+  }
+
+  const onBack = () => {
+    setStep(STEP.INPUT)
+  }
+
+  switch (step) {
+    case STEP.INPUT:
+      return <InputForm onFormSubmit={onInputSubmit} />
+    case STEP.CONFIRM:
+      return (
+        <ConfirmForm
+          data={formData}
+          onBack={onBack}
+          onFormSubmit={onConfirmSubmit}
+        />
+      )
+    case STEP.SENDING:
+      return <SendingForm />
+    case STEP.COMPLETE:
+      return <CompleteForm />
+    default:
+      return null
+  }
+}
+
+type InputProps = {
+  onFormSubmit: (data: z.infer<typeof formSchema>) => void
+}
+
+function InputForm(props: InputProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -90,11 +170,7 @@ export function CommandForm() {
       const sUrl = e.target.value
       const iUrl = form.getValues('iconUrl')
       if (isEmpty(iUrl) && !isEmpty(sUrl)) {
-        form.setValue(
-          'iconUrl',
-          `https://www.google.com/s2/favicons?sz=64&domain_url=${sUrl}`,
-        )
-        form.trigger('iconUrl')
+        findIconUrl(sUrl)
       }
     }, 1000)
   }
@@ -105,34 +181,13 @@ export function CommandForm() {
     }
   }
 
-  const findIconUrl = () => {
+  const findIconUrl = (_url?: string) => {
+    const url = _url ?? searchUrl
     form.setValue(
       'iconUrl',
-      `https://www.google.com/s2/favicons?sz=64&domain_url=${searchUrl}`,
+      `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`,
     )
     form.trigger('iconUrl')
-  }
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Clear localStorage after form submission
-    sessionStorage.removeItem(STORAGE_KEY)
-    // Send data to Google Apps Script
-    const url =
-      'https://script.google.com/macros/s/AKfycbxhdkl8vb0mxDlKqiHlF1ND461sIVp7nenuKOuNP4Shq1xMgvWyRQsg5Dl2Z0eRnxE/exec'
-    ;(async () => {
-      const ret = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        mode: 'no-cors',
-        body: JSON.stringify({
-          title: values.title,
-          message: toMessages(values),
-        }),
-      })
-      console.debug(ret)
-    })()
   }
 
   useEffect(() => {
@@ -154,7 +209,13 @@ export function CommandForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mt-4">
+      <DialogDescription className="text-stone-600">
+        コマンドの共有を申請します。
+      </DialogDescription>
+      <form
+        className="space-y-3 mt-4"
+        onSubmit={form.handleSubmit(props.onFormSubmit)}
+      >
         <FormField
           control={form.control}
           name="title"
@@ -200,7 +261,7 @@ export function CommandForm() {
                 )}
                 <FormControl>
                   <Input
-                    className=" pr-10"
+                    className="pr-10"
                     placeholder="Search URL"
                     {...field}
                   />
@@ -265,7 +326,7 @@ export function CommandForm() {
                     </FormControl>
                     {isEmpty(iconUrl) && !isEmpty(searchUrl) && (
                       <Button
-                        onClick={findIconUrl}
+                        onClick={() => findIconUrl()}
                         className="absolute gap-1.5 top-1 right-1 px-2.5 h-7 bg-stone-500 rounded-lg"
                       >
                         <RotateCw size={28} />
@@ -398,10 +459,142 @@ export function CommandForm() {
             type="submit"
             className="rounded-xl font-semibold bg-stone-700"
           >
-            <Send /> 共有実行
+            <Send /> 入力内容を確認する
           </Button>
         </div>
       </form>
     </Form>
+  )
+}
+
+const Item = ({ label, value }: { label: string; value: string }) => (
+  <div className="flex items-center">
+    <label className="w-2/6 text-sm font-medium">{label}</label>
+    <div className="w-4/6 font-[family-name:var(--font-geist-mono)] text-sm leading-relaxed overflow-scroll whitespace-nowrap inline-block">
+      <span>{value}</span>
+    </div>
+  </div>
+)
+
+const IconItem = ({ label, value }: { label: string; value: string }) => (
+  <div className="relative">
+    <img
+      className="absolute top-[-2px] left-[27%] w-7 h-7 rounded"
+      src={value}
+      alt="Search url's favicon"
+    />
+    <Item label={label} value={value} />
+  </div>
+)
+
+type ConfirmProps = {
+  data: FormValues
+  onFormSubmit: () => void
+  onBack: () => void
+}
+
+function ConfirmForm(props: ConfirmProps) {
+  return (
+    <div className="overflow-auto">
+      <DialogDescription className="text-stone-600">
+        以下の内容で間違いありませんか？
+      </DialogDescription>
+
+      <div className="mt-3 px-4 py-3 text-stone-800 bg-stone-200 rounded-xl">
+        <Item label="タイトル" value={props.data.title} />
+        <Item label="検索URL" value={props.data.searchUrl} />
+        <Item label="コマンドの説明" value={props.data.description} />
+        <IconItem label="アイコンURL" value={props.data.iconUrl} />
+        <Item label="OpenMode" value={props.data.openMode} />
+        <Item label="Ctrl + クリック" value={props.data.openModeSecondary} />
+        <Item label="スペースのエンコード" value={props.data.spaceEncoding} />
+      </div>
+      <p className="mt-3 text-md text-center">
+        ※送信された情報は本サイト上で公開されます。
+        <br />
+        個人情報や機密情報を含む情報の共有はお控えください。
+      </p>
+      <div className="mt-5 text-center">
+        <Button
+          type="submit"
+          className="rounded-xl font-semibold  text-stone-700 bg-stone-300 hover:bg-stone-300/80"
+          onClick={props.onBack}
+        >
+          <Undo2 />
+          修正する
+        </Button>
+        <Button
+          type="submit"
+          className="rounded-xl font-semibold bg-stone-700 ml-6"
+          onClick={props.onFormSubmit}
+        >
+          <Send /> 共有実行
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function SendingForm() {
+  return (
+    <div className="flex items-center justify-center flex-col">
+      <DialogDescription className="text-stone-600">
+        送信中...
+      </DialogDescription>
+      <Image
+        src="bars-scale-middle.svg"
+        alt="Uploading..."
+        width={30}
+        height={30}
+        className="opacity-60 my-5"
+      />
+    </div>
+  )
+}
+
+function CompleteForm() {
+  return (
+    <div>
+      <DialogDescription className="text-stone-600 text-lg">
+        送信が完了しました<span className="ml-1 text-xl">🎉</span>
+      </DialogDescription>
+      <div className="flex items-center mt-3">
+        <p
+          className={clsx(
+            'flex-1 bg-stone-200 rounded-2xl px-5 py-3',
+            css.triangle,
+          )}
+        >
+          コマンドを共有して頂きありがとうございます！
+          <br />
+          開発者がサイトに反映するまで2〜3日かかる場合がございます。
+          <br />
+          公開まで、今しばらくお待ちください。
+          <br />
+        </p>
+        <Image
+          src="engineer_suit_simple.png"
+          alt="Engineer"
+          width={100}
+          height={100}
+          className="rounded-full bg-stone-200 ml-3"
+          style={
+            {
+              objectViewBox: 'inset(-22px 56px 360px 283px)',
+            } as React.CSSProperties
+          }
+        />
+      </div>
+      <p className="mt-5 text-md">
+        申請後の削除のご要望は、こちらのリンクよりお願いします。
+      </p>
+      <a
+        className="underline text-sky-600"
+        href="https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support"
+        target="_brank"
+      >
+        サポートハブへ
+      </a>
+    </div>
   )
 }

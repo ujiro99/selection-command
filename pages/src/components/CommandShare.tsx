@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
-  DialogDescription,
 } from '@/components/ui/dialog'
 import { ArrowUpToLine } from 'lucide-react'
 import { CommandForm } from '@/components/CommandForm'
@@ -20,9 +19,6 @@ export function CommandShare(): JSX.Element {
         <DialogTitle className="text-stone-600">
           <span className="mr-1">✏️</span>コマンド共有フォーム
         </DialogTitle>
-        <DialogDescription className="text-stone-600">
-          共有するコマンドの情報を入力してください。
-        </DialogDescription>
         <CommandForm />
       </DialogContent>
     </Dialog>
