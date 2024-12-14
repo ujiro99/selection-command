@@ -3,7 +3,7 @@
     "message": "Selection Command"
   },
   "extDescription": {
-    "message": "On a web page, you can set your own commands for the selected text."
+    "message": "Preview links and set custom commands for text selected on web pages."
   },
   "saving": {
     "message": "Saving.."

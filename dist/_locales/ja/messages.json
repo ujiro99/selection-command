@@ -3,7 +3,7 @@
     "message": "Selection Command"
   },
   "extDescription": {
-    "message": "Webページ上で選択したテキストに対して、独自のコマンドを設定できます"
+    "message": "リンクのプレビューや、Webページ上で選択したテキストに対して独自のコマンドを設定できます。"
   },
   "saving": {
     "message": "保存中..."
