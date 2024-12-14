@@ -62,6 +62,10 @@ const STORAGE_KEY = 'CommandShareFormData'
 
 let onChagneSearchUrlTO = 0
 
+const toMessages = (data: Record<string, string>) => {
+  return `\`\`\`\n${JSON.stringify(data, null, 2)}`
+}
+
 export function CommandForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -110,9 +114,25 @@ export function CommandForm() {
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
     // Clear localStorage after form submission
     sessionStorage.removeItem(STORAGE_KEY)
+    // Send data to Google Apps Script
+    const url =
+      'https://script.google.com/macros/s/AKfycbxhdkl8vb0mxDlKqiHlF1ND461sIVp7nenuKOuNP4Shq1xMgvWyRQsg5Dl2Z0eRnxE/exec'
+    ;(async () => {
+      const ret = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: 'no-cors',
+        body: JSON.stringify({
+          title: values.title,
+          message: toMessages(values),
+        }),
+      })
+      console.debug(ret)
+    })()
   }
 
   useEffect(() => {
@@ -134,11 +154,7 @@ export function CommandForm() {
 
   return (
     <Form {...form}>
-      <form
-        id="commandForm"
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-3 mt-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 mt-4">
         <FormField
           control={form.control}
           name="title"
