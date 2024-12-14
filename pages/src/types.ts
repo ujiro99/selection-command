@@ -12,6 +12,7 @@ export type SelectionCommand = {
   spaceEncoding: SPACE_ENCODING
   description: string
   tags: Tag[]
+  addedAt: string
 }
 
 export type Analytics = {

@@ -3,11 +3,27 @@ import { createHash } from 'crypto'
 import { Commands } from '@/data/commands'
 import Analytics from '@/data/analytics.json'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import { Command } from '@/types'
+import { Command, SelectionCommand } from '@/types'
 
 export function cmd2text(cmd: Command): string {
   return JSON.stringify({
     id: cmd.id,
+    title: cmd.title,
+    searchUrl: cmd.searchUrl,
+    iconUrl: cmd.iconUrl,
+    openMode: cmd.openMode,
+    openModeSecondary: cmd.openModeSecondary,
+    spaceEncoding: cmd.spaceEncoding,
+  })
+}
+
+type CommandContent = Omit<
+  SelectionCommand,
+  'id' | 'tags' | 'addedAt' | 'description'
+>
+
+export function cmd2uuid(cmd: CommandContent): string {
+  return generateUUIDFromObject({
     title: cmd.title,
     searchUrl: cmd.searchUrl,
     iconUrl: cmd.iconUrl,

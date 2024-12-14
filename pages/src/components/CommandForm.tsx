@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import clsx from 'clsx'
+import { cmd2uuid } from '@/services/util'
 
 import {
   ChevronsUpDown,
@@ -108,7 +109,11 @@ export function CommandForm() {
         mode: 'no-cors',
         body: JSON.stringify({
           title: formData.title,
-          message: toMessages(formData),
+          message: toMessages({
+            id: cmd2uuid(formData),
+            addedAt: new Date().toISOString(),
+            ...formData,
+          }),
         }),
       })
       console.debug(ret)
