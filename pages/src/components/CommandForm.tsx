@@ -1,8 +1,8 @@
 'use client'
 
+import React, { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
 import { z } from 'zod'
 import clsx from 'clsx'
 
@@ -58,6 +58,8 @@ const formSchema = z.object({
   }),
 })
 
+const STORAGE_KEY = 'CommandShareFormData'
+
 let onChagneSearchUrlTO = 0
 
 export function CommandForm() {
@@ -74,6 +76,7 @@ export function CommandForm() {
     },
   })
 
+  const { setValue } = form
   const searchUrl = form.getValues('searchUrl')
   const iconUrl = form.getValues('iconUrl')
 
@@ -108,7 +111,26 @@ export function CommandForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
+    // Clear localStorage after form submission
+    sessionStorage.removeItem(STORAGE_KEY)
   }
+
+  useEffect(() => {
+    // Resotre form data from localStorage
+    const data = sessionStorage.getItem(STORAGE_KEY)
+    if (data) {
+      const savedData = JSON.parse(data)
+      if (savedData) {
+        Object.keys(savedData).forEach((key) => {
+          setValue(key, savedData[key])
+        })
+      }
+    }
+  }, [setValue])
+
+  form.watch((data) => {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  })
 
   return (
     <Form {...form}>
