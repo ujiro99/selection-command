@@ -23,6 +23,13 @@ const emptyData = {
   eventCount: 0,
 }
 
+/**
+ * Check if the string is empty.
+ */
+export function isEmpty(str: string | null): boolean {
+  return !str?.length
+}
+
 export function getCommands(): Command[] {
   return Commands.map((command) => {
     const a = Analytics.find((a) => a.eventId === command.id) ?? emptyData

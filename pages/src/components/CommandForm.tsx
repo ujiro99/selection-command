@@ -2,10 +2,11 @@
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
+import { useState } from 'react'
 import { z } from 'zod'
 import clsx from 'clsx'
 
-import { ChevronsUpDown, ChevronsDownUp, Send } from 'lucide-react'
+import { ChevronsUpDown, ChevronsDownUp, Send, RotateCw } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -33,6 +34,7 @@ import {
 } from '@/components/ui/collapsible'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { isEmpty } from '@/services/util'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
 
 import css from './CommandForm.module.css'
@@ -56,6 +58,8 @@ const formSchema = z.object({
   }),
 })
 
+let onChagneSearchUrlTO = 0
+
 export function CommandForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,9 +74,40 @@ export function CommandForm() {
     },
   })
 
+  const searchUrl = form.getValues('searchUrl')
+  const iconUrl = form.getValues('iconUrl')
+
+  const onChagneSearchUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(onChagneSearchUrlTO)
+    onChagneSearchUrlTO = window.setTimeout(() => {
+      const sUrl = e.target.value
+      const iUrl = form.getValues('iconUrl')
+      if (isEmpty(iUrl) && !isEmpty(sUrl)) {
+        form.setValue(
+          'iconUrl',
+          `https://www.google.com/s2/favicons?sz=64&domain_url=${sUrl}`,
+        )
+        form.trigger('iconUrl')
+      }
+    }, 1000)
+  }
+
+  const onChagneIconUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isEmpty(e.target.value)) {
+      form.resetField('iconUrl')
+    }
+  }
+
+  const findIconUrl = () => {
+    form.setValue(
+      'iconUrl',
+      `https://www.google.com/s2/favicons?sz=64&domain_url=${searchUrl}`,
+    )
+    form.trigger('iconUrl')
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
-    debugger
   }
 
   return (
@@ -107,37 +142,30 @@ export function CommandForm() {
           control={form.control}
           name="searchUrl"
           render={({ field }) => (
-            <FormItem className="flex items-center">
+            <FormItem
+              className="flex items-center"
+              onChange={onChagneSearchUrl}
+            >
               <div className="w-2/5">
                 <FormLabel>検索URL</FormLabel>
                 <FormDescription className="leading-tight">
                   `%s`を選択テキストに置換します。
                 </FormDescription>
               </div>
-              <div className="w-3/5">
+              <div className="w-3/5 relative">
+                {!isEmpty(iconUrl) && (
+                  <img
+                    className="absolute top-1 right-2.5 w-7 h-7"
+                    src={iconUrl}
+                    alt="Search url's favicon"
+                  />
+                )}
                 <FormControl>
-                  <Input placeholder="Search URL" {...field} />
-                </FormControl>
-                <FormMessage />
-              </div>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="iconUrl"
-          render={({ field }) => (
-            <FormItem className="flex items-center">
-              <div className="w-2/5">
-                <FormLabel>アイコンURL</FormLabel>
-                <FormDescription className="leading-tight">
-                  メニューのアイコンとして表示されます。
-                </FormDescription>
-              </div>
-              <div className="w-3/5">
-                <FormControl>
-                  <Input placeholder="Icon URL" {...field} />
+                  <Input
+                    className=" pr-10"
+                    placeholder="Search URL"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </div>
@@ -179,6 +207,38 @@ export function CommandForm() {
           <CollapsibleContent
             className={clsx(css.CollapsibleContent, 'w-full space-y-3 pt-2')}
           >
+            <FormField
+              control={form.control}
+              name="iconUrl"
+              render={({ field }) => (
+                <FormItem
+                  className="flex items-center"
+                  onChange={onChagneIconUrl}
+                >
+                  <div className="w-2/5">
+                    <FormLabel>アイコンURL</FormLabel>
+                    <FormDescription className="leading-tight">
+                      メニューのアイコンとして表示されます。
+                    </FormDescription>
+                  </div>
+                  <div className="w-3/5 relative">
+                    <FormControl>
+                      <Input placeholder="Icon URL" {...field} />
+                    </FormControl>
+                    {isEmpty(iconUrl) && !isEmpty(searchUrl) && (
+                      <Button
+                        onClick={findIconUrl}
+                        className="absolute gap-1.5 top-1 right-1 px-2.5 h-7 bg-stone-500 rounded-lg"
+                      >
+                        <RotateCw size={28} />
+                        <span className="font-medium">Detect</span>
+                      </Button>
+                    )}
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="openMode"
