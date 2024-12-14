@@ -17,11 +17,15 @@ export function cmd2text(cmd: Command): string {
   })
 }
 
+const emptyData = {
+  eventName: 'command_hub_add',
+  eventId: '',
+  eventCount: 0,
+}
+
 export function getCommands(): Command[] {
   return Commands.map((command) => {
-    const a = Analytics.downloads.find((a) => a.id === command.id) ?? {
-      download: 0,
-    }
+    const a = Analytics.find((a) => a.eventId === command.id) ?? emptyData
     const tags = command.tags.map((t) => ({
       id: generateUUIDFromObject({ name: t }),
       name: t,
@@ -32,7 +36,7 @@ export function getCommands(): Command[] {
       openModeSecondary: command.openModeSecondary as OPEN_MODE,
       spaceEncoding: command.spaceEncoding as SPACE_ENCODING,
       tags,
-      download: a.download.toLocaleString(),
+      download: a.eventCount.toLocaleString(),
     }
   })
 }
