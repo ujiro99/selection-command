@@ -13,14 +13,12 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command'
-
 import * as Popover from '@radix-ui/react-popover'
 
-import { getTags } from '@/services/util'
+import { getTags } from '@/features/tag'
+import { generateUUIDFromObject } from '@/lib/utils'
 
 import type { Tag } from '@/types'
-
-import { generateUUIDFromObject } from '@/services/util'
 
 type Props = {
   value?: Tag

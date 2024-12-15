@@ -8,12 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
 import clsx from 'clsx'
-import {
-  isEmpty,
-  cmd2uuid,
-  getTags,
-  generateUUIDFromObject,
-} from '@/services/util'
+import { cmd2uuid } from '@/features/command'
+import { getTags } from '@/features/tag'
+import { isEmpty, generateUUIDFromObject } from '@/lib/utils'
 
 import {
   ChevronsUpDown,

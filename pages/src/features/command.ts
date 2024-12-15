@@ -1,10 +1,8 @@
-import { v5 as uuidv5 } from 'uuid'
-import { createHash } from 'crypto'
 import Commands from '@/data/commands.json'
-import Tags from '@/data/tags.json'
 import Analytics from '@/data/analytics.json'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import { Command, SelectionCommand, Tag } from '@/types'
+import { Command, SelectionCommand } from '@/types'
+import { generateUUIDFromObject } from '@/lib/utils'
 
 export function cmd2text(cmd: Command): string {
   return JSON.stringify({
@@ -40,13 +38,6 @@ const emptyData = {
   eventCount: 0,
 }
 
-/**
- * Check if the string is empty.
- */
-export function isEmpty(str: string | null): boolean {
-  return !str?.length
-}
-
 export function getCommands(): Command[] {
   return Commands.map((command) => {
     const a = Analytics.find((a) => a.eventId === command.id) ?? emptyData
@@ -63,27 +54,4 @@ export function getCommands(): Command[] {
       download: a.eventCount.toLocaleString(),
     }
   })
-}
-
-/**
- * Get tags.
- */
-export function getTags(): Tag[] {
-  return Tags.map((c) => ({
-    id: generateUUIDFromObject({ name: c.name }),
-    name: c.name,
-  }))
-}
-
-/**
- * Generate UUID from object, using UUIDv5.
- * @param obj Object to generate UUID from.
- * @returns UUID.
- */
-export function generateUUIDFromObject(obj: object): string {
-  const objString = JSON.stringify(obj)
-  const hash = createHash('sha1').update(objString).digest('hex')
-  // UUIDv5 from https://ujiro99.github.io/selection-command/
-  const namespace = 'fe352db3-6a8e-5d07-9aaf-c45a2e9d9f5c'
-  return uuidv5(hash, namespace)
 }

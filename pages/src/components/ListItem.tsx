@@ -3,7 +3,7 @@ import { ArrowDownToLine } from 'lucide-react'
 import { Image } from '@/components/Image'
 import { Tag } from '@/components/Tag'
 import type { Command } from '@/types'
-import { cmd2text } from '@/services/util'
+import { cmd2text } from '@/features/command'
 
 type Props = {
   cmd: Command

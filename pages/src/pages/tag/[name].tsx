@@ -3,7 +3,7 @@ import type {
   GetStaticProps,
   GetStaticPaths,
 } from 'next'
-import { getCommands, getTags } from '@/services/util'
+import { getTags } from '@/features/tag'
 import Tags from '@/data/tags.json'
 
 type Tag = {

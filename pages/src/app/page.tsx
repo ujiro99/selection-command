@@ -3,7 +3,7 @@ import { MousePointer } from 'lucide-react'
 
 import { ListItem } from '@/components/ListItem'
 import { CommandShare } from '@/components/CommandShare'
-import { getCommands } from '@/services/util'
+import { getCommands } from '@/features/command'
 import css from './page.module.css'
 
 export default function Home() {
