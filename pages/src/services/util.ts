@@ -1,9 +1,10 @@
 import { v5 as uuidv5 } from 'uuid'
 import { createHash } from 'crypto'
 import { Commands } from '@/data/commands'
+import { Tags } from '@/data/tags'
 import Analytics from '@/data/analytics.json'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import { Command, SelectionCommand } from '@/types'
+import { Command, SelectionCommand, Tag } from '@/types'
 
 export function cmd2text(cmd: Command): string {
   return JSON.stringify({
@@ -64,7 +65,22 @@ export function getCommands(): Command[] {
   })
 }
 
-function generateUUIDFromObject(obj: object): string {
+/**
+ * Get tags.
+ */
+export function getTags(): Tag[] {
+  return Tags.map((c) => ({
+    id: generateUUIDFromObject({ name: c.name }),
+    name: c.name,
+  }))
+}
+
+/**
+ * Generate UUID from object, using UUIDv5.
+ * @param obj Object to generate UUID from.
+ * @returns UUID.
+ */
+export function generateUUIDFromObject(obj: object): string {
   const objString = JSON.stringify(obj)
   const hash = createHash('sha1').update(objString).digest('hex')
   // UUIDv5 from https://ujiro99.github.io/selection-command/

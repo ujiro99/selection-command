@@ -1,7 +1,7 @@
 import React from 'react'
 import { ArrowDownToLine } from 'lucide-react'
 import { Image } from '@/components/Image'
-import { Badge } from '@/components/ui/badge'
+import { Tag } from '@/components/Tag'
 import type { Command } from '@/types'
 import { cmd2text } from '@/services/util'
 
@@ -46,9 +46,7 @@ export function ListItem(props: Props): JSX.Element {
       <ul className="mt-2 flex gap-2">
         {cmd.tags.map((tag) => (
           <li key={tag.id}>
-            <Badge className="bg-stone-200 hover:bg-stone-300 text-stone-800 select-none">
-              {tag.name}
-            </Badge>
+            <Tag tag={tag} />
           </li>
         ))}
       </ul>

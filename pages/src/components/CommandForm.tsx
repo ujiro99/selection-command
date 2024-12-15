@@ -2,13 +2,18 @@
 
 import { DialogDescription } from '@/components/ui/dialog'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Image } from '@/components/Image'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
 import clsx from 'clsx'
-import { cmd2uuid } from '@/services/util'
+import {
+  isEmpty,
+  cmd2uuid,
+  getTags,
+  generateUUIDFromObject,
+} from '@/services/util'
 
 import {
   ChevronsUpDown,
@@ -16,6 +21,7 @@ import {
   Send,
   Undo2,
   RotateCw,
+  X,
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -44,8 +50,10 @@ import {
 } from '@/components/ui/collapsible'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { isEmpty } from '@/services/util'
+import { TagPicker } from '@/components/TagPicker'
+import { Tag } from '@/components/Tag'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
+import type { Command } from '@/types'
 
 import css from './CommandForm.module.css'
 
@@ -66,6 +74,18 @@ const formSchema = z.object({
   description: z.string().max(200, {
     message: '説明は最長200文字です',
   }),
+  tags: z
+    .array(
+      z.object({
+        tagId: z.string(),
+        name: z.string().max(20, {
+          message: 'タグは最長20文字です',
+        }),
+      }),
+    )
+    .max(5, {
+      message: 'タグは最大5つまでです',
+    }),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -74,8 +94,30 @@ const STORAGE_KEY = 'CommandShareFormData'
 
 let onChagneSearchUrlTO = 0
 
-const toMessages = (data: Record<string, string>) => {
-  return `\`\`\`\n${JSON.stringify(data, null, 2)}`
+type CommandMessage = Omit<Command, 'download' | 'thanks'>
+
+const toMessages = (data: FormValues) => {
+  const msgObj = toCommand(data)
+  return `\`\`\`\n${JSON.stringify(msgObj, null, 2)}`
+}
+
+const toCommand = (data: FormValues): CommandMessage => {
+  const allTags = getTags()
+  const tags = data.tags.map((t) => {
+    const tag = allTags.find((tag) => tag.id === t.tagId)
+    return (
+      tag ?? {
+        id: generateUUIDFromObject({ name: t.name }),
+        name: t.name,
+      }
+    )
+  })
+  return {
+    ...data,
+    id: cmd2uuid(data),
+    addedAt: new Date().toISOString(),
+    tags,
+  }
 }
 
 const enum STEP {
@@ -83,6 +125,7 @@ const enum STEP {
   CONFIRM,
   SENDING,
   COMPLETE,
+  ERROR,
 }
 
 export function CommandForm() {
@@ -100,27 +143,29 @@ export function CommandForm() {
     // Send data to Google Apps Script
     const url =
       'https://script.google.com/macros/s/AKfycbxhdkl8vb0mxDlKqiHlF1ND461sIVp7nenuKOuNP4Shq1xMgvWyRQsg5Dl2Z0eRnxE/exec'
-    ;(async () => {
-      const ret = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        mode: 'no-cors',
-        body: JSON.stringify({
-          title: formData.title,
-          message: toMessages({
-            id: cmd2uuid(formData),
-            addedAt: new Date().toISOString(),
-            ...formData,
+    const submit = async () => {
+      try {
+        const ret = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          mode: 'no-cors',
+          body: JSON.stringify({
+            title: formData.title,
+            message: toMessages(formData),
           }),
-        }),
-      })
-      console.debug(ret)
-      // Clear localStorage after form submission
-      sessionStorage.removeItem(STORAGE_KEY)
-      setStep(STEP.COMPLETE)
-    })()
+        })
+        console.debug(ret)
+        // Clear localStorage after form submission
+        sessionStorage.removeItem(STORAGE_KEY)
+        setStep(STEP.COMPLETE)
+      } catch (e) {
+        console.error(e)
+        setStep(STEP.ERROR)
+      }
+    }
+    submit()
   }
 
   const onBack = () => {
@@ -148,11 +193,13 @@ export function CommandForm() {
 }
 
 type InputProps = {
-  onFormSubmit: (data: z.infer<typeof formSchema>) => void
+  onFormSubmit: (data: FormValues) => void
 }
 
 function InputForm(props: InputProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
@@ -162,12 +209,18 @@ function InputForm(props: InputProps) {
       openMode: OPEN_MODE.POPUP,
       openModeSecondary: OPEN_MODE.TAB,
       spaceEncoding: SPACE_ENCODING.PLUS,
+      tags: [],
     },
   })
 
   const { setValue } = form
   const searchUrl = form.getValues('searchUrl')
   const iconUrl = form.getValues('iconUrl')
+
+  const { fields, append, remove } = useFieldArray({
+    name: 'tags',
+    control: form.control,
+  })
 
   const onChagneSearchUrl = (e: React.ChangeEvent<HTMLInputElement>) => {
     clearTimeout(onChagneSearchUrlTO)
@@ -301,6 +354,54 @@ function InputForm(props: InputProps) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="tags"
+          render={() => (
+            <FormItem className="flex items-center">
+              <div className="w-2/5">
+                <FormLabel>タグ</FormLabel>
+                <FormDescription className="leading-tight">
+                  コマンドの分類として表示されます。
+                </FormDescription>
+              </div>
+              <div className="w-3/5">
+                <FormControl>
+                  <ul className="flex gap-1.5">
+                    {fields.map((field, index) => (
+                      <li key={field.id}>
+                        <button
+                          className="group flex items-center relative"
+                          onClick={() => remove(index)}
+                        >
+                          <Tag className="py-1" tag={field} />
+                          <X
+                            size={16}
+                            className="absolute right-[3px] bg-white rounded-full p-0.5 hidden group-hover:inline"
+                          />
+                        </button>
+                      </li>
+                    ))}
+                    <TagPicker
+                      containerRef={containerRef}
+                      onSelect={(tag) =>
+                        append({
+                          tagId: tag.id,
+                          name: tag.name,
+                        })
+                      }
+                      excludeIds={fields.map((f) => f.tagId)}
+                    />
+                  </ul>
+                </FormControl>
+                <FormMessage />
+              </div>
+            </FormItem>
+          )}
+        />
+
+        <div ref={containerRef} />
 
         <Collapsible className={clsx(css.collapse, 'flex flex-col items-end')}>
           <CollapsibleTrigger className="flex items-center hover:bg-stone-200 px-1.5 py-1 rounded-lg">
