@@ -7,14 +7,14 @@ export default function NotFound() {
         <h1 className="text-4xl">404 ページが見つかりませんでした</h1>
       </header>
       <div className="flex felx-row items-center justify-center w-full text-center font-[family-name:var(--font-geist-mono)]">
-        <p className="text-2xl mt-[-100px]">
+        <p className="text-2xl mt-[-60px]">
           <span>アクセスしようとしたページは存在しません。</span>
           <br />
           <span>URLのご確認をお願いします。</span>
         </p>
         <Image
           src="ozigi_suit_man_simple.png"
-          alt="404 not found"
+          alt="404 Not found"
           className="h-[300px] ml-8"
         />
       </div>

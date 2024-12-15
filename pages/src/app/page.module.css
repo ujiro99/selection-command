@@ -12,3 +12,15 @@
 .item+.item {
   @apply border-t py-5;
 }
+
+.container {
+  @apply grid;
+  @apply grid-rows-[20px_1fr_20px];
+  @apply justify-items-center;
+  @apply min-h-screen;
+  @apply p-8;
+  @apply pb-20;
+  @apply gap-8;
+  @apply sm:p-20;
+  @apply font-[family-name:var(--font-geist-sans)];
+}
