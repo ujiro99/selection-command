@@ -53,7 +53,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { TagPicker } from '@/components/TagPicker'
 import { Tag } from '@/components/Tag'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import type { Command } from '@/types'
+import type { Command, Tag as TagType } from '@/types'
 
 import css from './CommandForm.module.css'
 
@@ -262,6 +262,9 @@ function InputForm(props: InputProps) {
   }, [setValue])
 
   form.watch((data) => {
+    if (!data.title && !data.searchUrl) {
+      return
+    }
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   })
 
@@ -593,6 +596,9 @@ const IconItem = ({ label, value }: { label: string; value: string }) => (
   </div>
 )
 
+type TagName = Omit<TagType, 'id'>
+const tagNames = (tags: TagName[]) => tags.map((t) => t.name).join(', ')
+
 type ConfirmProps = {
   data: FormValues
   onFormSubmit: () => void
@@ -611,6 +617,7 @@ function ConfirmForm(props: ConfirmProps) {
         <Item label="検索URL" value={props.data.searchUrl} />
         <Item label="コマンドの説明" value={props.data.description} />
         <IconItem label="アイコンURL" value={props.data.iconUrl} />
+        <Item label="タグ" value={tagNames(props.data.tags)} />
         <Item label="OpenMode" value={props.data.openMode} />
         <Item label="Ctrl + クリック" value={props.data.openModeSecondary} />
         <Item label="スペースのエンコード" value={props.data.spaceEncoding} />
