@@ -89,6 +89,7 @@ const formSchema = z.object({
 })
 
 type FormValues = z.infer<typeof formSchema>
+type FormKeys = keyof FormValues
 
 const STORAGE_KEY = 'CommandShareFormData'
 
@@ -255,7 +256,7 @@ function InputForm(props: InputProps) {
       const savedData = JSON.parse(data)
       if (savedData) {
         Object.keys(savedData).forEach((key) => {
-          setValue(key, savedData[key])
+          setValue(key as FormKeys, savedData[key])
         })
       }
     }
