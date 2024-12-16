@@ -1,8 +1,7 @@
 import fs from 'fs'
 import Commands from '../src/data/commands.json' assert { type: 'json' }
 
-const tags = Commands.data
-  .map((command) => command.tags)
+const tags = Commands.map((command) => command.tags)
   .flat()
   .reduce((acc, tag) => {
     const f = acc.find((t) => t.name === tag)
@@ -14,4 +13,4 @@ const tags = Commands.data
     return acc
   }, [])
 
-fs.writeFileSync('./src/data/tags.json', JSON.stringify(tags, null, 2))
+fs.writeFileSync('./pages/src/data/tags.json', JSON.stringify(tags, null, 2))

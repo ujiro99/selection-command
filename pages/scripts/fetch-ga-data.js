@@ -1,10 +1,8 @@
 const fs = require('fs')
 const { BetaAnalyticsDataClient } = require('@google-analytics/data')
 
-// const propertyId = process.env.GA_PROPERTY_ID
-const propertyId = '469672228'
-// const jsonKey = JSON.parse(process.env.GA_SERVICE_ACCOUNT_KEY)
-const jsonKey = require('./selection-command-b1db66b80a01.json')
+const propertyId = process.env.GA_PROPERTY_ID
+const jsonKey = JSON.parse(process.env.GA_SERVICE_ACCOUNT_KEY)
 
 const analyticsDataClient = new BetaAnalyticsDataClient({
   credentials: jsonKey,
@@ -53,7 +51,10 @@ async function runReport() {
     return acc
   }, [])
 
-  fs.writeFileSync('src/data/analytics.json', JSON.stringify(data, null, 2))
+  fs.writeFileSync(
+    './pages/src/data/analytics.json',
+    JSON.stringify(data, null, 2),
+  )
 }
 
 runReport().catch(console.error)

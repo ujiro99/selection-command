@@ -1,0 +1,30 @@
+name: Update Data
+on:
+  schedule:
+    - cron: '0 3 * * *' # 毎日12:00 JST (3:00 UTC)に実行
+  workflow_dispatch: # 手動実行用
+
+jobs:
+  update-analytics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install @google-analytics/data
+      - name: Fetch GA data
+        env:
+          GA_SERVICE_ACCOUNT_KEY: ${{ secrets.GA_SERVICE_ACCOUNT_KEY }}
+          GA_PROPERTY_ID: ${{ secrets.GA_PROPERTY_ID }}
+        run: node pages/scripts/fetch-ga-data.mjs
+      - name: Update Tag data
+        run: node pages/scripts/update-tags.mjs
+      - name: Commit and push if changed
+        run: |
+          git config --global user.email "github-actions@example.com"
+          git config --global user.name "GitHub Actions"
+          git add -A
+          git commit -m "Update analytics data" || exit 0
+          git push
