@@ -12,8 +12,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'yarn'
       - name: Install dependencies
-        run: npm install @google-analytics/data
+        run: yarn add @google-analytics/data
       - name: Fetch GA data
         env:
           GA_SERVICE_ACCOUNT_KEY: ${{ secrets.GA_SERVICE_ACCOUNT_KEY }}
