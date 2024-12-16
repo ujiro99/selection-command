@@ -1,18 +1,3 @@
-.mouse {
-  position: relative;
-  top: 22px;
-  left: -78px;
-  fill: white;
-}
-
-.item {
-  @apply pb-5;
-}
-
-.item+.item {
-  @apply border-t py-5;
-}
-
 .container {
   @apply grid;
   @apply grid-rows-[20px_1fr_20px];
@@ -23,4 +8,14 @@
   @apply gap-8;
   @apply sm:p-20;
   @apply font-[family-name:var(--font-geist-sans)];
+}
+
+.main {
+  @apply w-[600px];
+  @apply flex;
+  @apply flex-col;
+  @apply gap-8;
+  @apply mt-8;
+  @apply row-start-2;
+  @apply sm:items-start;
 }

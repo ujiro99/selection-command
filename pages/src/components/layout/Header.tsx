@@ -1,5 +1,5 @@
 import { MousePointer } from 'lucide-react'
-import css from '@/app/page.module.css'
+import css from './Header.module.css'
 
 export function Header(): JSX.Element {
   return (

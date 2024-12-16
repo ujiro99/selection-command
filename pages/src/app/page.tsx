@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className={css.container}>
       <Header />
-      <main className="w-[600px] flex flex-col gap-8 mt-8 row-start-2 sm:items-start">
+      <main className={css.main}>
         <div className="w-full flex justify-end">
           <CommandShare />
         </div>

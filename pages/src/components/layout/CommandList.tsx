@@ -2,7 +2,7 @@ import clsx from 'clsx'
 
 import { getCommands } from '@/features/command'
 import { ListItem } from '@/components/ListItem'
-import css from '@/app/page.module.css'
+import css from './CommandList.module.css'
 
 export function CommandList(): JSX.Element {
   const commands = getCommands()
