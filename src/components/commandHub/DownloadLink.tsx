@@ -11,6 +11,7 @@ import {
   PopoverArrow,
 } from '@/components/ui/popover'
 import { SCREEN } from '@/const'
+import { useDetectUrlChanged } from '@/hooks/useDetectUrlChanged'
 
 import '@/components/global.css'
 
@@ -19,12 +20,14 @@ const TooltipDuration = 2000
 export const DownloadLink = (): JSX.Element => {
   const [posision, setPosition] = useState<Point | null>(null)
   const { settings } = useSetting()
+  const { addUrlChangeListener, removeUrlChangeListener } =
+    useDetectUrlChanged()
   const commands = settings.commands
   const [shouldRender, setShouldRender] = useState(false)
   const open = posision != null
   const ref = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  const setButtonClickListener = () => {
     document.querySelectorAll('button[data-command]').forEach((button) => {
       if (!(button instanceof HTMLButtonElement)) return
       button.style.display = 'block' // show hidden buttons
@@ -40,7 +43,39 @@ export const DownloadLink = (): JSX.Element => {
         })
       })
     })
+  }
+
+  const updateButtonVisibility = () => {
+    const ids = commands.map((c) => c.id)
+    ids.forEach((id) => {
+      // hide installed buttons
+      const installed = document.querySelector(
+        `button[data-id="${id}"]`,
+      ) as HTMLElement
+      if (installed) installed.style.display = 'none'
+      // show installed label
+      const p = document.querySelector(`p[data-id="${id}"]`) as HTMLElement
+      if (p) p.style.display = 'block'
+    })
+  }
+
+  useEffect(() => {
+    setButtonClickListener()
+    updateButtonVisibility()
+    addUrlChangeListener(setButtonClickListener)
+    addUrlChangeListener(updateButtonVisibility)
+    return () => {
+      removeUrlChangeListener(setButtonClickListener)
+    }
   }, [])
+
+  useEffect(() => {
+    updateButtonVisibility()
+    addUrlChangeListener(updateButtonVisibility)
+    return () => {
+      removeUrlChangeListener(updateButtonVisibility)
+    }
+  }, [commands])
 
   useEffect(() => {
     if (!open) return
@@ -64,20 +99,6 @@ export const DownloadLink = (): JSX.Element => {
     }
     return () => clearTimeout(timer)
   }, [open])
-
-  useEffect(() => {
-    const ids = commands.map((c) => c.id)
-    ids.forEach((id) => {
-      // hide installed buttons
-      const installed = document.querySelector(
-        `button[data-id="${id}"]`,
-      ) as HTMLElement
-      if (installed) installed.style.display = 'none'
-      // show installed label
-      const p = document.querySelector(`p[data-id="${id}"]`) as HTMLElement
-      if (p) p.style.display = 'block'
-    })
-  }, [commands])
 
   const styles = {
     position: 'absolute',
