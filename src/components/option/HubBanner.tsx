@@ -14,7 +14,7 @@ export function HubBanner() {
           className={css2.banner}
           src="/SelectionCommandHub.png"
           alt="Selection Command"
-          width="230"
+          width="220"
         />
       </a>
       <p className={css2.description}>{t('commandHub_description')}</p>

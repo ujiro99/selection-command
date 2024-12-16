@@ -14,6 +14,7 @@ import { UserSettings } from '@/services/userSettings'
 import type { CommandVariable } from '@/types'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
+import { PopupOption } from '@/services/defaultUserSettings'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
@@ -245,6 +246,7 @@ const commandFuncs = {
       openMode: params.openMode,
       openModeSecondary: params.openModeSecondary,
       spaceEncoding: params.spaceEncoding,
+      popupOption: PopupOption,
     }
     UserSettings.addCommands([cmd]).then(() => {
       response(true)
