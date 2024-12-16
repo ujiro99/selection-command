@@ -51,10 +51,7 @@ async function runReport() {
     return acc
   }, [])
 
-  fs.writeFileSync(
-    './pages/src/data/analytics.json',
-    JSON.stringify(data, null, 2),
-  )
+  fs.writeFileSync('./src/data/analytics.json', JSON.stringify(data, null, 2))
 }
 
 runReport().catch(console.error)

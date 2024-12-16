@@ -13,4 +13,4 @@ const tags = Commands.map((command) => command.tags)
     return acc
   }, [])
 
-fs.writeFileSync('./pages/src/data/tags.json', JSON.stringify(tags, null, 2))
+fs.writeFileSync('./src/data/tags.json', JSON.stringify(tags, null, 2))
