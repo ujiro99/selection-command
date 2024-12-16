@@ -79,12 +79,9 @@ export const DownloadLink = (): JSX.Element => {
 
   useEffect(() => {
     if (!open) return
-    const hide = () => setPosition(null)
-    const timer = setTimeout(hide, TooltipDuration)
-    ref.current?.addEventListener('mouseleave', hide)
+    const timer = setTimeout(() => setPosition(null), TooltipDuration)
     return () => {
       clearTimeout(timer)
-      ref.current?.removeEventListener('mouseleave', hide)
     }
   }, [open])
 

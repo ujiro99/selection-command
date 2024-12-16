@@ -20,7 +20,7 @@
     {
       "matches": [
         "https://ujiro99.github.io/selection-command/*",
-        "http://localhost:3000/"
+        "http://localhost:3000/*"
       ],
       "js": [
         "/src/command_hub.js"
