@@ -18,6 +18,7 @@ import { Popup } from '@/components/Popup'
 import { LoadingIcon } from '@/components/option/LoadingIcon'
 import { TableOfContents } from '@/components/option/TableOfContents'
 import { ImportExport } from '@/components/option/ImportExport'
+import { HubBanner } from '@/components/option/HubBanner'
 import { useEventProxyReceiver } from '@/hooks/option/useEventProxy'
 
 import '@/components/App.css'
@@ -156,6 +157,9 @@ export function Option() {
           selectionText="preview"
           isPreview={true}
         />
+      </div>
+      <div className={css.commandHub}>
+        <HubBanner />
       </div>
 
       <div className={css.menuContainer}>

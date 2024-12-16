@@ -32,6 +32,9 @@
   "previewOnLeftClickHold": {
     "message": "Left-click and hold to display the menu. It disappears when clicked."
   },
+  "commandHub_description": {
+    "message": "You can now share commands✨"
+  },
   "Option_Enable": {
     "message": "Enabled"
   },

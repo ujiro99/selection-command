@@ -32,6 +32,9 @@
   "previewOnLeftClickHold": {
     "message": "左クリック長押しによりメニューを表示します。クリックすると消えます。"
   },
+  "commandHub_description": {
+    "message": "コマンドを共有できるようになりました✨"
+  },
   "Option_Enable": {
     "message": "有効"
   },

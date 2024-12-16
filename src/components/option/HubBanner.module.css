@@ -1,0 +1,25 @@
+.menuLabel {
+  font-family: var(--font-monospace);
+  font-size: 1.2rem;
+  color: #444;
+  padding-left: 8px;
+}
+
+.banner {
+  margin-top: 10px;
+  margin-left: -6px;
+  transition: opacity ease-out 0.1s;
+  cursor: pointer;
+  opacity: 1;
+
+  &:hover {
+    opacity: 0.6;
+  }
+}
+
+.description {
+  font-size: 0.8rem;
+  font-family: var(--font-family);
+  padding-left: 6px;
+  margin-top: 8px;
+}
