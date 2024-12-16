@@ -113,6 +113,13 @@ export const UserSettings = {
     return true
   },
 
+  addCommands: async (commands: Command[]): Promise<boolean> => {
+    const current = await Storage.getCommands()
+    const newCommands = [...current, ...commands]
+    await Storage.setCommands(newCommands)
+    return true
+  },
+
   updateCommands: async (commands: Command[]): Promise<boolean> => {
     await Storage.updateCommands(commands)
     return true

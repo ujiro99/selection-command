@@ -5,12 +5,12 @@ import { UserSettings } from '@/services/userSettings'
 import type { UserSettingsType } from '@/types'
 import {
   sleep,
-  toUrl,
   capitalize,
   isMenuCommand,
   isLinkCommand,
 } from '@/services/util'
 import { t } from '@/services/i18n'
+import { fetchIconUrl } from '@/services/chrome'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'
 import messages from '@/../dist/_locales/en/messages.json'
 
@@ -22,48 +22,6 @@ import { useEventProxyReceiver } from '@/hooks/option/useEventProxy'
 
 import '@/components/App.css'
 import css from './Option.module.css'
-
-/**
- * Get favicon url from url.
- *
- * @param {string} url
- * @returns {Promise<string>} favicon url
- */
-const fetchIconUrl = async (url: string): Promise<string> => {
-  const p = new Promise<string>(async (resolve, reject) => {
-    let w: chrome.windows.Window
-    const timeoutId = setTimeout(() => {
-      chrome.windows.remove(w.id as number)
-      console.warn('timeout', url)
-      reject()
-    }, 5000)
-    chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-      if (tabId === w.tabs?.[0].id && changeInfo.status === 'complete') {
-        clearTimeout(timeoutId)
-        if (tab.favIconUrl) {
-          resolve(tab.favIconUrl)
-        } else {
-          // retry
-          await sleep(100)
-          const t = await chrome.tabs.get(tabId)
-          if (tab.favIconUrl) {
-            resolve(t.favIconUrl as string)
-          } else {
-            // failed...
-            console.warn(tab)
-            reject()
-          }
-        }
-        chrome.windows.remove(w.id as number)
-      }
-    })
-    w = await chrome.windows.create({
-      url: toUrl(url, 'test'),
-      state: 'minimized',
-    })
-  })
-  return p
-}
 
 const getTranslation = () => {
   const obj = {} as { [key: string]: string }

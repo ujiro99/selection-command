@@ -7,6 +7,7 @@ import { Tooltip } from '../Tooltip'
 import { Icon } from '@/components/Icon'
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { linksInSelection } from '@/services/util'
+import { sendEvent } from '@/services/analytics'
 import { OPEN_MODE, POPUP_OFFSET } from '@/const'
 import { ExecState } from '@/action'
 import type { Command } from '@/types'
@@ -82,6 +83,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         }
       })
 
+    sendEvent('selection_command', { id: mode })
     e.stopPropagation()
   }
 

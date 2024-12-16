@@ -12,10 +12,12 @@ type PopupProps = {
   text: string
   positionElm: Element | null
   disabled?: boolean
+  delay?: number
 }
 
 export function Tooltip(props: PopupProps) {
   const { side } = useContext(popupContext)
+  const delay = props.delay ?? 300
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
   const elm = props.positionElm
@@ -40,7 +42,7 @@ export function Tooltip(props: PopupProps) {
     if (isOpen) {
       timer = setTimeout(() => {
         setShouldRender(true)
-      }, 300)
+      }, delay)
     } else {
       setShouldRender(false)
     }
@@ -59,7 +61,7 @@ export function Tooltip(props: PopupProps) {
           className={clsx(
             'bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 text-xs text-white shadow-md',
           )}
-          side={side}
+          side={side ?? 'top'}
           arrowPadding={-1}
         >
           {props.text}

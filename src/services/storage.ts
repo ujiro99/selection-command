@@ -5,12 +5,19 @@ export enum STORAGE_KEY {
   USER = 0,
   BG = 1,
   COMMAND_COUNT = 2,
-  MESSAGE_QUEUE = 3,
 }
 
 export enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
+  CLIENT_ID = 'clientId',
 }
+
+export enum SESSION_STORAGE_KEY {
+  SESSION_DATA = 'sessionData',
+  MESSAGE_QUEUE = 'messageQueue',
+}
+
+type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
 
 const CMD_PREFIX = 'cmd-'
 
@@ -20,15 +27,18 @@ const DEFAULTS = {
   [STORAGE_KEY.USER]: DefaultSettings,
   [STORAGE_KEY.BG]: {},
   [STORAGE_KEY.COMMAND_COUNT]: DEFAULT_COUNT,
-  [STORAGE_KEY.MESSAGE_QUEUE]: [],
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
+  [LOCAL_STORAGE_KEY.CLIENT_ID]: '',
+  [SESSION_STORAGE_KEY.SESSION_DATA]: null,
+  [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
 }
 
 export enum STORAGE_AREA {
   SYNC = 'sync',
   LOCAL = 'local',
+  SESSION = 'session',
 }
 
 export type ChangedCallback = (newVal: unknown, oldVal: unknown) => void
@@ -56,10 +66,7 @@ export const Storage = {
    *
    * @param {STORAGE_KEY} key of item in storage.
    */
-  get: async <T>(
-    key: STORAGE_KEY | LOCAL_STORAGE_KEY,
-    area = STORAGE_AREA.SYNC,
-  ): Promise<T> => {
+  get: async <T>(key: KEY, area = STORAGE_AREA.SYNC): Promise<T> => {
     let result = await chrome.storage[area].get(`${key}`)
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
@@ -74,7 +81,7 @@ export const Storage = {
    * @param {any} value item.
    */
   set: async (
-    key: STORAGE_KEY | LOCAL_STORAGE_KEY,
+    key: KEY,
     value: unknown,
     area = STORAGE_AREA.SYNC,
   ): Promise<boolean> => {
@@ -91,7 +98,7 @@ export const Storage = {
    * @param {string} key key of item.
    */
   remove: (
-    key: STORAGE_KEY | LOCAL_STORAGE_KEY,
+    key: KEY,
     area = STORAGE_AREA.SYNC,
   ): Promise<boolean | chrome.runtime.LastError> => {
     return new Promise((resolve, reject) => {
@@ -120,12 +127,12 @@ export const Storage = {
     })
   },
 
-  addListener: (key: STORAGE_KEY, cb: ChangedCallback) => {
+  addListener: (key: KEY, cb: ChangedCallback) => {
     changedCallbacks[key] = changedCallbacks[key] ?? []
     changedCallbacks[key].push(cb)
   },
 
-  removeListener: (key: STORAGE_KEY, cb: ChangedCallback) => {
+  removeListener: (key: KEY, cb: ChangedCallback) => {
     changedCallbacks[key] = changedCallbacks[key]?.filter((f) => f !== cb)
   },
 
@@ -173,7 +180,7 @@ export const Storage = {
     // Update commands.
     const data = commands.reduce(
       (acc, cmd, i) => {
-        cmd.id = i // Assigning IDs to each command
+        cmd.id = cmd.id ?? i // Assigning IDs to each command
         acc[`${CMD_PREFIX}${i}`] = cmd
         return acc
       },
