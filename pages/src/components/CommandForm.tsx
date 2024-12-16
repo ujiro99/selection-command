@@ -185,6 +185,8 @@ export function CommandForm() {
       return <SendingForm />
     case STEP.COMPLETE:
       return <CompleteForm />
+    case STEP.ERROR:
+      return <ErrorForm />
     default:
       return null
   }
@@ -706,6 +708,29 @@ function CompleteForm() {
       >
         サポートハブへ
       </a>
+    </div>
+  )
+}
+
+function ErrorForm() {
+  return (
+    <div>
+      <DialogDescription className="text-stone-600 text-lg">
+        送信エラーが発生しました⋯<span className="ml-1 text-xl"></span>
+      </DialogDescription>
+      <div className="mt-3 gap-2 flex flex-col">
+        <p className="text-md">
+          時間をおいて再度お試し頂くか、
+          以下のリンクから開発者までお問い合わせください。
+        </p>
+        <a
+          className="underline text-sky-600"
+          href="https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support"
+          target="_brank"
+        >
+          サポートハブへ
+        </a>
+      </div>
     </div>
   )
 }
