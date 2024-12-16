@@ -9,7 +9,8 @@ export default function Home() {
     <div className={css.container}>
       <Header />
       <main className={css.main}>
-        <div className="w-full flex justify-end">
+        <div className={css.menu}>
+          <div />
           <CommandShare />
         </div>
         <CommandList />

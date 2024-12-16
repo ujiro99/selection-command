@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { ArrowDownToLine } from 'lucide-react'
 import { Image } from '@/components/Image'
 import { Tag } from '@/components/Tag'
@@ -46,7 +47,9 @@ export function ListItem(props: Props): JSX.Element {
       <ul className="mt-2 flex gap-2">
         {cmd.tags.map((tag) => (
           <li key={tag.id}>
-            <Tag tag={tag} />
+            <Link href={`/tag/${tag.name}`}>
+              <Tag tag={tag} />
+            </Link>
           </li>
         ))}
       </ul>

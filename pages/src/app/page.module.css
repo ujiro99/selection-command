@@ -14,8 +14,38 @@
   @apply w-[600px];
   @apply flex;
   @apply flex-col;
-  @apply gap-8;
-  @apply mt-8;
+  @apply gap-10;
+  @apply mt-10;
   @apply row-start-2;
   @apply sm:items-start;
+}
+
+.menu {
+  @apply w-full;
+  @apply h-[68px];
+  @apply flex;
+  @apply justify-between;
+  @apply items-center;
+}
+
+.topLink {
+  @apply relative;
+  @apply flex;
+  @apply items-center;
+
+  &:after {
+    content: '';
+    opacity: 0;
+  }
+
+  &:hover:after {
+    @apply absolute;
+    @apply border-b;
+    @apply border-stone-500;
+    transition: opacity 0.2s;
+    opacity: 1;
+    width: 66px;
+    bottom: -3px;
+    left: 6px;
+  }
 }
