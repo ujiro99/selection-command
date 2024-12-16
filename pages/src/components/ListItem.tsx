@@ -28,19 +28,21 @@ export function ListItem(props: Props): JSX.Element {
           <p className="text-base">{cmd.description}</p>
         </div>
         <div className="flex items-center text-stone-600">
-          <p
-            className="hidden px-2 py-0.5 bg-stone-200 rounded-md"
-            data-id={cmd.id}
-          >
-            <span className="select-none">Installed</span>
-          </p>
-          <button
-            className="hidden hover:bg-stone-200 rounded"
-            data-id={cmd.id}
-            data-command={cmd2text(cmd)}
-          >
-            <ArrowDownToLine className="p-1" size={28} />
-          </button>
+          <div>
+            <p
+              className="hidden px-2 py-0.5 bg-stone-200 rounded-md"
+              data-id={cmd.id}
+            >
+              <span className="select-none">Installed</span>
+            </p>
+            <button
+              className="hidden hover:bg-stone-200 rounded"
+              data-id={cmd.id}
+              data-command={cmd2text(cmd)}
+            >
+              <ArrowDownToLine className="p-1" size={28} />
+            </button>
+          </div>
           <span className="ml-2 p-1 pl-0 select-none">{cmd.download}</span>
         </div>
       </div>
