@@ -1,17 +1,11 @@
 'use client'
 
-import { DialogDescription } from '@/components/ui/dialog'
-
 import React, { useState, useEffect, useRef } from 'react'
-import { Image } from '@/components/Image'
+import DOMPurify from 'dompurify'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
 import clsx from 'clsx'
-import { cmd2uuid } from '@/features/command'
-import { getTags } from '@/features/tag'
-import { isEmpty, generateUUIDFromObject } from '@/lib/utils'
-
 import {
   ChevronsUpDown,
   ChevronsDownUp,
@@ -47,8 +41,15 @@ import {
 } from '@/components/ui/collapsible'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { DialogDescription } from '@/components/ui/dialog'
+
 import { TagPicker } from '@/components/TagPicker'
+import { Image } from '@/components/Image'
 import { Tag } from '@/components/Tag'
+
+import { cmd2uuid } from '@/features/command'
+import { getTags } from '@/features/tag'
+import { isEmpty, generateUUIDFromObject } from '@/lib/utils'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
 import type { Command, Tag as TagType } from '@/types'
 
@@ -248,6 +249,20 @@ function InputForm(props: InputProps) {
     form.trigger('iconUrl')
   }
 
+  const handleSubmit = (_data: FormValues) => {
+    const data = {
+      title: DOMPurify.sanitize(_data.title),
+      searchUrl: DOMPurify.sanitize(_data.searchUrl),
+      description: DOMPurify.sanitize(_data.description),
+      iconUrl: DOMPurify.sanitize(_data.iconUrl),
+      openMode: _data.openMode,
+      openModeSecondary: _data.openModeSecondary,
+      spaceEncoding: _data.spaceEncoding,
+      tags: _data.tags,
+    }
+    props.onFormSubmit(data)
+  }
+
   useEffect(() => {
     // Resotre form data from localStorage
     const data = sessionStorage.getItem(STORAGE_KEY)
@@ -275,7 +290,7 @@ function InputForm(props: InputProps) {
       </DialogDescription>
       <form
         className="space-y-3 mt-4"
-        onSubmit={form.handleSubmit(props.onFormSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
       >
         <FormField
           control={form.control}

@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react'
 import { Check, Plus } from 'lucide-react'
+import DOMPurify from 'dompurify'
 
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -34,6 +35,7 @@ function tagIncludes(tag: Tag, ids: string[] | undefined): boolean {
 
 export function TagPicker(props: Props): JSX.Element {
   const [open, setOpen] = useState(false)
+  const [composing, setComposing] = useState(false)
   const [tagId, setTagId] = useState<string | undefined>(props.value?.id)
   const [input, setInput] = useState<string | undefined>()
   const emptyRef = useRef<HTMLDivElement>(null)
@@ -53,9 +55,10 @@ export function TagPicker(props: Props): JSX.Element {
 
   const tagName = findById(tagId)?.name
 
-  const create = (name: string) => {
+  const create = (_name: string) => {
     if (!createEnalbe) return
-    console.log('create', input)
+    console.log('create', _name)
+    const name = DOMPurify.sanitize(_name)
     props.onSelect({
       id: generateUUIDFromObject({ name }),
       name,
@@ -64,7 +67,7 @@ export function TagPicker(props: Props): JSX.Element {
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && emptyRef.current && input) {
+    if (e.key === 'Enter' && emptyRef.current && input && !composing) {
       create(input)
     }
   }
@@ -91,6 +94,9 @@ export function TagPicker(props: Props): JSX.Element {
               className="h-9"
               onValueChange={setInput}
               onKeyDown={onKeyDown}
+              onCompositionStart={() => setComposing(true)}
+              onCompositionEnd={() => setComposing(false)}
+              maxLength={20}
             />
             <CommandList>
               <CommandEmpty
