@@ -47,5 +47,36 @@
       "Japanese"
     ],
     "addedAt": "2024-12-10T00:00:00.000Z"
+  },
+  {
+    "id": "020d116e-5956-5274-b785-b7f4d7377a52",
+    "title": "Lucide",
+    "searchUrl": "https://lucide.dev/icons/?search=%s",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=64&domain_url=https://lucide.dev/",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "description": "Lucideでアイコンを探します",
+    "tags": [
+      "Design",
+      "UI",
+      "Font"
+    ],
+    "addedAt": "2024-12-16T02:02:14.795Z"
+  },
+  {
+    "title": "ヤフオク落札相場",
+    "searchUrl": "https://auctions.yahoo.co.jp/closedsearch/closedsearch?p=%s",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=64&domain_url=https://auctions.yahoo.co.jp/closedsearch/closedsearch?p=%s",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "description": "ヤフーオークションの落札相場で検索します",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "id": "33cd4e4c-a7cf-593f-b2c7-bf8743882aae",
+    "addedAt": "2024-12-15T09:50:25.804Z"
   }
 ]
