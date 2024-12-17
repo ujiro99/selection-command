@@ -15,7 +15,7 @@ export function CommandShare(): JSX.Element {
         <ArrowUpToLine size={18} />
         <span className="ml-1.5 font-semibold">コマンド共有</span>
       </DialogTrigger>
-      <DialogContent id="commandShare" className="bg-stone-50">
+      <DialogContent id="CommandShare" className="bg-stone-50">
         <DialogTitle className="text-stone-600">
           <span className="mr-1">✏️</span>コマンド共有フォーム
         </DialogTitle>

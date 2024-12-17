@@ -289,6 +289,7 @@ function InputForm(props: InputProps) {
         コマンドの共有を申請します。
       </DialogDescription>
       <form
+        id="InputForm"
         className="space-y-3 mt-4"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
@@ -428,6 +429,7 @@ function InputForm(props: InputProps) {
             <span className="ml-0.5">オプション</span>
           </CollapsibleTrigger>
           <CollapsibleContent
+            id="InputForm_Options"
             className={clsx(css.CollapsibleContent, 'w-full space-y-3 pt-2')}
           >
             <FormField
@@ -622,7 +624,7 @@ type ConfirmProps = {
 
 function ConfirmForm(props: ConfirmProps) {
   return (
-    <div className="overflow-auto">
+    <div id="ConfirmForm" className="overflow-auto">
       <DialogDescription className="text-stone-600">
         以下の内容で間違いありませんか？
       </DialogDescription>
@@ -665,7 +667,7 @@ function ConfirmForm(props: ConfirmProps) {
 
 function SendingForm() {
   return (
-    <div className="flex items-center justify-center flex-col">
+    <div id="SendingForm" className="flex items-center justify-center flex-col">
       <DialogDescription className="text-stone-600">
         送信中...
       </DialogDescription>
@@ -682,7 +684,7 @@ function SendingForm() {
 
 function CompleteForm() {
   return (
-    <div>
+    <div id="CompleteForm">
       <DialogDescription className="text-stone-600 text-lg">
         送信が完了しました<span className="ml-1 text-xl">🎉</span>
       </DialogDescription>
