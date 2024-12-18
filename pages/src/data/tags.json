@@ -38,5 +38,17 @@
   {
     "name": "Shop",
     "count": 1
+  },
+  {
+    "name": "Manual",
+    "count": 1
+  },
+  {
+    "name": "SaaS",
+    "count": 1
+  },
+  {
+    "name": "業務用",
+    "count": 1
   }
 ]
