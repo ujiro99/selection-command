@@ -35,5 +35,7 @@ jobs:
           git add -A
           git commit -m "Update analytics data" || exit 0
           git push
-      - name: call pages.yml for Deployment
-        uses: ./.github/workflows/pages.yml
+
+  deploy-data:
+    needs: update-data
+    uses: ./.github/workflows/pages.yml
