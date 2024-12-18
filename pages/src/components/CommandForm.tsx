@@ -646,9 +646,9 @@ function ConfirmForm(props: ConfirmProps) {
       </p>
       <div className="mt-5 text-center">
         <Button
-          type="submit"
           className="rounded-xl font-semibold  text-stone-700 bg-stone-300 hover:bg-stone-300/80"
           onClick={props.onBack}
+          data-gtm-click="confirm-back"
         >
           <Undo2 />
           修正する
@@ -722,6 +722,7 @@ function CompleteForm() {
         className="underline text-sky-600"
         href="https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support"
         target="_brank"
+        data-gtm-click="support-on-complete"
       >
         サポートハブへ
       </a>
@@ -731,7 +732,7 @@ function CompleteForm() {
 
 function ErrorForm() {
   return (
-    <div>
+    <div id="ErrorForm">
       <DialogDescription className="text-stone-600 text-lg">
         送信エラーが発生しました⋯<span className="ml-1 text-xl"></span>
       </DialogDescription>
@@ -744,6 +745,7 @@ function ErrorForm() {
           className="underline text-sky-600"
           href="https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support"
           target="_brank"
+          data-gtm-click="support-on-error"
         >
           サポートハブへ
         </a>
