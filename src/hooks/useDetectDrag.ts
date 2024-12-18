@@ -10,6 +10,7 @@ import {
   isAnchorElement,
   isClickableElement,
   isLinkCommand,
+  findAnchorElementFromPoint,
   getScreenSize,
 } from '@/services/util'
 import { sendEvent } from '@/services/analytics'
@@ -18,7 +19,7 @@ const isTargetEvent = (e: MouseEvent): boolean => {
   return (
     e.button === MOUSE.LEFT &&
     !isPopup(e.target as Element) &&
-    (isAnchorElement(e.target as Element) ||
+    (isAnchorElement({ x: e.clientX, y: e.clientY }) ||
       isClickableElement(e.target as Element))
   )
 }
@@ -55,9 +56,12 @@ export function useDetectDrag() {
     const handleMouseDown = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
       setStartPosition({ x: e.clientX, y: e.clientY })
-      setTarget(e.target as Element)
-      e.stopPropagation()
-      e.preventDefault()
+      const elm = findAnchorElementFromPoint({ x: e.clientX, y: e.clientY })
+      setTarget(elm as Element)
+      // Prevent text selection during drag
+      if (isClickableElement(e.target as Element)) {
+        e.preventDefault()
+      }
     }
 
     const handleMouseMove = (e: MouseEvent) => {

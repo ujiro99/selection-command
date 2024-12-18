@@ -1,5 +1,11 @@
 import { APP_ID, SPACE_ENCODING, OPEN_MODE } from '@/const'
-import type { Version, Command, SelectionCommand, LinkCommand } from '@/types'
+import type {
+  Version,
+  Point,
+  Command,
+  SelectionCommand,
+  LinkCommand,
+} from '@/types'
 
 /**
  * Stops processing for the specified time.
@@ -181,30 +187,44 @@ export function isPopup(elm: Element): boolean {
 }
 
 /**
- * Check if the element is an anchor element, or contained.
- *
- * @param {Element} elm The element to check.
- * @returns {boolean} True if the element is an anchor element.
- */
-export function isAnchorElement(elm: Element): boolean {
-  return findAnchorElement(elm) != null
-}
-
-/**
  * Find the anchor element from the specified element.
  *
  * @param {Element} elm The element to start searching.
  * @returns {Element} The anchor element.
  */
-export function findAnchorElement(elm: Element): Element | null {
-  if (elm == null) return null
-  if (elm.nodeName === 'body') return null
+export function findAnchorElement(elm: Element): Element | undefined {
+  if (elm == null) return undefined
+  if (elm.nodeName === 'body') return undefined
   if (
     elm.tagName?.toLowerCase() === 'a' &&
-    (elm as HTMLAnchorElement).href != null
+    !isEmpty((elm as HTMLAnchorElement).href)
   )
     return elm
   return findAnchorElement(elm.parentElement as Element)
+}
+
+/**
+ * Find the anchor element from the specified point.
+ * @param {Point} p The point to start searching.
+ * @returns {Element} The anchor element.
+ */
+export function findAnchorElementFromPoint(p: Point): Element | undefined {
+  const elms = document.elementsFromPoint(p.x, p.y)
+  return elms.find(
+    (e) =>
+      e.tagName.toLowerCase() === 'a' &&
+      !isEmpty((e as HTMLAnchorElement).href),
+  )
+}
+
+/**
+ * Check if the element is an anchor element, or contained.
+ *
+ * @param {Point} p The point to start searching.
+ * @returns {boolean} True if the element is an anchor element.
+ */
+export function isAnchorElement(p: Point): boolean {
+  return findAnchorElementFromPoint(p) != null
 }
 
 /**

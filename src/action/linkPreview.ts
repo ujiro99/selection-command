@@ -7,6 +7,7 @@ import {
 } from '@/services/util'
 import { DRAG_OPEN_MODE, POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
+import { isEmpty } from '@/services/util'
 
 export const LinkPreview = {
   async execute({ command, position, target }: ExecProps) {
@@ -19,7 +20,7 @@ export const LinkPreview = {
           ? POPUP_TYPE.POPUP
           : POPUP_TYPE.NORMAL
 
-      if (href != null) {
+      if (!isEmpty(href)) {
         Ipc.send(BgCommand.openPopups, {
           commandId: command.id,
           urls: [href],
