@@ -78,5 +78,21 @@
     ],
     "id": "33cd4e4c-a7cf-593f-b2c7-bf8743882aae",
     "addedAt": "2024-12-15T09:50:25.804Z"
+  },
+  {
+    "title": "KingOfTime",
+    "searchUrl": "https://support.ta.kingoftime.jp/hc/ja/search?query=%s",
+    "description": "KingOfTimeのマニュアルを検索",
+    "iconUrl": "https://support.ta.kingoftime.jp/hc/theming_assets/01HZM3GRFX4JWJSS9QN2PRAXHQ",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Manual",
+      "SaaS",
+      "業務用"
+    ],
+    "id": "f3254d62-2f77-528c-b7bd-6260c67802ec",
+    "addedAt": "2024-12-18T03:00:19.785Z"
   }
 ]
