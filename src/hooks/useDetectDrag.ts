@@ -56,8 +56,9 @@ export function useDetectDrag() {
     const handleMouseDown = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
       setStartPosition({ x: e.clientX, y: e.clientY })
-      const elm = findAnchorElementFromPoint({ x: e.clientX, y: e.clientY })
-      setTarget(elm as Element)
+      const target =
+        findAnchorElementFromPoint({ x: e.clientX, y: e.clientY }) ?? e.target
+      setTarget(target as Element)
       // Prevent text selection during drag
       if (isClickableElement(e.target as Element)) {
         e.preventDefault()
