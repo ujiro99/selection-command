@@ -151,15 +151,17 @@ export function Option() {
         </LoadingIcon>
       </CSSTransition>
 
-      <div className={css.preview} ref={setPreviewElm}>
-        <Popup
-          positionElm={previewElm}
-          selectionText="preview"
-          isPreview={true}
-        />
-      </div>
-      <div className={css.commandHub}>
-        <HubBanner />
+      <div className={css.rightColumn}>
+        <div ref={setPreviewElm}>
+          <Popup
+            positionElm={previewElm}
+            selectionText="preview"
+            isPreview={true}
+          />
+        </div>
+        <div className="mt-12">
+          <HubBanner />
+        </div>
       </div>
 
       <div className={css.menuContainer}>

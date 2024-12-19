@@ -37,16 +37,13 @@
   color: var(--font-color);
 }
 
-.preview {
+.rightColumn {
   position: fixed;
   top: var(--menu-top);
-  right: calc(50% - 460px);
-}
-
-.commandHub {
-  position: fixed;
-  top: calc(var(--menu-top) + 120px);
-  right: calc(50% - 596px);
+  right: calc(50% - 660px);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .menuContainer {
