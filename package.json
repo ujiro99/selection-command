@@ -4,12 +4,12 @@
   "scripts": {
     "build": "node build.js",
     "watch:src": "node watch.js",
-    "watch:dist": "mv3-hot-reload",
+    "watch:dist": "node lib/mv3-hot-reload/out/bin/mv3-hot-reload.js",
     "dev": "concurrently yarn:watch:*",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
     "prepare": "husky install",
-    "preinstall": "cd ./lib/mv3-hot-reload && yarn install && ln -s ../mv3-hot-reload/out/bin/mv3-hot-reload.js ../../node_modules/.bin/mv3-hot-reload",
+    "preinstall": "cd ./lib/mv3-hot-reload && yarn install",
     "zip": "npm-build-zip --source=dist --destination=build"
   },
   "author": "ujiro99",
