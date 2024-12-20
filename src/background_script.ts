@@ -188,7 +188,7 @@ const commandFuncs = {
   },
 
   [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    ; (async () => {
+    ;(async () => {
       const tabIds = await openPopups(param)
       if (tabIds.length > 0) {
         await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
@@ -255,13 +255,15 @@ const commandFuncs = {
   },
 
   [BgCommand.openTab]: (param: openTabProps, sender: Sender): boolean => {
-    getCurrentTab().then((tab) => {
-      const index = tab.index
+    const open = async () => {
+      const tab = sender.tab ?? (await getCurrentTab())
       chrome.tabs.create({
         ...param,
-        index: index + 1,
+        windowId: tab.windowId,
+        index: tab.index + 1,
       })
-    })
+    }
+    open()
     return false
   },
 
@@ -279,11 +281,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-        ; (async () => {
-          const res = await fetch(url, opt)
-          const json = await res.json()
-          response({ ok: res.ok, res: json })
-        })()
+      ;(async () => {
+        const res = await fetch(url, opt)
+        const json = await res.json()
+        response({ ok: res.ok, res: json })
+      })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
