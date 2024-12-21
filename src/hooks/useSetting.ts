@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react'
 import { UserSettings } from '../services/userSettings'
 import type { UserSettingsType, PageRule } from '@/types'
 import { isEmpty } from '@/services/util'
-import { STYLE, STARTUP_METHOD } from '@/const'
+import {
+  STYLE,
+  STARTUP_METHOD,
+  DRAG_OPEN_MODE,
+  LINK_COMMAND_ENABLED,
+} from '@/const'
 
 type useSettingReturn = {
   settings: UserSettingsType
@@ -17,11 +22,14 @@ const emptySettings: UserSettingsType = {
   style: STYLE.HORIZONTAL,
   popupPlacement: 'top',
   linkCommand: {
+    enabled: LINK_COMMAND_ENABLED.ENABLE,
+    openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
     threshold: 150,
     showIndicator: true,
   },
   userStyles: [],
   startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },
+  stars: [],
 }
 
 export function useSetting(): useSettingReturn {

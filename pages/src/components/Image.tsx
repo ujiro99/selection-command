@@ -1,5 +1,6 @@
 import * as React from 'react'
 import NextImage from 'next/image'
+import { cn } from '@/lib/utils'
 
 import nextConfig from '../../next.config.mjs'
 const BASE_PATH = nextConfig.basePath || ''
@@ -16,10 +17,10 @@ type Props = {
 function Image(props: Props): JSX.Element {
   let { src } = props
   if (src.startsWith('/')) {
-    src = `${BASE_PATH}/${props.src}`
+    src = `${BASE_PATH}${props.src}`
     return (
       <NextImage
-        className="dark:invert"
+        className={cn('dark:invert', props.className)}
         src={src}
         alt={`${props.alt}`}
         width={`${props.width ?? 20}`}

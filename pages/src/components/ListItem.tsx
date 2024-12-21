@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { ArrowDownToLine } from 'lucide-react'
+import { ArrowDownToLine, Check, Star } from 'lucide-react'
 import { Image } from '@/components/Image'
 import { Tag } from '@/components/Tag'
 import type { Command } from '@/types'
@@ -14,8 +14,8 @@ export function ListItem(props: Props): JSX.Element {
   const { cmd } = props
   return (
     <>
-      <div className="text-left flex flex-row">
-        <div className="flex-1">
+      <div className="text-left flex flex-row items-center gap-1">
+        <div className="flex-1 overflow-hidden space-y-1">
           <p className="text-lg flex flex-row">
             <Image
               src={cmd.iconUrl}
@@ -24,29 +24,53 @@ export function ListItem(props: Props): JSX.Element {
             />
             {cmd.title}
           </p>
-          <p className="text-base text-sm text-stone-500">{cmd.searchUrl}</p>
+          <p className="text-base text-sm text-stone-500 truncate">
+            {cmd.searchUrl}
+          </p>
           <p className="text-base">{cmd.description}</p>
         </div>
-        <div className="flex items-center text-stone-600">
-          <div>
-            <p
-              className="hidden px-2 py-0.5 bg-stone-200 rounded-md"
+        <div className="flex gap-1">
+          <div className="flex items-center text-stone-600">
+            <div>
+              <p className="hidden" data-id={cmd.id}>
+                <Check className="p-1 stroke-sky-500" size={28} />
+              </p>
+              <button
+                className="hidden hover:bg-stone-200 rounded transition"
+                data-id={cmd.id}
+                data-command={cmd2text(cmd)}
+                data-gtm-click="install"
+              >
+                <ArrowDownToLine className="p-1" size={28} />
+              </button>
+            </div>
+            <span
+              className="pl-0.5 p-1 select-none"
               data-id={cmd.id}
+              data-download-count={cmd.download}
             >
-              <span className="select-none">Installed</span>
-            </p>
-            <button
-              className="hidden hover:bg-stone-200 rounded"
-              data-id={cmd.id}
-              data-command={cmd2text(cmd)}
-            >
-              <ArrowDownToLine className="p-1" size={28} />
-            </button>
+              {cmd.download.toLocaleString()}
+            </span>
           </div>
-          <span className="ml-2 p-1 pl-0 select-none">{cmd.download}</span>
+          <div className="flex items-center text-stone-600">
+            <button
+              className="hover:bg-stone-200 rounded transition duration-50"
+              data-star-id={cmd.id}
+              data-gtm-click="star"
+            >
+              <Star className="p-1 transition" size={28} />
+            </button>
+            <span
+              className="pl-0.5 p-1 select-none"
+              data-star-id={cmd.id}
+              data-star-count={cmd.star}
+            >
+              {cmd.star.toLocaleString()}
+            </span>
+          </div>
         </div>
       </div>
-      <ul className="mt-2 flex gap-2">
+      <ul className="mt-2 flex gap-2 flex-wrap">
         {cmd.tags.map((tag) => (
           <li key={tag.id}>
             <Link href={`/tag/${tag.name}`}>

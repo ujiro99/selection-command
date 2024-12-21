@@ -33,14 +33,15 @@ export function cmd2uuid(cmd: CommandContent): string {
 }
 
 const emptyData = {
-  eventName: 'command_hub_add',
-  eventId: '',
   eventCount: 0,
 }
 
 export function getCommands(): Command[] {
   return Commands.map((command) => {
-    const a = Analytics.find((a) => a.eventId === command.id) ?? emptyData
+    const dl =
+      Analytics.download.find((a) => a.eventId === command.id) ?? emptyData
+    const star =
+      Analytics.starred.find((a) => a.eventId === command.id) ?? emptyData
     const tags = command.tags.map((t) => ({
       id: generateUUIDFromObject({ name: t }),
       name: t,
@@ -51,7 +52,8 @@ export function getCommands(): Command[] {
       openModeSecondary: command.openModeSecondary as OPEN_MODE,
       spaceEncoding: command.spaceEncoding as SPACE_ENCODING,
       tags,
-      download: a.eventCount.toLocaleString(),
+      download: dl.eventCount,
+      star: star.eventCount,
     }
   })
 }

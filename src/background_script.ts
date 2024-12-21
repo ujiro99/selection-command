@@ -188,7 +188,7 @@ const commandFuncs = {
   },
 
   [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    ; (async () => {
+    ;(async () => {
       const tabIds = await openPopups(param)
       if (tabIds.length > 0) {
         await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
@@ -255,13 +255,15 @@ const commandFuncs = {
   },
 
   [BgCommand.openTab]: (param: openTabProps, sender: Sender): boolean => {
-    getCurrentTab().then((tab) => {
-      const index = tab.index
+    const open = async () => {
+      const tab = sender.tab ?? (await getCurrentTab())
       chrome.tabs.create({
         ...param,
-        index: index + 1,
+        windowId: tab.windowId,
+        index: tab.index + 1,
       })
-    })
+    }
+    open()
     return false
   },
 
@@ -279,11 +281,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-        ; (async () => {
-          const res = await fetch(url, opt)
-          const json = await res.json()
-          response({ ok: res.ok, res: json })
-        })()
+      ;(async () => {
+        const res = await fetch(url, opt)
+        const json = await res.json()
+        response({ ok: res.ok, res: json })
+      })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
@@ -360,6 +362,29 @@ const commandFuncs = {
       })
 
     // return async
+    return true
+  },
+
+  [BgCommand.toggleStar]: (
+    param: { id: string },
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const toggle = async () => {
+      const settings = await UserSettings.get()
+      const idx = settings.stars.findIndex((s) => s.id === param.id)
+      if (idx >= 0) {
+        settings.stars.splice(idx, 1)
+      } else {
+        settings.stars.push({
+          id: param.id,
+          addedAt: Date.now(),
+        })
+      }
+      await UserSettings.set(settings, true)
+      response(true)
+    }
+    toggle()
     return true
   },
 } as { [key: string]: IpcCallback }

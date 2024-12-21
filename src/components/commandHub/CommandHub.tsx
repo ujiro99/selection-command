@@ -1,10 +1,12 @@
 import React from 'react'
-import { DownloadLink } from '@/components/commandHub/DownloadLink'
+import { DownloadButton } from '@/components/commandHub/DownloadButton'
+import { StarButton } from '@/components/commandHub/StarButton'
 
 export const CommandHub = (): JSX.Element => {
   return (
     <>
-      <DownloadLink />
+      <DownloadButton />
+      <StarButton />
     </>
   )
 }

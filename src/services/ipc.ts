@@ -10,6 +10,7 @@ export enum BgCommand {
   execApi = 'execApi',
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
+  toggleStar = 'toggleStar',
 }
 
 export enum TabCommand {

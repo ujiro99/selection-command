@@ -17,7 +17,8 @@ export type SelectionCommand = {
 
 export type Analytics = {
   id: string
-  download: string
+  download: number
+  star: number
 }
 
 export type Tag = {

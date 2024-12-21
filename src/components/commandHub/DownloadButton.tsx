@@ -16,7 +16,7 @@ import '@/components/global.css'
 
 const TooltipDuration = 2000
 
-export const DownloadLink = (): JSX.Element => {
+export const DownloadButton = (): JSX.Element => {
   const [position, setPosition] = useState<Element | null>(null)
   const { settings } = useSetting()
   const { addUrlChangeListener, removeUrlChangeListener } =
@@ -57,6 +57,21 @@ export const DownloadLink = (): JSX.Element => {
     })
   }
 
+  const updateCount = () => {
+    document.querySelectorAll('span[data-id]').forEach((span) => {
+      if (!(span instanceof HTMLElement)) return
+      const count = Number(span.dataset.downloadCount)
+      if (count == null || isNaN(count)) return
+      let reviced = 0
+      const cmd = commands.find((c) => c.id === span.dataset.id)
+      if (cmd != null) {
+        // There is a command.
+        reviced++
+      }
+      span.textContent = (count + reviced).toLocaleString()
+    })
+  }
+
   useEffect(() => {
     setButtonClickListener()
     updateButtonVisibility()
@@ -69,9 +84,12 @@ export const DownloadLink = (): JSX.Element => {
 
   useEffect(() => {
     updateButtonVisibility()
+    updateCount()
     addUrlChangeListener(updateButtonVisibility)
+    addUrlChangeListener(updateCount)
     return () => {
       removeUrlChangeListener(updateButtonVisibility)
+      removeUrlChangeListener(updateCount)
     }
   }, [commands])
 

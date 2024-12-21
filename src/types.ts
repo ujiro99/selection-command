@@ -98,6 +98,10 @@ export type StartupMethod = {
   leftClickHoldParam?: number
 }
 
+export type Star = {
+  id: string
+}
+
 export type UserSettingsType = {
   settingVersion: Version
   startupMethod: StartupMethod
@@ -108,6 +112,7 @@ export type UserSettingsType = {
   pageRules: Array<PageRule>
   style: STYLE
   userStyles: Array<StyleVariable>
+  stars: Array<Star>
 }
 
 export type SessionData = {

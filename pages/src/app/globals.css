@@ -72,3 +72,8 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.starred svg {
+  @apply fill-amber-400;
+  @apply stroke-amber-400;
+}
