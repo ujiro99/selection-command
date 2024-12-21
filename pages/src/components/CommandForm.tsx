@@ -276,7 +276,7 @@ function InputForm(props: InputProps) {
     }
   }, [setValue])
 
-  form.watch((data) => {
+  form.watch((data: FormValues) => {
     if (!data.title && !data.searchUrl) {
       return
     }
@@ -596,7 +596,7 @@ function InputForm(props: InputProps) {
 const Item = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center">
     <label className="w-2/6 text-sm font-medium">{label}</label>
-    <div className="w-4/6 font-[family-name:var(--font-geist-mono)] text-sm leading-relaxed overflow-scroll whitespace-nowrap inline-block">
+    <div className="w-4/6 font-[family-name:var(--font-geist-mono)] text-sm leading-relaxed overflow-x-auto whitespace-nowrap inline-block">
       <span>{value}</span>
     </div>
   </div>
@@ -672,7 +672,7 @@ function SendingForm() {
         送信中...
       </DialogDescription>
       <Image
-        src="bars-scale-middle.svg"
+        src="/bars-scale-middle.svg"
         alt="Uploading..."
         width={30}
         height={30}
@@ -703,14 +703,14 @@ function CompleteForm() {
           <br />
         </p>
         <Image
-          src="engineer_suit_simple.png"
+          src="/engineer_suit_simple.png"
           alt="Engineer"
           width={100}
           height={100}
-          className="rounded-full bg-stone-200 ml-3"
+          className="rounded-full bg-stone-200 ml-3 h-[100px]"
           style={
             {
-              objectViewBox: 'inset(-22px 56px 360px 283px)',
+              objectViewBox: 'inset(-5px 12px 65px 52px)',
             } as React.CSSProperties
           }
         />
