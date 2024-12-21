@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useSetting } from '@/hooks/useSetting'
 import { sendEvent } from '@/services/analytics'
 import { SCREEN } from '@/const'
@@ -18,6 +18,7 @@ function findButtonElement(elm: Element): HTMLButtonElement | undefined {
 
 export const StarButton = (): JSX.Element => {
   const { settings } = useSetting()
+  const [lastUpdated, setLastUpdated] = useState(0)
   const stars = settings.stars
   const { addUrlChangeListener, removeUrlChangeListener } =
     useDetectUrlChanged()
@@ -27,7 +28,7 @@ export const StarButton = (): JSX.Element => {
       const button = findButtonElement(e.target as Element)
       const id = button?.dataset.starId
       if (id == null) return
-      const found = stars.includes(id)
+      const found = stars.some((s) => s.id === id)
       sendEvent(
         `command_hub_star_${found ? 'remove' : 'add'}`,
         { id },
@@ -38,17 +39,33 @@ export const StarButton = (): JSX.Element => {
     [stars],
   )
 
-  const updateButton = () => {
+  const updateButton = useCallback(() => {
     document.querySelectorAll('button[data-star-id]').forEach((button) => {
       if (!(button instanceof HTMLButtonElement)) return
       const id = button.dataset.starId
       if (id == null) return
       button.addEventListener('click', updateStar)
-      if (stars.includes(id)) {
+      if (stars.some((s) => s.id === id)) {
         button.classList.add('starred')
       } else {
         button.classList.remove('starred')
       }
+    })
+  }, [stars])
+
+  const updateCount = () => {
+    document.querySelectorAll('span[data-star-id]').forEach((span) => {
+      if (!(span instanceof HTMLElement)) return
+      const count = Number(span.dataset.starCount)
+      if (count == null || isNaN(count)) return
+      let reviced = 0
+      const star = stars.find((s) => s.id === span.dataset.starId)
+      const addedAt = star?.addedAt ?? 0
+      if (addedAt > lastUpdated) {
+        // There is a new star.
+        reviced++
+      }
+      span.textContent = (count + reviced).toLocaleString()
     })
   }
 
@@ -60,10 +77,19 @@ export const StarButton = (): JSX.Element => {
   }
 
   useEffect(() => {
+    const elm = document.querySelector('[data-updated]')
+    if (!(elm instanceof HTMLElement)) return
+    setLastUpdated(Number(elm.dataset.updated))
+  }, [])
+
+  useEffect(() => {
     updateButton()
+    updateCount()
     addUrlChangeListener(updateButton)
+    addUrlChangeListener(updateCount)
     return () => {
       removeUrlChangeListener(updateButton)
+      removeUrlChangeListener(updateCount)
       removeButtonEvent()
     }
   }, [stars])

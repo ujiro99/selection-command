@@ -33,6 +33,7 @@ export type SelectionCommand = {
   fetchOptions?: string
   variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
+  addedAt?: number
 }
 
 export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
@@ -98,6 +99,11 @@ export type StartupMethod = {
   leftClickHoldParam?: number
 }
 
+export type Star = {
+  id: string
+  addedAt: number
+}
+
 export type UserSettingsType = {
   settingVersion: Version
   startupMethod: StartupMethod
@@ -108,7 +114,7 @@ export type UserSettingsType = {
   pageRules: Array<PageRule>
   style: STYLE
   userStyles: Array<StyleVariable>
-  stars: Array<string>
+  stars: Array<Star>
 }
 
 export type SessionData = {

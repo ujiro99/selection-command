@@ -372,13 +372,16 @@ const commandFuncs = {
   ): boolean => {
     const toggle = async () => {
       const settings = await UserSettings.get()
-      const idx = settings.stars.findIndex((s) => s === param.id)
+      const idx = settings.stars.findIndex((s) => s.id === param.id)
       if (idx >= 0) {
         settings.stars.splice(idx, 1)
       } else {
-        settings.stars.push(param.id)
+        settings.stars.push({
+          id: param.id,
+          addedAt: Date.now(),
+        })
       }
-      await UserSettings.set(settings)
+      await UserSettings.set(settings, true)
       response(true)
     }
     toggle()

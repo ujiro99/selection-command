@@ -1,7 +1,7 @@
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
 import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
-import type { UserSettingsType, Version, Command } from '@/types'
+import type { UserSettingsType, Version, Command, Star } from '@/types'
 import {
   isBase64,
   isEmpty,
@@ -46,7 +46,10 @@ export const UserSettings = {
     }
 
     // Stars
-    data.stars = await Storage.get<string[]>(LOCAL_STORAGE_KEY.STARS)
+    data.stars = await Storage.get<Star[]>(
+      LOCAL_STORAGE_KEY.STARS,
+      STORAGE_AREA.LOCAL,
+    )
 
     data = await migrate(data)
 
@@ -115,7 +118,7 @@ export const UserSettings = {
     data.commands = []
 
     // Stars
-    await Storage.set(LOCAL_STORAGE_KEY.STARS, data.stars)
+    await Storage.set(LOCAL_STORAGE_KEY.STARS, data.stars, STORAGE_AREA.LOCAL)
     data.stars = []
 
     await Storage.set(STORAGE_KEY.USER, data)

@@ -44,7 +44,13 @@ export function ListItem(props: Props): JSX.Element {
                 <ArrowDownToLine className="p-1" size={28} />
               </button>
             </div>
-            <span className="pl-0.5 p-1 select-none">{cmd.download}</span>
+            <span
+              className="pl-0.5 p-1 select-none"
+              data-id={cmd.id}
+              data-download-count={cmd.download}
+            >
+              {cmd.download.toLocaleString()}
+            </span>
           </div>
           <div className="flex items-center text-stone-600">
             <button
@@ -54,7 +60,13 @@ export function ListItem(props: Props): JSX.Element {
             >
               <Star className="p-1 transition" size={28} />
             </button>
-            <span className="pl-0.5 p-1 select-none">{cmd.star}</span>
+            <span
+              className="pl-0.5 p-1 select-none"
+              data-star-id={cmd.id}
+              data-star-count={cmd.star}
+            >
+              {cmd.star.toLocaleString()}
+            </span>
           </div>
         </div>
       </div>
