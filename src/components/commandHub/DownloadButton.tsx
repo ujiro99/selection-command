@@ -59,7 +59,6 @@ export const DownloadButton = (): JSX.Element => {
 
   const updateCount = () => {
     document.querySelectorAll('span[data-id]').forEach((span) => {
-      console.log(span)
       if (!(span instanceof HTMLElement)) return
       const count = Number(span.dataset.downloadCount)
       if (count == null || isNaN(count)) return
