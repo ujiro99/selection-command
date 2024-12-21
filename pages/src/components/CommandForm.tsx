@@ -93,7 +93,7 @@ const STORAGE_KEY = 'CommandShareFormData'
 
 let onChagneSearchUrlTO = 0
 
-type CommandMessage = Omit<Command, 'download' | 'thanks'>
+type CommandMessage = Omit<Command, 'download' | 'star'>
 
 const toMessages = (data: FormValues) => {
   const msgObj = toCommand(data)

@@ -10,6 +10,7 @@ export enum STORAGE_KEY {
 export enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
   CLIENT_ID = 'clientId',
+  STARS = 'stars',
 }
 
 export enum SESSION_STORAGE_KEY {
@@ -31,6 +32,7 @@ const DEFAULTS = {
     images: {},
   },
   [LOCAL_STORAGE_KEY.CLIENT_ID]: '',
+  [LOCAL_STORAGE_KEY.STARS]: [],
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
   [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
 }

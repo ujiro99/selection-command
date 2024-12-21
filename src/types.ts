@@ -108,6 +108,7 @@ export type UserSettingsType = {
   pageRules: Array<PageRule>
   style: STYLE
   userStyles: Array<StyleVariable>
+  stars: Array<string>
 }
 
 export type SessionData = {

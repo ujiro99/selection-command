@@ -364,6 +364,26 @@ const commandFuncs = {
     // return async
     return true
   },
+
+  [BgCommand.toggleStar]: (
+    param: { id: string },
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const toggle = async () => {
+      const settings = await UserSettings.get()
+      const idx = settings.stars.findIndex((s) => s === param.id)
+      if (idx >= 0) {
+        settings.stars.splice(idx, 1)
+      } else {
+        settings.stars.push(param.id)
+      }
+      await UserSettings.set(settings)
+      response(true)
+    }
+    toggle()
+    return true
+  },
 } as { [key: string]: IpcCallback }
 
 for (const key in BgCommand) {

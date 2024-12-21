@@ -46,6 +46,7 @@ export default {
     method: STARTUP_METHOD.TEXT_SELECTION,
   },
   userStyles: [],
+  stars: [],
 } as UserSettingsType
 
 export const PopupOption = {

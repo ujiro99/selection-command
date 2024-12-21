@@ -1,11 +1,6 @@
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
-import {
-  OPTION_FOLDER,
-  STARTUP_METHOD,
-  VERSION,
-  LINK_COMMAND_ENABLED,
-} from '@/const'
+import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
 import type { UserSettingsType, Version, Command } from '@/types'
 import {
   isBase64,
@@ -19,6 +14,7 @@ import { OptionSettings } from '@/services/optionSettings'
 
 enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
+  STARS = 'stars',
 }
 
 export type Caches = {
@@ -49,6 +45,9 @@ export const UserSettings = {
       data.commands = commands
     }
 
+    // Stars
+    data.stars = await Storage.get<string[]>(LOCAL_STORAGE_KEY.STARS)
+
     data = await migrate(data)
 
     data.folders = data.folders.filter((folder) => !!folder.title)
@@ -62,7 +61,10 @@ export const UserSettings = {
     return data
   },
 
-  set: async (data: UserSettingsType): Promise<boolean> => {
+  set: async (
+    data: UserSettingsType,
+    serviceWorker = false,
+  ): Promise<boolean> => {
     // remove unused caches
     const urls = UserSettings.getUrls(data)
     const caches = await UserSettings.getCaches()
@@ -73,25 +75,27 @@ export const UserSettings = {
       }
     }
 
-    // Convert iconUrl to DataURL for cache.
-    const noCacheUrls = urls
-      .filter((url) => !isEmpty(url))
-      .filter((url) => !isBase64(url) && caches.images[url] == null)
-    const newCaches = await Promise.all(
-      noCacheUrls.map(async (url) => {
-        let dataUrl = ''
-        try {
-          dataUrl = await toDataURL(url)
-        } catch (e) {
-          console.warn('Failed to convert to data url', url)
-          console.warn(e)
-        }
-        return [url, dataUrl]
-      }),
-    )
-    for (const [iconUrl, dataUrl] of newCaches) {
-      if (isEmpty(dataUrl)) continue
-      caches.images[iconUrl] = dataUrl
+    if (!serviceWorker) {
+      // Convert iconUrl to DataURL for cache.
+      const noCacheUrls = urls
+        .filter((url) => !isEmpty(url))
+        .filter((url) => !isBase64(url) && caches.images[url] == null)
+      const newCaches = await Promise.all(
+        noCacheUrls.map(async (url) => {
+          let dataUrl = ''
+          try {
+            dataUrl = await toDataURL(url)
+          } catch (e) {
+            console.warn('Failed to convert to data url', url)
+            console.warn(e)
+          }
+          return [url, dataUrl]
+        }),
+      )
+      for (const [iconUrl, dataUrl] of newCaches) {
+        if (isEmpty(dataUrl)) continue
+        caches.images[iconUrl] = dataUrl
+      }
     }
 
     // Restore a link command if not exists.
@@ -106,8 +110,14 @@ export const UserSettings = {
     // Settings for options are kept separate from user set values.
     removeOptionSettings(data)
 
+    // Commands
     await Storage.setCommands(data.commands)
     data.commands = []
+
+    // Stars
+    await Storage.set(LOCAL_STORAGE_KEY.STARS, data.stars)
+    data.stars = []
+
     await Storage.set(STORAGE_KEY.USER, data)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
     return true

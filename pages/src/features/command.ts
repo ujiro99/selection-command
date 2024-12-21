@@ -38,9 +38,15 @@ const emptyData = {
   eventCount: 0,
 }
 
+const emptyDataStar = {
+  eventName: 'command_hub_star',
+  eventId: '',
+  eventCount: 0,
+}
+
 export function getCommands(): Command[] {
   return Commands.map((command) => {
-    const a = Analytics.find((a) => a.eventId === command.id) ?? emptyData
+    const dl = Analytics.find((a) => a.eventId === command.id) ?? emptyData
     const tags = command.tags.map((t) => ({
       id: generateUUIDFromObject({ name: t }),
       name: t,
@@ -51,7 +57,8 @@ export function getCommands(): Command[] {
       openModeSecondary: command.openModeSecondary as OPEN_MODE,
       spaceEncoding: command.spaceEncoding as SPACE_ENCODING,
       tags,
-      download: a.eventCount.toLocaleString(),
+      download: dl.eventCount.toLocaleString(),
+      star: dl.eventCount.toLocaleString(),
     }
   })
 }

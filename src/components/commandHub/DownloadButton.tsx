@@ -16,7 +16,7 @@ import '@/components/global.css'
 
 const TooltipDuration = 2000
 
-export const DownloadLink = (): JSX.Element => {
+export const DownloadButton = (): JSX.Element => {
   const [position, setPosition] = useState<Element | null>(null)
   const { settings } = useSetting()
   const { addUrlChangeListener, removeUrlChangeListener } =
