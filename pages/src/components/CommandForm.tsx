@@ -276,7 +276,7 @@ function InputForm(props: InputProps) {
     }
   }, [setValue])
 
-  form.watch((data: FormValues) => {
+  form.watch((data: any) => {
     if (!data.title && !data.searchUrl) {
       return
     }
