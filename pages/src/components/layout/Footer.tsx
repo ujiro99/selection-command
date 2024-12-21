@@ -1,6 +1,7 @@
-import { updated } from '@/data/analytics.json'
+import data from '@/data/analytics.json'
 
 export function Footer(): JSX.Element {
+  const { updated } = data
   const updatedDate = new Date(updated)
   return (
     <footer className="row-start-3 flex flex-col gap-3 items-center">
