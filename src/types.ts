@@ -33,7 +33,6 @@ export type SelectionCommand = {
   fetchOptions?: string
   variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
-  addedAt?: number
 }
 
 export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
@@ -101,7 +100,6 @@ export type StartupMethod = {
 
 export type Star = {
   id: string
-  addedAt: number
 }
 
 export type UserSettingsType = {

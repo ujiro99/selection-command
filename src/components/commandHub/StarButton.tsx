@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useSetting } from '@/hooks/useSetting'
 import { sendEvent } from '@/services/analytics'
 import { SCREEN } from '@/const'
@@ -18,7 +18,6 @@ function findButtonElement(elm: Element): HTMLButtonElement | undefined {
 
 export const StarButton = (): JSX.Element => {
   const { settings } = useSetting()
-  const [lastUpdated, setLastUpdated] = useState(0)
   const stars = settings.stars
   const { addUrlChangeListener, removeUrlChangeListener } =
     useDetectUrlChanged()
@@ -60,8 +59,7 @@ export const StarButton = (): JSX.Element => {
       if (count == null || isNaN(count)) return
       let reviced = 0
       const star = stars.find((s) => s.id === span.dataset.starId)
-      const addedAt = star?.addedAt ?? 0
-      if (addedAt > lastUpdated) {
+      if (star != null) {
         // There is a new star.
         reviced++
       }
@@ -75,12 +73,6 @@ export const StarButton = (): JSX.Element => {
       button.removeEventListener('click', updateStar)
     })
   }
-
-  useEffect(() => {
-    const elm = document.querySelector('[data-updated]')
-    if (!(elm instanceof HTMLElement)) return
-    setLastUpdated(Number(elm.dataset.updated))
-  }, [])
 
   useEffect(() => {
     updateButton()
