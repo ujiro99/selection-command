@@ -5,24 +5,47 @@
       "eventCount": 4
     },
     {
+      "eventId": "33cd4e4c-a7cf-593f-b2c7-bf8743882aae",
+      "eventCount": 3
+    },
+    {
+      "eventId": "f3254d62-2f77-528c-b7bd-6260c67802ec",
+      "eventCount": 3
+    },
+    {
       "eventId": "020d116e-5956-5274-b785-b7f4d7377a52",
-      "eventCount": 1
+      "eventCount": 2
+    },
+    {
+      "eventId": "17026810-b9ed-5f5a-8e02-569b4cef1dcb",
+      "eventCount": 2
+    },
+    {
+      "eventId": "d458538c-efd1-5e0f-99b0-80db8167d2db",
+      "eventCount": 2
+    }
+  ],
+  "starred": [
+    {
+      "eventId": "020d116e-5956-5274-b785-b7f4d7377a52",
+      "eventCount": 2
     },
     {
       "eventId": "33cd4e4c-a7cf-593f-b2c7-bf8743882aae",
       "eventCount": 1
     },
     {
-      "eventId": "f3254d62-2f77-528c-b7bd-6260c67802ec",
-      "eventCount": 1
-    }
-  ],
-  "starred": [
-    {
       "eventId": "f5492254-4d6c-5924-860f-c8b668a76d7a",
+      "eventCount": 1
+    },
+    {
+      "eventId": "d458538c-efd1-5e0f-99b0-80db8167d2db",
       "eventCount": 2
+    },
+    {
+      "eventId": "f3254d62-2f77-528c-b7bd-6260c67802ec",
+      "eventCount": 0
     }
   ],
-
-  "updated": 1734748334762
+  "updated": 1734836928153
 }
