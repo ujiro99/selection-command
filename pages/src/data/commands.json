@@ -94,5 +94,20 @@
     ],
     "id": "f3254d62-2f77-528c-b7bd-6260c67802ec",
     "addedAt": "2024-12-18T03:00:19.785Z"
+  },
+  {
+    "title": "メルカリ相場",
+    "searchUrl": "https://jp.mercari.com/search?keyword=%s&status=sold_out%7Ctrading&sort=created_time&order=desc",
+    "description": "メルカリの相場を検索します",
+    "iconUrl": "https://web-jp-assets-v2.mercdn.net/_next/static/media/favicon.cbb38c8b.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "id": "0ba3f6ee-27e0-503d-a77a-e2e77e63e38e",
+    "addedAt": "2024-12-23T13:49:39.766Z"
   }
 ]

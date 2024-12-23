@@ -48,10 +48,9 @@ import { Image } from '@/components/Image'
 import { Tag } from '@/components/Tag'
 
 import { cmd2uuid } from '@/features/command'
-import { getTags } from '@/features/tag'
-import { isEmpty, generateUUIDFromObject } from '@/lib/utils'
+import { isEmpty } from '@/lib/utils'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import type { Command, Tag as TagType } from '@/types'
+import type { CommandInJson, Tag as TagType } from '@/types'
 
 import css from './CommandForm.module.css'
 
@@ -93,24 +92,13 @@ const STORAGE_KEY = 'CommandShareFormData'
 
 let onChagneSearchUrlTO = 0
 
-type CommandMessage = Omit<Command, 'download' | 'star'>
-
 const toMessages = (data: FormValues) => {
   const msgObj = toCommand(data)
   return `\`\`\`\n${JSON.stringify(msgObj, null, 2)}`
 }
 
-const toCommand = (data: FormValues): CommandMessage => {
-  const allTags = getTags()
-  const tags = data.tags.map((t) => {
-    const tag = allTags.find((tag) => tag.id === t.tagId)
-    return (
-      tag ?? {
-        id: generateUUIDFromObject({ name: t.name }),
-        name: t.name,
-      }
-    )
-  })
+const toCommand = (data: FormValues): CommandInJson => {
+  const tags = data.tags.map((t) => t.name)
   return {
     ...data,
     id: cmd2uuid(data),
