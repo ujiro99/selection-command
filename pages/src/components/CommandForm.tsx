@@ -30,7 +30,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
@@ -375,7 +374,7 @@ function InputForm(props: InputProps) {
               </div>
               <div className="w-3/5">
                 <FormControl>
-                  <ul className="flex gap-1.5">
+                  <ul className="flex gap-1.5 flex-wrap">
                     {fields.map((field, index) => (
                       <li key={field.id}>
                         <button
@@ -390,16 +389,18 @@ function InputForm(props: InputProps) {
                         </button>
                       </li>
                     ))}
-                    <TagPicker
-                      containerRef={containerRef}
-                      onSelect={(tag) =>
-                        append({
-                          tagId: tag.id,
-                          name: tag.name,
-                        })
-                      }
-                      excludeIds={fields.map((f) => f.tagId)}
-                    />
+                    {fields.length < 5 && (
+                      <TagPicker
+                        containerRef={containerRef}
+                        onSelect={(tag) =>
+                          append({
+                            tagId: tag.id,
+                            name: tag.name,
+                          })
+                        }
+                        excludeIds={fields.map((f) => f.tagId)}
+                      />
+                    )}
                   </ul>
                 </FormControl>
                 <FormMessage />
@@ -463,7 +464,7 @@ function InputForm(props: InputProps) {
                       結果の表示方法です。
                     </FormDescription>
                   </div>
-                  <div className="w-3/5">
+                  <div className="w-3/5 pr-[1px]">
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -475,7 +476,6 @@ function InputForm(props: InputProps) {
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>OpenMode</SelectLabel>
                           <SelectItem value={OPEN_MODE.POPUP}>Popup</SelectItem>
                           <SelectItem value={OPEN_MODE.WINDOW}>
                             Window
@@ -501,7 +501,7 @@ function InputForm(props: InputProps) {
                       Ctrl + クリック時の表示方法です。
                     </FormDescription>
                   </div>
-                  <div className="w-3/5">
+                  <div className="w-3/5 pr-[1px]">
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -513,7 +513,6 @@ function InputForm(props: InputProps) {
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>OpenMode</SelectLabel>
                           <SelectItem value={OPEN_MODE.POPUP}>Popup</SelectItem>
                           <SelectItem value={OPEN_MODE.WINDOW}>
                             Window
@@ -539,7 +538,7 @@ function InputForm(props: InputProps) {
                       選択テキスト中のスペースを置換します。
                     </FormDescription>
                   </div>
-                  <div className="w-3/5">
+                  <div className="w-3/5 pr-[1px]">
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -551,7 +550,6 @@ function InputForm(props: InputProps) {
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>スペースのエンコード</SelectLabel>
                           <SelectItem value={SPACE_ENCODING.PLUS}>
                             Plus (+)
                           </SelectItem>
