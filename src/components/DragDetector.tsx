@@ -5,7 +5,7 @@ import { CircularProgress } from '@/components/CircularProgress'
 export function DragDetector(): JSX.Element {
   const { progress, mousePosition, isDetecting } = useDetectDrag()
 
-  if (!mousePosition) return <></>
+  if (!mousePosition || !isDetecting) return <></>
 
   const styles = {
     position: 'absolute',

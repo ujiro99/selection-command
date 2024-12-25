@@ -223,7 +223,7 @@ export function findAnchorElementFromPoint(p: Point): Element | undefined {
  * @param {Point} p The point to start searching.
  * @returns {boolean} True if the element is an anchor element.
  */
-export function isAnchorElement(p: Point): boolean {
+export function isAnchorElementFromPoint(p: Point): boolean {
   return findAnchorElementFromPoint(p) != null
 }
 

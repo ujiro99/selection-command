@@ -7,9 +7,9 @@ import { useSetting } from '@/hooks/useSetting'
 import { DefaultCommands, PopupOption } from '@/services/defaultUserSettings'
 import {
   isPopup,
-  isAnchorElement,
-  isClickableElement,
   isLinkCommand,
+  isAnchorElementFromPoint,
+  isClickableElement,
   findAnchorElementFromPoint,
   getScreenSize,
 } from '@/services/util'
@@ -19,7 +19,7 @@ const isTargetEvent = (e: MouseEvent): boolean => {
   return (
     e.button === MOUSE.LEFT &&
     !isPopup(e.target as Element) &&
-    (isAnchorElement({ x: e.clientX, y: e.clientY }) ||
+    (isAnchorElementFromPoint({ x: e.clientX, y: e.clientY }) ||
       isClickableElement(e.target as Element))
   )
 }
@@ -60,11 +60,10 @@ export function useDetectDrag() {
         findAnchorElementFromPoint({ x: e.clientX, y: e.clientY }) ?? e.target
       setTarget(target as Element)
       // Prevent text selection during drag
-      if (isClickableElement(e.target as Element)) {
+      if (isClickableElement(e.target as HTMLElement)) {
         e.preventDefault()
       }
     }
-
     const handleMouseMove = (e: MouseEvent) => {
       if (e.button !== MOUSE.LEFT) return
       if (startPosition == null) return
