@@ -13,9 +13,12 @@ export default function NotFound() {
           <span>URLのご確認をお願いします。</span>
         </p>
         <Image
-          src="ozigi_suit_man_simple.png"
+          src="/ozigi_suit_man_simple.png"
           alt="404 Not found"
-          className="h-[300px] ml-8"
+          className="ml-8"
+          width={80}
+          height={280}
+          loading="lazy"
         />
       </div>
     </div>

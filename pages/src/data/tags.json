@@ -21,7 +21,7 @@
   },
   {
     "name": "Japanese",
-    "count": 3
+    "count": 6
   },
   {
     "name": "Design",
@@ -37,7 +37,7 @@
   },
   {
     "name": "Shop",
-    "count": 1
+    "count": 3
   },
   {
     "name": "Manual",
@@ -49,6 +49,10 @@
   },
   {
     "name": "業務用",
+    "count": 1
+  },
+  {
+    "name": "Development",
     "count": 1
   }
 ]
