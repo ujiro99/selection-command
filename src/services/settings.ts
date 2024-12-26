@@ -1,5 +1,5 @@
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
-import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
+import DefaultSettings, { DefaultCommands } from './defaultSettings'
 import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
 import type { SettingsType, Version, Command, Star } from '@/types'
 import {

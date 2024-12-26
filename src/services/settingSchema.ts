@@ -4,10 +4,10 @@ import {
   DRAG_OPEN_MODE,
   LINK_COMMAND_ENABLED,
 } from '@/const'
-import { PopupOption } from '@/services/defaultUserSettings'
+import { PopupOption } from '@/services/defaultSettings'
 
 export default {
-  title: 'UserSettingSchema',
+  title: 'SettingSchema',
   type: 'object',
   required: ['startupMethod', 'commands', 'popupPlacement', 'style'],
   properties: {

@@ -14,7 +14,7 @@ import { Settings } from '@/services/settings'
 import type { CommandVariable } from '@/types'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
-import { PopupOption } from '@/services/defaultUserSettings'
+import { PopupOption } from '@/services/defaultSettings'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()

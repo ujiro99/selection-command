@@ -1,4 +1,4 @@
-import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
+import DefaultSettings, { DefaultCommands } from './defaultSettings'
 import { Command } from '@/types'
 
 export enum STORAGE_KEY {

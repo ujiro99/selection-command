@@ -10,7 +10,7 @@ import Form from '@rjsf/core'
 import type { IChangeEvent } from '@rjsf/core'
 import clsx from 'clsx'
 
-import userSettingSchema from '@/services/userSettingSchema'
+import settingSchema from '@/services/settingSchema'
 import {
   UserStyleField,
   UserStyleMap,
@@ -438,7 +438,7 @@ export function SettingFrom() {
         enum: [{ id: '', name: '-- none --' }],
       } as folderOptionsType,
     )
-    userSettingSchema.definitions.folderOptions = folderOptions
+    settingSchema.definitions.folderOptions = folderOptions
   }
 
   // Add startupMethod to schema and uiSchema.
@@ -450,7 +450,7 @@ export function SettingFrom() {
       'ui:title': t(`startupMethod_${m}`),
     }
   }
-  userSettingSchema.definitions.startupMethodEnum.enum = methods
+  settingSchema.definitions.startupMethodEnum.enum = methods
   uiSchema.startupMethod.method.enum = methodMap
   if (method === STARTUP_METHOD.CONTEXT_MENU) {
     uiSchema.popupPlacement['ui:disabled'] = true
@@ -476,7 +476,7 @@ export function SettingFrom() {
       'ui:title': t(`openMode_${mode}`),
     }
   }
-  userSettingSchema.definitions.openMode.enum = modes
+  settingSchema.definitions.openMode.enum = modes
   uiSchema.commands.items.openMode.enum = modeMap
 
   // Add linkCommand's openMode to uiSchema.
@@ -526,14 +526,14 @@ export function SettingFrom() {
     }
   }
 
-  userSettingSchema.definitions.styleVariable.properties.name.enum = sv
+  settingSchema.definitions.styleVariable.properties.name.enum = sv
   uiSchema.userStyles.items.name.enum = svMap
 
   const log = (type: any) => console.log.bind(console, type)
   return (
     <Form
       className={css.form}
-      schema={userSettingSchema}
+      schema={settingSchema}
       validator={validator}
       formData={settingData}
       onChange={onChangeForm}

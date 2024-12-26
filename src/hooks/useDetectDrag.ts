@@ -4,7 +4,7 @@ import { Point, DragOption } from '@/types'
 import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
-import { DefaultCommands, PopupOption } from '@/services/defaultUserSettings'
+import { DefaultCommands, PopupOption } from '@/services/defaultSettings'
 import { isPopup, isLinkCommand } from '@/lib/utils'
 import {
   getScreenSize,
