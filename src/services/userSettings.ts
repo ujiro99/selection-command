@@ -8,7 +8,7 @@ import {
   versionDiff,
   VersionDiff,
   isLinkCommand,
-} from '@/services/util'
+} from '@/lib/utils'
 import { toDataURL } from '@/services/dom'
 import { OptionSettings } from '@/services/optionSettings'
 

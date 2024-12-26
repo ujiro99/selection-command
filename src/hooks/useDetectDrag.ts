@@ -5,7 +5,7 @@ import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
 import { DefaultCommands, PopupOption } from '@/services/defaultUserSettings'
-import { isPopup, isLinkCommand } from '@/services/util'
+import { isPopup, isLinkCommand } from '@/lib/utils'
 import {
   getScreenSize,
   isAnchorElementFromPoint,

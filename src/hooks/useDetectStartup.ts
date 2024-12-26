@@ -3,7 +3,7 @@ import type { PopupProps } from '@/components/Popup'
 import { useSetting } from '@/hooks/useSetting'
 import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD, MOUSE } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
-import { isPopup } from '@/services/util'
+import { isPopup } from '@/lib/utils'
 
 type Props = PopupProps & {
   isHover?: boolean

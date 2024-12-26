@@ -1,6 +1,6 @@
 import type { ExecProps } from './index'
 import { ExecState } from './index'
-import { sleep, isEmpty } from '@/services/util'
+import { sleep, isEmpty } from '@/lib/utils'
 import { getSelectionText } from '@/services/dom'
 
 async function setClipboard(text: string) {

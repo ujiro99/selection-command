@@ -7,7 +7,7 @@ import {
 } from '@/services/dom'
 import { DRAG_OPEN_MODE, POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
-import { isEmpty } from '@/services/util'
+import { isEmpty } from '@/lib/utils'
 
 export const LinkPreview = {
   async execute({ command, position, target }: ExecProps) {

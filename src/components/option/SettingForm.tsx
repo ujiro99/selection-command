@@ -29,7 +29,7 @@ import {
 import type { UserSettingsType, FolderOption } from '@/types'
 import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
-import { isMac } from '@/services/util'
+import { isMac } from '@/lib/utils'
 
 import css from './SettingForm.module.css'
 

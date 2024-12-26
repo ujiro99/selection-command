@@ -4,7 +4,7 @@ import type { UserSettingsType } from '@/types'
 
 import { Storage, STORAGE_KEY } from '@/services/storage'
 import { UserSettings, migrate } from '@/services/userSettings'
-import { isBase64, isUrl } from '@/services/util'
+import { isBase64, isUrl } from '@/lib/utils'
 import { APP_ID } from '@/const'
 import { t } from '@/services/i18n'
 
@@ -82,7 +82,7 @@ export function ImportExport() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ;(async () => {
+      ; (async () => {
         const data = await migrate(importJson)
         await UserSettings.set(data)
         location.reload()

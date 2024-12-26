@@ -8,8 +8,8 @@ import {
 } from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
-import { escapeJson } from '@/services/util'
-import type { ScreenSize } from '@/services/util'
+import { escapeJson } from '@/lib/utils'
+import type { ScreenSize } from '@/services/dom'
 import { UserSettings } from '@/services/userSettings'
 import type { CommandVariable } from '@/types'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
@@ -188,7 +188,7 @@ const commandFuncs = {
   },
 
   [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    ;(async () => {
+    ; (async () => {
       const tabIds = await openPopups(param)
       if (tabIds.length > 0) {
         await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
@@ -281,11 +281,11 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-      ;(async () => {
-        const res = await fetch(url, opt)
-        const json = await res.json()
-        response({ ok: res.ok, res: json })
-      })()
+        ; (async () => {
+          const res = await fetch(url, opt)
+          const json = await res.json()
+          response({ ok: res.ok, res: json })
+        })()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })

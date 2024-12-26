@@ -8,7 +8,7 @@ import React, {
 import { context } from '@/components/App'
 import { useLeftClickHold } from '@/hooks/useDetectStartup'
 import { MOUSE, EXIT_DURATION } from '@/const'
-import { isEmpty, isPopup } from '@/services/util'
+import { isEmpty, isPopup } from '@/lib/utils'
 import { Point } from '@/types'
 
 type Props = {

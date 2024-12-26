@@ -1,5 +1,5 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { sleep, toUrl } from '@/services/util'
+import { sleep, toUrl } from '@/lib/utils'
 import { ExecState } from './index'
 import type { ExecProps } from './index'
 

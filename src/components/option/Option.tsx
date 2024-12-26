@@ -3,12 +3,7 @@ import { CSSTransition } from 'react-transition-group'
 
 import { UserSettings } from '@/services/userSettings'
 import type { UserSettingsType } from '@/types'
-import {
-  sleep,
-  capitalize,
-  isMenuCommand,
-  isLinkCommand,
-} from '@/services/util'
+import { sleep, capitalize, isMenuCommand, isLinkCommand } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import { fetchIconUrl } from '@/services/chrome'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'

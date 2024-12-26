@@ -1,6 +1,6 @@
 import type { Point } from '@/types'
 
-import { isEmpty } from '@/services/util'
+import { isEmpty } from '@/lib/utils'
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   return new Promise((resolve, reject) => {

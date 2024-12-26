@@ -2,7 +2,7 @@ import { UserSettings } from '@/services/userSettings'
 import type { UserSettingsType, Command } from '@/types'
 import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
-import { isMenuCommand } from '@/services/util'
+import { isMenuCommand } from '@/lib/utils'
 
 chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
 UserSettings.addChangedListener(() => ContextMenu.init())

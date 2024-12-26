@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react'
-import { sleep } from '@/services/util'
+import React, { useState } from 'react'
+import { sleep } from '@/lib/utils'
 import { ExecState } from '@/action'
 
 import css from '@/components/result/ResultPopup.module.css'
