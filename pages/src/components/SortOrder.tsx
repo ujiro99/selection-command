@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { ArrowDown01, ArrowUp10, ArrowUpAZ, ArrowDownZA } from 'lucide-react'
 import {
   Select,
@@ -7,59 +8,91 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-
+import { Skeleton } from './ui/skeleton'
 import {
   Order,
   Labels,
   Direction,
-  CommandSorterProvider,
   SortType,
   useCommandSorter,
 } from '@/hooks/useCommandSorter'
+import { cn } from '@/lib/utils'
+
+const STORAGE_KEY = 'SortOrder'
 
 export function SortOrder(): JSX.Element {
   const { option, setOption, type } = useCommandSorter()
   const { order, direction } = option
+  const loaded = order && direction
 
-  const onChangeOrder = (_order: Order) => {
-    setOption({
-      order: _order,
-      direction,
-    })
+  const onChange = (o = order, d = direction) => {
+    const opt = {
+      order: o,
+      direction: d,
+    }
+    setOption(opt)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(opt))
+  }
+
+  const onChangeOrder = (o: Order) => {
+    onChange(o)
   }
 
   const onClickDirection = () => {
-    setOption({
-      order,
-      direction: direction === Direction.asc ? Direction.desc : Direction.asc,
-    })
+    onChange(
+      undefined,
+      direction === Direction.asc ? Direction.desc : Direction.asc,
+    )
   }
 
+  useEffect(() => {
+    const data = localStorage.getItem(STORAGE_KEY)
+    if (data) {
+      const opt = JSON.parse(data)
+      setOption(opt)
+    } else {
+      setOption({
+        order: Order.searchUrl,
+        direction: Direction.asc,
+      })
+    }
+  }, [])
+
   return (
-    <CommandSorterProvider>
-      <div className="w-full flex gap-1 justify-end">
-        <Select onValueChange={onChangeOrder} defaultValue={option.order}>
-          <SelectTrigger className="text-sm lg:text-sm w-36 h-8 rounded-lg">
-            <SelectValue placeholder="Select a openMode" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {Object.entries(Labels).map(([key, label]) => (
-                <SelectItem value={key} key={key}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <button
-          onClick={onClickDirection}
-          className="px-1.5 py-1 border border-input shadow-sm bg-white rounded-lg hover:bg-accent transition leading-none"
+    <div className="w-full flex gap-1 justify-end">
+      <Select onValueChange={onChangeOrder} value={order}>
+        <SelectTrigger
+          className={cn(
+            'text-sm lg:text-sm w-36 h-8 rounded-lg transition duration-100',
+            !loaded && 'opacity-0',
+          )}
         >
+          <SelectValue placeholder="Sort Order" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {Object.entries(Labels).map(([key, label]) => (
+              <SelectItem value={key} key={key}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      <button
+        onClick={onClickDirection}
+        className={cn(
+          'px-1.5 py-1 border border-input shadow-sm bg-white rounded-lg hover:bg-accent transition leading-none',
+          !loaded && 'opacity-0',
+        )}
+      >
+        {type && direction ? (
           <Arrow type={type} direction={direction} />
-        </button>
-      </div>
-    </CommandSorterProvider>
+        ) : (
+          <Skeleton className="h-5 w-[18px]" />
+        )}
+      </button>
+    </div>
   )
 }
 

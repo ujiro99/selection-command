@@ -56,8 +56,8 @@ const SortTypeMap = {
 }
 
 type OptionType = {
-  order: Order
-  direction: Direction
+  order: Order | undefined
+  direction: Direction | undefined
 }
 
 type ContextType = OptionType & {
@@ -75,8 +75,8 @@ export const CommandSorterProvider = ({
 }: {
   children: ReactNode
 }) => {
-  const [order, setOrder] = useState<Order>(Order.searchUrl)
-  const [direction, setDirection] = useState<Direction>(Direction.asc)
+  const [order, setOrder] = useState<Order>()
+  const [direction, setDirection] = useState<Direction>()
 
   const setOption = (option: OptionType) => {
     setOrder(option.order)
@@ -98,16 +98,21 @@ export const CommandSorterProvider = ({
 
 export function useCommandSorter() {
   const { order, direction, setOption } = useContext(CommandSorterContext)
-  const type = SortTypeMap[order]
 
-  let sort = sortFunctions[order]
-  let needReverse = direction === Direction.desc
-  if (type === SortType.date || type === SortType.number) {
-    needReverse = !needReverse
-  }
+  let type
+  let sort = sortSearchUrl
 
-  if (needReverse) {
-    sort = (commands: Command[]) => sortFunctions[order](commands).reverse()
+  if (order) {
+    type = SortTypeMap[order]
+    sort = sortFunctions[order]
+    let needReverse = direction === Direction.desc
+    if (type === SortType.date || type === SortType.number) {
+      needReverse = !needReverse
+    }
+
+    if (needReverse) {
+      sort = (commands: Command[]) => sortFunctions[order](commands).reverse()
+    }
   }
 
   return {
