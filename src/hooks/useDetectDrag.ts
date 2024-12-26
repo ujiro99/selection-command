@@ -5,14 +5,13 @@ import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
 import { DefaultCommands, PopupOption } from '@/services/defaultUserSettings'
+import { isPopup, isLinkCommand } from '@/services/util'
 import {
-  isPopup,
-  isLinkCommand,
+  getScreenSize,
   isAnchorElementFromPoint,
   isClickableElement,
   findAnchorElementFromPoint,
-  getScreenSize,
-} from '@/services/util'
+} from '@/services/dom'
 import { sendEvent } from '@/services/analytics'
 
 const isTargetEvent = (e: MouseEvent): boolean => {
@@ -38,8 +37,8 @@ export function useDetectDrag() {
   const playPixel = 20
   const commandEnabled =
     pageRule == null ||
-    pageRule.linkCommandEnabled == undefined ||
-    pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
+      pageRule.linkCommandEnabled == undefined ||
+      pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
       ? settings.linkCommand.enabled === LINK_COMMAND_ENABLED.ENABLE
       : pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.ENABLE
 
@@ -71,7 +70,7 @@ export function useDetectDrag() {
       const current = { x: e.clientX, y: e.clientY }
       const distance = Math.sqrt(
         Math.pow(current.x - startPosition.x, 2) +
-          Math.pow(current.y - startPosition.y, 2),
+        th.pow(current.y - startPosition.y, 2),
       )
       setMousePosition(current)
       setIsDetecting(showIndicator && distance > playPixel)

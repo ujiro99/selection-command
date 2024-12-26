@@ -4,7 +4,7 @@ import {
   findAnchorElement,
   findClickableElement,
   getSelectorFromElement,
-} from '@/services/util'
+} from '@/services/dom'
 import { DRAG_OPEN_MODE, POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
 import { isEmpty } from '@/services/util'

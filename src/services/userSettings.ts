@@ -5,11 +5,11 @@ import type { UserSettingsType, Version, Command, Star } from '@/types'
 import {
   isBase64,
   isEmpty,
-  toDataURL,
   versionDiff,
   VersionDiff,
   isLinkCommand,
 } from '@/services/util'
+import { toDataURL } from '@/services/dom'
 import { OptionSettings } from '@/services/optionSettings'
 
 enum LOCAL_STORAGE_KEY {

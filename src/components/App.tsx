@@ -3,7 +3,7 @@ import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
 import { DragDetector } from './DragDetector'
 import { OpenInTab } from '@/components/OpenInTab'
-import { getSelectionText } from '@/services/util'
+import { getSelectionText } from '@/services/dom'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 
 import './App.css'
