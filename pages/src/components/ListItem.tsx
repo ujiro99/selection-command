@@ -24,10 +24,10 @@ export function ListItem(props: Props): JSX.Element {
             />
             {cmd.title}
           </p>
-          <p className="text-base text-sm text-stone-500 truncate">
+          <p className="text-xs sm:text-sm text-stone-500 truncate">
             {cmd.searchUrl}
           </p>
-          <p className="text-base">{cmd.description}</p>
+          <p className="text-md sm:text-base">{cmd.description}</p>
         </div>
         <div className="flex gap-1">
           <div className="flex items-center text-stone-600">

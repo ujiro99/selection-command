@@ -11,18 +11,19 @@
 }
 
 .main {
-  @apply w-[600px];
+  @apply w-full;
+  @apply sm:w-[600px];
   @apply flex;
   @apply flex-col;
-  @apply gap-10;
-  @apply mt-10;
-  @apply row-start-2;
+  @apply gap-4;
+  @apply mt-8;
   @apply sm:items-start;
+  @apply overflow-hidden;
 }
 
 .menu {
   @apply w-full;
-  @apply h-[68px];
+  @apply h-[60px];
   @apply flex;
   @apply justify-between;
   @apply items-center;

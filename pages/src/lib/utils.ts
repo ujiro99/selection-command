@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { v5 as uuidv5 } from 'uuid'
 import { createHash } from 'crypto'
+import { parse } from 'tldts'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -23,6 +24,34 @@ export function generateUUIDFromObject(obj: object): string {
 /**
  * Check if the string is empty.
  */
-export function isEmpty(str: string | null): boolean {
+export function isEmpty(str: string | null | undefined): boolean {
   return !str?.length
+}
+
+/**
+ * Sort URLs by domain.
+ * @param collection Collenctionss to sort which has URL property.
+ * @param propertyName Property name of the URL.
+ * @returns Sorted URLs.
+ */
+export function sortUrlsByDomain<V>(
+  collection: V[],
+  propertyName: string,
+): V[] {
+  return collection.sort((a, b) => {
+    const parsedA = parse((a as any)[propertyName])
+    const parsedB = parse((b as any)[propertyName])
+
+    // Compare the domain and TLD of the URL.
+    // e.g. 'www.example.com' and 'example.com' are the same domain.
+    const domainA = `${parsedA.domain}.${parsedA.publicSuffix}`
+    const domainB = `${parsedB.domain}.${parsedB.publicSuffix}`
+    if (domainA !== domainB) {
+      return domainA.localeCompare(domainB)
+    }
+
+    // Compare the subdomain of the URL.
+    // e.g. 'www.example.com' and 'sub.example.com' are different domains.
+    return (parsedA.subdomain || '').localeCompare(parsedB.subdomain || '')
+  })
 }

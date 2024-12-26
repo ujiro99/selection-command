@@ -94,5 +94,50 @@
     ],
     "id": "f3254d62-2f77-528c-b7bd-6260c67802ec",
     "addedAt": "2024-12-18T03:00:19.785Z"
+  },
+  {
+    "title": "メルカリ相場",
+    "searchUrl": "https://jp.mercari.com/search?keyword=%s&status=sold_out%7Ctrading&sort=created_time&order=desc",
+    "description": "メルカリの相場を検索します",
+    "iconUrl": "https://web-jp-assets-v2.mercdn.net/_next/static/media/favicon.cbb38c8b.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "id": "0ba3f6ee-27e0-503d-a77a-e2e77e63e38e",
+    "addedAt": "2024-12-23T13:49:39.766Z"
+  },
+  {
+    "title": "メルカリ",
+    "searchUrl": "https://jp.mercari.com/search?keyword=%s",
+    "description": "メルカリで検索します",
+    "iconUrl": "https://web-jp-assets-v2.mercdn.net/_next/static/media/favicon.cbb38c8b.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "id": "f8dd2c7c-e0b2-5b1a-a3e6-314214a6d6d2",
+    "addedAt": "2024-12-23T13:49:39.765Z"
+  },
+  {
+    "title": "Zenn",
+    "searchUrl": "https://zenn.dev/search?q=%s",
+    "description": "Zennで検索します",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=64&domain_url=https://zenn.dev/search?q=test",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Japanese",
+      "Development"
+    ],
+    "id": "17f41196-edf1-5a5b-b0d4-c85b4b1bcd1b",
+    "addedAt": "2024-12-21T08:06:08.744Z"
   }
 ]
