@@ -102,7 +102,7 @@ export type Star = {
   id: string
 }
 
-export type UserSettingsType = {
+export type SettingsType = {
   settingVersion: Version
   startupMethod: StartupMethod
   popupPlacement: Placement

@@ -1,11 +1,11 @@
-import { UserSettings } from '@/services/userSettings'
-import type { UserSettingsType, Command } from '@/types'
+import { Settings } from '@/services/settings'
+import type { SettingsType, Command } from '@/types'
 import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
 import { isMenuCommand } from '@/lib/utils'
 
 chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
-UserSettings.addChangedListener(() => ContextMenu.init())
+Settings.addChangedListener(() => ContextMenu.init())
 
 export type executeActionProps = {
   command: Command
@@ -15,7 +15,7 @@ const ContextMenu = {
   init: () => {
     chrome.contextMenus.removeAll(async () => {
       chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
-      const settings = await UserSettings.get()
+      const settings = await Settings.get()
       if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
         console.debug('init context menu')
         ContextMenu.addMenus(settings)
@@ -26,7 +26,7 @@ const ContextMenu = {
 
   commandIdObj: {} as { [key: string | number]: Command },
 
-  addMenus: async (settings: UserSettingsType) => {
+  addMenus: async (settings: SettingsType) => {
     const contexts = ['selection'] as chrome.contextMenus.ContextType[]
 
     const commands = settings.commands.filter(isMenuCommand)

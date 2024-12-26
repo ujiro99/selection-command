@@ -10,7 +10,7 @@ import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
-import { UserSettings } from '@/services/userSettings'
+import { Settings } from '@/services/settings'
 import type { CommandVariable } from '@/types'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
@@ -210,7 +210,7 @@ const commandFuncs = {
 
   [BgCommand.addPageRule]: (param: addPageRuleProps): boolean => {
     const add = async () => {
-      const settings = await UserSettings.get()
+      const settings = await Settings.get()
       const pageRules = settings.pageRules ?? []
       if (pageRules.find((r) => r.urlPattern === param.url) == null) {
         pageRules.push({
@@ -220,7 +220,7 @@ const commandFuncs = {
           linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
         })
       }
-      await UserSettings.set({
+      await Settings.set({
         ...settings,
         pageRules,
       })
@@ -248,7 +248,7 @@ const commandFuncs = {
       spaceEncoding: params.spaceEncoding,
       popupOption: PopupOption,
     }
-    UserSettings.addCommands([cmd]).then(() => {
+    Settings.addCommands([cmd]).then(() => {
       response(true)
     })
     return true
@@ -371,7 +371,7 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ): boolean => {
     const toggle = async () => {
-      const settings = await UserSettings.get()
+      const settings = await Settings.get()
       const idx = settings.stars.findIndex((s) => s.id === param.id)
       if (idx >= 0) {
         settings.stars.splice(idx, 1)
@@ -381,7 +381,7 @@ const commandFuncs = {
           addedAt: Date.now(),
         })
       }
-      await UserSettings.set(settings, true)
+      await Settings.set(settings, true)
       response(true)
     }
     toggle()
@@ -409,14 +409,14 @@ const updateWindowSize = async (
   width: number,
   height: number,
 ) => {
-  const obj = await UserSettings.get()
+  const obj = await Settings.get()
   const found = obj.commands.find((c) => c.id === commandId)
   if (found) {
     found.popupOption = {
       width,
       height,
     }
-    await UserSettings.updateCommands([found])
+    await Settings.updateCommands([found])
   } else {
     console.warn('command not found', commandId)
   }

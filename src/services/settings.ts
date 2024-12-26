@@ -1,7 +1,7 @@
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import DefaultSettings, { DefaultCommands } from './defaultUserSettings'
 import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
-import type { UserSettingsType, Version, Command, Star } from '@/types'
+import type { SettingsType, Version, Command, Star } from '@/types'
 import {
   isBase64,
   isEmpty,
@@ -25,21 +25,21 @@ export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
 }
 
-const callbacks = [] as ((data: UserSettingsType) => void)[]
+const callbacks = [] as ((data: SettingsType) => void)[]
 Storage.addListener(STORAGE_KEY.USER, async (newVal: unknown) => {
-  const settings = newVal as UserSettingsType
+  const settings = newVal as SettingsType
   settings.commands = await Storage.getCommands()
   callbacks.forEach((cb) => cb(settings))
 })
 Storage.addCommandListener(async (commands: Command[]) => {
-  const settings = await UserSettings.get()
+  const settings = await Settings.get()
   settings.commands = commands
   callbacks.forEach((cb) => cb(settings))
 })
 
-export const UserSettings = {
-  get: async (excludeOptions = false): Promise<UserSettingsType> => {
-    let data = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+export const Settings = {
+  get: async (excludeOptions = false): Promise<SettingsType> => {
+    let data = await Storage.get<SettingsType>(STORAGE_KEY.USER)
     const commands = await Storage.getCommands()
     if (commands.length > 0) {
       data.commands = commands
@@ -64,13 +64,10 @@ export const UserSettings = {
     return data
   },
 
-  set: async (
-    data: UserSettingsType,
-    serviceWorker = false,
-  ): Promise<boolean> => {
+  set: async (data: SettingsType, serviceWorker = false): Promise<boolean> => {
     // remove unused caches
-    const urls = UserSettings.getUrls(data)
-    const caches = await UserSettings.getCaches()
+    const urls = Settings.getUrls(data)
+    const caches = await Settings.getCaches()
     for (const key in caches.images) {
       if (!urls.includes(key)) {
         console.debug('remove unused cache', key)
@@ -143,11 +140,11 @@ export const UserSettings = {
     await Storage.setCommands(DefaultCommands)
   },
 
-  addChangedListener: (callback: (data: UserSettingsType) => void) => {
+  addChangedListener: (callback: (data: SettingsType) => void) => {
     callbacks.push(callback)
   },
 
-  removeChangedListener: (callback: (data: UserSettingsType) => void) => {
+  removeChangedListener: (callback: (data: SettingsType) => void) => {
     const idx = callbacks.indexOf(callback)
     if (idx !== -1) callbacks.splice(idx, 1)
   },
@@ -156,7 +153,7 @@ export const UserSettings = {
     return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES, STORAGE_AREA.LOCAL)
   },
 
-  getUrls: (settings: UserSettingsType): string[] => {
+  getUrls: (settings: SettingsType): string[] => {
     const iconUrls = settings.commands.map((c) => c.iconUrl)
     const folderIconUrls = settings.folders.map((f) => f.iconUrl)
     const optionIconUrls = OptionSettings.commands.map((c) => c.iconUrl)
@@ -169,16 +166,14 @@ export const UserSettings = {
   },
 }
 
-const removeOptionSettings = (data: UserSettingsType): void => {
+const removeOptionSettings = (data: SettingsType): void => {
   data.commands = data.commands.filter(
     (c) => c?.parentFolderId !== OPTION_FOLDER,
   )
   data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
 }
 
-export const migrate = async (
-  data: UserSettingsType,
-): Promise<UserSettingsType> => {
+export const migrate = async (data: SettingsType): Promise<SettingsType> => {
   if (data.settingVersion == null) {
     data = migrate073(data)
   }
@@ -195,7 +190,7 @@ export const migrate = async (
   return data
 }
 
-const migrate073 = (data: UserSettingsType): UserSettingsType => {
+const migrate073 = (data: SettingsType): SettingsType => {
   if (data.startupMethod == null) {
     data.startupMethod = DefaultSettings.startupMethod as {
       method: STARTUP_METHOD
@@ -204,7 +199,7 @@ const migrate073 = (data: UserSettingsType): UserSettingsType => {
   return data
 }
 
-const migrate082 = (data: UserSettingsType): UserSettingsType => {
+const migrate082 = (data: SettingsType): SettingsType => {
   // parentFolder -> parentFolderId
   data.commands = data.commands.map((c) => {
     if (c.parentFolder != null) {
@@ -216,9 +211,7 @@ const migrate082 = (data: UserSettingsType): UserSettingsType => {
   return data
 }
 
-const migrate0_10_0 = async (
-  data: UserSettingsType,
-): Promise<UserSettingsType> => {
+const migrate0_10_0 = async (data: SettingsType): Promise<SettingsType> => {
   // Add a link command if not exists.
   const linkCommands = data.commands.filter(isLinkCommand)
   if (linkCommands.length === 0) {
@@ -232,7 +225,7 @@ const migrate0_10_0 = async (
   return data
 }
 
-const migrate0_10_3 = (data: UserSettingsType): UserSettingsType => {
+const migrate0_10_3 = (data: SettingsType): SettingsType => {
   // Add a linkCommand if not exists.
   if (data.linkCommand == null) {
     data.linkCommand = DefaultSettings.linkCommand

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { UserSettings } from '../services/userSettings'
-import type { UserSettingsType, PageRule } from '@/types'
+import { Settings } from '../services/settings'
+import type { SettingsType, PageRule } from '@/types'
 import { isEmpty } from '@/lib/utils'
 import {
   STYLE,
@@ -10,11 +10,11 @@ import {
 } from '@/const'
 
 type useSettingReturn = {
-  settings: UserSettingsType
+  settings: SettingsType
   pageRule: PageRule | undefined
 }
 
-const emptySettings: UserSettingsType = {
+const emptySettings: SettingsType = {
   settingVersion: '0.0.0',
   commands: [],
   folders: [],
@@ -33,19 +33,19 @@ const emptySettings: UserSettingsType = {
 }
 
 export function useSetting(): useSettingReturn {
-  const [settings, setSettings] = useState<UserSettingsType>(emptySettings)
+  const [settings, setSettings] = useState<SettingsType>(emptySettings)
 
   useEffect(() => {
     updateSettings()
-    UserSettings.addChangedListener(updateSettings)
+    Settings.addChangedListener(updateSettings)
     return () => {
-      UserSettings.removeChangedListener(updateSettings)
+      Settings.removeChangedListener(updateSettings)
     }
   }, [])
 
   const updateSettings = async () => {
-    const caches = await UserSettings.getCaches()
-    const data = await UserSettings.get()
+    const caches = await Settings.getCaches()
+    const data = await Settings.get()
     // use image cache if available
     data.commands = data.commands.map((c) => {
       const cache = caches.images[c.iconUrl]

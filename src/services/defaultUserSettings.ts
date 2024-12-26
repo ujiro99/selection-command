@@ -1,4 +1,4 @@
-import { UserSettingsType, Command } from '@/types'
+import { SettingsType, Command } from '@/types'
 import {
   VERSION,
   OPEN_MODE,
@@ -47,7 +47,7 @@ export default {
   },
   userStyles: [],
   stars: [],
-} as UserSettingsType
+} as SettingsType
 
 export const PopupOption = {
   width: 600,

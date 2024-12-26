@@ -26,7 +26,7 @@ import {
   LINK_COMMAND_ENABLED,
 } from '@/const'
 
-import type { UserSettingsType, FolderOption } from '@/types'
+import type { SettingsType, FolderOption } from '@/types'
 import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
 import { isMac } from '@/lib/utils'
@@ -65,9 +65,9 @@ export function SettingFrom() {
   const [parent, setParent] = useState<MessageEventSource>()
   const [origin, setOrigin] = useState('')
   const [trans, setTrans] = useState<Translation>({})
-  const [settingData, setSettingData] = useState<UserSettingsType>()
+  const [settingData, setSettingData] = useState<SettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
-  const settingRef = useRef<UserSettingsType>()
+  const settingRef = useRef<SettingsType>()
   const formRef = useRef<Form>(null)
 
   const sendMessage = useCallback(
@@ -91,7 +91,7 @@ export function SettingFrom() {
     menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const updateSettingData = (data: UserSettingsType) => {
+  const updateSettingData = (data: SettingsType) => {
     if (settingData == null) return
     console.log('updateSettingData', data.commands.length)
     setSettingData(data)
@@ -162,7 +162,7 @@ export function SettingFrom() {
   }, [settingData])
 
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
-    const data = arg.formData as UserSettingsType
+    const data = arg.formData as SettingsType
     // Remove unnecessary fields when openMode is not popup or tab or window.
     if (id?.endsWith('openMode')) {
       data.commands

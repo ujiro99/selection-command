@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
-import { UserSettings } from '@/services/userSettings'
-import type { UserSettingsType } from '@/types'
+import { Settings } from '@/services/settings'
+import type { SettingsType } from '@/types'
 import { sleep, capitalize, isMenuCommand, isLinkCommand } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import { fetchIconUrl } from '@/services/chrome'
@@ -37,11 +37,11 @@ export function Option() {
 
   useEventProxyReceiver()
 
-  const updateSettings = async (settings: UserSettingsType) => {
+  const updateSettings = async (settings: SettingsType) => {
     if (isSaving) return
     try {
       setIsSaving(true)
-      const current = await UserSettings.get(true)
+      const current = await Settings.get(true)
       const linkCommands = current.commands.filter(isLinkCommand).map((c) => ({
         ...c,
         openMode: settings.linkCommand.openMode,
@@ -51,7 +51,7 @@ export function Option() {
         },
       }))
       settings.commands = [...settings.commands, ...linkCommands]
-      await UserSettings.set(settings)
+      await Settings.set(settings)
       await sleep(1000)
     } catch (e) {
       console.error('Failed to update settings!', settings)
@@ -99,7 +99,7 @@ export function Option() {
   }
 
   const onLoadIfame = async () => {
-    const settings = await UserSettings.get(true)
+    const settings = await Settings.get(true)
     const translation = getTranslation()
 
     // Convert linkCommand option
