@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { ArrowDown01, ArrowUp10, ArrowUpAZ, ArrowDownZA } from 'lucide-react'
 import {
   Select,
@@ -18,52 +17,31 @@ import {
 } from '@/hooks/useCommandSorter'
 import { cn } from '@/lib/utils'
 
-const STORAGE_KEY = 'SortOrder'
-
 export function SortOrder(): JSX.Element {
   const { option, setOption, type } = useCommandSorter()
   const { order, direction } = option
   const loaded = order && direction
 
-  const onChange = (o = order, d = direction) => {
-    const opt = {
-      order: o,
-      direction: d,
-    }
-    setOption(opt)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(opt))
-  }
-
   const onChangeOrder = (o: Order) => {
-    onChange(o)
+    setOption({
+      order: o,
+      direction,
+    })
   }
 
   const onClickDirection = () => {
-    onChange(
-      undefined,
-      direction === Direction.asc ? Direction.desc : Direction.asc,
-    )
+    setOption({
+      order,
+      direction: direction === Direction.asc ? Direction.desc : Direction.asc,
+    })
   }
-
-  useEffect(() => {
-    const data = localStorage.getItem(STORAGE_KEY)
-    if (data) {
-      const opt = JSON.parse(data)
-      setOption(opt)
-    } else {
-      setOption({
-        order: Order.searchUrl,
-        direction: Direction.asc,
-      })
-    }
-  }, [])
 
   return (
     <div className="w-full flex gap-1 justify-end">
       <Select onValueChange={onChangeOrder} value={order}>
         <SelectTrigger
           className={cn(
-            'text-sm lg:text-sm w-36 h-8 rounded-lg transition duration-100',
+            'text-sm lg:text-sm w-36 h-8 rounded-lg transition duration-50',
             !loaded && 'opacity-0',
           )}
         >
@@ -82,7 +60,7 @@ export function SortOrder(): JSX.Element {
       <button
         onClick={onClickDirection}
         className={cn(
-          'px-1.5 py-1 border border-input shadow-sm bg-white rounded-lg hover:bg-accent transition leading-none',
+          'px-1.5 py-1 border border-input shadow-sm bg-white rounded-lg hover:bg-accent transition duration-50 leading-none',
           !loaded && 'opacity-0',
         )}
       >
@@ -119,7 +97,7 @@ export function Arrow({
     case SortType.date:
       return (
         <span className="text-sm px-[2px]">
-          {direction === Direction.asc ? '新' : '旧'}
+          {direction === Direction.asc ? '新' : '古'}
         </span>
       )
   }

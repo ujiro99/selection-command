@@ -12,6 +12,7 @@ type Props = {
   height?: number
   className?: string
   style?: React.CSSProperties
+  loading?: 'lazy' | 'eager'
 }
 
 function Image(props: Props): JSX.Element {
@@ -26,6 +27,7 @@ function Image(props: Props): JSX.Element {
         width={`${props.width ?? 20}`}
         height={`${props.height ?? 20}`}
         style={props.style}
+        loading={props.loading}
       />
     )
   }

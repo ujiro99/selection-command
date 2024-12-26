@@ -23,7 +23,13 @@ export function Header(): JSX.Element {
         className="fixed top-2 right-2 bg-white border border-stone-200 rounded-lg shadow-md transition duration-200 hover:shadow-lg"
         data-gtm-click="chrome-web-store"
       >
-        <Image src="/chrome_web_store.png" alt="Chrome Web Store" width={200} />
+        <Image
+          src="/chrome_web_store.png"
+          alt="Chrome Web Store"
+          width={200}
+          height={60}
+          loading="lazy"
+        />
       </a>
     </div>
   )

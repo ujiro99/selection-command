@@ -1,4 +1,10 @@
-import { ReactNode, useState, createContext, useContext } from 'react'
+import {
+  ReactNode,
+  useState,
+  createContext,
+  useContext,
+  useEffect,
+} from 'react'
 import { Command } from '@/types'
 import { sortUrlsByDomain } from '@/lib/utils'
 
@@ -70,6 +76,8 @@ const CommandSorterContext = createContext<ContextType>({
   setOption: () => {},
 })
 
+const STORAGE_KEY = 'SortOrder'
+
 export const CommandSorterProvider = ({
   children,
 }: {
@@ -81,7 +89,20 @@ export const CommandSorterProvider = ({
   const setOption = (option: OptionType) => {
     setOrder(option.order)
     setDirection(option.direction)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(option))
   }
+
+  useEffect(() => {
+    const data = localStorage.getItem(STORAGE_KEY)
+    if (data) {
+      setOption(JSON.parse(data))
+    } else {
+      setOption({
+        order: Order.searchUrl,
+        direction: Direction.asc,
+      })
+    }
+  }, [])
 
   const option = {
     order,
@@ -100,7 +121,7 @@ export function useCommandSorter() {
   const { order, direction, setOption } = useContext(CommandSorterContext)
 
   let type
-  let sort = sortSearchUrl
+  let sort
 
   if (order) {
     type = SortTypeMap[order]
