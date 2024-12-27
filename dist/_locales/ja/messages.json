@@ -201,7 +201,7 @@
     "message": "リンクプレビュー"
   },
   "Option_linkCommand_desc": {
-    "message": "リンクをドラッグすると、ポップアップでプレビュー表示します。"
+    "message": "リンクへの操作により、ポップアップでプレビュー表示します。"
   },
   "Option_linkCommand_enabledInherit": {
     "message": "全体設定から継承"
@@ -212,11 +212,29 @@
   "Option_linkCommand_enabledDisable": {
     "message": "無効"
   },
-  "Option_threshold": {
-    "message": "ドラッグ距離"
+  "Option_linkCommandStartupMethod_method": {
+    "message": "起動方法"
   },
-  "Option_threshold_desc": {
-    "message": "表示するまでの距離[px]"
+  "Option_linkCommandStartupMethod_drag": {
+    "message": "ドラッグ"
+  },
+  "Option_linkCommandStartupMethod_keyboard": {
+    "message": "クリック + キー同時押し"
+  },
+  "Option_linkCommandStartupMethod_leftClickHold": {
+    "message": "左クリック長押し"
+  },
+  "Option_linkCommandStartupMethod_threshold": {
+    "message": "ドラッグ距離[px]"
+  },
+  "Option_linkCommandStartupMethod_threshold_desc": {
+    "message": "表示するまでの距離"
+  },
+  "Option_linkCommandStartupMethod_keyboardParam": {
+    "message": "クリックと同時に押すキー"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam": {
+    "message": "長押し時間[ms]"
   },
   "Option_showIndicator": {
     "message": "インジケータの表示"

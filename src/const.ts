@@ -54,6 +54,12 @@ export enum LINK_COMMAND_ENABLED {
   INHERIT = 'Inherit',
 }
 
+export enum LINK_COMMAND_STARTUP_METHOD {
+  KEYBOARD = 'keyboard',
+  DRAG = 'drag',
+  LEFT_CLICK_HOLD = 'leftClickHold',
+}
+
 export enum STYLE {
   VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',

@@ -208,3 +208,12 @@ export const onHover = (
     onMouseLeave: () => func(leaveVal),
   }
 }
+
+/**
+ * Convert an enum to an array.
+ * @param {any} e The enum to convert.
+ * @returns {string[]} The array of the enum.
+ */
+export function e2a(e: any): string[] {
+  return Object.values(e)
+}

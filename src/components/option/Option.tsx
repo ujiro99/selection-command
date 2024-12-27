@@ -45,10 +45,6 @@ export function Option() {
       const linkCommands = current.commands.filter(isLinkCommand).map((c) => ({
         ...c,
         openMode: settings.linkCommand.openMode,
-        linkCommandOption: {
-          threshold: settings.linkCommand.threshold,
-          showIndicator: settings.linkCommand.showIndicator,
-        },
       }))
       settings.commands = [...settings.commands, ...linkCommands]
       await Settings.set(settings)
@@ -107,9 +103,8 @@ export function Option() {
     if (linkCommands.length > 0) {
       const linkCommand = linkCommands[0]
       settings.linkCommand = {
-        enabled: settings.linkCommand.enabled,
+        ...settings.linkCommand,
         openMode: linkCommand.openMode,
-        ...linkCommand.linkCommandOption,
       }
     }
     settings.commands = settings.commands.filter(isMenuCommand)

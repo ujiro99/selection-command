@@ -201,7 +201,7 @@
     "message": "Link Preview"
   },
   "Option_linkCommand_desc": {
-    "message": "When you drag a link, a pop-up preview is displayed."
+    "message": "Displays a preview in a pop-up menu by operating on a link."
   },
   "Option_linkCommand_enabledInherit": {
     "message": "Inherit from global settings"
@@ -212,11 +212,29 @@
   "Option_linkCommand_enabledDisable": {
     "message": "Disabled"
   },
-  "Option_threshold": {
-    "message": "Drag distance"
+  "Option_linkCommandStartupMethod_method": {
+    "message": "Startup Method"
   },
-  "Option_threshold_desc": {
-    "message": "Drag distance to display[px]"
+  "Option_linkCommandStartupMethod_drag": {
+    "message": "Drag"
+  },
+  "Option_linkCommandStartupMethod_keyboard": {
+    "message": "Click + Key simultaneous press"
+  },
+  "Option_linkCommandStartupMethod_leftClickHold": {
+    "message": "Left Click Hold"
+  },
+  "Option_linkCommandStartupMethod_threshold": {
+    "message": "Drag distance[px]"
+  },
+  "Option_linkCommandStartupMethod_threshold_desc": {
+    "message": "Drag distance to display"
+  },
+  "Option_linkCommandStartupMethod_keyboardParam": {
+    "message": "Key to press simultaneously with click"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam": {
+    "message": "Long press time[ms]"
   },
   "Option_showIndicator": {
     "message": "Display the indicator "
