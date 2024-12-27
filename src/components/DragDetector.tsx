@@ -1,9 +1,9 @@
 import React from 'react'
-import { useDetectDrag } from '@/hooks/useDetectDrag'
+import { useDetectLinkCommand } from '@/hooks/useDetectLinkCommand'
 import { CircularProgress } from '@/components/CircularProgress'
 
 export function DragDetector(): JSX.Element {
-  const { progress, mousePosition, isDetecting } = useDetectDrag()
+  const { progress, mousePosition, isDetecting } = useDetectLinkCommand()
 
   if (!mousePosition || !isDetecting) return <></>
 

@@ -23,7 +23,7 @@ const isTargetEvent = (e: MouseEvent): boolean => {
   )
 }
 
-export function useDetectDrag() {
+export function useDetectLinkCommand() {
   const [startPosition, setStartPosition] = useState<Point | null>()
   const [mousePosition, setMousePosition] = useState<Point | null>()
   const [target, setTarget] = useState<Element | null>(null)
