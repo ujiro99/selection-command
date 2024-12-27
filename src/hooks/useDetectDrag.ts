@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { MOUSE, LINK_COMMAND_ENABLED } from '@/const'
-import { Point, DragOption } from '@/types'
+import { Point } from '@/types'
 import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
-import { DefaultCommands, PopupOption } from '@/services/defaultSettings'
+import Default, { PopupOption } from '@/services/defaultSettings'
 import { isPopup, isLinkCommand } from '@/lib/utils'
 import {
   getScreenSize,
@@ -23,9 +23,6 @@ const isTargetEvent = (e: MouseEvent): boolean => {
   )
 }
 
-const Default = DefaultCommands.find(isLinkCommand)
-  ?.linkCommandOption as DragOption
-
 export function useDetectDrag() {
   const [startPosition, setStartPosition] = useState<Point | null>()
   const [mousePosition, setMousePosition] = useState<Point | null>()
@@ -37,15 +34,16 @@ export function useDetectDrag() {
   const playPixel = 20
   const commandEnabled =
     pageRule == null ||
-      pageRule.linkCommandEnabled == undefined ||
-      pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
+    pageRule.linkCommandEnabled == undefined ||
+    pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
       ? settings.linkCommand.enabled === LINK_COMMAND_ENABLED.ENABLE
       : pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.ENABLE
 
   const command = settings.commands.find(isLinkCommand)
-  const showIndicator =
-    command?.linkCommandOption.showIndicator ?? Default.showIndicator
-  const threshold = command?.linkCommandOption.threshold ?? Default.threshold
+  const showIndicator = settings.linkCommand.showIndicator
+  const threshold =
+    settings.linkCommand.startupMethod.threshold ??
+    (Default.linkCommand.startupMethod.threshold as number)
 
   const onChangeState = (state: ExecState, message?: string) => {
     console.debug({ state, message })
@@ -70,7 +68,7 @@ export function useDetectDrag() {
       const current = { x: e.clientX, y: e.clientY }
       const distance = Math.sqrt(
         Math.pow(current.x - startPosition.x, 2) +
-        th.pow(current.y - startPosition.y, 2),
+          Math.pow(current.y - startPosition.y, 2),
       )
       setMousePosition(current)
       setIsDetecting(showIndicator && distance > playPixel)

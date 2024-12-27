@@ -58,7 +58,7 @@ type LinkCommandSettings = {
   enabled: LINK_COMMAND_ENABLED
   openMode: DRAG_OPEN_MODE
   showIndicator: boolean
-  linkCommandStartupMethod: LinkCommandStartupMethod
+  startupMethod: LinkCommandStartupMethod
 }
 
 export type FolderOption = {

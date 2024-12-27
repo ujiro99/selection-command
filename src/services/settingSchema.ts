@@ -7,7 +7,7 @@ import {
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
 } from '@/const'
-import { PopupOption } from '@/services/defaultSettings'
+import Default, { PopupOption } from '@/services/defaultSettings'
 import { e2a } from '@/lib/utils'
 
 export default {
@@ -456,7 +456,7 @@ export default {
           $id: '#/linkCommandStartupMethod/method',
           type: 'string',
           enum: e2a(LINK_COMMAND_STARTUP_METHOD),
-          default: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+          default: Default.linkCommand.startupMethod.method,
         },
       },
       dependencies: {
@@ -471,7 +471,7 @@ export default {
                   name: 'Threshold',
                   $id: '#/linkCommandStartupMethod/param/threshold',
                   type: 'number',
-                  default: 150,
+                  default: Default.linkCommand.startupMethod.threshold,
                   minimum: 50,
                   maximum: 400,
                   step: 10,
@@ -488,7 +488,7 @@ export default {
                   $id: '#/linkCommandStartupMethod/param/keyboard',
                   type: 'string',
                   enum: [KEYBOARD.SHIFT, KEYBOARD.ALT],
-                  default: KEYBOARD.SHIFT,
+                  default: Default.linkCommand.startupMethod.keyboardParam,
                 },
               },
               required: ['keyboardParam'],
@@ -501,7 +501,7 @@ export default {
                 leftClickHoldParam: {
                   $id: '#/linkCommandStartupMethod/param/leftClickHold',
                   type: 'number',
-                  default: 200,
+                  default: Default.linkCommand.startupMethod.leftClickHoldParam,
                   minimum: 50,
                   maximum: 500,
                   step: 10,
