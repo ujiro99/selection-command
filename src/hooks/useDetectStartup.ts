@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import type { PopupProps } from '@/components/Popup'
 import { useSetting } from '@/hooks/useSetting'
-import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD, MOUSE } from '@/const'
+import { useLeftClickHold } from '@/hooks/useLeftClickHold'
+import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
-import { isPopup } from '@/lib/utils'
 
 type Props = PopupProps & {
   isHover?: boolean
@@ -13,7 +13,7 @@ export function useDetectStartup(props: Props) {
   const { selectionText, positionElm, isPreview, isHover } = props
   const [hide, setHide] = useState(false)
   const { settings, pageRule } = useSetting()
-  const { method } = settings.startupMethod
+  const { method, leftClickHoldParam } = settings.startupMethod
 
   let visible = selectionText.length > 0 && positionElm != null
   if (pageRule != null) {
@@ -41,7 +41,11 @@ export function useDetectStartup(props: Props) {
     visible = visible && detectKey
   }
 
-  const { detectHold } = useLeftClickHold(props)
+  const { detectHold } = useLeftClickHold({
+    enable: method === STARTUP_METHOD.LEFT_CLICK_HOLD,
+    holdDuration: leftClickHoldParam ?? 200,
+    selectionText,
+  })
   if (method === STARTUP_METHOD.LEFT_CLICK_HOLD) {
     visible = visible && detectHold
   }
@@ -84,73 +88,4 @@ export function useKeyboard(props: Props) {
   }, [method, keyboardParam])
 
   return detectKey
-}
-
-const isTargetEvent = (e: MouseEvent): boolean => {
-  return e.button === MOUSE.LEFT && !isPopup(e.target as Element)
-}
-
-function hasAnchor(x: number, y: number): boolean {
-  const elements = document.elementsFromPoint(x, y)
-  const anchorElement = elements.find(
-    (element) => element.tagName.toLowerCase() === 'a',
-  )
-  return anchorElement != null
-}
-
-type useLeftClickHoldParam = {
-  selectionText: string
-}
-export function useLeftClickHold(props: useLeftClickHoldParam) {
-  const [detectHold, setDetectHold] = useState(false)
-  const [detectHoldLink, setDetectHoldLink] = useState(false)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const { settings } = useSetting()
-  const { method, leftClickHoldParam } = settings.startupMethod
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
-
-  useEffect(() => {
-    release()
-  }, [props.selectionText])
-
-  // Left click hold
-  useEffect(() => {
-    if (method !== STARTUP_METHOD.LEFT_CLICK_HOLD) {
-      return
-    }
-    const handleMouseDown = (event: MouseEvent) => {
-      if (!isTargetEvent(event)) return
-      if (detectHold) {
-        // If already in hold, click to release hold.
-        release()
-      } else if (props.selectionText) {
-        // If there is a selection-text, start count of hold.
-        timeoutRef.current = setTimeout(() => {
-          setDetectHold(true)
-          setDetectHoldLink(hasAnchor(event.clientX, event.clientY))
-          setPosition({ x: event.clientX, y: event.clientY })
-        }, leftClickHoldParam)
-      } else {
-        release()
-      }
-    }
-    const handleMouseUp = (event: MouseEvent) => {
-      if (!isTargetEvent(event)) return
-      clearTimeout(timeoutRef.current)
-    }
-    window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
-    return () => {
-      window.removeEventListener('mousedown', handleMouseDown)
-      window.removeEventListener('mouseup', handleMouseUp)
-    }
-  }, [method, leftClickHoldParam, detectHold, timeoutRef, props])
-
-  const release = () => {
-    setDetectHold(false)
-    setDetectHoldLink(false)
-    setPosition(null)
-  }
-
-  return { detectHold, detectHoldLink, position }
 }

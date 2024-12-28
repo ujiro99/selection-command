@@ -1,13 +1,15 @@
 import React, {
   useState,
   useEffect,
+  useRef,
   forwardRef,
   useContext,
   useCallback,
 } from 'react'
 import { context } from '@/components/App'
-import { useLeftClickHold } from '@/hooks/useDetectStartup'
-import { MOUSE, EXIT_DURATION } from '@/const'
+import { useSetting } from '@/hooks/useSetting'
+import { useLeftClickHold } from '@/hooks/useLeftClickHold'
+import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from '@/const'
 import { isEmpty, isPopup } from '@/lib/utils'
 import { Point } from '@/types'
 
@@ -25,7 +27,14 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const [point, setPoint] = useState<Point | null>(null)
     const [offset, setOffset] = useState<Point>({} as Point)
     const [delayTO, setDelayTO] = useState<number | null>()
-    const { detectHold, position } = useLeftClickHold(props)
+
+    const { settings } = useSetting()
+    const { method, leftClickHoldParam } = settings.startupMethod
+    const { detectHold, detectHoldLink, position } = useLeftClickHold({
+      enable: method === STARTUP_METHOD.LEFT_CLICK_HOLD,
+      holdDuration: leftClickHoldParam ?? 200,
+      ...props,
+    })
     const selected = !isEmpty(props.selectionText)
 
     useEffect(() => {
@@ -158,9 +167,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       if (detectHold) {
-        if (point == null) {
-          setAnchor(position)
-        }
+        setAnchor(position)
       }
     }, [detectHold, point, setAnchor])
 
@@ -181,22 +188,60 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     return (
       <>
         <div style={styles} ref={ref} />
-        <LinkClickGuard {...props} />
+        <LinkClickGuard detectHoldLink={detectHoldLink} position={position} />
       </>
     )
   },
 )
 
-const LinkClickGuard = (props: Props) => {
-  const { detectHoldLink, position } = useLeftClickHold(props)
+type LinkClickGuardProps = {
+  detectHoldLink: boolean
+  position: Point
+}
+const LinkClickGuard = (props: LinkClickGuardProps) => {
+  const { detectHoldLink, position } = props
+  const [guard, setGuard] = useState(false)
+  const mouseDownRef = useRef(false)
+  const timeoutRef = useRef(0)
+
+  useEffect(() => {
+    if (detectHoldLink) {
+      setGuard(true)
+      mouseDownRef.current = true
+
+      timeoutRef.current = window.setTimeout(() => {
+        timeoutRef.current = 0
+        if (mouseDownRef.current) return
+        setGuard(false)
+      }, 500)
+      return () => {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = 0
+      }
+    }
+  }, [detectHoldLink])
+
+  useEffect(() => {
+    const mouseUp = () => {
+      mouseDownRef.current = false
+      if (timeoutRef.current === 0) {
+        setGuard(false)
+      }
+    }
+    document.addEventListener('mouseup', mouseUp)
+    return () => {
+      document.removeEventListener('mouseup', mouseUp)
+    }
+  }, [])
 
   const styles = {
     position: 'absolute',
-    top: window.scrollY + position?.y - 5,
-    left: window.scrollX + position?.x - 5,
+    top: window.scrollY + position.y - 5,
+    left: window.scrollX + position.x - 5,
     height: 10,
     width: 10,
+    // border: '1px solid red',
   } as React.CSSProperties
 
-  return detectHoldLink && <div style={styles} />
+  return guard && <div style={styles} />
 }

@@ -10,6 +10,7 @@ import { Point, SettingsType, Command } from '@/types'
 import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
+import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import Default, { PopupOption } from '@/services/defaultSettings'
 import { isPopup, isLinkCommand, isMac } from '@/lib/utils'
 import {
@@ -56,8 +57,6 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
       ? settings.linkCommand.enabled === LINK_COMMAND_ENABLED.ENABLE
       : pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.ENABLE
 
-  console.log(' 9', { linkCommand: settings.linkCommand })
-
   const onChangeState = (state: ExecState, message?: string) => {
     console.debug({ state, message })
   }
@@ -80,6 +79,7 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
     ...empty,
     ...useDetectDrag(enabled, settings, command, onDetect),
     ...useDetectKeyboard(enabled, settings, command, onDetect),
+    ...useDetectClickHold(enabled, settings, command, onDetect),
   }
 }
 
@@ -224,5 +224,32 @@ function useDetectKeyboard(
 
   return keyboardEnabled
     ? { progress: 0, mousePosition, inProgress: false }
+    : {}
+}
+
+function useDetectClickHold(
+  enabled: boolean,
+  settings: SettingsType,
+  command: Command,
+  onDetect: OnDetect,
+): SubHookReturn {
+  const clickHoldEnabled =
+    enabled &&
+    settings.linkCommand.startupMethod.method ===
+      LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
+  const duration = settings.linkCommand.startupMethod.leftClickHoldParam ?? 200
+
+  const { detectHoldLink, position } = useLeftClickHold({
+    enable: clickHoldEnabled,
+    holdDuration: duration,
+    selectionText: 'dummy',
+  })
+
+  if (clickHoldEnabled && detectHoldLink) {
+    onDetect(position, findAnchorElementFromPoint(position) as Element)
+  }
+
+  return clickHoldEnabled
+    ? { progress: 0, mousePosition: position, inProgress: false }
     : {}
 }

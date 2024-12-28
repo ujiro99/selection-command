@@ -1,7 +1,7 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import {
   getScreenSize,
-  findAnchorElement,
+  findAnchorElementFromParent,
   findClickableElement,
   getSelectorFromElement,
 } from '@/services/dom'
@@ -12,7 +12,7 @@ import { isEmpty } from '@/lib/utils'
 export const LinkPreview = {
   async execute({ command, position, target }: ExecProps) {
     if (position && target) {
-      const elm = findAnchorElement(target) as HTMLAnchorElement
+      const elm = findAnchorElementFromParent(target) as HTMLAnchorElement
       const href = elm?.href
 
       const type =

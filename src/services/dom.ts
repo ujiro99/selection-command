@@ -7,7 +7,7 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
     const img = new Image()
     img.crossOrigin = 'Anonymous'
     const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
-    img.onload = function() {
+    img.onload = function () {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       canvas.height = this.naturalHeight
@@ -96,7 +96,7 @@ export function getSelectionText(): string {
  * @param {Element} elm The element to start searching.
  * @returns {Element} The anchor element.
  */
-export function findAnchorElement(elm: Element): Element | undefined {
+export function findAnchorElementFromParent(elm: Element): Element | undefined {
   if (elm == null) return undefined
   if (elm.nodeName === 'body') return undefined
   if (
@@ -104,7 +104,7 @@ export function findAnchorElement(elm: Element): Element | undefined {
     !isEmpty((elm as HTMLAnchorElement).href)
   )
     return elm
-  return findAnchorElement(elm.parentElement as Element)
+  return findAnchorElementFromParent(elm.parentElement as Element)
 }
 
 /**
@@ -119,6 +119,19 @@ export function findAnchorElementFromPoint(p: Point): Element | undefined {
       e.tagName.toLowerCase() === 'a' &&
       !isEmpty((e as HTMLAnchorElement).href),
   )
+}
+
+/**
+ * Find the anchor element from the specified point or clicked element.
+ * @param {MouseEvent} e The mouse event.
+ * @returns {Element} The anchor element.
+ */
+export function findAnchorElement(e: MouseEvent): Element | undefined {
+  let elm = findAnchorElementFromPoint({ x: e.clientX, y: e.clientY })
+  if (elm == null) {
+    elm = findAnchorElementFromParent(e.target as Element)
+  }
+  return elm
 }
 
 /**
