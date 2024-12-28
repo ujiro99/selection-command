@@ -37,6 +37,7 @@ export function useSetting(): useSettingReturn {
   const updateSettings = async () => {
     const caches = await Settings.getCaches()
     const data = await Settings.get()
+    // console.log(data.popupPlacement) // ok
     // use image cache if available
     data.commands = data.commands.map((c) => {
       const cache = caches.images[c.iconUrl]
@@ -60,10 +61,12 @@ export function useSetting(): useSettingReturn {
 
   let pageRule: PageRule | undefined
   if (settings != null) {
-    pageRule = settings.pageRules.find((rule) => {
-      const re = new RegExp(rule.urlPattern)
-      return window.location.href.match(re) != null
-    })
+    pageRule = settings.pageRules
+      .filter((r) => !isEmpty(r.urlPattern))
+      .find((rule) => {
+        const re = new RegExp(rule.urlPattern)
+        return window.location.href.match(re) != null
+      })
 
     if (pageRule != null) {
       settings.popupPlacement = pageRule.popupPlacement

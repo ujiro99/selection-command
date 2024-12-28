@@ -465,6 +465,20 @@ export default {
             {
               properties: {
                 method: {
+                  enum: [LINK_COMMAND_STARTUP_METHOD.KEYBOARD],
+                },
+                keyboardParam: {
+                  $id: '#/linkCommandStartupMethod/param/keyboard',
+                  type: 'string',
+                  enum: [KEYBOARD.SHIFT, KEYBOARD.ALT, KEYBOARD.CTRL],
+                  default: Default.linkCommand.startupMethod.keyboardParam,
+                },
+              },
+              required: ['keyboardParam'],
+            },
+            {
+              properties: {
+                method: {
                   enum: [LINK_COMMAND_STARTUP_METHOD.DRAG],
                 },
                 threshold: {
@@ -478,20 +492,6 @@ export default {
                 },
               },
               required: ['threshold'],
-            },
-            {
-              properties: {
-                method: {
-                  enum: [LINK_COMMAND_STARTUP_METHOD.KEYBOARD],
-                },
-                keyboardParam: {
-                  $id: '#/linkCommandStartupMethod/param/keyboard',
-                  type: 'string',
-                  enum: [KEYBOARD.SHIFT, KEYBOARD.ALT],
-                  default: Default.linkCommand.startupMethod.keyboardParam,
-                },
-              },
-              required: ['keyboardParam'],
             },
             {
               properties: {

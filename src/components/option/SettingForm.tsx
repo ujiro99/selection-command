@@ -558,6 +558,9 @@ export function SettingFrom() {
     [KEYBOARD.ALT]: {
       'ui:title': t(`keyboardParam_${KEYBOARD.ALT}_${os}`),
     },
+    [KEYBOARD.CTRL]: {
+      'ui:title': t(`keyboardParam_${KEYBOARD.CTRL}_${os}`),
+    },
   }
   uiSchema.linkCommand.startupMethod.keyboardParam.enum = linkCommandkeyboardMap
 

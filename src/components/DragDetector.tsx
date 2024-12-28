@@ -3,9 +3,10 @@ import { useDetectLinkCommand } from '@/hooks/useDetectLinkCommand'
 import { CircularProgress } from '@/components/CircularProgress'
 
 export function DragDetector(): JSX.Element {
-  const { progress, mousePosition, isDetecting } = useDetectLinkCommand()
+  const { showIndicator, inProgress, progress, mousePosition } =
+    useDetectLinkCommand()
 
-  if (!mousePosition || !isDetecting) return <></>
+  if (!mousePosition || !inProgress) return <></>
 
   const styles = {
     position: 'absolute',
@@ -22,13 +23,12 @@ export function DragDetector(): JSX.Element {
   const circleStyles = {
     top: -30,
     left: -15,
+    opacity: showIndicator ? 1 : 0,
   }
 
   return (
     <div style={styles}>
-      {isDetecting && (
-        <CircularProgress style={circleStyles} progress={progress} />
-      )}
+      <CircularProgress style={circleStyles} progress={progress} />
     </div>
   )
 }
