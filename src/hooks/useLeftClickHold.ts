@@ -15,11 +15,10 @@ const hasAnchor = (e: MouseEvent): boolean => {
 
 type useLeftClickHoldParam = {
   enable: boolean
-  selectionText: string
   holdDuration: number
 }
 export function useLeftClickHold(props: useLeftClickHoldParam) {
-  const { selectionText, enable, holdDuration } = props
+  const { enable, holdDuration } = props
   const [detectHold, setDetectHold] = useState(false)
   const [detectHoldLink, setDetectHoldLink] = useState(false)
   const [position, setPosition] = useState<Point>({ x: 0, y: 0 })
@@ -29,36 +28,31 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
 
   useEffect(() => {
     release()
-  }, [selectionText])
+  }, [enable])
 
   useEffect(() => {
     if (!enable) return
 
     const handleMouseDown = (event: MouseEvent) => {
       if (!isTargetEvent(event)) return
-      if (detectHold) {
-        release()
-      }
-      if (selectionText) {
-        // If there is a selection-text, start count of hold.
-        progressRef.current = 0
-        const start = performance.now()
-        timeoutRef.current = setTimeout(() => {
-          setDetectHold(true)
-          setDetectHoldLink(hasAnchor(event))
-          setPosition({ x: event.clientX, y: event.clientY })
-        }, holdDuration)
-        intervalRef.current = setInterval(() => {
-          const now = performance.now()
-          const progress = Math.round(((now - start) / holdDuration) * 100)
-          progressRef.current = Math.min(100, progress)
-          if (progressRef.current >= 100) {
-            clearInterval(intervalRef.current)
-          }
-        }, holdDuration / 10)
-      } else {
-        release()
-      }
+      if (detectHold) release()
+
+      // If there is a selection-text, start count of hold.
+      progressRef.current = 0
+      const start = performance.now()
+      timeoutRef.current = setTimeout(() => {
+        setDetectHold(true)
+        setDetectHoldLink(hasAnchor(event))
+        setPosition({ x: event.clientX, y: event.clientY })
+      }, holdDuration)
+      intervalRef.current = setInterval(() => {
+        const now = performance.now()
+        const progress = Math.round(((now - start) / holdDuration) * 100)
+        progressRef.current = Math.min(100, progress)
+        if (progressRef.current >= 100) {
+          clearInterval(intervalRef.current)
+        }
+      }, holdDuration / 10)
     }
 
     const handleMouseUp = (event: MouseEvent) => {

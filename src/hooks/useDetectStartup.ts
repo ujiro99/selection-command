@@ -4,6 +4,7 @@ import { useSetting } from '@/hooks/useSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
+import { isEmpty } from '@/lib/utils'
 
 type Props = PopupProps & {
   isHover?: boolean
@@ -42,9 +43,9 @@ export function useDetectStartup(props: Props) {
   }
 
   const { detectHold } = useLeftClickHold({
-    enable: method === STARTUP_METHOD.LEFT_CLICK_HOLD,
+    enable:
+      method === STARTUP_METHOD.LEFT_CLICK_HOLD && !isEmpty(selectionText),
     holdDuration: leftClickHoldParam ?? 200,
-    selectionText,
   })
   if (method === STARTUP_METHOD.LEFT_CLICK_HOLD) {
     visible = visible && detectHold

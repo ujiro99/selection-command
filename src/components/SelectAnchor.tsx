@@ -31,9 +31,10 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const { settings } = useSetting()
     const { method, leftClickHoldParam } = settings.startupMethod
     const { detectHold, detectHoldLink, position } = useLeftClickHold({
-      enable: method === STARTUP_METHOD.LEFT_CLICK_HOLD,
+      enable:
+        method === STARTUP_METHOD.LEFT_CLICK_HOLD &&
+        !isEmpty(props.selectionText),
       holdDuration: leftClickHoldParam ?? 200,
-      ...props,
     })
     const selected = !isEmpty(props.selectionText)
 
@@ -188,7 +189,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     return (
       <>
         <div style={styles} ref={ref} />
-        <LinkClickGuard detectHoldLink={detectHoldLink} position={position} />
+        <LinkClickGuard show={detectHoldLink} position={position} />
       </>
     )
   },
