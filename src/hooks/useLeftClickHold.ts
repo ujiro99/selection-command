@@ -24,6 +24,8 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
   const [detectHoldLink, setDetectHoldLink] = useState(false)
   const [position, setPosition] = useState<Point>({ x: 0, y: 0 })
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
+  const intervalRef = useRef<ReturnType<typeof setInterval>>()
+  const progressRef = useRef(0)
 
   useEffect(() => {
     release()
@@ -37,13 +39,23 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       if (detectHold) {
         release()
       }
-      if (props.selectionText) {
+      if (selectionText) {
         // If there is a selection-text, start count of hold.
+        progressRef.current = 0
+        const start = performance.now()
         timeoutRef.current = setTimeout(() => {
           setDetectHold(true)
           setDetectHoldLink(hasAnchor(event))
           setPosition({ x: event.clientX, y: event.clientY })
         }, holdDuration)
+        intervalRef.current = setInterval(() => {
+          const now = performance.now()
+          const progress = Math.round(((now - start) / holdDuration) * 100)
+          progressRef.current = Math.min(100, progress)
+          if (progressRef.current >= 100) {
+            clearInterval(intervalRef.current)
+          }
+        }, holdDuration / 10)
       } else {
         release()
       }
@@ -52,6 +64,7 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
     const handleMouseUp = (event: MouseEvent) => {
       if (!isTargetEvent(event)) return
       clearTimeout(timeoutRef.current)
+      clearInterval(intervalRef.current)
     }
 
     window.addEventListener('mousedown', handleMouseDown)
@@ -66,7 +79,8 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
     setDetectHold(false)
     setDetectHoldLink(false)
     setPosition({ x: 0, y: 0 })
+    progressRef.current = 0
   }
 
-  return { detectHold, detectHoldLink, position }
+  return { detectHold, detectHoldLink, position, progress: progressRef.current }
 }

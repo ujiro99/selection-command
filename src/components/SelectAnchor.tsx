@@ -1,12 +1,12 @@
 import React, {
   useState,
   useEffect,
-  useRef,
   forwardRef,
   useContext,
   useCallback,
 } from 'react'
 import { context } from '@/components/App'
+import { LinkClickGuard } from '@/components/LinkClickGuard'
 import { useSetting } from '@/hooks/useSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from '@/const'
@@ -193,55 +193,3 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     )
   },
 )
-
-type LinkClickGuardProps = {
-  detectHoldLink: boolean
-  position: Point
-}
-const LinkClickGuard = (props: LinkClickGuardProps) => {
-  const { detectHoldLink, position } = props
-  const [guard, setGuard] = useState(false)
-  const mouseDownRef = useRef(false)
-  const timeoutRef = useRef(0)
-
-  useEffect(() => {
-    if (detectHoldLink) {
-      setGuard(true)
-      mouseDownRef.current = true
-
-      timeoutRef.current = window.setTimeout(() => {
-        timeoutRef.current = 0
-        if (mouseDownRef.current) return
-        setGuard(false)
-      }, 500)
-      return () => {
-        clearTimeout(timeoutRef.current)
-        timeoutRef.current = 0
-      }
-    }
-  }, [detectHoldLink])
-
-  useEffect(() => {
-    const mouseUp = () => {
-      mouseDownRef.current = false
-      if (timeoutRef.current === 0) {
-        setGuard(false)
-      }
-    }
-    document.addEventListener('mouseup', mouseUp)
-    return () => {
-      document.removeEventListener('mouseup', mouseUp)
-    }
-  }, [])
-
-  const styles = {
-    position: 'absolute',
-    top: window.scrollY + position.y - 5,
-    left: window.scrollX + position.x - 5,
-    height: 10,
-    width: 10,
-    // border: '1px solid red',
-  } as React.CSSProperties
-
-  return guard && <div style={styles} />
-}
