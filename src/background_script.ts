@@ -188,7 +188,7 @@ const commandFuncs = {
   },
 
   [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    ; (async () => {
+    const open = async () => {
       const tabIds = await openPopups(param)
       if (tabIds.length > 0) {
         await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
@@ -197,7 +197,8 @@ const commandFuncs = {
         return
       }
       console.debug('tab not found')
-    })()
+    }
+    open()
     return false
   },
 
@@ -281,11 +282,12 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-        ; (async () => {
-          const res = await fetch(url, opt)
-          const json = await res.json()
-          response({ ok: res.ok, res: json })
-        })()
+      const exec = async () => {
+        const res = await fetch(url, opt)
+        const json = await res.json()
+        response({ ok: res.ok, res: json })
+      }
+      exec()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
@@ -378,7 +380,6 @@ const commandFuncs = {
       } else {
         settings.stars.push({
           id: param.id,
-          addedAt: Date.now(),
         })
       }
       await Settings.set(settings, true)
@@ -509,6 +510,13 @@ chrome.runtime.onInstalled.addListener(() => {
     accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
   })
 })
+
+// for debug
+// chrome.declarativeNetRequest.onRuleMatchedDebug.addListener(
+//   (details: chrome.declarativeNetRequest.MatchedRuleInfoDebug) => {
+//     console.debug(details)
+//   },
+// )
 
 const updateRules = async (tabIds: number[]) => {
   const oldRules = await chrome.declarativeNetRequest.getSessionRules()
