@@ -2,15 +2,17 @@ import { useState, useEffect, useRef } from 'react'
 import { MOUSE } from '@/const'
 
 import { isPopup } from '@/lib/utils'
-import { findAnchorElement } from '@/services/dom'
+import { findAnchorElement, findClickableElement } from '@/services/dom'
 import type { Point } from '@/types'
 
 const isTargetEvent = (e: MouseEvent): boolean => {
   return e.button === MOUSE.LEFT && !isPopup(e.target as Element)
 }
 
-const hasAnchor = (e: MouseEvent): boolean => {
-  return findAnchorElement(e) != null
+const findTarget = (e: MouseEvent): Element | null => {
+  const anchor = findAnchorElement(e)
+  if (anchor != null) return anchor
+  return findClickableElement(e.target as Element)
 }
 
 type useLeftClickHoldParam = {
@@ -21,10 +23,11 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
   const { enable, holdDuration } = props
   const [detectHold, setDetectHold] = useState(false)
   const [detectHoldLink, setDetectHoldLink] = useState(false)
+  const [progress, setProgress] = useState(0)
   const [position, setPosition] = useState<Point>({ x: 0, y: 0 })
+  const [linkElm, setLinkElm] = useState<Element | null>(null)
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
   const intervalRef = useRef<ReturnType<typeof setInterval>>()
-  const progressRef = useRef(0)
 
   useEffect(() => {
     release()
@@ -37,26 +40,33 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       if (!isTargetEvent(event)) return
       if (detectHold) release()
 
-      // If there is a selection-text, start count of hold.
-      progressRef.current = 0
-      const start = performance.now()
+      // Set initial state
+      setProgress(0)
+      setPosition({ x: event.clientX, y: event.clientY })
+
+      // Start count of hold.
       timeoutRef.current = setTimeout(() => {
+        const el = findTarget(event)
         setDetectHold(true)
-        setDetectHoldLink(hasAnchor(event))
-        setPosition({ x: event.clientX, y: event.clientY })
+        setDetectHoldLink(el != null)
+        setLinkElm(el as Element)
       }, holdDuration)
-      intervalRef.current = setInterval(() => {
+
+      // Update progress
+      const start = performance.now()
+      const intervalTO = setInterval(() => {
         const now = performance.now()
         const progress = Math.round(((now - start) / holdDuration) * 100)
-        progressRef.current = Math.min(100, progress)
-        if (progressRef.current >= 100) {
-          clearInterval(intervalRef.current)
+        setProgress(Math.min(100, progress))
+        if (progress >= 100) {
+          // To clear interval, hold the timeout in the closure.
+          clearInterval(intervalTO)
         }
-      }, holdDuration / 10)
+      }, holdDuration / 20)
+      intervalRef.current = intervalTO
     }
 
-    const handleMouseUp = (event: MouseEvent) => {
-      if (!isTargetEvent(event)) return
+    const handleMouseUp = () => {
       clearTimeout(timeoutRef.current)
       clearInterval(intervalRef.current)
     }
@@ -73,8 +83,17 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
     setDetectHold(false)
     setDetectHoldLink(false)
     setPosition({ x: 0, y: 0 })
-    progressRef.current = 0
+    setProgress(0)
+    setLinkElm(null)
+    clearTimeout(timeoutRef.current)
+    clearInterval(intervalRef.current)
   }
 
-  return { detectHold, detectHoldLink, position, progress: progressRef.current }
+  return {
+    detectHold,
+    detectHoldLink,
+    position,
+    progress,
+    linkElement: linkElm,
+  }
 }

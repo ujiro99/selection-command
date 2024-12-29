@@ -46,7 +46,7 @@ export const LinkClickGuard = (props: LinkClickGuardProps) => {
     left: window.scrollX + position.x - 5,
     height: 10,
     width: 10,
-    border: '1px solid red',
+    // background: 'blue',
   } as React.CSSProperties
 
   return guard && <div style={styles} />

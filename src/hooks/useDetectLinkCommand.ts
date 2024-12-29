@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   MOUSE,
   KEYBOARD,
@@ -15,9 +15,8 @@ import Default, { PopupOption } from '@/services/defaultSettings'
 import { isPopup, isLinkCommand, isMac } from '@/lib/utils'
 import {
   getScreenSize,
-  isAnchorElementFromPoint,
   isClickableElement,
-  findAnchorElementFromPoint,
+  findAnchorElement,
   ScreenSize,
 } from '@/services/dom'
 import { sendEvent } from '@/services/analytics'
@@ -26,8 +25,7 @@ const isTargetEvent = (e: MouseEvent): boolean => {
   return (
     e.button === MOUSE.LEFT &&
     !isPopup(e.target as Element) &&
-    (isAnchorElementFromPoint({ x: e.clientX, y: e.clientY }) ||
-      isClickableElement(e.target as Element))
+    (findAnchorElement(e) != null || isClickableElement(e.target as Element))
   )
 }
 
@@ -36,6 +34,8 @@ type DetectLinkCommandReturn = {
   progress: number
   mousePosition: Point | null
   showIndicator: boolean
+  detectDrag?: boolean
+  detectHoldLink?: boolean
 }
 
 type SubHookReturn = Omit<DetectLinkCommandReturn, 'showIndicator'> | {}
@@ -109,17 +109,19 @@ function useDetectDrag(
     (Default.linkCommand.startupMethod.threshold as number)
 
   useEffect(() => {
+    if (!dragEnabled) return
+
     const handleMouseDown = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
       setStartPosition({ x: e.clientX, y: e.clientY })
-      const t =
-        findAnchorElementFromPoint({ x: e.clientX, y: e.clientY }) ?? e.target
+      const t = findAnchorElement(e) ?? e.target
       setTarget(t as Element)
       // Prevent text selection during drag
       if (isClickableElement(e.target as HTMLElement)) {
         e.preventDefault()
       }
     }
+
     const handleMouseMove = (e: MouseEvent) => {
       if (e.button !== MOUSE.LEFT) return
       if (startPosition == null) return
@@ -154,11 +156,9 @@ function useDetectDrag(
       setActivate(false)
     }
 
-    if (dragEnabled) {
-      window.addEventListener('mousedown', handleMouseDown)
-      window.addEventListener('mouseup', handleMouseUp)
-      window.addEventListener('mousemove', handleMouseMove)
-    }
+    window.addEventListener('mousedown', handleMouseDown)
+    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('mousemove', handleMouseMove)
     return () => {
       window.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mouseup', handleMouseUp)
@@ -166,11 +166,23 @@ function useDetectDrag(
     }
   }, [dragEnabled, startPosition, activate, command, target, onDetect])
 
-  return dragEnabled ? { progress, mousePosition, inProgress } : {}
+  return dragEnabled
+    ? { progress, mousePosition, inProgress, detectDrag: true }
+    : {}
 }
 
-const isCursorInLeft = (e: MouseEvent, s: ScreenSize): boolean => {
-  return e.screenX < s.width / 2
+const isCursorInLeft = (cursorX: number, s: ScreenSize): boolean => {
+  return cursorX < s.width / 2
+}
+
+const calcPopupPosition = (cursorX: number, command: Command): Point => {
+  const popupOption = command?.popupOption ?? PopupOption
+  const s = getScreenSize()
+  let x = isCursorInLeft(cursorX, s)
+    ? Math.floor(s.width + s.left - popupOption.width - POPUP_OFFSET)
+    : Math.floor(s.left + POPUP_OFFSET)
+  const y = Math.floor((s.height + s.top - popupOption.height) / 2)
+  return { x, y }
 }
 
 function useDetectKeyboard(
@@ -188,6 +200,8 @@ function useDetectKeyboard(
   const [mousePosition, setMousePosition] = useState<Point | null>(null)
 
   useEffect(() => {
+    if (!keyboardEnabled) return
+
     const onClick = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
       if (!keyboardEnabled) return
@@ -202,21 +216,13 @@ function useDetectKeyboard(
       }
       if (!detect) return
 
-      const s = getScreenSize()
-      let x = isCursorInLeft(e, s)
-        ? Math.floor(s.width + s.left - popupOption.width - POPUP_OFFSET)
-        : Math.floor(s.left + POPUP_OFFSET)
-      const y = Math.floor((s.height + s.top - popupOption.height) / 2)
-      const pos = { x, y }
-
+      const pos = calcPopupPosition(e.clientX, command)
       setMousePosition(pos)
       onDetect(pos, e.target as Element)
       e.preventDefault()
     }
 
-    if (keyboardEnabled) {
-      window.addEventListener('click', onClick)
-    }
+    window.addEventListener('click', onClick)
     return () => {
       window.removeEventListener('click', onClick)
     }
@@ -238,18 +244,53 @@ function useDetectClickHold(
     settings.linkCommand.startupMethod.method ===
       LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
   const duration = settings.linkCommand.startupMethod.leftClickHoldParam ?? 200
+  const detectLinkRef = useRef(false)
+  const [forceClear, setForceClear] = useState(false)
+  const playPixel = 20
 
-  const { detectHoldLink, position } = useLeftClickHold({
-    enable: clickHoldEnabled,
+  const { detectHoldLink, position, progress, linkElement } = useLeftClickHold({
+    enable: clickHoldEnabled && !forceClear,
     holdDuration: duration,
-    selectionText: 'dummy',
   })
 
-  if (clickHoldEnabled && detectHoldLink) {
-    onDetect(position, findAnchorElementFromPoint(position) as Element)
+  const clear = () => {
+    setForceClear(true)
+    setTimeout(() => setForceClear(false), 100)
   }
 
-  return clickHoldEnabled
-    ? { progress: 0, mousePosition: position, inProgress: false }
+  useEffect(() => {
+    if (clickHoldEnabled && detectHoldLink) {
+      const pos = calcPopupPosition(position.x, command)
+      onDetect(pos, linkElement as Element)
+    }
+  }, [clickHoldEnabled, detectHoldLink])
+
+  useEffect(() => {
+    if (!clickHoldEnabled) return
+    const handleMouseDown = (e: MouseEvent) => {
+      if (!isTargetEvent(e)) return
+      detectLinkRef.current = true
+    }
+    const handleMouseUp = () => {
+      if (!detectLinkRef.current) return
+      detectLinkRef.current = false
+      clear()
+    }
+
+    window.addEventListener('mousedown', handleMouseDown)
+    window.addEventListener('mouseup', handleMouseUp)
+    return () => {
+      window.removeEventListener('mousedown', handleMouseDown)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [clickHoldEnabled])
+
+  return clickHoldEnabled && detectLinkRef.current
+    ? {
+        mousePosition: position,
+        inProgress: progress > playPixel,
+        progress: progress,
+        detectHoldLink,
+      }
     : {}
 }

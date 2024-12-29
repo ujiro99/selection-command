@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { APP_ID, SPACE_ENCODING, OPEN_MODE } from '@/const'
+import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
 import type { Version, Command, SelectionCommand, LinkCommand } from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
@@ -87,8 +87,9 @@ export function isMenuCommand(command: Command): command is SelectionCommand {
  * @param {Command|LinkCommand} command The command to check.
  * @returns {boolean} True if the command is link command.
  */
+const DragOpenModes = Object.values(DRAG_OPEN_MODE)
 export function isLinkCommand(command: Command): command is LinkCommand {
-  return (command as LinkCommand).linkCommandOption !== undefined
+  return DragOpenModes.includes(command.openMode as DRAG_OPEN_MODE)
 }
 
 export function isPopup(elm: Element): boolean {
