@@ -3,7 +3,7 @@ import { useDetectLinkCommand } from '@/hooks/useDetectLinkCommand'
 import { LinkClickGuard } from '@/components/LinkClickGuard'
 import { CircularProgress } from '@/components/CircularProgress'
 
-export function DragDetector(): JSX.Element {
+export function LinkSelector(): JSX.Element {
   const {
     showIndicator,
     inProgress,

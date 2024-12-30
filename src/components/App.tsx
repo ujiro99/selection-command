@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
-import { DragDetector } from './DragDetector'
+import { LinkSelector } from '@/components/LinkSelector'
 import { OpenInTab } from '@/components/OpenInTab'
 import { getSelectionText } from '@/services/dom'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
@@ -43,7 +43,7 @@ export function App() {
         selectionText={selectionText}
         onHover={(v: boolean) => setIsHover(v)}
       />
-      <DragDetector />
+      <LinkSelector />
       <OpenInTab />
     </context.Provider>
   )

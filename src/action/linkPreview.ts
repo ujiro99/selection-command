@@ -32,9 +32,9 @@ export const LinkPreview = {
           type,
         })
         return
-      } else {
-        console.warn('href not found')
       }
+
+      console.warn('Href not found, trying to find clickable element')
 
       const clickElm = findClickableElement(target)
       if (clickElm) {
