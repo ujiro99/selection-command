@@ -34,7 +34,7 @@ export default async function Page({
               <House className="inline" size={16} />
               <span className="ml-0.5">Top</span>
             </Link>
-            <h1 className="text-3xl text-bold mt-2 indent-1 font-[family-name:var(--font-geist-mono)]">
+            <h1 className="text-xl sm:text-3xl text-bold mt-1 sm:mt-2 indent-1 font-[family-name:var(--font-geist-mono)]">
               #<span className="ml-0.5">{name}</span>
             </h1>
           </div>

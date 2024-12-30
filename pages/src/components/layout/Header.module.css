@@ -1,6 +1,7 @@
 .mouse {
-  position: relative;
+  position: absolute;
   top: 22px;
-  left: -78px;
+  right: 28px;
   fill: white;
+  @apply sm:top-8 sm:right-12;
 }
