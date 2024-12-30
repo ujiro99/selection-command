@@ -251,11 +251,14 @@ const migrate0_11_3 = (data: SettingsType): SettingsType => {
   if (data.linkCommand.startupMethod == null) {
     data.linkCommand.startupMethod = DefaultSettings.linkCommand.startupMethod
   }
+
   // 2. Move threshold to linkCommand.startUpMethod
   data.linkCommand.startupMethod = {
     ...data.linkCommand.startupMethod,
     threshold: (data.linkCommand as any).threshold,
   }
+  delete (data.linkCommand as any).threshold
+
   // 3. Change startUpMethod to drag if linkCommand is enabled.
   if (data.linkCommand.enabled) {
     data.linkCommand.startupMethod.method = LINK_COMMAND_STARTUP_METHOD.DRAG
