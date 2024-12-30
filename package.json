@@ -1,6 +1,6 @@
 {
   "name": "selection-command",
-  "version": "0.11.2",
+  "version": "0.11.3",
   "scripts": {
     "build": "node build.js",
     "watch:src": "node watch.js",
