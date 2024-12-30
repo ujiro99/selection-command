@@ -1,6 +1,11 @@
 import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import DefaultSettings, { DefaultCommands } from './defaultSettings'
-import { OPTION_FOLDER, STARTUP_METHOD, VERSION } from '@/const'
+import {
+  OPTION_FOLDER,
+  STARTUP_METHOD,
+  VERSION,
+  LINK_COMMAND_STARTUP_METHOD,
+} from '@/const'
 import type { SettingsType, Version, Command, Star } from '@/types'
 import {
   isBase64,
@@ -184,8 +189,11 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
     data = await migrate0_10_0(data)
   }
   if (versionDiff(data.settingVersion, '0.10.3') === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = migrate0_10_3(data)
+  }
+  if (versionDiff(data.settingVersion, '0.11.3') === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate0_11_3(data)
   }
   return data
 }
@@ -234,6 +242,23 @@ const migrate0_10_3 = (data: SettingsType): SettingsType => {
   if (data.linkCommand.enabled == null) {
     data.linkCommand.enabled = DefaultSettings.linkCommand.enabled
     console.debug('migrate 0.10.3 link command enabled')
+  }
+  return data
+}
+
+const migrate0_11_3 = (data: SettingsType): SettingsType => {
+  // 1. Add linkCommand.startUpMethod if not exists.
+  if (data.linkCommand.startupMethod == null) {
+    data.linkCommand.startupMethod = DefaultSettings.linkCommand.startupMethod
+  }
+  // 2. Move threshold to linkCommand.startUpMethod
+  data.linkCommand.startupMethod = {
+    ...data.linkCommand.startupMethod,
+    threshold: (data.linkCommand as any).threshold,
+  }
+  // 3. Change startUpMethod to drag if linkCommand is enabled.
+  if (data.linkCommand.enabled) {
+    data.linkCommand.startupMethod.method = LINK_COMMAND_STARTUP_METHOD.DRAG
   }
   return data
 }
