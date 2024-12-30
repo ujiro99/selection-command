@@ -10,7 +10,7 @@ export function DragDetector(): JSX.Element {
     progress,
     mousePosition,
     detectDrag,
-    detectHoldLink,
+    preventLinkClick,
   } = useDetectLinkCommand()
 
   if (!mousePosition || !inProgress) return <></>
@@ -22,7 +22,7 @@ export function DragDetector(): JSX.Element {
     top: window.scrollY + mousePosition.y - 4,
     left: window.scrollX + mousePosition.x - 4,
     zIndex: 2147483647,
-    opacity: detectHoldLink ? 0 : 1,
+    opacity: preventLinkClick ? 0 : 1,
     pointerEvents: 'none',
     // border: '1px solid red',
   } as React.CSSProperties
@@ -43,7 +43,10 @@ export function DragDetector(): JSX.Element {
       <div style={styles}>
         <CircularProgress style={circleStyles} progress={progress} />
       </div>
-      <LinkClickGuard show={detectHoldLink ?? false} position={mousePosition} />
+      <LinkClickGuard
+        show={preventLinkClick ?? false}
+        position={mousePosition}
+      />
     </>
   )
 }

@@ -35,7 +35,7 @@ type DetectLinkCommandReturn = {
   mousePosition: Point | null
   showIndicator: boolean
   detectDrag?: boolean
-  detectHoldLink?: boolean
+  preventLinkClick?: boolean
 }
 
 type SubHookReturn = Omit<DetectLinkCommandReturn, 'showIndicator'> | {}
@@ -185,6 +185,18 @@ const calcPopupPosition = (cursorX: number, command: Command): Point => {
   return { x, y }
 }
 
+const checkValidKey = (key: string | undefined, e: MouseEvent): boolean => {
+  let detect = false
+  key === KEYBOARD.SHIFT && e.shiftKey && (detect = true)
+  key === KEYBOARD.CTRL && e.ctrlKey && (detect = true)
+  key === KEYBOARD.ALT && e.altKey && (detect = true)
+  key === KEYBOARD.META && e.metaKey && (detect = true)
+  if (isMac()) {
+    key === KEYBOARD.CTRL && e.metaKey && (detect = true)
+  }
+  return detect
+}
+
 function useDetectKeyboard(
   enabled: boolean,
   settings: SettingsType,
@@ -197,39 +209,55 @@ function useDetectKeyboard(
       LINK_COMMAND_STARTUP_METHOD.KEYBOARD
   const key = settings.linkCommand.startupMethod.keyboardParam
   const popupOption = command?.popupOption ?? PopupOption
+  const [target, setTarget] = useState<Element | null>(null)
   const [mousePosition, setMousePosition] = useState<Point | null>(null)
+  const [mousePress, setMousePress] = useState<boolean>(false)
 
   useEffect(() => {
     if (!keyboardEnabled) return
 
-    const onClick = (e: MouseEvent) => {
-      if (!isTargetEvent(e)) return
+    const onMouseDown = (e: MouseEvent) => {
       if (!keyboardEnabled) return
+      if (!isTargetEvent(e)) return
+      if (!checkValidKey(key, e)) return
+      setTarget(e.target as Element)
+      setMousePosition({ x: e.clientX, y: e.clientY })
+      setMousePress(true)
+    }
 
-      let detect = false
-      key === KEYBOARD.SHIFT && e.shiftKey && (detect = true)
-      key === KEYBOARD.CTRL && e.ctrlKey && (detect = true)
-      key === KEYBOARD.ALT && e.altKey && (detect = true)
-      key === KEYBOARD.META && e.metaKey && (detect = true)
-      if (isMac()) {
-        key === KEYBOARD.CTRL && e.metaKey && (detect = true)
-      }
-      if (!detect) return
+    const onMouseUp = () => {
+      setTimeout(() => {
+        setTarget(null)
+        setMousePosition(null)
+        setMousePress(false)
+      }, 200)
+    }
 
+    const onClick = (e: MouseEvent) => {
+      if (!keyboardEnabled) return
+      if (!checkValidKey(key, e)) return
+      if (target == null) return
       const pos = calcPopupPosition(e.clientX, command)
-      setMousePosition(pos)
-      onDetect(pos, e.target as Element)
-      e.preventDefault()
+      onDetect(pos, target as Element)
     }
 
     window.addEventListener('click', onClick)
+    window.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mouseup', onMouseUp)
     return () => {
       window.removeEventListener('click', onClick)
+      window.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mouseup', onMouseUp)
     }
   }, [keyboardEnabled, key, onDetect, popupOption])
 
   return keyboardEnabled
-    ? { progress: 0, mousePosition, inProgress: false }
+    ? {
+        progress: 0,
+        mousePosition,
+        inProgress: mousePress,
+        preventLinkClick: true,
+      }
     : {}
 }
 
@@ -290,7 +318,7 @@ function useDetectClickHold(
         mousePosition: position,
         inProgress: progress > playPixel,
         progress: progress,
-        detectHoldLink,
+        preventLinkClick: detectHoldLink,
       }
     : {}
 }

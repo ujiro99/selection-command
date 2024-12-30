@@ -7,7 +7,7 @@ type LinkClickGuardProps = {
 
 export const LinkClickGuard = (props: LinkClickGuardProps) => {
   const { show, position } = props
-  const [guard, setGuard] = useState(false)
+  const [guard, setGuard] = useState(show)
   const mouseDownRef = useRef(false)
   const timeoutRef = useRef(0)
 
@@ -46,6 +46,7 @@ export const LinkClickGuard = (props: LinkClickGuardProps) => {
     left: window.scrollX + position.x - 5,
     height: 10,
     width: 10,
+    zIndex: 2147483691,
     // background: 'blue',
   } as React.CSSProperties
 
