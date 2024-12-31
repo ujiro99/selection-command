@@ -34,6 +34,8 @@ export function Option() {
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
+  const [popupElm, setPopupElm] = useState<Element | null>(null)
+  const [popupHeight, setPopupHeight] = useState(0)
 
   useEventProxyReceiver()
 
@@ -83,6 +85,14 @@ export function Option() {
       window.removeEventListener('message', func)
     }
   }, [])
+
+  useEffect(() => {
+    if (popupElm == null) return
+    setTimeout(() => {
+      const rect = popupElm.getBoundingClientRect()
+      setPopupHeight(rect.height)
+    }, 40)
+  }, [popupElm, isSaving])
 
   const sendMessage = (command: OPTION_MSG, value: unknown) => {
     if (iframeRef.current != null && iframeRef.current.contentWindow != null) {
@@ -142,14 +152,15 @@ export function Option() {
       </CSSTransition>
 
       <div className={css.rightColumn}>
-        <div ref={setPreviewElm}>
+        <div ref={setPreviewElm} style={{ marginBottom: popupHeight }}>
           <Popup
             positionElm={previewElm}
             selectionText="preview"
             isPreview={true}
+            ref={setPopupElm}
           />
         </div>
-        <div className="mt-12">
+        <div className="mt-8">
           <HubBanner />
         </div>
       </div>
