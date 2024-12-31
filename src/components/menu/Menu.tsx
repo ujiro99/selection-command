@@ -11,8 +11,9 @@ import {
 import { STYLE, ROOT_FOLDER } from '@/const'
 import { MenuItem } from './MenuItem'
 import { Icon } from '@/components/Icon'
+import { HoverArea } from '@/components/menu/HoverArea'
 import css from './Menu.module.css'
-import type { Command, CommandFolder } from '@/types'
+import type { Command, CommandFolder, Side } from '@/types'
 import { useSetting } from '@/hooks/useSetting'
 import { onHover, isMenuCommand } from '@/lib/utils'
 
@@ -70,7 +71,7 @@ export function Menu(): JSX.Element {
       })}
       ref={menuRef}
     >
-      {items.map(({ folder, commands }, idx) =>
+      {items.map(({ folder, commands }) =>
         folder.id === ROOT_FOLDER ? (
           commands.map((command) => (
             <MenuItem
@@ -81,46 +82,85 @@ export function Menu(): JSX.Element {
             />
           ))
         ) : (
-          <MenubarMenu value={folder.id} key={idx}>
-            <MenubarTrigger
-              className={clsx(css.item, css.folder, {
-                [css.itemHorizontal]: isHorizontal,
-                [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
-                [css.folderHorizontal]: isHorizontal,
-              })}
-              {...onHover(setHoverTrigger, folder.id)}
-            >
-              <img
-                className={css.itemImg}
-                src={folder.iconUrl}
-                alt={folder.title}
-              />
-              {!(folder.onlyIcon && isHorizontal) && (
-                <span className={clsx(css.itemTitle, css.title)}>
-                  {folder.title}
-                </span>
-              )}
-              {!isHorizontal && <Icon name="chevron" className={css.icon} />}
-            </MenubarTrigger>
-            <MenubarContent
-              side={side}
-              sideOffset={isHorizontal ? 0 : -2}
-              className={clsx({ flex: isHorizontal })}
-              {...onHover(setHoverContent, folder.id)}
-            >
-              {commands.map((command) => (
-                <MenubarItem key={command.id}>
-                  <MenuItem
-                    menuRef={menuRef}
-                    onlyIcon={isHorizontal}
-                    command={command}
-                  />
-                </MenubarItem>
-              ))}
-            </MenubarContent>
-          </MenubarMenu>
+          <MenuFolder
+            key={folder.id}
+            folder={folder}
+            commands={commands}
+            isHorizontal={isHorizontal}
+            side={side}
+            menuRef={menuRef}
+            onHoverTrigger={setHoverTrigger}
+            onHoverContent={setHoverContent}
+          />
         ),
       )}
     </Menubar>
+  )
+}
+
+const MenuFolder = (props: {
+  folder: CommandFolder
+  commands: Command[]
+  isHorizontal: boolean
+  side: Side
+  menuRef: React.RefObject<HTMLDivElement>
+  onHoverTrigger: (enterVal: any) => void
+  onHoverContent: (enterVal: any) => void
+}) => {
+  const { folder, isHorizontal } = props
+
+  // For HoverArea
+  const anchorRef = useRef<HTMLButtonElement | null>(null)
+  const contentRef = useRef<HTMLDivElement | null>(null)
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
+  const [contentRect, setContentRect] = useState<DOMRect | null>(null)
+
+  const onHoverTrigger = (enterVal: any) => {
+    props.onHoverTrigger(enterVal)
+    // Delay to wait finishing animation.
+    setTimeout(() => {
+      if (anchorRef.current && contentRef.current) {
+        setAnchorRect(anchorRef.current?.getBoundingClientRect())
+        setContentRect(contentRef.current?.getBoundingClientRect())
+      }
+    }, 200)
+  }
+
+  return (
+    <MenubarMenu value={folder.id}>
+      <MenubarTrigger
+        className={clsx(css.item, css.folder, {
+          [css.itemHorizontal]: isHorizontal,
+          [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
+          [css.folderHorizontal]: isHorizontal,
+        })}
+        ref={anchorRef}
+        {...onHover(onHoverTrigger, folder.id)}
+      >
+        <img className={css.itemImg} src={folder.iconUrl} alt={folder.title} />
+        {!(folder.onlyIcon && isHorizontal) && (
+          <span className={clsx(css.itemTitle, css.title)}>{folder.title}</span>
+        )}
+        {!isHorizontal && <Icon name="chevron" className={css.icon} />}
+      </MenubarTrigger>
+      <MenubarContent
+        side={props.side}
+        sideOffset={isHorizontal ? 2 : -2}
+        className={clsx({ flex: isHorizontal })}
+        ref={contentRef}
+        {...onHover(props.onHoverContent, folder.id)}
+      >
+        {props.commands.map((command) => (
+          <MenubarItem key={command.id}>
+            <MenuItem
+              menuRef={props.menuRef}
+              onlyIcon={isHorizontal}
+              command={command}
+            />
+          </MenubarItem>
+        ))}
+        <HoverArea anchor={anchorRect} content={contentRect} />
+      </MenubarContent>
+    </MenubarMenu>
   )
 }
