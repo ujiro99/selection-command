@@ -12,7 +12,6 @@ import { STYLE, ROOT_FOLDER } from '@/const'
 import { MenuItem } from './MenuItem'
 import { Icon } from '@/components/Icon'
 import css from './Menu.module.css'
-import folderCss from './MenuFolder.module.css'
 import type { Command, CommandFolder } from '@/types'
 import { useSetting } from '@/hooks/useSetting'
 import { onHover, isMenuCommand } from '@/lib/utils'
@@ -84,10 +83,10 @@ export function Menu(): JSX.Element {
         ) : (
           <MenubarMenu value={folder.id} key={idx}>
             <MenubarTrigger
-              className={clsx(folderCss.folder, {
+              className={clsx(css.item, css.folder, {
                 [css.itemHorizontal]: isHorizontal,
                 [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
-                [folderCss.folderHorizontal]: isHorizontal,
+                [css.folderHorizontal]: isHorizontal,
               })}
               {...onHover(setHoverTrigger, folder.id)}
             >
@@ -97,13 +96,11 @@ export function Menu(): JSX.Element {
                 alt={folder.title}
               />
               {!(folder.onlyIcon && isHorizontal) && (
-                <span className={clsx(css.itemTitle, folderCss.title)}>
+                <span className={clsx(css.itemTitle, css.title)}>
                   {folder.title}
                 </span>
               )}
-              {!isHorizontal && (
-                <Icon name="chevron" className={folderCss.icon} />
-              )}
+              {!isHorizontal && <Icon name="chevron" className={css.icon} />}
             </MenubarTrigger>
             <MenubarContent
               side={side}
