@@ -139,5 +139,17 @@
     ],
     "id": "17f41196-edf1-5a5b-b0d4-c85b4b1bcd1b",
     "addedAt": "2024-12-21T08:06:08.744Z"
+  },
+  {
+    "title": "アラビア文字数列を漢数字に変換",
+    "searchUrl": "https://www.sljfaq.org/cgi/numbers_ja.cgi?number=%s",
+    "description": "アラビア文字の数列を選択して開くと漢数字での表記法を出力します。莫大な数字を瞬時に判断できる。",
+    "iconUrl": "https://cdn.icon-icons.com/icons2/1369/PNG/512/-transform_90128.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Tool"],
+    "id": "b8b18002-f163-5a6c-a3e3-efba6c491a21",
+    "addedAt": "2024-12-31T02:49:13.716Z"
   }
 ]
