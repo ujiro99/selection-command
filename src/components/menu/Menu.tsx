@@ -159,7 +159,11 @@ const MenuFolder = (props: {
             />
           </MenubarItem>
         ))}
-        <HoverArea anchor={anchorRect} content={contentRect} />
+        <HoverArea
+          anchor={anchorRect}
+          content={contentRect}
+          isHorizontal={isHorizontal}
+        />
       </MenubarContent>
     </MenubarMenu>
   )
