@@ -72,7 +72,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       .execute({
         selectionText,
         command: props.command,
-        position: { x: rect.left + POPUP_OFFSET, y: rect.top },
+        position: { x: rect.right + 10, y: rect.top },
         useSecondary,
         changeState: onChangeState,
         target,
