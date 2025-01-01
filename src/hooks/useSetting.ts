@@ -37,7 +37,6 @@ export function useSetting(): useSettingReturn {
   const updateSettings = async () => {
     const caches = await Settings.getCaches()
     const data = await Settings.get()
-    // console.log(data.popupPlacement) // ok
     // use image cache if available
     data.commands = data.commands.map((c) => {
       const cache = caches.images[c.iconUrl]

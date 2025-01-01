@@ -12,11 +12,13 @@ export const HoverArea = (props: Props) => {
     return null
   }
 
+  // SVG size and position
   const x = Math.min(anchor.x, content.x)
   const y = Math.min(anchor.y, content.y)
   const width = Math.max(anchor.right, content.right) - x
   const height = Math.max(anchor.bottom, content.bottom) - y
 
+  // Anchor placement
   const isLeft = anchor.x <= content.x
   const isTop = anchor.y <= content.y
   const isRight = anchor.right >= content.right
