@@ -37,17 +37,8 @@
     ]
   },
   "action": {},
-  "permissions": [
-    "storage",
-    "tabs",
-    "contextMenus",
-    "declarativeNetRequest",
-    "declarativeNetRequestFeedback"
-  ],
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ],
+  "permissions": ["storage", "tabs", "contextMenus", "declarativeNetRequest"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "web_accessible_resources": [
     {
       "matches": [
