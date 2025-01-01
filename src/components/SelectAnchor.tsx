@@ -6,9 +6,11 @@ import React, {
   useCallback,
 } from 'react'
 import { context } from '@/components/App'
-import { useLeftClickHold } from '@/hooks/useDetectStartup'
-import { MOUSE, EXIT_DURATION } from '@/const'
-import { isEmpty, isPopup } from '@/services/util'
+import { LinkClickGuard } from '@/components/LinkClickGuard'
+import { useSetting } from '@/hooks/useSetting'
+import { useLeftClickHold } from '@/hooks/useLeftClickHold'
+import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from '@/const'
+import { isEmpty, isPopup } from '@/lib/utils'
 import { Point } from '@/types'
 
 type Props = {
@@ -25,7 +27,15 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     const [point, setPoint] = useState<Point | null>(null)
     const [offset, setOffset] = useState<Point>({} as Point)
     const [delayTO, setDelayTO] = useState<number | null>()
-    const { detectHold, position } = useLeftClickHold(props)
+
+    const { settings } = useSetting()
+    const { method, leftClickHoldParam } = settings.startupMethod
+    const { detectHold, detectHoldLink, position } = useLeftClickHold({
+      enable:
+        method === STARTUP_METHOD.LEFT_CLICK_HOLD &&
+        !isEmpty(props.selectionText),
+      holdDuration: leftClickHoldParam ?? 200,
+    })
     const selected = !isEmpty(props.selectionText)
 
     useEffect(() => {
@@ -158,9 +168,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       if (detectHold) {
-        if (point == null) {
-          setAnchor(position)
-        }
+        setAnchor(position)
       }
     }, [detectHold, point, setAnchor])
 
@@ -181,22 +189,8 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     return (
       <>
         <div style={styles} ref={ref} />
-        <LinkClickGuard {...props} />
+        <LinkClickGuard show={detectHoldLink} position={position} />
       </>
     )
   },
 )
-
-const LinkClickGuard = (props: Props) => {
-  const { detectHoldLink, position } = useLeftClickHold(props)
-
-  const styles = {
-    position: 'absolute',
-    top: window.scrollY + position?.y - 5,
-    left: window.scrollX + position?.x - 5,
-    height: 10,
-    width: 10,
-  } as React.CSSProperties
-
-  return detectHoldLink && <div style={styles} />
-}

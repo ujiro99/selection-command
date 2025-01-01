@@ -8,6 +8,7 @@ import type {
   SPACE_ENCODING,
   STYLE_VARIABLE,
   LINK_COMMAND_ENABLED,
+  LINK_COMMAND_STARTUP_METHOD,
 } from '@/const'
 
 export type Version = `${number}.${number}.${number}`
@@ -37,7 +38,6 @@ export type SelectionCommand = {
 
 export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
   openMode: DRAG_OPEN_MODE
-  linkCommandOption: DragOption
 }
 
 export type PopupOption = {
@@ -47,14 +47,18 @@ export type PopupOption = {
 
 export type CopyOption = 'default' | 'text'
 
-export type DragOption = {
-  threshold: number
-  showIndicator: boolean
+type LinkCommandStartupMethod = {
+  method: LINK_COMMAND_STARTUP_METHOD
+  threshold?: number
+  keyboardParam?: KEYBOARD
+  leftClickHoldParam?: number
 }
 
-type LinkCommandSettings = DragOption & {
+type LinkCommandSettings = {
   enabled: LINK_COMMAND_ENABLED
   openMode: DRAG_OPEN_MODE
+  showIndicator: boolean
+  startupMethod: LinkCommandStartupMethod
 }
 
 export type FolderOption = {
@@ -102,7 +106,7 @@ export type Star = {
   id: string
 }
 
-export type UserSettingsType = {
+export type SettingsType = {
   settingVersion: Version
   startupMethod: StartupMethod
   popupPlacement: Placement

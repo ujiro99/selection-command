@@ -1,4 +1,4 @@
-import { sleep, toUrl } from '@/services/util'
+import { sleep, toUrl } from '@/lib/utils'
 
 /**
  * Get favicon url from url.

@@ -8,13 +8,13 @@ import {
 } from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
-import { escapeJson } from '@/services/util'
-import type { ScreenSize } from '@/services/util'
-import { UserSettings } from '@/services/userSettings'
+import { escapeJson } from '@/lib/utils'
+import type { ScreenSize } from '@/services/dom'
+import { Settings } from '@/services/settings'
 import type { CommandVariable } from '@/types'
 import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
-import { PopupOption } from '@/services/defaultUserSettings'
+import { PopupOption } from '@/services/defaultSettings'
 
 mv3.utils.setConfig({ isDev: isDebug })
 mv3.background.init()
@@ -188,7 +188,7 @@ const commandFuncs = {
   },
 
   [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    ;(async () => {
+    const open = async () => {
       const tabIds = await openPopups(param)
       if (tabIds.length > 0) {
         await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
@@ -197,7 +197,8 @@ const commandFuncs = {
         return
       }
       console.debug('tab not found')
-    })()
+    }
+    open()
     return false
   },
 
@@ -210,7 +211,7 @@ const commandFuncs = {
 
   [BgCommand.addPageRule]: (param: addPageRuleProps): boolean => {
     const add = async () => {
-      const settings = await UserSettings.get()
+      const settings = await Settings.get()
       const pageRules = settings.pageRules ?? []
       if (pageRules.find((r) => r.urlPattern === param.url) == null) {
         pageRules.push({
@@ -220,7 +221,7 @@ const commandFuncs = {
           linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
         })
       }
-      await UserSettings.set({
+      await Settings.set({
         ...settings,
         pageRules,
       })
@@ -248,7 +249,7 @@ const commandFuncs = {
       spaceEncoding: params.spaceEncoding,
       popupOption: PopupOption,
     }
-    UserSettings.addCommands([cmd]).then(() => {
+    Settings.addCommands([cmd]).then(() => {
       response(true)
     })
     return true
@@ -281,11 +282,12 @@ const commandFuncs = {
         text: escapeJson(escapeJson(selectionText)),
       })
       const opt = JSON.parse(str)
-      ;(async () => {
+      const exec = async () => {
         const res = await fetch(url, opt)
         const json = await res.json()
         response({ ok: res.ok, res: json })
-      })()
+      }
+      exec()
     } catch (e) {
       console.error(e)
       response({ ok: false, res: e })
@@ -371,17 +373,16 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ): boolean => {
     const toggle = async () => {
-      const settings = await UserSettings.get()
+      const settings = await Settings.get()
       const idx = settings.stars.findIndex((s) => s.id === param.id)
       if (idx >= 0) {
         settings.stars.splice(idx, 1)
       } else {
         settings.stars.push({
           id: param.id,
-          addedAt: Date.now(),
         })
       }
-      await UserSettings.set(settings, true)
+      await Settings.set(settings, true)
       response(true)
     }
     toggle()
@@ -409,14 +410,14 @@ const updateWindowSize = async (
   width: number,
   height: number,
 ) => {
-  const obj = await UserSettings.get()
+  const obj = await Settings.get()
   const found = obj.commands.find((c) => c.id === commandId)
   if (found) {
     found.popupOption = {
       width,
       height,
     }
-    await UserSettings.updateCommands([found])
+    await Settings.updateCommands([found])
   } else {
     console.warn('command not found', commandId)
   }
@@ -509,6 +510,13 @@ chrome.runtime.onInstalled.addListener(() => {
     accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
   })
 })
+
+// for debug
+// chrome.declarativeNetRequest.onRuleMatchedDebug.addListener(
+//   (details: chrome.declarativeNetRequest.MatchedRuleInfoDebug) => {
+//     console.debug(details)
+//   },
+// )
 
 const updateRules = async (tabIds: number[]) => {
   const oldRules = await chrome.declarativeNetRequest.getSessionRules()

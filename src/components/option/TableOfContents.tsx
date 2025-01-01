@@ -1,5 +1,5 @@
 import React from 'react'
-import userSettingSchema from '@/services/userSettingSchema'
+import settingSchema from '@/services/settingSchema'
 import styles from './TableOfContents.module.css'
 import { t } from '@/services/i18n'
 
@@ -8,7 +8,7 @@ type Props = {
 }
 
 export const TableOfContents = (props: Props) => {
-  const properties = Object.keys(userSettingSchema.properties)
+  const properties = Object.keys(settingSchema.properties)
   const labels = properties.reduce(
     (a, p) => ({ ...a, [p]: t(`Option_${p}`) }),
     {},

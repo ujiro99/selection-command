@@ -1,14 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
-import { UserSettings } from '@/services/userSettings'
-import type { UserSettingsType } from '@/types'
-import {
-  sleep,
-  capitalize,
-  isMenuCommand,
-  isLinkCommand,
-} from '@/services/util'
+import { Settings } from '@/services/settings'
+import type { SettingsType } from '@/types'
+import { sleep, capitalize, isMenuCommand, isLinkCommand } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import { fetchIconUrl } from '@/services/chrome'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'
@@ -39,24 +34,22 @@ export function Option() {
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
+  const [popupElm, setPopupElm] = useState<Element | null>(null)
+  const [popupHeight, setPopupHeight] = useState(0)
 
   useEventProxyReceiver()
 
-  const updateSettings = async (settings: UserSettingsType) => {
+  const updateSettings = async (settings: SettingsType) => {
     if (isSaving) return
     try {
       setIsSaving(true)
-      const current = await UserSettings.get(true)
+      const current = await Settings.get(true)
       const linkCommands = current.commands.filter(isLinkCommand).map((c) => ({
         ...c,
         openMode: settings.linkCommand.openMode,
-        linkCommandOption: {
-          threshold: settings.linkCommand.threshold,
-          showIndicator: settings.linkCommand.showIndicator,
-        },
       }))
       settings.commands = [...settings.commands, ...linkCommands]
-      await UserSettings.set(settings)
+      await Settings.set(settings)
       await sleep(1000)
     } catch (e) {
       console.error('Failed to update settings!', settings)
@@ -93,6 +86,14 @@ export function Option() {
     }
   }, [])
 
+  useEffect(() => {
+    if (popupElm == null) return
+    setTimeout(() => {
+      const rect = popupElm.getBoundingClientRect()
+      setPopupHeight(rect.height)
+    }, 40)
+  }, [popupElm, isSaving])
+
   const sendMessage = (command: OPTION_MSG, value: unknown) => {
     if (iframeRef.current != null && iframeRef.current.contentWindow != null) {
       const message = { command, value }
@@ -104,7 +105,7 @@ export function Option() {
   }
 
   const onLoadIfame = async () => {
-    const settings = await UserSettings.get(true)
+    const settings = await Settings.get(true)
     const translation = getTranslation()
 
     // Convert linkCommand option
@@ -112,9 +113,8 @@ export function Option() {
     if (linkCommands.length > 0) {
       const linkCommand = linkCommands[0]
       settings.linkCommand = {
-        enabled: settings.linkCommand.enabled,
+        ...settings.linkCommand,
         openMode: linkCommand.openMode,
-        ...linkCommand.linkCommandOption,
       }
     }
     settings.commands = settings.commands.filter(isMenuCommand)
@@ -152,14 +152,15 @@ export function Option() {
       </CSSTransition>
 
       <div className={css.rightColumn}>
-        <div ref={setPreviewElm}>
+        <div ref={setPreviewElm} style={{ marginBottom: popupHeight }}>
           <Popup
             positionElm={previewElm}
             selectionText="preview"
             isPreview={true}
+            ref={setPopupElm}
           />
         </div>
-        <div className="mt-12">
+        <div className="mt-8">
           <HubBanner />
         </div>
       </div>

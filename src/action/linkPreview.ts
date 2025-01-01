@@ -1,18 +1,18 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import {
   getScreenSize,
-  findAnchorElement,
+  findAnchorElementFromParent,
   findClickableElement,
   getSelectorFromElement,
-} from '@/services/util'
+} from '@/services/dom'
 import { DRAG_OPEN_MODE, POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
-import { isEmpty } from '@/services/util'
+import { isEmpty } from '@/lib/utils'
 
 export const LinkPreview = {
   async execute({ command, position, target }: ExecProps) {
     if (position && target) {
-      const elm = findAnchorElement(target) as HTMLAnchorElement
+      const elm = findAnchorElementFromParent(target) as HTMLAnchorElement
       const href = elm?.href
 
       const type =
@@ -32,9 +32,9 @@ export const LinkPreview = {
           type,
         })
         return
-      } else {
-        console.warn('href not found')
       }
+
+      console.warn('Href not found, trying to find clickable element')
 
       const clickElm = findClickableElement(target)
       if (clickElm) {

@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react'
 import { Dialog } from './Dialog'
-import type { UserSettingsType } from '@/types'
+import type { SettingsType } from '@/types'
 
 import { Storage, STORAGE_KEY } from '@/services/storage'
-import { UserSettings, migrate } from '@/services/userSettings'
-import { isBase64, isUrl } from '@/services/util'
+import { Settings, migrate } from '@/services/settings'
+import { isBase64, isUrl } from '@/lib/utils'
 import { APP_ID } from '@/const'
 import { t } from '@/services/i18n'
 
@@ -23,7 +23,7 @@ function getTimestamp() {
 export function ImportExport() {
   const [resetDialog, setResetDialog] = useState(false)
   const [importDialog, setImportDialog] = useState(false)
-  const [importJson, setImportJson] = useState<UserSettingsType>()
+  const [importJson, setImportJson] = useState<SettingsType>()
   const inputFile = useRef<HTMLInputElement>(null)
 
   const handleReset = () => {
@@ -32,18 +32,18 @@ export function ImportExport() {
 
   const handleResetClose = (ret: boolean) => {
     if (ret) {
-      UserSettings.reset().then(() => location.reload())
+      Settings.reset().then(() => location.reload())
     }
     setResetDialog(false)
   }
 
   const handleExport = async () => {
-    const data = await Storage.get<UserSettingsType>(STORAGE_KEY.USER)
+    const data = await Storage.get<SettingsType>(STORAGE_KEY.USER)
     data.commands = await Storage.getCommands()
 
     // for back compatibility
     // cache key to image data url
-    const caches = await UserSettings.getCaches()
+    const caches = await Settings.getCaches()
     for (const c of data.commands) {
       if (!c.iconUrl) continue
       if (isBase64(c.iconUrl) || isUrl(c.iconUrl)) continue
@@ -82,9 +82,9 @@ export function ImportExport() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ;(async () => {
+      ; (async () => {
         const data = await migrate(importJson)
-        await UserSettings.set(data)
+        await Settings.set(data)
         location.reload()
       })()
     }

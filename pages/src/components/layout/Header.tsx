@@ -8,9 +8,9 @@ export function Header(): JSX.Element {
   return (
     <div>
       <Link href="/" className={commonCss.hover}>
-        <header className="flex items-center gap-1.5 text-3xl font-[family-name:var(--font-geist-mono)] font-medium">
+        <header className="relative flex items-center sm:gap-1.5 gap-0.5 text-xl sm:text-3xl font-[family-name:var(--font-geist-mono)] font-medium">
           Selection{' '}
-          <span className="bg-[#1597C9]/20 px-2 py-0.5 rounded-lg">
+          <span className="bg-[#1597C9]/20 px-1.5 sm:px-2 pb-0.5 sm:py-0.5 rounded-lg">
             Command
           </span>
           <span className="font-extralight ml-1">Hub</span>
@@ -20,7 +20,7 @@ export function Header(): JSX.Element {
       <a
         href="https://chromewebstore.google.com/detail/selection-command/nlnhbibaommoelemmdfnkjkgoppkohje"
         target="_blank"
-        className="fixed top-2 right-2 bg-white border border-stone-200 rounded-lg shadow-md transition duration-200 hover:shadow-lg"
+        className="fixed top-2 right-2 bg-white border border-stone-200 rounded-lg shadow-md transition duration-200 hover:shadow-lg hidden sm:block"
         data-gtm-click="chrome-web-store"
       >
         <Image

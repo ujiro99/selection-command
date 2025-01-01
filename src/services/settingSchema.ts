@@ -2,12 +2,16 @@ import {
   COMMAND_MAX,
   OPEN_MODE,
   DRAG_OPEN_MODE,
+  STARTUP_METHOD,
+  KEYBOARD,
   LINK_COMMAND_ENABLED,
+  LINK_COMMAND_STARTUP_METHOD,
 } from '@/const'
-import { PopupOption } from '@/services/defaultUserSettings'
+import Default, { PopupOption } from '@/services/defaultSettings'
+import { e2a } from '@/lib/utils'
 
 export default {
-  title: 'UserSettingSchema',
+  title: 'SettingSchema',
   type: 'object',
   required: ['startupMethod', 'commands', 'popupPlacement', 'style'],
   properties: {
@@ -35,7 +39,7 @@ export default {
     },
     linkCommand: {
       type: 'object',
-      required: ['enabled', 'openMode', 'threshold', 'showIndicator'],
+      required: ['enabled', 'openMode', 'showIndicator'],
       additionalProperties: false,
       properties: {
         enabled: {
@@ -52,20 +56,14 @@ export default {
           enum: [DRAG_OPEN_MODE.PREVIEW_POPUP, DRAG_OPEN_MODE.PREVIEW_WINDOW],
           default: DRAG_OPEN_MODE.PREVIEW_POPUP,
         },
-        threshold: {
-          name: 'Threshold',
-          $id: '#/linkCommand/threshold',
-          type: 'number',
-          default: 150,
-          minimum: 50,
-          maximum: 400,
-          step: 10,
-        },
         showIndicator: {
           name: 'ShowIndicator',
           $id: '#/linkCommand/showIndicator',
           type: 'boolean',
           default: true,
+        },
+        startupMethod: {
+          $ref: '#/definitions/linkCommandStartupMethod',
         },
       },
     },
@@ -142,7 +140,7 @@ export default {
         method: {
           $id: '#/startupMethod/method',
           $ref: '#/definitions/startupMethodEnum',
-          default: 'textSelection',
+          default: STARTUP_METHOD.TEXT_SELECTION,
         },
       },
       dependencies: {
@@ -170,8 +168,8 @@ export default {
                 keyboardParam: {
                   $id: '#/startupMethod/param/keyboard',
                   type: 'string',
-                  enum: ['Control', 'Alt', 'Shift'],
-                  default: 'Control',
+                  enum: [KEYBOARD.CTRL, KEYBOARD.ALT, KEYBOARD.SHIFT],
+                  default: KEYBOARD.CTRL,
                 },
               },
               required: ['keyboardParam'],
@@ -445,6 +443,73 @@ export default {
         },
         value: {
           type: 'string',
+        },
+      },
+    },
+    linkCommandStartupMethod: {
+      type: 'object',
+      name: 'LinkCommandStartupMethod',
+      additionalProperties: false,
+      required: ['method'],
+      properties: {
+        method: {
+          $id: '#/linkCommandStartupMethod/method',
+          type: 'string',
+          enum: e2a(LINK_COMMAND_STARTUP_METHOD),
+          default: Default.linkCommand.startupMethod.method,
+        },
+      },
+      dependencies: {
+        method: {
+          oneOf: [
+            {
+              properties: {
+                method: {
+                  enum: [LINK_COMMAND_STARTUP_METHOD.KEYBOARD],
+                },
+                keyboardParam: {
+                  $id: '#/linkCommandStartupMethod/param/keyboard',
+                  type: 'string',
+                  enum: [KEYBOARD.SHIFT, KEYBOARD.ALT, KEYBOARD.CTRL],
+                  default: Default.linkCommand.startupMethod.keyboardParam,
+                },
+              },
+              required: ['keyboardParam'],
+            },
+            {
+              properties: {
+                method: {
+                  enum: [LINK_COMMAND_STARTUP_METHOD.DRAG],
+                },
+                threshold: {
+                  name: 'Threshold',
+                  $id: '#/linkCommandStartupMethod/param/threshold',
+                  type: 'number',
+                  default: Default.linkCommand.startupMethod.threshold,
+                  minimum: 50,
+                  maximum: 400,
+                  step: 10,
+                },
+              },
+              required: ['threshold'],
+            },
+            {
+              properties: {
+                method: {
+                  enum: [LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD],
+                },
+                leftClickHoldParam: {
+                  $id: '#/linkCommandStartupMethod/param/leftClickHold',
+                  type: 'number',
+                  default: Default.linkCommand.startupMethod.leftClickHoldParam,
+                  minimum: 50,
+                  maximum: 500,
+                  step: 10,
+                },
+              },
+              required: ['leftClickHoldParam'],
+            },
+          ],
         },
       },
     },

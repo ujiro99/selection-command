@@ -1,51 +1,42 @@
 import { useState, useEffect } from 'react'
-import { UserSettings } from '../services/userSettings'
-import type { UserSettingsType, PageRule } from '@/types'
-import { isEmpty } from '@/services/util'
-import {
-  STYLE,
-  STARTUP_METHOD,
-  DRAG_OPEN_MODE,
-  LINK_COMMAND_ENABLED,
-} from '@/const'
+import { Settings } from '../services/settings'
+import type { SettingsType, PageRule } from '@/types'
+import { isEmpty } from '@/lib/utils'
+import { STYLE, STARTUP_METHOD } from '@/const'
+import Default from '@/services/defaultSettings'
 
 type useSettingReturn = {
-  settings: UserSettingsType
+  settings: SettingsType
   pageRule: PageRule | undefined
 }
 
-const emptySettings: UserSettingsType = {
+const emptySettings: SettingsType = {
   settingVersion: '0.0.0',
   commands: [],
   folders: [],
   pageRules: [],
   style: STYLE.HORIZONTAL,
   popupPlacement: 'top',
-  linkCommand: {
-    enabled: LINK_COMMAND_ENABLED.ENABLE,
-    openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
-    threshold: 150,
-    showIndicator: true,
-  },
+  linkCommand: Default.linkCommand,
   userStyles: [],
   startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },
   stars: [],
 }
 
 export function useSetting(): useSettingReturn {
-  const [settings, setSettings] = useState<UserSettingsType>(emptySettings)
+  const [settings, setSettings] = useState<SettingsType>(emptySettings)
 
   useEffect(() => {
     updateSettings()
-    UserSettings.addChangedListener(updateSettings)
+    Settings.addChangedListener(updateSettings)
     return () => {
-      UserSettings.removeChangedListener(updateSettings)
+      Settings.removeChangedListener(updateSettings)
     }
   }, [])
 
   const updateSettings = async () => {
-    const caches = await UserSettings.getCaches()
-    const data = await UserSettings.get()
+    const caches = await Settings.getCaches()
+    const data = await Settings.get()
     // use image cache if available
     data.commands = data.commands.map((c) => {
       const cache = caches.images[c.iconUrl]
@@ -69,10 +60,12 @@ export function useSetting(): useSettingReturn {
 
   let pageRule: PageRule | undefined
   if (settings != null) {
-    pageRule = settings.pageRules.find((rule) => {
-      const re = new RegExp(rule.urlPattern)
-      return window.location.href.match(re) != null
-    })
+    pageRule = settings.pageRules
+      .filter((r) => !isEmpty(r.urlPattern))
+      .find((rule) => {
+        const re = new RegExp(rule.urlPattern)
+        return window.location.href.match(re) != null
+      })
 
     if (pageRule != null) {
       settings.popupPlacement = pageRule.popupPlacement

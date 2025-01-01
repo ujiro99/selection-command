@@ -1,4 +1,4 @@
-import { UserSettingsType, Command } from '@/types'
+import { SettingsType, Command } from '@/types'
 import {
   VERSION,
   OPEN_MODE,
@@ -6,6 +6,8 @@ import {
   STARTUP_METHOD,
   STYLE,
   LINK_COMMAND_ENABLED,
+  LINK_COMMAND_STARTUP_METHOD,
+  KEYBOARD,
 } from '@/const'
 
 export default {
@@ -14,8 +16,13 @@ export default {
   linkCommand: {
     enabled: LINK_COMMAND_ENABLED.ENABLE,
     openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
-    threshold: 150,
     showIndicator: true,
+    startupMethod: {
+      method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+      keyboardParam: KEYBOARD.SHIFT,
+      threshold: 150,
+      leftClickHoldParam: 200,
+    },
   },
   folders: [
     {
@@ -47,7 +54,7 @@ export default {
   },
   userStyles: [],
   stars: [],
-} as UserSettingsType
+} as SettingsType
 
 export const PopupOption = {
   width: 600,
@@ -63,10 +70,6 @@ export const DefaultCommands = [
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
-    },
-    linkCommandOption: {
-      threshold: 150,
-      showIndicator: true,
     },
   },
   {

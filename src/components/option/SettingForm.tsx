@@ -10,7 +10,7 @@ import Form from '@rjsf/core'
 import type { IChangeEvent } from '@rjsf/core'
 import clsx from 'clsx'
 
-import userSettingSchema from '@/services/userSettingSchema'
+import settingSchema from '@/services/settingSchema'
 import {
   UserStyleField,
   UserStyleMap,
@@ -24,12 +24,13 @@ import {
   STYLE_VARIABLE,
   POPUP_ENABLED,
   LINK_COMMAND_ENABLED,
+  LINK_COMMAND_STARTUP_METHOD,
 } from '@/const'
 
-import type { UserSettingsType, FolderOption } from '@/types'
+import type { SettingsType, FolderOption } from '@/types'
 import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
-import { isMac } from '@/services/util'
+import { isMac, cn } from '@/lib/utils'
 
 import css from './SettingForm.module.css'
 
@@ -52,6 +53,10 @@ type LinkCommandEnabledMap = Record<
   LINK_COMMAND_ENABLED,
   { [key: string]: string }
 >
+type LinkCommandStartupMethodMap = Record<
+  LINK_COMMAND_STARTUP_METHOD,
+  { [key: string]: string }
+>
 
 const toKey = (str: string) => {
   return str.replace(/-/g, '_')
@@ -65,9 +70,9 @@ export function SettingFrom() {
   const [parent, setParent] = useState<MessageEventSource>()
   const [origin, setOrigin] = useState('')
   const [trans, setTrans] = useState<Translation>({})
-  const [settingData, setSettingData] = useState<UserSettingsType>()
+  const [settingData, setSettingData] = useState<SettingsType>()
   const [timeoutID, setTimeoutID] = useState<number>()
-  const settingRef = useRef<UserSettingsType>()
+  const settingRef = useRef<SettingsType>()
   const formRef = useRef<Form>(null)
 
   const sendMessage = useCallback(
@@ -91,9 +96,8 @@ export function SettingFrom() {
     menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const updateSettingData = (data: UserSettingsType) => {
+  const updateSettingData = (data: SettingsType) => {
     if (settingData == null) return
-    console.log('updateSettingData', data.commands.length)
     setSettingData(data)
     // For some reason, updating data here does not update the Form display.
     // So update via ref.
@@ -162,7 +166,7 @@ export function SettingFrom() {
   }, [settingData])
 
   const onChangeForm = (arg: IChangeEvent, id?: string) => {
-    const data = arg.formData as UserSettingsType
+    const data = arg.formData as SettingsType
     // Remove unnecessary fields when openMode is not popup or tab or window.
     if (id?.endsWith('openMode')) {
       data.commands
@@ -243,8 +247,11 @@ export function SettingFrom() {
     '#/commandFolder/onlyIcon': CheckboxField,
     '#/linkCommand/enabled': SelectField,
     '#/linkCommand/openMode': SelectField,
-    '#/linkCommand/threshold': InputNumberField,
     '#/linkCommand/showIndicator': CheckboxField,
+    '#/linkCommandStartupMethod/method': SelectField,
+    '#/linkCommandStartupMethod/param/threshold': InputNumberField,
+    '#/linkCommandStartupMethod/param/keyboard': SelectField,
+    '#/linkCommandStartupMethod/param/leftClickHold': InputNumberField,
     '#/pageRules/popupEnabled': SelectField,
     '#/pageRules/popupPlacement': SelectField,
     '#/pageRules/linkCommandEnabled': SelectField,
@@ -291,6 +298,7 @@ export function SettingFrom() {
     commands: {
       'ui:title': t('commands'),
       'ui:description': `${t('searchUrl')}: ${t('commands_desc')} \n${settingData?.commands.length}${t('commands_desc_count')}`,
+      'ui:classNames': css.listItem,
       items: {
         'ui:classNames': 'commandItem',
         'ui:order': [
@@ -350,7 +358,7 @@ export function SettingFrom() {
     linkCommand: {
       'ui:title': t('linkCommand'),
       'ui:description': t('linkCommand_desc'),
-      'ui:order': ['enabled', 'openMode', 'threshold', 'showIndicator'],
+      'ui:order': ['enabled', 'openMode', 'showIndicator', 'startupMethod'],
       enabled: {
         'ui:title': t('linkCommandEnabled'),
         'ui:classNames': 'linkCommandEnabled',
@@ -361,20 +369,38 @@ export function SettingFrom() {
         'ui:classNames': 'linkCommandOpenMode',
         enum: {} as DragOpenModeMap,
       },
-      threshold: {
-        'ui:title': t('threshold'),
-        'ui:description': t('threshold_desc'),
-        'ui:classNames': 'linkCommandThreshold',
-      },
       showIndicator: {
         'ui:title': t('showIndicator'),
         'ui:description': t('showIndicator_desc'),
         'ui:classNames': 'linkCommandShowIndicator',
       },
+      startupMethod: {
+        'ui:classNames': 'linkCommandStartupMethod',
+        method: {
+          'ui:title': t('linkCommandStartupMethod_method'),
+          'ui:classNames': 'linkCommandMethod',
+          enum: {} as LinkCommandStartupMethodMap,
+        },
+        threshold: {
+          'ui:title': t('linkCommandStartupMethod_threshold'),
+          'ui:description': t('linkCommandStartupMethod_threshold_desc'),
+          'ui:classNames': cn('linkCommandThreshold', css.hasDescription),
+        },
+        keyboardParam: {
+          'ui:title': t('linkCommandStartupMethod_keyboardParam'),
+          'ui:classNames': 'linkCommandKeyboardParam',
+          enum: {},
+        },
+        leftClickHoldParam: {
+          'ui:title': t('linkCommandStartupMethod_leftClickHoldParam'),
+          'ui:classNames': 'linkCommandLeftClickHoldParam',
+        },
+      },
     },
     folders: {
       'ui:title': t('folders'),
       'ui:description': t('folders_desc'),
+      'ui:classNames': css.listItem,
       items: {
         id: { 'ui:widget': 'hidden' },
         'ui:classNames': 'folderItem',
@@ -389,6 +415,7 @@ export function SettingFrom() {
     pageRules: {
       'ui:title': t('pageRules'),
       'ui:description': t('pageRules_desc'),
+      'ui:classNames': css.listItem,
       items: {
         'ui:classNames': 'pageRuleItem',
         urlPattern: { 'ui:title': t('urlPattern') },
@@ -438,7 +465,7 @@ export function SettingFrom() {
         enum: [{ id: '', name: '-- none --' }],
       } as folderOptionsType,
     )
-    userSettingSchema.definitions.folderOptions = folderOptions
+    settingSchema.definitions.folderOptions = folderOptions
   }
 
   // Add startupMethod to schema and uiSchema.
@@ -450,7 +477,7 @@ export function SettingFrom() {
       'ui:title': t(`startupMethod_${m}`),
     }
   }
-  userSettingSchema.definitions.startupMethodEnum.enum = methods
+  settingSchema.definitions.startupMethodEnum.enum = methods
   uiSchema.startupMethod.method.enum = methodMap
   if (method === STARTUP_METHOD.CONTEXT_MENU) {
     uiSchema.popupPlacement['ui:disabled'] = true
@@ -476,7 +503,7 @@ export function SettingFrom() {
       'ui:title': t(`openMode_${mode}`),
     }
   }
-  userSettingSchema.definitions.openMode.enum = modes
+  settingSchema.definitions.openMode.enum = modes
   uiSchema.commands.items.openMode.enum = modeMap
 
   // Add linkCommand's openMode to uiSchema.
@@ -514,6 +541,29 @@ export function SettingFrom() {
   uiSchema.linkCommand.enabled.enum = linkCommandEnabledMap
   uiSchema.pageRules.items.linkCommandEnabled.enum = linkCommandEnabledMap
 
+  // Add linkCommand's startup method to uiSchema.
+  const linkCommandStartupMethodMap = {} as LinkCommandStartupMethodMap
+  for (const m of Object.values(LINK_COMMAND_STARTUP_METHOD)) {
+    linkCommandStartupMethodMap[m] = {
+      'ui:title': t(`linkCommandStartupMethod_${m}`),
+    }
+  }
+  uiSchema.linkCommand.startupMethod.method.enum = linkCommandStartupMethodMap
+
+  // Key name per OS
+  const linkCommandkeyboardMap = {
+    [KEYBOARD.SHIFT]: {
+      'ui:title': t(`keyboardParam_${KEYBOARD.SHIFT}_${os}`),
+    },
+    [KEYBOARD.ALT]: {
+      'ui:title': t(`keyboardParam_${KEYBOARD.ALT}_${os}`),
+    },
+    [KEYBOARD.CTRL]: {
+      'ui:title': t(`keyboardParam_${KEYBOARD.CTRL}_${os}`),
+    },
+  }
+  uiSchema.linkCommand.startupMethod.keyboardParam.enum = linkCommandkeyboardMap
+
   // Add userStyles to schema and uiSchema.
   const sv = Object.values(STYLE_VARIABLE)
   const used = settingData?.userStyles?.map((s) => s.name) ?? []
@@ -526,14 +576,14 @@ export function SettingFrom() {
     }
   }
 
-  userSettingSchema.definitions.styleVariable.properties.name.enum = sv
+  settingSchema.definitions.styleVariable.properties.name.enum = sv
   uiSchema.userStyles.items.name.enum = svMap
 
   const log = (type: any) => console.log.bind(console, type)
   return (
     <Form
       className={css.form}
-      schema={userSettingSchema}
+      schema={settingSchema}
       validator={validator}
       formData={settingData}
       onChange={onChangeForm}

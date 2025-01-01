@@ -1,5 +1,5 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { toUrl } from '@/services/util'
+import { toUrl } from '@/lib/utils'
 import type { ExecProps } from './index'
 
 export const Tab = {
