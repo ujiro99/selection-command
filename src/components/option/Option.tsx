@@ -95,12 +95,19 @@ export function Option() {
   }, [])
 
   useEffect(() => {
-    if (popupElm == null) return
-    setTimeout(() => {
-      const rect = popupElm.getBoundingClientRect()
-      setPopupHeight(rect.height)
-    }, 40)
-  }, [popupElm, isSaving])
+    const updateHeight = () => {
+      if (popupElm == null) return
+      setTimeout(() => {
+        const rect = popupElm.getBoundingClientRect()
+        setPopupHeight(rect.height)
+      }, 40)
+    }
+    Settings.addChangedListener(updateHeight)
+    updateHeight()
+    return () => {
+      Settings.removeChangedListener(updateHeight)
+    }
+  }, [popupElm])
 
   const sendMessage = (command: OPTION_MSG, value: unknown) => {
     if (iframeRef.current != null && iframeRef.current.contentWindow != null) {
