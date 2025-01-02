@@ -46,7 +46,7 @@ import { TagPicker } from '@/components/TagPicker'
 import { Image } from '@/components/Image'
 import { Tag } from '@/components/Tag'
 
-import { cmd2uuid } from '@/features/command'
+import { cmd2uuid, getSearchUrl } from '@/features/command'
 import { isEmpty } from '@/lib/utils'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
 import type { CommandInJson, Tag as TagType } from '@/types'
@@ -62,7 +62,12 @@ const formSchema = z.object({
     .max(100, {
       message: 'タイトルは最長100文字です',
     }),
-  searchUrl: z.string().url(),
+  searchUrl: z
+    .string()
+    .url()
+    .refine((url) => getSearchUrl().every((u) => u !== url), {
+      message: '検索URLが既に登録されています',
+    }),
   iconUrl: z.string().url(),
   openMode: z.nativeEnum(OPEN_MODE),
   openModeSecondary: z.nativeEnum(OPEN_MODE),
@@ -189,6 +194,7 @@ function InputForm(props: InputProps) {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    mode: 'onBlur',
     defaultValues: {
       title: '',
       searchUrl: '',
