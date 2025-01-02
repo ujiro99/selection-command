@@ -85,6 +85,10 @@
     line-height: 1.3;
   }
 
+  :global input.form-control {
+    text-indent: 4px;
+  }
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -144,6 +148,14 @@
 
 :global select.form-control {
   cursor: pointer;
+}
+
+:global .form-control.checkbox {
+  padding: 6px 12px;
+}
+
+:global .form-control.checkbox>input {
+  margin-left: 5px;
 }
 
 :global .required {
@@ -333,11 +345,12 @@
 }
 
 .selectContainer .iconUrlPreview {
-  margin-left: 0.4em;
+  margin-left: 0.3em;
 }
 
 .iconUrl .iconUrlPreview {
   margin-bottom: -3px;
+  margin-left: 0.3em;
 }
 
 .iconUrlPreview+.select {
@@ -349,8 +362,6 @@
   align-items: center;
   padding-top: 0px !important;
   padding-bottom: 0px !important;
-  padding-left: 6px !important;
-  margin-left: -3px;
 }
 
 .select {
@@ -378,10 +389,11 @@
 
 .number {
   flex: 1;
-  height: 36px;
+  height: 38px;
   background: transparent;
   border: none;
   outline: none;
+  margin-left: 5px;
   cursor: text;
   color: var(--font-color);
 
@@ -438,6 +450,11 @@
   width: 16px;
   height: 16px;
   animation: spin 1s linear infinite;
+}
+
+.userStyles select,
+.userStyles input {
+  font-size: 0.85rem;
 }
 
 @keyframes spin {

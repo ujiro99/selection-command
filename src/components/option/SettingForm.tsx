@@ -457,7 +457,7 @@ export function SettingFrom() {
         label: t('Add'),
       },
       items: {
-        'ui:classNames': 'userStyles',
+        'ui:classNames': css.userStyles,
         name: {
           'ui:title': t('userStyles_name'),
           enum: {} as UserStyleMap,
