@@ -1,4 +1,5 @@
 import React, { useRef, useCallback } from 'react'
+import { Search } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import type {
   IconButtonProps,
@@ -15,6 +16,7 @@ import {
   UserStyleField,
   UserStyleMap,
 } from '@/components/option/UserStyleField'
+import { Icon } from '@/components/Icon'
 import {
   OPEN_MODE,
   DRAG_OPEN_MODE,
@@ -26,9 +28,7 @@ import {
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
 } from '@/const'
-
 import type { SettingsType, FolderOption } from '@/types'
-import { Icon } from '@/components/Icon'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
 import { isMac, cn } from '@/lib/utils'
 
@@ -224,6 +224,13 @@ export function SettingFrom() {
     updateSettingData(data)
   }
 
+  const openCommandHub = () => {
+    sendMessage(
+      OPTION_MSG.OPEN_LINK,
+      'https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=button',
+    )
+  }
+
   const autofill = (cmdIdx: number) => {
     const searchUrl = settingData?.commands[cmdIdx].searchUrl
     if (!searchUrl) return
@@ -299,6 +306,10 @@ export function SettingFrom() {
       'ui:title': t('commands'),
       'ui:description': `${t('searchUrl')}: ${t('commands_desc')} \n${settingData?.commands.length}${t('commands_desc_count')}`,
       'ui:classNames': css.listItem,
+      'ui:addButtonOptions': {
+        label: t('AddCommand'),
+        hasFindButton: true,
+      },
       items: {
         'ui:classNames': 'commandItem',
         'ui:order': [
@@ -349,9 +360,30 @@ export function SettingFrom() {
         variables: {
           'ui:classNames': 'variables',
           'ui:title': t('variables'),
+          'ui:addButtonOptions': {
+            label: t('Add'),
+          },
           items: {
             'ui:classNames': 'variableItem',
           },
+        },
+      },
+    },
+    folders: {
+      'ui:title': t('folders'),
+      'ui:description': t('folders_desc'),
+      'ui:classNames': css.listItem,
+      'ui:addButtonOptions': {
+        label: t('Add'),
+      },
+      items: {
+        id: { 'ui:widget': 'hidden' },
+        'ui:classNames': 'folderItem',
+        title: { 'ui:title': t('title') },
+        iconUrl: { 'ui:title': t('iconUrl') },
+        onlyIcon: {
+          'ui:title': t('onlyIcon'),
+          'ui:description': t('onlyIcon_desc'),
         },
       },
     },
@@ -397,25 +429,13 @@ export function SettingFrom() {
         },
       },
     },
-    folders: {
-      'ui:title': t('folders'),
-      'ui:description': t('folders_desc'),
-      'ui:classNames': css.listItem,
-      items: {
-        id: { 'ui:widget': 'hidden' },
-        'ui:classNames': 'folderItem',
-        title: { 'ui:title': t('title') },
-        iconUrl: { 'ui:title': t('iconUrl') },
-        onlyIcon: {
-          'ui:title': t('onlyIcon'),
-          'ui:description': t('onlyIcon_desc'),
-        },
-      },
-    },
     pageRules: {
       'ui:title': t('pageRules'),
       'ui:description': t('pageRules_desc'),
       'ui:classNames': css.listItem,
+      'ui:addButtonOptions': {
+        label: t('Add'),
+      },
       items: {
         'ui:classNames': 'pageRuleItem',
         urlPattern: { 'ui:title': t('urlPattern') },
@@ -433,17 +453,17 @@ export function SettingFrom() {
     userStyles: {
       'ui:title': t('userStyles'),
       'ui:description': t('userStyles_desc'),
+      'ui:addButtonOptions': {
+        label: t('Add'),
+      },
       items: {
-        'ui:classNames': 'userStyles',
+        'ui:classNames': css.userStyles,
         name: {
           'ui:title': t('userStyles_name'),
           enum: {} as UserStyleMap,
         },
         value: { 'ui:title': t('userStyles_value') },
       },
-    },
-    AddButton: {
-      'ui:title': t('Add'),
     },
   }
 
@@ -470,14 +490,12 @@ export function SettingFrom() {
 
   // Add startupMethod to schema and uiSchema.
   const method = settingData?.startupMethod.method
-  const methods = Object.values(STARTUP_METHOD)
   const methodMap = {} as StartupMethodMap
-  for (const m of methods) {
+  for (const m of Object.values(STARTUP_METHOD)) {
     methodMap[m] = {
       'ui:title': t(`startupMethod_${m}`),
     }
   }
-  settingSchema.definitions.startupMethodEnum.enum = methods
   uiSchema.startupMethod.method.enum = methodMap
   if (method === STARTUP_METHOD.CONTEXT_MENU) {
     uiSchema.popupPlacement['ui:disabled'] = true
@@ -565,19 +583,16 @@ export function SettingFrom() {
   uiSchema.linkCommand.startupMethod.keyboardParam.enum = linkCommandkeyboardMap
 
   // Add userStyles to schema and uiSchema.
-  const sv = Object.values(STYLE_VARIABLE)
   const used = settingData?.userStyles?.map((s) => s.name) ?? []
-  const svMap = {} as UserStyleMap
-  for (const s of sv) {
-    svMap[s] = {
+  const usMap = {} as UserStyleMap
+  for (const s of Object.values(STYLE_VARIABLE)) {
+    usMap[s] = {
       'ui:title': t(`userStyles_option_${toKey(s)}`),
       'ui:description': t(`userStyles_desc_${toKey(s)}`),
       used: used.includes(s) ? 'used' : '',
     }
   }
-
-  settingSchema.definitions.styleVariable.properties.name.enum = sv
-  uiSchema.userStyles.items.name.enum = svMap
+  uiSchema.userStyles.items.name.enum = usMap
 
   const log = (type: any) => console.log.bind(console, type)
   return (
@@ -592,7 +607,7 @@ export function SettingFrom() {
       fields={fields}
       templates={{
         ButtonTemplates: {
-          AddButton,
+          AddButton: AddButton(openCommandHub),
           MoveDownButton,
           MoveUpButton,
           RemoveButton,
@@ -606,14 +621,36 @@ export function SettingFrom() {
   )
 }
 
-function AddButton(props: IconButtonProps) {
-  const { icon, uiSchema, ...btnProps } = props
-  return (
-    <button type="button" {...btnProps} className={css.button}>
-      <Icon name="plus" />
-      <span>Add</span>
-    </button>
-  )
+const AddButton = (onClickFind: any) => (props: IconButtonProps) => {
+  const { icon, uiSchema, registry, ...btnProps } = props
+  let options
+  if (props.uiSchema && props.uiSchema['ui:addButtonOptions']) {
+    options = props.uiSchema['ui:addButtonOptions']
+  }
+  const title = options?.label ?? 'Add'
+  const hasFindButton = options?.hasFindButton ?? false
+
+  if (!hasFindButton) {
+    return (
+      <button type="button" {...btnProps} className={css.button}>
+        <Icon name="plus" />
+        <span>{title}</span>
+      </button>
+    )
+  } else {
+    return (
+      <div className="flex items-center justify-center gap-3">
+        <button type="button" {...btnProps} className={css.button}>
+          <Icon name="plus" />
+          <span>{title}</span>
+        </button>
+        <button type="button" className={css.buttonFind} onClick={onClickFind}>
+          <Search size={14} />
+          <span>コマンドを探す</span>
+        </button>
+      </div>
+    )
+  }
 }
 
 function MoveUpButton(props: IconButtonProps) {

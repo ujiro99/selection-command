@@ -1,12 +1,12 @@
 import { useEffect, useCallback, useRef } from 'react'
 import { OPTION_MSG, KEYBOARD, STARTUP_METHOD } from '@/const'
-import type { UserSettingsType } from '@/services/userSettings'
+import type { SettingsType } from '@/types'
 
 const allowdKeys = Object.values(KEYBOARD)
 
 export function useEventProxy(
   sendMessage: (msg: OPTION_MSG, value: any) => void,
-  settings?: UserSettingsType,
+  settings?: SettingsType,
 ) {
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
 

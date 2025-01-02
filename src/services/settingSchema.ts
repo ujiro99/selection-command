@@ -6,6 +6,7 @@ import {
   KEYBOARD,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
+  STYLE_VARIABLE,
 } from '@/const'
 import Default, { PopupOption } from '@/services/defaultSettings'
 import { e2a } from '@/lib/utils'
@@ -37,6 +38,12 @@ export default {
         $ref: '#/definitions/command',
       },
     },
+    folders: {
+      type: 'array',
+      items: {
+        $ref: '#/definitions/commandFolder',
+      },
+    },
     linkCommand: {
       type: 'object',
       required: ['enabled', 'openMode', 'showIndicator'],
@@ -65,12 +72,6 @@ export default {
         startupMethod: {
           $ref: '#/definitions/linkCommandStartupMethod',
         },
-      },
-    },
-    folders: {
-      type: 'array',
-      items: {
-        $ref: '#/definitions/commandFolder',
       },
     },
     pageRules: {
@@ -425,7 +426,7 @@ export default {
     },
     startupMethodEnum: {
       type: 'string',
-      enum: [''],
+      enum: Object.values(STARTUP_METHOD),
     },
     spaceEncoding: {
       type: 'string',
@@ -521,7 +522,7 @@ export default {
       properties: {
         name: {
           type: 'string',
-          enum: [''],
+          enum: Object.values(STYLE_VARIABLE),
         },
         value: {
           type: 'string',
