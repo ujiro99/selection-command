@@ -490,14 +490,12 @@ export function SettingFrom() {
 
   // Add startupMethod to schema and uiSchema.
   const method = settingData?.startupMethod.method
-  const methods = Object.values(STARTUP_METHOD)
   const methodMap = {} as StartupMethodMap
-  for (const m of methods) {
+  for (const m of Object.values(STARTUP_METHOD)) {
     methodMap[m] = {
       'ui:title': t(`startupMethod_${m}`),
     }
   }
-  settingSchema.definitions.startupMethodEnum.enum = methods
   uiSchema.startupMethod.method.enum = methodMap
   if (method === STARTUP_METHOD.CONTEXT_MENU) {
     uiSchema.popupPlacement['ui:disabled'] = true
@@ -585,19 +583,16 @@ export function SettingFrom() {
   uiSchema.linkCommand.startupMethod.keyboardParam.enum = linkCommandkeyboardMap
 
   // Add userStyles to schema and uiSchema.
-  const sv = Object.values(STYLE_VARIABLE)
   const used = settingData?.userStyles?.map((s) => s.name) ?? []
-  const svMap = {} as UserStyleMap
-  for (const s of sv) {
-    svMap[s] = {
+  const usMap = {} as UserStyleMap
+  for (const s of Object.values(STYLE_VARIABLE)) {
+    usMap[s] = {
       'ui:title': t(`userStyles_option_${toKey(s)}`),
       'ui:description': t(`userStyles_desc_${toKey(s)}`),
       used: used.includes(s) ? 'used' : '',
     }
   }
-
-  settingSchema.definitions.styleVariable.properties.name.enum = sv
-  uiSchema.userStyles.items.name.enum = svMap
+  uiSchema.userStyles.items.name.enum = usMap
 
   const log = (type: any) => console.log.bind(console, type)
   return (
