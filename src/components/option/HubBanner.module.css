@@ -2,7 +2,7 @@
   font-family: var(--font-monospace);
   font-size: 1.2rem;
   color: #444;
-  padding-left: 8px;
+  padding-left: 4px;
 }
 
 .banner {
@@ -19,5 +19,5 @@
 .description {
   font-size: 0.8rem;
   font-family: var(--font-family);
-  padding-left: 6px;
+  padding-left: 4px;
 }

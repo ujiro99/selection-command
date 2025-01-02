@@ -152,7 +152,10 @@ export function Option() {
       </CSSTransition>
 
       <div className={css.rightColumn}>
-        <div ref={setPreviewElm} style={{ marginBottom: popupHeight }}>
+        <div
+          ref={setPreviewElm}
+          style={{ marginBottom: Math.max(popupHeight, 30) }}
+        >
           <Popup
             positionElm={previewElm}
             selectionText="preview"

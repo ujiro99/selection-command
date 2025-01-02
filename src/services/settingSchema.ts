@@ -37,6 +37,12 @@ export default {
         $ref: '#/definitions/command',
       },
     },
+    folders: {
+      type: 'array',
+      items: {
+        $ref: '#/definitions/commandFolder',
+      },
+    },
     linkCommand: {
       type: 'object',
       required: ['enabled', 'openMode', 'showIndicator'],
@@ -65,12 +71,6 @@ export default {
         startupMethod: {
           $ref: '#/definitions/linkCommandStartupMethod',
         },
-      },
-    },
-    folders: {
-      type: 'array',
-      items: {
-        $ref: '#/definitions/commandFolder',
       },
     },
     pageRules: {

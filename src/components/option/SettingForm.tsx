@@ -355,6 +355,21 @@ export function SettingFrom() {
         },
       },
     },
+    folders: {
+      'ui:title': t('folders'),
+      'ui:description': t('folders_desc'),
+      'ui:classNames': css.listItem,
+      items: {
+        id: { 'ui:widget': 'hidden' },
+        'ui:classNames': 'folderItem',
+        title: { 'ui:title': t('title') },
+        iconUrl: { 'ui:title': t('iconUrl') },
+        onlyIcon: {
+          'ui:title': t('onlyIcon'),
+          'ui:description': t('onlyIcon_desc'),
+        },
+      },
+    },
     linkCommand: {
       'ui:title': t('linkCommand'),
       'ui:description': t('linkCommand_desc'),
@@ -394,21 +409,6 @@ export function SettingFrom() {
         leftClickHoldParam: {
           'ui:title': t('linkCommandStartupMethod_leftClickHoldParam'),
           'ui:classNames': 'linkCommandLeftClickHoldParam',
-        },
-      },
-    },
-    folders: {
-      'ui:title': t('folders'),
-      'ui:description': t('folders_desc'),
-      'ui:classNames': css.listItem,
-      items: {
-        id: { 'ui:widget': 'hidden' },
-        'ui:classNames': 'folderItem',
-        title: { 'ui:title': t('title') },
-        iconUrl: { 'ui:title': t('iconUrl') },
-        onlyIcon: {
-          'ui:title': t('onlyIcon'),
-          'ui:description': t('onlyIcon_desc'),
         },
       },
     },
