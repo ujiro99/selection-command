@@ -1,6 +1,7 @@
 import React from 'react'
 import type { FieldProps } from '@rjsf/utils'
 
+import { isEmpty } from '@/lib/utils'
 import { STYLE_VARIABLE } from '@/const'
 
 import css from './UserStyleField.module.css'
@@ -77,6 +78,7 @@ export function UserStyleField(props: FieldProps) {
   const attr = Attributes[formData?.name as STYLE_VARIABLE] ?? {
     type: 'string',
   }
+  const nameSelected = !isEmpty(formData?.name)
 
   const onChangeName = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.onChange({
@@ -96,20 +98,26 @@ export function UserStyleField(props: FieldProps) {
   return (
     <div className={css.container}>
       <div className={css.styleVariable}>
-        <select
-          id={props.idSchema.$id}
-          className={css.select}
-          value={formData?.name}
-          required={props.required}
-          onChange={onChangeName}
-        >
-          {options.map((option) => (
-            <option key={option.key} value={option.key}>
-              {option.name}
-            </option>
-          ))}
-        </select>
-        {formData?.name ? (
+        {nameSelected ? (
+          <label className={css.label}>
+            {options.find((o) => o.key === formData?.name)?.name}
+          </label>
+        ) : (
+          <select
+            id={props.idSchema.$id}
+            className={css.select}
+            value={formData?.name}
+            required={props.required}
+            onChange={onChangeName}
+          >
+            {options.map((option) => (
+              <option key={option.key} value={option.key}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        )}
+        {nameSelected ? (
           <input
             type={attr.type}
             id={props.idSchema.$id}
