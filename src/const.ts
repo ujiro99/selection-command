@@ -78,6 +78,7 @@ export enum OPTION_MSG {
   RES_FETCH_ICON_URL = 'resFetchIconUrl',
   KEY_INPUT = 'key_input',
   MOUSE = 'mouse',
+  OPEN_LINK = 'openLink',
 }
 
 export enum STYLE_VARIABLE {

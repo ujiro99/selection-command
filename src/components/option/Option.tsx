@@ -63,21 +63,29 @@ export function Option() {
     const func = async (event: MessageEvent) => {
       const command = event.data.command
       const value = event.data.value
-      if (command === OPTION_MSG.CHANGED) {
-        updateSettings(value)
-      } else if (command === OPTION_MSG.FETCH_ICON_URL) {
-        const { searchUrl } = value
-        console.log('fetchIconUrl', searchUrl)
-        try {
-          const iconUrl = await fetchIconUrl(searchUrl)
-          sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, { searchUrl, iconUrl })
-        } catch (e) {
-          console.warn('Failed to fetch icon', searchUrl)
-          sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, {
-            searchUrl,
-            iconUrl: null,
-          })
-        }
+      switch (command) {
+        case OPTION_MSG.CHANGED:
+          updateSettings(value)
+          break
+        case OPTION_MSG.FETCH_ICON_URL:
+          const { searchUrl } = value
+          console.debug('fetchIconUrl', searchUrl)
+          try {
+            const iconUrl = await fetchIconUrl(searchUrl)
+            sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, { searchUrl, iconUrl })
+          } catch (e) {
+            console.warn('Failed to fetch icon', searchUrl)
+            sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, {
+              searchUrl,
+              iconUrl: null,
+            })
+          }
+          break
+        case OPTION_MSG.OPEN_LINK:
+          window.open(value, '_blank')
+          break
+        default:
+          break
       }
     }
     window.addEventListener('message', func)

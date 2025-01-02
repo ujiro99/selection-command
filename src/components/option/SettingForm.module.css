@@ -237,13 +237,15 @@
 }
 
 .button,
-.buttonItems {
+.buttonItems,
+.buttonFind {
   composes: button from '../Common.module.css';
 }
 
-.button {
-  width: 74px;
+.button,
+.buttonFind {
   height: 34px;
+  padding: 0 8px;
   border-radius: var(--button-radius);
   display: flex;
   justify-content: center;
@@ -256,8 +258,6 @@
 
   >span {
     margin-left: 0.2em;
-    margin-right: 4px;
-    margin-bottom: -2px;
   }
 }
 
@@ -300,6 +300,15 @@
     &:hover svg {
       fill: rgb(225 29 72);
     }
+  }
+}
+
+.buttonFind {
+  @apply bg-sky-100 hover:bg-sky-200;
+  @apply border border-sky-300;
+
+  svg {
+    fill: none;
   }
 }
 

@@ -59,6 +59,12 @@
   "Option_Add": {
     "message": "Add"
   },
+  "Option_AddCommand": {
+    "message": "Create Command"
+  },
+  "Option_Find": {
+    "message": "Find Command"
+  },
   "Option_startupMethod": {
     "message": "Startup Method"
   },

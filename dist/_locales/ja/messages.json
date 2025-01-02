@@ -57,7 +57,13 @@
     "message": "インポート"
   },
   "Option_Add": {
-    "message": " 追加"
+    "message": "追加"
+  },
+  "Option_AddCommand": {
+    "message": "コマンド作成"
+  },
+  "Option_Find": {
+    "message": "コマンドを探す"
   },
   "Option_startupMethod": {
     "message": "起動方法"
