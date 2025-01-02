@@ -148,8 +148,24 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Tool"],
+    "tags": [
+      "Tool"
+    ],
     "id": "b8b18002-f163-5a6c-a3e3-efba6c491a21",
     "addedAt": "2024-12-31T02:49:13.716Z"
+  },
+  {
+    "title": "楽天検索",
+    "searchUrl": "https://search.rakuten.co.jp/search/mall/%s",
+    "description": "楽天で検索します",
+    "iconUrl": "https://search.rakuten.co.jp/com/assets/domain-resources/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop"
+    ],
+    "id": "2b679586-7167-56db-8ebd-00a54fab8445",
+    "addedAt": "2025-01-01T08:11:57.087Z"
   }
 ]
