@@ -284,7 +284,7 @@ function InputForm(props: InputProps) {
         コマンドの共有を申請します。
       </DialogDescription>
       {/* Content inserted by Chrome extension */}
-      <div id="MyCommands" className="hidden" />
+      <div id="MyCommands" className="hidden overflow-hidden" />
       <form
         id="InputForm"
         className="space-y-3 mt-4"
