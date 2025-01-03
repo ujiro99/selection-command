@@ -64,9 +64,11 @@ const formSchema = z.object({
     }),
   searchUrl: z
     .string()
-    .url()
+    .url({
+      message: 'URL形式が正しくありません',
+    })
     .refine((url) => getSearchUrl().every((u) => u !== url), {
-      message: '検索URLが既に登録されています',
+      message: '既に登録されています',
     }),
   iconUrl: z.string().url(),
   openMode: z.nativeEnum(OPEN_MODE),
@@ -281,6 +283,8 @@ function InputForm(props: InputProps) {
       <DialogDescription className="text-stone-600">
         コマンドの共有を申請します。
       </DialogDescription>
+      {/* Content inserted by Chrome extension */}
+      <div id="MyCommands" className="hidden" />
       <form
         id="InputForm"
         className="space-y-3 mt-4"
