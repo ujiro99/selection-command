@@ -59,6 +59,7 @@ const config: Config = {
     },
     data: {
       clickable: 'clickable="true"',
+      starred: 'starred="true"',
     },
   },
   plugins: [require('tailwindcss-animate')],

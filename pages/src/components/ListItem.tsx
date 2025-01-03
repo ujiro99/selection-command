@@ -30,13 +30,14 @@ export function ListItem(props: Props): JSX.Element {
           <p className="text-md sm:text-base">{cmd.description}</p>
         </div>
         <div className="flex gap-1">
+          {/* Download */}
           <div className="flex items-center text-stone-600">
             <div>
               <p className="hidden" data-id={cmd.id}>
                 <Check className="p-1 stroke-sky-500" size={28} />
               </p>
               <button
-                className="cursor-default block rounded transition group data-clickable:clickable-button"
+                className="cursor-default block rounded transition duration-50 group data-clickable:clickable-button"
                 data-id={cmd.id}
                 data-command={cmd2text(cmd)}
                 data-gtm-click="install"
@@ -49,23 +50,28 @@ export function ListItem(props: Props): JSX.Element {
               </button>
             </div>
             <span
-              className="pl-0.5 p-1 select-none"
+              className="pl-0.5 p-1 text-stone-500 select-none"
               data-id={cmd.id}
               data-download-count={cmd.download}
             >
               {cmd.download.toLocaleString()}
             </span>
           </div>
+
+          {/* Star */}
           <div className="flex items-center text-stone-600">
             <button
-              className="hover:bg-stone-200 rounded transition duration-50"
+              className="cursor-default block rounded transition duration-50 group data-clickable:clickable-button"
               data-star-id={cmd.id}
               data-gtm-click="star"
             >
-              <Star className="p-1 transition" size={28} />
+              <Star
+                className="p-1 stroke-stone-400 group-data-clickable:clickable-svg group-data-starred:starred"
+                size={28}
+              />
             </button>
             <span
-              className="pl-0.5 p-1 select-none"
+              className="pl-0.5 p-1 text-stone-500 select-none "
               data-star-id={cmd.id}
               data-star-count={cmd.star}
             >
@@ -74,6 +80,8 @@ export function ListItem(props: Props): JSX.Element {
           </div>
         </div>
       </div>
+
+      {/* Tags */}
       <ul className="mt-2 flex gap-2 flex-wrap">
         {cmd.tags.map((tag) => (
           <li key={tag.id}>
