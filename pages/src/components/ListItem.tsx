@@ -36,12 +36,16 @@ export function ListItem(props: Props): JSX.Element {
                 <Check className="p-1 stroke-sky-500" size={28} />
               </p>
               <button
-                className="hidden hover:bg-stone-200 rounded transition"
+                className="cursor-default block rounded transition group data-clickable:clickable-button"
                 data-id={cmd.id}
                 data-command={cmd2text(cmd)}
                 data-gtm-click="install"
+                data-clickable="false"
               >
-                <ArrowDownToLine className="p-1" size={28} />
+                <ArrowDownToLine
+                  className="p-1 stroke-stone-400 group-data-clickable:clickable-svg"
+                  size={28}
+                />
               </button>
             </div>
             <span

@@ -77,3 +77,13 @@ body {
   @apply fill-amber-400;
   @apply stroke-amber-400;
 }
+
+@layer components {
+  .clickable-button {
+    @apply hover:bg-stone-200 cursor-pointer;
+  }
+
+  .clickable-svg {
+    @apply drop-shadow stroke-stone-600;
+  }
+}

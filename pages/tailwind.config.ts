@@ -57,6 +57,9 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
     },
+    data: {
+      clickable: 'clickable="true"',
+    },
   },
   plugins: [require('tailwindcss-animate')],
 }

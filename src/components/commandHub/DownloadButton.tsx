@@ -28,10 +28,10 @@ export const DownloadButton = (): JSX.Element => {
   const setButtonClickListener = () => {
     document.querySelectorAll('button[data-command]').forEach((button) => {
       if (!(button instanceof HTMLButtonElement)) return
-      button.style.display = 'block' // show hidden buttons
       const command = button.dataset.command
       const id = button.dataset.id
       if (command == null) return
+      button.dataset.clickable = 'true'
       button.addEventListener('click', () => {
         Ipc.send(BgCommand.addCommand, { command }).then((res) => {
           if (res) {
