@@ -7,10 +7,11 @@ import type { Command } from '@/types'
 
 export const MyCommands = (): JSX.Element => {
   const [urls, setUrls] = useState<string[]>([])
-  const { settings } = useSetting()
+  const { settings, iconUrls } = useSetting()
   const commands = settings.commands
     .filter((c) => !isEmpty(c.searchUrl))
     .filter((c) => !urls.includes(c.searchUrl))
+    .map((c) => ({ ...c, iconDataUrl: c.iconUrl, iconUrl: iconUrls[c.id] }))
 
   useEffect(() => {
     fetch(`${HUB_URL}/api/searchUrls`)
@@ -20,12 +21,10 @@ export const MyCommands = (): JSX.Element => {
       })
   }, [])
 
-  console.log(' 4')
-
   return (
     <div className="relative pt-1 px-4">
       <p className="text-sm text-stone-700">
-        ⚡️作成したコマンドを自動入力しますか？
+        ⚡️作成したコマンドを自動入力できます。
       </p>
       <div
         className={cn(
@@ -44,8 +43,10 @@ export const MyCommands = (): JSX.Element => {
   )
 }
 
+type CommandWithIconDataUrl = Command & { iconDataUrl: string }
+
 type CommandListProps = {
-  commands: Command[]
+  commands: CommandWithIconDataUrl[]
   className?: string
 }
 const CommandList = (props: CommandListProps): JSX.Element => {
@@ -59,7 +60,7 @@ const CommandList = (props: CommandListProps): JSX.Element => {
 }
 
 type ItemProps = {
-  command: Command
+  command: CommandWithIconDataUrl
 }
 const ListItem = (props: ItemProps): JSX.Element => {
   const c = props.command
@@ -80,15 +81,20 @@ const ListItem = (props: ItemProps): JSX.Element => {
     }
   }, [imgElm])
 
+  const onClick = () => {
+    // Send a message to Commad Hub.
+    window.postMessage({ action: 'InsertCommand', data: c }, '*')
+  }
+
   return (
     <li
       key={c.id}
       ref={setLiElm}
       className="rounded-md shadow bg-white hover:opacity-70"
     >
-      <button className="flex items-center gap-2 p-2">
+      <button className="flex items-center gap-2 p-2" onClick={onClick}>
         <img
-          src={c.iconUrl}
+          src={c.iconDataUrl}
           alt={c.title}
           ref={setImgElm}
           className="h-7 w-7"

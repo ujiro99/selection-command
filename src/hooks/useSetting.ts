@@ -5,9 +5,12 @@ import { isEmpty } from '@/lib/utils'
 import { STYLE, STARTUP_METHOD } from '@/const'
 import Default from '@/services/defaultSettings'
 
+type iconUrlMap = Record<number | string, string>
+
 type useSettingReturn = {
   settings: SettingsType
   pageRule: PageRule | undefined
+  iconUrls: iconUrlMap
 }
 
 const emptySettings: SettingsType = {
@@ -25,6 +28,7 @@ const emptySettings: SettingsType = {
 
 export function useSetting(): useSettingReturn {
   const [settings, setSettings] = useState<SettingsType>(emptySettings)
+  const [iconUrls, setIconUrls] = useState<iconUrlMap>({})
 
   useEffect(() => {
     updateSettings()
@@ -37,6 +41,12 @@ export function useSetting(): useSettingReturn {
   const updateSettings = async () => {
     const caches = await Settings.getCaches()
     const data = await Settings.get()
+    // create iconUrl map to getting iconUrl
+    const iu = data.commands.reduce(
+      (acc, cur) => ({ ...acc, [cur.id]: cur.iconUrl }),
+      {},
+    )
+    setIconUrls(iu)
     // use image cache if available
     data.commands = data.commands.map((c) => {
       const cache = caches.images[c.iconUrl]
@@ -75,5 +85,6 @@ export function useSetting(): useSettingReturn {
   return {
     settings,
     pageRule,
+    iconUrls,
   }
 }

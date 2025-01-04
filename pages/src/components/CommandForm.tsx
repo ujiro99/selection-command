@@ -49,7 +49,7 @@ import { Tag } from '@/components/Tag'
 import { cmd2uuid, getSearchUrl } from '@/features/command'
 import { isEmpty } from '@/lib/utils'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import type { CommandInJson, Tag as TagType } from '@/types'
+import type { CommandInJson, CommandInMessage, Tag as TagType } from '@/types'
 
 import css from './CommandForm.module.css'
 
@@ -271,6 +271,31 @@ function InputForm(props: InputProps) {
     }
   }, [setValue])
 
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (
+        event.origin === window.location.origin &&
+        event.data.action === 'InsertCommand'
+      ) {
+        const cmd = event.data.data as CommandInMessage
+        const params = [
+          'title',
+          'searchUrl',
+          'iconUrl',
+          'openMode',
+          'openModeSecondary',
+          'spaceEncoding',
+        ] as (keyof CommandInMessage)[]
+        params.forEach((key) => {
+          setValue(key as FormKeys, cmd[key])
+        })
+        form.trigger(params)
+      }
+    }
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
   form.watch((data: any) => {
     if (!data.title && !data.searchUrl) {
       return
@@ -475,10 +500,7 @@ function InputForm(props: InputProps) {
                     </FormDescription>
                   </div>
                   <div className="w-3/5 pr-[1px]">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="">
                           <SelectValue placeholder="Select a openMode" />
@@ -512,10 +534,7 @@ function InputForm(props: InputProps) {
                     </FormDescription>
                   </div>
                   <div className="w-3/5 pr-[1px]">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="">
                           <SelectValue placeholder="Select a openMode" />
@@ -549,10 +568,7 @@ function InputForm(props: InputProps) {
                     </FormDescription>
                   </div>
                   <div className="w-3/5 pr-[1px]">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="">
                           <SelectValue placeholder="Select a space encoding" />
