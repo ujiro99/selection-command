@@ -85,6 +85,13 @@
   }
 }
 
+@layer components {
+  .marquee-var {
+    --marquee-items: 4;
+    --marquee-duration: calc(var(--marquee-items) * 5s);
+  }
+}
+
 @layer utilities {
   .animate-pause {
     animation-play-state: paused;

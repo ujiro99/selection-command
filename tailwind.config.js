@@ -81,8 +81,8 @@ module.exports = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        marquee: 'marquee 25s linear infinite',
-        marquee2: 'marquee2 25s linear infinite',
+        marquee: 'marquee var(--marquee-duration) linear infinite',
+        marquee2: 'marquee2 var(--marquee-duration) linear infinite',
       },
       padding: {
         0.5: '2px',
