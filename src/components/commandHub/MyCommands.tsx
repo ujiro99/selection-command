@@ -12,6 +12,7 @@ export const MyCommands = (): JSX.Element => {
     .filter((c) => !isEmpty(c.searchUrl))
     .filter((c) => !urls.includes(c.searchUrl))
     .map((c) => ({ ...c, iconDataUrl: c.iconUrl, iconUrl: iconUrls[c.id] }))
+  const enableMarquee = commands.length > 4
 
   useEffect(() => {
     fetch(`${HUB_URL}/api/searchUrls`)
@@ -28,15 +29,22 @@ export const MyCommands = (): JSX.Element => {
       </p>
       <div
         className={cn(
-          'flex flex-row overflow-x-hidden relative',
-          'before:absolute before:inset-0 before:z-[1] before:bg-gradient-to-r before:from-stone-50 before:to-transparent before:w-12 before:pointer-events-none',
-          'after:absolute after:inset-y-0 after:right-0 after:z-[1] after:bg-gradient-to-l after:from-stone-50 after:to-transparent after:w-12 after:pointer-events-none',
+          'flex flex-row relative h-[60px] overflow-hidden group',
+          'before:absolute before:inset-0 before:z-[1] before:bg-gradient-to-r before:from-stone-50 before:to-transparent before:w-10 before:pointer-events-none',
+          'after:absolute after:inset-y-0 after:right-0 after:z-[1] after:bg-gradient-to-l after:from-stone-50 after:to-transparent after:w-10 after:pointer-events-none',
         )}
       >
-        <CommandList commands={commands} className="animate-marquee" />
         <CommandList
           commands={commands}
-          className="animate-marquee2 absolute"
+          className={cn('absolute group-hover:animate-pause', {
+            'animate-marquee': enableMarquee,
+          })}
+        />
+        <CommandList
+          commands={commands}
+          className={cn('absolute group-hover:animate-pause', {
+            'animate-marquee2': enableMarquee,
+          })}
         />
       </div>
     </div>

@@ -84,3 +84,9 @@
       'calt' 1;
   }
 }
+
+@layer utilities {
+  .animate-pause {
+    animation-play-state: paused;
+  }
+}
