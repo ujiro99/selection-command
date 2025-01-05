@@ -44,7 +44,10 @@ function setupMyCommnands() {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {
         // Find the CommandShare form.
-        if (node instanceof HTMLElement && node.id === 'CommandShare') {
+        if (
+          node instanceof HTMLElement &&
+          (node.id === 'CommandShare' || node.id === 'InputForm')
+        ) {
           renderMyCommands()
         }
       })
