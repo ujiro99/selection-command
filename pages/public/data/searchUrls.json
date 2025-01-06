@@ -1,0 +1,15 @@
+[
+  "https://search.yahoo.co.jp/search?p=%s",
+  "https://www.deepl.com/ja/translator#en/ja/%s",
+  "https://www.deepl.com/ja/translator#ja/en/%s",
+  "https://lucide.dev/icons/?search=%s",
+  "https://auctions.yahoo.co.jp/closedsearch/closedsearch?p=%s",
+  "https://support.ta.kingoftime.jp/hc/ja/search?query=%s",
+  "https://jp.mercari.com/search?keyword=%s&status=sold_out%7Ctrading&sort=created_time&order=desc",
+  "https://jp.mercari.com/search?keyword=%s",
+  "https://zenn.dev/search?q=%s",
+  "https://www.sljfaq.org/cgi/numbers_ja.cgi?number=%s",
+  "https://search.rakuten.co.jp/search/mall/%s",
+  "https://google.com/search?q=%s",
+  "https://google.com/search?q=%s&tbm=isch"
+]
