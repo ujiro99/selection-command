@@ -96,6 +96,7 @@ export enum SCREEN {
   OPTION = 'Option',
   SERVICE_WORKER = 'ServiceWorker',
   COMMAND_HUB = 'CommandHub',
+  COMMAND_FORM = 'CommandForm',
 }
 
 export const POPUP_OFFSET = 50
