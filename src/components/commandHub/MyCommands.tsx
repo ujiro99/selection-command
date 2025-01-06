@@ -27,8 +27,8 @@ export const MyCommands = (): JSX.Element => {
       })
   }, [])
 
-  const move = (direction = true) => {
-    const diff = direction ? 5000 : -5000
+  const slide = (direction = true) => {
+    const diff = direction ? 5000 : -5000 // refer --marquee-duration.
     const elm = listRef.current
     const elm2 = list2Ref.current
     if (elm == null || elm2 == null) return
@@ -91,7 +91,7 @@ export const MyCommands = (): JSX.Element => {
               'group-hover:flex',
               'group/button',
             )}
-            onClick={() => move()}
+            onClick={() => slide(false)}
           >
             <ChevronLeft className="stroke-stone-400 group-hover/button:stroke-stone-700 group-hover/button:transition-all" />
           </button>
@@ -117,7 +117,7 @@ export const MyCommands = (): JSX.Element => {
               'group-hover:flex',
               'group/button',
             )}
-            onClick={() => move(false)}
+            onClick={() => slide()}
           >
             <ChevronRight className="stroke-stone-400 group-hover/button:stroke-stone-700 group-hover/button:transition-all" />
           </button>
