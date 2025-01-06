@@ -20,7 +20,7 @@ export const MyCommands = (): JSX.Element => {
   const enableMarquee = commands.length > 3
 
   useEffect(() => {
-    fetch(`${HUB_URL}/api/searchUrls`)
+    fetch(`${HUB_URL}/data/searchUrls.json`)
       .then((res) => res.json())
       .then((data) => {
         setUrls(data)
