@@ -57,7 +57,7 @@ export const MyCommands = (): JSX.Element => {
   }
 
   return (
-    <div className="relative pt-1 px-4">
+    <div className="relative pt-2 px-4">
       <p className="text-sm text-stone-700">
         ⚡️作成したコマンドを自動入力できます。
       </p>
@@ -166,7 +166,7 @@ const ListItem = (props: ItemProps): JSX.Element => {
       const color1 = `rgba(${dominantColor.join(',')}, 0.04)`
       const color2 = `rgba(${paletteColors[0].join(',')}, 0.1)`
       if (liElm != null) {
-        liElm.style.background = `linear-gradient(155deg, white 30%, ${color1} 60%, ${color2})`
+        liElm.style.background = `linear-gradient(160deg, white 30%, ${color1} 60%, ${color2})`
       }
     }
   }, [imgElm])
