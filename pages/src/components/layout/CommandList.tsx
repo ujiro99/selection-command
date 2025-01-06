@@ -8,10 +8,11 @@ import {
 } from '@/hooks/useCommandSorter'
 import { getCommands } from '@/features/command'
 import { cn, isEmpty } from '@/lib/utils'
+import { LangProps } from '@/types'
 
 import css from './CommandList.module.css'
 
-type Props = {
+type Props = LangProps & {
   tagName?: string
 }
 
@@ -24,7 +25,7 @@ export function CommandList(props: Props): JSX.Element {
 }
 
 function CommandListInner(props: Props): JSX.Element {
-  const { tagName } = props
+  const { tagName, lang } = props
   const { sort } = useCommandSorter()
   const loaded = sort != null
 
@@ -48,7 +49,7 @@ function CommandListInner(props: Props): JSX.Element {
       >
         {commands.map((cmd) => (
           <li key={cmd.id} className={cn('px-2 w-full', css.item)}>
-            <ListItem cmd={cmd} />
+            <ListItem lang={lang} cmd={cmd} />
           </li>
         ))}
       </ul>
