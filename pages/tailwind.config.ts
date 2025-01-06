@@ -56,6 +56,25 @@ const config: Config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      keyframes: {
+        scalePop: {
+          '0%': { transform: 'scale(100%)' },
+          '60%': { transform: 'scale(105%)' },
+          '100%': { transform: 'scale(100%)' },
+        },
+        slideToRight: {
+          '0%': { left: '0', transform: 'translateX(-100%)' },
+          '100%': { left: '100%', transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        scalePop: 'scalePop 0.2s',
+        slideToRight: 'slideToRight 0.2s',
+      },
+    },
+    data: {
+      clickable: 'clickable="true"',
+      starred: 'starred="true"',
     },
   },
   plugins: [require('tailwindcss-animate')],

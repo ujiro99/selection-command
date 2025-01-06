@@ -57,3 +57,7 @@ export function getCommands(): Command[] {
     }
   })
 }
+
+export function getSearchUrl(): string[] {
+  return Commands.map((cmd) => cmd.searchUrl)
+}

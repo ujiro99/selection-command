@@ -19,6 +19,11 @@ export type CommandInJson = Omit<SelectionCommand, 'tags'> & {
   tags: string[]
 }
 
+export type CommandInMessage = Omit<
+  SelectionCommand,
+  'id' | 'description' | 'tags' | 'addedAt'
+>
+
 export type Analytics = {
   id: string
   download: number

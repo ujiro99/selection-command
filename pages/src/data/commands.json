@@ -167,5 +167,34 @@
     ],
     "id": "2b679586-7167-56db-8ebd-00a54fab8445",
     "addedAt": "2025-01-01T08:11:57.087Z"
+  },
+  {
+    "title": "Google",
+    "searchUrl": "https://google.com/search?q=%s",
+    "description": "Googleで検索します",
+    "iconUrl": "https://www.google.com/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search"
+    ],
+    "id": "723ee9f1-150b-54ad-aeac-5fbfd0ae3650",
+    "addedAt": "2024-12-10T00:00:00.000Z"
+  },
+  {
+    "title": "Google Image",
+    "searchUrl": "https://google.com/search?q=%s&tbm=isch",
+    "description": "Google Imageで検索します。",
+    "iconUrl": "https://www.google.com/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search",
+      "Image"
+    ],
+    "id": "18998bac-4e6c-503f-b3ea-b9198edef7c3",
+    "addedAt": "2024-12-10T00:00:00.000Z"
   }
 ]

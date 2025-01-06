@@ -46,10 +46,10 @@ import { TagPicker } from '@/components/TagPicker'
 import { Image } from '@/components/Image'
 import { Tag } from '@/components/Tag'
 
-import { cmd2uuid } from '@/features/command'
+import { cmd2uuid, getSearchUrl } from '@/features/command'
 import { isEmpty } from '@/lib/utils'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import type { CommandInJson, Tag as TagType } from '@/types'
+import type { CommandInJson, CommandInMessage, Tag as TagType } from '@/types'
 
 import css from './CommandForm.module.css'
 
@@ -62,7 +62,14 @@ const formSchema = z.object({
     .max(100, {
       message: 'タイトルは最長100文字です',
     }),
-  searchUrl: z.string().url(),
+  searchUrl: z
+    .string()
+    .url({
+      message: 'URL形式が正しくありません',
+    })
+    .refine((url) => getSearchUrl().every((u) => u !== url), {
+      message: '既に登録されています',
+    }),
   iconUrl: z.string().url(),
   openMode: z.nativeEnum(OPEN_MODE),
   openModeSecondary: z.nativeEnum(OPEN_MODE),
@@ -186,9 +193,11 @@ type InputProps = {
 
 function InputForm(props: InputProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [animation, setAnimation] = useState(false)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    mode: 'onBlur',
     defaultValues: {
       title: '',
       searchUrl: '',
@@ -250,6 +259,19 @@ function InputForm(props: InputProps) {
     props.onFormSubmit(data)
   }
 
+  const autofillProps = (index: number, cls: string) => {
+    if (!animation)
+      return {
+        className: cls,
+      }
+    return {
+      className: clsx('autofill', cls),
+      style: {
+        '--autofill-animation-delay': `${index * 20}ms`,
+      } as React.CSSProperties,
+    }
+  }
+
   useEffect(() => {
     // Resotre form data from localStorage
     const data = sessionStorage.getItem(STORAGE_KEY)
@@ -263,6 +285,33 @@ function InputForm(props: InputProps) {
     }
   }, [setValue])
 
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (
+        event.origin === window.location.origin &&
+        event.data.action === 'InsertCommand'
+      ) {
+        const cmd = event.data.data as CommandInMessage
+        const params = [
+          'title',
+          'searchUrl',
+          'iconUrl',
+          'openMode',
+          'openModeSecondary',
+          'spaceEncoding',
+        ] as (keyof CommandInMessage)[]
+        params.forEach((key) => {
+          setValue(key as FormKeys, cmd[key])
+        })
+        form.trigger(params)
+        setAnimation(true)
+        setTimeout(() => setAnimation(false), 300)
+      }
+    }
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
   form.watch((data: any) => {
     if (!data.title && !data.searchUrl) {
       return
@@ -275,6 +324,8 @@ function InputForm(props: InputProps) {
       <DialogDescription className="text-stone-600">
         コマンドの共有を申請します。
       </DialogDescription>
+      {/* Content inserted by Chrome extension */}
+      <div id="MyCommands" className="hidden overflow-hidden" />
       <form
         id="InputForm"
         className="space-y-3 mt-4"
@@ -291,7 +342,7 @@ function InputForm(props: InputProps) {
                   コマンドのタイトルとして表示されます。
                 </FormDescription>
               </div>
-              <div className="w-3/5">
+              <div {...autofillProps(0, 'w-3/5 rounded-md')}>
                 <FormControl>
                   <Input placeholder="Title of command" {...field} />
                 </FormControl>
@@ -315,7 +366,7 @@ function InputForm(props: InputProps) {
                   `%s`を選択テキストに置換します。
                 </FormDescription>
               </div>
-              <div className="w-3/5 relative">
+              <div {...autofillProps(1, 'w-3/5 rounded-md relative')}>
                 {!isEmpty(iconUrl) && (
                   <img
                     className="absolute top-1 right-2.5 w-7 h-7"
@@ -435,7 +486,8 @@ function InputForm(props: InputProps) {
                       メニューのアイコンとして表示されます。
                     </FormDescription>
                   </div>
-                  <div className="w-3/5 relative">
+
+                  <div {...autofillProps(2, 'w-3/5 rounded-md relative')}>
                     <FormControl>
                       <Input placeholder="Icon URL" {...field} />
                     </FormControl>
@@ -464,11 +516,9 @@ function InputForm(props: InputProps) {
                       結果の表示方法です。
                     </FormDescription>
                   </div>
-                  <div className="w-3/5 pr-[1px]">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+
+                  <div {...autofillProps(3, 'w-3/5 rounded-md relative')}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="">
                           <SelectValue placeholder="Select a openMode" />
@@ -501,11 +551,8 @@ function InputForm(props: InputProps) {
                       Ctrl + クリック時の表示方法です。
                     </FormDescription>
                   </div>
-                  <div className="w-3/5 pr-[1px]">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                  <div {...autofillProps(4, 'w-3/5 rounded-md relative')}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="">
                           <SelectValue placeholder="Select a openMode" />
@@ -538,11 +585,9 @@ function InputForm(props: InputProps) {
                       選択テキスト中のスペースを置換します。
                     </FormDescription>
                   </div>
-                  <div className="w-3/5 pr-[1px]">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+
+                  <div {...autofillProps(5, 'w-3/5 rounded-md relative')}>
+                    <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="">
                           <SelectValue placeholder="Select a space encoding" />

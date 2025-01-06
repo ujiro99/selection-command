@@ -44,10 +44,11 @@ export const StarButton = (): JSX.Element => {
       const id = button.dataset.starId
       if (id == null) return
       button.addEventListener('click', updateStar)
+      button.dataset.clickable = 'true'
       if (stars.some((s) => s.id === id)) {
-        button.classList.add('starred')
+        button.dataset.starred = 'true'
       } else {
-        button.classList.remove('starred')
+        button.dataset.starred = 'false'
       }
     })
   }, [stars])

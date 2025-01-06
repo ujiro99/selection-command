@@ -34,6 +34,7 @@
     "@rjsf/validator-ajv8": "^5.22.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "colorthief": "^2.6.0",
     "lottie-web": "^5.12.2",
     "lucide-react": "^0.468.0",
     "mv3-hot-reload": "link:lib/mv3-hot-reload",

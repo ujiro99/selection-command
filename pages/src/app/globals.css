@@ -73,7 +73,31 @@ body {
   }
 }
 
-.starred svg {
-  @apply fill-amber-400;
-  @apply stroke-amber-400;
+@layer components {
+  .clickable-button {
+    @apply hover:bg-stone-200 cursor-pointer;
+  }
+
+  .clickable-svg {
+    @apply drop-shadow stroke-stone-500;
+  }
+
+  .starred {
+    @apply fill-amber-400 stroke-amber-400;
+    --tw-drop-shadow: drop-shadow(0 1px 2px #f59e0b30) drop-shadow(0 1px 1px #f59e0b2b);
+  }
+
+  .autofill {
+    @apply relative overflow-hidden;
+    @apply animate-scalePop ease-out;
+    animation-delay: var(--autofill-animation-delay, 0);
+  }
+
+  .autofill::before {
+    @apply absolute inset-0 bg-gradient-to-r from-transparent to-stone-200 w-20 z-[1];
+    @apply animate-slideToRight ease-linear;
+    content: '';
+    transform: translateX(-100%);
+    animation-delay: var(--autofill-animation-delay, 0);
+  }
 }

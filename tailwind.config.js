@@ -12,9 +12,6 @@ module.exports = {
         '2xl': '1400px',
       },
     },
-    fontSize: {
-      xs: '12px',
-    },
     extend: {
       colors: {
         border: 'hsl(var(--border))',
@@ -59,6 +56,10 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],
       },
+      fontSize: {
+        xs: '12px',
+        sm: '14px',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
@@ -68,10 +69,20 @@ module.exports = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+        marquee2: {
+          '0%': { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(0%)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        marquee: 'marquee var(--marquee-duration) linear infinite',
+        marquee2: 'marquee2 var(--marquee-duration) linear infinite',
       },
       padding: {
         0.5: '2px',
