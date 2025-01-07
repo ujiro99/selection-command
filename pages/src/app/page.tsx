@@ -15,7 +15,7 @@ export default function Home() {
           <div />
           <CommandShare lang={lang} />
         </div>
-        <CommandList lang={lang} />
+        <CommandList />
       </main>
       <Footer />
     </div>

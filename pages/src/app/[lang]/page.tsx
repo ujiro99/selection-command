@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: Promise<LangProps> }) {
         <div />
         <CommandShare lang={lang} />
       </div>
-      <CommandList lang={lang} />
+      <CommandList />
     </main>
   )
 }

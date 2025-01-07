@@ -36,6 +36,8 @@ export type Tag = {
   name: string
 }
 
+export type LangType = LanguageType
+
 export type LangProps = {
   lang: LanguageType
 }

@@ -1,17 +1,16 @@
 import React from 'react'
-import Link from 'next/link'
 import { ArrowDownToLine, Check, Star } from 'lucide-react'
 import { Image } from '@/components/Image'
-import { Tag } from '@/components/Tag'
-import type { Command, LangProps } from '@/types'
+import { TagLink } from '@/components/TagLink'
+import type { Command } from '@/types'
 import { cmd2text } from '@/features/command'
 
-type Props = LangProps & {
+type Props = {
   cmd: Command
 }
 
 export function ListItem(props: Props): JSX.Element {
-  const { lang, cmd } = props
+  const { cmd } = props
   return (
     <>
       <div className="text-left flex flex-row items-center gap-1">
@@ -85,9 +84,7 @@ export function ListItem(props: Props): JSX.Element {
       <ul className="mt-2 flex gap-2 flex-wrap">
         {cmd.tags.map((tag) => (
           <li key={tag.id}>
-            <Link href={`/${lang}/tag/${tag.name}`}>
-              <Tag tag={tag} />
-            </Link>
+            <TagLink tag={tag} />
           </li>
         ))}
       </ul>

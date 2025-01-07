@@ -34,7 +34,7 @@ export default async function Page({ params }: { params: Promise<Props> }) {
         </div>
         <CommandShare lang={lang} />
       </div>
-      <CommandList tagName={tag} lang={lang} />
+      <CommandList tagName={tag} />
     </main>
   )
 }

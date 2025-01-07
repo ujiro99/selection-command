@@ -6,11 +6,11 @@ const LanguageMap = {
   ja,
 } as const
 
-export const Languages = Object.keys(LanguageMap)
-
-export const DefaultLanguage = 'en' as const
-
 export type LanguageType = keyof typeof LanguageMap
+
+export const Languages = Object.keys(LanguageMap) as LanguageType[]
+
+export const DefaultLanguage = 'en' as const as LanguageType
 
 export const getDict = (lang: LanguageType) => {
   return LanguageMap[lang]
