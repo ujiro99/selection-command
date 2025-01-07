@@ -90,6 +90,11 @@ export default {
       '時間をおいて再度お試し頂くか、\n以下のリンクから開発者までお問い合わせください。',
     supportHub: 'サポートハブへ',
   },
+  notfound: {
+    title: 'ページが見つかりませんでした',
+    message:
+      'アクセスしようとしたページは存在しません。\nURLのご確認をお願いします。',
+  },
   sortOrder: {
     [SORT_ORDER.searchUrl]: '検索URL',
     [SORT_ORDER.title]: 'タイトル',

@@ -91,6 +91,11 @@ export default {
       'Please try again later or contact the developer from the link below.',
     supportHub: 'Support Hub',
   },
+  notfound: {
+    title: 'Page not found',
+    message:
+      'The page you tried to access does not exist.\nPlease check the URL.',
+  },
   sortOrder: {
     [SORT_ORDER.searchUrl]: 'Search URL',
     [SORT_ORDER.title]: 'Title',
