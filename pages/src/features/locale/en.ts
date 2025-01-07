@@ -66,9 +66,9 @@ export default {
         percent: 'Percent(%20)',
       },
     },
-    inputFormDescription: 'Apply for command sharing.',
-    inputFormOptions: 'Options',
-    inputFormConfirm: 'Confirm',
+    formDescription: 'Apply for command sharing.',
+    formOptions: 'Options',
+    confirm: 'Confirm',
   },
   confirmForm: {
     formDescription: 'Is the following content correct?',
@@ -76,6 +76,20 @@ export default {
       'The submitted information will be published on this site.\nPlease refrain from sharing personal or confidential information.',
     back: 'Back',
     submit: 'Share',
+  },
+  completeForm: {
+    formDescription: 'Submission completed.',
+    thanks:
+      'Thank you for sharing the command!\nIt may take 2-3 days for the developer to reflect it on the site.\nPlease wait patiently until it is published.',
+    aboudDelete:
+      'If you wish to delete after applying, please access the link below.',
+    supportHub: 'Support Hub',
+  },
+  errorForm: {
+    formDescription: 'A transmission error has occurred.',
+    message:
+      'Please try again later or contact the developer from the link below.',
+    supportHub: 'Support Hub',
   },
   sortOrder: {
     [SORT_ORDER.searchUrl]: 'Search URL',

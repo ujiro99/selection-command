@@ -113,7 +113,7 @@ const enum STEP {
 
 export function CommandForm() {
   const [formData, setFormData] = useState<FormValues>({} as FormValues)
-  const [step, setStep] = useState<STEP>(STEP.COMPLETE)
+  const [step, setStep] = useState<STEP>(STEP.INPUT)
 
   const onInputSubmit = (values: FormValues) => {
     if (!values) return
@@ -314,7 +314,7 @@ function InputForm(props: InputProps) {
   return (
     <Form {...form}>
       <DialogDescription className="text-stone-600">
-        {t.inputFormDescription}
+        {t.formDescription}
       </DialogDescription>
       {/* Content inserted by Chrome extension */}
       <div id="MyCommands" className="hidden overflow-hidden" />
@@ -458,7 +458,7 @@ function InputForm(props: InputProps) {
           <CollapsibleTrigger className="flex items-center hover:bg-stone-200 px-1.5 py-1 rounded-lg">
             <ChevronsUpDown size={18} className={css.iconUpDown} />
             <ChevronsDownUp size={18} className={css.iconDownUp} />
-            <span className="ml-0.5">{t.inputFormOptions}</span>
+            <span className="ml-0.5">{t.formOptions}</span>
           </CollapsibleTrigger>
           <CollapsibleContent
             id="InputForm_Options"
@@ -616,7 +616,7 @@ function InputForm(props: InputProps) {
             type="submit"
             className="rounded-xl font-semibold bg-stone-700"
           >
-            <Send /> {t.inputFormConfirm}
+            <Send /> {t.confirm}
           </Button>
         </div>
       </form>
@@ -725,24 +725,22 @@ function SendingForm() {
 }
 
 function CompleteForm() {
+  const { dict } = useLocale()
+  const t = dict.completeForm
   return (
     <div id="CompleteForm">
       <DialogDescription className="text-stone-600 text-lg">
-        送信が完了しました<span className="ml-1 text-xl">🎉</span>
+        {t.formDescription}
+        <span className="ml-1 text-xl">🎉</span>
       </DialogDescription>
       <div className="flex items-center mt-3">
         <p
           className={clsx(
-            'flex-1 bg-stone-200 rounded-2xl px-5 py-3',
+            'flex-1 bg-stone-200 rounded-2xl px-5 py-3 whitespace-break-spaces',
             css.triangle,
           )}
         >
-          コマンドを共有して頂きありがとうございます！
-          <br />
-          開発者がサイトに反映するまで2〜3日かかる場合がございます。
-          <br />
-          公開まで、今しばらくお待ちください。
-          <br />
+          {t.thanks}
         </p>
         <Image
           src="/engineer_suit_simple.png"
@@ -757,39 +755,35 @@ function CompleteForm() {
           }
         />
       </div>
-      <p className="mt-5 text-md">
-        申請後の削除のご要望は、こちらのリンクよりお願いします。
-      </p>
+      <p className="mt-5 text-md">{t.aboudDelete}</p>
       <a
         className="underline text-sky-600"
         href="https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support"
         target="_brank"
         data-gtm-click="support-on-complete"
       >
-        サポートハブへ
+        {t.supportHub}
       </a>
     </div>
   )
 }
 
 function ErrorForm() {
+  const t = useLocale().dict.errorForm
   return (
     <div id="ErrorForm">
       <DialogDescription className="text-stone-600 text-lg">
-        送信エラーが発生しました⋯<span className="ml-1 text-xl"></span>
+        {t.formDescription}
       </DialogDescription>
       <div className="mt-3 gap-2 flex flex-col">
-        <p className="text-md">
-          時間をおいて再度お試し頂くか、
-          以下のリンクから開発者までお問い合わせください。
-        </p>
+        <p className="text-md whitespace-break-spaces">{t.message}</p>
         <a
           className="underline text-sky-600"
           href="https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support"
           target="_brank"
           data-gtm-click="support-on-error"
         >
-          サポートハブへ
+          {t.supportHub}
         </a>
       </div>
     </div>
