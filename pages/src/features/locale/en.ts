@@ -1,6 +1,9 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
 
 export default {
+  name: 'English',
+  shorName: 'en',
+  languageName: 'English',
   errorPage: {
     error: 'A transmission error has occurred.',
     afterShortTime: 'Please contact us after a while.',

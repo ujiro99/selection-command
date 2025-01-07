@@ -1,4 +1,5 @@
 import data from '@/data/analytics.json'
+import { LocaleSelector } from '@/components/LocaleSelector'
 
 export function Footer(): JSX.Element {
   const { updated } = data
@@ -9,6 +10,7 @@ export function Footer(): JSX.Element {
         Last Updated: {updatedDate.toLocaleDateString()}
       </p>
       <p className="text-stone-500">© 2024 Selection Command</p>
+      <LocaleSelector />
     </footer>
   )
 }

@@ -1,6 +1,9 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
 
 export default {
+  name: '日本語',
+  shorName: 'ja',
+  languageName: 'Japanese',
   errorPage: {
     error: '送信エラーが発生しました。',
     afterShortTime: '暫く経ってからお問い合わせください。',
