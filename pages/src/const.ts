@@ -8,3 +8,11 @@ export enum SPACE_ENCODING {
   PLUS = 'plus',
   PERCENT = 'percent',
 }
+
+export enum SORT_ORDER {
+  searchUrl = 'searchUrl',
+  title = 'title',
+  download = 'download',
+  star = 'star',
+  addedAt = 'addedAt',
+}

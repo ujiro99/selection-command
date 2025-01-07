@@ -1,3 +1,5 @@
+import { SORT_ORDER } from '@/const'
+
 export default {
   errorPage: {
     error: '送信エラーが発生しました。',
@@ -6,6 +8,15 @@ export default {
   commandShare: {
     title: 'コマンド共有',
     formTitle: 'コマンド共有フォーム',
+  },
+  sortOrder: {
+    [SORT_ORDER.searchUrl]: '検索URL',
+    [SORT_ORDER.title]: 'タイトル',
+    [SORT_ORDER.download]: 'ダウンロード数',
+    [SORT_ORDER.star]: 'スター数',
+    [SORT_ORDER.addedAt]: '登録日',
+    new: '新',
+    old: '古',
   },
   commandForm: {
     title: 'コマンド',

@@ -15,10 +15,10 @@ export function useLocale() {
     lang = path
   }
 
-  const t = getDict(lang)
+  const dict = getDict(lang)
 
   return {
     lang,
-    t,
+    dict,
   }
 }
