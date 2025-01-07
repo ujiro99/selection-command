@@ -1,39 +1,33 @@
 # Privacy Policy
 
-Last updated January 21, 2024
+Last updated January 9, 2025
 
-Yujiro Takeda built the selection-command as a Freemium app. This SERVICE is provided by Yujiro Takeda at no cost and is intended for use as is.
+Yujiro Takeda has developed the Selection Command as a Freemium application. This SERVICE is provided by Yujiro Takeda at no cost and is intended for use "as is."
 
-This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.
+This Privacy Policy outlines how your information is collected, used, and disclosed when using the Service. By choosing to use the Service, you agree to the collection and use of information in accordance with this policy. The Personal Information collected is utilized solely for providing and enhancing the Service. Your information will not be shared with anyone except as described in this Privacy Policy.
 
-If you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that I collect is used for providing and improving the Service. I will not use or share your information with anyone except as described in this Privacy Policy.
-
-The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which are accessible at selection-command unless otherwise defined in this Privacy Policy.
+Terms used in this Privacy Policy have the same meanings as defined in our Terms and Conditions, accessible at Selection Command, unless otherwise specified.
 
 ## Information Collection and Use
 
-- **User Activity**: This application uses a third party service to track anonymous usage. An example is which options and buttons users click most often. The link to the privacy policy of the third-party service provider used by the application is below.
+- **User Activity**: This application utilizes third-party services to track anonymous usage data, such as which options or buttons are most frequently clicked. The privacy policy of the third-party service provider used by this application is linked below:
 
-  - [Mixpanel](https://mixpanel.com/legal/privacy-policy/)
+  - [Google Analytics](https://marketingplatform.google.com/about/analytics/terms/us/)
 
-- **Log Data**: This application may collect information about your PC as Log Data in the event of an error. This Log Data may include information such as your browser name, operating system version, the configuration of the app when utilizing my Service, the time and date of your use of the Service, and other statistics.
+- **Log Data**: In the event of an error within the application, certain information may be collected as Log Data. This may include details such as your browser type, operating system version, app configuration at the time of using the Service, timestamps of usage, and other diagnostic data.
 
 ## Security
 
-I value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and I cannot guarantee its absolute security.
+Your trust in providing Personal Information is highly valued, and we strive to implement commercially reasonable measures to protect it. However, please be aware that no method of transmission over the Internet or electronic storage is completely secure or reliable. Therefore, absolute security cannot be guaranteed.
 
 ## Links to Other Sites
 
-This Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by me. Therefore, I strongly advise you to review the Privacy Policy of these websites. I have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
+The Service may include links to external websites. If you click on a third-party link, you will be directed to that site. Please note that these external sites are not operated by us. We strongly recommend reviewing the Privacy Policies of any third-party websites you visit. We hold no responsibility for the content, privacy practices, or operations of any third-party sites or services.
 
 ## Changes to This Privacy Policy
 
-I may update our Privacy Policy from time to time. If I make any changes to this Privacy Statement, I will change the “Last Updated” date above. I will notify you of any changes by posting the new Privacy Policy on this page.
+This Privacy Policy may be updated periodically. Any changes will be reflected by updating the “Last Updated” date at the top of this page. You are encouraged to review this page regularly for any modifications. Updates will take effect immediately upon posting on this page.
 
 ## Contact Us
 
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at takeda.yujiro@gmail.com.
-
----
-
-This privacy policy page was created at [privacypolicytemplate.net](https://privacypolicytemplate.net) and modified/generated by [App Privacy Policy Generator](https://app-privacy-policy-generator.nisrulz.com/)
+If you have any questions or feedback regarding this Privacy Policy, please feel free to contact Yujiro Takeda at takeda.yujiro@gmail.com.
