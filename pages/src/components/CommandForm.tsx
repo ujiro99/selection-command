@@ -23,7 +23,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessageLocale,
 } from '@/components/ui/form'
 import {
   Select,
@@ -41,11 +41,10 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { DialogDescription } from '@/components/ui/dialog'
-
 import { TagPicker } from '@/components/TagPicker'
 import { Image } from '@/components/Image'
 import { Tag } from '@/components/Tag'
-
+import { useLocale } from '@/hooks/useLocale'
 import { cmd2uuid, getSearchUrl } from '@/features/command'
 import { isEmpty } from '@/lib/utils'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
@@ -54,40 +53,31 @@ import type { CommandInJson, CommandInMessage, Tag as TagType } from '@/types'
 import css from './CommandForm.module.css'
 
 const formSchema = z.object({
-  title: z
-    .string()
-    .min(3, {
-      message: 'タイトルは最短3文字です',
-    })
-    .max(100, {
-      message: 'タイトルは最長100文字です',
-    }),
+  title: z.string().min(3, { message: 'min3' }).max(100, { message: 'max100' }),
   searchUrl: z
     .string()
-    .url({
-      message: 'URL形式が正しくありません',
-    })
+    .url({ message: 'url' })
     .refine((url) => getSearchUrl().every((u) => u !== url), {
-      message: '既に登録されています',
+      message: 'unique',
     }),
   iconUrl: z.string().url(),
   openMode: z.nativeEnum(OPEN_MODE),
   openModeSecondary: z.nativeEnum(OPEN_MODE),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
   description: z.string().max(200, {
-    message: '説明は最長200文字です',
+    message: 'max200',
   }),
   tags: z
     .array(
       z.object({
         tagId: z.string(),
         name: z.string().max(20, {
-          message: 'タグは最長20文字です',
+          message: 'max20',
         }),
       }),
     )
     .max(5, {
-      message: 'タグは最大5つまでです',
+      message: 'max5',
     }),
 })
 
@@ -123,7 +113,7 @@ const enum STEP {
 
 export function CommandForm() {
   const [formData, setFormData] = useState<FormValues>({} as FormValues)
-  const [step, setStep] = useState<STEP>(STEP.INPUT)
+  const [step, setStep] = useState<STEP>(STEP.COMPLETE)
 
   const onInputSubmit = (values: FormValues) => {
     if (!values) return
@@ -194,6 +184,8 @@ type InputProps = {
 function InputForm(props: InputProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [animation, setAnimation] = useState(false)
+  const { lang, dict } = useLocale()
+  const t = dict.inputForm
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -322,7 +314,7 @@ function InputForm(props: InputProps) {
   return (
     <Form {...form}>
       <DialogDescription className="text-stone-600">
-        コマンドの共有を申請します。
+        {t.inputFormDescription}
       </DialogDescription>
       {/* Content inserted by Chrome extension */}
       <div id="MyCommands" className="hidden overflow-hidden" />
@@ -337,16 +329,16 @@ function InputForm(props: InputProps) {
           render={({ field }) => (
             <FormItem className="flex items-center">
               <div className="w-2/5">
-                <FormLabel>タイトル</FormLabel>
+                <FormLabel>{t.title.label}</FormLabel>
                 <FormDescription className="leading-tight">
-                  コマンドのタイトルとして表示されます。
+                  {t.title.description}
                 </FormDescription>
               </div>
               <div {...autofillProps(0, 'w-3/5 rounded-md')}>
                 <FormControl>
                   <Input placeholder="Title of command" {...field} />
                 </FormControl>
-                <FormMessage />
+                <FormMessageLocale lang={lang} />
               </div>
             </FormItem>
           )}
@@ -361,9 +353,9 @@ function InputForm(props: InputProps) {
               onChange={onChagneSearchUrl}
             >
               <div className="w-2/5">
-                <FormLabel>検索URL</FormLabel>
+                <FormLabel>{t.searchUrl.label}</FormLabel>
                 <FormDescription className="leading-tight">
-                  `%s`を選択テキストに置換します。
+                  {t.searchUrl.description}
                 </FormDescription>
               </div>
               <div {...autofillProps(1, 'w-3/5 rounded-md relative')}>
@@ -381,7 +373,7 @@ function InputForm(props: InputProps) {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessageLocale lang={lang} />
               </div>
             </FormItem>
           )}
@@ -393,9 +385,9 @@ function InputForm(props: InputProps) {
           render={({ field }) => (
             <FormItem className="flex items-center">
               <div className="w-2/5">
-                <FormLabel>コマンドの説明</FormLabel>
+                <FormLabel>{t.description.label}</FormLabel>
                 <FormDescription className="leading-tight">
-                  コマンドの説明として表示されます。
+                  {t.description.description}
                 </FormDescription>
               </div>
               <div className="w-3/5">
@@ -406,7 +398,7 @@ function InputForm(props: InputProps) {
                     {...field}
                   />
                 </FormControl>
-                <FormMessage />
+                <FormMessageLocale lang={lang} />
               </div>
             </FormItem>
           )}
@@ -418,9 +410,9 @@ function InputForm(props: InputProps) {
           render={() => (
             <FormItem className="flex items-center">
               <div className="w-2/5">
-                <FormLabel>タグ</FormLabel>
+                <FormLabel>{t.tags.label}</FormLabel>
                 <FormDescription className="leading-tight">
-                  コマンドの分類として表示されます。
+                  {t.tags.description}
                 </FormDescription>
               </div>
               <div className="w-3/5">
@@ -454,7 +446,7 @@ function InputForm(props: InputProps) {
                     )}
                   </ul>
                 </FormControl>
-                <FormMessage />
+                <FormMessageLocale lang={lang} />
               </div>
             </FormItem>
           )}
@@ -466,7 +458,7 @@ function InputForm(props: InputProps) {
           <CollapsibleTrigger className="flex items-center hover:bg-stone-200 px-1.5 py-1 rounded-lg">
             <ChevronsUpDown size={18} className={css.iconUpDown} />
             <ChevronsDownUp size={18} className={css.iconDownUp} />
-            <span className="ml-0.5">オプション</span>
+            <span className="ml-0.5">{t.inputFormOptions}</span>
           </CollapsibleTrigger>
           <CollapsibleContent
             id="InputForm_Options"
@@ -481,9 +473,9 @@ function InputForm(props: InputProps) {
                   onChange={onChagneIconUrl}
                 >
                   <div className="w-2/5">
-                    <FormLabel>アイコンURL</FormLabel>
+                    <FormLabel>{t.iconUrl.label}</FormLabel>
                     <FormDescription className="leading-tight">
-                      メニューのアイコンとして表示されます。
+                      {t.iconUrl.description}
                     </FormDescription>
                   </div>
 
@@ -500,7 +492,7 @@ function InputForm(props: InputProps) {
                         <span className="font-medium">Detect</span>
                       </Button>
                     )}
-                    <FormMessage />
+                    <FormMessageLocale lang={lang} />
                   </div>
                 </FormItem>
               )}
@@ -511,9 +503,9 @@ function InputForm(props: InputProps) {
               render={({ field }) => (
                 <FormItem className="flex items-center">
                   <div className="w-2/5">
-                    <FormLabel>OpenMode</FormLabel>
+                    <FormLabel>{t.openMode.label}</FormLabel>
                     <FormDescription className="leading-tight">
-                      結果の表示方法です。
+                      {t.openMode.description}
                     </FormDescription>
                   </div>
 
@@ -526,15 +518,19 @@ function InputForm(props: InputProps) {
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value={OPEN_MODE.POPUP}>Popup</SelectItem>
-                          <SelectItem value={OPEN_MODE.WINDOW}>
-                            Window
+                          <SelectItem value={OPEN_MODE.POPUP}>
+                            {t.openMode.options.popup}
                           </SelectItem>
-                          <SelectItem value={OPEN_MODE.TAB}>Tab</SelectItem>
+                          <SelectItem value={OPEN_MODE.TAB}>
+                            {t.openMode.options.tab}
+                          </SelectItem>
+                          <SelectItem value={OPEN_MODE.WINDOW}>
+                            {t.openMode.options.window}
+                          </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <FormMessageLocale lang={lang} />
                   </div>
                 </FormItem>
               )}
@@ -546,9 +542,9 @@ function InputForm(props: InputProps) {
               render={({ field }) => (
                 <FormItem className="flex items-center">
                   <div className="w-2/5">
-                    <FormLabel>Ctrl + クリック</FormLabel>
+                    <FormLabel>{t.openModeSecondary.label}</FormLabel>
                     <FormDescription className="leading-tight">
-                      Ctrl + クリック時の表示方法です。
+                      {t.openModeSecondary.description}
                     </FormDescription>
                   </div>
                   <div {...autofillProps(4, 'w-3/5 rounded-md relative')}>
@@ -560,15 +556,19 @@ function InputForm(props: InputProps) {
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value={OPEN_MODE.POPUP}>Popup</SelectItem>
-                          <SelectItem value={OPEN_MODE.WINDOW}>
-                            Window
+                          <SelectItem value={OPEN_MODE.POPUP}>
+                            {t.openMode.options.popup}
                           </SelectItem>
-                          <SelectItem value={OPEN_MODE.TAB}>Tab</SelectItem>
+                          <SelectItem value={OPEN_MODE.TAB}>
+                            {t.openMode.options.tab}
+                          </SelectItem>
+                          <SelectItem value={OPEN_MODE.WINDOW}>
+                            {t.openMode.options.window}
+                          </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <FormMessageLocale lang={lang} />
                   </div>
                 </FormItem>
               )}
@@ -580,9 +580,9 @@ function InputForm(props: InputProps) {
               render={({ field }) => (
                 <FormItem className="flex items-center">
                   <div className="w-2/5">
-                    <FormLabel>スペースのエンコード</FormLabel>
+                    <FormLabel>{t.spaceEncoding.label}</FormLabel>
                     <FormDescription className="leading-tight">
-                      選択テキスト中のスペースを置換します。
+                      {t.spaceEncoding.description}
                     </FormDescription>
                   </div>
 
@@ -596,27 +596,27 @@ function InputForm(props: InputProps) {
                       <SelectContent>
                         <SelectGroup>
                           <SelectItem value={SPACE_ENCODING.PLUS}>
-                            Plus (+)
+                            {t.spaceEncoding.options.plus}
                           </SelectItem>
                           <SelectItem value={SPACE_ENCODING.PERCENT}>
-                            Percent (%20)
+                            {t.spaceEncoding.options.percent}
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    <FormMessageLocale lang={lang} />
                   </div>
                 </FormItem>
               )}
             />
           </CollapsibleContent>
         </Collapsible>
-        <div className="pt-2 text-center">
+        <div className="pt-3 text-center">
           <Button
             type="submit"
             className="rounded-xl font-semibold bg-stone-700"
           >
-            <Send /> 入力内容を確認する
+            <Send /> {t.inputFormConfirm}
           </Button>
         </div>
       </form>
@@ -625,7 +625,7 @@ function InputForm(props: InputProps) {
 }
 
 const Item = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex items-center">
+  <div className="flex items-center min-h-7">
     <label className="w-2/6 text-sm font-medium">{label}</label>
     <div className="w-4/6 font-[family-name:var(--font-geist-mono)] text-sm leading-relaxed overflow-x-auto whitespace-nowrap inline-block">
       <span>{value}</span>
@@ -654,26 +654,36 @@ type ConfirmProps = {
 }
 
 function ConfirmForm(props: ConfirmProps) {
+  const { dict } = useLocale()
+  const t = dict.inputForm
+  const t2 = dict.confirmForm
   return (
     <div id="ConfirmForm" className="overflow-auto">
       <DialogDescription className="text-stone-600">
-        以下の内容で間違いありませんか？
+        {t2.formDescription}
       </DialogDescription>
 
       <div className="mt-3 px-4 py-3 text-stone-800 bg-stone-200 rounded-xl">
-        <Item label="タイトル" value={props.data.title} />
-        <Item label="検索URL" value={props.data.searchUrl} />
-        <Item label="コマンドの説明" value={props.data.description} />
-        <IconItem label="アイコンURL" value={props.data.iconUrl} />
-        <Item label="タグ" value={tagNames(props.data.tags)} />
-        <Item label="OpenMode" value={props.data.openMode} />
-        <Item label="Ctrl + クリック" value={props.data.openModeSecondary} />
-        <Item label="スペースのエンコード" value={props.data.spaceEncoding} />
+        <Item label={t.title.label} value={props.data.title} />
+        <Item label={t.searchUrl.label} value={props.data.searchUrl} />
+        <Item label={t.description.label} value={props.data.description} />
+        <IconItem label={t.iconUrl.label} value={props.data.iconUrl} />
+        <Item label={t.tags.label} value={tagNames(props.data.tags)} />
+        <Item
+          label={t.openMode.label}
+          value={t.openMode.options[props.data.openMode]}
+        />
+        <Item
+          label={t.openModeSecondary.label}
+          value={t.openMode.options[props.data.openModeSecondary]}
+        />
+        <Item
+          label={t.spaceEncoding.label}
+          value={t.spaceEncoding.options[props.data.spaceEncoding]}
+        />
       </div>
-      <p className="mt-3 text-md text-center">
-        ※送信された情報は本サイト上で公開されます。
-        <br />
-        個人情報や機密情報を含む情報の共有はお控えください。
+      <p className="mt-3 text-md text-center whitespace-break-spaces">
+        {t2.caution}
       </p>
       <div className="mt-5 text-center">
         <Button
@@ -682,14 +692,15 @@ function ConfirmForm(props: ConfirmProps) {
           data-gtm-click="confirm-back"
         >
           <Undo2 />
-          修正する
+          {t2.back}
         </Button>
         <Button
           type="submit"
           className="rounded-xl font-semibold bg-stone-700 ml-6"
           onClick={props.onFormSubmit}
         >
-          <Send /> 共有実行
+          <Send />
+          {t2.submit}
         </Button>
       </div>
     </div>
