@@ -47,6 +47,9 @@ export default {
     iconUrl: {
       label: 'Icon URL',
       description: 'Displayed as the icon of the menu.',
+      message: {
+        url: 'URL format is incorrect.',
+      },
     },
     openMode: {
       label: 'OpenMode',

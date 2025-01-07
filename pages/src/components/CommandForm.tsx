@@ -60,7 +60,7 @@ const formSchema = z.object({
     .refine((url) => getSearchUrl().every((u) => u !== url), {
       message: 'unique',
     }),
-  iconUrl: z.string().url(),
+  iconUrl: z.string().url({ message: 'url' }),
   openMode: z.nativeEnum(OPEN_MODE),
   openModeSecondary: z.nativeEnum(OPEN_MODE),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
@@ -624,10 +624,23 @@ function InputForm(props: InputProps) {
   )
 }
 
-const Item = ({ label, value }: { label: string; value: string }) => (
+const Item = ({
+  label,
+  value,
+  valueClass,
+}: {
+  label: string
+  value: string
+  valueClass?: string
+}) => (
   <div className="flex items-center min-h-7">
     <label className="w-2/6 text-sm font-medium">{label}</label>
-    <div className="w-4/6 font-[family-name:var(--font-geist-mono)] text-sm leading-relaxed overflow-x-auto whitespace-nowrap inline-block">
+    <div
+      className={clsx(
+        'w-4/6 font-[family-name:var(--font-geist-mono)] text-sm leading-relaxed overflow-x-auto whitespace-nowrap inline-block',
+        valueClass,
+      )}
+    >
       <span>{value}</span>
     </div>
   </div>
@@ -666,7 +679,11 @@ function ConfirmForm(props: ConfirmProps) {
       <div className="mt-3 px-4 py-3 text-stone-800 bg-stone-200 rounded-xl">
         <Item label={t.title.label} value={props.data.title} />
         <Item label={t.searchUrl.label} value={props.data.searchUrl} />
-        <Item label={t.description.label} value={props.data.description} />
+        <Item
+          label={t.description.label}
+          value={props.data.description}
+          valueClass="whitespace-break-spaces break-words"
+        />
         <IconItem label={t.iconUrl.label} value={props.data.iconUrl} />
         <Item label={t.tags.label} value={tagNames(props.data.tags)} />
         <Item

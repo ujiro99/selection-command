@@ -47,6 +47,9 @@ export default {
     iconUrl: {
       label: 'アイコンURL',
       description: 'メニューのアイコンとして表示されます。',
+      message: {
+        url: 'URL形式が正しくありません。',
+      },
     },
     openMode: {
       label: 'OpenMode',
