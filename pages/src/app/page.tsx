@@ -1,23 +1,15 @@
-import { Header } from '@/components/layout/Header'
-import { Footer } from '@/components/layout/Footer'
-import { CommandList } from '@/components/layout/CommandList'
-import { CommandShare } from '@/components/CommandShare'
-import css from '@/app/page.module.css'
-import { DefaultLanguage } from '@/features/locale'
+'use client'
+
+import { useEffect } from 'react'
+import { useLocale } from '@/hooks/useLocale'
 
 export default function Home() {
-  const lang = DefaultLanguage
-  return (
-    <div className={css.container}>
-      <Header lang={lang} />
-      <main className={css.main}>
-        <div className={css.menu}>
-          <div />
-          <CommandShare lang={lang} />
-        </div>
-        <CommandList />
-      </main>
-      <Footer />
-    </div>
-  )
+  const { switchBrowserLocale } = useLocale()
+
+  useEffect(() => {
+    switchBrowserLocale()
+  }, [])
+
+  // This page is just a redirect to the browser locale
+  return null
 }

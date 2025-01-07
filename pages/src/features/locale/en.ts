@@ -94,7 +94,7 @@ export default {
       'Please try again later or contact the developer from the link below.',
     supportHub: 'Support Hub',
   },
-  notfound: {
+  notFound: {
     title: 'Page not found',
     message:
       'The page you tried to access does not exist.\nPlease check the URL.',

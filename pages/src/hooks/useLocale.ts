@@ -1,17 +1,18 @@
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Languages, DefaultLanguage, getDict } from '@/features/locale'
 import type { LangType } from '@/types'
 
-const isLang = (lang: any | undefined): lang is LangType => {
+const isSupportedLang = (lang: any | undefined): lang is LangType => {
   return Languages.includes(lang)
 }
 
 export function useLocale() {
   const pathname = usePathname()
-  const current = pathname.split('/')[1]
+  const router = useRouter()
 
+  const current = pathname.split('/')[1]
   let lang = DefaultLanguage as LangType
-  if (isLang(current)) {
+  if (isSupportedLang(current)) {
     lang = current
   }
 
@@ -19,17 +20,29 @@ export function useLocale() {
 
   const switchLocale = (next: LangType) => {
     let newPath
-    if (isLang(current)) {
+    if (isSupportedLang(current)) {
       newPath = pathname.replace(current, next)
     } else {
       newPath = `/${next}${pathname}`
     }
-    window.history.replaceState(null, '', newPath)
+    router.push(newPath)
+  }
+
+  // detect the browser's default language
+  let browserLang = navigator.language.split('-')[0] as LangType // "en-US" -> "en"
+  if (!isSupportedLang(browserLang)) {
+    browserLang = DefaultLanguage
+  }
+
+  const switchBrowserLocale = () => {
+    router.replace(`/${browserLang}`)
   }
 
   return {
     lang,
+    browserLang,
     dict,
     switchLocale,
+    switchBrowserLocale,
   }
 }
