@@ -28,7 +28,7 @@ export default async function Page({ params }: { params: Promise<Props> }) {
             <House className="inline" size={16} />
             <span className="ml-0.5">Top</span>
           </Link>
-          <h1 className="text-xl sm:text-3xl text-bold mt-1 sm:mt-2 indent-1 font-[family-name:var(--font-geist-mono)]">
+          <h1 className={`${css.pageTitle} mt-1 sm:mt-2 indent-1`}>
             #<span className="ml-0.5">{tag}</span>
           </h1>
         </div>

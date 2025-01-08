@@ -21,7 +21,7 @@ export default async function LangLayout(props: Props) {
     <div className={css.container}>
       <Header lang={lang} />
       {children}
-      <Footer />
+      <Footer lang={lang} />
     </div>
   )
 }

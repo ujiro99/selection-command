@@ -22,7 +22,7 @@ export function CommandShare(props: LangProps): JSX.Element {
         </span>
       </DialogTrigger>
       <DialogContent id="CommandShare" className="bg-stone-50">
-        <DialogTitle className="text-stone-600">
+        <DialogTitle>
           <span className="mr-1">✏️</span>
           {t.formTitle}
         </DialogTitle>

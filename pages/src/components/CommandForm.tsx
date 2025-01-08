@@ -704,7 +704,7 @@ function ConfirmForm(props: ConfirmProps) {
       </p>
       <div className="mt-5 text-center">
         <Button
-          className="rounded-xl font-semibold  text-stone-700 bg-stone-300 hover:bg-stone-300/80"
+          className="rounded-xl font-semibold text-stone-700 bg-stone-300 hover:bg-stone-300/80"
           onClick={props.onBack}
           data-gtm-click="confirm-back"
         >
