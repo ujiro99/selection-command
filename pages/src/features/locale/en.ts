@@ -102,6 +102,11 @@ export default {
     message:
       'The page you tried to access does not exist.\nPlease check the URL.',
   },
+  about: {
+    terms: 'Terms of Service',
+    privacy: 'Privacy Policy',
+    cookie: 'Cookie Policy',
+  },
   sortOrder: {
     [SORT_ORDER.searchUrl]: 'Search URL',
     [SORT_ORDER.title]: 'Title',

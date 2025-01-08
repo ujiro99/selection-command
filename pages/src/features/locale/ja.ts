@@ -101,6 +101,11 @@ export default {
     message:
       'アクセスしようとしたページは存在しません。\nURLのご確認をお願いします。',
   },
+  about: {
+    terms: '利用規約',
+    privacy: 'プライバシーポリシー',
+    cookie: 'Cookieポリシー',
+  },
   sortOrder: {
     [SORT_ORDER.searchUrl]: '検索URL',
     [SORT_ORDER.title]: 'タイトル',
