@@ -1,5 +1,5 @@
 export default `
-These Terms of Service (hereinafter referred to as the "Terms") set forth the conditions for using the "Selection Command" service (hereinafter referred to as the "Service") provided by [Operator Name] (hereinafter referred to as "We" or "Us"). Please read these Terms carefully before using the Service. By using the Service, you are deemed to have agreed to these Terms.
+These Terms of Service (hereinafter referred to as the "Terms") set forth the conditions for using the "Selection Command Hub" service (hereinafter referred to as the "Service") provided by Operator (hereinafter referred to as "We" or "Us"). Please read these Terms carefully before using the Service. By using the Service, you are deemed to have agreed to these Terms.
 
 ## 1. Application
 1. These Terms apply to all relationships between Us and users regarding the use of the Service.
@@ -61,4 +61,6 @@ For inquiries or support requests related to this Service, please contact us via
 ## 11. Governing Law and Jurisdiction
 1. These Terms shall be governed by Japanese law.
 2. In case of disputes arising from these Terms or the Service, exclusive jurisdiction shall lie with courts in Japan.
+
+Effective as of 01/10/2025
 `

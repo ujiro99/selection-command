@@ -47,4 +47,6 @@ This Privacy Policy may be updated as necessary. The revised policy will take ef
 
 For inquiries regarding this Privacy Policy, please contact us through:
 - [Chrome Web Store Support Page](https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support) 
+
+Effective as of 01/10/2025
 `

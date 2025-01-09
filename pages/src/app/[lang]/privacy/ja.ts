@@ -47,4 +47,6 @@ export default `
 
 本プライバシーポリシーに関するお問い合わせは、以下までご連絡ください：
 - [Chrome Web Store サポートページ](https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support)
+
+発行日：2025/01/10
 `
