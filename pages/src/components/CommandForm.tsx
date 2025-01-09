@@ -111,6 +111,17 @@ const enum STEP {
   ERROR,
 }
 
+const DefaultValue = {
+  title: '',
+  searchUrl: '',
+  iconUrl: '',
+  description: '',
+  openMode: OPEN_MODE.POPUP,
+  openModeSecondary: OPEN_MODE.TAB,
+  spaceEncoding: SPACE_ENCODING.PLUS,
+  tags: [],
+}
+
 export function CommandForm() {
   const [formData, setFormData] = useState<FormValues>({} as FormValues)
   const [step, setStep] = useState<STEP>(STEP.INPUT)
@@ -190,16 +201,7 @@ function InputForm(props: InputProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onBlur',
-    defaultValues: {
-      title: '',
-      searchUrl: '',
-      iconUrl: '',
-      description: '',
-      openMode: OPEN_MODE.POPUP,
-      openModeSecondary: OPEN_MODE.TAB,
-      spaceEncoding: SPACE_ENCODING.PLUS,
-      tags: [],
-    },
+    defaultValues: DefaultValue,
   })
 
   const { setValue } = form
@@ -293,7 +295,7 @@ function InputForm(props: InputProps) {
           'spaceEncoding',
         ] as (keyof CommandInMessage)[]
         params.forEach((key) => {
-          setValue(key as FormKeys, cmd[key])
+          setValue(key as FormKeys, cmd[key] ?? DefaultValue[key])
         })
         form.trigger(params)
         setAnimation(true)
