@@ -166,6 +166,45 @@ const FormMessage = React.forwardRef<
 })
 FormMessage.displayName = 'FormMessage'
 
+const FormMessageLocale = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, children, lang, ...props }, ref) => {
+  const { name, error, formMessageId } = useFormField()
+  const hasError = !!error
+  let body
+  if (hasError) {
+    const msg = String(error?.message)
+    if (msg != null) {
+      const t = getDict(lang as LanguageType).inputForm as any
+      if (t[name]['message'] && t[name]['message'][msg]) {
+        body = t[name]['message'][msg]
+      } else {
+        // console.warn(`No message for ${msg} in ${name}`)
+        body = msg
+      }
+    }
+  } else {
+    body = children
+  }
+
+  if (!body) {
+    return null
+  }
+
+  return (
+    <p
+      ref={ref}
+      id={formMessageId}
+      className={cn('text-[0.8rem] font-medium text-destructive', className)}
+      {...props}
+    >
+      {body}
+    </p>
+  )
+})
+FormMessageLocale.displayName = 'FormMessageLocale'
+
 export {
   useFormField,
   Form,
