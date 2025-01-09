@@ -24,7 +24,7 @@ export function Header(props: Props): JSX.Element {
       <a
         href="https://chromewebstore.google.com/detail/selection-command/nlnhbibaommoelemmdfnkjkgoppkohje"
         target="_blank"
-        className="fixed top-2 right-2 bg-white border border-stone-200 rounded-lg shadow-md transition duration-200 hover:shadow-lg hidden sm:block"
+        className="fixed top-2 right-2 bg-white border border-stone-200 rounded-lg shadow-md transition duration-200 hover:shadow-lg hidden sm:block z-10"
         data-gtm-click="chrome-web-store"
       >
         <Image
