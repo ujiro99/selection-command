@@ -77,6 +77,6 @@ const config: Config = {
       starred: 'starred="true"',
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 }
 export default config

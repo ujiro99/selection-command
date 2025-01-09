@@ -14,6 +14,7 @@ import {
 
 import { cn } from '@/lib/utils'
 import { Label } from '@/components/ui/label'
+import { getDict, LanguageType } from '@/features/locale'
 
 const Form = FormProvider
 
@@ -166,6 +167,40 @@ const FormMessage = React.forwardRef<
 })
 FormMessage.displayName = 'FormMessage'
 
+const FormMessageLocale = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, children, lang, ...props }, ref) => {
+  const { name, error, formMessageId } = useFormField()
+  const hasError = !!error
+  let body
+  if (hasError) {
+    const msg = String(error?.message)
+    if (msg != null) {
+      const t = getDict(lang as LanguageType).inputForm as any
+      body = t[name]['message'][msg]
+    }
+  } else {
+    body = children
+  }
+
+  if (!body) {
+    return null
+  }
+
+  return (
+    <p
+      ref={ref}
+      id={formMessageId}
+      className={cn('text-[0.8rem] font-medium text-destructive', className)}
+      {...props}
+    >
+      {body}
+    </p>
+  )
+})
+FormMessageLocale.displayName = 'FormMessageLocale'
+
 export {
   useFormField,
   Form,
@@ -174,5 +209,6 @@ export {
   FormControl,
   FormDescription,
   FormMessage,
+  FormMessageLocale,
   FormField,
 }

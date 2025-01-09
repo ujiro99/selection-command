@@ -3,11 +3,15 @@ import { Image } from '@/components/Image'
 import { MousePointer } from 'lucide-react'
 import css from './Header.module.css'
 import commonCss from '@/lib/common.module.css'
+import { LangProps } from '@/types'
 
-export function Header(): JSX.Element {
+type Props = LangProps
+
+export function Header(props: Props): JSX.Element {
+  const { lang } = props
   return (
     <div>
-      <Link href="/" className={commonCss.hover}>
+      <Link href={`/${lang}`} className={commonCss.hover}>
         <header className="relative flex items-center sm:gap-1.5 gap-0.5 text-xl sm:text-3xl font-[family-name:var(--font-geist-mono)] font-medium">
           Selection{' '}
           <span className="bg-[#1597C9]/20 px-1.5 sm:px-2 pb-0.5 sm:py-0.5 rounded-lg">

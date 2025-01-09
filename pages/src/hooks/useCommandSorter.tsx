@@ -7,27 +7,12 @@ import {
 } from 'react'
 import { Command } from '@/types'
 import { sortUrlsByDomain } from '@/lib/utils'
-
-export enum Order {
-  searchUrl = 'searchUrl',
-  title = 'title',
-  download = 'download',
-  star = 'star',
-  addedAt = 'addedAt',
-}
+import { SORT_ORDER } from '@/const'
 
 export enum Direction {
   asc = 'asc',
   desc = 'desc',
 }
-
-export const Labels = {
-  [Order.searchUrl]: '検索URL',
-  [Order.title]: 'タイトル',
-  [Order.download]: 'ダウンロード数',
-  [Order.star]: 'スター数',
-  [Order.addedAt]: '登録日',
-} as Record<Order, string>
 
 const getLocale = () => navigator?.language ?? 'en'
 const sortSearchUrl = (cmds: Command[]) => sortUrlsByDomain(cmds, 'searchUrl')
@@ -40,11 +25,11 @@ const sortAddedAt = (cmds: Command[]) =>
   cmds.sort((a, b) => a.addedAt.localeCompare(b.addedAt, getLocale()))
 
 const sortFunctions = {
-  [Order.searchUrl]: sortSearchUrl,
-  [Order.title]: sortTitle,
-  [Order.download]: sortDownload,
-  [Order.star]: sortStar,
-  [Order.addedAt]: sortAddedAt,
+  [SORT_ORDER.searchUrl]: sortSearchUrl,
+  [SORT_ORDER.title]: sortTitle,
+  [SORT_ORDER.download]: sortDownload,
+  [SORT_ORDER.star]: sortStar,
+  [SORT_ORDER.addedAt]: sortAddedAt,
 }
 
 export enum SortType {
@@ -54,15 +39,15 @@ export enum SortType {
 }
 
 const SortTypeMap = {
-  [Order.searchUrl]: SortType.text,
-  [Order.title]: SortType.text,
-  [Order.download]: SortType.number,
-  [Order.star]: SortType.number,
-  [Order.addedAt]: SortType.date,
+  [SORT_ORDER.searchUrl]: SortType.text,
+  [SORT_ORDER.title]: SortType.text,
+  [SORT_ORDER.download]: SortType.number,
+  [SORT_ORDER.star]: SortType.number,
+  [SORT_ORDER.addedAt]: SortType.date,
 }
 
 type OptionType = {
-  order: Order | undefined
+  order: SORT_ORDER | undefined
   direction: Direction | undefined
 }
 
@@ -71,7 +56,7 @@ type ContextType = OptionType & {
 }
 
 const CommandSorterContext = createContext<ContextType>({
-  order: Order.searchUrl,
+  order: SORT_ORDER.searchUrl,
   direction: Direction.asc,
   setOption: () => {},
 })
@@ -83,7 +68,7 @@ export const CommandSorterProvider = ({
 }: {
   children: ReactNode
 }) => {
-  const [order, setOrder] = useState<Order>()
+  const [order, setOrder] = useState<SORT_ORDER>()
   const [direction, setDirection] = useState<Direction>()
 
   const setOption = (option: OptionType) => {
@@ -98,7 +83,7 @@ export const CommandSorterProvider = ({
       setOption(JSON.parse(data))
     } else {
       setOption({
-        order: Order.searchUrl,
+        order: SORT_ORDER.searchUrl,
         direction: Direction.asc,
       })
     }

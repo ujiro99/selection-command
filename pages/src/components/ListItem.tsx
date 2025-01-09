@@ -1,8 +1,7 @@
 import React from 'react'
-import Link from 'next/link'
 import { ArrowDownToLine, Check, Star } from 'lucide-react'
 import { Image } from '@/components/Image'
-import { Tag } from '@/components/Tag'
+import { TagLink } from '@/components/TagLink'
 import type { Command } from '@/types'
 import { cmd2text } from '@/features/command'
 
@@ -85,9 +84,7 @@ export function ListItem(props: Props): JSX.Element {
       <ul className="mt-2 flex gap-2 flex-wrap">
         {cmd.tags.map((tag) => (
           <li key={tag.id}>
-            <Link href={`/tag/${tag.name}`}>
-              <Tag tag={tag} />
-            </Link>
+            <TagLink tag={tag} />
           </li>
         ))}
       </ul>
