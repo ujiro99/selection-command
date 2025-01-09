@@ -1,4 +1,5 @@
 import type { OPEN_MODE, SPACE_ENCODING } from '@/const'
+import type { LanguageType } from '@/features/locale'
 
 export type Command = SelectionCommand & Analytics
 
@@ -33,4 +34,10 @@ export type Analytics = {
 export type Tag = {
   id: string
   name: string
+}
+
+export type LangType = LanguageType
+
+export type LangProps = {
+  lang: LanguageType
 }

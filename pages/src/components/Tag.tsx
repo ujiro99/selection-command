@@ -7,6 +7,7 @@ type Props = {
   tag: Tag
   className?: string
 }
+
 export function Tag(props: Props): JSX.Element {
   return (
     <Badge

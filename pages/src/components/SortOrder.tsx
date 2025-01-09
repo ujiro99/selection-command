@@ -8,21 +8,26 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Skeleton } from './ui/skeleton'
-import {
-  Order,
-  Labels,
-  Direction,
-  SortType,
-  useCommandSorter,
-} from '@/hooks/useCommandSorter'
+import { Direction, SortType, useCommandSorter } from '@/hooks/useCommandSorter'
+import { useLocale } from '@/hooks/useLocale'
 import { cn } from '@/lib/utils'
+import { SORT_ORDER } from '@/const'
 
 export function SortOrder(): JSX.Element {
   const { option, setOption, type } = useCommandSorter()
   const { order, direction } = option
   const loaded = order && direction
 
-  const onChangeOrder = (o: Order) => {
+  const t = useLocale().dict.sortOrder
+  const labels = {
+    [SORT_ORDER.searchUrl]: t.searchUrl,
+    [SORT_ORDER.title]: t.title,
+    [SORT_ORDER.download]: t.download,
+    [SORT_ORDER.star]: t.star,
+    [SORT_ORDER.addedAt]: t.addedAt,
+  }
+
+  const onChangeOrder = (o: SORT_ORDER) => {
     setOption({
       order: o,
       direction,
@@ -41,7 +46,7 @@ export function SortOrder(): JSX.Element {
       <Select onValueChange={onChangeOrder} value={order}>
         <SelectTrigger
           className={cn(
-            'text-sm lg:text-sm w-36 h-8 rounded-lg transition duration-50',
+            'text-sm lg:text-sm min-w-36 w-auto h-8 rounded-lg transition duration-50',
             !loaded && 'opacity-0',
           )}
         >
@@ -49,7 +54,7 @@ export function SortOrder(): JSX.Element {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {Object.entries(Labels).map(([key, label]) => (
+            {Object.entries(labels).map(([key, label]) => (
               <SelectItem value={key} key={key}>
                 {label}
               </SelectItem>
@@ -81,6 +86,8 @@ export function Arrow({
   type: SortType
   direction: Direction
 }): JSX.Element {
+  const t = useLocale().dict.sortOrder
+
   switch (type) {
     case SortType.text:
       return direction === Direction.asc ? (
@@ -97,7 +104,7 @@ export function Arrow({
     case SortType.date:
       return (
         <span className="text-sm px-[2px]">
-          {direction === Direction.asc ? '新' : '古'}
+          {direction === Direction.asc ? t.new : t.old}
         </span>
       )
   }

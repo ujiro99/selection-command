@@ -53,3 +53,13 @@
     left: 6px;
   }
 }
+
+.pageTitle {
+  @apply text-xl sm:text-3xl;
+  @apply font-medium font-[family-name:var(--font-geist-mono)];
+}
+
+.pageTitleBold {
+  @apply text-xl sm:text-3xl;
+  @apply font-bold font-[family-name:var(--font-geist-mono)];
+}

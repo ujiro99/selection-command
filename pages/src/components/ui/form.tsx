@@ -14,6 +14,7 @@ import {
 
 import { cn } from '@/lib/utils'
 import { Label } from '@/components/ui/label'
+import { getDict, LanguageType } from '@/features/locale'
 
 const Form = FormProvider
 
@@ -213,5 +214,6 @@ export {
   FormControl,
   FormDescription,
   FormMessage,
+  FormMessageLocale,
   FormField,
 }
