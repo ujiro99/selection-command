@@ -2,6 +2,7 @@ import { Footer } from '@/components/layout/Footer'
 import { Languages } from '@/features/locale'
 import { LangProps } from '@/types'
 import { Header } from '@/components/layout/Header'
+import { CookieConsent } from '@/components/CookieConsent'
 
 import css from '@/app/page.module.css'
 
@@ -22,6 +23,7 @@ export default async function LangLayout(props: Props) {
       <Header lang={lang} />
       {children}
       <Footer lang={lang} />
+      <CookieConsent lang={lang} />
     </div>
   )
 }

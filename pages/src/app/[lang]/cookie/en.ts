@@ -1,5 +1,5 @@
 export default `
-"Selection Command Hub" (hereinafter referred to as "the Service") uses cookies to enhance your browsing experience and improve our services. This Cookie Policy explains what cookies are, how we use them, and the choices available to you regarding their use.
+Selection Command Hub (hereinafter referred to as "the Service") uses cookies to enhance your browsing experience and improve our services. This Cookie Policy explains what cookies are, how we use them, and the choices available to you regarding their use.
 
 ### **1. What Are Cookies?**
 Cookies are small text files stored on your device (such as a computer or smartphone) by websites you visit. They are widely used to make websites work more efficiently, as well as to provide information to the website owners.
@@ -7,7 +7,10 @@ Cookies are small text files stored on your device (such as a computer or smartp
 ### **2. Cookies We Use**
 We use the following types of cookies on our Service:
 
-#### **2.1 Analytics Cookies**
+#### **2.1 Consent Management Cookie**
+- **cookieConsent**: This cookie is used to record your consent preferences regarding the use of cookies on our Service. It ensures that once you have provided consent, you will not be repeatedly asked to do so. This cookie is typically stored for 1 year.
+
+#### **2.2 Analytics Cookies**
 We use Google Analytics to help us understand how users interact with our Service and to improve its functionality. The cookies used by Google Analytics include:
 
 - **_ga**: Used to distinguish users. This cookie typically expires after 2 years.

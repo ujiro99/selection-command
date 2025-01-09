@@ -1,5 +1,5 @@
 export default `
-This Privacy Policy outlines how user information is handled within the Service (hereinafter referred to as the "Service"). By using the Service, you are deemed to have agreed to this Privacy Policy.
+This Privacy Policy outlines how user information is handled within Selection Command Hub (hereinafter referred to as "the Service"). By using the Service, you are deemed to have agreed to this Privacy Policy.
 
 ## **1. Information Collected**
 

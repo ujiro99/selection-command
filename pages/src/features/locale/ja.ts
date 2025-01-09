@@ -101,11 +101,6 @@ export default {
     message:
       'アクセスしようとしたページは存在しません。\nURLのご確認をお願いします。',
   },
-  about: {
-    terms: '利用規約',
-    privacy: 'プライバシーポリシー',
-    cookie: 'Cookieポリシー',
-  },
   sortOrder: {
     [SORT_ORDER.searchUrl]: '検索URL',
     [SORT_ORDER.title]: 'タイトル',
@@ -114,5 +109,17 @@ export default {
     [SORT_ORDER.addedAt]: '登録日',
     new: '新',
     old: '古',
+  },
+  about: {
+    terms: '利用規約',
+    privacy: 'プライバシーポリシー',
+    cookie: 'Cookieポリシー',
+  },
+  cookieConsent: {
+    title: 'Cookieの使用について',
+    message:
+      '当サイトでは、より良い体験を提供するためにCookieを使用しています。詳細はCookieポリシーをご覧ください。',
+    accept: '同意する',
+    decline: '同意しない',
   },
 }

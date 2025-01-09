@@ -102,11 +102,6 @@ export default {
     message:
       'The page you tried to access does not exist.\nPlease check the URL.',
   },
-  about: {
-    terms: 'Terms of Service',
-    privacy: 'Privacy Policy',
-    cookie: 'Cookie Policy',
-  },
   sortOrder: {
     [SORT_ORDER.searchUrl]: 'Search URL',
     [SORT_ORDER.title]: 'Title',
@@ -115,5 +110,17 @@ export default {
     [SORT_ORDER.addedAt]: 'Added Date',
     new: 'New',
     old: 'Old',
+  },
+  about: {
+    terms: 'Terms of Service',
+    privacy: 'Privacy Policy',
+    cookie: 'Cookie Policy',
+  },
+  cookieConsent: {
+    title: 'We use cookies',
+    message:
+      'We use cookies to ensure you get the best experience on our website. For more information, please see our cookie policy.',
+    accept: 'Accept',
+    decline: 'Decline',
   },
 }
