@@ -30,7 +30,7 @@ import {
 } from '@/const'
 import type { SettingsType, FolderOption } from '@/types'
 import { useEventProxy } from '@/hooks/option/useEventProxy'
-import { isMac, cn } from '@/lib/utils'
+import { isEmpty, isMac, cn } from '@/lib/utils'
 
 import css from './SettingForm.module.css'
 
@@ -145,6 +145,7 @@ export function SettingFrom() {
       } else if (command === OPTION_MSG.RES_FETCH_ICON_URL) {
         const { iconUrl, searchUrl } = value
         if (!settingData) return
+        if (isEmpty(iconUrl)) return // failed to find icon
         const commands = settingData.commands.map((cmd) => {
           if (cmd.searchUrl === searchUrl) {
             cmd.iconUrl = iconUrl
@@ -215,10 +216,12 @@ export function SettingFrom() {
     if (id?.endsWith('searchUrl')) {
       const command = data.commands[toCommandId(id)]
       updateSettingData(data)
-      sendMessage(OPTION_MSG.FETCH_ICON_URL, {
-        searchUrl: command.searchUrl,
-        settings: data,
-      })
+      if (!isEmpty(command.searchUrl)) {
+        sendMessage(OPTION_MSG.FETCH_ICON_URL, {
+          searchUrl: command.searchUrl,
+          settings: data,
+        })
+      }
       return
     }
     updateSettingData(data)
