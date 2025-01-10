@@ -16,3 +16,10 @@ export enum SORT_ORDER {
   star = 'star',
   addedAt = 'addedAt',
 }
+
+const environment = process.env.NODE_ENV || 'development'
+export const isDebug = environment === 'development'
+
+export const HUB_URL = isDebug
+  ? 'http://localhost:3000'
+  : 'https://ujiro99.github.io/selection-command'

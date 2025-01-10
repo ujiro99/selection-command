@@ -1,3 +1,5 @@
+import { HUB_URL } from '@/const'
+
 export default `
 These Terms of Service (hereinafter referred to as the "Terms") set forth the conditions for using the "Selection Command Hub" (hereinafter referred to as the "Service") provided by Operator (hereinafter referred to as "We" or "Us"). Please read these Terms carefully before using the Service. By using the Service, you are deemed to have agreed to these Terms.
 
@@ -45,7 +47,7 @@ Users are prohibited from engaging in the following activities when using the Se
 ## 7. Privacy Policy
 1. The handling of personal information and cookies related to the use of this service shall be governed by the Privacy Policy separately established by us.
 2. For details, please refer to the following page:
-   - [Privacy Policy](/en/privacy)
+   - [Privacy Policy](${HUB_URL}/en/privacy)
 
 ## 8. Suspension and Restrictions
 1. If a user violates these Terms, We may restrict access to or suspend their use of the Service without prior notice.

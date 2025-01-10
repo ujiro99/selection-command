@@ -1,3 +1,5 @@
+import { HUB_URL } from '@/const'
+
 export default `
 This Privacy Policy outlines how user information is handled within Selection Command Hub (hereinafter referred to as "the Service"). By using the Service, you are deemed to have agreed to this Privacy Policy.
 
@@ -7,7 +9,7 @@ The Service collects the following types of information:
 
 ### **1-1. Command Information Posted by Users**
 The Service collects command information posted by users (e.g., command names, URLs, descriptions).  
-For details on settings, please refer to the [Terms of Service](/en/terms).  
+For details on settings, please refer to the [Terms of Service](${HUB_URL}/en/terms).  
 *Note: This information is used only when users post or retrieve data within the Service.*
 
 ### **1-2. Usage Data**
