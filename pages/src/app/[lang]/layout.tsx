@@ -1,5 +1,5 @@
 import { Footer } from '@/components/layout/Footer'
-import { Languages } from '@/features/locale'
+import { isSupportedLang, DefaultLanguage, Languages } from '@/features/locale'
 import { LangProps } from '@/types'
 import { Header } from '@/components/layout/Header'
 import { CookieConsent } from '@/components/CookieConsent'
@@ -17,7 +17,10 @@ type Props = {
 
 export default async function LangLayout(props: Props) {
   const { children, params } = props
-  const { lang } = await params
+  let { lang } = await params
+  if (!isSupportedLang(lang)) {
+    lang = DefaultLanguage
+  }
   return (
     <div className={css.container}>
       <Header lang={lang} />

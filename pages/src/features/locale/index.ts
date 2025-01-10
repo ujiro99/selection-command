@@ -20,12 +20,14 @@ export const Labels = Languages.reduce(
   {} as Record<LanguageType, string>,
 )
 
-const isLang = (lang: any | undefined): lang is LanguageType => {
+export const isSupportedLang = (
+  lang: any | undefined,
+): lang is LanguageType => {
   return Languages.includes(lang)
 }
 
 export const getDict = (lang: LanguageType) => {
-  if (!isLang(lang)) {
+  if (!isSupportedLang(lang)) {
     lang = DefaultLanguage as LanguageType
   }
   return LanguageMap[lang]
