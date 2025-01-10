@@ -12,6 +12,10 @@ export default {
     title: 'Command Share',
     formTitle: 'Command Share Form',
   },
+  tagPicker: {
+    notFound: 'Not found',
+    create: 'Create?',
+  },
   inputForm: {
     title: {
       label: 'Title',
@@ -82,6 +86,9 @@ export default {
       'The submitted information will be published on this site.\nPlease refrain from sharing personal or confidential information.',
     back: 'Back',
     submit: 'Share',
+  },
+  SendingForm: {
+    sending: 'Sending...',
   },
   completeForm: {
     formDescription: 'Submission completed.',

@@ -727,10 +727,11 @@ function ConfirmForm(props: ConfirmProps) {
 }
 
 function SendingForm() {
+  const t = useLocale().dict.SendingForm
   return (
     <div id="SendingForm" className="flex items-center justify-center flex-col">
       <DialogDescription className="text-stone-600">
-        送信中...
+        {t.sending}
       </DialogDescription>
       <Image
         src="/bars-scale-middle.svg"
@@ -769,7 +770,7 @@ function CompleteForm() {
           className="rounded-full bg-stone-200 ml-3 h-[100px]"
           style={
             {
-              objectViewBox: 'inset(-5px 12px 65px 52px)',
+              objectViewBox: 'inset(-5% 8% 47% 38%)',
             } as React.CSSProperties
           }
         />

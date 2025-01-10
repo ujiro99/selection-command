@@ -12,6 +12,10 @@ export default {
     title: 'コマンド共有',
     formTitle: 'コマンド共有フォーム',
   },
+  tagPicker: {
+    notFound: '見つかりません',
+    create: '作りますか？',
+  },
   inputForm: {
     title: {
       label: 'タイトル',
@@ -82,6 +86,9 @@ export default {
       '※ 送信された情報は本サイト上で公開されます。\n個人情報や機密情報を含む情報の共有はお控えください。',
     back: '修正する',
     submit: '共有実行',
+  },
+  SendingForm: {
+    sending: '送信中...',
   },
   completeForm: {
     formDescription: '送信が完了しました。',

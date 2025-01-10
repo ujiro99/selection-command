@@ -18,6 +18,7 @@ import * as Popover from '@radix-ui/react-popover'
 
 import { getTags } from '@/features/tag'
 import { generateUUIDFromObject } from '@/lib/utils'
+import { useLocale } from '@/hooks/useLocale'
 
 import type { Tag } from '@/types'
 
@@ -40,6 +41,7 @@ export function TagPicker(props: Props): JSX.Element {
   const [input, setInput] = useState<string | undefined>()
   const emptyRef = useRef<HTMLDivElement>(null)
   const createEnalbe = input && input.length > 2
+  const t = useLocale().dict.tagPicker
 
   const tags = getTags().filter((tag) => !tagIncludes(tag, props.excludeIds))
 
@@ -106,10 +108,11 @@ export function TagPicker(props: Props): JSX.Element {
               >
                 {createEnalbe ? (
                   <p>
-                    <span className="font-semibold">{input}</span> を作りますか?
+                    <span>{t.create}</span>
+                    <span className="ml-3 font-semibold">{input}</span>
                   </p>
                 ) : (
-                  '見つかりません'
+                  <span>{t.notFound}</span>
                 )}
               </CommandEmpty>
               <CommandGroup>
