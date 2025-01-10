@@ -30,16 +30,23 @@ export function useLocale() {
     router.push(newPath)
   }
 
-  const switchBrowserLocale = () => {
-    router.replace(`/${browserLang}`)
-  }
-
   // detect the browser's default language
-  useEffect(() => {
+  const getBrowserLang = () => {
     const browser = navigator.language.split('-')[0] as LangType // "en-US" -> "en"
     if (isSupportedLang(browser)) {
-      setBrowserLang(browser)
+      return browser
     }
+    return DefaultLanguage
+  }
+
+  const switchBrowserLocale = () => {
+    const lang = getBrowserLang()
+    router.replace(`/${lang}`)
+  }
+
+  useEffect(() => {
+    const browser = getBrowserLang()
+    setBrowserLang(browser)
   }, [])
 
   return {
