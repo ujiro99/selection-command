@@ -8,16 +8,28 @@ import { sleep, toUrl } from '@/lib/utils'
  */
 export const fetchIconUrl = async (url: string): Promise<string> => {
   let w: chrome.windows.Window
-  const timeoutId = setTimeout(() => {
-    chrome.windows.remove(w.id as number)
-    console.warn('timeout', url)
-    throw new Error('timeout')
-  }, 5000)
 
   const p = new Promise<string>((resolve, reject) => {
-    chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    const timeoutId = setTimeout(() => {
+      chrome.windows.remove(w.id as number)
+      chrome.tabs.onUpdated.removeListener(onUpdated)
+      console.warn('timeout', url)
+      throw new Error('timeout')
+    }, 5000)
+
+    const onUpdated = async (
+      tabId: number,
+      changeInfo: chrome.tabs.TabChangeInfo,
+      tab: chrome.tabs.Tab,
+    ) => {
+      if (w == null) {
+        // illigal state
+        chrome.tabs.onUpdated.removeListener(onUpdated)
+        return
+      }
       if (tabId === w.tabs?.[0].id && changeInfo.status === 'complete') {
         clearTimeout(timeoutId)
+        chrome.tabs.onUpdated.removeListener(onUpdated)
         if (tab.favIconUrl) {
           resolve(tab.favIconUrl)
         } else {
@@ -34,7 +46,8 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
         }
         chrome.windows.remove(w.id as number)
       }
-    })
+    }
+    chrome.tabs.onUpdated.addListener(onUpdated)
   })
   w = await chrome.windows.create({
     url: toUrl(url, 'test'),

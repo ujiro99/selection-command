@@ -212,18 +212,17 @@ export function SettingFrom() {
       }
     }
 
-    // update iconURL when searchUrl chagned
+    // Update iconURL when searchUrl chagned and iconUrl is empty.
     if (id?.endsWith('searchUrl')) {
       const command = data.commands[toCommandId(id)]
-      updateSettingData(data)
-      if (!isEmpty(command.searchUrl)) {
+      if (!isEmpty(command.searchUrl) && isEmpty(command.iconUrl)) {
         sendMessage(OPTION_MSG.FETCH_ICON_URL, {
           searchUrl: command.searchUrl,
           settings: data,
         })
       }
-      return
     }
+
     updateSettingData(data)
   }
 
