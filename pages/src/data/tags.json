@@ -25,7 +25,7 @@
   },
   {
     "name": "Design",
-    "count": 1
+    "count": 2
   },
   {
     "name": "UI",
@@ -53,10 +53,30 @@
   },
   {
     "name": "Development",
-    "count": 1
+    "count": 3
   },
   {
     "name": "Image",
+    "count": 1
+  },
+  {
+    "name": "News",
+    "count": 1
+  },
+  {
+    "name": "Media",
+    "count": 2
+  },
+  {
+    "name": "SNS",
+    "count": 1
+  },
+  {
+    "name": "Photo",
+    "count": 1
+  },
+  {
+    "name": "Movie",
     "count": 1
   }
 ]
