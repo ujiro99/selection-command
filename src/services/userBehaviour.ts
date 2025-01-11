@@ -18,14 +18,6 @@ type UserConfig = {
   processData: (results: Results) => void
 }
 
-type EventListeners = {
-  scroll: (() => void) | null
-  click: ((e: MouseEvent) => void) | null
-  mouseMovement: ((e: MouseEvent) => void) | null
-  windowResize: ((e: UIEvent) => void) | null
-  visibilitychange: ((e: Event) => void) | null
-}
-
 type EventsFunctions = {
   scroll: () => void
   click: (e: MouseEvent) => void
@@ -38,7 +30,6 @@ type Memory = {
   processInterval: ReturnType<typeof setInterval> | null
   mouseInterval: ReturnType<typeof setInterval> | null
   mousePosition: [number, number, number] | []
-  eventListeners: EventListeners
   eventsFunctions: EventsFunctions
 }
 
@@ -67,7 +58,9 @@ type Results = {
   visibilitychanges?: Array<[string, number]>
 }
 
-const userBehaviour = (() => {
+const isNumber = (n: any): n is number => typeof n === 'number'
+
+export const UserBehaviour = (() => {
   const defaults: Required<UserConfig> = {
     userInfo: true,
     clicks: true,
@@ -91,13 +84,6 @@ const userBehaviour = (() => {
     processInterval: null,
     mouseInterval: null,
     mousePosition: [],
-    eventListeners: {
-      scroll: null,
-      click: null,
-      mouseMovement: null,
-      windowResize: null,
-      visibilitychange: null,
-    },
     eventsFunctions: {
       scroll() {
         results.mouseScroll?.push([
@@ -196,82 +182,73 @@ const userBehaviour = (() => {
     if (!user_config.timeCount && results.time)
       results.time.startTime = getTimeStamp()
 
-    if (user_config.mouseMovement)
-      mem.eventListeners.mouseMovement = window.addEventListener(
-        'mousemove',
-        mem.eventsFunctions.mouseMovement,
-      )
-
-    if (user_config.mouseMovementInterval) {
-      mem.mouseInterval = setInterval(() => {
-        if (
-          mem.mousePosition.length &&
-          (!results.mouseMovements!.length ||
-            (mem.mousePosition[0] !==
-              results.mouseMovements![results.mouseMovements!.length - 1][0] &&
-              mem.mousePosition[1] !==
-              results.mouseMovements![results.mouseMovements!.length - 1][1]))
-        ) {
-          results.mouseMovements!.push(
-            mem.mousePosition as [number, number, number],
-          )
-        }
-      }, user_config.mouseMovementInterval * 1000)
+    if (user_config.mouseMovement) {
+      window.addEventListener('mousemove', mem.eventsFunctions.mouseMovement)
+      if (user_config.mouseMovementInterval) {
+        mem.mouseInterval = setInterval(() => {
+          if (
+            mem.mousePosition.length &&
+            (!results.mouseMovements!.length ||
+              (mem.mousePosition[0] !==
+                results.mouseMovements![
+                results.mouseMovements!.length - 1
+                ][0] &&
+                mem.mousePosition[1] !==
+                results.mouseMovements![
+                results.mouseMovements!.length - 1
+                ][1]))
+          ) {
+            results.mouseMovements!.push(
+              mem.mousePosition as [number, number, number],
+            )
+          }
+        }, user_config.mouseMovementInterval * 1000)
+      }
     }
 
     if (user_config.clicks) {
-      mem.eventListeners.click = window.addEventListener(
-        'click',
-        mem.eventsFunctions.click,
-      )
+      window.addEventListener('click', mem.eventsFunctions.click)
     }
 
     if (user_config.mouseScroll) {
-      mem.eventListeners.scroll = window.addEventListener(
-        'scroll',
-        mem.eventsFunctions.scroll,
-      )
+      window.addEventListener('scroll', mem.eventsFunctions.scroll)
     }
 
     if (user_config.windowResize) {
-      mem.eventListeners.windowResize = window.addEventListener(
-        'resize',
-        mem.eventsFunctions.windowResize,
-      )
+      window.addEventListener('resize', mem.eventsFunctions.windowResize)
     }
 
     if (user_config.visibilitychange) {
-      mem.eventListeners.visibilitychange = window.addEventListener(
+      window.addEventListener(
         'visibilitychange',
         mem.eventsFunctions.visibilitychange,
       )
     }
 
-    if (user_config.processTime !== false) {
-      mem.processInterval = setInterval(() => {
-        processResults()
-      }, user_config.processTime * 1000)
+    if (isNumber(user_config.processTime)) {
+      mem.processInterval = setInterval(
+        () => processResults(),
+        user_config.processTime * 1000,
+      )
     }
   }
 
   function processResults(): void {
     user_config.processData(results)
-    if (user_config.clearAfterProcess) {
-      resetResults()
-    }
+    if (user_config.clearAfterProcess) resetResults()
   }
 
   function stop(): void {
     if (mem.processInterval) clearInterval(mem.processInterval)
     if (mem.mouseInterval) clearInterval(mem.mouseInterval)
 
-    window.removeEventListener('mousemove', mem.eventsFunctions.mouseMovement!)
-    window.removeEventListener('click', mem.eventsFunctions.click!)
-    window.removeEventListener('scroll', mem.eventsFunctions.scroll!)
-    window.removeEventListener('resize', mem.eventsFunctions.windowResize!)
+    window.removeEventListener('mousemove', mem.eventsFunctions.mouseMovement)
+    window.removeEventListener('click', mem.eventsFunctions.click)
+    window.removeEventListener('scroll', mem.eventsFunctions.scroll)
+    window.removeEventListener('resize', mem.eventsFunctions.windowResize)
     window.removeEventListener(
       'visibilitychange',
-      mem.eventsFunctions.visibilitychange!,
+      mem.eventsFunctions.visibilitychange,
     )
 
     if (results.time) results.time.stopTime = getTimeStamp()
@@ -279,12 +256,10 @@ const userBehaviour = (() => {
   }
 
   function result(): Results {
-    if (!user_config.userInfo && results.userInfo) {
-      delete results.userInfo
-    }
-    if (user_config.timeCount && results.time) {
+    if (!user_config.userInfo && results.userInfo) delete results.userInfo
+    if (user_config.timeCount && results.time)
       results.time.currentTime = getTimeStamp()
-    }
+
     return results
   }
 
@@ -294,12 +269,5 @@ const userBehaviour = (() => {
       : defaults
   }
 
-  return {
-    showConfig,
-    config,
-    start,
-    stop,
-    showResult: result,
-    processResults,
-  }
+  return { showConfig, config, start, stop, showResult: result, processResults }
 })()
