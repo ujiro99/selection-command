@@ -11,6 +11,7 @@ export enum BgCommand {
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
+  addPageAction = 'addPageAction',
 }
 
 export enum TabCommand {
@@ -18,6 +19,7 @@ export enum TabCommand {
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   getTabId = 'getTabId',
+  notifyPageAction = 'notifyPageAction',
 }
 
 export type ClickElementProps = {

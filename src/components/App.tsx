@@ -3,6 +3,7 @@ import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
 import { LinkSelector } from '@/components/LinkSelector'
 import { OpenInTab } from '@/components/OpenInTab'
+import { PageActions } from '@/components/PageActions'
 import { getSelectionText } from '@/services/dom'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
@@ -38,6 +39,7 @@ export function App() {
       />
       <LinkSelector />
       <OpenInTab />
+      <PageActions />
     </SelectContextProvider>
   )
 }

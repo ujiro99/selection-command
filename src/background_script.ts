@@ -11,8 +11,13 @@ import type { IpcCallback } from '@/services/ipc'
 import { escapeJson } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
 import { Settings } from '@/services/settings'
-import type { CommandVariable } from '@/types'
-import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
+import type { CommandVariable, PageAction } from '@/types'
+import {
+  Storage,
+  STORAGE_KEY,
+  SESSION_STORAGE_KEY,
+  STORAGE_AREA,
+} from '@/services/storage'
 import '@/services/contextMenus'
 import { PopupOption } from '@/services/defaultSettings'
 
@@ -385,6 +390,36 @@ const commandFuncs = {
       response(true)
     }
     toggle()
+    return true
+  },
+
+  [BgCommand.addPageAction]: (
+    param: PageAction,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const add = async () => {
+      const actions = await Storage.get<string[]>(
+        SESSION_STORAGE_KEY.PAGE_ACTION,
+        STORAGE_AREA.SESSION,
+      )
+
+      if (param.type === 'scroll' && actions.at(-1) === 'scroll') {
+        actions.pop()
+      }
+
+      await Storage.set(
+        SESSION_STORAGE_KEY.PAGE_ACTION,
+        [...actions, param],
+        STORAGE_AREA.SESSION,
+      )
+      Ipc.sendTab(sender.tab?.id as number, TabCommand.notifyPageAction, {
+        actions: [...actions, param],
+      })
+      response(true)
+    }
+    add()
+
     return true
   },
 } as { [key: string]: IpcCallback }

@@ -117,3 +117,13 @@ export type SessionData = {
   session_id: string
   timestamp: number
 }
+
+export type PageAction = {
+  type: string
+  timestamp: number
+  params: Record<string, unknown>
+}
+
+export type PageActionParam = {
+  actions: Array<PageAction>
+}
