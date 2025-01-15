@@ -88,7 +88,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
     )
 
     useEffect(() => {
-      const onMouseDown = (e: MouseEvent) => {
+      const onMouseDown = (_: MouseEvent) => {
         setIsMouseDown(true)
       }
 

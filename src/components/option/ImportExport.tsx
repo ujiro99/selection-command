@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Dialog } from './Dialog'
 import type { SettingsType } from '@/types'
 
@@ -82,7 +82,7 @@ export function ImportExport() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ; (async () => {
+      ;(async () => {
         const data = await migrate(importJson)
         await Settings.set(data)
         location.reload()

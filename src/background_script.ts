@@ -1,4 +1,3 @@
-import * as mv3 from 'mv3-hot-reload'
 import {
   isDebug,
   LINK_COMMAND_ENABLED,
@@ -16,8 +15,7 @@ import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
 import { PopupOption } from '@/services/defaultSettings'
 
-mv3.utils.setConfig({ isDev: isDebug })
-mv3.background.init()
+const OPTION_PAGE = 'src/options_page.html'
 
 type WindowType = {
   id: number
@@ -202,9 +200,9 @@ const commandFuncs = {
     return false
   },
 
-  [BgCommand.openOption]: (param: unknown, sender: Sender): boolean => {
+  [BgCommand.openOption]: (): boolean => {
     chrome.tabs.create({
-      url: 'options_page.html',
+      url: OPTION_PAGE,
     })
     return false
   },
@@ -226,7 +224,7 @@ const commandFuncs = {
         pageRules,
       })
       chrome.tabs.create({
-        url: `options_page.html#root_pageRules`,
+        url: `${OPTION_PAGE}#root_pageRules`,
       })
     }
     add()
@@ -235,7 +233,7 @@ const commandFuncs = {
 
   [BgCommand.addCommand]: (
     param: addCommandProps,
-    sender: Sender,
+    _: Sender,
     response: (res: unknown) => void,
   ): boolean => {
     const params = JSON.parse(param.command)
@@ -270,7 +268,7 @@ const commandFuncs = {
 
   [BgCommand.execApi]: (
     param: execApiProps,
-    sender: Sender,
+    _: Sender,
     response: (res: unknown) => void,
   ): boolean => {
     const { url, pageUrl, pageTitle, selectionText, fetchOptions, variables } =
@@ -297,7 +295,7 @@ const commandFuncs = {
   },
 
   [BgCommand.canOpenInTab]: (
-    param: unknown,
+    _: unknown,
     sender: Sender,
     response: (res: unknown) => void,
   ): boolean => {
@@ -315,7 +313,7 @@ const commandFuncs = {
   },
 
   [BgCommand.openInTab]: (
-    param: unknown,
+    _: unknown,
     sender: Sender,
     response: (res: unknown) => void,
   ): boolean => {
@@ -369,7 +367,7 @@ const commandFuncs = {
 
   [BgCommand.toggleStar]: (
     param: { id: string },
-    sender: Sender,
+    _: Sender,
     response: (res: unknown) => void,
   ): boolean => {
     const toggle = async () => {
@@ -396,7 +394,7 @@ for (const key in BgCommand) {
 }
 
 const getTabId = (
-  param: unknown,
+  _: unknown,
   sender: Sender,
   response: (res: unknown) => void,
 ) => {
@@ -425,7 +423,7 @@ const updateWindowSize = async (
 
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
-    url: 'options_page.html',
+    url: OPTION_PAGE,
   })
 })
 

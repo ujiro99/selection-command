@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useSetting } from '@/hooks/useSetting'
 import { sendEvent } from '@/services/analytics'
 import { SCREEN } from '@/const'

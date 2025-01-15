@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { useSetting } from '@/hooks/useSetting'
@@ -11,8 +11,6 @@ import {
 } from '@/components/ui/popover'
 import { SCREEN } from '@/const'
 import { useDetectUrlChanged } from '@/hooks/useDetectUrlChanged'
-
-import '@/components/global.css'
 
 const TooltipDuration = 2000
 

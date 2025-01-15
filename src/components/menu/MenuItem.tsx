@@ -8,7 +8,7 @@ import { Icon } from '@/components/Icon'
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { linksInSelection } from '@/services/dom'
 import { sendEvent } from '@/services/analytics'
-import { OPEN_MODE, POPUP_OFFSET } from '@/const'
+import { OPEN_MODE } from '@/const'
 import { ExecState } from '@/action'
 import type { Command } from '@/types'
 

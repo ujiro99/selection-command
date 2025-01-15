@@ -1,11 +1,17 @@
 import React from 'react'
-import { createRoot } from 'react-dom/client'
+import ReactDOM from 'react-dom/client'
 import { Option } from '@/components/option/Option'
-import icons from '../dist/icons.svg'
+import icons from './icons.svg?raw'
 
-const dom = document.querySelector('#root')
-if (dom != null) {
-  const root = createRoot(dom)
-  root.render(<Option />)
-  dom.insertAdjacentHTML('afterend', icons)
+import '@/components/global.css'
+import '@/components/Animation.css'
+
+const root = document.getElementById('root')
+if (root) {
+  root.insertAdjacentHTML('afterend', icons)
+  ReactDOM.createRoot(root).render(
+    <React.StrictMode>
+      <Option />
+    </React.StrictMode>,
+  )
 }

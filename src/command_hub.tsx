@@ -1,12 +1,14 @@
-import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { APP_ID } from './const'
+import { APP_ID, isDebug } from './const'
+import './command_hub.css'
 import { CommandHub } from '@/components/commandHub/CommandHub'
 import { MyCommands } from '@/components/commandHub/MyCommands'
 
-const url = chrome.runtime.getURL('/src/command_hub.css')
+const url = chrome.runtime.getURL('/assets/command_hub.css')
+const mode = isDebug ? 'open' : 'closed' // 'open' for debugging
 
 const insertCss = (elm: ShadowRoot) => {
+  if (isDebug) return
   fetch(url)
     .then((res) => res.text())
     .then((css) => {
@@ -20,7 +22,7 @@ function setupCommandHub() {
   const rootDom = document.createElement('div')
   rootDom.id = `${APP_ID}-command-hub`
   document.body.insertAdjacentElement('afterend', rootDom)
-  const shadow = rootDom.attachShadow({ mode: 'closed' })
+  const shadow = rootDom.attachShadow({ mode })
   const root = createRoot(shadow)
   root.render(<CommandHub />)
 
@@ -31,7 +33,7 @@ function setupCommandHub() {
 function renderMyCommands() {
   const container = document.getElementById('MyCommands')
   if (container) {
-    const shadow = container.attachShadow({ mode: 'closed' })
+    const shadow = container.attachShadow({ mode })
     const root = createRoot(shadow)
     root.render(<MyCommands />)
     container.style.display = 'block'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 type Props = {
   anchor: DOMRect | null
   content: DOMRect | null

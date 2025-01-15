@@ -418,7 +418,9 @@ export default {
     },
     openMode: {
       type: 'string',
-      enum: [''],
+      enum: Object.values(OPEN_MODE).filter(
+        (mode) => mode !== OPEN_MODE.OPTION && mode !== OPEN_MODE.ADD_PAGE_RULE,
+      ),
     },
     openModeSecondary: {
       type: 'string',

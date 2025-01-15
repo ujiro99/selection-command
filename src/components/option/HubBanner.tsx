@@ -1,4 +1,3 @@
-import React from 'react'
 import css from './Option.module.css'
 import css2 from './HubBanner.module.css'
 import { t } from '@/services/i18n'

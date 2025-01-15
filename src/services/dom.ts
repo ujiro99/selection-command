@@ -10,9 +10,9 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
     img.onload = function () {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
-      canvas.height = this.naturalHeight
-      canvas.width = this.naturalWidth
-      ctx?.drawImage(this, 0, 0)
+      canvas.height = img.naturalHeight
+      canvas.width = img.naturalWidth
+      ctx?.drawImage(img, 0, 0)
       const dataURL = canvas.toDataURL(outputFormat)
       resolve(dataURL)
       clearTimeout(id)
@@ -73,8 +73,8 @@ export function getScreenSize(): ScreenSize {
   return {
     width: window.screen.width,
     height: window.screen.height,
-    left: window.screen.availLeft,
-    top: window.screen.availTop,
+    left: (window.screen as any).availLeft,
+    top: (window.screen as any).availTop,
   }
 }
 
