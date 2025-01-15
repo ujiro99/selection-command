@@ -29,11 +29,11 @@ const getTranslation = () => {
 }
 
 export function Option() {
-  const [iframeRetryCount, setIframeRetryCount] = useState(0)
   const [isSaving, setIsSaving] = useState(false)
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
-  const iframeTORef = useRef<number>(0)
   const iframeRef = useRef<HTMLIFrameElement>(null)
+  const iframeTORef = useRef<number>(0)
+  const iframeRetryRef = useRef<number>(0)
   const loadingRef = useRef<HTMLDivElement>(null)
   const [popupElm, setPopupElm] = useState<Element | null>(null)
   const [popupHeight, setPopupHeight] = useState(0)
@@ -66,7 +66,6 @@ export function Option() {
       const value = event.data.value
       switch (command) {
         case OPTION_MSG.START_ACK:
-          // setIsIframeReady(true)
           clearInterval(iframeTORef.current)
           break
         case OPTION_MSG.CHANGED:
@@ -125,7 +124,6 @@ export function Option() {
   }
 
   const onLoadIframe = async () => {
-    console.debug('onLoadIframe')
     const settings = await Settings.get(true)
     const translation = getTranslation()
 
@@ -142,17 +140,17 @@ export function Option() {
 
     // Retry until the iframe is ready
     iframeTORef.current = window.setInterval(() => {
-      if (iframeRetryCount > 100) {
+      if (iframeRetryRef.current > 20) {
         console.error('Failed to initialize iframe for SettingForm')
         clearInterval(iframeTORef.current)
       }
-      console.debug('send settings: ', iframeRetryCount)
+      // console.debug('send settings: ', iframeRetryRef.current)
       sendMessage(OPTION_MSG.START, {
         settings,
         translation,
       })
-      setIframeRetryCount((c) => c + 1)
-    }, 50)
+      iframeRetryRef.current = iframeRetryRef.current + 1
+    }, 100)
   }
 
   const onClickMenu = (hash: string) => {
