@@ -9,8 +9,8 @@ import { SessionData } from '@/types'
 
 const GA_ENDPOINT = 'https://www.google-analytics.com/mp/collect'
 const GA_DEBUG_ENDPOINT = 'https://www.google-analytics.com/debug/mp/collect'
-const MEASUREMENT_ID = process.env.MEASUREMENT_ID
-const API_SECRET = process.env.API_SECRET
+const MEASUREMENT_ID = import.meta.env.MEASUREMENT_ID
+const API_SECRET = import.meta.env.API_SECRET
 const DEFAULT_ENGAGEMENT_TIME_IN_MSEC = 100
 const SESSION_EXPIRATION_IN_MIN = 30
 

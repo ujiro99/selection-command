@@ -1,5 +1,12 @@
-export const APP_ID = process.env.NAME as string
-export const VERSION = process.env.VERSION
+export const APP_ID = __APP_NAME__ as string
+export const VERSION = __APP_VERSION__ as string
+
+/**
+ * Setting value to switch the debug log output from this module.
+ * true: enables all log. | false: disables debug log.
+ */
+const environment = import.meta.env.MODE ?? 'development'
+export const isDebug = environment === 'development'
 
 export enum OPEN_MODE {
   POPUP = 'popup',
@@ -72,6 +79,7 @@ export enum SPACE_ENCODING {
 
 export enum OPTION_MSG {
   START = 'start',
+  START_ACK = 'startAck',
   CHANGED = 'changed',
   JUMP = 'jump',
   FETCH_ICON_URL = 'fetchIconUrl',
@@ -107,13 +115,6 @@ export const ROOT_FOLDER = ''
 export const OPTION_FOLDER = 'OptionFolder'
 
 export const COMMAND_MAX = 100
-
-/**
- * Setting value to switch the debug log output from this module.
- * true: enables all log. | false: disables debug log.
- */
-const environment = process.env.NODE_ENV || 'development'
-export const isDebug = environment === 'development'
 
 export const HUB_URL = isDebug
   ? 'http://localhost:3000/'

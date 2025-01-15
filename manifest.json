@@ -14,7 +14,7 @@
         "https://*/*"
       ],
       "js": [
-        "/src/content_script.js"
+        "src/content_script.tsx"
       ]
     },
     {
@@ -23,22 +23,30 @@
         "http://localhost:3000/*"
       ],
       "js": [
-        "/src/command_hub.js"
+        "src/command_hub.tsx"
       ]
     }
   ],
   "background": {
-    "service_worker": "/src/background_script.js"
+    "service_worker": "src/background_script.ts"
   },
-  "options_page": "options_page.html",
+  "options_page": "src/options_page.html",
   "sandbox": {
     "pages": [
-      "sandbox.html"
+      "src/sandbox.html"
     ]
   },
   "action": {},
-  "permissions": ["storage", "tabs", "contextMenus", "declarativeNetRequest"],
-  "host_permissions": ["http://*/*", "https://*/*"],
+  "permissions": [
+    "storage",
+    "tabs",
+    "contextMenus",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "web_accessible_resources": [
     {
       "matches": [
@@ -46,8 +54,7 @@
         "https://*/*"
       ],
       "resources": [
-        "src/content_script.css",
-        "src/command_hub.css"
+        "assets/*.css"
       ]
     }
   ]

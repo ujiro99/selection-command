@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
 import { Settings } from '@/services/settings'
@@ -7,7 +7,7 @@ import { sleep, capitalize, isMenuCommand, isLinkCommand } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import { fetchIconUrl } from '@/services/chrome'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'
-import messages from '@/../dist/_locales/en/messages.json'
+import messages from '@/../public/_locales/en/messages.json'
 
 import { Popup } from '@/components/Popup'
 import { LoadingIcon } from '@/components/option/LoadingIcon'
@@ -16,7 +16,6 @@ import { ImportExport } from '@/components/option/ImportExport'
 import { HubBanner } from '@/components/option/HubBanner'
 import { useEventProxyReceiver } from '@/hooks/option/useEventProxy'
 
-import '@/components/App.css'
 import css from './Option.module.css'
 
 const getTranslation = () => {
@@ -33,6 +32,8 @@ export function Option() {
   const [isSaving, setIsSaving] = useState(false)
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
+  const iframeTORef = useRef<number>(0)
+  const iframeRetryRef = useRef<number>(0)
   const loadingRef = useRef<HTMLDivElement>(null)
   const [popupElm, setPopupElm] = useState<Element | null>(null)
   const [popupHeight, setPopupHeight] = useState(0)
@@ -64,6 +65,9 @@ export function Option() {
       const command = event.data.command
       const value = event.data.value
       switch (command) {
+        case OPTION_MSG.START_ACK:
+          clearInterval(iframeTORef.current)
+          break
         case OPTION_MSG.CHANGED:
           updateSettings(value)
           break
@@ -119,7 +123,7 @@ export function Option() {
     }
   }
 
-  const onLoadIfame = async () => {
+  const onLoadIframe = async () => {
     const settings = await Settings.get(true)
     const translation = getTranslation()
 
@@ -134,10 +138,19 @@ export function Option() {
     }
     settings.commands = settings.commands.filter(isMenuCommand)
 
-    sendMessage(OPTION_MSG.START, {
-      settings,
-      translation,
-    })
+    // Retry until the iframe is ready
+    iframeTORef.current = window.setInterval(() => {
+      if (iframeRetryRef.current > 20) {
+        console.error('Failed to initialize iframe for SettingForm')
+        clearInterval(iframeTORef.current)
+      }
+      // console.debug('send settings: ', iframeRetryRef.current)
+      sendMessage(OPTION_MSG.START, {
+        settings,
+        translation,
+      })
+      iframeRetryRef.current = iframeRetryRef.current + 1
+    }, 100)
   }
 
   const onClickMenu = (hash: string) => {
@@ -145,10 +158,11 @@ export function Option() {
   }
 
   const sandboxUrl = () => {
+    const src = chrome.runtime.getURL('src/sandbox.html')
     if (document.location.hash) {
-      return `sandbox.html${document.location.hash}`
+      return `${src}${document.location.hash}`
     } else {
-      return `sandbox.html`
+      return src
     }
   }
 
@@ -199,7 +213,7 @@ export function Option() {
         src={sandboxUrl()}
         ref={iframeRef}
         className={css.editorFrame}
-        onLoad={onLoadIfame}
+        onLoad={onLoadIframe}
       />
     </div>
   )

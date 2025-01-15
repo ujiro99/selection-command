@@ -1,4 +1,3 @@
-import React from 'react'
 import type { ExecProps } from './index'
 import { TextStyle } from '@/components/result/TextStyle'
 

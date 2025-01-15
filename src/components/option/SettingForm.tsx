@@ -1,16 +1,16 @@
 import React, { useRef, useCallback } from 'react'
-import { Search } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { Search } from 'lucide-react'
 import type {
   IconButtonProps,
   FieldProps,
   RegistryFieldsType,
+  RJSFSchema,
 } from '@rjsf/utils'
 import validator from '@rjsf/validator-ajv8'
 import Form from '@rjsf/core'
 import type { IChangeEvent } from '@rjsf/core'
 import clsx from 'clsx'
-
 import settingSchema from '@/services/settingSchema'
 import {
   UserStyleField,
@@ -79,7 +79,7 @@ export function SettingFrom() {
     (command: OPTION_MSG, value: any) => {
       if (parent != null) {
         console.debug('sendMessage:', command, value)
-        parent.postMessage({ command, value }, origin)
+        parent.postMessage({ command, value }, { targetOrigin: origin })
       }
     },
     [parent, origin],
@@ -141,6 +141,11 @@ export function SettingFrom() {
           setTrans(translation)
           // Page scrolls to the hash.
           setTimeout(jump, 10)
+          // response
+          event.source.postMessage(
+            { command: OPTION_MSG.START_ACK },
+            { targetOrigin: event.origin },
+          )
         }
       } else if (command === OPTION_MSG.RES_FETCH_ICON_URL) {
         const { iconUrl, searchUrl } = value
@@ -487,7 +492,7 @@ export function SettingFrom() {
         enum: [{ id: '', name: '-- none --' }],
       } as folderOptionsType,
     )
-    settingSchema.definitions.folderOptions = folderOptions
+    settingSchema.definitions!.folderOptions = folderOptions
   }
 
   // Add startupMethod to schema and uiSchema.
@@ -514,16 +519,13 @@ export function SettingFrom() {
   uiSchema.startupMethod.keyboardParam.enum = keyboardMap
 
   // Add openModes to schema and uiSchema.
-  const modes = Object.values(OPEN_MODE).filter(
-    (mode) => mode !== OPEN_MODE.OPTION && mode !== OPEN_MODE.ADD_PAGE_RULE,
-  )
+  const modes = settingSchema.definitions.openMode.enum
   const modeMap = {} as ModeMap
   for (const mode of modes) {
     modeMap[mode] = {
       'ui:title': t(`openMode_${mode}`),
     }
   }
-  settingSchema.definitions.openMode.enum = modes
   uiSchema.commands.items.openMode.enum = modeMap
 
   // Add linkCommand's openMode to uiSchema.
@@ -597,10 +599,11 @@ export function SettingFrom() {
   uiSchema.userStyles.items.name.enum = usMap
 
   const log = (type: any) => console.log.bind(console, type)
+
   return (
     <Form
       className={css.form}
-      schema={settingSchema}
+      schema={settingSchema as unknown as RJSFSchema}
       validator={validator}
       formData={settingData}
       onChange={onChangeForm}
@@ -770,16 +773,22 @@ const InputNumberField = (props: FieldProps) => {
 
 const SelectField = (props: FieldProps) => {
   const { formData, schema, uiSchema, required } = props
-  const options = schema.enum.map((e: string) => {
-    const name = uiSchema?.enum?.[e] ? uiSchema.enum[e]['ui:title'] : e
-    return { name, value: e }
-  })
+  if (schema.enum == null) return null
+  const options = schema.enum
+    ?.filter((e): e is string => typeof e === 'string')
+    .map((e) => {
+      const name = uiSchema?.enum?.[e] ? uiSchema.enum[e]['ui:title'] : e
+      return { name, value: e }
+    })
+
   if (!required) {
     options.unshift({ name: '-- none --', value: '' })
   }
+
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.onChange(event.target.value)
   }
+
   return (
     <label className={clsx(css.selectContainer, 'form-control')}>
       <select
@@ -801,16 +810,14 @@ const SelectField = (props: FieldProps) => {
 }
 
 const FolderField = (props: FieldProps) => {
-  const { formData, schema, registry } = props
+  const { formData, schema } = props
   const folderOptions = schema.enum as FolderOption[]
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     props.onChange(event.target.value)
   }
 
-  const folder = registry.rootSchema.definitions.folderOptions.enum.find(
-    (e) => e.id === formData,
-  )
+  const folder = folderOptions.find((e: FolderOption) => e.id === formData)
 
   return (
     <label className={clsx(css.selectContainer, 'form-control')}>

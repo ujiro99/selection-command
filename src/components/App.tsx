@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react'
+import { useState, useEffect, createContext } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
 import { LinkSelector } from '@/components/LinkSelector'

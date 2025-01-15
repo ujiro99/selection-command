@@ -8,6 +8,7 @@ type Props = {
 }
 
 export const TableOfContents = (props: Props) => {
+  if (settingSchema.properties == null) return null
   const properties = Object.keys(settingSchema.properties)
   const labels = properties.reduce(
     (a, p) => ({ ...a, [p]: t(`Option_${p}`) }),
