@@ -8,6 +8,7 @@ import packageJson from './package.json'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
+  const isWatchMode = process.argv.includes('--watch')
   loadEnv(mode, process.cwd(), '')
   return {
     plugins: [
@@ -54,17 +55,17 @@ export default defineConfig(({ mode }) => {
         }),
     ],
     cssCodeSplit: false,
-    emptyOutDir: true,
     define: {
       __APP_NAME__: JSON.stringify(packageJson.name),
       __APP_VERSION__: JSON.stringify(packageJson.version),
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'), // ・・・・追加
+        '@': path.resolve(__dirname, './src'),
       },
     },
     build: {
+      emptyOutDir: !isWatchMode, // prevent deleting the dist folder when running in watch mode
       rollupOptions: {
         output: {
           assetFileNames: (assetInfo) => {
