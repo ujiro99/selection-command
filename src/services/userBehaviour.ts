@@ -109,7 +109,10 @@ export const UserBehaviour = (() => {
     window.removeEventListener('scroll', mem.eventsFunctions.scroll)
     window.removeEventListener('keydown', mem.eventsFunctions.keyboard)
     window.removeEventListener('input', mem.eventsFunctions.input)
+
+  function reset(): void {
+    Ipc.send(BgCommand.resetPageAction)
   }
 
-  return { start, stop }
+  return { start, stop, reset }
 })()

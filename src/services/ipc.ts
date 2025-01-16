@@ -12,6 +12,7 @@ export enum BgCommand {
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
   addPageAction = 'addPageAction',
+  resetPageAction = 'resetPageAction',
 }
 
 export enum TabCommand {

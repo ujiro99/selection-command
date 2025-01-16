@@ -422,6 +422,18 @@ const commandFuncs = {
 
     return true
   },
+
+  [BgCommand.resetPageAction]: (): boolean => {
+    const reset = async () => {
+      await Storage.set(
+        SESSION_STORAGE_KEY.PAGE_ACTION,
+        [],
+        STORAGE_AREA.SESSION,
+      )
+    }
+    reset()
+    return false
+  },
 } as { [key: string]: IpcCallback }
 
 for (const key in BgCommand) {
