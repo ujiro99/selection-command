@@ -1,12 +1,12 @@
 import React, { useState, useRef, useContext } from 'react'
 import clsx from 'clsx'
-import { context } from '@/components/App'
 import { popupContext } from '@/components/Popup'
 import { actions } from '@/action'
 import { Tooltip } from '../Tooltip'
 import { Icon } from '@/components/Icon'
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { linksInSelection } from '@/services/dom'
+import { useSelectContext } from '@/hooks/useSelectContext'
 import { sendEvent } from '@/services/analytics'
 import { OPEN_MODE } from '@/const'
 import { ExecState } from '@/action'
@@ -33,7 +33,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const [result, setResult] = useState<React.ReactNode>()
   const onlyIcon = props.onlyIcon
   const { openMode, openModeSecondary, iconUrl, title } = props.command
-  const { selectionText, target } = useContext(context)
+  const { selectionText, target } = useSelectContext()
   const { isPreview, inTransition } = useContext(popupContext)
   let message = itemState.message || title
   let enable = true

@@ -1,20 +1,13 @@
-import { useState, useEffect, createContext } from 'react'
+import { useState, useEffect } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
 import { LinkSelector } from '@/components/LinkSelector'
 import { OpenInTab } from '@/components/OpenInTab'
 import { getSelectionText } from '@/services/dom'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
+import { SelectContextProvider } from '@/hooks/useSelectContext'
 
 import './App.css'
-
-type ContextType = {
-  selectionText: string
-  target: Element | null
-  setTarget: (elm: Element | null) => void
-}
-
-export const context = createContext<ContextType>({} as ContextType)
 
 export function App() {
   useTabCommandReceiver()
@@ -36,7 +29,7 @@ export function App() {
   }, [isHover])
 
   return (
-    <context.Provider value={{ selectionText, target, setTarget }}>
+    <SelectContextProvider value={{ selectionText, target, setTarget }}>
       <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
       <Popup
         positionElm={positionElm}
@@ -45,6 +38,7 @@ export function App() {
       />
       <LinkSelector />
       <OpenInTab />
-    </context.Provider>
+      <div className="fixed bottom-2 bg-red-100 rounded p-3">test</div>
+    </SelectContextProvider>
   )
 }

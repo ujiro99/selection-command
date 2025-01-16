@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect, useContext } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
-import { context } from '@/components/App'
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { Icon } from '@/components/Icon'
 import { useContextMenu } from '@/hooks/useContextMenu'
+import { useSelectContext } from '@/hooks/useSelectContext'
 import type { Command } from '@/types'
 import { actions, ExecState } from '@/action'
 import { OPEN_MODE, POPUP_OFFSET } from '@/const'
@@ -20,7 +20,7 @@ type ItemState = {
 }
 
 export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
-  const { selectionText, target } = useContext(context)
+  const { selectionText, target } = useSelectContext()
   const { command, setCommand } = useContextMenu()
   const [itemState, setItemState] = useState<ItemState>({
     state: ExecState.NONE,
