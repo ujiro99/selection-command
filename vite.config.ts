@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => {
         }),
       viteTouchCss({
         cssFilePaths: [path.resolve(__dirname, 'src/components/App.css')],
-        watchMatch: /src/,
+        watchRegexp: /src/,
       }),
     ],
     cssCodeSplit: false,
