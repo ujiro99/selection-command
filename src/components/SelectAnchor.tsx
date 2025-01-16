@@ -1,13 +1,7 @@
-import React, {
-  useState,
-  useEffect,
-  forwardRef,
-  useContext,
-  useCallback,
-} from 'react'
-import { context } from '@/components/App'
+import React, { useState, useEffect, forwardRef, useCallback } from 'react'
 import { LinkClickGuard } from '@/components/LinkClickGuard'
 import { useSetting } from '@/hooks/useSetting'
+import { useSelectContext } from '@/hooks/useSelectContext'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from '@/const'
 import { isEmpty, isPopup } from '@/lib/utils'
@@ -21,7 +15,7 @@ const SIZE = 40
 
 export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
   (props: Props, ref) => {
-    const { setTarget } = useContext(context)
+    const { setTarget } = useSelectContext()
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false)
     const [isDragging, setIsDragging] = useState<boolean>(false)
     const [point, setPoint] = useState<Point | null>(null)
