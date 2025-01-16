@@ -7,13 +7,6 @@ type EventsFunctions = {
   input: (e: Event) => void
 }
 
-type Memory = {
-  eventsFunctions: EventsFunctions
-}
-
-const isModifierKey = (key: string): boolean =>
-  ['Shift', 'Control', 'Alt', 'Meta'].includes(key)
-
 const getXPath = (element: HTMLElement): string => {
   if (element.id) {
     return `//*[@id="${element.id}"]`
@@ -32,17 +25,24 @@ const getXPath = (element: HTMLElement): string => {
   return `${getXPath(parent)}/${element.tagName.toLowerCase()}[${index}]`
 }
 
-function isInput(e: HTMLElement): e is HTMLInputElement {
+const isCommandKey = (key: string): boolean => ['Control', 'Meta'].includes(key)
+
+const isInput = (e: HTMLElement): e is HTMLInputElement => {
   return e instanceof HTMLInputElement
 }
 
-function isTextarea(e: HTMLElement): e is HTMLTextAreaElement {
+const isTextarea = (e: HTMLElement): e is HTMLTextAreaElement => {
   return e instanceof HTMLTextAreaElement
 }
 
+const isEditable = (e: HTMLElement): boolean => {
+  return e.isContentEditable
+}
+
+const getTimeStamp = (): number => Date.now()
+
 export const UserBehaviour = (() => {
-  const mem: Memory = {
-    eventsFunctions: {
+  const func: EventsFunctions = {
       scroll() {
         Ipc.send(BgCommand.addPageAction, {
           type: 'scroll',
@@ -53,7 +53,7 @@ export const UserBehaviour = (() => {
           },
         })
       },
-      click(e) {
+    click(e: MouseEvent) {
         const xpath = getXPath(e.target as HTMLElement)
         Ipc.send(BgCommand.addPageAction, {
           type: 'click',
@@ -64,7 +64,7 @@ export const UserBehaviour = (() => {
         })
       },
       keyboard: (e: KeyboardEvent) => {
-        if (isModifierKey(e.key)) return
+      if (!isCommandKey(e.key)) return
         Ipc.send(BgCommand.addPageAction, {
           type: 'keyboard',
           timestamp: getTimeStamp(),
@@ -79,36 +79,38 @@ export const UserBehaviour = (() => {
       },
       input: (e: Event) => {
         const target = e.target as HTMLElement
+      let value
         if (isInput(target) || isTextarea(target)) {
+        value = target.value
+      } else if (isEditable(target)) {
+        value = target.innerText
+      }
+      if (value != null) {
           Ipc.send(BgCommand.addPageAction, {
             type: 'input',
             timestamp: getTimeStamp(),
             params: {
-              value: target.value,
+            value,
               xpath: getXPath(target),
             },
           })
         }
       },
-    },
-  }
-
-  function getTimeStamp(): number {
-    return Date.now()
   }
 
   function start(): void {
-    window.addEventListener('click', mem.eventsFunctions.click)
-    window.addEventListener('scroll', mem.eventsFunctions.scroll)
-    window.addEventListener('keydown', mem.eventsFunctions.keyboard)
-    window.addEventListener('input', mem.eventsFunctions.input)
+    window.addEventListener('click', func.click)
+    window.addEventListener('scroll', func.scroll)
+    window.addEventListener('keydown', func.keyboard)
+    window.addEventListener('input', func.input)
   }
 
   function stop(): void {
-    window.removeEventListener('click', mem.eventsFunctions.click)
-    window.removeEventListener('scroll', mem.eventsFunctions.scroll)
-    window.removeEventListener('keydown', mem.eventsFunctions.keyboard)
-    window.removeEventListener('input', mem.eventsFunctions.input)
+    window.removeEventListener('click', func.click)
+    window.removeEventListener('scroll', func.scroll)
+    window.removeEventListener('keydown', func.keyboard)
+    window.removeEventListener('input', func.input)
+  }
 
   function reset(): void {
     Ipc.send(BgCommand.resetPageAction)

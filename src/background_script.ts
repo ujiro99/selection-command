@@ -399,13 +399,16 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ): boolean => {
     const add = async () => {
-      const actions = await Storage.get<string[]>(
+      let actions = await Storage.get<PageAction[]>(
         SESSION_STORAGE_KEY.PAGE_ACTION,
         STORAGE_AREA.SESSION,
       )
 
-      if (param.type === 'scroll' && actions.at(-1) === 'scroll') {
+      if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
         actions.pop()
+      } else if (param.type === 'input') {
+        const xpath = param.params.xpath
+        actions = actions.filter((a) => a.params.xpath !== xpath)
       }
 
       await Storage.set(
