@@ -2679,6 +2679,11 @@ get-stream@^6.0.0:
   resolved "https://registry.yarnpkg.com/get-stream/-/get-stream-6.0.1.tgz#a262d8eef67aced57c2852ad6167526a43cbf7b7"
   integrity sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==
 
+get-xpath@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/get-xpath/-/get-xpath-3.2.0.tgz#1fd314fb389b98feb30037dc07f0a815ade51aa0"
+  integrity sha512-9pzw5Zkr0mAM/P5PRwUQMrz1319LA/7/JnFI3Z3WzL2l6/2hpOLMHRoj/om8e9wKySK9NzpM3SFkm/hdbboZoQ==
+
 glob-parent@^5.1.2, glob-parent@~5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-5.1.2.tgz#869832c58034fe68a4093c17dc15e8340d8401c4"

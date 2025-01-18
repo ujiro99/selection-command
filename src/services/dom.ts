@@ -7,7 +7,7 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
     const img = new Image()
     img.crossOrigin = 'Anonymous'
     const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
-    img.onload = function () {
+    img.onload = function() {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       canvas.height = img.naturalHeight
@@ -214,4 +214,15 @@ export function getSelectorFromElement(el: Element): string {
   }
 
   return path.join(' > ')
+}
+
+export type XPath = string
+export function isValidXPath(xpath: string): xpath is XPath {
+  try {
+    const evaluator = new XPathEvaluator()
+    evaluator.createExpression(xpath, null)
+    return true
+  } catch {
+    return false
+  }
 }

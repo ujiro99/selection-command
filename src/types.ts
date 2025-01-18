@@ -11,6 +11,7 @@ import type {
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
 } from '@/const'
+import type { EventTypes } from '@/services/userBehaviour'
 
 export type Version = `${number}.${number}.${number}`
 
@@ -118,12 +119,10 @@ export type SessionData = {
   timestamp: number
 }
 
-export type PageAction = {
-  type: string
+type ActionTypes = EventTypes
+export type PageActionType = {
+  id: string
+  type: ActionTypes
   timestamp: number
   params: Record<string, unknown>
-}
-
-export type PageActionParam = {
-  actions: Array<PageAction>
 }

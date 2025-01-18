@@ -12,15 +12,16 @@ export enum BgCommand {
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
   addPageAction = 'addPageAction',
+  queuePageAction = 'queuePageAction',
   resetPageAction = 'resetPageAction',
 }
 
 export enum TabCommand {
   executeAction = 'executeAction',
+  executePageAction = 'executePageAction',
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   getTabId = 'getTabId',
-  notifyPageAction = 'notifyPageAction',
 }
 
 export type ClickElementProps = {
@@ -38,7 +39,7 @@ export type Message = Request & {
   tabId: number
 }
 
-export type MessageQueueCallback = (newMessage: Message) => void
+export type MessageQueueCallback = (newMessage: Message | null) => void
 
 export type IpcCallback = (
   param: unknown,
@@ -53,7 +54,11 @@ export const Ipc = {
         const msgs = (newQueue as Message[]).filter(
           (m) => m.tabId === Number(tabId),
         )
-        msgs.forEach((m) => listener(m))
+        if (msgs.length === 0) {
+          listener(null)
+        } else {
+          msgs.forEach((m) => listener(m))
+        }
         newQueue = (newQueue as Message[]).filter(
           (m) => m.tabId !== Number(tabId),
         )
@@ -120,28 +125,53 @@ export const Ipc = {
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {
     const queue = await Storage.get<Message[]>(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      STORAGE_AREA.SESSION,
     )
     queue.push({ tabId, command, param })
-    return Storage.set(
-      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      queue,
-      STORAGE_AREA.SESSION,
-    )
+    return Storage.set(SESSION_STORAGE_KEY.MESSAGE_QUEUE, queue)
   },
 
-  async recvQueue(tabId: number) {
+  async recvQueue(tabId: number, single: boolean = false) {
     const queue = await Storage.get<Message[]>(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      STORAGE_AREA.SESSION,
     )
-    const msgs = queue.filter((m) => m.tabId === tabId)
+
+    const tabMessages = queue.filter((m) => m.tabId === tabId)
+
+    if (single) {
+      // Get only the first message.
+      const message = tabMessages[0]
+      if (message) {
+        await Storage.set(
+          SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+          queue.filter((m) => m !== message),
+        )
+      }
+      return message ? [message] : []
+    } else {
+      // Remove all messages that match the tabId.
+      await Storage.set(
+        SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+        queue.filter((m) => m.tabId !== tabId),
+      )
+      return tabMessages
+    }
+  },
+
+  async isQueueEmpty(tabId: number): Promise<boolean> {
+    const queue = await Storage.get<Message[]>(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+    )
+    return !queue.some((message) => message.tabId === tabId)
+  },
+
+  async removeQueue(tabId: number) {
+    const queue = await Storage.get<Message[]>(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+    )
     await Storage.set(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
       queue.filter((m) => m.tabId !== tabId),
-      STORAGE_AREA.SESSION,
     )
-    return msgs
   },
 
   msgQueuelisteners: {} as { [tabId: number]: MessageQueueCallback },

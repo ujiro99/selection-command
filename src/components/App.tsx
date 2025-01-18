@@ -3,15 +3,15 @@ import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
 import { LinkSelector } from '@/components/LinkSelector'
 import { OpenInTab } from '@/components/OpenInTab'
-import { PageActions } from '@/components/PageActions'
+import { PageActionRecorder } from '@/components/PageActionRecorder'
 import { getSelectionText } from '@/services/dom'
-import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
+// import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 
 import './App.css'
 
 export function App() {
-  useTabCommandReceiver()
+  // useTabCommandReceiver()
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
@@ -39,7 +39,7 @@ export function App() {
       />
       <LinkSelector />
       <OpenInTab />
-      <PageActions />
+      <PageActionRecorder />
     </SelectContextProvider>
   )
 }

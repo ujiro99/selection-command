@@ -8,10 +8,10 @@ import {
 } from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
-import { escapeJson } from '@/lib/utils'
+import { escapeJson, generateRandomID } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
 import { Settings } from '@/services/settings'
-import type { CommandVariable, PageAction } from '@/types'
+import type { CommandVariable, PageActionType } from '@/types'
 import { Storage, STORAGE_KEY, SESSION_STORAGE_KEY } from '@/services/storage'
 import '@/services/contextMenus'
 import { PopupOption } from '@/services/defaultSettings'
@@ -40,8 +40,8 @@ class BgData {
   public static init() {
     if (!BgData.instance) {
       Storage.get<BgData>(STORAGE_KEY.BG).then((val: BgData) => {
-          BgData.instance = new BgData(val)
-          console.debug('BgData initialized', BgData.instance)
+        BgData.instance = new BgData(val)
+        console.debug('BgData initialized', BgData.instance)
       })
     }
   }
@@ -387,16 +387,16 @@ const commandFuncs = {
   },
 
   [BgCommand.addPageAction]: (
-    param: PageAction,
-    sender: Sender,
+    param: PageActionType,
+    _: Sender,
     response: (res: unknown) => void,
   ): boolean => {
     const add = async () => {
-      let actions = await Storage.get<PageAction[]>(
+      let actions = await Storage.get<PageActionType[]>(
         SESSION_STORAGE_KEY.PAGE_ACTION,
-        STORAGE_AREA.SESSION,
       )
 
+      param.id = generateRandomID()
       if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
         actions.pop()
       } else if (param.type === 'input') {
@@ -404,14 +404,7 @@ const commandFuncs = {
         actions = actions.filter((a) => a.params.xpath !== xpath)
       }
 
-      await Storage.set(
-        SESSION_STORAGE_KEY.PAGE_ACTION,
-        [...actions, param],
-        STORAGE_AREA.SESSION,
-      )
-      Ipc.sendTab(sender.tab?.id as number, TabCommand.notifyPageAction, {
-        actions: [...actions, param],
-      })
+      await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [...actions, param])
       response(true)
     }
     add()
@@ -419,13 +412,34 @@ const commandFuncs = {
     return true
   },
 
+  [BgCommand.queuePageAction]: (
+    _: unknown,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const queue = async () => {
+      const actions = await Storage.get<PageActionType[]>(
+        SESSION_STORAGE_KEY.PAGE_ACTION,
+      )
+      const tabId = sender.tab?.id
+      if (tabId != null) {
+        for (const action of actions) {
+          await Ipc.sendQueue(
+            tabId,
+            TabCommand.executePageAction,
+            action as PageActionType,
+          )
+        }
+      }
+      response(true)
+    }
+    queue()
+    return true
+  },
+
   [BgCommand.resetPageAction]: (): boolean => {
     const reset = async () => {
-      await Storage.set(
-        SESSION_STORAGE_KEY.PAGE_ACTION,
-        [],
-        STORAGE_AREA.SESSION,
-      )
+      await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [])
     }
     reset()
     return false

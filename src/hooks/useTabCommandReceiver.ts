@@ -6,10 +6,7 @@ export function useTabCommandReceiver() {
   const [tabId, setTabId] = useState<number | null>(null)
 
   useEffect(() => {
-    Ipc.send(TabCommand.getTabId).then((id) => {
-      // console.log('getTabId', id)
-      setTabId(id)
-    })
+    Ipc.getTabId().then(setTabId)
   }, [])
 
   useEffect(() => {
@@ -33,9 +30,9 @@ export function useTabCommandReceiver() {
   }
 
   const execute = (message: Message) => {
-    console.debug('execute', message.command)
     switch (message.command) {
       case TabCommand.clickElement:
+        console.debug('clickElement', message.command)
         clickElement(message.param as ClickElementProps)
         break
     }

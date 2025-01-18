@@ -254,3 +254,11 @@ export function e2a(e: any): string[] {
 export function hyphen2Underscore(input: string): string {
   return input.replace(/-/g, '_')
 }
+
+/**
+ * Generate a random ID.
+ * @returns {string} The random ID.
+ */
+export function generateRandomID(): string {
+  return Math.random().toString(36).substring(2, 11)
+}
