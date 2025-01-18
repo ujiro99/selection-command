@@ -1,9 +1,4 @@
-import {
-  Storage,
-  LOCAL_STORAGE_KEY,
-  SESSION_STORAGE_KEY,
-  STORAGE_AREA as AREA,
-} from './storage'
+import { Storage, LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from './storage'
 import { isDebug, APP_ID, VERSION, SCREEN } from '@/const'
 import { SessionData } from '@/types'
 
@@ -54,10 +49,10 @@ export async function sendEvent(
 }
 
 async function getOrCreateClientId() {
-  let clientId = await Storage.get(LOCAL_STORAGE_KEY.CLIENT_ID, AREA.LOCAL)
+  let clientId = await Storage.get(LOCAL_STORAGE_KEY.CLIENT_ID)
   if (!clientId) {
     clientId = crypto.randomUUID()
-    await Storage.set(LOCAL_STORAGE_KEY.CLIENT_ID, clientId, AREA.LOCAL)
+    await Storage.set(LOCAL_STORAGE_KEY.CLIENT_ID, clientId)
   }
   return clientId
 }
@@ -65,7 +60,6 @@ async function getOrCreateClientId() {
 async function getOrCreateSessionId() {
   let sessionData = await Storage.get<SessionData | null>(
     SESSION_STORAGE_KEY.SESSION_DATA,
-    AREA.SESSION,
   )
   const currentTimeInMs = Date.now()
   if (sessionData && sessionData.timestamp) {
@@ -82,11 +76,7 @@ async function getOrCreateSessionId() {
       session_id: currentTimeInMs.toString(),
       timestamp: currentTimeInMs,
     }
-    await Storage.set(
-      SESSION_STORAGE_KEY.SESSION_DATA,
-      sessionData,
-      AREA.SESSION,
-    )
+    await Storage.set(SESSION_STORAGE_KEY.SESSION_DATA, sessionData)
   }
   return sessionData.session_id
 }

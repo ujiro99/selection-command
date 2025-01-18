@@ -12,12 +12,7 @@ import { escapeJson } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
 import { Settings } from '@/services/settings'
 import type { CommandVariable, PageAction } from '@/types'
-import {
-  Storage,
-  STORAGE_KEY,
-  SESSION_STORAGE_KEY,
-  STORAGE_AREA,
-} from '@/services/storage'
+import { Storage, STORAGE_KEY, SESSION_STORAGE_KEY } from '@/services/storage'
 import '@/services/contextMenus'
 import { PopupOption } from '@/services/defaultSettings'
 
@@ -44,12 +39,10 @@ class BgData {
 
   public static init() {
     if (!BgData.instance) {
-      Storage.get<BgData>(STORAGE_KEY.BG, STORAGE_AREA.LOCAL).then(
-        (val: BgData) => {
+      Storage.get<BgData>(STORAGE_KEY.BG).then((val: BgData) => {
           BgData.instance = new BgData(val)
           console.debug('BgData initialized', BgData.instance)
-        },
-      )
+      })
     }
   }
 
@@ -59,7 +52,7 @@ class BgData {
 
   public static set(val: BgData) {
     BgData.instance = val
-    Storage.set(STORAGE_KEY.BG, BgData.instance, STORAGE_AREA.LOCAL)
+    Storage.set(STORAGE_KEY.BG, BgData.instance)
   }
 }
 

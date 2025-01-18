@@ -1,4 +1,4 @@
-import { Storage, SESSION_STORAGE_KEY, STORAGE_AREA } from './storage'
+import { Storage, SESSION_STORAGE_KEY } from './storage'
 
 export enum BgCommand {
   openPopups = 'openPopups',

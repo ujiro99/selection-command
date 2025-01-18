@@ -39,10 +39,17 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.PAGE_ACTION]: [],
 }
 
-export enum STORAGE_AREA {
-  SYNC = 'sync',
-  LOCAL = 'local',
-  SESSION = 'session',
+const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
+  if (Object.values(STORAGE_KEY).includes(key)) {
+    return chrome.storage.sync
+  }
+  if (Object.values(LOCAL_STORAGE_KEY).includes(key as LOCAL_STORAGE_KEY)) {
+    return chrome.storage.local
+  }
+  if (Object.values(SESSION_STORAGE_KEY).includes(key as SESSION_STORAGE_KEY)) {
+    return chrome.storage.session
+  }
+  throw new Error('Invalid Storage Key')
 }
 
 export type ChangedCallback = (newVal: unknown, oldVal: unknown) => void
@@ -70,8 +77,9 @@ export const Storage = {
    *
    * @param {STORAGE_KEY} key of item in storage.
    */
-  get: async <T>(key: KEY, area = STORAGE_AREA.SYNC): Promise<T> => {
-    let result = await chrome.storage[area].get(`${key}`)
+  get: async <T>(key: KEY): Promise<T> => {
+    const area = detectStorageArea(key)
+    let result = await area.get(`${key}`)
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }
@@ -84,12 +92,9 @@ export const Storage = {
    * @param {string} key key of item.
    * @param {any} value item.
    */
-  set: async (
-    key: KEY,
-    value: unknown,
-    area = STORAGE_AREA.SYNC,
-  ): Promise<boolean> => {
-    await chrome.storage[area].set({ [key]: value })
+  set: async (key: KEY, value: unknown): Promise<boolean> => {
+    const area = detectStorageArea(key)
+    await area.set({ [key]: value })
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }
@@ -101,27 +106,10 @@ export const Storage = {
    *
    * @param {string} key key of item.
    */
-  remove: (
-    key: KEY,
-    area = STORAGE_AREA.SYNC,
-  ): Promise<boolean | chrome.runtime.LastError> => {
+  remove: (key: KEY): Promise<boolean | chrome.runtime.LastError> => {
     return new Promise((resolve, reject) => {
-      chrome.storage[area].remove(`${key}`, () => {
-        if (chrome.runtime.lastError != null) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve(true)
-        }
-      })
-    })
-  },
-
-  /**
-   * Clear all items in chrome sync storage.
-   */
-  clear: (area = STORAGE_AREA.SYNC): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-      chrome.storage[area].clear(() => {
+      const area = detectStorageArea(key)
+      area.remove(`${key}`, () => {
         if (chrome.runtime.lastError != null) {
           reject(chrome.runtime.lastError)
         } else {
