@@ -8,17 +8,20 @@ export enum SelectorType {
 
 export namespace PageActionProps {
   export type Click = {
+    label: string
     selector: string
     selectorType: SelectorType
   }
 
   export type Input = {
+    label: string
     selector: string
     selectorType: SelectorType
     value: string
   }
 
   export type Keyboard = {
+    label: string
     key: string
     shiftKey: boolean
     ctrlKey: boolean
@@ -27,6 +30,7 @@ export namespace PageActionProps {
   }
 
   export type Scroll = {
+    label: string
     x: number
     y: number
   }
@@ -57,33 +61,33 @@ export async function waitForElement(
 
   return new Promise((resolve, reject) => {
     const interval = setInterval(() => {
-      const elapsedTime = Date.now() - startTime
-
-      // Check if the timeout has been exceeded
-      if (elapsedTime > timeout) {
-        clearInterval(interval)
-        resolve(null)
-        return
-      }
-
-      // Find the element
-      let element: HTMLElement | null = null
-      if (selectorType === SelectorType.xpath) {
-        if (!isValidXPath(selector)) {
-          reject(`Invalid XPath: ${selector}`)
+      requestAnimationFrame(() => {
+        const elapsedTime = Date.now() - startTime
+        // Check if the timeout has been exceeded
+        if (elapsedTime > timeout) {
+          clearInterval(interval)
+          resolve(null)
+          return
         }
-        element = getElementByXPath(selector)
-      } else {
-        element = document.querySelector(selector)
-      }
 
-      // Found!
-      if (element) {
-        clearInterval(interval)
-        resolve(element)
-      }
+        // Find the element
+        let element: HTMLElement | null = null
+        if (selectorType === SelectorType.xpath) {
+          if (!isValidXPath(selector)) {
+            reject(`Invalid XPath: ${selector}`)
+          }
+          element = getElementByXPath(selector)
+        } else {
+          element = document.querySelector(selector)
+        }
 
-      console.log('Waiting:', selector, selectorType)
+        // Found!
+        if (element) {
+          clearInterval(interval)
+          resolve(element)
+        }
+        console.log('Waiting:', selector, selectorType)
+      })
     }, 100)
   })
 }

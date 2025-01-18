@@ -13,8 +13,6 @@ export function usePageActionRunner() {
   const [isQueueEmpty, setIsQueueEmpty] = useState(true)
   const isRunning = !isQueueEmpty || isExecuting
 
-  console.log(listeners)
-
   useEffect(() => {
     Ipc.getTabId().then(setTabId)
   }, [])
@@ -69,7 +67,7 @@ export function usePageActionRunner() {
     }
     listeners.forEach((f) => f(action.id))
     setIsExecuting(false)
-    console.log('Run complete:', action.type, action.params)
+    console.debug('Run complete:', action.type)
   }
 
   const start = async () => {

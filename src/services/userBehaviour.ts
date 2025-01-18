@@ -30,6 +30,17 @@ const isEditable = (e: HTMLElement): boolean => {
   return e.isContentEditable
 }
 
+const modifierPressed = (e: KeyboardEvent): boolean => {
+  return e.ctrlKey || e.metaKey || e.altKey || e.shiftKey
+}
+
+const getModifierKey = (e: KeyboardEvent): string => {
+  if (e.ctrlKey || e.metaKey) return 'Ctrl'
+  if (e.altKey) return 'Alt'
+  if (e.shiftKey) return 'Shift'
+  return ''
+}
+
 const getTimeStamp = (): number => Date.now()
 
 export const UserBehaviour = (() => {
@@ -41,6 +52,7 @@ export const UserBehaviour = (() => {
         type: 'click',
         timestamp: getTimeStamp(),
         params: {
+          label: (e.target as HTMLElement).innerText,
           selector: xpath,
           selectorType: SelectorType.xpath,
         } as PageActionProps.Click,
@@ -52,6 +64,7 @@ export const UserBehaviour = (() => {
         type: 'keyboard',
         timestamp: getTimeStamp(),
         params: {
+          label: modifierPressed(e) ? `${getModifierKey(e)}+${e.key}` : e.key,
           key: e.key,
           shiftKey: e.shiftKey,
           ctrlKey: e.ctrlKey,
@@ -73,6 +86,7 @@ export const UserBehaviour = (() => {
           type: 'input',
           timestamp: getTimeStamp(),
           params: {
+            label: value,
             value,
             selector: getXPath(target),
             selectorType: SelectorType.xpath,
@@ -85,6 +99,7 @@ export const UserBehaviour = (() => {
         type: 'scroll',
         timestamp: getTimeStamp(),
         params: {
+          label: `x: ${window.scrollX}, y: ${window.scrollY}`,
           x: window.scrollX,
           y: window.scrollY,
         } as PageActionProps.Scroll,

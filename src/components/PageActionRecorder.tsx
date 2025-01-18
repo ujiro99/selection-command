@@ -61,7 +61,7 @@ export function PageActionRecorder(): JSX.Element {
     if (isRunning) {
       UserBehaviour.stop()
     } else {
-      setCurrentId('')
+      setTimeout(() => setCurrentId(''), 200)
       UserBehaviour.start()
     }
     return () => {
@@ -96,12 +96,13 @@ export function PageActionRecorder(): JSX.Element {
           {actions.map((action) => (
             <li
               className={cn(
-                'bg-blue-200 rounded-lg p-2',
+                'bg-blue-200 rounded-lg p-2 text-center',
                 currentId === action.id ? 'bg-green-200' : '',
               )}
               key={action.timestamp}
             >
-              {action.type}
+              <p className="text-base text-stone-600">{action.type}</p>
+              <p className="truncate w-24 text-sm text-stone-600">{`${action.params.label}`}</p>
             </li>
           ))}
           <li className="bg-stone-200 rounded-lg p-2" key="remaining">
