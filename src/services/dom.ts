@@ -7,7 +7,7 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
     const img = new Image()
     img.crossOrigin = 'Anonymous'
     const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
-    img.onload = function() {
+    img.onload = function () {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       canvas.height = img.naturalHeight
@@ -163,29 +163,35 @@ export function isClickableElement(elm: Element | null): boolean {
 export function findClickableElement(elm: Element | null): Element | null {
   if (elm == null) return null
   if (elm.nodeName === 'body') return null
+  if (elm instanceof Window) return null
 
-  // 1. check onclick property
-  if (
-    elm.hasAttribute('onclick') ||
-    typeof (elm as HTMLElement).onclick === 'function'
-  ) {
-    return elm
-  }
-
-  // 2. check tagName
-  const clickableTags = ['a', 'button', 'input']
-  if (
-    clickableTags.includes(elm.tagName.toLowerCase()) &&
-    !(elm as HTMLButtonElement).disabled
-  ) {
-    if (elm.tagName.toLowerCase() === 'input') {
-      const type = (elm as HTMLInputElement).type
-      if (type === 'button') {
-        return elm
-      }
-    } else {
+  try {
+    // 1. check onclick property
+    if (
+      elm.hasAttribute('onclick') ||
+      typeof (elm as HTMLElement).onclick === 'function'
+    ) {
       return elm
     }
+
+    // 2. check tagName
+    const clickableTags = ['a', 'button', 'input']
+    if (
+      clickableTags.includes(elm.tagName.toLowerCase()) &&
+      !(elm as HTMLButtonElement).disabled
+    ) {
+      if (elm.tagName.toLowerCase() === 'input') {
+        const type = (elm as HTMLInputElement).type
+        if (type === 'button') {
+          return elm
+        }
+      } else {
+        return elm
+      }
+    }
+  } catch (e) {
+    console.debug(e)
+    return null
   }
 
   // 3. check parent

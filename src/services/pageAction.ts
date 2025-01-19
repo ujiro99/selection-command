@@ -1,5 +1,6 @@
 import type { XPath } from '@/services/dom'
 import { isValidXPath } from '@/services/dom'
+import userEvent from '@testing-library/user-event'
 
 export enum SelectorType {
   css = 'css',
@@ -23,6 +24,8 @@ export namespace PageActionProps {
   export type Keyboard = {
     label: string
     key: string
+    code: string
+    keyCode: number
     shiftKey: boolean
     ctrlKey: boolean
     altKey: boolean
@@ -95,10 +98,11 @@ export async function waitForElement(
 export const PageAction = {
   click: async (param: PageActionProps.Click) => {
     const { selector, selectorType } = param
+    const user = userEvent.setup()
 
     const element = await waitForElement(selector, selectorType)
     if (element) {
-      element.click()
+      await user.click(element)
     } else {
       console.warn(`Element not found for ${selectorType}: ${selector}`)
       return false
@@ -107,27 +111,33 @@ export const PageAction = {
     return true
   },
 
-  keyboard: (key: PageActionProps.Keyboard) => {
-    const event = new KeyboardEvent('keydown', {
-      ...key,
+  keyboard: async (key: PageActionProps.Keyboard) => {
+    return new Promise((resolve) => {
+      const down = new KeyboardEvent('keydown', {
+        ...key,
+        bubbles: true,
+        cancelable: true,
+      })
+      document.dispatchEvent(down)
+      setTimeout(() => {
+        const up = new KeyboardEvent('keyup', {
+          ...key,
+          bubbles: true,
+          cancelable: true,
+        })
+        document.dispatchEvent(up)
+        resolve(true)
+      }, 50)
     })
-    document.dispatchEvent(event)
-    return true
   },
 
   input: async (param: PageActionProps.Input) => {
     const { selector, selectorType, value } = param
+    const user = userEvent.setup()
 
     const element = await waitForElement(selector, selectorType)
     if (element) {
-      if (
-        element instanceof HTMLInputElement ||
-        element instanceof HTMLTextAreaElement
-      ) {
-        element.value = value
-      } else {
-        element.innerText = value
-      }
+      await user.type(element, value)
     } else {
       console.warn(`Element not found for ${selectorType}: ${selector}`)
       return false
@@ -140,12 +150,13 @@ export const PageAction = {
     return new Promise((resolve) => {
       const scrollTimeout = setTimeout(() => {
         console.warn('Scroll timeout')
+        window.removeEventListener('scrollend', onScrollend)
         resolve(true)
       }, 1000)
 
       const onScrollend = () => {
+        console.log('Scroll complete')
         clearTimeout(scrollTimeout)
-        console.log('スクロールが完了しました！')
         window.removeEventListener('scrollend', onScrollend)
         resolve(true)
       }

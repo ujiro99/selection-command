@@ -51,7 +51,7 @@ export function usePageActionRunner() {
           await PageAction.click(action.params as PageActionProps.Click)
           break
         case 'keyboard':
-          PageAction.keyboard(action.params as PageActionProps.Keyboard)
+          await PageAction.keyboard(action.params as PageActionProps.Keyboard)
           break
         case 'input':
           await PageAction.input(action.params as PageActionProps.Input)
@@ -75,7 +75,7 @@ export function usePageActionRunner() {
     setIsExecuting(true)
     setTimeout(() => {
       setIsExecuting(false)
-    }, 0)
+    }, 10)
   }
 
   const stop = async () => {

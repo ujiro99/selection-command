@@ -405,11 +405,12 @@ const commandFuncs = {
       param.id = generateRandomID()
       if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
         actions.pop()
-      } else if (param.type === 'input') {
+      } else if (param.type === 'input' && actions.at(-1)?.type === 'input') {
         const selector = param.params.selector
-        actions = actions.filter(
-          (a) => a.type !== 'input' || a.params.selector !== selector,
-        )
+        const prevSelector = actions.at(-1)?.params.selector
+        if (selector === prevSelector) {
+          actions.pop()
+        }
       }
 
       await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [...actions, param])

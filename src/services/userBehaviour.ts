@@ -1,6 +1,6 @@
 import getXPath from 'get-xpath'
 import { Ipc, BgCommand } from '@/services/ipc'
-import { isPopup } from '@/lib/utils'
+import { isPopup, isEmpty } from '@/lib/utils'
 import { SelectorType, PageActionProps } from '@/services/pageAction'
 
 type EventsFunctions = {
@@ -44,16 +44,36 @@ const getModifierKey = (e: KeyboardEvent): string => {
 
 const getTimeStamp = (): number => Date.now()
 
+const getLabel = (e: Element): string => {
+  if (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement) {
+    return !isEmpty(e.name)
+      ? e.name
+      : !isEmpty(e.placeholder)
+        ? e.placeholder
+        : e.type
+  } else if (e instanceof HTMLElement) {
+    return e.innerText
+  } else {
+    return e.nodeName
+  }
+}
+
 export const UserBehaviour = (() => {
   const func: EventsFunctions = {
     click(e: MouseEvent) {
       if (isPopup(e.target as HTMLElement)) return
-      const xpath = getXPath(e.target as HTMLElement)
+      let xpath = getXPath(e.target as HTMLElement)
+      let label = getLabel(e.target as Element)
+      if (isEmpty(xpath)) {
+        const targetAtPoint = document.elementFromPoint(e.x, e.y)
+        xpath = getXPath(targetAtPoint)
+        label = getLabel(targetAtPoint as Element)
+      }
       Ipc.send(BgCommand.addPageAction, {
         type: 'click',
         timestamp: getTimeStamp(),
         params: {
-          label: (e.target as HTMLElement).innerText,
+          label,
           selector: xpath,
           selectorType: SelectorType.xpath,
         } as PageActionProps.Click,
@@ -67,6 +87,8 @@ export const UserBehaviour = (() => {
         params: {
           label: modifierPressed(e) ? `${getModifierKey(e)}+${e.key}` : e.key,
           key: e.key,
+          code: e.code,
+          keyCode: e.keyCode,
           shiftKey: e.shiftKey,
           ctrlKey: e.ctrlKey,
           altKey: e.altKey,
