@@ -11,7 +11,7 @@ import type {
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
 } from '@/const'
-import type { EventTypes } from '@/services/userBehaviour'
+import type { EventTypes } from '@/services/pageAction/listener'
 
 export type Version = `${number}.${number}.${number}`
 

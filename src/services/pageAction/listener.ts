@@ -58,7 +58,7 @@ const getLabel = (e: Element): string => {
   }
 }
 
-export const UserBehaviour = (() => {
+export const PageActionListener = (() => {
   const func: EventsFunctions = {
     click(e: MouseEvent) {
       if (isPopup(e.target as HTMLElement)) return

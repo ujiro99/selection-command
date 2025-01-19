@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
-import { UserBehaviour } from '@/services/userBehaviour'
+import { PageActionListener as Listener } from '@/services/pageAction'
 import { PageActionType } from '@/types'
 import {
   Storage,
@@ -15,13 +15,11 @@ export function PageActionRecorder(): JSX.Element {
   const [currentId, setCurrentId] = useState<string>()
 
   const reset = () => {
-    UserBehaviour.reset()
+    Listener.reset()
   }
 
   const preview = () => {
-    UserBehaviour.stop()
-    const url = 'http://localhost:3000/'
-    location.replace(url)
+    Listener.stop()
     start()
   }
 
@@ -59,13 +57,13 @@ export function PageActionRecorder(): JSX.Element {
 
   useEffect(() => {
     if (isRunning) {
-      UserBehaviour.stop()
+      Listener.stop()
     } else {
       setTimeout(() => setCurrentId(''), 200)
-      UserBehaviour.start()
+      Listener.start()
     }
     return () => {
-      UserBehaviour.stop()
+      Listener.stop()
     }
   }, [isRunning])
 

@@ -55,7 +55,7 @@ const getElementByXPath = (path: XPath): HTMLElement | null => {
  * @param timeout - Maximum waiting time (milliseconds)
  * @returns Promise<HTMLElement | null> - Found element (null if not found)
  */
-export async function waitForElement(
+async function waitForElement(
   selector: string,
   selectorType: SelectorType,
   timeout: number = 5000,
@@ -95,7 +95,7 @@ export async function waitForElement(
   })
 }
 
-export const PageAction = {
+export const PageActionDispatcher = {
   click: async (param: PageActionProps.Click) => {
     const { selector, selectorType } = param
     const user = userEvent.setup()

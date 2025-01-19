@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
-import { PageAction, PageActionProps } from '@/services/pageAction'
+import {
+  PageActionDispatcher as dispatcher,
+  PageActionProps,
+} from '@/services/pageAction'
 import type { Message } from '@/services/ipc'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { PageActionType } from '@/types'
@@ -48,16 +51,16 @@ export function usePageActionRunner() {
     try {
       switch (action.type) {
         case 'click':
-          await PageAction.click(action.params as PageActionProps.Click)
+          await dispatcher.click(action.params as PageActionProps.Click)
           break
         case 'keyboard':
-          await PageAction.keyboard(action.params as PageActionProps.Keyboard)
+          await dispatcher.keyboard(action.params as PageActionProps.Keyboard)
           break
         case 'input':
-          await PageAction.input(action.params as PageActionProps.Input)
+          await dispatcher.input(action.params as PageActionProps.Input)
           break
         case 'scroll':
-          await PageAction.scroll(action.params as PageActionProps.Scroll)
+          await dispatcher.scroll(action.params as PageActionProps.Scroll)
           break
         default:
           console.warn(`Unknown action type: ${action.type}`)
