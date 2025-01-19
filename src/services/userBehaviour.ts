@@ -13,7 +13,8 @@ type EventsFunctions = {
 export type EventTypes = keyof EventsFunctions
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
-  if (e.key == 'Enter') return true
+  if (e.key === 'Enter') return true
+  if (e.key === 'Meta') return false
   if (e.ctrlKey || e.metaKey) return true
   return false
 }

@@ -70,8 +70,27 @@ export function PageActionRecorder(): JSX.Element {
   }, [isRunning])
 
   return (
-    <div className="fixed z-10 bottom-0 p-2">
+    <div className="fixed z-[2147483647] bottom-0 p-4">
       <div>
+        <ol className="flex gap-2 p-2">
+          {actions.map((action) => (
+            <li
+              className={cn(
+                'bg-blue-200 rounded-lg p-2 text-center',
+                currentId === action.id ? 'bg-green-200' : '',
+              )}
+              key={action.timestamp}
+            >
+              <p className="text-base text-stone-600">{action.type}</p>
+              <p className="truncate w-24 text-sm text-stone-600">{`${action.params.label}`}</p>
+            </li>
+          ))}
+          <li className="bg-stone-200 rounded-lg p-2" key="remaining">
+            残り10Step
+          </li>
+        </ol>
+      </div>
+      <div className="flex gap-2 p-2">
         <button className="bg-stone-300 rounded-lg p-2" onClick={() => reset()}>
           Reset
         </button>
@@ -90,25 +109,6 @@ export function PageActionRecorder(): JSX.Element {
             Preview
           </button>
         )}
-      </div>
-      <div>
-        <ol className="flex gap-2 p-4">
-          {actions.map((action) => (
-            <li
-              className={cn(
-                'bg-blue-200 rounded-lg p-2 text-center',
-                currentId === action.id ? 'bg-green-200' : '',
-              )}
-              key={action.timestamp}
-            >
-              <p className="text-base text-stone-600">{action.type}</p>
-              <p className="truncate w-24 text-sm text-stone-600">{`${action.params.label}`}</p>
-            </li>
-          ))}
-          <li className="bg-stone-200 rounded-lg p-2" key="remaining">
-            残り10Step
-          </li>
-        </ol>
       </div>
     </div>
   )

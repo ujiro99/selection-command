@@ -139,3 +139,5 @@ export const COMMAND_MAX = 100
 export const HUB_URL = isDebug
   ? 'http://localhost:3000/'
   : 'https://ujiro99.github.io/selection-command/'
+
+export const PAGE_ACTION_MAX = 10

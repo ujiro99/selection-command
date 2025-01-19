@@ -5,6 +5,7 @@ import {
   POPUP_OFFSET,
   POPUP_TYPE,
   POPUP_PLACEMENT,
+  PAGE_ACTION_MAX,
 } from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
@@ -396,12 +397,19 @@ const commandFuncs = {
         SESSION_STORAGE_KEY.PAGE_ACTION,
       )
 
+      if (actions.length >= PAGE_ACTION_MAX) {
+        response(true)
+        return
+      }
+
       param.id = generateRandomID()
       if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
         actions.pop()
       } else if (param.type === 'input') {
-        const xpath = param.params.xpath
-        actions = actions.filter((a) => a.params.xpath !== xpath)
+        const selector = param.params.selector
+        actions = actions.filter(
+          (a) => a.type !== 'input' || a.params.selector !== selector,
+        )
       }
 
       await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [...actions, param])
