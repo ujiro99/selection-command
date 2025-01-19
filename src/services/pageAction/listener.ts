@@ -131,7 +131,7 @@ export const PageActionListener = (() => {
   }
 
   function start(): void {
-    console.log('UserBehaviour.start')
+    console.log('Listener.start')
     window.addEventListener('click', func.click)
     window.addEventListener('keydown', func.keyboard)
     window.addEventListener('input', func.input)
@@ -139,7 +139,7 @@ export const PageActionListener = (() => {
   }
 
   function stop(): void {
-    console.log('UserBehaviour.stop')
+    console.log('Listener.stop')
     window.removeEventListener('click', func.click)
     window.removeEventListener('keydown', func.keyboard)
     window.removeEventListener('input', func.input)

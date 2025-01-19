@@ -12,11 +12,16 @@ export function useTabCommandReceiver() {
   useEffect(() => {
     ;(async () => {
       if (tabId == null) return
-      const msgs = await Ipc.recvQueue(tabId)
-      msgs.forEach((m) => execute(m))
-      Ipc.addQueueListener(tabId, execute)
+
+      let msg
+      do {
+        msg = await Ipc.recvQueue(tabId, TabCommand.clickElement)
+        msg && execute(msg)
+      } while (msg)
+
+      Ipc.addQueueChangedListener(tabId, TabCommand.clickElement, execute)
       return () => {
-        Ipc.removeQueueListener(tabId)
+        Ipc.removeQueueChangedLisner(tabId, TabCommand.clickElement)
       }
     })()
   }, [tabId])
@@ -29,7 +34,8 @@ export function useTabCommandReceiver() {
     return false
   }
 
-  const execute = (message: Message) => {
+  const execute = (message: Message | null) => {
+    if (!message) return
     switch (message.command) {
       case TabCommand.clickElement:
         console.debug('clickElement', message.command)

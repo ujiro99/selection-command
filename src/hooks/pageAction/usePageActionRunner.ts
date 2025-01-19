@@ -23,25 +23,19 @@ export function usePageActionRunner() {
   useEffect(() => {
     if (tabId == null) return
     const queueChanged = () => {
-      Ipc.isQueueEmpty(tabId).then(setIsQueueEmpty)
+      Ipc.isQueueEmpty(tabId, TabCommand.executePageAction).then(
+        setIsQueueEmpty,
+      )
     }
-    Ipc.addQueueListener(tabId, queueChanged)
+    Ipc.addQueueChangedListener(
+      tabId,
+      TabCommand.executePageAction,
+      queueChanged,
+    )
     return () => {
-      Ipc.removeQueueListener(tabId)
+      Ipc.removeQueueChangedLisner(tabId, TabCommand.executePageAction)
     }
   }, [tabId])
-
-  useEffect(() => {
-    if (!isExecuting) {
-      recvAndExecute()
-    }
-  }, [tabId, isExecuting])
-
-  const recvAndExecute = async () => {
-    if (tabId == null) return
-    const [msg] = await Ipc.recvQueue(tabId, true) // Recieve a single message.
-    msg && execute(msg)
-  }
 
   const execute = async (message: Message) => {
     if (message.command !== TabCommand.executePageAction) return
@@ -74,15 +68,17 @@ export function usePageActionRunner() {
   }
 
   const start = async () => {
-    Ipc.send(BgCommand.queuePageAction)
-    setIsExecuting(true)
-    setTimeout(() => {
-      setIsExecuting(false)
-    }, 10)
+    if (tabId == null) return
+    await Ipc.send(BgCommand.queuePageAction)
+    let msg
+    do {
+      msg = await Ipc.recvQueue(tabId, TabCommand.executePageAction)
+      msg && (await execute(msg))
+    } while (msg)
   }
 
   const stop = async () => {
-    return await Ipc.removeQueue(tabId!)
+    return await Ipc.removeQueue(tabId!, TabCommand.executePageAction)
   }
 
   const event = {
