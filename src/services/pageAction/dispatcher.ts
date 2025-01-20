@@ -162,7 +162,7 @@ export const PageActionDispatcher = {
       }
 
       window.addEventListener('scrollend', onScrollend)
-      window.scrollTo({ top: param.x, left: param.y, behavior: 'smooth' })
+      window.scrollTo({ top: param.y, left: param.x, behavior: 'smooth' })
     })
   },
 }
