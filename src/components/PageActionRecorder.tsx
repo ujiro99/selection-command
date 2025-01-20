@@ -14,9 +14,10 @@ import { cn, capitalizeFirst } from '@/lib/utils'
 import { PAGE_ACTION_MAX } from '@/const'
 
 export function PageActionRecorder(): JSX.Element {
-  const { isRunning, start, stop, subscribe, unsubscribe } =
-    usePageActionRunner()
+  const Runner = usePageActionRunner()
+  const { isRunning } = Runner
   const [actions, setActions] = useState<PageActionType[]>([])
+  const [isRecording, setIsRecording] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
   const remain = PAGE_ACTION_MAX - actions.length
@@ -34,7 +35,17 @@ export function PageActionRecorder(): JSX.Element {
   const preview = () => {
     clearState()
     Listener.stop()
-    start()
+    Runner.start()
+  }
+
+  const pause = () => {
+    setIsRecording(false)
+    Listener.stop()
+  }
+
+  const resume = () => {
+    setIsRecording(true)
+    Listener.start()
   }
 
   const onStart = (e: any) => {
@@ -43,7 +54,7 @@ export function PageActionRecorder(): JSX.Element {
 
   const onFailed = (e: any) => {
     setFailedId(e.detail.id)
-    stop()
+    Runner.stop()
   }
 
   useEffect(() => {
@@ -63,24 +74,24 @@ export function PageActionRecorder(): JSX.Element {
       SESSION_STORAGE_KEY.PAGE_ACTION,
       addActions as ChangedCallback,
     )
-    subscribe(RunnerEvent.Start, onStart)
-    subscribe(RunnerEvent.Failed, onFailed)
+    Runner.subscribe(RunnerEvent.Start, onStart)
+    Runner.subscribe(RunnerEvent.Failed, onFailed)
 
     return () => {
       Storage.removeListener(
         SESSION_STORAGE_KEY.PAGE_ACTION,
         addActions as ChangedCallback,
       )
-      unsubscribe(RunnerEvent.Start, onStart)
-      unsubscribe(RunnerEvent.Failed, onFailed)
+      Runner.unsubscribe(RunnerEvent.Start, onStart)
+      Runner.unsubscribe(RunnerEvent.Failed, onFailed)
     }
   }, [])
 
   useEffect(() => {
     if (isRunning) {
-      Listener.stop()
+      pause()
     } else {
-      Listener.start()
+      resume()
     }
     return () => {
       Listener.stop()
@@ -90,11 +101,26 @@ export function PageActionRecorder(): JSX.Element {
   return (
     <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
       <div className="inline-block relative left-[50%] translate-x-[-50%]">
-        <div>
+        <div className="flex gap-2">
+          {isRecording ? (
+            <button
+              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+              onClick={() => pause()}
+            >
+              Pause
+            </button>
+          ) : (
+            <button
+              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+              onClick={() => resume()}
+            >
+              Resume
+            </button>
+          )}
           {isRunning ? (
             <button
               className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => stop()}
+              onClick={() => Runner.stop()}
             >
               Stop
             </button>
@@ -107,7 +133,7 @@ export function PageActionRecorder(): JSX.Element {
             </button>
           )}
         </div>
-        <ol className="flex flex-wrap w-[600px] gap-2 mt-2">
+        <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
           {actions.map((action) => (
             <li
               className={cn(
