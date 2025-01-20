@@ -21,7 +21,6 @@ export default defineConfig(({ mode }) => {
             enableDev: true,
           },
           injectCodeFunction: (cssCode: string, options) => {
-            console.log('injectCodeFunction', options)
             const upsertCss = (elm: ShadowRoot) => {
               const fileName = options
                 .attributes!['data-vite-dev-id'].split('/')
