@@ -38,7 +38,6 @@ export function App() {
       />
       <LinkSelector />
       <OpenInTab />
-      <div className="fixed bottom-2 bg-red-100 rounded p-3">test</div>
     </SelectContextProvider>
   )
 }

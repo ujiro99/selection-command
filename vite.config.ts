@@ -74,7 +74,6 @@ export default defineConfig(({ mode }) => {
         watchRegexp: /src/,
       }),
     ],
-    cssCodeSplit: false,
     define: {
       __APP_NAME__: JSON.stringify(packageJson.name),
       __APP_VERSION__: JSON.stringify(packageJson.version),
@@ -89,7 +88,11 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           assetFileNames: (assetInfo) => {
-            const keepNames = ['App.css', 'command_hub.css']
+            const keepNames = [
+              'content_script.css',
+              'Popup.css',
+              'command_hub.css',
+            ]
             if (
               assetInfo.names?.length > 0 &&
               keepNames.includes(assetInfo.names[0])
