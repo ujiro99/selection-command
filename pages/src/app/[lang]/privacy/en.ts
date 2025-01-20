@@ -1,6 +1,6 @@
 import { HUB_URL } from '@/const'
 
-export default `
+const msg = `
 This Privacy Policy outlines how user information is handled within Selection Command Hub (hereinafter referred to as "the Service"). By using the Service, you are deemed to have agreed to this Privacy Policy.
 
 ## **1. Information Collected**
@@ -52,3 +52,4 @@ For inquiries regarding this Privacy Policy, please contact us through:
 
 Effective as of 01/10/2025
 `
+export default msg

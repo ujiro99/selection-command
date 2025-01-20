@@ -1,6 +1,6 @@
 import { HUB_URL } from '@/const'
 
-export default `
+const msg = `
 この利用規約（以下、「本規約」といいます。）は、運営者（以下、「当方」といいます。）が提供する「Selection Command Hub」（以下、「本サービス」といいます。）の利用条件を定めるものです。本サービスをご利用いただく前に、本規約をよくお読みください。本サービスをご利用いただくことで、本規約に同意したものとみなされます。
 
 ## 第1条 適用
@@ -66,3 +66,4 @@ export default `
 
 発行日：2025/01/10
 `
+export default msg

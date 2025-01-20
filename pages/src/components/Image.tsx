@@ -13,6 +13,7 @@ type Props = {
   className?: string
   style?: React.CSSProperties
   loading?: 'lazy' | 'eager'
+  priority?: boolean
 }
 
 function Image(props: Props): JSX.Element {
@@ -22,23 +23,21 @@ function Image(props: Props): JSX.Element {
     return (
       <NextImage
         className={cn('dark:invert', props.className)}
-        src={src}
-        alt={`${props.alt}`}
         width={`${props.width ?? 20}`}
         height={`${props.height ?? 20}`}
-        style={props.style}
-        loading={props.loading}
+        {...props}
       />
     )
   }
   return (
-    <img
+    <NextImage
       className={props.className}
       src={src}
       alt={props.alt}
-      width={props.width}
-      height={props.height}
+      width={props.width ?? 20}
+      height={props.height ?? 20}
       style={props.style}
+      unoptimized
     />
   )
 }

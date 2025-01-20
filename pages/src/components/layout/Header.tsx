@@ -32,7 +32,7 @@ export function Header(props: Props): JSX.Element {
           alt="Chrome Web Store"
           width={200}
           height={60}
-          loading="lazy"
+          priority={true}
         />
       </a>
     </div>

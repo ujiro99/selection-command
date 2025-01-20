@@ -1,6 +1,6 @@
 import { HUB_URL } from '@/const'
 
-export default `
+const msg = `
 These Terms of Service (hereinafter referred to as the "Terms") set forth the conditions for using the "Selection Command Hub" (hereinafter referred to as the "Service") provided by Operator (hereinafter referred to as "We" or "Us"). Please read these Terms carefully before using the Service. By using the Service, you are deemed to have agreed to these Terms.
 
 ## 1. Application
@@ -66,3 +66,4 @@ For inquiries or support requests related to this Service, please contact us via
 
 Effective as of 01/10/2025
 `
+export default msg

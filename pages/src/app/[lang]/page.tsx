@@ -5,7 +5,7 @@ import { LangProps } from '@/types'
 import css from '@/app/page.module.css'
 
 export default async function Page({ params }: { params: Promise<LangProps> }) {
-  let { lang } = await params
+  const { lang } = await params
   return (
     <main className={css.main}>
       <div className={css.menu}>

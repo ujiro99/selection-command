@@ -1,4 +1,4 @@
-export default `
+const msg = `
 Selection Command Hub（以下、「本サービス」といいます）は、お客様により良い体験を提供するため、Cookieを使用しています。本ポリシーでは、当サービスで使用しているCookieの種類、目的、お客様の選択肢について説明します。
 
 ### **1. Cookieとは**
@@ -31,3 +31,4 @@ Google Analyticsによるデータ収集・処理についての詳細は、[Goo
 
 発行日：2025/01/10
 `
+export default msg

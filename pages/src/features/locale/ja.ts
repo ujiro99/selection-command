@@ -1,6 +1,6 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
 
-export default {
+const lang = {
   name: '日本語',
   shorName: 'ja',
   languageName: 'Japanese',
@@ -130,3 +130,4 @@ export default {
     decline: '同意しない',
   },
 }
+export default lang

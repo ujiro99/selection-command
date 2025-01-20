@@ -304,7 +304,7 @@ function InputForm(props: InputProps) {
     }
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
-  }, [])
+  }, [form, setValue])
 
   form.watch((data: any) => {
     if (!data.title && !data.searchUrl) {
@@ -362,7 +362,7 @@ function InputForm(props: InputProps) {
               </div>
               <div {...autofillProps(1, 'w-3/5 rounded-md relative')}>
                 {!isEmpty(iconUrl) && (
-                  <img
+                  <Image
                     className="absolute top-1 right-2.5 w-7 h-7"
                     src={iconUrl}
                     alt="Search url's favicon"
@@ -650,7 +650,7 @@ const Item = ({
 
 const IconItem = ({ label, value }: { label: string; value: string }) => (
   <div className="relative">
-    <img
+    <Image
       className="absolute top-[-2px] left-[27%] w-7 h-7 rounded"
       src={value}
       alt="Search url's favicon"

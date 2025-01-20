@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     switchBrowserLocale()
-  }, [])
+  }, [switchBrowserLocale])
 
   // This page is just a redirect to the browser locale
   return null
