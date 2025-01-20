@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
-import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
+import {
+  usePageActionRunner,
+  RunnerEvent,
+} from '@/hooks/pageAction/usePageActionRunner'
 import { PageActionListener as Listener } from '@/services/pageAction'
 import { PageActionType } from '@/types'
 import {
@@ -10,21 +13,35 @@ import {
 import { cn } from '@/lib/utils'
 
 export function PageActionRecorder(): JSX.Element {
-  const { isRunning, start, stop, event } = usePageActionRunner()
+  const { isRunning, start, stop, subscribe, unsubscribe } =
+    usePageActionRunner()
   const [actions, setActions] = useState<PageActionType[]>([])
   const [currentId, setCurrentId] = useState<string>()
+  const [failedId, setFailedId] = useState<string>()
+
+  const clearState = () => {
+    setCurrentId('')
+    setFailedId('')
+  }
 
   const reset = () => {
+    clearState()
     Listener.reset()
   }
 
   const preview = () => {
+    clearState()
     Listener.stop()
     start()
   }
 
-  const onExecuted = (id: string) => {
-    setCurrentId(id)
+  const onStart = (e: any) => {
+    setCurrentId(e.detail.id)
+  }
+
+  const onFailed = (e: any) => {
+    setFailedId(e.detail.id)
+    stop()
   }
 
   useEffect(() => {
@@ -44,14 +61,16 @@ export function PageActionRecorder(): JSX.Element {
       SESSION_STORAGE_KEY.PAGE_ACTION,
       addActions as ChangedCallback,
     )
-    event.addOnExecutedListener(onExecuted)
+    subscribe(RunnerEvent.Start, onStart)
+    subscribe(RunnerEvent.Failed, onFailed)
 
     return () => {
       Storage.removeListener(
         SESSION_STORAGE_KEY.PAGE_ACTION,
         addActions as ChangedCallback,
       )
-      event.removeOnExecutedListener(onExecuted)
+      unsubscribe(RunnerEvent.Start, onStart)
+      unsubscribe(RunnerEvent.Failed, onFailed)
     }
   }, [])
 
@@ -59,7 +78,6 @@ export function PageActionRecorder(): JSX.Element {
     if (isRunning) {
       Listener.stop()
     } else {
-      setTimeout(() => setCurrentId(''), 200)
       Listener.start()
     }
     return () => {
@@ -76,6 +94,7 @@ export function PageActionRecorder(): JSX.Element {
               className={cn(
                 'bg-blue-200 rounded-lg p-2 text-center',
                 currentId === action.id ? 'bg-green-200' : '',
+                failedId === action.id ? 'bg-red-200' : '',
               )}
               key={action.timestamp}
             >

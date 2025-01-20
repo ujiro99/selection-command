@@ -95,8 +95,10 @@ async function waitForElement(
   })
 }
 
+type ActionReturn = Promise<[boolean, string?]>
+
 export const PageActionDispatcher = {
-  click: async (param: PageActionProps.Click) => {
+  click: async (param: PageActionProps.Click): ActionReturn => {
     const { selector, selectorType } = param
     const user = userEvent.setup()
 
@@ -104,14 +106,14 @@ export const PageActionDispatcher = {
     if (element) {
       await user.click(element)
     } else {
-      console.warn(`Element not found for ${selectorType}: ${selector}`)
-      return false
+      console.warn(`Element not found for: ${selector}`)
+      return [false, `Element not found: ${param.label}`]
     }
 
-    return true
+    return [true]
   },
 
-  keyboard: async (key: PageActionProps.Keyboard) => {
+  keyboard: async (key: PageActionProps.Keyboard): ActionReturn => {
     return new Promise((resolve) => {
       const down = new KeyboardEvent('keydown', {
         ...key,
@@ -126,12 +128,12 @@ export const PageActionDispatcher = {
           cancelable: true,
         })
         document.dispatchEvent(up)
-        resolve(true)
+        resolve([true])
       }, 50)
     })
   },
 
-  input: async (param: PageActionProps.Input) => {
+  input: async (param: PageActionProps.Input): ActionReturn => {
     const { selector, selectorType, value } = param
     const user = userEvent.setup()
 
@@ -139,26 +141,26 @@ export const PageActionDispatcher = {
     if (element) {
       await user.type(element, value)
     } else {
-      console.warn(`Element not found for ${selectorType}: ${selector}`)
-      return false
+      console.warn(`Element not found for: ${selector}`)
+      return [false, `Element not found: ${param.label}`]
     }
 
-    return true
+    return [true]
   },
 
-  scroll: async (param: PageActionProps.Scroll) => {
+  scroll: async (param: PageActionProps.Scroll): ActionReturn => {
     return new Promise((resolve) => {
       const scrollTimeout = setTimeout(() => {
         console.warn('Scroll timeout')
         window.removeEventListener('scrollend', onScrollend)
-        resolve(true)
+        resolve([true])
       }, 1000)
 
       const onScrollend = () => {
         console.log('Scroll complete')
         clearTimeout(scrollTimeout)
         window.removeEventListener('scrollend', onScrollend)
-        resolve(true)
+        resolve([true])
       }
 
       window.addEventListener('scrollend', onScrollend)
