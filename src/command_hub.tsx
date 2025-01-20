@@ -8,7 +8,6 @@ const url = chrome.runtime.getURL('/assets/command_hub.css')
 const mode = isDebug ? 'open' : 'closed' // 'open' for debugging
 
 const insertCss = (elm: ShadowRoot) => {
-  if (isDebug) return
   fetch(url)
     .then((res) => res.text())
     .then((css) => {
@@ -16,6 +15,13 @@ const insertCss = (elm: ShadowRoot) => {
       style.append(document.createTextNode(css))
       elm.insertBefore(style, elm.firstChild)
     })
+}
+
+const cloneCss = (from: ShadowRoot, to: ShadowRoot, selector: string) => {
+  const cloned = from.querySelector(selector)?.cloneNode(true)
+  if (cloned) {
+    to.insertBefore(cloned, to.firstChild)
+  }
 }
 
 function setupCommandHub() {
@@ -27,7 +33,7 @@ function setupCommandHub() {
   root.render(<CommandHub />)
 
   // Putting styles into ShadowDom
-  insertCss(shadow)
+  if (!isDebug) insertCss(shadow)
 }
 
 function renderMyCommands() {
@@ -37,7 +43,15 @@ function renderMyCommands() {
     const root = createRoot(shadow)
     root.render(<MyCommands />)
     container.style.display = 'block'
-    insertCss(shadow)
+
+    if (isDebug) {
+      const from = document.getElementById(
+        'selection-command-command-hub',
+      )?.shadowRoot
+      from && cloneCss(from, shadow, 'style')
+    } else {
+      insertCss(shadow)
+    }
   }
 }
 

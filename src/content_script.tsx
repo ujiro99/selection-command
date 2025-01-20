@@ -12,16 +12,21 @@ shadow.innerHTML = icons
 const root = createRoot(shadow)
 root.render(<App />)
 
-if (!isDebug) {
-  // Putting styles into ShadowDom
-  const url = chrome.runtime.getURL('/assets/App.css')
+const insertCss = (elm: ShadowRoot, filePath: string) => {
+  const url = chrome.runtime.getURL(filePath)
   fetch(url)
     .then((res) => res.text())
     .then((css) => {
       let style = document.createElement('style')
       style.append(document.createTextNode(css))
-      shadow.insertBefore(style, shadow.firstChild)
+      elm.insertBefore(style, elm.firstChild)
     })
+}
+
+if (!isDebug) {
+  // Putting styles into ShadowDom
+  insertCss(shadow, '/assets/content_script.css')
+  insertCss(shadow, '/assets/Popup.css')
 }
 
 // Hide the rootDom while printing.

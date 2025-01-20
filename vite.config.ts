@@ -21,44 +21,46 @@ export default defineConfig(({ mode }) => {
             enableDev: true,
           },
           injectCodeFunction: (cssCode: string, options) => {
+            const upsertCss = (elm: ShadowRoot) => {
+              const fileName = options
+                .attributes!['data-vite-dev-id'].split('/')
+                .pop() as string
+              options.attributes!['data-vite-dev-id'] = fileName
+              const newCssNode = document.createTextNode(cssCode)
+              let style = elm.querySelector(
+                `style[data-vite-dev-id='${fileName}']`,
+              )
+              if (style == null) {
+                // case1. Create a new style element.
+                style = document.createElement('style')
+                for (const attr in options.attributes) {
+                  style.setAttribute(attr, options.attributes[attr])
+                }
+                style.appendChild(newCssNode)
+                elm.appendChild(style)
+              } else {
+                // case2. Update the existing style element.
+                const oldTextNode = style.firstChild
+                if (oldTextNode) {
+                  style.replaceChild(newCssNode, oldTextNode)
+                }
+              }
+            }
             setTimeout(() => {
               try {
                 if (
                   typeof document != 'undefined' &&
                   options.attributes != null
                 ) {
-                  const fineName = options.attributes['data-vite-dev-id']
-                    .split('/')
-                    .pop() as string
                   let targetId = 'selection-command'
                   if (
                     options.attributes['data-vite-dev-id'].match(/command_hub/)
                   ) {
                     targetId = 'selection-command-command-hub'
                   }
-                  options.attributes['data-vite-dev-id'] = fineName
                   const shadow = document.getElementById(targetId)?.shadowRoot
-                  if (shadow != null) {
-                    const newCssNode = document.createTextNode(cssCode)
-                    let style = shadow.querySelector(
-                      `style[data-vite-dev-id='${fineName}']`,
-                    )
-                    if (style == null) {
-                      // case1. Create a new style element.
-                      style = document.createElement('style')
-                      for (const attr in options.attributes) {
-                        style.setAttribute(attr, options.attributes[attr])
-                      }
-                      style.appendChild(newCssNode)
-                      shadow.appendChild(style)
-                    } else {
-                      // case2. Update the existing style element.
-                      const oldTextNode = style.firstChild
-                      if (oldTextNode) {
-                        style.replaceChild(newCssNode, oldTextNode)
-                      }
-                    }
-                  }
+                  if (shadow == null) return
+                  upsertCss(shadow)
                 }
               } catch (e) {
                 console.error('vite-plugin-css-injected-by-js', e)
@@ -71,7 +73,6 @@ export default defineConfig(({ mode }) => {
         watchRegexp: /src/,
       }),
     ],
-    cssCodeSplit: false,
     define: {
       __APP_NAME__: JSON.stringify(packageJson.name),
       __APP_VERSION__: JSON.stringify(packageJson.version),
@@ -86,7 +87,11 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           assetFileNames: (assetInfo) => {
-            const keepNames = ['App.css', 'command_hub.css']
+            const keepNames = [
+              'content_script.css',
+              'Popup.css',
+              'command_hub.css',
+            ]
             if (
               assetInfo.names?.length > 0 &&
               keepNames.includes(assetInfo.names[0])
