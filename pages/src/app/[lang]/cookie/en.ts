@@ -1,4 +1,4 @@
-export default `
+const msg = `
 Selection Command Hub (hereinafter referred to as "the Service") uses cookies to enhance your browsing experience and improve our services. This Cookie Policy explains what cookies are, how we use them, and the choices available to you regarding their use.
 
 ### **1. What Are Cookies?**
@@ -33,3 +33,4 @@ If you have any questions about this Cookie Policy or how we use cookies, please
 
 Effective as of 01/10/2025
 `
+export default msg

@@ -1,6 +1,6 @@
 import { HUB_URL } from '@/const'
 
-export default `
+const msg = `
 本プライバシーポリシーは、Selection Command Hub（以下「本サービス」）におけるユーザーの情報の取り扱いについて定めたものです。本サービスをご利用いただく際には、本ポリシーに同意いただいたものとみなします。
 
 ## **1. 収集する情報**
@@ -52,3 +52,4 @@ export default `
 
 発行日：2025/01/10
 `
+export default msg

@@ -1,6 +1,6 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
 
-export default {
+const lang = {
   name: 'English',
   shorName: 'en',
   languageName: 'English',
@@ -131,3 +131,4 @@ export default {
     decline: 'Decline',
   },
 }
+export default lang

@@ -17,8 +17,8 @@ export function generateStaticParams() {
 type Props = LangProps & { tag: string }
 
 export default async function Page({ params }: { params: Promise<Props> }) {
-  let { lang, tag } = await params
-  tag = decodeURI(tag)
+  const { lang, tag } = await params
+  const _tag = decodeURI(tag)
   return (
     <main className={css.main}>
       <div className={css.menu}>
@@ -29,12 +29,12 @@ export default async function Page({ params }: { params: Promise<Props> }) {
             <span className="ml-0.5">Top</span>
           </Link>
           <h1 className={`${css.pageTitle} mt-1 sm:mt-2 indent-1`}>
-            #<span className="ml-0.5">{tag}</span>
+            #<span className="ml-0.5">{_tag}</span>
           </h1>
         </div>
         <CommandShare lang={lang} />
       </div>
-      <CommandList tagName={tag} />
+      <CommandList tagName={_tag} />
     </main>
   )
 }
