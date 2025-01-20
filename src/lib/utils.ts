@@ -262,3 +262,13 @@ export function hyphen2Underscore(input: string): string {
 export function generateRandomID(): string {
   return Math.random().toString(36).substring(2, 11)
 }
+
+/**
+ * Capitalize the first letter of a string.
+ * @param {string} str The string to capitalize.
+ * @returns {string} The capitalized string.
+ */
+export function capitalizeFirst(str: string): string {
+  if (!str) return str
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}

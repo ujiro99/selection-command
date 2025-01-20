@@ -10,7 +10,8 @@ import {
   SESSION_STORAGE_KEY,
   ChangedCallback,
 } from '@/services/storage'
-import { cn } from '@/lib/utils'
+import { cn, capitalizeFirst } from '@/lib/utils'
+import { PAGE_ACTION_MAX } from '@/const'
 
 export function PageActionRecorder(): JSX.Element {
   const { isRunning, start, stop, subscribe, unsubscribe } =
@@ -18,6 +19,7 @@ export function PageActionRecorder(): JSX.Element {
   const [actions, setActions] = useState<PageActionType[]>([])
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
+  const remain = PAGE_ACTION_MAX - actions.length
 
   const clearState = () => {
     setCurrentId('')
@@ -86,46 +88,55 @@ export function PageActionRecorder(): JSX.Element {
   }, [isRunning])
 
   return (
-    <div className="fixed z-[2147483647] bottom-0 p-4">
-      <div>
-        <ol className="flex gap-2 p-2">
+    <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
+      <div className="inline-block relative left-[50%] translate-x-[-50%]">
+        <div>
+          {isRunning ? (
+            <button
+              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+              onClick={() => stop()}
+            >
+              Stop
+            </button>
+          ) : (
+            <button
+              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+              onClick={() => preview()}
+            >
+              Preview
+            </button>
+          )}
+        </div>
+        <ol className="flex flex-wrap w-[600px] gap-2 mt-2">
           {actions.map((action) => (
             <li
               className={cn(
-                'bg-blue-200 rounded-lg p-2 text-center',
+                'bg-blue-200 rounded-xl p-1.5 text-center',
                 currentId === action.id ? 'bg-green-200' : '',
                 failedId === action.id ? 'bg-red-200' : '',
               )}
               key={action.timestamp}
             >
-              <p className="text-base text-stone-600">{action.type}</p>
-              <p className="truncate w-24 text-sm text-stone-600">{`${action.params.label}`}</p>
+              <p className="text-sm text-stone-600 font-medium">
+                {capitalizeFirst(action.type)}
+              </p>
+              <p className="truncate w-20 text-xs text-stone-600">{`${action.params.label}`}</p>
             </li>
           ))}
-          <li className="bg-stone-200 rounded-lg p-2" key="remaining">
-            残り10Step
-          </li>
+          {remain > 0 && (
+            <li className="bg-stone-200 rounded-lg p-2" key="remaining">
+              {`残り${remain} Step`}
+            </li>
+          )}
         </ol>
       </div>
       <div className="flex gap-2 p-2">
-        <button className="bg-stone-300 rounded-lg p-2" onClick={() => reset()}>
+        <button
+          className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+          onClick={() => reset()}
+        >
           Reset
         </button>
-        {isRunning ? (
-          <button
-            className="bg-stone-300 rounded-lg p-2"
-            onClick={() => stop()}
-          >
-            Stop
-          </button>
-        ) : (
-          <button
-            className="bg-stone-300 rounded-lg p-2"
-            onClick={() => preview()}
-          >
-            Preview
-          </button>
-        )}
       </div>
     </div>
   )
