@@ -30,6 +30,8 @@ export namespace PageActionProps {
     ctrlKey: boolean
     altKey: boolean
     metaKey: boolean
+    targetSelector: string
+    selectorType: SelectorType
   }
 
   export type Scroll = {
@@ -113,21 +115,27 @@ export const PageActionDispatcher = {
     return [true]
   },
 
-  keyboard: async (key: PageActionProps.Keyboard): ActionReturn => {
+  keyboard: async (param: PageActionProps.Keyboard): ActionReturn => {
+    const { label, targetSelector, selectorType, ...p } = param
+    const element = await waitForElement(targetSelector, selectorType)
+    if (element == null) {
+      console.warn(`Element not found for: ${targetSelector}`)
+      return [false, `Element not found: ${label}`]
+    }
     return new Promise((resolve) => {
       const down = new KeyboardEvent('keydown', {
-        ...key,
+        ...p,
         bubbles: true,
         cancelable: true,
       })
-      document.dispatchEvent(down)
+      element.dispatchEvent(down)
       setTimeout(() => {
         const up = new KeyboardEvent('keyup', {
-          ...key,
+          ...param,
           bubbles: true,
           cancelable: true,
         })
-        document.dispatchEvent(up)
+        element.dispatchEvent(up)
         resolve([true])
       }, 50)
     })

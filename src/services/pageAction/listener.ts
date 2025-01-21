@@ -13,7 +13,7 @@ type EventsFunctions = {
 export type EventTypes = keyof EventsFunctions
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
-  if (e.key === 'Enter') return true
+  if (['Tab', 'Enter'].includes(e.key)) return true
   if (e.key === 'Meta') return false
   if (e.ctrlKey || e.metaKey) return true
   return false
@@ -81,6 +81,7 @@ export const PageActionListener = (() => {
     },
     keyboard: (e: KeyboardEvent) => {
       if (!isTargetKey(e)) return
+      let xpath = getXPath(e.target as HTMLElement)
       Ipc.send(BgCommand.addPageAction, {
         type: 'keyboard',
         timestamp: getTimeStamp(),
@@ -93,6 +94,8 @@ export const PageActionListener = (() => {
           ctrlKey: e.ctrlKey,
           altKey: e.altKey,
           metaKey: e.metaKey,
+          targetSelector: xpath,
+          selectorType: SelectorType.xpath,
         } as PageActionProps.Keyboard,
       })
     },
