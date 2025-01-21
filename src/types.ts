@@ -119,7 +119,8 @@ export type SessionData = {
   timestamp: number
 }
 
-type ActionTypes = EventTypes
+export type ControlTypes = 'start' | 'end'
+export type ActionTypes = EventTypes | ControlTypes
 export type PageActionType = {
   id: string
   type: ActionTypes

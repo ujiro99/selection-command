@@ -1,12 +1,23 @@
-import type { PageActionType } from '@/types'
+import type { PageActionType, ControlTypes } from '@/types'
 import { Ipc, Sender, TabCommand } from '@/services/ipc'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { PAGE_ACTION_MAX } from '@/const'
 import { generateRandomID } from '@/lib/utils'
 
+const StartAction = {
+  type: 'start' as ControlTypes,
+  id: generateRandomID(),
+  url: '',
+}
+
+const EndAction = {
+  type: 'end' as ControlTypes,
+  id: generateRandomID(),
+}
+
 export const add = (
   param: PageActionType,
-  _: Sender,
+  sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
@@ -14,12 +25,28 @@ export const add = (
       SESSION_STORAGE_KEY.PAGE_ACTION,
     )
 
-    if (actions.length >= PAGE_ACTION_MAX) {
+    // Insert a start action if actions are empty.
+    if (actions.length === 0) {
+      actions.push({
+        ...StartAction,
+        timestamp: param.timestamp,
+        params: {
+          url: sender.tab?.url ?? '',
+        },
+      })
+    }
+
+    // Remove a end ation.
+    actions = actions.filter((a) => a.type !== 'end')
+
+    // + 1 : Start action
+    if (actions.length >= PAGE_ACTION_MAX + 1) {
       response(true)
       return
     }
 
     param.id = generateRandomID()
+
     if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
       actions.pop()
     } else if (param.type === 'input' && actions.at(-1)?.type === 'input') {
@@ -30,7 +57,12 @@ export const add = (
       }
     }
 
-    await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [...actions, param])
+    // Update actions.
+    await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [
+      ...actions,
+      param,
+      EndAction,
+    ])
     response(true)
   }
   add()

@@ -14,6 +14,10 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { PAGE_ACTION_MAX } from '@/const'
 import type { PageActionType } from '@/types'
 
+const isControlType = (type: string): boolean => {
+  return ['start', 'end'].includes(type)
+}
+
 export function PageActionRecorder(): JSX.Element {
   const Runner = usePageActionRunner()
   const { isRunning } = Runner
@@ -63,8 +67,8 @@ export function PageActionRecorder(): JSX.Element {
   }
 
   useEffect(() => {
-    const addList = (param: PageActionType[]) => {
-      setActions(param ?? [])
+    const addList = (list: PageActionType[]) => {
+      setActions((list ?? []).filter((l) => !isControlType(l.type)))
     }
 
     const init = async () => {

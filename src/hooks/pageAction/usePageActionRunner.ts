@@ -55,10 +55,12 @@ export function usePageActionRunner() {
       TabCommand.executePageAction,
       queueChanged,
     )
+    // Resume execution if the queue is not empty.
+    executeAll()
     return () => {
       Ipc.removeQueueChangedLisner(tabId.current!, TabCommand.executePageAction)
     }
-  }, [tabId])
+  }, [tabId.current])
 
   const execute = async (message: Message) => {
     if (message.command !== TabCommand.executePageAction) return
@@ -70,6 +72,15 @@ export function usePageActionRunner() {
     let msg: string | undefined
     try {
       switch (action.type) {
+        case 'start':
+          const url = action.params.url as string
+          if (url) {
+            location.href = url
+            // Resume until the page is loaded.
+            setStopPreview(true)
+          }
+          result = true
+          break
         case 'click':
           ;[result, msg] = await dispatcher.click(
             action.params as PageActionProps.Click,
@@ -90,6 +101,9 @@ export function usePageActionRunner() {
             action.params as PageActionProps.Scroll,
           )
           break
+        case 'end':
+          result = true
+          break
         default:
           console.warn(`Unknown action type: ${action.type}`)
           window.dispatchEvent(
@@ -109,15 +123,21 @@ export function usePageActionRunner() {
     setIsExecuting(false)
   }
 
-  const start = async () => {
+  const executeAll = async () => {
+    console.log('executeAll')
     if (tabId.current == null) return
-    setStopPreview(false)
-    await Ipc.send(BgCommand.queuePageAction)
     let msg
     do {
       msg = await Ipc.recvQueue(tabId.current, TabCommand.executePageAction)
       msg && (await execute(msg))
     } while (msg && !stopPreview.current)
+  }
+
+  const start = async () => {
+    if (tabId.current == null) return
+    setStopPreview(false)
+    await Ipc.send(BgCommand.queuePageAction)
+    await executeAll()
   }
 
   const stop = async () => {
