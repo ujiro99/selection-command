@@ -3,15 +3,16 @@ import {
   usePageActionRunner,
   RunnerEvent,
 } from '@/hooks/pageAction/usePageActionRunner'
+import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { PageActionListener as Listener } from '@/services/pageAction'
-import { PageActionType } from '@/types'
 import {
   Storage,
-  SESSION_STORAGE_KEY,
+  SESSION_STORAGE_KEY as STORAGE_KEY,
   ChangedCallback,
 } from '@/services/storage'
-import { cn, capitalizeFirst } from '@/lib/utils'
+import { Ipc, BgCommand } from '@/services/ipc'
 import { PAGE_ACTION_MAX } from '@/const'
+import type { PageActionType } from '@/types'
 
 export function PageActionRecorder(): JSX.Element {
   const Runner = usePageActionRunner()
@@ -29,7 +30,7 @@ export function PageActionRecorder(): JSX.Element {
 
   const reset = () => {
     clearState()
-    Listener.reset()
+    Ipc.send(BgCommand.resetPageAction)
   }
 
   const preview = () => {
@@ -48,6 +49,10 @@ export function PageActionRecorder(): JSX.Element {
     Listener.start()
   }
 
+  const removeAction = (id: string) => {
+    Ipc.send(BgCommand.removePageAction, { id })
+  }
+
   const onStart = (e: any) => {
     setCurrentId(e.detail.id)
   }
@@ -58,29 +63,26 @@ export function PageActionRecorder(): JSX.Element {
   }
 
   useEffect(() => {
-    const addActions = (param: PageActionType[]) => {
+    const addList = (param: PageActionType[]) => {
       setActions(param ?? [])
     }
 
     const init = async () => {
       const actions = await Storage.get<PageActionType[]>(
-        SESSION_STORAGE_KEY.PAGE_ACTION,
+        STORAGE_KEY.PAGE_ACTION,
       )
-      addActions(actions)
+      addList(actions)
     }
     init()
 
-    Storage.addListener(
-      SESSION_STORAGE_KEY.PAGE_ACTION,
-      addActions as ChangedCallback,
-    )
+    Storage.addListener(STORAGE_KEY.PAGE_ACTION, addList as ChangedCallback)
     Runner.subscribe(RunnerEvent.Start, onStart)
     Runner.subscribe(RunnerEvent.Failed, onFailed)
 
     return () => {
       Storage.removeListener(
-        SESSION_STORAGE_KEY.PAGE_ACTION,
-        addActions as ChangedCallback,
+        STORAGE_KEY.PAGE_ACTION,
+        addList as ChangedCallback,
       )
       Runner.unsubscribe(RunnerEvent.Start, onStart)
       Runner.unsubscribe(RunnerEvent.Failed, onFailed)
@@ -135,19 +137,13 @@ export function PageActionRecorder(): JSX.Element {
         </div>
         <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
           {actions.map((action) => (
-            <li
-              className={cn(
-                'bg-blue-200 rounded-xl p-1.5 text-center',
-                currentId === action.id ? 'bg-green-200' : '',
-                failedId === action.id ? 'bg-red-200' : '',
-              )}
-              key={action.timestamp}
-            >
-              <p className="text-sm text-stone-600 font-medium">
-                {capitalizeFirst(action.type)}
-              </p>
-              <p className="truncate w-20 text-xs text-stone-600">{`${action.params.label}`}</p>
-            </li>
+            <PageActionItem
+              action={action}
+              currentId={currentId}
+              failedId={failedId}
+              key={action.id}
+              onDeleted={removeAction}
+            />
           ))}
           {remain > 0 && (
             <li className="bg-stone-200 rounded-lg p-2" key="remaining">

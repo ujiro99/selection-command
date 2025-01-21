@@ -421,6 +421,25 @@ const commandFuncs = {
     return true
   },
 
+  [BgCommand.removePageAction]: (
+    param: { id: string },
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const remove = async () => {
+      let actions = await Storage.get<PageActionType[]>(
+        SESSION_STORAGE_KEY.PAGE_ACTION,
+      )
+      await Storage.set(
+        SESSION_STORAGE_KEY.PAGE_ACTION,
+        actions.filter((a) => a.id !== param.id),
+      )
+      response(true)
+    }
+    remove()
+    return true
+  },
+
   [BgCommand.queuePageAction]: (
     _: unknown,
     sender: Sender,

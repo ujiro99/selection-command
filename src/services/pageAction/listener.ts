@@ -146,9 +146,5 @@ export const PageActionListener = (() => {
     window.removeEventListener('scroll', func.scroll)
   }
 
-  function reset(): void {
-    Ipc.send(BgCommand.resetPageAction)
-  }
-
-  return { start, stop, reset }
+  return { start, stop }
 })()
