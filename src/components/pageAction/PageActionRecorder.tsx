@@ -25,11 +25,13 @@ export function PageActionRecorder(): JSX.Element {
   const [isRecording, setIsRecording] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
+  const [failedMessage, setFailedMesage] = useState<string>('')
   const remain = PAGE_ACTION_MAX - actions.length
 
   const clearState = () => {
     setCurrentId('')
     setFailedId('')
+    setFailedMesage('')
   }
 
   const reset = () => {
@@ -63,6 +65,7 @@ export function PageActionRecorder(): JSX.Element {
 
   const onFailed = (e: any) => {
     setFailedId(e.detail.id)
+    setFailedMesage(e.detail.message)
     Runner.stop()
   }
 
@@ -145,6 +148,7 @@ export function PageActionRecorder(): JSX.Element {
               action={action}
               currentId={currentId}
               failedId={failedId}
+              failedMessage={failedMessage}
               key={action.id}
               onDeleted={removeAction}
             />

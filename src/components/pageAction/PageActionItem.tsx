@@ -6,18 +6,20 @@ type Props = {
   action: PageActionType
   currentId: string | undefined
   failedId: string | undefined
+  failedMessage: string | undefined
   onDeleted: (id: string) => void
 }
 
 export function PageActionItem(props: Props): JSX.Element {
-  const { action, currentId, failedId } = props
+  const { action, currentId, failedId, failedMessage } = props
+  const isFailed = failedId === action.id
 
   return (
     <li
       className={cn(
         'relative bg-blue-200 rounded-xl p-1.5 text-center',
         currentId === action.id ? 'bg-green-200' : '',
-        failedId === action.id ? 'bg-red-200' : '',
+        isFailed ? 'bg-red-200' : '',
       )}
       key={action.timestamp}
     >
@@ -25,6 +27,11 @@ export function PageActionItem(props: Props): JSX.Element {
         {capitalizeFirst(action.type)}
       </p>
       <p className="truncate w-20 text-xs text-stone-600">{`${action.params.label}`}</p>
+      {isFailed && (
+        <p className="absolute bottom-[-40px] text-xs leading-3 text-red-600">
+          {failedMessage}
+        </p>
+      )}
       <button
         className={cn(
           'absolute top-[-4px] right-[-4px] bg-white rounded-full p-0.5 border border-stone-300',
