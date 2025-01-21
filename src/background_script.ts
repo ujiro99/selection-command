@@ -5,17 +5,17 @@ import {
   POPUP_OFFSET,
   POPUP_TYPE,
   POPUP_PLACEMENT,
-  PAGE_ACTION_MAX,
 } from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
-import { escapeJson, generateRandomID } from '@/lib/utils'
+import { escapeJson } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
 import { Settings } from '@/services/settings'
-import type { CommandVariable, PageActionType } from '@/types'
-import { Storage, STORAGE_KEY, SESSION_STORAGE_KEY } from '@/services/storage'
+import type { CommandVariable } from '@/types'
+import { Storage, STORAGE_KEY } from '@/services/storage'
 import '@/services/contextMenus'
 import { PopupOption } from '@/services/defaultSettings'
+import { PageActionBackground } from '@/services/pageAction'
 
 const OPTION_PAGE = 'src/options_page.html'
 
@@ -387,91 +387,13 @@ const commandFuncs = {
     return true
   },
 
-  [BgCommand.addPageAction]: (
-    param: PageActionType,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    const add = async () => {
-      let actions = await Storage.get<PageActionType[]>(
-        SESSION_STORAGE_KEY.PAGE_ACTION,
-      )
-
-      if (actions.length >= PAGE_ACTION_MAX) {
-        response(true)
-        return
-      }
-
-      param.id = generateRandomID()
-      if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
-        actions.pop()
-      } else if (param.type === 'input' && actions.at(-1)?.type === 'input') {
-        const selector = param.params.selector
-        const prevSelector = actions.at(-1)?.params.selector
-        if (selector === prevSelector) {
-          actions.pop()
-        }
-      }
-
-      await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [...actions, param])
-      response(true)
-    }
-    add()
-
-    return true
-  },
-
-  [BgCommand.removePageAction]: (
-    param: { id: string },
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    const remove = async () => {
-      let actions = await Storage.get<PageActionType[]>(
-        SESSION_STORAGE_KEY.PAGE_ACTION,
-      )
-      await Storage.set(
-        SESSION_STORAGE_KEY.PAGE_ACTION,
-        actions.filter((a) => a.id !== param.id),
-      )
-      response(true)
-    }
-    remove()
-    return true
-  },
-
-  [BgCommand.queuePageAction]: (
-    _: unknown,
-    sender: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    const queue = async () => {
-      const actions = await Storage.get<PageActionType[]>(
-        SESSION_STORAGE_KEY.PAGE_ACTION,
-      )
-      const tabId = sender.tab?.id
-      if (tabId != null) {
-        for (const action of actions) {
-          await Ipc.sendQueue(
-            tabId,
-            TabCommand.executePageAction,
-            action as PageActionType,
-          )
-        }
-      }
-      response(true)
-    }
-    queue()
-    return true
-  },
-
-  [BgCommand.resetPageAction]: (): boolean => {
-    const reset = async () => {
-      await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [])
-    }
-    reset()
-    return false
-  },
+  //
+  // PageAction
+  //
+  [BgCommand.addPageAction]: PageActionBackground.add,
+  [BgCommand.removePageAction]: PageActionBackground.remove,
+  [BgCommand.resetPageAction]: PageActionBackground.reset,
+  [BgCommand.queuePageAction]: PageActionBackground.execute,
 } as { [key: string]: IpcCallback }
 
 for (const key in BgCommand) {

@@ -42,6 +42,8 @@ export type Message = Request & {
 
 export type MessageQueueCallback = (newMessage: Message | null) => void
 
+export type Sender = chrome.runtime.MessageSender
+
 export type IpcCallback = (
   param: unknown,
   sender: chrome.runtime.MessageSender,
