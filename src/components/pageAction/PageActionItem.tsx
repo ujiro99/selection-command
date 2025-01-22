@@ -1,4 +1,4 @@
-import { cn, capitalizeFirst } from '@/lib/utils'
+import { cn, capitalize } from '@/lib/utils'
 import { PageActionType } from '@/types'
 import { X } from 'lucide-react'
 
@@ -24,7 +24,7 @@ export function PageActionItem(props: Props): JSX.Element {
       key={action.timestamp}
     >
       <p className="text-sm text-stone-600 font-medium">
-        {capitalizeFirst(action.type)}
+        {capitalize(action.type)}
       </p>
       <p className="truncate w-20 text-xs text-stone-600">{`${action.params.label}`}</p>
       {isFailed && (

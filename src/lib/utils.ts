@@ -264,11 +264,19 @@ export function generateRandomID(): string {
 }
 
 /**
- * Capitalize the first letter of a string.
- * @param {string} str The string to capitalize.
- * @returns {string} The capitalized string.
+ * Interpolate a string with variables.
+ * @param {string} template The template string.
+ * @param {object} variables The variables to interpolate.
+ * @returns {string} The interpolated string.
  */
-export function capitalizeFirst(str: string): string {
-  if (!str) return str
-  return str.charAt(0).toUpperCase() + str.slice(1)
+export function safeInterpolate(
+  template: string,
+  variables: { [key: string]: string },
+): string {
+  return template.replace(/\$\{(\w+)\}/g, (_, variableName) => {
+    if (variables.hasOwnProperty(variableName)) {
+      return variables[variableName]
+    }
+    return ''
+  })
 }
