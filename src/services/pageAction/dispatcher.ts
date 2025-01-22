@@ -115,6 +115,36 @@ export const PageActionDispatcher = {
     return [true]
   },
 
+  doubleCilck: async (param: PageActionProps.Click): ActionReturn => {
+    const { selector, selectorType } = param
+    const user = userEvent.setup()
+
+    const element = await waitForElement(selector, selectorType)
+    if (element) {
+      await user.dblClick(element)
+    } else {
+      console.warn(`Element not found for: ${selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
+
+    return [true]
+  },
+
+  tripleClick: async (param: PageActionProps.Click): ActionReturn => {
+    const { selector, selectorType } = param
+    const user = userEvent.setup()
+
+    const element = await waitForElement(selector, selectorType)
+    if (element) {
+      await user.tripleClick(element)
+    } else {
+      console.warn(`Element not found for: ${selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
+
+    return [true]
+  },
+
   keyboard: async (param: PageActionProps.Keyboard): ActionReturn => {
     const { label, targetSelector, selectorType, ...p } = param
     const element = await waitForElement(targetSelector, selectorType)

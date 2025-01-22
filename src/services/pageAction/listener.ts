@@ -5,6 +5,8 @@ import { SelectorType, PageActionProps } from '@/services/pageAction'
 
 type EventsFunctions = {
   click: (e: MouseEvent) => void
+  doubleClick: (xpath: string, label: string) => void
+  tripleClick: (xpath: string, label: string) => void
   keyboard: (e: KeyboardEvent) => void
   input: (e: Event) => void
   scroll: () => void
@@ -69,8 +71,36 @@ export const PageActionListener = (() => {
         xpath = getXPath(targetAtPoint)
         label = getLabel(targetAtPoint as Element)
       }
+      if (e.detail === 2) {
+        return func.doubleClick(xpath, label)
+      }
+      if (e.detail === 3) {
+        return func.tripleClick(xpath, label)
+      }
       Ipc.send(BgCommand.addPageAction, {
         type: 'click',
+        timestamp: getTimeStamp(),
+        params: {
+          label,
+          selector: xpath,
+          selectorType: SelectorType.xpath,
+        } as PageActionProps.Click,
+      })
+    },
+    doubleClick(xpath: string, label: string) {
+      Ipc.send(BgCommand.addPageAction, {
+        type: 'doubleClick',
+        timestamp: getTimeStamp(),
+        params: {
+          label,
+          selector: xpath,
+          selectorType: SelectorType.xpath,
+        } as PageActionProps.Click,
+      })
+    },
+    tripleClick(xpath: string, label: string) {
+      Ipc.send(BgCommand.addPageAction, {
+        type: 'tripleClick',
         timestamp: getTimeStamp(),
         params: {
           label,

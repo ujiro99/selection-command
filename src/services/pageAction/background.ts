@@ -47,7 +47,14 @@ export const add = (
 
     param.id = generateRandomID()
 
-    if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
+    if (param.type === 'doubleClick' && actions.at(-1)?.type === 'click') {
+      actions.pop()
+    } else if (
+      param.type === 'tripleClick' &&
+      actions.at(-1)?.type === 'doubleClick'
+    ) {
+      actions.pop()
+    } else if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
       actions.pop()
     } else if (param.type === 'input' && actions.at(-1)?.type === 'input') {
       const selector = param.params.selector

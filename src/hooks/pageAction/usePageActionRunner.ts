@@ -86,6 +86,16 @@ export function usePageActionRunner() {
             action.params as PageActionProps.Click,
           )
           break
+        case 'doubleClick':
+          ;[result, msg] = await dispatcher.doubleCilck(
+            action.params as PageActionProps.Click,
+          )
+          break
+        case 'tripleClick':
+          ;[result, msg] = await dispatcher.tripleClick(
+            action.params as PageActionProps.Click,
+          )
+          break
         case 'keyboard':
           ;[result, msg] = await dispatcher.keyboard(
             action.params as PageActionProps.Keyboard,
