@@ -22,10 +22,11 @@ function Image(props: Props): JSX.Element {
     src = `${BASE_PATH}${props.src}`
     return (
       <NextImage
+        {...props}
         className={cn('dark:invert', props.className)}
+        src={src}
         width={`${props.width ?? 20}`}
         height={`${props.height ?? 20}`}
-        {...props}
       />
     )
   }
