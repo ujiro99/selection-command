@@ -222,6 +222,11 @@ export function getSelectorFromElement(el: Element): string {
   return path.join(' > ')
 }
 
+/**
+ * Check if the xpath is valid.
+ * @param {string} xpath The xpath to check.
+ * @returns {boolean} True if the xpath is valid.
+ */
 export type XPath = string
 export function isValidXPath(xpath: string): xpath is XPath {
   try {
@@ -231,4 +236,25 @@ export function isValidXPath(xpath: string): xpath is XPath {
   } catch {
     return false
   }
+}
+
+/**
+ * Get scrollable ancestors of the specified element.
+ */
+export function getScrollableAncestors(element: HTMLElement): HTMLElement[] {
+  const scrollableAncestors: HTMLElement[] = []
+  let parent = element.parentElement
+
+  while (parent) {
+    const style = window.getComputedStyle(parent)
+    if (
+      style.overflow.indexOf('scroll') >= 0 ||
+      style.overflow.indexOf('auto') >= 0
+    ) {
+      scrollableAncestors.push(parent)
+    }
+    parent = parent.parentElement
+  }
+
+  return scrollableAncestors
 }

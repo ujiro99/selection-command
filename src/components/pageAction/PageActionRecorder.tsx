@@ -4,6 +4,7 @@ import {
   RunnerEvent,
 } from '@/hooks/pageAction/usePageActionRunner'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
+import { InputMenu } from '@/components/pageAction/InputMenu'
 import { PageActionListener as Listener } from '@/services/pageAction'
 import {
   Storage,
@@ -109,6 +110,7 @@ export function PageActionRecorder(): JSX.Element {
 
   return (
     <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
+      <InputMenu />
       <div className="inline-block relative left-[50%] translate-x-[-50%]">
         <div className="flex gap-2">
           {isRecording ? (
