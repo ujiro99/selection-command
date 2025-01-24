@@ -156,6 +156,7 @@ export function InputMenu(): JSX.Element {
 
     const onFocusIn = (e: any) => {
       if (!isTargetEditable(e.target)) return
+      if (isPopup(e.target)) return
       setMenuVisible(true)
       updateTarget(e)
     }
