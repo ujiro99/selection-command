@@ -85,6 +85,31 @@ function getCaretCharacterOffset(element: HTMLElement | Text): number {
   return cloned.toString().length
 }
 
+const insertText = (value: string, targetElm: HTMLElement | Text) => {
+  if (isInput(targetElm)) {
+    const pos = getCaretCharacterOffset(targetElm)
+    const text = targetElm.value
+    const newText = text.slice(0, pos) + value + text.slice(pos)
+    targetElm.value = newText
+  } else if (isTextNode(targetElm)) {
+    const pos = getCaretCharacterOffset(targetElm)
+    const text = targetElm.nodeValue
+    const newText = text.slice(0, pos) + value + text.slice(pos)
+    targetElm.nodeValue = newText
+  } else {
+    const pos = getCaretCharacterOffset(targetElm)
+    const text = targetElm.innerText
+    const newText = text.slice(0, pos) + value + text.slice(pos)
+    targetElm.innerText = newText
+  }
+  targetElm.dispatchEvent(
+    new InputEvent('input', {
+      bubbles: true,
+      cancelable: true,
+    }),
+  )
+}
+
 const calcAlign = (
   elm: HTMLElement | Text,
   x: number,
@@ -202,34 +227,16 @@ export function InputMenu(): JSX.Element {
   const onClickItem = async (menu: INSERT) => {
     switch (menu) {
       case INSERT.SELECTED_TEXT:
-        const value = '<テキストが挿入されます>'
-        console.log('value', value)
-        if (isInput(targetElm)) {
-          const pos = getCaretCharacterOffset(targetElm)
-          const text = targetElm.value
-          const newText = text.slice(0, pos) + value + text.slice(pos)
-          targetElm.value = newText
-        } else if (isTextNode(targetElm)) {
-          const pos = getCaretCharacterOffset(targetElm)
-          const text = targetElm.nodeValue
-          const newText = text.slice(0, pos) + value + text.slice(pos)
-          targetElm.nodeValue = newText
-        } else {
-          const pos = getCaretCharacterOffset(targetElm)
-          const text = targetElm.innerText
-          const newText = text.slice(0, pos) + value + text.slice(pos)
-          targetElm.innerText = newText
-        }
-        targetElm.dispatchEvent(
-          new InputEvent('input', {
-            bubbles: true,
-            cancelable: true,
-          }),
-        )
+        const selected = '{{選択テキストが挿入されます}}'
+        insertText(selected, targetElm)
         break
       case INSERT.URL:
+        const url = '{{URLが挿入されます}}'
+        insertText(url, targetElm)
         break
       case INSERT.CLIPBOARD:
+        const clipboard = '{{クリップボードから挿入されます}}'
+        insertText(clipboard, targetElm)
         break
     }
   }
@@ -277,7 +284,8 @@ export function InputMenu(): JSX.Element {
                 </MenubarTrigger>
                 <MenubarContent>
                   <InputMenuItem
-                    onClick={() => onClickItem(INSERT.SELECTED_TEXT)}
+                    onClick={onClickItem}
+                    value={INSERT.SELECTED_TEXT}
                   >
                     <TextCursorInput
                       size={16}
@@ -285,11 +293,11 @@ export function InputMenu(): JSX.Element {
                     />
                     選択テキスト
                   </InputMenuItem>
-                  <InputMenuItem>
+                  <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
                     <Link2 size={16} className="mr-2 stroke-gray-600" />
                     表示元URL
                   </InputMenuItem>
-                  <InputMenuItem>
+                  <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
                     <Clipboard size={16} className="mr-2 stroke-gray-600" />
                     クリップボード
                   </InputMenuItem>
@@ -306,14 +314,20 @@ export function InputMenu(): JSX.Element {
 
 type ItemProps = {
   children: React.ReactNode
-  onClick?: () => void
+  value: INSERT
+  onClick: (menu: INSERT) => void
 }
 
 function InputMenuItem(props: ItemProps): JSX.Element {
+  const onClick = (e: React.MouseEvent) => {
+    props.onClick((e.target as HTMLDivElement).dataset.value as INSERT)
+  }
+
   return (
     <MenubarItem
-      onClick={props.onClick}
+      onClick={onClick}
       className="px-3 py-2 text-sm font-medium text-gray-700 cursor-pointer"
+      data-value={props.value}
     >
       {props.children}
     </MenubarItem>
