@@ -233,6 +233,12 @@ export function InputMenu(): JSX.Element {
     }
   }
 
+  const onMouseEnter = () => {
+    if (selectedMenu !== MENU.INSERT) {
+      setSelectedMenu(MENU.INSERT)
+    }
+  }
+
   const anchor = isTextNode(targetElm) ? targetElm.parentElement : targetElm
 
   return (
@@ -254,6 +260,7 @@ export function InputMenu(): JSX.Element {
                     disabled && 'opacity-50 bg-gray-200 cursor-not-allowed',
                   )}
                   disabled={disabled}
+                  onMouseEnter={onMouseEnter}
                 >
                   <img
                     src={iconSrc}
