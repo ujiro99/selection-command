@@ -29,7 +29,9 @@ enum INSERT {
   CLIPBOARD = 'clipboard',
 }
 
-const isTargetEditable = (target: EventTarget | null): boolean => {
+const isInput = (
+  target: EventTarget | null,
+): target is HTMLInputElement | HTMLTextAreaElement => {
   if (target == null) return false
   if (target instanceof HTMLInputElement) {
     return [
@@ -47,77 +49,129 @@ const isTargetEditable = (target: EventTarget | null): boolean => {
   if (target instanceof HTMLTextAreaElement) {
     return true
   }
+  return false
+}
+
+const isHTMLElement = (elm: any | null): elm is HTMLElement => {
+  return elm instanceof HTMLElement
+}
+
+const isTextNode = (node: any | null): node is Text => {
+  if (node == null) return false
+  return node.nodeType === Node.TEXT_NODE
+}
+
+const isTargetEditable = (target: EventTarget | null): boolean => {
+  if (target == null) return false
+  if (isInput(target)) return true
   if (target instanceof HTMLElement) {
     return target.isContentEditable
   }
   return false
 }
 
-function getCaretCharacterOffsetWithin(element: HTMLElement): number {
+function getCaretCharacterOffset(element: HTMLElement | Text): number {
+  if (isInput(element)) {
+    return element.selectionStart ?? 0
+  }
   const selection = window.getSelection()
   if (!selection || selection.rangeCount === 0) {
     return 0
   }
   const range = selection.getRangeAt(0)
-  const preCaretRange = range.cloneRange()
-  preCaretRange.selectNodeContents(element)
-  preCaretRange.setEnd(range.endContainer, range.endOffset)
-  return preCaretRange.toString().length
+  const cloned = range.cloneRange()
+  cloned.selectNodeContents(element)
+  cloned.setEnd(range.endContainer, range.endOffset)
+  return cloned.toString().length
 }
 
-type Measurable = {
-  getBoundingClientRect(): DOMRect
+const calcAlign = (
+  elm: HTMLElement | Text,
+  x: number,
+): 'start' | 'center' | 'end' => {
+  if (isTextNode(elm)) {
+    elm = elm.parentElement as HTMLElement
+  }
+  try {
+    const rect = elm.getBoundingClientRect()
+    const relativeX = (x ?? 0) - rect.x
+    const rect3 = rect.width / 3
+    return rect3 > relativeX
+      ? 'start'
+      : rect3 * 2 < relativeX
+        ? 'end'
+        : 'center'
+  } catch (e) {
+    console.error(e)
+    return 'center'
+  }
 }
 
-const isHTMLElement = (elm: any): elm is HTMLElement => {
-  return elm instanceof HTMLElement
+type useDelayProps = {
+  visible: boolean
+  updater: (v: boolean) => void
 }
-
-const calcAlign = (elm: Measurable, x: number): 'start' | 'center' | 'end' => {
-  const rect = elm.getBoundingClientRect()
-  const relativeX = (x ?? 0) - rect.x
-  const rect3 = rect.width / 3
-  return rect3 > relativeX ? 'start' : rect3 * 2 < relativeX ? 'end' : 'center'
+const useVisibleDelay = (props: useDelayProps) => {
+  const { visible, updater } = props
+  useEffect(() => {
+    let delayTimer: NodeJS.Timeout
+    if (!visible) {
+      // Exit transition
+      delayTimer = setTimeout(() => {
+        updater(false)
+      }, EXIT_DURATION)
+    } else {
+      // Enter transition
+      delayTimer = setTimeout(() => {
+        updater(true)
+      }, 200)
+    }
+    return () => {
+      clearTimeout(delayTimer)
+    }
+  }, [visible])
 }
 
 export function InputMenu(): JSX.Element {
-  const [targetElm, setTargetElm] = useState<HTMLElement | null>(null)
+  const [targetElm, setTargetElm] = useState<HTMLElement | Text | null>(null)
   const [disabled, setDisabled] = useState(false)
   const [mousePos, setMousePos] = useState<Point | null>(null)
-  const [visible, setVisible] = useState(false)
+  const [menuVisible, setMenuVisible] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
   const [selectedMenu, setSelectedMenu] = useState('')
 
+  useVisibleDelay({ visible: menuVisible, updater: setShouldRender })
+
   useEffect(() => {
+    const updateTarget = (e: Event) => {
+      const s = window.getSelection()
+      if (isInput(e.target)) {
+        setTargetElm(e.target)
+      } else if (isHTMLElement(s?.focusNode)) {
+        setTargetElm(s.focusNode)
+      } else if (isTextNode(s?.focusNode)) {
+        setTargetElm(s.focusNode)
+      }
+    }
+
     const onFocusIn = (e: any) => {
       if (!isTargetEditable(e.target)) return
-      console.log('focusin', e)
-      setVisible(true)
-      const s = window.getSelection()
-      if (s == null || s.rangeCount === 0) return
-      if (isHTMLElement(s.focusNode?.parentNode)) {
-        setTargetElm(s.focusNode?.parentNode ?? e.target)
-      }
+      setMenuVisible(true)
+      updateTarget(e)
     }
 
     const onFocusOut = (e: any) => {
       if (!isTargetEditable(e.target)) return
       if (isPopup(e.relatedTarget)) return
-      console.log('focusout', e)
-      setVisible(false)
+      setMenuVisible(false)
       setTargetElm(null)
     }
 
     const onClick = (e: MouseEvent) => {
       if (!isTargetEditable(e.target)) return
       if (isPopup(e.target as Element)) return
-      console.log('click', e)
       setMousePos({ x: e.clientX, y: e.clientY })
-      const s = window.getSelection()
-      if (s == null || s.rangeCount === 0) return
-      if (isHTMLElement(s.focusNode?.parentNode)) {
-        setTargetElm(s.focusNode?.parentNode ?? null)
-      }
+      updateTarget(e)
       if (isHTMLElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
@@ -134,27 +188,7 @@ export function InputMenu(): JSX.Element {
       window.removeEventListener('focusout', onFocusOut)
       window.removeEventListener('click', onClick)
     }
-  }, [])
-
-  useEffect(() => {
-    let transitionTimer: NodeJS.Timeout
-    let delayTimer: NodeJS.Timeout
-    if (!visible) {
-      // Exit transition
-      delayTimer = setTimeout(() => {
-        setShouldRender(false)
-      }, EXIT_DURATION)
-    } else {
-      // Enter transition
-      delayTimer = setTimeout(() => {
-        setShouldRender(true)
-      }, 200)
-    }
-    return () => {
-      clearTimeout(transitionTimer)
-      clearTimeout(delayTimer)
-    }
-  }, [visible])
+  }, [setTargetElm, setMenuVisible, setDisabled, setMousePos])
 
   const noFocus = (e: Event) => e.preventDefault()
 
@@ -165,14 +199,26 @@ export function InputMenu(): JSX.Element {
   const isOpen = selectedMenu === MENU.INSERT
 
   const onClickItem = async (menu: INSERT) => {
-    console.log('onClickItem', menu, targetElm)
     switch (menu) {
       case INSERT.SELECTED_TEXT:
         const value = '<テキストが挿入されます>'
-        const pos = getCaretCharacterOffsetWithin(targetElm)
-        const text = targetElm.innerText
-        const newText = text.slice(0, pos) + value + text.slice(pos)
-        targetElm.innerText = newText
+        console.log('value', value)
+        if (isInput(targetElm)) {
+          const pos = getCaretCharacterOffset(targetElm)
+          const text = targetElm.value
+          const newText = text.slice(0, pos) + value + text.slice(pos)
+          targetElm.value = newText
+        } else if (isTextNode(targetElm)) {
+          const pos = getCaretCharacterOffset(targetElm)
+          const text = targetElm.nodeValue
+          const newText = text.slice(0, pos) + value + text.slice(pos)
+          targetElm.nodeValue = newText
+        } else {
+          const pos = getCaretCharacterOffset(targetElm)
+          const text = targetElm.innerText
+          const newText = text.slice(0, pos) + value + text.slice(pos)
+          targetElm.innerText = newText
+        }
         targetElm.dispatchEvent(
           new InputEvent('input', {
             bubbles: true,
@@ -187,10 +233,12 @@ export function InputMenu(): JSX.Element {
     }
   }
 
+  const anchor = isTextNode(targetElm) ? targetElm.parentElement : targetElm
+
   return (
     <>
-      <Popover open={visible}>
-        <PopoverAnchor virtualRef={{ current: targetElm }} />
+      <Popover open={menuVisible}>
+        <PopoverAnchor virtualRef={{ current: anchor }} />
         {shouldRender && (
           <PopoverContent
             className="pointer-events-auto"
@@ -243,7 +291,7 @@ export function InputMenu(): JSX.Element {
           </PopoverContent>
         )}
       </Popover>
-      <FocusOutline elm={targetElm} disabled={disabled} />
+      <FocusOutline elm={anchor} disabled={disabled} />
     </>
   )
 }
@@ -271,36 +319,60 @@ type FocusOutlineProps = {
 
 function FocusOutline(props: FocusOutlineProps): JSX.Element {
   const { elm, disabled } = props
+  const [container, setContainer] = useState<HTMLElement | null>(null)
   const [rect, setRect] = useState<DOMRect>()
+  const [shouldRender, setShouldRender] = useState(false)
+  const visible = elm != null
+
+  useVisibleDelay({ visible, updater: setShouldRender })
 
   useEffect(() => {
     if (elm == null) return
 
     const updatePosition = () => {
-      setRect(elm.getBoundingClientRect())
+      requestAnimationFrame(() => {
+        setRect(container?.getBoundingClientRect())
+      })
     }
-    updatePosition()
+    const cntnr = isTextNode(elm) ? elm.parentElement : elm
+    setContainer(cntnr)
+    setRect(cntnr?.getBoundingClientRect())
 
     const ancestors = getScrollableAncestors(elm)
     ancestors.forEach((a) => {
       a.addEventListener('scroll', updatePosition)
     })
+    window.addEventListener('focusin', updatePosition)
     window.addEventListener('scroll', updatePosition)
     window.addEventListener('input', updatePosition)
+    document.addEventListener('selectionchange', updatePosition)
     return () => {
       ancestors.forEach((a) => {
         a.removeEventListener('scroll', updatePosition)
       })
+      window.removeEventListener('focusin', updatePosition)
       window.removeEventListener('scroll', updatePosition)
       window.removeEventListener('input', updatePosition)
+      document.removeEventListener('selectionchange', updatePosition)
     }
-  }, [elm])
+  }, [elm, setRect, setContainer, container])
 
-  if (elm == null || rect == null) return <></>
+  useEffect(() => {
+    if (!shouldRender) return
+    requestAnimationFrame(() => {
+      setRect(container?.getBoundingClientRect())
+    })
+  }, [shouldRender])
+
+  if (elm == null || rect == null || !visible) return <></>
 
   return (
     <div
-      className={cn('border-2 border-blue-500', disabled && 'border-red-500')}
+      className={cn(
+        'border-2 border-blue-500 opacity-0 transition-opacity duration-150',
+        shouldRender && 'opacity-100',
+        disabled && 'border-red-500',
+      )}
       style={{
         position: 'fixed',
         top: rect.top - 4,
