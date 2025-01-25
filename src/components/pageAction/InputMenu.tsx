@@ -70,36 +70,50 @@ const isTargetEditable = (target: EventTarget | null): boolean => {
   return false
 }
 
-function getCaretCharacterOffset(element: HTMLElement | Text): number {
-  if (isInput(element)) {
-    return element.selectionStart ?? 0
+function getSelectionOffsets(elm: HTMLElement | Text): {
+  start: number
+  end: number
+} {
+  if (elm instanceof HTMLInputElement || elm instanceof HTMLTextAreaElement) {
+    return {
+      start: elm.selectionStart ?? 0,
+      end: elm.selectionEnd ?? 0,
+    }
   }
+
   const selection = window.getSelection()
   if (!selection || selection.rangeCount === 0) {
-    return 0
+    return { start: 0, end: 0 }
   }
+
   const range = selection.getRangeAt(0)
-  const cloned = range.cloneRange()
-  cloned.selectNodeContents(element)
-  cloned.setEnd(range.endContainer, range.endOffset)
-  return cloned.toString().length
+  const clonedRange = range.cloneRange()
+
+  // Calculate start position
+  clonedRange.selectNodeContents(elm)
+  clonedRange.setEnd(range.startContainer, range.startOffset)
+  const start = clonedRange.toString().length
+
+  // Calculate end position
+  clonedRange.setEnd(range.endContainer, range.endOffset)
+  const end = clonedRange.toString().length
+
+  return { start, end }
 }
 
 const insertText = (value: string, targetElm: HTMLElement | Text) => {
+  const { start, end } = getSelectionOffsets(targetElm)
   if (isInput(targetElm)) {
-    const pos = getCaretCharacterOffset(targetElm)
     const text = targetElm.value
-    const newText = text.slice(0, pos) + value + text.slice(pos)
+    const newText = text.slice(0, start) + value + text.slice(end)
     targetElm.value = newText
   } else if (isTextNode(targetElm)) {
-    const pos = getCaretCharacterOffset(targetElm)
     const text = targetElm.nodeValue
-    const newText = text.slice(0, pos) + value + text.slice(pos)
+    const newText = text.slice(0, start) + value + text.slice(end)
     targetElm.nodeValue = newText
   } else {
-    const pos = getCaretCharacterOffset(targetElm)
     const text = targetElm.innerText
-    const newText = text.slice(0, pos) + value + text.slice(pos)
+    const newText = text.slice(0, start) + value + text.slice(end)
     targetElm.innerText = newText
   }
   targetElm.dispatchEvent(
@@ -216,10 +230,9 @@ export function InputMenu(): JSX.Element {
     }
   }, [setTargetElm, setMenuVisible, setDisabled, setMousePos])
 
-  const noFocus = (e: Event) => e.preventDefault()
-
   if (targetElm == null) return <></>
 
+  const anchor = isTextNode(targetElm) ? targetElm.parentElement : targetElm
   const align = calcAlign(targetElm, mousePos?.x ?? 0)
   const iconSrc = chrome.runtime.getURL('/icon128.png')
   const isOpen = selectedMenu === MENU.INSERT
@@ -247,7 +260,7 @@ export function InputMenu(): JSX.Element {
     }
   }
 
-  const anchor = isTextNode(targetElm) ? targetElm.parentElement : targetElm
+  const noFocus = (e: Event) => e.preventDefault()
 
   return (
     <>
@@ -322,11 +335,10 @@ function InputMenuItem(props: ItemProps): JSX.Element {
   const onClick = (e: React.MouseEvent) => {
     props.onClick((e.target as HTMLDivElement).dataset.value as INSERT)
   }
-
   return (
     <MenubarItem
       onClick={onClick}
-      className="px-3 py-2 text-sm font-medium text-gray-700 cursor-pointer"
+      className="px-2.5 py-2 text-sm font-medium text-gray-700 cursor-pointer"
       data-value={props.value}
     >
       {props.children}
