@@ -258,3 +258,13 @@ export function getScrollableAncestors(element: HTMLElement): HTMLElement[] {
 
   return scrollableAncestors
 }
+
+/**
+ * check if the node is a text node.
+ * @param {Node} node The node to check.
+ * @returns {boolean} True if the node is a text node.
+ */
+export const isTextNode = (node: any | null): node is Text => {
+  if (node == null) return false
+  return node.nodeType === Node.TEXT_NODE
+}

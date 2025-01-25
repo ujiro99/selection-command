@@ -17,7 +17,7 @@ import {
 import { EXIT_DURATION } from '@/const'
 import { Point } from '@/types'
 import { isPopup, cn } from '@/lib/utils'
-import { getScrollableAncestors } from '@/services/dom'
+import { getScrollableAncestors, isTextNode } from '@/services/dom'
 
 enum MENU {
   INSERT = 'insert',
@@ -54,11 +54,6 @@ const isInput = (
 
 const isHTMLElement = (elm: any | null): elm is HTMLElement => {
   return elm instanceof HTMLElement
-}
-
-const isTextNode = (node: any | null): node is Text => {
-  if (node == null) return false
-  return node.nodeType === Node.TEXT_NODE
 }
 
 const isTargetEditable = (target: EventTarget | null): boolean => {

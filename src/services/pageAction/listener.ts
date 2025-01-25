@@ -2,6 +2,7 @@ import getXPath from 'get-xpath'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { isPopup, isEmpty } from '@/lib/utils'
 import { SelectorType, PageActionProps } from '@/services/pageAction'
+import { isTextNode } from '@/services/dom'
 
 type EventsFunctions = {
   click: (e: MouseEvent) => void
@@ -21,15 +22,15 @@ const isTargetKey = (e: KeyboardEvent): boolean => {
   return false
 }
 
-const isInput = (e: HTMLElement): e is HTMLInputElement => {
+const isInput = (e: any): e is HTMLInputElement => {
   return e instanceof HTMLInputElement
 }
 
-const isTextarea = (e: HTMLElement): e is HTMLTextAreaElement => {
+const isTextarea = (e: any): e is HTMLTextAreaElement => {
   return e instanceof HTMLTextAreaElement
 }
 
-const isEditable = (e: HTMLElement): boolean => {
+const isEditable = (e: any): boolean => {
   return e.isContentEditable
 }
 
@@ -47,7 +48,7 @@ const getModifierKey = (e: KeyboardEvent): string => {
 const getTimeStamp = (): number => Date.now()
 
 const getLabel = (e: Element): string => {
-  if (e instanceof HTMLInputElement || e instanceof HTMLTextAreaElement) {
+  if (isInput(e) || isTextarea(e)) {
     return !isEmpty(e.name)
       ? e.name
       : !isEmpty(e.placeholder)
@@ -130,12 +131,15 @@ export const PageActionListener = (() => {
       })
     },
     input: (e: Event) => {
-      const target = e.target as HTMLElement
+      let target = e.target as HTMLElement
       let value
       if (isInput(target) || isTextarea(target)) {
         value = target.value
       } else if (isEditable(target)) {
         value = target.innerText
+      } else if (isTextNode(target)) {
+        value = target.nodeValue
+        target = target.parentElement as HTMLElement
       }
       if (value != null) {
         Ipc.send(BgCommand.addPageAction, {

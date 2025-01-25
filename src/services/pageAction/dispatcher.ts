@@ -177,7 +177,7 @@ export const PageActionDispatcher = {
 
     const element = await waitForElement(selector, selectorType)
     if (element) {
-      await user.type(element, value)
+      await user.type(element, value, { skipClick: true })
     } else {
       console.warn(`Element not found for: ${selector}`)
       return [false, `Element not found: ${param.label}`]
