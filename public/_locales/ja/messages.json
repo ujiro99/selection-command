@@ -469,5 +469,14 @@
   },
   "Option_zod_url": {
     "message": "URL形式で入力してください。"
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "選択テキストが挿入されます"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "起動元のURLが挿入されます"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "クリップボードから挿入されます"
   }
 }

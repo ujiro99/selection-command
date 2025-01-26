@@ -1,8 +1,15 @@
 import getXPath from 'get-xpath'
-import { Ipc, BgCommand } from '@/services/ipc'
 import { isPopup, isEmpty } from '@/lib/utils'
-import { SelectorType, PageActionProps } from '@/services/pageAction'
+import { Ipc, BgCommand } from '@/services/ipc'
+import {
+  SelectorType,
+  PageActionProps,
+  INSERT,
+  InsertMark,
+  LocaleKey,
+} from '@/services/pageAction'
 import { isTextNode } from '@/services/dom'
+import { t } from '@/services/i18n'
 
 type EventsFunctions = {
   click: (e: MouseEvent) => void
@@ -132,7 +139,7 @@ export const PageActionListener = (() => {
     },
     input: (e: Event) => {
       let target = e.target as HTMLElement
-      let value
+      let value: string | null = null
       if (isInput(target) || isTextarea(target)) {
         value = target.value
       } else if (isEditable(target)) {
@@ -142,6 +149,15 @@ export const PageActionListener = (() => {
         target = target.parentElement as HTMLElement
       }
       if (value != null) {
+        const localedMarks = {
+          [t(LocaleKey + INSERT.SELECTED_TEXT)]:
+            InsertMark[INSERT.SELECTED_TEXT],
+          [t(LocaleKey + INSERT.URL)]: InsertMark[INSERT.URL],
+          [t(LocaleKey + INSERT.CLIPBOARD)]: InsertMark[INSERT.CLIPBOARD],
+        }
+        Object.entries(localedMarks).forEach(([key, val]) => {
+          value = value!.replace(new RegExp(key, 'g'), val)
+        })
         Ipc.send(BgCommand.addPageAction, {
           type: 'input',
           timestamp: getTimeStamp(),

@@ -18,15 +18,11 @@ import { EXIT_DURATION } from '@/const'
 import { Point } from '@/types'
 import { isPopup, cn } from '@/lib/utils'
 import { getScrollableAncestors, isTextNode } from '@/services/dom'
+import { t } from '@/services/i18n'
+import { INSERT, LocaleKey } from '@/services/pageAction'
 
 enum MENU {
   INSERT = 'insert',
-}
-
-enum INSERT {
-  SELECTED_TEXT = 'selected_text',
-  URL = 'url',
-  CLIPBOARD = 'clipboard',
 }
 
 const isInput = (
@@ -96,19 +92,20 @@ function getSelectionOffsets(elm: HTMLElement | Text): {
   return { start, end }
 }
 
-const insertText = (value: string, targetElm: HTMLElement | Text) => {
+const insertText = (targetElm: HTMLElement | Text, value: string) => {
+  console.log('insertText', value, targetElm)
   const { start, end } = getSelectionOffsets(targetElm)
   if (isInput(targetElm)) {
     const text = targetElm.value
-    const newText = text.slice(0, start) + value + text.slice(end)
+    const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)
     targetElm.value = newText
   } else if (isTextNode(targetElm)) {
     const text = targetElm.nodeValue
-    const newText = text.slice(0, start) + value + text.slice(end)
+    const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)
     targetElm.nodeValue = newText
   } else {
     const text = targetElm.innerText
-    const newText = text.slice(0, start) + value + text.slice(end)
+    const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)
     targetElm.innerText = newText
   }
   targetElm.dispatchEvent(
@@ -233,20 +230,7 @@ export function InputMenu(): JSX.Element {
   const isOpen = selectedMenu === MENU.INSERT
 
   const onClickItem = async (menu: INSERT) => {
-    switch (menu) {
-      case INSERT.SELECTED_TEXT:
-        const selected = '{{選択テキストが挿入されます}}'
-        insertText(selected, targetElm)
-        break
-      case INSERT.URL:
-        const url = '{{URLが挿入されます}}'
-        insertText(url, targetElm)
-        break
-      case INSERT.CLIPBOARD:
-        const clipboard = '{{クリップボードから挿入されます}}'
-        insertText(clipboard, targetElm)
-        break
-    }
+    insertText(targetElm, t(LocaleKey + menu))
   }
 
   const onMouseEnter = () => {

@@ -469,5 +469,17 @@
   },
   "Option_zod_url": {
     "message": "Please enter in URL format."
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "Selected text will be inserted",
+    "description": "for INSERT.SELECTED_TEXT"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "The URL of the origin will be inserted",
+    "description": "for INSERT.URL"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "The clipboard text  will be inserted",
+    "description": "for INSERT.CLIPBOARD"
   }
 }

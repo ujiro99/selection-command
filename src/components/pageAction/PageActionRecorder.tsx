@@ -3,6 +3,7 @@ import {
   usePageActionRunner,
   RunnerEvent,
 } from '@/hooks/pageAction/usePageActionRunner'
+import { usePageActionContext } from '@/hooks/usePageActionContext'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { InputMenu } from '@/components/pageAction/InputMenu'
 import { PageActionListener as Listener } from '@/services/pageAction'
@@ -12,6 +13,7 @@ import {
   ChangedCallback,
 } from '@/services/storage'
 import { Ipc, BgCommand } from '@/services/ipc'
+import { getSelectionText } from '@/services/dom'
 import { PAGE_ACTION_MAX } from '@/const'
 import type { PageActionType } from '@/types'
 
@@ -22,11 +24,13 @@ const isControlType = (type: string): boolean => {
 export function PageActionRecorder(): JSX.Element {
   const Runner = usePageActionRunner()
   const { isRunning } = Runner
+  const { setContextData } = usePageActionContext()
   const [actions, setActions] = useState<PageActionType[]>([])
   const [isRecording, setIsRecording] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>('')
+  const [previewElm, setPreviewElm] = useState<HTMLButtonElement | null>()
   const remain = PAGE_ACTION_MAX - actions.length
 
   const clearState = () => {
@@ -41,9 +45,18 @@ export function PageActionRecorder(): JSX.Element {
   }
 
   const preview = () => {
+    setTimeout(async () => {
+      // Wait for the clipboard to be updated.
+      const text = await navigator.clipboard.readText()
+      console.log('clipboard', text)
+      await setContextData({
+        selectedText: getSelectionText(),
+        clipboardText: text,
+      })
+      Runner.start()
+    }, 100)
     clearState()
     Listener.stop()
-    Runner.start()
   }
 
   const pause = () => {
@@ -108,6 +121,15 @@ export function PageActionRecorder(): JSX.Element {
     }
   }, [isRunning])
 
+  useEffect(() => {
+    if (previewElm) {
+      previewElm.addEventListener('click', preview)
+    }
+    return () => {
+      previewElm?.removeEventListener('click', preview)
+    }
+  }, [previewElm])
+
   return (
     <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
       <InputMenu />
@@ -138,7 +160,7 @@ export function PageActionRecorder(): JSX.Element {
           ) : (
             <button
               className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => preview()}
+              ref={setPreviewElm}
             >
               Preview
             </button>

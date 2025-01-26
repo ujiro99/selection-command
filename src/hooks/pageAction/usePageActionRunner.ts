@@ -6,6 +6,7 @@ import {
 import type { Message } from '@/services/ipc'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { PageActionType } from '@/types'
+import { usePageActionContext } from '@/hooks/usePageActionContext'
 
 type ExecutinListenerParam = {
   detail: { id: string; type: string; message: string }
@@ -25,7 +26,10 @@ export function usePageActionRunner() {
   const setStopPreview = (s: boolean) => (stopPreview.current = s)
   const [isExecuting, setIsExecuting] = useState(false)
   const [isQueueEmpty, setIsQueueEmpty] = useState(true)
+  const { selectedText, clipboardText } = usePageActionContext()
   const isRunning = !isQueueEmpty || isExecuting
+
+  console.log('selected', selectedText, 'clipboard', clipboardText)
 
   useEffect(() => {
     Ipc.getTabId().then(setTabId)
@@ -102,9 +106,11 @@ export function usePageActionRunner() {
           )
           break
         case 'input':
-          ;[result, msg] = await dispatcher.input(
-            action.params as PageActionProps.Input,
-          )
+          ;[result, msg] = await dispatcher.input({
+            ...action.params,
+            selectedText,
+            clipboardText,
+          } as PageActionProps.Input)
           break
         case 'scroll':
           ;[result, msg] = await dispatcher.scroll(

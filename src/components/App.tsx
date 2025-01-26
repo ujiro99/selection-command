@@ -7,6 +7,7 @@ import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
 import { getSelectionText } from '@/services/dom'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
+import { PageActionContextProvider } from '@/hooks/usePageActionContext'
 
 import './App.css'
 
@@ -30,16 +31,18 @@ export function App() {
   }, [isHover])
 
   return (
-    <SelectContextProvider value={{ selectionText, target, setTarget }}>
-      <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
-      <Popup
-        positionElm={positionElm}
-        selectionText={selectionText}
-        onHover={(v: boolean) => setIsHover(v)}
-      />
-      <LinkSelector />
-      <OpenInTab />
-      <PageActionRecorder />
-    </SelectContextProvider>
+    <PageActionContextProvider>
+      <SelectContextProvider value={{ selectionText, target, setTarget }}>
+        <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
+        <Popup
+          positionElm={positionElm}
+          selectionText={selectionText}
+          onHover={(v: boolean) => setIsHover(v)}
+        />
+        <LinkSelector />
+        <OpenInTab />
+        <PageActionRecorder />
+      </SelectContextProvider>
+    </PageActionContextProvider>
   )
 }

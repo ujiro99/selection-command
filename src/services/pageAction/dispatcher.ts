@@ -1,6 +1,8 @@
+import userEvent from '@testing-library/user-event'
 import type { XPath } from '@/services/dom'
 import { isValidXPath } from '@/services/dom'
-import userEvent from '@testing-library/user-event'
+import { safeInterpolate } from '@/lib/utils'
+import { INSERT, InsertMark } from '@/services/pageAction'
 
 export enum SelectorType {
   css = 'css',
@@ -19,6 +21,8 @@ export namespace PageActionProps {
     selector: string
     selectorType: SelectorType
     value: string
+    selectedText: string
+    clipboardText: string
   }
 
   export type Keyboard = {
@@ -172,11 +176,21 @@ export const PageActionDispatcher = {
   },
 
   input: async (param: PageActionProps.Input): ActionReturn => {
-    const { selector, selectorType, value } = param
+    const { selector, selectorType, selectedText, clipboardText } = param
     const user = userEvent.setup()
 
     const element = await waitForElement(selector, selectorType)
     if (element) {
+      // Inserts variables.
+      const variables = {
+        [InsertMark[INSERT.SELECTED_TEXT]]: selectedText,
+        [InsertMark[INSERT.URL]]: location.href,
+        [InsertMark[INSERT.CLIPBOARD]]: clipboardText,
+      }
+      console.log('variables:', variables)
+      let value = safeInterpolate(param.value, variables)
+      value = value.replace(/{/g, '\\\\{') // escape
+      value = value.replace(/}/g, '\\\\}') // escape
       await user.type(element, value, { skipClick: true })
     } else {
       console.warn(`Element not found for: ${selector}`)

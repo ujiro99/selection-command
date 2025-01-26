@@ -17,6 +17,7 @@ export enum SESSION_STORAGE_KEY {
   SESSION_DATA = 'sessionData',
   MESSAGE_QUEUE = 'messageQueue',
   PAGE_ACTION = 'pageAction',
+  PAGE_ACTION_CONTEXT = 'pageActionContext',
 }
 
 type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
@@ -37,6 +38,7 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
   [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
   [SESSION_STORAGE_KEY.PAGE_ACTION]: [],
+  [SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT]: {},
 }
 
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
