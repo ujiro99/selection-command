@@ -16,7 +16,7 @@ const EndAction = {
 }
 
 export const add = (
-  param: PageActionType,
+  action: PageActionType,
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
@@ -29,7 +29,7 @@ export const add = (
     if (actions.length === 0) {
       actions.push({
         ...StartAction,
-        timestamp: param.timestamp,
+        timestamp: action.timestamp,
         params: {
           url: sender.tab?.url ?? '',
         },
@@ -45,29 +45,39 @@ export const add = (
       return
     }
 
-    param.id = generateRandomID()
+    action.id = generateRandomID()
+    const prev = actions.at(-1)
 
-    if (param.type === 'doubleClick' && actions.at(-1)?.type === 'click') {
-      actions.pop()
-    } else if (
-      param.type === 'tripleClick' &&
-      actions.at(-1)?.type === 'doubleClick'
-    ) {
-      actions.pop()
-    } else if (param.type === 'scroll' && actions.at(-1)?.type === 'scroll') {
-      actions.pop()
-    } else if (param.type === 'input' && actions.at(-1)?.type === 'input') {
-      const selector = param.params.selector
-      const prevSelector = actions.at(-1)?.params.selector
-      if (selector === prevSelector) {
+    if (prev != null) {
+      if (action.type === 'doubleClick' && prev.type === 'click') {
+        // Removes a last click.
         actions.pop()
+      } else if (action.type === 'tripleClick' && prev.type === 'doubleClick') {
+        // Removes a last double click.
+        actions.pop()
+      } else if (action.type === 'scroll' && prev.type === 'scroll') {
+        actions.pop()
+      } else if (action.type === 'input' && prev.type.match('input')) {
+        const selector = action.params.selector
+        const prevSelector = prev.params.selector
+        if (selector === prevSelector) {
+          // Combine operations on the same input element.
+          actions.pop()
+        }
+      } else if (action.type === 'click' && prev.type.match('input')) {
+        const selector = action.params.selector
+        const prevSelector = prev.params.selector
+        if (selector === prevSelector) {
+          // Skip adding click to combine operations on the same input element.
+          return
+        }
       }
     }
 
     // Update actions.
     await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [
       ...actions,
-      param,
+      action,
       EndAction,
     ])
     response(true)
