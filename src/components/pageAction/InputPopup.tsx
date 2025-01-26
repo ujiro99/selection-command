@@ -163,7 +163,7 @@ const useVisibleDelay = (props: useDelayProps) => {
   }, [visible])
 }
 
-export function InputMenu(): JSX.Element {
+export function InputPopup(): JSX.Element {
   const [targetElm, setTargetElm] = useState<HTMLElement | Text | null>(null)
   const [disabled, setDisabled] = useState(false)
   const [mousePos, setMousePos] = useState<Point | null>(null)
@@ -250,6 +250,7 @@ export function InputMenu(): JSX.Element {
             className="pointer-events-auto"
             side={'top'}
             align={align}
+            sideOffset={8}
             onOpenAutoFocus={noFocus}
           >
             <Menubar value={selectedMenu} onValueChange={setSelectedMenu}>
@@ -382,7 +383,7 @@ function FocusOutline(props: FocusOutlineProps): JSX.Element {
   return (
     <div
       className={cn(
-        'border-2 border-blue-500 opacity-0 transition-opacity duration-150',
+        'border-2 border-gray-300 opacity-0 transition-opacity duration-150',
         shouldRender && 'opacity-100',
         disabled && 'border-red-500',
       )}
