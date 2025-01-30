@@ -6,6 +6,7 @@ import {
 import { usePageActionContext } from '@/hooks/usePageActionContext'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { InputPopup } from '@/components/pageAction/InputPopup'
+import { InputEditor } from '@/components/pageAction/InputEditor'
 import { PageActionListener as Listener } from '@/services/pageAction'
 import {
   Storage,
@@ -16,6 +17,7 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import { PAGE_ACTION_MAX } from '@/const'
 import type { PageActionType } from '@/types'
+import { isEmpty } from '@/lib/utils'
 
 const isControlType = (type: string): boolean => {
   return ['start', 'end'].includes(type)
@@ -31,6 +33,10 @@ export function PageActionRecorder(): JSX.Element {
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>('')
   const [previewElm, setPreviewElm] = useState<HTMLButtonElement | null>()
+  const [editId, setEditId] = useState<string | null>(null)
+  const editorValue = actions.find((a) => a.id === editId)?.params
+    .value as string
+
   const remain = PAGE_ACTION_MAX - actions.length
 
   const clearState = () => {
@@ -48,7 +54,6 @@ export function PageActionRecorder(): JSX.Element {
     setTimeout(async () => {
       // Wait for the clipboard to be updated.
       const text = await navigator.clipboard.readText()
-      console.log('clipboard', text)
       await setContextData({
         selectedText: getSelectionText(),
         clipboardText: text,
@@ -67,6 +72,15 @@ export function PageActionRecorder(): JSX.Element {
   const resume = () => {
     setIsRecording(true)
     Listener.start()
+  }
+
+  const edit = (id: string) => {
+    setEditId(id)
+  }
+
+  const editorSubmit = (value: string) => {
+    Ipc.send(BgCommand.updatePageAction, { id: editId, value })
+    setEditId(null)
   }
 
   const removeAction = (id: string) => {
@@ -133,6 +147,12 @@ export function PageActionRecorder(): JSX.Element {
   return (
     <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
       <InputPopup />
+      <InputEditor
+        open={!isEmpty(editId)}
+        onOpenChange={(o) => !o && setEditId(null)}
+        value={editorValue}
+        onSubmit={editorSubmit}
+      />
       <div className="inline-block relative left-[50%] translate-x-[-50%]">
         <div className="flex gap-2">
           {isRecording ? (
@@ -165,6 +185,12 @@ export function PageActionRecorder(): JSX.Element {
               Preview
             </button>
           )}
+          <button
+            className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+            onClick={() => reset()}
+          >
+            Reset
+          </button>
         </div>
         <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
           {actions.map((action) => (
@@ -174,7 +200,8 @@ export function PageActionRecorder(): JSX.Element {
               failedId={failedId}
               failedMessage={failedMessage}
               key={action.id}
-              onDeleted={removeAction}
+              onDelete={removeAction}
+              onClickEdit={edit}
             />
           ))}
           {remain > 0 && (
@@ -183,14 +210,6 @@ export function PageActionRecorder(): JSX.Element {
             </li>
           )}
         </ol>
-      </div>
-      <div className="flex gap-2 p-2">
-        <button
-          className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-          onClick={() => reset()}
-        >
-          Reset
-        </button>
       </div>
     </div>
   )

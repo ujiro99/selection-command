@@ -1,17 +1,19 @@
+import { X, Pencil } from 'lucide-react'
 import { cn, capitalize } from '@/lib/utils'
-import { PageActionType } from '@/types'
-import { X } from 'lucide-react'
+import type { PageActionType } from '@/types'
 
 type Props = {
   action: PageActionType
   currentId: string | undefined
   failedId: string | undefined
   failedMessage: string | undefined
-  onDeleted: (id: string) => void
+  onDelete: (id: string) => void
+  onClickEdit: (id: string) => void
 }
 
 export function PageActionItem(props: Props): JSX.Element {
   const { action, currentId, failedId, failedMessage } = props
+  const isInput = action.type === 'input'
   const isFailed = failedId === action.id
 
   return (
@@ -32,11 +34,22 @@ export function PageActionItem(props: Props): JSX.Element {
           {failedMessage}
         </p>
       )}
+      {isInput && (
+        <button
+          className="absolute top-[-4px] right-[18px] bg-white rounded-full p-[3px] border border-stone-300"
+          onClick={() => props.onClickEdit(action.id)}
+        >
+          <Pencil
+            size={12}
+            className="fill-white stroke-stone-500 pointer-events-auto"
+          />
+        </button>
+      )}
       <button
         className={cn(
           'absolute top-[-4px] right-[-4px] bg-white rounded-full p-0.5 border border-stone-300',
         )}
-        onClick={() => props.onDeleted(action.id)}
+        onClick={() => props.onDelete(action.id)}
       >
         <X
           size={14}

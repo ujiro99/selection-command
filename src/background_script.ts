@@ -391,6 +391,7 @@ const commandFuncs = {
   // PageAction
   //
   [BgCommand.addPageAction]: PageActionBackground.add,
+  [BgCommand.updatePageAction]: PageActionBackground.update,
   [BgCommand.removePageAction]: PageActionBackground.remove,
   [BgCommand.resetPageAction]: PageActionBackground.reset,
   [BgCommand.queuePageAction]: PageActionBackground.execute,

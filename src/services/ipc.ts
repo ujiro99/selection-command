@@ -12,6 +12,7 @@ export enum BgCommand {
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
   addPageAction = 'addPageAction',
+  updatePageAction = 'updatePageAction',
   removePageAction = 'removePageAction',
   queuePageAction = 'queuePageAction',
   resetPageAction = 'resetPageAction',

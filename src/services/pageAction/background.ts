@@ -86,6 +86,26 @@ export const add = (
   return true
 }
 
+export const update = (
+  param: { id: string; value: string },
+  _: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  const update = async () => {
+    let actions = await Storage.get<PageActionType[]>(
+      SESSION_STORAGE_KEY.PAGE_ACTION,
+    )
+    const index = actions.findIndex((a) => a.id === param.id)
+    if (index !== -1) {
+      actions[index].params.value = param.value
+      await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, actions)
+    }
+    response(true)
+  }
+  update()
+  return true
+}
+
 export const remove = (
   param: { id: string },
   _: Sender,
