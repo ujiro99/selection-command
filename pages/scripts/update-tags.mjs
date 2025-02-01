@@ -1,5 +1,5 @@
 import fs from 'fs'
-import Commands from '../src/data/commands.json' assert { type: 'json' }
+import Commands from '../src/data/commands.json' with { type: 'json' }
 
 const tags = Commands.map((command) => command.tags)
   .flat()

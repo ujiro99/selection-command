@@ -15,5 +15,6 @@
   "https://hn.algolia.com/?q=%s",
   "https://qiita.com/search?q=%s",
   "https://www.pinterest.com/search/pins/?q=%s",
-  "https://www.netflix.com/search?q=%s"
+  "https://www.netflix.com/search?q=%s",
+  "https://www.nicovideo.jp/watch/%s"
 ]
