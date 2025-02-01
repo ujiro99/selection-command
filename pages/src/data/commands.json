@@ -202,5 +202,17 @@
     "tags": ["Media", "Movie"],
     "id": "409aba7d-c49e-5e81-b8a6-a862f2651b3e",
     "addedAt": "2025-01-10T16:06:57.611Z"
+  },
+  {
+    "title": "ニコニコ動画",
+    "searchUrl": "https://www.nicovideo.jp/watch/%s",
+    "description": "「sm〇〇」を選択すると、ニコニコ動画の視聴ページにアクセス",
+    "iconUrl": "https://resource.video.nimg.jp/web/images/favicon/32.png",
+    "openMode": "tab",
+    "openModeSecondary": "popup",
+    "spaceEncoding": "plus",
+    "tags": ["Japanese", "Movie", "Media"],
+    "id": "ae97a840-39b7-5b12-9186-9f850ec91f9a",
+    "addedAt": "2025-02-01T07:03:50.021Z"
   }
 ]
