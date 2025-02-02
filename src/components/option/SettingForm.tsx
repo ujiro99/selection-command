@@ -71,9 +71,10 @@ export function SettingFrom() {
   const [origin, setOrigin] = useState('')
   const [trans, setTrans] = useState<Translation>({})
   const [settingData, setSettingData] = useState<SettingsType>()
-  const [timeoutID, setTimeoutID] = useState<number>()
   const settingRef = useRef<SettingsType>()
   const formRef = useRef<Form>(null)
+  const saveToRef = useRef<number>()
+  const iconToRef = useRef<number>()
 
   const sendMessage = useCallback(
     (command: OPTION_MSG, value: any) => {
@@ -109,20 +110,19 @@ export function SettingFrom() {
   // Save after 500 ms to storage.
   useEffect(() => {
     let unmounted = false
-    if (timeoutID) clearTimeout(timeoutID)
-    const newTimeoutId = window.setTimeout(() => {
+    clearTimeout(saveToRef.current)
+    saveToRef.current = window.setTimeout(() => {
       if (unmounted) return
       if (settingRef.current) {
         sendMessage(OPTION_MSG.CHANGED, settingData)
       }
       settingRef.current = settingData
-      setTimeoutID(undefined)
     }, 1 * 500 /* ms */)
-    setTimeoutID(newTimeoutId)
 
     return () => {
       unmounted = true
-      clearTimeout(timeoutID)
+      clearTimeout(saveToRef.current)
+      clearTimeout(iconToRef.current)
     }
   }, [settingData])
 
@@ -221,10 +221,13 @@ export function SettingFrom() {
     if (id?.endsWith('searchUrl')) {
       const command = data.commands[toCommandId(id)]
       if (!isEmpty(command.searchUrl) && isEmpty(command.iconUrl)) {
-        sendMessage(OPTION_MSG.FETCH_ICON_URL, {
-          searchUrl: command.searchUrl,
-          settings: data,
-        })
+        clearTimeout(iconToRef.current)
+        iconToRef.current = window.setTimeout(() => {
+          sendMessage(OPTION_MSG.FETCH_ICON_URL, {
+            searchUrl: command.searchUrl,
+            settings: data,
+          })
+        }, 500)
       }
     }
 
