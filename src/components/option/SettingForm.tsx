@@ -71,9 +71,10 @@ export function SettingFrom() {
   const [origin, setOrigin] = useState('')
   const [trans, setTrans] = useState<Translation>({})
   const [settingData, setSettingData] = useState<SettingsType>()
-  const [timeoutID, setTimeoutID] = useState<number>()
-  const settingRef = useRef<SettingsType>()
+  const initializedRef = useRef<boolean>(false)
   const formRef = useRef<Form>(null)
+  const saveToRef = useRef<number>()
+  const iconToRef = useRef<number>()
 
   const sendMessage = useCallback(
     (command: OPTION_MSG, value: any) => {
@@ -109,20 +110,23 @@ export function SettingFrom() {
   // Save after 500 ms to storage.
   useEffect(() => {
     let unmounted = false
-    if (timeoutID) clearTimeout(timeoutID)
-    const newTimeoutId = window.setTimeout(() => {
+
+    // Skip saving if the settingData is not initialized.
+    if (!initializedRef.current) {
+      initializedRef.current = settingData != null
+      return
+    }
+
+    clearTimeout(saveToRef.current)
+    saveToRef.current = window.setTimeout(() => {
       if (unmounted) return
-      if (settingRef.current) {
-        sendMessage(OPTION_MSG.CHANGED, settingData)
-      }
-      settingRef.current = settingData
-      setTimeoutID(undefined)
+      sendMessage(OPTION_MSG.CHANGED, settingData)
     }, 1 * 500 /* ms */)
-    setTimeoutID(newTimeoutId)
 
     return () => {
       unmounted = true
-      clearTimeout(timeoutID)
+      clearTimeout(saveToRef.current)
+      clearTimeout(iconToRef.current)
     }
   }, [settingData])
 
@@ -221,10 +225,13 @@ export function SettingFrom() {
     if (id?.endsWith('searchUrl')) {
       const command = data.commands[toCommandId(id)]
       if (!isEmpty(command.searchUrl) && isEmpty(command.iconUrl)) {
-        sendMessage(OPTION_MSG.FETCH_ICON_URL, {
-          searchUrl: command.searchUrl,
-          settings: data,
-        })
+        clearTimeout(iconToRef.current)
+        iconToRef.current = window.setTimeout(() => {
+          sendMessage(OPTION_MSG.FETCH_ICON_URL, {
+            searchUrl: command.searchUrl,
+            settings: data,
+          })
+        }, 500)
       }
     }
 
@@ -890,7 +897,7 @@ const CustomArraySchemaField = (props: FieldProps) => {
   const { SchemaField } = registry.fields
   const name = schema.name ?? index
 
-  if (name === 'Folder') {
+  if (name === 'Command' || name === 'Folder') {
     if (props.formData.id == null) {
       props.formData.id = crypto.randomUUID()
     }
