@@ -3,7 +3,7 @@ import {
   usePageActionRunner,
   RunnerEvent,
 } from '@/hooks/pageAction/usePageActionRunner'
-import { usePageActionContext } from '@/hooks/usePageActionContext'
+import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { InputPopup } from '@/components/pageAction/InputPopup'
 import { InputEditor } from '@/components/pageAction/InputEditor'

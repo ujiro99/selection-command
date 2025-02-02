@@ -7,7 +7,7 @@ import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
 import { getSelectionText } from '@/services/dom'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
-import { PageActionContextProvider } from '@/hooks/usePageActionContext'
+import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 
 import './App.css'
 

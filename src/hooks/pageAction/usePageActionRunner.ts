@@ -6,7 +6,7 @@ import {
 import type { Message } from '@/services/ipc'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { PageActionType } from '@/types'
-import { usePageActionContext } from '@/hooks/usePageActionContext'
+import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 
 type ExecutinListenerParam = {
   detail: { id: string; type: string; message: string }
