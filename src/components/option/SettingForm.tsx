@@ -890,7 +890,7 @@ const CustomArraySchemaField = (props: FieldProps) => {
   const { SchemaField } = registry.fields
   const name = schema.name ?? index
 
-  if (name === 'Folder') {
+  if (name === 'Command' || name === 'Folder') {
     if (props.formData.id == null) {
       props.formData.id = crypto.randomUUID()
     }
