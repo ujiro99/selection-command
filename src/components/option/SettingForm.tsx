@@ -71,7 +71,7 @@ export function SettingFrom() {
   const [origin, setOrigin] = useState('')
   const [trans, setTrans] = useState<Translation>({})
   const [settingData, setSettingData] = useState<SettingsType>()
-  const settingRef = useRef<SettingsType>()
+  const initializedRef = useRef<boolean>(false)
   const formRef = useRef<Form>(null)
   const saveToRef = useRef<number>()
   const iconToRef = useRef<number>()
@@ -110,13 +110,17 @@ export function SettingFrom() {
   // Save after 500 ms to storage.
   useEffect(() => {
     let unmounted = false
+
+    // Skip saving if the settingData is not initialized.
+    if (!initializedRef.current) {
+      initializedRef.current = settingData != null
+      return
+    }
+
     clearTimeout(saveToRef.current)
     saveToRef.current = window.setTimeout(() => {
       if (unmounted) return
-      if (settingRef.current) {
-        sendMessage(OPTION_MSG.CHANGED, settingData)
-      }
-      settingRef.current = settingData
+      sendMessage(OPTION_MSG.CHANGED, settingData)
     }, 1 * 500 /* ms */)
 
     return () => {
