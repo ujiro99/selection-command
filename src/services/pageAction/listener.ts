@@ -4,12 +4,9 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import {
   SelectorType,
   PageActionProps,
-  INSERT,
-  InsertMark,
-  LocaleKey,
+  convReadableKeysToSymbols,
 } from '@/services/pageAction'
 import { isTextNode } from '@/services/dom'
-import { t } from '@/services/i18n'
 
 type EventsFunctions = {
   click: (e: MouseEvent) => void
@@ -149,15 +146,7 @@ export const PageActionListener = (() => {
         target = target.parentElement as HTMLElement
       }
       if (value != null) {
-        const localedMarks = {
-          [t(LocaleKey + INSERT.SELECTED_TEXT)]:
-            InsertMark[INSERT.SELECTED_TEXT],
-          [t(LocaleKey + INSERT.URL)]: InsertMark[INSERT.URL],
-          [t(LocaleKey + INSERT.CLIPBOARD)]: InsertMark[INSERT.CLIPBOARD],
-        }
-        Object.entries(localedMarks).forEach(([key, val]) => {
-          value = value!.replace(new RegExp(key, 'g'), val)
-        })
+        value = convReadableKeysToSymbols(value)
         Ipc.send(BgCommand.addPageAction, {
           type: 'input',
           timestamp: getTimeStamp(),

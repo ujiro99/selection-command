@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -10,19 +10,25 @@ import {
   DialogClose,
 } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
+import { InputMenu } from '@/components/pageAction/InputPopup'
+import {
+  convSymbolsToReadableKeys,
+  convReadableKeysToSymbols,
+} from '@/services/pageAction'
 
 type InputEditorProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  value: string
+  value: string | null
   onSubmit: (value: string) => void
 }
 
 export function InputEditor(props: InputEditorProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const defaultVal = convSymbolsToReadableKeys(props.value ?? '')
+  const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
 
   const handleSubmit = () => {
-    props.onSubmit(textareaRef.current?.value || '')
+    props.onSubmit(convReadableKeysToSymbols(textarea?.value || ''))
   }
 
   return (
@@ -34,13 +40,17 @@ export function InputEditor(props: InputEditorProps) {
             このアクションにより入力される内容を編集してください。
           </DialogDescription>
         </DialogHeader>
-        <div>
+        <div className="retative">
+          <InputMenu
+            targetElm={textarea}
+            className="w-fit relative left-[100%] -translate-x-[100%] -top-1"
+          />
           <Textarea
             id="input-action"
             placeholder="入力される内容"
             rows={4}
-            defaultValue={props.value}
-            ref={textareaRef}
+            defaultValue={defaultVal}
+            ref={setTextarea}
           />
         </div>
         <DialogFooter>

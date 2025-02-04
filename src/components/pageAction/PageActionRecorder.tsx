@@ -36,6 +36,7 @@ export function PageActionRecorder(): JSX.Element {
   const [editId, setEditId] = useState<string | null>(null)
   const editorValue = actions.find((a) => a.id === editId)?.params
     .value as string
+  const editorOpen = !isEmpty(editId)
 
   const remain = PAGE_ACTION_MAX - actions.length
 
@@ -146,9 +147,9 @@ export function PageActionRecorder(): JSX.Element {
 
   return (
     <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
-      <InputPopup />
+      {!editorOpen && <InputPopup />}
       <InputEditor
-        open={!isEmpty(editId)}
+        open={editorOpen}
         onOpenChange={(o) => !o && setEditId(null)}
         value={editorValue}
         onSubmit={editorSubmit}

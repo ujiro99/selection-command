@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import type { XPath } from '@/services/dom'
 import { isValidXPath } from '@/services/dom'
 import { safeInterpolate } from '@/lib/utils'
-import { INSERT, InsertMark } from '@/services/pageAction'
+import { INSERT, InsertSymbol } from '@/services/pageAction'
 
 export enum SelectorType {
   css = 'css',
@@ -183,9 +183,9 @@ export const PageActionDispatcher = {
     if (element) {
       // Inserts variables.
       const variables = {
-        [InsertMark[INSERT.SELECTED_TEXT]]: selectedText,
-        [InsertMark[INSERT.URL]]: location.href,
-        [InsertMark[INSERT.CLIPBOARD]]: clipboardText,
+        [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
+        [InsertSymbol[INSERT.URL]]: location.href,
+        [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
       }
       console.log('variables:', variables)
       let value = safeInterpolate(param.value, variables)

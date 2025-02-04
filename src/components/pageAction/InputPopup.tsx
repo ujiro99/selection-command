@@ -169,7 +169,6 @@ export function InputPopup(): JSX.Element {
   const [mousePos, setMousePos] = useState<Point | null>(null)
   const [menuVisible, setMenuVisible] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
-  const [selectedMenu, setSelectedMenu] = useState('')
 
   useVisibleDelay({ visible: menuVisible, updater: setShouldRender })
 
@@ -226,19 +225,6 @@ export function InputPopup(): JSX.Element {
 
   const anchor = isTextNode(targetElm) ? targetElm.parentElement : targetElm
   const align = calcAlign(targetElm, mousePos?.x ?? 0)
-  const iconSrc = chrome.runtime.getURL('/icon128.png')
-  const isOpen = selectedMenu === MENU.INSERT
-
-  const onClickItem = async (menu: INSERT) => {
-    insertText(targetElm, t(LocaleKey + menu))
-  }
-
-  const onMouseEnter = () => {
-    if (selectedMenu !== MENU.INSERT) {
-      setSelectedMenu(MENU.INSERT)
-    }
-  }
-
   const noFocus = (e: Event) => e.preventDefault()
 
   return (
@@ -253,55 +239,78 @@ export function InputPopup(): JSX.Element {
             sideOffset={8}
             onOpenAutoFocus={noFocus}
           >
-            <Menubar value={selectedMenu} onValueChange={setSelectedMenu}>
-              <MenubarMenu value={MENU.INSERT}>
-                <MenubarTrigger
-                  className={cn(
-                    'py-1 px-2 text-sm font-medium text-gray-700 cursor-pointer',
-                    disabled && 'opacity-50 bg-gray-200 cursor-not-allowed',
-                  )}
-                  disabled={disabled}
-                  onMouseEnter={onMouseEnter}
-                >
-                  <img
-                    src={iconSrc}
-                    alt="icon"
-                    className="w-[18px] h-[18px] mr-1.5"
-                  />
-                  テキスト挿入
-                  {isOpen ? (
-                    <ChevronUp size={14} className="ml-1" />
-                  ) : (
-                    <ChevronDown size={14} className="ml-1" />
-                  )}
-                </MenubarTrigger>
-                <MenubarContent>
-                  <InputMenuItem
-                    onClick={onClickItem}
-                    value={INSERT.SELECTED_TEXT}
-                  >
-                    <TextCursorInput
-                      size={16}
-                      className="mr-2 stroke-gray-600"
-                    />
-                    選択テキスト
-                  </InputMenuItem>
-                  <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
-                    <Link2 size={16} className="mr-2 stroke-gray-600" />
-                    表示元URL
-                  </InputMenuItem>
-                  <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
-                    <Clipboard size={16} className="mr-2 stroke-gray-600" />
-                    クリップボード
-                  </InputMenuItem>
-                </MenubarContent>
-              </MenubarMenu>
-            </Menubar>
+            <InputMenu targetElm={targetElm} disabled={disabled} />
           </PopoverContent>
         )}
       </Popover>
       <FocusOutline elm={anchor} disabled={disabled} />
     </>
+  )
+}
+
+type MenuProps = {
+  targetElm: HTMLElement | Text | null
+  className?: string
+  disabled?: boolean
+}
+
+export function InputMenu(props: MenuProps): JSX.Element {
+  const disabled = props.disabled ?? false
+  const [selectedMenu, setSelectedMenu] = useState('')
+  const isOpen = selectedMenu === MENU.INSERT
+  const iconSrc = chrome.runtime.getURL('/icon128.png')
+
+  const onClickItem = async (menu: INSERT) => {
+    if (props.targetElm) {
+      insertText(props.targetElm, t(LocaleKey + menu))
+    }
+  }
+
+  const onMouseEnter = () => {
+    if (selectedMenu !== MENU.INSERT) {
+      setSelectedMenu(MENU.INSERT)
+    }
+  }
+
+  return (
+    <Menubar
+      className={props.className}
+      value={selectedMenu}
+      onValueChange={setSelectedMenu}
+    >
+      <MenubarMenu value={MENU.INSERT}>
+        <MenubarTrigger
+          className={cn(
+            'py-1 px-2 text-sm font-medium text-gray-700 cursor-pointer',
+            disabled && 'opacity-50 bg-gray-200 cursor-not-allowed',
+          )}
+          disabled={disabled}
+          onMouseEnter={onMouseEnter}
+        >
+          <img src={iconSrc} alt="icon" className="w-[18px] h-[18px] mr-1.5" />
+          テキスト挿入
+          {isOpen ? (
+            <ChevronUp size={14} className="ml-1" />
+          ) : (
+            <ChevronDown size={14} className="ml-1" />
+          )}
+        </MenubarTrigger>
+        <MenubarContent>
+          <InputMenuItem onClick={onClickItem} value={INSERT.SELECTED_TEXT}>
+            <TextCursorInput size={16} className="mr-2 stroke-gray-600" />
+            選択テキスト
+          </InputMenuItem>
+          <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
+            <Link2 size={16} className="mr-2 stroke-gray-600" />
+            表示元URL
+          </InputMenuItem>
+          <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
+            <Clipboard size={16} className="mr-2 stroke-gray-600" />
+            クリップボード
+          </InputMenuItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
   )
 }
 
