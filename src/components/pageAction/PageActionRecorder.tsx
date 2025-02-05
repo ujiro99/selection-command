@@ -8,6 +8,7 @@ import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { InputPopup } from '@/components/pageAction/InputPopup'
 import { InputEditor } from '@/components/pageAction/InputEditor'
 import { PageActionListener as Listener } from '@/services/pageAction'
+import type { PageAction } from '@/services/pageAction'
 import {
   Storage,
   SESSION_STORAGE_KEY as STORAGE_KEY,
@@ -15,9 +16,9 @@ import {
 } from '@/services/storage'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
-import { PAGE_ACTION_MAX } from '@/const'
-import type { PageActionType } from '@/types'
+import type { PageActionStep } from '@/types'
 import { isEmpty } from '@/lib/utils'
+import { PAGE_ACTION_MAX } from '@/const'
 
 const isControlType = (type: string): boolean => {
   return ['start', 'end'].includes(type)
@@ -27,18 +28,19 @@ export function PageActionRecorder(): JSX.Element {
   const Runner = usePageActionRunner()
   const { isRunning } = Runner
   const { setContextData } = usePageActionContext()
-  const [actions, setActions] = useState<PageActionType[]>([])
+  const [actions, setActions] = useState<PageActionStep[]>([])
   const [isRecording, setIsRecording] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>('')
   const [previewElm, setPreviewElm] = useState<HTMLButtonElement | null>()
-  const [editId, setEditId] = useState<string | null>(null)
-  const editorValue = actions.find((a) => a.id === editId)?.params
-    .value as string
-  const editorOpen = !isEmpty(editId)
-
   const remain = PAGE_ACTION_MAX - actions.length
+
+  // for Editor
+  const [editId, setEditId] = useState<string | null>(null)
+  const inputAction = actions.find((a) => a.id === editId)
+  const editorValue = (inputAction?.param as PageAction.Input)?.value
+  const editorOpen = !isEmpty(editId)
 
   const clearState = () => {
     setCurrentId('')
@@ -99,12 +101,12 @@ export function PageActionRecorder(): JSX.Element {
   }
 
   useEffect(() => {
-    const addList = (list: PageActionType[]) => {
+    const addList = (list: PageActionStep[]) => {
       setActions((list ?? []).filter((l) => !isControlType(l.type)))
     }
 
     const init = async () => {
-      const actions = await Storage.get<PageActionType[]>(
+      const actions = await Storage.get<PageActionStep[]>(
         STORAGE_KEY.PAGE_ACTION,
       )
       addList(actions)

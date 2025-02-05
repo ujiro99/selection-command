@@ -9,7 +9,14 @@ export enum SelectorType {
   xpath = 'xpath',
 }
 
-export namespace PageActionProps {
+export namespace PageAction {
+  export type Parameter = Start | Click | Input | Keyboard | Scroll
+
+  export type Start = {
+    label: string
+    url: string
+  }
+
   export type Click = {
     label: string
     selector: string
@@ -104,7 +111,7 @@ async function waitForElement(
 type ActionReturn = Promise<[boolean, string?]>
 
 export const PageActionDispatcher = {
-  click: async (param: PageActionProps.Click): ActionReturn => {
+  click: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
     const user = userEvent.setup()
 
@@ -119,7 +126,7 @@ export const PageActionDispatcher = {
     return [true]
   },
 
-  doubleCilck: async (param: PageActionProps.Click): ActionReturn => {
+  doubleCilck: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
     const user = userEvent.setup()
 
@@ -134,7 +141,7 @@ export const PageActionDispatcher = {
     return [true]
   },
 
-  tripleClick: async (param: PageActionProps.Click): ActionReturn => {
+  tripleClick: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
     const user = userEvent.setup()
 
@@ -149,7 +156,7 @@ export const PageActionDispatcher = {
     return [true]
   },
 
-  keyboard: async (param: PageActionProps.Keyboard): ActionReturn => {
+  keyboard: async (param: PageAction.Keyboard): ActionReturn => {
     const { label, targetSelector, selectorType, ...p } = param
     const element = await waitForElement(targetSelector, selectorType)
     if (element == null) {
@@ -175,7 +182,7 @@ export const PageActionDispatcher = {
     })
   },
 
-  input: async (param: PageActionProps.Input): ActionReturn => {
+  input: async (param: PageAction.Input): ActionReturn => {
     const { selector, selectorType, selectedText, clipboardText } = param
     const user = userEvent.setup()
 
@@ -200,7 +207,7 @@ export const PageActionDispatcher = {
     return [true]
   },
 
-  scroll: async (param: PageActionProps.Scroll): ActionReturn => {
+  scroll: async (param: PageAction.Scroll): ActionReturn => {
     return new Promise((resolve) => {
       const scrollTimeout = setTimeout(() => {
         console.warn('Scroll timeout')

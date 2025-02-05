@@ -3,7 +3,7 @@ import { isPopup, isEmpty } from '@/lib/utils'
 import { Ipc, BgCommand } from '@/services/ipc'
 import {
   SelectorType,
-  PageActionProps,
+  PageAction,
   convReadableKeysToSymbols,
 } from '@/services/pageAction'
 import { isTextNode } from '@/services/dom'
@@ -85,33 +85,33 @@ export const PageActionListener = (() => {
       Ipc.send(BgCommand.addPageAction, {
         type: 'click',
         timestamp: getTimeStamp(),
-        params: {
+        param: {
           label,
           selector: xpath,
           selectorType: SelectorType.xpath,
-        } as PageActionProps.Click,
+        } as PageAction.Click,
       })
     },
     doubleClick(xpath: string, label: string) {
       Ipc.send(BgCommand.addPageAction, {
         type: 'doubleClick',
         timestamp: getTimeStamp(),
-        params: {
+        param: {
           label,
           selector: xpath,
           selectorType: SelectorType.xpath,
-        } as PageActionProps.Click,
+        } as PageAction.Click,
       })
     },
     tripleClick(xpath: string, label: string) {
       Ipc.send(BgCommand.addPageAction, {
         type: 'tripleClick',
         timestamp: getTimeStamp(),
-        params: {
+        param: {
           label,
           selector: xpath,
           selectorType: SelectorType.xpath,
-        } as PageActionProps.Click,
+        } as PageAction.Click,
       })
     },
     keyboard: (e: KeyboardEvent) => {
@@ -120,7 +120,7 @@ export const PageActionListener = (() => {
       Ipc.send(BgCommand.addPageAction, {
         type: 'keyboard',
         timestamp: getTimeStamp(),
-        params: {
+        param: {
           label: modifierPressed(e) ? `${getModifierKey(e)}+${e.key}` : e.key,
           key: e.key,
           code: e.code,
@@ -131,7 +131,7 @@ export const PageActionListener = (() => {
           metaKey: e.metaKey,
           targetSelector: xpath,
           selectorType: SelectorType.xpath,
-        } as PageActionProps.Keyboard,
+        } as PageAction.Keyboard,
       })
     },
     input: (e: Event) => {
@@ -150,12 +150,12 @@ export const PageActionListener = (() => {
         Ipc.send(BgCommand.addPageAction, {
           type: 'input',
           timestamp: getTimeStamp(),
-          params: {
+          param: {
             label: value,
             value,
             selector: getXPath(target),
             selectorType: SelectorType.xpath,
-          } as PageActionProps.Input,
+          } as PageAction.Input,
         })
       }
     },
@@ -163,11 +163,11 @@ export const PageActionListener = (() => {
       Ipc.send(BgCommand.addPageAction, {
         type: 'scroll',
         timestamp: getTimeStamp(),
-        params: {
+        param: {
           label: `x: ${window.scrollX}, y: ${window.scrollY}`,
           x: window.scrollX,
           y: window.scrollY,
-        } as PageActionProps.Scroll,
+        } as PageAction.Scroll,
       })
     },
   }

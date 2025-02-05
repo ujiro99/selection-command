@@ -15,6 +15,7 @@ export enum OPEN_MODE {
   API = 'api',
   LINK_POPUP = 'linkPopup',
   COPY = 'copy',
+  PAGE_ACTION = 'pageAction',
   GET_TEXT_STYLES = 'getTextStyles',
   OPTION = 'option',
   ADD_PAGE_RULE = 'addPageRule',

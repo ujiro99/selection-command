@@ -1,9 +1,9 @@
 import { X, Pencil } from 'lucide-react'
 import { cn, capitalize } from '@/lib/utils'
-import type { PageActionType } from '@/types'
+import type { PageActionStep } from '@/types'
 
 type Props = {
-  action: PageActionType
+  action: PageActionStep
   currentId: string | undefined
   failedId: string | undefined
   failedMessage: string | undefined
@@ -28,7 +28,7 @@ export function PageActionItem(props: Props): JSX.Element {
       <p className="text-sm text-stone-600 font-medium">
         {capitalize(action.type)}
       </p>
-      <p className="truncate w-20 text-xs text-stone-600">{`${action.params.label}`}</p>
+      <p className="truncate w-20 text-xs text-stone-600">{`${action.param.label}`}</p>
       {isFailed && (
         <p className="absolute bottom-[-40px] text-xs leading-3 text-red-600">
           {failedMessage}

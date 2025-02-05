@@ -1,8 +1,10 @@
-import type { PageActionType, ControlTypes } from '@/types'
 import { Ipc, Sender, TabCommand } from '@/services/ipc'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { PAGE_ACTION_MAX } from '@/const'
 import { generateRandomID } from '@/lib/utils'
+import type { PageActionStep, ControlTypes } from '@/types'
+import type { PageAction } from '@/services/pageAction'
+import { isInputAction } from '@/services/pageAction'
 
 const StartAction = {
   type: 'start' as ControlTypes,
@@ -16,12 +18,12 @@ const EndAction = {
 }
 
 export const add = (
-  action: PageActionType,
+  action: PageActionStep,
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
-    let actions = await Storage.get<PageActionType[]>(
+    let actions = await Storage.get<PageActionStep[]>(
       SESSION_STORAGE_KEY.PAGE_ACTION,
     )
 
@@ -30,7 +32,8 @@ export const add = (
       actions.push({
         ...StartAction,
         timestamp: action.timestamp,
-        params: {
+        param: {
+          label: 'Start',
           url: sender.tab?.url ?? '',
         },
       })
@@ -58,15 +61,15 @@ export const add = (
       } else if (action.type === 'scroll' && prev.type === 'scroll') {
         actions.pop()
       } else if (action.type === 'input' && prev.type.match('input')) {
-        const selector = action.params.selector
-        const prevSelector = prev.params.selector
+        const selector = (action.param as PageAction.Input).selector
+        const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
           // Combine operations on the same input element.
           actions.pop()
         }
       } else if (action.type === 'click' && prev.type.match('input')) {
-        const selector = action.params.selector
-        const prevSelector = prev.params.selector
+        const selector = (action.param as PageAction.Input).selector
+        const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
           // Skip adding click to combine operations on the same input element.
           return
@@ -92,12 +95,12 @@ export const update = (
   response: (res: unknown) => void,
 ): boolean => {
   const update = async () => {
-    let actions = await Storage.get<PageActionType[]>(
+    let actions = await Storage.get<PageActionStep[]>(
       SESSION_STORAGE_KEY.PAGE_ACTION,
     )
     const index = actions.findIndex((a) => a.id === param.id)
-    if (index !== -1) {
-      actions[index].params.value = param.value
+    if (index !== -1 && isInputAction(actions[index].param)) {
+      actions[index].param.value = param.value
       await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, actions)
     }
     response(true)
@@ -112,7 +115,7 @@ export const remove = (
   response: (res: unknown) => void,
 ): boolean => {
   const remove = async () => {
-    let actions = await Storage.get<PageActionType[]>(
+    let actions = await Storage.get<PageActionStep[]>(
       SESSION_STORAGE_KEY.PAGE_ACTION,
     )
     await Storage.set(
@@ -139,7 +142,7 @@ export const execute = (
   response: (res: unknown) => void,
 ): boolean => {
   const queue = async () => {
-    const actions = await Storage.get<PageActionType[]>(
+    const actions = await Storage.get<PageActionStep[]>(
       SESSION_STORAGE_KEY.PAGE_ACTION,
     )
     const tabId = sender.tab?.id
@@ -148,7 +151,7 @@ export const execute = (
         await Ipc.sendQueue(
           tabId,
           TabCommand.executePageAction,
-          action as PageActionType,
+          action as PageActionStep,
         )
       }
     }

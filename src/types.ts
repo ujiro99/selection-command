@@ -12,6 +12,7 @@ import type {
   LINK_COMMAND_STARTUP_METHOD,
 } from '@/const'
 import type { EventTypes } from '@/services/pageAction/listener'
+import type { PageAction } from '@/services/pageAction'
 
 export type Version = `${number}.${number}.${number}`
 
@@ -121,9 +122,9 @@ export type SessionData = {
 
 export type ControlTypes = 'start' | 'end'
 export type ActionTypes = EventTypes | ControlTypes
-export type PageActionType = {
+export type PageActionStep = {
   id: string
   type: ActionTypes
   timestamp: number
-  params: Record<string, unknown>
+  param: PageAction.Parameter
 }

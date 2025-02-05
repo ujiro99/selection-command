@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
 import {
   PageActionDispatcher as dispatcher,
-  PageActionProps,
+  PageAction,
 } from '@/services/pageAction'
 import type { Message } from '@/services/ipc'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
-import { PageActionType } from '@/types'
+import { PageActionStep } from '@/types'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 
 type ExecutinListenerParam = {
@@ -68,7 +68,7 @@ export function usePageActionRunner() {
 
   const execute = async (message: Message) => {
     if (message.command !== TabCommand.executePageAction) return
-    const action = message.param as PageActionType
+    const action = message.param as PageActionStep
     const eventParam = { detail: { id: action.id, type: action.type } } as const
     window.dispatchEvent(new CustomEvent(RunnerEvent.Start, eventParam))
     setIsExecuting(true)
@@ -77,7 +77,7 @@ export function usePageActionRunner() {
     try {
       switch (action.type) {
         case 'start':
-          const url = action.params.url as string
+          const url = (action.param as PageAction.Start).url as string
           if (url) {
             location.href = url
             // Resume until the page is loaded.
@@ -87,34 +87,34 @@ export function usePageActionRunner() {
           break
         case 'click':
           ;[result, msg] = await dispatcher.click(
-            action.params as PageActionProps.Click,
+            action.param as PageAction.Click,
           )
           break
         case 'doubleClick':
           ;[result, msg] = await dispatcher.doubleCilck(
-            action.params as PageActionProps.Click,
+            action.param as PageAction.Click,
           )
           break
         case 'tripleClick':
           ;[result, msg] = await dispatcher.tripleClick(
-            action.params as PageActionProps.Click,
+            action.param as PageAction.Click,
           )
           break
         case 'keyboard':
           ;[result, msg] = await dispatcher.keyboard(
-            action.params as PageActionProps.Keyboard,
+            action.param as PageAction.Keyboard,
           )
           break
         case 'input':
           ;[result, msg] = await dispatcher.input({
-            ...action.params,
+            ...action.param,
             selectedText,
             clipboardText,
-          } as PageActionProps.Input)
+          } as PageAction.Input)
           break
         case 'scroll':
           ;[result, msg] = await dispatcher.scroll(
-            action.params as PageActionProps.Scroll,
+            action.param as PageAction.Scroll,
           )
           break
         case 'end':
