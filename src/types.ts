@@ -36,6 +36,7 @@ export type SelectionCommand = {
   fetchOptions?: string
   variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
+  pageActionOption?: PageActionOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
@@ -127,4 +128,8 @@ export type PageActionStep = {
   type: ActionTypes
   timestamp: number
   param: PageAction.Parameter
+}
+
+type PageActionOption = {
+  steps: Array<PageActionStep>
 }

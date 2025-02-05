@@ -42,8 +42,8 @@ export const add = (
     // Remove a end ation.
     actions = actions.filter((a) => a.type !== 'end')
 
-    // + 1 : Start action
-    if (actions.length >= PAGE_ACTION_MAX + 1) {
+    // - 1 : End action
+    if (actions.length >= PAGE_ACTION_MAX - 1) {
       response(true)
       return
     }

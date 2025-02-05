@@ -141,4 +141,4 @@ export const HUB_URL = isDebug
   ? 'http://localhost:3000/'
   : 'https://ujiro99.github.io/selection-command/'
 
-export const PAGE_ACTION_MAX = 10 // 10 actions
+export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
