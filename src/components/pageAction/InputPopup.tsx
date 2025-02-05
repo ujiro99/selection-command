@@ -206,7 +206,7 @@ export function InputPopup(): JSX.Element {
       if (isHTMLElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
-            e.target.innerText.trim().length !== 0,
+          e.target.innerText.trim().length !== 0,
         )
       }
     }
@@ -288,7 +288,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
           onMouseEnter={onMouseEnter}
         >
           <img src={iconSrc} alt="icon" className="w-[18px] h-[18px] mr-1.5" />
-          テキスト挿入
+          {t('PageAction_InputMenu_insertText')}
           {isOpen ? (
             <ChevronUp size={14} className="ml-1" />
           ) : (
@@ -298,15 +298,15 @@ export function InputMenu(props: MenuProps): JSX.Element {
         <MenubarContent>
           <InputMenuItem onClick={onClickItem} value={INSERT.SELECTED_TEXT}>
             <TextCursorInput size={16} className="mr-2 stroke-gray-600" />
-            選択テキスト
+            {t('PageAction_InputMenu_selectedText')}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
             <Link2 size={16} className="mr-2 stroke-gray-600" />
-            表示元URL
+            {t('PageAction_InputMenu_url')}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
             <Clipboard size={16} className="mr-2 stroke-gray-600" />
-            クリップボード
+            {t('PageAction_InputMenu_clipboard')}
           </InputMenuItem>
         </MenubarContent>
       </MenubarMenu>

@@ -478,5 +478,32 @@
   },
   "PageAction_InputMenu_mark_clipboard": {
     "message": "クリップボードから挿入されます"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "テキスト挿入"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "選択テキスト"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "表示元URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "クリップボード"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "Inputアクションの編集"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "このアクションにより入力される内容を編集してください。"
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "入力される内容"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "やめる"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "保存する"
   }
 }

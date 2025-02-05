@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Save } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -15,6 +16,7 @@ import {
   convSymbolsToReadableKeys,
   convReadableKeysToSymbols,
 } from '@/services/pageAction'
+import { t } from '@/services/i18n'
 
 type InputEditorProps = {
   open: boolean
@@ -35,9 +37,12 @@ export function InputEditor(props: InputEditorProps) {
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Inputアクションの編集</DialogTitle>
+          <DialogTitle>
+            <span className="mr-2">✏️</span>
+            {t('PageAction_InputEditor_title')}
+          </DialogTitle>
           <DialogDescription>
-            このアクションにより入力される内容を編集してください。
+            {t('PageAction_InputEditor_description')}
           </DialogDescription>
         </DialogHeader>
         <div className="retative">
@@ -47,18 +52,21 @@ export function InputEditor(props: InputEditorProps) {
           />
           <Textarea
             id="input-action"
-            placeholder="入力される内容"
+            placeholder={t('PageAction_InputEditor_placeholder')}
             rows={4}
             defaultValue={defaultVal}
             ref={setTextarea}
           />
         </div>
         <DialogFooter>
-          <DialogClose>
-            <Button variant="secondary">やめる</Button>
+          <DialogClose asChild>
+            <Button variant="secondary">
+              {t('PageAction_InputEditor_cancel')}
+            </Button>
           </DialogClose>
           <Button type="submit" onClick={handleSubmit}>
-            保存する
+            <Save size={16} className="mr-0.5" />
+            {t('PageAction_InputEditor_save')}
           </Button>
         </DialogFooter>
       </DialogContent>

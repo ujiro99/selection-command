@@ -481,5 +481,32 @@
   "PageAction_InputMenu_mark_clipboard": {
     "message": "The clipboard text  will be inserted",
     "description": "for INSERT.CLIPBOARD"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "Insert Text"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "Selected text"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "Origin URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "Clipboard"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "Edit the content"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "Edit the content to be entered by this action."
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "Content to be entered"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "Cancel"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "Save"
   }
 }
