@@ -230,6 +230,9 @@
   "Option_openMode_getTextStyles": {
     "message": "Get text styles"
   },
+  "Option_openMode_pageAction": {
+    "message": "Page Action"
+  },
   "Option_openMode_previewPopup": {
     "message": "Popup"
   },

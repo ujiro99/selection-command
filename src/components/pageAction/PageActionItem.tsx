@@ -23,7 +23,7 @@ export function PageActionItem(props: Props): JSX.Element {
         currentId === action.id ? 'bg-green-200' : '',
         isFailed ? 'bg-red-200' : '',
       )}
-      key={action.timestamp}
+      key={action.id}
     >
       <p className="text-sm text-stone-600 font-medium">
         {capitalize(action.type)}

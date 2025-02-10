@@ -230,6 +230,9 @@
   "Option_openMode_getTextStyles": {
     "message": "テキストのスタイル取得"
   },
+  "Option_openMode_pageAction": {
+    "message": "Page Action"
+  },
   "Option_openMode_previewPopup": {
     "message": "Popup"
   },

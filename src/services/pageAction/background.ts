@@ -1,19 +1,19 @@
 import { Ipc, Sender, TabCommand } from '@/services/ipc'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { PAGE_ACTION_MAX } from '@/const'
+import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from '@/const'
 import { generateRandomID } from '@/lib/utils'
-import type { PageActionStep, ControlTypes } from '@/types'
+import type { PageActionStep } from '@/types'
 import type { PageAction } from '@/services/pageAction'
 import { isInputAction } from '@/services/pageAction'
 
 const StartAction = {
-  type: 'start' as ControlTypes,
+  type: PAGE_ACTION_CONTROL.start,
   id: generateRandomID(),
   url: '',
 }
 
 const EndAction = {
-  type: 'end' as ControlTypes,
+  type: PAGE_ACTION_CONTROL.end,
   id: generateRandomID(),
 }
 
@@ -31,7 +31,6 @@ export const add = (
     if (actions.length === 0) {
       actions.push({
         ...StartAction,
-        timestamp: action.timestamp,
         param: {
           label: 'Start',
           url: sender.tab?.url ?? '',

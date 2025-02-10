@@ -13,9 +13,9 @@ import type { ScreenSize } from '@/services/dom'
 import { Settings } from '@/services/settings'
 import type { CommandVariable } from '@/types'
 import { Storage, STORAGE_KEY } from '@/services/storage'
-import '@/services/contextMenus'
 import { PopupOption } from '@/services/defaultSettings'
 import { PageActionBackground } from '@/services/pageAction'
+import '@/services/contextMenus'
 
 const OPTION_PAGE = 'src/options_page.html'
 

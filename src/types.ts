@@ -10,8 +10,9 @@ import type {
   STYLE_VARIABLE,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONTROL,
 } from '@/const'
-import type { EventTypes } from '@/services/pageAction/listener'
 import type { PageAction } from '@/services/pageAction'
 
 export type Version = `${number}.${number}.${number}`
@@ -121,15 +122,14 @@ export type SessionData = {
   timestamp: number
 }
 
-export type ControlTypes = 'start' | 'end'
-export type ActionTypes = EventTypes | ControlTypes
+export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
 export type PageActionStep = {
   id: string
   type: ActionTypes
-  timestamp: number
   param: PageAction.Parameter
 }
 
 type PageActionOption = {
+  startUrl: string
   steps: Array<PageActionStep>
 }

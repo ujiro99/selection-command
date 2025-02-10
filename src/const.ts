@@ -127,6 +127,20 @@ export const POPUP_OPTION = {
   height: 700,
 }
 
+export enum PAGE_ACTION_EVENT {
+  click = 'click',
+  doubleClick = 'doubleClick',
+  tripleClick = 'tripleClick',
+  keyboard = 'keyboard',
+  scroll = 'scroll',
+  input = 'input',
+}
+
+export enum PAGE_ACTION_CONTROL {
+  start = 'start',
+  end = 'end',
+}
+
 export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100

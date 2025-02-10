@@ -7,17 +7,16 @@ import {
   convReadableKeysToSymbols,
 } from '@/services/pageAction'
 import { isTextNode } from '@/services/dom'
+import { PAGE_ACTION_EVENT } from '@/const'
 
 type EventsFunctions = {
-  click: (e: MouseEvent) => void
-  doubleClick: (xpath: string, label: string) => void
-  tripleClick: (xpath: string, label: string) => void
-  keyboard: (e: KeyboardEvent) => void
-  input: (e: Event) => void
-  scroll: () => void
+  [PAGE_ACTION_EVENT.click]: (e: MouseEvent) => void
+  [PAGE_ACTION_EVENT.doubleClick]: (xpath: string, label: string) => void
+  [PAGE_ACTION_EVENT.tripleClick]: (xpath: string, label: string) => void
+  [PAGE_ACTION_EVENT.keyboard]: (e: KeyboardEvent) => void
+  [PAGE_ACTION_EVENT.input]: (e: Event) => void
+  [PAGE_ACTION_EVENT.scroll]: () => void
 }
-
-export type EventTypes = keyof EventsFunctions
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
   if (['Tab', 'Enter'].includes(e.key)) return true

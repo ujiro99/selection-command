@@ -17,11 +17,11 @@ import {
 import { Ipc, BgCommand } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import type { PageActionStep } from '@/types'
-import { isEmpty } from '@/lib/utils'
-import { PAGE_ACTION_MAX } from '@/const'
+import { isEmpty, e2a } from '@/lib/utils'
+import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from '@/const'
 
 const isControlType = (type: string): boolean => {
-  return ['start', 'end'].includes(type)
+  return e2a(PAGE_ACTION_CONTROL).includes(type)
 }
 
 export function PageActionRecorder(): JSX.Element {
@@ -34,7 +34,7 @@ export function PageActionRecorder(): JSX.Element {
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>('')
   const [previewElm, setPreviewElm] = useState<HTMLButtonElement | null>()
-  const remain = PAGE_ACTION_MAX - actions.length
+  const remain = PAGE_ACTION_MAX - actions.length - 2 // - 2: start, end
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
