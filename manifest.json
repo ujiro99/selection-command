@@ -31,11 +31,6 @@
     "service_worker": "src/background_script.ts"
   },
   "options_page": "src/options_page.html",
-  "sandbox": {
-    "pages": [
-      "src/sandbox.html"
-    ]
-  },
   "action": {},
   "permissions": [
     "storage",

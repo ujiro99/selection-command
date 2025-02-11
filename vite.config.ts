@@ -21,25 +21,25 @@ export default defineConfig(({ mode }) => {
             enableDev: true,
           },
           injectCodeFunction: (cssCode: string, options) => {
-            const upsertCss = (elm: ShadowRoot) => {
+            const upsertCss = (root: ShadowRoot | HTMLHeadElement) => {
               const fileName = options
                 .attributes!['data-vite-dev-id'].split('/')
                 .pop() as string
               options.attributes!['data-vite-dev-id'] = fileName
               const newCssNode = document.createTextNode(cssCode)
-              let style = elm.querySelector(
+              let style = root.querySelector(
                 `style[data-vite-dev-id='${fileName}']`,
               )
               if (style == null) {
-                // case1. Create a new style element.
+                // case 1. Create a new style element.
                 style = document.createElement('style')
                 for (const attr in options.attributes) {
                   style.setAttribute(attr, options.attributes[attr])
                 }
                 style.appendChild(newCssNode)
-                elm.appendChild(style)
+                root.appendChild(style)
               } else {
-                // case2. Update the existing style element.
+                // case 2. Update the existing style element.
                 const oldTextNode = style.firstChild
                 if (oldTextNode) {
                   style.replaceChild(newCssNode, oldTextNode)
@@ -58,9 +58,10 @@ export default defineConfig(({ mode }) => {
                   ) {
                     targetId = 'selection-command-command-hub'
                   }
-                  const shadow = document.getElementById(targetId)?.shadowRoot
-                  if (shadow == null) return
-                  upsertCss(shadow)
+                  const root =
+                    document.getElementById(targetId)?.shadowRoot ??
+                    document.head // Option page
+                  upsertCss(root)
                 }
               } catch (e) {
                 console.error('vite-plugin-css-injected-by-js', e)

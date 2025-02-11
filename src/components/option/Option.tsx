@@ -17,6 +17,7 @@ import { HubBanner } from '@/components/option/HubBanner'
 import { useEventProxyReceiver } from '@/hooks/option/useEventProxy'
 
 import css from './Option.module.css'
+import './SettingForm.module.css'
 
 const getTranslation = () => {
   const obj = {} as { [key: string]: string }
@@ -123,47 +124,38 @@ export function Option() {
     }
   }
 
-  const onLoadIframe = async () => {
-    const settings = await Settings.get(true)
-    const translation = getTranslation()
+  // const onLoadIframe = async () => {
+  //   const settings = await Settings.get(true)
+  //   const translation = getTranslation()
 
-    // Convert linkCommand option
-    const linkCommands = settings.commands.filter(isLinkCommand)
-    if (linkCommands.length > 0) {
-      const linkCommand = linkCommands[0]
-      settings.linkCommand = {
-        ...settings.linkCommand,
-        openMode: linkCommand.openMode,
-      }
-    }
-    settings.commands = settings.commands.filter(isMenuCommand)
+  //   // Convert linkCommand option
+  //   const linkCommands = settings.commands.filter(isLinkCommand)
+  //   if (linkCommands.length > 0) {
+  //     const linkCommand = linkCommands[0]
+  //     settings.linkCommand = {
+  //       ...settings.linkCommand,
+  //       openMode: linkCommand.openMode,
+  //     }
+  //   }
+  //   settings.commands = settings.commands.filter(isMenuCommand)
 
-    // Retry until the iframe is ready
-    iframeTORef.current = window.setInterval(() => {
-      if (iframeRetryRef.current > 20) {
-        console.error('Failed to initialize iframe for SettingForm')
-        clearInterval(iframeTORef.current)
-      }
-      // console.debug('send settings: ', iframeRetryRef.current)
-      sendMessage(OPTION_MSG.START, {
-        settings,
-        translation,
-      })
-      iframeRetryRef.current = iframeRetryRef.current + 1
-    }, 100)
-  }
+  //   // Retry until the iframe is ready
+  //   iframeTORef.current = window.setInterval(() => {
+  //     if (iframeRetryRef.current > 20) {
+  //       console.error('Failed to initialize iframe for SettingForm')
+  //       clearInterval(iframeTORef.current)
+  //     }
+  //     // console.debug('send settings: ', iframeRetryRef.current)
+  //     sendMessage(OPTION_MSG.START, {
+  //       settings,
+  //       translation,
+  //     })
+  //     iframeRetryRef.current = iframeRetryRef.current + 1
+  //   }, 100)
+  // }
 
   const onClickMenu = (hash: string) => {
     sendMessage(OPTION_MSG.JUMP, { hash })
-  }
-
-  const sandboxUrl = () => {
-    const src = chrome.runtime.getURL('src/sandbox.html')
-    if (document.location.hash) {
-      return `${src}${document.location.hash}`
-    } else {
-      return src
-    }
   }
 
   return (
@@ -206,15 +198,6 @@ export function Option() {
         <h1 className={css.title}>{capitalize(APP_ID.replace('-', ' '))}</h1>
         <span className={css.version}>Version: {VERSION}</span>
       </header>
-
-      <iframe
-        title="SettingForm"
-        id="sandbox"
-        src={sandboxUrl()}
-        ref={iframeRef}
-        className={css.editorFrame}
-        onLoad={onLoadIframe}
-      />
     </div>
   )
 }
