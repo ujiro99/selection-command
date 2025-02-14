@@ -113,6 +113,24 @@
   "Option_popupPlacement": {
     "message": "メニュー表示位置"
   },
+  "Option_popupPlacement_top": {
+    "message": "Top"
+  },
+  "Option_popupPlacement_top_start": {
+    "message": "Top Start"
+  },
+  "Option_popupPlacement_top_end": {
+    "message": "Top End"
+  },
+  "Option_popupPlacement_bottom": {
+    "message": "Bottom"
+  },
+  "Option_popupPlacement_bottom_start": {
+    "message": "Bottom Start"
+  },
+  "Option_popupPlacement_bottom_end": {
+    "message": "Bottom End"
+  },
   "Option_style": {
     "message": "メニュースタイル"
   },

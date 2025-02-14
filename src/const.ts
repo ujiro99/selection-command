@@ -20,6 +20,15 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = 'addPageRule',
 }
 
+export enum POPUP_PLACEMENT {
+  TOP = 'top',
+  TOP_START = 'top-start',
+  TOP_END = 'top-end',
+  BOTTOM = 'bottom',
+  BOTTOM_START = 'bottom-start',
+  BOTTOM_END = 'bottom-end',
+}
+
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = 'previewPopup',
   PREVIEW_WINDOW = 'previewWindow',

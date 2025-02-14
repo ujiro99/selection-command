@@ -1,65 +1,28 @@
 import { useState, useEffect, useRef } from 'react'
-import { CSSTransition } from 'react-transition-group'
 
 import { Settings } from '@/services/settings'
 import type { SettingsType } from '@/types'
 import { sleep, capitalize, isMenuCommand, isLinkCommand } from '@/lib/utils'
-import { t } from '@/services/i18n'
 import { fetchIconUrl } from '@/services/chrome'
 import { APP_ID, VERSION, OPTION_MSG } from '@/const'
-import messages from '@/../public/_locales/en/messages.json'
 
 import { Popup } from '@/components/Popup'
-import { LoadingIcon } from '@/components/option/LoadingIcon'
 import { TableOfContents } from '@/components/option/TableOfContents'
 import { ImportExport } from '@/components/option/ImportExport'
 import { HubBanner } from '@/components/option/HubBanner'
+import { SettingForm } from '@/components/option/SettingForm'
 import { useEventProxyReceiver } from '@/hooks/option/useEventProxy'
 
 import css from './Option.module.css'
-import './SettingForm.module.css'
-
-const getTranslation = () => {
-  const obj = {} as { [key: string]: string }
-  for (const key in messages) {
-    if (key.startsWith('Option_')) {
-      obj[key] = t(key)
-    }
-  }
-  return obj
-}
 
 export function Option() {
-  const [isSaving, setIsSaving] = useState(false)
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const iframeTORef = useRef<number>(0)
-  const iframeRetryRef = useRef<number>(0)
-  const loadingRef = useRef<HTMLDivElement>(null)
   const [popupElm, setPopupElm] = useState<Element | null>(null)
   const [popupHeight, setPopupHeight] = useState(0)
 
   useEventProxyReceiver()
-
-  const updateSettings = async (settings: SettingsType) => {
-    if (isSaving) return
-    try {
-      setIsSaving(true)
-      const current = await Settings.get(true)
-      const linkCommands = current.commands.filter(isLinkCommand).map((c) => ({
-        ...c,
-        openMode: settings.linkCommand.openMode,
-      }))
-      settings.commands = [...settings.commands, ...linkCommands]
-      await Settings.set(settings)
-      await sleep(1000)
-    } catch (e) {
-      console.error('Failed to update settings!', settings)
-      console.error(e)
-    } finally {
-      setIsSaving(false)
-    }
-  }
 
   useEffect(() => {
     const func = async (event: MessageEvent) => {
@@ -68,9 +31,6 @@ export function Option() {
       switch (command) {
         case OPTION_MSG.START_ACK:
           clearInterval(iframeTORef.current)
-          break
-        case OPTION_MSG.CHANGED:
-          updateSettings(value)
           break
         case OPTION_MSG.FETCH_ICON_URL:
           const { searchUrl } = value
@@ -139,39 +99,16 @@ export function Option() {
   //   }
   //   settings.commands = settings.commands.filter(isMenuCommand)
 
-  //   // Retry until the iframe is ready
-  //   iframeTORef.current = window.setInterval(() => {
-  //     if (iframeRetryRef.current > 20) {
-  //       console.error('Failed to initialize iframe for SettingForm')
-  //       clearInterval(iframeTORef.current)
-  //     }
-  //     // console.debug('send settings: ', iframeRetryRef.current)
-  //     sendMessage(OPTION_MSG.START, {
-  //       settings,
-  //       translation,
-  //     })
-  //     iframeRetryRef.current = iframeRetryRef.current + 1
-  //   }, 100)
   // }
 
   const onClickMenu = (hash: string) => {
-    sendMessage(OPTION_MSG.JUMP, { hash })
+    if (!hash) return
+    const menu = document.querySelector(hash)
+    menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
     <div className={css.option}>
-      <CSSTransition
-        in={isSaving}
-        timeout={300}
-        classNames="drop-in"
-        unmountOnExit
-        nodeRef={loadingRef}
-      >
-        <LoadingIcon ref={loadingRef}>
-          <span>{t('saving')}</span>
-        </LoadingIcon>
-      </CSSTransition>
-
       <div className={css.rightColumn}>
         <div
           ref={setPreviewElm}
@@ -198,6 +135,8 @@ export function Option() {
         <h1 className={css.title}>{capitalize(APP_ID.replace('-', ' '))}</h1>
         <span className={css.version}>Version: {VERSION}</span>
       </header>
+
+      <SettingForm />
     </div>
   )
 }

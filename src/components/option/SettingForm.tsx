@@ -1,111 +1,215 @@
-import React, { useRef, useCallback } from 'react'
-import { useState, useEffect } from 'react'
-import { Search } from 'lucide-react'
-import type {
-  IconButtonProps,
-  FieldProps,
-  RegistryFieldsType,
-  RJSFSchema,
-} from '@rjsf/utils'
-import validator from '@rjsf/validator-ajv8'
-import Form from '@rjsf/core'
-import type { IChangeEvent } from '@rjsf/core'
-import clsx from 'clsx'
-import settingSchema from '@/services/settingSchema'
+import React, { useState, useEffect, useRef } from 'react'
+import { CSSTransition } from 'react-transition-group'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, useFieldArray } from 'react-hook-form'
+import { LoadingIcon } from '@/components/option/LoadingIcon'
+
 import {
-  UserStyleField,
-  UserStyleMap,
-} from '@/components/option/UserStyleField'
-import { Icon } from '@/components/Icon'
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
+
+import { t as _t } from '@/services/i18n'
+const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+import { z } from 'zod'
+import {
+  STYLE,
   OPEN_MODE,
-  DRAG_OPEN_MODE,
-  OPTION_MSG,
   STARTUP_METHOD,
+  POPUP_PLACEMENT,
   KEYBOARD,
-  STYLE_VARIABLE,
+  SPACE_ENCODING,
+  COMMAND_MAX,
+  DRAG_OPEN_MODE,
   POPUP_ENABLED,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
+  STYLE_VARIABLE,
 } from '@/const'
-import type { SettingsType, FolderOption } from '@/types'
-import { useEventProxy } from '@/hooks/option/useEventProxy'
-import { isEmpty, isMac, cn } from '@/lib/utils'
+import type { SettingsType } from '@/types'
+import { isMenuCommand, isLinkCommand, isMac, sleep, e2a } from '@/lib/utils'
+import { Settings } from '@/services/settings'
 
-import css from './SettingForm.module.css'
-
-type folderOptionsType = {
-  enumNames: string[]
-  enum: FolderOption[]
-  iconUrl: string
+function hyphen2Underscore(input: string): string {
+  return input.replace(/-/g, '_')
 }
 
-type Translation = {
-  [key: string]: string
-}
+const formSchema = z
+  .object({
+    startupMethod: z
+      .object({
+        method: z.nativeEnum(STARTUP_METHOD),
+        keyboardParam: z
+          .nativeEnum(KEYBOARD)
+          .optional()
+          .refine((val) => val !== KEYBOARD.META),
+        leftClickHoldParam: z.number().min(50).max(500).step(10).optional(),
+      })
+      .strict(),
+    popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
+    style: z.nativeEnum(STYLE),
+    commands: z
+      .array(
+        z
+          .object({
+            title: z.string(),
+            iconUrl: z.string(),
+            openMode: z
+              .nativeEnum(OPEN_MODE)
+              .refine(
+                (val) =>
+                  val !== OPEN_MODE.OPTION && val !== OPEN_MODE.ADD_PAGE_RULE,
+              ),
+            parentFolderId: z.string().optional(),
+            searchUrl: z.string().optional(),
+            spaceEncoding: z.nativeEnum(SPACE_ENCODING).optional(),
+            popupOption: z
+              .object({
+                width: z.number().min(1),
+                height: z.number().min(1),
+              })
+              .optional(),
+            fetchOptions: z.string().optional(),
+            variables: z
+              .array(
+                z.object({
+                  name: z.string(),
+                  value: z.string(),
+                }),
+              )
+              .optional(),
+            copyOption: z.enum(['default', 'text']).optional(),
+          })
+          .strict(),
+      )
+      .min(1)
+      .max(COMMAND_MAX),
+    folders: z
+      .array(
+        z
+          .object({
+            id: z.string(),
+            title: z.string(),
+            iconUrl: z.string().optional(),
+            onlyIcon: z.boolean().optional(),
+          })
+          .strict(),
+      )
+      .optional(),
+    linkCommand: z
+      .object({
+        enabled: z
+          .nativeEnum(LINK_COMMAND_ENABLED)
+          .refine((val) => val !== LINK_COMMAND_ENABLED.INHERIT),
+        openMode: z.nativeEnum(DRAG_OPEN_MODE),
+        showIndicator: z.boolean(),
+        startupMethod: z
+          .object({
+            method: z.nativeEnum(LINK_COMMAND_STARTUP_METHOD),
+            keyboardParam: z.string().optional(),
+            threshold: z.number().min(50).max(400).step(10).optional(),
+            leftClickHoldParam: z.number().min(50).max(500).step(10).optional(),
+          })
+          .strict(),
+      })
+      .strict(),
+    pageRules: z
+      .array(
+        z
+          .object({
+            urlPattern: z.string(),
+            popupEnabled: z.nativeEnum(POPUP_ENABLED),
+            popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
+            linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
+          })
+          .strict(),
+      )
+      .optional(),
+    userStyles: z
+      .array(
+        z
+          .object({
+            name: z.nativeEnum(STYLE_VARIABLE),
+            value: z.string(),
+          })
+          .strict(),
+      )
+      .optional(),
+  })
+  .strict()
 
-type StartupMethodMap = Record<STARTUP_METHOD, { [key: string]: string }>
-type KeyboardMap = Record<KEYBOARD, { [key: string]: string }>
-type ModeMap = Record<OPEN_MODE, { [key: string]: string }>
-type DragOpenModeMap = Record<DRAG_OPEN_MODE, { [key: string]: string }>
-type PopupEnabledMap = Record<POPUP_ENABLED, { [key: string]: string }>
-type LinkCommandEnabledMap = Record<
-  LINK_COMMAND_ENABLED,
-  { [key: string]: string }
->
-type LinkCommandStartupMethodMap = Record<
-  LINK_COMMAND_STARTUP_METHOD,
-  { [key: string]: string }
->
+type FormValues = z.infer<typeof formSchema>
 
-const toKey = (str: string) => {
-  return str.replace(/-/g, '_')
-}
-
-const toCommandId = (id: string) => {
-  return Number(id.split('_')[2])
-}
-
-export function SettingFrom() {
-  const [parent, setParent] = useState<MessageEventSource>()
-  const [origin, setOrigin] = useState('')
-  const [trans, setTrans] = useState<Translation>({})
-  const [settingData, setSettingData] = useState<SettingsType>()
+export function SettingForm() {
   const initializedRef = useRef<boolean>(false)
-  const formRef = useRef<Form>(null)
+  const [isSaving, setIsSaving] = useState(false)
   const saveToRef = useRef<number>()
   const iconToRef = useRef<number>()
+  const [settingData, setSettingData] = useState<SettingsType | undefined>()
+  const loadingRef = useRef<HTMLDivElement>(null)
 
-  const sendMessage = useCallback(
-    (command: OPTION_MSG, value: any) => {
-      if (parent != null) {
-        console.debug('sendMessage:', command, value)
-        parent.postMessage({ command, value }, { targetOrigin: origin })
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    mode: 'onChange',
+  })
+
+  const { getValues, register } = form
+
+  const { fields, append, remove } = useFieldArray({
+    name: 'commands',
+    control: form.control,
+  })
+
+  const updateSettings = async (settings: SettingsType) => {
+    if (isSaving) return
+    try {
+      setIsSaving(true)
+      const current = await Settings.get(true)
+      const linkCommands = current.commands.filter(isLinkCommand).map((c) => ({
+        ...c,
+        openMode: settings.linkCommand.openMode,
+      }))
+      settings.commands = [...settings.commands, ...linkCommands]
+      await Settings.set(settings)
+      await sleep(1000)
+    } catch (e) {
+      console.error('Failed to update settings!', settings)
+      console.error(e)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await Settings.get(true)
+      // Convert linkCommand option
+      const linkCommands = settings.commands.filter(isLinkCommand)
+      if (linkCommands.length > 0) {
+        const linkCommand = linkCommands[0]
+        settings.linkCommand = {
+          ...settings.linkCommand,
+          openMode: linkCommand.openMode,
+        }
       }
-    },
-    [parent, origin],
-  )
-
-  const t = (key: string) => {
-    return trans[`Option_${key}`]
-  }
-
-  const jump = (_hash: string) => {
-    const hash = _hash ?? document.location.hash
-    if (!hash) return
-    const menu = document.querySelector(hash)
-    menu?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
-  const updateSettingData = (data: SettingsType) => {
-    if (settingData == null) return
-    setSettingData(data)
-    // For some reason, updating data here does not update the Form display.
-    // So update via ref.
-    formRef.current?.setState({ formData: data })
-  }
-
-  useEventProxy(sendMessage, settingData)
+      settings.commands = settings.commands.filter(isMenuCommand)
+      setSettingData(settings)
+    }
+    loadSettings()
+  }, [])
 
   // Save after 500 ms to storage.
   useEffect(() => {
@@ -119,8 +223,8 @@ export function SettingFrom() {
 
     clearTimeout(saveToRef.current)
     saveToRef.current = window.setTimeout(() => {
-      if (unmounted) return
-      sendMessage(OPTION_MSG.CHANGED, settingData)
+      if (unmounted || settingData == null) return
+      updateSettings(settingData)
     }, 1 * 500 /* ms */)
 
     return () => {
@@ -130,778 +234,250 @@ export function SettingFrom() {
     }
   }, [settingData])
 
-  useEffect(() => {
-    const func = (event: MessageEvent) => {
-      const command = event.data.command
-      const value = event.data.value
-      console.debug('recv message', command, value)
-      if (command === OPTION_MSG.START) {
-        const { settings, translation } = value
-        if (event.source != null) {
-          setParent(event.source)
-          setOrigin(event.origin)
-          console.log('start', settings)
-          setSettingData(settings)
-          setTrans(translation)
-          // Page scrolls to the hash.
-          setTimeout(jump, 10)
-          // response
-          event.source.postMessage(
-            { command: OPTION_MSG.START_ACK },
-            { targetOrigin: event.origin },
-          )
-        }
-      } else if (command === OPTION_MSG.RES_FETCH_ICON_URL) {
-        const { iconUrl, searchUrl } = value
-        if (!settingData) return
-        if (isEmpty(iconUrl)) return // failed to find icon
-        const commands = settingData.commands.map((cmd) => {
-          if (cmd.searchUrl === searchUrl) {
-            cmd.iconUrl = iconUrl
-          }
-          return cmd
-        })
-        const newSettings = { ...settingData, commands }
-        setSettingData(newSettings)
-        formRef.current?.setState({ formData: newSettings })
-      } else if (command === OPTION_MSG.JUMP) {
-        const { hash } = value
-        jump(hash)
-      }
-    }
-    window.addEventListener('message', func)
-    return () => {
-      window.removeEventListener('message', func)
-    }
-  }, [settingData])
-
-  const onChangeForm = (arg: IChangeEvent, id?: string) => {
-    const data = arg.formData as SettingsType
+  const handleSubmit = (
+    data: FormValues,
+    e: React.BaseSyntheticEvent | undefined,
+  ) => {
+    console.log(data, e)
     // Remove unnecessary fields when openMode is not popup or tab or window.
-    if (id?.endsWith('openMode')) {
-      data.commands
-        .filter(
-          (c) =>
-            c.openMode !== OPEN_MODE.POPUP &&
-            c.openMode !== OPEN_MODE.WINDOW &&
-            c.openMode !== OPEN_MODE.TAB,
-        )
-        .map((c) => {
-          delete c.openModeSecondary
-          delete c.spaceEncoding
-        })
-      data.commands
-        .filter(
-          (c) =>
-            c.openMode !== OPEN_MODE.POPUP &&
-            c.openMode !== OPEN_MODE.WINDOW &&
-            c.openMode !== OPEN_MODE.LINK_POPUP,
-        )
-        .map((c) => {
-          delete c.popupOption
-        })
-    }
+    //if (id?.endsWith('openMode')) {
+    //  data.commands
+    //    .filter(
+    //      (c) =>
+    //        c.openMode !== OPEN_MODE.POPUP &&
+    //        c.openMode !== OPEN_MODE.WINDOW &&
+    //        c.openMode !== OPEN_MODE.TAB,
+    //    )
+    //    .map((c) => {
+    //      delete c.openModeSecondary
+    //      delete c.spaceEncoding
+    //    })
+    //  data.commands
+    //    .filter(
+    //      (c) =>
+    //        c.openMode !== OPEN_MODE.POPUP &&
+    //        c.openMode !== OPEN_MODE.WINDOW &&
+    //        c.openMode !== OPEN_MODE.LINK_POPUP,
+    //    )
+    //    .map((c) => {
+    //      delete c.popupOption
+    //    })
+    //}
 
-    // If popup-delay is not set
-    // when the keyInput or leftClickHold is selected, set 0 ms.
-    if (id?.endsWith('method')) {
-      if (
-        data.startupMethod.method === STARTUP_METHOD.KEYBOARD ||
-        data.startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD
-      ) {
-        let userStyles = data.userStyles
-        if (!userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)) {
-          userStyles.push({ name: STYLE_VARIABLE.POPUP_DELAY, value: '0' })
-        }
-        updateSettingData({
-          ...data,
-          userStyles,
-        })
-        return
-      }
-    }
+    //// If popup-delay is not set
+    //// when the keyInput or leftClickHold is selected, set 0 ms.
+    //if (id?.endsWith('method')) {
+    //  if (
+    //    data.startupMethod.method === STARTUP_METHOD.KEYBOARD ||
+    //    data.startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD
+    //  ) {
+    //    let userStyles = data.userStyles
+    //    if (!userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)) {
+    //      userStyles.push({ name: STYLE_VARIABLE.POPUP_DELAY, value: '0' })
+    //    }
+    //    updateSettingData({
+    //      ...data,
+    //      userStyles,
+    //    })
+    //    return
+    //  }
+    //}
 
-    // Update iconURL when searchUrl chagned and iconUrl is empty.
-    if (id?.endsWith('searchUrl')) {
-      const command = data.commands[toCommandId(id)]
-      if (!isEmpty(command.searchUrl) && isEmpty(command.iconUrl)) {
-        clearTimeout(iconToRef.current)
-        iconToRef.current = window.setTimeout(() => {
-          sendMessage(OPTION_MSG.FETCH_ICON_URL, {
-            searchUrl: command.searchUrl,
-            settings: data,
-          })
-        }, 500)
-      }
-    }
+    //// Update iconURL when searchUrl chagned and iconUrl is empty.
+    //if (id?.endsWith('searchUrl')) {
+    //  const command = data.commands[toCommandId(id)]
+    //  if (!isEmpty(command.searchUrl) && isEmpty(command.iconUrl)) {
+    //    clearTimeout(iconToRef.current)
+    //    iconToRef.current = window.setTimeout(() => {
+    //      sendMessage(OPTION_MSG.FETCH_ICON_URL, {
+    //        searchUrl: command.searchUrl,
+    //        settings: data,
+    //      })
+    //    }, 500)
+    //  }
+    //}
 
-    updateSettingData(data)
+    //updateSettingData(data)
   }
 
-  const openCommandHub = () => {
-    sendMessage(
-      OPTION_MSG.OPEN_LINK,
-      'https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=button',
-    )
-  }
-
-  const autofill = (cmdIdx: number) => {
-    const searchUrl = settingData?.commands[cmdIdx].searchUrl
-    if (!searchUrl) return
-    sendMessage(OPTION_MSG.FETCH_ICON_URL, {
-      searchUrl: searchUrl,
-    })
-  }
-
-  const fields: RegistryFieldsType = {
-    '#/startupMethod/method': SelectField,
-    '#/startupMethod/param/keyboard': SelectField,
-    '#/startupMethod/param/leftClickHold': InputNumberField,
-    '#/popupPlacement': SelectField,
-    '#/style': SelectField,
-    '#/commands/iconUrl': IconUrlFieldWithAutofill(autofill),
-    '#/commands/fetchOptions': FetchOptionField,
-    '#/commands/openMode': SelectField,
-    '#/commands/copyOption': SelectField,
-    '#/commands/parentFolderId': FolderField,
-    '#/commandFolder/iconUrl': IconUrlField,
-    '#/commandFolder/onlyIcon': CheckboxField,
-    '#/linkCommand/enabled': SelectField,
-    '#/linkCommand/openMode': SelectField,
-    '#/linkCommand/showIndicator': CheckboxField,
-    '#/linkCommandStartupMethod/method': SelectField,
-    '#/linkCommandStartupMethod/param/threshold': InputNumberField,
-    '#/linkCommandStartupMethod/param/keyboard': SelectField,
-    '#/linkCommandStartupMethod/param/leftClickHold': InputNumberField,
-    '#/pageRules/popupEnabled': SelectField,
-    '#/pageRules/popupPlacement': SelectField,
-    '#/pageRules/linkCommandEnabled': SelectField,
-    '#/styleVariable': UserStyleField,
-    ArraySchemaField: CustomArraySchemaField,
-  }
-  for (const type of [OPEN_MODE.POPUP, OPEN_MODE.WINDOW, OPEN_MODE.TAB]) {
-    fields[`#/commands/openModeSecondary_${type}`] = SelectField
-    fields[`#/commands/spaceEncoding_${type}`] = SelectField
-  }
-
-  const uiSchema = {
-    startupMethod: {
-      'ui:title': t('startupMethod'),
-      'ui:description': t('startupMethod_desc'),
-      method: {
-        'ui:title': t('startupMethod_method'),
-        enum: {} as StartupMethodMap,
-      },
-      keyboardParam: {
-        'ui:classNames': 'startupMethodParam',
-        'ui:title': t('startupMethod_param_keyboard'),
-        enum: {} as KeyboardMap,
-      },
-      leftClickHoldParam: {
-        'ui:classNames': 'startupMethodParam',
-        'ui:title': t('startupMethod_param_leftClickHold'),
-      },
-    },
-    popupPlacement: {
-      'ui:classNames': 'popupPlacement',
-      'ui:title': t('popupPlacement'),
-      'ui:disabled': false,
-    },
-    style: {
-      'ui:classNames': 'style',
-      'ui:title': t('style'),
-      'ui:disabled': false,
-      enum: {
-        vertical: { 'ui:title': t('style_vertical') },
-        horizontal: { 'ui:title': t('style_horizontal') },
-      },
-    },
-    commands: {
-      'ui:title': t('commands'),
-      'ui:description': `${t('searchUrl')}: ${t('commands_desc')} \n${settingData?.commands.length}${t('commands_desc_count')}`,
-      'ui:classNames': css.listItem,
-      'ui:addButtonOptions': {
-        label: t('AddCommand'),
-        hasFindButton: true,
-      },
-      items: {
-        'ui:classNames': 'commandItem',
-        'ui:order': [
-          'title',
-          'openMode',
-          'openModeSecondary',
-          'searchUrl',
-          'iconUrl',
-          'parentFolderId',
-          '*',
-        ],
-        popupOption: { 'ui:widget': 'hidden' },
-        title: { 'ui:title': t('title') },
-        searchUrl: {
-          'ui:title': t('searchUrl'),
-        },
-        spaceEncoding: {
-          'ui:title': t('spaceEncoding'),
-          enum: {
-            plus: { 'ui:title': t('spaceEncoding_plus') },
-            percent: { 'ui:title': t('spaceEncoding_percent') },
-          },
-        },
-        iconUrl: {
-          'ui:title': t('iconUrl'),
-          'ui:button': t('iconUrl_autofill'),
-        },
-        openMode: {
-          'ui:title': t('openMode'),
-          enum: {} as ModeMap,
-        },
-        openModeSecondary: {
-          'ui:title': t('openModeSecondary'),
-          enum: {
-            popup: { 'ui:title': t('openMode_popup') },
-            tab: { 'ui:title': t('openMode_tab') },
-          },
-        },
-        parentFolderId: { 'ui:title': t('parentFolderId') },
-        fetchOptions: { 'ui:title': t('fetchOptions') },
-        copyOption: {
-          'ui:title': t('copyOption'),
-          enum: {
-            default: { 'ui:title': t('copyOption_default') },
-            text: { 'ui:title': t('copyOption_text') },
-          },
-        },
-        variables: {
-          'ui:classNames': 'variables',
-          'ui:title': t('variables'),
-          'ui:addButtonOptions': {
-            label: t('Add'),
-          },
-          items: {
-            'ui:classNames': 'variableItem',
-          },
-        },
-      },
-    },
-    folders: {
-      'ui:title': t('folders'),
-      'ui:description': t('folders_desc'),
-      'ui:classNames': css.listItem,
-      'ui:addButtonOptions': {
-        label: t('Add'),
-      },
-      items: {
-        id: { 'ui:widget': 'hidden' },
-        'ui:classNames': 'folderItem',
-        title: { 'ui:title': t('title') },
-        iconUrl: { 'ui:title': t('iconUrl') },
-        onlyIcon: {
-          'ui:title': t('onlyIcon'),
-          'ui:description': t('onlyIcon_desc'),
-        },
-      },
-    },
-    linkCommand: {
-      'ui:title': t('linkCommand'),
-      'ui:description': t('linkCommand_desc'),
-      'ui:order': ['enabled', 'openMode', 'showIndicator', 'startupMethod'],
-      enabled: {
-        'ui:title': t('linkCommandEnabled'),
-        'ui:classNames': 'linkCommandEnabled',
-        enum: {} as LinkCommandEnabledMap,
-      },
-      openMode: {
-        'ui:title': t('openMode'),
-        'ui:classNames': 'linkCommandOpenMode',
-        enum: {} as DragOpenModeMap,
-      },
-      showIndicator: {
-        'ui:title': t('showIndicator'),
-        'ui:description': t('showIndicator_desc'),
-        'ui:classNames': 'linkCommandShowIndicator',
-      },
-      startupMethod: {
-        'ui:classNames': 'linkCommandStartupMethod',
-        method: {
-          'ui:title': t('linkCommandStartupMethod_method'),
-          'ui:classNames': 'linkCommandMethod',
-          enum: {} as LinkCommandStartupMethodMap,
-        },
-        threshold: {
-          'ui:title': t('linkCommandStartupMethod_threshold'),
-          'ui:description': t('linkCommandStartupMethod_threshold_desc'),
-          'ui:classNames': cn('linkCommandThreshold', css.hasDescription),
-        },
-        keyboardParam: {
-          'ui:title': t('linkCommandStartupMethod_keyboardParam'),
-          'ui:classNames': 'linkCommandKeyboardParam',
-          enum: {},
-        },
-        leftClickHoldParam: {
-          'ui:title': t('linkCommandStartupMethod_leftClickHoldParam'),
-          'ui:classNames': 'linkCommandLeftClickHoldParam',
-        },
-      },
-    },
-    pageRules: {
-      'ui:title': t('pageRules'),
-      'ui:description': t('pageRules_desc'),
-      'ui:classNames': css.listItem,
-      'ui:addButtonOptions': {
-        label: t('Add'),
-      },
-      items: {
-        'ui:classNames': 'pageRuleItem',
-        urlPattern: { 'ui:title': t('urlPattern') },
-        popupEnabled: {
-          'ui:title': t('popupEnabled'),
-          enum: {} as PopupEnabledMap,
-        },
-        popupPlacement: { 'ui:title': t('popupPlacement') },
-        linkCommandEnabled: {
-          'ui:title': t('linkCommandEnabled'),
-          enum: {} as LinkCommandEnabledMap,
-        },
-      },
-    },
-    userStyles: {
-      'ui:title': t('userStyles'),
-      'ui:description': t('userStyles_desc'),
-      'ui:addButtonOptions': {
-        label: t('Add'),
-      },
-      items: {
-        'ui:classNames': css.userStyles,
-        name: {
-          'ui:title': t('userStyles_name'),
-          enum: {} as UserStyleMap,
-        },
-        value: { 'ui:title': t('userStyles_value') },
-      },
-    },
-  }
-
-  // Add folder options to schema.
-  if (settingData) {
-    const folders = settingData.folders
-    const folderOptions: folderOptionsType = folders.reduce(
-      (acc, cur) => {
-        acc.enumNames.push(cur.title)
-        acc.enum.push({
-          id: cur.id,
-          name: cur.title,
-          iconUrl: cur.iconUrl ?? '',
-        })
-        return acc
-      },
-      {
-        enumNames: ['-- none --'],
-        enum: [{ id: '', name: '-- none --' }],
-      } as folderOptionsType,
-    )
-    settingSchema.definitions!.folderOptions = folderOptions
-  }
-
-  // Add startupMethod to schema and uiSchema.
-  const method = settingData?.startupMethod.method
-  const methodMap = {} as StartupMethodMap
-  for (const m of Object.values(STARTUP_METHOD)) {
-    methodMap[m] = {
-      'ui:title': t(`startupMethod_${m}`),
-    }
-  }
-  uiSchema.startupMethod.method.enum = methodMap
-  if (method === STARTUP_METHOD.CONTEXT_MENU) {
-    uiSchema.popupPlacement['ui:disabled'] = true
-    uiSchema.style['ui:disabled'] = true
-  }
-  // Key name per OS
-  const keyboardMap = {} as KeyboardMap
-  let os = isMac() ? 'mac' : 'windows'
-  for (const k of Object.values(KEYBOARD)) {
-    keyboardMap[k] = {
-      'ui:title': t(`keyboardParam_${k}_${os}`),
-    }
-  }
-  uiSchema.startupMethod.keyboardParam.enum = keyboardMap
-
-  // Add openModes to schema and uiSchema.
-  const modes = settingSchema.definitions.openMode.enum
-  const modeMap = {} as ModeMap
-  for (const mode of modes) {
-    modeMap[mode] = {
-      'ui:title': t(`openMode_${mode}`),
-    }
-  }
-  uiSchema.commands.items.openMode.enum = modeMap
-
-  // Add linkCommand's openMode to uiSchema.
-  const dragOpenModeMap = {} as DragOpenModeMap
-  for (const mode of Object.values(DRAG_OPEN_MODE)) {
-    dragOpenModeMap[mode] = {
-      'ui:title': t(`openMode_${mode}`),
-    }
-  }
-  uiSchema.linkCommand.openMode.enum = dragOpenModeMap
-
-  const popupEnabledMap = {} as PopupEnabledMap
-  for (const option of Object.values(POPUP_ENABLED)) {
-    popupEnabledMap[option] = {
-      'ui:title': t(option),
-    }
-  }
-  uiSchema.pageRules.items.popupEnabled.enum = popupEnabledMap
-
-  const linkCommandEnabledMap = {} as LinkCommandEnabledMap
-  for (const option of Object.values(LINK_COMMAND_ENABLED)) {
-    if (option === LINK_COMMAND_ENABLED.INHERIT) {
-      linkCommandEnabledMap[option] = {
-        'ui:title':
-          t(`linkCommand_enabled${option}`) +
-          ': ' +
-          t(`linkCommand_enabled${settingData?.linkCommand.enabled}`),
-      }
-      continue
-    }
-    linkCommandEnabledMap[option] = {
-      'ui:title': t(`linkCommand_enabled${option}`),
-    }
-  }
-  uiSchema.linkCommand.enabled.enum = linkCommandEnabledMap
-  uiSchema.pageRules.items.linkCommandEnabled.enum = linkCommandEnabledMap
-
-  // Add linkCommand's startup method to uiSchema.
-  const linkCommandStartupMethodMap = {} as LinkCommandStartupMethodMap
-  for (const m of Object.values(LINK_COMMAND_STARTUP_METHOD)) {
-    linkCommandStartupMethodMap[m] = {
-      'ui:title': t(`linkCommandStartupMethod_${m}`),
-    }
-  }
-  uiSchema.linkCommand.startupMethod.method.enum = linkCommandStartupMethodMap
-
-  // Key name per OS
-  const linkCommandkeyboardMap = {
-    [KEYBOARD.SHIFT]: {
-      'ui:title': t(`keyboardParam_${KEYBOARD.SHIFT}_${os}`),
-    },
-    [KEYBOARD.ALT]: {
-      'ui:title': t(`keyboardParam_${KEYBOARD.ALT}_${os}`),
-    },
-    [KEYBOARD.CTRL]: {
-      'ui:title': t(`keyboardParam_${KEYBOARD.CTRL}_${os}`),
-    },
-  }
-  uiSchema.linkCommand.startupMethod.keyboardParam.enum = linkCommandkeyboardMap
-
-  // Add userStyles to schema and uiSchema.
-  const used = settingData?.userStyles?.map((s) => s.name) ?? []
-  const usMap = {} as UserStyleMap
-  for (const s of Object.values(STYLE_VARIABLE)) {
-    usMap[s] = {
-      'ui:title': t(`userStyles_option_${toKey(s)}`),
-      'ui:description': t(`userStyles_desc_${toKey(s)}`),
-      used: used.includes(s) ? 'used' : '',
-    }
-  }
-  uiSchema.userStyles.items.name.enum = usMap
-
-  const log = (type: any) => console.log.bind(console, type)
+  const os = isMac() ? 'mac' : 'windows'
 
   return (
-    <Form
-      className={css.form}
-      schema={settingSchema as unknown as RJSFSchema}
-      validator={validator}
-      formData={settingData}
-      onChange={onChangeForm}
-      onError={log('errors')}
-      uiSchema={uiSchema}
-      fields={fields}
-      templates={{
-        ButtonTemplates: {
-          AddButton: AddButton(openCommandHub),
-          MoveDownButton,
-          MoveUpButton,
-          RemoveButton,
-        },
-      }}
-      experimental_defaultFormStateBehavior={{
-        mergeDefaultsIntoFormData: 'useDefaultIfFormDataUndefined',
-      }}
-      ref={formRef}
-    />
+    <Form {...form}>
+      <CSSTransition
+        in={isSaving}
+        timeout={300}
+        classNames="drop-in"
+        unmountOnExit
+        nodeRef={loadingRef}
+      >
+        <LoadingIcon ref={loadingRef}>
+          <span>{_t('saving')}</span>
+        </LoadingIcon>
+      </CSSTransition>
+
+      <form
+        id="InputForm"
+        className="space-y-10 w-[600px] mx-auto"
+        onChange={form.handleSubmit(handleSubmit)}
+      >
+        <section className="space-y-3">
+          <h3 className="text-xl font-semibold">起動方法</h3>
+          <p className="text-base">
+            ポップアップメニューを表示する方法を変更します。
+          </p>
+          <SelectField
+            control={form.control}
+            name="startupMethod.method"
+            formLabel="方法"
+            options={e2a(STARTUP_METHOD).map((method) => ({
+              name: t(`startupMethod_${method}`),
+              value: method,
+            }))}
+          />
+          {getValues('startupMethod.method') === STARTUP_METHOD.KEYBOARD && (
+            <SelectField
+              control={form.control}
+              name="startupMethod.keyboardParam"
+              formLabel="表示を切り替えるキー"
+              options={e2a(KEYBOARD)
+                .filter((k) => k != KEYBOARD.META)
+                .map((key) => ({
+                  name: t(`keyboardParam_${key}_${os}`),
+                  value: key,
+                }))}
+            />
+          )}
+          {getValues('startupMethod.method') ===
+            STARTUP_METHOD.LEFT_CLICK_HOLD && (
+            <InputField
+              control={form.control}
+              name="startupMethod.leftClickHoldParam"
+              formLabel="長押し時間(ms)"
+              inputProps={{
+                type: 'number',
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register('startupMethod.leftClickHoldParam', {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
+          <SelectField
+            control={form.control}
+            name="popupPlacement"
+            formLabel="メニュー表示位置"
+            options={e2a(POPUP_PLACEMENT).map((placement) => ({
+              name: t(`popupPlacement_${hyphen2Underscore(placement)}`),
+              value: placement,
+            }))}
+          />
+          <SelectField
+            control={form.control}
+            name="style"
+            formLabel="メニュースタイル"
+            options={e2a(STYLE).map((style) => ({
+              name: t(`style_${style}`),
+              value: style,
+            }))}
+          />
+        </section>
+        <section className="space-y-3">
+          <h3 className="text-xl font-semibold">コマンド</h3>
+          <p className="text-base">
+            {t('commands_desc')}
+            <br />
+            {getValues('commands')?.length ?? 0}
+            {t('commands_desc_count')}
+          </p>
+        </section>
+      </form>
+    </Form>
   )
 }
 
-const AddButton = (onClickFind: any) => (props: IconButtonProps) => {
-  const { icon, uiSchema, registry, ...btnProps } = props
-  let options
-  if (props.uiSchema && props.uiSchema['ui:addButtonOptions']) {
-    options = props.uiSchema['ui:addButtonOptions']
-  }
-  const title = options?.label ?? 'Add'
-  const hasFindButton = options?.hasFindButton ?? false
-
-  if (!hasFindButton) {
-    return (
-      <button type="button" {...btnProps} className={css.button}>
-        <Icon name="plus" />
-        <span>{title}</span>
-      </button>
-    )
-  } else {
-    return (
-      <div className="flex items-center justify-center gap-3">
-        <button type="button" {...btnProps} className={css.button}>
-          <Icon name="plus" />
-          <span>{title}</span>
-        </button>
-        <button type="button" className={css.buttonFind} onClick={onClickFind}>
-          <Search size={14} />
-          <span>コマンドを探す</span>
-        </button>
-      </div>
-    )
-  }
-}
-
-function MoveUpButton(props: IconButtonProps) {
-  const { icon, uiSchema, ...btnProps } = props
-  return (
-    <button type="button" {...btnProps} className={css.buttonItems}>
-      <Icon name="arrow-up" />
-    </button>
-  )
-}
-
-function MoveDownButton(props: IconButtonProps) {
-  const { icon, uiSchema, ...btnProps } = props
-  return (
-    <button type="button" {...btnProps} className={css.buttonItems}>
-      <Icon name="arrow-down" />
-    </button>
-  )
-}
-
-function RemoveButton(props: IconButtonProps) {
-  const { icon, uiSchema, ...btnProps } = props
-  return (
-    <button
-      type="button"
-      {...btnProps}
-      className={clsx(css.buttonItems, css.buttonItemsDanger)}
-    >
-      <Icon name="delete" />
-    </button>
-  )
-}
-
-const IconUrlField = (props: FieldProps) => {
-  return (
-    <label className={`${css.iconUrl} form-control`}>
-      {props.formData && (
-        <img
-          className={css.iconUrlPreview}
-          src={props.formData}
-          alt="icon preview"
-        />
-      )}
-      <input
-        id={props.idSchema.$id}
-        type="text"
-        className={css.iconUrlInput}
-        value={props.formData}
-        required={props.required}
-        onChange={(event) => props.onChange(event.target.value)}
-      />
-    </label>
-  )
-}
-
-const IconUrlFieldWithAutofill =
-  (onClick: (cmdIdx: number) => void) => (props: FieldProps) => {
-    const btnLabel = props.uiSchema ? props.uiSchema['ui:button'] : 'autofill'
-    const cmdIdx = toCommandId(props.idSchema.$id)
-    const [clicked, setClicked] = useState(false)
-
-    const exec = () => {
-      onClick(cmdIdx)
-      setClicked(true)
-      setTimeout(() => setClicked(false), 5000)
-    }
-
-    return (
-      <>
-        <IconUrlField {...props} />
-        {!props.formData && (
-          <button
-            type="button"
-            className={css.iconUrlAutoFill}
-            onClick={exec}
-            disabled={clicked}
-          >
-            {clicked ? (
-              <Icon name="refresh" className={css.iconUrlAutoFillLoading} />
-            ) : (
-              btnLabel
-            )}
-          </button>
-        )}
-      </>
-    )
-  }
-
-type Option = {
+type SelectOptionType = {
   name: string
   value: string
 }
 
-const InputNumberField = (props: FieldProps) => {
-  const { formData, idSchema, required, schema } = props
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    props.onChange(Number(event.target.value))
-  }
-  return (
-    <label className={clsx(css.selectContainer, 'form-control')}>
-      <input
-        id={idSchema.$id}
-        className={css.number}
-        value={formData ?? schema.default}
-        required={required}
-        onChange={onChange}
-        type="number"
-        max={schema.maximum}
-        min={schema.minimum}
-        step={schema.step}
-      />
-    </label>
-  )
+type SelectFieldType = {
+  control: any
+  name: string
+  formLabel: string
+  options: SelectOptionType[]
 }
 
-const SelectField = (props: FieldProps) => {
-  const { formData, schema, uiSchema, required } = props
-  if (schema.enum == null) return null
-  const options = schema.enum
-    ?.filter((e): e is string => typeof e === 'string')
-    .map((e) => {
-      const name = uiSchema?.enum?.[e] ? uiSchema.enum[e]['ui:title'] : e
-      return { name, value: e }
-    })
-
-  if (!required) {
-    options.unshift({ name: '-- none --', value: '' })
-  }
-
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    props.onChange(event.target.value)
-  }
-
+const SelectField = ({
+  control,
+  name,
+  formLabel,
+  options,
+}: SelectFieldType) => {
   return (
-    <label className={clsx(css.selectContainer, 'form-control')}>
-      <select
-        id={props.idSchema.$id}
-        className={css.select}
-        value={formData}
-        onChange={onChange}
-        required={props.required}
-        disabled={props.disabled}
-      >
-        {options.map((option: Option) => (
-          <option key={option.value} value={option.value}>
-            {option.name}
-          </option>
-        ))}
-      </select>
-    </label>
-  )
-}
-
-const FolderField = (props: FieldProps) => {
-  const { formData, schema } = props
-  const folderOptions = schema.enum as FolderOption[]
-
-  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    props.onChange(event.target.value)
-  }
-
-  const folder = folderOptions.find((e: FolderOption) => e.id === formData)
-
-  return (
-    <label className={clsx(css.selectContainer, 'form-control')}>
-      {folder?.iconUrl && (
-        <img
-          className={css.iconUrlPreview}
-          src={folder.iconUrl}
-          alt="icon preview"
-        />
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex items-center gap-1">
+          <div className="w-2/6">
+            <FormLabel>{formLabel}</FormLabel>
+          </div>
+          <div className="w-4/6">
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Key" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {options.map((opt) => (
+                  <SelectItem value={opt.value} key={opt.value}>
+                    {opt.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </div>
+        </FormItem>
       )}
-      <select
-        id={props.idSchema.$id}
-        className={css.select}
-        value={formData}
-        required={props.required}
-        onChange={onChange}
-      >
-        {folderOptions.map((folder) => (
-          <option key={folder.id} value={folder.id}>
-            {folder.name}
-          </option>
-        ))}
-      </select>
-    </label>
+    />
   )
 }
 
-const FetchOptionField = (props: FieldProps) => {
+type InputFieldType = {
+  control: any
+  name: string
+  formLabel: string
+  inputProps: React.ComponentProps<typeof Input>
+}
+
+const InputField = ({
+  control,
+  name,
+  formLabel,
+  inputProps,
+}: InputFieldType) => {
   return (
-    <label className="form-control">
-      <textarea
-        id={props.idSchema.$id}
-        className={css.fetchOptionInput}
-        value={props.formData}
-        required={props.required}
-        onChange={(event) => props.onChange(event.target.value)}
-      />
-    </label>
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex items-center gap-1">
+          <div className="w-2/6">
+            <FormLabel>{formLabel}</FormLabel>
+          </div>
+          <div className="w-4/6">
+            <FormControl>
+              <Input {...field} {...inputProps} />
+            </FormControl>
+            <FormMessage />
+          </div>
+        </FormItem>
+      )}
+    />
   )
-}
-
-const CheckboxField = (props: FieldProps) => {
-  let title = props.name
-  let desc = ''
-  if (props.uiSchema) {
-    title = props.uiSchema['ui:title'] ?? title
-    desc = props.uiSchema['ui:description'] ?? desc
-  }
-  return (
-    <>
-      <label className="control-label has-description">
-        <p className="title">{title}</p>
-        <p className="desc">{desc}</p>
-      </label>
-      <label className="form-control checkbox">
-        <input
-          id={props.idSchema.$id}
-          type="checkbox"
-          checked={props.formData}
-          required={props.required}
-          onChange={(event) => props.onChange(event.target.checked)}
-        />
-      </label>
-    </>
-  )
-}
-
-const CustomArraySchemaField = (props: FieldProps) => {
-  const { index, registry, schema } = props
-  const { SchemaField } = registry.fields
-  const name = schema.name ?? index
-
-  if (name === 'Command' || name === 'Folder') {
-    if (props.formData.id == null) {
-      props.formData.id = crypto.randomUUID()
-    }
-  }
-
-  return <SchemaField {...props} name={name} />
 }
