@@ -2,7 +2,23 @@ import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { LoadingIcon } from '@/components/option/LoadingIcon'
+import { Trash2, Pencil, Plus } from 'lucide-react'
+
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 
 import {
   Form,
@@ -21,6 +37,20 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+
+import { Tooltip } from '@/components/Tooltip'
+import { SortableItem } from '@/components/option/SortableItem'
+import { LoadingIcon } from '@/components/option/LoadingIcon'
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -39,8 +69,15 @@ import {
   LINK_COMMAND_STARTUP_METHOD,
   STYLE_VARIABLE,
 } from '@/const'
-import type { SettingsType } from '@/types'
-import { isMenuCommand, isLinkCommand, isMac, sleep, e2a } from '@/lib/utils'
+import type { SettingsType, Command } from '@/types'
+import {
+  isMenuCommand,
+  isLinkCommand,
+  isMac,
+  sleep,
+  e2a,
+  cn,
+} from '@/lib/utils'
 import { Settings } from '@/services/settings'
 
 function hyphen2Underscore(input: string): string {
@@ -52,10 +89,7 @@ const formSchema = z
     startupMethod: z
       .object({
         method: z.nativeEnum(STARTUP_METHOD),
-        keyboardParam: z
-          .nativeEnum(KEYBOARD)
-          .optional()
-          .refine((val) => val !== KEYBOARD.META),
+        keyboardParam: z.nativeEnum(KEYBOARD).optional(),
         leftClickHoldParam: z.number().min(50).max(500).step(10).optional(),
       })
       .strict(),
@@ -67,12 +101,7 @@ const formSchema = z
           .object({
             title: z.string(),
             iconUrl: z.string(),
-            openMode: z
-              .nativeEnum(OPEN_MODE)
-              .refine(
-                (val) =>
-                  val !== OPEN_MODE.OPTION && val !== OPEN_MODE.ADD_PAGE_RULE,
-              ),
+            openMode: z.nativeEnum(OPEN_MODE).or(z.nativeEnum(DRAG_OPEN_MODE)),
             parentFolderId: z.string().optional(),
             searchUrl: z.string().optional(),
             spaceEncoding: z.nativeEnum(SPACE_ENCODING).optional(),
@@ -113,7 +142,7 @@ const formSchema = z
       .object({
         enabled: z
           .nativeEnum(LINK_COMMAND_ENABLED)
-          .refine((val) => val !== LINK_COMMAND_ENABLED.INHERIT),
+          .refine((v) => v !== LINK_COMMAND_ENABLED.INHERIT),
         openMode: z.nativeEnum(DRAG_OPEN_MODE),
         showIndicator: z.boolean(),
         startupMethod: z
@@ -160,18 +189,23 @@ export function SettingForm() {
   const iconToRef = useRef<number>()
   const [settingData, setSettingData] = useState<SettingsType | undefined>()
   const loadingRef = useRef<HTMLDivElement>(null)
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
   })
-
-  const { getValues, register } = form
-
-  const { fields, append, remove } = useFieldArray({
+  const { reset, getValues, register } = form
+  const { fields, append, remove, update, move } = useFieldArray({
     name: 'commands',
     control: form.control,
   })
+  const [draggingId, setDraggingId] = useState<string | null>(null)
 
   const updateSettings = async (settings: SettingsType) => {
     if (isSaving) return
@@ -207,6 +241,7 @@ export function SettingForm() {
       }
       settings.commands = settings.commands.filter(isMenuCommand)
       setSettingData(settings)
+      reset(settings)
     }
     loadSettings()
   }, [])
@@ -298,6 +333,27 @@ export function SettingForm() {
     //}
 
     //updateSettingData(data)
+  }
+
+  function handleDragStart(event: DragStartEvent) {
+    const { active } = event
+    setDraggingId(active.id as string)
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    setDraggingId(null)
+    const { active, over } = event
+    if (!active || !over) return
+    if (active.id !== over?.id) {
+      moveCommand(`${active.id}`, `${over.id}`)
+    }
+  }
+
+  const moveCommand = (srcId: string, distId: string) => {
+    const srcIndex = fields.findIndex((f) => f.id === srcId)
+    const distIndex = fields.findIndex((f) => f.id === distId)
+    if (srcIndex === -1 || distIndex === -1) return
+    move(srcIndex, distIndex)
   }
 
   const os = isMac() ? 'mac' : 'windows'
@@ -392,6 +448,55 @@ export function SettingForm() {
             {getValues('commands')?.length ?? 0}
             {t('commands_desc_count')}
           </p>
+          <ul className="border-y">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={fields}
+                strategy={verticalListSortingStrategy}
+              >
+                {fields.map((field, index) => (
+                  <SortableItem
+                    key={field.id}
+                    id={field.id}
+                    className={cn(
+                      index === 0 ? '' : 'border-t',
+                      field.id === draggingId ? 'border-t bg-gray-100' : '',
+                    )}
+                  >
+                    <div className="p-3 pl-0 flex-1 flex items-center">
+                      <div className="flex-1 flex items-center overflow-hidden pr-3">
+                        <img
+                          src={field.iconUrl}
+                          alt={field.title}
+                          className="inline-block w-7 h-7 mr-3"
+                        />
+                        <div>
+                          <p className="text-lg flex flex-row">
+                            <span className="text-base">{field.title}</span>
+                          </p>
+                          <p className="text-xs sm:text-sm text-gray-400 truncate">
+                            {field.searchUrl}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-0.5 items-center">
+                        <CummandEditButton />
+                        <CummandRemoveButton
+                          command={field}
+                          onRemove={() => remove(index)}
+                        />
+                      </div>
+                    </div>
+                  </SortableItem>
+                ))}
+              </SortableContext>
+            </DndContext>
+          </ul>
         </section>
       </form>
     </Form>
@@ -479,5 +584,69 @@ const InputField = ({
         </FormItem>
       )}
     />
+  )
+}
+
+const CummandEditButton = () => {
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  return (
+    <>
+      <button
+        ref={buttonRef}
+        className="p-2 rounded-md transition hover:bg-sky-100 hover:scale-125 group"
+      >
+        <Pencil
+          className="stroke-gray-500 group-hover:stroke-sky-500"
+          size={16}
+        />
+      </button>
+      <Tooltip positionElm={buttonRef.current} text={'編集'} />
+    </>
+  )
+}
+
+type CummandRemoveButtonProps = {
+  command: Command
+  onRemove: () => void
+}
+const CummandRemoveButton = ({
+  command,
+  onRemove,
+}: CummandRemoveButtonProps) => {
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  return (
+    <Dialog>
+      <DialogTrigger
+        ref={buttonRef}
+        className="p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group"
+        asChild
+      >
+        <button>
+          <Trash2
+            className="stroke-gray-500 group-hover:stroke-red-500"
+            size={16}
+          />
+        </button>
+      </DialogTrigger>
+      <Tooltip positionElm={buttonRef.current} text={'削除'} />
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>削除しますか？</DialogTitle>
+        </DialogHeader>
+        <DialogDescription className="text-center">
+          <img
+            src={command.iconUrl}
+            alt={command.title}
+            className="inline-block w-6 h-6 mr-2"
+          />
+          <span className="text-base">{command.title}</span>
+        </DialogDescription>
+        <DialogFooter>
+          <Button onClick={() => onRemove()} variant="destructive">
+            削除する
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

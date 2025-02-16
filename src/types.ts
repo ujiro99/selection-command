@@ -2,6 +2,7 @@ import type {
   OPEN_MODE,
   DRAG_OPEN_MODE,
   POPUP_ENABLED,
+  POPUP_PLACEMENT,
   STYLE,
   KEYBOARD,
   STARTUP_METHOD,
@@ -23,10 +24,10 @@ export type Command = SelectionCommand | LinkCommand
 export type SelectionCommand = {
   id: number | string
   title: string
-  searchUrl: string
   iconUrl: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
+  searchUrl?: string
   parentFolder?: FolderOption // deprecated from v0.8.2
   parentFolderId?: string
   popupOption?: PopupOption
@@ -55,7 +56,7 @@ type LinkCommandStartupMethod = {
 }
 
 type LinkCommandSettings = {
-  enabled: LINK_COMMAND_ENABLED
+  enabled: Exclude<LINK_COMMAND_ENABLED, LINK_COMMAND_ENABLED.INHERIT>
   openMode: DRAG_OPEN_MODE
   showIndicator: boolean
   startupMethod: LinkCommandStartupMethod
@@ -79,15 +80,10 @@ export type CommandVariable = {
   value: string
 }
 
-export type Side = 'top' | 'right' | 'bottom' | 'left'
-export type Alignment = 'start' | 'end' | 'center'
-type AlignedPlacement = `${Side}-${Alignment}`
-export type Placement = Side | AlignedPlacement
-
 export type PageRule = {
   urlPattern: string
   popupEnabled: POPUP_ENABLED
-  popupPlacement: Placement
+  popupPlacement: POPUP_PLACEMENT
   linkCommandEnabled: LINK_COMMAND_ENABLED
 }
 
@@ -109,7 +105,7 @@ export type Star = {
 export type SettingsType = {
   settingVersion: Version
   startupMethod: StartupMethod
-  popupPlacement: Placement
+  popupPlacement: POPUP_PLACEMENT
   commands: Array<Command>
   linkCommand: LinkCommandSettings
   folders: Array<CommandFolder>
