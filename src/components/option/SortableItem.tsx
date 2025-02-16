@@ -35,8 +35,10 @@ export function SortableItem(props: SrotabelItemProps) {
       className={cn(
         'pl-1 flex items-center cursor-auto',
         props.index === 0 ? '' : 'border-t',
-        props.index === activeIndex ? 'border-t bg-gray-100' : '',
-        props.level > 0 && 'ml-8',
+        props.index === activeIndex
+          ? 'border-y bg-gray-100/80 shadow-lg relative z-10'
+          : '',
+        props.level > 0 && 'ml-7',
         props.className,
       )}
       {...attributes}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { Trash2, Pencil, Plus } from 'lucide-react'
+import { Trash2, Pencil, ChevronRight } from 'lucide-react'
 
 import {
   DndContext,
@@ -624,8 +624,14 @@ export function SettingForm() {
                     index={index}
                     level={calcLevel(field)}
                   >
-                    <div className="p-3 pl-0 flex-1 flex items-center">
-                      <div className="flex-1 flex items-center overflow-hidden pr-3">
+                    <div className="h-14 pr-2 pl-0 flex-1 flex items-center">
+                      <div className="flex-1 flex items-center overflow-hidden pr-2">
+                        {!isCommand(field.content) && (
+                          <ChevronRight
+                            size={20}
+                            className="stroke-gray-600 mr-1.5"
+                          />
+                        )}
                         <img
                           src={field.content.iconUrl}
                           alt={field.content.title}
