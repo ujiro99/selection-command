@@ -480,7 +480,6 @@ export function SettingForm() {
       if (isCommand(distNode.content)) {
         // command to command
         const distIdx = commandArray.fields.findIndex((f) => f.id === distId)
-        if (srcIdx === -1 || distIdx === -1) return
         commandArray.update(srcIdx, {
           ...srcNode.content,
           parentFolderId: distNode.content.parentFolderId,
@@ -488,39 +487,25 @@ export function SettingForm() {
         commandArray.move(srcIdx, distIdx)
       } else {
         // command to folder
-        if (isMoveDown) {
-          const distIdx = commandArray.fields.findIndex(
-            (f) => f.parentFolderId === distId,
-          )
-          commandArray.update(srcIdx, {
-            ...srcNode.content,
-            parentFolderId: distId,
-          })
-          commandArray.move(srcIdx, distIdx - 1)
-        } else {
-          const distIdx = commandArray.fields.findIndex(
-            (f) => f.parentFolderId === distId,
-          )
-          commandArray.update(srcIdx, {
-            ...srcNode.content,
-            parentFolderId: undefined,
-          })
-          commandArray.move(srcIdx, distIdx)
-        }
+        const distIdx = commandArray.fields.findIndex(
+          (f) => f.parentFolderId === distId,
+        )
+        commandArray.update(srcIdx, {
+          ...srcNode.content,
+          parentFolderId: isMoveDown ? distId : undefined,
+        })
+        commandArray.move(srcIdx, isMoveDown ? distIdx - 1 : distIdx)
       }
     } else if (!isCommand(srcNode.content)) {
+      const srcIdx = commandArray.fields.findIndex(
+        (f) => f.parentFolderId === srcId,
+      )
       if (isCommand(distNode.content)) {
         // folder to command
-        const srcIdx = commandArray.fields.findIndex(
-          (f) => f.parentFolderId === srcId,
-        )
         const distIdx = commandArray.fields.findIndex((f) => f.id === distId)
         commandArray.move(srcIdx, distIdx)
       } else {
         // folder to folder
-        const srcIdx = commandArray.fields.findIndex(
-          (f) => f.parentFolderId === srcId,
-        )
         const distIdx = commandArray.fields.findIndex(
           (f) => f.parentFolderId === distId,
         )
