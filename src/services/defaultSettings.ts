@@ -73,7 +73,7 @@ export const DefaultCommands = [
     },
   },
   {
-    id: 0,
+    id: '723ee9f1-150b-54ad-aeac-5fbfd0ae3650',
     iconUrl: 'https://www.google.com/favicon.ico',
     openMode: OPEN_MODE.POPUP,
     searchUrl: 'https://google.com/search?q=%s',
@@ -84,7 +84,7 @@ export const DefaultCommands = [
     },
   },
   {
-    id: 1,
+    id: '18998bac-4e6c-503f-b3ea-b9198edef7c3',
     iconUrl: 'https://www.google.com/favicon.ico',
     openMode: OPEN_MODE.POPUP,
     searchUrl: 'https://google.com/search?q=%s&tbm=isch',
@@ -96,7 +96,7 @@ export const DefaultCommands = [
     },
   },
   {
-    id: 2,
+    id: '92f8f4e8-3cd8-4e01-9908-811d72448670',
     iconUrl: 'https://www.amazon.com/favicon.ico',
     openMode: OPEN_MODE.TAB,
     searchUrl: 'https://www.amazon.com/s?k=%s',
@@ -104,7 +104,7 @@ export const DefaultCommands = [
     parentFolderId: '222d6489-4eca-48fd-8590-fceb30545bab',
   },
   {
-    id: 3,
+    id: '2e0cd6fe-a232-402e-846c-2104f0639995',
     iconUrl: 'https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png',
     openMode: OPEN_MODE.TAB,
     searchUrl: 'https://www.youtube.com/results?search_query=%s',
@@ -112,7 +112,7 @@ export const DefaultCommands = [
     parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
   },
   {
-    id: 4,
+    id: '409aba7d-c49e-5e81-b8a6-a862f2651b3e',
     iconUrl:
       'https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico',
     openMode: OPEN_MODE.TAB,
@@ -121,7 +121,7 @@ export const DefaultCommands = [
     parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
   },
   {
-    id: 5,
+    id: '54f3e785-960a-5a70-9c80-cfbf0357c4c7',
     iconUrl: 'https://s.pinimg.com/webapp/favicon-22eb868c.png',
     openMode: OPEN_MODE.TAB,
     searchUrl: 'https://www.pinterest.com/search/pins/?q=%s',
@@ -129,7 +129,7 @@ export const DefaultCommands = [
     parentFolderId: 'a3495269-0a4d-4866-a519-bca75ed1c246',
   },
   {
-    id: 6,
+    id: 'bbf701ee-6443-49d8-b9c0-3acfa8034c5d',
     iconUrl:
       'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png',
     openMode: OPEN_MODE.TAB,
@@ -138,7 +138,7 @@ export const DefaultCommands = [
     parentFolderId: '01710cf1-ec8b-497f-8d1f-9cb716567bc4',
   },
   {
-    id: 7,
+    id: '6c6d45d6-735b-43bd-b4c8-5dc5104c23ed',
     iconUrl: 'https://ssl.gstatic.com/translate/favicon.ico',
     openMode: OPEN_MODE.TAB,
     searchUrl:

@@ -5,7 +5,9 @@ import { cn } from '@/lib/utils'
 
 type SrotabelItemProps = {
   id: string
+  index: number
   children: React.ReactNode
+  level: number
   className?: string
 }
 
@@ -17,6 +19,7 @@ export function SortableItem(props: SrotabelItemProps) {
     setActivatorNodeRef,
     transform,
     transition,
+    activeIndex,
     isDragging,
   } = useSortable({ id: props.id })
 
@@ -29,7 +32,13 @@ export function SortableItem(props: SrotabelItemProps) {
     <li
       ref={setNodeRef}
       style={style}
-      className={cn('pl-1 flex items-center cursor-auto', props.className)}
+      className={cn(
+        'pl-1 flex items-center cursor-auto',
+        props.index === 0 ? '' : 'border-t',
+        props.index === activeIndex ? 'border-t bg-gray-100' : '',
+        props.level > 0 && 'ml-8',
+        props.className,
+      )}
       {...attributes}
     >
       <div

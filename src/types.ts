@@ -22,12 +22,12 @@ export type Point = {
 export type Command = SelectionCommand | LinkCommand
 
 export type SelectionCommand = {
-  id: number | string
+  id: string
   title: string
+  searchUrl: string
   iconUrl: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
-  searchUrl?: string
   parentFolder?: FolderOption // deprecated from v0.8.2
   parentFolderId?: string
   popupOption?: PopupOption

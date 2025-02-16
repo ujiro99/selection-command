@@ -69,15 +69,8 @@ import {
   LINK_COMMAND_STARTUP_METHOD,
   STYLE_VARIABLE,
 } from '@/const'
-import type { SettingsType, Command } from '@/types'
-import {
-  isMenuCommand,
-  isLinkCommand,
-  isMac,
-  sleep,
-  e2a,
-  cn,
-} from '@/lib/utils'
+import type { SettingsType, Command, CommandFolder } from '@/types'
+import { isMenuCommand, isLinkCommand, isMac, sleep, e2a } from '@/lib/utils'
 import { Settings } from '@/services/settings'
 
 function hyphen2Underscore(input: string): string {
@@ -99,11 +92,12 @@ const formSchema = z
       .array(
         z
           .object({
+            id: z.string(),
             title: z.string(),
             iconUrl: z.string(),
+            searchUrl: z.string(),
             openMode: z.nativeEnum(OPEN_MODE).or(z.nativeEnum(DRAG_OPEN_MODE)),
             parentFolderId: z.string().optional(),
-            searchUrl: z.string().optional(),
             spaceEncoding: z.nativeEnum(SPACE_ENCODING).optional(),
             popupOption: z
               .object({
@@ -182,12 +176,114 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>
 
+type CommandTreeNode = {
+  type: 'command' | 'folder'
+  content: Command | CommandFolder
+  children?: CommandTreeNode[]
+}
+
+function toCommandTree(
+  commands: Command[],
+  folders: CommandFolder[],
+): CommandTreeNode[] {
+  return commands.reduce((acc, command) => {
+    if (command.parentFolderId) {
+      const folder = folders.find((f) => f.id === command.parentFolderId)
+      if (folder) {
+        const parent = acc.find((node) => node.content.id === folder.id)
+        if (parent) {
+          if (parent.children == null) parent.children = []
+          parent.children.push({
+            type: 'command',
+            content: command,
+          })
+        } else {
+          acc.push({
+            type: 'folder',
+            content: folder,
+            children: [
+              {
+                type: 'command',
+                content: command,
+              },
+            ],
+          })
+        }
+      }
+    } else {
+      acc.push({
+        type: 'command',
+        content: command,
+      })
+    }
+    return acc
+  }, [] as CommandTreeNode[])
+}
+
+type FlattenNode = {
+  id: string
+  content: Command | CommandFolder
+}
+
+function toFlatten(
+  tree: CommandTreeNode[],
+  flatten: FlattenNode[] = [],
+): FlattenNode[] {
+  for (const node of tree) {
+    if (node.type === 'command') {
+      flatten.push({
+        id: `${node.content.id}`,
+        content: node.content,
+      })
+    } else {
+      flatten.push({
+        id: `${node.content.id}`,
+        content: node.content,
+      })
+      toFlatten(node.children ?? [], flatten)
+      delete node.children
+    }
+  }
+  return flatten
+}
+
+function nodeFilter(
+  draggingId: string | null,
+  node: FlattenNode,
+  nodes: FlattenNode[],
+): boolean {
+  const active = nodes.find((n) => n.id === draggingId)
+  if (!active) return true
+  if (isCommand(active.content)) return true
+  if (!isCommand(node.content)) return true
+  if (node.content.parentFolderId != null) return false
+  return true
+}
+
+function isCommand(content: Command | CommandFolder): content is Command {
+  return 'openMode' in content
+}
+
+function calcLevel(node: FlattenNode): number {
+  if (isCommand(node.content)) {
+    if (node.content.parentFolderId) {
+      return 1
+    } else {
+      return 0
+    }
+  } else {
+    return 0
+  }
+}
+
 export function SettingForm() {
-  const initializedRef = useRef<boolean>(false)
+  const [settingData, setSettingData] = useState<SettingsType | undefined>()
   const [isSaving, setIsSaving] = useState(false)
+  const [draggingId, setDraggingId] = useState<string | null>(null)
+  const initializedRef = useRef<boolean>(false)
   const saveToRef = useRef<number>()
   const iconToRef = useRef<number>()
-  const [settingData, setSettingData] = useState<SettingsType | undefined>()
+  const commandsRef = useRef<HTMLUListElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -201,11 +297,19 @@ export function SettingForm() {
     mode: 'onChange',
   })
   const { reset, getValues, register } = form
-  const { fields, append, remove, update, move } = useFieldArray({
+  const commandArray = useFieldArray({
     name: 'commands',
     control: form.control,
+    keyName: '_id',
   })
-  const [draggingId, setDraggingId] = useState<string | null>(null)
+  const folderArray = useFieldArray({
+    name: 'folders',
+    control: form.control,
+    keyName: '_id',
+  })
+  const commandTree = toCommandTree(commandArray.fields, folderArray.fields)
+  let flatten = toFlatten(commandTree)
+  flatten = flatten.filter((f) => nodeFilter(draggingId, f, flatten))
 
   const updateSettings = async (settings: SettingsType) => {
     if (isSaving) return
@@ -216,7 +320,14 @@ export function SettingForm() {
         ...c,
         openMode: settings.linkCommand.openMode,
       }))
-      settings.commands = [...settings.commands, ...linkCommands]
+
+      // sort commands
+      const commandTree = toCommandTree(settings.commands, settings.folders)
+      const commands = toFlatten(commandTree)
+        .map((f) => f.content)
+        .filter((c) => isCommand(c))
+
+      settings.commands = [...commands, ...linkCommands]
       await Settings.set(settings)
       await sleep(1000)
     } catch (e) {
@@ -268,6 +379,13 @@ export function SettingForm() {
       clearTimeout(iconToRef.current)
     }
   }, [settingData])
+
+  useEffect(() => {
+    commandsRef.current?.style.setProperty(
+      'height',
+      commandsRef.current.scrollHeight + 'px',
+    )
+  }, [settingData?.commands])
 
   const handleSubmit = (
     data: FormValues,
@@ -345,15 +463,70 @@ export function SettingForm() {
     const { active, over } = event
     if (!active || !over) return
     if (active.id !== over?.id) {
-      moveCommand(`${active.id}`, `${over.id}`)
+      moveArray(`${active.id}`, `${over.id}`)
     }
   }
 
-  const moveCommand = (srcId: string, distId: string) => {
-    const srcIndex = fields.findIndex((f) => f.id === srcId)
-    const distIndex = fields.findIndex((f) => f.id === distId)
-    if (srcIndex === -1 || distIndex === -1) return
-    move(srcIndex, distIndex)
+  const moveArray = (srcId: string, distId: string) => {
+    const srcNode = flatten.find((f) => f.id === srcId)
+    const distNode = flatten.find((f) => f.id === distId)
+    const isMoveDown =
+      flatten.findIndex((f) => f.id === srcId) <
+      flatten.findIndex((f) => f.id === distId)
+    if (!srcNode || !distNode) return
+
+    if (isCommand(srcNode.content)) {
+      const srcIdx = commandArray.fields.findIndex((f) => f.id === srcId)
+      if (isCommand(distNode.content)) {
+        // command to command
+        const distIdx = commandArray.fields.findIndex((f) => f.id === distId)
+        if (srcIdx === -1 || distIdx === -1) return
+        commandArray.update(srcIdx, {
+          ...srcNode.content,
+          parentFolderId: distNode.content.parentFolderId,
+        })
+        commandArray.move(srcIdx, distIdx)
+      } else {
+        // command to folder
+        if (isMoveDown) {
+          const distIdx = commandArray.fields.findIndex(
+            (f) => f.parentFolderId === distId,
+          )
+          commandArray.update(srcIdx, {
+            ...srcNode.content,
+            parentFolderId: distId,
+          })
+          commandArray.move(srcIdx, distIdx - 1)
+        } else {
+          const distIdx = commandArray.fields.findIndex(
+            (f) => f.parentFolderId === distId,
+          )
+          commandArray.update(srcIdx, {
+            ...srcNode.content,
+            parentFolderId: undefined,
+          })
+          commandArray.move(srcIdx, distIdx)
+        }
+      }
+    } else if (!isCommand(srcNode.content)) {
+      if (isCommand(distNode.content)) {
+        // folder to command
+        const srcIdx = commandArray.fields.findIndex(
+          (f) => f.parentFolderId === srcId,
+        )
+        const distIdx = commandArray.fields.findIndex((f) => f.id === distId)
+        commandArray.move(srcIdx, distIdx)
+      } else {
+        // folder to folder
+        const srcIdx = commandArray.fields.findIndex(
+          (f) => f.parentFolderId === srcId,
+        )
+        const distIdx = commandArray.fields.findIndex(
+          (f) => f.parentFolderId === distId,
+        )
+        commandArray.move(srcIdx, distIdx)
+      }
+    }
   }
 
   const os = isMac() ? 'mac' : 'windows'
@@ -448,7 +621,7 @@ export function SettingForm() {
             {getValues('commands')?.length ?? 0}
             {t('commands_desc_count')}
           </p>
-          <ul className="border-y">
+          <ul className="border-y" ref={commandsRef}>
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -456,40 +629,44 @@ export function SettingForm() {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={fields}
+                items={flatten}
                 strategy={verticalListSortingStrategy}
               >
-                {fields.map((field, index) => (
+                {flatten.map((field, index) => (
                   <SortableItem
                     key={field.id}
                     id={field.id}
-                    className={cn(
-                      index === 0 ? '' : 'border-t',
-                      field.id === draggingId ? 'border-t bg-gray-100' : '',
-                    )}
+                    index={index}
+                    level={calcLevel(field)}
                   >
                     <div className="p-3 pl-0 flex-1 flex items-center">
                       <div className="flex-1 flex items-center overflow-hidden pr-3">
                         <img
-                          src={field.iconUrl}
-                          alt={field.title}
+                          src={field.content.iconUrl}
+                          alt={field.content.title}
                           className="inline-block w-7 h-7 mr-3"
                         />
                         <div>
                           <p className="text-lg flex flex-row">
-                            <span className="text-base">{field.title}</span>
+                            <span className="text-base">
+                              {field.content.title}
+                            </span>
                           </p>
-                          <p className="text-xs sm:text-sm text-gray-400 truncate">
-                            {field.searchUrl}
-                          </p>
+                          {isCommand(field.content) && (
+                            <p className="text-xs sm:text-sm text-gray-400 truncate">
+                              {field.content.searchUrl}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex gap-0.5 items-center">
                         <CummandEditButton />
-                        <CummandRemoveButton
-                          command={field}
-                          onRemove={() => remove(index)}
-                        />
+                        {isCommand(field.content) && (
+                          <CummandRemoveButton
+                            command={field.content}
+                            onRemove={() => commandArray.remove(index)}
+                          />
+                        )}
                       </div>
                     </div>
                   </SortableItem>
