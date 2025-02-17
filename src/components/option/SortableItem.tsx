@@ -9,9 +9,11 @@ type SrotabelItemProps = {
   children: React.ReactNode
   level: number
   className?: string
+  droppable?: boolean
 }
 
 export function SortableItem(props: SrotabelItemProps) {
+  const isDroppable = props.droppable ?? true
   const {
     attributes,
     listeners,
@@ -30,7 +32,7 @@ export function SortableItem(props: SrotabelItemProps) {
 
   return (
     <li
-      ref={setNodeRef}
+      ref={isDroppable ? setNodeRef : null}
       style={style}
       className={cn(
         'pl-1 flex items-center cursor-auto',
@@ -38,7 +40,7 @@ export function SortableItem(props: SrotabelItemProps) {
         props.index === activeIndex
           ? 'border-y bg-gray-100/80 shadow-lg relative z-10'
           : '',
-        props.level > 0 && 'ml-7',
+        props.level > 0 && 'ml-8',
         props.className,
       )}
       {...attributes}

@@ -77,6 +77,7 @@ import {
   sleep,
   unique,
   e2a,
+  cn,
 } from '@/lib/utils'
 import { Settings } from '@/services/settings'
 
@@ -239,46 +240,81 @@ function toCommandTree(
 
 type FlattenNode = {
   id: string
+  index: number
   content: Command | CommandFolder
+  lastChild?: boolean
 }
 
-function toFlatten(
+function _toFlatten(
   tree: CommandTreeNode[],
   flatten: FlattenNode[] = [],
 ): FlattenNode[] {
   for (const node of tree) {
     if (node.type === 'command') {
       flatten.push({
-        id: `${node.content.id}`,
+        id: node.content.id,
         content: node.content,
+        index: 0,
       })
     } else {
       flatten.push({
-        id: `${node.content.id}`,
+        id: node.content.id,
         content: node.content,
+        index: 0,
       })
-      toFlatten(node.children ?? [], flatten)
-      delete node.children
+      _toFlatten(node.children ?? [], flatten)
+      flatten[flatten.length - 1].lastChild = true
     }
   }
   return flatten
 }
+function toFlatten(tree: CommandTreeNode[]): FlattenNode[] {
+  let flatten = _toFlatten(tree)
+  flatten = flatten.map((node, index) => ({ ...node, index }))
+  return flatten
+}
 
-function nodeFilter(
-  draggingId: string | null,
-  node: FlattenNode,
+function commandsFilter(
   nodes: FlattenNode[],
-): boolean {
-  const active = nodes.find((n) => n.id === draggingId)
-  if (!active) return true
-  if (isCommand(active.content)) return true
-  if (!isCommand(node.content)) return true
-  if (node.content.parentFolderId != null) return false
+  draggingId?: string | null,
+): FlattenNode[] {
+  return nodes.filter((node) => {
+    if (isCommand(node.content)) {
+      if (node.content.parentFolderId === draggingId) return false
+    }
+    return true
+  })
+}
+
+function isDroppable(selfNode: FlattenNode, activeNode?: FlattenNode): boolean {
+  if (!activeNode) return true
+  if (isCommand(activeNode.content)) return true
+
+  const isMoveDown = activeNode.index < selfNode.index
+  if (isMoveDown) {
+    if (isFolder(selfNode.content)) return false
+    if (selfNode.content.parentFolderId != null && !selfNode.lastChild)
+      return false
+  } else {
+    if (isFolder(selfNode.content)) return true
+    if (selfNode.content.parentFolderId != null) return false
+  }
+
   return true
 }
 
-function isCommand(content: Command | CommandFolder): content is Command {
+function isCommand(
+  content: Command | CommandFolder | undefined,
+): content is Command {
+  if (content == null) return false
   return 'openMode' in content
+}
+
+function isFolder(
+  content: Command | CommandFolder | undefined,
+): content is CommandFolder {
+  if (content == null) return false
+  return !('openMode' in content)
 }
 
 function calcLevel(node: FlattenNode): number {
@@ -302,13 +338,6 @@ export function SettingForm() {
   const iconToRef = useRef<number>()
   const commandsRef = useRef<HTMLUListElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  )
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
@@ -324,9 +353,16 @@ export function SettingForm() {
     control: form.control,
     keyName: '_id',
   })
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
   const commandTree = toCommandTree(commandArray.fields, folderArray.fields)
   let flatten = toFlatten(commandTree)
-  flatten = flatten.filter((f) => nodeFilter(draggingId, f, flatten))
+  flatten = commandsFilter(flatten, draggingId)
+  const activeNode = flatten.find((f) => f.id === draggingId)
 
   const updateSettings = async (settings: SettingsType) => {
     if (isSaving) return
@@ -640,6 +676,13 @@ export function SettingForm() {
                     id={field.id}
                     index={index}
                     level={calcLevel(field)}
+                    droppable={isDroppable(field, activeNode)}
+                    className={cn(
+                      isFolder(activeNode?.content) &&
+                        isCommand(field.content) &&
+                        field.content.parentFolderId != null &&
+                        'opacity-50 bg-gray-100',
+                    )}
                   >
                     <div className="h-14 pr-2 pl-0 flex-1 flex items-center">
                       <div className="flex-1 flex items-center overflow-hidden pr-2">
