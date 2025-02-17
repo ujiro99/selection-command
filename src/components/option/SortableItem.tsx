@@ -23,7 +23,13 @@ export function SortableItem(props: SrotabelItemProps) {
     transition,
     activeIndex,
     isDragging,
-  } = useSortable({ id: props.id })
+  } = useSortable({
+    id: props.id,
+    transition: {
+      duration: 150,
+      easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+    },
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
