@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { Trash2, Pencil, ChevronRight } from 'lucide-react'
+import { Trash2, Pencil } from 'lucide-react'
 
 import {
   DndContext,
@@ -70,7 +70,14 @@ import {
   STYLE_VARIABLE,
 } from '@/const'
 import type { SettingsType, Command, CommandFolder } from '@/types'
-import { isMenuCommand, isLinkCommand, isMac, sleep, e2a } from '@/lib/utils'
+import {
+  isMenuCommand,
+  isLinkCommand,
+  isMac,
+  sleep,
+  unique,
+  e2a,
+} from '@/lib/utils'
 import { Settings } from '@/services/settings'
 
 function hyphen2Underscore(input: string): string {
@@ -186,7 +193,7 @@ function toCommandTree(
   commands: Command[],
   folders: CommandFolder[],
 ): CommandTreeNode[] {
-  return commands.reduce((acc, command) => {
+  let tree = commands.reduce((acc, command) => {
     if (command.parentFolderId) {
       const folder = folders.find((f) => f.id === command.parentFolderId)
       if (folder) {
@@ -218,6 +225,16 @@ function toCommandTree(
     }
     return acc
   }, [] as CommandTreeNode[])
+  const existsFolders = unique(commands.map((c) => c.parentFolderId))
+  const remainingFolders = folders.filter((f) => !existsFolders.includes(f.id))
+  tree = tree.concat(
+    remainingFolders.map((folder) => ({
+      type: 'folder',
+      content: folder,
+      children: [],
+    })),
+  )
+  return tree
 }
 
 type FlattenNode = {
@@ -626,12 +643,6 @@ export function SettingForm() {
                   >
                     <div className="h-14 pr-2 pl-0 flex-1 flex items-center">
                       <div className="flex-1 flex items-center overflow-hidden pr-2">
-                        {!isCommand(field.content) && (
-                          <ChevronRight
-                            size={20}
-                            className="stroke-gray-600 mr-1.5"
-                          />
-                        )}
                         <img
                           src={field.content.iconUrl}
                           alt={field.content.title}

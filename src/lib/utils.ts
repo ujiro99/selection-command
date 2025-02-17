@@ -15,6 +15,17 @@ export function sleep(msec: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, msec))
 }
 
+/**
+ * Removes duplicate values from an array and returns a new array containing only unique values.
+ *
+ * @template T - The type of elements in the array.
+ * @param {T[]} arr - The input array from which duplicates will be removed.
+ * @returns {T[]} A new array containing only the unique values from the input array.
+ */
+export function unique<T>(arr: T[]): T[] {
+  return [...new Set(arr)]
+}
+
 export function toUrl(
   searchUrl: string,
   text: string,
