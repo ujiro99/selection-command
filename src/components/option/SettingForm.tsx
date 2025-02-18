@@ -39,6 +39,7 @@ import {
 import { Input } from '@/components/ui/input'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -128,18 +129,16 @@ const formSchema = z
       )
       .min(1)
       .max(COMMAND_MAX),
-    folders: z
-      .array(
-        z
-          .object({
-            id: z.string(),
-            title: z.string(),
-            iconUrl: z.string().optional(),
-            onlyIcon: z.boolean().optional(),
-          })
-          .strict(),
-      )
-      .optional(),
+    folders: z.array(
+      z
+        .object({
+          id: z.string(),
+          title: z.string(),
+          iconUrl: z.string().optional(),
+          onlyIcon: z.boolean().optional(),
+        })
+        .strict(),
+    ),
     linkCommand: z
       .object({
         enabled: z
@@ -150,35 +149,31 @@ const formSchema = z
         startupMethod: z
           .object({
             method: z.nativeEnum(LINK_COMMAND_STARTUP_METHOD),
-            keyboardParam: z.string().optional(),
+            keyboardParam: z.nativeEnum(KEYBOARD).optional(),
             threshold: z.number().min(50).max(400).step(10).optional(),
             leftClickHoldParam: z.number().min(50).max(500).step(10).optional(),
           })
           .strict(),
       })
       .strict(),
-    pageRules: z
-      .array(
-        z
-          .object({
-            urlPattern: z.string(),
-            popupEnabled: z.nativeEnum(POPUP_ENABLED),
-            popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
-            linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
-          })
-          .strict(),
-      )
-      .optional(),
-    userStyles: z
-      .array(
-        z
-          .object({
-            name: z.nativeEnum(STYLE_VARIABLE),
-            value: z.string(),
-          })
-          .strict(),
-      )
-      .optional(),
+    pageRules: z.array(
+      z
+        .object({
+          urlPattern: z.string(),
+          popupEnabled: z.nativeEnum(POPUP_ENABLED),
+          popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
+          linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
+        })
+        .strict(),
+    ),
+    userStyles: z.array(
+      z
+        .object({
+          name: z.nativeEnum(STYLE_VARIABLE),
+          value: z.string(),
+        })
+        .strict(),
+    ),
   })
   .strict()
 
@@ -329,8 +324,10 @@ function calcLevel(node: FlattenNode): number {
   }
 }
 
+type SettingsFormType = Omit<SettingsType, 'settingVersion' | 'stars'>
+
 export function SettingForm() {
-  const [settingData, setSettingData] = useState<SettingsType | undefined>()
+  const [settingData, setSettingData] = useState<SettingsFormType>()
   const [isSaving, setIsSaving] = useState(false)
   const [draggingId, setDraggingId] = useState<string | null>(null)
   const initializedRef = useRef<boolean>(false)
@@ -342,7 +339,7 @@ export function SettingForm() {
     resolver: zodResolver(formSchema),
     mode: 'onChange',
   })
-  const { reset, getValues, register } = form
+  const { reset, getValues, register, watch } = form
   const commandArray = useFieldArray({
     name: 'commands',
     control: form.control,
@@ -364,7 +361,7 @@ export function SettingForm() {
   flatten = commandsFilter(flatten, draggingId)
   const activeNode = flatten.find((f) => f.id === draggingId)
 
-  const updateSettings = async (settings: SettingsType) => {
+  const updateSettings = async (settings: SettingsFormType) => {
     if (isSaving) return
     try {
       setIsSaving(true)
@@ -381,7 +378,11 @@ export function SettingForm() {
         .filter((c) => isCommand(c))
 
       settings.commands = [...commands, ...linkCommands]
-      await Settings.set(settings)
+      await Settings.set({
+        ...settings,
+        settingVersion: current.settingVersion,
+        stars: current.stars,
+      })
       await sleep(1000)
     } catch (e) {
       console.error('Failed to update settings!', settings)
@@ -404,7 +405,6 @@ export function SettingForm() {
         }
       }
       settings.commands = settings.commands.filter(isMenuCommand)
-      setSettingData(settings)
       reset(settings)
     }
     loadSettings()
@@ -440,71 +440,13 @@ export function SettingForm() {
     )
   }, [settingData?.commands])
 
-  const handleSubmit = (
-    data: FormValues,
-    e: React.BaseSyntheticEvent | undefined,
-  ) => {
-    console.log(data, e)
-    // Remove unnecessary fields when openMode is not popup or tab or window.
-    //if (id?.endsWith('openMode')) {
-    //  data.commands
-    //    .filter(
-    //      (c) =>
-    //        c.openMode !== OPEN_MODE.POPUP &&
-    //        c.openMode !== OPEN_MODE.WINDOW &&
-    //        c.openMode !== OPEN_MODE.TAB,
-    //    )
-    //    .map((c) => {
-    //      delete c.openModeSecondary
-    //      delete c.spaceEncoding
-    //    })
-    //  data.commands
-    //    .filter(
-    //      (c) =>
-    //        c.openMode !== OPEN_MODE.POPUP &&
-    //        c.openMode !== OPEN_MODE.WINDOW &&
-    //        c.openMode !== OPEN_MODE.LINK_POPUP,
-    //    )
-    //    .map((c) => {
-    //      delete c.popupOption
-    //    })
-    //}
-
-    //// If popup-delay is not set
-    //// when the keyInput or leftClickHold is selected, set 0 ms.
-    //if (id?.endsWith('method')) {
-    //  if (
-    //    data.startupMethod.method === STARTUP_METHOD.KEYBOARD ||
-    //    data.startupMethod.method === STARTUP_METHOD.LEFT_CLICK_HOLD
-    //  ) {
-    //    let userStyles = data.userStyles
-    //    if (!userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)) {
-    //      userStyles.push({ name: STYLE_VARIABLE.POPUP_DELAY, value: '0' })
-    //    }
-    //    updateSettingData({
-    //      ...data,
-    //      userStyles,
-    //    })
-    //    return
-    //  }
-    //}
-
-    //// Update iconURL when searchUrl chagned and iconUrl is empty.
-    //if (id?.endsWith('searchUrl')) {
-    //  const command = data.commands[toCommandId(id)]
-    //  if (!isEmpty(command.searchUrl) && isEmpty(command.iconUrl)) {
-    //    clearTimeout(iconToRef.current)
-    //    iconToRef.current = window.setTimeout(() => {
-    //      sendMessage(OPTION_MSG.FETCH_ICON_URL, {
-    //        searchUrl: command.searchUrl,
-    //        settings: data,
-    //      })
-    //    }, 500)
-    //  }
-    //}
-
-    //updateSettingData(data)
-  }
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      console.debug(value, name, type)
+      setSettingData(value as SettingsFormType)
+    })
+    return () => subscription.unsubscribe()
+  }, [watch])
 
   function handleDragStart(event: DragStartEvent) {
     const { active } = event
@@ -549,7 +491,7 @@ export function SettingForm() {
         })
         commandArray.move(srcIdx, isMoveDown ? distIdx - 1 : distIdx)
       }
-    } else if (!isCommand(srcNode.content)) {
+    } else if (isFolder(srcNode.content)) {
       const srcIdx = commandArray.fields.findIndex(
         (f) => f.parentFolderId === srcId,
       )
@@ -583,11 +525,7 @@ export function SettingForm() {
         </LoadingIcon>
       </CSSTransition>
 
-      <form
-        id="InputForm"
-        className="space-y-10 w-[600px] mx-auto"
-        onChange={form.handleSubmit(handleSubmit)}
-      >
+      <form id="InputForm" className="space-y-10 w-[600px] mx-auto">
         <section className="space-y-3">
           <h3 className="text-xl font-semibold">起動方法</h3>
           <p className="text-base">
@@ -855,7 +793,7 @@ const CummandRemoveButton = ({
         <DialogHeader>
           <DialogTitle>削除しますか？</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="text-center">
+        <DialogDescription className="flex items-center justify-center">
           <img
             src={command.iconUrl}
             alt={command.title}
@@ -864,9 +802,20 @@ const CummandRemoveButton = ({
           <span className="text-base">{command.title}</span>
         </DialogDescription>
         <DialogFooter>
-          <Button onClick={() => onRemove()} variant="destructive">
-            削除する
-          </Button>
+          <DialogClose asChild>
+            <Button type="button" variant="secondary">
+              やめる
+            </Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button
+              type="button"
+              onClick={() => onRemove()}
+              variant="destructive"
+            >
+              削除する
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
