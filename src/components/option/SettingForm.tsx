@@ -448,33 +448,47 @@ export function SettingForm() {
     return () => subscription.unsubscribe()
   }, [watch])
 
-  function handleDragStart(event: DragStartEvent) {
+  const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
     setDraggingId(active.id as string)
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  const handleDragEnd = (event: DragEndEvent) => {
     setDraggingId(null)
     const { active, over } = event
     if (!active || !over) return
     if (active.id !== over?.id) {
+      console.log('moveArray', active.id, over.id)
       moveArray(`${active.id}`, `${over.id}`)
     }
   }
 
+  const moveCommands = (srcIdxs: number[], distIdx: number) => {
+    const sortedIndexes = [...srcIdxs].sort((a, b) => b - a)
+    const itemsToMove = sortedIndexes.map((index) => commandArray.fields[index])
+    sortedIndexes.forEach((index) => commandArray.remove(index))
+    itemsToMove.reverse().forEach((item, i) => {
+      commandArray.insert(distIdx + i, item)
+    })
+  }
+
+  const commandIdx = (id: string) =>
+    commandArray.fields.findIndex((f) => f.id === id)
+
   const moveArray = (srcId: string, distId: string) => {
     const srcNode = flatten.find((f) => f.id === srcId)
     const distNode = flatten.find((f) => f.id === distId)
+    if (!srcNode || !distNode) return
+
     const isMoveDown =
       flatten.findIndex((f) => f.id === srcId) <
       flatten.findIndex((f) => f.id === distId)
-    if (!srcNode || !distNode) return
 
     if (isCommand(srcNode.content)) {
-      const srcIdx = commandArray.fields.findIndex((f) => f.id === srcId)
+      const srcIdx = commandIdx(srcId)
       if (isCommand(distNode.content)) {
         // command to command
-        const distIdx = commandArray.fields.findIndex((f) => f.id === distId)
+        const distIdx = commandIdx(distId)
         commandArray.update(srcIdx, {
           ...srcNode.content,
           parentFolderId: distNode.content.parentFolderId,
@@ -491,20 +505,20 @@ export function SettingForm() {
         })
         commandArray.move(srcIdx, isMoveDown ? distIdx - 1 : distIdx)
       }
-    } else if (isFolder(srcNode.content)) {
-      const srcIdx = commandArray.fields.findIndex(
-        (f) => f.parentFolderId === srcId,
-      )
+    } else {
+      const srcIdxs = commandArray.fields
+        .filter((f) => f.parentFolderId === srcId)
+        .map((f) => commandIdx(f.id))
       if (isCommand(distNode.content)) {
         // folder to command
-        const distIdx = commandArray.fields.findIndex((f) => f.id === distId)
-        commandArray.move(srcIdx, distIdx)
+        const distIdx = commandIdx(distId)
+        moveCommands(srcIdxs, isMoveDown ? distIdx - 1 : distIdx)
       } else {
         // folder to folder
         const distIdx = commandArray.fields.findIndex(
           (f) => f.parentFolderId === distId,
         )
-        commandArray.move(srcIdx, distIdx)
+        moveCommands(srcIdxs, distIdx)
       }
     }
   }
