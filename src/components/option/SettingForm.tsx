@@ -470,6 +470,9 @@ export function SettingForm() {
     const sortedIndexes = [...srcIdxs].sort((a, b) => b - a)
     const itemsToMove = sortedIndexes.map((index) => commandArray.fields[index])
     sortedIndexes.forEach((index) => commandArray.remove(index))
+
+    const isMoveDown = srcIdxs[0] < distIdx
+    if (isMoveDown) distIdx -= srcIdxs.length - 1
     itemsToMove.reverse().forEach((item, i) => {
       commandArray.insert(distIdx + i, item)
     })
@@ -543,7 +546,7 @@ export function SettingForm() {
       if (isCommand(distNode.content)) {
         // folder to command
         const distIdx = commandIdx(distId)
-        moveCommands(srcIdxs, isMoveDown ? distIdx - 1 : distIdx)
+        moveCommands(srcIdxs, distIdx)
       } else {
         // folder to folder
         const distIdx = commandArray.fields.findIndex(
