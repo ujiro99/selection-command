@@ -472,6 +472,29 @@ export function SettingForm() {
     })
   }
 
+  const commandRemove = (idx: number) => {
+    const node = flatten[idx]
+    if (isCommand(node.content)) {
+      commandArray.remove(idx)
+    } else {
+      commandArray.fields
+        .map((f, i) => ({
+          index: i,
+          id: f.id,
+          parentFolderId: f.parentFolderId,
+          data: f,
+        }))
+        .filter((f) => f.parentFolderId === node.id)
+        .forEach((f) =>
+          commandArray.update(f.index, {
+            ...f.data,
+            parentFolderId: undefined,
+          }),
+        )
+      folderArray.remove(folderArray.fields.findIndex((f) => f.id === node.id))
+    }
+  }
+
   const commandIdx = (id: string) =>
     commandArray.fields.findIndex((f) => f.id === id)
 
@@ -569,21 +592,21 @@ export function SettingForm() {
           )}
           {getValues('startupMethod.method') ===
             STARTUP_METHOD.LEFT_CLICK_HOLD && (
-            <InputField
-              control={form.control}
-              name="startupMethod.leftClickHoldParam"
-              formLabel="長押し時間(ms)"
-              inputProps={{
-                type: 'number',
-                min: 50,
-                max: 500,
-                step: 10,
-                ...register('startupMethod.leftClickHoldParam', {
-                  valueAsNumber: true,
-                }),
-              }}
-            />
-          )}
+              <InputField
+                control={form.control}
+                name="startupMethod.leftClickHoldParam"
+                formLabel="長押し時間(ms)"
+                inputProps={{
+                  type: 'number',
+                  min: 50,
+                  max: 500,
+                  step: 10,
+                  ...register('startupMethod.leftClickHoldParam', {
+                    valueAsNumber: true,
+                  }),
+                }}
+              />
+            )}
           <SelectField
             control={form.control}
             name="popupPlacement"
@@ -631,9 +654,9 @@ export function SettingForm() {
                     droppable={isDroppable(field, activeNode)}
                     className={cn(
                       isFolder(activeNode?.content) &&
-                        isCommand(field.content) &&
-                        field.content.parentFolderId != null &&
-                        'opacity-50 bg-gray-100',
+                      isCommand(field.content) &&
+                      field.content.parentFolderId != null &&
+                      'opacity-50 bg-gray-100',
                     )}
                   >
                     <div className="h-14 pr-2 pl-0 flex-1 flex items-center">
@@ -658,12 +681,10 @@ export function SettingForm() {
                       </div>
                       <div className="flex gap-0.5 items-center">
                         <CummandEditButton />
-                        {isCommand(field.content) && (
-                          <CummandRemoveButton
-                            command={field.content}
-                            onRemove={() => commandArray.remove(index)}
-                          />
-                        )}
+                        <CummandRemoveButton
+                          command={field.content}
+                          onRemove={() => commandRemove(index)}
+                        />
                       </div>
                     </div>
                   </SortableItem>
@@ -780,7 +801,7 @@ const CummandEditButton = () => {
 }
 
 type CummandRemoveButtonProps = {
-  command: Command
+  command: Command | CommandFolder
   onRemove: () => void
 }
 const CummandRemoveButton = ({
