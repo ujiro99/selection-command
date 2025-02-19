@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { Trash2, Pencil } from 'lucide-react'
+import { Trash2, Pencil, FilePlus2, FolderPlus, Search } from 'lucide-react'
 
 import {
   DndContext,
@@ -46,8 +46,10 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogPortal,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 
 import { Tooltip } from '@/components/Tooltip'
 import { SortableItem } from '@/components/option/SortableItem'
@@ -75,6 +77,7 @@ import {
   isMenuCommand,
   isLinkCommand,
   isMac,
+  isEmpty,
   sleep,
   unique,
   e2a,
@@ -519,9 +522,14 @@ export function SettingForm() {
         commandArray.move(srcIdx, distIdx)
       } else {
         // command to folder
-        const distIdx = commandArray.fields.findIndex(
+        let distIdx = commandArray.fields.findIndex(
           (f) => f.parentFolderId === distId,
         )
+        if (distIdx === -1) {
+          // Empty folders always exist at the end of the list, so move to the end of the dommands.
+          distIdx = commandArray.fields.length
+        }
+
         commandArray.update(srcIdx, {
           ...srcNode.content,
           parentFolderId: isMoveDown ? distId : undefined,
@@ -592,21 +600,21 @@ export function SettingForm() {
           )}
           {getValues('startupMethod.method') ===
             STARTUP_METHOD.LEFT_CLICK_HOLD && (
-              <InputField
-                control={form.control}
-                name="startupMethod.leftClickHoldParam"
-                formLabel="長押し時間(ms)"
-                inputProps={{
-                  type: 'number',
-                  min: 50,
-                  max: 500,
-                  step: 10,
-                  ...register('startupMethod.leftClickHoldParam', {
-                    valueAsNumber: true,
-                  }),
-                }}
-              />
-            )}
+            <InputField
+              control={form.control}
+              name="startupMethod.leftClickHoldParam"
+              formLabel="長押し時間(ms)"
+              inputProps={{
+                type: 'number',
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register('startupMethod.leftClickHoldParam', {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
           <SelectField
             control={form.control}
             name="popupPlacement"
@@ -634,6 +642,27 @@ export function SettingForm() {
             {getValues('commands')?.length ?? 0}
             {t('commands_desc_count')}
           </p>
+          <div className="flex gap-2 justify-end">
+            <Button variant="secondary" className="gap-1 px-3 shadow">
+              <FilePlus2 />
+              コマンド作成
+            </Button>
+            <Button variant="secondary" className="gap-1 px-3 shadow" asChild>
+              <a
+                href="https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=button"
+                target="_blank"
+              >
+                <Search />
+                コマンドを探す
+              </a>
+            </Button>
+            <FolderAddButton
+              onSubmit={(folder) => {
+                console.log(folder)
+                folderArray.append(folder)
+              }}
+            />
+          </div>
           <ul className="border-y" ref={commandsRef}>
             <DndContext
               sensors={sensors}
@@ -654,9 +683,9 @@ export function SettingForm() {
                     droppable={isDroppable(field, activeNode)}
                     className={cn(
                       isFolder(activeNode?.content) &&
-                      isCommand(field.content) &&
-                      field.content.parentFolderId != null &&
-                      'opacity-50 bg-gray-100',
+                        isCommand(field.content) &&
+                        field.content.parentFolderId != null &&
+                        'opacity-50 bg-gray-100',
                     )}
                   >
                     <div className="h-14 pr-2 pl-0 flex-1 flex items-center">
@@ -761,6 +790,8 @@ const InputField = ({
   formLabel,
   inputProps,
 }: InputFieldType) => {
+  const type = inputProps.type
+
   return (
     <FormField
       control={control}
@@ -770,9 +801,50 @@ const InputField = ({
           <div className="w-2/6">
             <FormLabel>{formLabel}</FormLabel>
           </div>
-          <div className="w-4/6">
+          <div className="w-4/6 relative">
+            {type === 'iconUrl' && !isEmpty(field.value) && (
+              <img
+                className="absolute top-[16%] left-[-11%] w-7 h-7 rounded"
+                src={field.value}
+                alt="folder icon's url"
+              />
+            )}
             <FormControl>
               <Input {...field} {...inputProps} />
+            </FormControl>
+            <FormMessage />
+          </div>
+        </FormItem>
+      )}
+    />
+  )
+}
+
+type SwitchFieldType = {
+  control: any
+  name: string
+  formLabel: string
+  description?: string
+}
+const SwitchField = ({
+  control,
+  name,
+  formLabel,
+  description,
+}: SwitchFieldType) => {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex items-center gap-1">
+          <div className="w-2/6">
+            <FormLabel>{formLabel}</FormLabel>
+            {description && <FormDescription>{description}</FormDescription>}
+          </div>
+          <div className="w-4/6">
+            <FormControl>
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>
             <FormMessage />
           </div>
@@ -853,6 +925,109 @@ const CummandRemoveButton = ({
           </DialogClose>
         </DialogFooter>
       </DialogContent>
+    </Dialog>
+  )
+}
+
+type FolderAddButtonProps = {
+  onSubmit: (folder: CommandFolder) => void
+}
+const FolderAddButton = ({ onSubmit }: FolderAddButtonProps) => {
+  const [open, setOpen] = useState(false)
+
+  const formSchema = z.object({
+    id: z.string(),
+    title: z.string().min(1),
+    iconUrl: z.string().optional(),
+    onlyIcon: z.boolean().optional(),
+  })
+
+  const DefaultValue = {
+    id: crypto.randomUUID(),
+    title: '',
+    iconUrl:
+      'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
+    onlyIcon: false,
+  }
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    mode: 'onChange',
+    defaultValues: DefaultValue,
+  })
+
+  const { register, reset } = form
+
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger ref={buttonRef} asChild>
+        <Button
+          variant="secondary"
+          className="gap-1 px-3 hover:bg-gray-200 shadow"
+        >
+          <FolderPlus />
+          フォルダ作成
+        </Button>
+      </DialogTrigger>
+      <DialogPortal>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>✏️ フォルダの作成</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            フォルダの情報を入力してください。
+          </DialogDescription>
+
+          <Form {...form}>
+            <form id="InputForm" className="space-y-4">
+              <InputField
+                control={form.control}
+                name="title"
+                formLabel="タイトル"
+                inputProps={{
+                  type: 'string',
+                  ...register('title', {}),
+                }}
+              />
+              <InputField
+                control={form.control}
+                name="iconUrl"
+                formLabel="アイコンURL"
+                inputProps={{
+                  type: 'iconUrl',
+                  ...register('iconUrl', {}),
+                }}
+              />
+              <SwitchField
+                control={form.control}
+                name="onlyIcon"
+                formLabel="アイコンのみ表示"
+                description="※横並びのときのみ有効です。"
+              />
+            </form>
+          </Form>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                やめる
+              </Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                onClick={form.handleSubmit((data) => {
+                  onSubmit(data)
+                  setOpen(false)
+                  reset(DefaultValue)
+                })}
+              >
+                作成する
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </DialogPortal>
     </Dialog>
   )
 }
