@@ -333,11 +333,14 @@ export function SettingForm() {
   const [settingData, setSettingData] = useState<SettingsFormType>()
   const [isSaving, setIsSaving] = useState(false)
   const [draggingId, setDraggingId] = useState<string | null>(null)
+  const [commandDialogOpen, setCommandDialogOpen] = useState(false)
+  const [folderDialogOpen, _setFolderDialogOpen] = useState(false)
   const initializedRef = useRef<boolean>(false)
   const saveToRef = useRef<number>()
   const iconToRef = useRef<number>()
   const commandsRef = useRef<HTMLUListElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
+  const editDataRef = useRef<Command | CommandFolder | null>(null)
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
@@ -363,6 +366,14 @@ export function SettingForm() {
   let flatten = toFlatten(commandTree)
   flatten = commandsFilter(flatten, draggingId)
   const activeNode = flatten.find((f) => f.id === draggingId)
+
+  const setFolderDialogOpen = (open: boolean) => {
+    if (!open) {
+      // Reset editData when closing the dialog.
+      editDataRef.current = null
+    }
+    _setFolderDialogOpen(open)
+  }
 
   const updateSettings = async (settings: SettingsFormType) => {
     if (isSaving) return
@@ -461,7 +472,6 @@ export function SettingForm() {
     const { active, over } = event
     if (!active || !over) return
     if (active.id !== over?.id) {
-      console.log('moveArray', active.id, over.id)
       moveArray(`${active.id}`, `${over.id}`)
     }
   }
@@ -476,6 +486,29 @@ export function SettingForm() {
     itemsToMove.reverse().forEach((item, i) => {
       commandArray.insert(distIdx + i, item)
     })
+  }
+
+  const commandEditorOpen = (idx: number) => {
+    const node = flatten[idx]
+    editDataRef.current = node.content
+    if (isCommand(node.content)) {
+      // TODO
+    } else {
+      setFolderDialogOpen(true)
+    }
+  }
+
+  const commandUpsert = (data: Command | CommandFolder) => {
+    if (isCommand(data)) {
+      // TODO
+    } else {
+      const idx = folderArray.fields.findIndex((f) => f.id === data.id)
+      if (idx >= 0) {
+        folderArray.update(idx, data)
+      } else {
+        folderArray.append(data)
+      }
+    }
   }
 
   const commandRemove = (idx: number) => {
@@ -659,11 +692,22 @@ export function SettingForm() {
                 コマンドを探す
               </a>
             </Button>
-            <FolderAddButton
+            <Button
+              type="button"
+              variant="secondary"
+              className="gap-1 px-3 hover:bg-gray-200 shadow"
+              onClick={() => setFolderDialogOpen(true)}
+            >
+              <FolderPlus />
+              フォルダ作成
+            </Button>
+            <FolderUpsertDialog
+              open={folderDialogOpen}
+              onOpenChange={setFolderDialogOpen}
               onSubmit={(folder) => {
-                console.log(folder)
-                folderArray.append(folder)
+                commandUpsert(folder)
               }}
+              folder={editDataRef.current as CommandFolder}
             />
           </div>
           <ul className="border-y" ref={commandsRef}>
@@ -712,7 +756,9 @@ export function SettingForm() {
                         </div>
                       </div>
                       <div className="flex gap-0.5 items-center">
-                        <CummandEditButton />
+                        <CummandEditButton
+                          onClick={() => commandEditorOpen(index)}
+                        />
                         <CummandRemoveButton
                           command={field.content}
                           onRemove={() => commandRemove(index)}
@@ -857,13 +903,21 @@ const SwitchField = ({
   )
 }
 
-const CummandEditButton = () => {
+type CummandEditButtonProps = {
+  onClick: () => void
+}
+const CummandEditButton = ({ onClick }: CummandEditButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const handleClick = (e: React.SyntheticEvent) => {
+    onClick()
+    e.preventDefault()
+  }
   return (
     <>
       <button
         ref={buttonRef}
         className="p-2 rounded-md transition hover:bg-sky-100 hover:scale-125 group"
+        onClick={handleClick}
       >
         <Pencil
           className="stroke-gray-500 group-hover:stroke-sky-500"
@@ -932,12 +986,18 @@ const CummandRemoveButton = ({
   )
 }
 
-type FolderAddButtonProps = {
+type FolderUpsertDialog = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
   onSubmit: (folder: CommandFolder) => void
+  folder?: CommandFolder
 }
-const FolderAddButton = ({ onSubmit }: FolderAddButtonProps) => {
-  const [open, setOpen] = useState(false)
-
+const FolderUpsertDialog = ({
+  open,
+  onOpenChange,
+  onSubmit,
+  folder,
+}: FolderUpsertDialog) => {
   const formSchema = z.object({
     id: z.string(),
     title: z.string().min(1),
@@ -946,11 +1006,11 @@ const FolderAddButton = ({ onSubmit }: FolderAddButtonProps) => {
   })
 
   const DefaultValue = {
-    id: crypto.randomUUID(),
+    id: '',
     title: '',
     iconUrl:
       'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
-    onlyIcon: false,
+    onlyIcon: true,
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -959,20 +1019,15 @@ const FolderAddButton = ({ onSubmit }: FolderAddButtonProps) => {
     defaultValues: DefaultValue,
   })
 
+  useEffect(() => {
+    form.reset(folder ?? DefaultValue)
+  }, [folder])
+
+  const isUpdate = folder != null
   const { register, reset } = form
 
-  const buttonRef = useRef<HTMLButtonElement>(null)
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger ref={buttonRef} asChild>
-        <Button
-          variant="secondary"
-          className="gap-1 px-3 hover:bg-gray-200 shadow"
-        >
-          <FolderPlus />
-          フォルダ作成
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -1020,12 +1075,13 @@ const FolderAddButton = ({ onSubmit }: FolderAddButtonProps) => {
               <Button
                 type="button"
                 onClick={form.handleSubmit((data) => {
+                  data.id = data.id ?? crypto.randomUUID()
                   onSubmit(data)
-                  setOpen(false)
+                  onOpenChange(false)
                   reset(DefaultValue)
                 })}
               >
-                作成する
+                {isUpdate ? '更新する' : '作成する'}
               </Button>
             </DialogClose>
           </DialogFooter>
