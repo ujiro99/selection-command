@@ -332,6 +332,8 @@ export function SettingForm() {
   const commandsRef = useRef<HTMLUListElement>(null)
   const loadingRef = useRef<HTMLDivElement>(null)
   const editDataRef = useRef<Command | CommandFolder | null>(null)
+  const addCommandButtonRef = useRef<HTMLButtonElement>(null)
+  const addFolderButtonRef = useRef<HTMLButtonElement>(null)
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
@@ -669,28 +671,47 @@ export function SettingForm() {
             {getValues('commands')?.length ?? 0}
             {t('commands_desc_count')}
           </p>
-          <div className="flex gap-2 justify-end">
-            <Button variant="secondary" className="gap-1 px-3 shadow">
-              <FilePlus2 />
-              コマンド作成
-            </Button>
-            <Button variant="secondary" className="gap-1 px-3 shadow" asChild>
-              <a
-                href="https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=button"
-                target="_blank"
-              >
-                <Search />
-                コマンドを探す
-              </a>
-            </Button>
+          <div className="flex relative h-6">
             <Button
               type="button"
-              variant="secondary"
-              className="gap-1 px-3 hover:bg-gray-200 shadow"
+              ref={addFolderButtonRef}
+              variant="outline"
+              className="absolute left-[226px] p-2rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setFolderDialogOpen(true)}
             >
               <FolderPlus />
-              フォルダ作成
+              フォルダ
+            </Button>
+            <Tooltip
+              positionElm={addFolderButtonRef.current}
+              text={'フォルダを作成します'}
+            />
+            <Button
+              ref={addCommandButtonRef}
+              variant="outline"
+              className="absolute left-[348px] p-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+            >
+              <FilePlus2 className="stroke-gray-600 group-hover:stroke-gray-700" />
+              コマンド
+            </Button>
+            <Tooltip
+              positionElm={addCommandButtonRef.current}
+              text={'コマンドを作成します'}
+            />
+            <Button
+              variant="outline"
+              className="absolute right-1 p-2 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
+              asChild
+            >
+              <a
+                href="https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=button"
+                target="_blank"
+                className="text-gray-600 hover:text-gray-700"
+              >
+                <Search />
+                <span className="font-semibold">Command</span>
+                <span className="font-thin">Hub</span>
+              </a>
             </Button>
             <FolderEditDialog
               open={folderDialogOpen}
