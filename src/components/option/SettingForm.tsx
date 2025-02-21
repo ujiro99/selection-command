@@ -36,7 +36,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
 import {
   Dialog,
   DialogClose,
@@ -46,14 +45,16 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-  DialogPortal,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-
 import { Tooltip } from '@/components/Tooltip'
 import { SortableItem } from '@/components/option/SortableItem'
 import { LoadingIcon } from '@/components/option/LoadingIcon'
+import { InputField } from '@/components/option/field/InputField'
+import {
+  FolderEditDialog,
+  folderSchema,
+} from '@/components/option/editor/FolderEditDialog'
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -77,7 +78,6 @@ import {
   isMenuCommand,
   isLinkCommand,
   isMac,
-  isEmpty,
   sleep,
   unique,
   e2a,
@@ -132,16 +132,7 @@ const formSchema = z
       )
       .min(1)
       .max(COMMAND_MAX),
-    folders: z.array(
-      z
-        .object({
-          id: z.string(),
-          title: z.string(),
-          iconUrl: z.string().optional(),
-          onlyIcon: z.boolean().optional(),
-        })
-        .strict(),
-    ),
+    folders: z.array(folderSchema),
     linkCommand: z
       .object({
         enabled: z
@@ -701,7 +692,7 @@ export function SettingForm() {
               <FolderPlus />
               フォルダ作成
             </Button>
-            <FolderUpsertDialog
+            <FolderEditDialog
               open={folderDialogOpen}
               onOpenChange={setFolderDialogOpen}
               onSubmit={(folder) => {
@@ -710,7 +701,7 @@ export function SettingForm() {
               folder={editDataRef.current as CommandFolder}
             />
           </div>
-          <ul className="border-y" ref={commandsRef}>
+          <ul ref={commandsRef}>
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -826,83 +817,6 @@ const SelectField = ({
   )
 }
 
-type InputFieldType = {
-  control: any
-  name: string
-  formLabel: string
-  inputProps: React.ComponentProps<typeof Input>
-}
-
-const InputField = ({
-  control,
-  name,
-  formLabel,
-  inputProps,
-}: InputFieldType) => {
-  const type = inputProps.type
-
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="flex items-center gap-1">
-          <div className="w-2/6">
-            <FormLabel>{formLabel}</FormLabel>
-          </div>
-          <div className="w-4/6 relative">
-            {type === 'iconUrl' && !isEmpty(field.value) && (
-              <img
-                className="absolute top-[16%] left-[-11%] w-7 h-7 rounded"
-                src={field.value}
-                alt="folder icon's url"
-              />
-            )}
-            <FormControl>
-              <Input {...field} {...inputProps} />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      )}
-    />
-  )
-}
-
-type SwitchFieldType = {
-  control: any
-  name: string
-  formLabel: string
-  description?: string
-}
-const SwitchField = ({
-  control,
-  name,
-  formLabel,
-  description,
-}: SwitchFieldType) => {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="flex items-center gap-1">
-          <div className="w-2/6">
-            <FormLabel>{formLabel}</FormLabel>
-            {description && <FormDescription>{description}</FormDescription>}
-          </div>
-          <div className="w-4/6">
-            <FormControl>
-              <Switch checked={field.value} onCheckedChange={field.onChange} />
-            </FormControl>
-            <FormMessage />
-          </div>
-        </FormItem>
-      )}
-    />
-  )
-}
-
 type CummandEditButtonProps = {
   onClick: () => void
 }
@@ -982,111 +896,6 @@ const CummandRemoveButton = ({
           </DialogClose>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
-  )
-}
-
-type FolderUpsertDialog = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSubmit: (folder: CommandFolder) => void
-  folder?: CommandFolder
-}
-const FolderUpsertDialog = ({
-  open,
-  onOpenChange,
-  onSubmit,
-  folder,
-}: FolderUpsertDialog) => {
-  const formSchema = z.object({
-    id: z.string(),
-    title: z.string().min(1),
-    iconUrl: z.string().optional(),
-    onlyIcon: z.boolean().optional(),
-  })
-
-  const DefaultValue = {
-    id: '',
-    title: '',
-    iconUrl:
-      'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
-    onlyIcon: true,
-  }
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    mode: 'onChange',
-    defaultValues: DefaultValue,
-  })
-
-  useEffect(() => {
-    form.reset(folder ?? DefaultValue)
-  }, [folder])
-
-  const isUpdate = folder != null
-  const { register, reset } = form
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogPortal>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>✏️ フォルダの作成</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            フォルダの情報を入力してください。
-          </DialogDescription>
-
-          <Form {...form}>
-            <form id="InputForm" className="space-y-4">
-              <InputField
-                control={form.control}
-                name="title"
-                formLabel="タイトル"
-                inputProps={{
-                  type: 'string',
-                  ...register('title', {}),
-                }}
-              />
-              <InputField
-                control={form.control}
-                name="iconUrl"
-                formLabel="アイコンURL"
-                inputProps={{
-                  type: 'iconUrl',
-                  ...register('iconUrl', {}),
-                }}
-              />
-              <SwitchField
-                control={form.control}
-                name="onlyIcon"
-                formLabel="アイコンのみ表示"
-                description="※横並びのときのみ有効です。"
-              />
-            </form>
-          </Form>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                やめる
-              </Button>
-            </DialogClose>
-            <DialogClose asChild>
-              <Button
-                type="button"
-                onClick={form.handleSubmit((data) => {
-                  data.id = data.id ?? crypto.randomUUID()
-                  onSubmit(data)
-                  onOpenChange(false)
-                  reset(DefaultValue)
-                })}
-              >
-                {isUpdate ? '更新する' : '作成する'}
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </DialogPortal>
     </Dialog>
   )
 }
