@@ -489,7 +489,9 @@ export function SettingForm() {
   const commandRemove = (idx: number) => {
     const node = flatten[idx]
     if (isCommand(node.content)) {
-      commandArray.remove(idx)
+      commandArray.remove(
+        commandArray.fields.findIndex((f) => f.id === node.id),
+      )
     } else {
       commandArray.fields
         .map((f, i) => ({
