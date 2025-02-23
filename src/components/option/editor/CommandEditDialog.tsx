@@ -220,7 +220,7 @@ export const CommandEditDialog = ({
     mode: 'onChange',
     defaultValues: defaultValute(OPEN_MODE.POPUP),
   })
-  const { register, reset, setValue, watch } = form
+  const { register, reset, getValues, setValue, watch } = form
 
   const searchUrl = watch('searchUrl')
   const isUpdate = command != null
@@ -238,7 +238,13 @@ export const CommandEditDialog = ({
   })
 
   useEffect(() => {
-    form.reset((command as any) ?? defaultValute(OPEN_MODE.POPUP))
+    if (command != null) {
+      reset((command as any) ?? defaultValute(OPEN_MODE.POPUP))
+    } else {
+      setTimeout(() => {
+        reset(defaultValute(OPEN_MODE.POPUP))
+      }, 100)
+    }
   }, [command])
 
   useEffect(() => {
@@ -248,7 +254,7 @@ export const CommandEditDialog = ({
     ) {
       return
     }
-    form.reset(defaultValute(openMode))
+    reset(defaultValute(openMode))
     preOpenModeRef.current = openMode
   }, [openMode])
 
@@ -259,8 +265,11 @@ export const CommandEditDialog = ({
     clearTimeout(fetchIconTO.current)
     fetchIconTO.current = window.setTimeout(async () => {
       const iconUrl = await fetchIconUrl(searchUrl)
+      const currentSearchUrl = getValues('searchUrl')
+      if (currentSearchUrl != searchUrl) return
       setValue('iconUrl', iconUrl)
     }, 500)
+
     return () => clearTimeout(fetchIconTO.current)
   }, [searchUrl])
 
