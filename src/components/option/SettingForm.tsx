@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { Trash2, Pencil, Terminal, FolderPlus, Search } from 'lucide-react'
 
 import {
@@ -80,6 +80,7 @@ import {
   cn,
 } from '@/lib/utils'
 import { Settings } from '@/services/settings'
+import { SwitchField } from './field/SwitchField'
 
 function hyphen2Underscore(input: string): string {
   return input.replace(/-/g, '_')
@@ -318,6 +319,12 @@ export function SettingForm() {
     control: form.control,
     keyName: '_id',
   })
+  const linkCommandMethod = useWatch({
+    control: form.control,
+    name: 'linkCommand.startupMethod.method',
+    defaultValue: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+  })
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -584,10 +591,8 @@ export function SettingForm() {
 
       <form id="InputForm" className="space-y-10 w-[600px] mx-auto">
         <section className="space-y-3">
-          <h3 className="text-xl font-semibold">起動方法</h3>
-          <p className="text-base">
-            ポップアップメニューを表示する方法を変更します。
-          </p>
+          <h3 className="text-xl font-semibold">{t('startupMethod')}</h3>
+          <p className="text-base">{t('startupMethod_desc')}</p>
           <SelectField
             control={form.control}
             name="startupMethod.method"
@@ -647,20 +652,20 @@ export function SettingForm() {
             }))}
           />
         </section>
+        <hr />
         <section className="space-y-3">
           <h3 className="text-xl font-semibold">コマンド</h3>
-          <p className="text-base">
-            {t('commands_desc')}
-            <br />
-            {getValues('commands')?.length ?? 0}
-            {t('commands_desc_count')}
-          </p>
-          <div className="flex relative h-8">
+          <p className="text-base">{t('commands_desc')}</p>
+          <div className="relative h-10 flex items-end">
+            <span className="text-sm bg-gray-100 px-2 py-0.5 rounded font-mono tracking-tight">
+              {getValues('commands')?.length ?? 0}
+              {t('commands_desc_count')}
+            </span>
             <Button
               type="button"
               ref={addFolderButtonRef}
               variant="outline"
-              className="absolute left-[240px] px-2 py-4 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute left-[250px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setFolderDialogOpen(true)}
             >
               <FolderPlus />
@@ -674,7 +679,7 @@ export function SettingForm() {
               type="button"
               ref={addCommandButtonRef}
               variant="outline"
-              className="absolute left-[348px] px-2 py-4 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute left-[358px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setCommandDialogOpen(true)}
             >
               <Terminal className="stroke-gray-600 group-hover:stroke-gray-700" />
@@ -686,13 +691,13 @@ export function SettingForm() {
             />
             <Button
               variant="outline"
-              className="absolute right-1 px-2 py-4 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
+              className="absolute right-1 px-2 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
               asChild
             >
               <a
                 href="https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=button"
                 target="_blank"
-                className="text-gray-600 hover:text-gray-700"
+                className="font-mono text-gray-600 hover:text-gray-700"
               >
                 <Search />
                 <span className="font-semibold">Command</span>
@@ -773,6 +778,98 @@ export function SettingForm() {
               </SortableContext>
             </DndContext>
           </ul>
+        </section>
+        <hr />
+        <section className="space-y-3">
+          <h3 className="text-xl font-semibold">{t('linkCommand')}</h3>
+          <p className="text-base">{t('linkCommand_desc')}</p>
+          <SelectField
+            control={form.control}
+            name="linkCommand.enabled"
+            formLabel={t('linkCommandEnabled')}
+            options={e2a(LINK_COMMAND_ENABLED)
+              .filter((opt) => opt !== LINK_COMMAND_ENABLED.INHERIT)
+              .map((opt) => ({
+                name: t(`linkCommand_enabled${opt}`),
+                value: opt,
+              }))}
+          />
+          <SelectField
+            control={form.control}
+            name="linkCommand.openMode"
+            formLabel={t('openMode')}
+            options={e2a(DRAG_OPEN_MODE).map((opt) => ({
+              name: t(`openMode_${opt}`),
+              value: opt,
+            }))}
+          />
+          <SelectField
+            control={form.control}
+            name="linkCommand.startupMethod.method"
+            formLabel={t('linkCommandStartupMethod_method')}
+            options={e2a(LINK_COMMAND_STARTUP_METHOD).map((opt) => ({
+              name: t(`linkCommandStartupMethod_${opt}`),
+              value: opt,
+            }))}
+          />
+          {linkCommandMethod === LINK_COMMAND_STARTUP_METHOD.KEYBOARD && (
+            <SelectField
+              control={form.control}
+              name="linkCommand.startupMethod.keyboardParam"
+              formLabel={t('linkCommandStartupMethod_keyboard')}
+              options={e2a(KEYBOARD)
+                .filter((k) => k != KEYBOARD.META)
+                .map((key) => ({
+                  name: t(`keyboardParam_${key}_${os}`),
+                  value: key,
+                }))}
+            />
+          )}
+          {linkCommandMethod === LINK_COMMAND_STARTUP_METHOD.DRAG && (
+            <InputField
+              control={form.control}
+              name="linkCommand.startupMethod.threshold"
+              formLabel={t('linkCommandStartupMethod_threshold')}
+              description={t('linkCommandStartupMethod_threshold_desc')}
+              inputProps={{
+                type: 'number',
+                min: 50,
+                max: 400,
+                step: 10,
+                ...register('linkCommand.startupMethod.threshold', {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
+          {linkCommandMethod ===
+            LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
+            <InputField
+              control={form.control}
+              name="linkCommand.startupMethod.leftClickHoldParam"
+              formLabel={t('linkCommandStartupMethod_leftClickHoldParam')}
+              inputProps={{
+                type: 'number',
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register('linkCommand.startupMethod.leftClickHoldParam', {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
+          <SwitchField
+            control={form.control}
+            name="linkCommand.showIndicator"
+            formLabel={t('showIndicator')}
+            description={t('showIndicator_desc')}
+          />
+        </section>
+        <hr />
+        <section className="space-y-3">
+          <h3 className="text-xl font-semibold">{t('pageRules')}</h3>
+          <p className="text-base">{t('pageRules_desc')}</p>
         </section>
       </form>
     </Form>

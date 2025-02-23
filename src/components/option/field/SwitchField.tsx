@@ -32,7 +32,7 @@ export const SwitchField = ({
             <FormLabel>{formLabel}</FormLabel>
             {description && <FormDescription>{description}</FormDescription>}
           </div>
-          <div className="w-4/6">
+          <div className="w-4/6 px-1">
             <FormControl>
               <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>

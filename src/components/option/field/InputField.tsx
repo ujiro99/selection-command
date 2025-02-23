@@ -5,6 +5,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from '@/components/ui/form'
 
 import { isEmpty } from '@/lib/utils'
@@ -14,6 +15,7 @@ type InputFieldType = {
   name: string
   formLabel: string
   inputProps: React.ComponentProps<typeof Input>
+  description?: string
 }
 
 export const InputField = ({
@@ -21,6 +23,7 @@ export const InputField = ({
   name,
   formLabel,
   inputProps,
+  description,
 }: InputFieldType) => {
   const type = inputProps.type
   return (
@@ -31,6 +34,7 @@ export const InputField = ({
         <FormItem className="flex items-center gap-1">
           <div className="w-2/6">
             <FormLabel>{formLabel}</FormLabel>
+            {description && <FormDescription>{description}</FormDescription>}
           </div>
           <div className="w-4/6 relative">
             {type === 'iconUrl' && !isEmpty(field.value) && (

@@ -47,9 +47,9 @@ export enum POPUP_TYPE {
 }
 
 export enum KEYBOARD {
+  SHIFT = 'Shift',
   CTRL = 'Control',
   ALT = 'Alt',
-  SHIFT = 'Shift',
   META = 'Meta',
 }
 
