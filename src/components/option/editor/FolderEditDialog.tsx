@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { FolderPlus, Save } from 'lucide-react'
 import {
   Dialog,
   DialogClose,
@@ -65,7 +66,10 @@ export const FolderEditDialog = ({
       <DialogPortal>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>✏️ フォルダの作成</DialogTitle>
+            <DialogTitle>
+              <FolderPlus />
+              フォルダの作成
+            </DialogTitle>
           </DialogHeader>
           <DialogDescription>
             フォルダの情報を入力してください。
@@ -115,7 +119,8 @@ export const FolderEditDialog = ({
                 reset(DefaultValue)
               })}
             >
-              {isUpdate ? '更新する' : '作成する'}
+              <Save />
+              {isUpdate ? '更新する' : '保存する'}
             </Button>
           </DialogFooter>
         </DialogContent>
