@@ -1,9 +1,7 @@
 import { useEffect } from 'react'
-import type { CommandFolder } from '@/types'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-
 import {
   Dialog,
   DialogClose,
@@ -19,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { InputField } from '@/components/option/field/InputField'
 import { SwitchField } from '@/components/option/field/SwitchField'
 import { isEmpty } from '@/lib/utils'
+import type { CommandFolder } from '@/types'
 
 export const folderSchema = z.object({
   id: z.string(),
@@ -109,7 +108,6 @@ export const FolderEditDialog = ({
             <Button
               type="button"
               onClick={form.handleSubmit((data) => {
-                console.log(data)
                 if (isEmpty(data.id)) data.id = crypto.randomUUID()
                 onSubmit(data)
                 onOpenChange(false)

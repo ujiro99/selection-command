@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
-import { Trash2, Pencil, FilePlus2, FolderPlus, Search } from 'lucide-react'
+import { Trash2, Pencil, Terminal, FolderPlus, Search } from 'lucide-react'
 
 import {
   DndContext,
@@ -30,13 +30,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -51,6 +44,11 @@ import { Tooltip } from '@/components/Tooltip'
 import { SortableItem } from '@/components/option/SortableItem'
 import { LoadingIcon } from '@/components/option/LoadingIcon'
 import { InputField } from '@/components/option/field/InputField'
+import { SelectField } from '@/components/option/field/SelectField'
+import {
+  CommandEditDialog,
+  commandSchema,
+} from '@/components/option/editor/CommandEditDialog'
 import {
   FolderEditDialog,
   folderSchema,
@@ -61,11 +59,9 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { z } from 'zod'
 import {
   STYLE,
-  OPEN_MODE,
   STARTUP_METHOD,
   POPUP_PLACEMENT,
   KEYBOARD,
-  SPACE_ENCODING,
   COMMAND_MAX,
   DRAG_OPEN_MODE,
   POPUP_ENABLED,
@@ -73,7 +69,12 @@ import {
   LINK_COMMAND_STARTUP_METHOD,
   STYLE_VARIABLE,
 } from '@/const'
-import type { SettingsType, Command, CommandFolder } from '@/types'
+import type {
+  SettingsType,
+  Command,
+  CommandFolder,
+  SelectionCommand,
+} from '@/types'
 import {
   isMenuCommand,
   isLinkCommand,
@@ -100,38 +101,7 @@ const formSchema = z
       .strict(),
     popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
     style: z.nativeEnum(STYLE),
-    commands: z
-      .array(
-        z
-          .object({
-            id: z.string(),
-            title: z.string(),
-            iconUrl: z.string(),
-            searchUrl: z.string(),
-            openMode: z.nativeEnum(OPEN_MODE).or(z.nativeEnum(DRAG_OPEN_MODE)),
-            parentFolderId: z.string().optional(),
-            spaceEncoding: z.nativeEnum(SPACE_ENCODING).optional(),
-            popupOption: z
-              .object({
-                width: z.number().min(1),
-                height: z.number().min(1),
-              })
-              .optional(),
-            fetchOptions: z.string().optional(),
-            variables: z
-              .array(
-                z.object({
-                  name: z.string(),
-                  value: z.string(),
-                }),
-              )
-              .optional(),
-            copyOption: z.enum(['default', 'text']).optional(),
-          })
-          .strict(),
-      )
-      .min(1)
-      .max(COMMAND_MAX),
+    commands: z.array(commandSchema).min(1).max(COMMAND_MAX),
     folders: z.array(folderSchema),
     linkCommand: z
       .object({
@@ -230,7 +200,7 @@ function toCommandTree(
 type FlattenNode = {
   id: string
   index: number
-  content: Command | CommandFolder
+  content: SelectionCommand | CommandFolder
   lastChild?: boolean
 }
 
@@ -324,7 +294,7 @@ export function SettingForm() {
   const [settingData, setSettingData] = useState<SettingsFormType>()
   const [isSaving, setIsSaving] = useState(false)
   const [draggingId, setDraggingId] = useState<string | null>(null)
-  const [commandDialogOpen, setCommandDialogOpen] = useState(false)
+  const [commandDialogOpen, _setCommandDialogOpen] = useState(false)
   const [folderDialogOpen, _setFolderDialogOpen] = useState(false)
   const initializedRef = useRef<boolean>(false)
   const saveToRef = useRef<number>()
@@ -359,6 +329,14 @@ export function SettingForm() {
   let flatten = toFlatten(commandTree)
   flatten = commandsFilter(flatten, draggingId)
   const activeNode = flatten.find((f) => f.id === draggingId)
+
+  const setCommandDialogOpen = (open: boolean) => {
+    if (!open) {
+      // Reset editData when closing the dialog.
+      editDataRef.current = null
+    }
+    _setCommandDialogOpen(open)
+  }
 
   const setFolderDialogOpen = (open: boolean) => {
     if (!open) {
@@ -412,7 +390,7 @@ export function SettingForm() {
         }
       }
       settings.commands = settings.commands.filter(isMenuCommand)
-      reset(settings)
+      reset(settings as FormValues)
     }
     loadSettings()
   }, [])
@@ -547,7 +525,7 @@ export function SettingForm() {
         commandArray.update(srcIdx, {
           ...srcNode.content,
           parentFolderId: distNode.content.parentFolderId,
-        })
+        } as z.infer<typeof commandSchema>)
         commandArray.move(srcIdx, distIdx)
       } else {
         // command to folder
@@ -558,11 +536,10 @@ export function SettingForm() {
           // Empty folders always exist at the end of the list, so move to the end of the dommands.
           distIdx = commandArray.fields.length
         }
-
         commandArray.update(srcIdx, {
           ...srcNode.content,
           parentFolderId: isMoveDown ? distId : undefined,
-        })
+        } as z.infer<typeof commandSchema>)
         commandArray.move(srcIdx, isMoveDown ? distIdx - 1 : distIdx)
       }
     } else {
@@ -619,6 +596,7 @@ export function SettingForm() {
               control={form.control}
               name="startupMethod.keyboardParam"
               formLabel="表示を切り替えるキー"
+              placeholder="キーを選択"
               options={e2a(KEYBOARD)
                 .filter((k) => k != KEYBOARD.META)
                 .map((key) => ({
@@ -671,12 +649,12 @@ export function SettingForm() {
             {getValues('commands')?.length ?? 0}
             {t('commands_desc_count')}
           </p>
-          <div className="flex relative h-6">
+          <div className="flex relative h-8">
             <Button
               type="button"
               ref={addFolderButtonRef}
               variant="outline"
-              className="absolute left-[226px] p-2rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute left-[240px] px-2 py-4 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setFolderDialogOpen(true)}
             >
               <FolderPlus />
@@ -687,11 +665,13 @@ export function SettingForm() {
               text={'フォルダを作成します'}
             />
             <Button
+              type="button"
               ref={addCommandButtonRef}
               variant="outline"
-              className="absolute left-[348px] p-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute left-[348px] px-2 py-4 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              onClick={() => setCommandDialogOpen(true)}
             >
-              <FilePlus2 className="stroke-gray-600 group-hover:stroke-gray-700" />
+              <Terminal className="stroke-gray-600 group-hover:stroke-gray-700" />
               コマンド
             </Button>
             <Tooltip
@@ -700,7 +680,7 @@ export function SettingForm() {
             />
             <Button
               variant="outline"
-              className="absolute right-1 p-2 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
+              className="absolute right-1 px-2 py-4 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
               asChild
             >
               <a
@@ -713,12 +693,17 @@ export function SettingForm() {
                 <span className="font-thin">Hub</span>
               </a>
             </Button>
+            <CommandEditDialog
+              open={commandDialogOpen}
+              onOpenChange={setCommandDialogOpen}
+              onSubmit={(command) => commandUpsert(command)}
+              folders={folderArray.fields}
+              command={editDataRef.current as SelectionCommand}
+            />
             <FolderEditDialog
               open={folderDialogOpen}
               onOpenChange={setFolderDialogOpen}
-              onSubmit={(folder) => {
-                commandUpsert(folder)
-              }}
+              onSubmit={(folder) => commandUpsert(folder)}
               folder={editDataRef.current as CommandFolder}
             />
           </div>
@@ -785,56 +770,6 @@ export function SettingForm() {
         </section>
       </form>
     </Form>
-  )
-}
-
-type SelectOptionType = {
-  name: string
-  value: string
-}
-
-type SelectFieldType = {
-  control: any
-  name: string
-  formLabel: string
-  options: SelectOptionType[]
-}
-
-const SelectField = ({
-  control,
-  name,
-  formLabel,
-  options,
-}: SelectFieldType) => {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="flex items-center gap-1">
-          <div className="w-2/6">
-            <FormLabel>{formLabel}</FormLabel>
-          </div>
-          <div className="w-4/6">
-            <Select onValueChange={field.onChange} value={field.value}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Key" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {options.map((opt) => (
-                  <SelectItem value={opt.value} key={opt.value}>
-                    {opt.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </div>
-        </FormItem>
-      )}
-    />
   )
 }
 

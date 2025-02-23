@@ -4,9 +4,9 @@ import { ResultPopup } from '@/components/result/ResultPopup'
 import { Icon } from '@/components/Icon'
 import { useContextMenu } from '@/hooks/useContextMenu'
 import { useSelectContext } from '@/hooks/useSelectContext'
-import type { Command } from '@/types'
+import type { SelectionCommand } from '@/types'
 import { actions, ExecState } from '@/action'
-import { OPEN_MODE, POPUP_OFFSET } from '@/const'
+import { POPUP_OFFSET } from '@/const'
 
 import css from './Menu.module.css'
 
@@ -36,7 +36,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     setItemState({ state, message })
   }
 
-  function execute(command: Command) {
+  function execute(command: SelectionCommand) {
     if (itemState.state !== ExecState.NONE) {
       return
     }
@@ -44,7 +44,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
       return
     }
     const rect = props.positionElm.getBoundingClientRect()
-    actions[command.openMode as OPEN_MODE]
+    actions[command.openMode]
       .execute({
         selectionText,
         command: command,
@@ -62,7 +62,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   }
 
   if (command != null) {
-    execute(command)
+    execute(command as SelectionCommand)
   }
 
   const visible = result != null && props.positionElm != null

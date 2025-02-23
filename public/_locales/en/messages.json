@@ -221,6 +221,12 @@
   "Option_variables": {
     "message": "Fetch Variables"
   },
+  "Option_variableName": {
+    "message": "Name"
+  },
+  "Option_variableValue": {
+    "message": "Value"
+  },
   "Option_linkCommand": {
     "message": "Link Preview"
   },

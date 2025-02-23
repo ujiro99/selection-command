@@ -24,10 +24,10 @@ export type Command = SelectionCommand | LinkCommand
 export type SelectionCommand = {
   id: string
   title: string
-  searchUrl: string
   iconUrl: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
+  searchUrl?: string
   parentFolder?: FolderOption // deprecated from v0.8.2
   parentFolderId?: string
   popupOption?: PopupOption
@@ -91,6 +91,10 @@ export type StyleVariable = {
   name: STYLE_VARIABLE
   value: string
 }
+
+export type Side = 'top' | 'right' | 'bottom' | 'left'
+
+export type Alignment = 'start' | 'end' | 'center'
 
 export type StartupMethod = {
   method: STARTUP_METHOD

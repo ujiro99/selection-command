@@ -1,0 +1,411 @@
+import { useEffect } from 'react'
+import { useForm, useFieldArray, useWatch } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Plus, Trash2 } from 'lucide-react'
+
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogPortal,
+} from '@/components/ui/dialog'
+
+import {
+  FormControl,
+  FormDescription,
+  FormMessage,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form'
+
+import { Input } from '@/components/ui/input'
+import { Form } from '@/components/ui/form'
+import { Button } from '@/components/ui/button'
+import { InputField } from '@/components/option/field/InputField'
+import { SelectField } from '@/components/option/field/SelectField'
+import { TextareaField } from '@/components/option/field/TextareaField'
+import { OPEN_MODE, SPACE_ENCODING, POPUP_OPTION, COPY_OPTION } from '@/const'
+import { isEmpty, e2a } from '@/lib/utils'
+import { t as _t } from '@/services/i18n'
+import type { SelectionCommand, CommandFolder } from '@/types'
+
+const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+
+const SearchOpenMode = [
+  OPEN_MODE.POPUP,
+  OPEN_MODE.TAB,
+  OPEN_MODE.WINDOW,
+] as const
+
+const searchSchema = z
+  .object({
+    openMode: z.enum(SearchOpenMode),
+    id: z.string(),
+    title: z.string(),
+    iconUrl: z.string(),
+    parentFolderId: z.string().optional(),
+    searchUrl: z.string(),
+    openModeSecondary: z.enum(SearchOpenMode),
+    spaceEncoding: z.nativeEnum(SPACE_ENCODING),
+    popupOption: z.object({
+      width: z.number().min(1),
+      height: z.number().min(1),
+    }),
+  })
+  .strict()
+
+const apiSchema = z
+  .object({
+    openMode: z.literal(OPEN_MODE.API),
+    id: z.string(),
+    title: z.string(),
+    iconUrl: z.string(),
+    parentFolderId: z.string().optional(),
+    searchUrl: z.string(),
+    fetchOptions: z.string().optional(),
+    variables: z
+      .array(
+        z.object({
+          name: z.string(),
+          value: z.string(),
+        }),
+      )
+      .optional(),
+  })
+  .strict()
+
+const linkPopupSchema = z
+  .object({
+    openMode: z.enum([OPEN_MODE.LINK_POPUP]),
+    id: z.string(),
+    parentFolderId: z.string().optional(),
+    title: z.string().default('Link Popup'),
+    iconUrl: z
+      .string()
+      .default(
+        'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
+      ),
+  })
+  .strict()
+
+const copySchema = z
+  .object({
+    openMode: z.enum([OPEN_MODE.COPY]),
+    id: z.string(),
+    parentFolderId: z.string().optional(),
+    title: z.string().default('Copy'),
+    iconUrl: z
+      .string()
+      .default(
+        'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png',
+      ),
+    copyOption: z.nativeEnum(COPY_OPTION).default(COPY_OPTION.DEFAULT),
+  })
+  .strict()
+
+const textStyleSchema = z
+  .object({
+    openMode: z.enum([OPEN_MODE.GET_TEXT_STYLES]),
+    id: z.string(),
+    parentFolderId: z.string().optional(),
+    title: z.string().default('Get Text Styles'),
+    iconUrl: z
+      .string()
+      .default(
+        'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png',
+      ),
+  })
+  .strict()
+
+export const commandSchema = z.discriminatedUnion('openMode', [
+  searchSchema,
+  apiSchema,
+  linkPopupSchema,
+  copySchema,
+  textStyleSchema,
+])
+
+type CommandEditDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onSubmit: (command: SelectionCommand) => void
+  folders: CommandFolder[]
+  command?: SelectionCommand
+}
+
+export const CommandEditDialog = ({
+  open,
+  onOpenChange,
+  onSubmit,
+  folders: opt,
+  command,
+}: CommandEditDialogProps) => {
+  const DefaultValue = {
+    id: '',
+    title: '',
+    iconUrl: '',
+    openMode: OPEN_MODE.POPUP as const,
+    openModeSecondary: OPEN_MODE.TAB as const,
+    spaceEncoding: SPACE_ENCODING.PLUS,
+    popupOption: {
+      width: POPUP_OPTION.width,
+      height: POPUP_OPTION.height,
+    },
+  }
+
+  const form = useForm<z.infer<typeof commandSchema>>({
+    resolver: zodResolver(commandSchema),
+    mode: 'onChange',
+    defaultValues: DefaultValue,
+  })
+
+  const variableArray = useFieldArray({
+    name: 'variables',
+    control: form.control,
+    keyName: '_id',
+  })
+
+  useEffect(() => {
+    form.reset((command as any) ?? DefaultValue)
+  }, [command])
+
+  const wOpenMode = useWatch({
+    control: form.control,
+    name: 'openMode',
+    defaultValue: DefaultValue.openMode,
+  })
+
+  const isUpdate = command != null
+  const { register, reset } = form
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogPortal>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>✏️ コマンドの作成</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            コマンドの情報を入力してください。
+          </DialogDescription>
+          <Form {...form}>
+            <form id="InputForm" className="space-y-2">
+              <InputField
+                control={form.control}
+                name="title"
+                formLabel="タイトル"
+                inputProps={{
+                  type: 'string',
+                  ...register('title', {}),
+                }}
+              />
+
+              <SelectField
+                control={form.control}
+                name="openMode"
+                formLabel="Open Mode"
+                options={e2a(OPEN_MODE)
+                  .filter(
+                    (mode) =>
+                      mode !== OPEN_MODE.ADD_PAGE_RULE &&
+                      mode !== OPEN_MODE.OPTION,
+                  )
+                  .map((mode) => ({
+                    name: t(`openMode_${mode}`),
+                    value: mode,
+                  }))}
+              />
+
+              {SearchOpenMode.includes(wOpenMode as any) && (
+                <SelectField
+                  control={form.control}
+                  name="openModeSecondary"
+                  formLabel={t('openModeSecondary')}
+                  options={e2a(OPEN_MODE)
+                    .filter(
+                      (mode) =>
+                        mode !== OPEN_MODE.ADD_PAGE_RULE &&
+                        mode !== OPEN_MODE.OPTION,
+                    )
+                    .map((mode) => ({
+                      name: t(`openMode_${mode}`),
+                      value: mode,
+                    }))}
+                />
+              )}
+
+              {(SearchOpenMode.includes(wOpenMode as any) ||
+                wOpenMode === OPEN_MODE.API) && (
+                <InputField
+                  control={form.control}
+                  name="searchUrl"
+                  formLabel={t('searchUrl')}
+                  inputProps={{
+                    type: 'string',
+                    ...register('searchUrl', {}),
+                  }}
+                />
+              )}
+
+              <InputField
+                control={form.control}
+                name="iconUrl"
+                formLabel="アイコンURL"
+                inputProps={{
+                  type: 'iconUrl',
+                  ...register('iconUrl', {}),
+                }}
+              />
+
+              <SelectField
+                control={form.control}
+                name="parentFolderId"
+                formLabel={t('parentFolderId')}
+                options={opt.map((folder) => ({
+                  name: folder.title,
+                  value: folder.id,
+                  iconUrl: folder.iconUrl,
+                }))}
+              />
+
+              {SearchOpenMode.includes(wOpenMode as any) && (
+                <SelectField
+                  control={form.control}
+                  name="spaceEncoding"
+                  formLabel={t('spaceEncoding')}
+                  options={e2a(SPACE_ENCODING).map((enc) => ({
+                    name: t(`spaceEncoding_${enc}`),
+                    value: enc,
+                  }))}
+                />
+              )}
+
+              {wOpenMode === OPEN_MODE.API && (
+                <>
+                  <TextareaField
+                    control={form.control}
+                    name="fetchOptions"
+                    formLabel={t('fetchOptions')}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="variables"
+                    render={() => (
+                      <FormItem className="flex items-center">
+                        <div className="w-2/6">
+                          <FormLabel>{t('variables')}</FormLabel>
+                        </div>
+                        <div className="w-4/6">
+                          <FormControl>
+                            <ul className="">
+                              {variableArray.fields.map((field, index) => (
+                                <li
+                                  key={field._id}
+                                  className="flex items-center gap-2 p-1"
+                                >
+                                  <FormField
+                                    control={form.control}
+                                    name={`variables.${index}.name`}
+                                    render={({ field }) => (
+                                      <FormItem className="flex items-center gap-1 w-1/2">
+                                        <FormLabel className="text-xs text-right">
+                                          {t('variableName')}
+                                        </FormLabel>
+                                        <FormControl className="flex-1">
+                                          <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={form.control}
+                                    name={`variables.${index}.value`}
+                                    render={({ field }) => (
+                                      <FormItem className="flex items-center gap-1 w-1/2">
+                                        <FormLabel className="text-xs text-right">
+                                          {t('variableValue')}
+                                        </FormLabel>
+                                        <FormControl>
+                                          <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <button
+                                    type="button"
+                                    className="group transition p-1.5 flex-none rounded-lg hover:bg-red-200 hover:scale-[1.1]"
+                                    onClick={() => variableArray.remove(index)}
+                                  >
+                                    <Trash2
+                                      className="stroke-gray-500 group-hover:stroke-red-500"
+                                      size={16}
+                                    />
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </FormControl>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            className="relative mt-1 rounded-lg h-7 left-[50%] translate-x-[-50%]"
+                            onClick={() =>
+                              variableArray.append({
+                                name: '',
+                                value: '',
+                              })
+                            }
+                          >
+                            <Plus />
+                          </Button>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+
+              {wOpenMode === OPEN_MODE.COPY && (
+                <SelectField
+                  control={form.control}
+                  name="copyOption"
+                  formLabel={t('copyOption')}
+                  options={e2a(COPY_OPTION).map((opt) => ({
+                    name: t(`copyOption_${opt}`),
+                    value: opt,
+                  }))}
+                />
+              )}
+            </form>
+          </Form>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                やめる
+              </Button>
+            </DialogClose>
+            <Button
+              type="button"
+              onClick={form.handleSubmit((data) => {
+                if (isEmpty(data.id)) data.id = crypto.randomUUID()
+                onSubmit(data)
+                onOpenChange(false)
+                reset(DefaultValue)
+              })}
+            >
+              {isUpdate ? '更新する' : '作成する'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </DialogPortal>
+    </Dialog>
+  )
+}

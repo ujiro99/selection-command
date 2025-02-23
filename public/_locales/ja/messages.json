@@ -221,6 +221,12 @@
   "Option_variables": {
     "message": "Fetch変数"
   },
+  "Option_variableName": {
+    "message": "変数名"
+  },
+  "Option_variableValue": {
+    "message": "値"
+  },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
   },
