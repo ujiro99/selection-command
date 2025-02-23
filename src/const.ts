@@ -130,7 +130,8 @@ export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100
 
-export const ROOT_FOLDER = ''
+export const ROOT_FOLDER = 'RootFolder'
+
 export const OPTION_FOLDER = 'OptionFolder'
 
 export const COMMAND_MAX = 100

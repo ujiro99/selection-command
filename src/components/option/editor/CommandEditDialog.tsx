@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -17,7 +17,6 @@ import {
 
 import {
   FormControl,
-  FormDescription,
   FormMessage,
   FormField,
   FormItem,
@@ -30,9 +29,16 @@ import { Button } from '@/components/ui/button'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { TextareaField } from '@/components/option/field/TextareaField'
-import { OPEN_MODE, SPACE_ENCODING, POPUP_OPTION, COPY_OPTION } from '@/const'
-import { isEmpty, e2a } from '@/lib/utils'
+import {
+  OPEN_MODE,
+  SPACE_ENCODING,
+  POPUP_OPTION,
+  COPY_OPTION,
+  ROOT_FOLDER,
+} from '@/const'
+import { isEmpty, isUrl, e2a } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
+import { fetchIconUrl } from '@/services/chrome'
 import type { SelectionCommand, CommandFolder } from '@/types'
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -48,9 +54,9 @@ const searchSchema = z
     openMode: z.enum(SearchOpenMode),
     id: z.string(),
     title: z.string(),
-    iconUrl: z.string(),
+    iconUrl: z.string().url(),
+    searchUrl: z.string().url(),
     parentFolderId: z.string().optional(),
-    searchUrl: z.string(),
     openModeSecondary: z.enum(SearchOpenMode),
     spaceEncoding: z.nativeEnum(SPACE_ENCODING),
     popupOption: z.object({
@@ -65,9 +71,9 @@ const apiSchema = z
     openMode: z.literal(OPEN_MODE.API),
     id: z.string(),
     title: z.string(),
-    iconUrl: z.string(),
+    iconUrl: z.string().url(),
+    searchUrl: z.string().url(),
     parentFolderId: z.string().optional(),
-    searchUrl: z.string(),
     fetchOptions: z.string().optional(),
     variables: z
       .array(
@@ -88,6 +94,7 @@ const linkPopupSchema = z
     title: z.string().default('Link Popup'),
     iconUrl: z
       .string()
+      .url()
       .default(
         'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
       ),
@@ -102,6 +109,7 @@ const copySchema = z
     title: z.string().default('Copy'),
     iconUrl: z
       .string()
+      .url()
       .default(
         'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png',
       ),
@@ -117,6 +125,7 @@ const textStyleSchema = z
     title: z.string().default('Get Text Styles'),
     iconUrl: z
       .string()
+      .url()
       .default(
         'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png',
       ),
@@ -131,6 +140,11 @@ export const commandSchema = z.discriminatedUnion('openMode', [
   textStyleSchema,
 ])
 
+const EmptyFolder = {
+  id: ROOT_FOLDER,
+  title: 'フォルダへ入れない',
+} as CommandFolder
+
 type CommandEditDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -143,16 +157,20 @@ export const CommandEditDialog = ({
   open,
   onOpenChange,
   onSubmit,
-  folders: opt,
+  folders,
   command,
 }: CommandEditDialogProps) => {
+  const fetchIconTO = useRef(0)
+
   const DefaultValue = {
     id: '',
     title: '',
+    searchUrl: '',
     iconUrl: '',
     openMode: OPEN_MODE.POPUP as const,
     openModeSecondary: OPEN_MODE.TAB as const,
     spaceEncoding: SPACE_ENCODING.PLUS,
+    parentFolderId: ROOT_FOLDER,
     popupOption: {
       width: POPUP_OPTION.width,
       height: POPUP_OPTION.height,
@@ -164,6 +182,10 @@ export const CommandEditDialog = ({
     mode: 'onChange',
     defaultValues: DefaultValue,
   })
+  const { register, reset, setValue, watch } = form
+
+  const searchUrl = watch('searchUrl')
+  const isUpdate = command != null
 
   const variableArray = useFieldArray({
     name: 'variables',
@@ -171,23 +193,33 @@ export const CommandEditDialog = ({
     keyName: '_id',
   })
 
-  useEffect(() => {
-    form.reset((command as any) ?? DefaultValue)
-  }, [command])
-
   const wOpenMode = useWatch({
     control: form.control,
     name: 'openMode',
     defaultValue: DefaultValue.openMode,
   })
 
-  const isUpdate = command != null
-  const { register, reset } = form
+  useEffect(() => {
+    form.reset((command as any) ?? DefaultValue)
+  }, [command])
+
+  useEffect(() => {
+    if (isEmpty(searchUrl) || !isUrl(searchUrl)) return
+
+    // debounce
+    clearTimeout(fetchIconTO.current)
+    fetchIconTO.current = window.setTimeout(async () => {
+      const iconUrl = await fetchIconUrl(searchUrl)
+      setValue('iconUrl', iconUrl)
+    }, 500)
+
+    return () => clearTimeout(fetchIconTO.current)
+  }, [searchUrl])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-xl">
           <DialogHeader>
             <DialogTitle>✏️ コマンドの作成</DialogTitle>
           </DialogHeader>
@@ -195,7 +227,7 @@ export const CommandEditDialog = ({
             コマンドの情報を入力してください。
           </DialogDescription>
           <Form {...form}>
-            <form id="InputForm" className="space-y-2">
+            <form id="CommandEditForm" className="space-y-2">
               <InputField
                 control={form.control}
                 name="title"
@@ -227,16 +259,10 @@ export const CommandEditDialog = ({
                   control={form.control}
                   name="openModeSecondary"
                   formLabel={t('openModeSecondary')}
-                  options={e2a(OPEN_MODE)
-                    .filter(
-                      (mode) =>
-                        mode !== OPEN_MODE.ADD_PAGE_RULE &&
-                        mode !== OPEN_MODE.OPTION,
-                    )
-                    .map((mode) => ({
-                      name: t(`openMode_${mode}`),
-                      value: mode,
-                    }))}
+                  options={SearchOpenMode.map((mode) => ({
+                    name: t(`openMode_${mode}`),
+                    value: mode,
+                  }))}
                 />
               )}
 
@@ -267,7 +293,7 @@ export const CommandEditDialog = ({
                 control={form.control}
                 name="parentFolderId"
                 formLabel={t('parentFolderId')}
-                options={opt.map((folder) => ({
+                options={[EmptyFolder, ...folders].map((folder) => ({
                   name: folder.title,
                   value: folder.id,
                   iconUrl: folder.iconUrl,
@@ -388,14 +414,18 @@ export const CommandEditDialog = ({
           </Form>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
+              <Button type="button" variant="secondary" size="lg">
                 やめる
               </Button>
             </DialogClose>
             <Button
               type="button"
+              size="lg"
               onClick={form.handleSubmit((data) => {
                 if (isEmpty(data.id)) data.id = crypto.randomUUID()
+                if (data.parentFolderId === ROOT_FOLDER) {
+                  data.parentFolderId = undefined
+                }
                 onSubmit(data)
                 onOpenChange(false)
                 reset(DefaultValue)

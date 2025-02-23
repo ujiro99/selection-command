@@ -101,11 +101,12 @@ export const FolderEditDialog = ({
           </Form>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="secondary">
+              <Button size="lg" type="button" variant="secondary">
                 やめる
               </Button>
             </DialogClose>
             <Button
+              size="lg"
               type="button"
               onClick={form.handleSubmit((data) => {
                 if (isEmpty(data.id)) data.id = crypto.randomUUID()

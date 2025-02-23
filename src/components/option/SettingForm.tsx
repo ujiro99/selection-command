@@ -20,15 +20,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Form } from '@/components/ui/form'
 import {
   Dialog,
   DialogClose,
@@ -56,6 +48,7 @@ import {
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+
 import { z } from 'zod'
 import {
   STYLE,
@@ -68,6 +61,8 @@ import {
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
   STYLE_VARIABLE,
+  OPEN_MODE,
+  ROOT_FOLDER,
 } from '@/const'
 import type {
   SettingsType,
@@ -142,6 +137,7 @@ const formSchema = z
   .strict()
 
 type FormValues = z.infer<typeof formSchema>
+type CommandSchemaType = z.infer<typeof commandSchema>
 
 type CommandTreeNode = {
   type: 'command' | 'folder'
@@ -154,7 +150,7 @@ function toCommandTree(
   folders: CommandFolder[],
 ): CommandTreeNode[] {
   let tree = commands.reduce((acc, command) => {
-    if (command.parentFolderId) {
+    if (command.parentFolderId && command.parentFolderId !== ROOT_FOLDER) {
       const folder = folders.find((f) => f.id === command.parentFolderId)
       if (folder) {
         const parent = acc.find((node) => node.content.id === folder.id)
@@ -264,9 +260,12 @@ function isDroppable(selfNode: FlattenNode, activeNode?: FlattenNode): boolean {
 
 function isCommand(
   content: Command | CommandFolder | undefined,
-): content is Command {
+): content is SelectionCommand {
   if (content == null) return false
-  return 'openMode' in content
+  if ('openMode' in content) {
+    return e2a(OPEN_MODE).includes(content.openMode)
+  }
+  return false
 }
 
 function isFolder(
@@ -463,15 +462,20 @@ export function SettingForm() {
     const node = flatten[idx]
     editDataRef.current = node.content
     if (isCommand(node.content)) {
-      // TODO
+      setCommandDialogOpen(true)
     } else {
       setFolderDialogOpen(true)
     }
   }
 
-  const commandUpsert = (data: Command | CommandFolder) => {
+  const commandUpsert = (data: SelectionCommand | CommandFolder) => {
     if (isCommand(data)) {
-      // TODO
+      const idx = commandArray.fields.findIndex((f) => f.id === data.id)
+      if (idx >= 0) {
+        commandArray.update(idx, data as CommandSchemaType)
+      } else {
+        commandArray.append(data as CommandSchemaType)
+      }
     } else {
       const idx = folderArray.fields.findIndex((f) => f.id === data.id)
       if (idx >= 0) {
@@ -525,7 +529,7 @@ export function SettingForm() {
         commandArray.update(srcIdx, {
           ...srcNode.content,
           parentFolderId: distNode.content.parentFolderId,
-        } as z.infer<typeof commandSchema>)
+        } as CommandSchemaType)
         commandArray.move(srcIdx, distIdx)
       } else {
         // command to folder
@@ -539,7 +543,7 @@ export function SettingForm() {
         commandArray.update(srcIdx, {
           ...srcNode.content,
           parentFolderId: isMoveDown ? distId : undefined,
-        } as z.infer<typeof commandSchema>)
+        } as CommandSchemaType)
         commandArray.move(srcIdx, isMoveDown ? distIdx - 1 : distIdx)
       }
     } else {
