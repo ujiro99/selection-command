@@ -20,8 +20,6 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 
-import { FormField } from '@/components/ui/form'
-
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/Tooltip'
@@ -31,6 +29,7 @@ import { EditButton } from '@/components/option/EditButton'
 import { RemoveButton } from '@/components/option/RemoveButton'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
+import { SwitchField } from '@/components/option/field/SwitchField'
 import {
   CommandEditDialog,
   commandSchema,
@@ -39,7 +38,10 @@ import {
   FolderEditDialog,
   folderSchema,
 } from '@/components/option/editor/FolderEditDialog'
-import { PageRuleList } from '@/components/option/editor/PageRuleList'
+import {
+  PageRuleList,
+  pageRulesSchema,
+} from '@/components/option/editor/PageRuleList'
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -75,7 +77,6 @@ import {
   cn,
 } from '@/lib/utils'
 import { Settings } from '@/services/settings'
-import { SwitchField } from './field/SwitchField'
 
 function hyphen2Underscore(input: string): string {
   return input.replace(/-/g, '_')
@@ -111,16 +112,7 @@ const formSchema = z
           .strict(),
       })
       .strict(),
-    pageRules: z.array(
-      z
-        .object({
-          urlPattern: z.string(),
-          popupEnabled: z.nativeEnum(POPUP_ENABLED),
-          popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
-          linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
-        })
-        .strict(),
-    ),
+    pageRules: pageRulesSchema.strict(),
     userStyles: z.array(
       z
         .object({

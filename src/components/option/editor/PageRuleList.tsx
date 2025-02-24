@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
-import { z } from 'zod'
 import { useForm, useFieldArray } from 'react-hook-form'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Save, BookOpen } from 'lucide-react'
 import {
@@ -33,7 +33,7 @@ const pageRuleSchema = z.object({
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
 })
 
-const pageRulesSchema = z.object({
+export const pageRulesSchema = z.object({
   pageRules: z.array(pageRuleSchema),
 })
 
@@ -111,14 +111,14 @@ export const PageRuleList = ({ control }: PageRuleListProps) => {
                     index !== 0 ? 'border-t' : '',
                   )}
                 >
-                  <div className="flex-1 px-1 py-2">
+                  <div className="flex-1 px-1 py-2 overflow-hidden">
                     <p className="flex items-center">
                       <img
                         src={`https://www.google.com/s2/favicons?sz=64&domain_url=${field.urlPattern}`}
                         alt="favicon"
                         className="w-5 h-5 inline-block mr-2 rounded"
                       />
-                      <span className="text-base font-mono">
+                      <span className="text-base font-mono truncate">
                         {field.urlPattern}
                       </span>
                     </p>
