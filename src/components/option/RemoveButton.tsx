@@ -45,7 +45,7 @@ export const RemoveButton = ({
         <DialogHeader>
           <DialogTitle>削除しますか？</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="flex items-center justify-center">
+        <DialogDescription className="flex items-center justify-center overflow-hidden">
           {iconUrl != null && (
             <img
               src={iconUrl}
@@ -53,7 +53,7 @@ export const RemoveButton = ({
               className="inline-block w-6 h-6 mr-2"
             />
           )}
-          <span className="text-base">{title}</span>
+          <span className="text-base truncate">{title}</span>
         </DialogDescription>
         <DialogFooter>
           <DialogClose asChild>
