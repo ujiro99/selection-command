@@ -192,8 +192,11 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
     data = migrate0_10_3(data)
   }
   if (versionDiff(data.settingVersion, '0.11.3') === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = migrate0_11_3(data)
+  }
+  if (versionDiff(data.settingVersion, '0.11.5') === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate0_11_5(data)
   }
   return data
 }
@@ -263,5 +266,17 @@ const migrate0_11_3 = (data: SettingsType): SettingsType => {
   if (data.linkCommand.enabled) {
     data.linkCommand.startupMethod.method = LINK_COMMAND_STARTUP_METHOD.DRAG
   }
+  return data
+}
+
+const migrate0_11_5 = (data: SettingsType): SettingsType => {
+  // Convert id of comamnds to uuid
+  data.commands = data.commands.map((c) => {
+    if (c.id.length === 36) return c
+    c.id =
+      DefaultCommands.find((dc) => dc.title === c.title)?.id ??
+      crypto.randomUUID()
+    return c
+  })
   return data
 }

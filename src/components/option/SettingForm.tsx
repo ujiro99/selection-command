@@ -58,10 +58,8 @@ import {
   KEYBOARD,
   COMMAND_MAX,
   DRAG_OPEN_MODE,
-  POPUP_ENABLED,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
-  STYLE_VARIABLE,
   OPEN_MODE,
   ROOT_FOLDER,
 } from '@/const'
@@ -75,6 +73,7 @@ import {
   isMenuCommand,
   isLinkCommand,
   isMac,
+  isEmpty,
   sleep,
   unique,
   e2a,
@@ -82,6 +81,7 @@ import {
   hyphen2Underscore,
 } from '@/lib/utils'
 import { Settings } from '@/services/settings'
+import DefaultSettings from '@/services/defaultSettings'
 
 const formSchema = z
   .object({
@@ -289,7 +289,7 @@ export function SettingForm() {
     resolver: zodResolver(formSchema),
     mode: 'onChange',
   })
-  const { reset, getValues, register, watch } = form
+  const { reset, getValues, setValue, register, watch } = form
   const commandArray = useFieldArray({
     name: 'commands',
     control: form.control,
@@ -299,6 +299,11 @@ export function SettingForm() {
     name: 'folders',
     control: form.control,
     keyName: '_id',
+  })
+  const startupMethod = useWatch({
+    control: form.control,
+    name: 'startupMethod.method',
+    defaultValue: STARTUP_METHOD.TEXT_SELECTION,
   })
   const linkCommandMethod = useWatch({
     control: form.control,
@@ -411,6 +416,50 @@ export function SettingForm() {
       commandsRef.current.scrollHeight + 'px',
     )
   }, [settingData?.commands])
+
+  useEffect(() => {
+    if (startupMethod === STARTUP_METHOD.KEYBOARD) {
+      const val = getValues('startupMethod.keyboardParam')
+      if (isEmpty(val)) {
+        setValue('startupMethod.keyboardParam', KEYBOARD.SHIFT)
+      }
+    } else if (startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD) {
+      const val = getValues('startupMethod.leftClickHoldParam')
+      if (val == null || isNaN(val)) {
+        setValue('startupMethod.leftClickHoldParam', 200)
+      }
+    }
+  }, [startupMethod])
+
+  useEffect(() => {
+    if (linkCommandMethod === LINK_COMMAND_STARTUP_METHOD.KEYBOARD) {
+      const val = getValues('linkCommand.startupMethod.keyboardParam')
+      if (isEmpty(val)) {
+        setValue(
+          'linkCommand.startupMethod.keyboardParam',
+          DefaultSettings.linkCommand.startupMethod.keyboardParam,
+        )
+      }
+    } else if (linkCommandMethod === LINK_COMMAND_STARTUP_METHOD.DRAG) {
+      const val = getValues('linkCommand.startupMethod.threshold')
+      if (val == null || isNaN(val)) {
+        setValue(
+          'linkCommand.startupMethod.threshold',
+          DefaultSettings.linkCommand.startupMethod.threshold,
+        )
+      }
+    } else if (
+      linkCommandMethod === LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
+    ) {
+      const val = getValues('linkCommand.startupMethod.leftClickHoldParam')
+      if (val == null || isNaN(val)) {
+        setValue(
+          'linkCommand.startupMethod.leftClickHoldParam',
+          DefaultSettings.linkCommand.startupMethod.leftClickHoldParam,
+        )
+      }
+    }
+  }, [linkCommandMethod])
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {

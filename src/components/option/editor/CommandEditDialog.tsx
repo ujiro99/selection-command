@@ -57,11 +57,19 @@ const searchSchema = z.object({
   parentFolderId: z.string().optional(),
   openModeSecondary: z.enum(SearchOpenMode),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
-  popupOption: z.object({
-    width: z.number().min(1),
-    height: z.number().min(1),
-  }),
+  popupOption: z
+    .object({
+      width: z.number().min(1),
+      height: z.number().min(1),
+    })
+    .optional(),
 })
+
+type SearchType = z.infer<typeof searchSchema>
+
+const isSearchType = (data: any): data is SearchType => {
+  return SearchOpenMode.includes(data.openMode)
+}
 
 const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
@@ -98,7 +106,7 @@ const copySchema = z.object({
   openMode: z.enum([OPEN_MODE.COPY]),
   id: z.string(),
   parentFolderId: z.string().optional(),
-  title: z.string().default('Copy'),
+  title: z.string().default('Copy text'),
   iconUrl: z
     .string()
     .url()
@@ -134,7 +142,7 @@ const EmptyFolder = {
   title: 'フォルダへ入れない',
 } as CommandFolder
 
-const defaultValute = (openMode: OPEN_MODE) => {
+const defaultValue = (openMode: OPEN_MODE) => {
   if (SearchOpenMode.includes(openMode as any)) {
     return {
       id: '',
@@ -176,7 +184,7 @@ const defaultValute = (openMode: OPEN_MODE) => {
   if (openMode === OPEN_MODE.COPY) {
     return {
       id: '',
-      title: 'Copy',
+      title: 'Copy text',
       iconUrl:
         'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png',
       openMode: OPEN_MODE.COPY as const,
@@ -217,7 +225,7 @@ export const CommandEditDialog = ({
   const form = useForm<z.infer<typeof commandSchema>>({
     resolver: zodResolver(commandSchema),
     mode: 'onChange',
-    defaultValues: defaultValute(OPEN_MODE.POPUP),
+    defaultValues: defaultValue(OPEN_MODE.POPUP),
   })
   const { register, reset, getValues, setValue, watch } = form
 
@@ -238,10 +246,10 @@ export const CommandEditDialog = ({
 
   useEffect(() => {
     if (command != null) {
-      reset((command as any) ?? defaultValute(OPEN_MODE.POPUP))
+      reset((command as any) ?? defaultValue(OPEN_MODE.POPUP))
     } else {
       setTimeout(() => {
-        reset(defaultValute(OPEN_MODE.POPUP))
+        reset(defaultValue(OPEN_MODE.POPUP))
       }, 100)
     }
   }, [command])
@@ -253,7 +261,8 @@ export const CommandEditDialog = ({
     ) {
       return
     }
-    reset(defaultValute(openMode))
+    if (command?.openMode === openMode) return
+    reset(defaultValue(openMode))
     preOpenModeRef.current = openMode
   }, [openMode])
 
@@ -287,6 +296,21 @@ export const CommandEditDialog = ({
           </DialogDescription>
           <Form {...form}>
             <form id="CommandEditForm" className="space-y-2">
+              <FormField
+                control={form.control}
+                name="id"
+                render={({ field }) => (
+                  <FormItem className="hidden">
+                    <FormControl>
+                      <input
+                        {...register('id', { value: field.value })}
+                        type="hidden"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
               <InputField
                 control={form.control}
                 name="title"
@@ -486,9 +510,17 @@ export const CommandEditDialog = ({
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
                   }
+                  if (isSearchType(data)) {
+                    if (data.popupOption != null) {
+                      data.popupOption = {
+                        width: Number(data.popupOption.width),
+                        height: Number(data.popupOption.height),
+                      }
+                    }
+                  }
                   onSubmit(data)
                   onOpenChange(false)
-                  reset(defaultValute(OPEN_MODE.POPUP))
+                  reset(defaultValue(OPEN_MODE.POPUP))
                 },
                 (err) => console.error(err),
               )}
