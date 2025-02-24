@@ -290,6 +290,12 @@
   "Option_pageRules_desc": {
     "message": "Site-specific settings."
   },
+  "Option_pageRules_add": {
+    "message": "Create Page Rule."
+  },
+  "Option_pageRules_add_desc": {
+    "message": "Please enter the Page Rule."
+  },
   "Option_urlPattern": {
     "message": "URL Pattern"
   },

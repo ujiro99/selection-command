@@ -290,6 +290,12 @@
   "Option_pageRules_desc": {
     "message": "サイト毎の設定値です。"
   },
+  "Option_pageRules_add": {
+    "message": "ページルールの作成"
+  },
+  "Option_pageRules_add_desc": {
+    "message": "ページルールを入力してください。"
+  },
   "Option_urlPattern": {
     "message": "URLパターン"
   },

@@ -38,10 +38,9 @@ import {
 } from '@/const'
 import { isEmpty, isUrl, e2a } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
+const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { fetchIconUrl } from '@/services/chrome'
 import type { SelectionCommand, CommandFolder } from '@/types'
-
-const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 const SearchOpenMode = [
   OPEN_MODE.POPUP,
@@ -276,7 +275,7 @@ export const CommandEditDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogContent className="max-w-xl">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
               <Terminal />

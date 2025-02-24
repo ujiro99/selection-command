@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
-import { Trash2, Pencil, Terminal, FolderPlus, Search } from 'lucide-react'
+import { Terminal, FolderPlus, Search } from 'lucide-react'
 
 import {
   DndContext,
@@ -20,21 +20,15 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 
+import { FormField } from '@/components/ui/form'
+
 import { Form } from '@/components/ui/form'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/Tooltip'
 import { SortableItem } from '@/components/option/SortableItem'
 import { LoadingIcon } from '@/components/option/LoadingIcon'
+import { EditButton } from '@/components/option/EditButton'
+import { RemoveButton } from '@/components/option/RemoveButton'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import {
@@ -45,6 +39,7 @@ import {
   FolderEditDialog,
   folderSchema,
 } from '@/components/option/editor/FolderEditDialog'
+import { PageRuleList } from '@/components/option/editor/PageRuleList'
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -308,7 +303,7 @@ export function SettingForm() {
     resolver: zodResolver(formSchema),
     mode: 'onChange',
   })
-  const { reset, getValues, register, watch } = form
+  const { reset, getValues, setValue, register, watch } = form
   const commandArray = useFieldArray({
     name: 'commands',
     control: form.control,
@@ -743,14 +738,14 @@ export function SettingForm() {
                         'opacity-50 bg-gray-100',
                     )}
                   >
-                    <div className="h-14 pr-2 pl-0 flex-1 flex items-center">
+                    <div className="h-14 pr-2 pl-0 flex-1 flex items-center overflow-hidden">
                       <div className="flex-1 flex items-center overflow-hidden pr-2">
                         <img
                           src={field.content.iconUrl}
                           alt={field.content.title}
                           className="inline-block w-7 h-7 mr-3"
                         />
-                        <div>
+                        <div className="overflow-hidden">
                           <p className="text-lg flex flex-row">
                             <span className="text-base">
                               {field.content.title}
@@ -764,11 +759,10 @@ export function SettingForm() {
                         </div>
                       </div>
                       <div className="flex gap-0.5 items-center">
-                        <CummandEditButton
-                          onClick={() => commandEditorOpen(index)}
-                        />
-                        <CummandRemoveButton
-                          command={field.content}
+                        <EditButton onClick={() => commandEditorOpen(index)} />
+                        <RemoveButton
+                          title={field.content.title}
+                          iconUrl={field.content.iconUrl}
                           onRemove={() => commandRemove(index)}
                         />
                       </div>
@@ -870,91 +864,14 @@ export function SettingForm() {
         <section className="space-y-3">
           <h3 className="text-xl font-semibold">{t('pageRules')}</h3>
           <p className="text-base">{t('pageRules_desc')}</p>
+          <PageRuleList control={form.control} />
+        </section>
+        <hr />
+        <section className="space-y-3">
+          <h3 className="text-xl font-semibold">{t('userStyles')}</h3>
+          <p className="text-base">{t('userStyles_desc')}</p>
         </section>
       </form>
     </Form>
-  )
-}
-
-type CummandEditButtonProps = {
-  onClick: () => void
-}
-const CummandEditButton = ({ onClick }: CummandEditButtonProps) => {
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const handleClick = (e: React.SyntheticEvent) => {
-    onClick()
-    e.preventDefault()
-  }
-  return (
-    <>
-      <button
-        ref={buttonRef}
-        className="p-2 rounded-md transition hover:bg-sky-100 hover:scale-125 group"
-        onClick={handleClick}
-      >
-        <Pencil
-          className="stroke-gray-500 group-hover:stroke-sky-500"
-          size={16}
-        />
-      </button>
-      <Tooltip positionElm={buttonRef.current} text={'編集'} />
-    </>
-  )
-}
-
-type CummandRemoveButtonProps = {
-  command: Command | CommandFolder
-  onRemove: () => void
-}
-const CummandRemoveButton = ({
-  command,
-  onRemove,
-}: CummandRemoveButtonProps) => {
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  return (
-    <Dialog>
-      <DialogTrigger
-        ref={buttonRef}
-        className="p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group"
-        asChild
-      >
-        <button>
-          <Trash2
-            className="stroke-gray-500 group-hover:stroke-red-500"
-            size={16}
-          />
-        </button>
-      </DialogTrigger>
-      <Tooltip positionElm={buttonRef.current} text={'削除'} />
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>削除しますか？</DialogTitle>
-        </DialogHeader>
-        <DialogDescription className="flex items-center justify-center">
-          <img
-            src={command.iconUrl}
-            alt={command.title}
-            className="inline-block w-6 h-6 mr-2"
-          />
-          <span className="text-base">{command.title}</span>
-        </DialogDescription>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              やめる
-            </Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button
-              type="button"
-              onClick={() => onRemove()}
-              variant="destructive"
-            >
-              削除する
-            </Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   )
 }
