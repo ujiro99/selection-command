@@ -42,6 +42,10 @@ import {
   PageRuleList,
   pageRuleSchema,
 } from '@/components/option/editor/PageRuleList'
+import {
+  UserStyleList,
+  userStyleSchema,
+} from '@/components/option/editor/UserStyleList'
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -75,12 +79,9 @@ import {
   unique,
   e2a,
   cn,
+  hyphen2Underscore,
 } from '@/lib/utils'
 import { Settings } from '@/services/settings'
-
-function hyphen2Underscore(input: string): string {
-  return input.replace(/-/g, '_')
-}
 
 const formSchema = z
   .object({
@@ -113,14 +114,7 @@ const formSchema = z
       })
       .strict(),
     pageRules: z.array(pageRuleSchema),
-    userStyles: z.array(
-      z
-        .object({
-          name: z.nativeEnum(STYLE_VARIABLE),
-          value: z.string(),
-        })
-        .strict(),
-    ),
+    userStyles: z.array(userStyleSchema),
   })
   .strict()
 
@@ -295,7 +289,7 @@ export function SettingForm() {
     resolver: zodResolver(formSchema),
     mode: 'onChange',
   })
-  const { reset, getValues, setValue, register, watch } = form
+  const { reset, getValues, register, watch } = form
   const commandArray = useFieldArray({
     name: 'commands',
     control: form.control,
@@ -576,7 +570,7 @@ export function SettingForm() {
         </LoadingIcon>
       </CSSTransition>
 
-      <form id="InputForm" className="space-y-10 w-[600px] mx-auto">
+      <form id="InputForm" className="space-y-10 w-[600px] mx-auto pb-20">
         <section className="space-y-3">
           <h3 className="text-xl font-semibold">{t('startupMethod')}</h3>
           <p className="text-base">{t('startupMethod_desc')}</p>
@@ -862,6 +856,7 @@ export function SettingForm() {
         <section className="space-y-3">
           <h3 className="text-xl font-semibold">{t('userStyles')}</h3>
           <p className="text-base">{t('userStyles_desc')}</p>
+          <UserStyleList control={form.control} />
         </section>
       </form>
     </Form>

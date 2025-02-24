@@ -10,19 +10,18 @@
 }
 
 .titleHeader {
-  margin-top: 35px;
-  margin-bottom: 30px;
+  @apply font-mono;
+  margin-top: 50px;
+  margin-bottom: 50px;
   text-align: center;
 }
 
 .version {
-  font-family: var(--font-monospace);
   font-size: 1rem;
   line-height: 28px;
 }
 
 .title {
-  font-family: var(--font-monospace);
   font-weight: 600;
   font-size: 2.2rem;
   margin: 0;

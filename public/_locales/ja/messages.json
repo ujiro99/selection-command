@@ -311,6 +311,12 @@
   "Option_userStyles_desc": {
     "message": "ポップアップの表示をカスタマイズできます。"
   },
+  "Option_userStyles_add": {
+    "message": "ユーザースタイルの編集"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "ユーザースタイルを入力してください。"
+  },
   "Option_userStyles_name": {
     "message": "設定名"
   },

@@ -291,7 +291,7 @@
     "message": "Site-specific settings."
   },
   "Option_pageRules_add": {
-    "message": "Create Page Rule."
+    "message": "Edit Page Rule."
   },
   "Option_pageRules_add_desc": {
     "message": "Please enter the Page Rule."
@@ -310,6 +310,12 @@
   },
   "Option_userStyles_desc": {
     "message": "You can customize the display of pop-up menu."
+  },
+  "Option_userStyles_add": {
+    "message": "Edit User Style"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "Please enter the User Style."
   },
   "Option_userStyles_name": {
     "message": "Property name"

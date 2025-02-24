@@ -229,3 +229,13 @@ export const onHover = (
 export function e2a(e: any): string[] {
   return Object.values(e)
 }
+
+/**
+ * Convert hyphen to underscore.
+ *
+ * @param {string} input The string to convert.
+ * @returns {string} The converted string.
+ */
+export function hyphen2Underscore(input: string): string {
+  return input.replace(/-/g, '_')
+}
