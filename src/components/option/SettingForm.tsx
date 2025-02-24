@@ -40,7 +40,7 @@ import {
 } from '@/components/option/editor/FolderEditDialog'
 import {
   PageRuleList,
-  pageRulesSchema,
+  pageRuleSchema,
 } from '@/components/option/editor/PageRuleList'
 
 import { t as _t } from '@/services/i18n'
@@ -112,7 +112,7 @@ const formSchema = z
           .strict(),
       })
       .strict(),
-    pageRules: pageRulesSchema.strict(),
+    pageRules: z.array(pageRuleSchema),
     userStyles: z.array(
       z
         .object({

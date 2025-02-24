@@ -26,14 +26,14 @@ import { POPUP_PLACEMENT, POPUP_ENABLED, LINK_COMMAND_ENABLED } from '@/const'
 import { e2a, cn } from '@/lib/utils'
 import type { PageRule } from '@/types'
 
-const pageRuleSchema = z.object({
+export const pageRuleSchema = z.object({
   urlPattern: z.string().url(),
   popupEnabled: z.nativeEnum(POPUP_ENABLED),
   popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
 })
 
-export const pageRulesSchema = z.object({
+const pageRulesSchema = z.object({
   pageRules: z.array(pageRuleSchema),
 })
 
