@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 3
+    "count": 4
   },
   {
     "name": "Language",
@@ -78,5 +78,9 @@
   {
     "name": "Movie",
     "count": 2
+  },
+  {
+    "name": "AI",
+    "count": 1
   }
 ]

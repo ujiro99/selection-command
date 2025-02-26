@@ -214,5 +214,17 @@
     "tags": ["Japanese", "Movie", "Media"],
     "id": "ae97a840-39b7-5b12-9186-9f850ec91f9a",
     "addedAt": "2025-02-01T07:03:50.021Z"
+  },
+  {
+    "title": "Perplexity",
+    "searchUrl": "https://www.perplexity.ai/search/new?q=%s",
+    "description": "Perplexityで検索します",
+    "iconUrl": "https://www.perplexity.ai/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "AI"],
+    "id": "59a9b166-b8e3-5e16-9237-aeda268ceacc",
+    "addedAt": "2025-02-26T12:44:05.718Z"
   }
 ]
