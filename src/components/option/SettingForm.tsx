@@ -271,7 +271,7 @@ function calcLevel(node: FlattenNode): number {
 
 type SettingsFormType = Omit<SettingsType, 'settingVersion' | 'stars'>
 
-export function SettingForm() {
+export function SettingForm({ className }: { className?: string }) {
   const [settingData, setSettingData] = useState<SettingsFormType>()
   const [isSaving, setIsSaving] = useState(false)
   const [draggingId, setDraggingId] = useState<string | null>(null)
@@ -619,8 +619,11 @@ export function SettingForm() {
         </LoadingIcon>
       </CSSTransition>
 
-      <form id="InputForm" className="space-y-10 w-[600px] mx-auto pb-20">
-        <section className="space-y-3">
+      <form
+        id="InputForm"
+        className={cn('space-y-10 w-[600px] mx-auto pb-20', className)}
+      >
+        <section id="startupMethod" className="space-y-3">
           <h3 className="text-xl font-semibold">{t('startupMethod')}</h3>
           <p className="text-base">{t('startupMethod_desc')}</p>
           <SelectField
@@ -683,7 +686,7 @@ export function SettingForm() {
           />
         </section>
         <hr />
-        <section className="space-y-3">
+        <section id="commands" className="space-y-3">
           <h3 className="text-xl font-semibold">コマンド</h3>
           <p className="text-base">{t('commands_desc')}</p>
           <div className="relative h-10 flex items-end">
@@ -809,7 +812,7 @@ export function SettingForm() {
           </ul>
         </section>
         <hr />
-        <section className="space-y-3">
+        <section id="linkCommand" className="space-y-3">
           <h3 className="text-xl font-semibold">{t('linkCommand')}</h3>
           <p className="text-base">{t('linkCommand_desc')}</p>
           <SelectField
@@ -896,13 +899,13 @@ export function SettingForm() {
           />
         </section>
         <hr />
-        <section className="space-y-3">
+        <section id="pageRules" className="space-y-3">
           <h3 className="text-xl font-semibold">{t('pageRules')}</h3>
           <p className="text-base">{t('pageRules_desc')}</p>
           <PageRuleList control={form.control} />
         </section>
         <hr />
-        <section className="space-y-3">
+        <section id="userStyles" className="space-y-3">
           <h3 className="text-xl font-semibold">{t('userStyles')}</h3>
           <p className="text-base">{t('userStyles_desc')}</p>
           <UserStyleList control={form.control} />

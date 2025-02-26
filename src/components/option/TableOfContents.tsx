@@ -1,5 +1,4 @@
 import React from 'react'
-import settingSchema from '@/services/settingSchema'
 import styles from './TableOfContents.module.css'
 import { t } from '@/services/i18n'
 
@@ -8,8 +7,13 @@ type Props = {
 }
 
 export const TableOfContents = (props: Props) => {
-  if (settingSchema.properties == null) return null
-  const properties = Object.keys(settingSchema.properties)
+  const properties = [
+    'startupMethod',
+    'commands',
+    'linkCommand',
+    'pageRules',
+    'userStyles',
+  ]
   const labels = properties.reduce(
     (a, p) => ({ ...a, [p]: t(`Option_${p}`) }),
     {},
@@ -17,7 +21,7 @@ export const TableOfContents = (props: Props) => {
 
   const onClick = (e: React.SyntheticEvent<HTMLButtonElement>) => {
     const target = e.currentTarget.dataset.target
-    const hash = `#root_${target}`
+    const hash = `#${target}`
     props.onClick(hash)
   }
 

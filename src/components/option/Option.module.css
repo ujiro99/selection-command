@@ -10,30 +10,20 @@
 }
 
 .titleHeader {
-  @apply font-mono;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  text-align: center;
-}
-
-.version {
-  font-size: 1rem;
-  line-height: 28px;
+  @apply flex items-center font-mono absolute top-0 px-4 py-1.5 z-50 w-full border-b gap-4;
+  @apply bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/40;
 }
 
 .title {
+  @apply tracking-tight text-gray-700;
   font-weight: 600;
-  font-size: 2.2rem;
+  font-size: 1.2rem;
   margin: 0;
-  line-height: 1.14;
 }
 
-.option {
-  height: 100vh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  color: var(--font-color);
+.version {
+  @apply mt-1 text-gray-500;
+  font-size: 0.8rem;
 }
 
 .rightColumn {
@@ -60,7 +50,7 @@
 }
 
 .menuLabel {
-  font-family: var(--font-monospace);
+  @apply font-mono;
   font-size: 1.2rem;
   color: #444;
   margin-bottom: 16px;
@@ -68,30 +58,23 @@
 }
 
 .menuLabel2 {
-  font-family: var(--font-monospace);
+  @apply font-mono;
   margin: 8px;
 }
 
-.textarea {
-  width: 100%;
-  font-family: var(--font-monospace);
-  font-size: 16px;
-}
-
 .menuButton {
+  @apply font-mono;
   border: none;
   background: none;
   font-size: 0.9rem;
   padding: 6px 8px;
   border-radius: 4px;
   color: #444;
-  font-family: var(--font-family);
-
   transition: background-color ease-out 0.2s;
   cursor: pointer;
 
   &:hover {
-    background-color: #e5e5e5;
+    @apply bg-gray-200;
   }
 }
 
