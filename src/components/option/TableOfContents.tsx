@@ -1,7 +1,14 @@
 import React from 'react'
-import styles from './TableOfContents.module.css'
 import { t } from '@/services/i18n'
-import { Rocket, SquareTerminal, Eye, BookOpen, Paintbrush } from 'lucide-react'
+import {
+  MessageSquareMore,
+  SquareTerminal,
+  Eye,
+  BookOpen,
+  Paintbrush,
+} from 'lucide-react'
+import styles from './TableOfContents.module.css'
+import optionCss from './Option.module.css'
 
 type Props = {
   onClick: (hash: string) => void
@@ -32,8 +39,12 @@ export const TableOfContents = (props: Props) => {
       <span className={styles.label}>Menu</span>
       {properties.map((p) => (
         <li className={styles.item} key={p}>
-          <button className={styles.button} onClick={onClick} data-target={p}>
-            <Icon name={p} size={20} className="mr-2 stroke-gray-600" />
+          <button
+            className={optionCss.menuButton}
+            onClick={onClick}
+            data-target={p}
+          >
+            <Icon name={p} size={18} className="mr-2 stroke-gray-600" />
             <span>{labels[p]}</span>
           </button>
         </li>
@@ -53,7 +64,7 @@ const Icon = ({
 }) => {
   switch (name) {
     case 'startupMethod':
-      return <Rocket size={size} className={className} />
+      return <MessageSquareMore size={size} className={className} />
     case 'commands':
       return <SquareTerminal size={size} className={className} />
     case 'linkCommand':

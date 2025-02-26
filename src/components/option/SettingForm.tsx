@@ -6,7 +6,7 @@ import {
   Terminal,
   FolderPlus,
   Search,
-  Rocket,
+  MessageSquareMore,
   SquareTerminal,
   Eye,
   BookOpen,
@@ -637,7 +637,7 @@ export function SettingForm({ className }: { className?: string }) {
       >
         <section id="startupMethod" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <Rocket size={22} className="mr-1.5 stroke-gray-600" />
+            <MessageSquareMore size={22} className="mr-1.5 stroke-gray-600" />
             {t('startupMethod')}
           </h3>
           <p className="text-base">{t('startupMethod_desc')}</p>
@@ -666,21 +666,21 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {getValues('startupMethod.method') ===
             STARTUP_METHOD.LEFT_CLICK_HOLD && (
-              <InputField
-                control={form.control}
-                name="startupMethod.leftClickHoldParam"
-                formLabel="長押し時間(ms)"
-                inputProps={{
-                  type: 'number',
-                  min: 50,
-                  max: 500,
-                  step: 10,
-                  ...register('startupMethod.leftClickHoldParam', {
-                    valueAsNumber: true,
-                  }),
-                }}
-              />
-            )}
+            <InputField
+              control={form.control}
+              name="startupMethod.leftClickHoldParam"
+              formLabel="長押し時間(ms)"
+              inputProps={{
+                type: 'number',
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register('startupMethod.leftClickHoldParam', {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
           <SelectField
             control={form.control}
             name="popupPlacement"
@@ -789,9 +789,9 @@ export function SettingForm({ className }: { className?: string }) {
                     droppable={isDroppable(field, activeNode)}
                     className={cn(
                       isFolder(activeNode?.content) &&
-                      isCommand(field.content) &&
-                      field.content.parentFolderId != null &&
-                      'opacity-50 bg-gray-100',
+                        isCommand(field.content) &&
+                        field.content.parentFolderId != null &&
+                        'opacity-50 bg-gray-100',
                     )}
                   >
                     <div className="h-14 pr-2 pl-0 flex-1 flex items-center overflow-hidden">
@@ -897,21 +897,21 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {linkCommandMethod ===
             LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
-              <InputField
-                control={form.control}
-                name="linkCommand.startupMethod.leftClickHoldParam"
-                formLabel={t('linkCommandStartupMethod_leftClickHoldParam')}
-                inputProps={{
-                  type: 'number',
-                  min: 50,
-                  max: 500,
-                  step: 10,
-                  ...register('linkCommand.startupMethod.leftClickHoldParam', {
-                    valueAsNumber: true,
-                  }),
-                }}
-              />
-            )}
+            <InputField
+              control={form.control}
+              name="linkCommand.startupMethod.leftClickHoldParam"
+              formLabel={t('linkCommandStartupMethod_leftClickHoldParam')}
+              inputProps={{
+                type: 'number',
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register('linkCommand.startupMethod.leftClickHoldParam', {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
           <SwitchField
             control={form.control}
             name="linkCommand.showIndicator"

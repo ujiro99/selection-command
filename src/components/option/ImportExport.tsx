@@ -7,6 +7,7 @@ import { Settings, migrate } from '@/services/settings'
 import { isBase64, isUrl } from '@/lib/utils'
 import { APP_ID } from '@/const'
 import { t } from '@/services/i18n'
+import { Download, Upload, Undo2 } from 'lucide-react'
 
 import css from './Option.module.css'
 
@@ -82,7 +83,7 @@ export function ImportExport() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ;(async () => {
+      ; (async () => {
         const data = await migrate(importJson)
         await Settings.set(data)
         location.reload()
@@ -104,12 +105,15 @@ export function ImportExport() {
           className={css.menuButton}
           type="button"
         >
+          <Download size={18} className="mr-2 stroke-gray-600" />
           {t('Option_Import')}
         </button>
         <button onClick={handleExport} className={css.menuButton} type="button">
+          <Upload size={18} className="mr-2 stroke-gray-600" />
           {t('Option_Export')}
         </button>
         <button onClick={handleReset} className={css.menuButton} type="button">
+          <Undo2 size={18} className="mr-2 stroke-gray-600" />
           {t('Option_Reset')}
         </button>
       </div>

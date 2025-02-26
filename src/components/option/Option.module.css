@@ -61,18 +61,22 @@
 }
 
 .menuButton {
-  @apply font-mono;
+  @apply font-mono flex items-center;
   border: none;
   background: none;
   font-size: 0.9rem;
   padding: 6px 8px;
   border-radius: 4px;
   color: #444;
-  transition: background-color ease-out 0.2s;
+  transition:
+    background-color,
+    ease-out 0.2s,
+    scale ease-out 0.2s;
   cursor: pointer;
 
   &:hover {
     @apply bg-gray-200;
+    @apply scale-[110%];
   }
 }
 
