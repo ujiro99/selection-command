@@ -17,4 +17,5 @@
 
 .button {
   composes: menuButton from './Option.module.css';
+  @apply flex items-center;
 }

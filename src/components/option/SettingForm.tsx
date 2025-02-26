@@ -2,7 +2,16 @@ import { useState, useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
-import { Terminal, FolderPlus, Search } from 'lucide-react'
+import {
+  Terminal,
+  FolderPlus,
+  Search,
+  Rocket,
+  SquareTerminal,
+  Eye,
+  BookOpen,
+  Paintbrush,
+} from 'lucide-react'
 
 import {
   DndContext,
@@ -621,10 +630,16 @@ export function SettingForm({ className }: { className?: string }) {
 
       <form
         id="InputForm"
-        className={cn('space-y-10 w-[600px] mx-auto pb-20', className)}
+        className={cn(
+          'space-y-10 w-[600px] mx-auto pb-20 text-gray-800',
+          className,
+        )}
       >
         <section id="startupMethod" className="space-y-3">
-          <h3 className="text-xl font-semibold">{t('startupMethod')}</h3>
+          <h3 className="text-xl font-semibold flex items-center">
+            <Rocket size={22} className="mr-1.5 stroke-gray-600" />
+            {t('startupMethod')}
+          </h3>
           <p className="text-base">{t('startupMethod_desc')}</p>
           <SelectField
             control={form.control}
@@ -687,7 +702,10 @@ export function SettingForm({ className }: { className?: string }) {
         </section>
         <hr />
         <section id="commands" className="space-y-3">
-          <h3 className="text-xl font-semibold">コマンド</h3>
+          <h3 className="text-xl font-semibold flex items-center">
+            <SquareTerminal size={22} className="mr-1.5 stroke-gray-600" />
+            {t('commands')}
+          </h3>
           <p className="text-base">{t('commands_desc')}</p>
           <div className="relative h-10 flex items-end">
             <span className="text-sm bg-gray-100 px-2 py-0.5 rounded font-mono tracking-tight">
@@ -813,7 +831,10 @@ export function SettingForm({ className }: { className?: string }) {
         </section>
         <hr />
         <section id="linkCommand" className="space-y-3">
-          <h3 className="text-xl font-semibold">{t('linkCommand')}</h3>
+          <h3 className="text-xl font-semibold flex items-center">
+            <Eye size={22} className="mr-1.5 stroke-gray-600" />
+            {t('linkCommand')}
+          </h3>
           <p className="text-base">{t('linkCommand_desc')}</p>
           <SelectField
             control={form.control}
@@ -899,14 +920,21 @@ export function SettingForm({ className }: { className?: string }) {
           />
         </section>
         <hr />
+
         <section id="pageRules" className="space-y-3">
-          <h3 className="text-xl font-semibold">{t('pageRules')}</h3>
+          <h3 className="text-xl font-semibold flex items-center">
+            <BookOpen size={22} className="mr-1.5 stroke-gray-600" />
+            {t('pageRules')}
+          </h3>
           <p className="text-base">{t('pageRules_desc')}</p>
           <PageRuleList control={form.control} />
         </section>
         <hr />
         <section id="userStyles" className="space-y-3">
-          <h3 className="text-xl font-semibold">{t('userStyles')}</h3>
+          <h3 className="text-xl font-semibold flex items-center">
+            <Paintbrush size={22} className="mr-1.5 stroke-gray-600" />
+            {t('userStyles')}
+          </h3>
           <p className="text-base">{t('userStyles_desc')}</p>
           <UserStyleList control={form.control} />
         </section>
