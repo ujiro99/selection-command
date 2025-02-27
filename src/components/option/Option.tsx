@@ -70,7 +70,7 @@ export function Option() {
         <aside className="pl-10 pt-24 font-mono min-w-70">
           <div
             ref={setPreviewElm}
-            style={{ marginBottom: Math.max(popupHeight, 30) }}
+            style={{ marginBottom: Math.max(popupHeight + 5, 30) }}
           >
             <Popup
               positionElm={previewElm}
@@ -79,7 +79,7 @@ export function Option() {
               ref={setPopupElm}
             />
           </div>
-          <div className="mt-20">
+          <div className="pt-4">
             <HubBanner />
           </div>
         </aside>
