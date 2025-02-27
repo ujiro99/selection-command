@@ -61,16 +61,17 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 import { z } from 'zod'
 import {
+  OPEN_MODE,
   STYLE,
   STARTUP_METHOD,
   POPUP_PLACEMENT,
   KEYBOARD,
   COMMAND_MAX,
+  ROOT_FOLDER,
   DRAG_OPEN_MODE,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
-  OPEN_MODE,
-  ROOT_FOLDER,
+  STYLE_VARIABLE,
 } from '@/const'
 import type {
   SettingsType,
@@ -430,6 +431,13 @@ export function SettingForm({ className }: { className?: string }) {
       const val = getValues('startupMethod.keyboardParam')
       if (isEmpty(val)) {
         setValue('startupMethod.keyboardParam', KEYBOARD.SHIFT)
+      }
+      const userStyles = getValues('userStyles')
+      if (userStyles.every((s) => s.name !== STYLE_VARIABLE.POPUP_DELAY)) {
+        setValue('userStyles', [
+          ...userStyles,
+          { name: STYLE_VARIABLE.POPUP_DELAY, value: 0 },
+        ])
       }
     } else if (startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD) {
       const val = getValues('startupMethod.leftClickHoldParam')

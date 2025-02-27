@@ -86,10 +86,10 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
         const popupDelay = settings.userStyles?.find(
           (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
         )
-        const duration = popupDuration?.value
-          ? parseInt(popupDuration.value)
-          : 150
-        const delay = popupDelay?.value ? parseInt(popupDelay.value) : 250
+        const duration =
+          popupDuration?.value != null ? parseInt(popupDuration.value) : 150
+        const delay =
+          popupDelay?.value != null ? parseInt(popupDelay.value) : 250
         setInTransition(true)
         transitionTimer = setTimeout(() => {
           setInTransition(false)
