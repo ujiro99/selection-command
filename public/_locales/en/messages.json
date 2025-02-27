@@ -35,6 +35,15 @@
   "commandHub_description": {
     "message": "You can now share commands✨"
   },
+  "Option_labelCancel": {
+    "message": "Cancel"
+  },
+  "Option_labelUpdate": {
+    "message": "Update"
+  },
+  "Option_labelSave": {
+    "message": "Create"
+  },
   "Option_Enable": {
     "message": "Enabled"
   },
@@ -59,11 +68,23 @@
   "Option_Add": {
     "message": "Add"
   },
-  "Option_AddCommand": {
-    "message": "Create Command"
+  "Option_Command": {
+    "message": "Command"
+  },
+  "Option_Command_tooltip": {
+    "message": "Create a command."
   },
   "Option_Find": {
     "message": "Find Command"
+  },
+  "Option_Command_edit": {
+    "message": "Edit Command"
+  },
+  "Option_Command_input": {
+    "message": "Please enter the command information."
+  },
+  "Option_Command_rootFolder": {
+    "message": "(Not in folder)"
   },
   "Option_startupMethod": {
     "message": "Startup Method"
@@ -88,6 +109,9 @@
   },
   "Option_startupMethod_param_keyboard": {
     "message": "Key to toggle display"
+  },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "Select a key"
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
@@ -275,8 +299,17 @@
   "Option_folders": {
     "message": "Folders"
   },
+  "Option_folders_tooltip": {
+    "message": "Create a folder."
+  },
   "Option_folders_desc": {
     "message": "Commands can be classified into folders."
+  },
+  "Option_folders_edit": {
+    "message": "Edit Folder"
+  },
+  "Option_folders_input": {
+    "message": "Please enter the folder information."
   },
   "Option_onlyIcon": {
     "message": "Display icon only"
@@ -286,6 +319,9 @@
   },
   "Option_pageRules": {
     "message": "Page Rules"
+  },
+  "Option_pageRules_tooltip": {
+    "message": "Create a page rule."
   },
   "Option_pageRules_desc": {
     "message": "Site-specific settings."
@@ -307,6 +343,9 @@
   },
   "Option_userStyles": {
     "message": "User Styles"
+  },
+  "Option_userStyles_tooltip": {
+    "message": "Create a User Style."
   },
   "Option_userStyles_desc": {
     "message": "You can customize the display of pop-up menu."

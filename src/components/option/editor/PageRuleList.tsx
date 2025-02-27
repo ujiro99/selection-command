@@ -94,11 +94,11 @@ export const PageRuleList = ({ control }: PageRuleListProps) => {
               ref={addButtonRef}
             >
               <BookOpen />
-              ページルール
+              {t('pageRules')}
             </Button>
             <Tooltip
               positionElm={addButtonRef.current}
-              text={'ページルールを作成します'}
+              text={t('pageRules_tooltip')}
             />
           </div>
           <FormControl>
@@ -250,7 +250,7 @@ export const PageRuleDialog = ({
           <DialogFooter>
             <DialogClose asChild>
               <Button size="lg" type="button" variant="secondary">
-                やめる
+                {t('labelCancel')}
               </Button>
             </DialogClose>
             <Button
@@ -263,7 +263,7 @@ export const PageRuleDialog = ({
               })}
             >
               <Save />
-              {isUpdate ? '更新する' : '保存する'}
+              {isUpdate ? t('labelUpdate') : t('labelSave')}
             </Button>
           </DialogFooter>
         </DialogContent>

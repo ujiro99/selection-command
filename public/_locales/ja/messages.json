@@ -35,6 +35,15 @@
   "commandHub_description": {
     "message": "コマンドを共有できるようになりました✨"
   },
+  "Option_labelCancel": {
+    "message": "やめる"
+  },
+  "Option_labelUpdate": {
+    "message": "更新する"
+  },
+  "Option_labelSave": {
+    "message": "保存する"
+  },
   "Option_Enable": {
     "message": "有効"
   },
@@ -59,11 +68,23 @@
   "Option_Add": {
     "message": "追加"
   },
-  "Option_AddCommand": {
-    "message": "コマンド作成"
+  "Option_Command": {
+    "message": "コマンド"
+  },
+  "Option_Command_tooltip": {
+    "message": "コマンドを作成します"
   },
   "Option_Find": {
     "message": "コマンドを探す"
+  },
+  "Option_Command_edit": {
+    "message": "コマンド編集"
+  },
+  "Option_Command_input": {
+    "message": "コマンドの情報を入力してください。"
+  },
+  "Option_Command_rootFolder": {
+    "message": "(フォルダにいれない)"
   },
   "Option_startupMethod": {
     "message": "起動方法"
@@ -88,6 +109,9 @@
   },
   "Option_startupMethod_param_keyboard": {
     "message": "表示を切り替えるキー"
+  },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "キーを選択"
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
@@ -275,8 +299,17 @@
   "Option_folders": {
     "message": "フォルダ"
   },
+  "Option_folders_tooltip": {
+    "message": "フォルダを作成します"
+  },
   "Option_folders_desc": {
     "message": "コマンドをフォルダへ分類することができます。"
+  },
+  "Option_folders_edit": {
+    "message": "フォルダ編集"
+  },
+  "Option_folders_input": {
+    "message": "フォルダの情報を入力してください。"
   },
   "Option_onlyIcon": {
     "message": "アイコンのみ表示"
@@ -290,8 +323,11 @@
   "Option_pageRules_desc": {
     "message": "サイト毎の設定値です。"
   },
+  "Option_pageRules_tooltip": {
+    "message": "ページルールを作成します。"
+  },
   "Option_pageRules_add": {
-    "message": "ページルールの作成"
+    "message": "ページルール編集"
   },
   "Option_pageRules_add_desc": {
     "message": "ページルールを入力してください。"
@@ -308,11 +344,14 @@
   "Option_userStyles": {
     "message": "ユーザースタイル"
   },
+  "Option_userStyles_tooltip": {
+    "message": "ユーザースタイルを作成します。"
+  },
   "Option_userStyles_desc": {
     "message": "ポップアップの表示をカスタマイズできます。"
   },
   "Option_userStyles_add": {
-    "message": "ユーザースタイルの編集"
+    "message": "ユーザースタイル編集"
   },
   "Option_userStyles_add_desc": {
     "message": "ユーザースタイルを入力してください。"

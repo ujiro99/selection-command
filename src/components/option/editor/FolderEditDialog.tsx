@@ -18,6 +18,8 @@ import { Button } from '@/components/ui/button'
 import { InputField } from '@/components/option/field/InputField'
 import { SwitchField } from '@/components/option/field/SwitchField'
 import { isEmpty } from '@/lib/utils'
+import { t as _t } from '@/services/i18n'
+const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { CommandFolder } from '@/types'
 
 export const folderSchema = z.object({
@@ -68,19 +70,16 @@ export const FolderEditDialog = ({
           <DialogHeader>
             <DialogTitle>
               <FolderPlus />
-              フォルダの作成
+              {t('folders_edit')}
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription>
-            フォルダの情報を入力してください。
-          </DialogDescription>
-
+          <DialogDescription>{t('folders_input')}</DialogDescription>
           <Form {...form}>
             <form id="InputForm" className="space-y-4">
               <InputField
                 control={form.control}
                 name="title"
-                formLabel="タイトル"
+                formLabel={t('title')}
                 inputProps={{
                   type: 'string',
                   ...register('title', {}),
@@ -89,7 +88,7 @@ export const FolderEditDialog = ({
               <InputField
                 control={form.control}
                 name="iconUrl"
-                formLabel="アイコンURL"
+                formLabel={t('iconUrl')}
                 inputProps={{
                   type: 'iconUrl',
                   ...register('iconUrl', {}),
@@ -98,15 +97,15 @@ export const FolderEditDialog = ({
               <SwitchField
                 control={form.control}
                 name="onlyIcon"
-                formLabel="アイコンのみ表示"
-                description="※横並びのときのみ有効です。"
+                formLabel={t('onlyIcon')}
+                description={t('onlyIcon_desc')}
               />
             </form>
           </Form>
           <DialogFooter>
             <DialogClose asChild>
               <Button size="lg" type="button" variant="secondary">
-                やめる
+                {t('labelCancel')}
               </Button>
             </DialogClose>
             <Button
@@ -120,7 +119,7 @@ export const FolderEditDialog = ({
               })}
             >
               <Save />
-              {isUpdate ? '更新する' : '保存する'}
+              {isUpdate ? t('labelUpdate') : t('labelSave')}
             </Button>
           </DialogFooter>
         </DialogContent>

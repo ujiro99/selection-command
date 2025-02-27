@@ -651,7 +651,7 @@ export function SettingForm({ className }: { className?: string }) {
           <SelectField
             control={form.control}
             name="startupMethod.method"
-            formLabel="方法"
+            formLabel={t('startupMethod_method')}
             options={e2a(STARTUP_METHOD).map((method) => ({
               name: t(`startupMethod_${method}`),
               value: method,
@@ -661,8 +661,8 @@ export function SettingForm({ className }: { className?: string }) {
             <SelectField
               control={form.control}
               name="startupMethod.keyboardParam"
-              formLabel="表示を切り替えるキー"
-              placeholder="キーを選択"
+              formLabel={t('startupMethod_param_keyboard')}
+              placeholder={t('startupMethod_keyboard_placeholder')}
               options={e2a(KEYBOARD)
                 .filter((k) => k != KEYBOARD.META)
                 .map((key) => ({
@@ -676,7 +676,7 @@ export function SettingForm({ className }: { className?: string }) {
             <InputField
               control={form.control}
               name="startupMethod.leftClickHoldParam"
-              formLabel="長押し時間(ms)"
+              formLabel={t('startupMethod_param_leftClickHold')}
               inputProps={{
                 type: 'number',
                 min: 50,
@@ -691,7 +691,7 @@ export function SettingForm({ className }: { className?: string }) {
           <SelectField
             control={form.control}
             name="popupPlacement"
-            formLabel="メニュー表示位置"
+            formLabel={t('popupPlacement')}
             options={e2a(POPUP_PLACEMENT).map((placement) => ({
               name: t(`popupPlacement_${hyphen2Underscore(placement)}`),
               value: placement,
@@ -700,7 +700,7 @@ export function SettingForm({ className }: { className?: string }) {
           <SelectField
             control={form.control}
             name="style"
-            formLabel="メニュースタイル"
+            formLabel={t('style')}
             options={e2a(STYLE).map((style) => ({
               name: t(`style_${style}`),
               value: style,
@@ -727,11 +727,11 @@ export function SettingForm({ className }: { className?: string }) {
               onClick={() => setFolderDialogOpen(true)}
             >
               <FolderPlus />
-              フォルダ
+              {t('folders')}
             </Button>
             <Tooltip
               positionElm={addFolderButtonRef.current}
-              text={'フォルダを作成します'}
+              text={t('folders_tooltip')}
             />
             <Button
               type="button"
@@ -741,11 +741,11 @@ export function SettingForm({ className }: { className?: string }) {
               onClick={() => setCommandDialogOpen(true)}
             >
               <Terminal className="stroke-gray-600 group-hover:stroke-gray-700" />
-              コマンド
+              {t('Command')}
             </Button>
             <Tooltip
               positionElm={addCommandButtonRef.current}
-              text={'コマンドを作成します'}
+              text={t('Command_tooltip')}
             />
             <Button
               variant="outline"

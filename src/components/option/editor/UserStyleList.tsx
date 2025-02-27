@@ -177,11 +177,11 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
               disabled={selectedAll}
             >
               <Paintbrush />
-              ユーザースタイル
+              {t('userStyles')}
             </Button>
             <Tooltip
               positionElm={addButtonRef.current}
-              text={'ページルールを作成します'}
+              text={t('userStyles_tooltip')}
             />
           </div>
           <FormControl>
@@ -345,7 +345,7 @@ export const UserStyleDialog = ({
           <DialogFooter>
             <DialogClose asChild>
               <Button size="lg" type="button" variant="secondary">
-                やめる
+                {t('labelCancel')}
               </Button>
             </DialogClose>
             <Button
@@ -357,7 +357,7 @@ export const UserStyleDialog = ({
               })}
             >
               <Save />
-              保存する
+              {isUpdate ? t('labelUpdate') : t('labelSave')}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Plus, Trash2, Save, Terminal } from 'lucide-react'
+import { Plus, Trash2, Save, SquareTerminal } from 'lucide-react'
 
 import {
   Dialog,
@@ -139,7 +139,7 @@ export const commandSchema = z.discriminatedUnion('openMode', [
 
 const EmptyFolder = {
   id: ROOT_FOLDER,
-  title: 'フォルダへ入れない',
+  title: t('Command_rootFolder'),
 } as CommandFolder
 
 const defaultValue = (openMode: OPEN_MODE) => {
@@ -287,13 +287,11 @@ export const CommandEditDialog = ({
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              <Terminal />
-              コマンドの作成
+              <SquareTerminal />
+              {t('Command_edit')}
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription>
-            コマンドの情報を入力してください。
-          </DialogDescription>
+          <DialogDescription>{t('Command_input')}</DialogDescription>
           <Form {...form}>
             <form id="CommandEditForm" className="space-y-2">
               <FormField
@@ -314,7 +312,7 @@ export const CommandEditDialog = ({
               <InputField
                 control={form.control}
                 name="title"
-                formLabel="タイトル"
+                formLabel={t('title')}
                 inputProps={{
                   type: 'string',
                   ...register('title', {}),
@@ -365,7 +363,7 @@ export const CommandEditDialog = ({
               <InputField
                 control={form.control}
                 name="iconUrl"
-                formLabel="アイコンURL"
+                formLabel={t('iconUrl')}
                 inputProps={{
                   type: 'iconUrl',
                   ...register('iconUrl', {}),
@@ -498,7 +496,7 @@ export const CommandEditDialog = ({
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary" size="lg">
-                やめる
+                {t('labelCancel')}
               </Button>
             </DialogClose>
             <Button
@@ -526,7 +524,7 @@ export const CommandEditDialog = ({
               )}
             >
               <Save />
-              {isUpdate ? '更新する' : '保存する'}
+              {isUpdate ? t('labelUpdate') : t('labelSave')}
             </Button>
           </DialogFooter>
         </DialogContent>
