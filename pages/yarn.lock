@@ -85,10 +85,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.8.tgz#21a907684723bbbaa5f0974cf7730bd797eb8e62"
   integrity sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==
 
-"@google-analytics/data@^4.12.0":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@google-analytics/data/-/data-4.12.0.tgz#ac5b817f12e63643b991b056288b583ebe4188b5"
-  integrity sha512-2s14EPCkmIANj5Jm7+VWrg4Nqkuq6kKo6UH+0s+UGd4yCvKr8BdLBW0llws04wWQOSqzLL1nv0tu179YxjaKFQ==
+"@google-analytics/data@^4.12.1":
+  version "4.12.1"
+  resolved "https://registry.yarnpkg.com/@google-analytics/data/-/data-4.12.1.tgz#f1c1108b7b0737970ed4021ecc9ca408ce339629"
+  integrity sha512-LzyrkVrnVUTYTmdmHayOZoroc+YA9GHEUrkSSuiXSmMSNbesuWy/MoTXugC1V7+8PCGqb2eQ1UtVVv/2BCAQYA==
   dependencies:
     google-gax "^4.0.3"
 
