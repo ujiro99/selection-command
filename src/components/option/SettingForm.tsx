@@ -348,7 +348,6 @@ export function SettingForm({ className }: { className?: string }) {
   }
 
   const updateSettings = async (settings: SettingsFormType) => {
-    if (isSaving) return
     try {
       setIsSaving(true)
       const current = await Settings.get(true)
