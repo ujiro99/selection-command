@@ -246,6 +246,9 @@ export const CommandEditDialog = ({
 
   useEffect(() => {
     if (command != null) {
+      if (isEmpty(command.parentFolderId)) {
+        command.parentFolderId = ROOT_FOLDER
+      }
       reset((command as any) ?? defaultValue(OPEN_MODE.POPUP))
     } else {
       setTimeout(() => {
