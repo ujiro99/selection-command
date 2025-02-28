@@ -531,6 +531,10 @@ export function SettingForm({ className }: { className?: string }) {
       const idx = commandArray.fields.findIndex((f) => f.id === data.id)
       if (idx >= 0) {
         commandArray.update(idx, data as CommandSchemaType)
+        // Move to the end of the list if the command is moved to the folder.
+        if (data.parentFolderId != null) {
+          commandArray.move(idx, commandArray.fields.length - 1)
+        }
       } else {
         commandArray.append(data as CommandSchemaType)
       }
