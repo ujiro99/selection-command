@@ -432,17 +432,22 @@ export function SettingForm({ className }: { className?: string }) {
       if (isEmpty(val)) {
         setValue('startupMethod.keyboardParam', KEYBOARD.SHIFT)
       }
+    } else if (startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD) {
+      const val = getValues('startupMethod.leftClickHoldParam')
+      if (val == null || isNaN(val)) {
+        setValue('startupMethod.leftClickHoldParam', 200)
+      }
+    }
+    if (
+      startupMethod === STARTUP_METHOD.KEYBOARD ||
+      startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD
+    ) {
       const userStyles = getValues('userStyles')
       if (userStyles.every((s) => s.name !== STYLE_VARIABLE.POPUP_DELAY)) {
         setValue('userStyles', [
           ...userStyles,
           { name: STYLE_VARIABLE.POPUP_DELAY, value: 0 },
         ])
-      }
-    } else if (startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD) {
-      const val = getValues('startupMethod.leftClickHoldParam')
-      if (val == null || isNaN(val)) {
-        setValue('startupMethod.leftClickHoldParam', 200)
       }
     }
   }, [startupMethod])
