@@ -227,7 +227,7 @@ export const CommandEditDialog = ({
     mode: 'onChange',
     defaultValues: defaultValue(OPEN_MODE.POPUP),
   })
-  const { register, reset, getValues, setValue, watch } = form
+  const { register, reset, getValues, setValue, clearErrors, watch } = form
 
   const searchUrl = watch('searchUrl')
   const isUpdate = command != null
@@ -279,6 +279,7 @@ export const CommandEditDialog = ({
       const currentSearchUrl = getValues('searchUrl')
       if (currentSearchUrl != searchUrl) return
       setValue('iconUrl', iconUrl)
+      clearErrors('iconUrl')
     }, 500)
 
     return () => clearTimeout(fetchIconTO.current)
