@@ -728,7 +728,7 @@ export function SettingForm({ className }: { className?: string }) {
               type="button"
               ref={addFolderButtonRef}
               variant="outline"
-              className="absolute left-[250px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute left-[248px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setFolderDialogOpen(true)}
             >
               <FolderPlus />
@@ -742,7 +742,7 @@ export function SettingForm({ className }: { className?: string }) {
               type="button"
               ref={addCommandButtonRef}
               variant="outline"
-              className="absolute left-[358px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute left-[356px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setCommandDialogOpen(true)}
             >
               <Terminal className="stroke-gray-600 group-hover:stroke-gray-700" />
@@ -754,7 +754,7 @@ export function SettingForm({ className }: { className?: string }) {
             />
             <Button
               variant="outline"
-              className="absolute right-1 px-2 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
+              className="absolute left-[100%] translate-x-[-105%] px-2 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
               asChild
             >
               <a
