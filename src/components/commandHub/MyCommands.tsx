@@ -13,7 +13,9 @@ export const MyCommands = (): JSX.Element => {
   const list2Ref = useRef<HTMLUListElement | null>(null)
   const { settings, iconUrls } = useSetting()
   const commands = settings.commands
-    .filter((c) => !isEmpty(c.searchUrl) && !urls.includes(c.searchUrl))
+    .filter(
+      (c) => !isEmpty(c.searchUrl) && !urls.includes(c.searchUrl as string),
+    )
     .map((c) => ({ ...c, iconDataUrl: c.iconUrl, iconUrl: iconUrls[c.id] }))
   const loaded = urls.length > 0
   const enableMarquee = commands.length > 3

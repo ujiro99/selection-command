@@ -1,11 +1,16 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { sleep, toUrl } from '@/lib/utils'
+import { sleep, toUrl, isValidString } from '@/lib/utils'
 import { ExecState } from './index'
 import type { ExecProps } from './index'
 
 export const Api = {
   async execute({ command, selectionText, changeState }: ExecProps) {
     changeState(ExecState.EXECUTING)
+
+    if (!isValidString(command.searchUrl)) {
+      console.error('searchUrl is not valid.')
+      return
+    }
 
     Ipc.send(BgCommand.execApi, {
       url: toUrl(command.searchUrl, selectionText),

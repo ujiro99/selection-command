@@ -85,6 +85,13 @@ export function isEmpty(str: string | null | undefined): boolean {
 }
 
 /**
+ * Check if the value is a string.
+ */
+export function isValidString(val: unknown): val is string {
+  return typeof val === 'string' && val.length > 0
+}
+
+/**
  * Check if the command is made for the popup menu.
  * @param {Command} command The command to check.
  * @returns {boolean} True if the command is made for the popup menu.

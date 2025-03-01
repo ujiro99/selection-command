@@ -488,7 +488,7 @@ export function SettingForm({ className }: { className?: string }) {
   }, [linkCommandMethod])
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
+    const subscription = watch((value) => {
       setSettingData(value as SettingsFormType)
     })
     return () => subscription.unsubscribe()
