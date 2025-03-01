@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import {
   FormControl,
@@ -8,7 +9,8 @@ import {
   FormDescription,
 } from '@/components/ui/form'
 
-import { isEmpty } from '@/lib/utils'
+import { fetchIconUrl } from '@/services/chrome'
+import { isEmpty, isUrl } from '@/lib/utils'
 
 type InputFieldType = {
   control: any
@@ -16,6 +18,8 @@ type InputFieldType = {
   formLabel: string
   inputProps: React.ComponentProps<typeof Input>
   description?: string
+  iconUrlSrc?: string
+  onAutoFill?: (value: string) => void
 }
 
 export const InputField = ({
@@ -24,8 +28,11 @@ export const InputField = ({
   formLabel,
   inputProps,
   description,
+  iconUrlSrc,
+  onAutoFill,
 }: InputFieldType) => {
   const type = inputProps.type
+
   return (
     <FormField
       control={control}
@@ -36,16 +43,26 @@ export const InputField = ({
             <FormLabel>{formLabel}</FormLabel>
             {description && <FormDescription>{description}</FormDescription>}
           </div>
+
           <div className="w-4/6 relative">
             {type === 'iconUrl' && !isEmpty(field.value) && (
               <img
                 className="absolute top-[0.6em] left-[-3em] w-7 h-7 rounded"
                 src={field.value}
-                alt="folder icon"
+                alt={`favicon of ${iconUrlSrc}`}
               />
             )}
             <FormControl>
-              <Input {...field} {...inputProps} />
+              {type === 'iconUrl' ? (
+                <IconUrlInput
+                  field={field}
+                  inputProps={inputProps}
+                  iconUrlSrc={iconUrlSrc}
+                  onAutoFill={onAutoFill}
+                />
+              ) : (
+                <Input {...field} {...inputProps} />
+              )}
             </FormControl>
             <FormMessage />
           </div>
@@ -54,3 +71,56 @@ export const InputField = ({
     />
   )
 }
+
+type IconUrlInputType = {
+  field: any
+  inputProps: React.ComponentProps<typeof Input>
+  iconUrlSrc?: string
+  onAutoFill?: (value: string) => void
+}
+
+const IconUrlInput = ({
+  field,
+  inputProps,
+  iconUrlSrc,
+  onAutoFill,
+}: IconUrlInputType) => {
+  const fetchIconTO = useRef(0)
+  const srcRef = useRef('')
+  const [initialized, setInitialized] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => setInitialized(true), 100)
+  }, [])
+
+  useEffect(() => {
+    if (!initialized) return
+    if (isEmpty(iconUrlSrc) || !isUrl(iconUrlSrc)) return
+    srcRef.current = iconUrlSrc!
+
+    // debounce
+    clearTimeout(fetchIconTO.current)
+    fetchIconTO.current = window.setTimeout(async () => {
+      if (isEmpty(iconUrlSrc)) return
+      try {
+        setIsLoading(true)
+        const iconUrl = await fetchIconUrl(iconUrlSrc!)
+        if (srcRef.current != iconUrlSrc) return
+        if (onAutoFill) onAutoFill(iconUrl)
+      } finally {
+        fetchIconTO.current = 0
+        srcRef.current = ''
+        setIsLoading(false)
+      }
+    }, 500)
+
+    return () => clearTimeout(fetchIconTO.current)
+  }, [iconUrlSrc])
+
+  return isLoading ? <Loading /> : <Input {...field} {...inputProps} />
+}
+
+const Loading = () => (
+  <div className="cursor-wait w-full h-10 border border-input shadow-sm bg-gray-100 animate-pulse rounded-md" />
+)

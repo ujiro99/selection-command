@@ -72,7 +72,8 @@ export function isBase64(str: string): boolean {
  * @returns {boolean} True if the string is a URL.
  * @see https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
  */
-export function isUrl(str: string): boolean {
+export function isUrl(str: string | undefined): boolean {
+  if (!str) return false
   return /^https?:\/\//.test(str)
 }
 

@@ -36,10 +36,9 @@ import {
   COPY_OPTION,
   ROOT_FOLDER,
 } from '@/const'
-import { isEmpty, isUrl, e2a } from '@/lib/utils'
+import { isEmpty, e2a } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { fetchIconUrl } from '@/services/chrome'
 import type { SelectionCommand, CommandFolder } from '@/types'
 
 const SearchOpenMode = [
@@ -229,14 +228,13 @@ export const CommandEditDialog = ({
   command,
 }: CommandEditDialogProps) => {
   const preOpenModeRef = useRef(command?.openMode ?? OPEN_MODE.POPUP)
-  const fetchIconTO = useRef(0)
 
   const form = useForm<z.infer<typeof commandSchema>>({
     resolver: zodResolver(commandSchema),
     mode: 'onChange',
     defaultValues: defaultValue(OPEN_MODE.POPUP),
   })
-  const { register, reset, getValues, setValue, clearErrors, watch } = form
+  const { register, reset, watch, setValue, clearErrors } = form
 
   const searchUrl = watch('searchUrl')
   const isUpdate = command != null
@@ -252,6 +250,12 @@ export const CommandEditDialog = ({
     name: 'openMode',
     defaultValue: OPEN_MODE.POPUP,
   })
+
+  const autofillIconUrl = (url: string) => {
+    if (isEmpty(url)) return
+    setValue('iconUrl', url)
+    clearErrors('iconUrl')
+  }
 
   useEffect(() => {
     if (command != null) {
@@ -277,22 +281,6 @@ export const CommandEditDialog = ({
     reset(defaultValue(openMode))
     preOpenModeRef.current = openMode
   }, [openMode])
-
-  useEffect(() => {
-    if (isEmpty(searchUrl) || !isUrl(searchUrl)) return
-
-    // debounce
-    clearTimeout(fetchIconTO.current)
-    fetchIconTO.current = window.setTimeout(async () => {
-      const iconUrl = await fetchIconUrl(searchUrl)
-      const currentSearchUrl = getValues('searchUrl')
-      if (currentSearchUrl != searchUrl) return
-      setValue('iconUrl', iconUrl)
-      clearErrors('iconUrl')
-    }, 500)
-
-    return () => clearTimeout(fetchIconTO.current)
-  }, [searchUrl])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -381,6 +369,8 @@ export const CommandEditDialog = ({
                   type: 'iconUrl',
                   ...register('iconUrl', {}),
                 }}
+                iconUrlSrc={searchUrl}
+                onAutoFill={autofillIconUrl}
               />
 
               <SelectField
