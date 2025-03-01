@@ -323,6 +323,15 @@
   "Option_folders_input": {
     "message": "フォルダの情報を入力してください。"
   },
+  "Option_icon_error": {
+    "message": "正しいURLまたはSVGを入力してください。"
+  },
+  "Option_icon_placeholder": {
+    "message": "URLまたはSVGを入力してください。"
+  },
+  "Option_icon_required": {
+    "message": "アイコンとなるURLまたはSVGが必要です。"
+  },
   "Option_onlyIcon": {
     "message": "アイコンのみ表示"
   },

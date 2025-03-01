@@ -323,6 +323,15 @@
   "Option_folders_input": {
     "message": "Please enter the folder information."
   },
+  "Option_icon_error": {
+    "message": "Please enter a valid URL or SVG."
+  },
+  "Option_icon_placeholder": {
+    "message": "Please enter a URL or SVG."
+  },
+  "Option_icon_required": {
+    "message": "An URL or SVG that will be used as an icon is required."
+  },
   "Option_onlyIcon": {
     "message": "Display icon only"
   },

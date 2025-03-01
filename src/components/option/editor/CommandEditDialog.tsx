@@ -27,6 +27,7 @@ import { Input } from '@/components/ui/input'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { InputField } from '@/components/option/field/InputField'
+import { IconField } from '@/components/option/field/IconField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { TextareaField } from '@/components/option/field/TextareaField'
 import {
@@ -328,6 +329,7 @@ export const CommandEditDialog = ({
                   name: folder.title,
                   value: folder.id,
                   iconUrl: folder.iconUrl,
+                  iconSvg: folder.iconSvg,
                 }))}
               />
 
@@ -377,14 +379,11 @@ export const CommandEditDialog = ({
                 />
               )}
 
-              <InputField
+              <IconField
                 control={form.control}
-                name="iconUrl"
+                nameUrl="iconUrl"
+                nameSvg="iconSvg"
                 formLabel={t('iconUrl')}
-                inputProps={{
-                  type: 'iconUrl',
-                  ...register('iconUrl', {}),
-                }}
                 iconUrlSrc={searchUrl}
                 onAutoFill={autofillIconUrl}
                 description={

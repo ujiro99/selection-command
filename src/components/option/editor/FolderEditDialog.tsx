@@ -16,18 +16,25 @@ import {
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { InputField } from '@/components/option/field/InputField'
+import { IconField } from '@/components/option/field/IconField'
 import { SwitchField } from '@/components/option/field/SwitchField'
 import { isEmpty } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { CommandFolder } from '@/types'
 
-export const folderSchema = z.object({
-  id: z.string(),
-  title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
-  iconUrl: z.string().optional(),
-  onlyIcon: z.boolean().optional(),
-})
+export const folderSchema = z
+  .object({
+    id: z.string(),
+    title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
+    iconUrl: z.string().optional(),
+    iconSvg: z.string().optional(),
+    onlyIcon: z.boolean().optional(),
+  })
+  .refine((data) => !isEmpty(data.iconUrl) || !isEmpty(data.iconSvg), {
+    path: ['iconSvg'],
+    message: t('icon_required'),
+  })
 
 type FolderEditDialog = {
   open: boolean
@@ -85,14 +92,11 @@ export const FolderEditDialog = ({
                   ...register('title', {}),
                 }}
               />
-              <InputField
+              <IconField
                 control={form.control}
-                name="iconUrl"
+                nameUrl="iconUrl"
+                nameSvg="iconSvg"
                 formLabel={t('iconUrl')}
-                inputProps={{
-                  type: 'iconUrl',
-                  ...register('iconUrl', {}),
-                }}
               />
               <SwitchField
                 control={form.control}
@@ -111,12 +115,15 @@ export const FolderEditDialog = ({
             <Button
               size="lg"
               type="button"
-              onClick={form.handleSubmit((data) => {
-                if (isEmpty(data.id)) data.id = crypto.randomUUID()
-                onSubmit(data)
-                onOpenChange(false)
-                reset(DefaultValue)
-              })}
+              onClick={form.handleSubmit(
+                (data) => {
+                  if (isEmpty(data.id)) data.id = crypto.randomUUID()
+                  onSubmit(data)
+                  onOpenChange(false)
+                  reset(DefaultValue)
+                },
+                (err) => console.error(err),
+              )}
             >
               <Save />
               {isUpdate ? t('labelUpdate') : t('labelSave')}

@@ -6,7 +6,6 @@ import {
   FormMessage,
   FormDescription,
 } from '@/components/ui/form'
-
 import {
   Select,
   SelectContent,
@@ -14,11 +13,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { MenuImage } from '@/components/menu/MenuImage'
 
 type SelectOptionType = {
   name: string
   value: string
   iconUrl?: string
+  iconSvg?: string
 }
 
 type SelectFieldType = {
@@ -64,8 +65,9 @@ export const SelectField = ({
                   >
                     {opt.iconUrl != null ? (
                       <span className=" flex items-center gap-1">
-                        <img
+                        <MenuImage
                           src={opt.iconUrl}
+                          svg={opt.iconSvg}
                           alt={opt.name}
                           className="w-5 h-5 mr-1.5"
                         />

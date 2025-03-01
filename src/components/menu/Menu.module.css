@@ -103,3 +103,8 @@
   fill: var(--gray-400);
   transition: fill 250ms;
 }
+
+.menuImage svg {
+  width: 100%;
+  height: 100%;
+}

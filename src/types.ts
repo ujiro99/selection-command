@@ -28,7 +28,6 @@ export type SelectionCommand = {
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
   searchUrl?: string
-  parentFolder?: FolderOption // deprecated from v0.8.2
   parentFolderId?: string
   popupOption?: PopupOption
   copyOption?: CopyOption
@@ -62,16 +61,11 @@ type LinkCommandSettings = {
   startupMethod: LinkCommandStartupMethod
 }
 
-export type FolderOption = {
-  id: string
-  name: string
-  iconUrl: string
-}
-
 export type CommandFolder = {
   id: string
   title: string
   iconUrl?: string
+  iconSvg?: string
   onlyIcon?: boolean
 }
 

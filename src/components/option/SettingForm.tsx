@@ -39,6 +39,7 @@ import { RemoveButton } from '@/components/option/RemoveButton'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { SwitchField } from '@/components/option/field/SwitchField'
+import { MenuImage } from '@/components/menu/MenuImage'
 import {
   CommandEditDialog,
   commandSchema,
@@ -816,8 +817,9 @@ export function SettingForm({ className }: { className?: string }) {
                   >
                     <div className="h-14 pr-2 pl-0 flex-1 flex items-center overflow-hidden">
                       <div className="flex-1 flex items-center overflow-hidden pr-2">
-                        <img
+                        <MenuImage
                           src={field.content.iconUrl}
+                          svg={field.content.iconSvg}
                           alt={field.content.title}
                           className="inline-block w-7 h-7 mr-3"
                         />

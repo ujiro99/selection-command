@@ -78,6 +78,13 @@ export function isUrl(str: string | undefined): boolean {
 }
 
 /**
+ * Check if the string is a valid SVG.
+ */
+export const isValidSVG = (text: string): boolean => {
+  return text.trim().startsWith('<svg') && text.trim().endsWith('</svg>')
+}
+
+/**
  * Check if the string is empty.
  */
 export function isEmpty(str: string | null | undefined): boolean {
