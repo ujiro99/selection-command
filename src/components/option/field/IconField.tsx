@@ -13,6 +13,7 @@ type IconField = {
   nameUrl: string
   nameSvg: string
   formLabel: string
+  placeholder?: string
   description?: string
   iconUrlSrc?: string
   onAutoFill?: (value: string) => void
@@ -24,6 +25,7 @@ export const IconField = ({
   nameSvg,
   formLabel,
   description,
+  placeholder,
   iconUrlSrc,
   onAutoFill,
 }: IconField) => {
@@ -50,6 +52,7 @@ export const IconField = ({
           fieldSvg={fieldSvg}
           iconUrlSrc={iconUrlSrc}
           onAutoFill={onAutoFill}
+          placeholder={placeholder}
         />
         <FormMessage />
         {(errUrl || errSvg) && (
@@ -66,6 +69,7 @@ export const IconField = ({
 type IconUrlInputType = {
   fieldUrl: any
   fieldSvg: any
+  placeholder?: string
   iconUrlSrc?: string
   onAutoFill?: (value: string) => void
 }
@@ -73,6 +77,7 @@ type IconUrlInputType = {
 const IconUrlInput = ({
   fieldUrl,
   fieldSvg,
+  placeholder,
   iconUrlSrc,
   onAutoFill,
 }: IconUrlInputType) => {
@@ -128,6 +133,7 @@ const IconUrlInput = ({
       />
       <UrlOrSvgInput
         value={value}
+        placeholder={placeholder}
         onChange={(value) => {
           fieldUrl.onChange(value.url)
           fieldSvg.onChange(value.svg)
@@ -157,10 +163,15 @@ type FormValues = {
 
 type UrlOrSvgInputProps = {
   value: string
+  placeholder?: string
   onChange: (value: FormValues) => void
 }
 
-const UrlOrSvgInput = ({ value, onChange }: UrlOrSvgInputProps) => {
+const UrlOrSvgInput = ({
+  value,
+  placeholder,
+  onChange,
+}: UrlOrSvgInputProps) => {
   const [error, setError] = useState<string | null>(null)
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,7 +196,7 @@ const UrlOrSvgInput = ({ value, onChange }: UrlOrSvgInputProps) => {
         type="text"
         value={value}
         onChange={handleInputChange}
-        placeholder={t('icon_placeholder')}
+        placeholder={placeholder}
         className="pl-10"
       />
       {error && (
