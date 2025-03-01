@@ -396,6 +396,8 @@ export function SettingForm({ className }: { className?: string }) {
       }
       settings.commands = settings.commands.filter(isMenuCommand)
       reset(settings as FormValues)
+      // Set initialized after 100ms to avoid flickering.
+      setTimeout(() => (initializedRef.current = true), 100)
     }
     loadSettings()
   }, [])
@@ -406,7 +408,6 @@ export function SettingForm({ className }: { className?: string }) {
 
     // Skip saving if the settingData is not initialized.
     if (!initializedRef.current) {
-      initializedRef.current = settingData != null
       return
     }
 
@@ -488,7 +489,6 @@ export function SettingForm({ className }: { className?: string }) {
 
   useEffect(() => {
     const subscription = watch((value, { name, type }) => {
-      console.debug(value, name, type)
       setSettingData(value as SettingsFormType)
     })
     return () => subscription.unsubscribe()
