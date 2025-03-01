@@ -5,6 +5,7 @@ import {
   STARTUP_METHOD,
   VERSION,
   LINK_COMMAND_STARTUP_METHOD,
+  LINK_COMMAND_ENABLED,
 } from '@/const'
 import type { SettingsType, Version, Command, Star } from '@/types'
 import {
@@ -270,7 +271,7 @@ const migrate0_11_3 = (data: SettingsType): SettingsType => {
 }
 
 const migrate0_11_5 = (data: SettingsType): SettingsType => {
-  // Convert id of comamnds to uuid
+  // 1. Convert id of comamnds to uuid
   data.commands = data.commands.map((c) => {
     if (c.id.length === 36) return c
     c.id =
@@ -278,5 +279,14 @@ const migrate0_11_5 = (data: SettingsType): SettingsType => {
       crypto.randomUUID()
     return c
   })
+
+  // 2. PageRule: Set default value of linkCommandEnabled.
+  data.pageRules = data.pageRules.map((pr) => {
+    if (pr.linkCommandEnabled == null) {
+      pr.linkCommandEnabled = LINK_COMMAND_ENABLED.INHERIT
+    }
+    return pr
+  })
+
   return data
 }
