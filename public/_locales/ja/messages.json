@@ -403,5 +403,38 @@
   },
   "Option_userStyles_desc_popup_duration": {
     "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150"
+  },
+  "Option_zod_number": {
+    "message": "数値を入力してください。"
+  },
+  "Option_zod_number_min": {
+    "message": "$key$ 以上の数値を入力してください。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "$key$ 以下の数値を入力してください。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "$key$ 文字以上の文字を入力してください。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "URL形式で入力してください。"
   }
 }

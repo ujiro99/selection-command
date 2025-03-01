@@ -51,9 +51,9 @@ const SearchOpenMode = [
 const searchSchema = z.object({
   openMode: z.enum(SearchOpenMode),
   id: z.string(),
-  title: z.string(),
-  iconUrl: z.string().url(),
-  searchUrl: z.string().url(),
+  title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
+  iconUrl: z.string().url({ message: t('zod_url') }),
+  searchUrl: z.string().url({ message: t('zod_url') }),
   parentFolderId: z.string().optional(),
   openModeSecondary: z.enum(SearchOpenMode),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
@@ -74,16 +74,16 @@ const isSearchType = (data: any): data is SearchType => {
 const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
   id: z.string(),
-  title: z.string(),
-  iconUrl: z.string().url(),
-  searchUrl: z.string().url(),
+  title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
+  iconUrl: z.string().url({ message: t('zod_url') }),
+  searchUrl: z.string().url({ message: t('zod_url') }),
   parentFolderId: z.string().optional(),
   fetchOptions: z.string().optional(),
   variables: z
     .array(
       z.object({
-        name: z.string(),
-        value: z.string(),
+        name: z.string({ message: t('zod_string_min', ['1']) }),
+        value: z.string({ message: t('zod_string_min', ['1']) }),
       }),
     )
     .optional(),
@@ -93,10 +93,13 @@ const linkPopupSchema = z.object({
   openMode: z.enum([OPEN_MODE.LINK_POPUP]),
   id: z.string(),
   parentFolderId: z.string().optional(),
-  title: z.string().default('Link Popup'),
+  title: z
+    .string()
+    .min(1, { message: t('zod_string_min', ['1']) })
+    .default('Link Popup'),
   iconUrl: z
     .string()
-    .url()
+    .url({ message: t('zod_url') })
     .default(
       'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
     ),
@@ -106,10 +109,13 @@ const copySchema = z.object({
   openMode: z.enum([OPEN_MODE.COPY]),
   id: z.string(),
   parentFolderId: z.string().optional(),
-  title: z.string().default('Copy text'),
+  title: z
+    .string()
+    .min(1, { message: t('zod_string_min', ['1']) })
+    .default('Copy text'),
   iconUrl: z
     .string()
-    .url()
+    .url({ message: t('zod_url') })
     .default(
       'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png',
     ),
@@ -120,10 +126,13 @@ const textStyleSchema = z.object({
   openMode: z.enum([OPEN_MODE.GET_TEXT_STYLES]),
   id: z.string(),
   parentFolderId: z.string().optional(),
-  title: z.string().default('Get Text Styles'),
+  title: z
+    .string()
+    .min(1, { message: t('zod_string_min', ['1']) })
+    .default('Get Text Styles'),
   iconUrl: z
     .string()
-    .url()
+    .url({ message: t('zod_url') })
     .default(
       'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png',
     ),

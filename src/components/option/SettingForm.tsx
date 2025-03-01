@@ -99,7 +99,11 @@ const formSchema = z
       .object({
         method: z.nativeEnum(STARTUP_METHOD),
         keyboardParam: z.nativeEnum(KEYBOARD).optional(),
-        leftClickHoldParam: z.number().min(50).max(500).step(10).optional(),
+        leftClickHoldParam: z
+          .number({ message: t('zod_number') })
+          .min(50, { message: t('zod_number_min', ['50']) })
+          .max(500, { message: t('zod_number_max', ['500']) })
+          .optional(),
       })
       .strict(),
     popupPlacement: z.nativeEnum(POPUP_PLACEMENT),

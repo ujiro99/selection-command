@@ -403,5 +403,38 @@
   },
   "Option_userStyles_desc_popup_duration": {
     "message": "Specify the display animation time. Default: 150"
+  },
+  "Option_zod_number": {
+    "message": "Please enter a number."
+  },
+  "Option_zod_number_min": {
+    "message": "Please enter a number greater than or equal to $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "Please enter a number less than or equal to $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "Please enter a string of $key$ characters or more.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "Please enter in URL format."
   }
 }

@@ -24,7 +24,7 @@ import type { CommandFolder } from '@/types'
 
 export const folderSchema = z.object({
   id: z.string(),
-  title: z.string().min(1),
+  title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
   iconUrl: z.string().optional(),
   onlyIcon: z.boolean().optional(),
 })

@@ -27,7 +27,7 @@ import { e2a, cn } from '@/lib/utils'
 import type { PageRule } from '@/types'
 
 export const pageRuleSchema = z.object({
-  urlPattern: z.string().url(),
+  urlPattern: z.string().url({ message: t('zod_url') }),
   popupEnabled: z.nativeEnum(POPUP_ENABLED),
   popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
