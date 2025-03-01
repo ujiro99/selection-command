@@ -45,13 +45,6 @@ export const InputField = ({
           </div>
 
           <div className="w-4/6 relative">
-            {type === 'iconUrl' && !isEmpty(field.value) && (
-              <img
-                className="absolute top-[0.6em] left-[-3em] w-7 h-7 rounded"
-                src={field.value}
-                alt={`favicon of ${iconUrlSrc}`}
-              />
-            )}
             <FormControl>
               {type === 'iconUrl' ? (
                 <IconUrlInput
@@ -89,6 +82,7 @@ const IconUrlInput = ({
   const srcRef = useRef('')
   const [initialized, setInitialized] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const hasIcon = !isEmpty(field.value)
 
   useEffect(() => {
     setTimeout(() => setInitialized(true), 100)
@@ -118,7 +112,20 @@ const IconUrlInput = ({
     return () => clearTimeout(fetchIconTO.current)
   }, [iconUrlSrc])
 
-  return isLoading ? <Loading /> : <Input {...field} {...inputProps} />
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <>
+      <Input {...field} {...inputProps} className="pl-10" />
+      {hasIcon && (
+        <img
+          className="absolute top-[0.7em] left-[0.9em] w-6 h-6 rounded"
+          src={field.value}
+          alt={`favicon of ${iconUrlSrc}`}
+        />
+      )}
+    </>
+  )
 }
 
 const Loading = () => (

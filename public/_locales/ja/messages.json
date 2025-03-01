@@ -168,7 +168,7 @@
     "message": "コマンド"
   },
   "Option_commands_desc": {
-    "message": "URL中の`%s`を、選択したテキストに置き換えて実行します。"
+    "message": "選択したテキストを元に実行するコマンドを定義します。"
   },
   "Option_commands_desc_count": {
     "message": " / 100 件"
@@ -179,14 +179,26 @@
   "Option_searchUrl": {
     "message": "検索URL"
   },
+  "Option_searchUrl_desc": {
+    "message": "`%s`を選択テキストに置き換えて表示します。"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "URLに`fetch api`を実行します。"
+  },
   "Option_iconUrl": {
     "message": "アイコンURL"
+  },
+  "Option_iconUrl_desc": {
+    "message": "※検索URLを変更すると自動で更新します。"
   },
   "Option_iconUrl_autofill": {
     "message": "自動検出"
   },
   "Option_spaceEncoding": {
     "message": "スペースのエンコード"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "選択テキスト中のスペースを置換します。"
   },
   "Option_spaceEncoding_plus": {
     "message": "Plus (+)"
@@ -228,7 +240,7 @@
     "message": " ┗ Ctrl + クリック"
   },
   "Option_parentFolderId": {
-    "message": "親フォルダ"
+    "message": "フォルダ"
   },
   "Option_copyOption": {
     "message": "コピーフォーマット"

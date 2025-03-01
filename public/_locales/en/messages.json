@@ -168,7 +168,7 @@
     "message": "Commands"
   },
   "Option_commands_desc": {
-    "message": "Replace `%s` in the URL with the selected text and execute."
+    "message": "Define commands to execute based on selected text."
   },
   "Option_commands_desc_count": {
     "message": " / 100 Records"
@@ -179,14 +179,26 @@
   "Option_searchUrl": {
     "message": "Search URL"
   },
+  "Option_searchUrl_desc": {
+    "message": "Replace `%s` with the selected text."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "* Automatically updated when the search URL is changed."
+  },
   "Option_iconUrl": {
     "message": "Icon URL"
+  },
+  "Option_iconUrl_desc": {
+    "message": "* Automatically updated when the search URL is changed."
   },
   "Option_iconUrl_autofill": {
     "message": "Autofill"
   },
   "Option_spaceEncoding": {
     "message": "Space Encoding"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "Replace spaces in selected text."
   },
   "Option_spaceEncoding_plus": {
     "message": "Plus (+)"
@@ -228,7 +240,7 @@
     "message": " ┗ Ctrl + Click"
   },
   "Option_parentFolderId": {
-    "message": "Parent Folder"
+    "message": "Folder"
   },
   "Option_copyOption": {
     "message": "Copy format"

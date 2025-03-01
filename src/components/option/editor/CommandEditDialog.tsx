@@ -322,6 +322,17 @@ export const CommandEditDialog = ({
 
               <SelectField
                 control={form.control}
+                name="parentFolderId"
+                formLabel={t('parentFolderId')}
+                options={[EmptyFolder, ...folders].map((folder) => ({
+                  name: folder.title,
+                  value: folder.id,
+                  iconUrl: folder.iconUrl,
+                }))}
+              />
+
+              <SelectField
+                control={form.control}
                 name="openMode"
                 formLabel="Open Mode"
                 options={e2a(OPEN_MODE)
@@ -358,6 +369,11 @@ export const CommandEditDialog = ({
                     type: 'string',
                     ...register('searchUrl', {}),
                   }}
+                  description={
+                    openMode === OPEN_MODE.API
+                      ? t('searchUrl_desc_api')
+                      : t('searchUrl_desc')
+                  }
                 />
               )}
 
@@ -371,17 +387,12 @@ export const CommandEditDialog = ({
                 }}
                 iconUrlSrc={searchUrl}
                 onAutoFill={autofillIconUrl}
-              />
-
-              <SelectField
-                control={form.control}
-                name="parentFolderId"
-                formLabel={t('parentFolderId')}
-                options={[EmptyFolder, ...folders].map((folder) => ({
-                  name: folder.title,
-                  value: folder.id,
-                  iconUrl: folder.iconUrl,
-                }))}
+                description={
+                  SearchOpenMode.includes(openMode as any) ||
+                  openMode === OPEN_MODE.API
+                    ? t('iconUrl_desc')
+                    : ''
+                }
               />
 
               {SearchOpenMode.includes(openMode as any) && (
@@ -393,6 +404,7 @@ export const CommandEditDialog = ({
                     name: t(`spaceEncoding_${enc}`),
                     value: enc,
                   }))}
+                  description={t('spaceEncoding_desc')}
                 />
               )}
 

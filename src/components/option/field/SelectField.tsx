@@ -4,6 +4,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from '@/components/ui/form'
 
 import {
@@ -26,6 +27,7 @@ type SelectFieldType = {
   formLabel: string
   options: SelectOptionType[]
   placeholder?: string
+  description?: string
 }
 
 export const SelectField = ({
@@ -34,6 +36,7 @@ export const SelectField = ({
   formLabel,
   options,
   placeholder,
+  description,
 }: SelectFieldType) => {
   return (
     <FormField
@@ -43,6 +46,7 @@ export const SelectField = ({
         <FormItem className="flex items-center gap-1">
           <div className="w-2/6">
             <FormLabel>{formLabel}</FormLabel>
+            {description && <FormDescription>{description}</FormDescription>}
           </div>
           <div className="w-4/6">
             <Select onValueChange={field.onChange} value={field.value}>
@@ -63,7 +67,7 @@ export const SelectField = ({
                         <img
                           src={opt.iconUrl}
                           alt={opt.name}
-                          className="w-4 h-4 mr-2"
+                          className="w-5 h-5 mr-1.5"
                         />
                         {opt.name}
                       </span>
