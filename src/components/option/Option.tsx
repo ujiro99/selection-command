@@ -54,7 +54,11 @@ export function Option() {
   return (
     <div>
       <header className={css.titleHeader}>
-        <h1 className={css.title}>{capitalize(APP_ID.replace('-', ' '))}</h1>
+        <h1 className={css.title}>
+          {APP_ID.split('-').map((n) => {
+            return <span className={css.titleSpan}>{capitalize(n)}</span>
+          })}
+        </h1>
         <span className={css.version}>Version: {VERSION}</span>
       </header>
       <div className="flex m-auto gap-4 justify-center">

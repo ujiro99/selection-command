@@ -21,18 +21,13 @@
   margin: 0;
 }
 
-.version {
-  @apply mt-1 text-gray-500;
-  font-size: 0.8rem;
+.titleSpan+.titleSpan {
+  margin-left: 4px;
 }
 
-.rightColumn {
-  position: fixed;
-  top: var(--menu-top);
-  right: calc(50% - 660px);
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+.version {
+  @apply mt-0.5 text-gray-500;
+  font-size: 0.8rem;
 }
 
 .menuContainer {

@@ -651,13 +651,13 @@ export function SettingForm({ className }: { className?: string }) {
       <form
         id="InputForm"
         className={cn(
-          'space-y-10 w-[600px] mx-auto pb-20 text-gray-800',
+          'space-y-10 w-[600px] mx-auto pb-20 text-gray-700',
           className,
         )}
       >
         <section id="startupMethod" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <MessageSquareMore size={22} className="mr-1.5 stroke-gray-600" />
+            <MessageSquareMore size={22} className="mr-2 stroke-gray-600" />
             {t('startupMethod')}
           </h3>
           <p className="text-base">{t('startupMethod_desc')}</p>
@@ -723,7 +723,7 @@ export function SettingForm({ className }: { className?: string }) {
         <hr />
         <section id="commands" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <SquareTerminal size={22} className="mr-1.5 stroke-gray-600" />
+            <SquareTerminal size={22} className="mr-2 stroke-gray-600" />
             {t('commands')}
           </h3>
           <p className="text-base">{t('commands_desc')}</p>
@@ -736,7 +736,7 @@ export function SettingForm({ className }: { className?: string }) {
               type="button"
               ref={addFolderButtonRef}
               variant="outline"
-              className="absolute left-[248px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute left-[244px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setFolderDialogOpen(true)}
             >
               <FolderPlus />
@@ -750,7 +750,7 @@ export function SettingForm({ className }: { className?: string }) {
               type="button"
               ref={addCommandButtonRef}
               variant="outline"
-              className="absolute left-[356px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute left-[350px] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setCommandDialogOpen(true)}
             >
               <Terminal className="stroke-gray-600 group-hover:stroke-gray-700" />
@@ -762,7 +762,7 @@ export function SettingForm({ className }: { className?: string }) {
             />
             <Button
               variant="outline"
-              className="absolute left-[100%] translate-x-[-105%] px-2 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
+              className="absolute left-[100%] translate-x-[-108%] pl-2 pr-2.5 rounded-md transition hover:bg-gray-100 hover:scale-[110%] group"
               asChild
             >
               <a
@@ -852,7 +852,7 @@ export function SettingForm({ className }: { className?: string }) {
         <hr />
         <section id="linkCommand" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <Eye size={22} className="mr-1.5 stroke-gray-600" />
+            <Eye size={22} className="mr-2 stroke-gray-600" />
             {t('linkCommand')}
           </h3>
           <p className="text-base">{t('linkCommand_desc')}</p>
@@ -943,7 +943,7 @@ export function SettingForm({ className }: { className?: string }) {
 
         <section id="pageRules" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <BookOpen size={22} className="mr-1.5 stroke-gray-600" />
+            <BookOpen size={22} className="mr-2 stroke-gray-600" />
             {t('pageRules')}
           </h3>
           <p className="text-base">{t('pageRules_desc')}</p>
@@ -952,7 +952,7 @@ export function SettingForm({ className }: { className?: string }) {
         <hr />
         <section id="userStyles" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
-            <Paintbrush size={22} className="mr-1.5 stroke-gray-600" />
+            <Paintbrush size={22} className="mr-2 stroke-gray-600" />
             {t('userStyles')}
           </h3>
           <p className="text-base">{t('userStyles_desc')}</p>
