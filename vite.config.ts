@@ -90,7 +90,7 @@ export default defineConfig(({ mode }) => {
           assetFileNames: (assetInfo) => {
             const keepNames = [
               'content_script.css',
-              'Popup.css',
+              'icons.css',
               'command_hub.css',
             ]
             if (

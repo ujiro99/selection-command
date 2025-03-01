@@ -26,7 +26,7 @@ const insertCss = (elm: ShadowRoot, filePath: string) => {
 if (!isDebug) {
   // Putting styles into ShadowDom
   insertCss(shadow, '/assets/content_script.css')
-  insertCss(shadow, '/assets/Popup.css')
+  insertCss(shadow, '/assets/icons.css')
 }
 
 // Hide the rootDom while printing.
