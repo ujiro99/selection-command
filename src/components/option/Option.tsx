@@ -56,7 +56,11 @@ export function Option() {
       <header className={css.titleHeader}>
         <h1 className={css.title}>
           {APP_ID.split('-').map((n) => {
-            return <span className={css.titleSpan}>{capitalize(n)}</span>
+            return (
+              <span key={n} className={css.titleSpan}>
+                {capitalize(n)}
+              </span>
+            )
           })}
         </h1>
         <span className={css.version}>Version: {VERSION}</span>
