@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 import { Settings } from '@/services/settings'
 import { capitalize } from '@/lib/utils'
