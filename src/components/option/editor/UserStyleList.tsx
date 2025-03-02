@@ -177,7 +177,11 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
               disabled={selectedAll}
             >
               <Paintbrush />
-              {t('userStyles')}
+              {t('userStyles')
+                .split(' ')
+                .map((w) => (
+                  <span key={w}>{w}</span>
+                ))}
             </Button>
             <Tooltip
               positionElm={addButtonRef.current}

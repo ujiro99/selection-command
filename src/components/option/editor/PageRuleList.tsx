@@ -94,7 +94,11 @@ export const PageRuleList = ({ control }: PageRuleListProps) => {
               ref={addButtonRef}
             >
               <BookOpen />
-              {t('pageRules')}
+              {t('pageRules')
+                .split(' ')
+                .map((w) => (
+                  <span key={w}>{w}</span>
+                ))}
             </Button>
             <Tooltip
               positionElm={addButtonRef.current}
