@@ -819,7 +819,11 @@ export function SettingForm({ className }: { className?: string }) {
                       <div className="flex-1 flex items-center overflow-hidden pr-2">
                         <MenuImage
                           src={field.content.iconUrl}
-                          svg={field.content.iconSvg}
+                          svg={
+                            isFolder(field.content)
+                              ? field.content.iconSvg
+                              : undefined
+                          }
                           alt={field.content.title}
                           className="inline-block w-7 h-7 mr-3"
                         />

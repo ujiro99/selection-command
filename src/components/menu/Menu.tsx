@@ -16,7 +16,7 @@ import { MenuImage } from '@/components/menu/MenuImage'
 import css from './Menu.module.css'
 import type { Command, CommandFolder, Side } from '@/types'
 import { useSetting } from '@/hooks/useSetting'
-import { onHover, isMenuCommand, isEmpty } from '@/lib/utils'
+import { onHover, isMenuCommand } from '@/lib/utils'
 
 type ItemObj = {
   folder: CommandFolder
