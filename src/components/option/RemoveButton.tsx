@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { Trash2 } from 'lucide-react'
 import { Tooltip } from '@/components/Tooltip'
+import { t } from '@/services/i18n'
 
 import {
   Dialog,
@@ -40,10 +41,13 @@ export const RemoveButton = ({
           />
         </button>
       </DialogTrigger>
-      <Tooltip positionElm={buttonRef.current} text={'削除'} />
+      <Tooltip
+        positionElm={buttonRef.current}
+        text={t('Option_remove_tooltip')}
+      />
       <DialogContent className="space-y-4">
         <DialogHeader>
-          <DialogTitle>削除しますか？</DialogTitle>
+          <DialogTitle>{t('Option_remove_title')}</DialogTitle>
         </DialogHeader>
         <DialogDescription className="flex items-center justify-center overflow-hidden">
           {iconUrl != null && (
@@ -58,7 +62,7 @@ export const RemoveButton = ({
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary" size="lg">
-              やめる
+              {t('Option_labelCancel')}
             </Button>
           </DialogClose>
           <DialogClose asChild>
@@ -69,7 +73,7 @@ export const RemoveButton = ({
               onClick={() => onRemove()}
             >
               <Trash2 />
-              削除する
+              {t('Option_remove_ok')}
             </Button>
           </DialogClose>
         </DialogFooter>

@@ -425,6 +425,18 @@
   "Option_userStyles_desc_popup_duration": {
     "message": "Specify the display animation time. Default: 150"
   },
+  "Option_edit_tooltip": {
+    "message": "Edit"
+  },
+  "Option_remove_title": {
+    "message": "Delete this?"
+  },
+  "Option_remove_tooltip": {
+    "message": "Delete"
+  },
+  "Option_remove_ok": {
+    "message": "Delete"
+  },
   "Option_zod_number": {
     "message": "Please enter a number."
   },

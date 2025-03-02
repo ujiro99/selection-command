@@ -425,6 +425,18 @@
   "Option_userStyles_desc_popup_duration": {
     "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150"
   },
+  "Option_edit_tooltip": {
+    "message": "編集"
+  },
+  "Option_remove_title": {
+    "message": "削除してよいですか？"
+  },
+  "Option_remove_tooltip": {
+    "message": "削除"
+  },
+  "Option_remove_ok": {
+    "message": "削除する"
+  },
   "Option_zod_number": {
     "message": "数値を入力してください。"
   },

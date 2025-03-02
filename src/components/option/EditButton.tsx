@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import { Pencil } from 'lucide-react'
 import { Tooltip } from '@/components/Tooltip'
+import { t } from '@/services/i18n'
 
 type EditButtonProps = {
   onClick: () => void
@@ -24,7 +25,10 @@ export const EditButton = ({ onClick }: EditButtonProps) => {
           size={16}
         />
       </button>
-      <Tooltip positionElm={buttonRef.current} text={'編集'} />
+      <Tooltip
+        positionElm={buttonRef.current}
+        text={t('Option_edit_tooltip')}
+      />
     </>
   )
 }

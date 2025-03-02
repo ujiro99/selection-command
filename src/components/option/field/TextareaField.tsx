@@ -7,12 +7,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { cn } from '@/lib/utils'
 
 type TextareaFieldType = {
   control: any
   name: string
   formLabel: string
   placeholder?: string
+  className?: string
 }
 
 export const TextareaField = ({
@@ -20,6 +22,7 @@ export const TextareaField = ({
   name,
   formLabel,
   placeholder,
+  className,
 }: TextareaFieldType) => {
   const updateHeight = (elm: HTMLTextAreaElement) => {
     elm.style.height = '5px'
@@ -52,7 +55,7 @@ export const TextareaField = ({
                 id={`textarea-${name}`}
                 {...field}
                 placeholder={placeholder}
-                className="resize-none max-h-80 font-mono text-sm"
+                className={cn('resize-none max-h-80', className)}
                 onInput={handleInput}
               />
             </FormControl>

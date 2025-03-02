@@ -413,6 +413,7 @@ export const CommandEditDialog = ({
                     control={form.control}
                     name="fetchOptions"
                     formLabel={t('fetchOptions')}
+                    className="font-mono text-xs sm:text-xs lg:text-sm"
                   />
                   <FormField
                     control={form.control}
