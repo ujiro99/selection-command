@@ -35,6 +35,15 @@
   "commandHub_description": {
     "message": "コマンドを共有できるようになりました✨"
   },
+  "Option_labelCancel": {
+    "message": "やめる"
+  },
+  "Option_labelUpdate": {
+    "message": "更新する"
+  },
+  "Option_labelSave": {
+    "message": "保存する"
+  },
   "Option_Enable": {
     "message": "有効"
   },
@@ -59,11 +68,23 @@
   "Option_Add": {
     "message": "追加"
   },
-  "Option_AddCommand": {
-    "message": "コマンド作成"
+  "Option_Command": {
+    "message": "コマンド"
+  },
+  "Option_Command_tooltip": {
+    "message": "コマンドを作成します"
   },
   "Option_Find": {
     "message": "コマンドを探す"
+  },
+  "Option_Command_edit": {
+    "message": "コマンド編集"
+  },
+  "Option_Command_input": {
+    "message": "コマンドの情報を入力してください。"
+  },
+  "Option_Command_rootFolder": {
+    "message": "(フォルダにいれない)"
   },
   "Option_startupMethod": {
     "message": "起動方法"
@@ -89,6 +110,9 @@
   "Option_startupMethod_param_keyboard": {
     "message": "表示を切り替えるキー"
   },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "キーを選択"
+  },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
   },
@@ -113,6 +137,24 @@
   "Option_popupPlacement": {
     "message": "メニュー表示位置"
   },
+  "Option_popupPlacement_top": {
+    "message": "Top"
+  },
+  "Option_popupPlacement_top_start": {
+    "message": "Top Start"
+  },
+  "Option_popupPlacement_top_end": {
+    "message": "Top End"
+  },
+  "Option_popupPlacement_bottom": {
+    "message": "Bottom"
+  },
+  "Option_popupPlacement_bottom_start": {
+    "message": "Bottom Start"
+  },
+  "Option_popupPlacement_bottom_end": {
+    "message": "Bottom End"
+  },
   "Option_style": {
     "message": "メニュースタイル"
   },
@@ -126,7 +168,7 @@
     "message": "コマンド"
   },
   "Option_commands_desc": {
-    "message": "URL中の`%s`を、選択したテキストに置き換えて実行します。"
+    "message": "選択したテキストを元に実行するコマンドを定義します。"
   },
   "Option_commands_desc_count": {
     "message": " / 100 件"
@@ -137,14 +179,26 @@
   "Option_searchUrl": {
     "message": "検索URL"
   },
+  "Option_searchUrl_desc": {
+    "message": "`%s`を選択テキストに置き換えて表示します。"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "URLに`fetch api`を実行します。"
+  },
   "Option_iconUrl": {
     "message": "アイコンURL"
+  },
+  "Option_iconUrl_desc": {
+    "message": "※検索URLを変更すると自動で更新します。"
   },
   "Option_iconUrl_autofill": {
     "message": "自動検出"
   },
   "Option_spaceEncoding": {
     "message": "スペースのエンコード"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "選択テキスト中のスペースを置換します。"
   },
   "Option_spaceEncoding_plus": {
     "message": "Plus (+)"
@@ -186,7 +240,7 @@
     "message": " ┗ Ctrl + クリック"
   },
   "Option_parentFolderId": {
-    "message": "親フォルダ"
+    "message": "フォルダ"
   },
   "Option_copyOption": {
     "message": "コピーフォーマット"
@@ -202,6 +256,12 @@
   },
   "Option_variables": {
     "message": "Fetch変数"
+  },
+  "Option_variableName": {
+    "message": "変数名"
+  },
+  "Option_variableValue": {
+    "message": "値"
   },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
@@ -251,8 +311,26 @@
   "Option_folders": {
     "message": "フォルダ"
   },
+  "Option_folders_tooltip": {
+    "message": "フォルダを作成します"
+  },
   "Option_folders_desc": {
     "message": "コマンドをフォルダへ分類することができます。"
+  },
+  "Option_folders_edit": {
+    "message": "フォルダ編集"
+  },
+  "Option_folders_input": {
+    "message": "フォルダの情報を入力してください。"
+  },
+  "Option_icon_error": {
+    "message": "正しいURLまたはSVGを入力してください。"
+  },
+  "Option_icon_placeholder": {
+    "message": "URLまたはSVGを入力してください。"
+  },
+  "Option_icon_required": {
+    "message": "アイコンとなるURLまたはSVGが必要です。"
   },
   "Option_onlyIcon": {
     "message": "アイコンのみ表示"
@@ -266,6 +344,15 @@
   "Option_pageRules_desc": {
     "message": "サイト毎の設定値です。"
   },
+  "Option_pageRules_tooltip": {
+    "message": "ページルールを作成します。"
+  },
+  "Option_pageRules_add": {
+    "message": "ページルール編集"
+  },
+  "Option_pageRules_add_desc": {
+    "message": "ページルールを入力してください。"
+  },
   "Option_urlPattern": {
     "message": "URLパターン"
   },
@@ -278,8 +365,17 @@
   "Option_userStyles": {
     "message": "ユーザースタイル"
   },
+  "Option_userStyles_tooltip": {
+    "message": "ユーザースタイルを作成します。"
+  },
   "Option_userStyles_desc": {
     "message": "ポップアップの表示をカスタマイズできます。"
+  },
+  "Option_userStyles_add": {
+    "message": "ユーザースタイル編集"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "ユーザースタイルを入力してください。"
   },
   "Option_userStyles_name": {
     "message": "設定名"
@@ -328,5 +424,50 @@
   },
   "Option_userStyles_desc_popup_duration": {
     "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150"
+  },
+  "Option_edit_tooltip": {
+    "message": "編集"
+  },
+  "Option_remove_title": {
+    "message": "削除してよいですか？"
+  },
+  "Option_remove_tooltip": {
+    "message": "削除"
+  },
+  "Option_remove_ok": {
+    "message": "削除する"
+  },
+  "Option_zod_number": {
+    "message": "数値を入力してください。"
+  },
+  "Option_zod_number_min": {
+    "message": "$key$ 以上の数値を入力してください。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "$key$ 以下の数値を入力してください。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "$key$ 文字以上の文字を入力してください。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "URL形式で入力してください。"
   }
 }

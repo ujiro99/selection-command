@@ -4,6 +4,7 @@ import {
   POPUP_ENABLED,
   POPUP_OFFSET,
   POPUP_TYPE,
+  POPUP_PLACEMENT,
 } from '@/const'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type { IpcCallback } from '@/services/ipc'
@@ -19,7 +20,7 @@ const OPTION_PAGE = 'src/options_page.html'
 
 type WindowType = {
   id: number
-  commandId: number
+  commandId: string
   srcWindowId: number
 }
 
@@ -62,7 +63,7 @@ BgData.init()
 type Sender = chrome.runtime.MessageSender
 
 export type openPopupsProps = {
-  commandId: number
+  commandId: string
   urls: string[]
   top: number
   left: number
@@ -215,7 +216,7 @@ const commandFuncs = {
         pageRules.push({
           urlPattern: param.url,
           popupEnabled: POPUP_ENABLED.ENABLE,
-          popupPlacement: 'top-start',
+          popupPlacement: POPUP_PLACEMENT.TOP_START,
           linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
         })
       }
@@ -404,7 +405,7 @@ const getTabId = (
 Ipc.addListener(TabCommand.getTabId, getTabId as IpcCallback)
 
 const updateWindowSize = async (
-  commandId: number,
+  commandId: string,
   width: number,
   height: number,
 ) => {

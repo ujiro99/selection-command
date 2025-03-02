@@ -5,17 +5,12 @@
 }
 
 .label {
-  font-family: var(--font-monospace);
+  @apply font-mono;
   font-size: 1.2rem;
-  margin-left: 10px;
   margin-bottom: 16px;
   display: inline-block;
 }
 
 .item {
   list-style: none;
-}
-
-.button {
-  composes: menuButton from './Option.module.css';
 }

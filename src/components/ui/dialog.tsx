@@ -11,6 +11,8 @@ const DialogTrigger = DialogPrimitive.Trigger
 
 const DialogClose = DialogPrimitive.Close
 
+const DialogPortal = DialogPrimitive.Portal
+
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
@@ -18,7 +20,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      'fixed inset-0 z-50 bg-black/50  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
       className,
     )}
     {...props}
@@ -30,7 +32,7 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
-  <div>
+  <>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
@@ -42,7 +44,7 @@ const DialogContent = React.forwardRef<
     >
       {children}
     </DialogPrimitive.Content>
-  </div>
+  </>
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
@@ -81,7 +83,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      'text-lg font-semibold leading-none tracking-tight',
+      'text-lg font-semibold leading-none tracking-tight flex gap-2 items-center',
       className,
     )}
     {...props}
@@ -111,4 +113,5 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
+  DialogPortal,
 }

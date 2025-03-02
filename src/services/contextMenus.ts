@@ -11,17 +11,22 @@ export type executeActionProps = {
   command: Command
 }
 
+let initDelayTO: NodeJS.Timeout
+
 const ContextMenu = {
   init: () => {
-    chrome.contextMenus.removeAll(async () => {
-      chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
-      const settings = await Settings.get()
-      if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
-        console.debug('init context menu')
-        ContextMenu.addMenus(settings)
-        chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-      }
-    })
+    clearTimeout(initDelayTO)
+    initDelayTO = setTimeout(() => {
+      chrome.contextMenus.removeAll(async () => {
+        chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
+        const settings = await Settings.get()
+        if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
+          console.debug('init context menu')
+          ContextMenu.addMenus(settings)
+          chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+        }
+      })
+    }, 200)
   },
 
   commandIdObj: {} as { [key: string | number]: Command },

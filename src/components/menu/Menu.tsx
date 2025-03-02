@@ -12,6 +12,7 @@ import { STYLE, ROOT_FOLDER } from '@/const'
 import { MenuItem } from './MenuItem'
 import { Icon } from '@/components/Icon'
 import { HoverArea } from '@/components/menu/HoverArea'
+import { MenuImage } from '@/components/menu/MenuImage'
 import css from './Menu.module.css'
 import type { Command, CommandFolder, Side } from '@/types'
 import { useSetting } from '@/hooks/useSetting'
@@ -137,7 +138,12 @@ const MenuFolder = (props: {
         ref={anchorRef}
         {...onHover(onHoverTrigger, folder.id)}
       >
-        <img className={css.itemImg} src={folder.iconUrl} alt={folder.title} />
+        <MenuImage
+          className={css.itemImg}
+          src={folder.iconUrl}
+          svg={folder.iconSvg}
+          alt={folder.title}
+        />
         {!(folder.onlyIcon && isHorizontal) && (
           <span className={clsx(css.itemTitle, css.title)}>{folder.title}</span>
         )}

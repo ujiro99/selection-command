@@ -13,8 +13,9 @@ export const MyCommands = (): JSX.Element => {
   const list2Ref = useRef<HTMLUListElement | null>(null)
   const { settings, iconUrls } = useSetting()
   const commands = settings.commands
-    .filter((c) => !isEmpty(c.searchUrl))
-    .filter((c) => !urls.includes(c.searchUrl))
+    .filter(
+      (c) => !isEmpty(c.searchUrl) && !urls.includes(c.searchUrl as string),
+    )
     .map((c) => ({ ...c, iconDataUrl: c.iconUrl, iconUrl: iconUrls[c.id] }))
   const loaded = urls.length > 0
   const enableMarquee = commands.length > 3
@@ -34,14 +35,14 @@ export const MyCommands = (): JSX.Element => {
     if (elm == null || elm2 == null) return
     const a = elm.getAnimations()[0]
     if (a != null) {
-      ; (a.currentTime as number) += diff
+      ;(a.currentTime as number) += diff
       if ((a.currentTime as number) < 0) {
         a.currentTime = 0
       }
     }
     const a2 = elm2.getAnimations()[0]
     if (a2 != null) {
-      ; (a2.currentTime as number) += diff
+      ;(a2.currentTime as number) += diff
       if ((a2.currentTime as number) < 0) {
         a2.currentTime = 0
       }

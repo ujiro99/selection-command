@@ -15,6 +15,17 @@ export function sleep(msec: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, msec))
 }
 
+/**
+ * Removes duplicate values from an array and returns a new array containing only unique values.
+ *
+ * @template T - The type of elements in the array.
+ * @param {T[]} arr - The input array from which duplicates will be removed.
+ * @returns {T[]} A new array containing only the unique values from the input array.
+ */
+export function unique<T>(arr: T[]): T[] {
+  return [...new Set(arr)]
+}
+
 export function toUrl(
   searchUrl: string,
   text: string,
@@ -61,15 +72,30 @@ export function isBase64(str: string): boolean {
  * @returns {boolean} True if the string is a URL.
  * @see https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
  */
-export function isUrl(str: string): boolean {
+export function isUrl(str: string | undefined): boolean {
+  if (!str) return false
   return /^https?:\/\//.test(str)
+}
+
+/**
+ * Check if the string is a valid SVG.
+ */
+export const isValidSVG = (text: string): boolean => {
+  return text.trim().startsWith('<svg') && text.trim().endsWith('</svg>')
 }
 
 /**
  * Check if the string is empty.
  */
-export function isEmpty(str: string | null): boolean {
+export function isEmpty(str: string | null | undefined): boolean {
   return !str?.length
+}
+
+/**
+ * Check if the value is a string.
+ */
+export function isValidString(val: unknown): val is string {
+  return typeof val === 'string' && val.length > 0
 }
 
 /**
@@ -217,4 +243,14 @@ export const onHover = (
  */
 export function e2a(e: any): string[] {
   return Object.values(e)
+}
+
+/**
+ * Convert hyphen to underscore.
+ *
+ * @param {string} input The string to convert.
+ * @returns {string} The converted string.
+ */
+export function hyphen2Underscore(input: string): string {
+  return input.replace(/-/g, '_')
 }

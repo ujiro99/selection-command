@@ -1,11 +1,10 @@
 import { useState, useEffect, createContext, forwardRef } from 'react'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
-import clsx from 'clsx'
 import { Menu } from '@/components/menu/Menu'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
-import { hexToHsl, isMac, onHover } from '@/lib/utils'
+import { hexToHsl, isMac, onHover, cn } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import { STYLE_VARIABLE, EXIT_DURATION } from '@/const'
 import { Alignment, Side } from '@/types'
@@ -86,10 +85,10 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
         const popupDelay = settings.userStyles?.find(
           (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
         )
-        const duration = popupDuration?.value
-          ? parseInt(popupDuration.value)
-          : 150
-        const delay = popupDelay?.value ? parseInt(popupDelay.value) : 250
+        const duration =
+          popupDuration?.value != null ? parseInt(popupDuration.value) : 150
+        const delay =
+          popupDelay?.value != null ? parseInt(popupDelay.value) : 250
         setInTransition(true)
         transitionTimer = setTimeout(() => {
           setInTransition(false)
@@ -121,7 +120,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               ref={ref}
               side={side}
               align={align}
-              className={clsx(css.popup)}
+              className={cn(css.popup, isPreview && 'z-10')}
               style={userStyles}
               onOpenAutoFocus={noFocus}
               {...onHover(handleOnHover, true)}

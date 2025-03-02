@@ -15,14 +15,23 @@ export enum OPEN_MODE {
   API = 'api',
   LINK_POPUP = 'linkPopup',
   COPY = 'copy',
-  OPTION = 'option',
   GET_TEXT_STYLES = 'getTextStyles',
+  OPTION = 'option',
   ADD_PAGE_RULE = 'addPageRule',
 }
 
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = 'previewPopup',
   PREVIEW_WINDOW = 'previewWindow',
+}
+
+export enum POPUP_PLACEMENT {
+  TOP = 'top',
+  TOP_START = 'top-start',
+  TOP_END = 'top-end',
+  BOTTOM = 'bottom',
+  BOTTOM_START = 'bottom-start',
+  BOTTOM_END = 'bottom-end',
 }
 
 export enum STARTUP_METHOD {
@@ -38,9 +47,9 @@ export enum POPUP_TYPE {
 }
 
 export enum KEYBOARD {
+  SHIFT = 'Shift',
   CTRL = 'Control',
   ALT = 'Alt',
-  SHIFT = 'Shift',
   META = 'Meta',
 }
 
@@ -56,9 +65,9 @@ export enum POPUP_ENABLED {
 }
 
 export enum LINK_COMMAND_ENABLED {
+  INHERIT = 'Inherit',
   ENABLE = 'Enable',
   DISABLE = 'Disable',
-  INHERIT = 'Inherit',
 }
 
 export enum LINK_COMMAND_STARTUP_METHOD {
@@ -75,6 +84,11 @@ export enum STYLE {
 export enum SPACE_ENCODING {
   PLUS = 'plus',
   PERCENT = 'percent',
+}
+
+export enum COPY_OPTION {
+  DEFAULT = 'default',
+  TEXT = 'text',
 }
 
 export enum OPTION_MSG {
@@ -107,11 +121,17 @@ export enum SCREEN {
   COMMAND_FORM = 'CommandForm',
 }
 
+export const POPUP_OPTION = {
+  width: 600,
+  height: 700,
+}
+
 export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100
 
-export const ROOT_FOLDER = ''
+export const ROOT_FOLDER = 'RootFolder'
+
 export const OPTION_FOLDER = 'OptionFolder'
 
 export const COMMAND_MAX = 100

@@ -43,14 +43,13 @@
   font-family: var(--font-monospace);
   font-size: 1.2rem;
   color: #444;
-  margin: 0 0 16px 4px;
 }
 
 .previewDescription {
   position: absolute;
   width: 200px;
   font-size: 0.8rem;
-  margin: 0;
+  margin: 10px 0 0;
 }
 
 @keyframes marquee {

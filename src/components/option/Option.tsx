@@ -1,102 +1,25 @@
 import { useState, useEffect, useRef } from 'react'
-import { CSSTransition } from 'react-transition-group'
 
 import { Settings } from '@/services/settings'
-import type { SettingsType } from '@/types'
-import { sleep, capitalize, isMenuCommand, isLinkCommand } from '@/lib/utils'
-import { t } from '@/services/i18n'
-import { fetchIconUrl } from '@/services/chrome'
-import { APP_ID, VERSION, OPTION_MSG } from '@/const'
-import messages from '@/../public/_locales/en/messages.json'
+import { capitalize } from '@/lib/utils'
+import { APP_ID, VERSION } from '@/const'
 
 import { Popup } from '@/components/Popup'
-import { LoadingIcon } from '@/components/option/LoadingIcon'
+import { ScrollArea } from '@/components/ui/scrollArea'
 import { TableOfContents } from '@/components/option/TableOfContents'
 import { ImportExport } from '@/components/option/ImportExport'
 import { HubBanner } from '@/components/option/HubBanner'
-import { useEventProxyReceiver } from '@/hooks/option/useEventProxy'
+import { SettingForm } from '@/components/option/SettingForm'
 
 import css from './Option.module.css'
 
-const getTranslation = () => {
-  const obj = {} as { [key: string]: string }
-  for (const key in messages) {
-    if (key.startsWith('Option_')) {
-      obj[key] = t(key)
-    }
-  }
-  return obj
-}
+const SCROLL_OFFSET = 96
 
 export function Option() {
-  const [isSaving, setIsSaving] = useState(false)
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
-  const iframeRef = useRef<HTMLIFrameElement>(null)
-  const iframeTORef = useRef<number>(0)
-  const iframeRetryRef = useRef<number>(0)
-  const loadingRef = useRef<HTMLDivElement>(null)
   const [popupElm, setPopupElm] = useState<Element | null>(null)
   const [popupHeight, setPopupHeight] = useState(0)
-
-  useEventProxyReceiver()
-
-  const updateSettings = async (settings: SettingsType) => {
-    if (isSaving) return
-    try {
-      setIsSaving(true)
-      const current = await Settings.get(true)
-      const linkCommands = current.commands.filter(isLinkCommand).map((c) => ({
-        ...c,
-        openMode: settings.linkCommand.openMode,
-      }))
-      settings.commands = [...settings.commands, ...linkCommands]
-      await Settings.set(settings)
-      await sleep(1000)
-    } catch (e) {
-      console.error('Failed to update settings!', settings)
-      console.error(e)
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
-  useEffect(() => {
-    const func = async (event: MessageEvent) => {
-      const command = event.data.command
-      const value = event.data.value
-      switch (command) {
-        case OPTION_MSG.START_ACK:
-          clearInterval(iframeTORef.current)
-          break
-        case OPTION_MSG.CHANGED:
-          updateSettings(value)
-          break
-        case OPTION_MSG.FETCH_ICON_URL:
-          const { searchUrl } = value
-          console.debug('fetchIconUrl', searchUrl)
-          try {
-            const iconUrl = await fetchIconUrl(searchUrl)
-            sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, { searchUrl, iconUrl })
-          } catch (e) {
-            console.warn('Failed to fetch icon', searchUrl)
-            sendMessage(OPTION_MSG.RES_FETCH_ICON_URL, {
-              searchUrl,
-              iconUrl: null,
-            })
-          }
-          break
-        case OPTION_MSG.OPEN_LINK:
-          window.open(value, '_blank')
-          break
-        default:
-          break
-      }
-    }
-    window.addEventListener('message', func)
-    return () => {
-      window.removeEventListener('message', func)
-    }
-  }, [])
+  const formRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const updateHeight = () => {
@@ -113,108 +36,62 @@ export function Option() {
     }
   }, [popupElm])
 
-  const sendMessage = (command: OPTION_MSG, value: unknown) => {
-    if (iframeRef.current != null && iframeRef.current.contentWindow != null) {
-      const message = { command, value }
-      iframeRef.current.contentWindow.postMessage(message, '*')
-    } else {
-      console.warn('frame null')
-      console.warn(iframeRef)
-    }
-  }
-
-  const onLoadIframe = async () => {
-    const settings = await Settings.get(true)
-    const translation = getTranslation()
-
-    // Convert linkCommand option
-    const linkCommands = settings.commands.filter(isLinkCommand)
-    if (linkCommands.length > 0) {
-      const linkCommand = linkCommands[0]
-      settings.linkCommand = {
-        ...settings.linkCommand,
-        openMode: linkCommand.openMode,
-      }
-    }
-    settings.commands = settings.commands.filter(isMenuCommand)
-
-    // Retry until the iframe is ready
-    iframeTORef.current = window.setInterval(() => {
-      if (iframeRetryRef.current > 20) {
-        console.error('Failed to initialize iframe for SettingForm')
-        clearInterval(iframeTORef.current)
-      }
-      // console.debug('send settings: ', iframeRetryRef.current)
-      sendMessage(OPTION_MSG.START, {
-        settings,
-        translation,
-      })
-      iframeRetryRef.current = iframeRetryRef.current + 1
-    }, 100)
-  }
-
   const onClickMenu = (hash: string) => {
-    sendMessage(OPTION_MSG.JUMP, { hash })
-  }
-
-  const sandboxUrl = () => {
-    const src = chrome.runtime.getURL('src/sandbox.html')
-    if (document.location.hash) {
-      return `${src}${document.location.hash}`
-    } else {
-      return src
+    if (!hash) return
+    const elm = document.querySelector(hash)
+    if (elm != null && formRef.current != null) {
+      const targetPosition =
+        elm.getBoundingClientRect().top +
+        formRef.current.scrollTop -
+        SCROLL_OFFSET
+      formRef.current?.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth',
+      })
     }
   }
 
   return (
-    <div className={css.option}>
-      <CSSTransition
-        in={isSaving}
-        timeout={300}
-        classNames="drop-in"
-        unmountOnExit
-        nodeRef={loadingRef}
-      >
-        <LoadingIcon ref={loadingRef}>
-          <span>{t('saving')}</span>
-        </LoadingIcon>
-      </CSSTransition>
-
-      <div className={css.rightColumn}>
-        <div
-          ref={setPreviewElm}
-          style={{ marginBottom: Math.max(popupHeight, 30) }}
-        >
-          <Popup
-            positionElm={previewElm}
-            selectionText="preview"
-            isPreview={true}
-            ref={setPopupElm}
-          />
-        </div>
-        <div className="mt-8">
-          <HubBanner />
-        </div>
-      </div>
-
-      <div className={css.menuContainer}>
-        <TableOfContents onClick={onClickMenu} />
-        <ImportExport />
-      </div>
-
+    <div>
       <header className={css.titleHeader}>
-        <h1 className={css.title}>{capitalize(APP_ID.replace('-', ' '))}</h1>
+        <h1 className={css.title}>
+          {APP_ID.split('-').map((n) => {
+            return (
+              <span key={n} className={css.titleSpan}>
+                {capitalize(n)}
+              </span>
+            )
+          })}
+        </h1>
         <span className={css.version}>Version: {VERSION}</span>
       </header>
-
-      <iframe
-        title="SettingForm"
-        id="sandbox"
-        src={sandboxUrl()}
-        ref={iframeRef}
-        className={css.editorFrame}
-        onLoad={onLoadIframe}
-      />
+      <div className="flex m-auto gap-4 justify-center">
+        <aside className="pt-24 min-w-64">
+          <TableOfContents onClick={onClickMenu} />
+          <ImportExport />
+        </aside>
+        <main>
+          <ScrollArea className="h-[100vh] px-6" ref={formRef}>
+            <SettingForm className="pt-24" />
+          </ScrollArea>
+        </main>
+        <aside className="pl-10 pt-24 font-mono min-w-70">
+          <div
+            ref={setPreviewElm}
+            style={{ marginBottom: Math.max(popupHeight + 5, 30) }}
+          >
+            <Popup
+              positionElm={previewElm}
+              selectionText="preview"
+              isPreview={true}
+              ref={setPopupElm}
+            />
+          </div>
+          <div className="pt-4">
+            <HubBanner />
+          </div>
+        </aside>
+      </div>
     </div>
   )
 }

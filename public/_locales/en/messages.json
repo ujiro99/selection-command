@@ -35,6 +35,15 @@
   "commandHub_description": {
     "message": "You can now share commands✨"
   },
+  "Option_labelCancel": {
+    "message": "Cancel"
+  },
+  "Option_labelUpdate": {
+    "message": "Update"
+  },
+  "Option_labelSave": {
+    "message": "Create"
+  },
   "Option_Enable": {
     "message": "Enabled"
   },
@@ -59,11 +68,23 @@
   "Option_Add": {
     "message": "Add"
   },
-  "Option_AddCommand": {
-    "message": "Create Command"
+  "Option_Command": {
+    "message": "Command"
+  },
+  "Option_Command_tooltip": {
+    "message": "Create a command."
   },
   "Option_Find": {
     "message": "Find Command"
+  },
+  "Option_Command_edit": {
+    "message": "Edit Command"
+  },
+  "Option_Command_input": {
+    "message": "Please enter the command information."
+  },
+  "Option_Command_rootFolder": {
+    "message": "(Not in folder)"
   },
   "Option_startupMethod": {
     "message": "Startup Method"
@@ -89,6 +110,9 @@
   "Option_startupMethod_param_keyboard": {
     "message": "Key to toggle display"
   },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "Select a key"
+  },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
   },
@@ -113,6 +137,24 @@
   "Option_popupPlacement": {
     "message": "Menu Display Position"
   },
+  "Option_popupPlacement_top": {
+    "message": "Top"
+  },
+  "Option_popupPlacement_top_start": {
+    "message": "Top Start"
+  },
+  "Option_popupPlacement_top_end": {
+    "message": "Top End"
+  },
+  "Option_popupPlacement_bottom": {
+    "message": "Bottom"
+  },
+  "Option_popupPlacement_bottom_start": {
+    "message": "Bottom Start"
+  },
+  "Option_popupPlacement_bottom_end": {
+    "message": "Bottom End"
+  },
   "Option_style": {
     "message": "Menu Style"
   },
@@ -126,7 +168,7 @@
     "message": "Commands"
   },
   "Option_commands_desc": {
-    "message": "Replace `%s` in the URL with the selected text and execute."
+    "message": "Define commands to execute based on selected text."
   },
   "Option_commands_desc_count": {
     "message": " / 100 Records"
@@ -137,14 +179,26 @@
   "Option_searchUrl": {
     "message": "Search URL"
   },
+  "Option_searchUrl_desc": {
+    "message": "Replace `%s` with the selected text."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "* Automatically updated when the search URL is changed."
+  },
   "Option_iconUrl": {
     "message": "Icon URL"
+  },
+  "Option_iconUrl_desc": {
+    "message": "* Automatically updated when the search URL is changed."
   },
   "Option_iconUrl_autofill": {
     "message": "Autofill"
   },
   "Option_spaceEncoding": {
     "message": "Space Encoding"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "Replace spaces in selected text."
   },
   "Option_spaceEncoding_plus": {
     "message": "Plus (+)"
@@ -186,7 +240,7 @@
     "message": " ┗ Ctrl + Click"
   },
   "Option_parentFolderId": {
-    "message": "Parent Folder"
+    "message": "Folder"
   },
   "Option_copyOption": {
     "message": "Copy format"
@@ -202,6 +256,12 @@
   },
   "Option_variables": {
     "message": "Fetch Variables"
+  },
+  "Option_variableName": {
+    "message": "Name"
+  },
+  "Option_variableValue": {
+    "message": "Value"
   },
   "Option_linkCommand": {
     "message": "Link Preview"
@@ -251,8 +311,26 @@
   "Option_folders": {
     "message": "Folders"
   },
+  "Option_folders_tooltip": {
+    "message": "Create a folder."
+  },
   "Option_folders_desc": {
     "message": "Commands can be classified into folders."
+  },
+  "Option_folders_edit": {
+    "message": "Edit Folder"
+  },
+  "Option_folders_input": {
+    "message": "Please enter the folder information."
+  },
+  "Option_icon_error": {
+    "message": "Please enter a valid URL or SVG."
+  },
+  "Option_icon_placeholder": {
+    "message": "Please enter a URL or SVG."
+  },
+  "Option_icon_required": {
+    "message": "An URL or SVG that will be used as an icon is required."
   },
   "Option_onlyIcon": {
     "message": "Display icon only"
@@ -263,8 +341,17 @@
   "Option_pageRules": {
     "message": "Page Rules"
   },
+  "Option_pageRules_tooltip": {
+    "message": "Create a page rule."
+  },
   "Option_pageRules_desc": {
     "message": "Site-specific settings."
+  },
+  "Option_pageRules_add": {
+    "message": "Edit Page Rule."
+  },
+  "Option_pageRules_add_desc": {
+    "message": "Please enter the Page Rule."
   },
   "Option_urlPattern": {
     "message": "URL Pattern"
@@ -278,8 +365,17 @@
   "Option_userStyles": {
     "message": "User Styles"
   },
+  "Option_userStyles_tooltip": {
+    "message": "Create a User Style."
+  },
   "Option_userStyles_desc": {
     "message": "You can customize the display of pop-up menu."
+  },
+  "Option_userStyles_add": {
+    "message": "Edit User Style"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "Please enter the User Style."
   },
   "Option_userStyles_name": {
     "message": "Property name"
@@ -328,5 +424,50 @@
   },
   "Option_userStyles_desc_popup_duration": {
     "message": "Specify the display animation time. Default: 150"
+  },
+  "Option_edit_tooltip": {
+    "message": "Edit"
+  },
+  "Option_remove_title": {
+    "message": "Delete this?"
+  },
+  "Option_remove_tooltip": {
+    "message": "Delete"
+  },
+  "Option_remove_ok": {
+    "message": "Delete"
+  },
+  "Option_zod_number": {
+    "message": "Please enter a number."
+  },
+  "Option_zod_number_min": {
+    "message": "Please enter a number greater than or equal to $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "Please enter a number less than or equal to $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "Please enter a string of $key$ characters or more.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "Please enter in URL format."
   }
 }

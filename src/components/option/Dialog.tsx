@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogFooter,
   DialogTitle,
+  DialogPortal,
 } from '@/components/ui/dialog'
 
 import { t } from '@/services/i18n'
@@ -29,26 +30,28 @@ export function Dialog(props: Props) {
   }
   return (
     <DialogRoot open={props.open} onOpenChange={onOpenChange}>
-      <DialogContent className={css.dialog}>
-        <DialogHeader>
-          <DialogTitle className={css.title}>{props.title}</DialogTitle>
-          <DialogDescription className={css.description}>
-            {props.description()}
-          </DialogDescription>
-        </DialogHeader>
-        {props.children}
-        <DialogFooter>
-          <button className={css.button} onClick={() => props.onClose(true)}>
-            {props.okText}
-          </button>
-          <button
-            className={css.buttonCancel}
-            onClick={() => props.onClose(false)}
-          >
-            {t('labelCancel')}
-          </button>
-        </DialogFooter>
-      </DialogContent>
+      <DialogPortal>
+        <DialogContent className={css.dialog}>
+          <DialogHeader>
+            <DialogTitle className={css.title}>{props.title}</DialogTitle>
+            <DialogDescription className={css.description}>
+              {props.description()}
+            </DialogDescription>
+          </DialogHeader>
+          {props.children}
+          <DialogFooter>
+            <button className={css.button} onClick={() => props.onClose(true)}>
+              {props.okText}
+            </button>
+            <button
+              className={css.buttonCancel}
+              onClick={() => props.onClose(false)}
+            >
+              {t('labelCancel')}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </DialogPortal>
     </DialogRoot>
   )
 }

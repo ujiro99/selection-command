@@ -2,9 +2,9 @@ import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
 import DefaultSettings, { DefaultCommands } from './defaultSettings'
 import {
   OPTION_FOLDER,
-  STARTUP_METHOD,
   VERSION,
   LINK_COMMAND_STARTUP_METHOD,
+  LINK_COMMAND_ENABLED,
 } from '@/const'
 import type { SettingsType, Version, Command, Star } from '@/types'
 import {
@@ -179,12 +179,6 @@ const removeOptionSettings = (data: SettingsType): void => {
 }
 
 export const migrate = async (data: SettingsType): Promise<SettingsType> => {
-  if (data.settingVersion == null) {
-    data = migrate073(data)
-  }
-  if (versionDiff(data.settingVersion, '0.8.2') === VersionDiff.Old) {
-    data = migrate082(data)
-  }
   if (versionDiff(data.settingVersion, '0.10.0') === VersionDiff.Old) {
     data = await migrate0_10_0(data)
   }
@@ -192,30 +186,12 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
     data = migrate0_10_3(data)
   }
   if (versionDiff(data.settingVersion, '0.11.3') === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = migrate0_11_3(data)
   }
-  return data
-}
-
-const migrate073 = (data: SettingsType): SettingsType => {
-  if (data.startupMethod == null) {
-    data.startupMethod = DefaultSettings.startupMethod as {
-      method: STARTUP_METHOD
-    }
+  if (versionDiff(data.settingVersion, '0.11.5') === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate0_11_5(data)
   }
-  return data
-}
-
-const migrate082 = (data: SettingsType): SettingsType => {
-  // parentFolder -> parentFolderId
-  data.commands = data.commands.map((c) => {
-    if (c.parentFolder != null) {
-      c.parentFolderId = c.parentFolder.id
-      delete c.parentFolder
-    }
-    return c
-  })
   return data
 }
 
@@ -263,5 +239,26 @@ const migrate0_11_3 = (data: SettingsType): SettingsType => {
   if (data.linkCommand.enabled) {
     data.linkCommand.startupMethod.method = LINK_COMMAND_STARTUP_METHOD.DRAG
   }
+  return data
+}
+
+const migrate0_11_5 = (data: SettingsType): SettingsType => {
+  // 1. Convert id of comamnds to uuid
+  data.commands = data.commands.map((c) => {
+    if (c.id.length === 36) return c
+    c.id =
+      DefaultCommands.find((dc) => dc.title === c.title)?.id ??
+      crypto.randomUUID()
+    return c
+  })
+
+  // 2. PageRule: Set default value of linkCommandEnabled.
+  data.pageRules = data.pageRules.map((pr) => {
+    if (pr.linkCommandEnabled == null) {
+      pr.linkCommandEnabled = LINK_COMMAND_ENABLED.INHERIT
+    }
+    return pr
+  })
+
   return data
 }

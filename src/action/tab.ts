@@ -1,9 +1,14 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { toUrl } from '@/lib/utils'
+import { toUrl, isValidString } from '@/lib/utils'
 import type { ExecProps } from './index'
 
 export const Tab = {
   async execute({ selectionText, command, useSecondary }: ExecProps) {
+    if (!isValidString(command.searchUrl)) {
+      console.error('searchUrl is not valid.')
+      return
+    }
+
     const url = toUrl(command.searchUrl, selectionText)
     const { openMode, openModeSecondary } = command
     const background =
