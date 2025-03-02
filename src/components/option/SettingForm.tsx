@@ -122,8 +122,16 @@ const formSchema = z
           .object({
             method: z.nativeEnum(LINK_COMMAND_STARTUP_METHOD),
             keyboardParam: z.nativeEnum(KEYBOARD).optional(),
-            threshold: z.number().min(50).max(400).step(10).optional(),
-            leftClickHoldParam: z.number().min(50).max(500).step(10).optional(),
+            threshold: z
+              .number({ message: t('zod_number') })
+              .min(50, { message: t('zod_number_min', ['50']) })
+              .max(400, { message: t('zod_number_max', ['400']) })
+              .optional(),
+            leftClickHoldParam: z
+              .number({ message: t('zod_number') })
+              .min(50, { message: t('zod_number_min', ['50']) })
+              .max(500, { message: t('zod_number_max', ['500']) })
+              .optional(),
           })
           .strict(),
       })
