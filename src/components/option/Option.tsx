@@ -34,6 +34,12 @@ export function Option() {
     }
   }, [popupElm])
 
+  useEffect(() => {
+    setTimeout(() => {
+      onClickMenu(location.hash)
+    }, 50)
+  }, [])
+
   const onClickMenu = (hash: string) => {
     if (!hash) return
     const elm = document.querySelector(hash)

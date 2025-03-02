@@ -225,7 +225,7 @@ const commandFuncs = {
         pageRules,
       })
       chrome.tabs.create({
-        url: `${OPTION_PAGE}#root_pageRules`,
+        url: `${OPTION_PAGE}#pageRules`,
       })
     }
     add()
