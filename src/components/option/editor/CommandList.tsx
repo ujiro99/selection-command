@@ -527,6 +527,11 @@ export const CommandList = ({ control }: CommandListProps) => {
                     <RemoveButton
                       title={field.content.title}
                       iconUrl={field.content.iconUrl}
+                      iconSvg={
+                        isFolder(field.content)
+                          ? field.content.iconSvg
+                          : undefined
+                      }
                       onRemove={() => commandRemove(index)}
                     />
                   </div>
