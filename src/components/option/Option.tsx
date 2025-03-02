@@ -5,7 +5,6 @@ import { capitalize } from '@/lib/utils'
 import { APP_ID, VERSION } from '@/const'
 
 import { Popup } from '@/components/Popup'
-import { ScrollArea } from '@/components/ui/scrollArea'
 import { TableOfContents } from '@/components/option/TableOfContents'
 import { ImportExport } from '@/components/option/ImportExport'
 import { HubBanner } from '@/components/option/HubBanner'
@@ -13,13 +12,12 @@ import { SettingForm } from '@/components/option/SettingForm'
 
 import css from './Option.module.css'
 
-const SCROLL_OFFSET = 96
+const SCROLL_OFFSET = 80
 
 export function Option() {
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
   const [popupElm, setPopupElm] = useState<Element | null>(null)
   const [popupHeight, setPopupHeight] = useState(0)
-  const formRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const updateHeight = () => {
@@ -39,12 +37,10 @@ export function Option() {
   const onClickMenu = (hash: string) => {
     if (!hash) return
     const elm = document.querySelector(hash)
-    if (elm != null && formRef.current != null) {
+    if (elm != null) {
       const targetPosition =
-        elm.getBoundingClientRect().top +
-        formRef.current.scrollTop -
-        SCROLL_OFFSET
-      formRef.current?.scrollTo({
+        elm.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET
+      window.scrollTo({
         top: targetPosition,
         behavior: 'smooth',
       })
@@ -66,29 +62,31 @@ export function Option() {
         <span className={css.version}>Version: {VERSION}</span>
       </header>
       <div className="flex m-auto gap-4 justify-center">
-        <aside className="pt-24 min-w-64">
-          <TableOfContents onClick={onClickMenu} />
-          <ImportExport />
+        <aside className="min-w-60">
+          <div className="sticky top-20">
+            <TableOfContents onClick={onClickMenu} />
+            <ImportExport />
+          </div>
         </aside>
         <main>
-          <ScrollArea className="h-[100vh] px-6" ref={formRef}>
-            <SettingForm className="pt-24" />
-          </ScrollArea>
+          <SettingForm className="pt-10" />
         </main>
-        <aside className="pl-10 pt-24 font-mono min-w-70">
-          <div
-            ref={setPreviewElm}
-            style={{ marginBottom: Math.max(popupHeight + 5, 30) }}
-          >
-            <Popup
-              positionElm={previewElm}
-              selectionText="preview"
-              isPreview={true}
-              ref={setPopupElm}
-            />
-          </div>
-          <div className="pt-4">
-            <HubBanner />
+        <aside className="pl-10 font-mono min-w-70">
+          <div className="sticky top-20">
+            <div
+              ref={setPreviewElm}
+              style={{ marginBottom: Math.max(popupHeight + 5, 30) }}
+            >
+              <Popup
+                positionElm={previewElm}
+                selectionText="preview"
+                isPreview={true}
+                ref={setPopupElm}
+              />
+            </div>
+            <div className="pt-4">
+              <HubBanner />
+            </div>
           </div>
         </aside>
       </div>
