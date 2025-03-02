@@ -14,16 +14,19 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { MenuImage } from '@/components/menu/MenuImage'
 
 type RemoveButtonProps = {
   onRemove: () => void
   title: string
   iconUrl?: string
+  iconSvg?: string
 }
 
 export const RemoveButton = ({
   title,
   iconUrl,
+  iconSvg,
   onRemove,
 }: RemoveButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -50,11 +53,12 @@ export const RemoveButton = ({
           <DialogTitle>{t('Option_remove_title')}</DialogTitle>
         </DialogHeader>
         <DialogDescription className="flex items-center justify-center overflow-hidden">
-          {iconUrl != null && (
-            <img
-              src={iconUrl}
-              alt={title}
+          {(iconUrl != null || iconSvg != null) && (
+            <MenuImage
               className="inline-block w-6 h-6 mr-2"
+              src={iconUrl}
+              svg={iconSvg}
+              alt={title}
             />
           )}
           <span className="text-base truncate">{title}</span>
