@@ -165,7 +165,7 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
             <Button
               type="button"
               variant="outline"
-              className="absolute bottom-0 left-[100%] translate-x-[-105%] px-2 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="absolute bottom-0 left-[100%] translate-x-[-105%] px-2 rounded-md transition font-mono hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => {
                 editorRef.current = {
                   name: defaultName,
