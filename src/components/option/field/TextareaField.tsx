@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import {
   FormControl,
@@ -20,11 +21,21 @@ export const TextareaField = ({
   formLabel,
   placeholder,
 }: TextareaFieldType) => {
-  function handleInput(e: React.FormEvent<HTMLTextAreaElement>) {
-    const elm = e.target as HTMLTextAreaElement
+  const updateHeight = (elm: HTMLTextAreaElement) => {
     elm.style.height = '5px'
     elm.style.height = elm.scrollHeight + 'px'
   }
+
+  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    updateHeight(e.target as HTMLTextAreaElement)
+  }
+
+  useEffect(() => {
+    const textarea = document.getElementById(`textarea-${name}`)
+    if (textarea != null) {
+      updateHeight(textarea as HTMLTextAreaElement)
+    }
+  }, [])
 
   return (
     <FormField
@@ -38,9 +49,10 @@ export const TextareaField = ({
           <div className="w-4/6 relative">
             <FormControl>
               <Textarea
+                id={`textarea-${name}`}
                 {...field}
                 placeholder={placeholder}
-                className="resize-none overflow-hidden max-h-80"
+                className="resize-none max-h-80 font-mono text-sm"
                 onInput={handleInput}
               />
             </FormControl>
