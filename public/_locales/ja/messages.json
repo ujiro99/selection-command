@@ -189,7 +189,10 @@
     "message": "アイコンURL"
   },
   "Option_iconUrl_desc": {
-    "message": "※検索URLを変更すると自動で更新します。"
+    "message": "検索URLを変更すると自動で更新します。"
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "開始URLを変更すると自動で更新します。"
   },
   "Option_iconUrl_autofill": {
     "message": "自動検出"
@@ -265,6 +268,12 @@
   },
   "Option_variableValue": {
     "message": "値"
+  },
+  "Option_startUrl": {
+    "message": "開始URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "アクションを開始するページのURL"
   },
   "Option_linkCommand": {
     "message": "リンクプレビュー"

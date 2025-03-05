@@ -189,7 +189,10 @@
     "message": "Icon URL"
   },
   "Option_iconUrl_desc": {
-    "message": "* Automatically updated when the search URL is changed."
+    "message": "Automatically updated when the search URL is changed."
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "Automatically updated when the Start URL is changed."
   },
   "Option_iconUrl_autofill": {
     "message": "Autofill"
@@ -265,6 +268,12 @@
   },
   "Option_variableValue": {
     "message": "Value"
+  },
+  "Option_startUrl": {
+    "message": "Start URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "URL of the page where the action starts."
   },
   "Option_linkCommand": {
     "message": "Link Preview"

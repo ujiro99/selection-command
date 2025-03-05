@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Plus, Trash2, Save, SquareTerminal } from 'lucide-react'
+import { Plus, Trash2, Save, SquareTerminal, Disc3 } from 'lucide-react'
 
 import {
   Dialog,
@@ -36,7 +36,12 @@ import {
   POPUP_OPTION,
   COPY_OPTION,
   ROOT_FOLDER,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONTROL,
 } from '@/const'
+
+import { SelectorType } from '@/services/pageAction'
+
 import { isEmpty, e2a } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -138,9 +143,80 @@ const textStyleSchema = z.object({
     ),
 })
 
+const PageActionStartSchema = z.object({
+  label: z.string(),
+  url: z.string(),
+})
+
+const PageActionClickSchema = z.object({
+  label: z.string(),
+  selector: z.string(),
+  selectorType: z.nativeEnum(SelectorType),
+})
+
+const PageActionInputSchema = z.object({
+  label: z.string(),
+  selector: z.string(),
+  selectorType: z.nativeEnum(SelectorType),
+  value: z.string(),
+  selectedText: z.string(),
+  clipboardText: z.string(),
+})
+
+const PageActionKeyboardSchema = z.object({
+  label: z.string(),
+  key: z.string(),
+  code: z.string(),
+  keyCode: z.number(),
+  shiftKey: z.boolean(),
+  ctrlKey: z.boolean(),
+  altKey: z.boolean(),
+  metaKey: z.boolean(),
+  targetSelector: z.string(),
+  selectorType: z.nativeEnum(SelectorType),
+})
+
+const PageActionScrollSchema = z.object({
+  label: z.string(),
+  x: z.number(),
+  y: z.number(),
+})
+
+const PageActionParameterSchema = z.union([
+  PageActionStartSchema,
+  PageActionClickSchema,
+  PageActionInputSchema,
+  PageActionKeyboardSchema,
+  PageActionScrollSchema,
+])
+
+const PageActionStepSchema = z.object({
+  id: z.string(),
+  type: z.nativeEnum(PAGE_ACTION_EVENT).or(z.nativeEnum(PAGE_ACTION_CONTROL)),
+  param: PageActionParameterSchema,
+})
+
+const PageActionOption = z.object({
+  startUrl: z.string(),
+  steps: z.array(PageActionStepSchema),
+})
+
+const pageActionSchema = z.object({
+  openMode: z.enum([OPEN_MODE.PAGE_ACTION]),
+  id: z.string(),
+  parentFolderId: z.string().optional(),
+  title: z
+    .string()
+    .min(1, { message: t('zod_string_min', ['1']) })
+    .default('Get Text Styles'),
+  iconUrl: z.string().url({ message: t('zod_url') }),
+  pageActionOption: PageActionOption,
+})
+
 export const commandSchema = z.discriminatedUnion('openMode', [
   searchSchema,
   apiSchema,
+  pageActionSchema,
   linkPopupSchema,
   copySchema,
   textStyleSchema,
@@ -178,6 +254,19 @@ const defaultValue = (openMode: OPEN_MODE) => {
       fetchOptions: '',
       variables: [],
       parentFolderId: ROOT_FOLDER,
+    }
+  }
+  if (openMode === OPEN_MODE.PAGE_ACTION) {
+    return {
+      id: '',
+      title: '',
+      iconUrl: '',
+      openMode: OPEN_MODE.PAGE_ACTION as const,
+      parentFolderId: ROOT_FOLDER,
+      pageActionOption: {
+        startUrl: '',
+        steps: [],
+      },
     }
   }
   if (openMode === OPEN_MODE.LINK_POPUP) {
@@ -221,6 +310,8 @@ type CommandEditDialogProps = {
   command?: SelectionCommand
 }
 
+const DEFAULT_MODE = OPEN_MODE.PAGE_ACTION
+
 export const CommandEditDialog = ({
   open,
   onOpenChange,
@@ -228,12 +319,12 @@ export const CommandEditDialog = ({
   folders,
   command,
 }: CommandEditDialogProps) => {
-  const preOpenModeRef = useRef(command?.openMode ?? OPEN_MODE.POPUP)
+  const preOpenModeRef = useRef(command?.openMode ?? DEFAULT_MODE)
 
   const form = useForm<z.infer<typeof commandSchema>>({
     resolver: zodResolver(commandSchema),
     mode: 'onChange',
-    defaultValues: defaultValue(OPEN_MODE.POPUP),
+    defaultValues: defaultValue(DEFAULT_MODE),
   })
   const { register, reset, watch, setValue, clearErrors } = form
 
@@ -249,7 +340,7 @@ export const CommandEditDialog = ({
   const openMode = useWatch({
     control: form.control,
     name: 'openMode',
-    defaultValue: OPEN_MODE.POPUP,
+    defaultValue: DEFAULT_MODE,
   })
 
   const autofillIconUrl = (url: string) => {
@@ -263,10 +354,10 @@ export const CommandEditDialog = ({
       if (isEmpty(command.parentFolderId)) {
         command.parentFolderId = ROOT_FOLDER
       }
-      reset((command as any) ?? defaultValue(OPEN_MODE.POPUP))
+      reset((command as any) ?? defaultValue(DEFAULT_MODE))
     } else {
       setTimeout(() => {
-        reset(defaultValue(OPEN_MODE.POPUP))
+        reset(defaultValue(DEFAULT_MODE))
       }, 100)
     }
   }, [command])
@@ -323,18 +414,6 @@ export const CommandEditDialog = ({
 
               <SelectField
                 control={form.control}
-                name="parentFolderId"
-                formLabel={t('parentFolderId')}
-                options={[EmptyFolder, ...folders].map((folder) => ({
-                  name: folder.title,
-                  value: folder.id,
-                  iconUrl: folder.iconUrl,
-                  iconSvg: folder.iconSvg,
-                }))}
-              />
-
-              <SelectField
-                control={form.control}
                 name="openMode"
                 formLabel="Open Mode"
                 options={e2a(OPEN_MODE)
@@ -379,6 +458,19 @@ export const CommandEditDialog = ({
                 />
               )}
 
+              {openMode === OPEN_MODE.PAGE_ACTION && (
+                <InputField
+                  control={form.control}
+                  name="searchUrl"
+                  formLabel={t('startUrl')}
+                  inputProps={{
+                    type: 'string',
+                    ...register('pageActionOption.startUrl', {}),
+                  }}
+                  description={t('startUrl_desc')}
+                />
+              )}
+
               <IconField
                 control={form.control}
                 nameUrl="iconUrl"
@@ -390,9 +482,20 @@ export const CommandEditDialog = ({
                   SearchOpenMode.includes(openMode as any) ||
                   openMode === OPEN_MODE.API
                     ? t('iconUrl_desc')
-                    : ''
+                    : openMode === OPEN_MODE.PAGE_ACTION
+                      ? t('iconUrl_desc_pageAction')
+                      : ''
                 }
               />
+
+              {openMode === OPEN_MODE.PAGE_ACTION && (
+                <div className="w-full p-2 flex items-center justify-center">
+                  <Button type="button" variant="secondary" size="xl">
+                    <Disc3 className="fill-red-300" size={24} />
+                    <span>REC</span>
+                  </Button>
+                </div>
+              )}
 
               {SearchOpenMode.includes(openMode as any) && (
                 <SelectField
@@ -506,6 +609,18 @@ export const CommandEditDialog = ({
                   }))}
                 />
               )}
+
+              <SelectField
+                control={form.control}
+                name="parentFolderId"
+                formLabel={t('parentFolderId')}
+                options={[EmptyFolder, ...folders].map((folder) => ({
+                  name: folder.title,
+                  value: folder.id,
+                  iconUrl: folder.iconUrl,
+                  iconSvg: folder.iconSvg,
+                }))}
+              />
             </form>
           </Form>
           <DialogFooter>
