@@ -5,6 +5,7 @@ import { crx } from '@crxjs/vite-plugin'
 import manifest from './manifest.json'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import viteTouchCss from './src/lib/vite-plugin-touch-css'
+import removeCssFromContentScript from './src/lib/vite-plugin-manifest'
 import packageJson from './package.json'
 
 // https://vite.dev/config/
@@ -73,6 +74,7 @@ export default defineConfig(({ mode }) => {
         cssFilePaths: [path.resolve(__dirname, 'src/components/App.css')],
         watchRegexp: /src/,
       }),
+      removeCssFromContentScript(),
     ],
     define: {
       __APP_NAME__: JSON.stringify(packageJson.name),
