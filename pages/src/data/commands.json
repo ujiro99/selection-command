@@ -226,5 +226,17 @@
     "tags": ["Search", "AI"],
     "id": "59a9b166-b8e3-5e16-9237-aeda268ceacc",
     "addedAt": "2025-02-26T12:44:05.718Z"
+  },
+  {
+    "title": "Youtube",
+    "searchUrl": "https://www.youtube.com/results?search_query=%s",
+    "description": "Youtubeで検索します",
+    "iconUrl": "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Media", "Movie"],
+    "id": "226d42cf-2445-5089-8938-8d97f607d34b",
+    "addedAt": "2025-03-07T03:25:26.841Z"
   }
 ]
