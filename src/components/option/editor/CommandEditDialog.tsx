@@ -62,10 +62,14 @@ import {
   FaviconEvent,
 } from '@/hooks/useFavicon'
 
+import { Ipc, BgCommand } from '@/services/ipc'
+import { getScreenSize } from '@/services/dom'
+import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
+
 import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import type { SelectionCommand, CommandFolder } from '@/types'
+import type { SelectionCommand, CommandFolder, PageActionStep } from '@/types'
 
 import css from './CommandEditDialog.module.css'
 
@@ -380,6 +384,12 @@ const CommandEditDialogInner = ({
     keyName: '_id',
   })
 
+  const pageActionArray = useFieldArray({
+    name: 'pageActionOption.steps',
+    control: form.control,
+    keyName: '_id',
+  })
+
   const openMode = useWatch({
     control: form.control,
     name: 'openMode',
@@ -399,6 +409,13 @@ const CommandEditDialogInner = ({
   })
 
   const iconUrlSrc = searchUrl || startUrl
+
+  const openPageActionRecorder = () => {
+    Ipc.send(BgCommand.startPageActionRecorder, {
+      startUrl,
+      screen: getScreenSize(),
+    })
+  }
 
   useEffect(() => {
     if (command != null) {
@@ -436,6 +453,14 @@ const CommandEditDialogInner = ({
       setInitialized(open)
     }, 100)
   }, [open, setIconUrlSrc])
+
+  useEffect(() => {
+    Storage.addListener(SESSION_STORAGE_KEY.PAGE_ACTION, (actions) => {
+      if (actions == null) return
+      console.debug(actions)
+      setValue('pageActionOption.steps', actions as PageActionStep[])
+    })
+  }, [])
 
   useEffect(() => {
     const sub = (e: any) => {
@@ -521,26 +546,26 @@ const CommandEditDialogInner = ({
 
               {(SearchOpenMode.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
-                  <InputField
-                    control={form.control}
-                    name="searchUrl"
-                    formLabel={t('searchUrl')}
-                    inputProps={{
-                      type: 'string',
-                      ...register('searchUrl', {}),
-                    }}
-                    description={
-                      openMode === OPEN_MODE.API
-                        ? t('searchUrl_desc_api')
-                        : t('searchUrl_desc')
-                    }
-                    previewUrl={
-                      !isEmpty(getValues('searchUrl'))
-                        ? getValues('iconUrl')
-                        : undefined
-                    }
-                  />
-                )}
+                <InputField
+                  control={form.control}
+                  name="searchUrl"
+                  formLabel={t('searchUrl')}
+                  inputProps={{
+                    type: 'string',
+                    ...register('searchUrl', {}),
+                  }}
+                  description={
+                    openMode === OPEN_MODE.API
+                      ? t('searchUrl_desc_api')
+                      : t('searchUrl_desc')
+                  }
+                  previewUrl={
+                    !isEmpty(getValues('searchUrl'))
+                      ? getValues('iconUrl')
+                      : undefined
+                  }
+                />
+              )}
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
                 <InputField
@@ -558,10 +583,44 @@ const CommandEditDialogInner = ({
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
                 <div className="w-full p-2 flex items-center justify-center">
-                  <Button type="button" variant="secondary" size="xl">
-                    <Disc3 className="fill-red-300" size={24} />
+                  <button
+                    type="button"
+                    className="bg-red-500 font-mono text-white px-4 py-1.5 inline-flex items-center justify-center gap-0.5 rounded-lg text-base font-medium transition hover:opacity-80 hover:scale-[1.10]"
+                    onClick={openPageActionRecorder}
+                  >
+                    <Disc3 className="stroke-white mr-1.5" size={20} />
                     <span>REC</span>
-                  </Button>
+                  </button>
+
+                  <FormField
+                    control={form.control}
+                    name="pageActionOption.steps"
+                    render={() => (
+                      <FormItem className="flex items-center">
+                        <FormControl>
+                          <ul className="">
+                            {pageActionArray.fields.map((field, index) => (
+                              <li
+                                key={field._id}
+                                className="flex items-center gap-2 p-1"
+                              >
+                                <FormField
+                                  control={form.control}
+                                  name={`pageActionOption.steps.${index}`}
+                                  render={({ field }) => (
+                                    <FormItem className="flex items-center gap-1 w-1/2">
+                                      <p>{field.value.type}</p>
+                                      <p>{field.value.param?.label}</p>
+                                    </FormItem>
+                                  )}
+                                />
+                              </li>
+                            ))}
+                          </ul>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                 </div>
               )}
 
@@ -694,7 +753,7 @@ const CommandEditDialogInner = ({
                     formLabel={t('iconUrl')}
                     description={
                       SearchOpenMode.includes(openMode as any) ||
-                        openMode === OPEN_MODE.API
+                      openMode === OPEN_MODE.API
                         ? t('iconUrl_desc')
                         : openMode === OPEN_MODE.PAGE_ACTION
                           ? t('iconUrl_desc_pageAction')

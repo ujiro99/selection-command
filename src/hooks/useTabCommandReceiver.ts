@@ -10,9 +10,8 @@ export function useTabCommandReceiver() {
   }, [])
 
   useEffect(() => {
-    ;(async () => {
+    const start = async () => {
       if (tabId == null) return
-
       let msg
       do {
         msg = await Ipc.recvQueue(tabId, TabCommand.clickElement)
@@ -23,7 +22,8 @@ export function useTabCommandReceiver() {
       return () => {
         Ipc.removeQueueChangedLisner(tabId, TabCommand.clickElement)
       }
-    })()
+    }
+    start()
   }, [tabId])
 
   const clickElement = (param: ClickElementProps) => {
@@ -36,9 +36,9 @@ export function useTabCommandReceiver() {
 
   const execute = (message: Message | null) => {
     if (!message) return
+    console.debug(message.command, message.param)
     switch (message.command) {
       case TabCommand.clickElement:
-        console.debug('clickElement', message.command)
         clickElement(message.param as ClickElementProps)
         break
     }

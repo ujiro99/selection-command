@@ -16,6 +16,8 @@ export enum BgCommand {
   removePageAction = 'removePageAction',
   queuePageAction = 'queuePageAction',
   resetPageAction = 'resetPageAction',
+  startPageActionRecorder = 'startPageActionRecorder',
+  finishPageActionRecorder = 'finishPageActionRecorder',
 }
 
 export enum TabCommand {
@@ -142,7 +144,7 @@ export const Ipc = {
     )
 
     const messages = queue.filter(
-      (m) => m.tabId === tabId && m.command === command,
+      (m) => m.tabId === tabId && command === m.command,
     )
 
     // Get only the first message.

@@ -1,10 +1,16 @@
 import { Ipc, Sender, TabCommand } from '@/services/ipc'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from '@/const'
+import {
+  POPUP_OPTION,
+  POPUP_TYPE,
+  PAGE_ACTION_MAX,
+  PAGE_ACTION_CONTROL,
+} from '@/const'
 import { generateRandomID } from '@/lib/utils'
-import type { PageActionStep } from '@/types'
+import type { PageActionStep, PageActionContext } from '@/types'
 import type { PageAction } from '@/services/pageAction'
 import { isInputAction } from '@/services/pageAction'
+import { ScreenSize } from '@/services/dom'
 
 const StartAction = {
   type: PAGE_ACTION_CONTROL.start,
@@ -80,7 +86,13 @@ export const add = (
     await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [
       ...actions,
       action,
-      EndAction,
+      {
+        ...EndAction,
+        param: {
+          label: 'End',
+          url: sender.tab?.url ?? '',
+        },
+      },
     ])
     response(true)
   }
@@ -157,5 +169,55 @@ export const execute = (
     response(true)
   }
   queue()
+  return true
+}
+
+const setRecordingTabId = async (tabId: number | undefined) => {
+  const context = await Storage.get<PageActionContext>(
+    SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT,
+  )
+  await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT, {
+    ...context,
+    recordingTabId: tabId,
+  })
+}
+
+export const openRecorder = (
+  param: { startUrl: string; screen: ScreenSize },
+  _sender: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  const { startUrl, screen } = param
+  const open = async () => {
+    const t = Math.floor((screen.height - POPUP_OPTION.height) / 2) + screen.top
+    const l = Math.floor((screen.width - POPUP_OPTION.width) / 2) + screen.left
+    const w = await chrome.windows.create({
+      url: startUrl,
+      width: POPUP_OPTION.width,
+      height: POPUP_OPTION.height,
+      top: t,
+      left: l,
+      type: POPUP_TYPE.POPUP,
+    })
+    if (w.tabs) {
+      await setRecordingTabId(w.tabs[0].id)
+    } else {
+      console.error('Failed to open the recorder.')
+    }
+    response(true)
+  }
+  open()
+  return true
+}
+
+export const closeRecorder = (
+  _param: any,
+  sender: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  setRecordingTabId(undefined).then(() => {
+    sender?.tab && chrome.windows.remove(sender.tab.windowId)
+    response(true)
+  })
   return true
 }

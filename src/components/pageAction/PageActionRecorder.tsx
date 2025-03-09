@@ -27,7 +27,7 @@ const isControlType = (type: string): boolean => {
 export function PageActionRecorder(): JSX.Element {
   const Runner = usePageActionRunner()
   const { isRunning } = Runner
-  const { setContextData } = usePageActionContext()
+  const { isRecording: isOpen, setContextData } = usePageActionContext()
   const [actions, setActions] = useState<PageActionStep[]>([])
   const [isRecording, setIsRecording] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
@@ -79,6 +79,10 @@ export function PageActionRecorder(): JSX.Element {
 
   const edit = (id: string) => {
     setEditId(id)
+  }
+
+  const finish = () => {
+    Ipc.send(BgCommand.finishPageActionRecorder)
   }
 
   const editorSubmit = (value: string) => {
@@ -147,7 +151,7 @@ export function PageActionRecorder(): JSX.Element {
     }
   }, [previewElm])
 
-  return (
+  return isOpen ? (
     <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
       {!editorOpen && <InputPopup />}
       <InputEditor
@@ -190,6 +194,12 @@ export function PageActionRecorder(): JSX.Element {
           )}
           <button
             className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+            onClick={() => finish()}
+          >
+            Finish
+          </button>
+          <button
+            className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
             onClick={() => reset()}
           >
             Reset
@@ -215,5 +225,7 @@ export function PageActionRecorder(): JSX.Element {
         </ol>
       </div>
     </div>
+  ) : (
+    <></>
   )
 }

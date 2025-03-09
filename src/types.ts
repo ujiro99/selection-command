@@ -133,3 +133,10 @@ type PageActionOption = {
   startUrl: string
   steps: Array<PageActionStep>
 }
+
+export type PageActionContext = {
+  recordingTabId?: number
+  isRecording?: boolean
+  selectedText?: string
+  clipboardText?: string
+}
