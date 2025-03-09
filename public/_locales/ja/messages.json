@@ -44,6 +44,9 @@
   "Option_labelSave": {
     "message": "保存する"
   },
+  "Option_labelDetail": {
+    "message": "詳細"
+  },
   "Option_Enable": {
     "message": "有効"
   },

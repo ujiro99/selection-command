@@ -44,6 +44,9 @@
   "Option_labelSave": {
     "message": "Create"
   },
+  "Option_labelDetail": {
+    "message": "Detail"
+  },
   "Option_Enable": {
     "message": "Enabled"
   },

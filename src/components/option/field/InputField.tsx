@@ -7,6 +7,7 @@ import {
   FormMessage,
   FormDescription,
 } from '@/components/ui/form'
+import { MenuImage } from '@/components/menu/MenuImage'
 
 type InputFieldType = {
   control: any
@@ -14,8 +15,10 @@ type InputFieldType = {
   formLabel: string
   inputProps: React.ComponentProps<typeof Input>
   description?: string
-  onAutoFill?: (value: string) => void
+  previewUrl?: string
 }
+
+import { isEmpty, cn } from '@/lib/utils'
 
 export const InputField = ({
   control,
@@ -23,7 +26,9 @@ export const InputField = ({
   formLabel,
   inputProps,
   description,
+  previewUrl,
 }: InputFieldType) => {
+  const hasPreview = !isEmpty(previewUrl)
   return (
     <FormField
       control={control}
@@ -35,8 +40,19 @@ export const InputField = ({
             {description && <FormDescription>{description}</FormDescription>}
           </div>
           <div className="w-4/6 relative">
+            {hasPreview && (
+              <MenuImage
+                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+                src={previewUrl}
+                alt="Preview of image"
+              />
+            )}
             <FormControl>
-              <Input {...field} {...inputProps} />
+              <Input
+                className={cn(hasPreview && 'pl-10')}
+                {...field}
+                {...inputProps}
+              />
             </FormControl>
             <FormMessage />
           </div>
