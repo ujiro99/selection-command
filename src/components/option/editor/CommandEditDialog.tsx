@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -361,6 +361,7 @@ const CommandEditDialogInner = ({
   folders,
   command,
 }: CommandEditDialogProps) => {
+  const [initialized, setInitialized] = useState(false)
   const preOpenModeRef = useRef(command?.openMode ?? DEFAULT_MODE)
 
   const form = useForm<z.infer<typeof commandSchema>>({
@@ -425,15 +426,23 @@ const CommandEditDialogInner = ({
   }, [openMode])
 
   useEffect(() => {
-    if (isEmpty(iconUrlSrc)) return
+    if (!initialized) return
     setIconUrlSrc(iconUrlSrc)
   }, [iconUrlSrc, setIconUrlSrc])
+
+  useEffect(() => {
+    if (!open) setIconUrlSrc('')
+    setTimeout(() => {
+      setInitialized(open)
+    }, 100)
+  }, [open, setIconUrlSrc])
 
   useEffect(() => {
     const sub = (e: any) => {
       setValue('iconUrl', e.detail.faviconUrl)
       clearErrors('iconUrl')
     }
+
     subscribe(FaviconEvent.START, sub)
     subscribe(FaviconEvent.SUCCESS, sub)
     subscribe(FaviconEvent.FAIL, sub)
