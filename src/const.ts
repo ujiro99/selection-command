@@ -13,6 +13,7 @@ export enum OPEN_MODE {
   WINDOW = 'window',
   TAB = 'tab',
   API = 'api',
+  PAGE_ACTION = 'pageAction',
   LINK_POPUP = 'linkPopup',
   COPY = 'copy',
   GET_TEXT_STYLES = 'getTextStyles',
@@ -126,6 +127,20 @@ export const POPUP_OPTION = {
   height: 700,
 }
 
+export enum PAGE_ACTION_EVENT {
+  click = 'click',
+  doubleClick = 'doubleClick',
+  tripleClick = 'tripleClick',
+  keyboard = 'keyboard',
+  scroll = 'scroll',
+  input = 'input',
+}
+
+export enum PAGE_ACTION_CONTROL {
+  start = 'start',
+  end = 'end',
+}
+
 export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100
@@ -139,3 +154,5 @@ export const COMMAND_MAX = 100
 export const HUB_URL = isDebug
   ? 'http://localhost:3000/'
   : 'https://ujiro99.github.io/selection-command/'
+
+export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end

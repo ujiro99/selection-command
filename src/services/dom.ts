@@ -163,29 +163,35 @@ export function isClickableElement(elm: Element | null): boolean {
 export function findClickableElement(elm: Element | null): Element | null {
   if (elm == null) return null
   if (elm.nodeName === 'body') return null
+  if (elm instanceof Window) return null
 
-  // 1. check onclick property
-  if (
-    elm.hasAttribute('onclick') ||
-    typeof (elm as HTMLElement).onclick === 'function'
-  ) {
-    return elm
-  }
-
-  // 2. check tagName
-  const clickableTags = ['a', 'button', 'input']
-  if (
-    clickableTags.includes(elm.tagName.toLowerCase()) &&
-    !(elm as HTMLButtonElement).disabled
-  ) {
-    if (elm.tagName.toLowerCase() === 'input') {
-      const type = (elm as HTMLInputElement).type
-      if (type === 'button') {
-        return elm
-      }
-    } else {
+  try {
+    // 1. check onclick property
+    if (
+      elm.hasAttribute('onclick') ||
+      typeof (elm as HTMLElement).onclick === 'function'
+    ) {
       return elm
     }
+
+    // 2. check tagName
+    const clickableTags = ['a', 'button', 'input']
+    if (
+      clickableTags.includes(elm.tagName.toLowerCase()) &&
+      !(elm as HTMLButtonElement).disabled
+    ) {
+      if (elm.tagName.toLowerCase() === 'input') {
+        const type = (elm as HTMLInputElement).type
+        if (type === 'button') {
+          return elm
+        }
+      } else {
+        return elm
+      }
+    }
+  } catch (e) {
+    console.debug(e)
+    return null
   }
 
   // 3. check parent
@@ -214,4 +220,51 @@ export function getSelectorFromElement(el: Element): string {
   }
 
   return path.join(' > ')
+}
+
+/**
+ * Check if the xpath is valid.
+ * @param {string} xpath The xpath to check.
+ * @returns {boolean} True if the xpath is valid.
+ */
+export type XPath = string
+export function isValidXPath(xpath: string): xpath is XPath {
+  try {
+    const evaluator = new XPathEvaluator()
+    evaluator.createExpression(xpath, null)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Get scrollable ancestors of the specified element.
+ */
+export function getScrollableAncestors(element: HTMLElement): HTMLElement[] {
+  const scrollableAncestors: HTMLElement[] = []
+  let parent = element.parentElement
+
+  while (parent) {
+    const style = window.getComputedStyle(parent)
+    if (
+      style.overflow.indexOf('scroll') >= 0 ||
+      style.overflow.indexOf('auto') >= 0
+    ) {
+      scrollableAncestors.push(parent)
+    }
+    parent = parent.parentElement
+  }
+
+  return scrollableAncestors
+}
+
+/**
+ * check if the node is a text node.
+ * @param {Node} node The node to check.
+ * @returns {boolean} True if the node is a text node.
+ */
+export const isTextNode = (node: any | null): node is Text => {
+  if (node == null) return false
+  return node.nodeType === Node.TEXT_NODE
 }

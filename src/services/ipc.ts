@@ -1,4 +1,4 @@
-import { Storage, SESSION_STORAGE_KEY, STORAGE_AREA } from './storage'
+import { Storage, SESSION_STORAGE_KEY } from './storage'
 
 export enum BgCommand {
   openPopups = 'openPopups',
@@ -11,10 +11,18 @@ export enum BgCommand {
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
+  openPageActionRecorder = 'openPageActionRecorder',
+  addPageAction = 'addPageAction',
+  updatePageAction = 'updatePageAction',
+  removePageAction = 'removePageAction',
+  queuePageAction = 'queuePageAction',
+  resetPageAction = 'resetPageAction',
 }
 
 export enum TabCommand {
   executeAction = 'executeAction',
+  recordPageAction = 'recordPageAction',
+  executePageAction = 'executePageAction',
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   getTabId = 'getTabId',
@@ -35,7 +43,9 @@ export type Message = Request & {
   tabId: number
 }
 
-export type MessageQueueCallback = (newMessage: Message) => void
+export type MessageQueueCallback = (newMessage: Message | null) => void
+
+export type Sender = chrome.runtime.MessageSender
 
 export type IpcCallback = (
   param: unknown,
@@ -46,11 +56,17 @@ export type IpcCallback = (
 export const Ipc = {
   init() {
     Storage.addListener(SESSION_STORAGE_KEY.MESSAGE_QUEUE, (newQueue) => {
-      for (const [tabId, listener] of Object.entries(Ipc.msgQueuelisteners)) {
+      for (const [tabId, listeners] of Object.entries(
+        Ipc.msgQueueChangedlisteners,
+      )) {
         const msgs = (newQueue as Message[]).filter(
           (m) => m.tabId === Number(tabId),
         )
-        msgs.forEach((m) => listener(m))
+        if (msgs.length === 0) {
+          Object.values(listeners).forEach((l) => l(null))
+        } else {
+          msgs.forEach((m) => listeners[m.command] && listeners[m.command](m))
+        }
         newQueue = (newQueue as Message[]).filter(
           (m) => m.tabId !== Number(tabId),
         )
@@ -117,38 +133,72 @@ export const Ipc = {
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {
     const queue = await Storage.get<Message[]>(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      STORAGE_AREA.SESSION,
     )
     queue.push({ tabId, command, param })
-    return Storage.set(
-      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      queue,
-      STORAGE_AREA.SESSION,
-    )
+    return Storage.set(SESSION_STORAGE_KEY.MESSAGE_QUEUE, queue)
   },
 
-  async recvQueue(tabId: number) {
+  async recvQueue(tabId: number, command: IpcCommand): Promise<Message | null> {
     const queue = await Storage.get<Message[]>(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      STORAGE_AREA.SESSION,
     )
-    const msgs = queue.filter((m) => m.tabId === tabId)
+
+    const messages = queue.filter(
+      (m) => m.tabId === tabId && m.command === command,
+    )
+
+    // Get only the first message.
+    const message = messages[0]
+    if (message) {
+      // Remove consumed message from the queue.
+      await Storage.set(
+        SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+        queue.filter((m) => m !== message),
+      )
+    }
+    return message
+  },
+
+  async isQueueEmpty(tabId: number, command: IpcCommand): Promise<boolean> {
+    const queue = await Storage.get<Message[]>(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+    )
+    return !queue.some(
+      (message) => message.tabId === tabId && message.command === command,
+    )
+  },
+
+  async removeQueue(tabId: number, command: IpcCommand) {
+    const queue = await Storage.get<Message[]>(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+    )
     await Storage.set(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      queue.filter((m) => m.tabId !== tabId),
-      STORAGE_AREA.SESSION,
+      queue.filter((m) => !(m.tabId === tabId && m.command === command)),
     )
-    return msgs
   },
 
-  msgQueuelisteners: {} as { [tabId: number]: MessageQueueCallback },
+  msgQueueChangedlisteners: {} as Record<
+    number,
+    Record<IpcCommand, MessageQueueCallback>
+  >,
 
-  addQueueListener(tabId: number, callback: MessageQueueCallback) {
-    Ipc.msgQueuelisteners[tabId] = callback
+  addQueueChangedListener(
+    tabId: number,
+    command: IpcCommand,
+    callback: MessageQueueCallback,
+  ) {
+    if (!Ipc.msgQueueChangedlisteners[tabId]) {
+      Ipc.msgQueueChangedlisteners[tabId] = {} as Record<
+        IpcCommand,
+        MessageQueueCallback
+      >
+    }
+    Ipc.msgQueueChangedlisteners[tabId][command] = callback
   },
 
-  removeQueueListener(tabId: number) {
-    delete Ipc.msgQueuelisteners[tabId]
+  removeQueueChangedLisner(tabId: number, command: IpcCommand) {
+    delete Ipc.msgQueueChangedlisteners[tabId][command]
   },
 }
 

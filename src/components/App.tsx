@@ -3,14 +3,16 @@ import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
 import { LinkSelector } from '@/components/LinkSelector'
 import { OpenInTab } from '@/components/OpenInTab'
+import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
 import { getSelectionText } from '@/services/dom'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
+import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 
 import './App.css'
 
 export function App() {
-  useTabCommandReceiver()
+  const { enabledPageActionRecorder } = useTabCommandReceiver()
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
@@ -29,15 +31,18 @@ export function App() {
   }, [isHover])
 
   return (
-    <SelectContextProvider value={{ selectionText, target, setTarget }}>
-      <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
-      <Popup
-        positionElm={positionElm}
-        selectionText={selectionText}
-        onHover={(v: boolean) => setIsHover(v)}
-      />
-      <LinkSelector />
-      <OpenInTab />
-    </SelectContextProvider>
+    <PageActionContextProvider>
+      <SelectContextProvider value={{ selectionText, target, setTarget }}>
+        <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
+        <Popup
+          positionElm={positionElm}
+          selectionText={selectionText}
+          onHover={(v: boolean) => setIsHover(v)}
+        />
+        <LinkSelector />
+        <OpenInTab />
+        {enabledPageActionRecorder && <PageActionRecorder />}
+      </SelectContextProvider>
+    </PageActionContextProvider>
   )
 }

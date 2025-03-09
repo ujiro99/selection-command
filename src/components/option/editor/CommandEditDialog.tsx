@@ -1,8 +1,16 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Plus, Trash2, Save, SquareTerminal } from 'lucide-react'
+import {
+  Plus,
+  Trash2,
+  Save,
+  SquareTerminal,
+  Disc3,
+  ChevronsUpDown,
+  ChevronsDownUp,
+} from 'lucide-react'
 
 import {
   Dialog,
@@ -23,6 +31,12 @@ import {
   FormLabel,
 } from '@/components/ui/form'
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
+
 import { Input } from '@/components/ui/input'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
@@ -36,11 +50,26 @@ import {
   POPUP_OPTION,
   COPY_OPTION,
   ROOT_FOLDER,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONTROL,
 } from '@/const'
-import { isEmpty, e2a } from '@/lib/utils'
+
+import { SelectorType } from '@/services/pageAction'
+
+import {
+  FaviconContextProvider,
+  useFavicon,
+  FaviconEvent,
+} from '@/hooks/useFavicon'
+
+import { Ipc, BgCommand } from '@/services/ipc'
+
+import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { SelectionCommand, CommandFolder } from '@/types'
+
+import css from './CommandEditDialog.module.css'
 
 const SearchOpenMode = [
   OPEN_MODE.POPUP,
@@ -138,9 +167,80 @@ const textStyleSchema = z.object({
     ),
 })
 
+const PageActionStartSchema = z.object({
+  label: z.string(),
+  url: z.string(),
+})
+
+const PageActionClickSchema = z.object({
+  label: z.string(),
+  selector: z.string(),
+  selectorType: z.nativeEnum(SelectorType),
+})
+
+const PageActionInputSchema = z.object({
+  label: z.string(),
+  selector: z.string(),
+  selectorType: z.nativeEnum(SelectorType),
+  value: z.string(),
+  selectedText: z.string(),
+  clipboardText: z.string(),
+})
+
+const PageActionKeyboardSchema = z.object({
+  label: z.string(),
+  key: z.string(),
+  code: z.string(),
+  keyCode: z.number(),
+  shiftKey: z.boolean(),
+  ctrlKey: z.boolean(),
+  altKey: z.boolean(),
+  metaKey: z.boolean(),
+  targetSelector: z.string(),
+  selectorType: z.nativeEnum(SelectorType),
+})
+
+const PageActionScrollSchema = z.object({
+  label: z.string(),
+  x: z.number(),
+  y: z.number(),
+})
+
+const PageActionParameterSchema = z.union([
+  PageActionStartSchema,
+  PageActionClickSchema,
+  PageActionInputSchema,
+  PageActionKeyboardSchema,
+  PageActionScrollSchema,
+])
+
+const PageActionStepSchema = z.object({
+  id: z.string(),
+  type: z.nativeEnum(PAGE_ACTION_EVENT).or(z.nativeEnum(PAGE_ACTION_CONTROL)),
+  param: PageActionParameterSchema,
+})
+
+const PageActionOption = z.object({
+  startUrl: z.string(),
+  steps: z.array(PageActionStepSchema),
+})
+
+const pageActionSchema = z.object({
+  openMode: z.enum([OPEN_MODE.PAGE_ACTION]),
+  id: z.string(),
+  parentFolderId: z.string().optional(),
+  title: z
+    .string()
+    .min(1, { message: t('zod_string_min', ['1']) })
+    .default('Get Text Styles'),
+  iconUrl: z.string().url({ message: t('zod_url') }),
+  pageActionOption: PageActionOption,
+})
+
 export const commandSchema = z.discriminatedUnion('openMode', [
   searchSchema,
   apiSchema,
+  pageActionSchema,
   linkPopupSchema,
   copySchema,
   textStyleSchema,
@@ -178,6 +278,19 @@ const defaultValue = (openMode: OPEN_MODE) => {
       fetchOptions: '',
       variables: [],
       parentFolderId: ROOT_FOLDER,
+    }
+  }
+  if (openMode === OPEN_MODE.PAGE_ACTION) {
+    return {
+      id: '',
+      title: '',
+      iconUrl: '',
+      openMode: OPEN_MODE.PAGE_ACTION as const,
+      parentFolderId: ROOT_FOLDER,
+      pageActionOption: {
+        startUrl: '',
+        steps: [],
+      },
     }
   }
   if (openMode === OPEN_MODE.LINK_POPUP) {
@@ -221,6 +334,8 @@ type CommandEditDialogProps = {
   command?: SelectionCommand
 }
 
+const DEFAULT_MODE = OPEN_MODE.PAGE_ACTION
+
 export const CommandEditDialog = ({
   open,
   onOpenChange,
@@ -228,16 +343,37 @@ export const CommandEditDialog = ({
   folders,
   command,
 }: CommandEditDialogProps) => {
-  const preOpenModeRef = useRef(command?.openMode ?? OPEN_MODE.POPUP)
+  return (
+    <FaviconContextProvider>
+      <CommandEditDialogInner
+        open={open}
+        onOpenChange={onOpenChange}
+        onSubmit={onSubmit}
+        folders={folders}
+        command={command}
+      />
+    </FaviconContextProvider>
+  )
+}
+
+const CommandEditDialogInner = ({
+  open,
+  onOpenChange,
+  onSubmit,
+  folders,
+  command,
+}: CommandEditDialogProps) => {
+  const [initialized, setInitialized] = useState(false)
+  const preOpenModeRef = useRef(command?.openMode ?? DEFAULT_MODE)
 
   const form = useForm<z.infer<typeof commandSchema>>({
     resolver: zodResolver(commandSchema),
     mode: 'onChange',
-    defaultValues: defaultValue(OPEN_MODE.POPUP),
+    defaultValues: defaultValue(DEFAULT_MODE),
   })
-  const { register, reset, watch, setValue, clearErrors } = form
+  const { register, reset, getValues, setValue, clearErrors } = form
+  const { setIconUrlSrc, subscribe, unsubscribe } = useFavicon()
 
-  const searchUrl = watch('searchUrl')
   const isUpdate = command != null
 
   const variableArray = useFieldArray({
@@ -249,13 +385,25 @@ export const CommandEditDialog = ({
   const openMode = useWatch({
     control: form.control,
     name: 'openMode',
-    defaultValue: OPEN_MODE.POPUP,
+    defaultValue: DEFAULT_MODE,
   })
 
-  const autofillIconUrl = (url: string) => {
-    if (isEmpty(url)) return
-    setValue('iconUrl', url)
-    clearErrors('iconUrl')
+  const searchUrl = useWatch({
+    control: form.control,
+    name: 'searchUrl',
+    defaultValue: '',
+  })
+
+  const startUrl = useWatch({
+    control: form.control,
+    name: 'pageActionOption.startUrl',
+    defaultValue: '',
+  })
+
+  const iconUrlSrc = searchUrl || startUrl
+
+  const openPageActionRecorder = () => {
+    Ipc.send(BgCommand.openPageActionRecorder, { startUrl })
   }
 
   useEffect(() => {
@@ -263,10 +411,10 @@ export const CommandEditDialog = ({
       if (isEmpty(command.parentFolderId)) {
         command.parentFolderId = ROOT_FOLDER
       }
-      reset((command as any) ?? defaultValue(OPEN_MODE.POPUP))
+      reset((command as any) ?? defaultValue(DEFAULT_MODE))
     } else {
       setTimeout(() => {
-        reset(defaultValue(OPEN_MODE.POPUP))
+        reset(defaultValue(DEFAULT_MODE))
       }, 100)
     }
   }, [command])
@@ -282,6 +430,34 @@ export const CommandEditDialog = ({
     reset(defaultValue(openMode))
     preOpenModeRef.current = openMode
   }, [openMode])
+
+  useEffect(() => {
+    if (!initialized) return
+    setIconUrlSrc(iconUrlSrc)
+  }, [iconUrlSrc, setIconUrlSrc])
+
+  useEffect(() => {
+    if (!open) setIconUrlSrc('')
+    setTimeout(() => {
+      setInitialized(open)
+    }, 100)
+  }, [open, setIconUrlSrc])
+
+  useEffect(() => {
+    const sub = (e: any) => {
+      setValue('iconUrl', e.detail.faviconUrl)
+      clearErrors('iconUrl')
+    }
+
+    subscribe(FaviconEvent.START, sub)
+    subscribe(FaviconEvent.SUCCESS, sub)
+    subscribe(FaviconEvent.FAIL, sub)
+    return () => {
+      unsubscribe(FaviconEvent.START, sub)
+      unsubscribe(FaviconEvent.SUCCESS, sub)
+      unsubscribe(FaviconEvent.FAIL, sub)
+    }
+  }, [])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -323,18 +499,6 @@ export const CommandEditDialog = ({
 
               <SelectField
                 control={form.control}
-                name="parentFolderId"
-                formLabel={t('parentFolderId')}
-                options={[EmptyFolder, ...folders].map((folder) => ({
-                  name: folder.title,
-                  value: folder.id,
-                  iconUrl: folder.iconUrl,
-                  iconSvg: folder.iconSvg,
-                }))}
-              />
-
-              <SelectField
-                control={form.control}
                 name="openMode"
                 formLabel="Open Mode"
                 options={e2a(OPEN_MODE)
@@ -363,48 +527,52 @@ export const CommandEditDialog = ({
 
               {(SearchOpenMode.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
+                  <InputField
+                    control={form.control}
+                    name="searchUrl"
+                    formLabel={t('searchUrl')}
+                    inputProps={{
+                      type: 'string',
+                      ...register('searchUrl', {}),
+                    }}
+                    description={
+                      openMode === OPEN_MODE.API
+                        ? t('searchUrl_desc_api')
+                        : t('searchUrl_desc')
+                    }
+                    previewUrl={
+                      !isEmpty(getValues('searchUrl'))
+                        ? getValues('iconUrl')
+                        : undefined
+                    }
+                  />
+                )}
+
+              {openMode === OPEN_MODE.PAGE_ACTION && (
                 <InputField
                   control={form.control}
                   name="searchUrl"
-                  formLabel={t('searchUrl')}
+                  formLabel={t('startUrl')}
                   inputProps={{
                     type: 'string',
-                    ...register('searchUrl', {}),
+                    ...register('pageActionOption.startUrl', {}),
                   }}
-                  description={
-                    openMode === OPEN_MODE.API
-                      ? t('searchUrl_desc_api')
-                      : t('searchUrl_desc')
-                  }
+                  description={t('startUrl_desc')}
+                  previewUrl={getValues('iconUrl')}
                 />
               )}
 
-              <IconField
-                control={form.control}
-                nameUrl="iconUrl"
-                nameSvg="iconSvg"
-                formLabel={t('iconUrl')}
-                iconUrlSrc={searchUrl}
-                onAutoFill={autofillIconUrl}
-                description={
-                  SearchOpenMode.includes(openMode as any) ||
-                  openMode === OPEN_MODE.API
-                    ? t('iconUrl_desc')
-                    : ''
-                }
-              />
-
-              {SearchOpenMode.includes(openMode as any) && (
-                <SelectField
-                  control={form.control}
-                  name="spaceEncoding"
-                  formLabel={t('spaceEncoding')}
-                  options={e2a(SPACE_ENCODING).map((enc) => ({
-                    name: t(`spaceEncoding_${enc}`),
-                    value: enc,
-                  }))}
-                  description={t('spaceEncoding_desc')}
-                />
+              {openMode === OPEN_MODE.PAGE_ACTION && (
+                <div className="w-full p-2 flex items-center justify-center">
+                  <button
+                    type="button"
+                    className="bg-red-500 text-white px-4 py-1.5 inline-flex items-center justify-center gap-0.5 rounded-lg text-base font-medium transition hover:opacity-80 hover:scale-[1.10]"
+                    onClick={openPageActionRecorder}
+                  >
+                    <Disc3 className="stroke-white mr-1.5" size={20} />
+                    <span>REC</span>
+                  </button>
+                </div>
               )}
 
               {openMode === OPEN_MODE.API && (
@@ -506,9 +674,73 @@ export const CommandEditDialog = ({
                   }))}
                 />
               )}
+
+              {/* details */}
+
+              <Collapsible
+                className={cn(css.collapse, 'flex flex-col items-end')}
+              >
+                <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
+                  <ChevronsUpDown
+                    size={18}
+                    className={cn(css.icon, css.iconUpDown)}
+                  />
+                  <ChevronsDownUp
+                    size={18}
+                    className={cn(css.icon, css.iconDownUp)}
+                  />
+                  <span className="ml-0.5">{t('labelDetail')}</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent
+                  className={cn(
+                    css.CollapsibleContent,
+                    'w-full space-y-3 pt-2',
+                  )}
+                >
+                  <IconField
+                    control={form.control}
+                    nameUrl="iconUrl"
+                    nameSvg="iconSvg"
+                    formLabel={t('iconUrl')}
+                    description={
+                      SearchOpenMode.includes(openMode as any) ||
+                        openMode === OPEN_MODE.API
+                        ? t('iconUrl_desc')
+                        : openMode === OPEN_MODE.PAGE_ACTION
+                          ? t('iconUrl_desc_pageAction')
+                          : ''
+                    }
+                  />
+
+                  {SearchOpenMode.includes(openMode as any) && (
+                    <SelectField
+                      control={form.control}
+                      name="spaceEncoding"
+                      formLabel={t('spaceEncoding')}
+                      options={e2a(SPACE_ENCODING).map((enc) => ({
+                        name: t(`spaceEncoding_${enc}`),
+                        value: enc,
+                      }))}
+                      description={t('spaceEncoding_desc')}
+                    />
+                  )}
+
+                  <SelectField
+                    control={form.control}
+                    name="parentFolderId"
+                    formLabel={t('parentFolderId')}
+                    options={[EmptyFolder, ...folders].map((folder) => ({
+                      name: folder.title,
+                      value: folder.id,
+                      iconUrl: folder.iconUrl,
+                      iconSvg: folder.iconSvg,
+                    }))}
+                  />
+                </CollapsibleContent>
+              </Collapsible>
             </form>
           </Form>
-          <DialogFooter>
+          <DialogFooter className="pt-0">
             <DialogClose asChild>
               <Button type="button" variant="secondary" size="lg">
                 {t('labelCancel')}

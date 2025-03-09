@@ -12,9 +12,10 @@ import { escapeJson } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
 import { Settings } from '@/services/settings'
 import type { CommandVariable } from '@/types'
-import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
-import '@/services/contextMenus'
+import { Storage, STORAGE_KEY } from '@/services/storage'
 import { PopupOption } from '@/services/defaultSettings'
+import { PageActionBackground } from '@/services/pageAction'
+import '@/services/contextMenus'
 
 const OPTION_PAGE = 'src/options_page.html'
 
@@ -39,12 +40,10 @@ class BgData {
 
   public static init() {
     if (!BgData.instance) {
-      Storage.get<BgData>(STORAGE_KEY.BG, STORAGE_AREA.LOCAL).then(
-        (val: BgData) => {
-          BgData.instance = new BgData(val)
-          console.debug('BgData initialized', BgData.instance)
-        },
-      )
+      Storage.get<BgData>(STORAGE_KEY.BG).then((val: BgData) => {
+        BgData.instance = new BgData(val)
+        console.debug('BgData initialized', BgData.instance)
+      })
     }
   }
 
@@ -54,7 +53,7 @@ class BgData {
 
   public static set(val: BgData) {
     BgData.instance = val
-    Storage.set(STORAGE_KEY.BG, BgData.instance, STORAGE_AREA.LOCAL)
+    Storage.set(STORAGE_KEY.BG, BgData.instance)
   }
 }
 
@@ -387,6 +386,16 @@ const commandFuncs = {
     toggle()
     return true
   },
+
+  //
+  // PageAction
+  //
+  [BgCommand.addPageAction]: PageActionBackground.add,
+  [BgCommand.updatePageAction]: PageActionBackground.update,
+  [BgCommand.removePageAction]: PageActionBackground.remove,
+  [BgCommand.resetPageAction]: PageActionBackground.reset,
+  [BgCommand.queuePageAction]: PageActionBackground.execute,
+  [BgCommand.openPageActionRecorder]: PageActionBackground.openRecorder,
 } as { [key: string]: IpcCallback }
 
 for (const key in BgCommand) {

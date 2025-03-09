@@ -10,7 +10,10 @@ import type {
   STYLE_VARIABLE,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONTROL,
 } from '@/const'
+import type { PageAction } from '@/services/pageAction'
 
 export type Version = `${number}.${number}.${number}`
 
@@ -34,6 +37,7 @@ export type SelectionCommand = {
   fetchOptions?: string
   variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
+  pageActionOption?: PageActionOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
@@ -116,4 +120,16 @@ export type SettingsType = {
 export type SessionData = {
   session_id: string
   timestamp: number
+}
+
+export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
+export type PageActionStep = {
+  id: string
+  type: ActionTypes
+  param: PageAction.Parameter
+}
+
+type PageActionOption = {
+  startUrl: string
+  steps: Array<PageActionStep>
 }
