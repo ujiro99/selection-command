@@ -1,4 +1,4 @@
-export function PageActionField(props) {
+export function PageActionField() {
   const start = () => {
     console.log('start')
   }

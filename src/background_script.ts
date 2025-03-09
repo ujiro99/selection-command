@@ -395,6 +395,7 @@ const commandFuncs = {
   [BgCommand.removePageAction]: PageActionBackground.remove,
   [BgCommand.resetPageAction]: PageActionBackground.reset,
   [BgCommand.queuePageAction]: PageActionBackground.execute,
+  [BgCommand.openPageActionRecorder]: PageActionBackground.openRecorder,
 } as { [key: string]: IpcCallback }
 
 for (const key in BgCommand) {

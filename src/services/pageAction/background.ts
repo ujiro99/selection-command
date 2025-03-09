@@ -159,3 +159,18 @@ export const execute = (
   queue()
   return true
 }
+
+export const openRecorder = (
+  param: { startUrl: string },
+  _sender: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  const open = async () => {
+    const tab = await chrome.tabs.create({ url: param.startUrl })
+    console.log('tab', tab)
+    await Ipc.sendQueue(tab.id as number, TabCommand.recordPageAction)
+    response(true)
+  }
+  open()
+  return true
+}

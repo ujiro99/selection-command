@@ -11,6 +11,7 @@ export enum BgCommand {
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
+  openPageActionRecorder = 'openPageActionRecorder',
   addPageAction = 'addPageAction',
   updatePageAction = 'updatePageAction',
   removePageAction = 'removePageAction',
@@ -20,6 +21,7 @@ export enum BgCommand {
 
 export enum TabCommand {
   executeAction = 'executeAction',
+  recordPageAction = 'recordPageAction',
   executePageAction = 'executePageAction',
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',

@@ -12,7 +12,7 @@ import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionConte
 import './App.css'
 
 export function App() {
-  useTabCommandReceiver()
+  const { enabledPageActionRecorder } = useTabCommandReceiver()
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
@@ -41,7 +41,7 @@ export function App() {
         />
         <LinkSelector />
         <OpenInTab />
-        <PageActionRecorder />
+        {enabledPageActionRecorder && <PageActionRecorder />}
       </SelectContextProvider>
     </PageActionContextProvider>
   )

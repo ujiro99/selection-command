@@ -62,6 +62,8 @@ import {
   FaviconEvent,
 } from '@/hooks/useFavicon'
 
+import { Ipc, BgCommand } from '@/services/ipc'
+
 import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -400,6 +402,10 @@ const CommandEditDialogInner = ({
 
   const iconUrlSrc = searchUrl || startUrl
 
+  const openPageActionRecorder = () => {
+    Ipc.send(BgCommand.openPageActionRecorder, { startUrl })
+  }
+
   useEffect(() => {
     if (command != null) {
       if (isEmpty(command.parentFolderId)) {
@@ -558,10 +564,14 @@ const CommandEditDialogInner = ({
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
                 <div className="w-full p-2 flex items-center justify-center">
-                  <Button type="button" variant="secondary" size="xl">
-                    <Disc3 className="fill-red-300" size={24} />
+                  <button
+                    type="button"
+                    className="bg-red-500 text-white px-4 py-1.5 inline-flex items-center justify-center gap-0.5 rounded-lg text-base font-medium transition hover:opacity-80 hover:scale-[1.10]"
+                    onClick={openPageActionRecorder}
+                  >
+                    <Disc3 className="stroke-white mr-1.5" size={20} />
                     <span>REC</span>
-                  </Button>
+                  </button>
                 </div>
               )}
 
