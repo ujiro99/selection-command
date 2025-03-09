@@ -14,7 +14,7 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
       chrome.windows.remove(w.id as number)
       chrome.tabs.onUpdated.removeListener(onUpdated)
       console.warn('timeout', url)
-      throw new Error('timeout')
+      reject('timeout')
     }, 5000)
 
     const onUpdated = async (

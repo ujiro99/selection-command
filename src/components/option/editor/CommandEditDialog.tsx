@@ -436,9 +436,11 @@ const CommandEditDialogInner = ({
     }
     subscribe(FaviconEvent.START, sub)
     subscribe(FaviconEvent.SUCCESS, sub)
+    subscribe(FaviconEvent.FAIL, sub)
     return () => {
       unsubscribe(FaviconEvent.START, sub)
       unsubscribe(FaviconEvent.SUCCESS, sub)
+      unsubscribe(FaviconEvent.FAIL, sub)
     }
   }, [])
 
@@ -510,22 +512,26 @@ const CommandEditDialogInner = ({
 
               {(SearchOpenMode.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
-                <InputField
-                  control={form.control}
-                  name="searchUrl"
-                  formLabel={t('searchUrl')}
-                  inputProps={{
-                    type: 'string',
-                    ...register('searchUrl', {}),
-                  }}
-                  description={
-                    openMode === OPEN_MODE.API
-                      ? t('searchUrl_desc_api')
-                      : t('searchUrl_desc')
-                  }
-                  previewUrl={getValues('iconUrl')}
-                />
-              )}
+                  <InputField
+                    control={form.control}
+                    name="searchUrl"
+                    formLabel={t('searchUrl')}
+                    inputProps={{
+                      type: 'string',
+                      ...register('searchUrl', {}),
+                    }}
+                    description={
+                      openMode === OPEN_MODE.API
+                        ? t('searchUrl_desc_api')
+                        : t('searchUrl_desc')
+                    }
+                    previewUrl={
+                      !isEmpty(getValues('searchUrl'))
+                        ? getValues('iconUrl')
+                        : undefined
+                    }
+                  />
+                )}
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
                 <InputField
@@ -679,7 +685,7 @@ const CommandEditDialogInner = ({
                     formLabel={t('iconUrl')}
                     description={
                       SearchOpenMode.includes(openMode as any) ||
-                      openMode === OPEN_MODE.API
+                        openMode === OPEN_MODE.API
                         ? t('iconUrl_desc')
                         : openMode === OPEN_MODE.PAGE_ACTION
                           ? t('iconUrl_desc_pageAction')
