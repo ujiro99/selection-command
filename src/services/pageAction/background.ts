@@ -11,16 +11,16 @@ import type { PageActionStep, PageActionContext } from '@/types'
 import type { PageAction } from '@/services/pageAction'
 import { isInputAction } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
+import { openPopups, openPopupsProps } from '@/services/chrome'
 
 const StartAction = {
-  type: PAGE_ACTION_CONTROL.start,
   id: generateRandomID(),
-  url: '',
+  type: PAGE_ACTION_CONTROL.start,
 }
 
 const EndAction = {
-  type: PAGE_ACTION_CONTROL.end,
   id: generateRandomID(),
+  type: PAGE_ACTION_CONTROL.end,
 }
 
 export const add = (
@@ -147,28 +147,55 @@ export const reset = (): boolean => {
   return false
 }
 
-export const execute = (
-  _: unknown,
+type openPopupAndRunParam = openPopupsProps & {
+  selectedText: string
+  clipboardText: string
+}
+
+export const openPopupAndRun = (param: openPopupAndRunParam): boolean => {
+  const { commandId } = param
+  const open = async () => {
+    const commands = await Storage.getCommands()
+    const cmd = commands.find((c) => c.id === commandId)
+    if (cmd == null || cmd?.pageActionOption == null) {
+      console.error('PageActionOption not found')
+      return
+    }
+    const tabIds = await openPopups(param)
+    if (tabIds.length > 0) {
+      const option = cmd.pageActionOption
+      await Ipc.sendQueue(tabIds[0], TabCommand.runPageAction, {
+        selectedText: param.selectedText,
+        clipboardText: param.clipboardText,
+        steps: option.steps,
+      })
+      return
+    }
+    console.debug('tab not found')
+  }
+  open()
+  return false
+}
+
+type startPageAction = {
+  steps: PageActionStep[]
+}
+
+export const queueSteps = (
+  param: startPageAction,
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  const queue = async () => {
-    const actions = await Storage.get<PageActionStep[]>(
-      SESSION_STORAGE_KEY.PAGE_ACTION,
-    )
+  const run = async () => {
+    const { steps } = param
     const tabId = sender.tab?.id
-    if (tabId != null) {
-      for (const action of actions) {
-        await Ipc.sendQueue(
-          tabId,
-          TabCommand.executePageAction,
-          action as PageActionStep,
-        )
-      }
+    if (tabId == null) return response(true)
+    for (const step of steps) {
+      await Ipc.sendQueue(tabId, TabCommand.execPageAction, step)
     }
     response(true)
   }
-  queue()
+  run()
   return true
 }
 

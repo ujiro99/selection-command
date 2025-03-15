@@ -1,4 +1,5 @@
 import { Storage, SESSION_STORAGE_KEY } from './storage'
+import type { PageActionStep } from '@/types'
 
 export enum BgCommand {
   openPopups = 'openPopups',
@@ -11,25 +12,35 @@ export enum BgCommand {
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
+  // PageAction
   addPageAction = 'addPageAction',
   updatePageAction = 'updatePageAction',
   removePageAction = 'removePageAction',
-  queuePageAction = 'queuePageAction',
   resetPageAction = 'resetPageAction',
+  queuePageAction = 'queuePageAction',
   startPageActionRecorder = 'startPageActionRecorder',
   finishPageActionRecorder = 'finishPageActionRecorder',
+  openPopupAndRunPageAction = 'openPopupAndRunPageAction',
 }
 
 export enum TabCommand {
   executeAction = 'executeAction',
-  executePageAction = 'executePageAction',
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   getTabId = 'getTabId',
+  // PageAction
+  runPageAction = 'runPageAction',
+  execPageAction = 'execPageAction',
 }
 
 export type ClickElementProps = {
   selector: string
+}
+
+export type RunPageActionProps = {
+  selectedText: string
+  clipboardText: string
+  steps: PageActionStep[]
 }
 
 type IpcCommand = BgCommand | TabCommand
@@ -55,23 +66,22 @@ export type IpcCallback = (
 
 export const Ipc = {
   init() {
-    Storage.addListener(SESSION_STORAGE_KEY.MESSAGE_QUEUE, (newQueue) => {
-      for (const [tabId, listeners] of Object.entries(
-        Ipc.msgQueueChangedlisteners,
-      )) {
-        const msgs = (newQueue as Message[]).filter(
-          (m) => m.tabId === Number(tabId),
-        )
-        if (msgs.length === 0) {
-          Object.values(listeners).forEach((l) => l(null))
-        } else {
-          msgs.forEach((m) => listeners[m.command] && listeners[m.command](m))
+    Storage.addListener(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+      (newQueue: Message[]) => {
+        for (const [tabId, listeners] of Object.entries(
+          Ipc.msgQueueChangedlisteners,
+        )) {
+          const msgs = newQueue.filter((m) => m.tabId === Number(tabId))
+          if (msgs.length === 0) {
+            Object.values(listeners).forEach((l) => l(null))
+          } else {
+            msgs.forEach((m) => listeners[m.command] && listeners[m.command](m))
+          }
+          newQueue = newQueue.filter((m) => m.tabId !== Number(tabId))
         }
-        newQueue = (newQueue as Message[]).filter(
-          (m) => m.tabId !== Number(tabId),
-        )
-      }
-    })
+      },
+    )
   },
 
   async send(command: IpcCommand, param?: unknown): Promise<any> {
@@ -138,13 +148,16 @@ export const Ipc = {
     return Storage.set(SESSION_STORAGE_KEY.MESSAGE_QUEUE, queue)
   },
 
-  async recvQueue(tabId: number, command: IpcCommand): Promise<Message | null> {
+  async recvQueue(
+    tabId: number,
+    commands: IpcCommand[],
+  ): Promise<Message | null> {
     const queue = await Storage.get<Message[]>(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
     )
 
     const messages = queue.filter(
-      (m) => m.tabId === tabId && command === m.command,
+      (m) => m.tabId === tabId && commands.includes(m.command),
     )
 
     // Get only the first message.
@@ -185,7 +198,7 @@ export const Ipc = {
 
   addQueueChangedListener(
     tabId: number,
-    command: IpcCommand,
+    commands: IpcCommand[],
     callback: MessageQueueCallback,
   ) {
     if (!Ipc.msgQueueChangedlisteners[tabId]) {
@@ -194,11 +207,15 @@ export const Ipc = {
         MessageQueueCallback
       >
     }
-    Ipc.msgQueueChangedlisteners[tabId][command] = callback
+    commands.map((command) => {
+      Ipc.msgQueueChangedlisteners[tabId][command] = callback
+    })
   },
 
-  removeQueueChangedLisner(tabId: number, command: IpcCommand) {
-    delete Ipc.msgQueueChangedlisteners[tabId][command]
+  removeQueueChangedLisner(tabId: number, commands: IpcCommand[]) {
+    commands.map((command) => {
+      delete Ipc.msgQueueChangedlisteners[tabId][command]
+    })
   },
 }
 

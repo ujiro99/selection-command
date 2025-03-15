@@ -9,11 +9,7 @@ import { InputPopup } from '@/components/pageAction/InputPopup'
 import { InputEditor } from '@/components/pageAction/InputEditor'
 import { PageActionListener as Listener } from '@/services/pageAction'
 import type { PageAction } from '@/services/pageAction'
-import {
-  Storage,
-  SESSION_STORAGE_KEY as STORAGE_KEY,
-  ChangedCallback,
-} from '@/services/storage'
+import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import type { PageActionStep } from '@/types'
@@ -28,17 +24,17 @@ export function PageActionRecorder(): JSX.Element {
   const Runner = usePageActionRunner()
   const { isRunning } = Runner
   const { isRecording: isOpen, setContextData } = usePageActionContext()
-  const [actions, setActions] = useState<PageActionStep[]>([])
+  const [steps, setSteps] = useState<PageActionStep[]>([])
   const [isRecording, setIsRecording] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>('')
   const [previewElm, setPreviewElm] = useState<HTMLButtonElement | null>()
-  const remain = PAGE_ACTION_MAX - actions.length - 2 // - 2: start, end
+  const remain = PAGE_ACTION_MAX - steps.length - 2 // - 2: start, end
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
-  const inputAction = actions.find((a) => a.id === editId)
+  const inputAction = steps.find((a) => a.id === editId)
   const editorValue = (inputAction?.param as PageAction.Input)?.value
   const editorOpen = !isEmpty(editId)
 
@@ -61,7 +57,7 @@ export function PageActionRecorder(): JSX.Element {
         selectedText: getSelectionText(),
         clipboardText: text,
       })
-      Runner.start()
+      Runner.run(steps)
     }, 100)
     clearState()
     Listener.stop()
@@ -105,27 +101,24 @@ export function PageActionRecorder(): JSX.Element {
   }
 
   useEffect(() => {
-    const addList = (list: PageActionStep[]) => {
-      setActions((list ?? []).filter((l) => !isControlType(l.type)))
+    const addStep = (list: PageActionStep[]) => {
+      setSteps((list ?? []).filter((l) => !isControlType(l.type)))
     }
 
     const init = async () => {
       const actions = await Storage.get<PageActionStep[]>(
         STORAGE_KEY.PAGE_ACTION,
       )
-      addList(actions)
+      addStep(actions)
     }
     init()
 
-    Storage.addListener(STORAGE_KEY.PAGE_ACTION, addList as ChangedCallback)
+    Storage.addListener(STORAGE_KEY.PAGE_ACTION, addStep)
     Runner.subscribe(RunnerEvent.Start, onStart)
     Runner.subscribe(RunnerEvent.Failed, onFailed)
 
     return () => {
-      Storage.removeListener(
-        STORAGE_KEY.PAGE_ACTION,
-        addList as ChangedCallback,
-      )
+      Storage.removeListener(STORAGE_KEY.PAGE_ACTION, addStep)
       Runner.unsubscribe(RunnerEvent.Start, onStart)
       Runner.unsubscribe(RunnerEvent.Failed, onFailed)
     }
@@ -206,7 +199,7 @@ export function PageActionRecorder(): JSX.Element {
           </button>
         </div>
         <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
-          {actions.map((action) => (
+          {steps.map((action) => (
             <PageActionItem
               action={action}
               currentId={currentId}

@@ -20,6 +20,7 @@ export const PageActionContextProvider = ({
 }: {
   children: ReactNode
 }) => {
+  const [runnerId, setRunnerId] = useState<string>('')
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [selectedText, setSelectedText] = useState<string>('')
   const [clipboardText, setClipboardText] = useState<string>('')
@@ -35,6 +36,7 @@ export const PageActionContextProvider = ({
   const updateState = async (data: PageActionContext) => {
     if (!data) return
     const tabId = await Ipc.getTabId()
+    data.runnerId && setRunnerId(data.runnerId)
     data.recordingTabId && setIsRecording(data.recordingTabId === tabId)
     data.selectedText && setSelectedText(data.selectedText)
     data.clipboardText && setClipboardText(data.clipboardText)
@@ -48,6 +50,7 @@ export const PageActionContextProvider = ({
   return (
     <PageActionContext.Provider
       value={{
+        runnerId,
         isRecording,
         selectedText,
         clipboardText,

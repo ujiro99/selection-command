@@ -136,7 +136,16 @@ type PageActionOption = {
 
 export type PageActionContext = {
   recordingTabId?: number
+  runnerId?: string
   isRecording?: boolean
   selectedText?: string
   clipboardText?: string
 }
+
+export type WindowType = {
+  id: number
+  commandId: string
+  srcWindowId: number
+}
+
+export type WindowLayer = WindowType[]

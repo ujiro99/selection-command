@@ -194,7 +194,6 @@ export const PageActionDispatcher = {
         [InsertSymbol[INSERT.URL]]: location.href,
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
       }
-      console.log('variables:', variables)
       let value = safeInterpolate(param.value, variables)
       value = value.replace(/{/g, '\\\\{') // escape
       value = value.replace(/}/g, '\\\\}') // escape

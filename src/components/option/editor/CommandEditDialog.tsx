@@ -7,7 +7,6 @@ import {
   Trash2,
   Save,
   SquareTerminal,
-  Disc3,
   ChevronsUpDown,
   ChevronsDownUp,
 } from 'lucide-react'
@@ -45,16 +44,17 @@ import { IconField } from '@/components/option/field/IconField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { TextareaField } from '@/components/option/field/TextareaField'
 import {
+  pageActionSchema,
+  PageActionStepSchema,
+  PageActionSection,
+} from '@/components/option/editor/PageActionSection'
+import {
   OPEN_MODE,
   SPACE_ENCODING,
   POPUP_OPTION,
   COPY_OPTION,
   ROOT_FOLDER,
-  PAGE_ACTION_EVENT,
-  PAGE_ACTION_CONTROL,
 } from '@/const'
-
-import { SelectorType } from '@/services/pageAction'
 
 import {
   FaviconContextProvider,
@@ -169,76 +169,6 @@ const textStyleSchema = z.object({
     ),
 })
 
-const PageActionStartSchema = z.object({
-  label: z.string(),
-  url: z.string(),
-})
-
-const PageActionClickSchema = z.object({
-  label: z.string(),
-  selector: z.string(),
-  selectorType: z.nativeEnum(SelectorType),
-})
-
-const PageActionInputSchema = z.object({
-  label: z.string(),
-  selector: z.string(),
-  selectorType: z.nativeEnum(SelectorType),
-  value: z.string(),
-  selectedText: z.string(),
-  clipboardText: z.string(),
-})
-
-const PageActionKeyboardSchema = z.object({
-  label: z.string(),
-  key: z.string(),
-  code: z.string(),
-  keyCode: z.number(),
-  shiftKey: z.boolean(),
-  ctrlKey: z.boolean(),
-  altKey: z.boolean(),
-  metaKey: z.boolean(),
-  targetSelector: z.string(),
-  selectorType: z.nativeEnum(SelectorType),
-})
-
-const PageActionScrollSchema = z.object({
-  label: z.string(),
-  x: z.number(),
-  y: z.number(),
-})
-
-const PageActionParameterSchema = z.union([
-  PageActionStartSchema,
-  PageActionClickSchema,
-  PageActionInputSchema,
-  PageActionKeyboardSchema,
-  PageActionScrollSchema,
-])
-
-const PageActionStepSchema = z.object({
-  id: z.string(),
-  type: z.nativeEnum(PAGE_ACTION_EVENT).or(z.nativeEnum(PAGE_ACTION_CONTROL)),
-  param: PageActionParameterSchema,
-})
-
-const PageActionOption = z.object({
-  startUrl: z.string(),
-  steps: z.array(PageActionStepSchema),
-})
-
-const pageActionSchema = z.object({
-  openMode: z.enum([OPEN_MODE.PAGE_ACTION]),
-  id: z.string(),
-  parentFolderId: z.string().optional(),
-  title: z
-    .string()
-    .min(1, { message: t('zod_string_min', ['1']) })
-    .default('Get Text Styles'),
-  iconUrl: z.string().url({ message: t('zod_url') }),
-  pageActionOption: PageActionOption,
-})
-
 export const commandSchema = z.discriminatedUnion('openMode', [
   searchSchema,
   apiSchema,
@@ -247,6 +177,8 @@ export const commandSchema = z.discriminatedUnion('openMode', [
   copySchema,
   textStyleSchema,
 ])
+
+type PageActionStepSchema = z.infer<typeof PageActionStepSchema>
 
 const EmptyFolder = {
   id: ROOT_FOLDER,
@@ -289,6 +221,10 @@ const defaultValue = (openMode: OPEN_MODE) => {
       iconUrl: '',
       openMode: OPEN_MODE.PAGE_ACTION as const,
       parentFolderId: ROOT_FOLDER,
+      popupOption: {
+        width: POPUP_OPTION.width,
+        height: POPUP_OPTION.height,
+      },
       pageActionOption: {
         startUrl: '',
         steps: [],
@@ -384,12 +320,6 @@ const CommandEditDialogInner = ({
     keyName: '_id',
   })
 
-  const pageActionArray = useFieldArray({
-    name: 'pageActionOption.steps',
-    control: form.control,
-    keyName: '_id',
-  })
-
   const openMode = useWatch({
     control: form.control,
     name: 'openMode',
@@ -455,11 +385,17 @@ const CommandEditDialogInner = ({
   }, [open, setIconUrlSrc])
 
   useEffect(() => {
-    Storage.addListener(SESSION_STORAGE_KEY.PAGE_ACTION, (actions) => {
-      if (actions == null) return
-      console.debug(actions)
-      setValue('pageActionOption.steps', actions as PageActionStep[])
-    })
+    Storage.addListener(
+      SESSION_STORAGE_KEY.PAGE_ACTION,
+      (steps: PageActionStepSchema[]) => {
+        if (steps == null) return
+        steps = steps.map((step) => {
+          step.param.type = step.type
+          return step
+        })
+        setValue('pageActionOption.steps', steps)
+      },
+    )
   }, [])
 
   useEffect(() => {
@@ -568,60 +504,10 @@ const CommandEditDialogInner = ({
               )}
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
-                <InputField
-                  control={form.control}
-                  name="searchUrl"
-                  formLabel={t('startUrl')}
-                  inputProps={{
-                    type: 'string',
-                    ...register('pageActionOption.startUrl', {}),
-                  }}
-                  description={t('startUrl_desc')}
-                  previewUrl={getValues('iconUrl')}
+                <PageActionSection
+                  form={form}
+                  openRecorder={openPageActionRecorder}
                 />
-              )}
-
-              {openMode === OPEN_MODE.PAGE_ACTION && (
-                <div className="w-full p-2 flex items-center justify-center">
-                  <button
-                    type="button"
-                    className="bg-red-500 font-mono text-white px-4 py-1.5 inline-flex items-center justify-center gap-0.5 rounded-lg text-base font-medium transition hover:opacity-80 hover:scale-[1.10]"
-                    onClick={openPageActionRecorder}
-                  >
-                    <Disc3 className="stroke-white mr-1.5" size={20} />
-                    <span>REC</span>
-                  </button>
-
-                  <FormField
-                    control={form.control}
-                    name="pageActionOption.steps"
-                    render={() => (
-                      <FormItem className="flex items-center">
-                        <FormControl>
-                          <ul className="">
-                            {pageActionArray.fields.map((field, index) => (
-                              <li
-                                key={field._id}
-                                className="flex items-center gap-2 p-1"
-                              >
-                                <FormField
-                                  control={form.control}
-                                  name={`pageActionOption.steps.${index}`}
-                                  render={({ field }) => (
-                                    <FormItem className="flex items-center gap-1 w-1/2">
-                                      <p>{field.value.type}</p>
-                                      <p>{field.value.param?.label}</p>
-                                    </FormItem>
-                                  )}
-                                />
-                              </li>
-                            ))}
-                          </ul>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
               )}
 
               {openMode === OPEN_MODE.API && (
@@ -804,6 +690,7 @@ const CommandEditDialogInner = ({
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
                   }
+                  // TODO page action
                   if (isSearchType(data)) {
                     if (data.popupOption != null) {
                       data.popupOption = {
@@ -812,6 +699,8 @@ const CommandEditDialogInner = ({
                       }
                     }
                   }
+                  // Fix
+                  console.log(data)
                   onSubmit(data)
                   onOpenChange(false)
                   reset(defaultValue(OPEN_MODE.POPUP))

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useId } from 'react'
 import {
   PageActionDispatcher as dispatcher,
   PageAction,
@@ -20,108 +20,113 @@ export enum RunnerEvent {
 }
 
 export function usePageActionRunner() {
+  const thisId = useId()
   const tabId = useRef<number | null>(null)
   const setTabId = (id: number) => (tabId.current = id)
-  const stopPreview = useRef<boolean | null>(false)
-  const setStopPreview = (s: boolean) => (stopPreview.current = s)
+  const stopExecute = useRef<boolean | null>(false)
+  const setStopExecute = (s: boolean) => (stopExecute.current = s)
   const [isExecuting, setIsExecuting] = useState(false)
   const [isQueueEmpty, setIsQueueEmpty] = useState(true)
-  const { selectedText, clipboardText } = usePageActionContext()
+  const { runnerId, selectedText, clipboardText } = usePageActionContext()
+  const isRunner = runnerId === thisId
   const isRunning = !isQueueEmpty || isExecuting
-
-  console.log('selected', selectedText, 'clipboard', clipboardText)
 
   useEffect(() => {
     Ipc.getTabId().then(setTabId)
+  }, [])
 
+  useEffect(() => {
     const log = (e: CustomEvent) => {
-      console.log(e.type, e.detail.type, e.detail.id)
+      console.log(e.detail.runnerId, e.type, e.detail.type, e.detail.param)
     }
-    window.addEventListener(RunnerEvent.Start, log as any)
-    window.addEventListener(RunnerEvent.Done, log as any)
-    window.addEventListener(RunnerEvent.Failed, log as any)
+    if (isRunner) {
+      window.addEventListener(RunnerEvent.Start, log as any)
+      window.addEventListener(RunnerEvent.Done, log as any)
+      window.addEventListener(RunnerEvent.Failed, log as any)
+    }
     return () => {
       window.removeEventListener(RunnerEvent.Start, log as any)
       window.removeEventListener(RunnerEvent.Done, log as any)
       window.removeEventListener(RunnerEvent.Failed, log as any)
     }
-  }, [])
+  }, [isRunner])
 
   useEffect(() => {
     if (tabId.current == null) return
+    if (!isRunner) return
     const queueChanged = () => {
-      Ipc.isQueueEmpty(tabId.current!, TabCommand.executePageAction).then(
+      Ipc.isQueueEmpty(tabId.current!, TabCommand.execPageAction).then(
         setIsQueueEmpty,
       )
     }
     Ipc.addQueueChangedListener(
       tabId.current,
-      TabCommand.executePageAction,
+      [TabCommand.execPageAction],
       queueChanged,
     )
     // Resume execution if the queue is not empty.
-    executeAll()
+    executeQueue()
     return () => {
-      Ipc.removeQueueChangedLisner(tabId.current!, TabCommand.executePageAction)
+      Ipc.removeQueueChangedLisner(tabId.current!, [TabCommand.execPageAction])
     }
-  }, [tabId.current])
+  }, [tabId.current, isRunner, selectedText, clipboardText])
 
   const execute = async (message: Message) => {
-    if (message.command !== TabCommand.executePageAction) return
-    const action = message.param as PageActionStep
-    const eventParam = { detail: { id: action.id, type: action.type } } as const
+    if (message.command !== TabCommand.execPageAction) return
+    const step = message.param as PageActionStep
+    const eventParam = { detail: { runnerId, ...step } } as const
     window.dispatchEvent(new CustomEvent(RunnerEvent.Start, eventParam))
     setIsExecuting(true)
     let result = false
     let msg: string | undefined
     try {
-      switch (action.type) {
+      switch (step.type) {
         case 'start':
-          const url = (action.param as PageAction.Start).url as string
+          const url = (step.param as PageAction.Start).url as string
           if (url) {
             location.href = url
             // Resume until the page is loaded.
-            setStopPreview(true)
+            setStopExecute(true)
           }
           result = true
           break
         case 'click':
           ;[result, msg] = await dispatcher.click(
-            action.param as PageAction.Click,
+            step.param as PageAction.Click,
           )
           break
         case 'doubleClick':
           ;[result, msg] = await dispatcher.doubleCilck(
-            action.param as PageAction.Click,
+            step.param as PageAction.Click,
           )
           break
         case 'tripleClick':
           ;[result, msg] = await dispatcher.tripleClick(
-            action.param as PageAction.Click,
+            step.param as PageAction.Click,
           )
           break
         case 'keyboard':
           ;[result, msg] = await dispatcher.keyboard(
-            action.param as PageAction.Keyboard,
+            step.param as PageAction.Keyboard,
           )
           break
         case 'input':
           ;[result, msg] = await dispatcher.input({
-            ...action.param,
+            ...step.param,
             selectedText,
             clipboardText,
           } as PageAction.Input)
           break
         case 'scroll':
           ;[result, msg] = await dispatcher.scroll(
-            action.param as PageAction.Scroll,
+            step.param as PageAction.Scroll,
           )
           break
         case 'end':
           result = true
           break
         default:
-          console.warn(`Unknown action type: ${action.type}`)
+          console.warn(`Unknown action type: ${step.type}`)
           window.dispatchEvent(
             new CustomEvent(RunnerEvent.Failed, {
               detail: { ...eventParam.detail, message: 'Unknown action type' },
@@ -139,27 +144,28 @@ export function usePageActionRunner() {
     setIsExecuting(false)
   }
 
-  const executeAll = async () => {
-    console.log('executeAll')
+  const executeQueue = async () => {
     if (tabId.current == null) return
     let msg
     do {
-      msg = await Ipc.recvQueue(tabId.current, TabCommand.executePageAction)
+      msg = await Ipc.recvQueue(tabId.current, [TabCommand.execPageAction])
       msg && (await execute(msg))
-    } while (msg && !stopPreview.current)
+    } while (msg && !stopExecute.current)
   }
 
-  const start = async () => {
+  const run = async (steps: PageActionStep[]) => {
     if (tabId.current == null) return
-    setStopPreview(false)
-    await Ipc.send(BgCommand.queuePageAction)
-    await executeAll()
+    setStopExecute(false)
+    await Ipc.send(BgCommand.queuePageAction, {
+      steps,
+    })
+    await executeQueue()
   }
 
   const stop = async () => {
     if (tabId.current == null) return
-    setStopPreview(true)
-    return await Ipc.removeQueue(tabId.current, TabCommand.executePageAction)
+    setStopExecute(true)
+    return await Ipc.removeQueue(tabId.current, TabCommand.execPageAction)
   }
 
   const subscribe = (event: RunnerEvent, func: ExecutinListener) => {
@@ -170,5 +176,5 @@ export function usePageActionRunner() {
     window.removeEventListener(event, func as any)
   }
 
-  return { start, stop, isRunning, subscribe, unsubscribe }
+  return { id: thisId, run, stop, isRunning, subscribe, unsubscribe }
 }

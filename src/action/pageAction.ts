@@ -1,12 +1,12 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { toUrl, isValidString } from '@/lib/utils'
 import { getScreenSize } from '@/services/dom'
+import { isValidString } from '@/lib/utils'
 import { POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
 
 export const PageAction = {
   async execute({ selectionText, command, position }: ExecProps) {
-    if (!isValidString(command.searchUrl)) {
+    if (!isValidString(command.pageActionOption?.startUrl)) {
       console.error('searchUrl is not valid.')
       return
     }
@@ -15,19 +15,28 @@ export const PageAction = {
       return
     }
 
-    const urls = [
-      toUrl(command.searchUrl, selectionText, command.spaceEncoding),
-    ]
+    const clipboard = await navigator.clipboard.readText()
+    console.debug(
+      'PageAction',
+      'selected',
+      selectionText,
+      'clipboard',
+      clipboard,
+    )
 
-    Ipc.send(BgCommand.openPopups, {
+    const urls = [command.pageActionOption?.startUrl]
+
+    Ipc.send(BgCommand.openPopupAndRunPageAction, {
       commandId: command.id,
-      urls: urls,
+      urls,
       top: Math.floor(window.screenTop + position.y),
       left: Math.floor(window.screenLeft + position.x),
       height: command.popupOption?.height,
       width: command.popupOption?.width,
       screen: getScreenSize(),
       type: POPUP_TYPE.POPUP,
+      selectedText: selectionText,
+      clipboardText: clipboard,
     })
   },
 }

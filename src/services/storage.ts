@@ -3,7 +3,6 @@ import { Command } from '@/types'
 
 export enum STORAGE_KEY {
   USER = 0,
-  BG = 1,
   COMMAND_COUNT = 2,
 }
 
@@ -14,6 +13,7 @@ export enum LOCAL_STORAGE_KEY {
 }
 
 export enum SESSION_STORAGE_KEY {
+  BG = 'bg',
   SESSION_DATA = 'sessionData',
   MESSAGE_QUEUE = 'messageQueue',
   PAGE_ACTION = 'pageAction',
@@ -28,13 +28,13 @@ const DEFAULT_COUNT = -1
 
 const DEFAULTS = {
   [STORAGE_KEY.USER]: DefaultSettings,
-  [STORAGE_KEY.BG]: {},
   [STORAGE_KEY.COMMAND_COUNT]: DEFAULT_COUNT,
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
   [LOCAL_STORAGE_KEY.CLIENT_ID]: '',
   [LOCAL_STORAGE_KEY.STARS]: [],
+  [SESSION_STORAGE_KEY.BG]: {},
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
   [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
   [SESSION_STORAGE_KEY.PAGE_ACTION]: [],
@@ -54,8 +54,8 @@ const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
   throw new Error('Invalid Storage Key')
 }
 
-export type ChangedCallback = (newVal: unknown, oldVal: unknown) => void
-const changedCallbacks = {} as { [key: string]: ChangedCallback[] }
+export type ChangedCallback<T> = (newVal: T, oldVal: T) => void
+const changedCallbacks = {} as { [key: string]: ChangedCallback<any>[] }
 
 type commandChangedCallback = (commands: Command[]) => void
 const commandChangedCallbacks = [] as commandChangedCallback[]
@@ -121,12 +121,12 @@ export const Storage = {
     })
   },
 
-  addListener: (key: KEY, cb: ChangedCallback) => {
+  addListener: <T>(key: KEY, cb: ChangedCallback<T>) => {
     changedCallbacks[key] = changedCallbacks[key] ?? []
     changedCallbacks[key].push(cb)
   },
 
-  removeListener: (key: KEY, cb: ChangedCallback) => {
+  removeListener: (key: KEY, cb: ChangedCallback<any>) => {
     changedCallbacks[key] = changedCallbacks[key]?.filter((f) => f !== cb)
   },
 
