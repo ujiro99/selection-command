@@ -57,6 +57,13 @@ export function PageActionRecorder(): JSX.Element {
         selectedText: getSelectionText(),
         clipboardText: text,
       })
+
+      // TODO: Reload
+      const url = (steps[0].param as PageAction.Start).url as string
+      if (url) {
+        location.href = url
+      }
+
       Runner.run(steps)
     }, 100)
     clearState()

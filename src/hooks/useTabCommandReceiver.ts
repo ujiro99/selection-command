@@ -8,7 +8,7 @@ import type {
 import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 
-const COMMANDS = [TabCommand.clickElement, TabCommand.runPageAction]
+const COMMANDS = [TabCommand.clickElement]
 
 export function useTabCommandReceiver() {
   const [tabId, setTabId] = useState<number | null>(null)
@@ -50,17 +50,6 @@ export function useTabCommandReceiver() {
     switch (message.command) {
       case TabCommand.clickElement:
         clickElement(message.param as ClickElementProps)
-        break
-      case TabCommand.runPageAction:
-        const props = message.param as RunPageActionProps
-        console.log('runPageAction', props)
-        // Set context of PageAction
-        await setContextData({
-          runnerId: Runner.id,
-          selectedText: props.selectedText,
-          clipboardText: props.clipboardText,
-        })
-        await Runner.run(props.steps)
         break
     }
   }

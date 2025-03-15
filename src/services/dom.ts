@@ -268,3 +268,34 @@ export const isTextNode = (node: any | null): node is Text => {
   if (node == null) return false
   return node.nodeType === Node.TEXT_NODE
 }
+
+/**
+ * Wait until DOM updates have settled.
+ * @returns {Promise<boolean>} True if the DOM change is settled.
+ */
+export const debounceDOMChange = (name: string): Promise<boolean> => {
+  console.warn('start debounceDOMChange', name)
+  let interval: number
+  let timeout: number
+  return new Promise((resolve) => {
+    const observer = new MutationObserver((_mutations, obs) => {
+      clearTimeout(interval)
+      interval = window.setTimeout(() => {
+        console.warn('end debounceDOMChange', name)
+        resolve(true)
+        obs.disconnect()
+        clearTimeout(timeout)
+      }, 20)
+    })
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    })
+    timeout = window.setTimeout(() => {
+      resolve(false)
+      console.warn('timeout debounceDOMChange', name)
+      clearTimeout(interval)
+      observer.disconnect()
+    }, 1000)
+  })
+}

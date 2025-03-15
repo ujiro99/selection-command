@@ -4,6 +4,7 @@ import { Popup } from './Popup'
 import { LinkSelector } from '@/components/LinkSelector'
 import { OpenInTab } from '@/components/OpenInTab'
 import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
+import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
 import { getSelectionText } from '@/services/dom'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
@@ -39,6 +40,7 @@ export function App() {
         />
         <LinkSelector />
         <OpenInTab />
+        <PageActionRunner />
         <PageActionRecorder />
       </SelectContextProvider>
     </PageActionContextProvider>

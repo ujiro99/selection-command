@@ -19,8 +19,27 @@ type EventsFunctions = {
 }
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
+  if (e.shiftKey && e.key === 'Enter') return false
   if (['Tab', 'Enter'].includes(e.key)) return true
-  if (e.key === 'Meta') return false
+  if (
+    [
+      'Meta',
+      'Control',
+      'F1',
+      'F2',
+      'F3',
+      'F4',
+      'F5',
+      'F6',
+      'F7',
+      'F8',
+      'F9',
+      'F10',
+      'F11',
+      'F12',
+    ].includes(e.key)
+  )
+    return false
   if (e.ctrlKey || e.metaKey) return true
   return false
 }
@@ -114,6 +133,7 @@ export const PageActionListener = (() => {
       })
     },
     keyboard: (e: KeyboardEvent) => {
+      if (isPopup(e.target as HTMLElement)) return
       if (!isTargetKey(e)) return
       let xpath = getXPath(e.target as HTMLElement)
       Ipc.send(BgCommand.addPageAction, {

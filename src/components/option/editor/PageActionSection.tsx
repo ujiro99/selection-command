@@ -113,8 +113,6 @@ export const PageActionSection = ({
     keyName: '_id',
   })
 
-  console.log(pageActionArray.fields)
-
   return (
     <>
       <InputField

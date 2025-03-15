@@ -29,13 +29,13 @@ export const add = (
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
-    let actions = await Storage.get<PageActionStep[]>(
+    let steps = await Storage.get<PageActionStep[]>(
       SESSION_STORAGE_KEY.PAGE_ACTION,
     )
 
-    // Insert a start action if actions are empty.
-    if (actions.length === 0) {
-      actions.push({
+    // Insert a start action if steps are empty.
+    if (steps.length === 0) {
+      steps.push({
         ...StartAction,
         param: {
           label: 'Start',
@@ -45,32 +45,32 @@ export const add = (
     }
 
     // Remove a end ation.
-    actions = actions.filter((a) => a.type !== 'end')
+    steps = steps.filter((a) => a.type !== 'end')
 
     // - 1 : End action
-    if (actions.length >= PAGE_ACTION_MAX - 1) {
+    if (steps.length >= PAGE_ACTION_MAX - 1) {
       response(true)
       return
     }
 
     action.id = generateRandomID()
-    const prev = actions.at(-1)
+    const prev = steps.at(-1)
 
     if (prev != null) {
       if (action.type === 'doubleClick' && prev.type === 'click') {
         // Removes a last click.
-        actions.pop()
+        steps.pop()
       } else if (action.type === 'tripleClick' && prev.type === 'doubleClick') {
         // Removes a last double click.
-        actions.pop()
+        steps.pop()
       } else if (action.type === 'scroll' && prev.type === 'scroll') {
-        actions.pop()
+        steps.pop()
       } else if (action.type === 'input' && prev.type.match('input')) {
         const selector = (action.param as PageAction.Input).selector
         const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
           // Combine operations on the same input element.
-          actions.pop()
+          steps.pop()
         }
       } else if (action.type === 'click' && prev.type.match('input')) {
         const selector = (action.param as PageAction.Input).selector
@@ -84,7 +84,7 @@ export const add = (
 
     // Update actions.
     await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [
-      ...actions,
+      ...steps,
       action,
       {
         ...EndAction,
