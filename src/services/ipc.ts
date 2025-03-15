@@ -1,4 +1,5 @@
-import { Storage, SESSION_STORAGE_KEY, STORAGE_AREA } from './storage'
+import { Storage, SESSION_STORAGE_KEY } from './storage'
+import type { PageActionStep } from '@/types'
 
 export enum BgCommand {
   openPopups = 'openPopups',
@@ -11,6 +12,15 @@ export enum BgCommand {
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
+  // PageAction
+  addPageAction = 'addPageAction',
+  updatePageAction = 'updatePageAction',
+  removePageAction = 'removePageAction',
+  resetPageAction = 'resetPageAction',
+  queuePageAction = 'queuePageAction',
+  startPageActionRecorder = 'startPageActionRecorder',
+  finishPageActionRecorder = 'finishPageActionRecorder',
+  openPopupAndRunPageAction = 'openPopupAndRunPageAction',
 }
 
 export enum TabCommand {
@@ -18,10 +28,19 @@ export enum TabCommand {
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   getTabId = 'getTabId',
+  // PageAction
+  runPageAction = 'runPageAction',
+  execPageAction = 'execPageAction',
 }
 
 export type ClickElementProps = {
   selector: string
+}
+
+export type RunPageActionProps = {
+  selectedText: string
+  clipboardText: string
+  steps: PageActionStep[]
 }
 
 type IpcCommand = BgCommand | TabCommand
@@ -35,7 +54,9 @@ export type Message = Request & {
   tabId: number
 }
 
-export type MessageQueueCallback = (newMessage: Message) => void
+export type MessageQueueCallback = (newMessage: Message | null) => void
+
+export type Sender = chrome.runtime.MessageSender
 
 export type IpcCallback = (
   param: unknown,
@@ -45,17 +66,22 @@ export type IpcCallback = (
 
 export const Ipc = {
   init() {
-    Storage.addListener(SESSION_STORAGE_KEY.MESSAGE_QUEUE, (newQueue) => {
-      for (const [tabId, listener] of Object.entries(Ipc.msgQueuelisteners)) {
-        const msgs = (newQueue as Message[]).filter(
-          (m) => m.tabId === Number(tabId),
-        )
-        msgs.forEach((m) => listener(m))
-        newQueue = (newQueue as Message[]).filter(
-          (m) => m.tabId !== Number(tabId),
-        )
-      }
-    })
+    Storage.addListener(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+      (newQueue: Message[]) => {
+        for (const [tabId, listeners] of Object.entries(
+          Ipc.msgQueueChangedlisteners,
+        )) {
+          const msgs = newQueue.filter((m) => m.tabId === Number(tabId))
+          if (msgs.length === 0) {
+            Object.values(listeners).forEach((l) => l(null))
+          } else {
+            msgs.forEach((m) => listeners[m.command] && listeners[m.command](m))
+          }
+          newQueue = newQueue.filter((m) => m.tabId !== Number(tabId))
+        }
+      },
+    )
   },
 
   async send(command: IpcCommand, param?: unknown): Promise<any> {
@@ -117,38 +143,79 @@ export const Ipc = {
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {
     const queue = await Storage.get<Message[]>(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      STORAGE_AREA.SESSION,
     )
     queue.push({ tabId, command, param })
-    return Storage.set(
-      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      queue,
-      STORAGE_AREA.SESSION,
-    )
+    return Storage.set(SESSION_STORAGE_KEY.MESSAGE_QUEUE, queue)
   },
 
-  async recvQueue(tabId: number) {
+  async recvQueue(
+    tabId: number,
+    commands: IpcCommand[],
+  ): Promise<Message | null> {
     const queue = await Storage.get<Message[]>(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      STORAGE_AREA.SESSION,
     )
-    const msgs = queue.filter((m) => m.tabId === tabId)
+
+    const messages = queue.filter(
+      (m) => m.tabId === tabId && commands.includes(m.command),
+    )
+
+    // Get only the first message.
+    const message = messages[0]
+    if (message) {
+      // Remove consumed message from the queue.
+      await Storage.set(
+        SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+        queue.filter((m) => m !== message),
+      )
+    }
+    return message
+  },
+
+  async isQueueEmpty(tabId: number, command: IpcCommand): Promise<boolean> {
+    const queue = await Storage.get<Message[]>(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+    )
+    return !queue.some(
+      (message) => message.tabId === tabId && message.command === command,
+    )
+  },
+
+  async removeQueue(tabId: number, command: IpcCommand) {
+    const queue = await Storage.get<Message[]>(
+      SESSION_STORAGE_KEY.MESSAGE_QUEUE,
+    )
     await Storage.set(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
-      queue.filter((m) => m.tabId !== tabId),
-      STORAGE_AREA.SESSION,
+      queue.filter((m) => !(m.tabId === tabId && m.command === command)),
     )
-    return msgs
   },
 
-  msgQueuelisteners: {} as { [tabId: number]: MessageQueueCallback },
+  msgQueueChangedlisteners: {} as Record<
+    number,
+    Record<IpcCommand, MessageQueueCallback>
+  >,
 
-  addQueueListener(tabId: number, callback: MessageQueueCallback) {
-    Ipc.msgQueuelisteners[tabId] = callback
+  addQueueChangedListener(
+    tabId: number,
+    commands: IpcCommand[],
+    callback: MessageQueueCallback,
+  ) {
+    if (!Ipc.msgQueueChangedlisteners[tabId]) {
+      Ipc.msgQueueChangedlisteners[tabId] = {} as Record<
+        IpcCommand,
+        MessageQueueCallback
+      >
+    }
+    commands.map((command) => {
+      Ipc.msgQueueChangedlisteners[tabId][command] = callback
+    })
   },
 
-  removeQueueListener(tabId: number) {
-    delete Ipc.msgQueuelisteners[tabId]
+  removeQueueChangedLisner(tabId: number, commands: IpcCommand[]) {
+    commands.map((command) => {
+      delete Ipc.msgQueueChangedlisteners[tabId][command]
+    })
   },
 }
 

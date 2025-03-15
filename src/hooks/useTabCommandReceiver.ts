@@ -1,27 +1,39 @@
 import { useEffect, useState } from 'react'
 import { Ipc, TabCommand } from '@/services/ipc'
-import type { ClickElementProps, Message } from '@/services/ipc'
+import type {
+  ClickElementProps,
+  RunPageActionProps,
+  Message,
+} from '@/services/ipc'
+import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
+import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
+
+const COMMANDS = [TabCommand.clickElement, TabCommand.runPageAction]
 
 export function useTabCommandReceiver() {
   const [tabId, setTabId] = useState<number | null>(null)
+  const Runner = usePageActionRunner()
+  const { setContextData } = usePageActionContext()
 
   useEffect(() => {
-    Ipc.send(TabCommand.getTabId).then((id) => {
-      // console.log('getTabId', id)
-      setTabId(id)
-    })
+    Ipc.getTabId().then(setTabId)
   }, [])
 
   useEffect(() => {
-    ;(async () => {
+    const start = async () => {
       if (tabId == null) return
-      const msgs = await Ipc.recvQueue(tabId)
-      msgs.forEach((m) => execute(m))
-      Ipc.addQueueListener(tabId, execute)
+      let msg
+      do {
+        msg = await Ipc.recvQueue(tabId, COMMANDS)
+        msg && (await execute(msg))
+      } while (msg)
+
+      Ipc.addQueueChangedListener(tabId, COMMANDS, execute)
       return () => {
-        Ipc.removeQueueListener(tabId)
+        Ipc.removeQueueChangedLisner(tabId, COMMANDS)
       }
-    })()
+    }
+    start()
   }, [tabId])
 
   const clickElement = (param: ClickElementProps) => {
@@ -32,11 +44,23 @@ export function useTabCommandReceiver() {
     return false
   }
 
-  const execute = (message: Message) => {
-    console.debug('execute', message.command)
+  const execute = async (message: Message | null) => {
+    if (!message) return
+    console.debug(message.command, message.param)
     switch (message.command) {
       case TabCommand.clickElement:
         clickElement(message.param as ClickElementProps)
+        break
+      case TabCommand.runPageAction:
+        const props = message.param as RunPageActionProps
+        console.log('runPageAction', props)
+        // Set context of PageAction
+        await setContextData({
+          runnerId: Runner.id,
+          selectedText: props.selectedText,
+          clipboardText: props.clipboardText,
+        })
+        await Runner.run(props.steps)
         break
     }
   }

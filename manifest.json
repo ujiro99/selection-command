@@ -36,7 +36,8 @@
     "storage",
     "tabs",
     "contextMenus",
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "clipboardRead"
   ],
   "host_permissions": [
     "http://*/*",
