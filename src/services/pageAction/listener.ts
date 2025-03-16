@@ -75,6 +75,12 @@ const getLabel = (e: Element): string => {
       : !isEmpty(e.placeholder)
         ? e.placeholder
         : e.type
+  } else if (e instanceof HTMLParagraphElement) {
+    return (
+      e.dataset.placeholder ||
+      e.parentElement?.dataset.placeholder ||
+      e.innerText
+    )
   } else if (e instanceof HTMLElement) {
     return e.innerText
   } else {
