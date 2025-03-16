@@ -56,9 +56,10 @@ export function InputEditor(props: InputEditorProps) {
             rows={4}
             defaultValue={defaultVal}
             ref={setTextarea}
+            className="text-sm"
           />
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex flex-row justify-end gap-2">
           <DialogClose asChild>
             <Button variant="secondary">
               {t('PageAction_InputEditor_cancel')}

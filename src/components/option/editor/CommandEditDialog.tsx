@@ -340,8 +340,12 @@ const CommandEditDialogInner = ({
 
   const iconUrlSrc = searchUrl || startUrl
 
-  const openPageActionRecorder = () => {
-    Ipc.send(BgCommand.startPageActionRecorder, {
+  const openPageActionRecorder = async () => {
+    await Storage.set(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+      getValues('pageActionOption.steps'),
+    )
+    await Ipc.send(BgCommand.startPageActionRecorder, {
       startUrl,
       screen: getScreenSize(),
     })
