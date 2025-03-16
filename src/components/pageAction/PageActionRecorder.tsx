@@ -23,9 +23,9 @@ const isControlType = (type: string): boolean => {
 export function PageActionRecorder(): JSX.Element {
   const Runner = usePageActionRunner()
   const { isRunning } = Runner
-  const { isRecording: isOpen, setContextData } = usePageActionContext()
+  const { isRecording, setContextData } = usePageActionContext()
   const [steps, setSteps] = useState<PageActionStep[]>([])
-  const [isRecording, setIsRecording] = useState(true)
+  const [isListening, setIsListening] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>('')
@@ -71,12 +71,12 @@ export function PageActionRecorder(): JSX.Element {
   }
 
   const pause = () => {
-    setIsRecording(false)
+    setIsListening(false)
     Listener.stop()
   }
 
   const resume = () => {
-    setIsRecording(true)
+    setIsListening(true)
     Listener.start()
   }
 
@@ -85,6 +85,7 @@ export function PageActionRecorder(): JSX.Element {
   }
 
   const finish = () => {
+    Listener.stop()
     Ipc.send(BgCommand.finishPageActionRecorder)
   }
 
@@ -135,12 +136,12 @@ export function PageActionRecorder(): JSX.Element {
     if (isRunning) {
       pause()
     } else {
-      resume()
+      isRecording && resume()
     }
     return () => {
-      Listener.stop()
+      pause()
     }
-  }, [isRunning])
+  }, [isRunning, isRecording])
 
   useEffect(() => {
     if (previewElm) {
@@ -151,7 +152,7 @@ export function PageActionRecorder(): JSX.Element {
     }
   }, [previewElm])
 
-  return isOpen ? (
+  return isRecording ? (
     <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
       {!editorOpen && <InputPopup />}
       <InputEditor
@@ -162,7 +163,7 @@ export function PageActionRecorder(): JSX.Element {
       />
       <div className="inline-block relative left-[50%] translate-x-[-50%]">
         <div className="flex gap-2">
-          {isRecording ? (
+          {isListening ? (
             <button
               className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
               onClick={() => pause()}

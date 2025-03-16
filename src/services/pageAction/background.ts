@@ -248,3 +248,14 @@ export const closeRecorder = (
   })
   return true
 }
+
+chrome.tabs.onRemoved.addListener(async (tabId) => {
+  const context = await Storage.get<PageActionContext>(
+    SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT,
+  )
+  const { recordingTabId } = context
+  if (tabId === recordingTabId) {
+    // Reset the recording tab id if recording.
+    setRecordingTabId(undefined)
+  }
+})

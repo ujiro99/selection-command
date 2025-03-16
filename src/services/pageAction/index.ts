@@ -1,7 +1,6 @@
 export { PageActionListener } from './listener'
 export { PageActionDispatcher, SelectorType } from './dispatcher'
 export type { PageAction } from './dispatcher'
-export * as PageActionBackground from './background'
 export * from './helper'
 
 export enum INSERT {
