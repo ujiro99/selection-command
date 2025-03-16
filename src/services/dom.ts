@@ -223,6 +223,40 @@ export function getSelectorFromElement(el: Element): string {
 }
 
 /**
+ * Get the xpath of the specified element.
+ * @param {Element} el The element to get the xpath.
+ * @returns {string} The xpath of the element.
+ */
+export function getXpath(el: Node | null): string {
+  if (!el || el.nodeType !== Node.ELEMENT_NODE) return ''
+
+  let element = el as HTMLElement
+  let xpath = ''
+
+  while (element && element.nodeType === Node.ELEMENT_NODE) {
+    let siblingIndex = 1
+    let sibling = element.previousSibling
+    while (sibling) {
+      if (
+        sibling.nodeType === Node.ELEMENT_NODE &&
+        (sibling as HTMLElement).tagName === element.tagName
+      ) {
+        siblingIndex++
+      }
+      sibling = sibling.previousSibling
+    }
+
+    const tagName = element.tagName.toLowerCase()
+    const segment = `${tagName}[${siblingIndex}]`
+    xpath = '/' + segment + xpath
+
+    element = element.parentElement!
+  }
+
+  return xpath
+}
+
+/**
  * Check if the xpath is valid.
  * @param {string} xpath The xpath to check.
  * @returns {boolean} True if the xpath is valid.
@@ -236,6 +270,21 @@ export function isValidXPath(xpath: string): xpath is XPath {
   } catch {
     return false
   }
+}
+
+/**
+ * Get the element by the specified xpath.
+ * @param {string} path The xpath to find the element.
+ * @returns {HTMLElement | null} The found element.
+ */
+export const getElementByXPath = (path: XPath): HTMLElement | null => {
+  return document.evaluate(
+    path,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null,
+  ).singleNodeValue as HTMLElement | null
 }
 
 /**

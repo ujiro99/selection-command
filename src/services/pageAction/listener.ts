@@ -1,4 +1,3 @@
-import getXPath from 'get-xpath'
 import { isPopup, isEmpty } from '@/lib/utils'
 import { Ipc, BgCommand } from '@/services/ipc'
 import {
@@ -6,7 +5,7 @@ import {
   PageAction,
   convReadableKeysToSymbols,
 } from '@/services/pageAction'
-import { isTextNode } from '@/services/dom'
+import { isTextNode, getXpath, getElementByXPath } from '@/services/dom'
 import { PAGE_ACTION_EVENT } from '@/const'
 
 type EventsFunctions = {
@@ -84,14 +83,22 @@ const getLabel = (e: Element): string => {
 }
 
 export const PageActionListener = (() => {
+  let focusElm: HTMLElement | null = null
+  let focusXpath: string | null = null
+
+  const onFocusIn = (event: FocusEvent) => {
+    focusElm = event.target as HTMLElement
+    focusXpath = getXpath(focusElm)
+  }
+
   const func: EventsFunctions = {
     click(e: MouseEvent) {
       if (isPopup(e.target as HTMLElement)) return
-      let xpath = getXPath(e.target as HTMLElement)
+      let xpath = getXpath(e.target as HTMLElement)
       let label = getLabel(e.target as Element)
       if (isEmpty(xpath)) {
         const targetAtPoint = document.elementFromPoint(e.x, e.y)
-        xpath = getXPath(targetAtPoint)
+        xpath = getXpath(targetAtPoint)
         label = getLabel(targetAtPoint as Element)
       }
       if (e.detail === 2) {
@@ -135,7 +142,10 @@ export const PageActionListener = (() => {
     keyboard: (e: KeyboardEvent) => {
       if (isPopup(e.target as HTMLElement)) return
       if (!isTargetKey(e)) return
-      let xpath = getXPath(e.target as HTMLElement)
+      let xpath = getXpath(e.target as HTMLElement)
+      if (getElementByXPath(xpath) == null && focusXpath != null) {
+        xpath = focusXpath
+      }
       Ipc.send(BgCommand.addPageAction, {
         type: 'keyboard',
         timestamp: getTimeStamp(),
@@ -164,6 +174,8 @@ export const PageActionListener = (() => {
         value = target.nodeValue
         target = target.parentElement as HTMLElement
       }
+      const xpath = getXpath(target)
+      console.log('input', target, xpath)
       if (value != null) {
         value = convReadableKeysToSymbols(value)
         Ipc.send(BgCommand.addPageAction, {
@@ -172,7 +184,7 @@ export const PageActionListener = (() => {
           param: {
             label: value,
             value,
-            selector: getXPath(target),
+            selector: xpath,
             selectorType: SelectorType.xpath,
           } as PageAction.Input,
         })
@@ -193,6 +205,7 @@ export const PageActionListener = (() => {
 
   function start(): void {
     console.log('Listener.start')
+    window.addEventListener('focusin', onFocusIn)
     window.addEventListener('click', func.click)
     window.addEventListener('keydown', func.keyboard)
     window.addEventListener('input', func.input)
@@ -201,6 +214,7 @@ export const PageActionListener = (() => {
 
   function stop(): void {
     console.log('Listener.stop')
+    window.removeEventListener('focusin', onFocusIn)
     window.removeEventListener('click', func.click)
     window.removeEventListener('keydown', func.keyboard)
     window.removeEventListener('input', func.input)

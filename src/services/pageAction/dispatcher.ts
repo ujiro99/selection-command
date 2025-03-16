@@ -1,6 +1,5 @@
 import userEvent from '@testing-library/user-event'
-import type { XPath } from '@/services/dom'
-import { isValidXPath } from '@/services/dom'
+import { getElementByXPath, isValidXPath } from '@/services/dom'
 import { safeInterpolate } from '@/lib/utils'
 import { INSERT, InsertSymbol } from '@/services/pageAction'
 
@@ -50,16 +49,6 @@ export namespace PageAction {
     x: number
     y: number
   }
-}
-
-const getElementByXPath = (path: XPath): HTMLElement | null => {
-  return document.evaluate(
-    path,
-    document,
-    null,
-    XPathResult.FIRST_ORDERED_NODE_TYPE,
-    null,
-  ).singleNodeValue as HTMLElement | null
 }
 
 /**
