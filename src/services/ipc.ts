@@ -38,6 +38,7 @@ export type ClickElementProps = {
 }
 
 export type RunPageActionProps = {
+  srcUrl: string
   selectedText: string
   clipboardText: string
   steps: PageActionStep[]

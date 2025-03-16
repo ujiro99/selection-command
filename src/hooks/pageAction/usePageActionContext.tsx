@@ -22,6 +22,7 @@ export const PageActionContextProvider = ({
 }) => {
   const [runnerId, setRunnerId] = useState<string>('')
   const [isRecording, setIsRecording] = useState<boolean>(false)
+  const [srcUrl, setSrcUrl] = useState<string>('')
   const [selectedText, setSelectedText] = useState<string>('')
   const [clipboardText, setClipboardText] = useState<string>('')
 
@@ -38,6 +39,7 @@ export const PageActionContextProvider = ({
     const tabId = await Ipc.getTabId()
     data.runnerId && setRunnerId(data.runnerId)
     data.recordingTabId && setIsRecording(data.recordingTabId === tabId)
+    data.srcUrl && setSrcUrl(data.srcUrl)
     data.selectedText && setSelectedText(data.selectedText)
     data.clipboardText && setClipboardText(data.clipboardText)
   }
@@ -53,6 +55,7 @@ export const PageActionContextProvider = ({
         runnerId,
         isRecording,
         selectedText,
+        srcUrl,
         clipboardText,
         setContextData,
       }}

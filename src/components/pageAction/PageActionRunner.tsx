@@ -93,6 +93,7 @@ export function PageActionRunner(): JSX.Element {
     // Set context of PageAction
     await setContextData({
       runnerId: Runner.id,
+      srcUrl: props.srcUrl,
       selectedText: props.selectedText,
       clipboardText: props.clipboardText,
     })

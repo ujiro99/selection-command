@@ -12,6 +12,7 @@ import type { PageAction } from '@/services/pageAction'
 import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
+import { t } from '@/services/i18n'
 import type { PageActionStep } from '@/types'
 import { isEmpty, e2a } from '@/lib/utils'
 import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from '@/const'
@@ -54,6 +55,7 @@ export function PageActionRecorder(): JSX.Element {
       // Wait for the clipboard to be updated.
       const text = await navigator.clipboard.readText()
       await setContextData({
+        srcUrl: t('PageAction_InputMenu_url'),
         selectedText: getSelectionText(),
         clipboardText: text,
       })

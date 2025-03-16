@@ -148,12 +148,13 @@ export const reset = (): boolean => {
 }
 
 type openPopupAndRunParam = openPopupsProps & {
+  srcUrl: string
   selectedText: string
   clipboardText: string
 }
 
 export const openPopupAndRun = (param: openPopupAndRunParam): boolean => {
-  const { commandId } = param
+  const { commandId, selectedText, clipboardText, srcUrl } = param
   const open = async () => {
     const commands = await Storage.getCommands()
     const cmd = commands.find((c) => c.id === commandId)
@@ -165,8 +166,9 @@ export const openPopupAndRun = (param: openPopupAndRunParam): boolean => {
     if (tabIds.length > 0) {
       const option = cmd.pageActionOption
       await Ipc.sendQueue(tabIds[0], TabCommand.runPageAction, {
-        selectedText: param.selectedText,
-        clipboardText: param.clipboardText,
+        srcUrl,
+        selectedText,
+        clipboardText,
         steps: option.steps,
       })
       return

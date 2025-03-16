@@ -138,6 +138,7 @@ export type PageActionContext = {
   recordingTabId?: number
   runnerId?: string
   isRecording?: boolean
+  srcUrl?: string
   selectedText?: string
   clipboardText?: string
 }

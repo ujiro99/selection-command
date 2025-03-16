@@ -30,7 +30,8 @@ export function usePageActionRunner() {
   const setStopExecute = (s: boolean) => (stopExecute.current = s)
   const [isExecuting, setIsExecuting] = useState(false)
   const [isQueueEmpty, setIsQueueEmpty] = useState(true)
-  const { runnerId, selectedText, clipboardText } = usePageActionContext()
+  const { runnerId, srcUrl, selectedText, clipboardText } =
+    usePageActionContext()
   const isRunner = runnerId === thisId
   const isRunning = !isQueueEmpty || isExecuting
 
@@ -74,7 +75,7 @@ export function usePageActionRunner() {
     return () => {
       Ipc.removeQueueChangedLisner(tabId.current!, [TabCommand.execPageAction])
     }
-  }, [tabId.current, isRunner, selectedText, clipboardText])
+  }, [tabId.current, isRunner, srcUrl, selectedText, clipboardText])
 
   const execute = async (message: Message) => {
     if (message.command !== TabCommand.execPageAction) return
@@ -118,6 +119,7 @@ export function usePageActionRunner() {
         case 'input':
           ;[result, msg] = await dispatcher.input({
             ...step.param,
+            srcUrl,
             selectedText,
             clipboardText,
           } as PageAction.Input)

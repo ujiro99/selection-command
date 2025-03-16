@@ -27,6 +27,7 @@ export namespace PageAction {
     selector: string
     selectorType: SelectorType
     value: string
+    srcUrl: string
     selectedText: string
     clipboardText: string
   }
@@ -172,7 +173,8 @@ export const PageActionDispatcher = {
   },
 
   input: async (param: PageAction.Input): ActionReturn => {
-    const { selector, selectorType, selectedText, clipboardText } = param
+    const { selector, selectorType, srcUrl, selectedText, clipboardText } =
+      param
     const user = userEvent.setup()
 
     const element = await waitForElement(selector, selectorType)
@@ -180,13 +182,15 @@ export const PageActionDispatcher = {
       // Inserts variables.
       const variables = {
         [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
-        [InsertSymbol[INSERT.URL]]: location.href,
+        [InsertSymbol[INSERT.URL]]: srcUrl,
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
       }
+      console.log('Variables:', variables)
       let value = safeInterpolate(param.value, variables)
       value = value.replace(/{/g, '\\\\{') // escape
       value = value.replace(/}/g, '\\\\}') // escape
-      await user.type(element, value, { skipClick: true })
+      // await user.type(element, value, { skipClick: true })
+      await user.type(element, value)
     } else {
       console.warn(`Element not found for: ${selector}`)
       return [false, `Element not found: ${param.label}`]
