@@ -115,18 +115,18 @@ export function PageActionRecorder(): JSX.Element {
 
     const init = async () => {
       const actions = await Storage.get<PageActionStep[]>(
-        STORAGE_KEY.PAGE_ACTION,
+        STORAGE_KEY.PA_RECORDING,
       )
       addStep(actions)
     }
     init()
 
-    Storage.addListener(STORAGE_KEY.PAGE_ACTION, addStep)
+    Storage.addListener(STORAGE_KEY.PA_RECORDING, addStep)
     Runner.subscribe(RunnerEvent.Start, onStart)
     Runner.subscribe(RunnerEvent.Failed, onFailed)
 
     return () => {
-      Storage.removeListener(STORAGE_KEY.PAGE_ACTION, addStep)
+      Storage.removeListener(STORAGE_KEY.PA_RECORDING, addStep)
       Runner.unsubscribe(RunnerEvent.Start, onStart)
       Runner.unsubscribe(RunnerEvent.Failed, onFailed)
     }

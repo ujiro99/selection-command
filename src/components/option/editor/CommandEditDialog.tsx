@@ -69,7 +69,7 @@ import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import type { SelectionCommand, CommandFolder, PageActionStep } from '@/types'
+import type { SelectionCommand, CommandFolder } from '@/types'
 
 import css from './CommandEditDialog.module.css'
 
@@ -386,7 +386,7 @@ const CommandEditDialogInner = ({
 
   useEffect(() => {
     Storage.addListener(
-      SESSION_STORAGE_KEY.PAGE_ACTION,
+      SESSION_STORAGE_KEY.PA_RECORDING,
       (steps: PageActionStepSchema[]) => {
         if (steps == null) return
         steps = steps.map((step) => {

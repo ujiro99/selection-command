@@ -30,7 +30,7 @@ export const add = (
 ): boolean => {
   const add = async () => {
     let steps = await Storage.get<PageActionStep[]>(
-      SESSION_STORAGE_KEY.PAGE_ACTION,
+      SESSION_STORAGE_KEY.PA_RECORDING,
     )
 
     // Insert a start action if steps are empty.
@@ -83,7 +83,7 @@ export const add = (
     }
 
     // Update actions.
-    await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [
+    await Storage.set(SESSION_STORAGE_KEY.PA_RECORDING, [
       ...steps,
       action,
       {
@@ -107,12 +107,12 @@ export const update = (
 ): boolean => {
   const update = async () => {
     let actions = await Storage.get<PageActionStep[]>(
-      SESSION_STORAGE_KEY.PAGE_ACTION,
+      SESSION_STORAGE_KEY.PA_RECORDING,
     )
     const index = actions.findIndex((a) => a.id === param.id)
     if (index !== -1 && isInputAction(actions[index].param)) {
       actions[index].param.value = param.value
-      await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, actions)
+      await Storage.set(SESSION_STORAGE_KEY.PA_RECORDING, actions)
     }
     response(true)
   }
@@ -127,10 +127,10 @@ export const remove = (
 ): boolean => {
   const remove = async () => {
     let actions = await Storage.get<PageActionStep[]>(
-      SESSION_STORAGE_KEY.PAGE_ACTION,
+      SESSION_STORAGE_KEY.PA_RECORDING,
     )
     await Storage.set(
-      SESSION_STORAGE_KEY.PAGE_ACTION,
+      SESSION_STORAGE_KEY.PA_RECORDING,
       actions.filter((a) => a.id !== param.id),
     )
     response(true)
@@ -141,7 +141,7 @@ export const remove = (
 
 export const reset = (): boolean => {
   const reset = async () => {
-    await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION, [])
+    await Storage.set(SESSION_STORAGE_KEY.PA_RECORDING, [])
   }
   reset()
   return false
@@ -201,9 +201,9 @@ export const queueSteps = (
 
 const setRecordingTabId = async (tabId: number | undefined) => {
   const context = await Storage.get<PageActionContext>(
-    SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT,
+    SESSION_STORAGE_KEY.PA_CONTEXT,
   )
-  await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT, {
+  await Storage.set(SESSION_STORAGE_KEY.PA_CONTEXT, {
     ...context,
     recordingTabId: tabId,
   })
@@ -251,7 +251,7 @@ export const closeRecorder = (
 
 chrome.tabs.onRemoved.addListener(async (tabId) => {
   const context = await Storage.get<PageActionContext>(
-    SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT,
+    SESSION_STORAGE_KEY.PA_CONTEXT,
   )
   const { recordingTabId } = context
   if (tabId === recordingTabId) {

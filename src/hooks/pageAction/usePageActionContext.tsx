@@ -26,11 +26,11 @@ export const PageActionContextProvider = ({
   const [clipboardText, setClipboardText] = useState<string>('')
 
   useEffect(() => {
-    Storage.get<PageActionContext>(
-      SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT,
-    ).then((data) => {
-      updateState(data)
-    })
+    Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
+      (data) => {
+        updateState(data)
+      },
+    )
   }, [])
 
   const updateState = async (data: PageActionContext) => {
@@ -44,7 +44,7 @@ export const PageActionContextProvider = ({
 
   const setContextData = async (data: PageActionContext) => {
     updateState(data)
-    await Storage.set(SESSION_STORAGE_KEY.PAGE_ACTION_CONTEXT, data)
+    await Storage.set(SESSION_STORAGE_KEY.PA_CONTEXT, data)
   }
 
   return (
