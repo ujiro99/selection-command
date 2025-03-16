@@ -20,8 +20,6 @@ import type { RunPageActionProps, Message } from '@/services/ipc'
 import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
 import { cn } from '@/lib/utils'
 
-const COMMANDS = [TabCommand.runPageAction]
-
 type Result = {
   status: RunnerEvent
   stepId: string
@@ -109,13 +107,13 @@ export function PageActionRunner(): JSX.Element {
       if (tabId == null) return
       let msg
       do {
-        msg = await Ipc.recvQueue(tabId, COMMANDS)
+        msg = await Ipc.recvQueue(tabId, TabCommand.runPageAction)
         msg && (await execute(msg))
       } while (msg)
 
-      Ipc.addQueueChangedListener(tabId, COMMANDS, execute)
+      Ipc.addQueueChangedListener(tabId, TabCommand.runPageAction, execute)
       return () => {
-        Ipc.removeQueueChangedLisner(tabId, COMMANDS)
+        Ipc.removeQueueChangedLisner(tabId, TabCommand.runPageAction)
       }
     }
     start()

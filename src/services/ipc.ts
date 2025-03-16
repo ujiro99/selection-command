@@ -149,16 +149,13 @@ export const Ipc = {
     return Storage.set(SESSION_STORAGE_KEY.MESSAGE_QUEUE, queue)
   },
 
-  async recvQueue(
-    tabId: number,
-    commands: IpcCommand[],
-  ): Promise<Message | null> {
+  async recvQueue(tabId: number, command: IpcCommand): Promise<Message | null> {
     const queue = await Storage.get<Message[]>(
       SESSION_STORAGE_KEY.MESSAGE_QUEUE,
     )
 
     const messages = queue.filter(
-      (m) => m.tabId === tabId && commands.includes(m.command),
+      (m) => m.tabId === tabId && command === m.command,
     )
 
     // Get only the first message.
@@ -199,7 +196,7 @@ export const Ipc = {
 
   addQueueChangedListener(
     tabId: number,
-    commands: IpcCommand[],
+    command: IpcCommand,
     callback: MessageQueueCallback,
   ) {
     if (!Ipc.msgQueueChangedlisteners[tabId]) {
@@ -208,15 +205,11 @@ export const Ipc = {
         MessageQueueCallback
       >
     }
-    commands.map((command) => {
-      Ipc.msgQueueChangedlisteners[tabId][command] = callback
-    })
+    Ipc.msgQueueChangedlisteners[tabId][command] = callback
   },
 
-  removeQueueChangedLisner(tabId: number, commands: IpcCommand[]) {
-    commands.map((command) => {
-      delete Ipc.msgQueueChangedlisteners[tabId][command]
-    })
+  removeQueueChangedLisner(tabId: number, command: IpcCommand) {
+    delete Ipc.msgQueueChangedlisteners[tabId][command]
   },
 }
 

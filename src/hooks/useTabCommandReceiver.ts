@@ -1,19 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Ipc, TabCommand } from '@/services/ipc'
-import type {
-  ClickElementProps,
-  RunPageActionProps,
-  Message,
-} from '@/services/ipc'
-import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
-import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
-
-const COMMANDS = [TabCommand.clickElement]
+import type { ClickElementProps, Message } from '@/services/ipc'
 
 export function useTabCommandReceiver() {
   const [tabId, setTabId] = useState<number | null>(null)
-  const Runner = usePageActionRunner()
-  const { setContextData } = usePageActionContext()
 
   useEffect(() => {
     Ipc.getTabId().then(setTabId)
@@ -24,13 +14,13 @@ export function useTabCommandReceiver() {
       if (tabId == null) return
       let msg
       do {
-        msg = await Ipc.recvQueue(tabId, COMMANDS)
+        msg = await Ipc.recvQueue(tabId, TabCommand.clickElement)
         msg && (await execute(msg))
       } while (msg)
 
-      Ipc.addQueueChangedListener(tabId, COMMANDS, execute)
+      Ipc.addQueueChangedListener(tabId, TabCommand.clickElement, execute)
       return () => {
-        Ipc.removeQueueChangedLisner(tabId, COMMANDS)
+        Ipc.removeQueueChangedLisner(tabId, TabCommand.clickElement)
       }
     }
     start()

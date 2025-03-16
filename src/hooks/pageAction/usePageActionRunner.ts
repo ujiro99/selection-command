@@ -69,11 +69,11 @@ export function usePageActionRunner() {
     }
     Ipc.addQueueChangedListener(
       tabId.current,
-      [TabCommand.execPageAction],
+      TabCommand.execPageAction,
       queueChanged,
     )
     return () => {
-      Ipc.removeQueueChangedLisner(tabId.current!, [TabCommand.execPageAction])
+      Ipc.removeQueueChangedLisner(tabId.current!, TabCommand.execPageAction)
     }
   }, [tabId.current, isRunner, srcUrl, selectedText, clipboardText])
 
@@ -157,7 +157,7 @@ export function usePageActionRunner() {
     executing.current = true
     let msg
     do {
-      msg = await Ipc.recvQueue(tabId.current, [TabCommand.execPageAction])
+      msg = await Ipc.recvQueue(tabId.current, TabCommand.execPageAction)
       msg && (await execute(msg))
     } while (msg && !stopExecute.current)
     executing.current = false
