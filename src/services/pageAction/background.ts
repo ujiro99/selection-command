@@ -230,11 +230,13 @@ export const run = (
         selectedText,
         clipboardText,
       })
-      await RunningStatus.update(
-        step.id,
-        ret.result ? EXEC_STATE.Done : EXEC_STATE.Failed,
-        ret.message,
-      )
+
+      if (ret.result) {
+        await RunningStatus.update(step.id, EXEC_STATE.Done)
+      } else {
+        await RunningStatus.update(step.id, EXEC_STATE.Failed, ret.message)
+        break
+      }
     }
     response(true)
   }

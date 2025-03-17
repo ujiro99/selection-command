@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import {
   ArrowDownFromLine,
   ArrowDownToLine,
@@ -12,12 +12,13 @@ import {
   Mouse,
   Type,
 } from 'lucide-react'
+import { Tooltip } from '@/components/Tooltip'
 import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
 import { RunningStatus } from '@/services/pageAction'
 import { Ipc } from '@/services/ipc'
 import type { PageActiontResult, PageActiontStatus } from '@/types'
 import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
-import { cn } from '@/lib/utils'
+import { cn, isEmpty } from '@/lib/utils'
 
 export function PageActionRunner(): JSX.Element {
   usePageActionRunner()
@@ -46,14 +47,31 @@ export function PageActionRunner(): JSX.Element {
     <div className="fixed z-[2147483647] bottom-2 right-2 p-2 bg-gray-800/30 rounded-md pointer-events-none">
       <ul className="text-xs text-gray-50">
         {results.map((result) => (
-          <li key={result.stepId} className="flex items-center gap-2 p-1">
-            <StatusIcon status={result.status} />
-            <TypeIcon type={result.type} className="" />
-            <span className="font-mono max-w-48 truncate">{result.label}</span>
-          </li>
+          <Step key={result.stepId} result={result} />
         ))}
       </ul>
     </div>
+  )
+}
+
+const Step = ({ result }: { result: PageActiontResult }) => {
+  const stepRef = useRef<HTMLLIElement>(null)
+  const hasMessage = !isEmpty(result.message)
+  return (
+    <li
+      ref={stepRef}
+      className={cn(
+        'flex items-center gap-2 p-1',
+        hasMessage && 'cursor-help pointer-events-auto',
+      )}
+    >
+      <StatusIcon status={result.status} />
+      <TypeIcon type={result.type} className="" />
+      <span className="font-mono max-w-48 truncate">{result.label}</span>
+      {hasMessage && (
+        <Tooltip positionElm={stepRef.current} text={result.message ?? ''} />
+      )}
+    </li>
   )
 }
 
