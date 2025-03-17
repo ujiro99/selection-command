@@ -285,9 +285,10 @@ const commandFuncs = {
   [BgCommand.updatePageAction]: PageActionBackground.update,
   [BgCommand.removePageAction]: PageActionBackground.remove,
   [BgCommand.resetPageAction]: PageActionBackground.reset,
-  [BgCommand.queuePageAction]: PageActionBackground.queueSteps,
   [BgCommand.startPageActionRecorder]: PageActionBackground.openRecorder,
   [BgCommand.finishPageActionRecorder]: PageActionBackground.closeRecorder,
+  [BgCommand.runPageAction]: PageActionBackground.run,
+  [BgCommand.stopPageAction]: PageActionBackground.stopRunner,
   [BgCommand.openPopupAndRunPageAction]: PageActionBackground.openPopupAndRun,
 } as { [key: string]: IpcCallback }
 

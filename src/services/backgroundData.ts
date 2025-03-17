@@ -1,15 +1,19 @@
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import type { WindowLayer } from '@/types'
 
+type updater = (val: BgData) => BgData
+
 export class BgData {
   private static instance: BgData
 
   public windowStack: WindowLayer[]
   public normalWindows: WindowLayer
+  public pageActionStop: boolean
 
   private constructor(val: BgData | undefined) {
     this.windowStack = val?.windowStack ?? []
     this.normalWindows = val?.normalWindows ?? []
+    this.pageActionStop = false
   }
 
   public static init() {
@@ -29,8 +33,12 @@ export class BgData {
     return BgData.instance
   }
 
-  public static set(val: BgData) {
-    BgData.instance = val
+  public static set(val: BgData | updater) {
+    if (val instanceof Function) {
+      BgData.instance = val(BgData.instance)
+    } else {
+      BgData.instance = val
+    }
     Storage.set(SESSION_STORAGE_KEY.BG, BgData.instance)
   }
 }

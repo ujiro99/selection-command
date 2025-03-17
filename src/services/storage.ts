@@ -17,6 +17,7 @@ export enum SESSION_STORAGE_KEY {
   SESSION_DATA = 'sessionData',
   MESSAGE_QUEUE = 'messageQueue',
   PA_RECORDING = 'pageActionRecording',
+  PA_RUNNING = 'pageActionRunning',
   PA_CONTEXT = 'pageActionContext',
 }
 
@@ -38,6 +39,7 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
   [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
   [SESSION_STORAGE_KEY.PA_RECORDING]: [],
+  [SESSION_STORAGE_KEY.PA_RUNNING]: [],
   [SESSION_STORAGE_KEY.PA_CONTEXT]: {},
 }
 
@@ -94,7 +96,7 @@ export const Storage = {
    * @param {string} key key of item.
    * @param {any} value item.
    */
-  set: async (key: KEY, value: unknown): Promise<boolean> => {
+  set: async <T>(key: KEY, value: T): Promise<boolean> => {
     const area = detectStorageArea(key)
     await area.set({ [key]: value })
     if (chrome.runtime.lastError != null) {

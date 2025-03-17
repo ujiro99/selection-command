@@ -1,17 +1,27 @@
-import { Ipc, Sender, TabCommand } from '@/services/ipc'
+import {
+  Ipc,
+  Sender,
+  TabCommand,
+  RunPageAction,
+  ExecPageAction,
+} from '@/services/ipc'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
+import type { PageAction } from '@/services/pageAction'
+import { isInputAction, RunningStatus } from '@/services/pageAction'
+import { ScreenSize } from '@/services/dom'
+import { openPopups, openPopupsProps } from '@/services/chrome'
 import {
   POPUP_OPTION,
   POPUP_TYPE,
   PAGE_ACTION_MAX,
   PAGE_ACTION_CONTROL,
+  EXEC_STATE,
 } from '@/const'
 import { generateRandomID } from '@/lib/utils'
 import type { PageActionStep, PageActionContext } from '@/types'
-import type { PageAction } from '@/services/pageAction'
-import { isInputAction } from '@/services/pageAction'
-import { ScreenSize } from '@/services/dom'
-import { openPopups, openPopupsProps } from '@/services/chrome'
+import { BgData } from '@/services/backgroundData'
+
+BgData.init()
 
 const StartAction = {
   id: generateRandomID(),
@@ -147,58 +157,94 @@ export const reset = (): boolean => {
   return false
 }
 
-type openPopupAndRunParam = openPopupsProps & {
-  srcUrl: string
-  selectedText: string
-  clipboardText: string
-}
+type openPopupAndRunProps = openPopupsProps & RunPageAction
 
-export const openPopupAndRun = (param: openPopupAndRunParam): boolean => {
-  const { commandId, selectedText, clipboardText, srcUrl } = param
+export const openPopupAndRun = (
+  param: openPopupAndRunProps,
+  _: Sender,
+  response: (res: unknown) => void,
+): boolean => {
   const open = async () => {
+    const tabIds = await openPopups(param)
+    if (tabIds.length === 0) {
+      console.error('tab not found')
+      response(false)
+      return
+    }
+    const tabId = tabIds[0]
+
+    // Wait until ipc connection is established.
+    await Ipc.connectTab(tabId)
+
     const commands = await Storage.getCommands()
-    const cmd = commands.find((c) => c.id === commandId)
+    const cmd = commands.find((c) => c.id === param.commandId)
     if (cmd == null || cmd?.pageActionOption == null) {
       console.error('PageActionOption not found')
-      return
+      response(false)
+      return true
     }
-    const tabIds = await openPopups(param)
-    if (tabIds.length > 0) {
-      const option = cmd.pageActionOption
-      await Ipc.sendQueue(tabIds[0], TabCommand.runPageAction, {
-        srcUrl,
-        selectedText,
-        clipboardText,
-        steps: option.steps,
-      })
-      return
-    }
-    console.debug('tab not found')
+    const steps = cmd.pageActionOption.steps
+
+    // Run the steps on the popup.
+    run({ ...param, tabId, steps }, _, response)
   }
   open()
-  return false
+  return true
 }
 
-type startPageAction = {
-  steps: PageActionStep[]
-}
-
-export const queueSteps = (
-  param: startPageAction,
+export const run = (
+  param: RunPageAction,
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
+  const { steps, selectedText, clipboardText, srcUrl } = param
+  const tabId = param.tabId || sender.tab?.id
+  if (tabId == null) {
+    console.error('tabId not found')
+    response(false)
+    return true
+  }
+
   const run = async () => {
-    const { steps } = param
-    const tabId = sender.tab?.id
-    if (tabId == null) return response(true)
+    // Update running status
+    RunningStatus.init(tabId, steps)
+    BgData.set((data) => ({ ...data, pageActionStop: false }))
+
+    // Run steps
     for (const step of steps) {
-      await Ipc.sendQueue(tabId, TabCommand.execPageAction, step)
+      await RunningStatus.update(step.id, EXEC_STATE.Start)
+
+      const stop = BgData.get().pageActionStop
+      if (stop) {
+        // Cancel the execution
+        await RunningStatus.update(step.id, EXEC_STATE.Stop)
+        break
+      }
+
+      const ret = await Ipc.sendTab<
+        ExecPageAction.Message,
+        ExecPageAction.Return
+      >(tabId, TabCommand.execPageAction, {
+        step,
+        srcUrl,
+        selectedText,
+        clipboardText,
+      })
+      await RunningStatus.update(
+        step.id,
+        ret.result ? EXEC_STATE.Done : EXEC_STATE.Failed,
+        ret.message,
+      )
     }
     response(true)
   }
   run()
   return true
+}
+
+export const stopRunner = (): boolean => {
+  BgData.set((data) => ({ ...data, pageActionStop: true }))
+  return false
 }
 
 const setRecordingTabId = async (tabId: number | undefined) => {

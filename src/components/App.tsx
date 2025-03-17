@@ -8,6 +8,7 @@ import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
 import { getSelectionText } from '@/services/dom'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
+import { Ipc, TabCommand } from '@/services/ipc'
 
 import './App.css'
 
@@ -16,6 +17,13 @@ export function App() {
   const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
   const [selectionText, setSelectionText] = useState('')
+
+  useEffect(() => {
+    Ipc.addListener(TabCommand.connect, () => false)
+    return () => {
+      Ipc.removeListener(TabCommand.connect)
+    }
+  }, [])
 
   useEffect(() => {
     const onSelectionchange = () => {

@@ -1,5 +1,6 @@
 import { Storage, SESSION_STORAGE_KEY } from './storage'
 import type { PageActionStep } from '@/types'
+import { sleep } from '@/lib/utils'
 
 export enum BgCommand {
   openPopups = 'openPopups',
@@ -20,16 +21,18 @@ export enum BgCommand {
   queuePageAction = 'queuePageAction',
   startPageActionRecorder = 'startPageActionRecorder',
   finishPageActionRecorder = 'finishPageActionRecorder',
+  runPageAction = 'runPageAction',
+  stopPageAction = 'stopPageAction',
   openPopupAndRunPageAction = 'openPopupAndRunPageAction',
 }
 
 export enum TabCommand {
+  connect = 'connect',
   executeAction = 'executeAction',
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   getTabId = 'getTabId',
   // PageAction
-  runPageAction = 'runPageAction',
   execPageAction = 'execPageAction',
 }
 
@@ -37,11 +40,25 @@ export type ClickElementProps = {
   selector: string
 }
 
-export type RunPageActionProps = {
+export type RunPageAction = {
+  tabId?: number
+  steps: PageActionStep[]
   srcUrl: string
   selectedText: string
   clipboardText: string
-  steps: PageActionStep[]
+}
+
+export namespace ExecPageAction {
+  export type Message = {
+    srcUrl: string
+    selectedText: string
+    clipboardText: string
+    step: PageActionStep
+  }
+  export type Return = {
+    result: boolean
+    message?: string
+  }
 }
 
 type IpcCommand = BgCommand | TabCommand
@@ -85,16 +102,46 @@ export const Ipc = {
     )
   },
 
-  async send(command: IpcCommand, param?: unknown): Promise<any> {
+  async send<M = any, R = any>(command: IpcCommand, param?: M): Promise<R> {
     return await chrome.runtime.sendMessage({ command, param })
   },
 
-  async sendTab(
+  async connectTab(tabId: number): Promise<void> {
+    for (let i = 0; i < 300; i++) {
+      try {
+        const ret = await chrome.tabs.sendMessage(tabId, {
+          command: TabCommand.connect,
+        })
+        if (chrome.runtime.lastError != null) {
+          throw chrome.runtime.lastError
+        }
+        console.debug('tab connected')
+        return ret
+      } catch (error) {
+        // nothing to do
+      }
+      await sleep(20)
+    }
+    throw new Error('Could not connect to tab')
+  },
+
+  async sendTab<M = any, R = any>(
     tabId: number,
     command: IpcCommand,
-    param?: unknown,
-  ): Promise<any> {
-    return await chrome.tabs.sendMessage(tabId, { command, param })
+    param?: M,
+  ): Promise<R> {
+    type MM = { command: IpcCommand; param: M }
+    const message = { command, param } as MM
+    try {
+      const ret = await chrome.tabs.sendMessage(tabId, message)
+      if (chrome.runtime.lastError != null) {
+        throw chrome.runtime.lastError
+      }
+      return ret
+    } catch (error) {
+      console.warn('Could not send message to tab:', error)
+      return error as R
+    }
   },
 
   async sendAllTab(command: IpcCommand, param?: unknown): Promise<any[]> {

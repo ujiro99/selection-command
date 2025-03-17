@@ -1,35 +1,32 @@
 import { useEffect, useState } from 'react'
-import {
-  usePageActionRunner,
-  RunnerEvent,
-} from '@/hooks/pageAction/usePageActionRunner'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { InputPopup } from '@/components/pageAction/InputPopup'
 import { InputEditor } from '@/components/pageAction/InputEditor'
-import { PageActionListener as Listener } from '@/services/pageAction'
+import {
+  PageActionListener as Listener,
+  RunningStatus,
+} from '@/services/pageAction'
 import type { PageAction } from '@/services/pageAction'
 import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
-import { Ipc, BgCommand } from '@/services/ipc'
+import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import { t } from '@/services/i18n'
-import type { PageActionStep } from '@/types'
+import type { PageActiontStatus, PageActionStep } from '@/types'
 import { isEmpty, e2a } from '@/lib/utils'
-import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from '@/const'
+import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
 
 const isControlType = (type: string): boolean => {
   return e2a(PAGE_ACTION_CONTROL).includes(type)
 }
 
 export function PageActionRecorder(): JSX.Element {
-  const Runner = usePageActionRunner()
-  const { isRunning } = Runner
-  const { isRecording, setContextData } = usePageActionContext()
+  const { isRecording, isRunning } = usePageActionContext()
   const [steps, setSteps] = useState<PageActionStep[]>([])
   const [isListening, setIsListening] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
-  const [failedMessage, setFailedMesage] = useState<string>('')
+  const [failedMessage, setFailedMesage] = useState<string>()
   const [previewElm, setPreviewElm] = useState<HTMLButtonElement | null>()
   const remain = PAGE_ACTION_MAX - steps.length - 2 // - 2: start, end
 
@@ -52,21 +49,21 @@ export function PageActionRecorder(): JSX.Element {
 
   const preview = () => {
     setTimeout(async () => {
-      // Wait for the clipboard to be updated.
-      const text = await navigator.clipboard.readText()
-      await setContextData({
-        srcUrl: t('PageAction_InputMenu_url'),
-        selectedText: getSelectionText(),
-        clipboardText: text,
-      })
-
       // TODO: Reload
       const url = (steps[0].param as PageAction.Start).url as string
       if (url) {
         location.href = url
       }
 
-      Runner.run(steps)
+      // Wait for the clipboard to be updated.
+      const text = await navigator.clipboard.readText()
+
+      Ipc.send<RunPageAction>(BgCommand.runPageAction, {
+        steps,
+        srcUrl: t('PageAction_InputMenu_url'),
+        selectedText: getSelectionText(),
+        clipboardText: text,
+      })
     }, 100)
     clearState()
     Listener.stop()
@@ -100,14 +97,16 @@ export function PageActionRecorder(): JSX.Element {
     Ipc.send(BgCommand.removePageAction, { id })
   }
 
-  const onStart = (e: any) => {
-    setCurrentId(e.detail.id)
-  }
-
-  const onFailed = (e: any) => {
-    setFailedId(e.detail.id)
-    setFailedMesage(e.detail.message)
-    Runner.stop()
+  const onStatusChange = ({ results }: PageActiontStatus) => {
+    const r = results.find((r) => r.status === EXEC_STATE.Start)
+    if (r != null) {
+      setCurrentId(r.stepId)
+    }
+    const f = results.find((r) => r.status === EXEC_STATE.Failed)
+    if (f != null) {
+      setFailedId(r?.stepId)
+      setFailedMesage(f.message)
+    }
   }
 
   useEffect(() => {
@@ -124,13 +123,11 @@ export function PageActionRecorder(): JSX.Element {
     init()
 
     Storage.addListener(STORAGE_KEY.PA_RECORDING, addStep)
-    Runner.subscribe(RunnerEvent.Start, onStart)
-    Runner.subscribe(RunnerEvent.Failed, onFailed)
+    RunningStatus.subscribe(onStatusChange)
 
     return () => {
       Storage.removeListener(STORAGE_KEY.PA_RECORDING, addStep)
-      Runner.unsubscribe(RunnerEvent.Start, onStart)
-      Runner.unsubscribe(RunnerEvent.Failed, onFailed)
+      RunningStatus.unsubscribe(onStatusChange)
     }
   }, [])
 
@@ -183,7 +180,9 @@ export function PageActionRecorder(): JSX.Element {
           {isRunning ? (
             <button
               className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => Runner.stop()}
+              onClick={() => {
+                Ipc.send(BgCommand.stopPageAction)
+              }}
             >
               Stop
             </button>

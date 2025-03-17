@@ -36,8 +36,8 @@ export const PageAction = {
       screen: getScreenSize(),
       type: POPUP_TYPE.POPUP,
       selectedText: selectionText,
-      srcUrl: location.href,
       clipboardText: clipboard,
+      srcUrl: location.href,
     })
   },
 }

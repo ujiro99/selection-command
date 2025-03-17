@@ -20,11 +20,8 @@ export const PageActionContextProvider = ({
 }: {
   children: ReactNode
 }) => {
-  const [runnerId, setRunnerId] = useState<string>('')
   const [isRecording, setIsRecording] = useState<boolean>(false)
-  const [srcUrl, setSrcUrl] = useState<string>('')
-  const [selectedText, setSelectedText] = useState<string>('')
-  const [clipboardText, setClipboardText] = useState<string>('')
+  const [isRunning, setIsRunning] = useState<boolean>(false)
 
   useEffect(() => {
     Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
@@ -37,11 +34,8 @@ export const PageActionContextProvider = ({
   const updateState = async (data: PageActionContext) => {
     if (!data) return
     const tabId = await Ipc.getTabId()
-    data.runnerId && setRunnerId(data.runnerId)
     data.recordingTabId && setIsRecording(data.recordingTabId === tabId)
-    data.srcUrl && setSrcUrl(data.srcUrl)
-    data.selectedText && setSelectedText(data.selectedText)
-    data.clipboardText && setClipboardText(data.clipboardText)
+    data.isRunning && setIsRunning(data.isRunning)
   }
 
   const setContextData = async (data: PageActionContext) => {
@@ -52,11 +46,8 @@ export const PageActionContextProvider = ({
   return (
     <PageActionContext.Provider
       value={{
-        runnerId,
         isRecording,
-        selectedText,
-        srcUrl,
-        clipboardText,
+        isRunning,
         setContextData,
       }}
     >

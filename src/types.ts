@@ -12,6 +12,7 @@ import type {
   LINK_COMMAND_STARTUP_METHOD,
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONTROL,
+  EXEC_STATE,
 } from '@/const'
 import type { PageAction } from '@/services/pageAction'
 
@@ -136,11 +137,21 @@ type PageActionOption = {
 
 export type PageActionContext = {
   recordingTabId?: number
-  runnerId?: string
   isRecording?: boolean
-  srcUrl?: string
-  selectedText?: string
-  clipboardText?: string
+  isRunning?: boolean
+}
+
+export type PageActiontResult = {
+  status: EXEC_STATE
+  stepId: string
+  type: PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
+  label: string
+  message?: string
+}
+
+export type PageActiontStatus = {
+  tabId: number
+  results: PageActiontResult[]
 }
 
 export type WindowType = {

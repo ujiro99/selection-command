@@ -141,6 +141,14 @@ export enum PAGE_ACTION_CONTROL {
   end = 'end',
 }
 
+export enum EXEC_STATE {
+  Queue = 'Queue',
+  Start = 'Start',
+  Done = 'Done',
+  Stop = 'Stop',
+  Failed = 'Failed',
+}
+
 export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100
