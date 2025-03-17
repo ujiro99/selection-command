@@ -104,7 +104,7 @@ export function PageActionRecorder(): JSX.Element {
     }
     const f = results.find((r) => r.status === EXEC_STATE.Failed)
     if (f != null) {
-      setFailedId(r?.stepId)
+      setFailedId(f?.stepId)
       setFailedMesage(f.message)
     }
   }
@@ -180,9 +180,7 @@ export function PageActionRecorder(): JSX.Element {
           {isRunning ? (
             <button
               className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => {
-                Ipc.send(BgCommand.stopPageAction)
-              }}
+              onClick={() => Ipc.send(BgCommand.stopPageAction)}
             >
               Stop
             </button>
@@ -208,13 +206,13 @@ export function PageActionRecorder(): JSX.Element {
           </button>
         </div>
         <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
-          {steps.map((action) => (
+          {steps.map((step) => (
             <PageActionItem
-              action={action}
+              step={step}
               currentId={currentId}
               failedId={failedId}
               failedMessage={failedMessage}
-              key={action.id}
+              key={step.id}
               onDelete={removeAction}
               onClickEdit={edit}
             />

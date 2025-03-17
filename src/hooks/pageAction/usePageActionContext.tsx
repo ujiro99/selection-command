@@ -20,11 +20,16 @@ export const PageActionContextProvider = ({
 }: {
   children: ReactNode
 }) => {
-  const [isRecording, setIsRecording] = useState<boolean>(false)
-  const [isRunning, setIsRunning] = useState<boolean>(false)
+  const [context, setContext] = useState<PageActionContext>({})
 
   useEffect(() => {
     Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
+      (data) => {
+        updateState(data)
+      },
+    )
+    Storage.addListener<PageActionContext>(
+      SESSION_STORAGE_KEY.PA_CONTEXT,
       (data) => {
         updateState(data)
       },
@@ -34,20 +39,24 @@ export const PageActionContextProvider = ({
   const updateState = async (data: PageActionContext) => {
     if (!data) return
     const tabId = await Ipc.getTabId()
-    data.recordingTabId && setIsRecording(data.recordingTabId === tabId)
-    data.isRunning && setIsRunning(data.isRunning)
+    if (data.recordingTabId != null) {
+      data.isRecording = data.recordingTabId === tabId
+    }
+    setContext((con) => ({
+      ...con,
+      ...data,
+    }))
   }
 
   const setContextData = async (data: PageActionContext) => {
-    updateState(data)
+    if (!data) return
     await Storage.set(SESSION_STORAGE_KEY.PA_CONTEXT, data)
   }
 
   return (
     <PageActionContext.Provider
       value={{
-        isRecording,
-        isRunning,
+        ...context,
         setContextData,
       }}
     >
