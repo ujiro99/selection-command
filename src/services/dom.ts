@@ -323,14 +323,14 @@ export const isTextNode = (node: any | null): node is Text => {
  * @returns {Promise<boolean>} True if the DOM change is settled.
  */
 export const debounceDOMChange = (name: string): Promise<boolean> => {
-  console.warn('start debounceDOMChange', name)
-  let interval: number
+  let mutationTimeout: number
+  let noChangeTimeout: number
   let timeout: number
   return new Promise((resolve) => {
     const observer = new MutationObserver((_mutations, obs) => {
-      clearTimeout(interval)
-      interval = window.setTimeout(() => {
-        console.warn('end debounceDOMChange', name)
+      clearTimeout(mutationTimeout)
+      clearTimeout(noChangeTimeout)
+      mutationTimeout = window.setTimeout(() => {
         resolve(true)
         obs.disconnect()
         clearTimeout(timeout)
@@ -340,11 +340,18 @@ export const debounceDOMChange = (name: string): Promise<boolean> => {
       childList: true,
       subtree: true,
     })
-    timeout = window.setTimeout(() => {
-      resolve(false)
-      console.warn('timeout debounceDOMChange', name)
-      clearTimeout(interval)
+    noChangeTimeout = window.setTimeout(() => {
+      resolve(true)
       observer.disconnect()
+      clearTimeout(mutationTimeout)
+      clearTimeout(timeout)
+    }, 100)
+    timeout = window.setTimeout(() => {
+      console.warn('timeout debounce DOM Changing', name)
+      resolve(false)
+      observer.disconnect()
+      clearTimeout(mutationTimeout)
+      clearTimeout(noChangeTimeout)
     }, 1000)
   })
 }
