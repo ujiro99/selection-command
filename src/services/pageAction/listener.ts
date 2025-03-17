@@ -181,7 +181,6 @@ export const PageActionListener = (() => {
         target = target.parentElement as HTMLElement
       }
       const xpath = getXpath(target)
-      console.log('input', target, xpath)
       if (value != null) {
         value = convReadableKeysToSymbols(value)
         Ipc.send(BgCommand.addPageAction, {
@@ -197,13 +196,15 @@ export const PageActionListener = (() => {
       }
     },
     scroll() {
+      const x = Math.trunc(window.scrollX)
+      const y = Math.trunc(window.scrollY)
       Ipc.send(BgCommand.addPageAction, {
         type: 'scroll',
         timestamp: getTimeStamp(),
         param: {
-          label: `x: ${window.scrollX}, y: ${window.scrollY}`,
-          x: window.scrollX,
-          y: window.scrollY,
+          label: `x: ${x}, y: ${y}`,
+          x,
+          y,
         } as PageAction.Scroll,
       })
     },

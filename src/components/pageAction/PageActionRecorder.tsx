@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Circle } from 'lucide-react'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { InputPopup } from '@/components/pageAction/InputPopup'
@@ -22,12 +23,13 @@ const isControlType = (type: string): boolean => {
 
 export function PageActionRecorder(): JSX.Element {
   const { isRecording, isRunning } = usePageActionContext()
-  const [steps, setSteps] = useState<PageActionStep[]>([])
+  const [_steps, setSteps] = useState<PageActionStep[]>([])
   const [isListening, setIsListening] = useState(true)
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>()
   const [previewElm, setPreviewElm] = useState<HTMLButtonElement | null>()
+  const steps = _steps.filter((l) => !isControlType(l.type))
   const remain = PAGE_ACTION_MAX - steps.length - 2 // - 2: start, end
 
   // for Editor
@@ -45,15 +47,15 @@ export function PageActionRecorder(): JSX.Element {
   const reset = () => {
     clearState()
     Ipc.send(BgCommand.resetPageAction)
+    const url = (_steps[0].param as PageAction.Start).url as string
+    if (url) {
+      location.href = url
+    }
   }
 
   const preview = () => {
     setTimeout(async () => {
       // TODO: Reload
-      const url = (steps[0].param as PageAction.Start).url as string
-      if (url) {
-        location.href = url
-      }
 
       // Wait for the clipboard to be updated.
       const text = await navigator.clipboard.readText()
@@ -111,7 +113,7 @@ export function PageActionRecorder(): JSX.Element {
 
   useEffect(() => {
     const addStep = (list: PageActionStep[]) => {
-      setSteps((list ?? []).filter((l) => !isControlType(l.type)))
+      setSteps(list ?? [])
     }
 
     const init = async () => {
@@ -152,79 +154,99 @@ export function PageActionRecorder(): JSX.Element {
   }, [previewElm])
 
   return isRecording ? (
-    <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
-      {!editorOpen && <InputPopup />}
-      <InputEditor
-        open={editorOpen}
-        onOpenChange={(o) => !o && setEditId(null)}
-        value={editorValue}
-        onSubmit={editorSubmit}
-      />
-      <div className="inline-block relative left-[50%] translate-x-[-50%]">
-        <div className="flex gap-2">
+    <>
+      <div className="fixed z-[2147483647] inset-x-0 top-0 p-3 bg-gradient-to-b from-gray-900/30">
+        <div className="flex justify-center">
           {isListening ? (
-            <button
-              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => pause()}
-            >
-              Pause
-            </button>
+            <div className="flex items-center gap-2">
+              <Circle
+                size="18"
+                className="stroke-red-600 fill-red-600 drop-shadow-md shadow-red-600 animate-pulse"
+              />
+              <span className="text-sm font-mono">Recording...</span>
+            </div>
           ) : (
-            <button
-              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => resume()}
-            >
-              Resume
-            </button>
+            <div className="flex items-center gap-2">
+              <Circle size="18" className="stroke-gray-600 fill-gray-100" />
+              <span className="text-sm font-mono">Not Recording</span>
+            </div>
           )}
-          {isRunning ? (
-            <button
-              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => Ipc.send(BgCommand.stopPageAction)}
-            >
-              Stop
-            </button>
-          ) : (
-            <button
-              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              ref={setPreviewElm}
-            >
-              Preview
-            </button>
-          )}
-          <button
-            className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-            onClick={() => finish()}
-          >
-            Finish
-          </button>
-          <button
-            className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-            onClick={() => reset()}
-          >
-            Reset
-          </button>
         </div>
-        <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
-          {steps.map((step) => (
-            <PageActionItem
-              step={step}
-              currentId={currentId}
-              failedId={failedId}
-              failedMessage={failedMessage}
-              key={step.id}
-              onDelete={removeAction}
-              onClickEdit={edit}
-            />
-          ))}
-          {remain > 0 && (
-            <li className="bg-stone-200 rounded-lg p-2" key="remaining">
-              {`残り${remain} Step`}
-            </li>
-          )}
-        </ol>
       </div>
-    </div>
+      <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
+        {!editorOpen && <InputPopup />}
+        <InputEditor
+          open={editorOpen}
+          onOpenChange={(o) => !o && setEditId(null)}
+          value={editorValue}
+          onSubmit={editorSubmit}
+        />
+        <div className="inline-block relative left-[50%] translate-x-[-50%]">
+          <div className="flex gap-2">
+            {isListening ? (
+              <button
+                className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+                onClick={() => pause()}
+              >
+                Pause
+              </button>
+            ) : (
+              <button
+                className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+                onClick={() => resume()}
+              >
+                Resume
+              </button>
+            )}
+            {isRunning ? (
+              <button
+                className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+                onClick={() => Ipc.send(BgCommand.stopPageAction)}
+              >
+                Stop
+              </button>
+            ) : (
+              <button
+                className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+                ref={setPreviewElm}
+              >
+                Preview
+              </button>
+            )}
+            <button
+              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+              onClick={() => finish()}
+            >
+              Finish
+            </button>
+            <button
+              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
+              onClick={() => reset()}
+            >
+              Reset
+            </button>
+          </div>
+          <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
+            {steps.map((step) => (
+              <PageActionItem
+                step={step}
+                currentId={currentId}
+                failedId={failedId}
+                failedMessage={failedMessage}
+                key={step.id}
+                onDelete={removeAction}
+                onClickEdit={edit}
+              />
+            ))}
+            {remain > 0 && (
+              <li className="bg-stone-200 rounded-lg p-2" key="remaining">
+                {`残り${remain} Step`}
+              </li>
+            )}
+          </ol>
+        </div>
+      </div>
+    </>
   ) : (
     <></>
   )
