@@ -1,10 +1,6 @@
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { EXEC_STATE } from '@/const'
-import type {
-  PageActiontStatus,
-  PageActiontResult,
-  PageActionStep,
-} from '@/types'
+import type { PageActiontStatus, PageActionStep } from '@/types'
 
 export const RunningStatus = {
   init: async (tabId: number, steps: PageActionStep[]) => {
@@ -36,7 +32,7 @@ export const RunningStatus = {
   },
 
   subscribe: (cb: (status: PageActiontStatus) => void) => {
-    Storage.addListener(SESSION_STORAGE_KEY.PA_RUNNING, cb)
+    Storage.addListener<PageActiontStatus>(SESSION_STORAGE_KEY.PA_RUNNING, cb)
   },
 
   unsubscribe: (cb: (status: PageActiontStatus) => void) => {
