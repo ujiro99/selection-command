@@ -187,7 +187,7 @@ export const openPopupAndRun = (
     const tabId = tabIds[0]
 
     // Wait until ipc connection is established.
-    await Ipc.connectTab(tabId)
+    await Ipc.ensureConnection(tabId)
 
     const commands = await Storage.getCommands()
     const cmd = commands.find((c) => c.id === param.commandId)
@@ -227,6 +227,7 @@ export const run = (
     for (const step of steps) {
       await RunningStatus.update(step.id, EXEC_STATE.Start)
 
+      // Check stop flag
       const stop = BgData.get().pageActionStop
       if (stop) {
         // Cancel the execution
@@ -234,20 +235,27 @@ export const run = (
         break
       }
 
-      const ret = await Ipc.sendTab<
-        ExecPageAction.Message,
-        ExecPageAction.Return
-      >(tabId, TabCommand.execPageAction, {
-        step,
-        srcUrl,
-        selectedText,
-        clipboardText,
-      })
+      try {
+        // Execute
+        await Ipc.ensureConnection(tabId)
+        const ret = await Ipc.sendTab<
+          ExecPageAction.Message,
+          ExecPageAction.Return
+        >(tabId, TabCommand.execPageAction, {
+          step,
+          srcUrl,
+          selectedText,
+          clipboardText,
+        })
 
-      if (ret.result) {
-        await RunningStatus.update(step.id, EXEC_STATE.Done)
-      } else {
-        await RunningStatus.update(step.id, EXEC_STATE.Failed, ret.message)
+        if (ret.result) {
+          await RunningStatus.update(step.id, EXEC_STATE.Done)
+        } else {
+          await RunningStatus.update(step.id, EXEC_STATE.Failed, ret.message)
+          break
+        }
+      } catch (e) {
+        await RunningStatus.update(step.id, EXEC_STATE.Failed, `${e}`)
         break
       }
     }

@@ -106,14 +106,37 @@ export const Ipc = {
     return await chrome.runtime.sendMessage({ command, param })
   },
 
-  async connectTab(tabId: number): Promise<void> {
-    for (let i = 0; i < 300; i++) {
+  /**
+   * Connect session to the tab.
+   * @param tabId
+   */
+  async ensureConnection(tabId: number): Promise<void> {
+    const tab = await chrome.tabs.get(tabId)
+    if (tab.status !== 'complete') {
+      await new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('Could not connect to tab'))
+        }, 4000)
+        const cb = (id: number, info: chrome.tabs.TabChangeInfo) => {
+          if (tabId === id && info.status === 'complete') {
+            resolve()
+            clearTimeout(timeout)
+            chrome.tabs.onUpdated.removeListener(cb)
+          }
+        }
+        chrome.tabs.onUpdated.addListener(cb)
+      })
+    }
+
+    for (let i = 0; i < 200; i++) {
       try {
+        // console.debug('try connect', i)
         const ret = await chrome.tabs.sendMessage(tabId, {
           command: TabCommand.connect,
         })
         if (chrome.runtime.lastError != null) {
-          throw chrome.runtime.lastError
+          console.warn(chrome.runtime.lastError)
+          continue
         }
         console.debug('tab connected')
         return ret
