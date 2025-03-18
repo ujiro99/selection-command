@@ -8,15 +8,6 @@ import {
 import { isTextNode, getXpath, getElementByXPath } from '@/services/dom'
 import { PAGE_ACTION_EVENT } from '@/const'
 
-type EventsFunctions = {
-  [PAGE_ACTION_EVENT.click]: (e: MouseEvent) => void
-  [PAGE_ACTION_EVENT.doubleClick]: (xpath: string, label: string) => void
-  [PAGE_ACTION_EVENT.tripleClick]: (xpath: string, label: string) => void
-  [PAGE_ACTION_EVENT.keyboard]: (e: KeyboardEvent) => void
-  [PAGE_ACTION_EVENT.input]: (e: Event) => void
-  [PAGE_ACTION_EVENT.scroll]: () => void
-}
-
 const isTargetKey = (e: KeyboardEvent): boolean => {
   if (e.shiftKey && e.key === 'Enter') return false
   if (['Tab', 'Enter'].includes(e.key)) return true
@@ -88,6 +79,15 @@ const getLabel = (e: Element): string => {
   }
 }
 
+interface EventsFunctions {
+  [PAGE_ACTION_EVENT.click]: (e: MouseEvent) => void
+  [PAGE_ACTION_EVENT.doubleClick]: (xpath: string, label: string) => void
+  [PAGE_ACTION_EVENT.tripleClick]: (xpath: string, label: string) => void
+  [PAGE_ACTION_EVENT.keyboard]: (e: KeyboardEvent) => void
+  [PAGE_ACTION_EVENT.input]: (e: Event) => void
+  [PAGE_ACTION_EVENT.scroll]: () => void
+}
+
 export const PageActionListener = (() => {
   let focusElm: HTMLElement | null = null
   let focusXpath: string | null = null
@@ -115,6 +115,7 @@ export const PageActionListener = (() => {
       }
       Ipc.send(BgCommand.addPageAction, {
         type: 'click',
+        eventType: e.type,
         timestamp: getTimeStamp(),
         param: {
           label,
@@ -213,6 +214,7 @@ export const PageActionListener = (() => {
   function start(): void {
     console.log('Listener.start')
     window.addEventListener('focusin', onFocusIn)
+    window.addEventListener('mousedown', func.click)
     window.addEventListener('click', func.click)
     window.addEventListener('keydown', func.keyboard)
     window.addEventListener('input', func.input)
@@ -222,6 +224,7 @@ export const PageActionListener = (() => {
   function stop(): void {
     console.log('Listener.stop')
     window.removeEventListener('focusin', onFocusIn)
+    window.removeEventListener('mousedown', func.click)
     window.removeEventListener('click', func.click)
     window.removeEventListener('keydown', func.keyboard)
     window.removeEventListener('input', func.input)

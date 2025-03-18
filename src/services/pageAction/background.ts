@@ -67,11 +67,24 @@ export const add = (
     const prev = steps.at(-1)
 
     if (prev != null) {
-      if (action.type === 'doubleClick' && prev.type === 'click') {
+      if (action.type === 'click' && prev.type === 'click') {
+        const selector = (action.param as PageAction.Input).selector
+        const prevSelector = (prev.param as PageAction.Input).selector
+        if (selector === prevSelector) {
+          const t1 = action.timestamp!
+          const t2 = prev.timestamp!
+          if (t1 - t2 < 300) {
+            return
+          }
+        }
+      } else if (action.type === 'doubleClick' && prev.type === 'click') {
         // Removes a last click.
         steps.pop()
+      } else if (action.type === 'doubleClick' && prev.type === 'doubleClick') {
+        steps.pop()
       } else if (action.type === 'tripleClick' && prev.type === 'doubleClick') {
-        // Removes a last double click.
+        steps.pop()
+      } else if (action.type === 'tripleClick' && prev.type === 'tripleClick') {
         steps.pop()
       } else if (action.type === 'scroll' && prev.type === 'scroll') {
         steps.pop()
