@@ -13,7 +13,7 @@ export namespace PageAction {
 
   export type Start = {
     label: string
-    url: string
+    url?: string
   }
 
   export type Click = {

@@ -197,6 +197,11 @@ export const openPopupAndRun = (
       return true
     }
     const steps = cmd.pageActionOption.steps
+    const start = steps.find((s) => s.type === PAGE_ACTION_CONTROL.start)
+    if (start) {
+      // Remove the url to stop reload.
+      ;(start.param as PageAction.Start).url = undefined
+    }
 
     // Run the steps on the popup.
     run({ ...param, tabId, steps }, _, response)
@@ -238,6 +243,15 @@ export const run = (
       try {
         // Execute
         await Ipc.ensureConnection(tabId)
+
+        if (step.type === PAGE_ACTION_CONTROL.start) {
+          // Reload tab
+          const url = (step.param as PageAction.Start).url
+          url && (await chrome.tabs.update(tabId, { url }))
+          await RunningStatus.update(step.id, EXEC_STATE.Done)
+          continue
+        }
+
         const ret = await Ipc.sendTab<
           ExecPageAction.Message,
           ExecPageAction.Return

@@ -28,7 +28,6 @@ export function PageActionRecorder(): JSX.Element {
   const [currentId, setCurrentId] = useState<string>()
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>()
-  const [previewElm, setPreviewElm] = useState<HTMLButtonElement | null>()
   const steps = _steps.filter((l) => !isControlType(l.type))
   const remain = PAGE_ACTION_MAX - steps.length - 2 // - 2: start, end
 
@@ -55,13 +54,11 @@ export function PageActionRecorder(): JSX.Element {
 
   const preview = () => {
     setTimeout(async () => {
-      // TODO: Reload
-
       // Wait for the clipboard to be updated.
       const text = await navigator.clipboard.readText()
-
+      // Start preview.
       Ipc.send<RunPageAction>(BgCommand.runPageAction, {
-        steps,
+        steps: _steps,
         srcUrl: t('PageAction_InputMenu_url'),
         selectedText: getSelectionText(),
         clipboardText: text,
@@ -144,15 +141,6 @@ export function PageActionRecorder(): JSX.Element {
     }
   }, [isRunning, isRecording])
 
-  useEffect(() => {
-    if (previewElm) {
-      previewElm.addEventListener('click', preview)
-    }
-    return () => {
-      previewElm?.removeEventListener('click', preview)
-    }
-  }, [previewElm])
-
   return isRecording ? (
     <>
       <div className="fixed z-[2147483647] inset-x-0 top-0 p-3 bg-gradient-to-b from-gray-900/30">
@@ -208,7 +196,7 @@ export function PageActionRecorder(): JSX.Element {
             ) : (
               <button
                 className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-                ref={setPreviewElm}
+                onClick={() => preview()}
               >
                 Preview
               </button>

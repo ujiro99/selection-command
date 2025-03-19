@@ -50,7 +50,13 @@ export const PageActionContextProvider = ({
 
   const setContextData = async (data: PageActionContext) => {
     if (!data) return
-    await Storage.set(SESSION_STORAGE_KEY.PA_CONTEXT, data)
+    const now = await Storage.get<PageActionContext>(
+      SESSION_STORAGE_KEY.PA_CONTEXT,
+    )
+    await Storage.set<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT, {
+      ...now,
+      ...data,
+    })
   }
 
   return (
