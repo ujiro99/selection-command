@@ -44,6 +44,9 @@
   "Option_labelSave": {
     "message": "保存する"
   },
+  "Option_labelDetail": {
+    "message": "詳細"
+  },
   "Option_Enable": {
     "message": "有効"
   },
@@ -189,7 +192,10 @@
     "message": "アイコンURL"
   },
   "Option_iconUrl_desc": {
-    "message": "※検索URLを変更すると自動で更新します。"
+    "message": "検索URLを変更すると自動で更新します。"
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "開始URLを変更すると自動で更新します。"
   },
   "Option_iconUrl_autofill": {
     "message": "自動検出"
@@ -230,6 +236,9 @@
   "Option_openMode_getTextStyles": {
     "message": "テキストのスタイル取得"
   },
+  "Option_openMode_pageAction": {
+    "message": "Page Action"
+  },
   "Option_openMode_previewPopup": {
     "message": "Popup"
   },
@@ -262,6 +271,15 @@
   },
   "Option_variableValue": {
     "message": "値"
+  },
+  "Option_startUrl": {
+    "message": "開始URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "アクションを開始するページのURL"
+  },
+  "Option_pageAction_openMode": {
+    "message": "ウィンドウ表示方法"
   },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
@@ -469,5 +487,41 @@
   },
   "Option_zod_url": {
     "message": "URL形式で入力してください。"
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "選択テキストが挿入されます"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "起動元のURLが挿入されます"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "クリップボードから挿入されます"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "テキスト挿入"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "選択テキスト"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "表示元URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "クリップボード"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "Inputアクションの編集"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "このアクションにより入力される内容を編集してください。"
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "入力される内容"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "やめる"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "保存する"
   }
 }

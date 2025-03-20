@@ -254,3 +254,29 @@ export function e2a(e: any): string[] {
 export function hyphen2Underscore(input: string): string {
   return input.replace(/-/g, '_')
 }
+
+/**
+ * Generate a random ID.
+ * @returns {string} The random ID.
+ */
+export function generateRandomID(): string {
+  return Math.random().toString(36).substring(2, 11)
+}
+
+/**
+ * Interpolate a string with variables.
+ * @param {string} template The template string.
+ * @param {object} variables The variables to interpolate.
+ * @returns {string} The interpolated string.
+ */
+export function safeInterpolate(
+  template: string,
+  variables: { [key: string]: string },
+): string {
+  return template.replace(/\{\{(\w+)\}\}/g, (match, variableName) => {
+    if (variables.hasOwnProperty(variableName)) {
+      return variables[variableName]
+    }
+    return match
+  })
+}

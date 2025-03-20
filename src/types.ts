@@ -10,7 +10,12 @@ import type {
   STYLE_VARIABLE,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONTROL,
+  PAGE_ACTION_OPEN_MODE,
+  EXEC_STATE,
 } from '@/const'
+import type { PageAction } from '@/services/pageAction'
 
 export type Version = `${number}.${number}.${number}`
 
@@ -34,6 +39,7 @@ export type SelectionCommand = {
   fetchOptions?: string
   variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
+  pageActionOption?: PageActionOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
@@ -117,3 +123,44 @@ export type SessionData = {
   session_id: string
   timestamp: number
 }
+
+export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
+export type PageActionStep = {
+  id: string
+  type: ActionTypes
+  timestamp?: number
+  param: PageAction.Parameter
+}
+
+export type PageActionOption = {
+  startUrl: string
+  openMode: PAGE_ACTION_OPEN_MODE
+  steps: Array<PageActionStep>
+}
+
+export type PageActionContext = {
+  recordingTabId?: number
+  isRecording?: boolean
+  isRunning?: boolean
+}
+
+export type PageActiontResult = {
+  status: EXEC_STATE
+  stepId: string
+  type: PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
+  label: string
+  message?: string
+}
+
+export type PageActiontStatus = {
+  tabId: number
+  results: PageActiontResult[]
+}
+
+export type WindowType = {
+  id: number
+  commandId: string
+  srcWindowId: number
+}
+
+export type WindowLayer = WindowType[]

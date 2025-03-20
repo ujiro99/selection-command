@@ -44,6 +44,9 @@
   "Option_labelSave": {
     "message": "Create"
   },
+  "Option_labelDetail": {
+    "message": "Detail"
+  },
   "Option_Enable": {
     "message": "Enabled"
   },
@@ -189,7 +192,10 @@
     "message": "Icon URL"
   },
   "Option_iconUrl_desc": {
-    "message": "* Automatically updated when the search URL is changed."
+    "message": "Automatically updated when the search URL is changed."
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "Automatically updated when the Start URL is changed."
   },
   "Option_iconUrl_autofill": {
     "message": "Autofill"
@@ -230,6 +236,9 @@
   "Option_openMode_getTextStyles": {
     "message": "Get text styles"
   },
+  "Option_openMode_pageAction": {
+    "message": "Page Action"
+  },
   "Option_openMode_previewPopup": {
     "message": "Popup"
   },
@@ -262,6 +271,15 @@
   },
   "Option_variableValue": {
     "message": "Value"
+  },
+  "Option_startUrl": {
+    "message": "Start URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "URL of the page where the action starts."
+  },
+  "Option_pageAction_openMode": {
+    "message": "Window Display Method"
   },
   "Option_linkCommand": {
     "message": "Link Preview"
@@ -469,5 +487,44 @@
   },
   "Option_zod_url": {
     "message": "Please enter in URL format."
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "Selected text will be inserted",
+    "description": "for INSERT.SELECTED_TEXT"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "The URL of the origin will be inserted",
+    "description": "for INSERT.URL"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "The clipboard text  will be inserted",
+    "description": "for INSERT.CLIPBOARD"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "Insert Text"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "Selected text"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "Origin URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "Clipboard"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "Edit the content"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "Edit the content to be entered by this action."
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "Content to be entered"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "Cancel"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "Save"
   }
 }
