@@ -85,12 +85,12 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.8.tgz#21a907684723bbbaa5f0974cf7730bd797eb8e62"
   integrity sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==
 
-"@google-analytics/data@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@google-analytics/data/-/data-5.0.0.tgz#ccaf8ba7c2278087dce237c8d0e368df23040ab5"
-  integrity sha512-GuAT+9UJps/oP6lIKzVNJVCMzLFpAfkx0O0nOnDsi4l1j/L5fy+NcmqHMgNR2XgYOM0z9ozOY3QYDxqP5YDUgA==
+"@google-analytics/data@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@google-analytics/data/-/data-5.1.0.tgz#bbbcd71facb47cc587ec16ea1e41c12322e448fb"
+  integrity sha512-puPCfKzxAEiD38aIdJPld2GFpUFRZVPJs1TNd0Gght5FTX1ZRvCsc2njRHIktEz25hBgobQdMBVOySQAfL8mow==
   dependencies:
-    google-gax "^5.0.0-rc.0"
+    google-gax "^5.0.1-rc.0"
 
 "@grpc/grpc-js@^1.12.6":
   version "1.13.0"
@@ -2442,10 +2442,10 @@ google-auth-library@^10.0.0-rc.1:
     gtoken "^8.0.0-rc.1"
     jws "^4.0.0"
 
-google-gax@^5.0.0-rc.0:
-  version "5.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-5.0.0-rc.3.tgz#2270778aed30329df2c54151c9bdeea9a1e210fb"
-  integrity sha512-lItCXSIJ2pxyO7bo/NzfuZpTUJj5MyGZZQI4hHHk1iHxJ0Z3HOGA4vOIBATy/HewW+K7N8Fc1pzQksMOkOkcug==
+google-gax@^5.0.1-rc.0:
+  version "5.0.1-rc.0"
+  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-5.0.1-rc.0.tgz#cab18092757a59473052360516ac28f0c6ddd09d"
+  integrity sha512-7dfJz21VjUYfVB8XKfXw2ETvjUp1Oa2DUFiNqnJ2k+AY0BDDeqIe4H5ROmLw8dRfv+TwmCL4DJELPRuOh8XAGA==
   dependencies:
     "@grpc/grpc-js" "^1.12.6"
     "@grpc/proto-loader" "^0.7.13"
