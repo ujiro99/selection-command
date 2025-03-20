@@ -1,4 +1,5 @@
 import { Storage, SESSION_STORAGE_KEY } from './storage'
+import { PAGE_ACTION_OPEN_MODE } from '@/const'
 import type { PageActionStep } from '@/types'
 import { sleep } from '@/lib/utils'
 
@@ -23,7 +24,7 @@ export enum BgCommand {
   finishPageActionRecorder = 'finishPageActionRecorder',
   runPageAction = 'runPageAction',
   stopPageAction = 'stopPageAction',
-  openPopupAndRunPageAction = 'openPopupAndRunPageAction',
+  openAndRunPageAction = 'openAndRunPageAction',
 }
 
 export enum TabCommand {
@@ -42,6 +43,7 @@ export type ClickElementProps = {
 
 export type RunPageAction = {
   tabId?: number
+  openMode: PAGE_ACTION_OPEN_MODE
   steps: PageActionStep[]
   srcUrl: string
   selectedText: string

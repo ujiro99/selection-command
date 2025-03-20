@@ -9,7 +9,7 @@ import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { Settings } from '@/services/settings'
 import { PopupOption } from '@/services/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
-import { openPopups, openPopupsProps } from '@/services/chrome'
+import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import { BgData } from '@/services/backgroundData'
 import { escapeJson } from '@/lib/utils'
 import type { IpcCallback } from '@/services/ipc'
@@ -21,7 +21,7 @@ BgData.init()
 
 type Sender = chrome.runtime.MessageSender
 
-export type openPopupAndClickProps = openPopupsProps & {
+export type openPopupAndClickProps = OpenPopupsProps & {
   selector: string
 }
 
@@ -64,14 +64,8 @@ function bindVariables(
   return res
 }
 
-async function getCurrentTab() {
-  const queryOptions = { active: true, lastFocusedWindow: true }
-  const [tab] = await chrome.tabs.query(queryOptions)
-  return tab
-}
-
 const commandFuncs = {
-  [BgCommand.openPopups]: (param: openPopupsProps): boolean => {
+  [BgCommand.openPopups]: (param: OpenPopupsProps): boolean => {
     openPopups(param)
     return false
   },
@@ -289,7 +283,7 @@ const commandFuncs = {
   [BgCommand.finishPageActionRecorder]: PageActionBackground.closeRecorder,
   [BgCommand.runPageAction]: PageActionBackground.run,
   [BgCommand.stopPageAction]: PageActionBackground.stopRunner,
-  [BgCommand.openPopupAndRunPageAction]: PageActionBackground.openPopupAndRun,
+  [BgCommand.openAndRunPageAction]: PageActionBackground.openAndRun,
 } as { [key: string]: IpcCallback }
 
 for (const key in BgCommand) {

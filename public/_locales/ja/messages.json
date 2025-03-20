@@ -278,6 +278,9 @@
   "Option_startUrl_desc": {
     "message": "アクションを開始するページのURL"
   },
+  "Option_pageAction_openMode": {
+    "message": "ウィンドウ表示方法"
+  },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
   },

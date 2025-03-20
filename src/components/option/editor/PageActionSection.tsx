@@ -1,13 +1,19 @@
 import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
-import { OPEN_MODE, PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
+import {
+  OPEN_MODE,
+  PAGE_ACTION_OPEN_MODE,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONTROL,
+} from '@/const'
 import { SelectorType } from '@/services/pageAction'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { cn, capitalize } from '@/lib/utils'
+import { cn, capitalize, e2a } from '@/lib/utils'
 
 import { FormControl, FormField, FormItem } from '@/components/ui/form'
 import { InputField } from '@/components/option/field/InputField'
+import { SelectField } from '@/components/option/field/SelectField'
 
 import css from './CommandEditDialog.module.css'
 
@@ -75,6 +81,7 @@ export const PageActionStepSchema = z.object({
 
 const PageActionOption = z.object({
   startUrl: z.string(),
+  openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
   steps: z.array(PageActionStepSchema),
 })
 
@@ -117,7 +124,7 @@ export const PageActionSection = ({
     <>
       <InputField
         control={form.control}
-        name="startUrl"
+        name="pageActionOption.startUrl"
         formLabel={t('startUrl')}
         inputProps={{
           type: 'string',
@@ -125,6 +132,16 @@ export const PageActionSection = ({
         }}
         description={t('startUrl_desc')}
         previewUrl={getValues('iconUrl')}
+      />
+
+      <SelectField
+        control={form.control}
+        name="pageActionOption.openMode"
+        formLabel={t('pageAction_openMode')}
+        options={e2a(PAGE_ACTION_OPEN_MODE).map((mode) => ({
+          name: t(`openMode_${mode}`),
+          value: mode,
+        }))}
       />
 
       <div className="w-full p-2 flex items-center justify-center">

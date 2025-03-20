@@ -62,7 +62,7 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
   return p
 }
 
-export type openPopupsProps = {
+export type OpenPopupsProps = {
   commandId: string
   urls: string[]
   top: number
@@ -73,7 +73,7 @@ export type openPopupsProps = {
   type: POPUP_TYPE
 }
 
-export const openPopups = async (param: openPopupsProps): Promise<number[]> => {
+export const openPopups = async (param: OpenPopupsProps): Promise<number[]> => {
   const { top, left, width, height, screen } = param
   const current = await chrome.windows.getCurrent()
   const type = param.type ?? POPUP_TYPE.POPUP
@@ -227,4 +227,14 @@ const updateRules = async (tabIds: number[]) => {
       },
     ],
   })
+}
+
+/**
+ * Get the current tab.
+ * @returns {Promise<chrome.tabs.Tab>}
+ */
+export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
+  const queryOptions = { active: true, lastFocusedWindow: true }
+  const [tab] = await chrome.tabs.query(queryOptions)
+  return tab
 }

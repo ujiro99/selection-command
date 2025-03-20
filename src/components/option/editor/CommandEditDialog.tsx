@@ -54,6 +54,7 @@ import {
   POPUP_OPTION,
   COPY_OPTION,
   ROOT_FOLDER,
+  PAGE_ACTION_OPEN_MODE,
 } from '@/const'
 
 import {
@@ -227,6 +228,7 @@ const defaultValue = (openMode: OPEN_MODE) => {
       },
       pageActionOption: {
         startUrl: '',
+        openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         steps: [],
       },
     }
@@ -343,10 +345,12 @@ const CommandEditDialogInner = ({
   const openPageActionRecorder = async () => {
     await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
       startUrl,
+      openMode: getValues('pageActionOption.openMode'),
       steps: getValues('pageActionOption.steps'),
     })
     await Ipc.send(BgCommand.startPageActionRecorder, {
       startUrl,
+      openMode: getValues('pageActionOption.openMode'),
       screen: getScreenSize(),
     })
   }

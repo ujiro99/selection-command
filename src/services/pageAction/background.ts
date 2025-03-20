@@ -9,12 +9,13 @@ import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import type { PageAction } from '@/services/pageAction'
 import { isInputAction, RunningStatus } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
-import { openPopups, openPopupsProps } from '@/services/chrome'
+import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import {
   POPUP_OPTION,
   POPUP_TYPE,
   PAGE_ACTION_MAX,
   PAGE_ACTION_CONTROL,
+  PAGE_ACTION_OPEN_MODE,
   EXEC_STATE,
 } from '@/const'
 import { generateRandomID } from '@/lib/utils'
@@ -194,21 +195,33 @@ export const reset = (_: any, sender: Sender): boolean => {
   return false
 }
 
-type openPopupAndRunProps = openPopupsProps & RunPageAction
+type openAndRunProps = OpenPopupsProps & RunPageAction
 
-export const openPopupAndRun = (
-  param: openPopupAndRunProps,
-  _: Sender,
+export const openAndRun = (
+  param: openAndRunProps,
+  sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
   const open = async () => {
-    const tabIds = await openPopups(param)
-    if (tabIds.length === 0) {
-      console.error('tab not found')
-      response(false)
-      return
+    let tabId: number
+
+    if (param.openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
+      const tabIds = await openPopups(param)
+      if (tabIds.length === 0) {
+        console.error('tab not found')
+        response(false)
+        return
+      }
+      tabId = tabIds[0]
+    } else {
+      const tab = sender.tab ?? (await getCurrentTab())
+      const newtab = await chrome.tabs.create({
+        url: param.urls[0],
+        windowId: tab.windowId,
+        index: tab.index + 1,
+      })
+      tabId = newtab.id!
     }
-    const tabId = tabIds[0]
 
     // Wait until ipc connection is established.
     await Ipc.ensureConnection(tabId)
@@ -228,7 +241,7 @@ export const openPopupAndRun = (
     }
 
     // Run the steps on the popup.
-    run({ ...param, tabId, steps }, _, response)
+    run({ ...param, tabId, steps }, sender, response)
   }
   open()
   return true
@@ -319,26 +332,40 @@ const setRecordingTabId = async (tabId: number | undefined) => {
 }
 
 export const openRecorder = (
-  param: { startUrl: string; screen: ScreenSize },
-  _sender: Sender,
+  param: {
+    startUrl: string
+    openMode: PAGE_ACTION_OPEN_MODE
+    screen: ScreenSize
+  },
+  sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  const { startUrl, screen } = param
+  const { startUrl, openMode, screen } = param
   const open = async () => {
     const t = Math.floor((screen.height - POPUP_OPTION.height) / 2) + screen.top
     const l = Math.floor((screen.width - POPUP_OPTION.width) / 2) + screen.left
-    const w = await chrome.windows.create({
-      url: startUrl,
-      width: POPUP_OPTION.width,
-      height: POPUP_OPTION.height,
-      top: t,
-      left: l,
-      type: POPUP_TYPE.POPUP,
-    })
-    if (w.tabs) {
-      await setRecordingTabId(w.tabs[0].id)
+    if (openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
+      const w = await chrome.windows.create({
+        url: startUrl,
+        width: POPUP_OPTION.width,
+        height: POPUP_OPTION.height,
+        top: t,
+        left: l,
+        type: POPUP_TYPE.POPUP,
+      })
+      if (w.tabs) {
+        await setRecordingTabId(w.tabs[0].id)
+      } else {
+        console.error('Failed to open the recorder.')
+      }
     } else {
-      console.error('Failed to open the recorder.')
+      const tab = sender.tab || (await getCurrentTab())
+      const recorderTab = await chrome.tabs.create({
+        url: startUrl,
+        windowId: tab.windowId,
+        index: tab.index + 1,
+      })
+      await setRecordingTabId(recorderTab.id)
     }
     response(true)
   }
@@ -352,7 +379,7 @@ export const closeRecorder = (
   response: (res: unknown) => void,
 ): boolean => {
   setRecordingTabId(undefined).then(() => {
-    sender?.tab && chrome.windows.remove(sender.tab.windowId)
+    sender.tab && chrome.tabs.remove(sender.tab.id!)
     response(true)
   })
   return true

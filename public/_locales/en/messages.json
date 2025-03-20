@@ -278,6 +278,9 @@
   "Option_startUrl_desc": {
     "message": "URL of the page where the action starts."
   },
+  "Option_pageAction_openMode": {
+    "message": "Window Display Method"
+  },
   "Option_linkCommand": {
     "message": "Link Preview"
   },

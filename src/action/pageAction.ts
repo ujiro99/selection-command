@@ -16,17 +16,9 @@ export const PageAction = {
     }
 
     const clipboard = await navigator.clipboard.readText()
-    console.debug(
-      'PageAction',
-      'selected',
-      selectionText,
-      'clipboard',
-      clipboard,
-    )
-
     const urls = [command.pageActionOption?.startUrl]
 
-    Ipc.send(BgCommand.openPopupAndRunPageAction, {
+    Ipc.send(BgCommand.openAndRunPageAction, {
       commandId: command.id,
       urls,
       top: Math.floor(window.screenTop + position.y),
@@ -38,6 +30,7 @@ export const PageAction = {
       selectedText: selectionText,
       clipboardText: clipboard,
       srcUrl: location.href,
+      openMode: command.pageActionOption.openMode,
     })
   },
 }

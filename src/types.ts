@@ -12,6 +12,7 @@ import type {
   LINK_COMMAND_STARTUP_METHOD,
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONTROL,
+  PAGE_ACTION_OPEN_MODE,
   EXEC_STATE,
 } from '@/const'
 import type { PageAction } from '@/services/pageAction'
@@ -133,6 +134,7 @@ export type PageActionStep = {
 
 export type PageActionOption = {
   startUrl: string
+  openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
 }
 

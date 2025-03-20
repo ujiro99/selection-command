@@ -26,6 +26,11 @@ export enum DRAG_OPEN_MODE {
   PREVIEW_WINDOW = 'previewWindow',
 }
 
+export enum PAGE_ACTION_OPEN_MODE {
+  POPUP = OPEN_MODE.POPUP,
+  TAB = OPEN_MODE.TAB,
+}
+
 export enum POPUP_PLACEMENT {
   TOP = 'top',
   TOP_START = 'top-start',
