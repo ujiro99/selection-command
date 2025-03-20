@@ -69,7 +69,7 @@ import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import type { SelectionCommand, CommandFolder } from '@/types'
+import type { SelectionCommand, CommandFolder, PageActionOption } from '@/types'
 
 import css from './CommandEditDialog.module.css'
 
@@ -341,10 +341,10 @@ const CommandEditDialogInner = ({
   const iconUrlSrc = searchUrl || startUrl
 
   const openPageActionRecorder = async () => {
-    await Storage.set(
-      SESSION_STORAGE_KEY.PA_RECORDING,
-      getValues('pageActionOption.steps'),
-    )
+    await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+      startUrl,
+      steps: getValues('pageActionOption.steps'),
+    })
     await Ipc.send(BgCommand.startPageActionRecorder, {
       startUrl,
       screen: getScreenSize(),
@@ -389,15 +389,15 @@ const CommandEditDialogInner = ({
   }, [open, setIconUrlSrc])
 
   useEffect(() => {
-    Storage.addListener(
+    Storage.addListener<PageActionOption>(
       SESSION_STORAGE_KEY.PA_RECORDING,
-      (steps: PageActionStepSchema[]) => {
+      ({ steps }) => {
         if (steps == null) return
         steps = steps.map((step) => {
           step.param.type = step.type
           return step
         })
-        setValue('pageActionOption.steps', steps)
+        setValue('pageActionOption.steps', steps as PageActionStepSchema[])
       },
     )
   }, [])

@@ -13,7 +13,11 @@ import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
 import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import { t } from '@/services/i18n'
-import type { PageActiontStatus, PageActionStep } from '@/types'
+import type {
+  PageActiontStatus,
+  PageActionOption,
+  PageActionStep,
+} from '@/types'
 import { isEmpty, e2a } from '@/lib/utils'
 import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
 
@@ -46,10 +50,6 @@ export function PageActionRecorder(): JSX.Element {
   const reset = () => {
     clearState()
     Ipc.send(BgCommand.resetPageAction)
-    const url = (_steps[0].param as PageAction.Start).url as string
-    if (url) {
-      location.href = url
-    }
   }
 
   const preview = () => {
@@ -109,19 +109,22 @@ export function PageActionRecorder(): JSX.Element {
   }
 
   useEffect(() => {
-    const addStep = (list: PageActionStep[]) => {
-      setSteps(list ?? [])
+    const addStep = (steps: PageActionStep[]) => {
+      setSteps(steps ?? [])
     }
 
     const init = async () => {
-      const actions = await Storage.get<PageActionStep[]>(
+      const { steps } = await Storage.get<PageActionOption>(
         STORAGE_KEY.PA_RECORDING,
       )
-      addStep(actions)
+      addStep(steps)
     }
     init()
 
-    Storage.addListener(STORAGE_KEY.PA_RECORDING, addStep)
+    Storage.addListener<PageActionOption>(
+      STORAGE_KEY.PA_RECORDING,
+      ({ steps }) => addStep(steps),
+    )
     RunningStatus.subscribe(onStatusChange)
 
     return () => {

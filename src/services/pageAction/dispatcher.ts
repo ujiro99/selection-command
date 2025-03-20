@@ -12,17 +12,20 @@ export namespace PageAction {
   export type Parameter = Start | Click | Input | Keyboard | Scroll
 
   export type Start = {
+    type?: string
     label: string
     url?: string
   }
 
   export type Click = {
+    type?: string
     label: string
     selector: string
     selectorType: SelectorType
   }
 
   export type Input = {
+    type?: string
     label: string
     selector: string
     selectorType: SelectorType
@@ -33,6 +36,7 @@ export namespace PageAction {
   }
 
   export type Keyboard = {
+    type?: string
     label: string
     key: string
     code: string
@@ -46,6 +50,7 @@ export namespace PageAction {
   }
 
   export type Scroll = {
+    type?: string
     label: string
     x: number
     y: number

@@ -131,7 +131,7 @@ export type PageActionStep = {
   param: PageAction.Parameter
 }
 
-type PageActionOption = {
+export type PageActionOption = {
   startUrl: string
   steps: Array<PageActionStep>
 }

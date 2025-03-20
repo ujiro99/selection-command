@@ -18,7 +18,11 @@ import {
   EXEC_STATE,
 } from '@/const'
 import { generateRandomID } from '@/lib/utils'
-import type { PageActionStep, PageActionContext } from '@/types'
+import type {
+  PageActionOption,
+  PageActionStep,
+  PageActionContext,
+} from '@/types'
 import { BgData } from '@/services/backgroundData'
 
 BgData.init()
@@ -34,14 +38,15 @@ const EndAction = {
 }
 
 export const add = (
-  action: PageActionStep,
+  step: PageActionStep,
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
-    let steps = await Storage.get<PageActionStep[]>(
+    const option = await Storage.get<PageActionOption>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
+    let steps = option.steps
 
     // Insert a start action if steps are empty.
     if (steps.length === 0) {
@@ -63,40 +68,40 @@ export const add = (
       return
     }
 
-    action.id = generateRandomID()
+    step.id = generateRandomID()
     const prev = steps.at(-1)
 
     if (prev != null) {
-      if (action.type === 'click' && prev.type === 'click') {
-        const selector = (action.param as PageAction.Input).selector
+      if (step.type === 'click' && prev.type === 'click') {
+        const selector = (step.param as PageAction.Input).selector
         const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
-          const t1 = action.timestamp!
+          const t1 = step.timestamp!
           const t2 = prev.timestamp!
           if (t1 - t2 < 300) {
             return
           }
         }
-      } else if (action.type === 'doubleClick' && prev.type === 'click') {
+      } else if (step.type === 'doubleClick' && prev.type === 'click') {
         // Removes a last click.
         steps.pop()
-      } else if (action.type === 'doubleClick' && prev.type === 'doubleClick') {
+      } else if (step.type === 'doubleClick' && prev.type === 'doubleClick') {
         steps.pop()
-      } else if (action.type === 'tripleClick' && prev.type === 'doubleClick') {
+      } else if (step.type === 'tripleClick' && prev.type === 'doubleClick') {
         steps.pop()
-      } else if (action.type === 'tripleClick' && prev.type === 'tripleClick') {
+      } else if (step.type === 'tripleClick' && prev.type === 'tripleClick') {
         steps.pop()
-      } else if (action.type === 'scroll' && prev.type === 'scroll') {
+      } else if (step.type === 'scroll' && prev.type === 'scroll') {
         steps.pop()
-      } else if (action.type === 'input' && prev.type.match('input')) {
-        const selector = (action.param as PageAction.Input).selector
+      } else if (step.type === 'input' && prev.type.match('input')) {
+        const selector = (step.param as PageAction.Input).selector
         const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
           // Combine operations on the same input element.
           steps.pop()
         }
-      } else if (action.type === 'click' && prev.type.match('input')) {
-        const selector = (action.param as PageAction.Input).selector
+      } else if (step.type === 'click' && prev.type.match('input')) {
+        const selector = (step.param as PageAction.Input).selector
         const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
           // Skip adding click to combine operations on the same input element.
@@ -106,17 +111,20 @@ export const add = (
     }
 
     // Update actions.
-    await Storage.set(SESSION_STORAGE_KEY.PA_RECORDING, [
-      ...steps,
-      action,
-      {
-        ...EndAction,
-        param: {
-          label: 'End',
-          url: sender.tab?.url ?? '',
+    await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+      ...option,
+      steps: [
+        ...steps,
+        step,
+        {
+          ...EndAction,
+          param: {
+            label: 'End',
+            url: sender.tab?.url ?? '',
+          },
         },
-      },
-    ])
+      ],
+    })
     response(true)
   }
   add()
@@ -129,13 +137,17 @@ export const update = (
   response: (res: unknown) => void,
 ): boolean => {
   const update = async () => {
-    let actions = await Storage.get<PageActionStep[]>(
+    const option = await Storage.get<PageActionOption>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
-    const index = actions.findIndex((a) => a.id === param.id)
-    if (index !== -1 && isInputAction(actions[index].param)) {
-      actions[index].param.value = param.value
-      await Storage.set(SESSION_STORAGE_KEY.PA_RECORDING, actions)
+    let steps = option.steps
+    const index = steps.findIndex((a) => a.id === param.id)
+    if (index !== -1 && isInputAction(steps[index].param)) {
+      steps[index].param.value = param.value
+      await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+        ...option,
+        steps,
+      })
     }
     response(true)
   }
@@ -149,22 +161,34 @@ export const remove = (
   response: (res: unknown) => void,
 ): boolean => {
   const remove = async () => {
-    let actions = await Storage.get<PageActionStep[]>(
+    const option = await Storage.get<PageActionOption>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
-    await Storage.set(
-      SESSION_STORAGE_KEY.PA_RECORDING,
-      actions.filter((a) => a.id !== param.id),
-    )
+    const steps = option.steps
+    await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+      ...option,
+      steps: steps.filter((a) => a.id !== param.id),
+    })
     response(true)
   }
   remove()
   return true
 }
 
-export const reset = (): boolean => {
+export const reset = (_: any, sender: Sender): boolean => {
+  const tabId = sender.tab?.id
+
   const reset = async () => {
-    await Storage.set(SESSION_STORAGE_KEY.PA_RECORDING, [])
+    const option = await Storage.get<PageActionOption>(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+    )
+    if (tabId && option.startUrl) {
+      await chrome.tabs.update(tabId, { url: option.startUrl })
+    }
+    await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+      ...option,
+      steps: [],
+    })
   }
   reset()
   return false
