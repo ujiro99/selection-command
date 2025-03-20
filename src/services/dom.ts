@@ -223,40 +223,6 @@ export function getSelectorFromElement(el: Element): string {
 }
 
 /**
- * Get the xpath of the specified element.
- * @param {Element} el The element to get the xpath.
- * @returns {string} The xpath of the element.
- */
-export function getXpath(el: Node | null): string {
-  if (!el || el.nodeType !== Node.ELEMENT_NODE) return ''
-
-  let element = el as HTMLElement
-  let xpath = ''
-
-  while (element && element.nodeType === Node.ELEMENT_NODE) {
-    let siblingIndex = 1
-    let sibling = element.previousSibling
-    while (sibling) {
-      if (
-        sibling.nodeType === Node.ELEMENT_NODE &&
-        (sibling as HTMLElement).tagName === element.tagName
-      ) {
-        siblingIndex++
-      }
-      sibling = sibling.previousSibling
-    }
-
-    const tagName = element.tagName.toLowerCase()
-    const segment = `${tagName}[${siblingIndex}]`
-    xpath = '/' + segment + xpath
-
-    element = element.parentElement!
-  }
-
-  return xpath
-}
-
-/**
  * Check if the xpath is valid.
  * @param {string} xpath The xpath to check.
  * @returns {boolean} True if the xpath is valid.
@@ -319,6 +285,15 @@ export const isTextNode = (node: any | null): node is Text => {
 }
 
 /**
+ * check if the node is an SVG element.
+ * @param {Element} element The node to check.
+ * @returns {boolean} True if the node is an SVG element.
+ */
+export const isSvgElement = (element: Element): boolean => {
+  return element.namespaceURI === 'http://www.w3.org/2000/svg'
+}
+
+/**
  * Wait until DOM updates have settled.
  * @returns {Promise<boolean>} True if the DOM change is settled.
  */
@@ -354,4 +329,106 @@ export const debounceDOMChange = (name: string): Promise<boolean> => {
       clearTimeout(noChangeTimeout)
     }, 1000)
   })
+}
+
+/**
+ * Get the Xpath of the element.
+ * @param {Element} element The element to get the xpath.
+ * @returns {string} The xpath of the element.
+ */
+export function getXPath(element: Element): string {
+  if (!(element instanceof Element)) {
+    return ''
+  }
+  if (isSvgElement(element)) {
+    element = element.parentElement as Element
+  }
+
+  // List of attributes that can uniquely identify an element.
+  const uniqueAttributes = [
+    'name',
+    'role',
+    'aria-label',
+    'aria-labelledby',
+    'test-id',
+    'id',
+    'placeholder',
+  ]
+
+  // Check if there is an attribute that can uniquely identify the element.
+  let uniqueAttribute: string | null = null
+  let uniqueElement: Element | null = null
+  for (
+    let cur = element;
+    cur && cur.nodeType === Node.ELEMENT_NODE;
+    cur = cur.parentNode as Element
+  ) {
+    for (const attr of uniqueAttributes) {
+      if (cur.hasAttribute(attr)) {
+        const value = cur.getAttribute(attr)
+        if (value == null || value.startsWith(':')) continue
+        if (document.querySelectorAll(`[${attr}="${value}"]`).length === 1) {
+          uniqueAttribute = attr
+          uniqueElement = cur
+          break
+        }
+      }
+    }
+    if (uniqueElement) {
+      break
+    }
+  }
+
+  if (uniqueElement && uniqueAttribute) {
+    // Generate a normal path from the part
+    // where the unique attribute can be uniquely identified.
+    let xpath = `//*[@${uniqueAttribute}="${uniqueElement.getAttribute(uniqueAttribute)}"]`
+    const path = getPath(element, uniqueElement)
+    if (path.length > 0) {
+      xpath += '/' + path.join('/')
+    }
+    return xpath
+  } else {
+    // Generate a normal node path
+    // if the element cannot be uniquely identified.
+    let xpath = ''
+    const path = getPath(element)
+    xpath += '/' + path.join('/')
+    return xpath
+  }
+}
+
+function getPath(elm: Element, uniqueElement?: Element): string[] {
+  let path = []
+  while (elm.nodeType === Node.ELEMENT_NODE && elm !== uniqueElement) {
+    let index = 0
+    let hasSiblings = false
+    let sibling = elm as Node | null
+    let nodeName = elm.nodeName.toLowerCase()
+
+    // Check if the element has siblings.
+    while (sibling) {
+      if (
+        sibling.nodeType === Node.ELEMENT_NODE &&
+        sibling.nodeName.toLowerCase() === nodeName &&
+        sibling !== elm
+      ) {
+        hasSiblings = true
+        break
+      }
+      sibling = sibling.previousSibling
+    }
+
+    // Find position.
+    if (hasSiblings && elm.parentNode) {
+      const children = Array.from(elm.parentNode.children)
+      index = children
+        .filter((c) => c.nodeName.toLowerCase() === nodeName)
+        .indexOf(elm)
+    }
+
+    path.unshift(hasSiblings ? `${nodeName}[${index + 1}]` : nodeName)
+    elm = elm.parentNode as Element
+  }
+  return path
 }
