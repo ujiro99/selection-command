@@ -138,10 +138,12 @@ export const PageActionSection = ({
         control={form.control}
         name="pageActionOption.openMode"
         formLabel={t('pageAction_openMode')}
-        options={e2a(PAGE_ACTION_OPEN_MODE).map((mode) => ({
-          name: t(`openMode_${mode}`),
-          value: mode,
-        }))}
+        options={e2a(PAGE_ACTION_OPEN_MODE)
+          .filter((mode) => mode !== PAGE_ACTION_OPEN_MODE.NONE)
+          .map((mode) => ({
+            name: t(`openMode_${mode}`),
+            value: mode,
+          }))}
       />
 
       <div className="w-full p-2 flex items-center justify-center">

@@ -70,7 +70,11 @@ import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import type { SelectionCommand, CommandFolder, PageActionOption } from '@/types'
+import type {
+  SelectionCommand,
+  CommandFolder,
+  PageActionRecorder,
+} from '@/types'
 
 import css from './CommandEditDialog.module.css'
 
@@ -343,14 +347,16 @@ const CommandEditDialogInner = ({
   const iconUrlSrc = searchUrl || startUrl
 
   const openPageActionRecorder = async () => {
-    await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+    await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
       startUrl,
       openMode: getValues('pageActionOption.openMode'),
+      size: getValues('popupOption') ?? POPUP_OPTION,
       steps: getValues('pageActionOption.steps'),
     })
     await Ipc.send(BgCommand.startPageActionRecorder, {
       startUrl,
       openMode: getValues('pageActionOption.openMode'),
+      size: getValues('popupOption') ?? POPUP_OPTION,
       screen: getScreenSize(),
     })
   }
@@ -393,14 +399,15 @@ const CommandEditDialogInner = ({
   }, [open, setIconUrlSrc])
 
   useEffect(() => {
-    Storage.addListener<PageActionOption>(
+    Storage.addListener<PageActionRecorder>(
       SESSION_STORAGE_KEY.PA_RECORDING,
-      ({ steps }) => {
+      ({ size, steps }) => {
         if (steps == null) return
         steps = steps.map((step) => {
           step.param.type = step.type
           return step
         })
+        setValue('popupOption', size)
         setValue('pageActionOption.steps', steps as PageActionStepSchema[])
       },
     )
@@ -698,7 +705,6 @@ const CommandEditDialogInner = ({
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
                   }
-                  // TODO page action
                   if (isSearchType(data)) {
                     if (data.popupOption != null) {
                       data.popupOption = {
@@ -707,8 +713,6 @@ const CommandEditDialogInner = ({
                       }
                     }
                   }
-                  // Fix
-                  console.log(data)
                   onSubmit(data)
                   onOpenChange(false)
                   reset(defaultValue(OPEN_MODE.POPUP))

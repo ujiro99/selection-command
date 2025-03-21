@@ -10,16 +10,22 @@ import {
 } from '@/services/pageAction'
 import type { PageAction } from '@/services/pageAction'
 import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
-import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
+import { Ipc, BgCommand, RunPageAction, TabCommand } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import { t } from '@/services/i18n'
 import type {
   PageActiontStatus,
-  PageActionOption,
+  PageActionRecorder,
   PageActionStep,
+  PopupOption,
 } from '@/types'
 import { isEmpty, e2a } from '@/lib/utils'
-import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
+import {
+  PAGE_ACTION_MAX,
+  PAGE_ACTION_CONTROL,
+  PAGE_ACTION_OPEN_MODE,
+  EXEC_STATE,
+} from '@/const'
 
 const isControlType = (type: string): boolean => {
   return e2a(PAGE_ACTION_CONTROL).includes(type)
@@ -59,6 +65,7 @@ export function PageActionRecorder(): JSX.Element {
       // Start preview.
       Ipc.send<RunPageAction>(BgCommand.runPageAction, {
         steps: _steps,
+        openMode: PAGE_ACTION_OPEN_MODE.NONE,
         srcUrl: t('PageAction_InputMenu_url'),
         selectedText: getSelectionText(),
         clipboardText: text,
@@ -114,14 +121,14 @@ export function PageActionRecorder(): JSX.Element {
     }
 
     const init = async () => {
-      const { steps } = await Storage.get<PageActionOption>(
+      const { steps } = await Storage.get<PageActionRecorder>(
         STORAGE_KEY.PA_RECORDING,
       )
       addStep(steps)
     }
     init()
 
-    Storage.addListener<PageActionOption>(
+    Storage.addListener<PageActionRecorder>(
       STORAGE_KEY.PA_RECORDING,
       ({ steps }) => addStep(steps),
     )
@@ -130,6 +137,24 @@ export function PageActionRecorder(): JSX.Element {
     return () => {
       Storage.removeListener(STORAGE_KEY.PA_RECORDING, addStep)
       RunningStatus.unsubscribe(onStatusChange)
+    }
+  }, [])
+
+  useEffect(() => {
+    const listener = (param: any, _sender: any, _response: any) => {
+      const update = async () => {
+        const data = await Storage.get<PageActionRecorder>(
+          STORAGE_KEY.PA_RECORDING,
+        )
+        data.size = param as PopupOption
+        await Storage.set<PageActionRecorder>(STORAGE_KEY.PA_RECORDING, data)
+      }
+      update()
+      return false
+    }
+    Ipc.addListener(TabCommand.sendWindowSize, listener)
+    return () => {
+      Ipc.removeListener(TabCommand.sendWindowSize)
     }
   }, [])
 
