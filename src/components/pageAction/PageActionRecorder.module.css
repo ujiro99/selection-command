@@ -1,0 +1,46 @@
+.recordButton {
+  @apply flex items-center gap-1.5 rounded p-1 pointer-events-auto;
+  @apply relative transition hover:scale-105;
+}
+
+.recordButtonIcon {
+  @apply stroke-red-600 fill-red-300 animate-pulse;
+  @apply drop-shadow-md;
+}
+
+svg.recordButtonIcon {
+  @apply drop-shadow-red;
+}
+
+.button {
+  @apply flex items-center gap-1 rounded px-1 py-0.5 pointer-events-auto;
+  @apply relative transition hover:scale-105;
+}
+
+.buttonLabelStatus,
+.buttonLabel {
+  @apply font-mono text-gray-800;
+}
+
+.buttonLabelStatus {
+  @apply text-sm;
+}
+
+.buttonLabel {
+  @apply text-xs;
+}
+
+.buttonHighlight {
+  @apply bg-white/50 absolute h-2 w-[96%] bottom-2 left-[2%] z-[-1] rounded-[2px];
+  @apply transition opacity-0;
+  box-shadow: white 0px 0px 8px;
+}
+
+.recordButton .buttonHighlight {
+  @apply h-3 bottom-1;
+}
+
+.recordButton:hover .buttonHighlight,
+.button:hover .buttonHighlight {
+  @apply opacity-100;
+}

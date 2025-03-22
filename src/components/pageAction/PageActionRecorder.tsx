@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Circle } from 'lucide-react'
+import { Circle, Play, Square, RotateCcw, Check } from 'lucide-react'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { InputPopup } from '@/components/pageAction/InputPopup'
@@ -20,6 +20,8 @@ import type {
 } from '@/types'
 import { isEmpty, e2a } from '@/lib/utils'
 import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
+
+import css from './PageActionRecorder.module.css'
 
 const isControlType = (type: string): boolean => {
   return e2a(PAGE_ACTION_CONTROL).includes(type)
@@ -144,24 +146,74 @@ export function PageActionRecorder(): JSX.Element {
     }
   }, [isRunning, isRecording])
 
+  const iconSize = 14
+
   return isRecording ? (
     <>
       <div className="fixed z-[2147483647] inset-x-0 top-0 p-3 bg-gradient-to-b from-gray-900/30">
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-4">
           {isListening ? (
-            <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className={css.recordButton}
+              onClick={() => pause()}
+            >
               <Circle
                 size="18"
-                className="stroke-red-600 fill-red-600 drop-shadow-md shadow-red-600 animate-pulse"
+                strokeWidth={1.5}
+                className={css.recordButtonIcon}
               />
-              <span className="text-sm font-mono">Recording...</span>
-            </div>
+              <span className={css.buttonLabelStatus}>Recording...</span>
+              <div className={css.buttonHighlight} />
+            </button>
           ) : (
-            <div className="flex items-center gap-2">
-              <Circle size="18" className="stroke-gray-600 fill-gray-100" />
-              <span className="text-sm font-mono">Not Recording</span>
-            </div>
+            <button
+              type="button"
+              className={css.recordButton}
+              onClick={() => resume()}
+            >
+              <Circle
+                size="18"
+                strokeWidth="1.5"
+                className="stroke-gray-500 fill-gray-100"
+              />
+              <p className="flex items-center gap-1">
+                <span className={css.buttonLabelStatus}>Not</span>
+                <span className={css.buttonLabelStatus}>Recording</span>
+              </p>
+              <div className={css.buttonHighlight} />
+            </button>
           )}
+
+          <div className="flex gap-1">
+            <button className={css.button} onClick={() => finish()}>
+              <Check size={iconSize} className="stroke-gray-600" />
+              <span className={css.buttonLabel}>Finish</span>
+              <div className={css.buttonHighlight} />
+            </button>
+
+            {isRunning ? (
+              <button
+                className={css.button}
+                onClick={() => Ipc.send(BgCommand.stopPageAction)}
+              >
+                <Square size={iconSize} className="stroke-gray-600" />
+                <span className={css.buttonLabel}>Stop</span>
+                <div className={css.buttonHighlight} />
+              </button>
+            ) : (
+              <button className={css.button} onClick={() => preview()}>
+                <Play size={iconSize} className="stroke-gray-600" />
+                <span className={css.buttonLabel}>Preview</span>
+                <div className={css.buttonHighlight} />
+              </button>
+            )}
+            <button className={css.button} onClick={() => reset()}>
+              <RotateCcw size={iconSize} className="stroke-gray-600" />
+              <span className={css.buttonLabel}>Reset</span>
+              <div className={css.buttonHighlight} />
+            </button>
+          </div>
         </div>
       </div>
       <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
@@ -173,50 +225,6 @@ export function PageActionRecorder(): JSX.Element {
           onSubmit={editorSubmit}
         />
         <div className="inline-block relative left-[50%] translate-x-[-50%]">
-          <div className="flex gap-2">
-            {isListening ? (
-              <button
-                className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-                onClick={() => pause()}
-              >
-                Pause
-              </button>
-            ) : (
-              <button
-                className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-                onClick={() => resume()}
-              >
-                Resume
-              </button>
-            )}
-            {isRunning ? (
-              <button
-                className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-                onClick={() => Ipc.send(BgCommand.stopPageAction)}
-              >
-                Stop
-              </button>
-            ) : (
-              <button
-                className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-                onClick={() => preview()}
-              >
-                Preview
-              </button>
-            )}
-            <button
-              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => finish()}
-            >
-              Finish
-            </button>
-            <button
-              className="bg-stone-300 rounded-lg p-2 pointer-events-auto"
-              onClick={() => reset()}
-            >
-              Reset
-            </button>
-          </div>
           <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
             {steps.map((step) => (
               <PageActionItem

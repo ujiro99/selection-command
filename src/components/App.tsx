@@ -1,3 +1,5 @@
+import './App.css'
+
 import { useState, useEffect } from 'react'
 import { SelectAnchor } from './SelectAnchor'
 import { Popup } from './Popup'
@@ -9,8 +11,6 @@ import { getSelectionText } from '@/services/dom'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 import { Ipc, TabCommand } from '@/services/ipc'
-
-import './App.css'
 
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
