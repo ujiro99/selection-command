@@ -44,11 +44,18 @@ export function PageActionItem(props: Props): JSX.Element {
       if (anchorRef.current && contentRef.current) {
         const anchorRect = anchorRef.current.getBoundingClientRect()
         const contentRect = contentRef.current.getBoundingClientRect()
+        const side = contentRef.current.dataset.side
+        let top = Math.ceil(anchorRect.height)
+        let height = Math.ceil(contentRect.top - anchorRect.bottom)
+        if (side === 'top') {
+          top = -Math.ceil(anchorRect.top - contentRect.bottom)
+          height = Math.ceil(anchorRect.top - contentRect.bottom)
+        }
         setHoverAreaStyle({
-          top: Math.ceil(anchorRect.height) - 5,
+          top: top - 5,
           left: Math.ceil(contentRect.left - anchorRect.left),
           width: Math.ceil(contentRect.width),
-          height: Math.ceil(contentRect.top - anchorRect.bottom) + 10,
+          height: height + 10,
         })
       }
     }, 200)
@@ -145,7 +152,7 @@ const RemoveButton = ({ onClick, size }: RemoveButtonProps) => {
       <button
         type="button"
         className={
-          'p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button'
+          'outline-gray-200 p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button'
         }
         onClick={onClick}
         ref={buttonRef}

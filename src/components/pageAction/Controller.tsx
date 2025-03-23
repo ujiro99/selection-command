@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, forwardRef } from 'react'
 import {
   Disc3,
   Circle,
@@ -44,215 +44,202 @@ type Props = {
   onClickEdit: (id: string) => void
 }
 
-export function Controller(props: Props): JSX.Element {
-  const { isRecording, isRunning } = usePageActionContext()
-  const [isListening, setIsListening] = useState(true)
-  const [currentId, setCurrentId] = useState<string>()
-  const [failedId, setFailedId] = useState<string>()
-  const [failedMessage, setFailedMesage] = useState<string>()
-  const steps = props.steps.filter((l) => !isControlType(l.type))
-  const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
+export const Controller = forwardRef<HTMLDivElement, Props>(
+  (props: Props, ref): JSX.Element => {
+    const { isRecording, isRunning } = usePageActionContext()
+    const [isListening, setIsListening] = useState(true)
+    const [currentId, setCurrentId] = useState<string>()
+    const [failedId, setFailedId] = useState<string>()
+    const [failedMessage, setFailedMesage] = useState<string>()
+    const steps = props.steps.filter((l) => !isControlType(l.type))
+    const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
 
-  const clearState = () => {
-    setCurrentId('')
-    setFailedId('')
-    setFailedMesage('')
-  }
-
-  const preview = () => {
-    setTimeout(async () => {
-      // Wait for the clipboard to be updated.
-      const text = await navigator.clipboard.readText()
-      // Start preview.
-      Ipc.send<RunPageAction>(BgCommand.runPageAction, {
-        steps: props.steps,
-        openMode: PAGE_ACTION_OPEN_MODE.NONE,
-        srcUrl: t('PageAction_InputMenu_url'),
-        selectedText: getSelectionText(),
-        clipboardText: text,
-      })
-    }, 100)
-    clearState()
-    Listener.stop()
-  }
-
-  const pause = () => {
-    setIsListening(false)
-    Listener.stop()
-  }
-
-  const resume = () => {
-    setIsListening(true)
-    Listener.start()
-  }
-
-  const reset = () => {
-    clearState()
-    Ipc.send(BgCommand.resetPageAction)
-  }
-
-  const finish = () => {
-    Listener.stop()
-    Ipc.send(BgCommand.finishPageActionRecorder)
-  }
-
-  const onStatusChange = ({ results }: PageActiontStatus) => {
-    const r = results.find((r) => r.status === EXEC_STATE.Start)
-    if (r != null) {
-      setCurrentId(r.stepId)
+    const clearState = () => {
+      setCurrentId('')
+      setFailedId('')
+      setFailedMesage('')
     }
-    const f = results.find((r) => r.status === EXEC_STATE.Failed)
-    if (f != null) {
-      setFailedId(f?.stepId)
-      setFailedMesage(f.message)
-    }
-  }
 
-  useEffect(() => {
-    const listener = (param: any, _sender: any, _response: any) => {
-      const update = async () => {
-        const data = await Storage.get<PageActionRecordingData>(
-          STORAGE_KEY.PA_RECORDING,
-        )
-        data.size = param as PopupOption
-        await Storage.set<PageActionRecordingData>(
-          STORAGE_KEY.PA_RECORDING,
-          data,
-        )
+    const preview = () => {
+      setTimeout(async () => {
+        // Wait for the clipboard to be updated.
+        const text = await navigator.clipboard.readText()
+        // Start preview.
+        Ipc.send<RunPageAction>(BgCommand.runPageAction, {
+          steps: props.steps,
+          openMode: PAGE_ACTION_OPEN_MODE.NONE,
+          srcUrl: t('PageAction_InputMenu_url'),
+          selectedText: getSelectionText(),
+          clipboardText: text,
+        })
+      }, 100)
+      clearState()
+      Listener.stop()
+    }
+
+    const pause = () => {
+      setIsListening(false)
+      Listener.stop()
+    }
+
+    const resume = () => {
+      setIsListening(true)
+      Listener.start()
+    }
+
+    const reset = () => {
+      clearState()
+      Ipc.send(BgCommand.resetPageAction)
+    }
+
+    const finish = () => {
+      Listener.stop()
+      Ipc.send(BgCommand.finishPageActionRecorder)
+    }
+
+    const onStatusChange = ({ results }: PageActiontStatus) => {
+      const r = results.find((r) => r.status === EXEC_STATE.Start)
+      if (r != null) {
+        setCurrentId(r.stepId)
       }
-      update()
-      return false
+      const f = results.find((r) => r.status === EXEC_STATE.Failed)
+      if (f != null) {
+        setFailedId(f?.stepId)
+        setFailedMesage(f.message)
+      }
     }
-    Ipc.addListener(TabCommand.sendWindowSize, listener)
-    RunningStatus.subscribe(onStatusChange)
-    return () => {
-      Ipc.removeListener(TabCommand.sendWindowSize)
-      RunningStatus.unsubscribe(onStatusChange)
-    }
-  }, [])
 
-  useEffect(() => {
-    if (isRunning) {
-      pause()
-    } else {
-      isRecording && resume()
-    }
-    return () => {
-      pause()
-    }
-  }, [isRunning, isRecording])
+    useEffect(() => {
+      RunningStatus.subscribe(onStatusChange)
+      return () => {
+        RunningStatus.unsubscribe(onStatusChange)
+      }
+    }, [])
 
-  const iconSize = 14
+    useEffect(() => {
+      if (isRunning) {
+        pause()
+      } else {
+        isRecording && resume()
+      }
+      return () => {
+        pause()
+      }
+    }, [isRunning, isRecording])
 
-  return (
-    <div
-      className={cn(
-        'flex flex-col items-center gap-2 w-fit pointer-events-auto',
-        'backdrop-blur-md bg-gray-200/40 rounded-md p-4 pr-3 shadow-md',
-      )}
-    >
-      <div className="controller flex w-[400px] justify-between">
-        {isListening ? (
-          <button
-            type="button"
-            className={css.recordButton}
-            onClick={() => pause()}
-          >
-            <Disc3
-              size={iconSize + 2}
-              strokeWidth="1.5"
-              className={css.recordButtonIcon}
-            />
-            <span className={css.buttonLabelStatus}>Recording...</span>
-            <div className={css.buttonHighlight} />
-          </button>
-        ) : (
-          <button
-            type="button"
-            className={css.recordButton}
-            onClick={() => resume()}
-          >
-            <Circle
-              size={iconSize + 2}
-              strokeWidth="1.5"
-              className="stroke-gray-500 fill-gray-100"
-            />
-            <p className="flex items-center gap-1">
-              <span className={css.buttonLabelStatus}>Not</span>
-              <span className={css.buttonLabelStatus}>Recording</span>
-            </p>
-            <div className={css.buttonHighlight} />
-          </button>
+    const iconSize = 14
+
+    return (
+      <div
+        className={cn(
+          'flex flex-col items-center gap-2 w-fit pointer-events-auto',
+          'backdrop-blur-md bg-gray-200/40 rounded-md p-4 pr-3 shadow-md',
         )}
-
-        <div className="flex gap-1">
-          <button className={css.button} onClick={() => finish()}>
-            <Check size={iconSize} className="stroke-gray-600" />
-            <span className={css.buttonLabel}>Finish</span>
-            <div className={css.buttonHighlight} />
-          </button>
-
-          {isRunning ? (
+        ref={ref}
+      >
+        <div className="controller flex w-[400px] justify-between">
+          {isListening ? (
             <button
-              className={css.button}
-              onClick={() => Ipc.send(BgCommand.stopPageAction)}
+              type="button"
+              className={css.recordButton}
+              onClick={() => pause()}
             >
-              <Square size={iconSize} className="stroke-gray-600" />
-              <span className={css.buttonLabel}>Stop</span>
+              <Disc3
+                size={iconSize + 2}
+                strokeWidth="1.5"
+                className={css.recordButtonIcon}
+              />
+              <span className={css.buttonLabelStatus}>Recording...</span>
               <div className={css.buttonHighlight} />
             </button>
           ) : (
-            <button className={css.button} onClick={() => preview()}>
-              <Play size={iconSize} className="stroke-gray-600" />
-              <span className={css.buttonLabel}>Preview</span>
+            <button
+              type="button"
+              className={css.recordButton}
+              onClick={() => resume()}
+            >
+              <Circle
+                size={iconSize + 2}
+                strokeWidth="1.5"
+                className="stroke-gray-500 fill-gray-100"
+              />
+              <p className="flex items-center gap-1">
+                <span className={css.buttonLabelStatus}>Not</span>
+                <span className={css.buttonLabelStatus}>Recording</span>
+              </p>
               <div className={css.buttonHighlight} />
             </button>
           )}
-          <button className={css.button} onClick={() => reset()}>
-            <RotateCcw size={iconSize} className="stroke-gray-600" />
-            <span className={css.buttonLabel}>Reset</span>
-            <div className={css.buttonHighlight} />
-          </button>
+
+          <div className="flex gap-1">
+            <button className={css.button} onClick={() => finish()}>
+              <Check size={iconSize} className="stroke-gray-600" />
+              <span className={css.buttonLabel}>Finish</span>
+              <div className={css.buttonHighlight} />
+            </button>
+
+            {isRunning ? (
+              <button
+                className={css.button}
+                onClick={() => Ipc.send(BgCommand.stopPageAction)}
+              >
+                <Square size={iconSize} className="stroke-gray-600" />
+                <span className={css.buttonLabel}>Stop</span>
+                <div className={css.buttonHighlight} />
+              </button>
+            ) : (
+              <button className={css.button} onClick={() => preview()}>
+                <Play size={iconSize} className="stroke-gray-600" />
+                <span className={css.buttonLabel}>Preview</span>
+                <div className={css.buttonHighlight} />
+              </button>
+            )}
+            <button className={css.button} onClick={() => reset()}>
+              <RotateCcw size={iconSize} className="stroke-gray-600" />
+              <span className={css.buttonLabel}>Reset</span>
+              <div className={css.buttonHighlight} />
+            </button>
+          </div>
+        </div>
+        <div className="timeline relative w-[418px] h-[24px]">
+          <ol className="flex items-center h-full">
+            {steps.map((step, i) => (
+              <PageActionItem
+                step={step}
+                currentId={currentId}
+                failedId={failedId}
+                failedMessage={failedMessage}
+                key={step.id}
+                onClickRemove={props.onClickRemove}
+                onClickEdit={props.onClickEdit}
+                className={cn(
+                  'relative',
+                  i > 0 &&
+                    "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-500/80 after:rounded",
+                )}
+              />
+            ))}
+            {emptySteps.map((_, i) => (
+              <li
+                key={i}
+                className={cn(
+                  'h-[24px] flex-1 flex items-center justify-center relative',
+                  (steps.length > 0 || i > 0) &&
+                    "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 after:rounded",
+                )}
+              >
+                <div className="bg-gray-50 rounded-full h-fit w-fit">
+                  <CircleDashed
+                    size="12"
+                    strokeWidth={3}
+                    className="stroke-gray-400"
+                  />
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
-      <div className="timeline relative w-[418px] h-[24px]">
-        <ol className="flex items-center h-full">
-          {steps.map((step, i) => (
-            <PageActionItem
-              step={step}
-              currentId={currentId}
-              failedId={failedId}
-              failedMessage={failedMessage}
-              key={step.id}
-              onClickRemove={props.onClickRemove}
-              onClickEdit={props.onClickEdit}
-              className={cn(
-                'relative',
-                i > 0 &&
-                  "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-500 after:rounded",
-              )}
-            />
-          ))}
-          {emptySteps.map((_, i) => (
-            <li
-              key={i}
-              className={cn(
-                'h-[24px] flex-1 flex items-center justify-center relative',
-                (steps.length > 0 || i > 0) &&
-                  "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 after:rounded",
-              )}
-            >
-              <div className="bg-gray-50 rounded-full h-fit w-fit">
-                <CircleDashed
-                  size="12"
-                  strokeWidth={3}
-                  className="stroke-gray-400"
-                />
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
-  )
-}
+    )
+  },
+)

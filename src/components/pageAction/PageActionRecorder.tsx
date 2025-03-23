@@ -12,11 +12,12 @@ import { Draggable } from '@/components/pageAction/Draggable'
 
 import type { PageAction } from '@/services/pageAction'
 import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
-import { Ipc, BgCommand } from '@/services/ipc'
+import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import type {
   PageActionRecorderOption,
   PageActionRecordingData,
   PageActionStep,
+  PopupOption,
   Point,
 } from '@/types'
 import { isEmpty, capitalize } from '@/lib/utils'
@@ -24,7 +25,12 @@ import { isEmpty, capitalize } from '@/lib/utils'
 export function PageActionRecorder(): JSX.Element {
   const { isRecording } = usePageActionContext()
   const [steps, setSteps] = useState<PageActionStep[]>([])
+  const [windowSize, setWindowSize] = useState<PopupOption>({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  })
   const [position, setPosition] = useState<Point | undefined>()
+  const [controllerElm, setControllerElm] = useState<HTMLDivElement | null>()
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
@@ -75,7 +81,6 @@ export function PageActionRecorder(): JSX.Element {
     Storage.get<PageActionRecorderOption>(STORAGE_KEY.PA_RECORDER_OPTION).then(
       update2,
     )
-
     Storage.addListener<PageActionRecordingData>(
       STORAGE_KEY.PA_RECORDING,
       update,
@@ -90,6 +95,40 @@ export function PageActionRecorder(): JSX.Element {
     }
   }, [])
 
+  useEffect(() => {
+    const listener = (param: any, _sender: any, _response: any) => {
+      const update = async () => {
+        const data = await Storage.get<PageActionRecordingData>(
+          STORAGE_KEY.PA_RECORDING,
+        )
+        data.size = param as PopupOption
+        await Storage.set<PageActionRecordingData>(
+          STORAGE_KEY.PA_RECORDING,
+          data,
+        )
+        setWindowSize(param)
+      }
+      update()
+      return false
+    }
+    Ipc.addListener(TabCommand.sendWindowSize, listener)
+    return () => {
+      Ipc.removeListener(TabCommand.sendWindowSize)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (controllerElm && position) {
+      const rect = controllerElm.getBoundingClientRect()
+      const over =
+        windowSize.width < position.x + rect.width ||
+        windowSize.height < position.y + rect.height
+      if (over) {
+        setPosition(undefined)
+      }
+    }
+  }, [controllerElm, position, windowSize])
+
   if (!isRecording) return <></>
 
   return (
@@ -100,6 +139,7 @@ export function PageActionRecorder(): JSX.Element {
             steps={steps}
             onClickRemove={setRemoveId}
             onClickEdit={setEditId}
+            ref={setControllerElm}
           />
         </Draggable>
         {!editorOpen && <InputPopup />}

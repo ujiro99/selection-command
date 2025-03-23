@@ -44,17 +44,17 @@ export function Draggable(props: Props) {
       style={style}
       className={cn('relative', isDragging && 'shadow-xl')}
     >
+      {props.children}
       <button
         className={cn(
-          'pointer-events-auto absolute p-1 z-10 top-[50%] translate-x-[2px] translate-y-[-50%]',
-          'rounded-md transition hover:bg-gray-100/50',
+          'pointer-events-auto absolute p-1 top-[50%] translate-x-[2px] translate-y-[-50%]',
+          'rounded-md transition hover:bg-white/50',
         )}
         {...listeners}
         {...attributes}
       >
         <GripVertical size={18} className="stroke-gray-400" />
       </button>
-      {props.children}
     </div>
   )
 }

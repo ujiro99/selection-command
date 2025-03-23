@@ -25,7 +25,7 @@ export const EditButton = ({
       <button
         ref={buttonRef}
         className={cn(
-          'p-2 rounded-md transition hover:bg-sky-100 hover:scale-125 group/edit-button',
+          'outline-gray-200 p-2 rounded-md transition hover:bg-sky-100 hover:scale-125 group/edit-button',
           className,
         )}
         onClick={handleClick}
