@@ -83,6 +83,7 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out',
         marquee: 'marquee var(--marquee-duration) linear infinite',
         marquee2: 'marquee2 var(--marquee-duration) linear infinite',
+        'spin-slow': 'spin 3s linear infinite',
       },
       padding: {
         0.5: '2px',

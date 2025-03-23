@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react'
-import { Circle, Play, Square, RotateCcw, Check } from 'lucide-react'
+import {
+  Disc3,
+  Circle,
+  Play,
+  Square,
+  RotateCcw,
+  Check,
+  CircleDashed,
+} from 'lucide-react'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { InputPopup } from '@/components/pageAction/InputPopup'
 import { InputEditor } from '@/components/pageAction/InputEditor'
+import { RemoveDialog } from '@/components/option/RemoveDialog'
+import { TypeIcon } from '@/components/pageAction/TypeIcon'
 import {
   PageActionListener as Listener,
   RunningStatus,
@@ -18,7 +28,7 @@ import type {
   PageActionOption,
   PageActionStep,
 } from '@/types'
-import { isEmpty, e2a } from '@/lib/utils'
+import { isEmpty, e2a, cn, capitalize } from '@/lib/utils'
 import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
 
 import css from './PageActionRecorder.module.css'
@@ -35,13 +45,18 @@ export function PageActionRecorder(): JSX.Element {
   const [failedId, setFailedId] = useState<string>()
   const [failedMessage, setFailedMesage] = useState<string>()
   const steps = _steps.filter((l) => !isControlType(l.type))
-  const remain = PAGE_ACTION_MAX - steps.length - 2 // - 2: start, end
+  const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
-  const inputAction = steps.find((a) => a.id === editId)
-  const editorValue = (inputAction?.param as PageAction.Input)?.value
+  const editStep = steps.find((a) => a.id === editId)
+  const editorValue = (editStep?.param as PageAction.Input)?.value
   const editorOpen = !isEmpty(editId)
+
+  // for RemoveDialog
+  const [removeId, setRemoveId] = useState<string | null>(null)
+  const removeStep = steps.find((a) => a.id === removeId)
+  const removeOpen = !isEmpty(removeId)
 
   const clearState = () => {
     setCurrentId('')
@@ -80,10 +95,6 @@ export function PageActionRecorder(): JSX.Element {
     Listener.start()
   }
 
-  const edit = (id: string) => {
-    setEditId(id)
-  }
-
   const finish = () => {
     Listener.stop()
     Ipc.send(BgCommand.finishPageActionRecorder)
@@ -94,7 +105,8 @@ export function PageActionRecorder(): JSX.Element {
     setEditId(null)
   }
 
-  const removeAction = (id: string) => {
+  const removeAction = (id: string | null) => {
+    if (id == null) return
     Ipc.send(BgCommand.removePageAction, { id })
   }
 
@@ -148,19 +160,21 @@ export function PageActionRecorder(): JSX.Element {
 
   const iconSize = 14
 
-  return isRecording ? (
-    <>
-      <div className="fixed z-[2147483647] inset-x-0 top-0 p-3 bg-gradient-to-b from-gray-900/30">
-        <div className="flex justify-center gap-4">
+  if (!isRecording) return <></>
+
+  return (
+    <div className="fixed z-[2147483647] inset-x-0 top-0 p-4 pb-5 bg-gradient-to-b from-gray-900/40">
+      <div className="flex flex-col items-center gap-2">
+        <div className="controller flex w-[400px] justify-between">
           {isListening ? (
             <button
               type="button"
               className={css.recordButton}
               onClick={() => pause()}
             >
-              <Circle
-                size="18"
-                strokeWidth={1.5}
+              <Disc3
+                size={iconSize + 2}
+                strokeWidth="1.5"
                 className={css.recordButtonIcon}
               />
               <span className={css.buttonLabelStatus}>Recording...</span>
@@ -173,7 +187,7 @@ export function PageActionRecorder(): JSX.Element {
               onClick={() => resume()}
             >
               <Circle
-                size="18"
+                size={iconSize + 2}
                 strokeWidth="1.5"
                 className="stroke-gray-500 fill-gray-100"
               />
@@ -215,38 +229,73 @@ export function PageActionRecorder(): JSX.Element {
             </button>
           </div>
         </div>
-      </div>
-      <div className="fixed z-[2147483647] inset-x-0 bottom-0 p-4 pointer-events-none">
-        {!editorOpen && <InputPopup />}
-        <InputEditor
-          open={editorOpen}
-          onOpenChange={(o) => !o && setEditId(null)}
-          value={editorValue}
-          onSubmit={editorSubmit}
-        />
-        <div className="inline-block relative left-[50%] translate-x-[-50%]">
-          <ol className="flex flex-wrap w-[500px] gap-2 mt-2">
-            {steps.map((step) => (
+        <div className="timeline relative w-[418px] h-[24px]">
+          <ol className="flex items-center h-full">
+            {steps.map((step, i) => (
               <PageActionItem
                 step={step}
                 currentId={currentId}
                 failedId={failedId}
                 failedMessage={failedMessage}
                 key={step.id}
-                onDelete={removeAction}
-                onClickEdit={edit}
+                onClickRemove={setRemoveId}
+                onClickEdit={setEditId}
+                className={cn(
+                  'relative',
+                  i > 0 &&
+                    "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-500 after:rounded",
+                )}
               />
             ))}
-            {remain > 0 && (
-              <li className="bg-stone-200 rounded-lg p-2" key="remaining">
-                {`残り${remain} Step`}
+            {emptySteps.map((_, i) => (
+              <li
+                key={i}
+                className={cn(
+                  'h-[24px] flex-1 flex items-center justify-center relative',
+                  (steps.length > 0 || i > 0) &&
+                    "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 after:rounded",
+                )}
+              >
+                <div className="bg-gray-50 rounded-full h-fit w-fit">
+                  <CircleDashed
+                    size="12"
+                    strokeWidth={3}
+                    className="stroke-gray-400"
+                  />
+                </div>
               </li>
-            )}
+            ))}
           </ol>
         </div>
       </div>
-    </>
-  ) : (
-    <></>
+      {!editorOpen && <InputPopup />}
+      <InputEditor
+        open={editorOpen}
+        onOpenChange={(o) => !o && setEditId(null)}
+        value={editorValue}
+        onSubmit={editorSubmit}
+      />
+      <RemoveDialog
+        open={removeOpen}
+        onOpenChange={(o) => !o && setRemoveId(null)}
+        onRemove={() => removeAction(removeId)}
+      >
+        {removeStep && (
+          <div>
+            <p className="text-base font-medium font-mono flex items-center gap-1.5">
+              <TypeIcon
+                type={removeStep.type}
+                className="stroke-gray-700 mr-2"
+                size={20}
+              />
+              {capitalize(removeStep.type)}
+            </p>
+            <p className="text-balance whitespace-pre-line text-sm mt-4">
+              <span>{removeStep.param.label}</span>
+            </p>
+          </div>
+        )}
+      </RemoveDialog>
+    </div>
   )
 }

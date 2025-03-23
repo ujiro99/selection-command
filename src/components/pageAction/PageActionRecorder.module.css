@@ -1,15 +1,12 @@
 .recordButton {
-  @apply flex items-center gap-1.5 rounded p-1 pointer-events-auto;
+  @apply flex items-center gap-1.5 rounded p-1 py-0.5 pointer-events-auto;
   @apply relative transition hover:scale-105;
 }
 
 .recordButtonIcon {
-  @apply stroke-red-600 fill-red-300 animate-pulse;
+  @apply stroke-red-600 fill-red-300 animate-spin-slow;
   @apply drop-shadow-md;
-}
-
-svg.recordButtonIcon {
-  @apply drop-shadow-red;
+  --tw-drop-shadow: drop-shadow(0 1px 2px #ef444480) drop-shadow(0 1px 1px #ef444480);
 }
 
 .button {
@@ -23,7 +20,7 @@ svg.recordButtonIcon {
 }
 
 .buttonLabelStatus {
-  @apply text-sm;
+  @apply text-xs;
 }
 
 .buttonLabel {
@@ -31,13 +28,9 @@ svg.recordButtonIcon {
 }
 
 .buttonHighlight {
-  @apply bg-white/50 absolute h-2 w-[96%] bottom-2 left-[2%] z-[-1] rounded-[2px];
+  @apply bg-white/40 absolute h-1.5 w-full bottom-2 left-[2%] z-[-1] rounded;
   @apply transition opacity-0;
   box-shadow: white 0px 0px 8px;
-}
-
-.recordButton .buttonHighlight {
-  @apply h-3 bottom-1;
 }
 
 .recordButton:hover .buttonHighlight,

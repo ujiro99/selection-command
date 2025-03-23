@@ -1,11 +1,10 @@
 import { useState, useRef } from 'react'
 import { Trash2 } from 'lucide-react'
 import { Tooltip } from '@/components/Tooltip'
-import { t } from '@/services/i18n'
-
 import { MenuImage } from '@/components/menu/MenuImage'
 import { RemoveDialog } from '@/components/option/RemoveDialog'
 import { cn } from '@/lib/utils'
+import { t } from '@/services/i18n'
 
 type RemoveButtonProps = {
   onRemove: () => void
@@ -32,14 +31,14 @@ export const RemoveButton = ({
       <button
         type="button"
         className={cn(
-          'p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group',
+          'p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button',
           className,
         )}
         onClick={() => setOpen(true)}
         ref={buttonRef}
       >
         <Trash2
-          className="stroke-gray-500 group-hover:stroke-red-500"
+          className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
           size={size}
         />
       </button>

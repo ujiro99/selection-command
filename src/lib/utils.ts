@@ -1,7 +1,14 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { IconName } from 'lucide-react/dynamic'
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
-import type { Version, Command, SelectionCommand, LinkCommand } from '@/types'
+import type {
+  Version,
+  Command,
+  SelectionCommand,
+  LinkCommand,
+  ActionTypes,
+} from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -279,4 +286,31 @@ export function safeInterpolate(
     }
     return match
   })
+}
+
+/**
+ * Convert an page action type to a Lucide icon name.
+ * @param {ActionTypes} action The page action type.
+ * @returns {IconName} The Lucide icon name.
+ * @see https://lucide.dev/
+ */
+export function actionToLucide(action: ActionTypes): IconName {
+  switch (action) {
+    case 'start':
+      return 'arrow-down-from-line'
+    case 'end':
+      return 'arrow-down-to-line'
+    case 'click':
+    case 'doubleClick':
+    case 'tripleClick':
+      return 'mouse-pointer-click'
+    case 'keyboard':
+      return 'keyboard'
+    case 'input':
+      return 'type'
+    case 'scroll':
+      return 'mouse'
+    default:
+      return 'circle-help'
+  }
 }

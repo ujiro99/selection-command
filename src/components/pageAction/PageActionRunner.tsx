@@ -1,23 +1,18 @@
 import { useEffect, useState, useRef } from 'react'
 import {
-  ArrowDownFromLine,
-  ArrowDownToLine,
   Ban,
   Check,
   CircleDashed,
   CircleAlert,
-  Keyboard,
   LoaderCircle,
-  MousePointerClick,
-  Mouse,
-  Type,
 } from 'lucide-react'
 import { Tooltip } from '@/components/Tooltip'
+import { TypeIcon } from '@/components/pageAction/TypeIcon'
 import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
 import { RunningStatus } from '@/services/pageAction'
 import { Ipc } from '@/services/ipc'
 import type { PageActiontResult, PageActiontStatus } from '@/types'
-import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
+import { EXEC_STATE } from '@/const'
 import { cn, isEmpty } from '@/lib/utils'
 
 export function PageActionRunner(): JSX.Element {
@@ -66,7 +61,7 @@ const Step = ({ result }: { result: PageActiontResult }) => {
       )}
     >
       <StatusIcon status={result.status} />
-      <TypeIcon type={result.type} className="" />
+      <TypeIcon type={result.type} />
       <span className="font-mono max-w-48 truncate">{result.label}</span>
       {hasMessage && (
         <Tooltip positionElm={stepRef.current} text={result.message ?? ''} />
@@ -98,32 +93,6 @@ const StatusIcon = ({
       )
     case EXEC_STATE.Stop:
       return <Ban size={size} className={cn(className)} />
-    default:
-      return null
-  }
-}
-
-const TypeIcon = ({
-  type,
-  className,
-}: {
-  type: PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
-  className?: string
-}) => {
-  const size = 16
-  switch (type) {
-    case PAGE_ACTION_CONTROL.start:
-      return <ArrowDownFromLine size={size} className={className} />
-    case PAGE_ACTION_CONTROL.end:
-      return <ArrowDownToLine size={size} className={className} />
-    case PAGE_ACTION_EVENT.click:
-      return <MousePointerClick size={size} className={className} />
-    case PAGE_ACTION_EVENT.input:
-      return <Type size={size} className={className} />
-    case PAGE_ACTION_EVENT.scroll:
-      return <Mouse size={size} className={className} />
-    case PAGE_ACTION_EVENT.keyboard:
-      return <Keyboard size={size} className={className} />
     default:
       return null
   }
