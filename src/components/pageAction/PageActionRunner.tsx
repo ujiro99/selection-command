@@ -39,8 +39,13 @@ export function PageActionRunner(): JSX.Element {
 
   if (!isRunning) return <></>
   return (
-    <div className="fixed z-[2147483647] bottom-2 right-2 p-2 bg-gray-800/40 rounded-md pointer-events-none">
-      <ul className="text-xs text-gray-100">
+    <div
+      className={cn(
+        'fixed z-[2147483647] top-2 right-2 pointer-events-none',
+        'backdrop-blur-md bg-gray-200/40 rounded-md p-3 shadow-md',
+      )}
+    >
+      <ul className="text-xs text-gray-600">
         {results.map((result) => (
           <Step key={result.stepId} result={result} />
         ))}
@@ -57,12 +62,15 @@ const Step = ({ result }: { result: PageActiontResult }) => {
       ref={stepRef}
       className={cn(
         'flex items-center gap-1.5 p-1',
-        hasMessage && 'cursor-help pointer-events-auto',
+        hasMessage && 'cursor-help pointer-events-auto text-red-500',
       )}
     >
       <StatusIcon status={result.status} />
-      <TypeIcon type={result.type} />
-      <span className="font-mono max-w-48 truncate">{result.label}</span>
+      <TypeIcon
+        type={result.type}
+        className={cn(hasMessage ? 'stroke-red-500' : 'stroke-gray-500')}
+      />
+      <span className="font-mono max-w-40 truncate">{result.label}</span>
       {hasMessage && (
         <Tooltip positionElm={stepRef.current} text={result.message ?? ''} />
       )}
@@ -89,7 +97,7 @@ const StatusIcon = ({
       return <Check size={size} className={cn(className)} />
     case EXEC_STATE.Failed:
       return (
-        <CircleAlert size={size} className={cn('stroke-red-400', className)} />
+        <CircleAlert size={size} className={cn('stroke-red-500', className)} />
       )
     case EXEC_STATE.Stop:
       return <Ban size={size} className={cn(className)} />
