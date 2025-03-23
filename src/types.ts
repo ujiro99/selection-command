@@ -138,7 +138,7 @@ export type PageActionOption = {
   steps: Array<PageActionStep>
 }
 
-export type PageActionRecorder = {
+export type PageActionRecordingData = {
   size: PopupOption
 } & PageActionOption
 

@@ -19,7 +19,7 @@ import {
 } from '@/const'
 import { generateRandomID } from '@/lib/utils'
 import type {
-  PageActionRecorder,
+  PageActionRecordingData,
   PageActionStep,
   PageActionContext,
   PopupOption,
@@ -44,7 +44,7 @@ export const add = (
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
-    const option = await Storage.get<PageActionRecorder>(
+    const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     let steps = option.steps
@@ -112,20 +112,23 @@ export const add = (
     }
 
     // Update actions.
-    await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
-      ...option,
-      steps: [
-        ...steps,
-        step,
-        {
-          ...EndAction,
-          param: {
-            label: 'End',
-            url: sender.tab?.url ?? '',
+    await Storage.set<PageActionRecordingData>(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+      {
+        ...option,
+        steps: [
+          ...steps,
+          step,
+          {
+            ...EndAction,
+            param: {
+              label: 'End',
+              url: sender.tab?.url ?? '',
+            },
           },
-        },
-      ],
-    })
+        ],
+      },
+    )
     response(true)
   }
   add()
@@ -138,17 +141,20 @@ export const update = (
   response: (res: unknown) => void,
 ): boolean => {
   const update = async () => {
-    const option = await Storage.get<PageActionRecorder>(
+    const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     let steps = option.steps
     const index = steps.findIndex((a) => a.id === param.id)
     if (index !== -1 && isInputAction(steps[index].param)) {
       steps[index].param.value = param.value
-      await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
-        ...option,
-        steps,
-      })
+      await Storage.set<PageActionRecordingData>(
+        SESSION_STORAGE_KEY.PA_RECORDING,
+        {
+          ...option,
+          steps,
+        },
+      )
     }
     response(true)
   }
@@ -162,14 +168,17 @@ export const remove = (
   response: (res: unknown) => void,
 ): boolean => {
   const remove = async () => {
-    const option = await Storage.get<PageActionRecorder>(
+    const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     const steps = option.steps
-    await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
-      ...option,
-      steps: steps.filter((a) => a.id !== param.id),
-    })
+    await Storage.set<PageActionRecordingData>(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+      {
+        ...option,
+        steps: steps.filter((a) => a.id !== param.id),
+      },
+    )
     response(true)
   }
   remove()
@@ -180,16 +189,19 @@ export const reset = (_: any, sender: Sender): boolean => {
   const tabId = sender.tab?.id
 
   const reset = async () => {
-    const option = await Storage.get<PageActionRecorder>(
+    const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     if (tabId && option.startUrl) {
       await chrome.tabs.update(tabId, { url: option.startUrl })
     }
-    await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
-      ...option,
-      steps: [],
-    })
+    await Storage.set<PageActionRecordingData>(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+      {
+        ...option,
+        steps: [],
+      },
+    )
   }
   reset()
   return false

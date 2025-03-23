@@ -20,7 +20,7 @@ import { getSelectionText } from '@/services/dom'
 import { t } from '@/services/i18n'
 import type {
   PageActiontStatus,
-  PageActionRecorder,
+  PageActionRecordingData,
   PageActionStep,
   PopupOption,
 } from '@/types'
@@ -111,11 +111,14 @@ export function Controller(props: Props): JSX.Element {
   useEffect(() => {
     const listener = (param: any, _sender: any, _response: any) => {
       const update = async () => {
-        const data = await Storage.get<PageActionRecorder>(
+        const data = await Storage.get<PageActionRecordingData>(
           STORAGE_KEY.PA_RECORDING,
         )
         data.size = param as PopupOption
-        await Storage.set<PageActionRecorder>(STORAGE_KEY.PA_RECORDING, data)
+        await Storage.set<PageActionRecordingData>(
+          STORAGE_KEY.PA_RECORDING,
+          data,
+        )
       }
       update()
       return false

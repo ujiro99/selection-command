@@ -73,7 +73,7 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type {
   SelectionCommand,
   CommandFolder,
-  PageActionRecorder,
+  PageActionRecordingData,
 } from '@/types'
 
 import css from './CommandEditDialog.module.css'
@@ -347,12 +347,15 @@ const CommandEditDialogInner = ({
   const iconUrlSrc = searchUrl || startUrl
 
   const openPageActionRecorder = async () => {
-    await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
-      startUrl,
-      openMode: getValues('pageActionOption.openMode'),
-      size: getValues('popupOption') ?? POPUP_OPTION,
-      steps: getValues('pageActionOption.steps'),
-    })
+    await Storage.set<PageActionRecordingData>(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+      {
+        startUrl,
+        openMode: getValues('pageActionOption.openMode'),
+        size: getValues('popupOption') ?? POPUP_OPTION,
+        steps: getValues('pageActionOption.steps'),
+      },
+    )
     await Ipc.send(BgCommand.startPageActionRecorder, {
       startUrl,
       openMode: getValues('pageActionOption.openMode'),
@@ -399,7 +402,7 @@ const CommandEditDialogInner = ({
   }, [open, setIconUrlSrc])
 
   useEffect(() => {
-    Storage.addListener<PageActionRecorder>(
+    Storage.addListener<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
       ({ size, steps }) => {
         if (steps == null) return

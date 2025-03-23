@@ -8,7 +8,7 @@ import { Controller } from '@/components/pageAction/Controller'
 import type { PageAction } from '@/services/pageAction'
 import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
 import { Ipc, BgCommand } from '@/services/ipc'
-import type { PageActionRecorder, PageActionStep } from '@/types'
+import type { PageActionRecordingData, PageActionStep } from '@/types'
 import { isEmpty, capitalize } from '@/lib/utils'
 
 export function PageActionRecorder(): JSX.Element {
@@ -41,13 +41,13 @@ export function PageActionRecorder(): JSX.Element {
       setSteps(steps ?? [])
     }
     const init = async () => {
-      const { steps } = await Storage.get<PageActionRecorder>(
+      const { steps } = await Storage.get<PageActionRecordingData>(
         STORAGE_KEY.PA_RECORDING,
       )
       addStep(steps)
     }
     init()
-    Storage.addListener<PageActionRecorder>(
+    Storage.addListener<PageActionRecordingData>(
       STORAGE_KEY.PA_RECORDING,
       ({ steps }) => addStep(steps),
     )
