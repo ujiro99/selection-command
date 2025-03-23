@@ -59,7 +59,7 @@ export function PageActionRecorder(): JSX.Element {
   if (!isRecording) return <></>
 
   return (
-    <div className="fixed z-[2147483647] inset-x-0 top-0 p-4 pb-5 bg-gradient-to-b from-gray-900/40">
+    <div className="fixed inset-0 pointer-events-none">
       <Controller
         steps={steps}
         onClickRemove={setRemoveId}
@@ -82,12 +82,12 @@ export function PageActionRecorder(): JSX.Element {
             <p className="text-base font-medium font-mono flex items-center gap-1.5">
               <TypeIcon
                 type={removeStep.type}
-                className="stroke-gray-700 mr-2"
+                className="stroke-gray-700"
                 size={20}
               />
               {capitalize(removeStep.type)}
             </p>
-            <p className="text-balance whitespace-pre-line text-sm mt-4">
+            <p className="mt-2 px-2 py-1.5 rounded text-balance whitespace-pre-line text-sm max-h-80 max-w-96 overflow-x-hidden overflow-y-auto bg-gray-50">
               <span>{removeStep.param.label}</span>
             </p>
           </div>

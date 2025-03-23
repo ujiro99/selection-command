@@ -27,11 +27,11 @@ export const RemoveDialog = ({
 }: RemoveDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="space-y-4">
+      <DialogContent className="space-y-2">
         <DialogHeader>
           <DialogTitle>{t('Option_remove_title')}</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="flex items-center justify-center overflow-hidden">
+        <DialogDescription className="flex items-center justify-center">
           {children}
         </DialogDescription>
         <DialogFooter>

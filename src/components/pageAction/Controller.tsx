@@ -145,7 +145,12 @@ export function Controller(props: Props): JSX.Element {
   const iconSize = 14
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div
+      className={cn(
+        'flex flex-col items-center gap-2 w-fit',
+        'backdrop-blur-sm bg-gray-300/10 rounded-md p-2 shadow-md',
+      )}
+    >
       <div className="controller flex w-[400px] justify-between">
         {isListening ? (
           <button
