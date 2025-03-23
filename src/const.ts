@@ -27,6 +27,7 @@ export enum DRAG_OPEN_MODE {
 }
 
 export enum PAGE_ACTION_OPEN_MODE {
+  NONE = 'none',
   POPUP = OPEN_MODE.POPUP,
   TAB = OPEN_MODE.TAB,
 }

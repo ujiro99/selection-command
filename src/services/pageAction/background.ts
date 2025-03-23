@@ -11,7 +11,6 @@ import { isInputAction, RunningStatus } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
 import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import {
-  POPUP_OPTION,
   POPUP_TYPE,
   PAGE_ACTION_MAX,
   PAGE_ACTION_CONTROL,
@@ -20,9 +19,10 @@ import {
 } from '@/const'
 import { generateRandomID } from '@/lib/utils'
 import type {
-  PageActionOption,
+  PageActionRecorder,
   PageActionStep,
   PageActionContext,
+  PopupOption,
 } from '@/types'
 import { BgData } from '@/services/backgroundData'
 
@@ -44,7 +44,7 @@ export const add = (
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
-    const option = await Storage.get<PageActionOption>(
+    const option = await Storage.get<PageActionRecorder>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     let steps = option.steps
@@ -112,7 +112,7 @@ export const add = (
     }
 
     // Update actions.
-    await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+    await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
       ...option,
       steps: [
         ...steps,
@@ -138,14 +138,14 @@ export const update = (
   response: (res: unknown) => void,
 ): boolean => {
   const update = async () => {
-    const option = await Storage.get<PageActionOption>(
+    const option = await Storage.get<PageActionRecorder>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     let steps = option.steps
     const index = steps.findIndex((a) => a.id === param.id)
     if (index !== -1 && isInputAction(steps[index].param)) {
       steps[index].param.value = param.value
-      await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+      await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
         ...option,
         steps,
       })
@@ -162,11 +162,11 @@ export const remove = (
   response: (res: unknown) => void,
 ): boolean => {
   const remove = async () => {
-    const option = await Storage.get<PageActionOption>(
+    const option = await Storage.get<PageActionRecorder>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     const steps = option.steps
-    await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+    await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
       ...option,
       steps: steps.filter((a) => a.id !== param.id),
     })
@@ -180,13 +180,13 @@ export const reset = (_: any, sender: Sender): boolean => {
   const tabId = sender.tab?.id
 
   const reset = async () => {
-    const option = await Storage.get<PageActionOption>(
+    const option = await Storage.get<PageActionRecorder>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     if (tabId && option.startUrl) {
       await chrome.tabs.update(tabId, { url: option.startUrl })
     }
-    await Storage.set<PageActionOption>(SESSION_STORAGE_KEY.PA_RECORDING, {
+    await Storage.set<PageActionRecorder>(SESSION_STORAGE_KEY.PA_RECORDING, {
       ...option,
       steps: [],
     })
@@ -335,20 +335,21 @@ export const openRecorder = (
   param: {
     startUrl: string
     openMode: PAGE_ACTION_OPEN_MODE
+    size: PopupOption
     screen: ScreenSize
   },
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  const { startUrl, openMode, screen } = param
+  const { startUrl, openMode, size, screen } = param
   const open = async () => {
-    const t = Math.floor((screen.height - POPUP_OPTION.height) / 2) + screen.top
-    const l = Math.floor((screen.width - POPUP_OPTION.width) / 2) + screen.left
+    const t = Math.floor((screen.height - size.height) / 2) + screen.top
+    const l = Math.floor((screen.width - size.width) / 2) + screen.left
     if (openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
       const w = await chrome.windows.create({
         url: startUrl,
-        width: POPUP_OPTION.width,
-        height: POPUP_OPTION.height,
+        width: size.width,
+        height: size.height,
         top: t,
         left: l,
         type: POPUP_TYPE.POPUP,
@@ -395,3 +396,20 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
     setRecordingTabId(undefined)
   }
 })
+
+chrome.windows.onBoundsChanged.addListener(
+  async (window: chrome.windows.Window) => {
+    const context = await Storage.get<PageActionContext>(
+      SESSION_STORAGE_KEY.PA_CONTEXT,
+    )
+    const { recordingTabId } = context
+    const tabs = await chrome.tabs.query({ windowId: window.id })
+    const tab = tabs && tabs[0]
+    if (tab && tab.id && tab.id === recordingTabId) {
+      Ipc.sendTab(tab.id, TabCommand.sendWindowSize, {
+        width: window.width,
+        height: window.height,
+      })
+    }
+  },
+)

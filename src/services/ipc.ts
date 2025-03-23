@@ -34,6 +34,7 @@ export enum TabCommand {
   closeMenu = 'closeMenu',
   getTabId = 'getTabId',
   // PageAction
+  sendWindowSize = 'sendWindowSize',
   execPageAction = 'execPageAction',
 }
 
@@ -61,6 +62,11 @@ export namespace ExecPageAction {
     result: boolean
     message?: string
   }
+}
+
+export type SendWindowSize = {
+  width: number
+  height: number
 }
 
 type IpcCommand = BgCommand | TabCommand

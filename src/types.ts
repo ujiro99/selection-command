@@ -138,6 +138,10 @@ export type PageActionOption = {
   steps: Array<PageActionStep>
 }
 
+export type PageActionRecorder = {
+  size: PopupOption
+} & PageActionOption
+
 export type PageActionContext = {
   recordingTabId?: number
   isRecording?: boolean

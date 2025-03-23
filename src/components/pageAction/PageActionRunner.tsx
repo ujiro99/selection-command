@@ -39,8 +39,8 @@ export function PageActionRunner(): JSX.Element {
 
   if (!isRunning) return <></>
   return (
-    <div className="fixed z-[2147483647] bottom-2 right-2 p-2 bg-gray-800/30 rounded-md pointer-events-none">
-      <ul className="text-xs text-gray-50">
+    <div className="fixed z-[2147483647] bottom-2 right-2 p-2 bg-gray-800/40 rounded-md pointer-events-none">
+      <ul className="text-xs text-gray-100">
         {results.map((result) => (
           <Step key={result.stepId} result={result} />
         ))}
@@ -56,7 +56,7 @@ const Step = ({ result }: { result: PageActiontResult }) => {
     <li
       ref={stepRef}
       className={cn(
-        'flex items-center gap-2 p-1',
+        'flex items-center gap-1.5 p-1',
         hasMessage && 'cursor-help pointer-events-auto',
       )}
     >
@@ -86,10 +86,10 @@ const StatusIcon = ({
         <LoaderCircle size={size} className={cn('animate-spin', className)} />
       )
     case EXEC_STATE.Done:
-      return <Check size={size} className={cn('stroke-sky-400', className)} />
+      return <Check size={size} className={cn(className)} />
     case EXEC_STATE.Failed:
       return (
-        <CircleAlert size={size} className={cn('stroke-red-300', className)} />
+        <CircleAlert size={size} className={cn('stroke-red-400', className)} />
       )
     case EXEC_STATE.Stop:
       return <Ban size={size} className={cn(className)} />
