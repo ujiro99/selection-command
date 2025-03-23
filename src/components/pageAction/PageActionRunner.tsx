@@ -5,6 +5,7 @@ import {
   CircleDashed,
   CircleAlert,
   LoaderCircle,
+  X,
 } from 'lucide-react'
 import { Tooltip } from '@/components/Tooltip'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
@@ -19,15 +20,21 @@ export function PageActionRunner(): JSX.Element {
   usePageActionRunner()
   const [tabId, setTabId] = useState<number | null>(null)
   const [results, setResults] = useState<PageActiontResult[]>([])
+  const [visible, setVisible] = useState(false)
   const toRef = useRef<number>()
-  const isRunning = results.length > 0
+
+  const hasError = (results: PageActiontResult[]): boolean => {
+    return results.some((r) => r.status === EXEC_STATE.Failed)
+  }
 
   const onStatusChange = (status: PageActiontStatus) => {
     if (status.tabId !== tabId) return
+    setVisible(true)
     setResults(status.results)
     clearTimeout(toRef.current)
+    if (hasError(status.results)) return
     toRef.current = window.setTimeout(() => {
-      setResults([])
+      setVisible(false)
     }, 5000)
   }
 
@@ -37,6 +44,7 @@ export function PageActionRunner(): JSX.Element {
       setTabId(tid)
       const status = await RunningStatus.get()
       if (status.tabId === tid) {
+        setVisible(true)
         setResults(status.results)
       }
     }
@@ -50,14 +58,22 @@ export function PageActionRunner(): JSX.Element {
     }
   }, [tabId])
 
-  if (!isRunning) return <></>
   return (
     <div
       className={cn(
-        'fixed z-[2147483647] top-2 right-2 pointer-events-none',
-        'backdrop-blur-md bg-gray-200/40 rounded-md p-3 shadow-md',
+        'relative fixed z-[2147483647] top-2 right-2 pointer-events-none',
+        'backdrop-blur-md bg-gray-200/40 rounded-md p-3 shadow-md transition-opacity duration-300',
+        visible ? 'opacity-100' : 'opacity-0',
       )}
     >
+      {hasError(results) && (
+        <button
+          className="absolute right-1 top-1 pointer-events-auto bg-gray-50 rounded-full p-1"
+          onClick={() => setVisible(false)}
+        >
+          <X size={12} className="stroke-gray-500" />
+        </button>
+      )}
       <ul className="text-xs text-gray-600">
         {results.map((result) => (
           <Step key={result.stepId} result={result} />
