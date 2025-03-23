@@ -274,7 +274,7 @@ export const run = (
 
   const run = async () => {
     // Update running status
-    RunningStatus.init(tabId, steps)
+    await RunningStatus.init(tabId, steps)
     BgData.set((data) => ({ ...data, pageActionStop: false }))
 
     // Run steps

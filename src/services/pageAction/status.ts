@@ -31,6 +31,10 @@ export const RunningStatus = {
     })
   },
 
+  get: async (): Promise<PageActiontStatus> => {
+    return await Storage.get<PageActiontStatus>(SESSION_STORAGE_KEY.PA_RUNNING)
+  },
+
   subscribe: (cb: (status: PageActiontStatus) => void) => {
     Storage.addListener<PageActiontStatus>(SESSION_STORAGE_KEY.PA_RUNNING, cb)
   },

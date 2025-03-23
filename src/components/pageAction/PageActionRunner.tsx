@@ -19,15 +19,28 @@ export function PageActionRunner(): JSX.Element {
   usePageActionRunner()
   const [tabId, setTabId] = useState<number | null>(null)
   const [results, setResults] = useState<PageActiontResult[]>([])
+  const toRef = useRef<number>()
   const isRunning = results.length > 0
 
   const onStatusChange = (status: PageActiontStatus) => {
     if (status.tabId !== tabId) return
     setResults(status.results)
+    clearTimeout(toRef.current)
+    toRef.current = window.setTimeout(() => {
+      setResults([])
+    }, 5000)
   }
 
   useEffect(() => {
-    Ipc.getTabId().then(setTabId)
+    const init = async () => {
+      const tid = await Ipc.getTabId()
+      setTabId(tid)
+      const status = await RunningStatus.get()
+      if (status.tabId === tid) {
+        setResults(status.results)
+      }
+    }
+    init()
   }, [])
 
   useEffect(() => {
