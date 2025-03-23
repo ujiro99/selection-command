@@ -1,19 +1,30 @@
 import { useEffect, useState } from 'react'
+import { restrictToParentElement } from '@dnd-kit/modifiers'
+import { DndContext, DragEndEvent } from '@dnd-kit/core'
+
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 import { InputPopup } from '@/components/pageAction/InputPopup'
 import { InputEditor } from '@/components/pageAction/InputEditor'
 import { RemoveDialog } from '@/components/option/RemoveDialog'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
 import { Controller } from '@/components/pageAction/Controller'
+import { Draggable } from '@/components/pageAction/Draggable'
+
 import type { PageAction } from '@/services/pageAction'
 import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
 import { Ipc, BgCommand } from '@/services/ipc'
-import type { PageActionRecordingData, PageActionStep } from '@/types'
+import type {
+  PageActionRecorderOption,
+  PageActionRecordingData,
+  PageActionStep,
+  Point,
+} from '@/types'
 import { isEmpty, capitalize } from '@/lib/utils'
 
 export function PageActionRecorder(): JSX.Element {
   const { isRecording } = usePageActionContext()
   const [steps, setSteps] = useState<PageActionStep[]>([])
+  const [position, setPosition] = useState<Point | undefined>()
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
@@ -36,63 +47,90 @@ export function PageActionRecorder(): JSX.Element {
     Ipc.send(BgCommand.removePageAction, { id })
   }
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    if (event.active.rect.current.translated == null) return
+    const newPos = {
+      x: event.active.rect.current.translated?.left,
+      y: event.active.rect.current.translated?.top,
+    }
+    setPosition(newPos)
+    Storage.get<PageActionRecorderOption>(STORAGE_KEY.PA_RECORDER_OPTION).then(
+      (data) => {
+        Storage.set(STORAGE_KEY.PA_RECORDER_OPTION, {
+          ...data,
+          controllerPosition: newPos,
+        })
+      },
+    )
+  }
+
   useEffect(() => {
-    const addStep = (steps: PageActionStep[]) => {
-      setSteps(steps ?? [])
+    const update = (data: PageActionRecordingData) => {
+      data?.steps && setSteps(data.steps ?? [])
     }
-    const init = async () => {
-      const { steps } = await Storage.get<PageActionRecordingData>(
-        STORAGE_KEY.PA_RECORDING,
-      )
-      addStep(steps)
+    const update2 = (opt: PageActionRecorderOption) => {
+      opt?.controllerPosition && setPosition(opt.controllerPosition)
     }
-    init()
+    Storage.get<PageActionRecordingData>(STORAGE_KEY.PA_RECORDING).then(update)
+    Storage.get<PageActionRecorderOption>(STORAGE_KEY.PA_RECORDER_OPTION).then(
+      update2,
+    )
+
     Storage.addListener<PageActionRecordingData>(
       STORAGE_KEY.PA_RECORDING,
-      ({ steps }) => addStep(steps),
+      update,
+    )
+    Storage.addListener<PageActionRecorderOption>(
+      STORAGE_KEY.PA_RECORDER_OPTION,
+      update2,
     )
     return () => {
-      Storage.removeListener(STORAGE_KEY.PA_RECORDING, addStep)
+      Storage.removeListener(STORAGE_KEY.PA_RECORDING, update)
+      Storage.removeListener(STORAGE_KEY.PA_RECORDER_OPTION, update2)
     }
   }, [])
 
   if (!isRecording) return <></>
 
   return (
-    <div className="fixed inset-0 pointer-events-none">
-      <Controller
-        steps={steps}
-        onClickRemove={setRemoveId}
-        onClickEdit={setEditId}
-      />
-      {!editorOpen && <InputPopup />}
-      <InputEditor
-        open={editorOpen}
-        onOpenChange={(o) => !o && setEditId(null)}
-        value={editorValue}
-        onSubmit={editorSubmit}
-      />
-      <RemoveDialog
-        open={removeOpen}
-        onOpenChange={(o) => !o && setRemoveId(null)}
-        onRemove={() => removeAction(removeId)}
-      >
-        {removeStep && (
-          <div>
-            <p className="text-base font-medium font-mono flex items-center gap-1.5">
-              <TypeIcon
-                type={removeStep.type}
-                className="stroke-gray-700"
-                size={20}
-              />
-              {capitalize(removeStep.type)}
-            </p>
-            <p className="mt-2 px-2 py-1.5 rounded text-balance whitespace-pre-line text-sm max-h-80 max-w-96 overflow-x-hidden overflow-y-auto bg-gray-50">
-              <span>{removeStep.param.label}</span>
-            </p>
-          </div>
-        )}
-      </RemoveDialog>
-    </div>
+    <DndContext onDragEnd={handleDragEnd} modifiers={[restrictToParentElement]}>
+      <div className="fixed inset-0 pointer-events-none z-[2147483647]">
+        <Draggable id="controller" position={position}>
+          <Controller
+            steps={steps}
+            onClickRemove={setRemoveId}
+            onClickEdit={setEditId}
+          />
+        </Draggable>
+        {!editorOpen && <InputPopup />}
+        <InputEditor
+          open={editorOpen}
+          onOpenChange={(o) => !o && setEditId(null)}
+          value={editorValue}
+          onSubmit={editorSubmit}
+        />
+        <RemoveDialog
+          open={removeOpen}
+          onOpenChange={(o) => !o && setRemoveId(null)}
+          onRemove={() => removeAction(removeId)}
+        >
+          {removeStep && (
+            <div>
+              <p className="text-base font-medium font-mono flex items-center gap-1.5">
+                <TypeIcon
+                  type={removeStep.type}
+                  className="stroke-gray-700"
+                  size={20}
+                />
+                {capitalize(removeStep.type)}
+              </p>
+              <p className="mt-2 px-2 py-1.5 rounded text-balance whitespace-pre-line text-sm max-h-80 max-w-96 overflow-x-hidden overflow-y-auto bg-gray-50">
+                <span>{removeStep.param.label}</span>
+              </p>
+            </div>
+          )}
+        </RemoveDialog>
+      </div>
+    </DndContext>
   )
 }

@@ -20,11 +20,11 @@
 }
 
 .buttonLabelStatus {
-  @apply text-xs;
+  @apply text-sm;
 }
 
 .buttonLabel {
-  @apply text-xs;
+  @apply text-sm;
 }
 
 .buttonHighlight {

@@ -19,6 +19,7 @@ export enum SESSION_STORAGE_KEY {
   PA_RECORDING = 'pageActionRecording',
   PA_RUNNING = 'pageActionRunning',
   PA_CONTEXT = 'pageActionContext',
+  PA_RECORDER_OPTION = 'pageActionRecorderOption',
 }
 
 type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
@@ -41,6 +42,7 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.PA_RECORDING]: [],
   [SESSION_STORAGE_KEY.PA_RUNNING]: [],
   [SESSION_STORAGE_KEY.PA_CONTEXT]: {},
+  [SESSION_STORAGE_KEY.PA_RECORDER_OPTION]: {},
 }
 
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {

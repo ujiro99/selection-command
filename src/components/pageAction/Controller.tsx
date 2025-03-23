@@ -147,8 +147,8 @@ export function Controller(props: Props): JSX.Element {
   return (
     <div
       className={cn(
-        'flex flex-col items-center gap-2 w-fit',
-        'backdrop-blur-sm bg-gray-300/10 rounded-md p-2 shadow-md',
+        'flex flex-col items-center gap-2 w-fit pointer-events-auto',
+        'backdrop-blur-md bg-gray-200/40 rounded-md p-4 pr-3 shadow-md',
       )}
     >
       <div className="controller flex w-[400px] justify-between">
