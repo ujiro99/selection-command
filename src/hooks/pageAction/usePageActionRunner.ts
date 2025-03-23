@@ -87,6 +87,7 @@ export function usePageActionRunner() {
       }
     } catch (e) {
       console.error(e)
+      msg = `${e}`
     }
     setContextData({ isRunning: false })
     return { result, message: msg }
