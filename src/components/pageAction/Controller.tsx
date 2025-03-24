@@ -18,7 +18,7 @@ import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import { t } from '@/services/i18n'
 import type { PageActiontStatus, PageActionStep } from '@/types'
-import { e2a, cn } from '@/lib/utils'
+import { e2a, cn, onHover } from '@/lib/utils'
 import {
   PAGE_ACTION_MAX,
   PAGE_ACTION_CONTROL,
@@ -44,6 +44,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const [isListening, setIsListening] = useState(true)
     const [currentId, setCurrentId] = useState<string>()
     const [failedId, setFailedId] = useState<string>()
+    const [hover, setHover] = useState(true)
     const [failedMessage, setFailedMesage] = useState<string>()
     const steps = props.steps.filter((l) => !isControlType(l.type))
     const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
@@ -130,6 +131,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
           'backdrop-blur-md bg-gray-200/40 rounded-md p-4 pr-3 shadow-md',
         )}
         ref={ref}
+        data-hover={hover}
       >
         <div className="controller flex w-[400px] justify-between">
           {isListening ? (
@@ -196,7 +198,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
           </div>
         </div>
         <div className="timeline relative w-[418px] h-[24px]">
-          <ol className="flex items-center h-full">
+          <ol className="flex items-center h-full" {...onHover(setHover, true)}>
             {steps.map((step, i) => (
               <PageActionItem
                 step={step}

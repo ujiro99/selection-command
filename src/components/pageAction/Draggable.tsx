@@ -3,6 +3,8 @@ import { cn } from '@/lib/utils'
 import { GripVertical } from 'lucide-react'
 import { Point } from '@/types'
 
+import css from './PageActionRecorder.module.css'
+
 type Props = {
   id: string
   children: React.ReactNode
@@ -47,6 +49,7 @@ export function Draggable(props: Props) {
       {props.children}
       <button
         className={cn(
+          css.dragHandle,
           'pointer-events-auto absolute p-1 top-[50%] translate-x-[2px] translate-y-[-50%]',
           'rounded-md transition hover:bg-white/50',
         )}

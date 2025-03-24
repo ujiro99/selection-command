@@ -37,3 +37,12 @@
 .button:hover .buttonHighlight {
   @apply opacity-100;
 }
+
+.dragHandle {
+  @apply transition-opacity;
+  opacity: 1;
+}
+
+[data-hover='true']+.dragHandle {
+  opacity: 0;
+}
