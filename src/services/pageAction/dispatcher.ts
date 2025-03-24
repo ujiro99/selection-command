@@ -194,8 +194,8 @@ export const PageActionDispatcher = {
       let value = safeInterpolate(param.value, variables)
       value = value.replace(/{/g, '\\\\{') // escape
       value = value.replace(/}/g, '\\\\}') // escape
-      // await user.type(element, value, { skipClick: true })
-      await user.type(element, value)
+      await user.type(element, value, { skipClick: true })
+      // await user.type(element, value)
     } else {
       console.warn(`Element not found for: ${selector}`)
       return [false, `Element not found: ${param.label}`]

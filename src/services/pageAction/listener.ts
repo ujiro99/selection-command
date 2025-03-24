@@ -205,7 +205,7 @@ export const PageActionListener = (() => {
           type: 'input',
           timestamp: getTimeStamp(),
           param: {
-            label: value,
+            label: getLabel(target),
             value,
             selector: xpath,
             selectorType: SelectorType.xpath,

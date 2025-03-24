@@ -94,12 +94,23 @@ export const add = (
         steps.pop()
       } else if (step.type === 'scroll' && prev.type === 'scroll') {
         steps.pop()
-      } else if (step.type === 'input' && prev.type.match('input')) {
-        const selector = (step.param as PageAction.Input).selector
-        const prevSelector = (prev.param as PageAction.Input).selector
-        if (selector === prevSelector) {
-          // Combine operations on the same input element.
-          steps.pop()
+      } else if (step.type === 'input') {
+        // Combine operations on the same input element.
+        if (prev.type === 'input') {
+          const selector = (step.param as PageAction.Input).selector
+          const prevSelector = (prev.param as PageAction.Input).selector
+          if (selector === prevSelector) {
+            steps.pop()
+          }
+        }
+        // Remove the vlaue in previous input if the same element has been input.
+        const param = step.param as PageAction.Input
+        const prevInput = steps.filter((a) => a.type === 'input').pop()
+        if (prevInput) {
+          const prevParam = prevInput.param as PageAction.Input
+          if (param.selector === prevParam.selector) {
+            param.value = param.value.replace(prevParam.value, '')
+          }
         }
       } else if (step.type === 'click' && prev.type.match('input')) {
         const selector = (step.param as PageAction.Input).selector

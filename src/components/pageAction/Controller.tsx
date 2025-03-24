@@ -14,16 +14,10 @@ import {
   PageActionListener as Listener,
   RunningStatus,
 } from '@/services/pageAction'
-import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
-import { Ipc, BgCommand, RunPageAction, TabCommand } from '@/services/ipc'
+import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import { t } from '@/services/i18n'
-import type {
-  PageActiontStatus,
-  PageActionRecordingData,
-  PageActionStep,
-  PopupOption,
-} from '@/types'
+import type { PageActiontStatus, PageActionStep } from '@/types'
 import { e2a, cn } from '@/lib/utils'
 import {
   PAGE_ACTION_MAX,
