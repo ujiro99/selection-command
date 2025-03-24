@@ -120,6 +120,8 @@ export const PageActionSection = ({
     keyName: '_id',
   })
 
+  const recDisabled = !getValues('pageActionOption.startUrl')
+
   return (
     <>
       <InputField
@@ -149,10 +151,18 @@ export const PageActionSection = ({
       <div className="w-full p-2 flex items-center justify-center">
         <button
           type="button"
-          className="bg-red-500 font-mono text-white px-4 py-1.5 inline-flex items-center justify-center gap-0.5 rounded-lg text-base font-medium transition hover:opacity-80 hover:scale-[1.10]"
+          className={cn(
+            'px-4 py-1.5 bg-red-500 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg group/record',
+            !recDisabled && 'transition hover:opacity-80 hover:scale-[1.10]',
+            recDisabled && 'opacity-50 cursor-not-allowed',
+          )}
+          disabled={recDisabled}
           onClick={openRecorder}
         >
-          <Disc3 className="stroke-white mr-1.5" size={20} />
+          <Disc3
+            className="stroke-white mr-1.5 group-hover/record:animate-spin-slow"
+            size={20}
+          />
           <span>REC</span>
         </button>
       </div>
