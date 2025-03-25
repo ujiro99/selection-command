@@ -6,16 +6,15 @@ import {
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONTROL,
 } from '@/const'
+import { FormLabel, FormDescription } from '@/components/ui/form'
 import { SelectorType } from '@/services/pageAction'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { cn, capitalize, e2a } from '@/lib/utils'
+import { cn, e2a } from '@/lib/utils'
 
-import { FormControl, FormField, FormItem } from '@/components/ui/form'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
-
-import css from './CommandEditDialog.module.css'
+import { StepList } from '@/components/pageAction/StepList'
 
 import { Disc3 } from 'lucide-react'
 
@@ -148,59 +147,38 @@ export const PageActionSection = ({
           }))}
       />
 
-      <div className="w-full p-2 flex items-center justify-center">
-        <button
-          type="button"
-          className={cn(
-            'px-4 py-1.5 bg-red-500 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg group/record',
-            !recDisabled && 'transition hover:opacity-80 hover:scale-[1.10]',
-            recDisabled && 'opacity-50 cursor-not-allowed',
-          )}
-          disabled={recDisabled}
-          onClick={openRecorder}
-        >
-          <Disc3
-            className="stroke-white mr-1.5 group-hover/record:animate-spin-slow"
-            size={20}
+      <div className="w-full flex items-center gap-1 py-4">
+        <div className="w-2/6">
+          <FormLabel>Actions</FormLabel>
+          <FormDescription>記録されたアクション</FormDescription>
+        </div>
+        <div className="w-4/6 relative">
+          <StepList
+            steps={
+              pageActionArray.fields.filter(
+                (f: any) => !e2a(PAGE_ACTION_CONTROL).includes(f.type),
+              ) as any
+            }
           />
-          <span>REC</span>
-        </button>
+          <button
+            type="button"
+            className={cn(
+              'relative left-[50%] -translate-x-[50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg',
+              !recDisabled &&
+                'group/record transition hover:opacity-80 hover:scale-[1.05]',
+              recDisabled && 'opacity-50 cursor-not-allowed bg-gray-400',
+            )}
+            disabled={recDisabled}
+            onClick={openRecorder}
+          >
+            <Disc3
+              className="stroke-white mr-1.5 group-hover/record:animate-spin-slow"
+              size={18}
+            />
+            <span>REC</span>
+          </button>
+        </div>
       </div>
-
-      <FormField
-        control={form.control}
-        name="pageActionOption.steps"
-        render={() => (
-          <FormItem>
-            <FormControl>
-              <ul className="flex flex-row flex-wrap gap-3.5 m-auto">
-                {pageActionArray.fields.map((field, index) => (
-                  <FormField
-                    key={field._id}
-                    control={form.control}
-                    name={`pageActionOption.steps.${index}`}
-                    render={({ field }) => (
-                      <li
-                        className={cn(css.triangle, {
-                          [css.pageActionStart]:
-                            PAGE_ACTION_CONTROL.start === field.value.type,
-                          [css.pageActionEnd]:
-                            PAGE_ACTION_CONTROL.end === field.value.type,
-                        })}
-                      >
-                        <FormItem className="w-28 p-2 bg-gray-200 rounded overflow-hidden">
-                          <p>{capitalize(field.value.type)}</p>
-                          <p className="truncate">{field.value.param?.label}</p>
-                        </FormItem>
-                      </li>
-                    )}
-                  />
-                ))}
-              </ul>
-            </FormControl>
-          </FormItem>
-        )}
-      />
     </>
   )
 }

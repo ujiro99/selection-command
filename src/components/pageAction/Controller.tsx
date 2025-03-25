@@ -1,15 +1,7 @@
 import { useEffect, useState, forwardRef } from 'react'
-import {
-  Disc3,
-  Circle,
-  Play,
-  Square,
-  RotateCcw,
-  Check,
-  CircleDashed,
-} from 'lucide-react'
+import { Disc3, Circle, Play, Square, RotateCcw, Check } from 'lucide-react'
+import { StepList } from '@/components/pageAction/StepList'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
-import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import {
   PageActionListener as Listener,
   RunningStatus,
@@ -18,13 +10,8 @@ import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
 import { getSelectionText } from '@/services/dom'
 import { t } from '@/services/i18n'
 import type { PageActiontStatus, PageActionStep } from '@/types'
-import { e2a, cn, onHover } from '@/lib/utils'
-import {
-  PAGE_ACTION_MAX,
-  PAGE_ACTION_CONTROL,
-  PAGE_ACTION_OPEN_MODE,
-  EXEC_STATE,
-} from '@/const'
+import { e2a, cn } from '@/lib/utils'
+import { PAGE_ACTION_CONTROL, PAGE_ACTION_OPEN_MODE, EXEC_STATE } from '@/const'
 
 import css from './PageActionRecorder.module.css'
 
@@ -44,10 +31,9 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const [isListening, setIsListening] = useState(true)
     const [currentId, setCurrentId] = useState<string>()
     const [failedId, setFailedId] = useState<string>()
-    const [hover, setHover] = useState(true)
     const [failedMessage, setFailedMesage] = useState<string>()
+    const [hover, setHover] = useState(false)
     const steps = props.steps.filter((l) => !isControlType(l.type))
-    const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
 
     const clearState = () => {
       setCurrentId('')
@@ -198,42 +184,15 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
           </div>
         </div>
         <div className="timeline relative w-[418px] h-[24px]">
-          <ol className="flex items-center h-full" {...onHover(setHover, true)}>
-            {steps.map((step, i) => (
-              <PageActionItem
-                step={step}
-                currentId={currentId}
-                failedId={failedId}
-                failedMessage={failedMessage}
-                key={step.id}
-                onClickRemove={props.onClickRemove}
-                onClickEdit={props.onClickEdit}
-                className={cn(
-                  'relative',
-                  i > 0 &&
-                    "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-500/80 after:rounded",
-                )}
-              />
-            ))}
-            {emptySteps.map((_, i) => (
-              <li
-                key={i}
-                className={cn(
-                  'h-[24px] flex-1 flex items-center justify-center relative',
-                  (steps.length > 0 || i > 0) &&
-                    "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 after:rounded",
-                )}
-              >
-                <div className="bg-gray-50 rounded-full h-fit w-fit">
-                  <CircleDashed
-                    size="12"
-                    strokeWidth={3}
-                    className="stroke-gray-400"
-                  />
-                </div>
-              </li>
-            ))}
-          </ol>
+          <StepList
+            steps={steps}
+            currentId={currentId}
+            failedId={failedId}
+            failedMessage={failedMessage}
+            onClickRemove={props.onClickRemove}
+            onClickEdit={props.onClickEdit}
+            onChangeHover={setHover}
+          />
         </div>
       </div>
     )
