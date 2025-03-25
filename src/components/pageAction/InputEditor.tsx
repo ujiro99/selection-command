@@ -65,7 +65,7 @@ export function InputEditor(props: InputEditorProps) {
               {t('PageAction_InputEditor_cancel')}
             </Button>
           </DialogClose>
-          <Button type="submit" onClick={handleSubmit}>
+          <Button type="button" onClick={handleSubmit}>
             <Save size={16} className="mr-0.5" />
             {t('PageAction_InputEditor_save')}
           </Button>

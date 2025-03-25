@@ -43,7 +43,7 @@ export function PageActionRecorder(): JSX.Element {
   const removeStep = steps.find((a) => a.id === removeId)
   const removeOpen = !isEmpty(removeId)
 
-  const editorSubmit = (value: string) => {
+  const editAction = (value: string) => {
     Ipc.send(BgCommand.updatePageAction, { id: editId, value })
     setEditId(null)
   }
@@ -147,7 +147,7 @@ export function PageActionRecorder(): JSX.Element {
           open={editorOpen}
           onOpenChange={(o) => !o && setEditId(null)}
           value={editorValue}
-          onSubmit={editorSubmit}
+          onSubmit={editAction}
         />
         <RemoveDialog
           open={removeOpen}

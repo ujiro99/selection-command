@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
+import { Disc3 } from 'lucide-react'
 import {
   OPEN_MODE,
   PAGE_ACTION_OPEN_MODE,
@@ -7,16 +9,19 @@ import {
   PAGE_ACTION_CONTROL,
 } from '@/const'
 import { FormLabel, FormDescription } from '@/components/ui/form'
+import type { PageAction } from '@/services/pageAction'
 import { SelectorType } from '@/services/pageAction'
+import { Ipc, BgCommand } from '@/services/ipc'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { cn, e2a } from '@/lib/utils'
+import { cn, e2a, isEmpty, capitalize } from '@/lib/utils'
 
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { StepList } from '@/components/pageAction/StepList'
-
-import { Disc3 } from 'lucide-react'
+import { InputEditor } from '@/components/pageAction/InputEditor'
+import { RemoveDialog } from '@/components/option/RemoveDialog'
+import { TypeIcon } from '@/components/pageAction/TypeIcon'
 
 const PageActionControlSchema = z.object({
   type: z.nativeEnum(PAGE_ACTION_CONTROL),
@@ -77,6 +82,7 @@ export const PageActionStepSchema = z.object({
   type: z.nativeEnum(PAGE_ACTION_EVENT).or(z.nativeEnum(PAGE_ACTION_CONTROL)),
   param: PageActionParameterSchema,
 })
+type PageActionStep = z.infer<typeof PageActionStepSchema>
 
 const PageActionOption = z.object({
   startUrl: z.string(),
@@ -118,8 +124,29 @@ export const PageActionSection = ({
     control: form.control,
     keyName: '_id',
   })
-
+  const steps = pageActionArray.fields as unknown as PageActionStep[]
   const recDisabled = !getValues('pageActionOption.startUrl')
+
+  // for Editor
+  const [editId, setEditId] = useState<string | null>(null)
+  const editStep = steps.find((a) => a.id === editId)
+  const editorValue = (editStep?.param as PageAction.Input)?.value
+  const editorOpen = !isEmpty(editId)
+
+  // for RemoveDialog
+  const [removeId, setRemoveId] = useState<string | null>(null)
+  const removeStep = steps.find((a) => a.id === removeId)
+  const removeOpen = !isEmpty(removeId)
+
+  const editAction = (value: string) => {
+    Ipc.send(BgCommand.updatePageAction, { id: editId, value })
+    setEditId(null)
+  }
+
+  const removeAction = (id: string | null) => {
+    if (id == null) return
+    Ipc.send(BgCommand.removePageAction, { id })
+  }
 
   return (
     <>
@@ -159,6 +186,8 @@ export const PageActionSection = ({
                 (f: any) => !e2a(PAGE_ACTION_CONTROL).includes(f.type),
               ) as any
             }
+            onClickRemove={setRemoveId}
+            onClickEdit={setEditId}
           />
           <button
             type="button"
@@ -179,6 +208,33 @@ export const PageActionSection = ({
           </button>
         </div>
       </div>
+      <InputEditor
+        open={editorOpen}
+        onOpenChange={(o) => !o && setEditId(null)}
+        value={editorValue}
+        onSubmit={editAction}
+      />
+      <RemoveDialog
+        open={removeOpen}
+        onOpenChange={(o) => !o && setRemoveId(null)}
+        onRemove={() => removeAction(removeId)}
+      >
+        {removeStep && (
+          <div>
+            <p className="text-base font-medium font-mono flex items-center gap-1.5">
+              <TypeIcon
+                type={removeStep.type}
+                className="stroke-gray-700"
+                size={20}
+              />
+              {capitalize(removeStep.type)}
+            </p>
+            <p className="mt-2 px-2 py-1.5 rounded text-balance whitespace-pre-line text-sm max-h-80 max-w-96 overflow-x-hidden overflow-y-auto bg-gray-50">
+              <span>{removeStep.param.label}</span>
+            </p>
+          </div>
+        )}
+      </RemoveDialog>
     </>
   )
 }
