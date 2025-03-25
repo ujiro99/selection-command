@@ -1,13 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
-import type {
-  Version,
-  Command,
-  SelectionCommand,
-  LinkCommand,
-  ActionTypes,
-} from '@/types'
+import type { Version, Command, SelectionCommand, LinkCommand } from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

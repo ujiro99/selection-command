@@ -7,6 +7,7 @@ import {
   LoaderCircle,
   X,
 } from 'lucide-react'
+import { Progress } from '@/components/ui/progress'
 import { Tooltip } from '@/components/Tooltip'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
 import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
@@ -21,7 +22,9 @@ export function PageActionRunner(): JSX.Element {
   const [tabId, setTabId] = useState<number | null>(null)
   const [results, setResults] = useState<PageActiontResult[]>([])
   const [visible, setVisible] = useState(false)
-  const toRef = useRef<number>()
+  const [progress, setProgress] = useState(0)
+  const startTimeRef = useRef<number>(0)
+  const progressTORef = useRef<number>()
 
   const hasError = (results: PageActiontResult[]): boolean => {
     return results.some((r) => r.status === EXEC_STATE.Failed)
@@ -30,12 +33,23 @@ export function PageActionRunner(): JSX.Element {
   const onStatusChange = (status: PageActiontStatus) => {
     if (status.tabId !== tabId) return
     setVisible(true)
+    setProgress(0)
+    clearTimeout(progressTORef.current)
     setResults(status.results)
-    clearTimeout(toRef.current)
     if (hasError(status.results)) return
-    toRef.current = window.setTimeout(() => {
-      setVisible(false)
-    }, 5000)
+    startTimeRef.current = Date.now()
+    progressTORef.current = window.setInterval(() => {
+      const prgrs = ((Date.now() - startTimeRef.current) / 5000) * 100
+      if (prgrs >= 100) {
+        clearTimeout(progressTORef.current)
+        setVisible(false)
+        return
+      }
+      setProgress(prgrs)
+    }, 50)
+    return () => {
+      clearTimeout(progressTORef.current)
+    }
   }
 
   useEffect(() => {
@@ -61,20 +75,27 @@ export function PageActionRunner(): JSX.Element {
   return (
     <div
       className={cn(
-        'relative fixed z-[2147483647] top-2 right-2 pointer-events-none',
-        'backdrop-blur-md bg-gray-200/40 rounded-md p-3 shadow-md transition-opacity duration-300',
+        'relative fixed z-[2147483647] top-2 right-2 pointer-events-none overflow-hidden',
+        'backdrop-blur-md bg-gray-200/40 rounded-md shadow-md transition-opacity duration-300',
         visible ? 'opacity-100' : 'opacity-0',
       )}
     >
+      <Progress
+        value={progress}
+        className={cn(
+          'h-0.5 bg-transparent opacity-0',
+          progress > 10 && 'opacity-100',
+        )}
+      />
       {hasError(results) && (
         <button
-          className="absolute right-1 top-1 pointer-events-auto bg-gray-50 rounded-full p-1"
+          className="absolute right-1 top-1.5 pointer-events-auto bg-gray-50 rounded-full p-1"
           onClick={() => setVisible(false)}
         >
           <X size={12} className="stroke-gray-500" />
         </button>
       )}
-      <ul className="text-xs text-gray-600">
+      <ul className="text-xs text-gray-600 p-2 pt-1.5">
         {results.map((result) => (
           <Step key={result.stepId} result={result} />
         ))}
