@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import ColorThief from 'colorthief'
 import { useSetting } from '@/hooks/useSetting'
 import { sendEvent } from '@/services/analytics'
-import { isEmpty, cn } from '@/lib/utils'
+import { cn, isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import { HUB_URL, SCREEN } from '@/const'
 import type { Command } from '@/types'
 
@@ -14,7 +14,9 @@ export const MyCommands = (): JSX.Element => {
   const { settings, iconUrls } = useSetting()
   const commands = settings.commands
     .filter(
-      (c) => !isEmpty(c.searchUrl) && !urls.includes(c.searchUrl as string),
+      (c) =>
+        (isSearchCommand(c) && !urls.includes(c.searchUrl as string)) ||
+        isPageActionCommand(c),
     )
     .map((c) => ({ ...c, iconDataUrl: c.iconUrl, iconUrl: iconUrls[c.id] }))
   const loaded = urls.length > 0

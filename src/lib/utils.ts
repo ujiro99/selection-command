@@ -1,7 +1,14 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
-import type { Version, Command, SelectionCommand, LinkCommand } from '@/types'
+import type {
+  Version,
+  Command,
+  SelectionCommand,
+  LinkCommand,
+  SearchCommand,
+  PageActionCommand,
+} from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -116,6 +123,22 @@ export function isMenuCommand(command: Command): command is SelectionCommand {
 const DragOpenModes = Object.values(DRAG_OPEN_MODE)
 export function isLinkCommand(command: Command): command is LinkCommand {
   return DragOpenModes.includes(command.openMode as DRAG_OPEN_MODE)
+}
+
+/**
+ * Check if the command is a search command.
+ */
+export function isSearchCommand(cmd: unknown): cmd is SearchCommand {
+  const modes = [OPEN_MODE.POPUP, OPEN_MODE.TAB, OPEN_MODE.WINDOW]
+  return modes.includes((cmd as SearchCommand).openMode)
+}
+
+/**
+ * Check if the command is a page action command.
+ */
+export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
+  const modes = [OPEN_MODE.PAGE_ACTION]
+  return modes.includes((cmd as SearchCommand).openMode)
 }
 
 export function isPopup(elm: Element): boolean {

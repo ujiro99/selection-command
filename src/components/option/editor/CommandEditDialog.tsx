@@ -45,9 +45,11 @@ import { SelectField } from '@/components/option/field/SelectField'
 import { TextareaField } from '@/components/option/field/TextareaField'
 import {
   pageActionSchema,
-  PageActionStepSchema,
   PageActionSection,
 } from '@/components/option/editor/PageActionSection'
+
+import { PageActionStep } from '@/types/schema'
+
 import {
   OPEN_MODE,
   SPACE_ENCODING,
@@ -182,8 +184,6 @@ export const commandSchema = z.discriminatedUnion('openMode', [
   copySchema,
   textStyleSchema,
 ])
-
-type PageActionStepSchema = z.infer<typeof PageActionStepSchema>
 
 const EmptyFolder = {
   id: ROOT_FOLDER,
@@ -411,7 +411,7 @@ const CommandEditDialogInner = ({
           return step
         })
         setValue('popupOption', size)
-        setValue('pageActionOption.steps', steps as PageActionStepSchema[])
+        setValue('pageActionOption.steps', steps as PageActionStep[])
       },
     )
   }, [])

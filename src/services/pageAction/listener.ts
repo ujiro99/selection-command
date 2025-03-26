@@ -1,18 +1,14 @@
 import getXPath from 'get-xpath'
 import { isPopup, isEmpty } from '@/lib/utils'
 import { Ipc, BgCommand } from '@/services/ipc'
-import {
-  SelectorType,
-  PageAction,
-  convReadableKeysToSymbols,
-} from '@/services/pageAction'
+import { PageAction, convReadableKeysToSymbols } from '@/services/pageAction'
 import {
   isTextNode,
   isSvgElement,
   getElementByXPath,
   getXPath as getXPathOriginal,
 } from '@/services/dom'
-import { PAGE_ACTION_EVENT } from '@/const'
+import { PAGE_ACTION_EVENT, SelectorType } from '@/const'
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
   if (e.shiftKey && e.key === 'Enter') return false

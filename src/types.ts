@@ -26,7 +26,13 @@ export type Point = {
 
 export type Command = SelectionCommand | LinkCommand
 
-export type SelectionCommand = {
+export type SelectionCommand =
+  | SearchCommand
+  | CopyCommand
+  | ApiCommand
+  | PageActionCommand
+
+export type SearchCommand = {
   id: string
   title: string
   iconUrl: string
@@ -35,11 +41,20 @@ export type SelectionCommand = {
   searchUrl?: string
   parentFolderId?: string
   popupOption?: PopupOption
-  copyOption?: CopyOption
-  fetchOptions?: string
-  variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
-  pageActionOption?: PageActionOption
+}
+
+type CopyCommand = SearchCommand & {
+  copyOption: CopyOption
+}
+
+type ApiCommand = SearchCommand & {
+  fetchOptions: string
+  variables: Array<CommandVariable>
+}
+
+export type PageActionCommand = SearchCommand & {
+  pageActionOption: PageActionOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {

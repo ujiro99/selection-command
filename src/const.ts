@@ -155,6 +155,11 @@ export enum EXEC_STATE {
   Failed = 'Failed',
 }
 
+export enum SelectorType {
+  css = 'css',
+  xpath = 'xpath',
+}
+
 export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100

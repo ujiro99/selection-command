@@ -2,11 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { getElementByXPath, isValidXPath } from '@/services/dom'
 import { safeInterpolate } from '@/lib/utils'
 import { INSERT, InsertSymbol } from '@/services/pageAction'
-
-export enum SelectorType {
-  css = 'css',
-  xpath = 'xpath',
-}
+import { SelectorType } from '@/const'
 
 export namespace PageAction {
   export type Parameter = Start | Click | Input | Keyboard | Scroll

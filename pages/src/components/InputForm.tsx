@@ -37,12 +37,18 @@ import { TagPicker } from '@/components/TagPicker'
 import { Tag } from '@/components/Tag'
 import { Image } from '@/components/Image'
 import { Button } from '@/components/ui/button'
+import { StepList } from '@/components/pageAction/StepList'
 
 import { getSearchUrl } from '@/features/command'
 import { isEmpty } from '@/lib/utils'
 import type { CommandInMessage } from '@/types'
 import { PageActionOption } from '@/types/schema'
-import { OPEN_MODE, SPACE_ENCODING, PAGE_ACTION_OPEN_MODE } from '@/const'
+import {
+  OPEN_MODE,
+  SPACE_ENCODING,
+  PAGE_ACTION_OPEN_MODE,
+  PAGE_ACTION_CONTROL,
+} from '@/const'
 import { useLocale } from '@/hooks/useLocale'
 
 import css from './CommandForm.module.css'
@@ -96,6 +102,8 @@ const DefaultValue = {
   },
 }
 
+const SEARCH_MODE = [OPEN_MODE.POPUP, OPEN_MODE.TAB, OPEN_MODE.WINDOW]
+
 const STORAGE_KEY = 'CommandShareFormData'
 
 let onChagneSearchUrlTO = 0
@@ -125,6 +133,14 @@ export function InputForm(props: InputProps) {
     name: 'openMode',
     defaultValue: OPEN_MODE.POPUP,
   })
+
+  const pageActionSteps = useWatch({
+    control: form.control,
+    name: 'pageActionOption.steps',
+    defaultValue: [],
+  }).filter(
+    (step) => !Object.values(PAGE_ACTION_CONTROL).includes(step.type as any),
+  )
 
   const { fields, append, remove } = useFieldArray({
     name: 'tags',
@@ -265,40 +281,88 @@ export function InputForm(props: InputProps) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="searchUrl"
-          render={({ field }) => (
-            <FormItem
-              className="flex items-center"
-              onChange={onChagneSearchUrl}
-            >
-              <div className="w-2/5">
-                <FormLabel>{t.searchUrl.label}</FormLabel>
+        {SEARCH_MODE.includes(openMode) && (
+          <FormField
+            control={form.control}
+            name="searchUrl"
+            render={({ field }) => (
+              <FormItem
+                className="flex items-center"
+                onChange={onChagneSearchUrl}
+              >
+                <div className="w-2/5">
+                  <FormLabel>{t.searchUrl.label}</FormLabel>
+                  <FormDescription className="leading-tight">
+                    {t.searchUrl.description}
+                  </FormDescription>
+                </div>
+                <div {...autofillProps(1, 'w-3/5 rounded-md relative')}>
+                  {!isEmpty(iconUrl) && (
+                    <Image
+                      className="absolute top-1.5 right-2 w-6 h-6"
+                      src={iconUrl}
+                      alt="Search url's favicon"
+                    />
+                  )}
+                  <FormControl>
+                    <Input
+                      className="pr-10"
+                      placeholder="Search URL"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessageLocale lang={lang} />
+                </div>
+              </FormItem>
+            )}
+          />
+        )}
+
+        {openMode === OPEN_MODE.PAGE_ACTION && (
+          <>
+            <FormField
+              control={form.control}
+              name="pageActionOption.startUrl"
+              render={({ field }) => (
+                <FormItem className="flex items-center">
+                  <div className="w-2/5">
+                    <FormLabel>{t.PageActionOption.startUrl.label}</FormLabel>
+                    <FormDescription className="leading-tight">
+                      {t.PageActionOption.startUrl.description}
+                    </FormDescription>
+                  </div>
+                  <div {...autofillProps(1, 'w-3/5 rounded-md relative')}>
+                    {!isEmpty(iconUrl) && (
+                      <Image
+                        className="absolute top-1.5 right-2 w-6 h-6"
+                        src={iconUrl}
+                        alt="Start url's favicon"
+                      />
+                    )}
+                    <FormControl>
+                      <Input
+                        className="pr-10"
+                        placeholder="Start URL"
+                        {...field}
+                        disabled
+                      />
+                    </FormControl>
+                    <FormMessageLocale lang={lang} />
+                  </div>
+                </FormItem>
+              )}
+            />
+            <div>
+              <div>
+                <FormLabel>{t.pageAction.label}</FormLabel>
                 <FormDescription className="leading-tight">
-                  {t.searchUrl.description}
+                  {t.pageAction.description}
                 </FormDescription>
               </div>
-              <div {...autofillProps(1, 'w-3/5 rounded-md relative')}>
-                {!isEmpty(iconUrl) && (
-                  <Image
-                    className="absolute top-1 right-2.5 w-7 h-7"
-                    src={iconUrl}
-                    alt="Search url's favicon"
-                  />
-                )}
-                <FormControl>
-                  <Input
-                    className="pr-10"
-                    placeholder="Search URL"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessageLocale lang={lang} />
-              </div>
-            </FormItem>
-          )}
-        />
+              <StepList className="py-3" steps={pageActionSteps} />
+            </div>
+          </>
+        )}
 
         <FormField
           control={form.control}
@@ -429,25 +493,24 @@ export function InputForm(props: InputProps) {
                       {t.openMode.description}
                     </FormDescription>
                   </div>
-
                   <div {...autofillProps(3, 'w-3/5 rounded-md relative')}>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={openMode === OPEN_MODE.PAGE_ACTION}
+                    >
                       <FormControl>
                         <SelectTrigger className="">
-                          <SelectValue placeholder="Select a openMode" />
+                          <SelectValue placeholder="Select a OpenMode" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value={OPEN_MODE.POPUP}>
-                            {t.openMode.options.popup}
-                          </SelectItem>
-                          <SelectItem value={OPEN_MODE.TAB}>
-                            {t.openMode.options.tab}
-                          </SelectItem>
-                          <SelectItem value={OPEN_MODE.WINDOW}>
-                            {t.openMode.options.window}
-                          </SelectItem>
+                          {Object.values(OPEN_MODE).map((mode) => (
+                            <SelectItem key={mode} value={mode}>
+                              {t.openMode.options[mode]}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -457,79 +520,88 @@ export function InputForm(props: InputProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="openModeSecondary"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <div className="w-2/5">
-                    <FormLabel>{t.openModeSecondary.label}</FormLabel>
-                    <FormDescription className="leading-tight">
-                      {t.openModeSecondary.description}
-                    </FormDescription>
-                  </div>
-                  <div {...autofillProps(4, 'w-3/5 rounded-md relative')}>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="">
-                          <SelectValue placeholder="Select a openMode" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value={OPEN_MODE.POPUP}>
-                            {t.openMode.options.popup}
-                          </SelectItem>
-                          <SelectItem value={OPEN_MODE.TAB}>
-                            {t.openMode.options.tab}
-                          </SelectItem>
-                          <SelectItem value={OPEN_MODE.WINDOW}>
-                            {t.openMode.options.window}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <FormMessageLocale lang={lang} />
-                  </div>
-                </FormItem>
-              )}
-            />
+            {SEARCH_MODE.includes(openMode) && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="openModeSecondary"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center">
+                      <div className="w-2/5">
+                        <FormLabel>{t.openModeSecondary.label}</FormLabel>
+                        <FormDescription className="leading-tight">
+                          {t.openModeSecondary.description}
+                        </FormDescription>
+                      </div>
+                      <div {...autofillProps(4, 'w-3/5 rounded-md relative')}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Select a openMode" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value={OPEN_MODE.POPUP}>
+                                {t.openMode.options.popup}
+                              </SelectItem>
+                              <SelectItem value={OPEN_MODE.TAB}>
+                                {t.openMode.options.tab}
+                              </SelectItem>
+                              <SelectItem value={OPEN_MODE.WINDOW}>
+                                {t.openMode.options.window}
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <FormMessageLocale lang={lang} />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="spaceEncoding"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center">
+                      <div className="w-2/5">
+                        <FormLabel>{t.spaceEncoding.label}</FormLabel>
+                        <FormDescription className="leading-tight">
+                          {t.spaceEncoding.description}
+                        </FormDescription>
+                      </div>
 
-            <FormField
-              control={form.control}
-              name="spaceEncoding"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <div className="w-2/5">
-                    <FormLabel>{t.spaceEncoding.label}</FormLabel>
-                    <FormDescription className="leading-tight">
-                      {t.spaceEncoding.description}
-                    </FormDescription>
-                  </div>
-
-                  <div {...autofillProps(5, 'w-3/5 rounded-md relative')}>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="">
-                          <SelectValue placeholder="Select a space encoding" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem value={SPACE_ENCODING.PLUS}>
-                            {t.spaceEncoding.options.plus}
-                          </SelectItem>
-                          <SelectItem value={SPACE_ENCODING.PERCENT}>
-                            {t.spaceEncoding.options.percent}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <FormMessageLocale lang={lang} />
-                  </div>
-                </FormItem>
-              )}
-            />
+                      <div {...autofillProps(5, 'w-3/5 rounded-md relative')}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Select a space encoding" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value={SPACE_ENCODING.PLUS}>
+                                {t.spaceEncoding.options.plus}
+                              </SelectItem>
+                              <SelectItem value={SPACE_ENCODING.PERCENT}>
+                                {t.spaceEncoding.options.percent}
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <FormMessageLocale lang={lang} />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
           </CollapsibleContent>
         </Collapsible>
         <div className="pt-3 text-center">

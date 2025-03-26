@@ -3,6 +3,8 @@ import { twMerge } from 'tailwind-merge'
 import { v5 as uuidv5 } from 'uuid'
 import { createHash } from 'crypto'
 import { parse } from 'tldts'
+import { SearchCommand, PageActionCommand } from '@/types'
+import { OPEN_MODE } from '@/const'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -26,6 +28,22 @@ export function generateUUIDFromObject(obj: object): string {
  */
 export function isEmpty(str: string | null | undefined): boolean {
   return !str?.length
+}
+
+/**
+ * Check if the command is a search command.
+ */
+export function isSearchCommand(cmd: unknown): cmd is SearchCommand {
+  const modes = [OPEN_MODE.POPUP, OPEN_MODE.TAB, OPEN_MODE.WINDOW]
+  return modes.includes((cmd as SearchCommand).openMode)
+}
+
+/**
+ * Check if the command is a page action command.
+ */
+export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
+  const modes = [OPEN_MODE.PAGE_ACTION]
+  return modes.includes((cmd as SearchCommand).openMode)
 }
 
 /**
@@ -54,4 +72,37 @@ export function sortUrlsByDomain<V>(
     // e.g. 'www.example.com' and 'sub.example.com' are different domains.
     return (parsedA.subdomain || '').localeCompare(parsedB.subdomain || '')
   })
+}
+
+/**
+ * onHover function.
+ */
+export const onHover = (
+  func: (val: any) => void,
+  enterVal: any,
+  leaveVal?: any,
+) => {
+  if (typeof enterVal === 'string' && leaveVal === undefined) {
+    leaveVal = ''
+  } else if (typeof enterVal === 'boolean' && leaveVal === undefined) {
+    leaveVal = !enterVal
+  }
+  return {
+    onMouseEnter: () => func(enterVal),
+    onMouseLeave: () => func(leaveVal),
+  }
+}
+
+/**
+ * Capitalize the first letter of each word in a string.
+ *
+ * @param {string} phrase The string to capitalize.
+ * @returns {string} The capitalized string.
+ */
+export function capitalize(phrase: string): string {
+  if (typeof phrase !== 'string' || !phrase) return phrase
+  return phrase
+    .split(' ')
+    .map((s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+    .join(' ')
 }

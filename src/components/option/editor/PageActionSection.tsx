@@ -2,19 +2,14 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
 import { Disc3 } from 'lucide-react'
-import {
-  OPEN_MODE,
-  PAGE_ACTION_OPEN_MODE,
-  PAGE_ACTION_EVENT,
-  PAGE_ACTION_CONTROL,
-} from '@/const'
+import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, PAGE_ACTION_CONTROL } from '@/const'
 import { FormLabel, FormDescription } from '@/components/ui/form'
 import type { PageAction } from '@/services/pageAction'
-import { SelectorType } from '@/services/pageAction'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { cn, e2a, isEmpty, capitalize } from '@/lib/utils'
+import { PageActionOption, PageActionStep } from '@/types/schema'
 
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
@@ -22,73 +17,6 @@ import { StepList } from '@/components/pageAction/StepList'
 import { InputEditor } from '@/components/pageAction/InputEditor'
 import { RemoveDialog } from '@/components/option/RemoveDialog'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
-
-const PageActionControlSchema = z.object({
-  type: z.nativeEnum(PAGE_ACTION_CONTROL),
-  label: z.string(),
-  url: z.string(),
-})
-
-const PageActionClickSchema = z.object({
-  type: z.enum([
-    PAGE_ACTION_EVENT.click,
-    PAGE_ACTION_EVENT.doubleClick,
-    PAGE_ACTION_EVENT.tripleClick,
-  ]),
-  label: z.string(),
-  selector: z.string(),
-  selectorType: z.nativeEnum(SelectorType),
-})
-
-const PageActionInputSchema = z.object({
-  type: z.literal(PAGE_ACTION_EVENT.input),
-  label: z.string(),
-  selector: z.string(),
-  selectorType: z.nativeEnum(SelectorType),
-  value: z.string(),
-})
-
-const PageActionKeyboardSchema = z.object({
-  type: z.literal(PAGE_ACTION_EVENT.keyboard),
-  label: z.string(),
-  key: z.string(),
-  code: z.string(),
-  keyCode: z.number(),
-  shiftKey: z.boolean(),
-  ctrlKey: z.boolean(),
-  altKey: z.boolean(),
-  metaKey: z.boolean(),
-  targetSelector: z.string(),
-  selectorType: z.nativeEnum(SelectorType),
-})
-
-const PageActionScrollSchema = z.object({
-  type: z.literal(PAGE_ACTION_EVENT.scroll),
-  label: z.string(),
-  x: z.number(),
-  y: z.number(),
-})
-
-const PageActionParameterSchema = z.discriminatedUnion('type', [
-  PageActionControlSchema,
-  PageActionClickSchema,
-  PageActionInputSchema,
-  PageActionKeyboardSchema,
-  PageActionScrollSchema,
-])
-
-export const PageActionStepSchema = z.object({
-  id: z.string(),
-  type: z.nativeEnum(PAGE_ACTION_EVENT).or(z.nativeEnum(PAGE_ACTION_CONTROL)),
-  param: PageActionParameterSchema,
-})
-type PageActionStep = z.infer<typeof PageActionStepSchema>
-
-const PageActionOption = z.object({
-  startUrl: z.string(),
-  openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
-  steps: z.array(PageActionStepSchema),
-})
 
 export const pageActionSchema = z.object({
   openMode: z.enum([OPEN_MODE.PAGE_ACTION]),

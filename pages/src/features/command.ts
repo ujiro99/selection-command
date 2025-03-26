@@ -1,7 +1,7 @@
 import Commands from '@/data/commands.json'
 import Analytics from '@/data/analytics.json'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import { Command, SelectionCommand } from '@/types'
+import { Command, SearchCommand } from '@/types'
 import { generateUUIDFromObject } from '@/lib/utils'
 
 export function cmd2text(cmd: Command): string {
@@ -17,7 +17,7 @@ export function cmd2text(cmd: Command): string {
 }
 
 type CommandContent = Omit<
-  SelectionCommand,
+  SearchCommand,
   'id' | 'tags' | 'addedAt' | 'description'
 >
 
