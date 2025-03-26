@@ -67,13 +67,23 @@ export const PageActionSection = ({
   const removeOpen = !isEmpty(removeId)
 
   const editAction = (value: string) => {
-    Ipc.send(BgCommand.updatePageAction, { id: editId, value })
+    if (!editStep) return
+    pageActionArray.update(
+      steps.findIndex((a) => a.id === editId),
+      {
+        ...editStep,
+        param: {
+          ...editStep.param,
+          value,
+        },
+      },
+    )
     setEditId(null)
   }
 
   const removeAction = (id: string | null) => {
     if (id == null) return
-    Ipc.send(BgCommand.removePageAction, { id })
+    pageActionArray.remove(steps.findIndex((a) => a.id === id))
   }
 
   return (
