@@ -5,7 +5,6 @@ import { Disc3 } from 'lucide-react'
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, PAGE_ACTION_CONTROL } from '@/const'
 import { FormLabel, FormDescription } from '@/components/ui/form'
 import type { PageAction } from '@/services/pageAction'
-import { Ipc, BgCommand } from '@/services/ipc'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { cn, e2a, isEmpty, capitalize } from '@/lib/utils'

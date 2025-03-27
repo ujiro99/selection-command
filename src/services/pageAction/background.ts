@@ -17,7 +17,7 @@ import {
   PAGE_ACTION_OPEN_MODE,
   EXEC_STATE,
 } from '@/const'
-import { generateRandomID } from '@/lib/utils'
+import { generateRandomID, isPageActionCommand } from '@/lib/utils'
 import type {
   PageActionRecordingData,
   PageActionStep,
@@ -251,7 +251,13 @@ export const openAndRun = (
 
     const commands = await Storage.getCommands()
     const cmd = commands.find((c) => c.id === param.commandId)
-    if (cmd == null || cmd?.pageActionOption == null) {
+    if (cmd == null || !isPageActionCommand(cmd)) {
+      console.error('PageActionCommand is not valid')
+      response(false)
+      return
+    }
+
+    if (cmd.pageActionOption == null) {
       console.error('PageActionOption not found')
       response(false)
       return true

@@ -1,11 +1,16 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import { getScreenSize } from '@/services/dom'
-import { isValidString } from '@/lib/utils'
+import { isValidString, isPageActionCommand } from '@/lib/utils'
 import { POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
 
 export const PageAction = {
   async execute({ selectionText, command, position }: ExecProps) {
+    if (!isPageActionCommand(command)) {
+      console.error('command is not for PageAction.')
+      return
+    }
+
     if (!isValidString(command.pageActionOption?.startUrl)) {
       console.error('searchUrl is not valid.')
       return

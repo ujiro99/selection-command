@@ -44,11 +44,11 @@ export type SearchCommand = {
   spaceEncoding?: SPACE_ENCODING
 }
 
-type CopyCommand = SearchCommand & {
+export type CopyCommand = SearchCommand & {
   copyOption: CopyOption
 }
 
-type ApiCommand = SearchCommand & {
+export type ApiCommand = SearchCommand & {
   fetchOptions: string
   variables: Array<CommandVariable>
 }
