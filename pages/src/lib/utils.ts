@@ -43,7 +43,7 @@ export function isSearchCommand(cmd: unknown): cmd is SearchCommand {
  */
 export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
   const modes = [OPEN_MODE.PAGE_ACTION]
-  return modes.includes((cmd as SearchCommand).openMode)
+  return modes.includes((cmd as PageActionCommand).openMode)
 }
 
 /**

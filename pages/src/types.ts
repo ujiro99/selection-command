@@ -23,8 +23,15 @@ export type SearchCommand = {
   addedAt: string
 }
 
-export type PageActionCommand = SearchCommand & {
+export type PageActionCommand = {
+  id: string
+  title: string
+  iconUrl: string
+  openMode: OPEN_MODE
   pageActionOption: PageActionOption
+  description: string
+  tags: Tag[]
+  addedAt: string
 }
 
 /*
@@ -102,7 +109,7 @@ type PageActionOption = {
   steps: Array<PageActionStep>
 }
 
-export type CommandInJson = Omit<SearchCommand, 'tags'> & {
+export type CommandInJson = Omit<SelectionCommand, 'tags'> & {
   tags: string[]
 }
 

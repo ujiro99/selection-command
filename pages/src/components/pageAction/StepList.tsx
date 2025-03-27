@@ -2,6 +2,7 @@ import { cn } from '@/lib/utils'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { CircleDashed } from 'lucide-react'
 import type { PageActionStep } from '@/types'
+import { PAGE_ACTION_CONTROL } from '@/const'
 
 import { PAGE_ACTION_MAX } from '@/const'
 
@@ -11,7 +12,10 @@ type Props = {
 }
 
 export function StepList(props: Props): JSX.Element {
-  const { steps, className } = props
+  const { steps: _steps, className } = props
+  const steps = _steps.filter(
+    (step) => !Object.values(PAGE_ACTION_CONTROL).includes(step.type as any),
+  )
   const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
 
   return (
@@ -23,7 +27,7 @@ export function StepList(props: Props): JSX.Element {
           className={cn(
             'relative',
             i > 0 &&
-              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-600/80 after:rounded",
+              "after:content-[''] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-600/80 after:rounded",
           )}
         />
       ))}
@@ -33,7 +37,7 @@ export function StepList(props: Props): JSX.Element {
           className={cn(
             'h-[24px] flex-1 flex items-center justify-center relative',
             (steps.length > 0 || i > 0) &&
-              "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 after:rounded",
+              "after:content-[''] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 after:rounded",
           )}
         >
           <div className="bg-gray-50 rounded-full h-fit w-fit">

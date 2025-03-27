@@ -8,10 +8,12 @@ import { InputForm, FormValues } from '@/components/InputForm'
 import { Button } from '@/components/ui/button'
 import { DialogDescription } from '@/components/ui/dialog'
 import { Image } from '@/components/Image'
+import { StepList } from '@/components/pageAction/StepList'
 
 import { useLocale } from '@/hooks/useLocale'
 import { cmd2uuid } from '@/features/command'
 import type { CommandInJson, Tag as TagType } from '@/types'
+import { isSearchCommand, isPageActionCommand } from '@/lib/utils'
 
 import css from './CommandForm.module.css'
 
@@ -152,6 +154,11 @@ function ConfirmForm(props: ConfirmProps) {
   const { dict } = useLocale()
   const t = dict.inputForm
   const t2 = dict.confirmForm
+  const cmd = props.data
+
+  const isSearch = isSearchCommand(cmd)
+  const isPageAction = isPageActionCommand(cmd)
+
   return (
     <div id="ConfirmForm" className="overflow-auto">
       <DialogDescription className="text-stone-600">
@@ -160,26 +167,44 @@ function ConfirmForm(props: ConfirmProps) {
 
       <div className="mt-3 px-4 py-3 text-stone-800 bg-stone-200 rounded-xl">
         <Item label={t.title.label} value={props.data.title} />
-        <Item label={t.searchUrl.label} value={props.data.searchUrl} />
+        {isSearch && <Item label={t.searchUrl.label} value={cmd.searchUrl} />}
+        {isPageAction && (
+          <Item
+            label={t.searchUrl.label}
+            value={cmd.pageActionOption.startUrl}
+          />
+        )}
         <Item
           label={t.description.label}
-          value={props.data.description}
+          value={cmd.description}
           valueClass="whitespace-break-spaces break-words"
         />
-        <IconItem label={t.iconUrl.label} value={props.data.iconUrl} />
-        <Item label={t.tags.label} value={tagNames(props.data.tags)} />
+        <IconItem label={t.iconUrl.label} value={cmd.iconUrl} />
+        <Item label={t.tags.label} value={tagNames(cmd.tags)} />
         <Item
           label={t.openMode.label}
-          value={t.openMode.options[props.data.openMode]}
+          value={t.openMode.options[cmd.openMode]}
         />
-        <Item
-          label={t.openModeSecondary.label}
-          value={t.openMode.options[props.data.openModeSecondary]}
-        />
-        <Item
-          label={t.spaceEncoding.label}
-          value={t.spaceEncoding.options[props.data.spaceEncoding]}
-        />
+        {isSearch && (
+          <>
+            <Item
+              label={t.openModeSecondary.label}
+              value={t.openMode.options[cmd.openModeSecondary]}
+            />
+            <Item
+              label={t.spaceEncoding.label}
+              value={t.spaceEncoding.options[cmd.spaceEncoding]}
+            />
+          </>
+        )}
+        {isPageAction && (
+          <div>
+            <label className="w-2/6 text-sm font-medium">
+              {t.pageAction.label}
+            </label>
+            <StepList className="py-3" steps={cmd.pageActionOption.steps} />
+          </div>
+        )}
       </div>
       <p className="mt-3 text-md text-center whitespace-break-spaces">
         {t2.caution}

@@ -1,35 +1,62 @@
 import Commands from '@/data/commands.json'
 import Analytics from '@/data/analytics.json'
 import { OPEN_MODE, SPACE_ENCODING } from '@/const'
-import { Command, SearchCommand } from '@/types'
-import { generateUUIDFromObject } from '@/lib/utils'
+import { Command, SelectionCommand } from '@/types'
+import {
+  generateUUIDFromObject,
+  isSearchCommand,
+  isPageActionCommand,
+} from '@/lib/utils'
 
 export function cmd2text(cmd: Command): string {
-  return JSON.stringify({
-    id: cmd.id,
-    title: cmd.title,
-    searchUrl: cmd.searchUrl,
-    iconUrl: cmd.iconUrl,
-    openMode: cmd.openMode,
-    openModeSecondary: cmd.openModeSecondary,
-    spaceEncoding: cmd.spaceEncoding,
-  })
+  if (isSearchCommand(cmd)) {
+    return JSON.stringify({
+      id: cmd.id,
+      title: cmd.title,
+      searchUrl: cmd.searchUrl,
+      iconUrl: cmd.iconUrl,
+      openMode: cmd.openMode,
+      openModeSecondary: cmd.openModeSecondary,
+      spaceEncoding: cmd.spaceEncoding,
+    })
+  } else if (isPageActionCommand(cmd)) {
+    return JSON.stringify({
+      id: cmd.id,
+      title: cmd.title,
+      iconUrl: cmd.iconUrl,
+      openMode: cmd.openMode,
+      pageActionOption: cmd.pageActionOption,
+    })
+  } else {
+    throw new Error('Invalid command')
+  }
 }
 
 type CommandContent = Omit<
-  SearchCommand,
+  SelectionCommand,
   'id' | 'tags' | 'addedAt' | 'description'
 >
 
 export function cmd2uuid(cmd: CommandContent): string {
-  return generateUUIDFromObject({
-    title: cmd.title,
-    searchUrl: cmd.searchUrl,
-    iconUrl: cmd.iconUrl,
-    openMode: cmd.openMode,
-    openModeSecondary: cmd.openModeSecondary,
-    spaceEncoding: cmd.spaceEncoding,
-  })
+  if (isSearchCommand(cmd)) {
+    return generateUUIDFromObject({
+      title: cmd.title,
+      searchUrl: cmd.searchUrl,
+      iconUrl: cmd.iconUrl,
+      openMode: cmd.openMode,
+      openModeSecondary: cmd.openModeSecondary,
+      spaceEncoding: cmd.spaceEncoding,
+    })
+  } else if (isPageActionCommand(cmd)) {
+    return generateUUIDFromObject({
+      title: cmd.title,
+      iconUrl: cmd.iconUrl,
+      openMode: cmd.openMode,
+      pageActionOption: cmd.pageActionOption,
+    })
+  } else {
+    throw new Error('Invalid command')
+  }
 }
 
 const emptyData = {

@@ -53,7 +53,7 @@ import { useLocale } from '@/hooks/useLocale'
 
 import css from './CommandForm.module.css'
 
-const formSchema = z.object({
+const searchCommandSchema = z.object({
   title: z.string().min(3, { message: 'min3' }).max(100, { message: 'max100' }),
   searchUrl: z
     .string()
@@ -62,7 +62,7 @@ const formSchema = z.object({
       message: 'unique',
     }),
   iconUrl: z.string().url({ message: 'url' }),
-  openMode: z.nativeEnum(OPEN_MODE),
+  openMode: z.enum([OPEN_MODE.POPUP, OPEN_MODE.TAB, OPEN_MODE.WINDOW]),
   openModeSecondary: z.nativeEnum(OPEN_MODE),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
   description: z.string().max(200, {
@@ -80,8 +80,34 @@ const formSchema = z.object({
     .max(5, {
       message: 'max5',
     }),
+})
+
+const pageActionSchema = z.object({
+  title: z.string().min(3, { message: 'min3' }).max(100, { message: 'max100' }),
+  iconUrl: z.string().url({ message: 'url' }),
+  openMode: z.literal(OPEN_MODE.PAGE_ACTION),
+  description: z.string().max(200, {
+    message: 'max200',
+  }),
+  tags: z
+    .array(
+      z.object({
+        tagId: z.string(),
+        name: z.string().max(20, {
+          message: 'max20',
+        }),
+      }),
+    )
+    .max(5, {
+      message: 'max5',
+    }),
   pageActionOption: PageActionOption.optional(),
 })
+
+const formSchema = z.discriminatedUnion('openMode', [
+  searchCommandSchema,
+  pageActionSchema,
+])
 
 export type FormValues = z.infer<typeof formSchema>
 type FormKeys = keyof FormValues
@@ -138,9 +164,7 @@ export function InputForm(props: InputProps) {
     control: form.control,
     name: 'pageActionOption.steps',
     defaultValue: [],
-  }).filter(
-    (step) => !Object.values(PAGE_ACTION_CONTROL).includes(step.type as any),
-  )
+  })
 
   const { fields, append, remove } = useFieldArray({
     name: 'tags',
@@ -258,7 +282,7 @@ export function InputForm(props: InputProps) {
       <form
         id="InputForm"
         className="space-y-3 mt-4"
-        onSubmit={form.handleSubmit(handleSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit, (err) => console.error(err))}
       >
         <FormField
           control={form.control}
