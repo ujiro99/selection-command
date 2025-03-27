@@ -161,6 +161,8 @@ const ListItem = (props: ItemProps): JSX.Element => {
   const [imgElm, setImgElm] = useState<HTMLImageElement | null>(null)
   const [liElm, setLiElm] = useState<HTMLLIElement | null>(null)
 
+  const isPageAction = isPageActionCommand(c)
+
   useEffect(() => {
     if (imgElm == null) return
     imgElm.onload = () => {
@@ -206,7 +208,7 @@ const ListItem = (props: ItemProps): JSX.Element => {
             {c.title}
           </p>
           <p className="text-xs text-stone-600 truncate leading-4 mt-0.5">
-            {c.searchUrl}
+            {isPageAction ? c.pageActionOption.startUrl : c.searchUrl}
           </p>
         </div>
       </button>

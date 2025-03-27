@@ -447,13 +447,16 @@
     "message": "編集"
   },
   "Option_remove_title": {
-    "message": "削除してよいですか？"
+    "message": "削除しますか？"
   },
   "Option_remove_tooltip": {
     "message": "削除"
   },
   "Option_remove_ok": {
     "message": "削除する"
+  },
+  "Option_remove_description": {
+    "message": "取り消しできません。よいですか？"
   },
   "Option_zod_number": {
     "message": "数値を入力してください。"

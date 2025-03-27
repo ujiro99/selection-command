@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 
 type RemoveDialogProps = {
   open: boolean
+  description?: string
   onOpenChange: (open: boolean) => void
   onRemove: () => void
   children: React.ReactNode
@@ -21,19 +22,19 @@ type RemoveDialogProps = {
 
 export const RemoveDialog = ({
   open,
+  description = '',
   onOpenChange,
   onRemove,
   children,
 }: RemoveDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="space-y-2">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{t('Option_remove_title')}</DialogTitle>
         </DialogHeader>
-        <DialogDescription className="flex items-center justify-center">
-          {children}
-        </DialogDescription>
+        <DialogDescription>{description}</DialogDescription>
+        <div className="py-1 flex items-center justify-center">{children}</div>
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary" size="lg">

@@ -64,7 +64,7 @@ export function PageActionItem(props: Props): JSX.Element {
         <PopoverAnchor virtualRef={anchorRef} />
         {shouldRender && (
           <PopoverContent
-            className={'bg-white p-3 max-w-80 text-xs text-gray-600'}
+            className={'bg-white p-3 min-w-32 max-w-80 text-xs text-gray-600'}
             side={'bottom'}
             arrowPadding={-5}
           >
@@ -80,7 +80,7 @@ export function PageActionItem(props: Props): JSX.Element {
               <p className="truncate text-sm mt-1">{step.param.label}</p>
             )}
             {isInput && inputParam.value != inputParam.label && (
-              <pre className="text-xs mt-1 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
+              <pre className="text-xs mt-1 p-2 min-w-40 bg-gray-100 font-mono rounded whitespace-pre-line">
                 {inputParam.value}
               </pre>
             )}

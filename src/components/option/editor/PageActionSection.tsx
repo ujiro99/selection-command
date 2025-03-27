@@ -64,6 +64,7 @@ export const PageActionSection = ({
   const [removeId, setRemoveId] = useState<string | null>(null)
   const removeStep = steps.find((a) => a.id === removeId)
   const removeOpen = !isEmpty(removeId)
+  const hasLabel = !isEmpty(removeStep?.param.label)
 
   const editAction = (value: string) => {
     if (!editStep) return
@@ -166,9 +167,11 @@ export const PageActionSection = ({
               />
               {capitalize(removeStep.type)}
             </p>
-            <p className="mt-2 px-2 py-1.5 rounded text-balance whitespace-pre-line text-sm max-h-80 max-w-96 overflow-x-hidden overflow-y-auto bg-gray-50">
-              <span>{removeStep.param.label}</span>
-            </p>
+            {hasLabel && (
+              <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100">
+                <span>{removeStep.param.label}</span>
+              </p>
+            )}
           </div>
         )}
       </RemoveDialog>

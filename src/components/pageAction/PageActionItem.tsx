@@ -11,9 +11,16 @@ import { EditButton } from '@/components/option/EditButton'
 import { Tooltip } from '@/components/Tooltip'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
 
-import { cn, capitalize, onHover } from '@/lib/utils'
+import { cn, capitalize, onHover, isEmpty } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import type { PageActionStep } from '@/types'
+import type { PageAction } from '@/services/pageAction'
+
+const isInputParam = (
+  param: PageAction.Parameter,
+): param is PageAction.Input => {
+  return (param as PageAction.Input).value != null
+}
 
 type Props = {
   step: PageActionStep
@@ -30,8 +37,12 @@ export function PageActionItem(props: Props): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
   const anchorRef = useRef<HTMLLIElement>(null)
-  const isInput = step.type === 'input'
   const isFailed = failedId === step.id
+  const hasLabel = !isEmpty(step.param.label)
+
+  // For Input step
+  const param = step.param
+  const isInput = isInputParam(param)
 
   // For HoverArea
   const contentRef = useRef<HTMLDivElement | null>(null)
@@ -98,12 +109,14 @@ export function PageActionItem(props: Props): JSX.Element {
         <PopoverAnchor virtualRef={anchorRef} />
         {shouldRender && (
           <PopoverContent
-            className={'bg-white px-3 py-2 text-xs text-gray-600 shadow-md'}
+            className={
+              'bg-white px-3 py-2 min-w-32 max-w-80 text-xs text-gray-600'
+            }
             side={'bottom'}
             arrowPadding={-5}
             ref={contentRef}
           >
-            <p className="text-sm font-medium font-mono flex items-center gap-1.5">
+            <p className="text-sm font-semibold font-mono flex items-center gap-1.5">
               <TypeIcon
                 type={step.type}
                 className="stroke-gray-700"
@@ -111,13 +124,18 @@ export function PageActionItem(props: Props): JSX.Element {
               />
               {capitalize(step.type)}
             </p>
-            <p className="truncate w-32 text-xs mt-2">{`${step.param.label}`}</p>
             {isFailed && (
-              <p className="absolute bottom-[-40px] text-xs leading-3 text-red-600">
-                {failedMessage}
-              </p>
+              <p className="text-sm text-red-600">{failedMessage}</p>
             )}
-            <div className="flex justify-end gap-0.5 mt-0.5">
+            {hasLabel && (
+              <p className="truncate text-sm mt-2">{step.param.label}</p>
+            )}
+            {isInput && param.value != param.label && (
+              <pre className="text-xs mt-1 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
+                {param.value}
+              </pre>
+            )}
+            <div className="flex justify-end gap-0.5 mt-1.5">
               {isInput && (
                 <EditButton
                   onClick={() => props.onClickEdit(step.id)}

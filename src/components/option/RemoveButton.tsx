@@ -42,7 +42,12 @@ export const RemoveButton = ({
           size={size}
         />
       </button>
-      <RemoveDialog open={open} onOpenChange={setOpen} onRemove={onRemove}>
+      <RemoveDialog
+        description={t('Option_remove_description')}
+        open={open}
+        onOpenChange={setOpen}
+        onRemove={onRemove}
+      >
         <>
           {(iconUrl != null || iconSvg != null) && (
             <MenuImage

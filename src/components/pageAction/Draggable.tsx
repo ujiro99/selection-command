@@ -9,6 +9,7 @@ type Props = {
   id: string
   children: React.ReactNode
   position?: Point
+  className?: string
 }
 
 export function Draggable(props: Props) {
@@ -44,7 +45,7 @@ export function Draggable(props: Props) {
     <div
       ref={setNodeRef}
       style={style}
-      className={cn('relative', isDragging && 'shadow-xl')}
+      className={cn('relative', isDragging && 'shadow-xl', props.className)}
     >
       {props.children}
       <button
