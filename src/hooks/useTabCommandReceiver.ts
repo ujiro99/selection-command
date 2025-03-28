@@ -6,22 +6,24 @@ export function useTabCommandReceiver() {
   const [tabId, setTabId] = useState<number | null>(null)
 
   useEffect(() => {
-    Ipc.send(TabCommand.getTabId).then((id) => {
-      // console.log('getTabId', id)
-      setTabId(id)
-    })
+    Ipc.getTabId().then(setTabId)
   }, [])
 
   useEffect(() => {
-    ;(async () => {
+    const start = async () => {
       if (tabId == null) return
-      const msgs = await Ipc.recvQueue(tabId)
-      msgs.forEach((m) => execute(m))
-      Ipc.addQueueListener(tabId, execute)
+      let msg
+      do {
+        msg = await Ipc.recvQueue(tabId, TabCommand.clickElement)
+        msg && (await execute(msg))
+      } while (msg)
+
+      Ipc.addQueueChangedListener(tabId, TabCommand.clickElement, execute)
       return () => {
-        Ipc.removeQueueListener(tabId)
+        Ipc.removeQueueChangedLisner(tabId, TabCommand.clickElement)
       }
-    })()
+    }
+    start()
   }, [tabId])
 
   const clickElement = (param: ClickElementProps) => {
@@ -32,8 +34,9 @@ export function useTabCommandReceiver() {
     return false
   }
 
-  const execute = (message: Message) => {
-    console.debug('execute', message.command)
+  const execute = async (message: Message | null) => {
+    if (!message) return
+    console.debug(message.command, message.param)
     switch (message.command) {
       case TabCommand.clickElement:
         clickElement(message.param as ClickElementProps)

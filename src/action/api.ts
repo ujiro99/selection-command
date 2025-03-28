@@ -2,6 +2,12 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { sleep, toUrl, isValidString } from '@/lib/utils'
 import { ExecState } from './index'
 import type { ExecProps } from './index'
+import type { ApiCommand } from '@/types'
+import { OPEN_MODE } from '@/const'
+
+const isApiCommand = (command: any): command is ApiCommand => {
+  return command.OpenMode === OPEN_MODE.API
+}
 
 export const Api = {
   async execute({ command, selectionText, changeState }: ExecProps) {
@@ -9,6 +15,11 @@ export const Api = {
 
     if (!isValidString(command.searchUrl)) {
       console.error('searchUrl is not valid.')
+      return
+    }
+
+    if (!isApiCommand(command)) {
+      console.error('command is not for Api.')
       return
     }
 

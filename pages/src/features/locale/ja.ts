@@ -62,6 +62,7 @@ const lang = {
         [OPEN_MODE.POPUP]: 'Popup',
         [OPEN_MODE.WINDOW]: 'Window',
         [OPEN_MODE.TAB]: 'Tab',
+        [OPEN_MODE.PAGE_ACTION]: 'PageAction',
       },
     },
     openModeSecondary: {
@@ -79,6 +80,16 @@ const lang = {
     formDescription: 'コマンドの共有を申請します。',
     formOptions: 'オプション',
     confirm: '入力内容を確認する',
+    pageAction: {
+      label: 'ページアクション',
+      description: '実行される操作',
+    },
+    PageActionOption: {
+      startUrl: {
+        label: '開始ページURL',
+        description: 'ページアクションを開始するページのURLです。',
+      },
+    },
   },
   confirmForm: {
     formDescription: '以下の内容で間違いありませんか？',
