@@ -40,15 +40,10 @@ import { Button } from '@/components/ui/button'
 import { StepList } from '@/components/pageAction/StepList'
 
 import { getSearchUrl } from '@/features/command'
-import { isEmpty } from '@/lib/utils'
+import { isEmpty, isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import type { CommandInMessage } from '@/types'
 import { PageActionOption } from '@/types/schema'
-import {
-  OPEN_MODE,
-  SPACE_ENCODING,
-  PAGE_ACTION_OPEN_MODE,
-  PAGE_ACTION_CONTROL,
-} from '@/const'
+import { OPEN_MODE, SPACE_ENCODING, PAGE_ACTION_OPEN_MODE } from '@/const'
 import { useLocale } from '@/hooks/useLocale'
 
 import css from './CommandForm.module.css'
@@ -101,7 +96,7 @@ const pageActionSchema = z.object({
     .max(5, {
       message: 'max5',
     }),
-  pageActionOption: PageActionOption.optional(),
+  pageActionOption: PageActionOption,
 })
 
 const formSchema = z.discriminatedUnion('openMode', [
@@ -111,6 +106,8 @@ const formSchema = z.discriminatedUnion('openMode', [
 
 export type FormValues = z.infer<typeof formSchema>
 type FormKeys = keyof FormValues
+
+export type PageActionOptionType = z.infer<typeof PageActionOption>
 
 const DefaultValue = {
   title: '',
@@ -196,19 +193,54 @@ export function InputForm(props: InputProps) {
     form.trigger('iconUrl')
   }
 
-  const handleSubmit = (_data: FormValues) => {
-    const data = {
-      title: DOMPurify.sanitize(_data.title),
-      searchUrl: DOMPurify.sanitize(_data.searchUrl),
-      description: DOMPurify.sanitize(_data.description),
-      iconUrl: DOMPurify.sanitize(_data.iconUrl),
-      openMode: _data.openMode,
-      openModeSecondary: _data.openModeSecondary,
-      spaceEncoding: _data.spaceEncoding,
-      tags: _data.tags,
-      pageActionOption: _data.pageActionOption,
+  const sanitizePageActionOption = (option: PageActionOptionType) => {
+    const steps = option.steps.map((step) => {
+      if ((step.param as any).value != null) {
+        debugger
+        return {
+          ...step,
+          label: DOMPurify.sanitize(step.param.label),
+          value: DOMPurify.sanitize((step.param as any).value),
+        }
+      }
+      return step
+    })
+    return {
+      ...option,
+      startUrl: DOMPurify.sanitize(option.startUrl),
+      steps,
     }
-    props.onFormSubmit(data)
+  }
+
+  const handleSubmit = (_data: FormValues) => {
+    const isSearch = isSearchCommand(_data)
+    const isPageAction = isPageActionCommand(_data)
+    const data = isSearch
+      ? {
+        title: DOMPurify.sanitize(_data.title),
+        searchUrl: DOMPurify.sanitize(_data.searchUrl),
+        description: DOMPurify.sanitize(_data.description),
+        iconUrl: DOMPurify.sanitize(_data.iconUrl),
+        openMode: _data.openMode,
+        openModeSecondary: _data.openModeSecondary,
+        spaceEncoding: _data.spaceEncoding,
+        tags: _data.tags,
+      }
+      : isPageAction
+        ? {
+          title: DOMPurify.sanitize(_data.title),
+          description: DOMPurify.sanitize(_data.description),
+          iconUrl: DOMPurify.sanitize(_data.iconUrl),
+          openMode: _data.openMode,
+          tags: _data.tags,
+          pageActionOption: sanitizePageActionOption(_data.pageActionOption),
+        }
+        : null
+    if (data != null) {
+      props.onFormSubmit(data as FormValues)
+    } else {
+      console.error('Invalid data')
+    }
   }
 
   const autofillProps = (index: number, cls: string) => {

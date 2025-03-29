@@ -13,25 +13,25 @@ export type SelectionCommand = SearchCommand | PageActionCommand
 export type SearchCommand = {
   id: string
   title: string
-  searchUrl: string
-  iconUrl: string
-  openMode: OPEN_MODE
-  openModeSecondary: OPEN_MODE
-  spaceEncoding: SPACE_ENCODING
   description: string
   tags: Tag[]
   addedAt: string
+  openMode: OPEN_MODE
+  searchUrl: string
+  iconUrl: string
+  openModeSecondary: OPEN_MODE
+  spaceEncoding: SPACE_ENCODING
 }
 
 export type PageActionCommand = {
   id: string
   title: string
-  iconUrl: string
-  openMode: OPEN_MODE
-  pageActionOption: PageActionOption
   description: string
   tags: Tag[]
   addedAt: string
+  openMode: OPEN_MODE
+  iconUrl: string
+  pageActionOption: PageActionOption
 }
 
 /*

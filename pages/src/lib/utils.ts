@@ -74,23 +74,45 @@ export function sortUrlsByDomain<V>(
   })
 }
 
+let hoverTo = 0
+
 /**
  * onHover function.
  */
 export const onHover = (
   func: (val: any) => void,
   enterVal: any,
-  leaveVal?: any,
+  opt?: {
+    leaveVal?: any
+    delay?: number
+  },
 ) => {
+  let leaveVal = opt?.leaveVal
   if (typeof enterVal === 'string' && leaveVal === undefined) {
     leaveVal = ''
   } else if (typeof enterVal === 'boolean' && leaveVal === undefined) {
     leaveVal = !enterVal
   }
-  return {
+
+  let callbacks = {
     onMouseEnter: () => func(enterVal),
     onMouseLeave: () => func(leaveVal),
   }
+
+  if (opt?.delay != null && opt?.delay > 0) {
+    callbacks = {
+      onMouseEnter: () => {
+        clearTimeout(hoverTo)
+        hoverTo = window.setTimeout(() => func(enterVal), opt?.delay)
+      },
+      onMouseLeave: () => {
+        clearTimeout(hoverTo)
+        func(leaveVal)
+      },
+    }
+  }
+
+  return callbacks
 }
 
 /**

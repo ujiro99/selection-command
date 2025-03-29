@@ -9,7 +9,7 @@ import {
 const PageActionControlSchema = z.object({
   type: z.nativeEnum(PAGE_ACTION_CONTROL),
   label: z.string(),
-  url: z.string(),
+  url: z.string().optional(),
 })
 
 const PageActionClickSchema = z.object({
