@@ -33,7 +33,6 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const [failedId, setFailedId] = useState<string>()
     const [failedMessage, setFailedMesage] = useState<string>()
     const [hover, setHover] = useState(false)
-    const steps = props.steps.filter((l) => !isControlType(l.param.type))
 
     const clearState = () => {
       setCurrentId('')
@@ -185,7 +184,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
         </div>
         <div className="timeline relative w-[418px] h-[24px]">
           <StepList
-            steps={steps}
+            steps={props.steps}
             currentId={currentId}
             failedId={failedId}
             failedMessage={failedMessage}

@@ -3,7 +3,8 @@ import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { CircleDashed } from 'lucide-react'
 import type { PageActionStep } from '@/types'
 
-import { PAGE_ACTION_MAX } from '@/const'
+import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from '@/const'
+import { e2a } from '@/lib/utils'
 
 const noop = () => {}
 
@@ -18,7 +19,10 @@ type Props = {
 }
 
 export function StepList(props: Props): JSX.Element {
-  const { steps, currentId, failedId, failedMessage } = props
+  const { steps: _steps, currentId, failedId, failedMessage } = props
+  const steps = _steps.filter(
+    (f) => !e2a(PAGE_ACTION_CONTROL).includes(f.param.type),
+  )
   const emptySteps = [...Array(PAGE_ACTION_MAX - 2 - steps.length)]
 
   const onChangeHover = props.onChangeHover ?? noop

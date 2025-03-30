@@ -119,11 +119,7 @@ export const PageActionSection = ({
         </div>
         <div className="w-4/6 relative">
           <StepList
-            steps={
-              pageActionArray.fields.filter(
-                (f: any) => !e2a(PAGE_ACTION_CONTROL).includes(f.type),
-              ) as any
-            }
+            steps={pageActionArray.fields as unknown as PageActionStep[]}
             onClickRemove={setRemoveId}
             onClickEdit={setEditId}
           />

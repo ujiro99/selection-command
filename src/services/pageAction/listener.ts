@@ -67,17 +67,20 @@ const getLabel = (e: Element): string => {
       ? e.name
       : !isEmpty(e.placeholder)
         ? e.placeholder
-        : e.type
+        : !isEmpty(e.ariaLabel)
+          ? e.ariaLabel || ''
+          : e.type
   } else if (isSvgElement(e)) {
     return getLabel(e.parentNode as Element)
   } else if (e instanceof HTMLParagraphElement) {
     return (
       e.dataset.placeholder ||
       e.parentElement?.dataset.placeholder ||
+      e.ariaLabel ||
       e.innerText
     )
   } else if (e instanceof HTMLElement) {
-    return e.innerText
+    return !isEmpty(e.ariaLabel) ? e.ariaLabel || '' : e.innerText
   } else {
     return e.nodeName
   }
@@ -127,10 +130,10 @@ export const PageActionListener = (() => {
         return func.tripleClick(xpath, label)
       }
       Ipc.send(BgCommand.addPageAction, {
-        type: 'click',
         eventType: e.type,
         timestamp: getTimeStamp(),
         param: {
+          type: PAGE_ACTION_EVENT.click,
           label,
           selector: xpath,
           selectorType: SelectorType.xpath,
@@ -139,9 +142,9 @@ export const PageActionListener = (() => {
     },
     doubleClick(xpath: string, label: string) {
       Ipc.send(BgCommand.addPageAction, {
-        type: 'doubleClick',
         timestamp: getTimeStamp(),
         param: {
+          type: PAGE_ACTION_EVENT.doubleClick,
           label,
           selector: xpath,
           selectorType: SelectorType.xpath,
@@ -150,9 +153,9 @@ export const PageActionListener = (() => {
     },
     tripleClick(xpath: string, label: string) {
       Ipc.send(BgCommand.addPageAction, {
-        type: 'tripleClick',
         timestamp: getTimeStamp(),
         param: {
+          type: PAGE_ACTION_EVENT.tripleClick,
           label,
           selector: xpath,
           selectorType: SelectorType.xpath,
@@ -167,9 +170,9 @@ export const PageActionListener = (() => {
         xpath = focusXpath
       }
       Ipc.send(BgCommand.addPageAction, {
-        type: 'keyboard',
         timestamp: getTimeStamp(),
         param: {
+          type: PAGE_ACTION_EVENT.keyboard,
           label: modifierPressed(e) ? `${getModifierKey(e)}+${e.key}` : e.key,
           key: e.key,
           code: e.code,
@@ -198,9 +201,9 @@ export const PageActionListener = (() => {
       if (value != null) {
         value = convReadableKeysToSymbols(value)
         Ipc.send(BgCommand.addPageAction, {
-          type: 'input',
           timestamp: getTimeStamp(),
           param: {
+            type: PAGE_ACTION_EVENT.input,
             label: getLabel(target),
             value,
             selector: xpath,
@@ -213,9 +216,9 @@ export const PageActionListener = (() => {
       const x = Math.trunc(window.scrollX)
       const y = Math.trunc(window.scrollY)
       Ipc.send(BgCommand.addPageAction, {
-        type: 'scroll',
         timestamp: getTimeStamp(),
         param: {
+          type: PAGE_ACTION_EVENT.scroll,
           label: `x: ${x}, y: ${y}`,
           x,
           y,

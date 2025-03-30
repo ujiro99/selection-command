@@ -11,7 +11,7 @@ import { PopupOption } from '@/services/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
 import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import { BgData } from '@/services/backgroundData'
-import { escapeJson } from '@/lib/utils'
+import { escapeJson, isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import type { IpcCallback } from '@/services/ipc'
 import type { CommandVariable, WindowType, WindowLayer } from '@/types'
 
@@ -122,16 +122,37 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ): boolean => {
     const params = JSON.parse(param.command)
-    const cmd = {
-      id: params.id,
-      title: params.title,
-      searchUrl: params.searchUrl,
-      iconUrl: params.iconUrl,
-      openMode: params.openMode,
-      openModeSecondary: params.openModeSecondary,
-      spaceEncoding: params.spaceEncoding,
-      popupOption: PopupOption,
+    const isSearch = isSearchCommand(params)
+    const isPageAction = isPageActionCommand(params)
+
+    const cmd = isSearch
+      ? {
+          id: params.id,
+          title: params.title,
+          searchUrl: params.searchUrl,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
+          popupOption: PopupOption,
+        }
+      : isPageAction
+        ? {
+            id: params.id,
+            title: params.title,
+            iconUrl: params.iconUrl,
+            openMode: params.openMode,
+            pageActionOption: params.pageActionOption,
+            popupOption: PopupOption,
+          }
+        : null
+
+    if (!cmd) {
+      console.error('invalid command', param.command)
+      response(false)
+      return true
     }
+
     Settings.addCommands([cmd]).then(() => {
       response(true)
     })
