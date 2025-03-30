@@ -44,6 +44,7 @@ export const add = (
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
+    const type = step.param.type
     const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
@@ -54,6 +55,7 @@ export const add = (
       steps.push({
         ...StartAction,
         param: {
+          type: PAGE_ACTION_CONTROL.start,
           label: 'Start',
           url: sender.tab?.url ?? '',
         },
@@ -61,7 +63,7 @@ export const add = (
     }
 
     // Remove a end ation.
-    steps = steps.filter((a) => a.type !== 'end')
+    steps = steps.filter((s) => s.param.type !== 'end')
 
     // - 1 : End action
     if (steps.length >= PAGE_ACTION_MAX - 1) {
@@ -71,11 +73,12 @@ export const add = (
 
     step.id = generateRandomID()
     const prev = steps.at(-1)
+    const prevType = prev?.param.type
 
     if (prev != null) {
-      if (step.type === 'click' && prev.type === 'click') {
-        const selector = (step.param as PageAction.Input).selector
-        const prevSelector = (prev.param as PageAction.Input).selector
+      if (type === 'click' && prevType === 'click') {
+        const selector = (step.param as PageAction.Click).selector
+        const prevSelector = (prev.param as PageAction.Click).selector
         if (selector === prevSelector) {
           const t1 = step.timestamp!
           const t2 = prev.timestamp!
@@ -83,20 +86,20 @@ export const add = (
             return
           }
         }
-      } else if (step.type === 'doubleClick' && prev.type === 'click') {
+      } else if (type === 'doubleClick' && prevType === 'click') {
         // Removes a last click.
         steps.pop()
-      } else if (step.type === 'doubleClick' && prev.type === 'doubleClick') {
+      } else if (type === 'doubleClick' && prevType === 'doubleClick') {
         steps.pop()
-      } else if (step.type === 'tripleClick' && prev.type === 'doubleClick') {
+      } else if (type === 'tripleClick' && prevType === 'doubleClick') {
         steps.pop()
-      } else if (step.type === 'tripleClick' && prev.type === 'tripleClick') {
+      } else if (type === 'tripleClick' && prevType === 'tripleClick') {
         steps.pop()
-      } else if (step.type === 'scroll' && prev.type === 'scroll') {
+      } else if (type === 'scroll' && prevType === 'scroll') {
         steps.pop()
-      } else if (step.type === 'input') {
+      } else if (type === 'input') {
         // Combine operations on the same input element.
-        if (prev.type === 'input') {
+        if (prevType === 'input') {
           const selector = (step.param as PageAction.Input).selector
           const prevSelector = (prev.param as PageAction.Input).selector
           if (selector === prevSelector) {
@@ -105,15 +108,15 @@ export const add = (
         }
         // Remove the vlaue in previous input if the same element has been input.
         const param = step.param as PageAction.Input
-        const prevInput = steps.filter((a) => a.type === 'input').pop()
+        const prevInput = steps.filter((a) => a.param.type === 'input').pop()
         if (prevInput) {
           const prevParam = prevInput.param as PageAction.Input
           if (param.selector === prevParam.selector) {
             param.value = param.value.replace(prevParam.value, '')
           }
         }
-      } else if (step.type === 'click' && prev.type.match('input')) {
-        const selector = (step.param as PageAction.Input).selector
+      } else if (type === 'click' && prevType === 'input') {
+        const selector = (step.param as PageAction.Click).selector
         const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
           // Skip adding click to combine operations on the same input element.
@@ -133,8 +136,8 @@ export const add = (
           {
             ...EndAction,
             param: {
+              type: PAGE_ACTION_CONTROL.end,
               label: 'End',
-              url: sender.tab?.url ?? '',
             },
           },
         ],
@@ -263,7 +266,7 @@ export const openAndRun = (
       return true
     }
     const steps = cmd.pageActionOption.steps
-    const start = steps.find((s) => s.type === PAGE_ACTION_CONTROL.start)
+    const start = steps.find((s) => s.param.type === PAGE_ACTION_CONTROL.start)
     if (start) {
       // Remove the url to stop reload.
       ;(start.param as PageAction.Start).url = undefined
@@ -310,7 +313,7 @@ export const run = (
         // Execute
         await Ipc.ensureConnection(tabId)
 
-        if (step.type === PAGE_ACTION_CONTROL.start) {
+        if (step.param.type === PAGE_ACTION_CONTROL.start) {
           // Reload tab
           const url = (step.param as PageAction.Start).url
           url && (await chrome.tabs.update(tabId, { url }))

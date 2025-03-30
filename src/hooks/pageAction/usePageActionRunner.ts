@@ -32,16 +32,17 @@ export function usePageActionRunner() {
     setContextData({ isRunning: true })
 
     const { step, srcUrl, selectedText, clipboardText } = message
+    const type = step.param.type
 
     // Wait for the DOM to be updated.
-    if (step.type !== PAGE_ACTION_CONTROL.end) {
-      await debounceDOMChange(step.type)
+    if (type !== PAGE_ACTION_CONTROL.end) {
+      await debounceDOMChange(type)
     }
 
     let result = false
     let msg: string | undefined
     try {
-      switch (step.type) {
+      switch (type) {
         case 'start':
           result = true
           break
@@ -71,7 +72,7 @@ export function usePageActionRunner() {
             srcUrl,
             selectedText,
             clipboardText,
-          } as PageAction.Input)
+          } as PageAction.InputExec)
           break
         case 'scroll':
           ;[result, msg] = await dispatcher.scroll(
@@ -82,7 +83,7 @@ export function usePageActionRunner() {
           result = true
           break
         default:
-          console.warn(`Unknown action type: ${step.type}`)
+          console.warn(`Unknown action type: ${type}`)
           break
       }
     } catch (e) {

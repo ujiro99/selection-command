@@ -101,7 +101,11 @@ export function PageActionItem(props: Props): JSX.Element {
           isFailed ? 'bg-red-400/50' : '',
         )}
       >
-        <TypeIcon type={step.type} className="stroke-gray-700" size={14} />
+        <TypeIcon
+          type={step.param.type}
+          className="stroke-gray-700"
+          size={14}
+        />
       </div>
 
       {/* Detail Popover */}
@@ -118,11 +122,11 @@ export function PageActionItem(props: Props): JSX.Element {
           >
             <p className="text-sm font-semibold font-mono flex items-center gap-1.5">
               <TypeIcon
-                type={step.type}
+                type={step.param.type}
                 className="stroke-gray-700"
                 size={14}
               />
-              {capitalize(step.type)}
+              {capitalize(step.param.type)}
             </p>
             {isFailed && (
               <p className="text-sm text-red-600">{failedMessage}</p>

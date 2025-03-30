@@ -6,7 +6,7 @@ export const RunningStatus = {
   init: async (tabId: number, steps: PageActionStep[]) => {
     const results = steps.map((s) => ({
       stepId: s.id,
-      type: s.type,
+      type: s.param.type,
       label: s.param.label,
       status: EXEC_STATE.Queue,
     }))

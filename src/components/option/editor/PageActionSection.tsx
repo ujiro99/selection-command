@@ -161,11 +161,11 @@ export const PageActionSection = ({
           <div>
             <p className="text-base font-medium font-mono flex items-center gap-1.5">
               <TypeIcon
-                type={removeStep.type}
+                type={removeStep.param.type}
                 className="stroke-gray-700"
                 size={20}
               />
-              {capitalize(removeStep.type)}
+              {capitalize(removeStep.param.type)}
             </p>
             {hasLabel && (
               <p className="mt-2 px-3 py-2 rounded-md text-balance whitespace-pre-line text-sm max-h-80 overflow-x-hidden overflow-y-auto bg-gray-100">

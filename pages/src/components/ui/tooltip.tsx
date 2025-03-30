@@ -46,5 +46,6 @@ const Tooltip = React.forwardRef<
     </Popover>
   )
 })
+Tooltip.displayName = 'Tooltip'
 
 export { Tooltip }

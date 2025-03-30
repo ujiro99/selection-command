@@ -9,7 +9,8 @@ import {
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
 
 import { cn, capitalize, onHover, isEmpty } from '@/lib/utils'
-import type { PageActionStep, PageAction } from '@/types'
+import type { PageActionStep } from '@/types/pageAction'
+import * as PageAction from '@/types/pageAction'
 
 type Props = {
   step: PageActionStep
@@ -28,6 +29,7 @@ export function PageActionItem(props: Props): JSX.Element {
   const [shouldRender, setShouldRender] = useState(false)
   const anchorRef = useRef<HTMLLIElement>(null)
   const hasLabel = !isEmpty(step.param.label)
+  const type = step.param.type
 
   // For Input step
   const isInput = isInputParam(step.param)
@@ -56,7 +58,7 @@ export function PageActionItem(props: Props): JSX.Element {
     >
       {/* List icon */}
       <div className="transition relative group-hover:scale-150 p-1 rounded-full">
-        <TypeIcon type={step.type} className="stroke-gray-700" size={16} />
+        <TypeIcon type={type} className="stroke-gray-700" size={16} />
       </div>
 
       {/* Detail Popover */}
@@ -69,12 +71,8 @@ export function PageActionItem(props: Props): JSX.Element {
             arrowPadding={-5}
           >
             <p className="text-sm font-semibold font-mono flex items-center gap-2">
-              <TypeIcon
-                type={step.type}
-                className="stroke-gray-700"
-                size={16}
-              />
-              {capitalize(step.type)}
+              <TypeIcon type={type} className="stroke-gray-700" size={16} />
+              {capitalize(type)}
             </p>
             {hasLabel && (
               <p className="truncate text-sm mt-1">{step.param.label}</p>

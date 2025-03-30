@@ -2,37 +2,48 @@ import userEvent from '@testing-library/user-event'
 import { getElementByXPath, isValidXPath } from '@/services/dom'
 import { safeInterpolate } from '@/lib/utils'
 import { INSERT, InsertSymbol } from '@/services/pageAction'
-import { SelectorType } from '@/const'
+import { SelectorType, PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
 
 export namespace PageAction {
-  export type Parameter = Start | Click | Input | Keyboard | Scroll
+  export type Parameter = Start | End | Click | Input | Keyboard | Scroll
 
   export type Start = {
-    type?: string
+    type: PAGE_ACTION_CONTROL.start
     label: string
     url?: string
   }
 
+  export type End = {
+    type: PAGE_ACTION_CONTROL.end
+    label: string
+  }
+
   export type Click = {
-    type?: string
+    type:
+      | PAGE_ACTION_EVENT.click
+      | PAGE_ACTION_EVENT.doubleClick
+      | PAGE_ACTION_EVENT.tripleClick
     label: string
     selector: string
     selectorType: SelectorType
   }
 
   export type Input = {
-    type?: string
+    type: PAGE_ACTION_EVENT.input
     label: string
     selector: string
     selectorType: SelectorType
     value: string
+  }
+
+  export type InputExec = Input & {
     srcUrl: string
     selectedText: string
     clipboardText: string
   }
 
   export type Keyboard = {
-    type?: string
+    type: PAGE_ACTION_EVENT.keyboard
     label: string
     key: string
     code: string
@@ -46,7 +57,7 @@ export namespace PageAction {
   }
 
   export type Scroll = {
-    type?: string
+    type: PAGE_ACTION_EVENT.scroll
     label: string
     x: number
     y: number
@@ -173,7 +184,7 @@ export const PageActionDispatcher = {
     })
   },
 
-  input: async (param: PageAction.Input): ActionReturn => {
+  input: async (param: PageAction.InputExec): ActionReturn => {
     const { selector, selectorType, srcUrl, selectedText, clipboardText } =
       param
     const user = userEvent.setup()

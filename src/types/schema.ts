@@ -62,7 +62,6 @@ const PageActionParameterSchema = z.discriminatedUnion('type', [
 
 const PageActionStepSchema = z.object({
   id: z.string(),
-  type: z.nativeEnum(PAGE_ACTION_EVENT).or(z.nativeEnum(PAGE_ACTION_CONTROL)),
   param: PageActionParameterSchema,
 })
 export type PageActionStep = z.infer<typeof PageActionStepSchema>

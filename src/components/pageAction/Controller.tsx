@@ -33,7 +33,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const [failedId, setFailedId] = useState<string>()
     const [failedMessage, setFailedMesage] = useState<string>()
     const [hover, setHover] = useState(false)
-    const steps = props.steps.filter((l) => !isControlType(l.type))
+    const steps = props.steps.filter((l) => !isControlType(l.param.type))
 
     const clearState = () => {
       setCurrentId('')

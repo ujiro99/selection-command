@@ -406,10 +406,6 @@ const CommandEditDialogInner = ({
       SESSION_STORAGE_KEY.PA_RECORDING,
       ({ size, steps }) => {
         if (steps == null) return
-        steps = steps.map((step) => {
-          step.param.type = step.type
-          return step
-        })
         setValue('popupOption', size)
         setValue('pageActionOption.steps', steps as PageActionStep[])
       },

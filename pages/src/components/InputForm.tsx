@@ -196,7 +196,6 @@ export function InputForm(props: InputProps) {
   const sanitizePageActionOption = (option: PageActionOptionType) => {
     const steps = option.steps.map((step) => {
       if ((step.param as any).value != null) {
-        debugger
         return {
           ...step,
           label: DOMPurify.sanitize(step.param.label),
@@ -217,24 +216,24 @@ export function InputForm(props: InputProps) {
     const isPageAction = isPageActionCommand(_data)
     const data = isSearch
       ? {
-        title: DOMPurify.sanitize(_data.title),
-        searchUrl: DOMPurify.sanitize(_data.searchUrl),
-        description: DOMPurify.sanitize(_data.description),
-        iconUrl: DOMPurify.sanitize(_data.iconUrl),
-        openMode: _data.openMode,
-        openModeSecondary: _data.openModeSecondary,
-        spaceEncoding: _data.spaceEncoding,
-        tags: _data.tags,
-      }
-      : isPageAction
-        ? {
           title: DOMPurify.sanitize(_data.title),
+          searchUrl: DOMPurify.sanitize(_data.searchUrl),
           description: DOMPurify.sanitize(_data.description),
           iconUrl: DOMPurify.sanitize(_data.iconUrl),
           openMode: _data.openMode,
+          openModeSecondary: _data.openModeSecondary,
+          spaceEncoding: _data.spaceEncoding,
           tags: _data.tags,
-          pageActionOption: sanitizePageActionOption(_data.pageActionOption),
         }
+      : isPageAction
+        ? {
+            title: DOMPurify.sanitize(_data.title),
+            description: DOMPurify.sanitize(_data.description),
+            iconUrl: DOMPurify.sanitize(_data.iconUrl),
+            openMode: _data.openMode,
+            tags: _data.tags,
+            pageActionOption: sanitizePageActionOption(_data.pageActionOption),
+          }
         : null
     if (data != null) {
       props.onFormSubmit(data as FormValues)
