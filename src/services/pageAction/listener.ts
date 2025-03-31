@@ -240,12 +240,13 @@ export const PageActionListener = (() => {
 
   function stop(): void {
     console.log('Listener.stop')
-    window.removeEventListener('focusin', onFocusIn)
-    window.removeEventListener('mousedown', func.click)
-    window.removeEventListener('click', func.click)
-    window.removeEventListener('keydown', func.keyboard)
-    window.removeEventListener('input', func.input)
-    window.removeEventListener('scroll', func.scroll)
+    const opt = { capture: true }
+    window.removeEventListener('focusin', onFocusIn, opt)
+    window.removeEventListener('mousedown', func.click, opt)
+    window.removeEventListener('click', func.click, opt)
+    window.removeEventListener('keydown', func.keyboard, opt)
+    window.removeEventListener('input', func.input, opt)
+    window.removeEventListener('scroll', func.scroll, opt)
   }
 
   return { start, stop }
