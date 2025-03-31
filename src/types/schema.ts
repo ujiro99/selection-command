@@ -6,10 +6,15 @@ import {
   SelectorType,
 } from '@/const'
 
-const PageActionControlSchema = z.object({
-  type: z.nativeEnum(PAGE_ACTION_CONTROL),
+const PageActionStartSchema = z.object({
+  type: z.literal(PAGE_ACTION_CONTROL.start),
   label: z.string(),
-  url: z.string(),
+  url: z.string().optional(),
+})
+
+const PageActionEndSchema = z.object({
+  type: z.literal(PAGE_ACTION_CONTROL.end),
+  label: z.string(),
 })
 
 const PageActionClickSchema = z.object({
@@ -53,7 +58,8 @@ const PageActionScrollSchema = z.object({
 })
 
 const PageActionParameterSchema = z.discriminatedUnion('type', [
-  PageActionControlSchema,
+  PageActionStartSchema,
+  PageActionEndSchema,
   PageActionClickSchema,
   PageActionInputSchema,
   PageActionKeyboardSchema,
