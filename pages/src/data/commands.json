@@ -238,5 +238,17 @@
     "tags": ["Media", "Movie"],
     "id": "226d42cf-2445-5089-8938-8d97f607d34b",
     "addedAt": "2025-03-07T03:25:26.841Z"
+  },
+  {
+    "title": "アマゾン",
+    "searchUrl": "https://www.amazon.co.jp/s?k=%s",
+    "description": "日本のアマゾンページで商品を検索できます",
+    "iconUrl": "https://www.amazon.co.jp/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Shop", "Japanese"],
+    "id": "f677e318-aceb-5500-a710-8b1d415c7094",
+    "addedAt": "2025-03-31T04:56:29.505Z"
   }
 ]
