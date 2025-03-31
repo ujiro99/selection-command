@@ -4,6 +4,8 @@ import { safeInterpolate } from '@/lib/utils'
 import { INSERT, InsertSymbol } from '@/services/pageAction'
 import { SelectorType, PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
 
+export const TIMEOUT = 5000
+
 export namespace PageAction {
   export type Parameter = Start | End | Click | Input | Keyboard | Scroll
 
@@ -73,7 +75,7 @@ export namespace PageAction {
 async function waitForElement(
   selector: string,
   selectorType: SelectorType,
-  timeout: number = 5000,
+  timeout: number = TIMEOUT,
 ): Promise<HTMLElement | null> {
   const startTime = Date.now()
 

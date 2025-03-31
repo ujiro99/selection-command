@@ -332,6 +332,11 @@ export const run = (
         })
 
         if (ret.result) {
+          if (step.param.type === PAGE_ACTION_CONTROL.end) {
+            // End of the action
+            await RunningStatus.update(step.id, EXEC_STATE.Done, '', 500)
+            break
+          }
           await RunningStatus.update(step.id, EXEC_STATE.Done)
         } else {
           await RunningStatus.update(step.id, EXEC_STATE.Failed, ret.message)

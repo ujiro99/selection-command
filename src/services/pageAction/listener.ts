@@ -229,12 +229,13 @@ export const PageActionListener = (() => {
 
   function start(): void {
     console.log('Listener.start')
-    window.addEventListener('focusin', onFocusIn)
-    window.addEventListener('mousedown', func.click)
-    window.addEventListener('click', func.click)
-    window.addEventListener('keydown', func.keyboard)
-    window.addEventListener('input', func.input)
-    window.addEventListener('scroll', func.scroll)
+    const opt = { capture: true, passive: true }
+    window.addEventListener('focusin', onFocusIn, opt)
+    window.addEventListener('mousedown', func.click, opt)
+    window.addEventListener('click', func.click, opt)
+    window.addEventListener('keydown', func.keyboard, opt)
+    window.addEventListener('input', func.input, opt)
+    window.addEventListener('scroll', func.scroll, opt)
   }
 
   function stop(): void {

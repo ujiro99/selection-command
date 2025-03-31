@@ -172,10 +172,12 @@ export type PageActiontResult = {
   type: PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
   label: string
   message?: string
+  duration: number
 }
 
 export type PageActiontStatus = {
   tabId: number
+  stepId: string
   results: PageActiontResult[]
 }
 

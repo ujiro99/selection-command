@@ -1,5 +1,5 @@
 export { PageActionListener } from './listener'
-export { PageActionDispatcher } from './dispatcher'
+export { PageActionDispatcher, TIMEOUT } from './dispatcher'
 export type { PageAction } from './dispatcher'
 export { RunningStatus } from './status'
 export * from './helper'

@@ -38,8 +38,10 @@ export function PageActionRunner(): JSX.Element {
     setResults(status.results)
     if (hasError(status.results)) return
     startTimeRef.current = Date.now()
+    const duration =
+      status.results.find((r) => r.stepId === status.stepId)?.duration ?? 1
     progressTORef.current = window.setInterval(() => {
-      const prgrs = ((Date.now() - startTimeRef.current) / 5000) * 100
+      const prgrs = ((Date.now() - startTimeRef.current) / duration) * 100
       if (prgrs >= 100) {
         clearTimeout(progressTORef.current)
         setVisible(false)
@@ -75,18 +77,20 @@ export function PageActionRunner(): JSX.Element {
   return (
     <div
       className={cn(
-        'relative fixed z-[2147483647] top-2 right-2 pointer-events-none overflow-hidden',
+        'relative fixed z-[2147483647] top-2 right-2 pointer-events-none',
         'backdrop-blur-md bg-gray-200/40 rounded-md shadow-md transition-opacity duration-300',
         visible ? 'opacity-100' : 'opacity-0',
       )}
     >
-      <Progress
-        value={progress}
-        className={cn(
-          'h-0.5 bg-transparent opacity-0',
-          progress > 10 && 'opacity-100',
-        )}
-      />
+      <div className="overflow-hidden rounded-md h-[12px] -mb-[12px]">
+        <Progress
+          value={progress}
+          className={cn(
+            'h-0.5 bg-transparent opacity-0',
+            progress > 10 && 'opacity-100',
+          )}
+        />
+      </div>
       {hasError(results) && (
         <button
           className="absolute right-1 top-1.5 pointer-events-auto bg-gray-50 rounded-full p-1"

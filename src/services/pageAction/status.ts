@@ -1,6 +1,7 @@
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { EXEC_STATE } from '@/const'
 import type { PageActiontStatus, PageActionStep } from '@/types'
+import { TIMEOUT } from '@/services/pageAction'
 
 export const RunningStatus = {
   init: async (tabId: number, steps: PageActionStep[]) => {
@@ -9,22 +10,30 @@ export const RunningStatus = {
       type: s.param.type,
       label: s.param.label,
       status: EXEC_STATE.Queue,
+      duration: TIMEOUT,
     }))
     await Storage.set<PageActiontStatus>(SESSION_STORAGE_KEY.PA_RUNNING, {
       tabId,
+      stepId: steps[0].id,
       results,
     })
   },
 
-  update: async (stepId: string, state: EXEC_STATE, message?: string) => {
+  update: async (
+    stepId: string,
+    state: EXEC_STATE,
+    message?: string,
+    duration = TIMEOUT,
+  ) => {
     const status = await Storage.get<PageActiontStatus>(
       SESSION_STORAGE_KEY.PA_RUNNING,
     )
     return await Storage.set(SESSION_STORAGE_KEY.PA_RUNNING, {
       ...status,
+      stepId,
       results: status.results.map((r) => {
         if (r.stepId === stepId) {
-          return { ...r, status: state, message }
+          return { ...r, status: state, message, duration }
         }
         return r
       }),
