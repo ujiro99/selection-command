@@ -1,0 +1,68 @@
+.CollapsibleContent[data-state='open'] {
+  animation: slideDown 150ms ease-out;
+}
+
+.CollapsibleContent[data-state='closed'] {
+  animation: slideUp 100ms ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+    overflow: hidden;
+  }
+
+  to {
+    height: var(--radix-collapsible-content-height);
+    overflow: hidden;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-collapsible-content-height);
+    overflow: hidden;
+  }
+
+  to {
+    height: 0;
+    overflow: hidden;
+  }
+}
+
+.icon {
+  @apply stroke-gray-600;
+}
+
+.pageActionStart>div,
+.pageActionEnd>div {
+  @apply w-14 h-14 rounded-full bg-red-200 text-center;
+}
+
+.pageActionStart>div>p+p,
+.pageActionEnd>div>p+p {
+  @apply hidden;
+}
+
+.collapse[data-state='open'] .iconUpDown {
+  display: none;
+}
+
+.collapse[data-state='closed'] .iconDownUp {
+  display: none;
+}
+
+.triangle {
+  position: relative;
+}
+
+.triangle:not(.pageActionEnd):after {
+  content: '';
+  position: absolute;
+  height: 24px;
+  top: 14px;
+  right: -12px;
+  aspect-ratio: cos(70deg);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  @apply bg-gradient-to-r from-cyan-500 to-blue-400;
+}

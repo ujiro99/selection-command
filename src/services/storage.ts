@@ -3,7 +3,6 @@ import { Command } from '@/types'
 
 export enum STORAGE_KEY {
   USER = 0,
-  BG = 1,
   COMMAND_COUNT = 2,
 }
 
@@ -14,8 +13,13 @@ export enum LOCAL_STORAGE_KEY {
 }
 
 export enum SESSION_STORAGE_KEY {
+  BG = 'bg',
   SESSION_DATA = 'sessionData',
   MESSAGE_QUEUE = 'messageQueue',
+  PA_RECORDING = 'pageActionRecording',
+  PA_RUNNING = 'pageActionRunning',
+  PA_CONTEXT = 'pageActionContext',
+  PA_RECORDER_OPTION = 'pageActionRecorderOption',
 }
 
 type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
@@ -26,25 +30,36 @@ const DEFAULT_COUNT = -1
 
 const DEFAULTS = {
   [STORAGE_KEY.USER]: DefaultSettings,
-  [STORAGE_KEY.BG]: {},
   [STORAGE_KEY.COMMAND_COUNT]: DEFAULT_COUNT,
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
   [LOCAL_STORAGE_KEY.CLIENT_ID]: '',
   [LOCAL_STORAGE_KEY.STARS]: [],
+  [SESSION_STORAGE_KEY.BG]: {},
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
   [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
+  [SESSION_STORAGE_KEY.PA_RECORDING]: [],
+  [SESSION_STORAGE_KEY.PA_RUNNING]: [],
+  [SESSION_STORAGE_KEY.PA_CONTEXT]: {},
+  [SESSION_STORAGE_KEY.PA_RECORDER_OPTION]: {},
 }
 
-export enum STORAGE_AREA {
-  SYNC = 'sync',
-  LOCAL = 'local',
-  SESSION = 'session',
+const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
+  if (Object.values(STORAGE_KEY).includes(key)) {
+    return chrome.storage.sync
+  }
+  if (Object.values(LOCAL_STORAGE_KEY).includes(key as LOCAL_STORAGE_KEY)) {
+    return chrome.storage.local
+  }
+  if (Object.values(SESSION_STORAGE_KEY).includes(key as SESSION_STORAGE_KEY)) {
+    return chrome.storage.session
+  }
+  throw new Error('Invalid Storage Key')
 }
 
-export type ChangedCallback = (newVal: unknown, oldVal: unknown) => void
-const changedCallbacks = {} as { [key: string]: ChangedCallback[] }
+export type ChangedCallback<T> = (newVal: T, oldVal: T) => void
+const changedCallbacks = {} as { [key: string]: ChangedCallback<any>[] }
 
 type commandChangedCallback = (commands: Command[]) => void
 const commandChangedCallbacks = [] as commandChangedCallback[]
@@ -68,8 +83,9 @@ export const Storage = {
    *
    * @param {STORAGE_KEY} key of item in storage.
    */
-  get: async <T>(key: KEY, area = STORAGE_AREA.SYNC): Promise<T> => {
-    let result = await chrome.storage[area].get(`${key}`)
+  get: async <T>(key: KEY): Promise<T> => {
+    const area = detectStorageArea(key)
+    let result = await area.get(`${key}`)
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }
@@ -82,12 +98,9 @@ export const Storage = {
    * @param {string} key key of item.
    * @param {any} value item.
    */
-  set: async (
-    key: KEY,
-    value: unknown,
-    area = STORAGE_AREA.SYNC,
-  ): Promise<boolean> => {
-    await chrome.storage[area].set({ [key]: value })
+  set: async <T>(key: KEY, value: T): Promise<boolean> => {
+    const area = detectStorageArea(key)
+    await area.set({ [key]: value })
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }
@@ -99,12 +112,10 @@ export const Storage = {
    *
    * @param {string} key key of item.
    */
-  remove: (
-    key: KEY,
-    area = STORAGE_AREA.SYNC,
-  ): Promise<boolean | chrome.runtime.LastError> => {
+  remove: (key: KEY): Promise<boolean | chrome.runtime.LastError> => {
     return new Promise((resolve, reject) => {
-      chrome.storage[area].remove(`${key}`, () => {
+      const area = detectStorageArea(key)
+      area.remove(`${key}`, () => {
         if (chrome.runtime.lastError != null) {
           reject(chrome.runtime.lastError)
         } else {
@@ -114,27 +125,12 @@ export const Storage = {
     })
   },
 
-  /**
-   * Clear all items in chrome sync storage.
-   */
-  clear: (area = STORAGE_AREA.SYNC): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-      chrome.storage[area].clear(() => {
-        if (chrome.runtime.lastError != null) {
-          reject(chrome.runtime.lastError)
-        } else {
-          resolve(true)
-        }
-      })
-    })
-  },
-
-  addListener: (key: KEY, cb: ChangedCallback) => {
+  addListener: <T>(key: KEY, cb: ChangedCallback<T>) => {
     changedCallbacks[key] = changedCallbacks[key] ?? []
     changedCallbacks[key].push(cb)
   },
 
-  removeListener: (key: KEY, cb: ChangedCallback) => {
+  removeListener: (key: KEY, cb: ChangedCallback<any>) => {
     changedCallbacks[key] = changedCallbacks[key]?.filter((f) => f !== cb)
   },
 

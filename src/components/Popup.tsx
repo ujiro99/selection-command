@@ -4,6 +4,7 @@ import { Menu } from '@/components/menu/Menu'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
+import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { hexToHsl, isMac, onHover, cn } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import { STYLE_VARIABLE, EXIT_DURATION } from '@/const'
@@ -28,6 +29,7 @@ export const popupContext = createContext<ContextType>({} as ContextType)
 
 export const Popup = forwardRef<HTMLDivElement, PopupProps>(
   (props: PopupProps, ref) => {
+    useTabCommandReceiver()
     const { settings } = useSetting()
     const [inTransition, setInTransition] = useState(false)
     const [shouldRender, setShouldRender] = useState(false)

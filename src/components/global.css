@@ -21,7 +21,7 @@
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 204 80.2% 15.9%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -95,5 +95,10 @@
 @layer utilities {
   .animate-pause {
     animation-play-state: paused;
+  }
+
+  .transition-size {
+    transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: width, height;
   }
 }

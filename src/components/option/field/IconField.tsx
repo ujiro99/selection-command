@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { useController } from 'react-hook-form'
 import { FormLabel, FormMessage, FormDescription } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { MenuImage } from '@/components/menu/MenuImage'
-import { fetchIconUrl } from '@/services/chrome'
-import { isEmpty, isUrl, isValidSVG } from '@/lib/utils'
+import { isEmpty, isValidSVG } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -15,9 +14,9 @@ type IconField = {
   formLabel: string
   placeholder?: string
   description?: string
-  iconUrlSrc?: string
-  onAutoFill?: (value: string) => void
 }
+
+import { useFavicon } from '@/hooks/useFavicon'
 
 export const IconField = ({
   control,
@@ -26,8 +25,6 @@ export const IconField = ({
   formLabel,
   description,
   placeholder,
-  iconUrlSrc,
-  onAutoFill,
 }: IconField) => {
   const { field: fieldUrl, formState: stateUrl } = useController({
     name: nameUrl,
@@ -50,8 +47,6 @@ export const IconField = ({
         <IconUrlInput
           fieldUrl={fieldUrl}
           fieldSvg={fieldSvg}
-          iconUrlSrc={iconUrlSrc}
-          onAutoFill={onAutoFill}
           placeholder={placeholder}
         />
         <FormMessage />
@@ -70,7 +65,6 @@ type IconUrlInputType = {
   fieldUrl: any
   fieldSvg: any
   placeholder?: string
-  iconUrlSrc?: string
   onAutoFill?: (value: string) => void
 }
 
@@ -78,14 +72,9 @@ const IconUrlInput = ({
   fieldUrl,
   fieldSvg,
   placeholder,
-  iconUrlSrc,
-  onAutoFill,
 }: IconUrlInputType) => {
-  const fetchIconTO = useRef(0)
-  const srcRef = useRef('')
+  const { isLoading } = useFavicon()
   const svgRef = useRef<HTMLDivElement | null>(null)
-  const [initialized, setInitialized] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const hasUrl = !isEmpty(fieldUrl.value)
   const value = hasUrl ? fieldUrl.value : fieldSvg.value
 
@@ -93,43 +82,15 @@ const IconUrlInput = ({
     svgRef.current.innerHTML = fieldSvg.value
   }
 
-  useEffect(() => {
-    setTimeout(() => setInitialized(true), 100)
-  }, [])
-
-  useEffect(() => {
-    if (!initialized) return
-    if (isEmpty(iconUrlSrc) || !isUrl(iconUrlSrc)) return
-    srcRef.current = iconUrlSrc!
-
-    // debounce
-    clearTimeout(fetchIconTO.current)
-    fetchIconTO.current = window.setTimeout(async () => {
-      if (isEmpty(iconUrlSrc)) return
-      try {
-        setIsLoading(true)
-        const iconUrl = await fetchIconUrl(iconUrlSrc!)
-        if (srcRef.current != iconUrlSrc) return
-        if (onAutoFill) onAutoFill(iconUrl)
-      } finally {
-        fetchIconTO.current = 0
-        srcRef.current = ''
-        setIsLoading(false)
-      }
-    }, 500)
-
-    return () => clearTimeout(fetchIconTO.current)
-  }, [iconUrlSrc])
-
   return isLoading ? (
     <Loading />
   ) : (
     <div>
       <MenuImage
-        className="absolute top-[0.7em] left-[0.9em] w-6 h-6 rounded"
+        className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
         src={fieldUrl.value}
         svg={fieldSvg.value}
-        alt="favicon"
+        alt="Preview of image"
       />
       <UrlOrSvgInput
         value={value}

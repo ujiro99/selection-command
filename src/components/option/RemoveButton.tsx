@@ -1,26 +1,18 @@
-import { useRef } from 'react'
+import { useState, useRef } from 'react'
 import { Trash2 } from 'lucide-react'
 import { Tooltip } from '@/components/Tooltip'
-import { t } from '@/services/i18n'
-
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
 import { MenuImage } from '@/components/menu/MenuImage'
+import { RemoveDialog } from '@/components/option/RemoveDialog'
+import { cn } from '@/lib/utils'
+import { t } from '@/services/i18n'
 
 type RemoveButtonProps = {
   onRemove: () => void
   title: string
   iconUrl?: string
   iconSvg?: string
+  size?: number
+  className?: string
 }
 
 export const RemoveButton = ({
@@ -28,31 +20,35 @@ export const RemoveButton = ({
   iconUrl,
   iconSvg,
   onRemove,
+  size = 16,
+  className,
 }: RemoveButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const [open, setOpen] = useState(false)
+
   return (
-    <Dialog>
-      <DialogTrigger
+    <>
+      <button
+        type="button"
+        className={cn(
+          'p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button',
+          className,
+        )}
+        onClick={() => setOpen(true)}
         ref={buttonRef}
-        className="p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group"
-        asChild
       >
-        <button>
-          <Trash2
-            className="stroke-gray-500 group-hover:stroke-red-500"
-            size={16}
-          />
-        </button>
-      </DialogTrigger>
-      <Tooltip
-        positionElm={buttonRef.current}
-        text={t('Option_remove_tooltip')}
-      />
-      <DialogContent className="space-y-4">
-        <DialogHeader>
-          <DialogTitle>{t('Option_remove_title')}</DialogTitle>
-        </DialogHeader>
-        <DialogDescription className="flex items-center justify-center overflow-hidden">
+        <Trash2
+          className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
+          size={size}
+        />
+      </button>
+      <RemoveDialog
+        description={t('Option_remove_description')}
+        open={open}
+        onOpenChange={setOpen}
+        onRemove={onRemove}
+      >
+        <>
           {(iconUrl != null || iconSvg != null) && (
             <MenuImage
               className="inline-block w-6 h-6 mr-2"
@@ -62,26 +58,12 @@ export const RemoveButton = ({
             />
           )}
           <span className="text-base truncate">{title}</span>
-        </DialogDescription>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="secondary" size="lg">
-              {t('Option_labelCancel')}
-            </Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button
-              type="button"
-              variant="destructive"
-              size="lg"
-              onClick={() => onRemove()}
-            >
-              <Trash2 />
-              {t('Option_remove_ok')}
-            </Button>
-          </DialogClose>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      </RemoveDialog>
+      <Tooltip
+        positionElm={buttonRef.current}
+        text={t('Option_remove_tooltip')}
+      />
+    </>
   )
 }

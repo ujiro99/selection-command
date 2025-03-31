@@ -238,5 +238,70 @@
     "tags": ["Media", "Movie"],
     "id": "226d42cf-2445-5089-8938-8d97f607d34b",
     "addedAt": "2025-03-07T03:25:26.841Z"
+  },
+  {
+    "title": "Gemini",
+    "searchUrl": "",
+    "description": "Geminiで選択テキストについて説明を聞きます。",
+    "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "openMode": "pageAction",
+    "tags": ["AI"],
+    "pageActionOption": {
+      "startUrl": "https://gemini.google.com/app",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "i79maq5ca",
+          "type": "start",
+          "param": {
+            "type": "start",
+            "label": "Start",
+            "url": "https://gemini.google.com/app"
+          }
+        },
+        {
+          "id": "5m91m7ofw",
+          "type": "click",
+          "param": {
+            "type": "click",
+            "label": "Ask Gemini",
+            "selector": "//*[@role=\"textbox\"]/p",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "udhkifpmf",
+          "type": "input",
+          "param": {
+            "type": "input",
+            "label": "Hello, Gemini. Please let me know about this.",
+            "selector": "//*[@id=\"app-root\"]/main/side-navigation-v2/mat-sidenav-container/mat-sidenav-content/div/div[2]/chat-window/div/input-container/div/input-area-v2/div/div/div/div/div/rich-textarea/div[2]",
+            "selectorType": "xpath",
+            "value": "以下について教えてください。\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "0g8wyk4ve",
+          "type": "click",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@aria-label=\"Send message\"]/mat-icon",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "44dd5s7c8",
+          "type": "end",
+          "param": {
+            "type": "end",
+            "label": "End",
+            "url": "https://gemini.google.com/app"
+          }
+        }
+      ]
+    },
+    "id": "a20cab66-2392-5be0-8436-d1aa363fefbc",
+    "addedAt": "2025-03-27T13:58:53.377Z"
   }
 ]

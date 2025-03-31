@@ -1,19 +1,33 @@
 import type { OPEN_MODE, SPACE_ENCODING } from '@/const'
 import type { LanguageType } from '@/features/locale'
+import type { PageActionOption } from '@/types/pageAction'
 
 export type Command = SelectionCommand & Analytics
 
-export type SelectionCommand = {
+export type SelectionCommand = SearchCommand | PageActionCommand
+
+export type SearchCommand = {
   id: string
   title: string
-  searchUrl: string
-  iconUrl: string
-  openMode: OPEN_MODE
-  openModeSecondary: OPEN_MODE
-  spaceEncoding: SPACE_ENCODING
   description: string
   tags: Tag[]
   addedAt: string
+  openMode: OPEN_MODE
+  searchUrl: string
+  iconUrl: string
+  openModeSecondary: OPEN_MODE
+  spaceEncoding: SPACE_ENCODING
+}
+
+export type PageActionCommand = {
+  id: string
+  title: string
+  description: string
+  tags: Tag[]
+  addedAt: string
+  openMode: OPEN_MODE
+  iconUrl: string
+  pageActionOption: PageActionOption
 }
 
 export type CommandInJson = Omit<SelectionCommand, 'tags'> & {

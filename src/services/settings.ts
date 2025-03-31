@@ -1,4 +1,4 @@
-import { Storage, STORAGE_KEY, STORAGE_AREA } from './storage'
+import { Storage, STORAGE_KEY } from './storage'
 import DefaultSettings, { DefaultCommands } from './defaultSettings'
 import {
   OPTION_FOLDER,
@@ -31,8 +31,7 @@ export type ImageCache = {
 }
 
 const callbacks = [] as ((data: SettingsType) => void)[]
-Storage.addListener(STORAGE_KEY.USER, async (newVal: unknown) => {
-  const settings = newVal as SettingsType
+Storage.addListener(STORAGE_KEY.USER, async (settings: SettingsType) => {
   settings.commands = await Storage.getCommands()
   callbacks.forEach((cb) => cb(settings))
 })
@@ -51,10 +50,7 @@ export const Settings = {
     }
 
     // Stars
-    data.stars = await Storage.get<Star[]>(
-      LOCAL_STORAGE_KEY.STARS,
-      STORAGE_AREA.LOCAL,
-    )
+    data.stars = await Storage.get<Star[]>(LOCAL_STORAGE_KEY.STARS)
 
     data = await migrate(data)
 
@@ -120,11 +116,11 @@ export const Settings = {
     data.commands = []
 
     // Stars
-    await Storage.set(LOCAL_STORAGE_KEY.STARS, data.stars, STORAGE_AREA.LOCAL)
+    await Storage.set(LOCAL_STORAGE_KEY.STARS, data.stars)
     data.stars = []
 
     await Storage.set(STORAGE_KEY.USER, data)
-    await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches, STORAGE_AREA.LOCAL)
+    await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches)
     return true
   },
 
@@ -155,7 +151,7 @@ export const Settings = {
   },
 
   getCaches: async (): Promise<Caches> => {
-    return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES, STORAGE_AREA.LOCAL)
+    return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
   },
 
   getUrls: (settings: SettingsType): string[] => {

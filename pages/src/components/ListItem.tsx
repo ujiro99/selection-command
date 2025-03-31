@@ -1,9 +1,12 @@
 import React from 'react'
-import { ArrowDownToLine, Check, Star } from 'lucide-react'
+import { ArrowDownToLine, Check, Star, Zap, Search } from 'lucide-react'
 import { Image } from '@/components/Image'
 import { TagLink } from '@/components/TagLink'
 import type { Command } from '@/types'
 import { cmd2text } from '@/features/command'
+import { isSearchCommand, isPageActionCommand } from '@/lib/utils'
+import { Tooltip } from '@/components/ui/tooltip'
+import { StepList } from '@/components/pageAction/StepList'
 
 type Props = {
   cmd: Command
@@ -11,26 +14,49 @@ type Props = {
 
 export function ListItem(props: Props): JSX.Element {
   const { cmd } = props
+  const isSearch = isSearchCommand(cmd)
+  const isPageAction = isPageActionCommand(cmd)
+
   return (
     <>
       <div className="text-left flex flex-row items-center gap-1">
         <div className="flex-1 overflow-hidden space-y-1">
-          <p className="text-lg flex flex-row">
+          <p className="text-lg flex flex-row items-center gap-2 text-stone-700">
             <Image
               src={cmd.iconUrl}
               alt={cmd.title}
-              className="inline-block w-7 h-7 mr-2"
+              className="inline-block w-7 h-7"
             />
-            {cmd.title}
+            <span>{cmd.title}</span>
+            <Tooltip
+              render={() => (
+                <p>{isSearch ? 'Search Command' : 'Page Action Command'}</p>
+              )}
+            >
+              {isSearch ? (
+                <Search
+                  size={18}
+                  className="ml-1 stroke-stone-400 drop-shadow"
+                />
+              ) : (
+                <Zap size={18} className="ml-1 stroke-stone-400" />
+              )}
+            </Tooltip>
           </p>
           <p className="text-xs sm:text-sm text-stone-500 truncate">
-            {cmd.searchUrl}
+            {isSearch ? cmd.searchUrl : cmd.pageActionOption.startUrl}
           </p>
           <p className="text-md sm:text-base">{cmd.description}</p>
+          {isPageAction && (
+            <StepList
+              className="ml-[-1rem] py-1"
+              steps={cmd.pageActionOption.steps}
+            />
+          )}
         </div>
         <div className="flex gap-1">
           {/* Download */}
-          <div className="flex items-center text-stone-600">
+          <div className="flex items-center text-stone-700">
             <div>
               <p className="hidden" data-id={cmd.id}>
                 <Check className="p-1 stroke-sky-500" size={28} />
