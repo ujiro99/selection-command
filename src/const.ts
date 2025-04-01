@@ -150,6 +150,7 @@ export enum PAGE_ACTION_CONTROL {
 export enum EXEC_STATE {
   Queue = 'Queue',
   Start = 'Start',
+  Doing = 'Doing',
   Done = 'Done',
   Stop = 'Stop',
   Failed = 'Failed',

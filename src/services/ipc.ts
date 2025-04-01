@@ -121,9 +121,11 @@ export const Ipc = {
   async ensureConnection(tabId: number): Promise<void> {
     const tab = await chrome.tabs.get(tabId)
     if (tab.status !== 'complete') {
-      await new Promise<void>((resolve, reject) => {
+      await new Promise<void>((resolve) => {
         const timeout = setTimeout(() => {
-          reject(new Error('Could not connect to tab'))
+          console.warn('Connection timeout')
+          resolve()
+          chrome.tabs.onUpdated.removeListener(cb)
         }, 4000)
         const cb = (id: number, info: chrome.tabs.TabChangeInfo) => {
           if (tabId === id && info.status === 'complete') {

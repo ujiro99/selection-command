@@ -144,6 +144,7 @@ const StatusIcon = ({
     case EXEC_STATE.Queue:
       return <CircleDashed size={size} className={cn(className)} />
     case EXEC_STATE.Start:
+    case EXEC_STATE.Doing:
       return (
         <LoaderCircle size={size} className={cn('animate-spin', className)} />
       )

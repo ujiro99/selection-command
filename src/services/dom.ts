@@ -309,7 +309,7 @@ export const debounceDOMChange = (name: string): Promise<boolean> => {
         resolve(true)
         obs.disconnect()
         clearTimeout(timeout)
-      }, 20)
+      }, 60)
     })
     observer.observe(document.body, {
       childList: true,
@@ -320,7 +320,7 @@ export const debounceDOMChange = (name: string): Promise<boolean> => {
       observer.disconnect()
       clearTimeout(mutationTimeout)
       clearTimeout(timeout)
-    }, 100)
+    }, 400)
     timeout = window.setTimeout(() => {
       console.warn('timeout debounce DOM Changing', name)
       resolve(false)

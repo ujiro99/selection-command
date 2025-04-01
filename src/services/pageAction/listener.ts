@@ -116,6 +116,7 @@ export const PageActionListener = (() => {
   const func: EventsFunctions = {
     click(e: MouseEvent) {
       if (isPopup(e.target as HTMLElement)) return
+      if (e.button !== 0) return // left click only
       let xpath = getXPathM(e.target as HTMLElement)
       let label = getLabel(e.target as Element)
       if (isEmpty(xpath)) {

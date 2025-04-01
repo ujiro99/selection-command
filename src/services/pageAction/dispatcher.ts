@@ -174,15 +174,7 @@ export const PageActionDispatcher = {
         cancelable: true,
       })
       element.dispatchEvent(down)
-      setTimeout(() => {
-        const up = new KeyboardEvent('keyup', {
-          ...param,
-          bubbles: true,
-          cancelable: true,
-        })
-        element.dispatchEvent(up)
-        resolve([true])
-      }, 50)
+      resolve([true])
     })
   },
 
@@ -199,12 +191,9 @@ export const PageActionDispatcher = {
         [InsertSymbol[INSERT.URL]]: srcUrl,
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
       }
-      console.log('Variables:', variables)
       let value = safeInterpolate(param.value, variables)
-      value = value.replace(/{/g, '\\\\{') // escape
-      value = value.replace(/}/g, '\\\\}') // escape
+      value = value.replace(/{/g, '{{') // escape
       await user.type(element, value, { skipClick: true })
-      // await user.type(element, value)
     } else {
       console.warn(`Element not found for: ${selector}`)
       return [false, `Element not found: ${param.label}`]

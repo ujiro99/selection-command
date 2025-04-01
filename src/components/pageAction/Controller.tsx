@@ -7,17 +7,12 @@ import {
   RunningStatus,
 } from '@/services/pageAction'
 import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
-import { getSelectionText } from '@/services/dom'
 import { t } from '@/services/i18n'
 import type { PageActiontStatus, PageActionStep } from '@/types'
-import { e2a, cn } from '@/lib/utils'
-import { PAGE_ACTION_CONTROL, PAGE_ACTION_OPEN_MODE, EXEC_STATE } from '@/const'
+import { cn } from '@/lib/utils'
+import { PAGE_ACTION_OPEN_MODE, EXEC_STATE } from '@/const'
 
 import css from './PageActionRecorder.module.css'
-
-const isControlType = (type: string): boolean => {
-  return e2a(PAGE_ACTION_CONTROL).includes(type)
-}
 
 type Props = {
   steps: PageActionStep[]
@@ -41,16 +36,14 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     }
 
     const preview = () => {
-      setTimeout(async () => {
-        // Wait for the clipboard to be updated.
-        const text = await navigator.clipboard.readText()
+      setTimeout(() => {
         // Start preview.
         Ipc.send<RunPageAction>(BgCommand.runPageAction, {
           steps: props.steps,
           openMode: PAGE_ACTION_OPEN_MODE.NONE,
-          srcUrl: t('PageAction_InputMenu_url'),
-          selectedText: getSelectionText(),
-          clipboardText: text,
+          srcUrl: `{{${t('PageAction_InputMenu_url')}}}`,
+          selectedText: `{{${t('PageAction_InputMenu_selectedText')}}}`,
+          clipboardText: `{{${t('PageAction_InputMenu_clipboard')}}}`,
         })
       }, 100)
       clearState()

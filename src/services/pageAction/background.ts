@@ -312,6 +312,7 @@ export const run = (
       try {
         // Execute
         await Ipc.ensureConnection(tabId)
+        await RunningStatus.update(step.id, EXEC_STATE.Doing)
 
         if (step.param.type === PAGE_ACTION_CONTROL.start) {
           // Reload tab
