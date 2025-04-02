@@ -171,6 +171,9 @@ export const OPTION_FOLDER = 'OptionFolder'
 
 export const COMMAND_MAX = 100
 
+export const ICON_NOT_FOUND =
+  'https://cdn4.iconfinder.com/data/icons/fluent-solid-20px-vol-6/20/ic_fluent_square_hint_20_filled-512.png'
+
 export const HUB_URL = isDebug
   ? 'http://localhost:3000/'
   : 'https://ujiro99.github.io/selection-command/'

@@ -57,6 +57,7 @@ import {
   COPY_OPTION,
   ROOT_FOLDER,
   PAGE_ACTION_OPEN_MODE,
+  ICON_NOT_FOUND,
 } from '@/const'
 
 import {
@@ -414,7 +415,11 @@ const CommandEditDialogInner = ({
 
   useEffect(() => {
     const sub = (e: any) => {
-      setValue('iconUrl', e.detail.faviconUrl)
+      if (e.type === FaviconEvent.FAIL) {
+        setValue('iconUrl', ICON_NOT_FOUND)
+      } else {
+        setValue('iconUrl', e.detail.faviconUrl)
+      }
       clearErrors('iconUrl')
     }
 
@@ -496,26 +501,26 @@ const CommandEditDialogInner = ({
 
               {(SearchOpenMode.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
-                <InputField
-                  control={form.control}
-                  name="searchUrl"
-                  formLabel={t('searchUrl')}
-                  inputProps={{
-                    type: 'string',
-                    ...register('searchUrl', {}),
-                  }}
-                  description={
-                    openMode === OPEN_MODE.API
-                      ? t('searchUrl_desc_api')
-                      : t('searchUrl_desc')
-                  }
-                  previewUrl={
-                    !isEmpty(getValues('searchUrl'))
-                      ? getValues('iconUrl')
-                      : undefined
-                  }
-                />
-              )}
+                  <InputField
+                    control={form.control}
+                    name="searchUrl"
+                    formLabel={t('searchUrl')}
+                    inputProps={{
+                      type: 'string',
+                      ...register('searchUrl', {}),
+                    }}
+                    description={
+                      openMode === OPEN_MODE.API
+                        ? t('searchUrl_desc_api')
+                        : t('searchUrl_desc')
+                    }
+                    previewUrl={
+                      !isEmpty(getValues('searchUrl'))
+                        ? getValues('iconUrl')
+                        : undefined
+                    }
+                  />
+                )}
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
                 <PageActionSection
@@ -653,7 +658,7 @@ const CommandEditDialogInner = ({
                     formLabel={t('iconUrl')}
                     description={
                       SearchOpenMode.includes(openMode as any) ||
-                      openMode === OPEN_MODE.API
+                        openMode === OPEN_MODE.API
                         ? t('iconUrl_desc')
                         : openMode === OPEN_MODE.PAGE_ACTION
                           ? t('iconUrl_desc_pageAction')
