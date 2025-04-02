@@ -19,5 +19,7 @@
   "https://www.nicovideo.jp/watch/%s",
   "https://www.perplexity.ai/search/new?q=%s",
   "https://www.youtube.com/results?search_query=%s",
-  "https://www.amazon.co.jp/s?k=%s"
+  "https://www.amazon.co.jp/s?k=%s",
+  "https://www.google.com/maps/search/%s",
+  "http://ja.wikipedia.org/wiki/Special:Search?search=%s&go=Go"
 ]

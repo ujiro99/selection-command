@@ -250,5 +250,29 @@
     "tags": ["Shop", "Japanese"],
     "id": "f677e318-aceb-5500-a710-8b1d415c7094",
     "addedAt": "2025-03-31T04:56:29.505Z"
+  },
+  {
+    "title": "Maps",
+    "searchUrl": "https://www.google.com/maps/search/%s",
+    "description": "Google Mapsで検索します",
+    "iconUrl": "https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search"],
+    "id": "046c500e-36f6-5327-97b7-420ebb2c2914",
+    "addedAt": "2025-04-02T09:32:45.217Z"
+  },
+  {
+    "title": "Wikipedia",
+    "searchUrl": "http://ja.wikipedia.org/wiki/Special:Search?search=%s&go=Go",
+    "description": "Wikipediaで検索します",
+    "iconUrl": "https://ja.wikipedia.org/static/favicon/wikipedia.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "Dictionary", "Japanese"],
+    "id": "0a95ee38-892c-57be-9a07-c3a0242c0127",
+    "addedAt": "2025-04-02T09:33:27.828Z"
   }
 ]
