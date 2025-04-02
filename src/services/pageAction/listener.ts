@@ -1,13 +1,9 @@
 import getXPath from 'get-xpath'
+import { RobulaPlus } from '@/lib/robula-plus'
 import { isPopup, isEmpty } from '@/lib/utils'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { PageAction, convReadableKeysToSymbols } from '@/services/pageAction'
-import {
-  isTextNode,
-  isSvgElement,
-  getElementByXPath,
-  getXPath as getXPathOriginal,
-} from '@/services/dom'
+import { isTextNode, isSvgElement } from '@/services/dom'
 import { PAGE_ACTION_EVENT, SelectorType } from '@/const'
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
@@ -88,11 +84,17 @@ const getLabel = (e: Element): string => {
 
 const getXPathM = (e: Element | null): string => {
   if (e == null) return ''
-  const xpath = getXPathOriginal(e)
-  if (getElementByXPath(xpath) == null) {
+  const rebula = new RobulaPlus()
+  const xpath = rebula.getRobustXPath(e, document)
+  if (rebula.getElementByXPath(xpath, document) == null) {
     return getXPath(e)
   }
   return xpath
+}
+
+const getElementByXPath = (xpath: string): Element | null => {
+  const rebula = new RobulaPlus()
+  return rebula.getElementByXPath(xpath, document)
 }
 
 interface EventsFunctions {
@@ -110,6 +112,7 @@ export const PageActionListener = (() => {
 
   const onFocusIn = (event: FocusEvent) => {
     focusElm = event.target as HTMLElement
+    if (isPopup(focusElm)) return
     focusXpath = getXPathM(focusElm)
   }
 
