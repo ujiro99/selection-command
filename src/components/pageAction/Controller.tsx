@@ -106,7 +106,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
       <div
         className={cn(
           'flex flex-col items-center gap-2 w-fit pointer-events-auto',
-          'backdrop-blur-md bg-gray-200/40 rounded-md p-4 pr-3 shadow-md',
+          'backdrop-blur bg-gray-300/20 rounded-md p-4 pr-3 shadow-md',
         )}
         ref={ref}
         data-hover={hover}
@@ -124,7 +124,6 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 className={css.recordButtonIcon}
               />
               <span className={css.buttonLabelStatus}>Recording...</span>
-              <div className={css.buttonHighlight} />
             </button>
           ) : (
             <button
@@ -141,15 +140,13 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 <span className={css.buttonLabelStatus}>Not</span>
                 <span className={css.buttonLabelStatus}>Recording</span>
               </p>
-              <div className={css.buttonHighlight} />
             </button>
           )}
 
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             <button className={css.button} onClick={() => finish()}>
               <Check size={iconSize} className="stroke-gray-600" />
               <span className={css.buttonLabel}>Finish</span>
-              <div className={css.buttonHighlight} />
             </button>
 
             {isRunning ? (
@@ -159,19 +156,16 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               >
                 <Square size={iconSize} className="stroke-gray-600" />
                 <span className={css.buttonLabel}>Stop</span>
-                <div className={css.buttonHighlight} />
               </button>
             ) : (
               <button className={css.button} onClick={() => preview()}>
                 <Play size={iconSize} className="stroke-gray-600" />
                 <span className={css.buttonLabel}>Preview</span>
-                <div className={css.buttonHighlight} />
               </button>
             )}
             <button className={css.button} onClick={() => reset()}>
               <RotateCcw size={iconSize} className="stroke-gray-600" />
               <span className={css.buttonLabel}>Reset</span>
-              <div className={css.buttonHighlight} />
             </button>
           </div>
         </div>

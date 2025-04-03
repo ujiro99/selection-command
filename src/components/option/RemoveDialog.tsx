@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Trash2 } from 'lucide-react'
 import { t } from '@/services/i18n'
 
@@ -27,9 +28,14 @@ export const RemoveDialog = ({
   onRemove,
   children,
 }: RemoveDialogProps) => {
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const handleOpenAutoFocus = (e: Event) => {
+    closeRef.current?.focus()
+    e.preventDefault()
+  }
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent onOpenAutoFocus={handleOpenAutoFocus}>
         <DialogHeader>
           <DialogTitle>{t('Option_remove_title')}</DialogTitle>
         </DialogHeader>
@@ -47,6 +53,7 @@ export const RemoveDialog = ({
               variant="destructive"
               size="lg"
               onClick={() => onRemove()}
+              ref={closeRef}
             >
               <Trash2 />
               {t('Option_remove_ok')}

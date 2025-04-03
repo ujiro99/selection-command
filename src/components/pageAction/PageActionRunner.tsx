@@ -78,7 +78,7 @@ export function PageActionRunner(): JSX.Element {
     <div
       className={cn(
         'relative fixed z-[2147483647] top-2 right-2 pointer-events-none',
-        'backdrop-blur-md bg-gray-200/40 rounded-md shadow-md transition-opacity duration-300',
+        'backdrop-blur bg-gray-300/20 rounded-md shadow-md transition-opacity duration-300',
         visible ? 'opacity-100' : 'opacity-0',
       )}
     >

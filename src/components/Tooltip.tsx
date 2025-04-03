@@ -53,6 +53,8 @@ export function Tooltip(props: PopupProps) {
     return null
   }
 
+  const noFocus = (e: Event) => e.preventDefault()
+
   return (
     <Popover open={isOpen}>
       <PopoverAnchor virtualRef={{ current: props.positionElm }} />
@@ -63,6 +65,7 @@ export function Tooltip(props: PopupProps) {
           )}
           side={side ?? 'top'}
           arrowPadding={-1}
+          onOpenAutoFocus={noFocus}
         >
           {props.text}
           <PopoverArrow className="fill-gray-800" height={6} />

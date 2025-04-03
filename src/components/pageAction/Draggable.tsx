@@ -51,8 +51,8 @@ export function Draggable(props: Props) {
       <button
         className={cn(
           css.dragHandle,
-          'pointer-events-auto absolute p-1 top-[50%] translate-x-[2px] translate-y-[-50%]',
-          'rounded-md transition hover:bg-white/50',
+          'pointer-events-auto absolute px-0.5 py-1 ml-0.5 top-[50%] translate-x-[2px] translate-y-[-50%]',
+          'rounded-md transition hover:bg-gray-300/50 hover:scale-110',
         )}
         {...listeners}
         {...attributes}
