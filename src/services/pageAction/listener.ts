@@ -82,6 +82,8 @@ const getLabel = (e: Element): string => {
   }
 }
 
+let focusElm: HTMLElement | null = null
+let focusXpath: string | null = null
 let prevInputElm: Element | null = null
 let prevInputXpath: string | null = null
 
@@ -105,6 +107,11 @@ const getXPathM = (e: Element | null, type?: string): string => {
         : rebula.getRobustXPath(e, document)
     prevInputElm = e
     prevInputXpath = xpath
+  } else if (type === PAGE_ACTION_EVENT.keyboard) {
+    xpath = rebula.getRobustXPath(e, document)
+    if (getElementByXPath(xpath) == null && focusXpath != null) {
+      xpath = focusXpath
+    }
   } else {
     xpath = rebula.getRobustXPath(e, document)
   }
@@ -132,9 +139,6 @@ interface EventsFunctions {
 }
 
 export const PageActionListener = (() => {
-  let focusElm: HTMLElement | null = null
-  let focusXpath: string | null = null
-
   const onFocusIn = (event: FocusEvent) => {
     focusElm = event.target as HTMLElement
     if (isPopup(focusElm)) return
@@ -194,10 +198,7 @@ export const PageActionListener = (() => {
     keyboard: (e: KeyboardEvent) => {
       if (isPopup(e.target as HTMLElement)) return
       if (!isTargetKey(e)) return
-      let xpath = getXPathM(e.target as HTMLElement)
-      if (getElementByXPath(xpath) == null && focusXpath != null) {
-        xpath = focusXpath
-      }
+      let xpath = getXPathM(e.target as HTMLElement, e.type)
       Ipc.send(BgCommand.addPageAction, {
         timestamp: getTimeStamp(),
         param: {
