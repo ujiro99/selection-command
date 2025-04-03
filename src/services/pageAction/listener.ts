@@ -82,11 +82,36 @@ const getLabel = (e: Element): string => {
   }
 }
 
-const getXPathM = (e: Element | null): string => {
+let prevInputElm: Element | null = null
+let prevInputXpath: string | null = null
+
+/**
+ * Get the robust XPath of an element.
+ * @param {Element} e - The element to get the XPath of.
+ * @param {string} type - The type of event (optional).
+ * @return {string} - The XPath of the element.
+ */
+const getXPathM = (e: Element | null, type?: string): string => {
   if (e == null) return ''
   const rebula = new RobulaPlus()
-  const xpath = rebula.getRobustXPath(e, document)
+
+  let xpath
+  if (type === PAGE_ACTION_EVENT.input) {
+    // Use the first xpath since robula's xpath also uses
+    // the value of the element and changes during input.
+    xpath =
+      prevInputXpath && e === prevInputElm
+        ? prevInputXpath
+        : rebula.getRobustXPath(e, document)
+    prevInputElm = e
+    prevInputXpath = xpath
+  } else {
+    xpath = rebula.getRobustXPath(e, document)
+  }
+
+  console.log('getRobustXPath:', xpath)
   if (rebula.getElementByXPath(xpath, document) == null) {
+    // Fallback to get-xpath
     return getXPath(e)
   }
   return xpath
@@ -191,6 +216,7 @@ export const PageActionListener = (() => {
       })
     },
     input: (e: Event) => {
+      if (isPopup(e.target as HTMLElement)) return
       let target = e.target as HTMLElement
       let value: string | null = null
       if (isInput(target) || isTextarea(target)) {
@@ -201,7 +227,7 @@ export const PageActionListener = (() => {
         value = target.nodeValue
         target = target.parentElement as HTMLElement
       }
-      const xpath = getXPathM(target)
+      const xpath = getXPathM(target, e.type)
       if (value != null) {
         value = convReadableKeysToSymbols(value)
         Ipc.send(BgCommand.addPageAction, {
