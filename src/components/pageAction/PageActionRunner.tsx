@@ -14,7 +14,7 @@ import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
 import { RunningStatus } from '@/services/pageAction'
 import { Ipc } from '@/services/ipc'
 import type { PageActiontResult, PageActiontStatus } from '@/types'
-import { EXEC_STATE } from '@/const'
+import { EXEC_STATE, PAGE_ACTION_CONTROL } from '@/const'
 import { cn, isEmpty } from '@/lib/utils'
 
 export function PageActionRunner(): JSX.Element {
@@ -38,8 +38,8 @@ export function PageActionRunner(): JSX.Element {
     setResults(status.results)
     if (hasError(status.results)) return
     startTimeRef.current = Date.now()
-    const duration =
-      status.results.find((r) => r.stepId === status.stepId)?.duration ?? 1
+    const result = status.results.find((r) => r.stepId === status.stepId)
+    const duration = result?.duration ?? 1
     progressTORef.current = window.setInterval(() => {
       const prgrs = ((Date.now() - startTimeRef.current) / duration) * 100
       if (prgrs >= 100) {

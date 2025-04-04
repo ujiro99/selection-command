@@ -62,6 +62,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
 
     const reset = () => {
       clearState()
+      RunningStatus.clear()
       Ipc.send(BgCommand.resetPageAction)
     }
 

@@ -4,6 +4,17 @@ import type { PageActiontStatus, PageActionStep } from '@/types'
 import { TIMEOUT } from '@/services/pageAction'
 
 export const RunningStatus = {
+  clear: async () => {
+    await Storage.update<PageActiontStatus>(
+      SESSION_STORAGE_KEY.PA_RUNNING,
+      (_cur) => ({
+        tabId: 0,
+        stepId: '',
+        results: [],
+      }),
+    )
+  },
+
   init: async (tabId: number, steps: PageActionStep[]) => {
     const results = steps.map((s) => ({
       stepId: s.id,
@@ -25,19 +36,19 @@ export const RunningStatus = {
     message?: string,
     duration = TIMEOUT,
   ) => {
-    const status = await Storage.get<PageActiontStatus>(
+    return await Storage.update<PageActiontStatus>(
       SESSION_STORAGE_KEY.PA_RUNNING,
-    )
-    return await Storage.set(SESSION_STORAGE_KEY.PA_RUNNING, {
-      ...status,
-      stepId,
-      results: status.results.map((r) => {
-        if (r.stepId === stepId) {
-          return { ...r, status: state, message, duration }
-        }
-        return r
+      (status) => ({
+        ...status,
+        stepId,
+        results: status.results.map((r) => {
+          if (r.stepId === stepId) {
+            return { ...r, status: state, message, duration }
+          }
+          return r
+        }),
       }),
-    })
+    )
   },
 
   get: async (): Promise<PageActiontStatus> => {

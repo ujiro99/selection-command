@@ -96,37 +96,35 @@ let prevInputXpath: string | null = null
 const getXPathM = (e: Element | null, type?: string): string => {
   if (e == null) return ''
   const rebula = new RobulaPlus()
+  const getXPath = (e: Element): string => {
+    return rebula.getRobustXPath(e, document)
+  }
+  const getElement = (xpath: string): Element | null => {
+    return rebula.getElementByXPath(xpath, document)
+  }
 
   let xpath
   if (type === PAGE_ACTION_EVENT.input) {
     // Use the first xpath since robula's xpath also uses
     // the value of the element and changes during input.
-    xpath =
-      prevInputXpath && e === prevInputElm
-        ? prevInputXpath
-        : rebula.getRobustXPath(e, document)
+    xpath = prevInputXpath && e === prevInputElm ? prevInputXpath : getXPath(e)
     prevInputElm = e
     prevInputXpath = xpath
   } else if (type === PAGE_ACTION_EVENT.keyboard) {
-    xpath = rebula.getRobustXPath(e, document)
-    if (getElementByXPath(xpath) == null && focusXpath != null) {
+    xpath = getXPath(e)
+    if (getElement(xpath) == null && focusXpath != null) {
       xpath = focusXpath
     }
   } else {
-    xpath = rebula.getRobustXPath(e, document)
+    xpath = getXPath(e)
   }
 
   console.log('getRobustXPath:', xpath)
-  if (rebula.getElementByXPath(xpath, document) == null) {
+  if (getElement(xpath) == null) {
     // Fallback to get-xpath
     return getXPath(e)
   }
   return xpath
-}
-
-const getElementByXPath = (xpath: string): Element | null => {
-  const rebula = new RobulaPlus()
-  return rebula.getElementByXPath(xpath, document)
 }
 
 interface EventsFunctions {
@@ -196,8 +194,14 @@ export const PageActionListener = (() => {
       })
     },
     keyboard: (e: KeyboardEvent) => {
-      if (isPopup(e.target as HTMLElement)) return
+      const target = e.target as HTMLElement
+      if (isPopup(target)) return
       if (!isTargetKey(e)) return
+      if (isInput(target) || isTextarea(target) || isEditable(target)) {
+        // Ignore input and textarea events
+        if (!['Tab', 'Enter'].includes(e.key)) return
+      }
+
       let xpath = getXPathM(e.target as HTMLElement, e.type)
       Ipc.send(BgCommand.addPageAction, {
         timestamp: getTimeStamp(),

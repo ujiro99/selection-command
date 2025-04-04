@@ -40,7 +40,7 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
   [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
   [SESSION_STORAGE_KEY.PA_RECORDING]: [],
-  [SESSION_STORAGE_KEY.PA_RUNNING]: [],
+  [SESSION_STORAGE_KEY.PA_RUNNING]: {},
   [SESSION_STORAGE_KEY.PA_CONTEXT]: {},
   [SESSION_STORAGE_KEY.PA_RECORDER_OPTION]: {},
 }
@@ -77,6 +77,8 @@ chrome.storage.onChanged.addListener((changes) => {
   }
 })
 
+type UpdateFunc<T> = (currentVal: T) => T
+
 export const Storage = {
   /**
    * Get a item from chrome sync storage.
@@ -105,6 +107,20 @@ export const Storage = {
       throw chrome.runtime.lastError
     }
     return true
+  },
+
+  /**
+   * Set a item to chrome sync storage.
+   *
+   * @param {string} key key of item.
+   * @param {UpdateFunc} updater function to update item.
+   *
+   * @returns {Promise<boolean>} true if success's
+   */
+  update: async <T>(key: KEY, updater: UpdateFunc<T>): Promise<boolean> => {
+    const data = await Storage.get<T>(key)
+    const newData = updater(data)
+    return await Storage.set(key, newData)
   },
 
   /**
