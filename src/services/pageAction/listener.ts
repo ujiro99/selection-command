@@ -96,7 +96,7 @@ let prevInputXpath: string | null = null
 const getXPathM = (e: Element | null, type?: string): string => {
   if (e == null) return ''
   const rebula = new RobulaPlus()
-  const getXPath = (e: Element): string => {
+  const getXPathR = (e: Element): string => {
     return rebula.getRobustXPath(e, document)
   }
   const getElement = (xpath: string): Element | null => {
@@ -107,16 +107,16 @@ const getXPathM = (e: Element | null, type?: string): string => {
   if (type === PAGE_ACTION_EVENT.input) {
     // Use the first xpath since robula's xpath also uses
     // the value of the element and changes during input.
-    xpath = prevInputXpath && e === prevInputElm ? prevInputXpath : getXPath(e)
+    xpath = prevInputXpath && e === prevInputElm ? prevInputXpath : getXPathR(e)
     prevInputElm = e
     prevInputXpath = xpath
   } else if (type === PAGE_ACTION_EVENT.keyboard) {
-    xpath = getXPath(e)
+    xpath = getXPathR(e)
     if (getElement(xpath) == null && focusXpath != null) {
       xpath = focusXpath
     }
   } else {
-    xpath = getXPath(e)
+    xpath = getXPathR(e)
   }
 
   console.log('getRobustXPath:', xpath)
