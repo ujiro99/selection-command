@@ -31,10 +31,35 @@ export class RobulaPlus {
     'maxlength',
   ]
 
+  // Flag to determine whether to detect random number patterns
+  private avoidRandomPatterns: boolean = true
+
+  // Regular expressions used to detect random patterns
+  private randomPatterns: RegExp[] = [
+    // UUID/GUID pattern
+    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,
+    // Long numeric or alphanumeric strings (common in random IDs)
+    /[a-z0-9]{8,}/i,
+    // IDs ending with numbers, commonly used in React and other frameworks
+    /[a-z]+-[0-9]+/i,
+    // Numeric patterns at the end of class names
+    /[a-z]+_[0-9]{3,}/i,
+    // Hash-like combinations of numbers and letters
+    /[a-f0-9]{6,}/i,
+  ]
+
   constructor(options?: RobulaPlusOptions) {
     if (options) {
       this.attributePriorizationList = options.attributePriorizationList
       this.attributeBlackList = options.attributeBlackList
+
+      if (options.avoidRandomPatterns !== undefined) {
+        this.avoidRandomPatterns = options.avoidRandomPatterns
+      }
+
+      if (options.randomPatterns) {
+        this.randomPatterns = options.randomPatterns
+      }
     }
   }
 
@@ -163,7 +188,10 @@ export class RobulaPlus {
       // add priority attributes to output
       for (const priorityAttribute of this.attributePriorizationList) {
         for (const attribute of ancestor.attributes) {
-          if (attribute.name === priorityAttribute) {
+          if (
+            attribute.name === priorityAttribute &&
+            this.isAttributeUsable(attribute)
+          ) {
             const newXPath: XPath = new XPath(xPath.getValue())
             newXPath.addPredicateToHead(
               `[@${attribute.name}='${attribute.value}']`,
@@ -173,11 +201,11 @@ export class RobulaPlus {
           }
         }
       }
-      // append all other non-blacklist attributes to output
+      // append all other non-blacklist and non-random attributes to output
       for (const attribute of ancestor.attributes) {
         if (
-          !this.attributeBlackList.includes(attribute.name) &&
-          !this.attributePriorizationList.includes(attribute.name)
+          !this.attributePriorizationList.includes(attribute.name) &&
+          this.isAttributeUsable(attribute)
         ) {
           const newXPath: XPath = new XPath(xPath.getValue())
           newXPath.addPredicateToHead(
@@ -198,9 +226,9 @@ export class RobulaPlus {
       this.attributePriorizationList.unshift('id')
       let attributes: Attr[] = [...ancestor.attributes]
 
-      // remove black list attributes
-      attributes = attributes.filter(
-        (attribute) => !this.attributeBlackList.includes(attribute.name),
+      // Filter to only use usable attributes
+      attributes = attributes.filter((attribute) =>
+        this.isAttributeUsable(attribute),
       )
 
       // generate power set
@@ -319,6 +347,32 @@ export class RobulaPlus {
     }
     return count
   }
+
+  /**
+   * Check if attribute value contains random patterns
+   */
+  private containsRandomPattern(value: string): boolean {
+    if (!this.avoidRandomPatterns) return false
+
+    return this.randomPatterns.some((pattern) => pattern.test(value))
+  }
+
+  /**
+   * Determine if an attribute can be used as an XPath locator
+   */
+  private isAttributeUsable(attribute: Attr): boolean {
+    // Don't use attributes in the blacklist
+    if (this.attributeBlackList.includes(attribute.name)) {
+      return false
+    }
+
+    // Don't use attribute values containing random patterns
+    if (this.containsRandomPattern(attribute.value)) {
+      return false
+    }
+
+    return true
+  }
 }
 
 export class XPath {
@@ -376,10 +430,13 @@ export class XPath {
   }
 }
 
+// Update RobulaPlusOptions class
 export class RobulaPlusOptions {
   /**
    * @attribute - attributePriorizationList: A prioritized list of HTML attributes, which are considered in the given order.
    * @attribute - attributeBlackList: Contains HTML attributes, which are classified as too fragile and are ignored by the algorithm.
+   * @attribute - avoidRandomPatterns: If true, attributes with values containing random-looking patterns will be avoided.
+   * @attribute - randomPatterns: Custom regex patterns to detect random values.
    */
 
   public attributePriorizationList: string[] = [
@@ -401,4 +458,6 @@ export class RobulaPlusOptions {
     'size',
     'maxlength',
   ]
+  public avoidRandomPatterns?: boolean
+  public randomPatterns?: RegExp[]
 }
