@@ -272,6 +272,7 @@ export const PageActionListener = (() => {
       const x = Math.trunc(window.scrollX)
       const y = Math.trunc(window.scrollY)
       const stepId = generateRandomID()
+      if (x < 10 && y < 10) return
       Ipc.send<PageActionStep>(BgCommand.addPageAction, {
         id: stepId,
         timestamp: getTimeStamp(),

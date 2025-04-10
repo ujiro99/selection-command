@@ -46,6 +46,7 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.PA_RUNNING]: {},
   [SESSION_STORAGE_KEY.PA_CONTEXT]: {},
   [SESSION_STORAGE_KEY.PA_RECORDER_OPTION]: {},
+  [SESSION_STORAGE_KEY.TMP_CAPTURES]: {},
 }
 
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {

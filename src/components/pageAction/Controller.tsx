@@ -1,5 +1,13 @@
 import { useEffect, useState, forwardRef } from 'react'
-import { Disc3, Circle, Play, Square, RotateCcw, Check } from 'lucide-react'
+import {
+  Disc3,
+  Circle,
+  Play,
+  Square,
+  RotateCcw,
+  Check,
+  LoaderCircle,
+} from 'lucide-react'
 import { StepList } from '@/components/pageAction/StepList'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
 import {
@@ -85,6 +93,11 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       RunningStatus.subscribe(onStatusChange)
+      RunningStatus.get().then((status) => {
+        setCurrentId(status.stepId)
+        setFailedId('')
+        setFailedMesage('')
+      })
       return () => {
         RunningStatus.unsubscribe(onStatusChange)
       }
@@ -126,6 +139,17 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               />
               <span className={css.buttonLabelStatus}>Recording...</span>
             </button>
+          ) : isRunning ? (
+            <div className="flex items-center gap-1.5 p-1 py-0.5">
+              <LoaderCircle
+                size={iconSize + 2}
+                strokeWidth="1.5"
+                className="stroke-sky-500 animate-spin"
+              />
+              <p className="flex items-center gap-1">
+                <span className={css.buttonLabelStatus}>Previewing</span>
+              </p>
+            </div>
           ) : (
             <button
               type="button"
