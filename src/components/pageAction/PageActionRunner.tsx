@@ -14,7 +14,7 @@ import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
 import { RunningStatus } from '@/services/pageAction'
 import { Ipc } from '@/services/ipc'
 import type { PageActiontResult, PageActiontStatus } from '@/types'
-import { EXEC_STATE, PAGE_ACTION_CONTROL } from '@/const'
+import { EXEC_STATE } from '@/const'
 import { cn, isEmpty } from '@/lib/utils'
 
 export function PageActionRunner(): JSX.Element {
@@ -126,7 +126,11 @@ const Step = ({ result }: { result: PageActiontResult }) => {
       />
       <span className="font-mono max-w-40 truncate">{result.label}</span>
       {hasMessage && (
-        <Tooltip positionElm={stepRef.current} text={result.message ?? ''} />
+        <Tooltip
+          positionElm={stepRef.current}
+          text={result.message ?? ''}
+          className="max-w-64"
+        />
       )}
     </li>
   )

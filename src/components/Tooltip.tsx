@@ -13,6 +13,7 @@ type PopupProps = {
   positionElm: Element | null
   disabled?: boolean
   delay?: number
+  className?: string
 }
 
 export function Tooltip(props: PopupProps) {
@@ -62,6 +63,7 @@ export function Tooltip(props: PopupProps) {
         <PopoverContent
           className={clsx(
             'bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 text-xs text-white shadow-md',
+            props.className,
           )}
           side={side ?? 'top'}
           arrowPadding={-1}
