@@ -3,13 +3,9 @@ import { RobulaPlus } from '@/lib/robula-plus'
 import { isPopup, isEmpty, generateRandomID } from '@/lib/utils'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { PageAction, convReadableKeysToSymbols } from '@/services/pageAction'
-import {
-  isTextNode,
-  isSvgElement,
-  captureElementScreenshot,
-} from '@/services/dom'
+import { isTextNode, isSvgElement } from '@/services/dom'
 import { PAGE_ACTION_EVENT, SelectorType } from '@/const'
-import { PageActionStep, CaptureData } from '@/types'
+import { PageActionStep } from '@/types'
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
   if (e.shiftKey && e.key === 'Enter') return false
