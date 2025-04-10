@@ -71,7 +71,6 @@ export const add = (
       return
     }
 
-    step.id = generateRandomID()
     const prev = steps.at(-1)
     const prevType = prev?.param.type
 

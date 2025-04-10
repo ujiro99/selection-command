@@ -1,10 +1,15 @@
 import getXPath from 'get-xpath'
 import { RobulaPlus } from '@/lib/robula-plus'
-import { isPopup, isEmpty } from '@/lib/utils'
+import { isPopup, isEmpty, generateRandomID } from '@/lib/utils'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { PageAction, convReadableKeysToSymbols } from '@/services/pageAction'
-import { isTextNode, isSvgElement } from '@/services/dom'
+import {
+  isTextNode,
+  isSvgElement,
+  captureElementScreenshot,
+} from '@/services/dom'
 import { PAGE_ACTION_EVENT, SelectorType } from '@/const'
+import { PageActionStep, CaptureData } from '@/types'
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
   if (e.shiftKey && e.key === 'Enter') return false
@@ -129,11 +134,21 @@ const getXPathM = (e: Element | null, type?: string): string => {
 
 interface EventsFunctions {
   [PAGE_ACTION_EVENT.click]: (e: MouseEvent) => void
-  [PAGE_ACTION_EVENT.doubleClick]: (xpath: string, label: string) => void
-  [PAGE_ACTION_EVENT.tripleClick]: (xpath: string, label: string) => void
+  [PAGE_ACTION_EVENT.doubleClick]: (
+    xpath: string,
+    label: string,
+    id: string,
+    captureId?: string,
+  ) => void
+  [PAGE_ACTION_EVENT.tripleClick]: (
+    xpath: string,
+    label: string,
+    id: string,
+    captureId?: string,
+  ) => void
   [PAGE_ACTION_EVENT.keyboard]: (e: KeyboardEvent) => void
   [PAGE_ACTION_EVENT.input]: (e: Event) => void
-  [PAGE_ACTION_EVENT.scroll]: () => void
+  [PAGE_ACTION_EVENT.scroll]: (e: Event) => void
 }
 
 export const PageActionListener = (() => {
@@ -144,7 +159,7 @@ export const PageActionListener = (() => {
   }
 
   const func: EventsFunctions = {
-    click(e: MouseEvent) {
+    async click(e: MouseEvent) {
       if (isPopup(e.target as HTMLElement)) return
       if (e.button !== 0) return // left click only
       let xpath = getXPathM(e.target as HTMLElement)
@@ -154,14 +169,17 @@ export const PageActionListener = (() => {
         xpath = getXPathM(targetAtPoint)
         label = getLabel(targetAtPoint as Element)
       }
+
+      const stepId = generateRandomID()
       if (e.detail === 2) {
-        return func.doubleClick(xpath, label)
+        return func.doubleClick(xpath, label, stepId)
       }
       if (e.detail === 3) {
-        return func.tripleClick(xpath, label)
+        return func.tripleClick(xpath, label, stepId)
       }
-      Ipc.send(BgCommand.addPageAction, {
-        eventType: e.type,
+
+      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+        id: stepId,
         timestamp: getTimeStamp(),
         param: {
           type: PAGE_ACTION_EVENT.click,
@@ -171,8 +189,9 @@ export const PageActionListener = (() => {
         } as PageAction.Click,
       })
     },
-    doubleClick(xpath: string, label: string) {
-      Ipc.send(BgCommand.addPageAction, {
+    doubleClick(xpath: string, label: string, id: string) {
+      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+        id,
         timestamp: getTimeStamp(),
         param: {
           type: PAGE_ACTION_EVENT.doubleClick,
@@ -182,8 +201,9 @@ export const PageActionListener = (() => {
         } as PageAction.Click,
       })
     },
-    tripleClick(xpath: string, label: string) {
-      Ipc.send(BgCommand.addPageAction, {
+    tripleClick(xpath: string, label: string, id: string) {
+      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+        id,
         timestamp: getTimeStamp(),
         param: {
           type: PAGE_ACTION_EVENT.tripleClick,
@@ -193,7 +213,7 @@ export const PageActionListener = (() => {
         } as PageAction.Click,
       })
     },
-    keyboard: (e: KeyboardEvent) => {
+    async keyboard(e: KeyboardEvent) {
       const target = e.target as HTMLElement
       if (isPopup(target)) return
       if (!isTargetKey(e)) return
@@ -202,8 +222,10 @@ export const PageActionListener = (() => {
         if (!['Tab', 'Enter'].includes(e.key)) return
       }
 
-      let xpath = getXPathM(e.target as HTMLElement, e.type)
-      Ipc.send(BgCommand.addPageAction, {
+      const stepId = generateRandomID()
+      const xpath = getXPathM(e.target as HTMLElement, e.type)
+      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+        id: stepId,
         timestamp: getTimeStamp(),
         param: {
           type: PAGE_ACTION_EVENT.keyboard,
@@ -220,7 +242,7 @@ export const PageActionListener = (() => {
         } as PageAction.Keyboard,
       })
     },
-    input: (e: Event) => {
+    async input(e: Event) {
       if (isPopup(e.target as HTMLElement)) return
       let target = e.target as HTMLElement
       let value: string | null = null
@@ -232,10 +254,13 @@ export const PageActionListener = (() => {
         value = target.nodeValue
         target = target.parentElement as HTMLElement
       }
+
+      const stepId = generateRandomID()
       const xpath = getXPathM(target, e.type)
       if (value != null) {
         value = convReadableKeysToSymbols(value)
-        Ipc.send(BgCommand.addPageAction, {
+        Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+          id: stepId,
           timestamp: getTimeStamp(),
           param: {
             type: PAGE_ACTION_EVENT.input,
@@ -250,7 +275,9 @@ export const PageActionListener = (() => {
     scroll() {
       const x = Math.trunc(window.scrollX)
       const y = Math.trunc(window.scrollY)
-      Ipc.send(BgCommand.addPageAction, {
+      const stepId = generateRandomID()
+      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+        id: stepId,
         timestamp: getTimeStamp(),
         param: {
           type: PAGE_ACTION_EVENT.scroll,

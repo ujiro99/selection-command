@@ -1,5 +1,5 @@
 import DefaultSettings, { DefaultCommands } from './defaultSettings'
-import { Command } from '@/types'
+import { Command, CaptureDataStorage } from '@/types'
 
 export enum STORAGE_KEY {
   USER = 0,
@@ -10,12 +10,14 @@ export enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',
   CLIENT_ID = 'clientId',
   STARS = 'stars',
+  CAPTURES = 'captures',
 }
 
 export enum SESSION_STORAGE_KEY {
   BG = 'bg',
   SESSION_DATA = 'sessionData',
   MESSAGE_QUEUE = 'messageQueue',
+  TMP_CAPTURES = 'tmpCaptures',
   PA_RECORDING = 'pageActionRecording',
   PA_RUNNING = 'pageActionRunning',
   PA_CONTEXT = 'pageActionContext',
@@ -36,6 +38,7 @@ const DEFAULTS = {
   },
   [LOCAL_STORAGE_KEY.CLIENT_ID]: '',
   [LOCAL_STORAGE_KEY.STARS]: [],
+  [LOCAL_STORAGE_KEY.CAPTURES]: {},
   [SESSION_STORAGE_KEY.BG]: {},
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
   [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],
@@ -153,6 +156,23 @@ export const Storage = {
   commandKeys: async (): Promise<string[]> => {
     const count = await Storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
     return Array.from({ length: count }, (_, i) => `${CMD_PREFIX}${i}`)
+  },
+
+  getCapture: async (key: string): Promise<string | undefined> => {
+    let captures = await Storage.get<CaptureDataStorage>(
+      LOCAL_STORAGE_KEY.CAPTURES,
+    )
+    let c = captures[key]
+    if (c != null) {
+      return c
+    }
+    captures = await Storage.get<CaptureDataStorage>(
+      SESSION_STORAGE_KEY.TMP_CAPTURES,
+    )
+    c = captures[key]
+    if (c != null) {
+      return c
+    }
   },
 
   /**

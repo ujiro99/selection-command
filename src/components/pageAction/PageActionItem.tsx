@@ -15,6 +15,7 @@ import { cn, capitalize, onHover, isEmpty } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import type { PageActionStep } from '@/types'
 import type { PageAction } from '@/services/pageAction'
+import { Storage } from '@/services/storage'
 
 const isInputParam = (
   param: PageAction.Parameter,
@@ -36,9 +37,11 @@ export function PageActionItem(props: Props): JSX.Element {
   const { step, currentId, failedId, failedMessage } = props
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
+  const [capture, setCapture] = useState<string>()
   const anchorRef = useRef<HTMLLIElement>(null)
   const isFailed = failedId === step.id
   const hasLabel = !isEmpty(step.param.label)
+  const capturedId = step.captureId
 
   // For Input step
   const param = step.param
@@ -83,6 +86,15 @@ export function PageActionItem(props: Props): JSX.Element {
     }
     return () => clearTimeout(timer)
   }, [isOpen])
+
+  useEffect(() => {
+    if (capturedId == null) return
+    Storage.getCapture(capturedId).then((data) => {
+      console.log('getCapture', capturedId, data)
+      if (data == null) return
+      setCapture(data)
+    })
+  }, [capturedId])
 
   return (
     <li
@@ -131,9 +143,18 @@ export function PageActionItem(props: Props): JSX.Element {
             {isFailed && (
               <p className="text-sm text-red-600">{failedMessage}</p>
             )}
-            {hasLabel && (
-              <p className="truncate text-sm mt-2">{step.param.label}</p>
-            )}
+            <div className="mt-2 flex items-center gap-1">
+              {capture && (
+                <img
+                  src={capture}
+                  alt="capture of target element."
+                  className="rounded-md w-12 h-12 object-scale-down"
+                />
+              )}
+              {hasLabel && (
+                <p className="truncate text-sm">{step.param.label}</p>
+              )}
+            </div>
             {isInput && param.value != param.label && (
               <pre className="text-xs mt-1 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
                 {param.value}

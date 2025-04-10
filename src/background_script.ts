@@ -13,7 +13,15 @@ import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import { BgData } from '@/services/backgroundData'
 import { escapeJson, isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import type { IpcCallback } from '@/services/ipc'
-import type { CommandVariable, WindowType, WindowLayer } from '@/types'
+import type {
+  CommandVariable,
+  WindowType,
+  WindowLayer,
+  CaptureData,
+  CaptureDataStorage,
+  CaptureScreenShotRes,
+} from '@/types'
+import { Storage, SESSION_STORAGE_KEY } from './services/storage'
 
 const OPTION_PAGE = 'src/options_page.html'
 
@@ -291,6 +299,50 @@ const commandFuncs = {
     }
     toggle()
     return true
+  },
+
+  [BgCommand.captureScreenshot]: (
+    _,
+    sender: Sender,
+    response: (res: CaptureScreenShotRes) => void,
+  ): boolean => {
+    const tabId = sender.tab?.id
+    const windowId = sender.tab?.windowId
+    if (!tabId || !windowId) {
+      response({ success: false, error: 'TabId or WindowId not found.' })
+      return true
+    }
+
+    chrome.tabs.captureVisibleTab(windowId, { format: 'png' }, (dataUrl) => {
+      if (chrome.runtime.lastError) {
+        response({ success: false, error: chrome.runtime.lastError.message })
+        return
+      }
+      response({ success: true, data: dataUrl })
+    })
+    return true
+  },
+
+  [BgCommand.addCapture]: (
+    param: CaptureData,
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    try {
+      Storage.update<CaptureDataStorage>(
+        SESSION_STORAGE_KEY.TMP_CAPTURES,
+        (captures) => ({
+          ...captures,
+          [param.id]: param.data,
+        }),
+      ).then(() => {
+        response(true)
+      })
+    } catch (e) {
+      console.error(e)
+      response(false)
+    }
+    return false
   },
 
   //

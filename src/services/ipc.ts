@@ -14,8 +14,10 @@ export enum BgCommand {
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
+  captureScreenshot = 'captureScreenshot',
   // PageAction
   addPageAction = 'addPageAction',
+  addCapture = 'addCapture',
   updatePageAction = 'updatePageAction',
   removePageAction = 'removePageAction',
   resetPageAction = 'resetPageAction',
