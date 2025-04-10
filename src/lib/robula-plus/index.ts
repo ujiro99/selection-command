@@ -46,12 +46,21 @@ export class RobulaPlus {
     /[a-z]+_[0-9]{3,}/i,
     // Hash-like combinations of numbers and letters
     /[a-f0-9]{6,}/i,
+    // React useId pattern (e.g. :r0:, :ra:, etc.)
+    /:[a-z0-9]+:/i,
+    // More specific React useId pattern with just 'r' followed by numbers/letters
+    /:r[a-z0-9]+:/i,
   ]
+
+  // Flag to specifically avoid React useId patterns
+  private avoidReactUseIdPatterns: boolean = true
 
   constructor(options?: RobulaPlusOptions) {
     if (options) {
-      this.attributePriorizationList = options.attributePriorizationList
-      this.attributeBlackList = options.attributeBlackList
+      this.attributePriorizationList =
+        options.attributePriorizationList || this.attributePriorizationList
+      this.attributeBlackList =
+        options.attributeBlackList || this.attributeBlackList
 
       if (options.avoidRandomPatterns !== undefined) {
         this.avoidRandomPatterns = options.avoidRandomPatterns
@@ -59,6 +68,10 @@ export class RobulaPlus {
 
       if (options.randomPatterns) {
         this.randomPatterns = options.randomPatterns
+      }
+
+      if (options.avoidReactUseIdPatterns !== undefined) {
+        this.avoidReactUseIdPatterns = options.avoidReactUseIdPatterns
       }
     }
   }
@@ -157,9 +170,12 @@ export class RobulaPlus {
     const output: XPath[] = []
     const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
     if (ancestor.id && !xPath.headHasAnyPredicates()) {
-      const newXPath: XPath = new XPath(xPath.getValue())
-      newXPath.addPredicateToHead(`[@id='${ancestor.id}']`)
-      output.push(newXPath)
+      // Only add ID if it doesn't contain React useId patterns
+      if (this.isAttributeValueUsable(ancestor.id)) {
+        const newXPath: XPath = new XPath(xPath.getValue())
+        newXPath.addPredicateToHead(`[@id='${ancestor.id}']`)
+        output.push(newXPath)
+      }
     }
     return output
   }
@@ -349,12 +365,40 @@ export class RobulaPlus {
   }
 
   /**
+   * Check if attribute value contains React useId patterns
+   */
+  private containsReactUseIdPattern(value: string): boolean {
+    if (!this.avoidReactUseIdPatterns) return false
+
+    // React useId patterns typically look like :r0:, :ra:, etc.
+    const reactUseIdPattern = /:[a-z0-9]+:/
+    return reactUseIdPattern.test(value)
+  }
+
+  /**
    * Check if attribute value contains random patterns
    */
   private containsRandomPattern(value: string): boolean {
     if (!this.avoidRandomPatterns) return false
 
     return this.randomPatterns.some((pattern) => pattern.test(value))
+  }
+
+  /**
+   * Check if an attribute value is usable for XPath locators
+   */
+  private isAttributeValueUsable(value: string): boolean {
+    // Check for React useId patterns
+    if (this.containsReactUseIdPattern(value)) {
+      return false
+    }
+
+    // Check for other random patterns
+    if (this.containsRandomPattern(value)) {
+      return false
+    }
+
+    return true
   }
 
   /**
@@ -366,8 +410,8 @@ export class RobulaPlus {
       return false
     }
 
-    // Don't use attribute values containing random patterns
-    if (this.containsRandomPattern(attribute.value)) {
+    // Check if the attribute value contains React useId or other random patterns
+    if (!this.isAttributeValueUsable(attribute.value)) {
       return false
     }
 
@@ -437,6 +481,7 @@ export class RobulaPlusOptions {
    * @attribute - attributeBlackList: Contains HTML attributes, which are classified as too fragile and are ignored by the algorithm.
    * @attribute - avoidRandomPatterns: If true, attributes with values containing random-looking patterns will be avoided.
    * @attribute - randomPatterns: Custom regex patterns to detect random values.
+   * @attribute - avoidReactUseIdPatterns: If true, attributes with values containing React useId patterns will be avoided.
    */
 
   public attributePriorizationList: string[] = [
@@ -460,4 +505,5 @@ export class RobulaPlusOptions {
   ]
   public avoidRandomPatterns?: boolean
   public randomPatterns?: RegExp[]
+  public avoidReactUseIdPatterns?: boolean
 }
