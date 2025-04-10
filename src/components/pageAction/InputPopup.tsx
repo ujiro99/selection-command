@@ -93,7 +93,6 @@ function getSelectionOffsets(elm: HTMLElement | Text): {
 }
 
 const insertText = (targetElm: HTMLElement | Text, value: string) => {
-  console.log('insertText', value, targetElm)
   const { start, end } = getSelectionOffsets(targetElm)
   if (isInput(targetElm)) {
     const text = targetElm.value
@@ -206,8 +205,16 @@ export function InputPopup(): JSX.Element {
       if (isHTMLElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
-          e.target.innerText.trim().length !== 0,
+            e.target.innerText.trim().length !== 0,
         )
+      }
+    }
+
+    if (document.activeElement) {
+      const activeElement = document.activeElement as HTMLElement
+      if (isTargetEditable(activeElement)) {
+        setTargetElm(activeElement)
+        setMenuVisible(true)
       }
     }
 
