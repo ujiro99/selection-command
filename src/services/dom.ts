@@ -320,7 +320,7 @@ export const debounceDOMChange = (name: string): Promise<boolean> => {
       observer.disconnect()
       clearTimeout(mutationTimeout)
       clearTimeout(timeout)
-    }, 400)
+    }, 200)
     timeout = window.setTimeout(() => {
       console.warn('timeout debounce DOM Changing', name)
       resolve(false)
