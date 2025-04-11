@@ -114,8 +114,8 @@ export const PageActionSection = ({
 
       <div className="w-full flex items-center gap-1 py-4">
         <div className="w-2/6">
-          <FormLabel>Actions</FormLabel>
-          <FormDescription>記録されたアクション</FormDescription>
+          <FormLabel>{t('pageAction_title')}</FormLabel>
+          <FormDescription>{t('pageAction_desc')}</FormDescription>
         </div>
         <div className="w-4/6 relative">
           <StepList

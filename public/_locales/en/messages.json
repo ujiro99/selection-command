@@ -278,6 +278,12 @@
   "Option_startUrl_desc": {
     "message": "URL of the page where the action starts."
   },
+  "Option_pageAction_title": {
+    "message": "Actions"
+  },
+  "Option_pageAction_desc": {
+    "message": "Actions to be performed"
+  },
   "Option_pageAction_openMode": {
     "message": "Window Display Method"
   },
@@ -529,5 +535,26 @@
   },
   "PageAction_InputEditor_save": {
     "message": "Save"
+  },
+  "PageAction_Controller_recording": {
+    "message": "Recording"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "Not recording"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "Previewing"
+  },
+  "PageAction_Controller_stop": {
+    "message": "Stop"
+  },
+  "PageAction_Controller_complete": {
+    "message": "Complete"
+  },
+  "PageAction_Controller_preview": {
+    "message": "Preview"
+  },
+  "PageAction_Controller_reset": {
+    "message": "Reset"
   }
 }

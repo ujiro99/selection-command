@@ -128,7 +128,7 @@ export function PageActionItem(props: Props): JSX.Element {
             className={
               'bg-white px-3 py-2 min-w-32 max-w-80 text-xs text-gray-600'
             }
-            side={'bottom'}
+            side={'top'}
             arrowPadding={-5}
             ref={contentRef}
           >

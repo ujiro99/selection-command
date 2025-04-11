@@ -278,6 +278,12 @@
   "Option_startUrl_desc": {
     "message": "アクションを開始するページのURL"
   },
+  "Option_pageAction_title": {
+    "message": "Actions"
+  },
+  "Option_pageAction_desc": {
+    "message": "実行される操作"
+  },
   "Option_pageAction_openMode": {
     "message": "ウィンドウ表示方法"
   },
@@ -526,5 +532,26 @@
   },
   "PageAction_InputEditor_save": {
     "message": "保存する"
+  },
+  "PageAction_Controller_recording": {
+    "message": "記録中"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "停止中"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "プレビュー中"
+  },
+  "PageAction_Controller_stop": {
+    "message": "停止"
+  },
+  "PageAction_Controller_complete": {
+    "message": "完了"
+  },
+  "PageAction_Controller_preview": {
+    "message": "プレビュー"
+  },
+  "PageAction_Controller_reset": {
+    "message": "リセット"
   }
 }

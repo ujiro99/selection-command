@@ -137,7 +137,9 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 strokeWidth="1.5"
                 className={css.recordButtonIcon}
               />
-              <span className={css.buttonLabelStatus}>Recording...</span>
+              <span className={css.buttonLabelStatus}>
+                {t('PageAction_Controller_recording')}...
+              </span>
             </button>
           ) : isRunning ? (
             <div className="flex items-center gap-1.5 p-1 py-0.5">
@@ -146,9 +148,9 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 strokeWidth="1.5"
                 className="stroke-sky-500 animate-spin"
               />
-              <p className="flex items-center gap-1">
-                <span className={css.buttonLabelStatus}>Previewing</span>
-              </p>
+              <span className={css.buttonLabelStatus}>
+                {t('PageAction_Controller_previewing')}
+              </span>
             </div>
           ) : (
             <button
@@ -161,17 +163,18 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 strokeWidth="1.5"
                 className="stroke-gray-500 fill-gray-100"
               />
-              <p className="flex items-center gap-1">
-                <span className={css.buttonLabelStatus}>Not</span>
-                <span className={css.buttonLabelStatus}>Recording</span>
-              </p>
+              <span className={css.buttonLabelStatus}>
+                {t('PageAction_Controller_not_recording')}
+              </span>
             </button>
           )}
 
           <div className="flex gap-2">
             <button className={css.button} onClick={() => finish()}>
               <Check size={iconSize} className="stroke-gray-600" />
-              <span className={css.buttonLabel}>Finish</span>
+              <span className={css.buttonLabel}>
+                {t('PageAction_Controller_complete')}
+              </span>
             </button>
 
             {isRunning ? (
@@ -180,17 +183,23 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 onClick={() => Ipc.send(BgCommand.stopPageAction)}
               >
                 <Square size={iconSize} className="stroke-gray-600" />
-                <span className={css.buttonLabel}>Stop</span>
+                <span className={css.buttonLabel}>
+                  {t('PageAction_Controller_stop')}
+                </span>
               </button>
             ) : (
               <button className={css.button} onClick={() => preview()}>
                 <Play size={iconSize} className="stroke-gray-600" />
-                <span className={css.buttonLabel}>Preview</span>
+                <span className={css.buttonLabel}>
+                  {t('PageAction_Controller_preview')}
+                </span>
               </button>
             )}
             <button className={css.button} onClick={() => reset()}>
               <RotateCcw size={iconSize} className="stroke-gray-600" />
-              <span className={css.buttonLabel}>Reset</span>
+              <span className={css.buttonLabel}>
+                {t('PageAction_Controller_reset')}
+              </span>
             </button>
           </div>
         </div>
