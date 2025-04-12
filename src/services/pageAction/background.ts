@@ -314,7 +314,7 @@ export const run = (
         await RunningStatus.update(step.id, EXEC_STATE.Doing)
 
         if (step.param.type === PAGE_ACTION_CONTROL.start) {
-          // Reload tab
+          // Reload tab on start action.
           const url = (step.param as PageAction.Start).url
           url && (await chrome.tabs.update(tabId, { url }))
           await RunningStatus.update(step.id, EXEC_STATE.Done)

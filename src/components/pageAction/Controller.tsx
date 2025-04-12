@@ -120,7 +120,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
       <div
         className={cn(
           'flex flex-col items-center gap-2 w-fit pointer-events-auto',
-          'backdrop-blur bg-gray-300/20 rounded-md p-4 pr-3 shadow-md',
+          'backdrop-blur bg-gray-100/60 rounded-md py-4 pl-5 pr-3 shadow-md',
         )}
         ref={ref}
         data-hover={hover}

@@ -124,15 +124,26 @@ export const Ipc = {
     const tab = await chrome.tabs.get(tabId)
     if (tab.status !== 'complete') {
       await new Promise<void>((resolve) => {
+        const interval = setInterval(async () => {
+          const t = await chrome.tabs.get(tabId)
+          if (t.status === 'complete') {
+            resolve()
+            clearTimeout(timeout)
+            clearInterval(interval)
+            chrome.tabs.onUpdated.removeListener(cb)
+          }
+        }, 50)
         const timeout = setTimeout(() => {
-          console.warn('Connection timeout')
           resolve()
+          clearInterval(interval)
           chrome.tabs.onUpdated.removeListener(cb)
+          console.warn('Connection timeout')
         }, 4000)
         const cb = (id: number, info: chrome.tabs.TabChangeInfo) => {
           if (tabId === id && info.status === 'complete') {
             resolve()
             clearTimeout(timeout)
+            clearInterval(interval)
             chrome.tabs.onUpdated.removeListener(cb)
           }
         }
