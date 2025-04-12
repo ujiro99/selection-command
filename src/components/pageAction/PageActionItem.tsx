@@ -75,6 +75,16 @@ export function PageActionItem(props: Props): JSX.Element {
     }, 200)
   }
 
+  const handleClickEdit = () => {
+    setIsOpen(false)
+    props.onClickEdit(step.id)
+  }
+
+  const handleClickRemove = () => {
+    setIsOpen(false)
+    props.onClickRemove(step.id)
+  }
+
   useEffect(() => {
     let timer: NodeJS.Timeout
     if (isOpen) {
@@ -161,16 +171,8 @@ export function PageActionItem(props: Props): JSX.Element {
               </pre>
             )}
             <div className="flex justify-end gap-0.5 mt-1.5">
-              {isInput && (
-                <EditButton
-                  onClick={() => props.onClickEdit(step.id)}
-                  size={14}
-                />
-              )}
-              <RemoveButton
-                onClick={() => props.onClickRemove(step.id)}
-                size={14}
-              />
+              {isInput && <EditButton onClick={handleClickEdit} size={14} />}
+              <RemoveButton onClick={handleClickRemove} size={14} />
             </div>
             <PopoverArrow className="fill-white" height={6} />
           </PopoverContent>
