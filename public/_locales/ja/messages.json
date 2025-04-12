@@ -452,6 +452,9 @@
   "Option_edit_tooltip": {
     "message": "編集"
   },
+  "Option_copy_tooltip": {
+    "message": "コピー"
+  },
   "Option_remove_title": {
     "message": "削除しますか？"
   },
@@ -463,6 +466,15 @@
   },
   "Option_remove_description": {
     "message": "取り消しできません。よいですか？"
+  },
+  "Option_copy_title": {
+    "message": "コマンド複製"
+  },
+  "Option_copy_desc": {
+    "message": "タイトルを入力してください。"
+  },
+  "Option_copy_ok": {
+    "message": "複製する"
   },
   "Option_zod_number": {
     "message": "数値を入力してください。"

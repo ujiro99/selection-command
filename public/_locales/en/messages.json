@@ -452,6 +452,9 @@
   "Option_edit_tooltip": {
     "message": "Edit"
   },
+  "Option_copy_tooltip": {
+    "message": "Duplicate"
+  },
   "Option_remove_title": {
     "message": "Delete this?"
   },
@@ -463,6 +466,15 @@
   },
   "Option_remove_description": {
     "message": "This operation cannot be undone. Are you sure?"
+  },
+  "Option_copy_title": {
+    "message": "Duplicate Command"
+  },
+  "Option_copy_desc": {
+    "message": "Please enter the title."
+  },
+  "Option_copy_ok": {
+    "message": "Duplicate"
   },
   "Option_zod_number": {
     "message": "Please enter a number."
