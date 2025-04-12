@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import type { PageActiontStatus } from '@/types'
 import {
   PageActionDispatcher as dispatcher,
   PageAction,
@@ -6,8 +7,9 @@ import {
 import type { ExecPageAction } from '@/services/ipc'
 import { Ipc, TabCommand } from '@/services/ipc'
 import { debounceDOMChange } from '@/services/dom'
+import { RunningStatus } from '@/services/pageAction'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
-import { PAGE_ACTION_CONTROL } from '@/const'
+import { PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
 
 export function usePageActionRunner() {
   const { setContextData } = usePageActionContext()
@@ -20,8 +22,29 @@ export function usePageActionRunner() {
       return true
     }
 
+    let timeout = 0
+    const updateStatus = (status: PageActiontStatus) => {
+      clearTimeout(timeout)
+      const sid = status.stepId
+      const step = status.results.find((s) => s.stepId === sid)
+      if (step?.status === EXEC_STATE.Start) {
+        setContextData({ isRunning: true })
+      } else if (step?.status === EXEC_STATE.Done) {
+        timeout = window.setTimeout(() => {
+          setContextData({ isRunning: false })
+        }, 500)
+      } else if (step?.status === EXEC_STATE.Failed) {
+        timeout = window.setTimeout(() => {
+          setContextData({ isRunning: false })
+        }, 500)
+      }
+    }
+
+    RunningStatus.get().then(updateStatus)
+    RunningStatus.subscribe(updateStatus)
     Ipc.addListener(TabCommand.execPageAction, listener)
     return () => {
+      RunningStatus.unsubscribe(updateStatus)
       Ipc.removeListener(TabCommand.execPageAction)
     }
   }, [])
@@ -29,8 +52,6 @@ export function usePageActionRunner() {
   const execute = async (
     message: ExecPageAction.Message,
   ): Promise<ExecPageAction.Return> => {
-    setContextData({ isRunning: true })
-
     const { step, srcUrl, selectedText, clipboardText } = message
     const type = step.param.type
 
@@ -90,7 +111,6 @@ export function usePageActionRunner() {
       console.error(e)
       msg = `${e}`
     }
-    setContextData({ isRunning: false })
     return { result, message: msg }
   }
 }
