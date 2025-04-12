@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { getElementByXPath, isValidXPath } from '@/services/dom'
-import { safeInterpolate } from '@/lib/utils'
+import { safeInterpolate, isMac } from '@/lib/utils'
 import { INSERT, InsertSymbol } from '@/services/pageAction'
 import { SelectorType, PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
 
@@ -166,6 +166,15 @@ export const PageActionDispatcher = {
     if (element == null) {
       console.warn(`Element not found for: ${targetSelector}`)
       return [false, `Element not found: ${label}`]
+    }
+
+    // Ctrl <-> Meta key conversion
+    if (isMac() && p.ctrlKey) {
+      p.metaKey = p.ctrlKey
+      p.ctrlKey = false
+    } else if (!isMac() && p.metaKey) {
+      p.ctrlKey = p.metaKey
+      p.metaKey = false
     }
     return new Promise((resolve) => {
       const down = new KeyboardEvent('keydown', {
