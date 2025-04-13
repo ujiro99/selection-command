@@ -2,13 +2,12 @@ import getXPath from 'get-xpath'
 import { RobulaPlus } from '@/lib/robula-plus'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { PageAction, convReadableKeysToSymbols } from '@/services/pageAction'
-import { isTextNode, isSvgElement } from '@/services/dom'
+import { isTextNode, isSvgElement, getFocusNode } from '@/services/dom'
 import { PAGE_ACTION_EVENT, SelectorType } from '@/const'
 import type { PageActionStep } from '@/types'
 import { isPopup, isEmpty, generateRandomID, truncate } from '@/lib/utils'
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
-  if (e.shiftKey && e.key === 'Enter') return false
   if (
     [
       'Meta',
@@ -86,8 +85,6 @@ const getLabel = (e: Element): string => {
 
 let focusElm: HTMLElement | null = null
 let focusXpath: string | null = null
-let prevInputElm: Element | null = null
-let prevInputXpath: string | null = null
 
 /**
  * Get the robust XPath of an element.
@@ -111,13 +108,7 @@ const getXPathM = (e: Element | null, type?: string): string => {
   }
 
   let xpath
-  if (type === PAGE_ACTION_EVENT.input) {
-    // Use the first xpath since robula's xpath also uses
-    // the value of the element and changes during input.
-    xpath = prevInputXpath && e === prevInputElm ? prevInputXpath : getXPathR(e)
-    prevInputElm = e
-    prevInputXpath = xpath
-  } else if (type === PAGE_ACTION_EVENT.keyboard) {
+  if (type === PAGE_ACTION_EVENT.keyboard) {
     xpath = getXPathR(e)
     if (getElement(xpath) == null && focusXpath != null) {
       xpath = focusXpath
@@ -254,8 +245,8 @@ export const PageActionListener = (() => {
         value = target.innerText
       } else if (isTextNode(target)) {
         value = target.nodeValue
-        target = target.parentElement as HTMLElement
       }
+      target = getFocusNode(e) ?? target
 
       const stepId = generateRandomID()
       const xpath = getXPathM(target, e.type)

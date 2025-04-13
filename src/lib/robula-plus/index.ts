@@ -190,7 +190,8 @@ export class RobulaPlus {
     if (
       ancestor.textContent &&
       !xPath.headHasPositionPredicate() &&
-      !xPath.headHasTextPredicate()
+      !xPath.headHasTextPredicate() &&
+      !this.isEditableElement(ancestor)
     ) {
       const newXPath: XPath = new XPath(xPath.getValue())
       newXPath.addPredicateToHead(
@@ -420,6 +421,43 @@ export class RobulaPlus {
     }
 
     return true
+  }
+
+  /**
+   * Determines if an element is editable
+   * @param element - The element to check
+   * @returns true if the element is editable, false otherwise
+   */
+  private isEditableElement(element: Element): boolean {
+    const tagName = element.tagName.toLowerCase()
+
+    if (tagName === 'textarea') {
+      return true
+    }
+
+    if (tagName === 'input') {
+      const type = element.getAttribute('type')?.toLowerCase()
+      const nonEditableTypes = [
+        'button',
+        'submit',
+        'reset',
+        'image',
+        'hidden',
+        'checkbox',
+        'radio',
+      ]
+      return !type || !nonEditableTypes.includes(type)
+    }
+
+    // Check if the element is directly editable via isContentEditable property
+    if (
+      'isContentEditable' in element &&
+      (element as HTMLElement).isContentEditable
+    ) {
+      return true
+    }
+
+    return false
   }
 }
 

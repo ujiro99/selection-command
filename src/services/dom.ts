@@ -7,7 +7,7 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
     const img = new Image()
     img.crossOrigin = 'Anonymous'
     const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
-    img.onload = function () {
+    img.onload = function() {
       const canvas = document.createElement('canvas')
       const ctx = canvas.getContext('2d')
       canvas.height = img.naturalHeight
@@ -274,6 +274,38 @@ export function getScrollableAncestors(element: HTMLElement): HTMLElement[] {
   return scrollableAncestors
 }
 
+export const isInput = (
+  target: EventTarget | null,
+): target is HTMLInputElement | HTMLTextAreaElement => {
+  if (target == null) return false
+  if (target instanceof HTMLInputElement) {
+    return [
+      'text',
+      'url',
+      'number',
+      'search',
+      'date',
+      'datetime-local',
+      'month',
+      'week',
+      'time',
+    ].includes(target.type)
+  }
+  if (target instanceof HTMLTextAreaElement) {
+    return true
+  }
+  return false
+}
+
+/**
+ * check if the node is a HtmlElment.
+ * @param {Node} node The node to check.
+ * @returns {boolean} True if the node is a document node.
+ */
+export const isHtmlElement = (node: any | null): node is HTMLElement => {
+  return node instanceof HTMLElement
+}
+
 /**
  * check if the node is a text node.
  * @param {Node} node The node to check.
@@ -282,6 +314,28 @@ export function getScrollableAncestors(element: HTMLElement): HTMLElement[] {
 export const isTextNode = (node: any | null): node is Text => {
   if (node == null) return false
   return node.nodeType === Node.TEXT_NODE
+}
+
+/**
+ * Get the focus node of the event.
+ * @param {Event} e The event to get the focus node.
+ * @returns {HTMLElement | null} The focus node.
+ */
+export const getFocusNode = (e: Event): HTMLElement | null => {
+  const s = window.getSelection()
+  if (isInput(e.target)) {
+    return e.target
+  } else if (isHtmlElement(s?.focusNode)) {
+    return s.focusNode
+  } else if (
+    isTextNode(s?.focusNode) &&
+    isHtmlElement(s.focusNode.parentNode)
+  ) {
+    return s.focusNode.parentNode
+  } else if (isHtmlElement(e.target)) {
+    return e.target
+  }
+  return null
 }
 
 /**

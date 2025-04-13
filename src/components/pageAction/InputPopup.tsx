@@ -17,39 +17,18 @@ import {
 import { EXIT_DURATION } from '@/const'
 import { Point } from '@/types'
 import { isPopup, cn } from '@/lib/utils'
-import { getScrollableAncestors, isTextNode } from '@/services/dom'
+import {
+  getScrollableAncestors,
+  isInput,
+  isTextNode,
+  isHtmlElement,
+  getFocusNode,
+} from '@/services/dom'
 import { t } from '@/services/i18n'
 import { INSERT, LocaleKey } from '@/services/pageAction'
 
 enum MENU {
   INSERT = 'insert',
-}
-
-const isInput = (
-  target: EventTarget | null,
-): target is HTMLInputElement | HTMLTextAreaElement => {
-  if (target == null) return false
-  if (target instanceof HTMLInputElement) {
-    return [
-      'text',
-      'url',
-      'number',
-      'search',
-      'date',
-      'datetime-local',
-      'month',
-      'week',
-      'time',
-    ].includes(target.type)
-  }
-  if (target instanceof HTMLTextAreaElement) {
-    return true
-  }
-  return false
-}
-
-const isHTMLElement = (elm: any | null): elm is HTMLElement => {
-  return elm instanceof HTMLElement
 }
 
 const isTargetEditable = (target: EventTarget | null): boolean => {
@@ -64,17 +43,19 @@ const isTargetEditable = (target: EventTarget | null): boolean => {
 function getSelectionOffsets(elm: HTMLElement | Text): {
   start: number
   end: number
+  focusNode: Node
 } {
   if (elm instanceof HTMLInputElement || elm instanceof HTMLTextAreaElement) {
     return {
       start: elm.selectionStart ?? 0,
       end: elm.selectionEnd ?? 0,
+      focusNode: elm,
     }
   }
 
   const selection = window.getSelection()
   if (!selection || selection.rangeCount === 0) {
-    return { start: 0, end: 0 }
+    return { start: 0, end: 0, focusNode: elm }
   }
 
   const range = selection.getRangeAt(0)
@@ -89,25 +70,26 @@ function getSelectionOffsets(elm: HTMLElement | Text): {
   clonedRange.setEnd(range.endContainer, range.endOffset)
   const end = clonedRange.toString().length
 
-  return { start, end }
+  return { start, end, focusNode: selection.focusNode ?? elm }
 }
 
 const insertText = (targetElm: HTMLElement | Text, value: string) => {
-  const { start, end } = getSelectionOffsets(targetElm)
-  if (isInput(targetElm)) {
-    const text = targetElm.value
+  const { start, end, focusNode } = getSelectionOffsets(targetElm)
+  if (focusNode == null) return
+  if (isInput(focusNode)) {
+    const text = focusNode.value
     const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)
-    targetElm.value = newText
-  } else if (isTextNode(targetElm)) {
-    const text = targetElm.nodeValue
+    focusNode.value = newText
+  } else if (isTextNode(focusNode)) {
+    const text = focusNode.nodeValue
     const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)
-    targetElm.nodeValue = newText
-  } else {
-    const text = targetElm.innerText
+    focusNode.nodeValue = newText
+  } else if (isHtmlElement(focusNode)) {
+    const text = focusNode.innerText
     const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)
-    targetElm.innerText = newText
+    focusNode.innerText = newText
   }
-  targetElm.dispatchEvent(
+  focusNode.dispatchEvent(
     new InputEvent('input', {
       bubbles: true,
       cancelable: true,
@@ -173,14 +155,7 @@ export function InputPopup(): JSX.Element {
 
   useEffect(() => {
     const updateTarget = (e: Event) => {
-      const s = window.getSelection()
-      if (isInput(e.target)) {
-        setTargetElm(e.target)
-      } else if (isHTMLElement(s?.focusNode)) {
-        setTargetElm(s.focusNode)
-      } else if (isTextNode(s?.focusNode)) {
-        setTargetElm(s.focusNode)
-      }
+      setTargetElm(getFocusNode(e))
     }
 
     const onFocusIn = (e: any) => {
@@ -202,7 +177,7 @@ export function InputPopup(): JSX.Element {
       if (isPopup(e.target as Element)) return
       setMousePos({ x: e.clientX, y: e.clientY })
       updateTarget(e)
-      if (isHTMLElement(e.target)) {
+      if (isHtmlElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
           e.target.innerText.trim().length !== 0,
