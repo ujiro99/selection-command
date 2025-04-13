@@ -205,7 +205,7 @@ export function InputPopup(): JSX.Element {
       if (isHTMLElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
-            e.target.innerText.trim().length !== 0,
+          e.target.innerText.trim().length !== 0,
         )
       }
     }
@@ -288,7 +288,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
       <MenubarMenu value={MENU.INSERT}>
         <MenubarTrigger
           className={cn(
-            'py-1 px-2 text-sm font-medium text-gray-700 cursor-pointer',
+            'py-1 px-2 text-sm font-normal font-sans text-gray-700 cursor-pointer',
             disabled && 'opacity-50 bg-gray-200 cursor-not-allowed',
           )}
           disabled={disabled}
@@ -334,7 +334,7 @@ function InputMenuItem(props: ItemProps): JSX.Element {
   return (
     <MenubarItem
       onClick={onClick}
-      className="px-2.5 py-2 text-sm font-medium text-gray-700 cursor-pointer"
+      className="px-2.5 py-2 text-sm font-normal font-sans text-gray-700 cursor-pointer"
       data-value={props.value}
     >
       {props.children}
