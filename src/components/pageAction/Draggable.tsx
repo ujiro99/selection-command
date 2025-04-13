@@ -57,7 +57,7 @@ export function Draggable(props: Props) {
         {...listeners}
         {...attributes}
       >
-        <GripVertical size={18} className="stroke-gray-400" />
+        <GripVertical size={18} strokeWidth={1.5} className="stroke-gray-500" />
       </button>
     </div>
   )
