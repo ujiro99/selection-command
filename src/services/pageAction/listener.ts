@@ -1,11 +1,11 @@
 import getXPath from 'get-xpath'
 import { RobulaPlus } from '@/lib/robula-plus'
-import { isPopup, isEmpty, generateRandomID } from '@/lib/utils'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { PageAction, convReadableKeysToSymbols } from '@/services/pageAction'
 import { isTextNode, isSvgElement } from '@/services/dom'
 import { PAGE_ACTION_EVENT, SelectorType } from '@/const'
-import { PageActionStep } from '@/types'
+import type { PageActionStep } from '@/types'
+import { isPopup, isEmpty, generateRandomID, truncate } from '@/lib/utils'
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
   if (e.shiftKey && e.key === 'Enter') return false
@@ -59,8 +59,9 @@ const getModifierKey = (e: KeyboardEvent): string => {
 const getTimeStamp = (): number => Date.now()
 
 const getLabel = (e: Element): string => {
+  let label = null
   if (isInput(e) || isTextarea(e)) {
-    return !isEmpty(e.name)
+    label = !isEmpty(e.name)
       ? e.name
       : !isEmpty(e.placeholder)
         ? e.placeholder
@@ -70,17 +71,17 @@ const getLabel = (e: Element): string => {
   } else if (isSvgElement(e)) {
     return getLabel(e.parentNode as Element)
   } else if (e instanceof HTMLParagraphElement) {
-    return (
+    label =
       e.dataset.placeholder ||
       e.parentElement?.dataset.placeholder ||
       e.ariaLabel ||
       e.innerText
-    )
   } else if (e instanceof HTMLElement) {
-    return !isEmpty(e.ariaLabel) ? e.ariaLabel || '' : e.innerText
+    label = !isEmpty(e.ariaLabel) ? e.ariaLabel || '' : e.innerText
   } else {
-    return e.nodeName
+    label = e.nodeName
   }
+  return truncate(label)
 }
 
 let focusElm: HTMLElement | null = null
@@ -101,7 +102,12 @@ const getXPathM = (e: Element | null, type?: string): string => {
     return rebula.getRobustXPath(e, document)
   }
   const getElement = (xpath: string): Element | null => {
-    return rebula.getElementByXPath(xpath, document)
+    try {
+      return rebula.getElementByXPath(xpath, document)
+    } catch (e) {
+      console.debug(e)
+      return null
+    }
   }
 
   let xpath
@@ -269,6 +275,11 @@ export const PageActionListener = (() => {
       }
     },
     scroll() {
+      const target = document.activeElement
+      if (isInput(target) || isTextarea(target) || isEditable(target)) {
+        // Ignore events from editable elements.
+        return
+      }
       const x = Math.trunc(window.scrollX)
       const y = Math.trunc(window.scrollY)
       const stepId = generateRandomID()

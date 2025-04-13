@@ -303,3 +303,23 @@ export function safeInterpolate(
     return match
   })
 }
+
+/**
+ * Truncates a string to a specified maximum length
+ * @param str - The string to truncate
+ * @param maxLength - Maximum length of the string (default: 100)
+ * @param suffix - String to append at the end when truncated (default: '...')
+ * @return The truncated string
+ */
+export function truncate(
+  str: string,
+  maxLength: number = 100,
+  suffix: string = '...',
+): string {
+  // Return the original string if it's already shorter than or equal to the maximum length
+  if (str.length <= maxLength) {
+    return str
+  }
+  // Truncate the string to (maxLength - suffix.length) and append the suffix
+  return str.slice(0, maxLength - suffix.length) + suffix
+}

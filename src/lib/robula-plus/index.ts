@@ -142,17 +142,21 @@ export class RobulaPlus {
     element: Element,
     document: Document,
   ): boolean {
-    const nodesSnapshot: XPathResult = document.evaluate(
-      xPath,
-      document,
-      null,
-      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-      null,
-    )
-    return (
-      nodesSnapshot.snapshotLength === 1 &&
-      nodesSnapshot.snapshotItem(0) === element
-    )
+    try {
+      const nodesSnapshot: XPathResult = document.evaluate(
+        xPath,
+        document,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null,
+      )
+      return (
+        nodesSnapshot.snapshotLength === 1 &&
+        nodesSnapshot.snapshotItem(0) === element
+      )
+    } catch (e) {
+      return false
+    }
   }
 
   public transfConvertStar(xPath: XPath, element: Element): XPath[] {
@@ -463,14 +467,48 @@ export class XPath {
   }
 
   public getLength(): number {
-    const splitXPath: string[] = this.value.split('/')
-    let length: number = 0
-    for (const piece of splitXPath) {
-      if (piece) {
-        length++
+    // Temporarily replace predicate expressions (inside []) to make path parsing easier
+    let cleanPath = this.value
+    const predicates: string[] = []
+
+    // Extract and replace predicates
+    let openBracketIndex = cleanPath.indexOf('[')
+    while (openBracketIndex !== -1) {
+      let nestLevel = 1
+      let closeBracketIndex = openBracketIndex + 1
+
+      // Find the corresponding closing bracket (handling nested brackets)
+      while (nestLevel > 0 && closeBracketIndex < cleanPath.length) {
+        if (cleanPath[closeBracketIndex] === '[') {
+          nestLevel++
+        } else if (cleanPath[closeBracketIndex] === ']') {
+          nestLevel--
+        }
+        closeBracketIndex++
       }
+
+      if (nestLevel === 0) {
+        const predicate = cleanPath.substring(
+          openBracketIndex,
+          closeBracketIndex,
+        )
+        predicates.push(predicate)
+        cleanPath =
+          cleanPath.substring(0, openBracketIndex) +
+          '___PREDICATE' +
+          (predicates.length - 1) +
+          '___' +
+          cleanPath.substring(closeBracketIndex)
+      }
+
+      openBracketIndex = cleanPath.indexOf('[')
     }
-    return length
+
+    // Split the path by '/' and count the nodes
+    const pathParts = cleanPath
+      .split('/')
+      .filter((part) => part && part.trim() !== '')
+    return pathParts.length
   }
 }
 
