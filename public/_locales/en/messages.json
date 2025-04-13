@@ -14,6 +14,9 @@
   "labelCancel": {
     "message": "Cancel"
   },
+  "labelClose": {
+    "message": "Close"
+  },
   "labelAddPageRule": {
     "message": "Add page rule."
   },
@@ -568,5 +571,8 @@
   },
   "PageAction_Controller_reset": {
     "message": "Reset"
+  },
+  "help_pageAction_title": {
+    "message": "How to use Page Action"
   }
 }

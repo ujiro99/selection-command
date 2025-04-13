@@ -47,6 +47,7 @@ import {
   pageActionSchema,
   PageActionSection,
 } from '@/components/option/editor/PageActionSection'
+import { PaeActionHelp } from '@/components/help/PageActionHelp'
 
 import { PageActionStep } from '@/types/schema'
 
@@ -434,11 +435,14 @@ const CommandEditDialogInner = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
         <DialogContent className="max-w-2xl">
-          <DialogHeader>
+          <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />
               {t('Command_edit')}
             </DialogTitle>
+            {openMode === OPEN_MODE.PAGE_ACTION && (
+              <PaeActionHelp className="absolute -top-4 right-2" />
+            )}
           </DialogHeader>
           <DialogDescription>{t('Command_input')}</DialogDescription>
           <Form {...form}>
@@ -498,26 +502,26 @@ const CommandEditDialogInner = ({
 
               {(SearchOpenMode.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
-                  <InputField
-                    control={form.control}
-                    name="searchUrl"
-                    formLabel={t('searchUrl')}
-                    inputProps={{
-                      type: 'string',
-                      ...register('searchUrl', {}),
-                    }}
-                    description={
-                      openMode === OPEN_MODE.API
-                        ? t('searchUrl_desc_api')
-                        : t('searchUrl_desc')
-                    }
-                    previewUrl={
-                      !isEmpty(getValues('searchUrl'))
-                        ? getValues('iconUrl')
-                        : undefined
-                    }
-                  />
-                )}
+                <InputField
+                  control={form.control}
+                  name="searchUrl"
+                  formLabel={t('searchUrl')}
+                  inputProps={{
+                    type: 'string',
+                    ...register('searchUrl', {}),
+                  }}
+                  description={
+                    openMode === OPEN_MODE.API
+                      ? t('searchUrl_desc_api')
+                      : t('searchUrl_desc')
+                  }
+                  previewUrl={
+                    !isEmpty(getValues('searchUrl'))
+                      ? getValues('iconUrl')
+                      : undefined
+                  }
+                />
+              )}
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
                 <PageActionSection
@@ -655,7 +659,7 @@ const CommandEditDialogInner = ({
                     formLabel={t('iconUrl')}
                     description={
                       SearchOpenMode.includes(openMode as any) ||
-                        openMode === OPEN_MODE.API
+                      openMode === OPEN_MODE.API
                         ? t('iconUrl_desc')
                         : openMode === OPEN_MODE.PAGE_ACTION
                           ? t('iconUrl_desc_pageAction')

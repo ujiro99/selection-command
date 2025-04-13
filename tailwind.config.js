@@ -100,6 +100,10 @@ module.exports = {
         3: '12px',
         4: '16px',
       },
+      listStyleType: {
+        square: 'square',
+        circle: 'circle',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

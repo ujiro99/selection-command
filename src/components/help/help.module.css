@@ -1,0 +1,11 @@
+.table {
+  @apply border-collapse border border-gray-300 text-sm mt-8;
+}
+
+.tableCell {
+  @apply border border-gray-300 px-2 py-1.5;
+}
+
+.carouselContent {
+  @apply mt-4;
+}

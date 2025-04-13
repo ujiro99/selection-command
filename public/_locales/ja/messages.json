@@ -14,6 +14,9 @@
   "labelCancel": {
     "message": "キャンセル"
   },
+  "labelClose": {
+    "message": "閉じる"
+  },
   "labelAddPageRule": {
     "message": "ページルールを追加"
   },
@@ -565,5 +568,8 @@
   },
   "PageAction_Controller_reset": {
     "message": "リセット"
+  },
+  "help_pageAction_title": {
+    "message": "Page Actionの使い方"
   }
 }
