@@ -37,7 +37,7 @@ export const HoverArea = (props: Props) => {
          v ${anchor.height}
          h ${anchor.width}
          z`
-    top = -anchor.height - 2
+    top = anchor.top - content.top
   } else if (isBottom) {
     d = `M ${anchor.left} ${anchor.bottom}
          Q ${anchor.left} ${content.bottom},
@@ -77,7 +77,12 @@ export const HoverArea = (props: Props) => {
       width={width}
       height={height}
       viewBox={`${x} ${y} ${width} ${height}`}
-      style={{ pointerEvents: 'none', position: 'absolute', top, left }}
+      style={{
+        pointerEvents: 'none',
+        position: 'absolute',
+        top,
+        left,
+      }}
     >
       <path
         d={d}

@@ -10,6 +10,7 @@ import {
 import { EditButton } from '@/components/option/EditButton'
 import { Tooltip } from '@/components/Tooltip'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
+import { HoverArea } from '@/components/menu/HoverArea'
 
 import { cn, capitalize, onHover, isEmpty } from '@/lib/utils'
 import { t } from '@/services/i18n'
@@ -49,30 +50,18 @@ export function PageActionItem(props: Props): JSX.Element {
 
   // For HoverArea
   const contentRef = useRef<HTMLDivElement | null>(null)
-  const [hoverAreaStyle, setHoverAreaStyle] = useState<React.CSSProperties>()
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
+  const [contentRect, setContentRect] = useState<DOMRect | null>(null)
 
   const onHoverTrigger = (hover: boolean) => {
     setIsOpen(hover)
     // Delay to wait finishing animation.
     setTimeout(() => {
       if (anchorRef.current && contentRef.current) {
-        const anchorRect = anchorRef.current.getBoundingClientRect()
-        const contentRect = contentRef.current.getBoundingClientRect()
-        const side = contentRef.current.dataset.side
-        let top = Math.ceil(anchorRect.height)
-        let height = Math.ceil(contentRect.top - anchorRect.bottom)
-        if (side === 'top') {
-          top = -Math.ceil(anchorRect.top - contentRect.bottom)
-          height = Math.ceil(anchorRect.top - contentRect.bottom)
-        }
-        setHoverAreaStyle({
-          top: top - 5,
-          left: Math.ceil(contentRect.left - anchorRect.left),
-          width: Math.ceil(contentRect.width),
-          height: height + 10,
-        })
+        setAnchorRect(anchorRef.current.getBoundingClientRect())
+        setContentRect(contentRef.current.getBoundingClientRect())
       }
-    }, 200)
+    }, 250)
   }
 
   const handleClickEdit = () => {
@@ -175,12 +164,14 @@ export function PageActionItem(props: Props): JSX.Element {
               <RemoveButton onClick={handleClickRemove} size={14} />
             </div>
             <PopoverArrow className="fill-white" height={6} />
+            <HoverArea
+              anchor={anchorRect}
+              content={contentRect}
+              isHorizontal={true}
+            />
           </PopoverContent>
         )}
       </Popover>
-      {shouldRender && (
-        <div className="hoverArea absolute" style={hoverAreaStyle} />
-      )}
     </li>
   )
 }
