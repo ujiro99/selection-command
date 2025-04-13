@@ -195,7 +195,6 @@ const defaultValue = (openMode: OPEN_MODE) => {
   if (SearchOpenMode.includes(openMode as any)) {
     return {
       id: '',
-      title: '',
       searchUrl: '',
       iconUrl: '',
       openMode: OPEN_MODE.POPUP as const,
@@ -211,7 +210,6 @@ const defaultValue = (openMode: OPEN_MODE) => {
   if (openMode === OPEN_MODE.API) {
     return {
       id: '',
-      title: '',
       searchUrl: '',
       iconUrl: '',
       openMode: OPEN_MODE.API as const,
@@ -223,7 +221,6 @@ const defaultValue = (openMode: OPEN_MODE) => {
   if (openMode === OPEN_MODE.PAGE_ACTION) {
     return {
       id: '',
-      title: '',
       iconUrl: '',
       openMode: OPEN_MODE.PAGE_ACTION as const,
       parentFolderId: ROOT_FOLDER,
@@ -279,7 +276,7 @@ type CommandEditDialogProps = {
   command?: SelectionCommand
 }
 
-const DEFAULT_MODE = OPEN_MODE.PAGE_ACTION
+const DEFAULT_MODE = OPEN_MODE.POPUP
 
 export const CommandEditDialog = ({
   open,
@@ -501,26 +498,26 @@ const CommandEditDialogInner = ({
 
               {(SearchOpenMode.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
-                <InputField
-                  control={form.control}
-                  name="searchUrl"
-                  formLabel={t('searchUrl')}
-                  inputProps={{
-                    type: 'string',
-                    ...register('searchUrl', {}),
-                  }}
-                  description={
-                    openMode === OPEN_MODE.API
-                      ? t('searchUrl_desc_api')
-                      : t('searchUrl_desc')
-                  }
-                  previewUrl={
-                    !isEmpty(getValues('searchUrl'))
-                      ? getValues('iconUrl')
-                      : undefined
-                  }
-                />
-              )}
+                  <InputField
+                    control={form.control}
+                    name="searchUrl"
+                    formLabel={t('searchUrl')}
+                    inputProps={{
+                      type: 'string',
+                      ...register('searchUrl', {}),
+                    }}
+                    description={
+                      openMode === OPEN_MODE.API
+                        ? t('searchUrl_desc_api')
+                        : t('searchUrl_desc')
+                    }
+                    previewUrl={
+                      !isEmpty(getValues('searchUrl'))
+                        ? getValues('iconUrl')
+                        : undefined
+                    }
+                  />
+                )}
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
                 <PageActionSection
@@ -658,7 +655,7 @@ const CommandEditDialogInner = ({
                     formLabel={t('iconUrl')}
                     description={
                       SearchOpenMode.includes(openMode as any) ||
-                      openMode === OPEN_MODE.API
+                        openMode === OPEN_MODE.API
                         ? t('iconUrl_desc')
                         : openMode === OPEN_MODE.PAGE_ACTION
                           ? t('iconUrl_desc_pageAction')
