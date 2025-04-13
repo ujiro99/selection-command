@@ -9,7 +9,6 @@ import { isPopup, isEmpty, generateRandomID, truncate } from '@/lib/utils'
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
   if (e.shiftKey && e.key === 'Enter') return false
-  if (['Tab', 'Enter'].includes(e.key)) return true
   if (
     [
       'Meta',
@@ -29,6 +28,7 @@ const isTargetKey = (e: KeyboardEvent): boolean => {
     ].includes(e.key)
   )
     return false
+  if (['Tab', 'Enter'].includes(e.key)) return true
   if (e.ctrlKey || e.metaKey) return true
   return false
 }
