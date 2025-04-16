@@ -180,7 +180,7 @@ export function InputPopup(): JSX.Element {
       if (isHtmlElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
-          e.target.innerText.trim().length !== 0,
+            e.target.innerText.trim().length !== 0,
         )
       }
     }
@@ -215,7 +215,7 @@ export function InputPopup(): JSX.Element {
         <PopoverAnchor virtualRef={{ current: anchor }} />
         {shouldRender && (
           <PopoverContent
-            className="pointer-events-auto"
+            className="pointer-events-auto z-auto"
             side={'top'}
             align={align}
             sideOffset={8}

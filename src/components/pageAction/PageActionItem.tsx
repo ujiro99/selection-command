@@ -108,7 +108,7 @@ export function PageActionItem(props: Props): JSX.Element {
       <div
         className={cn(
           'transition relative group-hover:scale-150 p-1 rounded-full',
-          currentId === step.id ? 'bg-sky-400/50' : '',
+          currentId === step.id ? 'bg-sky-200' : '',
           isFailed ? 'bg-red-200' : '',
         )}
       >
