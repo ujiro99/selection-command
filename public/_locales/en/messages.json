@@ -38,6 +38,9 @@
   "commandHub_description": {
     "message": "You can now share commands✨"
   },
+  "commnadHub_youcanshare": {
+    "message": "⚡️You can automatically input the created command."
+  },
   "Option_labelCancel": {
     "message": "Cancel"
   },

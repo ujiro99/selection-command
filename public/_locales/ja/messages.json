@@ -38,6 +38,9 @@
   "commandHub_description": {
     "message": "コマンドを共有できるようになりました✨"
   },
+  "commnadHub_youcanshare": {
+    "message": "⚡️作成したコマンドを自動入力できます。"
+  },
   "Option_labelCancel": {
     "message": "やめる"
   },

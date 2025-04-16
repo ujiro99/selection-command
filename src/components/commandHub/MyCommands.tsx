@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import ColorThief from 'colorthief'
 import { useSetting } from '@/hooks/useSetting'
 import { sendEvent } from '@/services/analytics'
+import { t } from '@/services/i18n'
 import { cn, isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import { HUB_URL, SCREEN } from '@/const'
 import type { Command } from '@/types'
@@ -62,9 +63,7 @@ export const MyCommands = (): JSX.Element => {
 
   return (
     <div className="relative pt-2 px-4">
-      <p className="text-sm text-stone-700">
-        ⚡️作成したコマンドを自動入力できます。
-      </p>
+      <p className="text-sm text-stone-700">{t('commnadHub_youcanshare')}</p>
       {!enableMarquee ? (
         <div
           className={cn(
