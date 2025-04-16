@@ -26,7 +26,7 @@ export function usePageActionRunner() {
     const updateStatus = (status: PageActiontStatus) => {
       clearTimeout(timeout)
       const sid = status.stepId
-      const step = status.results.find((s) => s.stepId === sid)
+      const step = status.results?.find((s) => s.stepId === sid)
       if (step?.status === EXEC_STATE.Start) {
         setContextData({ isRunning: true })
       } else if (step?.status === EXEC_STATE.Done) {
