@@ -446,7 +446,7 @@ const CommandEditDialogInner = ({
           </DialogHeader>
           <DialogDescription>{t('Command_input')}</DialogDescription>
           <Form {...form}>
-            <form id="CommandEditForm" className="space-y-2">
+            <div id="CommandEditForm" className="space-y-2">
               <FormField
                 control={form.control}
                 name="id"
@@ -693,7 +693,7 @@ const CommandEditDialogInner = ({
                   />
                 </CollapsibleContent>
               </Collapsible>
-            </form>
+            </div>
           </Form>
           <DialogFooter className="pt-0">
             <DialogClose asChild>

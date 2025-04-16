@@ -82,7 +82,7 @@ export const FolderEditDialog = ({
           </DialogHeader>
           <DialogDescription>{t('folders_input')}</DialogDescription>
           <Form {...form}>
-            <form id="InputForm" className="space-y-4">
+            <div id="InputForm" className="space-y-4">
               <InputField
                 control={form.control}
                 name="title"
@@ -105,7 +105,7 @@ export const FolderEditDialog = ({
                 formLabel={t('onlyIcon')}
                 description={t('onlyIcon_desc')}
               />
-            </form>
+            </div>
           </Form>
           <DialogFooter>
             <DialogClose asChild>
