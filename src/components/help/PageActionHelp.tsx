@@ -105,19 +105,27 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
           <Carousel className="w-[38rem] mx-[auto] mt-1" setApi={setApi}>
             <CarouselContent>
               <CarouselItem>
-                <DialogDescription>
-                  Page Actionは、<b>ユーザー操作を記録・再現</b>する機能です。
-                </DialogDescription>
+                <DialogDescription
+                  dangerouslySetInnerHTML={{
+                    __html: t('help_pageAction_description'),
+                  }}
+                />
                 <div className={css.carouselContent}>
                   <div className="text-sm">
-                    例として、以下のような使い方ができます。
-                    <ul className="list-disc list-inside">
-                      <li>決まったプロンプト＋選択文字列をLLMへ入力</li>
-                      <li>URLをテキスト欄へ入力して、ボタンを押す</li>
-                      <li>などなど...</li>
-                    </ul>
+                    {t('help_pageAction_example')}
+                    <ul
+                      className="list-disc list-inside"
+                      dangerouslySetInnerHTML={{
+                        __html: t('help_pageAction_example_1'),
+                      }}
+                    />
                   </div>
-                  <video controls className="rounded-md w-[90%] mt-4 mx-auto">
+                  <video
+                    controls
+                    controlsList="nodownload noremoteplayback"
+                    disablePictureInPicture
+                    className="rounded-md w-[90%] mt-4 mx-auto"
+                  >
                     <source
                       src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/PageAction/PageAction%20play.mp4"
                       type="video/mp4"
@@ -126,23 +134,27 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
                 </div>
               </CarouselItem>
               <CarouselItem>
-                <DialogDescription>
-                  Page Actionは、<b>RECボタンから</b>記録できます。
-                </DialogDescription>
+                <DialogDescription
+                  dangerouslySetInnerHTML={{
+                    __html: t('help_pageAction_record'),
+                  }}
+                />
                 <div className={css.carouselContent}>
                   <div className="text-sm">
-                    【作成手順】
-                    <ol className="list-decimal list-inside">
-                      <li>
-                        操作したいページのURLを入力し、RECボタンを押して記録を開始します。
-                      </li>
-                      <li>ウィンドウが開いたら記録したい操作を行います。</li>
-                      <li>
-                        完了したら、記録メニューのCompleteボタンを押します。
-                      </li>
-                    </ol>
+                    {t('help_pageAction_record_procedure')}
+                    <ol
+                      className="list-decimal list-inside"
+                      dangerouslySetInnerHTML={{
+                        __html: t('help_pageAction_record_procedure_list'),
+                      }}
+                    />
                   </div>
-                  <video controls className="rounded-md w-[90%] mt-4 mx-auto">
+                  <video
+                    controls
+                    controlsList="nodownload noremoteplayback"
+                    disablePictureInPicture
+                    className="rounded-md w-[90%] mt-4 mx-auto"
+                  >
                     <source
                       src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/PageAction/PageAction%20record.mp4"
                       type="video/mp4"
@@ -151,57 +163,67 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
                 </div>
               </CarouselItem>
               <CarouselItem>
-                <DialogDescription>
-                  Page Actionでは<b>以下の操作</b>を記録できます。
-                </DialogDescription>
+                <DialogDescription
+                  dangerouslySetInnerHTML={{
+                    __html: t('help_pageAction_record_detail'),
+                  }}
+                />
                 <div className={css.carouselContent}>
                   <table className={css.table}>
                     <thead>
                       <tr className="bg-gray-200">
-                        <th className={css.tableCell}>操作</th>
-                        <th className={css.tableCell}>説明</th>
+                        <th className={css.tableCell}>
+                          {t('help_pageAction_action')}
+                        </th>
+                        <th className={css.tableCell}>
+                          {t('help_pageAction_desc')}
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td className={css.tableCell}>左クリック</td>
+                        <td className={css.tableLabel}>
+                          {t('help_pageAction_left_click')}
+                        </td>
                         <td className={css.tableCell}>
-                          クリック、ダブルクリック、トリプルクリックを記録します。
+                          {t('help_pageAction_left_click_desc')}
                         </td>
                       </tr>
                       <tr>
-                        <td className={css.tableCell}>画面スクロール</td>
+                        <td className={css.tableLabel}>
+                          {t('help_pageAction_scroll')}
+                        </td>
                         <td className={css.tableCell}>
-                          10px以上のスクロールを記録します。
+                          {t('help_pageAction_scroll_desc')}
                         </td>
                       </tr>
                       <tr>
-                        <td className={css.tableCell}>キー入力</td>
+                        <td className={css.tableLabel}>
+                          {t('help_pageAction_keyboard')}
+                        </td>
+                        <td className={css.tableCell}>
+                          <ul
+                            className="list-disc list-inside"
+                            dangerouslySetInnerHTML={{
+                              __html: t('help_pageAction_keyboard_desc'),
+                            }}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className={css.tableLabel}>
+                          {t('help_pageAction_input')}
+                        </td>
                         <td className={css.tableCell}>
                           <ul className="list-disc list-inside">
-                            <li>
-                              Ctrl同時押しなど、一部のキー入力だけが記録されます。
-                            </li>
-                            <li>
-                              記録されたキー操作でも、きちんと動作しない場合があります。
-                            </li>
-                          </ul>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className={css.tableCell}>テキスト入力</td>
-                        <td className={css.tableCell}>
-                          <ul className="list-disc list-inside">
-                            <li>入力欄へのテキスト入力を記録します。</li>
-                            <li>以下の変数を使用できます。</li>
+                            <li>{t('help_pageAction_input_desc_1')}</li>
+                            <li>{t('help_pageAction_input_desc_2')}</li>
                             <li className="list-circle ml-4">
-                              選択的テキスト、URL、クリップボード
+                              {t('help_pageAction_input_desc_3')}
                             </li>
-                            <li>
-                              入力欄へのフォーカス中は、他の操作は記録されません。
-                            </li>
+                            <li>{t('help_pageAction_input_desc_4')}</li>
                             <li className="list-circle ml-4">
-                              ※Tab、Enterキーだけは記録されます。
+                              {t('help_pageAction_input_desc_5')}
                             </li>
                           </ul>
                         </td>
@@ -209,27 +231,31 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
                     </tbody>
                   </table>
                   <p className="mt-8 text-base">
-                    これらの操作を、最大10ステップまで記録できます
+                    {t('help_pageAction_input_desc_6')}
                   </p>
                 </div>
               </CarouselItem>
               <CarouselItem>
-                <DialogDescription>
-                  <b>記録後の編集</b>について
-                </DialogDescription>
+                <DialogDescription
+                  dangerouslySetInnerHTML={{
+                    __html: t('help_pageAction_edit'),
+                  }}
+                />
                 <div className={css.carouselContent}>
                   <div className="text-sm">
-                    <ol className="list-decimal list-inside">
-                      <li>
-                        テキスト入力の編集とステップの削除は、設定画面からも実行できます。
-                      </li>
-                      <li>
-                        既存のPage
-                        Actionをコピーし、一部だけ編集したコマンドを簡単に作成できます。
-                      </li>
-                    </ol>
+                    <ol
+                      className="list-decimal list-inside"
+                      dangerouslySetInnerHTML={{
+                        __html: t('help_pageAction_edit_desc'),
+                      }}
+                    />
                   </div>
-                  <video controls className="rounded-md w-[90%] mt-4 mx-auto">
+                  <video
+                    controls
+                    controlsList="nodownload noremoteplayback"
+                    disablePictureInPicture
+                    className="rounded-md w-[90%] mt-4 mx-auto"
+                  >
                     <source
                       src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/PageAction/PageAction%20edit.mp4"
                       type="video/mp4"
@@ -238,14 +264,24 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
                 </div>
               </CarouselItem>
               <CarouselItem>
-                <DialogDescription>
-                  <b>コマンドの共有</b>について
-                </DialogDescription>
+                <DialogDescription
+                  dangerouslySetInnerHTML={{
+                    __html: t('help_pageAction_share'),
+                  }}
+                />
                 <div className={css.carouselContent}>
                   <div className="text-sm">
-                    Selection Command Hubから、Page
-                    Actionコマンドの共有と取得ができます。
-                    <video controls className="rounded-md w-[90%] mt-4 mx-auto">
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: t('help_pageAction_share_desc'),
+                      }}
+                    />
+                    <video
+                      controls
+                      controlsList="nodownload noremoteplayback"
+                      disablePictureInPicture
+                      className="rounded-md w-[90%] mt-4 mx-auto"
+                    >
                       <source
                         src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/PageAction/PageAction%20share.mp4"
                         type="video/mp4"
@@ -262,7 +298,7 @@ const HelpDialog = ({ open, onOpenChange }: HelpDialogProps) => {
                     type="button"
                     className={cn(
                       'bg-gray-200 h-2 w-full hover:bg-sky-300 rounded transition',
-                      i === current - 1 ? 'bg-gray-500' : '',
+                      i === current - 1 ? 'bg-sky-700' : '',
                     )}
                     onClick={() => scrollTo(i)}
                   ></button>

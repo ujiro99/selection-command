@@ -574,5 +574,83 @@
   },
   "help_pageAction_title": {
     "message": "Page Actionの使い方"
+  },
+  "help_pageAction_description": {
+    "message": "Page Actionは、<b>ユーザー操作を記録・再現</b>する機能です。"
+  },
+  "help_pageAction_example": {
+    "message": "例として、以下のような使い方ができます。"
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>決まったプロンプト＋選択文字列をLLMへ入力</li><li>URLをテキスト欄へ入力して、ボタンを押す</li><li>などなど...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "Page Actionは、<b>RECボタンから</b>記録できます。"
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【作成手順】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>操作したいページのURLを入力し、RECボタンを押して記録を開始します。</li><li>ウィンドウが開いたら記録したい操作を行います。</li><li>完了したら、記録メニューのCompleteボタンを押します。</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": " Actionでは<b>以下の操作</b>を記録できます。"
+  },
+  "help_pageAction_action": {
+    "message": "操作"
+  },
+  "help_pageAction_desc": {
+    "message": "説明"
+  },
+  "help_pageAction_left_click": {
+    "message": "左クリック"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "クリック、ダブルクリック、トリプルクリックを記録します。"
+  },
+  "help_pageAction_scroll": {
+    "message": "画面スクロール"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "10px以上のスクロールを記録します。"
+  },
+  "help_pageAction_keyboard": {
+    "message": "キー入力"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>Ctrl同時押しなど、一部のキー入力だけが記録されます。</li><li>記録されたキー操作でも、きちんと動作しない場合があります。</li>"
+  },
+  "help_pageAction_input": {
+    "message": "テキスト入力"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "入力欄へのテキスト入力を記録します。"
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "以下の変数を使用できます。"
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "選択的テキスト、URL、クリップボード"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "入力欄へのフォーカス中は、他の操作は記録されません。"
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "※Tab、Enterキーだけは記録されます。"
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "これらの操作を、最大10ステップまで記録できます"
+  },
+  "help_pageAction_edit": {
+    "message": "<b>記録後の編集</b>について"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>テキスト入力の編集とステップの削除は、設定画面からも実行できます。</li><li>既存のPageActionをコピーし、一部だけ編集したコマンドを簡単に作成できます。</li>"
+  },
+  "help_pageAction_share": {
+    "message": "<b>コマンドの共有</b>について"
+  },
+  "help_pageAction_share_desc": {
+    "message": "Selection Command Hubから、<b>Page Actionコマンドの共有と取得</b>ができます。 "
   }
 }

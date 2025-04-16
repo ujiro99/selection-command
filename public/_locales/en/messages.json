@@ -577,5 +577,83 @@
   },
   "help_pageAction_title": {
     "message": "How to use Page Action"
+  },
+  "help_pageAction_description": {
+    "message": "Page Action lets you <b>record and replay user actions</b>."
+  },
+  "help_pageAction_example": {
+    "message": "Here are some example uses:"
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>Send a preset prompt and selected text to the LLM</li><li>Enter a URL and press a button</li><li>And more...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "To record, click the <b>REC button</b>."
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【How to Create】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>Enter the page URL and click the REC button to start recording.</li><li>When the window opens, perform the actions you want to record.</li><li>When finished, click the Complete button in the recording menu.</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": "Page Action can record the <b>following actions</b>."
+  },
+  "help_pageAction_action": {
+    "message": "Action"
+  },
+  "help_pageAction_desc": {
+    "message": "Description"
+  },
+  "help_pageAction_left_click": {
+    "message": "Left Click"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "Records single, double, and triple clicks."
+  },
+  "help_pageAction_scroll": {
+    "message": "Scroll"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "Records scrolls over 10px."
+  },
+  "help_pageAction_keyboard": {
+    "message": "Key Input"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>Only some key inputs, like Ctrl combinations, are recorded.</li><li>Some recorded key actions may not replay correctly.</li>"
+  },
+  "help_pageAction_input": {
+    "message": "Text Input"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "Records text entered in input fields."
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "You can use these variables:"
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "Selected text, URL, Clipboard"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "Other actions are not recorded while focusing on an input field."
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "Only Tab and Enter keys are recorded."
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "You can record up to 10 steps."
+  },
+  "help_pageAction_edit": {
+    "message": "<b>Editing after recording</b>"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>You can edit text inputs and delete steps from the settings screen.</li><li>Copy an existing Page Action to easily create a new command with some changes.</li>"
+  },
+  "help_pageAction_share": {
+    "message": "<b>Sharing commands</b>"
+  },
+  "help_pageAction_share_desc": {
+    "message": "You can share and get Page Action commands from the Selection Command Hub."
   }
 }
