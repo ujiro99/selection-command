@@ -39,7 +39,7 @@ import { MenuImage } from '@/components/menu/MenuImage'
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { OPEN_MODE, ROOT_FOLDER, COMMAND_MAX } from '@/const'
+import { OPEN_MODE, ROOT_FOLDER, COMMAND_MAX, HUB_URL } from '@/const'
 import { cn, e2a, isEmpty, unique } from '@/lib/utils'
 import type {
   Command,
@@ -474,7 +474,7 @@ export const CommandList = ({ control }: CommandListProps) => {
           asChild
         >
           <a
-            href="https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=button"
+            href={`${HUB_URL}/?utm_source=optionPage&utm_medium=button`}
             target="_blank"
             className="font-mono text-gray-600 hover:text-gray-700"
           >
