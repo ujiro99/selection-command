@@ -147,11 +147,13 @@ export const PageActionSection = ({
         onOpenChange={(o) => !o && setEditId(null)}
         value={editorValue}
         onSubmit={editAction}
+        portal={true}
       />
       <RemoveDialog
         open={removeOpen}
         onOpenChange={(o) => !o && setRemoveId(null)}
         onRemove={() => removeAction(removeId)}
+        portal={true}
       >
         {removeStep && (
           <div>

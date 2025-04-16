@@ -11,7 +11,18 @@ const DialogTrigger = DialogPrimitive.Trigger
 
 const DialogClose = DialogPrimitive.Close
 
-const DialogPortal = DialogPrimitive.Portal
+type DialogPortalProps = {
+  children: React.ReactNode
+  portal?: boolean
+}
+
+const DialogPortal = ({ portal, children }: DialogPortalProps) => {
+  if (portal) {
+    return <DialogPrimitive.Portal>{children}</DialogPrimitive.Portal>
+  } else {
+    return children
+  }
+}
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
