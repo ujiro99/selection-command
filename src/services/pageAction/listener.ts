@@ -117,7 +117,6 @@ const getXPathM = (e: Element | null, type?: string): string => {
     xpath = getXPathR(e)
   }
 
-  console.log('getRobustXPath:', xpath)
   if (getElement(xpath) == null) {
     // Fallback to get-xpath
     return getXPath(e)
@@ -289,7 +288,6 @@ export const PageActionListener = (() => {
   }
 
   function start(): void {
-    console.log('Listener.start')
     const opt = { capture: true, passive: true }
     window.addEventListener('focusin', onFocusIn, opt)
     window.addEventListener('mousedown', func.click, opt)
@@ -300,7 +298,6 @@ export const PageActionListener = (() => {
   }
 
   function stop(): void {
-    console.log('Listener.stop')
     const opt = { capture: true }
     window.removeEventListener('focusin', onFocusIn, opt)
     window.removeEventListener('mousedown', func.click, opt)

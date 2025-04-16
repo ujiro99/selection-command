@@ -89,7 +89,7 @@ export function PageActionItem(props: Props): JSX.Element {
   useEffect(() => {
     if (capturedId == null) return
     Storage.getCapture(capturedId).then((data) => {
-      console.log('getCapture', capturedId, data)
+      // console.log('getCapture', capturedId, data)
       if (data == null) return
       setCapture(data)
     })

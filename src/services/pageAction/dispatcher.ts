@@ -106,7 +106,7 @@ async function waitForElement(
           clearInterval(interval)
           resolve(element)
         }
-        console.log('Waiting:', selector, selectorType)
+        // console.log('Waiting:', selector, selectorType)
       })
     }, 100)
   })
@@ -220,7 +220,7 @@ export const PageActionDispatcher = {
       }, 1000)
 
       const onScrollend = () => {
-        console.log('Scroll complete')
+        // console.log('Scroll complete')
         clearTimeout(scrollTimeout)
         window.removeEventListener('scrollend', onScrollend)
         resolve([true])
