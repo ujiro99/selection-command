@@ -140,6 +140,7 @@ export function PageActionRecorder(): JSX.Element {
             steps={steps}
             onClickRemove={setRemoveId}
             onClickEdit={setEditId}
+            isRecordEnabled={!(editorOpen || removeOpen)}
             ref={setControllerElm}
           />
         </Draggable>

@@ -24,12 +24,13 @@ import css from './PageActionRecorder.module.css'
 
 type Props = {
   steps: PageActionStep[]
+  isRecordEnabled: boolean
   onClickRemove: (id: string) => void
   onClickEdit: (id: string) => void
 }
 
 export const Controller = forwardRef<HTMLDivElement, Props>(
-  (props: Props, ref): JSX.Element => {
+  ({ isRecordEnabled, ...props }: Props, ref): JSX.Element => {
     const { isRecording, isRunning } = usePageActionContext()
     const [isListening, setIsListening] = useState(true)
     const [currentId, setCurrentId] = useState<string>()
@@ -104,7 +105,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     }, [])
 
     useEffect(() => {
-      if (isRunning) {
+      if (isRunning || !isRecordEnabled) {
         pause()
       } else {
         isRecording && resume()
@@ -112,7 +113,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
       return () => {
         pause()
       }
-    }, [isRunning, isRecording])
+    }, [isRunning, isRecording, isRecordEnabled])
 
     const iconSize = 14
 
