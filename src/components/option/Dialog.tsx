@@ -30,7 +30,7 @@ export function Dialog(props: Props) {
   }
   return (
     <DialogRoot open={props.open} onOpenChange={onOpenChange}>
-      <DialogPortal>
+      <DialogPortal portal={true}>
         <DialogContent className={css.dialog}>
           <DialogHeader>
             <DialogTitle className={css.title}>{props.title}</DialogTitle>
