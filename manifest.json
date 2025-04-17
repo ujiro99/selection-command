@@ -50,7 +50,8 @@
         "https://*/*"
       ],
       "resources": [
-        "assets/*.css"
+        "assets/*.css",
+        "icon128.png"
       ]
     }
   ]
