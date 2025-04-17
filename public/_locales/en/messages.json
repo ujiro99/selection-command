@@ -197,6 +197,9 @@
   "Option_iconUrl": {
     "message": "Icon URL"
   },
+  "Option_iconUrl_folder": {
+    "message": "Icon URL / SVG"
+  },
   "Option_iconUrl_desc": {
     "message": "Automatically updated when the search URL is changed."
   },
@@ -357,7 +360,10 @@
     "message": "Please enter a valid URL or SVG."
   },
   "Option_icon_placeholder": {
-    "message": "Please enter a URL or SVG."
+    "message": "URL or SVG string."
+  },
+  "Option_icon_desc": {
+    "message": "URL or SVG is available."
   },
   "Option_icon_required": {
     "message": "An URL or SVG that will be used as an icon is required."
@@ -645,13 +651,13 @@
     "message": "You can record up to 10 steps."
   },
   "help_pageAction_edit": {
-    "message": "<b>Editing after recording</b>"
+    "message": "About <b>Editting Page Action</b>"
   },
   "help_pageAction_edit_desc": {
     "message": "<li>You can edit text inputs and delete steps from the settings screen.</li><li>Copy an existing Page Action to easily create a new command with some changes.</li>"
   },
   "help_pageAction_share": {
-    "message": "<b>Sharing commands</b>"
+    "message": "About <b>Sharing Commands</b>"
   },
   "help_pageAction_share_desc": {
     "message": "You can share and get Page Action commands from the Selection Command Hub."

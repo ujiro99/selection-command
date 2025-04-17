@@ -197,6 +197,9 @@
   "Option_iconUrl": {
     "message": "アイコンURL"
   },
+  "Option_iconUrl_folder": {
+    "message": "アイコンURL / SVG"
+  },
   "Option_iconUrl_desc": {
     "message": "検索URLを変更すると自動で更新します。"
   },
@@ -357,7 +360,10 @@
     "message": "正しいURLまたはSVGを入力してください。"
   },
   "Option_icon_placeholder": {
-    "message": "URLまたはSVGを入力してください。"
+    "message": "URLまたはSVGの文字列 "
+  },
+  "Option_icon_desc": {
+    "message": "URLまたはSVGを使用可能です"
   },
   "Option_icon_required": {
     "message": "アイコンとなるURLまたはSVGが必要です。"
@@ -594,7 +600,7 @@
     "message": "<li>操作したいページのURLを入力し、RECボタンを押して記録を開始します。</li><li>ウィンドウが開いたら記録したい操作を行います。</li><li>完了したら、記録メニューのCompleteボタンを押します。</li>"
   },
   "help_pageAction_record_detail": {
-    "message": " Actionでは<b>以下の操作</b>を記録できます。"
+    "message": "Page Actionでは<b>以下の操作</b>を記録できます。"
   },
   "help_pageAction_action": {
     "message": "操作"
@@ -642,7 +648,7 @@
     "message": "これらの操作を、最大10ステップまで記録できます"
   },
   "help_pageAction_edit": {
-    "message": "<b>記録後の編集</b>について"
+    "message": "<b>Page Actionの編集</b>について"
   },
   "help_pageAction_edit_desc": {
     "message": "<li>テキスト入力の編集とステップの削除は、設定画面からも実行できます。</li><li>既存のPageActionをコピーし、一部だけ編集したコマンドを簡単に作成できます。</li>"
