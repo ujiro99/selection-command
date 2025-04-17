@@ -96,8 +96,9 @@ export const FolderEditDialog = ({
                 control={form.control}
                 nameUrl="iconUrl"
                 nameSvg="iconSvg"
-                formLabel={t('iconUrl')}
+                formLabel={t('iconUrl_folder')}
                 placeholder={t('icon_placeholder')}
+                description={t('icon_desc')}
               />
               <SwitchField
                 control={form.control}

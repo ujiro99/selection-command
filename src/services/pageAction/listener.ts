@@ -212,6 +212,8 @@ export const PageActionListener = (() => {
       if (isInput(target) || isTextarea(target) || isEditable(target)) {
         // Ignore input and textarea events
         if (!['Tab', 'Enter'].includes(e.key)) return
+        // Ignore Enter key during composition session.
+        if (e.isComposing) return
       }
 
       const stepId = generateRandomID()

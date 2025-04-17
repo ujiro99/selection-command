@@ -16,13 +16,13 @@
 }
 
 :global .pageActionHelp b {
-  @apply relative ml-1;
+  @apply relative mx-1;
 }
 
 :global .pageActionHelp b:before {
   content: '';
   z-index: -1;
-  @apply absolute w-full h-3 -left-1 bottom-0;
-  @apply bg-blue-50 rounded;
+  @apply absolute w-full h-3 -left-1 -bottom-0.5;
+  @apply bg-blue-100 rounded;
   @apply box-content px-1;
 }
