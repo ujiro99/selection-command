@@ -211,6 +211,7 @@ export function InputPopup(): JSX.Element {
 
   return (
     <>
+      <FocusOutline elm={anchor} disabled={disabled} />
       <Popover open={menuVisible}>
         <PopoverAnchor virtualRef={{ current: anchor }} />
         {shouldRender && (
@@ -225,7 +226,6 @@ export function InputPopup(): JSX.Element {
           </PopoverContent>
         )}
       </Popover>
-      <FocusOutline elm={anchor} disabled={disabled} />
     </>
   )
 }
