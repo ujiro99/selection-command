@@ -47,7 +47,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const preview = () => {
       setTimeout(() => {
         // Start preview.
-        Ipc.send<RunPageAction>(BgCommand.runPageAction, {
+        Ipc.send<RunPageAction>(BgCommand.previewPageAction, {
           steps: props.steps,
           openMode: PAGE_ACTION_OPEN_MODE.NONE,
           srcUrl: `{{${t('PageAction_InputMenu_url')}}}`,

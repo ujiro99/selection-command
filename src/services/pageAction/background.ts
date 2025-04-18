@@ -17,7 +17,7 @@ import {
   PAGE_ACTION_OPEN_MODE,
   EXEC_STATE,
 } from '@/const'
-import { generateRandomID, isPageActionCommand } from '@/lib/utils'
+import { generateRandomID, isPageActionCommand, isUrl } from '@/lib/utils'
 import type {
   PageActionRecordingData,
   PageActionStep,
@@ -31,16 +31,20 @@ BgData.init()
 const StartAction = {
   id: generateRandomID(),
   type: PAGE_ACTION_CONTROL.start,
+  delayMs: 0,
+  skipRenderWait: false,
 }
 
 const EndAction = {
   id: generateRandomID(),
   type: PAGE_ACTION_CONTROL.end,
+  delayMs: 0,
+  skipRenderWait: false,
 }
 
 export const add = (
   step: PageActionStep,
-  sender: Sender,
+  _sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
@@ -57,7 +61,6 @@ export const add = (
         param: {
           type: PAGE_ACTION_CONTROL.start,
           label: 'Start',
-          url: sender.tab?.url ?? '',
         },
       })
     }
@@ -265,11 +268,6 @@ export const openAndRun = (
       return true
     }
     const steps = cmd.pageActionOption.steps
-    const start = steps.find((s) => s.param.type === PAGE_ACTION_CONTROL.start)
-    if (start) {
-      // Remove the url to stop reload.
-      ;(start.param as PageAction.Start).url = undefined
-    }
 
     // Run the steps on the popup.
     run({ ...param, tabId, steps }, sender, response)
@@ -278,7 +276,36 @@ export const openAndRun = (
   return true
 }
 
-export const run = (
+export const preview = (
+  param: RunPageAction,
+  sender: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  const tabId = param.tabId || sender.tab?.id
+  if (tabId == null) {
+    console.error('tabId not found')
+    response(false)
+    return true
+  }
+
+  const func = async () => {
+    const option = await Storage.get<PageActionRecordingData>(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+    )
+
+    // Reload tab if startUrl exists.
+    if (isUrl(option.startUrl)) {
+      await chrome.tabs.update(tabId, { url: option.startUrl })
+    }
+
+    run(param, sender, response)
+  }
+
+  func()
+  return true
+}
+
+const run = (
   param: RunPageAction,
   sender: Sender,
   response: (res: unknown) => void,
@@ -312,14 +339,6 @@ export const run = (
         // Execute
         await Ipc.ensureConnection(tabId)
         await RunningStatus.update(step.id, EXEC_STATE.Doing)
-
-        if (step.param.type === PAGE_ACTION_CONTROL.start) {
-          // Reload tab on start action.
-          const url = (step.param as PageAction.Start).url
-          url && (await chrome.tabs.update(tabId, { url }))
-          await RunningStatus.update(step.id, EXEC_STATE.Done)
-          continue
-        }
 
         const ret = await Ipc.sendTab<
           ExecPageAction.Message,

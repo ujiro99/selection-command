@@ -12,7 +12,6 @@ export namespace PageAction {
   export type Start = {
     type: PAGE_ACTION_CONTROL.start
     label: string
-    url?: string
   }
 
   export type End = {

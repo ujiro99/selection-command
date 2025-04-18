@@ -24,7 +24,7 @@ export enum BgCommand {
   queuePageAction = 'queuePageAction',
   startPageActionRecorder = 'startPageActionRecorder',
   finishPageActionRecorder = 'finishPageActionRecorder',
-  runPageAction = 'runPageAction',
+  previewPageAction = 'previewPageAction',
   stopPageAction = 'stopPageAction',
   openAndRunPageAction = 'openAndRunPageAction',
 }

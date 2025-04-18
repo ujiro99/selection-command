@@ -354,7 +354,7 @@ const commandFuncs = {
   [BgCommand.resetPageAction]: PageActionBackground.reset,
   [BgCommand.startPageActionRecorder]: PageActionBackground.openRecorder,
   [BgCommand.finishPageActionRecorder]: PageActionBackground.closeRecorder,
-  [BgCommand.runPageAction]: PageActionBackground.run,
+  [BgCommand.previewPageAction]: PageActionBackground.preview,
   [BgCommand.stopPageAction]: PageActionBackground.stopRunner,
   [BgCommand.openAndRunPageAction]: PageActionBackground.openAndRun,
 } as { [key: string]: IpcCallback }
