@@ -78,7 +78,7 @@ export function PageActionRunner(): JSX.Element {
     <div
       className={cn(
         'relative fixed z-[2147483647] top-2 right-2 pointer-events-none',
-        'backdrop-blur bg-gray-300/20 rounded-md shadow-md transition-opacity duration-300',
+        'backdrop-blur bg-gray-100/60 rounded-md shadow-md transition-opacity duration-300',
         visible ? 'opacity-100' : 'opacity-0',
       )}
     >
@@ -93,7 +93,7 @@ export function PageActionRunner(): JSX.Element {
       </div>
       {hasError(results) && (
         <button
-          className="absolute right-1 top-1.5 pointer-events-auto bg-gray-50 rounded-full p-1"
+          className="absolute right-1 top-1.5 pointer-events-auto bg-white/80 rounded-full p-1"
           onClick={() => setVisible(false)}
         >
           <X size={12} className="stroke-gray-500" />
@@ -115,7 +115,7 @@ const Step = ({ result }: { result: PageActiontResult }) => {
     <li
       ref={stepRef}
       className={cn(
-        'flex items-center gap-1.5 p-1',
+        'flex items-center gap-1.5 p-1 min-w-28',
         hasMessage && 'cursor-help pointer-events-auto text-red-500',
       )}
     >
