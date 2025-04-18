@@ -156,6 +156,8 @@ export type PageActionStep = {
   id: string
   timestamp?: number
   captureId?: string
+  delayMs: number
+  skipRenderWait: boolean
   param: PageAction.Parameter
 }
 

@@ -108,7 +108,7 @@ async function waitForElement(
         }
         // console.log('Waiting:', selector, selectorType)
       })
-    }, 100)
+    }, 50)
   })
 }
 

@@ -173,6 +173,8 @@ export const PageActionListener = (() => {
       Ipc.send<PageActionStep>(BgCommand.addPageAction, {
         id: stepId,
         timestamp: getTimeStamp(),
+        delayMs: 0,
+        skipRenderWait: false,
         param: {
           type: PAGE_ACTION_EVENT.click,
           label,
@@ -185,6 +187,8 @@ export const PageActionListener = (() => {
       Ipc.send<PageActionStep>(BgCommand.addPageAction, {
         id,
         timestamp: getTimeStamp(),
+        delayMs: 0,
+        skipRenderWait: false,
         param: {
           type: PAGE_ACTION_EVENT.doubleClick,
           label,
@@ -197,6 +201,8 @@ export const PageActionListener = (() => {
       Ipc.send<PageActionStep>(BgCommand.addPageAction, {
         id,
         timestamp: getTimeStamp(),
+        delayMs: 0,
+        skipRenderWait: false,
         param: {
           type: PAGE_ACTION_EVENT.tripleClick,
           label,
@@ -221,6 +227,8 @@ export const PageActionListener = (() => {
       Ipc.send<PageActionStep>(BgCommand.addPageAction, {
         id: stepId,
         timestamp: getTimeStamp(),
+        delayMs: 0,
+        skipRenderWait: false,
         param: {
           type: PAGE_ACTION_EVENT.keyboard,
           label: modifierPressed(e) ? `${getModifierKey(e)}+${e.key}` : e.key,
@@ -256,6 +264,8 @@ export const PageActionListener = (() => {
         Ipc.send<PageActionStep>(BgCommand.addPageAction, {
           id: stepId,
           timestamp: getTimeStamp(),
+          delayMs: 0,
+          skipRenderWait: false,
           param: {
             type: PAGE_ACTION_EVENT.input,
             label: getLabel(target),
@@ -279,6 +289,8 @@ export const PageActionListener = (() => {
       Ipc.send<PageActionStep>(BgCommand.addPageAction, {
         id: stepId,
         timestamp: getTimeStamp(),
+        delayMs: 0,
+        skipRenderWait: false,
         param: {
           type: PAGE_ACTION_EVENT.scroll,
           label: `x: ${x}, y: ${y}`,
