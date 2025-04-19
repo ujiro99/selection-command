@@ -329,6 +329,7 @@ const run = (
 
       // Check stop flag
       const stop = BgData.get().pageActionStop
+      console.log('stop', step.param.type, stop)
       if (stop) {
         // Cancel the execution
         await RunningStatus.update(step.id, EXEC_STATE.Stop)
@@ -372,9 +373,15 @@ const run = (
   return true
 }
 
-export const stopRunner = (): boolean => {
-  BgData.set((data) => ({ ...data, pageActionStop: true }))
-  return false
+export const stopRunner = (
+  _: any,
+  __: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  BgData.set((data) => ({ ...data, pageActionStop: true })).then(() => {
+    response(true)
+  })
+  return true
 }
 
 const setRecordingTabId = async (tabId: number | undefined) => {

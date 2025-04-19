@@ -13,7 +13,7 @@ export class BgData {
   private constructor(val: BgData | undefined) {
     this.windowStack = val?.windowStack ?? []
     this.normalWindows = val?.normalWindows ?? []
-    this.pageActionStop = false
+    this.pageActionStop = val?.pageActionStop ?? false
   }
 
   public static init() {
@@ -39,6 +39,6 @@ export class BgData {
     } else {
       BgData.instance = val
     }
-    Storage.set(SESSION_STORAGE_KEY.BG, BgData.instance)
+    return Storage.set(SESSION_STORAGE_KEY.BG, BgData.instance)
   }
 }

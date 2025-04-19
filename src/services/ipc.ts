@@ -161,7 +161,7 @@ export const Ipc = {
           console.warn(chrome.runtime.lastError)
           continue
         }
-        console.debug('tab connected')
+        // console.debug('tab connected')
         return ret
       } catch (error) {
         // nothing to do
