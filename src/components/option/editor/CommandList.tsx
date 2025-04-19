@@ -339,11 +339,12 @@ export const CommandList = ({ control }: CommandListProps) => {
     if (isFolder(node.content)) {
       return
     }
-    const cmd = commandArray.fields.find((f) => f.id === node.id)
-    if (!cmd) return
+    const index = commandArray.fields.findIndex((f) => f.id === node.id)
+    if (index < 0) return
+    const cmd = commandArray.fields[index]
     cmd.id = crypto.randomUUID()
     cmd.title = title
-    commandArray.insert(idx, cmd)
+    commandArray.insert(index + 1, cmd)
   }
 
   const commandRemove = (idx: number) => {
