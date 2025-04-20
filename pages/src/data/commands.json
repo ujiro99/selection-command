@@ -8,7 +8,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
   {
@@ -20,7 +22,13 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "percent",
-    "tags": ["Language", "Translation", "翻訳", "Tool", "Japanese"],
+    "tags": [
+      "Language",
+      "Translation",
+      "翻訳",
+      "Tool",
+      "Japanese"
+    ],
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
   {
@@ -32,7 +40,12 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "percent",
-    "tags": ["Language", "Translation", "Tool", "Japanese"],
+    "tags": [
+      "Language",
+      "Translation",
+      "Tool",
+      "Japanese"
+    ],
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
   {
@@ -44,7 +57,11 @@
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
     "description": "Lucideでアイコンを探します",
-    "tags": ["Design", "UI", "Font"],
+    "tags": [
+      "Design",
+      "UI",
+      "Font"
+    ],
     "addedAt": "2024-12-16T02:02:14.795Z"
   },
   {
@@ -55,7 +72,10 @@
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
     "description": "ヤフーオークションの落札相場で検索します",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "id": "33cd4e4c-a7cf-593f-b2c7-bf8743882aae",
     "addedAt": "2024-12-15T09:50:25.804Z"
   },
@@ -67,7 +87,11 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Manual", "SaaS", "業務用"],
+    "tags": [
+      "Manual",
+      "SaaS",
+      "業務用"
+    ],
     "id": "f3254d62-2f77-528c-b7bd-6260c67802ec",
     "addedAt": "2024-12-18T03:00:19.785Z"
   },
@@ -79,7 +103,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "id": "0ba3f6ee-27e0-503d-a77a-e2e77e63e38e",
     "addedAt": "2024-12-23T13:49:39.766Z"
   },
@@ -91,7 +118,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "id": "f8dd2c7c-e0b2-5b1a-a3e6-314214a6d6d2",
     "addedAt": "2024-12-23T13:49:39.765Z"
   },
@@ -103,7 +133,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Japanese", "Development"],
+    "tags": [
+      "Japanese",
+      "Development"
+    ],
     "id": "17f41196-edf1-5a5b-b0d4-c85b4b1bcd1b",
     "addedAt": "2024-12-21T08:06:08.744Z"
   },
@@ -115,7 +148,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Tool"],
+    "tags": [
+      "Tool"
+    ],
     "id": "b8b18002-f163-5a6c-a3e3-efba6c491a21",
     "addedAt": "2024-12-31T02:49:13.716Z"
   },
@@ -127,7 +162,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop"],
+    "tags": [
+      "Shop"
+    ],
     "id": "2b679586-7167-56db-8ebd-00a54fab8445",
     "addedAt": "2025-01-01T08:11:57.087Z"
   },
@@ -139,7 +176,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "id": "723ee9f1-150b-54ad-aeac-5fbfd0ae3650",
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
@@ -151,7 +190,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Image"],
+    "tags": [
+      "Search",
+      "Image"
+    ],
     "id": "18998bac-4e6c-503f-b3ea-b9198edef7c3",
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
@@ -163,7 +205,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["News", "Development"],
+    "tags": [
+      "News",
+      "Development"
+    ],
     "id": "72010b32-3039-57c1-a0aa-2bdd09ceb735",
     "addedAt": "2025-01-10T09:35:41.778Z"
   },
@@ -175,7 +220,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Development"],
+    "tags": [
+      "Development"
+    ],
     "id": "5bf1ca99-61d1-571d-8451-c91edfcac544",
     "addedAt": "2025-01-10T15:52:10.668Z"
   },
@@ -187,7 +234,12 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "SNS", "Design", "Photo"],
+    "tags": [
+      "Media",
+      "SNS",
+      "Design",
+      "Photo"
+    ],
     "id": "54f3e785-960a-5a70-9c80-cfbf0357c4c7",
     "addedAt": "2025-01-10T16:05:29.696Z"
   },
@@ -199,7 +251,10 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "Movie"],
+    "tags": [
+      "Media",
+      "Movie"
+    ],
     "id": "409aba7d-c49e-5e81-b8a6-a862f2651b3e",
     "addedAt": "2025-01-10T16:06:57.611Z"
   },
@@ -211,7 +266,11 @@
     "openMode": "tab",
     "openModeSecondary": "popup",
     "spaceEncoding": "plus",
-    "tags": ["Japanese", "Movie", "Media"],
+    "tags": [
+      "Japanese",
+      "Movie",
+      "Media"
+    ],
     "id": "ae97a840-39b7-5b12-9186-9f850ec91f9a",
     "addedAt": "2025-02-01T07:03:50.021Z"
   },
@@ -223,7 +282,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "AI"],
+    "tags": [
+      "Search",
+      "AI"
+    ],
     "id": "59a9b166-b8e3-5e16-9237-aeda268ceacc",
     "addedAt": "2025-02-26T12:44:05.718Z"
   },
@@ -235,73 +297,11 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "Movie"],
+    "tags": [
+      "Media",
+      "Movie"
+    ],
     "id": "226d42cf-2445-5089-8938-8d97f607d34b",
     "addedAt": "2025-03-07T03:25:26.841Z"
-  },
-  {
-    "title": "Gemini",
-    "searchUrl": "",
-    "description": "Geminiで選択テキストについて説明を聞きます。",
-    "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-    "openMode": "pageAction",
-    "tags": ["AI"],
-    "pageActionOption": {
-      "startUrl": "https://gemini.google.com/app",
-      "openMode": "popup",
-      "steps": [
-        {
-          "id": "i79maq5ca",
-          "type": "start",
-          "param": {
-            "type": "start",
-            "label": "Start",
-            "url": "https://gemini.google.com/app"
-          }
-        },
-        {
-          "id": "5m91m7ofw",
-          "type": "click",
-          "param": {
-            "type": "click",
-            "label": "Ask Gemini",
-            "selector": "//*[@role=\"textbox\"]/p",
-            "selectorType": "xpath"
-          }
-        },
-        {
-          "id": "udhkifpmf",
-          "type": "input",
-          "param": {
-            "type": "input",
-            "label": "Hello, Gemini. Please let me know about this.",
-            "selector": "//*[@id=\"app-root\"]/main/side-navigation-v2/mat-sidenav-container/mat-sidenav-content/div/div[2]/chat-window/div/input-container/div/input-area-v2/div/div/div/div/div/rich-textarea/div[2]",
-            "selectorType": "xpath",
-            "value": "以下について教えてください。\n{{SelectedText}}"
-          }
-        },
-        {
-          "id": "0g8wyk4ve",
-          "type": "click",
-          "param": {
-            "type": "click",
-            "label": "",
-            "selector": "//*[@aria-label=\"Send message\"]/mat-icon",
-            "selectorType": "xpath"
-          }
-        },
-        {
-          "id": "44dd5s7c8",
-          "type": "end",
-          "param": {
-            "type": "end",
-            "label": "End",
-            "url": "https://gemini.google.com/app"
-          }
-        }
-      ]
-    },
-    "id": "a20cab66-2392-5be0-8436-d1aa363fefbc",
-    "addedAt": "2025-03-27T13:58:53.377Z"
   }
 ]
