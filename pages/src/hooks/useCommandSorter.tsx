@@ -6,7 +6,11 @@ import {
   useEffect,
 } from 'react'
 import { Command } from '@/types'
-import { sortUrlsByDomain } from '@/lib/utils'
+import {
+  sortUrlsByDomain,
+  isSearchCommand,
+  isPageActionCommand,
+} from '@/lib/utils'
 import { SORT_ORDER } from '@/const'
 
 export enum Direction {
@@ -14,8 +18,17 @@ export enum Direction {
   desc = 'desc',
 }
 
+const getUrl = (cmd: Command) => {
+  if (isSearchCommand(cmd)) {
+    return cmd.searchUrl
+  } else if (isPageActionCommand(cmd)) {
+    return cmd.pageActionOption.startUrl
+  }
+  return ''
+}
+
 const getLocale = () => navigator?.language ?? 'en'
-const sortSearchUrl = (cmds: Command[]) => sortUrlsByDomain(cmds, 'searchUrl')
+const sortSearchUrl = (cmds: Command[]) => sortUrlsByDomain(cmds, getUrl)
 const sortTitle = (cmds: Command[]) =>
   cmds.sort((a, b) => a.title.localeCompare(b.title, getLocale()))
 const sortDownload = (cmds: Command[]) =>
