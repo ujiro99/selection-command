@@ -14,6 +14,9 @@
   "labelCancel": {
     "message": "キャンセル"
   },
+  "labelClose": {
+    "message": "閉じる"
+  },
   "labelAddPageRule": {
     "message": "ページルールを追加"
   },
@@ -35,6 +38,9 @@
   "commandHub_description": {
     "message": "コマンドを共有できるようになりました✨"
   },
+  "commnadHub_youcanshare": {
+    "message": "⚡️作成したコマンドを自動入力できます。"
+  },
   "Option_labelCancel": {
     "message": "やめる"
   },
@@ -43,6 +49,9 @@
   },
   "Option_labelSave": {
     "message": "保存する"
+  },
+  "Option_labelDetail": {
+    "message": "詳細"
   },
   "Option_Enable": {
     "message": "有効"
@@ -188,8 +197,14 @@
   "Option_iconUrl": {
     "message": "アイコンURL"
   },
+  "Option_iconUrl_folder": {
+    "message": "アイコンURL / SVG"
+  },
   "Option_iconUrl_desc": {
-    "message": "※検索URLを変更すると自動で更新します。"
+    "message": "検索URLを変更すると自動で更新します。"
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "開始URLを変更すると自動で更新します。"
   },
   "Option_iconUrl_autofill": {
     "message": "自動検出"
@@ -230,6 +245,9 @@
   "Option_openMode_getTextStyles": {
     "message": "テキストのスタイル取得"
   },
+  "Option_openMode_pageAction": {
+    "message": "Page Action"
+  },
   "Option_openMode_previewPopup": {
     "message": "Popup"
   },
@@ -262,6 +280,21 @@
   },
   "Option_variableValue": {
     "message": "値"
+  },
+  "Option_startUrl": {
+    "message": "開始URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "アクションを開始するページのURL"
+  },
+  "Option_pageAction_title": {
+    "message": "Actions"
+  },
+  "Option_pageAction_desc": {
+    "message": "実行される操作"
+  },
+  "Option_pageAction_openMode": {
+    "message": "ウィンドウ表示方法"
   },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
@@ -327,7 +360,10 @@
     "message": "正しいURLまたはSVGを入力してください。"
   },
   "Option_icon_placeholder": {
-    "message": "URLまたはSVGを入力してください。"
+    "message": "URLまたはSVGの文字列 "
+  },
+  "Option_icon_desc": {
+    "message": "URLまたはSVGを使用可能です"
   },
   "Option_icon_required": {
     "message": "アイコンとなるURLまたはSVGが必要です。"
@@ -428,14 +464,29 @@
   "Option_edit_tooltip": {
     "message": "編集"
   },
+  "Option_copy_tooltip": {
+    "message": "コピー"
+  },
   "Option_remove_title": {
-    "message": "削除してよいですか？"
+    "message": "削除しますか？"
   },
   "Option_remove_tooltip": {
     "message": "削除"
   },
   "Option_remove_ok": {
     "message": "削除する"
+  },
+  "Option_remove_description": {
+    "message": "取り消しできません。よいですか？"
+  },
+  "Option_copy_title": {
+    "message": "コマンド複製"
+  },
+  "Option_copy_desc": {
+    "message": "タイトルを入力してください。"
+  },
+  "Option_copy_ok": {
+    "message": "複製する"
   },
   "Option_zod_number": {
     "message": "数値を入力してください。"
@@ -469,5 +520,143 @@
   },
   "Option_zod_url": {
     "message": "URL形式で入力してください。"
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "選択テキストが挿入されます"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "起動元のURLが挿入されます"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "クリップボードから挿入されます"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "テキスト挿入"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "選択テキスト"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "表示元URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "クリップボード"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "Inputアクションの編集"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "このアクションにより入力される内容を編集してください。"
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "入力される内容"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "やめる"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "保存する"
+  },
+  "PageAction_Controller_recording": {
+    "message": "記録中"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "停止中"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "プレビュー中"
+  },
+  "PageAction_Controller_stop": {
+    "message": "停止"
+  },
+  "PageAction_Controller_complete": {
+    "message": "完了"
+  },
+  "PageAction_Controller_preview": {
+    "message": "プレビュー"
+  },
+  "PageAction_Controller_reset": {
+    "message": "リセット"
+  },
+  "help_pageAction_title": {
+    "message": "Page Actionの使い方"
+  },
+  "help_pageAction_description": {
+    "message": "Page Actionは、<b>ユーザー操作を記録・再現</b>する機能です。"
+  },
+  "help_pageAction_example": {
+    "message": "例として、以下のような使い方ができます。"
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>決まったプロンプト＋選択文字列をLLMへ入力</li><li>URLをテキスト欄へ入力して、ボタンを押す</li><li>などなど...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "Page Actionは、<b>RECボタンから</b>記録できます。"
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【作成手順】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>操作したいページのURLを入力し、RECボタンを押して記録を開始します。</li><li>ウィンドウが開いたら記録したい操作を行います。</li><li>完了したら、記録メニューのCompleteボタンを押します。</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": "Page Actionでは<b>以下の操作</b>を記録できます。"
+  },
+  "help_pageAction_action": {
+    "message": "操作"
+  },
+  "help_pageAction_desc": {
+    "message": "説明"
+  },
+  "help_pageAction_left_click": {
+    "message": "左クリック"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "クリック、ダブルクリック、トリプルクリックを記録します。"
+  },
+  "help_pageAction_scroll": {
+    "message": "画面スクロール"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "10px以上のスクロールを記録します。"
+  },
+  "help_pageAction_keyboard": {
+    "message": "キー入力"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>Ctrl同時押しなど、一部のキー入力だけが記録されます。</li><li>記録されたキー操作でも、きちんと動作しない場合があります。</li>"
+  },
+  "help_pageAction_input": {
+    "message": "テキスト入力"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "入力欄へのテキスト入力を記録します。"
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "以下の変数を使用できます。"
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "選択的テキスト、URL、クリップボード"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "入力欄へのフォーカス中は、他の操作は記録されません。"
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "※Tab、Enterキーだけは記録されます。"
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "これらの操作を、最大10ステップまで記録できます"
+  },
+  "help_pageAction_edit": {
+    "message": "<b>Page Actionの編集</b>について"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>テキスト入力の編集とステップの削除は、設定画面からも実行できます。</li><li>既存のPageActionをコピーし、一部だけ編集したコマンドを簡単に作成できます。</li>"
+  },
+  "help_pageAction_share": {
+    "message": "<b>コマンドの共有</b>について"
+  },
+  "help_pageAction_share_desc": {
+    "message": "Selection Command Hubから、<b>Page Actionコマンドの共有と取得</b>ができます。 "
   }
 }

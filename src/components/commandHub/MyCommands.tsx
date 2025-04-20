@@ -3,7 +3,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import ColorThief from 'colorthief'
 import { useSetting } from '@/hooks/useSetting'
 import { sendEvent } from '@/services/analytics'
-import { isEmpty, cn } from '@/lib/utils'
+import { t } from '@/services/i18n'
+import { cn, isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import { HUB_URL, SCREEN } from '@/const'
 import type { Command } from '@/types'
 
@@ -14,7 +15,9 @@ export const MyCommands = (): JSX.Element => {
   const { settings, iconUrls } = useSetting()
   const commands = settings.commands
     .filter(
-      (c) => !isEmpty(c.searchUrl) && !urls.includes(c.searchUrl as string),
+      (c) =>
+        (isSearchCommand(c) && !urls.includes(c.searchUrl as string)) ||
+        isPageActionCommand(c),
     )
     .map((c) => ({ ...c, iconDataUrl: c.iconUrl, iconUrl: iconUrls[c.id] }))
   const loaded = urls.length > 0
@@ -60,9 +63,7 @@ export const MyCommands = (): JSX.Element => {
 
   return (
     <div className="relative pt-2 px-4">
-      <p className="text-sm text-stone-700">
-        ⚡️作成したコマンドを自動入力できます。
-      </p>
+      <p className="text-sm text-stone-700">{t('commnadHub_youcanshare')}</p>
       {!enableMarquee ? (
         <div
           className={cn(
@@ -159,6 +160,8 @@ const ListItem = (props: ItemProps): JSX.Element => {
   const [imgElm, setImgElm] = useState<HTMLImageElement | null>(null)
   const [liElm, setLiElm] = useState<HTMLLIElement | null>(null)
 
+  const isPageAction = isPageActionCommand(c)
+
   useEffect(() => {
     if (imgElm == null) return
     imgElm.onload = () => {
@@ -204,7 +207,7 @@ const ListItem = (props: ItemProps): JSX.Element => {
             {c.title}
           </p>
           <p className="text-xs text-stone-600 truncate leading-4 mt-0.5">
-            {c.searchUrl}
+            {isPageAction ? c.pageActionOption.startUrl : c.searchUrl}
           </p>
         </div>
       </button>

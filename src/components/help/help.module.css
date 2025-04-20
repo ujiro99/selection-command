@@ -1,0 +1,28 @@
+.table {
+  @apply border-collapse border border-gray-300 text-sm mt-8 mx-auto;
+}
+
+.tableLabel,
+.tableCell {
+  @apply border border-gray-300 px-2 py-1.5;
+}
+
+.tableLabel {
+  @apply font-mono px-3;
+}
+
+.carouselContent {
+  @apply mt-4;
+}
+
+:global .pageActionHelp b {
+  @apply relative mx-1;
+}
+
+:global .pageActionHelp b:before {
+  content: '';
+  z-index: -1;
+  @apply absolute w-full h-3 -left-1 -bottom-0.5;
+  @apply bg-blue-100 rounded;
+  @apply box-content px-1;
+}

@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/Tooltip'
 import { SortableItem } from '@/components/option/SortableItem'
 import { EditButton } from '@/components/option/EditButton'
+import { CopyButton } from '@/components/option/CopyButton'
 import { RemoveButton } from '@/components/option/RemoveButton'
 import {
   commandSchema,
@@ -38,9 +39,14 @@ import { MenuImage } from '@/components/menu/MenuImage'
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { OPEN_MODE, ROOT_FOLDER, COMMAND_MAX } from '@/const'
+import { OPEN_MODE, ROOT_FOLDER, COMMAND_MAX, HUB_URL } from '@/const'
 import { cn, e2a, isEmpty, unique } from '@/lib/utils'
-import type { Command, CommandFolder, SelectionCommand } from '@/types'
+import type {
+  Command,
+  CommandFolder,
+  SelectionCommand,
+  PageActionCommand,
+} from '@/types'
 
 const commandsSchema = z.object({
   commands: z.array(commandSchema).min(1).max(COMMAND_MAX),
@@ -182,6 +188,16 @@ export function isCommand(
   return false
 }
 
+export function isPageActionCommand(
+  content: Command | CommandFolder | undefined,
+): content is PageActionCommand {
+  if (content == null) return false
+  if ('openMode' in content) {
+    return OPEN_MODE.PAGE_ACTION === content.openMode
+  }
+  return false
+}
+
 function isFolder(
   content: Command | CommandFolder | undefined,
 ): content is CommandFolder {
@@ -305,11 +321,6 @@ export const CommandList = ({ control }: CommandListProps) => {
       const idx = commandArray.fields.findIndex((f) => f.id === data.id)
       if (idx >= 0) {
         commandArray.update(idx, data as CommandSchemaType)
-        // Move to the end of the list if the command is moved to the folder.
-        //if (data.parentFolderId != null) {
-        if (hasFolder(data)) {
-          commandArray.move(idx, commandArray.fields.length - 1)
-        }
       } else {
         commandArray.append(data as CommandSchemaType)
       }
@@ -321,6 +332,19 @@ export const CommandList = ({ control }: CommandListProps) => {
         folderArray.append(data)
       }
     }
+  }
+
+  const commandCopy = (idx: number, title: string) => {
+    const node = flatten[idx]
+    if (isFolder(node.content)) {
+      return
+    }
+    const index = commandArray.fields.findIndex((f) => f.id === node.id)
+    if (index < 0) return
+    const cmd = commandArray.fields[index]
+    cmd.id = crypto.randomUUID()
+    cmd.title = title
+    commandArray.insert(index + 1, cmd)
   }
 
   const commandRemove = (idx: number) => {
@@ -451,7 +475,7 @@ export const CommandList = ({ control }: CommandListProps) => {
           asChild
         >
           <a
-            href="https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=button"
+            href={`${HUB_URL}/?utm_source=optionPage&utm_medium=button`}
             target="_blank"
             className="font-mono text-gray-600 hover:text-gray-700"
           >
@@ -523,6 +547,12 @@ export const CommandList = ({ control }: CommandListProps) => {
                     </div>
                   </div>
                   <div className="flex gap-0.5 items-center">
+                    {isPageActionCommand(field.content) && (
+                      <CopyButton
+                        srcTitle={field.content.title}
+                        onClick={(title) => commandCopy(index, title)}
+                      />
+                    )}
                     <EditButton onClick={() => commandEditorOpen(index)} />
                     <RemoveButton
                       title={field.content.title}

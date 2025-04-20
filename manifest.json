@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "__MSG_extName__",
   "description": "__MSG_extDescription__",
-  "version": "0.11.7",
+  "version": "0.11.8",
   "default_locale": "en",
   "icons": {
     "128": "icon128.png"
@@ -36,7 +36,8 @@
     "storage",
     "tabs",
     "contextMenus",
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "clipboardRead"
   ],
   "host_permissions": [
     "http://*/*",
@@ -49,7 +50,8 @@
         "https://*/*"
       ],
       "resources": [
-        "assets/*.css"
+        "assets/*.css",
+        "icon128.png"
       ]
     }
   ]

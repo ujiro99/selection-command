@@ -2,6 +2,12 @@ import type { ExecProps } from './index'
 import { ExecState } from './index'
 import { sleep, isEmpty } from '@/lib/utils'
 import { getSelectionText } from '@/services/dom'
+import type { CopyCommand } from '@/types'
+import { OPEN_MODE } from '@/const'
+
+const isCopyCommand = (command: any): command is CopyCommand => {
+  return command.openMode === OPEN_MODE.COPY
+}
 
 async function setClipboard(text: string) {
   const type = 'text/plain'
@@ -17,6 +23,11 @@ export const Copy = {
     useSecondary,
     command,
   }: ExecProps) {
+    if (!isCopyCommand(command)) {
+      console.error('command is not for Copy.')
+      return
+    }
+
     changeState(ExecState.EXECUTING)
     const currentText = getSelectionText()
 

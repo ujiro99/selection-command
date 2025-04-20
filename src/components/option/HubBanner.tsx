@@ -2,6 +2,7 @@ import css from './Option.module.css'
 import css2 from './HubBanner.module.css'
 import { t } from '@/services/i18n'
 import { cn } from '@/lib/utils'
+import { HUB_URL } from '@/const'
 
 export function HubBanner() {
   return (
@@ -10,7 +11,7 @@ export function HubBanner() {
         <span>Sharing Commands</span>
       </p>
       <a
-        href="https://ujiro99.github.io/selection-command/?utm_source=optionPage&utm_medium=banner"
+        href={`${HUB_URL}?utm_source=optionPage&utm_medium=banner`}
         target="_blank"
       >
         <img

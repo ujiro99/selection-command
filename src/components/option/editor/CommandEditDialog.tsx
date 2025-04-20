@@ -1,8 +1,15 @@
-import { useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Plus, Trash2, Save, SquareTerminal } from 'lucide-react'
+import {
+  Plus,
+  Trash2,
+  Save,
+  SquareTerminal,
+  ChevronsUpDown,
+  ChevronsDownUp,
+} from 'lucide-react'
 
 import {
   Dialog,
@@ -23,6 +30,12 @@ import {
   FormLabel,
 } from '@/components/ui/form'
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
+
 import { Input } from '@/components/ui/input'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
@@ -31,16 +44,43 @@ import { IconField } from '@/components/option/field/IconField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { TextareaField } from '@/components/option/field/TextareaField'
 import {
+  pageActionSchema,
+  PageActionSection,
+} from '@/components/option/editor/PageActionSection'
+import { PaeActionHelp } from '@/components/help/PageActionHelp'
+
+import { PageActionStep } from '@/types/schema'
+
+import {
   OPEN_MODE,
   SPACE_ENCODING,
   POPUP_OPTION,
   COPY_OPTION,
   ROOT_FOLDER,
+  PAGE_ACTION_OPEN_MODE,
+  ICON_NOT_FOUND,
 } from '@/const'
-import { isEmpty, e2a } from '@/lib/utils'
+
+import {
+  FaviconContextProvider,
+  useFavicon,
+  FaviconEvent,
+} from '@/hooks/useFavicon'
+
+import { Ipc, BgCommand } from '@/services/ipc'
+import { getScreenSize } from '@/services/dom'
+import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
+
+import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import type { SelectionCommand, CommandFolder } from '@/types'
+import type {
+  SelectionCommand,
+  CommandFolder,
+  PageActionRecordingData,
+} from '@/types'
+
+import css from './CommandEditDialog.module.css'
 
 const SearchOpenMode = [
   OPEN_MODE.POPUP,
@@ -103,6 +143,10 @@ const linkPopupSchema = z.object({
     .default(
       'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
     ),
+  popupOption: z.object({
+    width: z.number().min(1),
+    height: z.number().min(1),
+  }),
 })
 
 const copySchema = z.object({
@@ -141,6 +185,7 @@ const textStyleSchema = z.object({
 export const commandSchema = z.discriminatedUnion('openMode', [
   searchSchema,
   apiSchema,
+  pageActionSchema,
   linkPopupSchema,
   copySchema,
   textStyleSchema,
@@ -155,7 +200,6 @@ const defaultValue = (openMode: OPEN_MODE) => {
   if (SearchOpenMode.includes(openMode as any)) {
     return {
       id: '',
-      title: '',
       searchUrl: '',
       iconUrl: '',
       openMode: OPEN_MODE.POPUP as const,
@@ -171,13 +215,29 @@ const defaultValue = (openMode: OPEN_MODE) => {
   if (openMode === OPEN_MODE.API) {
     return {
       id: '',
-      title: '',
       searchUrl: '',
       iconUrl: '',
       openMode: OPEN_MODE.API as const,
       fetchOptions: '',
       variables: [],
       parentFolderId: ROOT_FOLDER,
+    }
+  }
+  if (openMode === OPEN_MODE.PAGE_ACTION) {
+    return {
+      id: '',
+      iconUrl: '',
+      openMode: OPEN_MODE.PAGE_ACTION as const,
+      parentFolderId: ROOT_FOLDER,
+      popupOption: {
+        width: POPUP_OPTION.width + 100,
+        height: POPUP_OPTION.height + 50,
+      },
+      pageActionOption: {
+        startUrl: '',
+        openMode: PAGE_ACTION_OPEN_MODE.POPUP,
+        steps: [],
+      },
     }
   }
   if (openMode === OPEN_MODE.LINK_POPUP) {
@@ -188,6 +248,10 @@ const defaultValue = (openMode: OPEN_MODE) => {
         'https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png',
       openMode: OPEN_MODE.LINK_POPUP as const,
       parentFolderId: ROOT_FOLDER,
+      popupOption: {
+        width: POPUP_OPTION.width,
+        height: POPUP_OPTION.height,
+      },
     }
   }
   if (openMode === OPEN_MODE.COPY) {
@@ -221,6 +285,8 @@ type CommandEditDialogProps = {
   command?: SelectionCommand
 }
 
+const DEFAULT_MODE = OPEN_MODE.POPUP
+
 export const CommandEditDialog = ({
   open,
   onOpenChange,
@@ -228,16 +294,37 @@ export const CommandEditDialog = ({
   folders,
   command,
 }: CommandEditDialogProps) => {
-  const preOpenModeRef = useRef(command?.openMode ?? OPEN_MODE.POPUP)
+  return (
+    <FaviconContextProvider>
+      <CommandEditDialogInner
+        open={open}
+        onOpenChange={onOpenChange}
+        onSubmit={onSubmit}
+        folders={folders}
+        command={command}
+      />
+    </FaviconContextProvider>
+  )
+}
+
+const CommandEditDialogInner = ({
+  open,
+  onOpenChange,
+  onSubmit,
+  folders,
+  command,
+}: CommandEditDialogProps) => {
+  const [initialized, setInitialized] = useState(false)
+  const preOpenModeRef = useRef(command?.openMode ?? DEFAULT_MODE)
 
   const form = useForm<z.infer<typeof commandSchema>>({
     resolver: zodResolver(commandSchema),
     mode: 'onChange',
-    defaultValues: defaultValue(OPEN_MODE.POPUP),
+    defaultValues: defaultValue(DEFAULT_MODE),
   })
-  const { register, reset, watch, setValue, clearErrors } = form
+  const { register, reset, getValues, setValue, clearErrors } = form
+  const { setIconUrlSrc, subscribe, unsubscribe } = useFavicon()
 
-  const searchUrl = watch('searchUrl')
   const isUpdate = command != null
 
   const variableArray = useFieldArray({
@@ -249,13 +336,39 @@ export const CommandEditDialog = ({
   const openMode = useWatch({
     control: form.control,
     name: 'openMode',
-    defaultValue: OPEN_MODE.POPUP,
+    defaultValue: DEFAULT_MODE,
   })
 
-  const autofillIconUrl = (url: string) => {
-    if (isEmpty(url)) return
-    setValue('iconUrl', url)
-    clearErrors('iconUrl')
+  const searchUrl = useWatch({
+    control: form.control,
+    name: 'searchUrl',
+    defaultValue: '',
+  })
+
+  const startUrl = useWatch({
+    control: form.control,
+    name: 'pageActionOption.startUrl',
+    defaultValue: '',
+  })
+
+  const iconUrlSrc = searchUrl || startUrl
+
+  const openPageActionRecorder = async () => {
+    await Storage.set<PageActionRecordingData>(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+      {
+        startUrl,
+        openMode: getValues('pageActionOption.openMode'),
+        size: getValues('popupOption') ?? POPUP_OPTION,
+        steps: getValues('pageActionOption.steps'),
+      },
+    )
+    await Ipc.send(BgCommand.startPageActionRecorder, {
+      startUrl,
+      openMode: getValues('pageActionOption.openMode'),
+      size: getValues('popupOption') ?? POPUP_OPTION,
+      screen: getScreenSize(),
+    })
   }
 
   useEffect(() => {
@@ -263,10 +376,10 @@ export const CommandEditDialog = ({
       if (isEmpty(command.parentFolderId)) {
         command.parentFolderId = ROOT_FOLDER
       }
-      reset((command as any) ?? defaultValue(OPEN_MODE.POPUP))
+      reset((command as any) ?? defaultValue(DEFAULT_MODE))
     } else {
       setTimeout(() => {
-        reset(defaultValue(OPEN_MODE.POPUP))
+        reset(defaultValue(DEFAULT_MODE))
       }, 100)
     }
   }, [command])
@@ -283,19 +396,65 @@ export const CommandEditDialog = ({
     preOpenModeRef.current = openMode
   }, [openMode])
 
+  useEffect(() => {
+    if (!initialized) return
+    setIconUrlSrc(iconUrlSrc)
+  }, [iconUrlSrc, setIconUrlSrc])
+
+  useEffect(() => {
+    if (!open) setIconUrlSrc('')
+    setTimeout(() => {
+      setInitialized(open)
+    }, 100)
+  }, [open, setIconUrlSrc])
+
+  useEffect(() => {
+    Storage.addListener<PageActionRecordingData>(
+      SESSION_STORAGE_KEY.PA_RECORDING,
+      ({ size, steps }) => {
+        if (steps == null) return
+        setValue('popupOption', size)
+        setValue('pageActionOption.steps', steps as PageActionStep[])
+      },
+    )
+  }, [])
+
+  useEffect(() => {
+    const sub = (e: any) => {
+      if (e.type === FaviconEvent.FAIL) {
+        setValue('iconUrl', ICON_NOT_FOUND)
+      } else {
+        setValue('iconUrl', e.detail.faviconUrl)
+      }
+      clearErrors('iconUrl')
+    }
+
+    subscribe(FaviconEvent.START, sub)
+    subscribe(FaviconEvent.SUCCESS, sub)
+    subscribe(FaviconEvent.FAIL, sub)
+    return () => {
+      unsubscribe(FaviconEvent.START, sub)
+      unsubscribe(FaviconEvent.SUCCESS, sub)
+      unsubscribe(FaviconEvent.FAIL, sub)
+    }
+  }, [])
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
         <DialogContent className="max-w-2xl">
-          <DialogHeader>
+          <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />
               {t('Command_edit')}
             </DialogTitle>
+            {openMode === OPEN_MODE.PAGE_ACTION && (
+              <PaeActionHelp className="absolute -top-4 right-2" />
+            )}
           </DialogHeader>
           <DialogDescription>{t('Command_input')}</DialogDescription>
           <Form {...form}>
-            <form id="CommandEditForm" className="space-y-2">
+            <div id="CommandEditForm" className="space-y-2">
               <FormField
                 control={form.control}
                 name="id"
@@ -319,18 +478,6 @@ export const CommandEditDialog = ({
                   type: 'string',
                   ...register('title', {}),
                 }}
-              />
-
-              <SelectField
-                control={form.control}
-                name="parentFolderId"
-                formLabel={t('parentFolderId')}
-                options={[EmptyFolder, ...folders].map((folder) => ({
-                  name: folder.title,
-                  value: folder.id,
-                  iconUrl: folder.iconUrl,
-                  iconSvg: folder.iconSvg,
-                }))}
               />
 
               <SelectField
@@ -376,34 +523,18 @@ export const CommandEditDialog = ({
                       ? t('searchUrl_desc_api')
                       : t('searchUrl_desc')
                   }
+                  previewUrl={
+                    !isEmpty(getValues('searchUrl'))
+                      ? getValues('iconUrl')
+                      : undefined
+                  }
                 />
               )}
 
-              <IconField
-                control={form.control}
-                nameUrl="iconUrl"
-                nameSvg="iconSvg"
-                formLabel={t('iconUrl')}
-                iconUrlSrc={searchUrl}
-                onAutoFill={autofillIconUrl}
-                description={
-                  SearchOpenMode.includes(openMode as any) ||
-                  openMode === OPEN_MODE.API
-                    ? t('iconUrl_desc')
-                    : ''
-                }
-              />
-
-              {SearchOpenMode.includes(openMode as any) && (
-                <SelectField
-                  control={form.control}
-                  name="spaceEncoding"
-                  formLabel={t('spaceEncoding')}
-                  options={e2a(SPACE_ENCODING).map((enc) => ({
-                    name: t(`spaceEncoding_${enc}`),
-                    value: enc,
-                  }))}
-                  description={t('spaceEncoding_desc')}
+              {openMode === OPEN_MODE.PAGE_ACTION && (
+                <PageActionSection
+                  form={form}
+                  openRecorder={openPageActionRecorder}
                 />
               )}
 
@@ -506,9 +637,73 @@ export const CommandEditDialog = ({
                   }))}
                 />
               )}
-            </form>
+
+              {/* details */}
+
+              <Collapsible
+                className={cn(css.collapse, 'flex flex-col items-end')}
+              >
+                <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
+                  <ChevronsUpDown
+                    size={18}
+                    className={cn(css.icon, css.iconUpDown)}
+                  />
+                  <ChevronsDownUp
+                    size={18}
+                    className={cn(css.icon, css.iconDownUp)}
+                  />
+                  <span className="ml-0.5">{t('labelDetail')}</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent
+                  className={cn(
+                    css.CollapsibleContent,
+                    'w-full space-y-3 pt-2',
+                  )}
+                >
+                  <IconField
+                    control={form.control}
+                    nameUrl="iconUrl"
+                    nameSvg="iconSvg"
+                    formLabel={t('iconUrl')}
+                    description={
+                      SearchOpenMode.includes(openMode as any) ||
+                      openMode === OPEN_MODE.API
+                        ? t('iconUrl_desc')
+                        : openMode === OPEN_MODE.PAGE_ACTION
+                          ? t('iconUrl_desc_pageAction')
+                          : ''
+                    }
+                  />
+
+                  {SearchOpenMode.includes(openMode as any) && (
+                    <SelectField
+                      control={form.control}
+                      name="spaceEncoding"
+                      formLabel={t('spaceEncoding')}
+                      options={e2a(SPACE_ENCODING).map((enc) => ({
+                        name: t(`spaceEncoding_${enc}`),
+                        value: enc,
+                      }))}
+                      description={t('spaceEncoding_desc')}
+                    />
+                  )}
+
+                  <SelectField
+                    control={form.control}
+                    name="parentFolderId"
+                    formLabel={t('parentFolderId')}
+                    options={[EmptyFolder, ...folders].map((folder) => ({
+                      name: folder.title,
+                      value: folder.id,
+                      iconUrl: folder.iconUrl,
+                      iconSvg: folder.iconSvg,
+                    }))}
+                  />
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
           </Form>
-          <DialogFooter>
+          <DialogFooter className="pt-0">
             <DialogClose asChild>
               <Button type="button" variant="secondary" size="lg">
                 {t('labelCancel')}

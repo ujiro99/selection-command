@@ -2,78 +2,34 @@ import {
   isDebug,
   LINK_COMMAND_ENABLED,
   POPUP_ENABLED,
-  POPUP_OFFSET,
-  POPUP_TYPE,
   POPUP_PLACEMENT,
 } from '@/const'
-import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
-import type { IpcCallback } from '@/services/ipc'
-import { escapeJson } from '@/lib/utils'
-import type { ScreenSize } from '@/services/dom'
-import { Settings } from '@/services/settings'
-import type { CommandVariable } from '@/types'
-import { Storage, STORAGE_KEY, STORAGE_AREA } from '@/services/storage'
 import '@/services/contextMenus'
+import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
+import { Settings } from '@/services/settings'
 import { PopupOption } from '@/services/defaultSettings'
+import * as PageActionBackground from '@/services/pageAction/background'
+import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
+import { BgData } from '@/services/backgroundData'
+import { escapeJson, isSearchCommand, isPageActionCommand } from '@/lib/utils'
+import type { IpcCallback } from '@/services/ipc'
+import type {
+  CommandVariable,
+  WindowType,
+  WindowLayer,
+  CaptureData,
+  CaptureDataStorage,
+  CaptureScreenShotRes,
+} from '@/types'
+import { Storage, SESSION_STORAGE_KEY } from './services/storage'
 
 const OPTION_PAGE = 'src/options_page.html'
-
-type WindowType = {
-  id: number
-  commandId: string
-  srcWindowId: number
-}
-
-type WindowLayer = WindowType[]
-
-class BgData {
-  private static instance: BgData
-
-  public windowStack: WindowLayer[]
-  public normalWindows: WindowLayer
-
-  private constructor(val: BgData | undefined) {
-    this.windowStack = val?.windowStack ?? []
-    this.normalWindows = val?.normalWindows ?? []
-  }
-
-  public static init() {
-    if (!BgData.instance) {
-      Storage.get<BgData>(STORAGE_KEY.BG, STORAGE_AREA.LOCAL).then(
-        (val: BgData) => {
-          BgData.instance = new BgData(val)
-          console.debug('BgData initialized', BgData.instance)
-        },
-      )
-    }
-  }
-
-  public static get(): BgData {
-    return BgData.instance
-  }
-
-  public static set(val: BgData) {
-    BgData.instance = val
-    Storage.set(STORAGE_KEY.BG, BgData.instance, STORAGE_AREA.LOCAL)
-  }
-}
 
 BgData.init()
 
 type Sender = chrome.runtime.MessageSender
 
-export type openPopupsProps = {
-  commandId: string
-  urls: string[]
-  top: number
-  left: number
-  width: number
-  height: number
-  screen: ScreenSize
-  type: POPUP_TYPE
-}
-
-export type openPopupAndClickProps = openPopupsProps & {
+export type openPopupAndClickProps = OpenPopupsProps & {
   selector: string
 }
 
@@ -116,72 +72,8 @@ function bindVariables(
   return res
 }
 
-async function getCurrentTab() {
-  const queryOptions = { active: true, lastFocusedWindow: true }
-  const [tab] = await chrome.tabs.query(queryOptions)
-  return tab
-}
-
-const openPopups = async (param: openPopupsProps): Promise<number[]> => {
-  const { top, left, width, height, screen } = param
-  const current = await chrome.windows.getCurrent()
-  const type = param.type ?? POPUP_TYPE.POPUP
-  const windows = await Promise.all(
-    param.urls.reverse().map((url, idx) => {
-      let t = top + POPUP_OFFSET * idx
-      let l = left + POPUP_OFFSET * idx
-
-      // If the window extends beyond the screen size,
-      // return the display position to the center.
-      if (screen.height < t + height - screen.top) {
-        t =
-          Math.floor((screen.height - height) / 2) +
-          screen.top +
-          POPUP_OFFSET * idx
-      }
-      if (screen.width < l + width - screen.left) {
-        l =
-          Math.floor((screen.width - width) / 2) +
-          screen.left +
-          POPUP_OFFSET * idx
-      }
-      return chrome.windows.create({
-        url,
-        width: width,
-        height: height,
-        top: t,
-        left: l,
-        type,
-        incognito: current.incognito,
-      })
-    }),
-  )
-  if (windows?.length > 0) {
-    const layer = windows.map((w) => ({
-      id: w.id,
-      commandId: param.commandId,
-      srcWindowId: current.id,
-    })) as WindowLayer
-    const data = BgData.get()
-    if (type === POPUP_TYPE.POPUP) {
-      data.windowStack.push(layer)
-    } else {
-      data.normalWindows = layer
-    }
-    BgData.set(data)
-  }
-
-  const tabIds = windows.reduce((tabIds, w) => {
-    w.tabs?.forEach((t) => t.id && tabIds.push(t.id))
-    return tabIds
-  }, [] as number[])
-  updateRules(tabIds)
-
-  return tabIds
-}
-
 const commandFuncs = {
-  [BgCommand.openPopups]: (param: openPopupsProps): boolean => {
+  [BgCommand.openPopups]: (param: OpenPopupsProps): boolean => {
     openPopups(param)
     return false
   },
@@ -238,16 +130,37 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ): boolean => {
     const params = JSON.parse(param.command)
-    const cmd = {
-      id: params.id,
-      title: params.title,
-      searchUrl: params.searchUrl,
-      iconUrl: params.iconUrl,
-      openMode: params.openMode,
-      openModeSecondary: params.openModeSecondary,
-      spaceEncoding: params.spaceEncoding,
-      popupOption: PopupOption,
+    const isSearch = isSearchCommand(params)
+    const isPageAction = isPageActionCommand(params)
+
+    const cmd = isSearch
+      ? {
+          id: params.id,
+          title: params.title,
+          searchUrl: params.searchUrl,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
+          popupOption: PopupOption,
+        }
+      : isPageAction
+        ? {
+            id: params.id,
+            title: params.title,
+            iconUrl: params.iconUrl,
+            openMode: params.openMode,
+            pageActionOption: params.pageActionOption,
+            popupOption: PopupOption,
+          }
+        : null
+
+    if (!cmd) {
+      console.error('invalid command', param.command)
+      response(false)
+      return true
     }
+
     Settings.addCommands([cmd]).then(() => {
       response(true)
     })
@@ -387,6 +300,63 @@ const commandFuncs = {
     toggle()
     return true
   },
+
+  [BgCommand.captureScreenshot]: (
+    _,
+    sender: Sender,
+    response: (res: CaptureScreenShotRes) => void,
+  ): boolean => {
+    const tabId = sender.tab?.id
+    const windowId = sender.tab?.windowId
+    if (!tabId || !windowId) {
+      response({ success: false, error: 'TabId or WindowId not found.' })
+      return true
+    }
+
+    chrome.tabs.captureVisibleTab(windowId, { format: 'png' }, (dataUrl) => {
+      if (chrome.runtime.lastError) {
+        response({ success: false, error: chrome.runtime.lastError.message })
+        return
+      }
+      response({ success: true, data: dataUrl })
+    })
+    return true
+  },
+
+  [BgCommand.addCapture]: (
+    param: CaptureData,
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    try {
+      Storage.update<CaptureDataStorage>(
+        SESSION_STORAGE_KEY.TMP_CAPTURES,
+        (captures) => ({
+          ...captures,
+          [param.id]: param.data,
+        }),
+      ).then(() => {
+        response(true)
+      })
+    } catch (e) {
+      console.error(e)
+      response(false)
+    }
+    return false
+  },
+
+  //
+  // PageAction
+  //
+  [BgCommand.addPageAction]: PageActionBackground.add,
+  [BgCommand.updatePageAction]: PageActionBackground.update,
+  [BgCommand.removePageAction]: PageActionBackground.remove,
+  [BgCommand.resetPageAction]: PageActionBackground.reset,
+  [BgCommand.startPageActionRecorder]: PageActionBackground.openRecorder,
+  [BgCommand.finishPageActionRecorder]: PageActionBackground.closeRecorder,
+  [BgCommand.previewPageAction]: PageActionBackground.preview,
+  [BgCommand.stopPageAction]: PageActionBackground.stopRunner,
+  [BgCommand.openAndRunPageAction]: PageActionBackground.openAndRun,
 } as { [key: string]: IpcCallback }
 
 for (const key in BgCommand) {
@@ -516,101 +486,3 @@ chrome.runtime.onInstalled.addListener(() => {
 //     console.debug(details)
 //   },
 // )
-
-const updateRules = async (tabIds: number[]) => {
-  const oldRules = await chrome.declarativeNetRequest.getSessionRules()
-  const oldRuleIds = oldRules.map((rule) => rule.id)
-  chrome.declarativeNetRequest.updateSessionRules({
-    removeRuleIds: oldRuleIds,
-    addRules: [
-      {
-        id: 1,
-        priority: 1,
-        action: {
-          type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
-          responseHeaders: [
-            {
-              header: 'Content-Disposition',
-              operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
-            },
-            {
-              header: 'Content-Type',
-              operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-              value: 'image/jpeg',
-            },
-          ],
-        },
-        condition: {
-          tabIds,
-          resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
-          responseHeaders: [
-            {
-              header: 'content-disposition',
-              values: ['attachment*jpg*'],
-            },
-            {
-              header: 'content-disposition',
-              values: ['attachment*jpeg*'],
-            },
-          ],
-        },
-      },
-      {
-        id: 2,
-        priority: 2,
-        action: {
-          type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
-          responseHeaders: [
-            {
-              header: 'Content-Disposition',
-              operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
-            },
-            {
-              header: 'Content-Type',
-              operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-              value: 'image/png',
-            },
-          ],
-        },
-        condition: {
-          tabIds,
-          resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
-          responseHeaders: [
-            {
-              header: 'content-disposition',
-              values: ['attachment*png*'],
-            },
-          ],
-        },
-      },
-      {
-        id: 3,
-        priority: 3,
-        action: {
-          type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
-          responseHeaders: [
-            {
-              header: 'Content-Disposition',
-              operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
-            },
-            {
-              header: 'Content-Type',
-              operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-              value: 'application/pdf',
-            },
-          ],
-        },
-        condition: {
-          tabIds,
-          resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
-          responseHeaders: [
-            {
-              header: 'content-disposition',
-              values: ['attachment*pdf*'],
-            },
-          ],
-        },
-      },
-    ],
-  })
-}

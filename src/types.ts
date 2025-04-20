@@ -10,7 +10,12 @@ import type {
   STYLE_VARIABLE,
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONTROL,
+  PAGE_ACTION_OPEN_MODE,
+  EXEC_STATE,
 } from '@/const'
+import type { PageAction } from '@/services/pageAction'
 
 export type Version = `${number}.${number}.${number}`
 
@@ -21,7 +26,13 @@ export type Point = {
 
 export type Command = SelectionCommand | LinkCommand
 
-export type SelectionCommand = {
+export type SelectionCommand =
+  | SearchCommand
+  | CopyCommand
+  | ApiCommand
+  | PageActionCommand
+
+export type SearchCommand = {
   id: string
   title: string
   iconUrl: string
@@ -30,10 +41,20 @@ export type SelectionCommand = {
   searchUrl?: string
   parentFolderId?: string
   popupOption?: PopupOption
-  copyOption?: CopyOption
-  fetchOptions?: string
-  variables?: Array<CommandVariable>
   spaceEncoding?: SPACE_ENCODING
+}
+
+export type CopyCommand = SearchCommand & {
+  copyOption: CopyOption
+}
+
+export type ApiCommand = SearchCommand & {
+  fetchOptions: string
+  variables: Array<CommandVariable>
+}
+
+export type PageActionCommand = SearchCommand & {
+  pageActionOption: PageActionOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
@@ -117,3 +138,68 @@ export type SessionData = {
   session_id: string
   timestamp: number
 }
+
+export type CaptureData = {
+  id: string
+  data: string
+}
+export type CaptureDataStorage = Record<string, string>
+
+export type CaptureScreenShotRes = {
+  success: boolean
+  data?: string
+  error?: string
+}
+
+export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
+export type PageActionStep = {
+  id: string
+  timestamp?: number
+  captureId?: string
+  delayMs: number
+  skipRenderWait: boolean
+  param: PageAction.Parameter
+}
+
+export type PageActionOption = {
+  startUrl: string
+  openMode: PAGE_ACTION_OPEN_MODE
+  steps: Array<PageActionStep>
+}
+
+export type PageActionRecorderOption = {
+  controllerPosition: Point
+}
+
+export type PageActionRecordingData = {
+  size: PopupOption
+} & PageActionOption
+
+export type PageActionContext = {
+  recordingTabId?: number
+  isRecording?: boolean
+  isRunning?: boolean
+}
+
+export type PageActiontResult = {
+  status: EXEC_STATE
+  stepId: string
+  type: PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
+  label: string
+  message?: string
+  duration: number
+}
+
+export type PageActiontStatus = {
+  tabId: number
+  stepId: string
+  results: PageActiontResult[]
+}
+
+export type WindowType = {
+  id: number
+  commandId: string
+  srcWindowId: number
+}
+
+export type WindowLayer = WindowType[]

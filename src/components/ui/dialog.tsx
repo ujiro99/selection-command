@@ -11,7 +11,18 @@ const DialogTrigger = DialogPrimitive.Trigger
 
 const DialogClose = DialogPrimitive.Close
 
-const DialogPortal = DialogPrimitive.Portal
+type DialogPortalProps = {
+  children: React.ReactNode
+  portal?: boolean
+}
+
+const DialogPortal = ({ portal, children }: DialogPortalProps) => {
+  if (portal) {
+    return <DialogPrimitive.Portal>{children}</DialogPrimitive.Portal>
+  } else {
+    return children
+  }
+}
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
@@ -53,10 +64,7 @@ const DialogHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn(
-      'flex flex-col space-y-4 text-center sm:text-left',
-      className,
-    )}
+    className={cn('flex flex-col space-y-4 sm:text-left', className)}
     {...props}
   />
 )
@@ -97,7 +105,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-sm', className)}
+    className={cn('text-base', className)}
     {...props}
   />
 ))

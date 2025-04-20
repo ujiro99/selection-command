@@ -14,6 +14,9 @@
   "labelCancel": {
     "message": "Cancel"
   },
+  "labelClose": {
+    "message": "Close"
+  },
   "labelAddPageRule": {
     "message": "Add page rule."
   },
@@ -35,6 +38,9 @@
   "commandHub_description": {
     "message": "You can now share commands✨"
   },
+  "commnadHub_youcanshare": {
+    "message": "⚡️You can automatically input the created command."
+  },
   "Option_labelCancel": {
     "message": "Cancel"
   },
@@ -43,6 +49,9 @@
   },
   "Option_labelSave": {
     "message": "Create"
+  },
+  "Option_labelDetail": {
+    "message": "Detail"
   },
   "Option_Enable": {
     "message": "Enabled"
@@ -188,8 +197,14 @@
   "Option_iconUrl": {
     "message": "Icon URL"
   },
+  "Option_iconUrl_folder": {
+    "message": "Icon URL / SVG"
+  },
   "Option_iconUrl_desc": {
-    "message": "* Automatically updated when the search URL is changed."
+    "message": "Automatically updated when the search URL is changed."
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "Automatically updated when the Start URL is changed."
   },
   "Option_iconUrl_autofill": {
     "message": "Autofill"
@@ -230,6 +245,9 @@
   "Option_openMode_getTextStyles": {
     "message": "Get text styles"
   },
+  "Option_openMode_pageAction": {
+    "message": "Page Action"
+  },
   "Option_openMode_previewPopup": {
     "message": "Popup"
   },
@@ -262,6 +280,21 @@
   },
   "Option_variableValue": {
     "message": "Value"
+  },
+  "Option_startUrl": {
+    "message": "Start URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "URL of the page where the action starts."
+  },
+  "Option_pageAction_title": {
+    "message": "Actions"
+  },
+  "Option_pageAction_desc": {
+    "message": "Actions to be performed"
+  },
+  "Option_pageAction_openMode": {
+    "message": "Window Display Method"
   },
   "Option_linkCommand": {
     "message": "Link Preview"
@@ -327,7 +360,10 @@
     "message": "Please enter a valid URL or SVG."
   },
   "Option_icon_placeholder": {
-    "message": "Please enter a URL or SVG."
+    "message": "URL or SVG string."
+  },
+  "Option_icon_desc": {
+    "message": "URL or SVG is available."
   },
   "Option_icon_required": {
     "message": "An URL or SVG that will be used as an icon is required."
@@ -428,6 +464,9 @@
   "Option_edit_tooltip": {
     "message": "Edit"
   },
+  "Option_copy_tooltip": {
+    "message": "Duplicate"
+  },
   "Option_remove_title": {
     "message": "Delete this?"
   },
@@ -436,6 +475,18 @@
   },
   "Option_remove_ok": {
     "message": "Delete"
+  },
+  "Option_remove_description": {
+    "message": "This operation cannot be undone. Are you sure?"
+  },
+  "Option_copy_title": {
+    "message": "Duplicate Command"
+  },
+  "Option_copy_desc": {
+    "message": "Please enter the title."
+  },
+  "Option_copy_ok": {
+    "message": "Duplicate"
   },
   "Option_zod_number": {
     "message": "Please enter a number."
@@ -469,5 +520,146 @@
   },
   "Option_zod_url": {
     "message": "Please enter in URL format."
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "Selected text will be inserted",
+    "description": "for INSERT.SELECTED_TEXT"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "The URL of the origin will be inserted",
+    "description": "for INSERT.URL"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "The clipboard text  will be inserted",
+    "description": "for INSERT.CLIPBOARD"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "Insert Text"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "Selected text"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "Origin URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "Clipboard"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "Edit the content"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "Edit the content to be entered by this action."
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "Content to be entered"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "Cancel"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "Save"
+  },
+  "PageAction_Controller_recording": {
+    "message": "Recording"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "Not recording"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "Previewing"
+  },
+  "PageAction_Controller_stop": {
+    "message": "Stop"
+  },
+  "PageAction_Controller_complete": {
+    "message": "Complete"
+  },
+  "PageAction_Controller_preview": {
+    "message": "Preview"
+  },
+  "PageAction_Controller_reset": {
+    "message": "Reset"
+  },
+  "help_pageAction_title": {
+    "message": "How to use Page Action"
+  },
+  "help_pageAction_description": {
+    "message": "Page Action lets you <b>record and replay user actions</b>."
+  },
+  "help_pageAction_example": {
+    "message": "Here are some example uses:"
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>Send a preset prompt and selected text to the LLM</li><li>Enter a URL and press a button</li><li>And more...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "To record, click the <b>REC button</b>."
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【How to Create】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>Enter the page URL and click the REC button to start recording.</li><li>When the window opens, perform the actions you want to record.</li><li>When finished, click the Complete button in the recording menu.</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": "Page Action can record the <b>following actions</b>."
+  },
+  "help_pageAction_action": {
+    "message": "Action"
+  },
+  "help_pageAction_desc": {
+    "message": "Description"
+  },
+  "help_pageAction_left_click": {
+    "message": "Left Click"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "Records single, double, and triple clicks."
+  },
+  "help_pageAction_scroll": {
+    "message": "Scroll"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "Records scrolls over 10px."
+  },
+  "help_pageAction_keyboard": {
+    "message": "Key Input"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>Only some key inputs, like Ctrl combinations, are recorded.</li><li>Some recorded key actions may not replay correctly.</li>"
+  },
+  "help_pageAction_input": {
+    "message": "Text Input"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "Records text entered in input fields."
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "You can use these variables:"
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "Selected text, URL, Clipboard"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "Other actions are not recorded while focusing on an input field."
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "Only Tab and Enter keys are recorded."
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "You can record up to 10 steps."
+  },
+  "help_pageAction_edit": {
+    "message": "About <b>Editting Page Action</b>"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>You can edit text inputs and delete steps from the settings screen.</li><li>Copy an existing Page Action to easily create a new command with some changes.</li>"
+  },
+  "help_pageAction_share": {
+    "message": "About <b>Sharing Commands</b>"
+  },
+  "help_pageAction_share_desc": {
+    "message": "You can share and get Page Action commands from the Selection Command Hub."
   }
 }

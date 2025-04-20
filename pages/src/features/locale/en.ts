@@ -62,6 +62,7 @@ const lang = {
         [OPEN_MODE.POPUP]: 'Popup',
         [OPEN_MODE.WINDOW]: 'Window',
         [OPEN_MODE.TAB]: 'Tab',
+        [OPEN_MODE.PAGE_ACTION]: 'PageAction',
       },
     },
     openModeSecondary: {
@@ -79,6 +80,16 @@ const lang = {
     formDescription: 'Apply for command sharing.',
     formOptions: 'Options',
     confirm: 'Confirm',
+    pageAction: {
+      label: 'Page Action',
+      description: 'Actions to be performed.',
+    },
+    PageActionOption: {
+      startUrl: {
+        label: 'Start Page URL',
+        description: 'URL to start the page action.',
+      },
+    },
   },
   confirmForm: {
     formDescription: 'Is the following content correct?',

@@ -1,0 +1,37 @@
+.recordButton {
+  @apply flex items-center gap-1.5 rounded p-1 py-0.5 pointer-events-auto;
+  @apply relative transition hover:scale-105;
+}
+
+.recordButtonIcon {
+  @apply stroke-red-600 fill-red-300 animate-spin-slow;
+  @apply drop-shadow-md;
+  --tw-drop-shadow: drop-shadow(0 1px 2px #ef444480) drop-shadow(0 1px 1px #ef444480);
+}
+
+.button {
+  @apply flex items-center gap-1 rounded px-1 py-0.5 pointer-events-auto;
+  @apply relative transition hover:scale-110;
+}
+
+.buttonLabelStatus,
+.buttonLabel {
+  @apply font-mono text-gray-700;
+}
+
+.buttonLabelStatus {
+  @apply text-sm;
+}
+
+.buttonLabel {
+  @apply text-xs;
+}
+
+.dragHandle {
+  @apply transition-opacity;
+  opacity: 1;
+}
+
+[data-hover='true']+.dragHandle {
+  opacity: 0;
+}
