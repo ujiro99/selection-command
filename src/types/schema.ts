@@ -69,6 +69,8 @@ const PageActionParameterSchema = z.discriminatedUnion('type', [
 const PageActionStepSchema = z.object({
   id: z.string(),
   param: PageActionParameterSchema,
+  delayMs: z.number().min(0).default(0),
+  skipRenderWait: z.boolean().default(false),
 })
 export type PageActionStep = z.infer<typeof PageActionStepSchema>
 
