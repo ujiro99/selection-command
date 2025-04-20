@@ -312,7 +312,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "id": "f677e318-aceb-5500-a710-8b1d415c7094",
     "addedAt": "2025-03-31T04:56:29.505Z"
   },
@@ -324,7 +327,9 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "id": "046c500e-36f6-5327-97b7-420ebb2c2914",
     "addedAt": "2025-04-02T09:32:45.217Z"
   },
@@ -336,8 +341,117 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Dictionary", "Japanese"],
+    "tags": [
+      "Search",
+      "Dictionary",
+      "Japanese"
+    ],
     "id": "0a95ee38-892c-57be-9a07-c3a0242c0127",
     "addedAt": "2025-04-02T09:33:27.828Z"
+  },
+  {
+    "title": "Gemini",
+    "description": "Ask Gemini to explain the selected text.",
+    "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "openMode": "pageAction",
+    "tags": [
+      "AI"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://gemini.google.com/app",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "1clkfxbrr",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "gmavyqlj2",
+          "param": {
+            "type": "input",
+            "label": "Ask Gemini",
+            "selector": "//*[@data-gramm='false']/*",
+            "selectorType": "xpath",
+            "value": "Please explain the following.\n{{SelectedText}}"
+          },
+          "label": "Ask Gemini",
+          "value": "Please explain the following.\n{{SelectedText}}"
+        },
+        {
+          "id": "umb7r0prx",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@data-mat-icon-name='send']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "stjwk2dnp",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "c187228b-844c-50a6-8a9d-147817ca75fe",
+    "addedAt": "2025-04-20T09:03:26.042Z"
+  },
+  {
+    "title": "Gemini - 日本語",
+    "description": "選択したテキストをGeminiに解説してもらいます。",
+    "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "openMode": "pageAction",
+    "tags": [
+      "AI",
+      "Japanese"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://gemini.google.com/app",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "1clkfxbrr",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "gmavyqlj2",
+          "param": {
+            "type": "input",
+            "label": "Ask Gemini",
+            "selector": "//*[@data-gramm='false']/*",
+            "selectorType": "xpath",
+            "value": "以下について解説してください。\n{{SelectedText}}"
+          },
+          "label": "Ask Gemini",
+          "value": "以下について解説してください。\n{{SelectedText}}"
+        },
+        {
+          "id": "umb7r0prx",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@data-mat-icon-name='send']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "stjwk2dnp",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "7256d90a-5f40-5d71-b0c7-db403add3bc0",
+    "addedAt": "2025-04-20T09:10:27.032Z"
   }
 ]

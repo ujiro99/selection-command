@@ -82,9 +82,11 @@ export function getCommands(): Command[] {
       download: dl.eventCount,
       star: star.eventCount,
     }
-  })
+  }) as Command[]
 }
 
 export function getSearchUrl(): string[] {
-  return Commands.map((cmd) => cmd.searchUrl)
+  return Commands.filter((cmd) => isSearchCommand(cmd)).map(
+    (cmd) => cmd.searchUrl,
+  )
 }

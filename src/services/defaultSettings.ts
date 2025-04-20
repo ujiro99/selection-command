@@ -34,16 +34,26 @@ export default {
       onlyIcon: true,
     },
     {
+      title: 'Action',
+      iconUrl: '',
+      iconSvg:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap-icon lucide-zap"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>',
+      id: '0f2167ab-2e1b-4972-954c-71eec058ab14',
+      onlyIcon: true,
+    },
+    {
       title: 'Media',
-      iconUrl:
-        'https://cdn3.iconfinder.com/data/icons/feather-5/24/play-circle-512.png',
+      iconUrl: '',
+      iconSvg:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-monitor-play-icon lucide-monitor-play"><path d="M10 7.75a.75.75 0 0 1 1.142-.638l3.664 2.249a.75.75 0 0 1 0 1.278l-3.664 2.25a.75.75 0 0 1-1.142-.64z"/><path d="M12 17v4"/><path d="M8 21h8"/><rect x="2" y="3" width="20" height="14" rx="2"/></svg>',
       id: 'a3495269-0a4d-4866-a519-bca75ed1c246',
       onlyIcon: true,
     },
     {
       title: 'Work',
-      iconUrl:
-        'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
+      iconUrl: '',
+      iconSvg:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>',
       id: '01710cf1-ec8b-497f-8d1f-9cb716567bc4',
     },
   ],
@@ -53,7 +63,20 @@ export default {
   startupMethod: {
     method: STARTUP_METHOD.TEXT_SELECTION,
   },
-  userStyles: [],
+  userStyles: [
+    {
+      name: 'padding-scale',
+      value: '1.5',
+    },
+    {
+      name: 'image-scale',
+      value: '1.1',
+    },
+    {
+      name: 'font-scale',
+      value: '1.1',
+    },
+  ],
   stars: [],
 } as SettingsType
 
@@ -113,6 +136,112 @@ export const DefaultCommands = [
       height: PopupOption.height,
     },
     spaceEncoding: SPACE_ENCODING.PLUS,
+  },
+  {
+    id: 'c187228b-844c-50a6-8a9d-147817ca75fe',
+    title: 'Gemini',
+    iconUrl:
+      'https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg',
+    openMode: OPEN_MODE.PAGE_ACTION,
+    pageActionOption: {
+      openMode: OPEN_MODE.POPUP,
+      startUrl: 'https://gemini.google.com/app',
+      steps: [
+        {
+          id: '1clkfxbrr',
+          param: {
+            label: 'Start',
+            type: 'start',
+          },
+        },
+        {
+          id: 'gmavyqlj2',
+          label: 'Ask Gemini',
+          param: {
+            label: 'Ask Gemini',
+            selector: "//*[@data-gramm='false']/*",
+            selectorType: 'xpath',
+            type: 'input',
+            value: 'Please explain the following.\n{{SelectedText}}',
+          },
+          value: 'Please explain the following.\n{{SelectedText}}',
+        },
+        {
+          id: 'umb7r0prx',
+          param: {
+            label: '',
+            selector: "//*[@data-mat-icon-name='send']",
+            selectorType: 'xpath',
+            type: 'click',
+          },
+        },
+        {
+          id: 'stjwk2dnp',
+          param: {
+            label: 'End',
+            type: 'end',
+          },
+        },
+      ],
+    },
+    parentFolderId: '0f2167ab-2e1b-4972-954c-71eec058ab14',
+    popupOption: {
+      width: PopupOption.width,
+      height: PopupOption.height,
+    },
+  },
+  {
+    id: '7256d90a-5f40-5d71-b0c7-db403add3bc0',
+    title: 'Gemini - 日本語',
+    iconUrl:
+      'https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg',
+    openMode: OPEN_MODE.PAGE_ACTION,
+    pageActionOption: {
+      openMode: OPEN_MODE.POPUP,
+      startUrl: 'https://gemini.google.com/app',
+      steps: [
+        {
+          id: '1clkfxbrr',
+          param: {
+            label: 'Start',
+            type: 'start',
+          },
+        },
+        {
+          id: 'gmavyqlj2',
+          label: 'Ask Gemini',
+          param: {
+            label: 'Ask Gemini',
+            selector: "//*[@data-gramm='false']/*",
+            selectorType: 'xpath',
+            type: 'input',
+            value: '以下について解説してください。\n{{SelectedText}}',
+          },
+          value: '以下について解説してください。\n{{SelectedText}}',
+        },
+        {
+          id: 'umb7r0prx',
+          param: {
+            label: '',
+            selector: "//*[@data-mat-icon-name='send']",
+            selectorType: 'xpath',
+            type: 'click',
+          },
+        },
+        {
+          id: 'stjwk2dnp',
+          param: {
+            label: 'End',
+            type: 'end',
+          },
+        },
+      ],
+    },
+    parentFolderId: '0f2167ab-2e1b-4972-954c-71eec058ab14',
+    popupOption: {
+      width: PopupOption.width,
+      height: PopupOption.height,
+    },
   },
   {
     id: '2e0cd6fe-a232-402e-846c-2104f0639995',

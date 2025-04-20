@@ -10,6 +10,7 @@ import type { Command } from '@/types'
 
 export const MyCommands = (): JSX.Element => {
   const [urls, setUrls] = useState<string[]>([])
+  const [pageActionIds, setPageActionIds] = useState<string[]>([])
   const listRef = useRef<HTMLUListElement | null>(null)
   const list2Ref = useRef<HTMLUListElement | null>(null)
   const { settings, iconUrls } = useSetting()
@@ -17,7 +18,7 @@ export const MyCommands = (): JSX.Element => {
     .filter(
       (c) =>
         (isSearchCommand(c) && !urls.includes(c.searchUrl as string)) ||
-        isPageActionCommand(c),
+        (isPageActionCommand(c) && !pageActionIds.includes(c.id)),
     )
     .map((c) => ({ ...c, iconDataUrl: c.iconUrl, iconUrl: iconUrls[c.id] }))
   const loaded = urls.length > 0
@@ -28,6 +29,11 @@ export const MyCommands = (): JSX.Element => {
       .then((res) => res.json())
       .then((data) => {
         setUrls(data)
+      })
+    fetch(`${HUB_URL}/data/pageActionIds.json`)
+      .then((res) => res.json())
+      .then((data) => {
+        setPageActionIds(data)
       })
   }, [])
 

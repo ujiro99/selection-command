@@ -49,16 +49,16 @@ export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
 /**
  * Sort URLs by domain.
  * @param collection Collenctionss to sort which has URL property.
- * @param propertyName Property name of the URL.
+ * @param getUrlFunc Property name of the URL.
  * @returns Sorted URLs.
  */
 export function sortUrlsByDomain<V>(
   collection: V[],
-  propertyName: string,
+  getUrlFunc: (c: V) => string,
 ): V[] {
   return collection.sort((a, b) => {
-    const parsedA = parse((a as any)[propertyName])
-    const parsedB = parse((b as any)[propertyName])
+    const parsedA = parse(getUrlFunc(a))
+    const parsedB = parse(getUrlFunc(b))
 
     // Compare the domain and TLD of the URL.
     // e.g. 'www.example.com' and 'example.com' are the same domain.
