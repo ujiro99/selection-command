@@ -62,6 +62,19 @@ const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
   throw new Error('Invalid Storage Key')
 }
 
+const getIndicesToRemove = (fromLen: number, toLen: number): number[] => {
+  if (toLen >= fromLen) {
+    return []
+  }
+  const removeCount = fromLen - toLen
+  const startIndex = toLen
+  const indicesToRemove = []
+  for (let i = 0; i < removeCount; i++) {
+    indicesToRemove.push(startIndex + i)
+  }
+  return indicesToRemove
+}
+
 export type ChangedCallback<T> = (newVal: T, oldVal: T) => void
 const changedCallbacks = {} as { [key: string]: ChangedCallback<any>[] }
 
@@ -204,14 +217,6 @@ export const Storage = {
   setCommands: async (
     commands: Command[],
   ): Promise<boolean | chrome.runtime.LastError> => {
-    // Remove all commands first.
-    await Storage.removeCommands()
-    // Update command count.
-    const count = commands.length
-    await chrome.storage.sync.set({ [STORAGE_KEY.COMMAND_COUNT]: count })
-    if (chrome.runtime.lastError != null) {
-      throw chrome.runtime.lastError
-    }
     // Update commands.
     const data = commands.reduce(
       (acc, cmd, i) => {
@@ -221,6 +226,20 @@ export const Storage = {
       {} as { [key: string]: Command },
     )
     await chrome.storage.sync.set(data)
+    if (chrome.runtime.lastError != null) {
+      throw chrome.runtime.lastError
+    }
+
+    // Remove surplus commands
+    const count = commands.length
+    const preCount = await Storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
+    const removeKeys = getIndicesToRemove(preCount, count).map(
+      (i) => `${CMD_PREFIX}${i}`,
+    )
+    await chrome.storage.sync.remove(removeKeys)
+
+    // Update command count.
+    await chrome.storage.sync.set({ [STORAGE_KEY.COMMAND_COUNT]: count })
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }
@@ -260,21 +279,6 @@ export const Storage = {
       {} as { [key: string]: Command },
     )
     await chrome.storage.sync.set(newCommands)
-    if (chrome.runtime.lastError != null) {
-      throw chrome.runtime.lastError
-    }
-    return true
-  },
-
-  /**
-   * Remove all commands from chrome sync storages.
-   *
-   * @returns {Promise<boolean>} true if success's
-   * @throws {chrome.runtime.LastError} if error occurred
-   */
-  removeCommands: async (): Promise<boolean> => {
-    const keys = await Storage.commandKeys()
-    await chrome.storage.sync.remove(keys)
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }

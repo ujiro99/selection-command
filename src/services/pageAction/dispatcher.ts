@@ -12,7 +12,6 @@ export namespace PageAction {
   export type Start = {
     type: PAGE_ACTION_CONTROL.start
     label: string
-    url?: string
   }
 
   export type End = {
@@ -108,7 +107,7 @@ async function waitForElement(
         }
         // console.log('Waiting:', selector, selectorType)
       })
-    }, 100)
+    }, 50)
   })
 }
 

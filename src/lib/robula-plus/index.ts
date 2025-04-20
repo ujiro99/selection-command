@@ -390,6 +390,16 @@ export class RobulaPlus {
   }
 
   /**
+   * Check if an attribute name is usable for XPath locators
+   */
+  private isAttributeNameUsable(name: string): boolean {
+    if (this.containsRandomPattern(name)) {
+      return false
+    }
+    return true
+  }
+
+  /**
    * Check if an attribute value is usable for XPath locators
    */
   private isAttributeValueUsable(value: string): boolean {
@@ -412,6 +422,10 @@ export class RobulaPlus {
   private isAttributeUsable(attribute: Attr): boolean {
     // Don't use attributes in the blacklist
     if (this.attributeBlackList.includes(attribute.name)) {
+      return false
+    }
+
+    if (!this.isAttributeNameUsable(attribute.name)) {
       return false
     }
 

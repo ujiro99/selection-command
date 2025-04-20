@@ -143,6 +143,10 @@ const linkPopupSchema = z.object({
     .default(
       'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
     ),
+  popupOption: z.object({
+    width: z.number().min(1),
+    height: z.number().min(1),
+  }),
 })
 
 const copySchema = z.object({
@@ -244,6 +248,10 @@ const defaultValue = (openMode: OPEN_MODE) => {
         'https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png',
       openMode: OPEN_MODE.LINK_POPUP as const,
       parentFolderId: ROOT_FOLDER,
+      popupOption: {
+        width: POPUP_OPTION.width,
+        height: POPUP_OPTION.height,
+      },
     }
   }
   if (openMode === OPEN_MODE.COPY) {
