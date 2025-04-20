@@ -329,7 +329,6 @@ const run = (
 
       // Check stop flag
       const stop = BgData.get().pageActionStop
-      console.log('stop', step.param.type, stop)
       if (stop) {
         // Cancel the execution
         await RunningStatus.update(step.id, EXEC_STATE.Stop)

@@ -112,7 +112,7 @@ export const PageActionSection = ({
           }))}
       />
 
-      <div className="w-full flex items-center gap-1 py-4">
+      <div className="w-full flex items-center gap-1 pt-4">
         <div className="w-2/6">
           <FormLabel>{t('pageAction_title')}</FormLabel>
           <FormDescription>{t('pageAction_desc')}</FormDescription>
