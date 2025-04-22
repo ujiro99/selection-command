@@ -198,8 +198,11 @@ export function InputForm(props: InputProps) {
       if ((step.param as any).value != null) {
         return {
           ...step,
-          label: DOMPurify.sanitize(step.param.label),
-          value: DOMPurify.sanitize((step.param as any).value),
+          param: {
+            ...step.param,
+            label: DOMPurify.sanitize(step.param.label),
+            value: DOMPurify.sanitize((step.param as any).value),
+          },
         }
       }
       return step
