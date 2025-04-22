@@ -376,9 +376,7 @@
             "selector": "//*[@data-gramm='false']/*",
             "selectorType": "xpath",
             "value": "Please explain the following.\n{{SelectedText}}"
-          },
-          "label": "Ask Gemini",
-          "value": "Please explain the following.\n{{SelectedText}}"
+          }
         },
         {
           "id": "umb7r0prx",
@@ -429,9 +427,7 @@
             "selector": "//*[@data-gramm='false']/*",
             "selectorType": "xpath",
             "value": "以下について解説してください。\n{{SelectedText}}"
-          },
-          "label": "Ask Gemini",
-          "value": "以下について解説してください。\n{{SelectedText}}"
+          }
         },
         {
           "id": "umb7r0prx",
@@ -453,5 +449,298 @@
     },
     "id": "7256d90a-5f40-5d71-b0c7-db403add3bc0",
     "addedAt": "2025-04-20T09:10:27.032Z"
+  },
+  {
+    "title": "サクラチェッカー",
+    "description": "表示中ページのURLをサクラチェッカーでチェックします。",
+    "iconUrl": "https://sakura-checker.jp/images/favicon.ico",
+    "openMode": "pageAction",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://sakura-checker.jp/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "diaq1mthv",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "hoi75oly8",
+          "param": {
+            "type": "click",
+            "label": "word",
+            "selector": "//*[@name='word']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "2boq9korh",
+          "param": {
+            "type": "input",
+            "label": "word",
+            "selector": "//*[@name='word']",
+            "selectorType": "xpath",
+            "value": "{{Url}}"
+          }
+        },
+        {
+          "id": "thuq16r8o",
+          "param": {
+            "type": "click",
+            "label": "submit",
+            "selector": "//*[@class='button is-primary is-medium']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "bcs0vx9bn",
+          "param": {
+            "type": "scroll",
+            "label": "x: 0, y: 266",
+            "x": 0,
+            "y": 266
+          }
+        },
+        {
+          "id": "8viuw3650",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "77880fec-e437-5dfc-8bea-1d3c9fc63aa6",
+    "addedAt": "2025-04-22T12:01:00.382Z"
+  },
+  {
+    "title": "Felo Web検索",
+    "description": "FeloのWeb検索で質問します。",
+    "iconUrl": "https://felo.ai/icon.ico",
+    "openMode": "pageAction",
+    "tags": [
+      "AI",
+      "Japanese"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://felo.ai/ja/search",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "mtwj10pot",
+          "param": {
+            "type": "start",
+            "label": "Start",
+            "url": "https://felo.ai/ja/search"
+          }
+        },
+        {
+          "id": "41lfahb7s",
+          "param": {
+            "type": "input",
+            "label": "何でも質問してください...",
+            "selector": "//*[@rows='3']",
+            "selectorType": "xpath",
+            "value": "以下について教えてください。\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "l4ve603zu",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@type='submit']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "37g7k3y0x",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "d18a21bc-eaa6-550e-9927-c7adc7f14027",
+    "addedAt": "2025-04-21T03:45:17.507Z"
+  },
+  {
+    "title": "陽キャ変換",
+    "description": "選択したテキストを陽キャ風に変換します。",
+    "iconUrl": "data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%20fill='none'%3e%3cstyle%3e%20:root%20{%20--primary-fill:%20%23000;%20--secondary-fill:%20%23fff;%20}%20@media%20(prefers-color-scheme:%20dark)%20{%20:root%20{%20--primary-fill:%20%23fff;%20--secondary-fill:%20%23000;%20}%20}%20%3c/style%3e%3cg%20clip-path='url(%23a)'%3e%3crect%20width='180'%20height='180'%20fill='var(--primary-fill)'%20rx='90'%20/%3e%3cg%20clip-path='url(%23b)'%3e%3cpath%20fill='var(--secondary-fill)'%20d='M75.91%2073.628V62.232c0-.96.36-1.68%201.199-2.16l22.912-13.194c3.119-1.8%206.838-2.639%2010.676-2.639%2014.394%200%2023.511%2011.157%2023.511%2023.032%200%20.839%200%201.799-.12%202.758l-23.752-13.914c-1.439-.84-2.879-.84-4.318%200L75.91%2073.627Zm53.499%2044.383v-27.23c0-1.68-.72-2.88-2.159-3.719L97.142%2069.55l9.836-5.638c.839-.48%201.559-.48%202.399%200l22.912%2013.195c6.598%203.839%2011.035%2011.995%2011.035%2019.912%200%209.116-5.397%2017.513-13.915%2020.992v.001Zm-60.577-23.99-9.836-5.758c-.84-.48-1.2-1.2-1.2-2.16v-26.39c0-12.834%209.837-22.55%2023.152-22.55%205.039%200%209.716%201.679%2013.676%204.678L70.993%2055.516c-1.44.84-2.16%202.039-2.16%203.719v34.787-.002Zm21.173%2012.234L75.91%2098.339V81.546l14.095-7.917%2014.094%207.917v16.793l-14.094%207.916Zm9.056%2036.467c-5.038%200-9.716-1.68-13.675-4.678l23.631-13.676c1.439-.839%202.159-2.038%202.159-3.718V85.863l9.956%205.757c.84.48%201.2%201.2%201.2%202.16v26.389c0%2012.835-9.957%2022.552-23.27%2022.552v.001Zm-28.43-26.75L47.72%20102.778c-6.599-3.84-11.036-11.996-11.036-19.913%200-9.236%205.518-17.513%2014.034-20.992v27.35c0%201.68.72%202.879%202.16%203.718l29.989%2017.393-9.837%205.638c-.84.48-1.56.48-2.399%200Zm-1.318%2019.673c-13.555%200-23.512-10.196-23.512-22.792%200-.959.12-1.919.24-2.879l23.63%2013.675c1.44.84%202.88.84%204.32%200l30.108-17.392v11.395c0%20.96-.361%201.68-1.2%202.16l-22.912%2013.194c-3.119%201.8-6.837%202.639-10.675%202.639Zm29.748%2014.274c14.515%200%2026.63-10.316%2029.39-23.991%2013.434-3.479%2022.071-16.074%2022.071-28.91%200-8.396-3.598-16.553-10.076-22.43.6-2.52.96-5.039.96-7.557%200-17.153-13.915-29.99-29.989-29.99-3.239%200-6.358.48-9.477%201.56-5.398-5.278-12.835-8.637-20.992-8.637-14.515%200-26.63%2010.316-29.39%2023.991-13.434%203.48-22.07%2016.074-22.07%2028.91%200%208.396%203.598%2016.553%2010.075%2022.431-.6%202.519-.96%205.038-.96%207.556%200%2017.154%2013.915%2029.989%2029.99%2029.989%203.238%200%206.357-.479%209.476-1.559%205.397%205.278%2012.835%208.637%2020.992%208.637Z'%20/%3e%3c/g%3e%3c/g%3e%3cdefs%3e%3cclipPath%20id='a'%3e%3cpath%20fill='var(--primary-fill)'%20d='M0%200h180v180H0z'%20/%3e%3c/clipPath%3e%3cclipPath%20id='b'%3e%3cpath%20fill='var(--primary-fill)'%20d='M29.487%2029.964h121.035v119.954H29.487z'%20/%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e",
+    "openMode": "pageAction",
+    "tags": [
+      "AI",
+      "Japanese",
+      "Character"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://chatgpt.com/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "diaq1mthv",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "y6htzvewk",
+          "param": {
+            "type": "click",
+            "label": "Ask anything",
+            "selector": "//p",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "mf2yadsdw",
+          "param": {
+            "type": "input",
+            "label": "以下の文章を、陽キャが絵文字をたくさん使って書いたようなウェイ系の文章へ変換してください。",
+            "selector": "//p",
+            "selectorType": "xpath",
+            "value": "以下の文章を、絵文字をたくさん使った陽キャウェイ系で、でもちょっとドジで天然な憎めないタイプの青年が書いた文章へ変換してください。"
+          }
+        },
+        {
+          "id": "lt5hlztib",
+          "param": {
+            "type": "keyboard",
+            "label": "Shift+Enter",
+            "key": "Enter",
+            "code": "Enter",
+            "keyCode": 13,
+            "shiftKey": true,
+            "ctrlKey": false,
+            "altKey": false,
+            "metaKey": false,
+            "targetSelector": "//*[@class='flex flex-col justify-start']/*/*/*/div",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "1gsqsd8ou",
+          "param": {
+            "type": "input",
+            "label": "\n{{選択テキストが挿入されます}}",
+            "selector": "//p[2]",
+            "selectorType": "xpath",
+            "value": "\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "t37rtinb6",
+          "param": {
+            "type": "click",
+            "label": "Send prompt",
+            "selector": "//*[@viewBox='0 0 32 32']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "8viuw3650",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "6d581d3b-1980-5fd3-b767-044ba4f70030",
+    "addedAt": "2025-04-22T13:58:49.144Z"
+  },
+  {
+    "title": "ChatGPT",
+    "description": "Ask ChatGPT to explain the selected text.",
+    "iconUrl": "data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%20fill='none'%3e%3cstyle%3e%20:root%20{%20--primary-fill:%20%23000;%20--secondary-fill:%20%23fff;%20}%20@media%20(prefers-color-scheme:%20dark)%20{%20:root%20{%20--primary-fill:%20%23fff;%20--secondary-fill:%20%23000;%20}%20}%20%3c/style%3e%3cg%20clip-path='url(%23a)'%3e%3crect%20width='180'%20height='180'%20fill='var(--primary-fill)'%20rx='90'%20/%3e%3cg%20clip-path='url(%23b)'%3e%3cpath%20fill='var(--secondary-fill)'%20d='M75.91%2073.628V62.232c0-.96.36-1.68%201.199-2.16l22.912-13.194c3.119-1.8%206.838-2.639%2010.676-2.639%2014.394%200%2023.511%2011.157%2023.511%2023.032%200%20.839%200%201.799-.12%202.758l-23.752-13.914c-1.439-.84-2.879-.84-4.318%200L75.91%2073.627Zm53.499%2044.383v-27.23c0-1.68-.72-2.88-2.159-3.719L97.142%2069.55l9.836-5.638c.839-.48%201.559-.48%202.399%200l22.912%2013.195c6.598%203.839%2011.035%2011.995%2011.035%2019.912%200%209.116-5.397%2017.513-13.915%2020.992v.001Zm-60.577-23.99-9.836-5.758c-.84-.48-1.2-1.2-1.2-2.16v-26.39c0-12.834%209.837-22.55%2023.152-22.55%205.039%200%209.716%201.679%2013.676%204.678L70.993%2055.516c-1.44.84-2.16%202.039-2.16%203.719v34.787-.002Zm21.173%2012.234L75.91%2098.339V81.546l14.095-7.917%2014.094%207.917v16.793l-14.094%207.916Zm9.056%2036.467c-5.038%200-9.716-1.68-13.675-4.678l23.631-13.676c1.439-.839%202.159-2.038%202.159-3.718V85.863l9.956%205.757c.84.48%201.2%201.2%201.2%202.16v26.389c0%2012.835-9.957%2022.552-23.27%2022.552v.001Zm-28.43-26.75L47.72%20102.778c-6.599-3.84-11.036-11.996-11.036-19.913%200-9.236%205.518-17.513%2014.034-20.992v27.35c0%201.68.72%202.879%202.16%203.718l29.989%2017.393-9.837%205.638c-.84.48-1.56.48-2.399%200Zm-1.318%2019.673c-13.555%200-23.512-10.196-23.512-22.792%200-.959.12-1.919.24-2.879l23.63%2013.675c1.44.84%202.88.84%204.32%200l30.108-17.392v11.395c0%20.96-.361%201.68-1.2%202.16l-22.912%2013.194c-3.119%201.8-6.837%202.639-10.675%202.639Zm29.748%2014.274c14.515%200%2026.63-10.316%2029.39-23.991%2013.434-3.479%2022.071-16.074%2022.071-28.91%200-8.396-3.598-16.553-10.076-22.43.6-2.52.96-5.039.96-7.557%200-17.153-13.915-29.99-29.989-29.99-3.239%200-6.358.48-9.477%201.56-5.398-5.278-12.835-8.637-20.992-8.637-14.515%200-26.63%2010.316-29.39%2023.991-13.434%203.48-22.07%2016.074-22.07%2028.91%200%208.396%203.598%2016.553%2010.075%2022.431-.6%202.519-.96%205.038-.96%207.556%200%2017.154%2013.915%2029.989%2029.99%2029.989%203.238%200%206.357-.479%209.476-1.559%205.397%205.278%2012.835%208.637%2020.992%208.637Z'%20/%3e%3c/g%3e%3c/g%3e%3cdefs%3e%3cclipPath%20id='a'%3e%3cpath%20fill='var(--primary-fill)'%20d='M0%200h180v180H0z'%20/%3e%3c/clipPath%3e%3cclipPath%20id='b'%3e%3cpath%20fill='var(--primary-fill)'%20d='M29.487%2029.964h121.035v119.954H29.487z'%20/%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e",
+    "openMode": "pageAction",
+    "tags": [
+      "AI"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://chatgpt.com/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "rfte8m8rt",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "omusmml3b",
+          "param": {
+            "type": "click",
+            "label": "Ask anything",
+            "selector": "//p",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "p673r698k",
+          "param": {
+            "type": "input",
+            "label": "Please explain the following.",
+            "selector": "//p",
+            "selectorType": "xpath",
+            "value": "Please explain the following."
+          }
+        },
+        {
+          "id": "9o18cbn5c",
+          "param": {
+            "type": "keyboard",
+            "label": "Shift+Enter",
+            "key": "Enter",
+            "code": "Enter",
+            "keyCode": 13,
+            "shiftKey": true,
+            "ctrlKey": false,
+            "altKey": false,
+            "metaKey": false,
+            "targetSelector": "//*[@class='flex flex-col justify-start']/*/*/*/div",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "ifk58gmsd",
+          "param": {
+            "type": "input",
+            "label": "\n{{選択テキストが挿入されます}}",
+            "selector": "//p[2]",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "2hsygs5av",
+          "param": {
+            "type": "click",
+            "label": "Send prompt",
+            "selector": "//*[@viewBox='0 0 32 32']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "63vgs6ha7",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "7ebf227c-815e-58ff-b072-4048f08fe4ca",
+    "addedAt": "2025-04-22T14:01:16.433Z"
   }
 ]

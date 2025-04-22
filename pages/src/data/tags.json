@@ -21,7 +21,7 @@
   },
   {
     "name": "Japanese",
-    "count": 10
+    "count": 13
   },
   {
     "name": "Design",
@@ -37,7 +37,7 @@
   },
   {
     "name": "Shop",
-    "count": 5
+    "count": 6
   },
   {
     "name": "Manual",
@@ -81,10 +81,14 @@
   },
   {
     "name": "AI",
-    "count": 3
+    "count": 6
   },
   {
     "name": "Dictionary",
+    "count": 1
+  },
+  {
+    "name": "Character",
     "count": 1
   }
 ]
