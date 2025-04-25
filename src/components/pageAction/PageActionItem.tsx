@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Check, Pencil } from 'lucide-react'
 
 import {
   Popover,
@@ -7,6 +7,7 @@ import {
   PopoverAnchor,
   PopoverArrow,
 } from '@/components/ui/popover'
+import { Input } from '@/components/ui/input'
 import { EditButton } from '@/components/option/EditButton'
 import { Tooltip } from '@/components/Tooltip'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
@@ -32,6 +33,7 @@ type Props = {
   failedMessage: string | undefined
   onClickRemove: (id: string) => void
   onClickEdit: (id: string) => void
+  onChangeLabel: (id: string, label: string) => void
 }
 
 export function PageActionItem(props: Props): JSX.Element {
@@ -39,7 +41,9 @@ export function PageActionItem(props: Props): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
   const [capture, setCapture] = useState<string>()
+  const [isEditingLabel, setIsEditingLabel] = useState(false)
   const anchorRef = useRef<HTMLLIElement>(null)
+  const labelInputRef = useRef<HTMLInputElement>(null)
   const isFailed = failedId === step.id
   const hasLabel = !isEmpty(step.param.label)
   const capturedId = step.captureId
@@ -62,6 +66,17 @@ export function PageActionItem(props: Props): JSX.Element {
         setContentRect(contentRef.current.getBoundingClientRect())
       }
     }, 250)
+  }
+
+  const handleClickEditLabel = () => {
+    setIsEditingLabel(true)
+  }
+
+  const handleClickEditLabelFinish = () => {
+    setIsEditingLabel(false)
+    if (labelInputRef.current) {
+      props.onChangeLabel(step.id, labelInputRef.current.value)
+    }
   }
 
   const handleClickEdit = () => {
@@ -142,7 +157,7 @@ export function PageActionItem(props: Props): JSX.Element {
             {isFailed && (
               <p className="text-sm text-red-600">{failedMessage}</p>
             )}
-            <div className="mt-2 flex items-center gap-1">
+            <div className="my-1 flex items-center gap-1">
               {capture && (
                 <img
                   src={capture}
@@ -150,10 +165,36 @@ export function PageActionItem(props: Props): JSX.Element {
                   className="rounded-md w-12 h-12 object-scale-down"
                 />
               )}
-              {hasLabel && (
-                <p className="truncate text-sm">
-                  <span>{step.param.label}</span>
-                </p>
+              {hasLabel && isEditingLabel ? (
+                <>
+                  <p className="flex-1">
+                    <Input
+                      ref={labelInputRef}
+                      defaultValue={step.param.label}
+                      className="h-auto px-1 text-sm"
+                    />
+                  </p>
+                  <button
+                    type="button"
+                    className="outline-gray-200 p-1 ml-0.5 rounded-md transition hover:bg-gray-100 hover:scale-125"
+                    onClick={handleClickEditLabelFinish}
+                  >
+                    <Check className="stroke-gray-500" size={14} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="truncate text-sm px-1 py-1.5 flex-1 min-w-40">
+                    <span>{step.param.label}</span>
+                  </p>
+                  <button
+                    type="button"
+                    className="outline-gray-200 p-1 rounded-md transition hover:bg-gray-100 hover:scale-125"
+                    onClick={handleClickEditLabel}
+                  >
+                    <Pencil className="stroke-gray-500" size={14} />
+                  </button>
+                </>
               )}
             </div>
             {isInput && (

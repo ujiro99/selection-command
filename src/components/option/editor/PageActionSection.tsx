@@ -86,6 +86,22 @@ export const PageActionSection = ({
     pageActionArray.remove(steps.findIndex((a) => a.id === id))
   }
 
+  const handleChangeLabel = (id: string, label: string) => {
+    const target = steps.find((a) => a.id === id)
+    if (target) {
+      pageActionArray.update(
+        steps.findIndex((a) => a.id === id),
+        {
+          ...target,
+          param: {
+            ...target.param,
+            label,
+          },
+        },
+      )
+    }
+  }
+
   return (
     <>
       <InputField
@@ -122,6 +138,7 @@ export const PageActionSection = ({
             steps={pageActionArray.fields as unknown as PageActionStep[]}
             onClickRemove={setRemoveId}
             onClickEdit={setEditId}
+            onChangeLabel={handleChangeLabel}
           />
           <button
             type="button"

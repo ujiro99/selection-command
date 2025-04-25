@@ -15,6 +15,7 @@ type Props = {
   failedMessage?: string
   onClickRemove?: (id: string) => void
   onClickEdit?: (id: string) => void
+  onChangeLabel?: (id: string, label: string) => void
   onChangeHover?: (hover: boolean) => void
 }
 
@@ -28,6 +29,7 @@ export function StepList(props: Props): JSX.Element {
   const onChangeHover = props.onChangeHover ?? noop
   const onClickRemove = props.onClickRemove ?? noop
   const onClickEdit = props.onClickEdit ?? noop
+  const onChangeLabel = props.onChangeLabel ?? noop
 
   return (
     <ol className="flex items-center h-full" {...onHover(onChangeHover, true)}>
@@ -40,6 +42,7 @@ export function StepList(props: Props): JSX.Element {
           failedMessage={failedMessage}
           onClickRemove={onClickRemove}
           onClickEdit={onClickEdit}
+          onChangeLabel={onChangeLabel}
           className={cn(
             'relative',
             i > 0 &&
