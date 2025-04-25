@@ -21,5 +21,6 @@
   "https://www.youtube.com/results?search_query=%s",
   "https://www.amazon.co.jp/s?k=%s",
   "https://www.google.com/maps/search/%s",
-  "http://ja.wikipedia.org/wiki/Special:Search?search=%s&go=Go"
+  "http://ja.wikipedia.org/wiki/Special:Search?search=%s&go=Go",
+  "https://drive.google.com/drive/search?q=%s"
 ]

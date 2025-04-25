@@ -742,5 +742,19 @@
     },
     "id": "7ebf227c-815e-58ff-b072-4048f08fe4ca",
     "addedAt": "2025-04-22T14:01:16.433Z"
+  },
+  {
+    "title": "Drive",
+    "searchUrl": "https://drive.google.com/drive/search?q=%s",
+    "description": "Google Driveで検索します",
+    "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Tool"
+    ],
+    "id": "125fdc5e-a97d-5f81-92c4-2a6cbfc3662f",
+    "addedAt": "2025-04-25T22:32:40.900Z"
   }
 ]

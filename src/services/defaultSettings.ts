@@ -287,7 +287,7 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: 'bbf701ee-6443-49d8-b9c0-3acfa8034c5d',
+    id: '125fdc5e-a97d-5f81-92c4-2a6cbfc3662f',
     iconUrl:
       'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png',
     openMode: OPEN_MODE.TAB,
