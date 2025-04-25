@@ -151,11 +151,13 @@ export function PageActionItem(props: Props): JSX.Element {
                 />
               )}
               {hasLabel && (
-                <p className="truncate text-sm">{step.param.label}</p>
+                <p className="truncate text-sm">
+                  <span>{step.param.label}</span>
+                </p>
               )}
             </div>
-            {isInput && param.value != param.label && (
-              <pre className="text-xs mt-1 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
+            {isInput && (
+              <pre className="text-xs mt-0.5 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
                 {param.value}
               </pre>
             )}

@@ -106,6 +106,8 @@ export const add = (
           const prevSelector = (prev.param as PageAction.Input).selector
           if (selector === prevSelector) {
             steps.pop()
+            // Use same label.
+            step.param.label = prev.param.label
           }
         }
         // Remove the vlaue in previous input if the same element has been input.
