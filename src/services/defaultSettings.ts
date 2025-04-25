@@ -164,7 +164,6 @@ export const DefaultCommands = [
             type: 'input',
             value: 'Please explain the following.\n{{SelectedText}}',
           },
-          value: 'Please explain the following.\n{{SelectedText}}',
         },
         {
           id: 'umb7r0prx',
@@ -217,7 +216,6 @@ export const DefaultCommands = [
             type: 'input',
             value: '以下について解説してください。\n{{SelectedText}}',
           },
-          value: '以下について解説してください。\n{{SelectedText}}',
         },
         {
           id: 'umb7r0prx',
