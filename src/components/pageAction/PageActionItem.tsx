@@ -58,8 +58,20 @@ export function PageActionItem(props: Props): JSX.Element {
   const [contentRect, setContentRect] = useState<DOMRect | null>(null)
 
   const onHoverTrigger = (hover: boolean) => {
+    if (isEditingLabel && !hover) return
     setIsOpen(hover)
     // Delay to wait finishing animation.
+    setTimeout(() => {
+      if (anchorRef.current && contentRef.current) {
+        setAnchorRect(anchorRef.current.getBoundingClientRect())
+        setContentRect(contentRef.current.getBoundingClientRect())
+      }
+    }, 250)
+  }
+
+  const handlePointerDownOutside = () => {
+    handleClickEditLabelFinish()
+    setIsOpen(false)
     setTimeout(() => {
       if (anchorRef.current && contentRef.current) {
         setAnchorRect(anchorRef.current.getBoundingClientRect())
@@ -139,12 +151,11 @@ export function PageActionItem(props: Props): JSX.Element {
         <PopoverAnchor virtualRef={anchorRef} />
         {shouldRender && (
           <PopoverContent
-            className={
-              'bg-white px-3 py-2 min-w-32 max-w-80 text-xs text-gray-600'
-            }
+            className={'bg-white px-3 py-3 min-w-48 max-w-80 text-gray-600'}
             side={'top'}
             arrowPadding={-5}
             ref={contentRef}
+            onPointerDownOutside={handlePointerDownOutside}
           >
             <p className="text-sm font-semibold font-mono flex items-center gap-1.5">
               <TypeIcon
@@ -157,7 +168,7 @@ export function PageActionItem(props: Props): JSX.Element {
             {isFailed && (
               <p className="text-sm text-red-600">{failedMessage}</p>
             )}
-            <div className="my-1 flex items-center gap-1">
+            <div className="mt-1.5 mb-1 flex items-center gap-1">
               {capture && (
                 <img
                   src={capture}
@@ -166,44 +177,53 @@ export function PageActionItem(props: Props): JSX.Element {
                 />
               )}
               {hasLabel && isEditingLabel ? (
-                <>
-                  <p className="flex-1">
+                <div className="flex-1 mt-0.5">
+                  <label className="text-xs ml-0.5 text-gray-500">Label</label>
+                  <p className="flex items-center gap-1">
                     <Input
                       ref={labelInputRef}
                       defaultValue={step.param.label}
                       className="h-auto px-1 text-sm"
                     />
+                    <button
+                      type="button"
+                      className="outline-gray-200 p-1 ml-0.5 rounded-md transition hover:bg-gray-100 hover:scale-125"
+                      onClick={handleClickEditLabelFinish}
+                    >
+                      <Check className="stroke-gray-500" size={14} />
+                    </button>
                   </p>
-                  <button
-                    type="button"
-                    className="outline-gray-200 p-1 ml-0.5 rounded-md transition hover:bg-gray-100 hover:scale-125"
-                    onClick={handleClickEditLabelFinish}
-                  >
-                    <Check className="stroke-gray-500" size={14} />
-                  </button>
-                </>
+                </div>
               ) : (
-                <>
-                  <p className="truncate text-sm px-1 py-1.5 flex-1 min-w-40">
-                    <span>{step.param.label}</span>
-                  </p>
-                  <button
-                    type="button"
-                    className="outline-gray-200 p-1 rounded-md transition hover:bg-gray-100 hover:scale-125"
-                    onClick={handleClickEditLabel}
-                  >
-                    <Pencil className="stroke-gray-500" size={14} />
-                  </button>
-                </>
+                <div className="min-w-48 flex-1 mt-0.5">
+                  <label className="text-xs ml-0.5 text-gray-500">Label</label>
+                  <div className="px-0.5 py-1 flex items-center gap-1">
+                    <span className="truncate text-sm flex-1">
+                      {step.param.label}
+                    </span>
+                    <EditButton
+                      className="p-1"
+                      onClick={handleClickEditLabel}
+                      size={14}
+                    />
+                  </div>
+                </div>
               )}
             </div>
             {isInput && (
-              <pre className="text-xs mt-0.5 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
-                {param.value}
-              </pre>
+              <div className="relative">
+                <label className="text-xs ml-0.5 text-gray-500">Value</label>
+                <pre className="text-xs mt-1 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
+                  {param.value}
+                </pre>
+                <EditButton
+                  className="p-1 absolute right-1 bottom-1"
+                  onClick={handleClickEdit}
+                  size={14}
+                />
+              </div>
             )}
-            <div className="flex justify-end gap-0.5 mt-1.5">
-              {isInput && <EditButton onClick={handleClickEdit} size={14} />}
+            <div className="flex justify-end gap-0.5 mt-1">
               <RemoveButton onClick={handleClickRemove} size={14} />
             </div>
             <PopoverArrow className="fill-white" height={6} />
