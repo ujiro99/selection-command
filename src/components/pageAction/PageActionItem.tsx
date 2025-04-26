@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { Trash2, Check, Pencil } from 'lucide-react'
+import { Trash2, Check } from 'lucide-react'
 
 import {
   Popover,
@@ -15,14 +15,28 @@ import { HoverArea } from '@/components/menu/HoverArea'
 
 import { cn, capitalize, onHover, isEmpty } from '@/lib/utils'
 import { t } from '@/services/i18n'
+import { paramToStr } from '@/services/pageAction'
 import type { PageActionStep } from '@/types'
 import type { PageAction } from '@/services/pageAction'
 import { Storage } from '@/services/storage'
+import { PAGE_ACTION_EVENT } from '@/const'
 
 const isInputParam = (
   param: PageAction.Parameter,
 ): param is PageAction.Input => {
-  return (param as PageAction.Input).value != null
+  return param.type === PAGE_ACTION_EVENT.input
+}
+
+const isKeyboardParam = (
+  param: PageAction.Parameter,
+): param is PageAction.Keyboard => {
+  return param.type === PAGE_ACTION_EVENT.keyboard
+}
+
+const isScrollParam = (
+  param: PageAction.Parameter,
+): param is PageAction.Scroll => {
+  return param.type === PAGE_ACTION_EVENT.scroll
 }
 
 type Props = {
@@ -48,9 +62,10 @@ export function PageActionItem(props: Props): JSX.Element {
   const hasLabel = !isEmpty(step.param.label)
   const capturedId = step.captureId
 
-  // For Input step
   const param = step.param
   const isInput = isInputParam(param)
+  const isKey = isKeyboardParam(param)
+  const isScroll = isScrollParam(param)
 
   // For HoverArea
   const contentRef = useRef<HTMLDivElement | null>(null)
@@ -151,9 +166,11 @@ export function PageActionItem(props: Props): JSX.Element {
         <PopoverAnchor virtualRef={anchorRef} />
         {shouldRender && (
           <PopoverContent
-            className={'bg-white px-3 py-3 min-w-48 max-w-80 text-gray-600'}
+            className={
+              'border bg-white px-3 py-3 min-w-48 max-w-80 text-gray-600'
+            }
             side={'top'}
-            arrowPadding={-5}
+            arrowPadding={-1}
             ref={contentRef}
             onPointerDownOutside={handlePointerDownOutside}
           >
@@ -176,9 +193,11 @@ export function PageActionItem(props: Props): JSX.Element {
                   className="rounded-md w-12 h-12 object-scale-down"
                 />
               )}
-              {hasLabel && isEditingLabel ? (
-                <div className="flex-1 mt-0.5">
-                  <label className="text-xs ml-0.5 text-gray-500">Label</label>
+              {isEditingLabel ? (
+                <div className="min-w-48 flex-1 mt-0.5">
+                  <label className="text-xs ml-0.5 text-gray-500">
+                    {t('Option_pageAction_label')}
+                  </label>
                   <p className="flex items-center gap-1">
                     <Input
                       ref={labelInputRef}
@@ -196,10 +215,12 @@ export function PageActionItem(props: Props): JSX.Element {
                 </div>
               ) : (
                 <div className="min-w-48 flex-1 mt-0.5">
-                  <label className="text-xs ml-0.5 text-gray-500">Label</label>
+                  <label className="text-xs ml-0.5 text-gray-500">
+                    {t('Option_pageAction_label')}
+                  </label>
                   <div className="px-0.5 py-1 flex items-center gap-1">
-                    <span className="truncate text-sm flex-1">
-                      {step.param.label}
+                    <span className="flex-1 truncate text-sm">
+                      {hasLabel ? step.param.label : '---'}
                     </span>
                     <EditButton
                       className="p-1"
@@ -210,23 +231,27 @@ export function PageActionItem(props: Props): JSX.Element {
                 </div>
               )}
             </div>
-            {isInput && (
+            {(isInput || isScroll || isKey) && (
               <div className="relative">
-                <label className="text-xs ml-0.5 text-gray-500">Value</label>
+                <label className="text-xs ml-0.5 text-gray-500">
+                  {t('Option_pageAction_value')}
+                </label>
                 <pre className="text-xs mt-1 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
-                  {param.value}
+                  {paramToStr(param)}
                 </pre>
-                <EditButton
-                  className="p-1 absolute right-1 bottom-1"
-                  onClick={handleClickEdit}
-                  size={14}
-                />
+                {isInput && (
+                  <EditButton
+                    className="p-1 absolute right-1 bottom-1"
+                    onClick={handleClickEdit}
+                    size={14}
+                  />
+                )}
               </div>
             )}
             <div className="flex justify-end gap-0.5 mt-1">
               <RemoveButton onClick={handleClickRemove} size={14} />
             </div>
-            <PopoverArrow className="fill-white" height={6} />
+            <PopoverArrow className="fill-white mt-[-1px]" height={6} />
             <HoverArea
               anchor={anchorRect}
               content={contentRect}

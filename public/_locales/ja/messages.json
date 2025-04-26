@@ -296,6 +296,12 @@
   "Option_pageAction_openMode": {
     "message": "ウィンドウ表示方法"
   },
+  "Option_pageAction_label": {
+    "message": "ラベル"
+  },
+  "Option_pageAction_value": {
+    "message": "値"
+  },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
   },

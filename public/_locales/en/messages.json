@@ -296,6 +296,12 @@
   "Option_pageAction_openMode": {
     "message": "Window Display Method"
   },
+  "Option_pageAction_label": {
+    "message": "Label"
+  },
+  "Option_pageAction_value": {
+    "message": "Value"
+  },
   "Option_linkCommand": {
     "message": "Link Preview"
   },

@@ -1,5 +1,7 @@
 import { t } from '@/services/i18n'
 import { INSERT, InsertSymbol, PageAction } from '@/services/pageAction'
+import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
+import { getKeyLabel } from '@/services/pageAction/listener'
 
 export const LocaleKey = 'PageAction_InputMenu_mark_'
 
@@ -31,4 +33,21 @@ export function isInputAction(
   param: PageAction.Parameter,
 ): param is PageAction.Input {
   return 'value' in param
+}
+
+export const paramToStr = (param: PageAction.Parameter): string => {
+  switch (param.type) {
+    case PAGE_ACTION_CONTROL.start:
+    case PAGE_ACTION_CONTROL.end:
+    case PAGE_ACTION_EVENT.click:
+    case PAGE_ACTION_EVENT.doubleClick:
+    case PAGE_ACTION_EVENT.tripleClick:
+      return param.label
+    case PAGE_ACTION_EVENT.input:
+      return param.value
+    case PAGE_ACTION_EVENT.keyboard:
+      return getKeyLabel(param)
+    case PAGE_ACTION_EVENT.scroll:
+      return `x: ${param.x}, y: ${param.y}`
+  }
 }

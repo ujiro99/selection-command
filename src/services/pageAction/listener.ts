@@ -44,15 +44,19 @@ const isEditable = (e: any): boolean => {
   return e.isContentEditable
 }
 
-const modifierPressed = (e: KeyboardEvent): boolean => {
+const modifierPressed = (e: KeyboardEvent | PageAction.Keyboard): boolean => {
   return e.ctrlKey || e.metaKey || e.altKey || e.shiftKey
 }
 
-const getModifierKey = (e: KeyboardEvent): string => {
+const getModifierKey = (e: KeyboardEvent | PageAction.Keyboard): string => {
   if (e.ctrlKey || e.metaKey) return 'Ctrl'
   if (e.altKey) return 'Alt'
   if (e.shiftKey) return 'Shift'
   return ''
+}
+
+export const getKeyLabel = (e: KeyboardEvent | PageAction.Keyboard): string => {
+  return modifierPressed(e) ? `${getModifierKey(e)}+${e.key}` : e.key
 }
 
 const getTimeStamp = (): number => Date.now()
@@ -231,7 +235,7 @@ export const PageActionListener = (() => {
         skipRenderWait: false,
         param: {
           type: PAGE_ACTION_EVENT.keyboard,
-          label: modifierPressed(e) ? `${getModifierKey(e)}+${e.key}` : e.key,
+          label: getKeyLabel(e),
           key: e.key,
           code: e.code,
           keyCode: e.keyCode,
