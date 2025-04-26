@@ -518,6 +518,15 @@
       }
     }
   },
+  "Option_zod_string_max": {
+    "message": "Please enter a string of $key$ characters or less.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
   "Option_zod_url": {
     "message": "Please enter in URL format."
   },

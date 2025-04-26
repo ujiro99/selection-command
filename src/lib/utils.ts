@@ -323,3 +323,15 @@ export function truncate(
   // Truncate the string to (maxLength - suffix.length) and append the suffix
   return str.slice(0, maxLength - suffix.length) + suffix
 }
+
+/**
+ * Check if the string exceeds a specified byte size.
+ * @param str - The string to check.
+ * @param byte - The byte size to check against.
+ * @returns {boolean} True if the string exceeds the byte size, false otherwise.
+ */
+export function isOverBytes(str: string, byte: number): boolean {
+  const encoder = new TextEncoder()
+  const byteLength = encoder.encode(str).length
+  return byteLength > byte
+}

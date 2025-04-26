@@ -92,7 +92,10 @@ const searchSchema = z.object({
   openMode: z.enum(SearchOpenMode),
   id: z.string(),
   title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
-  iconUrl: z.string().url({ message: t('zod_url') }),
+  iconUrl: z
+    .string()
+    .url({ message: t('zod_url') })
+    .max(1000, { message: t('zod_string_max', ['1000']) }),
   searchUrl: z.string().url({ message: t('zod_url') }),
   parentFolderId: z.string().optional(),
   openModeSecondary: z.enum(SearchOpenMode),
@@ -115,7 +118,10 @@ const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
   id: z.string(),
   title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
-  iconUrl: z.string().url({ message: t('zod_url') }),
+  iconUrl: z
+    .string()
+    .url({ message: t('zod_url') })
+    .max(1000, { message: t('zod_string_max', ['1000']) }),
   searchUrl: z.string().url({ message: t('zod_url') }),
   parentFolderId: z.string().optional(),
   fetchOptions: z.string().optional(),
@@ -140,6 +146,7 @@ const linkPopupSchema = z.object({
   iconUrl: z
     .string()
     .url({ message: t('zod_url') })
+    .max(1000, { message: t('zod_string_max', ['1000']) })
     .default(
       'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
     ),
@@ -160,6 +167,7 @@ const copySchema = z.object({
   iconUrl: z
     .string()
     .url({ message: t('zod_url') })
+    .max(1000, { message: t('zod_string_max', ['1000']) })
     .default(
       'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png',
     ),
@@ -177,6 +185,7 @@ const textStyleSchema = z.object({
   iconUrl: z
     .string()
     .url({ message: t('zod_url') })
+    .max(1000, { message: t('zod_string_max', ['1000']) })
     .default(
       'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png',
     ),
@@ -510,26 +519,26 @@ const CommandEditDialogInner = ({
 
               {(SearchOpenMode.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
-                <InputField
-                  control={form.control}
-                  name="searchUrl"
-                  formLabel={t('searchUrl')}
-                  inputProps={{
-                    type: 'string',
-                    ...register('searchUrl', {}),
-                  }}
-                  description={
-                    openMode === OPEN_MODE.API
-                      ? t('searchUrl_desc_api')
-                      : t('searchUrl_desc')
-                  }
-                  previewUrl={
-                    !isEmpty(getValues('searchUrl'))
-                      ? getValues('iconUrl')
-                      : undefined
-                  }
-                />
-              )}
+                  <InputField
+                    control={form.control}
+                    name="searchUrl"
+                    formLabel={t('searchUrl')}
+                    inputProps={{
+                      type: 'string',
+                      ...register('searchUrl', {}),
+                    }}
+                    description={
+                      openMode === OPEN_MODE.API
+                        ? t('searchUrl_desc_api')
+                        : t('searchUrl_desc')
+                    }
+                    previewUrl={
+                      !isEmpty(getValues('searchUrl'))
+                        ? getValues('iconUrl')
+                        : undefined
+                    }
+                  />
+                )}
 
               {openMode === OPEN_MODE.PAGE_ACTION && (
                 <PageActionSection
@@ -667,7 +676,7 @@ const CommandEditDialogInner = ({
                     formLabel={t('iconUrl')}
                     description={
                       SearchOpenMode.includes(openMode as any) ||
-                      openMode === OPEN_MODE.API
+                        openMode === OPEN_MODE.API
                         ? t('iconUrl_desc')
                         : openMode === OPEN_MODE.PAGE_ACTION
                           ? t('iconUrl_desc_pageAction')

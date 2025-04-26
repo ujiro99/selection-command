@@ -25,7 +25,10 @@ export const pageActionSchema = z.object({
     .string()
     .min(1, { message: t('zod_string_min', ['1']) })
     .default('Get Text Styles'),
-  iconUrl: z.string().url({ message: t('zod_url') }),
+  iconUrl: z
+    .string()
+    .url({ message: t('zod_url') })
+    .max(1000, { message: t('zod_string_max', ['1000']) }),
   popupOption: z
     .object({
       width: z.number().min(1),
@@ -145,7 +148,7 @@ export const PageActionSection = ({
             className={cn(
               'relative left-[50%] -translate-x-[50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg',
               !recDisabled &&
-                'group/record transition hover:opacity-80 hover:scale-[1.05]',
+              'group/record transition hover:opacity-80 hover:scale-[1.05]',
               recDisabled && 'opacity-50 cursor-not-allowed bg-gray-400',
             )}
             disabled={recDisabled}

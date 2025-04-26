@@ -1,10 +1,18 @@
-import { sleep, toUrl } from '@/lib/utils'
+import { sleep, toUrl, isOverBytes } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
 import type { WindowLayer } from '@/types'
 import { POPUP_OFFSET, POPUP_TYPE } from '@/const'
 import { BgData } from '@/services/backgroundData'
 
 BgData.init()
+
+const failsafe = (url: string, favicon: string) => {
+  if (isOverBytes(favicon, 1000)) {
+    console.warn('favicon failsafe', url)
+    return `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`
+  }
+  return favicon
+}
 
 /**
  * Get favicon url from url.
@@ -37,13 +45,13 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
         clearTimeout(timeoutId)
         chrome.tabs.onUpdated.removeListener(onUpdated)
         if (tab.favIconUrl) {
-          resolve(tab.favIconUrl)
+          resolve(failsafe(url, tab.favIconUrl))
         } else {
           // retry
           await sleep(100)
           const t = await chrome.tabs.get(tabId)
           if (t.favIconUrl) {
-            resolve(t.favIconUrl)
+            resolve(failsafe(url, t.favIconUrl))
           } else {
             // failed...
             console.warn(tab)
