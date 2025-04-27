@@ -7,7 +7,7 @@ import {
 } from '@/services/ipc'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import type { PageAction } from '@/services/pageAction'
-import { isInputAction, RunningStatus } from '@/services/pageAction'
+import { RunningStatus } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
 import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import {
@@ -154,7 +154,7 @@ export const add = (
 }
 
 export const update = (
-  param: { id: string; value: string },
+  param: { id: string; partial: Partial<PageAction.Parameter> },
   _: Sender,
   response: (res: unknown) => void,
 ): boolean => {
@@ -163,9 +163,13 @@ export const update = (
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     let steps = option.steps
-    const index = steps.findIndex((a) => a.id === param.id)
-    if (index !== -1 && isInputAction(steps[index].param)) {
-      steps[index].param.value = param.value
+    const index = steps.findIndex((s) => s.id === param.id)
+    if (index !== -1) {
+      const step = steps[index]
+      step.param = {
+        ...step.param,
+        ...param.partial,
+      } as PageAction.Parameter
       await Storage.set<PageActionRecordingData>(
         SESSION_STORAGE_KEY.PA_RECORDING,
         {

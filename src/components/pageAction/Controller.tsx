@@ -27,6 +27,7 @@ type Props = {
   isRecordEnabled: boolean
   onClickRemove: (id: string) => void
   onClickEdit: (id: string) => void
+  onChangeLabel: (id: string, label: string) => void
 }
 
 export const Controller = forwardRef<HTMLDivElement, Props>(
@@ -212,6 +213,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
             failedMessage={failedMessage}
             onClickRemove={props.onClickRemove}
             onClickEdit={props.onClickEdit}
+            onChangeLabel={props.onChangeLabel}
             onChangeHover={setHover}
           />
         </div>

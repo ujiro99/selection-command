@@ -44,9 +44,13 @@ export function PageActionRecorder(): JSX.Element {
   const removeOpen = !isEmpty(removeId)
   const hasLabel = !isEmpty(removeStep?.param.label)
 
-  const editAction = (value: string) => {
-    Ipc.send(BgCommand.updatePageAction, { id: editId, value })
+  const editInputAction = (value: string) => {
+    Ipc.send(BgCommand.updatePageAction, { id: editId, partial: { value } })
     setEditId(null)
+  }
+
+  const changeLabel = (id: string, label: string) => {
+    Ipc.send(BgCommand.updatePageAction, { id, partial: { label } })
   }
 
   const removeAction = (id: string | null) => {
@@ -140,6 +144,7 @@ export function PageActionRecorder(): JSX.Element {
             steps={steps}
             onClickRemove={setRemoveId}
             onClickEdit={setEditId}
+            onChangeLabel={changeLabel}
             isRecordEnabled={!(editorOpen || removeOpen)}
             ref={setControllerElm}
           />
@@ -149,7 +154,7 @@ export function PageActionRecorder(): JSX.Element {
           open={editorOpen}
           onOpenChange={(o) => !o && setEditId(null)}
           value={editorValue}
-          onSubmit={editAction}
+          onSubmit={editInputAction}
         />
         <RemoveDialog
           open={removeOpen}

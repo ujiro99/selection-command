@@ -29,12 +29,6 @@ export function convSymbolsToReadableKeys(value: string): string {
   return value
 }
 
-export function isInputAction(
-  param: PageAction.Parameter,
-): param is PageAction.Input {
-  return 'value' in param
-}
-
 export const paramToStr = (param: PageAction.Parameter): string => {
   switch (param.type) {
     case PAGE_ACTION_CONTROL.start:

@@ -223,7 +223,7 @@ export function PageActionItem(props: Props): JSX.Element {
                       {hasLabel ? step.param.label : '---'}
                     </span>
                     <EditButton
-                      className="p-1"
+                      className="p-1 mr-0.5"
                       onClick={handleClickEditLabel}
                       size={14}
                     />
