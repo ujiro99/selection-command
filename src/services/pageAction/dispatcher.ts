@@ -2,9 +2,12 @@ import userEvent from '@testing-library/user-event'
 import { getElementByXPath, isValidXPath } from '@/services/dom'
 import { safeInterpolate, isMac } from '@/lib/utils'
 import { INSERT, InsertSymbol } from '@/services/pageAction'
-import { SelectorType, PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
-
-export const TIMEOUT = 5000
+import {
+  SelectorType,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONTROL,
+  PAGE_ACTION_TIMEOUT as TIMEOUT,
+} from '@/const'
 
 export namespace PageAction {
   export type Parameter = Start | End | Click | Input | Keyboard | Scroll

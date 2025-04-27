@@ -16,8 +16,15 @@ import {
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_OPEN_MODE,
   EXEC_STATE,
+  PAGE_ACTION_EVENT as EVENT,
+  PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from '@/const'
-import { generateRandomID, isPageActionCommand, isUrl } from '@/lib/utils'
+import {
+  generateRandomID,
+  isPageActionCommand,
+  isUrl,
+  sleep,
+} from '@/lib/utils'
 import type {
   PageActionRecordingData,
   PageActionStep,
@@ -42,6 +49,8 @@ const EndAction = {
   skipRenderWait: false,
 }
 
+const DELAY_AFTER_URL_CHANGED = 100
+
 export const add = (
   step: PageActionStep,
   _sender: Sender,
@@ -53,6 +62,9 @@ export const add = (
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     let steps = option.steps
+    const context = await Storage.get<PageActionContext>(
+      SESSION_STORAGE_KEY.PA_CONTEXT,
+    )
 
     // Insert a start action if steps are empty.
     if (steps.length === 0) {
@@ -97,8 +109,18 @@ export const add = (
         steps.pop()
       } else if (type === 'tripleClick' && prevType === 'tripleClick') {
         steps.pop()
-      } else if (type === 'scroll' && prevType === 'scroll') {
-        steps.pop()
+      } else if (type === 'scroll') {
+        if (context.urlChanged) {
+          step.delayMs = DELAY_AFTER_URL_CHANGED
+        }
+        if (prevType === 'scroll') {
+          steps.pop()
+          step.delayMs = prev.delayMs
+        }
+      } else if (type === EVENT.keyboard) {
+        if (context.urlChanged) {
+          step.delayMs = DELAY_AFTER_URL_CHANGED
+        }
       } else if (type === 'input') {
         // Combine operations on the same input element.
         if (prevType === 'input') {
@@ -146,6 +168,15 @@ export const add = (
           },
         ],
       },
+    )
+
+    // Reset the url changed flag.
+    Storage.update<PageActionContext>(
+      SESSION_STORAGE_KEY.PA_CONTEXT,
+      (data) => ({
+        ...data,
+        urlChanged: false,
+      }),
     )
     response(true)
   }
@@ -344,7 +375,17 @@ const run = (
       try {
         // Execute
         await Ipc.ensureConnection(tabId)
-        await RunningStatus.update(step.id, EXEC_STATE.Doing)
+        await RunningStatus.update(
+          step.id,
+          EXEC_STATE.Doing,
+          '',
+          TIMEOUT + step.delayMs,
+        )
+
+        // Wait for the delay time
+        if (step.delayMs > 0) {
+          await sleep(step.delayMs)
+        }
 
         const ret = await Ipc.sendTab<
           ExecPageAction.Message,
@@ -453,6 +494,28 @@ export const closeRecorder = (
   })
   return true
 }
+
+let lastUrl: string | null = null
+chrome.tabs.onUpdated.addListener(
+  (id: number, info: chrome.tabs.TabChangeInfo) => {
+    Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
+      (data) => {
+        if (data.recordingTabId !== id) return
+        if (!info.url || lastUrl === info.url) return
+        Storage.update<PageActionContext>(
+          SESSION_STORAGE_KEY.PA_CONTEXT,
+          (data) => {
+            return {
+              ...data,
+              urlChanged: true,
+            }
+          },
+        )
+        lastUrl = info.url
+      },
+    )
+  },
+)
 
 chrome.tabs.onRemoved.addListener(async (tabId) => {
   const context = await Storage.get<PageActionContext>(

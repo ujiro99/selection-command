@@ -20,7 +20,9 @@ export const PageActionContextProvider = ({
 }: {
   children: ReactNode
 }) => {
-  const [context, setContext] = useState<PageActionContext>({})
+  const [context, setContext] = useState<PageActionContext>({
+    urlChanged: false,
+  })
 
   useEffect(() => {
     Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
