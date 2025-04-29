@@ -183,7 +183,7 @@ export type PageActionContext = {
   recordingTabId?: number
   isRecording?: boolean
   isRunning?: boolean
-  urlChanged: boolean
+  urlChanged?: boolean
 }
 
 export type PageActiontResult = {
