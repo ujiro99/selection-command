@@ -302,6 +302,9 @@
   "Option_pageAction_value": {
     "message": "値"
   },
+  "Option_pageAction_delay": {
+    "message": "遅延時間"
+  },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
   },

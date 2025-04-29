@@ -30,6 +30,7 @@ import type {
   PageActionStep,
   PageActionContext,
   PopupOption,
+  DeepPartial,
 } from '@/types'
 import { BgData } from '@/services/backgroundData'
 
@@ -185,7 +186,7 @@ export const add = (
 }
 
 export const update = (
-  param: { id: string; partial: Partial<PageAction.Parameter> },
+  param: { id: string; partial: DeepPartial<PageActionStep> },
   _: Sender,
   response: (res: unknown) => void,
 ): boolean => {
@@ -193,14 +194,18 @@ export const update = (
     const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
-    let steps = option.steps
+    const steps = option.steps
     const index = steps.findIndex((s) => s.id === param.id)
     if (index !== -1) {
       const step = steps[index]
-      step.param = {
-        ...step.param,
+      steps[index] = {
+        ...step,
         ...param.partial,
-      } as PageAction.Parameter
+        param: {
+          ...step.param,
+          ...param.partial.param,
+        } as PageAction.Parameter,
+      }
       await Storage.set<PageActionRecordingData>(
         SESSION_STORAGE_KEY.PA_RECORDING,
         {

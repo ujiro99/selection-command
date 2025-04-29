@@ -16,7 +16,7 @@ import {
 } from '@/services/pageAction'
 import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
 import { t } from '@/services/i18n'
-import type { PageActiontStatus, PageActionStep } from '@/types'
+import type { PageActiontStatus, PageActionStep, DeepPartial } from '@/types'
 import { cn } from '@/lib/utils'
 import { PAGE_ACTION_OPEN_MODE, EXEC_STATE } from '@/const'
 
@@ -27,7 +27,7 @@ type Props = {
   isRecordEnabled: boolean
   onClickRemove: (id: string) => void
   onClickEdit: (id: string) => void
-  onChangeLabel: (id: string, label: string) => void
+  onChange: (id: string, partial: DeepPartial<PageActionStep>) => void
 }
 
 export const Controller = forwardRef<HTMLDivElement, Props>(
@@ -213,7 +213,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
             failedMessage={failedMessage}
             onClickRemove={props.onClickRemove}
             onClickEdit={props.onClickEdit}
-            onChangeLabel={props.onChangeLabel}
+            onChange={props.onChange}
             onChangeHover={setHover}
           />
         </div>

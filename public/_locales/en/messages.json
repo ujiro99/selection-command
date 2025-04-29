@@ -302,6 +302,9 @@
   "Option_pageAction_value": {
     "message": "Value"
   },
+  "Option_pageAction_delay": {
+    "message": "Delay time"
+  },
   "Option_linkCommand": {
     "message": "Link Preview"
   },

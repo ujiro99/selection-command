@@ -9,6 +9,7 @@ import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { cn, e2a, isEmpty, capitalize } from '@/lib/utils'
 import { PageActionOption, PageActionStep } from '@/types/schema'
+import { DeepPartial } from '@/types'
 
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
@@ -89,16 +90,17 @@ export const PageActionSection = ({
     pageActionArray.remove(steps.findIndex((a) => a.id === id))
   }
 
-  const handleChangeLabel = (id: string, label: string) => {
+  const handleChange = (id: string, partial: DeepPartial<PageActionStep>) => {
     const target = steps.find((a) => a.id === id)
     if (target) {
       pageActionArray.update(
         steps.findIndex((a) => a.id === id),
         {
           ...target,
+          ...partial,
           param: {
             ...target.param,
-            label,
+            ...partial.param,
           },
         },
       )
@@ -141,14 +143,14 @@ export const PageActionSection = ({
             steps={pageActionArray.fields as unknown as PageActionStep[]}
             onClickRemove={setRemoveId}
             onClickEdit={setEditId}
-            onChangeLabel={handleChangeLabel}
+            onChange={handleChange}
           />
           <button
             type="button"
             className={cn(
               'relative left-[50%] -translate-x-[50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg',
               !recDisabled &&
-              'group/record transition hover:opacity-80 hover:scale-[1.05]',
+                'group/record transition hover:opacity-80 hover:scale-[1.05]',
               recDisabled && 'opacity-50 cursor-not-allowed bg-gray-400',
             )}
             disabled={recDisabled}

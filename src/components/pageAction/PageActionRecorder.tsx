@@ -19,6 +19,7 @@ import type {
   PageActionStep,
   PopupOption,
   Point,
+  DeepPartial,
 } from '@/types'
 import { isEmpty, capitalize } from '@/lib/utils'
 
@@ -49,8 +50,11 @@ export function PageActionRecorder(): JSX.Element {
     setEditId(null)
   }
 
-  const changeLabel = (id: string, label: string) => {
-    Ipc.send(BgCommand.updatePageAction, { id, partial: { label } })
+  const handleOnChangeStep = (
+    id: string,
+    partial: DeepPartial<PageActionStep>,
+  ) => {
+    Ipc.send(BgCommand.updatePageAction, { id, partial })
   }
 
   const removeAction = (id: string | null) => {
@@ -144,7 +148,7 @@ export function PageActionRecorder(): JSX.Element {
             steps={steps}
             onClickRemove={setRemoveId}
             onClickEdit={setEditId}
-            onChangeLabel={changeLabel}
+            onChange={handleOnChangeStep}
             isRecordEnabled={!(editorOpen || removeOpen)}
             ref={setControllerElm}
           />

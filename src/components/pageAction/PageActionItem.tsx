@@ -7,16 +7,16 @@ import {
   PopoverAnchor,
   PopoverArrow,
 } from '@/components/ui/popover'
-import { Input } from '@/components/ui/input'
 import { EditButton } from '@/components/option/EditButton'
 import { Tooltip } from '@/components/Tooltip'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
+import { InputField } from '@/components/pageAction/InputField'
 import { HoverArea } from '@/components/menu/HoverArea'
 
-import { cn, capitalize, onHover, isEmpty } from '@/lib/utils'
+import { cn, capitalize, onHover } from '@/lib/utils'
 import { t } from '@/services/i18n'
 import { paramToStr } from '@/services/pageAction'
-import type { PageActionStep } from '@/types'
+import type { PageActionStep, DeepPartial } from '@/types'
 import type { PageAction } from '@/services/pageAction'
 import { Storage } from '@/services/storage'
 import { PAGE_ACTION_EVENT } from '@/const'
@@ -47,19 +47,19 @@ type Props = {
   failedMessage: string | undefined
   onClickRemove: (id: string) => void
   onClickEdit: (id: string) => void
-  onChangeLabel: (id: string, label: string) => void
+  onChange: (id: string, partial: DeepPartial<PageActionStep>) => void
 }
 
 export function PageActionItem(props: Props): JSX.Element {
   const { step, currentId, failedId, failedMessage } = props
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [capture, setCapture] = useState<string>()
-  const [isEditingLabel, setIsEditingLabel] = useState(false)
   const anchorRef = useRef<HTMLLIElement>(null)
   const labelInputRef = useRef<HTMLInputElement>(null)
+  const delayInputRef = useRef<HTMLInputElement>(null)
   const isFailed = failedId === step.id
-  const hasLabel = !isEmpty(step.param.label)
   const capturedId = step.captureId
 
   const param = step.param
@@ -73,7 +73,7 @@ export function PageActionItem(props: Props): JSX.Element {
   const [contentRect, setContentRect] = useState<DOMRect | null>(null)
 
   const onHoverTrigger = (hover: boolean) => {
-    if (isEditingLabel && !hover) return
+    if (isEditing && !hover) return
     setIsOpen(hover)
     // Delay to wait finishing animation.
     setTimeout(() => {
@@ -85,7 +85,7 @@ export function PageActionItem(props: Props): JSX.Element {
   }
 
   const handlePointerDownOutside = () => {
-    handleClickEditLabelFinish()
+    handleClickEditFinish()
     setIsOpen(false)
     setTimeout(() => {
       if (anchorRef.current && contentRef.current) {
@@ -95,19 +95,19 @@ export function PageActionItem(props: Props): JSX.Element {
     }, 250)
   }
 
-  const handleClickEditLabel = () => {
-    setIsEditingLabel(true)
-  }
-
-  const handleClickEditLabelFinish = () => {
-    setIsEditingLabel(false)
-    if (labelInputRef.current) {
-      props.onChangeLabel(step.id, labelInputRef.current.value)
-    }
-  }
-
   const handleClickEdit = () => {
-    setIsOpen(false)
+    setIsEditing(true)
+  }
+
+  const handleClickEditFinish = () => {
+    const delayMs = parseInt(delayInputRef.current?.value ?? '0')
+    const label = labelInputRef.current?.value ?? ''
+    props.onChange(step.id, { delayMs, param: { label } })
+    setIsEditing(false)
+  }
+
+  const handleEditInputValue = () => {
+    if (!isEditing || !isInput) return
     props.onClickEdit(step.id)
   }
 
@@ -167,7 +167,7 @@ export function PageActionItem(props: Props): JSX.Element {
         {shouldRender && (
           <PopoverContent
             className={
-              'border bg-white px-3 py-3 min-w-48 max-w-80 text-gray-600'
+              'border bg-white px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600'
             }
             side={'top'}
             arrowPadding={-1}
@@ -182,74 +182,85 @@ export function PageActionItem(props: Props): JSX.Element {
               />
               {capitalize(step.param.type)}
             </p>
+
             {isFailed && (
               <p className="text-sm text-red-600">{failedMessage}</p>
             )}
-            <div className="mt-1.5 mb-1 flex items-center gap-1">
-              {capture && (
-                <img
-                  src={capture}
-                  alt="capture of target element."
-                  className="rounded-md w-12 h-12 object-scale-down"
-                />
-              )}
-              {isEditingLabel ? (
-                <div className="min-w-48 flex-1 mt-0.5">
-                  <label className="text-xs ml-0.5 text-gray-500">
-                    {t('Option_pageAction_label')}
-                  </label>
-                  <p className="flex items-center gap-1">
-                    <Input
-                      ref={labelInputRef}
-                      defaultValue={step.param.label}
-                      className="h-auto px-1 text-sm"
-                    />
-                    <button
-                      type="button"
-                      className="outline-gray-200 p-1 ml-0.5 rounded-md transition hover:bg-gray-100 hover:scale-125"
-                      onClick={handleClickEditLabelFinish}
-                    >
-                      <Check className="stroke-gray-500" size={14} />
-                    </button>
-                  </p>
-                </div>
-              ) : (
-                <div className="min-w-48 flex-1 mt-0.5">
-                  <label className="text-xs ml-0.5 text-gray-500">
-                    {t('Option_pageAction_label')}
-                  </label>
-                  <div className="px-0.5 py-1 flex items-center gap-1">
-                    <span className="flex-1 truncate text-sm">
-                      {hasLabel ? step.param.label : '---'}
-                    </span>
-                    <EditButton
-                      className="p-1 mr-0.5"
-                      onClick={handleClickEditLabel}
-                      size={14}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-            {(isInput || isScroll || isKey) && (
-              <div className="relative">
-                <label className="text-xs ml-0.5 text-gray-500">
-                  {t('Option_pageAction_value')}
-                </label>
-                <pre className="text-xs mt-1 p-2 bg-gray-100 font-mono rounded whitespace-pre-line">
-                  {paramToStr(param)}
-                </pre>
-                {isInput && (
-                  <EditButton
-                    className="p-1 absolute right-1 bottom-1"
-                    onClick={handleClickEdit}
-                    size={14}
+
+            <div className="mt-4 space-y-2">
+              <div className="flex items-center gap-1">
+                {capture && (
+                  <img
+                    src={capture}
+                    alt="capture of target element."
+                    className="rounded-md w-12 h-12 object-scale-down"
                   />
                 )}
+                <InputField
+                  label={t('Option_pageAction_label')}
+                  type="text"
+                  defaultValue={step.param.label}
+                  ref={labelInputRef}
+                  className="flex-1"
+                  isEditing={isEditing}
+                  inputProps={{
+                    placeholder: 'e.g. Submit',
+                  }}
+                />
               </div>
-            )}
-            <div className="flex justify-end gap-0.5 mt-1">
-              <RemoveButton onClick={handleClickRemove} size={14} />
+
+              {(isInput || isScroll || isKey) && (
+                <div className="flex items-center gap-1">
+                  <label className="w-1/3 text-xs">
+                    {t('Option_pageAction_value')}
+                  </label>
+                  <pre
+                    className={cn(
+                      'w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 font-mono rounded whitespace-pre-line',
+                      isInput &&
+                        isEditing &&
+                        'border border-gray-300 shadow cursor-pointer',
+                    )}
+                    onClick={handleEditInputValue}
+                  >
+                    {paramToStr(param)}
+                  </pre>
+                </div>
+              )}
+
+              <div className="">
+                <InputField
+                  label={t('Option_pageAction_delay')}
+                  unit={'[ms]'}
+                  type="number"
+                  defaultValue={step.delayMs}
+                  ref={delayInputRef}
+                  isEditing={isEditing}
+                  inputProps={{
+                    min: 0,
+                    max: 10000,
+                    step: 10,
+                    placeholder: 'e.g. 100',
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-0.5 mt-2">
+              {!isEditing ? (
+                <EditButton onClick={handleClickEdit} size={16} />
+              ) : (
+                <button
+                  className={cn(
+                    'outline-gray-200 p-2 rounded-md transition hover:bg-gray-200 hover:scale-125 group/edit-button',
+                  )}
+                  onClick={handleClickEditFinish}
+                >
+                  <Check className={cn('stroke-gray-500')} size={16} />
+                </button>
+              )}
+
+              <RemoveButton onClick={handleClickRemove} size={16} />
             </div>
             <PopoverArrow className="fill-white mt-[-1px]" height={6} />
             <HoverArea
