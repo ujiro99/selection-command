@@ -1,7 +1,7 @@
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { EXEC_STATE } from '@/const'
 import type { PageActiontStatus, PageActionStep } from '@/types'
-import { TIMEOUT } from '@/services/pageAction'
+import { PAGE_ACTION_TIMEOUT as TIMEOUT } from '@/const'
 
 export const RunningStatus = {
   clear: async () => {

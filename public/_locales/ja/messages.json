@@ -296,6 +296,15 @@
   "Option_pageAction_openMode": {
     "message": "ウィンドウ表示方法"
   },
+  "Option_pageAction_label": {
+    "message": "ステップ名"
+  },
+  "Option_pageAction_value": {
+    "message": "値"
+  },
+  "Option_pageAction_delay": {
+    "message": "遅延時間"
+  },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
   },
@@ -510,11 +519,20 @@
     }
   },
   "Option_zod_string_min": {
-    "message": "$key$ 文字以上の文字を入力してください。",
+    "message": "長さ $key$ 文字以上で入力してください。",
     "placeholders": {
       "key": {
         "content": "$1",
         "example": "1"
+      }
+    }
+  },
+  "Option_zod_string_max": {
+    "message": "長さ $key$ 文字以下で入力してください。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
       }
     }
   },

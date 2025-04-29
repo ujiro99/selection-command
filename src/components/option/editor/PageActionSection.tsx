@@ -9,6 +9,7 @@ import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { cn, e2a, isEmpty, capitalize } from '@/lib/utils'
 import { PageActionOption, PageActionStep } from '@/types/schema'
+import { DeepPartial } from '@/types'
 
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
@@ -25,7 +26,10 @@ export const pageActionSchema = z.object({
     .string()
     .min(1, { message: t('zod_string_min', ['1']) })
     .default('Get Text Styles'),
-  iconUrl: z.string().url({ message: t('zod_url') }),
+  iconUrl: z
+    .string()
+    .url({ message: t('zod_url') })
+    .max(1000, { message: t('zod_string_max', ['1000']) }),
   popupOption: z
     .object({
       width: z.number().min(1),
@@ -86,6 +90,23 @@ export const PageActionSection = ({
     pageActionArray.remove(steps.findIndex((a) => a.id === id))
   }
 
+  const handleChange = (id: string, partial: DeepPartial<PageActionStep>) => {
+    const target = steps.find((a) => a.id === id)
+    if (target) {
+      pageActionArray.update(
+        steps.findIndex((a) => a.id === id),
+        {
+          ...target,
+          ...partial,
+          param: {
+            ...target.param,
+            ...partial.param,
+          },
+        },
+      )
+    }
+  }
+
   return (
     <>
       <InputField
@@ -122,6 +143,7 @@ export const PageActionSection = ({
             steps={pageActionArray.fields as unknown as PageActionStep[]}
             onClickRemove={setRemoveId}
             onClickEdit={setEditId}
+            onChange={handleChange}
           />
           <button
             type="button"

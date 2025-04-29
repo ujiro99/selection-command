@@ -8,12 +8,14 @@ type EditButtonProps = {
   onClick: () => void
   size?: number
   className?: string
+  classNameIcon?: string
 }
 
 export const EditButton = ({
   onClick,
   size = 16,
   className,
+  classNameIcon,
 }: EditButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const handleClick = (e: React.SyntheticEvent) => {
@@ -31,7 +33,10 @@ export const EditButton = ({
         onClick={handleClick}
       >
         <Pencil
-          className="stroke-gray-500 group-hover/edit-button:stroke-sky-500"
+          className={cn(
+            'stroke-gray-500 group-hover/edit-button:stroke-sky-500',
+            classNameIcon,
+          )}
           size={size}
         />
       </button>

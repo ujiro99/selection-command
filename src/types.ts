@@ -17,6 +17,10 @@ import type {
 } from '@/const'
 import type { PageAction } from '@/services/pageAction'
 
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
+}
+
 export type Version = `${number}.${number}.${number}`
 
 export type Point = {
@@ -179,6 +183,7 @@ export type PageActionContext = {
   recordingTabId?: number
   isRecording?: boolean
   isRunning?: boolean
+  urlChanged?: boolean
 }
 
 export type PageActiontResult = {

@@ -179,3 +179,5 @@ export const HUB_URL = isDebug
   : 'https://ujiro99.github.io/selection-command/'
 
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
+
+export const PAGE_ACTION_TIMEOUT = 5000

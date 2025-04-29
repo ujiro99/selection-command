@@ -296,6 +296,15 @@
   "Option_pageAction_openMode": {
     "message": "Window Display Method"
   },
+  "Option_pageAction_label": {
+    "message": "Step Name"
+  },
+  "Option_pageAction_value": {
+    "message": "Value"
+  },
+  "Option_pageAction_delay": {
+    "message": "Delay time"
+  },
   "Option_linkCommand": {
     "message": "Link Preview"
   },
@@ -515,6 +524,15 @@
       "key": {
         "content": "$1",
         "example": "1"
+      }
+    }
+  },
+  "Option_zod_string_max": {
+    "message": "Please enter a string of $key$ characters or less.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
       }
     }
   },

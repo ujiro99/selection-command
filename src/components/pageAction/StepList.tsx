@@ -1,7 +1,7 @@
 import { cn, onHover } from '@/lib/utils'
 import { PageActionItem } from '@/components/pageAction/PageActionItem'
 import { CircleDashed } from 'lucide-react'
-import type { PageActionStep } from '@/types'
+import type { PageActionStep, DeepPartial } from '@/types'
 
 import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from '@/const'
 import { e2a } from '@/lib/utils'
@@ -15,6 +15,7 @@ type Props = {
   failedMessage?: string
   onClickRemove?: (id: string) => void
   onClickEdit?: (id: string) => void
+  onChange?: (id: string, partial: DeepPartial<PageActionStep>) => void
   onChangeHover?: (hover: boolean) => void
 }
 
@@ -28,6 +29,7 @@ export function StepList(props: Props): JSX.Element {
   const onChangeHover = props.onChangeHover ?? noop
   const onClickRemove = props.onClickRemove ?? noop
   const onClickEdit = props.onClickEdit ?? noop
+  const onChange = props.onChange ?? noop
 
   return (
     <ol className="flex items-center h-full" {...onHover(onChangeHover, true)}>
@@ -40,6 +42,7 @@ export function StepList(props: Props): JSX.Element {
           failedMessage={failedMessage}
           onClickRemove={onClickRemove}
           onClickEdit={onClickEdit}
+          onChange={onChange}
           className={cn(
             'relative',
             i > 0 &&
