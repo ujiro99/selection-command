@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Selection Command"
+    "message": "Selection Command – Instantly launch search, AI, and your favorite tools from selected text"
   },
   "extDescription": {
-    "message": "Preview links and set custom commands for text selected on web pages."
+    "message": "Instantly run searches, AI, and various tools on selected text with one click. Freely customize actions like sending preset prompts to ChatGPT, Claude, or your favorite searches. Share and discover commands with others. Preview links in place without opening new tabs, greatly reducing tab clutter and repetitive tasks. A Chrome extension that streamlines browsing, research, and daily work."
   },
   "saving": {
     "message": "Saving.."
