@@ -312,7 +312,13 @@
     "message": "Displays a preview in a pop-up menu by operating on a link."
   },
   "Option_linkCommand_enabledInherit": {
-    "message": "Inherit from global settings"
+    "message": "Inherit from global settings (current: $current$)",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "Enabled or Disabled"
+      }
+    }
   },
   "Option_linkCommand_enabledEnable": {
     "message": "Enabled"

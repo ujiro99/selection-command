@@ -48,9 +48,13 @@ const DefaultRule = {
 
 type PageRuleListProps = {
   control: any
+  linkCommandEnabled: LINK_COMMAND_ENABLED
 }
 
-export const PageRuleList = ({ control }: PageRuleListProps) => {
+export const PageRuleList = ({
+  control,
+  linkCommandEnabled,
+}: PageRuleListProps) => {
   const [dialogOpen, _setDialogOpen] = useState(false)
   const editorRef = useRef(DefaultRule)
   const addButtonRef = useRef<HTMLButtonElement>(null)
@@ -135,7 +139,9 @@ export const PageRuleList = ({ control }: PageRuleListProps) => {
                       </li>
                       <li>
                         {t('linkCommandEnabled')}:{' '}
-                        {t(`linkCommand_enabled${field.linkCommandEnabled}`)}
+                        {t(`linkCommand_enabled${field.linkCommandEnabled}`, [
+                          t(`linkCommand_enabled${linkCommandEnabled}`),
+                        ])}
                       </li>
                     </ul>
                   </div>
@@ -160,6 +166,7 @@ export const PageRuleList = ({ control }: PageRuleListProps) => {
             open={dialogOpen}
             onOpenChange={setDialogOpen}
             onSubmit={(rule) => upsert(rule)}
+            linkCommandEnabled={linkCommandEnabled}
             rule={editorRef.current ?? DefaultRule}
           />
         </FormItem>
@@ -172,6 +179,7 @@ type PageRuleDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (rule: PageRule) => void
+  linkCommandEnabled: LINK_COMMAND_ENABLED
   rule?: PageRule
 }
 
@@ -179,6 +187,7 @@ export const PageRuleDialog = ({
   open,
   onOpenChange,
   onSubmit,
+  linkCommandEnabled,
   rule,
 }: PageRuleDialogProps) => {
   const form = useForm<z.infer<typeof pageRuleSchema>>({
@@ -245,7 +254,9 @@ export const PageRuleDialog = ({
                 name="linkCommandEnabled"
                 formLabel={t('linkCommandEnabled')}
                 options={e2a(LINK_COMMAND_ENABLED).map((opt) => ({
-                  name: t(`linkCommand_enabled${opt}`),
+                  name: t(`linkCommand_enabled${opt}`, [
+                    t(`linkCommand_enabled${linkCommandEnabled}`),
+                  ]),
                   value: opt,
                 }))}
               />

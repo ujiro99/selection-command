@@ -467,7 +467,10 @@ export function SettingForm({ className }: { className?: string }) {
             {t('pageRules')}
           </h3>
           <p className="text-base">{t('pageRules_desc')}</p>
-          <PageRuleList control={form.control} />
+          <PageRuleList
+            control={form.control}
+            linkCommandEnabled={getValues('linkCommand.enabled')}
+          />
         </section>
         <hr />
         <section id="userStyles" className="space-y-3">
