@@ -312,7 +312,13 @@
     "message": "リンクへの操作により、ポップアップでプレビュー表示します。"
   },
   "Option_linkCommand_enabledInherit": {
-    "message": "全体設定から継承"
+    "message": "全体設定から継承(現在: $current$)",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "有効 or 無効"
+      }
+    }
   },
   "Option_linkCommand_enabledEnable": {
     "message": "有効"
