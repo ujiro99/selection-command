@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Settings } from '../services/settings'
 import type { SettingsType, PageRule } from '@/types'
 import { isEmpty } from '@/lib/utils'
-import { STYLE, STARTUP_METHOD, POPUP_PLACEMENT } from '@/const'
+import { STYLE, STARTUP_METHOD, ALIGN, SIDE } from '@/const'
 import Default from '@/services/defaultSettings'
 
 type iconUrlMap = Record<number | string, string>
@@ -19,7 +19,12 @@ const emptySettings: SettingsType = {
   folders: [],
   pageRules: [],
   style: STYLE.HORIZONTAL,
-  popupPlacement: POPUP_PLACEMENT.TOP,
+  popupPlacement: {
+    side: SIDE.top,
+    align: ALIGN.start,
+    alignOffset: 0,
+    sideOffset: 0,
+  },
   linkCommand: Default.linkCommand,
   userStyles: [],
   startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },

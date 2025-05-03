@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { useSetting } from '@/hooks/useSetting'
 import { Icon } from '@/components/Icon'
 import popupCss from '@/components/Popup.module.css'
+import { SIDE } from '@/const'
 import css from './ResultPopup.module.css'
 
 type PopupProps = {
@@ -17,7 +18,7 @@ type PopupProps = {
 export function ResultPopup(props: PopupProps) {
   const { settings } = useSetting()
   const placement = settings.popupPlacement
-  const isBottom = placement.startsWith('bottom')
+  const isBottom = placement.side === SIDE.bottom
 
   const visible = props.visible && props.positionRef.current != null
 
@@ -28,7 +29,7 @@ export function ResultPopup(props: PopupProps) {
     <Popover open={visible}>
       <PopoverAnchor virtualRef={virtualRef} />
       <PopoverContent
-        side={isBottom ? 'bottom' : 'top'}
+        side={isBottom ? SIDE.bottom : SIDE.top}
         className="bg-background rounded-md border"
       >
         <div className={clsx(popupCss.popup, css.resultPopup)}>

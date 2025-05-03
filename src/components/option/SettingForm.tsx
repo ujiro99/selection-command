@@ -16,6 +16,7 @@ import { LoadingIcon } from '@/components/option/LoadingIcon'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { SwitchField } from '@/components/option/field/SwitchField'
+import { PopupPlacementField } from '@/components/option/field/PopupPlacementField'
 import { folderSchema } from '@/components/option/editor/FolderEditDialog'
 import { commandSchema } from '@/components/option/editor/CommandEditDialog'
 import {
@@ -38,7 +39,6 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import {
   STYLE,
   STARTUP_METHOD,
-  POPUP_PLACEMENT,
   KEYBOARD,
   COMMAND_MAX,
   DRAG_OPEN_MODE,
@@ -47,6 +47,7 @@ import {
   STYLE_VARIABLE,
 } from '@/const'
 import type { SettingsType } from '@/types'
+import { PopupPlacementSchema } from '@/types/schema'
 import {
   isMenuCommand,
   isLinkCommand,
@@ -55,7 +56,6 @@ import {
   sleep,
   e2a,
   cn,
-  hyphen2Underscore,
 } from '@/lib/utils'
 import { Settings } from '@/services/settings'
 import DefaultSettings from '@/services/defaultSettings'
@@ -73,7 +73,7 @@ const formSchema = z
           .optional(),
       })
       .strict(),
-    popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
+    popupPlacement: PopupPlacementSchema,
     style: z.nativeEnum(STYLE),
     commands: z.array(commandSchema).min(1).max(COMMAND_MAX),
     folders: z.array(folderSchema),
@@ -341,15 +341,7 @@ export function SettingForm({ className }: { className?: string }) {
               }}
             />
           )}
-          <SelectField
-            control={form.control}
-            name="popupPlacement"
-            formLabel={t('popupPlacement')}
-            options={e2a(POPUP_PLACEMENT).map((placement) => ({
-              name: t(`popupPlacement_${hyphen2Underscore(placement)}`),
-              value: placement,
-            }))}
-          />
+          <PopupPlacementField control={form.control} name="popupPlacement" />
           <SelectField
             control={form.control}
             name="style"

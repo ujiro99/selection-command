@@ -32,13 +32,17 @@ export enum PAGE_ACTION_OPEN_MODE {
   TAB = OPEN_MODE.TAB,
 }
 
-export enum POPUP_PLACEMENT {
-  TOP = 'top',
-  TOP_START = 'top-start',
-  TOP_END = 'top-end',
-  BOTTOM = 'bottom',
-  BOTTOM_START = 'bottom-start',
-  BOTTOM_END = 'bottom-end',
+export enum SIDE {
+  top = 'top',
+  right = 'right',
+  bottom = 'bottom',
+  left = 'left',
+}
+
+export enum ALIGN {
+  start = 'start',
+  center = 'center',
+  end = 'end',
 }
 
 export enum STARTUP_METHOD {

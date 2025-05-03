@@ -146,23 +146,47 @@
   "Option_popupPlacement": {
     "message": "Menu Display Position"
   },
+  "Option_popupPlacement_side": {
+    "message": "Side"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "The position of the menu relative to the mouse pointer."
+  },
   "Option_popupPlacement_top": {
     "message": "Top"
   },
-  "Option_popupPlacement_top_start": {
-    "message": "Top Start"
-  },
-  "Option_popupPlacement_top_end": {
-    "message": "Top End"
+  "Option_popupPlacement_right": {
+    "message": "Right"
   },
   "Option_popupPlacement_bottom": {
     "message": "Bottom"
   },
-  "Option_popupPlacement_bottom_start": {
-    "message": "Bottom Start"
+  "Option_popupPlacement_left": {
+    "message": "Left"
   },
-  "Option_popupPlacement_bottom_end": {
-    "message": "Bottom End"
+  "Option_popupPlacement_align": {
+    "message": "Align"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "Aligns the mouse pointer with the menu."
+  },
+  "Option_popupPlacement_start": {
+    "message": "Start"
+  },
+  "Option_popupPlacement_center": {
+    "message": "Center"
+  },
+  "Option_popupPlacement_end": {
+    "message": "End"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "Side Offset"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "Align Offset"
+  },
+  "Option_mouse_pointer": {
+    "message": "Mouse Pointer"
   },
   "Option_style": {
     "message": "Menu Style"

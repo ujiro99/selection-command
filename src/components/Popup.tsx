@@ -7,8 +7,7 @@ import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { hexToHsl, isMac, onHover, cn } from '@/lib/utils'
 import { t } from '@/services/i18n'
-import { STYLE_VARIABLE, EXIT_DURATION } from '@/const'
-import { Alignment, Side } from '@/types'
+import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from '@/const'
 
 import css from './Popup.module.css'
 
@@ -22,8 +21,8 @@ export type PopupProps = {
 type ContextType = {
   isPreview?: boolean
   inTransition?: boolean
-  side: Side
-  align: Alignment
+  side: SIDE
+  align: ALIGN
 }
 export const popupContext = createContext<ContextType>({} as ContextType)
 
@@ -37,18 +36,8 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const { visible, isContextMenu } = useDetectStartup({ ...props, isHover })
     const placement = settings.popupPlacement
     const isPreview = props.isPreview === true
-    const side = isPreview
-      ? 'bottom'
-      : placement.startsWith('top')
-        ? 'top'
-        : 'bottom'
-    const align = isPreview
-      ? 'start'
-      : placement.endsWith('start')
-        ? 'start'
-        : placement.endsWith('end')
-          ? 'end'
-          : 'center'
+    const side = isPreview ? SIDE.bottom : placement.side
+    const align = isPreview ? ALIGN.center : placement.align
 
     const userStyles =
       settings.userStyles &&
@@ -122,6 +111,8 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               ref={ref}
               side={side}
               align={align}
+              sideOffset={0}
+              alignOffset={0}
               className={cn(css.popup, isPreview && 'z-10')}
               style={userStyles}
               onOpenAutoFocus={noFocus}

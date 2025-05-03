@@ -2,7 +2,8 @@ import type {
   OPEN_MODE,
   DRAG_OPEN_MODE,
   POPUP_ENABLED,
-  POPUP_PLACEMENT,
+  SIDE,
+  ALIGN,
   STYLE,
   KEYBOARD,
   STARTUP_METHOD,
@@ -102,7 +103,7 @@ export type CommandVariable = {
 export type PageRule = {
   urlPattern: string
   popupEnabled: POPUP_ENABLED
-  popupPlacement: POPUP_PLACEMENT
+  popupPlacement: PopupPlacement
   linkCommandEnabled: LINK_COMMAND_ENABLED
 }
 
@@ -110,10 +111,6 @@ export type StyleVariable = {
   name: STYLE_VARIABLE
   value: string
 }
-
-export type Side = 'top' | 'right' | 'bottom' | 'left'
-
-export type Alignment = 'start' | 'end' | 'center'
 
 export type StartupMethod = {
   method: STARTUP_METHOD
@@ -125,10 +122,17 @@ export type Star = {
   id: string
 }
 
+export type PopupPlacement = {
+  side: SIDE
+  align: ALIGN
+  sideOffset: number
+  alignOffset: number
+}
+
 export type SettingsType = {
   settingVersion: Version
   startupMethod: StartupMethod
-  popupPlacement: POPUP_PLACEMENT
+  popupPlacement: PopupPlacement
   commands: Array<Command>
   linkCommand: LinkCommandSettings
   folders: Array<CommandFolder>

@@ -146,23 +146,47 @@
   "Option_popupPlacement": {
     "message": "メニュー表示位置"
   },
+  "Option_popupPlacement_side": {
+    "message": "マウスポインタからの方向"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "マウスポインタを起点にした メニューの表示位置"
+  },
   "Option_popupPlacement_top": {
     "message": "Top"
   },
-  "Option_popupPlacement_top_start": {
-    "message": "Top Start"
-  },
-  "Option_popupPlacement_top_end": {
-    "message": "Top End"
+  "Option_popupPlacement_right": {
+    "message": "Right"
   },
   "Option_popupPlacement_bottom": {
     "message": "Bottom"
   },
-  "Option_popupPlacement_bottom_start": {
-    "message": "Bottom Start"
+  "Option_popupPlacement_left": {
+    "message": "Left"
   },
-  "Option_popupPlacement_bottom_end": {
-    "message": "Bottom End"
+  "Option_popupPlacement_align": {
+    "message": "位置揃え"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "マウスポインタとメニューの 位置の揃え方"
+  },
+  "Option_popupPlacement_start": {
+    "message": "Start"
+  },
+  "Option_popupPlacement_center": {
+    "message": "Center"
+  },
+  "Option_popupPlacement_end": {
+    "message": "End"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "Sideオフセット"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "Alignオフセット"
+  },
+  "Option_mouse_pointer": {
+    "message": "マウスポインタ"
   },
   "Option_style": {
     "message": "メニュースタイル"

@@ -22,14 +22,15 @@ import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { POPUP_PLACEMENT, POPUP_ENABLED, LINK_COMMAND_ENABLED } from '@/const'
+import { POPUP_ENABLED, LINK_COMMAND_ENABLED, ALIGN, SIDE } from '@/const'
 import { e2a, cn } from '@/lib/utils'
 import type { PageRule } from '@/types'
+import { PopupPlacementSchema } from '@/types/schema'
 
 export const pageRuleSchema = z.object({
   urlPattern: z.string().url({ message: t('zod_url') }),
   popupEnabled: z.nativeEnum(POPUP_ENABLED),
-  popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
+  popupPlacement: PopupPlacementSchema,
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
 })
 
@@ -42,7 +43,12 @@ type pageRulesType = z.infer<typeof pageRulesSchema>
 const DefaultRule = {
   urlPattern: '',
   popupEnabled: POPUP_ENABLED.ENABLE,
-  popupPlacement: POPUP_PLACEMENT.TOP_END,
+  popupPlacement: {
+    side: SIDE.top,
+    align: ALIGN.start,
+    alignOffset: 0,
+    sideOffset: 0,
+  },
   linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
 }
 
@@ -135,7 +141,8 @@ export const PageRuleList = ({
                         {t('popupEnabled')}: {t(`${field.popupEnabled}`)}
                       </li>
                       <li>
-                        {t('popupPlacement')}: {field.popupPlacement}
+                        {t('popupPlacement')}: {field.popupPlacement.side}{' '}
+                        {field.popupPlacement.align}
                       </li>
                       <li>
                         {t('linkCommandEnabled')}:{' '}
@@ -238,15 +245,6 @@ export const PageRuleDialog = ({
                 options={e2a(POPUP_ENABLED).map((mode) => ({
                   name: t(`${mode}`),
                   value: mode,
-                }))}
-              />
-              <SelectField
-                control={form.control}
-                name="popupPlacement"
-                formLabel={t('popupPlacement')}
-                options={e2a(POPUP_PLACEMENT).map((opt) => ({
-                  name: `${opt}`,
-                  value: opt,
                 }))}
               />
               <SelectField
