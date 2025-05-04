@@ -22,5 +22,10 @@
   "https://www.amazon.co.jp/s?k=%s",
   "https://www.google.com/maps/search/%s",
   "http://ja.wikipedia.org/wiki/Special:Search?search=%s&go=Go",
-  "https://drive.google.com/drive/search?q=%s"
+  "https://drive.google.com/drive/search?q=%s",
+  "https://google.com/search?q=%s&tbm=shop",
+  "https://note.com/search?q=%s",
+  "https://x.com/search?lang=ja&q=%s",
+  "https://chiebukuro.yahoo.co.jp/search?p=%s",
+  "https://keep.google.com/#search/text%253D%s"
 ]

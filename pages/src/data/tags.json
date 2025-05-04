@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 6
+    "count": 7
   },
   {
     "name": "Language",
@@ -17,11 +17,11 @@
   },
   {
     "name": "Tool",
-    "count": 4
+    "count": 5
   },
   {
     "name": "Japanese",
-    "count": 13
+    "count": 15
   },
   {
     "name": "Design",
@@ -37,7 +37,7 @@
   },
   {
     "name": "Shop",
-    "count": 6
+    "count": 7
   },
   {
     "name": "Manual",
@@ -49,7 +49,7 @@
   },
   {
     "name": "業務用",
-    "count": 1
+    "count": 2
   },
   {
     "name": "Development",
@@ -65,11 +65,11 @@
   },
   {
     "name": "Media",
-    "count": 4
+    "count": 5
   },
   {
     "name": "SNS",
-    "count": 1
+    "count": 2
   },
   {
     "name": "Photo",
@@ -89,6 +89,14 @@
   },
   {
     "name": "Character",
+    "count": 1
+  },
+  {
+    "name": "Blog",
+    "count": 2
+  },
+  {
+    "name": "work",
     "count": 1
   }
 ]

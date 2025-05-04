@@ -25,7 +25,7 @@ export function ListItem(props: Props): JSX.Element {
             <Image
               src={cmd.iconUrl}
               alt={cmd.title}
-              className="inline-block w-7 h-7"
+              className="inline-block w-7 h-7 rounded-sm"
             />
             <span>{cmd.title}</span>
             <Tooltip

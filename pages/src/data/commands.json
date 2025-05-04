@@ -756,5 +756,81 @@
     ],
     "id": "125fdc5e-a97d-5f81-92c4-2a6cbfc3662f",
     "addedAt": "2025-04-25T22:32:40.900Z"
+  },
+  {
+    "title": "google ショッピング",
+    "searchUrl": "https://google.com/search?q=%s&tbm=shop",
+    "description": "Google ショッピング で商品を検索します",
+    "iconUrl": "https://www.gstatic.com/gsx/shopping_favicon-32x32.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop"
+    ],
+    "id": "51f4c962-d46a-54fb-bbca-5d55abb95101",
+    "addedAt": "2025-05-03T05:21:12.343Z"
+  },
+  {
+    "title": "note",
+    "searchUrl": "https://note.com/search?q=%s",
+    "description": "noteで検索します",
+    "iconUrl": "https://assets.st-note.com/poc-image/manual/note-common-images/production/svg/production.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Media",
+      "Blog",
+      "Japanese"
+    ],
+    "id": "4f5c1307-a1a6-5e96-b80e-bbfc348f33de",
+    "addedAt": "2025-05-03T05:27:24.162Z"
+  },
+  {
+    "title": "X（旧Twitter）",
+    "searchUrl": "https://x.com/search?lang=ja&q=%s",
+    "description": "X（旧Twitter）で検索します",
+    "iconUrl": "https://abs.twimg.com/favicons/twitter.3.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "SNS",
+      "Blog",
+      "Japanese"
+    ],
+    "id": "7f53e080-a65f-5ad8-b4a6-d717bf0e4c33",
+    "addedAt": "2025-05-03T05:42:59.448Z"
+  },
+  {
+    "title": "Yahoo!知恵袋",
+    "searchUrl": "https://chiebukuro.yahoo.co.jp/search?p=%s",
+    "description": "Yahoo!知恵袋で検索します",
+    "iconUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAdVBMVEX////o6PbS0u7i4fO6uudrastfXsdjYshkY8ifntvy8vpzc8ttbMtnZsnY1/Bwb8zExOeiottmZcny8verq974+PyIiNOxseNPTcTKyumpqeDt7fiYmNp8e9C2tuW1teXAwOiDgtLd3fNAP7xYV8Y4N7pRUMFJW3/CAAAA/UlEQVR4AbXRVWKEMBQF0HjC8IJDcG27/yWWWx/77MU58bB/DhdCPiGljXXGRpd7usSOyFlP3iZ3SJp0miW5JTLyxqKCqCjPl8qTTq+tNkS6YaEtpSWy4gqFpVODr1jniHx/hR2QbMOkRqmGl3/RAb1iFkhpH5T8wcEQEo8eDz3N8xLWH900alY8JeCo5pN/dECnLmOTRsUpgob9d6KayGtYPB4xcJm/LH9pGuO8Jk1bXwFR9c+Y+VrF0xYtqv/G4Xpngjp/969feLlCseCnypcZWW42LuBnfzQKJth1BLR6w0QXxW6TQRUM07zNvoRlWULo1jtFeCKErNm/5h2lihYnWHrS1QAAAABJRU5ErkJggg==",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search"
+    ],
+    "id": "5d186ca4-2ae9-51ab-a027-6d1865397c19",
+    "addedAt": "2025-05-03T05:50:10.456Z"
+  },
+  {
+    "title": "Google Keep",
+    "searchUrl": "https://keep.google.com/#search/text%253D%s",
+    "description": "Google Keepで検索します",
+    "iconUrl": "https://www.gstatic.com/images/branding/product/1x/keep_2020q4_48dp.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "業務用",
+      "Tool",
+      "work"
+    ],
+    "id": "b63c5ecd-3c85-59ec-90dd-369121255528",
+    "addedAt": "2025-05-03T09:01:38.228Z"
   }
 ]
