@@ -1,10 +1,15 @@
 import { Storage, STORAGE_KEY } from './storage'
-import DefaultSettings, { DefaultCommands } from './defaultSettings'
+import DefaultSettings, {
+  DefaultCommands,
+  PopupPlacement,
+} from './defaultSettings'
 import {
   OPTION_FOLDER,
   VERSION,
   LINK_COMMAND_STARTUP_METHOD,
   LINK_COMMAND_ENABLED,
+  SIDE,
+  ALIGN,
 } from '@/const'
 import type { SettingsType, Version, Command, Star } from '@/types'
 import {
@@ -188,6 +193,11 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
     data.settingVersion = VERSION as Version
     data = migrate0_11_5(data)
   }
+  if (versionDiff(data.settingVersion, '0.11.9') === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate0_11_9(data)
+  }
+
   return data
 }
 
@@ -256,5 +266,18 @@ const migrate0_11_5 = (data: SettingsType): SettingsType => {
     return pr
   })
 
+  return data
+}
+
+const migrate0_11_9 = (data: SettingsType): SettingsType => {
+  // Convert POPUP_PLACEMENT to PopupPlacement
+  if (data.popupPlacement != null && typeof data.popupPlacement === 'string') {
+    const [oldSide, oldAlign] = (data.popupPlacement as string).split('-')
+    data.popupPlacement = {
+      ...PopupPlacement,
+      side: oldSide as SIDE,
+      align: oldAlign as ALIGN,
+    }
+  }
   return data
 }

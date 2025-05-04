@@ -14,6 +14,7 @@ type InputFieldType = {
   name: string
   formLabel: string
   inputProps: React.ComponentProps<typeof Input>
+  unit?: string
   description?: string
   previewUrl?: string
 }
@@ -25,6 +26,7 @@ export const InputField = ({
   name,
   formLabel,
   inputProps,
+  unit,
   description,
   previewUrl,
 }: InputFieldType) => {
@@ -50,6 +52,7 @@ export const InputField = ({
             <FormControl>
               <Input
                 className={cn(hasPreview && 'pl-10')}
+                unit={unit}
                 {...field}
                 {...inputProps}
               />

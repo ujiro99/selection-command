@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Save, BookOpen } from 'lucide-react'
+import { Save, BookOpen, ChevronsUpDown, ChevronsDownUp } from 'lucide-react'
 import {
   Dialog,
   DialogClose,
@@ -14,22 +14,32 @@ import {
   DialogPortal,
 } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/Tooltip'
 import { EditButton } from '@/components/option/EditButton'
 import { RemoveButton } from '@/components/option/RemoveButton'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
+import { PopupPlacementField } from '@/components/option/field/PopupPlacementField'
+import { PopupPlacement } from '@/services/defaultSettings'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { POPUP_PLACEMENT, POPUP_ENABLED, LINK_COMMAND_ENABLED } from '@/const'
+import { POPUP_ENABLED, LINK_COMMAND_ENABLED } from '@/const'
 import { e2a, cn } from '@/lib/utils'
 import type { PageRule } from '@/types'
+import { PopupPlacementSchema } from '@/types/schema'
+
+import css from './CommandEditDialog.module.css'
 
 export const pageRuleSchema = z.object({
   urlPattern: z.string().url({ message: t('zod_url') }),
   popupEnabled: z.nativeEnum(POPUP_ENABLED),
-  popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
+  popupPlacement: PopupPlacementSchema,
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
 })
 
@@ -42,7 +52,7 @@ type pageRulesType = z.infer<typeof pageRulesSchema>
 const DefaultRule = {
   urlPattern: '',
   popupEnabled: POPUP_ENABLED.ENABLE,
-  popupPlacement: POPUP_PLACEMENT.TOP_END,
+  popupPlacement: PopupPlacement,
   linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
 }
 
@@ -135,7 +145,8 @@ export const PageRuleList = ({
                         {t('popupEnabled')}: {t(`${field.popupEnabled}`)}
                       </li>
                       <li>
-                        {t('popupPlacement')}: {field.popupPlacement}
+                        {t('popupPlacement')}: {field.popupPlacement.side}{' '}
+                        {field.popupPlacement.align}
                       </li>
                       <li>
                         {t('linkCommandEnabled')}:{' '}
@@ -193,9 +204,14 @@ export const PageRuleDialog = ({
   const form = useForm<z.infer<typeof pageRuleSchema>>({
     resolver: zodResolver(pageRuleSchema),
     mode: 'onChange',
-    defaultValues: DefaultRule,
   })
-  const { register, reset } = form
+  const { register, reset, setValue } = form
+
+  const handlePopupPlacementSubmit = (
+    data: z.infer<typeof PopupPlacementSchema>,
+  ) => {
+    setValue('popupPlacement', data)
+  }
 
   useEffect(() => {
     if (rule != null && rule.urlPattern !== DefaultRule.urlPattern) {
@@ -221,7 +237,7 @@ export const PageRuleDialog = ({
           </DialogHeader>
           <DialogDescription>{t('pageRules_add_desc')}</DialogDescription>
           <Form {...form}>
-            <form id="PageRuleDialog" className="space-y-4">
+            <div id="PageRuleDialog" className="space-y-4">
               <InputField
                 control={form.control}
                 name="urlPattern"
@@ -242,15 +258,6 @@ export const PageRuleDialog = ({
               />
               <SelectField
                 control={form.control}
-                name="popupPlacement"
-                formLabel={t('popupPlacement')}
-                options={e2a(POPUP_PLACEMENT).map((opt) => ({
-                  name: `${opt}`,
-                  value: opt,
-                }))}
-              />
-              <SelectField
-                control={form.control}
                 name="linkCommandEnabled"
                 formLabel={t('linkCommandEnabled')}
                 options={e2a(LINK_COMMAND_ENABLED).map((opt) => ({
@@ -260,7 +267,33 @@ export const PageRuleDialog = ({
                   value: opt,
                 }))}
               />
-            </form>
+              <Collapsible
+                className={cn(css.collapse, 'flex flex-col items-end')}
+              >
+                <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
+                  <ChevronsUpDown
+                    size={18}
+                    className={cn(css.icon, css.iconUpDown)}
+                  />
+                  <ChevronsDownUp
+                    size={18}
+                    className={cn(css.icon, css.iconDownUp)}
+                  />
+                  <span className="ml-0.5">{t('labelOther')}</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent
+                  className={cn(
+                    css.CollapsibleContent,
+                    'w-full space-y-3 pt-2',
+                  )}
+                >
+                  <PopupPlacementField
+                    onSubmit={handlePopupPlacementSubmit}
+                    defaultValues={rule?.popupPlacement ?? PopupPlacement}
+                  />
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
           </Form>
           <DialogFooter>
             <DialogClose asChild>

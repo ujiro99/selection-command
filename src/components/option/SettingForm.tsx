@@ -16,6 +16,7 @@ import { LoadingIcon } from '@/components/option/LoadingIcon'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { SwitchField } from '@/components/option/field/SwitchField'
+import { PopupPlacementField } from '@/components/option/field/PopupPlacementField'
 import { folderSchema } from '@/components/option/editor/FolderEditDialog'
 import { commandSchema } from '@/components/option/editor/CommandEditDialog'
 import {
@@ -38,7 +39,6 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import {
   STYLE,
   STARTUP_METHOD,
-  POPUP_PLACEMENT,
   KEYBOARD,
   COMMAND_MAX,
   DRAG_OPEN_MODE,
@@ -47,6 +47,7 @@ import {
   STYLE_VARIABLE,
 } from '@/const'
 import type { SettingsType } from '@/types'
+import { PopupPlacementSchema } from '@/types/schema'
 import {
   isMenuCommand,
   isLinkCommand,
@@ -55,7 +56,6 @@ import {
   sleep,
   e2a,
   cn,
-  hyphen2Underscore,
 } from '@/lib/utils'
 import { Settings } from '@/services/settings'
 import DefaultSettings from '@/services/defaultSettings'
@@ -73,7 +73,7 @@ const formSchema = z
           .optional(),
       })
       .strict(),
-    popupPlacement: z.nativeEnum(POPUP_PLACEMENT),
+    popupPlacement: PopupPlacementSchema,
     style: z.nativeEnum(STYLE),
     commands: z.array(commandSchema).min(1).max(COMMAND_MAX),
     folders: z.array(folderSchema),
@@ -165,6 +165,17 @@ export function SettingForm({ className }: { className?: string }) {
     } finally {
       setIsSaving(false)
     }
+  }
+
+  const handlePopupPlacementSubmit = async (data: any) => {
+    const { side, align, alignOffset, sideOffset } = data
+    const popupPlacement = {
+      side,
+      align,
+      sideOffset,
+      alignOffset,
+    }
+    setValue('popupPlacement', popupPlacement)
   }
 
   useEffect(() => {
@@ -310,7 +321,18 @@ export function SettingForm({ className }: { className?: string }) {
               value: method,
             }))}
           />
-          {getValues('startupMethod.method') === STARTUP_METHOD.KEYBOARD && (
+          {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
+            <SelectField
+              control={form.control}
+              name="style"
+              formLabel={t('style')}
+              options={e2a(STYLE).map((style) => ({
+                name: t(`style_${style}`),
+                value: style,
+              }))}
+            />
+          )}
+          {startupMethod === STARTUP_METHOD.KEYBOARD && (
             <SelectField
               control={form.control}
               name="startupMethod.keyboardParam"
@@ -324,12 +346,12 @@ export function SettingForm({ className }: { className?: string }) {
                 }))}
             />
           )}
-          {getValues('startupMethod.method') ===
-            STARTUP_METHOD.LEFT_CLICK_HOLD && (
+          {startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD && (
             <InputField
               control={form.control}
               name="startupMethod.leftClickHoldParam"
               formLabel={t('startupMethod_param_leftClickHold')}
+              unit="ms"
               inputProps={{
                 type: 'number',
                 min: 50,
@@ -341,24 +363,13 @@ export function SettingForm({ className }: { className?: string }) {
               }}
             />
           )}
-          <SelectField
-            control={form.control}
-            name="popupPlacement"
-            formLabel={t('popupPlacement')}
-            options={e2a(POPUP_PLACEMENT).map((placement) => ({
-              name: t(`popupPlacement_${hyphen2Underscore(placement)}`),
-              value: placement,
-            }))}
-          />
-          <SelectField
-            control={form.control}
-            name="style"
-            formLabel={t('style')}
-            options={e2a(STYLE).map((style) => ({
-              name: t(`style_${style}`),
-              value: style,
-            }))}
-          />
+          {getValues('popupPlacement') != null &&
+            startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
+              <PopupPlacementField
+                onSubmit={handlePopupPlacementSubmit}
+                defaultValues={getValues('popupPlacement')}
+              />
+            )}
         </section>
         <hr />
         <section id="commands" className="space-y-3">
@@ -424,6 +435,7 @@ export function SettingForm({ className }: { className?: string }) {
               name="linkCommand.startupMethod.threshold"
               formLabel={t('linkCommandStartupMethod_threshold')}
               description={t('linkCommandStartupMethod_threshold_desc')}
+              unit="px"
               inputProps={{
                 type: 'number',
                 min: 50,
@@ -441,6 +453,10 @@ export function SettingForm({ className }: { className?: string }) {
               control={form.control}
               name="linkCommand.startupMethod.leftClickHoldParam"
               formLabel={t('linkCommandStartupMethod_leftClickHoldParam')}
+              description={t(
+                'linkCommandStartupMethod_leftClickHoldParam_desc',
+              )}
+              unit="ms"
               inputProps={{
                 type: 'number',
                 min: 50,

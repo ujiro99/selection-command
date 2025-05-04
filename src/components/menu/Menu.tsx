@@ -8,13 +8,13 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar'
 
-import { STYLE, ROOT_FOLDER } from '@/const'
+import { STYLE, ROOT_FOLDER, SIDE } from '@/const'
 import { MenuItem } from './MenuItem'
 import { Icon } from '@/components/Icon'
 import { HoverArea } from '@/components/menu/HoverArea'
 import { MenuImage } from '@/components/menu/MenuImage'
 import css from './Menu.module.css'
-import type { Command, CommandFolder, Side } from '@/types'
+import type { Command, CommandFolder } from '@/types'
 import { useSetting } from '@/hooks/useSetting'
 import { onHover, isMenuCommand } from '@/lib/utils'
 
@@ -35,8 +35,7 @@ export function Menu(): JSX.Element {
   const commands = settings.commands.filter(isMenuCommand)
   const folders = settings.folders
   const isHorizontal = settings.style === STYLE.HORIZONTAL
-  const isBottom = settings.popupPlacement.startsWith('bottom')
-  const side = isHorizontal ? (isBottom ? 'bottom' : 'top') : 'right'
+  const side = settings.popupPlacement.side
 
   const items = commands.reduce((pre, cur, idx) => {
     const folder = folders.find((obj) => obj.id === cur.parentFolderId)
@@ -103,12 +102,17 @@ const MenuFolder = (props: {
   folder: CommandFolder
   commands: Command[]
   isHorizontal: boolean
-  side: Side
+  side: SIDE
   menuRef: React.RefObject<HTMLDivElement>
   onHoverTrigger: (enterVal: any) => void
   onHoverContent: (enterVal: any) => void
 }) => {
   const { folder, isHorizontal } = props
+  const menuSide = isHorizontal
+    ? props.side === SIDE.top
+      ? SIDE.top
+      : SIDE.bottom
+    : SIDE.right
 
   // For HoverArea
   const anchorRef = useRef<HTMLButtonElement | null>(null)
@@ -150,7 +154,7 @@ const MenuFolder = (props: {
         {!isHorizontal && <Icon name="chevron" className={css.icon} />}
       </MenubarTrigger>
       <MenubarContent
-        side={props.side}
+        side={menuSide}
         sideOffset={isHorizontal ? 2 : -2}
         className={clsx({ flex: isHorizontal })}
         ref={contentRef}

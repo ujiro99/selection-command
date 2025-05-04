@@ -32,20 +32,24 @@ export enum PAGE_ACTION_OPEN_MODE {
   TAB = OPEN_MODE.TAB,
 }
 
-export enum POPUP_PLACEMENT {
-  TOP = 'top',
-  TOP_START = 'top-start',
-  TOP_END = 'top-end',
-  BOTTOM = 'bottom',
-  BOTTOM_START = 'bottom-start',
-  BOTTOM_END = 'bottom-end',
+export enum SIDE {
+  top = 'top',
+  right = 'right',
+  bottom = 'bottom',
+  left = 'left',
+}
+
+export enum ALIGN {
+  start = 'start',
+  center = 'center',
+  end = 'end',
 }
 
 export enum STARTUP_METHOD {
   TEXT_SELECTION = 'textSelection',
-  CONTEXT_MENU = 'contextMenu',
   KEYBOARD = 'keyboard',
   LEFT_CLICK_HOLD = 'leftClickHold',
+  CONTEXT_MENU = 'contextMenu',
 }
 
 export enum POPUP_TYPE {
@@ -84,8 +88,8 @@ export enum LINK_COMMAND_STARTUP_METHOD {
 }
 
 export enum STYLE {
-  VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
+  VERTICAL = 'vertical',
 }
 
 export enum SPACE_ENCODING {

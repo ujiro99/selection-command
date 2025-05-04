@@ -7,8 +7,7 @@ import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { hexToHsl, isMac, onHover, cn } from '@/lib/utils'
 import { t } from '@/services/i18n'
-import { STYLE_VARIABLE, EXIT_DURATION } from '@/const'
-import { Alignment, Side } from '@/types'
+import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from '@/const'
 
 import css from './Popup.module.css'
 
@@ -22,8 +21,8 @@ export type PopupProps = {
 type ContextType = {
   isPreview?: boolean
   inTransition?: boolean
-  side: Side
-  align: Alignment
+  side: SIDE
+  align: ALIGN
 }
 export const popupContext = createContext<ContextType>({} as ContextType)
 
@@ -35,20 +34,12 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const [shouldRender, setShouldRender] = useState(false)
     const [isHover, setIsHover] = useState(false)
     const { visible, isContextMenu } = useDetectStartup({ ...props, isHover })
-    const placement = settings.popupPlacement
     const isPreview = props.isPreview === true
-    const side = isPreview
-      ? 'bottom'
-      : placement.startsWith('top')
-        ? 'top'
-        : 'bottom'
-    const align = isPreview
-      ? 'start'
-      : placement.endsWith('start')
-        ? 'start'
-        : placement.endsWith('end')
-          ? 'end'
-          : 'center'
+    const placement = settings.popupPlacement
+    const side = isPreview ? SIDE.bottom : (placement.side ?? SIDE.top)
+    const align = isPreview ? ALIGN.center : (placement.align ?? ALIGN.start)
+    const sideOffset = isPreview ? 0 : (placement.sideOffset ?? 0)
+    const alignOffset = isPreview ? 0 : (placement.alignOffset ?? 0)
 
     const userStyles =
       settings.userStyles &&
@@ -122,6 +113,8 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               ref={ref}
               side={side}
               align={align}
+              sideOffset={sideOffset}
+              alignOffset={alignOffset}
               className={cn(css.popup, isPreview && 'z-10')}
               style={userStyles}
               onOpenAutoFocus={noFocus}

@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Selection Command"
+    "message": "Selection Command – Instantly launch search, AI, and your favorite tools from selected text"
   },
   "extDescription": {
-    "message": "Preview links and set custom commands for text selected on web pages."
+    "message": "Search, use AI, or run tools with selected text in one click. Customize commands to speed up your browsing."
   },
   "saving": {
     "message": "Saving.."
@@ -52,6 +52,9 @@
   },
   "Option_labelDetail": {
     "message": "Detail"
+  },
+  "Option_labelOther": {
+    "message": "Other"
   },
   "Option_Enable": {
     "message": "Enabled"
@@ -146,23 +149,53 @@
   "Option_popupPlacement": {
     "message": "Menu Display Position"
   },
+  "Option_popupPlacement_side": {
+    "message": "Side"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "The position of the menu relative to the mouse pointer."
+  },
   "Option_popupPlacement_top": {
     "message": "Top"
   },
-  "Option_popupPlacement_top_start": {
-    "message": "Top Start"
-  },
-  "Option_popupPlacement_top_end": {
-    "message": "Top End"
+  "Option_popupPlacement_right": {
+    "message": "Right"
   },
   "Option_popupPlacement_bottom": {
     "message": "Bottom"
   },
-  "Option_popupPlacement_bottom_start": {
-    "message": "Bottom Start"
+  "Option_popupPlacement_left": {
+    "message": "Left"
   },
-  "Option_popupPlacement_bottom_end": {
-    "message": "Bottom End"
+  "Option_popupPlacement_align": {
+    "message": "Align"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "Aligns the mouse pointer with the menu."
+  },
+  "Option_popupPlacement_start": {
+    "message": "Start"
+  },
+  "Option_popupPlacement_center": {
+    "message": "Center"
+  },
+  "Option_popupPlacement_end": {
+    "message": "End"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "Side Offset"
+  },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "Distance from the mouse pointer"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "Align Offset"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "Distance from the aligned position"
+  },
+  "Option_mouse_pointer": {
+    "message": "Mouse Pointer"
   },
   "Option_style": {
     "message": "Menu Style"
@@ -339,7 +372,7 @@
     "message": "Left Click Hold"
   },
   "Option_linkCommandStartupMethod_threshold": {
-    "message": "Drag distance[px]"
+    "message": "Drag distance"
   },
   "Option_linkCommandStartupMethod_threshold_desc": {
     "message": "Drag distance to display"
@@ -348,7 +381,10 @@
     "message": "Key to press simultaneously with click"
   },
   "Option_linkCommandStartupMethod_leftClickHoldParam": {
-    "message": "Long press time[ms]"
+    "message": "Long press time"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "Time until display"
   },
   "Option_showIndicator": {
     "message": "Display the indicator "
@@ -465,16 +501,16 @@
     "message": "Specify the margin size scaling. Default: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Display delay [ms]"
+    "message": "Display delay"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Specify the amount of time before the display begins. Default: 250"
+    "message": "Specify the amount of time before the display begins. Default: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
-    "message": "Display animation time [ms]"
+    "message": "Display animation time"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Specify the display animation time. Default: 150"
+    "message": "Specify the display animation time. Default: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Edit"

@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Selection Command"
+    "message": "Selection Command – 選択テキストから検索・AI・好きなツールを即起動"
   },
   "extDescription": {
-    "message": "リンクのプレビューや、Webページ上で選択したテキストに対して独自のコマンドを設定できます。"
+    "message": "選択テキストから検索・AI・各種ツールをワンクリックで実行。定型文送信などを自由にコマンド化し、ブラウジングを効率化。"
   },
   "saving": {
     "message": "保存中..."
@@ -52,6 +52,9 @@
   },
   "Option_labelDetail": {
     "message": "詳細"
+  },
+  "Option_labelOther": {
+    "message": "その他"
   },
   "Option_Enable": {
     "message": "有効"
@@ -146,23 +149,53 @@
   "Option_popupPlacement": {
     "message": "メニュー表示位置"
   },
+  "Option_popupPlacement_side": {
+    "message": "マウスポインタからの方向"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "マウスポインタを起点にした メニューの表示位置"
+  },
   "Option_popupPlacement_top": {
     "message": "Top"
   },
-  "Option_popupPlacement_top_start": {
-    "message": "Top Start"
-  },
-  "Option_popupPlacement_top_end": {
-    "message": "Top End"
+  "Option_popupPlacement_right": {
+    "message": "Right"
   },
   "Option_popupPlacement_bottom": {
     "message": "Bottom"
   },
-  "Option_popupPlacement_bottom_start": {
-    "message": "Bottom Start"
+  "Option_popupPlacement_left": {
+    "message": "Left"
   },
-  "Option_popupPlacement_bottom_end": {
-    "message": "Bottom End"
+  "Option_popupPlacement_align": {
+    "message": "位置揃え"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "マウスポインタとメニューの 位置の揃え方"
+  },
+  "Option_popupPlacement_start": {
+    "message": "Start"
+  },
+  "Option_popupPlacement_center": {
+    "message": "Center"
+  },
+  "Option_popupPlacement_end": {
+    "message": "End"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "オフセット"
+  },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "マウスポインタからの距離"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "オフセット"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "揃えた位置からの距離"
+  },
+  "Option_mouse_pointer": {
+    "message": "マウスポインタ"
   },
   "Option_style": {
     "message": "メニュースタイル"
@@ -339,7 +372,7 @@
     "message": "左クリック長押し"
   },
   "Option_linkCommandStartupMethod_threshold": {
-    "message": "ドラッグ距離[px]"
+    "message": "ドラッグ距離"
   },
   "Option_linkCommandStartupMethod_threshold_desc": {
     "message": "表示するまでの距離"
@@ -348,7 +381,10 @@
     "message": "クリックと同時に押すキー"
   },
   "Option_linkCommandStartupMethod_leftClickHoldParam": {
-    "message": "長押し時間[ms]"
+    "message": "長押し時間"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "表示するまでの時間"
   },
   "Option_showIndicator": {
     "message": "インジケータの表示"
@@ -465,16 +501,16 @@
     "message": "余白サイズの倍率を指定します。デフォルト: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "表示遅延(ms)"
+    "message": "表示遅延"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "表示が開始されるまでの時間を指定します。デフォルト: 250"
+    "message": "表示が開始されるまでの時間を指定します。デフォルト: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
-    "message": "表示アニメーション時間(ms)"
+    "message": "表示アニメーション時間"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150"
+    "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "編集"

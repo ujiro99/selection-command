@@ -1,13 +1,8 @@
-import {
-  isDebug,
-  LINK_COMMAND_ENABLED,
-  POPUP_ENABLED,
-  POPUP_PLACEMENT,
-} from '@/const'
+import { isDebug, LINK_COMMAND_ENABLED, POPUP_ENABLED } from '@/const'
 import '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { Settings } from '@/services/settings'
-import { PopupOption } from '@/services/defaultSettings'
+import { PopupOption, PopupPlacement } from '@/services/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
 import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import { BgData } from '@/services/backgroundData'
@@ -108,7 +103,7 @@ const commandFuncs = {
         pageRules.push({
           urlPattern: param.url,
           popupEnabled: POPUP_ENABLED.ENABLE,
-          popupPlacement: POPUP_PLACEMENT.TOP_START,
+          popupPlacement: PopupPlacement,
           linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
         })
       }

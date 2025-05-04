@@ -2,6 +2,8 @@ import { SettingsType, Command } from '@/types'
 import {
   VERSION,
   OPEN_MODE,
+  SIDE,
+  ALIGN,
   DRAG_OPEN_MODE,
   STARTUP_METHOD,
   STYLE,
@@ -11,8 +13,16 @@ import {
   SPACE_ENCODING,
 } from '@/const'
 
+export const PopupPlacement = {
+  side: SIDE.top,
+  align: ALIGN.start,
+  sideOffset: 0,
+  alignOffset: 0,
+}
+
 export default {
   settingVersion: VERSION,
+  popupPlacement: PopupPlacement,
   commands: [],
   linkCommand: {
     enabled: LINK_COMMAND_ENABLED.ENABLE,
@@ -58,7 +68,6 @@ export default {
     },
   ],
   pageRules: [],
-  popupPlacement: 'top-start',
   style: STYLE.HORIZONTAL,
   startupMethod: {
     method: STARTUP_METHOD.TEXT_SELECTION,
