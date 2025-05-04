@@ -88,8 +88,8 @@ export enum LINK_COMMAND_STARTUP_METHOD {
 }
 
 export enum STYLE {
-  VERTICAL = 'vertical',
   HORIZONTAL = 'horizontal',
+  VERTICAL = 'vertical',
 }
 
 export enum SPACE_ENCODING {

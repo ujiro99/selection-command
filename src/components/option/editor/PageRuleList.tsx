@@ -20,9 +20,11 @@ import { EditButton } from '@/components/option/EditButton'
 import { RemoveButton } from '@/components/option/RemoveButton'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
+import { PopupPlacementField } from '@/components/option/field/PopupPlacementField'
+import { PopupPlacement } from '@/services/defaultSettings'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { POPUP_ENABLED, LINK_COMMAND_ENABLED, ALIGN, SIDE } from '@/const'
+import { POPUP_ENABLED, LINK_COMMAND_ENABLED } from '@/const'
 import { e2a, cn } from '@/lib/utils'
 import type { PageRule } from '@/types'
 import { PopupPlacementSchema } from '@/types/schema'
@@ -43,12 +45,7 @@ type pageRulesType = z.infer<typeof pageRulesSchema>
 const DefaultRule = {
   urlPattern: '',
   popupEnabled: POPUP_ENABLED.ENABLE,
-  popupPlacement: {
-    side: SIDE.top,
-    align: ALIGN.start,
-    alignOffset: 0,
-    sideOffset: 0,
-  },
+  popupPlacement: PopupPlacement,
   linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
 }
 
@@ -200,9 +197,14 @@ export const PageRuleDialog = ({
   const form = useForm<z.infer<typeof pageRuleSchema>>({
     resolver: zodResolver(pageRuleSchema),
     mode: 'onChange',
-    defaultValues: DefaultRule,
   })
-  const { register, reset } = form
+  const { register, reset, setValue } = form
+
+  const handlePopupPlacementSubmit = (
+    data: z.infer<typeof PopupPlacementSchema>,
+  ) => {
+    setValue('popupPlacement', data)
+  }
 
   useEffect(() => {
     if (rule != null && rule.urlPattern !== DefaultRule.urlPattern) {
@@ -228,7 +230,7 @@ export const PageRuleDialog = ({
           </DialogHeader>
           <DialogDescription>{t('pageRules_add_desc')}</DialogDescription>
           <Form {...form}>
-            <form id="PageRuleDialog" className="space-y-4">
+            <div id="PageRuleDialog" className="space-y-4">
               <InputField
                 control={form.control}
                 name="urlPattern"
@@ -247,6 +249,10 @@ export const PageRuleDialog = ({
                   value: mode,
                 }))}
               />
+              <PopupPlacementField
+                onSubmit={handlePopupPlacementSubmit}
+                defaultValues={rule?.popupPlacement ?? PopupPlacement}
+              />
               <SelectField
                 control={form.control}
                 name="linkCommandEnabled"
@@ -258,7 +264,7 @@ export const PageRuleDialog = ({
                   value: opt,
                 }))}
               />
-            </form>
+            </div>
           </Form>
           <DialogFooter>
             <DialogClose asChild>
