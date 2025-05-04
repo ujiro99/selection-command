@@ -182,8 +182,14 @@
   "Option_popupPlacement_sideOffset": {
     "message": "Side Offset"
   },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "Offset from the mouse pointer"
+  },
   "Option_popupPlacement_alignOffset": {
     "message": "Align Offset"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "Offset from the aligned position"
   },
   "Option_mouse_pointer": {
     "message": "Mouse Pointer"

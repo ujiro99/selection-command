@@ -176,8 +176,8 @@ export const SelectAnchor = forwardRef<HTMLDivElement, Props>(
       width: SIZE,
       pointerEvents: 'none',
       zIndex: 2147483647,
-      backgroundColor: 'rgba(255, 0, 0, 0.3)',
-      border: '1px solid red',
+      // backgroundColor: 'rgba(255, 0, 0, 0.3)',
+      // border: '1px solid red',
     } as React.CSSProperties
 
     return (

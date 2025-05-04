@@ -180,10 +180,16 @@
     "message": "End"
   },
   "Option_popupPlacement_sideOffset": {
-    "message": "Sideオフセット"
+    "message": "オフセット"
+  },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "マウスポインタからのオフセット"
   },
   "Option_popupPlacement_alignOffset": {
-    "message": "Alignオフセット"
+    "message": "オフセット"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "揃えた位置からのオフセット"
   },
   "Option_mouse_pointer": {
     "message": "マウスポインタ"

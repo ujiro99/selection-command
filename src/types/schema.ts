@@ -10,16 +10,16 @@ import {
 import { t } from '@/services/i18n'
 
 export const PopupPlacementSchema = z.object({
-  align: z.nativeEnum(ALIGN),
   side: z.nativeEnum(SIDE),
-  alignOffset: z
+  align: z.nativeEnum(ALIGN),
+  sideOffset: z
     .number({ message: t('Option_zod_number') })
     .min(0, { message: t('Option_zod_number_min', ['0']) })
     .max(100, { message: t('Option_zod_number_max', ['100']) })
     .default(0),
-  sideOffset: z
+  alignOffset: z
     .number({ message: t('Option_zod_number') })
-    .min(0, { message: t('Option_zod_number_min', ['0']) })
+    .min(-100, { message: t('Option_zod_number_min', ['-100']) })
     .max(100, { message: t('Option_zod_number_max', ['100']) })
     .default(0),
 })

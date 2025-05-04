@@ -167,6 +167,17 @@ export function SettingForm({ className }: { className?: string }) {
     }
   }
 
+  const handlePopupPlacementSubmit = async (data: any) => {
+    const { side, align, alignOffset, sideOffset } = data
+    const popupPlacement = {
+      side,
+      align,
+      sideOffset,
+      alignOffset,
+    }
+    setValue('popupPlacement', popupPlacement)
+  }
+
   useEffect(() => {
     const loadSettings = async () => {
       const settings = await Settings.get(true)
@@ -310,7 +321,18 @@ export function SettingForm({ className }: { className?: string }) {
               value: method,
             }))}
           />
-          {getValues('startupMethod.method') === STARTUP_METHOD.KEYBOARD && (
+          {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
+            <SelectField
+              control={form.control}
+              name="style"
+              formLabel={t('style')}
+              options={e2a(STYLE).map((style) => ({
+                name: t(`style_${style}`),
+                value: style,
+              }))}
+            />
+          )}
+          {startupMethod === STARTUP_METHOD.KEYBOARD && (
             <SelectField
               control={form.control}
               name="startupMethod.keyboardParam"
@@ -324,8 +346,7 @@ export function SettingForm({ className }: { className?: string }) {
                 }))}
             />
           )}
-          {getValues('startupMethod.method') ===
-            STARTUP_METHOD.LEFT_CLICK_HOLD && (
+          {startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD && (
             <InputField
               control={form.control}
               name="startupMethod.leftClickHoldParam"
@@ -341,16 +362,13 @@ export function SettingForm({ className }: { className?: string }) {
               }}
             />
           )}
-          <PopupPlacementField control={form.control} name="popupPlacement" />
-          <SelectField
-            control={form.control}
-            name="style"
-            formLabel={t('style')}
-            options={e2a(STYLE).map((style) => ({
-              name: t(`style_${style}`),
-              value: style,
-            }))}
-          />
+          {getValues('popupPlacement') != null &&
+            startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
+              <PopupPlacementField
+                onSubmit={handlePopupPlacementSubmit}
+                defaultValues={getValues('popupPlacement')}
+              />
+            )}
         </section>
         <hr />
         <section id="commands" className="space-y-3">

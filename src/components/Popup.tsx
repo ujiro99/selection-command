@@ -34,10 +34,12 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const [shouldRender, setShouldRender] = useState(false)
     const [isHover, setIsHover] = useState(false)
     const { visible, isContextMenu } = useDetectStartup({ ...props, isHover })
-    const placement = settings.popupPlacement
     const isPreview = props.isPreview === true
-    const side = isPreview ? SIDE.bottom : placement.side
-    const align = isPreview ? ALIGN.center : placement.align
+    const placement = settings.popupPlacement
+    const side = isPreview ? SIDE.bottom : (placement.side ?? SIDE.top)
+    const align = isPreview ? ALIGN.center : (placement.align ?? ALIGN.start)
+    const sideOffset = isPreview ? 0 : (placement.sideOffset ?? 0)
+    const alignOffset = isPreview ? 0 : (placement.alignOffset ?? 0)
 
     const userStyles =
       settings.userStyles &&
@@ -111,8 +113,8 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               ref={ref}
               side={side}
               align={align}
-              sideOffset={0}
-              alignOffset={0}
+              sideOffset={sideOffset}
+              alignOffset={alignOffset}
               className={cn(css.popup, isPreview && 'z-10')}
               style={userStyles}
               onOpenAutoFocus={noFocus}

@@ -47,9 +47,9 @@ export enum ALIGN {
 
 export enum STARTUP_METHOD {
   TEXT_SELECTION = 'textSelection',
-  CONTEXT_MENU = 'contextMenu',
   KEYBOARD = 'keyboard',
   LEFT_CLICK_HOLD = 'leftClickHold',
+  CONTEXT_MENU = 'contextMenu',
 }
 
 export enum POPUP_TYPE {
