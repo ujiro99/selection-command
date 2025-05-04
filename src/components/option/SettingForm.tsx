@@ -351,6 +351,7 @@ export function SettingForm({ className }: { className?: string }) {
               control={form.control}
               name="startupMethod.leftClickHoldParam"
               formLabel={t('startupMethod_param_leftClickHold')}
+              unit="ms"
               inputProps={{
                 type: 'number',
                 min: 50,
@@ -434,6 +435,7 @@ export function SettingForm({ className }: { className?: string }) {
               name="linkCommand.startupMethod.threshold"
               formLabel={t('linkCommandStartupMethod_threshold')}
               description={t('linkCommandStartupMethod_threshold_desc')}
+              unit="px"
               inputProps={{
                 type: 'number',
                 min: 50,
@@ -451,6 +453,10 @@ export function SettingForm({ className }: { className?: string }) {
               control={form.control}
               name="linkCommand.startupMethod.leftClickHoldParam"
               formLabel={t('linkCommandStartupMethod_leftClickHoldParam')}
+              description={t(
+                'linkCommandStartupMethod_leftClickHoldParam_desc',
+              )}
+              unit="ms"
               inputProps={{
                 type: 'number',
                 min: 50,

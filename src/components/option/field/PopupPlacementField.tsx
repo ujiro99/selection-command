@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { MousePointer } from 'lucide-react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Check } from 'lucide-react'
 
 import { InputField } from '@/components/option/field/InputField'
 import {
@@ -16,6 +17,7 @@ import {
 import { PopupPlacementSchema } from '@/types/schema'
 
 import { SIDE, ALIGN } from '@/const'
+import { cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -51,7 +53,7 @@ export const PopupPlacementField = ({
   return (
     <section>
       <h2 className="text-sm font-bold">{t('popupPlacement')}</h2>
-      <div className="flex flex-col gap-4 ml-3 mt-3">
+      <div className="flex flex-col gap-4 ml-4 mt-3">
         <FormField
           control={form.control}
           name="side"
@@ -73,18 +75,18 @@ export const PopupPlacementField = ({
                     className="grid grid-cols-3 gap-2 p-0.5"
                   >
                     <div />
-                    <SideItem side={SIDE.top} />
+                    <SideItem side={SIDE.top} current={field.value} />
                     <div />
 
-                    <SideItem side={SIDE.left} />
+                    <SideItem side={SIDE.left} current={field.value} />
                     <div className="flex items-center flex-col gap-0.5">
                       <MousePointer size={18} />
                       <span>{t('mouse_pointer')}</span>
                     </div>
-                    <SideItem side={SIDE.right} />
+                    <SideItem side={SIDE.right} current={field.value} />
 
                     <div />
-                    <SideItem side={SIDE.bottom} />
+                    <SideItem side={SIDE.bottom} current={field.value} />
                     <div />
                   </ToggleGroup>
                 </FormControl>
@@ -129,9 +131,21 @@ export const PopupPlacementField = ({
                     defaultValue={field.value}
                     className="grid grid-cols-3 gap-2 p-0.5"
                   >
-                    <AlignItem side={side} align={ALIGN.start} />
-                    <AlignItem side={side} align={ALIGN.center} />
-                    <AlignItem side={side} align={ALIGN.end} />
+                    <AlignItem
+                      side={side}
+                      align={ALIGN.start}
+                      current={field.value}
+                    />
+                    <AlignItem
+                      side={side}
+                      align={ALIGN.center}
+                      current={field.value}
+                    />
+                    <AlignItem
+                      side={side}
+                      align={ALIGN.end}
+                      current={field.value}
+                    />
                   </ToggleGroup>
                 </FormControl>
                 <FormMessage />
@@ -160,15 +174,19 @@ export const PopupPlacementField = ({
   )
 }
 
-const SideItem = ({ side }: { side: SIDE }) => {
+const SideItem = ({ side, current }: { side: SIDE; current: SIDE }) => {
+  const checked = side === current
   return (
     <FormItem>
       <FormControl>
         <ToggleGroupItem
           value={side}
           aria-label={t(`popupPlacement_${side}`)}
-          className="w-full h-9 shadow-sm text-xs font-mono text-gray-600"
+          className={cn(
+            'relative w-full h-9 shadow-sm text-xs font-mono text-gray-600',
+          )}
         >
+          {checked && <Check size={16} className="absolute left-5" />}
           {t(`popupPlacement_${side}`)}
         </ToggleGroupItem>
       </FormControl>
@@ -176,17 +194,30 @@ const SideItem = ({ side }: { side: SIDE }) => {
   )
 }
 
-const AlignItem = ({ side, align }: { side: SIDE; align: ALIGN }) => {
+const AlignItem = ({
+  side,
+  align,
+  current,
+}: {
+  side: SIDE
+  align: ALIGN
+  current: ALIGN
+}) => {
   const _side =
     side === SIDE.left || side === SIDE.right ? 'vertical' : 'horizontal'
+  const checked = align === current
   return (
     <FormItem>
       <FormControl>
         <ToggleGroupItem
           value={align}
           aria-label={t(`popupPlacement_${align}`)}
-          className="flex-col gap-0 h-auto w-full py-1 shadow-sm text-xs font-mono text-gray-600"
+          className={cn(
+            'relative',
+            'flex-col gap-0 h-auto w-full py-1 shadow-sm text-xs font-mono text-gray-600',
+          )}
         >
+          {checked && <Check size={16} className="absolute left-2" />}
           <img
             src={`/setting/align_${align}_${_side}.png`}
             alt="Selection Command"

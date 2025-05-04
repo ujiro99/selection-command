@@ -53,6 +53,9 @@
   "Option_labelDetail": {
     "message": "Detail"
   },
+  "Option_labelOther": {
+    "message": "Other"
+  },
   "Option_Enable": {
     "message": "Enabled"
   },
@@ -183,13 +186,13 @@
     "message": "Side Offset"
   },
   "Option_popupPlacement_sideOffset_desc": {
-    "message": "Offset from the mouse pointer"
+    "message": "Distance from the mouse pointer"
   },
   "Option_popupPlacement_alignOffset": {
     "message": "Align Offset"
   },
   "Option_popupPlacement_alignOffset_desc": {
-    "message": "Offset from the aligned position"
+    "message": "Distance from the aligned position"
   },
   "Option_mouse_pointer": {
     "message": "Mouse Pointer"
@@ -369,7 +372,7 @@
     "message": "Left Click Hold"
   },
   "Option_linkCommandStartupMethod_threshold": {
-    "message": "Drag distance[px]"
+    "message": "Drag distance"
   },
   "Option_linkCommandStartupMethod_threshold_desc": {
     "message": "Drag distance to display"
@@ -378,7 +381,10 @@
     "message": "Key to press simultaneously with click"
   },
   "Option_linkCommandStartupMethod_leftClickHoldParam": {
-    "message": "Long press time[ms]"
+    "message": "Long press time"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "Time until display"
   },
   "Option_showIndicator": {
     "message": "Display the indicator "
@@ -495,16 +501,16 @@
     "message": "Specify the margin size scaling. Default: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Display delay [ms]"
+    "message": "Display delay"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Specify the amount of time before the display begins. Default: 250"
+    "message": "Specify the amount of time before the display begins. Default: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
-    "message": "Display animation time [ms]"
+    "message": "Display animation time"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Specify the display animation time. Default: 150"
+    "message": "Specify the display animation time. Default: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Edit"

@@ -108,6 +108,17 @@ const Attributes: AttributeMap = {
   },
 }
 
+type UnitMap = Record<STYLE_VARIABLE, string | undefined>
+const Units: UnitMap = {
+  [STYLE_VARIABLE.BACKGROUND_COLOR]: undefined,
+  [STYLE_VARIABLE.BORDER_COLOR]: undefined,
+  [STYLE_VARIABLE.FONT_SCALE]: undefined,
+  [STYLE_VARIABLE.IMAGE_SCALE]: undefined,
+  [STYLE_VARIABLE.PADDING_SCALE]: undefined,
+  [STYLE_VARIABLE.POPUP_DELAY]: 'ms',
+  [STYLE_VARIABLE.POPUP_DURATION]: 'ms',
+}
+
 const DefaultValue = {
   name: STYLE_VARIABLE.FONT_SCALE,
   value: '',
@@ -338,7 +349,12 @@ export const UserStyleDialog = ({
                   <FormItem className="w-1/2">
                     <FormLabel>{t('userStyles_value')}</FormLabel>
                     <FormControl>
-                      <Input className="mt-2" {...field} {...attr} />
+                      <Input
+                        className="mt-2"
+                        unit={Units[variableName]}
+                        {...field}
+                        {...attr}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

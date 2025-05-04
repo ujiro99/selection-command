@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Save, BookOpen } from 'lucide-react'
+import { Save, BookOpen, ChevronsUpDown, ChevronsDownUp } from 'lucide-react'
 import {
   Dialog,
   DialogClose,
@@ -14,6 +14,11 @@ import {
   DialogPortal,
 } from '@/components/ui/dialog'
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/Tooltip'
 import { EditButton } from '@/components/option/EditButton'
@@ -28,6 +33,8 @@ import { POPUP_ENABLED, LINK_COMMAND_ENABLED } from '@/const'
 import { e2a, cn } from '@/lib/utils'
 import type { PageRule } from '@/types'
 import { PopupPlacementSchema } from '@/types/schema'
+
+import css from './CommandEditDialog.module.css'
 
 export const pageRuleSchema = z.object({
   urlPattern: z.string().url({ message: t('zod_url') }),
@@ -249,10 +256,6 @@ export const PageRuleDialog = ({
                   value: mode,
                 }))}
               />
-              <PopupPlacementField
-                onSubmit={handlePopupPlacementSubmit}
-                defaultValues={rule?.popupPlacement ?? PopupPlacement}
-              />
               <SelectField
                 control={form.control}
                 name="linkCommandEnabled"
@@ -264,6 +267,32 @@ export const PageRuleDialog = ({
                   value: opt,
                 }))}
               />
+              <Collapsible
+                className={cn(css.collapse, 'flex flex-col items-end')}
+              >
+                <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
+                  <ChevronsUpDown
+                    size={18}
+                    className={cn(css.icon, css.iconUpDown)}
+                  />
+                  <ChevronsDownUp
+                    size={18}
+                    className={cn(css.icon, css.iconDownUp)}
+                  />
+                  <span className="ml-0.5">{t('labelOther')}</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent
+                  className={cn(
+                    css.CollapsibleContent,
+                    'w-full space-y-3 pt-2',
+                  )}
+                >
+                  <PopupPlacementField
+                    onSubmit={handlePopupPlacementSubmit}
+                    defaultValues={rule?.popupPlacement ?? PopupPlacement}
+                  />
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           </Form>
           <DialogFooter>

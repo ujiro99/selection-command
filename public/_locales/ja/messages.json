@@ -53,6 +53,9 @@
   "Option_labelDetail": {
     "message": "詳細"
   },
+  "Option_labelOther": {
+    "message": "その他"
+  },
   "Option_Enable": {
     "message": "有効"
   },
@@ -183,13 +186,13 @@
     "message": "オフセット"
   },
   "Option_popupPlacement_sideOffset_desc": {
-    "message": "マウスポインタからのオフセット"
+    "message": "マウスポインタからの距離"
   },
   "Option_popupPlacement_alignOffset": {
     "message": "オフセット"
   },
   "Option_popupPlacement_alignOffset_desc": {
-    "message": "揃えた位置からのオフセット"
+    "message": "揃えた位置からの距離"
   },
   "Option_mouse_pointer": {
     "message": "マウスポインタ"
@@ -369,7 +372,7 @@
     "message": "左クリック長押し"
   },
   "Option_linkCommandStartupMethod_threshold": {
-    "message": "ドラッグ距離[px]"
+    "message": "ドラッグ距離"
   },
   "Option_linkCommandStartupMethod_threshold_desc": {
     "message": "表示するまでの距離"
@@ -378,7 +381,10 @@
     "message": "クリックと同時に押すキー"
   },
   "Option_linkCommandStartupMethod_leftClickHoldParam": {
-    "message": "長押し時間[ms]"
+    "message": "長押し時間"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "表示するまでの時間"
   },
   "Option_showIndicator": {
     "message": "インジケータの表示"
@@ -495,16 +501,16 @@
     "message": "余白サイズの倍率を指定します。デフォルト: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "表示遅延(ms)"
+    "message": "表示遅延"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "表示が開始されるまでの時間を指定します。デフォルト: 250"
+    "message": "表示が開始されるまでの時間を指定します。デフォルト: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
-    "message": "表示アニメーション時間(ms)"
+    "message": "表示アニメーション時間"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150"
+    "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "編集"
