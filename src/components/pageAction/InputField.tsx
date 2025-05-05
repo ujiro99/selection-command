@@ -22,21 +22,18 @@ export const InputField = forwardRef<HTMLInputElement, Props>(
           <Input
             type={props.type}
             defaultValue={props.defaultValue ?? '---'}
-            className={cn(
+            className="w-full"
+            inputClassName={cn(
               'h-auto px-1 py-0 text-sm',
               !isEditing &&
                 'border-white shadow-none truncate disabled:cursor-auto disabled:opacity-100',
               isEditing && 'px-2 py-1.5 border-gray-300',
             )}
             ref={ref}
+            unit={props.unit}
             disabled={!isEditing}
             {...props.inputProps}
           />
-          {props.unit && (
-            <span className="text-sm text-gray-500 font-mono">
-              {props.unit}
-            </span>
-          )}
         </div>
       </div>
     )
