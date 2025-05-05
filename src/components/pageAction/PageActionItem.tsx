@@ -228,10 +228,10 @@ export function PageActionItem(props: Props): JSX.Element {
                 </div>
               )}
 
-              <div className="">
+              <div>
                 <InputField
                   label={t('Option_pageAction_delay')}
-                  unit={'[ms]'}
+                  unit={'ms'}
                   type="number"
                   defaultValue={step.delayMs}
                   ref={delayInputRef}

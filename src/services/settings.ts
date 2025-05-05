@@ -270,14 +270,30 @@ const migrate0_11_5 = (data: SettingsType): SettingsType => {
 }
 
 const migrate0_11_9 = (data: SettingsType): SettingsType => {
-  // Convert POPUP_PLACEMENT to PopupPlacement
+  // 1. Convert POPUP_PLACEMENT to PopupPlacement
   if (data.popupPlacement != null && typeof data.popupPlacement === 'string') {
     const [oldSide, oldAlign] = (data.popupPlacement as string).split('-')
     data.popupPlacement = {
       ...PopupPlacement,
       side: oldSide as SIDE,
-      align: oldAlign as ALIGN,
+      align: (oldAlign as ALIGN) ?? ALIGN.center,
     }
   }
+
+  // 2. Convert POPUP_PLACEMENT to PopupPlacement as PageRules
+  if (data.pageRules != null && Array.isArray(data.pageRules)) {
+    data.pageRules = data.pageRules.map((pr) => {
+      if (pr.popupPlacement != null && typeof pr.popupPlacement === 'string') {
+        const [oldSide, oldAlign] = (pr.popupPlacement as string).split('-')
+        pr.popupPlacement = {
+          ...PopupPlacement,
+          side: oldSide as SIDE,
+          align: (oldAlign as ALIGN) ?? ALIGN.center,
+        }
+      }
+      return pr
+    })
+  }
+
   return data
 }
