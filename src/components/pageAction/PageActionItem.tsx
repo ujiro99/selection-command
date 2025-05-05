@@ -100,7 +100,8 @@ export function PageActionItem(props: Props): JSX.Element {
   }
 
   const handleClickEditFinish = () => {
-    const delayMs = parseInt(delayInputRef.current?.value ?? '0')
+    let delayMs = parseInt(delayInputRef.current?.value ?? '0', 10)
+    isNaN(delayMs) && (delayMs = 0)
     const label = labelInputRef.current?.value ?? ''
     props.onChange(step.id, { delayMs, param: { label } })
     setIsEditing(false)
