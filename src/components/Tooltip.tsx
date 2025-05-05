@@ -7,6 +7,7 @@ import {
   PopoverArrow,
 } from '@/components/ui/popover'
 import { popupContext } from '@/components/Popup'
+import { SIDE } from '@/const'
 
 type PopupProps = {
   text: string
@@ -65,7 +66,7 @@ export function Tooltip(props: PopupProps) {
             'bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 text-xs text-white shadow-md',
             props.className,
           )}
-          side={side ?? 'top'}
+          side={side === SIDE.bottom ? SIDE.bottom : 'top'}
           arrowPadding={-1}
           onOpenAutoFocus={noFocus}
         >

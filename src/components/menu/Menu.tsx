@@ -109,9 +109,9 @@ const MenuFolder = (props: {
 }) => {
   const { folder, isHorizontal } = props
   const menuSide = isHorizontal
-    ? props.side === SIDE.top
-      ? SIDE.top
-      : SIDE.bottom
+    ? props.side === SIDE.bottom
+      ? SIDE.bottom
+      : SIDE.top
     : SIDE.right
 
   // For HoverArea
