@@ -2,7 +2,8 @@ import { Settings } from '@/services/settings'
 import type { SettingsType, Command } from '@/types'
 import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
-import { isMenuCommand } from '@/lib/utils'
+import { isMenuCommand, capitalize } from '@/lib/utils'
+import { APP_ID } from '@/const'
 
 chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
 Settings.addChangedListener(() => ContextMenu.init())
@@ -37,6 +38,16 @@ const ContextMenu = {
     const commands = settings.commands.filter(isMenuCommand)
     const folder = settings.folders
     const folderIdObj = {} as { [key: string]: string | number }
+
+    // Add the root menu using app name.
+    const rootId = chrome.contextMenus.create({
+      id: `${APP_ID}-root`,
+      title: APP_ID.split('-')
+        .map((n) => capitalize(n))
+        .join(' '),
+      contexts,
+    })
+
     for (const command of commands) {
       // Add folder
       let folderId
@@ -53,12 +64,14 @@ const ContextMenu = {
                 type: 'separator',
                 contexts,
                 id: 'OptionSeparator',
+                parentId: rootId,
               })
             }
             folderId = chrome.contextMenus.create({
               title: f.title,
               contexts,
               id: f.id,
+              parentId: rootId,
             })
             folderIdObj[f.id] = folderId
           }
@@ -67,7 +80,7 @@ const ContextMenu = {
       // Add command
       const menuId = chrome.contextMenus.create({
         title: command.title,
-        parentId: folderId,
+        parentId: folderId ?? rootId,
         contexts,
         id: `${command.id}`,
       })
