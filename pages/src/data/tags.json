@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 7
+    "count": 8
   },
   {
     "name": "Language",
@@ -17,7 +17,7 @@
   },
   {
     "name": "Tool",
-    "count": 5
+    "count": 6
   },
   {
     "name": "Japanese",
@@ -96,7 +96,7 @@
     "count": 2
   },
   {
-    "name": "work",
+    "name": "Work",
     "count": 1
   }
 ]

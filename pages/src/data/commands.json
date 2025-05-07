@@ -825,12 +825,63 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": [
-      "業務用",
-      "Tool",
-      "work"
-    ],
+    "tags": ["業務用", "Tool", "Work"],
     "id": "b63c5ecd-3c85-59ec-90dd-369121255528",
     "addedAt": "2025-05-03T09:01:38.228Z"
+  },
+  {
+    "title": "Notion検索",
+    "description": "Notionで選択テキストを検索します。",
+    "iconUrl": "https://www.notion.so/images/favicon.ico",
+    "openMode": "pageAction",
+    "tags": ["Search", "Tool"],
+    "pageActionOption": {
+      "startUrl": "https://www.notion.com/login",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "d74cruet6",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "bilzlhq2d",
+          "param": {
+            "type": "keyboard",
+            "label": "Ctrl+k",
+            "key": "k",
+            "code": "KeyK",
+            "keyCode": 75,
+            "shiftKey": false,
+            "ctrlKey": false,
+            "altKey": false,
+            "metaKey": true,
+            "targetSelector": "//body",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "3xvfhz9c7",
+          "param": {
+            "type": "input",
+            "label": "キーワード入力",
+            "selector": "//*[@type='text']",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "36p0e9tmf",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "9ca2af72-ab39-51d3-8aee-dc517eb3203c",
+    "addedAt": "2025-05-07T03:37:05.581Z"
   }
 ]
