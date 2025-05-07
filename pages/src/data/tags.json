@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 8
+    "count": 9
   },
   {
     "name": "Language",
@@ -17,11 +17,11 @@
   },
   {
     "name": "Tool",
-    "count": 6
+    "count": 8
   },
   {
     "name": "Japanese",
-    "count": 15
+    "count": 18
   },
   {
     "name": "Design",
@@ -49,7 +49,7 @@
   },
   {
     "name": "業務用",
-    "count": 2
+    "count": 4
   },
   {
     "name": "Development",
