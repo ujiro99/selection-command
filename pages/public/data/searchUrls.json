@@ -27,5 +27,6 @@
   "https://note.com/search?q=%s",
   "https://x.com/search?lang=ja&q=%s",
   "https://chiebukuro.yahoo.co.jp/search?p=%s",
-  "https://keep.google.com/#search/text%253D%s"
+  "https://keep.google.com/#search/text%253D%s",
+  "https://search.naver.com/search.naver?ie=UTF-8&sm=whl_hty&query=%s"
 ]

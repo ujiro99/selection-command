@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 9
+    "count": 10
   },
   {
     "name": "Language",
@@ -97,6 +97,10 @@
   },
   {
     "name": "Work",
+    "count": 1
+  },
+  {
+    "name": "Korean",
     "count": 1
   }
 ]

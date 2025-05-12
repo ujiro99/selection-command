@@ -961,5 +961,17 @@
     },
     "id": "2ce63d61-7859-5309-9235-5affa3fd2bb6",
     "addedAt": "2025-05-07T03:51:05.765Z"
+  },
+  {
+    "title": "네이버",
+    "searchUrl": "https://search.naver.com/search.naver?ie=UTF-8&sm=whl_hty&query=%s",
+    "description": "네이버에서 검색합니다",
+    "iconUrl": "https://ssl.pstatic.net/sstatic/search/favicon/favicon_32x32_240820.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "Korean"],
+    "id": "db192c4a-bde8-5901-ade9-cfaa4c758b55",
+    "addedAt": "2025-05-12T05:17:02.980Z"
   }
 ]
