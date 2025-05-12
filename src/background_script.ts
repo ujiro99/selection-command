@@ -18,27 +18,44 @@ import type {
 } from '@/types'
 import { Storage, SESSION_STORAGE_KEY } from './services/storage'
 
-const OPTION_PAGE = 'src/options_page.html'
-const REVIEW_THRESHOLD = 100
-const SETTING_KEY = {
-  COMMAND_EXECUTION_COUNT: 'commandExecutionCount',
+const CONSTANTS = {
+  OPTION_PAGE: 'src/options_page.html',
+  REVIEW_THRESHOLD: 100,
+  SETTING_KEY: {
+    COMMAND_EXECUTION_COUNT: 'commandExecutionCount',
+    HAS_SHOWN_REVIEW_REQUEST: 'hasShownReviewRequest',
+  },
+  URL: {
+    REVIEW: 'https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/reviews',
+  },
 } as const
 
 BgData.init()
 
 // Increment command execution count
-const incrementCommandExecutionCount = async () => {
-  await Settings.update(SETTING_KEY.COMMAND_EXECUTION_COUNT, (count) => (count ?? 0) + 1)
+const incrementCommandExecutionCount = async (): Promise<void> => {
+  try {
+    await Settings.update(CONSTANTS.SETTING_KEY.COMMAND_EXECUTION_COUNT, (count) => (count ?? 0) + 1)
+  } catch (error) {
+    console.error('Failed to increment command execution count:', error)
+  }
 }
 
 // Show review request when threshold is reached
-const showReviewRequest = async () => {
-  const settings = await Settings.get()
-  const count = settings.commandExecutionCount ?? 0
-  if (count >= REVIEW_THRESHOLD) {
-    chrome.tabs.create({
-      url: 'https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/reviews',
-    })
+const showReviewRequest = async (): Promise<void> => {
+  try {
+    const settings = await Settings.get()
+    const count = settings.commandExecutionCount ?? 0
+    const hasShown = settings.hasShownReviewRequest ?? false
+
+    if (count >= CONSTANTS.REVIEW_THRESHOLD && !hasShown) {
+      await Settings.update(CONSTANTS.SETTING_KEY.HAS_SHOWN_REVIEW_REQUEST, () => true)
+      chrome.tabs.create({
+        url: CONSTANTS.URL.REVIEW,
+      })
+    }
+  } catch (error) {
+    console.error('Failed to show review request:', error)
   }
 }
 
@@ -90,32 +107,42 @@ function bindVariables(
 const commandFuncs = {
   [BgCommand.openPopups]: (param: OpenPopupsProps, _: Sender, response: (res: unknown) => void): boolean => {
     incrementCommandExecutionCount().then(async () => {
-      await openPopups(param)
-      await showReviewRequest()
-      response(true)
+      try {
+        await openPopups(param)
+        await showReviewRequest()
+        response(true)
+      } catch (error) {
+        console.error('Failed to execute openPopups:', error)
+        response(false)
+      }
     })
     return true
   },
 
   [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps, _: Sender, response: (res: unknown) => void): boolean => {
     incrementCommandExecutionCount().then(async () => {
-      const tabIds = await openPopups(param)
-      if (tabIds.length > 0) {
-        await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
-          selector: (param as { selector: string }).selector,
-        })
-      } else {
-        console.debug('tab not found')
+      try {
+        const tabIds = await openPopups(param)
+        if (tabIds.length > 0) {
+          await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
+            selector: (param as { selector: string }).selector,
+          })
+        } else {
+          console.debug('tab not found')
+        }
+        await showReviewRequest()
+        response(true)
+      } catch (error) {
+        console.error('Failed to execute openPopupAndClick:', error)
+        response(false)
       }
-      await showReviewRequest()
-      response(true)
     })
     return true
   },
 
   [BgCommand.openOption]: (): boolean => {
     chrome.tabs.create({
-      url: OPTION_PAGE,
+      url: CONSTANTS.OPTION_PAGE,
     })
     return false
   },
@@ -137,7 +164,7 @@ const commandFuncs = {
         pageRules,
       })
       chrome.tabs.create({
-        url: `${OPTION_PAGE}#pageRules`,
+        url: `${CONSTANTS.OPTION_PAGE}#pageRules`,
       })
     }
     add()
@@ -414,7 +441,7 @@ const updateWindowSize = async (
 
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
-    url: OPTION_PAGE,
+    url: CONSTANTS.OPTION_PAGE,
   })
 })
 

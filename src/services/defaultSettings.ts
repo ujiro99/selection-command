@@ -88,6 +88,7 @@ export default {
   ],
   stars: [],
   commandExecutionCount: 0,
+  hasShownReviewRequest: false,
 } as SettingsType
 
 export const PopupOption = {

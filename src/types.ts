@@ -141,6 +141,7 @@ export type SettingsType = {
   userStyles: Array<StyleVariable>
   stars: Array<Star>
   commandExecutionCount?: number
+  hasShownReviewRequest?: boolean
 }
 
 export type SessionData = {
