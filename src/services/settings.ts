@@ -154,7 +154,8 @@ export const Settings = {
   },
 
   reset: async () => {
-    await Storage.set(STORAGE_KEY.USER, DefaultSettings)
+    const preservedValues = await Settings.getPreservedValues()
+    await Storage.set(STORAGE_KEY.USER, { ...DefaultSettings, ...preservedValues })
     await Storage.setCommands(DefaultCommands)
   },
 
@@ -169,6 +170,14 @@ export const Settings = {
 
   getCaches: async (): Promise<Caches> => {
     return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
+  },
+
+  getPreservedValues: async (): Promise<Pick<SettingsType, 'commandExecutionCount' | 'hasShownReviewRequest'>> => {
+    const currentSettings = await Settings.get()
+    return {
+      commandExecutionCount: currentSettings.commandExecutionCount,
+      hasShownReviewRequest: currentSettings.hasShownReviewRequest,
+    }
   },
 
   getUrls: (settings: SettingsType): string[] => {

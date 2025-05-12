@@ -84,8 +84,9 @@ export function ImportExport() {
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
       ; (async () => {
+        const preservedValues = await Settings.getPreservedValues()
         const data = await migrate(importJson)
-        await Settings.set(data)
+        await Settings.set({ ...data, ...preservedValues })
         location.reload()
       })()
     }
