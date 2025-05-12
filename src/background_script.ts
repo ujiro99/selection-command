@@ -19,8 +19,28 @@ import type {
 import { Storage, SESSION_STORAGE_KEY } from './services/storage'
 
 const OPTION_PAGE = 'src/options_page.html'
+const REVIEW_THRESHOLD = 100
+const SETTING_KEY = {
+  COMMAND_EXECUTION_COUNT: 'commandExecutionCount',
+} as const
 
 BgData.init()
+
+// Increment command execution count
+const incrementCommandExecutionCount = async () => {
+  await Settings.update(SETTING_KEY.COMMAND_EXECUTION_COUNT, (count) => (count ?? 0) + 1)
+}
+
+// Show review request when threshold is reached
+const showReviewRequest = async () => {
+  const settings = await Settings.get()
+  const count = settings.commandExecutionCount ?? 0
+  if (count >= REVIEW_THRESHOLD) {
+    chrome.tabs.create({
+      url: 'https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/reviews',
+    })
+  }
+}
 
 type Sender = chrome.runtime.MessageSender
 
@@ -68,24 +88,29 @@ function bindVariables(
 }
 
 const commandFuncs = {
-  [BgCommand.openPopups]: (param: OpenPopupsProps): boolean => {
-    openPopups(param)
-    return false
+  [BgCommand.openPopups]: (param: OpenPopupsProps, _: Sender, response: (res: unknown) => void): boolean => {
+    incrementCommandExecutionCount().then(async () => {
+      await openPopups(param)
+      await showReviewRequest()
+      response(true)
+    })
+    return true
   },
 
-  [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    const open = async () => {
+  [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps, _: Sender, response: (res: unknown) => void): boolean => {
+    incrementCommandExecutionCount().then(async () => {
       const tabIds = await openPopups(param)
       if (tabIds.length > 0) {
         await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
           selector: (param as { selector: string }).selector,
         })
-        return
+      } else {
+        console.debug('tab not found')
       }
-      console.debug('tab not found')
-    }
-    open()
-    return false
+      await showReviewRequest()
+      response(true)
+    })
+    return true
   },
 
   [BgCommand.openOption]: (): boolean => {

@@ -140,6 +140,7 @@ export type SettingsType = {
   style: STYLE
   userStyles: Array<StyleVariable>
   stars: Array<Star>
+  commandExecutionCount?: number
 }
 
 export type SessionData = {

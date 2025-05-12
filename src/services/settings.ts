@@ -129,6 +129,18 @@ export const Settings = {
     return true
   },
 
+  update: async <T extends keyof SettingsType>(
+    key: T,
+    updater: (value: SettingsType[T]) => SettingsType[T],
+  ): Promise<boolean> => {
+    const settings = await Settings.get()
+    const updatedSettings = {
+      ...settings,
+      [key]: updater(settings[key]),
+    }
+    return Settings.set(updatedSettings)
+  },
+
   addCommands: async (commands: Command[]): Promise<boolean> => {
     const current = await Storage.getCommands()
     const newCommands = [...current, ...commands]
