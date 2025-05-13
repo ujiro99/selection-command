@@ -25,37 +25,33 @@ const CONSTANTS = {
     COMMAND_EXECUTION_COUNT: 'commandExecutionCount',
     HAS_SHOWN_REVIEW_REQUEST: 'hasShownReviewRequest',
   },
-  URL: {
-    REVIEW: 'https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/reviews',
-  },
+  COMMAND_COUNT_THRESHOLD: 10,
 } as const
 
 BgData.init()
 
-// Increment command execution count
+// Increment command execution count and check review request
 const incrementCommandExecutionCount = async (): Promise<void> => {
-  try {
-    await Settings.update(CONSTANTS.SETTING_KEY.COMMAND_EXECUTION_COUNT, (count) => (count ?? 0) + 1)
-  } catch (error) {
-    console.error('Failed to increment command execution count:', error)
-  }
-}
-
-// Show review request when threshold is reached
-const showReviewRequest = async (): Promise<void> => {
   try {
     const settings = await Settings.get()
     const count = settings.commandExecutionCount ?? 0
     const hasShown = settings.hasShownReviewRequest ?? false
 
+    // コマンド実行回数をカウントアップ
+    await Settings.update(
+      CONSTANTS.SETTING_KEY.COMMAND_EXECUTION_COUNT,
+      () => count + 1,
+    )
+
+    // 閾値を超えたらレビュー依頼を表示
     if (count >= CONSTANTS.REVIEW_THRESHOLD && !hasShown) {
-      await Settings.update(CONSTANTS.SETTING_KEY.HAS_SHOWN_REVIEW_REQUEST, () => true)
-      chrome.tabs.create({
-        url: CONSTANTS.URL.REVIEW,
-      })
+      const tabs = await chrome.tabs.query({ active: true })
+      if (tabs[0]?.id) {
+        await Ipc.sendTab(tabs[0].id, TabCommand.showReviewRequest)
+      }
     }
   } catch (error) {
-    console.error('Failed to show review request:', error)
+    console.error('Failed to increment command execution count:', error)
   }
 }
 
@@ -105,11 +101,14 @@ function bindVariables(
 }
 
 const commandFuncs = {
-  [BgCommand.openPopups]: (param: OpenPopupsProps, _: Sender, response: (res: unknown) => void): boolean => {
+  [BgCommand.openPopups]: (
+    param: OpenPopupsProps,
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
     incrementCommandExecutionCount().then(async () => {
       try {
         await openPopups(param)
-        await showReviewRequest()
         response(true)
       } catch (error) {
         console.error('Failed to execute openPopups:', error)
@@ -119,7 +118,11 @@ const commandFuncs = {
     return true
   },
 
-  [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps, _: Sender, response: (res: unknown) => void): boolean => {
+  [BgCommand.openPopupAndClick]: (
+    param: openPopupAndClickProps,
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
     incrementCommandExecutionCount().then(async () => {
       try {
         const tabIds = await openPopups(param)
@@ -130,7 +133,6 @@ const commandFuncs = {
         } else {
           console.debug('tab not found')
         }
-        await showReviewRequest()
         response(true)
       } catch (error) {
         console.error('Failed to execute openPopupAndClick:', error)

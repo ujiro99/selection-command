@@ -11,6 +11,9 @@ import { getSelectionText } from '@/services/dom'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 import { Ipc, TabCommand } from '@/services/ipc'
+import { showReviewRequestToast } from '@/components/ReviewRequestToast'
+import { Settings } from '@/services/settings'
+import { Toaster } from 'sonner'
 
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
@@ -37,6 +40,20 @@ export function App() {
     }
   }, [isHover])
 
+  useEffect(() => {
+    const handleShowReviewRequest = () => {
+      showReviewRequestToast(() => {
+        Settings.update('hasShownReviewRequest', () => true)
+      })
+      return true
+    }
+
+    Ipc.addListener(TabCommand.showReviewRequest, handleShowReviewRequest)
+    return () => {
+      Ipc.removeListener(TabCommand.showReviewRequest)
+    }
+  }, [])
+
   return (
     <PageActionContextProvider>
       <SelectContextProvider value={{ selectionText, target, setTarget }}>
@@ -50,6 +67,7 @@ export function App() {
         <OpenInTab />
         <PageActionRunner />
         <PageActionRecorder />
+        <Toaster />
       </SelectContextProvider>
     </PageActionContextProvider>
   )

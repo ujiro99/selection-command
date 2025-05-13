@@ -35,6 +35,7 @@ export enum TabCommand {
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   getTabId = 'getTabId',
+  showReviewRequest = 'showReviewRequest',
   // PageAction
   sendWindowSize = 'sendWindowSize',
   execPageAction = 'execPageAction',

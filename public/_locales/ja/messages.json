@@ -718,5 +718,17 @@
   },
   "help_pageAction_share_desc": {
     "message": "Selection Command Hubから、<b>Page Actionコマンドの共有と取得</b>ができます。 "
+  },
+  "review_request_title": {
+    "message": "Selection Commandをお楽しみいただいていますか？"
+  },
+  "review_request_message": {
+    "message": "この拡張機能がお役に立っていると感じていただけましたら、Chrome Web Storeでのレビューをお願いいたします。皆様のフィードバックが改善の糧となります！"
+  },
+  "review_request_button": {
+    "message": "レビューを書く"
+  },
+  "review_request_close": {
+    "message": "後で"
   }
 }

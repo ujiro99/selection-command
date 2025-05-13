@@ -721,5 +721,17 @@
   },
   "help_pageAction_share_desc": {
     "message": "You can share and get Page Action commands from the Selection Command Hub."
+  },
+  "review_request_title": {
+    "message": "Enjoying Selection Command?"
+  },
+  "review_request_message": {
+    "message": "If you find this extension helpful, please consider leaving a review on the Chrome Web Store. Your feedback helps us improve!"
+  },
+  "review_request_button": {
+    "message": "Write a Review"
+  },
+  "review_request_close": {
+    "message": "Not Now"
   }
 }
