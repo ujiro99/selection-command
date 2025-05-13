@@ -973,5 +973,17 @@
     "tags": ["Search", "Korean"],
     "id": "db192c4a-bde8-5901-ade9-cfaa4c758b55",
     "addedAt": "2025-05-12T05:17:02.980Z"
+  },
+  {
+    "title": "쿠팡서치",
+    "searchUrl": "https://www.coupang.com/np/search?component=&q=%s",
+    "description": "상품검색",
+    "iconUrl": "https://image9.coupangcdn.com/image/coupang/favicon/v2/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "Shop", "Korean"],
+    "id": "1f80e40e-bf5f-5369-b76e-b78f69eefa53",
+    "addedAt": "2025-05-13T07:22:10.476Z"
   }
 ]
