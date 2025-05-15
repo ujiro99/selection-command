@@ -11,7 +11,7 @@ import {
   SIDE,
   ALIGN,
 } from '@/const'
-import type { SettingsType, Version, Command, Star } from '@/types'
+import type { SettingsType, UserSettings, Version, Command, Star, UserStats } from '@/types'
 import {
   isBase64,
   isEmpty,
@@ -56,6 +56,10 @@ export const Settings = {
 
     // Stars
     data.stars = await Storage.get<Star[]>(LOCAL_STORAGE_KEY.STARS)
+
+    // UserStats
+    const userStats = await Storage.get<UserStats>(STORAGE_KEY.USER_STATS)
+    data = { ...data, ...userStats }
 
     data = await migrate(data)
 
@@ -121,12 +125,33 @@ export const Settings = {
     data.commands = []
 
     // Stars
-    await Storage.set(LOCAL_STORAGE_KEY.STARS, data.stars)
-    data.stars = []
+    await Storage.set<Star[]>(LOCAL_STORAGE_KEY.STARS, data.stars)
 
-    await Storage.set(STORAGE_KEY.USER, data)
+    // UserStats
+    const userStats: UserStats = {
+      commandExecutionCount: data.commandExecutionCount,
+      hasShownReviewRequest: data.hasShownReviewRequest,
+    }
+    await Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats)
+
+    // Remove UserStats and stars from data
+    const { commandExecutionCount, hasShownReviewRequest, stars, ...restData } = data
+    await Storage.set<UserSettings>(STORAGE_KEY.USER, restData)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches)
     return true
+  },
+
+  update: async <T extends keyof SettingsType>(
+    key: T,
+    updater: (value: SettingsType[T]) => SettingsType[T],
+    serviceWorker = false,
+  ): Promise<boolean> => {
+    const settings = await Settings.get()
+    const updatedSettings = {
+      ...settings,
+      [key]: updater(settings[key]),
+    }
+    return Settings.set(updatedSettings, serviceWorker)
   },
 
   addCommands: async (commands: Command[]): Promise<boolean> => {

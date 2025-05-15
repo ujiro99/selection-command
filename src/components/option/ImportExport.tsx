@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { Dialog } from './Dialog'
-import type { SettingsType } from '@/types'
+import type { UserSettings } from '@/types'
 
 import { Storage, STORAGE_KEY } from '@/services/storage'
 import { Settings, migrate } from '@/services/settings'
@@ -24,7 +24,7 @@ function getTimestamp() {
 export function ImportExport() {
   const [resetDialog, setResetDialog] = useState(false)
   const [importDialog, setImportDialog] = useState(false)
-  const [importJson, setImportJson] = useState<SettingsType>()
+  const [importJson, setImportJson] = useState<UserSettings>()
   const inputFile = useRef<HTMLInputElement>(null)
 
   const handleReset = () => {
@@ -39,7 +39,7 @@ export function ImportExport() {
   }
 
   const handleExport = async () => {
-    const data = await Storage.get<SettingsType>(STORAGE_KEY.USER)
+    const data = await Storage.get<UserSettings>(STORAGE_KEY.USER)
     data.commands = await Storage.getCommands()
 
     // for back compatibility
@@ -84,7 +84,13 @@ export function ImportExport() {
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
       ; (async () => {
-        const data = await migrate(importJson)
+        const { commandExecutionCount = 0, hasShownReviewRequest = false } = await Settings.get()
+        const data = await migrate({
+          ...importJson,
+          commandExecutionCount,
+          hasShownReviewRequest,
+          stars: []
+        })
         await Settings.set(data)
         location.reload()
       })()

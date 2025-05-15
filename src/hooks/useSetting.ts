@@ -29,6 +29,8 @@ const emptySettings: SettingsType = {
   userStyles: [],
   startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },
   stars: [],
+  commandExecutionCount: 0,
+  hasShownReviewRequest: false,
 }
 
 export function useSetting(): useSettingReturn {

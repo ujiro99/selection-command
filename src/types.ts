@@ -118,10 +118,6 @@ export type StartupMethod = {
   leftClickHoldParam?: number
 }
 
-export type Star = {
-  id: string
-}
-
 export type PopupPlacement = {
   side: SIDE
   align: ALIGN
@@ -129,7 +125,20 @@ export type PopupPlacement = {
   alignOffset: number
 }
 
-export type SettingsType = {
+export type Star = {
+  id: string
+}
+
+type UserStars = {
+  stars: Array<Star>
+}
+
+export type UserStats = {
+  commandExecutionCount: number
+  hasShownReviewRequest: boolean
+}
+
+export type UserSettings = {
   settingVersion: Version
   startupMethod: StartupMethod
   popupPlacement: PopupPlacement
@@ -139,8 +148,9 @@ export type SettingsType = {
   pageRules: Array<PageRule>
   style: STYLE
   userStyles: Array<StyleVariable>
-  stars: Array<Star>
 }
+
+export type SettingsType = UserSettings & UserStats & UserStars
 
 export type SessionData = {
   session_id: string

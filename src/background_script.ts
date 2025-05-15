@@ -18,9 +18,44 @@ import type {
 } from '@/types'
 import { Storage, SESSION_STORAGE_KEY } from './services/storage'
 
-const OPTION_PAGE = 'src/options_page.html'
+const CONSTANTS = {
+  OPTION_PAGE: 'src/options_page.html',
+  REVIEW_THRESHOLD: 100,
+  REVIEW_INTERVAL: 50,
+  SETTING_KEY: {
+    COMMAND_EXECUTION_COUNT: 'commandExecutionCount',
+    HAS_SHOWN_REVIEW_REQUEST: 'hasShownReviewRequest',
+  },
+} as const
 
 BgData.init()
+
+// Increment command execution count and check review request
+const incrementCommandExecutionCount = async (): Promise<void> => {
+  try {
+    const settings = await Settings.get()
+    let count = settings.commandExecutionCount ?? 0
+    const hasShown = settings.hasShownReviewRequest ?? false
+
+    // Increment command execution count
+    count++
+    await Settings.update(
+      CONSTANTS.SETTING_KEY.COMMAND_EXECUTION_COUNT,
+      () => count,
+      true,
+    )
+
+    // Show review request when threshold is exceeded
+    if ((count === CONSTANTS.REVIEW_THRESHOLD || (count > CONSTANTS.REVIEW_THRESHOLD && (count - CONSTANTS.REVIEW_THRESHOLD) % CONSTANTS.REVIEW_INTERVAL === 0)) && !hasShown) {
+      const tabs = await chrome.tabs.query({ active: true })
+      if (tabs[0]?.id) {
+        await Ipc.sendTab(tabs[0].id, TabCommand.showReviewRequest)
+      }
+    }
+  } catch (error) {
+    console.error('Failed to increment command execution count:', error)
+  }
+}
 
 type Sender = chrome.runtime.MessageSender
 
@@ -68,29 +103,50 @@ function bindVariables(
 }
 
 const commandFuncs = {
-  [BgCommand.openPopups]: (param: OpenPopupsProps): boolean => {
-    openPopups(param)
-    return false
+  [BgCommand.openPopups]: (
+    param: OpenPopupsProps,
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    incrementCommandExecutionCount().then(async () => {
+      try {
+        await openPopups(param)
+        response(true)
+      } catch (error) {
+        console.error('Failed to execute openPopups:', error)
+        response(false)
+      }
+    })
+    return true
   },
 
-  [BgCommand.openPopupAndClick]: (param: openPopupAndClickProps): boolean => {
-    const open = async () => {
-      const tabIds = await openPopups(param)
-      if (tabIds.length > 0) {
-        await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
-          selector: (param as { selector: string }).selector,
-        })
-        return
+  [BgCommand.openPopupAndClick]: (
+    param: openPopupAndClickProps,
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    incrementCommandExecutionCount().then(async () => {
+      try {
+        const tabIds = await openPopups(param)
+        if (tabIds.length > 0) {
+          await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
+            selector: (param as { selector: string }).selector,
+          })
+        } else {
+          console.debug('tab not found')
+        }
+        response(true)
+      } catch (error) {
+        console.error('Failed to execute openPopupAndClick:', error)
+        response(false)
       }
-      console.debug('tab not found')
-    }
-    open()
-    return false
+    })
+    return true
   },
 
   [BgCommand.openOption]: (): boolean => {
     chrome.tabs.create({
-      url: OPTION_PAGE,
+      url: CONSTANTS.OPTION_PAGE,
     })
     return false
   },
@@ -110,9 +166,9 @@ const commandFuncs = {
       await Settings.set({
         ...settings,
         pageRules,
-      })
+      }, true)
       chrome.tabs.create({
-        url: `${OPTION_PAGE}#pageRules`,
+        url: `${CONSTANTS.OPTION_PAGE}#pageRules`,
       })
     }
     add()
@@ -130,24 +186,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-          id: params.id,
-          title: params.title,
-          searchUrl: params.searchUrl,
-          iconUrl: params.iconUrl,
-          openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
-          popupOption: PopupOption,
-        }
+        id: params.id,
+        title: params.title,
+        searchUrl: params.searchUrl,
+        iconUrl: params.iconUrl,
+        openMode: params.openMode,
+        openModeSecondary: params.openModeSecondary,
+        spaceEncoding: params.spaceEncoding,
+        popupOption: PopupOption,
+      }
       : isPageAction
         ? {
-            id: params.id,
-            title: params.title,
-            iconUrl: params.iconUrl,
-            openMode: params.openMode,
-            pageActionOption: params.pageActionOption,
-            popupOption: PopupOption,
-          }
+          id: params.id,
+          title: params.title,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          pageActionOption: params.pageActionOption,
+          popupOption: PopupOption,
+        }
         : null
 
     if (!cmd) {
@@ -389,7 +445,7 @@ const updateWindowSize = async (
 
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
-    url: OPTION_PAGE,
+    url: CONSTANTS.OPTION_PAGE,
   })
 })
 

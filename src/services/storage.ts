@@ -4,6 +4,7 @@ import { Command, CaptureDataStorage } from '@/types'
 export enum STORAGE_KEY {
   USER = 0,
   COMMAND_COUNT = 2,
+  USER_STATS = 3,
 }
 
 export enum LOCAL_STORAGE_KEY {
@@ -33,6 +34,10 @@ const DEFAULT_COUNT = -1
 const DEFAULTS = {
   [STORAGE_KEY.USER]: DefaultSettings,
   [STORAGE_KEY.COMMAND_COUNT]: DEFAULT_COUNT,
+  [STORAGE_KEY.USER_STATS]: {
+    commandExecutionCount: 0,
+    hasShownReviewRequest: false,
+  },
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
