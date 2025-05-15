@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Save, BookOpen, ChevronsUpDown, ChevronsDownUp } from 'lucide-react'
+import { Save, BookOpen } from 'lucide-react'
 import {
   Dialog,
   DialogClose,
@@ -17,7 +17,6 @@ import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import {
   Collapsible,
   CollapsibleContent,
-  CollapsibleTrigger,
 } from '@/components/ui/collapsible'
 import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/Tooltip'
@@ -29,9 +28,9 @@ import { PopupPlacementField } from '@/components/option/field/PopupPlacementFie
 import { PopupPlacement } from '@/services/defaultSettings'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { POPUP_ENABLED, LINK_COMMAND_ENABLED } from '@/const'
+import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT } from '@/const'
 import { e2a, cn } from '@/lib/utils'
-import type { PageRule } from '@/types'
+import type { PageRule, PopupPlacementOrInherit } from '@/types'
 import { PopupPlacementSchema } from '@/types/schema'
 
 import css from './CommandEditDialog.module.css'
@@ -39,7 +38,10 @@ import css from './CommandEditDialog.module.css'
 export const pageRuleSchema = z.object({
   urlPattern: z.string().url({ message: t('zod_url') }),
   popupEnabled: z.nativeEnum(POPUP_ENABLED),
-  popupPlacement: PopupPlacementSchema,
+  popupPlacement: z.union([
+    z.literal('inherit'),
+    PopupPlacementSchema,
+  ]),
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
 })
 
@@ -52,7 +54,7 @@ type pageRulesType = z.infer<typeof pageRulesSchema>
 const DefaultRule = {
   urlPattern: '',
   popupEnabled: POPUP_ENABLED.ENABLE,
-  popupPlacement: PopupPlacement,
+  popupPlacement: INHERIT as PopupPlacementOrInherit,
   linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
 }
 
@@ -145,8 +147,10 @@ export const PageRuleList = ({
                         {t('popupEnabled')}: {t(`${field.popupEnabled}`)}
                       </li>
                       <li>
-                        {t('popupPlacement')}: {field.popupPlacement.side}{' '}
-                        {field.popupPlacement.align}
+                        {t('popupPlacement')}:{' '}
+                        {field.popupPlacement === INHERIT
+                          ? t('inherit')
+                          : `${field.popupPlacement.side} ${field.popupPlacement.align}`}
                       </li>
                       <li>
                         {t('linkCommandEnabled')}:{' '}
@@ -205,7 +209,9 @@ export const PageRuleDialog = ({
     resolver: zodResolver(pageRuleSchema),
     mode: 'onChange',
   })
-  const { register, reset, setValue } = form
+  const { register, reset, setValue, watch } = form
+  const popupPlacement = watch('popupPlacement')
+  const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false)
 
   const handlePopupPlacementSubmit = (
     data: z.infer<typeof PopupPlacementSchema>,
@@ -213,12 +219,19 @@ export const PageRuleDialog = ({
     setValue('popupPlacement', data)
   }
 
+  const handleInheritChange = (inherit: boolean) => {
+    setValue('popupPlacement', inherit ? INHERIT : PopupPlacement)
+    setIsCollapsibleOpen(!inherit)
+  }
+
   useEffect(() => {
     if (rule != null && rule.urlPattern !== DefaultRule.urlPattern) {
-      reset(rule ?? DefaultRule)
+      reset(rule)
+      setIsCollapsibleOpen(rule.popupPlacement !== INHERIT)
     } else {
       setTimeout(() => {
         reset(DefaultRule)
+        setIsCollapsibleOpen(false)
       }, 200)
     }
   }, [rule])
@@ -267,32 +280,37 @@ export const PageRuleDialog = ({
                   value: opt,
                 }))}
               />
-              <Collapsible
-                className={cn(css.collapse, 'flex flex-col items-end')}
-              >
-                <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
-                  <ChevronsUpDown
-                    size={18}
-                    className={cn(css.icon, css.iconUpDown)}
+              <div className="space-y-2 pt-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="inheritPopupPlacement"
+                    checked={popupPlacement === INHERIT}
+                    onChange={(e) => handleInheritChange(e.target.checked)}
+                    className="rounded border-gray-300 cursor-pointer"
                   />
-                  <ChevronsDownUp
-                    size={18}
-                    className={cn(css.icon, css.iconDownUp)}
-                  />
-                  <span className="ml-0.5">{t('labelOther')}</span>
-                </CollapsibleTrigger>
-                <CollapsibleContent
-                  className={cn(
-                    css.CollapsibleContent,
-                    'w-full space-y-3 pt-2',
-                  )}
+                  <label htmlFor="inheritPopupPlacement" className="text-sm cursor-pointer">
+                    {t('inheritPopupPlacement')}
+                  </label>
+                </div>
+                <Collapsible
+                  open={isCollapsibleOpen}
+                  onOpenChange={setIsCollapsibleOpen}
+                  className={cn(css.collapse, 'flex flex-col items-end')}
                 >
-                  <PopupPlacementField
-                    onSubmit={handlePopupPlacementSubmit}
-                    defaultValues={rule?.popupPlacement ?? PopupPlacement}
-                  />
-                </CollapsibleContent>
-              </Collapsible>
+                  <CollapsibleContent
+                    className={cn(
+                      css.CollapsibleContent,
+                      'w-full space-y-3 pt-2',
+                    )}
+                  >
+                    <PopupPlacementField
+                      onSubmit={handlePopupPlacementSubmit}
+                      defaultValues={typeof popupPlacement === 'string' ? PopupPlacement : popupPlacement}
+                    />
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
             </div>
           </Form>
           <DialogFooter>
@@ -305,7 +323,7 @@ export const PageRuleDialog = ({
               size="lg"
               type="button"
               onClick={form.handleSubmit((data) => {
-                onSubmit(data)
+                onSubmit(data as PageRule)
                 onOpenChange(false)
                 reset(DefaultRule)
               })}

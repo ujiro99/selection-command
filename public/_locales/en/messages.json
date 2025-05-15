@@ -194,6 +194,15 @@
   "Option_popupPlacement_alignOffset_desc": {
     "message": "Distance from the aligned position"
   },
+  "Option_popupPlacement_alignOffset_disabled": {
+    "message": "Disabled when center-aligned"
+  },
+  "Option_inheritPopupPlacement": {
+    "message": "Inherit Menu Display Position from global settings"
+  },
+  "Option_inherit": {
+    "message": "Inherit"
+  },
   "Option_mouse_pointer": {
     "message": "Mouse Pointer"
   },

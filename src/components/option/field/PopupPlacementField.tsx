@@ -50,6 +50,13 @@ export const PopupPlacementField = ({
     name: 'side',
   })
 
+  const align = useWatch({
+    control: form.control,
+    name: 'align',
+  })
+
+  const isAlignOffsetDisabled = align === ALIGN.center
+
   return (
     <section>
       <h2 className="text-sm font-bold">{t('popupPlacement')}</h2>
@@ -70,8 +77,10 @@ export const PopupPlacementField = ({
                   <ToggleGroup
                     type="single"
                     variant="outline"
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
+                    onValueChange={(val) => {
+                      if (val) field.onChange(val)
+                    }}
                     className="grid grid-cols-3 gap-2 p-0.5"
                   >
                     <div />
@@ -127,8 +136,10 @@ export const PopupPlacementField = ({
                   <ToggleGroup
                     type="single"
                     variant="outline"
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
+                    onValueChange={(val) => {
+                      if (val) field.onChange(val)
+                    }}
                     className="grid grid-cols-3 gap-2 p-0.5"
                   >
                     <AlignItem
@@ -157,13 +168,17 @@ export const PopupPlacementField = ({
           control={form.control}
           name="alignOffset"
           formLabel={t('popupPlacement_alignOffset')}
-          description={t('popupPlacement_alignOffset_desc')}
+          description={isAlignOffsetDisabled ? t('popupPlacement_alignOffset_disabled') : t('popupPlacement_alignOffset_desc')}
           unit="px"
           inputProps={{
             type: 'number',
             min: -100,
             max: 100,
             step: 5,
+            disabled: isAlignOffsetDisabled,
+            className: cn(
+              isAlignOffsetDisabled && 'opacity-80 cursor-not-allowed'
+            ),
             ...register('alignOffset', {
               valueAsNumber: true,
             }),

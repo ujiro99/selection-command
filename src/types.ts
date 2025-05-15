@@ -17,6 +17,7 @@ import type {
   EXEC_STATE,
 } from '@/const'
 import type { PageAction } from '@/services/pageAction'
+import { INHERIT } from '@/const'
 
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
@@ -100,10 +101,19 @@ export type CommandVariable = {
   value: string
 }
 
+export type PopupPlacement = {
+  side: SIDE
+  align: ALIGN
+  sideOffset: number
+  alignOffset: number
+}
+
+export type PopupPlacementOrInherit = PopupPlacement | typeof INHERIT
+
 export type PageRule = {
   urlPattern: string
   popupEnabled: POPUP_ENABLED
-  popupPlacement: PopupPlacement
+  popupPlacement: PopupPlacementOrInherit
   linkCommandEnabled: LINK_COMMAND_ENABLED
 }
 
@@ -116,13 +126,6 @@ export type StartupMethod = {
   method: STARTUP_METHOD
   keyboardParam?: KEYBOARD
   leftClickHoldParam?: number
-}
-
-export type PopupPlacement = {
-  side: SIDE
-  align: ALIGN
-  sideOffset: number
-  alignOffset: number
 }
 
 export type Star = {
