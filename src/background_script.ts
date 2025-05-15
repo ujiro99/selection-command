@@ -21,11 +21,11 @@ import { Storage, SESSION_STORAGE_KEY } from './services/storage'
 const CONSTANTS = {
   OPTION_PAGE: 'src/options_page.html',
   REVIEW_THRESHOLD: 100,
+  REVIEW_INTERVAL: 50,
   SETTING_KEY: {
     COMMAND_EXECUTION_COUNT: 'commandExecutionCount',
     HAS_SHOWN_REVIEW_REQUEST: 'hasShownReviewRequest',
   },
-  COMMAND_COUNT_THRESHOLD: 10,
 } as const
 
 BgData.init()
@@ -34,18 +34,19 @@ BgData.init()
 const incrementCommandExecutionCount = async (): Promise<void> => {
   try {
     const settings = await Settings.get()
-    const count = settings.commandExecutionCount ?? 0
+    let count = settings.commandExecutionCount ?? 0
     const hasShown = settings.hasShownReviewRequest ?? false
 
-    // コマンド実行回数をカウントアップ
+    // Increment command execution count
+    count++
     await Settings.update(
       CONSTANTS.SETTING_KEY.COMMAND_EXECUTION_COUNT,
-      () => count + 1,
+      () => count,
       true,
     )
 
-    // 閾値を超えたらレビュー依頼を表示
-    if (count >= CONSTANTS.REVIEW_THRESHOLD && !hasShown) {
+    // Show review request when threshold is exceeded
+    if ((count === CONSTANTS.REVIEW_THRESHOLD || (count > CONSTANTS.REVIEW_THRESHOLD && (count - CONSTANTS.REVIEW_THRESHOLD) % CONSTANTS.REVIEW_INTERVAL === 0)) && !hasShown) {
       const tabs = await chrome.tabs.query({ active: true })
       if (tabs[0]?.id) {
         await Ipc.sendTab(tabs[0].id, TabCommand.showReviewRequest)

@@ -14,6 +14,7 @@ import { Ipc, TabCommand } from '@/services/ipc'
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/useToast"
 import { showReviewRequestToast } from '@/components/ReviewRequestToast'
+import { Settings } from '@/services/settings'
 
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
@@ -43,11 +44,9 @@ export function App() {
 
   useEffect(() => {
     const handleShowReviewRequest = (_param: any, _sender: any, response: any) => {
-      showReviewRequestToast(toast)
-
-      //showReviewRequestToast(() => {
-      // Settings.update('hasShownReviewRequest', () => true)
-      //})
+      showReviewRequestToast(toast, () => {
+        Settings.update('hasShownReviewRequest', () => true)
+      })
       response(true)
       return true
     }
