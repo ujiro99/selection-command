@@ -70,8 +70,10 @@ export const PopupPlacementField = ({
                   <ToggleGroup
                     type="single"
                     variant="outline"
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
+                    onValueChange={(val) => {
+                      if (val) field.onChange(val)
+                    }}
                     className="grid grid-cols-3 gap-2 p-0.5"
                   >
                     <div />
@@ -127,8 +129,10 @@ export const PopupPlacementField = ({
                   <ToggleGroup
                     type="single"
                     variant="outline"
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    value={field.value}
+                    onValueChange={(val) => {
+                      if (val) field.onChange(val)
+                    }}
                     className="grid grid-cols-3 gap-2 p-0.5"
                   >
                     <AlignItem
