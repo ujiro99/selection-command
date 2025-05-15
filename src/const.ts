@@ -75,6 +75,8 @@ export enum POPUP_ENABLED {
   DISABLE = 'Disable',
 }
 
+export const INHERIT = 'inherit'
+
 export enum LINK_COMMAND_ENABLED {
   INHERIT = 'Inherit',
   ENABLE = 'Enable',

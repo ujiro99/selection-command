@@ -10,19 +10,19 @@ import {
 import { t } from '@/services/i18n'
 
 export const PopupPlacementSchema = z.object({
-  side: z.nativeEnum(SIDE),
-  align: z.nativeEnum(ALIGN),
-  sideOffset: z
-    .number({ message: t('Option_zod_number') })
-    .min(0, { message: t('Option_zod_number_min', ['0']) })
-    .max(100, { message: t('Option_zod_number_max', ['100']) })
-    .default(0),
-  alignOffset: z
-    .number({ message: t('Option_zod_number') })
-    .min(-100, { message: t('Option_zod_number_min', ['-100']) })
-    .max(100, { message: t('Option_zod_number_max', ['100']) })
-    .default(0),
-})
+    side: z.nativeEnum(SIDE),
+    align: z.nativeEnum(ALIGN),
+    sideOffset: z
+      .number({ message: t('Option_zod_number') })
+      .min(0, { message: t('Option_zod_number_min', ['0']) })
+      .max(100, { message: t('Option_zod_number_max', ['100']) })
+      .default(0),
+    alignOffset: z
+      .number({ message: t('Option_zod_number') })
+      .min(-100, { message: t('Option_zod_number_min', ['-100']) })
+      .max(100, { message: t('Option_zod_number_max', ['100']) })
+      .default(0),
+  })
 
 const PageActionStartSchema = z.object({
   type: z.literal(PAGE_ACTION_CONTROL.start),

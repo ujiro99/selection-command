@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Settings } from '../services/settings'
 import type { SettingsType, PageRule } from '@/types'
 import { isEmpty } from '@/lib/utils'
-import { STYLE, STARTUP_METHOD, ALIGN, SIDE } from '@/const'
+import { STYLE, STARTUP_METHOD, ALIGN, SIDE, INHERIT } from '@/const'
 import Default from '@/services/defaultSettings'
 
 type iconUrlMap = Record<number | string, string>
@@ -84,7 +84,7 @@ export function useSetting(): useSettingReturn {
         return window.location.href.match(re) != null
       })
 
-    if (pageRule != null) {
+    if (pageRule != null && pageRule.popupPlacement !== INHERIT) {
       settings.popupPlacement = pageRule.popupPlacement
     }
   }
