@@ -11,15 +11,16 @@ import { getSelectionText } from '@/services/dom'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 import { Ipc, TabCommand } from '@/services/ipc'
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/hooks/useToast"
 import { showReviewRequestToast } from '@/components/ReviewRequestToast'
-import { Settings } from '@/services/settings'
-import { Toaster } from 'sonner'
 
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
   const [selectionText, setSelectionText] = useState('')
+  const { toast } = useToast()
 
   useEffect(() => {
     Ipc.addListener(TabCommand.connect, () => false)
@@ -41,10 +42,13 @@ export function App() {
   }, [isHover])
 
   useEffect(() => {
-    const handleShowReviewRequest = () => {
-      showReviewRequestToast(() => {
-        Settings.update('hasShownReviewRequest', () => true)
-      })
+    const handleShowReviewRequest = (_param: any, _sender: any, response: any) => {
+      showReviewRequestToast(toast)
+
+      //showReviewRequestToast(() => {
+      // Settings.update('hasShownReviewRequest', () => true)
+      //})
+      response(true)
       return true
     }
 

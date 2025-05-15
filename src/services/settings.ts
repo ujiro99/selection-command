@@ -144,13 +144,14 @@ export const Settings = {
   update: async <T extends keyof SettingsType>(
     key: T,
     updater: (value: SettingsType[T]) => SettingsType[T],
+    serviceWorker = false,
   ): Promise<boolean> => {
     const settings = await Settings.get()
     const updatedSettings = {
       ...settings,
       [key]: updater(settings[key]),
     }
-    return Settings.set(updatedSettings)
+    return Settings.set(updatedSettings, serviceWorker)
   },
 
   addCommands: async (commands: Command[]): Promise<boolean> => {

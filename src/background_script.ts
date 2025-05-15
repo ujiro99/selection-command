@@ -41,6 +41,7 @@ const incrementCommandExecutionCount = async (): Promise<void> => {
     await Settings.update(
       CONSTANTS.SETTING_KEY.COMMAND_EXECUTION_COUNT,
       () => count + 1,
+      true,
     )
 
     // 閾値を超えたらレビュー依頼を表示
@@ -164,7 +165,7 @@ const commandFuncs = {
       await Settings.set({
         ...settings,
         pageRules,
-      })
+      }, true)
       chrome.tabs.create({
         url: `${CONSTANTS.OPTION_PAGE}#pageRules`,
       })
@@ -184,24 +185,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-          id: params.id,
-          title: params.title,
-          searchUrl: params.searchUrl,
-          iconUrl: params.iconUrl,
-          openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
-          popupOption: PopupOption,
-        }
+        id: params.id,
+        title: params.title,
+        searchUrl: params.searchUrl,
+        iconUrl: params.iconUrl,
+        openMode: params.openMode,
+        openModeSecondary: params.openModeSecondary,
+        spaceEncoding: params.spaceEncoding,
+        popupOption: PopupOption,
+      }
       : isPageAction
         ? {
-            id: params.id,
-            title: params.title,
-            iconUrl: params.iconUrl,
-            openMode: params.openMode,
-            pageActionOption: params.pageActionOption,
-            popupOption: PopupOption,
-          }
+          id: params.id,
+          title: params.title,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          pageActionOption: params.pageActionOption,
+          popupOption: PopupOption,
+        }
         : null
 
     if (!cmd) {
