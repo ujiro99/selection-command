@@ -194,6 +194,9 @@
   "Option_popupPlacement_alignOffset_desc": {
     "message": "揃えた位置からの距離"
   },
+  "Option_popupPlacement_alignOffset_disabled": {
+    "message": "中央揃えの場合は無効です"
+  },
   "Option_mouse_pointer": {
     "message": "マウスポインタ"
   },

@@ -50,6 +50,13 @@ export const PopupPlacementField = ({
     name: 'side',
   })
 
+  const align = useWatch({
+    control: form.control,
+    name: 'align',
+  })
+
+  const isAlignOffsetDisabled = align === ALIGN.center
+
   return (
     <section>
       <h2 className="text-sm font-bold">{t('popupPlacement')}</h2>
@@ -161,13 +168,17 @@ export const PopupPlacementField = ({
           control={form.control}
           name="alignOffset"
           formLabel={t('popupPlacement_alignOffset')}
-          description={t('popupPlacement_alignOffset_desc')}
+          description={isAlignOffsetDisabled ? t('popupPlacement_alignOffset_disabled') : t('popupPlacement_alignOffset_desc')}
           unit="px"
           inputProps={{
             type: 'number',
             min: -100,
             max: 100,
             step: 5,
+            disabled: isAlignOffsetDisabled,
+            className: cn(
+              isAlignOffsetDisabled && 'opacity-80 cursor-not-allowed'
+            ),
             ...register('alignOffset', {
               valueAsNumber: true,
             }),
