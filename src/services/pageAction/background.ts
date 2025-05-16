@@ -10,6 +10,7 @@ import type { PageAction } from '@/services/pageAction'
 import { RunningStatus } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
 import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
+import { incrementCommandExecutionCount } from '@/services/commandMetrics'
 import {
   POPUP_TYPE,
   PAGE_ACTION_MAX,
@@ -273,6 +274,8 @@ export const openAndRun = (
   response: (res: unknown) => void,
 ): boolean => {
   const open = async () => {
+    await incrementCommandExecutionCount()
+
     let tabId: number
 
     if (param.openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
