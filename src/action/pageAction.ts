@@ -1,11 +1,11 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import { getScreenSize } from '@/services/dom'
 import { isValidString, isPageActionCommand } from '@/lib/utils'
-import { POPUP_TYPE } from '@/const'
+import { POPUP_TYPE, PAGE_ACTION_OPEN_MODE } from '@/const'
 import type { ExecProps } from './index'
 
 export const PageAction = {
-  async execute({ selectionText, command, position }: ExecProps) {
+  async execute({ selectionText, command, position, useSecondary }: ExecProps) {
     if (!isPageActionCommand(command)) {
       console.error('command is not for PageAction.')
       return
@@ -22,6 +22,11 @@ export const PageAction = {
 
     const clipboard = await navigator.clipboard.readText()
     const urls = [command.pageActionOption?.startUrl]
+    const openMode = useSecondary
+      ? command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.TAB
+        ? PAGE_ACTION_OPEN_MODE.POPUP
+        : PAGE_ACTION_OPEN_MODE.TAB
+      : command.pageActionOption.openMode
 
     Ipc.send(BgCommand.openAndRunPageAction, {
       commandId: command.id,
@@ -35,7 +40,7 @@ export const PageAction = {
       selectedText: selectionText,
       clipboardText: clipboard,
       srcUrl: location.href,
-      openMode: command.pageActionOption.openMode,
+      openMode,
     })
   },
 }

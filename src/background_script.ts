@@ -1,4 +1,4 @@
-import { isDebug, LINK_COMMAND_ENABLED, POPUP_ENABLED } from '@/const'
+import { isDebug, LINK_COMMAND_ENABLED, POPUP_ENABLED, OPTION_PAGE_PATH } from '@/const'
 import '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { Settings } from '@/services/settings'
@@ -7,6 +7,7 @@ import * as PageActionBackground from '@/services/pageAction/background'
 import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import { BgData } from '@/services/backgroundData'
 import { escapeJson, isSearchCommand, isPageActionCommand } from '@/lib/utils'
+import { incrementCommandExecutionCount } from '@/services/commandMetrics'
 import type { IpcCallback } from '@/services/ipc'
 import type {
   CommandVariable,
@@ -18,44 +19,7 @@ import type {
 } from '@/types'
 import { Storage, SESSION_STORAGE_KEY } from './services/storage'
 
-const CONSTANTS = {
-  OPTION_PAGE: 'src/options_page.html',
-  REVIEW_THRESHOLD: 100,
-  REVIEW_INTERVAL: 50,
-  SETTING_KEY: {
-    COMMAND_EXECUTION_COUNT: 'commandExecutionCount',
-    HAS_SHOWN_REVIEW_REQUEST: 'hasShownReviewRequest',
-  },
-} as const
-
 BgData.init()
-
-// Increment command execution count and check review request
-const incrementCommandExecutionCount = async (): Promise<void> => {
-  try {
-    const settings = await Settings.get()
-    let count = settings.commandExecutionCount ?? 0
-    const hasShown = settings.hasShownReviewRequest ?? false
-
-    // Increment command execution count
-    count++
-    await Settings.update(
-      CONSTANTS.SETTING_KEY.COMMAND_EXECUTION_COUNT,
-      () => count,
-      true,
-    )
-
-    // Show review request when threshold is exceeded
-    if ((count === CONSTANTS.REVIEW_THRESHOLD || (count > CONSTANTS.REVIEW_THRESHOLD && (count - CONSTANTS.REVIEW_THRESHOLD) % CONSTANTS.REVIEW_INTERVAL === 0)) && !hasShown) {
-      const tabs = await chrome.tabs.query({ active: true })
-      if (tabs[0]?.id) {
-        await Ipc.sendTab(tabs[0].id, TabCommand.showReviewRequest)
-      }
-    }
-  } catch (error) {
-    console.error('Failed to increment command execution count:', error)
-  }
-}
 
 type Sender = chrome.runtime.MessageSender
 
@@ -144,9 +108,25 @@ const commandFuncs = {
     return true
   },
 
+  [BgCommand.openTab]: (param: openTabProps, sender: Sender, response: (res: unknown) => void): boolean => {
+    getCurrentTab().then(tab => {
+      const currentTab = sender.tab ?? tab
+      chrome.tabs.create({
+        ...param,
+        windowId: currentTab.windowId,
+        index: currentTab.index + 1,
+      }, (newTab) => {
+        incrementCommandExecutionCount(newTab.id).then(() => {
+          response(true)
+        })
+      })
+    })
+    return true
+  },
+
   [BgCommand.openOption]: (): boolean => {
     chrome.tabs.create({
-      url: CONSTANTS.OPTION_PAGE,
+      url: OPTION_PAGE_PATH,
     })
     return false
   },
@@ -168,7 +148,7 @@ const commandFuncs = {
         pageRules,
       }, true)
       chrome.tabs.create({
-        url: `${CONSTANTS.OPTION_PAGE}#pageRules`,
+        url: `${OPTION_PAGE_PATH}#pageRules`,
       })
     }
     add()
@@ -216,19 +196,6 @@ const commandFuncs = {
       response(true)
     })
     return true
-  },
-
-  [BgCommand.openTab]: (param: openTabProps, sender: Sender): boolean => {
-    const open = async () => {
-      const tab = sender.tab ?? (await getCurrentTab())
-      chrome.tabs.create({
-        ...param,
-        windowId: tab.windowId,
-        index: tab.index + 1,
-      })
-    }
-    open()
-    return false
   },
 
   [BgCommand.execApi]: (
@@ -445,7 +412,7 @@ const updateWindowSize = async (
 
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
-    url: CONSTANTS.OPTION_PAGE,
+    url: OPTION_PAGE_PATH,
   })
 })
 

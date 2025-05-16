@@ -187,3 +187,14 @@ export const HUB_URL = isDebug
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
 export const PAGE_ACTION_TIMEOUT = 5000
+
+export const OPTION_PAGE_PATH = 'src/options_page.html'
+
+export const COMMAND_USAGE = {
+  REVIEW_THRESHOLD: 100,
+  REVIEW_INTERVAL: 50,
+  SETTING_KEY: {
+    COMMAND_EXECUTION_COUNT: 'commandExecutionCount',
+    HAS_SHOWN_REVIEW_REQUEST: 'hasShownReviewRequest',
+  },
+} as const

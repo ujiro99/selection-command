@@ -10,6 +10,7 @@ import type { PageAction } from '@/services/pageAction'
 import { RunningStatus } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
 import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
+import { incrementCommandExecutionCount } from '@/services/commandMetrics'
 import {
   POPUP_TYPE,
   PAGE_ACTION_MAX,
@@ -313,6 +314,8 @@ export const openAndRun = (
 
     // Run the steps on the popup.
     run({ ...param, tabId, steps }, sender, response)
+
+    await incrementCommandExecutionCount()
   }
   open()
   return true
