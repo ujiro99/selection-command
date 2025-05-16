@@ -109,14 +109,17 @@ const commandFuncs = {
   },
 
   [BgCommand.openTab]: (param: openTabProps, sender: Sender, response: (res: unknown) => void): boolean => {
-    incrementCommandExecutionCount().then(async () => {
-      const tab = sender.tab ?? (await getCurrentTab())
+    getCurrentTab().then(tab => {
+      const currentTab = sender.tab ?? tab
       chrome.tabs.create({
         ...param,
-        windowId: tab.windowId,
-        index: tab.index + 1,
+        windowId: currentTab.windowId,
+        index: currentTab.index + 1,
+      }, (newTab) => {
+        incrementCommandExecutionCount(newTab.id).then(() => {
+          response(true)
+        })
       })
-      response(true)
     })
     return true
   },

@@ -274,8 +274,6 @@ export const openAndRun = (
   response: (res: unknown) => void,
 ): boolean => {
   const open = async () => {
-    await incrementCommandExecutionCount()
-
     let tabId: number
 
     if (param.openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
@@ -316,6 +314,8 @@ export const openAndRun = (
 
     // Run the steps on the popup.
     run({ ...param, tabId, steps }, sender, response)
+
+    await incrementCommandExecutionCount()
   }
   open()
   return true

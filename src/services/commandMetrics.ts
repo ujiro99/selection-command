@@ -5,7 +5,7 @@ import { COMMAND_USAGE } from '@/const'
 /**
  * Increment command execution count and check review request
  */
-export const incrementCommandExecutionCount = async (): Promise<void> => {
+export const incrementCommandExecutionCount = async (tabId?: number): Promise<void> => {
     try {
         const settings = await Settings.get()
         let count = settings.commandExecutionCount ?? 0
@@ -21,9 +21,13 @@ export const incrementCommandExecutionCount = async (): Promise<void> => {
 
         // Show review request when threshold is exceeded
         if ((count === COMMAND_USAGE.REVIEW_THRESHOLD || (count > COMMAND_USAGE.REVIEW_THRESHOLD && (count - COMMAND_USAGE.REVIEW_THRESHOLD) % COMMAND_USAGE.REVIEW_INTERVAL === 0)) && !hasShown) {
-            const tabs = await chrome.tabs.query({ active: true })
-            if (tabs[0]?.id) {
-                await Ipc.sendTab(tabs[0].id, TabCommand.showReviewRequest)
+            if (!tabId) {
+                const tabs = await chrome.tabs.query({ active: true })
+                tabId = tabs[0].id
+            }
+            if (tabId) {
+                await Ipc.ensureConnection(tabId)
+                await Ipc.sendTab(tabId, TabCommand.showReviewRequest)
             }
         }
     } catch (error) {
