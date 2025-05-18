@@ -11,10 +11,11 @@ import { getSelectionText } from '@/services/dom'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 import { Ipc, TabCommand } from '@/services/ipc'
-import { Toaster } from "@/components/ui/toaster"
-import { useToast } from "@/hooks/useToast"
+import { Toaster } from '@/components/ui/toaster'
+import { useToast } from '@/hooks/useToast'
 import { showReviewRequestToast } from '@/components/ReviewRequestToast'
 import { Settings } from '@/services/settings'
+import { InvisibleItem } from '@/components/menu/InvisibleItem'
 
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
@@ -43,7 +44,11 @@ export function App() {
   }, [isHover])
 
   useEffect(() => {
-    const handleShowReviewRequest = (_param: any, _sender: any, response: any) => {
+    const handleShowReviewRequest = (
+      _param: any,
+      _sender: any,
+      response: any,
+    ) => {
       showReviewRequestToast(toast, () => {
         Settings.update('hasShownReviewRequest', () => true)
       })
@@ -66,6 +71,7 @@ export function App() {
           selectionText={selectionText}
           onHover={(v: boolean) => setIsHover(v)}
         />
+        <InvisibleItem positionElm={positionElm} />
         <LinkSelector />
         <OpenInTab />
         <PageActionRunner />

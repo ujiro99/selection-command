@@ -11,7 +11,7 @@ import { POPUP_OFFSET } from '@/const'
 import css from './Menu.module.css'
 
 type InvisibleItemProps = {
-  positionElm: Element | null
+  positionElm?: Element | null
 }
 
 type ItemState = {
@@ -40,15 +40,24 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     if (itemState.state !== ExecState.NONE) {
       return
     }
-    if (props.positionElm == null) {
-      return
+
+    let position = { x: 0, y: 0 }
+    if (props.positionElm) {
+      const rect = props.positionElm.getBoundingClientRect()
+      position = { x: rect.left + POPUP_OFFSET, y: rect.top }
+    } else {
+      // Use center of screen as position
+      position = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      }
     }
-    const rect = props.positionElm.getBoundingClientRect()
+
     actions[command.openMode]
       .execute({
         selectionText,
         command: command,
-        position: { x: rect.left + POPUP_OFFSET, y: rect.top },
+        position,
         useSecondary: false,
         changeState: onChangeState,
         target,
@@ -65,7 +74,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     execute(command as SelectionCommand)
   }
 
-  const visible = result != null && props.positionElm != null
+  const visible = result != null
 
   return (
     <div ref={elmRef}>
@@ -83,7 +92,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
 
 type ImageProps = {
   state: ExecState
-  positionElm: Element | null
+  positionElm?: Element | null
 }
 
 function IconWithState(props: ImageProps): JSX.Element {

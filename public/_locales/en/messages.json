@@ -742,5 +742,23 @@
   },
   "review_request_close": {
     "message": "Not Now"
+  },
+  "Option_shortcuts": {
+    "message": "Shortcut Keys"
+  },
+  "Option_shortcuts_desc": {
+    "message": "Configure which command to execute for each shortcut key."
+  },
+  "Option_shortcuts_settings_desc": {
+    "message": "To change the keys, please use the extension settings page."
+  },
+  "Option_shortcuts_settings_link": {
+    "message": "Key Settings"
+  },
+  "Option_shortcut_not_set": {
+    "message": "Not set"
+  },
+  "Option_shortcut_select_placeholder": {
+    "message": "Select an command"
   }
 }

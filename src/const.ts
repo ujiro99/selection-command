@@ -198,3 +198,5 @@ export const COMMAND_USAGE = {
     HAS_SHOWN_REVIEW_REQUEST: 'hasShownReviewRequest',
   },
 } as const
+
+export const SHORTCUT_PLACEHOLDER = '_placeholder_'

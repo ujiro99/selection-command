@@ -141,6 +141,15 @@ export type UserStats = {
   hasShownReviewRequest: boolean
 }
 
+export type ShortcutCommand = {
+  commandId: string
+  targetCommandId: string
+}
+
+export type ShortcutSettings = {
+  shortcuts: Array<ShortcutCommand>
+}
+
 export type UserSettings = {
   settingVersion: Version
   startupMethod: StartupMethod
@@ -151,6 +160,7 @@ export type UserSettings = {
   pageRules: Array<PageRule>
   style: STYLE
   userStyles: Array<StyleVariable>
+  shortcuts: ShortcutSettings
 }
 
 export type SettingsType = UserSettings & UserStats & UserStars

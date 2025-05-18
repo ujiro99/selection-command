@@ -8,6 +8,7 @@ export enum BgCommand {
   openPopupAndClick = 'openPopupAndClick',
   openTab = 'openTab',
   openOption = 'openOption',
+  openShortcuts = 'openShortcuts',
   addPageRule = 'addPageRule',
   addCommand = 'addCommand',
   execApi = 'execApi',

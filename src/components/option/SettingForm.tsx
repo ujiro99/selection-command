@@ -33,6 +33,8 @@ import {
   UserStyleList,
   userStyleSchema,
 } from '@/components/option/editor/UserStyleList'
+import { ShortcutList } from '@/components/option/editor/ShortcutList'
+import { ShortcutSettingsSchema } from '@/types/schema'
 
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -104,6 +106,7 @@ const formSchema = z
       .strict(),
     pageRules: z.array(pageRuleSchema),
     userStyles: z.array(userStyleSchema),
+    shortcuts: ShortcutSettingsSchema,
   })
   .strict()
 
@@ -381,6 +384,12 @@ export function SettingForm({ className }: { className?: string }) {
           <CommandList control={form.control} />
         </section>
         <hr />
+
+        <section id="shortcuts" className="space-y-3">
+          <ShortcutList control={form.control} />
+        </section>
+        <hr />
+
         <section id="linkCommand" className="space-y-3">
           <h3 className="text-xl font-semibold flex items-center">
             <Eye size={22} className="mr-2 stroke-gray-600" />

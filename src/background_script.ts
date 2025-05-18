@@ -1,4 +1,9 @@
-import { isDebug, LINK_COMMAND_ENABLED, POPUP_ENABLED, OPTION_PAGE_PATH } from '@/const'
+import {
+  isDebug,
+  LINK_COMMAND_ENABLED,
+  POPUP_ENABLED,
+  OPTION_PAGE_PATH,
+} from '@/const'
 import '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { Settings } from '@/services/settings'
@@ -108,18 +113,25 @@ const commandFuncs = {
     return true
   },
 
-  [BgCommand.openTab]: (param: openTabProps, sender: Sender, response: (res: unknown) => void): boolean => {
-    getCurrentTab().then(tab => {
+  [BgCommand.openTab]: (
+    param: openTabProps,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    getCurrentTab().then((tab) => {
       const currentTab = sender.tab ?? tab
-      chrome.tabs.create({
-        ...param,
-        windowId: currentTab.windowId,
-        index: currentTab.index + 1,
-      }, (newTab) => {
-        incrementCommandExecutionCount(newTab.id).then(() => {
-          response(true)
-        })
-      })
+      chrome.tabs.create(
+        {
+          ...param,
+          windowId: currentTab.windowId,
+          index: currentTab.index + 1,
+        },
+        (newTab) => {
+          incrementCommandExecutionCount(newTab.id).then(() => {
+            response(true)
+          })
+        },
+      )
     })
     return true
   },
@@ -127,6 +139,13 @@ const commandFuncs = {
   [BgCommand.openOption]: (): boolean => {
     chrome.tabs.create({
       url: OPTION_PAGE_PATH,
+    })
+    return false
+  },
+
+  [BgCommand.openShortcuts]: (): boolean => {
+    chrome.tabs.create({
+      url: 'chrome://extensions/shortcuts',
     })
     return false
   },
@@ -143,10 +162,13 @@ const commandFuncs = {
           linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
         })
       }
-      await Settings.set({
-        ...settings,
-        pageRules,
-      }, true)
+      await Settings.set(
+        {
+          ...settings,
+          pageRules,
+        },
+        true,
+      )
       chrome.tabs.create({
         url: `${OPTION_PAGE_PATH}#pageRules`,
       })
@@ -166,24 +188,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-        id: params.id,
-        title: params.title,
-        searchUrl: params.searchUrl,
-        iconUrl: params.iconUrl,
-        openMode: params.openMode,
-        openModeSecondary: params.openModeSecondary,
-        spaceEncoding: params.spaceEncoding,
-        popupOption: PopupOption,
-      }
-      : isPageAction
-        ? {
           id: params.id,
           title: params.title,
+          searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
           openMode: params.openMode,
-          pageActionOption: params.pageActionOption,
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
           popupOption: PopupOption,
         }
+      : isPageAction
+        ? {
+            id: params.id,
+            title: params.title,
+            iconUrl: params.iconUrl,
+            openMode: params.openMode,
+            pageActionOption: params.pageActionOption,
+            popupOption: PopupOption,
+          }
         : null
 
     if (!cmd) {
@@ -504,3 +526,37 @@ chrome.runtime.onInstalled.addListener(() => {
 //     console.debug(details)
 //   },
 // )
+
+// Add command processing
+chrome.commands.onCommand.addListener(async (commandName) => {
+  console.log('commandName', commandName)
+  try {
+    // Get settings
+    const settings = await Settings.get()
+    const shortcut = settings.shortcuts?.shortcuts.find(
+      (shortcut) => shortcut.commandId === commandName,
+    )
+
+    if (!shortcut) {
+      console.warn(`No shortcut mapped for command: ${commandName}`)
+      return
+    }
+
+    // Get active tab
+    const [tab] = await chrome.tabs.query({ active: true })
+    if (!tab.id) return
+
+    // Execute command
+    const command = settings.commands.find(
+      (c) => c.id === shortcut.targetCommandId,
+    )
+    if (command) {
+      await Ipc.sendTab(tab.id, TabCommand.executeAction, {
+        command,
+        position: null, // Center the display
+      })
+    }
+  } catch (error) {
+    console.error('Failed to execute shortcut command:', error)
+  }
+})

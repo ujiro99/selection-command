@@ -9,22 +9,15 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": [
-        "src/content_script.tsx"
-      ]
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["src/content_script.tsx"]
     },
     {
       "matches": [
         "https://ujiro99.github.io/selection-command/*",
         "http://localhost:3000/*"
       ],
-      "js": [
-        "src/command_hub.tsx"
-      ]
+      "js": ["src/command_hub.tsx"]
     }
   ],
   "background": {
@@ -39,20 +32,34 @@
     "declarativeNetRequest",
     "clipboardRead"
   ],
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "web_accessible_resources": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "resources": [
-        "assets/*.css",
-        "icon128.png"
-      ]
+      "matches": ["http://*/*", "https://*/*"],
+      "resources": ["assets/*.css", "icon128.png"]
     }
-  ]
+  ],
+  "commands": {
+    "command_1": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+1",
+        "mac": "Command+Shift+1"
+      },
+      "description": "Command 1"
+    },
+    "command_2": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+2",
+        "mac": "Command+Shift+2"
+      },
+      "description": "Command 2"
+    },
+    "command_3": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+3",
+        "mac": "Command+Shift+3"
+      },
+      "description": "Command 3"
+    }
+  }
 }

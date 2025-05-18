@@ -12,6 +12,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
 } from '@/components/ui/select'
 import { MenuImage } from '@/components/menu/MenuImage'
 
@@ -22,14 +24,53 @@ type SelectOptionType = {
   iconSvg?: string
 }
 
+type SelectGroupType = {
+  label: string
+  options: SelectOptionType[]
+  iconUrl?: string
+  iconSvg?: string
+}
+
 type SelectFieldType = {
   control: any
   name: string
   formLabel: string
-  options: SelectOptionType[]
+  options: (SelectOptionType | SelectGroupType)[]
   placeholder?: string
   description?: string
 }
+
+const renderOption = (opt: SelectOptionType) => (
+  <SelectItem value={opt.value} key={opt.value} className="hover:bg-gray-100">
+    {opt.iconUrl != null || opt.iconSvg != null ? (
+      <span className="flex items-center gap-1">
+        <MenuImage
+          src={opt.iconUrl}
+          svg={opt.iconSvg}
+          alt={opt.name}
+          className="w-5 h-5 mr-1.5"
+        />
+        {opt.name}
+      </span>
+    ) : (
+      opt.name
+    )}
+  </SelectItem>
+)
+
+const renderGroupLabel = (group: SelectGroupType) => (
+  <SelectLabel className="flex items-center gap-1">
+    {(group.iconUrl != null || group.iconSvg != null) && (
+      <MenuImage
+        src={group.iconUrl}
+        svg={group.iconSvg}
+        alt={group.label}
+        className="w-5 h-5 mr-1.5"
+      />
+    )}
+    {group.label}
+  </SelectLabel>
+)
 
 export const SelectField = ({
   control,
@@ -57,27 +98,24 @@ export const SelectField = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {options.map((opt) => (
-                  <SelectItem
-                    value={opt.value}
-                    key={opt.value}
-                    className="hover:bg-gray-100"
-                  >
-                    {opt.iconUrl != null ? (
-                      <span className=" flex items-center gap-1">
-                        <MenuImage
-                          src={opt.iconUrl}
-                          svg={opt.iconSvg}
-                          alt={opt.name}
-                          className="w-5 h-5 mr-1.5"
-                        />
-                        {opt.name}
-                      </span>
-                    ) : (
-                      opt.name
-                    )}
-                  </SelectItem>
-                ))}
+                {options.map((item, index) => {
+                  if ('options' in item) {
+                    // Grouped options
+                    return (
+                      <SelectGroup key={index}>
+                        {item.label && renderGroupLabel(item)}
+                        {item.options.map((opt) => (
+                          <div key={opt.value} className="pl-4">
+                            {renderOption(opt)}
+                          </div>
+                        ))}
+                      </SelectGroup>
+                    )
+                  } else {
+                    // Regular options
+                    return renderOption(item)
+                  }
+                })}
               </SelectContent>
             </Select>
             <FormMessage />

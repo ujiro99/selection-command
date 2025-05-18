@@ -1,7 +1,6 @@
 import { useState, useEffect, createContext, forwardRef } from 'react'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { Menu } from '@/components/menu/Menu'
-import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
@@ -120,11 +119,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               onOpenAutoFocus={noFocus}
               {...onHover(handleOnHover, true)}
             >
-              {!isContextMenu ? (
-                <Menu />
-              ) : (
-                <InvisibleItem positionElm={props.positionElm} />
-              )}
+              {!isContextMenu ? <Menu /> : null}
             </PopoverContent>
           )}
         </Popover>

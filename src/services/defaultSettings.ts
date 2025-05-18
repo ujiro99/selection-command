@@ -11,6 +11,7 @@ import {
   LINK_COMMAND_STARTUP_METHOD,
   KEYBOARD,
   SPACE_ENCODING,
+  SHORTCUT_PLACEHOLDER,
 } from '@/const'
 
 export const PopupPlacement = {
@@ -87,6 +88,22 @@ export default {
     },
   ],
   stars: [],
+  shortcuts: {
+    shortcuts: [
+      {
+        commandId: 'command_1',
+        targetCommandId: SHORTCUT_PLACEHOLDER,
+      },
+      {
+        commandId: 'command_2',
+        targetCommandId: SHORTCUT_PLACEHOLDER,
+      },
+      {
+        commandId: 'command_3',
+        targetCommandId: SHORTCUT_PLACEHOLDER,
+      },
+    ],
+  },
 } as UserSettings
 
 export const PopupOption = {

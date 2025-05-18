@@ -739,5 +739,23 @@
   },
   "review_request_later": {
     "message": "後で"
+  },
+  "Option_shortcuts": {
+    "message": "ショートカットキー"
+  },
+  "Option_shortcuts_desc": {
+    "message": "各ショートカットキーへ、実行するコマンドを設定します。"
+  },
+  "Option_shortcuts_settings_desc": {
+    "message": "キーの変更は拡張機能の設定画面から行ってください。"
+  },
+  "Option_shortcuts_settings_link": {
+    "message": "キー設定"
+  },
+  "Option_shortcut_not_set": {
+    "message": "未設定"
+  },
+  "Option_shortcut_select_placeholder": {
+    "message": "コマンドを選択"
   }
 }
