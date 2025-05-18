@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import clsx from 'clsx'
+import { cn } from '@/lib/utils'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 
 import { useSetting } from '@/hooks/useSetting'
@@ -12,6 +12,7 @@ type PopupProps = {
   visible: boolean
   positionRef: React.RefObject<Element>
   children: React.ReactNode
+  className?: string
   onClose: () => void
 }
 
@@ -30,16 +31,18 @@ export function ResultPopup(props: PopupProps) {
       <PopoverAnchor virtualRef={virtualRef} />
       <PopoverContent
         side={isBottom ? SIDE.bottom : SIDE.top}
-        className="bg-background rounded-md border"
+        className={cn('bg-background rounded-md border', props.className)}
       >
-        <div className={clsx(popupCss.popup, css.resultPopup)}>
+        <div className={cn(popupCss.popup, css.resultPopup)}>
           {props.children}
-          <button
-            className={clsx(css.closeButton, css.resultPopupButton)}
-            onClick={props.onClose}
-          >
-            <Icon name="close" />
-          </button>
+          {visible && (
+            <button
+              className={cn(css.closeButton, css.resultPopupButton)}
+              onClick={props.onClose}
+            >
+              <Icon name="close" />
+            </button>
+          )}
         </div>
       </PopoverContent>
     </Popover>

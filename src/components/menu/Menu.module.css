@@ -7,8 +7,11 @@
 .item {
   display: flex;
   align-items: center;
-  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding) calc(var(--sc-padding) * 1.5);
-  height: calc(max(var(--sc-font-size), var(--sc-image-size, 16px)) + var(--sc-padding) * 2);
+  padding: var(--sc-padding) calc(var(--sc-padding) * 2) var(--sc-padding)
+    calc(var(--sc-padding) * 1.5);
+  height: calc(
+    max(var(--sc-font-size), var(--sc-image-size, 16px)) + var(--sc-padding) * 2
+  );
   box-sizing: border-box;
   width: 100%;
   white-space: pre;
@@ -73,7 +76,7 @@
 
 .iconWithState {
   background: #fff;
-  padding: var(--sc-padding);
+  padding: var(--sc-padding, 1px);
   border-radius: 6px;
   line-height: 1;
 }

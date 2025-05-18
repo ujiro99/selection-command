@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
+import { cn } from '@/lib/utils'
 
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { Icon } from '@/components/Icon'
@@ -32,6 +33,42 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     setResult(undefined)
   }, [props.positionElm])
 
+  useEffect(() => {
+    const onSelectionchange = () => {
+      setResult(undefined)
+    }
+    document.addEventListener('selectionchange', onSelectionchange)
+    return () => {
+      document.removeEventListener('selectionchange', onSelectionchange)
+    }
+  }, [])
+
+  const position = useMemo(() => {
+    let p = { x: 0, y: 0 }
+    if (props.positionElm) {
+      const rect = props.positionElm.getBoundingClientRect()
+      p = { x: rect.left + POPUP_OFFSET, y: rect.top }
+    } else {
+      // Use center of screen as position
+      p = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      }
+    }
+    return p
+  }, [props.positionElm])
+
+  const style = useMemo(() => {
+    return {
+      position: 'absolute' as const,
+      top: window.scrollY + position.y,
+      left: window.scrollX + position.x,
+      height: 0,
+      width: 0,
+      pointerEvents: 'none' as const,
+    }
+  }, [position])
+
   const onChangeState = (state: ExecState, message?: string) => {
     setItemState({ state, message })
   }
@@ -39,18 +76,6 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   function execute(command: SelectionCommand) {
     if (itemState.state !== ExecState.NONE) {
       return
-    }
-
-    let position = { x: 0, y: 0 }
-    if (props.positionElm) {
-      const rect = props.positionElm.getBoundingClientRect()
-      position = { x: rect.left + POPUP_OFFSET, y: rect.top }
-    } else {
-      // Use center of screen as position
-      position = {
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2,
-      }
     }
 
     actions[command.openMode]
@@ -77,12 +102,13 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   const visible = result != null
 
   return (
-    <div ref={elmRef}>
+    <div style={style} ref={elmRef}>
       <IconWithState state={itemState.state} positionElm={props.positionElm} />
       <ResultPopup
         visible={visible}
         positionRef={elmRef}
         onClose={() => setResult(undefined)}
+        className={'pointer-events-auto'}
       >
         {result}
       </ResultPopup>
@@ -101,7 +127,12 @@ function IconWithState(props: ImageProps): JSX.Element {
   if (status == ExecState.NONE) return <></>
 
   return (
-    <div className={css.iconWithState}>
+    <div
+      className={cn(
+        css.iconWithState,
+        'shadow-md border border-gray-200 bg-white w-5 h-5',
+      )}
+    >
       {status === ExecState.EXECUTING && (
         <Icon
           className={`${css.itemImg} ${css.apiIconLoading} rotate`}
