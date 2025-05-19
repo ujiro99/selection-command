@@ -1,12 +1,13 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import React, { useRef, useEffect, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 
 import { ResultPopup } from '@/components/result/ResultPopup'
 import { Icon } from '@/components/Icon'
 import { useContextMenu } from '@/hooks/useContextMenu'
 import { useSelectContext } from '@/hooks/useSelectContext'
+import { useCommandExecutor } from '@/hooks/useCommandExecutor'
 import type { SelectionCommand } from '@/types'
-import { actions, ExecState } from '@/action'
+import { ExecState } from '@/action'
 import { POPUP_OFFSET } from '@/const'
 
 import css from './Menu.module.css'
@@ -15,27 +16,20 @@ type InvisibleItemProps = {
   positionElm?: Element | null
 }
 
-type ItemState = {
-  state: ExecState
-  message?: string
-}
-
 export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   const { selectionText, target } = useSelectContext()
   const { command, setCommand } = useContextMenu()
-  const [itemState, setItemState] = useState<ItemState>({
-    state: ExecState.NONE,
-  })
-  const [result, setResult] = useState<React.ReactNode>()
+  const { itemState, result, executeCommand, clearResult } =
+    useCommandExecutor()
   const elmRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setResult(undefined)
+    clearResult()
   }, [props.positionElm])
 
   useEffect(() => {
     const onSelectionchange = () => {
-      setResult(undefined)
+      clearResult()
     }
     document.addEventListener('selectionchange', onSelectionchange)
     return () => {
@@ -69,34 +63,14 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     }
   }, [position])
 
-  const onChangeState = (state: ExecState, message?: string) => {
-    setItemState({ state, message })
-  }
-
-  function execute(command: SelectionCommand) {
-    if (itemState.state !== ExecState.NONE) {
-      return
-    }
-
-    actions[command.openMode]
-      .execute({
-        selectionText,
-        command: command,
-        position,
-        useSecondary: false,
-        changeState: onChangeState,
-        target,
-      })
-      .then((res) => {
-        if (res) {
-          setResult(res)
-        }
-      })
-    setCommand(null)
-  }
-
   if (command != null) {
-    execute(command as SelectionCommand)
+    executeCommand({
+      command: command as SelectionCommand,
+      position,
+      selectionText,
+      target,
+    })
+    setCommand(null)
   }
 
   const visible = result != null
@@ -107,7 +81,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
       <ResultPopup
         visible={visible}
         positionRef={elmRef}
-        onClose={() => setResult(undefined)}
+        onClose={clearResult}
         className={'pointer-events-auto'}
       >
         {result}
