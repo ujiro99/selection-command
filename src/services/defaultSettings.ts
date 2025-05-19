@@ -91,15 +91,15 @@ export default {
   shortcuts: {
     shortcuts: [
       {
-        commandId: 'command_1',
+        commandId: 'slot_1',
         targetCommandId: SHORTCUT_PLACEHOLDER,
       },
       {
-        commandId: 'command_2',
+        commandId: 'slot_2',
         targetCommandId: SHORTCUT_PLACEHOLDER,
       },
       {
-        commandId: 'command_3',
+        commandId: 'slot_3',
         targetCommandId: SHORTCUT_PLACEHOLDER,
       },
     ],

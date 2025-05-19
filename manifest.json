@@ -40,26 +40,26 @@
     }
   ],
   "commands": {
-    "command_1": {
+    "slot_1": {
       "suggested_key": {
         "default": "Ctrl+Shift+1",
         "mac": "Command+Shift+1"
       },
-      "description": "Command 1"
+      "description": "Command slot 1"
     },
-    "command_2": {
+    "slot_2": {
       "suggested_key": {
         "default": "Ctrl+Shift+2",
         "mac": "Command+Shift+2"
       },
-      "description": "Command 2"
+      "description": "Command slot 2"
     },
-    "command_3": {
+    "slot_3": {
       "suggested_key": {
         "default": "Ctrl+Shift+3",
         "mac": "Command+Shift+3"
       },
-      "description": "Command 3"
+      "description": "Command slot 3"
     }
   }
 }
