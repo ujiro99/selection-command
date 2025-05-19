@@ -1,10 +1,11 @@
 import DefaultSettings, { DefaultCommands } from './defaultSettings'
-import { Command, CaptureDataStorage } from '@/types'
+import { Command, CaptureDataStorage, ShortcutSettings } from '@/types'
 
 export enum STORAGE_KEY {
   USER = 0,
   COMMAND_COUNT = 2,
   USER_STATS = 3,
+  SHORTCUTS = 4,
 }
 
 export enum LOCAL_STORAGE_KEY {
@@ -37,6 +38,9 @@ const DEFAULTS = {
   [STORAGE_KEY.USER_STATS]: {
     commandExecutionCount: 0,
     hasShownReviewRequest: false,
+  },
+  [STORAGE_KEY.SHORTCUTS]: {
+    shortcuts: [],
   },
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},

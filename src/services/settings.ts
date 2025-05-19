@@ -11,7 +11,15 @@ import {
   SIDE,
   ALIGN,
 } from '@/const'
-import type { SettingsType, UserSettings, Version, Command, Star, UserStats } from '@/types'
+import type {
+  SettingsType,
+  UserSettings,
+  Version,
+  Command,
+  Star,
+  UserStats,
+  ShortcutSettings,
+} from '@/types'
 import {
   isBase64,
   isEmpty,
@@ -60,6 +68,9 @@ export const Settings = {
     // UserStats
     const userStats = await Storage.get<UserStats>(STORAGE_KEY.USER_STATS)
     data = { ...data, ...userStats }
+
+    // Shortcuts
+    data.shortcuts = await Storage.get<ShortcutSettings>(STORAGE_KEY.SHORTCUTS)
 
     data = await migrate(data)
 
@@ -134,8 +145,12 @@ export const Settings = {
     }
     await Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats)
 
-    // Remove UserStats and stars from data
-    const { commandExecutionCount, hasShownReviewRequest, stars, ...restData } = data
+    // Shortcuts
+    await Storage.set<ShortcutSettings>(STORAGE_KEY.SHORTCUTS, data.shortcuts)
+
+    // Remove UserStats, stars and shortcuts from data
+    const { commandExecutionCount, hasShownReviewRequest, stars, ...restData } =
+      data
     await Storage.set<UserSettings>(STORAGE_KEY.USER, restData)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches)
     return true
@@ -169,6 +184,10 @@ export const Settings = {
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
     await Storage.setCommands(DefaultCommands)
+    await Storage.set<ShortcutSettings>(
+      STORAGE_KEY.SHORTCUTS,
+      DefaultSettings.shortcuts,
+    )
   },
 
   addChangedListener: (callback: (data: SettingsType) => void) => {
