@@ -106,12 +106,35 @@ export function ShortcutList({ control }: ShortcutListProps) {
     defaultValue: [],
   })
 
-  useEffect(() => {
-    // Initialize the commands on Chrome setting.
+  const updateCommands = () => {
     chrome.commands.getAll((cmds) => {
       const filteredCommands = cmds.filter((cmd) => cmd.description !== '')
       setCommands(filteredCommands)
     })
+  }
+
+  useEffect(() => {
+    // Initialize the commands on Chrome setting.
+    updateCommands()
+
+    // Update commands when the page becomes visible or focused
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        updateCommands()
+      }
+    }
+
+    const handleFocus = () => {
+      updateCommands()
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('focus', handleFocus)
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('focus', handleFocus)
+    }
   }, [])
 
   useEffect(() => {

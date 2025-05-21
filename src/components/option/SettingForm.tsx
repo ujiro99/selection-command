@@ -140,6 +140,59 @@ export function SettingForm({ className }: { className?: string }) {
     defaultValue: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
   })
 
+  // Common function to load and transform settings data
+  const loadSettingsData = async () => {
+    const settings = await Settings.get(true)
+    // Convert linkCommand option
+    const linkCommands = settings.commands.filter(isLinkCommand)
+    if (linkCommands.length > 0) {
+      const linkCommand = linkCommands[0]
+      settings.linkCommand = {
+        ...settings.linkCommand,
+        openMode: linkCommand.openMode,
+      }
+    }
+    settings.commands = settings.commands.filter(isMenuCommand)
+    return settings as FormValues
+  }
+
+  // Update form with latest settings
+  const updateFormSettings = async () => {
+    const settings = await loadSettingsData()
+    reset(settings)
+  }
+
+  // Initial settings load
+  useEffect(() => {
+    const initializeSettings = async () => {
+      await updateFormSettings()
+      // Set initialized after 100ms to avoid flickering
+      setTimeout(() => (initializedRef.current = true), 100)
+    }
+    initializeSettings()
+  }, [])
+
+  // Handle settings synchronization across tabs and windows
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        await updateFormSettings()
+      }
+    }
+
+    const handleSettingsChange = async () => {
+      await updateFormSettings()
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    Settings.addChangedListener(handleSettingsChange)
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      Settings.removeChangedListener(handleSettingsChange)
+    }
+  }, [])
+
   const updateSettings = async (settings: SettingsFormType) => {
     try {
       setIsSaving(true)
@@ -180,26 +233,6 @@ export function SettingForm({ className }: { className?: string }) {
     }
     setValue('popupPlacement', popupPlacement)
   }
-
-  useEffect(() => {
-    const loadSettings = async () => {
-      const settings = await Settings.get(true)
-      // Convert linkCommand option
-      const linkCommands = settings.commands.filter(isLinkCommand)
-      if (linkCommands.length > 0) {
-        const linkCommand = linkCommands[0]
-        settings.linkCommand = {
-          ...settings.linkCommand,
-          openMode: linkCommand.openMode,
-        }
-      }
-      settings.commands = settings.commands.filter(isMenuCommand)
-      reset(settings as FormValues)
-      // Set initialized after 100ms to avoid flickering.
-      setTimeout(() => (initializedRef.current = true), 100)
-    }
-    loadSettings()
-  }, [])
 
   // Save after 500 ms to storage.
   useEffect(() => {
