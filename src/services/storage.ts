@@ -1,5 +1,5 @@
 import DefaultSettings, { DefaultCommands } from './defaultSettings'
-import { Command, CaptureDataStorage, ShortcutSettings } from '@/types'
+import { Command, CaptureDataStorage } from '@/types'
 
 export enum STORAGE_KEY {
   USER = 0,

@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { actions, ExecState } from '@/action'
+import { ExecState } from '@/action'
 import type { Command, SelectionCommand } from '@/types'
-import { OPEN_MODE } from '@/const'
+import { executeCommand } from '@/services/commandExecutor'
 
 type ItemState = {
   state: ExecState
@@ -26,7 +26,7 @@ export function useCommandExecutor() {
     setItemState({ state, message })
   }
 
-  const executeCommand = async ({
+  const executeCommandWithState = async ({
     command,
     position,
     selectionText,
@@ -37,22 +37,13 @@ export function useCommandExecutor() {
       return
     }
 
-    let mode = command.openMode as OPEN_MODE
-    if (
-      useSecondary &&
-      'openModeSecondary' in command &&
-      command.openModeSecondary
-    ) {
-      mode = command.openModeSecondary
-    }
-
-    const res = await actions[mode].execute({
-      selectionText,
+    const res = await executeCommand({
       command,
       position,
+      selectionText,
+      target,
       useSecondary,
       changeState: onChangeState,
-      target,
     })
 
     if (res) {
@@ -67,7 +58,7 @@ export function useCommandExecutor() {
   return {
     itemState,
     result,
-    executeCommand,
+    executeCommand: executeCommandWithState,
     clearResult,
   }
 }

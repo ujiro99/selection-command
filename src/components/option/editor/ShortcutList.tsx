@@ -107,18 +107,22 @@ export function ShortcutList({ control }: ShortcutListProps) {
   })
 
   useEffect(() => {
+    // Initialize the commands on Chrome setting.
     chrome.commands.getAll((cmds) => {
       const filteredCommands = cmds.filter((cmd) => cmd.description !== '')
       setCommands(filteredCommands)
-
-      // Initialize the shortcuts
-      const initialData = filteredCommands.map((cmd) => ({
-        commandId: cmd.name || '',
-        targetCommandId: SHORTCUT_PLACEHOLDER,
-      }))
-      replace(initialData)
     })
-  }, [replace])
+  }, [])
+
+  useEffect(() => {
+    // Initialize the shortcuts
+    if (fields.length !== 0) return
+    const initialData = commands.map((cmd) => ({
+      commandId: cmd.name || '',
+      targetCommandId: SHORTCUT_PLACEHOLDER,
+    }))
+    replace(initialData)
+  }, [replace, commands, userCommands])
 
   return (
     <div className="space-y-3">

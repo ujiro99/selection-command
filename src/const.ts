@@ -21,6 +21,13 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = 'addPageRule',
 }
 
+export enum OPEN_MODE_BG {
+  POPUP = OPEN_MODE.POPUP,
+  WINDOW = OPEN_MODE.WINDOW,
+  TAB = OPEN_MODE.TAB,
+  PAGE_ACTION = OPEN_MODE.PAGE_ACTION,
+}
+
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = 'previewPopup',
   PREVIEW_WINDOW = 'previewWindow',

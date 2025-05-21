@@ -30,7 +30,8 @@
     "tabs",
     "contextMenus",
     "declarativeNetRequest",
-    "clipboardRead"
+    "clipboardRead",
+    "system.display"
   ],
   "host_permissions": ["http://*/*", "https://*/*"],
   "web_accessible_resources": [

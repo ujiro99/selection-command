@@ -1,5 +1,6 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { getScreenSize, linksInSelection } from '@/services/dom'
+import { linksInSelection } from '@/services/dom'
+import { getScreenSize } from '@/services/screen'
 import type { ExecProps } from './index'
 
 export const SelectedLinkPopup = {

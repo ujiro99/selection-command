@@ -1,10 +1,10 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import {
-  getScreenSize,
   findAnchorElementFromParent,
   findClickableElement,
   getSelectorFromElement,
 } from '@/services/dom'
+import { getScreenSize } from '@/services/screen'
 import { DRAG_OPEN_MODE, POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
 import { isEmpty } from '@/lib/utils'

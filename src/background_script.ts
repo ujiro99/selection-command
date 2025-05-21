@@ -13,6 +13,7 @@ import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import { BgData } from '@/services/backgroundData'
 import { escapeJson, isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import { incrementCommandExecutionCount } from '@/services/commandMetrics'
+import { executeCommandForBg } from '@/services/commandExecutorBg'
 import type { IpcCallback } from '@/services/ipc'
 import type {
   CommandVariable,
@@ -22,7 +23,7 @@ import type {
   CaptureDataStorage,
   CaptureScreenShotRes,
 } from '@/types'
-import { Storage, SESSION_STORAGE_KEY } from './services/storage'
+import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 
 BgData.init()
 
@@ -544,16 +545,30 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
     // Get active tab
     const [tab] = await chrome.tabs.query({ active: true })
-    if (!tab.id) return
-
-    // Execute command
     const command = settings.commands.find(
       (c) => c.id === shortcut.targetCommandId,
     )
-    if (command) {
-      await Ipc.sendTab(tab.id, TabCommand.executeAction, {
+    if (!command) {
+      console.warn(`Command not found: ${shortcut.targetCommandId}`)
+      return
+    }
+
+    let ret
+    if (tab?.id) {
+      // Execute command in tab
+      ret = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
         command,
         position: null, // Center the display
+      })
+    }
+
+    if (tab?.id == null || ret instanceof Error) {
+      // Execute command directly in background
+      await executeCommandForBg({
+        command,
+        position: { x: 10000, y: 10000 },
+        selectionText: '',
+        target: null,
       })
     }
   } catch (error) {

@@ -23,10 +23,25 @@ export const Api = {
       return
     }
 
+    // Get current URL and title
+    let pageUrl = ''
+    let pageTitle = ''
+    try {
+      const currentTab = await chrome.tabs.query({
+        active: true,
+      })
+      if (currentTab[0]) {
+        pageUrl = currentTab[0].url ?? ''
+        pageTitle = currentTab[0].title ?? ''
+      }
+    } catch (error) {
+      console.warn('Failed to get current tab info:', error)
+    }
+
     Ipc.send(BgCommand.execApi, {
       url: toUrl(command.searchUrl, selectionText),
-      pageUrl: window.location.href,
-      pageTitle: document.title,
+      pageUrl,
+      pageTitle,
       selectionText: selectionText,
       fetchOptions: command.fetchOptions,
       variables: command.variables,

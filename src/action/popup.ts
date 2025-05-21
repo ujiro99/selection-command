@@ -1,6 +1,6 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import { toUrl, isValidString } from '@/lib/utils'
-import { getScreenSize } from '@/services/dom'
+import { getScreenSize } from '@/services/screen'
 import { POPUP_TYPE } from '@/const'
 import type { ExecProps } from './index'
 
@@ -19,14 +19,28 @@ export const Popup = {
       toUrl(command.searchUrl, selectionText, command.spaceEncoding),
     ]
 
+    // Get window position
+    let top = 0
+    let left = 0
+    try {
+      const currentWindow = await chrome.windows.getCurrent()
+      top = currentWindow.top ?? 0
+      left = currentWindow.left ?? 0
+    } catch (error) {
+      console.warn('Failed to get window position:', error)
+      // Use default values if window position retrieval fails
+    }
+
+    const screen = await getScreenSize()
+
     Ipc.send(BgCommand.openPopups, {
       commandId: command.id,
       urls: urls,
-      top: Math.floor(window.screenTop + position.y),
-      left: Math.floor(window.screenLeft + position.x),
+      top: Math.floor(top + position.y),
+      left: Math.floor(left + position.x),
       height: command.popupOption?.height,
       width: command.popupOption?.width,
-      screen: getScreenSize(),
+      screen,
       type: POPUP_TYPE.POPUP,
     })
   },
