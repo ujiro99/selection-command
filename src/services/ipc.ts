@@ -1,7 +1,7 @@
 import { Storage, SESSION_STORAGE_KEY } from './storage'
 import { PAGE_ACTION_OPEN_MODE } from '@/const'
 import type { PageActionStep } from '@/types'
-import { sleep } from '@/lib/utils'
+import { sleep, isServiceWorker } from '@/lib/utils'
 
 export enum BgCommand {
   openPopups = 'openPopups',
@@ -114,7 +114,23 @@ export const Ipc = {
     )
   },
 
+  async callListener<M, R>(command: IpcCommand, param?: M): Promise<R> {
+    return new Promise((resolve) => {
+      const listener = Ipc.listeners[command]
+      if (!listener) {
+        resolve(undefined as R)
+        return
+      }
+      listener(param, {} as chrome.runtime.MessageSender, (res: unknown) =>
+        resolve(res as R),
+      )
+    })
+  },
+
   async send<M = any, R = any>(command: IpcCommand, param?: M): Promise<R> {
+    if (isServiceWorker()) {
+      return this.callListener<M, R>(command, param)
+    }
     return await chrome.runtime.sendMessage({ command, param })
   },
 
@@ -229,7 +245,10 @@ export const Ipc = {
 
   removeListener(command: IpcCommand) {
     const listener = Ipc.listeners[command]
-    chrome.runtime.onMessage.removeListener(listener)
+    if (listener) {
+      chrome.runtime.onMessage.removeListener(listener)
+      delete Ipc.listeners[command]
+    }
   },
 
   async getTabId() {

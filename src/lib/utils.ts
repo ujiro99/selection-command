@@ -335,3 +335,17 @@ export function isOverBytes(str: string, byte: number): boolean {
   const byteLength = encoder.encode(str).length
   return byteLength > byte
 }
+
+/**
+ * Check if the current execution context is a service worker.
+ * @returns {boolean} True if the current execution context is a service worker, false otherwise.
+ */
+export function isServiceWorker(): boolean {
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    return false
+  }
+  if (typeof self !== 'undefined' && typeof window === 'undefined') {
+    return true
+  }
+  return false
+}
