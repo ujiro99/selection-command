@@ -1,5 +1,5 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { getScreenSize } from '@/services/screen'
+import { getScreenSize, getWindowPosition } from '@/services/screen'
 import { isValidString, isPageActionCommand } from '@/lib/utils'
 import { POPUP_TYPE, PAGE_ACTION_OPEN_MODE } from '@/const'
 import type { ExecuteCommandParams } from '@/types'
@@ -60,25 +60,14 @@ export const PageAction = {
         : PAGE_ACTION_OPEN_MODE.TAB
       : command.pageActionOption.openMode
 
-    // Get window position
-    let top = 0
-    let left = 0
-    try {
-      const currentWindow = await chrome.windows.getCurrent()
-      top = currentWindow.top ?? 0
-      left = currentWindow.left ?? 0
-    } catch (error) {
-      console.warn('Failed to get window position:', error)
-      // Use default values if window position retrieval fails
-    }
-
+    const windowPosition = await getWindowPosition()
     const screen = await getScreenSize()
 
     Ipc.send(BgCommand.openAndRunPageAction, {
       commandId: command.id,
       urls,
-      top: Math.floor(top + position.y),
-      left: Math.floor(left + position.x),
+      top: Math.floor(windowPosition.top + position.y),
+      left: Math.floor(windowPosition.left + position.x),
       height: command.popupOption?.height,
       width: command.popupOption?.width,
       screen,
