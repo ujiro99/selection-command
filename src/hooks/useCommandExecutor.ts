@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ExecState } from '@/const'
 import type { Command, SelectionCommand } from '@/types'
-import { execute } from '@/action/executor'
+import { execute } from '@/action'
 
 type ItemState = {
   state: ExecState

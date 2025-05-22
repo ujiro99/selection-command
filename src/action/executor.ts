@@ -1,15 +1,15 @@
-import { actions } from '@/action'
 import type { ExecuteCommandParams } from '@/types'
 import { OPEN_MODE } from '@/const'
 
-export async function execute({
+export async function executeAction({
+  actions,
   command,
   position,
   selectionText,
   target,
   useSecondary = false,
   changeState,
-}: ExecuteCommandParams) {
+}: ExecuteCommandParams & { actions: Record<string, any> }) {
   let mode = command.openMode as OPEN_MODE
   if (
     useSecondary &&

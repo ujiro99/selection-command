@@ -2,9 +2,10 @@ import { OPEN_MODE_BG } from '@/const'
 import { Popup } from './popup'
 import { Window } from './window'
 import { Tab } from './tab'
-// import { Api } from './api'
+import { Api } from './api'
 import { PageAction } from './pageAction'
 import type { ExecuteCommandParams } from '@/types'
+import { executeAction } from './executor'
 
 export enum ExecState {
   NONE = 0,
@@ -17,7 +18,7 @@ export const actionsForBackground = {
   [OPEN_MODE_BG.POPUP]: Popup,
   [OPEN_MODE_BG.WINDOW]: Window,
   [OPEN_MODE_BG.TAB]: Tab,
-  // [OPEN_MODE.API]: Api,
+  [OPEN_MODE_BG.API]: Api,
   [OPEN_MODE_BG.PAGE_ACTION]: PageAction,
 }
 
@@ -29,23 +30,13 @@ export async function execute({
   useSecondary = false,
   changeState,
 }: ExecuteCommandParams) {
-  let mode = command.openMode as unknown as OPEN_MODE_BG
-  if (
-    useSecondary &&
-    'openModeSecondary' in command &&
-    command.openModeSecondary
-  ) {
-    mode = command.openModeSecondary as unknown as OPEN_MODE_BG
-  }
-
-  const res = await actionsForBackground[mode].execute({
-    selectionText,
+  return executeAction({
     command,
     position,
+    selectionText,
+    target,
     useSecondary,
-    changeState: changeState ?? (() => {}),
-    target: target ?? null,
+    changeState,
+    actions: actionsForBackground,
   })
-
-  return res
 }

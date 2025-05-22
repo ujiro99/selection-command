@@ -429,15 +429,16 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    let ret
-    if (tab?.id) {
+    let ret: unknown
+    let enableSendTab = tab?.id && !tab.url?.startsWith('chrome')
+    if (enableSendTab && tab?.id) {
       // Execute command in tab
       ret = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
         command,
       })
     }
 
-    if (tab?.id == null || ret instanceof Error) {
+    if (!enableSendTab || ret instanceof Error) {
       // Execute command directly in background
       await execute({
         command,
