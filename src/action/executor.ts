@@ -1,17 +1,8 @@
-import { actions, ExecState } from '@/action'
-import type { Command, SelectionCommand } from '@/types'
+import { actions } from '@/action'
+import type { ExecuteCommandParams } from '@/types'
 import { OPEN_MODE } from '@/const'
 
-type ExecuteCommandParams = {
-  command: Command | SelectionCommand
-  position: { x: number; y: number } | null
-  selectionText: string
-  target?: Element | null
-  useSecondary?: boolean
-  changeState?: (state: ExecState, message?: string) => void
-}
-
-export async function executeCommand({
+export async function execute({
   command,
   position,
   selectionText,

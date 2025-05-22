@@ -5,9 +5,9 @@ import {
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
   POPUP_OFFSET,
+  ExecState,
 } from '@/const'
 import { Point, SettingsType, Command } from '@/types'
-import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'

@@ -2,7 +2,7 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { getScreenSize } from '@/services/screen'
 import { isValidString, isPageActionCommand } from '@/lib/utils'
 import { POPUP_TYPE, PAGE_ACTION_OPEN_MODE } from '@/const'
-import type { ExecProps } from './index'
+import type { ExecuteCommandParams } from '@/types'
 
 /**
  * Read text from clipboard with retry mechanism
@@ -32,7 +32,12 @@ const readClipboardWithRetry = async (
 }
 
 export const PageAction = {
-  async execute({ selectionText, command, position, useSecondary }: ExecProps) {
+  async execute({
+    selectionText,
+    command,
+    position,
+    useSecondary,
+  }: ExecuteCommandParams) {
     if (!isPageActionCommand(command)) {
       console.error('command is not for PageAction.')
       return

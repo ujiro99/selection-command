@@ -7,8 +7,7 @@ import { useContextMenu } from '@/hooks/useContextMenu'
 import { useSelectContext } from '@/hooks/useSelectContext'
 import { useCommandExecutor } from '@/hooks/useCommandExecutor'
 import type { SelectionCommand } from '@/types'
-import { ExecState } from '@/action'
-import { POPUP_OFFSET } from '@/const'
+import { POPUP_OFFSET, ExecState } from '@/const'
 
 import css from './Menu.module.css'
 

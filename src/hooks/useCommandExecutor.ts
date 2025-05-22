@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { ExecState } from '@/action'
+import { ExecState } from '@/const'
 import type { Command, SelectionCommand } from '@/types'
-import { executeCommand } from '@/services/commandExecutor'
+import { execute } from '@/action/executor'
 
 type ItemState = {
   state: ExecState
@@ -37,7 +37,7 @@ export function useCommandExecutor() {
       return
     }
 
-    const res = await executeCommand({
+    const res = await execute({
       command,
       position,
       selectionText,

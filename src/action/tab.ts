@@ -1,9 +1,13 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import { toUrl, isValidString } from '@/lib/utils'
-import type { ExecProps } from './index'
+import type { ExecuteCommandParams } from '@/types'
 
 export const Tab = {
-  async execute({ selectionText, command, useSecondary }: ExecProps) {
+  async execute({
+    selectionText,
+    command,
+    useSecondary,
+  }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
       console.error('searchUrl is not valid.')
       return

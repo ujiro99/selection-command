@@ -14,7 +14,8 @@ import type {
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_OPEN_MODE,
-  EXEC_STATE,
+  PAGE_ACTION_EXEC_STATE,
+  ExecState,
 } from '@/const'
 import type { PageAction } from '@/services/pageAction'
 import { INHERIT } from '@/const'
@@ -170,6 +171,15 @@ export type SessionData = {
   timestamp: number
 }
 
+export type ExecuteCommandParams = {
+  command: Command | SelectionCommand
+  position: { x: number; y: number } | null
+  selectionText: string
+  target?: Element | null
+  useSecondary?: boolean
+  changeState?: (state: ExecState, message?: string) => void
+}
+
 export type CaptureData = {
   id: string
   data: string
@@ -214,7 +224,7 @@ export type PageActionContext = {
 }
 
 export type PageActiontResult = {
-  status: EXEC_STATE
+  status: PAGE_ACTION_EXEC_STATE
   stepId: string
   type: PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
   label: string

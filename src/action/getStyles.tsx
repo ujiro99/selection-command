@@ -1,8 +1,8 @@
-import type { ExecProps } from './index'
+import type { ExecuteCommandParams } from '@/types'
 import { TextStyle } from '@/components/result/TextStyle'
 
 export const GetStyles = {
-  async execute({ target }: ExecProps) {
+  async execute({ target }: ExecuteCommandParams) {
     if (!target) {
       return
     }

@@ -28,6 +28,13 @@ export enum OPEN_MODE_BG {
   PAGE_ACTION = OPEN_MODE.PAGE_ACTION,
 }
 
+export enum ExecState {
+  NONE = 0,
+  EXECUTING = 1,
+  SUCCESS = 2,
+  FAIL = 3,
+}
+
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = 'previewPopup',
   PREVIEW_WINDOW = 'previewWindow',
@@ -160,7 +167,7 @@ export enum PAGE_ACTION_CONTROL {
   end = 'end',
 }
 
-export enum EXEC_STATE {
+export enum PAGE_ACTION_EXEC_STATE {
   Queue = 'Queue',
   Start = 'Start',
   Doing = 'Doing',

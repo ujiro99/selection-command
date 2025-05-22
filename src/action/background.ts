@@ -4,7 +4,7 @@ import { Window } from './window'
 import { Tab } from './tab'
 // import { Api } from './api'
 import { PageAction } from './pageAction'
-import type { Command, Point } from '@/types'
+import type { ExecuteCommandParams } from '@/types'
 
 export enum ExecState {
   NONE = 0,
@@ -13,19 +13,39 @@ export enum ExecState {
   FAIL = 3,
 }
 
-export interface ExecProps {
-  selectionText: string
-  command: Command
-  position: Point | null
-  target: Element | null
-  useSecondary: boolean
-  changeState: (state: ExecState, message?: string) => void
-}
-
 export const actionsForBackground = {
   [OPEN_MODE_BG.POPUP]: Popup,
   [OPEN_MODE_BG.WINDOW]: Window,
   [OPEN_MODE_BG.TAB]: Tab,
   // [OPEN_MODE.API]: Api,
   [OPEN_MODE_BG.PAGE_ACTION]: PageAction,
+}
+
+export async function execute({
+  command,
+  position,
+  selectionText,
+  target,
+  useSecondary = false,
+  changeState,
+}: ExecuteCommandParams) {
+  let mode = command.openMode as unknown as OPEN_MODE_BG
+  if (
+    useSecondary &&
+    'openModeSecondary' in command &&
+    command.openModeSecondary
+  ) {
+    mode = command.openModeSecondary as unknown as OPEN_MODE_BG
+  }
+
+  const res = await actionsForBackground[mode].execute({
+    selectionText,
+    command,
+    position,
+    useSecondary,
+    changeState: changeState ?? (() => {}),
+    target: target ?? null,
+  })
+
+  return res
 }

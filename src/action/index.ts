@@ -9,23 +9,6 @@ import { PageAction } from './pageAction'
 import { Option } from './option'
 import { GetStyles as GetTextStyles } from './getStyles'
 import { AddPageRule } from './addPageRule'
-import type { Command, Point } from '@/types'
-
-export enum ExecState {
-  NONE = 0,
-  EXECUTING = 1,
-  SUCCESS = 2,
-  FAIL = 3,
-}
-
-export interface ExecProps {
-  selectionText: string
-  command: Command
-  position: Point | null
-  target: Element | null
-  useSecondary: boolean
-  changeState: (state: ExecState, message?: string) => void
-}
 
 export const actions = {
   [OPEN_MODE.POPUP]: Popup,

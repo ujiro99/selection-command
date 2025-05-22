@@ -81,7 +81,9 @@ export type OpenPopupsProps = {
   type: POPUP_TYPE
 }
 
-export const openPopups = async (param: OpenPopupsProps): Promise<number[]> => {
+export const openPopupWindows = async (
+  param: OpenPopupsProps,
+): Promise<number[]> => {
   const { top, left, width, height, screen } = param
   const current = await chrome.windows.getCurrent()
   const type = param.type ?? POPUP_TYPE.POPUP

@@ -1,10 +1,10 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import { linksInSelection } from '@/services/dom'
 import { getScreenSize } from '@/services/screen'
-import type { ExecProps } from './index'
+import type { ExecuteCommandParams } from '@/types'
 
 export const SelectedLinkPopup = {
-  async execute({ command, position }: ExecProps) {
+  async execute({ command, position }: ExecuteCommandParams) {
     if (position) {
       Ipc.send(BgCommand.openPopups, {
         commandId: command.id,

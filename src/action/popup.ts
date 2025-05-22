@@ -2,10 +2,10 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { toUrl, isValidString } from '@/lib/utils'
 import { getScreenSize } from '@/services/screen'
 import { POPUP_TYPE } from '@/const'
-import type { ExecProps } from './index'
+import type { ExecuteCommandParams } from '@/types'
 
 export const Popup = {
-  async execute({ selectionText, command, position }: ExecProps) {
+  async execute({ selectionText, command, position }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
       console.error('searchUrl is not valid.')
       return

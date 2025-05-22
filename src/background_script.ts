@@ -9,14 +9,12 @@ import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { Settings } from '@/services/settings'
 import { PopupOption, PopupPlacement } from '@/services/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
-import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import { BgData } from '@/services/backgroundData'
-import { escapeJson, isSearchCommand, isPageActionCommand } from '@/lib/utils'
-import { incrementCommandExecutionCount } from '@/services/commandMetrics'
-import { executeCommandForBg } from '@/services/commandExecutorBg'
+import { isSearchCommand, isPageActionCommand } from '@/lib/utils'
+import { execute } from '@/action/background'
+import * as ActionHelper from '@/action/helper'
 import type { IpcCallback } from '@/services/ipc'
 import type {
-  CommandVariable,
   WindowType,
   WindowLayer,
   CaptureData,
@@ -29,24 +27,6 @@ BgData.init()
 
 type Sender = chrome.runtime.MessageSender
 
-export type openPopupAndClickProps = OpenPopupsProps & {
-  selector: string
-}
-
-export type execApiProps = {
-  url: string
-  pageUrl: string
-  pageTitle: string
-  selectionText: string
-  fetchOptions: string
-  variables: CommandVariable[]
-}
-
-export type openTabProps = {
-  url: string
-  active: boolean
-}
-
 export type addPageRuleProps = {
   url: string
 }
@@ -55,87 +35,11 @@ type addCommandProps = {
   command: string
 }
 
-function bindVariables(
-  str: string,
-  variables: CommandVariable[],
-  obj: { [key: string]: string },
-): string {
-  const arr = [...variables]
-  for (const [key, value] of Object.entries(obj)) {
-    arr.push({ name: key, value: value })
-  }
-  let res = str
-  for (const v of arr) {
-    const re = new RegExp(`\\$\\{${v.name}\\}`, 'g')
-    res = res.replace(re, v.value)
-  }
-  return res
-}
-
 const commandFuncs = {
-  [BgCommand.openPopups]: (
-    param: OpenPopupsProps,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    incrementCommandExecutionCount().then(async () => {
-      try {
-        await openPopups(param)
-        response(true)
-      } catch (error) {
-        console.error('Failed to execute openPopups:', error)
-        response(false)
-      }
-    })
-    return true
-  },
-
-  [BgCommand.openPopupAndClick]: (
-    param: openPopupAndClickProps,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    incrementCommandExecutionCount().then(async () => {
-      try {
-        const tabIds = await openPopups(param)
-        if (tabIds.length > 0) {
-          await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
-            selector: (param as { selector: string }).selector,
-          })
-        } else {
-          console.debug('tab not found')
-        }
-        response(true)
-      } catch (error) {
-        console.error('Failed to execute openPopupAndClick:', error)
-        response(false)
-      }
-    })
-    return true
-  },
-
-  [BgCommand.openTab]: (
-    param: openTabProps,
-    sender: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    getCurrentTab().then((tab) => {
-      const currentTab = sender.tab ?? tab
-      chrome.tabs.create(
-        {
-          ...param,
-          windowId: currentTab.windowId,
-          index: currentTab.index + 1,
-        },
-        (newTab) => {
-          incrementCommandExecutionCount(newTab.id).then(() => {
-            response(true)
-          })
-        },
-      )
-    })
-    return true
-  },
+  [BgCommand.openPopups]: ActionHelper.openPopups,
+  [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
+  [BgCommand.openTab]: ActionHelper.openTab,
+  [BgCommand.execApi]: ActionHelper.execApi,
 
   [BgCommand.openOption]: (): boolean => {
     chrome.tabs.create({
@@ -218,34 +122,6 @@ const commandFuncs = {
     Settings.addCommands([cmd]).then(() => {
       response(true)
     })
-    return true
-  },
-
-  [BgCommand.execApi]: (
-    param: execApiProps,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    const { url, pageUrl, pageTitle, selectionText, fetchOptions, variables } =
-      param
-    try {
-      const str = bindVariables(fetchOptions, variables, {
-        pageUrl,
-        pageTitle,
-        text: escapeJson(escapeJson(selectionText)),
-      })
-      const opt = JSON.parse(str)
-      const exec = async () => {
-        const res = await fetch(url, opt)
-        const json = await res.json()
-        response({ ok: res.ok, res: json })
-      }
-      exec()
-    } catch (e) {
-      console.error(e)
-      response({ ok: false, res: e })
-    }
-    // return async
     return true
   },
 
@@ -558,13 +434,12 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       // Execute command in tab
       ret = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
         command,
-        position: null, // Center the display
       })
     }
 
     if (tab?.id == null || ret instanceof Error) {
       // Execute command directly in background
-      await executeCommandForBg({
+      await execute({
         command,
         position: { x: 10000, y: 10000 },
         selectionText: '',
