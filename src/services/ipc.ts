@@ -16,6 +16,7 @@ export enum BgCommand {
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
   captureScreenshot = 'captureScreenshot',
+  getTabId = 'getTabId',
   // PageAction
   addPageAction = 'addPageAction',
   addCapture = 'addCapture',
@@ -35,7 +36,6 @@ export enum TabCommand {
   executeAction = 'executeAction',
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
-  getTabId = 'getTabId',
   showReviewRequest = 'showReviewRequest',
   // PageAction
   sendWindowSize = 'sendWindowSize',
@@ -252,7 +252,7 @@ export const Ipc = {
   },
 
   async getTabId() {
-    return Ipc.send(TabCommand.getTabId)
+    return Ipc.send(BgCommand.getTabId)
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {

@@ -35,6 +35,15 @@ type addCommandProps = {
   command: string
 }
 
+const getTabId = (
+  _: unknown,
+  sender: Sender,
+  response: (res: unknown) => void,
+) => {
+  response(sender.tab?.id)
+  return true
+}
+
 const commandFuncs = {
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
@@ -262,6 +271,8 @@ const commandFuncs = {
     return false
   },
 
+  [BgCommand.getTabId]: getTabId,
+
   //
   // PageAction
   //
@@ -280,16 +291,6 @@ for (const key in BgCommand) {
   const command = BgCommand[key as keyof typeof BgCommand]
   Ipc.addListener(command, commandFuncs[key])
 }
-
-const getTabId = (
-  _: unknown,
-  sender: Sender,
-  response: (res: unknown) => void,
-) => {
-  response(sender.tab?.id)
-  return true
-}
-Ipc.addListener(TabCommand.getTabId, getTabId as IpcCallback)
 
 const updateWindowSize = async (
   commandId: string,
@@ -417,7 +418,6 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Add command processing
 chrome.commands.onCommand.addListener(async (commandName) => {
-  console.log('commandName', commandName)
   try {
     // Get settings
     const settings = await Settings.get()
