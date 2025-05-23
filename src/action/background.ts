@@ -7,13 +7,6 @@ import { PageAction } from './pageAction'
 import type { ExecuteCommandParams } from '@/types'
 import { executeAction } from './executor'
 
-export enum ExecState {
-  NONE = 0,
-  EXECUTING = 1,
-  SUCCESS = 2,
-  FAIL = 3,
-}
-
 export const actionsForBackground = {
   [OPEN_MODE_BG.POPUP]: Popup,
   [OPEN_MODE_BG.WINDOW]: Window,

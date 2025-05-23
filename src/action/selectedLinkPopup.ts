@@ -13,7 +13,7 @@ export const SelectedLinkPopup = {
         left: Math.floor(window.screenLeft + position.x + 20),
         height: command.popupOption?.height,
         width: command.popupOption?.width,
-        screen: getScreenSize(),
+        screen: await getScreenSize(),
       })
     }
   },

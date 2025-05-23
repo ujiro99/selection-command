@@ -28,7 +28,7 @@ export const LinkPreview = {
           left: Math.floor(position.x),
           height: command.popupOption?.height,
           width: command.popupOption?.width,
-          screen: getScreenSize(),
+          screen: await getScreenSize(),
           type,
         })
         return
@@ -46,7 +46,7 @@ export const LinkPreview = {
           left: Math.floor(position.x),
           height: command.popupOption?.height,
           width: command.popupOption?.width,
-          screen: getScreenSize(),
+          screen: await getScreenSize(),
           selector,
           type,
         })

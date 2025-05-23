@@ -376,7 +376,7 @@ const CommandEditDialogInner = ({
       startUrl,
       openMode: getValues('pageActionOption.openMode'),
       size: getValues('popupOption') ?? POPUP_OPTION,
-      screen: getScreenSize(),
+      screen: await getScreenSize(),
     })
   }
 
