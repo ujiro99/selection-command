@@ -22,6 +22,7 @@ import type {
   CaptureScreenShotRes,
 } from '@/types'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
+import { openClipboardReader } from '@/services/chrome'
 
 BgData.init()
 
@@ -272,6 +273,22 @@ const commandFuncs = {
   },
 
   [BgCommand.getTabId]: getTabId,
+
+  [BgCommand.getClipboard]: (
+    _: unknown,
+    __: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    openClipboardReader()
+      .then((clipboardText) => {
+        response(clipboardText)
+      })
+      .catch((error) => {
+        console.error('Failed to read clipboard:', error)
+        response(null)
+      })
+    return true
+  },
 
   //
   // PageAction

@@ -17,6 +17,7 @@ export enum BgCommand {
   toggleStar = 'toggleStar',
   captureScreenshot = 'captureScreenshot',
   getTabId = 'getTabId',
+  getClipboard = 'getClipboard',
   // PageAction
   addPageAction = 'addPageAction',
   addCapture = 'addCapture',
@@ -37,6 +38,7 @@ export enum TabCommand {
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   showReviewRequest = 'showReviewRequest',
+  readClipboard = 'readClipboard',
   // PageAction
   sendWindowSize = 'sendWindowSize',
   execPageAction = 'execPageAction',
