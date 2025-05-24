@@ -60,7 +60,6 @@ export async function getWindowPosition(): Promise<WindowPosition> {
       left = window.screenLeft
     }
   } catch (error) {
-    console.warn('Failed to get window position:', error)
     // Use default values if window position retrieval fails
   }
   return {

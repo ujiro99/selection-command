@@ -86,7 +86,13 @@ export const openPopupWindows = async (
   param: OpenPopupsProps,
 ): Promise<number[]> => {
   const { top, left, width, height, screen } = param
-  const current = await chrome.windows.getCurrent()
+  let current: chrome.windows.Window
+  try {
+    current = await chrome.windows.getCurrent()
+  } catch (e) {
+    // console.warn('Failed to get current window:', e)
+    current = { id: undefined, incognito: false } as chrome.windows.Window
+  }
   const type = param.type ?? POPUP_TYPE.POPUP
   const windows = await Promise.all(
     param.urls.reverse().map((url, idx) => {

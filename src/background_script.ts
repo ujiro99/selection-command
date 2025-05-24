@@ -171,7 +171,7 @@ const commandFuncs = {
         }
       }
     }
-    if (!w) {
+    if (!w || w.srcWindowId == null) {
       console.warn('window not found', sender.tab?.windowId)
       chrome.tabs.create({ url: sender.url })
       chrome.windows.remove(sender.tab?.windowId as number)
