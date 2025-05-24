@@ -17,21 +17,22 @@ import {
 } from '@/components/ui/select'
 import { MenuImage } from '@/components/menu/MenuImage'
 
-type SelectOptionType = {
+export type SelectOptionType = {
   name: string
   value: string
+  nameRender?: (name: string) => React.ReactNode
   iconUrl?: string
   iconSvg?: string
 }
 
-type SelectGroupType = {
+export type SelectGroupType = {
   label: string
   options: SelectOptionType[]
   iconUrl?: string
   iconSvg?: string
 }
 
-type SelectFieldType = {
+export type SelectFieldType = {
   control: any
   name: string
   formLabel: string
@@ -40,21 +41,29 @@ type SelectFieldType = {
   description?: string
 }
 
+const renderOptionContent = (opt: SelectOptionType) => {
+  const textContent = opt.nameRender ? opt.nameRender(opt.name) : opt.name
+
+  if (opt.iconUrl == null && opt.iconSvg == null) {
+    return textContent
+  }
+
+  return (
+    <span className="flex items-center gap-1 truncate max-w-[400px]">
+      <MenuImage
+        src={opt.iconUrl}
+        svg={opt.iconSvg}
+        alt={opt.name}
+        className="w-5 h-5 mr-1.5"
+      />
+      {textContent}
+    </span>
+  )
+}
+
 const renderOption = (opt: SelectOptionType) => (
   <SelectItem value={opt.value} key={opt.value} className="hover:bg-gray-100">
-    {opt.iconUrl != null || opt.iconSvg != null ? (
-      <span className="flex items-center gap-1">
-        <MenuImage
-          src={opt.iconUrl}
-          svg={opt.iconSvg}
-          alt={opt.name}
-          className="w-5 h-5 mr-1.5"
-        />
-        {opt.name}
-      </span>
-    ) : (
-      opt.name
-    )}
+    {renderOptionContent(opt)}
   </SelectItem>
 )
 
@@ -93,7 +102,7 @@ export const SelectField = ({
           <div className="w-4/6">
             <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="relative">
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
               </FormControl>

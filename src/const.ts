@@ -21,6 +21,10 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = 'addPageRule',
 }
 
+/**
+ * Background script only supports the following modes.
+ * Modes that can operate without text selection.
+ */
 export enum OPEN_MODE_BG {
   POPUP = OPEN_MODE.POPUP,
   WINDOW = OPEN_MODE.WINDOW,

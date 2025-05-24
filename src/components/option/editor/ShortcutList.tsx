@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Control, useFieldArray, useWatch } from 'react-hook-form'
 import { Keyboard, SquareArrowOutUpRight } from 'lucide-react'
-
 import { SelectField } from '@/components/option/field/SelectField'
+import type {
+  SelectOptionType,
+  SelectGroupType,
+} from '@/components/option/field/SelectField'
 import { t as _t } from '@/services/i18n'
 import { Ipc, BgCommand } from '@/services/ipc'
 import type { Command, CommandFolder, ShortcutCommand } from '@/types'
-import { SHORTCUT_PLACEHOLDER } from '@/const'
+import { SHORTCUT_PLACEHOLDER, OPEN_MODE_BG } from '@/const'
+import { cn } from '@/lib/utils'
+import css from './ShortcutList.module.css'
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -14,17 +19,25 @@ type ShortcutListProps = {
   control: Control<any>
 }
 
-type SelectOptionType = {
-  name: string
-  value: string
-  iconUrl?: string
-}
-
-type SelectGroupType = {
-  label: string
-  options: SelectOptionType[]
-  iconUrl?: string
-  iconSvg?: string
+const createNameRender = (openMode: string) => {
+  const isTextSelectionOnly = !Object.values(OPEN_MODE_BG).includes(
+    openMode as any,
+  )
+  return isTextSelectionOnly
+    ? (name: string) => (
+        <span className="truncate">
+          {name}
+          <span
+            className={cn(
+              'absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap',
+              css.tag,
+            )}
+          >
+            {t('shortcut_text_selection_only')}
+          </span>
+        </span>
+      )
+    : undefined
 }
 
 // Group commands by folder while maintaining order
@@ -62,6 +75,7 @@ const groupCommandsByFolder = (
         name: command.title,
         value: command.id,
         iconUrl: command.iconUrl,
+        nameRender: createNameRender(command.openMode),
       })
     } else {
       // For folder commands, add them as a group if not already added
@@ -78,6 +92,7 @@ const groupCommandsByFolder = (
             name: cmd.title,
             value: cmd.id,
             iconUrl: cmd.iconUrl,
+            nameRender: createNameRender(cmd.openMode),
           })),
         })
       }

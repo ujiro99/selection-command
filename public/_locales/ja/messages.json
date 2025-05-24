@@ -757,5 +757,8 @@
   },
   "Option_shortcut_select_placeholder": {
     "message": "コマンドを選択"
+  },
+  "Option_shortcut_text_selection_only": {
+    "message": "テキスト選択中のみ"
   }
 }

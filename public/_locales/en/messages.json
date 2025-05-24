@@ -760,5 +760,8 @@
   },
   "Option_shortcut_select_placeholder": {
     "message": "Select an command"
+  },
+  "Option_shortcut_text_selection_only": {
+    "message": "Text selection only"
   }
 }
