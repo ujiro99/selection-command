@@ -124,13 +124,17 @@ export const openPopupWindows = async (
       commandId: param.commandId,
       srcWindowId: current.id,
     })) as WindowLayer
-    const data = BgData.get()
     if (type === POPUP_TYPE.POPUP) {
-      data.windowStack.push(layer)
+      await BgData.set((data) => ({
+        ...data,
+        windowStack: [...data.windowStack, layer],
+      }))
     } else {
-      data.normalWindows = layer
+      await BgData.set((data) => ({
+        ...data,
+        normalWindows: layer,
+      }))
     }
-    BgData.set(data)
   }
 
   const tabIds = windows.reduce((tabIds, w) => {
@@ -263,6 +267,11 @@ export const openClipboardReader = async (): Promise<string> => {
     left: 0,
     top: 0,
   })
+
+  await BgData.set((data) => ({
+    ...data,
+    clipboardWindowId: w.id ?? null,
+  }))
 
   const tabId = w.tabs?.[0].id as number
   await Ipc.ensureConnection(tabId)

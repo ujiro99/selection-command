@@ -24,6 +24,7 @@ import type {
 } from '@/types'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { openClipboardReader } from '@/services/chrome'
+import { updateActiveScreenId } from '@/services/screen'
 
 BgData.init()
 
@@ -338,6 +339,9 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   const data = BgData.get()
   const stack = data.windowStack
 
+  // Clear selection text
+  await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, '')
+
   // Close all popup windows when focus is lost (WINDOW_ID_NONE)
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     if (stack.length > 0) {
@@ -346,11 +350,16 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
           chrome.windows.remove(window.id)
         }
       }
-      data.windowStack = []
-      BgData.set(data)
+      BgData.set((data) => ({
+        ...data,
+        windowStack: [],
+      }))
     }
     return
   }
+
+  // Update active screen ID
+  await updateActiveScreenId(windowId)
 
   // Close popup windows when focus changed to lower stack window
   const idx = stack.map((s) => s.findIndex((w) => w.id === windowId))
@@ -381,16 +390,23 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     }
   }
 
-  BgData.set(data)
+  BgData.set((data) => ({
+    ...data,
+    windowStack: stack,
+  }))
 })
 
 chrome.windows.onRemoved.addListener((windowId: number) => {
   const data = BgData.get()
-  const idx = data.normalWindows?.findIndex((w) => w.id === windowId)
+  const normalWindows = data.normalWindows ?? []
+  const idx = normalWindows.findIndex((w) => w.id === windowId)
+
   if (idx >= 0) {
-    data.normalWindows.splice(idx, 1)
-    BgData.set(data)
-    return
+    normalWindows.splice(idx, 1)
+    BgData.set((data) => ({
+      ...data,
+      normalWindows,
+    }))
   }
 })
 
@@ -407,13 +423,23 @@ chrome.windows.onBoundsChanged.addListener((window) => {
   }
 })
 
-chrome.tabs.onActivated.addListener(async () => {
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
   // Force close the menu
   try {
     const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
     ret.filter((v) => v).forEach((v) => console.debug(v))
   } catch (error) {
     console.error('Failed to close menu:', error)
+  }
+
+  // Get the active tab's window and update screen ID
+  try {
+    const tab = await chrome.tabs.get(activeInfo.tabId)
+    if (tab.windowId) {
+      await updateActiveScreenId(tab.windowId)
+    }
+  } catch (error) {
+    console.error('Failed to get active screen ID:', error)
   }
 })
 
@@ -453,7 +479,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     }
 
     // Get active tab
-    const [tab] = await chrome.tabs.query({ active: true })
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
     const command = settings.commands.find(
       (c) => c.id === shortcut.targetCommandId,
     )
@@ -462,18 +488,14 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    let selectionText = ''
     let enableSendTab =
       tab?.id &&
       !tab.url?.startsWith('chrome') &&
       !tab.url?.includes('chromewebstore.google.com')
 
-    if (enableSendTab && tab?.id) {
-      // Get selection text from session storage
-      selectionText = await Storage.get<string>(
-        SESSION_STORAGE_KEY.SELECTION_TEXT,
-      )
-    }
+    let selectionText = await Storage.get<string>(
+      SESSION_STORAGE_KEY.SELECTION_TEXT,
+    )
 
     // If no text is selected, handle according to noSelectionBehavior
     if (!selectionText) {
@@ -497,9 +519,9 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     }
 
     let ret: unknown
-    if (enableSendTab && tab?.id) {
+    if (enableSendTab) {
       // Execute command in tab
-      ret = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
+      ret = await Ipc.sendTab(tab?.id ?? 0, TabCommand.executeAction, {
         command,
         selectionText,
       })
