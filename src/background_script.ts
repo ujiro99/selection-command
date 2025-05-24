@@ -3,6 +3,7 @@ import {
   LINK_COMMAND_ENABLED,
   POPUP_ENABLED,
   OPTION_PAGE_PATH,
+  SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from '@/const'
 import '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
@@ -457,8 +458,38 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    let ret: unknown
+    let selectionText = ''
     let enableSendTab = tab?.id && !tab.url?.startsWith('chrome')
+
+    if (enableSendTab && tab?.id) {
+      // Get selection text from session storage
+      selectionText = await Storage.get<string>(
+        SESSION_STORAGE_KEY.SELECTION_TEXT,
+      )
+    }
+
+    // If no text is selected, handle according to noSelectionBehavior
+    if (!selectionText) {
+      if (
+        shortcut.noSelectionBehavior ===
+        SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
+      ) {
+        return
+      } else if (
+        shortcut.noSelectionBehavior ===
+        SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
+      ) {
+        const clipboardText = await Ipc.send(BgCommand.getClipboard)
+        console.debug('clipboardText', clipboardText)
+        if (clipboardText) {
+          selectionText = clipboardText
+        } else {
+          return
+        }
+      }
+    }
+
+    let ret: unknown
     if (enableSendTab && tab?.id) {
       // Execute command in tab
       ret = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
@@ -471,7 +502,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       await execute({
         command,
         position: { x: 10000, y: 10000 },
-        selectionText: '',
+        selectionText,
         target: null,
       })
     }

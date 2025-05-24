@@ -8,7 +8,10 @@ import { OpenInTab } from '@/components/OpenInTab'
 import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
 import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
 import { getSelectionText } from '@/services/dom'
-import { SelectContextProvider } from '@/hooks/useSelectContext'
+import {
+  SelectContextProvider,
+  useSelectContext,
+} from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 import { Ipc, TabCommand } from '@/services/ipc'
 import { Toaster } from '@/components/ui/toaster'
@@ -19,9 +22,8 @@ import { InvisibleItem } from '@/components/menu/InvisibleItem'
 
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
-  const [target, setTarget] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
-  const [selectionText, setSelectionText] = useState('')
+  const { selectionText, setSelectionText } = useSelectContext()
   const { toast } = useToast()
 
   useEffect(() => {
@@ -32,10 +34,10 @@ export function App() {
   }, [])
 
   useEffect(() => {
-    const onSelectionchange = () => {
+    const onSelectionchange = async () => {
       if (isHover) return
       const text = getSelectionText()
-      setSelectionText(text)
+      await setSelectionText(text)
     }
     document.addEventListener('selectionchange', onSelectionchange)
     return () => {
@@ -44,11 +46,7 @@ export function App() {
   }, [isHover])
 
   useEffect(() => {
-    const handleShowReviewRequest = (
-      _param: any,
-      _sender: any,
-      response: any,
-    ) => {
+    const handleShowReviewRequest = (_: any, __: any, response: any) => {
       showReviewRequestToast(toast, () => {
         Settings.update('hasShownReviewRequest', () => true)
       })
@@ -64,7 +62,7 @@ export function App() {
 
   return (
     <PageActionContextProvider>
-      <SelectContextProvider value={{ selectionText, target, setTarget }}>
+      <SelectContextProvider>
         <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
         <Popup
           positionElm={positionElm}

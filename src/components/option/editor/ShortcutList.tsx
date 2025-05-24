@@ -9,7 +9,11 @@ import type {
 import { t as _t } from '@/services/i18n'
 import { Ipc, BgCommand } from '@/services/ipc'
 import type { Command, CommandFolder, ShortcutCommand } from '@/types'
-import { SHORTCUT_PLACEHOLDER, OPEN_MODE_BG } from '@/const'
+import {
+  OPEN_MODE_BG,
+  SHORTCUT_PLACEHOLDER,
+  SHORTCUT_NO_SELECTION_BEHAVIOR,
+} from '@/const'
 import { cn } from '@/lib/utils'
 import css from './ShortcutList.module.css'
 
@@ -19,11 +23,11 @@ type ShortcutListProps = {
   control: Control<any>
 }
 
+const isTextSelectionOnly = (openMode: string) =>
+  !Object.values(OPEN_MODE_BG).includes(openMode as any)
+
 const createNameRender = (openMode: string) => {
-  const isTextSelectionOnly = !Object.values(OPEN_MODE_BG).includes(
-    openMode as any,
-  )
-  return isTextSelectionOnly
+  return isTextSelectionOnly(openMode)
     ? (name: string) => (
         <span className="truncate">
           {name}
@@ -120,6 +124,10 @@ export function ShortcutList({ control }: ShortcutListProps) {
     name: 'folders',
     defaultValue: [],
   })
+  const shortcutValues = useWatch({
+    control,
+    name: 'shortcuts.shortcuts',
+  })
 
   const updateCommands = () => {
     chrome.commands.getAll((cmds) => {
@@ -158,9 +166,21 @@ export function ShortcutList({ control }: ShortcutListProps) {
     const initialData = commands.map((cmd) => ({
       commandId: cmd.name || '',
       targetCommandId: SHORTCUT_PLACEHOLDER,
+      noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
     }))
     replace(initialData)
   }, [replace, commands, userCommands])
+
+  const noSelectionOptions = [
+    {
+      name: t('shortcut_no_selection_do_nothing'),
+      value: SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
+    },
+    {
+      name: t('shortcut_no_selection_use_clipboard'),
+      value: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+    },
+  ]
 
   return (
     <div className="space-y-3">
@@ -188,10 +208,10 @@ export function ShortcutList({ control }: ShortcutListProps) {
       </p>
       <div className="space-y-4">
         {fields.map((field, index) => {
-          const cmd = commands[index]
-          if (!cmd) return null
+          const chromeCmd = commands[index]
+          if (!chromeCmd) return null
 
-          const groupedOptions = [
+          const opts = [
             {
               name: t('shortcut_select_placeholder'),
               value: SHORTCUT_PLACEHOLDER,
@@ -199,14 +219,31 @@ export function ShortcutList({ control }: ShortcutListProps) {
             ...groupCommandsByFolder(userCommands, folders),
           ]
 
+          const targetId = shortcutValues[index]?.targetCommandId
+          const selectedCmd = userCommands.find(
+            (c: Command) => c.id === targetId,
+          )
+          const showNoSel =
+            selectedCmd && !isTextSelectionOnly(selectedCmd.openMode)
+
           return (
-            <SelectField
-              key={field.id}
-              control={control}
-              name={`shortcuts.shortcuts.${index}.targetCommandId`}
-              formLabel={`${cmd.description} (${cmd.shortcut || t('shortcut_not_set')})`}
-              options={groupedOptions}
-            />
+            <div key={field.id} className="space-y-2">
+              <SelectField
+                control={control}
+                name={`shortcuts.shortcuts.${index}.targetCommandId`}
+                formLabel={`${chromeCmd.description} (${chromeCmd.shortcut || t('shortcut_not_set')})`}
+                options={opts}
+              />
+              {showNoSel && (
+                <SelectField
+                  control={control}
+                  name={`shortcuts.shortcuts.${index}.noSelectionBehavior`}
+                  formLabel={t('shortcut_no_selection_behavior')}
+                  options={noSelectionOptions}
+                  labelClass="ml-6 font-normal"
+                />
+              )}
+            </div>
           )
         })}
       </div>

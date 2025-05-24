@@ -744,10 +744,10 @@
     "message": "ショートカットキー"
   },
   "Option_shortcuts_desc": {
-    "message": "各ショートカットキーへ、実行するコマンドを設定します。"
+    "message": "ショートカットキーで実行するコマンドを設定します。"
   },
   "Option_shortcuts_settings_desc": {
-    "message": "キーの変更は拡張機能の設定画面から行ってください。"
+    "message": "キー変更は拡張機能の設定画面から行ってください。"
   },
   "Option_shortcuts_settings_link": {
     "message": "キー設定"
@@ -760,5 +760,14 @@
   },
   "Option_shortcut_text_selection_only": {
     "message": "テキスト選択中のみ"
+  },
+  "Option_shortcut_no_selection_behavior": {
+    "message": "テキスト未選択時"
+  },
+  "Option_shortcut_no_selection_do_nothing": {
+    "message": "何もしない"
+  },
+  "Option_shortcut_no_selection_use_clipboard": {
+    "message": "クリップボードの内容を使用"
   }
 }

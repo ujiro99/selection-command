@@ -13,3 +13,5 @@ Ipc.addListener(TabCommand.readClipboard, (_param, _sender, response) => {
     })
   return true
 })
+
+Ipc.addListener(TabCommand.connect, () => false)

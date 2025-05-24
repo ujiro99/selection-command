@@ -16,6 +16,7 @@ import type {
   PAGE_ACTION_OPEN_MODE,
   PAGE_ACTION_EXEC_STATE,
   ExecState,
+  SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from '@/const'
 import type { PageAction } from '@/services/pageAction'
 import { INHERIT } from '@/const'
@@ -145,6 +146,7 @@ export type UserStats = {
 export type ShortcutCommand = {
   commandId: string
   targetCommandId: string
+  noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR
 }
 
 export type ShortcutSettings = {

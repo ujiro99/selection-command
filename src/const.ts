@@ -219,3 +219,8 @@ export const COMMAND_USAGE = {
 } as const
 
 export const SHORTCUT_PLACEHOLDER = '_placeholder_'
+
+export enum SHORTCUT_NO_SELECTION_BEHAVIOR {
+  DO_NOTHING = 'doNothing',
+  USE_CLIPBOARD = 'useClipboard',
+}

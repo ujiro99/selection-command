@@ -16,6 +16,7 @@ import {
   SelectLabel,
 } from '@/components/ui/select'
 import { MenuImage } from '@/components/menu/MenuImage'
+import { cn } from '@/lib/utils'
 
 export type SelectOptionType = {
   name: string
@@ -39,6 +40,7 @@ export type SelectFieldType = {
   options: (SelectOptionType | SelectGroupType)[]
   placeholder?: string
   description?: string
+  labelClass?: string
 }
 
 const renderOptionContent = (opt: SelectOptionType) => {
@@ -88,6 +90,7 @@ export const SelectField = ({
   options,
   placeholder,
   description,
+  labelClass,
 }: SelectFieldType) => {
   return (
     <FormField
@@ -96,7 +99,7 @@ export const SelectField = ({
       render={({ field }) => (
         <FormItem className="flex items-center gap-1">
           <div className="w-2/6">
-            <FormLabel>{formLabel}</FormLabel>
+            <FormLabel className={labelClass}>{formLabel}</FormLabel>
             {description && <FormDescription>{description}</FormDescription>}
           </div>
           <div className="w-4/6">

@@ -16,7 +16,7 @@ export function useDetectStartup(props: Props) {
   const { settings, pageRule } = useSetting()
   const { method, leftClickHoldParam } = settings.startupMethod
 
-  let visible = selectionText.length > 0 && positionElm != null
+  let visible = !isEmpty(selectionText) && positionElm != null
   if (pageRule != null) {
     visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
   }
