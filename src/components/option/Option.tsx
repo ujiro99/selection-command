@@ -85,7 +85,6 @@ export function Option() {
             >
               <Popup
                 positionElm={previewElm}
-                selectionText="preview"
                 isPreview={true}
                 ref={setPopupElm}
               />

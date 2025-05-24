@@ -16,7 +16,6 @@ import {
   SelectLabel,
 } from '@/components/ui/select'
 import { MenuImage } from '@/components/menu/MenuImage'
-import { cn } from '@/lib/utils'
 
 export type SelectOptionType = {
   name: string

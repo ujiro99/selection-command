@@ -7,11 +7,7 @@ import { LinkSelector } from '@/components/LinkSelector'
 import { OpenInTab } from '@/components/OpenInTab'
 import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
 import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
-import { getSelectionText } from '@/services/dom'
-import {
-  SelectContextProvider,
-  useSelectContext,
-} from '@/hooks/useSelectContext'
+import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 import { Ipc, TabCommand } from '@/services/ipc'
 import { Toaster } from '@/components/ui/toaster'
@@ -23,7 +19,6 @@ import { InvisibleItem } from '@/components/menu/InvisibleItem'
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
-  const { selectionText, setSelectionText } = useSelectContext()
   const { toast } = useToast()
 
   useEffect(() => {
@@ -32,18 +27,6 @@ export function App() {
       Ipc.removeListener(TabCommand.connect)
     }
   }, [])
-
-  useEffect(() => {
-    const onSelectionchange = async () => {
-      if (isHover) return
-      const text = getSelectionText()
-      await setSelectionText(text)
-    }
-    document.addEventListener('selectionchange', onSelectionchange)
-    return () => {
-      document.removeEventListener('selectionchange', onSelectionchange)
-    }
-  }, [isHover])
 
   useEffect(() => {
     const handleShowReviewRequest = (_: any, __: any, response: any) => {
@@ -62,11 +45,10 @@ export function App() {
 
   return (
     <PageActionContextProvider>
-      <SelectContextProvider>
-        <SelectAnchor selectionText={selectionText} ref={setPositionElm} />
+      <SelectContextProvider isPopupHover={isHover}>
+        <SelectAnchor ref={setPositionElm} />
         <Popup
           positionElm={positionElm}
-          selectionText={selectionText}
           onHover={(v: boolean) => setIsHover(v)}
         />
         <InvisibleItem positionElm={positionElm} />

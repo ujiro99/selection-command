@@ -1,9 +1,15 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from 'react'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
+import { getSelectionText } from '@/services/dom'
 
 type ContextType = {
   selectionText: string
-  setSelectionText: (text: string) => Promise<void>
   target: Element | null
   setTarget: (elm: Element | null) => void
 }
@@ -12,8 +18,10 @@ const context = createContext<ContextType>({} as ContextType)
 
 export const SelectContextProvider = ({
   children,
+  isPopupHover,
 }: {
   children: ReactNode
+  isPopupHover: boolean
 }) => {
   const [selectionText, _setSelectionText] = useState('')
   const [target, setTarget] = useState<Element | null>(null)
@@ -23,21 +31,29 @@ export const SelectContextProvider = ({
     await Storage.set<string>(SESSION_STORAGE_KEY.SELECTION_TEXT, text)
   }
 
+  useEffect(() => {
+    const onSelectionchange = async () => {
+      if (isPopupHover) return
+      const text = getSelectionText()
+      await setSelectionText(text)
+    }
+    document.addEventListener('selectionchange', onSelectionchange)
+    return () => {
+      document.removeEventListener('selectionchange', onSelectionchange)
+    }
+  }, [isPopupHover, setSelectionText])
+
   return (
-    <context.Provider
-      value={{ selectionText, setSelectionText, target, setTarget }}
-    >
+    <context.Provider value={{ selectionText, target, setTarget }}>
       {children}
     </context.Provider>
   )
 }
 
 export const useSelectContext = () => {
-  const { selectionText, setSelectionText, target, setTarget } =
-    useContext(context)
+  const { selectionText, target, setTarget } = useContext(context)
   return {
     selectionText,
-    setSelectionText,
     target,
     setTarget,
   }

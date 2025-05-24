@@ -12,7 +12,6 @@ import css from './Popup.module.css'
 
 export type PopupProps = {
   positionElm: Element | null
-  selectionText: string
   isPreview?: boolean
   onHover?: Function
 }
@@ -32,7 +31,10 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const [inTransition, setInTransition] = useState(false)
     const [shouldRender, setShouldRender] = useState(false)
     const [isHover, setIsHover] = useState(false)
-    const { visible, isContextMenu } = useDetectStartup({ ...props, isHover })
+    const { visible, isContextMenu } = useDetectStartup({
+      ...props,
+      isHover,
+    })
     const isPreview = props.isPreview === true
     const placement = settings.popupPlacement
     const side = isPreview ? SIDE.bottom : (placement.side ?? SIDE.top)
