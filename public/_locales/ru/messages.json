@@ -1,0 +1,776 @@
+{
+  "extName": {
+    "message": "Selection Command – Мгновенный поиск, использование ИИ или запуск инструментов."
+  },
+  "extDescription": {
+    "message": "Ищите, используйте ИИ или запускайте инструменты с выбранным текстом одним щелчком и ускоряйте навигацию."
+  },
+  "saving": {
+    "message": "Сохранение.."
+  },
+  "labelOption": {
+    "message": "Настройки"
+  },
+  "labelCancel": {
+    "message": "Отмена"
+  },
+  "labelClose": {
+    "message": "Закрыть"
+  },
+  "labelAddPageRule": {
+    "message": "Добавить правило страницы."
+  },
+  "previewOnContextMenu": {
+    "message": "Всплывающее меню не будет отображаться при выборе контекстного меню."
+  },
+  "previewOnKeyboard": {
+    "message": "Используйте клавишу $key$ для переключения отображения меню.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Ctrl / Alt / Shift"
+      }
+    }
+  },
+  "previewOnLeftClickHold": {
+    "message": "Удерживайте левую кнопку мыши для отображения меню. Нажмите для закрытия."
+  },
+  "commandHub_description": {
+    "message": "Теперь вы можете делиться командами✨"
+  },
+  "commnadHub_youcanshare": {
+    "message": "⚡️Сгенерированные команды могут быть автоматически вставлены."
+  },
+  "Option_labelCancel": {
+    "message": "Отмена"
+  },
+  "Option_labelUpdate": {
+    "message": "Обновить"
+  },
+  "Option_labelSave": {
+    "message": "Создать"
+  },
+  "Option_labelDetail": {
+    "message": "Детали"
+  },
+  "Option_labelOther": {
+    "message": "Другое"
+  },
+  "Option_Enable": {
+    "message": "Включить"
+  },
+  "Option_Disable": {
+    "message": "Отключить"
+  },
+  "Option_Reset": {
+    "message": "Сбросить"
+  },
+  "Option_Reset_description": {
+    "message": "Вы уверены, что хотите сбросить все настройки по умолчанию?\nЭто действие нельзя отменить.\n※ Рекомендуется сначала <b>\"Экспортировать\"</b>."
+  },
+  "Option_Import_description": {
+    "message": "Выберите файл конфигурации (<pre>*.json</pre>) для импорта."
+  },
+  "Option_Export": {
+    "message": "Экспорт"
+  },
+  "Option_Import": {
+    "message": "Импорт"
+  },
+  "Option_Add": {
+    "message": "Добавить"
+  },
+  "Option_Command": {
+    "message": "Команда"
+  },
+  "Option_Command_tooltip": {
+    "message": "Создать команду."
+  },
+  "Option_Find": {
+    "message": "Поиск команды"
+  },
+  "Option_Command_edit": {
+    "message": "Редактировать команду"
+  },
+  "Option_Command_input": {
+    "message": "Введите информацию о команде."
+  },
+  "Option_Command_rootFolder": {
+    "message": "(Нет папки)"
+  },
+  "Option_startupMethod": {
+    "message": "Способ запуска"
+  },
+  "Option_startupMethod_desc": {
+    "message": "Измените способ отображения всплывающего меню."
+  },
+  "Option_startupMethod_method": {
+    "message": "Метод"
+  },
+  "Option_startupMethod_textSelection": {
+    "message": "Выбор текста (по умолчанию)"
+  },
+  "Option_startupMethod_contextMenu": {
+    "message": "Контекстное меню"
+  },
+  "Option_startupMethod_keyboard": {
+    "message": "Ввод с клавиатуры"
+  },
+  "Option_startupMethod_leftClickHold": {
+    "message": "Удержание левой кнопки"
+  },
+  "Option_startupMethod_param_keyboard": {
+    "message": "Клавиша переключения отображения"
+  },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "Выберите клавишу"
+  },
+  "Option_keyboardParam_Control_windows": {
+    "message": "Ctrl"
+  },
+  "Option_keyboardParam_Alt_windows": {
+    "message": "Alt"
+  },
+  "Option_keyboardParam_Shift_windows": {
+    "message": "Shift"
+  },
+  "Option_keyboardParam_Control_mac": {
+    "message": "Command(⌘)"
+  },
+  "Option_keyboardParam_Alt_mac": {
+    "message": "Option(⌥)"
+  },
+  "Option_keyboardParam_Shift_mac": {
+    "message": "Shift"
+  },
+  "Option_startupMethod_param_leftClickHold": {
+    "message": "Время ожидания(мс)"
+  },
+  "Option_popupPlacement": {
+    "message": "Позиция меню"
+  },
+  "Option_popupPlacement_side": {
+    "message": "Сторона"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "Позиция меню относительно указателя мыши."
+  },
+  "Option_popupPlacement_top": {
+    "message": "Сверху"
+  },
+  "Option_popupPlacement_right": {
+    "message": "Справа"
+  },
+  "Option_popupPlacement_bottom": {
+    "message": "Снизу"
+  },
+  "Option_popupPlacement_left": {
+    "message": "Слева"
+  },
+  "Option_popupPlacement_align": {
+    "message": "Выравнивание"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "Выровняйте меню по указателю мыши."
+  },
+  "Option_popupPlacement_start": {
+    "message": "Начало"
+  },
+  "Option_popupPlacement_center": {
+    "message": "Центр"
+  },
+  "Option_popupPlacement_end": {
+    "message": "Конец"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "Боковое смещение"
+  },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "Расстояние от указателя мыши"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "Смещение выравнивания"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "Расстояние от выровненной позиции"
+  },
+  "Option_popupPlacement_alignOffset_disabled": {
+    "message": "Отключено при центрировании"
+  },
+  "Option_inheritPopupPlacement": {
+    "message": "Наследовать позицию меню из глобальных настроек"
+  },
+  "Option_inherit": {
+    "message": "Наследовать"
+  },
+  "Option_mouse_pointer": {
+    "message": "Указатель мыши"
+  },
+  "Option_style": {
+    "message": "Стиль меню"
+  },
+  "Option_style_vertical": {
+    "message": "Вертикальный"
+  },
+  "Option_style_horizontal": {
+    "message": "Горизонтальный"
+  },
+  "Option_commands": {
+    "message": "Команды"
+  },
+  "Option_commands_desc": {
+    "message": "Определяет команды для выполнения на основе выбранного текста."
+  },
+  "Option_commands_desc_count": {
+    "message": " / 100 элементов"
+  },
+  "Option_title": {
+    "message": "Название"
+  },
+  "Option_searchUrl": {
+    "message": "URL поиска"
+  },
+  "Option_searchUrl_desc": {
+    "message": "Заменяет `%s` на выбранный текст."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "* URL поиска будет автоматически обновлен при изменении."
+  },
+  "Option_iconUrl": {
+    "message": "URL иконки"
+  },
+  "Option_iconUrl_folder": {
+    "message": "URL иконки / SVG"
+  },
+  "Option_iconUrl_desc": {
+    "message": "URL иконки будет автоматически обновлен при изменении URL поиска."
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "URL иконки будет автоматически обновлен при изменении начального URL."
+  },
+  "Option_iconUrl_autofill": {
+    "message": "Автозаполнение"
+  },
+  "Option_spaceEncoding": {
+    "message": "Кодировка пробелов"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "Заменяет пробелы в выбранном тексте."
+  },
+  "Option_spaceEncoding_plus": {
+    "message": "Плюс (+)"
+  },
+  "Option_spaceEncoding_percent": {
+    "message": "Процент (%20)"
+  },
+  "Option_openMode": {
+    "message": "Режим открытия"
+  },
+  "Option_openMode_popup": {
+    "message": "Всплывающее окно"
+  },
+  "Option_openMode_window": {
+    "message": "Окно"
+  },
+  "Option_openMode_tab": {
+    "message": "Вкладка"
+  },
+  "Option_openMode_api": {
+    "message": "API"
+  },
+  "Option_openMode_linkPopup": {
+    "message": "Всплывающее окно ссылки"
+  },
+  "Option_openMode_copy": {
+    "message": "Копировать текст"
+  },
+  "Option_openMode_getTextStyles": {
+    "message": "Получить стили текста"
+  },
+  "Option_openMode_pageAction": {
+    "message": "Действие страницы"
+  },
+  "Option_openMode_previewPopup": {
+    "message": "Всплывающее окно"
+  },
+  "Option_openMode_previewWindow": {
+    "message": "Окно"
+  },
+  "Option_openModeSecondary": {
+    "message": " ┗ Ctrl + клик"
+  },
+  "Option_parentFolderId": {
+    "message": "Папка"
+  },
+  "Option_copyOption": {
+    "message": "Формат копирования"
+  },
+  "Option_copyOption_default": {
+    "message": "По умолчанию"
+  },
+  "Option_copyOption_text": {
+    "message": "Только текст"
+  },
+  "Option_fetchOptions": {
+    "message": "Опции получения"
+  },
+  "Option_variables": {
+    "message": "Переменные получения"
+  },
+  "Option_variableName": {
+    "message": "Имя"
+  },
+  "Option_variableValue": {
+    "message": "Значение"
+  },
+  "Option_startUrl": {
+    "message": "Начальный URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "URL страницы, где начинается действие."
+  },
+  "Option_pageAction_title": {
+    "message": "Действие"
+  },
+  "Option_pageAction_desc": {
+    "message": "Действие для выполнения"
+  },
+  "Option_pageAction_openMode": {
+    "message": "Метод отображения окна"
+  },
+  "Option_pageAction_label": {
+    "message": "Название шага"
+  },
+  "Option_pageAction_value": {
+    "message": "Значение"
+  },
+  "Option_pageAction_delay": {
+    "message": "Время ожидания"
+  },
+  "Option_linkCommand": {
+    "message": "Предпросмотр ссылки"
+  },
+  "Option_linkCommand_desc": {
+    "message": "Показывать предпросмотр во всплывающем меню при клике на ссылку."
+  },
+  "Option_linkCommand_enabledInherit": {
+    "message": "Наследовать из глобальных настроек (текущее: $current$)",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "Включено или Отключено"
+      }
+    }
+  },
+  "Option_linkCommand_enabledEnable": {
+    "message": "Включить"
+  },
+  "Option_linkCommand_enabledDisable": {
+    "message": "Отключить"
+  },
+  "Option_linkCommandStartupMethod_method": {
+    "message": "Способ запуска"
+  },
+  "Option_linkCommandStartupMethod_drag": {
+    "message": "Перетаскивание"
+  },
+  "Option_linkCommandStartupMethod_keyboard": {
+    "message": "Клик + одновременная клавиша"
+  },
+  "Option_linkCommandStartupMethod_leftClickHold": {
+    "message": "Удержание левой кнопки"
+  },
+  "Option_linkCommandStartupMethod_threshold": {
+    "message": "Порог перетаскивания"
+  },
+  "Option_linkCommandStartupMethod_threshold_desc": {
+    "message": "Порог перетаскивания для отображения"
+  },
+  "Option_linkCommandStartupMethod_keyboardParam": {
+    "message": "Клавиша для нажатия с кликом"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam": {
+    "message": "Время ожидания"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "Время до отображения"
+  },
+  "Option_showIndicator": {
+    "message": "Показывать индикатор"
+  },
+  "Option_showIndicator_desc": {
+    "message": "Показывать оставшееся время до предпросмотра."
+  },
+  "Option_folders": {
+    "message": "Папки"
+  },
+  "Option_folders_tooltip": {
+    "message": "Создать папку."
+  },
+  "Option_folders_desc": {
+    "message": "Вы можете организовать команды в папки."
+  },
+  "Option_folders_edit": {
+    "message": "Редактировать папку"
+  },
+  "Option_folders_input": {
+    "message": "Введите информацию о папке."
+  },
+  "Option_icon_error": {
+    "message": "Введите действительный URL или SVG."
+  },
+  "Option_icon_placeholder": {
+    "message": "URL или строка SVG."
+  },
+  "Option_icon_desc": {
+    "message": "Можно использовать URL или SVG."
+  },
+  "Option_icon_required": {
+    "message": "URL или SVG необходим для иконки."
+  },
+  "Option_onlyIcon": {
+    "message": "Показывать только иконку"
+  },
+  "Option_onlyIcon_desc": {
+    "message": "* Эффективно только в горизонтальном режиме"
+  },
+  "Option_pageRules": {
+    "message": "Правила страницы"
+  },
+  "Option_pageRules_tooltip": {
+    "message": "Создать правило страницы."
+  },
+  "Option_pageRules_desc": {
+    "message": "Настройки для сайта."
+  },
+  "Option_pageRules_add": {
+    "message": "Редактировать правило страницы."
+  },
+  "Option_pageRules_add_desc": {
+    "message": "Введите правило страницы."
+  },
+  "Option_urlPattern": {
+    "message": "Шаблон URL"
+  },
+  "Option_popupEnabled": {
+    "message": "Включить всплывающее окно"
+  },
+  "Option_linkCommandEnabled": {
+    "message": "Включить предпросмотр ссылки"
+  },
+  "Option_userStyles": {
+    "message": "Пользовательские стили"
+  },
+  "Option_userStyles_tooltip": {
+    "message": "Создать пользовательский стиль."
+  },
+  "Option_userStyles_desc": {
+    "message": "Вы можете настроить отображение всплывающего меню."
+  },
+  "Option_userStyles_add": {
+    "message": "Редактировать пользовательский стиль"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "Введите пользовательский стиль."
+  },
+  "Option_userStyles_name": {
+    "message": "Имя свойства"
+  },
+  "Option_userStyles_value": {
+    "message": "Значение"
+  },
+  "Option_userStyles_option_background_color": {
+    "message": "Цвет фона"
+  },
+  "Option_userStyles_desc_background_color": {
+    "message": "Укажите цвет фона меню. По умолчанию: #FFFFFF"
+  },
+  "Option_userStyles_option_border_color": {
+    "message": "Цвет границы"
+  },
+  "Option_userStyles_desc_border_color": {
+    "message": "Укажите цвет границы меню. По умолчанию: #F3F4F6"
+  },
+  "Option_userStyles_option_font_scale": {
+    "message": "Масштаб размера шрифта"
+  },
+  "Option_userStyles_desc_font_scale": {
+    "message": "Укажите масштаб размера шрифта. По умолчанию: 1"
+  },
+  "Option_userStyles_option_image_scale": {
+    "message": "Масштаб размера иконки"
+  },
+  "Option_userStyles_desc_image_scale": {
+    "message": "Укажите масштаб размера иконки. По умолчанию: 1"
+  },
+  "Option_userStyles_option_padding_scale": {
+    "message": "Масштаб отступов"
+  },
+  "Option_userStyles_desc_padding_scale": {
+    "message": "Укажите масштаб отступов. По умолчанию: 1"
+  },
+  "Option_userStyles_option_popup_delay": {
+    "message": "Задержка отображения"
+  },
+  "Option_userStyles_desc_popup_delay": {
+    "message": "Укажите время до начала отображения. По умолчанию: 250 мс"
+  },
+  "Option_userStyles_option_popup_duration": {
+    "message": "Длительность анимации отображения"
+  },
+  "Option_userStyles_desc_popup_duration": {
+    "message": "Укажите длительность анимации отображения. По умолчанию: 150 мс"
+  },
+  "Option_edit_tooltip": {
+    "message": "Редактировать"
+  },
+  "Option_copy_tooltip": {
+    "message": "Дублировать"
+  },
+  "Option_remove_title": {
+    "message": "Вы уверены, что хотите удалить это?"
+  },
+  "Option_remove_tooltip": {
+    "message": "Удалить"
+  },
+  "Option_remove_ok": {
+    "message": "Удалить"
+  },
+  "Option_remove_description": {
+    "message": "Это действие нельзя отменить. Хотите продолжить?"
+  },
+  "Option_copy_title": {
+    "message": "Дублировать команду"
+  },
+  "Option_copy_desc": {
+    "message": "Введите название."
+  },
+  "Option_copy_ok": {
+    "message": "Дублировать"
+  },
+  "Option_zod_number": {
+    "message": "Введите число."
+  },
+  "Option_zod_number_min": {
+    "message": "Введите число больше или равное $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "Введите число меньше или равное $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "Введите строку длиной не менее $key$ символов.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_string_max": {
+    "message": "Введите строку длиной не более $key$ символов.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "Введите в формате URL."
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "Будет вставлен выбранный текст",
+    "description": "for INSERT.SELECTED_TEXT"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "Будет вставлен оригинальный URL",
+    "description": "for INSERT.URL"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "Будет вставлен текст из буфера обмена",
+    "description": "for INSERT.CLIPBOARD"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "Вставить текст"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "Выбранный текст"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "Оригинальный URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "Буфер обмена"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "Редактировать содержимое"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "Редактируйте содержимое для вставки в это действие."
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "Содержимое для вставки"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "Отмена"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "Сохранить"
+  },
+  "PageAction_Controller_recording": {
+    "message": "Запись"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "Не записывается"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "Предпросмотр"
+  },
+  "PageAction_Controller_stop": {
+    "message": "Стоп"
+  },
+  "PageAction_Controller_complete": {
+    "message": "Завершить"
+  },
+  "PageAction_Controller_preview": {
+    "message": "Предпросмотр"
+  },
+  "PageAction_Controller_reset": {
+    "message": "Сбросить"
+  },
+  "help_pageAction_title": {
+    "message": "Как использовать действие страницы"
+  },
+  "help_pageAction_description": {
+    "message": "Действие страницы позволяет <b>записывать и воспроизводить действия пользователя</b>."
+  },
+  "help_pageAction_example": {
+    "message": "Примеры использования:"
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>Отправка выбранного текста с предустановленным промптом в LLM</li><li>Вставка URL и нажатие кнопок</li><li>И многое другое...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "Нажмите кнопку <b>REC</b> для записи."
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【Метод создания】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>Введите URL страницы и нажмите кнопку REC для начала записи.</li><li>Когда откроется окно, выполните действия, которые хотите записать.</li><li>Когда закончите, нажмите кнопку Завершить в меню записи.</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": "Действие страницы может записывать <b>следующие действия</b>."
+  },
+  "help_pageAction_action": {
+    "message": "Действие"
+  },
+  "help_pageAction_desc": {
+    "message": "Описание"
+  },
+  "help_pageAction_left_click": {
+    "message": "Левый клик"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "Записывает одиночные, двойные и тройные клики."
+  },
+  "help_pageAction_scroll": {
+    "message": "Прокрутка"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "Записывает прокрутки 10px или более."
+  },
+  "help_pageAction_keyboard": {
+    "message": "Ввод с клавиатуры"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>Записываются только определенные вводы с клавиатуры, такие как комбинации Ctrl.</li><li>Некоторые записанные действия клавиатуры могут не воспроизводиться корректно.</li>"
+  },
+  "help_pageAction_input": {
+    "message": "Ввод текста"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "Записывает текст, введенный в поля ввода."
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "Можно использовать следующие переменные:"
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "Выбранный текст, URL, буфер обмена"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "Другие действия не записываются, пока поле ввода в фокусе."
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "Записываются только клавиши Tab и Enter."
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "Вы можете записать до 10 шагов."
+  },
+  "help_pageAction_edit": {
+    "message": "О <b>Редактировании действия страницы</b>"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>Вы можете редактировать вводы текста и удалять шаги на экране конфигурации.</li><li>Вы можете легко создавать новые команды, копируя существующие действия страницы и внося некоторые изменения.</li>"
+  },
+  "help_pageAction_share": {
+    "message": "О <b>Обмене командами</b>"
+  },
+  "help_pageAction_share_desc": {
+    "message": "Вы можете делиться и импортировать команды действий страницы в Selection Command Hub."
+  },
+  "review_request_title": {
+    "message": "Нравится ли вам Selection Command?"
+  },
+  "review_request_message": {
+    "message": "Если вы находите это расширение полезным, оставьте отзыв в Chrome Web Store. Ваш отзыв помогает нам улучшаться!"
+  },
+  "review_request_button": {
+    "message": "Написать отзыв"
+  },
+  "review_request_close": {
+    "message": "Позже"
+  },
+  "Option_shortcuts": {
+    "message": "Горячие клавиши"
+  },
+  "Option_shortcuts_desc": {
+    "message": "Определяет горячие клавиши для выполнения команд."
+  },
+  "Option_shortcuts_settings_desc": {
+    "message": "Вы можете изменить клавиши в настройках расширения Chrome."
+  },
+  "Option_shortcuts_settings_link": {
+    "message": "Настроить клавиши"
+  },
+  "Option_shortcut_text_selection_only": {
+    "message": "Только выбор текста"
+  },
+  "Option_shortcut_select_placeholder": {
+    "message": "Выберите команду"
+  },
+  "Option_shortcut_not_set": {
+    "message": "Не установлено"
+  },
+  "Option_shortcut_no_selection_behavior": {
+    "message": "Когда нет выбранного текста"
+  },
+  "Option_shortcut_no_selection_do_nothing": {
+    "message": "Ничего не делать"
+  },
+  "Option_shortcut_no_selection_use_clipboard": {
+    "message": "Использовать содержимое буфера обмена"
+  }
+}

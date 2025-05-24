@@ -1,0 +1,776 @@
+{
+  "extName": {
+    "message": "Selection Command – 即时搜索、使用AI或启动工具。"
+  },
+  "extDescription": {
+    "message": "一键使用选中文本进行搜索、使用AI或执行工具，加速您的导航。"
+  },
+  "saving": {
+    "message": "保存中.."
+  },
+  "labelOption": {
+    "message": "选项"
+  },
+  "labelCancel": {
+    "message": "取消"
+  },
+  "labelClose": {
+    "message": "关闭"
+  },
+  "labelAddPageRule": {
+    "message": "添加页面规则。"
+  },
+  "previewOnContextMenu": {
+    "message": "当选择上下文菜单时不会显示弹出菜单。"
+  },
+  "previewOnKeyboard": {
+    "message": "使用$key$键切换菜单显示。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Ctrl / Alt / Shift"
+      }
+    }
+  },
+  "previewOnLeftClickHold": {
+    "message": "按住左键显示菜单。点击关闭。"
+  },
+  "commandHub_description": {
+    "message": "现在您可以分享命令了✨"
+  },
+  "commnadHub_youcanshare": {
+    "message": "⚡️生成的命令可以自动插入。"
+  },
+  "Option_labelCancel": {
+    "message": "取消"
+  },
+  "Option_labelUpdate": {
+    "message": "更新"
+  },
+  "Option_labelSave": {
+    "message": "创建"
+  },
+  "Option_labelDetail": {
+    "message": "详情"
+  },
+  "Option_labelOther": {
+    "message": "其他"
+  },
+  "Option_Enable": {
+    "message": "启用"
+  },
+  "Option_Disable": {
+    "message": "禁用"
+  },
+  "Option_Reset": {
+    "message": "重置"
+  },
+  "Option_Reset_description": {
+    "message": "您确定要将所有设置重置为默认值吗？\n此操作无法撤销。\n※建议先<b>\"导出\"</b>。"
+  },
+  "Option_Import_description": {
+    "message": "选择要导入的配置文件（<pre>*.json</pre>）。"
+  },
+  "Option_Export": {
+    "message": "导出"
+  },
+  "Option_Import": {
+    "message": "导入"
+  },
+  "Option_Add": {
+    "message": "添加"
+  },
+  "Option_Command": {
+    "message": "命令"
+  },
+  "Option_Command_tooltip": {
+    "message": "创建命令。"
+  },
+  "Option_Find": {
+    "message": "搜索命令"
+  },
+  "Option_Command_edit": {
+    "message": "编辑命令"
+  },
+  "Option_Command_input": {
+    "message": "输入命令信息。"
+  },
+  "Option_Command_rootFolder": {
+    "message": "（无文件夹）"
+  },
+  "Option_startupMethod": {
+    "message": "启动方式"
+  },
+  "Option_startupMethod_desc": {
+    "message": "更改弹出菜单的显示方式。"
+  },
+  "Option_startupMethod_method": {
+    "message": "方式"
+  },
+  "Option_startupMethod_textSelection": {
+    "message": "文本选择（默认）"
+  },
+  "Option_startupMethod_contextMenu": {
+    "message": "上下文菜单"
+  },
+  "Option_startupMethod_keyboard": {
+    "message": "键盘输入"
+  },
+  "Option_startupMethod_leftClickHold": {
+    "message": "左键按住"
+  },
+  "Option_startupMethod_param_keyboard": {
+    "message": "显示切换键"
+  },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "选择键"
+  },
+  "Option_keyboardParam_Control_windows": {
+    "message": "Ctrl"
+  },
+  "Option_keyboardParam_Alt_windows": {
+    "message": "Alt"
+  },
+  "Option_keyboardParam_Shift_windows": {
+    "message": "Shift"
+  },
+  "Option_keyboardParam_Control_mac": {
+    "message": "Command(⌘)"
+  },
+  "Option_keyboardParam_Alt_mac": {
+    "message": "Option(⌥)"
+  },
+  "Option_keyboardParam_Shift_mac": {
+    "message": "Shift"
+  },
+  "Option_startupMethod_param_leftClickHold": {
+    "message": "等待时间（毫秒）"
+  },
+  "Option_popupPlacement": {
+    "message": "菜单位置"
+  },
+  "Option_popupPlacement_side": {
+    "message": "侧边"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "菜单相对于鼠标指针的位置。"
+  },
+  "Option_popupPlacement_top": {
+    "message": "顶部"
+  },
+  "Option_popupPlacement_right": {
+    "message": "右侧"
+  },
+  "Option_popupPlacement_bottom": {
+    "message": "底部"
+  },
+  "Option_popupPlacement_left": {
+    "message": "左侧"
+  },
+  "Option_popupPlacement_align": {
+    "message": "对齐"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "菜单与鼠标指针对齐。"
+  },
+  "Option_popupPlacement_start": {
+    "message": "开始"
+  },
+  "Option_popupPlacement_center": {
+    "message": "居中"
+  },
+  "Option_popupPlacement_end": {
+    "message": "结束"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "侧边偏移"
+  },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "与鼠标指针的距离"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "对齐偏移"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "与对齐位置的距离"
+  },
+  "Option_popupPlacement_alignOffset_disabled": {
+    "message": "居中时禁用"
+  },
+  "Option_inheritPopupPlacement": {
+    "message": "从全局设置获取菜单位置"
+  },
+  "Option_inherit": {
+    "message": "获取"
+  },
+  "Option_mouse_pointer": {
+    "message": "鼠标指针"
+  },
+  "Option_style": {
+    "message": "菜单样式"
+  },
+  "Option_style_vertical": {
+    "message": "垂直"
+  },
+  "Option_style_horizontal": {
+    "message": "水平"
+  },
+  "Option_commands": {
+    "message": "命令"
+  },
+  "Option_commands_desc": {
+    "message": "定义基于选中文本执行的命令。"
+  },
+  "Option_commands_desc_count": {
+    "message": " / 100个项目"
+  },
+  "Option_title": {
+    "message": "标题"
+  },
+  "Option_searchUrl": {
+    "message": "搜索URL"
+  },
+  "Option_searchUrl_desc": {
+    "message": "将`%s`替换为选中的文本。"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "* 修改时搜索URL将自动更新。"
+  },
+  "Option_iconUrl": {
+    "message": "图标URL"
+  },
+  "Option_iconUrl_folder": {
+    "message": "图标URL / SVG"
+  },
+  "Option_iconUrl_desc": {
+    "message": "修改搜索URL时图标URL将自动更新。"
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "修改初始URL时图标URL将自动更新。"
+  },
+  "Option_iconUrl_autofill": {
+    "message": "自动填充"
+  },
+  "Option_spaceEncoding": {
+    "message": "空格编码"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "替换选中文本中的空格。"
+  },
+  "Option_spaceEncoding_plus": {
+    "message": "加号（+）"
+  },
+  "Option_spaceEncoding_percent": {
+    "message": "百分比（%20）"
+  },
+  "Option_openMode": {
+    "message": "打开模式"
+  },
+  "Option_openMode_popup": {
+    "message": "弹出窗口"
+  },
+  "Option_openMode_window": {
+    "message": "窗口"
+  },
+  "Option_openMode_tab": {
+    "message": "标签页"
+  },
+  "Option_openMode_api": {
+    "message": "API"
+  },
+  "Option_openMode_linkPopup": {
+    "message": "链接弹出窗口"
+  },
+  "Option_openMode_copy": {
+    "message": "复制文本"
+  },
+  "Option_openMode_getTextStyles": {
+    "message": "获取文本样式"
+  },
+  "Option_openMode_pageAction": {
+    "message": "页面操作"
+  },
+  "Option_openMode_previewPopup": {
+    "message": "弹出窗口"
+  },
+  "Option_openMode_previewWindow": {
+    "message": "窗口"
+  },
+  "Option_openModeSecondary": {
+    "message": " ┗ Ctrl + 点击"
+  },
+  "Option_parentFolderId": {
+    "message": "文件夹"
+  },
+  "Option_copyOption": {
+    "message": "复制格式"
+  },
+  "Option_copyOption_default": {
+    "message": "默认"
+  },
+  "Option_copyOption_text": {
+    "message": "仅文本"
+  },
+  "Option_fetchOptions": {
+    "message": "获取选项"
+  },
+  "Option_variables": {
+    "message": "获取变量"
+  },
+  "Option_variableName": {
+    "message": "名称"
+  },
+  "Option_variableValue": {
+    "message": "值"
+  },
+  "Option_startUrl": {
+    "message": "初始URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "操作开始的页面URL。"
+  },
+  "Option_pageAction_title": {
+    "message": "操作"
+  },
+  "Option_pageAction_desc": {
+    "message": "要执行的操作"
+  },
+  "Option_pageAction_openMode": {
+    "message": "窗口显示方式"
+  },
+  "Option_pageAction_label": {
+    "message": "步骤名称"
+  },
+  "Option_pageAction_value": {
+    "message": "值"
+  },
+  "Option_pageAction_delay": {
+    "message": "等待时间"
+  },
+  "Option_linkCommand": {
+    "message": "链接预览"
+  },
+  "Option_linkCommand_desc": {
+    "message": "点击链接时在弹出菜单中显示预览。"
+  },
+  "Option_linkCommand_enabledInherit": {
+    "message": "从全局设置获取（当前：$current$）",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "启用或禁用"
+      }
+    }
+  },
+  "Option_linkCommand_enabledEnable": {
+    "message": "启用"
+  },
+  "Option_linkCommand_enabledDisable": {
+    "message": "禁用"
+  },
+  "Option_linkCommandStartupMethod_method": {
+    "message": "启动方式"
+  },
+  "Option_linkCommandStartupMethod_drag": {
+    "message": "拖动"
+  },
+  "Option_linkCommandStartupMethod_keyboard": {
+    "message": "点击 + 组合键"
+  },
+  "Option_linkCommandStartupMethod_leftClickHold": {
+    "message": "左键按住"
+  },
+  "Option_linkCommandStartupMethod_threshold": {
+    "message": "拖动阈值"
+  },
+  "Option_linkCommandStartupMethod_threshold_desc": {
+    "message": "显示的拖动阈值"
+  },
+  "Option_linkCommandStartupMethod_keyboardParam": {
+    "message": "点击时要按下的键"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam": {
+    "message": "等待时间"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "显示前的时间"
+  },
+  "Option_showIndicator": {
+    "message": "显示指示器"
+  },
+  "Option_showIndicator_desc": {
+    "message": "显示预览前的剩余时间。"
+  },
+  "Option_folders": {
+    "message": "文件夹"
+  },
+  "Option_folders_tooltip": {
+    "message": "创建文件夹。"
+  },
+  "Option_folders_desc": {
+    "message": "您可以将命令组织到文件夹中。"
+  },
+  "Option_folders_edit": {
+    "message": "编辑文件夹"
+  },
+  "Option_folders_input": {
+    "message": "输入文件夹信息。"
+  },
+  "Option_icon_error": {
+    "message": "请输入有效的URL或SVG。"
+  },
+  "Option_icon_placeholder": {
+    "message": "URL或SVG字符串。"
+  },
+  "Option_icon_desc": {
+    "message": "可以使用URL或SVG。"
+  },
+  "Option_icon_required": {
+    "message": "图标需要URL或SVG。"
+  },
+  "Option_onlyIcon": {
+    "message": "仅显示图标"
+  },
+  "Option_onlyIcon_desc": {
+    "message": "* 仅在水平模式下有效"
+  },
+  "Option_pageRules": {
+    "message": "页面规则"
+  },
+  "Option_pageRules_tooltip": {
+    "message": "创建页面规则。"
+  },
+  "Option_pageRules_desc": {
+    "message": "网站设置。"
+  },
+  "Option_pageRules_add": {
+    "message": "编辑页面规则。"
+  },
+  "Option_pageRules_add_desc": {
+    "message": "输入页面规则。"
+  },
+  "Option_urlPattern": {
+    "message": "URL模式"
+  },
+  "Option_popupEnabled": {
+    "message": "启用弹出窗口"
+  },
+  "Option_linkCommandEnabled": {
+    "message": "启用链接预览"
+  },
+  "Option_userStyles": {
+    "message": "用户样式"
+  },
+  "Option_userStyles_tooltip": {
+    "message": "创建用户样式。"
+  },
+  "Option_userStyles_desc": {
+    "message": "您可以自定义弹出菜单的显示。"
+  },
+  "Option_userStyles_add": {
+    "message": "编辑用户样式"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "输入用户样式。"
+  },
+  "Option_userStyles_name": {
+    "message": "属性名称"
+  },
+  "Option_userStyles_value": {
+    "message": "值"
+  },
+  "Option_userStyles_option_background_color": {
+    "message": "背景颜色"
+  },
+  "Option_userStyles_desc_background_color": {
+    "message": "指定菜单的背景颜色。默认：#FFFFFF"
+  },
+  "Option_userStyles_option_border_color": {
+    "message": "边框颜色"
+  },
+  "Option_userStyles_desc_border_color": {
+    "message": "指定菜单的边框颜色。默认：#F3F4F6"
+  },
+  "Option_userStyles_option_font_scale": {
+    "message": "字体大小缩放"
+  },
+  "Option_userStyles_desc_font_scale": {
+    "message": "指定字体大小的缩放。默认：1"
+  },
+  "Option_userStyles_option_image_scale": {
+    "message": "图标大小缩放"
+  },
+  "Option_userStyles_desc_image_scale": {
+    "message": "指定图标大小的缩放。默认：1"
+  },
+  "Option_userStyles_option_padding_scale": {
+    "message": "内边距缩放"
+  },
+  "Option_userStyles_desc_padding_scale": {
+    "message": "指定内边距的缩放。默认：1"
+  },
+  "Option_userStyles_option_popup_delay": {
+    "message": "显示延迟"
+  },
+  "Option_userStyles_desc_popup_delay": {
+    "message": "指定显示开始前的时间。默认：250毫秒"
+  },
+  "Option_userStyles_option_popup_duration": {
+    "message": "显示动画持续时间"
+  },
+  "Option_userStyles_desc_popup_duration": {
+    "message": "指定显示动画的持续时间。默认：150毫秒"
+  },
+  "Option_edit_tooltip": {
+    "message": "编辑"
+  },
+  "Option_copy_tooltip": {
+    "message": "复制"
+  },
+  "Option_remove_title": {
+    "message": "您确定要删除吗？"
+  },
+  "Option_remove_tooltip": {
+    "message": "删除"
+  },
+  "Option_remove_ok": {
+    "message": "删除"
+  },
+  "Option_remove_description": {
+    "message": "此操作无法撤销。您确定要继续吗？"
+  },
+  "Option_copy_title": {
+    "message": "复制命令"
+  },
+  "Option_copy_desc": {
+    "message": "输入标题。"
+  },
+  "Option_copy_ok": {
+    "message": "复制"
+  },
+  "Option_zod_number": {
+    "message": "请输入数字。"
+  },
+  "Option_zod_number_min": {
+    "message": "请输入大于或等于$key$的数字。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "请输入小于或等于$key$的数字。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "请输入至少$key$个字符的字符串。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_string_max": {
+    "message": "请输入最多$key$个字符的字符串。",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "请以URL格式输入。"
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "将插入选中的文本",
+    "description": "for INSERT.SELECTED_TEXT"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "将插入原始URL",
+    "description": "for INSERT.URL"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "将从剪贴板插入文本",
+    "description": "for INSERT.CLIPBOARD"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "插入文本"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "选中的文本"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "原始URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "剪贴板"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "编辑内容"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "编辑要在此操作中插入的内容。"
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "要插入的内容"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "取消"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "保存"
+  },
+  "PageAction_Controller_recording": {
+    "message": "录制中"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "未录制"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "预览中"
+  },
+  "PageAction_Controller_stop": {
+    "message": "停止"
+  },
+  "PageAction_Controller_complete": {
+    "message": "完成"
+  },
+  "PageAction_Controller_preview": {
+    "message": "预览"
+  },
+  "PageAction_Controller_reset": {
+    "message": "重置"
+  },
+  "help_pageAction_title": {
+    "message": "如何使用页面操作"
+  },
+  "help_pageAction_description": {
+    "message": "页面操作允许您<b>记录和回放用户操作</b>。"
+  },
+  "help_pageAction_example": {
+    "message": "使用示例："
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>使用预定义提示将选中的文本发送给LLM</li><li>插入URL并点击按钮</li><li>等等...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "点击<b>REC按钮</b>开始录制。"
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【创建方法】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>输入页面URL并点击REC按钮开始录制。</li><li>当窗口打开时，执行您想要记录的操作。</li><li>完成后，点击录制菜单中的完成按钮。</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": "页面操作可以记录<b>以下操作</b>。"
+  },
+  "help_pageAction_action": {
+    "message": "操作"
+  },
+  "help_pageAction_desc": {
+    "message": "描述"
+  },
+  "help_pageAction_left_click": {
+    "message": "左键点击"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "记录单击、双击和三击。"
+  },
+  "help_pageAction_scroll": {
+    "message": "滚动"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "记录10px或更大的滚动。"
+  },
+  "help_pageAction_keyboard": {
+    "message": "键盘输入"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>只记录特定的键盘输入，如Ctrl组合键。</li><li>某些记录的键盘操作可能无法正确回放。</li>"
+  },
+  "help_pageAction_input": {
+    "message": "文本输入"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "记录在输入字段中输入的文本。"
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "可以使用以下变量："
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "选中的文本、URL、剪贴板"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "当输入字段获得焦点时，不记录其他操作。"
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "只记录Tab和Enter键。"
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "您最多可以记录10个步骤。"
+  },
+  "help_pageAction_edit": {
+    "message": "<b>编辑页面操作</b>时"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>您可以在配置屏幕上编辑文本输入并删除步骤。</li><li>您可以通过复制现有页面操作并进行一些更改来轻松创建新命令。</li>"
+  },
+  "help_pageAction_share": {
+    "message": "<b>命令分享</b>"
+  },
+  "help_pageAction_share_desc": {
+    "message": "您可以在Selection Command Hub中分享和导入页面操作命令。"
+  },
+  "review_request_title": {
+    "message": "您喜欢Selection Command吗？"
+  },
+  "review_request_message": {
+    "message": "如果您觉得这个扩展有用，请在Chrome Web Store上留下评论。您的反馈帮助我们变得更好！"
+  },
+  "review_request_button": {
+    "message": "写评论"
+  },
+  "review_request_close": {
+    "message": "稍后"
+  },
+  "Option_shortcuts": {
+    "message": "快捷键"
+  },
+  "Option_shortcuts_desc": {
+    "message": "定义执行命令的快捷键。"
+  },
+  "Option_shortcuts_settings_desc": {
+    "message": "您可以在Chrome扩展设置中更改按键。"
+  },
+  "Option_shortcuts_settings_link": {
+    "message": "配置按键"
+  },
+  "Option_shortcut_text_selection_only": {
+    "message": "仅文本选择"
+  },
+  "Option_shortcut_select_placeholder": {
+    "message": "选择命令"
+  },
+  "Option_shortcut_not_set": {
+    "message": "未设置"
+  },
+  "Option_shortcut_no_selection_behavior": {
+    "message": "当没有选中文本时"
+  },
+  "Option_shortcut_no_selection_do_nothing": {
+    "message": "不执行任何操作"
+  },
+  "Option_shortcut_no_selection_use_clipboard": {
+    "message": "使用剪贴板内容"
+  }
+}

@@ -1,0 +1,776 @@
+{
+  "extName": {
+    "message": "Selection Command – 즉시 검색, AI 사용 또는 도구 실행."
+  },
+  "extDescription": {
+    "message": "선택한 텍스트로 한 번의 클릭으로 검색, AI 사용 또는 도구를 실행하고 탐색을 가속화하세요."
+  },
+  "saving": {
+    "message": "저장 중.."
+  },
+  "labelOption": {
+    "message": "옵션"
+  },
+  "labelCancel": {
+    "message": "취소"
+  },
+  "labelClose": {
+    "message": "닫기"
+  },
+  "labelAddPageRule": {
+    "message": "페이지 규칙 추가."
+  },
+  "previewOnContextMenu": {
+    "message": "컨텍스트 메뉴가 선택되면 팝업 메뉴가 표시되지 않습니다."
+  },
+  "previewOnKeyboard": {
+    "message": "$key$ 키를 사용하여 메뉴 표시를 전환합니다.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Ctrl / Alt / Shift"
+      }
+    }
+  },
+  "previewOnLeftClickHold": {
+    "message": "왼쪽 클릭을 유지하여 메뉴를 표시합니다. 클릭하면 사라집니다."
+  },
+  "commandHub_description": {
+    "message": "이제 명령을 공유할 수 있습니다✨"
+  },
+  "commnadHub_youcanshare": {
+    "message": "⚡️생성된 명령을 자동으로 입력할 수 있습니다."
+  },
+  "Option_labelCancel": {
+    "message": "취소"
+  },
+  "Option_labelUpdate": {
+    "message": "업데이트"
+  },
+  "Option_labelSave": {
+    "message": "생성"
+  },
+  "Option_labelDetail": {
+    "message": "상세"
+  },
+  "Option_labelOther": {
+    "message": "기타"
+  },
+  "Option_Enable": {
+    "message": "활성화"
+  },
+  "Option_Disable": {
+    "message": "비활성화"
+  },
+  "Option_Reset": {
+    "message": "초기화"
+  },
+  "Option_Reset_description": {
+    "message": "모든 설정을 기본값으로 초기화해도 괜찮습니까?\n이 작업은 취소할 수 없습니다.\n※ 사전에 <b>\"내보내기\"</b>를 권장합니다."
+  },
+  "Option_Import_description": {
+    "message": "가져올 구성 파일(<pre>*.json</pre>)을 선택하세요."
+  },
+  "Option_Export": {
+    "message": "내보내기"
+  },
+  "Option_Import": {
+    "message": "가져오기"
+  },
+  "Option_Add": {
+    "message": "추가"
+  },
+  "Option_Command": {
+    "message": "명령"
+  },
+  "Option_Command_tooltip": {
+    "message": "명령 생성."
+  },
+  "Option_Find": {
+    "message": "명령 검색"
+  },
+  "Option_Command_edit": {
+    "message": "명령 편집"
+  },
+  "Option_Command_input": {
+    "message": "명령 정보를 입력하세요."
+  },
+  "Option_Command_rootFolder": {
+    "message": "(폴더 없음)"
+  },
+  "Option_startupMethod": {
+    "message": "시작 방법"
+  },
+  "Option_startupMethod_desc": {
+    "message": "팝업 메뉴가 표시되는 방식을 변경합니다."
+  },
+  "Option_startupMethod_method": {
+    "message": "방법"
+  },
+  "Option_startupMethod_textSelection": {
+    "message": "텍스트 선택 (기본값)"
+  },
+  "Option_startupMethod_contextMenu": {
+    "message": "컨텍스트 메뉴"
+  },
+  "Option_startupMethod_keyboard": {
+    "message": "키보드 입력"
+  },
+  "Option_startupMethod_leftClickHold": {
+    "message": "왼쪽 클릭 유지"
+  },
+  "Option_startupMethod_param_keyboard": {
+    "message": "표시 전환 키"
+  },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "키 선택"
+  },
+  "Option_keyboardParam_Control_windows": {
+    "message": "Ctrl"
+  },
+  "Option_keyboardParam_Alt_windows": {
+    "message": "Alt"
+  },
+  "Option_keyboardParam_Shift_windows": {
+    "message": "Shift"
+  },
+  "Option_keyboardParam_Control_mac": {
+    "message": "Command(⌘)"
+  },
+  "Option_keyboardParam_Alt_mac": {
+    "message": "Option(⌥)"
+  },
+  "Option_keyboardParam_Shift_mac": {
+    "message": "Shift"
+  },
+  "Option_startupMethod_param_leftClickHold": {
+    "message": "유지 시간(ms)"
+  },
+  "Option_popupPlacement": {
+    "message": "메뉴 표시 위치"
+  },
+  "Option_popupPlacement_side": {
+    "message": "측면"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "마우스 포인터를 기준으로 한 메뉴의 위치."
+  },
+  "Option_popupPlacement_top": {
+    "message": "상단"
+  },
+  "Option_popupPlacement_right": {
+    "message": "오른쪽"
+  },
+  "Option_popupPlacement_bottom": {
+    "message": "하단"
+  },
+  "Option_popupPlacement_left": {
+    "message": "왼쪽"
+  },
+  "Option_popupPlacement_align": {
+    "message": "정렬"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "마우스 포인터를 메뉴와 정렬합니다."
+  },
+  "Option_popupPlacement_start": {
+    "message": "시작"
+  },
+  "Option_popupPlacement_center": {
+    "message": "중앙"
+  },
+  "Option_popupPlacement_end": {
+    "message": "끝"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "측면 오프셋"
+  },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "마우스 포인터로부터의 거리"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "정렬 오프셋"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "정렬된 위치로부터의 거리"
+  },
+  "Option_popupPlacement_alignOffset_disabled": {
+    "message": "중앙 정렬 시 비활성화"
+  },
+  "Option_inheritPopupPlacement": {
+    "message": "전역 설정에서 메뉴 표시 위치 상속"
+  },
+  "Option_inherit": {
+    "message": "상속"
+  },
+  "Option_mouse_pointer": {
+    "message": "마우스 포인터"
+  },
+  "Option_style": {
+    "message": "메뉴 스타일"
+  },
+  "Option_style_vertical": {
+    "message": "수직"
+  },
+  "Option_style_horizontal": {
+    "message": "수평"
+  },
+  "Option_commands": {
+    "message": "명령"
+  },
+  "Option_commands_desc": {
+    "message": "선택한 텍스트를 기반으로 실행할 명령을 정의합니다."
+  },
+  "Option_commands_desc_count": {
+    "message": " / 100개 항목"
+  },
+  "Option_title": {
+    "message": "제목"
+  },
+  "Option_searchUrl": {
+    "message": "검색 URL"
+  },
+  "Option_searchUrl_desc": {
+    "message": "`%s`를 선택한 텍스트로 대체합니다."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "* 검색 URL이 변경되면 자동으로 업데이트됩니다."
+  },
+  "Option_iconUrl": {
+    "message": "아이콘 URL"
+  },
+  "Option_iconUrl_folder": {
+    "message": "아이콘 URL / SVG"
+  },
+  "Option_iconUrl_desc": {
+    "message": "검색 URL이 변경되면 자동으로 업데이트됩니다."
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "시작 URL이 변경되면 자동으로 업데이트됩니다."
+  },
+  "Option_iconUrl_autofill": {
+    "message": "자동 채우기"
+  },
+  "Option_spaceEncoding": {
+    "message": "공백 인코딩"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "선택한 텍스트의 공백을 대체합니다."
+  },
+  "Option_spaceEncoding_plus": {
+    "message": "더하기 (+)"
+  },
+  "Option_spaceEncoding_percent": {
+    "message": "퍼센트 (%20)"
+  },
+  "Option_openMode": {
+    "message": "열기 모드"
+  },
+  "Option_openMode_popup": {
+    "message": "팝업"
+  },
+  "Option_openMode_window": {
+    "message": "창"
+  },
+  "Option_openMode_tab": {
+    "message": "탭"
+  },
+  "Option_openMode_api": {
+    "message": "API"
+  },
+  "Option_openMode_linkPopup": {
+    "message": "링크 팝업"
+  },
+  "Option_openMode_copy": {
+    "message": "텍스트 복사"
+  },
+  "Option_openMode_getTextStyles": {
+    "message": "텍스트 스타일 가져오기"
+  },
+  "Option_openMode_pageAction": {
+    "message": "페이지 작업"
+  },
+  "Option_openMode_previewPopup": {
+    "message": "팝업"
+  },
+  "Option_openMode_previewWindow": {
+    "message": "창"
+  },
+  "Option_openModeSecondary": {
+    "message": " ┗ Ctrl + 클릭"
+  },
+  "Option_parentFolderId": {
+    "message": "폴더"
+  },
+  "Option_copyOption": {
+    "message": "복사 형식"
+  },
+  "Option_copyOption_default": {
+    "message": "기본값"
+  },
+  "Option_copyOption_text": {
+    "message": "텍스트만"
+  },
+  "Option_fetchOptions": {
+    "message": "가져오기 옵션"
+  },
+  "Option_variables": {
+    "message": "가져오기 변수"
+  },
+  "Option_variableName": {
+    "message": "이름"
+  },
+  "Option_variableValue": {
+    "message": "값"
+  },
+  "Option_startUrl": {
+    "message": "시작 URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "작업이 시작되는 페이지의 URL."
+  },
+  "Option_pageAction_title": {
+    "message": "작업"
+  },
+  "Option_pageAction_desc": {
+    "message": "수행할 작업"
+  },
+  "Option_pageAction_openMode": {
+    "message": "창 표시 방법"
+  },
+  "Option_pageAction_label": {
+    "message": "단계 이름"
+  },
+  "Option_pageAction_value": {
+    "message": "값"
+  },
+  "Option_pageAction_delay": {
+    "message": "지연 시간"
+  },
+  "Option_linkCommand": {
+    "message": "링크 미리보기"
+  },
+  "Option_linkCommand_desc": {
+    "message": "링크를 클릭할 때 팝업 메뉴에 미리보기를 표시합니다."
+  },
+  "Option_linkCommand_enabledInherit": {
+    "message": "전역 설정에서 상속 (현재: $current$)",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "활성화 또는 비활성화"
+      }
+    }
+  },
+  "Option_linkCommand_enabledEnable": {
+    "message": "활성화"
+  },
+  "Option_linkCommand_enabledDisable": {
+    "message": "비활성화"
+  },
+  "Option_linkCommandStartupMethod_method": {
+    "message": "시작 방법"
+  },
+  "Option_linkCommandStartupMethod_drag": {
+    "message": "드래그"
+  },
+  "Option_linkCommandStartupMethod_keyboard": {
+    "message": "클릭 + 키 동시"
+  },
+  "Option_linkCommandStartupMethod_leftClickHold": {
+    "message": "왼쪽 클릭 유지"
+  },
+  "Option_linkCommandStartupMethod_threshold": {
+    "message": "드래그 임계값"
+  },
+  "Option_linkCommandStartupMethod_threshold_desc": {
+    "message": "표시할 드래그 임계값"
+  },
+  "Option_linkCommandStartupMethod_keyboardParam": {
+    "message": "클릭과 함께 누를 키"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam": {
+    "message": "유지 시간"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "표시까지의 시간"
+  },
+  "Option_showIndicator": {
+    "message": "표시기 표시"
+  },
+  "Option_showIndicator_desc": {
+    "message": "미리보기까지 남은 시간을 표시합니다."
+  },
+  "Option_folders": {
+    "message": "폴더"
+  },
+  "Option_folders_tooltip": {
+    "message": "폴더 생성."
+  },
+  "Option_folders_desc": {
+    "message": "명령을 폴더로 구성할 수 있습니다."
+  },
+  "Option_folders_edit": {
+    "message": "폴더 편집"
+  },
+  "Option_folders_input": {
+    "message": "폴더 정보를 입력하세요."
+  },
+  "Option_icon_error": {
+    "message": "유효한 URL 또는 SVG를 입력하세요."
+  },
+  "Option_icon_placeholder": {
+    "message": "URL 또는 SVG 문자열."
+  },
+  "Option_icon_desc": {
+    "message": "URL 또는 SVG를 사용할 수 있습니다."
+  },
+  "Option_icon_required": {
+    "message": "아이콘으로 사용할 URL 또는 SVG가 필요합니다."
+  },
+  "Option_onlyIcon": {
+    "message": "아이콘만 표시"
+  },
+  "Option_onlyIcon_desc": {
+    "message": "* 수평 모드에서만 효과적"
+  },
+  "Option_pageRules": {
+    "message": "페이지 규칙"
+  },
+  "Option_pageRules_tooltip": {
+    "message": "페이지 규칙 생성."
+  },
+  "Option_pageRules_desc": {
+    "message": "사이트별 설정."
+  },
+  "Option_pageRules_add": {
+    "message": "페이지 규칙 편집."
+  },
+  "Option_pageRules_add_desc": {
+    "message": "페이지 규칙을 입력하세요."
+  },
+  "Option_urlPattern": {
+    "message": "URL 패턴"
+  },
+  "Option_popupEnabled": {
+    "message": "팝업 활성화"
+  },
+  "Option_linkCommandEnabled": {
+    "message": "링크 미리보기 활성화"
+  },
+  "Option_userStyles": {
+    "message": "사용자 스타일"
+  },
+  "Option_userStyles_tooltip": {
+    "message": "사용자 스타일 생성."
+  },
+  "Option_userStyles_desc": {
+    "message": "팝업 메뉴의 표시를 사용자 정의할 수 있습니다."
+  },
+  "Option_userStyles_add": {
+    "message": "사용자 스타일 편집"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "사용자 스타일을 입력하세요."
+  },
+  "Option_userStyles_name": {
+    "message": "속성 이름"
+  },
+  "Option_userStyles_value": {
+    "message": "값"
+  },
+  "Option_userStyles_option_background_color": {
+    "message": "배경색"
+  },
+  "Option_userStyles_desc_background_color": {
+    "message": "메뉴의 배경색을 지정합니다. 기본값: #FFFFFF"
+  },
+  "Option_userStyles_option_border_color": {
+    "message": "테두리 색상"
+  },
+  "Option_userStyles_desc_border_color": {
+    "message": "메뉴의 테두리 색상을 지정합니다. 기본값: #F3F4F6"
+  },
+  "Option_userStyles_option_font_scale": {
+    "message": "글꼴 크기 스케일"
+  },
+  "Option_userStyles_desc_font_scale": {
+    "message": "글꼴 크기 스케일을 지정합니다. 기본값: 1"
+  },
+  "Option_userStyles_option_image_scale": {
+    "message": "아이콘 크기 스케일"
+  },
+  "Option_userStyles_desc_image_scale": {
+    "message": "아이콘 크기 스케일을 지정합니다. 기본값: 1"
+  },
+  "Option_userStyles_option_padding_scale": {
+    "message": "여백 스케일"
+  },
+  "Option_userStyles_desc_padding_scale": {
+    "message": "여백 스케일을 지정합니다. 기본값: 1"
+  },
+  "Option_userStyles_option_popup_delay": {
+    "message": "표시 지연"
+  },
+  "Option_userStyles_desc_popup_delay": {
+    "message": "표시 시작까지의 시간을 지정합니다. 기본값: 250 ms"
+  },
+  "Option_userStyles_option_popup_duration": {
+    "message": "표시 애니메이션 시간"
+  },
+  "Option_userStyles_desc_popup_duration": {
+    "message": "표시 애니메이션 시간을 지정합니다. 기본값: 150 ms"
+  },
+  "Option_edit_tooltip": {
+    "message": "편집"
+  },
+  "Option_copy_tooltip": {
+    "message": "복제"
+  },
+  "Option_remove_title": {
+    "message": "이것을 삭제하시겠습니까?"
+  },
+  "Option_remove_tooltip": {
+    "message": "삭제"
+  },
+  "Option_remove_ok": {
+    "message": "삭제"
+  },
+  "Option_remove_description": {
+    "message": "이 작업은 취소할 수 없습니다. 계속하시겠습니까?"
+  },
+  "Option_copy_title": {
+    "message": "명령 복제"
+  },
+  "Option_copy_desc": {
+    "message": "제목을 입력하세요."
+  },
+  "Option_copy_ok": {
+    "message": "복제"
+  },
+  "Option_zod_number": {
+    "message": "숫자를 입력하세요."
+  },
+  "Option_zod_number_min": {
+    "message": "$key$ 이상의 숫자를 입력하세요.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "$key$ 이하의 숫자를 입력하세요.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "$key$자 이상의 문자열을 입력하세요.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_string_max": {
+    "message": "$key$자 이하의 문자열을 입력하세요.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "URL 형식으로 입력하세요."
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "선택한 텍스트가 삽입됩니다",
+    "description": "for INSERT.SELECTED_TEXT"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "원본 URL이 삽입됩니다",
+    "description": "for INSERT.URL"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "클립보드의 텍스트가 삽입됩니다",
+    "description": "for INSERT.CLIPBOARD"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "텍스트 삽입"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "선택한 텍스트"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "원본 URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "클립보드"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "내용 편집"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "이 작업으로 입력할 내용을 편집합니다."
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "입력할 내용"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "취소"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "저장"
+  },
+  "PageAction_Controller_recording": {
+    "message": "녹화 중"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "녹화하지 않음"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "미리보기"
+  },
+  "PageAction_Controller_stop": {
+    "message": "중지"
+  },
+  "PageAction_Controller_complete": {
+    "message": "완료"
+  },
+  "PageAction_Controller_preview": {
+    "message": "미리보기"
+  },
+  "PageAction_Controller_reset": {
+    "message": "초기화"
+  },
+  "help_pageAction_title": {
+    "message": "페이지 작업 사용 방법"
+  },
+  "help_pageAction_description": {
+    "message": "페이지 작업을 사용하면 <b>사용자 작업을 녹화하고 재생할 수 있습니다</b>."
+  },
+  "help_pageAction_example": {
+    "message": "사용 예시:"
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>미리 정의된 프롬프트와 선택한 텍스트를 LLM에 보내기</li><li>URL 입력 및 버튼 클릭</li><li>그 외 더 많은 기능...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "녹화하려면 <b>REC 버튼</b>을 클릭하세요."
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【생성 방법】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>페이지 URL을 입력하고 REC 버튼을 클릭하여 녹화를 시작합니다.</li><li>창이 열리면 녹화하려는 작업을 수행합니다.</li><li>완료되면 녹화 메뉴에서 완료 버튼을 클릭합니다.</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": "페이지 작업은 <b>다음 작업</b>을 녹화할 수 있습니다."
+  },
+  "help_pageAction_action": {
+    "message": "작업"
+  },
+  "help_pageAction_desc": {
+    "message": "설명"
+  },
+  "help_pageAction_left_click": {
+    "message": "왼쪽 클릭"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "단일, 이중 및 삼중 클릭을 녹화합니다."
+  },
+  "help_pageAction_scroll": {
+    "message": "스크롤"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "10px 이상의 스크롤을 녹화합니다."
+  },
+  "help_pageAction_keyboard": {
+    "message": "키보드 입력"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>Ctrl 조합과 같은 특정 키보드 입력만 녹화됩니다.</li><li>일부 녹화된 키보드 작업은 올바르게 재생되지 않을 수 있습니다.</li>"
+  },
+  "help_pageAction_input": {
+    "message": "텍스트 입력"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "입력 필드에 입력된 텍스트를 녹화합니다."
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "다음 변수를 사용할 수 있습니다:"
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "선택한 텍스트, URL, 클립보드"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "입력 필드에 포커스가 있는 동안 다른 작업은 녹화되지 않습니다."
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "Tab 및 Enter 키만 녹화됩니다."
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "최대 10단계까지 녹화할 수 있습니다."
+  },
+  "help_pageAction_edit": {
+    "message": "<b>페이지 작업 편집</b>에 대해"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>구성 화면에서 텍스트 입력을 편집하고 단계를 삭제할 수 있습니다.</li><li>기존 페이지 작업을 복사하여 몇 가지 변경 사항으로 쉽게 새 명령을 만들 수 있습니다.</li>"
+  },
+  "help_pageAction_share": {
+    "message": "<b>명령 공유</b>에 대해"
+  },
+  "help_pageAction_share_desc": {
+    "message": "Selection Command Hub에서 페이지 작업 명령을 공유하고 가져올 수 있습니다."
+  },
+  "review_request_title": {
+    "message": "Selection Command가 마음에 드시나요?"
+  },
+  "review_request_message": {
+    "message": "이 확장 프로그램이 유용하다고 생각되면 Chrome 웹 스토어에 리뷰를 남겨주세요. 귀하의 피드백은 우리가 개선하는 데 도움이 됩니다!"
+  },
+  "review_request_button": {
+    "message": "리뷰 작성"
+  },
+  "review_request_close": {
+    "message": "나중에"
+  },
+  "Option_shortcuts": {
+    "message": "단축키"
+  },
+  "Option_shortcuts_desc": {
+    "message": "명령을 실행하기 위한 단축키를 정의합니다."
+  },
+  "Option_shortcuts_settings_desc": {
+    "message": "Chrome 확장 프로그램 설정에서 키를 변경할 수 있습니다."
+  },
+  "Option_shortcuts_settings_link": {
+    "message": "키 설정"
+  },
+  "Option_shortcut_text_selection_only": {
+    "message": "텍스트 선택만"
+  },
+  "Option_shortcut_select_placeholder": {
+    "message": "명령 선택"
+  },
+  "Option_shortcut_not_set": {
+    "message": "설정되지 않음"
+  },
+  "Option_shortcut_no_selection_behavior": {
+    "message": "텍스트가 선택되지 않은 경우"
+  },
+  "Option_shortcut_no_selection_do_nothing": {
+    "message": "아무 작업도 하지 않음"
+  },
+  "Option_shortcut_no_selection_use_clipboard": {
+    "message": "클립보드 내용 사용"
+  }
+}

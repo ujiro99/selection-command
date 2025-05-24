@@ -1,0 +1,776 @@
+{
+  "extName": {
+    "message": "Selection Command – तुरंत खोजें, AI का उपयोग करें या टूल्स लॉन्च करें।"
+  },
+  "extDescription": {
+    "message": "चयनित टेक्स्ट के साथ एक क्लिक में खोजें, AI का उपयोग करें या टूल्स चलाएं, और अपनी नेविगेशन को तेज करें।"
+  },
+  "saving": {
+    "message": "सहेज रहा है.."
+  },
+  "labelOption": {
+    "message": "विकल्प"
+  },
+  "labelCancel": {
+    "message": "रद्द करें"
+  },
+  "labelClose": {
+    "message": "बंद करें"
+  },
+  "labelAddPageRule": {
+    "message": "पेज नियम जोड़ें।"
+  },
+  "previewOnContextMenu": {
+    "message": "जब कॉन्टेक्स्ट मेनू चुना जाता है तो पॉपअप मेनू नहीं दिखाई देगा।"
+  },
+  "previewOnKeyboard": {
+    "message": "मेनू के प्रदर्शन को टॉगल करने के लिए $key$ कुंजी का उपयोग करें।",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Ctrl / Alt / Shift"
+      }
+    }
+  },
+  "previewOnLeftClickHold": {
+    "message": "मेनू दिखाने के लिए बाएं क्लिक को दबाए रखें। बंद करने के लिए क्लिक करें।"
+  },
+  "commandHub_description": {
+    "message": "अब आप कमांड साझा कर सकते हैं✨"
+  },
+  "commnadHub_youcanshare": {
+    "message": "⚡️उत्पन्न कमांड स्वचालित रूप से डाली जा सकती हैं।"
+  },
+  "Option_labelCancel": {
+    "message": "रद्द करें"
+  },
+  "Option_labelUpdate": {
+    "message": "अपडेट करें"
+  },
+  "Option_labelSave": {
+    "message": "बनाएं"
+  },
+  "Option_labelDetail": {
+    "message": "विवरण"
+  },
+  "Option_labelOther": {
+    "message": "अन्य"
+  },
+  "Option_Enable": {
+    "message": "सक्षम करें"
+  },
+  "Option_Disable": {
+    "message": "अक्षम करें"
+  },
+  "Option_Reset": {
+    "message": "रीसेट करें"
+  },
+  "Option_Reset_description": {
+    "message": "क्या आप वाकई सभी सेटिंग्स को डिफ़ॉल्ट पर रीसेट करना चाहते हैं?\nयह क्रिया पूर्ववत नहीं की जा सकती।\n※ पहले <b>\"निर्यात\"</b> करने की अनुशंसा की जाती है।"
+  },
+  "Option_Import_description": {
+    "message": "आयात के लिए कॉन्फ़िगरेशन फ़ाइल (<pre>*.json</pre>) चुनें।"
+  },
+  "Option_Export": {
+    "message": "निर्यात"
+  },
+  "Option_Import": {
+    "message": "आयात"
+  },
+  "Option_Add": {
+    "message": "जोड़ें"
+  },
+  "Option_Command": {
+    "message": "कमांड"
+  },
+  "Option_Command_tooltip": {
+    "message": "कमांड बनाएं।"
+  },
+  "Option_Find": {
+    "message": "कमांड खोजें"
+  },
+  "Option_Command_edit": {
+    "message": "कमांड संपादित करें"
+  },
+  "Option_Command_input": {
+    "message": "कमांड की जानकारी दर्ज करें।"
+  },
+  "Option_Command_rootFolder": {
+    "message": "(कोई फ़ोल्डर नहीं)"
+  },
+  "Option_startupMethod": {
+    "message": "स्टार्टअप विधि"
+  },
+  "Option_startupMethod_desc": {
+    "message": "पॉपअप मेनू के प्रदर्शन के तरीके को बदलें।"
+  },
+  "Option_startupMethod_method": {
+    "message": "विधि"
+  },
+  "Option_startupMethod_textSelection": {
+    "message": "टेक्स्ट चयन (डिफ़ॉल्ट)"
+  },
+  "Option_startupMethod_contextMenu": {
+    "message": "कॉन्टेक्स्ट मेनू"
+  },
+  "Option_startupMethod_keyboard": {
+    "message": "कीबोर्ड इनपुट"
+  },
+  "Option_startupMethod_leftClickHold": {
+    "message": "बाएं क्लिक होल्ड"
+  },
+  "Option_startupMethod_param_keyboard": {
+    "message": "प्रदर्शन टॉगल कुंजी"
+  },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "कुंजी चुनें"
+  },
+  "Option_keyboardParam_Control_windows": {
+    "message": "Ctrl"
+  },
+  "Option_keyboardParam_Alt_windows": {
+    "message": "Alt"
+  },
+  "Option_keyboardParam_Shift_windows": {
+    "message": "Shift"
+  },
+  "Option_keyboardParam_Control_mac": {
+    "message": "Command(⌘)"
+  },
+  "Option_keyboardParam_Alt_mac": {
+    "message": "Option(⌥)"
+  },
+  "Option_keyboardParam_Shift_mac": {
+    "message": "Shift"
+  },
+  "Option_startupMethod_param_leftClickHold": {
+    "message": "प्रतीक्षा समय(मिलीसेकंड)"
+  },
+  "Option_popupPlacement": {
+    "message": "मेनू प्लेसमेंट"
+  },
+  "Option_popupPlacement_side": {
+    "message": "पक्ष"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "माउस पॉइंटर के सापेक्ष मेनू की स्थिति।"
+  },
+  "Option_popupPlacement_top": {
+    "message": "शीर्ष"
+  },
+  "Option_popupPlacement_right": {
+    "message": "दाएं"
+  },
+  "Option_popupPlacement_bottom": {
+    "message": "नीचे"
+  },
+  "Option_popupPlacement_left": {
+    "message": "बाएं"
+  },
+  "Option_popupPlacement_align": {
+    "message": "संरेखण"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "माउस पॉइंटर के साथ मेनू को संरेखित करें।"
+  },
+  "Option_popupPlacement_start": {
+    "message": "शुरू"
+  },
+  "Option_popupPlacement_center": {
+    "message": "केंद्र"
+  },
+  "Option_popupPlacement_end": {
+    "message": "अंत"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "साइड ऑफसेट"
+  },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "माउस पॉइंटर से दूरी"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "संरेखण ऑफसेट"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "संरेखित स्थिति से दूरी"
+  },
+  "Option_popupPlacement_alignOffset_disabled": {
+    "message": "केंद्रित होने पर अक्षम"
+  },
+  "Option_inheritPopupPlacement": {
+    "message": "वैश्विक सेटिंग्स से मेनू प्लेसमेंट प्राप्त करें"
+  },
+  "Option_inherit": {
+    "message": "प्राप्त करें"
+  },
+  "Option_mouse_pointer": {
+    "message": "माउस पॉइंटर"
+  },
+  "Option_style": {
+    "message": "मेनू शैली"
+  },
+  "Option_style_vertical": {
+    "message": "लंबवत"
+  },
+  "Option_style_horizontal": {
+    "message": "क्षैतिज"
+  },
+  "Option_commands": {
+    "message": "कमांड"
+  },
+  "Option_commands_desc": {
+    "message": "चयनित टेक्स्ट के आधार पर निष्पादित करने के लिए कमांड परिभाषित करता है।"
+  },
+  "Option_commands_desc_count": {
+    "message": " / 100 आइटम"
+  },
+  "Option_title": {
+    "message": "शीर्षक"
+  },
+  "Option_searchUrl": {
+    "message": "खोज URL"
+  },
+  "Option_searchUrl_desc": {
+    "message": "चयनित टेक्स्ट के साथ `%s` को प्रतिस्थापित करता है।"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "* खोज URL स्वचालित रूप से अपडेट होगा जब संशोधित किया जाएगा।"
+  },
+  "Option_iconUrl": {
+    "message": "आइकन URL"
+  },
+  "Option_iconUrl_folder": {
+    "message": "आइकन URL / SVG"
+  },
+  "Option_iconUrl_desc": {
+    "message": "खोज URL के संशोधित होने पर आइकन URL स्वचालित रूप से अपडेट होगा।"
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "प्रारंभिक URL के संशोधित होने पर आइकन URL स्वचालित रूप से अपडेट होगा।"
+  },
+  "Option_iconUrl_autofill": {
+    "message": "स्वतः भरें"
+  },
+  "Option_spaceEncoding": {
+    "message": "स्पेस एन्कोडिंग"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "चयनित टेक्स्ट में स्पेस को प्रतिस्थापित करता है।"
+  },
+  "Option_spaceEncoding_plus": {
+    "message": "प्लस (+)"
+  },
+  "Option_spaceEncoding_percent": {
+    "message": "प्रतिशत (%20)"
+  },
+  "Option_openMode": {
+    "message": "खुलने का मोड"
+  },
+  "Option_openMode_popup": {
+    "message": "पॉपअप"
+  },
+  "Option_openMode_window": {
+    "message": "विंडो"
+  },
+  "Option_openMode_tab": {
+    "message": "टैब"
+  },
+  "Option_openMode_api": {
+    "message": "API"
+  },
+  "Option_openMode_linkPopup": {
+    "message": "लिंक पॉपअप"
+  },
+  "Option_openMode_copy": {
+    "message": "टेक्स्ट कॉपी करें"
+  },
+  "Option_openMode_getTextStyles": {
+    "message": "टेक्स्ट स्टाइल प्राप्त करें"
+  },
+  "Option_openMode_pageAction": {
+    "message": "पेज एक्शन"
+  },
+  "Option_openMode_previewPopup": {
+    "message": "पॉपअप"
+  },
+  "Option_openMode_previewWindow": {
+    "message": "विंडो"
+  },
+  "Option_openModeSecondary": {
+    "message": " ┗ Ctrl + क्लिक"
+  },
+  "Option_parentFolderId": {
+    "message": "फ़ोल्डर"
+  },
+  "Option_copyOption": {
+    "message": "कॉपी प्रारूप"
+  },
+  "Option_copyOption_default": {
+    "message": "डिफ़ॉल्ट"
+  },
+  "Option_copyOption_text": {
+    "message": "केवल टेक्स्ट"
+  },
+  "Option_fetchOptions": {
+    "message": "फेच विकल्प"
+  },
+  "Option_variables": {
+    "message": "फेच वेरिएबल्स"
+  },
+  "Option_variableName": {
+    "message": "नाम"
+  },
+  "Option_variableValue": {
+    "message": "मान"
+  },
+  "Option_startUrl": {
+    "message": "प्रारंभिक URL"
+  },
+  "Option_startUrl_desc": {
+    "message": "पेज का URL जहां एक्शन शुरू होता है।"
+  },
+  "Option_pageAction_title": {
+    "message": "एक्शन"
+  },
+  "Option_pageAction_desc": {
+    "message": "निष्पादित करने के लिए एक्शन"
+  },
+  "Option_pageAction_openMode": {
+    "message": "विंडो प्रदर्शन विधि"
+  },
+  "Option_pageAction_label": {
+    "message": "स्टेप नाम"
+  },
+  "Option_pageAction_value": {
+    "message": "मान"
+  },
+  "Option_pageAction_delay": {
+    "message": "प्रतीक्षा समय"
+  },
+  "Option_linkCommand": {
+    "message": "लिंक प्रीव्यू"
+  },
+  "Option_linkCommand_desc": {
+    "message": "लिंक पर क्लिक करने पर पॉपअप मेनू में प्रीव्यू दिखाएं।"
+  },
+  "Option_linkCommand_enabledInherit": {
+    "message": "वैश्विक सेटिंग्स से प्राप्त करें (वर्तमान: $current$)",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "सक्षम या अक्षम"
+      }
+    }
+  },
+  "Option_linkCommand_enabledEnable": {
+    "message": "सक्षम करें"
+  },
+  "Option_linkCommand_enabledDisable": {
+    "message": "अक्षम करें"
+  },
+  "Option_linkCommandStartupMethod_method": {
+    "message": "स्टार्टअप विधि"
+  },
+  "Option_linkCommandStartupMethod_drag": {
+    "message": "ड्रैग"
+  },
+  "Option_linkCommandStartupMethod_keyboard": {
+    "message": "क्लिक + समवर्ती कुंजी"
+  },
+  "Option_linkCommandStartupMethod_leftClickHold": {
+    "message": "बाएं क्लिक होल्ड"
+  },
+  "Option_linkCommandStartupMethod_threshold": {
+    "message": "ड्रैग थ्रेशोल्ड"
+  },
+  "Option_linkCommandStartupMethod_threshold_desc": {
+    "message": "प्रदर्शन के लिए ड्रैग थ्रेशोल्ड"
+  },
+  "Option_linkCommandStartupMethod_keyboardParam": {
+    "message": "क्लिक के साथ दबाने के लिए कुंजी"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam": {
+    "message": "प्रतीक्षा समय"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "प्रदर्शन तक का समय"
+  },
+  "Option_showIndicator": {
+    "message": "इंडिकेटर दिखाएं"
+  },
+  "Option_showIndicator_desc": {
+    "message": "प्रीव्यू तक शेष समय दिखाएं।"
+  },
+  "Option_folders": {
+    "message": "फ़ोल्डर्स"
+  },
+  "Option_folders_tooltip": {
+    "message": "फ़ोल्डर बनाएं।"
+  },
+  "Option_folders_desc": {
+    "message": "आप कमांड को फ़ोल्डर्स में व्यवस्थित कर सकते हैं।"
+  },
+  "Option_folders_edit": {
+    "message": "फ़ोल्डर संपादित करें"
+  },
+  "Option_folders_input": {
+    "message": "फ़ोल्डर की जानकारी दर्ज करें।"
+  },
+  "Option_icon_error": {
+    "message": "एक वैध URL या SVG दर्ज करें।"
+  },
+  "Option_icon_placeholder": {
+    "message": "URL या SVG स्ट्रिंग।"
+  },
+  "Option_icon_desc": {
+    "message": "URL या SVG का उपयोग किया जा सकता है।"
+  },
+  "Option_icon_required": {
+    "message": "आइकन के लिए URL या SVG आवश्यक है।"
+  },
+  "Option_onlyIcon": {
+    "message": "केवल आइकन दिखाएं"
+  },
+  "Option_onlyIcon_desc": {
+    "message": "* केवल क्षैतिज मोड में प्रभावी"
+  },
+  "Option_pageRules": {
+    "message": "पेज नियम"
+  },
+  "Option_pageRules_tooltip": {
+    "message": "पेज नियम बनाएं।"
+  },
+  "Option_pageRules_desc": {
+    "message": "साइट के लिए सेटिंग्स।"
+  },
+  "Option_pageRules_add": {
+    "message": "पेज नियम संपादित करें।"
+  },
+  "Option_pageRules_add_desc": {
+    "message": "पेज नियम दर्ज करें।"
+  },
+  "Option_urlPattern": {
+    "message": "URL पैटर्न"
+  },
+  "Option_popupEnabled": {
+    "message": "पॉपअप सक्षम करें"
+  },
+  "Option_linkCommandEnabled": {
+    "message": "लिंक प्रीव्यू सक्षम करें"
+  },
+  "Option_userStyles": {
+    "message": "उपयोगकर्ता स्टाइल"
+  },
+  "Option_userStyles_tooltip": {
+    "message": "उपयोगकर्ता स्टाइल बनाएं।"
+  },
+  "Option_userStyles_desc": {
+    "message": "आप पॉपअप मेनू के प्रदर्शन को कस्टमाइज़ कर सकते हैं।"
+  },
+  "Option_userStyles_add": {
+    "message": "उपयोगकर्ता स्टाइल संपादित करें"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "उपयोगकर्ता स्टाइल दर्ज करें।"
+  },
+  "Option_userStyles_name": {
+    "message": "गुण नाम"
+  },
+  "Option_userStyles_value": {
+    "message": "मान"
+  },
+  "Option_userStyles_option_background_color": {
+    "message": "पृष्ठभूमि रंग"
+  },
+  "Option_userStyles_desc_background_color": {
+    "message": "मेनू का पृष्ठभूमि रंग निर्दिष्ट करें। डिफ़ॉल्ट: #FFFFFF"
+  },
+  "Option_userStyles_option_border_color": {
+    "message": "बॉर्डर रंग"
+  },
+  "Option_userStyles_desc_border_color": {
+    "message": "मेनू का बॉर्डर रंग निर्दिष्ट करें। डिफ़ॉल्ट: #F3F4F6"
+  },
+  "Option_userStyles_option_font_scale": {
+    "message": "फ़ॉन्ट साइज़ स्केल"
+  },
+  "Option_userStyles_desc_font_scale": {
+    "message": "फ़ॉन्ट साइज़ का स्केल निर्दिष्ट करें। डिफ़ॉल्ट: 1"
+  },
+  "Option_userStyles_option_image_scale": {
+    "message": "आइकन साइज़ स्केल"
+  },
+  "Option_userStyles_desc_image_scale": {
+    "message": "आइकन साइज़ का स्केल निर्दिष्ट करें। डिफ़ॉल्ट: 1"
+  },
+  "Option_userStyles_option_padding_scale": {
+    "message": "पैडिंग स्केल"
+  },
+  "Option_userStyles_desc_padding_scale": {
+    "message": "पैडिंग का स्केल निर्दिष्ट करें। डिफ़ॉल्ट: 1"
+  },
+  "Option_userStyles_option_popup_delay": {
+    "message": "प्रदर्शन विलंब"
+  },
+  "Option_userStyles_desc_popup_delay": {
+    "message": "प्रदर्शन शुरू होने तक का समय निर्दिष्ट करें। डिफ़ॉल्ट: 250 मिलीसेकंड"
+  },
+  "Option_userStyles_option_popup_duration": {
+    "message": "प्रदर्शन एनिमेशन अवधि"
+  },
+  "Option_userStyles_desc_popup_duration": {
+    "message": "प्रदर्शन एनिमेशन की अवधि निर्दिष्ट करें। डिफ़ॉल्ट: 150 मिलीसेकंड"
+  },
+  "Option_edit_tooltip": {
+    "message": "संपादित करें"
+  },
+  "Option_copy_tooltip": {
+    "message": "डुप्लिकेट"
+  },
+  "Option_remove_title": {
+    "message": "क्या आप वाकई इसे हटाना चाहते हैं?"
+  },
+  "Option_remove_tooltip": {
+    "message": "हटाएं"
+  },
+  "Option_remove_ok": {
+    "message": "हटाएं"
+  },
+  "Option_remove_description": {
+    "message": "यह क्रिया पूर्ववत नहीं की जा सकती। क्या आप जारी रखना चाहते हैं?"
+  },
+  "Option_copy_title": {
+    "message": "कमांड डुप्लिकेट करें"
+  },
+  "Option_copy_desc": {
+    "message": "शीर्षक दर्ज करें।"
+  },
+  "Option_copy_ok": {
+    "message": "डुप्लिकेट"
+  },
+  "Option_zod_number": {
+    "message": "एक संख्या दर्ज करें।"
+  },
+  "Option_zod_number_min": {
+    "message": "$key$ से बड़ी या बराबर संख्या दर्ज करें।",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "$key$ से छोटी या बराबर संख्या दर्ज करें।",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "कम से कम $key$ वर्णों की स्ट्रिंग दर्ज करें।",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_string_max": {
+    "message": "अधिकतम $key$ वर्णों की स्ट्रिंग दर्ज करें।",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "URL प्रारूप में दर्ज करें।"
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "चयनित टेक्स्ट डाला जाएगा",
+    "description": "for INSERT.SELECTED_TEXT"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "मूल URL डाला जाएगा",
+    "description": "for INSERT.URL"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "क्लिपबोर्ड से टेक्स्ट डाला जाएगा",
+    "description": "for INSERT.CLIPBOARD"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "टेक्स्ट डालें"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "चयनित टेक्स्ट"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "मूल URL"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "क्लिपबोर्ड"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "सामग्री संपादित करें"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "इस एक्शन में डालने के लिए सामग्री संपादित करें।"
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "डालने के लिए सामग्री"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "रद्द करें"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "सहेजें"
+  },
+  "PageAction_Controller_recording": {
+    "message": "रिकॉर्डिंग"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "रिकॉर्डिंग नहीं"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "प्रीव्यू"
+  },
+  "PageAction_Controller_stop": {
+    "message": "रोकें"
+  },
+  "PageAction_Controller_complete": {
+    "message": "पूर्ण"
+  },
+  "PageAction_Controller_preview": {
+    "message": "प्रीव्यू"
+  },
+  "PageAction_Controller_reset": {
+    "message": "रीसेट"
+  },
+  "help_pageAction_title": {
+    "message": "पेज एक्शन का उपयोग कैसे करें"
+  },
+  "help_pageAction_description": {
+    "message": "पेज एक्शन आपको <b>उपयोगकर्ता के कार्यों को रिकॉर्ड और प्लेबैक करने</b> की अनुमति देता है।"
+  },
+  "help_pageAction_example": {
+    "message": "उपयोग के उदाहरण:"
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>LLM को पूर्वनिर्धारित प्रॉम्प्ट के साथ चयनित टेक्स्ट भेजें</li><li>URL डालें और बटन क्लिक करें</li><li>और बहुत कुछ...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "रिकॉर्ड करने के लिए <b>REC बटन</b> पर क्लिक करें।"
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【बनाने की विधि】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>पेज का URL दर्ज करें और रिकॉर्डिंग शुरू करने के लिए REC बटन पर क्लिक करें।</li><li>जब विंडो खुले, तो आप जिन कार्यों को रिकॉर्ड करना चाहते हैं उन्हें निष्पादित करें।</li><li>जब समाप्त हो, तो रिकॉर्डिंग मेनू में पूर्ण बटन पर क्लिक करें।</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": "पेज एक्शन <b>निम्नलिखित कार्यों</b> को रिकॉर्ड कर सकता है।"
+  },
+  "help_pageAction_action": {
+    "message": "कार्य"
+  },
+  "help_pageAction_desc": {
+    "message": "विवरण"
+  },
+  "help_pageAction_left_click": {
+    "message": "बाएं क्लिक"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "सिंगल, डबल और ट्रिपल क्लिक रिकॉर्ड करता है।"
+  },
+  "help_pageAction_scroll": {
+    "message": "स्क्रॉल"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "10px या अधिक के स्क्रॉल रिकॉर्ड करता है।"
+  },
+  "help_pageAction_keyboard": {
+    "message": "कीबोर्ड इनपुट"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>केवल विशिष्ट कीबोर्ड इनपुट रिकॉर्ड किए जाते हैं, जैसे Ctrl कॉम्बिनेशन।</li><li>कुछ रिकॉर्ड किए गए कीबोर्ड कार्य सही ढंग से प्लेबैक नहीं हो सकते हैं।</li>"
+  },
+  "help_pageAction_input": {
+    "message": "टेक्स्ट इनपुट"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "इनपुट फ़ील्ड में दर्ज किए गए टेक्स्ट को रिकॉर्ड करता है।"
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "निम्नलिखित वेरिएबल्स का उपयोग किया जा सकता है:"
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "चयनित टेक्स्ट, URL, क्लिपबोर्ड"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "जब कोई इनपुट फ़ील्ड फोकस में हो तो अन्य कार्य रिकॉर्ड नहीं किए जाते हैं।"
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "केवल Tab और Enter कुंजियां रिकॉर्ड की जाती हैं।"
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "आप अधिकतम 10 स्टेप रिकॉर्ड कर सकते हैं।"
+  },
+  "help_pageAction_edit": {
+    "message": "<b>पेज एक्शन संपादित करने</b> पर"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>आप कॉन्फ़िगरेशन स्क्रीन पर टेक्स्ट इनपुट संपादित कर सकते हैं और स्टेप हटा सकते हैं।</li><li>आप मौजूदा पेज एक्शन को कॉपी करके और कुछ परिवर्तन करके आसानी से नए कमांड बना सकते हैं।</li>"
+  },
+  "help_pageAction_share": {
+    "message": "<b>कमांड शेयरिंग</b> पर"
+  },
+  "help_pageAction_share_desc": {
+    "message": "आप Selection Command Hub में पेज एक्शन कमांड शेयर और इम्पोर्ट कर सकते हैं।"
+  },
+  "review_request_title": {
+    "message": "क्या आपको Selection Command पसंद है?"
+  },
+  "review_request_message": {
+    "message": "यदि आप इस एक्सटेंशन को उपयोगी पाते हैं, तो Chrome Web Store में एक समीक्षा छोड़ें। आपकी प्रतिक्रिया हमें बेहतर बनने में मदद करती है!"
+  },
+  "review_request_button": {
+    "message": "समीक्षा लिखें"
+  },
+  "review_request_close": {
+    "message": "बाद में"
+  },
+  "Option_shortcuts": {
+    "message": "शॉर्टकट"
+  },
+  "Option_shortcuts_desc": {
+    "message": "कमांड निष्पादित करने के लिए शॉर्टकट परिभाषित करता है।"
+  },
+  "Option_shortcuts_settings_desc": {
+    "message": "आप Chrome एक्सटेंशन सेटिंग्स में कुंजियां बदल सकते हैं।"
+  },
+  "Option_shortcuts_settings_link": {
+    "message": "कुंजियां कॉन्फ़िगर करें"
+  },
+  "Option_shortcut_text_selection_only": {
+    "message": "केवल टेक्स्ट चयन"
+  },
+  "Option_shortcut_select_placeholder": {
+    "message": "कमांड चुनें"
+  },
+  "Option_shortcut_not_set": {
+    "message": "सेट नहीं"
+  },
+  "Option_shortcut_no_selection_behavior": {
+    "message": "जब कोई टेक्स्ट चयनित नहीं हो"
+  },
+  "Option_shortcut_no_selection_do_nothing": {
+    "message": "कुछ न करें"
+  },
+  "Option_shortcut_no_selection_use_clipboard": {
+    "message": "क्लिपबोर्ड सामग्री का उपयोग करें"
+  }
+}
