@@ -26,9 +26,7 @@ const readClipboardWithRetry = async (
 ): Promise<string> => {
   for (let i = 0; i < maxRetries; i++) {
     try {
-      const text = await navigator.clipboard.readText()
-      console.debug('clipboard text', text)
-      return text
+      return await navigator.clipboard.readText()
     } catch (error) {
       console.warn(
         `Retry to read clipboard (attempt ${i + 1}/${maxRetries}):`,

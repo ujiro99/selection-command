@@ -487,7 +487,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
       ) {
         const clipboardText = await Ipc.send(BgCommand.getClipboard)
-        console.debug('clipboardText', clipboardText)
+        // console.debug('clipboardText', clipboardText)
         if (clipboardText) {
           selectionText = clipboardText
         } else {
