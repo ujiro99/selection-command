@@ -268,10 +268,11 @@ export const openClipboardReader = async (): Promise<string> => {
   const w = await chrome.windows.create({
     url: chrome.runtime.getURL('src/clipboard.html'),
     type: 'popup',
-    width: 100,
-    height: 100,
+    width: 1,
+    height: 1,
     left: 0,
     top: 0,
+    focused: true,
   })
 
   await BgData.set((data) => ({
