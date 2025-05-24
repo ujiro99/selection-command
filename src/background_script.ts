@@ -494,6 +494,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       // Execute command in tab
       ret = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
         command,
+        selectionText,
       })
     }
 

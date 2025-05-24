@@ -10,6 +10,7 @@ Settings.addChangedListener(() => ContextMenu.init())
 
 export type executeActionProps = {
   command: Command
+  selectionText?: string
 }
 
 let initDelayTO: NodeJS.Timeout

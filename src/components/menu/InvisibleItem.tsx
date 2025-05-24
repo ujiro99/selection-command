@@ -16,8 +16,12 @@ type InvisibleItemProps = {
 }
 
 export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
-  const { selectionText, target } = useSelectContext()
-  const { command, setCommand } = useContextMenu()
+  const { selectionText: contextSelectionText, target } = useSelectContext()
+  const {
+    command,
+    setCommand,
+    selectionText: commandSelectionText,
+  } = useContextMenu()
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const elmRef = useRef<HTMLDivElement>(null)
@@ -66,7 +70,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     executeCommand({
       command: command as SelectionCommand,
       position,
-      selectionText,
+      selectionText: commandSelectionText ?? contextSelectionText,
       target,
     })
     setCommand(null)
