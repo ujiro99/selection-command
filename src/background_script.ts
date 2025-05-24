@@ -409,8 +409,12 @@ chrome.windows.onBoundsChanged.addListener((window) => {
 
 chrome.tabs.onActivated.addListener(async () => {
   // Force close the menu
-  const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
-  ret.filter((v) => v).forEach((v) => console.debug(v))
+  try {
+    const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
+    ret.filter((v) => v).forEach((v) => console.debug(v))
+  } catch (error) {
+    console.error('Failed to close menu:', error)
+  }
 })
 
 if (isDebug) {
@@ -459,7 +463,10 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     }
 
     let selectionText = ''
-    let enableSendTab = tab?.id && !tab.url?.startsWith('chrome')
+    let enableSendTab =
+      tab?.id &&
+      !tab.url?.startsWith('chrome') &&
+      !tab.url?.includes('chromewebstore.google.com')
 
     if (enableSendTab && tab?.id) {
       // Get selection text from session storage

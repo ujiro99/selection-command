@@ -211,6 +211,13 @@ export const Ipc = {
     throw new Error('Could not connect to tab')
   },
 
+  /**
+   * Send message to a specific tab
+   * @param tabId - Target tab ID
+   * @param command - Command to send
+   * @param param - Parameters to send
+   * @returns Response from the tab
+   */
   async sendTab<M = any, R = any>(
     tabId: number,
     command: IpcCommand,
@@ -219,11 +226,8 @@ export const Ipc = {
     type MM = { command: IpcCommand; param: M }
     const message = { command, param } as MM
     try {
-      const ret = await chrome.tabs.sendMessage(tabId, message)
-      if (chrome.runtime.lastError != null) {
-        throw chrome.runtime.lastError
-      }
-      return ret
+      const ret = await this._sendMessageToTab(tabId, message)
+      return ret as R
     } catch (error) {
       console.warn('Could not send message to tab:', error)
       return error as R
@@ -241,11 +245,50 @@ export const Ipc = {
       url: ['http://*/*', 'https://*/*'],
     })
     const ps = tabs
-      .filter((t) => t.id != null)
+      .filter(
+        (t) =>
+          t.id != null &&
+          !t.url?.includes('chromewebstore.google.com') &&
+          t.status === 'complete',
+      )
       .map((tab) =>
-        chrome.tabs.sendMessage(tab.id as number, { command, param }),
+        this._sendMessageToTab(tab.id as number, { command, param }),
       )
     return Promise.all(ps)
+  },
+
+  /**
+   * Internal method to send message to a tab
+   * @private
+   * @param tabId - Target tab ID
+   * @param message - Message to send
+   * @returns Response from the tab
+   * @throws {Error} When message sending fails
+   */
+  async _sendMessageToTab<T>(tabId: number, message: T): Promise<unknown> {
+    try {
+      const ret = await chrome.tabs.sendMessage(tabId, message)
+      if (chrome.runtime.lastError != null) {
+        throw chrome.runtime.lastError
+      }
+      return ret
+    } catch (error) {
+      try {
+        const tab = await chrome.tabs.get(tabId)
+        console.warn('Could not send message to tab:', {
+          url: tab.url,
+          title: tab.title,
+          error,
+        })
+      } catch (tabError) {
+        console.warn('Could not send message to tab:', {
+          tabId,
+          error,
+          tabError,
+        })
+      }
+      throw error
+    }
   },
 
   listeners: {} as { [key: string]: IpcCallback },
