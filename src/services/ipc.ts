@@ -3,6 +3,12 @@ import { PAGE_ACTION_OPEN_MODE } from '@/const'
 import type { PageActionStep } from '@/types'
 import { sleep, isServiceWorker } from '@/lib/utils'
 
+// Constants for connection
+const CONNECTION_RETRY_COUNT = 200
+const CONNECTION_RETRY_INTERVAL = 20
+const CONNECTION_TIMEOUT = 4000
+const CONNECTION_CHECK_INTERVAL = 50
+
 export enum BgCommand {
   openPopups = 'openPopups',
   openPopupAndClick = 'openPopupAndClick',
@@ -130,50 +136,65 @@ export const Ipc = {
   },
 
   async send<M = any, R = any>(command: IpcCommand, param?: M): Promise<R> {
-    if (isServiceWorker()) {
-      return this.callListener<M, R>(command, param)
+    try {
+      if (isServiceWorker()) {
+        return this.callListener<M, R>(command, param)
+      }
+      return await chrome.runtime.sendMessage({ command, param })
+    } catch (error) {
+      console.error(`Failed to send message: ${command}`, error)
+      throw error
     }
-    return await chrome.runtime.sendMessage({ command, param })
   },
 
   /**
    * Connect session to the tab.
-   * @param tabId
+   * @param tabId - Target tab ID to connect
+   * @throws {Error} When connection to the tab fails
    */
   async ensureConnection(tabId: number): Promise<void> {
     const tab = await chrome.tabs.get(tabId)
     if (tab.status !== 'complete') {
       await new Promise<void>((resolve) => {
-        const interval = setInterval(async () => {
-          const t = await chrome.tabs.get(tabId)
-          if (t.status === 'complete') {
-            resolve()
-            clearTimeout(timeout)
-            clearInterval(interval)
-            chrome.tabs.onUpdated.removeListener(cb)
-          }
-        }, 50)
-        const timeout = setTimeout(() => {
-          resolve()
-          clearInterval(interval)
-          chrome.tabs.onUpdated.removeListener(cb)
-          console.warn('Connection timeout')
-        }, 4000)
+        let interval: NodeJS.Timeout
+        let timeout: NodeJS.Timeout
         const cb = (id: number, info: chrome.tabs.TabChangeInfo) => {
           if (tabId === id && info.status === 'complete') {
+            cleanup()
             resolve()
-            clearTimeout(timeout)
-            clearInterval(interval)
-            chrome.tabs.onUpdated.removeListener(cb)
           }
         }
+
+        const cleanup = () => {
+          clearTimeout(timeout)
+          clearInterval(interval)
+          chrome.tabs.onUpdated.removeListener(cb)
+        }
+
+        interval = setInterval(async () => {
+          try {
+            const t = await chrome.tabs.get(tabId)
+            if (t.status === 'complete') {
+              cleanup()
+              resolve()
+            }
+          } catch (error) {
+            console.warn('Failed to check tab status:', error)
+          }
+        }, CONNECTION_CHECK_INTERVAL)
+
+        timeout = setTimeout(() => {
+          console.warn('Connection timeout')
+          cleanup()
+          resolve()
+        }, CONNECTION_TIMEOUT)
+
         chrome.tabs.onUpdated.addListener(cb)
       })
     }
 
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < CONNECTION_RETRY_COUNT; i++) {
       try {
-        // console.debug('try connect', i)
         const ret = await chrome.tabs.sendMessage(tabId, {
           command: TabCommand.connect,
         })
@@ -181,12 +202,11 @@ export const Ipc = {
           console.warn(chrome.runtime.lastError)
           continue
         }
-        // console.debug('tab connected')
         return ret
       } catch (error) {
-        // nothing to do
+        console.debug(`Connection attempt ${i + 1} failed:`, error)
       }
-      await sleep(20)
+      await sleep(CONNECTION_RETRY_INTERVAL)
     }
     throw new Error('Could not connect to tab')
   },
@@ -210,15 +230,21 @@ export const Ipc = {
     }
   },
 
+  /**
+   * Send message to all tabs
+   * @param command - Command to send
+   * @param param - Parameters to send
+   * @returns Array of responses from each tab
+   */
   async sendAllTab(command: IpcCommand, param?: unknown): Promise<any[]> {
     const tabs = await chrome.tabs.query({
       url: ['http://*/*', 'https://*/*'],
     })
     const ps = tabs
       .filter((t) => t.id != null)
-      .map((tab) => {
-        chrome.tabs.sendMessage(tab.id as number, { command, param })
-      })
+      .map((tab) =>
+        chrome.tabs.sendMessage(tab.id as number, { command, param }),
+      )
     return Promise.all(ps)
   },
 
