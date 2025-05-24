@@ -99,7 +99,7 @@ export type Sender = chrome.runtime.MessageSender
 export type IpcCallback = (
   param: unknown,
   sender: chrome.runtime.MessageSender,
-  response?: (response?: unknown) => void,
+  response: (response?: unknown) => void,
 ) => boolean
 
 export const Ipc = {
@@ -204,7 +204,7 @@ export const Ipc = {
         }
         return ret
       } catch (error) {
-        console.debug(`Connection attempt ${i + 1} failed:`, error)
+        console.debug(`Connection attempt ${i + 1} failed:`)
       }
       await sleep(CONNECTION_RETRY_INTERVAL)
     }
