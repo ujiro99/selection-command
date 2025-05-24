@@ -3,7 +3,7 @@ import type { ScreenSize } from '@/services/dom'
 import type { WindowLayer } from '@/types'
 import { POPUP_OFFSET, POPUP_TYPE } from '@/const'
 import { BgData } from '@/services/backgroundData'
-import { Ipc, TabCommand } from '@/services/ipc'
+import { Ipc, TabCommand, ClipboardResult } from '@/services/ipc'
 
 BgData.init()
 
@@ -262,8 +262,8 @@ export const openClipboardReader = async (): Promise<string> => {
   const w = await chrome.windows.create({
     url: chrome.runtime.getURL('src/clipboard.html'),
     type: 'popup',
-    width: 1,
-    height: 1,
+    width: 100,
+    height: 100,
     left: 0,
     top: 0,
   })
@@ -273,27 +273,31 @@ export const openClipboardReader = async (): Promise<string> => {
     clipboardWindowId: w.id ?? null,
   }))
 
-  const tabId = w.tabs?.[0].id as number
-  await Ipc.ensureConnection(tabId)
-
   let result = ''
   try {
-    result = await Ipc.sendTab(tabId, TabCommand.readClipboard)
-    if (!result) {
-      throw new Error('Failed to read clipboard')
+    const tabId = w.tabs?.[0].id as number
+    await Ipc.ensureConnection(tabId)
+    const { data, err } = await Ipc.sendTab<any, ClipboardResult>(
+      tabId,
+      TabCommand.readClipboard,
+    )
+    if (err != null) {
+      throw new Error(`Failed to read clipboard: ${err}`)
     }
+    result = data ?? ''
   } catch (e) {
     console.error(e)
   }
 
   try {
     await chrome.windows.remove(w.id as number)
+  } catch (e) {
+    console.error(e)
+  } finally {
     await BgData.set((data) => ({
       ...data,
       clipboardWindowId: null,
     }))
-  } catch (e) {
-    console.error(e)
   }
 
   return result

@@ -54,6 +54,11 @@ export type ClickElementProps = {
   selector: string
 }
 
+export type ClipboardResult = {
+  data: string | undefined
+  err?: string
+}
+
 export type RunPageAction = {
   tabId?: number
   openMode: PAGE_ACTION_OPEN_MODE
