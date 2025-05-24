@@ -18,7 +18,10 @@ import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
 import { t } from '@/services/i18n'
 import type { PageActiontStatus, PageActionStep, DeepPartial } from '@/types'
 import { cn } from '@/lib/utils'
-import { PAGE_ACTION_OPEN_MODE, EXEC_STATE } from '@/const'
+import {
+  PAGE_ACTION_OPEN_MODE,
+  PAGE_ACTION_EXEC_STATE as EXEC_STATE,
+} from '@/const'
 
 import css from './PageActionRecorder.module.css'
 

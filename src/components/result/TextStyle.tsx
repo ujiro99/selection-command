@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { sleep } from '@/lib/utils'
-import { ExecState } from '@/action'
-
+import { ExecState } from '@/const'
 import css from '@/components/result/ResultPopup.module.css'
 import { Icon } from '@/components/Icon'
 import { Tooltip } from '@/components/Tooltip'

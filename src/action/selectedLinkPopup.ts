@@ -1,9 +1,10 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { getScreenSize, linksInSelection } from '@/services/dom'
-import type { ExecProps } from './index'
+import { linksInSelection } from '@/services/dom'
+import { getScreenSize } from '@/services/screen'
+import type { ExecuteCommandParams } from '@/types'
 
 export const SelectedLinkPopup = {
-  async execute({ command, position }: ExecProps) {
+  async execute({ command, position }: ExecuteCommandParams) {
     if (position) {
       Ipc.send(BgCommand.openPopups, {
         commandId: command.id,
@@ -12,7 +13,7 @@ export const SelectedLinkPopup = {
         left: Math.floor(window.screenLeft + position.x + 20),
         height: command.popupOption?.height,
         width: command.popupOption?.width,
-        screen: getScreenSize(),
+        screen: await getScreenSize(),
       })
     }
   },

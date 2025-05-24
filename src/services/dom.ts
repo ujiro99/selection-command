@@ -69,15 +69,6 @@ export type ScreenSize = {
   top: number
 }
 
-export function getScreenSize(): ScreenSize {
-  return {
-    width: window.screen.width,
-    height: window.screen.height,
-    left: (window.screen as any).availLeft,
-    top: (window.screen as any).availTop,
-  }
-}
-
 /**
  * Get the text of the selected range.
  * @returns {string} The text of the selected range.

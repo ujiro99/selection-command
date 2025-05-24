@@ -9,14 +9,18 @@ import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import type { PageAction } from '@/services/pageAction'
 import { RunningStatus } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
-import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
+import {
+  openPopupWindows,
+  OpenPopupsProps,
+  getCurrentTab,
+} from '@/services/chrome'
 import { incrementCommandExecutionCount } from '@/services/commandMetrics'
 import {
   POPUP_TYPE,
   PAGE_ACTION_MAX,
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_OPEN_MODE,
-  EXEC_STATE,
+  PAGE_ACTION_EXEC_STATE as EXEC_STATE,
   PAGE_ACTION_EVENT as EVENT,
   PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from '@/const'
@@ -277,7 +281,7 @@ export const openAndRun = (
     let tabId: number
 
     if (param.openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
-      const tabIds = await openPopups(param)
+      const tabIds = await openPopupWindows(param)
       if (tabIds.length === 0) {
         console.error('tab not found')
         response(false)

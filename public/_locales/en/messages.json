@@ -742,5 +742,35 @@
   },
   "review_request_close": {
     "message": "Not Now"
+  },
+  "Option_shortcuts": {
+    "message": "Shortcut Keys"
+  },
+  "Option_shortcuts_desc": {
+    "message": "Define keyboard shortcuts to execute commands."
+  },
+  "Option_shortcuts_settings_desc": {
+    "message": "You can change the keys in Chrome's extension settings."
+  },
+  "Option_shortcuts_settings_link": {
+    "message": "Key Settings"
+  },
+  "Option_shortcut_text_selection_only": {
+    "message": "Text Selection Only"
+  },
+  "Option_shortcut_select_placeholder": {
+    "message": "Select a command"
+  },
+  "Option_shortcut_not_set": {
+    "message": "Not set"
+  },
+  "Option_shortcut_no_selection_behavior": {
+    "message": "When no text is selected"
+  },
+  "Option_shortcut_no_selection_do_nothing": {
+    "message": "Do nothing"
+  },
+  "Option_shortcut_no_selection_use_clipboard": {
+    "message": "Use clipboard content"
   }
 }

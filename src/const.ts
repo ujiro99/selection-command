@@ -21,6 +21,25 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = 'addPageRule',
 }
 
+/**
+ * Background script only supports the following modes.
+ * Modes that can operate without text selection.
+ */
+export enum OPEN_MODE_BG {
+  POPUP = OPEN_MODE.POPUP,
+  WINDOW = OPEN_MODE.WINDOW,
+  TAB = OPEN_MODE.TAB,
+  API = OPEN_MODE.API,
+  PAGE_ACTION = OPEN_MODE.PAGE_ACTION,
+}
+
+export enum ExecState {
+  NONE = 0,
+  EXECUTING = 1,
+  SUCCESS = 2,
+  FAIL = 3,
+}
+
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = 'previewPopup',
   PREVIEW_WINDOW = 'previewWindow',
@@ -153,7 +172,7 @@ export enum PAGE_ACTION_CONTROL {
   end = 'end',
 }
 
-export enum EXEC_STATE {
+export enum PAGE_ACTION_EXEC_STATE {
   Queue = 'Queue',
   Start = 'Start',
   Doing = 'Doing',
@@ -198,3 +217,10 @@ export const COMMAND_USAGE = {
     HAS_SHOWN_REVIEW_REQUEST: 'hasShownReviewRequest',
   },
 } as const
+
+export const SHORTCUT_PLACEHOLDER = '_placeholder_'
+
+export enum SHORTCUT_NO_SELECTION_BEHAVIOR {
+  DO_NOTHING = 'doNothing',
+  USE_CLIPBOARD = 'useClipboard',
+}

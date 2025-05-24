@@ -9,9 +9,13 @@ import { Ipc, TabCommand } from '@/services/ipc'
 import { debounceDOMChange } from '@/services/dom'
 import { RunningStatus } from '@/services/pageAction'
 import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
-import { PAGE_ACTION_CONTROL, EXEC_STATE } from '@/const'
+import { PAGE_ACTION_CONTROL, PAGE_ACTION_EXEC_STATE } from '@/const'
 
-const STOP_STATUS = [EXEC_STATE.Done, EXEC_STATE.Failed, EXEC_STATE.Stop]
+const STOP_STATUS = [
+  PAGE_ACTION_EXEC_STATE.Done,
+  PAGE_ACTION_EXEC_STATE.Failed,
+  PAGE_ACTION_EXEC_STATE.Stop,
+]
 
 export function usePageActionRunner() {
   const { setContextData } = usePageActionContext()
@@ -30,7 +34,7 @@ export function usePageActionRunner() {
       const sid = status.stepId
       const step = status.results?.find((s) => s.stepId === sid)
       if (!step) return
-      if (step.status === EXEC_STATE.Start) {
+      if (step.status === PAGE_ACTION_EXEC_STATE.Start) {
         setContextData({ isRunning: true })
       } else if (STOP_STATUS.includes(step.status)) {
         timeout = window.setTimeout(() => {

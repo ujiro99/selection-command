@@ -5,20 +5,20 @@ import {
   LINK_COMMAND_ENABLED,
   LINK_COMMAND_STARTUP_METHOD,
   POPUP_OFFSET,
+  ExecState,
 } from '@/const'
 import { Point, SettingsType, Command } from '@/types'
-import { ExecState } from '@/action'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import Default, { PopupOption } from '@/services/defaultSettings'
 import { isPopup, isLinkCommand, isMac } from '@/lib/utils'
 import {
-  getScreenSize,
   isClickableElement,
   findAnchorElement,
   ScreenSize,
 } from '@/services/dom'
+import { getScreenSize } from '@/services/screen'
 import { sendEvent } from '@/services/analytics'
 
 const isTargetEvent = (e: MouseEvent): boolean => {
@@ -137,13 +137,13 @@ function useDetectDrag(
       setProgress(Math.min(Math.floor((distance / threshold) * 100), 100))
     }
 
-    const handleMouseUp = (e: MouseEvent) => {
+    const handleMouseUp = async (e: MouseEvent) => {
       if (e.button !== MOUSE.LEFT) return
       if (startPosition == null) return
       if (activate && command) {
         const h = command.popupOption?.height ?? PopupOption.height
         const w = command.popupOption?.width ?? PopupOption.width
-        const screen = getScreenSize()
+        const screen = await getScreenSize()
         const position = { x: e.screenX, y: e.screenY - 50 }
         position.x = Math.min(position.x, screen.width - w + screen.left)
         position.y = Math.min(position.y, screen.height - h + screen.top - 60)
@@ -175,9 +175,12 @@ const isCursorInLeft = (cursorX: number, s: ScreenSize): boolean => {
   return cursorX < s.width / 2
 }
 
-const calcPopupPosition = (cursorX: number, command: Command): Point => {
+const calcPopupPosition = async (
+  cursorX: number,
+  command: Command,
+): Promise<Point> => {
   const popupOption = command?.popupOption ?? PopupOption
-  const s = getScreenSize()
+  const s = await getScreenSize()
   let x = isCursorInLeft(cursorX, s)
     ? Math.floor(s.width + s.left - popupOption.width - POPUP_OFFSET)
     : Math.floor(s.left + POPUP_OFFSET)
@@ -233,11 +236,11 @@ function useDetectKeyboard(
       }, 200)
     }
 
-    const onClick = (e: MouseEvent) => {
+    const onClick = async (e: MouseEvent) => {
       if (!keyboardEnabled) return
       if (!checkValidKey(key, e)) return
       if (target == null) return
-      const pos = calcPopupPosition(e.clientX, command)
+      const pos = await calcPopupPosition(e.clientX, command)
       onDetect(pos, target as Element)
     }
 
@@ -288,8 +291,9 @@ function useDetectClickHold(
 
   useEffect(() => {
     if (clickHoldEnabled && detectHoldLink) {
-      const pos = calcPopupPosition(position.x, command)
-      onDetect(pos, linkElement as Element)
+      calcPopupPosition(position.x, command).then((pos) =>
+        onDetect(pos, linkElement as Element),
+      )
     }
   }, [clickHoldEnabled, detectHoldLink])
 

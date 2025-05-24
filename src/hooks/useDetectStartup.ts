@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { PopupProps } from '@/components/Popup'
 import { useSetting } from '@/hooks/useSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
+import { useSelectContext } from '@/hooks/useSelectContext'
 import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD } from '@/const'
 import { Ipc, TabCommand } from '@/services/ipc'
 import { isEmpty } from '@/lib/utils'
@@ -11,12 +12,13 @@ type Props = PopupProps & {
 }
 
 export function useDetectStartup(props: Props) {
-  const { selectionText, positionElm, isPreview, isHover } = props
+  const { positionElm, isPreview, isHover } = props
+  const { selectionText } = useSelectContext()
   const [hide, setHide] = useState(false)
   const { settings, pageRule } = useSetting()
   const { method, leftClickHoldParam } = settings.startupMethod
 
-  let visible = selectionText.length > 0 && positionElm != null
+  let visible = !isEmpty(selectionText) && positionElm != null
   if (pageRule != null) {
     visible = visible && pageRule.popupEnabled === POPUP_ENABLED.ENABLE
   }
@@ -35,7 +37,7 @@ export function useDetectStartup(props: Props) {
 
   useEffect(() => {
     setHide(false)
-  }, [props.selectionText])
+  }, [selectionText])
 
   const detectKey = useKeyboard(props)
   if (method === STARTUP_METHOD.KEYBOARD) {
@@ -60,14 +62,15 @@ export function useDetectStartup(props: Props) {
   return { visible, isContextMenu, isKeyboard, isLeftClickHold }
 }
 
-export function useKeyboard(props: Props) {
+export function useKeyboard(_: Props) {
   const { settings } = useSetting()
+  const { selectionText } = useSelectContext()
   const [detectKey, setDetectKey] = useState(false)
   const { method, keyboardParam } = settings.startupMethod
 
   useEffect(() => {
     setDetectKey(false)
-  }, [props.selectionText])
+  }, [selectionText])
 
   useEffect(() => {
     if (method !== STARTUP_METHOD.KEYBOARD) {

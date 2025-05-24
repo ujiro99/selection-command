@@ -6,23 +6,25 @@ import {
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONTROL,
   SelectorType,
+  SHORTCUT_PLACEHOLDER,
+  SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from '@/const'
 import { t } from '@/services/i18n'
 
 export const PopupPlacementSchema = z.object({
-    side: z.nativeEnum(SIDE),
-    align: z.nativeEnum(ALIGN),
-    sideOffset: z
-      .number({ message: t('Option_zod_number') })
-      .min(0, { message: t('Option_zod_number_min', ['0']) })
-      .max(100, { message: t('Option_zod_number_max', ['100']) })
-      .default(0),
-    alignOffset: z
-      .number({ message: t('Option_zod_number') })
-      .min(-100, { message: t('Option_zod_number_min', ['-100']) })
-      .max(100, { message: t('Option_zod_number_max', ['100']) })
-      .default(0),
-  })
+  side: z.nativeEnum(SIDE),
+  align: z.nativeEnum(ALIGN),
+  sideOffset: z
+    .number({ message: t('Option_zod_number') })
+    .min(0, { message: t('Option_zod_number_min', ['0']) })
+    .max(100, { message: t('Option_zod_number_max', ['100']) })
+    .default(0),
+  alignOffset: z
+    .number({ message: t('Option_zod_number') })
+    .min(-100, { message: t('Option_zod_number_min', ['-100']) })
+    .max(100, { message: t('Option_zod_number_max', ['100']) })
+    .default(0),
+})
 
 const PageActionStartSchema = z.object({
   type: z.literal(PAGE_ACTION_CONTROL.start),
@@ -96,4 +98,16 @@ export const PageActionOption = z.object({
   startUrl: z.string(),
   openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
   steps: z.array(PageActionStepSchema),
+})
+
+export const ShortcutCommandSchema = z.object({
+  commandId: z.string(),
+  targetCommandId: z.string().default(SHORTCUT_PLACEHOLDER),
+  noSelectionBehavior: z
+    .nativeEnum(SHORTCUT_NO_SELECTION_BEHAVIOR)
+    .default(SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD),
+})
+
+export const ShortcutSettingsSchema = z.object({
+  shortcuts: z.array(ShortcutCommandSchema),
 })

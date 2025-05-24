@@ -14,7 +14,9 @@ import type {
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_OPEN_MODE,
-  EXEC_STATE,
+  PAGE_ACTION_EXEC_STATE,
+  ExecState,
+  SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from '@/const'
 import type { PageAction } from '@/services/pageAction'
 import { INHERIT } from '@/const'
@@ -141,6 +143,16 @@ export type UserStats = {
   hasShownReviewRequest: boolean
 }
 
+export type ShortcutCommand = {
+  commandId: string
+  targetCommandId: string
+  noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR
+}
+
+export type ShortcutSettings = {
+  shortcuts: Array<ShortcutCommand>
+}
+
 export type UserSettings = {
   settingVersion: Version
   startupMethod: StartupMethod
@@ -151,6 +163,7 @@ export type UserSettings = {
   pageRules: Array<PageRule>
   style: STYLE
   userStyles: Array<StyleVariable>
+  shortcuts: ShortcutSettings
 }
 
 export type SettingsType = UserSettings & UserStats & UserStars
@@ -158,6 +171,15 @@ export type SettingsType = UserSettings & UserStats & UserStars
 export type SessionData = {
   session_id: string
   timestamp: number
+}
+
+export type ExecuteCommandParams = {
+  command: Command | SelectionCommand
+  position: { x: number; y: number } | null
+  selectionText: string
+  target?: Element | null
+  useSecondary?: boolean
+  changeState?: (state: ExecState, message?: string) => void
 }
 
 export type CaptureData = {
@@ -204,7 +226,7 @@ export type PageActionContext = {
 }
 
 export type PageActiontResult = {
-  status: EXEC_STATE
+  status: PAGE_ACTION_EXEC_STATE
   stepId: string
   type: PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
   label: string

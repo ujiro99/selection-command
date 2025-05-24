@@ -1,5 +1,5 @@
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { EXEC_STATE } from '@/const'
+import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from '@/const'
 import type { PageActiontStatus, PageActionStep } from '@/types'
 import { PAGE_ACTION_TIMEOUT as TIMEOUT } from '@/const'
 

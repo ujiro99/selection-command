@@ -1,45 +1,34 @@
-import { isDebug, LINK_COMMAND_ENABLED, POPUP_ENABLED, OPTION_PAGE_PATH } from '@/const'
+import {
+  isDebug,
+  LINK_COMMAND_ENABLED,
+  POPUP_ENABLED,
+  OPTION_PAGE_PATH,
+  SHORTCUT_NO_SELECTION_BEHAVIOR,
+} from '@/const'
 import '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { Settings } from '@/services/settings'
 import { PopupOption, PopupPlacement } from '@/services/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
-import { openPopups, OpenPopupsProps, getCurrentTab } from '@/services/chrome'
 import { BgData } from '@/services/backgroundData'
-import { escapeJson, isSearchCommand, isPageActionCommand } from '@/lib/utils'
-import { incrementCommandExecutionCount } from '@/services/commandMetrics'
+import { isSearchCommand, isPageActionCommand } from '@/lib/utils'
+import { execute } from '@/action/background'
+import * as ActionHelper from '@/action/helper'
 import type { IpcCallback } from '@/services/ipc'
 import type {
-  CommandVariable,
   WindowType,
   WindowLayer,
   CaptureData,
   CaptureDataStorage,
   CaptureScreenShotRes,
 } from '@/types'
-import { Storage, SESSION_STORAGE_KEY } from './services/storage'
+import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
+import { openClipboardReader } from '@/services/chrome'
+import { updateActiveScreenId } from '@/services/screen'
 
 BgData.init()
 
 type Sender = chrome.runtime.MessageSender
-
-export type openPopupAndClickProps = OpenPopupsProps & {
-  selector: string
-}
-
-export type execApiProps = {
-  url: string
-  pageUrl: string
-  pageTitle: string
-  selectionText: string
-  fetchOptions: string
-  variables: CommandVariable[]
-}
-
-export type openTabProps = {
-  url: string
-  active: boolean
-}
 
 export type addPageRuleProps = {
   url: string
@@ -49,84 +38,31 @@ type addCommandProps = {
   command: string
 }
 
-function bindVariables(
-  str: string,
-  variables: CommandVariable[],
-  obj: { [key: string]: string },
-): string {
-  const arr = [...variables]
-  for (const [key, value] of Object.entries(obj)) {
-    arr.push({ name: key, value: value })
-  }
-  let res = str
-  for (const v of arr) {
-    const re = new RegExp(`\\$\\{${v.name}\\}`, 'g')
-    res = res.replace(re, v.value)
-  }
-  return res
+const getTabId = (
+  _: unknown,
+  sender: Sender,
+  response: (res: unknown) => void,
+) => {
+  response(sender.tab?.id)
+  return true
 }
 
 const commandFuncs = {
-  [BgCommand.openPopups]: (
-    param: OpenPopupsProps,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    incrementCommandExecutionCount().then(async () => {
-      try {
-        await openPopups(param)
-        response(true)
-      } catch (error) {
-        console.error('Failed to execute openPopups:', error)
-        response(false)
-      }
-    })
-    return true
-  },
-
-  [BgCommand.openPopupAndClick]: (
-    param: openPopupAndClickProps,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    incrementCommandExecutionCount().then(async () => {
-      try {
-        const tabIds = await openPopups(param)
-        if (tabIds.length > 0) {
-          await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
-            selector: (param as { selector: string }).selector,
-          })
-        } else {
-          console.debug('tab not found')
-        }
-        response(true)
-      } catch (error) {
-        console.error('Failed to execute openPopupAndClick:', error)
-        response(false)
-      }
-    })
-    return true
-  },
-
-  [BgCommand.openTab]: (param: openTabProps, sender: Sender, response: (res: unknown) => void): boolean => {
-    getCurrentTab().then(tab => {
-      const currentTab = sender.tab ?? tab
-      chrome.tabs.create({
-        ...param,
-        windowId: currentTab.windowId,
-        index: currentTab.index + 1,
-      }, (newTab) => {
-        incrementCommandExecutionCount(newTab.id).then(() => {
-          response(true)
-        })
-      })
-    })
-    return true
-  },
+  [BgCommand.openPopups]: ActionHelper.openPopups,
+  [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
+  [BgCommand.openTab]: ActionHelper.openTab,
+  [BgCommand.execApi]: ActionHelper.execApi,
 
   [BgCommand.openOption]: (): boolean => {
     chrome.tabs.create({
       url: OPTION_PAGE_PATH,
+    })
+    return false
+  },
+
+  [BgCommand.openShortcuts]: (): boolean => {
+    chrome.tabs.create({
+      url: 'chrome://extensions/shortcuts',
     })
     return false
   },
@@ -143,10 +79,13 @@ const commandFuncs = {
           linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
         })
       }
-      await Settings.set({
-        ...settings,
-        pageRules,
-      }, true)
+      await Settings.set(
+        {
+          ...settings,
+          pageRules,
+        },
+        true,
+      )
       chrome.tabs.create({
         url: `${OPTION_PAGE_PATH}#pageRules`,
       })
@@ -166,24 +105,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-        id: params.id,
-        title: params.title,
-        searchUrl: params.searchUrl,
-        iconUrl: params.iconUrl,
-        openMode: params.openMode,
-        openModeSecondary: params.openModeSecondary,
-        spaceEncoding: params.spaceEncoding,
-        popupOption: PopupOption,
-      }
-      : isPageAction
-        ? {
           id: params.id,
           title: params.title,
+          searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
           openMode: params.openMode,
-          pageActionOption: params.pageActionOption,
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
           popupOption: PopupOption,
         }
+      : isPageAction
+        ? {
+            id: params.id,
+            title: params.title,
+            iconUrl: params.iconUrl,
+            openMode: params.openMode,
+            pageActionOption: params.pageActionOption,
+            popupOption: PopupOption,
+          }
         : null
 
     if (!cmd) {
@@ -195,34 +134,6 @@ const commandFuncs = {
     Settings.addCommands([cmd]).then(() => {
       response(true)
     })
-    return true
-  },
-
-  [BgCommand.execApi]: (
-    param: execApiProps,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    const { url, pageUrl, pageTitle, selectionText, fetchOptions, variables } =
-      param
-    try {
-      const str = bindVariables(fetchOptions, variables, {
-        pageUrl,
-        pageTitle,
-        text: escapeJson(escapeJson(selectionText)),
-      })
-      const opt = JSON.parse(str)
-      const exec = async () => {
-        const res = await fetch(url, opt)
-        const json = await res.json()
-        response({ ok: res.ok, res: json })
-      }
-      exec()
-    } catch (e) {
-      console.error(e)
-      response({ ok: false, res: e })
-    }
-    // return async
     return true
   },
 
@@ -363,6 +274,24 @@ const commandFuncs = {
     return false
   },
 
+  [BgCommand.getTabId]: getTabId,
+
+  [BgCommand.getClipboard]: (
+    _: unknown,
+    __: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    openClipboardReader()
+      .then((clipboardText) => {
+        response(clipboardText)
+      })
+      .catch((error) => {
+        console.error('Failed to read clipboard:', error)
+        response(null)
+      })
+    return true
+  },
+
   //
   // PageAction
   //
@@ -381,16 +310,6 @@ for (const key in BgCommand) {
   const command = BgCommand[key as keyof typeof BgCommand]
   Ipc.addListener(command, commandFuncs[key])
 }
-
-const getTabId = (
-  _: unknown,
-  sender: Sender,
-  response: (res: unknown) => void,
-) => {
-  response(sender.tab?.id)
-  return true
-}
-Ipc.addListener(TabCommand.getTabId, getTabId as IpcCallback)
 
 const updateWindowSize = async (
   commandId: string,
@@ -417,13 +336,32 @@ chrome.action.onClicked.addListener(() => {
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
+  const data = BgData.get()
+  const stack = data.windowStack
+
+  // Clear selection text
+  await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, '')
+
+  // Close all popup windows when focus is lost (WINDOW_ID_NONE)
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
+    if (stack.length > 0) {
+      for (const layer of stack) {
+        for (const window of layer) {
+          chrome.windows.remove(window.id)
+        }
+      }
+      BgData.set((data) => ({
+        ...data,
+        windowStack: [],
+      }))
+    }
     return
   }
 
+  // Update active screen ID
+  await updateActiveScreenId(windowId)
+
   // Close popup windows when focus changed to lower stack window
-  const data = BgData.get()
-  const stack = data.windowStack
   const idx = stack.map((s) => s.findIndex((w) => w.id === windowId))
 
   // Close all window.
@@ -452,16 +390,23 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     }
   }
 
-  BgData.set(data)
+  BgData.set((data) => ({
+    ...data,
+    windowStack: stack,
+  }))
 })
 
 chrome.windows.onRemoved.addListener((windowId: number) => {
   const data = BgData.get()
-  const idx = data.normalWindows?.findIndex((w) => w.id === windowId)
+  const normalWindows = data.normalWindows ?? []
+  const idx = normalWindows.findIndex((w) => w.id === windowId)
+
   if (idx >= 0) {
-    data.normalWindows.splice(idx, 1)
-    BgData.set(data)
-    return
+    normalWindows.splice(idx, 1)
+    BgData.set((data) => ({
+      ...data,
+      normalWindows,
+    }))
   }
 })
 
@@ -478,10 +423,24 @@ chrome.windows.onBoundsChanged.addListener((window) => {
   }
 })
 
-chrome.tabs.onActivated.addListener(async () => {
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
   // Force close the menu
-  const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
-  ret.filter((v) => v).forEach((v) => console.debug(v))
+  try {
+    const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
+    ret.filter((v) => v).forEach((v) => console.debug(v))
+  } catch (error) {
+    console.error('Failed to close menu:', error)
+  }
+
+  // Get the active tab's window and update screen ID
+  try {
+    const tab = await chrome.tabs.get(activeInfo.tabId)
+    if (tab.windowId) {
+      await updateActiveScreenId(tab.windowId)
+    }
+  } catch (error) {
+    console.error('Failed to get active screen ID:', error)
+  }
 })
 
 if (isDebug) {
@@ -504,3 +463,80 @@ chrome.runtime.onInstalled.addListener(() => {
 //     console.debug(details)
 //   },
 // )
+
+// Add command processing
+chrome.commands.onCommand.addListener(async (commandName) => {
+  try {
+    // Get settings
+    const settings = await Settings.get()
+    const shortcut = settings.shortcuts?.shortcuts.find(
+      (shortcut) => shortcut.commandId === commandName,
+    )
+
+    if (!shortcut) {
+      console.warn(`No shortcut mapped for command: ${commandName}`)
+      return
+    }
+
+    // Get active tab
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+    const command = settings.commands.find(
+      (c) => c.id === shortcut.targetCommandId,
+    )
+    if (!command) {
+      console.warn(`Command not found: ${shortcut.targetCommandId}`)
+      return
+    }
+
+    let enableSendTab =
+      tab?.id &&
+      !tab.url?.startsWith('chrome') &&
+      !tab.url?.includes('chromewebstore.google.com')
+
+    let selectionText = await Storage.get<string>(
+      SESSION_STORAGE_KEY.SELECTION_TEXT,
+    )
+
+    // If no text is selected, handle according to noSelectionBehavior
+    if (!selectionText) {
+      if (
+        shortcut.noSelectionBehavior ===
+        SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
+      ) {
+        return
+      } else if (
+        shortcut.noSelectionBehavior ===
+        SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
+      ) {
+        const clipboardText = await Ipc.send(BgCommand.getClipboard)
+        // console.debug('clipboardText', clipboardText)
+        if (clipboardText) {
+          selectionText = clipboardText
+        } else {
+          return
+        }
+      }
+    }
+
+    let ret: unknown
+    if (enableSendTab) {
+      // Execute command in tab
+      ret = await Ipc.sendTab(tab?.id ?? 0, TabCommand.executeAction, {
+        command,
+        selectionText,
+      })
+    }
+
+    if (!enableSendTab || ret instanceof Error) {
+      // Execute command directly in background
+      await execute({
+        command,
+        position: { x: 10000, y: 10000 },
+        selectionText,
+        target: null,
+      })
+    }
+  } catch (error) {
+    console.error('Failed to execute shortcut command:', error)
+  }
+})

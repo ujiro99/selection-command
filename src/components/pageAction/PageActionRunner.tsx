@@ -14,7 +14,7 @@ import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
 import { RunningStatus } from '@/services/pageAction'
 import { Ipc } from '@/services/ipc'
 import type { PageActiontResult, PageActiontStatus } from '@/types'
-import { EXEC_STATE } from '@/const'
+import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from '@/const'
 import { cn, isEmpty } from '@/lib/utils'
 
 export function PageActionRunner(): JSX.Element {

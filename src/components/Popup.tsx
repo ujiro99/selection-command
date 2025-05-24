@@ -1,7 +1,6 @@
 import { useState, useEffect, createContext, forwardRef } from 'react'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { Menu } from '@/components/menu/Menu'
-import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import { useSetting } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
@@ -13,7 +12,6 @@ import css from './Popup.module.css'
 
 export type PopupProps = {
   positionElm: Element | null
-  selectionText: string
   isPreview?: boolean
   onHover?: Function
 }
@@ -33,7 +31,10 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const [inTransition, setInTransition] = useState(false)
     const [shouldRender, setShouldRender] = useState(false)
     const [isHover, setIsHover] = useState(false)
-    const { visible, isContextMenu } = useDetectStartup({ ...props, isHover })
+    const { visible, isContextMenu } = useDetectStartup({
+      ...props,
+      isHover,
+    })
     const isPreview = props.isPreview === true
     const placement = settings.popupPlacement
     const side = isPreview ? SIDE.bottom : (placement.side ?? SIDE.top)
@@ -120,11 +121,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               onOpenAutoFocus={noFocus}
               {...onHover(handleOnHover, true)}
             >
-              {!isContextMenu ? (
-                <Menu />
-              ) : (
-                <InvisibleItem positionElm={props.positionElm} />
-              )}
+              {!isContextMenu ? <Menu /> : null}
             </PopoverContent>
           )}
         </Popover>

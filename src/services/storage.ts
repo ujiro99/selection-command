@@ -5,6 +5,7 @@ export enum STORAGE_KEY {
   USER = 0,
   COMMAND_COUNT = 2,
   USER_STATS = 3,
+  SHORTCUTS = 4,
 }
 
 export enum LOCAL_STORAGE_KEY {
@@ -16,6 +17,7 @@ export enum LOCAL_STORAGE_KEY {
 
 export enum SESSION_STORAGE_KEY {
   BG = 'bg',
+  SELECTION_TEXT = 'selectionText ',
   SESSION_DATA = 'sessionData',
   MESSAGE_QUEUE = 'messageQueue',
   TMP_CAPTURES = 'tmpCaptures',
@@ -38,6 +40,9 @@ const DEFAULTS = {
     commandExecutionCount: 0,
     hasShownReviewRequest: false,
   },
+  [STORAGE_KEY.SHORTCUTS]: {
+    shortcuts: [],
+  },
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
@@ -52,6 +57,7 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.PA_CONTEXT]: {},
   [SESSION_STORAGE_KEY.PA_RECORDER_OPTION]: {},
   [SESSION_STORAGE_KEY.TMP_CAPTURES]: {},
+  [SESSION_STORAGE_KEY.SELECTION_TEXT]: '',
 }
 
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {

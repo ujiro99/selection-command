@@ -537,7 +537,9 @@ export const CommandList = ({ control }: CommandListProps) => {
                     />
                     <div className="overflow-hidden">
                       <p className="text-lg flex flex-row">
-                        <span className="text-base">{field.content.title}</span>
+                        <span className="text-base truncate">
+                          {field.content.title}
+                        </span>
                       </p>
                       {isCommand(field.content) && (
                         <p className="text-xs sm:text-sm text-gray-400 truncate">

@@ -1,13 +1,20 @@
 import { Storage, SESSION_STORAGE_KEY } from './storage'
 import { PAGE_ACTION_OPEN_MODE } from '@/const'
 import type { PageActionStep } from '@/types'
-import { sleep } from '@/lib/utils'
+import { sleep, isServiceWorker } from '@/lib/utils'
+
+// Constants for connection
+const CONNECTION_RETRY_COUNT = 200
+const CONNECTION_RETRY_INTERVAL = 20
+const CONNECTION_TIMEOUT = 4000
+const CONNECTION_CHECK_INTERVAL = 50
 
 export enum BgCommand {
   openPopups = 'openPopups',
   openPopupAndClick = 'openPopupAndClick',
   openTab = 'openTab',
   openOption = 'openOption',
+  openShortcuts = 'openShortcuts',
   addPageRule = 'addPageRule',
   addCommand = 'addCommand',
   execApi = 'execApi',
@@ -15,6 +22,8 @@ export enum BgCommand {
   openInTab = 'openInTab',
   toggleStar = 'toggleStar',
   captureScreenshot = 'captureScreenshot',
+  getTabId = 'getTabId',
+  getClipboard = 'getClipboard',
   // PageAction
   addPageAction = 'addPageAction',
   addCapture = 'addCapture',
@@ -34,8 +43,8 @@ export enum TabCommand {
   executeAction = 'executeAction',
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
-  getTabId = 'getTabId',
   showReviewRequest = 'showReviewRequest',
+  readClipboard = 'readClipboard',
   // PageAction
   sendWindowSize = 'sendWindowSize',
   execPageAction = 'execPageAction',
@@ -90,7 +99,7 @@ export type Sender = chrome.runtime.MessageSender
 export type IpcCallback = (
   param: unknown,
   sender: chrome.runtime.MessageSender,
-  response?: (response?: unknown) => void,
+  response: (response?: unknown) => void,
 ) => boolean
 
 export const Ipc = {
@@ -113,48 +122,79 @@ export const Ipc = {
     )
   },
 
+  async callListener<M, R>(command: IpcCommand, param?: M): Promise<R> {
+    return new Promise((resolve) => {
+      const listener = Ipc.listeners[command]
+      if (!listener) {
+        resolve(undefined as R)
+        return
+      }
+      listener(param, {} as chrome.runtime.MessageSender, (res: unknown) =>
+        resolve(res as R),
+      )
+    })
+  },
+
   async send<M = any, R = any>(command: IpcCommand, param?: M): Promise<R> {
-    return await chrome.runtime.sendMessage({ command, param })
+    try {
+      if (isServiceWorker()) {
+        return this.callListener<M, R>(command, param)
+      }
+      return await chrome.runtime.sendMessage({ command, param })
+    } catch (error) {
+      console.error(`Failed to send message: ${command}`, error)
+      throw error
+    }
   },
 
   /**
    * Connect session to the tab.
-   * @param tabId
+   * @param tabId - Target tab ID to connect
+   * @throws {Error} When connection to the tab fails
    */
   async ensureConnection(tabId: number): Promise<void> {
     const tab = await chrome.tabs.get(tabId)
     if (tab.status !== 'complete') {
       await new Promise<void>((resolve) => {
-        const interval = setInterval(async () => {
-          const t = await chrome.tabs.get(tabId)
-          if (t.status === 'complete') {
-            resolve()
-            clearTimeout(timeout)
-            clearInterval(interval)
-            chrome.tabs.onUpdated.removeListener(cb)
-          }
-        }, 50)
-        const timeout = setTimeout(() => {
-          resolve()
-          clearInterval(interval)
-          chrome.tabs.onUpdated.removeListener(cb)
-          console.warn('Connection timeout')
-        }, 4000)
+        let interval: NodeJS.Timeout
+        let timeout: NodeJS.Timeout
         const cb = (id: number, info: chrome.tabs.TabChangeInfo) => {
           if (tabId === id && info.status === 'complete') {
+            cleanup()
             resolve()
-            clearTimeout(timeout)
-            clearInterval(interval)
-            chrome.tabs.onUpdated.removeListener(cb)
           }
         }
+
+        const cleanup = () => {
+          clearTimeout(timeout)
+          clearInterval(interval)
+          chrome.tabs.onUpdated.removeListener(cb)
+        }
+
+        interval = setInterval(async () => {
+          try {
+            const t = await chrome.tabs.get(tabId)
+            if (t.status === 'complete') {
+              cleanup()
+              resolve()
+            }
+          } catch (error) {
+            console.warn('Failed to check tab status:', error)
+          }
+        }, CONNECTION_CHECK_INTERVAL)
+
+        timeout = setTimeout(() => {
+          console.warn('Connection timeout')
+          cleanup()
+          resolve()
+        }, CONNECTION_TIMEOUT)
+
         chrome.tabs.onUpdated.addListener(cb)
       })
     }
 
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < CONNECTION_RETRY_COUNT; i++) {
       try {
-        // console.debug('try connect', i)
         const ret = await chrome.tabs.sendMessage(tabId, {
           command: TabCommand.connect,
         })
@@ -162,16 +202,22 @@ export const Ipc = {
           console.warn(chrome.runtime.lastError)
           continue
         }
-        // console.debug('tab connected')
         return ret
       } catch (error) {
-        // nothing to do
+        console.debug(`Connection attempt ${i + 1} failed:`)
       }
-      await sleep(20)
+      await sleep(CONNECTION_RETRY_INTERVAL)
     }
     throw new Error('Could not connect to tab')
   },
 
+  /**
+   * Send message to a specific tab
+   * @param tabId - Target tab ID
+   * @param command - Command to send
+   * @param param - Parameters to send
+   * @returns Response from the tab
+   */
   async sendTab<M = any, R = any>(
     tabId: number,
     command: IpcCommand,
@@ -180,27 +226,69 @@ export const Ipc = {
     type MM = { command: IpcCommand; param: M }
     const message = { command, param } as MM
     try {
-      const ret = await chrome.tabs.sendMessage(tabId, message)
-      if (chrome.runtime.lastError != null) {
-        throw chrome.runtime.lastError
-      }
-      return ret
+      const ret = await this._sendMessageToTab(tabId, message)
+      return ret as R
     } catch (error) {
       console.warn('Could not send message to tab:', error)
       return error as R
     }
   },
 
+  /**
+   * Send message to all tabs
+   * @param command - Command to send
+   * @param param - Parameters to send
+   * @returns Array of responses from each tab
+   */
   async sendAllTab(command: IpcCommand, param?: unknown): Promise<any[]> {
     const tabs = await chrome.tabs.query({
       url: ['http://*/*', 'https://*/*'],
     })
     const ps = tabs
-      .filter((t) => t.id != null)
-      .map((tab) => {
-        chrome.tabs.sendMessage(tab.id as number, { command, param })
-      })
+      .filter(
+        (t) =>
+          t.id != null &&
+          !t.url?.includes('chromewebstore.google.com') &&
+          t.status === 'complete',
+      )
+      .map((tab) =>
+        this._sendMessageToTab(tab.id as number, { command, param }),
+      )
     return Promise.all(ps)
+  },
+
+  /**
+   * Internal method to send message to a tab
+   * @private
+   * @param tabId - Target tab ID
+   * @param message - Message to send
+   * @returns Response from the tab
+   * @throws {Error} When message sending fails
+   */
+  async _sendMessageToTab<T>(tabId: number, message: T): Promise<unknown> {
+    try {
+      const ret = await chrome.tabs.sendMessage(tabId, message)
+      if (chrome.runtime.lastError != null) {
+        throw chrome.runtime.lastError
+      }
+      return ret
+    } catch (error) {
+      try {
+        const tab = await chrome.tabs.get(tabId)
+        console.warn('Could not send message to tab:', {
+          url: tab.url,
+          title: tab.title,
+          error,
+        })
+      } catch (tabError) {
+        console.warn('Could not send message to tab:', {
+          tabId,
+          error,
+          tabError,
+        })
+      }
+      throw error
+    }
   },
 
   listeners: {} as { [key: string]: IpcCallback },
@@ -228,11 +316,14 @@ export const Ipc = {
 
   removeListener(command: IpcCommand) {
     const listener = Ipc.listeners[command]
-    chrome.runtime.onMessage.removeListener(listener)
+    if (listener) {
+      chrome.runtime.onMessage.removeListener(listener)
+      delete Ipc.listeners[command]
+    }
   },
 
   async getTabId() {
-    return Ipc.send(TabCommand.getTabId)
+    return Ipc.send(BgCommand.getTabId)
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {

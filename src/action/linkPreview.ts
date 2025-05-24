@@ -1,16 +1,16 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import {
-  getScreenSize,
   findAnchorElementFromParent,
   findClickableElement,
   getSelectorFromElement,
 } from '@/services/dom'
+import { getScreenSize } from '@/services/screen'
 import { DRAG_OPEN_MODE, POPUP_TYPE } from '@/const'
-import type { ExecProps } from './index'
 import { isEmpty } from '@/lib/utils'
+import type { ExecuteCommandParams } from '@/types'
 
 export const LinkPreview = {
-  async execute({ command, position, target }: ExecProps) {
+  async execute({ command, position, target }: ExecuteCommandParams) {
     if (position && target) {
       const elm = findAnchorElementFromParent(target) as HTMLAnchorElement
       const href = elm?.href
@@ -28,7 +28,7 @@ export const LinkPreview = {
           left: Math.floor(position.x),
           height: command.popupOption?.height,
           width: command.popupOption?.width,
-          screen: getScreenSize(),
+          screen: await getScreenSize(),
           type,
         })
         return
@@ -46,7 +46,7 @@ export const LinkPreview = {
           left: Math.floor(position.x),
           height: command.popupOption?.height,
           width: command.popupOption?.width,
-          screen: getScreenSize(),
+          screen: await getScreenSize(),
           selector,
           type,
         })

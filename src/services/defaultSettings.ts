@@ -11,6 +11,8 @@ import {
   LINK_COMMAND_STARTUP_METHOD,
   KEYBOARD,
   SPACE_ENCODING,
+  SHORTCUT_PLACEHOLDER,
+  SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from '@/const'
 
 export const PopupPlacement = {
@@ -87,6 +89,25 @@ export default {
     },
   ],
   stars: [],
+  shortcuts: {
+    shortcuts: [
+      {
+        commandId: 'slot_1',
+        targetCommandId: SHORTCUT_PLACEHOLDER,
+        noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+      },
+      {
+        commandId: 'slot_2',
+        targetCommandId: SHORTCUT_PLACEHOLDER,
+        noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+      },
+      {
+        commandId: 'slot_3',
+        targetCommandId: SHORTCUT_PLACEHOLDER,
+        noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
+      },
+    ],
+  },
 } as UserSettings
 
 export const PopupOption = {

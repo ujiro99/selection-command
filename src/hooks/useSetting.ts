@@ -31,6 +31,7 @@ const emptySettings: SettingsType = {
   stars: [],
   commandExecutionCount: 0,
   hasShownReviewRequest: false,
+  shortcuts: { shortcuts: [] },
 }
 
 export function useSetting(): useSettingReturn {

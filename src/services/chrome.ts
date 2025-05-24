@@ -3,6 +3,7 @@ import type { ScreenSize } from '@/services/dom'
 import type { WindowLayer } from '@/types'
 import { POPUP_OFFSET, POPUP_TYPE } from '@/const'
 import { BgData } from '@/services/backgroundData'
+import { Ipc, TabCommand } from '@/services/ipc'
 
 BgData.init()
 
@@ -81,7 +82,9 @@ export type OpenPopupsProps = {
   type: POPUP_TYPE
 }
 
-export const openPopups = async (param: OpenPopupsProps): Promise<number[]> => {
+export const openPopupWindows = async (
+  param: OpenPopupsProps,
+): Promise<number[]> => {
   const { top, left, width, height, screen } = param
   const current = await chrome.windows.getCurrent()
   const type = param.type ?? POPUP_TYPE.POPUP
@@ -121,13 +124,17 @@ export const openPopups = async (param: OpenPopupsProps): Promise<number[]> => {
       commandId: param.commandId,
       srcWindowId: current.id,
     })) as WindowLayer
-    const data = BgData.get()
     if (type === POPUP_TYPE.POPUP) {
-      data.windowStack.push(layer)
+      await BgData.set((data) => ({
+        ...data,
+        windowStack: [...data.windowStack, layer],
+      }))
     } else {
-      data.normalWindows = layer
+      await BgData.set((data) => ({
+        ...data,
+        normalWindows: layer,
+      }))
     }
-    BgData.set(data)
   }
 
   const tabIds = windows.reduce((tabIds, w) => {
@@ -245,4 +252,37 @@ export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
   const queryOptions = { active: true, lastFocusedWindow: true }
   const [tab] = await chrome.tabs.query(queryOptions)
   return tab
+}
+
+/**
+ * Opens a window to read the clipboard content
+ * @returns {Promise<string>} The clipboard content
+ */
+export const openClipboardReader = async (): Promise<string> => {
+  const w = await chrome.windows.create({
+    url: chrome.runtime.getURL('src/clipboard.html'),
+    type: 'popup',
+    width: 1,
+    height: 1,
+    left: 0,
+    top: 0,
+  })
+
+  await BgData.set((data) => ({
+    ...data,
+    clipboardWindowId: w.id ?? null,
+  }))
+
+  const tabId = w.tabs?.[0].id as number
+  await Ipc.ensureConnection(tabId)
+
+  try {
+    const result = await Ipc.sendTab(tabId, TabCommand.readClipboard)
+    if (!result) {
+      throw new Error('Failed to read clipboard')
+    }
+    return result
+  } finally {
+    await chrome.windows.remove(w.id as number)
+  }
 }
