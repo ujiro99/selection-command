@@ -370,7 +370,7 @@ const run = (
   const run = async () => {
     // Update running status
     await RunningStatus.init(tabId, steps)
-    BgData.set((data) => ({ ...data, pageActionStop: false }))
+    await BgData.set((data) => ({ ...data, pageActionStop: false }))
 
     // Run steps
     for (const step of steps) {

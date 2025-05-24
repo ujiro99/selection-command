@@ -91,6 +91,7 @@ const SearchOpenMode = [
 const searchSchema = z.object({
   openMode: z.enum(SearchOpenMode),
   id: z.string(),
+  revision: z.number().optional(),
   title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
   iconUrl: z
     .string()
@@ -117,6 +118,7 @@ const isSearchType = (data: any): data is SearchType => {
 const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
   id: z.string(),
+  revision: z.number().optional(),
   title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
   iconUrl: z
     .string()
@@ -138,6 +140,7 @@ const apiSchema = z.object({
 const linkPopupSchema = z.object({
   openMode: z.enum([OPEN_MODE.LINK_POPUP]),
   id: z.string(),
+  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   title: z
     .string()
@@ -159,6 +162,7 @@ const linkPopupSchema = z.object({
 const copySchema = z.object({
   openMode: z.enum([OPEN_MODE.COPY]),
   id: z.string(),
+  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   title: z
     .string()
@@ -177,6 +181,7 @@ const copySchema = z.object({
 const textStyleSchema = z.object({
   openMode: z.enum([OPEN_MODE.GET_TEXT_STYLES]),
   id: z.string(),
+  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   title: z
     .string()
@@ -724,6 +729,7 @@ const CommandEditDialogInner = ({
               onClick={form.handleSubmit(
                 (data) => {
                   if (isEmpty(data.id)) data.id = crypto.randomUUID()
+                  if (data.revision == null) data.revision = 0
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
                   }

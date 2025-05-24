@@ -118,6 +118,7 @@ export const PopupOption = {
 export const DefaultCommands = [
   {
     id: '$$drag-1',
+    revision: 0,
     title: 'Link Preview',
     searchUrl: '',
     openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
@@ -128,6 +129,7 @@ export const DefaultCommands = [
   },
   {
     id: '723ee9f1-150b-54ad-aeac-5fbfd0ae3650',
+    revision: 0,
     iconUrl: 'https://www.google.com/favicon.ico',
     openMode: OPEN_MODE.POPUP,
     openModeSecondary: OPEN_MODE.TAB,
@@ -141,6 +143,7 @@ export const DefaultCommands = [
   },
   {
     id: '18998bac-4e6c-503f-b3ea-b9198edef7c3',
+    revision: 0,
     iconUrl: 'https://www.google.com/favicon.ico',
     openMode: OPEN_MODE.POPUP,
     openModeSecondary: OPEN_MODE.TAB,
@@ -155,6 +158,7 @@ export const DefaultCommands = [
   },
   {
     id: '92f8f4e8-3cd8-4e01-9908-811d72448670',
+    revision: 0,
     iconUrl: 'https://www.amazon.com/favicon.ico',
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
@@ -169,6 +173,7 @@ export const DefaultCommands = [
   },
   {
     id: 'c187228b-844c-50a6-8a9d-147817ca75fe',
+    revision: 0,
     title: 'Gemini',
     iconUrl:
       'https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg',
@@ -221,6 +226,7 @@ export const DefaultCommands = [
   },
   {
     id: '7256d90a-5f40-5d71-b0c7-db403add3bc0',
+    revision: 0,
     title: 'Gemini - 日本語',
     iconUrl:
       'https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg',
@@ -273,6 +279,7 @@ export const DefaultCommands = [
   },
   {
     id: '2e0cd6fe-a232-402e-846c-2104f0639995',
+    revision: 0,
     iconUrl: 'https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png',
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
@@ -287,6 +294,7 @@ export const DefaultCommands = [
   },
   {
     id: '409aba7d-c49e-5e81-b8a6-a862f2651b3e',
+    revision: 0,
     iconUrl:
       'https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico',
     openMode: OPEN_MODE.TAB,
@@ -302,6 +310,7 @@ export const DefaultCommands = [
   },
   {
     id: '54f3e785-960a-5a70-9c80-cfbf0357c4c7',
+    revision: 0,
     iconUrl: 'https://s.pinimg.com/webapp/favicon-22eb868c.png',
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
@@ -316,6 +325,7 @@ export const DefaultCommands = [
   },
   {
     id: '125fdc5e-a97d-5f81-92c4-2a6cbfc3662f',
+    revision: 0,
     iconUrl:
       'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png',
     openMode: OPEN_MODE.TAB,
@@ -331,6 +341,7 @@ export const DefaultCommands = [
   },
   {
     id: '6c6d45d6-735b-43bd-b4c8-5dc5104c23ed',
+    revision: 0,
     iconUrl: 'https://ssl.gstatic.com/translate/favicon.ico',
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,

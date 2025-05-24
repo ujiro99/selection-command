@@ -21,6 +21,7 @@ import { TypeIcon } from '@/components/pageAction/TypeIcon'
 export const pageActionSchema = z.object({
   openMode: z.enum([OPEN_MODE.PAGE_ACTION]),
   id: z.string(),
+  revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   title: z
     .string()

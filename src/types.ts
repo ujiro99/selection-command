@@ -43,6 +43,7 @@ export type SelectionCommand =
 export type SearchCommand = {
   id: string
   title: string
+  revision?: number
   iconUrl: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
