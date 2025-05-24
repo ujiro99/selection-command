@@ -337,7 +337,7 @@ chrome.action.onClicked.addListener(() => {
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   const data = BgData.get()
-  const stack = data.windowStack
+  let stack = data.windowStack
 
   // Clear selection text
   await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, '')
@@ -369,14 +369,13 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   const closeAll = idx.every((i) => i < 0)
   if (closeAll && stack.length > 0) {
     closeStack = stack
-    data.windowStack = []
+    stack = []
   }
 
   // Close windows up to the window stack in focus.
   for (let i = idx.length - 2; i >= 0; i--) {
     if (idx[i] >= 0) {
       closeStack = stack.splice(i + 1)
-      data.windowStack = stack
       break
     }
   }
@@ -390,8 +389,8 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     }
   }
 
-  BgData.set((data) => ({
-    ...data,
+  await BgData.set((old) => ({
+    ...old,
     windowStack: stack,
   }))
 })

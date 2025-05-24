@@ -276,13 +276,25 @@ export const openClipboardReader = async (): Promise<string> => {
   const tabId = w.tabs?.[0].id as number
   await Ipc.ensureConnection(tabId)
 
+  let result = ''
   try {
-    const result = await Ipc.sendTab(tabId, TabCommand.readClipboard)
+    result = await Ipc.sendTab(tabId, TabCommand.readClipboard)
     if (!result) {
       throw new Error('Failed to read clipboard')
     }
-    return result
-  } finally {
-    await chrome.windows.remove(w.id as number)
+  } catch (e) {
+    console.error(e)
   }
+
+  try {
+    await chrome.windows.remove(w.id as number)
+    await BgData.set((data) => ({
+      ...data,
+      clipboardWindowId: null,
+    }))
+  } catch (e) {
+    console.error(e)
+  }
+
+  return result
 }
