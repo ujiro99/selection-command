@@ -23,6 +23,7 @@ export enum BgCommand {
   toggleStar = 'toggleStar',
   captureScreenshot = 'captureScreenshot',
   getTabId = 'getTabId',
+  setClipboard = 'setClipboard',
   getClipboard = 'getClipboard',
   // PageAction
   addPageAction = 'addPageAction',
