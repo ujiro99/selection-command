@@ -516,8 +516,6 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         // console.debug('clipboardText', clipboardText)
         if (clipboardText) {
           selectionText = clipboardText
-        } else {
-          return
         }
       }
     }
