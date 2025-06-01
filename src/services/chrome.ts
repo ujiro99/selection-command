@@ -71,12 +71,26 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
   return p
 }
 
-export type OpenPopupProps = {
-  commandId: string
+type UrlParam = {
   searchUrl: string
   spaceEncoding: SPACE_ENCODING
   selectionText: string
   useClipboard: boolean
+}
+
+const isUrlParam = (url: string | UrlParam): url is UrlParam => {
+  return (
+    typeof url === 'object' &&
+    'searchUrl' in url &&
+    'spaceEncoding' in url &&
+    'selectionText' in url &&
+    'useClipboard' in url
+  )
+}
+
+export type OpenPopupProps = {
+  commandId: string
+  url: string | UrlParam
   top: number
   left: number
   width: number
@@ -187,17 +201,7 @@ export const openWindowAndReadClipboard = async (
 export const openPopupWindow = async (
   param: OpenPopupProps,
 ): Promise<number> => {
-  const {
-    top,
-    left,
-    width,
-    height,
-    screen,
-    searchUrl,
-    spaceEncoding,
-    useClipboard,
-  } = param
-  let selectionText = param.selectionText
+  const { top, left, width, height, screen, url } = param
   let current: chrome.windows.Window
 
   try {
@@ -230,12 +234,18 @@ export const openPopupWindow = async (
     incognito: current.incognito,
   })
 
-  if (isEmpty(selectionText) && useClipboard) {
-    selectionText = clipboardText
+  let urlFixed: string
+  if (isUrlParam(url)) {
+    if (isEmpty(url.selectionText) && url.useClipboard) {
+      urlFixed = toUrl(url.searchUrl, clipboardText, url.spaceEncoding)
+    } else {
+      urlFixed = toUrl(url.searchUrl, url.selectionText, url.spaceEncoding)
+    }
+  } else {
+    urlFixed = url
   }
-  const url = toUrl(searchUrl, selectionText, spaceEncoding)
 
-  chrome.tabs.update(window.tabs?.[0].id as number, { url })
+  chrome.tabs.update(window.tabs?.[0].id as number, { url: urlFixed })
   if (chrome.runtime.lastError) {
     console.error(chrome.runtime.lastError)
   }
@@ -251,11 +261,13 @@ export const openPopupWindow = async (
     await BgData.set((data) => ({
       ...data,
       windowStack: [...data.windowStack, layer],
+      clipboardWindowId: null,
     }))
   } else {
     await BgData.set((data) => ({
       ...data,
       normalWindows: layer,
+      clipboardWindowId: null,
     }))
   }
 

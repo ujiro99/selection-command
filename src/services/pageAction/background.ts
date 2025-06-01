@@ -270,10 +270,10 @@ export const reset = (_: any, sender: Sender): boolean => {
   return false
 }
 
-type openAndRunProps = OpenPopupsProps & RunPageAction
+export type OpenAndRunProps = OpenPopupsProps & Omit<RunPageAction, 'steps'>
 
 export const openAndRun = (
-  param: openAndRunProps,
+  param: OpenAndRunProps,
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {

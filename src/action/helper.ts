@@ -3,7 +3,6 @@ import {
   openPopupWindowMultiple,
   OpenPopupsProps,
   OpenPopupProps,
-  getCurrentTab,
   openPopupWindow,
   openTab as openTabWithClipboard,
   OpenTabProps,
@@ -14,7 +13,7 @@ import type { CommandVariable } from '@/types'
 
 type Sender = chrome.runtime.MessageSender
 
-type OpenPopupAndClickProps = OpenPopupsProps & {
+type OpenPopupAndClickProps = OpenPopupProps & {
   selector: string
 }
 
@@ -68,14 +67,10 @@ export const openPopupAndClick = (
 ): boolean => {
   incrementCommandExecutionCount().then(async () => {
     try {
-      const tabIds = await openPopupWindowMultiple(param)
-      if (tabIds.length > 0) {
-        await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
-          selector: (param as { selector: string }).selector,
-        })
-      } else {
-        console.debug('tab not found')
-      }
+      const tabId = await openPopupWindow(param)
+      await Ipc.sendQueue(tabId, TabCommand.clickElement, {
+        selector: (param as { selector: string }).selector,
+      })
       response(true)
     } catch (error) {
       console.error('Failed to execute openPopupAndClick:', error)

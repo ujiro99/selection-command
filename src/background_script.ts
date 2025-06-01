@@ -355,12 +355,12 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   await updateActiveScreenId(windowId)
 
   // Close popup windows when focus changed to lower stack window
-  const idx = stack.map((s) => s.findIndex((w) => w.id === windowId))
+  const idxs = stack.map((s) => s.findIndex((w) => w.id === windowId))
   let changed = false
 
   // Close all window.
   let closeStack = [] as WindowLayer[]
-  const closeAll = idx.every((i) => i < 0)
+  const closeAll = idxs.every((i) => i < 0)
   if (closeAll && stack.length > 0) {
     closeStack = stack
     stack = []
@@ -368,8 +368,8 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   }
 
   // Close windows up to the window stack in focus.
-  for (let i = idx.length - 2; i >= 0; i--) {
-    if (idx[i] >= 0) {
+  for (let i = idxs.length - 2; i >= 0; i--) {
+    if (idxs[i] >= 0) {
       closeStack = stack.splice(i + 1)
       changed = true
       break
