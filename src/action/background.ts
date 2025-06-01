@@ -4,8 +4,8 @@ import { Window } from './window'
 import { Tab } from './tab'
 import { Api } from './api'
 import { PageAction } from './pageAction'
-import type { ExecuteCommandParams } from '@/types'
 import { executeAction } from './executor'
+import type { ExecuteCommandParams } from '@/types'
 
 export const actionsForBackground = {
   [OPEN_MODE_BG.POPUP]: Popup,
@@ -21,6 +21,7 @@ export async function execute({
   selectionText,
   target,
   useSecondary = false,
+  useClipboard = false,
   changeState,
 }: ExecuteCommandParams) {
   return executeAction({
@@ -29,6 +30,7 @@ export async function execute({
     selectionText,
     target,
     useSecondary,
+    useClipboard,
     changeState,
     actions: actionsForBackground,
   })

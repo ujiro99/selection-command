@@ -10,7 +10,7 @@ import type { PageAction } from '@/services/pageAction'
 import { RunningStatus } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
 import {
-  openPopupWindows,
+  openPopupWindowMultiple,
   OpenPopupsProps,
   getCurrentTab,
 } from '@/services/chrome'
@@ -281,7 +281,7 @@ export const openAndRun = (
     let tabId: number
 
     if (param.openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
-      const tabIds = await openPopupWindows(param)
+      const tabIds = await openPopupWindowMultiple(param)
       if (tabIds.length === 0) {
         console.error('tab not found')
         response(false)

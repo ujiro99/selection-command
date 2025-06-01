@@ -180,6 +180,7 @@ export type ExecuteCommandParams = {
   selectionText: string
   target?: Element | null
   useSecondary?: boolean
+  useClipboard?: boolean
   changeState?: (state: ExecState, message?: string) => void
 }
 

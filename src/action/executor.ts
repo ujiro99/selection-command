@@ -8,6 +8,7 @@ export async function executeAction({
   selectionText,
   target,
   useSecondary = false,
+  useClipboard = false,
   changeState,
 }: ExecuteCommandParams & { actions: Record<string, any> }) {
   let mode = command.openMode as OPEN_MODE
@@ -24,6 +25,7 @@ export async function executeAction({
     command,
     position,
     useSecondary,
+    useClipboard,
     changeState: changeState ?? (() => {}),
     target: target ?? null,
   })

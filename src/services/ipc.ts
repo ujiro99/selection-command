@@ -10,6 +10,7 @@ const CONNECTION_TIMEOUT = 4000
 const CONNECTION_CHECK_INTERVAL = 50
 
 export enum BgCommand {
+  openPopup = 'openPopup',
   openPopups = 'openPopups',
   openPopupAndClick = 'openPopupAndClick',
   openTab = 'openTab',
@@ -24,7 +25,6 @@ export enum BgCommand {
   captureScreenshot = 'captureScreenshot',
   getTabId = 'getTabId',
   setClipboard = 'setClipboard',
-  getClipboard = 'getClipboard',
   // PageAction
   addPageAction = 'addPageAction',
   addCapture = 'addCapture',

@@ -1,7 +1,7 @@
-import { sleep, toUrl, isOverBytes } from '@/lib/utils'
+import { sleep, toUrl, isOverBytes, isEmpty } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
 import type { WindowLayer } from '@/types'
-import { POPUP_OFFSET, POPUP_TYPE } from '@/const'
+import { POPUP_OFFSET, POPUP_TYPE, SPACE_ENCODING } from '@/const'
 import { BgData } from '@/services/backgroundData'
 import { BgCommand, ClipboardResult } from '@/services/ipc'
 
@@ -71,6 +71,20 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
   return p
 }
 
+export type OpenPopupProps = {
+  commandId: string
+  searchUrl: string
+  spaceEncoding: SPACE_ENCODING
+  selectionText: string
+  useClipboard: boolean
+  top: number
+  left: number
+  width: number
+  height: number
+  screen: ScreenSize
+  type: POPUP_TYPE
+}
+
 export type OpenPopupsProps = {
   commandId: string
   urls: string[]
@@ -82,7 +96,174 @@ export type OpenPopupsProps = {
   type: POPUP_TYPE
 }
 
-export const openPopupWindows = async (
+export type OpenTabProps = {
+  searchUrl: string
+  spaceEncoding: SPACE_ENCODING
+  selectionText: string
+  useClipboard: boolean
+  active: boolean
+}
+
+type ReadClipboardParam = Omit<OpenPopupsProps, 'urls'> & {
+  incognito: boolean
+}
+
+type ReadClipboardResult = {
+  clipboardText: string
+  window: chrome.windows.Window
+}
+
+/**
+ * Opens a window to read the clipboard content
+ * @param {ReadClipboardParam } param - The parameters for the popup window
+ * @returns {Promise<ReadClipboardResult>} The clipboard content
+ */
+export const openWindowAndReadClipboard = async (
+  param: ReadClipboardParam,
+): Promise<ReadClipboardResult> => {
+  const bg = await BgData.get()
+  if (bg.clipboardWindowId) {
+    try {
+      await chrome.windows.remove(bg.clipboardWindowId)
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError)
+      }
+    } catch (e) {
+      console.debug(e)
+    }
+  }
+
+  const w = await chrome.windows.create({
+    url: chrome.runtime.getURL('src/clipboard.html'),
+    focused: true,
+    type: param.type,
+    width: param.width,
+    height: param.height,
+    left: param.left,
+    top: param.top,
+    incognito: param.incognito,
+  })
+
+  // Fail safe to remove the window.
+  await BgData.set((data) => ({
+    ...data,
+    clipboardWindowId: w.id ?? null,
+  }))
+
+  let result = ''
+  try {
+    const tabId = w.tabs?.[0].id as number
+    const { data, err } = await new Promise<ClipboardResult>((resolve) => {
+      chrome.runtime.onConnect.addListener(function (port) {
+        if (port.sender?.tab?.id !== tabId) {
+          return
+        }
+        port.onMessage.addListener(function (msg) {
+          if (msg.command === BgCommand.setClipboard) {
+            resolve(msg.data)
+          }
+        })
+      })
+      if (chrome.runtime.lastError) {
+        throw new Error(chrome.runtime.lastError.message)
+      }
+    })
+
+    if (err != null) {
+      throw new Error(`Failed to read clipboard: ${err}`)
+    }
+
+    result = data ?? ''
+  } catch (e) {
+    console.error(e)
+  }
+
+  return {
+    clipboardText: result,
+    window: w,
+  }
+}
+
+export const openPopupWindow = async (
+  param: OpenPopupProps,
+): Promise<number> => {
+  const {
+    top,
+    left,
+    width,
+    height,
+    screen,
+    searchUrl,
+    spaceEncoding,
+    useClipboard,
+  } = param
+  let selectionText = param.selectionText
+  let current: chrome.windows.Window
+
+  try {
+    current = await chrome.windows.getCurrent()
+  } catch (e) {
+    // console.warn('Failed to get current window:', e)
+    current = { id: undefined, incognito: false } as chrome.windows.Window
+  }
+
+  const type = param.type ?? POPUP_TYPE.POPUP
+  let t = top + POPUP_OFFSET
+  let l = left + POPUP_OFFSET
+
+  // If the window extends beyond the screen size,
+  // return the display position to the center.
+  if (screen.height < t + height - screen.top) {
+    t = Math.floor((screen.height - height) / 2) + screen.top + POPUP_OFFSET
+  }
+  if (screen.width < l + width - screen.left) {
+    l = Math.floor((screen.width - width) / 2) + screen.left + POPUP_OFFSET
+  }
+  const { clipboardText, window } = await openWindowAndReadClipboard({
+    commandId: param.commandId,
+    screen: param.screen,
+    type,
+    width,
+    height,
+    top: t,
+    left: l,
+    incognito: current.incognito,
+  })
+
+  if (isEmpty(selectionText) && useClipboard) {
+    selectionText = clipboardText
+  }
+  const url = toUrl(searchUrl, selectionText, spaceEncoding)
+
+  chrome.tabs.update(window.tabs?.[0].id as number, { url })
+  if (chrome.runtime.lastError) {
+    console.error(chrome.runtime.lastError)
+  }
+
+  const layer = [
+    {
+      id: window.id,
+      commandId: param.commandId,
+      srcWindowId: current.id,
+    },
+  ] as WindowLayer
+  if (type === POPUP_TYPE.POPUP) {
+    await BgData.set((data) => ({
+      ...data,
+      windowStack: [...data.windowStack, layer],
+    }))
+  } else {
+    await BgData.set((data) => ({
+      ...data,
+      normalWindows: layer,
+    }))
+  }
+
+  updateRules([window.tabs?.[0].id as number])
+  return window.tabs?.[0].id as number
+}
+
+export const openPopupWindowMultiple = async (
   param: OpenPopupsProps,
 ): Promise<number[]> => {
   const { top, left, width, height, screen } = param
@@ -115,8 +296,8 @@ export const openPopupWindows = async (
       }
       return chrome.windows.create({
         url,
-        width: width,
-        height: height,
+        width,
+        height,
         top: t,
         left: l,
         type,
@@ -250,6 +431,69 @@ const updateRules = async (tabIds: number[]) => {
   })
 }
 
+export const openTab = async (param: OpenTabProps): Promise<number> => {
+  const { searchUrl, spaceEncoding, useClipboard, active } = param
+  let selectionText = param.selectionText
+
+  let currentTab: chrome.tabs.Tab | null = null
+  try {
+    currentTab = await getCurrentTab()
+  } catch (e) {
+    console.warn('Failed to get current tab:', e)
+  }
+
+  if (useClipboard) {
+    const tab = await chrome.tabs.create({
+      url: chrome.runtime.getURL('src/clipboard.html'),
+      active: true,
+      windowId: currentTab?.windowId,
+      index: currentTab?.index !== undefined ? currentTab.index + 1 : undefined,
+    })
+
+    let clipboardText = ''
+    try {
+      const { data, err } = await new Promise<ClipboardResult>((resolve) => {
+        chrome.runtime.onConnect.addListener(function (port) {
+          if (port.sender?.tab?.id !== tab.id) {
+            return
+          }
+          port.onMessage.addListener(function (msg) {
+            if (msg.command === BgCommand.setClipboard) {
+              resolve(msg.data)
+            }
+          })
+        })
+        if (chrome.runtime.lastError) {
+          throw new Error(chrome.runtime.lastError.message)
+        }
+      })
+
+      if (err != null) {
+        throw new Error(`Failed to read clipboard: ${err}`)
+      }
+      clipboardText = data ?? ''
+    } catch (e) {
+      console.error(e)
+    }
+
+    if (isEmpty(selectionText)) {
+      selectionText = clipboardText
+    }
+    const url = toUrl(searchUrl, selectionText, spaceEncoding)
+    chrome.tabs.update(tab.id as number, { url })
+    return tab.id as number
+  } else {
+    const url = toUrl(searchUrl, selectionText, spaceEncoding)
+    const tab = await chrome.tabs.create({
+      url,
+      active,
+      windowId: currentTab?.windowId,
+      index: currentTab?.index !== undefined ? currentTab.index + 1 : undefined,
+    })
+    return tab.id as number
+  }
+}
+
 /**
  * Get the current tab.
  * @returns {Promise<chrome.tabs.Tab>}
@@ -258,66 +502,4 @@ export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
   const queryOptions = { active: true, lastFocusedWindow: true }
   const [tab] = await chrome.tabs.query(queryOptions)
   return tab
-}
-
-/**
- * Opens a window to read the clipboard content
- * @returns {Promise<string>} The clipboard content
- */
-export const openClipboardReader = async (): Promise<string> => {
-  const w = await chrome.windows.create({
-    url: chrome.runtime.getURL('src/clipboard.html'),
-    type: 'popup',
-    width: 1,
-    height: 1,
-    left: 0,
-    top: 0,
-    focused: true,
-  })
-
-  await BgData.set((data) => ({
-    ...data,
-    clipboardWindowId: w.id ?? null,
-  }))
-
-  let result = ''
-  try {
-    const tabId = w.tabs?.[0].id as number
-    const res = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function (port) {
-        if (port.sender?.tab?.id !== tabId) {
-          return
-        }
-        port.onMessage.addListener(function (msg) {
-          if (msg.command === BgCommand.setClipboard) {
-            resolve(msg.data)
-          }
-        })
-      })
-    })
-    if (chrome.runtime.lastError) {
-      throw new Error(chrome.runtime.lastError.message)
-    }
-    const { data, err } = await res
-
-    if (err != null) {
-      throw new Error(`Failed to read clipboard: ${err}`)
-    }
-    result = data ?? ''
-  } catch (e) {
-    console.error(e)
-  }
-
-  try {
-    await chrome.windows.remove(w.id as number)
-  } catch (e) {
-    console.error(e)
-  } finally {
-    await BgData.set((data) => ({
-      ...data,
-      clipboardWindowId: null,
-    }))
-  }
-
-  return result
 }

@@ -1,11 +1,18 @@
 import { Ipc, BgCommand } from '@/services/ipc'
-import { toUrl, isValidString } from '@/lib/utils'
+import { isValidString } from '@/lib/utils'
 import { getScreenSize, getWindowPosition } from '@/services/screen'
-import { POPUP_TYPE } from '@/const'
+import { OpenPopupProps } from '@/services/chrome'
+import { POPUP_TYPE, SPACE_ENCODING } from '@/const'
 import type { ExecuteCommandParams } from '@/types'
+import { PopupOption } from '@/services/defaultSettings'
 
 export const Window = {
-  async execute({ selectionText, command, position }: ExecuteCommandParams) {
+  async execute({
+    selectionText,
+    command,
+    position,
+    useClipboard,
+  }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
       console.error('searchUrl is not valid.')
       return
@@ -15,20 +22,19 @@ export const Window = {
       return
     }
 
-    const urls = [
-      toUrl(command.searchUrl, selectionText, command.spaceEncoding),
-    ]
-
     const windowPosition = await getWindowPosition()
     const screen = await getScreenSize()
 
-    Ipc.send(BgCommand.openPopups, {
+    Ipc.send<OpenPopupProps>(BgCommand.openPopup, {
       commandId: command.id,
-      urls: urls,
+      searchUrl: command.searchUrl,
+      spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
+      selectionText,
+      useClipboard: useClipboard ?? false,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),
-      height: command.popupOption?.height,
-      width: command.popupOption?.width,
+      height: command.popupOption?.height ?? PopupOption.height,
+      width: command.popupOption?.width ?? PopupOption.width,
       screen,
       type: POPUP_TYPE.NORMAL,
     })
