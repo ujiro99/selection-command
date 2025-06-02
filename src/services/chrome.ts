@@ -194,22 +194,40 @@ export const openPopupWindow = async (
   if (screen.width < l + width - screen.left) {
     l = Math.floor((screen.width - width) / 2) + screen.left + POPUP_OFFSET
   }
-  const { clipboardText, window } = await openWindowAndReadClipboard({
-    commandId: param.commandId,
-    screen: param.screen,
-    type,
-    width,
-    height,
-    top: t,
-    left: l,
-    incognito: current.incognito,
-  })
 
-  chrome.tabs.update(window.tabs?.[0].id as number, {
-    url: toUrl(url, clipboardText),
-  })
-  if (chrome.runtime.lastError) {
-    console.error(chrome.runtime.lastError)
+  let window: chrome.windows.Window
+  let clipboardText = ''
+
+  if (isUrlParam(url) && url.useClipboard) {
+    const result = await openWindowAndReadClipboard({
+      commandId: param.commandId,
+      screen: param.screen,
+      type,
+      width,
+      height,
+      top: t,
+      left: l,
+      incognito: current.incognito,
+    })
+    window = result.window
+    clipboardText = result.clipboardText
+
+    chrome.tabs.update(window.tabs?.[0].id as number, {
+      url: toUrl(url, clipboardText),
+    })
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError)
+    }
+  } else {
+    window = await chrome.windows.create({
+      url: toUrl(url),
+      type,
+      width,
+      height,
+      top: t,
+      left: l,
+      incognito: current.incognito,
+    })
   }
 
   const layer = [
