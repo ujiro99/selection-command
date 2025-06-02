@@ -10,14 +10,12 @@ export class BgData {
   public normalWindows: WindowLayer
   public pageActionStop: boolean
   public activeScreenId: string | null
-  public clipboardWindowId: number | null
 
   private constructor(val: BgData | undefined) {
     this.windowStack = val?.windowStack ?? []
     this.normalWindows = val?.normalWindows ?? []
     this.pageActionStop = val?.pageActionStop ?? false
     this.activeScreenId = val?.activeScreenId ?? null
-    this.clipboardWindowId = val?.clipboardWindowId ?? null
   }
 
   public static init() {

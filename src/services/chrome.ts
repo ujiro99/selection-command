@@ -119,18 +119,6 @@ type ReadClipboardResult = {
 export const openWindowAndReadClipboard = async (
   param: ReadClipboardParam,
 ): Promise<ReadClipboardResult> => {
-  const bg = await BgData.get()
-  if (bg.clipboardWindowId) {
-    try {
-      await chrome.windows.remove(bg.clipboardWindowId)
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError)
-      }
-    } catch (e) {
-      console.debug(e)
-    }
-  }
-
   const w = await chrome.windows.create({
     url: chrome.runtime.getURL('src/clipboard.html'),
     focused: true,
@@ -141,12 +129,6 @@ export const openWindowAndReadClipboard = async (
     top: param.top,
     incognito: param.incognito,
   })
-
-  // Fail safe to remove the window.
-  await BgData.set((data) => ({
-    ...data,
-    clipboardWindowId: w.id ?? null,
-  }))
 
   let result = ''
   try {
@@ -241,13 +223,11 @@ export const openPopupWindow = async (
     await BgData.set((data) => ({
       ...data,
       windowStack: [...data.windowStack, layer],
-      clipboardWindowId: null,
     }))
   } else {
     await BgData.set((data) => ({
       ...data,
       normalWindows: layer,
-      clipboardWindowId: null,
     }))
   }
 
