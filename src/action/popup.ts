@@ -27,10 +27,12 @@ export const Popup = {
 
     Ipc.send<OpenPopupProps>(BgCommand.openPopup, {
       commandId: command.id,
-      searchUrl: command.searchUrl,
-      spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
-      selectionText,
-      useClipboard: useClipboard ?? false,
+      url: {
+        searchUrl: command.searchUrl,
+        spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
+        selectionText,
+        useClipboard: useClipboard ?? false,
+      },
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),
       height: command.popupOption?.height ?? PopupOption.height,

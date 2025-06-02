@@ -249,3 +249,10 @@ export type WindowType = {
 }
 
 export type WindowLayer = WindowType[]
+
+export type UrlParam = {
+  searchUrl: string
+  selectionText: string
+  spaceEncoding?: SPACE_ENCODING
+  useClipboard?: boolean
+}

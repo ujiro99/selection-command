@@ -10,9 +10,10 @@ import type { PageAction } from '@/services/pageAction'
 import { RunningStatus } from '@/services/pageAction'
 import { ScreenSize } from '@/services/dom'
 import {
-  openPopupWindowMultiple,
-  OpenPopupsProps,
+  openPopupWindow,
+  openTab,
   getCurrentTab,
+  OpenPopupProps,
 } from '@/services/chrome'
 import { incrementCommandExecutionCount } from '@/services/commandMetrics'
 import {
@@ -26,8 +27,10 @@ import {
 } from '@/const'
 import {
   generateRandomID,
+  isEmpty,
   isPageActionCommand,
   isUrl,
+  isUrlParam,
   sleep,
 } from '@/lib/utils'
 import type {
@@ -270,7 +273,8 @@ export const reset = (_: any, sender: Sender): boolean => {
   return false
 }
 
-export type OpenAndRunProps = OpenPopupsProps & Omit<RunPageAction, 'steps'>
+export type OpenAndRunProps = OpenPopupProps &
+  Omit<RunPageAction, 'steps' | 'clipboardText'>
 
 export const openAndRun = (
   param: OpenAndRunProps,
@@ -279,27 +283,31 @@ export const openAndRun = (
 ): boolean => {
   const open = async () => {
     let tabId: number
+    let selectedText = param.selectedText
+    let clipboardText: string
 
     if (param.openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
-      const tabIds = await openPopupWindowMultiple(param)
-      if (tabIds.length === 0) {
-        console.error('tab not found')
-        response(false)
-        return
-      }
-      tabId = tabIds[0]
+      const ret = await openPopupWindow(param)
+      tabId = ret.tabId
+      clipboardText = ret.clipboardText
     } else {
-      const tab = sender.tab ?? (await getCurrentTab())
-      const newtab = await chrome.tabs.create({
-        url: param.urls[0],
-        windowId: tab.windowId,
-        index: tab.index + 1,
+      const ret = await openTab({
+        url: param.url,
+        active: true,
       })
-      tabId = newtab.id!
+      tabId = ret.tabId
+      clipboardText = ret.clipboardText
     }
 
-    // Wait until ipc connection is established.
-    await Ipc.ensureConnection(tabId)
+    // Use clipboard text if selected text is empty and useClipboard is true.
+    // This is for the case for shortcut key.
+    if (
+      isEmpty(selectedText) &&
+      isUrlParam(param.url) &&
+      param.url.useClipboard
+    ) {
+      selectedText = clipboardText
+    }
 
     const commands = await Storage.getCommands()
     const cmd = commands.find((c) => c.id === param.commandId)
@@ -314,10 +322,17 @@ export const openAndRun = (
       response(false)
       return true
     }
-    const steps = cmd.pageActionOption.steps
+
+    // Wait until ipc connection is established.
+    await Ipc.ensureConnection(tabId)
 
     // Run the steps on the popup.
-    run({ ...param, tabId, steps }, sender, response)
+    const steps = cmd.pageActionOption.steps
+    run(
+      { ...param, tabId, steps, selectedText, clipboardText },
+      sender,
+      response,
+    )
 
     await incrementCommandExecutionCount()
   }

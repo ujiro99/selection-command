@@ -1,7 +1,7 @@
-import { sleep, toUrl, isOverBytes, isEmpty } from '@/lib/utils'
+import { sleep, toUrl, isOverBytes, isUrlParam } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
-import type { WindowLayer } from '@/types'
-import { POPUP_OFFSET, POPUP_TYPE, SPACE_ENCODING } from '@/const'
+import type { UrlParam, WindowLayer } from '@/types'
+import { POPUP_OFFSET, POPUP_TYPE } from '@/const'
 import { BgData } from '@/services/backgroundData'
 import { BgCommand, ClipboardResult } from '@/services/ipc'
 
@@ -65,27 +65,14 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
     chrome.tabs.onUpdated.addListener(onUpdated)
   })
   w = await chrome.windows.create({
-    url: toUrl(url, 'test'),
+    url: toUrl({
+      searchUrl: url,
+      selectionText: 'test',
+      useClipboard: false,
+    }),
     state: 'minimized',
   })
   return p
-}
-
-type UrlParam = {
-  searchUrl: string
-  spaceEncoding: SPACE_ENCODING
-  selectionText: string
-  useClipboard: boolean
-}
-
-const isUrlParam = (url: string | UrlParam): url is UrlParam => {
-  return (
-    typeof url === 'object' &&
-    'searchUrl' in url &&
-    'spaceEncoding' in url &&
-    'selectionText' in url &&
-    'useClipboard' in url
-  )
 }
 
 export type OpenPopupProps = {
@@ -111,10 +98,7 @@ export type OpenPopupsProps = {
 }
 
 export type OpenTabProps = {
-  searchUrl: string
-  spaceEncoding: SPACE_ENCODING
-  selectionText: string
-  useClipboard: boolean
+  url: string | UrlParam
   active: boolean
 }
 
@@ -198,9 +182,14 @@ export const openWindowAndReadClipboard = async (
   }
 }
 
+type OpenResult = {
+  tabId: number
+  clipboardText: string
+}
+
 export const openPopupWindow = async (
   param: OpenPopupProps,
-): Promise<number> => {
+): Promise<OpenResult> => {
   const { top, left, width, height, screen, url } = param
   let current: chrome.windows.Window
 
@@ -234,18 +223,9 @@ export const openPopupWindow = async (
     incognito: current.incognito,
   })
 
-  let urlFixed: string
-  if (isUrlParam(url)) {
-    if (isEmpty(url.selectionText) && url.useClipboard) {
-      urlFixed = toUrl(url.searchUrl, clipboardText, url.spaceEncoding)
-    } else {
-      urlFixed = toUrl(url.searchUrl, url.selectionText, url.spaceEncoding)
-    }
-  } else {
-    urlFixed = url
-  }
-
-  chrome.tabs.update(window.tabs?.[0].id as number, { url: urlFixed })
+  chrome.tabs.update(window.tabs?.[0].id as number, {
+    url: toUrl(url, clipboardText),
+  })
   if (chrome.runtime.lastError) {
     console.error(chrome.runtime.lastError)
   }
@@ -272,7 +252,11 @@ export const openPopupWindow = async (
   }
 
   updateRules([window.tabs?.[0].id as number])
-  return window.tabs?.[0].id as number
+
+  return {
+    tabId: window.tabs?.[0].id as number,
+    clipboardText: clipboardText,
+  }
 }
 
 export const openPopupWindowMultiple = async (
@@ -443,15 +427,19 @@ const updateRules = async (tabIds: number[]) => {
   })
 }
 
-export const openTab = async (param: OpenTabProps): Promise<number> => {
-  const { searchUrl, spaceEncoding, useClipboard, active } = param
-  let selectionText = param.selectionText
+export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
+  const { url, active } = param
 
   let currentTab: chrome.tabs.Tab | null = null
   try {
     currentTab = await getCurrentTab()
   } catch (e) {
     console.warn('Failed to get current tab:', e)
+  }
+
+  let useClipboard = false
+  if (isUrlParam(url)) {
+    useClipboard = url.useClipboard ?? false
   }
 
   if (useClipboard) {
@@ -488,21 +476,22 @@ export const openTab = async (param: OpenTabProps): Promise<number> => {
       console.error(e)
     }
 
-    if (isEmpty(selectionText)) {
-      selectionText = clipboardText
+    chrome.tabs.update(tab.id as number, { url: toUrl(url) })
+    return {
+      tabId: tab.id as number,
+      clipboardText: clipboardText,
     }
-    const url = toUrl(searchUrl, selectionText, spaceEncoding)
-    chrome.tabs.update(tab.id as number, { url })
-    return tab.id as number
   } else {
-    const url = toUrl(searchUrl, selectionText, spaceEncoding)
     const tab = await chrome.tabs.create({
-      url,
+      url: toUrl(url),
       active,
       windowId: currentTab?.windowId,
       index: currentTab?.index !== undefined ? currentTab.index + 1 : undefined,
     })
-    return tab.id as number
+    return {
+      tabId: tab.id as number,
+      clipboardText: '',
+    }
   }
 }
 

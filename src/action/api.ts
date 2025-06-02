@@ -1,7 +1,7 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import { sleep, toUrl, isValidString } from '@/lib/utils'
 import type { ExecuteCommandParams, ApiCommand } from '@/types'
-import { OPEN_MODE, ExecState } from '@/const'
+import { OPEN_MODE, ExecState, SPACE_ENCODING } from '@/const'
 
 const isApiCommand = (command: any): command is ApiCommand => {
   return command.OpenMode === OPEN_MODE.API
@@ -41,7 +41,11 @@ export const Api = {
     }
 
     Ipc.send(BgCommand.execApi, {
-      url: toUrl(command.searchUrl, selectionText),
+      url: toUrl({
+        searchUrl: command.searchUrl,
+        selectionText: selectionText,
+        spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
+      }),
       pageUrl,
       pageTitle,
       selectionText: selectionText,

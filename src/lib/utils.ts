@@ -8,6 +8,7 @@ import type {
   LinkCommand,
   SearchCommand,
   PageActionCommand,
+  UrlParam,
 } from '@/types'
 
 export function cn(...inputs: ClassValue[]) {
@@ -33,11 +34,40 @@ export function unique<T>(arr: T[]): T[] {
   return [...new Set(arr)]
 }
 
+/**
+ * Check if the string is a UrlParam.
+ * @param url The string to check.
+ * @returns True if the string is a UrlParam.
+ */
+export const isUrlParam = (url: string | UrlParam): url is UrlParam => {
+  return typeof url === 'object' && 'searchUrl' in url && 'selectionText' in url
+}
+
+/**
+ * Convert a string or UrlParam to a URL.
+ * @param param The string or UrlParam to convert.
+ * @param clipboardText The clipboard text to use if the UrlParam has useClipboard set to true.
+ * @returns The URL.
+ */
 export function toUrl(
-  searchUrl: string,
-  text: string,
-  spaceEncoding?: SPACE_ENCODING,
+  param: string | UrlParam,
+  clipboardText?: string,
 ): string {
+  console.debug('toUrl', param, clipboardText)
+  if (!isUrlParam(param)) {
+    return param
+  }
+  const {
+    searchUrl,
+    selectionText,
+    spaceEncoding = SPACE_ENCODING.PLUS,
+    useClipboard = false,
+  } = param
+  let text = selectionText
+  console.debug('toUrl', text, useClipboard, clipboardText)
+  if (useClipboard && isEmpty(text)) {
+    text = clipboardText ?? ''
+  }
   let textEscaped = text
   if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
     textEscaped = text.replaceAll(' ', '+')

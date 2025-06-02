@@ -67,7 +67,7 @@ export const openPopupAndClick = (
 ): boolean => {
   incrementCommandExecutionCount().then(async () => {
     try {
-      const tabId = await openPopupWindow(param)
+      const { tabId } = await openPopupWindow(param)
       await Ipc.sendQueue(tabId, TabCommand.clickElement, {
         selector: (param as { selector: string }).selector,
       })
@@ -85,7 +85,7 @@ export const openTab = (
   _: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  openTabWithClipboard(param).then((tabId) => {
+  openTabWithClipboard(param).then(({ tabId }) => {
     incrementCommandExecutionCount(tabId).then(() => {
       response(true)
     })
