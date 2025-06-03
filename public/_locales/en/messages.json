@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Use clipboard content"
+  },
+  "clipboard_error_title": {
+    "message": "Failed to get clipboard"
+  },
+  "clipboard_error_description": {
+    "message": "Could not get clipboard content."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

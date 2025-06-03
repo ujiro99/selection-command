@@ -769,5 +769,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "クリップボードの内容を使用"
+  },
+  "clipboard_error_title": {
+    "message": "クリップボード取得失敗"
+  },
+  "clipboard_error_description": {
+    "message": "クリップボードの内容を取得できませんでした。"
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

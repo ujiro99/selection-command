@@ -19,12 +19,12 @@ const readClipboardWithRetry = async (
         error,
       )
       if (i === maxRetries - 1) {
-        return { data: undefined, err: error as string }
+        return { data: undefined, err: `Retry limit exceeded. [${maxRetries}]` }
       }
       await new Promise<void>((resolve) => setTimeout(resolve, delayMs))
     }
   }
-  return { data: undefined, err: 'Out of retries' }
+  return { data: undefined, err: 'Out of retries.' }
 }
 
 const port = chrome.runtime.connect({ name: 'clipboard' })
@@ -41,4 +41,7 @@ readClipboardWithRetry()
       command: BgCommand.setClipboard,
       data: { data: undefined, err: error.message },
     })
+  })
+  .finally(() => {
+    port.disconnect()
   })

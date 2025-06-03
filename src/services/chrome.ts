@@ -1,9 +1,11 @@
 import { sleep, toUrl, isOverBytes, isUrlParam } from '@/lib/utils'
 import type { ScreenSize } from '@/services/dom'
-import type { UrlParam, WindowLayer } from '@/types'
+import type { ShowToastParam, UrlParam, WindowLayer } from '@/types'
 import { POPUP_OFFSET, POPUP_TYPE } from '@/const'
 import { BgData } from '@/services/backgroundData'
-import { BgCommand, ClipboardResult } from '@/services/ipc'
+import { BgCommand, ClipboardResult, TabCommand } from '@/services/ipc'
+import { Ipc } from '@/services/ipc'
+import { t } from '@/services/i18n'
 
 BgData.init()
 
@@ -109,6 +111,7 @@ type ReadClipboardParam = Omit<OpenPopupsProps, 'urls'> & {
 type ReadClipboardResult = {
   clipboardText: string
   window: chrome.windows.Window
+  err?: string
 }
 
 type OpenResult = {
@@ -292,12 +295,13 @@ const updateRules = async (tabIds: number[]) => {
 /**
  * Read clipboard content from a tab
  * @param {number} tabId - The ID of the tab to read clipboard from
- * @returns {Promise<string>} The clipboard content
+ * @returns {Promise<ClipboardResult>} The clipboard content
  */
-const readClipboardContent = async (tabId: number): Promise<string> => {
-  let result = ''
+const readClipboardContent = async (
+  tabId: number,
+): Promise<ClipboardResult> => {
   try {
-    const { data, err } = await new Promise<ClipboardResult>((resolve) => {
+    const result = await new Promise<ClipboardResult>((resolve) => {
       chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
@@ -313,15 +317,11 @@ const readClipboardContent = async (tabId: number): Promise<string> => {
       }
     })
 
-    if (err != null) {
-      throw new Error(`Failed to read clipboard: ${err}`)
-    }
-
-    result = data ?? ''
+    return result
   } catch (e) {
     console.error(e)
+    return { data: '', err: e instanceof Error ? e.message : 'Unknown error' }
   }
-  return result
 }
 
 const openWindowAndReadClipboard = async (
@@ -341,8 +341,9 @@ const openWindowAndReadClipboard = async (
   const result = await readClipboardContent(w.tabs?.[0].id as number)
 
   return {
-    clipboardText: result,
     window: w,
+    clipboardText: result.data ?? '',
+    err: result.err,
   }
 }
 
@@ -359,7 +360,7 @@ export const openPopupWindow = async (
   }
 
   const type = param.type ?? POPUP_TYPE.POPUP
-  const { top: t, left: l } = adjustWindowPosition(
+  const { top: at, left: al } = adjustWindowPosition(
     top,
     left,
     width,
@@ -377,18 +378,31 @@ export const openPopupWindow = async (
       type,
       width,
       height,
-      top: t,
-      left: l,
+      top: at,
+      left: al,
       incognito: current.incognito,
     })
     window = result.window
     clipboardText = result.clipboardText
 
-    chrome.tabs.update(window.tabs?.[0].id as number, {
+    await chrome.tabs.update(window.tabs?.[0].id as number, {
       url: toUrl(url, clipboardText),
     })
     if (chrome.runtime.lastError) {
       console.error(chrome.runtime.lastError)
+    }
+
+    if (result.err) {
+      await Ipc.ensureConnection(window.tabs?.[0].id as number)
+      await Ipc.sendTab<ShowToastParam>(
+        window.tabs?.[0].id as number,
+        TabCommand.showToast,
+        {
+          title: t('clipboard_error_title'),
+          description: t('clipboard_error_description'),
+          action: t('clipboard_error_action'),
+        },
+      )
     }
   } else {
     window = await chrome.windows.create({
@@ -396,8 +410,8 @@ export const openPopupWindow = async (
       type,
       width,
       height,
-      top: t,
-      left: l,
+      top: at,
+      left: al,
       incognito: current.incognito,
     })
   }
@@ -479,12 +493,25 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
       index: currentTab?.index !== undefined ? currentTab.index + 1 : undefined,
     })
 
-    const clipboardText = await readClipboardContent(tab.id as number)
-    chrome.tabs.update(tab.id as number, { url: toUrl(url) })
+    const result = await readClipboardContent(tab.id as number)
+    await chrome.tabs.update(tab.id as number, { url: toUrl(url) })
+
+    if (result.err) {
+      await Ipc.ensureConnection(tab.id as number)
+      await Ipc.sendTab<ShowToastParam>(
+        tab.id as number,
+        TabCommand.showToast,
+        {
+          title: t('clipboard_error_title'),
+          description: t('clipboard_error_description'),
+          action: t('clipboard_error_action'),
+        },
+      )
+    }
 
     return {
       tabId: tab.id as number,
-      clipboardText,
+      clipboardText: result.data ?? '',
     }
   } else {
     const tab = await chrome.tabs.create({

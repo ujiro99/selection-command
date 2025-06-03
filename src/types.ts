@@ -256,3 +256,9 @@ export type UrlParam = {
   spaceEncoding?: SPACE_ENCODING
   useClipboard?: boolean
 }
+
+export type ShowToastParam = {
+  title: string
+  description: string
+  action: string
+}

@@ -10,11 +10,13 @@ import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 import { Ipc, TabCommand } from '@/services/ipc'
+import { ToastAction } from '@/components/ui/toast'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/useToast'
 import { showReviewRequestToast } from '@/components/ReviewRequestToast'
 import { Settings } from '@/services/settings'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
+import type { ShowToastParam } from '@/types'
 
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
@@ -27,6 +29,30 @@ export function App() {
       Ipc.removeListener(TabCommand.connect)
     }
   }, [])
+
+  useEffect(() => {
+    const handleShowToast = (
+      param: ShowToastParam,
+      _sender: any,
+      response: any,
+    ) => {
+      toast({
+        title: param.title,
+        description: param.description,
+        duration: 3 * 1000,
+        action: (
+          <ToastAction altText={param.action}>{param.action}</ToastAction>
+        ),
+      })
+      response(true)
+      return true
+    }
+
+    Ipc.addListener<ShowToastParam>(TabCommand.showToast, handleShowToast)
+    return () => {
+      Ipc.removeListener(TabCommand.showToast)
+    }
+  }, [toast])
 
   useEffect(() => {
     const handleShowReviewRequest = (_: any, __: any, response: any) => {
