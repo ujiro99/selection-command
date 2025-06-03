@@ -732,7 +732,7 @@
     "message": "Вы можете делиться и импортировать команды действий страницы в Selection Command Hub."
   },
   "review_request_title": {
-    "message": "Нравится ли вам Selection Command?"
+    "message": "Спасибо за использование Selection Command!"
   },
   "review_request_message": {
     "message": "Если вы находите это расширение полезным, оставьте отзыв в Chrome Web Store. Ваш отзыв помогает нам улучшаться!"
@@ -768,7 +768,7 @@
     "message": "Когда нет выбранного текста"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "Ничего не делать"
+    "message": "Не запускать"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Использовать содержимое буфера обмена"

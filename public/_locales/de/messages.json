@@ -732,7 +732,7 @@
     "message": "Sie können Seitenaktionsbefehle vom Selection Command Hub teilen und abrufen."
   },
   "review_request_title": {
-    "message": "Gefällt Ihnen Selection Command?"
+    "message": "Vielen Dank für die Nutzung von Selection Command!"
   },
   "review_request_message": {
     "message": "Wenn Sie diese Erweiterung nützlich finden, erwägen Sie bitte, eine Bewertung im Chrome Web Store zu hinterlassen. Ihr Feedback hilft uns, uns zu verbessern!"
@@ -768,7 +768,7 @@
     "message": "Wenn kein Text ausgewählt ist"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "Nichts tun"
+    "message": "Nicht starten"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Inhalt der Zwischenablage verwenden"

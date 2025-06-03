@@ -732,7 +732,7 @@
     "message": "Puede compartir y obtener comandos de Acción de Página desde el Hub de Selection Command."
   },
   "review_request_title": {
-    "message": "¿Disfrutando de Selection Command?"
+    "message": "¡Gracias por usar Selection Command!"
   },
   "review_request_message": {
     "message": "Si encuentra útil esta extensión, considere dejar una reseña en Chrome Web Store. ¡Sus comentarios nos ayudan a mejorar!"
@@ -768,7 +768,7 @@
     "message": "Cuando no hay texto seleccionado"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "No hacer nada"
+    "message": "No iniciar"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Usar contenido del portapapeles"

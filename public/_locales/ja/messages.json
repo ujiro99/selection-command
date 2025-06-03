@@ -729,7 +729,7 @@
     "message": "Selection Command Hubから、<b>Page Actionコマンドの共有と取得</b>ができます。 "
   },
   "review_request_title": {
-    "message": "Selection Command はいかがですか？"
+    "message": "Selection Commandを使っていただき、ありがとうございます！"
   },
   "review_request_message": {
     "message": "この拡張機能を気に入っていただけたら、Chrome Web Storeでのレビューをお願いします。皆様のフィードバックが改善の糧となります！"
@@ -765,7 +765,7 @@
     "message": "テキスト未選択時"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "何もしない"
+    "message": "起動しない"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "クリップボードの内容を使用"

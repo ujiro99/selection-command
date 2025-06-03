@@ -732,7 +732,7 @@
     "message": "Você pode compartilhar e importar comandos de ação de página no Selection Command Hub."
   },
   "review_request_title": {
-    "message": "Você gosta do Selection Command?"
+    "message": "Obrigado por usar o Selection Command!"
   },
   "review_request_message": {
     "message": "Se você acha esta extensão útil, deixe uma avaliação na Chrome Web Store. Seu feedback nos ajuda a melhorar!"
@@ -768,7 +768,7 @@
     "message": "Quando não há texto selecionado"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "Não fazer nada"
+    "message": "Não iniciar"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Usar conteúdo da área de transferência"

@@ -732,7 +732,7 @@
     "message": "Selection Command Hub에서 페이지 작업 명령을 공유하고 가져올 수 있습니다."
   },
   "review_request_title": {
-    "message": "Selection Command가 마음에 드시나요?"
+    "message": "Selection Command를 사용해 주셔서 감사합니다!"
   },
   "review_request_message": {
     "message": "이 확장 프로그램이 유용하다고 생각되면 Chrome 웹 스토어에 리뷰를 남겨주세요. 귀하의 피드백은 우리가 개선하는 데 도움이 됩니다!"
@@ -768,7 +768,7 @@
     "message": "텍스트가 선택되지 않은 경우"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "아무 작업도 하지 않음"
+    "message": "실행하지 않음"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "클립보드 내용 사용"
