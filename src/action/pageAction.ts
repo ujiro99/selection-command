@@ -36,8 +36,10 @@ export const PageAction = {
 
     const openMode = useSecondary
       ? command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.TAB
-        ? PAGE_ACTION_OPEN_MODE.POPUP
-        : PAGE_ACTION_OPEN_MODE.TAB
+        ? PAGE_ACTION_OPEN_MODE.WINDOW
+        : command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
+          ? PAGE_ACTION_OPEN_MODE.TAB
+          : PAGE_ACTION_OPEN_MODE.TAB
       : command.pageActionOption.openMode
 
     const windowPosition = await getWindowPosition()
@@ -51,7 +53,6 @@ export const PageAction = {
       height: command.popupOption?.height ?? PopupOption.height,
       width: command.popupOption?.width ?? PopupOption.width,
       screen,
-      type: POPUP_TYPE.POPUP,
       selectedText: selectionText,
       srcUrl: location.href,
       openMode,

@@ -273,7 +273,7 @@ export const reset = (_: any, sender: Sender): boolean => {
   return false
 }
 
-export type OpenAndRunProps = OpenPopupProps &
+export type OpenAndRunProps = Omit<OpenPopupProps, 'type'> &
   Omit<RunPageAction, 'steps' | 'clipboardText'>
 
 export const openAndRun = (
@@ -286,14 +286,20 @@ export const openAndRun = (
     let selectedText = param.selectedText
     let clipboardText: string
 
-    if (param.openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
-      const ret = await openPopupWindow(param)
-      tabId = ret.tabId
-      clipboardText = ret.clipboardText
-    } else {
+    if (param.openMode === PAGE_ACTION_OPEN_MODE.TAB) {
       const ret = await openTab({
         url: param.url,
         active: true,
+      })
+      tabId = ret.tabId
+      clipboardText = ret.clipboardText
+    } else {
+      const ret = await openPopupWindow({
+        ...param,
+        type:
+          param.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
+            ? POPUP_TYPE.NORMAL
+            : POPUP_TYPE.POPUP,
       })
       tabId = ret.tabId
       clipboardText = ret.clipboardText
