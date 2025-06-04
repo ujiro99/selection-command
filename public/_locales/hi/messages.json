@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "क्लिपबोर्ड सामग्री का उपयोग करें"
+  },
+  "clipboard_error_title": {
+    "message": "क्लिपबोर्ड एक्सेस विफल"
+  },
+  "clipboard_error_description": {
+    "message": "क्लिपबोर्ड सामग्री तक पहुंच नहीं हो सकी।"
+  },
+  "clipboard_error_action": {
+    "message": "ठीक है"
   }
 }

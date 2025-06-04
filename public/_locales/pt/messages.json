@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Usar conteúdo da área de transferência"
+  },
+  "clipboard_error_title": {
+    "message": "Falha no acesso à área de transferência"
+  },
+  "clipboard_error_description": {
+    "message": "Não foi possível acessar o conteúdo da área de transferência."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

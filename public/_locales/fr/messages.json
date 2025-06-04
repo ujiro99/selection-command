@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Utiliser le contenu du presse-papiers"
+  },
+  "clipboard_error_title": {
+    "message": "Échec d'accès au presse-papiers"
+  },
+  "clipboard_error_description": {
+    "message": "Impossible d'accéder au contenu du presse-papiers."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

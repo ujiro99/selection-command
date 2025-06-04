@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Usa contenuto appunti"
+  },
+  "clipboard_error_title": {
+    "message": "Accesso agli appunti fallito"
+  },
+  "clipboard_error_description": {
+    "message": "Impossibile accedere al contenuto degli appunti."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

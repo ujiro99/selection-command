@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "使用剪贴板内容"
+  },
+  "clipboard_error_title": {
+    "message": "剪贴板访问失败"
+  },
+  "clipboard_error_description": {
+    "message": "无法访问剪贴板内容。"
+  },
+  "clipboard_error_action": {
+    "message": "确定"
   }
 }

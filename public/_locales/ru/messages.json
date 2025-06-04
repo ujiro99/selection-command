@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Использовать содержимое буфера обмена"
+  },
+  "clipboard_error_title": {
+    "message": "Ошибка доступа к буферу обмена"
+  },
+  "clipboard_error_description": {
+    "message": "Не удалось получить доступ к содержимому буфера обмена."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

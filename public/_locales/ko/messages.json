@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "클립보드 내용 사용"
+  },
+  "clipboard_error_title": {
+    "message": "클립보드 접근 실패"
+  },
+  "clipboard_error_description": {
+    "message": "클립보드 내용에 접근할 수 없습니다."
+  },
+  "clipboard_error_action": {
+    "message": "확인"
   }
 }

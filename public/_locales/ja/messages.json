@@ -771,10 +771,10 @@
     "message": "クリップボードの内容を使用"
   },
   "clipboard_error_title": {
-    "message": "クリップボード取得失敗"
+    "message": "クリップボードへのアクセスに失敗しました"
   },
   "clipboard_error_description": {
-    "message": "クリップボードの内容を取得できませんでした。"
+    "message": "クリップボードの内容にアクセスできませんでした。"
   },
   "clipboard_error_action": {
     "message": "OK"

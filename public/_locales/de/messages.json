@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Inhalt der Zwischenablage verwenden"
+  },
+  "clipboard_error_title": {
+    "message": "Zugriff auf Zwischenablage fehlgeschlagen"
+  },
+  "clipboard_error_description": {
+    "message": "Inhalt der Zwischenablage konnte nicht zugegriffen werden."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

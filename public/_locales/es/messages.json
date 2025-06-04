@@ -772,5 +772,14 @@
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Usar contenido del portapapeles"
+  },
+  "clipboard_error_title": {
+    "message": "Error de acceso al portapapeles"
+  },
+  "clipboard_error_description": {
+    "message": "No se pudo acceder al contenido del portapapeles."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

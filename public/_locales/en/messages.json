@@ -774,12 +774,15 @@
     "message": "Use clipboard content"
   },
   "clipboard_error_title": {
-    "message": "Failed to get clipboard"
+    "message": "Clipboard Access Failed",
+    "description": "Title for clipboard error"
   },
   "clipboard_error_description": {
-    "message": "Could not get clipboard content."
+    "message": "Could not access clipboard contents.",
+    "description": "Description for clipboard error"
   },
   "clipboard_error_action": {
-    "message": "OK"
+    "message": "OK",
+    "description": "Action button for clipboard error"
   }
 }
