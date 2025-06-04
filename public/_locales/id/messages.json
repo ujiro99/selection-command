@@ -1,0 +1,788 @@
+{
+  "extName": {
+    "message": "Selection Command – Cari, gunakan AI, atau luncurkan alat secara instan."
+  },
+  "extDescription": {
+    "message": "Cari, gunakan AI, atau jalankan alat dengan teks yang dipilih dalam satu klik, dan percepat penelusuran Anda."
+  },
+  "saving": {
+    "message": "Menyimpan.."
+  },
+  "labelOption": {
+    "message": "Opsi"
+  },
+  "labelCancel": {
+    "message": "Batal"
+  },
+  "labelClose": {
+    "message": "Tutup"
+  },
+  "labelAddPageRule": {
+    "message": "Tambahkan aturan halaman."
+  },
+  "previewOnContextMenu": {
+    "message": "Ketika Menu Konteks dipilih, menu pop-up tidak ditampilkan."
+  },
+  "previewOnKeyboard": {
+    "message": "Beralih visibilitas menu menggunakan tombol $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "Ctrl / Alt / Shift"
+      }
+    }
+  },
+  "previewOnLeftClickHold": {
+    "message": "Klik kiri dan tahan untuk menampilkan menu. Hilang saat diklik."
+  },
+  "commandHub_description": {
+    "message": "Anda sekarang dapat berbagi perintah✨"
+  },
+  "commnadHub_youcanshare": {
+    "message": "⚡️Anda dapat memasukkan perintah yang dibuat secara otomatis."
+  },
+  "Option_labelCancel": {
+    "message": "Batal"
+  },
+  "Option_labelUpdate": {
+    "message": "Perbarui"
+  },
+  "Option_labelSave": {
+    "message": "Buat"
+  },
+  "Option_labelDetail": {
+    "message": "Detail"
+  },
+  "Option_labelOther": {
+    "message": "Lainnya"
+  },
+  "Option_Enable": {
+    "message": "Diaktifkan"
+  },
+  "Option_Disable": {
+    "message": "Dinonaktifkan"
+  },
+  "Option_Reset": {
+    "message": "Reset"
+  },
+  "Option_Reset_description": {
+    "message": "Apakah Anda yakin untuk mereset semua pengaturan ke default?\nOperasi ini tidak dapat dibatalkan.\n※ Kami merekomendasikan <b>\"Ekspor\"</b> terlebih dahulu."
+  },
+  "Option_Import_description": {
+    "message": "Silakan pilih file pengaturan(<pre>*.json</pre>) untuk diimpor."
+  },
+  "Option_Export": {
+    "message": "Ekspor"
+  },
+  "Option_Import": {
+    "message": "Impor"
+  },
+  "Option_Add": {
+    "message": "Tambah"
+  },
+  "Option_Command": {
+    "message": "Perintah"
+  },
+  "Option_Command_tooltip": {
+    "message": "Buat perintah."
+  },
+  "Option_Find": {
+    "message": "Cari Perintah"
+  },
+  "Option_Command_edit": {
+    "message": "Edit Perintah"
+  },
+  "Option_Command_input": {
+    "message": "Silakan masukkan informasi perintah."
+  },
+  "Option_Command_rootFolder": {
+    "message": "(Tidak dalam folder)"
+  },
+  "Option_startupMethod": {
+    "message": "Metode Startup"
+  },
+  "Option_startupMethod_desc": {
+    "message": "Ubah cara menu pop-up ditampilkan."
+  },
+  "Option_startupMethod_method": {
+    "message": "Metode"
+  },
+  "Option_startupMethod_textSelection": {
+    "message": "Pemilihan Teks (Default)"
+  },
+  "Option_startupMethod_contextMenu": {
+    "message": "Menu Konteks"
+  },
+  "Option_startupMethod_keyboard": {
+    "message": "Input Keyboard"
+  },
+  "Option_startupMethod_leftClickHold": {
+    "message": "Tahan Klik Kiri"
+  },
+  "Option_startupMethod_param_keyboard": {
+    "message": "Tombol untuk beralih tampilan"
+  },
+  "Option_startupMethod_keyboard_placeholder": {
+    "message": "Pilih tombol"
+  },
+  "Option_keyboardParam_Control_windows": {
+    "message": "Ctrl"
+  },
+  "Option_keyboardParam_Alt_windows": {
+    "message": "Alt"
+  },
+  "Option_keyboardParam_Shift_windows": {
+    "message": "Shift"
+  },
+  "Option_keyboardParam_Control_mac": {
+    "message": "Command(⌘)"
+  },
+  "Option_keyboardParam_Alt_mac": {
+    "message": "Option(⌥)"
+  },
+  "Option_keyboardParam_Shift_mac": {
+    "message": "Shift"
+  },
+  "Option_startupMethod_param_leftClickHold": {
+    "message": "Waktu tekan lama(ms)"
+  },
+  "Option_popupPlacement": {
+    "message": "Posisi Tampilan Menu"
+  },
+  "Option_popupPlacement_side": {
+    "message": "Sisi"
+  },
+  "Option_popupPlacement_side_desc": {
+    "message": "Posisi menu relatif terhadap kursor mouse."
+  },
+  "Option_popupPlacement_top": {
+    "message": "Atas"
+  },
+  "Option_popupPlacement_right": {
+    "message": "Kanan"
+  },
+  "Option_popupPlacement_bottom": {
+    "message": "Bawah"
+  },
+  "Option_popupPlacement_left": {
+    "message": "Kiri"
+  },
+  "Option_popupPlacement_align": {
+    "message": "Rata"
+  },
+  "Option_popupPlacement_align_desc": {
+    "message": "Meratakan kursor mouse dengan menu."
+  },
+  "Option_popupPlacement_start": {
+    "message": "Mulai"
+  },
+  "Option_popupPlacement_center": {
+    "message": "Tengah"
+  },
+  "Option_popupPlacement_end": {
+    "message": "Akhir"
+  },
+  "Option_popupPlacement_sideOffset": {
+    "message": "Offset Sisi"
+  },
+  "Option_popupPlacement_sideOffset_desc": {
+    "message": "Jarak dari kursor mouse"
+  },
+  "Option_popupPlacement_alignOffset": {
+    "message": "Offset Rata"
+  },
+  "Option_popupPlacement_alignOffset_desc": {
+    "message": "Jarak dari posisi rata"
+  },
+  "Option_popupPlacement_alignOffset_disabled": {
+    "message": "Dinonaktifkan saat rata tengah"
+  },
+  "Option_inheritPopupPlacement": {
+    "message": "Warisi Posisi Tampilan Menu dari pengaturan global"
+  },
+  "Option_inherit": {
+    "message": "Warisi"
+  },
+  "Option_mouse_pointer": {
+    "message": "Kursor Mouse"
+  },
+  "Option_style": {
+    "message": "Gaya Menu"
+  },
+  "Option_style_vertical": {
+    "message": "Vertikal"
+  },
+  "Option_style_horizontal": {
+    "message": "Horisontal"
+  },
+  "Option_commands": {
+    "message": "Perintah"
+  },
+  "Option_commands_desc": {
+    "message": "Tentukan perintah untuk dieksekusi berdasarkan teks yang dipilih."
+  },
+  "Option_commands_desc_count": {
+    "message": " / 100 Catatan"
+  },
+  "Option_title": {
+    "message": "Judul"
+  },
+  "Option_searchUrl": {
+    "message": "URL Pencarian"
+  },
+  "Option_searchUrl_desc": {
+    "message": "Ganti `%s` dengan teks yang dipilih."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "* Diperbarui secara otomatis saat URL pencarian diubah."
+  },
+  "Option_iconUrl": {
+    "message": "URL Ikon"
+  },
+  "Option_iconUrl_folder": {
+    "message": "URL Ikon / SVG"
+  },
+  "Option_iconUrl_desc": {
+    "message": "Diperbarui secara otomatis saat URL pencarian diubah."
+  },
+  "Option_iconUrl_desc_pageAction": {
+    "message": "Diperbarui secara otomatis saat URL Mulai diubah."
+  },
+  "Option_iconUrl_autofill": {
+    "message": "Isi Otomatis"
+  },
+  "Option_spaceEncoding": {
+    "message": "Pengkodean Spasi"
+  },
+  "Option_spaceEncoding_desc": {
+    "message": "Ganti spasi dalam teks yang dipilih."
+  },
+  "Option_spaceEncoding_plus": {
+    "message": "Plus (+)"
+  },
+  "Option_spaceEncoding_percent": {
+    "message": "Persen (%20)"
+  },
+  "Option_openMode": {
+    "message": "Mode Buka"
+  },
+  "Option_openMode_popup": {
+    "message": "Pop-up"
+  },
+  "Option_openMode_window": {
+    "message": "Jendela"
+  },
+  "Option_openMode_tab": {
+    "message": "Tab"
+  },
+  "Option_openMode_api": {
+    "message": "API"
+  },
+  "Option_openMode_linkPopup": {
+    "message": "Pop-up Tautan"
+  },
+  "Option_openMode_copy": {
+    "message": "Salin teks"
+  },
+  "Option_openMode_getTextStyles": {
+    "message": "Dapatkan gaya teks"
+  },
+  "Option_openMode_pageAction": {
+    "message": "Tindakan Halaman"
+  },
+  "Option_openMode_previewPopup": {
+    "message": "Pop-up"
+  },
+  "Option_openMode_previewWindow": {
+    "message": "Jendela"
+  },
+  "Option_openModeSecondary": {
+    "message": " ┗ Ctrl + Klik"
+  },
+  "Option_parentFolderId": {
+    "message": "Folder"
+  },
+  "Option_copyOption": {
+    "message": "Format salinan"
+  },
+  "Option_copyOption_default": {
+    "message": "Default"
+  },
+  "Option_copyOption_text": {
+    "message": "Teks biasa"
+  },
+  "Option_fetchOptions": {
+    "message": "Opsi Ambil"
+  },
+  "Option_variables": {
+    "message": "Variabel Ambil"
+  },
+  "Option_variableName": {
+    "message": "Nama"
+  },
+  "Option_variableValue": {
+    "message": "Nilai"
+  },
+  "Option_startUrl": {
+    "message": "URL Mulai"
+  },
+  "Option_startUrl_desc": {
+    "message": "URL halaman di mana tindakan dimulai."
+  },
+  "Option_pageAction_title": {
+    "message": "Tindakan"
+  },
+  "Option_pageAction_desc": {
+    "message": "Tindakan yang akan dilakukan"
+  },
+  "Option_pageAction_openMode": {
+    "message": "Metode Tampilan Jendela"
+  },
+  "Option_pageAction_label": {
+    "message": "Nama Langkah"
+  },
+  "Option_pageAction_value": {
+    "message": "Nilai"
+  },
+  "Option_pageAction_delay": {
+    "message": "Waktu tunda"
+  },
+  "Option_linkCommand": {
+    "message": "Pratinjau Tautan"
+  },
+  "Option_linkCommand_desc": {
+    "message": "Menampilkan pratinjau dalam menu pop-up dengan mengoperasikan tautan."
+  },
+  "Option_linkCommand_enabledInherit": {
+    "message": "Warisi dari pengaturan global (saat ini: $current$)",
+    "placeholders": {
+      "current": {
+        "content": "$1",
+        "example": "Diaktifkan atau Dinonaktifkan"
+      }
+    }
+  },
+  "Option_linkCommand_enabledEnable": {
+    "message": "Diaktifkan"
+  },
+  "Option_linkCommand_enabledDisable": {
+    "message": "Dinonaktifkan"
+  },
+  "Option_linkCommandStartupMethod_method": {
+    "message": "Metode Startup"
+  },
+  "Option_linkCommandStartupMethod_drag": {
+    "message": "Seret"
+  },
+  "Option_linkCommandStartupMethod_keyboard": {
+    "message": "Klik + Tombol bersamaan"
+  },
+  "Option_linkCommandStartupMethod_leftClickHold": {
+    "message": "Tahan Klik Kiri"
+  },
+  "Option_linkCommandStartupMethod_threshold": {
+    "message": "Jarak seret"
+  },
+  "Option_linkCommandStartupMethod_threshold_desc": {
+    "message": "Jarak seret untuk ditampilkan"
+  },
+  "Option_linkCommandStartupMethod_keyboardParam": {
+    "message": "Tombol untuk ditekan bersamaan dengan klik"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam": {
+    "message": "Waktu tekan lama"
+  },
+  "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
+    "message": "Waktu hingga tampilan"
+  },
+  "Option_showIndicator": {
+    "message": "Tampilkan indikator"
+  },
+  "Option_showIndicator_desc": {
+    "message": "Menampilkan sisa ke pratinjau."
+  },
+  "Option_folders": {
+    "message": "Folder"
+  },
+  "Option_folders_tooltip": {
+    "message": "Buat folder."
+  },
+  "Option_folders_desc": {
+    "message": "Perintah dapat diklasifikasikan ke dalam folder."
+  },
+  "Option_folders_edit": {
+    "message": "Edit Folder"
+  },
+  "Option_folders_input": {
+    "message": "Silakan masukkan informasi folder."
+  },
+  "Option_icon_error": {
+    "message": "Silakan masukkan URL atau SVG yang valid."
+  },
+  "Option_icon_placeholder": {
+    "message": "URL atau string SVG."
+  },
+  "Option_icon_desc": {
+    "message": "URL atau SVG tersedia."
+  },
+  "Option_icon_required": {
+    "message": "URL atau SVG yang akan digunakan sebagai ikon diperlukan."
+  },
+  "Option_onlyIcon": {
+    "message": "Tampilkan ikon saja"
+  },
+  "Option_onlyIcon_desc": {
+    "message": "* Efektif hanya saat horisontal"
+  },
+  "Option_pageRules": {
+    "message": "Aturan Halaman"
+  },
+  "Option_pageRules_tooltip": {
+    "message": "Buat aturan halaman."
+  },
+  "Option_pageRules_desc": {
+    "message": "Pengaturan khusus situs."
+  },
+  "Option_pageRules_add": {
+    "message": "Edit Aturan Halaman."
+  },
+  "Option_pageRules_add_desc": {
+    "message": "Silakan masukkan Aturan Halaman."
+  },
+  "Option_urlPattern": {
+    "message": "Pola URL"
+  },
+  "Option_popupEnabled": {
+    "message": "Pop-up Diaktifkan"
+  },
+  "Option_linkCommandEnabled": {
+    "message": "Pratinjau Tautan Diaktifkan"
+  },
+  "Option_userStyles": {
+    "message": "Gaya Pengguna"
+  },
+  "Option_userStyles_tooltip": {
+    "message": "Buat Gaya Pengguna."
+  },
+  "Option_userStyles_desc": {
+    "message": "Anda dapat menyesuaikan tampilan menu pop-up."
+  },
+  "Option_userStyles_add": {
+    "message": "Edit Gaya Pengguna"
+  },
+  "Option_userStyles_add_desc": {
+    "message": "Silakan masukkan Gaya Pengguna."
+  },
+  "Option_userStyles_name": {
+    "message": "Nama properti"
+  },
+  "Option_userStyles_value": {
+    "message": "Nilai"
+  },
+  "Option_userStyles_option_background_color": {
+    "message": "Warna Latar Belakang"
+  },
+  "Option_userStyles_desc_background_color": {
+    "message": "Tentukan warna latar belakang menu. Default: #FFFFFF"
+  },
+  "Option_userStyles_option_border_color": {
+    "message": "Warna Border"
+  },
+  "Option_userStyles_desc_border_color": {
+    "message": "Tentukan warna border menu. Default: #F3F4F6"
+  },
+  "Option_userStyles_option_font_scale": {
+    "message": "Penskalaan ukuran font"
+  },
+  "Option_userStyles_desc_font_scale": {
+    "message": "Tentukan penskalaan ukuran font. Default: 1"
+  },
+  "Option_userStyles_option_image_scale": {
+    "message": "Penskalaan ukuran ikon"
+  },
+  "Option_userStyles_desc_image_scale": {
+    "message": "Tentukan penskalaan ukuran ikon. Default: 1"
+  },
+  "Option_userStyles_option_padding_scale": {
+    "message": "Penskalaan ukuran margin"
+  },
+  "Option_userStyles_desc_padding_scale": {
+    "message": "Tentukan penskalaan ukuran margin. Default: 1"
+  },
+  "Option_userStyles_option_popup_delay": {
+    "message": "Tunda tampilan"
+  },
+  "Option_userStyles_desc_popup_delay": {
+    "message": "Tentukan jumlah waktu sebelum tampilan dimulai. Default: 250 ms"
+  },
+  "Option_userStyles_option_popup_duration": {
+    "message": "Waktu animasi tampilan"
+  },
+  "Option_userStyles_desc_popup_duration": {
+    "message": "Tentukan waktu animasi tampilan. Default: 150 ms"
+  },
+  "Option_edit_tooltip": {
+    "message": "Edit"
+  },
+  "Option_copy_tooltip": {
+    "message": "Duplikat"
+  },
+  "Option_remove_title": {
+    "message": "Hapus ini?"
+  },
+  "Option_remove_tooltip": {
+    "message": "Hapus"
+  },
+  "Option_remove_ok": {
+    "message": "Hapus"
+  },
+  "Option_remove_description": {
+    "message": "Operasi ini tidak dapat dibatalkan. Apakah Anda yakin?"
+  },
+  "Option_copy_title": {
+    "message": "Duplikat Perintah"
+  },
+  "Option_copy_desc": {
+    "message": "Silakan masukkan judul."
+  },
+  "Option_copy_ok": {
+    "message": "Duplikat"
+  },
+  "Option_zod_number": {
+    "message": "Silakan masukkan angka."
+  },
+  "Option_zod_number_min": {
+    "message": "Silakan masukkan angka lebih besar dari atau sama dengan $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "0 / 1"
+      }
+    }
+  },
+  "Option_zod_number_max": {
+    "message": "Silakan masukkan angka kurang dari atau sama dengan $key$.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_string_min": {
+    "message": "Silakan masukkan string $key$ karakter atau lebih.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "Option_zod_string_max": {
+    "message": "Silakan masukkan string $key$ karakter atau kurang.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
+  },
+  "Option_zod_url": {
+    "message": "Silakan masukkan dalam format URL."
+  },
+  "PageAction_InputMenu_mark_selectedText": {
+    "message": "Teks yang dipilih akan dimasukkan",
+    "description": "for INSERT.SELECTED_TEXT"
+  },
+  "PageAction_InputMenu_mark_url": {
+    "message": "URL asal akan dimasukkan",
+    "description": "for INSERT.URL"
+  },
+  "PageAction_InputMenu_mark_clipboard": {
+    "message": "Teks papan klip akan dimasukkan",
+    "description": "for INSERT.CLIPBOARD"
+  },
+  "PageAction_InputMenu_insertText": {
+    "message": "Masukkan Teks"
+  },
+  "PageAction_InputMenu_selectedText": {
+    "message": "Teks yang dipilih"
+  },
+  "PageAction_InputMenu_url": {
+    "message": "URL Asal"
+  },
+  "PageAction_InputMenu_clipboard": {
+    "message": "Papan Klip"
+  },
+  "PageAction_InputEditor_title": {
+    "message": "Edit konten"
+  },
+  "PageAction_InputEditor_description": {
+    "message": "Edit konten yang akan dimasukkan oleh tindakan ini."
+  },
+  "PageAction_InputEditor_placeholder": {
+    "message": "Konten yang akan dimasukkan"
+  },
+  "PageAction_InputEditor_cancel": {
+    "message": "Batal"
+  },
+  "PageAction_InputEditor_save": {
+    "message": "Simpan"
+  },
+  "PageAction_Controller_recording": {
+    "message": "Merekam"
+  },
+  "PageAction_Controller_not_recording": {
+    "message": "Tidak merekam"
+  },
+  "PageAction_Controller_previewing": {
+    "message": "Mepratinjau"
+  },
+  "PageAction_Controller_stop": {
+    "message": "Berhenti"
+  },
+  "PageAction_Controller_complete": {
+    "message": "Selesai"
+  },
+  "PageAction_Controller_preview": {
+    "message": "Pratinjau"
+  },
+  "PageAction_Controller_reset": {
+    "message": "Reset"
+  },
+  "help_pageAction_title": {
+    "message": "Cara menggunakan Tindakan Halaman"
+  },
+  "help_pageAction_description": {
+    "message": "Tindakan Halaman memungkinkan Anda <b>merekam dan memutar ulang tindakan pengguna</b>."
+  },
+  "help_pageAction_example": {
+    "message": "Berikut adalah beberapa contoh penggunaan:"
+  },
+  "help_pageAction_example_1": {
+    "message": "<li>Kirim prompt yang telah ditetapkan dan teks yang dipilih ke LLM</li><li>Masukkan URL dan tekan tombol</li><li>Dan banyak lagi...</li>"
+  },
+  "help_pageAction_record": {
+    "message": "Untuk merekam, klik tombol <b>REC</b>."
+  },
+  "help_pageAction_record_procedure": {
+    "message": "【Cara Membuat】"
+  },
+  "help_pageAction_record_procedure_list": {
+    "message": "<li>Masukkan URL halaman dan klik tombol REC untuk mulai merekam.</li><li>Saat jendela terbuka, lakukan tindakan yang ingin Anda rekam.</li><li>Saat selesai, klik tombol Selesai di menu rekaman.</li>"
+  },
+  "help_pageAction_record_detail": {
+    "message": "Tindakan Halaman dapat merekam <b>tindakan berikut</b>."
+  },
+  "help_pageAction_action": {
+    "message": "Tindakan"
+  },
+  "help_pageAction_desc": {
+    "message": "Deskripsi"
+  },
+  "help_pageAction_left_click": {
+    "message": "Klik Kiri"
+  },
+  "help_pageAction_left_click_desc": {
+    "message": "Merekam klik tunggal, ganda, dan tiga kali."
+  },
+  "help_pageAction_scroll": {
+    "message": "Gulir"
+  },
+  "help_pageAction_scroll_desc": {
+    "message": "Merekam gulir lebih dari 10px."
+  },
+  "help_pageAction_keyboard": {
+    "message": "Input Keyboard"
+  },
+  "help_pageAction_keyboard_desc": {
+    "message": "<li>Hanya beberapa input keyboard, seperti kombinasi Ctrl, yang direkam.</li><li>Beberapa tindakan keyboard yang direkam mungkin tidak diputar ulang dengan benar.</li>"
+  },
+  "help_pageAction_input": {
+    "message": "Input Teks"
+  },
+  "help_pageAction_input_desc_1": {
+    "message": "Merekam teks yang dimasukkan dalam bidang input."
+  },
+  "help_pageAction_input_desc_2": {
+    "message": "Anda dapat menggunakan variabel ini:"
+  },
+  "help_pageAction_input_desc_3": {
+    "message": "Teks yang dipilih, URL, Papan Klip"
+  },
+  "help_pageAction_input_desc_4": {
+    "message": "Tindakan lain tidak direkam saat fokus pada bidang input."
+  },
+  "help_pageAction_input_desc_5": {
+    "message": "Hanya tombol Tab dan Enter yang direkam."
+  },
+  "help_pageAction_input_desc_6": {
+    "message": "Anda dapat merekam hingga 10 langkah."
+  },
+  "help_pageAction_edit": {
+    "message": "Tentang <b>Mengedit Tindakan Halaman</b>"
+  },
+  "help_pageAction_edit_desc": {
+    "message": "<li>Anda dapat mengedit input teks dan menghapus langkah dari layar pengaturan.</li><li>Salin Tindakan Halaman yang ada untuk mudah membuat perintah baru dengan beberapa perubahan.</li>"
+  },
+  "help_pageAction_share": {
+    "message": "Tentang <b>Berbagi Perintah</b>"
+  },
+  "help_pageAction_share_desc": {
+    "message": "Anda dapat berbagi dan mendapatkan perintah Tindakan Halaman dari Selection Command Hub."
+  },
+  "review_request_title": {
+    "message": "Terima kasih telah menggunakan Selection Command!"
+  },
+  "review_request_message": {
+    "message": "Jika Anda merasa ekstensi ini membantu, silakan pertimbangkan untuk memberikan ulasan di Chrome Web Store. Umpan balik Anda membantu kami untuk meningkatkan!"
+  },
+  "review_request_button": {
+    "message": "Tulis Ulasan"
+  },
+  "review_request_close": {
+    "message": "Tidak Sekarang"
+  },
+  "Option_shortcuts": {
+    "message": "Tombol Pintas"
+  },
+  "Option_shortcuts_desc": {
+    "message": "Tentukan tombol pintas untuk mengeksekusi perintah."
+  },
+  "Option_shortcuts_settings_desc": {
+    "message": "Anda dapat mengubah tombol di pengaturan ekstensi Chrome."
+  },
+  "Option_shortcuts_settings_link": {
+    "message": "Pengaturan Tombol"
+  },
+  "Option_shortcut_text_selection_only": {
+    "message": "Hanya Pemilihan Teks"
+  },
+  "Option_shortcut_select_placeholder": {
+    "message": "Pilih perintah"
+  },
+  "Option_shortcut_not_set": {
+    "message": "Tidak diatur"
+  },
+  "Option_shortcut_no_selection_behavior": {
+    "message": "Ketika tidak ada teks yang dipilih"
+  },
+  "Option_shortcut_no_selection_do_nothing": {
+    "message": "Jangan luncurkan"
+  },
+  "Option_shortcut_no_selection_use_clipboard": {
+    "message": "Gunakan konten papan klip"
+  },
+  "clipboard_error_title": {
+    "message": "Akses Papan Klip Gagal",
+    "description": "Title for clipboard error"
+  },
+  "clipboard_error_description": {
+    "message": "Tidak dapat mengakses konten papan klip.",
+    "description": "Description for clipboard error"
+  },
+  "clipboard_error_action": {
+    "message": "OK",
+    "description": "Action button for clipboard error"
+  }
+}

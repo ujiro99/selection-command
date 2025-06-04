@@ -1,15 +1,15 @@
 {
   "extName": {
-    "message": "Selection Command – Pesquise instantaneamente, use IA ou inicie ferramentas."
+    "message": "Selection Command – Pesquise, use IA ou lance ferramentas instantaneamente."
   },
   "extDescription": {
-    "message": "Pesquise, use IA ou execute ferramentas com o texto selecionado em um clique e acelere sua navegação."
+    "message": "Pesquise, use IA ou execute ferramentas com o texto selecionado em um clique, e acelere sua navegação."
   },
   "saving": {
     "message": "Salvando.."
   },
   "labelOption": {
-    "message": "Opções"
+    "message": "Opção"
   },
   "labelCancel": {
     "message": "Cancelar"
@@ -21,10 +21,10 @@
     "message": "Adicionar regra de página."
   },
   "previewOnContextMenu": {
-    "message": "O menu pop-up não será exibido quando o menu de contexto estiver selecionado."
+    "message": "Quando o Menu de Contexto é selecionado, o menu pop-up não é exibido."
   },
   "previewOnKeyboard": {
-    "message": "Use a tecla $key$ para alternar a exibição do menu.",
+    "message": "Alternar visibilidade do menu usando a tecla $key$.",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -33,13 +33,13 @@
     }
   },
   "previewOnLeftClickHold": {
-    "message": "Mantenha o clique esquerdo para exibir o menu. Clique para fechar."
+    "message": "Clique esquerdo e segure para exibir o menu. Ele desaparece quando clicado."
   },
   "commandHub_description": {
     "message": "Agora você pode compartilhar comandos✨"
   },
   "commnadHub_youcanshare": {
-    "message": "⚡️Os comandos gerados podem ser inseridos automaticamente."
+    "message": "⚡️Você pode inserir automaticamente o comando criado."
   },
   "Option_labelCancel": {
     "message": "Cancelar"
@@ -57,19 +57,19 @@
     "message": "Outros"
   },
   "Option_Enable": {
-    "message": "Ativar"
+    "message": "Ativado"
   },
   "Option_Disable": {
-    "message": "Desativar"
+    "message": "Desativado"
   },
   "Option_Reset": {
     "message": "Redefinir"
   },
   "Option_Reset_description": {
-    "message": "Tem certeza que deseja redefinir todas as configurações para os valores padrão?\nEsta ação não pode ser desfeita.\n※ Recomendamos <b>\"Exportar\"</b> primeiro."
+    "message": "Tem certeza que deseja redefinir todas as configurações para o padrão?\nEsta operação não pode ser desfeita.\n※ Recomendamos <b>\"Exportar\"</b> primeiro."
   },
   "Option_Import_description": {
-    "message": "Selecione o arquivo de configuração (<pre>*.json</pre>) para importar."
+    "message": "Por favor, selecione o arquivo de configurações(<pre>*.json</pre>) para importar."
   },
   "Option_Export": {
     "message": "Exportar"
@@ -84,46 +84,46 @@
     "message": "Comando"
   },
   "Option_Command_tooltip": {
-    "message": "Criar comando."
+    "message": "Criar um comando."
   },
   "Option_Find": {
-    "message": "Buscar comando"
+    "message": "Encontrar Comando"
   },
   "Option_Command_edit": {
-    "message": "Editar comando"
+    "message": "Editar Comando"
   },
   "Option_Command_input": {
-    "message": "Insira as informações do comando."
+    "message": "Por favor, insira as informações do comando."
   },
   "Option_Command_rootFolder": {
-    "message": "(Sem pasta)"
+    "message": "(Não está em pasta)"
   },
   "Option_startupMethod": {
-    "message": "Método de inicialização"
+    "message": "Método de Inicialização"
   },
   "Option_startupMethod_desc": {
-    "message": "Altera a forma como o menu pop-up é exibido."
+    "message": "Alterar a forma como os menus pop-up são exibidos."
   },
   "Option_startupMethod_method": {
     "message": "Método"
   },
   "Option_startupMethod_textSelection": {
-    "message": "Seleção de texto (padrão)"
+    "message": "Seleção de Texto (Padrão)"
   },
   "Option_startupMethod_contextMenu": {
-    "message": "Menu de contexto"
+    "message": "Menu de Contexto"
   },
   "Option_startupMethod_keyboard": {
-    "message": "Entrada de teclado"
+    "message": "Entrada de Tecla"
   },
   "Option_startupMethod_leftClickHold": {
-    "message": "Manter clique esquerdo"
+    "message": "Segurar Clique Esquerdo"
   },
   "Option_startupMethod_param_keyboard": {
-    "message": "Tecla de alternância de exibição"
+    "message": "Tecla para alternar exibição"
   },
   "Option_startupMethod_keyboard_placeholder": {
-    "message": "Selecionar tecla"
+    "message": "Selecione uma tecla"
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
@@ -144,16 +144,16 @@
     "message": "Shift"
   },
   "Option_startupMethod_param_leftClickHold": {
-    "message": "Tempo de espera(ms)"
+    "message": "Tempo de pressão longa(ms)"
   },
   "Option_popupPlacement": {
-    "message": "Posição do menu"
+    "message": "Posição de Exibição do Menu"
   },
   "Option_popupPlacement_side": {
     "message": "Lado"
   },
   "Option_popupPlacement_side_desc": {
-    "message": "Posição do menu em relação ao ponteiro do mouse."
+    "message": "A posição do menu em relação ao ponteiro do mouse."
   },
   "Option_popupPlacement_top": {
     "message": "Superior"
@@ -168,10 +168,10 @@
     "message": "Esquerda"
   },
   "Option_popupPlacement_align": {
-    "message": "Alinhamento"
+    "message": "Alinhar"
   },
   "Option_popupPlacement_align_desc": {
-    "message": "Alinha o menu com o ponteiro do mouse."
+    "message": "Alinha o ponteiro do mouse com o menu."
   },
   "Option_popupPlacement_start": {
     "message": "Início"
@@ -183,13 +183,13 @@
     "message": "Fim"
   },
   "Option_popupPlacement_sideOffset": {
-    "message": "Deslocamento lateral"
+    "message": "Deslocamento Lateral"
   },
   "Option_popupPlacement_sideOffset_desc": {
     "message": "Distância do ponteiro do mouse"
   },
   "Option_popupPlacement_alignOffset": {
-    "message": "Deslocamento de alinhamento"
+    "message": "Deslocamento de Alinhamento"
   },
   "Option_popupPlacement_alignOffset_desc": {
     "message": "Distância da posição alinhada"
@@ -198,16 +198,16 @@
     "message": "Desativado quando centralizado"
   },
   "Option_inheritPopupPlacement": {
-    "message": "Herdar posição do menu das configurações globais"
+    "message": "Herdar Posição de Exibição do Menu das configurações globais"
   },
   "Option_inherit": {
     "message": "Herdar"
   },
   "Option_mouse_pointer": {
-    "message": "Ponteiro do mouse"
+    "message": "Ponteiro do Mouse"
   },
   "Option_style": {
-    "message": "Estilo do menu"
+    "message": "Estilo do Menu"
   },
   "Option_style_vertical": {
     "message": "Vertical"
@@ -219,43 +219,43 @@
     "message": "Comandos"
   },
   "Option_commands_desc": {
-    "message": "Define comandos para executar com base no texto selecionado."
+    "message": "Definir comandos para executar com base no texto selecionado."
   },
   "Option_commands_desc_count": {
-    "message": " / 100 itens"
+    "message": " / 100 Registros"
   },
   "Option_title": {
     "message": "Título"
   },
   "Option_searchUrl": {
-    "message": "URL de pesquisa"
+    "message": "URL de Pesquisa"
   },
   "Option_searchUrl_desc": {
-    "message": "Substitui `%s` pelo texto selecionado."
+    "message": "Substitua `%s` pelo texto selecionado."
   },
   "Option_searchUrl_desc_api": {
-    "message": "* A URL de pesquisa será atualizada automaticamente quando alterada."
+    "message": "* Atualizado automaticamente quando a URL de pesquisa é alterada."
   },
   "Option_iconUrl": {
-    "message": "URL do ícone"
+    "message": "URL do Ícone"
   },
   "Option_iconUrl_folder": {
-    "message": "URL do ícone / SVG"
+    "message": "URL do Ícone / SVG"
   },
   "Option_iconUrl_desc": {
-    "message": "A URL do ícone será atualizada automaticamente quando a URL de pesquisa for alterada."
+    "message": "Atualizado automaticamente quando a URL de pesquisa é alterada."
   },
   "Option_iconUrl_desc_pageAction": {
-    "message": "A URL do ícone será atualizada automaticamente quando a URL inicial for alterada."
+    "message": "Atualizado automaticamente quando a URL Inicial é alterada."
   },
   "Option_iconUrl_autofill": {
-    "message": "Preenchimento automático"
+    "message": "Preenchimento Automático"
   },
   "Option_spaceEncoding": {
-    "message": "Codificação de espaço"
+    "message": "Codificação de Espaço"
   },
   "Option_spaceEncoding_desc": {
-    "message": "Substitui espaços no texto selecionado."
+    "message": "Substituir espaços no texto selecionado."
   },
   "Option_spaceEncoding_plus": {
     "message": "Mais (+)"
@@ -264,7 +264,7 @@
     "message": "Porcentagem (%20)"
   },
   "Option_openMode": {
-    "message": "Modo de abertura"
+    "message": "Modo de Abertura"
   },
   "Option_openMode_popup": {
     "message": "Pop-up"
@@ -279,7 +279,7 @@
     "message": "API"
   },
   "Option_openMode_linkPopup": {
-    "message": "Pop-up de link"
+    "message": "Pop-up de Link"
   },
   "Option_openMode_copy": {
     "message": "Copiar texto"
@@ -288,7 +288,7 @@
     "message": "Obter estilos de texto"
   },
   "Option_openMode_pageAction": {
-    "message": "Ação de página"
+    "message": "Ação de Página"
   },
   "Option_openMode_previewPopup": {
     "message": "Pop-up"
@@ -297,7 +297,7 @@
     "message": "Janela"
   },
   "Option_openModeSecondary": {
-    "message": " ┗ Ctrl + clique"
+    "message": " ┗ Ctrl + Clique"
   },
   "Option_parentFolderId": {
     "message": "Pasta"
@@ -309,13 +309,13 @@
     "message": "Padrão"
   },
   "Option_copyOption_text": {
-    "message": "Apenas texto"
+    "message": "Texto simples"
   },
   "Option_fetchOptions": {
-    "message": "Opções de busca"
+    "message": "Opções de Busca"
   },
   "Option_variables": {
-    "message": "Variáveis de busca"
+    "message": "Variáveis de Busca"
   },
   "Option_variableName": {
     "message": "Nome"
@@ -324,34 +324,34 @@
     "message": "Valor"
   },
   "Option_startUrl": {
-    "message": "URL inicial"
+    "message": "URL Inicial"
   },
   "Option_startUrl_desc": {
     "message": "URL da página onde a ação começa."
   },
   "Option_pageAction_title": {
-    "message": "Ação"
+    "message": "Ações"
   },
   "Option_pageAction_desc": {
-    "message": "Ação a ser executada"
+    "message": "Ações a serem executadas"
   },
   "Option_pageAction_openMode": {
-    "message": "Método de exibição da janela"
+    "message": "Método de Exibição da Janela"
   },
   "Option_pageAction_label": {
-    "message": "Nome da etapa"
+    "message": "Nome do Passo"
   },
   "Option_pageAction_value": {
     "message": "Valor"
   },
   "Option_pageAction_delay": {
-    "message": "Tempo de espera"
+    "message": "Tempo de atraso"
   },
   "Option_linkCommand": {
-    "message": "Visualização de link"
+    "message": "Visualização de Link"
   },
   "Option_linkCommand_desc": {
-    "message": "Exibe uma visualização no menu pop-up ao clicar em um link."
+    "message": "Exibe uma visualização em um menu pop-up ao operar em um link."
   },
   "Option_linkCommand_enabledInherit": {
     "message": "Herdar das configurações globais (atual: $current$)",
@@ -363,115 +363,115 @@
     }
   },
   "Option_linkCommand_enabledEnable": {
-    "message": "Ativar"
+    "message": "Ativado"
   },
   "Option_linkCommand_enabledDisable": {
-    "message": "Desativar"
+    "message": "Desativado"
   },
   "Option_linkCommandStartupMethod_method": {
-    "message": "Método de inicialização"
+    "message": "Método de Inicialização"
   },
   "Option_linkCommandStartupMethod_drag": {
     "message": "Arrastar"
   },
   "Option_linkCommandStartupMethod_keyboard": {
-    "message": "Clique + tecla simultânea"
+    "message": "Clique + Tecla simultânea"
   },
   "Option_linkCommandStartupMethod_leftClickHold": {
-    "message": "Manter clique esquerdo"
+    "message": "Segurar Clique Esquerdo"
   },
   "Option_linkCommandStartupMethod_threshold": {
-    "message": "Limite de arrasto"
+    "message": "Distância de arrasto"
   },
   "Option_linkCommandStartupMethod_threshold_desc": {
-    "message": "Limite de arrasto para exibir"
+    "message": "Distância de arrasto para exibir"
   },
   "Option_linkCommandStartupMethod_keyboardParam": {
-    "message": "Tecla para pressionar com o clique"
+    "message": "Tecla para pressionar simultaneamente com o clique"
   },
   "Option_linkCommandStartupMethod_leftClickHoldParam": {
-    "message": "Tempo de espera"
+    "message": "Tempo de pressão longa"
   },
   "Option_linkCommandStartupMethod_leftClickHoldParam_desc": {
     "message": "Tempo até a exibição"
   },
   "Option_showIndicator": {
-    "message": "Mostrar indicador"
+    "message": "Exibir o indicador"
   },
   "Option_showIndicator_desc": {
-    "message": "Mostra o tempo restante até a visualização."
+    "message": "Exibe o restante para a visualização."
   },
   "Option_folders": {
     "message": "Pastas"
   },
   "Option_folders_tooltip": {
-    "message": "Criar pasta."
+    "message": "Criar uma pasta."
   },
   "Option_folders_desc": {
-    "message": "Você pode organizar comandos em pastas."
+    "message": "Os comandos podem ser classificados em pastas."
   },
   "Option_folders_edit": {
-    "message": "Editar pasta"
+    "message": "Editar Pasta"
   },
   "Option_folders_input": {
-    "message": "Insira as informações da pasta."
+    "message": "Por favor, insira as informações da pasta."
   },
   "Option_icon_error": {
-    "message": "Insira uma URL ou SVG válida."
+    "message": "Por favor, insira uma URL ou SVG válida."
   },
   "Option_icon_placeholder": {
     "message": "URL ou string SVG."
   },
   "Option_icon_desc": {
-    "message": "URL ou SVG pode ser usado."
+    "message": "URL ou SVG está disponível."
   },
   "Option_icon_required": {
-    "message": "URL ou SVG é necessário para o ícone."
+    "message": "Uma URL ou SVG que será usada como ícone é necessária."
   },
   "Option_onlyIcon": {
-    "message": "Mostrar apenas ícone"
+    "message": "Exibir apenas ícone"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efetivo apenas no modo horizontal"
+    "message": "* Efetivo apenas quando horizontal"
   },
   "Option_pageRules": {
-    "message": "Regras de página"
+    "message": "Regras de Página"
   },
   "Option_pageRules_tooltip": {
-    "message": "Criar regra de página."
+    "message": "Criar uma regra de página."
   },
   "Option_pageRules_desc": {
-    "message": "Configurações por site."
+    "message": "Configurações específicas do site."
   },
   "Option_pageRules_add": {
-    "message": "Editar regra de página."
+    "message": "Editar Regra de Página."
   },
   "Option_pageRules_add_desc": {
-    "message": "Insira a regra de página."
+    "message": "Por favor, insira a Regra de Página."
   },
   "Option_urlPattern": {
     "message": "Padrão de URL"
   },
   "Option_popupEnabled": {
-    "message": "Ativar pop-up"
+    "message": "Pop-up Ativado"
   },
   "Option_linkCommandEnabled": {
-    "message": "Ativar visualização de link"
+    "message": "Visualização de Link Ativada"
   },
   "Option_userStyles": {
-    "message": "Estilos do usuário"
+    "message": "Estilos do Usuário"
   },
   "Option_userStyles_tooltip": {
-    "message": "Criar estilo do usuário."
+    "message": "Criar um Estilo do Usuário."
   },
   "Option_userStyles_desc": {
     "message": "Você pode personalizar a exibição do menu pop-up."
   },
   "Option_userStyles_add": {
-    "message": "Editar estilo do usuário"
+    "message": "Editar Estilo do Usuário"
   },
   "Option_userStyles_add_desc": {
-    "message": "Insira o estilo do usuário."
+    "message": "Por favor, insira o Estilo do Usuário."
   },
   "Option_userStyles_name": {
     "message": "Nome da propriedade"
@@ -480,46 +480,46 @@
     "message": "Valor"
   },
   "Option_userStyles_option_background_color": {
-    "message": "Cor de fundo"
+    "message": "Cor de Fundo"
   },
   "Option_userStyles_desc_background_color": {
-    "message": "Especifica a cor de fundo do menu. Padrão: #FFFFFF"
+    "message": "Especifique a cor de fundo do menu. Padrão: #FFFFFF"
   },
   "Option_userStyles_option_border_color": {
-    "message": "Cor da borda"
+    "message": "Cor da Borda"
   },
   "Option_userStyles_desc_border_color": {
-    "message": "Especifica a cor da borda do menu. Padrão: #F3F4F6"
+    "message": "Especifique a cor da borda do menu. Padrão: #F3F4F6"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Escala do tamanho da fonte"
   },
   "Option_userStyles_desc_font_scale": {
-    "message": "Especifica a escala do tamanho da fonte. Padrão: 1"
+    "message": "Especifique a escala do tamanho da fonte. Padrão: 1"
   },
   "Option_userStyles_option_image_scale": {
     "message": "Escala do tamanho do ícone"
   },
   "Option_userStyles_desc_image_scale": {
-    "message": "Especifica a escala do tamanho do ícone. Padrão: 1"
+    "message": "Especifique a escala do tamanho do ícone. Padrão: 1"
   },
   "Option_userStyles_option_padding_scale": {
-    "message": "Escala do preenchimento"
+    "message": "Escala do tamanho da margem"
   },
   "Option_userStyles_desc_padding_scale": {
-    "message": "Especifica a escala do preenchimento. Padrão: 1"
+    "message": "Especifique a escala do tamanho da margem. Padrão: 1"
   },
   "Option_userStyles_option_popup_delay": {
     "message": "Atraso de exibição"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Especifica o tempo até o início da exibição. Padrão: 250 ms"
+    "message": "Especifique a quantidade de tempo antes do início da exibição. Padrão: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
-    "message": "Duração da animação de exibição"
+    "message": "Tempo de animação de exibição"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Especifica a duração da animação de exibição. Padrão: 150 ms"
+    "message": "Especifique o tempo de animação de exibição. Padrão: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Editar"
@@ -528,7 +528,7 @@
     "message": "Duplicar"
   },
   "Option_remove_title": {
-    "message": "Tem certeza que deseja excluir isso?"
+    "message": "Excluir isto?"
   },
   "Option_remove_tooltip": {
     "message": "Excluir"
@@ -537,22 +537,22 @@
     "message": "Excluir"
   },
   "Option_remove_description": {
-    "message": "Esta ação não pode ser desfeita. Deseja continuar?"
+    "message": "Esta operação não pode ser desfeita. Tem certeza?"
   },
   "Option_copy_title": {
-    "message": "Duplicar comando"
+    "message": "Duplicar Comando"
   },
   "Option_copy_desc": {
-    "message": "Insira o título."
+    "message": "Por favor, insira o título."
   },
   "Option_copy_ok": {
     "message": "Duplicar"
   },
   "Option_zod_number": {
-    "message": "Insira um número."
+    "message": "Por favor, insira um número."
   },
   "Option_zod_number_min": {
-    "message": "Insira um número maior ou igual a $key$.",
+    "message": "Por favor, insira um número maior ou igual a $key$.",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -561,7 +561,7 @@
     }
   },
   "Option_zod_number_max": {
-    "message": "Insira um número menor ou igual a $key$.",
+    "message": "Por favor, insira um número menor ou igual a $key$.",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -570,7 +570,7 @@
     }
   },
   "Option_zod_string_min": {
-    "message": "Insira uma string com pelo menos $key$ caracteres.",
+    "message": "Por favor, insira uma string de $key$ caracteres ou mais.",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -579,7 +579,7 @@
     }
   },
   "Option_zod_string_max": {
-    "message": "Insira uma string com no máximo $key$ caracteres.",
+    "message": "Por favor, insira uma string de $key$ caracteres ou menos.",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -588,14 +588,14 @@
     }
   },
   "Option_zod_url": {
-    "message": "Insira no formato URL."
+    "message": "Por favor, insira no formato URL."
   },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "O texto selecionado será inserido",
     "description": "for INSERT.SELECTED_TEXT"
   },
   "PageAction_InputMenu_mark_url": {
-    "message": "A URL original será inserida",
+    "message": "A URL de origem será inserida",
     "description": "for INSERT.URL"
   },
   "PageAction_InputMenu_mark_clipboard": {
@@ -603,22 +603,22 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_insertText": {
-    "message": "Inserir texto"
+    "message": "Inserir Texto"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texto selecionado"
   },
   "PageAction_InputMenu_url": {
-    "message": "URL original"
+    "message": "URL de origem"
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Área de transferência"
   },
   "PageAction_InputEditor_title": {
-    "message": "Editar conteúdo"
+    "message": "Editar o conteúdo"
   },
   "PageAction_InputEditor_description": {
-    "message": "Edite o conteúdo a ser inserido nesta ação."
+    "message": "Editar o conteúdo a ser inserido por esta ação."
   },
   "PageAction_InputEditor_placeholder": {
     "message": "Conteúdo a ser inserido"
@@ -633,7 +633,7 @@
     "message": "Gravando"
   },
   "PageAction_Controller_not_recording": {
-    "message": "Não gravando"
+    "message": "Não está gravando"
   },
   "PageAction_Controller_previewing": {
     "message": "Visualizando"
@@ -651,28 +651,28 @@
     "message": "Redefinir"
   },
   "help_pageAction_title": {
-    "message": "Como usar a ação de página"
+    "message": "Como usar Ação de Página"
   },
   "help_pageAction_description": {
-    "message": "A ação de página permite <b>gravar e reproduzir ações do usuário</b>."
+    "message": "Ação de Página permite que você <b>grave e reproduza ações do usuário</b>."
   },
   "help_pageAction_example": {
-    "message": "Exemplos de uso:"
+    "message": "Aqui estão alguns exemplos de uso:"
   },
   "help_pageAction_example_1": {
-    "message": "<li>Enviar texto selecionado com prompt pré-definido para LLM</li><li>Inserir URL e clicar em botões</li><li>E muito mais...</li>"
+    "message": "<li>Envie um prompt predefinido e o texto selecionado para o LLM</li><li>Insira uma URL e pressione um botão</li><li>E mais...</li>"
   },
   "help_pageAction_record": {
-    "message": "Clique no <b>botão REC</b> para gravar."
+    "message": "Para gravar, clique no <b>botão REC</b>."
   },
   "help_pageAction_record_procedure": {
-    "message": "【Método de criação】"
+    "message": "【Como Criar】"
   },
   "help_pageAction_record_procedure_list": {
-    "message": "<li>Insira a URL da página e clique no botão REC para iniciar a gravação.</li><li>Quando a janela abrir, execute as ações que deseja gravar.</li><li>Quando terminar, clique no botão Concluir no menu de gravação.</li>"
+    "message": "<li>Insira a URL da página e clique no botão REC para iniciar a gravação.</li><li>Quando a janela abrir, execute as ações que deseja gravar.</li><li>Ao terminar, clique no botão Concluir no menu de gravação.</li>"
   },
   "help_pageAction_record_detail": {
-    "message": "A ação de página pode gravar as <b>seguintes ações</b>."
+    "message": "Ação de Página pode gravar as <b>seguintes ações</b>."
   },
   "help_pageAction_action": {
     "message": "Ação"
@@ -681,7 +681,7 @@
     "message": "Descrição"
   },
   "help_pageAction_left_click": {
-    "message": "Clique esquerdo"
+    "message": "Clique Esquerdo"
   },
   "help_pageAction_left_click_desc": {
     "message": "Grava cliques simples, duplos e triplos."
@@ -690,82 +690,82 @@
     "message": "Rolagem"
   },
   "help_pageAction_scroll_desc": {
-    "message": "Grava rolagens de 10px ou mais."
+    "message": "Grava rolagens acima de 10px."
   },
   "help_pageAction_keyboard": {
-    "message": "Entrada de teclado"
+    "message": "Entrada de Tecla"
   },
   "help_pageAction_keyboard_desc": {
-    "message": "<li>Apenas entradas de teclado específicas, como combinações Ctrl, são gravadas.</li><li>Algumas ações de teclado gravadas podem não ser reproduzidas corretamente.</li>"
+    "message": "<li>Apenas algumas entradas de tecla, como combinações Ctrl, são gravadas.</li><li>Algumas ações de tecla gravadas podem não ser reproduzidas corretamente.</li>"
   },
   "help_pageAction_input": {
-    "message": "Entrada de texto"
+    "message": "Entrada de Texto"
   },
   "help_pageAction_input_desc_1": {
-    "message": "Grava o texto inserido nos campos de entrada."
+    "message": "Grava texto inserido em campos de entrada."
   },
   "help_pageAction_input_desc_2": {
-    "message": "As seguintes variáveis podem ser usadas:"
+    "message": "Você pode usar estas variáveis:"
   },
   "help_pageAction_input_desc_3": {
-    "message": "Texto selecionado, URL, área de transferência"
+    "message": "Texto selecionado, URL, Área de transferência"
   },
   "help_pageAction_input_desc_4": {
-    "message": "Outras ações não são gravadas enquanto um campo de entrada estiver em foco."
+    "message": "Outras ações não são gravadas enquanto o foco está em um campo de entrada."
   },
   "help_pageAction_input_desc_5": {
     "message": "Apenas as teclas Tab e Enter são gravadas."
   },
   "help_pageAction_input_desc_6": {
-    "message": "Você pode gravar até 10 etapas."
+    "message": "Você pode gravar até 10 passos."
   },
   "help_pageAction_edit": {
-    "message": "Sobre <b>Editar ação de página</b>"
+    "message": "Sobre <b>Editar Ação de Página</b>"
   },
   "help_pageAction_edit_desc": {
-    "message": "<li>Você pode editar entradas de texto e excluir etapas na tela de configuração.</li><li>Você pode facilmente criar novos comandos copiando ações de página existentes e fazendo algumas alterações.</li>"
+    "message": "<li>Você pode editar entradas de texto e excluir passos da tela de configurações.</li><li>Copie uma Ação de Página existente para criar facilmente um novo comando com algumas alterações.</li>"
   },
   "help_pageAction_share": {
-    "message": "Sobre <b>Compartilhar comandos</b>"
+    "message": "Sobre <b>Compartilhar Comandos</b>"
   },
   "help_pageAction_share_desc": {
-    "message": "Você pode compartilhar e importar comandos de ação de página no Selection Command Hub."
+    "message": "Você pode compartilhar e obter comandos de Ação de Página do Selection Command Hub."
   },
   "review_request_title": {
     "message": "Obrigado por usar o Selection Command!"
   },
   "review_request_message": {
-    "message": "Se você acha esta extensão útil, deixe uma avaliação na Chrome Web Store. Seu feedback nos ajuda a melhorar!"
+    "message": "Se você achar esta extensão útil, por favor considere deixar uma avaliação na Chrome Web Store. Seu feedback nos ajuda a melhorar!"
   },
   "review_request_button": {
-    "message": "Escrever avaliação"
+    "message": "Escrever uma Avaliação"
   },
   "review_request_close": {
-    "message": "Mais tarde"
+    "message": "Agora Não"
   },
   "Option_shortcuts": {
-    "message": "Atalhos"
+    "message": "Teclas de Atalho"
   },
   "Option_shortcuts_desc": {
-    "message": "Define atalhos para executar comandos."
+    "message": "Definir atalhos de teclado para executar comandos."
   },
   "Option_shortcuts_settings_desc": {
-    "message": "Você pode alterar as teclas nas configurações da extensão Chrome."
+    "message": "Você pode alterar as teclas nas configurações da extensão do Chrome."
   },
   "Option_shortcuts_settings_link": {
-    "message": "Configurar teclas"
+    "message": "Configurações de Teclas"
   },
   "Option_shortcut_text_selection_only": {
-    "message": "Apenas seleção de texto"
+    "message": "Apenas Seleção de Texto"
   },
   "Option_shortcut_select_placeholder": {
-    "message": "Selecionar comando"
+    "message": "Selecione um comando"
   },
   "Option_shortcut_not_set": {
     "message": "Não definido"
   },
   "Option_shortcut_no_selection_behavior": {
-    "message": "Quando não há texto selecionado"
+    "message": "Quando nenhum texto está selecionado"
   },
   "Option_shortcut_no_selection_do_nothing": {
     "message": "Não iniciar"
@@ -774,12 +774,15 @@
     "message": "Usar conteúdo da área de transferência"
   },
   "clipboard_error_title": {
-    "message": "Falha no acesso à área de transferência"
+    "message": "Falha no Acesso à Área de Transferência",
+    "description": "Title for clipboard error"
   },
   "clipboard_error_description": {
-    "message": "Não foi possível acessar o conteúdo da área de transferência."
+    "message": "Não foi possível acessar o conteúdo da área de transferência.",
+    "description": "Description for clipboard error"
   },
   "clipboard_error_action": {
-    "message": "OK"
+    "message": "OK",
+    "description": "Action button for clipboard error"
   }
 }
