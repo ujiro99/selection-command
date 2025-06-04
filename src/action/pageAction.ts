@@ -2,9 +2,9 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { getScreenSize, getWindowPosition } from '@/services/screen'
 import { isValidString, isPageActionCommand } from '@/lib/utils'
 import { PAGE_ACTION_OPEN_MODE } from '@/const'
-import type { ExecuteCommandParams, UrlParam } from '@/types'
-import { OpenAndRunProps } from '@/services/pageAction/background'
 import { PopupOption } from '@/services/defaultSettings'
+import type { ExecuteCommandParams, UrlParam } from '@/types'
+import type { OpenAndRunProps } from '@/services/pageAction/background'
 
 export const PageAction = {
   async execute({

@@ -1,8 +1,8 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import { isValidString } from '@/lib/utils'
-import type { ExecuteCommandParams } from '@/types'
-import { OpenTabProps } from '@/services/chrome'
 import { SPACE_ENCODING } from '@/const'
+import type { ExecuteCommandParams } from '@/types'
+import type { OpenTabProps } from '@/services/chrome'
 
 export const Tab = {
   async execute({

@@ -1,10 +1,10 @@
 import { Ipc, BgCommand } from '@/services/ipc'
 import { isValidString } from '@/lib/utils'
 import { getScreenSize, getWindowPosition } from '@/services/screen'
-import { OpenPopupProps } from '@/services/chrome'
 import { POPUP_TYPE, SPACE_ENCODING } from '@/const'
-import type { ExecuteCommandParams } from '@/types'
 import { PopupOption } from '@/services/defaultSettings'
+import type { OpenPopupProps } from '@/services/chrome'
+import type { ExecuteCommandParams } from '@/types'
 
 export const Window = {
   async execute({

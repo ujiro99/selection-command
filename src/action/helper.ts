@@ -1,10 +1,10 @@
 import { escapeJson } from '@/lib/utils'
 import {
+  openPopupWindow,
   openPopupWindowMultiple,
+  openTab as openTabWithClipboard,
   OpenPopupsProps,
   OpenPopupProps,
-  openPopupWindow,
-  openTab as openTabWithClipboard,
   OpenTabProps,
 } from '@/services/chrome'
 import { incrementCommandExecutionCount } from '@/services/commandMetrics'
