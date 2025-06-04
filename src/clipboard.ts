@@ -1,17 +1,4 @@
-import { Ipc, TabCommand, ClipboardResult } from '@/services/ipc'
-
-Ipc.addListener(TabCommand.readClipboard, (_, __, response) => {
-  readClipboardWithRetry()
-    .then((ret: ClipboardResult) => {
-      response(ret)
-    })
-    .catch((error: Error) => {
-      response({ data: undefined, err: error.message })
-    })
-  return true
-})
-
-Ipc.addListener(TabCommand.connect, () => false)
+import { ClipboardResult, BgCommand } from '@/services/ipc'
 
 /**
  * Read text from clipboard with retry mechanism
@@ -32,10 +19,29 @@ const readClipboardWithRetry = async (
         error,
       )
       if (i === maxRetries - 1) {
-        return { data: undefined, err: error as string }
+        return { data: undefined, err: `Retry limit exceeded. [${maxRetries}]` }
       }
       await new Promise<void>((resolve) => setTimeout(resolve, delayMs))
     }
   }
-  return { data: undefined, err: 'Out of retries' }
+  return { data: undefined, err: 'Out of retries.' }
 }
+
+const port = chrome.runtime.connect({ name: 'clipboard' })
+port.onDisconnect.addListener(function (port) {
+  console.warn('onDisconnect', port.name)
+})
+
+readClipboardWithRetry()
+  .then((ret: ClipboardResult) => {
+    port.postMessage({ command: BgCommand.setClipboard, data: ret })
+  })
+  .catch((error: Error) => {
+    port.postMessage({
+      command: BgCommand.setClipboard,
+      data: { data: undefined, err: error.message },
+    })
+  })
+  .finally(() => {
+    port.disconnect()
+  })

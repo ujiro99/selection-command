@@ -732,7 +732,7 @@
     "message": "您可以在Selection Command Hub中分享和导入页面操作命令。"
   },
   "review_request_title": {
-    "message": "您喜欢Selection Command吗？"
+    "message": "感谢您使用 Selection Command！"
   },
   "review_request_message": {
     "message": "如果您觉得这个扩展有用，请在Chrome Web Store上留下评论。您的反馈帮助我们变得更好！"
@@ -768,9 +768,18 @@
     "message": "当没有选中文本时"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "不执行任何操作"
+    "message": "不启动"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "使用剪贴板内容"
+  },
+  "clipboard_error_title": {
+    "message": "剪贴板访问失败"
+  },
+  "clipboard_error_description": {
+    "message": "无法访问剪贴板内容。"
+  },
+  "clipboard_error_action": {
+    "message": "确定"
   }
 }

@@ -732,7 +732,7 @@
     "message": "You can share and get Page Action commands from the Selection Command Hub."
   },
   "review_request_title": {
-    "message": "Enjoying Selection Command?"
+    "message": "Thank you for using Selection Command!"
   },
   "review_request_message": {
     "message": "If you find this extension helpful, please consider leaving a review on the Chrome Web Store. Your feedback helps us improve!"
@@ -768,9 +768,21 @@
     "message": "When no text is selected"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "Do nothing"
+    "message": "Do not launch"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Use clipboard content"
+  },
+  "clipboard_error_title": {
+    "message": "Clipboard Access Failed",
+    "description": "Title for clipboard error"
+  },
+  "clipboard_error_description": {
+    "message": "Could not access clipboard contents.",
+    "description": "Description for clipboard error"
+  },
+  "clipboard_error_action": {
+    "message": "OK",
+    "description": "Action button for clipboard error"
   }
 }

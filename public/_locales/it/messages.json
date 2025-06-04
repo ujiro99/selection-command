@@ -732,7 +732,7 @@
     "message": "Puoi condividere e importare comandi di azione pagina nel Selection Command Hub."
   },
   "review_request_title": {
-    "message": "Ti piace Selection Command?"
+    "message": "Grazie per utilizzare Selection Command!"
   },
   "review_request_message": {
     "message": "Se trovi utile questa estensione, lascia una recensione nel Chrome Web Store. Il tuo feedback ci aiuta a migliorare!"
@@ -768,9 +768,18 @@
     "message": "Quando non c'è testo selezionato"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "Non fare nulla"
+    "message": "Non avviare"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Usa contenuto appunti"
+  },
+  "clipboard_error_title": {
+    "message": "Accesso agli appunti fallito"
+  },
+  "clipboard_error_description": {
+    "message": "Impossibile accedere al contenuto degli appunti."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

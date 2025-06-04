@@ -180,6 +180,7 @@ export type ExecuteCommandParams = {
   selectionText: string
   target?: Element | null
   useSecondary?: boolean
+  useClipboard?: boolean
   changeState?: (state: ExecState, message?: string) => void
 }
 
@@ -248,3 +249,16 @@ export type WindowType = {
 }
 
 export type WindowLayer = WindowType[]
+
+export type UrlParam = {
+  searchUrl: string
+  selectionText: string
+  spaceEncoding?: SPACE_ENCODING
+  useClipboard?: boolean
+}
+
+export type ShowToastParam = {
+  title: string
+  description: string
+  action: string
+}

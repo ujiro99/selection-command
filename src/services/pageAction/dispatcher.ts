@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { getElementByXPath, isValidXPath } from '@/services/dom'
-import { safeInterpolate, isMac } from '@/lib/utils'
+import { safeInterpolate, isMac, isEmpty } from '@/lib/utils'
 import { INSERT, InsertSymbol } from '@/services/pageAction'
 import {
   SelectorType,
@@ -204,7 +204,9 @@ export const PageActionDispatcher = {
       }
       let value = safeInterpolate(param.value, variables)
       value = value.replace(/{/g, '{{') // escape
-      await user.type(element, value, { skipClick: true })
+      if (!isEmpty(value)) {
+        await user.type(element, value, { skipClick: true })
+      }
     } else {
       console.warn(`Element not found for: ${selector}`)
       return [false, `Element not found: ${param.label}`]

@@ -1,8 +1,11 @@
 import { escapeJson } from '@/lib/utils'
 import {
-  openPopupWindows,
+  openPopupWindow,
+  openPopupWindowMultiple,
+  openTab as openTabWithClipboard,
   OpenPopupsProps,
-  getCurrentTab,
+  OpenPopupProps,
+  OpenTabProps,
 } from '@/services/chrome'
 import { incrementCommandExecutionCount } from '@/services/commandMetrics'
 import { Ipc, TabCommand } from '@/services/ipc'
@@ -10,12 +13,7 @@ import type { CommandVariable } from '@/types'
 
 type Sender = chrome.runtime.MessageSender
 
-type openTabProps = {
-  url: string
-  active: boolean
-}
-
-type openPopupAndClickProps = OpenPopupsProps & {
+type OpenPopupAndClickProps = OpenPopupProps & {
   selector: string
 }
 
@@ -28,6 +26,23 @@ type execApiProps = {
   variables: CommandVariable[]
 }
 
+export const openPopup = (
+  param: OpenPopupProps,
+  _: Sender,
+  response: (res: boolean) => void,
+): boolean => {
+  incrementCommandExecutionCount().then(async () => {
+    try {
+      await openPopupWindow(param)
+      response(true)
+    } catch (error) {
+      console.error('Failed to execute openPopups:', error)
+      response(false)
+    }
+  })
+  return true
+}
+
 export const openPopups = (
   param: OpenPopupsProps,
   _: Sender,
@@ -35,7 +50,7 @@ export const openPopups = (
 ): boolean => {
   incrementCommandExecutionCount().then(async () => {
     try {
-      await openPopupWindows(param)
+      await openPopupWindowMultiple(param)
       response(true)
     } catch (error) {
       console.error('Failed to execute openPopups:', error)
@@ -46,20 +61,16 @@ export const openPopups = (
 }
 
 export const openPopupAndClick = (
-  param: openPopupAndClickProps,
+  param: OpenPopupAndClickProps,
   _: Sender,
   response: (res: unknown) => void,
 ): boolean => {
   incrementCommandExecutionCount().then(async () => {
     try {
-      const tabIds = await openPopupWindows(param)
-      if (tabIds.length > 0) {
-        await Ipc.sendQueue(tabIds[0], TabCommand.clickElement, {
-          selector: (param as { selector: string }).selector,
-        })
-      } else {
-        console.debug('tab not found')
-      }
+      const { tabId } = await openPopupWindow(param)
+      await Ipc.sendQueue(tabId, TabCommand.clickElement, {
+        selector: (param as { selector: string }).selector,
+      })
       response(true)
     } catch (error) {
       console.error('Failed to execute openPopupAndClick:', error)
@@ -70,24 +81,14 @@ export const openPopupAndClick = (
 }
 
 export const openTab = (
-  param: openTabProps,
-  sender: Sender,
+  param: OpenTabProps,
+  _: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  getCurrentTab().then((tab) => {
-    const currentTab = sender?.tab ?? tab
-    chrome.tabs.create(
-      {
-        ...param,
-        windowId: currentTab.windowId,
-        index: currentTab.index + 1,
-      },
-      (newTab) => {
-        incrementCommandExecutionCount(newTab.id).then(() => {
-          response(true)
-        })
-      },
-    )
+  openTabWithClipboard(param).then(({ tabId }) => {
+    incrementCommandExecutionCount(tabId).then(() => {
+      response(true)
+    })
   })
   return true
 }

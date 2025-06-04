@@ -49,6 +49,7 @@ export enum PAGE_ACTION_OPEN_MODE {
   NONE = 'none',
   POPUP = OPEN_MODE.POPUP,
   TAB = OPEN_MODE.TAB,
+  WINDOW = OPEN_MODE.WINDOW,
 }
 
 export enum SIDE {

@@ -10,6 +10,7 @@ const CONNECTION_TIMEOUT = 4000
 const CONNECTION_CHECK_INTERVAL = 50
 
 export enum BgCommand {
+  openPopup = 'openPopup',
   openPopups = 'openPopups',
   openPopupAndClick = 'openPopupAndClick',
   openTab = 'openTab',
@@ -23,7 +24,7 @@ export enum BgCommand {
   toggleStar = 'toggleStar',
   captureScreenshot = 'captureScreenshot',
   getTabId = 'getTabId',
-  getClipboard = 'getClipboard',
+  setClipboard = 'setClipboard',
   // PageAction
   addPageAction = 'addPageAction',
   addCapture = 'addCapture',
@@ -44,7 +45,7 @@ export enum TabCommand {
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
   showReviewRequest = 'showReviewRequest',
-  readClipboard = 'readClipboard',
+  showToast = 'showToast',
   // PageAction
   sendWindowSize = 'sendWindowSize',
   execPageAction = 'execPageAction',
@@ -101,8 +102,8 @@ export type MessageQueueCallback = (newMessage: Message | null) => void
 
 export type Sender = chrome.runtime.MessageSender
 
-export type IpcCallback = (
-  param: unknown,
+export type IpcCallback<M = any> = (
+  param: M,
   sender: chrome.runtime.MessageSender,
   response: (response?: unknown) => void,
 ) => boolean
@@ -298,7 +299,7 @@ export const Ipc = {
 
   listeners: {} as { [key: string]: IpcCallback },
 
-  addListener(command: IpcCommand, callback: IpcCallback) {
+  addListener<M = any>(command: IpcCommand, callback: IpcCallback<M>) {
     const listener = (
       request: Request,
       sender: chrome.runtime.MessageSender,
@@ -310,7 +311,7 @@ export const Ipc = {
 
       if (command === cmd) {
         // must return "true" if response is async.
-        return callback(prm, sender, response)
+        return callback(prm as M, sender, response)
       }
 
       return false

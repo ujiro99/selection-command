@@ -10,7 +10,7 @@ Settings.addChangedListener(() => ContextMenu.init())
 
 export type executeActionProps = {
   command: Command
-  selectionText?: string
+  useClipboard?: boolean
 }
 
 let initDelayTO: NodeJS.Timeout

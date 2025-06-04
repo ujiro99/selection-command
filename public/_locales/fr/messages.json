@@ -732,7 +732,7 @@
     "message": "Vous pouvez partager et obtenir des commandes d'Action de Page depuis le Hub de Selection Command."
   },
   "review_request_title": {
-    "message": "Vous appréciez Selection Command ?"
+    "message": "Merci d'utiliser Selection Command !"
   },
   "review_request_message": {
     "message": "Si vous trouvez cette extension utile, envisagez de laisser un avis sur le Chrome Web Store. Vos commentaires nous aident à nous améliorer !"
@@ -768,9 +768,18 @@
     "message": "Lorsqu'aucun texte n'est sélectionné"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "Ne rien faire"
+    "message": "Ne pas lancer"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "Utiliser le contenu du presse-papiers"
+  },
+  "clipboard_error_title": {
+    "message": "Échec d'accès au presse-papiers"
+  },
+  "clipboard_error_description": {
+    "message": "Impossible d'accéder au contenu du presse-papiers."
+  },
+  "clipboard_error_action": {
+    "message": "OK"
   }
 }

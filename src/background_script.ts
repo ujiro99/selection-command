@@ -5,7 +5,7 @@ import {
   OPTION_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from '@/const'
-import '@/services/contextMenus'
+import { executeActionProps } from '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { Settings } from '@/services/settings'
 import { PopupOption, PopupPlacement } from '@/services/defaultSettings'
@@ -23,7 +23,6 @@ import type {
   CaptureScreenShotRes,
 } from '@/types'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { openClipboardReader } from '@/services/chrome'
 import { updateActiveScreenId } from '@/services/screen'
 
 BgData.init()
@@ -48,6 +47,7 @@ const getTabId = (
 }
 
 const commandFuncs = {
+  [BgCommand.openPopup]: ActionHelper.openPopup,
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [BgCommand.openTab]: ActionHelper.openTab,
@@ -175,6 +175,9 @@ const commandFuncs = {
       console.warn('window not found', sender.tab?.windowId)
       chrome.tabs.create({ url: sender.url })
       chrome.windows.remove(sender.tab?.windowId as number)
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError)
+      }
       response(true)
       return true
     }
@@ -199,6 +202,9 @@ const commandFuncs = {
             windowId: targetId,
           })
           chrome.windows.remove(sender.tab?.windowId as number)
+          if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError)
+          }
           response(true)
         }
         response(false)
@@ -276,22 +282,6 @@ const commandFuncs = {
 
   [BgCommand.getTabId]: getTabId,
 
-  [BgCommand.getClipboard]: (
-    _: unknown,
-    __: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    openClipboardReader()
-      .then((clipboardText) => {
-        response(clipboardText)
-      })
-      .catch((error) => {
-        console.error('Failed to read clipboard:', error)
-        response(null)
-      })
-    return true
-  },
-
   //
   // PageAction
   //
@@ -348,6 +338,9 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
       for (const layer of stack) {
         for (const window of layer) {
           chrome.windows.remove(window.id)
+          if (chrome.runtime.lastError) {
+            console.error(chrome.runtime.lastError)
+          }
         }
       }
       BgData.set((data) => ({
@@ -362,12 +355,12 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   await updateActiveScreenId(windowId)
 
   // Close popup windows when focus changed to lower stack window
-  const idx = stack.map((s) => s.findIndex((w) => w.id === windowId))
+  const idxs = stack.map((s) => s.findIndex((w) => w.id === windowId))
   let changed = false
 
   // Close all window.
   let closeStack = [] as WindowLayer[]
-  const closeAll = idx.every((i) => i < 0)
+  const closeAll = idxs.every((i) => i < 0)
   if (closeAll && stack.length > 0) {
     closeStack = stack
     stack = []
@@ -375,8 +368,8 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   }
 
   // Close windows up to the window stack in focus.
-  for (let i = idx.length - 2; i >= 0; i--) {
-    if (idx[i] >= 0) {
+  for (let i = idxs.length - 2; i >= 0; i--) {
+    if (idxs[i] >= 0) {
       closeStack = stack.splice(i + 1)
       changed = true
       break
@@ -388,6 +381,9 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     for (const layer of closeStack) {
       for (const window of layer) {
         chrome.windows.remove(window.id)
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError)
+        }
       }
     }
   }
@@ -502,6 +498,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     )
 
     // If no text is selected, handle according to noSelectionBehavior
+    let useClipboard = false
     if (!selectionText) {
       if (
         shortcut.noSelectionBehavior ===
@@ -512,23 +509,21 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         shortcut.noSelectionBehavior ===
         SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
       ) {
-        const clipboardText = await Ipc.send(BgCommand.getClipboard)
-        // console.debug('clipboardText', clipboardText)
-        if (clipboardText) {
-          selectionText = clipboardText
-        } else {
-          return
-        }
+        useClipboard = true
       }
     }
 
     let ret: unknown
     if (enableSendTab) {
       // Execute command in tab
-      ret = await Ipc.sendTab(tab?.id ?? 0, TabCommand.executeAction, {
-        command,
-        selectionText,
-      })
+      ret = await Ipc.sendTab<executeActionProps>(
+        tab?.id ?? 0,
+        TabCommand.executeAction,
+        {
+          command,
+          useClipboard,
+        },
+      )
     }
 
     if (!enableSendTab || ret instanceof Error) {
@@ -538,6 +533,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         position: { x: 10000, y: 10000 },
         selectionText,
         target: null,
+        useClipboard,
       })
     }
   } catch (error) {

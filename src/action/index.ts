@@ -31,6 +31,7 @@ export async function execute({
   selectionText,
   target,
   useSecondary = false,
+  useClipboard = false,
   changeState,
 }: ExecuteCommandParams) {
   return executeAction({
@@ -39,6 +40,7 @@ export async function execute({
     selectionText,
     target,
     useSecondary,
+    useClipboard,
     changeState,
     actions,
   })

@@ -14,11 +14,6 @@ export type ScreenSize = {
 
 export async function updateActiveScreenId(windowId: number): Promise<void> {
   try {
-    // Skip processing if this is a clipboard window
-    if (windowId === BgData.get().clipboardWindowId) {
-      return
-    }
-
     const window = await chrome.windows.get(windowId)
     const left = window.left ?? 0
     const top = window.top ?? 0

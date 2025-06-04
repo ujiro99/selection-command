@@ -732,7 +732,7 @@
     "message": "आप Selection Command Hub में पेज एक्शन कमांड शेयर और इम्पोर्ट कर सकते हैं।"
   },
   "review_request_title": {
-    "message": "क्या आपको Selection Command पसंद है?"
+    "message": "Selection Command का उपयोग करने के लिए धन्यवाद!"
   },
   "review_request_message": {
     "message": "यदि आप इस एक्सटेंशन को उपयोगी पाते हैं, तो Chrome Web Store में एक समीक्षा छोड़ें। आपकी प्रतिक्रिया हमें बेहतर बनने में मदद करती है!"
@@ -768,9 +768,18 @@
     "message": "जब कोई टेक्स्ट चयनित नहीं हो"
   },
   "Option_shortcut_no_selection_do_nothing": {
-    "message": "कुछ न करें"
+    "message": "लॉन्च न करें"
   },
   "Option_shortcut_no_selection_use_clipboard": {
     "message": "क्लिपबोर्ड सामग्री का उपयोग करें"
+  },
+  "clipboard_error_title": {
+    "message": "क्लिपबोर्ड एक्सेस विफल"
+  },
+  "clipboard_error_description": {
+    "message": "क्लिपबोर्ड सामग्री तक पहुंच नहीं हो सकी।"
+  },
+  "clipboard_error_action": {
+    "message": "ठीक है"
   }
 }
