@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
+import { Image } from '@/components/Image'
 import { useLocale } from '@/hooks/useLocale'
 import { Send } from 'lucide-react'
 import { useState } from 'react'
@@ -110,104 +111,120 @@ export function UninstallForm() {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-center mb-8">
-        アンインストールが完了しました
-      </h1>
-      <p className="mb-6">
-        これまでSelection
-        Commandをご利用いただきありがとうございました。お別れするのはとても残念ですが、今後の拡張機能の改善のため、以下のアンケートにご協力いただけますと幸いです。
-      </p>
-      <p className="mb-6">
-        誤ってアンインストールされた場合は、Chrome
-        ウェブストアから再インストールできます。
-      </p>
-
       {submitStatus === 'success' ? (
-        <div className="text-center p-6 bg-green-50 rounded-lg">
-          <p className="text-green-700 font-medium">
-            ご回答ありがとうございました。貴重なご意見をいただき、誠にありがとうございます。
-            このフォーム以外で直接ご意見をいただける場合は、ぜひ
-            takeda.yujiro@gmail.com まで、件名を明記のうえご連絡ください。
-          </p>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div>
-            <h2 className="text-lg font-semibold mb-4">
-              アンインストールした理由を教えてください。(複数選択可能)
-            </h2>
-            <div className="space-y-3">
-              {uninstallReasons.map((reason) => (
-                <div key={reason.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={reason.id}
-                    checked={selectedReasons.includes(reason.id)}
-                    onCheckedChange={(checked: boolean) => {
-                      if (checked) {
-                        setSelectedReasons([...selectedReasons, reason.id])
-                      } else {
-                        setSelectedReasons(
-                          selectedReasons.filter((id) => id !== reason.id),
-                        )
-                      }
-                    }}
-                  />
-                  <label
-                    htmlFor={reason.id}
-                    className="text-sm font-medium cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    {reason.label}
-                  </label>
-                </div>
-              ))}
-            </div>
-
-            <Collapsible open={selectedReasons.includes('other')}>
-              <CollapsibleContent className={css.CollapsibleContent}>
-                <div className="ml-6 mt-2">
-                  <Input
-                    value={otherReason}
-                    onChange={(e) => setOtherReason(e.target.value)}
-                    placeholder="具体的な理由をお聞かせください"
-                  />
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-
-          <div>
-            <h2 className="text-lg font-semibold mb-4">
-              よろしければ詳細を教えてください。
-            </h2>
-            <Textarea
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-              className="min-h-[100px]"
-              placeholder={`アンインストール理由の詳細、
-やりたかったこと や 困ったこと、
-使えなかったサイト等`}
-            />
-          </div>
-
-          {submitStatus === 'error' && (
-            <div className="text-center p-4 bg-red-50 rounded-lg">
-              <p className="text-red-700">
-                送信に失敗しました。時間をおいて再度お試しください。
+        <>
+          <h1 className="text-2xl font-bold text-center mb-8">
+            アンケート送信が完了しました。
+          </h1>
+          <div className="flex items-center">
+            <div className="p-6 bg-green-50 rounded-lg">
+              <p className="text-green-700 font-medium">
+                ご回答ありがとうございました。貴重なご意見をいただき、誠にありがとうございます。
+                このフォーム以外で直接ご意見をいただける場合は、ぜひ
+                takeda.yujiro@gmail.com まで、件名を明記のうえご連絡ください。
               </p>
             </div>
-          )}
-
-          <div className="flex justify-center">
-            <Button
-              type="submit"
-              className="rounded-xl font-semibold bg-stone-700 px-8"
-              disabled={selectedReasons.length === 0 || isSubmitting}
-            >
-              <Send className="mr-1" />
-              {isSubmitting ? '送信中...' : '送信'}
-            </Button>
+            <Image
+              src="/ozigi_suit_man_simple.png"
+              alt="Thank you"
+              className="ml-6"
+              width={60}
+              height={200}
+              loading="lazy"
+            />
           </div>
-        </form>
+        </>
+      ) : (
+        <>
+          <h1 className="text-2xl font-bold text-center mb-8">
+            アンインストールが完了しました。
+          </h1>
+          <p className="mb-6">
+            これまでSelection
+            Commandをご利用いただきありがとうございました。お別れするのはとても残念ですが、今後の拡張機能の改善のため、以下のアンケートにご協力いただけますと幸いです。
+          </p>
+          <p className="mb-6">
+            誤ってアンインストールされた場合は、Chrome
+            ウェブストアから再インストールできます。
+          </p>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div>
+              <h2 className="text-lg font-semibold mb-4">
+                アンインストールした理由を教えてください。(複数選択可能)
+              </h2>
+              <div className="space-y-3">
+                {uninstallReasons.map((reason) => (
+                  <div key={reason.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={reason.id}
+                      checked={selectedReasons.includes(reason.id)}
+                      onCheckedChange={(checked: boolean) => {
+                        if (checked) {
+                          setSelectedReasons([...selectedReasons, reason.id])
+                        } else {
+                          setSelectedReasons(
+                            selectedReasons.filter((id) => id !== reason.id),
+                          )
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor={reason.id}
+                      className="text-sm font-medium cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {reason.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              <Collapsible open={selectedReasons.includes('other')}>
+                <CollapsibleContent className={css.CollapsibleContent}>
+                  <div className="ml-6 mt-2">
+                    <Input
+                      value={otherReason}
+                      onChange={(e) => setOtherReason(e.target.value)}
+                      placeholder="具体的な理由をお聞かせください"
+                    />
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+
+            <div>
+              <h2 className="text-lg font-semibold mb-4">
+                よろしければ詳細を教えてください。
+              </h2>
+              <Textarea
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
+                className="min-h-[100px]"
+                placeholder={`アンインストール理由の詳細、
+やりたかったこと や 困ったこと、
+使えなかったサイト等`}
+              />
+            </div>
+
+            {submitStatus === 'error' && (
+              <div className="text-center p-4 bg-red-50 rounded-lg">
+                <p className="text-red-700">
+                  送信に失敗しました。時間をおいて再度お試しください。
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-center">
+              <Button
+                type="submit"
+                className="rounded-xl font-semibold bg-stone-700 px-8"
+                disabled={selectedReasons.length === 0 || isSubmitting}
+              >
+                <Send className="mr-1" />
+                {isSubmitting ? '送信中...' : '送信'}
+              </Button>
+            </div>
+          </form>
+        </>
       )}
     </div>
   )
