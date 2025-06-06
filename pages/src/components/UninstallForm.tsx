@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Image } from '@/components/Image'
 import { useLocale } from '@/hooks/useLocale'
-import { Send } from 'lucide-react'
+import { Send, SquareArrowOutUpRight } from 'lucide-react'
 import { useState } from 'react'
 import type { UninstallFormType } from '@/types'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
@@ -18,57 +18,13 @@ type UninstallReason = {
   label: string
 }
 
-const uninstallReasons: UninstallReason[] = [
-  { id: 'difficult_to_use', label: '使い方が分からなかった' },
-  { id: 'not_user_friendly', label: '使いづらかった' },
-  { id: 'not_working', label: '期待通りに動作しなかった' },
-  { id: 'missing_features', label: '必要な機能がなかった' },
-  { id: 'too_many_permissions', label: '必要な権限が多すぎる' },
-  { id: 'found_better', label: 'より良い代替製品を見つけた' },
-  { id: 'no_longer_needed', label: 'もう必要なくなった' },
-  { id: 'language_not_supported', label: '希望する言語に対応していない' },
-  { id: 'other', label: 'その他' },
-]
+const SubmitStatus = {
+  IDLE: 'idle',
+  SUCCESS: 'success',
+  ERROR: 'error',
+} as const
 
-type SubmitResponse = {
-  success: boolean
-  error?: string
-}
-
-export async function submit(
-  param: UninstallFormType,
-): Promise<SubmitResponse> {
-  try {
-    const { uninstallReason, details, locale, otherReason }: UninstallFormType =
-      param
-
-    // Create form data
-    const formData = new FormData()
-    uninstallReason.forEach((reason) => {
-      formData.append('entry.90439598', reason)
-    })
-    if (otherReason) {
-      formData.append('entry.90439598.other_option_response', otherReason)
-    }
-    formData.append('entry.1954317629', locale)
-    formData.append('entry.2091766235', details)
-    console.log(formData)
-
-    // Send form data to Google Forms
-    const formUrl =
-      'https://docs.google.com/forms/d/e/1FAIpQLSeKp9yy9i4dB3CK7qyKZoaDdrRB8a6dCVnm0zALl7mo-yvbXg/formResponse'
-    fetch(formUrl, {
-      method: 'POST',
-      body: formData,
-      mode: 'no-cors',
-    })
-
-    return { success: true }
-  } catch (error) {
-    console.error('Error processing uninstall form:', error)
-    return { success: false, error: 'Failed to process form submission' }
-  }
-}
+type SubmitStatusType = (typeof SubmitStatus)[keyof typeof SubmitStatus]
 
 export function UninstallForm() {
   const { dict, lang } = useLocale()
@@ -76,14 +32,21 @@ export function UninstallForm() {
   const [details, setDetails] = useState('')
   const [otherReason, setOtherReason] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<
-    'idle' | 'success' | 'error'
-  >('idle')
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatusType>(
+    SubmitStatus.IDLE,
+  )
+
+  const uninstallReasons: UninstallReason[] = Object.entries(
+    dict.uninstallForm.reasons,
+  ).map(([id, label]) => ({
+    id,
+    label: label as string,
+  }))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    setSubmitStatus('idle')
+    setSubmitStatus(SubmitStatus.IDLE)
 
     try {
       const response = await submit({
@@ -97,13 +60,13 @@ export function UninstallForm() {
         throw new Error('Failed to submit form')
       }
 
-      setSubmitStatus('success')
+      setSubmitStatus(SubmitStatus.SUCCESS)
       setSelectedReasons([])
       setOtherReason('')
       setDetails('')
     } catch (error) {
       console.error('Error submitting form:', error)
-      setSubmitStatus('error')
+      setSubmitStatus(SubmitStatus.ERROR)
     } finally {
       setIsSubmitting(false)
     }
@@ -111,17 +74,15 @@ export function UninstallForm() {
 
   return (
     <div className="max-w-2xl mx-auto p-6">
-      {submitStatus === 'success' ? (
+      {submitStatus === SubmitStatus.SUCCESS ? (
         <>
-          <h1 className="text-2xl font-bold text-center mb-8">
-            アンケート送信が完了しました。
+          <h1 className="text-3xl font-bold text-center mb-8">
+            {dict.uninstallForm.success.title}
           </h1>
           <div className="flex items-center">
             <div className="p-6 bg-green-50 rounded-lg">
-              <p className="text-green-700 font-medium">
-                ご回答ありがとうございました。貴重なご意見をいただき、誠にありがとうございます。
-                このフォーム以外で直接ご意見をいただける場合は、ぜひ
-                takeda.yujiro@gmail.com まで、件名を明記のうえご連絡ください。
+              <p className="text-green-700 font-medium leading-relaxed whitespace-pre-line">
+                {dict.uninstallForm.success.message}
               </p>
             </div>
             <Image
@@ -136,21 +97,25 @@ export function UninstallForm() {
         </>
       ) : (
         <>
-          <h1 className="text-2xl font-bold text-center mb-8">
-            アンインストールが完了しました。
+          <h1 className="text-3xl font-bold text-center mb-8">
+            {dict.uninstallForm.title}
           </h1>
-          <p className="mb-6">
-            これまでSelection
-            Commandをご利用いただきありがとうございました。お別れするのはとても残念ですが、今後の拡張機能の改善のため、以下のアンケートにご協力いただけますと幸いです。
+          <p className="mb-6 break-words whitespace-pre-line">
+            {dict.uninstallForm.description}
           </p>
-          <p className="mb-6">
-            誤ってアンインストールされた場合は、Chrome
-            ウェブストアから再インストールできます。
-          </p>
+          <p>{dict.uninstallForm.reinstall}</p>
+          <a
+            href="https://chromewebstore.google.com/detail/selection-command/nlnhbibaommoelemmdfnkjkgoppkohje?utm_source=selection-command-hub&utm_medium=link&utm_campaign=uninstall-form"
+            target="_blank"
+            className="text-blue-500 flex items-center gap-1 mb-6"
+          >
+            Chrome Web Store
+            <SquareArrowOutUpRight size={14} />
+          </a>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div>
               <h2 className="text-lg font-semibold mb-4">
-                アンインストールした理由を教えてください。(複数選択可能)
+                {dict.uninstallForm.reasonTitle}
               </h2>
               <div className="space-y-3">
                 {uninstallReasons.map((reason) => (
@@ -184,7 +149,7 @@ export function UninstallForm() {
                     <Input
                       value={otherReason}
                       onChange={(e) => setOtherReason(e.target.value)}
-                      placeholder="具体的な理由をお聞かせください"
+                      placeholder={dict.uninstallForm.otherReasonPlaceholder}
                     />
                   </div>
                 </CollapsibleContent>
@@ -193,23 +158,19 @@ export function UninstallForm() {
 
             <div>
               <h2 className="text-lg font-semibold mb-4">
-                よろしければ詳細を教えてください。
+                {dict.uninstallForm.detailsTitle}
               </h2>
               <Textarea
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
                 className="min-h-[100px]"
-                placeholder={`アンインストール理由の詳細、
-やりたかったこと や 困ったこと、
-使えなかったサイト等`}
+                placeholder={dict.uninstallForm.detailsPlaceholder}
               />
             </div>
 
-            {submitStatus === 'error' && (
+            {submitStatus === SubmitStatus.ERROR && (
               <div className="text-center p-4 bg-red-50 rounded-lg">
-                <p className="text-red-700">
-                  送信に失敗しました。時間をおいて再度お試しください。
-                </p>
+                <p className="text-red-700">{dict.uninstallForm.error}</p>
               </div>
             )}
 
@@ -220,7 +181,9 @@ export function UninstallForm() {
                 disabled={selectedReasons.length === 0 || isSubmitting}
               >
                 <Send className="mr-1" />
-                {isSubmitting ? '送信中...' : '送信'}
+                {isSubmitting
+                  ? dict.uninstallForm.submitting
+                  : dict.uninstallForm.submit}
               </Button>
             </div>
           </form>
@@ -228,4 +191,38 @@ export function UninstallForm() {
       )}
     </div>
   )
+}
+
+async function submit(
+  param: UninstallFormType,
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { uninstallReason, details, locale, otherReason }: UninstallFormType =
+      param
+
+    // Create form data
+    const formData = new FormData()
+    uninstallReason.forEach((reason) => {
+      formData.append('entry.90439598', reason)
+    })
+    if (otherReason) {
+      formData.append('entry.90439598.other_option_response', otherReason)
+    }
+    formData.append('entry.1954317629', locale)
+    formData.append('entry.2091766235', details)
+
+    // Send form data to Google Forms
+    const formUrl =
+      'https://docs.google.com/forms/d/e/1FAIpQLSeKp9yy9i4dB3CK7qyKZoaDdrRB8a6dCVnm0zALl7mo-yvbXg/formResponse'
+    fetch(formUrl, {
+      method: 'POST',
+      body: formData,
+      mode: 'no-cors',
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error('Error processing uninstall form:', error)
+    return { success: false, error: 'Failed to process form submission' }
+  }
 }

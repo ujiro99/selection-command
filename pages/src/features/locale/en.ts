@@ -141,5 +141,36 @@ const lang = {
     accept: 'Accept',
     decline: 'Decline',
   },
+  uninstallForm: {
+    title: 'Uninstallation Complete.',
+    description:
+      "Thank you for using Selection Command. While we're sad to see you go, we would greatly appreciate your feedback through the survey below to help us improve the extension.",
+    reinstall:
+      'If you uninstalled by mistake, you can reinstall from the link below.',
+    reasonTitle: 'Please tell us why you uninstalled (multiple choice)',
+    otherReasonPlaceholder: 'Please specify your reason',
+    detailsTitle: 'If possible, please provide more details.',
+    detailsPlaceholder:
+      "Details about why you uninstalled,\nWhat you wanted to do or what problems you encountered,\nSites where it didn't work, etc.",
+    submit: 'Submit',
+    submitting: 'Submitting...',
+    success: {
+      title: 'Survey Submission Complete',
+      message:
+        'Thank you for your response. We truly appreciate your valuable feedback.\nIf you would like to provide additional feedback directly, please contact us at takeda.yujiro@gmail.com with a clear subject line.',
+    },
+    error: 'Submission failed. Please try again later.',
+    reasons: {
+      difficult_to_use: "I didn't know how to use it.",
+      not_user_friendly: 'Not user-friendly',
+      not_working: "Didn't work as expected",
+      missing_features: 'Missing needed features',
+      too_many_permissions: 'Required too many permissions',
+      found_better: 'Found a better alternative',
+      no_longer_needed: 'No longer needed',
+      language_not_supported: 'Language not supported',
+      other: 'Other',
+    },
+  },
 }
 export default lang

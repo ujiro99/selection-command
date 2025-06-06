@@ -22,7 +22,7 @@ export function Header(props: Props): JSX.Element {
         </header>
       </Link>
       <a
-        href="https://chromewebstore.google.com/detail/selection-command/nlnhbibaommoelemmdfnkjkgoppkohje"
+        href="https://chromewebstore.google.com/detail/selection-command/nlnhbibaommoelemmdfnkjkgoppkohje?utm_source=selection-command-hub&utm_medium=link&utm_campaign=header"
         target="_blank"
         className="fixed top-2 right-2 bg-white border border-stone-200 rounded-lg shadow-md transition duration-200 hover:shadow-lg hidden sm:block z-10"
         data-gtm-click="chrome-web-store"
