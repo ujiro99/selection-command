@@ -5,10 +5,34 @@ import { getDict } from '@/features/locale'
 
 import en from './en'
 import ja from './ja'
+import de from './de'
+import es from './es'
+import fr from './fr'
+import hi from './hi'
+import id from './id'
+import it from './it'
+import ko from './ko'
+import ms from './ms'
+import pt_BR from './pt-BR'
+import pt_PT from './pt-PT'
+import ru from './ru'
+import zh_CN from './zh-CN'
 
 const LocaleMap = {
   en,
   ja,
+  de,
+  es,
+  fr,
+  hi,
+  id,
+  it,
+  ko,
+  ms,
+  'pt-BR': pt_BR,
+  'pt-PT': pt_PT,
+  ru,
+  'zh-CN': zh_CN,
 } as const
 
 type Props = LangProps

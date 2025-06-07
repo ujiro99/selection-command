@@ -128,3 +128,11 @@ export function capitalize(phrase: string): string {
     .map((s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
     .join(' ')
 }
+
+/**
+ * Stops processing for the specified time.
+ * @param {number} msec Sleep time in millisconds
+ */
+export function sleep(msec: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, msec))
+}

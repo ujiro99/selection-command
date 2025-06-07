@@ -331,7 +331,7 @@ export function InputForm(props: InputProps) {
               </div>
               <div {...autofillProps(0, 'w-3/5 rounded-md')}>
                 <FormControl>
-                  <Input placeholder="Title of command" {...field} />
+                  <Input placeholder={t.title.placeholder} {...field} />
                 </FormControl>
                 <FormMessageLocale lang={lang} />
               </div>
@@ -359,13 +359,13 @@ export function InputForm(props: InputProps) {
                     <Image
                       className="absolute top-1.5 right-2 w-6 h-6"
                       src={iconUrl}
-                      alt="Search url's favicon"
+                      alt={t.searchUrl.faviconAlt}
                     />
                   )}
                   <FormControl>
                     <Input
                       className="pr-10"
-                      placeholder="Search URL"
+                      placeholder={t.searchUrl.placeholder}
                       {...field}
                     />
                   </FormControl>
@@ -394,7 +394,7 @@ export function InputForm(props: InputProps) {
                       <Image
                         className="absolute top-1.5 right-2 w-6 h-6"
                         src={iconUrl}
-                        alt="Start url's favicon"
+                        alt={t.PageActionOption.startUrl.faviconAlt}
                       />
                     )}
                     <FormControl>
@@ -436,7 +436,7 @@ export function InputForm(props: InputProps) {
               <div className="w-3/5">
                 <FormControl>
                   <Textarea
-                    placeholder="Command description"
+                    placeholder={t.description.placeholder}
                     className="resize-none"
                     {...field}
                   />
@@ -524,7 +524,7 @@ export function InputForm(props: InputProps) {
 
                   <div {...autofillProps(2, 'w-3/5 rounded-md relative')}>
                     <FormControl>
-                      <Input placeholder="Icon URL" {...field} />
+                      <Input placeholder={t.iconUrl.placeholder} {...field} />
                     </FormControl>
                     {isEmpty(iconUrl) && !isEmpty(searchUrl) && (
                       <Button

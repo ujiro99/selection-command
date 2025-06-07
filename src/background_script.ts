@@ -4,6 +4,7 @@ import {
   POPUP_ENABLED,
   OPTION_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
+  HUB_URL,
 } from '@/const'
 import { executeActionProps } from '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
@@ -451,10 +452,18 @@ if (isDebug) {
   })
 }
 
-chrome.runtime.onInstalled.addListener(() => {
+chrome.runtime.onInstalled.addListener((details) => {
   chrome.storage.session.setAccessLevel({
     accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
   })
+
+  if (
+    details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
+    details.reason === chrome.runtime.OnInstalledReason.UPDATE
+  ) {
+    // Set uninstall survey URL
+    chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
+  }
 })
 
 // for debug

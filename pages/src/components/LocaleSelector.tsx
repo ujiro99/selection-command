@@ -20,7 +20,7 @@ export function LocaleSelector(): JSX.Element {
     <Select onValueChange={switchLocale} value={lang}>
       <SelectTrigger
         className={cn(
-          'fixed bottom-3 right-3 text-stone-700 text-sm lg:text-sm min-w-32 w-auto rounded-lg transition duration-50',
+          'fixed gap-1 bottom-3 right-3 text-stone-700 text-sm lg:text-sm min-w-32 w-auto rounded-lg transition duration-50',
         )}
       >
         <Globe size={16} className="stroke-stone-600" />

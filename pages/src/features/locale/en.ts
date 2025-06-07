@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'English',
@@ -20,6 +21,7 @@ const lang = {
     title: {
       label: 'Title',
       description: 'Displayed as the title of the command.',
+      placeholder: 'Title of command',
       message: {
         min3: 'The title must be at least 3 characters long.',
         max100: 'The title must be at most 100 characters long.',
@@ -28,6 +30,8 @@ const lang = {
     searchUrl: {
       label: 'Search URL',
       description: 'Replace `%s` with the selected text.',
+      placeholder: 'Search URL',
+      faviconAlt: "Search url's favicon",
       message: {
         url: 'URL format is incorrect.',
         unique: 'Already registered.',
@@ -36,6 +40,7 @@ const lang = {
     description: {
       label: 'Description',
       description: 'Displayed as the description of the command.',
+      placeholder: 'Command description',
       message: {
         max200: 'Description must be at most 200 characters long.',
       },
@@ -51,6 +56,7 @@ const lang = {
     iconUrl: {
       label: 'Icon URL',
       description: 'Displayed as the icon of the menu.',
+      placeholder: 'Icon URL',
       message: {
         url: 'URL format is incorrect.',
       },
@@ -88,6 +94,7 @@ const lang = {
       startUrl: {
         label: 'Start Page URL',
         description: 'URL to start the page action.',
+        faviconAlt: "Start url's favicon",
       },
     },
   },
@@ -140,6 +147,37 @@ const lang = {
       'We use cookies to ensure you get the best experience on our website. For more information, please see our cookie policy.',
     accept: 'Accept',
     decline: 'Decline',
+  },
+  uninstallForm: {
+    title: 'Uninstallation Complete.',
+    description:
+      "Thank you for using Selection Command. While we're sad to see you go, we would greatly appreciate your feedback through the survey below to help us improve the extension.",
+    reinstall:
+      'If you uninstalled by mistake, you can reinstall from the link below.',
+    reasonTitle: 'Please tell us why you uninstalled (multiple choice)',
+    otherReasonPlaceholder: 'Please specify your reason',
+    detailsTitle: 'If possible, please provide more details.',
+    detailsPlaceholder:
+      "Details about why you uninstalled,\nWhat you wanted to do or what problems you encountered,\nSites where it didn't work, etc.",
+    submit: 'Submit',
+    submitting: 'Submitting...',
+    success: {
+      title: 'Survey Submission Complete',
+      message:
+        'Thank you for your response. We truly appreciate your valuable feedback.\nIf you would like to provide additional feedback directly, please contact us at takeda.yujiro@gmail.com with a clear subject line.',
+    },
+    error: 'Submission failed. Please try again later.',
+    reasons: {
+      difficult_to_use: "I didn't know how to use it.",
+      not_user_friendly: 'Not user-friendly',
+      not_working: "Didn't work as expected",
+      missing_features: 'Missing needed features',
+      too_many_permissions: 'Required too many permissions',
+      found_better: 'Found a better alternative',
+      no_longer_needed: 'No longer needed',
+      language_not_supported: 'Language not supported',
+      [UNINSTALL_OTHER_OPTION]: 'Other',
+    },
   },
 }
 export default lang

@@ -51,3 +51,5 @@ export const isDebug = environment === 'development'
 export const HUB_URL = isDebug
   ? 'http://localhost:3000'
   : 'https://ujiro99.github.io/selection-command'
+
+export const UNINSTALL_OTHER_OPTION = '__other_option__' as const

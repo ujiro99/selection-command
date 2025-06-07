@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: '日本語',
@@ -20,6 +21,7 @@ const lang = {
     title: {
       label: 'タイトル',
       description: 'コマンドのタイトルとして表示されます。',
+      placeholder: 'コマンドのタイトル',
       message: {
         min3: 'タイトルは最短3文字です。',
         max100: 'タイトルは最長100文字です。',
@@ -28,6 +30,8 @@ const lang = {
     searchUrl: {
       label: '検索URL',
       description: '`%s`を選択テキストに置換します。',
+      placeholder: '検索URL',
+      faviconAlt: '検索URLのファビコン',
       message: {
         url: 'URL形式が正しくありません。',
         unique: '既に登録されています。',
@@ -36,6 +40,7 @@ const lang = {
     description: {
       label: 'コマンドの説明',
       description: 'コマンドの説明として表示されます。',
+      placeholder: 'コマンドの説明',
       message: {
         max200: '説明は最長200文字です。',
       },
@@ -51,6 +56,7 @@ const lang = {
     iconUrl: {
       label: 'アイコンURL',
       description: 'メニューのアイコンとして表示されます。',
+      placeholder: 'アイコンURL',
       message: {
         url: 'URL形式が正しくありません。',
       },
@@ -86,8 +92,9 @@ const lang = {
     },
     PageActionOption: {
       startUrl: {
-        label: '開始ページURL',
-        description: 'ページアクションを開始するページのURLです。',
+        label: '開始URL',
+        description: 'ページアクションを開始するURLです。',
+        faviconAlt: '開始URLのファビコン',
       },
     },
   },
@@ -139,6 +146,37 @@ const lang = {
       '当サイトでは、より良い体験を提供するためにCookieを使用しています。詳細はCookieポリシーをご覧ください。',
     accept: '同意する',
     decline: '同意しない',
+  },
+  uninstallForm: {
+    title: 'アンインストールが完了しました。',
+    description:
+      'これまでSelection Commandをご利用いただきありがとうございました。 お別れするのはとても残念ですが、今後の拡張機能の改善のため、以下のアンケートにご協力いただけますと幸いです。',
+    reinstall:
+      '誤ってアンインストールされた場合は、以下のリンクから再インストールできます。',
+    reasonTitle: 'アンインストールした理由を教えてください。(複数選択可能)',
+    otherReasonPlaceholder: '具体的な理由をお聞かせください',
+    detailsTitle: 'よろしければ詳細を教えてください。',
+    detailsPlaceholder:
+      'アンインストール理由の詳細、\nやりたかったこと や 困ったこと、\n使えなかったサイト等',
+    submit: '送信',
+    submitting: '送信中...',
+    success: {
+      title: 'アンケート送信が完了しました。',
+      message:
+        'ご回答ありがとうございました。貴重なご意見をいただき、誠にありがとうございます。\nこのフォーム以外で直接ご意見をいただける場合は、ぜひ takeda.yujiro@gmail.com まで、件名を明記のうえご連絡ください。',
+    },
+    error: '送信に失敗しました。時間をおいて再度お試しください。',
+    reasons: {
+      difficult_to_use: '使い方が分からなかった',
+      not_user_friendly: '使いづらかった',
+      not_working: '期待通りに動作しなかった',
+      missing_features: '必要な機能がなかった',
+      too_many_permissions: '必要な権限が多すぎる',
+      found_better: 'より良い代替製品を見つけた',
+      no_longer_needed: 'もう必要なくなった',
+      language_not_supported: '希望する言語に対応していない',
+      [UNINSTALL_OTHER_OPTION]: 'その他',
+    },
   },
 }
 export default lang
