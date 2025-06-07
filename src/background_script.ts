@@ -457,7 +457,10 @@ chrome.runtime.onInstalled.addListener((details) => {
     accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
   })
 
-  if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+  if (
+    details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
+    details.reason === chrome.runtime.OnInstalledReason.UPDATE
+  ) {
     // Set uninstall survey URL
     chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
   }
