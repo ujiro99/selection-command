@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Deutsch',
@@ -169,15 +170,15 @@ const lang = {
     error:
       'Der Sendevorgang ist fehlgeschlagen. Bitte versuchen Sie es in Kürze erneut.',
     reasons: {
-      difficult_to_use: 'Ich weiß nicht, wie man es benutzt',
-      not_user_friendly: 'Schwierig zu benutzen',
-      not_working: 'Funktioniert nicht wie erwartet',
-      missing_features: 'Benötigte Funktionen fehlen',
+      difficult_to_use: 'Ich wusste nicht, wie man es benutzt',
+      not_user_friendly: 'Nicht benutzerfreundlich',
+      not_working: 'Funktionierte nicht wie erwartet',
+      missing_features: 'Fehlende benötigte Funktionen',
       too_many_permissions: 'Zu viele Berechtigungen erforderlich',
-      found_better: 'Ich habe ein besseres Produkt gefunden',
-      no_longer_needed: 'Ich brauche es nicht mehr',
-      language_not_supported: 'Meine Sprache wird nicht unterstützt',
-      other: 'Andere',
+      found_better: 'Bessere Alternative gefunden',
+      no_longer_needed: 'Wird nicht mehr benötigt',
+      language_not_supported: 'Sprache wird nicht unterstützt',
+      [UNINSTALL_OTHER_OPTION]: 'Sonstiges',
     },
   },
 }

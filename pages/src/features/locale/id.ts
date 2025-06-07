@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Bahasa Indonesia',
@@ -167,14 +168,14 @@ const lang = {
     error: 'Gagal mengirim. Silakan coba lagi nanti.',
     reasons: {
       difficult_to_use: 'Tidak tahu cara menggunakannya',
-      not_user_friendly: 'Sulit digunakan',
+      not_user_friendly: 'Tidak ramah pengguna',
       not_working: 'Tidak berfungsi seperti yang diharapkan',
       missing_features: 'Fitur yang diperlukan tidak ada',
       too_many_permissions: 'Terlalu banyak izin yang diperlukan',
-      found_better: 'Menemukan produk yang lebih baik',
-      no_longer_needed: 'Tidak lagi diperlukan',
-      language_not_supported: 'Bahasa yang diinginkan tidak didukung',
-      other: 'Lainnya',
+      found_better: 'Menemukan alternatif yang lebih baik',
+      no_longer_needed: 'Tidak diperlukan lagi',
+      language_not_supported: 'Bahasa tidak didukung',
+      [UNINSTALL_OTHER_OPTION]: 'Lainnya',
     },
   },
 }

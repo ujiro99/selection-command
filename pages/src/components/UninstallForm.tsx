@@ -7,9 +7,11 @@ import { Input } from '@/components/ui/input'
 import { Image } from '@/components/Image'
 import { useLocale } from '@/hooks/useLocale'
 import { Send, SquareArrowOutUpRight } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { UninstallFormType } from '@/types'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { cn } from '@/lib/utils'
 
 import css from './CommandForm.module.css'
 
@@ -35,13 +37,33 @@ export function UninstallForm() {
   const [submitStatus, setSubmitStatus] = useState<SubmitStatusType>(
     SubmitStatus.IDLE,
   )
+  const [uninstallReasons, setUninstallReasons] = useState<UninstallReason[]>(
+    [],
+  )
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  const uninstallReasons: UninstallReason[] = Object.entries(
-    dict.uninstallForm.reasons,
-  ).map(([id, label]) => ({
-    id,
-    label: label as string,
-  }))
+  // Randomize order only on the client side
+  useEffect(() => {
+    const entries = Object.entries(dict.uninstallForm.reasons)
+    const otherEntry = entries.find(([id]) => id === UNINSTALL_OTHER_OPTION)
+    const otherEntries = entries.filter(([id]) => id !== UNINSTALL_OTHER_OPTION)
+
+    // Shuffle entries except for "Other" option
+    const shuffledEntries = otherEntries.sort(() => Math.random() - 0.5)
+
+    // Add "Other" option at the end if it exists
+    const finalEntries = otherEntry
+      ? [...shuffledEntries, otherEntry]
+      : shuffledEntries
+
+    setUninstallReasons(
+      finalEntries.map(([id, label]) => ({
+        id,
+        label: label as string,
+      })),
+    )
+    setIsInitialized(true)
+  }, [dict.uninstallForm.reasons])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,7 +74,9 @@ export function UninstallForm() {
       const response = await submit({
         uninstallReason: selectedReasons,
         details,
-        otherReason: selectedReasons.includes('other') ? otherReason : '',
+        otherReason: selectedReasons.includes(UNINSTALL_OTHER_OPTION)
+          ? otherReason
+          : '',
         locale: lang,
       } as UninstallFormType)
 
@@ -73,7 +97,13 @@ export function UninstallForm() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
+    <div
+      className={cn(
+        'max-w-2xl mx-auto p-6',
+        !isInitialized && 'opacity-0',
+        isInitialized && 'transition-opacity duration-50',
+      )}
+    >
       {submitStatus === SubmitStatus.SUCCESS ? (
         <>
           <h1 className="text-3xl font-bold text-center mb-8">
@@ -81,16 +111,16 @@ export function UninstallForm() {
           </h1>
           <div className="flex items-center">
             <div className="p-6 bg-green-50 rounded-lg">
-              <p className="text-green-700 font-medium leading-relaxed whitespace-pre-line">
+              <p className="text-green-700 leading-relaxed whitespace-pre-line">
                 {dict.uninstallForm.success.message}
               </p>
             </div>
             <Image
               src="/ozigi_suit_man_simple.png"
               alt="Thank you"
-              className="ml-6"
+              className="ml-6 w-auto h-auto"
               width={60}
-              height={200}
+              height={210}
               loading="lazy"
             />
           </div>
@@ -143,7 +173,9 @@ export function UninstallForm() {
                 ))}
               </div>
 
-              <Collapsible open={selectedReasons.includes('other')}>
+              <Collapsible
+                open={selectedReasons.includes(UNINSTALL_OTHER_OPTION)}
+              >
                 <CollapsibleContent className={css.CollapsibleContent}>
                   <div className="ml-6 mt-2">
                     <Input

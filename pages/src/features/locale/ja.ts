@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: '日本語',
@@ -174,7 +175,7 @@ const lang = {
       found_better: 'より良い代替製品を見つけた',
       no_longer_needed: 'もう必要なくなった',
       language_not_supported: '希望する言語に対応していない',
-      other: 'その他',
+      [UNINSTALL_OTHER_OPTION]: 'その他',
     },
   },
 }

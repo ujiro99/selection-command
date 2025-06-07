@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'हिन्दी',
@@ -167,15 +168,15 @@ const lang = {
     },
     error: 'भेजना विफल रहा। कृपया कुछ देर बाद पुनः प्रयास करें।',
     reasons: {
-      difficult_to_use: 'मुझे पता नहीं है कि इसका उपयोग कैसे करें',
-      not_user_friendly: 'उपयोग करना मुश्किल है',
-      not_working: 'अपेक्षित रूप से काम नहीं कर रहा है',
-      missing_features: 'आवश्यक सुविधाएं नहीं हैं',
-      too_many_permissions: 'बहुत अधिक अनुमतियां आवश्यक हैं',
-      found_better: 'मुझे एक बेहतर उत्पाद मिला',
-      no_longer_needed: 'मुझे अब इसकी आवश्यकता नहीं है',
-      language_not_supported: 'मेरी भाषा समर्थित नहीं है',
-      other: 'अन्य',
+      difficult_to_use: 'मुझे इसका उपयोग करना नहीं आया',
+      not_user_friendly: 'उपयोगकर्ता के अनुकूल नहीं',
+      not_working: 'अपेक्षा के अनुसार काम नहीं किया',
+      missing_features: 'आवश्यक सुविधाएँ नहीं थीं',
+      too_many_permissions: 'बहुत अधिक अनुमतियाँ आवश्यक थीं',
+      found_better: 'बेहतर विकल्प मिला',
+      no_longer_needed: 'अब आवश्यकता नहीं',
+      language_not_supported: 'भाषा समर्थित नहीं है',
+      [UNINSTALL_OTHER_OPTION]: 'अन्य',
     },
   },
 }

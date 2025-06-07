@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: '简体中文',
@@ -163,14 +164,14 @@ const lang = {
     error: '发送失败。请稍后重试。',
     reasons: {
       difficult_to_use: '不知道如何使用',
-      not_user_friendly: '使用不便',
+      not_user_friendly: '使用不方便',
       not_working: '不能按预期工作',
       missing_features: '缺少所需功能',
       too_many_permissions: '需要太多权限',
       found_better: '找到了更好的替代品',
       no_longer_needed: '不再需要',
       language_not_supported: '不支持所需语言',
-      other: '其他',
+      [UNINSTALL_OTHER_OPTION]: '其他',
     },
   },
 }

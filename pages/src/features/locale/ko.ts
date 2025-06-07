@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: '한국어',
@@ -164,15 +165,15 @@ const lang = {
     },
     error: '전송에 실패했습니다. 잠시 후 다시 시도해 주세요.',
     reasons: {
-      difficult_to_use: '사용 방법을 모르겠음',
-      not_user_friendly: '사용하기 어려움',
-      not_working: '예상대로 작동하지 않음',
-      missing_features: '필요한 기능이 없음',
-      too_many_permissions: '필요한 권한이 너무 많음',
-      found_better: '더 나은 대체 제품을 찾음',
-      no_longer_needed: '더 이상 필요하지 않음',
-      language_not_supported: '원하는 언어가 지원되지 않음',
-      other: '기타',
+      difficult_to_use: '사용 방법을 몰랐어요',
+      not_user_friendly: '사용자 친화적이지 않아요',
+      not_working: '기대한 대로 동작하지 않았어요',
+      missing_features: '필요한 기능이 없었어요',
+      too_many_permissions: '권한이 너무 많아요',
+      found_better: '더 나은 대안을 찾았어요',
+      no_longer_needed: '더 이상 필요하지 않아요',
+      language_not_supported: '원하는 언어가 지원되지 않아요',
+      [UNINSTALL_OTHER_OPTION]: '기타',
     },
   },
 }

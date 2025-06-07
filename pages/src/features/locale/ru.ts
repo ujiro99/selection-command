@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Русский',
@@ -168,14 +169,14 @@ const lang = {
     error: 'Не удалось отправить. Пожалуйста, попробуйте позже.',
     reasons: {
       difficult_to_use: 'Не знал, как использовать',
-      not_user_friendly: 'Неудобно использовать',
-      not_working: 'Не работало как ожидалось',
-      missing_features: 'Отсутствовали необходимые функции',
-      too_many_permissions: 'Требовалось слишком много разрешений',
+      not_user_friendly: 'Неудобный интерфейс',
+      not_working: 'Не работает как ожидалось',
+      missing_features: 'Отсутствуют нужные функции',
+      too_many_permissions: 'Требуется слишком много разрешений',
       found_better: 'Нашел лучшую альтернативу',
-      no_longer_needed: 'Больше не нужно',
-      language_not_supported: 'Нужный язык не поддерживается',
-      other: 'Другое',
+      no_longer_needed: 'Больше не нужен',
+      language_not_supported: 'Язык не поддерживается',
+      [UNINSTALL_OTHER_OPTION]: 'Другое',
     },
   },
 }

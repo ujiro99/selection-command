@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Português (Brasil)',
@@ -167,15 +168,15 @@ const lang = {
     },
     error: 'Falha ao enviar. Por favor, tente novamente mais tarde.',
     reasons: {
-      difficult_to_use: 'Não sabia como usar',
-      not_user_friendly: 'Difícil de usar',
+      difficult_to_use: 'Não soube como usar',
+      not_user_friendly: 'Pouco intuitivo',
       not_working: 'Não funcionou como esperado',
-      missing_features: 'Faltavam recursos necessários',
-      too_many_permissions: 'Muitas permissões necessárias',
-      found_better: 'Encontrei um produto melhor',
-      no_longer_needed: 'Não é mais necessário',
-      language_not_supported: 'Idioma desejado não suportado',
-      other: 'Outro',
+      missing_features: 'Faltam funcionalidades necessárias',
+      too_many_permissions: 'Requereu permissões a mais',
+      found_better: 'Encontrei uma alternativa melhor',
+      no_longer_needed: 'Já não é necessário',
+      language_not_supported: 'Idioma não suportado',
+      [UNINSTALL_OTHER_OPTION]: 'Outro',
     },
   },
 }

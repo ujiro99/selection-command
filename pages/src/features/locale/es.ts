@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Español',
@@ -169,15 +170,15 @@ const lang = {
     error:
       'El envío ha fallado. Por favor, inténtelo de nuevo en unos momentos.',
     reasons: {
-      difficult_to_use: 'No sé cómo usarlo',
-      not_user_friendly: 'Difícil de usar',
-      not_working: 'No funciona como se esperaba',
-      missing_features: 'Faltan funciones necesarias',
-      too_many_permissions: 'Se requieren demasiados permisos',
-      found_better: 'Encontré un mejor producto',
+      difficult_to_use: 'No supe cómo usarlo',
+      not_user_friendly: 'No es fácil de usar',
+      not_working: 'No funcionó como esperaba',
+      missing_features: 'Faltaban funciones necesarias',
+      too_many_permissions: 'Requería demasiados permisos',
+      found_better: 'Encontré una mejor alternativa',
       no_longer_needed: 'Ya no lo necesito',
-      language_not_supported: 'Mi idioma no está soportado',
-      other: 'Otro',
+      language_not_supported: 'Idioma no soportado',
+      [UNINSTALL_OTHER_OPTION]: 'Otro',
     },
   },
 }

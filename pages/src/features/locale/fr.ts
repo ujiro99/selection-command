@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Français',
@@ -168,15 +169,15 @@ const lang = {
     },
     error: "L'envoi a échoué. Veuillez réessayer dans quelques instants.",
     reasons: {
-      difficult_to_use: "Je ne sais pas comment l'utiliser",
-      not_user_friendly: 'Difficile à utiliser',
+      difficult_to_use: "Je ne savais pas comment l'utiliser",
+      not_user_friendly: 'Pas convivial',
       not_working: 'Ne fonctionne pas comme prévu',
-      missing_features: 'Fonctionnalités manquantes',
+      missing_features: 'Fonctionnalités nécessaires manquantes',
       too_many_permissions: 'Trop de permissions requises',
-      found_better: "J'ai trouvé un meilleur produit",
-      no_longer_needed: "Je n'en ai plus besoin",
-      language_not_supported: "Ma langue n'est pas prise en charge",
-      other: 'Autre',
+      found_better: 'Trouvé une meilleure alternative',
+      no_longer_needed: "N'est plus nécessaire",
+      language_not_supported: 'Langue non prise en charge',
+      [UNINSTALL_OTHER_OPTION]: 'Autre',
     },
   },
 }

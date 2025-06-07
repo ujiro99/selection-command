@@ -1,4 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
+import { UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'English',
@@ -175,7 +176,7 @@ const lang = {
       found_better: 'Found a better alternative',
       no_longer_needed: 'No longer needed',
       language_not_supported: 'Language not supported',
-      other: 'Other',
+      [UNINSTALL_OTHER_OPTION]: 'Other',
     },
   },
 }
