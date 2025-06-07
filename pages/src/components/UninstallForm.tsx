@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react'
 import type { UninstallFormType } from '@/types'
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { UNINSTALL_OTHER_OPTION } from '@/const'
-import { cn } from '@/lib/utils'
+import { cn, sleep } from '@/lib/utils'
 
 import css from './CommandForm.module.css'
 
@@ -84,6 +84,7 @@ export function UninstallForm() {
         throw new Error('Failed to submit form')
       }
 
+      await sleep(1000)
       setSubmitStatus(SubmitStatus.SUCCESS)
       setSelectedReasons([])
       setOtherReason('')
