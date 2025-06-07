@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: 'शीर्षक',
       description: 'कमांड के शीर्षक के रूप में दिखाया जाएगा।',
+      placeholder: 'कमांड का शीर्षक',
       message: {
         min3: 'शीर्षक कम से कम 3 अक्षर का होना चाहिए।',
         max100: 'शीर्षक अधिकतम 100 अक्षर का हो सकता है।',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: 'खोज URL',
       description: '`%s` को चयनित पाठ से बदल दिया जाएगा।',
+      placeholder: 'खोज URL',
+      faviconAlt: 'खोज URL का फेविकॉन',
       message: {
         url: 'URL प्रारूप अमान्य है।',
         unique: 'यह पहले से ही पंजीकृत है।',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: 'कमांड विवरण',
       description: 'कमांड के विवरण के रूप में दिखाया जाएगा।',
+      placeholder: 'कमांड विवरण',
       message: {
         max200: 'विवरण अधिकतम 200 अक्षर का हो सकता है।',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: 'आइकन URL',
       description: 'मेनू के आइकन के रूप में दिखाया जाएगा।',
+      placeholder: 'आइकन URL',
       message: {
         url: 'URL प्रारूप अमान्य है।',
       },
@@ -86,8 +91,9 @@ const lang = {
     },
     PageActionOption: {
       startUrl: {
-        label: 'प्रारंभ पेज URL',
-        description: 'पेज एक्शन शुरू होने वाले पेज का URL।',
+        label: 'प्रारंभ पृष्ठ URL',
+        description: 'पृष्ठ क्रिया शुरू होने वाले पृष्ठ का URL।',
+        faviconAlt: 'प्रारंभ पृष्ठ URL का फेविकॉन',
       },
     },
   },

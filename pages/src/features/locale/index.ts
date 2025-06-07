@@ -1,33 +1,33 @@
 import en from './en'
 import ja from './ja'
-import pt_PT from './pt_PT'
+import zh_CN from './zh_CN'
+import es from './es'
+import fr from './fr'
+import de from './de'
+import ru from './ru'
+import ko from './ko'
+import it from './it'
 import pt_BR from './pt_BR'
+import pt_PT from './pt_PT'
+import hi from './hi'
 import id from './id'
 import ms from './ms'
-import zh_CN from './zh_CN'
-import ru from './ru'
-import it from './it'
-import ko from './ko'
-import fr from './fr'
-import hi from './hi'
-import es from './es'
-import de from './de'
 
 export const LanguageMap = {
-  en,
-  ja,
-  'pt-PT': pt_PT,
-  'pt-BR': pt_BR,
-  id,
-  ms,
-  'zh-CN': zh_CN,
-  ru,
-  it,
-  ko,
-  fr,
-  hi,
-  es,
-  de,
+  en, // English (Global language)
+  ja, // Japanese
+  'zh-CN': zh_CN, // Chinese (Simplified)
+  ko, // Korean
+  es, // Spanish
+  fr, // French
+  de, // German
+  ru, // Russian
+  it, // Italian
+  'pt-BR': pt_BR, // Portuguese (Brazil)
+  'pt-PT': pt_PT, // Portuguese (Portugal)
+  hi, // Hindi
+  id, // Indonesian
+  ms, // Malay
 } as const
 
 export type LanguageType = keyof typeof LanguageMap

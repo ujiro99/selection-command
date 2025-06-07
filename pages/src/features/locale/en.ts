@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: 'Title',
       description: 'Displayed as the title of the command.',
+      placeholder: 'Title of command',
       message: {
         min3: 'The title must be at least 3 characters long.',
         max100: 'The title must be at most 100 characters long.',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: 'Search URL',
       description: 'Replace `%s` with the selected text.',
+      placeholder: 'Search URL',
+      faviconAlt: "Search url's favicon",
       message: {
         url: 'URL format is incorrect.',
         unique: 'Already registered.',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: 'Description',
       description: 'Displayed as the description of the command.',
+      placeholder: 'Command description',
       message: {
         max200: 'Description must be at most 200 characters long.',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: 'Icon URL',
       description: 'Displayed as the icon of the menu.',
+      placeholder: 'Icon URL',
       message: {
         url: 'URL format is incorrect.',
       },
@@ -88,6 +93,7 @@ const lang = {
       startUrl: {
         label: 'Start Page URL',
         description: 'URL to start the page action.',
+        faviconAlt: "Start url's favicon",
       },
     },
   },

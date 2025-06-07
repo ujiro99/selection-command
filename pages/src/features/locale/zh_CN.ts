@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: '标题',
       description: '将显示为命令的标题。',
+      placeholder: '命令标题',
       message: {
         min3: '标题至少需要3个字符。',
         max100: '标题最多100个字符。',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: '搜索URL',
       description: '将`%s`替换为选中的文本。',
+      placeholder: '搜索URL',
+      faviconAlt: '搜索URL的网站图标',
       message: {
         url: 'URL格式不正确。',
         unique: '已经注册。',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: '命令说明',
       description: '将显示为命令的说明。',
+      placeholder: '命令说明',
       message: {
         max200: '说明最多200个字符。',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: '图标URL',
       description: '将显示为菜单中的图标。',
+      placeholder: '图标URL',
       message: {
         url: 'URL格式不正确。',
       },
@@ -87,7 +92,8 @@ const lang = {
     PageActionOption: {
       startUrl: {
         label: '起始页面URL',
-        description: '页面操作开始的页面URL。',
+        description: '页面操作将开始的页面URL。',
+        faviconAlt: '起始页面URL的网站图标',
       },
     },
   },

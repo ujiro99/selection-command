@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: 'Titre',
       description: 'Sera affiché comme titre de la commande.',
+      placeholder: 'Titre de la commande',
       message: {
         min3: 'Le titre doit contenir au moins 3 caractères.',
         max100: 'Le titre ne peut pas dépasser 100 caractères.',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: 'URL de recherche',
       description: '`%s` sera remplacé par le texte sélectionné.',
+      placeholder: 'URL de recherche',
+      faviconAlt: "Favicon de l'URL de recherche",
       message: {
         url: "Le format de l'URL n'est pas valide.",
         unique: 'Cette URL est déjà enregistrée.',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: 'Description de la commande',
       description: 'Sera affiché comme description de la commande.',
+      placeholder: 'Description de la commande',
       message: {
         max200: 'La description ne peut pas dépasser 200 caractères.',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: "URL de l'icône",
       description: 'Sera affiché comme icône du menu.',
+      placeholder: "URL de l'icône",
       message: {
         url: "Le format de l'URL n'est pas valide.",
       },
@@ -88,6 +93,7 @@ const lang = {
       startUrl: {
         label: 'URL de la page de départ',
         description: "URL de la page où l'action de page commencera.",
+        faviconAlt: "Favicon de l'URL de la page de départ",
       },
     },
   },

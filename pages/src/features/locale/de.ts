@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: 'Titel',
       description: 'Wird als Titel des Befehls angezeigt.',
+      placeholder: 'Titel des Befehls',
       message: {
         min3: 'Der Titel muss mindestens 3 Zeichen lang sein.',
         max100: 'Der Titel darf maximal 100 Zeichen lang sein.',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: 'Such-URL',
       description: '`%s` wird durch den ausgewählten Text ersetzt.',
+      placeholder: 'Such-URL',
+      faviconAlt: 'Favicon der Such-URL',
       message: {
         url: 'Das URL-Format ist ungültig.',
         unique: 'Diese URL ist bereits registriert.',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: 'Befehlsbeschreibung',
       description: 'Wird als Beschreibung des Befehls angezeigt.',
+      placeholder: 'Befehlsbeschreibung',
       message: {
         max200: 'Die Beschreibung darf maximal 200 Zeichen lang sein.',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: 'Icon-URL',
       description: 'Wird als Menü-Icon angezeigt.',
+      placeholder: 'Icon-URL',
       message: {
         url: 'Das URL-Format ist ungültig.',
       },
@@ -88,6 +93,7 @@ const lang = {
       startUrl: {
         label: 'Startseiten-URL',
         description: 'URL der Seite, auf der die Seitenaktion beginnen soll.',
+        faviconAlt: 'Favicon der Startseiten-URL',
       },
     },
   },

@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: 'Judul',
       description: 'Akan ditampilkan sebagai judul perintah.',
+      placeholder: 'Judul perintah',
       message: {
         min3: 'Judul minimal 3 karakter.',
         max100: 'Judul maksimal 100 karakter.',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: 'URL Pencarian',
       description: 'Mengganti `%s` dengan teks yang dipilih.',
+      placeholder: 'URL Pencarian',
+      faviconAlt: 'Favicon URL pencarian',
       message: {
         url: 'Format URL tidak valid.',
         unique: 'Sudah terdaftar.',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: 'Deskripsi Perintah',
       description: 'Akan ditampilkan sebagai deskripsi perintah.',
+      placeholder: 'Deskripsi perintah',
       message: {
         max200: 'Deskripsi maksimal 200 karakter.',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: 'URL Ikon',
       description: 'Akan ditampilkan sebagai ikon di menu.',
+      placeholder: 'URL Ikon',
       message: {
         url: 'Format URL tidak valid.',
       },
@@ -87,7 +92,8 @@ const lang = {
     PageActionOption: {
       startUrl: {
         label: 'URL Halaman Awal',
-        description: 'URL halaman tempat aksi halaman akan dimulai.',
+        description: 'URL halaman di mana tindakan halaman akan dimulai.',
+        faviconAlt: 'Favicon URL halaman awal',
       },
     },
   },

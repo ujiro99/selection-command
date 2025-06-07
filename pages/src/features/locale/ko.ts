@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: '제목',
       description: '명령어의 제목으로 표시됩니다.',
+      placeholder: '명령어 제목',
       message: {
         min3: '제목은 최소 3자 이상이어야 합니다.',
         max100: '제목은 최대 100자까지 가능합니다.',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: '검색 URL',
       description: '`%s`를 선택한 텍스트로 대체합니다.',
+      placeholder: '검색 URL',
+      faviconAlt: '검색 URL의 파비콘',
       message: {
         url: 'URL 형식이 올바르지 않습니다.',
         unique: '이미 등록되어 있습니다.',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: '명령어 설명',
       description: '명령어의 설명으로 표시됩니다.',
+      placeholder: '명령어 설명',
       message: {
         max200: '설명은 최대 200자까지 가능합니다.',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: '아이콘 URL',
       description: '메뉴의 아이콘으로 표시됩니다.',
+      placeholder: '아이콘 URL',
       message: {
         url: 'URL 형식이 올바르지 않습니다.',
       },
@@ -88,6 +93,7 @@ const lang = {
       startUrl: {
         label: '시작 페이지 URL',
         description: '페이지 액션이 시작될 페이지의 URL입니다.',
+        faviconAlt: '시작 페이지 URL의 파비콘',
       },
     },
   },

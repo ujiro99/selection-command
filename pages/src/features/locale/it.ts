@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: 'Titolo',
       description: 'Verrà visualizzato come titolo del comando.',
+      placeholder: 'Titolo del comando',
       message: {
         min3: 'Il titolo deve essere di almeno 3 caratteri.',
         max100: 'Il titolo deve essere di massimo 100 caratteri.',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: 'URL di Ricerca',
       description: 'Sostituisce `%s` con il testo selezionato.',
+      placeholder: 'URL di Ricerca',
+      faviconAlt: "Favicon dell'URL di ricerca",
       message: {
         url: 'Formato URL non valido.',
         unique: 'Già registrato.',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: 'Descrizione del Comando',
       description: 'Verrà visualizzata come descrizione del comando.',
+      placeholder: 'Descrizione del comando',
       message: {
         max200: 'La descrizione deve essere di massimo 200 caratteri.',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: 'URL Icona',
       description: 'Verrà visualizzata come icona nel menu.',
+      placeholder: 'URL Icona',
       message: {
         url: 'Formato URL non valido.',
       },
@@ -89,6 +94,7 @@ const lang = {
       startUrl: {
         label: 'URL Pagina Iniziale',
         description: "URL della pagina da cui inizierà l'azione della pagina.",
+        faviconAlt: "Favicon dell'URL della pagina iniziale",
       },
     },
   },

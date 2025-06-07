@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: 'Заголовок',
       description: 'Будет отображаться как заголовок команды.',
+      placeholder: 'Заголовок команды',
       message: {
         min3: 'Заголовок должен содержать минимум 3 символа.',
         max100: 'Заголовок должен содержать максимум 100 символов.',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: 'URL поиска',
       description: 'Заменяет `%s` на выбранный текст.',
+      placeholder: 'URL поиска',
+      faviconAlt: 'Фавикон URL поиска',
       message: {
         url: 'Неверный формат URL.',
         unique: 'Уже зарегистрировано.',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: 'Описание команды',
       description: 'Будет отображаться как описание команды.',
+      placeholder: 'Описание команды',
       message: {
         max200: 'Описание должно содержать максимум 200 символов.',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: 'URL иконки',
       description: 'Будет отображаться как иконка в меню.',
+      placeholder: 'URL иконки',
       message: {
         url: 'Неверный формат URL.',
       },
@@ -88,6 +93,7 @@ const lang = {
       startUrl: {
         label: 'URL начальной страницы',
         description: 'URL страницы, с которой начнется действие страницы.',
+        faviconAlt: 'Фавикон URL начальной страницы',
       },
     },
   },

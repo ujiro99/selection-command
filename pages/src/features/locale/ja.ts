@@ -20,6 +20,7 @@ const lang = {
     title: {
       label: 'タイトル',
       description: 'コマンドのタイトルとして表示されます。',
+      placeholder: 'コマンドのタイトル',
       message: {
         min3: 'タイトルは最短3文字です。',
         max100: 'タイトルは最長100文字です。',
@@ -28,6 +29,8 @@ const lang = {
     searchUrl: {
       label: '検索URL',
       description: '`%s`を選択テキストに置換します。',
+      placeholder: '検索URL',
+      faviconAlt: '検索URLのファビコン',
       message: {
         url: 'URL形式が正しくありません。',
         unique: '既に登録されています。',
@@ -36,6 +39,7 @@ const lang = {
     description: {
       label: 'コマンドの説明',
       description: 'コマンドの説明として表示されます。',
+      placeholder: 'コマンドの説明',
       message: {
         max200: '説明は最長200文字です。',
       },
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: 'アイコンURL',
       description: 'メニューのアイコンとして表示されます。',
+      placeholder: 'アイコンURL',
       message: {
         url: 'URL形式が正しくありません。',
       },
@@ -86,8 +91,9 @@ const lang = {
     },
     PageActionOption: {
       startUrl: {
-        label: '開始ページURL',
-        description: 'ページアクションを開始するページのURLです。',
+        label: '開始URL',
+        description: 'ページアクションを開始するURLです。',
+        faviconAlt: '開始URLのファビコン',
       },
     },
   },

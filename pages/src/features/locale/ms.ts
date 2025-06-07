@@ -20,14 +20,17 @@ const lang = {
     title: {
       label: 'Tajuk',
       description: 'Akan dipaparkan sebagai tajuk arahan.',
+      placeholder: 'Tajuk arahan',
       message: {
-        min3: 'Tajuk mestilah sekurang-kurangnya 3 aksara.',
-        max100: 'Tajuk mestilah maksimum 100 aksara.',
+        min3: 'Tajuk minimum 3 aksara.',
+        max100: 'Tajuk maksimum 100 aksara.',
       },
     },
     searchUrl: {
       label: 'URL Carian',
-      description: 'Menggantikan `%s` dengan teks yang dipilih.',
+      description: 'Ganti `%s` dengan teks yang dipilih.',
+      placeholder: 'URL Carian',
+      faviconAlt: 'Favicon URL carian',
       message: {
         url: 'Format URL tidak sah.',
         unique: 'Sudah didaftarkan.',
@@ -36,8 +39,9 @@ const lang = {
     description: {
       label: 'Penerangan Arahan',
       description: 'Akan dipaparkan sebagai penerangan arahan.',
+      placeholder: 'Penerangan arahan',
       message: {
-        max200: 'Penerangan mestilah maksimum 200 aksara.',
+        max200: 'Penerangan maksimum 200 aksara.',
       },
     },
     tags: {
@@ -51,6 +55,7 @@ const lang = {
     iconUrl: {
       label: 'URL Ikon',
       description: 'Akan dipaparkan sebagai ikon dalam menu.',
+      placeholder: 'URL Ikon',
       message: {
         url: 'Format URL tidak sah.',
       },
@@ -87,7 +92,8 @@ const lang = {
     PageActionOption: {
       startUrl: {
         label: 'URL Halaman Mula',
-        description: 'URL halaman di mana tindakan halaman akan dimulakan.',
+        description: 'URL halaman di mana tindakan halaman akan bermula.',
+        faviconAlt: 'Favicon URL halaman mula',
       },
     },
   },
