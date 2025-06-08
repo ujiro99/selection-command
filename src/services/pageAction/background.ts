@@ -408,16 +408,17 @@ const run = (
       try {
         // Execute
         await Ipc.ensureConnection(tabId)
+        const delay = step.delayMs ?? 0
         await RunningStatus.update(
           step.id,
           EXEC_STATE.Doing,
           '',
-          TIMEOUT + step.delayMs,
+          TIMEOUT + delay,
         )
 
         // Wait for the delay time
-        if (step.delayMs > 0) {
-          await sleep(step.delayMs)
+        if (delay > 0) {
+          await sleep(delay)
         }
 
         const ret = await Ipc.sendTab<
