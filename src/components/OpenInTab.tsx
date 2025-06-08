@@ -3,6 +3,8 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { Icon } from '../components/Icon'
 import './OpenInTab.css'
 
+let isPageUnloading = false
+
 export function OpenInTab(): JSX.Element {
   const [enableOpenInTab, setEnableOpenInTab] = useState(false)
 
@@ -18,13 +20,25 @@ export function OpenInTab(): JSX.Element {
 
   useEffect(() => {
     const onBlur = () => {
-      Ipc.send(BgCommand.onFocusLost)
+      setTimeout(() => {
+        // Ignore blur events caused by screen transitions.
+        if (!isPageUnloading) {
+          Ipc.send(BgCommand.onFocusLost)
+        }
+      }, 100)
     }
+
+    const onBeforeunload = () => {
+      isPageUnloading = true
+    }
+
     if (enableOpenInTab) {
       window.addEventListener('blur', onBlur)
+      window.addEventListener('beforeunload', onBeforeunload)
     }
     return () => {
       window.removeEventListener('blur', onBlur)
+      window.removeEventListener('beforeunload', onBeforeunload)
     }
   }, [enableOpenInTab])
 
