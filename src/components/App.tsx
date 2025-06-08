@@ -9,7 +9,7 @@ import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
 import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
-import { Ipc, TabCommand } from '@/services/ipc'
+import { Ipc, TabCommand, CONNECTION_PORT } from '@/services/ipc'
 import { ToastAction } from '@/components/ui/toast'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/useToast'
@@ -24,10 +24,19 @@ export function App() {
   const { toast } = useToast()
 
   useEffect(() => {
-    Ipc.addListener(TabCommand.connect, () => false)
-    return () => {
-      Ipc.removeListener(TabCommand.connect)
+    // Connect to the background page
+    const port = chrome.runtime.connect({ name: CONNECTION_PORT })
+    port.onMessage.addListener(function (msg) {
+      if (msg.command === TabCommand.connected) {
+        return
+      }
+    })
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError.message)
     }
+    window.addEventListener('beforeunload', () => {
+      port.disconnect()
+    })
   }, [])
 
   useEffect(() => {

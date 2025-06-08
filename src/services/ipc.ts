@@ -1,13 +1,10 @@
 import { Storage, SESSION_STORAGE_KEY } from './storage'
 import { PAGE_ACTION_OPEN_MODE } from '@/const'
 import type { PageActionStep } from '@/types'
-import { sleep, isServiceWorker } from '@/lib/utils'
+import { isServiceWorker } from '@/lib/utils'
 
 // Constants for connection
-const CONNECTION_RETRY_COUNT = 200
-const CONNECTION_RETRY_INTERVAL = 20
-const CONNECTION_TIMEOUT = 4000
-const CONNECTION_CHECK_INTERVAL = 50
+export const CONNECTION_PORT = 'app'
 
 export enum BgCommand {
   openPopup = 'openPopup',
@@ -41,7 +38,7 @@ export enum BgCommand {
 }
 
 export enum TabCommand {
-  connect = 'connect',
+  connected = 'connected',
   executeAction = 'executeAction',
   clickElement = 'clickElement',
   closeMenu = 'closeMenu',
@@ -160,62 +157,41 @@ export const Ipc = {
    * @throws {Error} When connection to the tab fails
    */
   async ensureConnection(tabId: number): Promise<void> {
-    const tab = await chrome.tabs.get(tabId)
-    if (tab.status !== 'complete') {
-      await new Promise<void>((resolve) => {
-        let interval: NodeJS.Timeout
-        let timeout: NodeJS.Timeout
-        const cb = (id: number, info: chrome.tabs.TabChangeInfo) => {
-          if (tabId === id && info.status === 'complete') {
-            cleanup()
-            resolve()
-          }
-        }
-
-        const cleanup = () => {
-          clearTimeout(timeout)
-          clearInterval(interval)
-          chrome.tabs.onUpdated.removeListener(cb)
-        }
-
-        interval = setInterval(async () => {
-          try {
-            const t = await chrome.tabs.get(tabId)
-            if (t.status === 'complete') {
-              cleanup()
-              resolve()
-            }
-          } catch (error) {
-            console.warn('Failed to check tab status:', error)
-          }
-        }, CONNECTION_CHECK_INTERVAL)
-
-        timeout = setTimeout(() => {
-          console.warn('Connection timeout')
-          cleanup()
-          resolve()
-        }, CONNECTION_TIMEOUT)
-
-        chrome.tabs.onUpdated.addListener(cb)
-      })
+    // Check if the tab is already connected
+    const connectionTabs = await Storage.get<number[]>(
+      SESSION_STORAGE_KEY.CONNECTION_TABS,
+    )
+    if (connectionTabs.includes(tabId)) {
+      return
     }
-
-    for (let i = 0; i < CONNECTION_RETRY_COUNT; i++) {
-      try {
-        const ret = await chrome.tabs.sendMessage(tabId, {
-          command: TabCommand.connect,
+    // Connect to the tab
+    const p = new Promise<void>((resolve) => {
+      chrome.runtime.onConnect.addListener(async function (port) {
+        if (port.name !== CONNECTION_PORT) {
+          return
+        }
+        port.postMessage({ command: TabCommand.connected })
+        port.onDisconnect.addListener(() => {
+          Storage.update(
+            SESSION_STORAGE_KEY.CONNECTION_TABS,
+            (tabs: number[]) => {
+              return tabs.filter((t) => t !== tabId)
+            },
+          )
         })
-        if (chrome.runtime.lastError != null) {
-          console.warn(chrome.runtime.lastError)
-          continue
-        }
-        return ret
-      } catch (error) {
-        console.debug(`Connection attempt ${i + 1} failed:`)
+        await Storage.update(
+          SESSION_STORAGE_KEY.CONNECTION_TABS,
+          (tabs: number[]) => {
+            return [...tabs, tabId]
+          },
+        )
+        resolve()
+      })
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message)
       }
-      await sleep(CONNECTION_RETRY_INTERVAL)
-    }
-    throw new Error('Could not connect to tab')
+    })
+    return p
   },
 
   /**
@@ -280,20 +256,7 @@ export const Ipc = {
       }
       return ret
     } catch (error) {
-      try {
-        const tab = await chrome.tabs.get(tabId)
-        console.warn('Could not send message to tab:', {
-          url: tab.url,
-          title: tab.title,
-          error,
-        })
-      } catch (tabError) {
-        console.warn('Could not send message to tab:', {
-          tabId,
-          error,
-          tabError,
-        })
-      }
+      console.error('Failed to send message to tab:', tabId, error, message)
       throw error
     }
   },
