@@ -5,9 +5,6 @@ import { Ipc, TabCommand } from '@/services/ipc'
 import { isMenuCommand, capitalize } from '@/lib/utils'
 import { APP_ID } from '@/const'
 
-chrome.runtime.onInstalled.addListener(() => ContextMenu.init())
-Settings.addChangedListener(() => ContextMenu.init())
-
 export type executeActionProps = {
   command: Command
   useClipboard?: boolean
@@ -15,7 +12,7 @@ export type executeActionProps = {
 
 let initDelayTO: NodeJS.Timeout
 
-const ContextMenu = {
+export const ContextMenu = {
   init: () => {
     clearTimeout(initDelayTO)
     initDelayTO = setTimeout(() => {

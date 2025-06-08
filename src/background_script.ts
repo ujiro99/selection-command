@@ -12,6 +12,7 @@ import { Settings } from '@/services/settings'
 import { PopupOption, PopupPlacement } from '@/services/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
 import { BgData } from '@/services/backgroundData'
+import { ContextMenu } from '@/services/contextMenus'
 import { isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import { execute } from '@/action/background'
 import * as ActionHelper from '@/action/helper'
@@ -474,6 +475,8 @@ if (isDebug) {
 }
 
 chrome.runtime.onInstalled.addListener((details) => {
+  ContextMenu.init()
+
   chrome.storage.session.setAccessLevel({
     accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
   })
@@ -486,6 +489,8 @@ chrome.runtime.onInstalled.addListener((details) => {
     chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
   }
 })
+
+Settings.addChangedListener(() => ContextMenu.init())
 
 // for debug
 // chrome.declarativeNetRequest.onRuleMatchedDebug.addListener(
