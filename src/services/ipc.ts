@@ -21,6 +21,7 @@ export enum BgCommand {
   execApi = 'execApi',
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
+  onFocusLost = 'onFocusLost',
   toggleStar = 'toggleStar',
   captureScreenshot = 'captureScreenshot',
   getTabId = 'getTabId',

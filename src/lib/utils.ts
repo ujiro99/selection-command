@@ -53,7 +53,6 @@ export function toUrl(
   param: string | UrlParam,
   clipboardText?: string,
 ): string {
-  console.debug('toUrl', param, clipboardText)
   if (!isUrlParam(param)) {
     return param
   }
@@ -64,7 +63,6 @@ export function toUrl(
     useClipboard = false,
   } = param
   let text = selectionText
-  console.debug('toUrl', text, useClipboard, clipboardText)
   if (useClipboard && isEmpty(text)) {
     text = clipboardText ?? ''
   }

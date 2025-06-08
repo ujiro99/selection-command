@@ -153,6 +153,7 @@ const commandFuncs = {
         }
       }
     }
+    response(false)
     return false
   },
 
@@ -213,6 +214,41 @@ const commandFuncs = {
 
     // return async
     return true
+  },
+
+  [BgCommand.onFocusLost]: (
+    _param: any,
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const func = async () => {
+      const stack = BgData.get().windowStack
+
+      stack.forEach((layer) => {
+        layer.forEach(async (window, ii) => {
+          if (window.id === sender.tab?.windowId) {
+            // Do nothing when multiple links are open.
+            if (layer.length === 1) {
+              chrome.windows.remove(window.id)
+              layer.splice(ii, 1)
+              await BgData.set((data) => ({
+                ...data,
+                windowStack: stack,
+              }))
+              if (chrome.runtime.lastError) {
+                console.error(chrome.runtime.lastError)
+              }
+            }
+            return
+          }
+        })
+      })
+
+      response(true)
+    }
+
+    func()
+    return false
   },
 
   [BgCommand.toggleStar]: (
@@ -333,22 +369,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Clear selection text
   await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, '')
 
-  // Close all popup windows when focus is lost (WINDOW_ID_NONE)
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
-    if (stack.length > 0) {
-      for (const layer of stack) {
-        for (const window of layer) {
-          chrome.windows.remove(window.id)
-          if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError)
-          }
-        }
-      }
-      BgData.set((data) => ({
-        ...data,
-        windowStack: [],
-      }))
-    }
     return
   }
 

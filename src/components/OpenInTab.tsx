@@ -16,6 +16,18 @@ export function OpenInTab(): JSX.Element {
     })
   }, [])
 
+  useEffect(() => {
+    const onBlur = () => {
+      Ipc.send(BgCommand.onFocusLost)
+    }
+    if (enableOpenInTab) {
+      window.addEventListener('blur', onBlur)
+    }
+    return () => {
+      window.removeEventListener('blur', onBlur)
+    }
+  }, [enableOpenInTab])
+
   return (
     <>
       {enableOpenInTab && (
