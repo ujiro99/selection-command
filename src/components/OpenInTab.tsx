@@ -28,17 +28,17 @@ export function OpenInTab(): JSX.Element {
       }, 100)
     }
 
-    const onBeforeunload = () => {
+    const onPagehide = () => {
       isPageUnloading = true
     }
 
     if (enableOpenInTab) {
       window.addEventListener('blur', onBlur)
-      window.addEventListener('beforeunload', onBeforeunload)
+      window.addEventListener('pagehide', onPagehide)
     }
     return () => {
       window.removeEventListener('blur', onBlur)
-      window.removeEventListener('beforeunload', onBeforeunload)
+      window.removeEventListener('pagehide', onPagehide)
     }
   }, [enableOpenInTab])
 

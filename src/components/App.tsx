@@ -24,19 +24,23 @@ export function App() {
   const { toast } = useToast()
 
   useEffect(() => {
-    // Connect to the background page
-    const port = chrome.runtime.connect({ name: CONNECTION_PORT })
-    port.onMessage.addListener(function (msg) {
-      if (msg.command === TabCommand.connected) {
-        return
+    const connect = () => {
+      // Connect to the background page
+      const port = chrome.runtime.connect({ name: CONNECTION_PORT })
+      port.onMessage.addListener(function (msg) {
+        if (msg.command === TabCommand.connected) {
+          return
+        }
+      })
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message)
       }
-    })
-    if (chrome.runtime.lastError) {
-      console.error(chrome.runtime.lastError.message)
+      window.addEventListener('pagehide', () => {
+        port.disconnect()
+      })
     }
-    window.addEventListener('beforeunload', () => {
-      port.disconnect()
-    })
+    connect()
+    window.addEventListener('pageshow', connect)
   }, [])
 
   useEffect(() => {
