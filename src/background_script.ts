@@ -224,14 +224,32 @@ const commandFuncs = {
   ): boolean => {
     const func = async () => {
       const stack = BgData.get().windowStack
+      const windowId = sender.tab?.windowId
+      if (!windowId) {
+        response(true)
+        return
+      }
 
-      stack.forEach((layer) => {
-        layer.forEach(async (window, ii) => {
-          if (window.id === sender.tab?.windowId) {
-            // Do nothing when multiple links are open.
-            if (layer.length === 1) {
-              chrome.windows.remove(window.id)
-              layer.splice(ii, 1)
+      const src = stack.find((s) => s.find((w) => w.srcWindowId === windowId))
+      if (src) {
+        // Do nothing when the window is src window.
+        response(true)
+        return
+      }
+
+      const layer = stack.find((s) => s.find((w) => w.id === windowId))
+      if (!layer || layer.length > 1) {
+        // Do nothing when the window isn't in the layer or multiple links are opened.
+        response(true)
+        return
+      }
+
+      // Remove the window.
+      chrome.windows.remove(windowId)
+      layer.splice(
+        layer.findIndex((w) => w.id === windowId),
+        1,
+      )
               await BgData.set((data) => ({
                 ...data,
                 windowStack: stack,
@@ -239,13 +257,7 @@ const commandFuncs = {
               if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError)
               }
-            }
-            return
-          }
-        })
-      })
-
-      response(true)
+      response(false)
     }
 
     func()
