@@ -13,6 +13,7 @@ import { PopupOption, PopupPlacement } from '@/services/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
 import { BgData } from '@/services/backgroundData'
 import { ContextMenu } from '@/services/contextMenus'
+import { closeWindow } from '@/services/chrome'
 import { isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import { execute } from '@/action/background'
 import * as ActionHelper from '@/action/helper'
@@ -177,11 +178,9 @@ const commandFuncs = {
     if (!w || w.srcWindowId == null) {
       console.warn('window not found', sender.tab?.windowId)
       chrome.tabs.create({ url: sender.url })
-      chrome.windows.remove(sender.tab?.windowId as number)
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError)
-      }
+      closeWindow(sender.tab?.windowId as number, 'openInTab').then(() => {
       response(true)
+      })
       return true
     }
 
@@ -204,13 +203,12 @@ const commandFuncs = {
             url: sender.url,
             windowId: targetId,
           })
-          chrome.windows.remove(sender.tab?.windowId as number)
-          if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError)
-          }
+          closeWindow(sender.tab?.windowId as number, 'openInTab').then(() => {
           response(true)
-        }
+          })
+        } else {
         response(false)
+        }
       })
 
     // return async
@@ -245,7 +243,7 @@ const commandFuncs = {
       }
 
       // Remove the window.
-      chrome.windows.remove(windowId)
+      await closeWindow(windowId, 'onFocusLost')
       layer.splice(
         layer.findIndex((w) => w.id === windowId),
         1,
@@ -415,10 +413,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   if (closeStack.length > 0) {
     for (const layer of closeStack) {
       for (const window of layer) {
-        chrome.windows.remove(window.id)
-        if (chrome.runtime.lastError) {
-          console.error(chrome.runtime.lastError)
-        }
+        await closeWindow(window.id, 'onFocusChanged')
       }
     }
   }
