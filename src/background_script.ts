@@ -215,7 +215,7 @@ const commandFuncs = {
     return true
   },
 
-  [BgCommand.onFocusLost]: (
+  [BgCommand.onHidden]: (
     _param: any,
     sender: Sender,
     response: (res: unknown) => void,
@@ -223,7 +223,8 @@ const commandFuncs = {
     const func = async () => {
       const stack = BgData.get().windowStack
       const windowId = sender.tab?.windowId
-      if (!windowId) {
+      const tabId = sender.tab?.id
+      if (!windowId || !tabId) {
         response(true)
         return
       }
@@ -243,7 +244,7 @@ const commandFuncs = {
       }
 
       // Remove the window.
-      await closeWindow(windowId, 'onFocusLost')
+      await closeWindow(windowId, 'onHidden')
       layer.splice(
         layer.findIndex((w) => w.id === windowId),
         1,
@@ -252,10 +253,8 @@ const commandFuncs = {
                 ...data,
                 windowStack: stack,
               }))
-              if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError)
-              }
       response(false)
+      return
     }
 
     func()
