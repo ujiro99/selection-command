@@ -7,7 +7,6 @@ import { ResultPopup } from '@/components/result/ResultPopup'
 import { linksInSelection } from '@/services/dom'
 import { useSelectContext } from '@/hooks/useSelectContext'
 import { useCommandExecutor } from '@/hooks/useCommandExecutor'
-import { sendEvent } from '@/services/analytics'
 import { OPEN_MODE, ExecState } from '@/const'
 import type { Command } from '@/types'
 
@@ -56,7 +55,6 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       useSecondary,
     })
 
-    sendEvent('selection_command', { id: openMode })
     e.stopPropagation()
   }
 

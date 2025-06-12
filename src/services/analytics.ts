@@ -4,15 +4,27 @@ import { SessionData } from '@/types'
 
 const GA_ENDPOINT = 'https://www.google-analytics.com/mp/collect'
 const GA_DEBUG_ENDPOINT = 'https://www.google-analytics.com/debug/mp/collect'
-const MEASUREMENT_ID = import.meta.env.MEASUREMENT_ID
-const API_SECRET = import.meta.env.API_SECRET
+const MEASUREMENT_ID = import.meta.env.VITE_MEASUREMENT_ID
+const API_SECRET = import.meta.env.VITE_API_SECRET
 const DEFAULT_ENGAGEMENT_TIME_IN_MSEC = 100
 const SESSION_EXPIRATION_IN_MIN = 30
+
+export const ANALYTICS_EVENTS = {
+  SELECTION_COMMAND: 'selection_command',
+  LINK_COMMAND: 'link_command',
+  COMMAND_SHARE_FORM: 'command_share_form',
+  COMMAND_HUB_ADD: 'command_hub_add',
+  COMMAND_HUB_STAR_ADD: 'command_hub_star_add',
+  COMMAND_HUB_STAR_REMOVE: 'command_hub_star_remove',
+} as const
+
+export type AnalyticsEventName =
+  (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS]
 
 // https://developer.chrome.com/docs/extensions/how-to/integrate/google-analytics-4?t
 
 export async function sendEvent(
-  name: string,
+  name: AnalyticsEventName,
   params: any,
   screen = SCREEN.CONTENT_SCRIPT,
 ) {

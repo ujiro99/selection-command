@@ -1,5 +1,6 @@
 import type { ExecuteCommandParams } from '@/types'
 import { OPEN_MODE } from '@/const'
+import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 
 export async function executeAction({
   actions,
@@ -29,6 +30,8 @@ export async function executeAction({
     changeState: changeState ?? (() => {}),
     target: target ?? null,
   })
+
+  sendEvent(ANALYTICS_EVENTS.SELECTION_COMMAND, { id: mode })
 
   return res
 }
