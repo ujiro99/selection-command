@@ -157,16 +157,22 @@ export const Ipc = {
    * @throws {Error} When connection to the tab fails
    */
   async ensureConnection(tabId: number): Promise<void> {
-    // Check if the tab is already connected
-    const connectionTabs = await Storage.get<number[]>(
-      SESSION_STORAGE_KEY.CONNECTION_TABS,
-    )
-    if (connectionTabs.includes(tabId)) {
-      return
+    // Check tab status before sending the next message,
+    // as it might be sent before port.onDisconnect is called during page load.
+    const tab = await chrome.tabs.get(tabId)
+    if (tab.status === 'complete') {
+      // Check if the tab is already connected
+      const connectionTabs = await Storage.get<number[]>(
+        SESSION_STORAGE_KEY.CONNECTION_TABS,
+      )
+      if (connectionTabs.includes(tabId)) {
+        return
+      }
     }
+
     // Connect to the tab
     const p = new Promise<void>((resolve) => {
-      chrome.runtime.onConnect.addListener(async function (port) {
+      const onConnect = async function (port: chrome.runtime.Port) {
         if (port.name !== CONNECTION_PORT) {
           return
         }
@@ -185,8 +191,10 @@ export const Ipc = {
             return [...tabs, tabId]
           },
         )
+        chrome.runtime.onConnect.removeListener(onConnect)
         resolve()
-      })
+      }
+      chrome.runtime.onConnect.addListener(onConnect)
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError.message)
       }
