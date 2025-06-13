@@ -9,7 +9,7 @@ import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
 import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
-import { Ipc, TabCommand, CONNECTION_PORT } from '@/services/ipc'
+import { Ipc, TabCommand, CONNECTION_PORT, BgCommand } from '@/services/ipc'
 import { ToastAction } from '@/components/ui/toast'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/hooks/useToast'
@@ -24,23 +24,40 @@ export function App() {
   const { toast } = useToast()
 
   useEffect(() => {
+    // Connect to the background page
     const connect = () => {
-      // Connect to the background page
+      // from content script
       const port = chrome.runtime.connect({ name: CONNECTION_PORT })
-      port.onMessage.addListener(function (msg) {
-        if (msg.command === TabCommand.connected) {
-          return
-        }
-      })
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError.message)
       }
-      window.addEventListener('pagehide', () => {
-        port.disconnect()
+      port.onMessage.addListener(function (msg) {
+        if (msg.command === TabCommand.connected) {
+          port.disconnect()
+          return
+        }
       })
+      window.removeEventListener('pageshow', connect)
     }
     connect()
     window.addEventListener('pageshow', connect)
+
+    // from background script
+    const onConnect = (port: chrome.runtime.Port) => {
+      if (port.name !== CONNECTION_PORT) {
+        return
+      }
+      port.postMessage({ command: BgCommand.connected })
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError.message)
+      }
+    }
+    chrome.runtime.onConnect.addListener(onConnect)
+
+    return () => {
+      chrome.runtime.onConnect.removeListener(onConnect)
+      window.removeEventListener('pageshow', connect)
+    }
   }, [])
 
   useEffect(() => {
