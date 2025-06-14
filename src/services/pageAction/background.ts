@@ -421,6 +421,7 @@ const run = (
           await sleep(delay)
         }
 
+        // console.log('sendTab', step.param.type)
         const ret = await Ipc.sendTab<
           ExecPageAction.Message,
           ExecPageAction.Return

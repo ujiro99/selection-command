@@ -27,6 +27,7 @@ export function App() {
     // Connect to the background page
     const connect = () => {
       // from content script
+      // console.log('Connect to service worker')
       const port = chrome.runtime.connect({ name: CONNECTION_PORT })
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError.message)
@@ -43,6 +44,7 @@ export function App() {
     window.addEventListener('pageshow', connect)
 
     // from background script
+    // console.log('Listen onConnect')
     const onConnect = (port: chrome.runtime.Port) => {
       if (port.name !== CONNECTION_PORT) {
         return

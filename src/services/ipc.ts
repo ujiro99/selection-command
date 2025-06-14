@@ -167,50 +167,18 @@ export const Ipc = {
    * @throws {Error} When connection to the tab fails
    */
   async ensureConnection(tabId: number): Promise<void> {
-    // Wait for the tab to be loaded completely.
-    const tab = await chrome.tabs.get(tabId)
-    if (tab.status !== 'complete') {
-      await new Promise<void>((resolve) => {
-        let interval: NodeJS.Timeout
-        let timeout: NodeJS.Timeout
-        const cb = (id: number, info: chrome.tabs.TabChangeInfo) => {
-          if (tabId === id && info.status === 'complete') {
-            cleanup()
-            resolve()
-          }
-        }
+    // Connect from content script
+    const p = new Promise<void>(async (resolve) => {
+      let interval: NodeJS.Timeout
+      let timeout: NodeJS.Timeout
+      let onTabUpdated: (id: number, info: chrome.tabs.TabChangeInfo) => void
 
-        const cleanup = () => {
-          clearTimeout(timeout)
-          clearInterval(interval)
-          chrome.tabs.onUpdated.removeListener(cb)
-        }
+      const cleanup = () => {
+        clearTimeout(timeout)
+        clearInterval(interval)
+        chrome.tabs.onUpdated.removeListener(onTabUpdated)
+      }
 
-        interval = setInterval(async () => {
-          try {
-            const t = await chrome.tabs.get(tabId)
-            if (t.status === 'complete') {
-              cleanup()
-              resolve()
-            }
-          } catch (error) {
-            console.error(error)
-          }
-        }, CONNECTION_CHECK_INTERVAL)
-
-        timeout = setTimeout(() => {
-          console.warn('Connection timeout')
-          cleanup()
-          resolve()
-        }, CONNECTION_TIMEOUT)
-
-        chrome.tabs.onUpdated.addListener(cb)
-      })
-    }
-
-    // Connect to the tab using port.
-    const p = new Promise<void>((resolve) => {
-      // from content script
       const onConnect = async function (port: chrome.runtime.Port) {
         if (port.name !== CONNECTION_PORT) {
           return
@@ -219,18 +187,58 @@ export const Ipc = {
         if (chrome.runtime.lastError) {
           console.error(chrome.runtime.lastError.message)
         }
-        chrome.runtime.onConnect.removeListener(onConnect)
+        // console.log('connected from content script')
+        cleanup()
         resolve()
+        chrome.runtime.onConnect.removeListener(onConnect)
       }
       chrome.runtime.onConnect.addListener(onConnect)
 
-      // from background script
+      // Wait for the tab to be loaded completely.
+      const tab = await chrome.tabs.get(tabId)
+      if (tab.status !== 'complete') {
+        await new Promise<void>((res) => {
+          onTabUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
+            if (tabId === id && info.status === 'complete') {
+              // console.log('onUpdated', info)
+              cleanup()
+              res()
+            }
+          }
+
+          interval = setInterval(async () => {
+            try {
+              const t = await chrome.tabs.get(tabId)
+              if (t.status === 'complete') {
+                cleanup()
+                res()
+              }
+            } catch (error) {
+              console.error(error)
+            }
+          }, CONNECTION_CHECK_INTERVAL)
+
+          timeout = setTimeout(() => {
+            console.warn('Connection timeout')
+            cleanup()
+            res()
+          }, CONNECTION_TIMEOUT)
+
+          chrome.tabs.onUpdated.addListener(onTabUpdated)
+        })
+      }
+
+      // Connect from background script
       const port = chrome.tabs.connect(tabId, { name: CONNECTION_PORT })
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError.message)
       }
       port.onMessage.addListener(async function (msg) {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError.message)
+        }
         if (msg.command === BgCommand.connected) {
+          // console.log('connected from background script')
           resolve()
           port.disconnect()
           chrome.runtime.onConnect.removeListener(onConnect)
