@@ -179,7 +179,7 @@ const commandFuncs = {
       console.warn('window not found', sender.tab?.windowId)
       chrome.tabs.create({ url: sender.url })
       closeWindow(sender.tab?.windowId as number, 'openInTab').then(() => {
-      response(true)
+        response(true)
       })
       return true
     }
@@ -204,10 +204,10 @@ const commandFuncs = {
             windowId: targetId,
           })
           closeWindow(sender.tab?.windowId as number, 'openInTab').then(() => {
-          response(true)
+            response(true)
           })
         } else {
-        response(false)
+          response(false)
         }
       })
 
@@ -249,10 +249,10 @@ const commandFuncs = {
         layer.findIndex((w) => w.id === windowId),
         1,
       )
-              await BgData.set((data) => ({
-                ...data,
-                windowStack: stack,
-              }))
+      await BgData.set((data) => ({
+        ...data,
+        windowStack: stack,
+      }))
       response(false)
       return
     }
@@ -511,7 +511,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     // Get settings
     const settings = await Settings.get()
     const shortcut = settings.shortcuts?.shortcuts.find(
-      (shortcut) => shortcut.commandId === commandName,
+      (shortcut) => shortcut.id === commandName,
     )
 
     if (!shortcut) {
@@ -521,11 +521,9 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
     // Get active tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    const command = settings.commands.find(
-      (c) => c.id === shortcut.targetCommandId,
-    )
+    const command = settings.commands.find((c) => c.id === shortcut.commandId)
     if (!command) {
-      console.warn(`Command not found: ${shortcut.targetCommandId}`)
+      console.warn(`Command not found: ${shortcut.commandId}`)
       return
     }
 
