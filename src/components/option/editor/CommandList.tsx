@@ -215,6 +215,11 @@ function hasFolder(content: Command | CommandFolder | undefined): boolean {
   return false
 }
 
+export function removeUnstoredParam(data: Command) {
+  delete (data as any)._id
+  return data
+}
+
 function calcLevel(node: FlattenNode): number {
   if (isCommand(node.content)) {
     if (hasFolder(node.content)) {

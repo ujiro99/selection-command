@@ -536,3 +536,20 @@ export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
   const [tab] = await chrome.tabs.query(queryOptions)
   return tab
 }
+
+/**
+ * Close a window.
+ * @param windowId - The ID of the window to close.
+ * @param log - The log message to print.
+ * @returns A promise that resolves when the window is closed.
+ */
+export async function closeWindow(
+  windowId: number,
+  log?: string,
+): Promise<void> {
+  return chrome.windows.remove(windowId).then(() => {
+    if (chrome.runtime.lastError) {
+      console.error(log, chrome.runtime.lastError)
+    }
+  })
+}

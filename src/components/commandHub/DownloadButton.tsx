@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { Ipc, BgCommand } from '@/services/ipc'
 import { useSetting } from '@/hooks/useSetting'
-import { sendEvent } from '@/services/analytics'
+import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 import {
   Popover,
   PopoverContent,
@@ -33,7 +33,11 @@ export const DownloadButton = (): JSX.Element => {
       button.addEventListener('click', () => {
         Ipc.send(BgCommand.addCommand, { command }).then((res) => {
           if (res) {
-            sendEvent('command_hub_add', { id }, SCREEN.COMMAND_HUB)
+            sendEvent(
+              ANALYTICS_EVENTS.COMMAND_HUB_ADD,
+              { id },
+              SCREEN.COMMAND_HUB,
+            )
             setPosition(button.parentElement)
           }
         })

@@ -24,6 +24,7 @@ import {
   toCommandTree,
   toFlatten,
   isCommand,
+  removeUnstoredParam,
 } from '@/components/option/editor/CommandList'
 import {
   PageRuleList,
@@ -206,7 +207,8 @@ export function SettingForm({ className }: { className?: string }) {
       const commandTree = toCommandTree(settings.commands, settings.folders)
       const commands = toFlatten(commandTree)
         .map((f) => f.content)
-        .filter((c) => isCommand(c))
+        .filter(isCommand)
+        .map(removeUnstoredParam)
 
       settings.commands = [...commands, ...linkCommands]
       await Settings.set({

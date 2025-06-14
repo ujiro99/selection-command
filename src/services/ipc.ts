@@ -4,9 +4,12 @@ import type { PageActionStep } from '@/types'
 import { isServiceWorker } from '@/lib/utils'
 
 // Constants for connection
+const CONNECTION_TIMEOUT = 2000
+const CONNECTION_CHECK_INTERVAL = 50
 export const CONNECTION_PORT = 'app'
 
 export enum BgCommand {
+  connected = 'connected',
   openPopup = 'openPopup',
   openPopups = 'openPopups',
   openPopupAndClick = 'openPopupAndClick',
@@ -18,7 +21,7 @@ export enum BgCommand {
   execApi = 'execApi',
   canOpenInTab = 'canOpenInTab',
   openInTab = 'openInTab',
-  onFocusLost = 'onFocusLost',
+  onHidden = 'onHidden',
   toggleStar = 'toggleStar',
   captureScreenshot = 'captureScreenshot',
   getTabId = 'getTabId',
@@ -144,7 +147,14 @@ export const Ipc = {
       if (isServiceWorker()) {
         return this.callListener<M, R>(command, param)
       }
-      return await chrome.runtime.sendMessage({ command, param })
+      return new Promise<R>((resolve, reject) => {
+        chrome.runtime.sendMessage({ command, param }, (ret) => {
+          if (chrome.runtime.lastError != null) {
+            reject(chrome.runtime.lastError)
+          }
+          resolve(ret as R)
+        })
+      })
     } catch (error) {
       console.error(`Failed to send message: ${command}`, error)
       throw error
@@ -157,39 +167,84 @@ export const Ipc = {
    * @throws {Error} When connection to the tab fails
    */
   async ensureConnection(tabId: number): Promise<void> {
-    // Check if the tab is already connected
-    const connectionTabs = await Storage.get<number[]>(
-      SESSION_STORAGE_KEY.CONNECTION_TABS,
-    )
-    if (connectionTabs.includes(tabId)) {
-      return
-    }
-    // Connect to the tab
-    const p = new Promise<void>((resolve) => {
-      chrome.runtime.onConnect.addListener(async function (port) {
+    // Connect from content script
+    const p = new Promise<void>(async (resolve) => {
+      let interval: NodeJS.Timeout
+      let timeout: NodeJS.Timeout
+      let onTabUpdated: (id: number, info: chrome.tabs.TabChangeInfo) => void
+
+      const cleanup = () => {
+        clearTimeout(timeout)
+        clearInterval(interval)
+        chrome.tabs.onUpdated.removeListener(onTabUpdated)
+      }
+
+      const onConnect = async function (port: chrome.runtime.Port) {
         if (port.name !== CONNECTION_PORT) {
           return
         }
         port.postMessage({ command: TabCommand.connected })
-        port.onDisconnect.addListener(() => {
-          Storage.update(
-            SESSION_STORAGE_KEY.CONNECTION_TABS,
-            (tabs: number[]) => {
-              return tabs.filter((t) => t !== tabId)
-            },
-          )
-        })
-        await Storage.update(
-          SESSION_STORAGE_KEY.CONNECTION_TABS,
-          (tabs: number[]) => {
-            return [...tabs, tabId]
-          },
-        )
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError.message)
+        }
+        // console.log('connected from content script')
+        cleanup()
         resolve()
-      })
+        chrome.runtime.onConnect.removeListener(onConnect)
+      }
+      chrome.runtime.onConnect.addListener(onConnect)
+
+      // Wait for the tab to be loaded completely.
+      const tab = await chrome.tabs.get(tabId)
+      if (tab.status !== 'complete') {
+        await new Promise<void>((res) => {
+          onTabUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
+            if (tabId === id && info.status === 'complete') {
+              // console.log('onUpdated', info)
+              cleanup()
+              res()
+            }
+          }
+
+          interval = setInterval(async () => {
+            try {
+              const t = await chrome.tabs.get(tabId)
+              if (t.status === 'complete') {
+                cleanup()
+                res()
+              }
+            } catch (error) {
+              console.error(error)
+            }
+          }, CONNECTION_CHECK_INTERVAL)
+
+          timeout = setTimeout(() => {
+            console.warn('Connection timeout')
+            cleanup()
+            res()
+          }, CONNECTION_TIMEOUT)
+
+          chrome.tabs.onUpdated.addListener(onTabUpdated)
+        })
+      }
+
+      // Connect from background script
+      const port = chrome.tabs.connect(tabId, { name: CONNECTION_PORT })
       if (chrome.runtime.lastError) {
         console.error(chrome.runtime.lastError.message)
       }
+      port.onMessage.addListener(async function (msg) {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError.message)
+        }
+        if (msg.command === BgCommand.connected) {
+          // console.log('connected from background script')
+          resolve()
+          port.disconnect()
+          chrome.runtime.onConnect.removeListener(onConnect)
+          return
+        }
+      })
     })
     return p
   },
@@ -249,16 +304,21 @@ export const Ipc = {
    * @throws {Error} When message sending fails
    */
   async _sendMessageToTab<T>(tabId: number, message: T): Promise<unknown> {
-    try {
-      const ret = await chrome.tabs.sendMessage(tabId, message)
-      if (chrome.runtime.lastError != null) {
-        throw chrome.runtime.lastError
-      }
-      return ret
-    } catch (error) {
-      console.error('Failed to send message to tab:', tabId, error, message)
-      throw error
-    }
+    const p = new Promise<unknown>((resolve, reject) => {
+      chrome.tabs.sendMessage(tabId, message).then((ret) => {
+        if (chrome.runtime.lastError != null) {
+          console.error(
+            'Failed to send message to tab:',
+            tabId,
+            chrome.runtime.lastError,
+            message,
+          )
+          reject(chrome.runtime.lastError)
+        }
+        resolve(ret)
+      })
+    })
+    return p
   },
 
   listeners: {} as { [key: string]: IpcCallback },

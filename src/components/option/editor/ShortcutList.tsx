@@ -164,8 +164,8 @@ export function ShortcutList({ control }: ShortcutListProps) {
     // Initialize the shortcuts
     if (fields.length !== 0) return
     const initialData = commands.map((cmd) => ({
-      commandId: cmd.name || '',
-      targetCommandId: SHORTCUT_PLACEHOLDER,
+      id: cmd.name || '',
+      commandId: SHORTCUT_PLACEHOLDER,
       noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
     }))
     replace(initialData)
@@ -219,7 +219,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
             ...groupCommandsByFolder(userCommands, folders),
           ]
 
-          const targetId = shortcutValues[index]?.targetCommandId
+          const targetId = shortcutValues[index]?.commandId
           const selectedCmd = userCommands.find(
             (c: Command) => c.id === targetId,
           )
@@ -230,7 +230,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
             <div key={field.id} className="space-y-2">
               <SelectField
                 control={control}
-                name={`shortcuts.shortcuts.${index}.targetCommandId`}
+                name={`shortcuts.shortcuts.${index}.commandId`}
                 formLabel={`${chromeCmd.description} (${chromeCmd.shortcut || t('shortcut_not_set')})`}
                 options={opts}
               />

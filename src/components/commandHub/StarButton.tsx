@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react'
 import { useSetting } from '@/hooks/useSetting'
-import { sendEvent } from '@/services/analytics'
+import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 import { SCREEN } from '@/const'
 import { useDetectUrlChanged } from '@/hooks/useDetectUrlChanged'
 import { Ipc, BgCommand } from '@/services/ipc'
@@ -29,7 +29,9 @@ export const StarButton = (): JSX.Element => {
       if (id == null) return
       const found = stars.some((s) => s.id === id)
       sendEvent(
-        `command_hub_star_${found ? 'remove' : 'add'}`,
+        found
+          ? ANALYTICS_EVENTS.COMMAND_HUB_STAR_REMOVE
+          : ANALYTICS_EVENTS.COMMAND_HUB_STAR_ADD,
         { id },
         SCREEN.COMMAND_HUB,
       )

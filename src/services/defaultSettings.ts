@@ -92,18 +92,18 @@ export default {
   shortcuts: {
     shortcuts: [
       {
-        commandId: 'slot_1',
-        targetCommandId: SHORTCUT_PLACEHOLDER,
+        id: 'slot_1',
+        commandId: SHORTCUT_PLACEHOLDER,
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
       },
       {
-        commandId: 'slot_2',
-        targetCommandId: SHORTCUT_PLACEHOLDER,
+        id: 'slot_2',
+        commandId: SHORTCUT_PLACEHOLDER,
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
       },
       {
-        commandId: 'slot_3',
-        targetCommandId: SHORTCUT_PLACEHOLDER,
+        id: 'slot_3',
+        commandId: SHORTCUT_PLACEHOLDER,
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
       },
     ],

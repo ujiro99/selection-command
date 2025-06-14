@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, forwardRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import ColorThief from 'colorthief'
 import { useSetting } from '@/hooks/useSetting'
-import { sendEvent } from '@/services/analytics'
+import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 import { t } from '@/services/i18n'
 import { cn, isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import { HUB_URL, SCREEN } from '@/const'
@@ -186,7 +186,7 @@ const ListItem = (props: ItemProps): JSX.Element => {
     // Send a message to Commad Hub.
     window.postMessage({ action: 'InsertCommand', data: c }, '*')
     sendEvent(
-      'command_share_form',
+      ANALYTICS_EVENTS.COMMAND_SHARE_FORM,
       { event_label: 'input-my-command' },
       SCREEN.COMMAND_FORM,
     )

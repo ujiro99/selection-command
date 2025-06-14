@@ -19,7 +19,7 @@ import {
   ScreenSize,
 } from '@/services/dom'
 import { getScreenSize } from '@/services/screen'
-import { sendEvent } from '@/services/analytics'
+import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 
 const isTargetEvent = (e: MouseEvent): boolean => {
   return (
@@ -71,7 +71,7 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
       changeState: onChangeState,
       target,
     })
-    sendEvent('link_command', { id: 'link_preview' })
+    sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, { id: 'link_preview' })
   }
 
   return {
