@@ -8,3 +8,7 @@ export function t(key: string, params?: string[]): string {
   }
   return key
 }
+
+export function getCurrentLocale(): string {
+  return chrome.i18n.getMessage('@@ui_locale')
+}
