@@ -89,6 +89,7 @@ const getLabel = (e: Element): string => {
 
 let focusElm: HTMLElement | null = null
 let focusXpath: string | null = null
+let lastInputTarget: HTMLElement | null = null
 
 /**
  * Get the robust XPath of an element.
@@ -128,6 +129,16 @@ const getXPathM = (e: Element | null, type?: string): string => {
   return xpath
 }
 
+const isInputting = (target: HTMLElement): boolean => {
+  // Returns true if the target is an input element, matches the previous input event target,
+  // and the focus hasn't moved
+  return (
+    (isInput(target) || isTextarea(target) || isEditable(target)) &&
+    lastInputTarget === target &&
+    focusElm === target
+  )
+}
+
 interface EventsFunctions {
   [PAGE_ACTION_EVENT.click]: (e: MouseEvent) => void
   [PAGE_ACTION_EVENT.doubleClick]: (
@@ -158,8 +169,12 @@ export const PageActionListener = (() => {
     async click(e: MouseEvent) {
       if (isPopup(e.target as HTMLElement)) return
       if (e.button !== 0) return // left click only
-      let xpath = getXPathM(e.target as HTMLElement)
-      let label = getLabel(e.target as Element)
+
+      const target = e.target as HTMLElement
+      if (isInputting(target)) return
+
+      let xpath = getXPathM(target)
+      let label = getLabel(target as Element)
       if (isEmpty(xpath)) {
         const targetAtPoint = document.elementFromPoint(e.x, e.y)
         xpath = getXPathM(targetAtPoint)
@@ -219,7 +234,7 @@ export const PageActionListener = (() => {
       const target = e.target as HTMLElement
       if (isPopup(target)) return
       if (!isTargetKey(e)) return
-      if (isInput(target) || isTextarea(target) || isEditable(target)) {
+      if (isInputting(target)) {
         // Ignore input and textarea events
         if (!['Tab', 'Enter'].includes(e.key)) return
         // Ignore Enter key during composition session.
@@ -260,6 +275,9 @@ export const PageActionListener = (() => {
         value = target.nodeValue
       }
       target = getFocusNode(e) ?? target
+
+      // For input state detection
+      lastInputTarget = target
 
       const stepId = generateRandomID()
       const xpath = getXPathM(target, e.type)
