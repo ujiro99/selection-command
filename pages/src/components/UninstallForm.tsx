@@ -119,7 +119,7 @@ export function UninstallForm() {
             <Image
               src="/ozigi_suit_man_simple.png"
               alt="Thank you"
-              className="ml-6 w-auto h-auto"
+              className="ml-6 w-auto h-[230px]"
               width={60}
               height={210}
               loading="lazy"
