@@ -1,0 +1,13 @@
+---
+description: rules for Selection Command Hub
+globs: pages/**/*.tsx,pages/**/*.ts,pages/**/*.css,pages/**/*.json
+alwaysApply: false
+---
+- pages配下のプロジェクトは、 Selection Command Hub という名前である。
+- Chrome拡張機能である Selection Command で使用する Command を共有、取得する機能を提供する。
+- このプロジェクトは、 Next.js で構築される。
+- このプロジェクトは、Github Pages上にホストされるため、すべての機能をクライアント上で実現する必要がある。
+- コメント、JsDoc、ログは英語で記述する
+
+- フォームは、 react-hook-form と zod を使用する
+- 多言語化の定義は、 pages/src/features/locale 配下へ、言語毎にファイルを分けて格納する。
