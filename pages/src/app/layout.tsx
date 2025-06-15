@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { GoogleTagManager } from '@next/third-parties/google'
 import localFont from 'next/font/local'
+import { LanguageProvider } from '@/components/LanguageProvider'
 
 import './globals.css'
 
@@ -26,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html>
       <head>
         {/* Google Search Console verification */}
         <meta
@@ -38,7 +39,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-stone-50  text-stone-700`}
       >
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   )
