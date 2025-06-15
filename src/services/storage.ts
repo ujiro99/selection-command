@@ -20,7 +20,6 @@ export enum SESSION_STORAGE_KEY {
   SELECTION_TEXT = 'selectionText ',
   SESSION_DATA = 'sessionData',
   MESSAGE_QUEUE = 'messageQueue',
-  CONNECTION_TABS = 'connectionTabs',
   TMP_CAPTURES = 'tmpCaptures',
   PA_RECORDING = 'pageActionRecording',
   PA_RUNNING = 'pageActionRunning',
@@ -59,7 +58,6 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.PA_RECORDER_OPTION]: {},
   [SESSION_STORAGE_KEY.TMP_CAPTURES]: {},
   [SESSION_STORAGE_KEY.SELECTION_TEXT]: '',
-  [SESSION_STORAGE_KEY.CONNECTION_TABS]: [],
 }
 
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {

@@ -101,8 +101,8 @@ export const PageActionOption = z.object({
 })
 
 export const ShortcutCommandSchema = z.object({
-  commandId: z.string(),
-  targetCommandId: z.string().default(SHORTCUT_PLACEHOLDER),
+  id: z.string(),
+  commandId: z.string().default(SHORTCUT_PLACEHOLDER),
   noSelectionBehavior: z
     .nativeEnum(SHORTCUT_NO_SELECTION_BEHAVIOR)
     .default(SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD),

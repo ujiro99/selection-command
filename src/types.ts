@@ -145,8 +145,8 @@ export type UserStats = {
 }
 
 export type ShortcutCommand = {
+  id: string
   commandId: string
-  targetCommandId: string
   noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR
 }
 

@@ -109,6 +109,13 @@ export const add = (
             return
           }
         }
+      } else if (type === 'click' && prevType === 'input') {
+        const selector = (step.param as PageAction.Click).selector
+        const prevSelector = (prev.param as PageAction.Input).selector
+        if (selector === prevSelector) {
+          // Skip adding click to combine operations on the same input element.
+          return
+        }
       } else if (type === 'doubleClick' && prevType === 'click') {
         // Removes a last click.
         steps.pop()
@@ -149,13 +156,6 @@ export const add = (
           if (param.selector === prevParam.selector) {
             param.value = param.value.replace(prevParam.value, '')
           }
-        }
-      } else if (type === 'click' && prevType === 'input') {
-        const selector = (step.param as PageAction.Click).selector
-        const prevSelector = (prev.param as PageAction.Input).selector
-        if (selector === prevSelector) {
-          // Skip adding click to combine operations on the same input element.
-          return
         }
       }
     }
@@ -421,6 +421,7 @@ const run = (
           await sleep(delay)
         }
 
+        // console.log('sendTab', step.param.type)
         const ret = await Ipc.sendTab<
           ExecPageAction.Message,
           ExecPageAction.Return

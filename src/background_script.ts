@@ -13,6 +13,7 @@ import { PopupOption, PopupPlacement } from '@/services/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
 import { BgData } from '@/services/backgroundData'
 import { ContextMenu } from '@/services/contextMenus'
+import { closeWindow } from '@/services/chrome'
 import { isSearchCommand, isPageActionCommand } from '@/lib/utils'
 import { execute } from '@/action/background'
 import * as ActionHelper from '@/action/helper'
@@ -177,11 +178,9 @@ const commandFuncs = {
     if (!w || w.srcWindowId == null) {
       console.warn('window not found', sender.tab?.windowId)
       chrome.tabs.create({ url: sender.url })
-      chrome.windows.remove(sender.tab?.windowId as number)
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError)
-      }
-      response(true)
+      closeWindow(sender.tab?.windowId as number, 'openInTab').then(() => {
+        response(true)
+      })
       return true
     }
 
@@ -204,48 +203,58 @@ const commandFuncs = {
             url: sender.url,
             windowId: targetId,
           })
-          chrome.windows.remove(sender.tab?.windowId as number)
-          if (chrome.runtime.lastError) {
-            console.error(chrome.runtime.lastError)
-          }
-          response(true)
+          closeWindow(sender.tab?.windowId as number, 'openInTab').then(() => {
+            response(true)
+          })
+        } else {
+          response(false)
         }
-        response(false)
       })
 
     // return async
     return true
   },
 
-  [BgCommand.onFocusLost]: (
+  [BgCommand.onHidden]: (
     _param: any,
     sender: Sender,
     response: (res: unknown) => void,
   ): boolean => {
     const func = async () => {
       const stack = BgData.get().windowStack
+      const windowId = sender.tab?.windowId
+      const tabId = sender.tab?.id
+      if (!windowId || !tabId) {
+        response(true)
+        return
+      }
 
-      stack.forEach((layer) => {
-        layer.forEach(async (window, ii) => {
-          if (window.id === sender.tab?.windowId) {
-            // Do nothing when multiple links are open.
-            if (layer.length === 1) {
-              chrome.windows.remove(window.id)
-              layer.splice(ii, 1)
-              await BgData.set((data) => ({
-                ...data,
-                windowStack: stack,
-              }))
-              if (chrome.runtime.lastError) {
-                console.error(chrome.runtime.lastError)
-              }
-            }
-            return
-          }
-        })
-      })
+      const src = stack.find((s) => s.find((w) => w.srcWindowId === windowId))
+      if (src) {
+        // Do nothing when the window is src window.
+        response(true)
+        return
+      }
 
-      response(true)
+      const layer = stack.find((s) => s.find((w) => w.id === windowId))
+      if (!layer || layer.length > 1) {
+        // Do nothing when the window isn't in the layer or multiple links are opened.
+        response(true)
+        return
+      }
+
+      // Remove the window.
+      await closeWindow(windowId, 'onHidden')
+      layer.splice(
+        layer.findIndex((w) => w.id === windowId),
+        1,
+      )
+      await BgData.set((data) => ({
+        ...data,
+        windowStack: stack,
+      }))
+      response(false)
+      return
     }
 
     func()
@@ -403,10 +412,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   if (closeStack.length > 0) {
     for (const layer of closeStack) {
       for (const window of layer) {
-        chrome.windows.remove(window.id)
-        if (chrome.runtime.lastError) {
-          console.error(chrome.runtime.lastError)
-        }
+        await closeWindow(window.id, 'onFocusChanged')
       }
     }
   }
@@ -505,7 +511,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     // Get settings
     const settings = await Settings.get()
     const shortcut = settings.shortcuts?.shortcuts.find(
-      (shortcut) => shortcut.commandId === commandName,
+      (shortcut) => shortcut.id === commandName,
     )
 
     if (!shortcut) {
@@ -515,11 +521,9 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
     // Get active tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
-    const command = settings.commands.find(
-      (c) => c.id === shortcut.targetCommandId,
-    )
+    const command = settings.commands.find((c) => c.id === shortcut.commandId)
     if (!command) {
-      console.warn(`Command not found: ${shortcut.targetCommandId}`)
+      console.warn(`Command not found: ${shortcut.commandId}`)
       return
     }
 

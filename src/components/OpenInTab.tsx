@@ -19,26 +19,25 @@ export function OpenInTab(): JSX.Element {
   }, [])
 
   useEffect(() => {
-    const onBlur = () => {
-      setTimeout(() => {
-        // Ignore blur events caused by screen transitions.
-        if (!isPageUnloading) {
-          Ipc.send(BgCommand.onFocusLost)
-        }
-      }, 100)
-    }
-
-    const onBeforeunload = () => {
+    const onPagehide = () => {
       isPageUnloading = true
     }
 
+    const onHidden = () => {
+      setTimeout(() => {
+        if (document.hidden && !isPageUnloading) {
+          Ipc.send(BgCommand.onHidden)
+        }
+      }, 50)
+    }
+
     if (enableOpenInTab) {
-      window.addEventListener('blur', onBlur)
-      window.addEventListener('beforeunload', onBeforeunload)
+      window.addEventListener('pagehide', onPagehide)
+      document.addEventListener('visibilitychange', onHidden)
     }
     return () => {
-      window.removeEventListener('blur', onBlur)
-      window.removeEventListener('beforeunload', onBeforeunload)
+      window.removeEventListener('pagehide', onPagehide)
+      document.removeEventListener('visibilitychange', onHidden)
     }
   }, [enableOpenInTab])
 
