@@ -12,6 +12,12 @@ const SESSION_EXPIRATION_IN_MIN = 30
 export const ANALYTICS_EVENTS = {
   SELECTION_COMMAND: 'selection_command',
   LINK_COMMAND: 'link_command',
+  SHORTCUT: 'shortcut',
+  SHOW_HELP: 'show_help',
+  OPEN_DIALOG: 'open_dialog',
+  COMMAND_ADD: 'command_add',
+  COMMAND_EDIT: 'command_edit',
+  COMMAND_REMOVE: 'command_remove',
   COMMAND_SHARE_FORM: 'command_share_form',
   COMMAND_HUB_ADD: 'command_hub_add',
   COMMAND_HUB_STAR_ADD: 'command_hub_star_add',

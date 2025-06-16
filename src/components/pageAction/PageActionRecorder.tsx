@@ -22,6 +22,8 @@ import type {
   DeepPartial,
 } from '@/types'
 import { isEmpty, capitalize } from '@/lib/utils'
+import { ANALYTICS_EVENTS, sendEvent } from '@/services/analytics'
+import { SCREEN } from '@/const'
 
 export function PageActionRecorder(): JSX.Element {
   const { isRecording } = usePageActionContext()
@@ -78,6 +80,16 @@ export function PageActionRecorder(): JSX.Element {
       },
     )
   }
+
+  useEffect(() => {
+    sendEvent(
+      ANALYTICS_EVENTS.OPEN_DIALOG,
+      {
+        event_label: 'pageAction_recorder',
+      },
+      SCREEN.OPTION,
+    )
+  }, [])
 
   useEffect(() => {
     const update = (data: PageActionRecordingData) => {

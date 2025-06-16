@@ -37,6 +37,8 @@ import {
 } from '@/components/option/editor/FolderEditDialog'
 import { MenuImage } from '@/components/menu/MenuImage'
 
+import { ANALYTICS_EVENTS, sendEvent } from '@/services/analytics'
+import { SCREEN } from '@/const'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { OPEN_MODE, ROOT_FOLDER, COMMAND_MAX, HUB_URL } from '@/const'
@@ -273,6 +275,14 @@ export const CommandList = ({ control }: CommandListProps) => {
     if (!open) {
       // Reset editData when closing the dialog.
       editDataRef.current = null
+    } else {
+      sendEvent(
+        ANALYTICS_EVENTS.OPEN_DIALOG,
+        {
+          event_label: 'command_edit',
+        },
+        SCREEN.OPTION,
+      )
     }
     _setCommandDialogOpen(open)
   }
@@ -326,8 +336,22 @@ export const CommandList = ({ control }: CommandListProps) => {
       const idx = commandArray.fields.findIndex((f) => f.id === data.id)
       if (idx >= 0) {
         commandArray.update(idx, data as CommandSchemaType)
+        sendEvent(
+          ANALYTICS_EVENTS.COMMAND_EDIT,
+          {
+            event_label: data.openMode,
+          },
+          SCREEN.OPTION,
+        )
       } else {
         commandArray.append(data as CommandSchemaType)
+        sendEvent(
+          ANALYTICS_EVENTS.COMMAND_ADD,
+          {
+            event_label: data.openMode,
+          },
+          SCREEN.OPTION,
+        )
       }
     } else {
       const idx = folderArray.fields.findIndex((f) => f.id === data.id)
@@ -357,6 +381,13 @@ export const CommandList = ({ control }: CommandListProps) => {
     if (isCommand(node.content)) {
       commandArray.remove(
         commandArray.fields.findIndex((f) => f.id === node.id),
+      )
+      sendEvent(
+        ANALYTICS_EVENTS.COMMAND_REMOVE,
+        {
+          event_label: node.content.openMode,
+        },
+        SCREEN.OPTION,
       )
     } else {
       commandArray.fields

@@ -23,6 +23,8 @@ import {
 import { Tooltip } from '@/components/Tooltip'
 import { t } from '@/services/i18n'
 import { cn } from '@/lib/utils'
+import { ANALYTICS_EVENTS, sendEvent } from '@/services/analytics'
+import { SCREEN } from '@/const'
 
 import css from './help.module.css'
 
@@ -45,7 +47,16 @@ export const PaeActionHelp = ({ className }: Props) => {
           'inline-flex items-center gap-1 text-sm text-gray-600 outline-gray-200 p-1 px-1.5 rounded-md transition hover:bg-gray-100 hover:scale-[110%] hover:text-sky-500 group/button',
           className,
         )}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true)
+          sendEvent(
+            ANALYTICS_EVENTS.SHOW_HELP,
+            {
+              event_label: 'pageAction',
+            },
+            SCREEN.OPTION,
+          )
+        }}
         ref={buttonRef}
       >
         <CircleHelp

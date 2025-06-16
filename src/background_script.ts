@@ -5,6 +5,7 @@ import {
   OPTION_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
+  SCREEN,
 } from '@/const'
 import { executeActionProps } from '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
@@ -27,6 +28,7 @@ import type {
 } from '@/types'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
 import { updateActiveScreenId } from '@/services/screen'
+import { ANALYTICS_EVENTS, sendEvent } from './services/analytics'
 
 BgData.init()
 
@@ -575,6 +577,13 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         useClipboard,
       })
     }
+    sendEvent(
+      ANALYTICS_EVENTS.SHORTCUT,
+      {
+        event_label: command.openMode,
+      },
+      SCREEN.SERVICE_WORKER,
+    )
   } catch (error) {
     console.error('Failed to execute shortcut command:', error)
   }
