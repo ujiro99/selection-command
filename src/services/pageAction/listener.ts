@@ -89,6 +89,7 @@ const getLabel = (e: Element): string => {
 
 let focusElm: HTMLElement | null = null
 let focusXpath: string | null = null
+let lastMouseDownTarget: HTMLElement | null = null
 let lastInputTarget: HTMLElement | null = null
 
 /**
@@ -167,6 +168,16 @@ export const PageActionListener = (() => {
 
   const func: EventsFunctions = {
     async click(e: MouseEvent) {
+      // Ignore click events that are triggered by mouse down event.
+      if (lastMouseDownTarget === e.target && e.type === 'click') {
+        console.debug('ignore click', e)
+        lastMouseDownTarget = null
+        return
+      } else {
+        // Update the last mouse down target
+        lastMouseDownTarget = e.target as HTMLElement
+      }
+
       if (isPopup(e.target as HTMLElement)) return
       if (e.button !== 0) return // left click only
 

@@ -99,17 +99,7 @@ export const add = (
     const prevType = prev?.param.type
 
     if (prev != null) {
-      if (type === 'click' && prevType === 'click') {
-        const selector = (step.param as PageAction.Click).selector
-        const prevSelector = (prev.param as PageAction.Click).selector
-        if (selector === prevSelector) {
-          const t1 = step.timestamp!
-          const t2 = prev.timestamp!
-          if (t1 - t2 < 300) {
-            return
-          }
-        }
-      } else if (type === 'click' && prevType === 'input') {
+      if (type === 'click' && prevType === 'input') {
         const selector = (step.param as PageAction.Click).selector
         const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
