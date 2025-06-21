@@ -10,9 +10,8 @@ import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
 import { SelectContextProvider } from '@/hooks/useSelectContext'
 import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
 import { Ipc, TabCommand, CONNECTION_PORT, BgCommand } from '@/services/ipc'
-import { ToastAction } from '@/components/ui/toast'
+import { toast } from 'sonner'
 import { Toaster } from '@/components/ui/toaster'
-import { useToast } from '@/hooks/useToast'
 import { showReviewRequestToast } from '@/components/ReviewRequestToast'
 import { Settings } from '@/services/settings'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
@@ -21,7 +20,6 @@ import type { ShowToastParam } from '@/types'
 export function App() {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
-  const { toast } = useToast()
 
   useEffect(() => {
     // Connect to the background page
@@ -68,13 +66,15 @@ export function App() {
       _sender: any,
       response: any,
     ) => {
-      toast({
-        title: param.title,
+      toast(param.title, {
         description: param.description,
         duration: 3 * 1000,
-        action: (
-          <ToastAction altText={param.action}>{param.action}</ToastAction>
-        ),
+        action: param.action
+          ? {
+              label: param.action,
+              onClick: () => {},
+            }
+          : undefined,
       })
       response(true)
       return true
@@ -84,11 +84,11 @@ export function App() {
     return () => {
       Ipc.removeListener(TabCommand.showToast)
     }
-  }, [toast])
+  }, [])
 
   useEffect(() => {
     const handleShowReviewRequest = (_: any, __: any, response: any) => {
-      showReviewRequestToast(toast, () => {
+      showReviewRequestToast(() => {
         Settings.update('hasShownReviewRequest', () => true)
       })
       response(true)

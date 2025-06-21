@@ -36,3 +36,13 @@ window.addEventListener('beforeprint', () => {
 window.addEventListener('afterprint', () => {
   rootDom.style.display = 'block'
 })
+
+// For sonner
+// Move only one style element you put in to shadow-dom.
+let appended = false
+document.head.querySelectorAll('style').forEach((styleEl) => {
+  if (styleEl.textContent?.includes('[data-sonner-toaster]') && !appended) {
+    shadow.append(styleEl)
+    appended = true
+  }
+})
