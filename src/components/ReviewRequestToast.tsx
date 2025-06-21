@@ -29,8 +29,8 @@ export function showReviewRequestToast(onAccept: () => void): void {
           </button>
           <button
             className={cn(
-              'flex items-center justify-center flex-1 h-9 px-3 rounded-md transition',
-              'text-sm text-gray-600 font-medium border border-sky-300 bg-sky-200 hover:bg-sky-400',
+              'flex items-center justify-center gap-2 flex-1 h-9 px-3 rounded-md transition',
+              'text-sm text-white border border-sky-500 bg-sky-400 hover:bg-sky-500 font-medium hover:scale-110',
             )}
             onClick={() => {
               window.open(REVIEW_URL, '_blank')
@@ -38,8 +38,8 @@ export function showReviewRequestToast(onAccept: () => void): void {
               toast.dismiss(toastId)
             }}
           >
-            <PartyPopper className="mr-2 inline" size={17} />
             {t('review_request_button')}
+            <PartyPopper className="inline" size={17} />
           </button>
         </div>
       </div>
