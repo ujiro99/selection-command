@@ -133,22 +133,33 @@ export function toCommandTree(
   let tree: CommandTreeNode[] = []
   const addedFolders = new Set<string>()
 
-  // まずフォルダーを階層的に追加
+  // commandArrayの順序に従って、コマンドとフォルダーを順番に処理
+  commands.forEach((command) => {
+    const commandNode: CommandTreeNode = {
+      type: 'command',
+      content: command,
+    }
+    
+    // コマンドを追加する前に、必要な親フォルダーが存在するか確認し、なければ追加
+    if (command.parentFolderId && command.parentFolderId !== ROOT_FOLDER) {
+      const parentFolder = folders.find((f) => f.id === command.parentFolderId)
+      if (parentFolder && !addedFolders.has(parentFolder.id)) {
+        const folderNode = createFolderNode(parentFolder)
+        addNodeToTree(tree, folderNode, parentFolder.parentFolderId)
+        addedFolders.add(parentFolder.id)
+      }
+    }
+    
+    addNodeToTree(tree, commandNode, command.parentFolderId)
+  })
+
+  // 残りのフォルダー（コマンドで参照されていないフォルダー）を追加
   folders.forEach((folder) => {
     if (!addedFolders.has(folder.id)) {
       const folderNode = createFolderNode(folder)
       addNodeToTree(tree, folderNode, folder.parentFolderId)
       addedFolders.add(folder.id)
     }
-  })
-
-  // 次にコマンドを適切な位置に追加
-  commands.forEach((command) => {
-    const commandNode: CommandTreeNode = {
-      type: 'command',
-      content: command,
-    }
-    addNodeToTree(tree, commandNode, command.parentFolderId)
   })
 
   return tree
@@ -272,6 +283,7 @@ function isDroppable(
   folders: CommandFolder[] = [],
 ): boolean {
   if (!activeNode) return true
+
   if (isCommand(activeNode.content)) return true
 
   // フォルダーの場合は循環参照チェック
@@ -281,13 +293,6 @@ function isDroppable(
       selfNode.content.id,
       folders,
     )
-  }
-
-  const isMoveDown = activeNode.index < selfNode.index
-  if (isMoveDown) {
-    if (isInFolder(selfNode.content) && !selfNode.lastChild) return false
-  } else {
-    if (isInFolder(selfNode.content) && !selfNode.firstChild) return false
   }
   return true
 }
@@ -555,18 +560,40 @@ export const CommandList = ({ control }: CommandListProps) => {
         commandArray.move(srcIdx, distIdx)
       } else {
         // command to folder
-        let distIdx = commandArray.fields.findIndex(
-          (f) => f.parentFolderId === distId,
-        )
-        if (distIdx === -1) {
-          // Empty folders always exist at the end of the list, so move to the end of the dommands.
-          distIdx = commandArray.fields.length
+        if (isMoveDown) {
+          // フォルダーの後にドロップ → フォルダー内に移動
+          let distIdx = commandArray.fields.findIndex(
+            (f) => f.parentFolderId === distId,
+          )
+          if (distIdx === -1) {
+            // Empty folders always exist at the end of the list, so move to the end of the commands.
+            distIdx = commandArray.fields.length
+          }
+          commandArray.update(srcIdx, {
+            ...srcNode.content,
+            parentFolderId: distId,
+          } as CommandSchemaType)
+          commandArray.move(srcIdx, distIdx - 1)
+        } else {
+          // フォルダーの前にドロップ → フォルダーと同じレベルの前に挿入
+          // フラット化されたリストでのフォルダーの位置を取得
+          const targetFolderIndexInFlattened = flatten.findIndex(
+            (f) => f.id === distId,
+          )
+          // そのフォルダーより前にあるコマンドの数を数える
+          let insertPosition = 0
+          for (let i = 0; i < targetFolderIndexInFlattened; i++) {
+            if (isCommand(flatten[i].content)) {
+              insertPosition++
+            }
+          }
+
+          commandArray.update(srcIdx, {
+            ...srcNode.content,
+            parentFolderId: distNode.content.parentFolderId,
+          } as CommandSchemaType)
+          commandArray.move(srcIdx, insertPosition)
         }
-        commandArray.update(srcIdx, {
-          ...srcNode.content,
-          parentFolderId: isMoveDown ? distId : undefined,
-        } as CommandSchemaType)
-        commandArray.move(srcIdx, isMoveDown ? distIdx - 1 : distIdx)
       }
     } else {
       const srcIdxs = commandArray.fields
