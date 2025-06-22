@@ -642,25 +642,108 @@ export const CommandList = ({ control }: CommandListProps) => {
     }
   }
 
-  // フォルダーの移動処理
-  const moveFolderContents = (
+  // フォルダー自体をサブフォルダーとして移動
+  const moveFolderAsSubfolder = (
+    sourceFolderId: string,
+    targetFolderId: string,
+  ) => {
+    // 循環参照チェック
+    if (
+      isCircularReference(sourceFolderId, targetFolderId, folderArray.fields)
+    ) {
+      return
+    }
+
+    // ソースフォルダーのparentFolderIdを更新
+    const sourceFolderIndex = folderArray.fields.findIndex(
+      (f) => f.id === sourceFolderId,
+    )
+    if (sourceFolderIndex >= 0) {
+      const sourceFolder = folderArray.fields[sourceFolderIndex]
+      folderArray.update(sourceFolderIndex, {
+        ...sourceFolder,
+        parentFolderId: targetFolderId,
+      })
+    }
+  }
+
+  // フォルダーを同階層の前方に移動
+  const moveFolderToSameLevel = (
+    sourceFolderId: string,
+    targetFolderId: string,
+  ) => {
+    const sourceFolderIndex = folderArray.fields.findIndex(
+      (f) => f.id === sourceFolderId,
+    )
+    const targetFolder = folderArray.fields.find((f) => f.id === targetFolderId)
+
+    if (sourceFolderIndex >= 0 && targetFolder) {
+      const sourceFolder = folderArray.fields[sourceFolderIndex]
+
+      // 1. フォルダーのparentFolderIdを更新
+      folderArray.update(sourceFolderIndex, {
+        ...sourceFolder,
+        parentFolderId: targetFolder.parentFolderId,
+      })
+
+      // 2. フォルダー内のコマンドを移動（moveFolderContentsの実装を参考）
+      const sourceCommandIndices = commandArray.fields
+        .filter((f) => f.parentFolderId === sourceFolderId)
+        .map((f) => getCommandIndex(f.id))
+
+      if (sourceCommandIndices.length > 0) {
+        // ターゲットフォルダーより前にあるコマンドの位置を見つける
+        const targetFolderIndexInFlattened = flatten.findIndex(
+          (f) => f.id === targetFolderId,
+        )
+        let insertPosition = 0
+        for (let i = 0; i < targetFolderIndexInFlattened; i++) {
+          if (isCommand(flatten[i].content)) {
+            insertPosition++
+          }
+        }
+
+        // フォルダー内のコマンドをmoveCommands関数で移動
+        moveCommands(sourceCommandIndices, insertPosition)
+      }
+    }
+  }
+
+  // フォルダーをコマンドの位置に移動
+  const moveFolderToCommandPosition = (
     sourceFolderId: string,
     targetNode: FlattenNode,
   ) => {
-    const sourceCommandIndices = commandArray.fields
-      .filter((f) => f.parentFolderId === sourceFolderId)
-      .map((f) => getCommandIndex(f.id))
+    const sourceFolderIndex = folderArray.fields.findIndex(
+      (f) => f.id === sourceFolderId,
+    )
+    const targetCommand = targetNode.content as SelectionCommand
 
-    if (isCommand(targetNode.content)) {
-      // folder to command
-      const targetIndex = getCommandIndex(targetNode.id)
-      moveCommands(sourceCommandIndices, targetIndex)
-    } else {
-      // folder to folder
-      const targetIndex = commandArray.fields.findIndex(
-        (f) => f.parentFolderId === targetNode.id,
-      )
-      moveCommands(sourceCommandIndices, targetIndex)
+    if (sourceFolderIndex >= 0) {
+      const sourceFolder = folderArray.fields[sourceFolderIndex]
+
+      // 1. フォルダーのparentFolderIdを更新（ターゲットコマンドと同じ階層に移動）
+      folderArray.update(sourceFolderIndex, {
+        ...sourceFolder,
+        parentFolderId: targetCommand.parentFolderId,
+      })
+
+      // 2. フォルダー内のコマンドを移動（moveFolderContentsの実装を参考）
+      const sourceCommandIndices = commandArray.fields
+        .filter((f) => f.parentFolderId === sourceFolderId)
+        .map((f) => getCommandIndex(f.id))
+
+      if (sourceCommandIndices.length > 0) {
+        // ターゲットコマンドの位置を取得
+        const targetCommandIndex = getCommandIndex(targetNode.id)
+
+        // 挿入位置を決定
+        // moveCommands関数が内部でisMoveDown調整を行うため、targetCommandIndexをそのまま使用
+        const insertPosition = targetCommandIndex
+
+        // フォルダー内のコマンドをmoveCommands関数で移動
+        moveCommands(sourceCommandIndices, insertPosition)
+      }
     }
   }
 
@@ -691,7 +774,21 @@ export const CommandList = ({ control }: CommandListProps) => {
         )
       }
     } else {
-      moveFolderContents(sourceId, targetNode)
+      // フォルダーをフォルダーにドラッグした場合
+      if (isFolder(targetNode.content)) {
+        if (isMoveDown) {
+          // 1-1) ドラッグしたフォルダがドロップ先よりも先頭にある場合、ドロップ先フォルダの配下の先頭に挿入
+          moveFolderAsSubfolder(sourceId, targetNode.id)
+        } else {
+          // 1-2) ドラッグしたフォルダがドロップ先よりも後方にある場合、
+          // ドロップ先フォルダと同じ階層でかつドロップ先フォルダの前方に挿入
+          moveFolderToSameLevel(sourceId, targetNode.id)
+        }
+      } else {
+        // フォルダーをコマンドにドラッグした場合
+        // moveCommands関数が適切にisMoveDown調整を行うため、両ケースとも同じ処理
+        moveFolderToCommandPosition(sourceId, targetNode)
+      }
     }
   }
 
