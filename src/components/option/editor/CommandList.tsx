@@ -120,6 +120,7 @@ type FlattenNode = {
   id: string
   index: number
   content: SelectionCommand | CommandFolder
+  firstChild?: boolean
   lastChild?: boolean
 }
 
@@ -141,6 +142,9 @@ function _toFlatten(
         index: 0,
       })
       _toFlatten(node.children ?? [], flatten)
+      if (node.children) {
+        flatten[flatten.length - node.children.length].firstChild = true
+      }
       flatten[flatten.length - 1].lastChild = true
     }
   }
@@ -170,11 +174,11 @@ function isDroppable(selfNode: FlattenNode, activeNode?: FlattenNode): boolean {
 
   const isMoveDown = activeNode.index < selfNode.index
   if (isMoveDown) {
-    if (isFolder(selfNode.content)) return false
-    if (hasFolder(selfNode.content) && !selfNode.lastChild) return false
+    if (isInFolder(selfNode.content) && !selfNode.lastChild) return false
   } else {
-    if (isFolder(selfNode.content)) return true
-    if (hasFolder(selfNode.content)) return false
+    console.log('modeUp', selfNode)
+    // if (isFolder(selfNode.content)) return true
+    if (isInFolder(selfNode.content) && !selfNode.firstChild) return false
   }
 
   return true
@@ -207,9 +211,8 @@ function isFolder(
   return !('openMode' in content)
 }
 
-function hasFolder(content: Command | CommandFolder | undefined): boolean {
+function isInFolder(content: Command | CommandFolder | undefined): boolean {
   if (content == null) return false
-  if (isFolder(content)) return false
   const folderId = content.parentFolderId
   if (!isEmpty(folderId) && folderId != ROOT_FOLDER) {
     return true
@@ -224,7 +227,7 @@ export function removeUnstoredParam(data: Command) {
 
 function calcLevel(node: FlattenNode): number {
   if (isCommand(node.content)) {
-    if (hasFolder(node.content)) {
+    if (isInFolder(node.content)) {
       return 1
     } else {
       return 0
@@ -556,7 +559,7 @@ export const CommandList = ({ control }: CommandListProps) => {
                 className={cn(
                   isFolder(activeNode?.content) &&
                     isCommand(field.content) &&
-                    hasFolder(field.content) &&
+                    isInFolder(field.content) &&
                     'opacity-50 bg-gray-100',
                 )}
               >
