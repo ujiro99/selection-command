@@ -42,7 +42,7 @@ import { SCREEN } from '@/const'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { OPEN_MODE, ROOT_FOLDER, COMMAND_MAX, HUB_URL } from '@/const'
-import { cn, e2a, isEmpty, unique } from '@/lib/utils'
+import { cn, e2a, isEmpty } from '@/lib/utils'
 import type {
   Command,
   CommandFolder,
@@ -72,47 +72,85 @@ export function toCommandTree(
   commands: Command[],
   folders: CommandFolder[],
 ): CommandTreeNode[] {
-  let tree = commands.reduce((acc, command) => {
-    if (command.parentFolderId && command.parentFolderId !== ROOT_FOLDER) {
-      const folder = folders.find((f) => f.id === command.parentFolderId)
-      if (folder) {
-        const parent = acc.find((node) => node.content.id === folder.id)
-        if (parent) {
-          if (parent.children == null) parent.children = []
-          parent.children.push({
-            type: 'command',
-            content: command,
-          })
-        } else {
-          acc.push({
-            type: 'folder',
-            content: folder,
-            children: [
-              {
-                type: 'command',
-                content: command,
-              },
-            ],
-          })
+  // フォルダーノードを作成する関数
+  const createFolderNode = (folder: CommandFolder): CommandTreeNode => ({
+    type: 'folder',
+    content: folder,
+    children: [],
+  })
+
+  // ツリー内でノードを検索する関数
+  const findNodeInTree = (
+    tree: CommandTreeNode[],
+    id: string,
+  ): CommandTreeNode | null => {
+    for (const node of tree) {
+      if (node.content.id === id) {
+        return node
+      }
+      if (node.children) {
+        const found = findNodeInTree(node.children, id)
+        if (found) return found
+      }
+    }
+    return null
+  }
+
+  // ノードをツリーに追加する関数
+  const addNodeToTree = (
+    tree: CommandTreeNode[],
+    node: CommandTreeNode,
+    parentId?: string,
+  ) => {
+    if (parentId && parentId !== ROOT_FOLDER) {
+      const parent = findNodeInTree(tree, parentId)
+      if (parent) {
+        if (!parent.children) parent.children = []
+        parent.children.push(node)
+      } else {
+        // 親フォルダーがまだない場合は、先に親フォルダーを追加
+        const parentFolder = folders.find((f) => f.id === parentId)
+        if (parentFolder && !addedFolders.has(parentFolder.id)) {
+          const parentNode = createFolderNode(parentFolder)
+          addedFolders.add(parentFolder.id) // 重複防止のため追加
+          addNodeToTree(tree, parentNode, parentFolder.parentFolderId)
+          addNodeToTree(tree, node, parentId) // 再帰的に追加
+        } else if (parentFolder && addedFolders.has(parentFolder.id)) {
+          // 既に追加済みの場合は、ツリーから再検索
+          const existingParent = findNodeInTree(tree, parentId)
+          if (existingParent) {
+            if (!existingParent.children) existingParent.children = []
+            existingParent.children.push(node)
+          }
         }
       }
     } else {
-      acc.push({
-        type: 'command',
-        content: command,
-      })
+      // ルートレベルに追加
+      tree.push(node)
     }
-    return acc
-  }, [] as CommandTreeNode[])
-  const existsFolders = unique(commands.map((c) => c.parentFolderId))
-  const remainingFolders = folders.filter((f) => !existsFolders.includes(f.id))
-  tree = tree.concat(
-    remainingFolders.map((folder) => ({
-      type: 'folder',
-      content: folder,
-      children: [],
-    })),
-  )
+  }
+
+  let tree: CommandTreeNode[] = []
+  const addedFolders = new Set<string>()
+
+  // まずフォルダーを階層的に追加
+  folders.forEach((folder) => {
+    if (!addedFolders.has(folder.id)) {
+      const folderNode = createFolderNode(folder)
+      addNodeToTree(tree, folderNode, folder.parentFolderId)
+      addedFolders.add(folder.id)
+    }
+  })
+
+  // 次にコマンドを適切な位置に追加
+  commands.forEach((command) => {
+    const commandNode: CommandTreeNode = {
+      type: 'command',
+      content: command,
+    }
+    addNodeToTree(tree, commandNode, command.parentFolderId)
+  })
+
   return tree
 }
 
@@ -141,11 +179,21 @@ function _toFlatten(
         content: node.content,
         index: 0,
       })
-      _toFlatten(node.children ?? [], flatten)
-      if (node.children) {
-        flatten[flatten.length - node.children.length].firstChild = true
+
+      if (node.children && node.children.length > 0) {
+        const beforeChildrenLength = flatten.length
+        _toFlatten(node.children, flatten)
+        const afterChildrenLength = flatten.length
+
+        // 最初の子要素にfirstChildマークを設定
+        if (beforeChildrenLength < afterChildrenLength) {
+          flatten[beforeChildrenLength].firstChild = true
+        }
+        // 最後の子要素にlastChildマークを設定
+        if (afterChildrenLength > beforeChildrenLength) {
+          flatten[afterChildrenLength - 1].lastChild = true
+        }
       }
-      flatten[flatten.length - 1].lastChild = true
     }
   }
   return flatten
@@ -168,19 +216,48 @@ function commandsFilter(
   })
 }
 
-function isDroppable(selfNode: FlattenNode, activeNode?: FlattenNode): boolean {
+function isCircularReference(
+  draggedFolderId: string,
+  targetFolderId: string,
+  folders: CommandFolder[],
+): boolean {
+  // draggedFolderIdがtargetFolderIdの子孫フォルダーかチェック
+  const findDescendants = (folderId: string): string[] => {
+    const children = folders.filter((f) => f.parentFolderId === folderId)
+    let descendants = children.map((f) => f.id)
+    for (const child of children) {
+      descendants = descendants.concat(findDescendants(child.id))
+    }
+    return descendants
+  }
+
+  const descendants = findDescendants(draggedFolderId)
+  return descendants.includes(targetFolderId)
+}
+
+function isDroppable(
+  selfNode: FlattenNode,
+  activeNode?: FlattenNode,
+  folders: CommandFolder[] = [],
+): boolean {
   if (!activeNode) return true
   if (isCommand(activeNode.content)) return true
+
+  // フォルダーの場合は循環参照チェック
+  if (isFolder(selfNode.content)) {
+    return !isCircularReference(
+      activeNode.content.id,
+      selfNode.content.id,
+      folders,
+    )
+  }
 
   const isMoveDown = activeNode.index < selfNode.index
   if (isMoveDown) {
     if (isInFolder(selfNode.content) && !selfNode.lastChild) return false
   } else {
-    console.log('modeUp', selfNode)
-    // if (isFolder(selfNode.content)) return true
     if (isInFolder(selfNode.content) && !selfNode.firstChild) return false
   }
-
   return true
 }
 
@@ -225,16 +302,28 @@ export function removeUnstoredParam(data: Command) {
   return data
 }
 
-function calcLevel(node: FlattenNode): number {
-  if (isCommand(node.content)) {
-    if (isInFolder(node.content)) {
-      return 1
-    } else {
+function calcLevel(node: FlattenNode, folders: CommandFolder[]): number {
+  // 再帰的に親フォルダーをたどってレベルを計算
+  const calculateDepth = (parentFolderId?: string): number => {
+    if (!parentFolderId || parentFolderId === ROOT_FOLDER) {
       return 0
     }
-  } else {
-    return 0
+
+    const parentFolder = folders.find((f) => f.id === parentFolderId)
+    if (!parentFolder) {
+      return 0
+    }
+
+    return 1 + calculateDepth(parentFolder.parentFolderId)
   }
+
+  if (isCommand(node.content)) {
+    return calculateDepth(node.content.parentFolderId)
+  } else if (isFolder(node.content)) {
+    return calculateDepth(node.content.parentFolderId)
+  }
+
+  return 0
 }
 
 type CommandListProps = {
@@ -554,8 +643,8 @@ export const CommandList = ({ control }: CommandListProps) => {
                 key={field.id}
                 id={field.id}
                 index={index}
-                level={calcLevel(field)}
-                droppable={isDroppable(field, activeNode)}
+                level={calcLevel(field, folderArray.fields)}
+                droppable={isDroppable(field, activeNode, folderArray.fields)}
                 className={cn(
                   isFolder(activeNode?.content) &&
                     isCommand(field.content) &&
