@@ -207,10 +207,41 @@ export function toFlatten(tree: CommandTreeNode[]): FlattenNode[] {
 function commandsFilter(
   nodes: FlattenNode[],
   draggingId?: string | null,
+  folders: CommandFolder[] = [],
 ): FlattenNode[] {
+  if (!draggingId) return nodes
+
+  // ドラッグ中のフォルダーの子孫フォルダーIDを再帰的に取得
+  const getDescendantFolderIds = (folderId: string): string[] => {
+    const children = folders.filter((f) => f.parentFolderId === folderId)
+    let descendants = children.map((f) => f.id)
+    for (const child of children) {
+      descendants = descendants.concat(getDescendantFolderIds(child.id))
+    }
+    return descendants
+  }
+
+  const descendantFolderIds = getDescendantFolderIds(draggingId)
+  const hiddenFolderIds = new Set([draggingId, ...descendantFolderIds])
+
   return nodes.filter((node) => {
+    // コマンドの場合：親フォルダーがドラッグ中のフォルダーまたはその子孫フォルダーなら非表示
     if (isCommand(node.content)) {
-      if (node.content.parentFolderId === draggingId) return false
+      if (
+        node.content.parentFolderId &&
+        hiddenFolderIds.has(node.content.parentFolderId)
+      ) {
+        return false
+      }
+    }
+    // フォルダーの場合：親フォルダーがドラッグ中のフォルダーまたはその子孫フォルダーなら非表示
+    else if (isFolder(node.content)) {
+      if (
+        node.content.parentFolderId &&
+        hiddenFolderIds.has(node.content.parentFolderId)
+      ) {
+        return false
+      }
     }
     return true
   })
@@ -360,7 +391,7 @@ export const CommandList = ({ control }: CommandListProps) => {
 
   const commandTree = toCommandTree(commandArray.fields, folderArray.fields)
   let flatten = toFlatten(commandTree)
-  flatten = commandsFilter(flatten, draggingId)
+  flatten = commandsFilter(flatten, draggingId, folderArray.fields)
   const activeNode = flatten.find((f) => f.id === draggingId)
 
   const setCommandDialogOpen = (open: boolean) => {
