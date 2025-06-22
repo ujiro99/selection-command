@@ -532,6 +532,7 @@ export const CommandList = ({ control }: CommandListProps) => {
           onOpenChange={setFolderDialogOpen}
           onSubmit={(folder) => commandUpsert(folder)}
           folder={editDataRef.current as CommandFolder}
+          folders={folderArray.fields}
         />
       </div>
       <ul ref={commandsRef}>

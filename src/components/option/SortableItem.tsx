@@ -34,6 +34,7 @@ export function SortableItem(props: SrotabelItemProps) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    marginLeft: `${props.level * 32}px`,
   }
 
   return (
@@ -46,7 +47,6 @@ export function SortableItem(props: SrotabelItemProps) {
         props.index === activeIndex
           ? 'border-y bg-gray-100/80 shadow-lg relative z-10'
           : '',
-        props.level > 0 && 'ml-8',
         props.className,
       )}
       {...attributes}

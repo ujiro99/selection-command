@@ -302,6 +302,15 @@
   "Option_parentFolderId": {
     "message": "Folder"
   },
+  "Option_parentFolder": {
+    "message": "Parent Folder"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Select the parent folder"
+  },
+  "Option_rootFolder": {
+    "message": "Root (no parent)"
+  },
   "Option_copyOption": {
     "message": "Copy format"
   },

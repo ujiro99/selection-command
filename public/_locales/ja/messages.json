@@ -302,6 +302,15 @@
   "Option_parentFolderId": {
     "message": "フォルダ"
   },
+  "Option_parentFolder": {
+    "message": "親フォルダ"
+  },
+  "Option_parentFolder_desc": {
+    "message": "親フォルダを選択してください"
+  },
+  "Option_rootFolder": {
+    "message": "ルート（親なし）"
+  },
   "Option_copyOption": {
     "message": "コピーフォーマット"
   },

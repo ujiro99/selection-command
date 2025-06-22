@@ -18,8 +18,10 @@ import { Button } from '@/components/ui/button'
 import { InputField } from '@/components/option/field/InputField'
 import { IconField } from '@/components/option/field/IconField'
 import { SwitchField } from '@/components/option/field/SwitchField'
+import { SelectField } from '@/components/option/field/SelectField'
 import { isEmpty } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
+import { ROOT_FOLDER } from '@/const'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { CommandFolder } from '@/types'
 
@@ -30,6 +32,7 @@ export const folderSchema = z
     iconUrl: z.string().optional(),
     iconSvg: z.string().optional(),
     onlyIcon: z.boolean().optional(),
+    parentFolderId: z.string().optional(),
   })
   .refine((data) => !isEmpty(data.iconUrl) || !isEmpty(data.iconSvg), {
     path: ['iconSvg'],
@@ -41,6 +44,7 @@ type FolderEditDialog = {
   onOpenChange: (open: boolean) => void
   onSubmit: (folder: CommandFolder) => void
   folder?: CommandFolder
+  folders: CommandFolder[]
 }
 
 export const FolderEditDialog = ({
@@ -48,6 +52,7 @@ export const FolderEditDialog = ({
   onOpenChange,
   onSubmit,
   folder,
+  folders,
 }: FolderEditDialog) => {
   const DefaultValue = {
     id: '',
@@ -55,6 +60,29 @@ export const FolderEditDialog = ({
     iconUrl:
       'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
     onlyIcon: true,
+    parentFolderId: ROOT_FOLDER,
+  }
+
+  // Get all descendant folder IDs to prevent circular references
+  const getDescendantIds = (
+    folderId: string,
+    allFolders: CommandFolder[],
+    visited: Set<string> = new Set(),
+  ): string[] => {
+    if (visited.has(folderId)) {
+      return [] // Prevent infinite recursion from circular references
+    }
+
+    visited.add(folderId)
+    const descendants: string[] = []
+    const children = allFolders.filter((f) => f.parentFolderId === folderId)
+
+    for (const child of children) {
+      descendants.push(child.id)
+      descendants.push(...getDescendantIds(child.id, allFolders, visited))
+    }
+
+    return descendants
   }
 
   const form = useForm<z.infer<typeof folderSchema>>({
@@ -99,6 +127,33 @@ export const FolderEditDialog = ({
                 formLabel={t('iconUrl_folder')}
                 placeholder={t('icon_placeholder')}
                 description={t('icon_desc')}
+              />
+              <SelectField
+                control={form.control}
+                name="parentFolderId"
+                formLabel={t('parentFolder')}
+                description={t('parentFolder_desc')}
+                options={[
+                  {
+                    value: ROOT_FOLDER,
+                    name: t('rootFolder'),
+                  },
+                  ...folders
+                    .filter((f) => {
+                      if (!folder) return true
+                      const excludedIds = [
+                        folder.id,
+                        ...getDescendantIds(folder.id, folders),
+                      ]
+                      return !excludedIds.includes(f.id)
+                    })
+                    .map((f) => ({
+                      value: f.id,
+                      name: f.title,
+                      iconUrl: f.iconUrl,
+                      iconSvg: f.iconSvg,
+                    })),
+                ]}
               />
               <SwitchField
                 control={form.control}
