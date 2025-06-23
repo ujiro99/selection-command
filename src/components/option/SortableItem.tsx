@@ -2,6 +2,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { Command, CommandFolder } from '@/types'
 
 type SrotabelItemProps = {
   id: string
@@ -10,6 +11,8 @@ type SrotabelItemProps = {
   level: number
   className?: string
   droppable?: boolean
+  content: Command | CommandFolder
+  folders?: CommandFolder[]
 }
 
 export function SortableItem(props: SrotabelItemProps) {
@@ -25,6 +28,10 @@ export function SortableItem(props: SrotabelItemProps) {
     isDragging,
   } = useSortable({
     id: props.id,
+    data: {
+      content: props.content,
+      folders: props.folders,
+    },
     transition: {
       duration: 150,
       easing: 'cubic-bezier(0.25, 1, 0.5, 1)',

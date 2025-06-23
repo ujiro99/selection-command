@@ -17,15 +17,10 @@ import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { SwitchField } from '@/components/option/field/SwitchField'
 import { PopupPlacementField } from '@/components/option/field/PopupPlacementField'
-import { folderSchema } from '@/components/option/editor/FolderEditDialog'
-import { commandSchema } from '@/components/option/editor/CommandEditDialog'
-import {
-  CommandList,
-  toCommandTree,
-  toFlatten,
-  isCommand,
-  removeUnstoredParam,
-} from '@/components/option/editor/CommandList'
+import { commandSchema, folderSchema } from '@/types/schema'
+import { CommandList } from '@/components/option/editor/CommandList'
+import { toCommandTree, toFlatten } from '@/services/commandTree'
+import { isCommand, removeUnstoredParam } from '@/lib/commandUtils'
 import {
   PageRuleList,
   pageRuleSchema,
@@ -112,7 +107,7 @@ const formSchema = z
   .strict()
 
 type FormValues = z.infer<typeof formSchema>
-type SettingsFormType = Omit<UserSettings, 'settingVersion'>
+export type SettingsFormType = Omit<UserSettings, 'settingVersion'>
 
 export function SettingForm({ className }: { className?: string }) {
   const [isSaving, setIsSaving] = useState(false)

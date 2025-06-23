@@ -57,6 +57,7 @@ const groupCommandsByFolder = (
 
   // First, group commands by folder
   commands.forEach((command) => {
+    if (!command) return
     const folderId = command.parentFolderId || 'root'
     if (!commandsByFolder.has(folderId)) {
       commandsByFolder.set(folderId, [])
@@ -68,6 +69,7 @@ const groupCommandsByFolder = (
   const result: (SelectOptionType | SelectGroupType)[] = []
 
   commands.forEach((command) => {
+    if (!command) return
     const folderId = command.parentFolderId || 'root'
     const folderCommands = commandsByFolder.get(folderId)
 
@@ -221,7 +223,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
 
           const targetId = shortcutValues[index]?.commandId
           const selectedCmd = userCommands.find(
-            (c: Command) => c.id === targetId,
+            (c: Command) => c?.id === targetId,
           )
           const showNoSel =
             selectedCmd && !isTextSelectionOnly(selectedCmd.openMode)

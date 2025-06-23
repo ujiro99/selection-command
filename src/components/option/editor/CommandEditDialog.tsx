@@ -43,12 +43,8 @@ import { InputField } from '@/components/option/field/InputField'
 import { IconField } from '@/components/option/field/IconField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { TextareaField } from '@/components/option/field/TextareaField'
-import {
-  pageActionSchema,
-  PageActionSection,
-} from '@/components/option/editor/PageActionSection'
+import { PageActionSection } from '@/components/option/editor/PageActionSection'
 import { PaeActionHelp } from '@/components/help/PageActionHelp'
-
 import { PageActionStep } from '@/types/schema'
 
 import {
@@ -76,6 +72,8 @@ import { ANALYTICS_EVENTS, sendEvent } from '@/services/analytics'
 import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+
+import { SEARCH_OPEN_MODE, isSearchType, commandSchema } from '@/types/schema'
 import type {
   SelectionCommand,
   CommandFolder,
@@ -84,136 +82,13 @@ import type {
 
 import css from './CommandEditDialog.module.css'
 
-const SearchOpenMode = [
-  OPEN_MODE.POPUP,
-  OPEN_MODE.TAB,
-  OPEN_MODE.WINDOW,
-] as const
-
-const searchSchema = z.object({
-  openMode: z.enum(SearchOpenMode),
-  id: z.string(),
-  revision: z.number().optional(),
-  title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
-  iconUrl: z
-    .string()
-    .url({ message: t('zod_url') })
-    .max(1000, { message: t('zod_string_max', ['1000']) }),
-  searchUrl: z.string().url({ message: t('zod_url') }),
-  parentFolderId: z.string().optional(),
-  openModeSecondary: z.enum(SearchOpenMode),
-  spaceEncoding: z.nativeEnum(SPACE_ENCODING),
-  popupOption: z
-    .object({
-      width: z.number().min(1),
-      height: z.number().min(1),
-    })
-    .optional(),
-})
-
-type SearchType = z.infer<typeof searchSchema>
-
-const isSearchType = (data: any): data is SearchType => {
-  return SearchOpenMode.includes(data.openMode)
-}
-
-const apiSchema = z.object({
-  openMode: z.literal(OPEN_MODE.API),
-  id: z.string(),
-  revision: z.number().optional(),
-  title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
-  iconUrl: z
-    .string()
-    .url({ message: t('zod_url') })
-    .max(1000, { message: t('zod_string_max', ['1000']) }),
-  searchUrl: z.string().url({ message: t('zod_url') }),
-  parentFolderId: z.string().optional(),
-  fetchOptions: z.string().optional(),
-  variables: z
-    .array(
-      z.object({
-        name: z.string({ message: t('zod_string_min', ['1']) }),
-        value: z.string({ message: t('zod_string_min', ['1']) }),
-      }),
-    )
-    .optional(),
-})
-
-const linkPopupSchema = z.object({
-  openMode: z.enum([OPEN_MODE.LINK_POPUP]),
-  id: z.string(),
-  revision: z.number().optional(),
-  parentFolderId: z.string().optional(),
-  title: z
-    .string()
-    .min(1, { message: t('zod_string_min', ['1']) })
-    .default('Link Popup'),
-  iconUrl: z
-    .string()
-    .url({ message: t('zod_url') })
-    .max(1000, { message: t('zod_string_max', ['1000']) })
-    .default(
-      'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
-    ),
-  popupOption: z.object({
-    width: z.number().min(1),
-    height: z.number().min(1),
-  }),
-})
-
-const copySchema = z.object({
-  openMode: z.enum([OPEN_MODE.COPY]),
-  id: z.string(),
-  revision: z.number().optional(),
-  parentFolderId: z.string().optional(),
-  title: z
-    .string()
-    .min(1, { message: t('zod_string_min', ['1']) })
-    .default('Copy text'),
-  iconUrl: z
-    .string()
-    .url({ message: t('zod_url') })
-    .max(1000, { message: t('zod_string_max', ['1000']) })
-    .default(
-      'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png',
-    ),
-  copyOption: z.nativeEnum(COPY_OPTION).default(COPY_OPTION.DEFAULT),
-})
-
-const textStyleSchema = z.object({
-  openMode: z.enum([OPEN_MODE.GET_TEXT_STYLES]),
-  id: z.string(),
-  revision: z.number().optional(),
-  parentFolderId: z.string().optional(),
-  title: z
-    .string()
-    .min(1, { message: t('zod_string_min', ['1']) })
-    .default('Get Text Styles'),
-  iconUrl: z
-    .string()
-    .url({ message: t('zod_url') })
-    .max(1000, { message: t('zod_string_max', ['1000']) })
-    .default(
-      'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png',
-    ),
-})
-
-export const commandSchema = z.discriminatedUnion('openMode', [
-  searchSchema,
-  apiSchema,
-  pageActionSchema,
-  linkPopupSchema,
-  copySchema,
-  textStyleSchema,
-])
-
 const EmptyFolder = {
   id: ROOT_FOLDER,
   title: t('Command_rootFolder'),
 } as CommandFolder
 
 const defaultValue = (openMode: OPEN_MODE) => {
-  if (SearchOpenMode.includes(openMode as any)) {
+  if (SEARCH_OPEN_MODE.includes(openMode as any)) {
     return {
       id: '',
       searchUrl: '',
@@ -409,8 +284,8 @@ const CommandEditDialogInner = ({
 
   useEffect(() => {
     if (
-      SearchOpenMode.includes(openMode as any) &&
-      SearchOpenMode.includes(preOpenModeRef.current as any)
+      SEARCH_OPEN_MODE.includes(openMode as any) &&
+      SEARCH_OPEN_MODE.includes(preOpenModeRef.current as any)
     ) {
       return
     }
@@ -519,19 +394,19 @@ const CommandEditDialogInner = ({
                   }))}
               />
 
-              {SearchOpenMode.includes(openMode as any) && (
+              {SEARCH_OPEN_MODE.includes(openMode as any) && (
                 <SelectField
                   control={form.control}
                   name="openModeSecondary"
                   formLabel={t('openModeSecondary')}
-                  options={SearchOpenMode.map((mode) => ({
+                  options={SEARCH_OPEN_MODE.map((mode) => ({
                     name: t(`openMode_${mode}`),
                     value: mode,
                   }))}
                 />
               )}
 
-              {(SearchOpenMode.includes(openMode as any) ||
+              {(SEARCH_OPEN_MODE.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
                 <InputField
                   control={form.control}
@@ -689,7 +564,7 @@ const CommandEditDialogInner = ({
                     nameSvg="iconSvg"
                     formLabel={t('iconUrl')}
                     description={
-                      SearchOpenMode.includes(openMode as any) ||
+                      SEARCH_OPEN_MODE.includes(openMode as any) ||
                       openMode === OPEN_MODE.API
                         ? t('iconUrl_desc')
                         : openMode === OPEN_MODE.PAGE_ACTION
@@ -698,7 +573,7 @@ const CommandEditDialogInner = ({
                     }
                   />
 
-                  {SearchOpenMode.includes(openMode as any) && (
+                  {SEARCH_OPEN_MODE.includes(openMode as any) && (
                     <SelectField
                       control={form.control}
                       name="spaceEncoding"

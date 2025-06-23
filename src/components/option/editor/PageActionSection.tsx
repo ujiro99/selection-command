@@ -18,28 +18,6 @@ import { InputEditor } from '@/components/pageAction/InputEditor'
 import { RemoveDialog } from '@/components/option/RemoveDialog'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
 
-export const pageActionSchema = z.object({
-  openMode: z.enum([OPEN_MODE.PAGE_ACTION]),
-  id: z.string(),
-  revision: z.number().optional(),
-  parentFolderId: z.string().optional(),
-  title: z
-    .string()
-    .min(1, { message: t('zod_string_min', ['1']) })
-    .default('Get Text Styles'),
-  iconUrl: z
-    .string()
-    .url({ message: t('zod_url') })
-    .max(1000, { message: t('zod_string_max', ['1000']) }),
-  popupOption: z
-    .object({
-      width: z.number().min(1),
-      height: z.number().min(1),
-    })
-    .optional(),
-  pageActionOption: PageActionOption,
-})
-
 type PageActionSectionProps = {
   form: any
   openRecorder: () => void

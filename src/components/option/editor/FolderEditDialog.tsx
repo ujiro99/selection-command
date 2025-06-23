@@ -22,22 +22,9 @@ import { SelectField } from '@/components/option/field/SelectField'
 import { isEmpty } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 import { ROOT_FOLDER } from '@/const'
+import { folderSchema } from '@/types/schema'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { CommandFolder } from '@/types'
-
-export const folderSchema = z
-  .object({
-    id: z.string(),
-    title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
-    iconUrl: z.string().optional(),
-    iconSvg: z.string().optional(),
-    onlyIcon: z.boolean().optional(),
-    parentFolderId: z.string().optional(),
-  })
-  .refine((data) => !isEmpty(data.iconUrl) || !isEmpty(data.iconSvg), {
-    path: ['iconSvg'],
-    message: t('icon_required'),
-  })
 
 type FolderEditDialog = {
   open: boolean
