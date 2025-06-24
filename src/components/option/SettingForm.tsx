@@ -49,7 +49,7 @@ import {
   LINK_COMMAND_STARTUP_METHOD,
   STYLE_VARIABLE,
 } from '@/const'
-import type { SettingsType } from '@/types'
+import type { UserSettings } from '@/types'
 import { PopupPlacementSchema } from '@/types/schema'
 import {
   isMenuCommand,
@@ -112,14 +112,13 @@ const formSchema = z
   .strict()
 
 type FormValues = z.infer<typeof formSchema>
-type SettingsFormType = Omit<SettingsType, 'settingVersion' | 'stars'>
+type SettingsFormType = Omit<UserSettings, 'settingVersion'>
 
 export function SettingForm({ className }: { className?: string }) {
-  const [settingData, setSettingData] = useState<SettingsFormType>()
   const [isSaving, setIsSaving] = useState(false)
   const initializedRef = useRef<boolean>(false)
   const saveToRef = useRef<number>()
-  const iconToRef = useRef<number>()
+  const isLoadingRef = useRef<boolean>()
   const loadingRef = useRef<HTMLDivElement>(null)
   const os = isMac() ? 'mac' : 'windows'
 
@@ -127,7 +126,7 @@ export function SettingForm({ className }: { className?: string }) {
     resolver: zodResolver(formSchema),
     mode: 'onChange',
   })
-  const { reset, getValues, setValue, register, watch } = form
+  const { reset, getValues, setValue, register, subscribe } = form
 
   const startupMethod = useWatch({
     control: form.control,
@@ -159,8 +158,11 @@ export function SettingForm({ className }: { className?: string }) {
 
   // Update form with latest settings
   const updateFormSettings = async () => {
+    isLoadingRef.current = true
     const settings = await loadSettingsData()
     reset(settings)
+    await sleep(100)
+    isLoadingRef.current = false
   }
 
   // Initial settings load
@@ -212,9 +214,8 @@ export function SettingForm({ className }: { className?: string }) {
 
       settings.commands = [...commands, ...linkCommands]
       await Settings.set({
+        ...current,
         ...settings,
-        settingVersion: current.settingVersion,
-        stars: current.stars,
       })
       await sleep(1000)
     } catch (e) {
@@ -235,28 +236,6 @@ export function SettingForm({ className }: { className?: string }) {
     }
     setValue('popupPlacement', popupPlacement)
   }
-
-  // Save after 500 ms to storage.
-  useEffect(() => {
-    let unmounted = false
-
-    // Skip saving if the settingData is not initialized.
-    if (!initializedRef.current) {
-      return
-    }
-
-    clearTimeout(saveToRef.current)
-    saveToRef.current = window.setTimeout(() => {
-      if (unmounted || settingData == null) return
-      updateSettings(settingData)
-    }, 1 * 500 /* ms */)
-
-    return () => {
-      unmounted = true
-      clearTimeout(saveToRef.current)
-      clearTimeout(iconToRef.current)
-    }
-  }, [settingData])
 
   // Set default value for startupMethod.
   useEffect(() => {
@@ -317,11 +296,23 @@ export function SettingForm({ className }: { className?: string }) {
   }, [linkCommandMethod])
 
   useEffect(() => {
-    const subscription = watch((value) => {
-      setSettingData(value as SettingsFormType)
+    // Save after 500 ms to storage.
+    const subscription = subscribe({
+      formState: { values: true },
+      callback: ({ values }) => {
+        if (isLoadingRef.current) return
+        clearTimeout(saveToRef.current)
+        saveToRef.current = window.setTimeout(() => {
+          if (values == null) return
+          updateSettings(values as SettingsFormType)
+        }, 1 * 500 /* ms */)
+      },
     })
-    return () => subscription.unsubscribe()
-  }, [watch])
+    return () => {
+      clearTimeout(saveToRef.current)
+      subscription()
+    }
+  }, [subscribe])
 
   return (
     <Form {...form}>
