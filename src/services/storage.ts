@@ -130,6 +130,9 @@ export const Storage = {
    */
   set: async <T>(key: KEY, value: T): Promise<boolean> => {
     const area = detectStorageArea(key)
+    if (area === chrome.storage.sync) {
+      console.log(key, value)
+    }
     await area.set({ [key]: value })
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
@@ -228,7 +231,10 @@ export const Storage = {
   setCommands: async (
     commands: Command[],
   ): Promise<boolean | chrome.runtime.LastError> => {
-    // Update commands.
+    const count = commands.length
+    const preCount = await Storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
+
+    // Update commands and count.
     const data = commands.reduce(
       (acc, cmd, i) => {
         acc[`${CMD_PREFIX}${i}`] = cmd
@@ -236,23 +242,17 @@ export const Storage = {
       },
       {} as { [key: string]: Command },
     )
-    await chrome.storage.sync.set(data)
-    if (chrome.runtime.lastError != null) {
-      throw chrome.runtime.lastError
-    }
+    await chrome.storage.sync.set({
+      ...data,
+      [STORAGE_KEY.COMMAND_COUNT]: commands.length,
+    })
 
     // Remove surplus commands
-    const count = commands.length
-    const preCount = await Storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
-    const removeKeys = getIndicesToRemove(preCount, count).map(
-      (i) => `${CMD_PREFIX}${i}`,
-    )
-    await chrome.storage.sync.remove(removeKeys)
-
-    // Update command count.
-    await chrome.storage.sync.set({ [STORAGE_KEY.COMMAND_COUNT]: count })
-    if (chrome.runtime.lastError != null) {
-      throw chrome.runtime.lastError
+    if (preCount > count) {
+      const removeKeys = getIndicesToRemove(preCount, count).map(
+        (i) => `${CMD_PREFIX}${i}`,
+      )
+      await chrome.storage.sync.remove(removeKeys)
     }
     return true
   },
