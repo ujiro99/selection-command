@@ -138,19 +138,17 @@ export const Settings = {
     // Stars
     await Storage.set<Star[]>(LOCAL_STORAGE_KEY.STARS, data.stars)
 
-    // UserStats
-    const userStats: UserStats = {
-      commandExecutionCount: data.commandExecutionCount,
-      hasShownReviewRequest: data.hasShownReviewRequest,
-    }
-    await Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats)
-
-    // Shortcuts
-    await Storage.set<ShortcutSettings>(STORAGE_KEY.SHORTCUTS, data.shortcuts)
-
     // Remove UserStats, stars and shortcuts from data
     const { commandExecutionCount, hasShownReviewRequest, stars, ...restData } =
       data
+
+    const userStats: UserStats = {
+      commandExecutionCount,
+      hasShownReviewRequest,
+    }
+
+    await Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats)
+    await Storage.set<ShortcutSettings>(STORAGE_KEY.SHORTCUTS, data.shortcuts)
     await Storage.set<UserSettings>(STORAGE_KEY.USER, restData)
     await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches)
     return true
