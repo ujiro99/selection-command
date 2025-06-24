@@ -116,7 +116,6 @@ type SettingsFormType = Omit<UserSettings, 'settingVersion'>
 
 export function SettingForm({ className }: { className?: string }) {
   const [isSaving, setIsSaving] = useState(false)
-  const initializedRef = useRef<boolean>(false)
   const saveToRef = useRef<number>()
   const isLoadingRef = useRef<boolean>()
   const loadingRef = useRef<HTMLDivElement>(null)
@@ -169,8 +168,6 @@ export function SettingForm({ className }: { className?: string }) {
   useEffect(() => {
     const initializeSettings = async () => {
       await updateFormSettings()
-      // Set initialized after 100ms to avoid flickering
-      setTimeout(() => (initializedRef.current = true), 100)
     }
     initializeSettings()
   }, [])
@@ -300,7 +297,9 @@ export function SettingForm({ className }: { className?: string }) {
     const subscription = subscribe({
       formState: { values: true },
       callback: ({ values }) => {
+        // Skip saving if the settingData is loaded.
         if (isLoadingRef.current) return
+
         clearTimeout(saveToRef.current)
         saveToRef.current = window.setTimeout(() => {
           if (values == null) return
