@@ -41,11 +41,8 @@ export const useCommandDragDrop = (
 
       // Folder to Folder drag
       if (isFolder(activeContent) && isFolder(overContent)) {
-        const { targetIndex, newParentId } = calculateFolderToFolderPosition(
-          active,
-          over,
-          commands,
-        )
+        const { targetIndex, firstChildIndex, newParentId } =
+          calculateFolderToFolderPosition(active, over, commands, tree)
 
         if (newParentId) {
           // Move as subfolder
@@ -54,21 +51,19 @@ export const useCommandDragDrop = (
           // Move to same level
           moveFolderToSameLevel(activeContent.id, overContent.parentFolderId)
         }
-
-        moveFolderContents(activeContent.id, commands, targetIndex)
+        if (targetIndex !== firstChildIndex) {
+          moveFolderContents(activeContent.id, targetIndex, firstChildIndex)
+        }
         return
       }
 
       // Folder to Command drag
       if (isFolder(activeContent) && isCommand(overContent)) {
-        const targetIndex = calculateFolderToCommandPosition(
-          active,
-          over,
-          commands,
-        )
+        const { targetIndex, firstChildIndex } =
+          calculateFolderToCommandPosition(active, over, commands, tree)
         // Always move folder to same level as command
         moveFolderToSameLevel(activeContent.id, overContent.parentFolderId)
-        moveFolderContents(activeContent.id, commands, targetIndex)
+        moveFolderContents(activeContent.id, targetIndex, firstChildIndex)
         return
       }
 
@@ -88,7 +83,7 @@ export const useCommandDragDrop = (
             moveCommandIntoFolder(activeContent.id, newParentId)
           } else {
             // 2-2-2: Move command to same level as folder (parent folder)
-            moveCommandToSameLevel(activeContent.id, newParentId, targetIndex)
+            moveCommandToSameLevel(activeContent.id, targetIndex, newParentId)
           }
         }
         return
@@ -106,8 +101,8 @@ export const useCommandDragDrop = (
           if (activeContent.parentFolderId !== overContent.parentFolderId) {
             moveCommandToSameLevel(
               activeContent.id,
-              overContent.parentFolderId,
               overIndex,
+              overContent.parentFolderId,
             )
           } else {
             // If already in same parent, just move position
@@ -117,6 +112,7 @@ export const useCommandDragDrop = (
       }
     },
     [
+      tree,
       commands,
       moveCommands,
       moveFolderAsSubfolder,

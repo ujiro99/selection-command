@@ -168,11 +168,7 @@ export const CommandList = ({ control }: CommandListProps) => {
   }
 
   // Initialize command actions and drag drop functionality
-  const commandActions = useCommandActions(
-    formInstance,
-    commandArray,
-    folderArray,
-  )
+  const commandActions = useCommandActions(commandArray, folderArray)
 
   const { handleDragEnd } = useCommandDragDrop(
     commandActions,

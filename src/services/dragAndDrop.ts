@@ -58,15 +58,31 @@ export const calculateFolderToFolderPosition = (
   active: Active,
   over: Over,
   commands: Command[],
-): { targetIndex: number; newParentId?: string } => {
+  tree: CommandTreeNode[],
+): { targetIndex: number; firstChildIndex: number; newParentId?: string } => {
   const isForward = isForwardDrag(active, over)
+  const activeFolder = active.data.current?.content as CommandFolder
+  const activeNode = findNodeInTree(tree, activeFolder.id)
   const droppedFolder = over.data.current?.content as CommandFolder
-  const firstChildIndex = commands.findIndex(
-    (cmd) => cmd.parentFolderId === droppedFolder.id,
-  )
+  const droppedNode = findNodeInTree(tree, droppedFolder.id)
+
+  let firstChildIndex = -1
+  if (activeNode) {
+    const firstCommand = findFirstCommand(activeNode)
+    firstChildIndex = commands.findIndex(
+      (c) => c.id === firstCommand?.content.id,
+    )
+  }
+
+  let targetIndex = -1
+  if (droppedNode) {
+    const firstCommand = findFirstCommand(droppedNode)
+    targetIndex = commands.findIndex((c) => c.id === firstCommand?.content.id)
+  }
 
   return {
-    targetIndex: firstChildIndex >= 0 ? firstChildIndex : commands.length,
+    targetIndex: targetIndex >= 0 ? targetIndex : commands.length,
+    firstChildIndex,
     newParentId: isForward
       ? droppedFolder.id
       : droppedFolder.parentFolderId || ROOT_FOLDER,
@@ -77,17 +93,29 @@ export const calculateFolderToCommandPosition = (
   active: Active,
   over: Over,
   commands: Command[],
-): number => {
-  const isForward = isForwardDrag(active, over)
+  tree: CommandTreeNode[],
+): { targetIndex: number; firstChildIndex: number } => {
   const droppedCommand = over.data.current?.content as Command
   const droppedCommandIndex = commands.findIndex(
     (cmd) => cmd.id === droppedCommand.id,
   )
 
-  if (droppedCommandIndex === -1) return commands.length
+  let firstChildIndex = -1
+  const folderNode = findNodeInTree(tree, active.data.current?.content.id)
+  if (folderNode) {
+    const firstCommand = findFirstCommand(folderNode)
+    firstChildIndex = commands.findIndex(
+      (c) => c.id === firstCommand?.content.id,
+    )
+  }
 
-  // qqq 上からドラッグした際のインデックスの計算方法
-  return isForward ? droppedCommandIndex + 1 : droppedCommandIndex
+  if (droppedCommandIndex === -1)
+    return { targetIndex: commands.length, firstChildIndex }
+
+  return {
+    targetIndex: droppedCommandIndex,
+    firstChildIndex,
+  }
 }
 
 export const calculateCommandToFolderPosition = (
@@ -99,6 +127,7 @@ export const calculateCommandToFolderPosition = (
   const isForward = isForwardDrag(active, over)
   const droppedFolder = over.data.current?.content as CommandFolder
   const folderNode = findNodeInTree(tree, droppedFolder.id)
+
   let firstChildIndex = -1
   if (folderNode) {
     const firstCommand = findFirstCommand(folderNode)

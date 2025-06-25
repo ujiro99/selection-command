@@ -200,7 +200,7 @@ export function SettingForm({ className }: { className?: string }) {
       // sort commands
       const commandTree = toCommandTree(settings.commands, settings.folders)
       const commands = toFlatten(commandTree)
-        .map((f) => f.content)
+        .map((f: any) => f.content)
         .filter(isCommand)
         .map(removeUnstoredParam)
 

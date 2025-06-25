@@ -155,6 +155,9 @@ export function toCommandTree(
 ): CommandTreeNode[] {
   const tree: CommandTreeNode[] = []
   const processedFolders = new Set<string>()
+  if (commands == null || (commands.length === 0 && folders.length === 0)) {
+    return tree
+  }
 
   const addNodeToTree = createAddNodeToTreeFunction(folders, processedFolders)
   addCommandsToTree(tree, commands, folders, processedFolders, addNodeToTree)
@@ -219,4 +222,25 @@ export function calcLevel(node: FlattenNode, folders: CommandFolder[]): number {
   }
 
   return calculateDepth(node.content.parentFolderId)
+}
+
+export function getAllCommandsFromFolder(
+  folderNode: CommandTreeNode,
+): Command[] {
+  const commands: Command[] = []
+
+  const collectCommands = (node: CommandTreeNode) => {
+    if (node.type === 'command') {
+      commands.push(node.content as Command)
+    }
+
+    if (node.children) {
+      for (const child of node.children) {
+        collectCommands(child)
+      }
+    }
+  }
+
+  collectCommands(folderNode)
+  return commands
 }
