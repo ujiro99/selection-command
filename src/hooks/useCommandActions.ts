@@ -17,15 +17,15 @@ export const useCommandActions = (
 ) => {
   const tree = toCommandTree(commandArray.fields, folderArray.fields)
 
-  const moveCommands = useCallback(
+  const moveCommand = useCallback(
     (from: number, to: number) => {
       commandArray.move(from, to)
     },
     [commandArray],
   )
 
-  const moveFolderAsSubfolder = useCallback(
-    (sourceFolderId: string, targetFolderId: string) => {
+  const moveFolderToFolder = useCallback(
+    (sourceFolderId: string, targetFolderId = ROOT_FOLDER) => {
       if (
         isCircularReference(
           sourceFolderId,
@@ -50,22 +50,6 @@ export const useCommandActions = (
     [folderArray],
   )
 
-  const moveFolderToSameLevel = useCallback(
-    (sourceFolderId: string, targetParentId: string | undefined) => {
-      const sourceFolderIndex = folderArray.fields.findIndex(
-        (f) => f.id === sourceFolderId,
-      )
-      if (sourceFolderIndex >= 0) {
-        const sourceFolder = folderArray.fields[sourceFolderIndex]
-        folderArray.update(sourceFolderIndex, {
-          ...sourceFolder,
-          parentFolderId: targetParentId ?? ROOT_FOLDER,
-        })
-      }
-    },
-    [folderArray],
-  )
-
   const moveFolderContents = useCallback(
     (sourceFolderId: string, targetIndex: number, firstChildIndex: number) => {
       const folderNode = findNodeInTree(tree, sourceFolderId)
@@ -76,21 +60,21 @@ export const useCommandActions = (
       const isForwardDrag = targetIndex > firstChildIndex
       if (isForwardDrag) {
         folderCommands.forEach(() => {
-          moveCommands(firstChildIndex, targetIndex)
+          moveCommand(firstChildIndex, targetIndex)
         })
       } else {
         let currentTargetIndex = targetIndex
         folderCommands.forEach((cmd) => {
           const idx = commandArray.fields.findIndex((c) => c.id === cmd.id)
-          moveCommands(idx, currentTargetIndex)
+          moveCommand(idx, currentTargetIndex)
           currentTargetIndex++
         })
       }
     },
-    [tree, commandArray, moveCommands],
+    [tree, commandArray, moveCommand],
   )
 
-  const moveCommandToSameLevel = useCallback(
+  const moveCommandToFolder = useCallback(
     (commandId: string, distIndex: number, parentId = ROOT_FOLDER) => {
       const idx = commandArray.fields.findIndex((c) => c.id === commandId)
       if (idx >= 0) {
@@ -101,10 +85,10 @@ export const useCommandActions = (
           parentFolderId: parentId,
         })
         // Then move to target position
-        moveCommands(idx, distIndex)
+        moveCommand(idx, distIndex)
       }
     },
-    [commandArray, moveCommands],
+    [commandArray, moveCommand],
   )
 
   const commandRemove = useCallback(
@@ -147,11 +131,10 @@ export const useCommandActions = (
   )
 
   return {
-    moveCommands,
-    moveFolderAsSubfolder,
-    moveFolderToSameLevel,
-    moveFolderContents,
-    moveCommandToSameLevel,
+    moveCommand,
+    moveCommandToFolder,
     commandRemove,
+    moveFolderToFolder,
+    moveFolderContents,
   }
 }

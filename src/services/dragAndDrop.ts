@@ -58,7 +58,7 @@ export const calculateFolderToFolderPosition = (
   over: Over,
   commands: Command[],
   tree: CommandTreeNode[],
-): { targetIndex: number; firstChildIndex: number; newParentId?: string } => {
+): { targetIndex: number; firstChildIndex: number; newParentId: string } => {
   const isForward = isForwardDrag(active, over)
   const activeFolder = active.data.current?.content as CommandFolder
   const activeNode = findNodeInTree(tree, activeFolder.id)

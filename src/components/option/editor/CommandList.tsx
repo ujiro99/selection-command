@@ -304,7 +304,7 @@ export const CommandList = ({ control }: CommandListProps) => {
               onCopy={commandCopy}
               isDroppable={(node, activeNode) =>
                 isDroppable(node, activeNode, folderArray.fields)
-              }
+                }
             />
           </SortableContext>
         </DndContext>
