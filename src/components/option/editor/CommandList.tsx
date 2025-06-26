@@ -106,8 +106,6 @@ type CommandListProps = {
 }
 
 export const CommandList = ({ control }: CommandListProps) => {
-  // Create form instance for command actions
-  const formInstance = { control } as any
   const [draggingId, setDraggingId] = useState<string | null>(null)
   const [commandDialogOpen, _setCommandDialogOpen] = useState(false)
   const [folderDialogOpen, _setFolderDialogOpen] = useState(false)
