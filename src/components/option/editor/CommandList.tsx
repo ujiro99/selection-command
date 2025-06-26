@@ -83,10 +83,12 @@ function commandsFilter(
   folders: CommandFolder[] = [],
 ): FlattenNode[] {
   if (!draggingId) return nodes
-
+  const draggingNode = nodes.find((n) => n.id === draggingId)
+  if (isCommand(draggingNode?.content)) {
+    return nodes
+  }
   const descendantFolderIds = getDescendantFolderIds(draggingId, folders)
   const hiddenFolderIds = new Set([draggingId, ...descendantFolderIds])
-
   return nodes.filter(
     (node) => !isDescendantOfHiddenFolder(node, hiddenFolderIds),
   )
