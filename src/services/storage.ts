@@ -4,7 +4,36 @@ import { Command, CaptureDataStorage } from '@/types'
 const SYNC_DEBOUNCE_DELAY = 10
 
 let syncSetTimeout: NodeJS.Timeout | null
-const syncSetData = new Map<KEY, any>()
+let syncResolve: (() => void) | null
+const syncSetData = new Map<string, any>()
+
+const debouncedSyncSet = (data: Record<string, any>): Promise<void> => {
+  return new Promise((resolve) => {
+    if (syncSetTimeout != null) {
+      clearTimeout(syncSetTimeout)
+      syncResolve?.()
+      syncResolve = null
+    }
+
+    Object.entries(data).forEach(([key, value]) => {
+      syncSetData.set(key, value)
+    })
+
+    syncSetTimeout = setTimeout(async () => {
+      const dataToSet = Object.fromEntries(syncSetData)
+      chrome.storage.sync.set(dataToSet, () => {
+        if (chrome.runtime.lastError != null) {
+          console.error(chrome.runtime.lastError)
+        }
+        syncSetData.clear()
+        syncSetTimeout = null
+        resolve()
+        syncResolve = null
+      })
+    }, SYNC_DEBOUNCE_DELAY)
+    syncResolve = resolve
+  })
+}
 
 export enum STORAGE_KEY {
   USER = 0,
@@ -137,17 +166,7 @@ export const Storage = {
     const area = detectStorageArea(key)
 
     if (area === chrome.storage.sync) {
-      if (syncSetTimeout != null) {
-        clearTimeout(syncSetTimeout)
-      }
-      syncSetData.set(key, value)
-
-      syncSetTimeout = setTimeout(async () => {
-        const dataToSet = Object.fromEntries(syncSetData)
-        await area.set(dataToSet)
-        syncSetData.clear()
-        syncSetTimeout = null
-      }, SYNC_DEBOUNCE_DELAY)
+      await debouncedSyncSet({ [key.toString()]: value })
       return true
     } else {
       await area.set({ [key]: value })
@@ -257,7 +276,7 @@ export const Storage = {
       },
       {} as { [key: string]: Command },
     )
-    await chrome.storage.sync.set({
+    await debouncedSyncSet({
       ...data,
       [STORAGE_KEY.COMMAND_COUNT]: commands.length,
     })
@@ -304,10 +323,7 @@ export const Storage = {
       },
       {} as { [key: string]: Command },
     )
-    await chrome.storage.sync.set(newCommands)
-    if (chrome.runtime.lastError != null) {
-      throw chrome.runtime.lastError
-    }
+    await debouncedSyncSet(newCommands)
     return true
   },
 

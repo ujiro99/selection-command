@@ -86,6 +86,9 @@ export const Settings = {
   },
 
   set: async (data: SettingsType, serviceWorker = false): Promise<boolean> => {
+    // Promises
+    const ps = [] as Promise<any>[]
+
     // remove unused caches
     const urls = Settings.getUrls(data)
     const caches = await Settings.getCaches()
@@ -128,15 +131,10 @@ export const Settings = {
       }
     }
 
-    // Settings for options are kept separate from user set values.
+    // Set Commands
     removeOptionSettings(data)
-
-    // Commands
-    await Storage.setCommands(data.commands)
+    ps.push(Storage.setCommands(data.commands))
     data.commands = []
-
-    // Stars
-    await Storage.set<Star[]>(LOCAL_STORAGE_KEY.STARS, data.stars)
 
     // Remove UserStats, stars and shortcuts from data
     const { commandExecutionCount, hasShownReviewRequest, stars, ...restData } =
@@ -147,10 +145,18 @@ export const Settings = {
       hasShownReviewRequest,
     }
 
-    await Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats)
-    await Storage.set<ShortcutSettings>(STORAGE_KEY.SHORTCUTS, data.shortcuts)
-    await Storage.set<UserSettings>(STORAGE_KEY.USER, restData)
-    await Storage.set(LOCAL_STORAGE_KEY.CACHES, caches)
+    ps.push(Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats))
+    ps.push(
+      Storage.set<ShortcutSettings>(STORAGE_KEY.SHORTCUTS, data.shortcuts),
+    )
+    restData.shortcuts = { shortcuts: [] }
+    ps.push(Storage.set<UserSettings>(STORAGE_KEY.USER, restData))
+
+    // Set Stars and Caches
+    ps.push(Storage.set<Star[]>(LOCAL_STORAGE_KEY.STARS, stars))
+    ps.push(Storage.set(LOCAL_STORAGE_KEY.CACHES, caches))
+
+    await Promise.all(ps)
     return true
   },
 
