@@ -90,20 +90,6 @@ export const useCommandActions = (
     [tree, commandArray, moveCommands],
   )
 
-  const moveCommandIntoFolder = useCallback(
-    (commandId: string, folderId: string) => {
-      const idx = commandArray.fields.findIndex((c) => c.id === commandId)
-      if (idx >= 0) {
-        const command = commandArray.fields[idx]
-        commandArray.update(idx, {
-          ...command,
-          parentFolderId: folderId,
-        })
-      }
-    },
-    [commandArray],
-  )
-
   const moveCommandToSameLevel = useCallback(
     (commandId: string, distIndex: number, parentId = ROOT_FOLDER) => {
       const idx = commandArray.fields.findIndex((c) => c.id === commandId)
@@ -165,7 +151,6 @@ export const useCommandActions = (
     moveFolderAsSubfolder,
     moveFolderToSameLevel,
     moveFolderContents,
-    moveCommandIntoFolder,
     moveCommandToSameLevel,
     commandRemove,
   }

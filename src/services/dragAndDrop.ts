@@ -124,21 +124,21 @@ export const calculateCommandToFolderPosition = (
   tree: CommandTreeNode[],
 ): { targetIndex: number; newParentId?: string } => {
   const isForward = isForwardDrag(active, over)
-  const droppedFolder = over.data.current?.content as CommandFolder
-  const folderNode = findNodeInTree(tree, droppedFolder.id)
+  const overFolder = over.data.current?.content as CommandFolder
+  const overNode = findNodeInTree(tree, overFolder.id)
 
-  let firstChildIndex = -1
-  if (folderNode) {
-    const firstCommand = findFirstCommand(folderNode)
+  let firstChildIndex = commands.length
+  if (overNode) {
+    const firstCommand = findFirstCommand(overNode)
     firstChildIndex = commands.findIndex(
       (c) => c.id === firstCommand?.content.id,
     )
   }
 
   return {
-    targetIndex: firstChildIndex >= 0 ? firstChildIndex : commands.length,
+    targetIndex: isForward ? firstChildIndex - 1 : firstChildIndex,
     newParentId: isForward
-      ? droppedFolder.id
-      : droppedFolder.parentFolderId || ROOT_FOLDER,
+      ? overFolder.id
+      : overFolder.parentFolderId || ROOT_FOLDER,
   }
 }

@@ -45,12 +45,6 @@ export const CommandTreeRenderer: React.FC<Props> = ({
           droppable={isDroppable(field, activeNode)}
           content={field.content}
           folders={folders}
-          className={cn(
-            isFolder(activeNode?.content) &&
-              isCommand(field.content) &&
-              isInFolder(field.content) &&
-              'opacity-50 bg-gray-100',
-          )}
         >
           <div className="h-14 pr-2 pl-0 flex-1 flex items-center overflow-hidden">
             <div className="flex-1 flex items-center overflow-hidden pr-2">
