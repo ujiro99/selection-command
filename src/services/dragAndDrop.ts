@@ -74,14 +74,14 @@ export const calculateFolderToFolderPosition = (
     )
   }
 
-  let targetIndex = -1
+  let targetIndex = commands.length
   if (droppedNode) {
     const firstCommand = findFirstCommand(droppedNode)
     targetIndex = commands.findIndex((c) => c.id === firstCommand?.content.id)
   }
 
   return {
-    targetIndex: targetIndex >= 0 ? targetIndex : commands.length,
+    targetIndex: isForward ? targetIndex - 1 : targetIndex,
     firstChildIndex,
     newParentId: isForward
       ? droppedFolder.id
