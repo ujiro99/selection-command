@@ -20,7 +20,6 @@ export const isValidDrop = (
   folders: CommandFolder[] = [],
 ): boolean => {
   if (!activeContent || !overContent) return false
-  if (activeContent.id === overContent.id) return false
 
   if (isCommand(activeContent)) return true
 
