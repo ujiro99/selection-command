@@ -11,7 +11,7 @@ import { Point, SettingsType, Command } from '@/types'
 import { LinkPreview } from '@/action/linkPreview'
 import { useSetting } from '@/hooks/useSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
-import Default, { PopupOption } from '@/services/defaultSettings'
+import Default, { PopupOption } from '@/services/option/defaultSettings'
 import { isPopup, isLinkCommand, isMac } from '@/lib/utils'
 import {
   isClickableElement,

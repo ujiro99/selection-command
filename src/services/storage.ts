@@ -1,4 +1,4 @@
-import DefaultSettings, { DefaultCommands } from './defaultSettings'
+import DefaultSettings, { DefaultCommands } from './option/defaultSettings'
 import { Command, CaptureDataStorage } from '@/types'
 
 const SYNC_DEBOUNCE_DELAY = 10

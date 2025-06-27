@@ -4,16 +4,14 @@ import { EditButton } from '@/components/option/EditButton'
 import { CopyButton } from '@/components/option/CopyButton'
 import { RemoveButton } from '@/components/option/RemoveButton'
 import { MenuImage } from '@/components/menu/MenuImage'
-import type { FlattenNode } from '@/services/commandTree'
+import type { FlattenNode } from '@/services/option/commandTree'
 import type { CommandFolder } from '@/types'
 import {
   isCommand,
   isFolder,
-  isInFolder,
   isPageActionCommand,
-} from '@/lib/commandUtils'
-import { calcLevel } from '@/services/commandTree'
-import { cn } from '@/lib/utils'
+} from '@/services/option/commandUtils'
+import { calcLevel } from '@/services/option/commandTree'
 
 interface Props {
   nodes: FlattenNode[]

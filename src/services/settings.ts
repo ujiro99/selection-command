@@ -2,7 +2,7 @@ import { Storage, STORAGE_KEY } from './storage'
 import DefaultSettings, {
   DefaultCommands,
   PopupPlacement,
-} from './defaultSettings'
+} from './option/defaultSettings'
 import {
   OPTION_FOLDER,
   VERSION,
@@ -28,7 +28,7 @@ import {
   isLinkCommand,
 } from '@/lib/utils'
 import { toDataURL } from '@/services/dom'
-import { OptionSettings } from '@/services/optionSettings'
+import { OptionSettings } from '@/services/option/optionSettings'
 
 enum LOCAL_STORAGE_KEY {
   CACHES = 'caches',

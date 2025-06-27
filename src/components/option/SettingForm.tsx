@@ -19,8 +19,8 @@ import { SwitchField } from '@/components/option/field/SwitchField'
 import { PopupPlacementField } from '@/components/option/field/PopupPlacementField'
 import { commandSchema, folderSchema } from '@/types/schema'
 import { CommandList } from '@/components/option/editor/CommandList'
-import { toCommandTree, toFlatten } from '@/services/commandTree'
-import { isCommand, removeUnstoredParam } from '@/lib/commandUtils'
+import { toCommandTree, toFlatten } from '@/services/option/commandTree'
+import { isCommand, removeUnstoredParam } from '@/services/option/commandUtils'
 import {
   PageRuleList,
   pageRuleSchema,
@@ -56,7 +56,7 @@ import {
   cn,
 } from '@/lib/utils'
 import { Settings } from '@/services/settings'
-import DefaultSettings from '@/services/defaultSettings'
+import DefaultSettings from '@/services/option/defaultSettings'
 
 const formSchema = z
   .object({

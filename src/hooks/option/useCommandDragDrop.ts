@@ -1,15 +1,15 @@
 import { useCallback } from 'react'
 import type { DragEndEvent } from '@dnd-kit/core'
 import type { Command, CommandFolder } from '@/types'
-import { isFolder, isCommand } from '@/lib/commandUtils'
+import { isFolder, isCommand } from '@/services/option/commandUtils'
 import {
   isValidDragTarget,
   calculateFolderToFolderPosition,
   calculateFolderToCommandPosition,
   calculateCommandToFolderPosition,
-} from '@/services/dragAndDrop'
+} from '@/services/option/dragAndDrop'
 import { useCommandActions } from './useCommandActions'
-import { toCommandTree } from '@/services/commandTree'
+import { toCommandTree } from '@/services/option/commandTree'
 
 export const useCommandDragDrop = (
   commandActions: ReturnType<typeof useCommandActions>,

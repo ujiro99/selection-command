@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
 import { Disc3 } from 'lucide-react'
-import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from '@/const'
+import { PAGE_ACTION_OPEN_MODE } from '@/const'
 import { FormLabel, FormDescription } from '@/components/ui/form'
 import type { PageAction } from '@/services/pageAction'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { cn, e2a, isEmpty, capitalize } from '@/lib/utils'
-import { PageActionOption, PageActionStep } from '@/types/schema'
+import { PageActionStep } from '@/types/schema'
 import { DeepPartial } from '@/types'
 
 import { InputField } from '@/components/option/field/InputField'

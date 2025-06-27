@@ -3,7 +3,7 @@ import { Settings } from '../services/settings'
 import type { SettingsType, PageRule } from '@/types'
 import { isEmpty } from '@/lib/utils'
 import { STYLE, STARTUP_METHOD, ALIGN, SIDE, INHERIT } from '@/const'
-import Default from '@/services/defaultSettings'
+import Default from '@/services/option/defaultSettings'
 
 type iconUrlMap = Record<number | string, string>
 

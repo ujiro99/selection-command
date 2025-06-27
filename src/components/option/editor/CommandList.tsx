@@ -34,9 +34,9 @@ import {
   toCommandTree,
   toFlatten,
   type FlattenNode,
-} from '@/services/commandTree'
-import { isCommand, isFolder, getDescendantFolderIds } from '@/lib/commandUtils'
-import { isValidDrop } from '@/services/dragAndDrop'
+} from '@/services/option/commandTree'
+import { isCommand, isFolder, getDescendantFolderIds } from '@/services/option/commandUtils'
+import { isValidDrop } from '@/services/option/dragAndDrop'
 import { useCommandActions } from '@/hooks/option/useCommandActions'
 import { useCommandDragDrop } from '@/hooks/option/useCommandDragDrop'
 import { CommandListMenu } from './CommandListMenu'

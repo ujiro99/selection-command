@@ -25,7 +25,7 @@ import { RemoveButton } from '@/components/option/RemoveButton'
 import { InputField } from '@/components/option/field/InputField'
 import { SelectField } from '@/components/option/field/SelectField'
 import { PopupPlacementField } from '@/components/option/field/PopupPlacementField'
-import { PopupPlacement } from '@/services/defaultSettings'
+import { PopupPlacement } from '@/services/option/defaultSettings'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT } from '@/const'

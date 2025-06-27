@@ -1,8 +1,8 @@
 import type { Active, Over } from '@dnd-kit/core'
 import type { Command, CommandFolder } from '@/types'
-import type { CommandTreeNode } from '@/services/commandTree'
-import { findNodeInTree, findFirstCommand } from '@/services/commandTree'
-import { isCommand, isFolder, isCircularReference } from '@/lib/commandUtils'
+import type { CommandTreeNode } from '@/services/option/commandTree'
+import { findNodeInTree, findFirstCommand } from '@/services/option/commandTree'
+import { isCommand, isFolder, isCircularReference } from '@/services/option/commandUtils'
 import { ROOT_FOLDER } from '@/const'
 
 /**

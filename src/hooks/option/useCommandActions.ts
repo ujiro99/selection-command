@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 import { useFieldArray } from 'react-hook-form'
-import { toCommandTree } from '@/services/commandTree'
-import { isCircularReference } from '@/lib/commandUtils'
+import { toCommandTree } from '@/services/option/commandTree'
+import { isCircularReference } from '@/services/option/commandUtils'
 import { ROOT_FOLDER } from '@/const'
 import { CommandsSchemaType, FoldersSchemaType } from '@/types/schema'
 import {
   findNodeInTree,
   getAllCommandsFromFolder,
-} from '@/services/commandTree'
+} from '@/services/option/commandTree'
 
 /**
  * Custom hook that provides actions for managing commands and folders in the command editor.

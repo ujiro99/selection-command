@@ -2,7 +2,7 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { getScreenSize, getWindowPosition } from '@/services/screen'
 import { isValidString, isPageActionCommand } from '@/lib/utils'
 import { PAGE_ACTION_OPEN_MODE } from '@/const'
-import { PopupOption } from '@/services/defaultSettings'
+import { PopupOption } from '@/services/option/defaultSettings'
 import type { ExecuteCommandParams, UrlParam } from '@/types'
 import type { OpenAndRunProps } from '@/services/pageAction/background'
 
