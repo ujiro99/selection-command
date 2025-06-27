@@ -2,6 +2,11 @@ import type { Command, CommandFolder, SelectionCommand, PageActionCommand } from
 import { OPEN_MODE, ROOT_FOLDER } from '@/const'
 import { e2a, isEmpty } from '@/lib/utils'
 
+/**
+ * Type guard to check if the content is a SelectionCommand
+ * @param content - The content to check
+ * @returns True if the content is a SelectionCommand, false otherwise
+ */
 export function isCommand(
   content: Command | CommandFolder | undefined,
 ): content is SelectionCommand {
@@ -12,6 +17,11 @@ export function isCommand(
   return false
 }
 
+/**
+ * Type guard to check if the content is a PageActionCommand
+ * @param content - The content to check
+ * @returns True if the content is a PageActionCommand, false otherwise
+ */
 export function isPageActionCommand(
   content: Command | CommandFolder | undefined,
 ): content is PageActionCommand {
@@ -22,6 +32,11 @@ export function isPageActionCommand(
   return false
 }
 
+/**
+ * Type guard to check if the content is a CommandFolder
+ * @param content - The content to check
+ * @returns True if the content is a CommandFolder, false otherwise
+ */
 export function isFolder(
   content: Command | CommandFolder | undefined,
 ): content is CommandFolder {
@@ -29,17 +44,33 @@ export function isFolder(
   return !('openMode' in content)
 }
 
+/**
+ * Checks if the content is inside a folder (not in the root folder)
+ * @param content - The content to check
+ * @returns True if the content is in a folder, false otherwise
+ */
 export function isInFolder(content: Command | CommandFolder | undefined): boolean {
   if (content == null) return false
   const folderId = content.parentFolderId
   return !isEmpty(folderId) && folderId !== ROOT_FOLDER
 }
 
+/**
+ * Removes unstored parameters from a command (such as temporary IDs)
+ * @param data - The command data to clean
+ * @returns The command with unstored parameters removed
+ */
 export function removeUnstoredParam(data: Command): Command {
   delete (data as any)._id
   return data
 }
 
+/**
+ * Gets all descendant folder IDs for a given folder (recursive)
+ * @param folderId - The ID of the parent folder
+ * @param folders - Array of all folders to search through
+ * @returns Array of descendant folder IDs
+ */
 export const getDescendantFolderIds = (
   folderId: string,
   folders: CommandFolder[],
@@ -52,6 +83,13 @@ export const getDescendantFolderIds = (
   return descendants
 }
 
+/**
+ * Checks if moving a folder would create a circular reference
+ * @param draggedFolderId - The ID of the folder being moved
+ * @param targetFolderId - The ID of the target folder
+ * @param folders - Array of all folders
+ * @returns True if moving would create a circular reference, false otherwise
+ */
 export function isCircularReference(
   draggedFolderId: string,
   targetFolderId: string,

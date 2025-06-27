@@ -35,35 +35,33 @@ export const useCommandDragDrop = (
       const activeContent = active.data.current?.content
       const overContent = over.data.current?.content
 
-      console.log('from', activeContent.title, 'dist', overContent.title)
-
       // Folder to Folder drag
       if (isFolder(activeContent) && isFolder(overContent)) {
-        const { targetIndex, firstChildIndex, newParentId } =
+        const { distIndex, firstChildIndex, newParentId } =
           calculateFolderToFolderPosition(active, over, commands, tree)
         moveFolderToFolder(activeContent.id, newParentId)
-        moveFolderContents(activeContent.id, targetIndex, firstChildIndex)
+        moveFolderContents(activeContent.id, distIndex, firstChildIndex)
         return
       }
 
       // Folder to Command drag
       if (isFolder(activeContent) && isCommand(overContent)) {
-        const { targetIndex, firstChildIndex } =
+        const { distIndex, firstChildIndex } =
           calculateFolderToCommandPosition(active, over, commands, tree)
         moveFolderToFolder(activeContent.id, overContent.parentFolderId)
-        moveFolderContents(activeContent.id, targetIndex, firstChildIndex)
+        moveFolderContents(activeContent.id, distIndex, firstChildIndex)
         return
       }
 
       // Command to Folder drag
       if (isCommand(activeContent) && isFolder(overContent)) {
-        const { targetIndex, newParentId } = calculateCommandToFolderPosition(
+        const { distIndex, newParentId } = calculateCommandToFolderPosition(
           active,
           over,
           commands,
           tree,
         )
-        moveCommandToFolder(activeContent.id, targetIndex, newParentId)
+        moveCommandToFolder(activeContent.id, distIndex, newParentId)
         return
       }
 

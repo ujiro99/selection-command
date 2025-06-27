@@ -51,23 +51,23 @@ export const useCommandActions = (
   )
 
   const moveFolderContents = useCallback(
-    (sourceFolderId: string, targetIndex: number, firstChildIndex: number) => {
+    (sourceFolderId: string, distIndex: number, firstChildIndex: number) => {
       const folderNode = findNodeInTree(tree, sourceFolderId)
       if (!folderNode) {
         return
       }
       const folderCommands = getAllCommandsFromFolder(folderNode)
-      const isForwardDrag = targetIndex > firstChildIndex
+      const isForwardDrag = distIndex > firstChildIndex
       if (isForwardDrag) {
         folderCommands.forEach(() => {
-          moveCommand(firstChildIndex, targetIndex)
+          moveCommand(firstChildIndex, distIndex)
         })
       } else {
-        let currentTargetIndex = targetIndex
+        let currentDistIndex = distIndex
         folderCommands.forEach((cmd) => {
           const idx = commandArray.fields.findIndex((c) => c.id === cmd.id)
-          moveCommand(idx, currentTargetIndex)
-          currentTargetIndex++
+          moveCommand(idx, currentDistIndex)
+          currentDistIndex++
         })
       }
     },

@@ -35,7 +35,7 @@ import {
   toFlatten,
   type FlattenNode,
 } from '@/services/commandTree'
-import { isCommand, isFolder } from '@/lib/commandUtils'
+import { isCommand, isFolder, getDescendantFolderIds } from '@/lib/commandUtils'
 import { isValidDrop } from '@/services/dragAndDrop'
 import { useCommandActions } from '@/hooks/useCommandActions'
 import { useCommandDragDrop } from '@/hooks/useCommandDragDrop'
@@ -43,17 +43,6 @@ import { CommandActions } from './CommandActions'
 import { CommandTreeRenderer } from './CommandTreeRenderer'
 
 // Drag filtering utilities
-const getDescendantFolderIds = (
-  folderId: string,
-  folders: CommandFolder[],
-): string[] => {
-  const children = folders.filter((f) => f.parentFolderId === folderId)
-  let descendants = children.map((f) => f.id)
-  for (const child of children) {
-    descendants = descendants.concat(getDescendantFolderIds(child.id, folders))
-  }
-  return descendants
-}
 
 /**
  * Determines if a node is a descendant of any folder in the hidden folder set.
