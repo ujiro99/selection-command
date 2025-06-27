@@ -39,7 +39,7 @@ import { isCommand, isFolder, getDescendantFolderIds } from '@/lib/commandUtils'
 import { isValidDrop } from '@/services/dragAndDrop'
 import { useCommandActions } from '@/hooks/useCommandActions'
 import { useCommandDragDrop } from '@/hooks/useCommandDragDrop'
-import { CommandActions } from './CommandActions'
+import { CommandListMenu } from './CommandListMenu'
 import { CommandTreeRenderer } from './CommandTreeRenderer'
 
 // Drag filtering utilities
@@ -252,7 +252,7 @@ export const CommandList = ({ control }: CommandListProps) => {
 
   return (
     <>
-      <CommandActions
+      <CommandListMenu
         onAddCommand={() => setCommandDialogOpen(true)}
         onAddFolder={() => setFolderDialogOpen(true)}
         addCommandButtonRef={addCommandButtonRef}

@@ -14,7 +14,7 @@ interface Props {
   commandCount: number
 }
 
-export const CommandActions: React.FC<Props> = ({
+export const CommandListMenu: React.FC<Props> = ({
   onAddCommand,
   onAddFolder,
   addCommandButtonRef,
