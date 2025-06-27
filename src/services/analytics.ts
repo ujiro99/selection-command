@@ -14,6 +14,7 @@ export const ANALYTICS_EVENTS = {
   LINK_COMMAND: 'link_command',
   SHORTCUT: 'shortcut',
   SHOW_HELP: 'show_help',
+  SHOW_REVIEW_URL: 'show_review_url',
   OPEN_DIALOG: 'open_dialog',
   COMMAND_ADD: 'command_add',
   COMMAND_EDIT: 'command_edit',

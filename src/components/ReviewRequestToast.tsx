@@ -2,12 +2,22 @@ import { toast } from 'sonner'
 import { t } from '@/services/i18n'
 import { cn } from '@/lib/utils'
 import { PartyPopper } from 'lucide-react'
+import { ANALYTICS_EVENTS, sendEvent } from '@/services/analytics'
+import { SCREEN } from '@/const'
 
 const REVIEW_URL =
   'https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/reviews'
 const ICON_URL = chrome.runtime.getURL('icon128.png')
 
 export function showReviewRequestToast(onAccept: () => void): void {
+  sendEvent(
+    ANALYTICS_EVENTS.OPEN_DIALOG,
+    {
+      event_label: 'review_request_toast',
+    },
+    SCREEN.CONTENT_SCRIPT,
+  )
+
   toast.custom(
     (toastId) => (
       <div className="flex flex-col bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-gray-800">
@@ -36,6 +46,13 @@ export function showReviewRequestToast(onAccept: () => void): void {
               window.open(REVIEW_URL, '_blank')
               onAccept()
               toast.dismiss(toastId)
+              sendEvent(
+                ANALYTICS_EVENTS.SHOW_REVIEW_URL,
+                {
+                  event_label: 'review_url_opened',
+                },
+                SCREEN.CONTENT_SCRIPT,
+              )
             }}
           >
             {t('review_request_button')}
