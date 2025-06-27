@@ -62,7 +62,7 @@ import {
   FaviconContextProvider,
   useFavicon,
   FaviconEvent,
-} from '@/hooks/useFavicon'
+} from '@/hooks/option/useFavicon'
 
 import { Ipc, BgCommand } from '@/services/ipc'
 import { getScreenSize } from '@/services/screen'

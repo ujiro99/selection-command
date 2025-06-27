@@ -16,7 +16,7 @@ type IconField = {
   description?: string
 }
 
-import { useFavicon } from '@/hooks/useFavicon'
+import { useFavicon } from '@/hooks/option/useFavicon'
 
 export const IconField = ({
   control,

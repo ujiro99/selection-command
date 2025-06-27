@@ -37,8 +37,8 @@ import {
 } from '@/services/commandTree'
 import { isCommand, isFolder, getDescendantFolderIds } from '@/lib/commandUtils'
 import { isValidDrop } from '@/services/dragAndDrop'
-import { useCommandActions } from '@/hooks/useCommandActions'
-import { useCommandDragDrop } from '@/hooks/useCommandDragDrop'
+import { useCommandActions } from '@/hooks/option/useCommandActions'
+import { useCommandDragDrop } from '@/hooks/option/useCommandDragDrop'
 import { CommandListMenu } from './CommandListMenu'
 import { CommandTreeRenderer } from './CommandTreeRenderer'
 
