@@ -59,6 +59,7 @@ import {
   ROOT_FOLDER,
   PAGE_ACTION_OPEN_MODE,
   ICON_NOT_FOUND,
+  SCREEN,
 } from '@/const'
 
 import {
@@ -70,6 +71,7 @@ import {
 import { Ipc, BgCommand } from '@/services/ipc'
 import { getScreenSize } from '@/services/screen'
 import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
+import { ANALYTICS_EVENTS, sendEvent } from '@/services/analytics'
 
 import { isEmpty, e2a, cn } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
@@ -383,6 +385,13 @@ const CommandEditDialogInner = ({
       size: getValues('popupOption') ?? POPUP_OPTION,
       screen: await getScreenSize(),
     })
+    sendEvent(
+      ANALYTICS_EVENTS.OPEN_DIALOG,
+      {
+        event_label: 'pageAction_recorder',
+      },
+      SCREEN.OPTION,
+    )
   }
 
   useEffect(() => {
