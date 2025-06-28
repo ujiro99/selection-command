@@ -84,6 +84,22 @@ export const getDescendantFolderIds = (
 }
 
 /**
+ * Checks if folderA is a descendant of folderB
+ * @param folderAId - The ID of folder A to check
+ * @param folderBId - The ID of folder B (potential ancestor)
+ * @param folders - Array of all folders
+ * @returns True if folderA is a descendant of folderB, false otherwise
+ */
+export function isDescendantOf(
+  folderAId: string,
+  folderBId: string,
+  folders: CommandFolder[],
+): boolean {
+  const descendants = getDescendantFolderIds(folderBId, folders)
+  return descendants.includes(folderAId)
+}
+
+/**
  * Checks if moving a folder would create a circular reference
  * @param draggedFolderId - The ID of the folder being moved
  * @param targetFolderId - The ID of the target folder

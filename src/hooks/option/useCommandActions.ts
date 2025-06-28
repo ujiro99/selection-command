@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useFieldArray } from 'react-hook-form'
 import { isCircularReference } from '@/services/option/commandUtils'
 import { ROOT_FOLDER } from '@/const'
+import type { CommandFolder } from '@/types'
 import { CommandsSchemaType, FoldersSchemaType } from '@/types/schema'
 import {
   toFlatten,
@@ -9,7 +10,49 @@ import {
   getAllCommandsFromFolder,
   getAllFoldersFromNode,
 } from '@/services/option/commandTree'
-import type { CommandTreeNode } from '@/services/option/commandTree'
+import { isFolder, isDescendantOf } from '@/services/option/commandUtils'
+import type {
+  CommandTreeNode,
+  FlattenNode,
+} from '@/services/option/commandTree'
+
+/**
+ * Finds the appropriate folder between two positions in a flattened node array
+ * Used during drag operations to determine the target folder when dropping a command or folder
+ * @param flatten - Array of flattened nodes (commands and folders in display order)
+ * @param folders - Array of all folders for hierarchy checking
+ * @param from - Starting position index of the dragged item
+ * @param to - Target position index where the item is being dropped
+ * @returns The folder node that should be the target, or null if no suitable folder is found
+ */
+const findFolder = (
+  flatten: FlattenNode[],
+  folders: CommandFolder[],
+  from: number,
+  to: number,
+): FlattenNode | null => {
+  const isForwardDrag = to > from
+  if (isForwardDrag) {
+    for (let i = from + 1; i < to; i++) {
+      if (
+        isFolder(flatten[i].content) &&
+        !isDescendantOf(flatten[i].id, flatten[from].id, folders)
+      ) {
+        return flatten[i]
+      }
+    }
+  } else {
+    for (let i = from - 1; i > to; i--) {
+      if (
+        isFolder(flatten[i].content) &&
+        !isDescendantOf(flatten[i].id, flatten[from].id, folders)
+      ) {
+        return flatten[i]
+      }
+    }
+  }
+  return null
+}
 
 /*
  * Custom hook that provides actions for managing commands and folders in the command editor.
@@ -64,15 +107,29 @@ export const useCommandActions = (
       }
 
       const sourceFolder = findNodeInTree(tree, sourceFolderId)
+      const overContent = findNodeInTree(tree, overContentId)
       if (!sourceFolder) {
         return
       }
       const sourceFolderIndex = folderArray.fields.findIndex(
         (f) => f.id === sourceFolderId,
       )
-      const distFolderIndex = folderArray.fields.findIndex(
-        (f) => f.id === overContentId,
-      )
+      let distFolderIndex = -1
+      if (overContent?.type === 'folder') {
+        distFolderIndex = folderArray.fields.findIndex(
+          (f) => f.id === overContentId,
+        )
+      } else {
+        // When the drop target is a command, find a folder between the dragged folder and the target
+        const from = flatten.findIndex((f) => f.id === sourceFolderId)
+        const to = flatten.findIndex((f) => f.id === overContentId)
+        const folder = findFolder(flatten, folderArray.fields, from, to)
+        if (folder) {
+          distFolderIndex = folderArray.fields.findIndex(
+            (f) => f.id === folder.id,
+          )
+        }
+      }
 
       if (sourceFolderIndex >= 0) {
         folderArray.update(sourceFolderIndex, {
@@ -84,14 +141,12 @@ export const useCommandActions = (
           const subFolders = getAllFoldersFromNode(sourceFolder)
           if (isForwardDrag) {
             subFolders.forEach(() => {
-              console.log('source', sourceFolderIndex, 'dist', distFolderIndex)
               folderArray.move(sourceFolderIndex, distFolderIndex)
             })
           } else {
             let currentDistIndex = distFolderIndex
             subFolders.forEach((f) => {
               const idx = folderArray.fields.findIndex((c) => c.id === f.id)
-              console.log('source', idx, 'dist', currentDistIndex)
               folderArray.move(idx, currentDistIndex)
               currentDistIndex++
             })
