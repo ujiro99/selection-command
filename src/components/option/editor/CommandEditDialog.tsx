@@ -81,6 +81,7 @@ import type {
 } from '@/types'
 
 import css from './CommandEditDialog.module.css'
+import { calcLevel } from '@/services/option/commandTree'
 
 const EmptyFolder = {
   id: ROOT_FOLDER,
@@ -595,6 +596,7 @@ const CommandEditDialogInner = ({
                       value: folder.id,
                       iconUrl: folder.iconUrl,
                       iconSvg: folder.iconSvg,
+                      level: calcLevel(folder, folders),
                     }))}
                   />
                 </CollapsibleContent>

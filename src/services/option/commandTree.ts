@@ -207,7 +207,10 @@ export function toFlatten(tree: CommandTreeNode[]): FlattenNode[] {
   return flatten
 }
 
-export function calcLevel(node: FlattenNode, folders: CommandFolder[]): number {
+export function calcLevel(
+  node: FlattenNode | Command | CommandFolder,
+  folders: CommandFolder[],
+): number {
   const calculateDepth = (parentFolderId?: string): number => {
     if (!parentFolderId || parentFolderId === ROOT_FOLDER) {
       return 0
@@ -221,7 +224,11 @@ export function calcLevel(node: FlattenNode, folders: CommandFolder[]): number {
     return 1 + calculateDepth(parentFolder.parentFolderId)
   }
 
-  return calculateDepth(node.content.parentFolderId)
+  // Handle different input types
+  const parentFolderId =
+    'content' in node ? node.content.parentFolderId : node.parentFolderId
+
+  return calculateDepth(parentFolderId)
 }
 
 export function getAllCommandsFromFolder(
