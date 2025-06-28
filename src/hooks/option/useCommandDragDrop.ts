@@ -39,16 +39,24 @@ export const useCommandDragDrop = (
       if (isFolder(activeContent) && isFolder(overContent)) {
         const { distIndex, firstChildIndex, newParentId } =
           calculateFolderToFolderPosition(active, over, commands, tree)
-        moveFolderToFolder(activeContent.id, newParentId)
+        moveFolderToFolder(activeContent.id, overContent.id, newParentId)
         moveFolderContents(activeContent.id, distIndex, firstChildIndex)
         return
       }
 
       // Folder to Command drag
       if (isFolder(activeContent) && isCommand(overContent)) {
-        const { distIndex, firstChildIndex } =
-          calculateFolderToCommandPosition(active, over, commands, tree)
-        moveFolderToFolder(activeContent.id, overContent.parentFolderId)
+        const { distIndex, firstChildIndex } = calculateFolderToCommandPosition(
+          active,
+          over,
+          commands,
+          tree,
+        )
+        moveFolderToFolder(
+          activeContent.id,
+          overContent.id,
+          overContent.parentFolderId,
+        )
         moveFolderContents(activeContent.id, distIndex, firstChildIndex)
         return
       }

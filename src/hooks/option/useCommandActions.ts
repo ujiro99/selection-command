@@ -1,18 +1,20 @@
 import { useCallback } from 'react'
 import { useFieldArray } from 'react-hook-form'
-import { toCommandTree } from '@/services/option/commandTree'
 import { isCircularReference } from '@/services/option/commandUtils'
 import { ROOT_FOLDER } from '@/const'
 import { CommandsSchemaType, FoldersSchemaType } from '@/types/schema'
 import {
+  toFlatten,
   findNodeInTree,
   getAllCommandsFromFolder,
+  getAllFoldersFromNode,
 } from '@/services/option/commandTree'
+import type { CommandTreeNode } from '@/services/option/commandTree'
 
-/**
+/*
  * Custom hook that provides actions for managing commands and folders in the command editor.
  * Handles moving, organizing, and removing commands and folders with proper hierarchy management.
- * 
+ *
  * @param commandArray - React Hook Form field array for commands
  * @param folderArray - React Hook Form field array for folders
  * @returns Object containing command and folder management functions
@@ -22,8 +24,9 @@ export const useCommandActions = (
     typeof useFieldArray<CommandsSchemaType, 'commands'>
   >,
   folderArray: ReturnType<typeof useFieldArray<FoldersSchemaType, 'folders'>>,
+  tree: CommandTreeNode[],
 ) => {
-  const tree = toCommandTree(commandArray.fields, folderArray.fields)
+  const flatten = toFlatten(tree)
 
   /**
    * Moves a command from one position to another in the commands array
@@ -41,29 +44,59 @@ export const useCommandActions = (
    * Moves a folder to become a child of another folder
    * Prevents circular references by checking folder hierarchy
    * @param sourceFolderId - ID of the folder to move
-   * @param targetFolderId - ID of the target parent folder (defaults to ROOT_FOLDER)
+   * @param overContentid - ID of the content that is being dragged over
+   * @param distFolderId - ID of the target parent folder (defaults to ROOT_FOLDER)
    */
   const moveFolderToFolder = useCallback(
-    (sourceFolderId: string, targetFolderId = ROOT_FOLDER) => {
+    (
+      sourceFolderId: string,
+      overContentId: string,
+      distFolderId = ROOT_FOLDER,
+    ) => {
       if (
         isCircularReference(
           sourceFolderId,
-          targetFolderId,
+          distFolderId,
           folderArray.fields as any,
         )
       ) {
         return
       }
 
+      const sourceFolder = findNodeInTree(tree, sourceFolderId)
+      if (!sourceFolder) {
+        return
+      }
       const sourceFolderIndex = folderArray.fields.findIndex(
         (f) => f.id === sourceFolderId,
       )
+      const distFolderIndex = folderArray.fields.findIndex(
+        (f) => f.id === overContentId,
+      )
+
       if (sourceFolderIndex >= 0) {
-        const sourceFolder = folderArray.fields[sourceFolderIndex]
         folderArray.update(sourceFolderIndex, {
-          ...sourceFolder,
-          parentFolderId: targetFolderId,
+          ...sourceFolder.content,
+          parentFolderId: distFolderId,
         })
+        if (sourceFolderIndex !== distFolderIndex && distFolderIndex >= 0) {
+          const isForwardDrag = distFolderIndex > sourceFolderIndex
+          const subFolders = getAllFoldersFromNode(sourceFolder)
+          if (isForwardDrag) {
+            subFolders.forEach(() => {
+              console.log('source', sourceFolderIndex, 'dist', distFolderIndex)
+              folderArray.move(sourceFolderIndex, distFolderIndex)
+            })
+          } else {
+            let currentDistIndex = distFolderIndex
+            subFolders.forEach((f) => {
+              const idx = folderArray.fields.findIndex((c) => c.id === f.id)
+              console.log('source', idx, 'dist', currentDistIndex)
+              folderArray.move(idx, currentDistIndex)
+              currentDistIndex++
+            })
+          }
+        }
       }
     },
     [folderArray],

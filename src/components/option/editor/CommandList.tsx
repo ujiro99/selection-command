@@ -35,7 +35,11 @@ import {
   toFlatten,
   type FlattenNode,
 } from '@/services/option/commandTree'
-import { isCommand, isFolder, getDescendantFolderIds } from '@/services/option/commandUtils'
+import {
+  isCommand,
+  isFolder,
+  getDescendantFolderIds,
+} from '@/services/option/commandUtils'
 import { isValidDrop } from '@/services/option/dragAndDrop'
 import { useCommandActions } from '@/hooks/option/useCommandActions'
 import { useCommandDragDrop } from '@/hooks/option/useCommandDragDrop'
@@ -157,7 +161,11 @@ export const CommandList = ({ control }: CommandListProps) => {
   }
 
   // Initialize command actions and drag drop functionality
-  const commandActions = useCommandActions(commandArray, folderArray)
+  const commandActions = useCommandActions(
+    commandArray,
+    folderArray,
+    commandTree,
+  )
 
   const { handleDragEnd } = useCommandDragDrop(
     commandActions,
@@ -293,7 +301,7 @@ export const CommandList = ({ control }: CommandListProps) => {
               onCopy={commandCopy}
               isDroppable={(node, activeNode) =>
                 isDroppable(node, activeNode, folderArray.fields)
-                }
+              }
             />
           </SortableContext>
         </DndContext>
