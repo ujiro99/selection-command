@@ -252,9 +252,7 @@ export function getAllCommandsFromFolder(
   return commands
 }
 
-export function getAllFoldersFromNode(
-  node: CommandTreeNode,
-): CommandFolder[] {
+export function getAllFoldersFromNode(node: CommandTreeNode): CommandFolder[] {
   const folders: CommandFolder[] = []
 
   const collectFolders = (currentNode: CommandTreeNode) => {

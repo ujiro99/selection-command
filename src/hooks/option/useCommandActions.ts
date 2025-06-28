@@ -1,16 +1,20 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useEffect } from 'react'
 import { useFieldArray } from 'react-hook-form'
-import { isCircularReference } from '@/services/option/commandUtils'
+import { usePrevious } from '@/hooks/usePrevious'
 import { ROOT_FOLDER } from '@/const'
 import type { CommandFolder } from '@/types'
 import { CommandsSchemaType, FoldersSchemaType } from '@/types/schema'
+import {
+  isFolder,
+  isDescendantOf,
+  isCircularReference,
+} from '@/services/option/commandUtils'
 import {
   toFlatten,
   findNodeInTree,
   getAllCommandsFromFolder,
   getAllFoldersFromNode,
 } from '@/services/option/commandTree'
-import { isFolder, isDescendantOf } from '@/services/option/commandUtils'
 import type {
   CommandTreeNode,
   FlattenNode,
@@ -33,7 +37,7 @@ const findFolder = (
 ): FlattenNode | null => {
   const isForwardDrag = to > from
   if (isForwardDrag) {
-    for (let i = from + 1; i < to; i++) {
+    for (let i = from + 1; i <= to; i++) {
       if (
         isFolder(flatten[i].content) &&
         !isDescendantOf(flatten[i].id, flatten[from].id, folders)
@@ -42,7 +46,7 @@ const findFolder = (
       }
     }
   } else {
-    for (let i = from - 1; i > to; i--) {
+    for (let i = from - 1; i >= to; i--) {
       if (
         isFolder(flatten[i].content) &&
         !isDescendantOf(flatten[i].id, flatten[from].id, folders)
@@ -60,7 +64,10 @@ const findFolder = (
  * @param id - ID to find
  * @returns Index of the item, or -1 if not found
  */
-const findIndexById = <T extends { id: string }>(array: T[], id: string): number => {
+const findIndexById = <T extends { id: string }>(
+  array: T[],
+  id: string,
+): number => {
   return array.findIndex((item) => item.id === id)
 }
 
@@ -126,7 +133,7 @@ const moveSubFolders = (
 ): void => {
   const isForwardDrag = distFolderIndex > sourceFolderIndex
   const subFolders = getAllFoldersFromNode(sourceFolder)
-  
+
   if (isForwardDrag) {
     subFolders.forEach(() => {
       folderArray.move(sourceFolderIndex, distFolderIndex)
@@ -157,6 +164,37 @@ export const useCommandActions = (
   tree: CommandTreeNode[],
 ) => {
   const flatten = useMemo(() => toFlatten(tree), [tree])
+  const prevFlatten = usePrevious(flatten)
+
+  useEffect(() => {
+    if (!prevFlatten) return
+    const prevFolders = prevFlatten
+      .filter((node) => isFolder(node.content))
+      .map((node) => node.id)
+    const currentFolders = flatten
+      .filter((node) => isFolder(node.content))
+      .map((node) => node.id)
+
+    // Check if the folder order has changed.
+    const folderOrderChanged = prevFolders.some((prev, idx) => {
+      const currentIdx = currentFolders.findIndex((current) => current === prev)
+      return currentIdx !== idx
+    })
+
+    // Reorder folderArray.fields to match flatten.
+    if (folderOrderChanged) {
+      // 1. Remove all folders first.
+      currentFolders.forEach(() => folderArray.remove(0))
+      // 2. Append folders in the correct order.
+      currentFolders.forEach((folderId) => {
+        const idx = folderArray.fields.findIndex((f) => f.id === folderId)
+        if (idx > -1) {
+          const cur = folderArray.fields[idx]
+          folderArray.append(cur)
+        }
+      })
+    }
+  }, [flatten, prevFlatten, folderArray])
 
   /**
    * Moves a command from one position to another in the commands array
@@ -184,11 +222,7 @@ export const useCommandActions = (
       distFolderId = ROOT_FOLDER,
     ) => {
       if (
-        isCircularReference(
-          sourceFolderId,
-          distFolderId,
-          folderArray.fields,
-        )
+        isCircularReference(sourceFolderId, distFolderId, folderArray.fields)
       ) {
         return
       }
@@ -199,7 +233,10 @@ export const useCommandActions = (
         return
       }
 
-      const sourceFolderIndex = findIndexById(folderArray.fields, sourceFolderId)
+      const sourceFolderIndex = findIndexById(
+        folderArray.fields,
+        sourceFolderId,
+      )
       const distFolderIndex = getTargetFolderIndex(
         overContent,
         overContentId,
@@ -215,7 +252,12 @@ export const useCommandActions = (
         })
 
         if (sourceFolderIndex !== distFolderIndex && distFolderIndex >= 0) {
-          moveSubFolders(sourceFolder, sourceFolderIndex, distFolderIndex, folderArray)
+          moveSubFolders(
+            sourceFolder,
+            sourceFolderIndex,
+            distFolderIndex,
+            folderArray,
+          )
         }
       }
     },
@@ -293,8 +335,14 @@ export const useCommandActions = (
       const folderIndex = findIndexById(folderArray.fields, id)
       if (folderIndex >= 0) {
         // Move child commands to root when removing folder
-        const childCommands = commandArray.fields.map((cmd, index) => ({ ...cmd, index }))
-        const childFolders = folderArray.fields.map((folder, index) => ({ ...folder, index }))
+        const childCommands = commandArray.fields.map((cmd, index) => ({
+          ...cmd,
+          index,
+        }))
+        const childFolders = folderArray.fields.map((folder, index) => ({
+          ...folder,
+          index,
+        }))
 
         moveChildrenToRoot(childCommands, id, (index, item) => {
           commandArray.update(index, item)
