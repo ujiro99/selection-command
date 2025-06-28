@@ -164,12 +164,17 @@ const MenuFolder = (props: {
       </MenubarTrigger>
       <MenubarContent
         side={menuSide}
-        sideOffset={isHorizontal ? 2 + depth * 4 : -2 - depth * 4}
+        sideOffset={isHorizontal ? 2 : -2}
         className={clsx({ flex: isHorizontal })}
         ref={contentRef}
         {...onHover(props.onHoverContent, folder.id)}
       >
-        <Menubar value={activeFolder}>
+        <Menubar
+          value={activeFolder}
+          className={clsx({
+            [css.menuVertical]: !isHorizontal,
+          })}
+        >
           {children?.map((child) => (
             <MenuTreeNode
               node={child}
