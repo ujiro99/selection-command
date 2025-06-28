@@ -23,6 +23,7 @@ import { isEmpty } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
 import { ROOT_FOLDER } from '@/const'
 import { folderSchema } from '@/types/schema'
+import { getDescendantFolderIds } from '@/services/option/commandUtils'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { CommandFolder } from '@/types'
 
@@ -50,27 +51,6 @@ export const FolderEditDialog = ({
     parentFolderId: ROOT_FOLDER,
   }
 
-  // Get all descendant folder IDs to prevent circular references
-  const getDescendantIds = (
-    folderId: string,
-    allFolders: CommandFolder[],
-    visited: Set<string> = new Set(),
-  ): string[] => {
-    if (visited.has(folderId)) {
-      return [] // Prevent infinite recursion from circular references
-    }
-
-    visited.add(folderId)
-    const descendants: string[] = []
-    const children = allFolders.filter((f) => f.parentFolderId === folderId)
-
-    for (const child of children) {
-      descendants.push(child.id)
-      descendants.push(...getDescendantIds(child.id, allFolders, visited))
-    }
-
-    return descendants
-  }
 
   const form = useForm<z.infer<typeof folderSchema>>({
     resolver: zodResolver(folderSchema),
@@ -130,7 +110,7 @@ export const FolderEditDialog = ({
                       if (!folder) return true
                       const excludedIds = [
                         folder.id,
-                        ...getDescendantIds(folder.id, folders),
+                        ...getDescendantFolderIds(folder.id, folders),
                       ]
                       return !excludedIds.includes(f.id)
                     })
