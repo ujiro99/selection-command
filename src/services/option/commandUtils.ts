@@ -61,7 +61,8 @@ export function isInFolder(content: Command | CommandFolder | undefined): boolea
  * @returns The command with unstored parameters removed
  */
 export function removeUnstoredParam(data: Command): Command {
-  delete (data as any)._id
+  const tempData = data as Command & { _id?: unknown }
+  delete tempData._id
   return data
 }
 
