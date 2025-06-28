@@ -529,12 +529,12 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    let enableSendTab =
+    const enableSendTab =
       tab?.id &&
       !tab.url?.startsWith('chrome') &&
       !tab.url?.includes('chromewebstore.google.com')
 
-    let selectionText = await Storage.get<string>(
+    const selectionText = await Storage.get<string>(
       SESSION_STORAGE_KEY.SELECTION_TEXT,
     )
 

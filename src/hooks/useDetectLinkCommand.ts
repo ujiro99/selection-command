@@ -181,7 +181,7 @@ const calcPopupPosition = async (
 ): Promise<Point> => {
   const popupOption = command?.popupOption ?? PopupOption
   const s = await getScreenSize()
-  let x = isCursorInLeft(cursorX, s)
+  const x = isCursorInLeft(cursorX, s)
     ? Math.floor(s.width + s.left - popupOption.width - POPUP_OFFSET)
     : Math.floor(s.left + POPUP_OFFSET)
   const y = Math.floor((s.height + s.top - popupOption.height) / 2)

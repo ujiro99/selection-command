@@ -136,7 +136,7 @@ export function PreviewDesc(props: PopupProps) {
   const { settings } = useSetting()
   const key = settings.startupMethod.keyboardParam
 
-  let os = isMac() ? 'mac' : 'windows'
+  const os = isMac() ? 'mac' : 'windows'
   const keyLabel = t(`Option_keyboardParam_${key}_${os}`)
 
   return (

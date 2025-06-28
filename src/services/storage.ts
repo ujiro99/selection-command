@@ -149,7 +149,7 @@ export const Storage = {
    */
   get: async <T>(key: KEY): Promise<T> => {
     const area = detectStorageArea(key)
-    let result = await area.get(`${key}`)
+    const result = await area.get(`${key}`)
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }

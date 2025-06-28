@@ -11,7 +11,7 @@ const insertCss = (elm: ShadowRoot) => {
   fetch(url)
     .then((res) => res.text())
     .then((css) => {
-      let style = document.createElement('style')
+      const style = document.createElement('style')
       style.append(document.createTextNode(css))
       elm.insertBefore(style, elm.firstChild)
     })
