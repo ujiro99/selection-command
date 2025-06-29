@@ -155,7 +155,7 @@ const UrlOrSvgInput = ({
     <>
       <Input
         type="text"
-        value={value}
+        value={value || ''}
         onChange={handleInputChange}
         placeholder={placeholder}
         className="pl-10"
