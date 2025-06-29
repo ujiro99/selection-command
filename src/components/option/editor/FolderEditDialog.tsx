@@ -26,6 +26,7 @@ import { folderSchema } from '@/types/schema'
 import { getDescendantFolderIds } from '@/services/option/commandUtils'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { CommandFolder } from '@/types'
+import { calcLevel } from '@/services/option/commandTree'
 
 type FolderEditDialog = {
   open: boolean
@@ -50,7 +51,6 @@ export const FolderEditDialog = ({
     onlyIcon: true,
     parentFolderId: ROOT_FOLDER,
   }
-
 
   const form = useForm<z.infer<typeof folderSchema>>({
     resolver: zodResolver(folderSchema),
@@ -119,6 +119,7 @@ export const FolderEditDialog = ({
                       name: f.title,
                       iconUrl: f.iconUrl,
                       iconSvg: f.iconSvg,
+                      level: calcLevel(f, folders),
                     })),
                 ]}
               />
