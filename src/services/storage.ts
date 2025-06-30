@@ -9,14 +9,12 @@ const syncSetData = new Map<string, unknown>()
 
 chrome.storage.sync.getBytesInUse(['0', '2', '3', '4'], (bytes) => {
   console.log('bytes', bytes)
-})
+            })
 
 const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
   return new Promise((resolve) => {
     if (syncSetTimeout != null) {
       clearTimeout(syncSetTimeout)
-      syncResolve?.()
-      syncResolve = null
     }
 
     Object.entries(data).forEach(([key, value]) => {
@@ -31,11 +29,11 @@ const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
         }
         syncSetData.clear()
         syncSetTimeout = null
-        resolve()
-        syncResolve = null
+        syncSetResolves.forEach((resolve) => resolve())
+        syncSetResolves = []
       })
     }, SYNC_DEBOUNCE_DELAY)
-    syncResolve = resolve
+    syncSetResolves.push(resolve)
   })
 }
 
@@ -496,12 +494,8 @@ class HybridCommandStorage {
       // Step 1: Determine storage allocation
       const allocation = this.calculator.analyzeAndAllocate(commands)
 
-      // Step 2: Save to both storage areas with integrity checking
-      await this.saveToStorageAreas(allocation)
-
-      // Step 3: Save metadata
-      await this.metadataManager.saveMetadata(allocation.metadata)
-
+      // Step 2: Save commands and metadata atomically
+      await this.saveCommandsAndMetadataAtomically(allocation)
       return true
     } catch (error) {
       console.error('Failed to save commands:', error)
@@ -552,11 +546,10 @@ class HybridCommandStorage {
     }
   }
 
-  private async saveToStorageAreas(
+  private async saveCommandsAndMetadataAtomically(
     allocation: StorageAllocation,
   ): Promise<void> {
     const syncSavePromises: Promise<void>[] = []
-    const localSavePromises: Promise<void>[] = []
 
     // Save to sync storage
     allocation.sync.commands.forEach((command, index) => {
@@ -565,17 +558,25 @@ class HybridCommandStorage {
     })
 
     // Save to local storage
+    const localSetData = new Map<string, unknown>()
     allocation.local.commands.forEach((command, index) => {
       const key = `${CMD_PREFIX}local-${index}`
-      localSavePromises.push(
-        chrome.storage.local.set({ [key]: command }).then(() => {}),
-      )
+      localSetData.set(key, command)
     })
 
-    // Save in parallel
+    const dataToSet = Object.fromEntries(localSetData)
+    const localSavePromise = chrome.storage.local.set(dataToSet)
+
+    // Add metadata save to the same promise batch
+    const metadataSavePromise = this.metadataManager.saveMetadata(
+      allocation.metadata,
+    )
+
+    // Save commands and metadata atomically in parallel
     await Promise.all([
-      Promise.all(syncSavePromises),
-      Promise.all(localSavePromises),
+      await Promise.all(syncSavePromises),
+      localSavePromise,
+      metadataSavePromise,
     ])
   }
 
