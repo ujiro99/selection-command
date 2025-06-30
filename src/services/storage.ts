@@ -4,7 +4,7 @@ import { Command, CaptureDataStorage } from '@/types'
 const SYNC_DEBOUNCE_DELAY = 10
 
 let syncSetTimeout: NodeJS.Timeout | null
-let syncResolve: (() => void) | null
+let syncSetResolves: (() => void)[] = []
 const syncSetData = new Map<string, unknown>()
 
 chrome.storage.sync.getBytesInUse(['0', '2', '3', '4'], (bytes) => {
@@ -152,14 +152,24 @@ chrome.storage.onChanged.addListener((changes) => {
 
 type UpdateFunc<T> = (currentVal: T) => T
 
-// Helper functions for hybrid storage
-function generateCommandChecksum(commands: Command[]): string {
-  // Simple checksum combining command IDs and revisions
-  const dataStr = commands
-    .map((cmd) => `${cmd.id}:${('revision' in cmd ? cmd.revision : 0) || 0}`)
-    .sort()
-    .join('|')
-  return btoa(dataStr).slice(0, 16)
+/**
+ * Generate checksum from object (JSON.stringify based)
+ * Uses a simple hash algorithm compatible with browser environment
+ * @param obj - Object to generate checksum for
+ * @returns Checksum (hexadecimal string)
+ */
+function generateChecksum(obj: unknown): string {
+  const normalized = JSON.stringify(obj, Object.keys(obj || {}).sort())
+
+  // Simple hash algorithm (djb2) that works in browser
+  let hash = 5381
+  for (let i = 0; i < normalized.length; i++) {
+    hash = (hash << 5) + hash + normalized.charCodeAt(i)
+    hash = hash & hash // Convert to 32bit integer
+  }
+
+  // Convert to hex string and pad to ensure consistent length
+  return Math.abs(hash).toString(16).padStart(8, '0')
 }
 
 async function loadLegacyCommandData(options?: {
@@ -322,7 +332,7 @@ class StorageCapacityCalculator {
       syncCount,
       localCount,
       version: Date.now(),
-      checksum: generateCommandChecksum(allCommands),
+      checksum: generateChecksum(allCommands),
     }
   }
 }
@@ -359,7 +369,7 @@ class MetadataManager {
     if (totalCount !== commands.length) return false
 
     // Checksum-based integrity check
-    const currentChecksum = generateCommandChecksum(commands)
+    const currentChecksum = generateChecksum(commands)
     return metadata.checksum === currentChecksum
   }
 
@@ -429,9 +439,9 @@ class CommandMigrationManager {
 
   async needsMigration(): Promise<boolean> {
     try {
-      const migrationStatus = (await Storage.get(
-        this.MIGRATION_FLAG_KEY,
-      )) as any
+      const migrationStatus = (await Storage.get(this.MIGRATION_FLAG_KEY)) as {
+        version?: string
+      } | null
       if (
         migrationStatus &&
         migrationStatus.version === this.MIGRATION_VERSION
@@ -503,7 +513,10 @@ class HybridCommandStorage {
     }
   }
 
-  async loadCommands(): Promise<Command[]> {
+  async loadCommands(retryCount = 0): Promise<Command[]> {
+    const MAX_RETRIES = 3
+    const RETRY_DELAY_MS = 10
+
     try {
       // Step 1: Check if migration is needed
       if (await this.metadataManager.needsMigration()) {
@@ -529,14 +542,18 @@ class HybridCommandStorage {
 
       // Step 5: Integrity check
       if (!(await this.metadataManager.validateMetadata(orderedCommands))) {
-        console.warn('Command integrity check failed, attempting recovery...')
-
-        // Attempt to restore from backup when data is corrupted
-        const migrationManager = new CommandMigrationManager()
-        const backupCommands = await migrationManager.restoreFromBackup()
-        if (backupCommands.length > 0) {
-          return backupCommands
+        console.warn(
+          `Command integrity check failed (attempt ${retryCount + 1}/${MAX_RETRIES + 1})`,
+        )
+        // Retry with delay if we haven't exceeded max retries
+        if (retryCount < MAX_RETRIES) {
+          console.info(
+            `Retrying command load after ${RETRY_DELAY_MS}ms delay...`,
+          )
+          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
+          return await this.loadCommands(retryCount + 1)
         }
+        console.warn('Command integrity check failed after all retries...')
       }
 
       return orderedCommands
