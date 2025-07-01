@@ -27,7 +27,7 @@ export class DailyBackupManager {
     try {
       const hybridStorage = new HybridCommandStorage()
       const commands = await hybridStorage.loadCommands()
-      
+
       if (commands.length === 0) {
         console.debug('No commands to backup')
         return
@@ -43,17 +43,23 @@ export class DailyBackupManager {
         [this.DAILY_BACKUP_KEY]: backup,
       })
 
-      console.debug(`Daily backup completed: ${commands.length} commands backed up`)
+      console.debug(
+        `Daily backup completed: ${commands.length} commands backed up`,
+      )
     } catch (error) {
       console.error('Failed to perform daily backup:', error)
     }
   }
 
-  async getLastBackupData(): Promise<{ version: string; timestamp: number; commands: Command[] } | null> {
+  async getLastBackupData(): Promise<{
+    version: string
+    timestamp: number
+    commands: Command[]
+  } | null> {
     try {
       const result = await chrome.storage.local.get(this.DAILY_BACKUP_KEY)
       const backup = result[this.DAILY_BACKUP_KEY]
-      
+
       if (backup && backup.timestamp && Array.isArray(backup.commands)) {
         return backup
       }

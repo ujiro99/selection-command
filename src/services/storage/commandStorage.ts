@@ -7,6 +7,22 @@ import {
   CMD_PREFIX,
   debouncedSyncSet,
 } from './index'
+import { VERSION } from '@/const'
+
+// Command change callbacks
+export type commandChangedCallback = (commands: Command[]) => void
+const commandChangedCallbacks = [] as commandChangedCallback[]
+
+// Setup command change listener
+chrome.storage.onChanged.addListener((changes) => {
+  const commands = [] as Command[]
+  for (const [k, { newValue }] of Object.entries(changes)) {
+    if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
+  }
+  if (commands.length > 0) {
+    commandChangedCallbacks.forEach((cb) => cb(commands))
+  }
+})
 
 const DEFAULT_COUNT = -1
 
@@ -219,7 +235,7 @@ class MetadataManager {
 
 // Migration management class
 export class CommandMigrationManager {
-  private readonly MIGRATION_VERSION = 'v2.0'
+  private readonly MIGRATION_VERSION = VERSION
   private readonly MIGRATION_FLAG_KEY = LOCAL_STORAGE_KEY.MIGRATION_STATUS
 
   async performMigration(): Promise<Command[]> {
@@ -233,7 +249,7 @@ export class CommandMigrationManager {
       }
 
       // Step 2: Backup data
-      await this.backupCommands(legacyCommands, 'legacy')
+      await this.backupCommands(legacyCommands)
 
       // Step 3: Save in new format
       const hybridStorage = new HybridCommandStorage()
@@ -270,7 +286,9 @@ export class CommandMigrationManager {
 
   async needsMigration(): Promise<boolean> {
     try {
-      const migrationStatus = (await BaseStorage.get(this.MIGRATION_FLAG_KEY)) as {
+      const migrationStatus = (await BaseStorage.get(
+        this.MIGRATION_FLAG_KEY,
+      )) as {
         version?: string
       } | null
       if (
@@ -287,12 +305,9 @@ export class CommandMigrationManager {
     return legacyCount !== DEFAULT_COUNT
   }
 
-  private async backupCommands(
-    commands: Command[],
-    version: string,
-  ): Promise<void> {
+  private async backupCommands(commands: Command[]): Promise<void> {
     const backup = {
-      version: version,
+      version: 'legacy',
       timestamp: Date.now(),
       commands: commands,
     }
@@ -555,5 +570,14 @@ export const CommandStorage = {
     )
     await debouncedSyncSet(newCommands)
     return true
+  },
+
+  addCommandListener: (cb: commandChangedCallback) => {
+    commandChangedCallbacks.push(cb)
+  },
+
+  removeCommandListener: (cb: commandChangedCallback) => {
+    const idx = commandChangedCallbacks.findIndex((f) => f === cb)
+    if (idx !== -1) commandChangedCallbacks.splice(idx, 1)
   },
 }

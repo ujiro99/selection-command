@@ -12,21 +12,9 @@ import {
   HybridCommandStorage,
   CommandMigrationManager,
   CommandStorage,
+  commandChangedCallback,
 } from './storage/commandStorage'
 import { DailyBackupManager } from './storage/backupManager'
-
-type commandChangedCallback = (commands: Command[]) => void
-const commandChangedCallbacks = [] as commandChangedCallback[]
-
-chrome.storage.onChanged.addListener((changes) => {
-  const commands = [] as Command[]
-  for (const [k, { newValue }] of Object.entries(changes)) {
-    if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
-  }
-  if (commands.length > 0) {
-    commandChangedCallbacks.forEach((cb) => cb(commands))
-  }
-})
 
 // Re-export everything from sub-modules
 export {
@@ -38,7 +26,7 @@ export {
   DailyBackupManager,
 }
 
-export type { ChangedCallback, KEY }
+export type { ChangedCallback, KEY, commandChangedCallback }
 
 export const Storage = {
   // Base storage methods
@@ -47,18 +35,9 @@ export const Storage = {
   // Command-specific methods
   ...CommandStorage,
 
-  addCommandListener: (cb: commandChangedCallback) => {
-    commandChangedCallbacks.push(cb)
-  },
-
-  removeCommandListener: (cb: commandChangedCallback) => {
-    const idx = commandChangedCallbacks.findIndex((f) => f === cb)
-    if (idx !== -1) commandChangedCallbacks.splice(idx, 1)
-  },
-
   // New methods for hybrid storage
   hybridStorage: new HybridCommandStorage(),
-  
+
   // Daily backup manager
   dailyBackupManager: new DailyBackupManager(),
 
