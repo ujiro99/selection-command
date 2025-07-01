@@ -248,9 +248,8 @@ interface StorageAllocation {
 
 // Storage capacity calculation class
 class StorageCapacityCalculator {
-  private readonly SYNC_MAX_TOTAL = 60 * 1024 // 60KB (including safety margin)
+  private readonly SYNC_COMMAND_TOTAL = 60 * 1024 // 60KB (including safety margin)
   private readonly ITEM_MAX_SIZE = 8 * 1024 // 8KB
-  private readonly METADATA_OVERHEAD = 200 // Expected metadata overhead
 
   /**
    * Calculate accurate byte count with UTF-8 encoding
@@ -291,10 +290,9 @@ class StorageCapacityCalculator {
       ...largeCommands,
     ]
 
-    let syncUsage = this.METADATA_OVERHEAD // Metadata overhead
-
+    let syncUsage = 0
     for (const item of candidateCommands) {
-      if (syncUsage + item.size <= this.SYNC_MAX_TOTAL) {
+      if (syncUsage + item.size <= this.SYNC_COMMAND_TOTAL) {
         syncCommands.push(item)
         syncUsage += item.size
       } else {
@@ -542,7 +540,7 @@ class HybridCommandStorage {
 
       // Step 5: Integrity check
       if (!(await this.metadataManager.validateMetadata(orderedCommands))) {
-        console.warn(
+        console.debug(
           `Command integrity check failed (attempt ${retryCount + 1}/${MAX_RETRIES + 1})`,
         )
         // Retry with delay if we haven't exceeded max retries
