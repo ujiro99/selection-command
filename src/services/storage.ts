@@ -3,40 +3,6 @@ import { Command, CaptureDataStorage } from '@/types'
 
 const SYNC_DEBOUNCE_DELAY = 10
 
-let syncSetTimeout: NodeJS.Timeout | null
-let syncSetResolves: (() => void)[] = []
-const syncSetData = new Map<string, unknown>()
-
-chrome.storage.sync.getBytesInUse(['0', '2', '3', '4'], (bytes) => {
-  console.log('bytes', bytes)
-            })
-
-const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
-  return new Promise((resolve) => {
-    if (syncSetTimeout != null) {
-      clearTimeout(syncSetTimeout)
-    }
-
-    Object.entries(data).forEach(([key, value]) => {
-      syncSetData.set(key, value)
-    })
-
-    syncSetTimeout = setTimeout(async () => {
-      const dataToSet = Object.fromEntries(syncSetData)
-      chrome.storage.sync.set(dataToSet, () => {
-        if (chrome.runtime.lastError != null) {
-          console.error(chrome.runtime.lastError)
-        }
-        syncSetData.clear()
-        syncSetTimeout = null
-        syncSetResolves.forEach((resolve) => resolve())
-        syncSetResolves = []
-      })
-    }, SYNC_DEBOUNCE_DELAY)
-    syncSetResolves.push(resolve)
-  })
-}
-
 export enum STORAGE_KEY {
   USER = 0,
   COMMAND_COUNT = 2,
@@ -67,9 +33,39 @@ export enum SESSION_STORAGE_KEY {
   PA_RECORDER_OPTION = 'pageActionRecorderOption',
 }
 
-type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
+export const CMD_PREFIX = 'cmd-'
 
-const CMD_PREFIX = 'cmd-'
+let syncSetTimeout: NodeJS.Timeout | null
+let syncSetResolves: (() => void)[] = []
+const syncSetData = new Map<string, unknown>()
+
+const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
+  return new Promise((resolve) => {
+    if (syncSetTimeout != null) {
+      clearTimeout(syncSetTimeout)
+    }
+
+    Object.entries(data).forEach(([key, value]) => {
+      syncSetData.set(key, value)
+    })
+
+    syncSetTimeout = setTimeout(async () => {
+      const dataToSet = Object.fromEntries(syncSetData)
+      chrome.storage.sync.set(dataToSet, () => {
+        if (chrome.runtime.lastError != null) {
+          console.error(chrome.runtime.lastError)
+        }
+        syncSetData.clear()
+        syncSetTimeout = null
+        syncSetResolves.forEach((resolve) => resolve())
+        syncSetResolves = []
+      })
+    }, SYNC_DEBOUNCE_DELAY)
+    syncSetResolves.push(resolve)
+  })
+}
+
+type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
 
 const DEFAULT_COUNT = -1
 

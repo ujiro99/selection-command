@@ -1,0 +1,154 @@
+import React, { useState, useEffect } from 'react'
+import MultiProgress from 'react-multi-progress'
+import { getStorageUsage, StorageUsageData } from '@/services/storageUsage'
+import { cn } from '@/lib/utils'
+
+import s from './Option.module.css'
+
+const StorageUsage: React.FC = () => {
+  const [storageData, setStorageData] = useState<StorageUsageData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const loadStorageUsage = async () => {
+      try {
+        setLoading(true)
+        const data = await getStorageUsage()
+        setStorageData(data)
+        setError(null)
+      } catch (err) {
+        console.error('Failed to load storage usage:', err)
+        setError('Failed to load storage usage')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadStorageUsage()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className={cn(s.menu, 'w-[240px]')}>
+        <h3 className={s.menuLabel}>Storage Usage</h3>
+        <p className="text-sm text-gray-600 font-medium font-mono mb-2">
+          Loading...
+        </p>
+      </div>
+    )
+  }
+
+  if (error || !storageData) {
+    return (
+      <div className={cn(s.menu, 'w-[240px]')}>
+        <h3 className={s.menuLabel}>Storage Usage</h3>
+        <p className="text-red-500">{error || 'No data available'}</p>
+      </div>
+    )
+  }
+
+  const syncElements = [
+    {
+      value: storageData.sync.systemPercent,
+      color: '#4b5563', // gray-600
+      name: 'System',
+    },
+    {
+      value: storageData.sync.commandsPercent,
+      color: '#9ca3af', // gray-400
+      name: 'Commands',
+    },
+    {
+      value: storageData.sync.freePercent,
+      color: '#e5e7eb', // gray-300
+      name: 'Free',
+    },
+  ]
+
+  const localElements = [
+    {
+      value: storageData.local.systemPercent,
+      color: '#4b5563', // gray-600
+      name: 'System',
+    },
+    {
+      value: storageData.local.commandsPercent,
+      color: '#9ca3af', // gray-400
+      name: 'Commands',
+    },
+    {
+      value: storageData.local.backupPercent,
+      color: '#fcd34d', // amber-300
+      name: 'Backup',
+    },
+    {
+      value: storageData.local.freePercent,
+      color: '#e5e7eb', // gray-300
+      name: 'Free',
+    },
+  ]
+
+  return (
+    <div className={cn(s.menu, 'w-[240px]')}>
+      <h3 className={s.menuLabel}>Storage Usage</h3>
+      <div className="mb-6 w-full">
+        <h4 className="text-sm text-gray-600 font-medium font-mono my-2">
+          Sync Storage
+        </h4>
+        <MultiProgress
+          elements={syncElements}
+          height={8}
+          backgroundColor="#f3f4f6"
+          className="w-full"
+        />
+        <div className="text-[11px] text-gray-600 mt-3 px-1 flex flex-wrap gap-2">
+          <div className="flex items-center mr-2">
+            <div className="w-3 h-3 bg-gray-600 rounded-sm mr-1"></div>
+            <span>System: {storageData.sync.systemPercent}%</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-gray-400 rounded-sm mr-1"></div>
+            <span>Commands: {storageData.sync.commandsPercent}%</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-gray-300 rounded-sm mr-1"></div>
+            <span>Free: {storageData.sync.freePercent}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full">
+        <h4 className="text-sm text-gray-600 font-medium font-mono my-2">
+          Local Storage
+        </h4>
+        <MultiProgress
+          elements={localElements}
+          height={8}
+          backgroundColor="#f3f4f6"
+          className="w-full"
+        />
+        <div className="text-[11px] text-gray-600 mt-3 px-1 grid grid-cols-2 gap-2">
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-gray-600 rounded-sm mr-1"></div>
+            <span>System: {storageData.local.systemPercent}%</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-gray-400 rounded-sm mr-1"></div>
+            <span>Commands: {storageData.local.commandsPercent}%</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-amber-300 rounded-sm mr-1"></div>
+            <span>Backup: {storageData.local.backupPercent}%</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-gray-300 rounded-sm mr-1"></div>
+            <span>Free: {storageData.local.freePercent}%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default StorageUsage

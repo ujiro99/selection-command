@@ -9,6 +9,7 @@ import { TableOfContents } from '@/components/option/TableOfContents'
 import { ImportExport } from '@/components/option/ImportExport'
 import { HubBanner } from '@/components/option/HubBanner'
 import { SettingForm } from '@/components/option/SettingForm'
+import StorageUsage from '@/components/option/StorageUsage'
 
 import css from './Option.module.css'
 
@@ -91,6 +92,9 @@ export function Option() {
             </div>
             <div className="pt-4">
               <HubBanner />
+            </div>
+            <div className="pt-4">
+              <StorageUsage />
             </div>
           </div>
         </aside>
