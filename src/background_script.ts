@@ -496,7 +496,27 @@ chrome.runtime.onInstalled.addListener((details) => {
     // Set uninstall survey URL
     chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
   }
+
+  // Check for daily backup on startup
+  checkAndPerformDailyBackup()
 })
+
+chrome.runtime.onStartup.addListener(() => {
+  // Check for daily backup on browser startup
+  checkAndPerformDailyBackup()
+})
+
+// Daily backup check function
+const checkAndPerformDailyBackup = async () => {
+  try {
+    const dailyBackupManager = Storage.dailyBackupManager
+    if (await dailyBackupManager.shouldBackup()) {
+      await dailyBackupManager.performDailyBackup()
+    }
+  } catch (error) {
+    console.error('Failed to perform daily backup check:', error)
+  }
+}
 
 Settings.addChangedListener(() => ContextMenu.init())
 
