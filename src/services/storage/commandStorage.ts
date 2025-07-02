@@ -306,10 +306,15 @@ export class CommandMigrationManager {
   }
 
   private async backupCommands(commands: Command[]): Promise<void> {
+    // Get folders from settings directly from storage to avoid circular dependency
+    const userSettings = await BaseStorage.get(STORAGE_KEY.USER) as any
+    const folders = userSettings?.folders || []
+    
     const backup = {
       version: 'legacy',
       timestamp: Date.now(),
       commands: commands,
+      folders: folders,
     }
     await chrome.storage.local.set({
       [LOCAL_STORAGE_KEY.COMMANDS_BACKUP]: backup,
@@ -337,6 +342,32 @@ export class CommandMigrationManager {
     } catch (error) {
       console.error('Failed to restore from backup:', error)
       return []
+    }
+  }
+
+  /**
+   * Restore both commands and folders from legacy backup
+   */
+  async restoreFromBackupWithFolders(): Promise<{ commands: Command[]; folders: import('@/types').CommandFolder[] }> {
+    try {
+      const result = await chrome.storage.local.get(
+        LOCAL_STORAGE_KEY.COMMANDS_BACKUP,
+      )
+      const backup = result[LOCAL_STORAGE_KEY.COMMANDS_BACKUP]
+
+      if (backup && backup.commands && Array.isArray(backup.commands)) {
+        console.info(
+          `Restoring ${backup.commands.length} commands and ${(backup.folders || []).length} folders from backup (created at ${new Date(backup.timestamp).toLocaleString()})`,
+        )
+        return {
+          commands: backup.commands,
+          folders: Array.isArray(backup.folders) ? backup.folders : [],
+        }
+      }
+      return { commands: [], folders: [] }
+    } catch (error) {
+      console.error('Failed to restore from backup:', error)
+      return { commands: [], folders: [] }
     }
   }
 }
@@ -473,68 +504,7 @@ export class HybridCommandStorage {
   }
 }
 
-const getIndicesToRemove = (fromLen: number, toLen: number): number[] => {
-  if (toLen >= fromLen) {
-    return []
-  }
-  const removeCount = fromLen - toLen
-  const startIndex = toLen
-  const indicesToRemove = []
-  for (let i = 0; i < removeCount; i++) {
-    indicesToRemove.push(startIndex + i)
-  }
-  return indicesToRemove
-}
-
 export const CommandStorage = {
-  /**
-   * Get all commands from chrome sync storage (legacy format).
-   *
-   * @returns {Promise<Command[]>} commands
-   * @throws {chrome.runtime.LastError} if error occurred
-   */
-  getCommandsOld: async (): Promise<Command[]> => {
-    return await loadLegacyCommandData({
-      returnDefaultOnEmpty: true,
-      throwOnError: true,
-    })
-  },
-
-  /**
-   * Set all commands to chrome sync storage.
-   *
-   * @returns {Promise<boolean>} true if success's
-   * @throws {chrome.runtime.LastError} if error occurred
-   */
-  setCommandsOld: async (
-    commands: Command[],
-  ): Promise<boolean | chrome.runtime.LastError> => {
-    const count = commands.length
-    const preCount = await BaseStorage.get<number>(STORAGE_KEY.COMMAND_COUNT)
-
-    // Update commands and count.
-    const data = commands.reduce(
-      (acc, cmd, i) => {
-        acc[`${CMD_PREFIX}${i}`] = cmd
-        return acc
-      },
-      {} as { [key: string]: Command },
-    )
-    await debouncedSyncSet({
-      ...data,
-      [STORAGE_KEY.COMMAND_COUNT]: commands.length,
-    })
-
-    // Remove surplus commands
-    if (preCount > count) {
-      const removeKeys = getIndicesToRemove(preCount, count).map(
-        (i) => `${CMD_PREFIX}${i}`,
-      )
-      await chrome.storage.sync.remove(removeKeys)
-    }
-    return true
-  },
-
   /**
    * Update commands to chrome sync storage.
    *

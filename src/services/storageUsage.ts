@@ -57,9 +57,9 @@ export const getStorageUsage = async (): Promise<StorageUsageData> => {
     const allLocalData = await chrome.storage.local.get(null)
 
     const localSystemKeys = Object.values(LOCAL_STORAGE_KEY).filter(
-      (key) => key !== LOCAL_STORAGE_KEY.COMMANDS_BACKUP,
+      (key) => key !== LOCAL_STORAGE_KEY.COMMANDS_BACKUP && key !== LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP,
     ) as string[]
-    const localBackupKeys = [LOCAL_STORAGE_KEY.COMMANDS_BACKUP] as string[]
+    const localBackupKeys = [LOCAL_STORAGE_KEY.COMMANDS_BACKUP, LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP] as string[]
     const localCommandKeys = Object.keys(allLocalData || {}).filter((key) =>
       key.startsWith(CMD_PREFIX),
     )
