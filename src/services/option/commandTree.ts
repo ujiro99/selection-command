@@ -72,6 +72,8 @@ const createAddNodeToTreeFunction = (
   folders: CommandFolder[],
   processedFolders: Set<string>,
 ) => {
+  const processingStack = new Set<string>()
+  
   const addNodeToTree = (
     tree: CommandTreeNode[],
     node: CommandTreeNode,
@@ -83,6 +85,14 @@ const createAddNodeToTreeFunction = (
         if (!parent.children) parent.children = []
         parent.children.push(node)
       } else {
+        // Check for circular dependency before processing
+        if (processingStack.has(parentId)) {
+          console.warn(`Circular dependency detected for folder ${parentId}. Adding to root instead.`)
+          tree.push(node)
+          return
+        }
+        
+        processingStack.add(parentId)
         addParentFolderIfNeeded(
           tree,
           parentId,
@@ -90,7 +100,17 @@ const createAddNodeToTreeFunction = (
           processedFolders,
           addNodeToTree,
         )
-        addNodeToTree(tree, node, parentId)
+        processingStack.delete(parentId)
+        
+        // Try again after adding parent
+        const parentAfterAdd = findNodeInTree(tree, parentId)
+        if (parentAfterAdd) {
+          if (!parentAfterAdd.children) parentAfterAdd.children = []
+          parentAfterAdd.children.push(node)
+        } else {
+          console.warn(`Failed to find or create parent folder ${parentId}. Adding to root instead.`)
+          tree.push(node)
+        }
       }
     } else {
       tree.push(node)
