@@ -1,4 +1,4 @@
-import { CMD_PREFIX, STORAGE_KEY, LOCAL_STORAGE_KEY } from './storage'
+import { CMD_PREFIX, STORAGE_KEY, LOCAL_STORAGE_KEY } from '@/services/storage'
 
 export interface StorageUsageData {
   sync: {
@@ -27,7 +27,7 @@ export interface StorageUsageData {
   }
 }
 
-export const getStorageUsage = async (): Promise<StorageUsageData> => {
+const getStorageUsage = async (): Promise<StorageUsageData> => {
   try {
     const syncSystemKeys = Object.values(STORAGE_KEY).map((key) => String(key))
     const syncSystemBytes = await new Promise<number>((resolve) => {
@@ -155,5 +155,25 @@ export const getStorageUsage = async (): Promise<StorageUsageData> => {
   } catch (error) {
     console.error('Failed to get storage usage:', error)
     throw error
+  }
+}
+
+export const subscribeStorageUsage = (
+  callback: (data: StorageUsageData) => void,
+): (() => void) => {
+  const listener = async () => {
+    try {
+      const data = await getStorageUsage()
+      callback(data)
+    } catch (error) {
+      console.error('Failed to get storage usage:', error)
+    }
+  }
+
+  chrome.storage.onChanged.addListener(listener)
+  listener() // Initial call
+
+  return () => {
+    chrome.storage.onChanged.removeListener(listener)
   }
 }

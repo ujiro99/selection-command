@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import MultiProgress from 'react-multi-progress'
-import { getStorageUsage, StorageUsageData } from '@/services/storageUsage'
+import {
+  subscribeStorageUsage,
+  StorageUsageData,
+} from '@/services/storage/storageUsage'
 import { cn } from '@/lib/utils'
 
 import s from './Option.module.css'
@@ -11,10 +14,9 @@ const StorageUsage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const loadStorageUsage = async () => {
+    const loadStorageUsage = async (data: StorageUsageData) => {
       try {
         setLoading(true)
-        const data = await getStorageUsage()
         setStorageData(data)
         setError(null)
       } catch (err) {
@@ -24,8 +26,7 @@ const StorageUsage: React.FC = () => {
         setLoading(false)
       }
     }
-
-    loadStorageUsage()
+    return subscribeStorageUsage(loadStorageUsage)
   }, [])
 
   if (loading) {
@@ -101,7 +102,7 @@ const StorageUsage: React.FC = () => {
       <h3 className={s.menuLabel}>Storage Usage</h3>
       <div className="mb-6 w-full">
         <h4 className="text-sm text-gray-600 font-medium font-mono my-2">
-          Sync Storage
+          Sync Area
         </h4>
         <MultiProgress
           elements={syncElements}
@@ -133,7 +134,7 @@ const StorageUsage: React.FC = () => {
 
       <div className="w-full">
         <h4 className="text-sm text-gray-600 font-medium font-mono my-2">
-          Local Storage
+          Local Area
         </h4>
         <MultiProgress
           elements={localElements}
