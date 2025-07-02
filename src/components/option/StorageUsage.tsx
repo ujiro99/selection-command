@@ -60,8 +60,14 @@ const StorageUsage: React.FC = () => {
       name: 'Commands',
     },
     {
+      value: storageData.sync.reservedRemain,
+      color: '#fff',
+      name: 'Reserved',
+      className: s.bgHatching,
+    },
+    {
       value: storageData.sync.freePercent,
-      color: '#e5e7eb', // gray-300
+      color: '#e5e7eb', // gray-200
       name: 'Free',
     },
   ]
@@ -79,12 +85,13 @@ const StorageUsage: React.FC = () => {
     },
     {
       value: storageData.local.backupPercent,
+      color: '#fff',
       name: 'Backup',
       className: s.bgHatching,
     },
     {
       value: storageData.local.freePercent,
-      color: '#e5e7eb', // gray-300
+      color: '#e5e7eb', // gray-200
       name: 'Free',
     },
   ]
@@ -102,7 +109,7 @@ const StorageUsage: React.FC = () => {
           backgroundColor="#f3f4f6"
           className="w-full"
         />
-        <div className="text-[11px] text-gray-600 mt-3 px-1 flex flex-wrap gap-2">
+        <div className="text-[11px] text-gray-600 mt-3 px-1 grid grid-cols-2 gap-2">
           <div className="flex items-center mr-2">
             <div className="w-3 h-3 bg-gray-600 rounded-sm mr-1"></div>
             <span>System: {storageData.sync.systemPercent}%</span>
@@ -112,7 +119,13 @@ const StorageUsage: React.FC = () => {
             <span>Commands: {storageData.sync.commandsPercent}%</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-300 rounded-sm mr-1"></div>
+            <div
+              className={cn('w-3 h-3 border rounded-sm mr-1', s.bgHatching)}
+            ></div>
+            <span>Reserved: {storageData.sync.reservedPercent}%</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-gray-200 rounded-sm mr-1"></div>
             <span>Free: {storageData.sync.freePercent}%</span>
           </div>
         </div>
@@ -144,7 +157,7 @@ const StorageUsage: React.FC = () => {
             <span>Backup: {storageData.local.backupPercent}%</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-gray-300 rounded-sm mr-1"></div>
+            <div className="w-3 h-3 bg-gray-200 rounded-sm mr-1"></div>
             <span>Free: {storageData.local.freePercent}%</span>
           </div>
         </div>

@@ -93,8 +93,8 @@
 .bgHatching {
   background-color: #fff;
   background-image: repeating-linear-gradient(45deg,
-      #9ca3af,
-      #9ca3af 1px,
-      transparent 2px,
+      #6b7280,
+      #6b7280 1px,
+      transparent 1px,
       transparent 4px);
 }

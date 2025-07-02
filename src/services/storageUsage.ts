@@ -7,7 +7,9 @@ export interface StorageUsageData {
     free: number
     system: number
     commands: number
+    reservedRemain: number
     systemPercent: number
+    reservedPercent: number
     commandsPercent: number
     freePercent: number
   }
@@ -57,9 +59,14 @@ export const getStorageUsage = async (): Promise<StorageUsageData> => {
     const allLocalData = await chrome.storage.local.get(null)
 
     const localSystemKeys = Object.values(LOCAL_STORAGE_KEY).filter(
-      (key) => key !== LOCAL_STORAGE_KEY.COMMANDS_BACKUP && key !== LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP,
+      (key) =>
+        key !== LOCAL_STORAGE_KEY.COMMANDS_BACKUP &&
+        key !== LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP,
     ) as string[]
-    const localBackupKeys = [LOCAL_STORAGE_KEY.COMMANDS_BACKUP, LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP] as string[]
+    const localBackupKeys = [
+      LOCAL_STORAGE_KEY.COMMANDS_BACKUP,
+      LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP,
+    ] as string[]
     const localCommandKeys = Object.keys(allLocalData || {}).filter((key) =>
       key.startsWith(CMD_PREFIX),
     )
@@ -98,10 +105,12 @@ export const getStorageUsage = async (): Promise<StorageUsageData> => {
     })
 
     const syncLimitTotal = 100 * 1024 // 100KB
+    const reservedTotal = 40 * 1024 // 40KB reserved for system data
     const localLimitTotal = 10 * 1024 * 1024 // 10MB
 
     const syncUsed = syncTotalBytes
-    const syncFree = syncLimitTotal - syncUsed
+    const reservedRemain = reservedTotal - syncSystemBytes
+    const syncFree = syncLimitTotal - reservedRemain - syncUsed
     const localUsed = localTotalBytes
     const localFree = localLimitTotal - localUsed
 
@@ -111,14 +120,18 @@ export const getStorageUsage = async (): Promise<StorageUsageData> => {
         used: syncUsed,
         free: syncFree,
         system: syncSystemBytes,
+        reservedRemain,
         commands: syncCommandBytes,
         systemPercent: Number(
-          ((syncSystemBytes / syncLimitTotal) * 100).toFixed(1),
+          ((syncSystemBytes / syncLimitTotal) * 100).toFixed(0),
+        ),
+        reservedPercent: Number(
+          ((reservedRemain / syncLimitTotal) * 100).toFixed(0),
         ),
         commandsPercent: Number(
-          ((syncCommandBytes / syncLimitTotal) * 100).toFixed(1),
+          ((syncCommandBytes / syncLimitTotal) * 100).toFixed(0),
         ),
-        freePercent: Number(((syncFree / syncLimitTotal) * 100).toFixed(1)),
+        freePercent: Number(((syncFree / syncLimitTotal) * 100).toFixed(0)),
       },
       local: {
         total: localLimitTotal,
@@ -128,15 +141,15 @@ export const getStorageUsage = async (): Promise<StorageUsageData> => {
         backup: localBackupBytes,
         commands: localCommandBytes,
         systemPercent: Number(
-          ((localSystemBytes / localLimitTotal) * 100).toFixed(1),
+          ((localSystemBytes / localLimitTotal) * 100).toFixed(0),
         ),
         backupPercent: Number(
-          ((localBackupBytes / localLimitTotal) * 100).toFixed(1),
+          ((localBackupBytes / localLimitTotal) * 100).toFixed(0),
         ),
         commandsPercent: Number(
-          ((localCommandBytes / localLimitTotal) * 100).toFixed(1),
+          ((localCommandBytes / localLimitTotal) * 100).toFixed(0),
         ),
-        freePercent: Number(((localFree / localLimitTotal) * 100).toFixed(1)),
+        freePercent: Number(((localFree / localLimitTotal) * 100).toFixed(0)),
       },
     }
   } catch (error) {
