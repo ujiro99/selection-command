@@ -317,6 +317,17 @@ export function ImportExport() {
             return <span>No backup data available.</span>
           }
           
+          return <span>Select a backup to restore:</span>
+        }}
+        okText="Restore"
+      >
+        {(() => {
+          const availableBackups = Object.entries(backupData).filter(([, backup]) => backup.status === 'available')
+          
+          if (availableBackups.length === 0) {
+            return null
+          }
+          
           const getBackupTypeLabel = (type: string) => {
             switch (type) {
               case 'legacy': return 'Legacy Migration'
@@ -328,7 +339,6 @@ export function ImportExport() {
           
           return (
             <div>
-              <p className="mb-4">Select a backup to restore:</p>
               <RadioGroup value={selectedBackupType} onValueChange={(value) => setSelectedBackupType(value as typeof selectedBackupType)}>
                 {availableBackups.map(([type, backup]) => (
                   <div key={type} className="flex items-start space-x-3">
@@ -355,9 +365,8 @@ export function ImportExport() {
               </p>
             </div>
           )
-        }}
-        okText="Restore"
-      />
+        })()}
+      </Dialog>
     </>
   )
 }
