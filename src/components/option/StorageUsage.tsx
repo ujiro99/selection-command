@@ -79,8 +79,8 @@ const StorageUsage: React.FC = () => {
     },
     {
       value: storageData.local.backupPercent,
-      color: '#fcd34d', // amber-300
       name: 'Backup',
+      className: s.bgHatching,
     },
     {
       value: storageData.local.freePercent,
@@ -138,7 +138,9 @@ const StorageUsage: React.FC = () => {
             <span>Commands: {storageData.local.commandsPercent}%</span>
           </div>
           <div className="flex items-center">
-            <div className="w-3 h-3 bg-amber-300 rounded-sm mr-1"></div>
+            <div
+              className={cn('w-3 h-3 border rounded-sm mr-1', s.bgHatching)}
+            ></div>
             <span>Backup: {storageData.local.backupPercent}%</span>
           </div>
           <div className="flex items-center">
