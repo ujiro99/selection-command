@@ -16,6 +16,7 @@ import type {
 } from '@/types'
 import { isEmpty } from '@/lib/utils'
 import { INHERIT } from '@/const'
+import { emptySettings } from './useSetting'
 
 // セクション別Hook戻り値の型定義
 type SectionData<T extends CacheSection> =
@@ -327,26 +328,7 @@ export function useCompatibleSetting(): {
   // loadingが完了するまでemptySettingsを返す（既存の実装に合わせる）
   if (loading || !settings.commands) {
     return {
-      settings: {
-        settingVersion: '0.0.0',
-        commands: [],
-        folders: [],
-        pageRules: [],
-        style: 'horizontal' as any,
-        popupPlacement: {
-          side: 'top' as any,
-          align: 'start' as any,
-          alignOffset: 0,
-          sideOffset: 0,
-        },
-        linkCommand: {} as any,
-        userStyles: [],
-        startupMethod: { method: 'text_selection' as any },
-        stars: [],
-        commandExecutionCount: 0,
-        hasShownReviewRequest: false,
-        shortcuts: { shortcuts: [] },
-      },
+      settings: emptySettings,
       pageRule: undefined,
       iconUrls: {},
     }

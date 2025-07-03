@@ -14,7 +14,7 @@ type useSettingReturn = {
   iconUrls: iconUrlMap
 }
 
-const emptySettings: SettingsType = {
+export const emptySettings: SettingsType = {
   settingVersion: '0.0.0',
   commands: [],
   folders: [],
