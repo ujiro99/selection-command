@@ -14,7 +14,7 @@ import { HoverArea } from '@/components/menu/HoverArea'
 import { MenuImage } from '@/components/menu/MenuImage'
 import css from './Menu.module.css'
 import type { Command, CommandFolder } from '@/types'
-import { useSetting } from '@/hooks/useSetting'
+import { useEnhancedSetting } from '@/hooks/useEnhancedSetting'
 import { onHover, isMenuCommand } from '@/lib/utils'
 import {
   toCommandTree,
@@ -35,11 +35,11 @@ export function Menu(): JSX.Element {
   const menuRef = useRef(null)
   const [hoverTrigger, setHoverTrigger] = useState('')
   const [hoverContent, setHoverContent] = useState('')
-  const { settings } = useSetting()
-  const commands = settings.commands.filter(isMenuCommand)
-  const folders = settings.folders
+  const { settings } = useEnhancedSetting()
+  const commands = settings.commands?.filter(isMenuCommand) || []
+  const folders = settings.folders || []
   const isHorizontal = settings.style === STYLE.HORIZONTAL
-  const side = settings.popupPlacement.side
+  const side = settings.popupPlacement?.side ?? SIDE.top
 
   const commandTree = toCommandTree(commands, folders)
   const activeFolder = hoverTrigger || hoverContent

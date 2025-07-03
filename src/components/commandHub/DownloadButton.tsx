@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { Ipc, BgCommand } from '@/services/ipc'
-import { useSetting } from '@/hooks/useSetting'
+import { useCommands } from '@/hooks/useEnhancedSetting'
 import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 import {
   Popover,
@@ -16,10 +16,9 @@ const TooltipDuration = 2000
 
 export const DownloadButton = (): JSX.Element => {
   const [position, setPosition] = useState<Element | null>(null)
-  const { settings } = useSetting()
+  const { commands } = useCommands()
   const { addUrlChangeListener, removeUrlChangeListener } =
     useDetectUrlChanged()
-  const commands = settings.commands
   const [shouldRender, setShouldRender] = useState(false)
   const open = position != null
 

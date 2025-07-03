@@ -9,7 +9,7 @@ import {
 } from '@/const'
 import { Point, SettingsType, Command } from '@/types'
 import { LinkPreview } from '@/action/linkPreview'
-import { useSetting } from '@/hooks/useSetting'
+import { useEnhancedSetting } from '@/hooks/useEnhancedSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import Default, { PopupOption } from '@/services/option/defaultSettings'
 import { isPopup, isLinkCommand, isMac } from '@/lib/utils'
@@ -47,14 +47,14 @@ const empty = {
 }
 
 export function useDetectLinkCommand(): DetectLinkCommandReturn {
-  const { settings, pageRule } = useSetting()
-  const showIndicator = settings.linkCommand.showIndicator
-  const command = settings.commands.find(isLinkCommand) as Command
+  const { settings, pageRule } = useEnhancedSetting()
+  const showIndicator = settings.linkCommand?.showIndicator
+  const command = settings.commands?.find(isLinkCommand) as Command
   const enabled =
     pageRule == null ||
     pageRule.linkCommandEnabled == undefined ||
     pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
-      ? settings.linkCommand.enabled === LINK_COMMAND_ENABLED.ENABLE
+      ? settings.linkCommand?.enabled === LINK_COMMAND_ENABLED.ENABLE
       : pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.ENABLE
 
   const onChangeState = (state: ExecState, message?: string) => {
@@ -75,11 +75,11 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
   }
 
   return {
-    showIndicator,
+    showIndicator: showIndicator ?? false,
     ...empty,
-    ...useDetectDrag(enabled, settings, command, onDetect),
-    ...useDetectKeyboard(enabled, settings, command, onDetect),
-    ...useDetectClickHold(enabled, settings, command, onDetect),
+    ...useDetectDrag(enabled, settings as SettingsType, command, onDetect),
+    ...useDetectKeyboard(enabled, settings as SettingsType, command, onDetect),
+    ...useDetectClickHold(enabled, settings as SettingsType, command, onDetect),
   }
 }
 
@@ -101,11 +101,11 @@ function useDetectDrag(
 
   const dragEnabled =
     enabled &&
-    settings.linkCommand.startupMethod.method ===
+    settings.linkCommand?.startupMethod?.method ===
       LINK_COMMAND_STARTUP_METHOD.DRAG
 
   const threshold =
-    settings.linkCommand.startupMethod.threshold ??
+    settings.linkCommand?.startupMethod?.threshold ??
     (Default.linkCommand.startupMethod.threshold as number)
 
   useEffect(() => {
@@ -208,9 +208,9 @@ function useDetectKeyboard(
 ): SubHookReturn {
   const keyboardEnabled =
     enabled &&
-    settings.linkCommand.startupMethod.method ===
+    settings.linkCommand?.startupMethod?.method ===
       LINK_COMMAND_STARTUP_METHOD.KEYBOARD
-  const key = settings.linkCommand.startupMethod.keyboardParam
+  const key = settings.linkCommand?.startupMethod?.keyboardParam
   const popupOption = command?.popupOption ?? PopupOption
   const [target, setTarget] = useState<Element | null>(null)
   const [mousePosition, setMousePosition] = useState<Point | null>(null)
@@ -272,9 +272,9 @@ function useDetectClickHold(
 ): SubHookReturn {
   const clickHoldEnabled =
     enabled &&
-    settings.linkCommand.startupMethod.method ===
+    settings.linkCommand?.startupMethod?.method ===
       LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
-  const duration = settings.linkCommand.startupMethod.leftClickHoldParam ?? 200
+  const duration = settings.linkCommand?.startupMethod?.leftClickHoldParam ?? 200
   const detectLinkRef = useRef(false)
   const [forceClear, setForceClear] = useState(false)
   const playPixel = 20

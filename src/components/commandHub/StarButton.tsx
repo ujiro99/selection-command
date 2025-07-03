@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react'
-import { useSetting } from '@/hooks/useSetting'
+import { useSection, CACHE_SECTIONS } from '@/hooks/useEnhancedSetting'
 import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 import { SCREEN } from '@/const'
 import { useDetectUrlChanged } from '@/hooks/useDetectUrlChanged'
@@ -17,8 +17,7 @@ function findButtonElement(elm: Element): HTMLButtonElement | undefined {
 }
 
 export const StarButton = (): JSX.Element => {
-  const { settings } = useSetting()
-  const stars = settings.stars
+  const { data: stars } = useSection(CACHE_SECTIONS.STARS)
   const { addUrlChangeListener, removeUrlChangeListener } =
     useDetectUrlChanged()
 
@@ -27,7 +26,7 @@ export const StarButton = (): JSX.Element => {
       const button = findButtonElement(e.target as Element)
       const id = button?.dataset.starId
       if (id == null) return
-      const found = stars.some((s) => s.id === id)
+      const found = stars?.some((s: any) => s.id === id) ?? false
       sendEvent(
         found
           ? ANALYTICS_EVENTS.COMMAND_HUB_STAR_REMOVE
@@ -47,7 +46,7 @@ export const StarButton = (): JSX.Element => {
       if (id == null) return
       button.addEventListener('click', updateStar)
       button.dataset.clickable = 'true'
-      if (stars.some((s) => s.id === id)) {
+      if (stars?.some((s: any) => s.id === id)) {
         button.dataset.starred = 'true'
       } else {
         button.dataset.starred = 'false'
@@ -61,7 +60,7 @@ export const StarButton = (): JSX.Element => {
       const count = Number(span.dataset.starCount)
       if (count == null || isNaN(count)) return
       let reviced = 0
-      const star = stars.find((s) => s.id === span.dataset.starId)
+      const star = stars?.find((s: any) => s.id === span.dataset.starId)
       if (star != null) {
         // There is a new star.
         reviced++

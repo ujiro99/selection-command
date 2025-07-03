@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import { cn } from '@/lib/utils'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 
-import { useSetting } from '@/hooks/useSetting'
+import { useUserSettings } from '@/hooks/useEnhancedSetting'
 import { Icon } from '@/components/Icon'
 import popupCss from '@/components/Popup.module.css'
 import { SIDE } from '@/const'
@@ -17,9 +17,9 @@ type PopupProps = {
 }
 
 export function ResultPopup(props: PopupProps) {
-  const { settings } = useSetting()
-  const placement = settings.popupPlacement
-  const isBottom = placement.side === SIDE.bottom
+  const { userSettings } = useUserSettings()
+  const placement = userSettings?.popupPlacement
+  const isBottom = placement?.side === SIDE.bottom
 
   const visible = props.visible && props.positionRef.current != null
 

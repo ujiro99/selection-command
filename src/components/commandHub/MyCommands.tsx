@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import ColorThief from 'colorthief'
-import { useSetting } from '@/hooks/useSetting'
+import { useCompatibleSetting } from '@/hooks/useEnhancedSetting'
 import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 import { t } from '@/services/i18n'
 import { cn, isSearchCommand, isPageActionCommand } from '@/lib/utils'
@@ -13,7 +13,7 @@ export const MyCommands = (): JSX.Element => {
   const [pageActionIds, setPageActionIds] = useState<string[]>([])
   const listRef = useRef<HTMLUListElement | null>(null)
   const list2Ref = useRef<HTMLUListElement | null>(null)
-  const { settings, iconUrls } = useSetting()
+  const { settings, iconUrls } = useCompatibleSetting()
   const commands = settings.commands
     .filter(
       (c) =>

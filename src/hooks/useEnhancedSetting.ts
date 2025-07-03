@@ -5,6 +5,9 @@ import {
   CacheSection,
   CACHE_SECTIONS,
 } from '../services/settingsCache'
+
+// Export CACHE_SECTIONS for external use
+export { CACHE_SECTIONS } from '../services/settingsCache'
 import type {
   SettingsType,
   Command,
@@ -33,7 +36,7 @@ type SectionData<T extends CacheSection> =
             : any
 
 // セクション別使用Hook
-function useSection<T extends CacheSection>(
+export function useSection<T extends CacheSection>(
   section: T,
   forceFresh = false,
 ): {
@@ -164,7 +167,7 @@ export function useUserSettings(forceFresh = false) {
   )
 
   return {
-    userSettings: data || {},
+    userSettings: (data || {}) as UserSettings,
     loading,
     error,
     refetch,
