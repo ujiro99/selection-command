@@ -9,7 +9,7 @@ import {
 } from '@/const'
 import { Point, SettingsType, Command } from '@/types'
 import { LinkPreview } from '@/action/linkPreview'
-import { useEnhancedSetting } from '@/hooks/useEnhancedSetting'
+import { useSetting } from '@/hooks/useSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import Default, { PopupOption } from '@/services/option/defaultSettings'
 import { isPopup, isLinkCommand, isMac } from '@/lib/utils'
@@ -47,7 +47,7 @@ const empty = {
 }
 
 export function useDetectLinkCommand(): DetectLinkCommandReturn {
-  const { settings, pageRule } = useEnhancedSetting()
+  const { settings, pageRule } = useSetting()
   const showIndicator = settings.linkCommand?.showIndicator
   const command = settings.commands?.find(isLinkCommand) as Command
   const enabled =

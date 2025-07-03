@@ -1,108 +1,293 @@
-import { useState, useEffect } from 'react'
-import { Settings } from '../services/settings'
-import { useCompatibleSetting } from './useEnhancedSetting'
-import type { SettingsType, PageRule } from '@/types'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { enhancedSettings } from '../services/enhancedSettings'
+import {
+  settingsCache,
+  CacheSection,
+  CACHE_SECTIONS,
+} from '../services/settingsCache'
+
+import type {
+  SettingsType,
+  Command,
+  Star,
+  UserStats,
+  ShortcutSettings,
+  UserSettings,
+  PageRule,
+} from '@/types'
 import { isEmpty } from '@/lib/utils'
-import { STYLE, STARTUP_METHOD, ALIGN, SIDE, INHERIT } from '@/const'
-import Default from '@/services/option/defaultSettings'
+import { INHERIT } from '@/const'
 
-type iconUrlMap = Record<number | string, string>
+// セクション別Hook戻り値の型定義
+type SectionData<T extends CacheSection> =
+  T extends typeof CACHE_SECTIONS.COMMANDS
+    ? Command[]
+    : T extends typeof CACHE_SECTIONS.USER_SETTINGS
+      ? UserSettings
+      : T extends typeof CACHE_SECTIONS.STARS
+        ? Star[]
+        : T extends typeof CACHE_SECTIONS.SHORTCUTS
+          ? ShortcutSettings
+          : T extends typeof CACHE_SECTIONS.USER_STATS
+            ? UserStats
+            : any
 
-type useSettingReturn = {
-  settings: SettingsType
-  pageRule: PageRule | undefined
-  iconUrls: iconUrlMap
-}
+// 共通の非同期データ取得Hook
+function useAsyncData<T>(
+  loader: () => Promise<T>,
+  deps: React.DependencyList,
+  subscriptions?: {
+    subscribe: (callback: () => void) => void
+    unsubscribe: (callback: () => void) => void
+  }[],
+): {
+  data: T | null
+  loading: boolean
+  error: Error | null
+  refetch: () => Promise<void>
+} {
+  const [data, setData] = useState<T | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+  const mountedRef = useRef(true)
 
-export const emptySettings: SettingsType = {
-  settingVersion: '0.0.0',
-  commands: [],
-  folders: [],
-  pageRules: [],
-  style: STYLE.HORIZONTAL,
-  popupPlacement: {
-    side: SIDE.top,
-    align: ALIGN.start,
-    alignOffset: 0,
-    sideOffset: 0,
-  },
-  linkCommand: Default.linkCommand,
-  userStyles: [],
-  startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },
-  stars: [],
-  commandExecutionCount: 0,
-  hasShownReviewRequest: false,
-  shortcuts: { shortcuts: [] },
-}
+  const loadData = useCallback(async () => {
+    if (!mountedRef.current) return
 
-// Enhanced version flag - set to true to use the new cached implementation
-const USE_ENHANCED_SETTINGS = process.env.NODE_ENV !== 'production' // Enable in development
+    try {
+      setLoading(true)
+      setError(null)
+      const result = await loader()
 
-export function useSetting(): useSettingReturn {
-  // Use enhanced implementation if enabled
-  if (USE_ENHANCED_SETTINGS) {
-    return useCompatibleSetting()
-  }
+      if (mountedRef.current) {
+        setData(result)
+      }
+    } catch (err) {
+      if (mountedRef.current) {
+        setError(err instanceof Error ? err : new Error('Unknown error'))
+      }
+    } finally {
+      if (mountedRef.current) {
+        setLoading(false)
+      }
+    }
+  }, deps)
 
-  // Legacy implementation (original code)
-  const [settings, setSettings] = useState<SettingsType>(emptySettings)
-  const [iconUrls, setIconUrls] = useState<iconUrlMap>({})
+  const refetch = useCallback(async () => {
+    await loadData()
+  }, [loadData])
 
+  // 初回ロードとクリーンアップ
   useEffect(() => {
-    updateSettings()
-    Settings.addChangedListener(updateSettings)
+    mountedRef.current = true
+    loadData()
+
     return () => {
-      Settings.removeChangedListener(updateSettings)
+      mountedRef.current = false
     }
-  }, [])
+  }, deps)
 
-  const updateSettings = async () => {
-    const caches = await Settings.getCaches()
-    const data = await Settings.get()
-    // create iconUrl map to getting iconUrl
-    const iu = data.commands.reduce(
-      (acc, cur) => ({ ...acc, [cur.id]: cur.iconUrl }),
-      {},
-    )
-    setIconUrls(iu)
-    // use image cache if available
-    data.commands = data.commands.map((c) => {
-      const cache = caches.images[c.iconUrl]
-      let iconUrl = c.iconUrl
-      if (!isEmpty(cache)) {
-        iconUrl = cache
-      }
-      return { ...c, iconUrl }
-    })
-    data.folders = data.folders.map((f) => {
-      if (!f.iconUrl) return f
-      const cache = caches.images[f.iconUrl]
-      let iconUrl = f.iconUrl
-      if (!isEmpty(cache)) {
-        iconUrl = cache
-      }
-      return { ...f, iconUrl }
-    })
-    setSettings(data)
-  }
+  // 変更監視の設定
+  useEffect(() => {
+    if (!subscriptions) return
 
-  let pageRule: PageRule | undefined
-  if (settings != null) {
-    pageRule = settings.pageRules
-      .filter((r) => !isEmpty(r.urlPattern))
-      .find((rule) => {
-        const re = new RegExp(rule.urlPattern)
-        return window.location.href.match(re) != null
+    const handleChange = () => {
+      if (mountedRef.current) {
+        loadData()
+      }
+    }
+
+    subscriptions.forEach((subscription) => {
+      subscription.subscribe(handleChange)
+    })
+
+    return () => {
+      subscriptions.forEach((subscription) => {
+        subscription.unsubscribe(handleChange)
       })
-
-    if (pageRule != null && pageRule.popupPlacement !== INHERIT) {
-      settings.popupPlacement = pageRule.popupPlacement
     }
-  }
+  }, [...deps, loadData])
+
+  return { data, loading, error, refetch }
+}
+
+// セクション別使用Hook
+export function useSection<T extends CacheSection>(
+  section: T,
+  forceFresh = false,
+): {
+  data: SectionData<T> | null
+  loading: boolean
+  error: Error | null
+  refetch: () => Promise<void>
+} {
+  return useAsyncData<SectionData<T>>(
+    () => enhancedSettings.getSection(section, forceFresh),
+    [section, forceFresh],
+    [
+      {
+        subscribe: (callback) => settingsCache.subscribe(section, callback),
+        unsubscribe: (callback) => settingsCache.unsubscribe(section, callback),
+      },
+    ],
+  )
+}
+
+// ユーザー設定専用Hook
+export function useUserSettings(forceFresh = false) {
+  const { data, loading, error, refetch } = useSection(
+    CACHE_SECTIONS.USER_SETTINGS,
+    forceFresh,
+  )
+
+  const updateUserSettings = useCallback(
+    async (updater: (settings: UserSettings) => UserSettings) => {
+      await enhancedSettings.updateSection<UserSettings>(
+        CACHE_SECTIONS.USER_SETTINGS,
+        updater,
+      )
+    },
+    [],
+  )
 
   return {
-    settings,
+    userSettings: (data || {}) as UserSettings,
+    loading,
+    error,
+    refetch,
+    updateUserSettings,
+  }
+}
+
+// 統合設定Hook（必要なセクションのみ指定）
+export function useSetting(
+  sections: CacheSection[] = [
+    CACHE_SECTIONS.COMMANDS,
+    CACHE_SECTIONS.USER_SETTINGS,
+  ],
+  forceFresh = false,
+): {
+  settings: Partial<SettingsType>
+  pageRule: PageRule | undefined
+  loading: boolean
+  error: Error | null
+  refetch: () => Promise<void>
+  invalidateCache: (sectionsToInvalidate?: CacheSection[]) => void
+} {
+  const sectionsRef = useRef(sections)
+  const sectionsKey = useMemo(() => sections.join(','), [sections])
+
+  // sectionsが変更された場合の更新
+  useEffect(() => {
+    sectionsRef.current = sections
+  }, [sections])
+
+  const {
+    data: settings,
+    loading,
+    error,
+    refetch,
+  } = useAsyncData<Partial<SettingsType>>(
+    () =>
+      enhancedSettings.get({
+        sections: sectionsRef.current,
+        forceFresh,
+      }),
+    [sectionsKey, forceFresh],
+    sections.map((section) => ({
+      subscribe: (callback) => settingsCache.subscribe(section, callback),
+      unsubscribe: (callback) => settingsCache.unsubscribe(section, callback),
+    })),
+  )
+
+  const invalidateCache = useCallback(
+    (sectionsToInvalidate?: CacheSection[]) => {
+      const targetSections = sectionsToInvalidate || sectionsRef.current
+      enhancedSettings.invalidateCache(targetSections)
+    },
+    [],
+  )
+
+  // ページルール計算
+  const pageRule = useMemo(() => {
+    if (!settings || typeof window === 'undefined') return undefined
+
+    const rule = (settings.pageRules || [])
+      .filter((r) => !isEmpty(r.urlPattern))
+      .find((rule) => {
+        try {
+          const re = new RegExp(rule.urlPattern)
+          return window.location.href.match(re) != null
+        } catch {
+          return false
+        }
+      })
+
+    if (
+      rule != null &&
+      rule.popupPlacement !== INHERIT &&
+      settings.popupPlacement
+    ) {
+      settings.popupPlacement = rule.popupPlacement
+    }
+
+    return rule
+  }, [settings])
+
+  return {
+    settings: settings || {},
     pageRule,
+    loading,
+    error,
+    refetch,
+    invalidateCache,
+  }
+}
+
+// Image cacheを適用した設定Hook
+export function useSettingsWithImageCache() {
+  const { settings, pageRule, loading } = useSetting([
+    CACHE_SECTIONS.COMMANDS,
+    CACHE_SECTIONS.USER_SETTINGS,
+    CACHE_SECTIONS.CACHES,
+  ])
+
+  const { commandsWithCache, foldersWithCache, iconUrls } = useMemo(() => {
+    if (loading || !settings.commands) {
+      return { commandsWithCache: [], foldersWithCache: [], iconUrls: {} }
+    }
+
+    const caches = (settings as any).caches || { images: {} }
+
+    // Commands with cache
+    const commandsWithCache = settings.commands.map((c) => {
+      const cache = caches.images[c.iconUrl]
+      const iconUrl = !isEmpty(cache) ? cache : c.iconUrl
+      return { ...c, iconUrl }
+    })
+
+    // Folders with cache
+    const foldersWithCache = (settings.folders || []).map((f) => {
+      if (!f.iconUrl) return f
+      const cache = caches.images[f.iconUrl]
+      const iconUrl = !isEmpty(cache) ? cache : f.iconUrl
+      return { ...f, iconUrl }
+    })
+
+    // IconUrls map
+    const iconUrls = commandsWithCache.reduce(
+      (acc, cur) => ({ ...acc, [cur.id]: cur.iconUrl }),
+      {} as Record<string, string>,
+    )
+
+    return { commandsWithCache, foldersWithCache, iconUrls }
+  }, [settings, loading])
+
+  return {
+    commands: commandsWithCache,
+    folders: foldersWithCache,
     iconUrls,
+    pageRule,
+    loading,
   }
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useCallback } from 'react'
 import { LinkClickGuard } from '@/components/LinkClickGuard'
-import { useUserSettings } from '@/hooks/useEnhancedSetting'
+import { useUserSettings } from '@/hooks/useSetting'
 import { useSelectContext } from '@/hooks/useSelectContext'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from '@/const'

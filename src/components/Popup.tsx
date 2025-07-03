@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext, forwardRef } from 'react'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { Menu } from '@/components/menu/Menu'
-import { useUserSettings } from '@/hooks/useEnhancedSetting'
+import { useUserSettings } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { hexToHsl, isMac, onHover, cn } from '@/lib/utils'

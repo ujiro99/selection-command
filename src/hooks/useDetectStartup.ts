@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { PopupProps } from '@/components/Popup'
-import { useEnhancedSetting } from '@/hooks/useEnhancedSetting'
+import { useSetting } from '@/hooks/useSetting'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import { useSelectContext } from '@/hooks/useSelectContext'
 import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD } from '@/const'
@@ -15,7 +15,7 @@ export function useDetectStartup(props: Props) {
   const { positionElm, isPreview, isHover } = props
   const { selectionText } = useSelectContext()
   const [hide, setHide] = useState(false)
-  const { settings, pageRule } = useEnhancedSetting()
+  const { settings, pageRule } = useSetting()
   const { method, leftClickHoldParam } = settings.startupMethod || {}
 
   let visible = !isEmpty(selectionText) && positionElm != null
@@ -63,7 +63,7 @@ export function useDetectStartup(props: Props) {
 }
 
 export function useKeyboard(_: Props) {
-  const { settings } = useEnhancedSetting()
+  const { settings } = useSetting()
   const { selectionText } = useSelectContext()
   const [detectKey, setDetectKey] = useState(false)
   const { method, keyboardParam } = settings.startupMethod || {}

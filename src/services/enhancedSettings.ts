@@ -46,7 +46,7 @@ export class EnhancedSettings {
       excludeOptions = false,
     } = options
 
-    console.log('EnhancedSettings.get called with sections:', sections)
+    console.debug('EnhancedSettings.get called with sections:', sections)
 
     // 並列でセクション別取得
     const results = await Promise.allSettled([
@@ -54,13 +54,19 @@ export class EnhancedSettings {
         ? settingsCache.get<Command[]>(CACHE_SECTIONS.COMMANDS, forceFresh)
         : Promise.resolve([]),
       sections.includes(CACHE_SECTIONS.USER_SETTINGS)
-        ? settingsCache.get<UserSettings>(CACHE_SECTIONS.USER_SETTINGS, forceFresh)
+        ? settingsCache.get<UserSettings>(
+            CACHE_SECTIONS.USER_SETTINGS,
+            forceFresh,
+          )
         : Promise.resolve(DefaultSettings as UserSettings),
       sections.includes(CACHE_SECTIONS.STARS)
         ? settingsCache.get<Star[]>(CACHE_SECTIONS.STARS, forceFresh)
         : Promise.resolve([]),
       sections.includes(CACHE_SECTIONS.SHORTCUTS)
-        ? settingsCache.get<ShortcutSettings>(CACHE_SECTIONS.SHORTCUTS, forceFresh)
+        ? settingsCache.get<ShortcutSettings>(
+            CACHE_SECTIONS.SHORTCUTS,
+            forceFresh,
+          )
         : Promise.resolve({ shortcuts: [] }),
       sections.includes(CACHE_SECTIONS.USER_STATS)
         ? settingsCache.get<UserStats>(CACHE_SECTIONS.USER_STATS, forceFresh)
@@ -82,7 +88,9 @@ export class EnhancedSettings {
     const commands =
       commandsResult.status === 'fulfilled' ? commandsResult.value : []
     const userSettings =
-      userSettingsResult.status === 'fulfilled' ? userSettingsResult.value : DefaultSettings as UserSettings
+      userSettingsResult.status === 'fulfilled'
+        ? userSettingsResult.value
+        : (DefaultSettings as UserSettings)
     const stars = starsResult.status === 'fulfilled' ? starsResult.value : []
     const shortcuts =
       shortcutsResult.status === 'fulfilled'
@@ -102,8 +110,6 @@ export class EnhancedSettings {
       userStats,
     })
 
-    // マイグレーション処理（コメントアウト - migrateメソッドが存在しない場合）
-    // mergedSettings = await Settings.migrate(mergedSettings)
 
     // フォルダーのフィルタリング
     mergedSettings.folders = mergedSettings.folders.filter(
@@ -230,10 +236,7 @@ export class EnhancedSettings {
   }
 
   // 変更監視解除
-  removeChangedListener(
-    sections: CacheSection[],
-    callback: () => void,
-  ): void {
+  removeChangedListener(sections: CacheSection[], callback: () => void): void {
     sections.forEach((section) => {
       settingsCache.unsubscribe(section, callback)
     })
@@ -249,39 +252,6 @@ export class EnhancedSettings {
     settingsCache.invalidateAll()
   }
 
-  // 従来の設定APIとの互換性保持
-  async getLegacy(excludeOptions = false): Promise<SettingsType> {
-    return this.get({ excludeOptions })
-  }
-
-  // 従来のset実装との互換性
-  async setLegacy(data: SettingsType, serviceWorker = false): Promise<boolean> {
-    return Settings.set(data, serviceWorker)
-  }
-
-  // 従来のupdate実装との互換性
-  async updateLegacy<T extends keyof SettingsType>(
-    key: T,
-    updater: (value: SettingsType[T]) => SettingsType[T],
-    serviceWorker = false,
-  ): Promise<boolean> {
-    return Settings.update(key, updater, serviceWorker)
-  }
-
-  // コマンド関連の操作
-  async addCommands(commands: Command[]): Promise<boolean> {
-    return Settings.addCommands(commands)
-  }
-
-  async updateCommands(commands: Command[]): Promise<boolean> {
-    return Settings.updateCommands(commands)
-  }
-
-  // 設定リセット
-  async reset(): Promise<void> {
-    await Settings.reset()
-    this.invalidateAllCache()
-  }
 
   // キャッシュ関連
   async getCaches() {
