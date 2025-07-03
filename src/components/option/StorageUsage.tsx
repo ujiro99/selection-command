@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MultiProgress from 'react-multi-progress'
+import { Cloud, Monitor } from 'lucide-react'
 import {
   subscribeStorageUsage,
   StorageUsageData,
@@ -102,6 +103,7 @@ const StorageUsage: React.FC = () => {
       <h3 className={s.menuLabel}>Storage Usage</h3>
       <div className="mb-6 w-full">
         <h4 className="text-sm text-gray-600 font-medium font-mono my-2">
+          <Cloud className="inline mr-2 stroke-gray-500" size={17} />
           Sync Area
         </h4>
         <MultiProgress
@@ -134,6 +136,7 @@ const StorageUsage: React.FC = () => {
 
       <div className="w-full">
         <h4 className="text-sm text-gray-600 font-medium font-mono my-2">
+          <Monitor className="inline mr-2 stroke-gray-500" size={17} />
           Local Area
         </h4>
         <MultiProgress
