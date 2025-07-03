@@ -517,6 +517,8 @@ export const CommandStorage = {
   ): Promise<boolean | chrome.runtime.LastError> => {
     const current = await hybridStorage.loadCommands()
 
+    // TODO: use metadate
+
     // If update first time, set DefaultCommands.
     const count = await BaseStorage.get<number>(STORAGE_KEY.COMMAND_COUNT)
     if (count === DEFAULT_COUNT) {

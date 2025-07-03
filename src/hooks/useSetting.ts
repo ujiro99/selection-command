@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Settings } from '../services/settings'
+import { useCompatibleSetting } from './useEnhancedSetting'
 import type { SettingsType, PageRule } from '@/types'
 import { isEmpty } from '@/lib/utils'
 import { STYLE, STARTUP_METHOD, ALIGN, SIDE, INHERIT } from '@/const'
@@ -34,7 +35,16 @@ const emptySettings: SettingsType = {
   shortcuts: { shortcuts: [] },
 }
 
+// Enhanced version flag - set to true to use the new cached implementation
+const USE_ENHANCED_SETTINGS = process.env.NODE_ENV !== 'production' // Enable in development
+
 export function useSetting(): useSettingReturn {
+  // Use enhanced implementation if enabled
+  if (USE_ENHANCED_SETTINGS) {
+    return useCompatibleSetting()
+  }
+
+  // Legacy implementation (original code)
   const [settings, setSettings] = useState<SettingsType>(emptySettings)
   const [iconUrls, setIconUrls] = useState<iconUrlMap>({})
 
