@@ -13,26 +13,26 @@ import { OptionSettings } from '@/services/option/optionSettings'
 import DefaultSettings from '@/services/option/defaultSettings'
 import { OPTION_FOLDER } from '@/const'
 
-// 設定取得オプション
+// Settings fetch options
 interface GetSettingsOptions {
   sections?: CacheSection[]
   forceFresh?: boolean
   excludeOptions?: boolean
 }
 
-// 部分設定型
+// Partial settings type
 type PartialSettingsType = {
   [K in keyof SettingsType]?: SettingsType[K]
 }
 
-// 強化された設定サービス
+// Enhanced settings service
 export class EnhancedSettings {
   constructor() {
-    // 従来のリスナー設定をキャッシュ無効化に対応
+    // Set up legacy listeners for cache invalidation
     this.setupLegacyListeners()
   }
 
-  // 統合設定取得（キャッシュ活用）
+  // Get integrated settings (with cache utilization)
   async get(options: GetSettingsOptions = {}): Promise<SettingsType> {
     const {
       sections = [
@@ -48,7 +48,7 @@ export class EnhancedSettings {
 
     console.debug('EnhancedSettings.get called with sections:', sections)
 
-    // 並列でセクション別取得
+    // Get sections in parallel
     const results = await Promise.allSettled([
       sections.includes(CACHE_SECTIONS.COMMANDS)
         ? settingsCache.get<Command[]>(CACHE_SECTIONS.COMMANDS, forceFresh)
@@ -76,7 +76,7 @@ export class EnhancedSettings {
           }),
     ])
 
-    // 結果の処理
+    // Process results
     const [
       commandsResult,
       userSettingsResult,
@@ -101,7 +101,7 @@ export class EnhancedSettings {
         ? userStatsResult.value
         : { commandExecutionCount: 0, hasShownReviewRequest: false }
 
-    // 設定をマージ
+    // Merge settings
     let mergedSettings = this.mergeSettings({
       commands,
       userSettings,
@@ -110,13 +110,12 @@ export class EnhancedSettings {
       userStats,
     })
 
-
-    // フォルダーのフィルタリング
+    // Filter folders
     mergedSettings.folders = mergedSettings.folders.filter(
       (folder) => !!folder.title,
     )
 
-    // オプション設定の処理
+    // Process option settings
     if (!excludeOptions) {
       this.removeOptionSettings(mergedSettings)
       mergedSettings.commands.push(...OptionSettings.commands)
@@ -126,7 +125,7 @@ export class EnhancedSettings {
     return mergedSettings
   }
 
-  // 部分的な設定取得
+  // Get partial settings
   async getSection<K extends CacheSection>(
     section: K,
     forceFresh = false,
@@ -146,7 +145,7 @@ export class EnhancedSettings {
     return settingsCache.get(section, forceFresh)
   }
 
-  // セクション別更新
+  // Update by section
   async updateSection<T>(
     section: CacheSection,
     updater: (data: T) => T,
@@ -158,7 +157,7 @@ export class EnhancedSettings {
     settingsCache.invalidate([section])
   }
 
-  // ストレージへの保存
+  // Save to storage
   private async saveToStorage(section: CacheSection, data: any): Promise<void> {
     switch (section) {
       case CACHE_SECTIONS.COMMANDS:
@@ -189,7 +188,7 @@ export class EnhancedSettings {
     }
   }
 
-  // 設定マージ
+  // Merge settings
   private mergeSettings(data: {
     commands: Command[]
     userSettings: UserSettings
@@ -207,7 +206,7 @@ export class EnhancedSettings {
     } as SettingsType
   }
 
-  // オプション設定の削除
+  // Remove option settings
   private removeOptionSettings(data: SettingsType): void {
     data.commands = data.commands.filter(
       (c) => c?.parentFolderId !== OPTION_FOLDER,
@@ -215,7 +214,7 @@ export class EnhancedSettings {
     data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
   }
 
-  // 変更監視
+  // Add change listener
   addChangedListener(
     sections: CacheSection[],
     callback: (data: PartialSettingsType) => void,
@@ -235,43 +234,42 @@ export class EnhancedSettings {
     })
   }
 
-  // 変更監視解除
+  // Remove change listener
   removeChangedListener(sections: CacheSection[], callback: () => void): void {
     sections.forEach((section) => {
       settingsCache.unsubscribe(section, callback)
     })
   }
 
-  // キャッシュ無効化
+  // Invalidate cache
   invalidateCache(sections: CacheSection[]): void {
     settingsCache.invalidate(sections)
   }
 
-  // 全キャッシュ無効化
+  // Invalidate all cache
   invalidateAllCache(): void {
     settingsCache.invalidateAll()
   }
 
-
-  // キャッシュ関連
+  // Cache related
   async getCaches() {
     return settingsCache.get(CACHE_SECTIONS.CACHES)
   }
 
-  // 従来リスナーの設定
+  // Setup legacy listeners
   private setupLegacyListeners(): void {
-    // 従来のSettings.addChangedListenerに対応
+    // Handle legacy Settings.addChangedListener
     Settings.addChangedListener((_data: SettingsType) => {
-      // 全キャッシュを無効化（安全策）
+      // Invalidate all cache (safety measure)
       this.invalidateAllCache()
     })
   }
 
-  // デバッグ用
+  // For debugging
   getCacheStatus() {
     return settingsCache.getCacheStatus()
   }
 }
 
-// シングルトンインスタンス
+// Singleton instance
 export const enhancedSettings = new EnhancedSettings()

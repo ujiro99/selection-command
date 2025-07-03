@@ -1,12 +1,8 @@
 import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from './storage'
-import type {
-  UserStats,
-  ShortcutSettings,
-  UserSettings,
-} from '@/types'
+import type { UserStats, ShortcutSettings, UserSettings } from '@/types'
 import { Settings } from './settings'
 
-// キャッシュセクション定数
+// Cache section constants
 export const CACHE_SECTIONS = {
   COMMANDS: 'commands',
   USER_SETTINGS: 'userSettings',
@@ -16,7 +12,7 @@ export const CACHE_SECTIONS = {
   CACHES: 'caches',
 } as const
 
-// キャッシュセクション定義
+// Cache section definition
 export type CacheSection =
   | typeof CACHE_SECTIONS.COMMANDS
   | typeof CACHE_SECTIONS.USER_SETTINGS
@@ -25,7 +21,7 @@ export type CacheSection =
   | typeof CACHE_SECTIONS.USER_STATS
   | typeof CACHE_SECTIONS.CACHES
 
-// キャッシュエントリ
+// Cache entry (internal use)
 interface CacheEntry<T> {
   data: T
   timestamp: number
@@ -33,7 +29,7 @@ interface CacheEntry<T> {
   ttl?: number
 }
 
-// バージョン管理
+// Version management (internal use)
 class DataVersionManager {
   private versions = new Map<CacheSection, string>()
 
@@ -66,32 +62,32 @@ class DataVersionManager {
   }
 }
 
-// 設定キャッシュマネージャー
+// Settings cache manager
 export class SettingsCacheManager {
   private cache = new Map<CacheSection, CacheEntry<any>>()
   private versionManager = new DataVersionManager()
   private listeners = new Map<CacheSection, Set<() => void>>()
-  private readonly DEFAULT_TTL = 5 * 60 * 1000 // 5分
+  private readonly DEFAULT_TTL = 5 * 60 * 1000 // 5 minutes
   private storageListenerSetup = false
 
   constructor() {
     this.setupStorageListener()
   }
 
-  // セクション別データ取得
+  // Get data by section
   async get<T>(section: CacheSection, forceFresh = false): Promise<T> {
     if (!forceFresh && this.isValid(section)) {
-      console.log(`Cache hit for ${section}`)
+      console.debug(`Cache hit for ${section}`)
       return this.cache.get(section)!.data
     }
 
-    console.log(`Loading ${section} from storage`)
+    console.debug(`Loading ${section} from storage`)
     const data = await this.loadFromStorage<T>(section)
     this.setCache(section, data)
     return data
   }
 
-  // キャッシュ設定
+  // Set cache
   private setCache<T>(section: CacheSection, data: T, ttl?: number): void {
     const version = this.versionManager.generateVersion(section, data)
     this.versionManager.setVersion(section, version)
@@ -104,7 +100,7 @@ export class SettingsCacheManager {
     })
   }
 
-  // キャッシュ有効性確認
+  // Check cache validity
   private isValid(section: CacheSection): boolean {
     const entry = this.cache.get(section)
     if (!entry) return false
@@ -115,7 +111,7 @@ export class SettingsCacheManager {
     return !isExpired
   }
 
-  // セクション別無効化
+  // Invalidate by section
   invalidate(sections: CacheSection[]): void {
     console.log(`Invalidating cache for sections: ${sections.join(', ')}`)
     sections.forEach((section) => {
@@ -125,13 +121,13 @@ export class SettingsCacheManager {
     })
   }
 
-  // 全キャッシュ無効化
+  // Invalidate all cache
   invalidateAll(): void {
     const allSections = Array.from(this.cache.keys())
     this.invalidate(allSections)
   }
 
-  // 変更監視登録
+  // Subscribe to changes
   subscribe(section: CacheSection, callback: () => void): void {
     if (!this.listeners.has(section)) {
       this.listeners.set(section, new Set())
@@ -139,7 +135,7 @@ export class SettingsCacheManager {
     this.listeners.get(section)!.add(callback)
   }
 
-  // 変更監視解除
+  // Unsubscribe from changes
   unsubscribe(section: CacheSection, callback: () => void): void {
     const sectionListeners = this.listeners.get(section)
     if (sectionListeners) {
@@ -150,7 +146,7 @@ export class SettingsCacheManager {
     }
   }
 
-  // リスナー通知
+  // Notify listeners
   private notifyListeners(section: CacheSection): void {
     const sectionListeners = this.listeners.get(section)
     if (sectionListeners) {
@@ -164,7 +160,7 @@ export class SettingsCacheManager {
     }
   }
 
-  // ストレージからのデータ読み込み
+  // Load data from storage
   private async loadFromStorage<T>(section: CacheSection): Promise<T> {
     switch (section) {
       case CACHE_SECTIONS.COMMANDS:
@@ -190,11 +186,11 @@ export class SettingsCacheManager {
     }
   }
 
-  // ストレージ変更監視設定
+  // Setup storage change monitoring
   private setupStorageListener(): void {
     if (this.storageListenerSetup) return
 
-    // Chrome storage変更監視
+    // Monitor Chrome storage changes
     chrome.storage.onChanged.addListener((changes, areaName) => {
       console.log(`Storage changed in ${areaName}:`, Object.keys(changes))
 
@@ -224,7 +220,7 @@ export class SettingsCacheManager {
     this.storageListenerSetup = true
   }
 
-  // デバッグ用：キャッシュ状態確認
+  // For debugging: Check cache status
   getCacheStatus(): Record<CacheSection, { cached: boolean; age: number }> {
     const status: Record<string, { cached: boolean; age: number }> = {}
 
@@ -239,5 +235,5 @@ export class SettingsCacheManager {
   }
 }
 
-// シングルトンインスタンス
+// Singleton instance
 export const settingsCache = new SettingsCacheManager()

@@ -18,7 +18,7 @@ import type {
 import { isEmpty } from '@/lib/utils'
 import { INHERIT } from '@/const'
 
-// セクション別Hook戻り値の型定義
+// Type definitions for section-specific hook return values
 type SectionData<T extends CacheSection> =
   T extends typeof CACHE_SECTIONS.COMMANDS
     ? Command[]
@@ -32,7 +32,7 @@ type SectionData<T extends CacheSection> =
             ? UserStats
             : any
 
-// 共通の非同期データ取得Hook
+// Common async data fetching hook
 function useAsyncData<T>(
   loader: () => Promise<T>,
   deps: React.DependencyList,
@@ -77,7 +77,7 @@ function useAsyncData<T>(
     await loadData()
   }, [loadData])
 
-  // 初回ロードとクリーンアップ
+  // Initial load and cleanup
   useEffect(() => {
     mountedRef.current = true
     loadData()
@@ -87,7 +87,7 @@ function useAsyncData<T>(
     }
   }, deps)
 
-  // 変更監視の設定
+  // Setup change monitoring
   useEffect(() => {
     if (!subscriptions) return
 
@@ -111,7 +111,7 @@ function useAsyncData<T>(
   return { data, loading, error, refetch }
 }
 
-// セクション別使用Hook
+// Section-specific hook
 export function useSection<T extends CacheSection>(
   section: T,
   forceFresh = false,
@@ -133,7 +133,7 @@ export function useSection<T extends CacheSection>(
   )
 }
 
-// ユーザー設定専用Hook
+// User settings-specific hook
 export function useUserSettings(forceFresh = false) {
   const { data, loading, error, refetch } = useSection(
     CACHE_SECTIONS.USER_SETTINGS,
@@ -159,7 +159,7 @@ export function useUserSettings(forceFresh = false) {
   }
 }
 
-// 統合設定Hook（必要なセクションのみ指定）
+// Integrated settings hook (specify only required sections)
 export function useSetting(
   sections: CacheSection[] = [
     CACHE_SECTIONS.COMMANDS,
@@ -177,7 +177,7 @@ export function useSetting(
   const sectionsRef = useRef(sections)
   const sectionsKey = useMemo(() => sections.join(','), [sections])
 
-  // sectionsが変更された場合の更新
+  // Update when sections change
   useEffect(() => {
     sectionsRef.current = sections
   }, [sections])
@@ -208,7 +208,7 @@ export function useSetting(
     [],
   )
 
-  // ページルール計算
+  // Page rule calculation
   const pageRule = useMemo(() => {
     if (!settings || typeof window === 'undefined') return undefined
 
@@ -244,7 +244,7 @@ export function useSetting(
   }
 }
 
-// Image cacheを適用した設定Hook
+// Settings hook with image cache applied
 export function useSettingsWithImageCache() {
   const { settings, pageRule, loading } = useSetting([
     CACHE_SECTIONS.COMMANDS,
