@@ -35,8 +35,8 @@ export const Storage = {
   // Command-specific methods
   ...CommandStorage,
 
-  // New methods for hybrid storage
-  hybridStorage: new HybridCommandStorage(),
+  // New methods for hybrid storage (will be initialized after Storage is defined)
+  hybridStorage: null as unknown as HybridCommandStorage,
 
   // Daily backup manager
   dailyBackupManager: new DailyBackupManager(),
@@ -64,6 +64,13 @@ export const Storage = {
   updateCommands: async (
     commands: Command[],
   ): Promise<boolean | chrome.runtime.LastError> => {
-    return await CommandStorage.updateCommands(commands, Storage.hybridStorage)
+    return await CommandStorage.updateCommands(
+      commands,
+      Storage.hybridStorage,
+      Storage,
+    )
   },
 }
+
+// Initialize hybrid storage after Storage object is defined
+Storage.hybridStorage = new HybridCommandStorage(Storage)

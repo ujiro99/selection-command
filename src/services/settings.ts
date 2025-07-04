@@ -44,10 +44,12 @@ export type ImageCache = {
 }
 
 const callbacks = [] as ((data: SettingsType) => void)[]
+
 Storage.addListener(STORAGE_KEY.USER, async (settings: SettingsType) => {
   settings.commands = await Storage.getCommands()
   callbacks.forEach((cb) => cb(settings))
 })
+
 Storage.addCommandListener(async (commands: Command[]) => {
   const settings = await Settings.get()
   settings.commands = commands
