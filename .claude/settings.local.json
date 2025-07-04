@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(yarn build)",
+      "Bash(rg:*)",
+      "Bash(npm run lint)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.dndkit.com)",
+      "WebFetch(domain:stackoverflow.com)",
+      "Bash(yarn lint)",
+      "Bash(yarn dev)",
+      "Bash(pkill:*)",
+      "Bash(node:*)",
+      "Bash(rm:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:react-hook-form.com)",
+      "Bash(cat:*)",
+      "Bash(yarn add:*)",
+      "Bash(mv:*)",
+      "Bash(mkdir:*)",
+      "Bash(sed:*)",
+      "Bash(npx tsc:*)",
+      "Bash(find:*)",
+      "Bash(yarn lint:*)",
+      "Bash(yarn eslint:*)",
+      "Bash(npx eslint:*)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(ls:*)"
+    ],
+    "deny": []
+  }
+}
