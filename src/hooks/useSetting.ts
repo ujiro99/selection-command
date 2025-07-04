@@ -140,22 +140,11 @@ export function useUserSettings(forceFresh = false) {
     forceFresh,
   )
 
-  const updateUserSettings = useCallback(
-    async (updater: (settings: UserSettings) => UserSettings) => {
-      await enhancedSettings.updateSection<UserSettings>(
-        CACHE_SECTIONS.USER_SETTINGS,
-        updater,
-      )
-    },
-    [],
-  )
-
   return {
     userSettings: (data || {}) as UserSettings,
     loading,
     error,
     refetch,
-    updateUserSettings,
   }
 }
 
@@ -200,14 +189,6 @@ export function useSetting(
     })),
   )
 
-  const invalidateCache = useCallback(
-    (sectionsToInvalidate?: CacheSection[]) => {
-      const targetSections = sectionsToInvalidate || sectionsRef.current
-      enhancedSettings.invalidateCache(targetSections)
-    },
-    [],
-  )
-
   // Page rule calculation
   const pageRule = useMemo(() => {
     if (!settings || typeof window === 'undefined') return undefined
@@ -233,6 +214,14 @@ export function useSetting(
 
     return rule
   }, [settings])
+
+  const invalidateCache = useCallback(
+    (sectionsToInvalidate?: CacheSection[]) => {
+      const targetSections = sectionsToInvalidate || sectionsRef.current
+      enhancedSettings.invalidateCache(targetSections)
+    },
+    [],
+  )
 
   return {
     settings: settings || {},

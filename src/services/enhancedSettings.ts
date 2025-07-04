@@ -8,7 +8,6 @@ import type {
 } from '@/types'
 import { settingsCache, CacheSection, CACHE_SECTIONS } from './settingsCache'
 import { Settings } from './settings'
-import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from './storage'
 import { OptionSettings } from '@/services/option/optionSettings'
 import DefaultSettings from '@/services/option/defaultSettings'
 import { OPTION_FOLDER } from '@/const'
@@ -18,11 +17,6 @@ interface GetSettingsOptions {
   sections?: CacheSection[]
   forceFresh?: boolean
   excludeOptions?: boolean
-}
-
-// Partial settings type
-type PartialSettingsType = {
-  [K in keyof SettingsType]?: SettingsType[K]
 }
 
 // Enhanced settings service
@@ -46,7 +40,7 @@ export class EnhancedSettings {
       excludeOptions = false,
     } = options
 
-    console.debug('EnhancedSettings.get called with sections:', sections)
+    // console.debug('EnhancedSettings.get called with sections:', sections)
 
     // Get sections in parallel
     const results = await Promise.allSettled([
@@ -145,49 +139,6 @@ export class EnhancedSettings {
     return settingsCache.get(section, forceFresh)
   }
 
-  // Update by section
-  async updateSection<T>(
-    section: CacheSection,
-    updater: (data: T) => T,
-  ): Promise<void> {
-    const currentData = await settingsCache.get<T>(section)
-    const updatedData = updater(currentData)
-
-    await this.saveToStorage(section, updatedData)
-    settingsCache.invalidate([section])
-  }
-
-  // Save to storage
-  private async saveToStorage(section: CacheSection, data: any): Promise<void> {
-    switch (section) {
-      case CACHE_SECTIONS.COMMANDS:
-        await Storage.setCommands(data as Command[])
-        break
-
-      case CACHE_SECTIONS.USER_SETTINGS:
-        await Storage.set<UserSettings>(STORAGE_KEY.USER, data as UserSettings)
-        break
-
-      case CACHE_SECTIONS.STARS:
-        await Storage.set(LOCAL_STORAGE_KEY.STARS, data as Star[])
-        break
-
-      case CACHE_SECTIONS.SHORTCUTS:
-        await Storage.set<ShortcutSettings>(
-          STORAGE_KEY.SHORTCUTS,
-          data as ShortcutSettings,
-        )
-        break
-
-      case CACHE_SECTIONS.USER_STATS:
-        await Storage.set<UserStats>(STORAGE_KEY.USER_STATS, data as UserStats)
-        break
-
-      default:
-        throw new Error(`Cannot save section: ${section}`)
-    }
-  }
-
   // Merge settings
   private mergeSettings(data: {
     commands: Command[]
@@ -212,33 +163,6 @@ export class EnhancedSettings {
       (c) => c?.parentFolderId !== OPTION_FOLDER,
     )
     data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
-  }
-
-  // Add change listener
-  addChangedListener(
-    sections: CacheSection[],
-    callback: (data: PartialSettingsType) => void,
-  ): void {
-    sections.forEach((section) => {
-      settingsCache.subscribe(section, async () => {
-        try {
-          const data = await this.get({ sections })
-          callback(data)
-        } catch (error) {
-          console.error(
-            `Error in settings change listener for ${section}:`,
-            error,
-          )
-        }
-      })
-    })
-  }
-
-  // Remove change listener
-  removeChangedListener(sections: CacheSection[], callback: () => void): void {
-    sections.forEach((section) => {
-      settingsCache.unsubscribe(section, callback)
-    })
   }
 
   // Invalidate cache

@@ -77,11 +77,10 @@ export class SettingsCacheManager {
   // Get data by section
   async get<T>(section: CacheSection, forceFresh = false): Promise<T> {
     if (!forceFresh && this.isValid(section)) {
-      console.debug(`Cache hit for ${section}`)
+      // console.debug(`Cache hit for ${section}`)
       return this.cache.get(section)!.data
     }
 
-    console.debug(`Loading ${section} from storage`)
     const data = await this.loadFromStorage<T>(section)
     this.setCache(section, data)
     return data
@@ -191,8 +190,8 @@ export class SettingsCacheManager {
     if (this.storageListenerSetup) return
 
     // Monitor Chrome storage changes
-    chrome.storage.onChanged.addListener((changes, areaName) => {
-      console.log(`Storage changed in ${areaName}:`, Object.keys(changes))
+    chrome.storage.onChanged.addListener((changes, _areaName) => {
+      // console.log(`Storage changed in ${_areaName}:`, Object.keys(changes))
 
       const sectionsToInvalidate: CacheSection[] = []
 
