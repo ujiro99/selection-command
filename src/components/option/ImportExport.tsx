@@ -1,32 +1,51 @@
-import { useState, useRef, useEffect } from 'react'
-import { Dialog } from './Dialog'
-import type { UserSettings } from '@/types'
+import { useState, useRef, useEffect } from "react"
+import { Dialog } from "./Dialog"
+import type { UserSettings } from "@/types"
 
 import {
   Storage,
   STORAGE_KEY,
+  LOCAL_STORAGE_KEY,
   CommandMigrationManager,
-} from '@/services/storage'
+} from "@/services/storage"
 import {
   DailyBackupManager,
   WeeklyBackupManager,
-} from '@/services/storage/backupManager'
-import { Settings, migrate } from '@/services/settings'
-import { isBase64, isUrl } from '@/lib/utils'
-import { APP_ID } from '@/const'
-import { t } from '@/services/i18n'
-import { Download, Upload, Undo2, RotateCcw } from 'lucide-react'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+} from "@/services/storage/backupManager"
+import { Settings, migrate } from "@/services/settings"
+import { isBase64, isUrl } from "@/lib/utils"
+import { APP_ID } from "@/const"
+import { t } from "@/services/i18n"
+import { Download, Upload, Undo2, RotateCcw } from "lucide-react"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import type { BackupData } from "@/services/storage/backupManager"
 
-import css from './Option.module.css'
+import css from "./Option.module.css"
+
+// Backup type constants
+const BACKUP_TYPES = {
+  LEGACY: "legacy",
+  DAILY: "daily",
+  WEEKLY: "weekly",
+} as const
+
+// Backup status constants
+const BACKUP_STATUS = {
+  CHECKING: "checking",
+  AVAILABLE: "available",
+  NONE: "none",
+} as const
+
+type BackupType = (typeof BACKUP_TYPES)[keyof typeof BACKUP_TYPES]
+type BackupStatus = (typeof BACKUP_STATUS)[keyof typeof BACKUP_STATUS]
 
 function getTimestamp() {
   const date = new Date()
   const year = date.getFullYear()
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const day = date.getDate().toString().padStart(2, '0')
-  const hours = date.getHours().toString().padStart(2, '0')
-  const minutes = date.getMinutes().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, "0")
+  const day = date.getDate().toString().padStart(2, "0")
+  const hours = date.getHours().toString().padStart(2, "0")
+  const minutes = date.getMinutes().toString().padStart(2, "0")
   return `${year}${month}${day}_${hours}${minutes}`
 }
 
@@ -36,24 +55,24 @@ export function ImportExport() {
   const [restoreDialog, setRestoreDialog] = useState(false)
   const [importJson, setImportJson] = useState<UserSettings>()
   const [backupData, setBackupData] = useState<{
-    legacy: {
-      status: 'checking' | 'available' | 'none'
+    [BACKUP_TYPES.LEGACY]: {
+      status: BackupStatus
       info: {
         timestamp: number
         commandCount: number
         folderCount?: number
       } | null
     }
-    daily: {
-      status: 'checking' | 'available' | 'none'
+    [BACKUP_TYPES.DAILY]: {
+      status: BackupStatus
       info: {
         timestamp: number
         commandCount: number
         folderCount?: number
       } | null
     }
-    weekly: {
-      status: 'checking' | 'available' | 'none'
+    [BACKUP_TYPES.WEEKLY]: {
+      status: BackupStatus
       info: {
         timestamp: number
         commandCount: number
@@ -61,13 +80,13 @@ export function ImportExport() {
       } | null
     }
   }>({
-    legacy: { status: 'checking', info: null },
-    daily: { status: 'checking', info: null },
-    weekly: { status: 'checking', info: null },
+    [BACKUP_TYPES.LEGACY]: { status: BACKUP_STATUS.CHECKING, info: null },
+    [BACKUP_TYPES.DAILY]: { status: BACKUP_STATUS.CHECKING, info: null },
+    [BACKUP_TYPES.WEEKLY]: { status: BACKUP_STATUS.CHECKING, info: null },
   })
-  const [selectedBackupType, setSelectedBackupType] = useState<
-    'legacy' | 'daily' | 'weekly'
-  >('legacy')
+  const [selectedBackupType, setSelectedBackupType] = useState<BackupType>(
+    BACKUP_TYPES.LEGACY,
+  )
   const inputFile = useRef<HTMLInputElement>(null)
 
   // Check backup status on initialization
@@ -79,19 +98,18 @@ export function ImportExport() {
     try {
       const newBackupData = { ...backupData }
 
-      // Check legacy backup
-      const legacyResult = await chrome.storage.local.get(
-        'legacy_commands_backup',
+      // 1. Check legacy backup
+      const legacyBackup = await Storage.get<BackupData>(
+        LOCAL_STORAGE_KEY.COMMANDS_BACKUP,
       )
-      const legacyBackup = legacyResult.legacy_commands_backup
 
       if (
         legacyBackup &&
         legacyBackup.commands &&
         Array.isArray(legacyBackup.commands)
       ) {
-        newBackupData.legacy = {
-          status: 'available',
+        newBackupData[BACKUP_TYPES.LEGACY] = {
+          status: BACKUP_STATUS.AVAILABLE,
           info: {
             timestamp: legacyBackup.timestamp,
             commandCount: legacyBackup.commands.length,
@@ -101,10 +119,13 @@ export function ImportExport() {
           },
         }
       } else {
-        newBackupData.legacy = { status: 'none', info: null }
+        newBackupData[BACKUP_TYPES.LEGACY] = {
+          status: BACKUP_STATUS.NONE,
+          info: null,
+        }
       }
 
-      // Check daily backup
+      // 2. Check daily backup
       const dailyBackupManager = new DailyBackupManager()
       const dailyBackup = await dailyBackupManager.getLastBackupData()
 
@@ -113,8 +134,8 @@ export function ImportExport() {
         dailyBackup.commands &&
         Array.isArray(dailyBackup.commands)
       ) {
-        newBackupData.daily = {
-          status: 'available',
+        newBackupData[BACKUP_TYPES.DAILY] = {
+          status: BACKUP_STATUS.AVAILABLE,
           info: {
             timestamp: dailyBackup.timestamp,
             commandCount: dailyBackup.commands.length,
@@ -124,10 +145,13 @@ export function ImportExport() {
           },
         }
       } else {
-        newBackupData.daily = { status: 'none', info: null }
+        newBackupData[BACKUP_TYPES.DAILY] = {
+          status: BACKUP_STATUS.NONE,
+          info: null,
+        }
       }
 
-      // Check weekly backup
+      // 3. Check weekly backup
       const weeklyBackupManager = new WeeklyBackupManager()
       const weeklyBackup = await weeklyBackupManager.getLastBackupData()
 
@@ -136,8 +160,8 @@ export function ImportExport() {
         weeklyBackup.commands &&
         Array.isArray(weeklyBackup.commands)
       ) {
-        newBackupData.weekly = {
-          status: 'available',
+        newBackupData[BACKUP_TYPES.WEEKLY] = {
+          status: BACKUP_STATUS.AVAILABLE,
           info: {
             timestamp: weeklyBackup.timestamp,
             commandCount: weeklyBackup.commands.length,
@@ -147,25 +171,34 @@ export function ImportExport() {
           },
         }
       } else {
-        newBackupData.weekly = { status: 'none', info: null }
+        newBackupData[BACKUP_TYPES.WEEKLY] = {
+          status: BACKUP_STATUS.NONE,
+          info: null,
+        }
       }
 
       setBackupData(newBackupData)
 
       // Set default selection to first available backup
-      if (newBackupData.legacy.status === 'available') {
-        setSelectedBackupType('legacy')
-      } else if (newBackupData.daily.status === 'available') {
-        setSelectedBackupType('daily')
-      } else if (newBackupData.weekly.status === 'available') {
-        setSelectedBackupType('weekly')
+      if (
+        newBackupData[BACKUP_TYPES.LEGACY].status === BACKUP_STATUS.AVAILABLE
+      ) {
+        setSelectedBackupType(BACKUP_TYPES.LEGACY)
+      } else if (
+        newBackupData[BACKUP_TYPES.DAILY].status === BACKUP_STATUS.AVAILABLE
+      ) {
+        setSelectedBackupType(BACKUP_TYPES.DAILY)
+      } else if (
+        newBackupData[BACKUP_TYPES.WEEKLY].status === BACKUP_STATUS.AVAILABLE
+      ) {
+        setSelectedBackupType(BACKUP_TYPES.WEEKLY)
       }
     } catch (error) {
-      console.error('Failed to check backup status:', error)
+      console.error("Failed to check backup status:", error)
       setBackupData({
-        legacy: { status: 'none', info: null },
-        daily: { status: 'none', info: null },
-        weekly: { status: 'none', info: null },
+        [BACKUP_TYPES.LEGACY]: { status: BACKUP_STATUS.NONE, info: null },
+        [BACKUP_TYPES.DAILY]: { status: BACKUP_STATUS.NONE, info: null },
+        [BACKUP_TYPES.WEEKLY]: { status: BACKUP_STATUS.NONE, info: null },
       })
     }
   }
@@ -195,9 +228,9 @@ export function ImportExport() {
     }
 
     const text = JSON.stringify(data, null, 2)
-    const blob = new Blob([text], { type: 'text/plain' })
+    const blob = new Blob([text], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
+    const a = document.createElement("a")
     document.body.appendChild(a)
     a.download = `${APP_ID}_${getTimestamp()}.json`
     a.href = url
@@ -244,11 +277,11 @@ export function ImportExport() {
 
   const handleRestore = async () => {
     const hasAnyBackup = Object.values(backupData).some(
-      (backup) => backup.status === 'available',
+      (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
     )
 
     if (!hasAnyBackup) {
-      alert('No backup data found.')
+      alert("No backup data found.")
       return
     }
 
@@ -261,7 +294,7 @@ export function ImportExport() {
         try {
           let backupCommands: any[] = []
 
-          if (selectedBackupType === 'legacy') {
+          if (selectedBackupType === BACKUP_TYPES.LEGACY) {
             // Restore from legacy backup
             const migrationManager = new CommandMigrationManager()
             const legacyData =
@@ -276,7 +309,7 @@ export function ImportExport() {
                 folders: legacyData.folders,
               })
             }
-          } else if (selectedBackupType === 'daily') {
+          } else if (selectedBackupType === BACKUP_TYPES.DAILY) {
             // Restore from daily backup
             const dailyBackupManager = new DailyBackupManager()
             const dailyData = await dailyBackupManager.restoreFromDailyBackup()
@@ -290,7 +323,7 @@ export function ImportExport() {
                 folders: dailyData.folders,
               })
             }
-          } else if (selectedBackupType === 'weekly') {
+          } else if (selectedBackupType === BACKUP_TYPES.WEEKLY) {
             // Restore from weekly backup
             const weeklyBackupManager = new WeeklyBackupManager()
             const weeklyData =
@@ -312,11 +345,11 @@ export function ImportExport() {
             await Storage.setCommands(backupCommands)
             location.reload()
           } else {
-            alert('Failed to restore from backup.')
+            alert("Failed to restore from backup.")
           }
         } catch (error) {
-          console.error('Failed to restore from backup:', error)
-          alert('Failed to restore from backup.')
+          console.error("Failed to restore from backup:", error)
+          alert("Failed to restore from backup.")
         }
       })()
     }
@@ -337,11 +370,11 @@ export function ImportExport() {
           type="button"
         >
           <Download size={18} className="mr-2 stroke-gray-600" />
-          {t('Option_Import')}
+          {t("Option_Import")}
         </button>
         <button onClick={handleExport} className={css.menuButton} type="button">
           <Upload size={18} className="mr-2 stroke-gray-600" />
-          {t('Option_Export')}
+          {t("Option_Export")}
         </button>
         <button
           onClick={handleRestore}
@@ -349,56 +382,56 @@ export function ImportExport() {
           type="button"
           disabled={
             !Object.values(backupData).some(
-              (backup) => backup.status === 'available',
+              (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
             )
           }
           title={
             Object.values(backupData).every(
-              (backup) => backup.status === 'checking',
+              (backup) => backup.status === BACKUP_STATUS.CHECKING,
             )
-              ? 'Checking backups...'
+              ? "Checking backups..."
               : !Object.values(backupData).some(
-                    (backup) => backup.status === 'available',
+                    (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
                   )
-                ? 'No backup available'
-                : 'Restore commands from backup'
+                ? "No backup available"
+                : "Restore commands from backup"
           }
         >
           <RotateCcw size={18} className="mr-2 stroke-gray-600" />
           Restore from Backup
           {Object.values(backupData).every(
-            (backup) => backup.status === 'checking',
+            (backup) => backup.status === BACKUP_STATUS.CHECKING,
           ) && <span className="ml-2 text-xs opacity-50">...</span>}
           {!Object.values(backupData).some(
-            (backup) => backup.status === 'available',
+            (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
           ) && <span className="ml-2 text-xs opacity-50">(N/A)</span>}
         </button>
         <button onClick={handleReset} className={css.menuButton} type="button">
           <Undo2 size={18} className="mr-2 stroke-gray-600" />
-          {t('Option_Reset')}
+          {t("Option_Reset")}
         </button>
       </div>
       <Dialog
         open={resetDialog}
         onClose={handleResetClose}
-        title={'Reset settings?'}
+        title={"Reset settings?"}
         description={() => (
           <span
-            dangerouslySetInnerHTML={{ __html: t('Option_Reset_Description') }}
+            dangerouslySetInnerHTML={{ __html: t("Option_Reset_Description") }}
           />
         )}
-        okText={t('Option_Reset')}
+        okText={t("Option_Reset")}
       />
       <Dialog
         open={importDialog}
         onClose={handleImportClose}
-        title={'Import settings'}
+        title={"Import settings"}
         description={() => (
           <span
-            dangerouslySetInnerHTML={{ __html: t('Option_Import_Description') }}
+            dangerouslySetInnerHTML={{ __html: t("Option_Import_Description") }}
           />
         )}
-        okText={t('Option_Import')}
+        okText={t("Option_Import")}
       >
         <input
           type="file"
@@ -412,10 +445,10 @@ export function ImportExport() {
       <Dialog
         open={restoreDialog}
         onClose={handleRestoreClose}
-        title={'Restore from Backup'}
+        title={"Restore from Backup"}
         description={() => {
           const availableBackups = Object.entries(backupData).filter(
-            ([, backup]) => backup.status === 'available',
+            ([, backup]) => backup.status === BACKUP_STATUS.AVAILABLE,
           )
 
           if (availableBackups.length === 0) {
@@ -428,7 +461,7 @@ export function ImportExport() {
       >
         {(() => {
           const availableBackups = Object.entries(backupData).filter(
-            ([, backup]) => backup.status === 'available',
+            ([, backup]) => backup.status === BACKUP_STATUS.AVAILABLE,
           )
 
           if (availableBackups.length === 0) {
@@ -437,12 +470,12 @@ export function ImportExport() {
 
           const getBackupTypeLabel = (type: string) => {
             switch (type) {
-              case 'legacy':
-                return 'Legacy Migration'
-              case 'daily':
-                return 'Daily Backup'
-              case 'weekly':
-                return 'Weekly Backup'
+              case BACKUP_TYPES.LEGACY:
+                return "Legacy Migration"
+              case BACKUP_TYPES.DAILY:
+                return "Daily Backup"
+              case BACKUP_TYPES.WEEKLY:
+                return "Weekly Backup"
               default:
                 return type
             }
@@ -473,7 +506,7 @@ export function ImportExport() {
                       {backup.info && (
                         <div className="text-xs text-gray-600 mt-1">
                           <div>
-                            Created:{' '}
+                            Created:{" "}
                             {new Date(backup.info.timestamp).toLocaleString()}
                           </div>
                           <div>Commands: {backup.info.commandCount} items</div>
