@@ -243,7 +243,7 @@ class CommandMetadataManager {
   async saveGlobalCommandMetadata(
     metadata: GlobalCommandMetadata,
   ): Promise<void> {
-    // Save only to sync storage for consistency across devices
+    console.debug('Saving global command metadata:', metadata)
     await this.storage.set(this.GLOBAL_METADATA_KEY, metadata)
   }
 
@@ -273,10 +273,10 @@ class CommandMetadataManager {
 
   async loadGlobalCommandMetadata(): Promise<GlobalCommandMetadata | null> {
     try {
-      // Load only from sync storage
       const metadata = await this.storage.get<GlobalCommandMetadata>(
         this.GLOBAL_METADATA_KEY,
       )
+      console.log('Loaded global command metadata:', metadata)
       return metadata || null
     } catch (error) {
       console.error('Failed to load global metadata:', error)
@@ -639,6 +639,7 @@ export class HybridCommandStorage {
     const localSavePromise = chrome.storage.local.set(dataToSet)
 
     // Add metadata save to the same promise batch
+    console.log(allocation.globalMetadata)
     const metadataSavePromises = [
       this.metadataManager.saveSyncCommandMetadata(allocation.syncMetadata),
       this.metadataManager.saveLocalCommandMetadata(allocation.localMetadata),
@@ -722,6 +723,7 @@ export const CommandStorage = {
     const current = await hybridStorage.loadCommands()
 
     // TODO: use metadate
+    debugger
 
     // If update first time, set DefaultCommands.
     const count = await storage.get<number>(STORAGE_KEY.COMMAND_COUNT)

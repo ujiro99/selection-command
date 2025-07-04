@@ -274,7 +274,8 @@ function useDetectClickHold(
     enabled &&
     settings.linkCommand?.startupMethod?.method ===
       LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
-  const duration = settings.linkCommand?.startupMethod?.leftClickHoldParam ?? 200
+  const duration =
+    settings.linkCommand?.startupMethod?.leftClickHoldParam ?? 200
   const detectLinkRef = useRef(false)
   const [forceClear, setForceClear] = useState(false)
   const playPixel = 20

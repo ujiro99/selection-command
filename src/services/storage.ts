@@ -14,7 +14,10 @@ import {
   CommandStorage,
   commandChangedCallback,
 } from './storage/commandStorage'
-import { DailyBackupManager } from './storage/backupManager'
+import {
+  DailyBackupManager,
+  WeeklyBackupManager,
+} from './storage/backupManager'
 
 // Re-export everything from sub-modules
 export {
@@ -24,6 +27,7 @@ export {
   CMD_PREFIX,
   CommandMigrationManager,
   DailyBackupManager,
+  WeeklyBackupManager,
 }
 
 export type { ChangedCallback, KEY, commandChangedCallback }
@@ -40,6 +44,9 @@ export const Storage = {
 
   // Daily backup manager
   dailyBackupManager: new DailyBackupManager(),
+
+  // Weekly backup manager
+  weeklyBackupManager: new WeeklyBackupManager(),
 
   /**
    * New command getter method (hybrid storage compatible)

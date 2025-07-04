@@ -2,10 +2,17 @@ import { Command, CommandFolder } from '@/types'
 import { LOCAL_STORAGE_KEY, BaseStorage, STORAGE_KEY } from './index'
 import { HybridCommandStorage } from './commandStorage'
 
-// Daily backup management class
-export class DailyBackupManager {
-  private readonly DAILY_BACKUP_KEY = LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP
-  private readonly BACKUP_INTERVAL_MS = 24 * 60 * 60 * 1000 // 24 hours
+export interface BackupData {
+  version: string
+  timestamp: number
+  commands: Command[]
+  folders?: CommandFolder[]
+}
+
+export abstract class BaseBackupManager {
+  protected abstract readonly BACKUP_KEY: string
+  protected abstract readonly BACKUP_INTERVAL_MS: number
+  protected abstract readonly VERSION: string
 
   async shouldBackup(): Promise<boolean> {
     try {
@@ -23,13 +30,15 @@ export class DailyBackupManager {
     }
   }
 
-  async performDailyBackup(): Promise<void> {
+  async performBackup(): Promise<void> {
     try {
       const hybridStorage = new HybridCommandStorage()
       const commands = await hybridStorage.loadCommands()
 
       // Get folders from settings directly from storage to avoid circular dependency
-      const userSettings = await BaseStorage.get(STORAGE_KEY.USER) as any
+      const userSettings = (await BaseStorage.get(STORAGE_KEY.USER)) as {
+        folders?: CommandFolder[]
+      }
       const folders = userSettings?.folders || []
 
       if (commands.length === 0 && folders.length === 0) {
@@ -37,34 +46,29 @@ export class DailyBackupManager {
         return
       }
 
-      const backup = {
-        version: 'daily',
+      const backup: BackupData = {
+        version: this.VERSION,
         timestamp: Date.now(),
         commands: commands,
         folders: folders,
       }
 
       await chrome.storage.local.set({
-        [this.DAILY_BACKUP_KEY]: backup,
+        [this.BACKUP_KEY]: backup,
       })
 
       console.debug(
-        `Daily backup completed: ${commands.length} commands and ${folders.length} folders backed up`,
+        `${this.VERSION} backup completed: ${commands.length} commands and ${folders.length} folders backed up`,
       )
     } catch (error) {
-      console.error('Failed to perform daily backup:', error)
+      console.error(`Failed to perform ${this.VERSION} backup:`, error)
     }
   }
 
-  async getLastBackupData(): Promise<{
-    version: string
-    timestamp: number
-    commands: Command[]
-    folders?: CommandFolder[]
-  } | null> {
+  async getLastBackupData(): Promise<BackupData | null> {
     try {
-      const result = await chrome.storage.local.get(this.DAILY_BACKUP_KEY)
-      const backup = result[this.DAILY_BACKUP_KEY]
+      const result = await chrome.storage.local.get(this.BACKUP_KEY)
+      const backup = result[this.BACKUP_KEY]
 
       if (backup && backup.timestamp && Array.isArray(backup.commands)) {
         return {
@@ -81,7 +85,7 @@ export class DailyBackupManager {
     }
   }
 
-  async restoreFromDailyBackup(): Promise<{
+  async restoreFromBackup(): Promise<{
     commands: Command[]
     folders: CommandFolder[]
   }> {
@@ -96,7 +100,7 @@ export class DailyBackupManager {
         folders: backup.folders || [],
       }
     } catch (error) {
-      console.error('Failed to restore from daily backup:', error)
+      console.error('Failed to restore from backup:', error)
       return { commands: [], folders: [] }
     }
   }
@@ -104,5 +108,42 @@ export class DailyBackupManager {
   async getLastBackupDate(): Promise<Date | null> {
     const backup = await this.getLastBackupData()
     return backup ? new Date(backup.timestamp) : null
+  }
+}
+
+// Daily backup management class
+export class DailyBackupManager extends BaseBackupManager {
+  protected readonly BACKUP_KEY = LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP
+  protected readonly BACKUP_INTERVAL_MS = 24 * 60 * 60 * 1000 // 24 hours
+  protected readonly VERSION = 'daily'
+
+  // 既存のメソッド名を保持するためのエイリアス
+  async performDailyBackup(): Promise<void> {
+    return this.performBackup()
+  }
+
+  async restoreFromDailyBackup(): Promise<{
+    commands: Command[]
+    folders: CommandFolder[]
+  }> {
+    return this.restoreFromBackup()
+  }
+}
+
+// Weekly backup management class
+export class WeeklyBackupManager extends BaseBackupManager {
+  protected readonly BACKUP_KEY = LOCAL_STORAGE_KEY.WEEKLY_COMMANDS_BACKUP
+  protected readonly BACKUP_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
+  protected readonly VERSION = 'weekly'
+
+  async performWeeklyBackup(): Promise<void> {
+    return this.performBackup()
+  }
+
+  async restoreFromWeeklyBackup(): Promise<{
+    commands: Command[]
+    folders: CommandFolder[]
+  }> {
+    return this.restoreFromBackup()
   }
 }
