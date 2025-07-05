@@ -226,7 +226,8 @@ class StorageCapacityCalculator {
 class CommandMetadataManager {
   private readonly SYNC_METADATA_KEY = STORAGE_KEY.SYNC_COMMAND_METADATA
   private readonly LOCAL_METADATA_KEY = LOCAL_STORAGE_KEY.LOCAL_COMMAND_METADATA
-  private readonly GLOBAL_METADATA_KEY = STORAGE_KEY.GLOBAL_COMMAND_METADATA
+  private readonly GLOBAL_METADATA_KEY =
+    LOCAL_STORAGE_KEY.GLOBAL_COMMAND_METADATA
   private storage: StorageInterface
 
   constructor(storage: StorageInterface = BaseStorage) {
@@ -277,8 +278,11 @@ class CommandMetadataManager {
       const metadata = await this.storage.get<GlobalCommandMetadata>(
         this.GLOBAL_METADATA_KEY,
       )
-      console.log("Loaded global command metadata:", metadata)
-      return metadata || null
+      if (metadata) {
+        return metadata
+      }
+      console.warn("Global command metadata not found.")
+      return null
     } catch (error) {
       console.error("Failed to load global metadata:", error)
       return null
@@ -661,9 +665,6 @@ export const CommandStorage = {
     storage: StorageInterface = BaseStorage,
   ): Promise<boolean | chrome.runtime.LastError> => {
     const current = await hybridStorage.loadCommands()
-
-    // TODO: use metadate
-    debugger
 
     // If update first time, set DefaultCommands.
     const count = await storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
