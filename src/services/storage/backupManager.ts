@@ -1,16 +1,16 @@
-import { Command, CommandFolder } from '@/types'
-import { LOCAL_STORAGE_KEY, BaseStorage, STORAGE_KEY } from './index'
-import { HybridCommandStorage } from './commandStorage'
+import { Command, CommandFolder } from "@/types"
+import { LOCAL_STORAGE_KEY, BaseStorage, STORAGE_KEY } from "./index"
+import { HybridCommandStorage } from "./commandStorage"
 
 export interface BackupData {
   version: string
   timestamp: number
   commands: Command[]
-  folders?: CommandFolder[]
+  folders: CommandFolder[]
 }
 
 export abstract class BaseBackupManager {
-  protected abstract readonly BACKUP_KEY: string
+  protected abstract readonly BACKUP_KEY: LOCAL_STORAGE_KEY
   protected abstract readonly BACKUP_INTERVAL_MS: number
   protected abstract readonly VERSION: string
 
@@ -25,7 +25,7 @@ export abstract class BaseBackupManager {
       const timeSinceLastBackup = now - lastBackup.timestamp
       return timeSinceLastBackup >= this.BACKUP_INTERVAL_MS
     } catch (error) {
-      console.error('Failed to check backup schedule:', error)
+      console.error("Failed to check backup schedule:", error)
       return true
     }
   }
@@ -42,7 +42,7 @@ export abstract class BaseBackupManager {
       const folders = userSettings?.folders || []
 
       if (commands.length === 0 && folders.length === 0) {
-        console.debug('No commands or folders to backup')
+        console.debug("No commands or folders to backup")
         return
       }
 
@@ -53,9 +53,7 @@ export abstract class BaseBackupManager {
         folders: folders,
       }
 
-      await chrome.storage.local.set({
-        [this.BACKUP_KEY]: backup,
-      })
+      await BaseStorage.set(this.BACKUP_KEY, backup)
 
       console.debug(
         `${this.VERSION} backup completed: ${commands.length} commands and ${folders.length} folders backed up`,
@@ -67,8 +65,7 @@ export abstract class BaseBackupManager {
 
   async getLastBackupData(): Promise<BackupData | null> {
     try {
-      const result = await chrome.storage.local.get(this.BACKUP_KEY)
-      const backup = result[this.BACKUP_KEY]
+      const backup = await BaseStorage.get<BackupData>(this.BACKUP_KEY)
 
       if (backup && backup.timestamp && Array.isArray(backup.commands)) {
         return {
@@ -80,7 +77,7 @@ export abstract class BaseBackupManager {
       }
       return null
     } catch (error) {
-      console.error('Failed to get last backup data:', error)
+      console.error("Failed to get last backup data:", error)
       return null
     }
   }
@@ -100,7 +97,7 @@ export abstract class BaseBackupManager {
         folders: backup.folders || [],
       }
     } catch (error) {
-      console.error('Failed to restore from backup:', error)
+      console.error("Failed to restore from backup:", error)
       return { commands: [], folders: [] }
     }
   }
@@ -115,7 +112,7 @@ export abstract class BaseBackupManager {
 export class DailyBackupManager extends BaseBackupManager {
   protected readonly BACKUP_KEY = LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP
   protected readonly BACKUP_INTERVAL_MS = 24 * 60 * 60 * 1000 // 24 hours
-  protected readonly VERSION = 'daily'
+  protected readonly VERSION = "daily"
 
   // 既存のメソッド名を保持するためのエイリアス
   async performDailyBackup(): Promise<void> {
@@ -134,7 +131,7 @@ export class DailyBackupManager extends BaseBackupManager {
 export class WeeklyBackupManager extends BaseBackupManager {
   protected readonly BACKUP_KEY = LOCAL_STORAGE_KEY.WEEKLY_COMMANDS_BACKUP
   protected readonly BACKUP_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
-  protected readonly VERSION = 'weekly'
+  protected readonly VERSION = "weekly"
 
   async performWeeklyBackup(): Promise<void> {
     return this.performBackup()
@@ -145,5 +142,49 @@ export class WeeklyBackupManager extends BaseBackupManager {
     folders: CommandFolder[]
   }> {
     return this.restoreFromBackup()
+  }
+}
+
+// Legacy backup management class (for migration purposes)
+export class LegacyBackupManager extends BaseBackupManager {
+  protected readonly BACKUP_KEY = LOCAL_STORAGE_KEY.COMMANDS_BACKUP
+  protected readonly BACKUP_INTERVAL_MS = 0 // Never auto-backup (manual only)
+  protected readonly VERSION = "legacy"
+
+  async performLegacyBackup(): Promise<void> {
+    return this.performBackup()
+  }
+
+  async restoreFromLegacyBackup(): Promise<{
+    commands: Command[]
+    folders: CommandFolder[]
+  }> {
+    return this.restoreFromBackup()
+  }
+
+  // Migration-specific method that backs up given commands (not from storage)
+  async backupCommandsForMigration(commands: Command[]): Promise<void> {
+    try {
+      // Get folders from settings directly from storage to avoid circular dependency
+      const userSettings = (await BaseStorage.get(STORAGE_KEY.USER)) as {
+        folders?: CommandFolder[]
+      }
+      const folders = userSettings?.folders || []
+
+      const backup: BackupData = {
+        version: this.VERSION,
+        timestamp: Date.now(),
+        commands: commands,
+        folders: folders,
+      }
+
+      await BaseStorage.set(this.BACKUP_KEY, backup)
+
+      console.debug(
+        `Legacy migration backup completed: ${commands.length} commands and ${folders.length} folders backed up`,
+      )
+    } catch (error) {
+      console.error(`Failed to perform legacy migration backup:`, error)
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Command } from '@/types'
+import { Command } from "@/types"
 import {
   BaseStorage,
   STORAGE_KEY,
@@ -7,17 +7,18 @@ import {
   CMD_PREFIX,
   ChangedCallback,
   KEY,
-} from './storage/index'
+} from "./storage/index"
 import {
   HybridCommandStorage,
   CommandMigrationManager,
   CommandStorage,
   commandChangedCallback,
-} from './storage/commandStorage'
+} from "./storage/commandStorage"
 import {
   DailyBackupManager,
   WeeklyBackupManager,
-} from './storage/backupManager'
+  LegacyBackupManager,
+} from "./storage/backupManager"
 
 // Re-export everything from sub-modules
 export {
@@ -28,6 +29,7 @@ export {
   CommandMigrationManager,
   DailyBackupManager,
   WeeklyBackupManager,
+  LegacyBackupManager,
 }
 
 export type { ChangedCallback, KEY, commandChangedCallback }

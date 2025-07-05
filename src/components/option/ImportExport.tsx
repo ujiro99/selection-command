@@ -297,8 +297,7 @@ export function ImportExport() {
           if (selectedBackupType === BACKUP_TYPES.LEGACY) {
             // Restore from legacy backup
             const migrationManager = new CommandMigrationManager()
-            const legacyData =
-              await migrationManager.restoreFromBackupWithFolders()
+            const legacyData = await migrationManager.restoreFromBackup()
             backupCommands = legacyData.commands
 
             if (legacyData.folders && legacyData.folders.length > 0) {

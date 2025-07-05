@@ -1,14 +1,15 @@
-import { DefaultCommands } from '../option/defaultSettings'
-import { Command } from '@/types'
+import { DefaultCommands } from "../option/defaultSettings"
+import { Command } from "@/types"
 import {
   BaseStorage,
   STORAGE_KEY,
   LOCAL_STORAGE_KEY,
   CMD_PREFIX,
-  debouncedSyncSet,
   KEY,
-} from './index'
-import { VERSION } from '@/const'
+  debouncedSyncSet,
+} from "./index"
+import { VERSION } from "@/const"
+import { LegacyBackupManager } from "./backupManager"
 
 // Storage interface for dependency injection
 interface StorageInterface {
@@ -50,7 +51,7 @@ function generateChecksum(obj: unknown): string {
   }
 
   // Convert to hex string and pad to ensure consistent length
-  return Math.abs(hash).toString(16).padStart(8, '0')
+  return Math.abs(hash).toString(16).padStart(8, "0")
 }
 
 async function loadLegacyCommandData(
@@ -80,7 +81,7 @@ async function loadLegacyCommandData(
     if (throwOnError) {
       throw error
     }
-    console.warn('Failed to load legacy commands:', error)
+    console.warn("Failed to load legacy commands:", error)
     return returnDefaultOnEmpty ? DefaultCommands : []
   }
 }
@@ -243,7 +244,7 @@ class CommandMetadataManager {
   async saveGlobalCommandMetadata(
     metadata: GlobalCommandMetadata,
   ): Promise<void> {
-    console.debug('Saving global command metadata:', metadata)
+    console.debug("Saving global command metadata:", metadata)
     await this.storage.set(this.GLOBAL_METADATA_KEY, metadata)
   }
 
@@ -254,7 +255,7 @@ class CommandMetadataManager {
       )
       return metadata || null
     } catch (error) {
-      console.error('Failed to load sync metadata:', error)
+      console.error("Failed to load sync metadata:", error)
       return null
     }
   }
@@ -266,7 +267,7 @@ class CommandMetadataManager {
       )
       return metadata || null
     } catch (error) {
-      console.error('Failed to load local metadata:', error)
+      console.error("Failed to load local metadata:", error)
       return null
     }
   }
@@ -276,10 +277,10 @@ class CommandMetadataManager {
       const metadata = await this.storage.get<GlobalCommandMetadata>(
         this.GLOBAL_METADATA_KEY,
       )
-      console.log('Loaded global command metadata:', metadata)
+      console.log("Loaded global command metadata:", metadata)
       return metadata || null
     } catch (error) {
-      console.error('Failed to load global metadata:', error)
+      console.error("Failed to load global metadata:", error)
       return null
     }
   }
@@ -341,7 +342,7 @@ export class CommandMigrationManager {
 
   async performMigration(): Promise<Command[]> {
     try {
-      console.debug('Starting command migration to hybrid storage...')
+      console.debug("Starting command migration to hybrid storage...")
 
       // Step 1: Load legacy format data
       const legacyCommands = await loadLegacyCommandData(this.storage)
@@ -350,7 +351,8 @@ export class CommandMigrationManager {
       }
 
       // Step 2: Backup data
-      await this.backupCommands(legacyCommands)
+      const legacyBackupManager = new LegacyBackupManager()
+      await legacyBackupManager.backupCommandsForMigration(legacyCommands)
 
       // Step 3: Save in new format
       const hybridStorage = new HybridCommandStorage(this.storage)
@@ -368,15 +370,16 @@ export class CommandMigrationManager {
       )
       return legacyCommands
     } catch (error) {
-      console.error('Migration failed:', error)
+      console.error("Migration failed:", error)
 
       // Attempt to restore from backup when migration fails
-      const backups = await this.restoreFromBackup()
-      if (backups.length > 0) {
+      const legacyBackupManager = new LegacyBackupManager()
+      const backupData = await legacyBackupManager.restoreFromLegacyBackup()
+      if (backupData.commands.length > 0) {
         console.debug(
-          `Migration failed, but restored ${backups.length} commands from backup`,
+          `Migration failed, but restored ${backupData.commands.length} commands from backup`,
         )
-        return backups
+        return backupData.commands
       }
 
       throw new Error(
@@ -408,75 +411,15 @@ export class CommandMigrationManager {
     return legacyCount !== DEFAULT_COUNT
   }
 
-  private async backupCommands(commands: Command[]): Promise<void> {
-    // Get folders from settings directly from storage to avoid circular dependency
-    const userSettings = (await this.storage.get(STORAGE_KEY.USER)) as {
-      folders?: import('@/types').CommandFolder[]
-    }
-    const folders = userSettings?.folders || []
-
-    const backup = {
-      version: 'legacy',
-      timestamp: Date.now(),
-      commands: commands,
-      folders: folders,
-    }
-    await chrome.storage.local.set({
-      [LOCAL_STORAGE_KEY.COMMANDS_BACKUP]: backup,
-    })
-  }
-
-  /**
-   * Restore from legacy data backup
-   * Used for recovery from migration failure or data corruption
-   */
-  async restoreFromBackup(): Promise<Command[]> {
-    try {
-      const result = await chrome.storage.local.get(
-        LOCAL_STORAGE_KEY.COMMANDS_BACKUP,
-      )
-      const backup = result[LOCAL_STORAGE_KEY.COMMANDS_BACKUP]
-
-      if (backup && backup.commands && Array.isArray(backup.commands)) {
-        console.info(
-          `Restoring ${backup.commands.length} commands from backup (created at ${new Date(backup.timestamp).toLocaleString()})`,
-        )
-        return backup.commands
-      }
-      return []
-    } catch (error) {
-      console.error('Failed to restore from backup:', error)
-      return []
-    }
-  }
-
   /**
    * Restore both commands and folders from legacy backup
    */
-  async restoreFromBackupWithFolders(): Promise<{
+  async restoreFromBackup(): Promise<{
     commands: Command[]
-    folders: import('@/types').CommandFolder[]
+    folders: import("@/types").CommandFolder[]
   }> {
-    try {
-      const result = await chrome.storage.local.get(
-        LOCAL_STORAGE_KEY.COMMANDS_BACKUP,
-      )
-      const backup = result[LOCAL_STORAGE_KEY.COMMANDS_BACKUP]
-
-      if (backup && backup.commands && Array.isArray(backup.commands)) {
-        console.info(
-          `Restoring ${backup.commands.length} commands and ${(backup.folders || []).length} folders from backup (created at ${new Date(backup.timestamp).toLocaleString()})`,
-        )
-        return {
-          commands: backup.commands,
-          folders: Array.isArray(backup.folders) ? backup.folders : [],
-        }
-      }
-      return { commands: [], folders: [] }
-    } catch (error) {
-      console.error('Failed to restore from backup:', error)
-      return { commands: [], folders: [] }
-    }
+    const legacyBackupManager = new LegacyBackupManager()
+    return await legacyBackupManager.restoreFromLegacyBackup()
   }
 }
 
@@ -500,7 +443,7 @@ export class HybridCommandStorage {
       await this.saveCommandsAndMetadata(allocation)
       return true
     } catch (error) {
-      console.error('Failed to save commands:', error)
+      console.error("Failed to save commands:", error)
       throw error
     }
   }
@@ -570,7 +513,7 @@ export class HybridCommandStorage {
             syncMetadata,
           ))
         ) {
-          console.debug('Sync command integrity check failed')
+          console.debug("Sync command integrity check failed")
           hasIntegrityIssues = true
         }
       }
@@ -582,7 +525,7 @@ export class HybridCommandStorage {
             localMetadata,
           ))
         ) {
-          console.debug('Local command integrity check failed')
+          console.debug("Local command integrity check failed")
           hasIntegrityIssues = true
         }
       }
@@ -591,7 +534,7 @@ export class HybridCommandStorage {
         globalMetadata &&
         !(await this.metadataManager.validateGlobalConsistency(orderedCommands))
       ) {
-        console.debug('Global consistency check failed')
+        console.debug("Global consistency check failed")
         hasIntegrityIssues = true
       }
 
@@ -607,12 +550,12 @@ export class HybridCommandStorage {
           await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
           return await this.loadCommands(retryCount + 1)
         }
-        console.warn('Command integrity check failed after all retries...')
+        console.warn("Command integrity check failed after all retries...")
       }
 
       return orderedCommands
     } catch (error) {
-      console.error('Failed to load commands:', error)
+      console.error("Failed to load commands:", error)
       return DefaultCommands
     }
   }
@@ -621,6 +564,7 @@ export class HybridCommandStorage {
     allocation: StorageAllocation,
   ): Promise<void> {
     const syncSavePromises: Promise<void>[] = []
+    const localSavePromises: Promise<boolean>[] = []
 
     // Save to sync storage
     allocation.sync.commands.forEach((command, index) => {
@@ -628,15 +572,11 @@ export class HybridCommandStorage {
       syncSavePromises.push(debouncedSyncSet({ [key]: command }))
     })
 
-    // Save to local storage
-    const localSetData = new Map<string, unknown>()
+    // Save to local storage using BaseStorage
     allocation.local.commands.forEach((command, index) => {
-      const key = `${CMD_PREFIX}local-${index}`
-      localSetData.set(key, command)
+      const key = `${CMD_PREFIX}local-${index}` as KEY
+      localSavePromises.push(this.storage.set(key, command))
     })
-
-    const dataToSet = Object.fromEntries(localSetData)
-    const localSavePromise = chrome.storage.local.set(dataToSet)
 
     // Add metadata save to the same promise batch
     console.log(allocation.globalMetadata)
@@ -649,7 +589,7 @@ export class HybridCommandStorage {
     // Save commands and metadata atomically in parallel
     await Promise.all([
       await Promise.all(syncSavePromises),
-      localSavePromise,
+      await Promise.all(localSavePromises),
       await Promise.all(metadataSavePromises),
     ])
   }
@@ -728,7 +668,7 @@ export const CommandStorage = {
     // If update first time, set DefaultCommands.
     const count = await storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
     if (count === DEFAULT_COUNT) {
-      console.debug('Update first time, set DefaultCommands.')
+      console.debug("Update first time, set DefaultCommands.")
       const newCommands = current.map((cmd) => {
         return commands.find((c) => c.id === cmd.id) ?? cmd
       })

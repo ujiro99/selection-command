@@ -1,5 +1,5 @@
-import DefaultSettings from '../option/defaultSettings'
-import { CaptureDataStorage } from '@/types'
+import DefaultSettings from "../option/defaultSettings"
+import { CaptureDataStorage } from "@/types"
 
 const SYNC_DEBOUNCE_DELAY = 10
 
@@ -13,31 +13,31 @@ export enum STORAGE_KEY {
 }
 
 export enum LOCAL_STORAGE_KEY {
-  CACHES = 'caches',
-  CLIENT_ID = 'clientId',
-  STARS = 'stars',
-  CAPTURES = 'captures',
-  COMMAND_LOCAL_COUNT = 'commandLocalCount',
-  MIGRATION_STATUS = 'migrationStatus',
-  LOCAL_COMMAND_METADATA = 'localCommandMetadata',
-  COMMANDS_BACKUP = 'commandsBackup',
-  DAILY_COMMANDS_BACKUP = 'dailyCommandsBackup',
-  WEEKLY_COMMANDS_BACKUP = 'weeklyCommandsBackup',
+  CACHES = "caches",
+  CLIENT_ID = "clientId",
+  STARS = "stars",
+  CAPTURES = "captures",
+  COMMAND_LOCAL_COUNT = "commandLocalCount",
+  MIGRATION_STATUS = "migrationStatus",
+  LOCAL_COMMAND_METADATA = "localCommandMetadata",
+  COMMANDS_BACKUP = "commandsBackup",
+  DAILY_COMMANDS_BACKUP = "dailyCommandsBackup",
+  WEEKLY_COMMANDS_BACKUP = "weeklyCommandsBackup",
 }
 
 export enum SESSION_STORAGE_KEY {
-  BG = 'bg',
-  SELECTION_TEXT = 'selectionText ',
-  SESSION_DATA = 'sessionData',
-  MESSAGE_QUEUE = 'messageQueue',
-  TMP_CAPTURES = 'tmpCaptures',
-  PA_RECORDING = 'pageActionRecording',
-  PA_RUNNING = 'pageActionRunning',
-  PA_CONTEXT = 'pageActionContext',
-  PA_RECORDER_OPTION = 'pageActionRecorderOption',
+  BG = "bg",
+  SELECTION_TEXT = "selectionText ",
+  SESSION_DATA = "sessionData",
+  MESSAGE_QUEUE = "messageQueue",
+  TMP_CAPTURES = "tmpCaptures",
+  PA_RECORDING = "pageActionRecording",
+  PA_RUNNING = "pageActionRunning",
+  PA_CONTEXT = "pageActionContext",
+  PA_RECORDER_OPTION = "pageActionRecorderOption",
 }
 
-export const CMD_PREFIX = 'cmd-'
+export const CMD_PREFIX = "cmd-"
 
 let syncSetTimeout: NodeJS.Timeout | null
 let syncSetResolves: (() => void)[] = []
@@ -69,7 +69,7 @@ const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
   })
 }
 
-export type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY
+export type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY | string
 
 const DEFAULT_COUNT = -1
 
@@ -88,7 +88,7 @@ const DEFAULTS = {
   [LOCAL_STORAGE_KEY.CACHES]: {
     images: {},
   },
-  [LOCAL_STORAGE_KEY.CLIENT_ID]: '',
+  [LOCAL_STORAGE_KEY.CLIENT_ID]: "",
   [LOCAL_STORAGE_KEY.STARS]: [],
   [LOCAL_STORAGE_KEY.CAPTURES]: {},
   [LOCAL_STORAGE_KEY.COMMAND_LOCAL_COUNT]: 0,
@@ -105,7 +105,7 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.PA_CONTEXT]: {},
   [SESSION_STORAGE_KEY.PA_RECORDER_OPTION]: {},
   [SESSION_STORAGE_KEY.TMP_CAPTURES]: {},
-  [SESSION_STORAGE_KEY.SELECTION_TEXT]: '',
+  [SESSION_STORAGE_KEY.SELECTION_TEXT]: "",
 } as const
 
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
@@ -118,7 +118,16 @@ const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
   if (Object.values(SESSION_STORAGE_KEY).includes(key as SESSION_STORAGE_KEY)) {
     return chrome.storage.session
   }
-  throw new Error('Invalid Storage Key')
+
+  // Handle dynamic command keys
+  if (typeof key === "string") {
+    if (key.startsWith(CMD_PREFIX)) {
+      // Command keys: cmd-0, cmd-1, cmd-local-0, cmd-local-1, etc.
+      return key.includes("local-") ? chrome.storage.local : chrome.storage.sync
+    }
+  }
+
+  throw new Error("Invalid Storage Key")
 }
 
 export type ChangedCallback<T> = (newVal: T, oldVal: T) => void
@@ -142,7 +151,15 @@ export const BaseStorage = {
     if (chrome.runtime.lastError != null) {
       throw chrome.runtime.lastError
     }
-    return result[key] ?? structuredClone(DEFAULTS[key])
+    // For dynamic keys (like command keys), return the raw value or undefined
+    // For static keys, use the default value from DEFAULTS
+    const hasDefault = key in DEFAULTS
+    return (
+      result[key] ??
+      (hasDefault
+        ? structuredClone(DEFAULTS[key as keyof typeof DEFAULTS])
+        : undefined)
+    )
   },
 
   set: async <T>(key: KEY, value: T): Promise<boolean> => {
