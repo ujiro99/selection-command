@@ -1,4 +1,4 @@
-import { CMD_PREFIX, STORAGE_KEY, LOCAL_STORAGE_KEY } from '@/services/storage'
+import { CMD_PREFIX, STORAGE_KEY, LOCAL_STORAGE_KEY } from "@/services/storage"
 
 export interface StorageUsageData {
   sync: {
@@ -114,7 +114,7 @@ const getStorageUsage = async (): Promise<StorageUsageData> => {
 
     const syncUsed = syncTotalBytes
     const reservedRemain = reservedTotal - syncSystemBytes
-    const syncFree = syncLimitTotal - reservedRemain - syncUsed
+    const syncFree = syncLimitTotal - reservedTotal - syncCommandBytes
     const localUsed = localTotalBytes
     const localFree = localLimitTotal - localUsed
 
@@ -157,7 +157,7 @@ const getStorageUsage = async (): Promise<StorageUsageData> => {
       },
     }
   } catch (error) {
-    console.error('Failed to get storage usage:', error)
+    console.error("Failed to get storage usage:", error)
     throw error
   }
 }
@@ -170,7 +170,7 @@ export const subscribeStorageUsage = (
       const data = await getStorageUsage()
       callback(data)
     } catch (error) {
-      console.error('Failed to get storage usage:', error)
+      console.error("Failed to get storage usage:", error)
     }
   }
 
