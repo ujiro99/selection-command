@@ -1,25 +1,26 @@
-import React, { useState, useRef } from 'react'
-import clsx from 'clsx'
+import React, { useState, useRef } from "react"
+import clsx from "clsx"
 import {
   Menubar,
   MenubarMenu,
   MenubarTrigger,
   MenubarContent,
-} from '@/components/ui/menubar'
+} from "@/components/ui/menubar"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
-import { STYLE, SIDE } from '@/const'
-import { MenuItem } from './MenuItem'
-import { Icon } from '@/components/Icon'
-import { HoverArea } from '@/components/menu/HoverArea'
-import { MenuImage } from '@/components/menu/MenuImage'
-import css from './Menu.module.css'
-import type { Command, CommandFolder } from '@/types'
-import { useSettingsWithImageCache, useUserSettings } from '@/hooks/useSetting'
-import { onHover, isMenuCommand } from '@/lib/utils'
+import { STYLE, SIDE } from "@/const"
+import { MenuItem } from "./MenuItem"
+import { Icon } from "@/components/Icon"
+import { HoverArea } from "@/components/menu/HoverArea"
+import { MenuImage } from "@/components/menu/MenuImage"
+import css from "./Menu.module.css"
+import type { Command, CommandFolder } from "@/types"
+import { useSettingsWithImageCache, useUserSettings } from "@/hooks/useSetting"
+import { onHover, isMenuCommand } from "@/lib/utils"
 import {
   toCommandTree,
   type CommandTreeNode,
-} from '@/services/option/commandTree'
+} from "@/services/option/commandTree"
 
 type MenuTreeNodeProps = {
   node: CommandTreeNode
@@ -33,8 +34,8 @@ type MenuTreeNodeProps = {
 
 export function Menu(): JSX.Element {
   const menuRef = useRef(null)
-  const [hoverTrigger, setHoverTrigger] = useState('')
-  const [hoverContent, setHoverContent] = useState('')
+  const [hoverTrigger, setHoverTrigger] = useState("")
+  const [hoverContent, setHoverContent] = useState("")
   const { commands: allCommands, folders } = useSettingsWithImageCache()
   const commands = allCommands.filter(isMenuCommand)
   const { userSettings } = useUserSettings()
@@ -78,7 +79,7 @@ const MenuTreeNode = (props: MenuTreeNodeProps): JSX.Element => {
     depth = 0,
   } = props
 
-  if (node.type === 'command') {
+  if (node.type === "command") {
     return (
       <MenuItem
         menuRef={menuRef}
@@ -113,8 +114,8 @@ const MenuFolder = (props: {
   depth?: number
 }) => {
   const { folder, children, isHorizontal, depth = 0 } = props
-  const [hoverTrigger, setHoverTrigger] = useState('')
-  const [hoverContent, setHoverContent] = useState('')
+  const [hoverTrigger, setHoverTrigger] = useState("")
+  const [hoverContent, setHoverContent] = useState("")
   const activeFolder = hoverTrigger || hoverContent
 
   const menuSide = isHorizontal
@@ -139,6 +140,14 @@ const MenuFolder = (props: {
       }
     }, 200)
   }
+
+  const menubarStyle = isHorizontal
+    ? {
+        maxWidth: ((anchorRef.current?.clientWidth ?? 0) + 1) * 10 + 5,
+      }
+    : {
+        maxHeight: ((anchorRef.current?.clientHeight ?? 0) + 2) * 11.6,
+      }
 
   return (
     <MenubarMenu value={folder.id}>
@@ -169,25 +178,51 @@ const MenuFolder = (props: {
         ref={contentRef}
         {...onHover(props.onHoverContent, folder.id)}
       >
-        <Menubar
-          value={activeFolder}
-          className={clsx({
-            [css.menuVertical]: !isHorizontal,
-          })}
-        >
-          {children?.map((child) => (
-            <MenuTreeNode
-              node={child}
-              isHorizontal={isHorizontal}
-              side={props.side}
-              menuRef={props.menuRef}
-              onHoverTrigger={setHoverTrigger}
-              onHoverContent={setHoverContent}
-              depth={depth + 1}
-              key={child.content.id}
-            />
-          ))}
-        </Menubar>
+        {!isHorizontal ? (
+          <ScrollArea>
+            <Menubar
+              value={activeFolder}
+              style={menubarStyle}
+              className={clsx({
+                [css.menuVertical]: !isHorizontal,
+              })}
+            >
+              {children?.map((child) => (
+                <MenuTreeNode
+                  node={child}
+                  isHorizontal={isHorizontal}
+                  side={props.side}
+                  menuRef={props.menuRef}
+                  onHoverTrigger={setHoverTrigger}
+                  onHoverContent={setHoverContent}
+                  depth={depth + 1}
+                  key={child.content.id}
+                />
+              ))}
+            </Menubar>
+          </ScrollArea>
+        ) : (
+          <Menubar
+            value={activeFolder}
+            style={menubarStyle}
+            className={clsx({
+              "flex-wrap": isHorizontal,
+            })}
+          >
+            {children?.map((child) => (
+              <MenuTreeNode
+                node={child}
+                isHorizontal={isHorizontal}
+                side={props.side}
+                menuRef={props.menuRef}
+                onHoverTrigger={setHoverTrigger}
+                onHoverContent={setHoverContent}
+                depth={depth + 1}
+                key={child.content.id}
+              />
+            ))}
+          </Menubar>
+        )}
         <HoverArea
           anchor={anchorRect}
           content={contentRect}
