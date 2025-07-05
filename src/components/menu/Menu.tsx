@@ -141,12 +141,22 @@ const MenuFolder = (props: {
     }, 200)
   }
 
+  const baseSize = anchorRef.current?.clientHeight ?? 0
   const menubarStyle = isHorizontal
     ? {
-        maxWidth: ((anchorRef.current?.clientWidth ?? 0) + 1) * 10 + 5,
+        maxWidth:
+          baseSize * 10 /* buttons */ +
+          1 * 9 /* gap */ +
+          2 * 2 /* padding */ +
+          1 * 2 /* border */ +
+          5,
       }
     : {
-        maxHeight: ((anchorRef.current?.clientHeight ?? 0) + 2) * 11.6,
+        maxHeight:
+          baseSize * 11.4 /* buttons */ +
+          2 * 11 /* gap */ +
+          2 * 2 /* padding */ +
+          1 * 2 /* border */,
       }
 
   return (
