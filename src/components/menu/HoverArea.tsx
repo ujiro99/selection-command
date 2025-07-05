@@ -4,7 +4,7 @@ type Props = {
   isHorizontal: boolean
 }
 
-type Placement = 'top' | 'bottom' | 'left' | 'right'
+type Placement = "top" | "bottom" | "left" | "right"
 
 export const HoverArea = (props: Props) => {
   const { anchor, content, isHorizontal } = props
@@ -24,20 +24,21 @@ export const HoverArea = (props: Props) => {
   const isBottom = isHorizontal && anchor.bottom >= content.bottom
   const isLeft = !isHorizontal && anchor.x <= content.x
   const placement: Placement = isTop
-    ? 'top'
+    ? "top"
     : isBottom
-      ? 'bottom'
+      ? "bottom"
       : isLeft
-        ? 'left'
-        : 'right'
+        ? "left"
+        : "right"
 
   let top = 0
   let left = 0
   let d
 
   switch (placement) {
-    case 'top':
+    case "top":
       d = `M ${anchor.right} ${anchor.top}
+         v ${anchor.height / 4}
          Q ${anchor.right} ${content.top},
            ${content.right} ${content.top}
          h ${-content.width}
@@ -47,34 +48,37 @@ export const HoverArea = (props: Props) => {
          z`
       top = anchor.top - content.top
       break
-    case 'bottom':
+    case "bottom":
       d = `M ${anchor.left} ${anchor.bottom}
          Q ${anchor.left} ${content.bottom},
            ${content.left} ${content.bottom}
          h ${content.width}
          Q ${anchor.right} ${content.bottom},
-           ${anchor.right} ${anchor.bottom}
+           ${anchor.right} ${anchor.bottom - anchor.height / 4}
+         v ${anchor.height / 4}
          h ${-anchor.width}
          z`
       break
-    case 'left':
+    case "left":
       d = `M ${anchor.x} ${anchor.y}
          Q ${content.x} ${anchor.y},
            ${content.x} ${content.y}
          v ${content.height}
          Q ${content.x} ${anchor.bottom},
-           ${anchor.x} ${anchor.bottom}
+           ${anchor.right - (anchor.width * 3) / 4} ${anchor.bottom}
+         h ${-(anchor.width / 4)}
          v ${-anchor.height}
          z`
       left = -anchor.width + 2
       break
-    case 'right':
+    case "right":
       d = `M ${anchor.right} ${anchor.top}
          Q ${content.right} ${anchor.top},
            ${content.right} ${content.top}
          v ${content.height}
          Q ${content.right} ${anchor.bottom},
-           ${anchor.right} ${anchor.bottom}
+           ${anchor.right - anchor.width / 4} ${anchor.bottom}
+         h ${anchor.width / 4}
          v ${-anchor.height}
          z`
       left = -2
@@ -87,17 +91,17 @@ export const HoverArea = (props: Props) => {
       height={height}
       viewBox={`${x} ${y} ${width} ${height}`}
       style={{
-        pointerEvents: 'none',
-        position: 'absolute',
+        pointerEvents: "none",
+        position: "absolute",
         top,
         left,
       }}
     >
       <path
         d={d}
-        fill={'skyblue'}
+        fill={"skyblue"}
         fillOpacity="0"
-        style={{ pointerEvents: 'auto' }}
+        style={{ pointerEvents: "auto" }}
       />
     </svg>
   )
