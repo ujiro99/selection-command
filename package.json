@@ -42,7 +42,7 @@
     "react-hook-form": "^7.58.1",
     "react-textarea-autosize": "^8.5.3",
     "react-transition-group": "^4.4.5",
-    "sonner": "^2.0.5",
+    "sonner": "github:ujiro99/sonner",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.1"
