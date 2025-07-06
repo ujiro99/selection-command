@@ -16,7 +16,11 @@ import { Settings } from '@/services/settings'
 import { InvisibleItem } from '@/components/menu/InvisibleItem'
 import type { ShowToastParam } from '@/types'
 
-export function App() {
+type Props = {
+  rootElm: HTMLElement
+}
+
+export function App({ rootElm }: Props) {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
 
@@ -113,7 +117,7 @@ export function App() {
         <OpenInTab />
         <PageActionRunner />
         <PageActionRecorder />
-        <Toaster />
+        <Toaster cssContainer={rootElm} />
       </SelectContextProvider>
     </PageActionContextProvider>
   )
