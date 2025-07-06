@@ -97,6 +97,7 @@ export type CommandFolder = {
   iconUrl?: string
   iconSvg?: string
   onlyIcon?: boolean
+  parentFolderId?: string
 }
 
 export type CommandVariable = {

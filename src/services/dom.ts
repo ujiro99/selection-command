@@ -183,7 +183,7 @@ export function findClickableElement(elm: Element | null): Element | null {
 
 export function getSelectorFromElement(el: Element): string {
   if (!(el instanceof Element)) return ''
-  let path = []
+  const path = []
   while (el.nodeType === Node.ELEMENT_NODE) {
     let selector = el.nodeName.toLowerCase()
     if (el.id) {
@@ -436,12 +436,12 @@ export function getXPath(element: Element): string {
 }
 
 function getPath(elm: Element, uniqueElement?: Element): string[] {
-  let path = []
+  const path = []
   while (elm.nodeType === Node.ELEMENT_NODE && elm !== uniqueElement) {
     let index = 0
     let hasSiblings = false
     let sibling = elm as Node | null
-    let nodeName = elm.nodeName.toLowerCase()
+    const nodeName = elm.nodeName.toLowerCase()
 
     // Check if the element has siblings.
     while (sibling) {

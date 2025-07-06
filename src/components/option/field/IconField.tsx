@@ -16,7 +16,7 @@ type IconField = {
   description?: string
 }
 
-import { useFavicon } from '@/hooks/useFavicon'
+import { useFavicon } from '@/hooks/option/useFavicon'
 
 export const IconField = ({
   control,
@@ -155,7 +155,7 @@ const UrlOrSvgInput = ({
     <>
       <Input
         type="text"
-        value={value}
+        value={value || ''}
         onChange={handleInputChange}
         placeholder={placeholder}
         className="pl-10"

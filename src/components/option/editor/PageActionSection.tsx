@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import { z } from 'zod'
 import { useFieldArray } from 'react-hook-form'
 import { Disc3 } from 'lucide-react'
-import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from '@/const'
+import { PAGE_ACTION_OPEN_MODE } from '@/const'
 import { FormLabel, FormDescription } from '@/components/ui/form'
 import type { PageAction } from '@/services/pageAction'
 import { t as _t } from '@/services/i18n'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { cn, e2a, isEmpty, capitalize } from '@/lib/utils'
-import { PageActionOption, PageActionStep } from '@/types/schema'
+import { PageActionStep } from '@/types/schema'
 import { DeepPartial } from '@/types'
 
 import { InputField } from '@/components/option/field/InputField'
@@ -17,28 +16,6 @@ import { StepList } from '@/components/pageAction/StepList'
 import { InputEditor } from '@/components/pageAction/InputEditor'
 import { RemoveDialog } from '@/components/option/RemoveDialog'
 import { TypeIcon } from '@/components/pageAction/TypeIcon'
-
-export const pageActionSchema = z.object({
-  openMode: z.enum([OPEN_MODE.PAGE_ACTION]),
-  id: z.string(),
-  revision: z.number().optional(),
-  parentFolderId: z.string().optional(),
-  title: z
-    .string()
-    .min(1, { message: t('zod_string_min', ['1']) })
-    .default('Get Text Styles'),
-  iconUrl: z
-    .string()
-    .url({ message: t('zod_url') })
-    .max(1000, { message: t('zod_string_max', ['1000']) }),
-  popupOption: z
-    .object({
-      width: z.number().min(1),
-      height: z.number().min(1),
-    })
-    .optional(),
-  pageActionOption: PageActionOption,
-})
 
 type PageActionSectionProps = {
   form: any

@@ -781,5 +781,62 @@
   },
   "clipboard_error_action": {
     "message": "ठीक है"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "बैकअप से पुनर्स्थापना"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "बैकअप जांच रहे हैं..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "कोई बैकअप उपलब्ध नहीं"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "बैकअप से कमांड पुनर्स्थापित करें"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "कोई बैकअप डेटा नहीं मिला।"
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "बैकअप से पुनर्स्थापना"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "कोई बैकअप डेटा उपलब्ध नहीं।"
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "पुनर्स्थापित करने के लिए बैकअप चुनें:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "पुनर्स्थापना"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "लेगेसी माइग्रेशन"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "दैनिक बैकअप"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "साप्ताहिक बैकअप"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "बनाया गया:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "कमांड:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "फ़ोल्डर:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "आइटम"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "चेतावनी:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "यह सभी वर्तमान कमांड को बैकअप डेटा से बदल देगा।"
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "बैकअप से पुनर्स्थापना विफल।"
   }
 }

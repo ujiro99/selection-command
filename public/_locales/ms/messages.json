@@ -784,5 +784,62 @@
   "clipboard_error_action": {
     "message": "OK",
     "description": "Action button for clipboard error"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Pulihkan dari Sandaran"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Memeriksa sandaran..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Tiada sandaran tersedia"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Pulihkan arahan dari sandaran"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "Data sandaran tidak dijumpai."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Pulihkan dari Sandaran"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "Tiada data sandaran tersedia."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Pilih sandaran untuk dipulihkan:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Pulihkan"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Migrasi Legasi"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Sandaran Harian"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Sandaran Mingguan"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Dicipta:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Arahan:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Folder:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "item"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Amaran:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Ini akan menggantikan semua arahan semasa dengan data sandaran."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Gagal memulihkan dari sandaran."
   }
 }

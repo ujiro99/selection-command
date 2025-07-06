@@ -1,16 +1,16 @@
-import React, { useRef, useContext } from 'react'
-import clsx from 'clsx'
-import { popupContext } from '@/components/Popup'
-import { Tooltip } from '../Tooltip'
-import { Icon } from '@/components/Icon'
-import { ResultPopup } from '@/components/result/ResultPopup'
-import { linksInSelection } from '@/services/dom'
-import { useSelectContext } from '@/hooks/useSelectContext'
-import { useCommandExecutor } from '@/hooks/useCommandExecutor'
-import { OPEN_MODE, ExecState } from '@/const'
-import type { Command } from '@/types'
+import React, { useRef, useContext } from "react"
+import clsx from "clsx"
+import { popupContext } from "@/components/Popup"
+import { Tooltip } from "../Tooltip"
+import { Icon } from "@/components/Icon"
+import { ResultPopup } from "@/components/result/ResultPopup"
+import { linksInSelection } from "@/services/dom"
+import { useSelectContext } from "@/hooks/useSelectContext"
+import { useCommandExecutor } from "@/hooks/useCommandExecutor"
+import { OPEN_MODE, ExecState } from "@/const"
+import type { Command } from "@/types"
 
-import css from './Menu.module.css'
+import css from "./Menu.module.css"
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
@@ -31,7 +31,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 
   if (openMode === OPEN_MODE.LINK_POPUP) {
     const links = linksInSelection()
-    console.debug('links', links)
+    console.debug("links", links)
     enable = links.length > 0
     message = `${links.length} links`
   }
@@ -67,9 +67,9 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           css.button,
           {
             [css.itemHorizontal]: onlyIcon,
-            ['hover:bg-accent']: !inTransition,
+            ["hover:bg-accent"]: !inTransition,
           },
-          'rounded-sm ',
+          "rounded-sm ",
         )}
         ref={buttonRef}
         onClick={handleClick}

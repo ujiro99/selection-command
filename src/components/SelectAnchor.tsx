@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useCallback } from 'react'
 import { LinkClickGuard } from '@/components/LinkClickGuard'
-import { useSetting } from '@/hooks/useSetting'
+import { useUserSettings } from '@/hooks/useSetting'
 import { useSelectContext } from '@/hooks/useSelectContext'
 import { useLeftClickHold } from '@/hooks/useLeftClickHold'
 import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from '@/const'
@@ -17,8 +17,8 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   const [offset, setOffset] = useState<Point>({} as Point)
   const [delayTO, setDelayTO] = useState<number | null>()
 
-  const { settings } = useSetting()
-  const { method, leftClickHoldParam } = settings.startupMethod
+  const { userSettings } = useUserSettings()
+  const { method, leftClickHoldParam } = userSettings?.startupMethod || {}
   const selected = !isEmpty(selectionText)
   const { detectHold, detectHoldLink, position } = useLeftClickHold({
     enable: method === STARTUP_METHOD.LEFT_CLICK_HOLD && selected,

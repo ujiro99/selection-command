@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext, forwardRef } from 'react'
 import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
 import { Menu } from '@/components/menu/Menu'
-import { useSetting } from '@/hooks/useSetting'
+import { useUserSettings } from '@/hooks/useSetting'
 import { useDetectStartup } from '@/hooks/useDetectStartup'
 import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
 import { hexToHsl, isMac, onHover, cn } from '@/lib/utils'
@@ -27,7 +27,7 @@ export const popupContext = createContext<ContextType>({} as ContextType)
 export const Popup = forwardRef<HTMLDivElement, PopupProps>(
   (props: PopupProps, ref) => {
     useTabCommandReceiver()
-    const { settings } = useSetting()
+    const { userSettings } = useUserSettings()
     const [inTransition, setInTransition] = useState(false)
     const [shouldRender, setShouldRender] = useState(false)
     const [isHover, setIsHover] = useState(false)
@@ -36,15 +36,15 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       isHover,
     })
     const isPreview = props.isPreview === true
-    const placement = settings.popupPlacement
-    const side = isPreview ? SIDE.bottom : (placement.side ?? SIDE.top)
-    const align = isPreview ? ALIGN.center : (placement.align ?? ALIGN.start)
-    const sideOffset = isPreview ? 0 : (placement.sideOffset ?? 0)
-    const alignOffset = isPreview ? 0 : (placement.alignOffset ?? 0)
+    const placement = userSettings?.popupPlacement
+    const side = isPreview ? SIDE.bottom : (placement?.side ?? SIDE.top)
+    const align = isPreview ? ALIGN.center : (placement?.align ?? ALIGN.start)
+    const sideOffset = isPreview ? 0 : (placement?.sideOffset ?? 0)
+    const alignOffset = isPreview ? 0 : (placement?.alignOffset ?? 0)
 
     const userStyles =
-      settings.userStyles &&
-      settings.userStyles.reduce((acc, cur) => {
+      userSettings?.userStyles &&
+      userSettings.userStyles.reduce((acc: any, cur: any) => {
         if (cur.value == null) return acc
         if (cur.name === 'background-color' || cur.name === 'border-color') {
           const hsl = hexToHsl(cur.value)
@@ -73,11 +73,11 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
         }, EXIT_DURATION)
       } else {
         // Enter transition
-        const popupDuration = settings.userStyles?.find(
-          (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
+        const popupDuration = userSettings?.userStyles?.find(
+          (s: any) => s.name === STYLE_VARIABLE.POPUP_DURATION,
         )
-        const popupDelay = settings.userStyles?.find(
-          (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
+        const popupDelay = userSettings?.userStyles?.find(
+          (s: any) => s.name === STYLE_VARIABLE.POPUP_DELAY,
         )
         const duration =
           popupDuration?.value != null ? parseInt(popupDuration.value) : 150
@@ -133,10 +133,10 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
 export function PreviewDesc(props: PopupProps) {
   const { visible, isContextMenu, isKeyboard, isLeftClickHold } =
     useDetectStartup(props)
-  const { settings } = useSetting()
-  const key = settings.startupMethod.keyboardParam
+  const { userSettings } = useUserSettings()
+  const key = userSettings?.startupMethod?.keyboardParam
 
-  let os = isMac() ? 'mac' : 'windows'
+  const os = isMac() ? 'mac' : 'windows'
   const keyLabel = t(`Option_keyboardParam_${key}_${os}`)
 
   return (

@@ -79,7 +79,6 @@ export function PageActionRecorder(): JSX.Element {
     )
   }
 
-
   useEffect(() => {
     const update = (data: PageActionRecordingData) => {
       data?.steps && setSteps(data.steps ?? [])

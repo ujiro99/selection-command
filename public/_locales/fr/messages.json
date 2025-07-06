@@ -781,5 +781,62 @@
   },
   "clipboard_error_action": {
     "message": "OK"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Restaurer depuis Sauvegarde"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Vérification des sauvegardes..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Aucune sauvegarde disponible"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Restaurer les commandes depuis la sauvegarde"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "Aucune donnée de sauvegarde trouvée."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Restaurer depuis Sauvegarde"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "Aucune donnée de sauvegarde disponible."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Sélectionnez une sauvegarde à restaurer :"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Restaurer"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Migration Héritée"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Sauvegarde Quotidienne"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Sauvegarde Hebdomadaire"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Créé :"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Commandes :"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Dossiers :"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "éléments"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Attention :"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Ceci remplacera toutes les commandes actuelles par les données de sauvegarde."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Échec de la restauration depuis la sauvegarde."
   }
 }

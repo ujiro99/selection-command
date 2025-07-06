@@ -302,6 +302,15 @@
   "Option_parentFolderId": {
     "message": "Folder"
   },
+  "Option_parentFolder": {
+    "message": "Parent Folder"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Select the parent folder"
+  },
+  "Option_rootFolder": {
+    "message": "Root (no parent)"
+  },
   "Option_copyOption": {
     "message": "Copy format"
   },
@@ -784,5 +793,62 @@
   "clipboard_error_action": {
     "message": "OK",
     "description": "Action button for clipboard error"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Restore from Backup"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Checking backups..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "No backup available"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Restore commands from backup"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "No backup data found."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Restore from Backup"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "No backup data available."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Select a backup to restore:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Restore"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Legacy Migration"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Daily Backup"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Weekly Backup"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Created:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Commands:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Folders:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "items"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Warning:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "This will replace all current commands with the backup data."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Failed to restore from backup."
   }
 }

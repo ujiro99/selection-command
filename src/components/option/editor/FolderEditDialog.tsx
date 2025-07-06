@@ -18,29 +18,22 @@ import { Button } from '@/components/ui/button'
 import { InputField } from '@/components/option/field/InputField'
 import { IconField } from '@/components/option/field/IconField'
 import { SwitchField } from '@/components/option/field/SwitchField'
+import { SelectField } from '@/components/option/field/SelectField'
 import { isEmpty } from '@/lib/utils'
 import { t as _t } from '@/services/i18n'
+import { ROOT_FOLDER } from '@/const'
+import { folderSchema } from '@/types/schema'
+import { getDescendantFolderIds } from '@/services/option/commandUtils'
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { CommandFolder } from '@/types'
-
-export const folderSchema = z
-  .object({
-    id: z.string(),
-    title: z.string().min(1, { message: t('zod_string_min', ['1']) }),
-    iconUrl: z.string().optional(),
-    iconSvg: z.string().optional(),
-    onlyIcon: z.boolean().optional(),
-  })
-  .refine((data) => !isEmpty(data.iconUrl) || !isEmpty(data.iconSvg), {
-    path: ['iconSvg'],
-    message: t('icon_required'),
-  })
+import { calcLevel } from '@/services/option/commandTree'
 
 type FolderEditDialog = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (folder: CommandFolder) => void
   folder?: CommandFolder
+  folders: CommandFolder[]
 }
 
 export const FolderEditDialog = ({
@@ -48,6 +41,7 @@ export const FolderEditDialog = ({
   onOpenChange,
   onSubmit,
   folder,
+  folders,
 }: FolderEditDialog) => {
   const DefaultValue = {
     id: '',
@@ -55,6 +49,7 @@ export const FolderEditDialog = ({
     iconUrl:
       'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
     onlyIcon: true,
+    parentFolderId: ROOT_FOLDER,
   }
 
   const form = useForm<z.infer<typeof folderSchema>>({
@@ -99,6 +94,34 @@ export const FolderEditDialog = ({
                 formLabel={t('iconUrl_folder')}
                 placeholder={t('icon_placeholder')}
                 description={t('icon_desc')}
+              />
+              <SelectField
+                control={form.control}
+                name="parentFolderId"
+                formLabel={t('parentFolder')}
+                description={t('parentFolder_desc')}
+                options={[
+                  {
+                    value: ROOT_FOLDER,
+                    name: t('rootFolder'),
+                  },
+                  ...folders
+                    .filter((f) => {
+                      if (!folder) return true
+                      const excludedIds = [
+                        folder.id,
+                        ...getDescendantFolderIds(folder.id, folders),
+                      ]
+                      return !excludedIds.includes(f.id)
+                    })
+                    .map((f) => ({
+                      value: f.id,
+                      name: f.title,
+                      iconUrl: f.iconUrl,
+                      iconSvg: f.iconSvg,
+                      level: calcLevel(f, folders),
+                    })),
+                ]}
               />
               <SwitchField
                 control={form.control}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Control, useFieldArray, useWatch } from 'react-hook-form'
 import { Keyboard, SquareArrowOutUpRight } from 'lucide-react'
 import { SelectField } from '@/components/option/field/SelectField'
@@ -57,6 +57,7 @@ const groupCommandsByFolder = (
 
   // First, group commands by folder
   commands.forEach((command) => {
+    if (!command) return
     const folderId = command.parentFolderId || 'root'
     if (!commandsByFolder.has(folderId)) {
       commandsByFolder.set(folderId, [])
@@ -68,6 +69,7 @@ const groupCommandsByFolder = (
   const result: (SelectOptionType | SelectGroupType)[] = []
 
   commands.forEach((command) => {
+    if (!command) return
     const folderId = command.parentFolderId || 'root'
     const folderCommands = commandsByFolder.get(folderId)
 
@@ -171,6 +173,11 @@ export function ShortcutList({ control }: ShortcutListProps) {
     replace(initialData)
   }, [replace, commands, userCommands])
 
+  const options = useMemo(
+    () => groupCommandsByFolder(userCommands, folders),
+    [userCommands, folders],
+  )
+
   const noSelectionOptions = [
     {
       name: t('shortcut_no_selection_do_nothing'),
@@ -216,12 +223,12 @@ export function ShortcutList({ control }: ShortcutListProps) {
               name: t('shortcut_select_placeholder'),
               value: SHORTCUT_PLACEHOLDER,
             },
-            ...groupCommandsByFolder(userCommands, folders),
+            ...options,
           ]
 
           const targetId = shortcutValues[index]?.commandId
           const selectedCmd = userCommands.find(
-            (c: Command) => c.id === targetId,
+            (c: Command) => c?.id === targetId,
           )
           const showNoSel =
             selectedCmd && !isTextSelectionOnly(selectedCmd.openMode)

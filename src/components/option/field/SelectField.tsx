@@ -23,6 +23,7 @@ export type SelectOptionType = {
   nameRender?: (name: string) => React.ReactNode
   iconUrl?: string
   iconSvg?: string
+  level?: number
 }
 
 export type SelectGroupType = {
@@ -62,11 +63,20 @@ const renderOptionContent = (opt: SelectOptionType) => {
   )
 }
 
-const renderOption = (opt: SelectOptionType) => (
-  <SelectItem value={opt.value} key={opt.value} className="hover:bg-gray-100">
-    {renderOptionContent(opt)}
-  </SelectItem>
-)
+const renderOption = (opt: SelectOptionType) => {
+  const level = opt.level ?? 0
+  const paddingLeft = level * 16 + 32 // 32 is the width of pl-8
+  return (
+    <SelectItem
+      value={opt.value}
+      key={opt.value}
+      className={`hover:bg-gray-100`}
+      style={{ paddingLeft }}
+    >
+      {renderOptionContent(opt)}
+    </SelectItem>
+  )
+}
 
 const renderGroupLabel = (group: SelectGroupType) => (
   <SelectLabel className="flex items-center gap-1">

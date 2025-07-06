@@ -781,5 +781,62 @@
   },
   "clipboard_error_action": {
     "message": "OK"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Ripristina da Backup"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Controllo backup in corso..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Nessun backup disponibile"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Ripristina comandi da backup"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "Nessun dato di backup trovato."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Ripristina da Backup"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "Nessun dato di backup disponibile."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Seleziona un backup da ripristinare:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Ripristina"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Migrazione Legacy"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Backup Giornaliero"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Backup Settimanale"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Creato:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Comandi:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Cartelle:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "elementi"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Attenzione:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Questo sostituirà tutti i comandi attuali con i dati del backup."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Ripristino da backup fallito."
   }
 }

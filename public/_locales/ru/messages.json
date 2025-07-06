@@ -781,5 +781,62 @@
   },
   "clipboard_error_action": {
     "message": "OK"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Восстановить из резервной копии"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Проверка резервных копий..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Нет доступных резервных копий"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Восстановить команды из резервной копии"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "Данные резервной копии не найдены."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Восстановить из резервной копии"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "Нет доступных данных резервной копии."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Выберите резервную копию для восстановления:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Восстановить"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Унаследованная миграция"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Ежедневная резервная копия"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Еженедельная резервная копия"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Создано:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Команды:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Папки:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "элементов"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Предупреждение:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Это заменит все текущие команды данными из резервной копии."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Не удалось восстановить из резервной копии."
   }
 }

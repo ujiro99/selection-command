@@ -784,5 +784,62 @@
   "clipboard_error_action": {
     "message": "OK",
     "description": "Action button for clipboard error"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Restaurar do Backup"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Verificando backups..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Nenhum backup disponível"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Restaurar comandos do backup"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "Nenhum dado de backup encontrado."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Restaurar do Backup"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "Nenhum dado de backup disponível."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Selecione um backup para restaurar:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Restaurar"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Migração Legada"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Backup Diário"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Backup Semanal"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Criado:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Comandos:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Pastas:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "itens"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Aviso:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Isso substituirá todos os comandos atuais pelos dados do backup."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Falha ao restaurar do backup."
   }
 }

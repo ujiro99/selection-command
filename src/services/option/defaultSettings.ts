@@ -1,4 +1,4 @@
-import { UserSettings, Command } from '@/types'
+import { UserSettings, Command, SettingsType } from '@/types'
 import {
   VERSION,
   OPEN_MODE,
@@ -20,6 +20,38 @@ export const PopupPlacement = {
   align: ALIGN.start,
   sideOffset: 0,
   alignOffset: 0,
+}
+
+// Empty settings for loading state
+export const emptySettings: SettingsType = {
+  settingVersion: '0.0.0',
+  commands: [],
+  folders: [],
+  pageRules: [],
+  style: STYLE.HORIZONTAL,
+  popupPlacement: {
+    side: SIDE.top,
+    align: ALIGN.start,
+    alignOffset: 0,
+    sideOffset: 0,
+  },
+  linkCommand: {
+    enabled: LINK_COMMAND_ENABLED.ENABLE,
+    openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
+    showIndicator: true,
+    startupMethod: {
+      method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+      keyboardParam: KEYBOARD.SHIFT,
+      threshold: 150,
+      leftClickHoldParam: 200,
+    },
+  },
+  userStyles: [],
+  startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },
+  stars: [],
+  commandExecutionCount: 0,
+  hasShownReviewRequest: false,
+  shortcuts: { shortcuts: [] },
 }
 
 export default {

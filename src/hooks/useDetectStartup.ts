@@ -16,7 +16,7 @@ export function useDetectStartup(props: Props) {
   const { selectionText } = useSelectContext()
   const [hide, setHide] = useState(false)
   const { settings, pageRule } = useSetting()
-  const { method, leftClickHoldParam } = settings.startupMethod
+  const { method, leftClickHoldParam } = settings.startupMethod || {}
 
   let visible = !isEmpty(selectionText) && positionElm != null
   if (pageRule != null) {
@@ -66,7 +66,7 @@ export function useKeyboard(_: Props) {
   const { settings } = useSetting()
   const { selectionText } = useSelectContext()
   const [detectKey, setDetectKey] = useState(false)
-  const { method, keyboardParam } = settings.startupMethod
+  const { method, keyboardParam } = settings.startupMethod || {}
 
   useEffect(() => {
     setDetectKey(false)

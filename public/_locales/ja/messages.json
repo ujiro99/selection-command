@@ -302,6 +302,15 @@
   "Option_parentFolderId": {
     "message": "フォルダ"
   },
+  "Option_parentFolder": {
+    "message": "親フォルダ"
+  },
+  "Option_parentFolder_desc": {
+    "message": "親フォルダを選択してください"
+  },
+  "Option_rootFolder": {
+    "message": "ルート（親なし）"
+  },
   "Option_copyOption": {
     "message": "コピーフォーマット"
   },
@@ -778,5 +787,62 @@
   },
   "clipboard_error_action": {
     "message": "OK"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "バックアップから復元"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "バックアップを確認中..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "バックアップなし"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "バックアップからコマンドを復元"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "バックアップデータが見つかりません。"
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "バックアップから復元"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "バックアップデータがありません。"
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "復元するバックアップを選択："
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "復元"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "レガシー移行"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "日次バックアップ"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "週次バックアップ"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "作成日時："
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "コマンド："
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "フォルダ："
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "件"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "警告："
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "現在のコマンドがすべてバックアップデータに置き換えられます。"
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "バックアップからの復元に失敗しました。"
   }
 }

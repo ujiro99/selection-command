@@ -781,5 +781,62 @@
   },
   "clipboard_error_action": {
     "message": "OK"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Restaurar desde Respaldo"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Verificando respaldos..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Sin respaldo disponible"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Restaurar comandos desde respaldo"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "No se encontraron datos de respaldo."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Restaurar desde Respaldo"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "No hay datos de respaldo disponibles."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Seleccione un respaldo para restaurar:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Restaurar"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Migración Heredada"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Respaldo Diario"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Respaldo Semanal"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Creado:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Comandos:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Carpetas:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "elementos"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Advertencia:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Esto reemplazará todos los comandos actuales con los datos del respaldo."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Error al restaurar desde respaldo."
   }
 }

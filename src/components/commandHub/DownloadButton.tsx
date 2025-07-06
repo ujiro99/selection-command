@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { Ipc, BgCommand } from '@/services/ipc'
-import { useSetting } from '@/hooks/useSetting'
+import { useSection } from '@/hooks/useSetting'
+import { useDetectUrlChanged } from '@/hooks/useDetectUrlChanged'
+import { CACHE_SECTIONS } from '@/services/settingsCache'
 import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 import {
   Popover,
@@ -10,16 +12,14 @@ import {
   PopoverArrow,
 } from '@/components/ui/popover'
 import { SCREEN } from '@/const'
-import { useDetectUrlChanged } from '@/hooks/useDetectUrlChanged'
 
 const TooltipDuration = 2000
 
 export const DownloadButton = (): JSX.Element => {
   const [position, setPosition] = useState<Element | null>(null)
-  const { settings } = useSetting()
+  const { data: commands } = useSection(CACHE_SECTIONS.COMMANDS)
   const { addUrlChangeListener, removeUrlChangeListener } =
     useDetectUrlChanged()
-  const commands = settings.commands
   const [shouldRender, setShouldRender] = useState(false)
   const open = position != null
 
@@ -46,7 +46,7 @@ export const DownloadButton = (): JSX.Element => {
   }
 
   const updateButtonVisibility = () => {
-    const ids = commands.map((c) => c.id)
+    const ids = commands?.map((c) => c.id) ?? []
     ids.forEach((id) => {
       // hide installed buttons
       const installed = document.querySelector(
@@ -65,7 +65,7 @@ export const DownloadButton = (): JSX.Element => {
       const count = Number(span.dataset.downloadCount)
       if (count == null || isNaN(count)) return
       let reviced = 0
-      const cmd = commands.find((c) => c.id === span.dataset.id)
+      const cmd = commands?.find((c) => c.id === span.dataset.id)
       if (cmd != null) {
         // There is a command.
         reviced++

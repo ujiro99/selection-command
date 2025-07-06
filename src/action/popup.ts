@@ -2,7 +2,7 @@ import { Ipc, BgCommand } from '@/services/ipc'
 import { isValidString } from '@/lib/utils'
 import { getScreenSize, getWindowPosition } from '@/services/screen'
 import { POPUP_TYPE, SPACE_ENCODING } from '@/const'
-import { PopupOption } from '@/services/defaultSettings'
+import { PopupOption } from '@/services/option/defaultSettings'
 import type { ExecuteCommandParams } from '@/types'
 import type { OpenPopupProps } from '@/services/chrome'
 

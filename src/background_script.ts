@@ -10,7 +10,7 @@ import {
 import { executeActionProps } from '@/services/contextMenus'
 import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
 import { Settings } from '@/services/settings'
-import { PopupOption, PopupPlacement } from '@/services/defaultSettings'
+import { PopupOption, PopupPlacement } from '@/services/option/defaultSettings'
 import * as PageActionBackground from '@/services/pageAction/background'
 import { BgData } from '@/services/backgroundData'
 import { ContextMenu } from '@/services/contextMenus'
@@ -496,7 +496,45 @@ chrome.runtime.onInstalled.addListener((details) => {
     // Set uninstall survey URL
     chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
   }
+
+  // Check for daily backup on startup
+  checkAndPerformDailyBackup()
+
+  // Check for weekly backup on startup
+  checkAndPerformWeeklyBackup()
 })
+
+chrome.runtime.onStartup.addListener(() => {
+  // Check for daily backup on browser startup
+  checkAndPerformDailyBackup()
+
+  // Check for weekly backup on browser startup
+  checkAndPerformWeeklyBackup()
+})
+
+// Daily backup check function
+const checkAndPerformDailyBackup = async () => {
+  try {
+    const dailyBackupManager = Storage.dailyBackupManager
+    if (await dailyBackupManager.shouldBackup()) {
+      await dailyBackupManager.performDailyBackup()
+    }
+  } catch (error) {
+    console.error('Failed to perform daily backup check:', error)
+  }
+}
+
+// Weekly backup check function
+const checkAndPerformWeeklyBackup = async () => {
+  try {
+    const weeklyBackupManager = Storage.weeklyBackupManager
+    if (await weeklyBackupManager.shouldBackup()) {
+      await weeklyBackupManager.performWeeklyBackup()
+    }
+  } catch (error) {
+    console.error('Failed to perform weekly backup check:', error)
+  }
+}
 
 Settings.addChangedListener(() => ContextMenu.init())
 
@@ -529,12 +567,12 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    let enableSendTab =
+    const enableSendTab =
       tab?.id &&
       !tab.url?.startsWith('chrome') &&
       !tab.url?.includes('chromewebstore.google.com')
 
-    let selectionText = await Storage.get<string>(
+    const selectionText = await Storage.get<string>(
       SESSION_STORAGE_KEY.SELECTION_TEXT,
     )
 

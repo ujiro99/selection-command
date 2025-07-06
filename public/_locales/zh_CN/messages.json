@@ -781,5 +781,62 @@
   },
   "clipboard_error_action": {
     "message": "确定"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "从备份恢复"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "正在检查备份..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "无可用备份"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "从备份恢复命令"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "未找到备份数据。"
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "从备份恢复"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "无可用备份数据。"
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "选择要恢复的备份："
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "恢复"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "传统迁移"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "每日备份"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "每周备份"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "创建时间："
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "命令："
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "文件夹："
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "项"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "警告："
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "这将用备份数据替换所有当前命令。"
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "从备份恢复失败。"
   }
 }

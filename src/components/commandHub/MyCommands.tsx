@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import ColorThief from 'colorthief'
-import { useSetting } from '@/hooks/useSetting'
+import { useSettingsWithImageCache } from '@/hooks/useSetting'
 import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
 import { t } from '@/services/i18n'
 import { cn, isSearchCommand, isPageActionCommand } from '@/lib/utils'
@@ -13,14 +13,18 @@ export const MyCommands = (): JSX.Element => {
   const [pageActionIds, setPageActionIds] = useState<string[]>([])
   const listRef = useRef<HTMLUListElement | null>(null)
   const list2Ref = useRef<HTMLUListElement | null>(null)
-  const { settings, iconUrls } = useSetting()
-  const commands = settings.commands
+  const { commands: allCommands, iconUrls } = useSettingsWithImageCache()
+  const commands = allCommands
     .filter(
       (c) =>
         (isSearchCommand(c) && !urls.includes(c.searchUrl as string)) ||
         (isPageActionCommand(c) && !pageActionIds.includes(c.id)),
     )
-    .map((c) => ({ ...c, iconDataUrl: c.iconUrl, iconUrl: iconUrls[c.id] }))
+    .map((c) => ({
+      ...c,
+      iconDataUrl: iconUrls[c.id] || c.iconUrl,
+      iconUrl: iconUrls[c.id],
+    }))
   const loaded = urls.length > 0
   const enableMarquee = commands.length > 3
 
