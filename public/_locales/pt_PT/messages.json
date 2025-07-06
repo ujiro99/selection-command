@@ -784,5 +784,62 @@
   "clipboard_error_action": {
     "message": "OK",
     "description": "Action button for clipboard error"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Restaurar da Cópia de Segurança"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "A verificar cópias de segurança..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Nenhuma cópia de segurança disponível"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Restaurar comandos da cópia de segurança"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "Nenhum dado de cópia de segurança encontrado."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Restaurar da Cópia de Segurança"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "Nenhum dado de cópia de segurança disponível."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Selecione uma cópia de segurança para restaurar:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Restaurar"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Migração Legada"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Cópia de Segurança Diária"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Cópia de Segurança Semanal"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Criado:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Comandos:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Pastas:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "itens"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Aviso:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Isto substituirá todos os comandos actuais pelos dados da cópia de segurança."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Falha ao restaurar da cópia de segurança."
   }
 }

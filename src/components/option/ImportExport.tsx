@@ -281,7 +281,7 @@ export function ImportExport() {
     )
 
     if (!hasAnyBackup) {
-      alert("No backup data found.")
+      alert(t("Option_RestoreFromBackup_no_data"))
       return
     }
 
@@ -344,7 +344,7 @@ export function ImportExport() {
             await Storage.setCommands(backupCommands)
             location.reload()
           } else {
-            alert("Failed to restore from backup.")
+            alert(t("Option_RestoreFromBackup_failed"))
           }
         } catch (error) {
           console.error("Failed to restore from backup:", error)
@@ -388,22 +388,16 @@ export function ImportExport() {
             Object.values(backupData).every(
               (backup) => backup.status === BACKUP_STATUS.CHECKING,
             )
-              ? "Checking backups..."
+              ? t("Option_RestoreFromBackup_checking")
               : !Object.values(backupData).some(
                     (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
                   )
-                ? "No backup available"
-                : "Restore commands from backup"
+                ? t("Option_RestoreFromBackup_no_backup")
+                : t("Option_RestoreFromBackup_tooltip")
           }
         >
           <RotateCcw size={18} className="mr-2 stroke-gray-600" />
-          Restore from Backup
-          {Object.values(backupData).every(
-            (backup) => backup.status === BACKUP_STATUS.CHECKING,
-          ) && <span className="ml-2 text-xs opacity-50">...</span>}
-          {!Object.values(backupData).some(
-            (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
-          ) && <span className="ml-2 text-xs opacity-50">(N/A)</span>}
+          {t("Option_RestoreFromBackup")}
         </button>
         <button onClick={handleReset} className={css.menuButton} type="button">
           <Undo2 size={18} className="mr-2 stroke-gray-600" />
@@ -444,19 +438,19 @@ export function ImportExport() {
       <Dialog
         open={restoreDialog}
         onClose={handleRestoreClose}
-        title={"Restore from Backup"}
+        title={t("Option_RestoreFromBackup_dialog_title")}
         description={() => {
           const availableBackups = Object.entries(backupData).filter(
             ([, backup]) => backup.status === BACKUP_STATUS.AVAILABLE,
           )
 
           if (availableBackups.length === 0) {
-            return <span>No backup data available.</span>
+            return <span>{t("Option_RestoreFromBackup_dialog_no_data")}</span>
           }
 
-          return <span>Select a backup to restore:</span>
+          return <span>{t("Option_RestoreFromBackup_dialog_select")}</span>
         }}
-        okText="Restore"
+        okText={t("Option_RestoreFromBackup_dialog_restore")}
       >
         {(() => {
           const availableBackups = Object.entries(backupData).filter(
@@ -470,11 +464,11 @@ export function ImportExport() {
           const getBackupTypeLabel = (type: string) => {
             switch (type) {
               case BACKUP_TYPES.LEGACY:
-                return "Legacy Migration"
+                return t("Option_RestoreFromBackup_legacy")
               case BACKUP_TYPES.DAILY:
-                return "Daily Backup"
+                return t("Option_RestoreFromBackup_daily")
               case BACKUP_TYPES.WEEKLY:
-                return "Weekly Backup"
+                return t("Option_RestoreFromBackup_weekly")
               default:
                 return type
             }
@@ -505,12 +499,20 @@ export function ImportExport() {
                       {backup.info && (
                         <div className="text-xs text-gray-600 mt-1">
                           <div>
-                            Created:{" "}
+                            {t("Option_RestoreFromBackup_created")}{" "}
                             {new Date(backup.info.timestamp).toLocaleString()}
                           </div>
-                          <div>Commands: {backup.info.commandCount} items</div>
+                          <div>
+                            {t("Option_RestoreFromBackup_commands")}{" "}
+                            {backup.info.commandCount}{" "}
+                            {t("Option_RestoreFromBackup_items")}
+                          </div>
                           {backup.info.folderCount !== undefined && (
-                            <div>Folders: {backup.info.folderCount} items</div>
+                            <div>
+                              {t("Option_RestoreFromBackup_folders")}{" "}
+                              {backup.info.folderCount}{" "}
+                              {t("Option_RestoreFromBackup_items")}
+                            </div>
                           )}
                         </div>
                       )}
@@ -519,8 +521,8 @@ export function ImportExport() {
                 ))}
               </RadioGroup>
               <p className="mt-4 text-sm text-yellow-600">
-                <strong>Warning:</strong> This will replace all current commands
-                with the backup data.
+                <strong>{t("Option_RestoreFromBackup_warning")}</strong>{" "}
+                {t("Option_RestoreFromBackup_warning_message")}
               </p>
             </div>
           )

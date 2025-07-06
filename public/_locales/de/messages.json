@@ -781,5 +781,62 @@
   },
   "clipboard_error_action": {
     "message": "OK"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Aus Backup wiederherstellen"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Backups werden überprüft..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Kein Backup verfügbar"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Befehle aus Backup wiederherstellen"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "Keine Backup-Daten gefunden."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Aus Backup wiederherstellen"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "Keine Backup-Daten verfügbar."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Wählen Sie ein Backup zum Wiederherstellen:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Wiederherstellen"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Legacy-Migration"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Tägliches Backup"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Wöchentliches Backup"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Erstellt:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Befehle:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Ordner:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "Elemente"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Warnung:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Dies ersetzt alle aktuellen Befehle durch die Backup-Daten."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Wiederherstellung aus Backup fehlgeschlagen."
   }
 }

@@ -784,5 +784,62 @@
   "clipboard_error_action": {
     "message": "OK",
     "description": "Action button for clipboard error"
+  },
+  "Option_RestoreFromBackup": {
+    "message": "Pulihkan dari Cadangan"
+  },
+  "Option_RestoreFromBackup_checking": {
+    "message": "Memeriksa cadangan..."
+  },
+  "Option_RestoreFromBackup_no_backup": {
+    "message": "Tidak ada cadangan tersedia"
+  },
+  "Option_RestoreFromBackup_tooltip": {
+    "message": "Pulihkan perintah dari cadangan"
+  },
+  "Option_RestoreFromBackup_no_data": {
+    "message": "Data cadangan tidak ditemukan."
+  },
+  "Option_RestoreFromBackup_dialog_title": {
+    "message": "Pulihkan dari Cadangan"
+  },
+  "Option_RestoreFromBackup_dialog_no_data": {
+    "message": "Tidak ada data cadangan tersedia."
+  },
+  "Option_RestoreFromBackup_dialog_select": {
+    "message": "Pilih cadangan untuk dipulihkan:"
+  },
+  "Option_RestoreFromBackup_dialog_restore": {
+    "message": "Pulihkan"
+  },
+  "Option_RestoreFromBackup_legacy": {
+    "message": "Migrasi Warisan"
+  },
+  "Option_RestoreFromBackup_daily": {
+    "message": "Cadangan Harian"
+  },
+  "Option_RestoreFromBackup_weekly": {
+    "message": "Cadangan Mingguan"
+  },
+  "Option_RestoreFromBackup_created": {
+    "message": "Dibuat:"
+  },
+  "Option_RestoreFromBackup_commands": {
+    "message": "Perintah:"
+  },
+  "Option_RestoreFromBackup_folders": {
+    "message": "Folder:"
+  },
+  "Option_RestoreFromBackup_items": {
+    "message": "item"
+  },
+  "Option_RestoreFromBackup_warning": {
+    "message": "Peringatan:"
+  },
+  "Option_RestoreFromBackup_warning_message": {
+    "message": "Ini akan mengganti semua perintah saat ini dengan data cadangan."
+  },
+  "Option_RestoreFromBackup_failed": {
+    "message": "Gagal memulihkan dari cadangan."
   }
 }
