@@ -276,15 +276,6 @@ export function ImportExport() {
   }
 
   const handleRestore = async () => {
-    const hasAnyBackup = Object.values(backupData).some(
-      (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
-    )
-
-    if (!hasAnyBackup) {
-      alert(t("Option_RestoreFromBackup_no_data"))
-      return
-    }
-
     setRestoreDialog(true)
   }
 
@@ -379,11 +370,6 @@ export function ImportExport() {
           onClick={handleRestore}
           className={css.menuButton}
           type="button"
-          disabled={
-            !Object.values(backupData).some(
-              (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
-            )
-          }
           title={
             Object.values(backupData).every(
               (backup) => backup.status === BACKUP_STATUS.CHECKING,
@@ -451,6 +437,11 @@ export function ImportExport() {
           return <span>{t("Option_RestoreFromBackup_dialog_select")}</span>
         }}
         okText={t("Option_RestoreFromBackup_dialog_restore")}
+        okDisabled={
+          !Object.values(backupData).some(
+            (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
+          )
+        }
       >
         {(() => {
           const availableBackups = Object.entries(backupData).filter(
