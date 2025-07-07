@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 
-import { Settings } from '@/services/settings'
-import { capitalize } from '@/lib/utils'
-import { APP_ID, VERSION } from '@/const'
+import { Settings } from "@/services/settings"
+import { capitalize } from "@/lib/utils"
+import { APP_ID, VERSION } from "@/const"
 
-import { Popup } from '@/components/Popup'
-import { TableOfContents } from '@/components/option/TableOfContents'
-import { ImportExport } from '@/components/option/ImportExport'
-import { HubBanner } from '@/components/option/HubBanner'
-import { SettingForm } from '@/components/option/SettingForm'
-import StorageUsage from '@/components/option/StorageUsage'
+import { Popup } from "@/components/Popup"
+import { TableOfContents } from "@/components/option/TableOfContents"
+import { ImportExport } from "@/components/option/ImportExport"
+import { HubBanner } from "@/components/option/HubBanner"
+import { SettingForm } from "@/components/option/SettingForm"
+import StorageUsage from "@/components/option/StorageUsage"
 
-import css from './Option.module.css'
+import css from "./Option.module.css"
 
 const SCROLL_OFFSET = 80
 
@@ -49,7 +49,7 @@ export function Option() {
         elm.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET
       window.scrollTo({
         top: targetPosition,
-        behavior: 'smooth',
+        behavior: "smooth",
       })
     }
   }
@@ -58,7 +58,7 @@ export function Option() {
     <div>
       <header className={css.titleHeader}>
         <h1 className={css.title}>
-          {APP_ID.split('-').map((n) => {
+          {APP_ID.split("-").map((n) => {
             return (
               <span key={n} className={css.titleSpan}>
                 {capitalize(n)}
@@ -90,10 +90,10 @@ export function Option() {
                 ref={setPopupElm}
               />
             </div>
-            <div className="pt-4">
+            <div className="pt-3">
               <HubBanner />
             </div>
-            <div className="pt-4">
+            <div>
               <StorageUsage />
             </div>
           </div>

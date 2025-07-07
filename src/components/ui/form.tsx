@@ -1,8 +1,8 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import * as LabelPrimitive from '@radix-ui/react-label'
-import { Slot } from '@radix-ui/react-slot'
+import * as React from "react"
+import * as LabelPrimitive from "@radix-ui/react-label"
+import { Slot } from "@radix-ui/react-slot"
 import {
   Controller,
   ControllerProps,
@@ -10,10 +10,10 @@ import {
   FieldValues,
   FormProvider,
   useFormContext,
-} from 'react-hook-form'
+} from "react-hook-form"
 
-import { cn } from '@/lib/utils'
-import { Label } from '@/components/ui/label'
+import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
 
 const Form = FormProvider
 
@@ -49,7 +49,7 @@ const useFormField = () => {
   const fieldState = getFieldState(fieldContext.name, formState)
 
   if (!fieldContext) {
-    throw new Error('useFormField should be used within <FormField>')
+    throw new Error("useFormField should be used within <FormField>")
   }
 
   const { id } = itemContext
@@ -84,7 +84,7 @@ const FormItem = React.forwardRef<
     </FormItemContext.Provider>
   )
 })
-FormItem.displayName = 'FormItem'
+FormItem.displayName = "FormItem"
 
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
@@ -96,8 +96,8 @@ const FormLabel = React.forwardRef<
     <Label
       ref={ref}
       className={cn(
-        error && 'text-destructive',
-        'font-semibold text-sm',
+        error && "text-destructive",
+        "font-semibold text-sm",
         className,
       )}
       htmlFor={formItemId}
@@ -105,7 +105,7 @@ const FormLabel = React.forwardRef<
     />
   )
 })
-FormLabel.displayName = 'FormLabel'
+FormLabel.displayName = "FormLabel"
 
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
@@ -127,7 +127,7 @@ const FormControl = React.forwardRef<
     />
   )
 })
-FormControl.displayName = 'FormControl'
+FormControl.displayName = "FormControl"
 
 const FormDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -139,12 +139,12 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn('text-[0.8rem] text-stone-800', className)}
+      className={cn("text-[0.8rem] text-gray-800", className)}
       {...props}
     />
   )
 })
-FormDescription.displayName = 'FormDescription'
+FormDescription.displayName = "FormDescription"
 
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
@@ -161,14 +161,14 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn('text-[0.8rem] font-medium text-destructive', className)}
+      className={cn("text-[0.8rem] font-medium text-destructive", className)}
       {...props}
     >
       {body}
     </p>
   )
 })
-FormMessage.displayName = 'FormMessage'
+FormMessage.displayName = "FormMessage"
 
 export {
   useFormField,

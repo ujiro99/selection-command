@@ -101,7 +101,7 @@ const StorageUsage: React.FC = () => {
   return (
     <div className={cn(s.menu, "w-[240px]")}>
       <h3 className={s.menuLabel}>Storage Usage</h3>
-      <div className="mb-6 w-full">
+      <div className="pl-2 mb-6 w-full">
         <h4 className="flex items-center text-sm text-gray-600 font-medium font-mono my-2">
           <Cloud className="inline mr-2 stroke-gray-500" size={17} />
           Sync Area
@@ -112,7 +112,7 @@ const StorageUsage: React.FC = () => {
           backgroundColor="#f3f4f6"
           className="w-full"
         />
-        <div className="text-[11px] text-gray-600 mt-3 px-1 grid grid-cols-2 gap-2">
+        <div className="text-[11px] text-gray-600 mt-3 pl-1 grid grid-cols-2 gap-2">
           <div className="flex items-center">
             <div className="w-3 h-3 bg-gray-600 rounded-sm mr-1"></div>
             <span>System: {storageData.sync.systemPercent}%</span>
@@ -134,7 +134,7 @@ const StorageUsage: React.FC = () => {
         </div>
       </div>
 
-      <div className="w-full">
+      <div className="pl-2 w-full">
         <h4 className="flex items-center text-sm text-gray-600 font-medium font-mono my-2">
           <Monitor className="inline mr-2 stroke-gray-500" size={17} />
           Local Area
@@ -145,7 +145,7 @@ const StorageUsage: React.FC = () => {
           backgroundColor="#f3f4f6"
           className="w-full"
         />
-        <div className="text-[11px] text-gray-600 mt-3 px-1 grid grid-cols-2 gap-2">
+        <div className="text-[11px] text-gray-600 mt-3 pl-1 grid grid-cols-2 gap-2">
           <div className="flex items-center">
             <div className="w-3 h-3 bg-gray-600 rounded-sm mr-1"></div>
             <span>System: {storageData.local.systemPercent}%</span>
