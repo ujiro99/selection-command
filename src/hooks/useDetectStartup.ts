@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
-import type { PopupProps } from '@/components/Popup'
-import { useSetting } from '@/hooks/useSetting'
-import { useLeftClickHold } from '@/hooks/useLeftClickHold'
-import { useSelectContext } from '@/hooks/useSelectContext'
-import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD } from '@/const'
-import { Ipc, TabCommand } from '@/services/ipc'
-import { isEmpty } from '@/lib/utils'
+import { useState, useEffect } from "react"
+import type { PopupProps } from "@/components/Popup"
+import { useSetting } from "@/hooks/useSetting"
+import { useLeftClickHold } from "@/hooks/useLeftClickHold"
+import { useSelectContext } from "@/hooks/useSelectContext"
+import { POPUP_ENABLED, STARTUP_METHOD, KEYBOARD } from "@/const"
+import { Ipc, TabCommand } from "@/services/ipc"
+import { isEmpty } from "@/lib/utils"
 
 type Props = PopupProps & {
   isHover?: boolean
@@ -85,9 +85,9 @@ export function useKeyboard(_: Props) {
         setDetectKey((prev) => !prev)
       }
     }
-    window.addEventListener('keyup', handleKeyUp)
+    window.addEventListener("keyup", handleKeyUp)
     return () => {
-      window.removeEventListener('keyup', handleKeyUp)
+      window.removeEventListener("keyup", handleKeyUp)
     }
   }, [method, keyboardParam])
 

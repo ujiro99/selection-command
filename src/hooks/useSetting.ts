@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { enhancedSettings } from '../services/enhancedSettings'
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { enhancedSettings } from "../services/enhancedSettings"
 import {
   settingsCache,
   CacheSection,
   CACHE_SECTIONS,
-} from '../services/settingsCache'
+} from "../services/settingsCache"
 
 import type {
   SettingsType,
@@ -14,9 +14,43 @@ import type {
   ShortcutSettings,
   UserSettings,
   PageRule,
-} from '@/types'
-import { isEmpty } from '@/lib/utils'
-import { INHERIT } from '@/const'
+} from "@/types"
+import { isEmpty } from "@/lib/utils"
+import { INHERIT } from "@/const"
+
+// Find page rule that matches current URL
+function findMatchingPageRule(
+  settings: Partial<SettingsType>,
+): PageRule | undefined {
+  if (!settings || typeof window === "undefined") return undefined
+
+  const rule = (settings.pageRules || [])
+    .filter((r) => !isEmpty(r.urlPattern))
+    .find((rule) => {
+      try {
+        const re = new RegExp(rule.urlPattern)
+        return window.location.href.match(re) != null
+      } catch {
+        return false
+      }
+    })
+
+  return rule
+}
+
+// Apply page rule to settings, modifying popupPlacement if needed
+function applyPageRuleToSettings(
+  settings: Partial<SettingsType>,
+  pageRule: PageRule | undefined,
+): void {
+  if (
+    pageRule != null &&
+    pageRule.popupPlacement !== INHERIT &&
+    settings.popupPlacement
+  ) {
+    settings.popupPlacement = pageRule.popupPlacement
+  }
+}
 
 // Type definitions for section-specific hook return values
 type SectionData<T extends CacheSection> =
@@ -64,7 +98,7 @@ function useAsyncData<T>(
       }
     } catch (err) {
       if (mountedRef.current) {
-        setError(err instanceof Error ? err : new Error('Unknown error'))
+        setError(err instanceof Error ? err : new Error("Unknown error"))
       }
     } finally {
       if (mountedRef.current) {
@@ -140,8 +174,23 @@ export function useUserSettings(forceFresh = false) {
     forceFresh,
   )
 
+  // Find matching page rule and apply to settings
+  const pageRule = useMemo(() => {
+    if (!data) return undefined
+    return findMatchingPageRule(data)
+  }, [data])
+
+  const userSettings = useMemo(() => {
+    if (!data) return {} as UserSettings
+
+    const settings = { ...data } as UserSettings
+    applyPageRuleToSettings(settings, pageRule)
+    return settings
+  }, [data, pageRule])
+
   return {
-    userSettings: (data || {}) as UserSettings,
+    userSettings,
+    pageRule,
     loading,
     error,
     refetch,
@@ -159,24 +208,16 @@ export function useSetting(
   settings: Partial<SettingsType>
   pageRule: PageRule | undefined
   loading: boolean
-  error: Error | null
-  refetch: () => Promise<void>
-  invalidateCache: (sectionsToInvalidate?: CacheSection[]) => void
 } {
   const sectionsRef = useRef(sections)
-  const sectionsKey = useMemo(() => sections.join(','), [sections])
+  const sectionsKey = useMemo(() => sections.join(","), [sections])
 
   // Update when sections change
   useEffect(() => {
     sectionsRef.current = sections
   }, [sections])
 
-  const {
-    data: settings,
-    loading,
-    error,
-    refetch,
-  } = useAsyncData<Partial<SettingsType>>(
+  const { data: settings, loading } = useAsyncData<Partial<SettingsType>>(
     () =>
       enhancedSettings.get({
         sections: sectionsRef.current,
@@ -189,53 +230,26 @@ export function useSetting(
     })),
   )
 
-  // Page rule calculation
+  // Find matching page rule using centralized logic
   const pageRule = useMemo(() => {
-    if (!settings || typeof window === 'undefined') return undefined
-
-    const rule = (settings.pageRules || [])
-      .filter((r) => !isEmpty(r.urlPattern))
-      .find((rule) => {
-        try {
-          const re = new RegExp(rule.urlPattern)
-          return window.location.href.match(re) != null
-        } catch {
-          return false
-        }
-      })
-
-    if (
-      rule != null &&
-      rule.popupPlacement !== INHERIT &&
-      settings.popupPlacement
-    ) {
-      settings.popupPlacement = rule.popupPlacement
+    if (!settings) return undefined
+    const rule = findMatchingPageRule(settings)
+    if (rule) {
+      applyPageRuleToSettings(settings, rule)
     }
-
     return rule
   }, [settings])
-
-  const invalidateCache = useCallback(
-    (sectionsToInvalidate?: CacheSection[]) => {
-      const targetSections = sectionsToInvalidate || sectionsRef.current
-      enhancedSettings.invalidateCache(targetSections)
-    },
-    [],
-  )
 
   return {
     settings: settings || {},
     pageRule,
     loading,
-    error,
-    refetch,
-    invalidateCache,
   }
 }
 
 // Settings hook with image cache applied
 export function useSettingsWithImageCache() {
-  const { settings, pageRule, loading } = useSetting([
+  const { settings, loading } = useSetting([
     CACHE_SECTIONS.COMMANDS,
     CACHE_SECTIONS.USER_SETTINGS,
     CACHE_SECTIONS.CACHES,
@@ -276,7 +290,5 @@ export function useSettingsWithImageCache() {
     commands: commandsWithCache,
     folders: foldersWithCache,
     iconUrls,
-    pageRule,
-    loading,
   }
 }
