@@ -119,6 +119,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               className={cn(css.popup, isPreview && "z-10")}
               style={userStyles}
               onOpenAutoFocus={noFocus}
+              onCloseAutoFocus={noFocus}
               {...onHover(handleOnHover, true)}
             >
               {!isContextMenu ? <Menu /> : null}

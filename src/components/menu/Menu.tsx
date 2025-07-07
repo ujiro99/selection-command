@@ -186,6 +186,7 @@ const MenuFolder = (props: {
         sideOffset={isHorizontal ? 2 : -2}
         className={clsx({ flex: isHorizontal })}
         ref={contentRef}
+        onCloseAutoFocus={(e) => e.preventDefault()}
         {...onHover(props.onHoverContent, folder.id)}
       >
         {!isHorizontal ? (
