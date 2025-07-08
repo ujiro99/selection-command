@@ -222,7 +222,7 @@
     "message": "Definir comandos para ejecutar basados en el texto seleccionado."
   },
   "Option_commands_desc_count": {
-    "message": " / 100 Registros"
+    "message": " registros"
   },
   "Option_title": {
     "message": "Título"

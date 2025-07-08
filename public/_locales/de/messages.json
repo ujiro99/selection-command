@@ -222,7 +222,7 @@
     "message": "Befehle definieren, die basierend auf dem ausgewählten Text ausgeführt werden sollen."
   },
   "Option_commands_desc_count": {
-    "message": " / 100 Einträge"
+    "message": " Einträge"
   },
   "Option_title": {
     "message": "Titel"

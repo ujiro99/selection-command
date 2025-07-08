@@ -222,7 +222,7 @@
     "message": "선택한 텍스트를 기반으로 실행할 명령을 정의합니다."
   },
   "Option_commands_desc_count": {
-    "message": " / 100개 항목"
+    "message": " 개"
   },
   "Option_title": {
     "message": "제목"

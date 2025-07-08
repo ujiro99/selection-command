@@ -222,7 +222,7 @@
     "message": "Определяет команды для выполнения на основе выбранного текста."
   },
   "Option_commands_desc_count": {
-    "message": " / 100 элементов"
+    "message": " элементов"
   },
   "Option_title": {
     "message": "Название"

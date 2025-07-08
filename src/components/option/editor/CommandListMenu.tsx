@@ -1,9 +1,9 @@
-import React from 'react'
-import { Button } from '@/components/ui/button'
-import { Terminal, FolderPlus, Search } from 'lucide-react'
-import { Tooltip } from '@/components/Tooltip'
-import { HUB_URL } from '@/const'
-import { t as _t } from '@/services/i18n'
+import React from "react"
+import { Button } from "@/components/ui/button"
+import { Terminal, FolderPlus, Search } from "lucide-react"
+import { Tooltip } from "@/components/Tooltip"
+import { HUB_URL } from "@/const"
+import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 interface Props {
@@ -25,7 +25,7 @@ export const CommandListMenu: React.FC<Props> = ({
     <div className="relative h-10 flex items-end">
       <span className="text-sm bg-gray-100 px-2 py-0.5 rounded font-mono tracking-tight">
         {commandCount ?? 0}
-        {t('commands_desc_count')}
+        {t("commands_desc_count")}
       </span>
       <Button
         type="button"
@@ -35,11 +35,11 @@ export const CommandListMenu: React.FC<Props> = ({
         onClick={onAddFolder}
       >
         <FolderPlus />
-        {t('folders')}
+        {t("folders")}
       </Button>
       <Tooltip
         positionElm={addFolderButtonRef.current}
-        text={t('folders_tooltip')}
+        text={t("folders_tooltip")}
       />
       <Button
         type="button"
@@ -49,11 +49,11 @@ export const CommandListMenu: React.FC<Props> = ({
         onClick={onAddCommand}
       >
         <Terminal className="stroke-gray-600 group-hover:stroke-gray-700" />
-        {t('Command')}
+        {t("Command")}
       </Button>
       <Tooltip
         positionElm={addCommandButtonRef.current}
-        text={t('Command_tooltip')}
+        text={t("Command_tooltip")}
       />
       <Button
         variant="outline"
