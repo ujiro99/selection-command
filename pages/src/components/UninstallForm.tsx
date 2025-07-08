@@ -28,17 +28,124 @@ const SubmitStatus = {
 
 type SubmitStatusType = (typeof SubmitStatus)[keyof typeof SubmitStatus]
 
-export function UninstallForm() {
-  const { dict, lang } = useLocale()
-  const [selectedReasons, setSelectedReasons] = useState<string[]>([])
-  const [selectedWantedToUse, setSelectedWantedToUse] = useState<string[]>([])
-  const [details, setDetails] = useState("")
-  const [otherReason, setOtherReason] = useState("")
-  const [otherWantedToUse, setOtherWantedToUse] = useState("")
+// Helper function to shuffle options and put "Other" at the end
+function shuffleOptionsWithOtherLast(
+  entries: [string, unknown][],
+  otherOptionKey: string,
+): UninstallReason[] {
+  const otherEntry = entries.find(([id]) => id === otherOptionKey)
+  const otherEntries = entries.filter(([id]) => id !== otherOptionKey)
+
+  // Shuffle entries except for "Other" option
+  const shuffledEntries = otherEntries.sort(() => Math.random() - 0.5)
+
+  // Add "Other" option at the end if it exists
+  const finalEntries = otherEntry
+    ? [...shuffledEntries, otherEntry]
+    : shuffledEntries
+
+  return finalEntries.map(([id, label]) => ({
+    id,
+    label: label as string,
+  }))
+}
+
+// Custom hook for form state management
+function useUninstallFormState() {
+  const [formState, setFormState] = useState({
+    selectedReasons: [] as string[],
+    selectedWantedToUse: [] as string[],
+    details: "",
+    otherReason: "",
+    otherWantedToUse: "",
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<SubmitStatusType>(
     SubmitStatus.IDLE,
   )
+
+  const updateFormState = (updates: Partial<typeof formState>) => {
+    setFormState((prev) => ({ ...prev, ...updates }))
+  }
+
+  const resetForm = () => {
+    setFormState({
+      selectedReasons: [],
+      selectedWantedToUse: [],
+      details: "",
+      otherReason: "",
+      otherWantedToUse: "",
+    })
+  }
+
+  return {
+    formState,
+    updateFormState,
+    resetForm,
+    isSubmitting,
+    setIsSubmitting,
+    submitStatus,
+    setSubmitStatus,
+  }
+}
+
+// CheckboxGroup component for reusable checkbox logic
+type CheckboxGroupProps = {
+  options: UninstallReason[]
+  selectedValues: string[]
+  onSelectionChange: (values: string[]) => void
+  idPrefix?: string
+}
+
+function CheckboxGroup({
+  options,
+  selectedValues,
+  onSelectionChange,
+  idPrefix = "",
+}: CheckboxGroupProps) {
+  const handleChange = (optionId: string, checked: boolean) => {
+    if (checked) {
+      onSelectionChange([...selectedValues, optionId])
+    } else {
+      onSelectionChange(selectedValues.filter((id) => id !== optionId))
+    }
+  }
+
+  return (
+    <div className="space-y-3">
+      {options.map((option) => (
+        <div key={option.id} className="flex items-center space-x-2">
+          <Checkbox
+            id={`${idPrefix}${option.id}`}
+            checked={selectedValues.includes(option.id)}
+            onCheckedChange={(checked: boolean) =>
+              handleChange(option.id, checked)
+            }
+          />
+          <label
+            htmlFor={`${idPrefix}${option.id}`}
+            className="text-sm font-medium cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            {option.label}
+          </label>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export function UninstallForm() {
+  const { dict, lang } = useLocale()
+  const {
+    formState,
+    updateFormState,
+    resetForm,
+    isSubmitting,
+    setIsSubmitting,
+    submitStatus,
+    setSubmitStatus,
+  } = useUninstallFormState()
+
   const [uninstallReasons, setUninstallReasons] = useState<UninstallReason[]>(
     [],
   )
@@ -51,52 +158,14 @@ export function UninstallForm() {
   useEffect(() => {
     // Process uninstall reasons
     const reasonEntries = Object.entries(dict.uninstallForm.reasons)
-    const otherReasonEntry = reasonEntries.find(
-      ([id]) => id === UNINSTALL_OTHER_OPTION,
-    )
-    const otherReasonEntries = reasonEntries.filter(
-      ([id]) => id !== UNINSTALL_OTHER_OPTION,
-    )
-
-    // Shuffle entries except for "Other" option
-    const shuffledReasonEntries = otherReasonEntries.sort(
-      () => Math.random() - 0.5,
-    )
-
-    // Add "Other" option at the end if it exists
-    const finalReasonEntries = otherReasonEntry
-      ? [...shuffledReasonEntries, otherReasonEntry]
-      : shuffledReasonEntries
-
     setUninstallReasons(
-      finalReasonEntries.map(([id, label]) => ({
-        id,
-        label: label as string,
-      })),
+      shuffleOptionsWithOtherLast(reasonEntries, UNINSTALL_OTHER_OPTION),
     )
 
     // Process wanted to use options
     const wantedEntries = Object.entries(dict.uninstallForm.wantedToUse)
-    const otherWantedEntry = wantedEntries.find(([id]) => id === OTHER_OPTION)
-    const otherWantedEntries = wantedEntries.filter(
-      ([id]) => id !== OTHER_OPTION,
-    )
-
-    // Shuffle entries except for "Other" option
-    const shuffledWantedEntries = otherWantedEntries.sort(
-      () => Math.random() - 0.5,
-    )
-
-    // Add "Other" option at the end if it exists
-    const finalWantedEntries = otherWantedEntry
-      ? [...shuffledWantedEntries, otherWantedEntry]
-      : shuffledWantedEntries
-
     setWantedToUseOptions(
-      finalWantedEntries.map(([id, label]) => ({
-        id,
-        label: label as string,
-      })),
+      shuffleOptionsWithOtherLast(wantedEntries, OTHER_OPTION),
     )
 
     setIsInitialized(true)
@@ -109,14 +178,14 @@ export function UninstallForm() {
 
     try {
       const response = await submit({
-        uninstallReason: selectedReasons,
-        wantedToUse: selectedWantedToUse,
-        details,
-        otherReason: selectedReasons.includes(UNINSTALL_OTHER_OPTION)
-          ? otherReason
+        uninstallReason: formState.selectedReasons,
+        wantedToUse: formState.selectedWantedToUse,
+        details: formState.details,
+        otherReason: formState.selectedReasons.includes(UNINSTALL_OTHER_OPTION)
+          ? formState.otherReason
           : "",
-        otherWantedToUse: selectedWantedToUse.includes(OTHER_OPTION)
-          ? otherWantedToUse
+        otherWantedToUse: formState.selectedWantedToUse.includes(OTHER_OPTION)
+          ? formState.otherWantedToUse
           : "",
         locale: lang,
       } as UninstallFormType)
@@ -127,11 +196,7 @@ export function UninstallForm() {
 
       await sleep(1000)
       setSubmitStatus(SubmitStatus.SUCCESS)
-      setSelectedReasons([])
-      setSelectedWantedToUse([])
-      setOtherReason("")
-      setOtherWantedToUse("")
-      setDetails("")
+      resetForm()
     } catch (error) {
       console.error("Error submitting form:", error)
       setSubmitStatus(SubmitStatus.ERROR)
@@ -187,48 +252,30 @@ export function UninstallForm() {
             <SquareArrowOutUpRight size={14} />
           </a>
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* wanted to use */}
             <div>
-              {/* wanted to use */}
               <h2 className="text-lg font-semibold mb-4">
                 {dict.uninstallForm.wantedToUseTitle}
               </h2>
-              <div className="space-y-3">
-                {wantedToUseOptions.map((option) => (
-                  <div key={option.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`wanted-${option.id}`}
-                      checked={selectedWantedToUse.includes(option.id)}
-                      onCheckedChange={(checked: boolean) => {
-                        if (checked) {
-                          setSelectedWantedToUse([
-                            ...selectedWantedToUse,
-                            option.id,
-                          ])
-                        } else {
-                          setSelectedWantedToUse(
-                            selectedWantedToUse.filter(
-                              (id) => id !== option.id,
-                            ),
-                          )
-                        }
-                      }}
-                    />
-                    <label
-                      htmlFor={`wanted-${option.id}`}
-                      className="text-sm font-medium cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {option.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
+              <CheckboxGroup
+                options={wantedToUseOptions}
+                selectedValues={formState.selectedWantedToUse}
+                onSelectionChange={(values) =>
+                  updateFormState({ selectedWantedToUse: values })
+                }
+                idPrefix="wanted-"
+              />
 
-              <Collapsible open={selectedWantedToUse.includes(OTHER_OPTION)}>
+              <Collapsible
+                open={formState.selectedWantedToUse.includes(OTHER_OPTION)}
+              >
                 <CollapsibleContent className={css.CollapsibleContent}>
                   <div className="ml-6 mt-2">
                     <Input
-                      value={otherWantedToUse}
-                      onChange={(e) => setOtherWantedToUse(e.target.value)}
+                      value={formState.otherWantedToUse}
+                      onChange={(e) =>
+                        updateFormState({ otherWantedToUse: e.target.value })
+                      }
                       placeholder={dict.uninstallForm.wantedToUsePlaceholder}
                     />
                   </div>
@@ -236,45 +283,31 @@ export function UninstallForm() {
               </Collapsible>
             </div>
 
+            {/* uninstall reason */}
             <div>
-              {/* uninstall reason */}
               <h2 className="text-lg font-semibold mb-4">
                 {dict.uninstallForm.reasonTitle}
               </h2>
-              <div className="space-y-3">
-                {uninstallReasons.map((reason) => (
-                  <div key={reason.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={reason.id}
-                      checked={selectedReasons.includes(reason.id)}
-                      onCheckedChange={(checked: boolean) => {
-                        if (checked) {
-                          setSelectedReasons([...selectedReasons, reason.id])
-                        } else {
-                          setSelectedReasons(
-                            selectedReasons.filter((id) => id !== reason.id),
-                          )
-                        }
-                      }}
-                    />
-                    <label
-                      htmlFor={reason.id}
-                      className="text-sm font-medium cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {reason.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
+              <CheckboxGroup
+                options={uninstallReasons}
+                selectedValues={formState.selectedReasons}
+                onSelectionChange={(values) =>
+                  updateFormState({ selectedReasons: values })
+                }
+              />
 
               <Collapsible
-                open={selectedReasons.includes(UNINSTALL_OTHER_OPTION)}
+                open={formState.selectedReasons.includes(
+                  UNINSTALL_OTHER_OPTION,
+                )}
               >
                 <CollapsibleContent className={css.CollapsibleContent}>
                   <div className="ml-6 mt-2">
                     <Input
-                      value={otherReason}
-                      onChange={(e) => setOtherReason(e.target.value)}
+                      value={formState.otherReason}
+                      onChange={(e) =>
+                        updateFormState({ otherReason: e.target.value })
+                      }
                       placeholder={dict.uninstallForm.otherReasonPlaceholder}
                     />
                   </div>
@@ -282,13 +315,14 @@ export function UninstallForm() {
               </Collapsible>
             </div>
 
+            {/* detail */}
             <div>
               <h2 className="text-lg font-semibold mb-4">
                 {dict.uninstallForm.detailsTitle}
               </h2>
               <Textarea
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
+                value={formState.details}
+                onChange={(e) => updateFormState({ details: e.target.value })}
                 className="min-h-[100px]"
                 placeholder={dict.uninstallForm.detailsPlaceholder}
               />
@@ -305,8 +339,8 @@ export function UninstallForm() {
                 type="submit"
                 className="rounded-xl font-semibold bg-stone-700 px-8"
                 disabled={
-                  (selectedReasons.length === 0 &&
-                    selectedWantedToUse.length === 0) ||
+                  (formState.selectedReasons.length === 0 &&
+                    formState.selectedWantedToUse.length === 0) ||
                   isSubmitting
                 }
               >
