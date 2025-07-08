@@ -222,7 +222,7 @@
     "message": "Define commands to execute based on selected text."
   },
   "Option_commands_desc_count": {
-    "message": " / 100 Records"
+    "message": " items"
   },
   "Option_title": {
     "message": "Title"

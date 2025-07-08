@@ -1,14 +1,14 @@
-import { useState, useEffect, createContext, forwardRef } from 'react'
-import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
-import { Menu } from '@/components/menu/Menu'
-import { useUserSettings } from '@/hooks/useSetting'
-import { useDetectStartup } from '@/hooks/useDetectStartup'
-import { useTabCommandReceiver } from '@/hooks/useTabCommandReceiver'
-import { hexToHsl, isMac, onHover, cn } from '@/lib/utils'
-import { t } from '@/services/i18n'
-import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from '@/const'
+import { useState, useEffect, createContext, forwardRef } from "react"
+import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
+import { Menu } from "@/components/menu/Menu"
+import { useUserSettings } from "@/hooks/useSetting"
+import { useDetectStartup } from "@/hooks/useDetectStartup"
+import { useTabCommandReceiver } from "@/hooks/useTabCommandReceiver"
+import { hexToHsl, isMac, onHover, cn } from "@/lib/utils"
+import { t } from "@/services/i18n"
+import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
 
-import css from './Popup.module.css'
+import css from "./Popup.module.css"
 
 export type PopupProps = {
   positionElm: Element | null
@@ -46,7 +46,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       userSettings?.userStyles &&
       userSettings.userStyles.reduce((acc: any, cur: any) => {
         if (cur.value == null) return acc
-        if (cur.name === 'background-color' || cur.name === 'border-color') {
+        if (cur.name === "background-color" || cur.name === "border-color") {
           const hsl = hexToHsl(cur.value)
           return {
             ...acc,
@@ -116,9 +116,10 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               align={align}
               sideOffset={sideOffset}
               alignOffset={alignOffset}
-              className={cn(css.popup, isPreview && 'z-10')}
+              className={cn(css.popup, isPreview && "z-10 mt-2")}
               style={userStyles}
               onOpenAutoFocus={noFocus}
+              onCloseAutoFocus={noFocus}
               {...onHover(handleOnHover, true)}
             >
               {!isContextMenu ? <Menu /> : null}
@@ -136,7 +137,7 @@ export function PreviewDesc(props: PopupProps) {
   const { userSettings } = useUserSettings()
   const key = userSettings?.startupMethod?.keyboardParam
 
-  const os = isMac() ? 'mac' : 'windows'
+  const os = isMac() ? "mac" : "windows"
   const keyLabel = t(`Option_keyboardParam_${key}_${os}`)
 
   return (
@@ -145,16 +146,16 @@ export function PreviewDesc(props: PopupProps) {
         <span>Preview...</span>
       </p>
       {isContextMenu && (
-        <p className={css.previewDescription}>{t('previewOnContextMenu')}</p>
+        <p className={css.previewDescription}>{t("previewOnContextMenu")}</p>
       )}
       {!visible && isKeyboard && (
         <p className={css.previewDescription}>
-          {t('previewOnKeyboard', [keyLabel])}
+          {t("previewOnKeyboard", [keyLabel])}
         </p>
       )}
       {!visible && isLeftClickHold && (
         <p className={css.previewDescription}>
-          {t('previewOnLeftClickHold', [keyLabel])}
+          {t("previewOnLeftClickHold", [keyLabel])}
         </p>
       )}
     </>

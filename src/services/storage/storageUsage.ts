@@ -118,6 +118,13 @@ const getStorageUsage = async (): Promise<StorageUsageData> => {
     const localUsed = localTotalBytes
     const localFree = localLimitTotal - localUsed
 
+    const formatPercentage = (value: number): number => {
+      const percentage = value * 100
+      return Number(
+        percentage >= 10 ? percentage.toFixed(0) : percentage.toFixed(1),
+      )
+    }
+
     return {
       sync: {
         total: syncLimitTotal,
@@ -126,16 +133,10 @@ const getStorageUsage = async (): Promise<StorageUsageData> => {
         system: syncSystemBytes,
         reservedRemain,
         commands: syncCommandBytes,
-        systemPercent: Number(
-          ((syncSystemBytes / syncLimitTotal) * 100).toFixed(0),
-        ),
-        reservedPercent: Number(
-          ((reservedRemain / syncLimitTotal) * 100).toFixed(0),
-        ),
-        commandsPercent: Number(
-          ((syncCommandBytes / syncLimitTotal) * 100).toFixed(0),
-        ),
-        freePercent: Number(((syncFree / syncLimitTotal) * 100).toFixed(0)),
+        systemPercent: formatPercentage(syncSystemBytes / syncLimitTotal),
+        reservedPercent: formatPercentage(reservedRemain / syncLimitTotal),
+        commandsPercent: formatPercentage(syncCommandBytes / syncLimitTotal),
+        freePercent: formatPercentage(syncFree / syncLimitTotal),
       },
       local: {
         total: localLimitTotal,
@@ -144,16 +145,10 @@ const getStorageUsage = async (): Promise<StorageUsageData> => {
         system: localSystemBytes,
         backup: localBackupBytes,
         commands: localCommandBytes,
-        systemPercent: Number(
-          ((localSystemBytes / localLimitTotal) * 100).toFixed(0),
-        ),
-        backupPercent: Number(
-          ((localBackupBytes / localLimitTotal) * 100).toFixed(0),
-        ),
-        commandsPercent: Number(
-          ((localCommandBytes / localLimitTotal) * 100).toFixed(0),
-        ),
-        freePercent: Number(((localFree / localLimitTotal) * 100).toFixed(0)),
+        systemPercent: formatPercentage(localSystemBytes / localLimitTotal),
+        backupPercent: formatPercentage(localBackupBytes / localLimitTotal),
+        commandsPercent: formatPercentage(localCommandBytes / localLimitTotal),
+        freePercent: formatPercentage(localFree / localLimitTotal),
       },
     }
   } catch (error) {

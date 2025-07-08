@@ -222,7 +222,7 @@
     "message": "Definisce i comandi da eseguire in base al testo selezionato."
   },
   "Option_commands_desc_count": {
-    "message": " / 100 elementi"
+    "message": " elementi"
   },
   "Option_title": {
     "message": "Titolo"

@@ -1,7 +1,6 @@
 .menuLabel {
-  font-family: var(--font-monospace);
+  @apply font-mono text-gray-800;
   font-size: 1.2rem;
-  color: #444;
 }
 
 .banner {
@@ -16,7 +15,7 @@
 }
 
 .description {
+  @apply font-mono text-gray-800;
   font-size: 0.8rem;
-  font-family: var(--font-family);
   padding-left: 4px;
 }

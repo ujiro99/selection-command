@@ -222,7 +222,7 @@
     "message": "定义基于选中文本执行的命令。"
   },
   "Option_commands_desc_count": {
-    "message": " / 100个项目"
+    "message": " 个"
   },
   "Option_title": {
     "message": "标题"

@@ -28,6 +28,18 @@ function ScrollArea({
   )
 }
 
+function ScrollAreaConditional({
+  scrollEnabled = true,
+  ...props
+}: React.ComponentProps<typeof ScrollAreaPrimitive.Root> & {
+  scrollEnabled?: boolean
+}) {
+  if (!scrollEnabled) {
+    return <>{props.children}</>
+  }
+  return <ScrollArea {...props}>{props.children}</ScrollArea>
+}
+
 function ScrollBar({
   className,
   orientation = "vertical",
@@ -55,4 +67,4 @@ function ScrollBar({
   )
 }
 
-export { ScrollArea, ScrollBar }
+export { ScrollArea, ScrollAreaConditional, ScrollBar }

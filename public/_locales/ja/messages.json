@@ -222,7 +222,7 @@
     "message": "選択したテキストを元に実行するコマンドを定義します。"
   },
   "Option_commands_desc_count": {
-    "message": " / 100 件"
+    "message": " 件"
   },
   "Option_title": {
     "message": "タイトル"

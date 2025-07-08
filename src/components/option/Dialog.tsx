@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   Dialog as DialogRoot,
   DialogContent,
@@ -7,11 +7,12 @@ import {
   DialogFooter,
   DialogTitle,
   DialogPortal,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 
-import { t } from '@/services/i18n'
+import { t } from "@/services/i18n"
+import { cn } from "@/lib/utils"
 
-import css from './Dialog.module.css'
+import css from "./Dialog.module.css"
 
 type Props = {
   open: boolean
@@ -19,6 +20,7 @@ type Props = {
   title: string
   description: () => React.ReactNode
   okText: string
+  okDisabled?: boolean
   children?: React.ReactNode
 }
 
@@ -40,14 +42,18 @@ export function Dialog(props: Props) {
           </DialogHeader>
           {props.children}
           <DialogFooter>
-            <button className={css.button} onClick={() => props.onClose(true)}>
+            <button
+              className={cn(css.button, "disabled:opacity-50")}
+              onClick={() => props.onClose(true)}
+              disabled={props.okDisabled}
+            >
               {props.okText}
             </button>
             <button
               className={css.buttonCancel}
               onClick={() => props.onClose(false)}
             >
-              {t('labelCancel')}
+              {t("labelCancel")}
             </button>
           </DialogFooter>
         </DialogContent>
