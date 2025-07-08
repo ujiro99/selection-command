@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Français',
@@ -154,6 +154,8 @@ const lang = {
       "Merci d'avoir utilisé Selection Command jusqu'à présent. Nous sommes désolés de vous voir partir, mais nous serions reconnaissants si vous pouviez répondre à l'enquête ci-dessous pour nous aider à améliorer l'extension.",
     reinstall:
       "Si vous l'avez désinstallé par erreur, vous pouvez le réinstaller via le lien ci-dessous.",
+    wantedToUseTitle: "Quelles fonctionnalités souhaitiez-vous utiliser ? (choix multiples)",
+    wantedToUsePlaceholder: "Veuillez nous dire ce que vous souhaitiez faire",
     reasonTitle:
       'Veuillez nous indiquer la raison de la désinstallation. (Choix multiples possibles)',
     otherReasonPlaceholder: 'Veuillez préciser la raison',
@@ -168,6 +170,12 @@ const lang = {
         'Merci pour votre réponse. Nous apprécions vos commentaires.\nSi vous souhaitez nous contacter directement en dehors de ce formulaire, veuillez envoyer un e-mail à takeda.yujiro@gmail.com avec un objet explicite.',
     },
     error: "L'envoi a échoué. Veuillez réessayer dans quelques instants.",
+    wantedToUse: {
+      search_selected_text: "Rechercher du texte sélectionné",
+      ai_chatbot: "Chatbot IA (comme ChatGPT)",
+      link_preview: "Aperçu des liens",
+      [OTHER_OPTION]: "Autre",
+    },
     reasons: {
       difficult_to_use: "Je ne savais pas comment l'utiliser",
       not_user_friendly: 'Pas convivial',
@@ -177,6 +185,9 @@ const lang = {
       found_better: 'Trouvé une meilleure alternative',
       no_longer_needed: "N'est plus nécessaire",
       language_not_supported: 'Langue non prise en charge',
+      search_engine_is_not_available: 'Moteur de recherche non disponible',
+      i_dont_know_how_to_add_commands: 'Ne sais pas comment ajouter des commandes',
+      settings_are_complicated: 'Les paramètres sont trop compliqués',
       [UNINSTALL_OTHER_OPTION]: 'Autre',
     },
   },

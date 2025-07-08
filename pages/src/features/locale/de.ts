@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Deutsch',
@@ -154,6 +154,8 @@ const lang = {
       'Vielen Dank für die bisherige Nutzung von Selection Command. Es tut uns leid, Sie gehen zu sehen, aber wir wären dankbar, wenn Sie die folgende Umfrage beantworten könnten, um uns bei der Verbesserung der Erweiterung zu helfen.',
     reinstall:
       'Wenn Sie es versehentlich deinstalliert haben, können Sie es über den folgenden Link neu installieren.',
+    wantedToUseTitle: 'Welche Funktionen wollten Sie nutzen? (Mehrfachauswahl möglich)',
+    wantedToUsePlaceholder: 'Bitte teilen Sie uns mit, was Sie erreichen wollten',
     reasonTitle:
       'Bitte teilen Sie uns den Grund für die Deinstallation mit. (Mehrfachauswahl möglich)',
     otherReasonPlaceholder: 'Bitte geben Sie den Grund an',
@@ -169,6 +171,12 @@ const lang = {
     },
     error:
       'Der Sendevorgang ist fehlgeschlagen. Bitte versuchen Sie es in Kürze erneut.',
+    wantedToUse: {
+      search_selected_text: 'Text-Suche',
+      ai_chatbot: 'KI-Chatbot (wie ChatGPT)',
+      link_preview: 'Link-Vorschau',
+      [OTHER_OPTION]: 'Sonstiges',
+    },
     reasons: {
       difficult_to_use: 'Ich wusste nicht, wie man es benutzt',
       not_user_friendly: 'Nicht benutzerfreundlich',
@@ -178,6 +186,9 @@ const lang = {
       found_better: 'Bessere Alternative gefunden',
       no_longer_needed: 'Wird nicht mehr benötigt',
       language_not_supported: 'Sprache wird nicht unterstützt',
+      search_engine_is_not_available: 'Gewünschte Suchmaschine nicht verfügbar',
+      i_dont_know_how_to_add_commands: 'Weiß nicht, wie man Befehle hinzufügt',
+      settings_are_complicated: 'Einstellungen sind zu kompliziert',
       [UNINSTALL_OTHER_OPTION]: 'Sonstiges',
     },
   },

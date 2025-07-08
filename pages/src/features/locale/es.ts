@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Español',
@@ -154,6 +154,8 @@ const lang = {
       'Gracias por usar Selection Command hasta ahora. Lamentamos verlo partir, pero agradeceríamos si pudiera responder la encuesta a continuación para ayudarnos a mejorar la extensión.',
     reinstall:
       'Si lo ha desinstalado por error, puede reinstalarlo a través del enlace a continuación.',
+    wantedToUseTitle: '¿Qué funciones quería usar? (selección múltiple)',
+    wantedToUsePlaceholder: 'Díganos qué quería hacer',
     reasonTitle:
       'Por favor, indíquenos la razón de la desinstalación. (Selección múltiple posible)',
     otherReasonPlaceholder: 'Por favor, especifique la razón',
@@ -169,6 +171,12 @@ const lang = {
     },
     error:
       'El envío ha fallado. Por favor, inténtelo de nuevo en unos momentos.',
+    wantedToUse: {
+      search_selected_text: 'Búsqueda de texto',
+      ai_chatbot: 'Chatbot de IA (como ChatGPT)',
+      link_preview: 'Vista previa de enlaces',
+      [OTHER_OPTION]: 'Otro',
+    },
     reasons: {
       difficult_to_use: 'No supe cómo usarlo',
       not_user_friendly: 'No es fácil de usar',
@@ -178,6 +186,9 @@ const lang = {
       found_better: 'Encontré una mejor alternativa',
       no_longer_needed: 'Ya no lo necesito',
       language_not_supported: 'Idioma no soportado',
+      search_engine_is_not_available: 'Motor de búsqueda no disponible',
+      i_dont_know_how_to_add_commands: 'No sé cómo agregar comandos',
+      settings_are_complicated: 'Las configuraciones son demasiado complicadas',
       [UNINSTALL_OTHER_OPTION]: 'Otro',
     },
   },

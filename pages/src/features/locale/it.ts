@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Italiano',
@@ -155,6 +155,8 @@ const lang = {
       "Grazie per aver utilizzato Selection Command finora. È un peccato che tu stia andando via, ma per migliorare l'estensione in futuro, saremmo grati se potessi rispondere al sondaggio sottostante.",
     reinstall:
       'Se hai disinstallato per errore, puoi reinstallare tramite il link sottostante.',
+    wantedToUseTitle: 'Quali funzionalità volevi utilizzare? (scelta multipla)',
+    wantedToUsePlaceholder: 'Raccontaci cosa volevi fare',
     reasonTitle: 'Perché hai disinstallato? (Scelta multipla)',
     otherReasonPlaceholder: 'Per favore, specifica il motivo',
     detailsTitle: 'Se possibile, per favore, fornisci maggiori dettagli.',
@@ -168,6 +170,12 @@ const lang = {
         'Grazie per la tua risposta. Apprezziamo il tuo prezioso feedback.\nSe hai ulteriori feedback oltre a questo modulo, contatta takeda.yujiro@gmail.com con un oggetto chiaro.',
     },
     error: 'Invio fallito. Per favore, riprova più tardi.',
+    wantedToUse: {
+      search_selected_text: 'Ricerca testo selezionato',
+      ai_chatbot: 'Chatbot AI (come ChatGPT)',
+      link_preview: 'Anteprima link',
+      [OTHER_OPTION]: 'Altro',
+    },
     reasons: {
       difficult_to_use: 'Non sapevo come usarlo',
       not_user_friendly: 'Non facile da usare',
@@ -177,6 +185,9 @@ const lang = {
       found_better: "Ho trovato un'alternativa migliore",
       no_longer_needed: 'Non più necessario',
       language_not_supported: 'Lingua non supportata',
+      search_engine_is_not_available: 'Motore di ricerca non disponibile',
+      i_dont_know_how_to_add_commands: 'Non so come aggiungere comandi',
+      settings_are_complicated: 'Le impostazioni sono troppo complicate',
       [UNINSTALL_OTHER_OPTION]: 'Altro',
     },
   },

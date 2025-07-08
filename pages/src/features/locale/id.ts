@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Bahasa Indonesia',
@@ -153,6 +153,8 @@ const lang = {
       'Terima kasih telah menggunakan Selection Command sampai sekarang. Sayang sekali Anda pergi, tetapi untuk meningkatkan ekstensi di masa depan, kami akan berterima kasih jika Anda dapat menjawab survei di bawah ini.',
     reinstall:
       'Jika Anda mencopot secara tidak sengaja, Anda dapat menginstal ulang melalui tautan di bawah.',
+    wantedToUseTitle: 'Fitur apa yang ingin Anda gunakan? (pilihan ganda)',
+    wantedToUsePlaceholder: 'Silakan beritahu kami apa yang ingin Anda lakukan',
     reasonTitle: 'Mengapa Anda mencopot? (Pilihan ganda)',
     otherReasonPlaceholder: 'Silakan tentukan alasannya',
     detailsTitle: 'Jika memungkinkan, mohon berikan detail lebih lanjut.',
@@ -166,6 +168,12 @@ const lang = {
         'Terima kasih atas tanggapan Anda. Kami menghargai umpan balik berharga Anda.\nJika Anda memiliki umpan balik lebih lanjut selain formulir ini, silakan hubungi takeda.yujiro@gmail.com dengan subjek yang jelas.',
     },
     error: 'Gagal mengirim. Silakan coba lagi nanti.',
+    wantedToUse: {
+      search_selected_text: 'Mencari teks yang dipilih',
+      ai_chatbot: 'Chatbot AI (seperti ChatGPT)',
+      link_preview: 'Pratinjau tautan',
+      [OTHER_OPTION]: 'Lainnya',
+    },
     reasons: {
       difficult_to_use: 'Tidak tahu cara menggunakannya',
       not_user_friendly: 'Tidak ramah pengguna',
@@ -175,6 +183,9 @@ const lang = {
       found_better: 'Menemukan alternatif yang lebih baik',
       no_longer_needed: 'Tidak diperlukan lagi',
       language_not_supported: 'Bahasa tidak didukung',
+      search_engine_is_not_available: 'Mesin pencari yang diinginkan tidak tersedia',
+      i_dont_know_how_to_add_commands: 'Tidak tahu cara menambah perintah',
+      settings_are_complicated: 'Pengaturan terlalu rumit',
       [UNINSTALL_OTHER_OPTION]: 'Lainnya',
     },
   },

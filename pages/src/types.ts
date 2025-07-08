@@ -58,7 +58,9 @@ export type LangProps = {
 
 export type UninstallFormType = {
   uninstallReason: string[]
+  wantedToUse: string[]
   otherReason?: string
+  otherWantedToUse?: string
   details: string
   locale: string
 }
