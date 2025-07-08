@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import {
   Menubar,
   MenubarMenu,
@@ -128,17 +128,63 @@ const MenuFolder = (props: {
   const contentRef = useRef<HTMLDivElement | null>(null)
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
   const [contentRect, setContentRect] = useState<DOMRect | null>(null)
+  const resizeObserverRef = useRef<ResizeObserver | null>(null)
+
+  const updateRects = () => {
+    if (anchorRef.current && contentRef.current) {
+      setAnchorRect(anchorRef.current.getBoundingClientRect())
+      setContentRect(contentRef.current.getBoundingClientRect())
+    }
+  }
 
   const onHoverTrigger = (enterVal: any) => {
     props.onHoverTrigger(enterVal)
-    // Delay to wait finishing animation.
-    setTimeout(() => {
-      if (anchorRef.current && contentRef.current) {
-        setAnchorRect(anchorRef.current?.getBoundingClientRect())
-        setContentRect(contentRef.current?.getBoundingClientRect())
+
+    // Initial rect update
+    updateRects()
+
+    // Setup ResizeObserver if not already setup
+    if (!resizeObserverRef.current) {
+      resizeObserverRef.current = new ResizeObserver(() => {
+        updateRects()
+      })
+
+      // Observe anchor element
+      if (anchorRef.current) {
+        resizeObserverRef.current.observe(anchorRef.current)
       }
-    }, 200)
+
+      // Observe content element if available, otherwise retry once
+      if (contentRef.current) {
+        resizeObserverRef.current.observe(contentRef.current)
+      } else {
+        setTimeout(() => {
+          if (contentRef.current && resizeObserverRef.current) {
+            resizeObserverRef.current.observe(contentRef.current)
+            updateRects()
+          }
+        }, 50)
+      }
+    }
   }
+
+  // Cleanup ResizeObserver on unmount
+  useEffect(() => {
+    return () => {
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect()
+        resizeObserverRef.current = null
+      }
+    }
+  }, [])
+
+  // Also cleanup when folder changes
+  useEffect(() => {
+    if (resizeObserverRef.current) {
+      resizeObserverRef.current.disconnect()
+      resizeObserverRef.current = null
+    }
+  }, [folder.id])
 
   const baseSize = anchorRef.current?.getBoundingClientRect().height ?? 0
   const menubarStyle = isHorizontal
