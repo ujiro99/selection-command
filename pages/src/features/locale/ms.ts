@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Bahasa Melayu',
@@ -153,6 +153,8 @@ const lang = {
       'Terima kasih kerana menggunakan Selection Command sehingga kini. Sayang sekali anda pergi, tetapi untuk meningkatkan sambungan pada masa hadapan, kami akan berterima kasih jika anda boleh menjawab tinjauan di bawah.',
     reinstall:
       'Jika anda menyahpasang secara tidak sengaja, anda boleh memasang semula melalui pautan di bawah.',
+    wantedToUseTitle: 'Ciri apa yang anda mahu gunakan? (pilihan berganda)',
+    wantedToUsePlaceholder: 'Sila beritahu kami apa yang anda mahu lakukan',
     reasonTitle: 'Mengapa anda menyahpasang? (Pilihan berganda)',
     otherReasonPlaceholder: 'Sila nyatakan sebabnya',
     detailsTitle: 'Jika boleh, sila berikan lebih banyak butiran.',
@@ -166,6 +168,12 @@ const lang = {
         'Terima kasih atas respons anda. Kami menghargai maklum balas berharga anda.\nJika anda mempunyai maklum balas selain daripada borang ini, sila hubungi takeda.yujiro@gmail.com dengan subjek yang jelas.',
     },
     error: 'Gagal menghantar. Sila cuba sebentar lagi.',
+    wantedToUse: {
+      search_selected_text: 'Mencari teks yang dipilih',
+      ai_chatbot: 'Chatbot AI (seperti ChatGPT)',
+      link_preview: 'Pratonton pautan',
+      [OTHER_OPTION]: 'Lain-lain',
+    },
     reasons: {
       difficult_to_use: 'Tidak tahu cara menggunakannya',
       not_user_friendly: 'Tidak mesra pengguna',

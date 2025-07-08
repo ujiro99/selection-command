@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: '简体中文',
@@ -149,6 +149,8 @@ const lang = {
     description:
       '感谢您一直使用Selection Command。很遗憾您要离开，但为了将来改进扩展，如果您能回答以下调查，我们将不胜感激。',
     reinstall: '如果您不小心卸载，可以通过以下链接重新安装。',
+    wantedToUseTitle: '您希望使用哪些功能？(多选)',
+    wantedToUsePlaceholder: '请告诉我们您想要做什么',
     reasonTitle: '您为什么卸载？(多选)',
     otherReasonPlaceholder: '请说明原因',
     detailsTitle: '如果可以，请提供更多详细信息。',
@@ -162,6 +164,12 @@ const lang = {
         '感谢您的回答。我们重视您的宝贵反馈。\n如果您有除此表单之外的更多反馈，请发送邮件至takeda.yujiro@gmail.com，并注明主题。',
     },
     error: '发送失败。请稍后重试。',
+    wantedToUse: {
+      search_selected_text: '搜索选中文本',
+      ai_chatbot: 'AI聊天机器人 (如ChatGPT)',
+      link_preview: '链接预览',
+      [OTHER_OPTION]: '其他',
+    },
     reasons: {
       difficult_to_use: '不知道如何使用',
       not_user_friendly: '使用不方便',

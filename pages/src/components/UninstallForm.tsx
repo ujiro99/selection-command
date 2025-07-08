@@ -1,19 +1,19 @@
-'use client'
+"use client"
 
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
-import { Image } from '@/components/Image'
-import { useLocale } from '@/hooks/useLocale'
-import { Send, SquareArrowOutUpRight } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import type { UninstallFormType } from '@/types'
-import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
-import { cn, sleep } from '@/lib/utils'
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
+import { Image } from "@/components/Image"
+import { useLocale } from "@/hooks/useLocale"
+import { Send, SquareArrowOutUpRight } from "lucide-react"
+import { useState, useEffect } from "react"
+import type { UninstallFormType } from "@/types"
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
+import { UNINSTALL_OTHER_OPTION, OTHER_OPTION } from "@/const"
+import { cn, sleep } from "@/lib/utils"
 
-import css from './CommandForm.module.css'
+import css from "./CommandForm.module.css"
 
 type UninstallReason = {
   id: string
@@ -21,9 +21,9 @@ type UninstallReason = {
 }
 
 const SubmitStatus = {
-  IDLE: 'idle',
-  SUCCESS: 'success',
-  ERROR: 'error',
+  IDLE: "idle",
+  SUCCESS: "success",
+  ERROR: "error",
 } as const
 
 type SubmitStatusType = (typeof SubmitStatus)[keyof typeof SubmitStatus]
@@ -31,8 +31,10 @@ type SubmitStatusType = (typeof SubmitStatus)[keyof typeof SubmitStatus]
 export function UninstallForm() {
   const { dict, lang } = useLocale()
   const [selectedReasons, setSelectedReasons] = useState<string[]>([])
-  const [details, setDetails] = useState('')
-  const [otherReason, setOtherReason] = useState('')
+  const [selectedWantedToUse, setSelectedWantedToUse] = useState<string[]>([])
+  const [details, setDetails] = useState("")
+  const [otherReason, setOtherReason] = useState("")
+  const [otherWantedToUse, setOtherWantedToUse] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<SubmitStatusType>(
     SubmitStatus.IDLE,
@@ -40,30 +42,65 @@ export function UninstallForm() {
   const [uninstallReasons, setUninstallReasons] = useState<UninstallReason[]>(
     [],
   )
+  const [wantedToUseOptions, setWantedToUseOptions] = useState<
+    UninstallReason[]
+  >([])
   const [isInitialized, setIsInitialized] = useState(false)
 
   // Randomize order only on the client side
   useEffect(() => {
-    const entries = Object.entries(dict.uninstallForm.reasons)
-    const otherEntry = entries.find(([id]) => id === UNINSTALL_OTHER_OPTION)
-    const otherEntries = entries.filter(([id]) => id !== UNINSTALL_OTHER_OPTION)
+    // Process uninstall reasons
+    const reasonEntries = Object.entries(dict.uninstallForm.reasons)
+    const otherReasonEntry = reasonEntries.find(
+      ([id]) => id === UNINSTALL_OTHER_OPTION,
+    )
+    const otherReasonEntries = reasonEntries.filter(
+      ([id]) => id !== UNINSTALL_OTHER_OPTION,
+    )
 
     // Shuffle entries except for "Other" option
-    const shuffledEntries = otherEntries.sort(() => Math.random() - 0.5)
+    const shuffledReasonEntries = otherReasonEntries.sort(
+      () => Math.random() - 0.5,
+    )
 
     // Add "Other" option at the end if it exists
-    const finalEntries = otherEntry
-      ? [...shuffledEntries, otherEntry]
-      : shuffledEntries
+    const finalReasonEntries = otherReasonEntry
+      ? [...shuffledReasonEntries, otherReasonEntry]
+      : shuffledReasonEntries
 
     setUninstallReasons(
-      finalEntries.map(([id, label]) => ({
+      finalReasonEntries.map(([id, label]) => ({
         id,
         label: label as string,
       })),
     )
+
+    // Process wanted to use options
+    const wantedEntries = Object.entries(dict.uninstallForm.wantedToUse)
+    const otherWantedEntry = wantedEntries.find(([id]) => id === OTHER_OPTION)
+    const otherWantedEntries = wantedEntries.filter(
+      ([id]) => id !== OTHER_OPTION,
+    )
+
+    // Shuffle entries except for "Other" option
+    const shuffledWantedEntries = otherWantedEntries.sort(
+      () => Math.random() - 0.5,
+    )
+
+    // Add "Other" option at the end if it exists
+    const finalWantedEntries = otherWantedEntry
+      ? [...shuffledWantedEntries, otherWantedEntry]
+      : shuffledWantedEntries
+
+    setWantedToUseOptions(
+      finalWantedEntries.map(([id, label]) => ({
+        id,
+        label: label as string,
+      })),
+    )
+
     setIsInitialized(true)
-  }, [dict.uninstallForm.reasons])
+  }, [dict.uninstallForm.reasons, dict.uninstallForm.wantedToUse])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -73,24 +110,30 @@ export function UninstallForm() {
     try {
       const response = await submit({
         uninstallReason: selectedReasons,
+        wantedToUse: selectedWantedToUse,
         details,
         otherReason: selectedReasons.includes(UNINSTALL_OTHER_OPTION)
           ? otherReason
-          : '',
+          : "",
+        otherWantedToUse: selectedWantedToUse.includes(OTHER_OPTION)
+          ? otherWantedToUse
+          : "",
         locale: lang,
       } as UninstallFormType)
 
       if (!response.success) {
-        throw new Error('Failed to submit form')
+        throw new Error("Failed to submit form")
       }
 
       await sleep(1000)
       setSubmitStatus(SubmitStatus.SUCCESS)
       setSelectedReasons([])
-      setOtherReason('')
-      setDetails('')
+      setSelectedWantedToUse([])
+      setOtherReason("")
+      setOtherWantedToUse("")
+      setDetails("")
     } catch (error) {
-      console.error('Error submitting form:', error)
+      console.error("Error submitting form:", error)
       setSubmitStatus(SubmitStatus.ERROR)
     } finally {
       setIsSubmitting(false)
@@ -100,9 +143,9 @@ export function UninstallForm() {
   return (
     <div
       className={cn(
-        'max-w-2xl mx-auto p-6',
-        !isInitialized && 'opacity-0',
-        isInitialized && 'transition-opacity duration-50',
+        "max-w-2xl mx-auto p-6",
+        !isInitialized && "opacity-0",
+        isInitialized && "transition-opacity duration-50",
       )}
     >
       {submitStatus === SubmitStatus.SUCCESS ? (
@@ -145,6 +188,56 @@ export function UninstallForm() {
           </a>
           <form onSubmit={handleSubmit} className="space-y-8">
             <div>
+              {/* wanted to use */}
+              <h2 className="text-lg font-semibold mb-4">
+                {dict.uninstallForm.wantedToUseTitle}
+              </h2>
+              <div className="space-y-3">
+                {wantedToUseOptions.map((option) => (
+                  <div key={option.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`wanted-${option.id}`}
+                      checked={selectedWantedToUse.includes(option.id)}
+                      onCheckedChange={(checked: boolean) => {
+                        if (checked) {
+                          setSelectedWantedToUse([
+                            ...selectedWantedToUse,
+                            option.id,
+                          ])
+                        } else {
+                          setSelectedWantedToUse(
+                            selectedWantedToUse.filter(
+                              (id) => id !== option.id,
+                            ),
+                          )
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor={`wanted-${option.id}`}
+                      className="text-sm font-medium cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {option.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              <Collapsible open={selectedWantedToUse.includes(OTHER_OPTION)}>
+                <CollapsibleContent className={css.CollapsibleContent}>
+                  <div className="ml-6 mt-2">
+                    <Input
+                      value={otherWantedToUse}
+                      onChange={(e) => setOtherWantedToUse(e.target.value)}
+                      placeholder={dict.uninstallForm.wantedToUsePlaceholder}
+                    />
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+
+            <div>
+              {/* uninstall reason */}
               <h2 className="text-lg font-semibold mb-4">
                 {dict.uninstallForm.reasonTitle}
               </h2>
@@ -211,7 +304,11 @@ export function UninstallForm() {
               <Button
                 type="submit"
                 className="rounded-xl font-semibold bg-stone-700 px-8"
-                disabled={selectedReasons.length === 0 || isSubmitting}
+                disabled={
+                  (selectedReasons.length === 0 &&
+                    selectedWantedToUse.length === 0) ||
+                  isSubmitting
+                }
               >
                 <Send className="mr-1" />
                 {isSubmitting
@@ -230,32 +327,51 @@ async function submit(
   param: UninstallFormType,
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { uninstallReason, details, locale, otherReason }: UninstallFormType =
-      param
+    const {
+      uninstallReason,
+      wantedToUse,
+      details,
+      locale,
+      otherReason,
+      otherWantedToUse,
+    }: UninstallFormType = param
 
     // Create form data
     const formData = new FormData()
+    // 1. wanted to use
+    wantedToUse.forEach((feature) => {
+      formData.append("entry.1077095346", feature)
+    })
+    if (otherWantedToUse) {
+      formData.append(
+        "entry.1077095346.other_option_response",
+        otherWantedToUse,
+      )
+    }
+    // 2. uninstall reason
     uninstallReason.forEach((reason) => {
-      formData.append('entry.90439598', reason)
+      formData.append("entry.90439598", reason)
     })
     if (otherReason) {
-      formData.append('entry.90439598.other_option_response', otherReason)
+      formData.append("entry.90439598.other_option_response", otherReason)
     }
-    formData.append('entry.1954317629', locale)
-    formData.append('entry.2091766235', details)
+    // 3. details
+    formData.append("entry.2091766235", details)
+    // 4. locale
+    formData.append("entry.1954317629", locale)
 
     // Send form data to Google Forms
     const formUrl =
-      'https://docs.google.com/forms/d/e/1FAIpQLSeKp9yy9i4dB3CK7qyKZoaDdrRB8a6dCVnm0zALl7mo-yvbXg/formResponse'
+      "https://docs.google.com/forms/d/e/1FAIpQLSeKp9yy9i4dB3CK7qyKZoaDdrRB8a6dCVnm0zALl7mo-yvbXg/formResponse"
     fetch(formUrl, {
-      method: 'POST',
+      method: "POST",
       body: formData,
-      mode: 'no-cors',
+      mode: "no-cors",
     })
 
     return { success: true }
   } catch (error) {
-    console.error('Error processing uninstall form:', error)
-    return { success: false, error: 'Failed to process form submission' }
+    console.error("Error processing uninstall form:", error)
+    return { success: false, error: "Failed to process form submission" }
   }
 }

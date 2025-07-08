@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'हिन्दी',
@@ -154,6 +154,8 @@ const lang = {
       'अब तक Selection Command का उपयोग करने के लिए धन्यवाद। हमें आपको जाते हुए देखकर दुख हो रहा है, लेकिन हम आभारी होंगे यदि आप एक्सटेंशन को बेहतर बनाने में हमारी मदद करने के लिए नीचे दिए गए सर्वेक्षण का जवाब दे सकें।',
     reinstall:
       'यदि आपने गलती से इसे अनइंस्टॉल किया है, तो आप नीचे दिए गए लिंक के माध्यम से इसे पुनः इंस्टॉल कर सकते हैं।',
+    wantedToUseTitle: 'आप कौन सी सुविधाओं का उपयोग करना चाहते थे? (एकाधिक विकल्प)',
+    wantedToUsePlaceholder: 'कृपया हमें बताएं कि आप क्या करना चाहते थे',
     reasonTitle: 'कृपया अनइंस्टॉल करने का कारण बताएं। (एकाधिक विकल्प संभव)',
     otherReasonPlaceholder: 'कृपया कारण निर्दिष्ट करें',
     detailsTitle: 'यदि संभव हो, तो कृपया अधिक विवरण दें।',
@@ -167,6 +169,12 @@ const lang = {
         'आपके जवाब के लिए धन्यवाद। हम आपकी प्रतिक्रिया की सराहना करते हैं।\nयदि आप इस फॉर्म के बाहर सीधे संपर्क करना चाहते हैं, तो कृपया takeda.yujiro@gmail.com पर एक स्पष्ट विषय के साथ ईमेल करें।',
     },
     error: 'भेजना विफल रहा। कृपया कुछ देर बाद पुनः प्रयास करें।',
+    wantedToUse: {
+      search_selected_text: 'चयनित पाठ खोजें',
+      ai_chatbot: 'AI चैटबॉट (जैसे ChatGPT)',
+      link_preview: 'लिंक पूर्वावलोकन',
+      [OTHER_OPTION]: 'अन्य',
+    },
     reasons: {
       difficult_to_use: 'मुझे इसका उपयोग करना नहीं आया',
       not_user_friendly: 'उपयोगकर्ता के अनुकूल नहीं',

@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: '한국어',
@@ -151,6 +151,8 @@ const lang = {
     description:
       '지금까지 Selection Command를 이용해 주셔서 감사합니다. 헤어지게 되어 매우 아쉽지만, 향후 확장 프로그램 개선을 위해 아래 설문에 응답해 주시면 감사하겠습니다.',
     reinstall: '실수로 제거하신 경우 아래 링크에서 다시 설치할 수 있습니다.',
+    wantedToUseTitle: '어떤 기능을 사용하고 싶었나요? (복수 선택 가능)',
+    wantedToUsePlaceholder: '하고 싶었던 일을 알려주세요',
     reasonTitle: '제거한 이유를 알려주세요. (복수 선택 가능)',
     otherReasonPlaceholder: '구체적인 이유를 알려주세요',
     detailsTitle: '가능하다면 자세한 내용을 알려주세요.',
@@ -164,6 +166,12 @@ const lang = {
         '응답해 주셔서 감사합니다. 소중한 의견을 주셔서 감사합니다.\n이 양식 외에 직접 의견을 주실 수 있는 경우, takeda.yujiro@gmail.com으로 제목을 명시하여 연락해 주시기 바랍니다.',
     },
     error: '전송에 실패했습니다. 잠시 후 다시 시도해 주세요.',
+    wantedToUse: {
+      search_selected_text: '선택한 텍스트 검색',
+      ai_chatbot: 'AI 챗봇 (ChatGPT 등)',
+      link_preview: '링크 미리보기',
+      [OTHER_OPTION]: '기타',
+    },
     reasons: {
       difficult_to_use: '사용 방법을 몰랐어요',
       not_user_friendly: '사용자 친화적이지 않아요',

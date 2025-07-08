@@ -1,5 +1,5 @@
 import { SORT_ORDER, OPEN_MODE } from '@/const'
-import { UNINSTALL_OTHER_OPTION } from '@/const'
+import { OTHER_OPTION, UNINSTALL_OTHER_OPTION } from '@/const'
 
 const lang = {
   name: 'Русский',
@@ -153,6 +153,8 @@ const lang = {
       'Спасибо за использование Selection Command до сих пор. Жаль, что вы уходите, но для улучшения расширения в будущем мы будем благодарны, если вы ответите на опрос ниже.',
     reinstall:
       'Если вы случайно удалили расширение, вы можете переустановить его по ссылке ниже.',
+    wantedToUseTitle: 'Какие функции вы хотели использовать? (множественный выбор)',
+    wantedToUsePlaceholder: 'Пожалуйста, расскажите, что вы хотели делать',
     reasonTitle: 'Почему вы удалили расширение? (Множественный выбор)',
     otherReasonPlaceholder: 'Пожалуйста, укажите причину',
     detailsTitle:
@@ -167,6 +169,12 @@ const lang = {
         'Спасибо за ваш ответ. Мы ценим ваши ценные отзывы.\nЕсли у вас есть дополнительные отзывы помимо этой формы, пожалуйста, свяжитесь с takeda.yujiro@gmail.com с четким предметом.',
     },
     error: 'Не удалось отправить. Пожалуйста, попробуйте позже.',
+    wantedToUse: {
+      search_selected_text: 'Поиск выбранного текста',
+      ai_chatbot: 'AI-чатбот (как ChatGPT)',
+      link_preview: 'Предпросмотр ссылок',
+      [OTHER_OPTION]: 'Другое',
+    },
     reasons: {
       difficult_to_use: 'Не знал, как использовать',
       not_user_friendly: 'Неудобный интерфейс',
