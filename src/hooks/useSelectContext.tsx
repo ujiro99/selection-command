@@ -4,9 +4,9 @@ import {
   useState,
   ReactNode,
   useEffect,
-} from 'react'
-import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { getSelectionText } from '@/services/dom'
+} from "react"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { getSelectionText } from "@/services/dom"
 
 type ContextType = {
   selectionText: string
@@ -23,7 +23,7 @@ export const SelectContextProvider = ({
   children: ReactNode
   isPopupHover: boolean
 }) => {
-  const [selectionText, _setSelectionText] = useState('')
+  const [selectionText, _setSelectionText] = useState("")
   const [target, setTarget] = useState<Element | null>(null)
 
   const setSelectionText = async (text: string) => {
@@ -37,9 +37,9 @@ export const SelectContextProvider = ({
       const text = getSelectionText()
       await setSelectionText(text)
     }
-    document.addEventListener('selectionchange', onSelectionchange)
+    document.addEventListener("selectionchange", onSelectionchange)
     return () => {
-      document.removeEventListener('selectionchange', onSelectionchange)
+      document.removeEventListener("selectionchange", onSelectionchange)
     }
   }, [isPopupHover, setSelectionText])
 

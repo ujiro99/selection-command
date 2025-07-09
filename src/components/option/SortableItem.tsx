@@ -1,8 +1,8 @@
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { GripVertical } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { Command, CommandFolder } from '@/types'
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { GripVertical } from "lucide-react"
+import { cn } from "@/lib/utils"
+import type { Command, CommandFolder } from "@/types"
 
 type SrotabelItemProps = {
   id: string
@@ -34,7 +34,7 @@ export function SortableItem(props: SrotabelItemProps) {
     },
     transition: {
       duration: 150,
-      easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+      easing: "cubic-bezier(0.25, 1, 0.5, 1)",
     },
   })
 
@@ -49,19 +49,19 @@ export function SortableItem(props: SrotabelItemProps) {
       ref={isDroppable ? setNodeRef : null}
       style={style}
       className={cn(
-        'pl-1 flex items-center cursor-auto',
-        props.index === 0 ? '' : 'border-t',
+        "pl-1 flex items-center cursor-auto",
+        props.index === 0 ? "" : "border-t",
         props.index === activeIndex
-          ? 'border-y bg-gray-100/80 shadow-lg relative z-10'
-          : '',
+          ? "border-y bg-gray-100/80 shadow-lg relative z-10"
+          : "",
         props.className,
       )}
       {...attributes}
     >
       <div
         className={cn(
-          'p-1 py-2 mr-1 hover:bg-gray-100 cursor-grab rounded-md transition duration-200',
-          isDragging && 'cursor-grabbing',
+          "p-1 py-2 mr-1 hover:bg-gray-100 cursor-grab rounded-md transition duration-200",
+          isDragging && "cursor-grabbing",
         )}
         ref={setActivatorNodeRef}
         {...listeners}

@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
-import { useFieldArray } from 'react-hook-form'
+import { useState, useRef, useEffect } from "react"
+import { useFieldArray } from "react-hook-form"
 
 import {
   DndContext,
@@ -9,42 +9,42 @@ import {
   useSensor,
   useSensors,
   DragStartEvent,
-} from '@dnd-kit/core'
+} from "@dnd-kit/core"
 
 import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
+} from "@dnd-kit/sortable"
 
-import { CommandEditDialog } from '@/components/option/editor/CommandEditDialog'
-import { FolderEditDialog } from '@/components/option/editor/FolderEditDialog'
+import { CommandEditDialog } from "@/components/option/editor/CommandEditDialog"
+import { FolderEditDialog } from "@/components/option/editor/FolderEditDialog"
 import {
   CommandSchemaType,
   CommandsSchemaType,
   FoldersSchemaType,
-} from '@/types/schema'
+} from "@/types/schema"
 
-import { ANALYTICS_EVENTS, sendEvent } from '@/services/analytics'
-import { SCREEN } from '@/const'
-import type { Command, CommandFolder, SelectionCommand } from '@/types'
+import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import { SCREEN } from "@/const"
+import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
 // Imported services and hooks
 import {
   toCommandTree,
   toFlatten,
   type FlattenNode,
-} from '@/services/option/commandTree'
+} from "@/services/option/commandTree"
 import {
   isCommand,
   isFolder,
   getDescendantFolderIds,
-} from '@/services/option/commandUtils'
-import { isValidDrop } from '@/services/option/dragAndDrop'
-import { useCommandActions } from '@/hooks/option/useCommandActions'
-import { useCommandDragDrop } from '@/hooks/option/useCommandDragDrop'
-import { CommandListMenu } from './CommandListMenu'
-import { CommandTreeRenderer } from './CommandTreeRenderer'
+} from "@/services/option/commandUtils"
+import { isValidDrop } from "@/services/option/dragAndDrop"
+import { useCommandActions } from "@/hooks/option/useCommandActions"
+import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
+import { CommandListMenu } from "./CommandListMenu"
+import { CommandTreeRenderer } from "./CommandTreeRenderer"
 
 // Drag filtering utilities
 
@@ -109,16 +109,16 @@ export const CommandList = ({ control }: CommandListProps) => {
   const commandsRef = useRef<HTMLUListElement>(null)
   const editDataRef = useRef<Command | CommandFolder | null>(null)
 
-  const commandArray = useFieldArray<CommandsSchemaType, 'commands', '_id'>({
-    name: 'commands',
+  const commandArray = useFieldArray<CommandsSchemaType, "commands", "_id">({
+    name: "commands",
     control: control,
-    keyName: '_id',
+    keyName: "_id",
   })
 
-  const folderArray = useFieldArray<FoldersSchemaType, 'folders', '_id'>({
-    name: 'folders',
+  const folderArray = useFieldArray<FoldersSchemaType, "folders", "_id">({
+    name: "folders",
     control: control,
-    keyName: '_id',
+    keyName: "_id",
   })
 
   const sensors = useSensors(
@@ -140,7 +140,7 @@ export const CommandList = ({ control }: CommandListProps) => {
       sendEvent(
         ANALYTICS_EVENTS.OPEN_DIALOG,
         {
-          event_label: 'command_edit',
+          event_label: "command_edit",
         },
         SCREEN.OPTION,
       )
@@ -253,8 +253,8 @@ export const CommandList = ({ control }: CommandListProps) => {
 
   useEffect(() => {
     commandsRef.current?.style.setProperty(
-      'height',
-      commandsRef.current.scrollHeight + 'px',
+      "height",
+      commandsRef.current.scrollHeight + "px",
     )
   }, [commandArray.fields, folderArray.fields])
 

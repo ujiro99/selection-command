@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 type Props = {
   name: string
@@ -9,7 +9,7 @@ type Props = {
 export function Icon(props: Props): JSX.Element {
   const href = `#icon-${props.name}`
 
-  const className = props.className ?? 'h-full w-full'
+  const className = props.className ?? "h-full w-full"
 
   return (
     <svg className={className} style={props.style}>

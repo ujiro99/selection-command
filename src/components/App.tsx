@@ -1,20 +1,20 @@
-import './App.css'
+import "./App.css"
 
-import { useState, useEffect } from 'react'
-import { SelectAnchor } from './SelectAnchor'
-import { Popup } from './Popup'
-import { LinkSelector } from '@/components/LinkSelector'
-import { OpenInTab } from '@/components/OpenInTab'
-import { PageActionRecorder } from '@/components/pageAction/PageActionRecorder'
-import { PageActionRunner } from '@/components/pageAction/PageActionRunner'
-import { SelectContextProvider } from '@/hooks/useSelectContext'
-import { PageActionContextProvider } from '@/hooks/pageAction/usePageActionContext'
-import { Ipc, TabCommand, CONNECTION_PORT, BgCommand } from '@/services/ipc'
-import { toast, Toaster } from 'sonner'
-import { showReviewRequestToast } from '@/components/ReviewRequestToast'
-import { Settings } from '@/services/settings'
-import { InvisibleItem } from '@/components/menu/InvisibleItem'
-import type { ShowToastParam } from '@/types'
+import { useState, useEffect } from "react"
+import { SelectAnchor } from "./SelectAnchor"
+import { Popup } from "./Popup"
+import { LinkSelector } from "@/components/LinkSelector"
+import { OpenInTab } from "@/components/OpenInTab"
+import { PageActionRecorder } from "@/components/pageAction/PageActionRecorder"
+import { PageActionRunner } from "@/components/pageAction/PageActionRunner"
+import { SelectContextProvider } from "@/hooks/useSelectContext"
+import { PageActionContextProvider } from "@/hooks/pageAction/usePageActionContext"
+import { Ipc, TabCommand, CONNECTION_PORT, BgCommand } from "@/services/ipc"
+import { toast, Toaster } from "sonner"
+import { showReviewRequestToast } from "@/components/ReviewRequestToast"
+import { Settings } from "@/services/settings"
+import { InvisibleItem } from "@/components/menu/InvisibleItem"
+import type { ShowToastParam } from "@/types"
 
 type Props = {
   rootElm: HTMLElement
@@ -39,10 +39,10 @@ export function App({ rootElm }: Props) {
           return
         }
       })
-      window.removeEventListener('pageshow', connect)
+      window.removeEventListener("pageshow", connect)
     }
     connect()
-    window.addEventListener('pageshow', connect)
+    window.addEventListener("pageshow", connect)
 
     // from background script
     // console.log('Listen onConnect')
@@ -59,7 +59,7 @@ export function App({ rootElm }: Props) {
 
     return () => {
       chrome.runtime.onConnect.removeListener(onConnect)
-      window.removeEventListener('pageshow', connect)
+      window.removeEventListener("pageshow", connect)
     }
   }, [])
 
@@ -92,7 +92,7 @@ export function App({ rootElm }: Props) {
   useEffect(() => {
     const handleShowReviewRequest = (_: any, __: any, response: any) => {
       showReviewRequestToast(() => {
-        Settings.update('hasShownReviewRequest', () => true)
+        Settings.update("hasShownReviewRequest", () => true)
       })
       response(true)
       return true

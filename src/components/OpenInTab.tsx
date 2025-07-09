@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { Ipc, BgCommand } from '@/services/ipc'
-import { Icon } from '../components/Icon'
-import './OpenInTab.css'
+import { useEffect, useState } from "react"
+import { Ipc, BgCommand } from "@/services/ipc"
+import { Icon } from "../components/Icon"
+import "./OpenInTab.css"
 
 let isPageUnloading = false
 
@@ -32,12 +32,12 @@ export function OpenInTab(): JSX.Element {
     }
 
     if (enableOpenInTab) {
-      window.addEventListener('pagehide', onPagehide)
-      document.addEventListener('visibilitychange', onHidden)
+      window.addEventListener("pagehide", onPagehide)
+      document.addEventListener("visibilitychange", onHidden)
     }
     return () => {
-      window.removeEventListener('pagehide', onPagehide)
-      document.removeEventListener('visibilitychange', onHidden)
+      window.removeEventListener("pagehide", onPagehide)
+      document.removeEventListener("visibilitychange", onHidden)
     }
   }, [enableOpenInTab])
 

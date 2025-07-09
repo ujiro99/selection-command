@@ -1,17 +1,17 @@
-import React from 'react'
-import { SortableItem } from '@/components/option/SortableItem'
-import { EditButton } from '@/components/option/EditButton'
-import { CopyButton } from '@/components/option/CopyButton'
-import { RemoveButton } from '@/components/option/RemoveButton'
-import { MenuImage } from '@/components/menu/MenuImage'
-import type { FlattenNode } from '@/services/option/commandTree'
-import type { CommandFolder } from '@/types'
+import React from "react"
+import { SortableItem } from "@/components/option/SortableItem"
+import { EditButton } from "@/components/option/EditButton"
+import { CopyButton } from "@/components/option/CopyButton"
+import { RemoveButton } from "@/components/option/RemoveButton"
+import { MenuImage } from "@/components/menu/MenuImage"
+import type { FlattenNode } from "@/services/option/commandTree"
+import type { CommandFolder } from "@/types"
 import {
   isCommand,
   isFolder,
   isPageActionCommand,
-} from '@/services/option/commandUtils'
-import { calcLevel } from '@/services/option/commandTree'
+} from "@/services/option/commandUtils"
+import { calcLevel } from "@/services/option/commandTree"
 
 interface Props {
   nodes: FlattenNode[]

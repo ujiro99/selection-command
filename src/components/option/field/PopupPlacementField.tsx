@@ -1,11 +1,11 @@
-import { useForm, useWatch } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { MousePointer } from 'lucide-react'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Check } from 'lucide-react'
+import { useForm, useWatch } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { MousePointer } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Check } from "lucide-react"
 
-import { InputField } from '@/components/option/field/InputField'
+import { InputField } from "@/components/option/field/InputField"
 import {
   FormControl,
   FormDescription,
@@ -13,12 +13,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { PopupPlacementSchema } from '@/types/schema'
+} from "@/components/ui/form"
+import { PopupPlacementSchema } from "@/types/schema"
 
-import { SIDE, ALIGN } from '@/const'
-import { cn } from '@/lib/utils'
-import { t as _t } from '@/services/i18n'
+import { SIDE, ALIGN } from "@/const"
+import { cn } from "@/lib/utils"
+import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 type PopupPlacementType = z.infer<typeof PopupPlacementSchema>
@@ -34,7 +34,7 @@ export const PopupPlacementField = ({
 }: PopupPlacementFieldType) => {
   const form = useForm<PopupPlacementType>({
     resolver: zodResolver(PopupPlacementSchema),
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: defaultValues,
   })
   const { register } = form
@@ -47,19 +47,19 @@ export const PopupPlacementField = ({
 
   const side = useWatch({
     control: form.control,
-    name: 'side',
+    name: "side",
   })
 
   const align = useWatch({
     control: form.control,
-    name: 'align',
+    name: "align",
   })
 
   const isAlignOffsetDisabled = align === ALIGN.center
 
   return (
     <section>
-      <h2 className="text-sm font-bold">{t('popupPlacement')}</h2>
+      <h2 className="text-sm font-bold">{t("popupPlacement")}</h2>
       <div className="flex flex-col gap-4 ml-4 mt-3">
         <FormField
           control={form.control}
@@ -67,9 +67,9 @@ export const PopupPlacementField = ({
           render={({ field }) => (
             <FormItem className="flex items-start gap-1">
               <div className="w-2/6">
-                <FormLabel>{t('popupPlacement_side')}</FormLabel>
+                <FormLabel>{t("popupPlacement_side")}</FormLabel>
                 <FormDescription className="mt-2 text-balance break-keep wrap-anywhere">
-                  {t('popupPlacement_side_desc')}
+                  {t("popupPlacement_side_desc")}
                 </FormDescription>
               </div>
               <div className="w-4/6">
@@ -90,7 +90,7 @@ export const PopupPlacementField = ({
                     <SideItem side={SIDE.left} current={field.value} />
                     <div className="flex items-center flex-col gap-0.5">
                       <MousePointer size={18} />
-                      <span>{t('mouse_pointer')}</span>
+                      <span>{t("mouse_pointer")}</span>
                     </div>
                     <SideItem side={SIDE.right} current={field.value} />
 
@@ -107,15 +107,15 @@ export const PopupPlacementField = ({
         <InputField
           control={form.control}
           name="sideOffset"
-          formLabel={t('popupPlacement_sideOffset')}
-          description={t('popupPlacement_sideOffset_desc')}
+          formLabel={t("popupPlacement_sideOffset")}
+          description={t("popupPlacement_sideOffset_desc")}
           unit="px"
           inputProps={{
-            type: 'number',
+            type: "number",
             min: 0,
             max: 100,
             step: 5,
-            ...register('sideOffset', {
+            ...register("sideOffset", {
               valueAsNumber: true,
             }),
           }}
@@ -126,9 +126,9 @@ export const PopupPlacementField = ({
           render={({ field }) => (
             <FormItem className="flex items-start gap-1">
               <div className="w-2/6">
-                <FormLabel>{t('popupPlacement_align')}</FormLabel>
+                <FormLabel>{t("popupPlacement_align")}</FormLabel>
                 <FormDescription className="text-balance break-keep wrap-anywhere">
-                  {t('popupPlacement_align_desc')}
+                  {t("popupPlacement_align_desc")}
                 </FormDescription>
               </div>
               <div className="w-4/6">
@@ -167,19 +167,23 @@ export const PopupPlacementField = ({
         <InputField
           control={form.control}
           name="alignOffset"
-          formLabel={t('popupPlacement_alignOffset')}
-          description={isAlignOffsetDisabled ? t('popupPlacement_alignOffset_disabled') : t('popupPlacement_alignOffset_desc')}
+          formLabel={t("popupPlacement_alignOffset")}
+          description={
+            isAlignOffsetDisabled
+              ? t("popupPlacement_alignOffset_disabled")
+              : t("popupPlacement_alignOffset_desc")
+          }
           unit="px"
           inputProps={{
-            type: 'number',
+            type: "number",
             min: -100,
             max: 100,
             step: 5,
             disabled: isAlignOffsetDisabled,
             className: cn(
-              isAlignOffsetDisabled && 'opacity-80 cursor-not-allowed'
+              isAlignOffsetDisabled && "opacity-80 cursor-not-allowed",
             ),
-            ...register('alignOffset', {
+            ...register("alignOffset", {
               valueAsNumber: true,
             }),
           }}
@@ -198,7 +202,7 @@ const SideItem = ({ side, current }: { side: SIDE; current: SIDE }) => {
           value={side}
           aria-label={t(`popupPlacement_${side}`)}
           className={cn(
-            'relative w-full h-9 shadow-sm text-xs font-mono text-gray-600',
+            "relative w-full h-9 shadow-sm text-xs font-mono text-gray-600",
           )}
         >
           {checked && <Check size={16} className="absolute left-5" />}
@@ -219,7 +223,7 @@ const AlignItem = ({
   current: ALIGN
 }) => {
   const _side =
-    side === SIDE.left || side === SIDE.right ? 'vertical' : 'horizontal'
+    side === SIDE.left || side === SIDE.right ? "vertical" : "horizontal"
   const checked = align === current
   return (
     <FormItem>
@@ -228,8 +232,8 @@ const AlignItem = ({
           value={align}
           aria-label={t(`popupPlacement_${align}`)}
           className={cn(
-            'relative',
-            'flex-col gap-0 h-auto w-full py-1 shadow-sm text-xs font-mono text-gray-600',
+            "relative",
+            "flex-col gap-0 h-auto w-full py-1 shadow-sm text-xs font-mono text-gray-600",
           )}
         >
           {checked && <Check size={16} className="absolute left-2" />}

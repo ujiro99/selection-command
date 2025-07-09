@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react'
-import clsx from 'clsx'
-import { Ipc, BgCommand } from '@/services/ipc'
-import { useSection } from '@/hooks/useSetting'
-import { useDetectUrlChanged } from '@/hooks/useDetectUrlChanged'
-import { CACHE_SECTIONS } from '@/services/settingsCache'
-import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
+import { useState, useEffect } from "react"
+import clsx from "clsx"
+import { Ipc, BgCommand } from "@/services/ipc"
+import { useSection } from "@/hooks/useSetting"
+import { useDetectUrlChanged } from "@/hooks/useDetectUrlChanged"
+import { CACHE_SECTIONS } from "@/services/settingsCache"
+import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import {
   Popover,
   PopoverContent,
   PopoverAnchor,
   PopoverArrow,
-} from '@/components/ui/popover'
-import { SCREEN } from '@/const'
+} from "@/components/ui/popover"
+import { SCREEN } from "@/const"
 
 const TooltipDuration = 2000
 
@@ -24,13 +24,13 @@ export const DownloadButton = (): JSX.Element => {
   const open = position != null
 
   const setButtonClickListener = () => {
-    document.querySelectorAll('button[data-command]').forEach((button) => {
+    document.querySelectorAll("button[data-command]").forEach((button) => {
       if (!(button instanceof HTMLButtonElement)) return
       const command = button.dataset.command
       const id = button.dataset.id
       if (command == null) return
-      button.dataset.clickable = 'true'
-      button.addEventListener('click', () => {
+      button.dataset.clickable = "true"
+      button.addEventListener("click", () => {
         Ipc.send(BgCommand.addCommand, { command }).then((res) => {
           if (res) {
             sendEvent(
@@ -52,15 +52,15 @@ export const DownloadButton = (): JSX.Element => {
       const installed = document.querySelector(
         `button[data-id="${id}"]`,
       ) as HTMLElement
-      if (installed) installed.style.display = 'none'
+      if (installed) installed.style.display = "none"
       // show installed label
       const p = document.querySelector(`p[data-id="${id}"]`) as HTMLElement
-      if (p) p.style.display = 'block'
+      if (p) p.style.display = "block"
     })
   }
 
   const updateCount = () => {
-    document.querySelectorAll('span[data-id]').forEach((span) => {
+    document.querySelectorAll("span[data-id]").forEach((span) => {
       if (!(span instanceof HTMLElement)) return
       const count = Number(span.dataset.downloadCount)
       if (count == null || isNaN(count)) return
@@ -121,7 +121,7 @@ export const DownloadButton = (): JSX.Element => {
       {shouldRender && (
         <PopoverContent
           className={clsx(
-            'bg-stone-800 min-w-4 px-2 py-1.5 text-xs text-white shadow-md',
+            "bg-stone-800 min-w-4 px-2 py-1.5 text-xs text-white shadow-md",
           )}
           side="top"
           arrowPadding={-1}

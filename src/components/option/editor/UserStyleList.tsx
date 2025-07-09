@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Paintbrush, Save } from 'lucide-react'
+import { useEffect, useState, useRef } from "react"
+import { useForm, useFieldArray } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Paintbrush, Save } from "lucide-react"
 import {
   Form,
   FormControl,
@@ -11,7 +11,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from "@/components/ui/form"
 import {
   Dialog,
   DialogClose,
@@ -21,23 +21,23 @@ import {
   DialogTitle,
   DialogFooter,
   DialogPortal,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Tooltip } from '@/components/Tooltip'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { EditButton } from '@/components/option/EditButton'
-import { RemoveButton } from '@/components/option/RemoveButton'
+} from "@/components/ui/select"
+import { Tooltip } from "@/components/Tooltip"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { EditButton } from "@/components/option/EditButton"
+import { RemoveButton } from "@/components/option/RemoveButton"
 
-import { STYLE_VARIABLE } from '@/const'
-import { cn, hyphen2Underscore } from '@/lib/utils'
-import { t as _t } from '@/services/i18n'
+import { STYLE_VARIABLE } from "@/const"
+import { cn, hyphen2Underscore } from "@/lib/utils"
+import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 export const userStyleSchema = z.object({
@@ -53,7 +53,7 @@ type UserStyleType = z.infer<typeof userStyleSchema>
 type UserStylesType = z.infer<typeof userStylesSchema>
 
 type AttributesType = {
-  type: 'string' | 'number' | 'color'
+  type: "string" | "number" | "color"
   default: string | number
   max?: number
   min?: number
@@ -64,43 +64,43 @@ type AttributeMap = Record<STYLE_VARIABLE, AttributesType>
 
 const Attributes: AttributeMap = {
   [STYLE_VARIABLE.BACKGROUND_COLOR]: {
-    type: 'color',
-    default: '#FFFFFF',
+    type: "color",
+    default: "#FFFFFF",
   },
   [STYLE_VARIABLE.BORDER_COLOR]: {
-    type: 'color',
-    default: '#F3F4F6',
+    type: "color",
+    default: "#F3F4F6",
   },
   [STYLE_VARIABLE.FONT_SCALE]: {
-    type: 'number',
+    type: "number",
     default: 1,
     max: 3,
     min: 0.5,
     step: 0.1,
   },
   [STYLE_VARIABLE.IMAGE_SCALE]: {
-    type: 'number',
+    type: "number",
     default: 1,
     max: 3,
     min: 0.5,
     step: 0.1,
   },
   [STYLE_VARIABLE.PADDING_SCALE]: {
-    type: 'number',
+    type: "number",
     default: 1,
     max: 3,
     min: 0.5,
     step: 0.1,
   },
   [STYLE_VARIABLE.POPUP_DELAY]: {
-    type: 'number',
+    type: "number",
     default: 250,
     max: 1000,
     min: 0,
     step: 10,
   },
   [STYLE_VARIABLE.POPUP_DURATION]: {
-    type: 'number',
+    type: "number",
     default: 150,
     max: 1000,
     min: 0,
@@ -115,13 +115,13 @@ const Units: UnitMap = {
   [STYLE_VARIABLE.FONT_SCALE]: undefined,
   [STYLE_VARIABLE.IMAGE_SCALE]: undefined,
   [STYLE_VARIABLE.PADDING_SCALE]: undefined,
-  [STYLE_VARIABLE.POPUP_DELAY]: 'ms',
-  [STYLE_VARIABLE.POPUP_DURATION]: 'ms',
+  [STYLE_VARIABLE.POPUP_DELAY]: "ms",
+  [STYLE_VARIABLE.POPUP_DURATION]: "ms",
 }
 
 const DefaultValue = {
   name: STYLE_VARIABLE.FONT_SCALE,
-  value: '',
+  value: "",
 } as const
 
 type UserStyleListProps = {
@@ -133,10 +133,10 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
   const editorRef = useRef<UserStyleType>(DefaultValue)
   const addButtonRef = useRef<HTMLButtonElement>(null)
 
-  const array = useFieldArray<UserStylesType, 'userStyles', '_id'>({
-    name: 'userStyles',
+  const array = useFieldArray<UserStylesType, "userStyles", "_id">({
+    name: "userStyles",
     control: control,
-    keyName: '_id',
+    keyName: "_id",
   })
 
   const selectedList = array.fields.map((field) => field.name)
@@ -149,7 +149,7 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
     if (!open) {
       editorRef.current = {
         name: defaultName,
-        value: '',
+        value: "",
       }
     }
     _setDialogOpen(open)
@@ -188,15 +188,15 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
               disabled={selectedAll}
             >
               <Paintbrush />
-              {t('userStyles')
-                .split(' ')
+              {t("userStyles")
+                .split(" ")
                 .map((w) => (
                   <span key={w}>{w}</span>
                 ))}
             </Button>
             <Tooltip
               positionElm={addButtonRef.current}
-              text={t('userStyles_tooltip')}
+              text={t("userStyles_tooltip")}
             />
           </div>
           <FormControl>
@@ -205,8 +205,8 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
                 <li
                   key={field._id}
                   className={cn(
-                    'flex items-center gap-2 px-2 py-1',
-                    index !== 0 ? 'border-t' : '',
+                    "flex items-center gap-2 px-2 py-1",
+                    index !== 0 ? "border-t" : "",
                   )}
                 >
                   <p className="text-base font-mono flex-1 p-2">
@@ -264,11 +264,11 @@ export const UserStyleDialog = ({
   const isUpdate = (variable as any)._id != null
   const form = useForm<z.infer<typeof userStyleSchema>>({
     resolver: zodResolver(userStyleSchema),
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: variable,
   })
   const { reset, watch, setValue } = form
-  const variableName = watch('name')
+  const variableName = watch("name")
   const attr = Attributes[variableName]
 
   useEffect(() => {
@@ -277,7 +277,7 @@ export const UserStyleDialog = ({
 
   useEffect(() => {
     if (!isUpdate) {
-      setValue('value', Attributes[variableName]?.default)
+      setValue("value", Attributes[variableName]?.default)
     }
   }, [variableName])
 
@@ -288,10 +288,10 @@ export const UserStyleDialog = ({
           <DialogHeader>
             <DialogTitle>
               <Paintbrush />
-              {t('userStyles_add')}
+              {t("userStyles_add")}
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription>{t('userStyles_add_desc')}</DialogDescription>
+          <DialogDescription>{t("userStyles_add_desc")}</DialogDescription>
           <Form {...form}>
             <form id="UserStyleDialog" className="flex gap-2 mt-2">
               <FormField
@@ -301,7 +301,7 @@ export const UserStyleDialog = ({
                   <FormItem className="w-1/2">
                     {isUpdate ? (
                       <div>
-                        <FormLabel>{t('userStyles_name')}</FormLabel>
+                        <FormLabel>{t("userStyles_name")}</FormLabel>
                         <p className="py-2 h-10 mt-2 text-base">
                           {t(
                             `userStyles_option_${hyphen2Underscore(field.value)}`,
@@ -313,10 +313,10 @@ export const UserStyleDialog = ({
                         onValueChange={field.onChange}
                         value={field.value}
                       >
-                        <FormLabel>{t('userStyles_name')}</FormLabel>
+                        <FormLabel>{t("userStyles_name")}</FormLabel>
                         <FormControl>
                           <SelectTrigger className="mt-2">
-                            <SelectValue placeholder={t('userStyles_value')} />
+                            <SelectValue placeholder={t("userStyles_value")} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -347,7 +347,7 @@ export const UserStyleDialog = ({
                 name="value"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel>{t('userStyles_value')}</FormLabel>
+                    <FormLabel>{t("userStyles_value")}</FormLabel>
                     <FormControl>
                       <Input
                         className="mt-2"
@@ -365,7 +365,7 @@ export const UserStyleDialog = ({
           <DialogFooter>
             <DialogClose asChild>
               <Button size="lg" type="button" variant="secondary">
-                {t('labelCancel')}
+                {t("labelCancel")}
               </Button>
             </DialogClose>
             <Button
@@ -377,7 +377,7 @@ export const UserStyleDialog = ({
               })}
             >
               <Save />
-              {isUpdate ? t('labelUpdate') : t('labelSave')}
+              {isUpdate ? t("labelUpdate") : t("labelSave")}
             </Button>
           </DialogFooter>
         </DialogContent>

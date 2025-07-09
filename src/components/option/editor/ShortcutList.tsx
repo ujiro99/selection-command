@@ -1,21 +1,21 @@
-import { useEffect, useState, useMemo } from 'react'
-import { Control, useFieldArray, useWatch } from 'react-hook-form'
-import { Keyboard, SquareArrowOutUpRight } from 'lucide-react'
-import { SelectField } from '@/components/option/field/SelectField'
+import { useEffect, useState, useMemo } from "react"
+import { Control, useFieldArray, useWatch } from "react-hook-form"
+import { Keyboard, SquareArrowOutUpRight } from "lucide-react"
+import { SelectField } from "@/components/option/field/SelectField"
 import type {
   SelectOptionType,
   SelectGroupType,
-} from '@/components/option/field/SelectField'
-import { t as _t } from '@/services/i18n'
-import { Ipc, BgCommand } from '@/services/ipc'
-import type { Command, CommandFolder, ShortcutCommand } from '@/types'
+} from "@/components/option/field/SelectField"
+import { t as _t } from "@/services/i18n"
+import { Ipc, BgCommand } from "@/services/ipc"
+import type { Command, CommandFolder, ShortcutCommand } from "@/types"
 import {
   OPEN_MODE_BG,
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
-} from '@/const'
-import { cn } from '@/lib/utils'
-import css from './ShortcutList.module.css'
+} from "@/const"
+import { cn } from "@/lib/utils"
+import css from "./ShortcutList.module.css"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -33,11 +33,11 @@ const createNameRender = (openMode: string) => {
           {name}
           <span
             className={cn(
-              'absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap',
+              "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap",
               css.tag,
             )}
           >
-            {t('shortcut_text_selection_only')}
+            {t("shortcut_text_selection_only")}
           </span>
         </span>
       )
@@ -53,12 +53,12 @@ const groupCommandsByFolder = (
 
   // Create a map to store commands by folder
   const commandsByFolder = new Map<string, Command[]>()
-  commandsByFolder.set('root', [])
+  commandsByFolder.set("root", [])
 
   // First, group commands by folder
   commands.forEach((command) => {
     if (!command) return
-    const folderId = command.parentFolderId || 'root'
+    const folderId = command.parentFolderId || "root"
     if (!commandsByFolder.has(folderId)) {
       commandsByFolder.set(folderId, [])
     }
@@ -70,12 +70,12 @@ const groupCommandsByFolder = (
 
   commands.forEach((command) => {
     if (!command) return
-    const folderId = command.parentFolderId || 'root'
+    const folderId = command.parentFolderId || "root"
     const folderCommands = commandsByFolder.get(folderId)
 
     if (!folderCommands) return
 
-    if (folderId === 'root') {
+    if (folderId === "root") {
       // For root commands, add them individually
       result.push({
         name: command.title,
@@ -88,7 +88,7 @@ const groupCommandsByFolder = (
       const folder = folderMap.get(folderId)
       if (
         folder &&
-        !result.some((item) => 'label' in item && item.label === folder.title)
+        !result.some((item) => "label" in item && item.label === folder.title)
       ) {
         result.push({
           label: folder.title,
@@ -114,26 +114,26 @@ export function ShortcutList({ control }: ShortcutListProps) {
     shortcuts: { shortcuts: ShortcutCommand[] }
   }>({
     control,
-    name: 'shortcuts.shortcuts',
+    name: "shortcuts.shortcuts",
   })
   const userCommands = useWatch({
     control,
-    name: 'commands',
+    name: "commands",
     defaultValue: [],
   })
   const folders = useWatch({
     control,
-    name: 'folders',
+    name: "folders",
     defaultValue: [],
   })
   const shortcutValues = useWatch({
     control,
-    name: 'shortcuts.shortcuts',
+    name: "shortcuts.shortcuts",
   })
 
   const updateCommands = () => {
     chrome.commands.getAll((cmds) => {
-      const filteredCommands = cmds.filter((cmd) => cmd.description !== '')
+      const filteredCommands = cmds.filter((cmd) => cmd.description !== "")
       setCommands(filteredCommands)
     })
   }
@@ -144,7 +144,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
 
     // Update commands when the page becomes visible or focused
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
+      if (document.visibilityState === "visible") {
         updateCommands()
       }
     }
@@ -153,12 +153,12 @@ export function ShortcutList({ control }: ShortcutListProps) {
       updateCommands()
     }
 
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    window.addEventListener('focus', handleFocus)
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    window.addEventListener("focus", handleFocus)
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      window.removeEventListener("focus", handleFocus)
     }
   }, [])
 
@@ -166,7 +166,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
     // Initialize the shortcuts
     if (fields.length !== 0) return
     const initialData = commands.map((cmd) => ({
-      id: cmd.name || '',
+      id: cmd.name || "",
       commandId: SHORTCUT_PLACEHOLDER,
       noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
     }))
@@ -180,11 +180,11 @@ export function ShortcutList({ control }: ShortcutListProps) {
 
   const noSelectionOptions = [
     {
-      name: t('shortcut_no_selection_do_nothing'),
+      name: t("shortcut_no_selection_do_nothing"),
       value: SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
     },
     {
-      name: t('shortcut_no_selection_use_clipboard'),
+      name: t("shortcut_no_selection_use_clipboard"),
       value: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
     },
   ]
@@ -193,13 +193,13 @@ export function ShortcutList({ control }: ShortcutListProps) {
     <div className="space-y-3">
       <div className="flex items-center">
         <Keyboard size={22} className="mr-2 stroke-gray-600" />
-        <h3 className="text-xl font-semibold">{t('shortcuts')}</h3>
+        <h3 className="text-xl font-semibold">{t("shortcuts")}</h3>
       </div>
       <p className="text-base">
-        {t('shortcuts_desc')}
+        {t("shortcuts_desc")}
         <br />
         <span className="text-sm">
-          {t('shortcuts_settings_desc')}{' '}
+          {t("shortcuts_settings_desc")}{" "}
           <button
             type="button"
             onClick={() => Ipc.send(BgCommand.openShortcuts)}
@@ -209,7 +209,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
               size={14}
               className="inline-block mr-1 mb-0.5"
             />
-            {t('shortcuts_settings_link')}
+            {t("shortcuts_settings_link")}
           </button>
         </span>
       </p>
@@ -220,7 +220,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
 
           const opts = [
             {
-              name: t('shortcut_select_placeholder'),
+              name: t("shortcut_select_placeholder"),
               value: SHORTCUT_PLACEHOLDER,
             },
             ...options,
@@ -238,14 +238,14 @@ export function ShortcutList({ control }: ShortcutListProps) {
               <SelectField
                 control={control}
                 name={`shortcuts.shortcuts.${index}.commandId`}
-                formLabel={`${chromeCmd.description} (${chromeCmd.shortcut || t('shortcut_not_set')})`}
+                formLabel={`${chromeCmd.description} (${chromeCmd.shortcut || t("shortcut_not_set")})`}
                 options={opts}
               />
               {showNoSel && (
                 <SelectField
                   control={control}
                   name={`shortcuts.shortcuts.${index}.noSelectionBehavior`}
-                  formLabel={t('shortcut_no_selection_behavior')}
+                  formLabel={t("shortcut_no_selection_behavior")}
                   options={noSelectionOptions}
                   labelClass="ml-6 font-normal"
                 />

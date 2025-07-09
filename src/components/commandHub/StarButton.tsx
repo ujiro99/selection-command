@@ -1,18 +1,18 @@
-import { useEffect, useCallback } from 'react'
-import { useSection } from '@/hooks/useSetting'
-import { CACHE_SECTIONS } from '@/services/settingsCache'
-import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
-import { SCREEN } from '@/const'
-import { useDetectUrlChanged } from '@/hooks/useDetectUrlChanged'
-import { Ipc, BgCommand } from '@/services/ipc'
+import { useEffect, useCallback } from "react"
+import { useSection } from "@/hooks/useSetting"
+import { CACHE_SECTIONS } from "@/services/settingsCache"
+import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import { SCREEN } from "@/const"
+import { useDetectUrlChanged } from "@/hooks/useDetectUrlChanged"
+import { Ipc, BgCommand } from "@/services/ipc"
 
 function isButtonElement(elm: Element): elm is HTMLButtonElement {
-  return elm.tagName?.toLowerCase() === 'button'
+  return elm.tagName?.toLowerCase() === "button"
 }
 
 function findButtonElement(elm: Element): HTMLButtonElement | undefined {
   if (elm == null) return undefined
-  if (elm.nodeName === 'body') return undefined
+  if (elm.nodeName === "body") return undefined
   if (isButtonElement(elm)) return elm
   return findButtonElement(elm.parentElement as Element)
 }
@@ -41,22 +41,22 @@ export const StarButton = (): JSX.Element => {
   )
 
   const updateButton = useCallback(() => {
-    document.querySelectorAll('button[data-star-id]').forEach((button) => {
+    document.querySelectorAll("button[data-star-id]").forEach((button) => {
       if (!(button instanceof HTMLButtonElement)) return
       const id = button.dataset.starId
       if (id == null) return
-      button.addEventListener('click', updateStar)
-      button.dataset.clickable = 'true'
+      button.addEventListener("click", updateStar)
+      button.dataset.clickable = "true"
       if (stars?.some((s: any) => s.id === id)) {
-        button.dataset.starred = 'true'
+        button.dataset.starred = "true"
       } else {
-        button.dataset.starred = 'false'
+        button.dataset.starred = "false"
       }
     })
   }, [stars])
 
   const updateCount = () => {
-    document.querySelectorAll('span[data-star-id]').forEach((span) => {
+    document.querySelectorAll("span[data-star-id]").forEach((span) => {
       if (!(span instanceof HTMLElement)) return
       const count = Number(span.dataset.starCount)
       if (count == null || isNaN(count)) return
@@ -71,9 +71,9 @@ export const StarButton = (): JSX.Element => {
   }
 
   const removeButtonEvent = () => {
-    document.querySelectorAll('button[data-star-id]').forEach((button) => {
+    document.querySelectorAll("button[data-star-id]").forEach((button) => {
       if (!(button instanceof HTMLButtonElement)) return
-      button.removeEventListener('click', updateStar)
+      button.removeEventListener("click", updateStar)
     })
   }
 

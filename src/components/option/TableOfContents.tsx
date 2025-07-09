@@ -1,5 +1,5 @@
-import React from 'react'
-import { t } from '@/services/i18n'
+import React from "react"
+import { t } from "@/services/i18n"
 import {
   MessageSquareMore,
   SquareTerminal,
@@ -7,9 +7,9 @@ import {
   BookOpen,
   Paintbrush,
   Keyboard,
-} from 'lucide-react'
-import styles from './TableOfContents.module.css'
-import optionCss from './Option.module.css'
+} from "lucide-react"
+import styles from "./TableOfContents.module.css"
+import optionCss from "./Option.module.css"
 
 type Props = {
   onClick: (hash: string) => void
@@ -17,12 +17,12 @@ type Props = {
 
 export const TableOfContents = (props: Props) => {
   const properties = [
-    'startupMethod',
-    'commands',
-    'shortcuts',
-    'linkCommand',
-    'pageRules',
-    'userStyles',
+    "startupMethod",
+    "commands",
+    "shortcuts",
+    "linkCommand",
+    "pageRules",
+    "userStyles",
   ]
 
   const labels = properties.reduce(
@@ -65,17 +65,17 @@ const Icon = ({
   className: string
 }) => {
   switch (name) {
-    case 'startupMethod':
+    case "startupMethod":
       return <MessageSquareMore size={size} className={className} />
-    case 'commands':
+    case "commands":
       return <SquareTerminal size={size} className={className} />
-    case 'linkCommand':
+    case "linkCommand":
       return <Eye size={size} className={className} />
-    case 'shortcuts':
+    case "shortcuts":
       return <Keyboard size={size} className={className} />
-    case 'pageRules':
+    case "pageRules":
       return <BookOpen size={size} className={className} />
-    case 'userStyles':
+    case "userStyles":
       return <Paintbrush size={size} className={className} />
     default:
       return null

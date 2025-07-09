@@ -1,4 +1,4 @@
-import { useEffect, useState, forwardRef } from 'react'
+import { useEffect, useState, forwardRef } from "react"
 import {
   Disc3,
   Circle,
@@ -7,23 +7,28 @@ import {
   RotateCcw,
   Check,
   LoaderCircle,
-} from 'lucide-react'
-import { StepList } from '@/components/pageAction/StepList'
-import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
+} from "lucide-react"
+import { StepList } from "@/components/pageAction/StepList"
+import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
 import {
   PageActionListener as Listener,
   RunningStatus,
-} from '@/services/pageAction'
-import { Ipc, BgCommand, RunPageAction } from '@/services/ipc'
-import { t } from '@/services/i18n'
-import type { PageActiontStatus, PageActionStep, DeepPartial } from '@/types'
-import { cn } from '@/lib/utils'
+} from "@/services/pageAction"
+import { Ipc, BgCommand, RunPageAction } from "@/services/ipc"
+import { t } from "@/services/i18n"
+import type {
+  PageActiontStatus,
+  PageActionStep,
+  PageActiontResult,
+  DeepPartial,
+} from "@/types"
+import { cn } from "@/lib/utils"
 import {
   PAGE_ACTION_OPEN_MODE,
   PAGE_ACTION_EXEC_STATE as EXEC_STATE,
-} from '@/const'
+} from "@/const"
 
-import css from './PageActionRecorder.module.css'
+import css from "./PageActionRecorder.module.css"
 
 type Props = {
   steps: PageActionStep[]
@@ -43,9 +48,9 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const [hover, setHover] = useState(false)
 
     const clearState = () => {
-      setCurrentId('')
-      setFailedId('')
-      setFailedMesage('')
+      setCurrentId("")
+      setFailedId("")
+      setFailedMesage("")
     }
 
     const preview = () => {
@@ -54,9 +59,9 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
         Ipc.send<RunPageAction>(BgCommand.previewPageAction, {
           steps: props.steps,
           openMode: PAGE_ACTION_OPEN_MODE.NONE,
-          srcUrl: `{{${t('PageAction_InputMenu_url')}}}`,
-          selectedText: `{{${t('PageAction_InputMenu_selectedText')}}}`,
-          clipboardText: `{{${t('PageAction_InputMenu_clipboard')}}}`,
+          srcUrl: `{{${t("PageAction_InputMenu_url")}}}`,
+          selectedText: `{{${t("PageAction_InputMenu_selectedText")}}}`,
+          clipboardText: `{{${t("PageAction_InputMenu_clipboard")}}}`,
         })
       }, 100)
       clearState()
@@ -85,11 +90,15 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     }
 
     const onStatusChange = ({ results }: PageActiontStatus) => {
-      const r = results.find((r) => r.status === EXEC_STATE.Start)
+      const r = results.find(
+        (r: PageActiontResult) => r.status === EXEC_STATE.Start,
+      )
       if (r != null) {
         setCurrentId(r.stepId)
       }
-      const f = results.find((r) => r.status === EXEC_STATE.Failed)
+      const f = results.find(
+        (r: PageActiontResult) => r.status === EXEC_STATE.Failed,
+      )
       if (f != null) {
         setFailedId(f?.stepId)
         setFailedMesage(f.message)
@@ -100,8 +109,8 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
       RunningStatus.subscribe(onStatusChange)
       RunningStatus.get().then((status) => {
         setCurrentId(status.stepId)
-        setFailedId('')
-        setFailedMesage('')
+        setFailedId("")
+        setFailedMesage("")
       })
       return () => {
         RunningStatus.unsubscribe(onStatusChange)
@@ -124,8 +133,8 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     return (
       <div
         className={cn(
-          'flex flex-col items-center gap-2 w-fit pointer-events-auto',
-          'backdrop-blur bg-gray-100/60 rounded-md py-4 pl-5 pr-3 shadow-md',
+          "flex flex-col items-center gap-2 w-fit pointer-events-auto",
+          "backdrop-blur bg-gray-100/60 rounded-md py-4 pl-5 pr-3 shadow-md",
         )}
         ref={ref}
         data-hover={hover}
@@ -143,7 +152,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 className={css.recordButtonIcon}
               />
               <span className={css.buttonLabelStatus}>
-                {t('PageAction_Controller_recording')}...
+                {t("PageAction_Controller_recording")}...
               </span>
             </button>
           ) : isRunning ? (
@@ -154,7 +163,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 className="stroke-sky-500 animate-spin"
               />
               <span className={css.buttonLabelStatus}>
-                {t('PageAction_Controller_previewing')}
+                {t("PageAction_Controller_previewing")}
               </span>
             </div>
           ) : (
@@ -169,7 +178,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
                 className="stroke-gray-500 fill-gray-100"
               />
               <span className={css.buttonLabelStatus}>
-                {t('PageAction_Controller_not_recording')}
+                {t("PageAction_Controller_not_recording")}
               </span>
             </button>
           )}
@@ -178,7 +187,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
             <button className={css.button} onClick={() => finish()}>
               <Check size={iconSize} className="stroke-gray-600" />
               <span className={css.buttonLabel}>
-                {t('PageAction_Controller_complete')}
+                {t("PageAction_Controller_complete")}
               </span>
             </button>
 
@@ -189,21 +198,21 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
               >
                 <Square size={iconSize} className="stroke-gray-600" />
                 <span className={css.buttonLabel}>
-                  {t('PageAction_Controller_stop')}
+                  {t("PageAction_Controller_stop")}
                 </span>
               </button>
             ) : (
               <button className={css.button} onClick={() => preview()}>
                 <Play size={iconSize} className="stroke-gray-600" />
                 <span className={css.buttonLabel}>
-                  {t('PageAction_Controller_preview')}
+                  {t("PageAction_Controller_preview")}
                 </span>
               </button>
             )}
             <button className={css.button} onClick={() => reset()}>
               <RotateCcw size={iconSize} className="stroke-gray-600" />
               <span className={css.buttonLabel}>
-                {t('PageAction_Controller_reset')}
+                {t("PageAction_Controller_reset")}
               </span>
             </button>
           </div>

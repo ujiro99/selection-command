@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react'
-import { Trash2 } from 'lucide-react'
-import { Tooltip } from '@/components/Tooltip'
-import { MenuImage } from '@/components/menu/MenuImage'
-import { RemoveDialog } from '@/components/option/RemoveDialog'
-import { cn } from '@/lib/utils'
-import { t } from '@/services/i18n'
+import { useState, useRef } from "react"
+import { Trash2 } from "lucide-react"
+import { Tooltip } from "@/components/Tooltip"
+import { MenuImage } from "@/components/menu/MenuImage"
+import { RemoveDialog } from "@/components/option/RemoveDialog"
+import { cn } from "@/lib/utils"
+import { t } from "@/services/i18n"
 
 type RemoveButtonProps = {
   onRemove: () => void
@@ -31,7 +31,7 @@ export const RemoveButton = ({
       <button
         type="button"
         className={cn(
-          'p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button',
+          "p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button",
           className,
         )}
         onClick={() => setOpen(true)}
@@ -43,7 +43,7 @@ export const RemoveButton = ({
         />
       </button>
       <RemoveDialog
-        description={t('Option_remove_description')}
+        description={t("Option_remove_description")}
         open={open}
         onOpenChange={setOpen}
         onRemove={onRemove}
@@ -62,7 +62,7 @@ export const RemoveButton = ({
       </RemoveDialog>
       <Tooltip
         positionElm={buttonRef.current}
-        text={t('Option_remove_tooltip')}
+        text={t("Option_remove_tooltip")}
       />
     </>
   )

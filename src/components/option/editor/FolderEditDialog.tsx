@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { FolderPlus, Save } from 'lucide-react'
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { FolderPlus, Save } from "lucide-react"
 import {
   Dialog,
   DialogClose,
@@ -12,21 +12,21 @@ import {
   DialogTitle,
   DialogFooter,
   DialogPortal,
-} from '@/components/ui/dialog'
-import { Form } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
-import { InputField } from '@/components/option/field/InputField'
-import { IconField } from '@/components/option/field/IconField'
-import { SwitchField } from '@/components/option/field/SwitchField'
-import { SelectField } from '@/components/option/field/SelectField'
-import { isEmpty } from '@/lib/utils'
-import { t as _t } from '@/services/i18n'
-import { ROOT_FOLDER } from '@/const'
-import { folderSchema } from '@/types/schema'
-import { getDescendantFolderIds } from '@/services/option/commandUtils'
+} from "@/components/ui/dialog"
+import { Form } from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
+import { InputField } from "@/components/option/field/InputField"
+import { IconField } from "@/components/option/field/IconField"
+import { SwitchField } from "@/components/option/field/SwitchField"
+import { SelectField } from "@/components/option/field/SelectField"
+import { isEmpty } from "@/lib/utils"
+import { t as _t } from "@/services/i18n"
+import { ROOT_FOLDER } from "@/const"
+import { folderSchema } from "@/types/schema"
+import { getDescendantFolderIds } from "@/services/option/commandUtils"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import type { CommandFolder } from '@/types'
-import { calcLevel } from '@/services/option/commandTree'
+import type { CommandFolder } from "@/types"
+import { calcLevel } from "@/services/option/commandTree"
 
 type FolderEditDialog = {
   open: boolean
@@ -44,17 +44,17 @@ export const FolderEditDialog = ({
   folders,
 }: FolderEditDialog) => {
   const DefaultValue = {
-    id: '',
-    title: '',
+    id: "",
+    title: "",
     iconUrl:
-      'https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png',
+      "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
     onlyIcon: true,
     parentFolderId: ROOT_FOLDER,
   }
 
   const form = useForm<z.infer<typeof folderSchema>>({
     resolver: zodResolver(folderSchema),
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: DefaultValue,
   })
 
@@ -72,38 +72,38 @@ export const FolderEditDialog = ({
           <DialogHeader>
             <DialogTitle>
               <FolderPlus />
-              {t('folders_edit')}
+              {t("folders_edit")}
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription>{t('folders_input')}</DialogDescription>
+          <DialogDescription>{t("folders_input")}</DialogDescription>
           <Form {...form}>
             <div id="InputForm" className="space-y-4">
               <InputField
                 control={form.control}
                 name="title"
-                formLabel={t('title')}
+                formLabel={t("title")}
                 inputProps={{
-                  type: 'string',
-                  ...register('title', {}),
+                  type: "string",
+                  ...register("title", {}),
                 }}
               />
               <IconField
                 control={form.control}
                 nameUrl="iconUrl"
                 nameSvg="iconSvg"
-                formLabel={t('iconUrl_folder')}
-                placeholder={t('icon_placeholder')}
-                description={t('icon_desc')}
+                formLabel={t("iconUrl_folder")}
+                placeholder={t("icon_placeholder")}
+                description={t("icon_desc")}
               />
               <SelectField
                 control={form.control}
                 name="parentFolderId"
-                formLabel={t('parentFolder')}
-                description={t('parentFolder_desc')}
+                formLabel={t("parentFolder")}
+                description={t("parentFolder_desc")}
                 options={[
                   {
                     value: ROOT_FOLDER,
-                    name: t('rootFolder'),
+                    name: t("rootFolder"),
                   },
                   ...folders
                     .filter((f) => {
@@ -126,15 +126,15 @@ export const FolderEditDialog = ({
               <SwitchField
                 control={form.control}
                 name="onlyIcon"
-                formLabel={t('onlyIcon')}
-                description={t('onlyIcon_desc')}
+                formLabel={t("onlyIcon")}
+                description={t("onlyIcon_desc")}
               />
             </div>
           </Form>
           <DialogFooter>
             <DialogClose asChild>
               <Button size="lg" type="button" variant="secondary">
-                {t('labelCancel')}
+                {t("labelCancel")}
               </Button>
             </DialogClose>
             <Button
@@ -151,7 +151,7 @@ export const FolderEditDialog = ({
               )}
             >
               <Save />
-              {isUpdate ? t('labelUpdate') : t('labelSave')}
+              {isUpdate ? t("labelUpdate") : t("labelSave")}
             </Button>
           </DialogFooter>
         </DialogContent>

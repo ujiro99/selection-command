@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react'
-import { useForm, useFieldArray } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Save, BookOpen } from 'lucide-react'
+import { useEffect, useState, useRef } from "react"
+import { useForm, useFieldArray } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Save, BookOpen } from "lucide-react"
 import {
   Dialog,
   DialogClose,
@@ -12,36 +12,30 @@ import {
   DialogTitle,
   DialogFooter,
   DialogPortal,
-} from '@/components/ui/dialog'
-import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
-import {
-  Collapsible,
-  CollapsibleContent,
-} from '@/components/ui/collapsible'
-import { Button } from '@/components/ui/button'
-import { Tooltip } from '@/components/Tooltip'
-import { EditButton } from '@/components/option/EditButton'
-import { RemoveButton } from '@/components/option/RemoveButton'
-import { InputField } from '@/components/option/field/InputField'
-import { SelectField } from '@/components/option/field/SelectField'
-import { PopupPlacementField } from '@/components/option/field/PopupPlacementField'
-import { PopupPlacement } from '@/services/option/defaultSettings'
-import { t as _t } from '@/services/i18n'
+} from "@/components/ui/dialog"
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form"
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
+import { Button } from "@/components/ui/button"
+import { Tooltip } from "@/components/Tooltip"
+import { EditButton } from "@/components/option/EditButton"
+import { RemoveButton } from "@/components/option/RemoveButton"
+import { InputField } from "@/components/option/field/InputField"
+import { SelectField } from "@/components/option/field/SelectField"
+import { PopupPlacementField } from "@/components/option/field/PopupPlacementField"
+import { PopupPlacement } from "@/services/option/defaultSettings"
+import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT } from '@/const'
-import { e2a, cn } from '@/lib/utils'
-import type { PageRule, PopupPlacementOrInherit } from '@/types'
-import { PopupPlacementSchema } from '@/types/schema'
+import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT } from "@/const"
+import { e2a, cn } from "@/lib/utils"
+import type { PageRule, PopupPlacementOrInherit } from "@/types"
+import { PopupPlacementSchema } from "@/types/schema"
 
-import css from './CommandEditDialog.module.css'
+import css from "./CommandEditDialog.module.css"
 
 export const pageRuleSchema = z.object({
-  urlPattern: z.string().url({ message: t('zod_url') }),
+  urlPattern: z.string().url({ message: t("zod_url") }),
   popupEnabled: z.nativeEnum(POPUP_ENABLED),
-  popupPlacement: z.union([
-    z.literal('inherit'),
-    PopupPlacementSchema,
-  ]),
+  popupPlacement: z.union([z.literal("inherit"), PopupPlacementSchema]),
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
 })
 
@@ -52,7 +46,7 @@ const pageRulesSchema = z.object({
 type pageRulesType = z.infer<typeof pageRulesSchema>
 
 const DefaultRule = {
-  urlPattern: '',
+  urlPattern: "",
   popupEnabled: POPUP_ENABLED.ENABLE,
   popupPlacement: INHERIT as PopupPlacementOrInherit,
   linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
@@ -78,10 +72,10 @@ export const PageRuleList = ({
     }
   }
 
-  const pageRuleArray = useFieldArray<pageRulesType, 'pageRules', '_id'>({
+  const pageRuleArray = useFieldArray<pageRulesType, "pageRules", "_id">({
     control: control,
-    name: 'pageRules',
-    keyName: '_id',
+    name: "pageRules",
+    keyName: "_id",
   })
 
   const upsert = (rule: PageRule) => {
@@ -110,15 +104,15 @@ export const PageRuleList = ({
               ref={addButtonRef}
             >
               <BookOpen />
-              {t('pageRules')
-                .split(' ')
+              {t("pageRules")
+                .split(" ")
                 .map((w) => (
                   <span key={w}>{w}</span>
                 ))}
             </Button>
             <Tooltip
               positionElm={addButtonRef.current}
-              text={t('pageRules_tooltip')}
+              text={t("pageRules_tooltip")}
             />
           </div>
           <FormControl>
@@ -127,8 +121,8 @@ export const PageRuleList = ({
                 <li
                   key={field._id}
                   className={cn(
-                    'flex items-center gap-2 px-2 py-1',
-                    index !== 0 ? 'border-t' : '',
+                    "flex items-center gap-2 px-2 py-1",
+                    index !== 0 ? "border-t" : "",
                   )}
                 >
                   <div className="flex-1 px-1 py-2 overflow-hidden">
@@ -144,16 +138,16 @@ export const PageRuleList = ({
                     </p>
                     <ul className="mt-1 text-gray-500 flex flex-wrap gap-x-3 gap-y-1">
                       <li>
-                        {t('popupEnabled')}: {t(`${field.popupEnabled}`)}
+                        {t("popupEnabled")}: {t(`${field.popupEnabled}`)}
                       </li>
                       <li>
-                        {t('popupPlacement')}:{' '}
+                        {t("popupPlacement")}:{" "}
                         {field.popupPlacement === INHERIT
-                          ? t('inherit')
+                          ? t("inherit")
                           : `${field.popupPlacement.side} ${field.popupPlacement.align}`}
                       </li>
                       <li>
-                        {t('linkCommandEnabled')}:{' '}
+                        {t("linkCommandEnabled")}:{" "}
                         {t(`linkCommand_enabled${field.linkCommandEnabled}`, [
                           t(`linkCommand_enabled${linkCommandEnabled}`),
                         ])}
@@ -207,20 +201,20 @@ export const PageRuleDialog = ({
 }: PageRuleDialogProps) => {
   const form = useForm<z.infer<typeof pageRuleSchema>>({
     resolver: zodResolver(pageRuleSchema),
-    mode: 'onChange',
+    mode: "onChange",
   })
   const { register, reset, setValue, watch } = form
-  const popupPlacement = watch('popupPlacement')
+  const popupPlacement = watch("popupPlacement")
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false)
 
   const handlePopupPlacementSubmit = (
     data: z.infer<typeof PopupPlacementSchema>,
   ) => {
-    setValue('popupPlacement', data)
+    setValue("popupPlacement", data)
   }
 
   const handleInheritChange = (inherit: boolean) => {
-    setValue('popupPlacement', inherit ? INHERIT : PopupPlacement)
+    setValue("popupPlacement", inherit ? INHERIT : PopupPlacement)
     setIsCollapsibleOpen(!inherit)
   }
 
@@ -245,25 +239,25 @@ export const PageRuleDialog = ({
           <DialogHeader>
             <DialogTitle>
               <BookOpen />
-              {t('pageRules_add')}
+              {t("pageRules_add")}
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription>{t('pageRules_add_desc')}</DialogDescription>
+          <DialogDescription>{t("pageRules_add_desc")}</DialogDescription>
           <Form {...form}>
             <div id="PageRuleDialog" className="space-y-4">
               <InputField
                 control={form.control}
                 name="urlPattern"
-                formLabel={t('urlPattern')}
+                formLabel={t("urlPattern")}
                 inputProps={{
-                  type: 'string',
-                  ...register('urlPattern', {}),
+                  type: "string",
+                  ...register("urlPattern", {}),
                 }}
               />
               <SelectField
                 control={form.control}
                 name="popupEnabled"
-                formLabel={t('popupEnabled')}
+                formLabel={t("popupEnabled")}
                 options={e2a(POPUP_ENABLED).map((mode) => ({
                   name: t(`${mode}`),
                   value: mode,
@@ -272,7 +266,7 @@ export const PageRuleDialog = ({
               <SelectField
                 control={form.control}
                 name="linkCommandEnabled"
-                formLabel={t('linkCommandEnabled')}
+                formLabel={t("linkCommandEnabled")}
                 options={e2a(LINK_COMMAND_ENABLED).map((opt) => ({
                   name: t(`linkCommand_enabled${opt}`, [
                     t(`linkCommand_enabled${linkCommandEnabled}`),
@@ -289,24 +283,31 @@ export const PageRuleDialog = ({
                     onChange={(e) => handleInheritChange(e.target.checked)}
                     className="rounded border-gray-300 cursor-pointer"
                   />
-                  <label htmlFor="inheritPopupPlacement" className="text-sm cursor-pointer">
-                    {t('inheritPopupPlacement')}
+                  <label
+                    htmlFor="inheritPopupPlacement"
+                    className="text-sm cursor-pointer"
+                  >
+                    {t("inheritPopupPlacement")}
                   </label>
                 </div>
                 <Collapsible
                   open={isCollapsibleOpen}
                   onOpenChange={setIsCollapsibleOpen}
-                  className={cn(css.collapse, 'flex flex-col items-end')}
+                  className={cn(css.collapse, "flex flex-col items-end")}
                 >
                   <CollapsibleContent
                     className={cn(
                       css.CollapsibleContent,
-                      'w-full space-y-3 pt-2',
+                      "w-full space-y-3 pt-2",
                     )}
                   >
                     <PopupPlacementField
                       onSubmit={handlePopupPlacementSubmit}
-                      defaultValues={typeof popupPlacement === 'string' ? PopupPlacement : popupPlacement}
+                      defaultValues={
+                        typeof popupPlacement === "string"
+                          ? PopupPlacement
+                          : popupPlacement
+                      }
                     />
                   </CollapsibleContent>
                 </Collapsible>
@@ -316,7 +317,7 @@ export const PageRuleDialog = ({
           <DialogFooter>
             <DialogClose asChild>
               <Button size="lg" type="button" variant="secondary">
-                {t('labelCancel')}
+                {t("labelCancel")}
               </Button>
             </DialogClose>
             <Button
@@ -329,7 +330,7 @@ export const PageRuleDialog = ({
               })}
             >
               <Save />
-              {isUpdate ? t('labelUpdate') : t('labelSave')}
+              {isUpdate ? t("labelUpdate") : t("labelSave")}
             </Button>
           </DialogFooter>
         </DialogContent>

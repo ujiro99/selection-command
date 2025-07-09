@@ -1,25 +1,25 @@
-import { useEffect, useState, useRef } from 'react'
-import { Trash2, Check } from 'lucide-react'
+import { useEffect, useState, useRef } from "react"
+import { Trash2, Check } from "lucide-react"
 
 import {
   Popover,
   PopoverContent,
   PopoverAnchor,
   PopoverArrow,
-} from '@/components/ui/popover'
-import { EditButton } from '@/components/option/EditButton'
-import { Tooltip } from '@/components/Tooltip'
-import { TypeIcon } from '@/components/pageAction/TypeIcon'
-import { InputField } from '@/components/pageAction/InputField'
-import { HoverArea } from '@/components/menu/HoverArea'
+} from "@/components/ui/popover"
+import { EditButton } from "@/components/option/EditButton"
+import { Tooltip } from "@/components/Tooltip"
+import { TypeIcon } from "@/components/pageAction/TypeIcon"
+import { InputField } from "@/components/pageAction/InputField"
+import { HoverArea } from "@/components/menu/HoverArea"
 
-import { cn, capitalize, onHover } from '@/lib/utils'
-import { t } from '@/services/i18n'
-import { paramToStr } from '@/services/pageAction'
-import type { PageActionStep, DeepPartial } from '@/types'
-import type { PageAction } from '@/services/pageAction'
-import { Storage } from '@/services/storage'
-import { PAGE_ACTION_EVENT } from '@/const'
+import { cn, capitalize, onHover } from "@/lib/utils"
+import { t } from "@/services/i18n"
+import { paramToStr } from "@/services/pageAction"
+import type { PageActionStep, DeepPartial } from "@/types"
+import type { PageAction } from "@/services/pageAction"
+import { Storage } from "@/services/storage"
+import { PAGE_ACTION_EVENT } from "@/const"
 
 const isInputParam = (
   param: PageAction.Parameter,
@@ -100,9 +100,9 @@ export function PageActionItem(props: Props): JSX.Element {
   }
 
   const handleClickEditFinish = () => {
-    let delayMs = parseInt(delayInputRef.current?.value ?? '0', 10)
+    let delayMs = parseInt(delayInputRef.current?.value ?? "0", 10)
     isNaN(delayMs) && (delayMs = 0)
-    const label = labelInputRef.current?.value ?? ''
+    const label = labelInputRef.current?.value ?? ""
     props.onChange(step.id, { delayMs, param: { label } })
     setIsEditing(false)
   }
@@ -141,7 +141,7 @@ export function PageActionItem(props: Props): JSX.Element {
   return (
     <li
       className={cn(
-        'h-[24px] flex-1 flex items-center justify-center pointer-events-auto group relative',
+        "h-[24px] flex-1 flex items-center justify-center pointer-events-auto group relative",
         props.className,
       )}
       ref={anchorRef}
@@ -150,9 +150,9 @@ export function PageActionItem(props: Props): JSX.Element {
       {/* List icon */}
       <div
         className={cn(
-          'transition relative group-hover:scale-150 p-1 rounded-full',
-          currentId === step.id ? 'bg-sky-200' : '',
-          isFailed ? 'bg-red-200' : '',
+          "transition relative group-hover:scale-150 p-1 rounded-full",
+          currentId === step.id ? "bg-sky-200" : "",
+          isFailed ? "bg-red-200" : "",
         )}
       >
         <TypeIcon
@@ -168,9 +168,9 @@ export function PageActionItem(props: Props): JSX.Element {
         {shouldRender && (
           <PopoverContent
             className={
-              'border bg-white px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600'
+              "border bg-white px-3 pt-4 pb-2 min-w-56 max-w-80 text-gray-600"
             }
-            side={'top'}
+            side={"top"}
             arrowPadding={-1}
             ref={contentRef}
             onPointerDownOutside={handlePointerDownOutside}
@@ -198,14 +198,14 @@ export function PageActionItem(props: Props): JSX.Element {
                   />
                 )}
                 <InputField
-                  label={t('Option_pageAction_label')}
+                  label={t("Option_pageAction_label")}
                   type="text"
                   defaultValue={step.param.label}
                   ref={labelInputRef}
                   className="flex-1"
                   isEditing={isEditing}
                   inputProps={{
-                    placeholder: 'e.g. Submit',
+                    placeholder: "e.g. Submit",
                   }}
                 />
               </div>
@@ -213,14 +213,14 @@ export function PageActionItem(props: Props): JSX.Element {
               {(isInput || isScroll || isKey) && (
                 <div className="flex items-center gap-1">
                   <label className="w-1/3 text-xs">
-                    {t('Option_pageAction_value')}
+                    {t("Option_pageAction_value")}
                   </label>
                   <pre
                     className={cn(
-                      'w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 font-mono rounded whitespace-pre-line',
+                      "w-2/3 max-h-32 truncate text-xs p-2 bg-gray-100 font-mono rounded whitespace-pre-line",
                       isInput &&
                         isEditing &&
-                        'border border-gray-300 shadow cursor-pointer',
+                        "border border-gray-300 shadow cursor-pointer",
                     )}
                     onClick={handleEditInputValue}
                   >
@@ -231,8 +231,8 @@ export function PageActionItem(props: Props): JSX.Element {
 
               <div>
                 <InputField
-                  label={t('Option_pageAction_delay')}
-                  unit={'ms'}
+                  label={t("Option_pageAction_delay")}
+                  unit={"ms"}
                   type="number"
                   defaultValue={step.delayMs}
                   ref={delayInputRef}
@@ -241,7 +241,7 @@ export function PageActionItem(props: Props): JSX.Element {
                     min: 0,
                     max: 10000,
                     step: 10,
-                    placeholder: 'e.g. 100',
+                    placeholder: "e.g. 100",
                   }}
                 />
               </div>
@@ -253,11 +253,11 @@ export function PageActionItem(props: Props): JSX.Element {
               ) : (
                 <button
                   className={cn(
-                    'outline-gray-200 p-2 rounded-md transition hover:bg-gray-200 hover:scale-125 group/edit-button',
+                    "outline-gray-200 p-2 rounded-md transition hover:bg-gray-200 hover:scale-125 group/edit-button",
                   )}
                   onClick={handleClickEditFinish}
                 >
-                  <Check className={cn('stroke-gray-500')} size={16} />
+                  <Check className={cn("stroke-gray-500")} size={16} />
                 </button>
               )}
 
@@ -288,7 +288,7 @@ const RemoveButton = ({ onClick, size }: RemoveButtonProps) => {
       <button
         type="button"
         className={
-          'outline-gray-200 p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button'
+          "outline-gray-200 p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button"
         }
         onClick={onClick}
         ref={buttonRef}
@@ -300,7 +300,7 @@ const RemoveButton = ({ onClick, size }: RemoveButtonProps) => {
       </button>
       <Tooltip
         positionElm={buttonRef.current}
-        text={t('Option_remove_tooltip')}
+        text={t("Option_remove_tooltip")}
       />
     </>
   )

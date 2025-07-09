@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { Save } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useState } from "react"
+import { Save } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogPortal,
@@ -10,14 +10,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from '@/components/ui/dialog'
-import { Textarea } from '@/components/ui/textarea'
-import { InputMenu } from '@/components/pageAction/InputPopup'
+} from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
+import { InputMenu } from "@/components/pageAction/InputPopup"
 import {
   convSymbolsToReadableKeys,
   convReadableKeysToSymbols,
-} from '@/services/pageAction'
-import { t } from '@/services/i18n'
+} from "@/services/pageAction"
+import { t } from "@/services/i18n"
 
 type InputEditorProps = {
   open: boolean
@@ -28,11 +28,11 @@ type InputEditorProps = {
 }
 
 export function InputEditor(props: InputEditorProps) {
-  const defaultVal = convSymbolsToReadableKeys(props.value ?? '')
+  const defaultVal = convSymbolsToReadableKeys(props.value ?? "")
   const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
 
   const handleSubmit = () => {
-    props.onSubmit(convReadableKeysToSymbols(textarea?.value || ''))
+    props.onSubmit(convReadableKeysToSymbols(textarea?.value || ""))
   }
 
   return (
@@ -42,10 +42,10 @@ export function InputEditor(props: InputEditorProps) {
           <DialogHeader>
             <DialogTitle>
               <span className="mr-2">✏️</span>
-              {t('PageAction_InputEditor_title')}
+              {t("PageAction_InputEditor_title")}
             </DialogTitle>
             <DialogDescription>
-              {t('PageAction_InputEditor_description')}
+              {t("PageAction_InputEditor_description")}
             </DialogDescription>
           </DialogHeader>
           <div className="retative">
@@ -55,7 +55,7 @@ export function InputEditor(props: InputEditorProps) {
             />
             <Textarea
               id="input-action"
-              placeholder={t('PageAction_InputEditor_placeholder')}
+              placeholder={t("PageAction_InputEditor_placeholder")}
               rows={4}
               defaultValue={defaultVal}
               ref={setTextarea}
@@ -65,12 +65,12 @@ export function InputEditor(props: InputEditorProps) {
           <DialogFooter className="flex flex-row justify-end gap-2">
             <DialogClose asChild>
               <Button variant="secondary">
-                {t('PageAction_InputEditor_cancel')}
+                {t("PageAction_InputEditor_cancel")}
               </Button>
             </DialogClose>
             <Button type="button" onClick={handleSubmit}>
               <Save size={16} className="mr-0.5" />
-              {t('PageAction_InputEditor_save')}
+              {t("PageAction_InputEditor_save")}
             </Button>
           </DialogFooter>
         </DialogContent>

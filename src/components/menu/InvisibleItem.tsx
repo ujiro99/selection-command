@@ -1,15 +1,15 @@
-import React, { useRef, useEffect, useMemo } from 'react'
-import { cn } from '@/lib/utils'
+import React, { useRef, useEffect, useMemo } from "react"
+import { cn } from "@/lib/utils"
 
-import { ResultPopup } from '@/components/result/ResultPopup'
-import { Icon } from '@/components/Icon'
-import { useContextMenu } from '@/hooks/useContextMenu'
-import { useSelectContext } from '@/hooks/useSelectContext'
-import { useCommandExecutor } from '@/hooks/useCommandExecutor'
-import type { SelectionCommand } from '@/types'
-import { POPUP_OFFSET, ExecState } from '@/const'
+import { ResultPopup } from "@/components/result/ResultPopup"
+import { Icon } from "@/components/Icon"
+import { useContextMenu } from "@/hooks/useContextMenu"
+import { useSelectContext } from "@/hooks/useSelectContext"
+import { useCommandExecutor } from "@/hooks/useCommandExecutor"
+import type { SelectionCommand } from "@/types"
+import { POPUP_OFFSET, ExecState } from "@/const"
 
-import css from './Menu.module.css'
+import css from "./Menu.module.css"
 
 type InvisibleItemProps = {
   positionElm?: Element | null
@@ -30,9 +30,9 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
     const onSelectionchange = () => {
       clearResult()
     }
-    document.addEventListener('selectionchange', onSelectionchange)
+    document.addEventListener("selectionchange", onSelectionchange)
     return () => {
-      document.removeEventListener('selectionchange', onSelectionchange)
+      document.removeEventListener("selectionchange", onSelectionchange)
     }
   }, [])
 
@@ -53,12 +53,12 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
 
   const style = useMemo(() => {
     return {
-      position: 'absolute' as const,
+      position: "absolute" as const,
       top: window.scrollY + position.y,
       left: window.scrollX + position.x,
       height: 0,
       width: 0,
-      pointerEvents: 'none' as const,
+      pointerEvents: "none" as const,
     }
   }, [position])
 
@@ -82,7 +82,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
         visible={visible}
         positionRef={elmRef}
         onClose={clearResult}
-        className={'pointer-events-auto'}
+        className={"pointer-events-auto"}
       >
         {result}
       </ResultPopup>
@@ -104,7 +104,7 @@ function IconWithState(props: ImageProps): JSX.Element {
     <div
       className={cn(
         css.iconWithState,
-        'shadow-md border border-gray-200 bg-white w-5 h-5',
+        "shadow-md border border-gray-200 bg-white w-5 h-5",
       )}
     >
       {status === ExecState.EXECUTING && (

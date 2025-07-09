@@ -1,11 +1,11 @@
-import React, { useState, useEffect, forwardRef, useCallback } from 'react'
-import { LinkClickGuard } from '@/components/LinkClickGuard'
-import { useUserSettings } from '@/hooks/useSetting'
-import { useSelectContext } from '@/hooks/useSelectContext'
-import { useLeftClickHold } from '@/hooks/useLeftClickHold'
-import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from '@/const'
-import { isEmpty, isPopup } from '@/lib/utils'
-import { Point } from '@/types'
+import React, { useState, useEffect, forwardRef, useCallback } from "react"
+import { LinkClickGuard } from "@/components/LinkClickGuard"
+import { useUserSettings } from "@/hooks/useSetting"
+import { useSelectContext } from "@/hooks/useSelectContext"
+import { useLeftClickHold } from "@/hooks/useLeftClickHold"
+import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from "@/const"
+import { isEmpty, isPopup } from "@/lib/utils"
+import { Point } from "@/types"
 
 const SIZE = 40
 
@@ -118,15 +118,15 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       setAnchor({ x: e.clientX, y: e.clientY })
     }
 
-    document.addEventListener('mousedown', onMouseDown)
-    document.addEventListener('mouseup', onMouseUp)
-    document.addEventListener('click', onClick)
-    document.addEventListener('dblclick', onDouble)
+    document.addEventListener("mousedown", onMouseDown)
+    document.addEventListener("mouseup", onMouseUp)
+    document.addEventListener("click", onClick)
+    document.addEventListener("dblclick", onDouble)
     return () => {
-      document.removeEventListener('mousedown', onMouseDown)
-      document.removeEventListener('mouseup', onMouseUp)
-      document.removeEventListener('click', onClick)
-      document.removeEventListener('dblclick', onDouble)
+      document.removeEventListener("mousedown", onMouseDown)
+      document.removeEventListener("mouseup", onMouseUp)
+      document.removeEventListener("click", onClick)
+      document.removeEventListener("dblclick", onDouble)
     }
   }, [isMouseDown, isDragging, detectHold, selected, releaseAnchor, setAnchor])
 
@@ -139,10 +139,10 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       }
     }
     if (isMouseDown) {
-      document.addEventListener('mousemove', onMouseMove)
+      document.addEventListener("mousemove", onMouseMove)
     }
     return () => {
-      document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener("mousemove", onMouseMove)
     }
   }, [point, isMouseDown, setIsDragging, releaseAnchor])
 
@@ -155,12 +155,12 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   if (point == null) return null
 
   const styles = {
-    position: 'absolute',
+    position: "absolute",
     top: window.scrollY + point.y - offset.y - SIZE / 2,
     left: window.scrollX + point.x - offset.x - SIZE / 2,
     height: SIZE,
     width: SIZE,
-    pointerEvents: 'none',
+    pointerEvents: "none",
     zIndex: 2147483647,
     // backgroundColor: 'rgba(255, 0, 0, 0.3)',
     // border: '1px solid red',

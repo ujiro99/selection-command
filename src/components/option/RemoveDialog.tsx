@@ -1,6 +1,6 @@
-import { useRef } from 'react'
-import { Trash2 } from 'lucide-react'
-import { t } from '@/services/i18n'
+import { useRef } from "react"
+import { Trash2 } from "lucide-react"
+import { t } from "@/services/i18n"
 
 import {
   Dialog,
@@ -11,8 +11,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 
 type RemoveDialogProps = {
   open: boolean
@@ -34,7 +34,7 @@ export const RemoveDialog = (props: RemoveDialogProps) => {
       <DialogPortal portal={props.portal}>
         <DialogContent onOpenAutoFocus={handleOpenAutoFocus}>
           <DialogHeader>
-            <DialogTitle>{t('Option_remove_title')}</DialogTitle>
+            <DialogTitle>{t("Option_remove_title")}</DialogTitle>
           </DialogHeader>
           <DialogDescription>{props.description}</DialogDescription>
           <div className="py-1 flex items-center justify-center">
@@ -43,7 +43,7 @@ export const RemoveDialog = (props: RemoveDialogProps) => {
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary" size="lg">
-                {t('Option_labelCancel')}
+                {t("Option_labelCancel")}
               </Button>
             </DialogClose>
             <DialogClose asChild>
@@ -55,7 +55,7 @@ export const RemoveDialog = (props: RemoveDialogProps) => {
                 ref={closeRef}
               >
                 <Trash2 />
-                {t('Option_remove_ok')}
+                {t("Option_remove_ok")}
               </Button>
             </DialogClose>
           </DialogFooter>

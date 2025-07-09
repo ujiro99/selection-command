@@ -5,9 +5,9 @@ import {
   useRef,
   createContext,
   useContext,
-} from 'react'
-import { fetchIconUrl } from '@/services/chrome'
-import { isEmpty, isUrl } from '@/lib/utils'
+} from "react"
+import { fetchIconUrl } from "@/services/chrome"
+import { isEmpty, isUrl } from "@/lib/utils"
 
 type ContextType = {
   isLoading: boolean
@@ -18,10 +18,10 @@ type ContextType = {
 const FaviconContext = createContext<ContextType>({} as ContextType)
 
 export enum FaviconEvent {
-  START = 'START',
-  SUCCESS = 'SUCCESS',
-  FAIL = 'FAIL',
-  FINISH = 'FINISH',
+  START = "START",
+  SUCCESS = "SUCCESS",
+  FAIL = "FAIL",
+  FINISH = "FINISH",
 }
 
 const dispatch = (eve: FaviconEvent, detail: ParamDetail) => {
@@ -33,17 +33,17 @@ export const FaviconContextProvider = ({
 }: {
   children: ReactNode
 }) => {
-  const [iconUrlSrc, setIconUrlSrc] = useState<string>('')
-  const [iconUrl, setIconUrl] = useState<string>('')
+  const [iconUrlSrc, setIconUrlSrc] = useState<string>("")
+  const [iconUrl, setIconUrl] = useState<string>("")
   const [isLoading, _setIsLoading] = useState(false)
   const fetchIconTO = useRef(0)
-  const srcRef = useRef('')
+  const srcRef = useRef("")
 
   const setIsLoading = (isLoading: boolean) => {
     _setIsLoading(isLoading)
     dispatch(isLoading ? FaviconEvent.START : FaviconEvent.FINISH, {
       isLoading,
-      faviconUrl: isLoading ? '/loading.gif' : '',
+      faviconUrl: isLoading ? "/loading.gif" : "",
     })
   }
 
@@ -58,7 +58,7 @@ export const FaviconContextProvider = ({
       try {
         setIsLoading(true)
         const iconUrl = await fetchIconUrl(iconUrlSrc)
-        if (srcRef.current != iconUrlSrc) throw new Error('Icon url mismatch')
+        if (srcRef.current != iconUrlSrc) throw new Error("Icon url mismatch")
         setIconUrl(iconUrl)
         dispatch(FaviconEvent.SUCCESS, { faviconUrl: iconUrl })
       } catch (e: any) {
@@ -68,7 +68,7 @@ export const FaviconContextProvider = ({
         })
       } finally {
         fetchIconTO.current = 0
-        srcRef.current = ''
+        srcRef.current = ""
         setIsLoading(false)
       }
     }, 500)

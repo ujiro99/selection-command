@@ -1,10 +1,10 @@
-import { cn, onHover } from '@/lib/utils'
-import { PageActionItem } from '@/components/pageAction/PageActionItem'
-import { CircleDashed } from 'lucide-react'
-import type { PageActionStep, DeepPartial } from '@/types'
+import { cn, onHover } from "@/lib/utils"
+import { PageActionItem } from "@/components/pageAction/PageActionItem"
+import { CircleDashed } from "lucide-react"
+import type { PageActionStep, DeepPartial } from "@/types"
 
-import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from '@/const'
-import { e2a } from '@/lib/utils'
+import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from "@/const"
+import { e2a } from "@/lib/utils"
 
 const noop = () => {}
 
@@ -44,7 +44,7 @@ export function StepList(props: Props): JSX.Element {
           onClickEdit={onClickEdit}
           onChange={onChange}
           className={cn(
-            'relative',
+            "relative",
             i > 0 &&
               "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-500/80 after:rounded",
           )}
@@ -54,7 +54,7 @@ export function StepList(props: Props): JSX.Element {
         <li
           key={i}
           className={cn(
-            'h-[24px] flex-1 flex items-center justify-center relative',
+            "h-[24px] flex-1 flex items-center justify-center relative",
             (steps.length > 0 || i > 0) &&
               "after:content-[''] after:z-[-1] after:absolute after:left-[-25%] after:h-[2px] after:w-[50%] after:bg-gray-400/70 after:rounded",
           )}

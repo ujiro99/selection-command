@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
-import { useForm, useFieldArray, useWatch } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { useState, useEffect, useRef } from "react"
+import { useForm, useFieldArray, useWatch } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 import {
   Plus,
   Trash2,
@@ -9,7 +9,7 @@ import {
   SquareTerminal,
   ChevronsUpDown,
   ChevronsDownUp,
-} from 'lucide-react'
+} from "lucide-react"
 
 import {
   Dialog,
@@ -20,7 +20,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogPortal,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog"
 
 import {
   FormControl,
@@ -28,24 +28,24 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from '@/components/ui/form'
+} from "@/components/ui/form"
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+} from "@/components/ui/collapsible"
 
-import { Input } from '@/components/ui/input'
-import { Form } from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
-import { InputField } from '@/components/option/field/InputField'
-import { IconField } from '@/components/option/field/IconField'
-import { SelectField } from '@/components/option/field/SelectField'
-import { TextareaField } from '@/components/option/field/TextareaField'
-import { PageActionSection } from '@/components/option/editor/PageActionSection'
-import { PaeActionHelp } from '@/components/help/PageActionHelp'
-import { PageActionStep } from '@/types/schema'
+import { Input } from "@/components/ui/input"
+import { Form } from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
+import { InputField } from "@/components/option/field/InputField"
+import { IconField } from "@/components/option/field/IconField"
+import { SelectField } from "@/components/option/field/SelectField"
+import { TextareaField } from "@/components/option/field/TextareaField"
+import { PageActionSection } from "@/components/option/editor/PageActionSection"
+import { PaeActionHelp } from "@/components/help/PageActionHelp"
+import { PageActionStep } from "@/types/schema"
 
 import {
   OPEN_MODE,
@@ -56,44 +56,44 @@ import {
   PAGE_ACTION_OPEN_MODE,
   ICON_NOT_FOUND,
   SCREEN,
-} from '@/const'
+} from "@/const"
 
 import {
   FaviconContextProvider,
   useFavicon,
   FaviconEvent,
-} from '@/hooks/option/useFavicon'
+} from "@/hooks/option/useFavicon"
 
-import { Ipc, BgCommand } from '@/services/ipc'
-import { getScreenSize } from '@/services/screen'
-import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { ANALYTICS_EVENTS, sendEvent } from '@/services/analytics'
+import { Ipc, BgCommand } from "@/services/ipc"
+import { getScreenSize } from "@/services/screen"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
-import { isEmpty, e2a, cn } from '@/lib/utils'
-import { t as _t } from '@/services/i18n'
+import { isEmpty, e2a, cn } from "@/lib/utils"
+import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
-import { SEARCH_OPEN_MODE, isSearchType, commandSchema } from '@/types/schema'
+import { SEARCH_OPEN_MODE, isSearchType, commandSchema } from "@/types/schema"
 import type {
   SelectionCommand,
   CommandFolder,
   PageActionRecordingData,
-} from '@/types'
+} from "@/types"
 
-import css from './CommandEditDialog.module.css'
-import { calcLevel } from '@/services/option/commandTree'
+import css from "./CommandEditDialog.module.css"
+import { calcLevel } from "@/services/option/commandTree"
 
 const EmptyFolder = {
   id: ROOT_FOLDER,
-  title: t('Command_rootFolder'),
+  title: t("Command_rootFolder"),
 } as CommandFolder
 
 const defaultValue = (openMode: OPEN_MODE) => {
   if (SEARCH_OPEN_MODE.includes(openMode as any)) {
     return {
-      id: '',
-      searchUrl: '',
-      iconUrl: '',
+      id: "",
+      searchUrl: "",
+      iconUrl: "",
       openMode: OPEN_MODE.POPUP as const,
       openModeSecondary: OPEN_MODE.TAB as const,
       spaceEncoding: SPACE_ENCODING.PLUS,
@@ -106,19 +106,19 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
   if (openMode === OPEN_MODE.API) {
     return {
-      id: '',
-      searchUrl: '',
-      iconUrl: '',
+      id: "",
+      searchUrl: "",
+      iconUrl: "",
       openMode: OPEN_MODE.API as const,
-      fetchOptions: '',
+      fetchOptions: "",
       variables: [],
       parentFolderId: ROOT_FOLDER,
     }
   }
   if (openMode === OPEN_MODE.PAGE_ACTION) {
     return {
-      id: '',
-      iconUrl: '',
+      id: "",
+      iconUrl: "",
       openMode: OPEN_MODE.PAGE_ACTION as const,
       parentFolderId: ROOT_FOLDER,
       popupOption: {
@@ -126,7 +126,7 @@ const defaultValue = (openMode: OPEN_MODE) => {
         height: POPUP_OPTION.height + 50,
       },
       pageActionOption: {
-        startUrl: '',
+        startUrl: "",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         steps: [],
       },
@@ -134,10 +134,10 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
   if (openMode === OPEN_MODE.LINK_POPUP) {
     return {
-      id: '',
-      title: 'Link Popup',
+      id: "",
+      title: "Link Popup",
       iconUrl:
-        'https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png',
+        "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png",
       openMode: OPEN_MODE.LINK_POPUP as const,
       parentFolderId: ROOT_FOLDER,
       popupOption: {
@@ -148,10 +148,10 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
   if (openMode === OPEN_MODE.COPY) {
     return {
-      id: '',
-      title: 'Copy text',
+      id: "",
+      title: "Copy text",
       iconUrl:
-        'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png',
+        "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png",
       openMode: OPEN_MODE.COPY as const,
       copyOption: COPY_OPTION.DEFAULT,
       parentFolderId: ROOT_FOLDER,
@@ -159,10 +159,10 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
   if (openMode === OPEN_MODE.GET_TEXT_STYLES) {
     return {
-      id: '',
-      title: 'Get Text Styles',
+      id: "",
+      title: "Get Text Styles",
       iconUrl:
-        'https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png',
+        "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png",
       openMode: OPEN_MODE.GET_TEXT_STYLES as const,
       parentFolderId: ROOT_FOLDER,
     }
@@ -211,7 +211,7 @@ const CommandEditDialogInner = ({
 
   const form = useForm<z.infer<typeof commandSchema>>({
     resolver: zodResolver(commandSchema),
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: defaultValue(DEFAULT_MODE),
   })
   const { register, reset, getValues, setValue, clearErrors } = form
@@ -220,27 +220,27 @@ const CommandEditDialogInner = ({
   const isUpdate = command != null
 
   const variableArray = useFieldArray({
-    name: 'variables',
+    name: "variables",
     control: form.control,
-    keyName: '_id',
+    keyName: "_id",
   })
 
   const openMode = useWatch({
     control: form.control,
-    name: 'openMode',
+    name: "openMode",
     defaultValue: DEFAULT_MODE,
   })
 
   const searchUrl = useWatch({
     control: form.control,
-    name: 'searchUrl',
-    defaultValue: '',
+    name: "searchUrl",
+    defaultValue: "",
   })
 
   const startUrl = useWatch({
     control: form.control,
-    name: 'pageActionOption.startUrl',
-    defaultValue: '',
+    name: "pageActionOption.startUrl",
+    defaultValue: "",
   })
 
   const iconUrlSrc = searchUrl || startUrl
@@ -250,21 +250,21 @@ const CommandEditDialogInner = ({
       SESSION_STORAGE_KEY.PA_RECORDING,
       {
         startUrl,
-        openMode: getValues('pageActionOption.openMode'),
-        size: getValues('popupOption') ?? POPUP_OPTION,
-        steps: getValues('pageActionOption.steps'),
+        openMode: getValues("pageActionOption.openMode"),
+        size: getValues("popupOption") ?? POPUP_OPTION,
+        steps: getValues("pageActionOption.steps"),
       },
     )
     await Ipc.send(BgCommand.startPageActionRecorder, {
       startUrl,
-      openMode: getValues('pageActionOption.openMode'),
-      size: getValues('popupOption') ?? POPUP_OPTION,
+      openMode: getValues("pageActionOption.openMode"),
+      size: getValues("popupOption") ?? POPUP_OPTION,
       screen: await getScreenSize(),
     })
     sendEvent(
       ANALYTICS_EVENTS.OPEN_DIALOG,
       {
-        event_label: 'pageAction_recorder',
+        event_label: "pageAction_recorder",
       },
       SCREEN.OPTION,
     )
@@ -301,7 +301,7 @@ const CommandEditDialogInner = ({
   }, [iconUrlSrc, setIconUrlSrc])
 
   useEffect(() => {
-    if (!open) setIconUrlSrc('')
+    if (!open) setIconUrlSrc("")
     setTimeout(() => {
       setInitialized(open)
     }, 100)
@@ -312,8 +312,8 @@ const CommandEditDialogInner = ({
       SESSION_STORAGE_KEY.PA_RECORDING,
       ({ size, steps }) => {
         if (steps == null) return
-        setValue('popupOption', size)
-        setValue('pageActionOption.steps', steps as PageActionStep[])
+        setValue("popupOption", size)
+        setValue("pageActionOption.steps", steps as PageActionStep[])
       },
     )
   }, [])
@@ -321,11 +321,11 @@ const CommandEditDialogInner = ({
   useEffect(() => {
     const sub = (e: any) => {
       if (e.type === FaviconEvent.FAIL) {
-        setValue('iconUrl', ICON_NOT_FOUND)
+        setValue("iconUrl", ICON_NOT_FOUND)
       } else {
-        setValue('iconUrl', e.detail.faviconUrl)
+        setValue("iconUrl", e.detail.faviconUrl)
       }
-      clearErrors('iconUrl')
+      clearErrors("iconUrl")
     }
 
     subscribe(FaviconEvent.START, sub)
@@ -345,13 +345,13 @@ const CommandEditDialogInner = ({
           <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />
-              {t('Command_edit')}
+              {t("Command_edit")}
             </DialogTitle>
             {openMode === OPEN_MODE.PAGE_ACTION && (
               <PaeActionHelp className="absolute -top-4 right-2" />
             )}
           </DialogHeader>
-          <DialogDescription>{t('Command_input')}</DialogDescription>
+          <DialogDescription>{t("Command_input")}</DialogDescription>
           <Form {...form}>
             <div id="CommandEditForm" className="space-y-2">
               <FormField
@@ -361,7 +361,7 @@ const CommandEditDialogInner = ({
                   <FormItem className="hidden">
                     <FormControl>
                       <input
-                        {...register('id', { value: field.value })}
+                        {...register("id", { value: field.value })}
                         type="hidden"
                       />
                     </FormControl>
@@ -372,10 +372,10 @@ const CommandEditDialogInner = ({
               <InputField
                 control={form.control}
                 name="title"
-                formLabel={t('title')}
+                formLabel={t("title")}
                 inputProps={{
-                  type: 'string',
-                  ...register('title', {}),
+                  type: "string",
+                  ...register("title", {}),
                 }}
               />
 
@@ -399,7 +399,7 @@ const CommandEditDialogInner = ({
                 <SelectField
                   control={form.control}
                   name="openModeSecondary"
-                  formLabel={t('openModeSecondary')}
+                  formLabel={t("openModeSecondary")}
                   options={SEARCH_OPEN_MODE.map((mode) => ({
                     name: t(`openMode_${mode}`),
                     value: mode,
@@ -412,19 +412,19 @@ const CommandEditDialogInner = ({
                 <InputField
                   control={form.control}
                   name="searchUrl"
-                  formLabel={t('searchUrl')}
+                  formLabel={t("searchUrl")}
                   inputProps={{
-                    type: 'string',
-                    ...register('searchUrl', {}),
+                    type: "string",
+                    ...register("searchUrl", {}),
                   }}
                   description={
                     openMode === OPEN_MODE.API
-                      ? t('searchUrl_desc_api')
-                      : t('searchUrl_desc')
+                      ? t("searchUrl_desc_api")
+                      : t("searchUrl_desc")
                   }
                   previewUrl={
-                    !isEmpty(getValues('searchUrl'))
-                      ? getValues('iconUrl')
+                    !isEmpty(getValues("searchUrl"))
+                      ? getValues("iconUrl")
                       : undefined
                   }
                 />
@@ -442,7 +442,7 @@ const CommandEditDialogInner = ({
                   <TextareaField
                     control={form.control}
                     name="fetchOptions"
-                    formLabel={t('fetchOptions')}
+                    formLabel={t("fetchOptions")}
                     className="font-mono text-xs sm:text-xs lg:text-sm"
                   />
                   <FormField
@@ -451,7 +451,7 @@ const CommandEditDialogInner = ({
                     render={() => (
                       <FormItem className="flex items-center">
                         <div className="w-2/6">
-                          <FormLabel>{t('variables')}</FormLabel>
+                          <FormLabel>{t("variables")}</FormLabel>
                         </div>
                         <div className="w-4/6">
                           <FormControl>
@@ -467,7 +467,7 @@ const CommandEditDialogInner = ({
                                     render={({ field }) => (
                                       <FormItem className="flex items-center gap-1 w-1/2">
                                         <FormLabel className="text-xs text-right">
-                                          {t('variableName')}
+                                          {t("variableName")}
                                         </FormLabel>
                                         <FormControl className="flex-1">
                                           <Input {...field} />
@@ -482,7 +482,7 @@ const CommandEditDialogInner = ({
                                     render={({ field }) => (
                                       <FormItem className="flex items-center gap-1 w-1/2">
                                         <FormLabel className="text-xs text-right">
-                                          {t('variableValue')}
+                                          {t("variableValue")}
                                         </FormLabel>
                                         <FormControl>
                                           <Input {...field} />
@@ -511,8 +511,8 @@ const CommandEditDialogInner = ({
                             className="relative mt-1 rounded-lg h-7 left-[50%] translate-x-[-50%]"
                             onClick={() =>
                               variableArray.append({
-                                name: '',
-                                value: '',
+                                name: "",
+                                value: "",
                               })
                             }
                           >
@@ -529,7 +529,7 @@ const CommandEditDialogInner = ({
                 <SelectField
                   control={form.control}
                   name="copyOption"
-                  formLabel={t('copyOption')}
+                  formLabel={t("copyOption")}
                   options={e2a(COPY_OPTION).map((opt) => ({
                     name: t(`copyOption_${opt}`),
                     value: opt,
@@ -540,7 +540,7 @@ const CommandEditDialogInner = ({
               {/* details */}
 
               <Collapsible
-                className={cn(css.collapse, 'flex flex-col items-end')}
+                className={cn(css.collapse, "flex flex-col items-end")}
               >
                 <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
                   <ChevronsUpDown
@@ -551,26 +551,26 @@ const CommandEditDialogInner = ({
                     size={18}
                     className={cn(css.icon, css.iconDownUp)}
                   />
-                  <span className="ml-0.5">{t('labelDetail')}</span>
+                  <span className="ml-0.5">{t("labelDetail")}</span>
                 </CollapsibleTrigger>
                 <CollapsibleContent
                   className={cn(
                     css.CollapsibleContent,
-                    'w-full space-y-3 pt-2',
+                    "w-full space-y-3 pt-2",
                   )}
                 >
                   <IconField
                     control={form.control}
                     nameUrl="iconUrl"
                     nameSvg="iconSvg"
-                    formLabel={t('iconUrl')}
+                    formLabel={t("iconUrl")}
                     description={
                       SEARCH_OPEN_MODE.includes(openMode as any) ||
                       openMode === OPEN_MODE.API
-                        ? t('iconUrl_desc')
+                        ? t("iconUrl_desc")
                         : openMode === OPEN_MODE.PAGE_ACTION
-                          ? t('iconUrl_desc_pageAction')
-                          : ''
+                          ? t("iconUrl_desc_pageAction")
+                          : ""
                     }
                   />
 
@@ -578,19 +578,19 @@ const CommandEditDialogInner = ({
                     <SelectField
                       control={form.control}
                       name="spaceEncoding"
-                      formLabel={t('spaceEncoding')}
+                      formLabel={t("spaceEncoding")}
                       options={e2a(SPACE_ENCODING).map((enc) => ({
                         name: t(`spaceEncoding_${enc}`),
                         value: enc,
                       }))}
-                      description={t('spaceEncoding_desc')}
+                      description={t("spaceEncoding_desc")}
                     />
                   )}
 
                   <SelectField
                     control={form.control}
                     name="parentFolderId"
-                    formLabel={t('parentFolderId')}
+                    formLabel={t("parentFolderId")}
                     options={[EmptyFolder, ...folders].map((folder) => ({
                       name: folder.title,
                       value: folder.id,
@@ -606,7 +606,7 @@ const CommandEditDialogInner = ({
           <DialogFooter className="pt-0">
             <DialogClose asChild>
               <Button type="button" variant="secondary" size="lg">
-                {t('labelCancel')}
+                {t("labelCancel")}
               </Button>
             </DialogClose>
             <Button
@@ -635,7 +635,7 @@ const CommandEditDialogInner = ({
               )}
             >
               <Save />
-              {isUpdate ? t('labelUpdate') : t('labelSave')}
+              {isUpdate ? t("labelUpdate") : t("labelSave")}
             </Button>
           </DialogFooter>
         </DialogContent>

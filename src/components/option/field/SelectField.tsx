@@ -5,7 +5,7 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from '@/components/ui/form'
+} from "@/components/ui/form"
 import {
   Select,
   SelectContent,
@@ -14,8 +14,8 @@ import {
   SelectValue,
   SelectGroup,
   SelectLabel,
-} from '@/components/ui/select'
-import { MenuImage } from '@/components/menu/MenuImage'
+} from "@/components/ui/select"
+import { MenuImage } from "@/components/menu/MenuImage"
 
 export type SelectOptionType = {
   name: string
@@ -120,7 +120,7 @@ export const SelectField = ({
               </FormControl>
               <SelectContent>
                 {options.map((item, index) => {
-                  if ('options' in item) {
+                  if ("options" in item) {
                     // Grouped options
                     return (
                       <SelectGroup key={index}>

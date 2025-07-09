@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Point } from '@/types'
+import React, { useState, useEffect, useRef } from "react"
+import { Point } from "@/types"
 type LinkClickGuardProps = {
   show: boolean
   position: Point
@@ -34,14 +34,14 @@ export const LinkClickGuard = (props: LinkClickGuardProps) => {
         setGuard(false)
       }
     }
-    document.addEventListener('mouseup', mouseUp)
+    document.addEventListener("mouseup", mouseUp)
     return () => {
-      document.removeEventListener('mouseup', mouseUp)
+      document.removeEventListener("mouseup", mouseUp)
     }
   }, [])
 
   const styles = {
-    position: 'absolute',
+    position: "absolute",
     top: window.scrollY + position.y - 5,
     left: window.scrollX + position.x - 5,
     height: 10,

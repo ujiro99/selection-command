@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { isEmpty, cn } from '@/lib/utils'
-import css from './Menu.module.css'
+import { useState } from "react"
+import { isEmpty, cn } from "@/lib/utils"
+import css from "./Menu.module.css"
 
 type MenuImageProps = {
   src?: string
