@@ -22,6 +22,11 @@ global.chrome = {
       remove: vi.fn(),
       clear: vi.fn(),
     },
+    onChanged: {
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      hasListener: vi.fn(),
+    },
   },
   runtime: {
     sendMessage: vi.fn(),

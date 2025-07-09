@@ -29,11 +29,7 @@ import {
 } from "@/lib/utils"
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
-
-enum LOCAL_STORAGE_KEY {
-  CACHES = "caches",
-  STARS = "stars",
-}
+import { LOCAL_STORAGE_KEY } from "./storage"
 
 export type Caches = {
   images: ImageCache
@@ -58,7 +54,10 @@ Storage.addCommandListener(async (commands: Command[]) => {
 
 export const Settings = {
   get: async (excludeOptions = false): Promise<SettingsType> => {
+    // User Settings
     let data = await Storage.get<SettingsType>(STORAGE_KEY.USER)
+
+    // Commands
     const commands = await Storage.getCommands()
     if (commands.length > 0) {
       data.commands = commands
