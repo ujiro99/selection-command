@@ -1,4 +1,4 @@
-import 'chrome'
+import "chrome"
 
 declare global {
   namespace chrome.declarativeNetRequest {

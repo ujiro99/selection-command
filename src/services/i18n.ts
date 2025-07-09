@@ -10,5 +10,5 @@ export function t(key: string, params?: string[]): string {
 }
 
 export function getCurrentLocale(): string {
-  return chrome.i18n.getMessage('@@ui_locale')
+  return chrome.i18n.getMessage("@@ui_locale")
 }

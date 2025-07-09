@@ -1,15 +1,15 @@
-import { useEffect } from 'react'
-import type { PageActiontStatus } from '@/types'
+import { useEffect } from "react"
+import type { PageActiontStatus } from "@/types"
 import {
   PageActionDispatcher as dispatcher,
   PageAction,
-} from '@/services/pageAction'
-import type { ExecPageAction } from '@/services/ipc'
-import { Ipc, TabCommand } from '@/services/ipc'
-import { debounceDOMChange } from '@/services/dom'
-import { RunningStatus } from '@/services/pageAction'
-import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
-import { PAGE_ACTION_CONTROL, PAGE_ACTION_EXEC_STATE } from '@/const'
+} from "@/services/pageAction"
+import type { ExecPageAction } from "@/services/ipc"
+import { Ipc, TabCommand } from "@/services/ipc"
+import { debounceDOMChange } from "@/services/dom"
+import { RunningStatus } from "@/services/pageAction"
+import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
+import { PAGE_ACTION_CONTROL, PAGE_ACTION_EXEC_STATE } from "@/const"
 
 const STOP_STATUS = [
   PAGE_ACTION_EXEC_STATE.Done,
@@ -67,30 +67,30 @@ export function usePageActionRunner() {
     let msg: string | undefined
     try {
       switch (type) {
-        case 'start':
+        case "start":
           result = true
           break
-        case 'click':
+        case "click":
           ;[result, msg] = await dispatcher.click(
             step.param as PageAction.Click,
           )
           break
-        case 'doubleClick':
+        case "doubleClick":
           ;[result, msg] = await dispatcher.doubleCilck(
             step.param as PageAction.Click,
           )
           break
-        case 'tripleClick':
+        case "tripleClick":
           ;[result, msg] = await dispatcher.tripleClick(
             step.param as PageAction.Click,
           )
           break
-        case 'keyboard':
+        case "keyboard":
           ;[result, msg] = await dispatcher.keyboard(
             step.param as PageAction.Keyboard,
           )
           break
-        case 'input':
+        case "input":
           ;[result, msg] = await dispatcher.input({
             ...step.param,
             srcUrl,
@@ -98,12 +98,12 @@ export function usePageActionRunner() {
             clipboardText,
           } as PageAction.InputExec)
           break
-        case 'scroll':
+        case "scroll":
           ;[result, msg] = await dispatcher.scroll(
             step.param as PageAction.Scroll,
           )
           break
-        case 'end':
+        case "end":
           result = true
           break
         default:

@@ -1,4 +1,4 @@
-import { escapeJson } from '@/lib/utils'
+import { escapeJson } from "@/lib/utils"
 import {
   openPopupWindow,
   openPopupWindowMultiple,
@@ -6,10 +6,10 @@ import {
   OpenPopupsProps,
   OpenPopupProps,
   OpenTabProps,
-} from '@/services/chrome'
-import { incrementCommandExecutionCount } from '@/services/commandMetrics'
-import { Ipc, TabCommand } from '@/services/ipc'
-import type { CommandVariable } from '@/types'
+} from "@/services/chrome"
+import { incrementCommandExecutionCount } from "@/services/commandMetrics"
+import { Ipc, TabCommand } from "@/services/ipc"
+import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
 
@@ -36,7 +36,7 @@ export const openPopup = (
       await openPopupWindow(param)
       response(true)
     } catch (error) {
-      console.error('Failed to execute openPopups:', error)
+      console.error("Failed to execute openPopups:", error)
       response(false)
     }
   })
@@ -53,7 +53,7 @@ export const openPopups = (
       await openPopupWindowMultiple(param)
       response(true)
     } catch (error) {
-      console.error('Failed to execute openPopups:', error)
+      console.error("Failed to execute openPopups:", error)
       response(false)
     }
   })
@@ -73,7 +73,7 @@ export const openPopupAndClick = (
       })
       response(true)
     } catch (error) {
-      console.error('Failed to execute openPopupAndClick:', error)
+      console.error("Failed to execute openPopupAndClick:", error)
       response(false)
     }
   })
@@ -104,7 +104,7 @@ function bindVariables(
   }
   let res = str
   for (const v of arr) {
-    const re = new RegExp(`\\$\\{${v.name}\\}`, 'g')
+    const re = new RegExp(`\\$\\{${v.name}\\}`, "g")
     res = res.replace(re, v.value)
   }
   return res

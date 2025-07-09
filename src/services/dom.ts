@@ -1,15 +1,15 @@
-import type { Point } from '@/types'
+import type { Point } from "@/types"
 
-import { isEmpty } from '@/lib/utils'
+import { isEmpty } from "@/lib/utils"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image()
-    img.crossOrigin = 'Anonymous'
+    img.crossOrigin = "Anonymous"
     const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
     img.onload = function () {
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
       canvas.height = img.naturalHeight
       canvas.width = img.naturalWidth
       ctx?.drawImage(img, 0, 0)
@@ -43,7 +43,7 @@ export function linksInSelection(): string[] {
 function linkAtContainer(range: Range): string | undefined {
   let parent = range.commonAncestorContainer as HTMLElement | null
   while (parent) {
-    if (parent.tagName === 'A') {
+    if (parent.tagName === "A") {
       return (parent as HTMLAnchorElement).href
     }
     parent = parent.parentElement
@@ -51,7 +51,7 @@ function linkAtContainer(range: Range): string | undefined {
 }
 
 function linksInRange(range: Range): string[] {
-  const anchors = range.cloneContents().querySelectorAll('a')
+  const anchors = range.cloneContents().querySelectorAll("a")
   if (!anchors) {
     return []
   }
@@ -78,7 +78,7 @@ export function getSelectionText(): string {
   if (s != null && s.rangeCount > 0) {
     return s.toString().trim()
   }
-  return ''
+  return ""
 }
 
 /**
@@ -89,9 +89,9 @@ export function getSelectionText(): string {
  */
 export function findAnchorElementFromParent(elm: Element): Element | undefined {
   if (elm == null) return undefined
-  if (elm.nodeName === 'body') return undefined
+  if (elm.nodeName === "body") return undefined
   if (
-    elm.tagName?.toLowerCase() === 'a' &&
+    elm.tagName?.toLowerCase() === "a" &&
     !isEmpty((elm as HTMLAnchorElement).href)
   )
     return elm
@@ -107,7 +107,7 @@ export function findAnchorElementFromPoint(p: Point): Element | undefined {
   const elms = document.elementsFromPoint(p.x, p.y)
   return elms.find(
     (e) =>
-      e.tagName.toLowerCase() === 'a' &&
+      e.tagName.toLowerCase() === "a" &&
       !isEmpty((e as HTMLAnchorElement).href),
   )
 }
@@ -153,19 +153,19 @@ export function isClickableElement(elm: Element | null): boolean {
  */
 export function findClickableElement(elm: Element | null): Element | null {
   if (elm == null) return null
-  if (elm.nodeName === 'body') return null
+  if (elm.nodeName === "body") return null
   if (elm instanceof Window) return null
 
   try {
     // check tagName
-    const clickableTags = ['a', 'button', 'input']
+    const clickableTags = ["a", "button", "input"]
     if (
       clickableTags.includes(elm.tagName.toLowerCase()) &&
       !(elm as HTMLButtonElement).disabled
     ) {
-      if (elm.tagName.toLowerCase() === 'input') {
+      if (elm.tagName.toLowerCase() === "input") {
         const type = (elm as HTMLInputElement).type
-        if (type === 'button') {
+        if (type === "button") {
           return elm
         }
       } else {
@@ -182,12 +182,12 @@ export function findClickableElement(elm: Element | null): Element | null {
 }
 
 export function getSelectorFromElement(el: Element): string {
-  if (!(el instanceof Element)) return ''
+  if (!(el instanceof Element)) return ""
   const path = []
   while (el.nodeType === Node.ELEMENT_NODE) {
     let selector = el.nodeName.toLowerCase()
     if (el.id) {
-      selector += '#' + el.id
+      selector += "#" + el.id
       path.unshift(selector)
       break
     } else {
@@ -202,7 +202,7 @@ export function getSelectorFromElement(el: Element): string {
     el = el.parentNode as Element
   }
 
-  return path.join(' > ')
+  return path.join(" > ")
 }
 
 /**
@@ -246,8 +246,8 @@ export function getScrollableAncestors(element: HTMLElement): HTMLElement[] {
   while (parent) {
     const style = window.getComputedStyle(parent)
     if (
-      style.overflow.indexOf('scroll') >= 0 ||
-      style.overflow.indexOf('auto') >= 0
+      style.overflow.indexOf("scroll") >= 0 ||
+      style.overflow.indexOf("auto") >= 0
     ) {
       scrollableAncestors.push(parent)
     }
@@ -263,15 +263,15 @@ export const isInput = (
   if (target == null) return false
   if (target instanceof HTMLInputElement) {
     return [
-      'text',
-      'url',
-      'number',
-      'search',
-      'date',
-      'datetime-local',
-      'month',
-      'week',
-      'time',
+      "text",
+      "url",
+      "number",
+      "search",
+      "date",
+      "datetime-local",
+      "month",
+      "week",
+      "time",
     ].includes(target.type)
   }
   if (target instanceof HTMLTextAreaElement) {
@@ -327,7 +327,7 @@ export const getFocusNode = (e: Event): HTMLElement | null => {
  * @returns {boolean} True if the node is an SVG element.
  */
 export const isSvgElement = (element: Element): boolean => {
-  return element.namespaceURI === 'http://www.w3.org/2000/svg'
+  return element.namespaceURI === "http://www.w3.org/2000/svg"
 }
 
 /**
@@ -359,7 +359,7 @@ export const debounceDOMChange = (name: string): Promise<boolean> => {
       clearTimeout(timeout)
     }, 200)
     timeout = window.setTimeout(() => {
-      console.warn('timeout debounce DOM Changing', name)
+      console.warn("timeout debounce DOM Changing", name)
       resolve(false)
       observer.disconnect()
       clearTimeout(mutationTimeout)
@@ -375,7 +375,7 @@ export const debounceDOMChange = (name: string): Promise<boolean> => {
  */
 export function getXPath(element: Element): string {
   if (!(element instanceof Element)) {
-    return ''
+    return ""
   }
   if (isSvgElement(element)) {
     element = element.parentElement as Element
@@ -383,13 +383,13 @@ export function getXPath(element: Element): string {
 
   // List of attributes that can uniquely identify an element.
   const uniqueAttributes = [
-    'name',
-    'role',
-    'aria-label',
-    'aria-labelledby',
-    'test-id',
-    'id',
-    'placeholder',
+    "name",
+    "role",
+    "aria-label",
+    "aria-labelledby",
+    "test-id",
+    "id",
+    "placeholder",
   ]
 
   // Check if there is an attribute that can uniquely identify the element.
@@ -403,7 +403,7 @@ export function getXPath(element: Element): string {
     for (const attr of uniqueAttributes) {
       if (cur.hasAttribute(attr)) {
         const value = cur.getAttribute(attr)
-        if (value == null || value.startsWith(':')) continue
+        if (value == null || value.startsWith(":")) continue
         if (document.querySelectorAll(`[${attr}="${value}"]`).length === 1) {
           uniqueAttribute = attr
           uniqueElement = cur
@@ -422,15 +422,15 @@ export function getXPath(element: Element): string {
     let xpath = `//*[@${uniqueAttribute}="${uniqueElement.getAttribute(uniqueAttribute)}"]`
     const path = getPath(element, uniqueElement)
     if (path.length > 0) {
-      xpath += '/' + path.join('/')
+      xpath += "/" + path.join("/")
     }
     return xpath
   } else {
     // Generate a normal node path
     // if the element cannot be uniquely identified.
-    let xpath = ''
+    let xpath = ""
     const path = getPath(element)
-    xpath += '/' + path.join('/')
+    xpath += "/" + path.join("/")
     return xpath
   }
 }

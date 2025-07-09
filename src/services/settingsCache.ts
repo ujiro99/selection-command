@@ -1,15 +1,15 @@
-import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from './storage'
-import type { UserStats, ShortcutSettings, UserSettings } from '@/types'
-import { Settings } from './settings'
+import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "./storage"
+import type { UserStats, ShortcutSettings, UserSettings } from "@/types"
+import { Settings } from "./settings"
 
 // Cache section constants
 export const CACHE_SECTIONS = {
-  COMMANDS: 'commands',
-  USER_SETTINGS: 'userSettings',
-  STARS: 'stars',
-  SHORTCUTS: 'shortcuts',
-  USER_STATS: 'userStats',
-  CACHES: 'caches',
+  COMMANDS: "commands",
+  USER_SETTINGS: "userSettings",
+  STARS: "stars",
+  SHORTCUTS: "shortcuts",
+  USER_STATS: "userStats",
+  CACHES: "caches",
 } as const
 
 // Cache section definition
@@ -58,7 +58,7 @@ class DataVersionManager {
       hash = (hash << 5) + hash + normalized.charCodeAt(i)
       hash = hash & hash
     }
-    return Math.abs(hash).toString(16).padStart(8, '0')
+    return Math.abs(hash).toString(16).padStart(8, "0")
   }
 }
 
@@ -112,10 +112,10 @@ export class SettingsCacheManager {
 
   // Invalidate by section
   invalidate(sections: CacheSection[]): void {
-    console.log(`Invalidating cache for sections: ${sections.join(', ')}`)
+    console.log(`Invalidating cache for sections: ${sections.join(", ")}`)
     sections.forEach((section) => {
       this.cache.delete(section)
-      this.versionManager.setVersion(section, '')
+      this.versionManager.setVersion(section, "")
       this.notifyListeners(section)
     })
   }
@@ -206,7 +206,7 @@ export class SettingsCacheManager {
           sectionsToInvalidate.push(CACHE_SECTIONS.STARS)
         } else if (key === LOCAL_STORAGE_KEY.CACHES) {
           sectionsToInvalidate.push(CACHE_SECTIONS.CACHES)
-        } else if (key.startsWith('cmd-')) {
+        } else if (key.startsWith("cmd-")) {
           sectionsToInvalidate.push(CACHE_SECTIONS.COMMANDS)
         }
       }

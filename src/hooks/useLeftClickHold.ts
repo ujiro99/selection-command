@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
-import { MOUSE } from '@/const'
+import { useState, useEffect, useRef } from "react"
+import { MOUSE } from "@/const"
 
-import { isPopup } from '@/lib/utils'
-import { findAnchorElement, findClickableElement } from '@/services/dom'
-import type { Point } from '@/types'
+import { isPopup } from "@/lib/utils"
+import { findAnchorElement, findClickableElement } from "@/services/dom"
+import type { Point } from "@/types"
 
 const isTargetEvent = (e: MouseEvent): boolean => {
   return e.button === MOUSE.LEFT && !isPopup(e.target as Element)
@@ -71,11 +71,11 @@ export function useLeftClickHold(props: useLeftClickHoldParam) {
       clearInterval(intervalRef.current)
     }
 
-    window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener("mousedown", handleMouseDown)
+    window.addEventListener("mouseup", handleMouseUp)
     return () => {
-      window.removeEventListener('mousedown', handleMouseDown)
-      window.removeEventListener('mouseup', handleMouseUp)
+      window.removeEventListener("mousedown", handleMouseDown)
+      window.removeEventListener("mouseup", handleMouseUp)
     }
   }, [enable, holdDuration, detectHold, timeoutRef, props])
 

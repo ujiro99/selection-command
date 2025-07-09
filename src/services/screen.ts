@@ -1,4 +1,4 @@
-import { BgData } from '@/services/backgroundData'
+import { BgData } from "@/services/backgroundData"
 
 type WindowPosition = {
   top: number
@@ -37,7 +37,7 @@ export async function updateActiveScreenId(windowId: number): Promise<void> {
       }))
     }
   } catch (error) {
-    console.error('Failed to update active screen ID:', error)
+    console.error("Failed to update active screen ID:", error)
   }
 }
 
@@ -46,7 +46,7 @@ export async function getWindowPosition(): Promise<WindowPosition> {
   let top = 0
   let left = 0
   try {
-    if (typeof chrome !== 'undefined' && chrome.windows) {
+    if (typeof chrome !== "undefined" && chrome.windows) {
       const currentWindow = await chrome.windows.getCurrent()
       top = currentWindow.top ?? 0
       left = currentWindow.left ?? 0
@@ -76,7 +76,7 @@ export async function getScreenSize(): Promise<ScreenSize> {
       : displays.find((d) => d.isPrimary)
 
     if (!targetDisplay) {
-      throw new Error('Target display not found')
+      throw new Error("Target display not found")
     }
 
     return {

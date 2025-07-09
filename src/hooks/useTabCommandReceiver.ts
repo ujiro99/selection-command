@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Ipc, TabCommand } from '@/services/ipc'
-import type { ClickElementProps, Message } from '@/services/ipc'
+import { useEffect, useState } from "react"
+import { Ipc, TabCommand } from "@/services/ipc"
+import type { ClickElementProps, Message } from "@/services/ipc"
 
 export function useTabCommandReceiver() {
   const [tabId, setTabId] = useState<number | null>(null)

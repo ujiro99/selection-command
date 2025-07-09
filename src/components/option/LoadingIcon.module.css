@@ -27,7 +27,7 @@
     animation: spin 1s linear infinite;
 
     &::before {
-      content: '';
+      content: "";
       box-sizing: content-box;
       position: absolute;
       display: block;

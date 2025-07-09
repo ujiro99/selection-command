@@ -1,9 +1,9 @@
-import { t } from '@/services/i18n'
-import { INSERT, InsertSymbol, PageAction } from '@/services/pageAction'
-import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
-import { getKeyLabel } from '@/services/pageAction/listener'
+import { t } from "@/services/i18n"
+import { INSERT, InsertSymbol, PageAction } from "@/services/pageAction"
+import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from "@/const"
+import { getKeyLabel } from "@/services/pageAction/listener"
 
-export const LocaleKey = 'PageAction_InputMenu_mark_'
+export const LocaleKey = "PageAction_InputMenu_mark_"
 
 export function convReadableKeysToSymbols(value: string): string {
   const symbols = {
@@ -12,7 +12,7 @@ export function convReadableKeysToSymbols(value: string): string {
     [t(LocaleKey + INSERT.CLIPBOARD)]: InsertSymbol[INSERT.CLIPBOARD],
   }
   Object.entries(symbols).forEach(([key, val]) => {
-    value = value!.replace(new RegExp(key, 'g'), val)
+    value = value!.replace(new RegExp(key, "g"), val)
   })
   return value
 }
@@ -24,7 +24,7 @@ export function convSymbolsToReadableKeys(value: string): string {
     [InsertSymbol[INSERT.CLIPBOARD]]: t(LocaleKey + INSERT.CLIPBOARD),
   }
   Object.entries(symbols).forEach(([key, val]) => {
-    value = value!.replace(new RegExp(key, 'g'), val)
+    value = value!.replace(new RegExp(key, "g"), val)
   })
   return value
 }

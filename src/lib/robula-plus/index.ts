@@ -12,23 +12,23 @@
  */
 export class RobulaPlus {
   private attributePriorizationList: string[] = [
-    'name',
-    'class',
-    'title',
-    'alt',
-    'value',
+    "name",
+    "class",
+    "title",
+    "alt",
+    "value",
   ]
   private attributeBlackList: string[] = [
-    'href',
-    'src',
-    'onclick',
-    'onload',
-    'tabindex',
-    'width',
-    'height',
-    'style',
-    'size',
-    'maxlength',
+    "href",
+    "src",
+    "onclick",
+    "onload",
+    "tabindex",
+    "width",
+    "height",
+    "style",
+    "size",
+    "maxlength",
   ]
 
   // Flag to determine whether to detect random number patterns
@@ -86,9 +86,9 @@ export class RobulaPlus {
    */
   public getRobustXPath(element: Element, document: Document): string {
     if (!document.body.contains(element)) {
-      throw new Error('Document does not contain given element!')
+      throw new Error("Document does not contain given element!")
     }
-    const xPathList: XPath[] = [new XPath('//*')]
+    const xPathList: XPath[] = [new XPath("//*")]
     while (xPathList.length > 0) {
       const xPath: XPath = xPathList.shift()!
       let temp: XPath[] = []
@@ -107,7 +107,7 @@ export class RobulaPlus {
         xPathList.push(x)
       }
     }
-    throw new Error('Internal Error: xPathList.shift returns undefined')
+    throw new Error("Internal Error: xPathList.shift returns undefined")
   }
 
   /**
@@ -162,9 +162,9 @@ export class RobulaPlus {
   public transfConvertStar(xPath: XPath, element: Element): XPath[] {
     const output: XPath[] = []
     const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
-    if (xPath.startsWith('//*')) {
+    if (xPath.startsWith("//*")) {
       output.push(
-        new XPath('//' + ancestor.tagName.toLowerCase() + xPath.substring(3)),
+        new XPath("//" + ancestor.tagName.toLowerCase() + xPath.substring(3)),
       )
     }
     return output
@@ -244,7 +244,7 @@ export class RobulaPlus {
     const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
     if (!xPath.headHasAnyPredicates()) {
       // add id to attributePriorizationList
-      this.attributePriorizationList.unshift('id')
+      this.attributePriorizationList.unshift("id")
       let attributes: Attr[] = [...ancestor.attributes]
 
       // Filter to only use usable attributes
@@ -290,7 +290,7 @@ export class RobulaPlus {
         for (let i: number = 1; i < attributeSet.length; i++) {
           predicate += ` and @${attributeSet[i].name}='${attributeSet[i].value}'`
         }
-        predicate += ']'
+        predicate += "]"
         const newXPath: XPath = new XPath(xPath.getValue())
         newXPath.addPredicateToHead(predicate)
         output.push(newXPath)
@@ -304,7 +304,7 @@ export class RobulaPlus {
     const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
     if (!xPath.headHasPositionPredicate()) {
       let position: number = 1
-      if (xPath.startsWith('//*')) {
+      if (xPath.startsWith("//*")) {
         position =
           Array.from(ancestor.parentNode!.children).indexOf(ancestor) + 1
       } else {
@@ -327,7 +327,7 @@ export class RobulaPlus {
   public transfAddLevel(xPath: XPath, element: Element): XPath[] {
     const output: XPath[] = []
     if (xPath.getLength() - 1 < this.getAncestorCount(element)) {
-      output.push(new XPath('//*' + xPath.substring(1)))
+      output.push(new XPath("//*" + xPath.substring(1)))
     }
     return output
   }
@@ -445,27 +445,27 @@ export class RobulaPlus {
   private isEditableElement(element: Element): boolean {
     const tagName = element.tagName.toLowerCase()
 
-    if (tagName === 'textarea') {
+    if (tagName === "textarea") {
       return true
     }
 
-    if (tagName === 'input') {
-      const type = element.getAttribute('type')?.toLowerCase()
+    if (tagName === "input") {
+      const type = element.getAttribute("type")?.toLowerCase()
       const nonEditableTypes = [
-        'button',
-        'submit',
-        'reset',
-        'image',
-        'hidden',
-        'checkbox',
-        'radio',
+        "button",
+        "submit",
+        "reset",
+        "image",
+        "hidden",
+        "checkbox",
+        "radio",
       ]
       return !type || !nonEditableTypes.includes(type)
     }
 
     // Check if the element is directly editable via isContentEditable property
     if (
-      'isContentEditable' in element &&
+      "isContentEditable" in element &&
       (element as HTMLElement).isContentEditable
     ) {
       return true
@@ -495,27 +495,27 @@ export class XPath {
   }
 
   public headHasAnyPredicates(): boolean {
-    return this.value.split('/')[2].includes('[')
+    return this.value.split("/")[2].includes("[")
   }
 
   public headHasPositionPredicate(): boolean {
-    const splitXPath: string[] = this.value.split('/')
-    const regExp: RegExp = new RegExp('[[0-9]]')
+    const splitXPath: string[] = this.value.split("/")
+    const regExp: RegExp = new RegExp("[[0-9]]")
     return (
-      splitXPath[2].includes('position()') ||
-      splitXPath[2].includes('last()') ||
+      splitXPath[2].includes("position()") ||
+      splitXPath[2].includes("last()") ||
       regExp.test(splitXPath[2])
     )
   }
 
   public headHasTextPredicate(): boolean {
-    return this.value.split('/')[2].includes('text()')
+    return this.value.split("/")[2].includes("text()")
   }
 
   public addPredicateToHead(predicate: string): void {
-    const splitXPath: string[] = this.value.split('/')
+    const splitXPath: string[] = this.value.split("/")
     splitXPath[2] += predicate
-    this.value = splitXPath.join('/')
+    this.value = splitXPath.join("/")
   }
 
   public getLength(): number {
@@ -524,16 +524,16 @@ export class XPath {
     const predicates: string[] = []
 
     // Extract and replace predicates
-    let openBracketIndex = cleanPath.indexOf('[')
+    let openBracketIndex = cleanPath.indexOf("[")
     while (openBracketIndex !== -1) {
       let nestLevel = 1
       let closeBracketIndex = openBracketIndex + 1
 
       // Find the corresponding closing bracket (handling nested brackets)
       while (nestLevel > 0 && closeBracketIndex < cleanPath.length) {
-        if (cleanPath[closeBracketIndex] === '[') {
+        if (cleanPath[closeBracketIndex] === "[") {
           nestLevel++
-        } else if (cleanPath[closeBracketIndex] === ']') {
+        } else if (cleanPath[closeBracketIndex] === "]") {
           nestLevel--
         }
         closeBracketIndex++
@@ -547,19 +547,19 @@ export class XPath {
         predicates.push(predicate)
         cleanPath =
           cleanPath.substring(0, openBracketIndex) +
-          '___PREDICATE' +
+          "___PREDICATE" +
           (predicates.length - 1) +
-          '___' +
+          "___" +
           cleanPath.substring(closeBracketIndex)
       }
 
-      openBracketIndex = cleanPath.indexOf('[')
+      openBracketIndex = cleanPath.indexOf("[")
     }
 
     // Split the path by '/' and count the nodes
     const pathParts = cleanPath
-      .split('/')
-      .filter((part) => part && part.trim() !== '')
+      .split("/")
+      .filter((part) => part && part.trim() !== "")
     return pathParts.length
   }
 }
@@ -575,23 +575,23 @@ export class RobulaPlusOptions {
    */
 
   public attributePriorizationList: string[] = [
-    'name',
-    'class',
-    'title',
-    'alt',
-    'value',
+    "name",
+    "class",
+    "title",
+    "alt",
+    "value",
   ]
   public attributeBlackList: string[] = [
-    'href',
-    'src',
-    'onclick',
-    'onload',
-    'tabindex',
-    'width',
-    'height',
-    'style',
-    'size',
-    'maxlength',
+    "href",
+    "src",
+    "onclick",
+    "onload",
+    "tabindex",
+    "width",
+    "height",
+    "style",
+    "size",
+    "maxlength",
   ]
   public avoidRandomPatterns?: boolean
   public randomPatterns?: RegExp[]

@@ -1,9 +1,13 @@
-import type { Active, Over } from '@dnd-kit/core'
-import type { Command, CommandFolder } from '@/types'
-import type { CommandTreeNode } from '@/services/option/commandTree'
-import { findNodeInTree, findFirstCommand } from '@/services/option/commandTree'
-import { isCommand, isFolder, isCircularReference } from '@/services/option/commandUtils'
-import { ROOT_FOLDER } from '@/const'
+import type { Active, Over } from "@dnd-kit/core"
+import type { Command, CommandFolder } from "@/types"
+import type { CommandTreeNode } from "@/services/option/commandTree"
+import { findNodeInTree, findFirstCommand } from "@/services/option/commandTree"
+import {
+  isCommand,
+  isFolder,
+  isCircularReference,
+} from "@/services/option/commandUtils"
+import { ROOT_FOLDER } from "@/const"
 
 /**
  * Checks if a drag operation between two content items is valid.
@@ -48,7 +52,7 @@ export const isValidDragTarget = (active: Active, over: Over): boolean => {
 export const isForwardDrag = (active: Active, over: Over): boolean => {
   const activeIndex = active.data.current?.sortable?.index
   const overIndex = over.data.current?.sortable?.index
-  return typeof activeIndex === 'number' && typeof overIndex === 'number'
+  return typeof activeIndex === "number" && typeof overIndex === "number"
     ? activeIndex < overIndex
     : false
 }

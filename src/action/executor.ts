@@ -1,6 +1,6 @@
-import type { ExecuteCommandParams } from '@/types'
-import { OPEN_MODE } from '@/const'
-import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
+import type { ExecuteCommandParams } from "@/types"
+import { OPEN_MODE } from "@/const"
+import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 
 export async function executeAction({
   actions,
@@ -15,7 +15,7 @@ export async function executeAction({
   let mode = command.openMode as OPEN_MODE
   if (
     useSecondary &&
-    'openModeSecondary' in command &&
+    "openModeSecondary" in command &&
     command.openModeSecondary
   ) {
     mode = command.openModeSecondary

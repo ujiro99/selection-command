@@ -1,4 +1,4 @@
-import { ClipboardResult, BgCommand } from '@/services/ipc'
+import { ClipboardResult, BgCommand } from "@/services/ipc"
 
 /**
  * Read text from clipboard with retry mechanism
@@ -24,12 +24,12 @@ const readClipboardWithRetry = async (
       await new Promise<void>((resolve) => setTimeout(resolve, delayMs))
     }
   }
-  return { data: undefined, err: 'Out of retries.' }
+  return { data: undefined, err: "Out of retries." }
 }
 
-const port = chrome.runtime.connect({ name: 'clipboard' })
+const port = chrome.runtime.connect({ name: "clipboard" })
 port.onDisconnect.addListener(function (port) {
-  console.warn('onDisconnect', port.name)
+  console.warn("onDisconnect", port.name)
 })
 
 readClipboardWithRetry()

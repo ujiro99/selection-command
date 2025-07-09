@@ -1,10 +1,10 @@
-import { Ipc, BgCommand } from '@/services/ipc'
-import { isValidString } from '@/lib/utils'
-import { getScreenSize, getWindowPosition } from '@/services/screen'
-import { POPUP_TYPE, SPACE_ENCODING } from '@/const'
-import { PopupOption } from '@/services/option/defaultSettings'
-import type { OpenPopupProps } from '@/services/chrome'
-import type { ExecuteCommandParams } from '@/types'
+import { Ipc, BgCommand } from "@/services/ipc"
+import { isValidString } from "@/lib/utils"
+import { getScreenSize, getWindowPosition } from "@/services/screen"
+import { POPUP_TYPE, SPACE_ENCODING } from "@/const"
+import { PopupOption } from "@/services/option/defaultSettings"
+import type { OpenPopupProps } from "@/services/chrome"
+import type { ExecuteCommandParams } from "@/types"
 
 export const Window = {
   async execute({
@@ -14,11 +14,11 @@ export const Window = {
     useClipboard,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
-      console.error('searchUrl is not valid.')
+      console.error("searchUrl is not valid.")
       return
     }
     if (position === null) {
-      console.error('position is null.')
+      console.error("position is null.")
       return
     }
 

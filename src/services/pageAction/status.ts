@@ -1,7 +1,7 @@
-import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from '@/const'
-import type { PageActiontStatus, PageActionStep } from '@/types'
-import { PAGE_ACTION_TIMEOUT as TIMEOUT } from '@/const'
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from "@/const"
+import type { PageActiontStatus, PageActionStep } from "@/types"
+import { PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
 
 export const RunningStatus = {
   clear: async () => {
@@ -9,7 +9,7 @@ export const RunningStatus = {
       SESSION_STORAGE_KEY.PA_RUNNING,
       (_cur) => ({
         tabId: 0,
-        stepId: '',
+        stepId: "",
         results: [],
       }),
     )

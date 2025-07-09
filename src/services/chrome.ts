@@ -1,17 +1,17 @@
-import { sleep, toUrl, isOverBytes, isUrlParam } from '@/lib/utils'
-import type { ScreenSize } from '@/services/dom'
-import type { ShowToastParam, UrlParam, WindowLayer } from '@/types'
-import { POPUP_OFFSET, POPUP_TYPE } from '@/const'
-import { BgData } from '@/services/backgroundData'
-import { BgCommand, ClipboardResult, TabCommand } from '@/services/ipc'
-import { Ipc } from '@/services/ipc'
-import { t } from '@/services/i18n'
+import { sleep, toUrl, isOverBytes, isUrlParam } from "@/lib/utils"
+import type { ScreenSize } from "@/services/dom"
+import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
+import { POPUP_OFFSET, POPUP_TYPE } from "@/const"
+import { BgData } from "@/services/backgroundData"
+import { BgCommand, ClipboardResult, TabCommand } from "@/services/ipc"
+import { Ipc } from "@/services/ipc"
+import { t } from "@/services/i18n"
 
 BgData.init()
 
 const failsafe = (url: string, favicon: string) => {
   if (isOverBytes(favicon, 1000)) {
-    console.warn('favicon failsafe', url)
+    console.warn("favicon failsafe", url)
     return `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`
   }
   return favicon
@@ -30,8 +30,8 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
     const timeoutId = setTimeout(() => {
       chrome.windows.remove(w.id as number)
       chrome.tabs.onUpdated.removeListener(onUpdated)
-      console.warn('timeout', url)
-      reject('timeout')
+      console.warn("timeout", url)
+      reject("timeout")
     }, 5000)
 
     const onUpdated = async (
@@ -44,7 +44,7 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
         chrome.tabs.onUpdated.removeListener(onUpdated)
         return
       }
-      if (tabId === w.tabs?.[0].id && changeInfo.status === 'complete') {
+      if (tabId === w.tabs?.[0].id && changeInfo.status === "complete") {
         clearTimeout(timeoutId)
         chrome.tabs.onUpdated.removeListener(onUpdated)
         if (tab.favIconUrl) {
@@ -69,10 +69,10 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
   w = await chrome.windows.create({
     url: toUrl({
       searchUrl: url,
-      selectionText: 'test',
+      selectionText: "test",
       useClipboard: false,
     }),
-    state: 'minimized',
+    state: "minimized",
   })
   return p
 }
@@ -104,7 +104,7 @@ export type OpenTabProps = {
   active: boolean
 }
 
-type ReadClipboardParam = Omit<OpenPopupsProps, 'urls'> & {
+type ReadClipboardParam = Omit<OpenPopupsProps, "urls"> & {
   incognito: boolean
 }
 
@@ -207,13 +207,13 @@ const updateRules = async (tabIds: number[]) => {
           type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
           responseHeaders: [
             {
-              header: 'Content-Disposition',
+              header: "Content-Disposition",
               operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
             },
             {
-              header: 'Content-Type',
+              header: "Content-Type",
               operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-              value: 'image/jpeg',
+              value: "image/jpeg",
             },
           ],
         },
@@ -222,12 +222,12 @@ const updateRules = async (tabIds: number[]) => {
           resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
           responseHeaders: [
             {
-              header: 'content-disposition',
-              values: ['attachment*jpg*'],
+              header: "content-disposition",
+              values: ["attachment*jpg*"],
             },
             {
-              header: 'content-disposition',
-              values: ['attachment*jpeg*'],
+              header: "content-disposition",
+              values: ["attachment*jpeg*"],
             },
           ],
         },
@@ -239,13 +239,13 @@ const updateRules = async (tabIds: number[]) => {
           type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
           responseHeaders: [
             {
-              header: 'Content-Disposition',
+              header: "Content-Disposition",
               operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
             },
             {
-              header: 'Content-Type',
+              header: "Content-Type",
               operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-              value: 'image/png',
+              value: "image/png",
             },
           ],
         },
@@ -254,8 +254,8 @@ const updateRules = async (tabIds: number[]) => {
           resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
           responseHeaders: [
             {
-              header: 'content-disposition',
-              values: ['attachment*png*'],
+              header: "content-disposition",
+              values: ["attachment*png*"],
             },
           ],
         },
@@ -267,13 +267,13 @@ const updateRules = async (tabIds: number[]) => {
           type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
           responseHeaders: [
             {
-              header: 'Content-Disposition',
+              header: "Content-Disposition",
               operation: chrome.declarativeNetRequest.HeaderOperation.REMOVE,
             },
             {
-              header: 'Content-Type',
+              header: "Content-Type",
               operation: chrome.declarativeNetRequest.HeaderOperation.SET,
-              value: 'application/pdf',
+              value: "application/pdf",
             },
           ],
         },
@@ -282,8 +282,8 @@ const updateRules = async (tabIds: number[]) => {
           resourceTypes: [chrome.declarativeNetRequest.ResourceType.MAIN_FRAME],
           responseHeaders: [
             {
-              header: 'content-disposition',
-              values: ['attachment*pdf*'],
+              header: "content-disposition",
+              values: ["attachment*pdf*"],
             },
           ],
         },
@@ -320,7 +320,7 @@ const readClipboardContent = async (
     return result
   } catch (e) {
     console.error(e)
-    return { data: '', err: e instanceof Error ? e.message : 'Unknown error' }
+    return { data: "", err: e instanceof Error ? e.message : "Unknown error" }
   }
 }
 
@@ -328,7 +328,7 @@ const openWindowAndReadClipboard = async (
   param: ReadClipboardParam,
 ): Promise<ReadClipboardResult> => {
   const w = await chrome.windows.create({
-    url: chrome.runtime.getURL('src/clipboard.html'),
+    url: chrome.runtime.getURL("src/clipboard.html"),
     focused: true,
     type: param.type,
     width: param.width,
@@ -342,7 +342,7 @@ const openWindowAndReadClipboard = async (
 
   return {
     window: w,
-    clipboardText: result.data ?? '',
+    clipboardText: result.data ?? "",
     err: result.err,
   }
 }
@@ -369,7 +369,7 @@ export const openPopupWindow = async (
   )
 
   let window: chrome.windows.Window
-  let clipboardText = ''
+  let clipboardText = ""
 
   if (isUrlParam(url) && url.useClipboard) {
     const result = await openWindowAndReadClipboard({
@@ -398,9 +398,9 @@ export const openPopupWindow = async (
         window.tabs?.[0].id as number,
         TabCommand.showToast,
         {
-          title: t('clipboard_error_title'),
-          description: t('clipboard_error_description'),
-          action: t('clipboard_error_action'),
+          title: t("clipboard_error_title"),
+          description: t("clipboard_error_description"),
+          action: t("clipboard_error_action"),
         },
       )
     }
@@ -477,7 +477,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
   try {
     currentTab = await getCurrentTab()
   } catch (e) {
-    console.warn('Failed to get current tab:', e)
+    console.warn("Failed to get current tab:", e)
   }
 
   let useClipboard = false
@@ -487,7 +487,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
 
   if (useClipboard) {
     const tab = await chrome.tabs.create({
-      url: chrome.runtime.getURL('src/clipboard.html'),
+      url: chrome.runtime.getURL("src/clipboard.html"),
       active: true,
       windowId: currentTab?.windowId,
       index: currentTab?.index !== undefined ? currentTab.index + 1 : undefined,
@@ -502,16 +502,16 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
         tab.id as number,
         TabCommand.showToast,
         {
-          title: t('clipboard_error_title'),
-          description: t('clipboard_error_description'),
-          action: t('clipboard_error_action'),
+          title: t("clipboard_error_title"),
+          description: t("clipboard_error_description"),
+          action: t("clipboard_error_action"),
         },
       )
     }
 
     return {
       tabId: tab.id as number,
-      clipboardText: result.data ?? '',
+      clipboardText: result.data ?? "",
     }
   } else {
     const tab = await chrome.tabs.create({
@@ -522,7 +522,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
     })
     return {
       tabId: tab.id as number,
-      clipboardText: '',
+      clipboardText: "",
     }
   }
 }

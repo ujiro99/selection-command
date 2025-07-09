@@ -1,11 +1,11 @@
-import { OPEN_MODE_BG } from '@/const'
-import { Popup } from './popup'
-import { Window } from './window'
-import { Tab } from './tab'
-import { Api } from './api'
-import { PageAction } from './pageAction'
-import { executeAction } from './executor'
-import type { ExecuteCommandParams } from '@/types'
+import { OPEN_MODE_BG } from "@/const"
+import { Popup } from "./popup"
+import { Window } from "./window"
+import { Tab } from "./tab"
+import { Api } from "./api"
+import { PageAction } from "./pageAction"
+import { executeAction } from "./executor"
+import type { ExecuteCommandParams } from "@/types"
 
 export const actionsForBackground = {
   [OPEN_MODE_BG.POPUP]: Popup,
