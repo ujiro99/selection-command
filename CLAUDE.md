@@ -36,6 +36,10 @@
   - `ui/` - 再利用可能なUIコンポーネント（Radix UIを使用）
 - **Services** (`src/services/`) - 設定管理、ストレージ、分析、ページアクション処理を含むビジネスロジックとユーティリティ
 - **Hooks** (`src/hooks/`) - 状態管理とChrome拡張機能APIのためのカスタムReactフック
+- **Testing** (`src/test/`) - テスト環境のセットアップとモック設定
+  - `setup.ts` - Vitestのセットアップファイル（Chrome拡張機能APIのモック、jsdom環境設定）
+  - `**/*.test.{ts,tsx}` - コンポーネントとサービスのユニットテスト
+  - `**/*.spec.{ts,tsx}` - 統合テストとE2Eテスト
 
 **主要機能:**
 
@@ -62,3 +66,11 @@
 - 拡張機能は`public/_locales/`のロケールファイルによる国際化をサポート
 - コンテンツスクリプトのスタイリング分離にShadow DOMを使用
 - 堅牢なXPathセレクター生成のためのRobula+アルゴリズムを実装（`src/lib/robula-plus/`）
+
+### テスト環境
+
+- **テストフレームワーク**: Vitest with jsdom環境
+- **テスト設定**: `vitest.config.ts`で設定、`src/test/setup.ts`でモック設定
+- **Chrome拡張機能モック**: `chrome.storage`、`chrome.runtime`、`chrome.tabs`等のAPIをモック
+- **テストファイル**: `src/**/*.{test,spec}.{ts,tsx}`パターンで配置
+- **カバレッジ**: `yarn test:coverage`でテストカバレッジを測定可能
