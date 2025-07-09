@@ -61,7 +61,7 @@ export const CommandListMenu: React.FC<Props> = ({
         asChild
       >
         <a
-          href={`${HUB_URL}/?utm_source=optionPage&utm_medium=button`}
+          href={`${HUB_URL}?utm_source=optionPage&utm_medium=button`}
           target="_blank"
           className="font-mono text-gray-600 hover:text-gray-700"
         >
