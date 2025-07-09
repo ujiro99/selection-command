@@ -7,6 +7,9 @@
 - `yarn dev` - Viteを使用した開発モードの開始
 - `yarn build` - 拡張機能のビルド（TypeScriptコンパイル + Viteビルドを実行）
 - `yarn lint` - ESLintを実行してコード品質をチェック
+- `yarn test` - Vitestを使用したテストの実行
+- `yarn test:ui` - VitestのUIモードでテストを実行
+- `yarn test:coverage` - テストカバレッジを測定
 - `yarn zip` - ビルドされたdistフォルダから配布可能な拡張機能のzipファイルを作成
 
 ## アーキテクチャ概要
@@ -49,7 +52,8 @@
 - **フォームとバリデーション**: react-hook-form and zod
 - **スタイリング**: CSS Modules + Tailwind CSS(ver.3)
 - **状態管理**: React hooks with Chrome extension storage APIs
-- **テスト**: ESLint for code quality
+- **テスト**: Vitest with jsdom for unit/integration testing
+- **コード品質**: ESLint for code quality
 
 ### プロジェクト構造の注意事項
 
