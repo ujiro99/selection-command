@@ -2,10 +2,7 @@ import { useEffect, useState, useMemo } from "react"
 import { Control, useFieldArray, useWatch } from "react-hook-form"
 import { Keyboard, SquareArrowOutUpRight } from "lucide-react"
 import { SelectField } from "@/components/option/field/SelectField"
-import type {
-  SelectOptionType,
-  SelectGroupType,
-} from "@/components/option/field/SelectField"
+import type { SelectOptionType } from "@/components/option/field/SelectField"
 import { t as _t } from "@/services/i18n"
 import { Ipc, BgCommand } from "@/services/ipc"
 import type { Command, CommandFolder, ShortcutCommand } from "@/types"
@@ -14,6 +11,11 @@ import {
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from "@/const"
+import {
+  toCommandTree,
+  toFlatten,
+  calcLevel,
+} from "@/services/option/commandTree"
 import { cn } from "@/lib/utils"
 import css from "./ShortcutList.module.css"
 
@@ -44,64 +46,42 @@ const createNameRender = (openMode: string) => {
     : undefined
 }
 
-// Group commands by folder while maintaining order
-const groupCommandsByFolder = (
+// Create flat list of commands and folders with proper hierarchy levels using toFlatten
+const flattenCommandsAndFolders = (
   commands: Command[],
   folders: CommandFolder[],
-): (SelectOptionType | SelectGroupType)[] => {
-  const folderMap = new Map(folders.map((folder) => [folder.id, folder]))
+): SelectOptionType[] => {
+  const tree = toCommandTree(commands, folders)
+  const flattenedNodes = toFlatten(tree)
 
-  // Create a map to store commands by folder
-  const commandsByFolder = new Map<string, Command[]>()
-  commandsByFolder.set("root", [])
+  const result: SelectOptionType[] = []
 
-  // First, group commands by folder
-  commands.forEach((command) => {
-    if (!command) return
-    const folderId = command.parentFolderId || "root"
-    if (!commandsByFolder.has(folderId)) {
-      commandsByFolder.set(folderId, [])
-    }
-    commandsByFolder.get(folderId)?.push(command)
-  })
+  flattenedNodes.forEach((node) => {
+    if ("openMode" in node.content) {
+      // This is a command
+      const command = node.content as Command
+      const level = calcLevel(command, folders)
 
-  // Then, create the final array maintaining the original order
-  const result: (SelectOptionType | SelectGroupType)[] = []
-
-  commands.forEach((command) => {
-    if (!command) return
-    const folderId = command.parentFolderId || "root"
-    const folderCommands = commandsByFolder.get(folderId)
-
-    if (!folderCommands) return
-
-    if (folderId === "root") {
-      // For root commands, add them individually
       result.push({
         name: command.title,
         value: command.id,
         iconUrl: command.iconUrl,
         nameRender: createNameRender(command.openMode),
+        level: level,
       })
     } else {
-      // For folder commands, add them as a group if not already added
-      const folder = folderMap.get(folderId)
-      if (
-        folder &&
-        !result.some((item) => "label" in item && item.label === folder.title)
-      ) {
-        result.push({
-          label: folder.title,
-          iconUrl: folder.iconUrl,
-          iconSvg: folder.iconSvg,
-          options: folderCommands.map((cmd: Command) => ({
-            name: cmd.title,
-            value: cmd.id,
-            iconUrl: cmd.iconUrl,
-            nameRender: createNameRender(cmd.openMode),
-          })),
-        })
-      }
+      // This is a folder
+      const folder = node.content as CommandFolder
+      const level = calcLevel(folder, folders)
+
+      result.push({
+        name: folder.title,
+        value: folder.id,
+        iconUrl: folder.iconUrl,
+        iconSvg: folder.iconSvg,
+        level: level,
+        isGroup: true, // Folders are not selectable
+      })
     }
   })
 
@@ -174,7 +154,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
   }, [replace, commands, userCommands])
 
   const options = useMemo(
-    () => groupCommandsByFolder(userCommands, folders),
+    () => flattenCommandsAndFolders(userCommands, folders),
     [userCommands, folders],
   )
 
