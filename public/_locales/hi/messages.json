@@ -810,7 +810,7 @@
     "message": "पुनर्स्थापना"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "लेगेसी माइग्रेशन"
+    "message": "बैकअप अपडेट करें"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "दैनिक बैकअप"

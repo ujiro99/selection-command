@@ -810,7 +810,7 @@
     "message": "恢复"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "传统迁移"
+    "message": "更新备份"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "每日备份"

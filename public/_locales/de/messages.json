@@ -810,7 +810,7 @@
     "message": "Wiederherstellen"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "Legacy-Migration"
+    "message": "Backup aktualisieren"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "Tägliches Backup"

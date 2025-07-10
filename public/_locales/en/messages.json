@@ -822,7 +822,7 @@
     "message": "Restore"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "Legacy Migration"
+    "message": "Update Backup"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "Daily Backup"

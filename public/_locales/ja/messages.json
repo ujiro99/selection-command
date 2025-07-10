@@ -816,7 +816,7 @@
     "message": "復元"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "レガシー移行"
+    "message": "更新時バックアップ"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "日次バックアップ"

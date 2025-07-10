@@ -473,43 +473,50 @@ export function ImportExport() {
                   setSelectedBackupType(value as typeof selectedBackupType)
                 }
               >
-                {availableBackups.map(([type, backup]) => (
-                  <div key={type} className="flex items-start space-x-3">
-                    <RadioGroupItem value={type} className="mt-1" />
-                    <div className="flex-1">
-                      <label
-                        className="text-sm font-medium cursor-pointer"
-                        onClick={() =>
-                          setSelectedBackupType(
-                            type as typeof selectedBackupType,
-                          )
-                        }
-                      >
-                        {getBackupTypeLabel(type)}
-                      </label>
-                      {backup.info && (
-                        <div className="text-xs text-gray-600 mt-1">
-                          <div>
-                            {t("Option_RestoreFromBackup_created")}{" "}
-                            {new Date(backup.info.timestamp).toLocaleString()}
-                          </div>
-                          <div>
-                            {t("Option_RestoreFromBackup_commands")}{" "}
-                            {backup.info.commandCount}{" "}
-                            {t("Option_RestoreFromBackup_items")}
-                          </div>
-                          {backup.info.folderCount !== undefined && (
+                {availableBackups
+                  .sort(([typeA], [typeB]) => {
+                    // Put legacy at the bottom
+                    if (typeA === BACKUP_TYPES.LEGACY) return 1
+                    if (typeB === BACKUP_TYPES.LEGACY) return -1
+                    return 0
+                  })
+                  .map(([type, backup]) => (
+                    <div key={type} className="flex items-start space-x-3">
+                      <RadioGroupItem value={type} className="mt-1" />
+                      <div className="flex-1">
+                        <label
+                          className="text-sm font-medium cursor-pointer"
+                          onClick={() =>
+                            setSelectedBackupType(
+                              type as typeof selectedBackupType,
+                            )
+                          }
+                        >
+                          {getBackupTypeLabel(type)}
+                        </label>
+                        {backup.info && (
+                          <div className="text-xs text-gray-600 mt-1">
                             <div>
-                              {t("Option_RestoreFromBackup_folders")}{" "}
-                              {backup.info.folderCount}{" "}
+                              {t("Option_RestoreFromBackup_created")}{" "}
+                              {new Date(backup.info.timestamp).toLocaleString()}
+                            </div>
+                            <div>
+                              {t("Option_RestoreFromBackup_commands")}{" "}
+                              {backup.info.commandCount}{" "}
                               {t("Option_RestoreFromBackup_items")}
                             </div>
-                          )}
-                        </div>
-                      )}
+                            {backup.info.folderCount !== undefined && (
+                              <div>
+                                {t("Option_RestoreFromBackup_folders")}{" "}
+                                {backup.info.folderCount}{" "}
+                                {t("Option_RestoreFromBackup_items")}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </RadioGroup>
               <p className="mt-4 text-sm text-yellow-600">
                 <strong>{t("Option_RestoreFromBackup_warning")}</strong>{" "}
