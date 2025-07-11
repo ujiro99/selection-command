@@ -3,16 +3,8 @@ import { EnhancedSettings } from "./enhancedSettings"
 import { settingsCache, CACHE_SECTIONS } from "./settingsCache"
 import { Settings } from "./settings"
 import { OptionSettings } from "./option/optionSettings"
-import DefaultSettings from "./option/defaultSettings"
 import { OPTION_FOLDER } from "@/const"
-import type {
-  SettingsType,
-  Command,
-  Star,
-  UserStats,
-  ShortcutSettings,
-  UserSettings,
-} from "@/types"
+import type { SettingsType } from "@/types"
 
 // Mock dependencies
 vi.mock("./settingsCache")
@@ -50,7 +42,7 @@ describe("EnhancedSettings", () => {
       id: OPTION_FOLDER,
       title: "Options",
       iconUrl: "",
-      commands: [],
+      onlyIcon: false,
     }
 
     enhancedSettings = new EnhancedSettings()
@@ -225,16 +217,33 @@ describe("EnhancedSettings", () => {
     })
 
     it("should include option settings when excludeOptions is false", async () => {
-      const mockCommands = [{ id: "1", title: "Regular Command", iconUrl: "" }]
+      const mockCommands = [
+        {
+          id: "1",
+          title: "Regular Command",
+          iconUrl: "",
+          searchUrl: "",
+          openMode: "tab" as any,
+          parentFolderId: "",
+        },
+      ]
       const mockUserSettings = { folders: [], pageRules: [] }
 
       mockOptionSettings.commands = [
-        { id: "opt1", title: "Option Command", iconUrl: "" },
+        {
+          id: "opt1",
+          title: "Option Command",
+          iconUrl: "",
+          searchUrl: "",
+          openMode: "tab" as any,
+          parentFolderId: "",
+        },
       ]
       mockOptionSettings.folder = {
         id: OPTION_FOLDER,
         title: "Options",
         iconUrl: "",
+        onlyIcon: false,
       }
 
       mockSettingsCache.get
@@ -259,9 +268,9 @@ describe("EnhancedSettings", () => {
     it("should filter empty folders", async () => {
       const mockUserSettings = {
         folders: [
-          { id: "1", title: "Valid Folder", iconUrl: "" },
-          { id: "2", title: "", iconUrl: "" }, // Empty title
-          { id: "3", title: "Another Valid", iconUrl: "" },
+          { id: "1", title: "Valid Folder", iconUrl: "", onlyIcon: false },
+          { id: "2", title: "", iconUrl: "", onlyIcon: false }, // Empty title
+          { id: "3", title: "Another Valid", iconUrl: "", onlyIcon: false },
         ],
         pageRules: [],
       }
@@ -483,6 +492,10 @@ describe("EnhancedSettings", () => {
       const mockStatus = {
         [CACHE_SECTIONS.COMMANDS]: { cached: true, age: 1000 },
         [CACHE_SECTIONS.USER_SETTINGS]: { cached: false, age: 0 },
+        [CACHE_SECTIONS.STARS]: { cached: false, age: 0 },
+        [CACHE_SECTIONS.CACHES]: { cached: false, age: 0 },
+        [CACHE_SECTIONS.SHORTCUTS]: { cached: false, age: 0 },
+        [CACHE_SECTIONS.USER_STATS]: { cached: false, age: 0 },
       }
       mockSettingsCache.getCacheStatus.mockReturnValue(mockStatus)
 

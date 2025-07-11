@@ -8,7 +8,19 @@ import {
 } from "./useSetting"
 import { enhancedSettings } from "../services/enhancedSettings"
 import { settingsCache, CACHE_SECTIONS } from "../services/settingsCache"
-import { INHERIT } from "@/const"
+import {
+  INHERIT,
+  SIDE,
+  ALIGN,
+  STYLE,
+  STARTUP_METHOD,
+  LINK_COMMAND_ENABLED,
+  DRAG_OPEN_MODE,
+  LINK_COMMAND_STARTUP_METHOD,
+  KEYBOARD,
+  POPUP_ENABLED,
+  OPEN_MODE,
+} from "@/const"
 import type { SettingsType, UserSettings, PageRule } from "@/types"
 
 // Mock dependencies
@@ -24,6 +36,47 @@ Object.defineProperty(window, "location", {
     href: "https://example.com/test",
   },
   writable: true,
+})
+
+// Helper function to create a valid UserSettings object
+const createMockUserSettings = (
+  overrides: Partial<UserSettings> = {},
+): UserSettings => ({
+  settingVersion: "1.0.0",
+  startupMethod: { method: STARTUP_METHOD.TEXT_SELECTION },
+  popupPlacement: {
+    side: SIDE.top,
+    align: ALIGN.start,
+    sideOffset: 0,
+    alignOffset: 0,
+  },
+  commands: [],
+  linkCommand: {
+    enabled: LINK_COMMAND_ENABLED.ENABLE,
+    openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
+    showIndicator: true,
+    startupMethod: {
+      method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+      keyboardParam: KEYBOARD.SHIFT,
+      threshold: 150,
+      leftClickHoldParam: 200,
+    },
+  },
+  folders: [],
+  pageRules: [],
+  style: STYLE.HORIZONTAL,
+  userStyles: [],
+  shortcuts: { shortcuts: [] },
+  ...overrides,
+})
+
+// Helper function to create a valid SearchCommand object
+const createMockCommand = (overrides: any = {}): any => ({
+  id: "test-id",
+  title: "Test Command",
+  iconUrl: "",
+  openMode: OPEN_MODE.TAB,
+  ...overrides,
 })
 
 describe("useSetting hooks", () => {
@@ -71,9 +124,7 @@ describe("useSetting hooks", () => {
       const mockData = [{ id: "1", title: "Test", iconUrl: "" }]
       mockEnhancedSettings.getSection.mockResolvedValue(mockData)
 
-      const { result } = renderHook(() =>
-        useSection(CACHE_SECTIONS.COMMANDS, true),
-      )
+      renderHook(() => useSection(CACHE_SECTIONS.COMMANDS, true))
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0))
@@ -104,7 +155,7 @@ describe("useSetting hooks", () => {
       const mockData = [{ id: "1", title: "Test", iconUrl: "" }]
       mockEnhancedSettings.getSection.mockResolvedValue(mockData)
 
-      const { result } = renderHook(() => useSection(CACHE_SECTIONS.COMMANDS))
+      renderHook(() => useSection(CACHE_SECTIONS.COMMANDS))
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0))
@@ -120,9 +171,7 @@ describe("useSetting hooks", () => {
       const mockData = [{ id: "1", title: "Test", iconUrl: "" }]
       mockEnhancedSettings.getSection.mockResolvedValue(mockData)
 
-      const { result, unmount } = renderHook(() =>
-        useSection(CACHE_SECTIONS.COMMANDS),
-      )
+      const { unmount } = renderHook(() => useSection(CACHE_SECTIONS.COMMANDS))
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0))
@@ -159,12 +208,11 @@ describe("useSetting hooks", () => {
 
   describe("useUserSettings", () => {
     it("should fetch user settings successfully", async () => {
-      const mockUserSettings = {
+      const mockUserSettings = createMockUserSettings({
         settingVersion: "1.0.0",
         folders: [],
         pageRules: [],
-        popupPlacement: { side: "top", align: "start" },
-      } as UserSettings
+      })
 
       mockEnhancedSettings.getSection.mockResolvedValue(mockUserSettings)
 
@@ -182,16 +230,20 @@ describe("useSetting hooks", () => {
 
     it("should find matching page rule", async () => {
       const mockPageRule: PageRule = {
-        id: "1",
         urlPattern: "example\\.com",
-        popupPlacement: { side: "bottom", align: "center" },
+        popupEnabled: POPUP_ENABLED.ENABLE,
+        popupPlacement: {
+          side: SIDE.bottom,
+          align: ALIGN.center,
+          sideOffset: 0,
+          alignOffset: 0,
+        },
+        linkCommandEnabled: LINK_COMMAND_ENABLED.ENABLE,
       }
 
-      const mockUserSettings = {
-        folders: [],
+      const mockUserSettings = createMockUserSettings({
         pageRules: [mockPageRule],
-        popupPlacement: { side: "top", align: "start" },
-      } as UserSettings
+      })
 
       mockEnhancedSettings.getSection.mockResolvedValue(mockUserSettings)
 
@@ -203,24 +255,31 @@ describe("useSetting hooks", () => {
 
       expect(result.current.pageRule).toEqual(mockPageRule)
       expect(result.current.userSettings.popupPlacement).toEqual({
-        side: "bottom",
-        align: "center",
+        side: SIDE.bottom,
+        align: ALIGN.center,
+        sideOffset: 0,
+        alignOffset: 0,
       })
     })
 
     it("should not apply page rule when popupPlacement is INHERIT", async () => {
       const mockPageRule: PageRule = {
-        id: "1",
         urlPattern: "example\\.com",
+        popupEnabled: POPUP_ENABLED.ENABLE,
         popupPlacement: INHERIT,
+        linkCommandEnabled: LINK_COMMAND_ENABLED.ENABLE,
       }
 
-      const originalPlacement = { side: "top", align: "start" }
-      const mockUserSettings = {
-        folders: [],
+      const originalPlacement = {
+        side: SIDE.top,
+        align: ALIGN.start,
+        sideOffset: 0,
+        alignOffset: 0,
+      }
+      const mockUserSettings = createMockUserSettings({
         pageRules: [mockPageRule],
         popupPlacement: originalPlacement,
-      } as UserSettings
+      })
 
       mockEnhancedSettings.getSection.mockResolvedValue(mockUserSettings)
 
@@ -238,16 +297,26 @@ describe("useSetting hooks", () => {
 
     it("should handle invalid regex in page rules", async () => {
       const mockPageRule: PageRule = {
-        id: "1",
         urlPattern: "[invalid regex",
-        popupPlacement: { side: "bottom", align: "center" },
+        popupEnabled: POPUP_ENABLED.ENABLE,
+        popupPlacement: {
+          side: SIDE.bottom,
+          align: ALIGN.center,
+          sideOffset: 0,
+          alignOffset: 0,
+        },
+        linkCommandEnabled: LINK_COMMAND_ENABLED.ENABLE,
       }
 
-      const mockUserSettings = {
-        folders: [],
+      const mockUserSettings = createMockUserSettings({
         pageRules: [mockPageRule],
-        popupPlacement: { side: "top", align: "start" },
-      } as UserSettings
+        popupPlacement: {
+          side: SIDE.top,
+          align: ALIGN.start,
+          sideOffset: 0,
+          alignOffset: 0,
+        },
+      })
 
       mockEnhancedSettings.getSection.mockResolvedValue(mockUserSettings)
 
@@ -259,8 +328,10 @@ describe("useSetting hooks", () => {
 
       expect(result.current.pageRule).toBeUndefined()
       expect(result.current.userSettings.popupPlacement).toEqual({
-        side: "top",
-        align: "start",
+        side: SIDE.top,
+        align: ALIGN.start,
+        sideOffset: 0,
+        alignOffset: 0,
       })
     })
 
@@ -281,9 +352,13 @@ describe("useSetting hooks", () => {
   describe("useSetting", () => {
     it("should fetch settings with default sections", async () => {
       const mockSettings = {
-        commands: [{ id: "1", title: "Test", iconUrl: "" }],
+        ...createMockUserSettings(),
+        commands: [createMockCommand({ id: "1", title: "Test" })],
         folders: [],
         pageRules: [],
+        stars: [],
+        commandExecutionCount: 0,
+        hasShownReviewRequest: false,
       } as SettingsType
 
       mockEnhancedSettings.get.mockResolvedValue(mockSettings)
@@ -305,13 +380,17 @@ describe("useSetting hooks", () => {
 
     it("should fetch settings with custom sections", async () => {
       const mockSettings = {
-        commands: [{ id: "1", title: "Test", iconUrl: "" }],
+        ...createMockUserSettings(),
+        commands: [createMockCommand({ id: "1", title: "Test" })],
+        stars: [],
+        commandExecutionCount: 0,
+        hasShownReviewRequest: false,
       } as SettingsType
 
       mockEnhancedSettings.get.mockResolvedValue(mockSettings)
 
       const customSections = [CACHE_SECTIONS.COMMANDS, CACHE_SECTIONS.STARS]
-      const { result } = renderHook(() => useSetting(customSections))
+      renderHook(() => useSetting(customSections))
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0))
@@ -324,10 +403,15 @@ describe("useSetting hooks", () => {
     })
 
     it("should handle forceFresh parameter", async () => {
-      const mockSettings = {} as SettingsType
+      const mockSettings = {
+        ...createMockUserSettings(),
+        stars: [],
+        commandExecutionCount: 0,
+        hasShownReviewRequest: false,
+      } as SettingsType
       mockEnhancedSettings.get.mockResolvedValue(mockSettings)
 
-      const { result } = renderHook(() => useSetting(undefined, true))
+      renderHook(() => useSetting(undefined, true))
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0))
@@ -341,14 +425,29 @@ describe("useSetting hooks", () => {
 
     it("should find and apply page rule", async () => {
       const mockPageRule: PageRule = {
-        id: "1",
         urlPattern: "example\\.com",
-        popupPlacement: { side: "bottom", align: "center" },
+        popupEnabled: POPUP_ENABLED.ENABLE,
+        popupPlacement: {
+          side: SIDE.bottom,
+          align: ALIGN.center,
+          sideOffset: 0,
+          alignOffset: 0,
+        },
+        linkCommandEnabled: LINK_COMMAND_ENABLED.ENABLE,
       }
 
       const mockSettings = {
+        ...createMockUserSettings(),
         pageRules: [mockPageRule],
-        popupPlacement: { side: "top", align: "start" },
+        popupPlacement: {
+          side: SIDE.top,
+          align: ALIGN.start,
+          sideOffset: 0,
+          alignOffset: 0,
+        },
+        stars: [],
+        commandExecutionCount: 0,
+        hasShownReviewRequest: false,
       } as SettingsType
 
       mockEnhancedSettings.get.mockResolvedValue(mockSettings)
@@ -361,17 +460,24 @@ describe("useSetting hooks", () => {
 
       expect(result.current.pageRule).toEqual(mockPageRule)
       expect(result.current.settings.popupPlacement).toEqual({
-        side: "bottom",
-        align: "center",
+        side: SIDE.bottom,
+        align: ALIGN.center,
+        sideOffset: 0,
+        alignOffset: 0,
       })
     })
 
     it("should subscribe to cache changes for all sections", async () => {
-      const mockSettings = {} as SettingsType
+      const mockSettings = {
+        ...createMockUserSettings(),
+        stars: [],
+        commandExecutionCount: 0,
+        hasShownReviewRequest: false,
+      } as SettingsType
       mockEnhancedSettings.get.mockResolvedValue(mockSettings)
 
       const sections = [CACHE_SECTIONS.COMMANDS, CACHE_SECTIONS.USER_SETTINGS]
-      const { result } = renderHook(() => useSetting(sections))
+      renderHook(() => useSetting(sections))
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0))
@@ -388,7 +494,7 @@ describe("useSetting hooks", () => {
     })
 
     it("should handle empty settings", async () => {
-      mockEnhancedSettings.get.mockResolvedValue(null)
+      mockEnhancedSettings.get.mockResolvedValue({} as SettingsType)
 
       const { result } = renderHook(() => useSetting())
 
@@ -544,20 +650,41 @@ describe("useSetting hooks", () => {
     it("should test findMatchingPageRule with various URL patterns", async () => {
       const mockPageRules: PageRule[] = [
         {
-          id: "1",
           urlPattern: "github\\.com",
-          popupPlacement: { side: "bottom", align: "center" },
+          popupEnabled: POPUP_ENABLED.ENABLE,
+          popupPlacement: {
+            side: SIDE.bottom,
+            align: ALIGN.center,
+            sideOffset: 0,
+            alignOffset: 0,
+          },
+          linkCommandEnabled: LINK_COMMAND_ENABLED.ENABLE,
         },
         {
-          id: "2",
           urlPattern: "example\\.com/test",
-          popupPlacement: { side: "top", align: "start" },
+          popupEnabled: POPUP_ENABLED.ENABLE,
+          popupPlacement: {
+            side: SIDE.top,
+            align: ALIGN.start,
+            sideOffset: 0,
+            alignOffset: 0,
+          },
+          linkCommandEnabled: LINK_COMMAND_ENABLED.ENABLE,
         },
       ]
 
       const mockSettings = {
+        ...createMockUserSettings(),
         pageRules: mockPageRules,
-        popupPlacement: { side: "left", align: "end" },
+        popupPlacement: {
+          side: SIDE.left,
+          align: ALIGN.end,
+          sideOffset: 0,
+          alignOffset: 0,
+        },
+        stars: [],
+        commandExecutionCount: 0,
+        hasShownReviewRequest: false,
       } as SettingsType
 
       mockEnhancedSettings.get.mockResolvedValue(mockSettings)

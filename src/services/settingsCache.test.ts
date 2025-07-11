@@ -2,6 +2,16 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { SettingsCacheManager, CACHE_SECTIONS } from "./settingsCache"
 import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "./storage"
 import { Settings } from "./settings"
+import { OPEN_MODE } from "@/const"
+
+// Helper function to create a valid SearchCommand object
+const createMockCommand = (overrides: any = {}): any => ({
+  id: "test-id",
+  title: "Test Command",
+  iconUrl: "",
+  openMode: OPEN_MODE.TAB,
+  ...overrides,
+})
 
 // Mock dependencies
 vi.mock("./storage")
@@ -39,7 +49,6 @@ describe("SettingsCacheManager", () => {
 
   describe("DataVersionManager (via SettingsCacheManager)", () => {
     it("should generate consistent versions for same data", async () => {
-      const testData = { test: "data" }
       mockStorage.getCommands.mockResolvedValue([])
 
       // Get data twice with same content
@@ -57,8 +66,8 @@ describe("SettingsCacheManager", () => {
     })
 
     it("should generate different versions for different data", async () => {
-      const data1 = [{ id: "1", title: "test1" }]
-      const data2 = [{ id: "2", title: "test2" }]
+      const data1 = [createMockCommand({ id: "1", title: "test1" })]
+      const data2 = [createMockCommand({ id: "2", title: "test2" })]
 
       mockStorage.getCommands
         .mockResolvedValueOnce(data1)
@@ -79,7 +88,7 @@ describe("SettingsCacheManager", () => {
 
   describe("get method", () => {
     it("should return cached data on cache hit", async () => {
-      const mockData = [{ id: "1", title: "test" }]
+      const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
       // First call - cache miss
@@ -94,7 +103,7 @@ describe("SettingsCacheManager", () => {
     })
 
     it("should force refresh when forceFresh is true", async () => {
-      const mockData = [{ id: "1", title: "test" }]
+      const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
       // First call
@@ -107,7 +116,7 @@ describe("SettingsCacheManager", () => {
     })
 
     it("should handle TTL expiration", async () => {
-      const mockData = [{ id: "1", title: "test" }]
+      const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
       // Mock Date.now to control time
@@ -131,7 +140,7 @@ describe("SettingsCacheManager", () => {
     })
 
     it("should load from storage for each section type", async () => {
-      const mockCommands = [{ id: "1", title: "test" }]
+      const mockCommands = [createMockCommand({ id: "1", title: "test" })]
       const mockUserSettings = { theme: "dark" }
       const mockStars = [{ id: "1" }]
       const mockShortcuts = { shortcuts: [] }
@@ -177,7 +186,7 @@ describe("SettingsCacheManager", () => {
 
   describe("cache invalidation", () => {
     it("should invalidate specified sections", async () => {
-      const mockData = [{ id: "1", title: "test" }]
+      const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
       // Load data to cache
@@ -193,7 +202,7 @@ describe("SettingsCacheManager", () => {
     })
 
     it("should invalidate all cache sections", async () => {
-      const mockData = [{ id: "1", title: "test" }]
+      const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
       mockStorage.get.mockResolvedValue({})
 
@@ -334,7 +343,7 @@ describe("SettingsCacheManager", () => {
 
     it("should not set up listener multiple times", () => {
       // Create another instance
-      const anotherManager = new SettingsCacheManager()
+      new SettingsCacheManager()
 
       // Should still only have been called once per instance
       expect(mockChromeStorage.onChanged.addListener).toHaveBeenCalledTimes(2)
@@ -343,7 +352,7 @@ describe("SettingsCacheManager", () => {
 
   describe("cache status debugging", () => {
     it("should return cache status for all sections", async () => {
-      const mockData = [{ id: "1", title: "test" }]
+      const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
       // Load some data
@@ -367,7 +376,7 @@ describe("SettingsCacheManager", () => {
     })
 
     it("should show correct cache age", async () => {
-      const mockData = [{ id: "1", title: "test" }]
+      const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
       const originalNow = Date.now
