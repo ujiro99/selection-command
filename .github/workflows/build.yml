@@ -1,29 +1,29 @@
 name: Build
 
-on: [push]
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "pages/**"
+      - ".github/workflows/pages.yml"
+      - ".github/workflows/update-data.yml"
+      - "**.md"
 
 jobs:
-  main:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'true'
-      - name: Use Node.js
+          submodules: "true"
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'yarn'
-      - name: Restore cache for node_modules
-        uses: actions/cache@v4
-        with:
-          path: './node_modules'
-          key: ${{ runner.os }}-node-package-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-package-
-      - name: yarn install and build
-        run: |
-          yarn install
-          yarn build
+          node-version: "lts/*"
+          cache: "yarn"
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build extension
+        run: yarn build
         env:
           CI: true

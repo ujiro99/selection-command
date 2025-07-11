@@ -17,10 +17,10 @@ jobs:
           submodules: "true"
       - uses: actions/setup-node@v4
         with:
-          node-version: 23
+          node-version: "lts/*"
           cache: "yarn"
       - name: Install dependencies
-        run: yarn add @google-analytics/data
+        run: yarn install --frozen-lockfile
       - name: Fetch GA data
         env:
           GA_SERVICE_ACCOUNT_KEY: ${{ secrets.GA_SERVICE_ACCOUNT_KEY }}
