@@ -96,7 +96,7 @@ export class EnhancedSettings {
         : { commandExecutionCount: 0, hasShownReviewRequest: false }
 
     // Merge settings
-    let mergedSettings = this.mergeSettings({
+    const mergedSettings = this.mergeSettings({
       commands,
       userSettings,
       stars,
