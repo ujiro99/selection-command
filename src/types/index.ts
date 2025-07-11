@@ -17,9 +17,9 @@ import type {
   PAGE_ACTION_EXEC_STATE,
   ExecState,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
-} from '@/const'
-import type { PageAction } from '@/services/pageAction'
-import { INHERIT } from '@/const'
+} from "@/const"
+import type { PageAction } from "@/services/pageAction"
+import { INHERIT } from "@/const"
 
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
@@ -66,7 +66,7 @@ export type PageActionCommand = SearchCommand & {
   pageActionOption: PageActionOption
 }
 
-export type LinkCommand = Omit<SelectionCommand, 'openMode'> & {
+export type LinkCommand = Omit<SelectionCommand, "openMode"> & {
   openMode: DRAG_OPEN_MODE
 }
 
@@ -75,7 +75,7 @@ export type PopupOption = {
   height: number
 }
 
-export type CopyOption = 'default' | 'text'
+export type CopyOption = "default" | "text"
 
 type LinkCommandStartupMethod = {
   method: LINK_COMMAND_STARTUP_METHOD

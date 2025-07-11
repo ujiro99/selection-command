@@ -4,18 +4,18 @@ import {
   TabCommand,
   RunPageAction,
   ExecPageAction,
-} from '@/services/ipc'
-import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import type { PageAction } from '@/services/pageAction'
-import { RunningStatus } from '@/services/pageAction'
-import { ScreenSize } from '@/services/dom'
+} from "@/services/ipc"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import type { PageAction } from "@/services/pageAction"
+import { RunningStatus } from "@/services/pageAction"
+import { ScreenSize } from "@/services/dom"
 import {
   openPopupWindow,
   openTab,
   getCurrentTab,
   OpenPopupProps,
-} from '@/services/chrome'
-import { incrementCommandExecutionCount } from '@/services/commandMetrics'
+} from "@/services/chrome"
+import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import {
   POPUP_TYPE,
   PAGE_ACTION_MAX,
@@ -24,7 +24,7 @@ import {
   PAGE_ACTION_EXEC_STATE as EXEC_STATE,
   PAGE_ACTION_EVENT as EVENT,
   PAGE_ACTION_TIMEOUT as TIMEOUT,
-} from '@/const'
+} from "@/const"
 import {
   generateRandomID,
   isEmpty,
@@ -32,15 +32,15 @@ import {
   isUrl,
   isUrlParam,
   sleep,
-} from '@/lib/utils'
+} from "@/lib/utils"
 import type {
   PageActionRecordingData,
   PageActionStep,
   PageActionContext,
   PopupOption,
   DeepPartial,
-} from '@/types'
-import { BgData } from '@/services/backgroundData'
+} from "@/types"
+import { BgData } from "@/services/backgroundData"
 
 BgData.init()
 
@@ -81,13 +81,13 @@ export const add = (
         ...StartAction,
         param: {
           type: PAGE_ACTION_CONTROL.start,
-          label: 'Start',
+          label: "Start",
         },
       })
     }
 
     // Remove a end ation.
-    steps = steps.filter((s) => s.param.type !== 'end')
+    steps = steps.filter((s) => s.param.type !== "end")
 
     // - 1 : End action
     if (steps.length >= PAGE_ACTION_MAX - 1) {
@@ -99,27 +99,27 @@ export const add = (
     const prevType = prev?.param.type
 
     if (prev != null) {
-      if (type === 'click' && prevType === 'input') {
+      if (type === "click" && prevType === "input") {
         const selector = (step.param as PageAction.Click).selector
         const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
           // Skip adding click to combine operations on the same input element.
           return
         }
-      } else if (type === 'doubleClick' && prevType === 'click') {
+      } else if (type === "doubleClick" && prevType === "click") {
         // Removes a last click.
         steps.pop()
-      } else if (type === 'doubleClick' && prevType === 'doubleClick') {
+      } else if (type === "doubleClick" && prevType === "doubleClick") {
         steps.pop()
-      } else if (type === 'tripleClick' && prevType === 'doubleClick') {
+      } else if (type === "tripleClick" && prevType === "doubleClick") {
         steps.pop()
-      } else if (type === 'tripleClick' && prevType === 'tripleClick') {
+      } else if (type === "tripleClick" && prevType === "tripleClick") {
         steps.pop()
-      } else if (type === 'scroll') {
+      } else if (type === "scroll") {
         if (context.urlChanged) {
           step.delayMs = DELAY_AFTER_URL_CHANGED
         }
-        if (prevType === 'scroll') {
+        if (prevType === "scroll") {
           steps.pop()
           step.delayMs = prev.delayMs
         }
@@ -127,9 +127,9 @@ export const add = (
         if (context.urlChanged) {
           step.delayMs = DELAY_AFTER_URL_CHANGED
         }
-      } else if (type === 'input') {
+      } else if (type === "input") {
         // Combine operations on the same input element.
-        if (prevType === 'input') {
+        if (prevType === "input") {
           const selector = (step.param as PageAction.Input).selector
           const prevSelector = (prev.param as PageAction.Input).selector
           if (selector === prevSelector) {
@@ -140,11 +140,11 @@ export const add = (
         }
         // Remove the vlaue in previous input if the same element has been input.
         const param = step.param as PageAction.Input
-        const prevInput = steps.filter((a) => a.param.type === 'input').pop()
+        const prevInput = steps.filter((a) => a.param.type === "input").pop()
         if (prevInput) {
           const prevParam = prevInput.param as PageAction.Input
           if (param.selector === prevParam.selector) {
-            param.value = param.value.replace(prevParam.value, '')
+            param.value = param.value.replace(prevParam.value, "")
           }
         }
       }
@@ -162,7 +162,7 @@ export const add = (
             ...EndAction,
             param: {
               type: PAGE_ACTION_CONTROL.end,
-              label: 'End',
+              label: "End",
             },
           },
         ],
@@ -263,8 +263,8 @@ export const reset = (_: any, sender: Sender): boolean => {
   return false
 }
 
-export type OpenAndRunProps = Omit<OpenPopupProps, 'type'> &
-  Omit<RunPageAction, 'steps' | 'clipboardText'>
+export type OpenAndRunProps = Omit<OpenPopupProps, "type"> &
+  Omit<RunPageAction, "steps" | "clipboardText">
 
 export const openAndRun = (
   param: OpenAndRunProps,
@@ -308,13 +308,13 @@ export const openAndRun = (
     const commands = await Storage.getCommands()
     const cmd = commands.find((c) => c.id === param.commandId)
     if (cmd == null || !isPageActionCommand(cmd)) {
-      console.error('PageActionCommand is not valid')
+      console.error("PageActionCommand is not valid")
       response(false)
       return
     }
 
     if (cmd.pageActionOption == null) {
-      console.error('PageActionOption not found')
+      console.error("PageActionOption not found")
       response(false)
       return true
     }
@@ -343,7 +343,7 @@ export const preview = (
 ): boolean => {
   const tabId = param.tabId || sender.tab?.id
   if (tabId == null) {
-    console.error('tabId not found')
+    console.error("tabId not found")
     response(false)
     return true
   }
@@ -373,7 +373,7 @@ const run = (
   const { steps, selectedText, clipboardText, srcUrl } = param
   const tabId = param.tabId || sender.tab?.id
   if (tabId == null) {
-    console.error('tabId not found')
+    console.error("tabId not found")
     response(false)
     return true
   }
@@ -402,7 +402,7 @@ const run = (
         await RunningStatus.update(
           step.id,
           EXEC_STATE.Doing,
-          '',
+          "",
           TIMEOUT + delay,
         )
 
@@ -425,7 +425,7 @@ const run = (
         if (ret.result) {
           if (step.param.type === PAGE_ACTION_CONTROL.end) {
             // End of the action
-            await RunningStatus.update(step.id, EXEC_STATE.Done, '', 500)
+            await RunningStatus.update(step.id, EXEC_STATE.Done, "", 500)
             break
           }
           await RunningStatus.update(step.id, EXEC_STATE.Done)
@@ -491,7 +491,7 @@ export const openRecorder = (
       if (w.tabs) {
         await setRecordingTabId(w.tabs[0].id)
       } else {
-        console.error('Failed to open the recorder.')
+        console.error("Failed to open the recorder.")
       }
     } else {
       const tab = sender.tab || (await getCurrentTab())

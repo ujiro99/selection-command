@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react'
-import { Copy } from 'lucide-react'
+import { useState, useRef } from "react"
+import { Copy } from "lucide-react"
 import {
   Dialog,
   DialogClose,
@@ -8,12 +8,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Tooltip } from '@/components/Tooltip'
-import { t } from '@/services/i18n'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Tooltip } from "@/components/Tooltip"
+import { t } from "@/services/i18n"
+import { cn } from "@/lib/utils"
 
 type CopyButtonProps = {
   srcTitle: string
@@ -40,7 +40,7 @@ export const CopyButton = ({
         type="button"
         ref={buttonRef}
         className={cn(
-          'outline-gray-200 p-2 rounded-md transition hover:bg-gray-100 hover:scale-125 group/edit-button',
+          "outline-gray-200 p-2 rounded-md transition hover:bg-gray-100 hover:scale-125 group/edit-button",
           className,
         )}
         onClick={() => setOpen(true)}
@@ -58,7 +58,7 @@ export const CopyButton = ({
       />
       <Tooltip
         positionElm={buttonRef.current}
-        text={t('Option_copy_tooltip')}
+        text={t("Option_copy_tooltip")}
       />
     </>
   )
@@ -71,7 +71,7 @@ function incrementLastNumber(str: string): string {
     const incrementedNumber = (parseInt(number, 10) + 1).toString()
     return str.slice(0, -number.length) + incrementedNumber
   } else {
-    return str + ' 1'
+    return str + " 1"
   }
 }
 
@@ -98,9 +98,9 @@ export const CopyDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent onOpenAutoFocus={handleOpenAutoFocus}>
         <DialogHeader>
-          <DialogTitle>{t('Option_copy_title')}</DialogTitle>
+          <DialogTitle>{t("Option_copy_title")}</DialogTitle>
         </DialogHeader>
-        <DialogDescription>{t('Option_copy_desc')}</DialogDescription>
+        <DialogDescription>{t("Option_copy_desc")}</DialogDescription>
         <Input
           type="text"
           ref={inputRef}
@@ -109,18 +109,18 @@ export const CopyDialog = ({
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="secondary" size="lg">
-              {t('Option_labelCancel')}
+              {t("Option_labelCancel")}
             </Button>
           </DialogClose>
           <DialogClose asChild>
             <Button
               type="button"
               size="lg"
-              onClick={() => onCopy(inputRef.current?.value ?? '')}
+              onClick={() => onCopy(inputRef.current?.value ?? "")}
               ref={buttonRef}
             >
               <Copy />
-              {t('Option_copy_ok')}
+              {t("Option_copy_ok")}
             </Button>
           </DialogClose>
         </DialogFooter>

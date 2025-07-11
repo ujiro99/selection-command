@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import { sleep } from '@/lib/utils'
-import { ExecState } from '@/const'
-import css from '@/components/result/ResultPopup.module.css'
-import { Icon } from '@/components/Icon'
-import { Tooltip } from '@/components/Tooltip'
+import { useState } from "react"
+import { sleep } from "@/lib/utils"
+import { ExecState } from "@/const"
+import css from "@/components/result/ResultPopup.module.css"
+import { Icon } from "@/components/Icon"
+import { Tooltip } from "@/components/Tooltip"
 
 const toName = (str: string) => {
-  return str.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase())
+  return str.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase())
 }
 
 const toProp = (str: string) => {
-  return str.replace(/([A-Z])/g, '-$1').replace(/^./, (s) => s.toLowerCase())
+  return str.replace(/([A-Z])/g, "-$1").replace(/^./, (s) => s.toLowerCase())
 }
 
 type Props = {
@@ -20,7 +20,7 @@ type Props = {
 export function TextStyle({ styles }: Props) {
   const [buttonElm, setButtonElm] = useState<HTMLButtonElement | null>(null)
   const [status, setStatus] = useState(ExecState.NONE)
-  const message = status === ExecState.SUCCESS ? 'Copied!' : 'Copy'
+  const message = status === ExecState.SUCCESS ? "Copied!" : "Copy"
   const styleArr = Object.entries(styles).map(([key, value]) => ({
     key,
     value,
@@ -29,7 +29,7 @@ export function TextStyle({ styles }: Props) {
   const cssCopy = async () => {
     const copyText = styleArr
       .map((item) => `${toProp(item.key)}: ${item.value};`)
-      .join('\n')
+      .join("\n")
     navigator.clipboard.writeText(copyText)
     setStatus(ExecState.SUCCESS)
     await sleep(1000)

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from "react"
 import {
   MOUSE,
   KEYBOARD,
@@ -6,20 +6,20 @@ import {
   LINK_COMMAND_STARTUP_METHOD,
   POPUP_OFFSET,
   ExecState,
-} from '@/const'
-import { Point, SettingsType, Command } from '@/types'
-import { LinkPreview } from '@/action/linkPreview'
-import { useSetting } from '@/hooks/useSetting'
-import { useLeftClickHold } from '@/hooks/useLeftClickHold'
-import Default, { PopupOption } from '@/services/option/defaultSettings'
-import { isPopup, isLinkCommand, isMac } from '@/lib/utils'
+} from "@/const"
+import { Point, SettingsType, Command } from "@/types"
+import { LinkPreview } from "@/action/linkPreview"
+import { useSetting } from "@/hooks/useSetting"
+import { useLeftClickHold } from "@/hooks/useLeftClickHold"
+import Default, { PopupOption } from "@/services/option/defaultSettings"
+import { isPopup, isLinkCommand, isMac } from "@/lib/utils"
 import {
   isClickableElement,
   findAnchorElement,
   ScreenSize,
-} from '@/services/dom'
-import { getScreenSize } from '@/services/screen'
-import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
+} from "@/services/dom"
+import { getScreenSize } from "@/services/screen"
+import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 
 const isTargetEvent = (e: MouseEvent): boolean => {
   return (
@@ -38,7 +38,7 @@ type DetectLinkCommandReturn = {
   preventLinkClick?: boolean
 }
 
-type SubHookReturn = Omit<DetectLinkCommandReturn, 'showIndicator'> | {}
+type SubHookReturn = Omit<DetectLinkCommandReturn, "showIndicator"> | {}
 
 const empty = {
   inProgress: false,
@@ -64,14 +64,14 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
   const onDetect = (position: Point, target: Element) => {
     if (command == null) return
     LinkPreview.execute({
-      selectionText: '',
+      selectionText: "",
       command,
       position,
       useSecondary: false,
       changeState: onChangeState,
       target,
     })
-    sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, { id: 'link_preview' })
+    sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, { id: "link_preview" })
   }
 
   return {
@@ -156,13 +156,13 @@ function useDetectDrag(
       setActivate(false)
     }
 
-    window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
-    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener("mousedown", handleMouseDown)
+    window.addEventListener("mouseup", handleMouseUp)
+    window.addEventListener("mousemove", handleMouseMove)
     return () => {
-      window.removeEventListener('mousedown', handleMouseDown)
-      window.removeEventListener('mouseup', handleMouseUp)
-      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener("mousedown", handleMouseDown)
+      window.removeEventListener("mouseup", handleMouseUp)
+      window.removeEventListener("mousemove", handleMouseMove)
     }
   }, [dragEnabled, startPosition, activate, command, target, onDetect])
 
@@ -244,13 +244,13 @@ function useDetectKeyboard(
       onDetect(pos, target as Element)
     }
 
-    window.addEventListener('click', onClick)
-    window.addEventListener('mousedown', onMouseDown)
-    window.addEventListener('mouseup', onMouseUp)
+    window.addEventListener("click", onClick)
+    window.addEventListener("mousedown", onMouseDown)
+    window.addEventListener("mouseup", onMouseUp)
     return () => {
-      window.removeEventListener('click', onClick)
-      window.removeEventListener('mousedown', onMouseDown)
-      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener("click", onClick)
+      window.removeEventListener("mousedown", onMouseDown)
+      window.removeEventListener("mouseup", onMouseUp)
     }
   }, [keyboardEnabled, key, onDetect, popupOption])
 
@@ -310,11 +310,11 @@ function useDetectClickHold(
       clear()
     }
 
-    window.addEventListener('mousedown', handleMouseDown)
-    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener("mousedown", handleMouseDown)
+    window.addEventListener("mouseup", handleMouseUp)
     return () => {
-      window.removeEventListener('mousedown', handleMouseDown)
-      window.removeEventListener('mouseup', handleMouseUp)
+      window.removeEventListener("mousedown", handleMouseDown)
+      window.removeEventListener("mouseup", handleMouseUp)
     }
   }, [clickHoldEnabled])
 

@@ -1,6 +1,6 @@
-import { Settings } from '@/services/settings'
-import { Ipc, TabCommand } from '@/services/ipc'
-import { COMMAND_USAGE } from '@/const'
+import { Settings } from "@/services/settings"
+import { Ipc, TabCommand } from "@/services/ipc"
+import { COMMAND_USAGE } from "@/const"
 
 /**
  * Increment command execution count and check review request
@@ -40,6 +40,6 @@ export const incrementCommandExecutionCount = async (
       }
     }
   } catch (error) {
-    console.error('Failed to increment command execution count:', error)
+    console.error("Failed to increment command execution count:", error)
   }
 }

@@ -1,5 +1,5 @@
-import type { ExecuteCommandParams } from '@/types'
-import { TextStyle } from '@/components/result/TextStyle'
+import type { ExecuteCommandParams } from "@/types"
+import { TextStyle } from "@/components/result/TextStyle"
 
 export const GetStyles = {
   async execute({ target }: ExecuteCommandParams) {
@@ -14,10 +14,10 @@ export const GetStyles = {
 }
 
 const CANVAS_OPTIONS = {
-  fillStyle: 'rgb(0,0,0)',
+  fillStyle: "rgb(0,0,0)",
   height: 50,
-  size: '40px',
-  textBaseline: 'top',
+  size: "40px",
+  textBaseline: "top",
   width: 600,
 }
 
@@ -25,12 +25,12 @@ function getFontOption(css: FontCSS) {
   return `${css.fontStyle} ${css.fontWeight} ${CANVAS_OPTIONS.size} ${css.fontFamily}`
 }
 
-function getCanvasData(css: FontCSS, text = 'abcdefghijklmnopqrstuvwxyz') {
-  const canvas = document.createElement('canvas')
+function getCanvasData(css: FontCSS, text = "abcdefghijklmnopqrstuvwxyz") {
+  const canvas = document.createElement("canvas")
   canvas.width = CANVAS_OPTIONS.width
   canvas.height = CANVAS_OPTIONS.height
 
-  const ctx = canvas.getContext('2d')
+  const ctx = canvas.getContext("2d")
   if (!ctx) return null
 
   Object.assign(ctx, CANVAS_OPTIONS)
@@ -39,7 +39,7 @@ function getCanvasData(css: FontCSS, text = 'abcdefghijklmnopqrstuvwxyz') {
   ctx.fillText(text, 0, 0)
 
   return canvas
-    .getContext('2d')
+    .getContext("2d")
     ?.getImageData(0, 0, CANVAS_OPTIONS.width, CANVAS_OPTIONS.height).data
 }
 
@@ -68,11 +68,11 @@ const getActiveFont = (css: FontCSS) => {
   for (let f = 0; f < stack.length; f++) {
     const serifStyle = {
       ...css,
-      fontFamily: stack[f] + ', serif',
+      fontFamily: stack[f] + ", serif",
     }
     const sansSerifStyle = {
       ...css,
-      fontFamily: stack[f] + ', sans-serif',
+      fontFamily: stack[f] + ", sans-serif",
     }
 
     if (
@@ -90,11 +90,11 @@ function getFontCSS(element: HTMLElement): FontCSS {
 
   return {
     fontFamily: getActiveFont(computed),
-    fontWeight: computed.getPropertyValue('font-weight') || 'normal',
-    fontStyle: computed.getPropertyValue('font-style') || 'normal',
-    fontSize: computed.getPropertyValue('font-size'),
-    color: computed.getPropertyValue('color'),
-    lineHeight: computed.getPropertyValue('line-height'),
-    letterSpacing: computed.getPropertyValue('letter-spacing'),
+    fontWeight: computed.getPropertyValue("font-weight") || "normal",
+    fontStyle: computed.getPropertyValue("font-style") || "normal",
+    fontSize: computed.getPropertyValue("font-size"),
+    color: computed.getPropertyValue("color"),
+    lineHeight: computed.getPropertyValue("line-height"),
+    letterSpacing: computed.getPropertyValue("letter-spacing"),
   }
 }

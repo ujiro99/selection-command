@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef, forwardRef } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import ColorThief from 'colorthief'
-import { useSettingsWithImageCache } from '@/hooks/useSetting'
-import { sendEvent, ANALYTICS_EVENTS } from '@/services/analytics'
-import { t } from '@/services/i18n'
-import { cn, isSearchCommand, isPageActionCommand } from '@/lib/utils'
-import { HUB_URL, SCREEN } from '@/const'
-import type { Command } from '@/types'
+import React, { useState, useEffect, useRef, forwardRef } from "react"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import ColorThief from "colorthief"
+import { useSettingsWithImageCache } from "@/hooks/useSetting"
+import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import { t } from "@/services/i18n"
+import { cn, isSearchCommand, isPageActionCommand } from "@/lib/utils"
+import { HUB_URL, SCREEN } from "@/const"
+import type { Command } from "@/types"
 
 export const MyCommands = (): JSX.Element => {
   const [urls, setUrls] = useState<string[]>([])
@@ -73,18 +73,18 @@ export const MyCommands = (): JSX.Element => {
 
   return (
     <div className="relative pt-2 px-4">
-      <p className="text-sm text-stone-700">{t('commnadHub_youcanshare')}</p>
+      <p className="text-sm text-stone-700">{t("commnadHub_youcanshare")}</p>
       {!enableMarquee ? (
         <div
           className={cn(
-            'flex flex-row relative h-[60px] overflow-hidden group transition duratioin-50',
+            "flex flex-row relative h-[60px] overflow-hidden group transition duratioin-50",
           )}
         >
           <CommandList
             commands={commands}
             className="absolute group-hover:animate-pause marquee-var"
             style={
-              { '--marquee-items': commands.length } as React.CSSProperties
+              { "--marquee-items": commands.length } as React.CSSProperties
             }
             ref={listRef}
           />
@@ -92,16 +92,16 @@ export const MyCommands = (): JSX.Element => {
       ) : (
         <div
           className={cn(
-            'flex flex-row relative h-[60px] overflow-hidden group',
-            'before:absolute before:inset-0 before:z-[1] before:bg-gradient-to-r before:from-stone-50 before:to-transparent before:w-12 before:pointer-events-none',
-            'after:absolute after:inset-y-0 after:right-0 after:z-[1] after:bg-gradient-to-l after:from-stone-50 after:to-transparent after:w-12 after:pointer-events-none',
+            "flex flex-row relative h-[60px] overflow-hidden group",
+            "before:absolute before:inset-0 before:z-[1] before:bg-gradient-to-r before:from-stone-50 before:to-transparent before:w-12 before:pointer-events-none",
+            "after:absolute after:inset-y-0 after:right-0 after:z-[1] after:bg-gradient-to-l after:from-stone-50 after:to-transparent after:w-12 after:pointer-events-none",
           )}
         >
           <button
             className={cn(
-              'hidden absolute inset-0 left-[-5px] w-10 z-10 select-none items-center justify-start',
-              'group-hover:flex',
-              'group/button',
+              "hidden absolute inset-0 left-[-5px] w-10 z-10 select-none items-center justify-start",
+              "group-hover:flex",
+              "group/button",
             )}
             onClick={() => slide(false)}
           >
@@ -111,7 +111,7 @@ export const MyCommands = (): JSX.Element => {
             commands={commands}
             className="absolute group-hover:animate-pause marquee-var animate-marquee"
             style={
-              { '--marquee-items': commands.length } as React.CSSProperties
+              { "--marquee-items": commands.length } as React.CSSProperties
             }
             ref={listRef}
           />
@@ -119,15 +119,15 @@ export const MyCommands = (): JSX.Element => {
             commands={commands}
             className="absolute group-hover:animate-pause marquee-var animate-marquee2"
             style={
-              { '--marquee-items': commands.length } as React.CSSProperties
+              { "--marquee-items": commands.length } as React.CSSProperties
             }
             ref={list2Ref}
           />
           <button
             className={cn(
-              'hidden absolute inset-y-0 right-[-5px] w-10 z-10 select-none items-center justify-end',
-              'group-hover:flex',
-              'group/button',
+              "hidden absolute inset-y-0 right-[-5px] w-10 z-10 select-none items-center justify-end",
+              "group-hover:flex",
+              "group/button",
             )}
             onClick={() => slide()}
           >
@@ -150,7 +150,7 @@ const CommandList = forwardRef<HTMLUListElement, CommandListProps>(
   (props: CommandListProps, ref): JSX.Element => {
     return (
       <ul
-        className={cn('flex gap-2 p-1', props.className)}
+        className={cn("flex gap-2 p-1", props.className)}
         style={props.style}
         ref={ref}
       >
@@ -178,8 +178,8 @@ const ListItem = (props: ItemProps): JSX.Element => {
       const colorThief = new ColorThief()
       const dominantColor = colorThief.getColor(imgElm) // [R, G, B]
       const paletteColors = colorThief.getPalette(imgElm, 2)
-      const color1 = `rgba(${dominantColor.join(',')}, 0.04)`
-      const color2 = `rgba(${paletteColors[0].join(',')}, 0.1)`
+      const color1 = `rgba(${dominantColor.join(",")}, 0.04)`
+      const color2 = `rgba(${paletteColors[0].join(",")}, 0.1)`
       if (liElm != null) {
         liElm.style.background = `linear-gradient(160deg, white 30%, ${color1} 60%, ${color2})`
       }
@@ -188,10 +188,10 @@ const ListItem = (props: ItemProps): JSX.Element => {
 
   const onClick = () => {
     // Send a message to Commad Hub.
-    window.postMessage({ action: 'InsertCommand', data: c }, '*')
+    window.postMessage({ action: "InsertCommand", data: c }, "*")
     sendEvent(
       ANALYTICS_EVENTS.COMMAND_SHARE_FORM,
-      { event_label: 'input-my-command' },
+      { event_label: "input-my-command" },
       SCREEN.COMMAND_FORM,
     )
   }

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef } from "react"
 import {
   Ban,
   Check,
@@ -6,16 +6,16 @@ import {
   CircleAlert,
   LoaderCircle,
   X,
-} from 'lucide-react'
-import { Progress } from '@/components/ui/progress'
-import { Tooltip } from '@/components/Tooltip'
-import { TypeIcon } from '@/components/pageAction/TypeIcon'
-import { usePageActionRunner } from '@/hooks/pageAction/usePageActionRunner'
-import { RunningStatus } from '@/services/pageAction'
-import { Ipc } from '@/services/ipc'
-import type { PageActiontResult, PageActiontStatus } from '@/types'
-import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from '@/const'
-import { cn, isEmpty } from '@/lib/utils'
+} from "lucide-react"
+import { Progress } from "@/components/ui/progress"
+import { Tooltip } from "@/components/Tooltip"
+import { TypeIcon } from "@/components/pageAction/TypeIcon"
+import { usePageActionRunner } from "@/hooks/pageAction/usePageActionRunner"
+import { RunningStatus } from "@/services/pageAction"
+import { Ipc } from "@/services/ipc"
+import type { PageActiontResult, PageActiontStatus } from "@/types"
+import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from "@/const"
+import { cn, isEmpty } from "@/lib/utils"
 
 export function PageActionRunner(): JSX.Element {
   usePageActionRunner()
@@ -38,7 +38,9 @@ export function PageActionRunner(): JSX.Element {
     setResults(status.results)
     if (hasError(status.results)) return
     startTimeRef.current = Date.now()
-    const result = status.results.find((r) => r.stepId === status.stepId)
+    const result = status.results.find(
+      (r: PageActiontResult) => r.stepId === status.stepId,
+    )
     const duration = result?.duration ?? 1
     progressTORef.current = window.setInterval(() => {
       const prgrs = ((Date.now() - startTimeRef.current) / duration) * 100
@@ -77,17 +79,17 @@ export function PageActionRunner(): JSX.Element {
   return (
     <div
       className={cn(
-        'relative fixed z-[2147483647] top-2 right-2 pointer-events-none',
-        'backdrop-blur bg-gray-100/60 rounded-md shadow-md transition-opacity duration-300',
-        visible ? 'opacity-100' : 'opacity-0',
+        "relative fixed z-[2147483647] top-2 right-2 pointer-events-none",
+        "backdrop-blur bg-gray-100/60 rounded-md shadow-md transition-opacity duration-300",
+        visible ? "opacity-100" : "opacity-0",
       )}
     >
       <div className="overflow-hidden rounded-md h-[12px] -mb-[12px]">
         <Progress
           value={progress}
           className={cn(
-            'h-0.5 bg-transparent opacity-0',
-            progress > 10 && 'opacity-100',
+            "h-0.5 bg-transparent opacity-0",
+            progress > 10 && "opacity-100",
           )}
         />
       </div>
@@ -115,20 +117,20 @@ const Step = ({ result }: { result: PageActiontResult }) => {
     <li
       ref={stepRef}
       className={cn(
-        'flex items-center gap-1.5 p-1 min-w-28',
-        hasMessage && 'cursor-help pointer-events-auto text-red-500',
+        "flex items-center gap-1.5 p-1 min-w-28",
+        hasMessage && "cursor-help pointer-events-auto text-red-500",
       )}
     >
       <StatusIcon status={result.status} />
       <TypeIcon
         type={result.type}
-        className={cn(hasMessage ? 'stroke-red-500' : 'stroke-gray-500')}
+        className={cn(hasMessage ? "stroke-red-500" : "stroke-gray-500")}
       />
       <span className="font-mono max-w-40 truncate">{result.label}</span>
       {hasMessage && (
         <Tooltip
           positionElm={stepRef.current}
-          text={result.message ?? ''}
+          text={result.message ?? ""}
           className="max-w-64"
         />
       )}
@@ -150,13 +152,13 @@ const StatusIcon = ({
     case EXEC_STATE.Start:
     case EXEC_STATE.Doing:
       return (
-        <LoaderCircle size={size} className={cn('animate-spin', className)} />
+        <LoaderCircle size={size} className={cn("animate-spin", className)} />
       )
     case EXEC_STATE.Done:
       return <Check size={size} className={cn(className)} />
     case EXEC_STATE.Failed:
       return (
-        <CircleAlert size={size} className={cn('stroke-red-500', className)} />
+        <CircleAlert size={size} className={cn("stroke-red-500", className)} />
       )
     case EXEC_STATE.Stop:
       return <Ban size={size} className={cn(className)} />

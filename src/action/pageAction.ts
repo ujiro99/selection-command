@@ -1,10 +1,10 @@
-import { Ipc, BgCommand } from '@/services/ipc'
-import { getScreenSize, getWindowPosition } from '@/services/screen'
-import { isValidString, isPageActionCommand } from '@/lib/utils'
-import { PAGE_ACTION_OPEN_MODE } from '@/const'
-import { PopupOption } from '@/services/option/defaultSettings'
-import type { ExecuteCommandParams, UrlParam } from '@/types'
-import type { OpenAndRunProps } from '@/services/pageAction/background'
+import { Ipc, BgCommand } from "@/services/ipc"
+import { getScreenSize, getWindowPosition } from "@/services/screen"
+import { isValidString, isPageActionCommand } from "@/lib/utils"
+import { PAGE_ACTION_OPEN_MODE } from "@/const"
+import { PopupOption } from "@/services/option/defaultSettings"
+import type { ExecuteCommandParams, UrlParam } from "@/types"
+import type { OpenAndRunProps } from "@/services/pageAction/background"
 
 export const PageAction = {
   async execute({
@@ -15,16 +15,16 @@ export const PageAction = {
     useClipboard,
   }: ExecuteCommandParams) {
     if (!isPageActionCommand(command)) {
-      console.error('command is not for PageAction.')
+      console.error("command is not for PageAction.")
       return
     }
 
     if (!isValidString(command.pageActionOption?.startUrl)) {
-      console.error('searchUrl is not valid.')
+      console.error("searchUrl is not valid.")
       return
     }
     if (position === null) {
-      console.error('position is null.')
+      console.error("position is null.")
       return
     }
 

@@ -1,55 +1,55 @@
-import { Storage, SESSION_STORAGE_KEY } from './storage'
-import { PAGE_ACTION_OPEN_MODE } from '@/const'
-import type { PageActionStep } from '@/types'
-import { isServiceWorker } from '@/lib/utils'
+import { Storage, SESSION_STORAGE_KEY } from "./storage"
+import { PAGE_ACTION_OPEN_MODE } from "@/const"
+import type { PageActionStep } from "@/types"
+import { isServiceWorker } from "@/lib/utils"
 
 // Constants for connection
 const CONNECTION_TIMEOUT = 2000
 const CONNECTION_CHECK_INTERVAL = 50
-export const CONNECTION_PORT = 'app'
+export const CONNECTION_PORT = "app"
 
 export enum BgCommand {
-  connected = 'connected',
-  openPopup = 'openPopup',
-  openPopups = 'openPopups',
-  openPopupAndClick = 'openPopupAndClick',
-  openTab = 'openTab',
-  openOption = 'openOption',
-  openShortcuts = 'openShortcuts',
-  addPageRule = 'addPageRule',
-  addCommand = 'addCommand',
-  execApi = 'execApi',
-  canOpenInTab = 'canOpenInTab',
-  openInTab = 'openInTab',
-  onHidden = 'onHidden',
-  toggleStar = 'toggleStar',
-  captureScreenshot = 'captureScreenshot',
-  getTabId = 'getTabId',
-  setClipboard = 'setClipboard',
+  connected = "connected",
+  openPopup = "openPopup",
+  openPopups = "openPopups",
+  openPopupAndClick = "openPopupAndClick",
+  openTab = "openTab",
+  openOption = "openOption",
+  openShortcuts = "openShortcuts",
+  addPageRule = "addPageRule",
+  addCommand = "addCommand",
+  execApi = "execApi",
+  canOpenInTab = "canOpenInTab",
+  openInTab = "openInTab",
+  onHidden = "onHidden",
+  toggleStar = "toggleStar",
+  captureScreenshot = "captureScreenshot",
+  getTabId = "getTabId",
+  setClipboard = "setClipboard",
   // PageAction
-  addPageAction = 'addPageAction',
-  addCapture = 'addCapture',
-  updatePageAction = 'updatePageAction',
-  removePageAction = 'removePageAction',
-  resetPageAction = 'resetPageAction',
-  queuePageAction = 'queuePageAction',
-  startPageActionRecorder = 'startPageActionRecorder',
-  finishPageActionRecorder = 'finishPageActionRecorder',
-  previewPageAction = 'previewPageAction',
-  stopPageAction = 'stopPageAction',
-  openAndRunPageAction = 'openAndRunPageAction',
+  addPageAction = "addPageAction",
+  addCapture = "addCapture",
+  updatePageAction = "updatePageAction",
+  removePageAction = "removePageAction",
+  resetPageAction = "resetPageAction",
+  queuePageAction = "queuePageAction",
+  startPageActionRecorder = "startPageActionRecorder",
+  finishPageActionRecorder = "finishPageActionRecorder",
+  previewPageAction = "previewPageAction",
+  stopPageAction = "stopPageAction",
+  openAndRunPageAction = "openAndRunPageAction",
 }
 
 export enum TabCommand {
-  connected = 'connected',
-  executeAction = 'executeAction',
-  clickElement = 'clickElement',
-  closeMenu = 'closeMenu',
-  showReviewRequest = 'showReviewRequest',
-  showToast = 'showToast',
+  connected = "connected",
+  executeAction = "executeAction",
+  clickElement = "clickElement",
+  closeMenu = "closeMenu",
+  showReviewRequest = "showReviewRequest",
+  showToast = "showToast",
   // PageAction
-  sendWindowSize = 'sendWindowSize',
-  execPageAction = 'execPageAction',
+  sendWindowSize = "sendWindowSize",
+  execPageAction = "execPageAction",
 }
 
 export type ClickElementProps = {
@@ -196,10 +196,10 @@ export const Ipc = {
 
       // Wait for the tab to be loaded completely.
       const tab = await chrome.tabs.get(tabId)
-      if (tab.status !== 'complete') {
+      if (tab.status !== "complete") {
         await new Promise<void>((res) => {
           onTabUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
-            if (tabId === id && info.status === 'complete') {
+            if (tabId === id && info.status === "complete") {
               // console.log('onUpdated', info)
               cleanup()
               res()
@@ -209,7 +209,7 @@ export const Ipc = {
           interval = setInterval(async () => {
             try {
               const t = await chrome.tabs.get(tabId)
-              if (t.status === 'complete') {
+              if (t.status === "complete") {
                 cleanup()
                 res()
               }
@@ -219,7 +219,7 @@ export const Ipc = {
           }, CONNECTION_CHECK_INTERVAL)
 
           timeout = setTimeout(() => {
-            console.warn('Connection timeout')
+            console.warn("Connection timeout")
             cleanup()
             res()
           }, CONNECTION_TIMEOUT)
@@ -267,7 +267,7 @@ export const Ipc = {
       const ret = await this._sendMessageToTab(tabId, message)
       return ret as R
     } catch (error) {
-      console.warn('Could not send message to tab:', error)
+      console.warn("Could not send message to tab:", error)
       return error as R
     }
   },
@@ -280,14 +280,14 @@ export const Ipc = {
    */
   async sendAllTab(command: IpcCommand, param?: unknown): Promise<any[]> {
     const tabs = await chrome.tabs.query({
-      url: ['http://*/*', 'https://*/*'],
+      url: ["http://*/*", "https://*/*"],
     })
     const ps = tabs
       .filter(
         (t) =>
           t.id != null &&
-          !t.url?.includes('chromewebstore.google.com') &&
-          t.status === 'complete',
+          !t.url?.includes("chromewebstore.google.com") &&
+          t.status === "complete",
       )
       .map((tab) =>
         this._sendMessageToTab(tab.id as number, { command, param }),
@@ -308,7 +308,7 @@ export const Ipc = {
       chrome.tabs.sendMessage(tabId, message).then((ret) => {
         if (chrome.runtime.lastError != null) {
           console.error(
-            'Failed to send message to tab:',
+            "Failed to send message to tab:",
             tabId,
             chrome.runtime.lastError,
             message,

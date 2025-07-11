@@ -1,24 +1,24 @@
-import { useCallback, useMemo, useEffect } from 'react'
-import { useFieldArray } from 'react-hook-form'
-import { usePrevious } from '@/hooks/usePrevious'
-import { ROOT_FOLDER } from '@/const'
-import type { CommandFolder } from '@/types'
-import { CommandsSchemaType, FoldersSchemaType } from '@/types/schema'
+import { useCallback, useMemo, useEffect } from "react"
+import { useFieldArray } from "react-hook-form"
+import { usePrevious } from "@/hooks/usePrevious"
+import { ROOT_FOLDER } from "@/const"
+import type { CommandFolder } from "@/types"
+import { CommandsSchemaType, FoldersSchemaType } from "@/types/schema"
 import {
   isFolder,
   isDescendantOf,
   isCircularReference,
-} from '@/services/option/commandUtils'
+} from "@/services/option/commandUtils"
 import {
   toFlatten,
   findNodeInTree,
   getAllCommandsFromFolder,
   getAllFoldersFromNode,
-} from '@/services/option/commandTree'
+} from "@/services/option/commandTree"
 import type {
   CommandTreeNode,
   FlattenNode,
-} from '@/services/option/commandTree'
+} from "@/services/option/commandTree"
 
 /**
  * Finds the appropriate folder between two positions in a flattened node array
@@ -105,9 +105,9 @@ const getTargetFolderIndex = (
   overContentId: string,
   sourceFolderId: string,
   flatten: FlattenNode[],
-  folderArray: ReturnType<typeof useFieldArray<FoldersSchemaType, 'folders'>>,
+  folderArray: ReturnType<typeof useFieldArray<FoldersSchemaType, "folders">>,
 ): number => {
-  if (overContent?.type === 'folder') {
+  if (overContent?.type === "folder") {
     return findIndexById(folderArray.fields, overContentId)
   } else {
     // When the drop target is a command, find a folder between the dragged folder and the target
@@ -129,7 +129,7 @@ const moveSubFolders = (
   sourceFolder: CommandTreeNode,
   sourceFolderIndex: number,
   distFolderIndex: number,
-  folderArray: ReturnType<typeof useFieldArray<FoldersSchemaType, 'folders'>>,
+  folderArray: ReturnType<typeof useFieldArray<FoldersSchemaType, "folders">>,
 ): void => {
   const isForwardDrag = distFolderIndex > sourceFolderIndex
   const subFolders = getAllFoldersFromNode(sourceFolder)
@@ -158,9 +158,9 @@ const moveSubFolders = (
  */
 export const useCommandActions = (
   commandArray: ReturnType<
-    typeof useFieldArray<CommandsSchemaType, 'commands'>
+    typeof useFieldArray<CommandsSchemaType, "commands">
   >,
-  folderArray: ReturnType<typeof useFieldArray<FoldersSchemaType, 'folders'>>,
+  folderArray: ReturnType<typeof useFieldArray<FoldersSchemaType, "folders">>,
   tree: CommandTreeNode[],
 ) => {
   const flatten = useMemo(() => toFlatten(tree), [tree])

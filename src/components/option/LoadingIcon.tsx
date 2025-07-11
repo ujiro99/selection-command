@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react'
-import styles from './LoadingIcon.module.css'
+import React, { forwardRef } from "react"
+import styles from "./LoadingIcon.module.css"
 
 type LoadingIconProp = {
   children?: React.ReactNode

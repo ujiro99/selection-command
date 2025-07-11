@@ -1,9 +1,9 @@
-import { Settings } from '@/services/settings'
-import type { SettingsType, Command } from '@/types'
-import { OPTION_FOLDER, STARTUP_METHOD } from '@/const'
-import { Ipc, TabCommand } from '@/services/ipc'
-import { isMenuCommand, capitalize } from '@/lib/utils'
-import { APP_ID } from '@/const'
+import { Settings } from "@/services/settings"
+import type { SettingsType, Command } from "@/types"
+import { OPTION_FOLDER, STARTUP_METHOD } from "@/const"
+import { Ipc, TabCommand } from "@/services/ipc"
+import { isMenuCommand, capitalize } from "@/lib/utils"
+import { APP_ID } from "@/const"
 
 export type executeActionProps = {
   command: Command
@@ -20,7 +20,7 @@ export const ContextMenu = {
         chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
         const settings = await Settings.get()
         if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
-          console.debug('init context menu')
+          console.debug("init context menu")
           ContextMenu.addMenus(settings)
           chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
         }
@@ -31,7 +31,7 @@ export const ContextMenu = {
   commandIdObj: {} as { [key: string | number]: Command },
 
   addMenus: async (settings: SettingsType) => {
-    const contexts = ['selection'] as chrome.contextMenus.ContextType[]
+    const contexts = ["selection"] as chrome.contextMenus.ContextType[]
 
     const commands = settings.commands.filter(isMenuCommand)
     const folder = settings.folders
@@ -40,9 +40,9 @@ export const ContextMenu = {
     // Add the root menu using app name.
     const rootId = chrome.contextMenus.create({
       id: `${APP_ID}-root`,
-      title: APP_ID.split('-')
+      title: APP_ID.split("-")
         .map((n) => capitalize(n))
-        .join(' '),
+        .join(" "),
       contexts,
     })
 
@@ -58,10 +58,10 @@ export const ContextMenu = {
             if (f.id === OPTION_FOLDER) {
               // If the folder is Option menu, insert a separator.
               chrome.contextMenus.create({
-                title: 'Option',
-                type: 'separator',
+                title: "Option",
+                type: "separator",
                 contexts,
-                id: 'OptionSeparator',
+                id: "OptionSeparator",
                 parentId: rootId,
               })
             }

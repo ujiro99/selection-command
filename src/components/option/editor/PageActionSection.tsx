@@ -1,21 +1,21 @@
-import { useState } from 'react'
-import { useFieldArray } from 'react-hook-form'
-import { Disc3 } from 'lucide-react'
-import { PAGE_ACTION_OPEN_MODE } from '@/const'
-import { FormLabel, FormDescription } from '@/components/ui/form'
-import type { PageAction } from '@/services/pageAction'
-import { t as _t } from '@/services/i18n'
+import { useState } from "react"
+import { useFieldArray } from "react-hook-form"
+import { Disc3 } from "lucide-react"
+import { PAGE_ACTION_OPEN_MODE } from "@/const"
+import { FormLabel, FormDescription } from "@/components/ui/form"
+import type { PageAction } from "@/services/pageAction"
+import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { cn, e2a, isEmpty, capitalize } from '@/lib/utils'
-import { PageActionStep } from '@/types/schema'
-import { DeepPartial } from '@/types'
+import { cn, e2a, isEmpty, capitalize } from "@/lib/utils"
+import { PageActionStep } from "@/types/schema"
+import { DeepPartial } from "@/types"
 
-import { InputField } from '@/components/option/field/InputField'
-import { SelectField } from '@/components/option/field/SelectField'
-import { StepList } from '@/components/pageAction/StepList'
-import { InputEditor } from '@/components/pageAction/InputEditor'
-import { RemoveDialog } from '@/components/option/RemoveDialog'
-import { TypeIcon } from '@/components/pageAction/TypeIcon'
+import { InputField } from "@/components/option/field/InputField"
+import { SelectField } from "@/components/option/field/SelectField"
+import { StepList } from "@/components/pageAction/StepList"
+import { InputEditor } from "@/components/pageAction/InputEditor"
+import { RemoveDialog } from "@/components/option/RemoveDialog"
+import { TypeIcon } from "@/components/pageAction/TypeIcon"
 
 type PageActionSectionProps = {
   form: any
@@ -29,12 +29,12 @@ export const PageActionSection = ({
   const { register, getValues } = form
 
   const pageActionArray = useFieldArray({
-    name: 'pageActionOption.steps',
+    name: "pageActionOption.steps",
     control: form.control,
-    keyName: '_id',
+    keyName: "_id",
   })
   const steps = pageActionArray.fields as unknown as PageActionStep[]
-  const recDisabled = !getValues('pageActionOption.startUrl')
+  const recDisabled = !getValues("pageActionOption.startUrl")
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
@@ -90,19 +90,19 @@ export const PageActionSection = ({
       <InputField
         control={form.control}
         name="pageActionOption.startUrl"
-        formLabel={t('startUrl')}
+        formLabel={t("startUrl")}
         inputProps={{
-          type: 'string',
-          ...register('pageActionOption.startUrl', {}),
+          type: "string",
+          ...register("pageActionOption.startUrl", {}),
         }}
-        description={t('startUrl_desc')}
-        previewUrl={getValues('iconUrl')}
+        description={t("startUrl_desc")}
+        previewUrl={getValues("iconUrl")}
       />
 
       <SelectField
         control={form.control}
         name="pageActionOption.openMode"
-        formLabel={t('pageAction_openMode')}
+        formLabel={t("pageAction_openMode")}
         options={e2a(PAGE_ACTION_OPEN_MODE)
           .filter((mode) => mode !== PAGE_ACTION_OPEN_MODE.NONE)
           .map((mode) => ({
@@ -113,8 +113,8 @@ export const PageActionSection = ({
 
       <div className="w-full flex items-center gap-1 pt-4">
         <div className="w-2/6">
-          <FormLabel>{t('pageAction_title')}</FormLabel>
-          <FormDescription>{t('pageAction_desc')}</FormDescription>
+          <FormLabel>{t("pageAction_title")}</FormLabel>
+          <FormDescription>{t("pageAction_desc")}</FormDescription>
         </div>
         <div className="w-4/6 relative">
           <StepList
@@ -126,10 +126,10 @@ export const PageActionSection = ({
           <button
             type="button"
             className={cn(
-              'relative left-[50%] -translate-x-[50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg',
+              "relative left-[50%] -translate-x-[50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg",
               !recDisabled &&
-                'group/record transition hover:opacity-80 hover:scale-[1.05]',
-              recDisabled && 'opacity-50 cursor-not-allowed bg-gray-400',
+                "group/record transition hover:opacity-80 hover:scale-[1.05]",
+              recDisabled && "opacity-50 cursor-not-allowed bg-gray-400",
             )}
             disabled={recDisabled}
             onClick={openRecorder}

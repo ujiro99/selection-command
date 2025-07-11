@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 
 type Listener = () => void
 type Listeners = Listener[]
@@ -17,7 +17,7 @@ export function useDetectUrlChanged() {
   useEffect(() => {
     const observeUrlChange = () => {
       let oldHref = document.location.href
-      const body = document.querySelector('body')
+      const body = document.querySelector("body")
       const observer = new MutationObserver(() => {
         if (oldHref !== document.location.href) {
           oldHref = document.location.href

@@ -1,16 +1,16 @@
-import { OPEN_MODE } from '@/const'
-import { Popup } from './popup'
-import { Window } from './window'
-import { Tab } from './tab'
-import { Api } from './api'
-import { SelectedLinkPopup } from './selectedLinkPopup'
-import { Copy } from './copy'
-import { PageAction } from './pageAction'
-import { Option } from './option'
-import { GetStyles as GetTextStyles } from './getStyles'
-import { AddPageRule } from './addPageRule'
-import { executeAction } from './executor'
-import type { ExecuteCommandParams } from '@/types'
+import { OPEN_MODE } from "@/const"
+import { Popup } from "./popup"
+import { Window } from "./window"
+import { Tab } from "./tab"
+import { Api } from "./api"
+import { SelectedLinkPopup } from "./selectedLinkPopup"
+import { Copy } from "./copy"
+import { PageAction } from "./pageAction"
+import { Option } from "./option"
+import { GetStyles as GetTextStyles } from "./getStyles"
+import { AddPageRule } from "./addPageRule"
+import { executeAction } from "./executor"
+import type { ExecuteCommandParams } from "@/types"
 
 export const actions = {
   [OPEN_MODE.POPUP]: Popup,

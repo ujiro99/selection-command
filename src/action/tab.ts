@@ -1,8 +1,8 @@
-import { Ipc, BgCommand } from '@/services/ipc'
-import { isValidString } from '@/lib/utils'
-import { SPACE_ENCODING } from '@/const'
-import type { ExecuteCommandParams } from '@/types'
-import type { OpenTabProps } from '@/services/chrome'
+import { Ipc, BgCommand } from "@/services/ipc"
+import { isValidString } from "@/lib/utils"
+import { SPACE_ENCODING } from "@/const"
+import type { ExecuteCommandParams } from "@/types"
+import type { OpenTabProps } from "@/services/chrome"
 
 export const Tab = {
   async execute({
@@ -12,7 +12,7 @@ export const Tab = {
     useClipboard,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
-      console.error('searchUrl is not valid.')
+      console.error("searchUrl is not valid.")
       return
     }
 

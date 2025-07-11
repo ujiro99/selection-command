@@ -1,12 +1,12 @@
-import React, { useRef } from 'react'
-import { cn } from '@/lib/utils'
-import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
+import React, { useRef } from "react"
+import { cn } from "@/lib/utils"
+import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 
-import { useUserSettings } from '@/hooks/useSetting'
-import { Icon } from '@/components/Icon'
-import popupCss from '@/components/Popup.module.css'
-import { SIDE } from '@/const'
-import css from './ResultPopup.module.css'
+import { useUserSettings } from "@/hooks/useSetting"
+import { Icon } from "@/components/Icon"
+import popupCss from "@/components/Popup.module.css"
+import { SIDE } from "@/const"
+import css from "./ResultPopup.module.css"
 
 type PopupProps = {
   visible: boolean
@@ -31,7 +31,7 @@ export function ResultPopup(props: PopupProps) {
       <PopoverAnchor virtualRef={virtualRef} />
       <PopoverContent
         side={isBottom ? SIDE.bottom : SIDE.top}
-        className={cn('bg-background rounded-md border', props.className)}
+        className={cn("bg-background rounded-md border", props.className)}
       >
         <div className={cn(popupCss.popup, css.resultPopup)}>
           {props.children}

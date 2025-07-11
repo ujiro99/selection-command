@@ -1,17 +1,17 @@
-import { createRoot } from 'react-dom/client'
-import { APP_ID, isDebug } from './const'
-import './command_hub.css'
-import { CommandHub } from '@/components/commandHub/CommandHub'
-import { MyCommands } from '@/components/commandHub/MyCommands'
+import { createRoot } from "react-dom/client"
+import { APP_ID, isDebug } from "./const"
+import "./command_hub.css"
+import { CommandHub } from "@/components/commandHub/CommandHub"
+import { MyCommands } from "@/components/commandHub/MyCommands"
 
-const url = chrome.runtime.getURL('/assets/command_hub.css')
-const mode = isDebug ? 'open' : 'closed' // 'open' for debugging
+const url = chrome.runtime.getURL("/assets/command_hub.css")
+const mode = isDebug ? "open" : "closed" // 'open' for debugging
 
 const insertCss = (elm: ShadowRoot) => {
   fetch(url)
     .then((res) => res.text())
     .then((css) => {
-      const style = document.createElement('style')
+      const style = document.createElement("style")
       style.append(document.createTextNode(css))
       elm.insertBefore(style, elm.firstChild)
     })
@@ -25,9 +25,9 @@ const cloneCss = (from: ShadowRoot, to: ShadowRoot, selector: string) => {
 }
 
 function setupCommandHub() {
-  const rootDom = document.createElement('div')
+  const rootDom = document.createElement("div")
   rootDom.id = `${APP_ID}-command-hub`
-  document.body.insertAdjacentElement('afterend', rootDom)
+  document.body.insertAdjacentElement("afterend", rootDom)
   const shadow = rootDom.attachShadow({ mode })
   const root = createRoot(shadow)
   root.render(<CommandHub />)
@@ -37,18 +37,18 @@ function setupCommandHub() {
 }
 
 function renderMyCommands() {
-  const container = document.getElementById('MyCommands')
+  const container = document.getElementById("MyCommands")
   if (container) {
     const shadow = container.attachShadow({ mode })
     const root = createRoot(shadow)
     root.render(<MyCommands />)
-    container.style.display = 'block'
+    container.style.display = "block"
 
     if (isDebug) {
       const from = document.getElementById(
-        'selection-command-command-hub',
+        "selection-command-command-hub",
       )?.shadowRoot
-      from && cloneCss(from, shadow, 'style')
+      from && cloneCss(from, shadow, "style")
     } else {
       insertCss(shadow)
     }
@@ -62,7 +62,7 @@ function setupMyCommnands() {
         // Find the CommandShare form.
         if (
           node instanceof HTMLElement &&
-          (node.id === 'CommandShare' || node.id === 'InputForm')
+          (node.id === "CommandShare" || node.id === "InputForm")
         ) {
           renderMyCommands()
         }

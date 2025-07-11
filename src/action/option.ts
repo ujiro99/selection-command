@@ -1,4 +1,4 @@
-import { Ipc, BgCommand } from '@/services/ipc'
+import { Ipc, BgCommand } from "@/services/ipc"
 
 export const Option = {
   async execute() {

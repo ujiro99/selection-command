@@ -810,7 +810,7 @@
     "message": "복원"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "레거시 마이그레이션"
+    "message": "백업 업데이트"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "일간 백업"

@@ -1,13 +1,13 @@
-import userEvent from '@testing-library/user-event'
-import { getElementByXPath, isValidXPath } from '@/services/dom'
-import { safeInterpolate, isMac, isEmpty } from '@/lib/utils'
-import { INSERT, InsertSymbol } from '@/services/pageAction'
+import userEvent from "@testing-library/user-event"
+import { getElementByXPath, isValidXPath } from "@/services/dom"
+import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
+import { INSERT, InsertSymbol } from "@/services/pageAction"
 import {
   SelectorType,
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_TIMEOUT as TIMEOUT,
-} from '@/const'
+} from "@/const"
 
 export namespace PageAction {
   export type Parameter = Start | End | Click | Input | Keyboard | Scroll
@@ -179,7 +179,7 @@ export const PageActionDispatcher = {
       p.metaKey = false
     }
     return new Promise((resolve) => {
-      const down = new KeyboardEvent('keydown', {
+      const down = new KeyboardEvent("keydown", {
         ...p,
         bubbles: true,
         cancelable: true,
@@ -203,7 +203,7 @@ export const PageActionDispatcher = {
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
       }
       let value = safeInterpolate(param.value, variables)
-      value = value.replace(/{/g, '{{') // escape
+      value = value.replace(/{/g, "{{") // escape
       if (!isEmpty(value)) {
         await user.type(element, value, { skipClick: true })
       }
@@ -218,20 +218,20 @@ export const PageActionDispatcher = {
   scroll: async (param: PageAction.Scroll): ActionReturn => {
     return new Promise((resolve) => {
       const scrollTimeout = setTimeout(() => {
-        console.warn('Scroll timeout')
-        window.removeEventListener('scrollend', onScrollend)
+        console.warn("Scroll timeout")
+        window.removeEventListener("scrollend", onScrollend)
         resolve([true])
       }, 1000)
 
       const onScrollend = () => {
         // console.log('Scroll complete')
         clearTimeout(scrollTimeout)
-        window.removeEventListener('scrollend', onScrollend)
+        window.removeEventListener("scrollend", onScrollend)
         resolve([true])
       }
 
-      window.addEventListener('scrollend', onScrollend)
-      window.scrollTo({ top: param.y, left: param.x, behavior: 'smooth' })
+      window.addEventListener("scrollend", onScrollend)
+      window.scrollTo({ top: param.y, left: param.x, behavior: "smooth" })
     })
   },
 }

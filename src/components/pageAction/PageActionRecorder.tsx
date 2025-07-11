@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react'
-import { restrictToParentElement } from '@dnd-kit/modifiers'
-import { DndContext, DragEndEvent } from '@dnd-kit/core'
+import { useEffect, useState } from "react"
+import { restrictToParentElement } from "@dnd-kit/modifiers"
+import { DndContext, DragEndEvent } from "@dnd-kit/core"
 
-import { usePageActionContext } from '@/hooks/pageAction/usePageActionContext'
-import { InputPopup } from '@/components/pageAction/InputPopup'
-import { InputEditor } from '@/components/pageAction/InputEditor'
-import { RemoveDialog } from '@/components/option/RemoveDialog'
-import { TypeIcon } from '@/components/pageAction/TypeIcon'
-import { Controller } from '@/components/pageAction/Controller'
-import { Draggable } from '@/components/pageAction/Draggable'
+import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
+import { InputPopup } from "@/components/pageAction/InputPopup"
+import { InputEditor } from "@/components/pageAction/InputEditor"
+import { RemoveDialog } from "@/components/option/RemoveDialog"
+import { TypeIcon } from "@/components/pageAction/TypeIcon"
+import { Controller } from "@/components/pageAction/Controller"
+import { Draggable } from "@/components/pageAction/Draggable"
 
-import type { PageAction } from '@/services/pageAction'
-import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from '@/services/storage'
-import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
+import type { PageAction } from "@/services/pageAction"
+import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from "@/services/storage"
+import { Ipc, BgCommand, TabCommand } from "@/services/ipc"
 import type {
   PageActionRecorderOption,
   PageActionRecordingData,
@@ -20,8 +20,8 @@ import type {
   PopupOption,
   Point,
   DeepPartial,
-} from '@/types'
-import { isEmpty, capitalize } from '@/lib/utils'
+} from "@/types"
+import { isEmpty, capitalize } from "@/lib/utils"
 
 export function PageActionRecorder(): JSX.Element {
   const { isRecording } = usePageActionContext()

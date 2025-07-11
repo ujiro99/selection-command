@@ -1,7 +1,7 @@
-import React from 'react'
-import { useDetectLinkCommand } from '@/hooks/useDetectLinkCommand'
-import { LinkClickGuard } from '@/components/LinkClickGuard'
-import { CircularProgress } from '@/components/CircularProgress'
+import React from "react"
+import { useDetectLinkCommand } from "@/hooks/useDetectLinkCommand"
+import { LinkClickGuard } from "@/components/LinkClickGuard"
+import { CircularProgress } from "@/components/CircularProgress"
 
 export function LinkSelector(): JSX.Element {
   const {
@@ -16,20 +16,20 @@ export function LinkSelector(): JSX.Element {
   if (!mousePosition || !inProgress) return <></>
 
   const styles = {
-    position: 'absolute',
+    position: "absolute",
     height: 8,
     width: 8,
     top: window.scrollY + mousePosition.y - 4,
     left: window.scrollX + mousePosition.x - 4,
     zIndex: 2147483647,
     opacity: preventLinkClick ? 0 : 1,
-    pointerEvents: 'none',
+    pointerEvents: "none",
     // border: '1px solid red',
   } as React.CSSProperties
 
   if (detectDrag) {
-    styles.cursor = 'grabbing'
-    styles.pointerEvents = 'auto'
+    styles.cursor = "grabbing"
+    styles.pointerEvents = "auto"
   }
 
   const circleStyles = {

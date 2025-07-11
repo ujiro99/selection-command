@@ -1,5 +1,5 @@
-import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import type { WindowLayer } from '@/types'
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import type { WindowLayer } from "@/types"
 
 type updater = (val: BgData) => BgData
 
@@ -22,11 +22,11 @@ export class BgData {
     if (!BgData.instance) {
       Storage.get<BgData>(SESSION_STORAGE_KEY.BG).then((val: BgData) => {
         BgData.instance = new BgData(val)
-        console.debug('BgData initialized', BgData.instance)
+        console.debug("BgData initialized", BgData.instance)
       })
       Storage.addListener(SESSION_STORAGE_KEY.BG, (val: BgData) => {
         BgData.instance = new BgData(val)
-        console.debug('BgData updated', BgData.instance)
+        console.debug("BgData updated", BgData.instance)
       })
     }
   }

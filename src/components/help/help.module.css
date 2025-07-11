@@ -20,7 +20,7 @@
 }
 
 :global .pageActionHelp b:before {
-  content: '';
+  content: "";
   z-index: -1;
   @apply absolute w-full h-3 -left-1 -bottom-0.5;
   @apply bg-blue-100 rounded;

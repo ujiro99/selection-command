@@ -1,4 +1,4 @@
-import { Input } from '@/components/ui/input'
+import { Input } from "@/components/ui/input"
 import {
   FormControl,
   FormField,
@@ -6,8 +6,8 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from '@/components/ui/form'
-import { MenuImage } from '@/components/menu/MenuImage'
+} from "@/components/ui/form"
+import { MenuImage } from "@/components/menu/MenuImage"
 
 type InputFieldType = {
   control: any
@@ -19,7 +19,7 @@ type InputFieldType = {
   previewUrl?: string
 }
 
-import { isEmpty, cn } from '@/lib/utils'
+import { isEmpty, cn } from "@/lib/utils"
 
 export const InputField = ({
   control,
@@ -51,7 +51,7 @@ export const InputField = ({
             )}
             <FormControl>
               <Input
-                className={cn(hasPreview && 'pl-10')}
+                className={cn(hasPreview && "pl-10")}
                 unit={unit}
                 {...field}
                 {...inputProps}

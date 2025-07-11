@@ -813,7 +813,7 @@
     "message": "Restaurar"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "Migração Legada"
+    "message": "Atualizar Cópia de Segurança"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "Cópia de Segurança Diária"

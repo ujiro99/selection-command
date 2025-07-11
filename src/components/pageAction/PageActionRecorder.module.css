@@ -6,7 +6,8 @@
 .recordButtonIcon {
   @apply stroke-red-600 fill-red-300 animate-spin-slow;
   @apply drop-shadow-md;
-  --tw-drop-shadow: drop-shadow(0 1px 2px #ef444480) drop-shadow(0 1px 1px #ef444480);
+  --tw-drop-shadow: drop-shadow(0 1px 2px #ef444480)
+    drop-shadow(0 1px 1px #ef444480);
 }
 
 .button {
@@ -32,6 +33,6 @@
   opacity: 1;
 }
 
-[data-hover='true']+.dragHandle {
+[data-hover="true"] + .dragHandle {
   opacity: 0;
 }

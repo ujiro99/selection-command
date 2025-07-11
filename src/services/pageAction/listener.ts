@@ -1,33 +1,33 @@
-import getXPath from 'get-xpath'
-import { RobulaPlus } from '@/lib/robula-plus'
-import { Ipc, BgCommand } from '@/services/ipc'
-import { PageAction, convReadableKeysToSymbols } from '@/services/pageAction'
-import { isTextNode, isSvgElement, getFocusNode } from '@/services/dom'
-import { PAGE_ACTION_EVENT, SelectorType } from '@/const'
-import type { PageActionStep } from '@/types'
-import { isPopup, isEmpty, generateRandomID, truncate } from '@/lib/utils'
+import getXPath from "get-xpath"
+import { RobulaPlus } from "@/lib/robula-plus"
+import { Ipc, BgCommand } from "@/services/ipc"
+import { PageAction, convReadableKeysToSymbols } from "@/services/pageAction"
+import { isTextNode, isSvgElement, getFocusNode } from "@/services/dom"
+import { PAGE_ACTION_EVENT, SelectorType } from "@/const"
+import type { PageActionStep } from "@/types"
+import { isPopup, isEmpty, generateRandomID, truncate } from "@/lib/utils"
 
 const isTargetKey = (e: KeyboardEvent): boolean => {
   if (
     [
-      'Meta',
-      'Control',
-      'F1',
-      'F2',
-      'F3',
-      'F4',
-      'F5',
-      'F6',
-      'F7',
-      'F8',
-      'F9',
-      'F10',
-      'F11',
-      'F12',
+      "Meta",
+      "Control",
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F7",
+      "F8",
+      "F9",
+      "F10",
+      "F11",
+      "F12",
     ].includes(e.key)
   )
     return false
-  if (['Tab', 'Enter'].includes(e.key)) return true
+  if (["Tab", "Enter"].includes(e.key)) return true
   if (e.ctrlKey || e.metaKey) return true
   return false
 }
@@ -49,10 +49,10 @@ const modifierPressed = (e: KeyboardEvent | PageAction.Keyboard): boolean => {
 }
 
 const getModifierKey = (e: KeyboardEvent | PageAction.Keyboard): string => {
-  if (e.ctrlKey || e.metaKey) return 'Ctrl'
-  if (e.altKey) return 'Alt'
-  if (e.shiftKey) return 'Shift'
-  return ''
+  if (e.ctrlKey || e.metaKey) return "Ctrl"
+  if (e.altKey) return "Alt"
+  if (e.shiftKey) return "Shift"
+  return ""
 }
 
 export const getKeyLabel = (e: KeyboardEvent | PageAction.Keyboard): string => {
@@ -69,7 +69,7 @@ const getLabel = (e: Element): string => {
       : !isEmpty(e.placeholder)
         ? e.placeholder
         : !isEmpty(e.ariaLabel)
-          ? e.ariaLabel || ''
+          ? e.ariaLabel || ""
           : e.type
   } else if (isSvgElement(e)) {
     return getLabel(e.parentNode as Element)
@@ -80,7 +80,7 @@ const getLabel = (e: Element): string => {
       e.ariaLabel ||
       e.innerText
   } else if (e instanceof HTMLElement) {
-    label = !isEmpty(e.ariaLabel) ? e.ariaLabel || '' : e.innerText
+    label = !isEmpty(e.ariaLabel) ? e.ariaLabel || "" : e.innerText
   } else {
     label = e.nodeName
   }
@@ -99,7 +99,7 @@ let lastInputTarget: HTMLElement | null = null
  * @return {string} - The XPath of the element.
  */
 const getXPathM = (e: Element | null, type?: string): string => {
-  if (e == null) return ''
+  if (e == null) return ""
   const rebula = new RobulaPlus()
   const getXPathR = (e: Element): string => {
     return rebula.getRobustXPath(e, document)
@@ -169,8 +169,8 @@ export const PageActionListener = (() => {
   const func: EventsFunctions = {
     async click(e: MouseEvent) {
       // Ignore click events that are triggered by mouse down event.
-      if (lastMouseDownTarget === e.target && e.type === 'click') {
-        console.debug('ignore click', e)
+      if (lastMouseDownTarget === e.target && e.type === "click") {
+        console.debug("ignore click", e)
         lastMouseDownTarget = null
         return
       } else {
@@ -247,7 +247,7 @@ export const PageActionListener = (() => {
       if (!isTargetKey(e)) return
       if (isInputting(target)) {
         // Ignore input and textarea events
-        if (!['Tab', 'Enter'].includes(e.key)) return
+        if (!["Tab", "Enter"].includes(e.key)) return
         // Ignore Enter key during composition session.
         if (e.isComposing) return
       }
@@ -336,22 +336,22 @@ export const PageActionListener = (() => {
 
   function start(): void {
     const opt = { capture: true, passive: true }
-    window.addEventListener('focusin', onFocusIn, opt)
-    window.addEventListener('mousedown', func.click, opt)
-    window.addEventListener('click', func.click, opt)
-    window.addEventListener('keydown', func.keyboard, opt)
-    window.addEventListener('input', func.input, opt)
-    window.addEventListener('scroll', func.scroll, opt)
+    window.addEventListener("focusin", onFocusIn, opt)
+    window.addEventListener("mousedown", func.click, opt)
+    window.addEventListener("click", func.click, opt)
+    window.addEventListener("keydown", func.keyboard, opt)
+    window.addEventListener("input", func.input, opt)
+    window.addEventListener("scroll", func.scroll, opt)
   }
 
   function stop(): void {
     const opt = { capture: true }
-    window.removeEventListener('focusin', onFocusIn, opt)
-    window.removeEventListener('mousedown', func.click, opt)
-    window.removeEventListener('click', func.click, opt)
-    window.removeEventListener('keydown', func.keyboard, opt)
-    window.removeEventListener('input', func.input, opt)
-    window.removeEventListener('scroll', func.scroll, opt)
+    window.removeEventListener("focusin", onFocusIn, opt)
+    window.removeEventListener("mousedown", func.click, opt)
+    window.removeEventListener("click", func.click, opt)
+    window.removeEventListener("keydown", func.keyboard, opt)
+    window.removeEventListener("input", func.input, opt)
+    window.removeEventListener("scroll", func.scroll, opt)
   }
 
   return { start, stop }

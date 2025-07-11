@@ -22,7 +22,7 @@
   margin: 0;
 }
 
-.titleSpan+.titleSpan {
+.titleSpan + .titleSpan {
   margin-left: 4px;
 }
 
@@ -92,9 +92,11 @@
 
 .bgHatching {
   background-color: #fff;
-  background-image: repeating-linear-gradient(45deg,
-      #6b7280,
-      #6b7280 1px,
-      transparent 1px,
-      transparent 4px);
+  background-image: repeating-linear-gradient(
+    45deg,
+    #6b7280,
+    #6b7280 1px,
+    transparent 1px,
+    transparent 4px
+  );
 }

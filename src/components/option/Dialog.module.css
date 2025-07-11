@@ -24,7 +24,7 @@
 
 .button,
 .buttonCancel {
-  composes: button from '../Common.module.css';
+  composes: button from "../Common.module.css";
   padding: 6px 8px 6px;
   line-height: 1.2;
   border-radius: 6px;

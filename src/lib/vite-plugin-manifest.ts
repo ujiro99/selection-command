@@ -1,13 +1,13 @@
-import type { Plugin } from 'vite'
-import type { OutputAsset } from 'rollup'
-import fs from 'node:fs'
+import type { Plugin } from "vite"
+import type { OutputAsset } from "rollup"
+import fs from "node:fs"
 
 export default function removeCssFromContentScript(): Plugin {
   return {
-    name: 'update-manifest',
+    name: "update-manifest",
     writeBundle(_options, bundle) {
       const b = Object.entries(bundle).find(
-        ([name]) => name === 'manifest.json',
+        ([name]) => name === "manifest.json",
       )
 
       if (!b) return

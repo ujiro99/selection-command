@@ -1,4 +1,4 @@
-import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from '@/const'
+import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from "@/const"
 import {
   ArrowDownFromLine,
   ArrowDownToLine,
@@ -7,7 +7,7 @@ import {
   Type,
   Mouse,
   CircleHelp,
-} from 'lucide-react'
+} from "lucide-react"
 
 export const TypeIcon = ({
   type,
@@ -19,19 +19,19 @@ export const TypeIcon = ({
   className?: string
 }) => {
   switch (type) {
-    case 'start':
+    case "start":
       return <ArrowDownFromLine size={size} className={className} />
-    case 'end':
+    case "end":
       return <ArrowDownToLine size={size} className={className} />
-    case 'click':
-    case 'doubleClick':
-    case 'tripleClick':
+    case "click":
+    case "doubleClick":
+    case "tripleClick":
       return <MousePointerClick size={size} className={className} />
-    case 'keyboard':
+    case "keyboard":
       return <Keyboard size={size} className={className} />
-    case 'input':
+    case "input":
       return <Type size={size} className={className} />
-    case 'scroll':
+    case "scroll":
       return <Mouse size={size} className={className} />
     default:
       return <CircleHelp size={size} className={className} />

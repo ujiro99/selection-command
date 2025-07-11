@@ -1,7 +1,7 @@
-import { Ipc, BgCommand } from '@/services/ipc'
-import { linksInSelection } from '@/services/dom'
-import { getScreenSize } from '@/services/screen'
-import type { ExecuteCommandParams } from '@/types'
+import { Ipc, BgCommand } from "@/services/ipc"
+import { linksInSelection } from "@/services/dom"
+import { getScreenSize } from "@/services/screen"
+import type { ExecuteCommandParams } from "@/types"
 
 export const SelectedLinkPopup = {
   async execute({ command, position }: ExecuteCommandParams) {

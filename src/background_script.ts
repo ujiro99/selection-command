@@ -6,29 +6,29 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
   SCREEN,
-} from '@/const'
-import { executeActionProps } from '@/services/contextMenus'
-import { Ipc, BgCommand, TabCommand } from '@/services/ipc'
-import { Settings } from '@/services/settings'
-import { PopupOption, PopupPlacement } from '@/services/option/defaultSettings'
-import * as PageActionBackground from '@/services/pageAction/background'
-import { BgData } from '@/services/backgroundData'
-import { ContextMenu } from '@/services/contextMenus'
-import { closeWindow } from '@/services/chrome'
-import { isSearchCommand, isPageActionCommand } from '@/lib/utils'
-import { execute } from '@/action/background'
-import * as ActionHelper from '@/action/helper'
-import type { IpcCallback } from '@/services/ipc'
+} from "@/const"
+import { executeActionProps } from "@/services/contextMenus"
+import { Ipc, BgCommand, TabCommand } from "@/services/ipc"
+import { Settings } from "@/services/settings"
+import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
+import * as PageActionBackground from "@/services/pageAction/background"
+import { BgData } from "@/services/backgroundData"
+import { ContextMenu } from "@/services/contextMenus"
+import { closeWindow } from "@/services/chrome"
+import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
+import { execute } from "@/action/background"
+import * as ActionHelper from "@/action/helper"
+import type { IpcCallback } from "@/services/ipc"
 import type {
   WindowType,
   WindowLayer,
   CaptureData,
   CaptureDataStorage,
   CaptureScreenShotRes,
-} from '@/types'
-import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { updateActiveScreenId } from '@/services/screen'
-import { ANALYTICS_EVENTS, sendEvent } from './services/analytics'
+} from "@/types"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { updateActiveScreenId } from "@/services/screen"
+import { ANALYTICS_EVENTS, sendEvent } from "./services/analytics"
 
 BgData.init()
 
@@ -67,7 +67,7 @@ const commandFuncs = {
 
   [BgCommand.openShortcuts]: (): boolean => {
     chrome.tabs.create({
-      url: 'chrome://extensions/shortcuts',
+      url: "chrome://extensions/shortcuts",
     })
     return false
   },
@@ -131,7 +131,7 @@ const commandFuncs = {
         : null
 
     if (!cmd) {
-      console.error('invalid command', param.command)
+      console.error("invalid command", param.command)
       response(false)
       return true
     }
@@ -178,9 +178,9 @@ const commandFuncs = {
       }
     }
     if (!w || w.srcWindowId == null) {
-      console.warn('window not found', sender.tab?.windowId)
+      console.warn("window not found", sender.tab?.windowId)
       chrome.tabs.create({ url: sender.url })
-      closeWindow(sender.tab?.windowId as number, 'openInTab').then(() => {
+      closeWindow(sender.tab?.windowId as number, "openInTab").then(() => {
         response(true)
       })
       return true
@@ -205,7 +205,7 @@ const commandFuncs = {
             url: sender.url,
             windowId: targetId,
           })
-          closeWindow(sender.tab?.windowId as number, 'openInTab').then(() => {
+          closeWindow(sender.tab?.windowId as number, "openInTab").then(() => {
             response(true)
           })
         } else {
@@ -246,7 +246,7 @@ const commandFuncs = {
       }
 
       // Remove the window.
-      await closeWindow(windowId, 'onHidden')
+      await closeWindow(windowId, "onHidden")
       layer.splice(
         layer.findIndex((w) => w.id === windowId),
         1,
@@ -293,11 +293,11 @@ const commandFuncs = {
     const tabId = sender.tab?.id
     const windowId = sender.tab?.windowId
     if (!tabId || !windowId) {
-      response({ success: false, error: 'TabId or WindowId not found.' })
+      response({ success: false, error: "TabId or WindowId not found." })
       return true
     }
 
-    chrome.tabs.captureVisibleTab(windowId, { format: 'png' }, (dataUrl) => {
+    chrome.tabs.captureVisibleTab(windowId, { format: "png" }, (dataUrl) => {
       if (chrome.runtime.lastError) {
         response({ success: false, error: chrome.runtime.lastError.message })
         return
@@ -364,7 +364,7 @@ const updateWindowSize = async (
     }
     await Settings.updateCommands([found])
   } else {
-    console.warn('command not found', commandId)
+    console.warn("command not found", commandId)
   }
 }
 
@@ -379,7 +379,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   let stack = data.windowStack
 
   // Clear selection text
-  await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, '')
+  await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
 
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     return
@@ -414,7 +414,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   if (closeStack.length > 0) {
     for (const layer of closeStack) {
       for (const window of layer) {
-        await closeWindow(window.id, 'onFocusChanged')
+        await closeWindow(window.id, "onFocusChanged")
       }
     }
   }
@@ -460,7 +460,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
     ret.filter((v) => v).forEach((v) => console.debug(v))
   } catch (error) {
-    console.error('Failed to close menu:', error)
+    console.error("Failed to close menu:", error)
   }
 
   // Get the active tab's window and update screen ID
@@ -470,14 +470,14 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
       await updateActiveScreenId(tab.windowId)
     }
   } catch (error) {
-    console.error('Failed to get active screen ID:', error)
+    console.error("Failed to get active screen ID:", error)
   }
 })
 
 if (isDebug) {
   chrome.action.setIcon({
     path: {
-      128: '/icon128-dev.png',
+      128: "/icon128-dev.png",
     },
   })
 }
@@ -486,7 +486,7 @@ chrome.runtime.onInstalled.addListener((details) => {
   ContextMenu.init()
 
   chrome.storage.session.setAccessLevel({
-    accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
+    accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
   })
 
   if (
@@ -520,7 +520,7 @@ const checkAndPerformDailyBackup = async () => {
       await dailyBackupManager.performDailyBackup()
     }
   } catch (error) {
-    console.error('Failed to perform daily backup check:', error)
+    console.error("Failed to perform daily backup check:", error)
   }
 }
 
@@ -532,7 +532,7 @@ const checkAndPerformWeeklyBackup = async () => {
       await weeklyBackupManager.performWeeklyBackup()
     }
   } catch (error) {
-    console.error('Failed to perform weekly backup check:', error)
+    console.error("Failed to perform weekly backup check:", error)
   }
 }
 
@@ -569,8 +569,8 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
     const enableSendTab =
       tab?.id &&
-      !tab.url?.startsWith('chrome') &&
-      !tab.url?.includes('chromewebstore.google.com')
+      !tab.url?.startsWith("chrome") &&
+      !tab.url?.includes("chromewebstore.google.com")
 
     const selectionText = await Storage.get<string>(
       SESSION_STORAGE_KEY.SELECTION_TEXT,
@@ -623,6 +623,6 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       SCREEN.SERVICE_WORKER,
     )
   } catch (error) {
-    console.error('Failed to execute shortcut command:', error)
+    console.error("Failed to execute shortcut command:", error)
   }
 })

@@ -5,17 +5,15 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from '@/components/ui/form'
+} from "@/components/ui/form"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectGroup,
-  SelectLabel,
-} from '@/components/ui/select'
-import { MenuImage } from '@/components/menu/MenuImage'
+} from "@/components/ui/select"
+import { MenuImage } from "@/components/menu/MenuImage"
 
 export type SelectOptionType = {
   name: string
@@ -24,20 +22,14 @@ export type SelectOptionType = {
   iconUrl?: string
   iconSvg?: string
   level?: number
-}
-
-export type SelectGroupType = {
-  label: string
-  options: SelectOptionType[]
-  iconUrl?: string
-  iconSvg?: string
+  isGroup?: boolean
 }
 
 export type SelectFieldType = {
   control: any
   name: string
   formLabel: string
-  options: (SelectOptionType | SelectGroupType)[]
+  options: SelectOptionType[]
   placeholder?: string
   description?: string
   labelClass?: string
@@ -70,27 +62,13 @@ const renderOption = (opt: SelectOptionType) => {
     <SelectItem
       value={opt.value}
       key={opt.value}
-      className={`hover:bg-gray-100`}
+      className={`${opt.isGroup ? "pointer-events-none" : "hover:bg-gray-100"}`}
       style={{ paddingLeft }}
     >
       {renderOptionContent(opt)}
     </SelectItem>
   )
 }
-
-const renderGroupLabel = (group: SelectGroupType) => (
-  <SelectLabel className="flex items-center gap-1">
-    {(group.iconUrl != null || group.iconSvg != null) && (
-      <MenuImage
-        src={group.iconUrl}
-        svg={group.iconSvg}
-        alt={group.label}
-        className="w-5 h-5 mr-1.5"
-      />
-    )}
-    {group.label}
-  </SelectLabel>
-)
 
 export const SelectField = ({
   control,
@@ -119,24 +97,7 @@ export const SelectField = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {options.map((item, index) => {
-                  if ('options' in item) {
-                    // Grouped options
-                    return (
-                      <SelectGroup key={index}>
-                        {item.label && renderGroupLabel(item)}
-                        {item.options.map((opt) => (
-                          <div key={opt.value} className="pl-4">
-                            {renderOption(opt)}
-                          </div>
-                        ))}
-                      </SelectGroup>
-                    )
-                  } else {
-                    // Regular options
-                    return renderOption(item)
-                  }
-                })}
+                {options.map((o) => renderOption(o))}
               </SelectContent>
             </Select>
             <FormMessage />

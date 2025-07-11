@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react'
-import { useController } from 'react-hook-form'
-import { FormLabel, FormMessage, FormDescription } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { MenuImage } from '@/components/menu/MenuImage'
-import { isEmpty, isValidSVG } from '@/lib/utils'
-import { t as _t } from '@/services/i18n'
+import React, { useState, useRef } from "react"
+import { useController } from "react-hook-form"
+import { FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { MenuImage } from "@/components/menu/MenuImage"
+import { isEmpty, isValidSVG } from "@/lib/utils"
+import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 type IconField = {
@@ -16,7 +16,7 @@ type IconField = {
   description?: string
 }
 
-import { useFavicon } from '@/hooks/option/useFavicon'
+import { useFavicon } from "@/hooks/option/useFavicon"
 
 export const IconField = ({
   control,
@@ -138,13 +138,13 @@ const UrlOrSvgInput = ({
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = event.target.value
     if (isValidUrl(inputText)) {
-      onChange({ url: inputText, svg: '' })
+      onChange({ url: inputText, svg: "" })
     } else if (isValidSVG(inputText)) {
-      onChange({ url: '', svg: inputText })
+      onChange({ url: "", svg: inputText })
     } else {
-      onChange({ url: inputText, svg: '' })
+      onChange({ url: inputText, svg: "" })
       if (inputText.length > 0) {
-        setError(t('icon_error'))
+        setError(t("icon_error"))
       }
       return
     }
@@ -155,7 +155,7 @@ const UrlOrSvgInput = ({
     <>
       <Input
         type="text"
-        value={value || ''}
+        value={value || ""}
         onChange={handleInputChange}
         placeholder={placeholder}
         className="pl-10"

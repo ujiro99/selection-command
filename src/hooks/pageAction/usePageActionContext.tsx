@@ -4,10 +4,10 @@ import {
   useEffect,
   createContext,
   useContext,
-} from 'react'
-import { Storage, SESSION_STORAGE_KEY } from '@/services/storage'
-import { Ipc } from '@/services/ipc'
-import type { PageActionContext } from '@/types'
+} from "react"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { Ipc } from "@/services/ipc"
+import type { PageActionContext } from "@/types"
 
 type ContextType = PageActionContext & {
   setContextData: (data: PageActionContext) => Promise<void>
@@ -44,7 +44,7 @@ export const PageActionContextProvider = ({
     if (data.recordingTabId != null) {
       data.isRecording = data.recordingTabId === tabId
     }
-    setContext((con) => ({
+    setContext((con: PageActionContext) => ({
       ...con,
       ...data,
     }))

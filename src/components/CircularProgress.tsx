@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react'
-import clsx from 'clsx'
-import lottie from 'lottie-web'
+import React, { useEffect, useRef } from "react"
+import clsx from "clsx"
+import lottie from "lottie-web"
 
-import anim from '@/lottie/rippled-circle.json'
-import css from './CircularProgress.module.css'
+import anim from "@/lottie/rippled-circle.json"
+import css from "./CircularProgress.module.css"
 
 interface CircularProgressProps {
   progress: number
@@ -13,11 +13,11 @@ interface CircularProgressProps {
 
 export const CircularProgress: React.FC<CircularProgressProps> = ({
   progress,
-  progressColor = '#3498db',
+  progressColor = "#3498db",
   style,
 }) => {
   const completeDiv = useRef<HTMLDivElement>(null)
-  const circleColor = '#e0e0e0'
+  const circleColor = "#e0e0e0"
   const strokeWidth = 10
   const size = 30
   const viewBox = 140
@@ -33,7 +33,7 @@ export const CircularProgress: React.FC<CircularProgressProps> = ({
     if (!completeDiv.current || !isComplete) return
     lottie.loadAnimation({
       container: completeDiv.current,
-      renderer: 'svg',
+      renderer: "svg",
       loop: true,
       autoplay: true,
       animationData: anim,

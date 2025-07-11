@@ -1,13 +1,13 @@
-import type { Plugin } from 'vite'
-import fs from 'node:fs'
-import path from 'node:path'
+import type { Plugin } from "vite"
+import fs from "node:fs"
+import path from "node:path"
 
-const srcPath = './public/_locales'
-const destPath = './dist/_locales'
+const srcPath = "./public/_locales"
+const destPath = "./dist/_locales"
 
 export default function refreshLocales(): Plugin {
   return {
-    name: 'refresh-locales',
+    name: "refresh-locales",
     buildStart(_options) {
       try {
         // Remove first

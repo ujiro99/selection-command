@@ -1,8 +1,8 @@
-import { Storage, STORAGE_KEY } from './storage'
+import { Storage, STORAGE_KEY } from "./storage"
 import DefaultSettings, {
   DefaultCommands,
   PopupPlacement,
-} from './option/defaultSettings'
+} from "./option/defaultSettings"
 import {
   OPTION_FOLDER,
   VERSION,
@@ -10,7 +10,7 @@ import {
   LINK_COMMAND_ENABLED,
   SIDE,
   ALIGN,
-} from '@/const'
+} from "@/const"
 import type {
   SettingsType,
   UserSettings,
@@ -19,20 +19,20 @@ import type {
   Star,
   UserStats,
   ShortcutSettings,
-} from '@/types'
+} from "@/types"
 import {
   isBase64,
   isEmpty,
   versionDiff,
   VersionDiff,
   isLinkCommand,
-} from '@/lib/utils'
-import { toDataURL } from '@/services/dom'
-import { OptionSettings } from '@/services/option/optionSettings'
+} from "@/lib/utils"
+import { toDataURL } from "@/services/dom"
+import { OptionSettings } from "@/services/option/optionSettings"
 
 enum LOCAL_STORAGE_KEY {
-  CACHES = 'caches',
-  STARS = 'stars',
+  CACHES = "caches",
+  STARS = "stars",
 }
 
 export type Caches = {
@@ -96,7 +96,7 @@ export const Settings = {
     const caches = await Settings.getCaches()
     for (const key in caches.images) {
       if (!urls.includes(key)) {
-        console.debug('remove unused cache', key)
+        console.debug("remove unused cache", key)
         delete caches.images[key]
       }
     }
@@ -108,11 +108,11 @@ export const Settings = {
         .filter((url) => !isBase64(url) && caches.images[url] == null)
       const newCaches = await Promise.all(
         noCacheUrls.map(async (url) => {
-          let dataUrl = ''
+          let dataUrl = ""
           try {
             dataUrl = await toDataURL(url)
           } catch (e) {
-            console.warn('Failed to convert to data url', url)
+            console.warn("Failed to convert to data url", url)
             console.warn(e)
           }
           return [url, dataUrl]
@@ -230,20 +230,20 @@ const removeOptionSettings = (data: SettingsType): void => {
 }
 
 export const migrate = async (data: SettingsType): Promise<SettingsType> => {
-  if (versionDiff(data.settingVersion, '0.10.0') === VersionDiff.Old) {
+  if (versionDiff(data.settingVersion, "0.10.0") === VersionDiff.Old) {
     data = await migrate0_10_0(data)
   }
-  if (versionDiff(data.settingVersion, '0.10.3') === VersionDiff.Old) {
+  if (versionDiff(data.settingVersion, "0.10.3") === VersionDiff.Old) {
     data = migrate0_10_3(data)
   }
-  if (versionDiff(data.settingVersion, '0.11.3') === VersionDiff.Old) {
+  if (versionDiff(data.settingVersion, "0.11.3") === VersionDiff.Old) {
     data = migrate0_11_3(data)
   }
-  if (versionDiff(data.settingVersion, '0.11.5') === VersionDiff.Old) {
+  if (versionDiff(data.settingVersion, "0.11.5") === VersionDiff.Old) {
     data.settingVersion = VERSION as Version
     data = migrate0_11_5(data)
   }
-  if (versionDiff(data.settingVersion, '0.11.9') === VersionDiff.Old) {
+  if (versionDiff(data.settingVersion, "0.11.9") === VersionDiff.Old) {
     data.settingVersion = VERSION as Version
     data = migrate0_11_9(data)
   }
@@ -259,7 +259,7 @@ const migrate0_10_0 = async (data: SettingsType): Promise<SettingsType> => {
     if (defaultLinkCommand != null) {
       data.commands.push(defaultLinkCommand)
       await Storage.setCommands(data.commands)
-      console.debug('migrate 0.10.0 link command')
+      console.debug("migrate 0.10.0 link command")
     }
   }
   return data
@@ -269,11 +269,11 @@ const migrate0_10_3 = (data: SettingsType): SettingsType => {
   // Add a linkCommand if not exists.
   if (data.linkCommand == null) {
     data.linkCommand = DefaultSettings.linkCommand
-    console.debug('migrate 0.10.3 link command')
+    console.debug("migrate 0.10.3 link command")
   }
   if (data.linkCommand.enabled == null) {
     data.linkCommand.enabled = DefaultSettings.linkCommand.enabled
-    console.debug('migrate 0.10.3 link command enabled')
+    console.debug("migrate 0.10.3 link command enabled")
   }
   return data
 }
@@ -321,8 +321,8 @@ const migrate0_11_5 = (data: SettingsType): SettingsType => {
 
 const migrate0_11_9 = (data: SettingsType): SettingsType => {
   // 1. Convert POPUP_PLACEMENT to PopupPlacement
-  if (data.popupPlacement != null && typeof data.popupPlacement === 'string') {
-    const [oldSide, oldAlign] = (data.popupPlacement as string).split('-')
+  if (data.popupPlacement != null && typeof data.popupPlacement === "string") {
+    const [oldSide, oldAlign] = (data.popupPlacement as string).split("-")
     data.popupPlacement = {
       ...PopupPlacement,
       side: oldSide as SIDE,
@@ -333,8 +333,8 @@ const migrate0_11_9 = (data: SettingsType): SettingsType => {
   // 2. Convert POPUP_PLACEMENT to PopupPlacement as PageRules
   if (data.pageRules != null && Array.isArray(data.pageRules)) {
     data.pageRules = data.pageRules.map((pr) => {
-      if (pr.popupPlacement != null && typeof pr.popupPlacement === 'string') {
-        const [oldSide, oldAlign] = (pr.popupPlacement as string).split('-')
+      if (pr.popupPlacement != null && typeof pr.popupPlacement === "string") {
+        const [oldSide, oldAlign] = (pr.popupPlacement as string).split("-")
         pr.popupPlacement = {
           ...PopupPlacement,
           side: oldSide as SIDE,

@@ -1,6 +1,6 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from '@/const'
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
 import type {
   Version,
   Command,
@@ -9,7 +9,7 @@ import type {
   SearchCommand,
   PageActionCommand,
   UrlParam,
-} from '@/types'
+} from "@/types"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -40,7 +40,7 @@ export function unique<T>(arr: T[]): T[] {
  * @returns True if the string is a UrlParam.
  */
 export const isUrlParam = (url: string | UrlParam): url is UrlParam => {
-  return typeof url === 'object' && 'searchUrl' in url && 'selectionText' in url
+  return typeof url === "object" && "searchUrl" in url && "selectionText" in url
 }
 
 /**
@@ -64,28 +64,28 @@ export function toUrl(
   } = param
   let text = selectionText
   if (useClipboard && isEmpty(text)) {
-    text = clipboardText ?? ''
+    text = clipboardText ?? ""
   }
   let textEscaped = text
   if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
-    textEscaped = text.replaceAll(' ', '+')
+    textEscaped = text.replaceAll(" ", "+")
   } else if (spaceEncoding === SPACE_ENCODING.PERCENT) {
     // do nothing
   }
-  textEscaped = text.replaceAll('/', '\\/')
+  textEscaped = text.replaceAll("/", "\\/")
   textEscaped = encodeURIComponent(textEscaped)
-  return searchUrl?.replace('%s', textEscaped)
+  return searchUrl?.replace("%s", textEscaped)
 }
 
 export function escapeJson(str: string) {
   return str
-    .replace(/[\\]/g, '\\\\')
-    .replace(/[\/]/g, '\\/')
-    .replace(/[\b]/g, '\\b')
-    .replace(/[\f]/g, '\\f')
-    .replace(/[\n]/g, '\\n')
-    .replace(/[\r]/g, '\\r')
-    .replace(/[\t]/g, '\\t')
+    .replace(/[\\]/g, "\\\\")
+    .replace(/[\/]/g, "\\/")
+    .replace(/[\b]/g, "\\b")
+    .replace(/[\f]/g, "\\f")
+    .replace(/[\n]/g, "\\n")
+    .replace(/[\r]/g, "\\r")
+    .replace(/[\t]/g, "\\t")
     .replace(/[\"]/g, '\\"')
     .replace(/\\'/g, "\\'")
 }
@@ -116,7 +116,7 @@ export function isUrl(str: string | undefined): boolean {
  * Check if the string is a valid SVG.
  */
 export const isValidSVG = (text: string): boolean => {
-  return text.trim().startsWith('<svg') && text.trim().endsWith('</svg>')
+  return text.trim().startsWith("<svg") && text.trim().endsWith("</svg>")
 }
 
 /**
@@ -130,7 +130,7 @@ export function isEmpty(str: string | null | undefined): boolean {
  * Check if the value is a string.
  */
 export function isValidString(val: unknown): val is string {
-  return typeof val === 'string' && val.length > 0
+  return typeof val === "string" && val.length > 0
 }
 
 /**
@@ -172,7 +172,7 @@ export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
 export function isPopup(elm: Element): boolean {
   if (elm == null) return false
   if (elm.id === APP_ID) return true
-  if (elm.nodeName === 'body') return false
+  if (elm.nodeName === "body") return false
   return isPopup(elm.parentElement as Element)
 }
 
@@ -226,11 +226,11 @@ export function hexToHsl(hex: string): [number, number, number] {
  * @returns {string} The capitalized string.
  */
 export function capitalize(phrase: string): string {
-  if (typeof phrase !== 'string' || !phrase) return phrase
+  if (typeof phrase !== "string" || !phrase) return phrase
   return phrase
-    .split(' ')
+    .split(" ")
     .map((s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
-    .join(' ')
+    .join(" ")
 }
 
 /**
@@ -238,7 +238,7 @@ export function capitalize(phrase: string): string {
  * @returns {boolean} True if the user is using a Mac.
  */
 export function isMac(): boolean {
-  return navigator.userAgent.indexOf('Mac') !== -1
+  return navigator.userAgent.indexOf("Mac") !== -1
 }
 
 export enum VersionDiff {
@@ -260,8 +260,8 @@ export function versionDiff(a: Version, b: Version): VersionDiff {
   if (!a || !b) {
     return VersionDiff.Old
   }
-  const aVer = a.split('.').map((v) => Number.parseInt(v))
-  const bVer = b.split('.').map((v) => Number.parseInt(v))
+  const aVer = a.split(".").map((v) => Number.parseInt(v))
+  const bVer = b.split(".").map((v) => Number.parseInt(v))
   for (let i = 0; i < aVer.length; i++) {
     if (aVer[i] === bVer[i]) {
       continue
@@ -276,9 +276,9 @@ export const onHover = (
   enterVal: any,
   leaveVal?: any,
 ) => {
-  if (typeof enterVal === 'string' && leaveVal === undefined) {
-    leaveVal = ''
-  } else if (typeof enterVal === 'boolean' && leaveVal === undefined) {
+  if (typeof enterVal === "string" && leaveVal === undefined) {
+    leaveVal = ""
+  } else if (typeof enterVal === "boolean" && leaveVal === undefined) {
     leaveVal = !enterVal
   }
   return {
@@ -303,7 +303,7 @@ export function e2a(e: any): string[] {
  * @returns {string} The converted string.
  */
 export function hyphen2Underscore(input: string): string {
-  return input.replace(/-/g, '_')
+  return input.replace(/-/g, "_")
 }
 
 /**
@@ -342,7 +342,7 @@ export function safeInterpolate(
 export function truncate(
   str: string,
   maxLength: number = 100,
-  suffix: string = '...',
+  suffix: string = "...",
 ): string {
   // Return the original string if it's already shorter than or equal to the maximum length
   if (str.length <= maxLength) {
@@ -369,10 +369,10 @@ export function isOverBytes(str: string, byte: number): boolean {
  * @returns {boolean} True if the current execution context is a service worker, false otherwise.
  */
 export function isServiceWorker(): boolean {
-  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  if (typeof window !== "undefined" && typeof document !== "undefined") {
     return false
   }
-  if (typeof self !== 'undefined' && typeof window === 'undefined') {
+  if (typeof self !== "undefined" && typeof window === "undefined") {
     return true
   }
   return false

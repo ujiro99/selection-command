@@ -1,8 +1,8 @@
-import type { Command, CommandFolder } from '@/types'
-import { ROOT_FOLDER } from '@/const'
+import type { Command, CommandFolder } from "@/types"
+import { ROOT_FOLDER } from "@/const"
 
 export type CommandTreeNode = {
-  type: 'command' | 'folder'
+  type: "command" | "folder"
   content: Command | CommandFolder
   children?: CommandTreeNode[]
 }
@@ -16,7 +16,7 @@ export type FlattenNode = {
 }
 
 const createFolderNode = (folder: CommandFolder): CommandTreeNode => ({
-  type: 'folder',
+  type: "folder",
   content: folder,
   children: [],
 })
@@ -43,7 +43,7 @@ export const findFirstCommand = (
   if (node.children == null) return null
   const first = node.children[0]
   if (first == null) return null
-  if (first.type === 'folder') return findFirstCommand(first)
+  if (first.type === "folder") return findFirstCommand(first)
   return first
 }
 
@@ -73,7 +73,7 @@ const createAddNodeToTreeFunction = (
   processedFolders: Set<string>,
 ) => {
   const processingStack = new Set<string>()
-  
+
   const addNodeToTree = (
     tree: CommandTreeNode[],
     node: CommandTreeNode,
@@ -87,11 +87,13 @@ const createAddNodeToTreeFunction = (
       } else {
         // Check for circular dependency before processing
         if (processingStack.has(parentId)) {
-          console.warn(`Circular dependency detected for folder ${parentId}. Adding to root instead.`)
+          console.warn(
+            `Circular dependency detected for folder ${parentId}. Adding to root instead.`,
+          )
           tree.push(node)
           return
         }
-        
+
         processingStack.add(parentId)
         addParentFolderIfNeeded(
           tree,
@@ -101,14 +103,16 @@ const createAddNodeToTreeFunction = (
           addNodeToTree,
         )
         processingStack.delete(parentId)
-        
+
         // Try again after adding parent
         const parentAfterAdd = findNodeInTree(tree, parentId)
         if (parentAfterAdd) {
           if (!parentAfterAdd.children) parentAfterAdd.children = []
           parentAfterAdd.children.push(node)
         } else {
-          console.warn(`Failed to find or create parent folder ${parentId}. Adding to root instead.`)
+          console.warn(
+            `Failed to find or create parent folder ${parentId}. Adding to root instead.`,
+          )
           tree.push(node)
         }
       }
@@ -132,7 +136,7 @@ const addCommandsToTree = (
 ) => {
   commands.forEach((command) => {
     const commandNode: CommandTreeNode = {
-      type: 'command',
+      type: "command",
       content: command,
     }
 
@@ -191,7 +195,7 @@ function _toFlatten(
   flatten: FlattenNode[] = [],
 ): FlattenNode[] {
   for (const node of tree) {
-    if (node.type === 'command') {
+    if (node.type === "command") {
       flatten.push({
         id: node.content.id,
         content: node.content,
@@ -246,7 +250,7 @@ export function calcLevel(
 
   // Handle different input types
   const parentFolderId =
-    'content' in node ? node.content.parentFolderId : node.parentFolderId
+    "content" in node ? node.content.parentFolderId : node.parentFolderId
 
   return calculateDepth(parentFolderId)
 }
@@ -257,7 +261,7 @@ export function getAllCommandsFromFolder(
   const commands: Command[] = []
 
   const collectCommands = (node: CommandTreeNode) => {
-    if (node.type === 'command') {
+    if (node.type === "command") {
       commands.push(node.content as Command)
     }
 
@@ -276,7 +280,7 @@ export function getAllFoldersFromNode(node: CommandTreeNode): CommandFolder[] {
   const folders: CommandFolder[] = []
 
   const collectFolders = (currentNode: CommandTreeNode) => {
-    if (currentNode.type === 'folder') {
+    if (currentNode.type === "folder") {
       folders.push(currentNode.content as CommandFolder)
     }
 

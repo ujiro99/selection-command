@@ -5,12 +5,12 @@ import type {
   UserStats,
   ShortcutSettings,
   UserSettings,
-} from '@/types'
-import { settingsCache, CacheSection, CACHE_SECTIONS } from './settingsCache'
-import { Settings } from './settings'
-import { OptionSettings } from '@/services/option/optionSettings'
-import DefaultSettings from '@/services/option/defaultSettings'
-import { OPTION_FOLDER } from '@/const'
+} from "@/types"
+import { settingsCache, CacheSection, CACHE_SECTIONS } from "./settingsCache"
+import { Settings } from "./settings"
+import { OptionSettings } from "@/services/option/optionSettings"
+import DefaultSettings from "@/services/option/defaultSettings"
+import { OPTION_FOLDER } from "@/const"
 
 // Settings fetch options
 interface GetSettingsOptions {
@@ -80,18 +80,18 @@ export class EnhancedSettings {
     ] = results
 
     const commands =
-      commandsResult.status === 'fulfilled' ? commandsResult.value : []
+      commandsResult.status === "fulfilled" ? commandsResult.value : []
     const userSettings =
-      userSettingsResult.status === 'fulfilled'
+      userSettingsResult.status === "fulfilled"
         ? userSettingsResult.value
         : (DefaultSettings as UserSettings)
-    const stars = starsResult.status === 'fulfilled' ? starsResult.value : []
+    const stars = starsResult.status === "fulfilled" ? starsResult.value : []
     const shortcuts =
-      shortcutsResult.status === 'fulfilled'
+      shortcutsResult.status === "fulfilled"
         ? shortcutsResult.value
         : { shortcuts: [] }
     const userStats =
-      userStatsResult.status === 'fulfilled'
+      userStatsResult.status === "fulfilled"
         ? userStatsResult.value
         : { commandExecutionCount: 0, hasShownReviewRequest: false }
 
@@ -124,15 +124,15 @@ export class EnhancedSettings {
     section: K,
     forceFresh = false,
   ): Promise<
-    K extends 'commands'
+    K extends "commands"
       ? Command[]
-      : K extends 'userSettings'
+      : K extends "userSettings"
         ? UserSettings
-        : K extends 'stars'
+        : K extends "stars"
           ? Star[]
-          : K extends 'shortcuts'
+          : K extends "shortcuts"
             ? ShortcutSettings
-            : K extends 'userStats'
+            : K extends "userStats"
               ? UserStats
               : any
   > {

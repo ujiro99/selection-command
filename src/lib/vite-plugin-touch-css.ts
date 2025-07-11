@@ -1,5 +1,5 @@
-import fs from 'node:fs'
-import type { Plugin, ViteDevServer } from 'vite'
+import fs from "node:fs"
+import type { Plugin, ViteDevServer } from "vite"
 
 function touchFiles(filePaths: string[]): void {
   const time = new Date()
@@ -18,9 +18,9 @@ export default function touchCSSPlugin({
   watchRegexp,
 }: TouchCSSPluginOptions): Plugin {
   return {
-    name: 'touch-css',
+    name: "touch-css",
     configureServer(server: ViteDevServer) {
-      server.watcher.on('change', (path: string) => {
+      server.watcher.on("change", (path: string) => {
         if (watchRegexp.test(path)) {
           if (!cssFilePaths.includes(path)) {
             touchFiles(cssFilePaths)

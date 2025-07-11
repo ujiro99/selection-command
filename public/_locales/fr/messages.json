@@ -810,7 +810,7 @@
     "message": "Restaurer"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "Migration Héritée"
+    "message": "Mettre à jour la sauvegarde"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "Sauvegarde Quotidienne"

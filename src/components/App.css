@@ -1,10 +1,11 @@
-@import url('global.css');
-@import url('Animation.css');
+@import url("global.css");
+@import url("Animation.css");
 
 :host,
 :root {
-  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
-  --font-monospace: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  --font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-monospace:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }

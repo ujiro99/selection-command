@@ -1,28 +1,28 @@
-import { Storage, LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from './storage'
-import { isDebug, APP_ID, VERSION, SCREEN } from '@/const'
-import { SessionData } from '@/types'
+import { Storage, LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "./storage"
+import { isDebug, APP_ID, VERSION, SCREEN } from "@/const"
+import { SessionData } from "@/types"
 
-const GA_ENDPOINT = 'https://www.google-analytics.com/mp/collect'
-const GA_DEBUG_ENDPOINT = 'https://www.google-analytics.com/debug/mp/collect'
+const GA_ENDPOINT = "https://www.google-analytics.com/mp/collect"
+const GA_DEBUG_ENDPOINT = "https://www.google-analytics.com/debug/mp/collect"
 const MEASUREMENT_ID = import.meta.env.VITE_MEASUREMENT_ID
 const API_SECRET = import.meta.env.VITE_API_SECRET
 const DEFAULT_ENGAGEMENT_TIME_IN_MSEC = 100
 const SESSION_EXPIRATION_IN_MIN = 30
 
 export const ANALYTICS_EVENTS = {
-  SELECTION_COMMAND: 'selection_command',
-  LINK_COMMAND: 'link_command',
-  SHORTCUT: 'shortcut',
-  SHOW_HELP: 'show_help',
-  SHOW_REVIEW_URL: 'show_review_url',
-  OPEN_DIALOG: 'open_dialog',
-  COMMAND_ADD: 'command_add',
-  COMMAND_EDIT: 'command_edit',
-  COMMAND_REMOVE: 'command_remove',
-  COMMAND_SHARE_FORM: 'command_share_form',
-  COMMAND_HUB_ADD: 'command_hub_add',
-  COMMAND_HUB_STAR_ADD: 'command_hub_star_add',
-  COMMAND_HUB_STAR_REMOVE: 'command_hub_star_remove',
+  SELECTION_COMMAND: "selection_command",
+  LINK_COMMAND: "link_command",
+  SHORTCUT: "shortcut",
+  SHOW_HELP: "show_help",
+  SHOW_REVIEW_URL: "show_review_url",
+  OPEN_DIALOG: "open_dialog",
+  COMMAND_ADD: "command_add",
+  COMMAND_EDIT: "command_edit",
+  COMMAND_REMOVE: "command_remove",
+  COMMAND_SHARE_FORM: "command_share_form",
+  COMMAND_HUB_ADD: "command_hub_add",
+  COMMAND_HUB_STAR_ADD: "command_hub_star_add",
+  COMMAND_HUB_STAR_REMOVE: "command_hub_star_remove",
 } as const
 
 export type AnalyticsEventName =
@@ -40,7 +40,7 @@ export async function sendEvent(
     const res = await fetch(
       `${endpoint}?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`,
       {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           client_id: await getOrCreateClientId(),
           events: [

@@ -1,34 +1,34 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
 import {
   TextCursorInput,
   Link2,
   Clipboard,
   ChevronDown,
   ChevronUp,
-} from 'lucide-react'
-import { Popover, PopoverContent, PopoverAnchor } from '@/components/ui/popover'
+} from "lucide-react"
+import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import {
   Menubar,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
   MenubarTrigger,
-} from '@/components/ui/menubar'
-import { EXIT_DURATION } from '@/const'
-import { Point } from '@/types'
-import { isPopup, cn } from '@/lib/utils'
+} from "@/components/ui/menubar"
+import { EXIT_DURATION } from "@/const"
+import { Point } from "@/types"
+import { isPopup, cn } from "@/lib/utils"
 import {
   getScrollableAncestors,
   isInput,
   isTextNode,
   isHtmlElement,
   getFocusNode,
-} from '@/services/dom'
-import { t } from '@/services/i18n'
-import { INSERT, LocaleKey } from '@/services/pageAction'
+} from "@/services/dom"
+import { t } from "@/services/i18n"
+import { INSERT, LocaleKey } from "@/services/pageAction"
 
 enum MENU {
-  INSERT = 'insert',
+  INSERT = "insert",
 }
 
 const isTargetEditable = (target: EventTarget | null): boolean => {
@@ -90,7 +90,7 @@ const insertText = (targetElm: HTMLElement | Text, value: string) => {
     focusNode.innerText = newText
   }
   focusNode.dispatchEvent(
-    new InputEvent('input', {
+    new InputEvent("input", {
       bubbles: true,
       cancelable: true,
     }),
@@ -100,7 +100,7 @@ const insertText = (targetElm: HTMLElement | Text, value: string) => {
 const calcAlign = (
   elm: HTMLElement | Text,
   x: number,
-): 'start' | 'center' | 'end' => {
+): "start" | "center" | "end" => {
   if (isTextNode(elm)) {
     elm = elm.parentElement as HTMLElement
   }
@@ -109,13 +109,13 @@ const calcAlign = (
     const relativeX = (x ?? 0) - rect.x
     const rect3 = rect.width / 3
     return rect3 > relativeX
-      ? 'start'
+      ? "start"
       : rect3 * 2 < relativeX
-        ? 'end'
-        : 'center'
+        ? "end"
+        : "center"
   } catch (e) {
     console.error(e)
-    return 'center'
+    return "center"
   }
 }
 
@@ -193,13 +193,13 @@ export function InputPopup(): JSX.Element {
       }
     }
 
-    window.addEventListener('focusin', onFocusIn)
-    window.addEventListener('focusout', onFocusOut)
-    window.addEventListener('click', onClick)
+    window.addEventListener("focusin", onFocusIn)
+    window.addEventListener("focusout", onFocusOut)
+    window.addEventListener("click", onClick)
     return () => {
-      window.removeEventListener('focusin', onFocusIn)
-      window.removeEventListener('focusout', onFocusOut)
-      window.removeEventListener('click', onClick)
+      window.removeEventListener("focusin", onFocusIn)
+      window.removeEventListener("focusout", onFocusOut)
+      window.removeEventListener("click", onClick)
     }
   }, [setTargetElm, setMenuVisible, setDisabled, setMousePos])
 
@@ -217,7 +217,7 @@ export function InputPopup(): JSX.Element {
         {shouldRender && (
           <PopoverContent
             className="pointer-events-auto z-auto"
-            side={'top'}
+            side={"top"}
             align={align}
             sideOffset={8}
             onOpenAutoFocus={noFocus}
@@ -238,9 +238,9 @@ type MenuProps = {
 
 export function InputMenu(props: MenuProps): JSX.Element {
   const disabled = props.disabled ?? false
-  const [selectedMenu, setSelectedMenu] = useState('')
+  const [selectedMenu, setSelectedMenu] = useState("")
   const isOpen = selectedMenu === MENU.INSERT
-  const iconSrc = chrome.runtime.getURL('/icon128.png')
+  const iconSrc = chrome.runtime.getURL("/icon128.png")
 
   const onClickItem = async (menu: INSERT) => {
     if (props.targetElm) {
@@ -263,14 +263,14 @@ export function InputMenu(props: MenuProps): JSX.Element {
       <MenubarMenu value={MENU.INSERT}>
         <MenubarTrigger
           className={cn(
-            'py-1 px-2 text-sm font-normal font-sans text-gray-700 cursor-pointer',
-            disabled && 'opacity-50 bg-gray-200 cursor-not-allowed',
+            "py-1 px-2 text-sm font-normal font-sans text-gray-700 cursor-pointer",
+            disabled && "opacity-50 bg-gray-200 cursor-not-allowed",
           )}
           disabled={disabled}
           onMouseEnter={onMouseEnter}
         >
           <img src={iconSrc} alt="icon" className="w-[18px] h-[18px] mr-1.5" />
-          {t('PageAction_InputMenu_insertText')}
+          {t("PageAction_InputMenu_insertText")}
           {isOpen ? (
             <ChevronUp size={14} className="ml-1" />
           ) : (
@@ -280,15 +280,15 @@ export function InputMenu(props: MenuProps): JSX.Element {
         <MenubarContent>
           <InputMenuItem onClick={onClickItem} value={INSERT.SELECTED_TEXT}>
             <TextCursorInput size={16} className="mr-2 stroke-gray-600" />
-            {t('PageAction_InputMenu_selectedText')}
+            {t("PageAction_InputMenu_selectedText")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
             <Link2 size={16} className="mr-2 stroke-gray-600" />
-            {t('PageAction_InputMenu_url')}
+            {t("PageAction_InputMenu_url")}
           </InputMenuItem>
           <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
             <Clipboard size={16} className="mr-2 stroke-gray-600" />
-            {t('PageAction_InputMenu_clipboard')}
+            {t("PageAction_InputMenu_clipboard")}
           </InputMenuItem>
         </MenubarContent>
       </MenubarMenu>
@@ -345,20 +345,20 @@ function FocusOutline(props: FocusOutlineProps): JSX.Element {
 
     const ancestors = getScrollableAncestors(elm)
     ancestors.forEach((a) => {
-      a.addEventListener('scroll', updatePosition)
+      a.addEventListener("scroll", updatePosition)
     })
-    window.addEventListener('focusin', updatePosition)
-    window.addEventListener('scroll', updatePosition)
-    window.addEventListener('input', updatePosition)
-    document.addEventListener('selectionchange', updatePosition)
+    window.addEventListener("focusin", updatePosition)
+    window.addEventListener("scroll", updatePosition)
+    window.addEventListener("input", updatePosition)
+    document.addEventListener("selectionchange", updatePosition)
     return () => {
       ancestors.forEach((a) => {
-        a.removeEventListener('scroll', updatePosition)
+        a.removeEventListener("scroll", updatePosition)
       })
-      window.removeEventListener('focusin', updatePosition)
-      window.removeEventListener('scroll', updatePosition)
-      window.removeEventListener('input', updatePosition)
-      document.removeEventListener('selectionchange', updatePosition)
+      window.removeEventListener("focusin", updatePosition)
+      window.removeEventListener("scroll", updatePosition)
+      window.removeEventListener("input", updatePosition)
+      document.removeEventListener("selectionchange", updatePosition)
     }
   }, [elm, setRect, setContainer, container])
 
@@ -374,20 +374,20 @@ function FocusOutline(props: FocusOutlineProps): JSX.Element {
   return (
     <div
       className={cn(
-        'border-2 border-gray-300 opacity-0 transition-opacity duration-150',
-        shouldRender && 'opacity-100',
-        disabled && 'border-red-500',
+        "border-2 border-gray-300 opacity-0 transition-opacity duration-150",
+        shouldRender && "opacity-100",
+        disabled && "border-red-500",
       )}
       style={{
-        position: 'fixed',
+        position: "fixed",
         top: rect.top - 4,
         left: rect.left - 4,
         width: rect.width,
         height: rect.height,
-        padding: '2px',
-        boxSizing: 'content-box',
-        borderRadius: '6px',
-        pointerEvents: 'none',
+        padding: "2px",
+        boxSizing: "content-box",
+        borderRadius: "6px",
+        pointerEvents: "none",
       }}
     />
   )
