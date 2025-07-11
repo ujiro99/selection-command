@@ -38,7 +38,9 @@ type DetectLinkCommandReturn = {
   preventLinkClick?: boolean
 }
 
-type SubHookReturn = Omit<DetectLinkCommandReturn, "showIndicator"> | {}
+type SubHookReturn =
+  | Omit<DetectLinkCommandReturn, "showIndicator">
+  | Record<string, never>
 
 const empty = {
   inProgress: false,

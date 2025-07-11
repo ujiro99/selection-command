@@ -1,7 +1,7 @@
 name: Update Data
 on:
   schedule:
-    - cron: '0 3 * * *' # 毎日12:00 JST (3:00 UTC)に実行
+    - cron: "0 3 * * *" # 毎日12:00 JST (3:00 UTC)に実行
   workflow_dispatch:
 
 defaults:
@@ -14,13 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'true'
+          submodules: "true"
       - uses: actions/setup-node@v4
         with:
-          node-version: 23
-          cache: 'yarn'
+          node-version: "lts/*"
+          cache: "yarn"
       - name: Install dependencies
-        run: yarn add @google-analytics/data
+        run: yarn install --frozen-lockfile
       - name: Fetch GA data
         env:
           GA_SERVICE_ACCOUNT_KEY: ${{ secrets.GA_SERVICE_ACCOUNT_KEY }}

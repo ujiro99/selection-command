@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '*'
+      - "*"
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -11,21 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'true'
-      - name: Use Node.js
+          submodules: "true"
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'yarn'
-      - name: yarn install and build
+          node-version: "lts/*"
+          cache: "yarn"
+      - name: Install dependencies and build
         run: |
-          yarn install
+          yarn install --frozen-lockfile
           yarn build
         env:
           CI: true
-      - name: archive
+      - name: Create zip package
         run: |
-          zip -r chrome-ext.zip dist/
+          yarn zip
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: 'chrome-ext.zip'
+          artifacts: "build/*.zip"

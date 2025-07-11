@@ -13,7 +13,7 @@ import css from "./Popup.module.css"
 export type PopupProps = {
   positionElm: Element | null
   isPreview?: boolean
-  onHover?: Function
+  onHover?: () => void
 }
 
 type ContextType = {

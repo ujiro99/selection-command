@@ -27,7 +27,9 @@
       "Bash(yarn eslint:*)",
       "Bash(npx eslint:*)",
       "WebFetch(domain:www.npmjs.com)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(tsc:*)",
+      "Bash(yarn test:*)"
     ],
     "deny": []
   }
