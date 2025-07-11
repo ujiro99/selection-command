@@ -810,7 +810,7 @@
     "message": "Ripristina"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "Migrazione Legacy"
+    "message": "Aggiorna Backup"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "Backup Giornaliero"

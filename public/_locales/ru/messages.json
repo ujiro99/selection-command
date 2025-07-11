@@ -810,7 +810,7 @@
     "message": "Восстановить"
   },
   "Option_RestoreFromBackup_legacy": {
-    "message": "Унаследованная миграция"
+    "message": "Обновить резервную копию"
   },
   "Option_RestoreFromBackup_daily": {
     "message": "Ежедневная резервная копия"
