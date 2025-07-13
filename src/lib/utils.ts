@@ -325,7 +325,7 @@ export function safeInterpolate(
   variables: { [key: string]: string },
 ): string {
   return template.replace(/\{\{(\w+)\}\}/g, (match, variableName) => {
-    if (variables.hasOwnProperty(variableName)) {
+    if (Object.prototype.hasOwnProperty.call(variables, variableName)) {
       return variables[variableName]
     }
     return match

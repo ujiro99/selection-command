@@ -7,12 +7,10 @@ name: Deploy Next.js site to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches:
-      - main
-      - 'ci/*'
+    branches: [main]
     paths:
-      - 'pages/**'
-      - '.github/workflows/pages.yml'
+      - "pages/**"
+      - ".github/workflows/pages.yml"
   # Allows you to run this workflow from another workflow
   workflow_call:
   # Allows you to run this workflow manually from the Actions tab
@@ -27,7 +25,7 @@ permissions:
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: 'pages'
+  group: "pages"
   cancel-in-progress: false
 
 defaults:
@@ -61,7 +59,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "lts/*"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
           cache-dependency-path: ./pages/yarn.lock
       - name: Setup Pages
@@ -85,7 +83,7 @@ jobs:
       - name: Restore cache for node_modules
         uses: actions/cache@v4
         with:
-          path: './pages/node_modules'
+          path: "./pages/node_modules"
           key: ${{ runner.os }}-node-package-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-package-

@@ -7,6 +7,9 @@
 - `yarn dev` - Viteを使用した開発モードの開始
 - `yarn build` - 拡張機能のビルド（TypeScriptコンパイル + Viteビルドを実行）
 - `yarn lint` - ESLintを実行してコード品質をチェック
+- `yarn test` - Vitestを使用したテストの実行
+- `yarn test:ui` - VitestのUIモードでテストを実行
+- `yarn test:coverage` - テストカバレッジを測定
 - `yarn zip` - ビルドされたdistフォルダから配布可能な拡張機能のzipファイルを作成
 
 ## アーキテクチャ概要
@@ -33,6 +36,10 @@
   - `ui/` - 再利用可能なUIコンポーネント（Radix UIを使用）
 - **Services** (`src/services/`) - 設定管理、ストレージ、分析、ページアクション処理を含むビジネスロジックとユーティリティ
 - **Hooks** (`src/hooks/`) - 状態管理とChrome拡張機能APIのためのカスタムReactフック
+- **Testing** (`src/test/`) - テスト環境のセットアップとモック設定
+  - `setup.ts` - Vitestのセットアップファイル（Chrome拡張機能APIのモック、jsdom環境設定）
+  - `**/*.test.{ts,tsx}` - コンポーネントとサービスのユニットテスト
+  - `**/*.spec.{ts,tsx}` - 統合テストとE2Eテスト
 
 **主要機能:**
 
@@ -49,7 +56,8 @@
 - **フォームとバリデーション**: react-hook-form and zod
 - **スタイリング**: CSS Modules + Tailwind CSS(ver.3)
 - **状態管理**: React hooks with Chrome extension storage APIs
-- **テスト**: ESLint for code quality
+- **テスト**: Vitest with jsdom for unit/integration testing
+- **コード品質**: ESLint for code quality
 
 ### プロジェクト構造の注意事項
 
@@ -58,3 +66,11 @@
 - 拡張機能は`public/_locales/`のロケールファイルによる国際化をサポート
 - コンテンツスクリプトのスタイリング分離にShadow DOMを使用
 - 堅牢なXPathセレクター生成のためのRobula+アルゴリズムを実装（`src/lib/robula-plus/`）
+
+### テスト環境
+
+- **テストフレームワーク**: Vitest with jsdom環境
+- **テスト設定**: `vitest.config.ts`で設定、`src/test/setup.ts`でモック設定
+- **Chrome拡張機能モック**: `chrome.storage`、`chrome.runtime`、`chrome.tabs`等のAPIをモック
+- **テストファイル**: `src/**/*.{test,spec}.{ts,tsx}`パターンで配置
+- **カバレッジ**: `yarn test:coverage`でテストカバレッジを測定可能
