@@ -134,7 +134,7 @@ describe("CommandStorage actual implementation tests", () => {
     })
 
     describe("saveCommands", () => {
-      it("should save commands using the calculator", async () => {
+      it("CS-01: should save commands using the calculator", async () => {
         const commands = [createCommand("1"), createCommand("2")]
 
         // Mock successful save
@@ -145,7 +145,7 @@ describe("CommandStorage actual implementation tests", () => {
         expect(result).toBe(true)
       })
 
-      it("should handle save errors", async () => {
+      it("CS-02: should handle save errors", async () => {
         const commands = [createCommand("1")]
 
         // Mock error in storage
@@ -158,7 +158,7 @@ describe("CommandStorage actual implementation tests", () => {
     })
 
     describe("loadCommands", () => {
-      it("should return default commands when no metadata exists", async () => {
+      it("CS-03: should return default commands when no metadata exists", async () => {
         // Mock no metadata exists
         mockStorageInterface.get.mockResolvedValue(null)
 
@@ -166,7 +166,7 @@ describe("CommandStorage actual implementation tests", () => {
         expect(result).toEqual(DefaultCommands)
       })
 
-      it("should trigger migration when needed", async () => {
+      it("CS-04: should trigger migration when needed", async () => {
         // Mock migration needed
         mockStorageInterface.get
           .mockResolvedValueOnce(null) // sync metadata
@@ -179,7 +179,7 @@ describe("CommandStorage actual implementation tests", () => {
         expect(result).toEqual(DefaultCommands)
       })
 
-      it("should demonstrate loading functionality", async () => {
+      it("CS-05: should demonstrate loading functionality", async () => {
         const allCommands = [createCommand("1"), createCommand("2")]
 
         // Mock the loadCommands method to return our expected commands directly
@@ -193,7 +193,7 @@ describe("CommandStorage actual implementation tests", () => {
     })
 
     describe("calculator property", () => {
-      it("should have a calculator with calculateCommandSize method", () => {
+      it("CS-06: should have a calculator with calculateCommandSize method", () => {
         expect(hybridStorage.calculator).toBeDefined()
         expect(hybridStorage.calculator.calculateCommandSize).toBeDefined()
 
@@ -202,7 +202,7 @@ describe("CommandStorage actual implementation tests", () => {
         expect(size).toBeGreaterThan(0)
       })
 
-      it("should have a calculator with analyzeAndAllocate method", () => {
+      it("CS-07: should have a calculator with analyzeAndAllocate method", () => {
         expect(hybridStorage.calculator.analyzeAndAllocate).toBeDefined()
 
         const commands = [createCommand("1"), createCommand("2")]
@@ -225,7 +225,7 @@ describe("CommandStorage actual implementation tests", () => {
     })
 
     describe("performMigration", () => {
-      it("should return default commands when no legacy data", async () => {
+      it("CS-08: should return default commands when no legacy data", async () => {
         // Mock no legacy data
         mockStorageInterface.get.mockResolvedValue(-1)
 
@@ -233,7 +233,7 @@ describe("CommandStorage actual implementation tests", () => {
         expect(result).toEqual(DefaultCommands)
       })
 
-      it("should perform migration with legacy data", async () => {
+      it("CS-09: should perform migration with legacy data", async () => {
         const legacyCommands = [createCommand("1"), createCommand("2")]
 
         // Mock legacy data exists
@@ -252,7 +252,7 @@ describe("CommandStorage actual implementation tests", () => {
     })
 
     describe("needsMigration", () => {
-      it("should return false when migration already completed", async () => {
+      it("CS-10: should return false when migration already completed", async () => {
         mockStorageInterface.get
           .mockResolvedValueOnce({ version: "1.0.0" })
           .mockResolvedValueOnce(5)
@@ -261,7 +261,7 @@ describe("CommandStorage actual implementation tests", () => {
         expect(result).toBe(false)
       })
 
-      it("should return true when legacy data exists", async () => {
+      it("CS-11: should return true when legacy data exists", async () => {
         mockStorageInterface.get
           .mockResolvedValueOnce(null)
           .mockResolvedValueOnce(5)
@@ -272,7 +272,7 @@ describe("CommandStorage actual implementation tests", () => {
     })
 
     describe("restoreFromBackup", () => {
-      it("should restore from backup", async () => {
+      it("CS-12: should restore from backup", async () => {
         const result = await migrationManager.restoreFromBackup()
         expect(result).toHaveProperty("commands")
         expect(result).toHaveProperty("folders")
@@ -282,7 +282,7 @@ describe("CommandStorage actual implementation tests", () => {
 
   describe("CommandStorage object", () => {
     describe("updateCommands", () => {
-      it("should handle first-time update", async () => {
+      it("CS-13: should handle first-time update", async () => {
         // Clear any existing mocks that might interfere
         vi.restoreAllMocks()
 
@@ -309,7 +309,7 @@ describe("CommandStorage actual implementation tests", () => {
         expect(hybridStorage.saveCommands).toHaveBeenCalled()
       })
 
-      it("should update existing commands", async () => {
+      it("CS-14: should update existing commands", async () => {
         const hybridStorage = new HybridCommandStorage(mockStorageInterface)
         const existingCommands = [createCommand("1"), createCommand("2")]
         const updatedCommands = [
@@ -334,7 +334,7 @@ describe("CommandStorage actual implementation tests", () => {
     })
 
     describe("listener management", () => {
-      it("should add and remove command change listeners", () => {
+      it("CS-15: should add and remove command change listeners", () => {
         const callback1 = vi.fn()
         const callback2 = vi.fn()
 
@@ -351,7 +351,7 @@ describe("CommandStorage actual implementation tests", () => {
   })
 
   describe("Storage capacity calculation", () => {
-    it("should calculate command size correctly", () => {
+    it("CS-16: should calculate command size correctly", () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const command = createCommand("test")
 
@@ -363,7 +363,7 @@ describe("CommandStorage actual implementation tests", () => {
       expect(size).toBeGreaterThan(jsonSize)
     })
 
-    it("should handle large commands", () => {
+    it("CS-18: should handle large commands", () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const largeCommand = createCommand("large", 9000)
 
@@ -371,7 +371,7 @@ describe("CommandStorage actual implementation tests", () => {
       expect(size).toBeGreaterThan(8 * 1024) // Should be > 8KB
     })
 
-    it("should allocate commands based on size", () => {
+    it("CS-19: should allocate commands based on size", () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const commands = [
         createCommand("1"),
@@ -387,7 +387,7 @@ describe("CommandStorage actual implementation tests", () => {
       expect(totalCommands).toBe(commands.length)
     })
 
-    it("should handle capacity overflow correctly", () => {
+    it("CS-21: should handle capacity overflow correctly", () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
 
       // Create many commands that would exceed sync capacity
@@ -411,7 +411,7 @@ describe("CommandStorage actual implementation tests", () => {
   })
 
   describe("Command metadata validation", () => {
-    it("should validate command integrity with correct data", async () => {
+    it("CS-23: should validate command integrity with correct data", async () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const commands = [createCommand("1"), createCommand("2")]
 
@@ -449,7 +449,7 @@ describe("CommandStorage actual implementation tests", () => {
       expect(result).toBe(true)
     })
 
-    it("should fail validation with incorrect count", async () => {
+    it("CS-24: should fail validation with incorrect count", async () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const commands = [createCommand("1"), createCommand("2")]
 
@@ -473,7 +473,7 @@ describe("CommandStorage actual implementation tests", () => {
       expect(result).toBe(false)
     })
 
-    it("should validate global consistency with correct order", async () => {
+    it("CS-25: should validate global consistency with correct order", async () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const commands = [createCommand("1"), createCommand("2")]
 
@@ -494,7 +494,7 @@ describe("CommandStorage actual implementation tests", () => {
       expect(result).toBe(true)
     })
 
-    it("should fail global consistency with wrong order", async () => {
+    it("CS-26: should fail global consistency with wrong order", async () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const commands = [createCommand("1"), createCommand("2")]
 
@@ -515,7 +515,7 @@ describe("CommandStorage actual implementation tests", () => {
       expect(result).toBe(false)
     })
 
-    it("should fail global consistency when metadata is missing", async () => {
+    it("CS-27: should fail global consistency when metadata is missing", async () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const commands = [createCommand("1")]
 

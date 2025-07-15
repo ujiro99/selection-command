@@ -103,7 +103,7 @@ describe("storageUsage", () => {
       })
     })
 
-    it("should calculate storage usage correctly", async () => {
+    it("SU-01: should calculate storage usage correctly", async () => {
       const result = await getStorageUsage()
 
       expect(result.sync.total).toBe(102400) // 100KB
@@ -119,7 +119,7 @@ describe("storageUsage", () => {
       expect(result.local.commands).toBe(2000)
     })
 
-    it("should handle empty storage correctly", async () => {
+    it("SU-07: should handle empty storage correctly", async () => {
       // Mock empty storage
       mockSyncGetBytesInUse.mockImplementation((_keys, callback) => callback(0))
       mockLocalGetBytesInUse.mockImplementation((_keys, callback) =>
@@ -139,7 +139,7 @@ describe("storageUsage", () => {
       expect(result.local.commands).toBe(0)
     })
 
-    it("should handle command keys correctly", async () => {
+    it("SU-03: should handle command keys correctly", async () => {
       // Mock data with command keys
       mockSyncGet.mockResolvedValue({
         "0": "settings",
@@ -160,7 +160,7 @@ describe("storageUsage", () => {
       expect(result.local.commands).toBe(2000) // local command bytes
     })
 
-    it("should handle backup keys correctly", async () => {
+    it("SU-10: should handle backup keys correctly", async () => {
       mockLocalGet.mockResolvedValue({
         caches: "cache",
         commandsBackup: "backup1",
@@ -173,7 +173,7 @@ describe("storageUsage", () => {
       expect(result.local.backup).toBe(5000) // backup bytes
     })
 
-    it("should handle null data from Chrome APIs", async () => {
+    it("SU-16: should handle null data from Chrome APIs", async () => {
       mockSyncGet.mockResolvedValue(null)
       mockLocalGet.mockResolvedValue(null)
 
@@ -184,7 +184,7 @@ describe("storageUsage", () => {
       expect(result.local).toBeDefined()
     })
 
-    it("should calculate percentages correctly", async () => {
+    it("SU-04: should calculate percentages correctly", async () => {
       const result = await getStorageUsage()
 
       // Test percentage formatting - should be 0.5 for 500/102400
@@ -192,7 +192,7 @@ describe("storageUsage", () => {
       expect(result.sync.commandsPercent).toBe(0.3)
     })
 
-    it("should handle high percentages as integers", async () => {
+    it("SU-25: should handle high percentages as integers", async () => {
       // Mock high usage for integer percentage test
       mockSyncGetBytesInUse.mockImplementation((keys, callback) => {
         if (keys === null) {
@@ -209,7 +209,7 @@ describe("storageUsage", () => {
       expect(result.sync.systemPercent).toBe(15) // Should be integer for >= 10%
     })
 
-    it("should handle maximum capacity scenarios", async () => {
+    it("SU-08: should handle maximum capacity scenarios", async () => {
       // Mock near-maximum usage - fix the calculation
       mockSyncGetBytesInUse.mockImplementation((keys, callback) => {
         if (keys === null) {
@@ -230,7 +230,7 @@ describe("storageUsage", () => {
   })
 
   describe("subscribeStorageUsage", () => {
-    it("should add storage change listener", () => {
+    it("SU-17: should add storage change listener", () => {
       const mockCallback = vi.fn()
       const unsubscribe = subscribeStorageUsage(mockCallback)
 
@@ -241,7 +241,7 @@ describe("storageUsage", () => {
       unsubscribe()
     })
 
-    it("should remove storage change listener on unsubscribe", () => {
+    it("SU-19: should remove storage change listener on unsubscribe", () => {
       const mockCallback = vi.fn()
       const unsubscribe = subscribeStorageUsage(mockCallback)
 
@@ -252,7 +252,7 @@ describe("storageUsage", () => {
       expect(mockOnChangedRemoveListener).toHaveBeenCalledWith(listener)
     })
 
-    it("should handle multiple subscriptions independently", () => {
+    it("SU-20: should handle multiple subscriptions independently", () => {
       const mockCallback1 = vi.fn()
       const mockCallback2 = vi.fn()
 
@@ -270,7 +270,7 @@ describe("storageUsage", () => {
   })
 
   describe("error handling", () => {
-    it("should handle Chrome API errors in subscribeStorageUsage", async () => {
+    it("SU-22: should handle Chrome API errors in subscribeStorageUsage", async () => {
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       // Mock Chrome API error
@@ -294,7 +294,7 @@ describe("storageUsage", () => {
       unsubscribe()
     })
 
-    it("should handle promise rejections in subscribeStorageUsage", async () => {
+    it("SU-21: should handle promise rejections in subscribeStorageUsage", async () => {
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       // Mock the rejection
