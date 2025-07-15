@@ -30,7 +30,16 @@ global.chrome = {
 } as any
 
 // Import the functions to test after mocking
-import { getStorageUsage, subscribeStorageUsage } from "./storageUsage"
+import { subscribeStorageUsage, StorageUsageData } from "./storageUsage"
+
+// For testing internal function.
+const getStorageUsage = async (): Promise<StorageUsageData> => {
+  return new Promise((resolve) => {
+    subscribeStorageUsage((usage) => {
+      resolve(usage)
+    })
+  })
+}
 
 describe("storageUsage", () => {
   beforeEach(() => {
@@ -258,8 +267,10 @@ describe("storageUsage", () => {
       unsubscribe2()
       expect(mockOnChangedRemoveListener).toHaveBeenCalledTimes(2)
     })
+  })
 
-    it("should handle errors in getStorageUsage gracefully", async () => {
+  describe("error handling", () => {
+    it("should handle Chrome API errors in subscribeStorageUsage", async () => {
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
 
       // Mock Chrome API error
@@ -271,41 +282,20 @@ describe("storageUsage", () => {
       const unsubscribe = subscribeStorageUsage(mockCallback)
 
       // Wait for the initial call to complete
-      await new Promise((resolve) => setTimeout(resolve, 50))
+      await new Promise((resolve) => setTimeout(resolve, 1))
 
-      // Should not throw, but should log error
+      // Callback should not be called, only console.error
+      expect(mockCallback).not.toHaveBeenCalled()
       expect(consoleSpy).toHaveBeenCalledWith(
         "Failed to get storage usage:",
         expect.any(Error),
       )
 
       unsubscribe()
-      consoleSpy.mockRestore()
-    })
-  })
-
-  describe("error handling", () => {
-    it("should handle Chrome API errors", async () => {
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
-      // Mock Chrome API error
-      mockSyncGetBytesInUse.mockImplementation((_keys, _callback) => {
-        throw new Error("Chrome API error")
-      })
-
-      await expect(getStorageUsage()).rejects.toThrow("Chrome API error")
-
-      consoleSpy.mockRestore()
     })
 
-    it("should handle promise rejections", async () => {
+    it("should handle promise rejections in subscribeStorageUsage", async () => {
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
-      // Reset all mocks for this test
-      mockSyncGetBytesInUse.mockReset()
-      mockLocalGetBytesInUse.mockReset()
-      mockSyncGet.mockReset()
-      mockLocalGet.mockReset()
 
       // Mock the rejection
       mockSyncGet.mockRejectedValue(new Error("Promise rejection"))
@@ -317,9 +307,20 @@ describe("storageUsage", () => {
       )
       mockLocalGet.mockResolvedValue({})
 
-      await expect(getStorageUsage()).rejects.toThrow("Promise rejection")
+      const mockCallback = vi.fn()
+      const unsubscribe = subscribeStorageUsage(mockCallback)
 
-      consoleSpy.mockRestore()
+      // Wait for the initial call to complete
+      await new Promise((resolve) => setTimeout(resolve, 1))
+
+      // Callback should not be called, only console.error
+      expect(mockCallback).not.toHaveBeenCalled()
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Failed to get storage usage:",
+        expect.any(Error),
+      )
+
+      unsubscribe()
     })
   })
 })

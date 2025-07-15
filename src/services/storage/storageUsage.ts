@@ -27,7 +27,7 @@ export interface StorageUsageData {
   }
 }
 
-export const getStorageUsage = async (): Promise<StorageUsageData> => {
+const getStorageUsage = async (): Promise<StorageUsageData> => {
   try {
     const syncSystemKeys = Object.values(STORAGE_KEY).map((key) => String(key))
     const syncSystemBytes = await new Promise<number>((resolve) => {
