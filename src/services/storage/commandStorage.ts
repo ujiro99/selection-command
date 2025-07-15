@@ -54,6 +54,19 @@ function generateChecksum(obj: unknown): string {
   return Math.abs(hash).toString(16).padStart(8, "0")
 }
 
+const getIndicesToRemove = (fromLen: number, toLen: number): number[] => {
+  if (toLen >= fromLen) {
+    return []
+  }
+  const removeCount = fromLen - toLen
+  const startIndex = toLen
+  const indicesToRemove = []
+  for (let i = 0; i < removeCount; i++) {
+    indicesToRemove.push(startIndex + i)
+  }
+  return indicesToRemove
+}
+
 async function loadLegacyCommandData(
   storage: StorageInterface,
   options?: {
@@ -319,9 +332,11 @@ class CommandMetadataManager {
 
   // Migration determination
   async needsMigration(): Promise<boolean> {
-    const syncMetadata = await this.loadSyncCommandMetadata()
-    const localMetadata = await this.loadLocalCommandMetadata()
-    const globalMetadata = await this.loadGlobalCommandMetadata()
+    const [syncMetadata, localMetadata, globalMetadata] = await Promise.all([
+      this.loadSyncCommandMetadata(),
+      this.loadLocalCommandMetadata(),
+      this.loadGlobalCommandMetadata(),
+    ])
     const oldCount = await this.storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
 
     // When new metadata doesn't exist but legacy format data exists
@@ -570,6 +585,14 @@ export class HybridCommandStorage {
     const syncSavePromises: Promise<void>[] = []
     const localSavePromises: Promise<boolean>[] = []
 
+    // Load count
+    const [syncMetadata, localMetadata] = await Promise.all([
+      this.metadataManager.loadSyncCommandMetadata(),
+      this.metadataManager.loadLocalCommandMetadata(),
+    ])
+    const preSyncCount = syncMetadata?.count || 0
+    const preLocalCount = localMetadata?.count || 0
+
     // Save to sync storage
     allocation.sync.commands.forEach((command, index) => {
       const key = `${CMD_PREFIX}${index}`
@@ -583,7 +606,6 @@ export class HybridCommandStorage {
     })
 
     // Add metadata save to the same promise batch
-    console.log(allocation.globalMetadata)
     const metadataSavePromises = [
       this.metadataManager.saveSyncCommandMetadata(allocation.syncMetadata),
       this.metadataManager.saveLocalCommandMetadata(allocation.localMetadata),
@@ -596,6 +618,22 @@ export class HybridCommandStorage {
       await Promise.all(localSavePromises),
       await Promise.all(metadataSavePromises),
     ])
+
+    // Remove surplus commands
+    const syncCount = allocation.syncMetadata.count
+    if (preSyncCount > syncCount) {
+      const removeKeys = getIndicesToRemove(preSyncCount, syncCount).map(
+        (i) => `${CMD_PREFIX}${i}`,
+      )
+      await chrome.storage.sync.remove(removeKeys)
+    }
+    const localCount = allocation.localMetadata.count
+    if (preLocalCount > localCount) {
+      const removeKeys = getIndicesToRemove(preLocalCount, localCount).map(
+        (i) => `${CMD_PREFIX}local-${i}`,
+      )
+      await chrome.storage.local.remove(removeKeys)
+    }
   }
 
   private async loadFromSync(count: number): Promise<Command[]> {
