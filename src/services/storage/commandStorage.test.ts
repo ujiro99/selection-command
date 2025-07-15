@@ -59,11 +59,57 @@ vi.mock("../option/defaultSettings", () => ({
   ],
 }))
 
-// Mock Chrome APIs
-const mockSyncGet = vi.fn()
-const mockSyncSet = vi.fn()
-const mockLocalGet = vi.fn()
-const mockLocalSet = vi.fn()
+// Mock Chrome APIs with Map-based storage simulation
+const syncStorage = new Map<string, any>()
+const localStorage = new Map<string, any>()
+
+// Helper function to create storage get mock
+const createStorageGetMock = (storageMap: Map<string, any>) => {
+  return vi.fn().mockImplementation((keys?: string | string[] | null) => {
+    return new Promise((resolve) => {
+      const result: Record<string, any> = {}
+
+      if (!keys || keys === null) {
+        // Get all items
+        for (const [key, value] of storageMap.entries()) {
+          result[key] = value
+        }
+      } else if (typeof keys === "string") {
+        // Get single item
+        if (storageMap.has(keys)) {
+          result[keys] = storageMap.get(keys)
+        }
+      } else if (Array.isArray(keys)) {
+        // Get multiple items
+        for (const key of keys) {
+          if (storageMap.has(key)) {
+            result[key] = storageMap.get(key)
+          }
+        }
+      }
+
+      resolve(result)
+    })
+  })
+}
+
+// Helper function to create storage set mock
+const createStorageSetMock = (storageMap: Map<string, any>) => {
+  return vi.fn().mockImplementation((items: Record<string, any>) => {
+    return new Promise((resolve) => {
+      for (const [key, value] of Object.entries(items)) {
+        storageMap.set(key, value)
+      }
+      resolve(undefined)
+    })
+  })
+}
+
+const mockSyncGet = createStorageGetMock(syncStorage)
+const mockSyncSet = createStorageSetMock(syncStorage)
+const mockLocalGet = createStorageGetMock(localStorage)
+const mockLocalSet = createStorageSetMock(localStorage)
+
 const mockOnChanged = {
   addListener: vi.fn(),
   removeListener: vi.fn(),
@@ -124,6 +170,9 @@ const mockStorageInterface = {
 describe("CommandStorage actual implementation tests", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Clear storage maps between tests
+    syncStorage.clear()
+    localStorage.clear()
   })
 
   describe("HybridCommandStorage", () => {
