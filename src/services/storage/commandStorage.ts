@@ -9,7 +9,7 @@ import {
   debouncedSyncSet,
 } from "./index"
 import { VERSION } from "@/const"
-import { LegacyBackupManager } from "./backupManager"
+import { LegacyBackupManager } from "@/services/storage/backupManager"
 
 // Storage interface for dependency injection
 interface StorageInterface {

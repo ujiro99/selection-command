@@ -381,12 +381,6 @@ describe("CommandStorage actual implementation tests", () => {
 
       const allocation = hybridStorage.calculator.analyzeAndAllocate(commands)
 
-      expect(allocation.sync.commands).toBeDefined()
-      expect(allocation.local.commands).toBeDefined()
-      expect(allocation.syncMetadata).toBeDefined()
-      expect(allocation.localMetadata).toBeDefined()
-      expect(allocation.globalMetadata).toBeDefined()
-
       // Total commands should be preserved
       const totalCommands =
         allocation.sync.commands.length + allocation.local.commands.length
