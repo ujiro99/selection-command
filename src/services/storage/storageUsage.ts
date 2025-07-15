@@ -27,6 +27,13 @@ export interface StorageUsageData {
   }
 }
 
+export const formatPercentage = (value: number): number => {
+  const percentage = value * 100
+  return Number(
+    percentage >= 10 ? percentage.toFixed(0) : percentage.toFixed(1),
+  )
+}
+
 const getStorageUsage = async (): Promise<StorageUsageData> => {
   try {
     const syncSystemKeys = Object.values(STORAGE_KEY).map((key) => String(key))
@@ -117,13 +124,6 @@ const getStorageUsage = async (): Promise<StorageUsageData> => {
     const syncFree = syncLimitTotal - reservedTotal - syncCommandBytes
     const localUsed = localTotalBytes
     const localFree = localLimitTotal - localUsed
-
-    const formatPercentage = (value: number): number => {
-      const percentage = value * 100
-      return Number(
-        percentage >= 10 ? percentage.toFixed(0) : percentage.toFixed(1),
-      )
-    }
 
     return {
       sync: {

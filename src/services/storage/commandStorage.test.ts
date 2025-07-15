@@ -363,6 +363,19 @@ describe("CommandStorage actual implementation tests", () => {
       expect(size).toBeGreaterThan(jsonSize)
     })
 
+    it("CS-17: should include key overhead in calculation", () => {
+      const hybridStorage = new HybridCommandStorage(mockStorageInterface)
+      const command = createCommand("test")
+
+      const size = hybridStorage.calculator.calculateCommandSize(command)
+      const jsonSize = new TextEncoder().encode(JSON.stringify(command)).length
+      const keySize = new TextEncoder().encode("cmd-test").length
+      const expectedSize = jsonSize + keySize
+
+      expect(size).toBe(expectedSize)
+      expect(size).toBeGreaterThan(jsonSize) // Key overhead included
+    })
+
     it("CS-18: should handle large commands", () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
       const largeCommand = createCommand("large", 9000)
@@ -387,6 +400,38 @@ describe("CommandStorage actual implementation tests", () => {
       expect(totalCommands).toBe(commands.length)
     })
 
+    it("CS-20: should balance between sync and local storage", () => {
+      const hybridStorage = new HybridCommandStorage(mockStorageInterface)
+
+      // Create commands that would force allocation to local storage
+      // Use very large commands that exceed sync capacity
+      const largeCommands = Array.from({ length: 20 }, (_, i) =>
+        createCommand(`large${i}`, 4000),
+      )
+
+      const allocation =
+        hybridStorage.calculator.analyzeAndAllocate(largeCommands)
+
+      // Verify total command count is preserved
+      const totalAllocated =
+        allocation.sync.commands.length + allocation.local.commands.length
+      expect(totalAllocated).toBe(largeCommands.length)
+
+      // Check that allocation respects capacity limits
+      expect(allocation.sync.totalBytes).toBeLessThanOrEqual(60 * 1024) // 60KB sync limit
+
+      // If sync is at capacity, some commands should be in local
+      if (allocation.sync.totalBytes >= 60 * 1024) {
+        expect(allocation.local.commands.length).toBeGreaterThan(0)
+      }
+
+      // Verify no commands are larger than 8KB in sync storage
+      allocation.sync.commands.forEach((cmd) => {
+        const size = hybridStorage.calculator.calculateCommandSize(cmd)
+        expect(size).toBeLessThanOrEqual(8 * 1024)
+      })
+    })
+
     it("CS-21: should handle capacity overflow correctly", () => {
       const hybridStorage = new HybridCommandStorage(mockStorageInterface)
 
@@ -407,6 +452,56 @@ describe("CommandStorage actual implementation tests", () => {
       if (allocation.sync.totalBytes >= 60 * 1024) {
         expect(allocation.local.commands.length).toBeGreaterThan(0)
       }
+    })
+
+    it("CS-22: should preserve total command count", () => {
+      const hybridStorage = new HybridCommandStorage(mockStorageInterface)
+
+      // Test with various scenarios
+      const scenarios = [
+        { commands: [createCommand("1")], name: "single command" },
+        {
+          commands: Array.from({ length: 10 }, (_, i) =>
+            createCommand(`cmd${i}`),
+          ),
+          name: "multiple small commands",
+        },
+        {
+          commands: Array.from({ length: 50 }, (_, i) =>
+            createCommand(`large${i}`, 2000),
+          ),
+          name: "many medium commands",
+        },
+        {
+          commands: [
+            ...Array.from({ length: 20 }, (_, i) =>
+              createCommand(`small${i}`, 100),
+            ),
+            ...Array.from({ length: 5 }, (_, i) =>
+              createCommand(`large${i}`, 9000),
+            ),
+          ],
+          name: "mixed size commands",
+        },
+      ]
+
+      scenarios.forEach(({ commands, name }) => {
+        const allocation = hybridStorage.calculator.analyzeAndAllocate(commands)
+
+        const totalAllocated =
+          allocation.sync.commands.length + allocation.local.commands.length
+        expect(totalAllocated).toBe(commands.length)
+
+        // Verify no commands are lost or duplicated
+        const allocatedIds = new Set([
+          ...allocation.sync.commands.map((cmd) => cmd.id),
+          ...allocation.local.commands.map((cmd) => cmd.id),
+        ])
+        const originalIds = new Set(commands.map((cmd) => cmd.id))
+
+        expect(allocatedIds.size).toBe(originalIds.size)
+        expect(allocatedIds).toEqual(originalIds)
+      })
     })
   })
 
