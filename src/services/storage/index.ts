@@ -43,7 +43,9 @@ let syncSetTimeout: NodeJS.Timeout | null
 let syncSetResolves: (() => void)[] = []
 const syncSetData = new Map<string, unknown>()
 
-const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
+export const debouncedSyncSet = (
+  data: Record<string, unknown>,
+): Promise<void> => {
   return new Promise((resolve) => {
     if (syncSetTimeout != null) {
       clearTimeout(syncSetTimeout)
@@ -61,7 +63,7 @@ const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
         }
         syncSetData.clear()
         syncSetTimeout = null
-        syncSetResolves.forEach((resolve) => resolve())
+        syncSetResolves.forEach((res) => res())
         syncSetResolves = []
       })
     }, SYNC_DEBOUNCE_DELAY)
@@ -220,5 +222,3 @@ export const BaseStorage = {
     }
   },
 }
-
-export { debouncedSyncSet }

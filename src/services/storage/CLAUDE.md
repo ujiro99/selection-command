@@ -204,3 +204,101 @@
 4. **容量計算精度** - バイト計算とJSON Stringifyの結果を比較
 5. **チェックサム計算** - djb2ハッシュアルゴリズムの正確な実装
 6. **エラーハンドリング** - `expect().rejects.toThrow()`でエラーケースをテスト
+
+## index.ts の単体テスト設計
+
+### テスト対象の分析
+
+#### `debouncedSyncSet`関数 (index.ts:46-72)
+
+- **機能**: 複数のストレージ操作をデバウンスして一括処理
+- **デバウンス遅延**: 10ms (`SYNC_DEBOUNCE_DELAY`)
+- **内部状態**: `syncSetTimeout`, `syncSetResolves`, `syncSetData` (Map)
+- **Chrome API依存**: `chrome.storage.sync.set`, `chrome.runtime.lastError`
+
+### テストケース設計
+
+#### 基本的なデバウンス動作
+
+- ✅ DS-01: 単一呼び出し時の正常動作
+  - データが正しく`chrome.storage.sync.set`に渡される
+  - Promiseが適切に解決される
+
+- ✅ DS-02: 複数回連続呼び出し時のデバウンス
+  - 最後の呼び出しから10ms後に一度だけ`chrome.storage.sync.set`が呼ばれる
+  - 既存のタイムアウトが適切にクリアされる
+
+- ✅ DS-03: データマージ動作
+  - 異なるキーの値が適切にマージされる
+  - 同じキーの値が後から呼ばれた値で上書きされる
+
+#### Promise解決とエラーハンドリング
+
+- ✅ DS-04: 成功時の全Promiseの解決
+  - 複数回呼び出された全てのPromiseが解決される
+  - `syncSetResolves`配列が正しくクリアされる
+
+- ✅ DS-05: エラー時の処理
+  - `chrome.runtime.lastError`が設定されている場合
+  - エラーがコンソールに出力される
+  - 内部状態（Map、タイムアウト、resolves配列）がクリアされる
+  - Promiseは解決される（エラーで拒否されない）
+
+#### 並行処理と状態管理
+
+- ✅ DS-06: 並行呼び出しの処理
+  - 複数の並行呼び出しが適切に処理される
+  - 全てのPromiseが解決される
+  - データが正しくマージされる
+
+- ✅ DS-07: 内部状態のクリーンアップ
+  - 処理完了後に`syncSetData.clear()`が呼ばれる
+  - `syncSetTimeout`がnullにリセットされる
+  - `syncSetResolves`配列が空になる
+
+#### エッジケース
+
+- ✅ DS-08: 空オブジェクトの処理
+  - 空のデータオブジェクト`{}`を渡した場合の動作
+
+- ✅ DS-09: タイムアウト中の追加呼び出し
+  - タイムアウト待機中に新しい呼び出しがあった場合
+  - 既存タイムアウトがクリアされ、新しいタイムアウトが設定される
+
+### モック要件
+
+#### Chrome API のモック
+
+```typescript
+const mockChromeStorageSync = {
+  set: vi.fn().mockImplementation((data, callback) => {
+    // 成功時またはエラー時の動作をシミュレート
+    callback?.()
+  }),
+}
+
+const mockChromeRuntime = {
+  lastError: undefined, // テストケースに応じて設定
+}
+```
+
+#### タイマーのモック
+
+```typescript
+beforeEach(() => {
+  vi.useFakeTimers()
+})
+
+afterEach(() => {
+  vi.useRealTimers()
+})
+```
+
+### テスト実装時の注意点
+
+1. **タイマーテスト** - `vi.useFakeTimers()`と`vi.advanceTimersByTime()`を使用
+2. **非同期処理** - `async/await`でPromiseの解決を適切に待機
+3. **モック状態のリセット** - 各テスト間でモックとタイマーをリセット
+4. **内部状態の検証** - プライベート変数の状態変化を適切にテスト
+5. **並行処理テスト** - `Promise.all()`で複数の呼び出しを同時実行
+6. **Chrome API エラー** - `chrome.runtime.lastError`の設定と解除
