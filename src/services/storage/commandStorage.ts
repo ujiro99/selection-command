@@ -473,8 +473,14 @@ export class HybridCommandStorage {
 
     try {
       // Step 1: Check if migration is needed
-      if (await this.metadataManager.needsMigration()) {
-        const migrationManager = new CommandMigrationManager()
+      const migrationManager = new CommandMigrationManager()
+      const [needsMigrationByManager, needsMigrationByMetadata] =
+        await Promise.all([
+          migrationManager.needsMigration(),
+          this.metadataManager.needsMigration(),
+        ])
+
+      if (needsMigrationByManager || needsMigrationByMetadata) {
         return await migrationManager.performMigration()
       }
 
