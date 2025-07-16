@@ -258,7 +258,6 @@ class CommandMetadataManager {
   async saveGlobalCommandMetadata(
     metadata: GlobalCommandMetadata,
   ): Promise<void> {
-    console.debug("Saving global command metadata:", metadata)
     await this.storage.set(this.GLOBAL_METADATA_KEY, metadata)
   }
 
@@ -620,9 +619,9 @@ export class HybridCommandStorage {
 
     // Save commands and metadata atomically in parallel
     await Promise.all([
-      await Promise.all(syncSavePromises),
-      await Promise.all(localSavePromises),
-      await Promise.all(metadataSavePromises),
+      ...syncSavePromises,
+      ...localSavePromises,
+      ...metadataSavePromises,
     ])
 
     // Remove surplus commands
