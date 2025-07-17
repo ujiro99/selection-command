@@ -360,8 +360,6 @@ export class CommandMigrationManager {
 
   async performMigration(): Promise<Command[]> {
     try {
-      console.debug("Starting command migration to hybrid storage...")
-
       // Step 1: Load legacy format data
       const legacyCommands = await loadLegacyCommandData(this.storage)
       if (legacyCommands.length === 0) {
@@ -374,7 +372,7 @@ export class CommandMigrationManager {
 
       // Step 3: Save in new format
       const hybridStorage = new HybridCommandStorage(this.storage)
-      await hybridStorage.saveCommands(legacyCommands)
+      await hybridStorage.saveCommands(legacyCommands, true)
 
       // Step 4: Set migration completion flag
       await this.storage.set(this.MIGRATION_FLAG_KEY, {
@@ -452,13 +450,17 @@ export class HybridCommandStorage {
     this.metadataManager = new CommandMetadataManager(this.storage)
   }
 
-  async saveCommands(commands: Command[]): Promise<boolean> {
+  async saveCommands(commands: Command[], migration = false): Promise<boolean> {
     try {
       // Step 1: Determine storage allocation
       const allocation = this.calculator.analyzeAndAllocate(commands)
 
       // Step 2: Save commands and metadata atomically
-      await this.saveCommandsAndMetadata(allocation)
+      if (migration) {
+        await this.saveCommandsAndMetadata(allocation, commands.length)
+      } else {
+        await this.saveCommandsAndMetadata(allocation)
+      }
       return true
     } catch (error) {
       console.error("Failed to save commands:", error)
@@ -586,6 +588,7 @@ export class HybridCommandStorage {
 
   private async saveCommandsAndMetadata(
     allocation: StorageAllocation,
+    legacyCount?: number,
   ): Promise<void> {
     const syncSavePromises: Promise<void>[] = []
     const localSavePromises: Promise<boolean>[] = []
@@ -595,7 +598,7 @@ export class HybridCommandStorage {
       this.metadataManager.loadSyncCommandMetadata(),
       this.metadataManager.loadLocalCommandMetadata(),
     ])
-    const preSyncCount = syncMetadata?.count || 0
+    const preSyncCount = syncMetadata?.count || legacyCount || 0
     const preLocalCount = localMetadata?.count || 0
 
     // Save to sync storage
@@ -626,6 +629,7 @@ export class HybridCommandStorage {
 
     // Remove surplus commands
     const syncCount = allocation.syncMetadata.count
+    console.log("count", preSyncCount, syncCount)
     if (preSyncCount > syncCount) {
       const removeKeys = getIndicesToRemove(preSyncCount, syncCount).map(
         (i) => `${CMD_PREFIX}${i}`,

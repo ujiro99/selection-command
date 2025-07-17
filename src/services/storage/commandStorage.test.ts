@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { Command } from "@/types"
 import { OPEN_MODE } from "@/const"
-import { CMD_PREFIX, STORAGE_KEY } from "./index"
+import { CMD_PREFIX, STORAGE_KEY, LOCAL_STORAGE_KEY } from "./index"
+import { LegacyBackupManager } from "./backupManager"
+
+type CMD_KEY = `${typeof CMD_PREFIX}${number}`
+type CMD_LOCAL_KEY = `${typeof CMD_PREFIX}local-${number}`
+type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | CMD_KEY | CMD_LOCAL_KEY
 
 // Mock dependencies first
 vi.mock("./index", async (importOriginal) => {
@@ -14,16 +19,6 @@ vi.mock("./index", async (importOriginal) => {
     },
   }
 })
-
-vi.mock("./backupManager", () => ({
-  LegacyBackupManager: vi.fn().mockImplementation(() => ({
-    backupCommandsForMigration: vi.fn().mockResolvedValue(true),
-    restoreFromLegacyBackup: vi.fn().mockResolvedValue({
-      commands: [],
-      folders: [],
-    }),
-  })),
-}))
 
 vi.mock("@/const", async (importOriginal) => {
   const actual: any = await importOriginal()
@@ -50,12 +45,12 @@ vi.mock("../option/defaultSettings", async (importOriginal) => {
 })
 
 // Mock Chrome APIs with Map-based storage simulation
-const syncStorage = new Map<string, any>()
-const localStorage = new Map<string, any>()
+const syncStorage = new Map<STORAGE_KEY | CMD_KEY, any>()
+const localStorage = new Map<LOCAL_STORAGE_KEY | CMD_LOCAL_KEY, any>()
 
 // Helper function to create storage get mock
-const createStorageGetMock = (storageMap: Map<string, any>) => {
-  return vi.fn().mockImplementation((keys?: string | string[] | null) => {
+const createStorageGetMock = (storageMap: Map<KEY, any>) => {
+  return vi.fn().mockImplementation((keys?: KEY | KEY[] | null) => {
     return new Promise((resolve) => {
       const result: Record<string, any> = {}
 
@@ -84,13 +79,13 @@ const createStorageGetMock = (storageMap: Map<string, any>) => {
 }
 
 // Helper function to create storage set mock
-const createStorageSetMock = (storageMap: Map<string, any>) => {
+const createStorageSetMock = (storageMap: Map<KEY, any>) => {
   return vi
     .fn()
-    .mockImplementation((items: Record<string, any>, callback: () => {}) => {
+    .mockImplementation((items: Record<KEY, any>, callback: () => void) => {
       return new Promise((resolve) => {
         for (const [key, value] of Object.entries(items)) {
-          storageMap.set(key, value)
+          storageMap.set(key as KEY, value)
         }
         resolve(undefined)
         if (callback) {
@@ -99,6 +94,9 @@ const createStorageSetMock = (storageMap: Map<string, any>) => {
       })
     })
 }
+
+const cmdSyncKey = (idx: number): CMD_KEY => `${CMD_PREFIX}${idx}`
+//const cmdLocalKey = (idx: number) => `${CMD_PREFIX}local-${idx}`
 
 const mockSyncGet = createStorageGetMock(syncStorage)
 const mockSyncSet = createStorageSetMock(syncStorage)
@@ -151,12 +149,34 @@ import {
 } from "./commandStorage"
 import { DefaultCommands } from "../option/defaultSettings"
 
+const isCmdKey = (key: any): key is CMD_KEY => {
+  return key && `${key}`.startsWith(CMD_PREFIX) && !key.includes("local-")
+}
+
+const isCmdLocalKey = (key: any): key is CMD_LOCAL_KEY => {
+  return key && `${key}`.startsWith(CMD_PREFIX) && key.includes("local-")
+}
+
+const detectStorageArea = (key: KEY): Map<KEY, any> => {
+  if (Object.values(STORAGE_KEY).includes(key) || isCmdKey(key)) {
+    return syncStorage
+  }
+  if (
+    Object.values(LOCAL_STORAGE_KEY).includes(key as LOCAL_STORAGE_KEY) ||
+    isCmdLocalKey(key)
+  ) {
+    return localStorage
+  }
+  throw new Error("Invalid Storage Key")
+}
+
 // Mock storage interface
-const innerStorage = new Map<string, any>()
 const mockStorageInterface = {
-  get: vi.fn().mockImplementation((key: string) => innerStorage.get(key)),
-  set: vi.fn().mockImplementation((key: string, value: any) => {
-    innerStorage.set(key, value)
+  get: vi
+    .fn()
+    .mockImplementation((key: KEY) => detectStorageArea(key).get(key)),
+  set: vi.fn().mockImplementation((key: KEY, value: any) => {
+    detectStorageArea(key).set(key, value)
     return Promise.resolve(true)
   }),
 }
@@ -188,7 +208,6 @@ describe("CommandStorage actual implementation tests", () => {
     // Clear storage maps between tests
     syncStorage.clear()
     localStorage.clear()
-    innerStorage.clear()
   })
 
   describe("HybridCommandStorage", () => {
@@ -214,29 +233,35 @@ describe("CommandStorage actual implementation tests", () => {
           createCommand("3"),
         ]
         await hybridStorage.saveCommands(initialCommands)
-        expect(syncStorage.get(`${CMD_PREFIX}0`)).toBe(initialCommands[0])
+        expect(syncStorage.get(cmdSyncKey(0))).toBe(initialCommands[0])
 
-        const metadata = innerStorage.get(
-          STORAGE_KEY.SYNC_COMMAND_METADATA as unknown as string,
+        const beforeCommandKeys = Array.from(syncStorage.keys()).filter((key) =>
+          isCmdKey(key),
         )
+        const metadata = syncStorage.get(STORAGE_KEY.SYNC_COMMAND_METADATA)
         expect(metadata.count).toBe(3)
-        expect(syncStorage.size).toBe(3)
+        expect(beforeCommandKeys.length).toBe(3)
 
         // Now save fewer commands (2 instead of 3)
         const reducedCommands = [createCommand("1"), createCommand("2")]
         await hybridStorage.saveCommands(reducedCommands)
-        expect(syncStorage.get(`${CMD_PREFIX}0`)).toBe(reducedCommands[0])
+        expect(syncStorage.get(cmdSyncKey(0))).toBe(reducedCommands[0])
 
         // Since we reduced from 3 to 2 commands, the save operation should complete
         // This verifies that the implementation correctly handles the reduction
-        expect(syncStorage.size).toBe(2)
+        const afterCommandKeys = Array.from(syncStorage.keys()).filter((key) =>
+          isCmdKey(key),
+        )
+        expect(afterCommandKeys.length).toBe(2)
       })
 
       it("CS-02: should handle save errors", async () => {
         const commands = [createCommand("1")]
 
         // Mock error in storage - override the beforeEach setup
-        mockStorageInterface.set.mockRejectedValue(new Error("Storage error"))
+        mockStorageInterface.set.mockRejectedValueOnce(
+          new Error("Storage error"),
+        )
 
         await expect(hybridStorage.saveCommands(commands)).rejects.toThrow(
           "Storage error",
@@ -247,7 +272,7 @@ describe("CommandStorage actual implementation tests", () => {
     describe("loadCommands", () => {
       it("CS-03: should return default commands when no metadata exists", async () => {
         // Mock no metadata exists
-        mockStorageInterface.get.mockResolvedValue(null)
+        mockStorageInterface.set(STORAGE_KEY.SYNC_COMMAND_METADATA, null)
 
         const result = await hybridStorage.loadCommands()
         expect(result).toEqual(DefaultCommands)
@@ -314,7 +339,7 @@ describe("CommandStorage actual implementation tests", () => {
     describe("performMigration", () => {
       it("CS-08: should return default commands when no legacy data", async () => {
         // Mock no legacy data
-        mockStorageInterface.get.mockResolvedValue(-1)
+        mockStorageInterface.set(STORAGE_KEY.COMMAND_COUNT, -1)
 
         const result = await migrationManager.performMigration()
         expect(result).toEqual(DefaultCommands)
@@ -324,12 +349,11 @@ describe("CommandStorage actual implementation tests", () => {
         const legacyCommands = [createCommand("1"), createCommand("2")]
 
         // Set up legacy data in syncStorage Map using correct CMD_PREFIX
-        syncStorage.set("cmd_0", legacyCommands[0])
-        syncStorage.set("cmd_1", legacyCommands[1])
+        syncStorage.set(cmdSyncKey(0), legacyCommands[0])
+        syncStorage.set(cmdSyncKey(0), legacyCommands[1])
 
         // Mock legacy count exists (not DEFAULT_COUNT which is -1)
-        mockStorageInterface.get.mockResolvedValue(2)
-        mockStorageInterface.set.mockResolvedValue(true)
+        mockStorageInterface.set(STORAGE_KEY.COMMAND_COUNT, 2)
 
         // Mock the performMigration to return our expected result
         // Since this test is about demonstrating the migration concept
@@ -341,6 +365,47 @@ describe("CommandStorage actual implementation tests", () => {
         expect(result).toHaveLength(2)
         expect(result[0].id).toBe("1")
         expect(result[1].id).toBe("2")
+      })
+
+      it("CS-09-a: should distribute large legacy data between sync and local storage during migration", async () => {
+        // Create many large commands that exceed 60KB sync capacity
+        const largeCommands = Array.from(
+          { length: 50 },
+          (_, i) => createCommand(`legacy${i}`, 2000), // Each command ~2KB
+        )
+
+        // Set up legacy data in syncStorage Map using correct CMD_PREFIX
+        largeCommands.forEach((cmd, idx) => {
+          syncStorage.set(cmdSyncKey(idx), cmd)
+        })
+        syncStorage.set(STORAGE_KEY.COMMAND_COUNT, largeCommands.length)
+
+        // Mock the backupCommandsForMigration to check buckup functionality.
+        const spy = vi.spyOn(
+          LegacyBackupManager.prototype,
+          "backupCommandsForMigration",
+        )
+
+        // Execute the migration
+        const result = await migrationManager.performMigration()
+
+        // Verify the migration completed successfully
+        expect(result).toHaveLength(largeCommands.length)
+        expect(result.map((cmd) => cmd.id)).toEqual(
+          largeCommands.map((cmd) => cmd.id),
+        )
+
+        // Verify the backupCommandsForMigration was called
+        expect(spy).toHaveBeenCalledWith(largeCommands)
+
+        // Verify migration completion flag
+        const migrationStatus = localStorage.get(
+          LOCAL_STORAGE_KEY.MIGRATION_STATUS,
+        )
+        expect(migrationStatus).toBeDefined()
+        expect(migrationStatus.version).toBe("1.0.0") // VERSION from mock
+        expect(migrationStatus.migratedAt).toBeGreaterThan(0)
+        expect(migrationStatus.commandCount).toBe(largeCommands.length)
       })
     })
 

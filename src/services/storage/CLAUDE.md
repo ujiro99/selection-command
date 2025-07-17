@@ -140,6 +140,10 @@
 
 - ✅ CS-08: レガシーデータが存在しない場合はDefaultCommandsを返す
 - ✅ CS-09: レガシーデータが存在する場合は移行を実行してコマンドを復元する
+- ✅ CS-09-a: レガシーデータが容量制限(60KB以上)を超える場合、syncとlocalのストレージに分配して移行する
+  - このとき、syncストレージには60KBまでのコマンドが保存され、localストレージには残りのコマンドが保存される
+  - このとき、GlobalCommandMetadata の globalOrder は、レガシーデータの順序を保持する
+  - このとき、GlobalCommandMetadata の count は、レガシーデータのコマンド数を保持する
 
 **needsMigrationメソッド:**
 
