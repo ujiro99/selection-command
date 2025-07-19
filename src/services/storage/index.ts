@@ -38,6 +38,13 @@ export enum SESSION_STORAGE_KEY {
 
 export const CMD_PREFIX = "cmd-"
 
+export type CMD_KEY = `${typeof CMD_PREFIX}${number}`
+export type CMD_LOCAL_KEY = `${typeof CMD_PREFIX}local-${number}`
+
+export const cmdSyncKey = (idx: number): CMD_KEY => `${CMD_PREFIX}${idx}`
+export const cmdLocalKey = (idx: number): CMD_LOCAL_KEY =>
+  `${CMD_PREFIX}local-${idx}`
+
 let syncSetTimeout: NodeJS.Timeout | null
 let syncSetResolves: (() => void)[] = []
 const syncSetData = new Map<string, unknown>()
@@ -70,7 +77,13 @@ export const debouncedSyncSet = (
   })
 }
 
-export type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY | string
+export type KEY =
+  | STORAGE_KEY
+  | LOCAL_STORAGE_KEY
+  | SESSION_STORAGE_KEY
+  | CMD_KEY
+  | CMD_LOCAL_KEY
+  | string
 
 const DEFAULT_COUNT = -1
 

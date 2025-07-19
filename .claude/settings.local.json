@@ -30,7 +30,8 @@
       "Bash(ls:*)",
       "Bash(tsc:*)",
       "Bash(yarn test:*)",
-      "Bash(gh pr:*)"
+      "Bash(gh pr:*)",
+      "WebFetch(domain:www.radix-ui.com)"
     ],
     "deny": []
   }

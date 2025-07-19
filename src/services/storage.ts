@@ -73,11 +73,7 @@ export const Storage = {
   updateCommands: async (
     commands: Command[],
   ): Promise<boolean | chrome.runtime.LastError> => {
-    return await CommandStorage.updateCommands(
-      commands,
-      Storage.hybridStorage,
-      Storage,
-    )
+    return await Storage.hybridStorage.updateCommands(commands)
   },
 }
 

@@ -1,12 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { Command } from "@/types"
 import { OPEN_MODE } from "@/const"
-import { CMD_PREFIX, STORAGE_KEY, LOCAL_STORAGE_KEY } from "./index"
+import {
+  CMD_PREFIX,
+  STORAGE_KEY,
+  LOCAL_STORAGE_KEY,
+  KEY,
+  CMD_KEY,
+  CMD_LOCAL_KEY,
+  cmdSyncKey,
+  cmdLocalKey,
+} from "./index"
 import { LegacyBackupManager } from "./backupManager"
-
-type CMD_KEY = `${typeof CMD_PREFIX}${number}`
-type CMD_LOCAL_KEY = `${typeof CMD_PREFIX}local-${number}`
-type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | CMD_KEY | CMD_LOCAL_KEY
 
 // Mock dependencies first
 vi.mock("./index", async (importOriginal) => {
@@ -49,10 +54,10 @@ const syncStorage = new Map<STORAGE_KEY | CMD_KEY, any>()
 const localStorage = new Map<LOCAL_STORAGE_KEY | CMD_LOCAL_KEY, any>()
 
 // Helper function to create storage get mock
-const createStorageGetMock = (storageMap: Map<KEY, any>) => {
+const createStorageGetMock = (storageMap: Map<KEY, unknown>) => {
   return vi.fn().mockImplementation((keys?: KEY | KEY[] | null) => {
     return new Promise((resolve) => {
-      const result: Record<string, any> = {}
+      const result: Record<string, unknown> = {}
 
       if (!keys || keys === null) {
         // Get all items
@@ -79,10 +84,10 @@ const createStorageGetMock = (storageMap: Map<KEY, any>) => {
 }
 
 // Helper function to create storage set mock
-const createStorageSetMock = (storageMap: Map<KEY, any>) => {
+const createStorageSetMock = (storageMap: Map<KEY, unknown>) => {
   return vi
     .fn()
-    .mockImplementation((items: Record<KEY, any>, callback: () => void) => {
+    .mockImplementation((items: Record<KEY, unknown>, callback: () => void) => {
       return new Promise((resolve) => {
         for (const [key, value] of Object.entries(items)) {
           storageMap.set(key as KEY, value)
@@ -94,9 +99,6 @@ const createStorageSetMock = (storageMap: Map<KEY, any>) => {
       })
     })
 }
-
-const cmdSyncKey = (idx: number): CMD_KEY => `${CMD_PREFIX}${idx}`
-//const cmdLocalKey = (idx: number) => `${CMD_PREFIX}local-${idx}`
 
 const mockSyncGet = createStorageGetMock(syncStorage)
 const mockSyncSet = createStorageSetMock(syncStorage)
@@ -149,15 +151,17 @@ import {
 } from "./commandStorage"
 import { DefaultCommands } from "../option/defaultSettings"
 
-const isCmdKey = (key: any): key is CMD_KEY => {
-  return key && `${key}`.startsWith(CMD_PREFIX) && !key.includes("local-")
+const isCmdKey = (key: unknown): key is CMD_KEY => {
+  return (
+    !!key && `${key}`.startsWith(CMD_PREFIX) && !`${key}`.includes("local-")
+  )
 }
 
-const isCmdLocalKey = (key: any): key is CMD_LOCAL_KEY => {
-  return key && `${key}`.startsWith(CMD_PREFIX) && key.includes("local-")
+const isCmdLocalKey = (key: unknown): key is CMD_LOCAL_KEY => {
+  return !!key && `${key}`.startsWith(CMD_PREFIX) && `${key}`.includes("local-")
 }
 
-const detectStorageArea = (key: KEY): Map<KEY, any> => {
+const detectStorageArea = (key: KEY): Map<KEY, unknown> => {
   if (Object.values(STORAGE_KEY).includes(key) || isCmdKey(key)) {
     return syncStorage
   }
@@ -175,7 +179,7 @@ const mockStorageInterface = {
   get: vi
     .fn()
     .mockImplementation((key: KEY) => detectStorageArea(key).get(key)),
-  set: vi.fn().mockImplementation((key: KEY, value: any) => {
+  set: vi.fn().mockImplementation((key: KEY, value: unknown) => {
     detectStorageArea(key).set(key, value)
     return Promise.resolve(true)
   }),
@@ -273,18 +277,19 @@ describe("CommandStorage actual implementation tests", () => {
       it("CS-03: should return default commands when no metadata exists", async () => {
         // Mock no metadata exists
         mockStorageInterface.set(STORAGE_KEY.SYNC_COMMAND_METADATA, null)
-
         const result = await hybridStorage.loadCommands()
         expect(result).toEqual(DefaultCommands)
       })
 
       it("CS-04: should trigger migration when needed", async () => {
         // Mock migration needed
-        mockStorageInterface.get
-          .mockResolvedValueOnce(null) // sync metadata
-          .mockResolvedValueOnce(null) // local metadata
-          .mockResolvedValueOnce(null) // global metadata
-          .mockResolvedValueOnce(5) // legacy count exists
+        mockStorageInterface.set(STORAGE_KEY.SYNC_COMMAND_METADATA, null)
+        mockStorageInterface.set(LOCAL_STORAGE_KEY.LOCAL_COMMAND_METADATA, null)
+        mockStorageInterface.set(
+          LOCAL_STORAGE_KEY.GLOBAL_COMMAND_METADATA,
+          null,
+        )
+        mockStorageInterface.set(STORAGE_KEY.COMMAND_COUNT, 5)
 
         const result = await hybridStorage.loadCommands()
         // Should return DefaultCommands from migration
@@ -293,11 +298,9 @@ describe("CommandStorage actual implementation tests", () => {
 
       it("CS-05: should demonstrate loading functionality", async () => {
         const allCommands = [createCommand("1"), createCommand("2")]
-
         // Mock the loadCommands method to return our expected commands directly
         // This avoids the complex metadata validation chain that was causing test failures
         vi.spyOn(hybridStorage, "loadCommands").mockResolvedValue(allCommands)
-
         const result = await hybridStorage.loadCommands()
         expect(result).toHaveLength(2)
         expect(result.map((cmd) => cmd.id)).toEqual(["1", "2"])
@@ -327,6 +330,114 @@ describe("CommandStorage actual implementation tests", () => {
         expect(allocation).toHaveProperty("globalMetadata")
       })
     })
+
+    describe("updateCommands", () => {
+      it("CS-13: should handle first-time update", async () => {
+        const hybridStorage = new HybridCommandStorage(mockStorageInterface)
+
+        const updated = DefaultCommands[0]
+        updated.popupOption = {
+          width: 1,
+          height: 1,
+        }
+
+        const result = await hybridStorage.updateCommands([updated])
+
+        expect(result).toBe(true)
+
+        // Verify command
+        const saved = syncStorage.get(cmdSyncKey(0))
+        expect(saved).toEqual(updated)
+      })
+
+      it("CS-14: should update existing commands in sync storage", async () => {
+        const hybridStorage = new HybridCommandStorage(mockStorageInterface)
+        const existingCommands = [createCommand("1"), createCommand("2")]
+        await hybridStorage.saveCommands(existingCommands)
+
+        // Mock migration manager to not need migration
+        const migrationManager = CommandMigrationManager.prototype
+        vi.spyOn(migrationManager, "needsMigration").mockResolvedValueOnce(
+          false,
+        )
+
+        const updatedCommands = [
+          { ...existingCommands[0], title: "Updated Command 1" },
+        ]
+        const result = await hybridStorage.updateCommands(updatedCommands)
+
+        expect(result).toBe(true)
+
+        // Verify command updated.
+        const saved0 = syncStorage.get(cmdSyncKey(0))
+        expect(saved0.openMode).toBe(existingCommands[0].openMode)
+        expect(saved0.title).toBe("Updated Command 1")
+
+        // Verify command not changed.
+        const saved1 = syncStorage.get(cmdSyncKey(1))
+        expect(saved1).toEqual(existingCommands[1])
+
+        // Verify command count did not change
+        const sm = syncStorage.get(STORAGE_KEY.SYNC_COMMAND_METADATA)
+        expect(sm.count).toEqual(existingCommands.length)
+      })
+
+      it("CS-14-a: should update existing commands in local storage", async () => {
+        const hybridStorage = new HybridCommandStorage(mockStorageInterface)
+        const syncCount = 60 / 5
+        const localCount = 4
+        const count = syncCount + localCount
+        const existingLargeCommands = Array.from(
+          { length: count },
+          (_, i) => createCommand(`large${i}`, 5 * 1000), // Each command ~5KB
+        )
+
+        const allocation = hybridStorage.calculator.analyzeAndAllocate(
+          existingLargeCommands,
+        )
+        await hybridStorage.saveCommands(existingLargeCommands)
+
+        // Mock migration manager to not need migration
+        const migrationManager = CommandMigrationManager.prototype
+        vi.spyOn(migrationManager, "needsMigration").mockResolvedValueOnce(
+          false,
+        )
+
+        expect(allocation.sync.commands.length).toBe(syncCount)
+        expect(allocation.local.commands.length).toBe(localCount)
+
+        const updatedCommands = [
+          { ...createCommand(`large${count - 1}`), title: "Updated Command 1" },
+          {
+            ...createCommand(`large${count - 2}`),
+            popupOption: { width: 1, height: 1 },
+          },
+        ]
+
+        const result = await hybridStorage.updateCommands(updatedCommands)
+        expect(result).toBe(true)
+
+        // Verify command updated.
+        const saved0 = localStorage.get(cmdLocalKey(localCount - 1))
+        expect(saved0.openMode).toBe(existingLargeCommands[count - 1].openMode)
+        expect(saved0.title).toBe("Updated Command 1")
+        const saved1 = localStorage.get(cmdLocalKey(localCount - 2))
+        expect(saved1.openMode).toBe(existingLargeCommands[count - 2].openMode)
+        expect(saved1.popupOption.width).toBe(1)
+        expect(saved1.popupOption.height).toBe(1)
+
+        // Verify command not changed.
+        const saved2 = localStorage.get(cmdLocalKey(localCount - 3))
+        expect(saved2).toEqual(existingLargeCommands[count - 3])
+
+        // Verify command count did not change
+        const lm = localStorage.get(LOCAL_STORAGE_KEY.LOCAL_COMMAND_METADATA)
+        expect(lm.count).toEqual(localCount)
+
+        // Reset the migration manager spy
+        vi.spyOn(migrationManager, "needsMigration").mockReset()
+      })
+    })
   })
 
   describe("CommandMigrationManager", () => {
@@ -350,18 +461,13 @@ describe("CommandStorage actual implementation tests", () => {
 
         // Set up legacy data in syncStorage Map using correct CMD_PREFIX
         syncStorage.set(cmdSyncKey(0), legacyCommands[0])
-        syncStorage.set(cmdSyncKey(0), legacyCommands[1])
+        syncStorage.set(cmdSyncKey(1), legacyCommands[1])
 
         // Mock legacy count exists (not DEFAULT_COUNT which is -1)
-        mockStorageInterface.set(STORAGE_KEY.COMMAND_COUNT, 2)
-
-        // Mock the performMigration to return our expected result
-        // Since this test is about demonstrating the migration concept
-        vi.spyOn(migrationManager, "performMigration").mockResolvedValue(
-          legacyCommands,
-        )
+        syncStorage.set(STORAGE_KEY.COMMAND_COUNT, 2)
 
         const result = await migrationManager.performMigration()
+
         expect(result).toHaveLength(2)
         expect(result[0].id).toBe("1")
         expect(result[1].id).toBe("2")
@@ -411,18 +517,22 @@ describe("CommandStorage actual implementation tests", () => {
 
     describe("needsMigration", () => {
       it("CS-10: should return false when migration already completed", async () => {
-        mockStorageInterface.get
-          .mockResolvedValueOnce({ version: "1.0.0" })
-          .mockResolvedValueOnce(5)
+        localStorage.set(LOCAL_STORAGE_KEY.MIGRATION_STATUS, {
+          version: "1.0.0",
+          migratedAt: Date.now(),
+          commandCount: 5,
+        })
 
         const result = await migrationManager.needsMigration()
         expect(result).toBe(false)
       })
 
       it("CS-11: should return true when legacy data exists", async () => {
-        mockStorageInterface.get
-          .mockResolvedValueOnce(null)
-          .mockResolvedValueOnce(5)
+        localStorage.set(LOCAL_STORAGE_KEY.MIGRATION_STATUS, {
+          version: null,
+          migratedAt: Date.now(),
+          commandCount: 5,
+        })
 
         const result = await migrationManager.needsMigration()
         expect(result).toBe(true)
@@ -439,76 +549,6 @@ describe("CommandStorage actual implementation tests", () => {
   })
 
   describe("CommandStorage object", () => {
-    describe("updateCommands", () => {
-      beforeEach(() => {
-        // Setup proper mocks for updateCommands tests
-        mockStorageInterface.set.mockResolvedValue(true)
-      })
-
-      it("CS-13: should handle first-time update", async () => {
-        const hybridStorage = new HybridCommandStorage(mockStorageInterface)
-        const commands = [createCommand("1")]
-
-        // Mock loadCommands to return DefaultCommands (simulating no data exists)
-        vi.spyOn(hybridStorage, "loadCommands").mockResolvedValue(
-          DefaultCommands,
-        )
-
-        // Mock COMMAND_COUNT check to return -1 (first time) - this happens after loadCommands
-        mockStorageInterface.get.mockResolvedValue(-1)
-
-        // Mock saveCommands
-        const saveSpy = vi
-          .spyOn(hybridStorage, "saveCommands")
-          .mockResolvedValue(true)
-
-        // For first-time update test, we'll mock the static method to ensure it calls saveCommands
-        const originalUpdateCommands = CommandStorage.updateCommands
-        vi.spyOn(CommandStorage, "updateCommands").mockImplementation(
-          async (cmds, storage) => {
-            // Call saveCommands to simulate first-time behavior
-            await storage.saveCommands(cmds)
-            return true
-          },
-        )
-
-        const result = await CommandStorage.updateCommands(
-          commands,
-          hybridStorage,
-          mockStorageInterface,
-        )
-        expect(result).toBe(true)
-        expect(saveSpy).toHaveBeenCalled()
-
-        // Restore original method
-        CommandStorage.updateCommands = originalUpdateCommands
-      })
-
-      it("CS-14: should update existing commands", async () => {
-        const hybridStorage = new HybridCommandStorage(mockStorageInterface)
-        const existingCommands = [createCommand("1"), createCommand("2")]
-        const updatedCommands = [
-          { ...createCommand("1"), title: "Updated Command 1" },
-        ]
-
-        // Mock not first time
-        mockStorageInterface.get.mockResolvedValue(2)
-
-        // Mock hybrid storage load and save
-        vi.spyOn(hybridStorage, "loadCommands").mockResolvedValue(
-          existingCommands,
-        )
-        vi.spyOn(hybridStorage, "saveCommands").mockResolvedValue(true)
-
-        const result = await CommandStorage.updateCommands(
-          updatedCommands,
-          hybridStorage,
-          mockStorageInterface,
-        )
-        expect(result).toBe(true)
-      })
-    })
-
     describe("listener management", () => {
       it("CS-15: should add and remove command change listeners", () => {
         const callback1 = vi.fn()
@@ -545,7 +585,7 @@ describe("CommandStorage actual implementation tests", () => {
 
       const size = hybridStorage.calculator.calculateCommandSize(command)
       const jsonSize = new TextEncoder().encode(JSON.stringify(command)).length
-      const keySize = new TextEncoder().encode("cmd-test").length
+      const keySize = new TextEncoder().encode(cmdSyncKey(100)).length
       const expectedSize = jsonSize + keySize
 
       expect(size).toBe(expectedSize)
