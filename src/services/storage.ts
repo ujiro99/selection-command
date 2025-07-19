@@ -11,7 +11,6 @@ import {
 import {
   HybridCommandStorage,
   CommandMigrationManager,
-  CommandStorage,
   commandChangedCallback,
 } from "./storage/commandStorage"
 import {
@@ -32,14 +31,11 @@ export {
   LegacyBackupManager,
 }
 
-export type { ChangedCallback, KEY, commandChangedCallback }
+export type { ChangedCallback, KEY }
 
 export const Storage = {
   // Base storage methods
   ...BaseStorage,
-
-  // Command-specific methods
-  ...CommandStorage,
 
   // New methods for hybrid storage (will be initialized after Storage is defined)
   hybridStorage: null as unknown as HybridCommandStorage,
@@ -74,6 +70,22 @@ export const Storage = {
     commands: Command[],
   ): Promise<boolean | chrome.runtime.LastError> => {
     return await Storage.hybridStorage.updateCommands(commands)
+  },
+
+  /**
+   * Add a command changed listener.
+   * @param {commandChangedCallback} cb - The callback to be called when commands change.
+   */
+  addCommandListener: (cb: commandChangedCallback) => {
+    return Storage.hybridStorage.addCommandListener(cb)
+  },
+
+  /**
+   * Remove a command changed listener.
+   * @param {commandChangedCallback} cb - The callback to be removed.
+   */
+  removeCommandListener: (cb: commandChangedCallback) => {
+    return Storage.hybridStorage.removeCommandListener(cb)
   },
 }
 

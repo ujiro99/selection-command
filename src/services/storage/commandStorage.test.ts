@@ -144,11 +144,7 @@ global.chrome = {
 } as any
 
 // Import the classes and functions after mocking
-import {
-  CommandStorage,
-  HybridCommandStorage,
-  CommandMigrationManager,
-} from "./commandStorage"
+import { HybridCommandStorage, CommandMigrationManager } from "./commandStorage"
 import { DefaultCommands } from "../option/defaultSettings"
 
 const isCmdKey = (key: unknown): key is CMD_KEY => {
@@ -554,13 +550,14 @@ describe("CommandStorage actual implementation tests", () => {
         const callback1 = vi.fn()
         const callback2 = vi.fn()
 
-        CommandStorage.addCommandListener(callback1)
-        CommandStorage.addCommandListener(callback2)
+        const hybridStorage = new HybridCommandStorage()
+        hybridStorage.addCommandListener(callback1)
+        hybridStorage.addCommandListener(callback2)
 
         expect(callback1).toBeDefined()
         expect(callback2).toBeDefined()
 
-        CommandStorage.removeCommandListener(callback1)
+        hybridStorage.removeCommandListener(callback1)
         // callback1 should be removed, callback2 should remain
       })
     })

@@ -22,7 +22,7 @@ interface StorageInterface {
 }
 
 // Command change callbacks
-export type commandChangedCallback = (commands: Command[]) => void
+export type commandChangedCallback = () => void
 const commandChangedCallbacks = [] as commandChangedCallback[]
 
 // Setup command change listener
@@ -32,7 +32,7 @@ chrome.storage.onChanged.addListener((changes) => {
     if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
   }
   if (commands.length > 0) {
-    commandChangedCallbacks.forEach((cb) => cb(commands))
+    commandChangedCallbacks.forEach((cb) => cb())
   }
 })
 
@@ -648,6 +648,15 @@ export class HybridCommandStorage {
     return true
   }
 
+  addCommandListener(cb: commandChangedCallback) {
+    commandChangedCallbacks.push(cb)
+  }
+
+  removeCommandListener(cb: commandChangedCallback) {
+    const idx = commandChangedCallbacks.findIndex((f) => f === cb)
+    if (idx !== -1) commandChangedCallbacks.splice(idx, 1)
+  }
+
   private async saveCommandsAndMetadata(
     allocation: StorageAllocation,
     legacyCount?: number,
@@ -755,15 +764,4 @@ export class HybridCommandStorage {
     // Update global metadata to match actual commands
     await this.metadataManager.saveGlobalCommandMetadata(updatedGlobalMetadata)
   }
-}
-
-export const CommandStorage = {
-  addCommandListener: (cb: commandChangedCallback) => {
-    commandChangedCallbacks.push(cb)
-  },
-
-  removeCommandListener: (cb: commandChangedCallback) => {
-    const idx = commandChangedCallbacks.findIndex((f) => f === cb)
-    if (idx !== -1) commandChangedCallbacks.splice(idx, 1)
-  },
 }

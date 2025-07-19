@@ -39,17 +39,14 @@ export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
 }
 
-const callbacks = [] as ((data: SettingsType) => void)[]
+const callbacks = [] as (() => void)[]
 
-Storage.addListener(STORAGE_KEY.USER, async (settings: SettingsType) => {
-  settings.commands = await Storage.getCommands()
-  callbacks.forEach((cb) => cb(settings))
+Storage.addListener(STORAGE_KEY.USER, async () => {
+  callbacks.forEach((cb) => cb())
 })
 
-Storage.addCommandListener(async (commands: Command[]) => {
-  const settings = await Settings.get()
-  settings.commands = commands
-  callbacks.forEach((cb) => cb(settings))
+Storage.addCommandListener(async () => {
+  callbacks.forEach((cb) => cb())
 })
 
 export const Settings = {
@@ -195,11 +192,11 @@ export const Settings = {
     )
   },
 
-  addChangedListener: (callback: (data: SettingsType) => void) => {
+  addChangedListener: (callback: () => void) => {
     callbacks.push(callback)
   },
 
-  removeChangedListener: (callback: (data: SettingsType) => void) => {
+  removeChangedListener: (callback: () => void) => {
     const idx = callbacks.indexOf(callback)
     if (idx !== -1) callbacks.splice(idx, 1)
   },

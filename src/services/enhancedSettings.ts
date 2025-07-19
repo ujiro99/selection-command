@@ -183,7 +183,7 @@ export class EnhancedSettings {
   // Setup legacy listeners
   private setupLegacyListeners(): void {
     // Handle legacy Settings.addChangedListener
-    Settings.addChangedListener((_data: SettingsType) => {
+    Settings.addChangedListener(() => {
       // Invalidate all cache (safety measure)
       this.invalidateAllCache()
     })

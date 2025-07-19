@@ -100,6 +100,7 @@
 
 - `saveCommands` - コマンドの保存機能
 - `loadCommands` - コマンドの読み込み機能
+- `updateCommands` - コマンド更新処理
 - `calculator` - ストレージ容量計算機能
 
 #### 2. `CommandMigrationManager`クラス
@@ -110,7 +111,6 @@
 
 #### 3. `CommandStorage`オブジェクト
 
-- `updateCommands` - コマンド更新処理
 - リスナー管理（`addCommandListener`, `removeCommandListener`）
 
 ### テストケース設計
@@ -128,6 +128,17 @@
 - ✅ CS-03: メタデータが存在しない場合はDefaultCommandsを返す
 - ✅ CS-04: レガシーデータが存在する場合は移行を実行する
 - ✅ CS-05: 基本的な読み込み機能をデモンストレーション
+
+**updateCommandsメソッド:**
+
+- ✅ CS-13: 初回更新時の処理
+  - DefaultCommandsへの変更が保存される
+- ✅ CS-14: 既存コマンドの更新処理(syncストレージの更新)
+  - 指定したコマンドが更新され、syncストレージに保存される
+  - 指定していないコマンドはそのまま残る
+- ✅ CS-14-a: 既存コマンドの更新処理(localストレージの更新)
+  - 指定したコマンドが更新され、localストレージに保存される
+  - 指定していないコマンドはそのまま残る
 
 **calculatorプロパティ:**
 
@@ -155,17 +166,6 @@
 - ✅ CS-12: バックアップからcommands、foldersプロパティを持つオブジェクトを復元
 
 #### `CommandStorage`オブジェクトのテスト
-
-**updateCommandsメソッド:**
-
-- ✅ CS-13: 初回更新時の処理
-  - DefaultCommandsへの変更が保存される
-- ✅ CS-14: 既存コマンドの更新処理(syncストレージの更新)
-  - 指定したコマンドが更新され、syncストレージに保存される
-  - 指定していないコマンドはそのまま残る
-- ✅ CS-14-a: 既存コマンドの更新処理(localストレージの更新)
-  - 指定したコマンドが更新され、localストレージに保存される
-  - 指定していないコマンドはそのまま残る
 
 **リスナー管理:**
 

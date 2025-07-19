@@ -4,7 +4,6 @@ import { settingsCache, CACHE_SECTIONS } from "./settingsCache"
 import { Settings } from "./settings"
 import { OptionSettings } from "./option/optionSettings"
 import { OPTION_FOLDER } from "@/const"
-import type { SettingsType } from "@/types"
 
 // Mock dependencies
 vi.mock("./settingsCache")
@@ -608,7 +607,7 @@ describe("EnhancedSettings", () => {
         const callback = mockSettings.addChangedListener.mock.calls[0][0]
 
         // Call the callback
-        callback({} as SettingsType)
+        callback()
 
         expect(invalidateAllSpy).toHaveBeenCalled()
       })
