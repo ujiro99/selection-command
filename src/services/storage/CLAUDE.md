@@ -96,7 +96,7 @@
 
 ### テスト対象の分析
 
-#### 1. `HybridCommandStorage`クラス
+#### 1. `CommandStorage`クラス
 
 - `saveCommands` - コマンドの保存機能
 - `loadCommands` - コマンドの読み込み機能
@@ -115,7 +115,7 @@
 
 ### テストケース設計
 
-#### `HybridCommandStorage`のテスト
+#### `CommandStorage`のテスト
 
 **saveCommandsメソッド:**
 

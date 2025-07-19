@@ -103,7 +103,7 @@ async function loadLegacyCommandData(
   }
 }
 
-// Type definitions for hybrid storage
+// Type definitions for command storage
 interface CommandMetadata {
   count: number // Number of commands saved in this storage
   version: number // Data version (timestamp)
@@ -367,8 +367,8 @@ export class CommandMigrationManager {
       await legacyBackupManager.backupCommandsForMigration(legacyCommands)
 
       // Step 3: Save in new format
-      const hybridStorage = new HybridCommandStorage(this.storage)
-      await hybridStorage.saveCommands(legacyCommands, true)
+      const commandStorage = new CommandStorage(this.storage)
+      await commandStorage.saveCommands(legacyCommands, true)
 
       // Step 4: Set migration completion flag
       await this.storage.set(this.MIGRATION_FLAG_KEY, {
@@ -435,8 +435,8 @@ export class CommandMigrationManager {
   }
 }
 
-// Hybrid command storage class
-export class HybridCommandStorage {
+// Command storage class
+export class CommandStorage {
   public calculator = new StorageCapacityCalculator()
   private metadataManager: CommandMetadataManager
   private storage: StorageInterface

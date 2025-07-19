@@ -9,7 +9,7 @@ import {
   KEY,
 } from "./storage/index"
 import {
-  HybridCommandStorage,
+  CommandStorage,
   CommandMigrationManager,
   commandChangedCallback,
 } from "./storage/commandStorage"
@@ -37,8 +37,8 @@ export const Storage = {
   // Base storage methods
   ...BaseStorage,
 
-  // New methods for hybrid storage (will be initialized after Storage is defined)
-  hybridStorage: null as unknown as HybridCommandStorage,
+  // New methods for command storage (will be initialized after Storage is defined)
+  commandStorage: null as unknown as CommandStorage,
 
   // Daily backup manager
   dailyBackupManager: new DailyBackupManager(),
@@ -47,17 +47,17 @@ export const Storage = {
   weeklyBackupManager: new WeeklyBackupManager(),
 
   /**
-   * New command getter method (hybrid storage compatible)
+   * New command getter method (command storage compatible)
    */
   getCommands: async (): Promise<Command[]> => {
-    return await Storage.hybridStorage.loadCommands()
+    return await Storage.commandStorage.loadCommands()
   },
 
   /**
-   * New command setter method (hybrid storage compatible)
+   * New command setter method (command storage compatible)
    */
   setCommands: async (commands: Command[]): Promise<boolean> => {
-    return await Storage.hybridStorage.saveCommands(commands)
+    return await Storage.commandStorage.saveCommands(commands)
   },
 
   /**
@@ -69,7 +69,7 @@ export const Storage = {
   updateCommands: async (
     commands: Command[],
   ): Promise<boolean | chrome.runtime.LastError> => {
-    return await Storage.hybridStorage.updateCommands(commands)
+    return await Storage.commandStorage.updateCommands(commands)
   },
 
   /**
@@ -77,7 +77,7 @@ export const Storage = {
    * @param {commandChangedCallback} cb - The callback to be called when commands change.
    */
   addCommandListener: (cb: commandChangedCallback) => {
-    return Storage.hybridStorage.addCommandListener(cb)
+    return Storage.commandStorage.addCommandListener(cb)
   },
 
   /**
@@ -85,9 +85,9 @@ export const Storage = {
    * @param {commandChangedCallback} cb - The callback to be removed.
    */
   removeCommandListener: (cb: commandChangedCallback) => {
-    return Storage.hybridStorage.removeCommandListener(cb)
+    return Storage.commandStorage.removeCommandListener(cb)
   },
 }
 
-// Initialize hybrid storage after Storage object is defined
-Storage.hybridStorage = new HybridCommandStorage(Storage)
+// Initialize command storage after Storage object is defined
+Storage.commandStorage = new CommandStorage(Storage)

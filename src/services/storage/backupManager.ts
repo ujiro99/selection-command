@@ -1,6 +1,6 @@
 import { Command, CommandFolder } from "@/types"
 import { LOCAL_STORAGE_KEY, BaseStorage, STORAGE_KEY } from "./index"
-import { HybridCommandStorage } from "@/services/storage/commandStorage"
+import { CommandStorage } from "@/services/storage/commandStorage"
 
 export interface BackupData {
   version: string
@@ -32,8 +32,8 @@ export abstract class BaseBackupManager {
 
   async performBackup(): Promise<void> {
     try {
-      const hybridStorage = new HybridCommandStorage()
-      const commands = await hybridStorage.loadCommands()
+      const commandStorage = new CommandStorage()
+      const commands = await commandStorage.loadCommands()
 
       // Get folders from settings directly from storage to avoid circular dependency
       const userSettings = (await BaseStorage.get(STORAGE_KEY.USER)) as {
