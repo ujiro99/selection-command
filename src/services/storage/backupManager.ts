@@ -1,6 +1,6 @@
 import { Command, CommandFolder } from "@/types"
 import { LOCAL_STORAGE_KEY, BaseStorage, STORAGE_KEY } from "./index"
-import { HybridCommandStorage } from "./commandStorage"
+import { HybridCommandStorage } from "@/services/storage/commandStorage"
 
 export interface BackupData {
   version: string

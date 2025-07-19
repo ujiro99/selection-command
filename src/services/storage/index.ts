@@ -16,7 +16,6 @@ export enum LOCAL_STORAGE_KEY {
   CLIENT_ID = "clientId",
   STARS = "stars",
   CAPTURES = "captures",
-  COMMAND_LOCAL_COUNT = "commandLocalCount",
   MIGRATION_STATUS = "migrationStatus",
   LOCAL_COMMAND_METADATA = "localCommandMetadata",
   GLOBAL_COMMAND_METADATA = "globalCommandMetadata",
@@ -39,11 +38,20 @@ export enum SESSION_STORAGE_KEY {
 
 export const CMD_PREFIX = "cmd-"
 
+export type CMD_KEY = `${typeof CMD_PREFIX}${number}`
+export type CMD_LOCAL_KEY = `${typeof CMD_PREFIX}local-${number}`
+
+export const cmdSyncKey = (idx: number): CMD_KEY => `${CMD_PREFIX}${idx}`
+export const cmdLocalKey = (idx: number): CMD_LOCAL_KEY =>
+  `${CMD_PREFIX}local-${idx}`
+
 let syncSetTimeout: NodeJS.Timeout | null
 let syncSetResolves: (() => void)[] = []
 const syncSetData = new Map<string, unknown>()
 
-const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
+export const debouncedSyncSet = (
+  data: Record<string, unknown>,
+): Promise<void> => {
   return new Promise((resolve) => {
     if (syncSetTimeout != null) {
       clearTimeout(syncSetTimeout)
@@ -61,7 +69,7 @@ const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
         }
         syncSetData.clear()
         syncSetTimeout = null
-        syncSetResolves.forEach((resolve) => resolve())
+        syncSetResolves.forEach((res) => res())
         syncSetResolves = []
       })
     }, SYNC_DEBOUNCE_DELAY)
@@ -69,7 +77,13 @@ const debouncedSyncSet = (data: Record<string, unknown>): Promise<void> => {
   })
 }
 
-export type KEY = STORAGE_KEY | LOCAL_STORAGE_KEY | SESSION_STORAGE_KEY | string
+export type KEY =
+  | STORAGE_KEY
+  | LOCAL_STORAGE_KEY
+  | SESSION_STORAGE_KEY
+  | CMD_KEY
+  | CMD_LOCAL_KEY
+  | string
 
 const DEFAULT_COUNT = -1
 
@@ -90,7 +104,6 @@ const DEFAULTS = {
   [LOCAL_STORAGE_KEY.CLIENT_ID]: "",
   [LOCAL_STORAGE_KEY.STARS]: [],
   [LOCAL_STORAGE_KEY.CAPTURES]: {},
-  [LOCAL_STORAGE_KEY.COMMAND_LOCAL_COUNT]: 0,
   [LOCAL_STORAGE_KEY.MIGRATION_STATUS]: null,
   [LOCAL_STORAGE_KEY.COMMANDS_BACKUP]: null,
   [LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP]: null,
@@ -220,5 +233,3 @@ export const BaseStorage = {
     }
   },
 }
-
-export { debouncedSyncSet }

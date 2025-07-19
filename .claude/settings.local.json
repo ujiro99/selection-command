@@ -29,7 +29,9 @@
       "WebFetch(domain:www.npmjs.com)",
       "Bash(ls:*)",
       "Bash(tsc:*)",
-      "Bash(yarn test:*)"
+      "Bash(yarn test:*)",
+      "Bash(gh pr:*)",
+      "WebFetch(domain:www.radix-ui.com)"
     ],
     "deny": []
   }
