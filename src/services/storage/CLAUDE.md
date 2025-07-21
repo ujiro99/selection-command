@@ -287,21 +287,6 @@
 
 ### モック要件
 
-#### Chrome API のモック
-
-```typescript
-const mockChromeStorageSync = {
-  set: vi.fn().mockImplementation((data, callback) => {
-    // 成功時またはエラー時の動作をシミュレート
-    callback?.()
-  }),
-}
-
-const mockChromeRuntime = {
-  lastError: undefined, // テストケースに応じて設定
-}
-```
-
 #### タイマーのモック
 
 ```typescript

@@ -212,12 +212,14 @@ class CommandMetadataManager {
     this.storage = storage
   }
 
-  async saveSyncCommandMetadata(metadata: CommandMetadata): Promise<void> {
-    await this.storage.set(this.SYNC_METADATA_KEY, metadata)
-  }
-
-  async saveLocalCommandMetadata(metadata: CommandMetadata): Promise<void> {
-    await this.storage.set(this.LOCAL_METADATA_KEY, metadata)
+  async saveCommandMetadata(
+    sync: CommandMetadata,
+    local: CommandMetadata,
+  ): Promise<void> {
+    await Promise.all([
+      this.storage.set(this.SYNC_METADATA_KEY, sync),
+      this.storage.set(this.LOCAL_METADATA_KEY, local),
+    ])
   }
 
   async saveGlobalCommandMetadata(
@@ -226,27 +228,18 @@ class CommandMetadataManager {
     await this.storage.set(this.GLOBAL_METADATA_KEY, metadata)
   }
 
-  async loadSyncCommandMetadata(): Promise<CommandMetadata | null> {
+  async loadCommandMetadata(): Promise<
+    [CommandMetadata, CommandMetadata] | [null, null]
+  > {
     try {
-      const metadata = await this.storage.get<CommandMetadata>(
-        this.SYNC_METADATA_KEY,
-      )
-      return metadata || null
+      const metadata = await Promise.all([
+        this.storage.get<CommandMetadata>(this.SYNC_METADATA_KEY),
+        this.storage.get<CommandMetadata>(this.LOCAL_METADATA_KEY),
+      ])
+      return metadata
     } catch (error) {
       console.error("Failed to load sync metadata:", error)
-      return null
-    }
-  }
-
-  async loadLocalCommandMetadata(): Promise<CommandMetadata | null> {
-    try {
-      const metadata = await this.storage.get<CommandMetadata>(
-        this.LOCAL_METADATA_KEY,
-      )
-      return metadata || null
-    } catch (error) {
-      console.error("Failed to load local metadata:", error)
-      return null
+      return [null, null]
     }
   }
 
@@ -282,11 +275,11 @@ class CommandMetadataManager {
 
   // Migration determination
   async needsMigration(): Promise<boolean> {
-    const [syncMetadata, localMetadata, globalMetadata] = await Promise.all([
-      this.loadSyncCommandMetadata(),
-      this.loadLocalCommandMetadata(),
+    const [metadata, globalMetadata] = await Promise.all([
+      this.loadCommandMetadata(),
       this.loadGlobalCommandMetadata(),
     ])
+    const [syncMetadata, localMetadata] = metadata
     const legacyCount = await this.storage.get<number>(
       STORAGE_KEY.COMMAND_COUNT,
     )
@@ -433,11 +426,11 @@ export class CommandStorage {
       }
 
       // Step 2: Load metadata
-      const [syncMetadata, localMetadata, globalMetadata] = await Promise.all([
-        this.metadataManager.loadSyncCommandMetadata(),
-        this.metadataManager.loadLocalCommandMetadata(),
+      const [metadata, globalMetadata] = await Promise.all([
+        this.metadataManager.loadCommandMetadata(),
         this.metadataManager.loadGlobalCommandMetadata(),
       ])
+      const [syncMetadata, localMetadata] = metadata
 
       if (!syncMetadata && !localMetadata && !globalMetadata) {
         // First load, return default commands.
@@ -503,10 +496,8 @@ export class CommandStorage {
   async updateCommands(
     commands: Command[],
   ): Promise<boolean | chrome.runtime.LastError> {
-    const [syncMetadata, localMetadata] = await Promise.all([
-      this.metadataManager.loadSyncCommandMetadata(),
-      this.metadataManager.loadLocalCommandMetadata(),
-    ])
+    const [syncMetadata, localMetadata] =
+      await this.metadataManager.loadCommandMetadata()
 
     // If update first time, set DefaultCommands.
     if (!syncMetadata) {
@@ -574,10 +565,8 @@ export class CommandStorage {
     const localSavePromises: Promise<boolean>[] = []
 
     // Load count
-    const [syncMetadata, localMetadata] = await Promise.all([
-      this.metadataManager.loadSyncCommandMetadata(),
-      this.metadataManager.loadLocalCommandMetadata(),
-    ])
+    const [syncMetadata, localMetadata] =
+      await this.metadataManager.loadCommandMetadata()
     const preSyncCount = syncMetadata?.count || legacyCount || 0
     const preLocalCount = localMetadata?.count || 0
 
@@ -595,8 +584,10 @@ export class CommandStorage {
 
     // Add metadata save to the same promise batch
     const metadataSavePromises = [
-      this.metadataManager.saveSyncCommandMetadata(allocation.syncMetadata),
-      this.metadataManager.saveLocalCommandMetadata(allocation.localMetadata),
+      this.metadataManager.saveCommandMetadata(
+        allocation.syncMetadata,
+        allocation.localMetadata,
+      ),
       this.metadataManager.saveGlobalCommandMetadata(allocation.globalMetadata),
     ]
 
