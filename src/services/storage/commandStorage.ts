@@ -359,14 +359,14 @@ export class CommandMigrationManager {
       } | null
       if (
         migrationStatus &&
-        migrationStatus.version === this.MIGRATION_VERSION
+        migrationStatus.version !== this.MIGRATION_VERSION
       ) {
-        return false
+        return true
       }
     } catch {
       // Migration flag doesn't exist = migration not performed
     }
-    return true
+    return false
   }
 
   /**
