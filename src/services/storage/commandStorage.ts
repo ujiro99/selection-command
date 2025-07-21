@@ -1,5 +1,6 @@
 import { DefaultCommands } from "../option/defaultSettings"
 import { Command } from "@/types"
+import { CommandMetadata, GlobalCommandMetadata } from "@/types/command"
 import {
   BaseStorage,
   STORAGE_KEY,
@@ -37,26 +38,6 @@ chrome.storage.onChanged.addListener((changes) => {
 })
 
 const DEFAULT_COUNT = -1
-
-/**
- * Generate checksum from object (JSON.stringify based)
- * Uses a simple hash algorithm compatible with browser environment
- * @param obj - Object to generate checksum for
- * @returns Checksum (hexadecimal string)
- */
-function generateChecksum(obj: unknown): string {
-  const normalized = JSON.stringify(obj, Object.keys(obj || {}).sort())
-
-  // Simple hash algorithm (djb2) that works in browser
-  let hash = 5381
-  for (let i = 0; i < normalized.length; i++) {
-    hash = (hash << 5) + hash + normalized.charCodeAt(i)
-    hash = hash & hash // Convert to 32bit integer
-  }
-
-  // Convert to hex string and pad to ensure consistent length
-  return Math.abs(hash).toString(16).padStart(8, "0")
-}
 
 const getIndicesToRemove = (fromLen: number, toLen: number): number[] => {
   if (toLen >= fromLen) {
@@ -101,19 +82,6 @@ async function loadLegacyCommandData(
     console.warn("Failed to load legacy commands:", error)
     return returnDefaultOnEmpty ? DefaultCommands : []
   }
-}
-
-// Type definitions for command storage
-interface CommandMetadata {
-  count: number // Number of commands saved in this storage
-  version: number // Data version (timestamp)
-  checksum: string // Hash for integrity checking
-}
-
-interface GlobalCommandMetadata {
-  globalOrder: string[] // Global command order array
-  version: number // Global data version (timestamp)
-  lastUpdated: number // Last update timestamp
 }
 
 interface StorageAllocation {
@@ -213,20 +181,15 @@ class StorageCapacityCalculator {
     localMetadata: CommandMetadata
     globalMetadata: GlobalCommandMetadata
   } {
-    const syncCommands = allCommands.slice(0, syncCount)
-    const localCommands = allCommands.slice(syncCount)
     const timestamp = Date.now()
-
     return {
       syncMetadata: {
         count: syncCount,
         version: timestamp,
-        checksum: generateChecksum(syncCommands),
       },
       localMetadata: {
         count: localCount,
         version: timestamp,
-        checksum: generateChecksum(localCommands),
       },
       globalMetadata: {
         globalOrder: allCommands.map((cmd) => cmd.id),
@@ -303,20 +266,6 @@ class CommandMetadataManager {
     }
   }
 
-  async validateCommandIntegrity(
-    commands: Command[],
-    metadata: CommandMetadata,
-  ): Promise<boolean> {
-    if (!metadata) return false
-
-    // Basic integrity check
-    if (metadata.count !== commands.length) return false
-
-    // Checksum-based integrity check
-    const currentChecksum = generateChecksum(commands)
-    return metadata.checksum === currentChecksum
-  }
-
   async validateGlobalConsistency(allCommands: Command[]): Promise<boolean> {
     const globalMetadata = await this.loadGlobalCommandMetadata()
     if (!globalMetadata) return false
@@ -338,9 +287,17 @@ class CommandMetadataManager {
       this.loadLocalCommandMetadata(),
       this.loadGlobalCommandMetadata(),
     ])
+    const legacyCount = await this.storage.get<number>(
+      STORAGE_KEY.COMMAND_COUNT,
+    )
 
     // When new metadata doesn't exist but legacy format data exists
-    return !syncMetadata && !localMetadata && !globalMetadata
+    return (
+      !syncMetadata &&
+      !localMetadata &&
+      !globalMetadata &&
+      legacyCount !== DEFAULT_COUNT
+    )
   }
 }
 
@@ -416,11 +373,7 @@ export class CommandMigrationManager {
     } catch {
       // Migration flag doesn't exist = migration not performed
     }
-
-    const legacyCount = await this.storage.get<number>(
-      STORAGE_KEY.COMMAND_COUNT,
-    )
-    return legacyCount !== DEFAULT_COUNT
+    return true
   }
 
   /**
@@ -464,13 +417,10 @@ export class CommandStorage {
     }
   }
 
-  async loadCommands(retryCount = 0): Promise<Command[]> {
-    const MAX_RETRIES = 3
-    const RETRY_DELAY_MS = 10
-
+  async loadCommands(): Promise<Command[]> {
     try {
       // Step 1: Check if migration is needed
-      const migrationManager = new CommandMigrationManager()
+      const migrationManager = new CommandMigrationManager(this.storage)
       const [needsMigrationByManager, needsMigrationByMetadata] =
         await Promise.all([
           migrationManager.needsMigration(),
@@ -520,62 +470,21 @@ export class CommandStorage {
           console.debug(
             `Missing ${expectedCount - actualCount} commands from global order`,
           )
-          // Update global metadata if necessary
-          await this.updateGlobalMetadataForMissingCommands(orderedCommands)
+          await this.updateGlobalMetadata(orderedCommands)
         }
       } else {
         // Fallback: merge with sync commands first
         orderedCommands = allCommands
+        await this.updateGlobalMetadata(orderedCommands)
       }
 
-      // Step 5: Integrity checks
-      let hasIntegrityIssues = false
-
-      if (syncMetadata && syncCommands.length > 0) {
-        if (
-          !(await this.metadataManager.validateCommandIntegrity(
-            syncCommands,
-            syncMetadata,
-          ))
-        ) {
-          console.debug("Sync command integrity check failed")
-          hasIntegrityIssues = true
-        }
-      }
-
-      if (localMetadata && localCommands.length > 0) {
-        if (
-          !(await this.metadataManager.validateCommandIntegrity(
-            localCommands,
-            localMetadata,
-          ))
-        ) {
-          console.debug("Local command integrity check failed")
-          hasIntegrityIssues = true
-        }
-      }
-
+      // Step 5: Global Consistency checks
       if (
         globalMetadata &&
         !(await this.metadataManager.validateGlobalConsistency(orderedCommands))
       ) {
         console.debug("Global consistency check failed")
-        hasIntegrityIssues = true
-      }
-
-      if (hasIntegrityIssues) {
-        console.debug(
-          `Command integrity check failed (attempt ${retryCount + 1}/${MAX_RETRIES + 1})`,
-        )
-        // Retry with delay if we haven't exceeded max retries
-        if (retryCount < MAX_RETRIES) {
-          console.info(
-            `Retrying command load after ${RETRY_DELAY_MS}ms delay...`,
-          )
-          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
-          return await this.loadCommands(retryCount + 1)
-        }
-        console.warn("Command integrity check failed after all retries...")
+        await this.updateGlobalMetadata(orderedCommands)
       }
 
       return orderedCommands
@@ -752,15 +661,12 @@ export class CommandStorage {
     return orderedCommands
   }
 
-  private async updateGlobalMetadataForMissingCommands(
-    actualCommands: Command[],
-  ): Promise<void> {
+  private async updateGlobalMetadata(actualCommands: Command[]): Promise<void> {
     const updatedGlobalMetadata: GlobalCommandMetadata = {
       globalOrder: actualCommands.map((cmd) => cmd.id),
       version: Date.now(),
       lastUpdated: Date.now(),
     }
-
     // Update global metadata to match actual commands
     await this.metadataManager.saveGlobalCommandMetadata(updatedGlobalMetadata)
   }
