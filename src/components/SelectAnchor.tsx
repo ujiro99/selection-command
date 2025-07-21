@@ -152,6 +152,18 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   }, [point, isMouseDown, setIsDragging, releaseAnchor])
 
   useEffect(() => {
+    const onKeyUp = () => {
+      if (!selectionText) {
+        releaseAnchor(true)
+      }
+    }
+    document.addEventListener("keyup", onKeyUp)
+    return () => {
+      document.removeEventListener("keyup", onKeyUp)
+    }
+  }, [point, selectionText, setAnchor, releaseAnchor])
+
+  useEffect(() => {
     if (detectHold) {
       setAnchor(position)
     }
@@ -167,7 +179,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
     width: SIZE,
     pointerEvents: "none",
     zIndex: 2147483647,
-    // backgroundColor: 'rgba(255, 0, 0, 0.3)',
+    // backgroundColor: "rgba(255, 0, 0, 0.3)",
     // border: '1px solid red',
   } as React.CSSProperties
 
