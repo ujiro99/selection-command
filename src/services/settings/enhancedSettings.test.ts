@@ -2,15 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { EnhancedSettings } from "./enhancedSettings"
 import { settingsCache, CACHE_SECTIONS } from "./settingsCache"
 import { Settings } from "./settings"
-import { OptionSettings } from "./option/optionSettings"
+import { OptionSettings } from "../option/optionSettings"
 import { OPTION_FOLDER } from "@/const"
-import type { SettingsType } from "@/types"
 
 // Mock dependencies
 vi.mock("./settingsCache")
 vi.mock("./settings")
-vi.mock("./option/optionSettings")
-vi.mock("./option/defaultSettings", () => ({
+vi.mock("../option/optionSettings")
+vi.mock("../option/defaultSettings", () => ({
   default: {
     settingVersion: "0.13.0",
     folders: [],
@@ -53,7 +52,7 @@ describe("EnhancedSettings", () => {
   })
 
   describe("constructor", () => {
-    it("should set up legacy listeners", () => {
+    it("ES-22: should set up legacy listeners", () => {
       expect(mockSettings.addChangedListener).toHaveBeenCalledWith(
         expect.any(Function),
       )
@@ -61,7 +60,7 @@ describe("EnhancedSettings", () => {
   })
 
   describe("get method", () => {
-    it("should get settings with default sections", async () => {
+    it("ES-01: should get settings with default sections", async () => {
       const mockCommands = [{ id: "1", title: "Test Command", iconUrl: "" }]
       const mockUserSettings = {
         settingVersion: "1.0.0",
@@ -117,7 +116,7 @@ describe("EnhancedSettings", () => {
       )
     })
 
-    it("should get settings with specific sections", async () => {
+    it("ES-02: should get settings with specific sections", async () => {
       const mockCommands = [{ id: "1", title: "Test Command", iconUrl: "" }]
 
       mockSettingsCache.get.mockResolvedValue(mockCommands)
@@ -135,7 +134,7 @@ describe("EnhancedSettings", () => {
       expect(result.commands).toEqual(mockCommands)
     })
 
-    it("should force fresh data when forceFresh is true", async () => {
+    it("ES-03: should force fresh data when forceFresh is true", async () => {
       mockSettingsCache.get
         .mockResolvedValueOnce([])
         .mockResolvedValueOnce({ folders: [], pageRules: [] })
@@ -170,7 +169,7 @@ describe("EnhancedSettings", () => {
       )
     })
 
-    it("should exclude option settings when excludeOptions is true", async () => {
+    it("ES-04: should exclude option settings when excludeOptions is true", async () => {
       const mockCommands = [
         { id: "1", title: "Regular Command", iconUrl: "" },
         {
@@ -216,7 +215,7 @@ describe("EnhancedSettings", () => {
       ])
     })
 
-    it("should include option settings when excludeOptions is false", async () => {
+    it("ES-05: should include option settings when excludeOptions is false", async () => {
       const mockCommands = [
         {
           id: "1",
@@ -265,7 +264,7 @@ describe("EnhancedSettings", () => {
       expect(result.folders).toEqual([mockOptionSettings.folder])
     })
 
-    it("should filter empty folders", async () => {
+    it("ES-07: should filter empty folders", async () => {
       const mockUserSettings = {
         folders: [
           { id: "1", title: "Valid Folder", iconUrl: "", onlyIcon: false },
@@ -295,7 +294,7 @@ describe("EnhancedSettings", () => {
       ])
     })
 
-    it("should handle parallel data fetching correctly", async () => {
+    it("ES-06: should handle parallel data fetching correctly", async () => {
       const mockCommands = [{ id: "1", title: "Command", iconUrl: "" }]
       const mockUserSettings = { folders: [], pageRules: [] }
       const mockStars = [{ id: "1" }]
@@ -327,7 +326,7 @@ describe("EnhancedSettings", () => {
       )
     })
 
-    it("should use default values when section fetch fails", async () => {
+    it("ES-09: should use default values when section fetch fails", async () => {
       mockSettingsCache.get
         .mockRejectedValueOnce(new Error("Commands failed"))
         .mockRejectedValueOnce(new Error("User settings failed"))
@@ -349,7 +348,7 @@ describe("EnhancedSettings", () => {
       )
     })
 
-    it("should handle mixed success and failure in parallel fetching", async () => {
+    it("ES-09-a: should handle mixed success and failure in parallel fetching", async () => {
       const mockCommands = [{ id: "1", title: "Command", iconUrl: "" }]
       const mockStars = [{ id: "1" }]
 
@@ -376,7 +375,7 @@ describe("EnhancedSettings", () => {
   })
 
   describe("getSection method", () => {
-    it("should get commands section", async () => {
+    it("ES-11: should get commands section", async () => {
       const mockCommands = [{ id: "1", title: "Test Command", iconUrl: "" }]
       mockSettingsCache.get.mockResolvedValue(mockCommands)
 
@@ -389,26 +388,100 @@ describe("EnhancedSettings", () => {
       expect(result).toEqual(mockCommands)
     })
 
-    it("should get user settings section", async () => {
+    it("ES-12: should get user settings section", async () => {
       const mockUserSettings = {
         settingVersion: "1.0.0",
         folders: [],
         pageRules: [],
       }
-      mockSettingsCache.get.mockResolvedValue(mockUserSettings)
+      const mockCommands = [
+        {
+          id: "cmd-1",
+          title: "Test Command",
+          searchUrl: "https://example.com/search?q=%s",
+          parentFolderId: "",
+          iconUrl: "",
+        },
+      ]
+
+      // Mock settingsCache to return different data for different sections
+      mockSettingsCache.get.mockImplementation((section) => {
+        if (section === CACHE_SECTIONS.USER_SETTINGS) {
+          return Promise.resolve(mockUserSettings)
+        }
+        if (section === CACHE_SECTIONS.COMMANDS) {
+          return Promise.resolve(mockCommands)
+        }
+        return Promise.resolve([])
+      })
 
       const result = await enhancedSettings.getSection(
         CACHE_SECTIONS.USER_SETTINGS,
       )
 
+      // Verify both sections were called
       expect(mockSettingsCache.get).toHaveBeenCalledWith(
         CACHE_SECTIONS.USER_SETTINGS,
         false,
       )
-      expect(result).toEqual(mockUserSettings)
+      expect(mockSettingsCache.get).toHaveBeenCalledWith(
+        CACHE_SECTIONS.COMMANDS,
+        false,
+      )
+
+      // Result should include merged commands
+      expect(result).toEqual({
+        ...mockUserSettings,
+        commands: mockCommands,
+      })
     })
 
-    it("should get stars section", async () => {
+    it("ES-12-a: should merge commands section data when getting user settings section", async () => {
+      const mockCommands = [
+        {
+          id: "cmd-1",
+          title: "Test Command 1",
+          searchUrl: "https://example.com/search?q=%s",
+          parentFolderId: "",
+          iconUrl: "",
+        },
+        {
+          id: "cmd-2",
+          title: "Test Command 2",
+          searchUrl: "https://example.com/search2?q=%s",
+          parentFolderId: "",
+          iconUrl: "",
+        },
+      ]
+
+      const mockUserSettings = {
+        version: "1.0.0",
+        commands: [],
+        folders: [],
+        pageRules: [],
+      }
+
+      // Mock settingsCache to return different data for different sections
+      mockSettingsCache.get.mockImplementation((section) => {
+        if (section === CACHE_SECTIONS.USER_SETTINGS) {
+          return Promise.resolve(mockUserSettings)
+        }
+        if (section === CACHE_SECTIONS.COMMANDS) {
+          return Promise.resolve(mockCommands)
+        }
+        return Promise.resolve([])
+      })
+
+      const result = await enhancedSettings.getSection(
+        CACHE_SECTIONS.USER_SETTINGS,
+      )
+
+      // This test should fail with current implementation
+      // The expectation is that commands from COMMANDS section should be merged
+      expect(result.commands).toEqual(mockCommands)
+    })
+
+    it("ES-13: should get stars section", async () => {
       const mockStars = [{ id: "1" }, { id: "2" }]
       mockSettingsCache.get.mockResolvedValue(mockStars)
 
@@ -421,7 +494,7 @@ describe("EnhancedSettings", () => {
       expect(result).toEqual(mockStars)
     })
 
-    it("should get shortcuts section", async () => {
+    it("ES-14: should get shortcuts section", async () => {
       const mockShortcuts = { shortcuts: [{ key: "Ctrl+S", action: "save" }] }
       mockSettingsCache.get.mockResolvedValue(mockShortcuts)
 
@@ -434,7 +507,7 @@ describe("EnhancedSettings", () => {
       expect(result).toEqual(mockShortcuts)
     })
 
-    it("should get user stats section", async () => {
+    it("ES-15: should get user stats section", async () => {
       const mockUserStats = {
         commandExecutionCount: 25,
         hasShownReviewRequest: true,
@@ -452,7 +525,7 @@ describe("EnhancedSettings", () => {
       expect(result).toEqual(mockUserStats)
     })
 
-    it("should force fresh data when forceFresh is true", async () => {
+    it("ES-03-a: should force fresh data when forceFresh is true", async () => {
       const mockData = [{ id: "1", title: "Test", iconUrl: "" }]
       mockSettingsCache.get.mockResolvedValue(mockData)
 
@@ -464,7 +537,7 @@ describe("EnhancedSettings", () => {
       )
     })
 
-    it("should handle section fetch errors", async () => {
+    it("ES-16: should handle section fetch errors", async () => {
       mockSettingsCache.get.mockRejectedValue(new Error("Section fetch failed"))
 
       await expect(
@@ -474,7 +547,7 @@ describe("EnhancedSettings", () => {
   })
 
   describe("cache management", () => {
-    it("should invalidate cache for specific sections", () => {
+    it("ES-17: should invalidate cache for specific sections", () => {
       const sections = [CACHE_SECTIONS.COMMANDS, CACHE_SECTIONS.USER_SETTINGS]
 
       enhancedSettings.invalidateCache(sections)
@@ -482,13 +555,13 @@ describe("EnhancedSettings", () => {
       expect(mockSettingsCache.invalidate).toHaveBeenCalledWith(sections)
     })
 
-    it("should invalidate all cache", () => {
+    it("ES-18: should invalidate all cache", () => {
       enhancedSettings.invalidateAllCache()
 
       expect(mockSettingsCache.invalidateAll).toHaveBeenCalled()
     })
 
-    it("should get cache status", () => {
+    it("ES-19: should get cache status", () => {
       const mockStatus = {
         [CACHE_SECTIONS.COMMANDS]: { cached: true, age: 1000 },
         [CACHE_SECTIONS.USER_SETTINGS]: { cached: false, age: 0 },
@@ -504,21 +577,11 @@ describe("EnhancedSettings", () => {
       expect(mockSettingsCache.getCacheStatus).toHaveBeenCalled()
       expect(result).toEqual(mockStatus)
     })
-
-    it("should get caches through settingsCache", async () => {
-      const mockCaches = { images: { url1: "data1" } }
-      mockSettingsCache.get.mockResolvedValue(mockCaches)
-
-      const result = await enhancedSettings.getCaches()
-
-      expect(mockSettingsCache.get).toHaveBeenCalledWith(CACHE_SECTIONS.CACHES)
-      expect(result).toEqual(mockCaches)
-    })
   })
 
   describe("private methods (tested through public interface)", () => {
     describe("mergeSettings", () => {
-      it("should merge settings correctly", async () => {
+      it("ES-20: should merge settings correctly", async () => {
         const mockCommands = [{ id: "1", title: "Command", iconUrl: "" }]
         const mockUserSettings = {
           settingVersion: "1.0.0",
@@ -557,7 +620,7 @@ describe("EnhancedSettings", () => {
     })
 
     describe("removeOptionSettings", () => {
-      it("should remove option settings correctly", async () => {
+      it("ES-21: should remove option settings correctly", async () => {
         const mockCommands = [
           { id: "1", title: "Regular Command", iconUrl: "" },
           {
@@ -598,7 +661,7 @@ describe("EnhancedSettings", () => {
     })
 
     describe("setupLegacyListeners", () => {
-      it("should handle legacy listener callback", () => {
+      it("ES-22-a: should handle legacy listener callback", () => {
         const invalidateAllSpy = vi.spyOn(
           enhancedSettings,
           "invalidateAllCache",
@@ -608,7 +671,7 @@ describe("EnhancedSettings", () => {
         const callback = mockSettings.addChangedListener.mock.calls[0][0]
 
         // Call the callback
-        callback({} as SettingsType)
+        callback()
 
         expect(invalidateAllSpy).toHaveBeenCalled()
       })
@@ -616,7 +679,7 @@ describe("EnhancedSettings", () => {
   })
 
   describe("error handling", () => {
-    it("should handle cache get errors gracefully", async () => {
+    it("ES-10: should handle cache get errors gracefully", async () => {
       mockSettingsCache.get.mockRejectedValue(new Error("Cache error"))
 
       // Should not throw, should use default values
@@ -634,7 +697,7 @@ describe("EnhancedSettings", () => {
       )
     })
 
-    it("should handle partial cache failures", async () => {
+    it("ES-10-a: should handle partial cache failures", async () => {
       const mockCommands = [{ id: "1", title: "Command", iconUrl: "" }]
 
       mockSettingsCache.get

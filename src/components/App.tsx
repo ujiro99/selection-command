@@ -12,7 +12,7 @@ import { PageActionContextProvider } from "@/hooks/pageAction/usePageActionConte
 import { Ipc, TabCommand, CONNECTION_PORT, BgCommand } from "@/services/ipc"
 import { toast, Toaster } from "sonner"
 import { showReviewRequestToast } from "@/components/ReviewRequestToast"
-import { Settings } from "@/services/settings"
+import { Settings } from "@/services/settings/settings"
 import { InvisibleItem } from "@/components/menu/InvisibleItem"
 import type { ShowToastParam } from "@/types"
 

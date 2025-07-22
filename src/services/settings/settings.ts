@@ -1,8 +1,8 @@
-import { Storage, STORAGE_KEY } from "./storage"
+import { Storage, STORAGE_KEY } from "../storage"
 import DefaultSettings, {
   DefaultCommands,
   PopupPlacement,
-} from "./option/defaultSettings"
+} from "../option/defaultSettings"
 import {
   OPTION_FOLDER,
   VERSION,
@@ -19,6 +19,7 @@ import type {
   Star,
   UserStats,
   ShortcutSettings,
+  Caches,
 } from "@/types"
 import {
   isBase64,
@@ -29,27 +30,16 @@ import {
 } from "@/lib/utils"
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
-import { LOCAL_STORAGE_KEY } from "./storage"
+import { LOCAL_STORAGE_KEY } from "../storage"
 
-export type Caches = {
-  images: ImageCache
-}
+const callbacks = [] as (() => void)[]
 
-export type ImageCache = {
-  [id: string]: string // key: url or uuid, value: data:image/png;base64
-}
-
-const callbacks = [] as ((data: SettingsType) => void)[]
-
-Storage.addListener(STORAGE_KEY.USER, async (settings: SettingsType) => {
-  settings.commands = await Storage.getCommands()
-  callbacks.forEach((cb) => cb(settings))
+Storage.addListener(STORAGE_KEY.USER, async () => {
+  callbacks.forEach((cb) => cb())
 })
 
-Storage.addCommandListener(async (commands: Command[]) => {
-  const settings = await Settings.get()
-  settings.commands = commands
-  callbacks.forEach((cb) => cb(settings))
+Storage.addCommandListener(async () => {
+  callbacks.forEach((cb) => cb())
 })
 
 export const Settings = {
@@ -92,7 +82,7 @@ export const Settings = {
 
     // remove unused caches
     const urls = Settings.getUrls(data)
-    const caches = await Settings.getCaches()
+    const caches = await Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
     for (const key in caches.images) {
       if (!urls.includes(key)) {
         console.debug("remove unused cache", key)
@@ -195,17 +185,13 @@ export const Settings = {
     )
   },
 
-  addChangedListener: (callback: (data: SettingsType) => void) => {
+  addChangedListener: (callback: () => void) => {
     callbacks.push(callback)
   },
 
-  removeChangedListener: (callback: (data: SettingsType) => void) => {
+  removeChangedListener: (callback: () => void) => {
     const idx = callbacks.indexOf(callback)
     if (idx !== -1) callbacks.splice(idx, 1)
-  },
-
-  getCaches: async (): Promise<Caches> => {
-    return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
   },
 
   getUrls: (settings: SettingsType): string[] => {

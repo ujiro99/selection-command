@@ -14,7 +14,7 @@ import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
 import css from "./Menu.module.css"
 import type { Command, CommandFolder } from "@/types"
-import { useSettingsWithImageCache, useUserSettings } from "@/hooks/useSetting"
+import { useSettingsWithImageCache, useUserSettings } from "@/hooks/useSettings"
 import { cn, onHover, isMenuCommand } from "@/lib/utils"
 import {
   toCommandTree,

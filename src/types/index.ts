@@ -263,3 +263,11 @@ export type ShowToastParam = {
   description: string
   action: string
 }
+
+export type Caches = {
+  images: ImageCache
+}
+
+export type ImageCache = {
+  [id: string]: string // key: url or uuid, value: data:image/png;base64
+}

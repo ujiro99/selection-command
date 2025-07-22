@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import ColorThief from "colorthief"
-import { useSettingsWithImageCache } from "@/hooks/useSetting"
+import { useSettingsWithImageCache } from "@/hooks/useSettings"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import { t } from "@/services/i18n"
 import { cn, isSearchCommand, isPageActionCommand } from "@/lib/utils"

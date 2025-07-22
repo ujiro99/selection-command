@@ -1,4 +1,4 @@
-import { Settings } from "@/services/settings"
+import { Settings } from "@/services/settings/settings"
 import type { SettingsType, Command } from "@/types"
 import { OPTION_FOLDER, STARTUP_METHOD } from "@/const"
 import { Ipc, TabCommand } from "@/services/ipc"

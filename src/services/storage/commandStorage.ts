@@ -1,15 +1,20 @@
 import { DefaultCommands } from "../option/defaultSettings"
 import { Command } from "@/types"
+import { CommandMetadata, GlobalCommandMetadata } from "@/types/command"
 import {
   BaseStorage,
   STORAGE_KEY,
   LOCAL_STORAGE_KEY,
   CMD_PREFIX,
   KEY,
+  CMD_KEY,
+  CMD_LOCAL_KEY,
+  cmdSyncKey,
+  cmdLocalKey,
   debouncedSyncSet,
 } from "./index"
 import { VERSION } from "@/const"
-import { LegacyBackupManager } from "./backupManager"
+import { LegacyBackupManager } from "@/services/storage/backupManager"
 
 // Storage interface for dependency injection
 interface StorageInterface {
@@ -18,7 +23,7 @@ interface StorageInterface {
 }
 
 // Command change callbacks
-export type commandChangedCallback = (commands: Command[]) => void
+export type commandChangedCallback = () => void
 const commandChangedCallbacks = [] as commandChangedCallback[]
 
 // Setup command change listener
@@ -28,30 +33,23 @@ chrome.storage.onChanged.addListener((changes) => {
     if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
   }
   if (commands.length > 0) {
-    commandChangedCallbacks.forEach((cb) => cb(commands))
+    commandChangedCallbacks.forEach((cb) => cb())
   }
 })
 
 const DEFAULT_COUNT = -1
 
-/**
- * Generate checksum from object (JSON.stringify based)
- * Uses a simple hash algorithm compatible with browser environment
- * @param obj - Object to generate checksum for
- * @returns Checksum (hexadecimal string)
- */
-function generateChecksum(obj: unknown): string {
-  const normalized = JSON.stringify(obj, Object.keys(obj || {}).sort())
-
-  // Simple hash algorithm (djb2) that works in browser
-  let hash = 5381
-  for (let i = 0; i < normalized.length; i++) {
-    hash = (hash << 5) + hash + normalized.charCodeAt(i)
-    hash = hash & hash // Convert to 32bit integer
+const getIndicesToRemove = (fromLen: number, toLen: number): number[] => {
+  if (toLen >= fromLen) {
+    return []
   }
-
-  // Convert to hex string and pad to ensure consistent length
-  return Math.abs(hash).toString(16).padStart(8, "0")
+  const removeCount = fromLen - toLen
+  const startIndex = toLen
+  const indicesToRemove = []
+  for (let i = 0; i < removeCount; i++) {
+    indicesToRemove.push(startIndex + i)
+  }
+  return indicesToRemove
 }
 
 async function loadLegacyCommandData(
@@ -69,7 +67,7 @@ async function loadLegacyCommandData(
       return returnDefaultOnEmpty ? DefaultCommands : []
     }
 
-    const keys = Array.from({ length: count }, (_, i) => `${CMD_PREFIX}${i}`)
+    const keys = Array.from({ length: count }, (_, i) => cmdSyncKey(i))
     const result = await chrome.storage.sync.get(keys)
 
     if (throwOnError && chrome.runtime.lastError != null) {
@@ -84,19 +82,6 @@ async function loadLegacyCommandData(
     console.warn("Failed to load legacy commands:", error)
     return returnDefaultOnEmpty ? DefaultCommands : []
   }
-}
-
-// Type definitions for hybrid storage
-interface CommandMetadata {
-  count: number // Number of commands saved in this storage
-  version: number // Data version (timestamp)
-  checksum: string // Hash for integrity checking
-}
-
-interface GlobalCommandMetadata {
-  globalOrder: string[] // Global command order array
-  version: number // Global data version (timestamp)
-  lastUpdated: number // Last update timestamp
 }
 
 interface StorageAllocation {
@@ -131,9 +116,7 @@ class StorageCapacityCalculator {
     const bytes = new TextEncoder().encode(jsonStr).length
 
     // Add overhead for chrome.storage key name
-    const keyOverhead = new TextEncoder().encode(
-      `${CMD_PREFIX}${command.id}`,
-    ).length
+    const keyOverhead = new TextEncoder().encode(cmdSyncKey(100)).length
 
     return bytes + keyOverhead
   }
@@ -198,20 +181,15 @@ class StorageCapacityCalculator {
     localMetadata: CommandMetadata
     globalMetadata: GlobalCommandMetadata
   } {
-    const syncCommands = allCommands.slice(0, syncCount)
-    const localCommands = allCommands.slice(syncCount)
     const timestamp = Date.now()
-
     return {
       syncMetadata: {
         count: syncCount,
         version: timestamp,
-        checksum: generateChecksum(syncCommands),
       },
       localMetadata: {
         count: localCount,
         version: timestamp,
-        checksum: generateChecksum(localCommands),
       },
       globalMetadata: {
         globalOrder: allCommands.map((cmd) => cmd.id),
@@ -234,42 +212,34 @@ class CommandMetadataManager {
     this.storage = storage
   }
 
-  async saveSyncCommandMetadata(metadata: CommandMetadata): Promise<void> {
-    await this.storage.set(this.SYNC_METADATA_KEY, metadata)
-  }
-
-  async saveLocalCommandMetadata(metadata: CommandMetadata): Promise<void> {
-    await this.storage.set(this.LOCAL_METADATA_KEY, metadata)
+  async saveCommandMetadata(
+    sync: CommandMetadata,
+    local: CommandMetadata,
+  ): Promise<void> {
+    await Promise.all([
+      this.storage.set(this.SYNC_METADATA_KEY, sync),
+      this.storage.set(this.LOCAL_METADATA_KEY, local),
+    ])
   }
 
   async saveGlobalCommandMetadata(
     metadata: GlobalCommandMetadata,
   ): Promise<void> {
-    console.debug("Saving global command metadata:", metadata)
     await this.storage.set(this.GLOBAL_METADATA_KEY, metadata)
   }
 
-  async loadSyncCommandMetadata(): Promise<CommandMetadata | null> {
+  async loadCommandMetadata(): Promise<
+    [CommandMetadata, CommandMetadata] | [null, null]
+  > {
     try {
-      const metadata = await this.storage.get<CommandMetadata>(
-        this.SYNC_METADATA_KEY,
-      )
-      return metadata || null
+      const metadata = await Promise.all([
+        this.storage.get<CommandMetadata>(this.SYNC_METADATA_KEY),
+        this.storage.get<CommandMetadata>(this.LOCAL_METADATA_KEY),
+      ])
+      return metadata
     } catch (error) {
       console.error("Failed to load sync metadata:", error)
-      return null
-    }
-  }
-
-  async loadLocalCommandMetadata(): Promise<CommandMetadata | null> {
-    try {
-      const metadata = await this.storage.get<CommandMetadata>(
-        this.LOCAL_METADATA_KEY,
-      )
-      return metadata || null
-    } catch (error) {
-      console.error("Failed to load local metadata:", error)
-      return null
+      return [null, null]
     }
   }
 
@@ -289,20 +259,6 @@ class CommandMetadataManager {
     }
   }
 
-  async validateCommandIntegrity(
-    commands: Command[],
-    metadata: CommandMetadata,
-  ): Promise<boolean> {
-    if (!metadata) return false
-
-    // Basic integrity check
-    if (metadata.count !== commands.length) return false
-
-    // Checksum-based integrity check
-    const currentChecksum = generateChecksum(commands)
-    return metadata.checksum === currentChecksum
-  }
-
   async validateGlobalConsistency(allCommands: Command[]): Promise<boolean> {
     const globalMetadata = await this.loadGlobalCommandMetadata()
     if (!globalMetadata) return false
@@ -319,17 +275,21 @@ class CommandMetadataManager {
 
   // Migration determination
   async needsMigration(): Promise<boolean> {
-    const syncMetadata = await this.loadSyncCommandMetadata()
-    const localMetadata = await this.loadLocalCommandMetadata()
-    const globalMetadata = await this.loadGlobalCommandMetadata()
-    const oldCount = await this.storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
+    const [metadata, globalMetadata] = await Promise.all([
+      this.loadCommandMetadata(),
+      this.loadGlobalCommandMetadata(),
+    ])
+    const [syncMetadata, localMetadata] = metadata
+    const legacyCount = await this.storage.get<number>(
+      STORAGE_KEY.COMMAND_COUNT,
+    )
 
     // When new metadata doesn't exist but legacy format data exists
     return (
       !syncMetadata &&
       !localMetadata &&
       !globalMetadata &&
-      oldCount !== DEFAULT_COUNT
+      legacyCount !== DEFAULT_COUNT
     )
   }
 }
@@ -346,8 +306,6 @@ export class CommandMigrationManager {
 
   async performMigration(): Promise<Command[]> {
     try {
-      console.debug("Starting command migration to hybrid storage...")
-
       // Step 1: Load legacy format data
       const legacyCommands = await loadLegacyCommandData(this.storage)
       if (legacyCommands.length === 0) {
@@ -359,8 +317,8 @@ export class CommandMigrationManager {
       await legacyBackupManager.backupCommandsForMigration(legacyCommands)
 
       // Step 3: Save in new format
-      const hybridStorage = new HybridCommandStorage(this.storage)
-      await hybridStorage.saveCommands(legacyCommands)
+      const commandStorage = new CommandStorage(this.storage)
+      await commandStorage.saveCommands(legacyCommands, true)
 
       // Step 4: Set migration completion flag
       await this.storage.set(this.MIGRATION_FLAG_KEY, {
@@ -401,18 +359,14 @@ export class CommandMigrationManager {
       } | null
       if (
         migrationStatus &&
-        migrationStatus.version === this.MIGRATION_VERSION
+        migrationStatus.version !== this.MIGRATION_VERSION
       ) {
-        return false
+        return true
       }
     } catch {
       // Migration flag doesn't exist = migration not performed
     }
-
-    const legacyCount = await this.storage.get<number>(
-      STORAGE_KEY.COMMAND_COUNT,
-    )
-    return legacyCount !== DEFAULT_COUNT
+    return false
   }
 
   /**
@@ -427,8 +381,8 @@ export class CommandMigrationManager {
   }
 }
 
-// Hybrid command storage class
-export class HybridCommandStorage {
+// Command storage class
+export class CommandStorage {
   public calculator = new StorageCapacityCalculator()
   private metadataManager: CommandMetadataManager
   private storage: StorageInterface
@@ -438,13 +392,17 @@ export class HybridCommandStorage {
     this.metadataManager = new CommandMetadataManager(this.storage)
   }
 
-  async saveCommands(commands: Command[]): Promise<boolean> {
+  async saveCommands(commands: Command[], migration = false): Promise<boolean> {
     try {
       // Step 1: Determine storage allocation
       const allocation = this.calculator.analyzeAndAllocate(commands)
 
       // Step 2: Save commands and metadata atomically
-      await this.saveCommandsAndMetadata(allocation)
+      if (migration) {
+        await this.saveCommandsAndMetadata(allocation, commands.length)
+      } else {
+        await this.saveCommandsAndMetadata(allocation)
+      }
       return true
     } catch (error) {
       console.error("Failed to save commands:", error)
@@ -452,25 +410,31 @@ export class HybridCommandStorage {
     }
   }
 
-  async loadCommands(retryCount = 0): Promise<Command[]> {
-    const MAX_RETRIES = 3
-    const RETRY_DELAY_MS = 10
-
+  async loadCommands(): Promise<Command[]> {
     try {
       // Step 1: Check if migration is needed
-      if (await this.metadataManager.needsMigration()) {
-        const migrationManager = new CommandMigrationManager()
+      const migrationManager = new CommandMigrationManager(this.storage)
+      const [needsMigrationByManager, needsMigrationByMetadata] =
+        await Promise.all([
+          migrationManager.needsMigration(),
+          this.metadataManager.needsMigration(),
+        ])
+
+      if (needsMigrationByManager || needsMigrationByMetadata) {
+        console.debug("Migration needed, performing migration...")
         return await migrationManager.performMigration()
       }
 
       // Step 2: Load metadata
-      const [syncMetadata, localMetadata, globalMetadata] = await Promise.all([
-        this.metadataManager.loadSyncCommandMetadata(),
-        this.metadataManager.loadLocalCommandMetadata(),
+      const [metadata, globalMetadata] = await Promise.all([
+        this.metadataManager.loadCommandMetadata(),
         this.metadataManager.loadGlobalCommandMetadata(),
       ])
+      const [syncMetadata, localMetadata] = metadata
 
       if (!syncMetadata && !localMetadata && !globalMetadata) {
+        // First load, return default commands.
+        console.debug("No metadata found, returning default commands...")
         return DefaultCommands
       }
 
@@ -499,109 +463,162 @@ export class HybridCommandStorage {
           console.debug(
             `Missing ${expectedCount - actualCount} commands from global order`,
           )
-          // Update global metadata if necessary
-          await this.updateGlobalMetadataForMissingCommands(orderedCommands)
+          await this.updateGlobalMetadata(orderedCommands)
         }
       } else {
         // Fallback: merge with sync commands first
         orderedCommands = allCommands
+        await this.updateGlobalMetadata(orderedCommands)
       }
 
-      // Step 5: Integrity checks
-      let hasIntegrityIssues = false
-
-      if (syncMetadata && syncCommands.length > 0) {
-        if (
-          !(await this.metadataManager.validateCommandIntegrity(
-            syncCommands,
-            syncMetadata,
-          ))
-        ) {
-          console.debug("Sync command integrity check failed")
-          hasIntegrityIssues = true
-        }
-      }
-
-      if (localMetadata && localCommands.length > 0) {
-        if (
-          !(await this.metadataManager.validateCommandIntegrity(
-            localCommands,
-            localMetadata,
-          ))
-        ) {
-          console.debug("Local command integrity check failed")
-          hasIntegrityIssues = true
-        }
-      }
-
+      // Step 5: Global Consistency checks
       if (
         globalMetadata &&
         !(await this.metadataManager.validateGlobalConsistency(orderedCommands))
       ) {
         console.debug("Global consistency check failed")
-        hasIntegrityIssues = true
-      }
-
-      if (hasIntegrityIssues) {
-        console.debug(
-          `Command integrity check failed (attempt ${retryCount + 1}/${MAX_RETRIES + 1})`,
-        )
-        // Retry with delay if we haven't exceeded max retries
-        if (retryCount < MAX_RETRIES) {
-          console.info(
-            `Retrying command load after ${RETRY_DELAY_MS}ms delay...`,
-          )
-          await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
-          return await this.loadCommands(retryCount + 1)
-        }
-        console.warn("Command integrity check failed after all retries...")
+        await this.updateGlobalMetadata(orderedCommands)
       }
 
       return orderedCommands
     } catch (error) {
       console.error("Failed to load commands:", error)
-      return DefaultCommands
+      throw error
     }
+  }
+
+  /**
+   * Update commands to chrome sync/local storage.
+   *
+   * @returns {Promise<boolean>} true if success's
+   * @throws {chrome.runtime.LastError} if error occurred
+   */
+  async updateCommands(
+    commands: Command[],
+  ): Promise<boolean | chrome.runtime.LastError> {
+    const [syncMetadata, localMetadata] =
+      await this.metadataManager.loadCommandMetadata()
+
+    // If update first time, set DefaultCommands.
+    if (!syncMetadata) {
+      console.debug("Update first time, set DefaultCommands.")
+      const updated = DefaultCommands.reduce(
+        (acc, cmd, i) => {
+          const found = commands.find((c) => c.id === cmd.id)
+          if (found) {
+            acc[cmdSyncKey(i)] = found
+          }
+          return acc
+        },
+        {} as { [key: CMD_KEY]: Command },
+      )
+      if (Object.keys(updated).length > 0) await debouncedSyncSet(updated)
+      return true
+    }
+
+    // For sync
+    const commandInSync = await this.loadFromSync(syncMetadata?.count || 0)
+    let newCommands = commandInSync.reduce(
+      (acc, cmd, i) => {
+        const newCmd = commands.find((c) => c.id === cmd.id)
+        if (newCmd) {
+          acc[cmdSyncKey(i)] = newCmd
+        }
+        return acc
+      },
+      {} as { [key: CMD_KEY]: Command },
+    )
+    if (Object.keys(newCommands).length > 0) await debouncedSyncSet(newCommands)
+
+    // For local
+    const commandInLocal = await this.loadFromLocal(localMetadata?.count || 0)
+    newCommands = commandInLocal.reduce(
+      (acc, cmd, i) => {
+        const newCmd = commands.find((c) => c.id === cmd.id)
+        if (newCmd) {
+          acc[cmdLocalKey(i)] = newCmd
+        }
+        return acc
+      },
+      {} as { [key: CMD_LOCAL_KEY]: Command },
+    )
+    if (Object.keys(newCommands).length > 0)
+      await chrome.storage.local.set(newCommands)
+
+    return true
+  }
+
+  addCommandListener(cb: commandChangedCallback) {
+    commandChangedCallbacks.push(cb)
+  }
+
+  removeCommandListener(cb: commandChangedCallback) {
+    const idx = commandChangedCallbacks.findIndex((f) => f === cb)
+    if (idx !== -1) commandChangedCallbacks.splice(idx, 1)
   }
 
   private async saveCommandsAndMetadata(
     allocation: StorageAllocation,
+    legacyCount?: number,
   ): Promise<void> {
     const syncSavePromises: Promise<void>[] = []
     const localSavePromises: Promise<boolean>[] = []
 
+    // Load count
+    const [syncMetadata, localMetadata] =
+      await this.metadataManager.loadCommandMetadata()
+    const preSyncCount = syncMetadata?.count || legacyCount || 0
+    const preLocalCount = localMetadata?.count || 0
+
     // Save to sync storage
     allocation.sync.commands.forEach((command, index) => {
-      const key = `${CMD_PREFIX}${index}`
+      const key = cmdSyncKey(index)
       syncSavePromises.push(debouncedSyncSet({ [key]: command }))
     })
 
     // Save to local storage using BaseStorage
     allocation.local.commands.forEach((command, index) => {
-      const key = `${CMD_PREFIX}local-${index}` as KEY
+      const key = cmdLocalKey(index)
       localSavePromises.push(this.storage.set(key, command))
     })
 
     // Add metadata save to the same promise batch
-    console.log(allocation.globalMetadata)
     const metadataSavePromises = [
-      this.metadataManager.saveSyncCommandMetadata(allocation.syncMetadata),
-      this.metadataManager.saveLocalCommandMetadata(allocation.localMetadata),
+      this.metadataManager.saveCommandMetadata(
+        allocation.syncMetadata,
+        allocation.localMetadata,
+      ),
       this.metadataManager.saveGlobalCommandMetadata(allocation.globalMetadata),
     ]
 
     // Save commands and metadata atomically in parallel
     await Promise.all([
-      await Promise.all(syncSavePromises),
-      await Promise.all(localSavePromises),
-      await Promise.all(metadataSavePromises),
+      ...syncSavePromises,
+      ...localSavePromises,
+      ...metadataSavePromises,
     ])
+
+    // Remove surplus commands
+    const syncCount = allocation.syncMetadata.count
+    if (preSyncCount > syncCount) {
+      const removeKeys = getIndicesToRemove(preSyncCount, syncCount).map((i) =>
+        cmdSyncKey(i),
+      )
+      await chrome.storage.sync.remove(removeKeys)
+    }
+    const localCount = allocation.localMetadata.count
+    if (preLocalCount > localCount) {
+      const removeKeys = getIndicesToRemove(preLocalCount, localCount).map(
+        (i) => cmdLocalKey(i),
+      )
+      await chrome.storage.local.remove(removeKeys)
+    }
   }
 
   private async loadFromSync(count: number): Promise<Command[]> {
     if (count === 0) return []
 
-    const keys = Array.from({ length: count }, (_, i) => `${CMD_PREFIX}${i}`)
+    const keys = Array.from({ length: count }, (_, i) => cmdSyncKey(i))
     const result = await chrome.storage.sync.get(keys)
 
     return keys.map((key) => result[key]).filter((cmd) => cmd != null)
@@ -610,10 +627,7 @@ export class HybridCommandStorage {
   private async loadFromLocal(count: number): Promise<Command[]> {
     if (count === 0) return []
 
-    const keys = Array.from(
-      { length: count },
-      (_, i) => `${CMD_PREFIX}local-${i}`,
-    )
+    const keys = Array.from({ length: count }, (_, i) => cmdLocalKey(i))
     const result = await chrome.storage.local.get(keys)
 
     return keys.map((key) => result[key]).filter((cmd) => cmd != null)
@@ -638,65 +652,13 @@ export class HybridCommandStorage {
     return orderedCommands
   }
 
-  private async updateGlobalMetadataForMissingCommands(
-    actualCommands: Command[],
-  ): Promise<void> {
+  private async updateGlobalMetadata(actualCommands: Command[]): Promise<void> {
     const updatedGlobalMetadata: GlobalCommandMetadata = {
       globalOrder: actualCommands.map((cmd) => cmd.id),
       version: Date.now(),
       lastUpdated: Date.now(),
     }
-
     // Update global metadata to match actual commands
     await this.metadataManager.saveGlobalCommandMetadata(updatedGlobalMetadata)
   }
-}
-
-export const CommandStorage = {
-  /**
-   * Update commands to chrome sync storage.
-   *
-   * @returns {Promise<boolean>} true if success's
-   * @throws {chrome.runtime.LastError} if error occurred
-   */
-  updateCommands: async (
-    commands: Command[],
-    hybridStorage: HybridCommandStorage,
-    storage: StorageInterface = BaseStorage,
-  ): Promise<boolean | chrome.runtime.LastError> => {
-    const current = await hybridStorage.loadCommands()
-
-    // If update first time, set DefaultCommands.
-    const count = await storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
-    if (count === DEFAULT_COUNT) {
-      console.debug("Update first time, set DefaultCommands.")
-      const newCommands = current.map((cmd) => {
-        return commands.find((c) => c.id === cmd.id) ?? cmd
-      })
-      return hybridStorage.saveCommands(newCommands)
-    }
-
-    // Update commands.
-    const newCommands = current.reduce(
-      (acc, cmd, i) => {
-        const newCmd = commands.find((c) => c.id === cmd.id)
-        if (newCmd) {
-          acc[`${CMD_PREFIX}${i}`] = newCmd
-        }
-        return acc
-      },
-      {} as { [key: string]: Command },
-    )
-    await debouncedSyncSet(newCommands)
-    return true
-  },
-
-  addCommandListener: (cb: commandChangedCallback) => {
-    commandChangedCallbacks.push(cb)
-  },
-
-  removeCommandListener: (cb: commandChangedCallback) => {
-    const idx = commandChangedCallbacks.findIndex((f) => f === cb)
-    if (idx !== -1) commandChangedCallbacks.splice(idx, 1)
-  },
 }
