@@ -1,4 +1,4 @@
-import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "./storage"
+import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "../storage"
 import type { UserStats, ShortcutSettings, UserSettings } from "@/types"
 import { Settings } from "./settings"
 

@@ -6,8 +6,11 @@ import {
   useUserSettings,
   useSettingsWithImageCache,
 } from "./useSetting"
-import { enhancedSettings } from "../services/enhancedSettings"
-import { settingsCache, CACHE_SECTIONS } from "../services/settingsCache"
+import { enhancedSettings } from "../services/settings/enhancedSettings"
+import {
+  settingsCache,
+  CACHE_SECTIONS,
+} from "../services/settings/settingsCache"
 import {
   INHERIT,
   SIDE,
@@ -22,11 +25,11 @@ import {
   OPEN_MODE,
 } from "@/const"
 import type { SettingsType, UserSettings, PageRule } from "@/types"
-import type { Caches } from "@/services/settings"
+import type { Caches } from "@/services/settings/settings"
 
 // Mock dependencies
-vi.mock("../services/enhancedSettings")
-vi.mock("../services/settingsCache")
+vi.mock("../services/settings/enhancedSettings")
+vi.mock("../services/settings/settingsCache")
 
 const mockEnhancedSettings = vi.mocked(enhancedSettings)
 const mockSettingsCache = vi.mocked(settingsCache)

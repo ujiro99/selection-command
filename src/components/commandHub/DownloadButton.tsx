@@ -3,7 +3,7 @@ import clsx from "clsx"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { useSection } from "@/hooks/useSetting"
 import { useDetectUrlChanged } from "@/hooks/useDetectUrlChanged"
-import { CACHE_SECTIONS } from "@/services/settingsCache"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import {
   Popover,

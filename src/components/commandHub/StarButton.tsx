@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react"
 import { useSection } from "@/hooks/useSetting"
-import { CACHE_SECTIONS } from "@/services/settingsCache"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import { SCREEN } from "@/const"
 import { useDetectUrlChanged } from "@/hooks/useDetectUrlChanged"

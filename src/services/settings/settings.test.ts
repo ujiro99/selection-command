@@ -1,17 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Settings, migrate } from "./settings"
-import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "./storage"
-import { OptionSettings } from "./option/optionSettings"
-import DefaultSettings, { DefaultCommands } from "./option/defaultSettings"
-import { toDataURL } from "./dom"
+import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "../storage"
+import { OptionSettings } from "../option/optionSettings"
+import DefaultSettings, { DefaultCommands } from "../option/defaultSettings"
+import { toDataURL } from "../dom"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
 import { isLinkCommand } from "@/lib/utils"
 
 // Mock dependencies
-vi.mock("./storage")
-vi.mock("./option/optionSettings")
-vi.mock("./dom")
+vi.mock("../storage")
+vi.mock("../option/optionSettings")
+vi.mock("../dom")
 
 const mockStorage = vi.mocked(Storage)
 const mockOptionSettings = vi.mocked(OptionSettings)

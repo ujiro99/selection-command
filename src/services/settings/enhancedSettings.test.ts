@@ -2,14 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { EnhancedSettings } from "./enhancedSettings"
 import { settingsCache, CACHE_SECTIONS } from "./settingsCache"
 import { Settings } from "./settings"
-import { OptionSettings } from "./option/optionSettings"
+import { OptionSettings } from "../option/optionSettings"
 import { OPTION_FOLDER } from "@/const"
 
 // Mock dependencies
 vi.mock("./settingsCache")
 vi.mock("./settings")
-vi.mock("./option/optionSettings")
-vi.mock("./option/defaultSettings", () => ({
+vi.mock("../option/optionSettings")
+vi.mock("../option/defaultSettings", () => ({
   default: {
     settingVersion: "0.13.0",
     folders: [],

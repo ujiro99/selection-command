@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react"
-import { enhancedSettings } from "../services/enhancedSettings"
+import { enhancedSettings } from "../services/settings/enhancedSettings"
 import {
   settingsCache,
   CacheSection,
   CACHE_SECTIONS,
-} from "../services/settingsCache"
+} from "../services/settings/settingsCache"
 
 import type {
   SettingsType,

@@ -54,7 +54,7 @@ import {
   e2a,
   cn,
 } from "@/lib/utils"
-import { Settings } from "@/services/settings"
+import { Settings } from "@/services/settings/settings"
 import DefaultSettings from "@/services/option/defaultSettings"
 
 const formSchema = z

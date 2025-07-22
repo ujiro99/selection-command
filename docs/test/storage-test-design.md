@@ -1,4 +1,4 @@
-# Storage Service Test Design
+# ストレージ管理機能の単体テスト設計
 
 ## storageUsage.ts の単体テスト設計
 

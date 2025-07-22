@@ -12,7 +12,7 @@ import {
   DailyBackupManager,
   WeeklyBackupManager,
 } from "@/services/storage/backupManager"
-import { Settings, migrate } from "@/services/settings"
+import { Settings, migrate } from "@/services/settings/settings"
 import { isBase64, isUrl } from "@/lib/utils"
 import { APP_ID } from "@/const"
 import { t } from "@/services/i18n"

@@ -2,33 +2,7 @@
 
 ## 設計概要
 
-### 1. `src/services/settings.ts`
-
-- **役割**: 設定の CRUD 操作を行う低レベルサービス
-- **特徴**:
-  - Chrome拡張機能のストレージとの直接的なやり取り
-  - マイグレーション機能
-  - 画像キャッシュ管理
-  - コールバック機能による変更通知
-
-### 2. `src/services/enhancedSettings.ts`
-
-- **役割**: 設定の高レベルサービス（キャッシュ機能付き）
-- **特徴**:
-  - settingsCacheを使用した効率的なデータ取得
-  - セクション別の部分取得
-  - 並列データ取得
-  - legacyリスナーとの互換性
-
-### 3. `src/services/settingsCache.ts`
-
-- **役割**: 設定データのキャッシュ管理システム
-- **特徴**:
-  - メモリベースのキャッシュでパフォーマンス向上
-  - TTL（Time To Live）による自動期限切れ
-  - セクション別のデータ管理とバージョン管理
-  - Chrome拡張機能ストレージの変更監視
-  - リスナー機能によるリアルタイム更新通知
+- @src/services/settings/CLAUDE.md を参照
 
 ### 4. `src/hooks/useSetting.ts`
 
@@ -41,7 +15,7 @@
 
 ## 単体テストの設計
 
-### `src/services/settings.ts` のテスト項目
+### `src/services/settings/settings.ts` のテスト項目
 
 #### Settings.get のテスト
 
@@ -102,7 +76,7 @@
 - [ ] ST-31: 正常系: バージョン0.11.9からのマイグレーション
 - [ ] ST-32: 正常系: 最新バージョンの場合、マイグレーション不要
 
-### `src/services/enhancedSettings.ts` のテスト項目
+### `src/services/settings/enhancedSettings.ts` のテスト項目
 
 #### EnhancedSettings.get のテスト
 
@@ -138,7 +112,7 @@
 - [ ] ES-21: 正常系: removeOptionSettingsでオプション設定の除去
 - [ ] ES-22: 正常系: setupLegacyListenersでレガシーリスナーの設定
 
-### `src/services/settingsCache.ts` のテスト項目
+### `src/services/settings/settingsCache.ts` のテスト項目
 
 #### DataVersionManager のテスト
 
@@ -279,9 +253,10 @@
 ```
 src/
 ├── services/
-│   ├── settings.test.ts
-│   ├── enhancedSettings.test.ts
-│   └── settingsCache.test.ts
+│   └── settings/
+│       ├── settings.test.ts
+│       ├── enhancedSettings.test.ts
+│       └── settingsCache.test.ts
 └── hooks/
     └── useSetting.test.ts
 ```

@@ -1,8 +1,8 @@
-import { Storage, STORAGE_KEY } from "./storage"
+import { Storage, STORAGE_KEY } from "../storage"
 import DefaultSettings, {
   DefaultCommands,
   PopupPlacement,
-} from "./option/defaultSettings"
+} from "../option/defaultSettings"
 import {
   OPTION_FOLDER,
   VERSION,
@@ -29,7 +29,7 @@ import {
 } from "@/lib/utils"
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
-import { LOCAL_STORAGE_KEY } from "./storage"
+import { LOCAL_STORAGE_KEY } from "../storage"
 
 export type Caches = {
   images: ImageCache

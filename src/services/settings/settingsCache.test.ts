@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { SettingsCacheManager, CACHE_SECTIONS } from "./settingsCache"
-import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "./storage"
+import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "../storage"
 import { Settings } from "./settings"
 import { OPEN_MODE } from "@/const"
 
@@ -14,7 +14,7 @@ const createMockCommand = (overrides: any = {}): any => ({
 })
 
 // Mock dependencies
-vi.mock("./storage")
+vi.mock("../storage")
 vi.mock("./settings")
 
 const mockStorage = vi.mocked(Storage)
