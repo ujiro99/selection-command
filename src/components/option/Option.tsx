@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 
-import { Settings } from "@/services/settings"
+import { Settings } from "@/services/settings/settings"
 import { capitalize } from "@/lib/utils"
 import { APP_ID, VERSION } from "@/const"
 

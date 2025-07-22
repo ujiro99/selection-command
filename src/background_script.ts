@@ -9,7 +9,7 @@ import {
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand } from "@/services/ipc"
-import { Settings } from "@/services/settings"
+import { Settings } from "@/services/settings/settings"
 import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"

@@ -1,17 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Settings, migrate } from "./settings"
-import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "./storage"
-import { OptionSettings } from "./option/optionSettings"
-import DefaultSettings, { DefaultCommands } from "./option/defaultSettings"
-import { toDataURL } from "./dom"
+import { Storage, STORAGE_KEY } from "../storage"
+import { OptionSettings } from "../option/optionSettings"
+import DefaultSettings, { DefaultCommands } from "../option/defaultSettings"
+import { toDataURL } from "../dom"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
 import { isLinkCommand } from "@/lib/utils"
 
 // Mock dependencies
-vi.mock("./storage")
-vi.mock("./option/optionSettings")
-vi.mock("./dom")
+vi.mock("../storage")
+vi.mock("../option/optionSettings")
+vi.mock("../dom")
 
 const mockStorage = vi.mocked(Storage)
 const mockOptionSettings = vi.mocked(OptionSettings)
@@ -49,7 +49,7 @@ describe("Settings", () => {
       setupDefaultMocks()
     })
 
-    it("should return basic settings data", async () => {
+    it("ST-01: should return basic settings data", async () => {
       const mockUserSettings = {
         settingVersion: VERSION,
         folders: [{ id: "1", title: "Test Folder", iconUrl: "" }],
@@ -84,7 +84,7 @@ describe("Settings", () => {
       )
     })
 
-    it("should exclude option settings when excludeOptions is true", async () => {
+    it("ST-02: should exclude option settings when excludeOptions is true", async () => {
       const mockUserSettings = { folders: [], pageRules: [] }
 
       mockStorage.get.mockResolvedValue(mockUserSettings)
@@ -99,7 +99,7 @@ describe("Settings", () => {
       )
     })
 
-    it("should include option settings when excludeOptions is false", async () => {
+    it("ST-03: should include option settings when excludeOptions is false", async () => {
       const mockUserSettings = { folders: [], pageRules: [] }
 
       mockStorage.get.mockResolvedValue(mockUserSettings)
@@ -114,7 +114,7 @@ describe("Settings", () => {
       expect(result.folders).toEqual([mockOptionSettings.folder])
     })
 
-    it("should filter empty folders", async () => {
+    it("ST-04: should filter empty folders", async () => {
       const mockUserSettings = {
         settingVersion: VERSION,
         commands: [], // Add commands to prevent undefined issue
@@ -146,7 +146,7 @@ describe("Settings", () => {
       ])
     })
 
-    it("should handle migration", async () => {
+    it("ST-06: should handle migration", async () => {
       const oldSettings = {
         settingVersion: "0.10.0",
         folders: [],
@@ -170,7 +170,7 @@ describe("Settings", () => {
       expect(mockStorage.get).toHaveBeenCalled()
     })
 
-    it("should handle storage errors gracefully", async () => {
+    it("ST-07: should handle storage errors gracefully", async () => {
       mockStorage.get.mockRejectedValue(new Error("Storage error"))
       mockStorage.getCommands.mockResolvedValue([])
 
@@ -190,84 +190,40 @@ describe("Settings", () => {
       stars: [] as Star[],
     }
 
-    it("should save settings data correctly", async () => {
-      const originalGetCaches = Settings.getCaches
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
+    it("ST-08: should save settings data correctly", async () => {
+      console.log("ST-08 Testing Settings.set method", chrome.storage.local.get)
+      mockStorage.get.mockResolvedValueOnce({
+        images: {},
+      })
 
-      try {
-        const result = await Settings.set(mockSettings)
+      const result = await Settings.set(mockSettings)
 
-        expect(result).toBe(true)
-        expect(mockStorage.setCommands).toHaveBeenCalledWith(
-          expect.arrayContaining(mockSettings.commands),
-        )
-        expect(mockStorage.set).toHaveBeenCalledWith(STORAGE_KEY.USER_STATS, {
-          commandExecutionCount: mockSettings.commandExecutionCount,
-          hasShownReviewRequest: mockSettings.hasShownReviewRequest,
-        })
-        expect(mockStorage.set).toHaveBeenCalledWith(
-          STORAGE_KEY.SHORTCUTS,
-          mockSettings.shortcuts,
-        )
-        expect(mockStorage.set).toHaveBeenCalledWith(
-          "stars",
-          mockSettings.stars,
-        )
-      } finally {
-        Settings.getCaches = originalGetCaches
-      }
+      expect(result).toBe(true)
+      expect(mockStorage.setCommands).toHaveBeenCalledWith(
+        expect.arrayContaining(mockSettings.commands),
+      )
+      expect(mockStorage.set).toHaveBeenCalledWith(STORAGE_KEY.USER_STATS, {
+        commandExecutionCount: mockSettings.commandExecutionCount,
+        hasShownReviewRequest: mockSettings.hasShownReviewRequest,
+      })
+      expect(mockStorage.set).toHaveBeenCalledWith(
+        STORAGE_KEY.SHORTCUTS,
+        mockSettings.shortcuts,
+      )
+      expect(mockStorage.set).toHaveBeenCalledWith("stars", mockSettings.stars)
     })
 
-    it("should skip image cache processing when serviceWorker is true", async () => {
-      const originalGetCaches = Settings.getCaches
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
-
-      try {
-        await Settings.set(mockSettings, true)
-
-        expect(mockToDataURL).not.toHaveBeenCalled()
-      } finally {
-        Settings.getCaches = originalGetCaches
-      }
+    it("ST-09: should skip image cache processing when serviceWorker is true", async () => {
+      await Settings.set(mockSettings, true)
+      expect(mockToDataURL).not.toHaveBeenCalled()
     })
 
-    it("should process image URLs and create cache when serviceWorker is false", async () => {
-      const imageUrl = "http://example.com/icon.png"
-      const settingsWithImage = {
-        ...mockSettings,
-        commands: DefaultCommands,
-      }
-
-      const originalGetCaches = Settings.getCaches
-      const originalGetUrls = Settings.getUrls
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
-      Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
-
-      try {
-        await Settings.set(settingsWithImage, false)
-
-        expect(mockToDataURL).toHaveBeenCalledWith(imageUrl)
-        expect(mockStorage.set).toHaveBeenCalledWith(
-          "caches",
-          expect.objectContaining({
-            images: expect.objectContaining({
-              [imageUrl]: "data:image/png;base64,test",
-            }),
-          }),
-        )
-      } finally {
-        Settings.getCaches = originalGetCaches
-        Settings.getUrls = originalGetUrls
-      }
-    })
-
-    it("should remove unused cache entries", async () => {
+    it("ST-10: should remove unused cache entries", async () => {
       const imageUrl1 = "http://example.com/icon1.png"
       const imageUrl2 = "http://example.com/icon2.png"
 
-      const originalGetCaches = Settings.getCaches
       const originalGetUrls = Settings.getUrls
-      Settings.getCaches = vi.fn().mockResolvedValue({
+      mockStorage.get.mockResolvedValueOnce({
         images: {
           [imageUrl1]: "cached1",
           [imageUrl2]: "cached2", // This should be removed
@@ -287,12 +243,39 @@ describe("Settings", () => {
           }),
         )
       } finally {
-        Settings.getCaches = originalGetCaches
         Settings.getUrls = originalGetUrls
       }
     })
 
-    it("should add default link command if none exists", async () => {
+    it("ST-11: should process image URLs and create cache when serviceWorker is false", async () => {
+      const imageUrl = "http://example.com/icon.png"
+      const settingsWithImage = {
+        ...mockSettings,
+        commands: DefaultCommands,
+      }
+
+      const originalGetUrls = Settings.getUrls
+      mockStorage.get.mockResolvedValueOnce({ images: {} })
+      Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
+
+      try {
+        await Settings.set(settingsWithImage, false)
+
+        expect(mockToDataURL).toHaveBeenCalledWith(imageUrl)
+        expect(mockStorage.set).toHaveBeenCalledWith(
+          "caches",
+          expect.objectContaining({
+            images: expect.objectContaining({
+              [imageUrl]: "data:image/png;base64,test",
+            }),
+          }),
+        )
+      } finally {
+        Settings.getUrls = originalGetUrls
+      }
+    })
+
+    it("ST-12: should add default link command if none exists", async () => {
       const settingsWithoutLinkCommand = {
         ...mockSettings,
         commands: DefaultCommands.filter((cmd) => !isLinkCommand(cmd)),
@@ -306,24 +289,19 @@ describe("Settings", () => {
       }
       vi.mocked(DefaultCommands).find = vi.fn().mockReturnValue(mockLinkCommand)
 
-      const originalGetCaches = Settings.getCaches
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
+      mockStorage.get.mockResolvedValueOnce({ images: {} })
 
-      try {
-        await Settings.set(settingsWithoutLinkCommand)
+      await Settings.set(settingsWithoutLinkCommand)
 
-        expect(mockStorage.setCommands).toHaveBeenCalledWith(
-          expect.arrayContaining([
-            ...settingsWithoutLinkCommand.commands,
-            mockLinkCommand,
-          ]),
-        )
-      } finally {
-        Settings.getCaches = originalGetCaches
-      }
+      expect(mockStorage.setCommands).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          ...settingsWithoutLinkCommand.commands,
+          mockLinkCommand,
+        ]),
+      )
     })
 
-    it("should handle toDataURL errors gracefully", async () => {
+    it("ST-14: should handle toDataURL errors gracefully", async () => {
       const imageUrl = "http://example.com/invalid.png"
       const settingsWithImage = {
         ...mockSettings,
@@ -337,10 +315,9 @@ describe("Settings", () => {
         ],
       }
 
-      const originalGetCaches = Settings.getCaches
       const originalGetUrls = Settings.getUrls
+      mockStorage.get.mockResolvedValueOnce({ images: {} })
 
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
       Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
       mockToDataURL.mockRejectedValue(new Error("Network error"))
 
@@ -350,7 +327,6 @@ describe("Settings", () => {
         expect(result).toBe(true)
       } finally {
         // Restore original methods
-        Settings.getCaches = originalGetCaches
         Settings.getUrls = originalGetUrls
       }
     })
@@ -361,7 +337,7 @@ describe("Settings", () => {
       setupDefaultMocks()
     })
 
-    it("should update specific key with updater function", async () => {
+    it("ST-15: should update specific key with updater function", async () => {
       const currentSettings = {
         folders: [{ id: "1", title: "Old Title", iconUrl: "" }],
       }
@@ -395,7 +371,7 @@ describe("Settings", () => {
       }
     })
 
-    it("should pass serviceWorker parameter correctly", async () => {
+    it("ST-16: should pass serviceWorker parameter correctly", async () => {
       const originalGet = Settings.get
       const originalSet = Settings.set
       Settings.get = vi.fn().mockResolvedValue({ folders: [] })
@@ -417,7 +393,7 @@ describe("Settings", () => {
       setupDefaultMocks()
     })
 
-    it("should add new commands to existing ones", async () => {
+    it("ST-18: should add new commands to existing ones", async () => {
       const existingCommands = [
         { id: "1", title: "Existing", iconUrl: "", openMode: OPEN_MODE.POPUP },
       ]
@@ -437,7 +413,7 @@ describe("Settings", () => {
       ])
     })
 
-    it("should handle empty array addition", async () => {
+    it("ST-19: should handle empty array addition", async () => {
       const existingCommands: Command[] = [
         { id: "1", title: "Existing", iconUrl: "", openMode: OPEN_MODE.POPUP },
       ]
@@ -456,7 +432,7 @@ describe("Settings", () => {
       setupDefaultMocks()
     })
 
-    it("should update commands correctly", async () => {
+    it("ST-21: should update commands correctly", async () => {
       const updatedCommands: Command[] = [
         { id: "1", title: "Updated", iconUrl: "", openMode: OPEN_MODE.POPUP },
       ]
@@ -473,7 +449,7 @@ describe("Settings", () => {
       setupDefaultMocks()
     })
 
-    it("should reset to default settings", async () => {
+    it("ST-23: should reset to default settings", async () => {
       await Settings.reset()
 
       expect(mockStorage.set).toHaveBeenCalledWith(
@@ -493,7 +469,7 @@ describe("Settings", () => {
       setupDefaultMocks()
     })
 
-    it("should add and remove change listeners", () => {
+    it("ST-25: should add and remove change listeners", () => {
       const callback1 = vi.fn()
       const callback2 = vi.fn()
 
@@ -510,25 +486,8 @@ describe("Settings", () => {
   })
 
   describe("cache functionality", () => {
-    describe("getCaches", () => {
-      it("should get caches correctly", async () => {
-        // Don't call setupDefaultMocks - set up specific mocks only
-        vi.clearAllMocks()
-
-        const mockCaches = { images: { url1: "data1" } }
-
-        // Set up mock for specific cache call only
-        mockStorage.get.mockResolvedValue(mockCaches)
-
-        const result = await Settings.getCaches()
-
-        expect(result).toEqual(mockCaches)
-        expect(mockStorage.get).toHaveBeenCalledWith(LOCAL_STORAGE_KEY.CACHES)
-      })
-    })
-
     describe("getUrls", () => {
-      it("should get all URLs from settings", () => {
+      it("ST-29: should get all URLs from settings", () => {
         // Don't call setupDefaultMocks - set up specific mocks only
         vi.clearAllMocks()
 
@@ -579,19 +538,7 @@ describe("migrate function", () => {
     vi.clearAllMocks()
   })
 
-  it("should return data unchanged for latest version", async () => {
-    const latestData: SettingsType = {
-      ...DefaultSettings,
-      commandExecutionCount: 0,
-      hasShownReviewRequest: false,
-      stars: [] as Star[],
-    }
-
-    const result = await migrate(latestData)
-    expect(result).toEqual(latestData)
-  })
-
-  it("should migrate from version 0.11.9", async () => {
+  it("ST-31: should migrate from version 0.11.9", async () => {
     const oldData = {
       settingVersion: "0.11.5",
       commands: [],
@@ -622,7 +569,7 @@ describe("migrate function", () => {
     })
   })
 
-  it("should migrate from version 0.11.5", async () => {
+  it("ST-31-a: should migrate from version 0.11.5", async () => {
     const oldData = {
       settingVersion: "0.11.3",
       commands: [
@@ -649,7 +596,7 @@ describe("migrate function", () => {
     expect(result.pageRules[1].linkCommandEnabled).toBe("inherit") // Should remain
   })
 
-  it("should handle migration with missing DefaultCommands match", async () => {
+  it("ST-31-b: should handle migration with missing DefaultCommands match", async () => {
     const oldData = {
       settingVersion: "0.11.3",
       commands: [{ id: "123", title: "Unknown Command" }],
@@ -673,5 +620,17 @@ describe("migrate function", () => {
 
     // Restore original crypto
     global.crypto = originalCrypto
+  })
+
+  it("ST-32: should return data unchanged for latest version", async () => {
+    const latestData: SettingsType = {
+      ...DefaultSettings,
+      commandExecutionCount: 0,
+      hasShownReviewRequest: false,
+      stars: [] as Star[],
+    }
+
+    const result = await migrate(latestData)
+    expect(result).toEqual(latestData)
   })
 })

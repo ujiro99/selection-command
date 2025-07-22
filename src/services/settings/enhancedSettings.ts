@@ -40,8 +40,6 @@ export class EnhancedSettings {
       excludeOptions = false,
     } = options
 
-    // console.debug('EnhancedSettings.get called with sections:', sections)
-
     // Get sections in parallel
     const results = await Promise.allSettled([
       sections.includes(CACHE_SECTIONS.COMMANDS)
@@ -136,6 +134,22 @@ export class EnhancedSettings {
               ? UserStats
               : any
   > {
+    // Special handling for USER_SETTINGS to merge commands data
+    if (section === CACHE_SECTIONS.USER_SETTINGS) {
+      const [userSettings, commands] = await Promise.all([
+        settingsCache.get<UserSettings>(
+          CACHE_SECTIONS.USER_SETTINGS,
+          forceFresh,
+        ),
+        settingsCache.get<Command[]>(CACHE_SECTIONS.COMMANDS, forceFresh),
+      ])
+
+      return {
+        ...userSettings,
+        commands,
+      } as any
+    }
+
     return settingsCache.get(section, forceFresh)
   }
 
@@ -173,11 +187,6 @@ export class EnhancedSettings {
   // Invalidate all cache
   invalidateAllCache(): void {
     settingsCache.invalidateAll()
-  }
-
-  // Cache related
-  async getCaches() {
-    return settingsCache.get(CACHE_SECTIONS.CACHES)
   }
 
   // Setup legacy listeners

@@ -1,4 +1,4 @@
-import { Settings } from "@/services/settings"
+import { Settings } from "@/services/settings/settings"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { COMMAND_USAGE } from "@/const"
 

@@ -7,9 +7,9 @@ import {
   POPUP_OFFSET,
   ExecState,
 } from "@/const"
-import { Point, SettingsType, Command } from "@/types"
+import { Point, UserSettings, Command } from "@/types"
 import { LinkPreview } from "@/action/linkPreview"
-import { useSetting } from "@/hooks/useSetting"
+import { useUserSettings } from "@/hooks/useSettings"
 import { useLeftClickHold } from "@/hooks/useLeftClickHold"
 import Default, { PopupOption } from "@/services/option/defaultSettings"
 import { isPopup, isLinkCommand, isMac } from "@/lib/utils"
@@ -49,7 +49,7 @@ const empty = {
 }
 
 export function useDetectLinkCommand(): DetectLinkCommandReturn {
-  const { settings, pageRule } = useSetting()
+  const { userSettings: settings, pageRule } = useUserSettings()
   const showIndicator = settings.linkCommand?.showIndicator
   const command = settings.commands?.find(isLinkCommand) as Command
   const enabled =
@@ -79,9 +79,9 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
   return {
     showIndicator: showIndicator ?? false,
     ...empty,
-    ...useDetectDrag(enabled, settings as SettingsType, command, onDetect),
-    ...useDetectKeyboard(enabled, settings as SettingsType, command, onDetect),
-    ...useDetectClickHold(enabled, settings as SettingsType, command, onDetect),
+    ...useDetectDrag(enabled, settings, command, onDetect),
+    ...useDetectKeyboard(enabled, settings, command, onDetect),
+    ...useDetectClickHold(enabled, settings, command, onDetect),
   }
 }
 
@@ -89,7 +89,7 @@ type OnDetect = (position: Point, target: Element) => void
 
 function useDetectDrag(
   enabled: boolean,
-  settings: SettingsType,
+  settings: UserSettings,
   command: Command,
   onDetect: OnDetect,
 ): SubHookReturn {
@@ -166,7 +166,15 @@ function useDetectDrag(
       window.removeEventListener("mouseup", handleMouseUp)
       window.removeEventListener("mousemove", handleMouseMove)
     }
-  }, [dragEnabled, startPosition, activate, command, target, onDetect])
+  }, [
+    dragEnabled,
+    startPosition,
+    activate,
+    command,
+    target,
+    onDetect,
+    threshold,
+  ])
 
   return dragEnabled
     ? { progress, mousePosition, inProgress, detectDrag: true }
@@ -204,7 +212,7 @@ const checkValidKey = (key: string | undefined, e: MouseEvent): boolean => {
 
 function useDetectKeyboard(
   enabled: boolean,
-  settings: SettingsType,
+  settings: UserSettings,
   command: Command,
   onDetect: OnDetect,
 ): SubHookReturn {
@@ -254,7 +262,7 @@ function useDetectKeyboard(
       window.removeEventListener("mousedown", onMouseDown)
       window.removeEventListener("mouseup", onMouseUp)
     }
-  }, [keyboardEnabled, key, onDetect, popupOption])
+  }, [keyboardEnabled, key, onDetect, popupOption, command, target])
 
   return keyboardEnabled
     ? {
@@ -268,7 +276,7 @@ function useDetectKeyboard(
 
 function useDetectClickHold(
   enabled: boolean,
-  settings: SettingsType,
+  settings: UserSettings,
   command: Command,
   onDetect: OnDetect,
 ): SubHookReturn {
@@ -298,7 +306,14 @@ function useDetectClickHold(
         onDetect(pos, linkElement as Element),
       )
     }
-  }, [clickHoldEnabled, detectHoldLink])
+  }, [
+    clickHoldEnabled,
+    detectHoldLink,
+    position,
+    command,
+    onDetect,
+    linkElement,
+  ])
 
   useEffect(() => {
     if (!clickHoldEnabled) return
