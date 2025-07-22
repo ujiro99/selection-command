@@ -5,6 +5,7 @@ import { useSelectContext } from "@/hooks/useSelectContext"
 import { useLeftClickHold } from "@/hooks/useLeftClickHold"
 import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from "@/const"
 import { isEmpty, isPopup } from "@/lib/utils"
+import { getSelectionText } from "@/services/dom"
 import { Point } from "@/types"
 
 const SIZE = 40
@@ -103,18 +104,22 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
         setIsDragging(false)
         return
       }
-      if (!selected) {
+      // Since the update of selectionText is momentarily delayed,
+      // it is directly retrieved.
+      if (!getSelectionText()) {
         releaseAnchor()
       }
     }
 
     const onDrag = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
+      if (!getSelectionText()) return
       setAnchor({ x: e.clientX, y: e.clientY })
     }
 
     const onDouble = (e: MouseEvent) => {
       if (!isTargetEvent(e)) return
+      if (!getSelectionText()) return
       setAnchor({ x: e.clientX, y: e.clientY })
     }
 
@@ -147,10 +152,22 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   }, [point, isMouseDown, setIsDragging, releaseAnchor])
 
   useEffect(() => {
+    const onKeyUp = () => {
+      if (!selectionText) {
+        releaseAnchor(true)
+      }
+    }
+    document.addEventListener("keyup", onKeyUp)
+    return () => {
+      document.removeEventListener("keyup", onKeyUp)
+    }
+  }, [point, selectionText, setAnchor, releaseAnchor])
+
+  useEffect(() => {
     if (detectHold) {
       setAnchor(position)
     }
-  }, [detectHold, point, setAnchor])
+  }, [detectHold, point, setAnchor, position])
 
   if (point == null) return null
 
@@ -162,7 +179,7 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
     width: SIZE,
     pointerEvents: "none",
     zIndex: 2147483647,
-    // backgroundColor: 'rgba(255, 0, 0, 0.3)',
+    // backgroundColor: "rgba(255, 0, 0, 0.3)",
     // border: '1px solid red',
   } as React.CSSProperties
 

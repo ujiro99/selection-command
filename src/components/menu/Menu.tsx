@@ -12,6 +12,7 @@ import { MenuItem } from "./MenuItem"
 import { Icon } from "@/components/Icon"
 import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
+import { popupContext } from "@/components/Popup"
 import css from "./Menu.module.css"
 import type { Command, CommandFolder } from "@/types"
 import { useSettingsWithImageCache, useUserSettings } from "@/hooks/useSettings"
@@ -116,6 +117,7 @@ const MenuFolder = (props: {
   const [triggeredFolder, setTriggeredFolder] = useState("")
   const [hoveredFolder, setHoveredFolder] = useState("")
   const activeFolder = triggeredFolder || hoveredFolder
+  const { inTransition } = React.useContext(popupContext)
 
   const menuSide = isHorizontal
     ? props.side === SIDE.bottom
@@ -210,6 +212,7 @@ const MenuFolder = (props: {
           [css.itemHorizontal]: isHorizontal,
           [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
           [css.folderHorizontal]: isHorizontal,
+          "pointer-events-none": inTransition,
         })}
         ref={anchorRef}
         {...onHover(onHoverTrigger, folder.id)}
