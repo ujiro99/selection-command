@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { Dialog } from "./Dialog"
-import type { UserSettings } from "@/types"
+import type { UserSettings, Caches } from "@/types"
 
 import {
   Storage,
@@ -222,14 +222,16 @@ export function ImportExport() {
 
     // for back compatibility
     // cache key to image data url
-    const caches = await enhancedSettings.getSection(
+    const caches = (await enhancedSettings.getSection(
       CACHE_SECTIONS.CACHES,
       true,
-    )
+    )) as Caches
     for (const c of data.commands) {
       if (!c.iconUrl) continue
       if (isBase64(c.iconUrl) || isUrl(c.iconUrl)) continue
-      c.iconUrl = caches.images[c.iconUrl]
+      if (caches?.images?.[c.iconUrl]) {
+        c.iconUrl = caches.images[c.iconUrl]
+      }
     }
 
     const text = JSON.stringify(data, null, 2)
