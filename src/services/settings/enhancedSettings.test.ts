@@ -503,16 +503,6 @@ describe("EnhancedSettings", () => {
       expect(mockSettingsCache.getCacheStatus).toHaveBeenCalled()
       expect(result).toEqual(mockStatus)
     })
-
-    it("ES-19-a: should get caches through settingsCache", async () => {
-      const mockCaches = { images: { url1: "data1" } }
-      mockSettingsCache.get.mockResolvedValue(mockCaches)
-
-      const result = await enhancedSettings.getCaches()
-
-      expect(mockSettingsCache.get).toHaveBeenCalledWith(CACHE_SECTIONS.CACHES)
-      expect(result).toEqual(mockCaches)
-    })
   })
 
   describe("private methods (tested through public interface)", () => {

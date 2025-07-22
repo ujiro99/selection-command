@@ -19,6 +19,7 @@ import type {
   Star,
   UserStats,
   ShortcutSettings,
+  Caches,
 } from "@/types"
 import {
   isBase64,
@@ -30,14 +31,6 @@ import {
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"
-
-export type Caches = {
-  images: ImageCache
-}
-
-export type ImageCache = {
-  [id: string]: string // key: url or uuid, value: data:image/png;base64
-}
 
 const callbacks = [] as (() => void)[]
 
@@ -89,7 +82,7 @@ export const Settings = {
 
     // remove unused caches
     const urls = Settings.getUrls(data)
-    const caches = await Settings.getCaches()
+    const caches = await Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
     for (const key in caches.images) {
       if (!urls.includes(key)) {
         console.debug("remove unused cache", key)
@@ -199,10 +192,6 @@ export const Settings = {
   removeChangedListener: (callback: () => void) => {
     const idx = callbacks.indexOf(callback)
     if (idx !== -1) callbacks.splice(idx, 1)
-  },
-
-  getCaches: async (): Promise<Caches> => {
-    return Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)
   },
 
   getUrls: (settings: SettingsType): string[] => {

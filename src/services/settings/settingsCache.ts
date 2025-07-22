@@ -1,6 +1,5 @@
 import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "../storage"
-import type { UserStats, ShortcutSettings, UserSettings } from "@/types"
-import { Settings } from "./settings"
+import type { UserStats, ShortcutSettings, UserSettings, Caches } from "@/types"
 
 // Cache section constants
 export const CACHE_SECTIONS = {
@@ -178,7 +177,7 @@ export class SettingsCacheManager {
         return (await Storage.get<UserStats>(STORAGE_KEY.USER_STATS)) as T
 
       case CACHE_SECTIONS.CACHES:
-        return (await Settings.getCaches()) as T
+        return (await Storage.get<Caches>(LOCAL_STORAGE_KEY.CACHES)) as T
 
       default:
         throw new Error(`Unknown cache section: ${section}`)

@@ -2,7 +2,7 @@ import React, { useRef } from "react"
 import { cn } from "@/lib/utils"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 
-import { useUserSettings } from "@/hooks/useSetting"
+import { useUserSettings } from "@/hooks/useSettings"
 import { Icon } from "@/components/Icon"
 import popupCss from "@/components/Popup.module.css"
 import { SIDE } from "@/const"

@@ -153,7 +153,7 @@ describe("SettingsCacheManager", () => {
         .mockResolvedValueOnce(mockStars)
         .mockResolvedValueOnce(mockShortcuts)
         .mockResolvedValueOnce(mockUserStats)
-      mockSettings.getCaches.mockResolvedValue(mockCaches)
+        .mockResolvedValueOnce(mockCaches)
 
       // Test each section
       const commands = await cacheManager.get(CACHE_SECTIONS.COMMANDS)
@@ -174,7 +174,6 @@ describe("SettingsCacheManager", () => {
 
       const caches = await cacheManager.get(CACHE_SECTIONS.CACHES)
       expect(caches).toEqual(mockCaches)
-      expect(mockSettings.getCaches).toHaveBeenCalled()
     })
 
     it("SC-12: should throw error for unknown section", async () => {

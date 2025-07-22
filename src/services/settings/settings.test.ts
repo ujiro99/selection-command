@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Settings, migrate } from "./settings"
-import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "../storage"
+import { Storage, STORAGE_KEY } from "../storage"
 import { OptionSettings } from "../option/optionSettings"
 import DefaultSettings, { DefaultCommands } from "../option/defaultSettings"
 import { toDataURL } from "../dom"
@@ -191,53 +191,39 @@ describe("Settings", () => {
     }
 
     it("ST-08: should save settings data correctly", async () => {
-      const originalGetCaches = Settings.getCaches
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
+      console.log("ST-08 Testing Settings.set method", chrome.storage.local.get)
+      mockStorage.get.mockResolvedValueOnce({
+        images: {},
+      })
 
-      try {
-        const result = await Settings.set(mockSettings)
+      const result = await Settings.set(mockSettings)
 
-        expect(result).toBe(true)
-        expect(mockStorage.setCommands).toHaveBeenCalledWith(
-          expect.arrayContaining(mockSettings.commands),
-        )
-        expect(mockStorage.set).toHaveBeenCalledWith(STORAGE_KEY.USER_STATS, {
-          commandExecutionCount: mockSettings.commandExecutionCount,
-          hasShownReviewRequest: mockSettings.hasShownReviewRequest,
-        })
-        expect(mockStorage.set).toHaveBeenCalledWith(
-          STORAGE_KEY.SHORTCUTS,
-          mockSettings.shortcuts,
-        )
-        expect(mockStorage.set).toHaveBeenCalledWith(
-          "stars",
-          mockSettings.stars,
-        )
-      } finally {
-        Settings.getCaches = originalGetCaches
-      }
+      expect(result).toBe(true)
+      expect(mockStorage.setCommands).toHaveBeenCalledWith(
+        expect.arrayContaining(mockSettings.commands),
+      )
+      expect(mockStorage.set).toHaveBeenCalledWith(STORAGE_KEY.USER_STATS, {
+        commandExecutionCount: mockSettings.commandExecutionCount,
+        hasShownReviewRequest: mockSettings.hasShownReviewRequest,
+      })
+      expect(mockStorage.set).toHaveBeenCalledWith(
+        STORAGE_KEY.SHORTCUTS,
+        mockSettings.shortcuts,
+      )
+      expect(mockStorage.set).toHaveBeenCalledWith("stars", mockSettings.stars)
     })
 
     it("ST-09: should skip image cache processing when serviceWorker is true", async () => {
-      const originalGetCaches = Settings.getCaches
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
-
-      try {
-        await Settings.set(mockSettings, true)
-
-        expect(mockToDataURL).not.toHaveBeenCalled()
-      } finally {
-        Settings.getCaches = originalGetCaches
-      }
+      await Settings.set(mockSettings, true)
+      expect(mockToDataURL).not.toHaveBeenCalled()
     })
 
     it("ST-10: should remove unused cache entries", async () => {
       const imageUrl1 = "http://example.com/icon1.png"
       const imageUrl2 = "http://example.com/icon2.png"
 
-      const originalGetCaches = Settings.getCaches
       const originalGetUrls = Settings.getUrls
-      Settings.getCaches = vi.fn().mockResolvedValue({
+      mockStorage.get.mockResolvedValueOnce({
         images: {
           [imageUrl1]: "cached1",
           [imageUrl2]: "cached2", // This should be removed
@@ -257,7 +243,6 @@ describe("Settings", () => {
           }),
         )
       } finally {
-        Settings.getCaches = originalGetCaches
         Settings.getUrls = originalGetUrls
       }
     })
@@ -269,9 +254,8 @@ describe("Settings", () => {
         commands: DefaultCommands,
       }
 
-      const originalGetCaches = Settings.getCaches
       const originalGetUrls = Settings.getUrls
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
+      mockStorage.get.mockResolvedValueOnce({ images: {} })
       Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
 
       try {
@@ -287,7 +271,6 @@ describe("Settings", () => {
           }),
         )
       } finally {
-        Settings.getCaches = originalGetCaches
         Settings.getUrls = originalGetUrls
       }
     })
@@ -306,21 +289,16 @@ describe("Settings", () => {
       }
       vi.mocked(DefaultCommands).find = vi.fn().mockReturnValue(mockLinkCommand)
 
-      const originalGetCaches = Settings.getCaches
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
+      mockStorage.get.mockResolvedValueOnce({ images: {} })
 
-      try {
-        await Settings.set(settingsWithoutLinkCommand)
+      await Settings.set(settingsWithoutLinkCommand)
 
-        expect(mockStorage.setCommands).toHaveBeenCalledWith(
-          expect.arrayContaining([
-            ...settingsWithoutLinkCommand.commands,
-            mockLinkCommand,
-          ]),
-        )
-      } finally {
-        Settings.getCaches = originalGetCaches
-      }
+      expect(mockStorage.setCommands).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          ...settingsWithoutLinkCommand.commands,
+          mockLinkCommand,
+        ]),
+      )
     })
 
     it("ST-14: should handle toDataURL errors gracefully", async () => {
@@ -337,10 +315,9 @@ describe("Settings", () => {
         ],
       }
 
-      const originalGetCaches = Settings.getCaches
       const originalGetUrls = Settings.getUrls
+      mockStorage.get.mockResolvedValueOnce({ images: {} })
 
-      Settings.getCaches = vi.fn().mockResolvedValue({ images: {} })
       Settings.getUrls = vi.fn().mockReturnValue([imageUrl])
       mockToDataURL.mockRejectedValue(new Error("Network error"))
 
@@ -350,7 +327,6 @@ describe("Settings", () => {
         expect(result).toBe(true)
       } finally {
         // Restore original methods
-        Settings.getCaches = originalGetCaches
         Settings.getUrls = originalGetUrls
       }
     })
@@ -510,23 +486,6 @@ describe("Settings", () => {
   })
 
   describe("cache functionality", () => {
-    describe("getCaches", () => {
-      it("ST-28: should get caches correctly", async () => {
-        // Don't call setupDefaultMocks - set up specific mocks only
-        vi.clearAllMocks()
-
-        const mockCaches = { images: { url1: "data1" } }
-
-        // Set up mock for specific cache call only
-        mockStorage.get.mockResolvedValue(mockCaches)
-
-        const result = await Settings.getCaches()
-
-        expect(result).toEqual(mockCaches)
-        expect(mockStorage.get).toHaveBeenCalledWith(LOCAL_STORAGE_KEY.CACHES)
-      })
-    })
-
     describe("getUrls", () => {
       it("ST-29: should get all URLs from settings", () => {
         // Don't call setupDefaultMocks - set up specific mocks only

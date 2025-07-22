@@ -1,11 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import {
-  useSetting,
   useSection,
   useUserSettings,
   useSettingsWithImageCache,
-} from "./useSetting"
+} from "./useSettings"
 import { enhancedSettings } from "../services/settings/enhancedSettings"
 import {
   settingsCache,
@@ -24,8 +23,7 @@ import {
   POPUP_ENABLED,
   OPEN_MODE,
 } from "@/const"
-import type { SettingsType, UserSettings, PageRule } from "@/types"
-import type { Caches } from "@/services/settings/settings"
+import type { SettingsType, UserSettings, PageRule, Caches } from "@/types"
 
 // Mock dependencies
 vi.mock("../services/settings/enhancedSettings")
@@ -74,16 +72,7 @@ const createMockUserSettings = (
   ...overrides,
 })
 
-// Helper function to create a valid SearchCommand object
-const createMockCommand = (overrides: any = {}): any => ({
-  id: "test-id",
-  title: "Test Command",
-  iconUrl: "",
-  openMode: OPEN_MODE.TAB,
-  ...overrides,
-})
-
-describe("useSetting hooks", () => {
+describe("useSettings hooks", () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
@@ -351,83 +340,8 @@ describe("useSetting hooks", () => {
       expect(result.current.userSettings).toEqual({})
       expect(result.current.pageRule).toBeUndefined()
     })
-  })
 
-  describe("useSetting", () => {
-    it("US-20: should fetch settings with default sections", async () => {
-      const mockSettings = {
-        ...createMockUserSettings(),
-        commands: [createMockCommand({ id: "1", title: "Test" })],
-        folders: [],
-        pageRules: [],
-        stars: [],
-        commandExecutionCount: 0,
-        hasShownReviewRequest: false,
-      } as SettingsType
-
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
-
-      const { result } = renderHook(() => useSetting())
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0))
-      })
-
-      expect(result.current.loading).toBe(false)
-      expect(result.current.settings).toEqual(mockSettings)
-      expect(result.current.pageRule).toBeUndefined()
-      expect(mockEnhancedSettings.get).toHaveBeenCalledWith({
-        sections: [CACHE_SECTIONS.COMMANDS, CACHE_SECTIONS.USER_SETTINGS],
-        forceFresh: false,
-      })
-    })
-
-    it("US-21: should fetch settings with custom sections", async () => {
-      const mockSettings = {
-        ...createMockUserSettings(),
-        commands: [createMockCommand({ id: "1", title: "Test" })],
-        stars: [],
-        commandExecutionCount: 0,
-        hasShownReviewRequest: false,
-      } as SettingsType
-
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
-
-      const customSections = [CACHE_SECTIONS.COMMANDS, CACHE_SECTIONS.STARS]
-      renderHook(() => useSetting(customSections))
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0))
-      })
-
-      expect(mockEnhancedSettings.get).toHaveBeenCalledWith({
-        sections: customSections,
-        forceFresh: false,
-      })
-    })
-
-    it("US-22: should handle forceFresh parameter", async () => {
-      const mockSettings = {
-        ...createMockUserSettings(),
-        stars: [],
-        commandExecutionCount: 0,
-        hasShownReviewRequest: false,
-      } as SettingsType
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
-
-      renderHook(() => useSetting(undefined, true))
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0))
-      })
-
-      expect(mockEnhancedSettings.get).toHaveBeenCalledWith({
-        sections: [CACHE_SECTIONS.COMMANDS, CACHE_SECTIONS.USER_SETTINGS],
-        forceFresh: true,
-      })
-    })
-
-    it("US-22-a: should find and apply page rule", async () => {
+    it("US-20: should find and apply page rule", async () => {
       const mockPageRule: PageRule = {
         urlPattern: "example\\.com",
         popupEnabled: POPUP_ENABLED.ENABLE,
@@ -454,60 +368,21 @@ describe("useSetting hooks", () => {
         hasShownReviewRequest: false,
       } as SettingsType
 
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
+      mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
 
-      const { result } = renderHook(() => useSetting())
+      const { result } = renderHook(() => useUserSettings())
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0))
       })
 
       expect(result.current.pageRule).toEqual(mockPageRule)
-      expect(result.current.settings.popupPlacement).toEqual({
+      expect(result.current.userSettings.popupPlacement).toEqual({
         side: SIDE.bottom,
         align: ALIGN.center,
         sideOffset: 0,
         alignOffset: 0,
       })
-    })
-
-    it("US-23: should subscribe to cache changes for all sections", async () => {
-      const mockSettings = {
-        ...createMockUserSettings(),
-        stars: [],
-        commandExecutionCount: 0,
-        hasShownReviewRequest: false,
-      } as SettingsType
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
-
-      const sections = [CACHE_SECTIONS.COMMANDS, CACHE_SECTIONS.USER_SETTINGS]
-      renderHook(() => useSetting(sections))
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0))
-      })
-
-      expect(mockSettingsCache.subscribe).toHaveBeenCalledWith(
-        CACHE_SECTIONS.COMMANDS,
-        expect.any(Function),
-      )
-      expect(mockSettingsCache.subscribe).toHaveBeenCalledWith(
-        CACHE_SECTIONS.USER_SETTINGS,
-        expect.any(Function),
-      )
-    })
-
-    it("US-24: should handle empty settings", async () => {
-      mockEnhancedSettings.get.mockResolvedValue({} as SettingsType)
-
-      const { result } = renderHook(() => useSetting())
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0))
-      })
-
-      expect(result.current.settings).toEqual({})
-      expect(result.current.pageRule).toBeUndefined()
     })
   })
 
@@ -524,18 +399,20 @@ describe("useSetting hooks", () => {
         title: "Folder",
         iconUrl: "http://example.com/folder.png",
       }
-      const mockSettings: Partial<SettingsType> | { caches: Caches } = {
+      const mockSettings: Partial<SettingsType> = {
         commands: [command],
         folders: [folder],
-        caches: {
-          images: {
-            "http://example.com/icon.png": "data:image/png;base64,cached",
-            "http://example.com/folder.png": "data:image/png;base64,cached2",
-          },
+      }
+      const mockCaches: Caches = {
+        images: {
+          "http://example.com/icon.png": "data:image/png;base64,cached",
+          "http://example.com/folder.png": "data:image/png;base64,cached2",
         },
       }
 
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings as any)
+      mockEnhancedSettings.getSection
+        .mockResolvedValueOnce(mockSettings as any)
+        .mockResolvedValueOnce(mockCaches as any)
 
       const { result } = renderHook(() => useSettingsWithImageCache())
 
@@ -560,6 +437,30 @@ describe("useSetting hooks", () => {
       })
     })
 
+    it("US-26: should handle folders without iconUrl", async () => {
+      const mockSettings = {
+        commands: [],
+        folders: [
+          { id: "1", title: "Folder", iconUrl: "" },
+          { id: "2", title: "Folder2" }, // No iconUrl
+        ],
+        caches: { images: {} },
+      } as any
+
+      mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
+
+      const { result } = renderHook(() => useSettingsWithImageCache())
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0))
+      })
+
+      expect(result.current.folders).toEqual([
+        { id: "1", title: "Folder", iconUrl: "" },
+        { id: "2", title: "Folder2" },
+      ])
+    })
+
     it("US-28: should use original URLs when cache is not available", async () => {
       const mockSettings = {
         commands: [
@@ -577,7 +478,7 @@ describe("useSetting hooks", () => {
         },
       } as any
 
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
+      mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
 
       const { result } = renderHook(() => useSettingsWithImageCache())
 
@@ -608,30 +509,6 @@ describe("useSetting hooks", () => {
       expect(result.current.iconUrls).toEqual({})
     })
 
-    it("US-26: should handle folders without iconUrl", async () => {
-      const mockSettings = {
-        commands: [],
-        folders: [
-          { id: "1", title: "Folder", iconUrl: "" },
-          { id: "2", title: "Folder2" }, // No iconUrl
-        ],
-        caches: { images: {} },
-      } as any
-
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
-
-      const { result } = renderHook(() => useSettingsWithImageCache())
-
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0))
-      })
-
-      expect(result.current.folders).toEqual([
-        { id: "1", title: "Folder", iconUrl: "" },
-        { id: "2", title: "Folder2" },
-      ])
-    })
-
     it("US-28-a: should handle empty cache strings", async () => {
       const mockSettings = {
         commands: [
@@ -645,7 +522,7 @@ describe("useSetting hooks", () => {
         },
       } as any
 
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
+      mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
 
       const { result } = renderHook(() => useSettingsWithImageCache())
 
@@ -700,10 +577,10 @@ describe("useSetting hooks", () => {
         hasShownReviewRequest: false,
       } as SettingsType
 
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
+      mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
 
       // Test with current URL (https://example.com/test)
-      const { result } = renderHook(() => useSetting())
+      const { result } = renderHook(() => useUserSettings())
 
       await act(async () => {
         await new Promise((resolve) => setTimeout(resolve, 0))

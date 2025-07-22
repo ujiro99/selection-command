@@ -182,8 +182,7 @@ export function useUserSettings(forceFresh = false) {
 
   const userSettings = useMemo(() => {
     if (!data) return {} as UserSettings
-
-    const settings = { ...data } as UserSettings
+    const settings: UserSettings = { ...data }
     applyPageRuleToSettings(settings, pageRule)
     return settings
   }, [data, pageRule])
@@ -197,73 +196,21 @@ export function useUserSettings(forceFresh = false) {
   }
 }
 
-// Integrated settings hook (specify only required sections)
-export function useSetting(
-  sections: CacheSection[] = [
-    CACHE_SECTIONS.COMMANDS,
-    CACHE_SECTIONS.USER_SETTINGS,
-  ],
-  forceFresh = false,
-): {
-  settings: Partial<SettingsType>
-  pageRule: PageRule | undefined
-  loading: boolean
-} {
-  const sectionsRef = useRef(sections)
-  const sectionsKey = useMemo(() => sections.join(","), [sections])
-
-  // Update when sections change
-  useEffect(() => {
-    sectionsRef.current = sections
-  }, [sections])
-
-  const { data: settings, loading } = useAsyncData<Partial<SettingsType>>(
-    () =>
-      enhancedSettings.get({
-        sections: sectionsRef.current,
-        forceFresh,
-      }),
-    [sectionsKey, forceFresh],
-    sections.map((section) => ({
-      subscribe: (callback) => settingsCache.subscribe(section, callback),
-      unsubscribe: (callback) => settingsCache.unsubscribe(section, callback),
-    })),
-  )
-
-  // Find matching page rule using centralized logic
-  const pageRule = useMemo(() => {
-    if (!settings) return undefined
-    const rule = findMatchingPageRule(settings)
-    if (rule) {
-      applyPageRuleToSettings(settings, rule)
-    }
-    return rule
-  }, [settings])
-
-  return {
-    settings: settings || {},
-    pageRule,
-    loading,
-  }
-}
-
 // Settings hook with image cache applied
 export function useSettingsWithImageCache() {
-  const { settings, loading } = useSetting([
-    CACHE_SECTIONS.COMMANDS,
-    CACHE_SECTIONS.USER_SETTINGS,
-    CACHE_SECTIONS.CACHES,
-  ])
+  const { userSettings: settings, loading } = useUserSettings()
+  const { data: caches } = useSection(CACHE_SECTIONS.CACHES)
+
+  console.log("useSettingsWithImageCache", settings, caches)
 
   const { commandsWithCache, foldersWithCache, iconUrls } = useMemo(() => {
     if (loading || !settings.commands) {
       return { commandsWithCache: [], foldersWithCache: [], iconUrls: {} }
     }
 
-    const caches = (settings as any).caches || { images: {} }
-
     // Commands with cache
     const commandsWithCache = settings.commands.map((c) => {
+      if (!caches.images) return c
       const cache = caches.images[c.iconUrl]
       const iconUrl = !isEmpty(cache) ? cache : c.iconUrl
       return { ...c, iconUrl }
@@ -272,6 +219,7 @@ export function useSettingsWithImageCache() {
     // Folders with cache
     const foldersWithCache = (settings.folders || []).map((f) => {
       if (!f.iconUrl) return f
+      if (!caches.images) return f
       const cache = caches.images[f.iconUrl]
       const iconUrl = !isEmpty(cache) ? cache : f.iconUrl
       return { ...f, iconUrl }
@@ -284,7 +232,7 @@ export function useSettingsWithImageCache() {
     )
 
     return { commandsWithCache, foldersWithCache, iconUrls }
-  }, [settings, loading])
+  }, [settings, loading, caches])
 
   return {
     commands: commandsWithCache,

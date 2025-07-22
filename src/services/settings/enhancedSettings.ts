@@ -40,7 +40,7 @@ export class EnhancedSettings {
       excludeOptions = false,
     } = options
 
-    // console.debug('EnhancedSettings.get called with sections:', sections)
+    console.debug("EnhancedSettings.get called with sections:", sections)
 
     // Get sections in parallel
     const results = await Promise.allSettled([
@@ -173,11 +173,6 @@ export class EnhancedSettings {
   // Invalidate all cache
   invalidateAllCache(): void {
     settingsCache.invalidateAll()
-  }
-
-  // Cache related
-  async getCaches() {
-    return settingsCache.get(CACHE_SECTIONS.CACHES)
   }
 
   // Setup legacy listeners
