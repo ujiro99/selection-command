@@ -22,6 +22,7 @@ import {
   OPEN_MODE,
 } from "@/const"
 import type { SettingsType, UserSettings, PageRule } from "@/types"
+import type { Caches } from "@/services/settings"
 
 // Mock dependencies
 vi.mock("../services/enhancedSettings")
@@ -95,7 +96,7 @@ describe("useSetting hooks", () => {
   })
 
   describe("useSection", () => {
-    it("should fetch section data successfully", async () => {
+    it("US-12: should fetch section data successfully", async () => {
       const mockData = [{ id: "1", title: "Test Command", iconUrl: "" }]
       mockEnhancedSettings.getSection.mockResolvedValue(mockData)
 
@@ -120,7 +121,7 @@ describe("useSetting hooks", () => {
       )
     })
 
-    it("should handle forceFresh parameter", async () => {
+    it("US-13: should handle forceFresh parameter", async () => {
       const mockData = [{ id: "1", title: "Test", iconUrl: "" }]
       mockEnhancedSettings.getSection.mockResolvedValue(mockData)
 
@@ -136,7 +137,7 @@ describe("useSetting hooks", () => {
       )
     })
 
-    it("should handle fetch errors", async () => {
+    it("US-15: should handle fetch errors", async () => {
       const error = new Error("Fetch failed")
       mockEnhancedSettings.getSection.mockRejectedValue(error)
 
@@ -151,7 +152,7 @@ describe("useSetting hooks", () => {
       expect(result.current.error).toEqual(error)
     })
 
-    it("should subscribe to cache changes", async () => {
+    it("US-14: should subscribe to cache changes", async () => {
       const mockData = [{ id: "1", title: "Test", iconUrl: "" }]
       mockEnhancedSettings.getSection.mockResolvedValue(mockData)
 
@@ -167,7 +168,7 @@ describe("useSetting hooks", () => {
       )
     })
 
-    it("should unsubscribe on unmount", async () => {
+    it("US-10: should unsubscribe on unmount", async () => {
       const mockData = [{ id: "1", title: "Test", iconUrl: "" }]
       mockEnhancedSettings.getSection.mockResolvedValue(mockData)
 
@@ -185,7 +186,7 @@ describe("useSetting hooks", () => {
       )
     })
 
-    it("should provide refetch function", async () => {
+    it("US-09: should provide refetch function", async () => {
       const mockData = [{ id: "1", title: "Test", iconUrl: "" }]
       mockEnhancedSettings.getSection.mockResolvedValue(mockData)
 
@@ -207,7 +208,7 @@ describe("useSetting hooks", () => {
   })
 
   describe("useUserSettings", () => {
-    it("should fetch user settings successfully", async () => {
+    it("US-16: should fetch user settings successfully", async () => {
       const mockUserSettings = createMockUserSettings({
         settingVersion: "1.0.0",
         folders: [],
@@ -228,7 +229,7 @@ describe("useSetting hooks", () => {
       expect(result.current.error).toBe(null)
     })
 
-    it("should find matching page rule", async () => {
+    it("US-17: should find matching page rule", async () => {
       const mockPageRule: PageRule = {
         urlPattern: "example\\.com",
         popupEnabled: POPUP_ENABLED.ENABLE,
@@ -262,7 +263,7 @@ describe("useSetting hooks", () => {
       })
     })
 
-    it("should not apply page rule when popupPlacement is INHERIT", async () => {
+    it("US-05: should not apply page rule when popupPlacement is INHERIT", async () => {
       const mockPageRule: PageRule = {
         urlPattern: "example\\.com",
         popupEnabled: POPUP_ENABLED.ENABLE,
@@ -295,7 +296,7 @@ describe("useSetting hooks", () => {
       )
     })
 
-    it("should handle invalid regex in page rules", async () => {
+    it("US-03: should handle invalid regex in page rules", async () => {
       const mockPageRule: PageRule = {
         urlPattern: "[invalid regex",
         popupEnabled: POPUP_ENABLED.ENABLE,
@@ -335,7 +336,7 @@ describe("useSetting hooks", () => {
       })
     })
 
-    it("should handle empty user settings", async () => {
+    it("US-18: should handle empty user settings", async () => {
       mockEnhancedSettings.getSection.mockResolvedValue(null)
 
       const { result } = renderHook(() => useUserSettings())
@@ -350,7 +351,7 @@ describe("useSetting hooks", () => {
   })
 
   describe("useSetting", () => {
-    it("should fetch settings with default sections", async () => {
+    it("US-20: should fetch settings with default sections", async () => {
       const mockSettings = {
         ...createMockUserSettings(),
         commands: [createMockCommand({ id: "1", title: "Test" })],
@@ -378,7 +379,7 @@ describe("useSetting hooks", () => {
       })
     })
 
-    it("should fetch settings with custom sections", async () => {
+    it("US-21: should fetch settings with custom sections", async () => {
       const mockSettings = {
         ...createMockUserSettings(),
         commands: [createMockCommand({ id: "1", title: "Test" })],
@@ -402,7 +403,7 @@ describe("useSetting hooks", () => {
       })
     })
 
-    it("should handle forceFresh parameter", async () => {
+    it("US-22: should handle forceFresh parameter", async () => {
       const mockSettings = {
         ...createMockUserSettings(),
         stars: [],
@@ -423,7 +424,7 @@ describe("useSetting hooks", () => {
       })
     })
 
-    it("should find and apply page rule", async () => {
+    it("US-22-a: should find and apply page rule", async () => {
       const mockPageRule: PageRule = {
         urlPattern: "example\\.com",
         popupEnabled: POPUP_ENABLED.ENABLE,
@@ -467,7 +468,7 @@ describe("useSetting hooks", () => {
       })
     })
 
-    it("should subscribe to cache changes for all sections", async () => {
+    it("US-23: should subscribe to cache changes for all sections", async () => {
       const mockSettings = {
         ...createMockUserSettings(),
         stars: [],
@@ -493,7 +494,7 @@ describe("useSetting hooks", () => {
       )
     })
 
-    it("should handle empty settings", async () => {
+    it("US-24: should handle empty settings", async () => {
       mockEnhancedSettings.get.mockResolvedValue({} as SettingsType)
 
       const { result } = renderHook(() => useSetting())
@@ -508,27 +509,30 @@ describe("useSetting hooks", () => {
   })
 
   describe("useSettingsWithImageCache", () => {
-    it("should return settings with image cache applied", async () => {
-      const mockSettings = {
-        commands: [
-          { id: "1", title: "Test", iconUrl: "http://example.com/icon.png" },
-        ],
-        folders: [
-          {
-            id: "1",
-            title: "Folder",
-            iconUrl: "http://example.com/folder.png",
-          },
-        ],
+    it("US-25: should return settings with image cache applied", async () => {
+      const command = {
+        id: "1",
+        title: "Test",
+        openMode: OPEN_MODE.POPUP,
+        iconUrl: "http://example.com/icon.png",
+      }
+      const folder = {
+        id: "1",
+        title: "Folder",
+        iconUrl: "http://example.com/folder.png",
+      }
+      const mockSettings: Partial<SettingsType> | { caches: Caches } = {
+        commands: [command],
+        folders: [folder],
         caches: {
           images: {
             "http://example.com/icon.png": "data:image/png;base64,cached",
             "http://example.com/folder.png": "data:image/png;base64,cached2",
           },
         },
-      } as any
+      }
 
-      mockEnhancedSettings.get.mockResolvedValue(mockSettings)
+      mockEnhancedSettings.get.mockResolvedValue(mockSettings as any)
 
       const { result } = renderHook(() => useSettingsWithImageCache())
 
@@ -537,17 +541,23 @@ describe("useSetting hooks", () => {
       })
 
       expect(result.current.commands).toEqual([
-        { id: "1", title: "Test", iconUrl: "data:image/png;base64,cached" },
+        {
+          ...command,
+          iconUrl: "data:image/png;base64,cached",
+        },
       ])
       expect(result.current.folders).toEqual([
-        { id: "1", title: "Folder", iconUrl: "data:image/png;base64,cached2" },
+        {
+          ...folder,
+          iconUrl: "data:image/png;base64,cached2",
+        },
       ])
       expect(result.current.iconUrls).toEqual({
         "1": "data:image/png;base64,cached",
       })
     })
 
-    it("should use original URLs when cache is not available", async () => {
+    it("US-28: should use original URLs when cache is not available", async () => {
       const mockSettings = {
         commands: [
           { id: "1", title: "Test", iconUrl: "http://example.com/icon.png" },
@@ -580,7 +590,7 @@ describe("useSetting hooks", () => {
       ])
     })
 
-    it("should handle loading state", async () => {
+    it("US-29: should handle loading state", async () => {
       // Mock a delayed response
       mockEnhancedSettings.get.mockImplementation(
         () =>
@@ -595,7 +605,7 @@ describe("useSetting hooks", () => {
       expect(result.current.iconUrls).toEqual({})
     })
 
-    it("should handle folders without iconUrl", async () => {
+    it("US-26: should handle folders without iconUrl", async () => {
       const mockSettings = {
         commands: [],
         folders: [
@@ -619,7 +629,7 @@ describe("useSetting hooks", () => {
       ])
     })
 
-    it("should handle empty cache strings", async () => {
+    it("US-28-a: should handle empty cache strings", async () => {
       const mockSettings = {
         commands: [
           { id: "1", title: "Test", iconUrl: "http://example.com/icon.png" },
@@ -647,7 +657,7 @@ describe("useSetting hooks", () => {
   })
 
   describe("utility functions (tested through hooks)", () => {
-    it("should test findMatchingPageRule with various URL patterns", async () => {
+    it("US-01: should test findMatchingPageRule with various URL patterns", async () => {
       const mockPageRules: PageRule[] = [
         {
           urlPattern: "github\\.com",
@@ -699,7 +709,7 @@ describe("useSetting hooks", () => {
       expect(result.current.pageRule).toEqual(mockPageRules[1])
     })
 
-    it("should handle window being undefined (SSR)", async () => {
+    it("US-02: should handle window being undefined (SSR)", async () => {
       // Skip this test for now due to React DOM issues in test environment
       // This functionality is tested in other integration tests
       expect(true).toBe(true)

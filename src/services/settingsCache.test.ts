@@ -48,7 +48,7 @@ describe("SettingsCacheManager", () => {
   })
 
   describe("DataVersionManager (via SettingsCacheManager)", () => {
-    it("should generate consistent versions for same data", async () => {
+    it("SC-04: should generate consistent versions for same data", async () => {
       mockStorage.getCommands.mockResolvedValue([])
 
       // Get data twice with same content
@@ -65,7 +65,7 @@ describe("SettingsCacheManager", () => {
       expect(status2[CACHE_SECTIONS.COMMANDS]).toBeDefined()
     })
 
-    it("should generate different versions for different data", async () => {
+    it("SC-05: should generate different versions for different data", async () => {
       const data1 = [createMockCommand({ id: "1", title: "test1" })]
       const data2 = [createMockCommand({ id: "2", title: "test2" })]
 
@@ -87,7 +87,7 @@ describe("SettingsCacheManager", () => {
   })
 
   describe("get method", () => {
-    it("should return cached data on cache hit", async () => {
+    it("SC-07: should return cached data on cache hit", async () => {
       const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
@@ -102,7 +102,7 @@ describe("SettingsCacheManager", () => {
       expect(mockStorage.getCommands).toHaveBeenCalledTimes(1) // Should not call again
     })
 
-    it("should force refresh when forceFresh is true", async () => {
+    it("SC-09: should force refresh when forceFresh is true", async () => {
       const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
@@ -115,7 +115,7 @@ describe("SettingsCacheManager", () => {
       expect(mockStorage.getCommands).toHaveBeenCalledTimes(2)
     })
 
-    it("should handle TTL expiration", async () => {
+    it("SC-10: should handle TTL expiration", async () => {
       const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
@@ -139,7 +139,7 @@ describe("SettingsCacheManager", () => {
       Date.now = originalNow
     })
 
-    it("should load from storage for each section type", async () => {
+    it("SC-11: should load from storage for each section type", async () => {
       const mockCommands = [createMockCommand({ id: "1", title: "test" })]
       const mockUserSettings = { theme: "dark" }
       const mockStars = [{ id: "1" }]
@@ -177,7 +177,7 @@ describe("SettingsCacheManager", () => {
       expect(mockSettings.getCaches).toHaveBeenCalled()
     })
 
-    it("should throw error for unknown section", async () => {
+    it("SC-12: should throw error for unknown section", async () => {
       await expect(cacheManager.get("unknown-section" as any)).rejects.toThrow(
         "Unknown cache section: unknown-section",
       )
@@ -185,7 +185,7 @@ describe("SettingsCacheManager", () => {
   })
 
   describe("cache invalidation", () => {
-    it("should invalidate specified sections", async () => {
+    it("SC-18: should invalidate specified sections", async () => {
       const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
@@ -201,7 +201,7 @@ describe("SettingsCacheManager", () => {
       expect(mockStorage.getCommands).toHaveBeenCalledTimes(2)
     })
 
-    it("should invalidate all cache sections", async () => {
+    it("SC-19: should invalidate all cache sections", async () => {
       const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
       mockStorage.get.mockResolvedValue({})
@@ -221,7 +221,7 @@ describe("SettingsCacheManager", () => {
       expect(mockStorage.get).toHaveBeenCalledTimes(2)
     })
 
-    it("should notify listeners on invalidation", async () => {
+    it("SC-20: should notify listeners on invalidation", async () => {
       const listener = vi.fn()
       cacheManager.subscribe(CACHE_SECTIONS.COMMANDS, listener)
 
@@ -232,7 +232,7 @@ describe("SettingsCacheManager", () => {
   })
 
   describe("listener functionality", () => {
-    it("should subscribe and unsubscribe listeners", () => {
+    it("SC-22: should subscribe and unsubscribe listeners", () => {
       const listener1 = vi.fn()
       const listener2 = vi.fn()
 
@@ -256,7 +256,7 @@ describe("SettingsCacheManager", () => {
       expect(listener2).toHaveBeenCalledTimes(2)
     })
 
-    it("should handle listener errors gracefully", () => {
+    it("SC-25: should handle listener errors gracefully", () => {
       const errorListener = vi.fn().mockImplementation(() => {
         throw new Error("Listener error")
       })
@@ -274,7 +274,7 @@ describe("SettingsCacheManager", () => {
       expect(normalListener).toHaveBeenCalled()
     })
 
-    it("should clean up listener sets when empty", () => {
+    it("SC-27: should clean up listener sets when empty", () => {
       const listener = vi.fn()
 
       cacheManager.subscribe(CACHE_SECTIONS.COMMANDS, listener)
@@ -288,12 +288,12 @@ describe("SettingsCacheManager", () => {
   })
 
   describe("storage change monitoring", () => {
-    it("should set up Chrome storage listener", () => {
+    it("SC-28: should set up Chrome storage listener", () => {
       // Constructor should have set up the listener
       expect(mockChromeStorage.onChanged.addListener).toHaveBeenCalledTimes(1)
     })
 
-    it("should invalidate correct sections on storage changes", () => {
+    it("SC-29: should invalidate correct sections on storage changes", () => {
       const invalidateSpy = vi.spyOn(cacheManager, "invalidate")
 
       // Get the listener function that was registered
@@ -324,7 +324,7 @@ describe("SettingsCacheManager", () => {
       )
     })
 
-    it("should deduplicate sections when invalidating", () => {
+    it("SC-35: should deduplicate sections when invalidating", () => {
       const invalidateSpy = vi.spyOn(cacheManager, "invalidate")
 
       const listenerFn =
@@ -341,7 +341,7 @@ describe("SettingsCacheManager", () => {
       expect(invalidateSpy).toHaveBeenCalledWith([CACHE_SECTIONS.COMMANDS])
     })
 
-    it("should not set up listener multiple times", () => {
+    it("SC-36: should not set up listener multiple times", () => {
       // Create another instance
       new SettingsCacheManager()
 
@@ -351,7 +351,7 @@ describe("SettingsCacheManager", () => {
   })
 
   describe("cache status debugging", () => {
-    it("should return cache status for all sections", async () => {
+    it("SC-44: should return cache status for all sections", async () => {
       const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
@@ -368,14 +368,14 @@ describe("SettingsCacheManager", () => {
       expect(status[CACHE_SECTIONS.COMMANDS].age).toBeGreaterThanOrEqual(0)
     })
 
-    it("should not include uncached sections in status", () => {
+    it("SC-46: should not include uncached sections in status", () => {
       const status = cacheManager.getCacheStatus()
 
       // Should be empty for new cache manager
       expect(Object.keys(status)).toHaveLength(0)
     })
 
-    it("should show correct cache age", async () => {
+    it("SC-45: should show correct cache age", async () => {
       const mockData = [createMockCommand({ id: "1", title: "test" })]
       mockStorage.getCommands.mockResolvedValue(mockData)
 
