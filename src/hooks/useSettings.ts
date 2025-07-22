@@ -201,8 +201,6 @@ export function useSettingsWithImageCache() {
   const { userSettings: settings, loading } = useUserSettings()
   const { data: caches } = useSection(CACHE_SECTIONS.CACHES)
 
-  console.log("useSettingsWithImageCache", settings, caches)
-
   const { commandsWithCache, foldersWithCache, iconUrls } = useMemo(() => {
     if (loading || !settings.commands) {
       return { commandsWithCache: [], foldersWithCache: [], iconUrls: {} }

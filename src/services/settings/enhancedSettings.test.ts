@@ -394,17 +394,91 @@ describe("EnhancedSettings", () => {
         folders: [],
         pageRules: [],
       }
-      mockSettingsCache.get.mockResolvedValue(mockUserSettings)
+      const mockCommands = [
+        {
+          id: "cmd-1",
+          title: "Test Command",
+          searchUrl: "https://example.com/search?q=%s",
+          parentFolderId: "",
+          iconUrl: "",
+        },
+      ]
+
+      // Mock settingsCache to return different data for different sections
+      mockSettingsCache.get.mockImplementation((section) => {
+        if (section === CACHE_SECTIONS.USER_SETTINGS) {
+          return Promise.resolve(mockUserSettings)
+        }
+        if (section === CACHE_SECTIONS.COMMANDS) {
+          return Promise.resolve(mockCommands)
+        }
+        return Promise.resolve([])
+      })
 
       const result = await enhancedSettings.getSection(
         CACHE_SECTIONS.USER_SETTINGS,
       )
 
+      // Verify both sections were called
       expect(mockSettingsCache.get).toHaveBeenCalledWith(
         CACHE_SECTIONS.USER_SETTINGS,
         false,
       )
-      expect(result).toEqual(mockUserSettings)
+      expect(mockSettingsCache.get).toHaveBeenCalledWith(
+        CACHE_SECTIONS.COMMANDS,
+        false,
+      )
+
+      // Result should include merged commands
+      expect(result).toEqual({
+        ...mockUserSettings,
+        commands: mockCommands,
+      })
+    })
+
+    it("ES-12-a: should merge commands section data when getting user settings section", async () => {
+      const mockCommands = [
+        {
+          id: "cmd-1",
+          title: "Test Command 1",
+          searchUrl: "https://example.com/search?q=%s",
+          parentFolderId: "",
+          iconUrl: "",
+        },
+        {
+          id: "cmd-2",
+          title: "Test Command 2",
+          searchUrl: "https://example.com/search2?q=%s",
+          parentFolderId: "",
+          iconUrl: "",
+        },
+      ]
+
+      const mockUserSettings = {
+        version: "1.0.0",
+        commands: [],
+        folders: [],
+        pageRules: [],
+      }
+
+      // Mock settingsCache to return different data for different sections
+      mockSettingsCache.get.mockImplementation((section) => {
+        if (section === CACHE_SECTIONS.USER_SETTINGS) {
+          return Promise.resolve(mockUserSettings)
+        }
+        if (section === CACHE_SECTIONS.COMMANDS) {
+          return Promise.resolve(mockCommands)
+        }
+        return Promise.resolve([])
+      })
+
+      const result = await enhancedSettings.getSection(
+        CACHE_SECTIONS.USER_SETTINGS,
+      )
+
+      // This test should fail with current implementation
+      // The expectation is that commands from COMMANDS section should be merged
+      expect(result.commands).toEqual(mockCommands)
     })
 
     it("ES-13: should get stars section", async () => {

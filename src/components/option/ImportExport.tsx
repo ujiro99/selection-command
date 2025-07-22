@@ -13,6 +13,8 @@ import {
   WeeklyBackupManager,
 } from "@/services/storage/backupManager"
 import { Settings, migrate } from "@/services/settings/settings"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { isBase64, isUrl } from "@/lib/utils"
 import { APP_ID } from "@/const"
 import { t } from "@/services/i18n"
@@ -220,7 +222,10 @@ export function ImportExport() {
 
     // for back compatibility
     // cache key to image data url
-    const caches = await Settings.getCaches()
+    const caches = await enhancedSettings.getSection(
+      CACHE_SECTIONS.CACHES,
+      true,
+    )
     for (const c of data.commands) {
       if (!c.iconUrl) continue
       if (isBase64(c.iconUrl) || isUrl(c.iconUrl)) continue
