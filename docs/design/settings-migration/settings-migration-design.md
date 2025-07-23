@@ -13,18 +13,19 @@
 
 ### 直接使用箇所（計5ファイル）
 
-| ファイル                         | 行番号            | 使用方法                                | 影響度 |
-| -------------------------------- | ----------------- | --------------------------------------- | ------ |
-| `src/services/commandMetrics.ts` | 12                | `const settings = await Settings.get()` | 中     |
-| `src/services/contextMenus.ts`   | 21                | `const settings = await Settings.get()` | 中     |
-| `src/background_script.ts`       | 77, 272, 358, 552 | `const settings = await Settings.get()` | 高     |
+| ファイル                                 | 行番号             | 使用方法                                       | 影響度 |
+| ---------------------------------------- | ------------------ | ---------------------------------------------- | ------ |
+| `src/services/commandMetrics.ts`         | 12                 | `const settings = await Settings.get()`        | 中     |
+| `src/services/contextMenus.ts`           | 21                 | `const settings = await Settings.get()`        | 中     |
+| `src/background_script.ts`               | 77, 272, 358, 552  | `const settings = await Settings.get()`        | 高     |
+| `src/components/option/SettingForm.tsx`  | 138, 193           | `const settings = await Settings.get(true)`    | 中     |
+| `src/components/option/ImportExport.tsx` | 271, 303, 317, 332 | `const currentSettings = await Settings.get()` | 中     |
 
 ### 既に移行済み
 
-| ファイル                                 | 状況                                                    |
-| ---------------------------------------- | ------------------------------------------------------- |
-| `src/hooks/useSettings.ts`               | 既に `enhancedSettings` を使用済み                      |
-| `src/components/option/ImportExport.tsx` | `Settings.get()` の直接使用なし、`migrate` 関数のみ使用 |
+| ファイル                   | 状況                               |
+| -------------------------- | ---------------------------------- |
+| `src/hooks/useSettings.ts` | 既に `enhancedSettings` を使用済み |
 
 ## インターフェース互換性の分析
 
@@ -54,54 +55,33 @@ interface GetSettingsOptions {
 
 ## 移行戦略
 
-### Phase 1: インターフェース統一（後方互換性維持）
+### 直接置換による段階的移行
 
-#### 1.1 EnhancedSettings.get() のオーバーロード追加
+#### 移行方針
 
-```typescript
-// 後方互換性のためのオーバーロード
-async get(excludeOptions?: boolean): Promise<SettingsType>
-async get(options?: GetSettingsOptions): Promise<SettingsType>
-async get(optionsOrExcludeOptions?: GetSettingsOptions | boolean): Promise<SettingsType>
-```
+複雑なオーバーロードや後方互換性メソッドは追加せず、各使用箇所を直接的に置き換える方式を採用。
 
-#### 1.2 Settings クラスへのプロキシメソッド追加（段階的移行用）
-
-```typescript
-export const Settings = {
-  // 既存メソッド...
-
-  // 新しいプロキシメソッド（将来的に削除予定）
-  getEnhanced: enhancedSettings.get.bind(enhancedSettings),
-}
-```
-
-### Phase 2: 段階的移行
-
-#### 2.1 優先順位付き移行
+#### 優先順位付き移行
 
 1. **高優先度**: `src/background_script.ts` （4箇所）
 2. **中優先度**: `src/services/contextMenus.ts`, `src/services/commandMetrics.ts`
+3. **中優先度**: `src/components/option/SettingForm.tsx` （2箇所）
+4. **中優先度**: `src/components/option/ImportExport.tsx` （4箇所）
 
-#### 2.2 移行手順（ファイル毎）
+#### 移行手順（ファイル毎）
 
 1. `Settings` インポートを `enhancedSettings` に変更
 2. `Settings.get()` 呼び出しを `enhancedSettings.get()` に変更
-3. パラメータが `excludeOptions` のみの場合は構造調整
+3. パラメータ調整：
+   - `Settings.get()` → `enhancedSettings.get()`
+   - `Settings.get(true)` → `enhancedSettings.get({ excludeOptions: true })`
+   - `Settings.get(false)` → `enhancedSettings.get({ excludeOptions: false })`
 4. 動作テストの実行
+5. 関連テストファイルの更新
 
-### Phase 3: 完全移行とクリーンアップ
+#### 最終クリーンアップ
 
-#### 3.1 Settings.get() の廃止予告
-
-- `@deprecated` アノテーションの追加
-- 段階的に警告ログの追加
-
-#### 3.2 最終クリーンアップ
-
-- `Settings.get()` の削除
-- プロキシメソッドの削除
-- 関連テストの更新
+移行完了後、不要になった`Settings.get()`の削除を検討（別タスクとして）
 
 ## リスク分析と対策
 
@@ -153,7 +133,6 @@ export const Settings = {
 
 - [ ] MG-09: 初回取得時間の測定
 - [ ] MG-10: キャッシュ使用時の取得時間測定
-- [ ] MG-11: メモリ使用量の比較
 
 ## スケジュール提案
 

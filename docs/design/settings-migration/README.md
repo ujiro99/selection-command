@@ -36,11 +36,13 @@
 
 **目的**: レガシーな`Settings.get()`をキャッシュ機能付きの`EnhancedSettings.get()`に置き換え、パフォーマンスを向上させる
 
-**影響箇所**: 5ファイル、8箇所の使用箇所
+**影響箇所**: 5ファイル、12箇所の使用箇所
 
 - `src/background_script.ts` (4箇所) - 最重要
 - `src/services/contextMenus.ts` (1箇所)
 - `src/services/commandMetrics.ts` (1箇所)
+- `src/components/option/SettingForm.tsx` (2箇所)
+- `src/components/option/ImportExport.tsx` (4箇所)
 
 **移行戦略**:
 
