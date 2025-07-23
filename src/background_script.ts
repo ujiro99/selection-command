@@ -626,3 +626,9 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     console.error("Failed to execute shortcut command:", error)
   }
 })
+
+// Export functions for testing
+export const testExports = {
+  commandFuncs,
+  updateWindowSize,
+}

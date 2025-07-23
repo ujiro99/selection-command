@@ -45,7 +45,7 @@ describe("Background Script Migration", () => {
     expect(spy).toHaveBeenCalled()
   })
 
-  it("MG-01-b: executeCommand関数での設定取得", async () => {
+  it("MG-01-b: updateWindowSize関数での設定取得", async () => {
     // 同様のテスト...
   })
 

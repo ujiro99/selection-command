@@ -3,7 +3,7 @@ import { EnhancedSettings } from "./enhancedSettings"
 import { settingsCache, CACHE_SECTIONS } from "./settingsCache"
 import { Settings } from "./settings"
 import { OptionSettings } from "../option/optionSettings"
-import { OPTION_FOLDER } from "@/const"
+import { OPTION_FOLDER, OPEN_MODE } from "@/const"
 
 // Mock dependencies
 vi.mock("./settingsCache")
@@ -481,6 +481,58 @@ describe("EnhancedSettings", () => {
       expect(result.commands).toEqual(mockCommands)
     })
 
+    it("ES-12-b: should include OptionSettings in user settings section commands", async () => {
+      const mockCommands = [
+        {
+          id: "cmd-1",
+          title: "Test Command 1",
+          searchUrl: "https://example.com/search?q=%s",
+          parentFolderId: "",
+          iconUrl: "",
+        },
+      ]
+
+      const mockUserSettings = {
+        version: "1.0.0",
+        commands: [],
+        folders: [],
+        pageRules: [],
+      }
+
+      // Mock OptionSettings commands
+      const mockOptionCommands = [
+        {
+          id: "opt-cmd-1",
+          title: "Option Command 1",
+          openMode: OPEN_MODE.OPTION,
+          searchUrl: "https://option-example.com/search?q=%s",
+          parentFolderId: OPTION_FOLDER,
+          iconUrl: "",
+        },
+      ]
+
+      mockOptionSettings.commands = mockOptionCommands
+
+      // Mock settingsCache to return different data for different sections
+      mockSettingsCache.get.mockImplementation((section) => {
+        if (section === CACHE_SECTIONS.USER_SETTINGS) {
+          return Promise.resolve(mockUserSettings)
+        }
+        if (section === CACHE_SECTIONS.COMMANDS) {
+          return Promise.resolve(mockCommands)
+        }
+        return Promise.resolve([])
+      })
+
+      const result = await enhancedSettings.getSection(
+        CACHE_SECTIONS.USER_SETTINGS,
+      )
+
+      // This test should fail with current implementation
+      // The expectation is that OptionSettings.commands should be included in the merged commands
+      expect(result.commands).toEqual([...mockCommands, ...mockOptionCommands])
+    })
+
     it("ES-13: should get stars section", async () => {
       const mockStars = [{ id: "1" }, { id: "2" }]
       mockSettingsCache.get.mockResolvedValue(mockStars)
@@ -717,6 +769,56 @@ describe("EnhancedSettings", () => {
       expect(result.shortcuts).toEqual({ shortcuts: [] })
       expect(result.commandExecutionCount).toBe(0)
       expect(result.hasShownReviewRequest).toBe(false)
+    })
+  })
+
+  describe("Performance Tests", () => {
+    it("MG-PERF-01: should measure initial data fetch time", async () => {
+      // Setup realistic mock data
+      mockSettingsCache.get
+        .mockResolvedValueOnce([{ id: "1", title: "Command", iconUrl: "" }])
+        .mockResolvedValueOnce({ folders: [], pageRules: [] })
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce({ shortcuts: [] })
+        .mockResolvedValueOnce({
+          commandExecutionCount: 0,
+          hasShownReviewRequest: false,
+        })
+
+      const startTime = performance.now()
+      await enhancedSettings.get()
+      const duration = performance.now() - startTime
+
+      // This test will fail initially with mocked implementation
+      // Real implementation should be faster than 100ms
+      expect(duration).toBeLessThan(100)
+    })
+
+    it("MG-PERF-02: should measure cache effectiveness", async () => {
+      // Setup mock data
+      mockSettingsCache.get
+        .mockResolvedValue([{ id: "1", title: "Command", iconUrl: "" }])
+        .mockResolvedValue({ folders: [], pageRules: [] })
+        .mockResolvedValue([])
+        .mockResolvedValue({ shortcuts: [] })
+        .mockResolvedValue({
+          commandExecutionCount: 0,
+          hasShownReviewRequest: false,
+        })
+
+      // Initial fetch
+      const start1 = performance.now()
+      await enhancedSettings.get()
+      const duration1 = performance.now() - start1
+
+      // Second fetch (from cache)
+      const start2 = performance.now()
+      await enhancedSettings.get()
+      const duration2 = performance.now() - start2
+
+      // This test will fail initially with mocked implementation
+      // With real cache, 2nd call should be 20% faster
+      expect(duration2).toBeLessThan(duration1 * 0.8)
     })
   })
 })
