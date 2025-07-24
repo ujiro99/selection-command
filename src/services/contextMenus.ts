@@ -10,22 +10,17 @@ export type executeActionProps = {
   useClipboard?: boolean
 }
 
-let initDelayTO: NodeJS.Timeout
-
 export const ContextMenu = {
   init: () => {
-    clearTimeout(initDelayTO)
-    initDelayTO = setTimeout(() => {
-      chrome.contextMenus.removeAll(async () => {
-        chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
-        const settings = await enhancedSettings.get()
-        if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
-          console.debug("init context menu")
-          ContextMenu.addMenus(settings)
-          chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-        }
-      })
-    }, 200)
+    chrome.contextMenus.removeAll(async () => {
+      chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
+      const settings = await enhancedSettings.get()
+      if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
+        console.info("init context menu")
+        ContextMenu.addMenus(settings)
+        chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+      }
+    })
   },
 
   commandIdObj: {} as { [key: string | number]: Command },
@@ -95,7 +90,7 @@ export const ContextMenu = {
       const res = await Ipc.sendTab(tab.id, TabCommand.executeAction, {
         command,
       })
-      res && console.debug(res)
+      if (res) console.debug(res)
     }
   },
 }
