@@ -9,9 +9,8 @@ import {
   KEY,
   CMD_KEY,
   CMD_LOCAL_KEY,
-  cmdSyncKey,
-  cmdLocalKey,
-} from "./index"
+} from "./const"
+import { cmdSyncKey, cmdLocalKey } from "./index"
 import { LegacyBackupManager } from "./backupManager"
 
 // Mock dependencies first

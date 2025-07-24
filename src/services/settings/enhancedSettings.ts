@@ -103,9 +103,9 @@ export class EnhancedSettings {
     })
 
     // Filter folders
-    mergedSettings.folders = mergedSettings.folders.filter(
-      (folder) => !!folder.title,
-    )
+      mergedSettings.folders = mergedSettings.folders.filter(
+        (folder) => !!folder.title,
+      )
 
     // Process option settings
     if (!excludeOptions) {

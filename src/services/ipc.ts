@@ -1,4 +1,5 @@
-import { Storage, SESSION_STORAGE_KEY } from "./storage"
+import { Storage } from "@/services/storage"
+import { SESSION_STORAGE_KEY } from "@/services/storage/const"
 import { PAGE_ACTION_OPEN_MODE } from "@/const"
 import type { PageActionStep } from "@/types"
 import { isServiceWorker } from "@/lib/utils"

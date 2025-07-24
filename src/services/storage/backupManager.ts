@@ -1,5 +1,6 @@
 import { Command, CommandFolder } from "@/types"
-import { LOCAL_STORAGE_KEY, BaseStorage, STORAGE_KEY } from "./index"
+import { LOCAL_STORAGE_KEY, STORAGE_KEY } from "./const"
+import { BaseStorage } from "./index"
 import { CommandStorage } from "@/services/storage/commandStorage"
 
 export interface BackupData {
