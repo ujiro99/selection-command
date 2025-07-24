@@ -1,4 +1,5 @@
-import { Storage, STORAGE_KEY } from "../storage"
+import { Storage } from "@/services/storage"
+import { STORAGE_KEY } from "@/services/storage/const"
 import DefaultSettings, {
   DefaultCommands,
   PopupPlacement,

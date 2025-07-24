@@ -1,13 +1,12 @@
 import { Command } from "@/types"
 import {
-  BaseStorage,
   STORAGE_KEY,
   LOCAL_STORAGE_KEY,
   SESSION_STORAGE_KEY,
   CMD_PREFIX,
-  ChangedCallback,
   KEY,
-} from "./storage/index"
+} from "./storage/const"
+import { BaseStorage, ChangedCallback } from "./storage/index"
 import {
   CommandStorage,
   CommandMigrationManager,

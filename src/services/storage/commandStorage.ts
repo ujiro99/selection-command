@@ -2,17 +2,14 @@ import { DefaultCommands } from "../option/defaultSettings"
 import { Command } from "@/types"
 import { CommandMetadata, GlobalCommandMetadata } from "@/types/command"
 import {
-  BaseStorage,
   STORAGE_KEY,
   LOCAL_STORAGE_KEY,
   CMD_PREFIX,
   KEY,
   CMD_KEY,
   CMD_LOCAL_KEY,
-  cmdSyncKey,
-  cmdLocalKey,
-  debouncedSyncSet,
-} from "./index"
+} from "./const"
+import { BaseStorage, debouncedSyncSet, cmdSyncKey, cmdLocalKey } from "./index"
 import { VERSION } from "@/const"
 import { LegacyBackupManager } from "@/services/storage/backupManager"
 

@@ -1,4 +1,4 @@
-import { Settings } from "@/services/settings/settings"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import type { SettingsType, Command } from "@/types"
 import { OPTION_FOLDER, STARTUP_METHOD } from "@/const"
 import { Ipc, TabCommand } from "@/services/ipc"
@@ -18,7 +18,7 @@ export const ContextMenu = {
     initDelayTO = setTimeout(() => {
       chrome.contextMenus.removeAll(async () => {
         chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
-        const settings = await Settings.get()
+        const settings = await enhancedSettings.get()
         if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
           console.debug("init context menu")
           ContextMenu.addMenus(settings)

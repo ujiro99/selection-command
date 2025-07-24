@@ -3,7 +3,7 @@ import { EnhancedSettings } from "./enhancedSettings"
 import { settingsCache, CACHE_SECTIONS } from "./settingsCache"
 import { Settings } from "./settings"
 import { OptionSettings } from "../option/optionSettings"
-import { OPTION_FOLDER } from "@/const"
+import { OPTION_FOLDER, OPEN_MODE } from "@/const"
 
 // Mock dependencies
 vi.mock("./settingsCache")
@@ -391,7 +391,7 @@ describe("EnhancedSettings", () => {
     it("ES-12: should get user settings section", async () => {
       const mockUserSettings = {
         settingVersion: "1.0.0",
-        folders: [],
+        folders: [mockOptionSettings.folder],
         pageRules: [],
       }
       const mockCommands = [
@@ -402,6 +402,7 @@ describe("EnhancedSettings", () => {
           parentFolderId: "",
           iconUrl: "",
         },
+        ...mockOptionSettings.commands,
       ]
 
       // Mock settingsCache to return different data for different sections
@@ -479,6 +480,58 @@ describe("EnhancedSettings", () => {
       // This test should fail with current implementation
       // The expectation is that commands from COMMANDS section should be merged
       expect(result.commands).toEqual(mockCommands)
+    })
+
+    it("ES-12-b: should include OptionSettings in user settings section commands", async () => {
+      const mockCommands = [
+        {
+          id: "cmd-1",
+          title: "Test Command 1",
+          searchUrl: "https://example.com/search?q=%s",
+          parentFolderId: "",
+          iconUrl: "",
+        },
+      ]
+
+      const mockUserSettings = {
+        version: "1.0.0",
+        commands: [],
+        folders: [],
+        pageRules: [],
+      }
+
+      // Mock OptionSettings commands
+      const mockOptionCommands = [
+        {
+          id: "opt-cmd-1",
+          title: "Option Command 1",
+          openMode: OPEN_MODE.OPTION,
+          searchUrl: "https://option-example.com/search?q=%s",
+          parentFolderId: OPTION_FOLDER,
+          iconUrl: "",
+        },
+      ]
+
+      mockOptionSettings.commands = mockOptionCommands
+
+      // Mock settingsCache to return different data for different sections
+      mockSettingsCache.get.mockImplementation((section) => {
+        if (section === CACHE_SECTIONS.USER_SETTINGS) {
+          return Promise.resolve(mockUserSettings)
+        }
+        if (section === CACHE_SECTIONS.COMMANDS) {
+          return Promise.resolve(mockCommands)
+        }
+        return Promise.resolve([])
+      })
+
+      const result = await enhancedSettings.getSection(
+        CACHE_SECTIONS.USER_SETTINGS,
+      )
+
+      // This test should fail with current implementation
+      // The expectation is that OptionSettings.commands should be included in the merged commands
+      expect(result.commands).toEqual([...mockCommands, ...mockOptionCommands])
     })
 
     it("ES-13: should get stars section", async () => {

@@ -54,6 +54,7 @@ import {
   e2a,
   cn,
 } from "@/lib/utils"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import DefaultSettings from "@/services/option/defaultSettings"
 
@@ -135,7 +136,7 @@ export function SettingForm({ className }: { className?: string }) {
 
   // Common function to load and transform settings data
   const loadSettingsData = async () => {
-    const settings = await Settings.get(true)
+    const settings = await enhancedSettings.get({ excludeOptions: true })
     // Convert linkCommand option
     const linkCommands = settings.commands.filter(isLinkCommand)
     if (linkCommands.length > 0) {
@@ -190,7 +191,7 @@ export function SettingForm({ className }: { className?: string }) {
   const updateSettings = async (settings: SettingsFormType) => {
     try {
       setIsSaving(true)
-      const current = await Settings.get(true)
+      const current = await enhancedSettings.get({ excludeOptions: true })
       const linkCommands = current.commands.filter(isLinkCommand).map((c) => ({
         ...c,
         openMode: settings.linkCommand.openMode,
