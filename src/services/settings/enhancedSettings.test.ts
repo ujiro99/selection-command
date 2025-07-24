@@ -391,7 +391,7 @@ describe("EnhancedSettings", () => {
     it("ES-12: should get user settings section", async () => {
       const mockUserSettings = {
         settingVersion: "1.0.0",
-        folders: [],
+        folders: [mockOptionSettings.folder],
         pageRules: [],
       }
       const mockCommands = [
@@ -402,6 +402,7 @@ describe("EnhancedSettings", () => {
           parentFolderId: "",
           iconUrl: "",
         },
+        ...mockOptionSettings.commands,
       ]
 
       // Mock settingsCache to return different data for different sections
@@ -773,52 +774,50 @@ describe("EnhancedSettings", () => {
   })
 
   describe("Performance Tests", () => {
-    it("MG-PERF-01: should measure initial data fetch time", async () => {
-      // Setup realistic mock data
-      mockSettingsCache.get
-        .mockResolvedValueOnce([{ id: "1", title: "Command", iconUrl: "" }])
-        .mockResolvedValueOnce({ folders: [], pageRules: [] })
-        .mockResolvedValueOnce([])
-        .mockResolvedValueOnce({ shortcuts: [] })
-        .mockResolvedValueOnce({
-          commandExecutionCount: 0,
-          hasShownReviewRequest: false,
-        })
+    // Use real settingsCache for performance tests
+    beforeEach(async () => {
+      // Restore the real settingsCache implementation for performance tests
+      vi.doUnmock("./settingsCache")
+      const { settingsCache: realSettingsCache } = await import(
+        "./settingsCache"
+      )
+      // Clear any existing cache
+      realSettingsCache.invalidateAll()
+    })
 
+    afterEach(() => {
+      // Restore mock for other tests
+      vi.doMock("./settingsCache")
+    })
+
+    it("MG-PERF-01: should measure initial data fetch time", async () => {
       const startTime = performance.now()
-      await enhancedSettings.get()
+      await enhancedSettings.get({ forceFresh: true })
       const duration = performance.now() - startTime
 
-      // This test will fail initially with mocked implementation
-      // Real implementation should be faster than 100ms
+      // This test should now measure real performance
+      console.debug("Initial fetch duration:", duration)
       expect(duration).toBeLessThan(100)
     })
 
     it("MG-PERF-02: should measure cache effectiveness", async () => {
-      // Setup mock data
-      mockSettingsCache.get
-        .mockResolvedValue([{ id: "1", title: "Command", iconUrl: "" }])
-        .mockResolvedValue({ folders: [], pageRules: [] })
-        .mockResolvedValue([])
-        .mockResolvedValue({ shortcuts: [] })
-        .mockResolvedValue({
-          commandExecutionCount: 0,
-          hasShownReviewRequest: false,
-        })
+      // Clear cache to ensure fresh start
+      enhancedSettings.invalidateAllCache()
 
       // Initial fetch
       const start1 = performance.now()
-      await enhancedSettings.get()
+      await enhancedSettings.get({ forceFresh: true })
       const duration1 = performance.now() - start1
+      console.debug("Initial fetch duration:", duration1)
 
       // Second fetch (from cache)
       const start2 = performance.now()
       await enhancedSettings.get()
       const duration2 = performance.now() - start2
+      console.debug("Cache fetch duration:", duration2)
 
-      // This test will fail initially with mocked implementation
-      // With real cache, 2nd call should be 20% faster
-      expect(duration2).toBeLessThan(duration1 * 0.8)
+      // With real cache, 2nd call should be significantly faster
+      expect(duration2).toBeLessThan(duration1 * 0.5)
     })
   })
 })

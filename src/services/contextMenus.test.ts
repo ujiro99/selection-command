@@ -48,8 +48,8 @@ describe("Service Layer Migration", () => {
     // This test will fail initially because ContextMenu.init still uses Settings.get()
     ContextMenu.init()
 
-    // Give some time for async operations
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    // Give some time for async operations (setTimeout is 200ms in contextMenus.ts)
+    await new Promise((resolve) => setTimeout(resolve, 250))
 
     expect(mockEnhancedSettings.get).toHaveBeenCalledTimes(1)
   })

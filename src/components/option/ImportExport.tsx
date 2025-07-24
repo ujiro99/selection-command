@@ -268,7 +268,7 @@ export function ImportExport() {
     if (ret && importJson != null) {
       ;(async () => {
         const { commandExecutionCount = 0, hasShownReviewRequest = false } =
-          await Settings.get()
+          await enhancedSettings.get()
         const data = await migrate({
           ...importJson,
           commandExecutionCount,
@@ -300,7 +300,7 @@ export function ImportExport() {
 
             if (legacyData.folders && legacyData.folders.length > 0) {
               // Restore folders to settings
-              const currentSettings = await Settings.get()
+              const currentSettings = await enhancedSettings.get()
               await Settings.set({
                 ...currentSettings,
                 folders: legacyData.folders,
@@ -314,7 +314,7 @@ export function ImportExport() {
 
             if (dailyData.folders && dailyData.folders.length > 0) {
               // Restore folders to settings
-              const currentSettings = await Settings.get()
+              const currentSettings = await enhancedSettings.get()
               await Settings.set({
                 ...currentSettings,
                 folders: dailyData.folders,
@@ -329,7 +329,7 @@ export function ImportExport() {
 
             if (weeklyData.folders && weeklyData.folders.length > 0) {
               // Restore folders to settings
-              const currentSettings = await Settings.get()
+              const currentSettings = await enhancedSettings.get()
               await Settings.set({
                 ...currentSettings,
                 folders: weeklyData.folders,

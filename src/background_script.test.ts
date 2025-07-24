@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { BgCommand } from "@/services/ipc"
+import { POPUP_ENABLED, LINK_COMMAND_ENABLED } from "@/const"
 
 // Mock dependencies
 vi.mock("@/services/settings/enhancedSettings")
@@ -206,8 +207,8 @@ describe("Background Script Migration", () => {
           // New rule should be added
           expect.objectContaining({
             urlPattern: newUrl,
-            popupEnabled: "enable",
-            linkCommandEnabled: "inherit",
+            popupEnabled: POPUP_ENABLED.ENABLE,
+            linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
           }),
         ]),
       }),
@@ -366,6 +367,9 @@ describe("Background Script Migration", () => {
       SESSION_STORAGE_KEY: {
         SELECTION_TEXT: "selectionText",
       },
+      LOCAL_STORAGE_KEY: {
+        CLIENT_ID: "clientId",
+      },
     }))
 
     // Mock the execute function from action/background
@@ -391,6 +395,9 @@ describe("Background Script Migration", () => {
         executeAction: "executeAction",
       },
     }))
+
+    // Clear the module cache to ensure fresh import
+    vi.resetModules()
 
     // Import the module to trigger the listener setup
     await import("./background_script")

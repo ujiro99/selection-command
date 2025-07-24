@@ -110,8 +110,8 @@ export class EnhancedSettings {
     // Process option settings
     if (!excludeOptions) {
       this.removeOptionSettings(mergedSettings)
-      mergedSettings.commands.push(...OptionSettings.commands)
       mergedSettings.folders.push(OptionSettings.folder)
+      mergedSettings.commands.push(...OptionSettings.commands)
     }
 
     return mergedSettings
@@ -144,10 +144,13 @@ export class EnhancedSettings {
         settingsCache.get<Command[]>(CACHE_SECTIONS.COMMANDS, forceFresh),
       ])
 
-      return {
-        ...userSettings,
-        commands,
-      } as any
+      // Process option settings
+      const mergedSettings = { ...userSettings, commands } as SettingsType
+      this.removeOptionSettings(mergedSettings)
+      mergedSettings.folders.push(OptionSettings.folder)
+      mergedSettings.commands.push(...OptionSettings.commands)
+
+      return mergedSettings as any
     }
 
     return settingsCache.get(section, forceFresh)

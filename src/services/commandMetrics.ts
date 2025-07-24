@@ -1,4 +1,5 @@
 import { Settings } from "@/services/settings/settings"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { COMMAND_USAGE } from "@/const"
 
@@ -9,7 +10,7 @@ export const incrementCommandExecutionCount = async (
   tabId?: number,
 ): Promise<void> => {
   try {
-    const settings = await Settings.get()
+    const settings = await enhancedSettings.get()
     let count = settings.commandExecutionCount ?? 0
     const hasShown = settings.hasShownReviewRequest ?? false
 

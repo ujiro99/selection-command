@@ -10,6 +10,7 @@ import {
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
@@ -74,7 +75,7 @@ const commandFuncs = {
 
   [BgCommand.addPageRule]: (param: addPageRuleProps): boolean => {
     const add = async () => {
-      const settings = await Settings.get()
+      const settings = await enhancedSettings.get()
       const pageRules = settings.pageRules ?? []
       if (pageRules.find((r) => r.urlPattern === param.url) == null) {
         pageRules.push({
@@ -269,7 +270,7 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ): boolean => {
     const toggle = async () => {
-      const settings = await Settings.get()
+      const settings = await enhancedSettings.get()
       const idx = settings.stars.findIndex((s) => s.id === param.id)
       if (idx >= 0) {
         settings.stars.splice(idx, 1)
@@ -355,7 +356,7 @@ const updateWindowSize = async (
   width: number,
   height: number,
 ) => {
-  const obj = await Settings.get()
+  const obj = await enhancedSettings.get()
   const found = obj.commands.find((c) => c.id === commandId)
   if (found) {
     found.popupOption = {
@@ -549,7 +550,7 @@ Settings.addChangedListener(() => ContextMenu.init())
 chrome.commands.onCommand.addListener(async (commandName) => {
   try {
     // Get settings
-    const settings = await Settings.get()
+    const settings = await enhancedSettings.get()
     const shortcut = settings.shortcuts?.shortcuts.find(
       (shortcut) => shortcut.id === commandName,
     )
