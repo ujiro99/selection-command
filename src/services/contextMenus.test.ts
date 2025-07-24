@@ -218,6 +218,61 @@ describe("Context Menu Multi-level Hierarchy", () => {
         parentId: "mock-menu-id-1",
       })
     })
+
+    it("CM-05: should update menu when settings change", async () => {
+      const mockRemoveAll = chrome.contextMenus.removeAll as any
+      const mockRemoveListener = chrome.contextMenus.onClicked
+        .removeListener as any
+      const mockAddListener = chrome.contextMenus.onClicked.addListener as any
+
+      // Initial settings
+      const initialFolders = [createFolder("folder1", "Folder 1")]
+      const initialCommands = [createCommand("cmd1", "Command 1", "folder1")]
+
+      mockEnhancedSettings.get.mockResolvedValueOnce({
+        commands: initialCommands,
+        folders: initialFolders,
+        startupMethod: { method: "contextMenu", threshold: 1 },
+      } as any)
+
+      await ContextMenu.init()
+
+      // Should create initial menus
+      expect(mockContextMenusCreate).toHaveBeenCalledTimes(3)
+
+      // Updated settings
+      const updatedFolders = [createFolder("folder2", "Folder 2")]
+      const updatedCommands = [createCommand("cmd2", "Command 2", "folder2")]
+
+      mockEnhancedSettings.get.mockResolvedValueOnce({
+        commands: updatedCommands,
+        folders: updatedFolders,
+        startupMethod: { method: "contextMenu", threshold: 1 },
+      } as any)
+
+      // Clear mock calls for second init
+      vi.clearAllMocks()
+      let mockIdCounter = 0
+      mockContextMenusCreate.mockImplementation(
+        () => `mock-menu-id-${++mockIdCounter}`,
+      )
+
+      await ContextMenu.init()
+
+      // Should remove all previous menus and create new ones
+      expect(mockRemoveAll).toHaveBeenCalledTimes(1)
+      expect(mockRemoveListener).toHaveBeenCalledTimes(1)
+      expect(mockContextMenusCreate).toHaveBeenCalledTimes(3) // root + folder2 + cmd2
+      expect(mockAddListener).toHaveBeenCalledTimes(1)
+
+      // Check that new menu structure is created
+      expect(mockContextMenusCreate).toHaveBeenCalledWith({
+        title: "Folder 2",
+        contexts: ["selection"],
+        id: "folder2",
+        parentId: "mock-menu-id-1",
+      })
+    })
   })
 
   describe("Command processing tests", () => {
@@ -332,6 +387,53 @@ describe("Context Menu Multi-level Hierarchy", () => {
       })
     })
 
+    it("CM-11: should handle circular reference folder structure", async () => {
+      // Create circular reference: folder1 -> folder2 -> folder1
+      const folders = [
+        createFolder("folder1", "Folder 1", "folder2"),
+        createFolder("folder2", "Folder 2", "folder1"),
+      ]
+      const commands = [createCommand("cmd1", "Command 1", "folder1")]
+
+      mockEnhancedSettings.get.mockResolvedValue({
+        commands,
+        folders,
+        startupMethod: { method: "contextMenu", threshold: 1 },
+      } as any)
+
+      await ContextMenu.init()
+
+      // Should handle circular reference gracefully
+      // Both folders should be created, but circular dependency should be resolved
+      expect(mockContextMenusCreate).toHaveBeenCalledTimes(5) // root + 2 folders (one duplicated due to circular ref) + 1 command
+
+      // Verify that folders are created (exact parent structure may vary due to circular resolution)
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Folder 1",
+          contexts: ["selection"],
+          id: "folder1",
+        }),
+      )
+
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Folder 2",
+          contexts: ["selection"],
+          id: "folder2",
+        }),
+      )
+
+      // Command should be placed somewhere in the hierarchy
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: "Command 1",
+          contexts: ["selection"],
+          id: "cmd1",
+        }),
+      )
+    })
+
     it("CM-12: should handle non-existent parent folder references", async () => {
       const folders: CommandFolder[] = []
       const commands = [
@@ -433,6 +535,52 @@ describe("Context Menu Multi-level Hierarchy", () => {
 
       // All commands should be mapped correctly
       expect(Object.keys(ContextMenu.commandIdObj)).toHaveLength(2)
+    })
+
+    it("CM-15: should execute command when menu is clicked", async () => {
+      // Mock chrome.tabs and chrome.runtime APIs
+      const mockSendMessage = vi.fn().mockResolvedValue("success")
+      global.chrome.tabs = {
+        sendMessage: mockSendMessage,
+      } as any
+      global.chrome.runtime = {
+        lastError: null,
+      } as any
+
+      const folders = [createFolder("folder1", "Folder 1")]
+      const commands = [createCommand("cmd1", "Command 1", "folder1")]
+
+      mockEnhancedSettings.get.mockResolvedValue({
+        commands,
+        folders,
+        startupMethod: { method: "contextMenu", threshold: 1 },
+      } as any)
+
+      await ContextMenu.init()
+
+      // Simulate menu click
+      const mockInfo: chrome.contextMenus.OnClickData = {
+        menuItemId: "mock-menu-id-3", // Command menu ID
+        selectionText: "selected text",
+      } as any
+
+      const mockTab: chrome.tabs.Tab = {
+        id: 123,
+        url: "https://example.com",
+      } as any
+
+      await ContextMenu.onClicked(mockInfo, mockTab)
+
+      // Should call chrome.tabs.sendMessage with correct parameters
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        123,
+        expect.objectContaining({
+          command: "executeAction",
+          param: {
+            command: commands[0],
+          },
+        }),
+      )
     })
   })
 })
