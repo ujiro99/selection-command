@@ -14,6 +14,34 @@ export type executeActionProps = {
   useClipboard?: boolean
 }
 
+type Callback = () => void
+
+const callbacks = new Map<number | string, Callback>()
+
+const createMenu = (
+  options: chrome.contextMenus.CreateProperties,
+): string | number => {
+  const cb = () => {
+    if (callbacks.has(options.id as string)) {
+      // Remove self
+      callbacks.delete(options.id as string)
+    }
+    if (callbacks.size === 0) {
+      // Last callback.
+      console.info("Context menu initialized successfully.")
+    }
+    if (chrome.runtime.lastError) {
+      console.error(
+        `Failed to create context menu "${options.title}":`,
+        chrome.runtime.lastError,
+      )
+    }
+  }
+  const id = chrome.contextMenus.create(options, cb)
+  callbacks.set(id, cb)
+  return id
+}
+
 let initDelayTO: NodeJS.Timeout
 let initResolve: () => void
 
@@ -35,7 +63,6 @@ export const ContextMenu = {
         if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
           await ContextMenu.addMenus(settings)
           chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-          console.info("init context menu")
         }
         resolve()
       }, 10)
@@ -50,33 +77,24 @@ export const ContextMenu = {
     const folders = settings.folders
 
     // Add the root menu using app name.
-    const rootId = chrome.contextMenus.create(
-      {
-        id: `${APP_ID}-root`,
-        title: APP_ID.split("-")
-          .map((n) => capitalize(n))
-          .join(" "),
-        contexts,
-      },
-      () => {
-        if (chrome.runtime.lastError) {
-          console.error(
-            "Failed to create root context menu:",
-            chrome.runtime.lastError,
-          )
-        }
-      },
-    )
+    const rootId = createMenu({
+      id: `${APP_ID}-root`,
+      title: APP_ID.split("-")
+        .map((n) => capitalize(n))
+        .join(" "),
+      contexts,
+    })
     // Create hierarchical tree structure
     const tree = toCommandTree(commands, folders)
     // Recursively add menus based on tree structure
-    ContextMenu.addMenusRecursive(tree, rootId, contexts)
+    ContextMenu.addMenusRecursive(tree, rootId, contexts, callbacks)
   },
 
   addMenusRecursive: (
     nodes: CommandTreeNode[],
     parentId: string | number,
     contexts: chrome.contextMenus.ContextType[],
+    callbacks: Map<number | string, Callback> = new Map(),
   ) => {
     for (const node of nodes) {
       if (node.type === "folder") {
@@ -84,66 +102,41 @@ export const ContextMenu = {
 
         // Handle OPTION_FOLDER separator
         if (folder.id === OPTION_FOLDER) {
-          chrome.contextMenus.create(
-            {
-              title: "Option",
-              type: "separator",
-              contexts,
-              id: "OptionSeparator",
-              parentId,
-            },
-            () => {
-              if (chrome.runtime.lastError) {
-                console.error(
-                  `Failed to create separator for folder "${folder.title}":`,
-                  chrome.runtime.lastError,
-                )
-              }
-            },
-          )
+          createMenu({
+            title: "Option",
+            type: "separator",
+            contexts,
+            id: "OptionSeparator",
+            parentId,
+          })
         }
 
         // Create folder menu
-        const folderId = chrome.contextMenus.create(
-          {
-            title: folder.title,
-            contexts,
-            id: folder.id,
-            parentId,
-          },
-          () => {
-            if (chrome.runtime.lastError) {
-              console.error(
-                `Failed to create folder context menu "${folder.title}":`,
-                chrome.runtime.lastError,
-              )
-            }
-          },
-        )
+        const folderId = createMenu({
+          title: folder.title,
+          contexts,
+          id: folder.id,
+          parentId,
+        })
 
         // Recursively add child nodes
         if (node.children && node.children.length > 0) {
-          ContextMenu.addMenusRecursive(node.children, folderId, contexts)
+          ContextMenu.addMenusRecursive(
+            node.children,
+            folderId,
+            contexts,
+            callbacks,
+          )
         }
       } else {
         // Handle command
         const command = node.content as Command
-        const menuId = chrome.contextMenus.create(
-          {
-            title: command.title,
-            parentId,
-            contexts,
-            id: command.id,
-          },
-          () => {
-            if (chrome.runtime.lastError) {
-              console.error(
-                `Failed to create command context menu "${command.title}":`,
-                chrome.runtime.lastError,
-              )
-            }
-          },
-        )
+        const menuId = createMenu({
+          title: command.title,
+          parentId,
+          contexts,
+          id: command.id,
+        })
         ContextMenu.commandIdObj[menuId] = command
       }
     }
