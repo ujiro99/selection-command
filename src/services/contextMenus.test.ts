@@ -42,17 +42,12 @@ describe("Service Layer Migration", () => {
 
   it("MG-02-b: should use enhancedSettings.get() in contextMenus", async () => {
     // Mock chrome.contextMenus.removeAll to call the callback
-    ;(chrome.contextMenus.removeAll as any).mockImplementation(
-      (callback: () => void) => {
-        callback()
-      },
-    )
+    ;(chrome.contextMenus.removeAll as any).mockImplementation(async () => {
+      return
+    })
 
     // This test will fail initially because ContextMenu.init still uses Settings.get()
-    ContextMenu.init()
-
-    // Give some time for async operations (setTimeout is 200ms in contextMenus.ts)
-    await new Promise((resolve) => setTimeout(resolve, 250))
+    await ContextMenu.init()
 
     expect(mockEnhancedSettings.get).toHaveBeenCalledTimes(1)
   })
@@ -87,18 +82,26 @@ describe("Context Menu Multi-level Hierarchy", () => {
     vi.clearAllMocks()
     let mockIdCounter = 0
     mockContextMenusCreate.mockImplementation(
-      () => `mock-menu-id-${++mockIdCounter}`,
+      (_options: any, callback?: () => void) => {
+        const menuId = `mock-menu-id-${++mockIdCounter}`
+        // Call callback immediately for testing
+        if (callback) {
+          callback()
+        }
+        return menuId
+      },
     )
 
     // Clear commandIdObj between tests
     ContextMenu.commandIdObj = {}
 
     // Mock chrome.contextMenus.removeAll to call the callback
-    ;(chrome.contextMenus.removeAll as any).mockImplementation(
-      (callback: () => void) => {
-        callback()
-      },
-    )
+    ;(chrome.contextMenus.removeAll as any).mockImplementation(async () => {})
+
+    // Mock chrome.runtime.lastError
+    global.chrome.runtime = {
+      lastError: null,
+    } as any
   })
 
   describe("Basic functionality tests", () => {
@@ -118,27 +121,39 @@ describe("Context Menu Multi-level Hierarchy", () => {
       expect(mockContextMenusCreate).toHaveBeenCalledTimes(3)
 
       // Check root menu creation
-      expect(mockContextMenusCreate).toHaveBeenNthCalledWith(1, {
-        id: "selection-command-root",
-        title: "Selection Command",
-        contexts: ["selection"],
-      })
+      expect(mockContextMenusCreate).toHaveBeenNthCalledWith(
+        1,
+        {
+          id: "selection-command-root",
+          title: "Selection Command",
+          contexts: ["selection"],
+        },
+        expect.any(Function),
+      )
 
       // Check folder creation
-      expect(mockContextMenusCreate).toHaveBeenNthCalledWith(2, {
-        title: "Folder 1",
-        contexts: ["selection"],
-        id: "folder1",
-        parentId: "mock-menu-id-1",
-      })
+      expect(mockContextMenusCreate).toHaveBeenNthCalledWith(
+        2,
+        {
+          title: "Folder 1",
+          contexts: ["selection"],
+          id: "folder1",
+          parentId: "mock-menu-id-1",
+        },
+        expect.any(Function),
+      )
 
       // Check command creation
-      expect(mockContextMenusCreate).toHaveBeenNthCalledWith(3, {
-        title: "Command 1",
-        parentId: "mock-menu-id-2",
-        contexts: ["selection"],
-        id: "cmd1",
-      })
+      expect(mockContextMenusCreate).toHaveBeenNthCalledWith(
+        3,
+        {
+          title: "Command 1",
+          parentId: "mock-menu-id-2",
+          contexts: ["selection"],
+          id: "cmd1",
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-02: should create 2-level folder structure correctly", async () => {
@@ -160,12 +175,15 @@ describe("Context Menu Multi-level Hierarchy", () => {
       expect(mockContextMenusCreate).toHaveBeenCalledTimes(4)
 
       // Verify the nested structure is created correctly
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Folder 2",
-        contexts: ["selection"],
-        id: "folder2",
-        parentId: "mock-menu-id-2", // Should be parent of folder1
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          id: "folder2",
+          title: "Folder 2",
+          contexts: ["selection"],
+          parentId: "mock-menu-id-2", // Should be parent of folder1
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-03: should create 3+ level deep structure correctly", async () => {
@@ -188,12 +206,15 @@ describe("Context Menu Multi-level Hierarchy", () => {
       expect(mockContextMenusCreate).toHaveBeenCalledTimes(5)
 
       // Verify deep nesting
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Folder 3",
-        contexts: ["selection"],
-        id: "folder3",
-        parentId: "mock-menu-id-3", // Should be parent of folder2
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          title: "Folder 3",
+          contexts: ["selection"],
+          id: "folder3",
+          parentId: "mock-menu-id-3", // Should be parent of folder2
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-04: should display empty folders correctly", async () => {
@@ -211,12 +232,15 @@ describe("Context Menu Multi-level Hierarchy", () => {
       // Should create root menu + empty folder
       expect(mockContextMenusCreate).toHaveBeenCalledTimes(2)
 
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Empty Folder",
-        contexts: ["selection"],
-        id: "empty-folder",
-        parentId: "mock-menu-id-1",
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          title: "Empty Folder",
+          contexts: ["selection"],
+          id: "empty-folder",
+          parentId: "mock-menu-id-1",
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-05: should update menu when settings change", async () => {
@@ -254,7 +278,14 @@ describe("Context Menu Multi-level Hierarchy", () => {
       vi.clearAllMocks()
       let mockIdCounter = 0
       mockContextMenusCreate.mockImplementation(
-        () => `mock-menu-id-${++mockIdCounter}`,
+        (options: any, callback?: () => void) => {
+          const menuId = `mock-menu-id-${++mockIdCounter}`
+          // Simulate async behavior with callback
+          if (callback) {
+            setTimeout(() => callback(), 0)
+          }
+          return menuId
+        },
       )
 
       await ContextMenu.init()
@@ -266,12 +297,15 @@ describe("Context Menu Multi-level Hierarchy", () => {
       expect(mockAddListener).toHaveBeenCalledTimes(1)
 
       // Check that new menu structure is created
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Folder 2",
-        contexts: ["selection"],
-        id: "folder2",
-        parentId: "mock-menu-id-1",
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          title: "Folder 2",
+          contexts: ["selection"],
+          id: "folder2",
+          parentId: "mock-menu-id-1",
+        },
+        expect.any(Function),
+      )
     })
   })
 
@@ -288,12 +322,15 @@ describe("Context Menu Multi-level Hierarchy", () => {
 
       await ContextMenu.init()
 
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Root Command",
-        parentId: "mock-menu-id-1", // Root menu ID
-        contexts: ["selection"],
-        id: "root-cmd",
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          title: "Root Command",
+          parentId: "mock-menu-id-1", // Root menu ID
+          contexts: ["selection"],
+          id: "root-cmd",
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-07: should create commands in 1-level folders correctly", async () => {
@@ -309,12 +346,15 @@ describe("Context Menu Multi-level Hierarchy", () => {
       await ContextMenu.init()
 
       // Command should be placed in the folder, not root
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Command 1",
-        parentId: "mock-menu-id-2", // Folder's menu ID
-        contexts: ["selection"],
-        id: "cmd1",
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          title: "Command 1",
+          parentId: "mock-menu-id-2", // Folder's menu ID
+          contexts: ["selection"],
+          id: "cmd1",
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-08: should create commands in deep hierarchy correctly", async () => {
@@ -334,12 +374,15 @@ describe("Context Menu Multi-level Hierarchy", () => {
       await ContextMenu.init()
 
       // Command should be in the deepest folder
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Deep Command",
-        parentId: "mock-menu-id-4", // folder3's menu ID
-        contexts: ["selection"],
-        id: "deep-cmd",
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          title: "Deep Command",
+          parentId: "mock-menu-id-4", // folder3's menu ID
+          contexts: ["selection"],
+          id: "deep-cmd",
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-09: should create mixed structure (folders + commands) correctly", async () => {
@@ -378,13 +421,16 @@ describe("Context Menu Multi-level Hierarchy", () => {
       await ContextMenu.init()
 
       // Should create separator before option folder
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Option",
-        type: "separator",
-        contexts: ["selection"],
-        id: "OptionSeparator",
-        parentId: "mock-menu-id-1",
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          title: "Option",
+          type: "separator",
+          contexts: ["selection"],
+          id: "OptionSeparator",
+          parentId: "mock-menu-id-1",
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-11: should handle circular reference folder structure", async () => {
@@ -414,6 +460,7 @@ describe("Context Menu Multi-level Hierarchy", () => {
           contexts: ["selection"],
           id: "folder1",
         }),
+        expect.any(Function),
       )
 
       expect(mockContextMenusCreate).toHaveBeenCalledWith(
@@ -422,6 +469,7 @@ describe("Context Menu Multi-level Hierarchy", () => {
           contexts: ["selection"],
           id: "folder2",
         }),
+        expect.any(Function),
       )
 
       // Command should be placed somewhere in the hierarchy
@@ -431,6 +479,7 @@ describe("Context Menu Multi-level Hierarchy", () => {
           contexts: ["selection"],
           id: "cmd1",
         }),
+        expect.any(Function),
       )
     })
 
@@ -449,12 +498,15 @@ describe("Context Menu Multi-level Hierarchy", () => {
       await ContextMenu.init()
 
       // Orphan command should be placed under root
-      expect(mockContextMenusCreate).toHaveBeenCalledWith({
-        title: "Orphan Command",
-        parentId: "mock-menu-id-1", // Root menu ID
-        contexts: ["selection"],
-        id: "orphan-cmd",
-      })
+      expect(mockContextMenusCreate).toHaveBeenCalledWith(
+        {
+          title: "Orphan Command",
+          parentId: "mock-menu-id-1", // Root menu ID
+          contexts: ["selection"],
+          id: "orphan-cmd",
+        },
+        expect.any(Function),
+      )
     })
 
     it("CM-16: should be executed only the last call, if called multiple times", async () => {
