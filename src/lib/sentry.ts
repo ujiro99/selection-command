@@ -4,26 +4,152 @@ import {
   getDefaultIntegrations,
   makeFetchTransport,
   Scope,
+  ErrorEvent,
 } from "@sentry/browser"
+import { isDebug, POPUP_ENABLED } from "@/const"
+import { UserSettings } from "@/types"
+import { STORAGE_KEY } from "@/services/storage/const"
 
-// filter integrations that use the global variable
-const integrations = getDefaultIntegrations({}).filter((defaultIntegration) => {
-  return !["BrowserApiErrors", "Breadcrumbs", "GlobalHandlers"].includes(
-    defaultIntegration.name,
-  )
-})
+// Global Sentry instance
+let sentryScope: Scope | null = null
 
-const client = new BrowserClient({
-  dsn: "https://c3ef72fd0c92de0910f8467e466323a8@o4509693053698048.ingest.us.sentry.io/4509693069361153",
-  transport: makeFetchTransport,
-  stackParser: defaultStackParser,
-  integrations: integrations,
-})
+// Check if the current page should skip Sentry initialization based on pageRule settings
+async function shouldSkipSentryForCurrentPage(): Promise<boolean> {
+  try {
+    // Get current URL
+    const currentUrl = typeof window !== "undefined" ? window.location.href : ""
+    if (!currentUrl) return false
 
-const scope = new Scope()
-scope.setClient(client)
+    // Get user settings from chrome.storage.sync
+    const result = await chrome.storage.sync.get([STORAGE_KEY.USER])
+    const userSettings = result[STORAGE_KEY.USER] as UserSettings | undefined
 
-client.init() // initializing has to be done after setting the client on the scope
-console.log("Sentry initialized")
+    if (!userSettings?.pageRules) return false
 
-export const Sentry = scope
+    // Check if current URL matches any pageRule with popupEnabled = false
+    for (const rule of userSettings.pageRules) {
+      if (rule.urlPattern && rule.popupEnabled === POPUP_ENABLED.DISABLE) {
+        const regex = new RegExp(rule.urlPattern)
+        if (regex.test(currentUrl)) {
+          return true // Skip Sentry initialization
+        }
+      }
+    }
+
+    return false
+  } catch (error) {
+    // If there's an error getting settings, don't skip initialization
+    console.warn("Failed to check pageRule settings:", error)
+    return false
+  }
+}
+
+// URL sanitizer function to remove sensitive information
+function sanitizeUrl(url: string): string {
+  try {
+    const urlObj = new URL(url)
+    // Return only protocol, host, and pathname (no search params or hash)
+    return `${urlObj.protocol}//${urlObj.host}${urlObj.pathname}`
+  } catch (error) {
+    // If URL parsing fails, return empty string
+    console.warn("Failed to sanitize URL:", error)
+    return ""
+  }
+}
+
+// Check if Sentry is initialized
+function isInitialized(): boolean {
+  return sentryScope !== null
+}
+
+// Custom beforeSend hook to sanitize data
+const customBeforeSend = (event: ErrorEvent): ErrorEvent | null => {
+  // Sanitize URL information
+  if (event.request?.url) {
+    event.request.url = sanitizeUrl(event.request.url)
+  }
+
+  if (event.extra?.url) {
+    event.extra.url = sanitizeUrl(event.extra.url as string)
+  }
+
+  // Remove potentially sensitive tags
+  if (event.tags) {
+    delete event.tags.url
+  }
+
+  return event
+}
+
+// Initialize Sentry with conditional logic
+export async function initSentry(): Promise<void> {
+  if (isDebug) {
+    console.log("Sentry initialization skipped (debug build)")
+    return
+  }
+
+  const shouldSkip = await shouldSkipSentryForCurrentPage()
+  if (shouldSkip) {
+    console.log("Sentry initialization skipped (pageRule disabled)")
+    sentryScope = null
+    return
+  }
+
+  if (isInitialized()) {
+    console.log("Sentry already initialized")
+    return
+  }
+
+  try {
+    // Filter integrations that use global variables
+    const integrations = getDefaultIntegrations({}).filter(
+      (defaultIntegration) => {
+        return !["BrowserApiErrors", "Breadcrumbs", "GlobalHandlers"].includes(
+          defaultIntegration.name,
+        )
+      },
+    )
+
+    const client = new BrowserClient({
+      dsn: "https://c3ef72fd0c92de0910f8467e466323a8@o4509693053698048.ingest.us.sentry.io/4509693069361153",
+      transport: makeFetchTransport,
+      stackParser: defaultStackParser,
+      integrations: integrations,
+      beforeSend: customBeforeSend,
+    })
+
+    const scope = new Scope()
+    scope.setClient(client)
+
+    client.init()
+    sentryScope = scope
+
+    console.log("Sentry initialized successfully")
+  } catch (error) {
+    console.error("Failed to initialize Sentry:", error)
+  }
+}
+
+// Export Sentry instance for use throughout the application
+export const Sentry = {
+  captureException: (error: Error) => {
+    if (sentryScope) {
+      sentryScope.captureException(error)
+    }
+  },
+  captureMessage: (message: string) => {
+    if (sentryScope) {
+      sentryScope.captureMessage(message)
+    }
+  },
+}
+
+export const TestUtils = {
+  // Test utility function to reset Sentry state
+  reset: () => {
+    sentryScope = null
+  },
+  // Test utility function to check if Sentry is initialized
+  isInitialized,
+  sanitizeUrl,
+}
