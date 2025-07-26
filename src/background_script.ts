@@ -30,6 +30,12 @@ import type {
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
 import { ANALYTICS_EVENTS, sendEvent } from "./services/analytics"
+import { initSentry, Sentry } from "@/lib/sentry"
+
+// Initialize Sentry for background script
+initSentry().catch((error) => {
+  console.error("Failed to initialize Sentry in background script:", error)
+})
 
 BgData.init()
 
@@ -348,7 +354,15 @@ const commandFuncs = {
 
 for (const key in BgCommand) {
   const command = BgCommand[key as keyof typeof BgCommand]
-  Ipc.addListener(command, commandFuncs[key])
+  Ipc.addListener(command, (...args) => {
+    try {
+      return commandFuncs[key](...args)
+    } catch (error) {
+      console.error(`Error executing command ${command}:`, error)
+      Sentry.captureException(error as Error)
+    }
+    return false
+  })
 }
 
 const updateWindowSize = async (
@@ -462,6 +476,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     ret.filter((v) => v).forEach((v) => console.debug(v))
   } catch (error) {
     console.error("Failed to close menu:", error)
+    Sentry.captureException(error as Error)
   }
 
   // Get the active tab's window and update screen ID
@@ -472,6 +487,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     }
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
+    Sentry.captureException(error as Error)
   }
 })
 
@@ -522,6 +538,7 @@ const checkAndPerformDailyBackup = async () => {
     }
   } catch (error) {
     console.error("Failed to perform daily backup check:", error)
+    Sentry.captureException(error as Error)
   }
 }
 
@@ -534,6 +551,7 @@ const checkAndPerformWeeklyBackup = async () => {
     }
   } catch (error) {
     console.error("Failed to perform weekly backup check:", error)
+    Sentry.captureException(error as Error)
   }
 }
 
@@ -625,6 +643,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     )
   } catch (error) {
     console.error("Failed to execute shortcut command:", error)
+    Sentry.captureException(error as Error)
   }
 })
 

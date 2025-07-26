@@ -27,7 +27,7 @@
   },
   "include": [
     "src",
-    "src/custom-chrome.d.ts",
+    "src/types/custom-chrome.d.ts",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
     "src/**/*.spec.ts",
