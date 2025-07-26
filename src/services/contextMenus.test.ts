@@ -278,7 +278,7 @@ describe("Context Menu Multi-level Hierarchy", () => {
       vi.clearAllMocks()
       let mockIdCounter = 0
       mockContextMenusCreate.mockImplementation(
-        (options: any, callback?: () => void) => {
+        (_options: any, callback?: () => void) => {
           const menuId = `mock-menu-id-${++mockIdCounter}`
           // Simulate async behavior with callback
           if (callback) {
