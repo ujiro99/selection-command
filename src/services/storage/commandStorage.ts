@@ -22,6 +22,7 @@ interface StorageInterface {
 // Command change callbacks
 export type commandChangedCallback = () => void
 const commandChangedCallbacks = [] as commandChangedCallback[]
+let debounceTO: NodeJS.Timeout
 
 // Setup command change listener
 chrome.storage.onChanged.addListener((changes) => {
@@ -29,8 +30,11 @@ chrome.storage.onChanged.addListener((changes) => {
   for (const [k, { newValue }] of Object.entries(changes)) {
     if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
   }
-  if (commands.length > 0) {
-    commandChangedCallbacks.forEach((cb) => cb())
+  if (commands.filter((c) => c).length > 0) {
+    clearTimeout(debounceTO)
+    debounceTO = setTimeout(() => {
+      commandChangedCallbacks.forEach((cb) => cb())
+    }, 5)
   }
 })
 
