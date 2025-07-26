@@ -1,6 +1,8 @@
 import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "../storage"
 import type { UserStats, ShortcutSettings, UserSettings, Caches } from "@/types"
 
+import { CMD_PREFIX } from "@/services/storage/const"
+
 // Cache section constants
 export const CACHE_SECTIONS = {
   COMMANDS: "commands",
@@ -68,6 +70,17 @@ export class SettingsCacheManager {
   private listeners = new Map<CacheSection, Set<() => void>>()
   private readonly DEFAULT_TTL = 5 * 60 * 1000 // 5 minutes
   private storageListenerSetup = false
+  private debounceTimers = new Map<CacheSection, NodeJS.Timeout>()
+  private readonly DEBOUNCE_DELAY = 5 // ms
+
+  // Storage key to cache section mapping
+  private readonly storageKeyMapping = new Map<string, CacheSection>([
+    [STORAGE_KEY.USER.toString(), CACHE_SECTIONS.USER_SETTINGS],
+    [STORAGE_KEY.USER_STATS.toString(), CACHE_SECTIONS.USER_STATS],
+    [STORAGE_KEY.SHORTCUTS.toString(), CACHE_SECTIONS.SHORTCUTS],
+    [LOCAL_STORAGE_KEY.STARS, CACHE_SECTIONS.STARS],
+    [LOCAL_STORAGE_KEY.CACHES, CACHE_SECTIONS.CACHES],
+  ])
 
   constructor() {
     this.setupStorageListener()
@@ -111,7 +124,7 @@ export class SettingsCacheManager {
 
   // Invalidate by section
   invalidate(sections: CacheSection[]): void {
-    console.log(`Invalidating cache for sections: ${sections.join(", ")}`)
+    // console.info(`Invalidating cache for sections: ${sections.join(", ")}`)
     sections.forEach((section) => {
       this.cache.delete(section)
       this.versionManager.setVersion(section, "")
@@ -190,32 +203,40 @@ export class SettingsCacheManager {
 
     // Monitor Chrome storage changes
     chrome.storage.onChanged.addListener((changes, _areaName) => {
-      // console.log(`Storage changed in ${_areaName}:`, Object.keys(changes))
-
-      const sectionsToInvalidate: CacheSection[] = []
+      // console.debug("Storage changes detected:", changes, _areaName)
+      const sectionsToInvalidate = new Set<CacheSection>()
 
       for (const key of Object.keys(changes)) {
-        if (key === STORAGE_KEY.USER.toString()) {
-          sectionsToInvalidate.push(CACHE_SECTIONS.USER_SETTINGS)
-        } else if (key === STORAGE_KEY.USER_STATS.toString()) {
-          sectionsToInvalidate.push(CACHE_SECTIONS.USER_STATS)
-        } else if (key === STORAGE_KEY.SHORTCUTS.toString()) {
-          sectionsToInvalidate.push(CACHE_SECTIONS.SHORTCUTS)
-        } else if (key === LOCAL_STORAGE_KEY.STARS) {
-          sectionsToInvalidate.push(CACHE_SECTIONS.STARS)
-        } else if (key === LOCAL_STORAGE_KEY.CACHES) {
-          sectionsToInvalidate.push(CACHE_SECTIONS.CACHES)
-        } else if (key.startsWith("cmd-")) {
-          sectionsToInvalidate.push(CACHE_SECTIONS.COMMANDS)
+        const section = this.storageKeyMapping.get(key)
+        if (section) {
+          sectionsToInvalidate.add(section)
+        }
+        // Command prefix check
+        else if (key.startsWith(CMD_PREFIX)) {
+          sectionsToInvalidate.add(CACHE_SECTIONS.COMMANDS)
         }
       }
-
-      if (sectionsToInvalidate.length > 0) {
-        this.invalidate([...new Set(sectionsToInvalidate)])
-      }
+      // Debounce processing
+      sectionsToInvalidate.forEach((section) => {
+        this.debounceInvalidation(section)
+      })
     })
 
     this.storageListenerSetup = true
+  }
+
+  private debounceInvalidation(section: CacheSection): void {
+    const existingTimer = this.debounceTimers.get(section)
+    if (existingTimer) {
+      clearTimeout(existingTimer)
+    }
+    const timer = setTimeout(() => {
+      // console.debug(`Debounced invalidation for section: ${section}`)
+      this.invalidate([section])
+      this.debounceTimers.delete(section)
+    }, this.DEBOUNCE_DELAY)
+
+    this.debounceTimers.set(section, timer)
   }
 
   // For debugging: Check cache status

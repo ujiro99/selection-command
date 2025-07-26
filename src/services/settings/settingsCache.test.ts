@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { SettingsCacheManager, CACHE_SECTIONS } from "./settingsCache"
 import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "../storage"
 import { OPEN_MODE } from "@/const"
+import { cmdSyncKey } from "../storage/index"
 
 // Helper function to create a valid SearchCommand object
 const createMockCommand = (overrides: any = {}): any => ({
@@ -26,6 +27,9 @@ describe("SettingsCacheManager", () => {
     // Reset all mocks
     vi.clearAllMocks()
 
+    // Use fake timers for debounce testing
+    vi.useFakeTimers()
+
     // Mock Chrome storage API
     mockChromeStorage = {
       onChanged: {
@@ -43,6 +47,7 @@ describe("SettingsCacheManager", () => {
 
   afterEach(() => {
     vi.clearAllTimers()
+    vi.useRealTimers()
   })
 
   describe("DataVersionManager (via SettingsCacheManager)", () => {
@@ -304,12 +309,20 @@ describe("SettingsCacheManager", () => {
         [STORAGE_KEY.SHORTCUTS]: { newValue: {}, oldValue: {} },
         [LOCAL_STORAGE_KEY.STARS]: { newValue: {}, oldValue: {} },
         [LOCAL_STORAGE_KEY.CACHES]: { newValue: {}, oldValue: {} },
-        "cmd-123": { newValue: {}, oldValue: {} },
+        [cmdSyncKey(123)]: { newValue: {}, oldValue: {} },
       }
 
       listenerFn(changes, "sync")
 
-      expect(invalidateSpy).toHaveBeenCalledWith(
+      // Advance timers to wait for debounce processing
+      vi.advanceTimersByTime(10) // 5ms + buffer
+
+      // Verify call count and arguments since invalidate is called per section
+      expect(invalidateSpy).toHaveBeenCalledTimes(6)
+
+      // Verify that each section is invalidated individually
+      const calledSections = invalidateSpy.mock.calls.map((call) => call[0][0])
+      expect(calledSections).toEqual(
         expect.arrayContaining([
           CACHE_SECTIONS.USER_SETTINGS,
           CACHE_SECTIONS.USER_STATS,
@@ -329,12 +342,17 @@ describe("SettingsCacheManager", () => {
 
       // Multiple command changes should only invalidate COMMANDS once
       const changes = {
-        "cmd-123": { newValue: {}, oldValue: {} },
-        "cmd-456": { newValue: {}, oldValue: {} },
+        [cmdSyncKey(123)]: { newValue: {}, oldValue: {} },
+        [cmdSyncKey(456)]: { newValue: {}, oldValue: {} },
       }
 
       listenerFn(changes, "sync")
 
+      // Advance timers to wait for debounce processing
+      vi.advanceTimersByTime(10) // 5ms + buffer
+
+      // Multiple command changes should result in only one COMMANDS section due to debouncing
+      expect(invalidateSpy).toHaveBeenCalledTimes(1)
       expect(invalidateSpy).toHaveBeenCalledWith([CACHE_SECTIONS.COMMANDS])
     })
 
