@@ -30,16 +30,12 @@ import type {
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
 import { ANALYTICS_EVENTS, sendEvent } from "./services/analytics"
-import { initSentry, initServiceWorker, Sentry } from "@/lib/sentry"
+import { initSentry, Sentry } from "@/lib/sentry"
 
 // Initialize Sentry for background script
-initSentry()
-  .then(() => {
-    initServiceWorker()
-  })
-  .catch((error) => {
-    console.error("Failed to initialize Sentry in background script:", error)
-  })
+initSentry().catch((error) => {
+  console.error("Failed to initialize Sentry in background script:", error)
+})
 
 BgData.init()
 

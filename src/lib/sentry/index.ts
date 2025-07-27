@@ -126,21 +126,20 @@ export async function initSentry(): Promise<void> {
     client.init()
     sentryScope = scope
 
+    self.addEventListener("error", (event) => {
+      // console.debug("Service Worker error:", event.error)
+      Sentry.captureException(event.error as Error)
+    })
+
+    self.addEventListener("unhandledrejection", (event) => {
+      // console.debug("Service Worker unhandled rejection:", event.reason)
+      Sentry.captureException(event.reason as Error)
+    })
+
     console.log("Sentry initialized successfully")
   } catch (error) {
     console.error("Failed to initialize Sentry:", error)
   }
-}
-
-export function initServiceWorker(): void {
-  self.addEventListener("error", (event) => {
-    // console.debug("Service Worker error:", event.error)
-    Sentry.captureException(event.error as Error)
-  })
-  self.addEventListener("unhandledrejection", (event) => {
-    // console.debug("Service Worker unhandled rejection:", event.reason)
-    Sentry.captureException(event.reason as Error)
-  })
 }
 
 // Export Sentry instance for use throughout the application
@@ -148,11 +147,6 @@ export const Sentry = {
   captureException: (error: Error) => {
     if (sentryScope) {
       sentryScope.captureException(error)
-    }
-  },
-  captureMessage: (message: string) => {
-    if (sentryScope) {
-      sentryScope.captureMessage(message)
     }
   },
 }
