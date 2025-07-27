@@ -10,6 +10,8 @@ import { isDebug, POPUP_ENABLED } from "@/const"
 import { UserSettings } from "@/types"
 import { STORAGE_KEY } from "@/services/storage/const"
 
+const VITE_SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN
+
 // Global Sentry instance
 let sentryScope: Scope | null = null
 
@@ -111,7 +113,7 @@ export async function initSentry(): Promise<void> {
     )
 
     const client = new BrowserClient({
-      dsn: "https://c3ef72fd0c92de0910f8467e466323a8@o4509693053698048.ingest.us.sentry.io/4509693069361153",
+      dsn: VITE_SENTRY_DSN,
       transport: makeFetchTransport,
       stackParser: defaultStackParser,
       integrations: integrations,
