@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client"
 import { APP_ID, isDebug } from "./const"
 import { App } from "./components/App"
 import icons from "./icons.svg?raw"
-import { initSentry, Sentry } from "@/lib/sentry"
+import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
 
 // Initialize Sentry for content script
 initSentry().catch((error) => {
@@ -17,7 +17,11 @@ try {
   const shadow = rootDom.attachShadow({ mode })
   shadow.innerHTML = icons
   const root = createRoot(shadow)
-  root.render(<App rootElm={shadow as unknown as HTMLElement} />)
+  root.render(
+    <ErrorBoundary>
+      <App rootElm={shadow as unknown as HTMLElement} />
+    </ErrorBoundary>,
+  )
 
   const insertCss = (elm: ShadowRoot, filePath: string) => {
     const url = chrome.runtime.getURL(filePath)
@@ -36,8 +40,8 @@ try {
 
   if (!isDebug) {
     // Putting styles into ShadowDom
-    insertCss(shadow, "/assets/content_script.css")
     insertCss(shadow, "/assets/icons.css")
+    insertCss(shadow, "/assets/content_script.css")
   }
 
   // Hide the rootDom while printing.

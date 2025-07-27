@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client"
 import { Option } from "@/components/option/Option"
 import icons from "./icons.svg?raw"
 import { getCurrentLocale } from "@/services/i18n"
-import { initSentry, Sentry } from "@/lib/sentry"
+import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
 
 import "@/components/global.css"
 import "@/components/Animation.css"
@@ -22,7 +22,9 @@ if (root) {
     root.insertAdjacentHTML("afterend", icons)
     ReactDOM.createRoot(root).render(
       <React.StrictMode>
-        <Option />
+        <ErrorBoundary>
+          <Option />
+        </ErrorBoundary>
       </React.StrictMode>,
     )
   } catch (error) {

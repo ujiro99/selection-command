@@ -23,7 +23,7 @@ async function shouldSkipSentryForCurrentPage(): Promise<boolean> {
     if (!currentUrl) return false
 
     // Get user settings from chrome.storage.sync
-    const result = await chrome.storage.sync.get([STORAGE_KEY.USER])
+    const result = await chrome.storage.sync.get(`${STORAGE_KEY.USER}`)
     const userSettings = result[STORAGE_KEY.USER] as UserSettings | undefined
 
     if (!userSettings?.pageRules) return false
@@ -86,19 +86,19 @@ const customBeforeSend = (event: ErrorEvent): ErrorEvent | null => {
 // Initialize Sentry with conditional logic
 export async function initSentry(): Promise<void> {
   if (isDebug) {
-    console.log("Sentry initialization skipped (debug build)")
+    // console.log("Sentry initialization skipped (debug build)")
     return
   }
 
   const shouldSkip = await shouldSkipSentryForCurrentPage()
   if (shouldSkip) {
-    console.log("Sentry initialization skipped (pageRule disabled)")
+    // console.log("Sentry initialization skipped (pageRule disabled)")
     sentryScope = null
     return
   }
 
   if (isInitialized()) {
-    console.log("Sentry already initialized")
+    // console.log("Sentry already initialized")
     return
   }
 
@@ -132,6 +132,17 @@ export async function initSentry(): Promise<void> {
   }
 }
 
+export function initServiceWorker(): void {
+  self.addEventListener("error", (event) => {
+    // console.debug("Service Worker error:", event.error)
+    Sentry.captureException(event.error as Error)
+  })
+  self.addEventListener("unhandledrejection", (event) => {
+    // console.debug("Service Worker unhandled rejection:", event.reason)
+    Sentry.captureException(event.reason as Error)
+  })
+}
+
 // Export Sentry instance for use throughout the application
 export const Sentry = {
   captureException: (error: Error) => {
@@ -155,3 +166,5 @@ export const TestUtils = {
   isInitialized,
   sanitizeUrl,
 }
+
+export { ErrorBoundary } from "./ErrorBoundary"
