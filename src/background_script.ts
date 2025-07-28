@@ -31,6 +31,9 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
 import { ANALYTICS_EVENTS, sendEvent } from "./services/analytics"
 
+import { importIf } from "@import-if"
+importIf("production", "./lib/sentry/initialize")
+
 BgData.init()
 
 type Sender = chrome.runtime.MessageSender
