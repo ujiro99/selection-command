@@ -136,7 +136,7 @@ export async function initSentry(): Promise<void> {
       Sentry.captureException(event.reason as Error)
     })
 
-    console.log("Sentry initialized successfully")
+    // console.log("Sentry initialized successfully")
   } catch (error) {
     console.error("Failed to initialize Sentry:", error)
   }

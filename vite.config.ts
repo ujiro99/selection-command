@@ -10,7 +10,7 @@ import removeCssFromContentScript from "./src/lib/vite-plugin-manifest"
 import refreshLocales from "./src/lib/vite-plugin-refresh-locales"
 import packageJson from "./package.json"
 import { vitePluginMacro } from "vite-plugin-macro"
-import { provideEnvImport } from "./macros/envImportProvider"
+import { provideImportIf } from "./macros/importIfProvider"
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
       vitePluginMacro({
         typesPath: path.resolve(__dirname, "./src/types/macros.d.ts"),
       })
-        .use(provideEnvImport({ mode }))
+        .use(provideImportIf({ mode }))
         .toPlugin(),
       mode === "development" &&
         cssInjectedByJsPlugin({

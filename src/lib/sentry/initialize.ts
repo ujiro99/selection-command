@@ -4,5 +4,3 @@ import { initSentry } from "@/lib/sentry"
 initSentry().catch((error) => {
   console.error("Failed to initialize Sentry in background script:", error)
 })
-
-console.log("in production")

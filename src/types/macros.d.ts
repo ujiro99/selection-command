@@ -1,3 +1,3 @@
-declare module '@env-import' {
-  export function envImport(prodPath: string, devPath: string)
+declare module "@import-if" {
+  export function importIf(targetMode: string, path: string)
 }

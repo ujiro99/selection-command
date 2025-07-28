@@ -176,7 +176,9 @@ describe("Sentry Initialization Control Tests", () => {
 
       // Assert
       expect(TestUtils.isInitialized()).toBe(false)
-      expect(mockChromeStorageSync.get).toHaveBeenCalledWith([STORAGE_KEY.USER])
+      expect(mockChromeStorageSync.get).toHaveBeenCalledWith(
+        `${STORAGE_KEY.USER}`,
+      )
     })
 
     it("should initialize Sentry on pages that do not match pageRules", async () => {
@@ -205,7 +207,9 @@ describe("Sentry Initialization Control Tests", () => {
       // Assert
       expect(mockSentryClient.init).toHaveBeenCalled()
       expect(TestUtils.isInitialized()).toBe(true)
-      expect(mockChromeStorageSync.get).toHaveBeenCalledWith([STORAGE_KEY.USER])
+      expect(mockChromeStorageSync.get).toHaveBeenCalledWith(
+        `${STORAGE_KEY.USER}`,
+      )
     })
   })
 
@@ -225,7 +229,9 @@ describe("Sentry Initialization Control Tests", () => {
       // Assert
       expect(mockSentryClient.init).toHaveBeenCalled()
       expect(TestUtils.isInitialized()).toBe(true)
-      expect(mockChromeStorageSync.get).toHaveBeenCalledWith([STORAGE_KEY.USER])
+      expect(mockChromeStorageSync.get).toHaveBeenCalledWith(
+        `${STORAGE_KEY.USER}`,
+      )
     })
 
     it("should initialize with default settings when configuration retrieval fails", async () => {
@@ -761,12 +767,12 @@ describe("Sentry Configuration Management Tests", () => {
     it("should update Sentry state when pageRule is added", async () => {
       // Arrange
       const initialStorageData = {
-        [STORAGE_KEY.USER]: {
+        [`${STORAGE_KEY.USER}`]: {
           pageRules: [],
         },
       }
       const updatedStorageData = {
-        [STORAGE_KEY.USER]: {
+        [`${STORAGE_KEY.USER}`]: {
           pageRules: [
             {
               urlPattern: "//example.com",
@@ -794,7 +800,9 @@ describe("Sentry Configuration Management Tests", () => {
 
       // Assert
       expect(mockChromeStorageSync.get).toHaveBeenCalledTimes(2)
-      expect(mockChromeStorageSync.get).toHaveBeenCalledWith([STORAGE_KEY.USER])
+      expect(mockChromeStorageSync.get).toHaveBeenCalledWith(
+        `${STORAGE_KEY.USER}`,
+      )
       // Verify that second call respects the new pageRule
     })
 

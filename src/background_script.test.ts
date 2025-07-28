@@ -14,6 +14,9 @@ vi.mock("@/services/contextMenus")
 vi.mock("@/action/background")
 vi.mock("@/action/helper")
 vi.mock("@/services/pageAction/background")
+vi.mock("@import-if", () => ({
+  importIf: vi.fn(),
+}))
 
 const mockEnhancedSettings = vi.mocked(enhancedSettings)
 const mockSettings = vi.mocked(Settings)

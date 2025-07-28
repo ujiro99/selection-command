@@ -31,8 +31,8 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
 import { ANALYTICS_EVENTS, sendEvent } from "./services/analytics"
 
-import { envImport } from "@env-import"
-envImport("./lib/sentry/initialize-prod", "./lib/sentry/initialize-dev")
+import { importIf } from "@import-if"
+importIf("production", "./lib/sentry/initialize")
 
 BgData.init()
 
