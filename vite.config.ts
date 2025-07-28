@@ -9,6 +9,8 @@ import viteTouchCss from "./src/lib/vite-plugin-touch-css"
 import removeCssFromContentScript from "./src/lib/vite-plugin-manifest"
 import refreshLocales from "./src/lib/vite-plugin-refresh-locales"
 import packageJson from "./package.json"
+import { vitePluginMacro } from "vite-plugin-macro"
+import { provideEnvImport } from "./macros/envImportProvider"
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
@@ -23,6 +25,11 @@ export default defineConfig(({ mode }) => {
         org: "ujiro99",
         project: "selection-command",
       }),
+      vitePluginMacro({
+        typesPath: path.resolve(__dirname, "./src/types/macros.d.ts"),
+      })
+        .use(provideEnvImport({ mode }))
+        .toPlugin(),
       mode === "development" &&
         cssInjectedByJsPlugin({
           dev: {
