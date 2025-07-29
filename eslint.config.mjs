@@ -37,6 +37,8 @@ export default tseslint.config(
       "no-async-promise-executor": "warn", // Temporarily needed for complex async processing
       "no-useless-escape": "warn", // Regex readability
       "prefer-const": "warn", // Code style issue
+      // Relaxed rules for personal development
+      "@typescript-eslint/no-namespace": "off",
     },
   },
 )

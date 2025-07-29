@@ -283,7 +283,16 @@ export const openAndRun = (
       })
       tabId = ret.tabId
       clipboardText = ret.clipboardText
+    } else if (param.openMode === PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB) {
+      // Background tab execution
+      const ret = await openTab({
+        url: param.url,
+        active: false, // Do not activate the tab
+      })
+      tabId = ret.tabId
+      clipboardText = ret.clipboardText
     } else {
+      // Popup and Window modes
       const ret = await openPopupWindow({
         ...param,
         type:
@@ -370,7 +379,7 @@ const run = (
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  const { steps, selectedText, clipboardText, srcUrl } = param
+  const { steps, selectedText, clipboardText, srcUrl, openMode } = param
   const tabId = param.tabId || sender.tab?.id
   if (tabId == null) {
     console.error("tabId not found")
@@ -420,6 +429,7 @@ const run = (
           srcUrl,
           selectedText,
           clipboardText,
+          openMode,
         })
 
         if (ret.result) {
