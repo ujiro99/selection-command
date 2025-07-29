@@ -36,7 +36,7 @@ type HelpDialogProps = {
 type Props = {
   className?: string
 }
-export const PaeActionHelp = ({ className }: Props) => {
+export const PageActionHelp = ({ className }: Props) => {
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   return (
