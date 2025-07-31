@@ -102,14 +102,14 @@ export class EnhancedSettings {
       userStats,
     })
 
-    // Filter folders
-      mergedSettings.folders = mergedSettings.folders.filter(
-        (folder) => !!folder.title,
-      )
+    // Filter invalid folders
+    mergedSettings.folders = mergedSettings.folders.filter(
+      (folder) => !!folder.title,
+    )
 
     // Process option settings
+    this.removeOptionSettings(mergedSettings)
     if (!excludeOptions) {
-      this.removeOptionSettings(mergedSettings)
       mergedSettings.folders.push(OptionSettings.folder)
       mergedSettings.commands.push(...OptionSettings.commands)
     }
@@ -134,23 +134,27 @@ export class EnhancedSettings {
               ? UserStats
               : any
   > {
-    // Special handling for USER_SETTINGS to merge commands data
-    if (section === CACHE_SECTIONS.USER_SETTINGS) {
-      const [userSettings, commands] = await Promise.all([
-        settingsCache.get<UserSettings>(
-          CACHE_SECTIONS.USER_SETTINGS,
-          forceFresh,
-        ),
-        settingsCache.get<Command[]>(CACHE_SECTIONS.COMMANDS, forceFresh),
-      ])
+    if (section === CACHE_SECTIONS.COMMANDS) {
+      let commands = await settingsCache.get<Command[]>(
+        CACHE_SECTIONS.COMMANDS,
+        forceFresh,
+      )
 
       // Process option settings
-      const mergedSettings = { ...userSettings, commands } as SettingsType
-      this.removeOptionSettings(mergedSettings)
-      mergedSettings.folders.push(OptionSettings.folder)
-      mergedSettings.commands.push(...OptionSettings.commands)
+      commands = commands.filter((c) => c?.parentFolderId !== OPTION_FOLDER)
+      commands.push(...OptionSettings.commands)
 
-      return mergedSettings as any
+      return commands as any
+    } else if (section === CACHE_SECTIONS.USER_SETTINGS) {
+      const data = await settingsCache.get<UserSettings>(
+        CACHE_SECTIONS.USER_SETTINGS,
+        forceFresh,
+      )
+      // Process option settings
+      data.folders = data.folders.filter((f) => f.id !== OPTION_FOLDER)
+      data.folders.push(OptionSettings.folder)
+
+      return data as any
     }
 
     return settingsCache.get(section, forceFresh)

@@ -23,7 +23,13 @@ import {
   POPUP_ENABLED,
   OPEN_MODE,
 } from "@/const"
-import type { SettingsType, UserSettings, PageRule, Caches } from "@/types"
+import type {
+  SettingsType,
+  Command,
+  UserSettings,
+  PageRule,
+  Caches,
+} from "@/types"
 
 // Mock dependencies
 vi.mock("../services/settings/enhancedSettings")
@@ -400,9 +406,9 @@ describe("useSettings hooks", () => {
         iconUrl: "http://example.com/folder.png",
       }
       const mockSettings: Partial<SettingsType> = {
-        commands: [command],
         folders: [folder],
       }
+      const mockCommands: Command[] = [command]
       const mockCaches: Caches = {
         images: {
           "http://example.com/icon.png": "data:image/png;base64,cached",
@@ -412,6 +418,7 @@ describe("useSettings hooks", () => {
 
       mockEnhancedSettings.getSection
         .mockResolvedValueOnce(mockSettings as any)
+        .mockResolvedValueOnce(mockCommands as any)
         .mockResolvedValueOnce(mockCaches as any)
 
       const { result } = renderHook(() => useSettingsWithImageCache())
@@ -439,15 +446,17 @@ describe("useSettings hooks", () => {
 
     it("US-26: should handle folders without iconUrl", async () => {
       const mockSettings = {
-        commands: [],
         folders: [
           { id: "1", title: "Folder", iconUrl: "" },
           { id: "2", title: "Folder2" }, // No iconUrl
         ],
         caches: { images: {} },
       } as any
+      const mockCommands: Command[] = []
 
-      mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
+      mockEnhancedSettings.getSection
+        .mockResolvedValueOnce(mockSettings)
+        .mockResolvedValueOnce(mockCommands)
 
       const { result } = renderHook(() => useSettingsWithImageCache())
 
@@ -463,9 +472,6 @@ describe("useSettings hooks", () => {
 
     it("US-28: should use original URLs when cache is not available", async () => {
       const mockSettings = {
-        commands: [
-          { id: "1", title: "Test", iconUrl: "http://example.com/icon.png" },
-        ],
         folders: [
           {
             id: "1",
@@ -477,8 +483,18 @@ describe("useSettings hooks", () => {
           images: {},
         },
       } as any
+      const mockCommands: Command[] = [
+        {
+          id: "1",
+          openMode: OPEN_MODE.POPUP,
+          title: "Test",
+          iconUrl: "http://example.com/icon.png",
+        },
+      ]
 
-      mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
+      mockEnhancedSettings.getSection
+        .mockResolvedValueOnce(mockSettings)
+        .mockResolvedValueOnce(mockCommands)
 
       const { result } = renderHook(() => useSettingsWithImageCache())
 
@@ -487,7 +503,12 @@ describe("useSettings hooks", () => {
       })
 
       expect(result.current.commands).toEqual([
-        { id: "1", title: "Test", iconUrl: "http://example.com/icon.png" },
+        {
+          id: "1",
+          title: "Test",
+          openMode: OPEN_MODE.POPUP,
+          iconUrl: "http://example.com/icon.png",
+        },
       ])
       expect(result.current.folders).toEqual([
         { id: "1", title: "Folder", iconUrl: "http://example.com/folder.png" },
@@ -511,9 +532,6 @@ describe("useSettings hooks", () => {
 
     it("US-28-a: should handle empty cache strings", async () => {
       const mockSettings = {
-        commands: [
-          { id: "1", title: "Test", iconUrl: "http://example.com/icon.png" },
-        ],
         folders: [],
         caches: {
           images: {
@@ -522,7 +540,18 @@ describe("useSettings hooks", () => {
         },
       } as any
 
-      mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
+      const mockCommands: Command[] = [
+        {
+          id: "1",
+          openMode: OPEN_MODE.POPUP,
+          title: "Test",
+          iconUrl: "http://example.com/icon.png",
+        },
+      ]
+
+      mockEnhancedSettings.getSection
+        .mockResolvedValueOnce(mockSettings)
+        .mockResolvedValueOnce(mockCommands)
 
       const { result } = renderHook(() => useSettingsWithImageCache())
 
@@ -531,7 +560,12 @@ describe("useSettings hooks", () => {
       })
 
       expect(result.current.commands).toEqual([
-        { id: "1", title: "Test", iconUrl: "http://example.com/icon.png" },
+        {
+          id: "1",
+          openMode: OPEN_MODE.POPUP,
+          title: "Test",
+          iconUrl: "http://example.com/icon.png",
+        },
       ])
     })
   })
