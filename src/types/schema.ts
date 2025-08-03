@@ -209,10 +209,7 @@ const pageActionSchema = z.object({
   id: z.string(),
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
-  title: z
-    .string()
-    .min(1, { message: t("zod_string_min", ["1"]) })
-    .default("Get Text Styles"),
+  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
   iconUrl: z
     .string()
     .url({ message: t("zod_url") })
