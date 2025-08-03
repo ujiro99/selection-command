@@ -14,14 +14,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { PopupPlacementSchema } from "@/types/schema"
+import { popupPlacementSchema } from "@/types/schema"
 
 import { SIDE, ALIGN } from "@/const"
 import { cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
-type PopupPlacementType = z.infer<typeof PopupPlacementSchema>
+type PopupPlacementType = z.infer<typeof popupPlacementSchema>
 
 type PopupPlacementFieldType = {
   onSubmit: (data: PopupPlacementType) => void
@@ -33,7 +33,7 @@ export const PopupPlacementField = ({
   defaultValues,
 }: PopupPlacementFieldType) => {
   const form = useForm<PopupPlacementType>({
-    resolver: zodResolver(PopupPlacementSchema),
+    resolver: zodResolver(popupPlacementSchema),
     mode: "onChange",
     defaultValues: defaultValues,
   })

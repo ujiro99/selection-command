@@ -28,14 +28,14 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT } from "@/const"
 import { e2a, cn } from "@/lib/utils"
 import type { PageRule, PopupPlacementOrInherit } from "@/types"
-import { PopupPlacementSchema } from "@/types/schema"
+import { popupPlacementSchema } from "@/types/schema"
 
 import css from "./CommandEditDialog.module.css"
 
 export const pageRuleSchema = z.object({
   urlPattern: z.string().url({ message: t("zod_url") }),
   popupEnabled: z.nativeEnum(POPUP_ENABLED),
-  popupPlacement: z.union([z.literal("inherit"), PopupPlacementSchema]),
+  popupPlacement: z.union([z.literal("inherit"), popupPlacementSchema]),
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
 })
 
@@ -208,7 +208,7 @@ export const PageRuleDialog = ({
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false)
 
   const handlePopupPlacementSubmit = (
-    data: z.infer<typeof PopupPlacementSchema>,
+    data: z.infer<typeof popupPlacementSchema>,
   ) => {
     setValue("popupPlacement", data)
   }

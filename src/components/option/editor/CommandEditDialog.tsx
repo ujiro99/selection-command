@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import {
   Plus,
   Trash2,
@@ -63,6 +62,7 @@ import {
   useFavicon,
   FaviconEvent,
 } from "@/hooks/option/useFavicon"
+import { usePrevious } from "@/hooks/usePrevious"
 
 import { Ipc, BgCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
@@ -73,7 +73,12 @@ import { isEmpty, e2a, cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
-import { SEARCH_OPEN_MODE, isSearchType, commandSchema } from "@/types/schema"
+import {
+  SEARCH_OPEN_MODE,
+  isSearchType,
+  commandSchema,
+  CommandSchemaType,
+} from "@/types/schema"
 import type {
   SelectionCommand,
   CommandFolder,
@@ -88,12 +93,15 @@ const EmptyFolder = {
   title: t("Command_rootFolder"),
 } as CommandFolder
 
-const defaultValue = (openMode: OPEN_MODE) => {
+const getDefault = (openMode: OPEN_MODE, base?: CommandSchemaType) => {
   if (SEARCH_OPEN_MODE.includes(openMode as any)) {
+    let searchUrl = ""
+    if (base && (base as any).pageActionOption?.startUrl) {
+      searchUrl = (base as any).pageActionOption.startUrl
+    }
     return {
-      id: "",
-      searchUrl: "",
-      iconUrl: "",
+      ...base,
+      searchUrl,
       openMode: OPEN_MODE.POPUP as const,
       openModeSecondary: OPEN_MODE.TAB as const,
       spaceEncoding: SPACE_ENCODING.PLUS,
@@ -106,9 +114,7 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
   if (openMode === OPEN_MODE.API) {
     return {
-      id: "",
-      searchUrl: "",
-      iconUrl: "",
+      ...base,
       openMode: OPEN_MODE.API as const,
       fetchOptions: "",
       variables: [],
@@ -116,9 +122,12 @@ const defaultValue = (openMode: OPEN_MODE) => {
     }
   }
   if (openMode === OPEN_MODE.PAGE_ACTION) {
+    let startUrl = ""
+    if (base && (base as any).searchUrl) {
+      startUrl = (base as any).searchUrl
+    }
     return {
-      id: "",
-      iconUrl: "",
+      ...base,
       openMode: OPEN_MODE.PAGE_ACTION as const,
       parentFolderId: ROOT_FOLDER,
       popupOption: {
@@ -126,7 +135,7 @@ const defaultValue = (openMode: OPEN_MODE) => {
         height: POPUP_OPTION.height + 50,
       },
       pageActionOption: {
-        startUrl: "",
+        startUrl,
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         steps: [],
       },
@@ -134,7 +143,7 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
   if (openMode === OPEN_MODE.LINK_POPUP) {
     return {
-      id: "",
+      ...base,
       title: "Link Popup",
       iconUrl:
         "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png",
@@ -148,7 +157,7 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
   if (openMode === OPEN_MODE.COPY) {
     return {
-      id: "",
+      ...base,
       title: "Copy text",
       iconUrl:
         "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png",
@@ -159,7 +168,7 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
   if (openMode === OPEN_MODE.GET_TEXT_STYLES) {
     return {
-      id: "",
+      ...base,
       title: "Get Text Styles",
       iconUrl:
         "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png",
@@ -169,6 +178,13 @@ const defaultValue = (openMode: OPEN_MODE) => {
   }
 }
 
+const DEFAULT_MODE = OPEN_MODE.POPUP
+
+const InitialValues = getDefault(DEFAULT_MODE, {
+  id: "",
+  title: "",
+} as CommandSchemaType)
+
 type CommandEditDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -176,8 +192,6 @@ type CommandEditDialogProps = {
   folders: CommandFolder[]
   command?: SelectionCommand
 }
-
-const DEFAULT_MODE = OPEN_MODE.POPUP
 
 export const CommandEditDialog = ({
   open,
@@ -207,12 +221,11 @@ const CommandEditDialogInner = ({
   command,
 }: CommandEditDialogProps) => {
   const [initialized, setInitialized] = useState(false)
-  const preOpenModeRef = useRef(command?.openMode ?? DEFAULT_MODE)
 
-  const form = useForm<z.infer<typeof commandSchema>>({
+  const form = useForm<CommandSchemaType>({
     resolver: zodResolver(commandSchema),
     mode: "onChange",
-    defaultValues: defaultValue(DEFAULT_MODE),
+    defaultValues: InitialValues,
   })
   const { register, reset, getValues, setValue, clearErrors } = form
   const { setIconUrlSrc, subscribe, unsubscribe } = useFavicon()
@@ -230,6 +243,7 @@ const CommandEditDialogInner = ({
     name: "openMode",
     defaultValue: DEFAULT_MODE,
   })
+  const preOpenMode = usePrevious(openMode)
 
   const searchUrl = useWatch({
     control: form.control,
@@ -275,30 +289,30 @@ const CommandEditDialogInner = ({
       if (isEmpty(command.parentFolderId)) {
         command.parentFolderId = ROOT_FOLDER
       }
-      reset((command as any) ?? defaultValue(DEFAULT_MODE))
+      reset((command as any) ?? InitialValues)
     } else {
       setTimeout(() => {
-        reset(defaultValue(DEFAULT_MODE))
+        reset(InitialValues)
       }, 100)
     }
-  }, [command])
+  }, [command, reset])
 
   useEffect(() => {
+    if (openMode === preOpenMode) return
+    if (openMode === command?.openMode) return
     if (
       SEARCH_OPEN_MODE.includes(openMode as any) &&
-      SEARCH_OPEN_MODE.includes(preOpenModeRef.current as any)
+      SEARCH_OPEN_MODE.includes(preOpenMode as any)
     ) {
       return
     }
-    if (command?.openMode === openMode) return
-    reset(defaultValue(openMode))
-    preOpenModeRef.current = openMode
-  }, [openMode])
+    reset(getDefault(openMode, getValues()))
+  }, [command?.openMode, preOpenMode, openMode, reset, getValues])
 
   useEffect(() => {
     if (!initialized) return
     setIconUrlSrc(iconUrlSrc)
-  }, [iconUrlSrc, setIconUrlSrc])
+  }, [initialized, iconUrlSrc, setIconUrlSrc])
 
   useEffect(() => {
     if (!open) setIconUrlSrc("")
@@ -629,7 +643,7 @@ const CommandEditDialogInner = ({
                   }
                   onSubmit(data)
                   onOpenChange(false)
-                  reset(defaultValue(OPEN_MODE.POPUP))
+                  reset(InitialValues)
                 },
                 (err) => console.error(err),
               )}

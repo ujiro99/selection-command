@@ -9,7 +9,8 @@ import {
 } from "@/const"
 import { Point, UserSettings, Command } from "@/types"
 import { LinkPreview } from "@/action/linkPreview"
-import { useUserSettings } from "@/hooks/useSettings"
+import { useUserSettings, useSection } from "@/hooks/useSettings"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { useLeftClickHold } from "@/hooks/useLeftClickHold"
 import Default, { PopupOption } from "@/services/option/defaultSettings"
 import { isPopup, isLinkCommand, isMac } from "@/lib/utils"
@@ -51,7 +52,8 @@ const empty = {
 export function useDetectLinkCommand(): DetectLinkCommandReturn {
   const { userSettings: settings, pageRule } = useUserSettings()
   const showIndicator = settings.linkCommand?.showIndicator
-  const command = settings.commands?.find(isLinkCommand) as Command
+  const { data: commands } = useSection(CACHE_SECTIONS.COMMANDS)
+  const command = commands?.find(isLinkCommand) as Command
   const enabled =
     pageRule == null ||
     pageRule.linkCommandEnabled == undefined ||

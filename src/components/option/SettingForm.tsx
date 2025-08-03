@@ -17,10 +17,7 @@ import { InputField } from "@/components/option/field/InputField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { SwitchField } from "@/components/option/field/SwitchField"
 import { PopupPlacementField } from "@/components/option/field/PopupPlacementField"
-import { commandSchema, folderSchema } from "@/types/schema"
 import { CommandList } from "@/components/option/editor/CommandList"
-import { toCommandTree, toFlatten } from "@/services/option/commandTree"
-import { isCommand, removeUnstoredParam } from "@/services/option/commandUtils"
 import {
   PageRuleList,
   pageRuleSchema,
@@ -30,7 +27,6 @@ import {
   userStyleSchema,
 } from "@/components/option/editor/UserStyleList"
 import { ShortcutList } from "@/components/option/editor/ShortcutList"
-import { ShortcutSettingsSchema } from "@/types/schema"
 
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -44,7 +40,6 @@ import {
   STYLE_VARIABLE,
 } from "@/const"
 import type { UserSettings } from "@/types"
-import { PopupPlacementSchema } from "@/types/schema"
 import {
   isMenuCommand,
   isLinkCommand,
@@ -54,9 +49,18 @@ import {
   e2a,
   cn,
 } from "@/lib/utils"
+import { toCommandTree, toFlatten } from "@/services/option/commandTree"
+import { isCommand, removeUnstoredParam } from "@/services/option/commandUtils"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import DefaultSettings from "@/services/option/defaultSettings"
+
+import {
+  commandSchema,
+  folderSchema,
+  popupPlacementSchema,
+  shortcutSettingsSchema,
+} from "@/types/schema"
 
 const formSchema = z
   .object({
@@ -71,7 +75,7 @@ const formSchema = z
           .optional(),
       })
       .strict(),
-    popupPlacement: PopupPlacementSchema,
+    popupPlacement: popupPlacementSchema,
     style: z.nativeEnum(STYLE),
     commands: z.array(commandSchema).min(1),
     folders: z.array(folderSchema),
@@ -102,7 +106,7 @@ const formSchema = z
       .strict(),
     pageRules: z.array(pageRuleSchema),
     userStyles: z.array(userStyleSchema),
-    shortcuts: ShortcutSettingsSchema,
+    shortcuts: shortcutSettingsSchema,
   })
   .strict()
 

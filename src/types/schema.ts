@@ -209,10 +209,7 @@ const pageActionSchema = z.object({
   id: z.string(),
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
-  title: z
-    .string()
-    .min(1, { message: t("zod_string_min", ["1"]) })
-    .default("Get Text Styles"),
+  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
   iconUrl: z
     .string()
     .url({ message: t("zod_url") })
@@ -262,7 +259,7 @@ const foldersSchema = z.object({
 
 export type FoldersSchemaType = z.infer<typeof foldersSchema>
 
-export const PopupPlacementSchema = z.object({
+export const popupPlacementSchema = z.object({
   side: z.nativeEnum(SIDE),
   align: z.nativeEnum(ALIGN),
   sideOffset: z
@@ -285,6 +282,6 @@ export const ShortcutCommandSchema = z.object({
     .default(SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD),
 })
 
-export const ShortcutSettingsSchema = z.object({
+export const shortcutSettingsSchema = z.object({
   shortcuts: z.array(ShortcutCommandSchema),
 })

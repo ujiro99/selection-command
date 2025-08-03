@@ -168,12 +168,10 @@ export function useSection<T extends CacheSection>(
 }
 
 // User settings-specific hook
-export function useUserSettings(forceFresh = false) {
+export function useUserSettings() {
   const { data, loading, error, refetch } = useSection(
     CACHE_SECTIONS.USER_SETTINGS,
-    forceFresh,
   )
-
   // Find matching page rule and apply to settings
   const pageRule = useMemo(() => {
     if (!data) return undefined
@@ -199,15 +197,16 @@ export function useUserSettings(forceFresh = false) {
 // Settings hook with image cache applied
 export function useSettingsWithImageCache() {
   const { userSettings: settings, loading } = useUserSettings()
+  const { data: commands } = useSection(CACHE_SECTIONS.COMMANDS)
   const { data: caches } = useSection(CACHE_SECTIONS.CACHES)
 
   const { commandsWithCache, foldersWithCache, iconUrls } = useMemo(() => {
-    if (loading || !settings.commands) {
+    if (loading || !commands) {
       return { commandsWithCache: [], foldersWithCache: [], iconUrls: {} }
     }
 
     // Commands with cache
-    const commandsWithCache = settings.commands.map((c) => {
+    const commandsWithCache = commands.map((c) => {
       if (!caches.images) return c
       const cache = caches.images[c.iconUrl]
       const iconUrl = !isEmpty(cache) ? cache : c.iconUrl
@@ -230,9 +229,10 @@ export function useSettingsWithImageCache() {
     )
 
     return { commandsWithCache, foldersWithCache, iconUrls }
-  }, [settings, loading, caches])
+  }, [settings, loading, caches, commands])
 
   return {
+    userSettings: settings,
     commands: commandsWithCache,
     folders: foldersWithCache,
     iconUrls,

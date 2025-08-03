@@ -46,7 +46,10 @@ export function PageActionRecorder(): JSX.Element {
   const hasLabel = !isEmpty(removeStep?.param.label)
 
   const editInputAction = (value: string) => {
-    Ipc.send(BgCommand.updatePageAction, { id: editId, partial: { value } })
+    Ipc.send(BgCommand.updatePageAction, {
+      id: editId,
+      partial: { param: { value } },
+    })
     setEditId(null)
   }
 
