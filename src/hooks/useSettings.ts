@@ -207,7 +207,7 @@ export function useSettingsWithImageCache() {
 
     // Commands with cache
     const commandsWithCache = commands.map((c) => {
-      if (!caches.images) return c
+      if (!caches || !caches.images) return c
       const cache = caches.images[c.iconUrl]
       const iconUrl = !isEmpty(cache) ? cache : c.iconUrl
       return { ...c, iconUrl }
@@ -216,7 +216,7 @@ export function useSettingsWithImageCache() {
     // Folders with cache
     const foldersWithCache = (settings.folders || []).map((f) => {
       if (!f.iconUrl) return f
-      if (!caches.images) return f
+      if (!caches || !caches.images) return f
       const cache = caches.images[f.iconUrl]
       const iconUrl = !isEmpty(cache) ? cache : f.iconUrl
       return { ...f, iconUrl }
