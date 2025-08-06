@@ -1,8 +1,17 @@
 import type { Command, CommandFolder } from "@/types"
-import { ROOT_FOLDER } from "@/const"
+import { ROOT_FOLDER, OPTION_FOLDER } from "@/const"
+
+// CommandTreeNode type constants
+export const TREE_NODE_TYPE = {
+  COMMAND: "command",
+  FOLDER: "folder",
+} as const
+
+export type CommandTreeNodeType =
+  (typeof TREE_NODE_TYPE)[keyof typeof TREE_NODE_TYPE]
 
 export type CommandTreeNode = {
-  type: "command" | "folder"
+  type: CommandTreeNodeType
   content: Command | CommandFolder
   children?: CommandTreeNode[]
 }
@@ -16,7 +25,7 @@ export type FlattenNode = {
 }
 
 const createFolderNode = (folder: CommandFolder): CommandTreeNode => ({
-  type: "folder",
+  type: TREE_NODE_TYPE.FOLDER,
   content: folder,
   children: [],
 })
@@ -41,10 +50,18 @@ export const findFirstCommand = (
   node: CommandTreeNode,
 ): CommandTreeNode | null => {
   if (node.children == null) return null
-  const first = node.children[0]
-  if (first == null) return null
-  if (first.type === "folder") return findFirstCommand(first)
-  return first
+
+  for (const child of node.children) {
+    if (child.type === TREE_NODE_TYPE.COMMAND) {
+      return child
+    }
+    if (child.type === TREE_NODE_TYPE.FOLDER) {
+      const found = findFirstCommand(child)
+      if (found) return found
+    }
+  }
+
+  return null
 }
 
 const addParentFolderIfNeeded = (
@@ -136,7 +153,7 @@ const addCommandsToTree = (
 ) => {
   commands.forEach((command) => {
     const commandNode: CommandTreeNode = {
-      type: "command",
+      type: TREE_NODE_TYPE.COMMAND,
       content: command,
     }
 
@@ -179,13 +196,22 @@ export function toCommandTree(
 ): CommandTreeNode[] {
   const tree: CommandTreeNode[] = []
   const processedFolders = new Set<string>()
-  if (commands == null || (commands.length === 0 && folders.length === 0)) {
+  if (!commands?.length && !folders?.length) {
     return tree
   }
 
   const addNodeToTree = createAddNodeToTreeFunction(folders, processedFolders)
   addCommandsToTree(tree, commands, folders, processedFolders, addNodeToTree)
   addRemainingFoldersToTree(tree, folders, processedFolders, addNodeToTree)
+
+  // Sort tree to place OPTION_FOLDER at the end
+  const optionIndex = tree.findIndex(
+    (node) => node.content.id === OPTION_FOLDER,
+  )
+  if (optionIndex !== -1 && optionIndex !== tree.length - 1) {
+    const optionNode = tree.splice(optionIndex, 1)[0]
+    tree.push(optionNode)
+  }
 
   return tree
 }
@@ -195,7 +221,7 @@ function _toFlatten(
   flatten: FlattenNode[] = [],
 ): FlattenNode[] {
   for (const node of tree) {
-    if (node.type === "command") {
+    if (node.type === TREE_NODE_TYPE.COMMAND) {
       flatten.push({
         id: node.content.id,
         content: node.content,
@@ -261,7 +287,7 @@ export function getAllCommandsFromFolder(
   const commands: Command[] = []
 
   const collectCommands = (node: CommandTreeNode) => {
-    if (node.type === "command") {
+    if (node.type === TREE_NODE_TYPE.COMMAND) {
       commands.push(node.content as Command)
     }
 
@@ -280,7 +306,7 @@ export function getAllFoldersFromNode(node: CommandTreeNode): CommandFolder[] {
   const folders: CommandFolder[] = []
 
   const collectFolders = (currentNode: CommandTreeNode) => {
-    if (currentNode.type === "folder") {
+    if (currentNode.type === TREE_NODE_TYPE.FOLDER) {
       folders.push(currentNode.content as CommandFolder)
     }
 
