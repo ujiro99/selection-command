@@ -50,10 +50,18 @@ export const findFirstCommand = (
   node: CommandTreeNode,
 ): CommandTreeNode | null => {
   if (node.children == null) return null
-  const first = node.children[0]
-  if (first == null) return null
-  if (first.type === TREE_NODE_TYPE.FOLDER) return findFirstCommand(first)
-  return first
+
+  for (const child of node.children) {
+    if (child.type === TREE_NODE_TYPE.COMMAND) {
+      return child
+    }
+    if (child.type === TREE_NODE_TYPE.FOLDER) {
+      const found = findFirstCommand(child)
+      if (found) return found
+    }
+  }
+
+  return null
 }
 
 const addParentFolderIfNeeded = (

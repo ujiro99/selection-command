@@ -458,14 +458,7 @@ describe("CommandTree", () => {
       }
 
       const result = findFirstCommand(folderNode)
-      // The function recursively checks folders first, so may return null if empty folder is processed first
-      // Implementation may vary - either skip empty folders or return null
-      if (result !== null) {
-        expect(result.content.id).toBe("mixed-cmd")
-      } else {
-        // This is also acceptable behavior for this implementation
-        expect(result).toBeNull()
-      }
+      expect(result!.content.id).toBe("mixed-cmd")
     })
 
     test("CT-31: Should return null when no commands exist", () => {
