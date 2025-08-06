@@ -1,5 +1,5 @@
 import type { Command, CommandFolder } from "@/types"
-import { ROOT_FOLDER } from "@/const"
+import { ROOT_FOLDER, OPTION_FOLDER } from "@/const"
 
 // CommandTreeNode type constants
 export const TREE_NODE_TYPE = {
@@ -195,6 +195,16 @@ export function toCommandTree(
   const addNodeToTree = createAddNodeToTreeFunction(folders, processedFolders)
   addCommandsToTree(tree, commands, folders, processedFolders, addNodeToTree)
   addRemainingFoldersToTree(tree, folders, processedFolders, addNodeToTree)
+
+  // Sort tree to place OPTION_FOLDER at the end
+  tree.sort((a, b) => {
+    const aIsOption = a.content.id === OPTION_FOLDER
+    const bIsOption = b.content.id === OPTION_FOLDER
+
+    if (aIsOption && !bIsOption) return 1 // a goes to end
+    if (!aIsOption && bIsOption) return -1 // b goes to end
+    return 0 // maintain relative order for non-option folders
+  })
 
   return tree
 }

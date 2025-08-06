@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from "vitest"
 import type { Command, CommandFolder } from "@/types"
-import { OPEN_MODE } from "@/const"
+import { OPEN_MODE, OPTION_FOLDER } from "@/const"
 import {
   toCommandTree,
   toFlatten,
@@ -155,15 +155,27 @@ describe("CommandTree", () => {
       expect(result).toEqual([])
     })
 
-    test("CT-10: Should handle parent folder added after child processing", () => {
-      const commands = [createCommand("cmd-1", "Command 1", "folder-1")]
-      const folders = [createFolder("folder-1", "Folder 1")]
+    test("CT-10: Should place option folder at the end when empty folders exist", () => {
+      const commands = [
+        createCommand("option-cmd", "Option Command", OPTION_FOLDER),
+      ]
+      const folders = [
+        createFolder("empty-folder-1", "Empty Folder 1"),
+        createFolder("empty-folder-2", "Empty Folder 2"),
+        createFolder(OPTION_FOLDER, "Option"),
+      ]
       const result = toCommandTree(commands, folders)
 
-      expect(result).toHaveLength(1)
-      expect(result[0].type).toBe(TREE_NODE_TYPE.FOLDER)
-      expect(result[0].children).toHaveLength(1)
-      expect(result[0].children![0].type).toBe(TREE_NODE_TYPE.COMMAND)
+      expect(result).toHaveLength(3)
+      // Option folder should be placed at the end (last position)
+      expect(result[2].type).toBe(TREE_NODE_TYPE.FOLDER)
+      expect(result[2].content.id).toBe(OPTION_FOLDER)
+      expect(result[2].children).toHaveLength(1)
+      expect(result[2].children![0].content.id).toBe("option-cmd")
+
+      // Empty folders should come before option folder
+      expect(result[0].content.id).toBe("empty-folder-1")
+      expect(result[1].content.id).toBe("empty-folder-2")
     })
 
     test("CT-11: Should handle mixed commands and folders in same parent", () => {
