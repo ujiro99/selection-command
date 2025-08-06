@@ -196,7 +196,7 @@ export function toCommandTree(
 ): CommandTreeNode[] {
   const tree: CommandTreeNode[] = []
   const processedFolders = new Set<string>()
-  if (commands == null || (commands.length === 0 && folders.length === 0)) {
+  if (!commands?.length && !folders?.length) {
     return tree
   }
 
@@ -205,14 +205,13 @@ export function toCommandTree(
   addRemainingFoldersToTree(tree, folders, processedFolders, addNodeToTree)
 
   // Sort tree to place OPTION_FOLDER at the end
-  tree.sort((a, b) => {
-    const aIsOption = a.content.id === OPTION_FOLDER
-    const bIsOption = b.content.id === OPTION_FOLDER
-
-    if (aIsOption && !bIsOption) return 1 // a goes to end
-    if (!aIsOption && bIsOption) return -1 // b goes to end
-    return 0 // maintain relative order for non-option folders
-  })
+  const optionIndex = tree.findIndex(
+    (node) => node.content.id === OPTION_FOLDER,
+  )
+  if (optionIndex !== -1 && optionIndex !== tree.length - 1) {
+    const optionNode = tree.splice(optionIndex, 1)[0]
+    tree.push(optionNode)
+  }
 
   return tree
 }
