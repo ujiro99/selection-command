@@ -9,6 +9,7 @@ import {
   calcLevel,
   getAllCommandsFromFolder,
   getAllFoldersFromNode,
+  TREE_NODE_TYPE,
   type CommandTreeNode,
   type FlattenNode,
 } from "./commandTree"
@@ -58,9 +59,9 @@ describe("CommandTree", () => {
       const result = toCommandTree(commands, [])
 
       expect(result).toHaveLength(2)
-      expect(result[0].type).toBe("command")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.COMMAND)
       expect(result[0].content.id).toBe("cmd-1")
-      expect(result[1].type).toBe("command")
+      expect(result[1].type).toBe(TREE_NODE_TYPE.COMMAND)
       expect(result[1].content.id).toBe("cmd-2")
     })
 
@@ -72,10 +73,10 @@ describe("CommandTree", () => {
       const result = toCommandTree([], folders)
 
       expect(result).toHaveLength(2)
-      expect(result[0].type).toBe("folder")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.FOLDER)
       expect(result[0].content.id).toBe("folder-1")
       expect(result[0].children).toEqual([])
-      expect(result[1].type).toBe("folder")
+      expect(result[1].type).toBe(TREE_NODE_TYPE.FOLDER)
       expect(result[1].content.id).toBe("folder-2")
       expect(result[1].children).toEqual([])
     })
@@ -88,10 +89,10 @@ describe("CommandTree", () => {
       const result = toCommandTree([], folders)
 
       expect(result).toHaveLength(1)
-      expect(result[0].type).toBe("folder")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.FOLDER)
       expect(result[0].content.id).toBe("parent")
       expect(result[0].children).toHaveLength(1)
-      expect(result[0].children![0].type).toBe("folder")
+      expect(result[0].children![0].type).toBe(TREE_NODE_TYPE.FOLDER)
       expect(result[0].children![0].content.id).toBe("child")
     })
 
@@ -101,10 +102,10 @@ describe("CommandTree", () => {
       const result = toCommandTree(commands, folders)
 
       expect(result).toHaveLength(1)
-      expect(result[0].type).toBe("folder")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.FOLDER)
       expect(result[0].content.id).toBe("folder-1")
       expect(result[0].children).toHaveLength(1)
-      expect(result[0].children![0].type).toBe("command")
+      expect(result[0].children![0].type).toBe(TREE_NODE_TYPE.COMMAND)
       expect(result[0].children![0].content.id).toBe("cmd-1")
     })
 
@@ -131,7 +132,7 @@ describe("CommandTree", () => {
       const result = toCommandTree(commands, [])
 
       expect(result).toHaveLength(1)
-      expect(result[0].type).toBe("command")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.COMMAND)
       expect(result[0].content.id).toBe("cmd-1")
     })
 
@@ -160,9 +161,9 @@ describe("CommandTree", () => {
       const result = toCommandTree(commands, folders)
 
       expect(result).toHaveLength(1)
-      expect(result[0].type).toBe("folder")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.FOLDER)
       expect(result[0].children).toHaveLength(1)
-      expect(result[0].children![0].type).toBe("command")
+      expect(result[0].children![0].type).toBe(TREE_NODE_TYPE.COMMAND)
     })
 
     test("CT-11: Should handle mixed commands and folders in same parent", () => {
@@ -186,11 +187,11 @@ describe("CommandTree", () => {
     test("CT-13: Should flatten simple tree structure with commands only", () => {
       const tree: CommandTreeNode[] = [
         {
-          type: "command",
+          type: TREE_NODE_TYPE.COMMAND,
           content: createCommand("cmd-1", "Command 1"),
         },
         {
-          type: "command",
+          type: TREE_NODE_TYPE.COMMAND,
           content: createCommand("cmd-2", "Command 2"),
         },
       ]
@@ -206,7 +207,7 @@ describe("CommandTree", () => {
     test("CT-14: Should flatten folder-only tree structure", () => {
       const tree: CommandTreeNode[] = [
         {
-          type: "folder",
+          type: TREE_NODE_TYPE.FOLDER,
           content: createFolder("folder-1", "Folder 1"),
           children: [],
         },
@@ -221,15 +222,15 @@ describe("CommandTree", () => {
     test("CT-15: Should flatten nested structure with proper indexing", () => {
       const tree: CommandTreeNode[] = [
         {
-          type: "folder",
+          type: TREE_NODE_TYPE.FOLDER,
           content: createFolder("folder-1", "Folder 1"),
           children: [
             {
-              type: "command",
+              type: TREE_NODE_TYPE.COMMAND,
               content: createCommand("cmd-1", "Command 1", "folder-1"),
             },
             {
-              type: "command",
+              type: TREE_NODE_TYPE.COMMAND,
               content: createCommand("cmd-2", "Command 2", "folder-1"),
             },
           ],
@@ -249,19 +250,19 @@ describe("CommandTree", () => {
     test("CT-16: Should set firstChild/lastChild flags correctly", () => {
       const tree: CommandTreeNode[] = [
         {
-          type: "folder",
+          type: TREE_NODE_TYPE.FOLDER,
           content: createFolder("folder-1", "Folder 1"),
           children: [
             {
-              type: "command",
+              type: TREE_NODE_TYPE.COMMAND,
               content: createCommand("cmd-1", "Command 1", "folder-1"),
             },
             {
-              type: "command",
+              type: TREE_NODE_TYPE.COMMAND,
               content: createCommand("cmd-2", "Command 2", "folder-1"),
             },
             {
-              type: "command",
+              type: TREE_NODE_TYPE.COMMAND,
               content: createCommand("cmd-3", "Command 3", "folder-1"),
             },
           ],
@@ -286,7 +287,7 @@ describe("CommandTree", () => {
     test("CT-18: Should flatten folder with no children", () => {
       const tree: CommandTreeNode[] = [
         {
-          type: "folder",
+          type: TREE_NODE_TYPE.FOLDER,
           content: createFolder("folder-1", "Folder 1"),
           children: [],
         },
@@ -303,15 +304,15 @@ describe("CommandTree", () => {
   describe("findNodeInTree", () => {
     const tree: CommandTreeNode[] = [
       {
-        type: "command",
+        type: TREE_NODE_TYPE.COMMAND,
         content: createCommand("root-cmd", "Root Command"),
       },
       {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("root-folder", "Root Folder"),
         children: [
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand(
               "nested-cmd",
               "Nested Command",
@@ -319,7 +320,7 @@ describe("CommandTree", () => {
             ),
           },
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder(
               "nested-folder",
               "Nested Folder",
@@ -327,7 +328,7 @@ describe("CommandTree", () => {
             ),
             children: [
               {
-                type: "command",
+                type: TREE_NODE_TYPE.COMMAND,
                 content: createCommand(
                   "deep-cmd",
                   "Deep Command",
@@ -344,14 +345,14 @@ describe("CommandTree", () => {
       const result = findNodeInTree(tree, "root-cmd")
       expect(result).not.toBeNull()
       expect(result!.content.id).toBe("root-cmd")
-      expect(result!.type).toBe("command")
+      expect(result!.type).toBe(TREE_NODE_TYPE.COMMAND)
     })
 
     test("CT-22: Should find root level folder node", () => {
       const result = findNodeInTree(tree, "root-folder")
       expect(result).not.toBeNull()
       expect(result!.content.id).toBe("root-folder")
-      expect(result!.type).toBe("folder")
+      expect(result!.type).toBe(TREE_NODE_TYPE.FOLDER)
     })
 
     test("CT-23: Should find nested node at depth 2", () => {
@@ -385,15 +386,15 @@ describe("CommandTree", () => {
   describe("findFirstCommand", () => {
     test("CT-28: Should find first command directly under folder", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("folder-1", "Folder 1"),
         children: [
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("first-cmd", "First Command"),
           },
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("second-cmd", "Second Command"),
           },
         ],
@@ -406,15 +407,15 @@ describe("CommandTree", () => {
 
     test("CT-29: Should find first command in nested folder structure", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("parent", "Parent"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("child", "Child"),
             children: [
               {
-                type: "command",
+                type: TREE_NODE_TYPE.COMMAND,
                 content: createCommand("nested-cmd", "Nested Command"),
               },
             ],
@@ -429,16 +430,16 @@ describe("CommandTree", () => {
 
     test("CT-30: Should find first command when folders and commands are mixed", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("mixed", "Mixed"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("empty-folder", "Empty Folder"),
             children: [],
           },
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("mixed-cmd", "Mixed Command"),
           },
         ],
@@ -457,11 +458,11 @@ describe("CommandTree", () => {
 
     test("CT-31: Should return null when no commands exist", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("empty", "Empty"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("also-empty", "Also Empty"),
             children: [],
           },
@@ -474,7 +475,7 @@ describe("CommandTree", () => {
 
     test("CT-32: Should return null for node with no children", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("no-children", "No Children"),
       }
 
@@ -484,22 +485,22 @@ describe("CommandTree", () => {
 
     test("CT-33: Should return null for folder-only hierarchy", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("parent", "Parent"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("child1", "Child 1"),
             children: [
               {
-                type: "folder",
+                type: TREE_NODE_TYPE.FOLDER,
                 content: createFolder("grandchild", "Grandchild"),
                 children: [],
               },
             ],
           },
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("child2", "Child 2"),
             children: [],
           },
@@ -584,15 +585,15 @@ describe("CommandTree", () => {
   describe("getAllCommandsFromFolder", () => {
     test("CT-43: Should get commands directly under folder", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("folder", "Folder"),
         children: [
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("cmd-1", "Command 1"),
           },
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("cmd-2", "Command 2"),
           },
         ],
@@ -606,19 +607,19 @@ describe("CommandTree", () => {
 
     test("CT-44: Should get all commands from nested folder structure", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("parent", "Parent"),
         children: [
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("parent-cmd", "Parent Command"),
           },
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("child", "Child"),
             children: [
               {
-                type: "command",
+                type: TREE_NODE_TYPE.COMMAND,
                 content: createCommand("child-cmd", "Child Command"),
               },
             ],
@@ -634,25 +635,25 @@ describe("CommandTree", () => {
 
     test("CT-45: Should get commands from mixed structure (folders and commands)", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("mixed", "Mixed"),
         children: [
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("direct-cmd", "Direct Command"),
           },
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("sub-folder", "Sub Folder"),
             children: [
               {
-                type: "command",
+                type: TREE_NODE_TYPE.COMMAND,
                 content: createCommand("nested-cmd", "Nested Command"),
               },
             ],
           },
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("another-cmd", "Another Command"),
           },
         ],
@@ -667,11 +668,11 @@ describe("CommandTree", () => {
 
     test("CT-46: Should return empty array for folder with no commands", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("empty", "Empty"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("also-empty", "Also Empty"),
             children: [],
           },
@@ -684,11 +685,11 @@ describe("CommandTree", () => {
 
     test("CT-47: Should return empty array for folder-only hierarchy", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("folders-only", "Folders Only"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("child-folder", "Child Folder"),
             children: [],
           },
@@ -701,19 +702,19 @@ describe("CommandTree", () => {
 
     test("CT-48: Should get commands from deeply nested structure", () => {
       const folderNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("level-1", "Level 1"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("level-2", "Level 2"),
             children: [
               {
-                type: "folder",
+                type: TREE_NODE_TYPE.FOLDER,
                 content: createFolder("level-3", "Level 3"),
                 children: [
                   {
-                    type: "command",
+                    type: TREE_NODE_TYPE.COMMAND,
                     content: createCommand("deep-cmd", "Deep Command"),
                   },
                 ],
@@ -732,21 +733,21 @@ describe("CommandTree", () => {
   describe("getAllFoldersFromNode", () => {
     test("CT-49: Should get direct child folders", () => {
       const rootNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("root", "Root"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("child-1", "Child 1"),
             children: [],
           },
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("child-2", "Child 2"),
             children: [],
           },
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("cmd", "Command"),
           },
         ],
@@ -761,15 +762,15 @@ describe("CommandTree", () => {
 
     test("CT-50: Should get all folders from nested structure", () => {
       const rootNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("root", "Root"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("level-1", "Level 1"),
             children: [
               {
-                type: "folder",
+                type: TREE_NODE_TYPE.FOLDER,
                 content: createFolder("level-2", "Level 2"),
                 children: [],
               },
@@ -787,16 +788,16 @@ describe("CommandTree", () => {
 
     test("CT-51: Should get folders from folder-only structure", () => {
       const rootNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("folders-only", "Folders Only"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("folder-a", "Folder A"),
             children: [],
           },
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("folder-b", "Folder B"),
             children: [],
           },
@@ -812,7 +813,7 @@ describe("CommandTree", () => {
 
     test("CT-52: Should return empty array for node with no folders", () => {
       const commandNode: CommandTreeNode = {
-        type: "command",
+        type: TREE_NODE_TYPE.COMMAND,
         content: createCommand("lone-cmd", "Lone Command"),
       }
 
@@ -822,15 +823,15 @@ describe("CommandTree", () => {
 
     test("CT-53: Should return empty array for command-only node", () => {
       const rootNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("commands-only", "Commands Only"),
         children: [
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("cmd-1", "Command 1"),
           },
           {
-            type: "command",
+            type: TREE_NODE_TYPE.COMMAND,
             content: createCommand("cmd-2", "Command 2"),
           },
         ],
@@ -843,11 +844,11 @@ describe("CommandTree", () => {
 
     test("CT-54: Should handle root node as execution target", () => {
       const rootNode: CommandTreeNode = {
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: createFolder("root-target", "Root Target"),
         children: [
           {
-            type: "folder",
+            type: TREE_NODE_TYPE.FOLDER,
             content: createFolder("sub-folder", "Sub Folder"),
             children: [],
           },
@@ -868,7 +869,7 @@ describe("CommandTree", () => {
       const result = toCommandTree(commands, folders)
 
       expect(result).toHaveLength(1)
-      expect(result[0].type).toBe("folder")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.FOLDER)
       expect(result[0].content.id).toBe("missing-parent")
       expect(result[0].children).toHaveLength(1)
     })
@@ -878,7 +879,7 @@ describe("CommandTree", () => {
       const result = toCommandTree(commands, [])
 
       expect(result).toHaveLength(1)
-      expect(result[0].type).toBe("command")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.COMMAND)
       expect(result[0].content.id).toBe("cmd")
     })
 
@@ -891,7 +892,7 @@ describe("CommandTree", () => {
       const result = toCommandTree(commands, folders)
 
       expect(result).toHaveLength(1)
-      expect(result[0].type).toBe("folder")
+      expect(result[0].type).toBe(TREE_NODE_TYPE.FOLDER)
       expect(result[0].content.id).toBe("shared-parent")
       expect(result[0].children).toHaveLength(2)
     })
@@ -919,7 +920,7 @@ describe("CommandTree", () => {
       expect(result.length).toBeGreaterThanOrEqual(1)
       // Ensure both folders are processed somewhere in the tree
       const allFolders = getAllFoldersFromNode({
-        type: "folder",
+        type: TREE_NODE_TYPE.FOLDER,
         content: { id: "root", title: "Root" },
         children: result,
       })

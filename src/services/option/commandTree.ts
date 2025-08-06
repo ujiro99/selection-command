@@ -1,8 +1,17 @@
 import type { Command, CommandFolder } from "@/types"
 import { ROOT_FOLDER } from "@/const"
 
+// CommandTreeNode type constants
+export const TREE_NODE_TYPE = {
+  COMMAND: "command",
+  FOLDER: "folder",
+} as const
+
+export type CommandTreeNodeType =
+  (typeof TREE_NODE_TYPE)[keyof typeof TREE_NODE_TYPE]
+
 export type CommandTreeNode = {
-  type: "command" | "folder"
+  type: CommandTreeNodeType
   content: Command | CommandFolder
   children?: CommandTreeNode[]
 }
@@ -16,7 +25,7 @@ export type FlattenNode = {
 }
 
 const createFolderNode = (folder: CommandFolder): CommandTreeNode => ({
-  type: "folder",
+  type: TREE_NODE_TYPE.FOLDER,
   content: folder,
   children: [],
 })
@@ -43,7 +52,7 @@ export const findFirstCommand = (
   if (node.children == null) return null
   const first = node.children[0]
   if (first == null) return null
-  if (first.type === "folder") return findFirstCommand(first)
+  if (first.type === TREE_NODE_TYPE.FOLDER) return findFirstCommand(first)
   return first
 }
 
@@ -136,7 +145,7 @@ const addCommandsToTree = (
 ) => {
   commands.forEach((command) => {
     const commandNode: CommandTreeNode = {
-      type: "command",
+      type: TREE_NODE_TYPE.COMMAND,
       content: command,
     }
 
@@ -195,7 +204,7 @@ function _toFlatten(
   flatten: FlattenNode[] = [],
 ): FlattenNode[] {
   for (const node of tree) {
-    if (node.type === "command") {
+    if (node.type === TREE_NODE_TYPE.COMMAND) {
       flatten.push({
         id: node.content.id,
         content: node.content,
@@ -261,7 +270,7 @@ export function getAllCommandsFromFolder(
   const commands: Command[] = []
 
   const collectCommands = (node: CommandTreeNode) => {
-    if (node.type === "command") {
+    if (node.type === TREE_NODE_TYPE.COMMAND) {
       commands.push(node.content as Command)
     }
 
@@ -280,7 +289,7 @@ export function getAllFoldersFromNode(node: CommandTreeNode): CommandFolder[] {
   const folders: CommandFolder[] = []
 
   const collectFolders = (currentNode: CommandTreeNode) => {
-    if (currentNode.type === "folder") {
+    if (currentNode.type === TREE_NODE_TYPE.FOLDER) {
       folders.push(currentNode.content as CommandFolder)
     }
 
