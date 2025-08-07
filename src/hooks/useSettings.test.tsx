@@ -440,7 +440,7 @@ describe("useSettings hooks", () => {
         },
       ])
       expect(result.current.iconUrls).toEqual({
-        "1": "data:image/png;base64,cached",
+        "1": "http://example.com/icon.png",
       })
     })
 
@@ -467,6 +467,87 @@ describe("useSettings hooks", () => {
       expect(result.current.folders).toEqual([
         { id: "1", title: "Folder", iconUrl: "" },
         { id: "2", title: "Folder2" },
+      ])
+    })
+
+    it("US-27: should generate IconUrls map correctly", async () => {
+      const command1 = {
+        id: "cmd1",
+        title: "Command 1",
+        openMode: OPEN_MODE.POPUP,
+        iconUrl: "http://example.com/icon1.png",
+      }
+      const command2 = {
+        id: "cmd2",
+        title: "Command 2",
+        openMode: OPEN_MODE.POPUP,
+        iconUrl: "http://example.com/icon2.png",
+      }
+      const folder1 = {
+        id: "folder1",
+        title: "Folder 1",
+        iconUrl: "http://example.com/folder1.png",
+      }
+      const folder2 = {
+        id: "folder2",
+        title: "Folder 2",
+        iconUrl: "http://example.com/folder2.png",
+      }
+
+      const mockSettings: Partial<SettingsType> = {
+        folders: [folder1, folder2],
+      }
+      const mockCommands: Command[] = [command1, command2]
+      const mockCaches: Caches = {
+        images: {
+          "http://example.com/icon1.png": "data:image/png;base64,cached-cmd1",
+          "http://example.com/icon2.png": "data:image/png;base64,cached-cmd2",
+          "http://example.com/folder1.png":
+            "data:image/png;base64,cached-folder1",
+          "http://example.com/folder2.png":
+            "data:image/png;base64,cached-folder2",
+        },
+      }
+
+      mockEnhancedSettings.getSection
+        .mockResolvedValueOnce(mockSettings as any)
+        .mockResolvedValueOnce(mockCommands as any)
+        .mockResolvedValueOnce(mockCaches as any)
+
+      const { result } = renderHook(() => useSettingsWithImageCache())
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0))
+      })
+
+      // Verify that iconUrls map contains original URLs for commands
+      expect(result.current.iconUrls).toEqual({
+        cmd1: "http://example.com/icon1.png",
+        cmd2: "http://example.com/icon2.png",
+      })
+
+      // Verify that commands have cached URLs
+      expect(result.current.commands).toEqual([
+        {
+          ...command1,
+          iconUrl: "data:image/png;base64,cached-cmd1",
+        },
+        {
+          ...command2,
+          iconUrl: "data:image/png;base64,cached-cmd2",
+        },
+      ])
+
+      // Verify that folders have cached URLs
+      expect(result.current.folders).toEqual([
+        {
+          ...folder1,
+          iconUrl: "data:image/png;base64,cached-folder1",
+        },
+        {
+          ...folder2,
+          iconUrl: "data:image/png;base64,cached-folder2",
+        },
       ])
     })
 
@@ -515,21 +596,6 @@ describe("useSettings hooks", () => {
       ])
     })
 
-    it("US-29: should handle loading state", async () => {
-      // Mock a delayed response
-      mockEnhancedSettings.get.mockImplementation(
-        () =>
-          new Promise((resolve) => setTimeout(() => resolve({} as any), 100)),
-      )
-
-      const { result } = renderHook(() => useSettingsWithImageCache())
-
-      // Should return empty arrays during loading
-      expect(result.current.commands).toEqual([])
-      expect(result.current.folders).toEqual([])
-      expect(result.current.iconUrls).toEqual({})
-    })
-
     it("US-28-a: should handle empty cache strings", async () => {
       const mockSettings = {
         folders: [],
@@ -567,6 +633,21 @@ describe("useSettings hooks", () => {
           iconUrl: "http://example.com/icon.png",
         },
       ])
+    })
+
+    it("US-29: should handle loading state", async () => {
+      // Mock a delayed response
+      mockEnhancedSettings.get.mockImplementation(
+        () =>
+          new Promise((resolve) => setTimeout(() => resolve({} as any), 100)),
+      )
+
+      const { result } = renderHook(() => useSettingsWithImageCache())
+
+      // Should return empty arrays during loading
+      expect(result.current.commands).toEqual([])
+      expect(result.current.folders).toEqual([])
+      expect(result.current.iconUrls).toEqual({})
     })
   })
 

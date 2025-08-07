@@ -222,8 +222,8 @@ export function useSettingsWithImageCache() {
       return { ...f, iconUrl }
     })
 
-    // IconUrls map
-    const iconUrls = commandsWithCache.reduce(
+    // IconUrls map - contains original URLs before cache application
+    const iconUrls = commands.reduce(
       (acc, cur) => ({ ...acc, [cur.id]: cur.iconUrl }),
       {} as Record<string, string>,
     )
