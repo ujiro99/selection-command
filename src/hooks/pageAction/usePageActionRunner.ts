@@ -1,7 +1,8 @@
 import { useEffect } from "react"
 import type { PageActiontStatus } from "@/types"
 import {
-  PageActionDispatcher as dispatcher,
+  PageActionDispatcher,
+  BackgroundPageActionDispatcher,
   PageAction,
 } from "@/services/pageAction"
 import type { ExecPageAction } from "@/services/ipc"
@@ -9,7 +10,11 @@ import { Ipc, TabCommand } from "@/services/ipc"
 import { debounceDOMChange } from "@/services/dom"
 import { RunningStatus } from "@/services/pageAction"
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
-import { PAGE_ACTION_CONTROL, PAGE_ACTION_EXEC_STATE } from "@/const"
+import {
+  PAGE_ACTION_CONTROL,
+  PAGE_ACTION_EXEC_STATE,
+  PAGE_ACTION_OPEN_MODE,
+} from "@/const"
 
 const STOP_STATUS = [
   PAGE_ACTION_EXEC_STATE.Done,
@@ -55,8 +60,14 @@ export function usePageActionRunner() {
   const execute = async (
     message: ExecPageAction.Message,
   ): Promise<ExecPageAction.Return> => {
-    const { step, srcUrl, selectedText, clipboardText } = message
+    const { step, srcUrl, selectedText, clipboardText, openMode } = message
     const type = step.param.type
+
+    // Select dispatcher based on openMode
+    const dispatcher =
+      openMode === PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
+        ? BackgroundPageActionDispatcher
+        : PageActionDispatcher
 
     // Wait for the DOM to be updated.
     if (type !== PAGE_ACTION_CONTROL.end) {
