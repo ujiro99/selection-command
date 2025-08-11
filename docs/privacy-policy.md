@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated January 9, 2025
+Last updated August 11, 2025
 
 Yujiro Takeda has developed the Selection Command as a Freemium application. This SERVICE is provided by Yujiro Takeda at no cost and is intended for use "as is."
 
@@ -11,8 +11,10 @@ Terms used in this Privacy Policy have the same meanings as defined in our Terms
 ## Information Collection and Use
 
 - **User Activity**: This application utilizes third-party services to track anonymous usage data, such as which options or buttons are most frequently clicked. The privacy policy of the third-party service provider used by this application is linked below:
-
   - [Google Analytics](https://marketingplatform.google.com/about/analytics/terms/us/)
+
+- **Error Tracking**: This application uses Sentry, a third-party service, to monitor and track application errors and performance issues. Sentry may collect information such as error details, stack traces, browser information, and usage patterns to help improve the application's stability and performance. The privacy policy of Sentry can be found here:
+  - [Sentry](https://sentry.io/privacy/)
 
 - **Log Data**: In the event of an error within the application, certain information may be collected as Log Data. This may include details such as your browser type, operating system version, app configuration at the time of using the Service, timestamps of usage, and other diagnostic data.
 
