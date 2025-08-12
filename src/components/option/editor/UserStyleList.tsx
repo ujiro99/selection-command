@@ -290,7 +290,7 @@ export const UserStyleDialog = ({
           </DialogHeader>
           <DialogDescription>{t("userStyles_add_desc")}</DialogDescription>
           <Form {...form}>
-            <form id="UserStyleDialog" className="flex gap-2 mt-2">
+            <div id="UserStyleDialog" className="flex gap-2 mt-2">
               <FormField
                 control={form.control}
                 name="name"
@@ -357,7 +357,7 @@ export const UserStyleDialog = ({
                   </FormItem>
                 )}
               />
-            </form>
+            </div>
           </Form>
           <DialogFooter>
             <DialogClose asChild>
