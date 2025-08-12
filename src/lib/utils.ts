@@ -303,6 +303,9 @@ export function e2a(e: any): string[] {
  * @returns {string} The converted string.
  */
 export function hyphen2Underscore(input: string): string {
+  if (!input || typeof input !== "string") {
+    return input
+  }
   return input.replace(/-/g, "_")
 }
 

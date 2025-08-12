@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
-import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Paintbrush, Save } from "lucide-react"
 import {
@@ -35,22 +34,12 @@ import { Button } from "@/components/ui/button"
 import { EditButton } from "@/components/option/EditButton"
 import { RemoveButton } from "@/components/option/RemoveButton"
 
+import { userStyleSchema, UserStyleType, UserStylesType } from "@/types/schema"
+
 import { STYLE_VARIABLE } from "@/const"
 import { cn, hyphen2Underscore } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-
-export const userStyleSchema = z.object({
-  name: z.nativeEnum(STYLE_VARIABLE),
-  value: z.string().or(z.number()),
-})
-
-const userStylesSchema = z.object({
-  userStyles: z.array(userStyleSchema),
-})
-
-type UserStyleType = z.infer<typeof userStyleSchema>
-type UserStylesType = z.infer<typeof userStylesSchema>
 
 type AttributesType = {
   type: "string" | "number" | "color"
@@ -123,6 +112,10 @@ const DefaultValue = {
   name: STYLE_VARIABLE.FONT_SCALE,
   value: "",
 } as const
+
+const isValidStyle = (variable: string): variable is STYLE_VARIABLE => {
+  return Object.values(STYLE_VARIABLE).includes(variable as STYLE_VARIABLE)
+}
 
 type UserStyleListProps = {
   control: any
@@ -201,36 +194,40 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
           </div>
           <FormControl>
             <ul className="">
-              {array.fields.map((field, index) => (
-                <li
-                  key={field._id}
-                  className={cn(
-                    "flex items-center gap-2 px-2 py-1",
-                    index !== 0 ? "border-t" : "",
-                  )}
-                >
-                  <p className="text-base font-mono flex-1 p-2">
-                    <span className="inline-block w-1/2">
-                      {t(`userStyles_option_${hyphen2Underscore(field.name)}`)}
-                    </span>
-                    <span className="inline-block w-1/2 text-center">
-                      {field.value}
-                    </span>
-                  </p>
-                  <div className="flex gap-0.5 items-center">
-                    <EditButton
-                      onClick={() => {
-                        editorRef.current = field
-                        setDialogOpen(true)
-                      }}
-                    />
-                    <RemoveButton
-                      title={`${field.name}: ${field.value}`}
-                      onRemove={() => array.remove(index)}
-                    />
-                  </div>
-                </li>
-              ))}
+              {array.fields
+                .filter((f) => isValidStyle(f.name))
+                .map((field, index) => (
+                  <li
+                    key={field._id}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-1",
+                      index !== 0 ? "border-t" : "",
+                    )}
+                  >
+                    <p className="text-base font-mono flex-1 p-2">
+                      <span className="inline-block w-1/2">
+                        {t(
+                          `userStyles_option_${hyphen2Underscore(field.name)}`,
+                        )}
+                      </span>
+                      <span className="inline-block w-1/2 text-center">
+                        {field.value}
+                      </span>
+                    </p>
+                    <div className="flex gap-0.5 items-center">
+                      <EditButton
+                        onClick={() => {
+                          editorRef.current = field
+                          setDialogOpen(true)
+                        }}
+                      />
+                      <RemoveButton
+                        title={`${field.name}: ${field.value}`}
+                        onRemove={() => array.remove(index)}
+                      />
+                    </div>
+                  </li>
+                ))}
             </ul>
           </FormControl>
           <UserStyleDialog
@@ -262,7 +259,7 @@ export const UserStyleDialog = ({
   exclude,
 }: UserStyleDialogProps) => {
   const isUpdate = (variable as any)._id != null
-  const form = useForm<z.infer<typeof userStyleSchema>>({
+  const form = useForm<UserStyleType>({
     resolver: zodResolver(userStyleSchema),
     mode: "onChange",
     defaultValues: variable,

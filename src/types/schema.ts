@@ -11,6 +11,7 @@ import {
   SelectorType,
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
+  STYLE_VARIABLE,
 } from "@/const"
 
 import { t } from "@/services/i18n"
@@ -45,8 +46,16 @@ const searchSchema = z.object({
 
 type SearchType = z.infer<typeof searchSchema>
 
-export const isSearchType = (data: any): data is SearchType => {
-  return SEARCH_OPEN_MODE.includes(data.openMode)
+export const isSearchType = (data: unknown): data is SearchType => {
+  if (!data || typeof data !== "object") {
+    return false
+  }
+  if (!("openMode" in data)) {
+    return false
+  }
+  return SEARCH_OPEN_MODE.includes(
+    data.openMode as (typeof SEARCH_OPEN_MODE)[number],
+  )
 }
 
 const apiSchema = z.object({
@@ -232,12 +241,8 @@ export const commandSchema = z.discriminatedUnion("openMode", [
   textStyleSchema,
 ])
 
-const commandsSchema = z.object({
-  commands: z.array(commandSchema).min(1),
-})
-
 export type CommandSchemaType = z.infer<typeof commandSchema>
-export type CommandsSchemaType = z.infer<typeof commandsSchema>
+export type CommandsSchemaType = { commands: CommandSchemaType[] }
 
 export const folderSchema = z
   .object({
@@ -253,11 +258,8 @@ export const folderSchema = z
     message: t("icon_required"),
   })
 
-const foldersSchema = z.object({
-  folders: z.array(folderSchema),
-})
-
-export type FoldersSchemaType = z.infer<typeof foldersSchema>
+type FolderSchemaType = z.infer<typeof folderSchema>
+export type FoldersSchemaType = { folders: FolderSchemaType[] }
 
 export const popupPlacementSchema = z.object({
   side: z.nativeEnum(SIDE),
@@ -285,3 +287,11 @@ export const ShortcutCommandSchema = z.object({
 export const shortcutSettingsSchema = z.object({
   shortcuts: z.array(ShortcutCommandSchema),
 })
+
+export const userStyleSchema = z.object({
+  name: z.nativeEnum(STYLE_VARIABLE),
+  value: z.string().or(z.number()),
+})
+
+export type UserStyleType = z.infer<typeof userStyleSchema>
+export type UserStylesType = { userStyles: UserStyleType[] }

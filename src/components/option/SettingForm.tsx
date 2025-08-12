@@ -22,10 +22,7 @@ import {
   PageRuleList,
   pageRuleSchema,
 } from "@/components/option/editor/PageRuleList"
-import {
-  UserStyleList,
-  userStyleSchema,
-} from "@/components/option/editor/UserStyleList"
+import { UserStyleList } from "@/components/option/editor/UserStyleList"
 import { ShortcutList } from "@/components/option/editor/ShortcutList"
 
 import { t as _t } from "@/services/i18n"
@@ -60,6 +57,7 @@ import {
   folderSchema,
   popupPlacementSchema,
   shortcutSettingsSchema,
+  userStyleSchema,
 } from "@/types/schema"
 
 const formSchema = z
