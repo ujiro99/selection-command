@@ -31,7 +31,9 @@
       "WebFetch(domain:react-hook-form.com)",
       "WebFetch(domain:stackoverflow.com)",
       "WebFetch(domain:www.npmjs.com)",
-      "WebFetch(domain:www.radix-ui.com)"
+      "WebFetch(domain:www.radix-ui.com)",
+      "mcp__serena__find_symbol",
+      "mcp__serena__replace_symbol_body"
     ],
     "deny": []
   }
