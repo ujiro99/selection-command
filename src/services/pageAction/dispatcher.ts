@@ -114,7 +114,7 @@ async function waitForElement(
   })
 }
 
-type ActionReturn = Promise<[boolean, string?]>
+export type ActionReturn = Promise<[boolean, string?]>
 
 export const PageActionDispatcher = {
   click: async (param: PageAction.Click): ActionReturn => {
