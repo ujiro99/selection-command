@@ -15,18 +15,12 @@ import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
-import { closeWindow } from "@/services/chrome"
+import { closeWindow, windowExists } from "@/services/chrome"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { IpcCallback } from "@/services/ipc"
-import type {
-  WindowType,
-  WindowLayer,
-  CaptureData,
-  CaptureDataStorage,
-  CaptureScreenShotRes,
-} from "@/types"
+import type { WindowType, WindowLayer } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
 import { ANALYTICS_EVENTS, sendEvent } from "./services/analytics"
@@ -191,31 +185,32 @@ const commandFuncs = {
     }
 
     let targetId: number | undefined
-    chrome.windows
-      .get(w.srcWindowId)
-      .then((window) => {
-        targetId = window.id
-      })
-      .catch(async () => {
+
+    const processWindow = async () => {
+      const windowIdExists = await windowExists(w.srcWindowId)
+      if (windowIdExists) {
+        targetId = w.srcWindowId
+      } else {
         const current = await chrome.windows.getCurrent()
         targetId = current.id
         console.warn(
           `source window(${w.srcWindowId}) not found, use current(${current.id}) instead.`,
         )
-      })
-      .finally(() => {
-        if (targetId) {
-          chrome.tabs.create({
-            url: sender.url,
-            windowId: targetId,
-          })
-          closeWindow(sender.tab?.windowId as number, "openInTab").then(() => {
-            response(true)
-          })
-        } else {
-          response(false)
-        }
-      })
+      }
+
+      if (targetId) {
+        chrome.tabs.create({
+          url: sender.url,
+          windowId: targetId,
+        })
+        await closeWindow(sender.tab?.windowId as number, "openInTab")
+        response(true)
+      } else {
+        response(false)
+      }
+    }
+
+    processWindow()
 
     // return async
     return true
@@ -287,50 +282,6 @@ const commandFuncs = {
     }
     toggle()
     return true
-  },
-
-  [BgCommand.captureScreenshot]: (
-    _,
-    sender: Sender,
-    response: (res: CaptureScreenShotRes) => void,
-  ): boolean => {
-    const tabId = sender.tab?.id
-    const windowId = sender.tab?.windowId
-    if (!tabId || !windowId) {
-      response({ success: false, error: "TabId or WindowId not found." })
-      return true
-    }
-
-    chrome.tabs.captureVisibleTab(windowId, { format: "png" }, (dataUrl) => {
-      if (chrome.runtime.lastError) {
-        response({ success: false, error: chrome.runtime.lastError.message })
-        return
-      }
-      response({ success: true, data: dataUrl })
-    })
-    return true
-  },
-
-  [BgCommand.addCapture]: (
-    param: CaptureData,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    try {
-      Storage.update<CaptureDataStorage>(
-        SESSION_STORAGE_KEY.TMP_CAPTURES,
-        (captures) => ({
-          ...captures,
-          [param.id]: param.data,
-        }),
-      ).then(() => {
-        response(true)
-      })
-    } catch (e) {
-      console.error(e)
-      response(false)
-    }
-    return false
   },
 
   [BgCommand.getTabId]: getTabId,
