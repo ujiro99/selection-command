@@ -32,8 +32,14 @@
       "WebFetch(domain:stackoverflow.com)",
       "WebFetch(domain:www.npmjs.com)",
       "WebFetch(domain:www.radix-ui.com)",
+      "mcp__serena__check_onboarding_performed",
       "mcp__serena__find_symbol",
-      "mcp__serena__replace_symbol_body"
+      "mcp__serena__get_symbols_overview",
+      "mcp__serena__list_dir",
+      "mcp__serena__onboarding",
+      "mcp__serena__replace_symbol_body",
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__write_memory"
     ],
     "deny": []
   }
