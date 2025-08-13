@@ -185,23 +185,10 @@ export type ExecuteCommandParams = {
   changeState?: (state: ExecState, message?: string) => void
 }
 
-export type CaptureData = {
-  id: string
-  data: string
-}
-export type CaptureDataStorage = Record<string, string>
-
-export type CaptureScreenShotRes = {
-  success: boolean
-  data?: string
-  error?: string
-}
-
 export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
 export type PageActionStep = {
   id: string
   timestamp?: number
-  captureId?: string
   delayMs: number
   skipRenderWait: boolean
   param: PageAction.Parameter

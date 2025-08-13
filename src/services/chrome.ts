@@ -9,6 +9,20 @@ import { t } from "@/services/i18n"
 
 BgData.init()
 
+/**
+ * Check if a window exists
+ * @param {number} windowId - The ID of the window to check
+ * @returns {Promise<boolean>} True if the window exists, false otherwise
+ */
+export const windowExists = async (windowId: number): Promise<boolean> => {
+  try {
+    await chrome.windows.get(windowId)
+    return true
+  } catch {
+    return false
+  }
+}
+
 const failsafe = (url: string, favicon: string) => {
   if (isOverBytes(favicon, 1000)) {
     console.warn("favicon failsafe", url)
@@ -24,11 +38,11 @@ const failsafe = (url: string, favicon: string) => {
  * @returns {Promise<string>} favicon url
  */
 export const fetchIconUrl = async (url: string): Promise<string> => {
-  let w: chrome.windows.Window
-
   const p = new Promise<string>((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      chrome.windows.remove(w.id as number)
+    const timeoutId = setTimeout(async () => {
+      if (w?.id) {
+        await closeWindow(w.id, "fetchIconUrl timeout")
+      }
       chrome.tabs.onUpdated.removeListener(onUpdated)
       console.warn("timeout", url)
       reject("timeout")
@@ -61,12 +75,14 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
             reject()
           }
         }
-        chrome.windows.remove(w.id as number)
+        if (w?.id) {
+          await closeWindow(w.id, "fetchIconUrl close window")
+        }
       }
     }
     chrome.tabs.onUpdated.addListener(onUpdated)
   })
-  w = await chrome.windows.create({
+  const w = await chrome.windows.create({
     url: toUrl({
       searchUrl: url,
       selectionText: "test",
@@ -547,9 +563,9 @@ export async function closeWindow(
   windowId: number,
   log?: string,
 ): Promise<void> {
-  return chrome.windows.remove(windowId).then(() => {
-    if (chrome.runtime.lastError) {
-      console.error(log, chrome.runtime.lastError)
-    }
-  })
+  try {
+    await chrome.windows.remove(windowId)
+  } catch (e) {
+    console.warn(log, e)
+  }
 }

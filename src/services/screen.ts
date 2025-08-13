@@ -1,4 +1,5 @@
 import { BgData } from "@/services/backgroundData"
+import { windowExists } from "@/services/chrome"
 
 type WindowPosition = {
   top: number
@@ -14,6 +15,12 @@ export type ScreenSize = {
 
 export async function updateActiveScreenId(windowId: number): Promise<void> {
   try {
+    const exists = await windowExists(windowId)
+    if (!exists) {
+      console.warn(`Window ${windowId} does not exist for screen ID update`)
+      return
+    }
+
     const window = await chrome.windows.get(windowId)
     const left = window.left ?? 0
     const top = window.top ?? 0

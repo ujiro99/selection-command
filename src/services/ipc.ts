@@ -24,12 +24,10 @@ export enum BgCommand {
   openInTab = "openInTab",
   onHidden = "onHidden",
   toggleStar = "toggleStar",
-  captureScreenshot = "captureScreenshot",
   getTabId = "getTabId",
   setClipboard = "setClipboard",
   // PageAction
   addPageAction = "addPageAction",
-  addCapture = "addCapture",
   updatePageAction = "updatePageAction",
   removePageAction = "removePageAction",
   resetPageAction = "resetPageAction",
