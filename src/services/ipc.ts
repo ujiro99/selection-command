@@ -28,7 +28,6 @@ export enum BgCommand {
   setClipboard = "setClipboard",
   // PageAction
   addPageAction = "addPageAction",
-  addCapture = "addCapture",
   updatePageAction = "updatePageAction",
   removePageAction = "removePageAction",
   resetPageAction = "resetPageAction",

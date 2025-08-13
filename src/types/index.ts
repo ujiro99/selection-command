@@ -189,7 +189,6 @@ export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
 export type PageActionStep = {
   id: string
   timestamp?: number
-  captureId?: string
   delayMs: number
   skipRenderWait: boolean
   param: PageAction.Parameter

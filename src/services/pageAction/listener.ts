@@ -146,13 +146,11 @@ interface EventsFunctions {
     xpath: string,
     label: string,
     id: string,
-    captureId?: string,
   ) => void
   [PAGE_ACTION_EVENT.tripleClick]: (
     xpath: string,
     label: string,
     id: string,
-    captureId?: string,
   ) => void
   [PAGE_ACTION_EVENT.keyboard]: (e: KeyboardEvent) => void
   [PAGE_ACTION_EVENT.input]: (e: Event) => void

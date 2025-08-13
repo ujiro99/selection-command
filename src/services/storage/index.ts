@@ -1,5 +1,4 @@
 import DefaultSettings from "../option/defaultSettings"
-import { CaptureDataStorage } from "@/types"
 import {
   KEY,
   CMD_KEY,
@@ -67,7 +66,6 @@ const DEFAULTS = {
   },
   [LOCAL_STORAGE_KEY.CLIENT_ID]: "",
   [LOCAL_STORAGE_KEY.STARS]: [],
-  [LOCAL_STORAGE_KEY.CAPTURES]: {},
   [LOCAL_STORAGE_KEY.MIGRATION_STATUS]: null,
   [LOCAL_STORAGE_KEY.COMMANDS_BACKUP]: null,
   [LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP]: null,
@@ -178,22 +176,5 @@ export const BaseStorage = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   removeListener: (key: KEY, cb: ChangedCallback<any>) => {
     changedCallbacks[key] = changedCallbacks[key]?.filter((f) => f !== cb)
-  },
-
-  getCapture: async (key: string): Promise<string | undefined> => {
-    let captures = await BaseStorage.get<CaptureDataStorage>(
-      LOCAL_STORAGE_KEY.CAPTURES,
-    )
-    let c = captures[key]
-    if (c != null) {
-      return c
-    }
-    captures = await BaseStorage.get<CaptureDataStorage>(
-      SESSION_STORAGE_KEY.TMP_CAPTURES,
-    )
-    c = captures[key]
-    if (c != null) {
-      return c
-    }
   },
 }

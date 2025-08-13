@@ -18,7 +18,6 @@ import { t } from "@/services/i18n"
 import { paramToStr } from "@/services/pageAction"
 import type { PageActionStep, DeepPartial } from "@/types"
 import type { PageAction } from "@/services/pageAction"
-import { Storage } from "@/services/storage"
 import { PAGE_ACTION_EVENT } from "@/const"
 
 const isInputParam = (
@@ -55,12 +54,10 @@ export function PageActionItem(props: Props): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-  const [capture, setCapture] = useState<string>()
   const anchorRef = useRef<HTMLLIElement>(null)
   const labelInputRef = useRef<HTMLInputElement>(null)
   const delayInputRef = useRef<HTMLInputElement>(null)
   const isFailed = failedId === step.id
-  const capturedId = step.captureId
 
   const param = step.param
   const isInput = isInputParam(param)
@@ -129,15 +126,6 @@ export function PageActionItem(props: Props): JSX.Element {
     return () => clearTimeout(timer)
   }, [isOpen])
 
-  useEffect(() => {
-    if (capturedId == null) return
-    Storage.getCapture(capturedId).then((data) => {
-      // console.log('getCapture', capturedId, data)
-      if (data == null) return
-      setCapture(data)
-    })
-  }, [capturedId])
-
   return (
     <li
       className={cn(
@@ -190,13 +178,6 @@ export function PageActionItem(props: Props): JSX.Element {
 
             <div className="mt-4 space-y-2">
               <div className="flex items-center gap-1">
-                {capture && (
-                  <img
-                    src={capture}
-                    alt="capture of target element."
-                    className="rounded-md w-12 h-12 object-scale-down"
-                  />
-                )}
                 <InputField
                   label={t("Option_pageAction_label")}
                   type="text"

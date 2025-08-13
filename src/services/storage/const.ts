@@ -10,7 +10,6 @@ export enum LOCAL_STORAGE_KEY {
   CACHES = "caches",
   CLIENT_ID = "clientId",
   STARS = "stars",
-  CAPTURES = "captures",
   MIGRATION_STATUS = "migrationStatus",
   LOCAL_COMMAND_METADATA = "localCommandMetadata",
   GLOBAL_COMMAND_METADATA = "globalCommandMetadata",
