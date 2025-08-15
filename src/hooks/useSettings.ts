@@ -55,16 +55,16 @@ function applyPageRuleToSettings(
 // Type definitions for section-specific hook return values
 type SectionData<T extends CacheSection> =
   T extends typeof CACHE_SECTIONS.COMMANDS
-    ? Command[]
-    : T extends typeof CACHE_SECTIONS.USER_SETTINGS
-      ? UserSettings
-      : T extends typeof CACHE_SECTIONS.STARS
-        ? Star[]
-        : T extends typeof CACHE_SECTIONS.SHORTCUTS
-          ? ShortcutSettings
-          : T extends typeof CACHE_SECTIONS.USER_STATS
-            ? UserStats
-            : any
+  ? Command[]
+  : T extends typeof CACHE_SECTIONS.USER_SETTINGS
+  ? UserSettings
+  : T extends typeof CACHE_SECTIONS.STARS
+  ? Star[]
+  : T extends typeof CACHE_SECTIONS.SHORTCUTS
+  ? ShortcutSettings
+  : T extends typeof CACHE_SECTIONS.USER_STATS
+  ? UserStats
+  : any
 
 // Common async data fetching hook
 function useAsyncData<T>(
@@ -196,9 +196,12 @@ export function useUserSettings() {
 
 // Settings hook with image cache applied
 export function useSettingsWithImageCache() {
-  const { userSettings: settings, loading } = useUserSettings()
-  const { data: commands } = useSection(CACHE_SECTIONS.COMMANDS)
-  const { data: caches } = useSection(CACHE_SECTIONS.CACHES)
+  const { userSettings: settings, loading: loading1 } = useUserSettings()
+  const { data: commands, loading: loading2 } = useSection(
+    CACHE_SECTIONS.COMMANDS,
+  )
+  const { data: caches, loading: loading3 } = useSection(CACHE_SECTIONS.CACHES)
+  const loading = loading1 || loading2 || loading3
 
   const { commandsWithCache, foldersWithCache, iconUrls } = useMemo(() => {
     if (loading || !commands) {
@@ -236,5 +239,6 @@ export function useSettingsWithImageCache() {
     commands: commandsWithCache,
     folders: foldersWithCache,
     iconUrls,
+    loading,
   }
 }

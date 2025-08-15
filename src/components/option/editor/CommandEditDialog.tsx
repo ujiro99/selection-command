@@ -330,7 +330,7 @@ const CommandEditDialogInner = ({
         setValue("pageActionOption.steps", steps as PageActionStep[])
       },
     )
-  }, [])
+  }, [setValue])
 
   useEffect(() => {
     const sub = (e: any) => {
