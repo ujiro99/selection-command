@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn lint)",
+      "Bash(yarn build)",
+      "mcp__serena__check_onboarding_performed",
+      "WebSearch",
+      "WebFetch(domain:nextjs.org)",
+      "mcp__serena__get_symbols_overview",
+      "mcp__serena__find_file",
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__find_referencing_symbols",
+      "WebFetch(domain:github.com)",
+      "mcp__serena__list_dir"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
