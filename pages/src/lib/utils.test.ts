@@ -80,6 +80,55 @@ describe("Utility Functions", () => {
         /^[0-9a-f]{8}-[0-9a-f]{4}-5[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
       )
     })
+
+    test("UTIL-05-a: Property order independence: same content different order produces same UUID", () => {
+      // Arrange
+      const obj1 = { name: "test", value: 123, flag: true }
+      const obj2 = { flag: true, value: 123, name: "test" }
+      const obj3 = { value: 123, name: "test", flag: true }
+
+      // Act
+      const uuid1 = generateUUIDFromObject(obj1)
+      const uuid2 = generateUUIDFromObject(obj2)
+      const uuid3 = generateUUIDFromObject(obj3)
+
+      // Assert
+      expect(uuid1).toBe(uuid2)
+      expect(uuid2).toBe(uuid3)
+      expect(uuid1).toBe(uuid3)
+    })
+
+    test("UTIL-05-b: Property order independence: nested objects produce same UUID", () => {
+      // Arrange
+      const obj1 = {
+        user: { name: "John", age: 30 },
+        settings: { theme: "dark", lang: "en" },
+      }
+      const obj2 = {
+        settings: { lang: "en", theme: "dark" },
+        user: { age: 30, name: "John" },
+      }
+
+      // Act
+      const uuid1 = generateUUIDFromObject(obj1)
+      const uuid2 = generateUUIDFromObject(obj2)
+
+      // Assert
+      expect(uuid1).toBe(uuid2)
+    })
+
+    test("UTIL-05-c: Array order preservation: different array order produces different UUID", () => {
+      // Arrange
+      const obj1 = { tags: ["red", "blue", "green"], count: 3 }
+      const obj2 = { tags: ["blue", "red", "green"], count: 3 }
+
+      // Act
+      const uuid1 = generateUUIDFromObject(obj1)
+      const uuid2 = generateUUIDFromObject(obj2)
+
+      // Assert
+      expect(uuid1).not.toBe(uuid2) // Array order should be preserved
+    })
   })
 
   describe("isEmpty function", () => {

@@ -11,12 +11,39 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
+ * Normalize object by sorting keys recursively to ensure consistent serialization
+ * regardless of property order.
+ * @param obj Object to normalize.
+ * @returns Normalized object with sorted keys.
+ */
+function normalizeObject(obj: any): any {
+  if (obj === null || typeof obj !== "object") {
+    return obj
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(normalizeObject)
+  }
+
+  const sortedKeys = Object.keys(obj).sort()
+  const normalizedObj: any = {}
+
+  for (const key of sortedKeys) {
+    normalizedObj[key] = normalizeObject(obj[key])
+  }
+
+  return normalizedObj
+}
+
+/**
  * Generate UUID from object, using UUIDv5.
+ * Property order independent - same content produces same UUID regardless of key order.
  * @param obj Object to generate UUID from.
  * @returns UUID.
  */
 export function generateUUIDFromObject(obj: object): string {
-  const objString = JSON.stringify(obj)
+  const normalizedObj = normalizeObject(obj)
+  const objString = JSON.stringify(normalizedObj)
   const hash = createHash("sha1").update(objString).digest("hex")
   // UUIDv5 from https://ujiro99.github.io/selection-command/
   const namespace = "fe352db3-6a8e-5d07-9aaf-c45a2e9d9f5c"
