@@ -1,7 +1,0 @@
-.item {
-  @apply pb-5;
-}
-
-.item+.item {
-  @apply border-t py-5;
-}
