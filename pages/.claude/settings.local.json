@@ -11,7 +11,10 @@
       "mcp__serena__search_for_pattern",
       "mcp__serena__find_referencing_symbols",
       "WebFetch(domain:github.com)",
-      "mcp__serena__list_dir"
+      "mcp__serena__list_dir",
+      "Bash(mkdir:*)",
+      "Bash(yarn test:*)",
+      "Bash(tsc:*)"
     ],
     "deny": [],
     "ask": []
