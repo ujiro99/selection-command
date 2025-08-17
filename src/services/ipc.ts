@@ -7,7 +7,8 @@ import { isServiceWorker } from "@/lib/utils"
 // Constants for connection
 const CONNECTION_TIMEOUT = 2000
 const CONNECTION_CHECK_INTERVAL = 50
-export const CONNECTION_PORT = "app"
+export const CONNECTION_APP = "app"
+export const CONNECTION_SW = "sw"
 
 export enum BgCommand {
   connected = "connected",
@@ -146,106 +147,164 @@ export const Ipc = {
       if (isServiceWorker()) {
         return this.callListener<M, R>(command, param)
       }
-      return new Promise<R>((resolve, reject) => {
-        chrome.runtime.sendMessage({ command, param }, (ret) => {
-          if (chrome.runtime.lastError != null) {
-            reject(chrome.runtime.lastError)
-          }
-          resolve(ret as R)
-        })
-      })
+      const ret = await chrome.runtime.sendMessage({ command, param })
+      return ret as R
     } catch (error) {
       console.error(`Failed to send message: ${command}`, error)
-      throw error
+      return Promise.reject(error)
     }
   },
 
   /**
    * Connect session to the tab.
    * @param tabId - Target tab ID to connect
-   * @throws {Error} When connection to the tab fails
+   * @throws {Error} When connection to the tab fails or times out
    */
   async ensureConnection(tabId: number): Promise<void> {
-    // Connect from content script
-    const p = new Promise<void>(async (resolve) => {
-      let interval: NodeJS.Timeout
-      let timeout: NodeJS.Timeout
-      let onTabUpdated: (id: number, info: chrome.tabs.TabChangeInfo) => void
+    try {
+      // Run both connection strategies in parallel
+      await Promise.race([
+        // Strategy 1: Wait for content script to initiate connection
+        this._waitForContentScriptConnection(),
+        // Strategy 2: Background initiates connection (requires tab to be ready)
+        this._backgroundConnectionFlow(tabId),
+      ])
+    } catch (error) {
+      console.error(`Failed to ensure connection to tab ${tabId}:`, error)
+      throw error
+    }
+  },
 
+  /**
+   * Wait for connection from content script
+   * @private
+   */
+  async _waitForContentScriptConnection(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       const cleanup = () => {
-        clearTimeout(timeout)
-        clearInterval(interval)
-        chrome.tabs.onUpdated.removeListener(onTabUpdated)
+        if (timeout) clearTimeout(timeout)
+        if (onConnect) chrome.runtime.onConnect.removeListener(onConnect)
       }
 
-      const onConnect = async function (port: chrome.runtime.Port) {
-        if (port.name !== CONNECTION_PORT) {
+      // Handle connection from content script
+      const onConnect = (port: chrome.runtime.Port) => {
+        if (port.name !== CONNECTION_APP) {
           return
         }
-        port.postMessage({ command: TabCommand.connected })
-        if (chrome.runtime.lastError) {
-          console.error(chrome.runtime.lastError.message)
+        try {
+          // console.debug("Content script connected:", port)
+          port.postMessage({ command: TabCommand.connected })
+          cleanup()
+          resolve()
+        } catch (error) {
+          cleanup()
+          reject(new Error(`Failed to respond to content script: ${error}`))
         }
-        // console.log('connected from content script')
-        cleanup()
-        resolve()
-        chrome.runtime.onConnect.removeListener(onConnect)
       }
+
       chrome.runtime.onConnect.addListener(onConnect)
 
-      // Wait for the tab to be loaded completely.
-      const tab = await chrome.tabs.get(tabId)
-      if (tab.status !== "complete") {
-        await new Promise<void>((res) => {
-          onTabUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
-            if (tabId === id && info.status === "complete") {
-              // console.log('onUpdated', info)
-              cleanup()
-              res()
-            }
-          }
-
-          interval = setInterval(async () => {
-            try {
-              const t = await chrome.tabs.get(tabId)
-              if (t.status === "complete") {
-                cleanup()
-                res()
-              }
-            } catch (error) {
-              console.error(error)
-            }
-          }, CONNECTION_CHECK_INTERVAL)
-
-          timeout = setTimeout(() => {
-            console.warn("Connection timeout")
-            cleanup()
-            res()
-          }, CONNECTION_TIMEOUT)
-
-          chrome.tabs.onUpdated.addListener(onTabUpdated)
-        })
-      }
-
-      // Connect from background script
-      const port = chrome.tabs.connect(tabId, { name: CONNECTION_PORT })
-      if (chrome.runtime.lastError) {
-        console.error(chrome.runtime.lastError.message)
-      }
-      port.onMessage.addListener(async function (msg) {
-        if (chrome.runtime.lastError) {
-          console.error(chrome.runtime.lastError.message)
-        }
-        if (msg.command === BgCommand.connected) {
-          // console.log('connected from background script')
-          resolve()
-          port.disconnect()
-          chrome.runtime.onConnect.removeListener(onConnect)
-          return
-        }
-      })
+      // Set timeout for connection
+      const timeout = setTimeout(() => {
+        cleanup()
+        reject(new Error("Timeout waiting for content script connection"))
+      }, CONNECTION_TIMEOUT)
     })
-    return p
+  },
+
+  /**
+   * Background-initiated connection flow: wait for tab ready then initiate connection
+   * @private
+   */
+  async _backgroundConnectionFlow(tabId: number): Promise<void> {
+    // Wait for tab to be ready first
+    await this._waitForTabReady(tabId)
+    // Then initiate connection from background
+    await this._initiateBackgroundConnection(tabId)
+  },
+
+  /**
+   * Wait for the tab to be in 'complete' status
+   * @private
+   */
+  async _waitForTabReady(tabId: number): Promise<void> {
+    const tab = await chrome.tabs.get(tabId)
+    if (tab.status === "complete") {
+      return
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      const cleanup = () => {
+        if (interval) clearInterval(interval)
+        if (timeout) clearTimeout(timeout)
+        if (onTabUpdated) chrome.tabs.onUpdated.removeListener(onTabUpdated)
+      }
+
+      const onTabUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
+        if (tabId === id && info.status === "complete") {
+          cleanup()
+          resolve()
+        }
+      }
+
+      // Poll for tab status
+      const interval = setInterval(async () => {
+        try {
+          const t = await chrome.tabs.get(tabId)
+          if (t.status === "complete") {
+            cleanup()
+            resolve()
+          }
+        } catch (error) {
+          cleanup()
+          reject(new Error(`Tab ${tabId} not accessible: ${error}`))
+        }
+      }, CONNECTION_CHECK_INTERVAL)
+
+      // Set timeout
+      const timeout = setTimeout(() => {
+        cleanup()
+        reject(new Error(`Timeout waiting for tab ${tabId} to be ready`))
+      }, CONNECTION_TIMEOUT)
+
+      chrome.tabs.onUpdated.addListener(onTabUpdated)
+    })
+  },
+
+  /**
+   * Initiate connection from background script to content script
+   * @private
+   */
+  async _initiateBackgroundConnection(tabId: number): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      let connectionPort: chrome.runtime.Port | null = null
+
+      const cleanup = () => {
+        if (connectionPort) {
+          try {
+            connectionPort.disconnect()
+          } catch {
+            // Ignore disconnect errors during cleanup
+          }
+          connectionPort = null
+        }
+      }
+
+      try {
+        // Initiate connection from background script
+        // console.debug("Connecting to content script in tab:", tabId)
+        connectionPort = chrome.tabs.connect(tabId, { name: CONNECTION_SW })
+        connectionPort.onMessage.addListener((msg) => {
+          if (msg.command === BgCommand.connected) {
+            cleanup()
+            resolve()
+          }
+        })
+      } catch (error) {
+        cleanup()
+        reject(new Error(`Failed to establish background connection: ${error}`))
+      }
+    })
   },
 
   /**
@@ -306,13 +365,41 @@ export const Ipc = {
     const p = new Promise<unknown>((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, message).then((ret) => {
         if (chrome.runtime.lastError != null) {
-          console.error(
-            "Failed to send message to tab:",
-            tabId,
-            chrome.runtime.lastError,
-            message,
-          )
-          reject(chrome.runtime.lastError)
+          const error = chrome.runtime.lastError
+          const errorMessage = error.message || ""
+
+          // Check if this is a bfcache-related error
+          if (
+            errorMessage.includes("back/forward cache") ||
+            errorMessage.includes("message channel is closed")
+          ) {
+            console.debug(
+              "Tab moved to bfcache, message channel closed:",
+              tabId,
+              errorMessage,
+              message,
+            )
+            // Don't reject for bfcache errors - they are expected
+            resolve(null)
+            return
+          }
+
+          // Check if the receiving end doesn't exist (tab closed/navigated)
+          if (errorMessage.includes("receiving end does not exist")) {
+            console.debug(
+              "Tab no longer exists or has navigated:",
+              tabId,
+              errorMessage,
+              message,
+            )
+            resolve(null)
+            return
+          }
+
+          // For other errors, log as errors and reject
+          console.error("Failed to send message to tab:", tabId, error, message)
+          reject(error)
+          return
         }
         resolve(ret)
       })

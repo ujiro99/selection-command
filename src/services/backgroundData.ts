@@ -2,6 +2,7 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import type { WindowLayer } from "@/types"
 
 type updater = (val: BgData) => BgData
+type updaterPartial = (val: BgData) => Partial<BgData>
 
 export class BgData {
   private static instance: BgData
@@ -10,12 +11,14 @@ export class BgData {
   public normalWindows: WindowLayer
   public pageActionStop: boolean
   public activeScreenId: string | null
+  public connectedTabs: number[]
 
   private constructor(val: BgData | undefined) {
     this.windowStack = val?.windowStack ?? []
     this.normalWindows = val?.normalWindows ?? []
     this.pageActionStop = val?.pageActionStop ?? false
     this.activeScreenId = val?.activeScreenId ?? null
+    this.connectedTabs = val?.connectedTabs ?? []
   }
 
   public static init() {
@@ -26,7 +29,7 @@ export class BgData {
       })
       Storage.addListener(SESSION_STORAGE_KEY.BG, (val: BgData) => {
         BgData.instance = new BgData(val)
-        console.debug("BgData updated", BgData.instance)
+        // console.debug("BgData updated", BgData.instance)
       })
     }
   }
@@ -40,6 +43,23 @@ export class BgData {
       BgData.instance = val(BgData.instance)
     } else {
       BgData.instance = val
+    }
+    return Storage.set(SESSION_STORAGE_KEY.BG, BgData.instance)
+  }
+
+  public static update(
+    val: Partial<BgData> | updaterPartial,
+  ): Promise<boolean> {
+    if (val instanceof Function) {
+      BgData.instance = {
+        ...BgData.instance,
+        ...val(BgData.instance),
+      }
+    } else {
+      BgData.instance = {
+        ...BgData.instance,
+        ...val,
+      }
     }
     return Storage.set(SESSION_STORAGE_KEY.BG, BgData.instance)
   }

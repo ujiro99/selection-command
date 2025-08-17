@@ -7,26 +7,60 @@ import { t } from "@/services/i18n"
 import { cn, isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { HUB_URL, SCREEN } from "@/const"
 import type { Command } from "@/types"
+import { cmd2uuid } from "@/services/uuid"
 
 export const MyCommands = (): JSX.Element => {
   const [urls, setUrls] = useState<string[]>([])
   const [pageActionIds, setPageActionIds] = useState<string[]>([])
+  const [commands, setCommands] = useState<
+    Array<Command & { iconDataUrl: string; iconUrl?: string }>
+  >([])
   const listRef = useRef<HTMLUListElement | null>(null)
   const list2Ref = useRef<HTMLUListElement | null>(null)
-  const { commands: allCommands, iconUrls } = useSettingsWithImageCache()
-  const commands = allCommands
-    .filter(
-      (c) =>
-        (isSearchCommand(c) && !urls.includes(c.searchUrl as string)) ||
-        (isPageActionCommand(c) && !pageActionIds.includes(c.id)),
-    )
-    .map((c) => ({
-      ...c,
-      iconDataUrl: iconUrls[c.id] || c.iconUrl,
-      iconUrl: iconUrls[c.id],
-    }))
+  const {
+    commands: allCommands,
+    iconUrls,
+    loading,
+  } = useSettingsWithImageCache()
   const loaded = urls.length > 0
   const enableMarquee = commands.length > 3
+
+  useEffect(() => {
+    const filterCommands = async () => {
+      const filteredCommands = []
+      for (const c of allCommands) {
+        if (isSearchCommand(c) && !urls.includes(c.searchUrl as string)) {
+          filteredCommands.push(c)
+        } else if (isPageActionCommand(c)) {
+          const uuid = await cmd2uuid({
+            ...c,
+            iconUrl: iconUrls[c.id],
+          })
+          console.info("Command UUID:", c.title, uuid)
+          if (!pageActionIds.includes(uuid)) {
+            filteredCommands.push(c)
+          }
+        }
+      }
+
+      const commandsWithIcons = filteredCommands.map((c) => ({
+        ...c,
+        iconDataUrl: c.iconUrl || iconUrls[c.id],
+        iconUrl: iconUrls[c.id],
+      }))
+
+      setCommands(commandsWithIcons)
+    }
+
+    if (
+      !loading &&
+      allCommands.length > 0 &&
+      urls.length > 0 &&
+      pageActionIds.length > 0
+    ) {
+      filterCommands()
+    }
+  }, [allCommands, iconUrls, loading, urls, pageActionIds])
 
   useEffect(() => {
     fetch(`${HUB_URL}/data/searchUrls.json`)
@@ -48,14 +82,14 @@ export const MyCommands = (): JSX.Element => {
     if (elm == null || elm2 == null) return
     const a = elm.getAnimations()[0]
     if (a != null) {
-      ;(a.currentTime as number) += diff
+      ; (a.currentTime as number) += diff
       if ((a.currentTime as number) < 0) {
         a.currentTime = 0
       }
     }
     const a2 = elm2.getAnimations()[0]
     if (a2 != null) {
-      ;(a2.currentTime as number) += diff
+      ; (a2.currentTime as number) += diff
       if ((a2.currentTime as number) < 0) {
         a2.currentTime = 0
       }

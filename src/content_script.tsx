@@ -3,6 +3,7 @@ import { APP_ID, isDebug } from "./const"
 import { App } from "./components/App"
 import icons from "./icons.svg?raw"
 import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
+import "@/services/connection"
 
 // Initialize Sentry for content script
 initSentry().catch((error) => {

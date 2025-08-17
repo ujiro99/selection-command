@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 このファイルは、このリポジトリのコードを扱う際にClaude Code (claude.ai/code)に対するガイダンスを提供します。
 
 ## 基本ルール
@@ -18,6 +20,8 @@
 - `yarn test` - Vitestを使用したテストの実行
 - `yarn test:ui` - VitestのUIモードでテストを実行
 - `yarn test:coverage` - テストカバレッジを測定
+- `yarn test src/path/to/file.test.ts` - 単一テストファイルの実行
+- `yarn pretty-quick` - Prettierによるコード整形
 - `yarn zip` - ビルドされたdistフォルダから配布可能な拡張機能のzipファイルを作成
 
 ## アーキテクチャ概要
@@ -76,6 +80,10 @@
 - コンテンツスクリプトのスタイリング分離にShadow DOMを使用
 - 堅牢なXPathセレクター生成のためのRobula+アルゴリズムを実装（`src/lib/robula-plus/`）
 
+**パスエイリアス**:
+- `@/` - `src/`ディレクトリへのエイリアス
+- `@import-if` - テスト用のモックファイル（`src/test/__mocks__/import-if`）
+
 ### テスト環境
 
 - **テストフレームワーク**: Vitest with jsdom環境
@@ -83,6 +91,12 @@
 - **Chrome拡張機能モック**: `chrome.storage`、`chrome.runtime`、`chrome.tabs`等のAPIをモック
 - **テストファイル**: `src/**/*.{test,spec}.{ts,tsx}`パターンで配置
 - **カバレッジ**: `yarn test:coverage`でテストカバレッジを測定可能
+
+**Chrome Storage Mock**:
+- `StorageMockFactory`クラスでChrome拡張機能のストレージAPIをモック
+- `setupStorageMocks(mode)`でモードを指定可能 ("basic" | "realistic" | "custom")
+- `src/test/setup.ts`でグローバルなモックを設定
+- テスト内で`setupStorageMocks("realistic")`を使用すると、実際のストレージ動作をシミュレート
 
 ### テスト設計のガイドライン
 

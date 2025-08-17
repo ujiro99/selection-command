@@ -1,3 +1,5 @@
+import { SelectionCommand } from "./index"
+
 // Type definitions for command storage
 export interface CommandMetadata {
   count: number // Number of commands saved in this storage
@@ -9,3 +11,5 @@ export interface GlobalCommandMetadata {
   version: number // Global data version (timestamp)
   lastUpdated: number // Last update timestamp
 }
+
+export type CommandContent = Omit<SelectionCommand, "id">

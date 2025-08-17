@@ -1,25 +1,52 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-import { v5 as uuidv5 } from 'uuid'
-import { createHash } from 'crypto'
-import { parse } from 'tldts'
-import { SearchCommand, PageActionCommand } from '@/types'
-import { OPEN_MODE } from '@/const'
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+import { v5 as uuidv5 } from "uuid"
+import { createHash } from "crypto"
+import { parse } from "tldts"
+import { SearchCommand, PageActionCommand } from "@/types"
+import { OPEN_MODE } from "@/const"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 /**
+ * Normalize object by sorting keys recursively to ensure consistent serialization
+ * regardless of property order.
+ * @param obj Object to normalize.
+ * @returns Normalized object with sorted keys.
+ */
+function normalizeObject(obj: any): any {
+  if (obj === null || typeof obj !== "object") {
+    return obj
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(normalizeObject)
+  }
+
+  const sortedKeys = Object.keys(obj).sort()
+  const normalizedObj: any = {}
+
+  for (const key of sortedKeys) {
+    normalizedObj[key] = normalizeObject(obj[key])
+  }
+
+  return normalizedObj
+}
+
+/**
  * Generate UUID from object, using UUIDv5.
+ * Property order independent - same content produces same UUID regardless of key order.
  * @param obj Object to generate UUID from.
  * @returns UUID.
  */
 export function generateUUIDFromObject(obj: object): string {
-  const objString = JSON.stringify(obj)
-  const hash = createHash('sha1').update(objString).digest('hex')
+  const normalizedObj = normalizeObject(obj)
+  const objString = JSON.stringify(normalizedObj)
+  const hash = createHash("sha1").update(objString).digest("hex")
   // UUIDv5 from https://ujiro99.github.io/selection-command/
-  const namespace = 'fe352db3-6a8e-5d07-9aaf-c45a2e9d9f5c'
+  const namespace = "fe352db3-6a8e-5d07-9aaf-c45a2e9d9f5c"
   return uuidv5(hash, namespace)
 }
 
@@ -34,6 +61,9 @@ export function isEmpty(str: string | null | undefined): boolean {
  * Check if the command is a search command.
  */
 export function isSearchCommand(cmd: unknown): cmd is SearchCommand {
+  if (!cmd || typeof cmd !== "object") {
+    return false
+  }
   const modes = [OPEN_MODE.POPUP, OPEN_MODE.TAB, OPEN_MODE.WINDOW]
   return modes.includes((cmd as SearchCommand).openMode)
 }
@@ -42,6 +72,9 @@ export function isSearchCommand(cmd: unknown): cmd is SearchCommand {
  * Check if the command is a page action command.
  */
 export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
+  if (!cmd || typeof cmd !== "object") {
+    return false
+  }
   const modes = [OPEN_MODE.PAGE_ACTION]
   return modes.includes((cmd as PageActionCommand).openMode)
 }
@@ -70,7 +103,7 @@ export function sortUrlsByDomain<V>(
 
     // Compare the subdomain of the URL.
     // e.g. 'www.example.com' and 'sub.example.com' are different domains.
-    return (parsedA.subdomain || '').localeCompare(parsedB.subdomain || '')
+    return (parsedA.subdomain || "").localeCompare(parsedB.subdomain || "")
   })
 }
 
@@ -88,9 +121,9 @@ export const onHover = (
   },
 ) => {
   let leaveVal = opt?.leaveVal
-  if (typeof enterVal === 'string' && leaveVal === undefined) {
-    leaveVal = ''
-  } else if (typeof enterVal === 'boolean' && leaveVal === undefined) {
+  if (typeof enterVal === "string" && leaveVal === undefined) {
+    leaveVal = ""
+  } else if (typeof enterVal === "boolean" && leaveVal === undefined) {
     leaveVal = !enterVal
   }
 
@@ -122,11 +155,11 @@ export const onHover = (
  * @returns {string} The capitalized string.
  */
 export function capitalize(phrase: string): string {
-  if (typeof phrase !== 'string' || !phrase) return phrase
+  if (typeof phrase !== "string" || !phrase) return phrase
   return phrase
-    .split(' ')
+    .split(" ")
     .map((s: string) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
-    .join(' ')
+    .join(" ")
 }
 
 /**

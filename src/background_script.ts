@@ -49,6 +49,27 @@ const getTabId = (
   return true
 }
 
+const onConnect = async function (port: chrome.runtime.Port) {
+  // console.debug("port connected", port.name, port.sender?.tab?.id)
+  port.onDisconnect.addListener(() => onDisconnect(port))
+  const tabId = port.sender?.tab?.id
+  if (tabId) {
+    BgData.update((data) => ({
+      connectedTabs: [...data.connectedTabs, tabId],
+    }))
+  }
+}
+const onDisconnect = async function (port: chrome.runtime.Port) {
+  // console.debug("port disconnected", port.name, port.sender?.tab?.id)
+  const tabId = port.sender?.tab?.id
+  if (tabId) {
+    BgData.update((data) => ({
+      connectedTabs: data.connectedTabs.filter((id) => id !== tabId),
+    }))
+  }
+}
+chrome.runtime.onConnect.addListener(onConnect)
+
 const commandFuncs = {
   [BgCommand.openPopup]: ActionHelper.openPopup,
   [BgCommand.openPopups]: ActionHelper.openPopups,
@@ -587,3 +608,11 @@ export const testExports = {
   commandFuncs,
   updateWindowSize,
 }
+
+self.addEventListener("error", (event) => {
+  console.error("error", event)
+})
+
+self.addEventListener("unhandledrejection", (event) => {
+  console.error("unhandledrejection", event)
+})

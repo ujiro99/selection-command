@@ -8,9 +8,14 @@
     "postbuild": "next-sitemap; npm run tags; npm run urls",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest --coverage",
     "analytics": "node ./scripts/fetch-ga-data.js",
     "tags": "node ./scripts/update-tags.mjs",
-    "urls": "node ./scripts/update-searchUrls.mjs"
+    "urls": "node ./scripts/update-searchUrls.mjs",
+    "pretty-quick": "pretty-quick"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -43,14 +48,29 @@
   "devDependencies": {
     "@google-analytics/data": "^5.2.0",
     "@tailwindcss/typography": "^0.5.16",
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
     "eslint": "^8",
     "eslint-config-next": "15.0.0",
+    "jsdom": "^26.1.0",
     "next-sitemap": "^4.2.3",
     "postcss": "^8",
+    "pretty-quick": "^4.2.2",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.4"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": false,
+    "tabWidth": 2,
+    "trailingComma": "all"
   }
 }
