@@ -30,10 +30,17 @@ describe("Utility Functions", () => {
     test("UTIL-02: Normal case: conditional classnames are processed correctly", () => {
       // Arrange
       const baseClass = "btn"
-      const conditionalClass = true && "active"
+      const conditionalClassTrue = "active"
+      const conditionalClassFalse = "inactive"
 
       // Act
-      const result = cn(baseClass, conditionalClass)
+      const result = cn(
+        baseClass,
+        // eslint-disable-next-line no-constant-binary-expression
+        true && conditionalClassTrue,
+        // eslint-disable-next-line no-constant-binary-expression
+        false && conditionalClassFalse,
+      )
 
       // Assert
       expect(result).toBe("btn active")

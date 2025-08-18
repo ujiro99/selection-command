@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 11
+    "count": 12
   },
   {
     "name": "Language",
@@ -65,7 +65,7 @@
   },
   {
     "name": "Media",
-    "count": 5
+    "count": 7
   },
   {
     "name": "SNS",
@@ -77,7 +77,7 @@
   },
   {
     "name": "Movie",
-    "count": 3
+    "count": 4
   },
   {
     "name": "AI",
@@ -102,5 +102,13 @@
   {
     "name": "Korean",
     "count": 2
+  },
+  {
+    "name": "Review",
+    "count": 1
+  },
+  {
+    "name": "Game",
+    "count": 1
   }
 ]
