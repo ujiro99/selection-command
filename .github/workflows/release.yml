@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies and build
         run: |
           yarn install --frozen-lockfile
-          yarn build
+          yarn build:extension
         env:
           CI: true
           VITE_MEASUREMENT_ID: ${{ secrets.VITE_MEASUREMENT_ID }}
@@ -30,7 +30,7 @@ jobs:
           UPLOAD_SOURCEMAP_TO_SENTRY: "true"
       - name: Create zip package
         run: |
-          yarn zip
+          yarn workspace @selection-command/extension zip
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/*.zip"
+          artifacts: "packages/extension/build/*.zip"

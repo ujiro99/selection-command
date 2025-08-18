@@ -1,22 +1,22 @@
-import { defineConfig } from "vitest/config"
-import { resolve } from "path"
-import packageJson from "./package.json"
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
     environment: "jsdom",
-    setupFiles: ["./src/test/setup.ts"],
     globals: true,
     css: true,
-  },
-  define: {
-    __APP_NAME__: JSON.stringify(packageJson.name),
-    __APP_VERSION__: JSON.stringify(packageJson.version),
-  },
-  resolve: {
-    alias: {
-      "@": resolve(__dirname, "./src"),
-      "@import-if": resolve(__dirname, "./src/test/__mocks__/import-if"),
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      exclude: [
+        "node_modules/",
+        "**/test/",
+        "**/*.d.ts",
+        "**/dist/**",
+        "**/build/**",
+        "**/.next/**",
+        "**/coverage/**",
+      ],
     },
   },
-})
+});

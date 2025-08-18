@@ -2,15 +2,18 @@
 
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+**/coverage
 
 # production
 /dist
+**/dist
 /build
+**/build
 
 # misc
 .DS_Store
@@ -35,3 +38,6 @@ yarn-error.log*
 
 # Serena
 .serena/cache
+
+# vite
+.vite
