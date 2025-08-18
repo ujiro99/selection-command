@@ -10,7 +10,8 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "lint": "echo 'linting skipped for now'",
-    "test": "echo 'testing skipped for now'"
+    "test": "echo 'testing skipped for now'",
+    "test:coverage": "echo 'testing skipped for now'"
   },
   "dependencies": {
     "clsx": "^2.1.1",

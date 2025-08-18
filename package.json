@@ -16,6 +16,7 @@
     "build:hub": "yarn workspace @selection-command/hub build",
     "lint": "yarn workspaces run lint",
     "test": "yarn workspace @selection-command/extension test:run; yarn workspace @selection-command/hub test:run",
+    "test:coverage": "yarn workspaces run test:coverage",
     "clean": "yarn workspaces run clean && rm -rf node_modules"
   },
   "devDependencies": {
