@@ -9,7 +9,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "pages/**"
+      - "packages/hub/**"
       - ".github/workflows/pages.yml"
   # Allows you to run this workflow from another workflow
   workflow_call:
@@ -30,7 +30,7 @@ concurrency:
 
 defaults:
   run:
-    working-directory: ./pages
+    working-directory: ./packages/hub
 
 jobs:
   # Build job
@@ -61,7 +61,7 @@ jobs:
         with:
           node-version: "lts/*"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
-          cache-dependency-path: ./pages/yarn.lock
+          cache-dependency-path: ./packages/hub/yarn.lock
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -70,11 +70,11 @@ jobs:
           #
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
-          generator_config_file: pages/next.config.mjs
+          generator_config_file: packages/hub/next.config.mjs
       - name: Restore cache for Next.js
         uses: actions/cache@v4
         with:
-          path: ./pages/.next/cache
+          path: ./packages/hub/.next/cache
           # Generate a new cache whenever packages or source files change.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
@@ -83,7 +83,7 @@ jobs:
       - name: Restore cache for node_modules
         uses: actions/cache@v4
         with:
-          path: "./pages/node_modules"
+          path: "./packages/hub/node_modules"
           key: ${{ runner.os }}-node-package-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-package-
@@ -94,7 +94,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./pages/out
+          path: ./packages/hub/out
 
   # Deployment job
   deploy:
