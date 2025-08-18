@@ -1,7 +1,7 @@
 // Import and re-export shared utilities
 import {
   cn,
-  isPageActionCommand,
+  isPageActionCommand as _isPageActionCommand,
   isSearchCommand,
   capitalize,
   isEmpty,
@@ -9,13 +9,14 @@ import {
 } from "../../../shared/src"
 
 // Re-export for other files to use
-export { cn, isPageActionCommand, isSearchCommand, capitalize, isEmpty, sleep }
+export { cn, isSearchCommand, capitalize, isEmpty, sleep }
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
 import type {
   Version,
   Command,
   SelectionCommand,
   LinkCommand,
+  PageActionCommand,
   UrlParam,
 } from "@/types"
 
@@ -152,14 +153,11 @@ export function isLinkCommand(command: Command): command is LinkCommand {
 }
 
 /**
- * Check if the command is a search command.
- */
-// isSearchCommand function is now imported from shared package
-
-/**
  * Check if the command is a page action command.
  */
-// isPageActionCommand function is now imported from shared package
+export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
+  return _isPageActionCommand(cmd)
+}
 
 export function isPopup(elm: Element): boolean {
   if (elm == null) return false

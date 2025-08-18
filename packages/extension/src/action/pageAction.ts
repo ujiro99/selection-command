@@ -19,7 +19,7 @@ export const PageAction = {
       return
     }
 
-    if (!isValidString((command.pageActionOption as any)?.startUrl)) {
+    if (!isValidString(command.pageActionOption.startUrl)) {
       console.error("searchUrl is not valid.")
       return
     }
@@ -29,19 +29,18 @@ export const PageAction = {
     }
 
     const url: UrlParam = {
-      searchUrl: (command.pageActionOption as any)?.startUrl,
+      searchUrl: command.pageActionOption.startUrl,
       selectionText,
       useClipboard: useClipboard ?? false,
     }
 
     const openMode = useSecondary
-      ? (command.pageActionOption as any).openMode === PAGE_ACTION_OPEN_MODE.TAB
+      ? command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.TAB
         ? PAGE_ACTION_OPEN_MODE.WINDOW
-        : (command.pageActionOption as any).openMode ===
-            PAGE_ACTION_OPEN_MODE.WINDOW
+        : command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
           ? PAGE_ACTION_OPEN_MODE.TAB
           : PAGE_ACTION_OPEN_MODE.TAB
-      : (command.pageActionOption as any).openMode
+      : command.pageActionOption.openMode
 
     const windowPosition = await getWindowPosition()
     const screen = await getScreenSize()
@@ -51,8 +50,8 @@ export const PageAction = {
       url,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),
-      height: (command as any).popupOption?.height ?? PopupOption.height,
-      width: (command as any).popupOption?.width ?? PopupOption.width,
+      height: command.popupOption?.height ?? PopupOption.height,
+      width: command.popupOption?.width ?? PopupOption.width,
       screen,
       selectedText: selectionText,
       srcUrl: location.href,
