@@ -7,7 +7,7 @@
     "build": "next build",
     "postbuild": "next-sitemap; npm run tags; npm run urls",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@google-analytics/data": "^5.2.0",
+    "@next/eslint-plugin-next": "15.0.0",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.7.0",
     "@testing-library/react": "^16.3.0",
@@ -57,7 +58,6 @@
     "@vitejs/plugin-react": "^5.0.0",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
-    "eslint": "^8",
     "eslint-config-next": "15.0.0",
     "jsdom": "^26.1.0",
     "next-sitemap": "^4.2.3",
@@ -65,7 +65,7 @@
     "pretty-quick": "^4.2.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5",
-    "vitest": "^3.2.4"
+    "typescript-eslint": "^8.18.2"
   },
   "prettier": {
     "semi": false,
