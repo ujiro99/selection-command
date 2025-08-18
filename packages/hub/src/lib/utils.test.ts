@@ -36,9 +36,7 @@ describe("Utility Functions", () => {
       // Act
       const result = cn(
         baseClass,
-        // eslint-disable-next-line no-constant-binary-expression
         true && conditionalClassTrue,
-        // eslint-disable-next-line no-constant-binary-expression
         false && conditionalClassFalse,
       )
 

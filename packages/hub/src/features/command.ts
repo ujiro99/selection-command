@@ -7,10 +7,14 @@ import {
   SearchCommand,
   PageActionCommand,
 } from "@/types"
-import { generateUUIDFromObject } from "@/lib/utils"
+import {
+  generateUUIDFromObject,
+  isSearchCommand,
+  isPageActionCommand,
+} from "@/lib/utils"
 
 export function cmd2text(cmd: Command): string {
-  if (cmd.openMode !== OPEN_MODE.PAGE_ACTION) {
+  if (isSearchCommand(cmd)) {
     const searchCmd = cmd as SearchCommand & { download: number; star: number }
     return JSON.stringify({
       id: searchCmd.id,
@@ -21,7 +25,7 @@ export function cmd2text(cmd: Command): string {
       openModeSecondary: searchCmd.openModeSecondary,
       spaceEncoding: searchCmd.spaceEncoding,
     })
-  } else if (cmd.openMode === OPEN_MODE.PAGE_ACTION) {
+  } else if (isPageActionCommand(cmd)) {
     const pageActionCmd = cmd as PageActionCommand & {
       download: number
       star: number
@@ -44,7 +48,7 @@ type CommandContent = Omit<
 >
 
 export function cmd2uuid(cmd: CommandContent): string {
-  if (cmd.openMode !== OPEN_MODE.PAGE_ACTION) {
+  if (isSearchCommand(cmd)) {
     const searchCmd = cmd as Omit<
       SearchCommand,
       "id" | "tags" | "addedAt" | "description"
@@ -57,7 +61,7 @@ export function cmd2uuid(cmd: CommandContent): string {
       openModeSecondary: searchCmd.openModeSecondary,
       spaceEncoding: searchCmd.spaceEncoding,
     })
-  } else if (cmd.openMode === OPEN_MODE.PAGE_ACTION) {
+  } else if (isPageActionCommand(cmd)) {
     const pageActionCmd = cmd as Omit<
       PageActionCommand,
       "id" | "tags" | "addedAt" | "description"

@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui",
+    "test:run": "vitest run",
     "test:coverage": "vitest --coverage",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
