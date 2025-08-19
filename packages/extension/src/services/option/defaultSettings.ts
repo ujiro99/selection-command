@@ -204,7 +204,7 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "c187228b-844c-50a6-8a9d-147817ca75fe",
+    id: "06964cb6-019d-511f-b16f-18c7bbd2c785",
     revision: 0,
     title: "Gemini",
     iconUrl:
@@ -223,7 +223,6 @@ export const DefaultCommands = [
         },
         {
           id: "gmavyqlj2",
-          label: "Ask Gemini",
           param: {
             label: "Ask Gemini",
             selector: "//*[@data-gramm='false']/*",
@@ -257,7 +256,7 @@ export const DefaultCommands = [
     },
   },
   {
-    id: "7256d90a-5f40-5d71-b0c7-db403add3bc0",
+    id: "e2001b8a-a20c-5d33-983b-bf6c6d55a63c",
     revision: 0,
     title: "Gemini - 日本語",
     iconUrl:
@@ -276,7 +275,6 @@ export const DefaultCommands = [
         },
         {
           id: "gmavyqlj2",
-          label: "Ask Gemini",
           param: {
             label: "Ask Gemini",
             selector: "//*[@data-gramm='false']/*",

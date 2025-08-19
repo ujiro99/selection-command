@@ -27,7 +27,7 @@ export const StarButton = (): JSX.Element => {
       const button = findButtonElement(e.target as Element)
       const id = button?.dataset.starId
       if (id == null) return
-      const found = stars?.some((s: any) => s.id === id) ?? false
+      const found = stars?.some((s) => s.id === id) ?? false
       sendEvent(
         found
           ? ANALYTICS_EVENTS.COMMAND_HUB_STAR_REMOVE
@@ -47,35 +47,35 @@ export const StarButton = (): JSX.Element => {
       if (id == null) return
       button.addEventListener("click", updateStar)
       button.dataset.clickable = "true"
-      if (stars?.some((s: any) => s.id === id)) {
+      if (stars?.some((s) => s.id === id)) {
         button.dataset.starred = "true"
       } else {
         button.dataset.starred = "false"
       }
     })
-  }, [stars])
+  }, [stars, updateStar])
 
-  const updateCount = () => {
+  const updateCount = useCallback(() => {
     document.querySelectorAll("span[data-star-id]").forEach((span) => {
       if (!(span instanceof HTMLElement)) return
       const count = Number(span.dataset.starCount)
       if (count == null || isNaN(count)) return
       let reviced = 0
-      const star = stars?.find((s: any) => s.id === span.dataset.starId)
+      const star = stars?.find((s) => s.id === span.dataset.starId)
       if (star != null) {
         // There is a new star.
         reviced++
       }
       span.textContent = (count + reviced).toLocaleString()
     })
-  }
+  }, [stars])
 
-  const removeButtonEvent = () => {
+  const removeButtonEvent = useCallback(() => {
     document.querySelectorAll("button[data-star-id]").forEach((button) => {
       if (!(button instanceof HTMLButtonElement)) return
       button.removeEventListener("click", updateStar)
     })
-  }
+  }, [updateStar])
 
   useEffect(() => {
     updateButton()

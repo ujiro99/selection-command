@@ -4,7 +4,7 @@ import ColorThief from "colorthief"
 import { useSettingsWithImageCache } from "@/hooks/useSettings"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import { t } from "@/services/i18n"
-import { cn, isSearchCommand, isPageActionCommand } from "@/lib/utils"
+import { cn, isSearchCommand, isPageActionCommand, isBase64 } from "@/lib/utils"
 import { HUB_URL, SCREEN } from "@/const"
 import type { Command } from "@/types"
 import { cmd2uuid } from "@/services/uuid"
@@ -36,7 +36,6 @@ export const MyCommands = (): JSX.Element => {
             ...c,
             iconUrl: iconUrls[c.id],
           })
-          console.info("Command UUID:", c.title, uuid)
           if (!pageActionIds.includes(uuid)) {
             filteredCommands.push(c)
           }
@@ -207,18 +206,17 @@ const ListItem = (props: ItemProps): JSX.Element => {
   const isPageAction = isPageActionCommand(c)
 
   useEffect(() => {
-    if (imgElm == null) return
+    if (imgElm == null || liElm == null) return
+    if (!isBase64(imgElm.src)) return
     imgElm.onload = () => {
       const colorThief = new ColorThief()
       const dominantColor = colorThief.getColor(imgElm) // [R, G, B]
       const paletteColors = colorThief.getPalette(imgElm, 2)
       const color1 = `rgba(${dominantColor.join(",")}, 0.04)`
       const color2 = `rgba(${paletteColors[0].join(",")}, 0.1)`
-      if (liElm != null) {
-        liElm.style.background = `linear-gradient(160deg, white 30%, ${color1} 60%, ${color2})`
-      }
+      liElm.style.background = `linear-gradient(160deg, white 30%, ${color1} 60%, ${color2})`
     }
-  }, [imgElm])
+  }, [imgElm, liElm])
 
   const onClick = () => {
     // Send a message to Commad Hub.

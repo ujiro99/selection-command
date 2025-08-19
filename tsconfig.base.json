@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -16,5 +20,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "exclude": ["node_modules", "**/dist", "**/build", "**/.next", "**/coverage"]
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/build",
+    "**/.next",
+    "**/coverage"
+  ]
 }

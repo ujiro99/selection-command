@@ -46,20 +46,20 @@ describe("Command Operations", () => {
     test("CH-01: Normal case: SearchCommand is correctly converted to JSON", () => {
       // Arrange
       const searchCommand: SearchCommand & { download: number; star: number } =
-        {
-          id: "test-id",
-          title: "Test Command",
-          description: "Test Description",
-          tags: [],
-          addedAt: "2024-01-01",
-          openMode: OPEN_MODE.POPUP,
-          searchUrl: "https://example.com/search?q=%s",
-          iconUrl: "https://example.com/icon.ico",
-          openModeSecondary: OPEN_MODE.TAB,
-          spaceEncoding: SPACE_ENCODING.PLUS,
-          download: 0,
-          star: 0,
-        }
+      {
+        id: "test-id",
+        title: "Test Command",
+        description: "Test Description",
+        tags: [],
+        addedAt: "2024-01-01",
+        openMode: OPEN_MODE.POPUP,
+        searchUrl: "https://example.com/search?q=%s",
+        iconUrl: "https://example.com/icon.ico",
+        openModeSecondary: OPEN_MODE.TAB,
+        spaceEncoding: SPACE_ENCODING.PLUS,
+        download: 0,
+        star: 0,
+      }
 
       // Act
       const result = cmd2text(searchCommand)
@@ -188,6 +188,27 @@ describe("Command Operations", () => {
 
       // Act & Assert
       expect(() => cmd2uuid(invalidContent)).toThrow("Invalid command")
+    })
+
+    test("CH-14: Generate the same UUID as the Selection command Extension.", async () => {
+      const pageActionCommand = {
+        title: "Page Action Example",
+        iconUrl: "https://example.com/icon.png",
+        openMode: OPEN_MODE.PAGE_ACTION,
+        pageActionOption: {
+          startUrl: "https://example.com",
+          openMode: "tab",
+          steps: [
+            { id: "gmavyqlj2", type: "click", selector: "#submit" },
+            { id: "umb7r0prx", duration: 1000, type: "wait" }, // properties order is changed.
+          ],
+        },
+      }
+      const uuid = cmd2uuid(pageActionCommand)
+
+      // Assert
+      // This UUID should match the one generated in the Extension's test case: UUID-14
+      expect(uuid).toBe("3b6529de-daa9-5832-9597-090d260b81aa")
     })
   })
 
