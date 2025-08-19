@@ -1,6 +1,6 @@
 [
   {
-    "id": "f5492254-4d6c-5924-860f-c8b668a76d7a",
+    "id": "eb0f8ff9-c0cc-5a4d-9a7e-c12eebf84b5d",
     "title": "Yahoo!検索",
     "description": "Yahoo!検索で選択キーワードを検索します",
     "searchUrl": "https://search.yahoo.co.jp/search?p=%s",
@@ -14,7 +14,7 @@
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
   {
-    "id": "d458538c-efd1-5e0f-99b0-80db8167d2db",
+    "id": "1b6c73a7-7327-54ee-b686-5aeb274714ff",
     "title": "英語 → 日本語",
     "description": "DeepLで英語を日本語に翻訳します",
     "searchUrl": "https://www.deepl.com/ja/translator#en/ja/%s",
@@ -32,7 +32,7 @@
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
   {
-    "id": "17026810-b9ed-5f5a-8e02-569b4cef1dcb",
+    "id": "31d2aea8-f53e-5053-ab9b-3c64ff370262",
     "title": "日本語 → 英語",
     "description": "DeepLで英語を日本語に翻訳します",
     "searchUrl": "https://www.deepl.com/ja/translator#ja/en/%s",
@@ -49,7 +49,7 @@
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
   {
-    "id": "020d116e-5956-5274-b785-b7f4d7377a52",
+    "id": "4cdeb80b-699f-53d7-b77e-fb6e0a8bed52",
     "title": "Lucide",
     "searchUrl": "https://lucide.dev/icons/?search=%s",
     "iconUrl": "https://lucide.dev/favicon.ico",
@@ -76,7 +76,7 @@
       "Shop",
       "Japanese"
     ],
-    "id": "33cd4e4c-a7cf-593f-b2c7-bf8743882aae",
+    "id": "997b30fb-47a9-583f-b538-d9ceaf7cdcbe",
     "addedAt": "2024-12-15T09:50:25.804Z"
   },
   {
@@ -92,7 +92,7 @@
       "SaaS",
       "業務用"
     ],
-    "id": "f3254d62-2f77-528c-b7bd-6260c67802ec",
+    "id": "7ee9c1a5-c18f-56cc-a1a6-1f6d7f67f434",
     "addedAt": "2024-12-18T03:00:19.785Z"
   },
   {
@@ -107,7 +107,7 @@
       "Shop",
       "Japanese"
     ],
-    "id": "0ba3f6ee-27e0-503d-a77a-e2e77e63e38e",
+    "id": "618ad67a-cdb9-5206-85e1-481957b84e41",
     "addedAt": "2024-12-23T13:49:39.766Z"
   },
   {
@@ -122,7 +122,7 @@
       "Shop",
       "Japanese"
     ],
-    "id": "f8dd2c7c-e0b2-5b1a-a3e6-314214a6d6d2",
+    "id": "26075d5a-b662-5eed-9590-8b8ab0fe5cb5",
     "addedAt": "2024-12-23T13:49:39.765Z"
   },
   {
@@ -137,7 +137,7 @@
       "Japanese",
       "Development"
     ],
-    "id": "17f41196-edf1-5a5b-b0d4-c85b4b1bcd1b",
+    "id": "db80c32e-b056-52bc-a0a2-662fd0640648",
     "addedAt": "2024-12-21T08:06:08.744Z"
   },
   {
@@ -151,7 +151,7 @@
     "tags": [
       "Tool"
     ],
-    "id": "b8b18002-f163-5a6c-a3e3-efba6c491a21",
+    "id": "6a8b33db-8c7d-528e-a9fc-c0fa0ae9d1bc",
     "addedAt": "2024-12-31T02:49:13.716Z"
   },
   {
@@ -165,7 +165,7 @@
     "tags": [
       "Shop"
     ],
-    "id": "2b679586-7167-56db-8ebd-00a54fab8445",
+    "id": "f7495054-6f21-512f-a0bb-4cf515207b21",
     "addedAt": "2025-01-01T08:11:57.087Z"
   },
   {
@@ -179,7 +179,7 @@
     "tags": [
       "Search"
     ],
-    "id": "723ee9f1-150b-54ad-aeac-5fbfd0ae3650",
+    "id": "0cb9dbbc-c0cf-53c6-93e5-016363705216",
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
   {
@@ -194,7 +194,7 @@
       "Search",
       "Image"
     ],
-    "id": "18998bac-4e6c-503f-b3ea-b9198edef7c3",
+    "id": "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
   {
@@ -209,7 +209,7 @@
       "News",
       "Development"
     ],
-    "id": "72010b32-3039-57c1-a0aa-2bdd09ceb735",
+    "id": "a79cb2ea-daf0-565a-ad0e-34748577a533",
     "addedAt": "2025-01-10T09:35:41.778Z"
   },
   {
@@ -223,7 +223,7 @@
     "tags": [
       "Development"
     ],
-    "id": "5bf1ca99-61d1-571d-8451-c91edfcac544",
+    "id": "8e7f849a-2503-5e63-be37-cead3cc3f5c1",
     "addedAt": "2025-01-10T15:52:10.668Z"
   },
   {
@@ -240,7 +240,7 @@
       "Design",
       "Photo"
     ],
-    "id": "54f3e785-960a-5a70-9c80-cfbf0357c4c7",
+    "id": "30797fb1-5bc7-585a-ba53-fa5420e417d9",
     "addedAt": "2025-01-10T16:05:29.696Z"
   },
   {
@@ -255,7 +255,7 @@
       "Media",
       "Movie"
     ],
-    "id": "409aba7d-c49e-5e81-b8a6-a862f2651b3e",
+    "id": "fb9cb6ad-76e3-5aa8-82a7-ade233edcec0",
     "addedAt": "2025-01-10T16:06:57.611Z"
   },
   {
@@ -271,7 +271,7 @@
       "Movie",
       "Media"
     ],
-    "id": "ae97a840-39b7-5b12-9186-9f850ec91f9a",
+    "id": "a5078dcb-1bcb-5fc2-84e6-9305f924c767",
     "addedAt": "2025-02-01T07:03:50.021Z"
   },
   {
@@ -286,7 +286,7 @@
       "Search",
       "AI"
     ],
-    "id": "59a9b166-b8e3-5e16-9237-aeda268ceacc",
+    "id": "008a609d-e0d0-5461-aa34-b44d58e2616b",
     "addedAt": "2025-02-26T12:44:05.718Z"
   },
   {
@@ -301,7 +301,7 @@
       "Media",
       "Movie"
     ],
-    "id": "226d42cf-2445-5089-8938-8d97f607d34b",
+    "id": "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
     "addedAt": "2025-03-07T03:25:26.841Z"
   },
   {
@@ -316,7 +316,7 @@
       "Shop",
       "Japanese"
     ],
-    "id": "f677e318-aceb-5500-a710-8b1d415c7094",
+    "id": "e16acf01-7f20-5310-aa82-31bd9c72d367",
     "addedAt": "2025-03-31T04:56:29.505Z"
   },
   {
@@ -330,7 +330,7 @@
     "tags": [
       "Search"
     ],
-    "id": "046c500e-36f6-5327-97b7-420ebb2c2914",
+    "id": "41844648-dd4a-5703-976d-3dd6cba14f74",
     "addedAt": "2025-04-02T09:32:45.217Z"
   },
   {
@@ -346,7 +346,7 @@
       "Dictionary",
       "Japanese"
     ],
-    "id": "0a95ee38-892c-57be-9a07-c3a0242c0127",
+    "id": "92d71313-cbc8-5382-9210-abf684cd674c",
     "addedAt": "2025-04-02T09:33:27.828Z"
   },
   {
@@ -396,7 +396,7 @@
         }
       ]
     },
-    "id": "c187228b-844c-50a6-8a9d-147817ca75fe",
+    "id": "06964cb6-019d-511f-b16f-18c7bbd2c785",
     "addedAt": "2025-04-20T09:03:26.042Z"
   },
   {
@@ -447,7 +447,7 @@
         }
       ]
     },
-    "id": "7256d90a-5f40-5d71-b0c7-db403add3bc0",
+    "id": "e2001b8a-a20c-5d33-983b-bf6c6d55a63c",
     "addedAt": "2025-04-20T09:10:27.032Z"
   },
   {
@@ -516,7 +516,7 @@
         }
       ]
     },
-    "id": "77880fec-e437-5dfc-8bea-1d3c9fc63aa6",
+    "id": "b1856c00-d775-5fdc-89e9-94d1b6f786e5",
     "addedAt": "2025-04-22T12:01:00.382Z"
   },
   {
@@ -568,7 +568,7 @@
         }
       ]
     },
-    "id": "d18a21bc-eaa6-550e-9927-c7adc7f14027",
+    "id": "7f11e008-c45a-504d-9ea0-2a6613d8c417",
     "addedAt": "2025-04-21T03:45:17.507Z"
   },
   {
@@ -655,7 +655,7 @@
         }
       ]
     },
-    "id": "6d581d3b-1980-5fd3-b767-044ba4f70030",
+    "id": "a11249bc-9254-5e15-9e65-caea2a8faaa6",
     "addedAt": "2025-04-22T13:58:49.144Z"
   },
   {
@@ -713,7 +713,7 @@
         }
       ]
     },
-    "id": "7ebf227c-815e-58ff-b072-4048f08fe4ca",
+    "id": "5bd801be-edf1-5787-91e0-48df29230fed",
     "addedAt": "2025-04-22T14:01:16.433Z"
   },
   {
@@ -727,7 +727,7 @@
     "tags": [
       "Tool"
     ],
-    "id": "125fdc5e-a97d-5f81-92c4-2a6cbfc3662f",
+    "id": "dd05d527-92db-5102-9a88-4a5b31fa7512",
     "addedAt": "2025-04-25T22:32:40.900Z"
   },
   {
@@ -741,7 +741,7 @@
     "tags": [
       "Shop"
     ],
-    "id": "51f4c962-d46a-54fb-bbca-5d55abb95101",
+    "id": "44244ff5-b50c-5cfe-9809-d5bfe44ec111",
     "addedAt": "2025-05-03T05:21:12.343Z"
   },
   {
@@ -757,7 +757,7 @@
       "Blog",
       "Japanese"
     ],
-    "id": "4f5c1307-a1a6-5e96-b80e-bbfc348f33de",
+    "id": "fcf3b151-0e23-5759-a84d-f5036907cc2f",
     "addedAt": "2025-05-03T05:27:24.162Z"
   },
   {
@@ -773,7 +773,7 @@
       "Blog",
       "Japanese"
     ],
-    "id": "7f53e080-a65f-5ad8-b4a6-d717bf0e4c33",
+    "id": "e8ee7862-b709-5e05-9f71-cd8f321e1793",
     "addedAt": "2025-05-03T05:42:59.448Z"
   },
   {
@@ -787,7 +787,7 @@
     "tags": [
       "Search"
     ],
-    "id": "5d186ca4-2ae9-51ab-a027-6d1865397c19",
+    "id": "a79d3357-91be-5fe5-9f73-cb06c4c4cbc1",
     "addedAt": "2025-05-03T05:50:10.456Z"
   },
   {
@@ -803,7 +803,7 @@
       "Tool",
       "Work"
     ],
-    "id": "b63c5ecd-3c85-59ec-90dd-369121255528",
+    "id": "9c504254-f529-5b0d-a6c0-ef1eb06720ea",
     "addedAt": "2025-05-03T09:01:38.228Z"
   },
   {
@@ -861,7 +861,7 @@
         }
       ]
     },
-    "id": "9ca2af72-ab39-51d3-8aee-dc517eb3203c",
+    "id": "6cb03d7b-2cb0-585e-b265-f7d1e9f25b50",
     "addedAt": "2025-05-07T03:37:05.581Z"
   },
   {
@@ -922,7 +922,7 @@
         }
       ]
     },
-    "id": "4aefa74e-8b4e-56e6-9b55-aec0deb2d6af",
+    "id": "342fbc4a-0e33-5d05-87e5-72e3bf7db990",
     "addedAt": "2025-05-07T03:46:04.661Z"
   },
   {
@@ -993,7 +993,7 @@
         }
       ]
     },
-    "id": "e1c2ff14-3936-53bf-b903-02a4228e0241",
+    "id": "071c7099-9b2b-52be-a135-5134807cf7d0",
     "addedAt": "2025-05-07T03:49:58.093Z"
   },
   {
@@ -1055,7 +1055,7 @@
         }
       ]
     },
-    "id": "2ce63d61-7859-5309-9235-5affa3fd2bb6",
+    "id": "aefebed0-d031-5e05-969c-6de2c1d892ce",
     "addedAt": "2025-05-07T03:51:05.765Z"
   },
   {
@@ -1070,7 +1070,7 @@
       "Search",
       "Korean"
     ],
-    "id": "db192c4a-bde8-5901-ade9-cfaa4c758b55",
+    "id": "3ec8fe1d-be48-5ab9-8654-a50f7f272480",
     "addedAt": "2025-05-12T05:17:02.980Z"
   },
   {
@@ -1086,7 +1086,7 @@
       "Shop",
       "Korean"
     ],
-    "id": "1f80e40e-bf5f-5369-b76e-b78f69eefa53",
+    "id": "f08d4bf0-dca8-5606-8dc1-ff7f74400dd9",
     "addedAt": "2025-05-13T07:22:10.476Z"
   },
   {
@@ -1100,7 +1100,7 @@
     "tags": [
       "Search"
     ],
-    "id": "bb8c6ff7-9b89-565e-a49a-2a67b5b81cf7",
+    "id": "4b8e4704-0407-5b1d-aefa-caf7d9db137e",
     "addedAt": "2025-08-18T00:55:42.512Z"
   },
   {
