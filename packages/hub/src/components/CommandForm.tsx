@@ -27,8 +27,8 @@ const toMessages = (data: FormValues) => {
 const toCommand = (data: FormValues): CommandInJson => {
   const tags = data.tags.map((t) => t.name)
   return {
-    ...data,
     id: cmd2uuid(data),
+    ...data,
     addedAt: new Date().toISOString(),
     tags,
   }
