@@ -572,9 +572,10 @@
     "addedAt": "2025-04-21T03:45:17.507Z"
   },
   {
+    "id": "bf22c686-f557-558a-aa24-a619fcf9220c",
     "title": "陽キャ変換",
     "description": "選択したテキストを陽キャ風に変換します。",
-    "iconUrl": "https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico",
+    "iconUrl": "https://cdn.oaistatic.com/assets/favicon-l4nq08hd.svg",
     "openMode": "pageAction",
     "tags": [
       "AI",
@@ -596,7 +597,7 @@
           "id": "y6htzvewk",
           "param": {
             "type": "click",
-            "label": "Ask anything",
+            "label": "Inputへフォーカス",
             "selector": "//p",
             "selectorType": "xpath"
           }
@@ -605,17 +606,17 @@
           "id": "mf2yadsdw",
           "param": {
             "type": "input",
-            "label": "以下の文章を、陽キャが絵文字をたくさん使って書いたようなウェイ系の文章へ変換してください。",
+            "label": "プロンプト入力",
             "selector": "//p",
             "selectorType": "xpath",
             "value": "以下の文章を、絵文字をたくさん使った陽キャウェイ系で、でもちょっとドジで天然な憎めないタイプの青年が書いた文章へ変換してください。"
           }
         },
         {
-          "id": "lt5hlztib",
+          "id": "0m0pbdr63",
           "param": {
             "type": "keyboard",
-            "label": "Shift+Enter",
+            "label": "改行",
             "key": "Enter",
             "code": "Enter",
             "keyCode": 13,
@@ -623,31 +624,31 @@
             "ctrlKey": false,
             "altKey": false,
             "metaKey": false,
-            "targetSelector": "//*[@class='flex flex-col justify-start']/*/*/*/div",
+            "targetSelector": "//form/*/*/*/*/*/div",
             "selectorType": "xpath"
           }
         },
         {
-          "id": "1gsqsd8ou",
+          "id": "7kts6hc0o",
           "param": {
             "type": "input",
-            "label": "\n{{選択テキストが挿入されます}}",
+            "label": "選択テキスト入力",
             "selector": "//p[2]",
             "selectorType": "xpath",
             "value": "\n{{SelectedText}}"
           }
         },
         {
-          "id": "t37rtinb6",
+          "id": "2hllzva57",
           "param": {
             "type": "click",
-            "label": "Send prompt",
-            "selector": "//*[@viewBox='0 0 32 32']",
+            "label": "送信",
+            "selector": "//*[@aria-label='Send prompt']/*",
             "selectorType": "xpath"
           }
         },
         {
-          "id": "8viuw3650",
+          "id": "f5kk1wuca",
           "param": {
             "type": "end",
             "label": "End"
@@ -655,8 +656,7 @@
         }
       ]
     },
-    "id": "a11249bc-9254-5e15-9e65-caea2a8faaa6",
-    "addedAt": "2025-04-22T13:58:49.144Z"
+    "addedAt": "2025-08-19T12:22:59.671Z"
   },
   {
     "title": "ChatGPT",
