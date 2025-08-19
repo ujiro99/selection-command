@@ -7,34 +7,10 @@ export {
   isEmpty,
   sleep,
 } from "../../../shared/src"
+import { normalizeObject } from "../../../shared/src/utils/common"
 import { v5 as uuidv5 } from "uuid"
 import { createHash } from "crypto"
 import { parse } from "tldts"
-
-/**
- * Normalize object by sorting keys recursively to ensure consistent serialization
- * regardless of property order.
- * @param obj Object to normalize.
- * @returns Normalized object with sorted keys.
- */
-function normalizeObject(obj: any): any {
-  if (obj === null || typeof obj !== "object") {
-    return obj
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map(normalizeObject)
-  }
-
-  const sortedKeys = Object.keys(obj).sort()
-  const normalizedObj: any = {}
-
-  for (const key of sortedKeys) {
-    normalizedObj[key] = normalizeObject(obj[key])
-  }
-
-  return normalizedObj
-}
 
 /**
  * Generate UUID from object, using UUIDv5.

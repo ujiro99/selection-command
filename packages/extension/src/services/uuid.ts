@@ -1,4 +1,8 @@
-import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  normalizeObject,
+} from "@/lib/utils"
 import { v5 as uuidv5 } from "uuid"
 import type { CommandContent } from "@/types/command"
 
@@ -8,7 +12,7 @@ import type { CommandContent } from "@/types/command"
  * @returns UUID.
  */
 async function generateUUIDFromObject(obj: object): Promise<string> {
-  const objString = JSON.stringify(obj)
+  const objString = JSON.stringify(normalizeObject(obj))
   const encoder = new TextEncoder()
   const data = encoder.encode(objString)
   const hashBuffer = await crypto.subtle.digest("SHA-1", data)

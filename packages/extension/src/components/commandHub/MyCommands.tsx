@@ -36,7 +36,6 @@ export const MyCommands = (): JSX.Element => {
             ...c,
             iconUrl: iconUrls[c.id],
           })
-          console.info("Command UUID:", c.title, uuid)
           if (!pageActionIds.includes(uuid)) {
             filteredCommands.push(c)
           }

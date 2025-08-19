@@ -7,9 +7,10 @@ import {
   isEmpty,
   sleep,
 } from "../../../shared/src"
+import { normalizeObject } from "../../../shared/src/utils/common"
 
 // Re-export for other files to use
-export { cn, isSearchCommand, capitalize, isEmpty, sleep }
+export { cn, isSearchCommand, capitalize, isEmpty, sleep, normalizeObject }
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
 import type {
   Version,
