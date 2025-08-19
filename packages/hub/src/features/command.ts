@@ -1,4 +1,5 @@
 import Commands from "@/data/commands.json"
+import IdHistory from "@/data/command-id-history.json"
 import Analytics from "@/data/analytics.json"
 import { OPEN_MODE, SPACE_ENCODING } from "@/const"
 import {
@@ -87,6 +88,14 @@ export function getCommands(): Command[] {
       Analytics.download.find((a) => a.eventId === command.id) ?? emptyData
     const star =
       Analytics.starred.find((a) => a.eventId === command.id) ?? emptyData
+
+    // Old Id
+    const oldId = IdHistory.find((h) => h.afterId === command.id)?.beforeId
+    const oldDl =
+      Analytics.download.find((a) => a.eventId === oldId) ?? emptyData
+    const oldStar =
+      Analytics.starred.find((a) => a.eventId === oldId) ?? emptyData
+
     const tags = command.tags.map((t) => ({
       id: generateUUIDFromObject({ name: t }),
       name: t,
@@ -97,8 +106,8 @@ export function getCommands(): Command[] {
       openModeSecondary: command.openModeSecondary as OPEN_MODE,
       spaceEncoding: command.spaceEncoding as SPACE_ENCODING,
       tags,
-      download: dl.eventCount,
-      star: star.eventCount,
+      download: dl.eventCount + oldDl.eventCount,
+      star: star.eventCount + oldStar.eventCount,
     }
   }) as Command[]
 }
