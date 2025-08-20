@@ -9,6 +9,7 @@ import { PageActionRecorder } from "@/components/pageAction/PageActionRecorder"
 import { PageActionRunner } from "@/components/pageAction/PageActionRunner"
 import { PageActionContextProvider } from "@/hooks/pageAction/usePageActionContext"
 import { SelectContextProvider } from "@/providers/SelectContextProvider"
+import { TabContextProvider } from "@/providers/TabContextProvider"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { toast, Toaster } from "sonner"
 import { showReviewRequestToast } from "@/components/ReviewRequestToast"
@@ -67,19 +68,21 @@ export function App({ rootElm }: Props) {
 
   return (
     <PageActionContextProvider>
-      <SelectContextProvider isPopupHover={isHover}>
-        <SelectAnchor ref={setPositionElm} />
-        <Popup
-          positionElm={positionElm}
-          onHover={(v: boolean) => setIsHover(v)}
-        />
-        <InvisibleItem positionElm={positionElm} />
-        <LinkSelector />
-        <OpenInTab />
-        <PageActionRunner />
-        <PageActionRecorder />
-        <Toaster cssContainer={rootElm} />
-      </SelectContextProvider>
+      <TabContextProvider>
+        <SelectContextProvider isPopupHover={isHover}>
+          <SelectAnchor ref={setPositionElm} />
+          <Popup
+            positionElm={positionElm}
+            onHover={(v: boolean) => setIsHover(v)}
+          />
+          <InvisibleItem positionElm={positionElm} />
+          <LinkSelector />
+          <OpenInTab />
+          <PageActionRunner />
+          <PageActionRecorder />
+          <Toaster cssContainer={rootElm} />
+        </SelectContextProvider>
+      </TabContextProvider>
     </PageActionContextProvider>
   )
 }

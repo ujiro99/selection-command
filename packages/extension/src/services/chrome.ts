@@ -318,11 +318,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function (port) {
+      chrome.runtime.onConnect.addListener(function(port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function (msg) {
+        port.onMessage.addListener(function(msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -409,7 +409,10 @@ export const openPopupWindow = async (
     }
 
     if (result.err) {
-      await Ipc.ensureConnection(window.tabs?.[0].id as number)
+      await Ipc.ensureConnection(
+        window.tabs?.[0].id as number,
+        "openPopupWindow",
+      )
       await Ipc.sendTab<ShowToastParam>(
         window.tabs?.[0].id as number,
         TabCommand.showToast,
@@ -513,7 +516,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
     await chrome.tabs.update(tab.id as number, { url: toUrl(url) })
 
     if (result.err) {
-      await Ipc.ensureConnection(tab.id as number)
+      await Ipc.ensureConnection(tab.id as number, "openTab")
       await Ipc.sendTab<ShowToastParam>(
         tab.id as number,
         TabCommand.showToast,

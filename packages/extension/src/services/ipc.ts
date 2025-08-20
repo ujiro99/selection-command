@@ -1,14 +1,14 @@
 import { Storage } from "@/services/storage"
+import { BgData } from "@/services/backgroundData"
 import { SESSION_STORAGE_KEY } from "@/services/storage/const"
 import { PAGE_ACTION_OPEN_MODE } from "@/const"
 import type { PageActionStep } from "@/types"
 import { isServiceWorker } from "@/lib/utils"
 
 // Constants for connection
-const CONNECTION_TIMEOUT = 2000
+const CONNECTION_TIMEOUT = 3000
 const CONNECTION_CHECK_INTERVAL = 50
 export const CONNECTION_APP = "app"
-export const CONNECTION_SW = "sw"
 
 export enum BgCommand {
   connected = "connected",
@@ -41,6 +41,7 @@ export enum BgCommand {
 }
 
 export enum TabCommand {
+  ping = "ping",
   connected = "connected",
   executeAction = "executeAction",
   clickElement = "clickElement",
@@ -109,6 +110,8 @@ export type IpcCallback<M = any> = (
   response: (response?: unknown) => void,
 ) => boolean
 
+let onConnect: (port: chrome.runtime.Port) => void
+
 export const Ipc = {
   init() {
     Storage.addListener(
@@ -160,18 +163,22 @@ export const Ipc = {
    * @param tabId - Target tab ID to connect
    * @throws {Error} When connection to the tab fails or times out
    */
-  async ensureConnection(tabId: number): Promise<void> {
+  async ensureConnection(tabId: number, msg?: string): Promise<void> {
+    if (BgData.get()?.connectedTabs.includes(tabId)) {
+      // If already connected, resolve immediately
+      return
+    }
     try {
       // Run both connection strategies in parallel
-      await Promise.race([
+      await Promise.any([
         // Strategy 1: Wait for content script to initiate connection
-        this._waitForContentScriptConnection(),
+        this._waitForContentScriptConnection(tabId),
         // Strategy 2: Background initiates connection (requires tab to be ready)
         this._backgroundConnectionFlow(tabId),
       ])
+      console.info(`Connection to tab ${tabId}.`, msg)
     } catch (error) {
       console.error(`Failed to ensure connection to tab ${tabId}:`, error)
-      throw error
     }
   },
 
@@ -179,23 +186,25 @@ export const Ipc = {
    * Wait for connection from content script
    * @private
    */
-  async _waitForContentScriptConnection(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+  async _waitForContentScriptConnection(tabId: number): Promise<string> {
+    if (onConnect) chrome.runtime.onConnect.removeListener(onConnect)
+    return new Promise<string>((resolve, reject) => {
       const cleanup = () => {
         if (timeout) clearTimeout(timeout)
         if (onConnect) chrome.runtime.onConnect.removeListener(onConnect)
       }
 
       // Handle connection from content script
-      const onConnect = (port: chrome.runtime.Port) => {
-        if (port.name !== CONNECTION_APP) {
+      onConnect = (port: chrome.runtime.Port) => {
+        if (port.name !== CONNECTION_APP || port.sender?.tab?.id !== tabId) {
+          console.warn("05")
           return
         }
         try {
           // console.debug("Content script connected:", port)
           port.postMessage({ command: TabCommand.connected })
           cleanup()
-          resolve()
+          resolve("from content script")
         } catch (error) {
           cleanup()
           reject(new Error(`Failed to respond to content script: ${error}`))
@@ -216,11 +225,11 @@ export const Ipc = {
    * Background-initiated connection flow: wait for tab ready then initiate connection
    * @private
    */
-  async _backgroundConnectionFlow(tabId: number): Promise<void> {
+  async _backgroundConnectionFlow(tabId: number): Promise<string> {
     // Wait for tab to be ready first
     await this._waitForTabReady(tabId)
     // Then initiate connection from background
-    await this._initiateBackgroundConnection(tabId)
+    return await this._initiateBackgroundConnection(tabId)
   },
 
   /**
@@ -275,35 +284,35 @@ export const Ipc = {
    * Initiate connection from background script to content script
    * @private
    */
-  async _initiateBackgroundConnection(tabId: number): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      let connectionPort: chrome.runtime.Port | null = null
-
+  async _initiateBackgroundConnection(tabId: number): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
       const cleanup = () => {
-        if (connectionPort) {
-          try {
-            connectionPort.disconnect()
-          } catch {
-            // Ignore disconnect errors during cleanup
-          }
-          connectionPort = null
+        if (interval) clearInterval(interval)
+        if (timeout) clearTimeout(timeout)
+      }
+
+      const ping = async () => {
+        try {
+          await Ipc.sendTab(tabId, TabCommand.ping)
+          return true
+        } catch (_e) {
+          return false
         }
       }
 
-      try {
-        // Initiate connection from background script
-        // console.debug("Connecting to content script in tab:", tabId)
-        connectionPort = chrome.tabs.connect(tabId, { name: CONNECTION_SW })
-        connectionPort.onMessage.addListener((msg) => {
-          if (msg.command === BgCommand.connected) {
-            cleanup()
-            resolve()
-          }
-        })
-      } catch (error) {
+      const interval = setInterval(async () => {
+        const ret = await ping()
+        if (ret) {
+          cleanup()
+          resolve("from background script")
+        }
+      }, CONNECTION_CHECK_INTERVAL)
+
+      // Set timeout
+      const timeout = setTimeout(() => {
         cleanup()
-        reject(new Error(`Failed to establish background connection: ${error}`))
-      }
+        reject(new Error(`Timeout waiting for tab ${tabId} to be ready`))
+      }, CONNECTION_TIMEOUT)
     })
   },
 
@@ -362,49 +371,40 @@ export const Ipc = {
    * @throws {Error} When message sending fails
    */
   async _sendMessageToTab<T>(tabId: number, message: T): Promise<unknown> {
-    const p = new Promise<unknown>((resolve, reject) => {
-      chrome.tabs.sendMessage(tabId, message).then((ret) => {
-        if (chrome.runtime.lastError != null) {
-          const error = chrome.runtime.lastError
-          const errorMessage = error.message || ""
+    try {
+      return await chrome.tabs.sendMessage(tabId, message)
+    } catch (error: any) {
+      if (!error || !Object.hasOwn(error, "message")) {
+        console.error("Failed to send message to tab:", tabId, error, message)
+        throw error
+      }
+      const errorMessage = error.message || ""
+      // Check if this is a bfcache-related error
+      if (
+        errorMessage.includes("back/forward cache") ||
+        errorMessage.includes("message channel is closed")
+      ) {
+        console.warn(
+          "Tab moved to bfcache, message channel closed:",
+          tabId,
+          errorMessage,
+          message,
+        )
+        // Don't reject for bfcache errors - they are expected
+        return
+      }
 
-          // Check if this is a bfcache-related error
-          if (
-            errorMessage.includes("back/forward cache") ||
-            errorMessage.includes("message channel is closed")
-          ) {
-            console.debug(
-              "Tab moved to bfcache, message channel closed:",
-              tabId,
-              errorMessage,
-              message,
-            )
-            // Don't reject for bfcache errors - they are expected
-            resolve(null)
-            return
-          }
-
-          // Check if the receiving end doesn't exist (tab closed/navigated)
-          if (errorMessage.includes("receiving end does not exist")) {
-            console.debug(
-              "Tab no longer exists or has navigated:",
-              tabId,
-              errorMessage,
-              message,
-            )
-            resolve(null)
-            return
-          }
-
-          // For other errors, log as errors and reject
-          console.error("Failed to send message to tab:", tabId, error, message)
-          reject(error)
-          return
-        }
-        resolve(ret)
-      })
-    })
-    return p
+      // Check if the receiving end doesn't exist (tab closed/navigated)
+      if (errorMessage.includes("receiving end does not exist")) {
+        console.warn(
+          "Tab no longer exists or has navigated:",
+          tabId,
+          errorMessage,
+          message,
+        )
+        return
+      }
+    }
   },
 
   listeners: {} as { [key: string]: IpcCallback },

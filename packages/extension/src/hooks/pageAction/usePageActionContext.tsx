@@ -6,7 +6,7 @@ import {
   useContext,
 } from "react"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { Ipc } from "@/services/ipc"
+import { useTabContext } from "@/hooks/useTabContext"
 import type { PageActionContext } from "@/types"
 
 type ContextType = PageActionContext & {
@@ -20,35 +20,38 @@ export const PageActionContextProvider = ({
 }: {
   children: ReactNode
 }) => {
+  const { tabId, isLoading } = useTabContext()
   const [context, setContext] = useState<PageActionContext>({
     urlChanged: false,
   })
 
   useEffect(() => {
+    if (isLoading || tabId == null) return
+
+    const updateState = async (data: PageActionContext) => {
+      if (!data) return
+      if (data.recordingTabId != null) {
+        data.isRecording = data.recordingTabId === tabId
+      }
+      setContext((con: PageActionContext) => ({
+        ...con,
+        ...data,
+      }))
+    }
+
     Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
       (data) => {
         updateState(data)
       },
     )
+
     Storage.addListener<PageActionContext>(
       SESSION_STORAGE_KEY.PA_CONTEXT,
       (data) => {
         updateState(data)
       },
     )
-  }, [])
-
-  const updateState = async (data: PageActionContext) => {
-    if (!data) return
-    const tabId = await Ipc.getTabId()
-    if (data.recordingTabId != null) {
-      data.isRecording = data.recordingTabId === tabId
-    }
-    setContext((con: PageActionContext) => ({
-      ...con,
-      ...data,
-    }))
-  }
+  }, [tabId, isLoading])
 
   const setContextData = async (data: PageActionContext) => {
     if (!data) return
