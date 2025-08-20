@@ -57,11 +57,9 @@ import {
   SCREEN,
 } from "@/const"
 
-import {
-  FaviconContextProvider,
-  useFavicon,
-  FaviconEvent,
-} from "@/hooks/option/useFavicon"
+import { FaviconEvent } from "@/context/faviconContext"
+import { FaviconContextProvider } from "@/providers/faviconContextProvider"
+import { useFavicon } from "@/hooks/option/useFavicon"
 import { usePrevious } from "@/hooks/usePrevious"
 
 import { Ipc, BgCommand } from "@/services/ipc"
@@ -228,7 +226,7 @@ const CommandEditDialogInner = ({
     defaultValues: InitialValues,
   })
   const { register, reset, getValues, setValue, clearErrors } = form
-  const { setIconUrlSrc, subscribe, unsubscribe } = useFavicon()
+  const { setIconUrlSrc, subscribe } = useFavicon()
 
   const isUpdate = command != null
 
@@ -254,6 +252,12 @@ const CommandEditDialogInner = ({
   const startUrl = useWatch({
     control: form.control,
     name: "pageActionOption.startUrl",
+    defaultValue: "",
+  })
+
+  const iconUrl = useWatch({
+    control: form.control,
+    name: "iconUrl",
     defaultValue: "",
   })
 
@@ -311,8 +315,9 @@ const CommandEditDialogInner = ({
 
   useEffect(() => {
     if (!initialized) return
+    if (!isEmpty(iconUrl)) return // already set
     setIconUrlSrc(iconUrlSrc)
-  }, [initialized, iconUrlSrc, setIconUrlSrc])
+  }, [initialized, iconUrl, iconUrlSrc, setIconUrlSrc])
 
   useEffect(() => {
     if (!open) setIconUrlSrc("")
@@ -341,14 +346,13 @@ const CommandEditDialogInner = ({
       }
       clearErrors("iconUrl")
     }
-
-    subscribe(FaviconEvent.START, sub)
-    subscribe(FaviconEvent.SUCCESS, sub)
-    subscribe(FaviconEvent.FAIL, sub)
+    const unsubscribe = [
+      subscribe(FaviconEvent.START, sub),
+      subscribe(FaviconEvent.SUCCESS, sub),
+      subscribe(FaviconEvent.FAIL, sub),
+    ]
     return () => {
-      unsubscribe(FaviconEvent.START, sub)
-      unsubscribe(FaviconEvent.SUCCESS, sub)
-      unsubscribe(FaviconEvent.FAIL, sub)
+      unsubscribe.forEach((unsub) => unsub())
     }
   }, [])
 

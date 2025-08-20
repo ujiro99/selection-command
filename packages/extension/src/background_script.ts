@@ -8,7 +8,7 @@ import {
   SCREEN,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
-import { Ipc, BgCommand, TabCommand } from "@/services/ipc"
+import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
@@ -46,11 +46,11 @@ const getTabId = (
   response: (res: unknown) => void,
 ) => {
   response(sender.tab?.id)
-  return true
+  return false
 }
 
 const onConnect = async function (port: chrome.runtime.Port) {
-  // console.debug("port connected", port.name, port.sender?.tab?.id)
+  if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
   if (tabId) {
@@ -60,7 +60,7 @@ const onConnect = async function (port: chrome.runtime.Port) {
   }
 }
 const onDisconnect = async function (port: chrome.runtime.Port) {
-  // console.debug("port disconnected", port.name, port.sender?.tab?.id)
+  if (port.name !== CONNECTION_APP) return
   const tabId = port.sender?.tab?.id
   if (tabId) {
     BgData.update((data) => ({
@@ -271,8 +271,7 @@ const commandFuncs = {
         layer.findIndex((w) => w.id === windowId),
         1,
       )
-      await BgData.set((data) => ({
-        ...data,
+      await BgData.update(() => ({
         windowStack: stack,
       }))
       response(false)
@@ -396,8 +395,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   }
 
   if (changed) {
-    await BgData.set((old) => ({
-      ...old,
+    await BgData.update(() => ({
       windowStack: stack,
     }))
   }

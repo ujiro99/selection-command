@@ -1,9 +1,21 @@
-import {
-  CONNECTION_APP,
-  CONNECTION_SW,
-  BgCommand,
-  TabCommand,
-} from "@/services/ipc"
+import { CONNECTION_APP, TabCommand, Ipc } from "@/services/ipc"
+import { RunningStatus } from "@/services/pageAction"
+
+Ipc.getTabId().then((tabId) => {
+  RunningStatus.get().then((status) => {
+    if (status.tabId === tabId) {
+      // Setup event listeners for bfcache handling
+      window.addEventListener("pageshow", (event: PageTransitionEvent) => {
+        // Only reconnect if coming from bfcache or initial load
+        if (event.persisted) {
+          connect()
+        }
+      })
+      // Initial connection
+      connect()
+    }
+  })
+})
 
 // Connect to the background page
 const connect = () => {
@@ -12,7 +24,7 @@ const connect = () => {
     const port = chrome.runtime.connect({ name: CONNECTION_APP })
     port.onMessage.addListener(function (msg) {
       if (msg.command === TabCommand.connected) {
-        console.debug("Connected to service worker", port)
+        console.info("Connected to service worker", port)
         return
       }
     })
@@ -21,23 +33,8 @@ const connect = () => {
   }
 }
 
-// Setup event listeners for bfcache handling
-window.addEventListener("pageshow", (event: PageTransitionEvent) => {
-  // Only reconnect if coming from bfcache or initial load
-  if (event.persisted) {
-    connect()
+chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
+  if (request.command === TabCommand.ping) {
+    sendResponse({ ready: true })
   }
 })
-
-// Initial connection
-connect()
-
-// from background script
-const onConnect = (port: chrome.runtime.Port) => {
-  if (port.name !== CONNECTION_SW) {
-    return
-  }
-  port.postMessage({ command: BgCommand.connected })
-}
-
-chrome.runtime.onConnect.addListener(onConnect)

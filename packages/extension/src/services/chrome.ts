@@ -193,13 +193,11 @@ const updateBackgroundData = async (
     })) as WindowLayer
 
     if (type === POPUP_TYPE.POPUP) {
-      await BgData.set((data) => ({
-        ...data,
+      await BgData.update((data) => ({
         windowStack: [...data.windowStack, layer],
       }))
     } else {
-      await BgData.set((data) => ({
-        ...data,
+      await BgData.update(() => ({
         normalWindows: layer,
       }))
     }
@@ -409,7 +407,10 @@ export const openPopupWindow = async (
     }
 
     if (result.err) {
-      await Ipc.ensureConnection(window.tabs?.[0].id as number)
+      await Ipc.ensureConnection(
+        window.tabs?.[0].id as number,
+        "openPopupWindow",
+      )
       await Ipc.sendTab<ShowToastParam>(
         window.tabs?.[0].id as number,
         TabCommand.showToast,
@@ -513,7 +514,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
     await chrome.tabs.update(tab.id as number, { url: toUrl(url) })
 
     if (result.err) {
-      await Ipc.ensureConnection(tab.id as number)
+      await Ipc.ensureConnection(tab.id as number, "openTab")
       await Ipc.sendTab<ShowToastParam>(
         tab.id as number,
         TabCommand.showToast,
