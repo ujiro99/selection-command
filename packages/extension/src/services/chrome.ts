@@ -193,13 +193,11 @@ const updateBackgroundData = async (
     })) as WindowLayer
 
     if (type === POPUP_TYPE.POPUP) {
-      await BgData.set((data) => ({
-        ...data,
+      await BgData.update((data) => ({
         windowStack: [...data.windowStack, layer],
       }))
     } else {
-      await BgData.set((data) => ({
-        ...data,
+      await BgData.update(() => ({
         normalWindows: layer,
       }))
     }
@@ -318,11 +316,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        port.onMessage.addListener(function (msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }

@@ -271,8 +271,7 @@ const commandFuncs = {
         layer.findIndex((w) => w.id === windowId),
         1,
       )
-      await BgData.set((data) => ({
-        ...data,
+      await BgData.update(() => ({
         windowStack: stack,
       }))
       response(false)
@@ -396,8 +395,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   }
 
   if (changed) {
-    await BgData.set((old) => ({
-      ...old,
+    await BgData.update(() => ({
       windowStack: stack,
     }))
   }
