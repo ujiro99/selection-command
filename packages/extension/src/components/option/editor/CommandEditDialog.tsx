@@ -257,6 +257,12 @@ const CommandEditDialogInner = ({
     defaultValue: "",
   })
 
+  const iconUrl = useWatch({
+    control: form.control,
+    name: "iconUrl",
+    defaultValue: "",
+  })
+
   const iconUrlSrc = searchUrl || startUrl
 
   const openPageActionRecorder = async () => {
@@ -311,8 +317,9 @@ const CommandEditDialogInner = ({
 
   useEffect(() => {
     if (!initialized) return
+    if (!isEmpty(iconUrl)) return // already set
     setIconUrlSrc(iconUrlSrc)
-  }, [initialized, iconUrlSrc, setIconUrlSrc])
+  }, [initialized, iconUrl, iconUrlSrc, setIconUrlSrc])
 
   useEffect(() => {
     if (!open) setIconUrlSrc("")
