@@ -197,7 +197,6 @@ export const Ipc = {
       // Handle connection from content script
       onConnect = (port: chrome.runtime.Port) => {
         if (port.name !== CONNECTION_APP || port.sender?.tab?.id !== tabId) {
-          console.warn("05")
           return
         }
         try {

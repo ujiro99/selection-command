@@ -13,7 +13,6 @@ export const TabContextProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading(true)
         setError(null)
         const id = await Ipc.getTabId()
-        console.debug("Tab ID:", id)
         setTabId(id)
       } catch (err) {
         setError(err instanceof Error ? err : new Error("Failed to get tab ID"))
