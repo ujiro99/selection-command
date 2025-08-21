@@ -10,8 +10,6 @@ import {
   CMD_LOCAL_KEY,
 } from "./const"
 import { BaseStorage, debouncedSyncSet, cmdSyncKey, cmdLocalKey } from "./index"
-import { VERSION } from "@/const"
-import { LegacyBackupManager } from "@/services/storage/backupManager"
 
 // Storage interface for dependency injection
 interface StorageInterface {
@@ -51,38 +49,6 @@ const getIndicesToRemove = (fromLen: number, toLen: number): number[] => {
     indicesToRemove.push(startIndex + i)
   }
   return indicesToRemove
-}
-
-async function loadLegacyCommandData(
-  storage: StorageInterface,
-  options?: {
-    returnDefaultOnEmpty?: boolean
-    throwOnError?: boolean
-  },
-): Promise<Command[]> {
-  const { returnDefaultOnEmpty = false, throwOnError = false } = options || {}
-
-  try {
-    const count = await storage.get<number>(STORAGE_KEY.COMMAND_COUNT)
-    if (count === DEFAULT_COUNT) {
-      return returnDefaultOnEmpty ? DefaultCommands : []
-    }
-
-    const keys = Array.from({ length: count }, (_, i) => cmdSyncKey(i))
-    const result = await chrome.storage.sync.get(keys)
-
-    if (throwOnError && chrome.runtime.lastError != null) {
-      throw chrome.runtime.lastError
-    }
-
-    return keys.map((key) => result[key]).filter((cmd) => cmd != null)
-  } catch (error) {
-    if (throwOnError) {
-      throw error
-    }
-    console.warn("Failed to load legacy commands:", error)
-    return returnDefaultOnEmpty ? DefaultCommands : []
-  }
 }
 
 interface StorageAllocation {
@@ -295,93 +261,6 @@ class CommandMetadataManager {
   }
 }
 
-// Migration management class
-export class CommandMigrationManager {
-  private readonly MIGRATION_VERSION = VERSION
-  private readonly MIGRATION_FLAG_KEY = LOCAL_STORAGE_KEY.MIGRATION_STATUS
-  private storage: StorageInterface
-
-  constructor(storage: StorageInterface = BaseStorage) {
-    this.storage = storage
-  }
-
-  async performMigration(): Promise<Command[]> {
-    try {
-      // Step 1: Load legacy format data
-      const legacyCommands = await loadLegacyCommandData(this.storage)
-      if (legacyCommands.length === 0) {
-        return DefaultCommands
-      }
-
-      // Step 2: Backup data
-      const legacyBackupManager = new LegacyBackupManager()
-      await legacyBackupManager.backupCommandsForMigration(legacyCommands)
-
-      // Step 3: Save in new format
-      const commandStorage = new CommandStorage(this.storage)
-      await commandStorage.saveCommands(legacyCommands, true)
-
-      // Step 4: Set migration completion flag
-      await this.storage.set(this.MIGRATION_FLAG_KEY, {
-        version: this.MIGRATION_VERSION,
-        migratedAt: Date.now(),
-        commandCount: legacyCommands.length,
-      })
-
-      console.debug(
-        `Migration completed: ${legacyCommands.length} commands migrated`,
-      )
-      return legacyCommands
-    } catch (error) {
-      console.error("Migration failed:", error)
-
-      // Attempt to restore from backup when migration fails
-      const legacyBackupManager = new LegacyBackupManager()
-      const backupData = await legacyBackupManager.restoreFromLegacyBackup()
-      if (backupData.commands.length > 0) {
-        console.debug(
-          `Migration failed, but restored ${backupData.commands.length} commands from backup`,
-        )
-        return backupData.commands
-      }
-
-      throw new Error(
-        `Command migration failed: ${error instanceof Error ? error.message : String(error)}`,
-      )
-    }
-  }
-
-  async needsMigration(): Promise<boolean> {
-    try {
-      const migrationStatus = (await this.storage.get(
-        this.MIGRATION_FLAG_KEY,
-      )) as {
-        version?: string
-      } | null
-      if (
-        migrationStatus &&
-        migrationStatus.version !== this.MIGRATION_VERSION
-      ) {
-        return true
-      }
-    } catch {
-      // Migration flag doesn't exist = migration not performed
-    }
-    return false
-  }
-
-  /**
-   * Restore both commands and folders from legacy backup
-   */
-  async restoreFromBackup(): Promise<{
-    commands: Command[]
-    folders: import("@/types").CommandFolder[]
-  }> {
-    const legacyBackupManager = new LegacyBackupManager()
-    return await legacyBackupManager.restoreFromLegacyBackup()
-  }
-}
-
 // Command storage class
 export class CommandStorage {
   public calculator = new StorageCapacityCalculator()
@@ -413,20 +292,7 @@ export class CommandStorage {
 
   async loadCommands(): Promise<Command[]> {
     try {
-      // Step 1: Check if migration is needed
-      const migrationManager = new CommandMigrationManager(this.storage)
-      const [needsMigrationByManager, needsMigrationByMetadata] =
-        await Promise.all([
-          migrationManager.needsMigration(),
-          this.metadataManager.needsMigration(),
-        ])
-
-      if (needsMigrationByManager || needsMigrationByMetadata) {
-        console.debug("Migration needed, performing migration...")
-        return await migrationManager.performMigration()
-      }
-
-      // Step 2: Load metadata
+      // Step 1: Load metadata
       const [metadata, globalMetadata] = await Promise.all([
         this.metadataManager.loadCommandMetadata(),
         this.metadataManager.loadGlobalCommandMetadata(),
@@ -439,13 +305,13 @@ export class CommandStorage {
         return DefaultCommands
       }
 
-      // Step 3: Load commands from both storage areas
+      // Step 2: Load commands from both storage areas
       const [syncCommands, localCommands] = await Promise.all([
         this.loadFromSync(syncMetadata?.count || 0),
         this.loadFromLocal(localMetadata?.count || 0),
       ])
 
-      // Step 4: Merge and order commands with fallback
+      // Step 3: Merge and order commands with fallback
       const allCommands = [...syncCommands, ...localCommands]
       let orderedCommands: Command[]
 
@@ -472,7 +338,7 @@ export class CommandStorage {
         await this.updateGlobalMetadata(orderedCommands)
       }
 
-      // Step 5: Global Consistency checks
+      // Step 4: Global Consistency checks
       if (
         globalMetadata &&
         !(await this.metadataManager.validateGlobalConsistency(orderedCommands))
