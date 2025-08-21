@@ -2,15 +2,11 @@ import { useState, useRef, useEffect } from "react"
 import { Dialog } from "./Dialog"
 import type { UserSettings, Caches } from "@/types"
 
-import {
-  Storage,
-  STORAGE_KEY,
-  LOCAL_STORAGE_KEY,
-  CommandMigrationManager,
-} from "@/services/storage"
+import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "@/services/storage"
 import {
   DailyBackupManager,
   WeeklyBackupManager,
+  LegacyBackupManager,
 } from "@/services/storage/backupManager"
 import { Settings, migrate } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
@@ -294,22 +290,22 @@ export function ImportExport() {
 
           if (selectedBackupType === BACKUP_TYPES.LEGACY) {
             // Restore from legacy backup
-            const migrationManager = new CommandMigrationManager()
-            const legacyData = await migrationManager.restoreFromBackup()
-            backupCommands = legacyData.commands
+            const manager = new LegacyBackupManager()
+            const data = await manager.restoreFromBackup()
+            backupCommands = data.commands
 
-            if (legacyData.folders && legacyData.folders.length > 0) {
+            if (data.folders && data.folders.length > 0) {
               // Restore folders to settings
               const currentSettings = await enhancedSettings.get()
               await Settings.set({
                 ...currentSettings,
-                folders: legacyData.folders,
+                folders: data.folders,
               })
             }
           } else if (selectedBackupType === BACKUP_TYPES.DAILY) {
             // Restore from daily backup
             const dailyBackupManager = new DailyBackupManager()
-            const dailyData = await dailyBackupManager.restoreFromDailyBackup()
+            const dailyData = await dailyBackupManager.restoreFromBackup()
             backupCommands = dailyData.commands
 
             if (dailyData.folders && dailyData.folders.length > 0) {
@@ -323,8 +319,7 @@ export function ImportExport() {
           } else if (selectedBackupType === BACKUP_TYPES.WEEKLY) {
             // Restore from weekly backup
             const weeklyBackupManager = new WeeklyBackupManager()
-            const weeklyData =
-              await weeklyBackupManager.restoreFromWeeklyBackup()
+            const weeklyData = await weeklyBackupManager.restoreFromBackup()
             backupCommands = weeklyData.commands
 
             if (weeklyData.folders && weeklyData.folders.length > 0) {

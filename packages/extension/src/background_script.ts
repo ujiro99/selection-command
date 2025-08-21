@@ -486,11 +486,16 @@ chrome.runtime.onInstalled.addListener((details) => {
 })
 
 chrome.runtime.onStartup.addListener(() => {
+  console.debug("Service worker started")
+
   // Check for daily backup on browser startup
   checkAndPerformDailyBackup()
 
   // Check for weekly backup on browser startup
   checkAndPerformWeeklyBackup()
+
+  // Check for legacy backup on startup
+  checkAndPerformLegacyBackup()
 })
 
 // Daily backup check function
@@ -498,7 +503,7 @@ const checkAndPerformDailyBackup = async () => {
   try {
     const dailyBackupManager = Storage.dailyBackupManager
     if (await dailyBackupManager.shouldBackup()) {
-      await dailyBackupManager.performDailyBackup()
+      await dailyBackupManager.performBackup()
     }
   } catch (error) {
     console.error("Failed to perform daily backup check:", error)
@@ -510,7 +515,19 @@ const checkAndPerformWeeklyBackup = async () => {
   try {
     const weeklyBackupManager = Storage.weeklyBackupManager
     if (await weeklyBackupManager.shouldBackup()) {
-      await weeklyBackupManager.performWeeklyBackup()
+      await weeklyBackupManager.performBackup()
+    }
+  } catch (error) {
+    console.error("Failed to perform weekly backup check:", error)
+  }
+}
+
+// Legacy backup check function
+const checkAndPerformLegacyBackup = async () => {
+  try {
+    const legacyBackupManager = Storage.legacyBackupManager
+    if (await legacyBackupManager.shouldBackup()) {
+      await legacyBackupManager.performBackup()
     }
   } catch (error) {
     console.error("Failed to perform weekly backup check:", error)
