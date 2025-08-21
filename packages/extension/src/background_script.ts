@@ -61,6 +61,13 @@ const onConnect = async function (port: chrome.runtime.Port) {
 }
 const onDisconnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
+  if (chrome.runtime.lastError) {
+    if (
+      !chrome.runtime.lastError.message?.match("moved into back/forward cache")
+    ) {
+      console.warn("Connection error:", chrome.runtime.lastError.message)
+    }
+  }
   const tabId = port.sender?.tab?.id
   if (tabId) {
     BgData.update((data) => ({

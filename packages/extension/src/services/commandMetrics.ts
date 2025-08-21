@@ -27,8 +27,8 @@ export const incrementCommandExecutionCount = async (
       (count === COMMAND_USAGE.REVIEW_THRESHOLD ||
         (count > COMMAND_USAGE.REVIEW_THRESHOLD &&
           (count - COMMAND_USAGE.REVIEW_THRESHOLD) %
-          COMMAND_USAGE.REVIEW_INTERVAL ===
-          0)) &&
+            COMMAND_USAGE.REVIEW_INTERVAL ===
+            0)) &&
       !hasShown
     ) {
       if (!tabId) {
@@ -36,7 +36,7 @@ export const incrementCommandExecutionCount = async (
         tabId = tabs[0].id
       }
       if (tabId) {
-        await Ipc.ensureConnection(tabId, "incrementCommandExecutionCount")
+        await Ipc.ensureConnection(tabId)
         await Ipc.sendTab(tabId, TabCommand.showReviewRequest)
       }
     }

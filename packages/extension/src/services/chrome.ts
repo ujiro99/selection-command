@@ -407,10 +407,7 @@ export const openPopupWindow = async (
     }
 
     if (result.err) {
-      await Ipc.ensureConnection(
-        window.tabs?.[0].id as number,
-        "openPopupWindow",
-      )
+      await Ipc.ensureConnection(window.tabs?.[0].id as number)
       await Ipc.sendTab<ShowToastParam>(
         window.tabs?.[0].id as number,
         TabCommand.showToast,
@@ -514,7 +511,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
     await chrome.tabs.update(tab.id as number, { url: toUrl(url) })
 
     if (result.err) {
-      await Ipc.ensureConnection(tab.id as number, "openTab")
+      await Ipc.ensureConnection(tab.id as number)
       await Ipc.sendTab<ShowToastParam>(
         tab.id as number,
         TabCommand.showToast,
