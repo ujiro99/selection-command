@@ -33,7 +33,7 @@ export const incrementCommandExecutionCount = async (
     ) {
       if (!tabId) {
         const tabs = await chrome.tabs.query({ active: true })
-        tabId = tabs[0].id
+        tabId = tabs[0]?.id
       }
       if (tabId) {
         await Ipc.ensureConnection(tabId)

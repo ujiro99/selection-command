@@ -530,7 +530,7 @@ const checkAndPerformLegacyBackup = async () => {
       await legacyBackupManager.performBackup()
     }
   } catch (error) {
-    console.error("Failed to perform weekly backup check:", error)
+    console.error("Failed to perform legacy backup check:", error)
   }
 }
 
