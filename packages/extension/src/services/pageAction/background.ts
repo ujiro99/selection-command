@@ -320,7 +320,7 @@ export const openAndRun = (
     }
 
     // Wait until ipc connection is established.
-    await Ipc.ensureConnection(tabId, "openAndRun")
+    await Ipc.ensureConnection(tabId)
 
     // Run the steps on the popup.
     const steps = (cmd.pageActionOption as any).steps
@@ -397,7 +397,7 @@ const run = (
 
       try {
         // Execute
-        await Ipc.ensureConnection(tabId, "_run")
+        await Ipc.ensureConnection(tabId)
         const delay = step.delayMs ?? 0
         await RunningStatus.update(
           step.id,

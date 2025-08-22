@@ -9,7 +9,6 @@ import {
 import { BaseStorage, ChangedCallback } from "./storage/index"
 import {
   CommandStorage,
-  CommandMigrationManager,
   commandChangedCallback,
 } from "./storage/commandStorage"
 import {
@@ -24,10 +23,8 @@ export {
   LOCAL_STORAGE_KEY,
   SESSION_STORAGE_KEY,
   CMD_PREFIX,
-  CommandMigrationManager,
   DailyBackupManager,
   WeeklyBackupManager,
-  LegacyBackupManager,
 }
 
 export type { ChangedCallback, KEY }
@@ -44,6 +41,9 @@ export const Storage = {
 
   // Weekly backup manager
   weeklyBackupManager: new WeeklyBackupManager(),
+
+  // Legacy backup manager (for migration purposes)
+  legacyBackupManager: new LegacyBackupManager(),
 
   /**
    * New command getter method (command storage compatible)

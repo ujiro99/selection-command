@@ -2,22 +2,29 @@
   "manifest_version": 3,
   "name": "__MSG_extName__",
   "description": "__MSG_extDescription__",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "default_locale": "en",
   "icons": {
     "128": "icon128.png"
   },
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["src/content_script.tsx"]
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/content_script.tsx"
+      ]
     },
     {
       "matches": [
         "https://ujiro99.github.io/selection-command/*",
         "http://localhost:3000/*"
       ],
-      "js": ["src/command_hub.tsx"]
+      "js": [
+        "src/command_hub.tsx"
+      ]
     }
   ],
   "background": {
@@ -33,11 +40,20 @@
     "clipboardRead",
     "system.display"
   ],
-  "host_permissions": ["http://*/*", "https://*/*"],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "web_accessible_resources": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "resources": ["assets/*.css", "icon128.png"]
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "resources": [
+        "assets/*.css",
+        "icon128.png"
+      ]
     }
   ],
   "commands": {

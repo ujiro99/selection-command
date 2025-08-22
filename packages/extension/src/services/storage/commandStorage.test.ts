@@ -11,7 +11,6 @@ import {
   CMD_LOCAL_KEY,
 } from "./const"
 import { cmdSyncKey, cmdLocalKey } from "./index"
-import { LegacyBackupManager } from "./backupManager"
 
 // Mock dependencies first
 vi.mock("./index", async (importOriginal) => {
@@ -144,7 +143,7 @@ global.chrome = {
 } as any
 
 // Import the classes and functions after mocking
-import { CommandStorage, CommandMigrationManager } from "./commandStorage"
+import { CommandStorage } from "./commandStorage"
 import { DefaultCommands } from "../option/defaultSettings"
 
 const isCmdKey = (key: unknown): key is CMD_KEY => {
@@ -298,9 +297,15 @@ describe("CommandStorage actual implementation tests", () => {
       it("CS-05: should loading commands", async () => {
         const commands = [createCommand("1"), createCommand("2")]
 
-        mockStorageInterface.set(STORAGE_KEY.COMMAND_COUNT, commands.length)
         mockStorageInterface.set(cmdSyncKey(0), commands[0])
         mockStorageInterface.set(cmdSyncKey(1), commands[1])
+
+        // Set up sync storage
+        const scm: CommandMetadata = {
+          count: commands.length,
+          version: 123456,
+        }
+        syncStorage.set(STORAGE_KEY.SYNC_COMMAND_METADATA, scm)
 
         const result = await commandStorge.loadCommands()
         expect(result).toHaveLength(2)
@@ -341,12 +346,6 @@ describe("CommandStorage actual implementation tests", () => {
         }
         localStorage.set(LOCAL_STORAGE_KEY.GLOBAL_COMMAND_METADATA, gcm)
 
-        // Mock migration manager to not need migration
-        const migrationManager = CommandMigrationManager.prototype
-        vi.spyOn(migrationManager, "needsMigration").mockResolvedValueOnce(
-          false,
-        )
-
         const result = await commandStorge.loadCommands()
 
         // Should load all commands
@@ -362,8 +361,6 @@ describe("CommandStorage actual implementation tests", () => {
 
         syncIds.forEach((id) => expect(resultIds).toContain(id))
         localIds.forEach((id) => expect(resultIds).toContain(id))
-
-        vi.spyOn(migrationManager, "needsMigration").mockReset()
       })
 
       it("CS-05-b: should load commands from sync storage only (different browser case)", async () => {
@@ -387,12 +384,6 @@ describe("CommandStorage actual implementation tests", () => {
         // No local storage data (different browser scenario)
         // No global metadata exists
 
-        // Mock migration manager to not need migration
-        const migrationManager = CommandMigrationManager.prototype
-        vi.spyOn(migrationManager, "needsMigration").mockResolvedValueOnce(
-          false,
-        )
-
         const result = await commandStorge.loadCommands()
 
         // Should load only sync commands
@@ -412,8 +403,6 @@ describe("CommandStorage actual implementation tests", () => {
         )
         expect(globalMetadata).toBeDefined()
         expect(globalMetadata.globalOrder).toEqual(["sync1", "sync2", "sync3"])
-
-        vi.spyOn(migrationManager, "needsMigration").mockReset()
       })
 
       it("CS-05-c: should handle sync and GlobalCommandMetadata inconsistency (synced from different browser case)", async () => {
@@ -465,12 +454,6 @@ describe("CommandStorage actual implementation tests", () => {
         }
         localStorage.set(LOCAL_STORAGE_KEY.GLOBAL_COMMAND_METADATA, gmd)
 
-        // Mock migration manager to not need migration
-        const migrationManager = CommandMigrationManager.prototype
-        vi.spyOn(migrationManager, "needsMigration").mockResolvedValueOnce(
-          false,
-        )
-
         const result = await commandStorge.loadCommands()
 
         // Should load all existing commands (current sync + local)
@@ -502,8 +485,6 @@ describe("CommandStorage actual implementation tests", () => {
         const expectedOrder = ["sync1", "local1", "local2", "sync3", "sync4"]
         expect(updatedGlobalMetadata.globalOrder).toEqual(expectedOrder)
         expect(result.map((cmd) => cmd.id)).toEqual(expectedOrder)
-
-        vi.spyOn(migrationManager, "needsMigration").mockReset()
       })
     })
 
@@ -555,12 +536,6 @@ describe("CommandStorage actual implementation tests", () => {
         const existingCommands = [createCommand("1"), createCommand("2")]
         await commandStorage.saveCommands(existingCommands)
 
-        // Mock migration manager to not need migration
-        const migrationManager = CommandMigrationManager.prototype
-        vi.spyOn(migrationManager, "needsMigration").mockResolvedValueOnce(
-          false,
-        )
-
         const updatedCommands = [
           { ...existingCommands[0], title: "Updated Command 1" },
         ]
@@ -597,12 +572,6 @@ describe("CommandStorage actual implementation tests", () => {
         )
         await commandStorage.saveCommands(existingLargeCommands)
 
-        // Mock migration manager to not need migration
-        const migrationManager = CommandMigrationManager.prototype
-        vi.spyOn(migrationManager, "needsMigration").mockResolvedValueOnce(
-          false,
-        )
-
         expect(allocation.sync.commands.length).toBe(syncCount)
         expect(allocation.local.commands.length).toBe(localCount)
 
@@ -633,117 +602,6 @@ describe("CommandStorage actual implementation tests", () => {
         // Verify command count did not change
         const lm = localStorage.get(LOCAL_STORAGE_KEY.LOCAL_COMMAND_METADATA)
         expect(lm.count).toEqual(localCount)
-
-        // Reset the migration manager spy
-        vi.spyOn(migrationManager, "needsMigration").mockReset()
-      })
-    })
-  })
-
-  describe("CommandMigrationManager", () => {
-    let migrationManager: CommandMigrationManager
-
-    beforeEach(() => {
-      migrationManager = new CommandMigrationManager(mockStorageInterface)
-    })
-
-    describe("performMigration", () => {
-      it("CS-08: should return default commands when no legacy data", async () => {
-        // Mock no legacy data
-        mockStorageInterface.set(STORAGE_KEY.COMMAND_COUNT, -1)
-
-        const result = await migrationManager.performMigration()
-        expect(result).toEqual(DefaultCommands)
-      })
-
-      it("CS-09: should perform migration with legacy data", async () => {
-        const legacyCommands = [createCommand("1"), createCommand("2")]
-
-        // Set up legacy data in syncStorage Map using correct CMD_PREFIX
-        syncStorage.set(cmdSyncKey(0), legacyCommands[0])
-        syncStorage.set(cmdSyncKey(1), legacyCommands[1])
-
-        // Mock legacy count exists (not DEFAULT_COUNT which is -1)
-        syncStorage.set(STORAGE_KEY.COMMAND_COUNT, 2)
-
-        const result = await migrationManager.performMigration()
-
-        expect(result).toHaveLength(2)
-        expect(result[0].id).toBe("1")
-        expect(result[1].id).toBe("2")
-      })
-
-      it("CS-09-a: should distribute large legacy data between sync and local storage during migration", async () => {
-        // Create many large commands that exceed 60KB sync capacity
-        const largeCommands = Array.from(
-          { length: 50 },
-          (_, i) => createCommand(`legacy${i}`, 2000), // Each command ~2KB
-        )
-
-        // Set up legacy data in syncStorage Map using correct CMD_PREFIX
-        largeCommands.forEach((cmd, idx) => {
-          syncStorage.set(cmdSyncKey(idx), cmd)
-        })
-        syncStorage.set(STORAGE_KEY.COMMAND_COUNT, largeCommands.length)
-
-        // Mock the backupCommandsForMigration to check buckup functionality.
-        const spy = vi.spyOn(
-          LegacyBackupManager.prototype,
-          "backupCommandsForMigration",
-        )
-
-        // Execute the migration
-        const result = await migrationManager.performMigration()
-
-        // Verify the migration completed successfully
-        expect(result).toHaveLength(largeCommands.length)
-        expect(result.map((cmd) => cmd.id)).toEqual(
-          largeCommands.map((cmd) => cmd.id),
-        )
-
-        // Verify the backupCommandsForMigration was called
-        expect(spy).toHaveBeenCalledWith(largeCommands)
-
-        // Verify migration completion flag
-        const migrationStatus = localStorage.get(
-          LOCAL_STORAGE_KEY.MIGRATION_STATUS,
-        )
-        expect(migrationStatus).toBeDefined()
-        expect(migrationStatus.version).toBe("1.0.0") // VERSION from mock
-        expect(migrationStatus.migratedAt).toBeGreaterThan(0)
-        expect(migrationStatus.commandCount).toBe(largeCommands.length)
-      })
-    })
-
-    describe("needsMigration", () => {
-      it("CS-10: should return false when migration already completed", async () => {
-        localStorage.set(LOCAL_STORAGE_KEY.MIGRATION_STATUS, {
-          version: "1.0.0",
-          migratedAt: Date.now(),
-          commandCount: 5,
-        })
-
-        const result = await migrationManager.needsMigration()
-        expect(result).toBe(false)
-      })
-
-      it("CS-11: should return true when legacy data exists", async () => {
-        localStorage.set(LOCAL_STORAGE_KEY.MIGRATION_STATUS, {
-          version: null,
-          migratedAt: Date.now(),
-          commandCount: 5,
-        })
-
-        const result = await migrationManager.needsMigration()
-        expect(result).toBe(true)
-      })
-    })
-
-    describe("restoreFromBackup", () => {
-      it("CS-12: should restore from backup", async () => {
-        const result = await migrationManager.restoreFromBackup()
-        expect(result).toHaveProperty("commands")
-        expect(result).toHaveProperty("folders")
       })
     })
   })

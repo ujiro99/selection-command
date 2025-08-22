@@ -163,7 +163,7 @@ export const Ipc = {
    * @param tabId - Target tab ID to connect
    * @throws {Error} When connection to the tab fails or times out
    */
-  async ensureConnection(tabId: number, msg?: string): Promise<void> {
+  async ensureConnection(tabId: number): Promise<void> {
     if (BgData.get()?.connectedTabs.includes(tabId)) {
       // If already connected, resolve immediately
       return
@@ -176,7 +176,6 @@ export const Ipc = {
         // Strategy 2: Background initiates connection (requires tab to be ready)
         this._backgroundConnectionFlow(tabId),
       ])
-      console.info(`Connection to tab ${tabId}.`, msg)
     } catch (error) {
       console.error(`Failed to ensure connection to tab ${tabId}:`, error)
     }

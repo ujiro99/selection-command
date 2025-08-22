@@ -1,7 +1,9 @@
-import { Command, CommandFolder } from "@/types"
+import { Command, CommandFolder, Version } from "@/types"
+import { VERSION } from "@/const"
 import { LOCAL_STORAGE_KEY, STORAGE_KEY } from "./const"
 import { BaseStorage } from "./index"
 import { CommandStorage } from "@/services/storage/commandStorage"
+import { versionDiff, VersionDiff } from "@/lib/utils"
 
 export interface BackupData {
   version: string
@@ -114,18 +116,6 @@ export class DailyBackupManager extends BaseBackupManager {
   protected readonly BACKUP_KEY = LOCAL_STORAGE_KEY.DAILY_COMMANDS_BACKUP
   protected readonly BACKUP_INTERVAL_MS = 24 * 60 * 60 * 1000 // 24 hours
   protected readonly VERSION = "daily"
-
-  // 既存のメソッド名を保持するためのエイリアス
-  async performDailyBackup(): Promise<void> {
-    return this.performBackup()
-  }
-
-  async restoreFromDailyBackup(): Promise<{
-    commands: Command[]
-    folders: CommandFolder[]
-  }> {
-    return this.restoreFromBackup()
-  }
 }
 
 // Weekly backup management class
@@ -133,59 +123,31 @@ export class WeeklyBackupManager extends BaseBackupManager {
   protected readonly BACKUP_KEY = LOCAL_STORAGE_KEY.WEEKLY_COMMANDS_BACKUP
   protected readonly BACKUP_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
   protected readonly VERSION = "weekly"
-
-  async performWeeklyBackup(): Promise<void> {
-    return this.performBackup()
-  }
-
-  async restoreFromWeeklyBackup(): Promise<{
-    commands: Command[]
-    folders: CommandFolder[]
-  }> {
-    return this.restoreFromBackup()
-  }
 }
 
 // Legacy backup management class (for migration purposes)
 export class LegacyBackupManager extends BaseBackupManager {
   protected readonly BACKUP_KEY = LOCAL_STORAGE_KEY.COMMANDS_BACKUP
   protected readonly BACKUP_INTERVAL_MS = 0 // Never auto-backup (manual only)
-  protected readonly VERSION = "legacy"
+  protected readonly VERSION = VERSION
 
-  async performLegacyBackup(): Promise<void> {
-    return this.performBackup()
-  }
-
-  async restoreFromLegacyBackup(): Promise<{
-    commands: Command[]
-    folders: CommandFolder[]
-  }> {
-    return this.restoreFromBackup()
-  }
-
-  // Migration-specific method that backs up given commands (not from storage)
-  async backupCommandsForMigration(commands: Command[]): Promise<void> {
+  async shouldBackup(): Promise<boolean> {
     try {
-      // Get folders from settings directly from storage to avoid circular dependency
-      const userSettings = (await BaseStorage.get(STORAGE_KEY.USER)) as {
-        folders?: CommandFolder[]
+      const lastBackup = await this.getLastBackupData()
+      if (!lastBackup) {
+        return true
       }
-      const folders = userSettings?.folders || []
-
-      const backup: BackupData = {
-        version: this.VERSION,
-        timestamp: Date.now(),
-        commands: commands,
-        folders: folders,
+      if (lastBackup.version === "legacy") {
+        // If the last backup is from the legacy version, we always backup
+        return true
       }
-
-      await BaseStorage.set(this.BACKUP_KEY, backup)
-
-      console.debug(
-        `Legacy migration backup completed: ${commands.length} commands and ${folders.length} folders backed up`,
+      return (
+        versionDiff(this.VERSION as Version, lastBackup.version as Version) ===
+        VersionDiff.New
       )
     } catch (error) {
-      console.error(`Failed to perform legacy migration backup:`, error)
+      console.error("Failed to check backup schedule:", error)
+      return true
     }
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "selection-command-monorepo",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "private": true,
   "description": "Selection Command - Monorepo for Chrome Extension and Hub",
   "author": "ujiro99",
@@ -17,6 +17,7 @@
     "lint": "yarn workspaces run lint",
     "test": "yarn workspace @selection-command/extension test:run; yarn workspace @selection-command/hub test:run",
     "test:coverage": "yarn workspaces run test:coverage",
+    "tsc": "yarn workspaces run tsc",
     "clean": "yarn workspaces run clean && rm -rf node_modules"
   },
   "devDependencies": {

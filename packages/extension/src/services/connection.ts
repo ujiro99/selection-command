@@ -1,20 +1,21 @@
 import { CONNECTION_APP, TabCommand, Ipc } from "@/services/ipc"
-import { RunningStatus } from "@/services/pageAction"
+import { BgData } from "@/services/backgroundData"
 
 Ipc.getTabId().then((tabId) => {
-  RunningStatus.get().then((status) => {
-    if (status.tabId === tabId) {
-      // Setup event listeners for bfcache handling
-      window.addEventListener("pageshow", (event: PageTransitionEvent) => {
-        // Only reconnect if coming from bfcache or initial load
-        if (event.persisted) {
-          connect()
-        }
-      })
-      // Initial connection
-      connect()
-    }
-  })
+  const bgData = BgData.get()
+  const isConnected = bgData?.connectedTabs?.includes(tabId) ?? false
+
+  if (!isConnected) {
+    // Setup event listeners for bfcache handling
+    window.addEventListener("pageshow", (event: PageTransitionEvent) => {
+      // Only reconnect if coming from bfcache or initial load
+      if (event.persisted) {
+        connect()
+      }
+    })
+    // Initial connection
+    connect()
+  }
 })
 
 // Connect to the background page
