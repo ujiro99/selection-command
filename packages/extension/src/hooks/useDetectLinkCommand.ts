@@ -294,7 +294,7 @@ function useDetectClickHold(
     settings.linkCommand?.startupMethod?.leftClickHoldParam ?? 200
   const detectLinkRef = useRef(false)
   const [forceClear, setForceClear] = useState(false)
-  const playPixel = 20
+  const playProgress = 40 // percentage to start progress.
 
   const { detectHoldLink, position, progress, linkElement } = useLeftClickHold({
     enable: clickHoldEnabled && !forceClear,
@@ -344,7 +344,7 @@ function useDetectClickHold(
   return clickHoldEnabled && detectLinkRef.current
     ? {
       mousePosition: position,
-      inProgress: progress > playPixel,
+      inProgress: progress > playProgress,
       progress: progress,
       preventLinkClick: detectHoldLink,
     }
