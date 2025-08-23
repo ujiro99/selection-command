@@ -272,7 +272,7 @@ export const openAndRun = (
   response: (res: unknown) => void,
 ): boolean => {
   const open = async () => {
-    let tabId: number
+    let tabId: number | undefined
     let selectedText = param.selectedText
     let clipboardText: string
 
@@ -293,6 +293,12 @@ export const openAndRun = (
       })
       tabId = ret.tabId
       clipboardText = ret.clipboardText
+    }
+
+    if (tabId == null) {
+      console.error("Failed to open popup or tab")
+      response(false)
+      return
     }
 
     // Use clipboard text if selected text is empty and useClipboard is true.
