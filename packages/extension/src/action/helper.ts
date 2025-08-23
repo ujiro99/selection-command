@@ -68,6 +68,11 @@ export const openPopupAndClick = (
   incrementCommandExecutionCount().then(async () => {
     try {
       const { tabId } = await openPopupWindow(param)
+      if (!tabId) {
+        console.error("Tab ID is not available after opening popup")
+        response(false)
+        return
+      }
       await Ipc.sendQueue(tabId, TabCommand.clickElement, {
         selector: (param as { selector: string }).selector,
       })

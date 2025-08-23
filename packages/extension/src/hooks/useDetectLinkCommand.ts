@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import {
   MOUSE,
   KEYBOARD,
@@ -56,27 +56,31 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
   const command = commands?.find(isLinkCommand) as Command
   const enabled =
     pageRule == null ||
-    pageRule.linkCommandEnabled == undefined ||
-    pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
+      pageRule.linkCommandEnabled == undefined ||
+      pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
       ? settings.linkCommand?.enabled === LINK_COMMAND_ENABLED.ENABLE
       : pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.ENABLE
 
-  const onChangeState = (state: ExecState, message?: string) => {
-    console.debug({ state, message })
-  }
+  const onDetect = useCallback(
+    (position: Point, target: Element) => {
+      if (command == null) return
 
-  const onDetect = (position: Point, target: Element) => {
-    if (command == null) return
-    LinkPreview.execute({
-      selectionText: "",
-      command,
-      position,
-      useSecondary: false,
-      changeState: onChangeState,
-      target,
-    })
-    sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, { id: "link_preview" })
-  }
+      const onChangeState = (state: ExecState, message?: string) => {
+        console.debug({ state, message })
+      }
+
+      LinkPreview.execute({
+        selectionText: "",
+        command,
+        position,
+        useSecondary: false,
+        changeState: onChangeState,
+        target,
+      })
+      sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, { id: "link_preview" })
+    },
+    [command],
+  )
 
   return {
     showIndicator: showIndicator ?? false,
@@ -106,7 +110,7 @@ function useDetectDrag(
   const dragEnabled =
     enabled &&
     settings.linkCommand?.startupMethod?.method ===
-      LINK_COMMAND_STARTUP_METHOD.DRAG
+    LINK_COMMAND_STARTUP_METHOD.DRAG
 
   const threshold =
     settings.linkCommand?.startupMethod?.threshold ??
@@ -133,7 +137,7 @@ function useDetectDrag(
       const current = { x: e.clientX, y: e.clientY }
       const distance = Math.sqrt(
         Math.pow(current.x - startPosition.x, 2) +
-          Math.pow(current.y - startPosition.y, 2),
+        Math.pow(current.y - startPosition.y, 2),
       )
       setMousePosition(current)
       setInProgress(distance > playPixel)
@@ -221,7 +225,7 @@ function useDetectKeyboard(
   const keyboardEnabled =
     enabled &&
     settings.linkCommand?.startupMethod?.method ===
-      LINK_COMMAND_STARTUP_METHOD.KEYBOARD
+    LINK_COMMAND_STARTUP_METHOD.KEYBOARD
   const key = settings.linkCommand?.startupMethod?.keyboardParam
   const popupOption = command?.popupOption ?? PopupOption
   const [target, setTarget] = useState<Element | null>(null)
@@ -268,11 +272,11 @@ function useDetectKeyboard(
 
   return keyboardEnabled
     ? {
-        progress: 0,
-        mousePosition,
-        inProgress: mousePress,
-        preventLinkClick: true,
-      }
+      progress: 0,
+      mousePosition,
+      inProgress: mousePress,
+      preventLinkClick: true,
+    }
     : {}
 }
 
@@ -285,12 +289,12 @@ function useDetectClickHold(
   const clickHoldEnabled =
     enabled &&
     settings.linkCommand?.startupMethod?.method ===
-      LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
+    LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
   const duration =
     settings.linkCommand?.startupMethod?.leftClickHoldParam ?? 200
   const detectLinkRef = useRef(false)
   const [forceClear, setForceClear] = useState(false)
-  const playPixel = 20
+  const playProgress = 40 // percentage to start progress.
 
   const { detectHoldLink, position, progress, linkElement } = useLeftClickHold({
     enable: clickHoldEnabled && !forceClear,
@@ -339,10 +343,10 @@ function useDetectClickHold(
 
   return clickHoldEnabled && detectLinkRef.current
     ? {
-        mousePosition: position,
-        inProgress: progress > playPixel,
-        progress: progress,
-        preventLinkClick: detectHoldLink,
-      }
+      mousePosition: position,
+      inProgress: progress > playProgress,
+      progress: progress,
+      preventLinkClick: detectHoldLink,
+    }
     : {}
 }

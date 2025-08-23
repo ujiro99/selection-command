@@ -131,7 +131,7 @@ type ReadClipboardResult = {
 }
 
 type OpenResult = {
-  tabId: number
+  tabId: number | undefined
   clipboardText: string
 }
 
@@ -316,11 +316,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function (port) {
+      chrome.runtime.onConnect.addListener(function(port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function (msg) {
+        port.onMessage.addListener(function(msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -431,10 +431,12 @@ export const openPopupWindow = async (
   }
 
   await updateBackgroundData([window], param.commandId, current.id, type)
-  updateRules([window.tabs?.[0].id as number])
+  if (window.tabs?.[0]?.id) {
+    updateRules([window.tabs[0].id])
+  }
 
   return {
-    tabId: window.tabs?.[0].id as number,
+    tabId: window.tabs?.[0]?.id,
     clipboardText,
   }
 }
