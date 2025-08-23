@@ -3,6 +3,7 @@ import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import { POPUP_OFFSET, POPUP_TYPE } from "@/const"
 import { BgData } from "@/services/backgroundData"
+import { WindowStackManager } from "@/services/windowStackManager"
 import { BgCommand, ClipboardResult, TabCommand } from "@/services/ipc"
 import { Ipc } from "@/services/ipc"
 import { t } from "@/services/i18n"
@@ -186,17 +187,30 @@ const updateBackgroundData = async (
   type: POPUP_TYPE,
 ) => {
   if (windows?.length > 0) {
-    const layer = windows.map((w) => ({
-      id: w.id,
-      commandId,
-      srcWindowId: currentWindowId,
-    })) as WindowLayer
-
     if (type === POPUP_TYPE.POPUP) {
-      await BgData.update((data) => ({
-        windowStack: [...data.windowStack, layer],
-      }))
+      // Use WindowStackManager for popup windows with batch operation
+      const windowsToAdd = windows
+        .filter((window) => window.id && currentWindowId !== undefined)
+        .map((window) => ({
+          window: {
+            id: window.id!,
+            commandId,
+            srcWindowId: currentWindowId!,
+          },
+          parentWindowId: currentWindowId!,
+        }))
+
+      if (windowsToAdd.length > 0) {
+        await WindowStackManager.addWindows(windowsToAdd)
+      }
     } else {
+      // Keep existing logic for normal windows
+      const layer = windows.map((w) => ({
+        id: w.id,
+        commandId,
+        srcWindowId: currentWindowId,
+      })) as WindowLayer
+
       await BgData.update(() => ({
         normalWindows: layer,
       }))

@@ -16,14 +16,15 @@ import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists } from "@/services/chrome"
+import { WindowStackManager } from "@/services/windowStackManager"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { IpcCallback } from "@/services/ipc"
-import type { WindowType, WindowLayer } from "@/types"
+import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
-import { ANALYTICS_EVENTS, sendEvent } from "./services/analytics"
+import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -49,7 +50,7 @@ const getTabId = (
   return false
 }
 
-const onConnect = async function (port: chrome.runtime.Port) {
+const onConnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -59,7 +60,7 @@ const onConnect = async function (port: chrome.runtime.Port) {
     }))
   }
 }
-const onDisconnect = async function (port: chrome.runtime.Port) {
+const onDisconnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -136,24 +137,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-          id: params.id,
-          title: params.title,
-          searchUrl: params.searchUrl,
-          iconUrl: params.iconUrl,
-          openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
-          popupOption: PopupOption,
-        }
+        id: params.id,
+        title: params.title,
+        searchUrl: params.searchUrl,
+        iconUrl: params.iconUrl,
+        openMode: params.openMode,
+        openModeSecondary: params.openModeSecondary,
+        spaceEncoding: params.spaceEncoding,
+        popupOption: PopupOption,
+      }
       : isPageAction
         ? {
-            id: params.id,
-            title: params.title,
-            iconUrl: params.iconUrl,
-            openMode: params.openMode,
-            pageActionOption: params.pageActionOption,
-            popupOption: PopupOption,
-          }
+          id: params.id,
+          title: params.title,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          pageActionOption: params.pageActionOption,
+          popupOption: PopupOption,
+        }
         : null
 
     if (!cmd) {
@@ -172,49 +173,49 @@ const commandFuncs = {
     _: unknown,
     sender: Sender,
     response: (res: unknown) => void,
-  ): boolean => {
-    const data = BgData.get()
-    for (const layer of data.windowStack) {
-      for (const window of layer) {
-        if (window.id === sender.tab?.windowId) {
-          // found!
-          response(true)
-          break
+  ) => {
+    WindowStackManager.getStack().then((stack) => {
+      for (const layer of stack) {
+        for (const window of layer) {
+          if (window.id === sender.tab?.windowId) {
+            // found!
+            response(true)
+            return
+          }
         }
       }
-    }
-    response(false)
-    return false
+      response(false)
+    })
+    return true
   },
 
   [BgCommand.openInTab]: (
     _: unknown,
     sender: Sender,
     response: (res: unknown) => void,
-  ): boolean => {
-    let w: WindowType | undefined
+  ) => {
+    const handleOpenInTab = async () => {
+      let w: WindowType | undefined
 
-    const data = BgData.get()
-    for (const layer of data.windowStack) {
-      for (const window of layer) {
-        if (window.id === sender.tab?.windowId) {
-          w = window
-          break
+      const stack = await WindowStackManager.getStack()
+      for (const layer of stack) {
+        for (const window of layer) {
+          if (window.id === sender.tab?.windowId) {
+            w = window
+            break
+          }
         }
       }
-    }
-    if (!w || w.srcWindowId == null) {
-      console.warn("window not found", sender.tab?.windowId)
-      chrome.tabs.create({ url: sender.url })
-      closeWindow(sender.tab?.windowId as number, "openInTab").then(() => {
+      if (!w || w.srcWindowId == null) {
+        console.warn("window not found", sender.tab?.windowId)
+        chrome.tabs.create({ url: sender.url })
+        await closeWindow(sender.tab?.windowId as number, "openInTab")
+        await WindowStackManager.removeWindow(sender.tab?.windowId as number)
         response(true)
-      })
-      return true
-    }
+        return
+      }
 
-    let targetId: number | undefined
-
-    const processWindow = async () => {
+      let targetId: number | undefined
       const windowIdExists = await windowExists(w.srcWindowId)
       if (windowIdExists) {
         targetId = w.srcWindowId
@@ -232,15 +233,14 @@ const commandFuncs = {
           windowId: targetId,
         })
         await closeWindow(sender.tab?.windowId as number, "openInTab")
+        await WindowStackManager.removeWindow(sender.tab?.windowId as number)
         response(true)
       } else {
         response(false)
       }
     }
 
-    processWindow()
-
-    // return async
+    handleOpenInTab()
     return true
   },
 
@@ -248,15 +248,16 @@ const commandFuncs = {
     _param: any,
     sender: Sender,
     response: (res: unknown) => void,
-  ): boolean => {
-    const func = async () => {
-      const stack = BgData.get().windowStack
+  ) => {
+    const handleOnHidden = async () => {
       const windowId = sender.tab?.windowId
       const tabId = sender.tab?.id
       if (!windowId || !tabId) {
         response(true)
         return
       }
+
+      const stack = await WindowStackManager.getStack()
 
       const src = stack.find((s) => s.find((w) => w.srcWindowId === windowId))
       if (src) {
@@ -274,19 +275,12 @@ const commandFuncs = {
 
       // Remove the window.
       await closeWindow(windowId, "onHidden")
-      layer.splice(
-        layer.findIndex((w) => w.id === windowId),
-        1,
-      )
-      await BgData.update(() => ({
-        windowStack: stack,
-      }))
+      await WindowStackManager.removeWindow(windowId)
       response(false)
-      return
     }
 
-    func()
-    return false
+    handleOnHidden()
+    return true
   },
 
   [BgCommand.toggleStar]: (
@@ -357,9 +351,6 @@ chrome.action.onClicked.addListener(() => {
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
-  const data = BgData.get()
-  let stack = data.windowStack
-
   // Clear selection text
   await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
 
@@ -370,41 +361,13 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Update active screen ID
   await updateActiveScreenId(windowId)
 
-  // Close popup windows when focus changed to lower stack window
-  const idxs = stack.map((s) => s.findIndex((w) => w.id === windowId))
-  let changed = false
+  // Get windows to close based on focus change
+  const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
 
-  // Close all window.
-  let closeStack = [] as WindowLayer[]
-  const closeAll = idxs.every((i) => i < 0)
-  if (closeAll && stack.length > 0) {
-    closeStack = stack
-    stack = []
-    changed = true
-  }
-
-  // Close windows up to the window stack in focus.
-  for (let i = idxs.length - 2; i >= 0; i--) {
-    if (idxs[i] >= 0) {
-      closeStack = stack.splice(i + 1)
-      changed = true
-      break
-    }
-  }
-
-  // execute close
-  if (closeStack.length > 0) {
-    for (const layer of closeStack) {
-      for (const window of layer) {
-        await closeWindow(window.id, "onFocusChanged")
-      }
-    }
-  }
-
-  if (changed) {
-    await BgData.update(() => ({
-      windowStack: stack,
-    }))
+  // Execute close for all windows that need to be closed
+  for (const window of windowsToClose) {
+    await closeWindow(window.id, "onFocusChanged")
+    await WindowStackManager.removeWindow(window.id)
   }
 })
 
@@ -422,9 +385,10 @@ chrome.windows.onRemoved.addListener((windowId: number) => {
   }
 })
 
-chrome.windows.onBoundsChanged.addListener((window) => {
+chrome.windows.onBoundsChanged.addListener(async (window) => {
   const data = BgData.get()
-  for (const layer of [...data.windowStack, data.normalWindows]) {
+  const windowStack = await WindowStackManager.getStack()
+  for (const layer of [...windowStack, data.normalWindows]) {
     const w = layer.find((v) => v.id === window.id)
     if (w) {
       if (w.id === window.id && window.width && window.height) {
