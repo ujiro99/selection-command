@@ -1,0 +1,1137 @@
+[
+  {
+    "id": "eb0f8ff9-c0cc-5a4d-9a7e-c12eebf84b5d",
+    "title": "Yahoo!検索",
+    "description": "Yahoo!検索で選択キーワードを検索します",
+    "searchUrl": "https://search.yahoo.co.jp/search?p=%s",
+    "iconUrl": "https://www.yahoo.co.jp/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search"
+    ],
+    "addedAt": "2024-12-10T00:00:00.000Z"
+  },
+  {
+    "id": "1b6c73a7-7327-54ee-b686-5aeb274714ff",
+    "title": "英語 → 日本語",
+    "description": "DeepLで英語を日本語に翻訳します",
+    "searchUrl": "https://www.deepl.com/ja/translator#en/ja/%s",
+    "iconUrl": "https://static.deepl.com/img/favicon/favicon_96.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "percent",
+    "tags": [
+      "Language",
+      "Translation",
+      "翻訳",
+      "Tool",
+      "Japanese"
+    ],
+    "addedAt": "2024-12-10T00:00:00.000Z"
+  },
+  {
+    "id": "31d2aea8-f53e-5053-ab9b-3c64ff370262",
+    "title": "日本語 → 英語",
+    "description": "DeepLで英語を日本語に翻訳します",
+    "searchUrl": "https://www.deepl.com/ja/translator#ja/en/%s",
+    "iconUrl": "https://static.deepl.com/img/favicon/favicon_96.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "percent",
+    "tags": [
+      "Language",
+      "Translation",
+      "Tool",
+      "Japanese"
+    ],
+    "addedAt": "2024-12-10T00:00:00.000Z"
+  },
+  {
+    "id": "4cdeb80b-699f-53d7-b77e-fb6e0a8bed52",
+    "title": "Lucide",
+    "searchUrl": "https://lucide.dev/icons/?search=%s",
+    "iconUrl": "https://lucide.dev/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "description": "Lucideでアイコンを探します",
+    "tags": [
+      "Design",
+      "UI",
+      "Font"
+    ],
+    "addedAt": "2024-12-16T02:02:14.795Z"
+  },
+  {
+    "title": "ヤフオク落札相場",
+    "searchUrl": "https://auctions.yahoo.co.jp/closedsearch/closedsearch?p=%s",
+    "iconUrl": "https://s.yimg.jp/c/icon/s/bsc/2.1/a/auctions120.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "description": "ヤフーオークションの落札相場で検索します",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "id": "997b30fb-47a9-583f-b538-d9ceaf7cdcbe",
+    "addedAt": "2024-12-15T09:50:25.804Z"
+  },
+  {
+    "title": "KingOfTime",
+    "searchUrl": "https://support.ta.kingoftime.jp/hc/ja/search?query=%s",
+    "description": "KingOfTimeのマニュアルを検索",
+    "iconUrl": "https://support.ta.kingoftime.jp/hc/theming_assets/01HZM3GRFX4JWJSS9QN2PRAXHQ",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Manual",
+      "SaaS",
+      "業務用"
+    ],
+    "id": "7ee9c1a5-c18f-56cc-a1a6-1f6d7f67f434",
+    "addedAt": "2024-12-18T03:00:19.785Z"
+  },
+  {
+    "title": "メルカリ相場",
+    "searchUrl": "https://jp.mercari.com/search?keyword=%s&status=sold_out%7Ctrading&sort=created_time&order=desc",
+    "description": "メルカリの相場を検索します",
+    "iconUrl": "https://web-jp-assets-v2.mercdn.net/_next/static/media/favicon.cbb38c8b.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "id": "618ad67a-cdb9-5206-85e1-481957b84e41",
+    "addedAt": "2024-12-23T13:49:39.766Z"
+  },
+  {
+    "title": "メルカリ",
+    "searchUrl": "https://jp.mercari.com/search?keyword=%s",
+    "description": "メルカリで検索します",
+    "iconUrl": "https://web-jp-assets-v2.mercdn.net/_next/static/media/favicon.cbb38c8b.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "id": "26075d5a-b662-5eed-9590-8b8ab0fe5cb5",
+    "addedAt": "2024-12-23T13:49:39.765Z"
+  },
+  {
+    "title": "Zenn",
+    "searchUrl": "https://zenn.dev/search?q=%s",
+    "description": "Zennで検索します",
+    "iconUrl": "https://static.zenn.studio/images/icon.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Japanese",
+      "Development"
+    ],
+    "id": "db80c32e-b056-52bc-a0a2-662fd0640648",
+    "addedAt": "2024-12-21T08:06:08.744Z"
+  },
+  {
+    "title": "アラビア文字数列を漢数字に変換",
+    "searchUrl": "https://www.sljfaq.org/cgi/numbers_ja.cgi?number=%s",
+    "description": "アラビア文字の数列を選択して開くと漢数字での表記法を出力します。莫大な数字を瞬時に判断できる。",
+    "iconUrl": "https://cdn.icon-icons.com/icons2/1369/PNG/512/-transform_90128.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Tool"
+    ],
+    "id": "6a8b33db-8c7d-528e-a9fc-c0fa0ae9d1bc",
+    "addedAt": "2024-12-31T02:49:13.716Z"
+  },
+  {
+    "title": "楽天検索",
+    "searchUrl": "https://search.rakuten.co.jp/search/mall/%s",
+    "description": "楽天で検索します",
+    "iconUrl": "https://search.rakuten.co.jp/com/assets/domain-resources/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop"
+    ],
+    "id": "f7495054-6f21-512f-a0bb-4cf515207b21",
+    "addedAt": "2025-01-01T08:11:57.087Z"
+  },
+  {
+    "title": "Google",
+    "searchUrl": "https://google.com/search?q=%s",
+    "description": "Googleで検索します",
+    "iconUrl": "https://www.google.com/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search"
+    ],
+    "id": "0cb9dbbc-c0cf-53c6-93e5-016363705216",
+    "addedAt": "2024-12-10T00:00:00.000Z"
+  },
+  {
+    "title": "Google Image",
+    "searchUrl": "https://google.com/search?q=%s&tbm=isch",
+    "description": "Google Imageで検索します。",
+    "iconUrl": "https://www.google.com/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search",
+      "Image"
+    ],
+    "id": "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
+    "addedAt": "2024-12-10T00:00:00.000Z"
+  },
+  {
+    "title": "Hacker News",
+    "searchUrl": "https://hn.algolia.com/?q=%s",
+    "description": "Search on Hacker News.",
+    "iconUrl": "https://news.ycombinator.com/y18.svg",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "News",
+      "Development"
+    ],
+    "id": "a79cb2ea-daf0-565a-ad0e-34748577a533",
+    "addedAt": "2025-01-10T09:35:41.778Z"
+  },
+  {
+    "title": "Qiita",
+    "searchUrl": "https://qiita.com/search?q=%s",
+    "description": "Qiitaで検索します",
+    "iconUrl": "https://cdn.qiita.com/assets/favicons/public/production-c620d3e403342b1022967ba5e3db1aaa.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Development"
+    ],
+    "id": "8e7f849a-2503-5e63-be37-cead3cc3f5c1",
+    "addedAt": "2025-01-10T15:52:10.668Z"
+  },
+  {
+    "title": "Pinterest",
+    "searchUrl": "https://www.pinterest.com/search/pins/?q=%s",
+    "description": "",
+    "iconUrl": "https://s.pinimg.com/webapp/favicon-22eb868c.png",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Media",
+      "SNS",
+      "Design",
+      "Photo"
+    ],
+    "id": "30797fb1-5bc7-585a-ba53-fa5420e417d9",
+    "addedAt": "2025-01-10T16:05:29.696Z"
+  },
+  {
+    "title": "Netflix",
+    "searchUrl": "https://www.netflix.com/search?q=%s",
+    "description": "Netflixで検索します",
+    "iconUrl": "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Media",
+      "Movie"
+    ],
+    "id": "fb9cb6ad-76e3-5aa8-82a7-ade233edcec0",
+    "addedAt": "2025-01-10T16:06:57.611Z"
+  },
+  {
+    "title": "ニコニコ動画",
+    "searchUrl": "https://www.nicovideo.jp/watch/%s",
+    "description": "「sm〇〇」を選択すると、ニコニコ動画の視聴ページにアクセス",
+    "iconUrl": "https://resource.video.nimg.jp/web/images/favicon/32.png",
+    "openMode": "tab",
+    "openModeSecondary": "popup",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Japanese",
+      "Movie",
+      "Media"
+    ],
+    "id": "a5078dcb-1bcb-5fc2-84e6-9305f924c767",
+    "addedAt": "2025-02-01T07:03:50.021Z"
+  },
+  {
+    "title": "Perplexity",
+    "searchUrl": "https://www.perplexity.ai/search/new?q=%s",
+    "description": "Perplexityで検索します",
+    "iconUrl": "https://www.perplexity.ai/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search",
+      "AI"
+    ],
+    "id": "008a609d-e0d0-5461-aa34-b44d58e2616b",
+    "addedAt": "2025-02-26T12:44:05.718Z"
+  },
+  {
+    "title": "Youtube",
+    "searchUrl": "https://www.youtube.com/results?search_query=%s",
+    "description": "Youtubeで検索します",
+    "iconUrl": "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Media",
+      "Movie"
+    ],
+    "id": "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
+    "addedAt": "2025-03-07T03:25:26.841Z"
+  },
+  {
+    "title": "アマゾン",
+    "searchUrl": "https://www.amazon.co.jp/s?k=%s",
+    "description": "日本のアマゾンページで商品を検索できます",
+    "iconUrl": "https://www.amazon.co.jp/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "id": "e16acf01-7f20-5310-aa82-31bd9c72d367",
+    "addedAt": "2025-03-31T04:56:29.505Z"
+  },
+  {
+    "title": "Maps",
+    "searchUrl": "https://www.google.com/maps/search/%s",
+    "description": "Google Mapsで検索します",
+    "iconUrl": "https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search"
+    ],
+    "id": "41844648-dd4a-5703-976d-3dd6cba14f74",
+    "addedAt": "2025-04-02T09:32:45.217Z"
+  },
+  {
+    "title": "Wikipedia",
+    "searchUrl": "http://ja.wikipedia.org/wiki/Special:Search?search=%s&go=Go",
+    "description": "Wikipediaで検索します",
+    "iconUrl": "https://ja.wikipedia.org/static/favicon/wikipedia.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search",
+      "Dictionary",
+      "Japanese"
+    ],
+    "id": "92d71313-cbc8-5382-9210-abf684cd674c",
+    "addedAt": "2025-04-02T09:33:27.828Z"
+  },
+  {
+    "title": "Gemini",
+    "description": "Ask Gemini to explain the selected text.",
+    "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "openMode": "pageAction",
+    "tags": [
+      "AI"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://gemini.google.com/app",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "1clkfxbrr",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "gmavyqlj2",
+          "param": {
+            "type": "input",
+            "label": "Ask Gemini",
+            "selector": "//*[@data-gramm='false']/*",
+            "selectorType": "xpath",
+            "value": "Please explain the following.\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "umb7r0prx",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@data-mat-icon-name='send']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "stjwk2dnp",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "06964cb6-019d-511f-b16f-18c7bbd2c785",
+    "addedAt": "2025-04-20T09:03:26.042Z"
+  },
+  {
+    "title": "Gemini - 日本語",
+    "description": "選択したテキストをGeminiに解説してもらいます。",
+    "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "openMode": "pageAction",
+    "tags": [
+      "AI",
+      "Japanese"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://gemini.google.com/app",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "1clkfxbrr",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "gmavyqlj2",
+          "param": {
+            "type": "input",
+            "label": "Ask Gemini",
+            "selector": "//*[@data-gramm='false']/*",
+            "selectorType": "xpath",
+            "value": "以下について解説してください。\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "umb7r0prx",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@data-mat-icon-name='send']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "stjwk2dnp",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "e2001b8a-a20c-5d33-983b-bf6c6d55a63c",
+    "addedAt": "2025-04-20T09:10:27.032Z"
+  },
+  {
+    "title": "サクラチェッカー",
+    "description": "表示中ページのURLをサクラチェッカーでチェックします。",
+    "iconUrl": "https://sakura-checker.jp/images/favicon.ico",
+    "openMode": "pageAction",
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://sakura-checker.jp/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "diaq1mthv",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "hoi75oly8",
+          "param": {
+            "type": "click",
+            "label": "word",
+            "selector": "//*[@name='word']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "2boq9korh",
+          "param": {
+            "type": "input",
+            "label": "word",
+            "selector": "//*[@name='word']",
+            "selectorType": "xpath",
+            "value": "{{Url}}"
+          }
+        },
+        {
+          "id": "thuq16r8o",
+          "param": {
+            "type": "click",
+            "label": "submit",
+            "selector": "//*[@class='button is-primary is-medium']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "bcs0vx9bn",
+          "param": {
+            "type": "scroll",
+            "label": "x: 0, y: 266",
+            "x": 0,
+            "y": 266
+          }
+        },
+        {
+          "id": "8viuw3650",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "b1856c00-d775-5fdc-89e9-94d1b6f786e5",
+    "addedAt": "2025-04-22T12:01:00.382Z"
+  },
+  {
+    "title": "Felo Web検索",
+    "description": "FeloのWeb検索で質問します。",
+    "iconUrl": "https://felo.ai/icon.ico",
+    "openMode": "pageAction",
+    "tags": [
+      "AI",
+      "Japanese"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://felo.ai/ja/search",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "mtwj10pot",
+          "param": {
+            "type": "start",
+            "label": "Start",
+            "url": "https://felo.ai/ja/search"
+          }
+        },
+        {
+          "id": "41lfahb7s",
+          "param": {
+            "type": "input",
+            "label": "何でも質問してください...",
+            "selector": "//*[@rows='3']",
+            "selectorType": "xpath",
+            "value": "以下について教えてください。\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "l4ve603zu",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@type='submit']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "37g7k3y0x",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "7f11e008-c45a-504d-9ea0-2a6613d8c417",
+    "addedAt": "2025-04-21T03:45:17.507Z"
+  },
+  {
+    "id": "bf22c686-f557-558a-aa24-a619fcf9220c",
+    "title": "陽キャ変換",
+    "description": "選択したテキストを陽キャ風に変換します。",
+    "iconUrl": "https://cdn.oaistatic.com/assets/favicon-l4nq08hd.svg",
+    "openMode": "pageAction",
+    "tags": [
+      "AI",
+      "Japanese",
+      "Character"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://chatgpt.com/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "diaq1mthv",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "y6htzvewk",
+          "param": {
+            "type": "click",
+            "label": "Inputへフォーカス",
+            "selector": "//p",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "mf2yadsdw",
+          "param": {
+            "type": "input",
+            "label": "プロンプト入力",
+            "selector": "//p",
+            "selectorType": "xpath",
+            "value": "以下の文章を、絵文字をたくさん使った陽キャウェイ系で、でもちょっとドジで天然な憎めないタイプの青年が書いた文章へ変換してください。"
+          }
+        },
+        {
+          "id": "0m0pbdr63",
+          "param": {
+            "type": "keyboard",
+            "label": "改行",
+            "key": "Enter",
+            "code": "Enter",
+            "keyCode": 13,
+            "shiftKey": true,
+            "ctrlKey": false,
+            "altKey": false,
+            "metaKey": false,
+            "targetSelector": "//form/*/*/*/*/*/div",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "7kts6hc0o",
+          "param": {
+            "type": "input",
+            "label": "選択テキスト入力",
+            "selector": "//p[2]",
+            "selectorType": "xpath",
+            "value": "\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "2hllzva57",
+          "param": {
+            "type": "click",
+            "label": "送信",
+            "selector": "//*[@aria-label='Send prompt']/*",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "f5kk1wuca",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2025-08-19T12:22:59.671Z"
+  },
+  {
+    "title": "ChatGPT",
+    "description": "Ask ChatGPT to explain the selected text.",
+    "iconUrl": "https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico",
+    "openMode": "pageAction",
+    "tags": [
+      "AI"
+    ],
+    "pageActionOption": {
+      "openMode": "popup",
+      "startUrl": "https://chatgpt.com/",
+      "steps": [
+        {
+          "delayMs": 0,
+          "id": "fdz6a6dyl",
+          "param": {
+            "label": "Start",
+            "type": "start"
+          },
+          "skipRenderWait": false
+        },
+        {
+          "delayMs": 0,
+          "id": "sbsw7b3r8",
+          "param": {
+            "label": "Input prompt",
+            "selector": "//p",
+            "selectorType": "xpath",
+            "type": "input",
+            "value": "Please explain the following. \n{{SelectedText}}"
+          },
+          "skipRenderWait": false
+        },
+        {
+          "delayMs": 0,
+          "id": "paoqgubiv",
+          "param": {
+            "label": "Send prompt",
+            "selector": "//*[@aria-label='Send prompt']/*",
+            "selectorType": "xpath",
+            "type": "click"
+          },
+          "skipRenderWait": false
+        },
+        {
+          "delayMs": 0,
+          "id": "tjllchitd",
+          "param": {
+            "label": "End",
+            "type": "end"
+          },
+          "skipRenderWait": false
+        }
+      ]
+    },
+    "id": "5bd801be-edf1-5787-91e0-48df29230fed",
+    "addedAt": "2025-04-22T14:01:16.433Z"
+  },
+  {
+    "title": "Drive",
+    "searchUrl": "https://drive.google.com/drive/search?q=%s",
+    "description": "Google Driveで検索します",
+    "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Tool"
+    ],
+    "id": "dd05d527-92db-5102-9a88-4a5b31fa7512",
+    "addedAt": "2025-04-25T22:32:40.900Z"
+  },
+  {
+    "title": "google ショッピング",
+    "searchUrl": "https://google.com/search?q=%s&tbm=shop",
+    "description": "Google ショッピング で商品を検索します",
+    "iconUrl": "https://www.gstatic.com/gsx/shopping_favicon-32x32.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Shop"
+    ],
+    "id": "44244ff5-b50c-5cfe-9809-d5bfe44ec111",
+    "addedAt": "2025-05-03T05:21:12.343Z"
+  },
+  {
+    "title": "note",
+    "searchUrl": "https://note.com/search?q=%s",
+    "description": "noteで検索します",
+    "iconUrl": "https://assets.st-note.com/poc-image/manual/note-common-images/production/svg/production.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Media",
+      "Blog",
+      "Japanese"
+    ],
+    "id": "fcf3b151-0e23-5759-a84d-f5036907cc2f",
+    "addedAt": "2025-05-03T05:27:24.162Z"
+  },
+  {
+    "title": "X（旧Twitter）",
+    "searchUrl": "https://x.com/search?lang=ja&q=%s",
+    "description": "X（旧Twitter）で検索します",
+    "iconUrl": "https://abs.twimg.com/favicons/twitter.3.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "SNS",
+      "Blog",
+      "Japanese"
+    ],
+    "id": "e8ee7862-b709-5e05-9f71-cd8f321e1793",
+    "addedAt": "2025-05-03T05:42:59.448Z"
+  },
+  {
+    "title": "Yahoo!知恵袋",
+    "searchUrl": "https://chiebukuro.yahoo.co.jp/search?p=%s",
+    "description": "Yahoo!知恵袋で検索します",
+    "iconUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAdVBMVEX////o6PbS0u7i4fO6uudrastfXsdjYshkY8ifntvy8vpzc8ttbMtnZsnY1/Bwb8zExOeiottmZcny8verq974+PyIiNOxseNPTcTKyumpqeDt7fiYmNp8e9C2tuW1teXAwOiDgtLd3fNAP7xYV8Y4N7pRUMFJW3/CAAAA/UlEQVR4AbXRVWKEMBQF0HjC8IJDcG27/yWWWx/77MU58bB/DhdCPiGljXXGRpd7usSOyFlP3iZ3SJp0miW5JTLyxqKCqCjPl8qTTq+tNkS6YaEtpSWy4gqFpVODr1jniHx/hR2QbMOkRqmGl3/RAb1iFkhpH5T8wcEQEo8eDz3N8xLWH900alY8JeCo5pN/dECnLmOTRsUpgob9d6KayGtYPB4xcJm/LH9pGuO8Jk1bXwFR9c+Y+VrF0xYtqv/G4Xpngjp/969feLlCseCnypcZWW42LuBnfzQKJth1BLR6w0QXxW6TQRUM07zNvoRlWULo1jtFeCKErNm/5h2lihYnWHrS1QAAAABJRU5ErkJggg==",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search"
+    ],
+    "id": "a79d3357-91be-5fe5-9f73-cb06c4c4cbc1",
+    "addedAt": "2025-05-03T05:50:10.456Z"
+  },
+  {
+    "title": "Google Keep",
+    "searchUrl": "https://keep.google.com/#search/text%253D%s",
+    "description": "Google Keepで検索します",
+    "iconUrl": "https://www.gstatic.com/images/branding/product/1x/keep_2020q4_48dp.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "業務用",
+      "Tool",
+      "Work"
+    ],
+    "id": "9c504254-f529-5b0d-a6c0-ef1eb06720ea",
+    "addedAt": "2025-05-03T09:01:38.228Z"
+  },
+  {
+    "title": "Notion検索",
+    "description": "Notionで選択テキストを検索します。",
+    "iconUrl": "https://www.notion.so/images/favicon.ico",
+    "openMode": "pageAction",
+    "tags": [
+      "Search",
+      "Tool"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://www.notion.com/login",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "d74cruet6",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "bilzlhq2d",
+          "param": {
+            "type": "keyboard",
+            "label": "Ctrl+k",
+            "key": "k",
+            "code": "KeyK",
+            "keyCode": 75,
+            "shiftKey": false,
+            "ctrlKey": false,
+            "altKey": false,
+            "metaKey": true,
+            "targetSelector": "//body",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "3xvfhz9c7",
+          "param": {
+            "type": "input",
+            "label": "キーワード入力",
+            "selector": "//*[@type='text']",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "36p0e9tmf",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "6cb03d7b-2cb0-585e-b265-f7d1e9f25b50",
+    "addedAt": "2025-05-07T03:37:05.581Z"
+  },
+  {
+    "title": "文字数カウンター",
+    "description": "文字数をカウントします",
+    "iconUrl": "https://web-toolbox.dev/favicon.svg",
+    "openMode": "pageAction",
+    "tags": [
+      "Japanese",
+      "Tool"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://web-toolbox.dev/tools/character-counter",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "b28aqptaq",
+          "param": {
+            "type": "start",
+            "label": "Start",
+            "url": "https://web-toolbox.dev/tools/character-counter"
+          }
+        },
+        {
+          "id": "xswttnk5r",
+          "param": {
+            "type": "click",
+            "label": "textarea",
+            "selector": "//textarea",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "pycqdt0ap",
+          "param": {
+            "type": "input",
+            "label": "文字入力",
+            "selector": "//textarea",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "8tsr1lz9m",
+          "param": {
+            "type": "scroll",
+            "label": "表示位置までスクロール",
+            "x": 0,
+            "y": 812
+          }
+        },
+        {
+          "id": "erkxkfph0",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "342fbc4a-0e33-5d05-87e5-72e3bf7db990",
+    "addedAt": "2025-05-07T03:46:04.661Z"
+  },
+  {
+    "title": "法人番号検索（T番号）",
+    "description": "選択した会社名の法人番号を検索します",
+    "iconUrl": "https://cdn3.iconfinder.com/data/icons/kicon-business/24/invoice-1024.png",
+    "openMode": "pageAction",
+    "tags": [
+      "業務用",
+      "Search",
+      "Japanese"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://www.houjin-bangou.nta.go.jp/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "psqfi1wpo",
+          "param": {
+            "type": "start",
+            "label": "Start",
+            "url": "https://www.houjin-bangou.nta.go.jp/"
+          }
+        },
+        {
+          "id": "7mu6mbjer",
+          "param": {
+            "type": "click",
+            "label": "houzinNmTxtf",
+            "selector": "//*[@name=\"houzinNmTxtf\"]",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "m34usrk3n",
+          "param": {
+            "type": "input",
+            "label": "houzinNmTxtf",
+            "selector": "//*[@name=\"houzinNmTxtf\"]",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "gq936ddom",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@id=\"search_condition\"]/img",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "hth5oirvs",
+          "param": {
+            "type": "scroll",
+            "label": "x: 0, y: 408",
+            "x": 0,
+            "y": 408
+          }
+        },
+        {
+          "id": "7mqhhf7jp",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "071c7099-9b2b-52be-a135-5134807cf7d0",
+    "addedAt": "2025-05-07T03:49:58.093Z"
+  },
+  {
+    "title": "環境依存文字チェック",
+    "description": "選択テキストから機種依存文字をチェック＆変換します",
+    "iconUrl": "https://pdc-checker.b-risk.jp/favicon.ico",
+    "openMode": "pageAction",
+    "tags": [
+      "Tool",
+      "Japanese",
+      "業務用"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://pdc-checker.b-risk.jp/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "ugi2pau0p",
+          "param": {
+            "type": "start",
+            "label": "Start",
+            "url": "https://pdc-checker.b-risk.jp/"
+          }
+        },
+        {
+          "id": "u0i9i2bm4",
+          "param": {
+            "type": "click",
+            "label": "入力欄フォーカス",
+            "selector": "//*[contains(text(),'変換サンプル：\nあの⾓にある⽩い⾞は私の車です。\n右上が立の「﨑」や，はしごの「髙」なども変換します。\n\n① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ\n㍉ ㌔ ㌢ ㍍ ㌘ ㌧ ㌃ ㌶ ㍑ ㍗ ㌍ ㌦ ㌣ ㌫ ㍊ ㌻ ㎜ ㎝ ㎞ ㎎ ㎏ ㏄ ㎡ ㏍ ℡ ㊤ ㊥ ㊦ ㊧ ㊨ ㈱ ㈲ ㈹ ㍾ ㍽ ㍼ ㍻ ㋿\n                    ')]",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "3rzbembi6",
+          "param": {
+            "type": "input",
+            "label": "テキスト入力",
+            "selector": "//*[contains(text(),'変換サンプル：\nあの⾓にある⽩い⾞は私の車です。\n右上が立の「﨑」や，はしごの「髙」なども変換します。\n\n① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ\n㍉ ㌔ ㌢ ㍍ ㌘ ㌧ ㌃ ㌶ ㍑ ㍗ ㌍ ㌦ ㌣ ㌫ ㍊ ㌻ ㎜ ㎝ ㎞ ㎎ ㎏ ㏄ ㎡ ㏍ ℡ ㊤ ㊥ ㊦ ㊧ ㊨ ㈱ ㈲ ㈹ ㍾ ㍽ ㍼ ㍻ ㋿\n                    ')]",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "erf8jrjlt",
+          "param": {
+            "type": "click",
+            "label": "チェック＆変換",
+            "selector": "//button",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "h7068hrgl",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "id": "aefebed0-d031-5e05-969c-6de2c1d892ce",
+    "addedAt": "2025-05-07T03:51:05.765Z"
+  },
+  {
+    "title": "네이버",
+    "searchUrl": "https://search.naver.com/search.naver?ie=UTF-8&sm=whl_hty&query=%s",
+    "description": "네이버에서 검색합니다",
+    "iconUrl": "https://ssl.pstatic.net/sstatic/search/favicon/favicon_32x32_240820.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search",
+      "Korean"
+    ],
+    "id": "3ec8fe1d-be48-5ab9-8654-a50f7f272480",
+    "addedAt": "2025-05-12T05:17:02.980Z"
+  },
+  {
+    "title": "쿠팡서치",
+    "searchUrl": "https://www.coupang.com/np/search?component=&q=%s",
+    "description": "상품검색",
+    "iconUrl": "https://image9.coupangcdn.com/image/coupang/favicon/v2/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search",
+      "Shop",
+      "Korean"
+    ],
+    "id": "f08d4bf0-dca8-5606-8dc1-ff7f74400dd9",
+    "addedAt": "2025-05-13T07:22:10.476Z"
+  },
+  {
+    "title": "DuckDuckGo",
+    "searchUrl": "https://duckduckgo.com/?q=%s&t=&ia=web",
+    "description": "Search with DuckDuckGo.",
+    "iconUrl": "https://duckduckgo.com/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search"
+    ],
+    "id": "4b8e4704-0407-5b1d-aefa-caf7d9db137e",
+    "addedAt": "2025-08-18T00:55:42.512Z"
+  },
+  {
+    "title": "Rotten Tomatoes",
+    "searchUrl": "https://www.rottentomatoes.com/search?search=%s",
+    "description": "Search on Rotten Tomatoes",
+    "iconUrl": "https://www.rottentomatoes.com/assets/pizza-pie/images/favicon.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Media",
+      "Movie",
+      "Review"
+    ],
+    "id": "a9790b5a-994c-5d1c-8318-f403d08e3303",
+    "addedAt": "2025-08-18T00:55:19.905Z"
+  },
+  {
+    "title": "Steam",
+    "searchUrl": "https://store.steampowered.com/search/?term=%s",
+    "description": "Search on Steam",
+    "iconUrl": "https://store.steampowered.com/favicon.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Media",
+      "Game"
+    ],
+    "id": "57e42438-c5cc-5ee6-a036-6d228250b1c2",
+    "addedAt": "2025-08-18T00:55:07.791Z"
+  }
+]

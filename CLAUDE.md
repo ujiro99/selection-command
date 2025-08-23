@@ -1,5 +1,7 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 このファイルは、このリポジトリのコードを扱う際にClaude Code (claude.ai/code)に対するガイダンスを提供します。
 
 ## 基本ルール
@@ -10,91 +12,205 @@
 - **コードの品質**: コードは読みやすく、保守しやすいように書くこと。コメントは必要な箇所へ記載し、複雑なロジックには説明を加える。
 - **テキストのエンコーディング**: UTF-8を使用すること。
 
-## 開発コマンド
+## モノレポ構造
 
-- `yarn dev` - Viteを使用した開発モードの開始
-- `yarn build` - 拡張機能のビルド（TypeScriptコンパイル + Viteビルドを実行）
-- `yarn lint` - ESLintを実行してコード品質をチェック
-- `yarn test` - Vitestを使用したテストの実行
-- `yarn test:ui` - VitestのUIモードでテストを実行
-- `yarn test:coverage` - テストカバレッジを測定
-- `yarn zip` - ビルドされたdistフォルダから配布可能な拡張機能のzipファイルを作成
+このリポジトリは**Selection Command**プロジェクトのモノレポで、以下の3つのパッケージで構成されています：
+
+### パッケージ構成
+
+1. **packages/extension** (`@selection-command/extension`)
+   - Chrome拡張機能のメインコード
+   - Manifest V3対応
+   - React + TypeScript + Vite
+
+2. **packages/hub** (`@selection-command/hub`)
+   - コマンド共有・発見のWebプラットフォーム
+   - Next.js 15 + App Router
+   - 11言語対応の国際化
+
+3. **packages/shared** (`@selection-command/shared`)
+   - 共通ユーティリティと型定義
+   - extension と hub で共有される基本型
+
+## 開発コマンド（ルートレベル）
+
+```bash
+# 拡張機能の開発
+yarn dev                   # extensionの開発モード開始
+yarn dev:hub               # hubの開発モード開始
+
+# ビルド
+yarn build                 # 全パッケージのビルド
+yarn build:extension       # extensionのみビルド
+yarn build:hub             # hubのみビルド
+
+# 品質チェック
+yarn lint                  # 全パッケージのlint実行
+yarn test                  # 全パッケージのテスト実行
+
+# その他
+yarn clean                 # 全パッケージのクリーンアップ
+```
+
+### パッケージ別コマンド
+
+各パッケージディレクトリ内では、以下のコマンドが使用できます：
+
+**Extension (packages/extension):**
+
+```bash
+yarn dev                   # 開発モード
+yarn build                 # ビルド
+yarn test                  # テスト実行
+yarn test:ui               # テストUIモード
+yarn test:coverage         # カバレッジ測定
+yarn lint                  # ESLint実行
+yarn zip                   # 配布用zip作成
+```
+
+**Hub (packages/hub):**
+
+```bash
+yarn dev                   # Next.js開発サーバー（Turbo）
+yarn build                 # プロダクションビルド
+yarn analytics             # GA分析データ更新
+yarn tags                  # タグ統計更新
+yarn urls                  # 検索URL更新
+```
+
+**Shared (packages/shared):**
+
+```bash
+yarn build                 # TypeScriptコンパイル
+yarn dev                   # watch モード
+```
 
 ## アーキテクチャ概要
 
-これは**Selection Command**と呼ばれるChrome拡張機能（Manifest V3）で、
-ユーザーがWebページ上で選択したテキストに対してさまざまなアクションを実行できます。
+**Selection Command**は、Webページ上で選択したテキストに対してさまざまなアクションを実行できるChrome拡張機能です。
 
-### 主要コンポーネント
+### システム全体の構成
 
-**Chrome拡張機能の構造:**
+```
+┌────────────────────────┐    ┌─────────────────────┐
+│   Chrome Extension     │    │    Command Hub      │
+│   (packages/ext)       │◄──►│   (packages/hub)    │
+│                        │    │                     │
+│ • コンテンツスクリプト │    │ • コマンド共有      │
+│ • バックグラウンド     │    │ • 検索・発見        │
+│ • オプションページ     │    │ • 多言語対応        │
+│ • ページアクション     │    │ • 分析機能          │
+└────────────────────────┘    └─────────────────────┘
+           │                            │
+           └──────────┬─────────────────┘
+                      │
+           ┌─────────────────────┐
+           │   Shared Package    │
+           │  (packages/shared)  │
+           │                     │
+           │ • 共通型定義        │
+           │ • ユーティリティ    │
+           │ • 型ガード          │
+           └─────────────────────┘
+```
 
-- `manifest.json` - 権限、コンテンツスクリプト、バックグラウンドワーカーを定義する拡張機能マニフェスト
-- `src/background_script.ts` - 拡張機能のライフサイクルとバックグラウンド操作を処理するサービスワーカー
-- `src/content_script.tsx` - Webページに注入されるメインのコンテンツスクリプト
-- `src/options_page.tsx` - 拡張機能のオプション/設定ページ
+### 主要な連携ポイント
 
-**コアアーキテクチャ:**
+1. **型システム共有**: SharedパッケージでBaseCommandなどの基本型を定義し、ExtensionとHubで拡張
+2. **コマンドデータ**: Hubで管理するcommands.jsonをExtensionで参照
+3. **国際化**: Hubの多言語対応とExtensionのlocalesファイルが連携
+4. **ページアクション**: ExtensionのPageActionがHubで共有・発見される
 
-- **Actions** (`src/action/`) - バックグラウンド操作、ポップアップ処理、ページアクション、コマンド実行を含むコア機能モジュール
-- **Components** (`src/components/`) - 機能別に整理されたReactコンポーネント:
-  - `menu/` - コンテキストメニューとメニューアイテムコンポーネント
-  - `option/` - 設定と構成UI
-  - `pageAction/` - ページ自動化と記録コンポーネント
-  - `result/` - 結果表示とポップアップコンポーネント
-  - `ui/` - 再利用可能なUIコンポーネント（Radix UIを使用）
-- **Services** (`src/services/`) - 設定管理、ストレージ、分析、ページアクション処理を含むビジネスロジックとユーティリティ
-- **Hooks** (`src/hooks/`) - 状態管理とChrome拡張機能APIのためのカスタムReactフック
-- **Testing** (`src/test/`) - テスト環境のセットアップとモック設定
-  - `setup.ts` - Vitestのセットアップファイル（Chrome拡張機能APIのモック、jsdom環境設定）
-  - `**/*.test.{ts,tsx}` - コンポーネントとサービスのユニットテスト
-  - `**/*.spec.{ts,tsx}` - 統合テストとE2Eテスト
+### Chrome拡張機能の構造 (packages/extension)
 
-**主要機能:**
+**コア機能:**
 
-- **ページアクション** - ブラウザ自動化シーケンスの記録と再生
-- **コマンドハブ** - コマンドの共有と発見のためのWebインターフェース（`pages/`内の独立したNext.jsアプリ）
-- **コンテキストメニュー** - 選択したテキストに対する右クリックアクション
-- **設定管理** - 構成とユーザー設定のインポート/エクスポート
+- **ページアクション**: ブラウザ自動化シーケンスの記録と再生
+- **コンテキストメニュー**: 選択テキストに対する右クリックアクション
+- **IPC通信**: content script ↔ background script ↔ options page
+- **設定管理**: Chrome Storage API使用、インポート/エクスポート対応
 
-### 技術スタック
+**主要コンポーネント:**
 
-- **フロントエンド**: React 18 with TypeScript
-- **ビルドシステム**: Vite with `@crxjs/vite-plugin` for Chrome extension development
-- **UIコンポーネント**: Shadcn
-- **フォームとバリデーション**: react-hook-form and zod
-- **スタイリング**: CSS Modules + Tailwind CSS(ver.3)
-- **状態管理**: React hooks with Chrome extension storage APIs
-- **テスト**: Vitest with jsdom for unit/integration testing
-- **コード品質**: ESLint for code quality
+- `src/background_script.ts` - サービスワーカー（Manifest V3）
+- `src/content_script.tsx` - Webページ注入スクリプト
+- `src/options_page.tsx` - 設定UI
+- `src/services/ipc.ts` - プロセス間通信の中核
+- `src/services/pageAction/` - 自動化シーケンス処理
+- `src/lib/robula-plus/` - 堅牢なXPathセレクター生成
 
-### プロジェクト構造の注意事項
+### Hubプラットフォームの構造 (packages/hub)
 
-- メインの拡張機能コードは`src/`内にある
-- コマンドハブのウェブサイトは`pages/`内の独立したNext.jsアプリケーション
-- 拡張機能は`public/_locales/`のロケールファイルによる国際化をサポート
-- コンテンツスクリプトのスタイリング分離にShadow DOMを使用
-- 堅牢なXPathセレクター生成のためのRobula+アルゴリズムを実装（`src/lib/robula-plus/`）
+**機能:**
 
-### テスト環境
+- コマンドライブラリの検索・発見
+- タグベースでのカテゴライズ
+- Google Analytics統合
+- 11言語の国際化対応
 
-- **テストフレームワーク**: Vitest with jsdom環境
-- **テスト設定**: `vitest.config.ts`で設定、`src/test/setup.ts`でモック設定
-- **Chrome拡張機能モック**: `chrome.storage`、`chrome.runtime`、`chrome.tabs`等のAPIをモック
-- **テストファイル**: `src/**/*.{test,spec}.{ts,tsx}`パターンで配置
-- **カバレッジ**: `yarn test:coverage`でテストカバレッジを測定可能
+**データフロー:**
 
-### テスト設計のガイドライン
+```
+commands.json → フィルタリング・検索 → UI表示
+commands.json → scripts/update-tags.mjs → tags.json
+Google Analytics → scripts/fetch-ga-data.js → analytics.json
+```
 
-- **テスト設計書**: 各機能のテストケースを明確に定義
-  - 機能ごとにテストケースを分類し、優先順位を付ける
-  - 正常系、異常系、境界値テストを含める
-  - テスト設計書は `docs/test/` に配置
-- **ユニットテスト**: 各関数やコンポーネントの個別テスト
-  - テスト間の副作用を最小限に抑えるため、モックの使用は最低限にする
-  - Arrange-Act-Assertパターンを使用
-  - 共通的なモックは `src/test/setup.ts` に配置
-- **テストケースの名前**: 機能名と期待される動作を明示的に記述する
-  - テストケース名の接頭辞は、機能名の略称と通し番号を使用（例: `SU-` for Storage Usage）
-    - 後から追加した場合は、さらに記号を付けて区別（例: SU-01-a）
-  - 例: ✅ SU-01: 正常系: 基本的な使用量計算が正しく行われる
+### 型システムの設計
+
+**Shared Package**での基本定義:
+
+```typescript
+interface BaseCommand {
+  id: string;
+  title: string;
+  openMode: OPEN_MODE;
+  // ... 基本プロパティ
+}
+
+interface PageActionCommand extends BaseCommand {
+  pageActionOption: unknown; // パッケージごとに具体化
+}
+```
+
+**Extension Package**での拡張:
+
+```typescript
+interface PageActionOption {
+  startUrl: string;
+  openMode: PAGE_ACTION_OPEN_MODE;
+  steps: Array<PageActionStep>;
+}
+```
+
+### 開発時の注意事項
+
+**型の取り扱い:**
+
+- SharedパッケージのPageActionCommand.pageActionOptionは`unknown`型
+- Extension内では`(command.pageActionOption as any)`等の型アサーションが必要
+- 新しい共通型はSharedパッケージで定義し、yarn buildで各パッケージに反映
+
+**Chrome拡張機能開発:**
+
+- Manifest V3の制約に注意（CSP、service worker等）
+- Shadow DOMでスタイル分離
+- Chrome Storage APIの制限（QUOTA_BYTES等）
+
+**Hub開発:**
+
+- commands.jsonの手動更新後は`yarn tags`でタグ統計更新
+- 多言語対応時は各言語ファイルの更新が必要
+- 分析データは`yarn analytics`で手動更新
+
+**テスト:**
+
+- Extensionでは Chrome API のモック使用
+- テストファイルは`src/**/*.{test,spec}.{ts,tsx}`パターン
+- カバレッジ測定は`yarn test:coverage`
+
+**ビルド・配布:**
+
+- Extension: `yarn zip`で配布用zipファイル作成
+- Hub: Vercel等での静的サイト配布
+- Shared: TypeScript declarations自動生成

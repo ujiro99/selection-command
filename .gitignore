@@ -2,15 +2,18 @@
 
 # dependencies
 /node_modules
+**/node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+**/coverage
 
 # production
 /dist
+**/dist
 /build
+**/build
 
 # misc
 .DS_Store
@@ -32,3 +35,9 @@ yarn-error.log*
 
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Serena
+.serena/cache
+
+# vite
+.vite
