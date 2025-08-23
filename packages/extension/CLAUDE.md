@@ -80,6 +80,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 堅牢なXPathセレクター生成のためのRobula+アルゴリズムを実装（`src/lib/robula-plus/`）
 
 **パスエイリアス**:
+
 - `@/` - `src/`ディレクトリへのエイリアス
 - `@import-if` - テスト用のモックファイル（`src/test/__mocks__/import-if`）
 
@@ -92,6 +93,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **カバレッジ**: `yarn test:coverage`でテストカバレッジを測定可能
 
 **Chrome Storage Mock**:
+
 - `StorageMockFactory`クラスでChrome拡張機能のストレージAPIをモック
 - `setupStorageMocks(mode)`でモードを指定可能 ("basic" | "realistic" | "custom")
 - `src/test/setup.ts`でグローバルなモックを設定
@@ -102,7 +104,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **テスト設計書**: 各機能のテストケースを明確に定義
   - 機能ごとにテストケースを分類し、優先順位を付ける
   - 正常系、異常系、境界値テストを含める
-  - テスト設計書は `docs/test/` に配置
 - **ユニットテスト**: 各関数やコンポーネントの個別テスト
   - テスト間の副作用を最小限に抑えるため、モックの使用は最低限にする
   - Arrange-Act-Assertパターンを使用
