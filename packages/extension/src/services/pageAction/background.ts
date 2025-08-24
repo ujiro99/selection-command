@@ -425,12 +425,12 @@ const run = (
         }
         return await execute(step, retryCount + 1)
       }
+      return ret
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : String(e)
       console.error("PageAction execution error:", errorMessage)
       return { result: false, message: errorMessage }
     }
-    return { result: true }
   }
 
   const _run = async () => {

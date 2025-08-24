@@ -1,20 +1,20 @@
 import "./App.css"
 
 import { useState, useEffect } from "react"
+import { toast, Toaster } from "sonner"
 import { SelectAnchor } from "./SelectAnchor"
 import { Popup } from "./Popup"
 import { LinkSelector } from "@/components/LinkSelector"
 import { OpenInTab } from "@/components/OpenInTab"
 import { PageActionRecorder } from "@/components/pageAction/PageActionRecorder"
 import { PageActionRunner } from "@/components/pageAction/PageActionRunner"
+import { showReviewRequestToast } from "@/components/ReviewRequestToast"
+import { InvisibleItem } from "@/components/menu/InvisibleItem"
 import { PageActionContextProvider } from "@/providers/pageActionContextProvider"
 import { SelectContextProvider } from "@/providers/SelectContextProvider"
 import { TabContextProvider } from "@/providers/TabContextProvider"
 import { Ipc, TabCommand } from "@/services/ipc"
-import { toast, Toaster } from "sonner"
-import { showReviewRequestToast } from "@/components/ReviewRequestToast"
 import { Settings } from "@/services/settings/settings"
-import { InvisibleItem } from "@/components/menu/InvisibleItem"
 import type { ShowToastParam } from "@/types"
 
 type Props = {
@@ -67,8 +67,8 @@ export function App({ rootElm }: Props) {
   }, [])
 
   return (
-    <PageActionContextProvider>
-      <TabContextProvider>
+    <TabContextProvider>
+      <PageActionContextProvider>
         <SelectContextProvider isPopupHover={isHover}>
           <SelectAnchor ref={setPositionElm} />
           <Popup
@@ -82,7 +82,7 @@ export function App({ rootElm }: Props) {
           <PageActionRecorder />
           <Toaster cssContainer={rootElm} />
         </SelectContextProvider>
-      </TabContextProvider>
-    </PageActionContextProvider>
+      </PageActionContextProvider>
+    </TabContextProvider>
   )
 }
