@@ -229,6 +229,9 @@ export type PageActiontStatus = {
   stepId: string
   results: PageActiontResult[]
 }
+export type MultiTabPageActionStatus = {
+  [tabId: number]: PageActiontStatus
+}
 
 export type WindowType = {
   id: number

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import type { PageActiontStatus } from "@/types"
+import type { PageActiontStatus, MultiTabPageActionStatus } from "@/types"
 import {
   PageActionDispatcher,
   BackgroundPageActionDispatcher,
@@ -8,8 +8,9 @@ import {
 import type { ExecPageAction } from "@/services/ipc"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { debounceDOMChange } from "@/services/dom"
-import { RunningStatus } from "@/services/pageAction"
+import { MultiTabRunningStatus } from "@/services/pageAction"
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
+import { useTabContext } from "@/hooks/useTabContext"
 import {
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_EXEC_STATE,
@@ -24,6 +25,7 @@ const STOP_STATUS = [
 
 export function usePageActionRunner() {
   const { setContextData } = usePageActionContext()
+  const { tabId } = useTabContext()
 
   useEffect(() => {
     const listener = (param: any, _sender: any, response: any) => {
@@ -32,9 +34,20 @@ export function usePageActionRunner() {
       })
       return true
     }
+    Ipc.addListener(TabCommand.execPageAction, listener)
+    return () => {
+      Ipc.removeListener(TabCommand.execPageAction)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!tabId) return
 
     let timeout = 0
     const updateStatus = (status: PageActiontStatus) => {
+      // Only handle status updates for the current tab
+      if (status.tabId !== tabId) return
+
       clearTimeout(timeout)
       const sid = status.stepId
       const step = status.results?.find((s) => s.stepId === sid)
@@ -48,14 +61,28 @@ export function usePageActionRunner() {
       }
     }
 
-    RunningStatus.get().then(updateStatus)
-    RunningStatus.subscribe(updateStatus)
-    Ipc.addListener(TabCommand.execPageAction, listener)
-    return () => {
-      RunningStatus.unsubscribe(updateStatus)
-      Ipc.removeListener(TabCommand.execPageAction)
+    // Initialize status
+    MultiTabRunningStatus.getTab(tabId).then((multiTabStatus) => {
+      if (multiTabStatus) {
+        updateStatus(multiTabStatus)
+      }
+    })
+
+    // Handle multi-tab status updates
+    const handleUpdateStatus = (multiStatus: MultiTabPageActionStatus) => {
+      const currentTabStatus = multiStatus[tabId]
+      if (currentTabStatus) {
+        updateStatus(currentTabStatus)
+      }
     }
-  }, [])
+
+    // Subscribe to status changes
+    MultiTabRunningStatus.subscribe(handleUpdateStatus)
+
+    return () => {
+      MultiTabRunningStatus.unsubscribe(handleUpdateStatus)
+    }
+  }, [tabId, setContextData])
 
   const execute = async (
     message: ExecPageAction.Message,

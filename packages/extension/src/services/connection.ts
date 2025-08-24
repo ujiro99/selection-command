@@ -25,7 +25,7 @@ const connect = () => {
     const port = chrome.runtime.connect({ name: CONNECTION_APP })
     port.onMessage.addListener(function (msg) {
       if (msg.command === TabCommand.connected) {
-        console.info("Connected to service worker", port)
+        // console.debug("Connected to service worker", port)
         return
       }
     })
@@ -36,6 +36,7 @@ const connect = () => {
 
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.command === TabCommand.ping) {
+    // console.debug("Connected from service worker")
     sendResponse({ ready: true })
   }
 })

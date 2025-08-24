@@ -27,6 +27,8 @@
 2. **Focus依存処理**: `listener.ts`でfocus関連の状態管理を多用
 3. **UserEvent制限**: `@testing-library/user-event`はバックグラウンドタブで制限有り
 4. **視覚的フィードバック**: スムーズスクロールなどの視覚効果が意味を持たない
+5. **単一実行制限**: 現在の状態管理は1つのPageAction実行状態のみ追跡可能
+6. **タブ間競合**: 複数タブでの同時実行時に実行状態が混在・上書きされる
 
 #### 操作別の制約詳細
 
@@ -83,13 +85,47 @@ export enum PAGE_ACTION_OPEN_MODE {
 }
 
 interface PageActionOptions {
-  openMode: PAGE_ACTION_OPEN_MODE
-  waitForVisibility?: boolean // 要素の可視性を待つか
-  enableVisualFeedback?: boolean // 視覚的フィードバックを有効にするか
+  openMode: PAGE_ACTION_OPEN_MODE;
+  waitForVisibility?: boolean; // 要素の可視性を待つか
+  enableVisualFeedback?: boolean; // 視覚的フィードバックを有効にするか
 }
 ```
 
-### 2. 段階的実装アプローチ
+### 2. 複数タブ並列実行の設計
+
+#### 現在の状態管理の問題
+
+- **単一実行状態**: Session Storageで1つの`PageActiontStatus`のみ管理
+- **状態の上書き**: 新しいPageAction開始時に前の状態が失われる
+- **タブ固有情報の欠如**: 複数タブでの実行状態を区別できない
+
+#### 提案する状態管理構造
+
+```typescript
+// 現在の構造
+interface PageActiontStatus {
+  tabId: number;
+  stepId: string;
+  results: PageActiontResult[];
+}
+
+// 提案する新構造
+interface MultiTabPageActionStatus {
+  [tabId: number]: PageActiontStatus;
+}
+
+// 実行制御のメタデータ
+interface PageActionExecutionMeta {
+  activeExecutions: number[]; // 実行中のタブIDリスト
+}
+```
+
+#### 並列実行制御の考慮事項
+
+1. **エラー隔離**: 1つのタブでのエラーが他のタブに影響しない設計
+2. **状態同期**: タブ間での状態情報の整合性確保
+
+### 3. 段階的実装アプローチ
 
 #### Phase 1: インフラ整備
 
@@ -97,6 +133,13 @@ interface PageActionOptions {
 - バックグラウンド実行用のdispatcher実装
 - openAndRun関数の分岐処理追加
 - 国際化対応
+
+#### Phase 1.5: 複数タブ並列実行対応
+
+- `MultiTabPageActionStatus`構造への移行
+- `RunningStatus`サービスのタブID別操作対応
+- 実行制御メタデータの追加
+- 自動クリーンアップ機能の実装
 
 #### Phase 2: 操作別対応
 
@@ -109,6 +152,7 @@ interface PageActionOptions {
 - パフォーマンス最適化
 - エラー回復機能
 - ユーザーフィードバック改善
+- 同時実行制限とキューイング
 
 ## 技術設計
 
@@ -121,146 +165,77 @@ interface PageActionOptions {
 │ script      │    │ (new tab)   │
 └─────────────┘    └─────────────┘
 
-提案:
+提案 - シングル実行:
 ┌─────────────┐    ┌─────────────┐
 │ background  │───▶│ Background  │
 │ script      │    │ Tab         │
 └─────────────┘    └─────────────┘
+
+提案 - マルチタブ並列実行:
+┌─────────────┐    ┌─────────────┐
+│ background  │───▶│ Background  │
+│ script      │    │ Tab A       │
+│             │    └─────────────┘
+│             │    ┌─────────────┐
+│             │───▶│ Background  │
+│             │    │ Tab B       │
+│             │    └─────────────┘
+│             │    ┌─────────────┐
+│             │───▶│ Background  │
+│             │    │ Tab C       │
+└─────────────┘    └─────────────┘
+        │
+        ▼
+┌─────────────────────┐
+│ Multi-Tab Status    │
+│ Management          │
+│ - Tab A: Running    │
+│ - Tab B: Completed  │
+│ - Tab C: Failed     │
+└─────────────────────┘
 ```
 
-### 1. Background用Dispatcher実装
+### 1. 複数タブ並列実行対応の状態管理
 
-```typescript
-export const BackgroundPageActionDispatcher = {
-  click: async (param: PageAction.Click): ActionReturn => {
-    const { selector, selectorType } = param
+#### RunningStatusサービスの拡張
 
-    // バックグラウンド用の要素取得（可視性チェックなし）
-    const element = await waitForElementBackground(selector, selectorType)
-    if (element) {
-      // userEventの代わりに直接イベント発火
-      const clickEvent = new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        composed: true,
-      })
-      element.dispatchEvent(clickEvent)
-    } else {
-      return [false, `Element not found: ${param.label}`]
-    }
-    return [true]
-  },
+複数タブでの並列実行に対応するため、現在の単一状態管理から以下の機能を持つサービスに拡張：
 
-  // その他の操作も同様に実装...
-}
-```
+- **タブ別状態管理**: 各タブIDをキーとした状態管理
+- **状態の初期化**: 新しいタブでの実行開始時の状態設定
+- **状態の更新**: 特定タブの実行状態更新
+- **状態の取得**: 特定タブまたは全タブの状態取得
+- **状態の削除**: 完了したタブの状態クリーンアップ
 
-### 2. Focus非依存の要素解決
+### 2. Background用Dispatcher実装
 
-```typescript
-async function waitForElementBackground(
-  selector: string,
-  selectorType: SelectorType,
-  timeout: number = TIMEOUT,
-): Promise<HTMLElement | null> {
-  const startTime = Date.now()
+バックグラウンドタブ実行に特化したDispatcherの実装：
 
-  return new Promise((resolve) => {
-    const interval = setInterval(() => {
-      const elapsedTime = Date.now() - startTime
-      if (elapsedTime > timeout) {
-        clearInterval(interval)
-        resolve(null)
-        return
-      }
+- **可視性チェックなしの要素取得**: バックグラウンドタブでは要素の可視性確認を省略
+- **直接イベント発火**: `@testing-library/user-event`の代わりに`MouseEvent`等を直接発火
+- **Focus非依存処理**: focus/blurイベントに依存しない実装
 
-      let element: HTMLElement | null = null
-      if (selectorType === SelectorType.xpath) {
-        element = getElementByBackgroundXPath(selector) // Focus非依存版
-      } else {
-        element = document.querySelector(selector)
-      }
+### 3. Focus非依存の要素解決
 
-      if (element) {
-        clearInterval(interval)
-        resolve(element)
-      }
-    }, 100) // バックグラウンドタブでは間隔を長めに
-  })
-}
-```
+バックグラウンドタブでの要素取得に特化した実装：
 
-### 3. 実行制御の変更
+- **XPath解決の改善**: focus状態に依存しないXPath要素解決
+- **待機間隔の調整**: バックグラウンドタブでの実行制限を考慮した適切な間隔設定
+- **タイムアウト処理**: 要素が見つからない場合の適切なエラー処理
 
-```typescript
-// background.ts
-export const openAndRun = (
-  param: OpenAndRunProps,
-  sender: Sender,
-  response: (res: unknown) => void,
-): boolean => {
-  const open = async () => {
-    let tabId: number
+### 4. 実行制御の変更
 
-    if (param.openMode === PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB) {
-      // バックグラウンドタブで実行
-      const ret = await openTab({
-        url: param.url,
-        active: false, // アクティブ化しない
-      })
-      tabId = ret.tabId
-    } else if (param.openMode === PAGE_ACTION_OPEN_MODE.TAB) {
-      // 通常のタブで実行
-      const ret = await openTab({
-        url: param.url,
-        active: true,
-      })
-      tabId = ret.tabId
-    } else {
-      // ポップアップ・ウィンドウモード（従来通り）
-      const ret = await openPopupWindow({
-        ...param,
-        type:
-          param.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
-            ? POPUP_TYPE.NORMAL
-            : POPUP_TYPE.POPUP,
-      })
-      tabId = ret.tabId
-    }
+background scriptでの実行制御ロジック：
 
-    // バックグラウンド実行用のdispatcherを使用
-    const dispatcher =
-      param.openMode === PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
-        ? BackgroundPageActionDispatcher
-        : PageActionDispatcher
+- **タブ開き方の分岐**: `BACKGROUND_TAB`モード時は`active: false`でタブを開く
+- **Dispatcher選択**: 実行モードに応じて適切なDispatcherを選択
+- **状態管理の統合**: 複数タブに対応した状態管理サービスの利用
 
-    // 実行...
-  }
-  // ...
-}
-```
+### 5. UI変更
 
-### 4. UI変更
-
-```typescript
-// PageActionSection.tsx で BACKGROUND_TAB を選択肢に追加
-// 既存のコードで e2a(PAGE_ACTION_OPEN_MODE) により自動的に選択肢に含まれる
-
-// 国際化対応
-// @/public/_locales/ja/messages.json
-{
-  "PageAction_openModebackgroundTab": {
-    "message": "バックグラウンドタブ"
-  }
-}
-
-// @/public/_locales/en/messages.json
-{
-  "PageAction_openModebackgroundTab": {
-    "message": "Background Tab"
-  }
-}
-```
+- **選択肢の追加**: `BACKGROUND_TAB`を`PAGE_ACTION_OPEN_MODE`の選択肢に追加
+- **国際化対応**: 日本語・英語の翻訳メッセージを追加
+- **状態表示の改善**: 複数タブの実行状態を適切に表示
 
 ## 制限事項・注意点
 
@@ -274,7 +249,6 @@ export const openAndRun = (
 
 - バックグラウンドタブでの実行は遅くなる可能性
 - タイムアウト時間の調整が必要
-- 複数のバックグラウンド実行は制限する
 
 ### 3. ユーザーエクスペリエンス
 
@@ -286,12 +260,23 @@ export const openAndRun = (
 
 ### High Priority (必須)
 
+#### バックグラウンド実行基盤
+
 - [ ] OPEN_MODE.BACKGROUND_TAB enum値追加
 - [ ] PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB enum値追加
 - [ ] BackgroundPageActionDispatcher実装
 - [ ] バックグラウンド用要素解決ロジック
 - [ ] openAndRun関数でのBACKGROUND_TABモード対応
 - [ ] 国際化メッセージ追加
+
+#### 複数タブ並列実行対応
+
+- [ ] MultiTabPageActionStatus型定義追加
+- [ ] MultiTabRunningStatusサービス実装
+- [ ] PageActionExecutionController実装
+- [ ] SESSION_STORAGE_KEY.PA_MULTI_RUNNING追加
+- [ ] PageActionRunnerコンポーネントのマルチタブ対応
+- [ ] usePageActionRunnerフックのマルチタブ対応
 
 ### Medium Priority (推奨)
 
@@ -305,9 +290,28 @@ export const openAndRun = (
 - [ ] バックグラウンド実行の統計取得
 - [ ] 高度なエラー回復機能
 - [ ] バッチ実行機能
+- [ ] タブ間での実行状態共有とモニタリング
 
 ## 結論
 
-PageActionのバックグラウンド実行は**技術的に実現可能**ですが、いくつかの制約があります。段階的なアプローチで実装し、ユーザーには実行モードの選択肢を提供することで、従来の安定性を保ちながら新機能を提供できます。
+PageActionのバックグラウンド実行と複数タブでの並列実行は**技術的に実現可能**ですが、いくつかの制約があります。段階的なアプローチで実装し、ユーザーには実行モードの選択肢を提供することで、従来の安定性を保ちながら新機能を提供できます。
+
+### 実装アプローチ
+
+1. **Phase 1**: バックグラウンド実行の基盤を構築
+2. **Phase 1.5**: 複数タブ並列実行に対応した状態管理に拡張
+3. **Phase 2**: 操作別の最適化と安定化
+4. **Phase 3**: パフォーマンス最適化と高度な機能追加
+
+### 主要な利点
+
+- **ユーザー体験の向上**: 作業を中断せずにPageActionを実行
+- **効率性の向上**: 複数タブで並列実行により処理時間短縮
+- **柔軟性の向上**: 実行モードを選択可能
+
+### 重要な考慮事項
+
+- **エラー処理**: 1つのタブのエラーが他に影響しない設計
+- **状態管理**: 複数タブに対応した状態管理の適切な設計と実装
 
 最初は基本的な操作（click, input）から対応し、動作が安定してから他の操作に拡張することを推奨します。

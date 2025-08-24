@@ -11,8 +11,12 @@ import { Progress } from "@/components/ui/progress"
 import { Tooltip } from "@/components/Tooltip"
 import { TypeIcon } from "@/components/pageAction/TypeIcon"
 import { usePageActionRunner } from "@/hooks/pageAction/usePageActionRunner"
-import { RunningStatus } from "@/services/pageAction"
-import type { PageActiontResult, PageActiontStatus } from "@/types"
+import { MultiTabRunningStatus } from "@/services/pageAction"
+import type {
+  PageActiontResult,
+  PageActiontStatus,
+  MultiTabPageActionStatus,
+} from "@/types"
 import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from "@/const"
 import { cn, isEmpty } from "@/lib/utils"
 import { useTabContext } from "@/hooks/useTabContext"
@@ -30,22 +34,22 @@ export function PageActionRunner(): JSX.Element {
     return results.some((r) => r.status === EXEC_STATE.Failed)
   }
   useEffect(() => {
-    if (isLoading) return
+    if (isLoading || !tabId) return
+
     const init = async () => {
-      const status = await RunningStatus.get()
-      if (status.tabId === tabId) {
+      const runningStatus = await MultiTabRunningStatus.getTab(tabId)
+      if (runningStatus) {
         setVisible(true)
-        setResults(status.results)
+        setResults(runningStatus.results)
       }
     }
     init()
   }, [tabId, isLoading])
 
   useEffect(() => {
-    if (isLoading) return
+    if (isLoading || !tabId) return
 
-    const onStatusChange = (status: PageActiontStatus) => {
-      if (status.tabId !== tabId) return
+    const handleStatusChange = (status: PageActiontStatus) => {
       setVisible(true)
       setProgress(0)
       clearTimeout(progressTORef.current)
@@ -65,14 +69,20 @@ export function PageActionRunner(): JSX.Element {
         }
         setProgress(prgrs)
       }, 50)
-      return () => {
-        clearTimeout(progressTORef.current)
+    }
+
+    const onStatusChange = (multiStatus: MultiTabPageActionStatus) => {
+      const currentTabStatus = multiStatus[tabId]
+      if (currentTabStatus) {
+        handleStatusChange(currentTabStatus)
       }
     }
 
-    RunningStatus.subscribe(onStatusChange)
+    // Subscribe to status changes
+    MultiTabRunningStatus.subscribe(onStatusChange)
     return () => {
-      RunningStatus.unsubscribe(onStatusChange)
+      clearTimeout(progressTORef.current)
+      MultiTabRunningStatus.unsubscribe(onStatusChange)
     }
   }, [tabId, isLoading])
 

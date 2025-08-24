@@ -106,15 +106,12 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     }
 
     useEffect(() => {
-      RunningStatus.subscribe(onStatusChange)
       RunningStatus.get().then((status) => {
         setCurrentId(status.stepId)
         setFailedId("")
         setFailedMesage("")
       })
-      return () => {
-        RunningStatus.unsubscribe(onStatusChange)
-      }
+      return RunningStatus.subscribe(onStatusChange)
     }, [])
 
     useEffect(() => {
