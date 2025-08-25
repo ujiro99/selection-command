@@ -37,10 +37,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
 
     const { isRecording, isRunning, status } = usePageActionContext()
     const results = status?.results
-    const r = results?.find(
-      (r: PageActiontResult) => r.status === EXEC_STATE.Start,
-    )
-    const currentId = r?.stepId ?? ""
+    const currentId = status?.stepId
     const f = results?.find(
       (r: PageActiontResult) => r.status === EXEC_STATE.Failed,
     )
