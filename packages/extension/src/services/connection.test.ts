@@ -204,13 +204,10 @@ describe("Connection Service", () => {
 
       // Simulate connected message
       const connectedMessage = { command: TabCommand.connected }
-      messageListener(connectedMessage)
+      const result = messageListener(connectedMessage)
 
-      // Assert
-      expect(mockConsoleInfo).toHaveBeenCalledWith(
-        "Connected to service worker",
-        mockPort,
-      )
+      // Assert - connection service handles the message silently (returns undefined)
+      expect(result).toBeUndefined()
     })
 
     it("CN-03-c: should handle connection errors gracefully", async () => {

@@ -10,18 +10,10 @@ import {
 } from "lucide-react"
 import { StepList } from "@/components/pageAction/StepList"
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
-import {
-  PageActionListener as Listener,
-  RunningStatus,
-} from "@/services/pageAction"
+import { PageActionListener as Listener } from "@/services/pageAction"
 import { Ipc, BgCommand, RunPageAction } from "@/services/ipc"
 import { t } from "@/services/i18n"
-import type {
-  PageActiontStatus,
-  PageActionStep,
-  PageActiontResult,
-  DeepPartial,
-} from "@/types"
+import type { PageActionStep, PageActiontResult, DeepPartial } from "@/types"
 import { cn } from "@/lib/utils"
 import {
   PAGE_ACTION_OPEN_MODE,
@@ -40,18 +32,17 @@ type Props = {
 
 export const Controller = forwardRef<HTMLDivElement, Props>(
   ({ isRecordEnabled, ...props }: Props, ref): JSX.Element => {
-    const { isRecording, isRunning } = usePageActionContext()
     const [isListening, setIsListening] = useState(true)
-    const [currentId, setCurrentId] = useState<string>()
-    const [failedId, setFailedId] = useState<string>()
-    const [failedMessage, setFailedMesage] = useState<string>()
     const [hover, setHover] = useState(false)
 
-    const clearState = () => {
-      setCurrentId("")
-      setFailedId("")
-      setFailedMesage("")
-    }
+    const { isRecording, isRunning, status } = usePageActionContext()
+    const results = status?.results
+    const currentId = status?.stepId
+    const f = results?.find(
+      (r: PageActiontResult) => r.status === EXEC_STATE.Failed,
+    )
+    const failedId = f?.stepId
+    const failedMessage = f?.message ?? ""
 
     const preview = () => {
       setTimeout(() => {
@@ -64,7 +55,6 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
           clipboardText: `{{${t("PageAction_InputMenu_clipboard")}}}`,
         })
       }, 100)
-      clearState()
       Listener.stop()
     }
 
@@ -79,8 +69,6 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     }
 
     const reset = () => {
-      clearState()
-      RunningStatus.clear()
       Ipc.send(BgCommand.resetPageAction)
     }
 
@@ -88,34 +76,6 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
       Listener.stop()
       Ipc.send(BgCommand.finishPageActionRecorder)
     }
-
-    const onStatusChange = ({ results }: PageActiontStatus) => {
-      const r = results.find(
-        (r: PageActiontResult) => r.status === EXEC_STATE.Start,
-      )
-      if (r != null) {
-        setCurrentId(r.stepId)
-      }
-      const f = results.find(
-        (r: PageActiontResult) => r.status === EXEC_STATE.Failed,
-      )
-      if (f != null) {
-        setFailedId(f?.stepId)
-        setFailedMesage(f.message)
-      }
-    }
-
-    useEffect(() => {
-      RunningStatus.subscribe(onStatusChange)
-      RunningStatus.get().then((status) => {
-        setCurrentId(status.stepId)
-        setFailedId("")
-        setFailedMesage("")
-      })
-      return () => {
-        RunningStatus.unsubscribe(onStatusChange)
-      }
-    }, [])
 
     useEffect(() => {
       if (isRunning || !isRecordEnabled) {

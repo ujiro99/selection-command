@@ -213,6 +213,7 @@ export type PageActionContext = {
   isRecording?: boolean
   isRunning?: boolean
   urlChanged?: boolean
+  status?: PageActionStatus
 }
 
 export type PageActiontResult = {
@@ -224,10 +225,13 @@ export type PageActiontResult = {
   duration: number
 }
 
-export type PageActiontStatus = {
+export type PageActionStatus = {
   tabId: number
   stepId: string
   results: PageActiontResult[]
+}
+export type MultiTabPageActionStatus = {
+  [tabId: number]: PageActionStatus
 }
 
 export type WindowType = {

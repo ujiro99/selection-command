@@ -43,7 +43,7 @@ import { IconField } from "@/components/option/field/IconField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { TextareaField } from "@/components/option/field/TextareaField"
 import { PageActionSection } from "@/components/option/editor/PageActionSection"
-import { PaeActionHelp } from "@/components/help/PageActionHelp"
+import { PageActionHelp } from "@/components/help/PageActionHelp"
 import { PageActionStep } from "@/types/schema"
 
 import {
@@ -366,7 +366,7 @@ const CommandEditDialogInner = ({
               {t("Command_edit")}
             </DialogTitle>
             {openMode === OPEN_MODE.PAGE_ACTION && (
-              <PaeActionHelp className="absolute -top-4 right-2" />
+              <PageActionHelp className="absolute -top-4 right-2" />
             )}
           </DialogHeader>
           <DialogDescription>{t("Command_input")}</DialogDescription>

@@ -369,5 +369,17 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 global.requestAnimationFrame = vi.fn((cb) => setTimeout(cb, 0)) as any
 global.cancelAnimationFrame = vi.fn((id) => clearTimeout(id))
 
+// Mock navigator.clipboard
+Object.defineProperty(window, "navigator", {
+  writable: true,
+  value: {
+    ...window.navigator,
+    clipboard: {
+      writeText: vi.fn().mockResolvedValue(undefined),
+      readText: vi.fn().mockResolvedValue(""),
+    },
+  },
+})
+
 // Export for use in tests
 export { StorageMockFactory, setupStorageMocks, type MockMode }

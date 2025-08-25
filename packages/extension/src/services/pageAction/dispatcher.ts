@@ -114,7 +114,7 @@ async function waitForElement(
   })
 }
 
-type ActionReturn = Promise<[boolean, string?]>
+export type ActionReturn = Promise<[boolean, string?]>
 
 export const PageActionDispatcher = {
   click: async (param: PageAction.Click): ActionReturn => {
@@ -132,7 +132,7 @@ export const PageActionDispatcher = {
     return [true]
   },
 
-  doubleCilck: async (param: PageAction.Click): ActionReturn => {
+  doubleClick: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
     const user = userEvent.setup()
 
