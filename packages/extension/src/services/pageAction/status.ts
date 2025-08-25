@@ -7,12 +7,6 @@ import type {
 } from "@/types"
 import { PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
 
-// Track current tab for single-tab compatibility API
-let currentTabId: number | null = null
-
-// Callback storage for proper cleanup
-type StatusCallback = (status: PageActiontStatus) => void
-
 export const MultiTabRunningStatus = {
   // Initialize status for a specific tab
   initTab: async (tabId: number, steps: PageActionStep[]) => {
@@ -142,9 +136,12 @@ export const MultiTabRunningStatus = {
   },
 }
 
+// Track current tab for single-tab compatibility API
+let currentTabId: number | null = null
+
 // Single-tab compatibility API (unified interface)
 export const RunningStatus = {
-  // Initialize status for current tab
+  // Initialize status for specified tab
   init: async (tabId: number, steps: PageActionStep[]) => {
     currentTabId = tabId
     return await MultiTabRunningStatus.initTab(tabId, steps)
@@ -196,21 +193,5 @@ export const RunningStatus = {
       await MultiTabRunningStatus.clearTab(currentTabId)
     }
     currentTabId = null
-  },
-
-  // Subscribe to current tab status changes
-  subscribe: (cb: StatusCallback) => {
-    const listener = (multiStatus: MultiTabPageActionStatus) => {
-      if (currentTabId !== null && multiStatus[currentTabId]) {
-        cb(multiStatus[currentTabId])
-      }
-    }
-    Storage.addListener<MultiTabPageActionStatus>(
-      SESSION_STORAGE_KEY.PA_RUNNING,
-      listener,
-    )
-    return () => {
-      Storage.removeListener(SESSION_STORAGE_KEY.PA_RUNNING, listener)
-    }
   },
 }

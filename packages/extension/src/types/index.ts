@@ -213,6 +213,7 @@ export type PageActionContext = {
   isRecording?: boolean
   isRunning?: boolean
   urlChanged?: boolean
+  status?: PageActiontStatus
 }
 
 export type PageActiontResult = {

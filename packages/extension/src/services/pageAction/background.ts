@@ -419,10 +419,11 @@ const run = (
         openMode,
       })
       if (ret == null) {
-        console.debug("No response from the tab. Retrying...")
         if (retryCount >= RETRY_MAX) {
+          console.warn("No response from the tab after retries.")
           return { result: false, message: "No response from the tab." }
         }
+        console.debug("No response from the tab. Retrying...", retryCount)
         return await execute(step, retryCount + 1)
       }
       return ret
@@ -462,7 +463,8 @@ const run = (
         if (ret.result) {
           if (step.param.type === PAGE_ACTION_CONTROL.end) {
             // End of the action
-            await RunningStatus.update(step.id, EXEC_STATE.Done, "", 500)
+            await RunningStatus.update(step.id, EXEC_STATE.Done, "", 1000)
+            await sleep(1000)
             break
           } else {
             await RunningStatus.update(step.id, EXEC_STATE.Done)
@@ -483,6 +485,8 @@ const run = (
         error instanceof Error ? error.message : String(error)
       console.error("PageAction run error:", errorMessage)
       response(false)
+    } finally {
+      await RunningStatus.clear()
     }
   }
   _run()

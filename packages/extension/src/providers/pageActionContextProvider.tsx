@@ -1,8 +1,10 @@
 import { ReactNode, useState, useEffect } from "react"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { MultiTabRunningStatus } from "@/services/pageAction"
 import { useTabContext } from "@/hooks/useTabContext"
 import { pageActionContext } from "@/hooks/pageAction/usePageActionContext"
-import type { PageActionContext } from "@/types"
+
+import type { PageActionContext, MultiTabPageActionStatus } from "@/types"
 
 export const PageActionContextProvider = ({
   children,
@@ -40,6 +42,20 @@ export const PageActionContextProvider = ({
         updateState(data)
       },
     )
+
+    // Initialize RunningStatus
+    MultiTabRunningStatus.getTab(tabId).then((status) => {
+      if (status) {
+        updateState({ status })
+      }
+    })
+
+    // subscribe to changes
+    const onStatusChange = (allStatus: MultiTabPageActionStatus) => {
+      const status = allStatus[tabId]
+      updateState({ status })
+    }
+    MultiTabRunningStatus.subscribe(onStatusChange)
   }, [tabId, isLoading])
 
   const setContextData = async (data: PageActionContext) => {

@@ -11,20 +11,15 @@ import { Progress } from "@/components/ui/progress"
 import { Tooltip } from "@/components/Tooltip"
 import { TypeIcon } from "@/components/pageAction/TypeIcon"
 import { usePageActionRunner } from "@/hooks/pageAction/usePageActionRunner"
-import { MultiTabRunningStatus } from "@/services/pageAction"
-import type {
-  PageActiontResult,
-  PageActiontStatus,
-  MultiTabPageActionStatus,
-} from "@/types"
+import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
+import type { PageActiontResult } from "@/types"
 import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from "@/const"
 import { cn, isEmpty } from "@/lib/utils"
-import { useTabContext } from "@/hooks/useTabContext"
 
 export function PageActionRunner(): JSX.Element {
   usePageActionRunner()
-  const { tabId, isLoading } = useTabContext()
-  const [results, setResults] = useState<PageActiontResult[]>([])
+  const { isRunning, status } = usePageActionContext()
+  const results = status?.results ?? []
   const [visible, setVisible] = useState(false)
   const [progress, setProgress] = useState(0)
   const startTimeRef = useRef<number>(0)
@@ -33,58 +28,34 @@ export function PageActionRunner(): JSX.Element {
   const hasError = (results: PageActiontResult[]): boolean => {
     return results.some((r) => r.status === EXEC_STATE.Failed)
   }
-  useEffect(() => {
-    if (isLoading || !tabId) return
-
-    const init = async () => {
-      const runningStatus = await MultiTabRunningStatus.getTab(tabId)
-      if (runningStatus) {
-        setVisible(true)
-        setResults(runningStatus.results)
-      }
-    }
-    init()
-  }, [tabId, isLoading])
 
   useEffect(() => {
-    if (isLoading || !tabId) return
+    if (!isRunning) return
+    setVisible(true)
+  }, [isRunning])
 
-    const handleStatusChange = (status: PageActiontStatus) => {
-      setVisible(true)
-      setProgress(0)
-      clearTimeout(progressTORef.current)
-      setResults(status.results)
-      if (hasError(status.results)) return
-      startTimeRef.current = Date.now()
-      const result = status.results.find(
-        (r: PageActiontResult) => r.stepId === status.stepId,
-      )
-      const duration = result?.duration ?? 1
-      progressTORef.current = window.setInterval(() => {
-        const prgrs = ((Date.now() - startTimeRef.current) / duration) * 100
-        if (prgrs >= 100) {
-          clearTimeout(progressTORef.current)
-          setVisible(false)
-          return
-        }
-        setProgress(prgrs)
-      }, 50)
-    }
+  useEffect(() => {
+    if (status == null) return
 
-    const onStatusChange = (multiStatus: MultiTabPageActionStatus) => {
-      const currentTabStatus = multiStatus[tabId]
-      if (currentTabStatus) {
-        handleStatusChange(currentTabStatus)
+    setVisible(true)
+    setProgress(0)
+    clearTimeout(progressTORef.current)
+    if (hasError(status.results)) return
+    startTimeRef.current = Date.now()
+    const result = status.results.find(
+      (r: PageActiontResult) => r.stepId === status.stepId,
+    )
+    const duration = result?.duration ?? 1
+    progressTORef.current = window.setInterval(() => {
+      const prgrs = ((Date.now() - startTimeRef.current) / duration) * 100
+      if (prgrs >= 100) {
+        clearTimeout(progressTORef.current)
+        setVisible(false)
+        return
       }
-    }
-
-    // Subscribe to status changes
-    const unsub = MultiTabRunningStatus.subscribe(onStatusChange)
-    return () => {
-      clearTimeout(progressTORef.current)
-      unsub()
-    }
-  }, [tabId, isLoading])
+      setProgress(prgrs)
+    }, 50)
+  }, [status])
 
   return (
     <div
