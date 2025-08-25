@@ -89,7 +89,10 @@ const mockElements = {
   contentEditableDiv: (() => {
     const div = document.createElement("div")
     div.contentEditable = "true"
-    div.isContentEditable = true
+    Object.defineProperty(div, "isContentEditable", {
+      value: true,
+      writable: true,
+    })
     div.innerText = ""
     div.dispatchEvent = vi.fn()
     return div
@@ -155,12 +158,15 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const clickParam = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".test-button",
         selectorType: SelectorType.css,
         label: "Test Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.click(clickParam)
+      const result = await BackgroundPageActionDispatcher.click(
+        clickParam as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockDocument.querySelector).toHaveBeenCalledWith(".test-button")
@@ -173,12 +179,15 @@ describe("backgroundDispatcher", () => {
       mockIsValidXPath.mockReturnValue(true)
 
       const clickParam = {
+        type: PAGE_ACTION_EVENT.click,
         selector: "//button[@class='test']",
         selectorType: SelectorType.xpath,
         label: "Test Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.click(clickParam)
+      const result = await BackgroundPageActionDispatcher.click(
+        clickParam as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockIsValidXPath).toHaveBeenCalledWith("//button[@class='test']")
@@ -197,12 +206,15 @@ describe("backgroundDispatcher", () => {
       })
 
       const clickParam = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".delayed-button",
         selectorType: SelectorType.css,
         label: "Delayed Button",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(clickParam)
+      const resultPromise = BackgroundPageActionDispatcher.click(
+        clickParam as any,
+      )
 
       // Advance time to trigger polling
       vi.advanceTimersByTime(300) // 3 polls * 100ms interval
@@ -218,12 +230,15 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(null)
 
       const clickParam = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".nonexistent-button",
         selectorType: SelectorType.css,
         label: "Nonexistent Button",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(clickParam)
+      const resultPromise = BackgroundPageActionDispatcher.click(
+        clickParam as any,
+      )
 
       // Advance time beyond default timeout (PAGE_ACTION_TIMEOUT)
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
@@ -241,12 +256,15 @@ describe("backgroundDispatcher", () => {
       mockIsValidXPath.mockReturnValue(false)
 
       const clickParam = {
+        type: PAGE_ACTION_EVENT.click,
         selector: "invalid-xpath",
         selectorType: SelectorType.xpath,
         label: "Invalid XPath",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(clickParam)
+      const resultPromise = BackgroundPageActionDispatcher.click(
+        clickParam as any,
+      )
       // Invalid XPath returns null immediately, but still needs to timeout in the polling loop
       vi.advanceTimersByTime(1100) // Skip timeout period
 
@@ -261,12 +279,15 @@ describe("backgroundDispatcher", () => {
 
     it("WEB-06: Should handle empty selector string", async () => {
       const clickParam = {
+        type: PAGE_ACTION_EVENT.click,
         selector: "",
         selectorType: SelectorType.css,
         label: "Empty Selector",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(clickParam)
+      const resultPromise = BackgroundPageActionDispatcher.click(
+        clickParam as any,
+      )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
 
       const result = await resultPromise
@@ -284,12 +305,15 @@ describe("backgroundDispatcher", () => {
       })
 
       const clickParam = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".test",
         selectorType: SelectorType.css,
         label: "Test",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(clickParam)
+      const resultPromise = BackgroundPageActionDispatcher.click(
+        clickParam as any,
+      )
 
       // Immediate check happens first (callCount = 1)
       expect(callCount).toBe(1)
@@ -316,12 +340,15 @@ describe("backgroundDispatcher", () => {
       })
 
       const clickParam = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".found-on-poll",
         selectorType: SelectorType.css,
         label: "Found Button",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(clickParam)
+      const resultPromise = BackgroundPageActionDispatcher.click(
+        clickParam as any,
+      )
 
       // Immediate check (no element)
       expect(callCount).toBe(1)
@@ -344,12 +371,13 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".click-button",
         selectorType: SelectorType.css,
         label: "Click Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.click(param)
+      const result = await BackgroundPageActionDispatcher.click(param as any)
 
       expect(result).toEqual([true])
       expect(mockDocument.querySelector).toHaveBeenCalledWith(".click-button")
@@ -369,12 +397,13 @@ describe("backgroundDispatcher", () => {
       mockIsValidXPath.mockReturnValue(true)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: "//button[@id='click-btn']",
         selectorType: SelectorType.xpath,
         label: "Click Button XPath",
       }
 
-      const result = await BackgroundPageActionDispatcher.click(param)
+      const result = await BackgroundPageActionDispatcher.click(param as any)
 
       expect(result).toEqual([true])
       expect(mockIsValidXPath).toHaveBeenCalledWith("//button[@id='click-btn']")
@@ -396,12 +425,13 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".test",
         selectorType: SelectorType.css,
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.click(param)
+      await BackgroundPageActionDispatcher.click(param as any)
 
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -417,12 +447,13 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(null)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".not-found",
         selectorType: SelectorType.css,
         label: "Not Found Button",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(param)
+      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
 
       const result = await resultPromise
@@ -440,12 +471,15 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".double-click-button",
         selectorType: SelectorType.css,
         label: "Double Click Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.doubleClick(param)
+      const result = await BackgroundPageActionDispatcher.doubleClick(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledTimes(2)
@@ -460,12 +494,13 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".test",
         selectorType: SelectorType.css,
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.doubleClick(param)
+      await BackgroundPageActionDispatcher.doubleClick(param as any)
 
       expect(dispatchedEvents).toEqual(["click", "dblclick"])
     })
@@ -479,12 +514,13 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".test",
         selectorType: SelectorType.css,
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.doubleClick(param)
+      await BackgroundPageActionDispatcher.doubleClick(param as any)
 
       expect(eventDetails).toEqual([1, 2])
     })
@@ -493,12 +529,15 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(null)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".not-found",
         selectorType: SelectorType.css,
         label: "Not Found",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.doubleClick(param)
+      const resultPromise = BackgroundPageActionDispatcher.doubleClick(
+        param as any,
+      )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
 
       const result = await resultPromise
@@ -516,12 +555,15 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".triple-click-button",
         selectorType: SelectorType.css,
         label: "Triple Click Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.tripleClick(param)
+      const result = await BackgroundPageActionDispatcher.tripleClick(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledTimes(3)
@@ -536,12 +578,13 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".test",
         selectorType: SelectorType.css,
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.tripleClick(param)
+      await BackgroundPageActionDispatcher.tripleClick(param as any)
 
       expect(dispatchedEvents).toEqual(["click", "click", "click"])
     })
@@ -555,12 +598,13 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".test",
         selectorType: SelectorType.css,
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.tripleClick(param)
+      await BackgroundPageActionDispatcher.tripleClick(param as any)
 
       expect(eventDetails).toEqual([1, 2, 3])
     })
@@ -569,12 +613,15 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(null)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".not-found",
         selectorType: SelectorType.css,
         label: "Not Found",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.tripleClick(param)
+      const resultPromise = BackgroundPageActionDispatcher.tripleClick(
+        param as any,
+      )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
 
       const result = await resultPromise
@@ -592,6 +639,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         targetSelector: ".input-field",
         selectorType: SelectorType.css,
         label: "Input Field",
@@ -604,7 +652,7 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const result = await BackgroundPageActionDispatcher.keyboard(param)
+      const result = await BackgroundPageActionDispatcher.keyboard(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
@@ -625,6 +673,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         targetSelector: ".input-field",
         selectorType: SelectorType.css,
         label: "Input Field",
@@ -637,7 +686,7 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const result = await BackgroundPageActionDispatcher.keyboard(param)
+      const result = await BackgroundPageActionDispatcher.keyboard(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
@@ -654,6 +703,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         targetSelector: ".input-field",
         selectorType: SelectorType.css,
         label: "Input Field",
@@ -666,7 +716,7 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const result = await BackgroundPageActionDispatcher.keyboard(param)
+      const result = await BackgroundPageActionDispatcher.keyboard(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
@@ -682,6 +732,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         targetSelector: ".input-field",
         selectorType: SelectorType.css,
         label: "Input Field",
@@ -694,7 +745,7 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const result = await BackgroundPageActionDispatcher.keyboard(param)
+      const result = await BackgroundPageActionDispatcher.keyboard(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
@@ -715,6 +766,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         targetSelector: ".test",
         selectorType: SelectorType.css,
         label: "Test",
@@ -727,7 +779,7 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      await BackgroundPageActionDispatcher.keyboard(param)
+      await BackgroundPageActionDispatcher.keyboard(param as any)
 
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -742,6 +794,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(null)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         targetSelector: ".not-found",
         selectorType: SelectorType.css,
         label: "Not Found",
@@ -754,7 +807,9 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.keyboard(param)
+      const resultPromise = BackgroundPageActionDispatcher.keyboard(
+        param as any,
+      )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
 
       const result = await resultPromise
@@ -773,6 +828,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input-field",
         selectorType: SelectorType.css,
         label: "Input Field",
@@ -782,7 +838,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.value).toBe("existingtest text")
@@ -797,6 +853,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".textarea-field",
         selectorType: SelectorType.css,
         label: "Textarea Field",
@@ -806,7 +863,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.value).toBe("existingtest text")
@@ -832,6 +889,7 @@ describe("backgroundDispatcher", () => {
       mockWindow.getSelection.mockReturnValue(mockSelection)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".contenteditable",
         selectorType: SelectorType.css,
         label: "ContentEditable",
@@ -841,7 +899,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.innerText).toBe("existingtest text")
@@ -856,11 +914,14 @@ describe("backgroundDispatcher", () => {
       const mockElement = mockElements.input
       mockElement.value = ""
       mockDocument.querySelector.mockReturnValue(mockElement)
-      mockSafeInterpolate.mockImplementation((template, vars) => {
-        return template.replace("{{selectedText}}", vars["{{selectedText}}"])
-      })
+      mockSafeInterpolate.mockImplementation(
+        (template: string, vars: Record<string, string>) => {
+          return template.replace("{{selectedText}}", vars["{{selectedText}}"])
+        },
+      )
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -870,7 +931,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -885,11 +946,14 @@ describe("backgroundDispatcher", () => {
       const mockElement = mockElements.input
       mockElement.value = ""
       mockDocument.querySelector.mockReturnValue(mockElement)
-      mockSafeInterpolate.mockImplementation((template, vars) => {
-        return template.replace("{{url}}", vars["{{url}}"])
-      })
+      mockSafeInterpolate.mockImplementation(
+        (template: string, vars: Record<string, string>) => {
+          return template.replace("{{url}}", vars["{{url}}"])
+        },
+      )
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -899,7 +963,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -914,11 +978,14 @@ describe("backgroundDispatcher", () => {
       const mockElement = mockElements.input
       mockElement.value = ""
       mockDocument.querySelector.mockReturnValue(mockElement)
-      mockSafeInterpolate.mockImplementation((template, vars) => {
-        return template.replace("{{clipboard}}", vars["{{clipboard}}"])
-      })
+      mockSafeInterpolate.mockImplementation(
+        (template: string, vars: Record<string, string>) => {
+          return template.replace("{{clipboard}}", vars["{{clipboard}}"])
+        },
+      )
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -928,7 +995,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "copied text",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -943,15 +1010,18 @@ describe("backgroundDispatcher", () => {
       const mockElement = mockElements.input
       mockElement.value = ""
       mockDocument.querySelector.mockReturnValue(mockElement)
-      mockSafeInterpolate.mockImplementation((template, vars) => {
-        let result = template
-        Object.entries(vars).forEach(([key, value]) => {
-          result = result.replace(key, value as string)
-        })
-        return result
-      })
+      mockSafeInterpolate.mockImplementation(
+        (template: string, vars: Record<string, string>) => {
+          let result = template
+          Object.entries(vars).forEach(([key, value]) => {
+            result = result.replace(key, value as string)
+          })
+          return result
+        },
+      )
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -961,7 +1031,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "clipboard",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -981,6 +1051,7 @@ describe("backgroundDispatcher", () => {
       mockSafeInterpolate.mockReturnValue("test {value}")
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -990,7 +1061,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      await BackgroundPageActionDispatcher.input(param)
+      await BackgroundPageActionDispatcher.input(param as any)
 
       // The value should be escaped after interpolation
       expect(mockElement.value).toContain("test {{value}")
@@ -1002,6 +1073,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -1011,7 +1083,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.value).toBe("existing text appended")
@@ -1023,6 +1095,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(mockElement)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -1032,7 +1105,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      await BackgroundPageActionDispatcher.input(param)
+      await BackgroundPageActionDispatcher.input(param as any)
 
       const expectedLength = "existing text".length
       expect(mockElement.selectionStart).toBe(expectedLength)
@@ -1050,6 +1123,7 @@ describe("backgroundDispatcher", () => {
       })
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -1059,7 +1133,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      await BackgroundPageActionDispatcher.input(param)
+      await BackgroundPageActionDispatcher.input(param as any)
 
       expect(eventTypes).toEqual(["input", "change"])
       expect(mockElement.dispatchEvent).toHaveBeenCalledTimes(2)
@@ -1072,6 +1146,7 @@ describe("backgroundDispatcher", () => {
       mockIsEmpty.mockReturnValue(true)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
@@ -1081,7 +1156,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param)
+      const result = await BackgroundPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.value).toBe("existing") // Should remain unchanged
@@ -1092,6 +1167,7 @@ describe("backgroundDispatcher", () => {
       mockDocument.querySelector.mockReturnValue(null)
 
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         selector: ".not-found",
         selectorType: SelectorType.css,
         label: "Not Found",
@@ -1101,7 +1177,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.input(param)
+      const resultPromise = BackgroundPageActionDispatcher.input(param as any)
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
 
       const result = await resultPromise
@@ -1116,12 +1192,13 @@ describe("backgroundDispatcher", () => {
   describe("BackgroundPageActionDispatcher.scroll", () => {
     it("BDS-01: Should execute scroll successfully", async () => {
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         x: 100,
         y: 200,
         label: "Scroll",
       }
 
-      const result = await BackgroundPageActionDispatcher.scroll(param)
+      const result = await BackgroundPageActionDispatcher.scroll(param as any)
 
       expect(result).toEqual([true])
       expect(mockWindow.scrollTo).toHaveBeenCalledWith({
@@ -1132,12 +1209,13 @@ describe("backgroundDispatcher", () => {
 
     it("BDS-02: Should scroll to origin (0,0)", async () => {
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         x: 0,
         y: 0,
         label: "Scroll to top",
       }
 
-      const result = await BackgroundPageActionDispatcher.scroll(param)
+      const result = await BackgroundPageActionDispatcher.scroll(param as any)
 
       expect(result).toEqual([true])
       expect(mockWindow.scrollTo).toHaveBeenCalledWith({
@@ -1148,12 +1226,13 @@ describe("backgroundDispatcher", () => {
 
     it("BDS-03: Should handle large coordinate values", async () => {
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         x: 10000,
         y: 20000,
         label: "Large scroll",
       }
 
-      const result = await BackgroundPageActionDispatcher.scroll(param)
+      const result = await BackgroundPageActionDispatcher.scroll(param as any)
 
       expect(result).toEqual([true])
       expect(mockWindow.scrollTo).toHaveBeenCalledWith({
@@ -1164,12 +1243,13 @@ describe("backgroundDispatcher", () => {
 
     it("BDS-05: Should handle negative coordinate values", async () => {
       const param = {
+        type: PAGE_ACTION_EVENT.click,
         x: -100,
         y: -200,
         label: "Negative scroll",
       }
 
-      const result = await BackgroundPageActionDispatcher.scroll(param)
+      const result = await BackgroundPageActionDispatcher.scroll(param as any)
 
       expect(result).toEqual([true])
       expect(mockWindow.scrollTo).toHaveBeenCalledWith({

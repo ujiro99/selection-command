@@ -1,4 +1,4 @@
-import { beforeEach, afterEach, describe, it, expect, vi } from "vitest"
+import { beforeEach, describe, it, expect, vi } from "vitest"
 import type {
   MultiTabPageActionStatus,
   PageActionStatus,
@@ -40,11 +40,21 @@ describe("MultiTabRunningStatus", () => {
   const mockSteps: PageActionStep[] = [
     {
       id: "step1",
-      param: { type: "click", label: "Button 1" },
+      delayMs: 0,
+      skipRenderWait: false,
+      param: {
+        type: "click" as any,
+        label: "Button 1",
+      },
     },
     {
       id: "step2",
-      param: { type: "input", label: "Text Field" },
+      delayMs: 0,
+      skipRenderWait: false,
+      param: {
+        type: "input" as any,
+        label: "Text Field",
+      },
     },
   ]
 
@@ -54,14 +64,14 @@ describe("MultiTabRunningStatus", () => {
     results: [
       {
         stepId: "step1",
-        type: "click",
+        type: "click" as any,
         label: "Button 1",
         status: EXEC_STATE.Queue,
         duration: TIMEOUT,
       },
       {
         stepId: "step2",
-        type: "input",
+        type: "input" as any,
         label: "Text Field",
         status: EXEC_STATE.Queue,
         duration: TIMEOUT,
@@ -98,14 +108,14 @@ describe("MultiTabRunningStatus", () => {
             results: expect.arrayContaining([
               expect.objectContaining({
                 stepId: "step1",
-                type: "click",
+                type: "click" as any,
                 label: "Button 1",
                 status: EXEC_STATE.Queue,
                 duration: TIMEOUT,
               }),
               expect.objectContaining({
                 stepId: "step2",
-                type: "input",
+                type: "input" as any,
                 label: "Text Field",
                 status: EXEC_STATE.Queue,
                 duration: TIMEOUT,
@@ -158,16 +168,18 @@ describe("MultiTabRunningStatus", () => {
 
   describe("updateTab", () => {
     it("MT-05: Should update step status successfully", async () => {
-      const updatedStatus = { ...mockMultiStatus }
-      mockStorage.update.mockImplementation((key, updateFn) => {
-        const result = updateFn(mockMultiStatus)
-        return Promise.resolve(result)
-      })
+      // const updatedStatus = { ...mockMultiStatus }
+      mockStorage.update.mockImplementation(
+        (_: string, updateFn: (data: any) => any) => {
+          const result = updateFn(mockMultiStatus)
+          return Promise.resolve(result)
+        },
+      )
 
       await MultiTabRunningStatus.updateTab(
         mockTabId,
         "step1",
-        EXEC_STATE.Success,
+        EXEC_STATE.Done,
         "Test message",
         500,
       )
@@ -179,16 +191,14 @@ describe("MultiTabRunningStatus", () => {
     })
 
     it("MT-06: Should handle missing tab gracefully", async () => {
-      mockStorage.update.mockImplementation((key, updateFn) => {
-        const result = updateFn({})
-        return Promise.resolve(result)
-      })
-
-      await MultiTabRunningStatus.updateTab(
-        mockTabId,
-        "step1",
-        EXEC_STATE.Success,
+      mockStorage.update.mockImplementation(
+        (_: string, updateFn: (data: any) => any) => {
+          const result = updateFn({})
+          return Promise.resolve(result)
+        },
       )
+
+      await MultiTabRunningStatus.updateTab(mockTabId, "step1", EXEC_STATE.Done)
 
       expect(mockConsole.warn).toHaveBeenCalledWith(
         `Tab ${mockTabId} not found in running status`,
@@ -196,55 +206,59 @@ describe("MultiTabRunningStatus", () => {
     })
 
     it("MT-07: Should update specific step and preserve others", async () => {
-      mockStorage.update.mockImplementation((key, updateFn) => {
-        const result = updateFn(mockMultiStatus)
+      mockStorage.update.mockImplementation(
+        (_: string, updateFn: (data: any) => any) => {
+          const result = updateFn(mockMultiStatus)
 
-        // Verify the update function logic
-        const currentMultiStatus = mockMultiStatus
-        const currentTabStatus = currentMultiStatus[mockTabId]
-        const updatedResults = currentTabStatus.results.map((r) =>
-          r.stepId === "step1"
-            ? {
-                ...r,
-                status: EXEC_STATE.Success,
-                message: "Updated",
-                duration: 600,
-              }
-            : r,
-        )
+          // Verify the update function logic
+          const currentMultiStatus = mockMultiStatus
+          const currentTabStatus = currentMultiStatus[mockTabId]
+          const updatedResults = currentTabStatus.results.map((r) =>
+            r.stepId === "step1"
+              ? {
+                  ...r,
+                  status: EXEC_STATE.Done,
+                  message: "Updated",
+                  duration: 600,
+                }
+              : r,
+          )
 
-        const expectedResult = {
-          ...currentMultiStatus,
-          [mockTabId]: {
-            ...currentTabStatus,
-            stepId: "step1",
-            results: updatedResults,
-          },
-        }
+          const expectedResult = {
+            ...currentMultiStatus,
+            [mockTabId]: {
+              ...currentTabStatus,
+              stepId: "step1",
+              results: updatedResults,
+            },
+          }
 
-        expect(result).toEqual(expectedResult)
-        return Promise.resolve(result)
-      })
+          expect(result).toEqual(expectedResult)
+          return Promise.resolve(result)
+        },
+      )
 
       await MultiTabRunningStatus.updateTab(
         mockTabId,
         "step1",
-        EXEC_STATE.Success,
+        EXEC_STATE.Done,
         "Updated",
         600,
       )
     })
 
     it("MT-08: Should use default duration when not provided", async () => {
-      mockStorage.update.mockImplementation((key, updateFn) => {
-        const result = updateFn(mockMultiStatus)
-        return Promise.resolve(result)
-      })
+      mockStorage.update.mockImplementation(
+        (_: string, updateFn: (data: any) => any) => {
+          const result = updateFn(mockMultiStatus)
+          return Promise.resolve(result)
+        },
+      )
 
       await MultiTabRunningStatus.updateTab(
         mockTabId,
         "step1",
-        EXEC_STATE.Success,
+        EXEC_STATE.Done,
         "Test message",
       )
 
@@ -338,16 +352,18 @@ describe("MultiTabRunningStatus", () => {
         456: { ...mockPageActionStatus, tabId: 456 },
       }
 
-      mockStorage.update.mockImplementation((key, updateFn) => {
-        const result = updateFn(multiStatusWithMultipleTabs)
+      mockStorage.update.mockImplementation(
+        (_: string, updateFn: (data: any) => any) => {
+          const result = updateFn(multiStatusWithMultipleTabs)
 
-        // Verify the update function removes the correct tab
-        const { [mockTabId]: removed, ...remaining } =
-          multiStatusWithMultipleTabs
-        expect(result).toEqual(remaining)
+          // Verify the update function removes the correct tab
+          const { [mockTabId]: removed, ...remaining } =
+            multiStatusWithMultipleTabs
+          expect(result).toEqual(remaining)
 
-        return Promise.resolve(result)
-      })
+          return Promise.resolve(result)
+        },
+      )
 
       await MultiTabRunningStatus.clearTab(mockTabId)
 
@@ -370,11 +386,13 @@ describe("MultiTabRunningStatus", () => {
     })
 
     it("MT-18: Should handle clearing non-existing tab", async () => {
-      mockStorage.update.mockImplementation((key, updateFn) => {
-        const result = updateFn({})
-        expect(result).toEqual({})
-        return Promise.resolve(result)
-      })
+      mockStorage.update.mockImplementation(
+        (_: string, updateFn: (data: any) => any) => {
+          const result = updateFn({})
+          expect(result).toEqual({})
+          return Promise.resolve(result)
+        },
+      )
 
       await MultiTabRunningStatus.clearTab(999)
 
@@ -424,7 +442,12 @@ describe("RunningStatus (Single-tab API)", () => {
   const mockSteps: PageActionStep[] = [
     {
       id: "step1",
-      param: { type: "click", label: "Button 1" },
+      delayMs: 0,
+      skipRenderWait: false,
+      param: {
+        type: "click" as any,
+        label: "Button 1",
+      },
     },
   ]
 
@@ -473,32 +496,29 @@ describe("RunningStatus (Single-tab API)", () => {
       await RunningStatus.init(mockTabId, mockSteps)
 
       // Mock update behavior
-      mockStorage.update.mockImplementation((key, updateFn) => {
-        const mockStatus = {
-          [mockTabId]: {
-            tabId: mockTabId,
-            stepId: "step1",
-            results: [
-              {
-                stepId: "step1",
-                type: "click",
-                label: "Button 1",
-                status: EXEC_STATE.Queue,
-                duration: TIMEOUT,
-              },
-            ],
-          },
-        }
-        const result = updateFn(mockStatus)
-        return Promise.resolve(result)
-      })
-
-      await RunningStatus.update(
-        "step1",
-        EXEC_STATE.Success,
-        "Test message",
-        500,
+      mockStorage.update.mockImplementation(
+        (_: string, updateFn: (data: any) => any) => {
+          const mockStatus = {
+            [mockTabId]: {
+              tabId: mockTabId,
+              stepId: "step1",
+              results: [
+                {
+                  stepId: "step1",
+                  type: "click" as any,
+                  label: "Button 1",
+                  status: EXEC_STATE.Queue,
+                  duration: TIMEOUT,
+                },
+              ],
+            },
+          }
+          const result = updateFn(mockStatus)
+          return Promise.resolve(result)
+        },
       )
+
+      await RunningStatus.update("step1", EXEC_STATE.Done, "Test message", 500)
 
       expect(mockStorage.update).toHaveBeenCalledWith(
         SESSION_STORAGE_KEY.PA_RUNNING,
@@ -507,7 +527,7 @@ describe("RunningStatus (Single-tab API)", () => {
     })
 
     it("ST-03: Should warn when no current tab is set", async () => {
-      await RunningStatus.update("step1", EXEC_STATE.Success, "Test message")
+      await RunningStatus.update("step1", EXEC_STATE.Done, "Test message")
 
       expect(mockConsole.warn).toHaveBeenCalledWith(
         "No current tab set for RunningStatus.update",
@@ -524,7 +544,7 @@ describe("RunningStatus (Single-tab API)", () => {
         results: [
           {
             stepId: "step1",
-            type: "click",
+            type: "click" as any,
             label: "Button 1",
             status: EXEC_STATE.Queue,
             duration: TIMEOUT,
@@ -585,10 +605,12 @@ describe("RunningStatus (Single-tab API)", () => {
       await RunningStatus.init(mockTabId, mockSteps)
 
       // Mock clear behavior
-      mockStorage.update.mockImplementation((key, updateFn) => {
-        const result = updateFn({ [mockTabId]: {} })
-        return Promise.resolve(result)
-      })
+      mockStorage.update.mockImplementation(
+        (_: string, updateFn: (data: any) => any) => {
+          const result = updateFn({ [mockTabId]: {} })
+          return Promise.resolve(result)
+        },
+      )
 
       await RunningStatus.clear()
 
@@ -598,7 +620,7 @@ describe("RunningStatus (Single-tab API)", () => {
       )
 
       // Verify currentTabId is reset by checking update behavior
-      await RunningStatus.update("step1", EXEC_STATE.Success)
+      await RunningStatus.update("step1", EXEC_STATE.Done)
       expect(mockConsole.warn).toHaveBeenCalledWith(
         "No current tab set for RunningStatus.update",
       )
