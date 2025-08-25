@@ -68,8 +68,8 @@ export function usePageActionRunner() {
       }
     })
 
-    // Handle multi-tab status updates
-    const handleUpdateStatus = (multiStatus: MultiTabPageActionStatus) => {
+    // Handle status updates
+    const onStatusChange = (multiStatus: MultiTabPageActionStatus) => {
       const currentTabStatus = multiStatus[tabId]
       if (currentTabStatus) {
         updateStatus(currentTabStatus)
@@ -77,11 +77,7 @@ export function usePageActionRunner() {
     }
 
     // Subscribe to status changes
-    MultiTabRunningStatus.subscribe(handleUpdateStatus)
-
-    return () => {
-      MultiTabRunningStatus.unsubscribe(handleUpdateStatus)
-    }
+    return MultiTabRunningStatus.subscribe(onStatusChange)
   }, [tabId, setContextData])
 
   const execute = async (

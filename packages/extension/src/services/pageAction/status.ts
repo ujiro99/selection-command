@@ -136,11 +136,9 @@ export const MultiTabRunningStatus = {
       SESSION_STORAGE_KEY.PA_RUNNING,
       cb,
     )
-  },
-
-  // Unsubscribe from status changes
-  unsubscribe: (cb: (status: MultiTabPageActionStatus) => void) => {
-    Storage.removeListener(SESSION_STORAGE_KEY.PA_RUNNING, cb)
+    return () => {
+      Storage.removeListener(SESSION_STORAGE_KEY.PA_RUNNING, cb)
+    }
   },
 }
 

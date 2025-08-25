@@ -79,10 +79,10 @@ export function PageActionRunner(): JSX.Element {
     }
 
     // Subscribe to status changes
-    MultiTabRunningStatus.subscribe(onStatusChange)
+    const unsub = MultiTabRunningStatus.subscribe(onStatusChange)
     return () => {
       clearTimeout(progressTORef.current)
-      MultiTabRunningStatus.unsubscribe(onStatusChange)
+      unsub()
     }
   }, [tabId, isLoading])
 
