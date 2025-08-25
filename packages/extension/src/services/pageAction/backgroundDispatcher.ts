@@ -74,7 +74,7 @@ export const BackgroundPageActionDispatcher = {
     return [true]
   },
 
-  doubleCilck: async (param: PageAction.Click): ActionReturn => {
+  doubleClick: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
 
     const element = await waitForElementBackground(selector, selectorType)

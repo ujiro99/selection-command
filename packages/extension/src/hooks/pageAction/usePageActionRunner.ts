@@ -64,7 +64,7 @@ export function usePageActionRunner() {
           )
           break
         case "doubleClick":
-          ;[result, msg] = await dispatcher.doubleCilck(
+          ;[result, msg] = await dispatcher.doubleClick(
             step.param as PageAction.Click,
           )
           break

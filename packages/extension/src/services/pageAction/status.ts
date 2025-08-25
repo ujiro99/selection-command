@@ -2,7 +2,7 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from "@/const"
 import type {
   MultiTabPageActionStatus,
-  PageActiontStatus,
+  PageActionStatus,
   PageActionStep,
 } from "@/types"
 import { PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
@@ -20,7 +20,7 @@ export const MultiTabRunningStatus = {
       )) ?? {}
 
     // Add new tab status with type safety
-    const tabStatus: PageActiontStatus = {
+    const tabStatus: PageActionStatus = {
       tabId,
       stepId: steps[0].id,
       results: steps.map((s) => ({
@@ -74,7 +74,7 @@ export const MultiTabRunningStatus = {
   },
 
   // Get status for a specific tab
-  getTab: async (tabId: number): Promise<PageActiontStatus | null> => {
+  getTab: async (tabId: number): Promise<PageActionStatus | null> => {
     try {
       const multiStatus = await Storage.get<MultiTabPageActionStatus>(
         SESSION_STORAGE_KEY.PA_RUNNING,
@@ -168,7 +168,7 @@ export const RunningStatus = {
   },
 
   // Get status for current tab
-  get: async (): Promise<PageActiontStatus> => {
+  get: async (): Promise<PageActionStatus> => {
     if (currentTabId === null) {
       // Return empty status if no current tab
       return {

@@ -55,7 +55,8 @@ export const PageActionContextProvider = ({
       const status = allStatus[tabId]
       updateState({ status })
     }
-    MultiTabRunningStatus.subscribe(onStatusChange)
+
+    return MultiTabRunningStatus.subscribe(onStatusChange)
   }, [tabId, isLoading])
 
   const setContextData = useCallback(async (data: PageActionContext) => {
