@@ -87,7 +87,7 @@ export const add = (
       })
     }
 
-    // Remove a end ation.
+    // Remove a end action.
     steps = steps.filter((s) => s.param.type !== "end")
 
     // - 1 : End action
@@ -139,7 +139,7 @@ export const add = (
             step.param.label = prev.param.label
           }
         }
-        // Remove the vlaue in previous input if the same element has been input.
+        // Remove the value in previous input if the same element has been input.
         const param = step.param as PageAction.Input
         const prevInput = steps.filter((a) => a.param.type === "input").pop()
         if (prevInput) {

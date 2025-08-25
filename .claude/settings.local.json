@@ -50,7 +50,8 @@
       "WebFetch(domain:developer.chrome.com)",
       "mcp__serena__read_memory",
       "mcp__serena__think_about_collected_information",
-      "mcp__serena__insert_after_symbol"
+      "mcp__serena__insert_after_symbol",
+      "mcp__serena__think_about_whether_you_are_done"
     ],
     "deny": []
   }
