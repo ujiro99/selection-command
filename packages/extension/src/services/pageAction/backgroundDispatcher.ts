@@ -5,6 +5,26 @@ import { PageAction, ActionReturn } from "./dispatcher"
 import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
 
 /**
+ * Find element by selector type with unified logic.
+ * @param selector - CSS selector or XPath
+ * @param selectorType - Type of selector
+ * @returns HTMLElement | null - Found element (null if not found or invalid)
+ */
+function findElement(
+  selector: string,
+  selectorType: SelectorType,
+): HTMLElement | null {
+  if (selectorType === SelectorType.xpath) {
+    if (!isValidXPath(selector)) {
+      return null
+    }
+    return getElementByXPath(selector)
+  } else {
+    return document.querySelector(selector)
+  }
+}
+
+/**
  * Wait for an element to appear in the DOM for background tab execution.
  * Similar to waitForElement but with longer intervals and no requestAnimationFrame.
  * @param selector - CSS selector or XPath
@@ -17,6 +37,13 @@ async function waitForElementBackground(
   selectorType: SelectorType,
   timeout: number = TIMEOUT,
 ): Promise<HTMLElement | null> {
+  // Check immediately before starting polling (performance optimization)
+  const elm = findElement(selector, selectorType)
+  if (elm) {
+    return elm
+  }
+
+  // Start polling if element not found immediately
   const startTime = Date.now()
 
   return new Promise((resolve) => {
@@ -28,18 +55,7 @@ async function waitForElementBackground(
         return
       }
 
-      let element: HTMLElement | null = null
-      if (selectorType === SelectorType.xpath) {
-        if (!isValidXPath(selector)) {
-          clearInterval(interval)
-          resolve(null)
-          return
-        }
-        element = getElementByXPath(selector)
-      } else {
-        element = document.querySelector(selector)
-      }
-
+      const element = findElement(selector, selectorType)
       if (element) {
         clearInterval(interval)
         resolve(element)
