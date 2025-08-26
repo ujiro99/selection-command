@@ -1,24 +1,17 @@
 import { useEffect } from "react"
-import type { PageActiontStatus } from "@/types"
 import {
-  PageActionDispatcher as dispatcher,
+  PageActionDispatcher,
+  BackgroundPageActionDispatcher,
   PageAction,
 } from "@/services/pageAction"
 import type { ExecPageAction } from "@/services/ipc"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { debounceDOMChange } from "@/services/dom"
-import { RunningStatus } from "@/services/pageAction"
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
-import { PAGE_ACTION_CONTROL, PAGE_ACTION_EXEC_STATE } from "@/const"
-
-const STOP_STATUS = [
-  PAGE_ACTION_EXEC_STATE.Done,
-  PAGE_ACTION_EXEC_STATE.Failed,
-  PAGE_ACTION_EXEC_STATE.Stop,
-]
+import { PAGE_ACTION_CONTROL, PAGE_ACTION_OPEN_MODE } from "@/const"
 
 export function usePageActionRunner() {
-  const { setContextData } = usePageActionContext()
+  const { setContextData, status } = usePageActionContext()
 
   useEffect(() => {
     const listener = (param: any, _sender: any, response: any) => {
@@ -27,36 +20,31 @@ export function usePageActionRunner() {
       })
       return true
     }
-
-    let timeout = 0
-    const updateStatus = (status: PageActiontStatus) => {
-      clearTimeout(timeout)
-      const sid = status.stepId
-      const step = status.results?.find((s) => s.stepId === sid)
-      if (!step) return
-      if (step.status === PAGE_ACTION_EXEC_STATE.Start) {
-        setContextData({ isRunning: true })
-      } else if (STOP_STATUS.includes(step.status)) {
-        timeout = window.setTimeout(() => {
-          setContextData({ isRunning: false })
-        }, 500)
-      }
-    }
-
-    RunningStatus.get().then(updateStatus)
-    RunningStatus.subscribe(updateStatus)
     Ipc.addListener(TabCommand.execPageAction, listener)
     return () => {
-      RunningStatus.unsubscribe(updateStatus)
       Ipc.removeListener(TabCommand.execPageAction)
     }
   }, [])
 
+  useEffect(() => {
+    if (status != null) {
+      setContextData({ isRunning: true })
+    } else {
+      setContextData({ isRunning: false })
+    }
+  }, [setContextData, status])
+
   const execute = async (
     message: ExecPageAction.Message,
   ): Promise<ExecPageAction.Return> => {
-    const { step, srcUrl, selectedText, clipboardText } = message
+    const { step, srcUrl, selectedText, clipboardText, openMode } = message
     const type = step.param.type
+
+    // Select dispatcher based on openMode
+    const dispatcher =
+      openMode === PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
+        ? BackgroundPageActionDispatcher
+        : PageActionDispatcher
 
     // Wait for the DOM to be updated.
     if (type !== PAGE_ACTION_CONTROL.end) {
@@ -76,7 +64,7 @@ export function usePageActionRunner() {
           )
           break
         case "doubleClick":
-          ;[result, msg] = await dispatcher.doubleCilck(
+          ;[result, msg] = await dispatcher.doubleClick(
             step.param as PageAction.Click,
           )
           break

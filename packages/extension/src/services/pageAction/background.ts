@@ -59,6 +59,7 @@ const EndAction = {
 }
 
 const DELAY_AFTER_URL_CHANGED = 100
+const RETRY_MAX = 5
 
 export const add = (
   step: PageActionStep,
@@ -86,7 +87,7 @@ export const add = (
       })
     }
 
-    // Remove a end ation.
+    // Remove a end action.
     steps = steps.filter((s) => s.param.type !== "end")
 
     // - 1 : End action
@@ -138,7 +139,7 @@ export const add = (
             step.param.label = prev.param.label
           }
         }
-        // Remove the vlaue in previous input if the same element has been input.
+        // Remove the value in previous input if the same element has been input.
         const param = step.param as PageAction.Input
         const prevInput = steps.filter((a) => a.param.type === "input").pop()
         if (prevInput) {
@@ -283,7 +284,16 @@ export const openAndRun = (
       })
       tabId = ret.tabId
       clipboardText = ret.clipboardText
+    } else if (param.openMode === PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB) {
+      // Background tab execution
+      const ret = await openTab({
+        url: param.url,
+        active: false, // Do not activate the tab
+      })
+      tabId = ret.tabId
+      clipboardText = ret.clipboardText
     } else {
+      // Popup and Window modes
       const ret = await openPopupWindow({
         ...param,
         type:
@@ -376,7 +386,7 @@ const run = (
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  const { steps, selectedText, clipboardText, srcUrl } = param
+  const { steps, selectedText, clipboardText, srcUrl, openMode } = param
   const tabId = param.tabId || sender.tab?.id
   if (tabId == null) {
     console.error("tabId not found")
@@ -384,67 +394,117 @@ const run = (
     return true
   }
 
-  const _run = async () => {
-    // Update running status
-    await RunningStatus.init(tabId, steps)
-    await BgData.set((data) => ({ ...data, pageActionStop: false }))
+  const execute = async (
+    step: PageActionStep,
+    retryCount = 0,
+  ): Promise<ExecPageAction.Return> => {
+    try {
+      await Ipc.ensureConnection(tabId)
+      const delay = step.delayMs ?? 0
+      await RunningStatus.updateTab(
+        tabId,
+        step.id,
+        EXEC_STATE.Doing,
+        "",
+        TIMEOUT + delay,
+      )
 
-    // Run steps
-    for (const step of steps) {
-      await RunningStatus.update(step.id, EXEC_STATE.Start)
-
-      // Check stop flag
-      const stop = BgData.get().pageActionStop
-      if (stop) {
-        // Cancel the execution
-        await RunningStatus.update(step.id, EXEC_STATE.Stop)
-        break
+      // Wait for the delay time
+      if (delay > 0) {
+        await sleep(delay)
       }
 
-      try {
-        // Execute
-        await Ipc.ensureConnection(tabId)
-        const delay = step.delayMs ?? 0
-        await RunningStatus.update(
-          step.id,
-          EXEC_STATE.Doing,
-          "",
-          TIMEOUT + delay,
-        )
+      const ret = await Ipc.sendTab<
+        ExecPageAction.Message,
+        ExecPageAction.Return
+      >(tabId, TabCommand.execPageAction, {
+        step,
+        srcUrl,
+        selectedText,
+        clipboardText,
+        openMode,
+      })
+      if (ret == null) {
+        if (retryCount >= RETRY_MAX) {
+          console.warn("No response from the tab after retries.")
+          return { result: false, message: "No response from the tab." }
+        }
+        console.debug("No response from the tab. Retrying...", retryCount)
+        return await execute(step, retryCount + 1)
+      }
+      return ret
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e)
+      console.error("PageAction execution error:", errorMessage)
+      return { result: false, message: errorMessage }
+    }
+  }
 
-        // Wait for the delay time
-        if (delay > 0) {
-          await sleep(delay)
+  const _run = async () => {
+    try {
+      // Update running status
+      await RunningStatus.initTab(tabId, steps)
+
+      // Enhanced BgData update with error handling
+      const updateResult = await BgData.update({ pageActionStop: false })
+      if (!updateResult) {
+        console.warn("Failed to update BgData, continuing execution")
+      }
+
+      // Run steps
+      for (const step of steps) {
+        await RunningStatus.updateTab(tabId, step.id, EXEC_STATE.Start)
+
+        // Check stop flag
+        const stop = BgData.get().pageActionStop
+        if (stop) {
+          // Cancel the execution
+          await RunningStatus.updateTab(tabId, step.id, EXEC_STATE.Stop)
+          break
         }
 
-        // console.log('sendTab', step.param.type)
-        const ret = await Ipc.sendTab<
-          ExecPageAction.Message,
-          ExecPageAction.Return
-        >(tabId, TabCommand.execPageAction, {
-          step,
-          srcUrl,
-          selectedText,
-          clipboardText,
-        })
+        // Execute step
+        const ret = await execute(step)
 
         if (ret.result) {
           if (step.param.type === PAGE_ACTION_CONTROL.end) {
             // End of the action
-            await RunningStatus.update(step.id, EXEC_STATE.Done, "", 500)
+            await RunningStatus.updateTab(
+              tabId,
+              step.id,
+              EXEC_STATE.Done,
+              "",
+              1000,
+            )
+            await sleep(1000)
             break
+          } else {
+            await RunningStatus.updateTab(tabId, step.id, EXEC_STATE.Done)
           }
-          await RunningStatus.update(step.id, EXEC_STATE.Done)
         } else {
-          await RunningStatus.update(step.id, EXEC_STATE.Failed, ret.message)
-          break
+          const errorMessage = ret.message || "Unknown execution error"
+          await RunningStatus.updateTab(
+            tabId,
+            step.id,
+            EXEC_STATE.Failed,
+            errorMessage,
+          )
+          console.error(`Step execution failed: ${errorMessage}`, {
+            step,
+            tabId,
+          })
+          break // Stop execution on error
         }
-      } catch (e) {
-        await RunningStatus.update(step.id, EXEC_STATE.Failed, `${e}`)
-        break
       }
+      response(true)
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error)
+      console.error("PageAction run error:", errorMessage)
+      response(false)
+    } finally {
+      await RunningStatus.clearTab(tabId)
     }
-    response(true)
   }
   _run()
   return true
@@ -455,9 +515,14 @@ export const stopRunner = (
   __: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  BgData.set((data) => ({ ...data, pageActionStop: true })).then(() => {
-    response(true)
-  })
+  BgData.set((data) => ({ ...data, pageActionStop: true }))
+    .then(() => {
+      response(true)
+    })
+    .catch((error) => {
+      console.error("Failed to stop PageAction runner:", error)
+      response(false)
+    })
   return true
 }
 

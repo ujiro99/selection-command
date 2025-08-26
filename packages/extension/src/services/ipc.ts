@@ -77,6 +77,7 @@ export namespace ExecPageAction {
     selectedText: string
     clipboardText: string
     step: PageActionStep
+    openMode: PAGE_ACTION_OPEN_MODE
   }
   export type Return = {
     result: boolean

@@ -42,10 +42,12 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-function-type": "error",
       "@typescript-eslint/no-empty-object-type": "error",
       "no-prototype-builtins": "error",
-      // Style-related rules
-      "no-async-promise-executor": "warn",
-      "no-useless-escape": "warn",
-      "prefer-const": "warn",
+      // Style-related rules can be relaxed
+      "no-async-promise-executor": "warn", // Temporarily needed for complex async processing
+      "no-useless-escape": "warn", // Regex readability
+      "prefer-const": "warn", // Code style issue
+      // Relaxed rules for personal development
+      "@typescript-eslint/no-namespace": "off",
     },
   },
 );

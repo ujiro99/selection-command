@@ -275,6 +275,9 @@
   "Option_openMode_tab": {
     "message": "Tab"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Background Tab"
+  },
   "Option_openMode_api": {
     "message": "API"
   },

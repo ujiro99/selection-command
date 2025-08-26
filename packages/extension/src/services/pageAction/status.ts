@@ -1,65 +1,140 @@
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { PAGE_ACTION_EXEC_STATE as EXEC_STATE } from "@/const"
-import type { PageActiontStatus, PageActionStep } from "@/types"
+import type {
+  MultiTabPageActionStatus,
+  PageActionStatus,
+  PageActionStep,
+} from "@/types"
 import { PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
 
+/**
+ * RunningStatus manages the execution status of page actions across multiple tabs.
+ */
 export const RunningStatus = {
-  clear: async () => {
-    await Storage.update<PageActiontStatus>(
-      SESSION_STORAGE_KEY.PA_RUNNING,
-      (_cur) => ({
-        tabId: 0,
-        stepId: "",
-        results: [],
-      }),
-    )
-  },
+  // Initialize status for a specific tab
+  initTab: async (tabId: number, steps: PageActionStep[]) => {
+    if (steps.length === 0) {
+      throw new Error("Steps array cannot be empty")
+    }
 
-  init: async (tabId: number, steps: PageActionStep[]) => {
-    const results = steps.map((s) => ({
-      stepId: s.id,
-      type: s.param.type,
-      label: s.param.label,
-      status: EXEC_STATE.Queue,
-      duration: TIMEOUT,
-    }))
-    await Storage.set<PageActiontStatus>(SESSION_STORAGE_KEY.PA_RUNNING, {
+    const multiStatus =
+      (await Storage.get<MultiTabPageActionStatus>(
+        SESSION_STORAGE_KEY.PA_RUNNING,
+      )) ?? {}
+
+    // Add new tab status with type safety
+    const tabStatus: PageActionStatus = {
       tabId,
       stepId: steps[0].id,
-      results,
-    })
+      results: steps.map((s) => ({
+        stepId: s.id,
+        type: s.param.type,
+        label: s.param.label,
+        status: EXEC_STATE.Queue,
+        duration: TIMEOUT,
+      })),
+    }
+
+    multiStatus[tabId] = tabStatus
+    await Storage.set(SESSION_STORAGE_KEY.PA_RUNNING, multiStatus)
   },
 
-  update: async (
+  // Update status for a specific tab
+  updateTab: async (
+    tabId: number,
     stepId: string,
     state: EXEC_STATE,
     message?: string,
     duration = TIMEOUT,
   ) => {
-    return await Storage.update<PageActiontStatus>(
+    return await Storage.update<MultiTabPageActionStatus>(
       SESSION_STORAGE_KEY.PA_RUNNING,
-      (status) => ({
-        ...status,
-        stepId,
-        results: status.results.map((r) => {
-          if (r.stepId === stepId) {
-            return { ...r, status: state, message, duration }
-          }
-          return r
-        }),
-      }),
+      (multiStatus) => {
+        // Ensure multiStatus is properly typed
+        const currentMultiStatus: MultiTabPageActionStatus = multiStatus ?? {}
+
+        // Type-safe check for tab existence
+        if (!currentMultiStatus[tabId]) {
+          console.warn(`Tab ${tabId} not found in running status`)
+          return currentMultiStatus
+        }
+
+        const currentTabStatus = currentMultiStatus[tabId]
+        const updatedResults = currentTabStatus.results.map((r) =>
+          r.stepId === stepId ? { ...r, status: state, message, duration } : r,
+        )
+
+        return {
+          ...currentMultiStatus,
+          [tabId]: {
+            ...currentTabStatus,
+            stepId,
+            results: updatedResults,
+          },
+        }
+      },
     )
   },
 
-  get: async (): Promise<PageActiontStatus> => {
-    return await Storage.get<PageActiontStatus>(SESSION_STORAGE_KEY.PA_RUNNING)
+  // Get status for a specific tab
+  getTab: async (tabId: number): Promise<PageActionStatus | null> => {
+    try {
+      const multiStatus = await Storage.get<MultiTabPageActionStatus>(
+        SESSION_STORAGE_KEY.PA_RUNNING,
+      )
+      return multiStatus?.[tabId] ?? null
+    } catch (error) {
+      console.error("Failed to get tab status:", error)
+      return null
+    }
   },
 
-  subscribe: (cb: (status: PageActiontStatus) => void) => {
-    Storage.addListener<PageActiontStatus>(SESSION_STORAGE_KEY.PA_RUNNING, cb)
+  // Get all tab statuses
+  getAll: async (): Promise<MultiTabPageActionStatus> => {
+    try {
+      return (
+        (await Storage.get<MultiTabPageActionStatus>(
+          SESSION_STORAGE_KEY.PA_RUNNING,
+        )) ?? {}
+      )
+    } catch (error) {
+      console.error("Failed to get all tab statuses:", error)
+      return {}
+    }
   },
 
-  unsubscribe: (cb: (status: PageActiontStatus) => void) => {
-    Storage.removeListener(SESSION_STORAGE_KEY.PA_RUNNING, cb)
+  // Clear status for a specific tab
+  clearTab: async (tabId: number) => {
+    try {
+      await Storage.update<MultiTabPageActionStatus>(
+        SESSION_STORAGE_KEY.PA_RUNNING,
+        (multiStatus) => {
+          const currentMultiStatus: MultiTabPageActionStatus = multiStatus ?? {}
+          const { [tabId]: removed, ...remaining } = currentMultiStatus
+          return remaining
+        },
+      )
+    } catch (error) {
+      console.error("Failed to clear tab status:", error)
+    }
+  },
+
+  // Clear all statuses
+  clear: async () => {
+    await Storage.set<MultiTabPageActionStatus>(
+      SESSION_STORAGE_KEY.PA_RUNNING,
+      {},
+    )
+  },
+
+  // Subscribe to status changes
+  subscribe: (cb: (status: MultiTabPageActionStatus) => void) => {
+    Storage.addListener<MultiTabPageActionStatus>(
+      SESSION_STORAGE_KEY.PA_RUNNING,
+      cb,
+    )
+    return () => {
+      Storage.removeListener(SESSION_STORAGE_KEY.PA_RUNNING, cb)
+    }
   },
 }

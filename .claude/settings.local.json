@@ -10,9 +10,7 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(node:*)",
-      "Bash(npm install:*)",
       "Bash(npm run lint)",
-      "Bash(npm uninstall:*)",
       "Bash(npx eslint:*)",
       "Bash(npx tsc:*)",
       "Bash(pkill:*)",
@@ -23,7 +21,6 @@
       "Bash(yarn add:*)",
       "Bash(yarn build)",
       "Bash(yarn eslint:*)",
-      "Bash(yarn install)",
       "Bash(yarn lint)",
       "Bash(yarn lint:*)",
       "Bash(yarn test:*)",
@@ -52,7 +49,9 @@
       "WebSearch",
       "WebFetch(domain:developer.chrome.com)",
       "mcp__serena__read_memory",
-      "mcp__serena__think_about_collected_information"
+      "mcp__serena__think_about_collected_information",
+      "mcp__serena__insert_after_symbol",
+      "mcp__serena__think_about_whether_you_are_done"
     ],
     "deny": []
   }
