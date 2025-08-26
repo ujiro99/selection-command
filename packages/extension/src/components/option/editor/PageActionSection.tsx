@@ -102,6 +102,7 @@ export const PageActionSection = ({
         control={form.control}
         name="pageActionOption.openMode"
         formLabel={t("pageAction_openMode")}
+        description={t("displayMode_desc")}
         type="pageAction"
       />
 

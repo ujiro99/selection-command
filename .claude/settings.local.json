@@ -52,7 +52,11 @@
       "mcp__serena__think_about_collected_information",
       "mcp__serena__insert_after_symbol",
       "mcp__serena__think_about_whether_you_are_done",
-      "mcp__serena__think_about_task_adherence"
+      "mcp__serena__think_about_task_adherence",
+      "Bash(for lang in it ko ru zh_CN pt_BR pt_PT hi id ms)",
+      "Bash(do)",
+      "Bash(echo:*)",
+      "Bash(done)"
     ],
     "deny": []
   }

@@ -2,6 +2,7 @@ import { OPEN_MODE } from "@/const"
 import { Popup } from "./popup"
 import { Window } from "./window"
 import { Tab } from "./tab"
+import { BackgroundTab } from "./backgroundTab"
 import { Api } from "./api"
 import { SelectedLinkPopup } from "./selectedLinkPopup"
 import { Copy } from "./copy"
@@ -16,6 +17,7 @@ export const actions = {
   [OPEN_MODE.POPUP]: Popup,
   [OPEN_MODE.WINDOW]: Window,
   [OPEN_MODE.TAB]: Tab,
+  [OPEN_MODE.BACKGROUND_TAB]: BackgroundTab,
   [OPEN_MODE.API]: Api,
   [OPEN_MODE.LINK_POPUP]: SelectedLinkPopup,
   [OPEN_MODE.COPY]: Copy,

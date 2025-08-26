@@ -4,7 +4,7 @@ import { SPACE_ENCODING } from "@/const"
 import type { ExecuteCommandParams } from "@/types"
 import type { OpenTabProps } from "@/services/chrome"
 
-export const Tab = {
+export const BackgroundTab = {
   async execute({
     selectionText,
     command,
@@ -22,7 +22,7 @@ export const Tab = {
         selectionText,
         useClipboard: useClipboard ?? false,
       },
-      active: true,
+      active: false,
     })
   },
 }
