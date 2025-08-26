@@ -22,6 +22,83 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = "addPageRule",
 }
 
+// Abstract command categories for simplified command creation
+export enum COMMAND_CATEGORY {
+  SEARCH = "search",
+  PAGE_ACTION = "pageAction",
+  COPY = "copy",
+  LINK_POPUP = "linkPopup",
+  GET_TEXT_STYLES = "getTextStyles",
+  API = "api",
+}
+
+// Metadata for command categories
+export const COMMAND_CATEGORY_METADATA = {
+  [COMMAND_CATEGORY.SEARCH]: {
+    iconName: "Search",
+    titleKey: "commandCategory_search_title",
+    descKey: "commandCategory_search_desc",
+  },
+  [COMMAND_CATEGORY.PAGE_ACTION]: {
+    iconName: "Play",
+    titleKey: "commandCategory_pageAction_title",
+    descKey: "commandCategory_pageAction_desc",
+  },
+  [COMMAND_CATEGORY.COPY]: {
+    iconName: "Copy",
+    titleKey: "commandCategory_copy_title",
+    descKey: "commandCategory_copy_desc",
+  },
+  [COMMAND_CATEGORY.LINK_POPUP]: {
+    iconName: "Link",
+    titleKey: "commandCategory_linkPopup_title",
+    descKey: "commandCategory_linkPopup_desc",
+  },
+  [COMMAND_CATEGORY.GET_TEXT_STYLES]: {
+    iconName: "Paintbrush",
+    titleKey: "commandCategory_getTextStyles_title",
+    descKey: "commandCategory_getTextStyles_desc",
+  },
+  [COMMAND_CATEGORY.API]: {
+    iconName: "Code",
+    titleKey: "commandCategory_api_title",
+    descKey: "commandCategory_api_desc",
+  },
+} as const
+
+// Command category groups for organized display
+export const COMMAND_CATEGORY_GROUPS = [
+  {
+    titleKey: "commandGroup_webPage_title",
+    categories: [COMMAND_CATEGORY.SEARCH, COMMAND_CATEGORY.PAGE_ACTION],
+  },
+  {
+    titleKey: "commandGroup_singleFunction_title",
+    categories: [
+      COMMAND_CATEGORY.COPY,
+      COMMAND_CATEGORY.LINK_POPUP,
+      COMMAND_CATEGORY.GET_TEXT_STYLES,
+    ],
+  },
+  {
+    titleKey: "commandGroup_experimental_title",
+    categories: [COMMAND_CATEGORY.API],
+  },
+] as const
+
+// Available OPEN_MODEs for command creation (excludes internal modes)
+export const COMMAND_OPEN_MODES = [
+  OPEN_MODE.POPUP,
+  OPEN_MODE.WINDOW,
+  OPEN_MODE.TAB,
+  OPEN_MODE.BACKGROUND_TAB,
+  OPEN_MODE.API,
+  OPEN_MODE.PAGE_ACTION,
+  OPEN_MODE.LINK_POPUP,
+  OPEN_MODE.COPY,
+  OPEN_MODE.GET_TEXT_STYLES,
+] as const
+
 /**
  * Background script only supports the following modes.
  * Modes that can operate without text selection.

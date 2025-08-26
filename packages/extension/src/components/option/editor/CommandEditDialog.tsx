@@ -55,6 +55,7 @@ import {
   PAGE_ACTION_OPEN_MODE,
   ICON_NOT_FOUND,
   SCREEN,
+  COMMAND_CATEGORY,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -189,6 +190,8 @@ type CommandEditDialogProps = {
   onSubmit: (command: SelectionCommand) => void
   folders: CommandFolder[]
   command?: SelectionCommand
+  selectedCategory?: COMMAND_CATEGORY
+  selectedOpenMode?: OPEN_MODE
 }
 
 export const CommandEditDialog = ({
@@ -197,6 +200,8 @@ export const CommandEditDialog = ({
   onSubmit,
   folders,
   command,
+  selectedCategory,
+  selectedOpenMode,
 }: CommandEditDialogProps) => {
   return (
     <FaviconContextProvider>
@@ -206,6 +211,8 @@ export const CommandEditDialog = ({
         onSubmit={onSubmit}
         folders={folders}
         command={command}
+        selectedCategory={selectedCategory}
+        selectedOpenMode={selectedOpenMode}
       />
     </FaviconContextProvider>
   )
@@ -217,6 +224,8 @@ const CommandEditDialogInner = ({
   onSubmit,
   folders,
   command,
+  selectedCategory,
+  selectedOpenMode,
 }: CommandEditDialogProps) => {
   const [initialized, setInitialized] = useState(false)
 
@@ -296,10 +305,16 @@ const CommandEditDialogInner = ({
       reset((command as any) ?? InitialValues)
     } else {
       setTimeout(() => {
-        reset(InitialValues)
+        const initialValues = selectedOpenMode
+          ? getDefault(selectedOpenMode, {
+              id: "",
+              title: "",
+            } as CommandSchemaType)
+          : InitialValues
+        reset(initialValues)
       }, 100)
     }
-  }, [command, reset])
+  }, [command, selectedOpenMode, reset])
 
   useEffect(() => {
     if (openMode === preOpenMode) return
@@ -397,21 +412,35 @@ const CommandEditDialogInner = ({
                 }}
               />
 
-              <SelectField
-                control={form.control}
-                name="openMode"
-                formLabel="Open Mode"
-                options={e2a(OPEN_MODE)
-                  .filter(
-                    (mode) =>
-                      mode !== OPEN_MODE.ADD_PAGE_RULE &&
-                      mode !== OPEN_MODE.OPTION,
-                  )
-                  .map((mode) => ({
+              {selectedCategory === COMMAND_CATEGORY.SEARCH ? (
+                <SelectField
+                  control={form.control}
+                  name="openMode"
+                  formLabel={t("searchMode")}
+                  options={SEARCH_OPEN_MODE.map((mode) => ({
                     name: t(`openMode_${mode}`),
                     value: mode,
                   }))}
-              />
+                />
+              ) : (
+                !selectedOpenMode && (
+                  <SelectField
+                    control={form.control}
+                    name="openMode"
+                    formLabel="Open Mode"
+                    options={e2a(OPEN_MODE)
+                      .filter(
+                        (mode) =>
+                          mode !== OPEN_MODE.ADD_PAGE_RULE &&
+                          mode !== OPEN_MODE.OPTION,
+                      )
+                      .map((mode) => ({
+                        name: t(`openMode_${mode}`),
+                        value: mode,
+                      }))}
+                  />
+                )
+              )}
 
               {SEARCH_OPEN_MODE.includes(openMode as any) && (
                 <SelectField

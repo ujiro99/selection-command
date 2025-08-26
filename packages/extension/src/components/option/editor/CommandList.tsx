@@ -18,6 +18,7 @@ import {
 } from "@dnd-kit/sortable"
 
 import { CommandEditDialog } from "@/components/option/editor/CommandEditDialog"
+import { CommandTypeSelectionDialog } from "@/components/option/editor/CommandTypeSelectionDialog"
 import { FolderEditDialog } from "@/components/option/editor/FolderEditDialog"
 import {
   CommandSchemaType,
@@ -26,7 +27,7 @@ import {
 } from "@/types/schema"
 
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import { SCREEN } from "@/const"
+import { SCREEN, OPEN_MODE, COMMAND_CATEGORY } from "@/const"
 import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
 // Imported services and hooks
@@ -102,8 +103,11 @@ type CommandListProps = {
 
 export const CommandList = ({ control }: CommandListProps) => {
   const [draggingId, setDraggingId] = useState<string | null>(null)
+  const [typeSelectionDialogOpen, setTypeSelectionDialogOpen] = useState(false)
   const [commandDialogOpen, _setCommandDialogOpen] = useState(false)
   const [folderDialogOpen, _setFolderDialogOpen] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<COMMAND_CATEGORY>()
+  const [selectedOpenMode, setSelectedOpenMode] = useState<OPEN_MODE>()
   const addCommandButtonRef = useRef<HTMLButtonElement>(null)
   const addFolderButtonRef = useRef<HTMLButtonElement>(null)
   const commandsRef = useRef<HTMLUListElement>(null)
@@ -153,6 +157,28 @@ export const CommandList = ({ control }: CommandListProps) => {
       editDataRef.current = null
     }
     _setFolderDialogOpen(open)
+  }
+
+  const handleTypeSelect = (category: COMMAND_CATEGORY) => {
+    setSelectedCategory(category)
+    setTypeSelectionDialogOpen(false)
+
+    // For search category, open command dialog without specific mode (user will select in dialog)
+    if (category === COMMAND_CATEGORY.SEARCH) {
+      setSelectedOpenMode(undefined)
+      setCommandDialogOpen(true)
+    } else {
+      // For other categories, map directly to the corresponding OPEN_MODE
+      const modeMap = {
+        [COMMAND_CATEGORY.PAGE_ACTION]: OPEN_MODE.PAGE_ACTION,
+        [COMMAND_CATEGORY.COPY]: OPEN_MODE.COPY,
+        [COMMAND_CATEGORY.LINK_POPUP]: OPEN_MODE.LINK_POPUP,
+        [COMMAND_CATEGORY.GET_TEXT_STYLES]: OPEN_MODE.GET_TEXT_STYLES,
+        [COMMAND_CATEGORY.API]: OPEN_MODE.API,
+      }
+      setSelectedOpenMode(modeMap[category])
+      setCommandDialogOpen(true)
+    }
   }
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -261,11 +287,16 @@ export const CommandList = ({ control }: CommandListProps) => {
   return (
     <>
       <CommandListMenu
-        onAddCommand={() => setCommandDialogOpen(true)}
+        onAddCommand={() => setTypeSelectionDialogOpen(true)}
         onAddFolder={() => setFolderDialogOpen(true)}
         addCommandButtonRef={addCommandButtonRef}
         addFolderButtonRef={addFolderButtonRef}
         commandCount={commandArray.fields.length}
+      />
+      <CommandTypeSelectionDialog
+        open={typeSelectionDialogOpen}
+        onOpenChange={setTypeSelectionDialogOpen}
+        onSelect={handleTypeSelect}
       />
       <CommandEditDialog
         open={commandDialogOpen}
@@ -273,6 +304,8 @@ export const CommandList = ({ control }: CommandListProps) => {
         onSubmit={(command) => commandUpsert(command)}
         folders={folderArray.fields}
         command={editDataRef.current as SelectionCommand}
+        selectedCategory={selectedCategory}
+        selectedOpenMode={selectedOpenMode}
       />
       <FolderEditDialog
         open={folderDialogOpen}

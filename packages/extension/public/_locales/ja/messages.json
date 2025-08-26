@@ -266,6 +266,9 @@
   "Option_openMode": {
     "message": "Open Mode"
   },
+  "Option_searchMode": {
+    "message": "検索モード"
+  },
   "Option_openMode_popup": {
     "message": "Popup"
   },
@@ -292,6 +295,111 @@
   },
   "Option_openMode_pageAction": {
     "message": "Page Action"
+  },
+  "Option_commandType_title": {
+    "message": "コマンドの種類を選ぶ"
+  },
+  "Option_commandType_description": {
+    "message": "作成するコマンドの種類を選択してください"
+  },
+  "Option_commandCategory_search_title": {
+    "message": "検索"
+  },
+  "Option_commandCategory_search_desc": {
+    "message": "選択したテキストを検索します"
+  },
+  "Option_commandCategory_pageAction_title": {
+    "message": "Page Action"
+  },
+  "Option_commandCategory_pageAction_desc": {
+    "message": "Webページ上の操作を記録・再生します"
+  },
+  "Option_commandCategory_copy_title": {
+    "message": "テキストコピー"
+  },
+  "Option_commandCategory_copy_desc": {
+    "message": "選択テキストをクリップボードにコピーします"
+  },
+  "Option_commandCategory_linkPopup_title": {
+    "message": "リンクポップアップ"
+  },
+  "Option_commandCategory_linkPopup_desc": {
+    "message": "選択したテキスト内のリンクを一括で開きます"
+  },
+  "Option_commandCategory_getTextStyles_title": {
+    "message": "スタイル取得"
+  },
+  "Option_commandCategory_getTextStyles_desc": {
+    "message": "選択テキストのスタイル情報を取得します"
+  },
+  "Option_commandCategory_api_title": {
+    "message": "API"
+  },
+  "Option_commandCategory_api_desc": {
+    "message": "APIにfetchリクエストを送信します"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Webページ起動"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "単機能"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "実験的"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "ポップアップ"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "選択テキストをポップアップウィンドウで開きます"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "新しいウィンドウ"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "選択テキストを新しいウィンドウで開きます"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "新しいタブ"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "選択テキストを新しいタブで開きます"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "バックグラウンドタブ"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "選択テキストをバックグラウンドタブで開きます"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "APIにリクエストを送信して結果を表示します"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Page Action"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "ブラウザ操作を記録・再生します"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "リンクポップアップ"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "選択されたリンクをポップアップで開きます"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "テキストコピー"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "選択テキストをクリップボードにコピーします"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "スタイル取得"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "選択テキストのスタイル情報を取得します"
   },
   "Option_openMode_previewPopup": {
     "message": "Popup"
