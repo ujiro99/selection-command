@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "将`%s`替换为选中的文本。"
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* 修改时搜索URL将自动更新。"
-  },
   "Option_iconUrl": {
     "message": "图标URL"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "页面操作"
   },
-  "Option_searchMode": {
-    "message": "搜索模式"
+  "Option_displayMode": {
+    "message": "窗口显示方式"
   },
   "Option_commandType_title": {
     "message": "选择命令类型"
@@ -892,5 +889,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "从备份恢复失败。"
+  },
+  "Option_openMode_popup_desc": {
+    "message": "简单的UI窗口。<wbr>失去焦点时自动关闭。"
+  },
+  "Option_openMode_window_desc": {
+    "message": "在新窗口中打开。"
+  },
+  "Option_openMode_tab_desc": {
+    "message": "显示标签页并激活。<wbr>显示在当前标签页的右侧。"
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
+  },
+  "Option_title_desc": {
+    "message": "显示为命令标题。"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "对URL执行`fetch api`。"
+  },
+  "Option_displayMode_desc": {
+    "message": "窗口显示方式。"
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Ctrl + 点击菜单时的行为。"
+  },
+  "Option_parentFolder": {
+    "message": "父文件夹"
+  },
+  "Option_parentFolder_desc": {
+    "message": "选择父文件夹"
   }
 }

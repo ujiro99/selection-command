@@ -227,6 +227,9 @@
   "Option_title": {
     "message": "タイトル"
   },
+  "Option_title_desc": {
+    "message": "コマンドのタイトルとして表示されます。"
+  },
   "Option_searchUrl": {
     "message": "検索URL"
   },
@@ -266,8 +269,11 @@
   "Option_openMode": {
     "message": "Open Mode"
   },
-  "Option_searchMode": {
-    "message": "検索モード"
+  "Option_displayMode": {
+    "message": "ウィンドウ表示方法"
+  },
+  "Option_displayMode_desc": {
+    "message": "ウィンドウの表示方法です。"
   },
   "Option_openMode_popup": {
     "message": "Popup"
@@ -295,6 +301,18 @@
   },
   "Option_openMode_pageAction": {
     "message": "ページアクション"
+  },
+  "Option_openMode_popup_desc": {
+    "message": "シンプルなUIのウィンドウ。<wbr>フォーカスを外すと自動で消える。"
+  },
+  "Option_openMode_window_desc": {
+    "message": "新しいウィンドウを開く。"
+  },
+  "Option_openMode_tab_desc": {
+    "message": "タブを表示してアクティブにする。<wbr>表示中タブの右側に表示する。"
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
   },
   "Option_commandType_title": {
     "message": "コマンドの種類を選ぶ"
@@ -409,6 +427,9 @@
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "メニューをCtrl + クリックしたときの動作です。"
   },
   "Option_parentFolderId": {
     "message": "フォルダ"

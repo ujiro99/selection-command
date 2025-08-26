@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Substitua `%s` pelo texto selecionado."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* Atualizado automaticamente quando a URL de pesquisa é alterada."
-  },
   "Option_iconUrl": {
     "message": "URL do Ícone"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "Ação de Página"
   },
-  "Option_searchMode": {
-    "message": "Modo de Pesquisa"
+  "Option_displayMode": {
+    "message": "Método de Exibição de Janela"
   },
   "Option_commandType_title": {
     "message": "Selecionar Tipo de Comando"
@@ -895,5 +892,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Falha ao restaurar da cópia de segurança."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Janela de interface simples.<wbr>Fecha automaticamente ao perder o foco."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Abrir em nova janela."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Exibir separador e activá-lo.<wbr>Exibir à direita do separador actual."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Abrir separador em segundo plano.<wbr>Exibir à direita do separador actual."
+  },
+  "Option_title_desc": {
+    "message": "Exibido como título do comando."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Executar `fetch api` para a URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Método de exibição de janela."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Comportamento ao fazer Ctrl + clique no menu."
+  },
+  "Option_parentFolder": {
+    "message": "Pasta Pai"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Selecionar pasta pai"
   }
 }

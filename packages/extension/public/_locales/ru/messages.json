@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Заменяет `%s` на выбранный текст."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* URL поиска будет автоматически обновлен при изменении."
-  },
   "Option_iconUrl": {
     "message": "URL иконки"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "Действие страницы"
   },
-  "Option_searchMode": {
-    "message": "Режим поиска"
+  "Option_displayMode": {
+    "message": "Способ отображения окна"
   },
   "Option_commandType_title": {
     "message": "Выбрать тип команды"
@@ -892,5 +889,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Не удалось восстановить из резервной копии."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Простое окно интерфейса.<wbr>Автоматически закрывается при потере фокуса."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Открыть в новом окне."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Показать вкладку и активировать.<wbr>Показать справа от текущей вкладки."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Открыть вкладку в фоновом режиме.<wbr>Показать справа от текущей вкладки."
+  },
+  "Option_title_desc": {
+    "message": "Отображается как заголовок команды."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Выполнить `fetch api` к URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Способ отображения окна."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Поведение при Ctrl + клике по меню."
+  },
+  "Option_parentFolder": {
+    "message": "Родительская Папка"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Выберите родительскую папку"
   }
 }

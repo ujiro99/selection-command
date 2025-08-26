@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Remplacer `%s` par le texte sélectionné."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* Mis à jour automatiquement lorsque l'URL de recherche est modifiée."
-  },
   "Option_iconUrl": {
     "message": "URL de l'Icône"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "Action de Page"
   },
-  "Option_searchMode": {
-    "message": "Mode de Recherche"
+  "Option_displayMode": {
+    "message": "Méthode d'Affichage de Fenêtre"
   },
   "Option_commandType_title": {
     "message": "Sélectionner le Type de Commande"
@@ -892,5 +889,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Échec de la restauration depuis la sauvegarde."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Fenêtre d'interface simple.<wbr>Se ferme automatiquement en perdant le focus."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Ouvrir dans une nouvelle fenêtre."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Afficher l'onglet et l'activer.<wbr>Afficher à droite de l'onglet actuel."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Ouvrir l'onglet en arrière-plan.<wbr>Afficher à droite de l'onglet actuel."
+  },
+  "Option_title_desc": {
+    "message": "Affiché comme titre de commande."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Exécuter `fetch api` vers l'URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Méthode d'affichage de fenêtre."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Comportement lors du Ctrl + clic sur le menu."
+  },
+  "Option_parentFolder": {
+    "message": "Dossier Parent"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Sélectionner le dossier parent"
   }
 }

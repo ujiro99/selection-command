@@ -5,6 +5,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormDescription,
 } from "@/components/ui/form"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { cn } from "@/lib/utils"
@@ -51,6 +52,7 @@ type OpenModeToggleFieldProps = {
   control: any
   name: string
   formLabel: string
+  description?: string
   type: "search" | "pageAction"
 }
 
@@ -58,6 +60,7 @@ export const OpenModeToggleField = ({
   control,
   name,
   formLabel,
+  description,
   type,
 }: OpenModeToggleFieldProps) => {
   const modes = type === "search" ? SEARCH_MODES : PAGE_ACTION_MODES
@@ -70,6 +73,7 @@ export const OpenModeToggleField = ({
         <FormItem className="flex items-start gap-1">
           <div className="w-2/6">
             <FormLabel>{formLabel}</FormLabel>
+            {description && <FormDescription>{description}</FormDescription>}
           </div>
           <div className="w-4/6">
             <FormControl>
@@ -132,7 +136,7 @@ const OpenModeItem = ({
             <img
               src={iconSrc}
               alt={mode}
-              className={cn("h-9 w-9 object-contain")}
+              className={cn("h-8 w-8 object-contain")}
             />
             <span className={cn("text-sm font-normal text-gray-600")}>
               {t(`openMode_${mode}`)}

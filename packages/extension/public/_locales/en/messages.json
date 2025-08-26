@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Replace `%s` with the selected text."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* Automatically updated when the search URL is changed."
-  },
   "Option_iconUrl": {
     "message": "Icon URL"
   },
@@ -266,8 +263,8 @@
   "Option_openMode": {
     "message": "Open Mode"
   },
-  "Option_searchMode": {
-    "message": "Search Mode"
+  "Option_displayMode": {
+    "message": "Window Display Method"
   },
   "Option_openMode_popup": {
     "message": "Popup"
@@ -907,5 +904,29 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Failed to restore from backup."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Simple UI window.<wbr>Automatically closes when losing focus."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Open in new window."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Display tab and make it active.<wbr>Show to the right of current tab."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Open tab in background.<wbr>Show to the right of current tab."
+  },
+  "Option_title_desc": {
+    "message": "Displayed as the command title."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Execute `fetch api` to the URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Window display method."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Behavior when Ctrl + clicking the menu."
   }
 }

@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "`%s`를 선택한 텍스트로 대체합니다."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* 검색 URL이 변경되면 자동으로 업데이트됩니다."
-  },
   "Option_iconUrl": {
     "message": "아이콘 URL"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "페이지 작업"
   },
-  "Option_searchMode": {
-    "message": "검색 모드"
+  "Option_displayMode": {
+    "message": "창 표시 방법"
   },
   "Option_commandType_title": {
     "message": "명령 유형 선택"
@@ -892,5 +889,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "백업에서 복원하지 못했습니다."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "간단한 UI 창.<wbr>포커스를 잃으면 자동으로 닫힙니다."
+  },
+  "Option_openMode_window_desc": {
+    "message": "새 창에서 열기."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "탭을 표시하고 활성화.<wbr>현재 탭 오른쪽에 표시합니다."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "백그라운드에서 탭 열기.<wbr>현재 탭 오른쪽에 표시합니다."
+  },
+  "Option_title_desc": {
+    "message": "명령 제목으로 표시됩니다."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "URL에 `fetch api`를 실행합니다."
+  },
+  "Option_displayMode_desc": {
+    "message": "창 표시 방법."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "메뉴를 Ctrl + 클릭했을 때의 동작입니다."
+  },
+  "Option_parentFolder": {
+    "message": "상위 폴더"
+  },
+  "Option_parentFolder_desc": {
+    "message": "상위 폴더를 선택하세요"
   }
 }

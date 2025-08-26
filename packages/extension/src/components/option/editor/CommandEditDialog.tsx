@@ -405,6 +405,7 @@ const CommandEditDialogInner = ({
                 control={form.control}
                 name="title"
                 formLabel={t("title")}
+                description={t("title_desc")}
                 inputProps={{
                   type: "string",
                   ...register("title", {}),
@@ -440,6 +441,7 @@ const CommandEditDialogInner = ({
                   name="openMode"
                   formLabel={t("displayMode")}
                   type="search"
+                  description={t("displayMode_desc")}
                 />
               ) : (
                 !selectedOpenMode && (
@@ -466,6 +468,7 @@ const CommandEditDialogInner = ({
                   control={form.control}
                   name="openModeSecondary"
                   formLabel={t("openModeSecondary")}
+                  description={t("openModeSecondary_desc")}
                   options={SEARCH_OPEN_MODE.map((mode) => ({
                     name: t(`openMode_${mode}`),
                     value: mode,

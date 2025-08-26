@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Sostituisce `%s` con il testo selezionato."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* L'URL di ricerca verrà aggiornato automaticamente quando modificato."
-  },
   "Option_iconUrl": {
     "message": "URL icona"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "Azione pagina"
   },
-  "Option_searchMode": {
-    "message": "Modalità di Ricerca"
+  "Option_displayMode": {
+    "message": "Metodo di Visualizzazione Finestra"
   },
   "Option_commandType_title": {
     "message": "Seleziona Tipo di Comando"
@@ -892,5 +889,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Ripristino da backup fallito."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Finestra interfaccia semplice.<wbr>Si chiude automaticamente perdendo il focus."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Apri in nuova finestra."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Mostra scheda e attivala.<wbr>Mostra a destra della scheda corrente."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
+  },
+  "Option_title_desc": {
+    "message": "Visualizzato come titolo del comando."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Eseguire `fetch api` all'URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Metodo di visualizzazione finestra."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Comportamento quando si fa Ctrl + clic sul menu."
+  },
+  "Option_parentFolder": {
+    "message": "Cartella Genitore"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Seleziona cartella genitore"
   }
 }

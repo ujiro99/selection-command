@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Ersetzen Sie `%s` durch den ausgewählten Text."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* Wird automatisch aktualisiert, wenn die Such-URL geändert wird."
-  },
   "Option_iconUrl": {
     "message": "Symbol-URL"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "Seitenaktion"
   },
-  "Option_searchMode": {
-    "message": "Suchmodus"
+  "Option_displayMode": {
+    "message": "Fenster-Anzeigemethode"
   },
   "Option_commandType_title": {
     "message": "Befehlstyp wählen"
@@ -892,5 +889,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Wiederherstellung aus Backup fehlgeschlagen."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Einfaches UI-Fenster.<wbr>Schließt automatisch beim Fokusverlust."
+  },
+  "Option_openMode_window_desc": {
+    "message": "In neuem Fenster öffnen."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Tab anzeigen und aktivieren.<wbr>Rechts vom aktuellen Tab anzeigen."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
+  },
+  "Option_title_desc": {
+    "message": "Wird als Befehlstitel angezeigt."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "`fetch api` zur URL ausführen."
+  },
+  "Option_displayMode_desc": {
+    "message": "Fenster-Anzeigemethode."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Verhalten beim Strg + Klicken des Menüs."
+  },
+  "Option_parentFolder": {
+    "message": "Übergeordneter Ordner"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Übergeordneten Ordner auswählen"
   }
 }

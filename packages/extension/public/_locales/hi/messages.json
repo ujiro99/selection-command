@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "चयनित टेक्स्ट के साथ `%s` को प्रतिस्थापित करता है।"
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* खोज URL स्वचालित रूप से अपडेट होगा जब संशोधित किया जाएगा।"
-  },
   "Option_iconUrl": {
     "message": "आइकन URL"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "पेज एक्शन"
   },
-  "Option_searchMode": {
-    "message": "खोज मोड"
+  "Option_displayMode": {
+    "message": "विंडो प्रदर्शन विधि"
   },
   "Option_commandType_title": {
     "message": "कमांड प्रकार चुनें"
@@ -892,5 +889,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "बैकअप से पुनर्स्थापना विफल।"
+  },
+  "Option_openMode_popup_desc": {
+    "message": "सरल UI विंडो।<wbr>फोकस खोने पर स्वचालित रूप से बंद हो जाता है।"
+  },
+  "Option_openMode_window_desc": {
+    "message": "नई विंडो में खोलें।"
+  },
+  "Option_openMode_tab_desc": {
+    "message": "टैब दिखाएँ और सक्रिय करें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "बैकग्राउंड में टैब खोलें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
+  },
+  "Option_title_desc": {
+    "message": "कमांड शीर्षक के रूप में प्रदर्शित होता है।"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "URL पर `fetch api` निष्पादित करें।"
+  },
+  "Option_displayMode_desc": {
+    "message": "विंडो प्रदर्शन विधि।"
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "मेन्यू पर Ctrl + क्लिक करने पर व्यवहार।"
+  },
+  "Option_parentFolder": {
+    "message": "मूल फ़ोल्डर"
+  },
+  "Option_parentFolder_desc": {
+    "message": "मूल फ़ोल्डर चुनें"
   }
 }

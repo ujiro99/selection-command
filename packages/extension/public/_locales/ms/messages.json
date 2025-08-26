@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Ganti `%s` dengan teks yang dipilih."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* Dikemas kini secara automatik apabila URL carian diubah."
-  },
   "Option_iconUrl": {
     "message": "URL Ikon"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "Tindakan Halaman"
   },
-  "Option_searchMode": {
-    "message": "Mod Carian"
+  "Option_displayMode": {
+    "message": "Kaedah Paparan Tetingkap"
   },
   "Option_commandType_title": {
     "message": "Pilih Jenis Arahan"
@@ -895,5 +892,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Gagal memulihkan dari sandaran."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Tetingkap antara muka ringkas.<wbr>Tutup secara automatik apabila kehilangan fokus."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Buka dalam tetingkap baru."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Papar tab dan aktifkan.<wbr>Papar di sebelah kanan tab semasa."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Buka tab di latar belakang.<wbr>Papar di sebelah kanan tab semasa."
+  },
+  "Option_title_desc": {
+    "message": "Dipaparkan sebagai tajuk arahan."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Jalankan `fetch api` ke URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Kaedah paparan tetingkap."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Tingkah laku semasa Ctrl + klik menu."
+  },
+  "Option_parentFolder": {
+    "message": "Folder Induk"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Pilih folder induk"
   }
 }

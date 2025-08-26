@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Ganti `%s` dengan teks yang dipilih."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* Diperbarui secara otomatis saat URL pencarian diubah."
-  },
   "Option_iconUrl": {
     "message": "URL Ikon"
   },
@@ -290,8 +287,8 @@
   "Option_openMode_pageAction": {
     "message": "Tindakan Halaman"
   },
-  "Option_searchMode": {
-    "message": "Mode Pencarian"
+  "Option_displayMode": {
+    "message": "Metode Tampilan Jendela"
   },
   "Option_commandType_title": {
     "message": "Pilih Jenis Perintah"
@@ -895,5 +892,35 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Gagal memulihkan dari cadangan."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Jendela antarmuka sederhana.<wbr>Otomatis tertutup saat kehilangan fokus."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Buka di jendela baru."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Tampilkan tab dan aktifkan.<wbr>Tampilkan di sebelah kanan tab saat ini."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Buka tab di latar belakang.<wbr>Tampilkan di sebelah kanan tab saat ini."
+  },
+  "Option_title_desc": {
+    "message": "Ditampilkan sebagai judul perintah."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Jalankan `fetch api` ke URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Metode tampilan jendela."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Perilaku saat Ctrl + klik menu."
+  },
+  "Option_parentFolder": {
+    "message": "Folder Induk"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Pilih folder induk"
   }
 }
