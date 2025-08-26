@@ -20,8 +20,8 @@ import { isEmpty } from "@/lib/utils"
 export const SEARCH_OPEN_MODE = [
   OPEN_MODE.POPUP,
   OPEN_MODE.TAB,
-  OPEN_MODE.WINDOW,
   OPEN_MODE.BACKGROUND_TAB,
+  OPEN_MODE.WINDOW,
 ] as const
 
 const searchSchema = z.object({

@@ -70,10 +70,10 @@ export const CommandTypeSelectionDialog = ({
                       <button
                         key={category}
                         type="button"
-                        className="group p-4 border rounded-lg hover:border-gray-300 hover:shadow-md transition-all duration-200 text-left"
+                        className="group px-4 py-3 border rounded-lg hover:border-gray-300 hover:shadow-md transition-all duration-200 text-left"
                         onClick={() => handleCardClick(category)}
                       >
-                        <div className="flex flex-col items-center space-y-3">
+                        <div className="flex flex-col items-center space-y-2">
                           <div className="p-3 rounded-full bg-gray-50 group-hover:bg-gray-100 transition-colors">
                             <IconComponent
                               size={24}

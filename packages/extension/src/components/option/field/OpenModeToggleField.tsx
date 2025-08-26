@@ -1,0 +1,151 @@
+import { Check } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form"
+import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
+import { cn } from "@/lib/utils"
+import { t as _t } from "@/services/i18n"
+
+const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+
+// アイコンマッピング
+const getIconForMode = (mode: string) => {
+  if (mode === OPEN_MODE.POPUP || mode === PAGE_ACTION_OPEN_MODE.POPUP) {
+    return "/setting/open_mode/popup.png"
+  }
+  if (mode === OPEN_MODE.TAB || mode === PAGE_ACTION_OPEN_MODE.TAB) {
+    return "/setting/open_mode/tab.png"
+  }
+  if (
+    mode === OPEN_MODE.BACKGROUND_TAB ||
+    mode === PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
+  ) {
+    return "/setting/open_mode/background_tab.png"
+  }
+  if (mode === OPEN_MODE.WINDOW || mode === PAGE_ACTION_OPEN_MODE.WINDOW) {
+    return "/setting/open_mode/window.png"
+  }
+  return "/setting/open_mode/popup.png"
+}
+
+// 統一された選択肢の順序
+const SEARCH_MODES = [
+  OPEN_MODE.POPUP,
+  OPEN_MODE.TAB,
+  OPEN_MODE.BACKGROUND_TAB,
+  OPEN_MODE.WINDOW,
+] as const
+
+const PAGE_ACTION_MODES = [
+  PAGE_ACTION_OPEN_MODE.POPUP,
+  PAGE_ACTION_OPEN_MODE.TAB,
+  PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
+  PAGE_ACTION_OPEN_MODE.WINDOW,
+] as const
+
+type OpenModeToggleFieldProps = {
+  control: any
+  name: string
+  formLabel: string
+  type: "search" | "pageAction"
+}
+
+export const OpenModeToggleField = ({
+  control,
+  name,
+  formLabel,
+  type,
+}: OpenModeToggleFieldProps) => {
+  const modes = type === "search" ? SEARCH_MODES : PAGE_ACTION_MODES
+
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex items-start gap-1">
+          <div className="w-2/6">
+            <FormLabel>{formLabel}</FormLabel>
+          </div>
+          <div className="w-4/6">
+            <FormControl>
+              <ToggleGroup
+                type="single"
+                variant="outline"
+                value={field.value}
+                onValueChange={(val) => {
+                  if (val) field.onChange(val)
+                }}
+                className="grid grid-cols-1 gap-2"
+              >
+                {modes.map((mode) => {
+                  const iconSrc = getIconForMode(mode)
+                  const checked = mode === field.value
+                  return (
+                    <OpenModeItem
+                      key={mode}
+                      mode={mode}
+                      iconSrc={iconSrc}
+                      checked={checked}
+                    />
+                  )
+                })}
+              </ToggleGroup>
+            </FormControl>
+          </div>
+        </FormItem>
+      )}
+    />
+  )
+}
+
+const OpenModeItem = ({
+  mode,
+  iconSrc,
+  checked,
+}: {
+  mode: string
+  iconSrc: string
+  checked: boolean
+}) => {
+  return (
+    <FormItem>
+      <FormControl>
+        <div className="flex items-center">
+          <ToggleGroupItem
+            value={mode}
+            aria-label={t(`openMode_${mode}`)}
+            className={cn(
+              "relative flex-col gap-0.5 h-auto w-full py-1.5 shadow-sm text-xs font-medium text-gray-600 hover:text-gray-700",
+              "w-[160px]",
+              "border transition-all duration-200",
+              checked && "border-gray-400 bg-gray-50",
+            )}
+          >
+            {checked && (
+              <Check size={18} className="absolute left-4 text-gray-700" />
+            )}
+            <img
+              src={iconSrc}
+              alt={mode}
+              className={cn("h-9 w-9 object-contain")}
+            />
+            <span className={cn("text-sm font-normal text-gray-600")}>
+              {t(`openMode_${mode}`)}
+            </span>
+          </ToggleGroupItem>
+          <p
+            dangerouslySetInnerHTML={{
+              __html: t(`openMode_${mode}_desc`),
+            }}
+            className="flex-1 text-[0.8rem] text-gray-800 pl-3 break-keep"
+          />
+        </div>
+      </FormControl>
+    </FormItem>
+  )
+}

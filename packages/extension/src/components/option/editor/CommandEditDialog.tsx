@@ -42,6 +42,7 @@ import { InputField } from "@/components/option/field/InputField"
 import { IconField } from "@/components/option/field/IconField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { TextareaField } from "@/components/option/field/TextareaField"
+import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { PageActionSection } from "@/components/option/editor/PageActionSection"
 import { PageActionHelp } from "@/components/help/PageActionHelp"
 import { PageActionStep } from "@/types/schema"
@@ -410,15 +411,35 @@ const CommandEditDialogInner = ({
                 }}
               />
 
+              {(SEARCH_OPEN_MODE.includes(openMode as any) ||
+                openMode === OPEN_MODE.API) && (
+                <InputField
+                  control={form.control}
+                  name="searchUrl"
+                  formLabel={t("searchUrl")}
+                  inputProps={{
+                    type: "string",
+                    ...register("searchUrl", {}),
+                  }}
+                  description={
+                    openMode === OPEN_MODE.API
+                      ? t("searchUrl_desc_api")
+                      : t("searchUrl_desc")
+                  }
+                  previewUrl={
+                    !isEmpty(getValues("searchUrl"))
+                      ? getValues("iconUrl")
+                      : undefined
+                  }
+                />
+              )}
+
               {selectedCategory === COMMAND_CATEGORY.SEARCH ? (
-                <SelectField
+                <OpenModeToggleField
                   control={form.control}
                   name="openMode"
-                  formLabel={t("searchMode")}
-                  options={SEARCH_OPEN_MODE.map((mode) => ({
-                    name: t(`openMode_${mode}`),
-                    value: mode,
-                  }))}
+                  formLabel={t("displayMode")}
+                  type="search"
                 />
               ) : (
                 !selectedOpenMode && (
@@ -449,29 +470,6 @@ const CommandEditDialogInner = ({
                     name: t(`openMode_${mode}`),
                     value: mode,
                   }))}
-                />
-              )}
-
-              {(SEARCH_OPEN_MODE.includes(openMode as any) ||
-                openMode === OPEN_MODE.API) && (
-                <InputField
-                  control={form.control}
-                  name="searchUrl"
-                  formLabel={t("searchUrl")}
-                  inputProps={{
-                    type: "string",
-                    ...register("searchUrl", {}),
-                  }}
-                  description={
-                    openMode === OPEN_MODE.API
-                      ? t("searchUrl_desc_api")
-                      : t("searchUrl_desc")
-                  }
-                  previewUrl={
-                    !isEmpty(getValues("searchUrl"))
-                      ? getValues("iconUrl")
-                      : undefined
-                  }
                 />
               )}
 
