@@ -7,7 +7,10 @@ import type {
 } from "@/types"
 import { PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
 
-export const MultiTabRunningStatus = {
+/**
+ * RunningStatus manages the execution status of page actions across multiple tabs.
+ */
+export const RunningStatus = {
   // Initialize status for a specific tab
   initTab: async (tabId: number, steps: PageActionStep[]) => {
     if (steps.length === 0) {
@@ -133,65 +136,5 @@ export const MultiTabRunningStatus = {
     return () => {
       Storage.removeListener(SESSION_STORAGE_KEY.PA_RUNNING, cb)
     }
-  },
-}
-
-// Track current tab for single-tab compatibility API
-let currentTabId: number | null = null
-
-// Single-tab compatibility API (unified interface)
-export const RunningStatus = {
-  // Initialize status for specified tab
-  init: async (tabId: number, steps: PageActionStep[]) => {
-    currentTabId = tabId
-    return await MultiTabRunningStatus.initTab(tabId, steps)
-  },
-
-  // Update status for current tab
-  update: async (
-    stepId: string,
-    state: EXEC_STATE,
-    message?: string,
-    duration = TIMEOUT,
-  ) => {
-    if (currentTabId === null) {
-      console.warn("No current tab set for RunningStatus.update")
-      return
-    }
-    return await MultiTabRunningStatus.updateTab(
-      currentTabId,
-      stepId,
-      state,
-      message,
-      duration,
-    )
-  },
-
-  // Get status for current tab
-  get: async (): Promise<PageActionStatus> => {
-    if (currentTabId === null) {
-      // Return empty status if no current tab
-      return {
-        tabId: 0,
-        stepId: "",
-        results: [],
-      }
-    }
-    const status = await MultiTabRunningStatus.getTab(currentTabId)
-    return (
-      status || {
-        tabId: currentTabId,
-        stepId: "",
-        results: [],
-      }
-    )
-  },
-
-  // Clear current tab status
-  clear: async () => {
-    if (currentTabId !== null) {
-      await MultiTabRunningStatus.clearTab(currentTabId)
-    }
-    currentTabId = null
   },
 }

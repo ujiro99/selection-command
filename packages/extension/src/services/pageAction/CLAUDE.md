@@ -177,21 +177,29 @@ Chrome拡張機能のバックグラウンドスクリプトとして動作し�
 
 ### status.ts - 実行ステータス管理
 
-**役割**: アクション実行中のリアルタイム進捗管理
+**役割**: アクション実行中のリアルタイム進捗管理（マルチタブ対応）
 
 **主要機能**:
 
-- `RunningStatus`: 実行状態の CRUD操作
-  - `init`: 実行前の初期化（全stepを Queue状態に設定）
-  - `update`: step単位での状態更新（Start → Doing → Done/Failed）
-  - `get/subscribe/unsubscribe`: 状態の取得・購読
+- `RunningStatus`: マルチタブ対応の実行状態管理
+  - `initTab`: 特定タブでの実行前の初期化（全stepを Queue状態に設定）
+  - `updateTab`: タブとstep単位での状態更新（Start → Doing → Done/Failed）
+  - `getTab/getAll`: 特定タブまたは全タブの状態取得
+  - `clearTab/clear`: タブ別または全体のステータス削除
+  - `subscribe/unsubscribe`: 状態変更の監視・購読
 
 **ステータス管理**:
 
 - 実行状態: Queue → Start → Doing → Done/Failed/Stop
+- タブ別の並列実行状態追跡
 - step単位での進捗追跡
 - エラーメッセージの記録
 - 実行時間の測定
+
+**競合状態の解決**:
+
+- 従来のグローバル変数による単一タブ管理から、明示的なタブID指定による安全な並列実行に改良
+- 複数タブでの同時実行時の状態競合問題を完全に解決
 
 ### helper.ts - ユーティリティ関数
 

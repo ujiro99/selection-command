@@ -1,6 +1,6 @@
 import { ReactNode, useState, useEffect, useCallback } from "react"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { MultiTabRunningStatus } from "@/services/pageAction"
+import { RunningStatus } from "@/services/pageAction"
 import { useTabContext } from "@/hooks/useTabContext"
 import { pageActionContext } from "@/hooks/pageAction/usePageActionContext"
 
@@ -44,7 +44,7 @@ export const PageActionContextProvider = ({
     )
 
     // Initialize RunningStatus
-    MultiTabRunningStatus.getTab(tabId).then((status) => {
+    RunningStatus.getTab(tabId).then((status) => {
       if (status) {
         updateState({ status })
       }
@@ -56,7 +56,7 @@ export const PageActionContextProvider = ({
       updateState({ status })
     }
 
-    return MultiTabRunningStatus.subscribe(onStatusChange)
+    return RunningStatus.subscribe(onStatusChange)
   }, [tabId, isLoading])
 
   const setContextData = useCallback(async (data: PageActionContext) => {

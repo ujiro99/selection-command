@@ -134,11 +134,12 @@ interface PageActionExecutionMeta {
 - openAndRun関数の分岐処理追加
 - 国際化対応
 
-#### Phase 1.5: 複数タブ並列実行対応
+#### Phase 1.5: 複数タブ並列実行対応 ✅ **完了**
 
-- `MultiTabPageActionStatus`構造への移行
-- `RunningStatus`サービスのタブID別操作対応
-- 実行制御メタデータの追加
+- ✅ `MultiTabPageActionStatus`構造への移行
+- ✅ `RunningStatus`サービスのタブID別操作対応
+- ✅ 競合状態の解決（グローバル変数currentTabIdを削除）
+- ✅ マルチタブ対応状態管理の統一
 - 自動クリーンアップ機能の実装
 
 #### Phase 2: 操作別対応
@@ -195,17 +196,18 @@ interface PageActionExecutionMeta {
 └─────────────────────┘
 ```
 
-### 1. 複数タブ並列実行対応の状態管理
+### 1. 複数タブ並列実行対応の状態管理 ✅ **実装完了**
 
 #### RunningStatusサービスの拡張
 
 複数タブでの並列実行に対応するため、現在の単一状態管理から以下の機能を持つサービスに拡張：
 
-- **タブ別状態管理**: 各タブIDをキーとした状態管理
-- **状態の初期化**: 新しいタブでの実行開始時の状態設定
-- **状態の更新**: 特定タブの実行状態更新
-- **状態の取得**: 特定タブまたは全タブの状態取得
-- **状態の削除**: 完了したタブの状態クリーンアップ
+- ✅ **タブ別状態管理**: 各タブIDをキーとした状態管理
+- ✅ **状態の初期化**: 新しいタブでの実行開始時の状態設定（`initTab`）
+- ✅ **状態の更新**: 特定タブの実行状態更新（`updateTab`）
+- ✅ **状態の取得**: 特定タブまたは全タブの状態取得（`getTab`/`getAll`）
+- ✅ **状態の削除**: 完了したタブの状態クリーンアップ（`clearTab`/`clear`）
+- ✅ **競合状態の解決**: グローバル変数`currentTabId`を削除し、明示的なタブID指定によるAPI統一
 
 ### 2. Background用Dispatcher実装
 
@@ -271,8 +273,10 @@ background scriptでの実行制御ロジック：
 
 #### 複数タブ並列実行対応
 
-- [ ] MultiTabPageActionStatus型定義追加
-- [ ] MultiTabRunningStatusサービス実装
+- [x] MultiTabPageActionStatus型定義追加
+- [x] RunningStatusサービス実装（旧MultiTabRunningStatus）
+- [x] 競合状態の解決（グローバルcurrentTabId削除）
+- [x] マルチタブ対応状態管理の統一
 - [ ] PageActionExecutionController実装
 - [ ] SESSION_STORAGE_KEY.PA_MULTI_RUNNING追加
 - [ ] PageActionRunnerコンポーネントのマルチタブ対応
@@ -292,7 +296,18 @@ background scriptでの実行制御ロジック：
 - [ ] バッチ実行機能
 - [ ] タブ間での実行状態共有とモニタリング
 
-## 結論
+## 実装状況と結論
+
+### 完了済み機能 ✅
+
+**複数タブ並列実行対応の状態管理**（2025年1月実装）:
+
+- 競合状態の問題を完全に解決
+- `RunningStatus`による明示的なタブID指定API
+- マルチタブ対応の実行状態管理
+- 安全で拡張性の高い設計への統一
+
+### 今後の実装
 
 PageActionのバックグラウンド実行と複数タブでの並列実行は**技術的に実現可能**ですが、いくつかの制約があります。段階的なアプローチで実装し、ユーザーには実行モードの選択肢を提供することで、従来の安定性を保ちながら新機能を提供できます。
 

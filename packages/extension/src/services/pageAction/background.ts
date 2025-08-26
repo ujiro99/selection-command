@@ -401,7 +401,13 @@ const run = (
     try {
       await Ipc.ensureConnection(tabId)
       const delay = step.delayMs ?? 0
-      await RunningStatus.update(step.id, EXEC_STATE.Doing, "", TIMEOUT + delay)
+      await RunningStatus.updateTab(
+        tabId,
+        step.id,
+        EXEC_STATE.Doing,
+        "",
+        TIMEOUT + delay,
+      )
 
       // Wait for the delay time
       if (delay > 0) {
@@ -437,7 +443,7 @@ const run = (
   const _run = async () => {
     try {
       // Update running status
-      await RunningStatus.init(tabId, steps)
+      await RunningStatus.initTab(tabId, steps)
 
       // Enhanced BgData update with error handling
       const updateResult = await BgData.update({ pageActionStop: false })
@@ -447,13 +453,13 @@ const run = (
 
       // Run steps
       for (const step of steps) {
-        await RunningStatus.update(step.id, EXEC_STATE.Start)
+        await RunningStatus.updateTab(tabId, step.id, EXEC_STATE.Start)
 
         // Check stop flag
         const stop = BgData.get().pageActionStop
         if (stop) {
           // Cancel the execution
-          await RunningStatus.update(step.id, EXEC_STATE.Stop)
+          await RunningStatus.updateTab(tabId, step.id, EXEC_STATE.Stop)
           break
         }
 
@@ -463,15 +469,26 @@ const run = (
         if (ret.result) {
           if (step.param.type === PAGE_ACTION_CONTROL.end) {
             // End of the action
-            await RunningStatus.update(step.id, EXEC_STATE.Done, "", 1000)
+            await RunningStatus.updateTab(
+              tabId,
+              step.id,
+              EXEC_STATE.Done,
+              "",
+              1000,
+            )
             await sleep(1000)
             break
           } else {
-            await RunningStatus.update(step.id, EXEC_STATE.Done)
+            await RunningStatus.updateTab(tabId, step.id, EXEC_STATE.Done)
           }
         } else {
           const errorMessage = ret.message || "Unknown execution error"
-          await RunningStatus.update(step.id, EXEC_STATE.Failed, errorMessage)
+          await RunningStatus.updateTab(
+            tabId,
+            step.id,
+            EXEC_STATE.Failed,
+            errorMessage,
+          )
           console.error(`Step execution failed: ${errorMessage}`, {
             step,
             tabId,
@@ -486,7 +503,7 @@ const run = (
       console.error("PageAction run error:", errorMessage)
       response(false)
     } finally {
-      await RunningStatus.clear()
+      await RunningStatus.clearTab(tabId)
     }
   }
   _run()
