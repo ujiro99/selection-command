@@ -17,3 +17,8 @@
   Journal of Software: Evolution and Process (JSEP), Volume 28, Issue 3, pp.177–204.
   John Wiley & Sons, 2016. https://doi.org/10.1002/smr.1771
   ```
+
+## Donation
+Support the development with a donation if you’d like.  
+  
+<a href="https://www.buymeacoffee.com/yujiro.takeda" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
