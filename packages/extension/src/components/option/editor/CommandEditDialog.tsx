@@ -304,15 +304,13 @@ const CommandEditDialogInner = ({
       }
       reset((command as any) ?? InitialValues)
     } else {
-      setTimeout(() => {
-        const initialValues = selectedOpenMode
-          ? getDefault(selectedOpenMode, {
-              id: "",
-              title: "",
-            } as CommandSchemaType)
-          : InitialValues
-        reset(initialValues)
-      }, 100)
+      const initialValues = selectedOpenMode
+        ? getDefault(selectedOpenMode, {
+            id: "",
+            title: "",
+          } as CommandSchemaType)
+        : InitialValues
+      reset(initialValues)
     }
   }, [command, selectedOpenMode, reset])
 

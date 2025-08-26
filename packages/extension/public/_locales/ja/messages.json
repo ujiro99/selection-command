@@ -294,7 +294,7 @@
     "message": "テキストのスタイル取得"
   },
   "Option_openMode_pageAction": {
-    "message": "Page Action"
+    "message": "ページアクション"
   },
   "Option_commandType_title": {
     "message": "コマンドの種類を選ぶ"
@@ -309,7 +309,7 @@
     "message": "選択したテキストを検索します"
   },
   "Option_commandCategory_pageAction_title": {
-    "message": "Page Action"
+    "message": "ページアクション"
   },
   "Option_commandCategory_pageAction_desc": {
     "message": "Webページ上の操作を記録・再生します"
@@ -378,7 +378,7 @@
     "message": "APIにリクエストを送信して結果を表示します"
   },
   "Option_openModeCard_pageAction_title": {
-    "message": "Page Action"
+    "message": "ページアクション"
   },
   "Option_openModeCard_pageAction_desc": {
     "message": "ブラウザ操作を記録・再生します"
@@ -768,10 +768,10 @@
     "message": "リセット"
   },
   "help_pageAction_title": {
-    "message": "Page Actionの使い方"
+    "message": "ページアクションの使い方"
   },
   "help_pageAction_description": {
-    "message": "Page Actionは、<b>ユーザー操作を記録・再現</b>する機能です。"
+    "message": "ページアクションは、<b>ユーザー操作を記録・再現</b>する機能です。"
   },
   "help_pageAction_example": {
     "message": "例として、以下のような使い方ができます。"
@@ -780,7 +780,7 @@
     "message": "<li>決まったプロンプト＋選択文字列をLLMへ入力</li><li>URLをテキスト欄へ入力して、ボタンを押す</li><li>などなど...</li>"
   },
   "help_pageAction_record": {
-    "message": "Page Actionは、<b>RECボタンから</b>記録できます。"
+    "message": "ページアクションは、<b>RECボタンから</b>記録できます。"
   },
   "help_pageAction_record_procedure": {
     "message": "【作成手順】"
@@ -789,7 +789,7 @@
     "message": "<li>操作したいページのURLを入力し、RECボタンを押して記録を開始します。</li><li>ウィンドウが開いたら記録したい操作を行います。</li><li>完了したら、記録メニューのCompleteボタンを押します。</li>"
   },
   "help_pageAction_record_detail": {
-    "message": "Page Actionでは<b>以下の操作</b>を記録できます。"
+    "message": "ページアクションでは<b>以下の操作</b>を記録できます。"
   },
   "help_pageAction_action": {
     "message": "操作"
@@ -837,7 +837,7 @@
     "message": "これらの操作を、最大10ステップまで記録できます"
   },
   "help_pageAction_edit": {
-    "message": "<b>Page Actionの編集</b>について"
+    "message": "<b>ページアクションの編集</b>について"
   },
   "help_pageAction_edit_desc": {
     "message": "<li>テキスト入力の編集とステップの削除は、設定画面からも実行できます。</li><li>既存のPageActionをコピーし、一部だけ編集したコマンドを簡単に作成できます。</li>"
@@ -846,7 +846,7 @@
     "message": "<b>コマンドの共有</b>について"
   },
   "help_pageAction_share_desc": {
-    "message": "Selection Command Hubから、<b>Page Actionコマンドの共有と取得</b>ができます。 "
+    "message": "Selection Command Hubから、<b>ページアクションコマンドの共有と取得</b>ができます。 "
   },
   "review_request_title": {
     "message": "Selection Commandを使っていただき、ありがとうございます！"

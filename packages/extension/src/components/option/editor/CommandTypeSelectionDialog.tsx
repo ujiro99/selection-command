@@ -81,7 +81,7 @@ export const CommandTypeSelectionDialog = ({
                             />
                           </div>
                           <div className="text-center">
-                            <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                            <h4 className="text-base font-semibold text-gray-900 mb-1">
                               {t(metadata.titleKey)}
                             </h4>
                             <p className="text-xs text-gray-600 line-clamp-3">
