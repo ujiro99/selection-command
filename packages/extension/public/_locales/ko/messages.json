@@ -290,6 +290,60 @@
   "Option_openMode_pageAction": {
     "message": "페이지 작업"
   },
+  "Option_searchMode": {
+    "message": "검색 모드"
+  },
+  "Option_commandType_title": {
+    "message": "명령 유형 선택"
+  },
+  "Option_commandType_description": {
+    "message": "생성하려는 명령 유형을 선택하세요"
+  },
+  "Option_commandCategory_search_title": {
+    "message": "검색"
+  },
+  "Option_commandCategory_search_desc": {
+    "message": "선택한 텍스트를 검색합니다"
+  },
+  "Option_commandCategory_pageAction_title": {
+    "message": "페이지 작업"
+  },
+  "Option_commandCategory_pageAction_desc": {
+    "message": "웹 페이지 작업을 기록하고 재생합니다"
+  },
+  "Option_commandCategory_copy_title": {
+    "message": "텍스트 복사"
+  },
+  "Option_commandCategory_copy_desc": {
+    "message": "선택한 텍스트를 클립보드에 복사합니다"
+  },
+  "Option_commandCategory_linkPopup_title": {
+    "message": "링크 팝업"
+  },
+  "Option_commandCategory_linkPopup_desc": {
+    "message": "선택한 텍스트의 링크를 일괄로 엽니다"
+  },
+  "Option_commandCategory_getTextStyles_title": {
+    "message": "스타일 가져오기"
+  },
+  "Option_commandCategory_getTextStyles_desc": {
+    "message": "선택한 텍스트의 스타일 정보를 가져옵니다"
+  },
+  "Option_commandCategory_api_title": {
+    "message": "API"
+  },
+  "Option_commandCategory_api_desc": {
+    "message": "API에 fetch 요청을 보냅니다"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "웹 페이지 런처"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "단일 기능"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "실험적"
+  },
   "Option_openMode_previewPopup": {
     "message": "팝업"
   },

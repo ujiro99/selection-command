@@ -290,6 +290,60 @@
   "Option_openMode_pageAction": {
     "message": "Action de Page"
   },
+  "Option_searchMode": {
+    "message": "Mode de Recherche"
+  },
+  "Option_commandType_title": {
+    "message": "Sélectionner le Type de Commande"
+  },
+  "Option_commandType_description": {
+    "message": "Veuillez sélectionner le type de commande que vous souhaitez créer"
+  },
+  "Option_commandCategory_search_title": {
+    "message": "Recherche"
+  },
+  "Option_commandCategory_search_desc": {
+    "message": "Rechercher le texte sélectionné"
+  },
+  "Option_commandCategory_pageAction_title": {
+    "message": "Page Action"
+  },
+  "Option_commandCategory_pageAction_desc": {
+    "message": "Enregistrer et reproduire les opérations de pages web"
+  },
+  "Option_commandCategory_copy_title": {
+    "message": "Copier le Texte"
+  },
+  "Option_commandCategory_copy_desc": {
+    "message": "Copier le texte sélectionné dans le presse-papiers"
+  },
+  "Option_commandCategory_linkPopup_title": {
+    "message": "Pop-up de Lien"
+  },
+  "Option_commandCategory_linkPopup_desc": {
+    "message": "Ouvrir les liens dans le texte sélectionné en lot"
+  },
+  "Option_commandCategory_getTextStyles_title": {
+    "message": "Obtenir les Styles"
+  },
+  "Option_commandCategory_getTextStyles_desc": {
+    "message": "Obtenir les informations de style du texte sélectionné"
+  },
+  "Option_commandCategory_api_title": {
+    "message": "API"
+  },
+  "Option_commandCategory_api_desc": {
+    "message": "Envoyer une requête fetch à l'API"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Lanceurs de Page Web"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "Fonctions Individuelles"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "Expérimental"
+  },
   "Option_openMode_previewPopup": {
     "message": "Pop-up"
   },

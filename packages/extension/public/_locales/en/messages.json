@@ -266,6 +266,9 @@
   "Option_openMode": {
     "message": "Open Mode"
   },
+  "Option_searchMode": {
+    "message": "Search Mode"
+  },
   "Option_openMode_popup": {
     "message": "Popup"
   },
@@ -292,6 +295,57 @@
   },
   "Option_openMode_pageAction": {
     "message": "Page Action"
+  },
+  "Option_commandType_title": {
+    "message": "Select Command Type"
+  },
+  "Option_commandType_description": {
+    "message": "Please select the type of command you want to create"
+  },
+  "Option_commandCategory_search_title": {
+    "message": "Search"
+  },
+  "Option_commandCategory_search_desc": {
+    "message": "Search the selected text"
+  },
+  "Option_commandCategory_pageAction_title": {
+    "message": "Page Action"
+  },
+  "Option_commandCategory_pageAction_desc": {
+    "message": "Record and replay web page operations"
+  },
+  "Option_commandCategory_copy_title": {
+    "message": "Copy Text"
+  },
+  "Option_commandCategory_copy_desc": {
+    "message": "Copy selected text to clipboard"
+  },
+  "Option_commandCategory_linkPopup_title": {
+    "message": "Link Popup"
+  },
+  "Option_commandCategory_linkPopup_desc": {
+    "message": "Open links in selected text in bulk"
+  },
+  "Option_commandCategory_getTextStyles_title": {
+    "message": "Get Styles"
+  },
+  "Option_commandCategory_getTextStyles_desc": {
+    "message": "Get style information of selected text"
+  },
+  "Option_commandCategory_api_title": {
+    "message": "API"
+  },
+  "Option_commandCategory_api_desc": {
+    "message": "Send fetch request to API"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Web Page Launchers"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "Single Functions"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "Experimental"
   },
   "Option_openMode_previewPopup": {
     "message": "Popup"

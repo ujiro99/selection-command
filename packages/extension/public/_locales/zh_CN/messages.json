@@ -290,6 +290,60 @@
   "Option_openMode_pageAction": {
     "message": "页面操作"
   },
+  "Option_searchMode": {
+    "message": "搜索模式"
+  },
+  "Option_commandType_title": {
+    "message": "选择命令类型"
+  },
+  "Option_commandType_description": {
+    "message": "请选择您要创建的命令类型"
+  },
+  "Option_commandCategory_search_title": {
+    "message": "搜索"
+  },
+  "Option_commandCategory_search_desc": {
+    "message": "搜索选中的文本"
+  },
+  "Option_commandCategory_pageAction_title": {
+    "message": "页面操作"
+  },
+  "Option_commandCategory_pageAction_desc": {
+    "message": "录制和重放网页操作"
+  },
+  "Option_commandCategory_copy_title": {
+    "message": "复制文本"
+  },
+  "Option_commandCategory_copy_desc": {
+    "message": "将选中的文本复制到剪贴板"
+  },
+  "Option_commandCategory_linkPopup_title": {
+    "message": "链接弹出窗口"
+  },
+  "Option_commandCategory_linkPopup_desc": {
+    "message": "批量打开选中文本中的链接"
+  },
+  "Option_commandCategory_getTextStyles_title": {
+    "message": "获取样式"
+  },
+  "Option_commandCategory_getTextStyles_desc": {
+    "message": "获取选中文本的样式信息"
+  },
+  "Option_commandCategory_api_title": {
+    "message": "API"
+  },
+  "Option_commandCategory_api_desc": {
+    "message": "向API发送fetch请求"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "网页启动器"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "单一功能"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "实验性"
+  },
   "Option_openMode_previewPopup": {
     "message": "弹出窗口"
   },

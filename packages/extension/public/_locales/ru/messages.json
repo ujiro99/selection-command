@@ -290,6 +290,60 @@
   "Option_openMode_pageAction": {
     "message": "Действие страницы"
   },
+  "Option_searchMode": {
+    "message": "Режим поиска"
+  },
+  "Option_commandType_title": {
+    "message": "Выбрать тип команды"
+  },
+  "Option_commandType_description": {
+    "message": "Пожалуйста, выберите тип команды, которую вы хотите создать"
+  },
+  "Option_commandCategory_search_title": {
+    "message": "Поиск"
+  },
+  "Option_commandCategory_search_desc": {
+    "message": "Поиск выбранного текста"
+  },
+  "Option_commandCategory_pageAction_title": {
+    "message": "Действие страницы"
+  },
+  "Option_commandCategory_pageAction_desc": {
+    "message": "Записывать и воспроизводить операции веб-страниц"
+  },
+  "Option_commandCategory_copy_title": {
+    "message": "Копировать текст"
+  },
+  "Option_commandCategory_copy_desc": {
+    "message": "Копировать выбранный текст в буфер обмена"
+  },
+  "Option_commandCategory_linkPopup_title": {
+    "message": "Всплывающее окно ссылки"
+  },
+  "Option_commandCategory_linkPopup_desc": {
+    "message": "Открыть ссылки в выбранном тексте в пакетном режиме"
+  },
+  "Option_commandCategory_getTextStyles_title": {
+    "message": "Получить стили"
+  },
+  "Option_commandCategory_getTextStyles_desc": {
+    "message": "Получить информацию о стиле выбранного текста"
+  },
+  "Option_commandCategory_api_title": {
+    "message": "API"
+  },
+  "Option_commandCategory_api_desc": {
+    "message": "Отправить fetch запрос в API"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Запуск веб-страниц"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "Одиночные функции"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "Экспериментальные"
+  },
   "Option_openMode_previewPopup": {
     "message": "Всплывающее окно"
   },

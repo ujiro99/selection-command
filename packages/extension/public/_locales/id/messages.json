@@ -290,6 +290,60 @@
   "Option_openMode_pageAction": {
     "message": "Tindakan Halaman"
   },
+  "Option_searchMode": {
+    "message": "Mode Pencarian"
+  },
+  "Option_commandType_title": {
+    "message": "Pilih Jenis Perintah"
+  },
+  "Option_commandType_description": {
+    "message": "Silakan pilih jenis perintah yang ingin Anda buat"
+  },
+  "Option_commandCategory_search_title": {
+    "message": "Pencarian"
+  },
+  "Option_commandCategory_search_desc": {
+    "message": "Cari teks yang dipilih"
+  },
+  "Option_commandCategory_pageAction_title": {
+    "message": "Tindakan Halaman"
+  },
+  "Option_commandCategory_pageAction_desc": {
+    "message": "Rekam dan putar operasi halaman web"
+  },
+  "Option_commandCategory_copy_title": {
+    "message": "Salin Teks"
+  },
+  "Option_commandCategory_copy_desc": {
+    "message": "Salin teks yang dipilih ke papan klip"
+  },
+  "Option_commandCategory_linkPopup_title": {
+    "message": "Pop-up Tautan"
+  },
+  "Option_commandCategory_linkPopup_desc": {
+    "message": "Buka tautan dalam teks yang dipilih secara massal"
+  },
+  "Option_commandCategory_getTextStyles_title": {
+    "message": "Dapatkan Gaya"
+  },
+  "Option_commandCategory_getTextStyles_desc": {
+    "message": "Dapatkan informasi gaya teks yang dipilih"
+  },
+  "Option_commandCategory_api_title": {
+    "message": "API"
+  },
+  "Option_commandCategory_api_desc": {
+    "message": "Kirim permintaan fetch ke API"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Peluncur Halaman Web"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "Fungsi Tunggal"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "Eksperimental"
+  },
   "Option_openMode_previewPopup": {
     "message": "Pop-up"
   },
