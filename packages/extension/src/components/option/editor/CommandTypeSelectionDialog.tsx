@@ -1,4 +1,5 @@
 import { Search, Code, Play, Link, Copy, Paintbrush } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 import {
   Dialog,
@@ -70,13 +71,16 @@ export const CommandTypeSelectionDialog = ({
                       <button
                         key={category}
                         type="button"
-                        className="group px-4 py-2 border rounded-lg hover:border-gray-300 hover:shadow-md transition-all duration-200 text-left"
+                        className={cn(
+                          "group px-4 py-2 border rounded-lg hover:border-gray-300 hover:shadow-md transition-all duration-200 text-left",
+                          "hover:bg-gray-50",
+                        )}
                         onClick={() => handleCardClick(category)}
                       >
-                        <div className="flex flex-col items-center space-y-2">
-                          <div className="p-3 rounded-full bg-gray-50 group-hover:bg-gray-100 transition-colors">
+                        <div className="flex flex-col items-center space-y-1">
+                          <div className="p-3 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors">
                             <IconComponent
-                              size={24}
+                              size={20}
                               className="text-gray-600 group-hover:text-gray-700"
                             />
                           </div>

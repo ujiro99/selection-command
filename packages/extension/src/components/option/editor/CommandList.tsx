@@ -27,7 +27,7 @@ import {
 } from "@/types/schema"
 
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import { SCREEN, OPEN_MODE, COMMAND_CATEGORY } from "@/const"
+import { SCREEN, COMMAND_CATEGORY, OPEN_MODE_CATEGORY_MAP } from "@/const"
 import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
 // Imported services and hooks
@@ -107,7 +107,6 @@ export const CommandList = ({ control }: CommandListProps) => {
   const [commandDialogOpen, _setCommandDialogOpen] = useState(false)
   const [folderDialogOpen, _setFolderDialogOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<COMMAND_CATEGORY>()
-  const [selectedOpenMode, setSelectedOpenMode] = useState<OPEN_MODE>()
   const addCommandButtonRef = useRef<HTMLButtonElement>(null)
   const addFolderButtonRef = useRef<HTMLButtonElement>(null)
   const commandsRef = useRef<HTMLUListElement>(null)
@@ -162,23 +161,7 @@ export const CommandList = ({ control }: CommandListProps) => {
   const handleTypeSelect = (category: COMMAND_CATEGORY) => {
     setSelectedCategory(category)
     setTypeSelectionDialogOpen(false)
-
-    // For search category, open command dialog without specific mode (user will select in dialog)
-    if (category === COMMAND_CATEGORY.SEARCH) {
-      setSelectedOpenMode(undefined)
-      setCommandDialogOpen(true)
-    } else {
-      // For other categories, map directly to the corresponding OPEN_MODE
-      const modeMap = {
-        [COMMAND_CATEGORY.PAGE_ACTION]: OPEN_MODE.PAGE_ACTION,
-        [COMMAND_CATEGORY.COPY]: OPEN_MODE.COPY,
-        [COMMAND_CATEGORY.LINK_POPUP]: OPEN_MODE.LINK_POPUP,
-        [COMMAND_CATEGORY.GET_TEXT_STYLES]: OPEN_MODE.GET_TEXT_STYLES,
-        [COMMAND_CATEGORY.API]: OPEN_MODE.API,
-      }
-      setSelectedOpenMode(modeMap[category])
-      setCommandDialogOpen(true)
-    }
+    setCommandDialogOpen(true)
   }
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -208,7 +191,10 @@ export const CommandList = ({ control }: CommandListProps) => {
     const node = flatten[idx]
     editDataRef.current = node.content
     if (isCommand(node.content)) {
+      const command = node.content as SelectionCommand
+      const category = OPEN_MODE_CATEGORY_MAP[command.openMode]
       setCommandDialogOpen(true)
+      setSelectedCategory(category)
     } else {
       setFolderDialogOpen(true)
     }
@@ -305,7 +291,6 @@ export const CommandList = ({ control }: CommandListProps) => {
         folders={folderArray.fields}
         command={editDataRef.current as SelectionCommand}
         selectedCategory={selectedCategory}
-        selectedOpenMode={selectedOpenMode}
       />
       <FolderEditDialog
         open={folderDialogOpen}

@@ -127,7 +127,7 @@ const OpenModeItem = ({
               "relative flex-col gap-0.5 h-auto w-full py-1.5 shadow-sm text-xs font-medium text-gray-600 hover:text-gray-700",
               "w-[160px]",
               "border transition-all duration-200",
-              checked && "border-gray-400 bg-gray-50",
+              checked && "bg-gray-50",
             )}
           >
             {checked && (

@@ -57,6 +57,7 @@ import {
   ICON_NOT_FOUND,
   SCREEN,
   COMMAND_CATEGORY,
+  COMMAND_CATEGORY_OPEN_MODES_MAP,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -192,7 +193,6 @@ type CommandEditDialogProps = {
   folders: CommandFolder[]
   command?: SelectionCommand
   selectedCategory?: COMMAND_CATEGORY
-  selectedOpenMode?: OPEN_MODE
 }
 
 export const CommandEditDialog = ({
@@ -202,7 +202,6 @@ export const CommandEditDialog = ({
   folders,
   command,
   selectedCategory,
-  selectedOpenMode,
 }: CommandEditDialogProps) => {
   return (
     <FaviconContextProvider>
@@ -213,7 +212,6 @@ export const CommandEditDialog = ({
         folders={folders}
         command={command}
         selectedCategory={selectedCategory}
-        selectedOpenMode={selectedOpenMode}
       />
     </FaviconContextProvider>
   )
@@ -226,7 +224,6 @@ const CommandEditDialogInner = ({
   folders,
   command,
   selectedCategory,
-  selectedOpenMode,
 }: CommandEditDialogProps) => {
   const [initialized, setInitialized] = useState(false)
 
@@ -239,6 +236,9 @@ const CommandEditDialogInner = ({
   const { setIconUrlSrc, subscribe } = useFavicon()
 
   const isUpdate = command != null
+
+  // Determine if open mode selection should be shown
+  const shouldShowOpenModeSelect = selectedCategory === COMMAND_CATEGORY.SEARCH
 
   const variableArray = useFieldArray({
     name: "variables",
@@ -299,21 +299,29 @@ const CommandEditDialogInner = ({
   }
 
   useEffect(() => {
+    // Get default open mode for the selected category
+    const getDefaultOpenMode = (category: COMMAND_CATEGORY) => {
+      const modes = COMMAND_CATEGORY_OPEN_MODES_MAP[category]
+      return modes?.[0] ?? DEFAULT_MODE
+    }
+
     if (command != null) {
+      // edit mode
       if (isEmpty(command.parentFolderId)) {
         command.parentFolderId = ROOT_FOLDER
       }
       reset((command as any) ?? InitialValues)
     } else {
-      const initialValues = selectedOpenMode
-        ? getDefault(selectedOpenMode, {
+      // new mode
+      const initialValues = selectedCategory
+        ? getDefault(getDefaultOpenMode(selectedCategory), {
             id: "",
             title: "",
           } as CommandSchemaType)
         : InitialValues
       reset(initialValues)
     }
-  }, [command, selectedOpenMode, reset])
+  }, [command, selectedCategory, reset])
 
   useEffect(() => {
     if (openMode === preOpenMode) return
@@ -444,7 +452,7 @@ const CommandEditDialogInner = ({
                   description={t("displayMode_desc")}
                 />
               ) : (
-                !selectedOpenMode && (
+                shouldShowOpenModeSelect && (
                   <SelectField
                     control={form.control}
                     name="openMode"
