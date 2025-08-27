@@ -272,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Tab"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Tab Latar Belakang"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -903,6 +906,33 @@
     "message": "Tampilkan tab dan aktifkan.<wbr>Tampilkan di sebelah kanan tab saat ini."
   },
   "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "Variabel Pengguna"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "Tentukan variabel kustom untuk digunakan dalam Page Actions Anda. Variabel ini dapat digunakan dalam field input dengan {{namaVariabel}}."
+    },
+    "Option_userVariable_name": {
+      "message": "Nama"
+    },
+    "Option_userVariable_value": {
+      "message": "Nilai"
+    },
+    "Option_userVariable_add": {
+      "message": "Tambah Variabel"
+    },
+    "Option_userVariable_name_required": {
+      "message": "Nama variabel diperlukan"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "Nama harus dimulai dengan huruf dan hanya boleh berisi huruf, angka, dan underscore"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "Nama variabel sudah ada"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "Maksimal 5 variabel diizinkan"
+    },
     "message": "Buka tab di latar belakang.<wbr>Tampilkan di sebelah kanan tab saat ini."
   },
   "Option_title_desc": {

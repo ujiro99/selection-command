@@ -340,8 +340,9 @@ export const openAndRun = (
 
     // Run the steps on the popup.
     const steps = (cmd.pageActionOption as any).steps
+    const userVariables = (cmd.pageActionOption as any).userVariables || []
     run(
-      { ...param, tabId, steps, selectedText, clipboardText },
+      { ...param, tabId, steps, selectedText, clipboardText, userVariables },
       sender,
       response,
     )
@@ -386,7 +387,14 @@ const run = (
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  const { steps, selectedText, clipboardText, srcUrl, openMode } = param
+  const {
+    steps,
+    selectedText,
+    clipboardText,
+    srcUrl,
+    openMode,
+    userVariables,
+  } = param
   const tabId = param.tabId || sender.tab?.id
   if (tabId == null) {
     console.error("tabId not found")
@@ -423,6 +431,7 @@ const run = (
         selectedText,
         clipboardText,
         openMode,
+        userVariables,
       })
       if (ret == null) {
         if (retryCount >= RETRY_MAX) {

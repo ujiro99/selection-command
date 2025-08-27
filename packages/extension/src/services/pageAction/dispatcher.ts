@@ -8,6 +8,7 @@ import {
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from "@/const"
+import type { UserVariable } from "@/types"
 
 export namespace PageAction {
   export type Parameter = Start | End | Click | Input | Keyboard | Scroll
@@ -44,6 +45,7 @@ export namespace PageAction {
     srcUrl: string
     selectedText: string
     clipboardText: string
+    userVariables?: UserVariable[]
   }
 
   export type Keyboard = {
@@ -190,8 +192,14 @@ export const PageActionDispatcher = {
   },
 
   input: async (param: PageAction.InputExec): ActionReturn => {
-    const { selector, selectorType, srcUrl, selectedText, clipboardText } =
-      param
+    const {
+      selector,
+      selectorType,
+      srcUrl,
+      selectedText,
+      clipboardText,
+      userVariables,
+    } = param
     const user = userEvent.setup()
 
     const element = await waitForElement(selector, selectorType)
@@ -201,6 +209,14 @@ export const PageActionDispatcher = {
         [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
         [InsertSymbol[INSERT.URL]]: srcUrl,
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
+        // Add user variables
+        ...(userVariables?.reduce(
+          (acc, variable) => {
+            acc[variable.name] = variable.value
+            return acc
+          },
+          {} as Record<string, string>,
+        ) || {}),
       }
       let value = safeInterpolate(param.value, variables)
       value = value.replace(/{/g, "{{") // escape

@@ -272,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Onglet"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Onglet en arrière-plan"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -900,6 +903,33 @@
     "message": "Afficher l'onglet et l'activer.<wbr>Afficher à droite de l'onglet actuel."
   },
   "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "Variables Utilisateur"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "Définissez des variables personnalisées à utiliser dans vos Page Actions. Ces variables peuvent être utilisées dans les champs de saisie avec {{nomVariable}}."
+    },
+    "Option_userVariable_name": {
+      "message": "Nom"
+    },
+    "Option_userVariable_value": {
+      "message": "Valeur"
+    },
+    "Option_userVariable_add": {
+      "message": "Ajouter Variable"
+    },
+    "Option_userVariable_name_required": {
+      "message": "Le nom de la variable est requis"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "Le nom doit commencer par une lettre et ne peut contenir que des lettres, chiffres et tirets bas"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "Le nom de la variable existe déjà"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "Maximum 5 variables autorisées"
+    },
     "message": "Ouvrir l'onglet en arrière-plan.<wbr>Afficher à droite de l'onglet actuel."
   },
   "Option_title_desc": {

@@ -19,6 +19,7 @@ import type {
   LinkCommand,
   PageActionCommand,
   UrlParam,
+  UserVariable,
 } from "@/types"
 
 // cn function is now imported from shared package
@@ -364,4 +365,26 @@ export function isServiceWorker(): boolean {
     return true
   }
   return false
+}
+
+/**
+ * Check if the variable name is valid.
+ * Variable names must start with a letter and contain only letters, numbers, and underscores.
+ * @param {string} name The variable name to check.
+ * @returns {boolean} True if the variable name is valid.
+ */
+export function isValidVariableName(name: string): boolean {
+  return /^[a-zA-Z][a-zA-Z0-9_]*$/.test(name)
+}
+
+/**
+ * Validate user variables array.
+ * @param {UserVariable[]} variables The user variables to validate.
+ * @returns {boolean} True if the variables are valid (max 5, valid names and values).
+ */
+export function validateUserVariables(variables: UserVariable[]): boolean {
+  if (variables.length > 5) return false
+  return variables.every(
+    (v) => isValidVariableName(v.name) && typeof v.value === "string",
+  )
 }

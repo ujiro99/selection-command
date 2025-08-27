@@ -105,6 +105,11 @@ export type CommandVariable = {
   value: string
 }
 
+export type UserVariable = {
+  name: string
+  value: string
+}
+
 export type PopupPlacement = {
   side: SIDE
   align: ALIGN
@@ -198,6 +203,7 @@ export type PageActionOption = {
   startUrl: string
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
+  userVariables?: Array<UserVariable>
 }
 
 export type PageActionRecorderOption = {

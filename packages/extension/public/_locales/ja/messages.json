@@ -276,16 +276,16 @@
     "message": "ウィンドウの表示方法です。"
   },
   "Option_openMode_popup": {
-    "message": "Popup"
+    "message": "ポップアップ"
   },
   "Option_openMode_window": {
-    "message": "Window"
+    "message": "ウィンドウ"
   },
   "Option_openMode_tab": {
-    "message": "Tab"
+    "message": "タブ"
   },
   "Option_openMode_backgroundTab": {
-    "message": "Background Tab"
+    "message": "バックグラウンドタブ"
   },
   "Option_openMode_api": {
     "message": "API"
@@ -487,6 +487,39 @@
   },
   "Option_pageAction_delay": {
     "message": "遅延時間"
+  },
+  "Option_userVariables": {
+    "message": "ユーザー変数"
+  },
+  "Option_userVariables_desc": {
+    "message": "入力時に使用できる独自の変数を定義します（最大5個）"
+  },
+  "Option_userVariable_name": {
+    "message": "変数名"
+  },
+  "Option_userVariable_value": {
+    "message": "値"
+  },
+  "Option_userVariable_add": {
+    "message": "変数を追加"
+  },
+  "Option_userVariable_name_required": {
+    "message": "変数名は必須です"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "変数名は英字で始まり、英数字とアンダースコアのみ使用できます"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "変数名が重複しています"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "最大$max$個まで追加できます",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
@@ -709,6 +742,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "変数名は文字で始まり、文字、数字、アンダースコアのみを含む必要があります"
   },
   "Option_zod_string_min": {
     "message": "長さ $key$ 文字以上で入力してください。",

@@ -272,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "标签页"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "后台标签页"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -900,6 +903,33 @@
     "message": "显示标签页并激活。<wbr>显示在当前标签页的右侧。"
   },
   "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "用户变量"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "定义在页面操作中使用的自定义变量。这些变量可以在输入字段中使用{{变量名}}的形式。"
+    },
+    "Option_userVariable_name": {
+      "message": "名称"
+    },
+    "Option_userVariable_value": {
+      "message": "值"
+    },
+    "Option_userVariable_add": {
+      "message": "添加变量"
+    },
+    "Option_userVariable_name_required": {
+      "message": "变量名是必需的"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "名称必须以字母开头，只能包含字母、数字和下划线"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "变量名已存在"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "最多允许5个变量"
+    },
     "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
   },
   "Option_title_desc": {

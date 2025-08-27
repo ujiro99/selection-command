@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Check } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
@@ -7,6 +8,7 @@ import {
   FormLabel,
   FormDescription,
 } from "@/components/ui/form"
+import { Tooltip } from "@/components/Tooltip"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
@@ -84,7 +86,7 @@ export const OpenModeToggleField = ({
                 onValueChange={(val) => {
                   if (val) field.onChange(val)
                 }}
-                className="grid grid-cols-1 gap-2"
+                className="grid grid-cols-2 gap-2 py-1"
               >
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)
@@ -116,16 +118,18 @@ const OpenModeItem = ({
   iconSrc: string
   checked: boolean
 }) => {
+  const [tooltipRef, setTooltipRef] = useState<HTMLElement | null>(null)
+
   return (
     <FormItem>
       <FormControl>
-        <div className="flex items-center">
+        <>
           <ToggleGroupItem
+            ref={setTooltipRef}
             value={mode}
             aria-label={t(`openMode_${mode}`)}
             className={cn(
               "relative flex-col gap-0.5 h-auto w-full py-1.5 shadow-sm text-xs font-medium text-gray-600 hover:text-gray-700",
-              "w-[160px]",
               "border transition-all duration-200",
               checked && "bg-gray-50",
             )}
@@ -138,17 +142,16 @@ const OpenModeItem = ({
               alt={mode}
               className={cn("h-8 w-8 object-contain")}
             />
-            <span className={cn("text-sm font-normal text-gray-600")}>
+            <span className={cn("text-xs font-normal text-gray-600")}>
               {t(`openMode_${mode}`)}
             </span>
           </ToggleGroupItem>
-          <p
-            dangerouslySetInnerHTML={{
-              __html: t(`openMode_${mode}_desc`),
-            }}
-            className="flex-1 text-[0.8rem] text-gray-800 pl-3 break-keep"
+          <Tooltip
+            text={t(`openMode_${mode}_desc`).replace("<wbr>", "\n")}
+            className="whitespace-pre-wrap text-center"
+            positionElm={tooltipRef}
           />
-        </div>
+        </>
       </FormControl>
     </FormItem>
   )

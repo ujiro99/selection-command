@@ -272,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Scheda"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Scheda in background"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -900,6 +903,33 @@
     "message": "Mostra scheda e attivala.<wbr>Mostra a destra della scheda corrente."
   },
   "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "Variabili Utente"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "Definisci variabili personalizzate da utilizzare nelle tue Page Actions. Queste variabili possono essere utilizzate nei campi di input con {{nomeVariabile}}."
+    },
+    "Option_userVariable_name": {
+      "message": "Nome"
+    },
+    "Option_userVariable_value": {
+      "message": "Valore"
+    },
+    "Option_userVariable_add": {
+      "message": "Aggiungi Variabile"
+    },
+    "Option_userVariable_name_required": {
+      "message": "Il nome della variabile è richiesto"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "Il nome deve iniziare con una lettera e può contenere solo lettere, numeri e underscore"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "Il nome della variabile esiste già"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "Sono consentite massimo 5 variabili"
+    },
     "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
   },
   "Option_title_desc": {

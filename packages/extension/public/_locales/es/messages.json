@@ -272,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Pestaña"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Pestaña en segundo plano"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -900,6 +903,33 @@
     "message": "Mostrar pestaña y activarla.<wbr>Mostrar a la derecha de la pestaña actual."
   },
   "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "Variables de Usuario"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "Define variables personalizadas para usar en tus Page Actions. Estas variables se pueden usar en campos de entrada con {{nombreVariable}}."
+    },
+    "Option_userVariable_name": {
+      "message": "Nombre"
+    },
+    "Option_userVariable_value": {
+      "message": "Valor"
+    },
+    "Option_userVariable_add": {
+      "message": "Agregar Variable"
+    },
+    "Option_userVariable_name_required": {
+      "message": "El nombre de la variable es requerido"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "El nombre debe comenzar con una letra y solo puede contener letras, números y guiones bajos"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "El nombre de la variable ya existe"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "Se permiten máximo 5 variables"
+    },
     "message": "Abrir pestaña en segundo plano.<wbr>Mostrar a la derecha de la pestaña actual."
   },
   "Option_title_desc": {

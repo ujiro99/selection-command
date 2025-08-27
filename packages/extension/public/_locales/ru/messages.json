@@ -272,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Вкладка"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Фоновая вкладка"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -900,6 +903,33 @@
     "message": "Показать вкладку и активировать.<wbr>Показать справа от текущей вкладки."
   },
   "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "Пользовательские переменные"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "Определите пользовательские переменные для использования в ваших Page Actions. Эти переменные можно использовать в полях ввода с {{имяПеременной}}."
+    },
+    "Option_userVariable_name": {
+      "message": "Имя"
+    },
+    "Option_userVariable_value": {
+      "message": "Значение"
+    },
+    "Option_userVariable_add": {
+      "message": "Добавить переменную"
+    },
+    "Option_userVariable_name_required": {
+      "message": "Имя переменной обязательно"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "Имя должно начинаться с буквы и может содержать только буквы, цифры и подчеркивания"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "Имя переменной уже существует"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "Разрешено максимум 5 переменных"
+    },
     "message": "Открыть вкладку в фоновом режиме.<wbr>Показать справа от текущей вкладки."
   },
   "Option_title_desc": {

@@ -410,6 +410,33 @@
   "Option_pageAction_delay": {
     "message": "Delay time"
   },
+  "Option_userVariables": {
+    "message": "User Variables"
+  },
+  "Option_userVariables_desc": {
+    "message": "Define custom variables for input fields (max 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Variable name"
+  },
+  "Option_userVariable_value": {
+    "message": "Value"
+  },
+  "Option_userVariable_add": {
+    "message": "Add variable"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Variable name is required"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Variable name must start with letter and contain only letters, numbers, and underscores"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Variable name already exists"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maximum 5 variables allowed"
+  },
   "Option_linkCommand": {
     "message": "Link Preview"
   },
@@ -631,6 +658,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Variable name must start with a letter and contain only letters, numbers, and underscores"
   },
   "Option_zod_string_min": {
     "message": "Please enter a string of $key$ characters or more.",

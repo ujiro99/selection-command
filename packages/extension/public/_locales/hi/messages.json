@@ -272,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "टैब"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "बैकग्राउंड टैब"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -900,6 +903,33 @@
     "message": "टैब दिखाएँ और सक्रिय करें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
   },
   "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "उपयोगकर्ता चर"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "अपने पेज एक्शन में उपयोग के लिए कस्टम वेरिएबल परिभाषित करें। ये वेरिएबल इनपुट फ़ील्ड में {{चरनाम}} के साथ उपयोग किए जा सकते हैं।"
+    },
+    "Option_userVariable_name": {
+      "message": "नाम"
+    },
+    "Option_userVariable_value": {
+      "message": "मान"
+    },
+    "Option_userVariable_add": {
+      "message": "वेरिएबल जोड़ें"
+    },
+    "Option_userVariable_name_required": {
+      "message": "वेरिएबल नाम आवश्यक है"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "नाम एक अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "वेरिएबल नाम पहले से मौजूद है"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "अधिकतम 5 वेरिएबल की अनुमति है"
+    },
     "message": "बैकग्राउंड में टैब खोलें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
   },
   "Option_title_desc": {

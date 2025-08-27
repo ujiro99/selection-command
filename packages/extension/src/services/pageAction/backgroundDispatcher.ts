@@ -170,8 +170,14 @@ export const BackgroundPageActionDispatcher = {
   },
 
   input: async (param: PageAction.InputExec): ActionReturn => {
-    const { selector, selectorType, srcUrl, selectedText, clipboardText } =
-      param
+    const {
+      selector,
+      selectorType,
+      srcUrl,
+      selectedText,
+      clipboardText,
+      userVariables,
+    } = param
 
     const element = await waitForElementBackground(selector, selectorType)
     if (element) {
@@ -180,6 +186,14 @@ export const BackgroundPageActionDispatcher = {
         [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
         [InsertSymbol[INSERT.URL]]: srcUrl,
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
+        // Add user variables
+        ...(userVariables?.reduce(
+          (acc, variable) => {
+            acc[variable.name] = variable.value
+            return acc
+          },
+          {} as Record<string, string>,
+        ) || {}),
       }
       let value = safeInterpolate(param.value, variables)
       value = value.replace(/{/g, "{{") // escape

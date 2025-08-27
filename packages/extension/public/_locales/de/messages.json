@@ -272,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Tab"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Hintergrund-Tab"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -900,6 +903,33 @@
     "message": "Tab anzeigen und aktivieren.<wbr>Rechts vom aktuellen Tab anzeigen."
   },
   "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "Benutzervariablen"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "Definieren Sie benutzerdefinierte Variablen für die Verwendung in Ihren Page Actions. Diese Variablen können in Eingabefeldern mit {{variableName}} verwendet werden."
+    },
+    "Option_userVariable_name": {
+      "message": "Name"
+    },
+    "Option_userVariable_value": {
+      "message": "Wert"
+    },
+    "Option_userVariable_add": {
+      "message": "Variable hinzufügen"
+    },
+    "Option_userVariable_name_required": {
+      "message": "Variablenname ist erforderlich"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "Name muss mit einem Buchstaben beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "Variablenname bereits vorhanden"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "Maximal 5 Variablen sind erlaubt"
+    },
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
   },
   "Option_title_desc": {

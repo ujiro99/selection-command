@@ -69,6 +69,7 @@ export type RunPageAction = {
   srcUrl: string
   selectedText: string
   clipboardText: string
+  userVariables?: Array<import("@/types").UserVariable>
 }
 
 export namespace ExecPageAction {
@@ -78,6 +79,7 @@ export namespace ExecPageAction {
     clipboardText: string
     step: PageActionStep
     openMode: PAGE_ACTION_OPEN_MODE
+    userVariables?: Array<import("@/types").UserVariable>
   }
   export type Return = {
     result: boolean
