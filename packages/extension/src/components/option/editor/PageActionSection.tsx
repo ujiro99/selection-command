@@ -11,11 +11,11 @@ import { DeepPartial } from "@/types"
 
 import { InputField } from "@/components/option/field/InputField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
-import { UserVariablesField } from "@/components/option/field/UserVariablesField"
 import { StepList } from "@/components/pageAction/StepList"
 import { InputEditor } from "@/components/pageAction/InputEditor"
 import { RemoveDialog } from "@/components/option/RemoveDialog"
 import { TypeIcon } from "@/components/pageAction/TypeIcon"
+// import { UserVariablesField } from "@/components/option/field/UserVariablesField"
 
 type PageActionSectionProps = {
   form: any
@@ -107,13 +107,14 @@ export const PageActionSection = ({
         type="pageAction"
       />
 
+      {/*
       <UserVariablesField
         control={form.control}
         name="pageActionOption.userVariables"
         formLabel={t("userVariables")}
         description={t("userVariables_tooltip")}
       />
-
+      */}
       <div className="w-full flex items-center gap-1 pt-4">
         <div className="w-2/6">
           <FormLabel>{t("pageAction_title")}</FormLabel>
