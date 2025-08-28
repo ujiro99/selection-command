@@ -931,7 +931,13 @@
       "message": "Nome da variável já existe"
     },
     "Option_userVariable_max_reached": {
-      "message": "Máximo de 5 variáveis permitidas"
+      "message": "Máximo de $max$ variáveis permitidas",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "Abrir separador em segundo plano.<wbr>Exibir à direita do separador actual."
   },

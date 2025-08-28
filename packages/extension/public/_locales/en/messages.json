@@ -435,7 +435,13 @@
     "message": "Variable name already exists"
   },
   "Option_userVariable_max_reached": {
-    "message": "Maximum 5 variables allowed"
+    "message": "Maximum $max$ variables allowed",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "Link Preview"

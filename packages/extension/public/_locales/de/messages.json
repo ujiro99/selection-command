@@ -928,7 +928,13 @@
       "message": "Variablenname bereits vorhanden"
     },
     "Option_userVariable_max_reached": {
-      "message": "Maximal 5 Variablen sind erlaubt"
+      "message": "Maximal $max$ Variablen sind erlaubt",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
   },

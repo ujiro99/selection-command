@@ -931,7 +931,13 @@
       "message": "Nama pembolehubah sudah wujud"
     },
     "Option_userVariable_max_reached": {
-      "message": "Maksimum 5 pembolehubah dibenarkan"
+      "message": "Maksimum $max$ pembolehubah dibenarkan",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "Buka tab di latar belakang.<wbr>Papar di sebelah kanan tab semasa."
   },

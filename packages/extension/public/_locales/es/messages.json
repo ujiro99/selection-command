@@ -928,7 +928,13 @@
       "message": "El nombre de la variable ya existe"
     },
     "Option_userVariable_max_reached": {
-      "message": "Se permiten máximo 5 variables"
+      "message": "Se permiten máximo $max$ variables",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "Abrir pestaña en segundo plano.<wbr>Mostrar a la derecha de la pestaña actual."
   },

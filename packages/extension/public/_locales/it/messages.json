@@ -928,7 +928,13 @@
       "message": "Il nome della variabile esiste già"
     },
     "Option_userVariable_max_reached": {
-      "message": "Sono consentite massimo 5 variabili"
+      "message": "Sono consentite massimo $max$ variabili",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
   },

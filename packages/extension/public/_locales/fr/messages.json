@@ -928,7 +928,13 @@
       "message": "Le nom de la variable existe déjà"
     },
     "Option_userVariable_max_reached": {
-      "message": "Maximum 5 variables autorisées"
+      "message": "Maximum $max$ variables autorisées",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "Ouvrir l'onglet en arrière-plan.<wbr>Afficher à droite de l'onglet actuel."
   },

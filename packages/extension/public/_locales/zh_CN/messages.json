@@ -928,7 +928,13 @@
       "message": "变量名已存在"
     },
     "Option_userVariable_max_reached": {
-      "message": "最多允许5个变量"
+      "message": "最多允许$max$个变量",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
   },

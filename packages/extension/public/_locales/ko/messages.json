@@ -928,7 +928,13 @@
       "message": "변수 이름이 이미 존재합니다"
     },
     "Option_userVariable_max_reached": {
-      "message": "최대 5개의 변수가 허용됩니다"
+      "message": "최대 $max$개의 변수가 허용됩니다",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "백그라운드에서 탭 열기.<wbr>현재 탭 오른쪽에 표시합니다."
   },

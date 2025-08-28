@@ -928,7 +928,13 @@
       "message": "वेरिएबल नाम पहले से मौजूद है"
     },
     "Option_userVariable_max_reached": {
-      "message": "अधिकतम 5 वेरिएबल की अनुमति है"
+      "message": "अधिकतम $max$ वेरिएबल की अनुमति है",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
     },
     "message": "बैकग्राउंड में टैब खोलें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
   },
