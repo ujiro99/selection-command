@@ -27,6 +27,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormDescription,
 } from "@/components/ui/form"
 
 import {
@@ -45,6 +46,9 @@ import { TextareaField } from "@/components/option/field/TextareaField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { PageActionSection } from "@/components/option/editor/PageActionSection"
 import { PageActionHelp } from "@/components/help/PageActionHelp"
+import { SearchUrlAssistButton } from "@/components/option/editor/SearchUrlAssistButton"
+import { SearchUrlAssistDialog } from "@/components/option/editor/SearchUrlAssistDialog"
+import { MenuImage } from "@/components/menu/MenuImage"
 import { PageActionStep } from "@/types/schema"
 
 import {
@@ -70,7 +74,7 @@ import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
-import { isEmpty, e2a, cn } from "@/lib/utils"
+import { isEmpty, e2a, cn, parseGeminiUrl } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -226,6 +230,7 @@ const CommandEditDialogInner = ({
   selectedCategory,
 }: CommandEditDialogProps) => {
   const [initialized, setInitialized] = useState(false)
+  const [assistDialogOpen, setAssistDialogOpen] = useState(false)
 
   const form = useForm<CommandSchemaType>({
     resolver: zodResolver(commandSchema),
@@ -422,24 +427,71 @@ const CommandEditDialogInner = ({
 
               {(SEARCH_OPEN_MODE.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
-                <InputField
+                <FormField
                   control={form.control}
                   name="searchUrl"
-                  formLabel={t("searchUrl")}
-                  inputProps={{
-                    type: "string",
-                    ...register("searchUrl", {}),
-                  }}
-                  description={
-                    openMode === OPEN_MODE.API
-                      ? t("searchUrl_desc_api")
-                      : t("searchUrl_desc")
-                  }
-                  previewUrl={
-                    !isEmpty(getValues("searchUrl"))
-                      ? getValues("iconUrl")
-                      : undefined
-                  }
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-1">
+                      <div className="w-2/6">
+                        <FormLabel>{t("searchUrl")}</FormLabel>
+                        <FormDescription>
+                          {openMode === OPEN_MODE.API
+                            ? t("searchUrl_desc_api")
+                            : t("searchUrl_desc")}
+                        </FormDescription>
+                      </div>
+                      <div className="w-4/6 relative">
+                        <div className="flex-1 relative">
+                          {!isEmpty(getValues("iconUrl")) && (
+                            <MenuImage
+                              className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+                              src={getValues("iconUrl")}
+                              alt="Preview of image"
+                            />
+                          )}
+                          <FormControl>
+                            <Input
+                              className={cn(
+                                !isEmpty(getValues("iconUrl")) && "pl-10",
+                              )}
+                              inputClassName={cn(
+                                !isEmpty(searchUrl) && "pr-11",
+                              )}
+                              type="string"
+                              {...field}
+                              {...register("searchUrl", {})}
+                              onBlur={(e) => {
+                                const value = e.target.value
+                                const parsedUrl = parseGeminiUrl(value)
+                                if (parsedUrl !== value) {
+                                  setValue("searchUrl", parsedUrl)
+                                }
+                                field.onBlur()
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                        {SEARCH_OPEN_MODE.includes(openMode as any) && (
+                          <SearchUrlAssistButton
+                            onClick={() => {
+                              setAssistDialogOpen(true)
+                              sendEvent(
+                                ANALYTICS_EVENTS.OPEN_DIALOG,
+                                {
+                                  event_label: "search_url_assist",
+                                },
+                                SCREEN.OPTION,
+                              )
+                            }}
+                            disabled={false}
+                            className="absolute top-1.5 right-1.5"
+                            compact={!isEmpty(searchUrl)}
+                          />
+                        )}
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
                 />
               )}
 
@@ -694,6 +746,11 @@ const CommandEditDialogInner = ({
           </DialogFooter>
         </DialogContent>
       </DialogPortal>
+
+      <SearchUrlAssistDialog
+        open={assistDialogOpen}
+        onOpenChange={setAssistDialogOpen}
+      />
     </Dialog>
   )
 }

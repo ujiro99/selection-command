@@ -32,9 +32,9 @@ export type End = {
 
 export type Click = {
   type:
-    | PAGE_ACTION_EVENT.click
-    | PAGE_ACTION_EVENT.doubleClick
-    | PAGE_ACTION_EVENT.tripleClick
+  | PAGE_ACTION_EVENT.click
+  | PAGE_ACTION_EVENT.doubleClick
+  | PAGE_ACTION_EVENT.tripleClick
   label: string
   selector: string
   selectorType: SelectorType
@@ -80,8 +80,14 @@ export type PageActionStep = {
   param: Parameter
 }
 
+export type UserVariable = {
+  name: string
+  value: string
+}
+
 export type PageActionOption = {
   startUrl: string
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
+  userVariables?: Array<UserVariable>
 }

@@ -1012,5 +1012,53 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "バックアップからの復元に失敗しました。"
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI アシスト"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "検索URL アシスト"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "検索キーワードと検索結果URLを入力して、実行ボタンを押してください。\nAIが検索URLを生成します。"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "検索キーワード"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "例: test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "検索結果ページのURL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "使用方法："
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "任意の検索キーワードを入力"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "そのキーワードで実際に検索。結果ページのURLをコピー&ペースト"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "「Geminiで実行」をクリック → AIが検索URLを生成"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "生成された検索URLを、コマンドの検索URL欄にコピー&ペースト"
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Geminiで実行"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "起動中..."
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "検索キーワードを入力してください"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "有効なURLを入力してください"
   }
 }

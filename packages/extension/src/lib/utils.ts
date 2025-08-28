@@ -388,3 +388,35 @@ export function validateUserVariables(variables: UserVariable[]): boolean {
     (v) => isValidVariableName(v.name) && typeof v.value === "string",
   )
 }
+
+/**
+ * Parse markdown URL format in Gemini and extract the actual URL.
+ * @param {string} text - Text that might contain markdown URL
+ * @returns {string} Extracted URL or original text if no markdown URL found
+ */
+export function parseGeminiUrl(text: string): string {
+  // Match markdown link format: [text](url) and extract the text part (Gemini-specific behavior)
+  // Gemini wraps the actual URL in brackets and puts Google search URL in parentheses
+  const markdownLinkRegex = /^\[(.*?)\]\((.*)\)$/
+  const match = text.match(markdownLinkRegex)
+
+  if (match) {
+    let textPart = match[1]
+    const urlPart = match[2]
+
+    // Basic validation - both text and URL parts should be present
+    if (textPart && urlPart) {
+      // For Gemini URLs, the actual intended URL is in the text part (brackets)
+      // Handle Markdown escape sequences in the text part
+      textPart = textPart.replace(/\\(.)/g, "$1") // Unescape markdown special characters
+
+      // Basic URL validation - should start with http:// or https://
+      if (textPart.startsWith("http://") || textPart.startsWith("https://")) {
+        return textPart
+      }
+    }
+  }
+
+  // Return original text if no valid markdown URL pattern found
+  return text
+}

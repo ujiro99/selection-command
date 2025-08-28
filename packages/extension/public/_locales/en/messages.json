@@ -964,5 +964,53 @@
   },
   "Option_openModeSecondary_desc": {
     "message": "Behavior when Ctrl + clicking the menu."
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI Assist"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Search URL Assist"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Enter a search keyword and search result URL, and AI will generate a search URL template."
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Search keyword"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "e.g., test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "Search result page URL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "How to use:"
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Enter any search keyword"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Copy & paste the URL of the search results page for that keyword"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Click \"Execute with Gemini\" to have AI generate a search URL template"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Use the generated template in the search URL field of the command"
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Execute with Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Launching..."
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Please enter a search keyword"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Please enter a valid URL"
   }
 }

@@ -15,7 +15,7 @@ import { t as _t } from "@/services/i18n"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
-// アイコンマッピング
+// Icon mapping
 const getIconForMode = (mode: string) => {
   if (mode === OPEN_MODE.POPUP || mode === PAGE_ACTION_OPEN_MODE.POPUP) {
     return "/setting/open_mode/popup.png"
@@ -35,19 +35,19 @@ const getIconForMode = (mode: string) => {
   return "/setting/open_mode/popup.png"
 }
 
-// 統一された選択肢の順序
+// Order of options
 const SEARCH_MODES = [
   OPEN_MODE.POPUP,
+  OPEN_MODE.WINDOW,
   OPEN_MODE.TAB,
   OPEN_MODE.BACKGROUND_TAB,
-  OPEN_MODE.WINDOW,
 ] as const
 
 const PAGE_ACTION_MODES = [
   PAGE_ACTION_OPEN_MODE.POPUP,
+  PAGE_ACTION_OPEN_MODE.WINDOW,
   PAGE_ACTION_OPEN_MODE.TAB,
   PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
-  PAGE_ACTION_OPEN_MODE.WINDOW,
 ] as const
 
 type OpenModeToggleFieldProps = {

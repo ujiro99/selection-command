@@ -339,8 +339,8 @@ export const openAndRun = (
     await Ipc.ensureConnection(tabId)
 
     // Run the steps on the popup.
-    const steps = (cmd.pageActionOption as any).steps
-    const userVariables = (cmd.pageActionOption as any).userVariables || []
+    const steps = cmd.pageActionOption.steps
+    const userVariables = param.userVariables || []
     run(
       { ...param, tabId, steps, selectedText, clipboardText, userVariables },
       sender,

@@ -6,6 +6,10 @@ import { PopupOption } from "@/services/option/defaultSettings"
 import type { ExecuteCommandParams, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
 
+type PageActionParams = {
+  userVariables?: Array<{ name: string; value: string }>
+}
+
 export const PageAction = {
   async execute({
     selectionText,
@@ -13,7 +17,8 @@ export const PageAction = {
     position,
     useSecondary,
     useClipboard,
-  }: ExecuteCommandParams) {
+    userVariables,
+  }: ExecuteCommandParams & PageActionParams) {
     if (!isPageActionCommand(command)) {
       console.error("command is not for PageAction.")
       return
@@ -56,6 +61,7 @@ export const PageAction = {
       selectedText: selectionText,
       srcUrl: location.href,
       openMode,
+      userVariables: userVariables ?? command.pageActionOption.userVariables,
     })
   },
 }
