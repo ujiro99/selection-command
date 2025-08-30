@@ -164,6 +164,12 @@ export const CommandList = ({ control }: CommandListProps) => {
     setCommandDialogOpen(true)
   }
 
+  const handleTypeClick = () => {
+    setSelectedCategory(undefined)
+    setTypeSelectionDialogOpen(true)
+    setCommandDialogOpen(false)
+  }
+
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
     setDraggingId(active.id as string)
@@ -193,8 +199,8 @@ export const CommandList = ({ control }: CommandListProps) => {
     if (isCommand(node.content)) {
       const command = node.content as SelectionCommand
       const category = OPEN_MODE_CATEGORY_MAP[command.openMode]
-      setCommandDialogOpen(true)
       setSelectedCategory(category)
+      setCommandDialogOpen(true)
     } else {
       setFolderDialogOpen(true)
     }
@@ -290,7 +296,8 @@ export const CommandList = ({ control }: CommandListProps) => {
         onSubmit={(command) => commandUpsert(command)}
         folders={folderArray.fields}
         command={editDataRef.current as SelectionCommand}
-        selectedCategory={selectedCategory}
+        selectedCategory={selectedCategory ?? COMMAND_CATEGORY.SEARCH}
+        onTypeClick={handleTypeClick}
       />
       <FolderEditDialog
         open={folderDialogOpen}

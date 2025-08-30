@@ -95,6 +95,12 @@ export const COMMAND_CATEGORY_METADATA = {
     titleKey: "commandCategory_api_title",
     descKey: "commandCategory_api_desc",
   },
+  // For type safety, even if not displayed.
+  [COMMAND_CATEGORY.OPTION]: {
+    iconName: "EllipsisVertical",
+    titleKey: "",
+    descKey: "",
+  },
 } as const
 
 // Command category groups for organized display

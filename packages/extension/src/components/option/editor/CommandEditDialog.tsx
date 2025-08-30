@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -46,9 +46,11 @@ import { TextareaField } from "@/components/option/field/TextareaField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { PageActionSection } from "@/components/option/editor/PageActionSection"
 import { PageActionHelp } from "@/components/help/PageActionHelp"
+import { CommandType } from "@/components/option/editor/CommandType"
 import { SearchUrlAssistButton } from "@/components/option/editor/SearchUrlAssistButton"
 import { SearchUrlAssistDialog } from "@/components/option/editor/SearchUrlAssistDialog"
 import { MenuImage } from "@/components/menu/MenuImage"
+import { Tooltip } from "@/components/Tooltip"
 import { PageActionStep } from "@/types/schema"
 
 import {
@@ -196,27 +198,14 @@ type CommandEditDialogProps = {
   onSubmit: (command: SelectionCommand) => void
   folders: CommandFolder[]
   command?: SelectionCommand
-  selectedCategory?: COMMAND_CATEGORY
+  selectedCategory: COMMAND_CATEGORY
+  onTypeClick: () => void
 }
 
-export const CommandEditDialog = ({
-  open,
-  onOpenChange,
-  onSubmit,
-  folders,
-  command,
-  selectedCategory,
-}: CommandEditDialogProps) => {
+export const CommandEditDialog = (param: CommandEditDialogProps) => {
   return (
     <FaviconContextProvider>
-      <CommandEditDialogInner
-        open={open}
-        onOpenChange={onOpenChange}
-        onSubmit={onSubmit}
-        folders={folders}
-        command={command}
-        selectedCategory={selectedCategory}
-      />
+      <CommandEditDialogInner {...param} />
     </FaviconContextProvider>
   )
 }
@@ -228,9 +217,11 @@ const CommandEditDialogInner = ({
   folders,
   command,
   selectedCategory,
+  onTypeClick,
 }: CommandEditDialogProps) => {
   const [initialized, setInitialized] = useState(false)
   const [assistDialogOpen, setAssistDialogOpen] = useState(false)
+  const commandTypeRef = useRef(null)
 
   const form = useForm<CommandSchemaType>({
     resolver: zodResolver(commandSchema),
@@ -398,21 +389,27 @@ const CommandEditDialogInner = ({
           </DialogHeader>
           <DialogDescription>{t("Command_input")}</DialogDescription>
           <Form {...form}>
-            <div id="CommandEditForm" className="space-y-2">
-              <FormField
-                control={form.control}
-                name="id"
-                render={({ field }) => (
-                  <FormItem className="hidden">
-                    <FormControl>
-                      <input
-                        {...register("id", { value: field.value })}
-                        type="hidden"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+            <div id="CommandEditForm" className="space-y-3">
+              <FormItem className="flex items-start gap-1">
+                <div className="w-2/6">
+                  <FormLabel>{t("commandCategory")}</FormLabel>
+                </div>
+                <div className="w-4/6 relative">
+                  <CommandType
+                    category={selectedCategory}
+                    onClick={onTypeClick}
+                    compact={true}
+                    disabled={isUpdate}
+                    ref={commandTypeRef}
+                  />
+                  {isUpdate && (
+                    <Tooltip
+                      text={t("commandCategory_on_edit")}
+                      positionElm={commandTypeRef.current}
+                    />
+                  )}
+                </div>
+              </FormItem>
 
               <InputField
                 control={form.control}
@@ -704,6 +701,21 @@ const CommandEditDialogInner = ({
                       iconSvg: folder.iconSvg,
                       level: calcLevel(folder, folders),
                     }))}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="id"
+                    render={({ field }) => (
+                      <FormItem className="hidden">
+                        <FormControl>
+                          <input
+                            {...register("id", { value: field.value })}
+                            type="hidden"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
                   />
                 </CollapsibleContent>
               </Collapsible>

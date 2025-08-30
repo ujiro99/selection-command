@@ -1,6 +1,3 @@
-import { Search, Code, Play, Link, Copy, Paintbrush } from "lucide-react"
-import { cn } from "@/lib/utils"
-
 import {
   Dialog,
   DialogContent,
@@ -10,24 +7,12 @@ import {
   DialogPortal,
 } from "@/components/ui/dialog"
 
-import {
-  COMMAND_CATEGORY,
-  COMMAND_CATEGORY_METADATA,
-  COMMAND_CATEGORY_GROUPS,
-} from "@/const"
+import { CommandType } from "./CommandType"
+
+import { COMMAND_CATEGORY, COMMAND_CATEGORY_GROUPS } from "@/const"
 import { t as _t } from "@/services/i18n"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-
-// Map icon names to actual Lucide React components
-const IconMap = {
-  Search,
-  Code,
-  Play,
-  Link,
-  Copy,
-  Paintbrush,
-} as const
 
 interface CommandTypeSelectionDialogProps {
   open: boolean
@@ -62,40 +47,14 @@ export const CommandTypeSelectionDialog = ({
                   {t(group.titleKey)}
                 </h3>
                 <div className="grid grid-cols-3 gap-4">
-                  {group.categories.map((category) => {
-                    const metadata = COMMAND_CATEGORY_METADATA[category]
-                    const IconComponent =
-                      IconMap[metadata.iconName as keyof typeof IconMap]
-
-                    return (
-                      <button
-                        key={category}
-                        type="button"
-                        className={cn(
-                          "group px-4 py-2 border rounded-lg hover:border-gray-300 hover:shadow-md transition-all duration-200 text-left",
-                          "hover:bg-gray-50",
-                        )}
-                        onClick={() => handleCardClick(category)}
-                      >
-                        <div className="flex flex-col items-center space-y-2">
-                          <div className="p-3 rounded-full bg-gray-100 group-hover:bg-gray-200 transition-colors">
-                            <IconComponent
-                              size={20}
-                              className="text-gray-600 group-hover:text-gray-700"
-                            />
-                          </div>
-                          <div className="text-center">
-                            <h4 className="text-sm font-semibold text-gray-900 mb-1">
-                              {t(metadata.titleKey)}
-                            </h4>
-                            <p className="text-xs text-gray-600 line-clamp-3">
-                              {t(metadata.descKey)}
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-                    )
-                  })}
+                  {group.categories.map((category) => (
+                    <CommandType
+                      key={category}
+                      category={category}
+                      onClick={handleCardClick}
+                      compact={false}
+                    />
+                  ))}
                 </div>
               </div>
             ))}

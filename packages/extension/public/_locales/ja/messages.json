@@ -320,6 +320,9 @@
   "Option_commandType_description": {
     "message": "作成するコマンドの種類を選択してください"
   },
+  "Option_commandCategory": {
+    "message": "コマンドの種類"
+  },
   "Option_commandCategory_search_title": {
     "message": "検索"
   },
@@ -355,6 +358,9 @@
   },
   "Option_commandCategory_api_desc": {
     "message": "APIにfetchリクエストを送信します"
+  },
+  "Option_commandCategory_on_edit": {
+    "message": "一度保存したコマンドの種類は変更できません"
   },
   "Option_commandGroup_webPage_title": {
     "message": "Webページ起動"

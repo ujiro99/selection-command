@@ -86,7 +86,7 @@ export const OpenModeToggleField = ({
                 onValueChange={(val) => {
                   if (val) field.onChange(val)
                 }}
-                className="grid grid-cols-2 gap-2 py-1"
+                className="grid grid-cols-4 gap-2 py-1"
               >
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)
@@ -121,7 +121,7 @@ const OpenModeItem = ({
   const [tooltipRef, setTooltipRef] = useState<HTMLElement | null>(null)
 
   return (
-    <FormItem>
+    <FormItem className="h-full">
       <FormControl>
         <>
           <ToggleGroupItem
@@ -129,20 +129,25 @@ const OpenModeItem = ({
             value={mode}
             aria-label={t(`openMode_${mode}`)}
             className={cn(
-              "relative flex-col gap-0.5 h-auto w-full py-1.5 shadow-sm text-xs font-medium text-gray-600 hover:text-gray-700",
+              "relative flex-col gap-0.5 h-full w-full py-1.5 shadow-sm text-xs font-medium text-gray-600 hover:text-gray-700",
               "border transition-all duration-200",
               checked && "bg-gray-50",
             )}
           >
             {checked && (
-              <Check size={18} className="absolute left-4 text-gray-700" />
+              <Check
+                size={18}
+                className="absolute top-2 left-2 text-gray-700"
+              />
             )}
             <img
               src={iconSrc}
               alt={mode}
               className={cn("h-8 w-8 object-contain")}
             />
-            <span className={cn("text-xs font-normal text-gray-600")}>
+            <span
+              className={cn("text-xs font-normal leading-tight text-gray-600")}
+            >
               {t(`openMode_${mode}`)}
             </span>
           </ToggleGroupItem>
