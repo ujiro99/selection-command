@@ -163,7 +163,6 @@ export const PageActionListener = (() => {
     async click(e: MouseEvent) {
       // Ignore click events that are triggered by mouse down event.
       if (lastMouseDownTarget === e.target && e.type === "click") {
-        console.debug("ignore click", e)
         lastMouseDownTarget = null
         return
       } else {
@@ -269,7 +268,7 @@ export const PageActionListener = (() => {
     },
     async input(e: Event) {
       if (isPopup(e.target as HTMLElement)) return
-      let target = e.target as HTMLElement
+      const target = e.target as HTMLElement
       let value: string | null = null
       if (isInput(target) || isTextarea(target)) {
         value = target.value
@@ -278,7 +277,6 @@ export const PageActionListener = (() => {
       } else if (isTextNode(target)) {
         value = target.nodeValue
       }
-      target = getFocusNode(e) ?? target
 
       // For input state detection
       lastInputTarget = target
