@@ -28,7 +28,6 @@ import {
 import {
   generateRandomID,
   isEmpty,
-  isPageActionCommand,
   isUrl,
   isUrlParam,
   sleep,

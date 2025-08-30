@@ -8,7 +8,6 @@ import {
   mockOpenPopupWindow,
   mockIncrementCommandExecutionCount,
   mockIsEmpty,
-  mockIsPageActionCommand,
   mockIsUrl,
   mockIsUrlParam,
   mockConsole,
