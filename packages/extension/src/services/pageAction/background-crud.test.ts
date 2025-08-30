@@ -553,6 +553,145 @@ describe("background.ts - CRUD Operations", () => {
         const savedData = setCall![1]
         expect(savedData.steps[2].param.value).toBe(" world") // "hello" removed despite keyboard step
       })
+
+      it("BGD-15-c: Integration: Previous input values are removed from new value", async () => {
+        const existingStep1 = {
+          id: "input-1",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "1",
+          },
+        }
+        const keyboardStep1 = {
+          id: "keyboard-1",
+          param: { type: "keyboard", key: "Enter", shiftKey: true },
+        }
+        const existingStep2 = {
+          id: "input-2",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "2",
+          },
+        }
+        const keyboardStep2 = {
+          id: "keyboard-2",
+          param: { type: "keyboard", key: "Enter", shiftKey: true },
+        }
+        const newStep = {
+          id: "input-3",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "1\n2\n3",
+          },
+        }
+
+        const mockRecordingData = {
+          steps: [existingStep1, keyboardStep1, existingStep2, keyboardStep2],
+        }
+        mockStorage.get.mockImplementation((key: string) => {
+          if (key === "pa_recording") return Promise.resolve(mockRecordingData)
+          return Promise.resolve({ urlChanged: false })
+        })
+
+        add(newStep as any, mockSender as any, mockResponse)
+        await vi.runAllTimersAsync()
+
+        const setCall = mockStorage.set.mock.calls.find(
+          (call: any[]) => call[0] === "pa_recording",
+        )
+        const savedData = setCall![1]
+        expect(savedData.steps[4].param.value).toBe("3")
+      })
+
+      it("BGD-15-d: Integration: Previous input values are removed from new value", async () => {
+        const existingStep1 = {
+          id: "input-1",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "aaa",
+          },
+        }
+        const keyboardStep1 = {
+          id: "keyboard-1",
+          param: { type: "keyboard", key: "Enter", shiftKey: true },
+        }
+        const newStep = {
+          id: "input-2",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "aaa\naaabbb",
+          },
+        }
+
+        const mockRecordingData = {
+          steps: [existingStep1, keyboardStep1],
+        }
+        mockStorage.get.mockImplementation((key: string) => {
+          if (key === "pa_recording") return Promise.resolve(mockRecordingData)
+          return Promise.resolve({ urlChanged: false })
+        })
+
+        add(newStep as any, mockSender as any, mockResponse)
+        await vi.runAllTimersAsync()
+
+        const setCall = mockStorage.set.mock.calls.find(
+          (call: any[]) => call[0] === "pa_recording",
+        )
+        const savedData = setCall![1]
+        expect(savedData.steps[2].param.value).toBe("aaabbb")
+      })
+
+      it("BGD-15-e: Integration: Previous input value that includes line-break is removed from new value", async () => {
+        const existingStep1 = {
+          id: "input-1",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "a\naa",
+          },
+        }
+        const keyboardStep1 = {
+          id: "keyboard-1",
+          param: { type: "keyboard", key: "Enter", shiftKey: true },
+        }
+        const newStep = {
+          id: "input-2",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "a\naa\nbbb",
+          },
+        }
+
+        const mockRecordingData = {
+          steps: [existingStep1, keyboardStep1],
+        }
+        mockStorage.get.mockImplementation((key: string) => {
+          if (key === "pa_recording") return Promise.resolve(mockRecordingData)
+          return Promise.resolve({ urlChanged: false })
+        })
+
+        add(newStep as any, mockSender as any, mockResponse)
+        await vi.runAllTimersAsync()
+
+        const setCall = mockStorage.set.mock.calls.find(
+          (call: any[]) => call[0] === "pa_recording",
+        )
+        const savedData = setCall![1]
+        expect(savedData.steps[2].param.value).toBe("bbb")
+      })
     })
 
     describe("Error handling", () => {

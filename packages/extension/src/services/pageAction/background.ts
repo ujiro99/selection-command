@@ -144,15 +144,37 @@ export const add = (
             step.param.label = prev.param.label
           }
         }
-        // Remove the value in previous input if the same element has been input.
+        // Remove ALL previous input values if the same element has been input.
         const param = step.param as PageAction.Input
-        const prevInput = steps.filter((a) => a.param.type === "input").pop()
-        if (prevInput) {
+        const prevInputs = steps.filter((a) => a.param.type === "input")
+        for (const prevInput of prevInputs) {
           const prevParam = prevInput.param as PageAction.Input
           if (param.selector === prevParam.selector) {
-            param.value = param.value.replace(prevParam.value, "")
+            // Check if the new value contains newlines
+            if (param.value.includes('\n')) {
+              // For multiline input, check if previous value also contains newlines
+              if (prevParam.value.includes('\n')) {
+                // Both multiline: use global replace with proper escaping
+                const escapedValue = prevParam.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+                param.value = param.value.replace(new RegExp(escapedValue, 'g'), "")
+              } else {
+                // Previous is single line, new is multiline: remove only lines that exactly match
+                const lines = param.value.split('\n')
+                const filteredLines = lines.filter(line => line !== prevParam.value)
+                param.value = filteredLines.join('\n')
+              }
+            } else {
+              // For single line input, use global replace to remove all occurrences
+              const escapedValue = prevParam.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+              param.value = param.value.replace(new RegExp(escapedValue, 'g'), "")
+            }
           }
         }
+        // Clean up empty lines at start and end only for multiline input
+        if (param.value.includes('\n')) {
+          param.value = param.value.replace(/^\n+/, '').replace(/\n+$/, '').replace(/\n{2,}/g, '\n')
+        }
+        console.debug(param.value)
       }
     }
 
@@ -256,7 +278,7 @@ export const reset = (_: any, sender: Sender): boolean => {
     )
     if (tabId && option.startUrl) {
       try {
-      await chrome.tabs.update(tabId, { url: option.startUrl })
+        await chrome.tabs.update(tabId, { url: option.startUrl })
       } catch (e) {
         console.error("Failed to reload the tab:", e)
       }
@@ -569,30 +591,30 @@ export const openRecorder = (
     const t = Math.floor((screen.height - size.height) / 2) + screen.top
     const l = Math.floor((screen.width - size.width) / 2) + screen.left
     try {
-    if (openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
-      const w = await chrome.windows.create({
-        url: startUrl,
-        width: size.width,
-        height: size.height,
-        top: t,
-        left: l,
-        type: POPUP_TYPE.POPUP,
-      })
-      if (w.tabs) {
-        await setRecordingTabId(w.tabs[0].id)
+      if (openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
+        const w = await chrome.windows.create({
+          url: startUrl,
+          width: size.width,
+          height: size.height,
+          top: t,
+          left: l,
+          type: POPUP_TYPE.POPUP,
+        })
+        if (w.tabs) {
+          await setRecordingTabId(w.tabs[0].id)
+        } else {
+          console.error("Failed to open the recorder.")
+        }
       } else {
-        console.error("Failed to open the recorder.")
+        const tab = sender.tab || (await getCurrentTab())
+        const recorderTab = await chrome.tabs.create({
+          url: startUrl,
+          windowId: tab.windowId,
+          index: tab.index + 1,
+        })
+        await setRecordingTabId(recorderTab.id)
       }
-    } else {
-      const tab = sender.tab || (await getCurrentTab())
-      const recorderTab = await chrome.tabs.create({
-        url: startUrl,
-        windowId: tab.windowId,
-        index: tab.index + 1,
-      })
-      await setRecordingTabId(recorderTab.id)
-    }
-    response(true)
+      response(true)
     } catch (e) {
       console.error("Failed to open the recorder:", e)
       response(false)
@@ -610,9 +632,9 @@ export const closeRecorder = (
 ): boolean => {
   setRecordingTabId(undefined)
     .then(() => {
-    sender.tab && chrome.tabs.remove(sender.tab.id!)
-    response(true)
-  })
+      sender.tab && chrome.tabs.remove(sender.tab.id!)
+      response(true)
+    })
     .catch((e) => {
       console.error("Failed to close the recorder:", e)
       response(false)
@@ -632,22 +654,22 @@ export const onTabUpdated = (
   info: chrome.tabs.TabChangeInfo,
   _tab: chrome.tabs.Tab,
 ) => {
-    Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
-      (data) => {
-        if (data.recordingTabId !== id) return
-        if (!info.url || lastUrl === info.url) return
-        Storage.update<PageActionContext>(
-          SESSION_STORAGE_KEY.PA_CONTEXT,
-          (data) => {
-            return {
-              ...data,
-              urlChanged: true,
-            }
-          },
-        )
-        lastUrl = info.url
-      },
-    )
+  Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
+    (data) => {
+      if (data.recordingTabId !== id) return
+      if (!info.url || lastUrl === info.url) return
+      Storage.update<PageActionContext>(
+        SESSION_STORAGE_KEY.PA_CONTEXT,
+        (data) => {
+          return {
+            ...data,
+            urlChanged: true,
+          }
+        },
+      )
+      lastUrl = info.url
+    },
+  )
 }
 
 chrome.tabs.onUpdated.addListener(onTabUpdated)
@@ -671,18 +693,18 @@ chrome.tabs.onRemoved.addListener(onTabRemoved)
 
 // Export for testing
 export const onWindowBoundsChanged = async (window: chrome.windows.Window) => {
-    const context = await Storage.get<PageActionContext>(
-      SESSION_STORAGE_KEY.PA_CONTEXT,
-    )
-    const { recordingTabId } = context
-    const tabs = await chrome.tabs.query({ windowId: window.id })
-    const tab = tabs && tabs[0]
-    if (tab && tab.id && tab.id === recordingTabId) {
-      Ipc.sendTab(tab.id, TabCommand.sendWindowSize, {
-        width: window.width,
-        height: window.height,
-      })
-    }
+  const context = await Storage.get<PageActionContext>(
+    SESSION_STORAGE_KEY.PA_CONTEXT,
+  )
+  const { recordingTabId } = context
+  const tabs = await chrome.tabs.query({ windowId: window.id })
+  const tab = tabs && tabs[0]
+  if (tab && tab.id && tab.id === recordingTabId) {
+    Ipc.sendTab(tab.id, TabCommand.sendWindowSize, {
+      width: window.width,
+      height: window.height,
+    })
+  }
 }
 
 chrome.windows.onBoundsChanged.addListener(onWindowBoundsChanged)
