@@ -35,7 +35,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-36: 正常系: TABモードでの新しいタブでの実行", async () => {
+    it("BGD-36: Normal case: Execution in new tab with TAB mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: "https://example.com",
@@ -70,7 +70,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockIncrementCommandExecutionCount).toHaveBeenCalled()
     })
 
-    it("BGD-37: 正常系: BACKGROUND_TABモードでの背景タブでの実行", async () => {
+    it("BGD-37: Normal case: Execution in background tab with BACKGROUND_TAB mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
         url: "https://example.com",
@@ -96,7 +96,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-38: 正常系: POPUPモードでのポップアップウィンドウでの実行", async () => {
+    it("BGD-38: Normal case: Execution in popup window with POPUP mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         url: "https://example.com",
@@ -126,7 +126,7 @@ describe("background.ts - Execution Operations", () => {
       )
     })
 
-    it("BGD-39: 正常系: WINDOWモードでの通常ウィンドウでの実行", async () => {
+    it("BGD-39: Normal case: Execution in normal window with WINDOW mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.WINDOW,
         url: "https://example.com",
@@ -153,7 +153,7 @@ describe("background.ts - Execution Operations", () => {
       )
     })
 
-    it("BGD-41: 異常系: 存在しないcommandIdの場合", async () => {
+    it("BGD-41: Error case: When commandId does not exist", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: "https://example.com",
@@ -172,7 +172,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-42: 異常系: PageActionCommandではないコマンドの場合", async () => {
+    it("BGD-42: Error case: When command is not a PageActionCommand", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: "https://example.com",
@@ -193,7 +193,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-43: 異常系: pageActionOptionが存在しない場合", async () => {
+    it("BGD-43: Error case: When pageActionOption does not exist", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: "https://example.com",
@@ -217,7 +217,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-44: 正常系: selectedTextが空でuseClipboardがtrueの場合、clipboardTextを使用", async () => {
+    it("BGD-44: Normal case: Use clipboardText when selectedText is empty and useClipboard is true", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: { url: "https://example.com", useClipboard: true },
@@ -254,7 +254,7 @@ describe("background.ts - Execution Operations", () => {
       )
     })
 
-    it("BGD-47: 異常系: tabIdの取得に失敗した場合", async () => {
+    it("BGD-47: Error case: When tabId retrieval fails", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: "https://example.com",
@@ -282,7 +282,7 @@ describe("background.ts - Execution Operations", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
-    it("BGD-51: 正常系: プレビュー実行が成功する", async () => {
+    it("BGD-51: Normal case: Preview execution succeeds", async () => {
       const mockParam = {
         tabId: 123,
         steps: [{ id: "step-1", param: { type: "click" } }],
@@ -310,7 +310,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-52: 正常系: startUrlが存在する場合、タブがURLに復帰してから実行", async () => {
+    it("BGD-52: Normal case: Execute after tab returns to URL when startUrl exists", async () => {
       const mockParam = {
         steps: [{ id: "step-1", param: { type: "click" } }],
         selectedText: "selected",
@@ -332,24 +332,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-54: 境界値: tabIdが存在しない場合", async () => {
-      const mockParam = { steps: [] }
-      const mockSenderNoTab = { tab: null }
-
-      const result = preview(
-        mockParam as any,
-        mockSenderNoTab as any,
-        mockResponse,
-      )
-      expect(result).toBe(true)
-
-      await vi.runAllTimersAsync()
-
-      expect(mockConsole.error).toHaveBeenCalledWith("tabId not found")
-      expect(mockResponse).toHaveBeenCalledWith(false)
-    })
-
-    it("BGD-53: 境界値: startUrlが無効な場合", async () => {
+    it("BGD-53: Boundary: When startUrl is invalid", async () => {
       const mockParam = {
         steps: [{ id: "step-1", param: { type: "click" } }],
         selectedText: "selected",
@@ -369,6 +352,23 @@ describe("background.ts - Execution Operations", () => {
       expect(mockIsUrl).toHaveBeenCalledWith("invalid-url")
       expect(global.chrome.tabs.update).not.toHaveBeenCalled()
     })
+
+    it("BGD-54: Boundary: When tabId does not exist", async () => {
+      const mockParam = { steps: [] }
+      const mockSenderNoTab = { tab: null }
+
+      const result = preview(
+        mockParam as any,
+        mockSenderNoTab as any,
+        mockResponse,
+      )
+      expect(result).toBe(true)
+
+      await vi.runAllTimersAsync()
+
+      expect(mockConsole.error).toHaveBeenCalledWith("tabId not found")
+      expect(mockResponse).toHaveBeenCalledWith(false)
+    })
   })
 
   // Note: run() function's internal behavior is complex and depends on asynchronous
@@ -380,7 +380,7 @@ describe("background.ts - Execution Operations", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
-    it("BGD-71: 正常系: stopフラグの設定が成功する", async () => {
+    it("BGD-71: Normal case: Stop flag setting succeeds", async () => {
       mockBgData.set.mockImplementation((updateFn: (data: any) => any) => {
         const result = updateFn({ pageActionStop: false })
         expect(result.pageActionStop).toBe(true)
@@ -396,7 +396,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-73: 異常系: BgData.set でエラーが発生した場合", async () => {
+    it("BGD-73: Error case: When BgData.set error occurs", async () => {
       mockBgData.set.mockRejectedValue(new Error("BgData error"))
 
       stopRunner({}, mockSender as any, mockResponse)
@@ -409,7 +409,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-72: 正常系: BgData.set でpageActionStopがtrueに設定される", async () => {
+    it("BGD-72: Normal case: pageActionStop is set to true in BgData.set", async () => {
       let capturedData: any
       mockBgData.set.mockImplementation((updateFn: (data: any) => any) => {
         capturedData = updateFn({ pageActionStop: false })
@@ -424,7 +424,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-74: 正常系: responseがtrueで返される", async () => {
+    it("BGD-74: Normal case: response returns true", async () => {
       mockBgData.set.mockImplementation((updateFn: (data: any) => any) => {
         updateFn({ pageActionStop: false })
         return Promise.resolve(undefined)
@@ -437,7 +437,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-75: 異常系: エラー時にresponseがfalseで返される", async () => {
+    it("BGD-75: Error case: response returns false on error", async () => {
       mockBgData.set.mockRejectedValue(new Error("Test error"))
 
       const result = stopRunner({}, mockSender as any, mockResponse)

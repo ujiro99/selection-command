@@ -14,7 +14,7 @@ describe("background.ts - CRUD Operations", () => {
     const mockResponse = vi.fn()
 
     describe("Basic functionality", () => {
-      it("BGD-01: 正常系: 基本的なステップ追加が成功する", async () => {
+      it("BGD-01: Normal case: Basic step addition succeeds", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -47,7 +47,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(mockResponse).toHaveBeenCalledWith(true)
       })
 
-      it("BGD-02: 正常系: 空のsteps配列に最初のステップを追加すると、StartActionが自動で挿入される", async () => {
+      it("BGD-02: Normal case: Adding first step to empty array auto-inserts StartAction", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -78,7 +78,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.type).toBe("end")
       })
 
-      it("BGD-03: 正常系: EndActionが自動で追加される", async () => {
+      it("BGD-03: Normal case: EndAction is automatically added", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -111,7 +111,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.type).toBe("end")
       })
 
-      it("BGD-04: 境界値: 最大ステップ数に達した場合の処理（PAGE_ACTION_MAX - 1）", async () => {
+      it("BGD-04: Boundary: Handling when maximum step count is reached (PAGE_ACTION_MAX - 1)", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -141,7 +141,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(mockStorage.set).not.toHaveBeenCalled()
       })
 
-      it("BGD-05: 正常系: URLの変更フラグがリセットされる", async () => {
+      it("BGD-05: Normal case: URL change flag is reset", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -188,7 +188,7 @@ describe("background.ts - CRUD Operations", () => {
         })
       })
 
-      it("BGD-06: 統合: 同一要素でのclick + inputはclickがスキップされる", async () => {
+      it("BGD-06: Integration: Click is skipped when click + input on same element", async () => {
         const existingStep = {
           id: "input-1",
           param: { type: "input", selector: ".test-input", label: "Input" },
@@ -220,7 +220,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(mockStorage.set).not.toHaveBeenCalled()
       })
 
-      it("BGD-07: 統合: click → doubleClickで前のclickが削除される", async () => {
+      it("BGD-07: Integration: Previous click is removed when click → doubleClick", async () => {
         const existingStep = {
           id: "click-1",
           param: { type: "click", selector: ".test-button", label: "Click" },
@@ -251,7 +251,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0]).toBe(newStep)
       })
 
-      it("BGD-08: 統合: doubleClick → doubleClickで前のdoubleClickが削除される", async () => {
+      it("BGD-08: Integration: Previous doubleClick is removed when doubleClick → doubleClick", async () => {
         const existingStep = {
           id: "double-1",
           param: {
@@ -286,7 +286,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0]).toBe(newStep)
       })
 
-      it("BGD-09: 統合: doubleClick → tripleClickで前のdoubleClickが削除される", async () => {
+      it("BGD-09: Integration: Previous doubleClick is removed when doubleClick → tripleClick", async () => {
         const existingStep = {
           id: "double-1",
           param: {
@@ -321,7 +321,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0]).toBe(newStep)
       })
 
-      it("BGD-10: 統合: tripleClick → tripleClickで前のtripleClickが削除される", async () => {
+      it("BGD-10: Integration: Previous tripleClick is removed when tripleClick → tripleClick", async () => {
         const existingStep = {
           id: "triple-1",
           param: {
@@ -356,7 +356,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0]).toBe(newStep)
       })
 
-      it("BGD-11: 統合: scroll → scrollで前のscrollが削除され、delayMsが継承される", async () => {
+      it("BGD-11: Integration: Previous scroll is removed and delayMs inherited when scroll → scroll", async () => {
         const existingStep = {
           id: "scroll-1",
           param: { type: "scroll", label: "Scroll 1" },
@@ -385,7 +385,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0].delayMs).toBe(500) // Inherited delay
       })
 
-      it("BGD-12: 統合: URL変更後のscrollでDELAY_AFTER_URL_CHANGEDが設定される", async () => {
+      it("BGD-12: Integration: DELAY_AFTER_URL_CHANGED is set for scroll after URL change", async () => {
         const newStep = {
           id: "scroll-1",
           param: { type: "scroll", label: "Scroll after URL change" },
@@ -411,7 +411,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[1].delayMs).toBe(100) // DELAY_AFTER_URL_CHANGED
       })
 
-      it("BGD-13: 統合: URL変更後のkeyboardでDELAY_AFTER_URL_CHANGEDが設定される", async () => {
+      it("BGD-13: Integration: DELAY_AFTER_URL_CHANGED is set for keyboard after URL change", async () => {
         const newStep = {
           id: "keyboard-1",
           param: { type: "keyboard", label: "Keyboard after URL change" },
@@ -437,7 +437,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[1].delayMs).toBe(100) // DELAY_AFTER_URL_CHANGED
       })
 
-      it("BGD-14: 統合: 同一要素での連続inputが統合される（labelも継承）", async () => {
+      it("BGD-14: Integration: Consecutive inputs on same element are merged (label inherited)", async () => {
         const existingStep = {
           id: "input-1",
           param: {
@@ -474,7 +474,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0].param.label).toBe("Original Label") // Label inherited
       })
 
-      it("BGD-15: 統合: 同一要素での過去のinput値が新しい値から除去される", async () => {
+      it("BGD-15: Integration: Previous input value is removed from new value on same element", async () => {
         const existingStep = {
           id: "input-1",
           param: {
@@ -514,7 +514,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.value).toBe(" world") // "hello" removed
       })
 
-      it("BGD-15-b: 統合: 同一要素で、Shift-Enter操作をあいだに挟んだ場合でも、過去のinput値が新しい値から除去される", async () => {
+      it("BGD-15-b: Integration: Previous input value is removed from new value even with Shift-Enter operation in between", async () => {
         const existingStep = {
           id: "input-1",
           param: {
@@ -563,7 +563,7 @@ describe("background.ts - CRUD Operations", () => {
 
       // BGD-17: Skipped - add() function doesn't handle Storage.set errors, causing unhandled rejections
 
-      it("BGD-18: 異常系: Storage.update でエラーが発生した場合", async () => {
+      it("BGD-18: Error case: When Storage.update error occurs", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -587,7 +587,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(result).toBe(true)
       })
 
-      it("BGD-19: 境界値: step.param が null/undefined の場合", async () => {
+      it("BGD-19: Boundary: When step.param is null/undefined", async () => {
         const mockStep = {
           id: "step-1",
           param: null,
@@ -609,7 +609,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(mockResponse).toHaveBeenCalledWith(false)
       })
 
-      it("BGD-20: 境界値: context が null/undefined の場合", async () => {
+      it("BGD-20: Boundary: When context is null/undefined", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -637,7 +637,7 @@ describe("background.ts - CRUD Operations", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
-    it("BGD-21: 正常系: 既存ステップの部分更新が成功する", async () => {
+    it("BGD-21: Normal case: Partial update of existing step succeeds", async () => {
       const existingSteps = [
         {
           id: "step-1",
@@ -685,7 +685,7 @@ describe("background.ts - CRUD Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-22: 正常系: ネストしたparamオブジェクトの更新が正しく行われる", async () => {
+    it("BGD-22: Normal case: Nested param object update is performed correctly", async () => {
       const existingSteps = [
         {
           id: "step-1",
@@ -724,7 +724,7 @@ describe("background.ts - CRUD Operations", () => {
       )
     })
 
-    it("BGD-23: 境界値: 存在しないIDでの更新は何も行わない", async () => {
+    it("BGD-23: Boundary: Update with non-existent ID does nothing", async () => {
       const existingSteps = [
         { id: "step-1", param: { type: "click", label: "Original" } },
       ]
@@ -746,7 +746,7 @@ describe("background.ts - CRUD Operations", () => {
 
     // BGD-24: Skipped - update() function doesn't handle Storage errors, causing unhandled rejections
 
-    it("BGD-25: 境界値: partial が空オブジェクトの場合", async () => {
+    it("BGD-25: Boundary: When partial is empty object", async () => {
       const existingSteps = [
         {
           id: "step-1",
@@ -788,7 +788,7 @@ describe("background.ts - CRUD Operations", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
-    it("BGD-26: 正常系: 指定IDのステップ削除が成功する", async () => {
+    it("BGD-26: Normal case: Step deletion with specified ID succeeds", async () => {
       const existingSteps = [
         { id: "step-1", param: { type: "click", label: "Click" } },
         { id: "step-2", param: { type: "input", label: "Input" } },
@@ -814,7 +814,7 @@ describe("background.ts - CRUD Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-27: 正常系: 複数ステップから特定のIDのみ削除される", async () => {
+    it("BGD-27: Normal case: Only specific ID is deleted from multiple steps", async () => {
       const existingSteps = [
         { id: "step-1", param: { type: "click", label: "Click 1" } },
         { id: "step-2", param: { type: "click", label: "Click 2" } },
@@ -845,7 +845,7 @@ describe("background.ts - CRUD Operations", () => {
 
     // BGD-30: Skipped - remove() function doesn't handle Storage errors, causing unhandled rejections
 
-    it("BGD-28: 境界値: 存在しないIDでの削除は何も行わない", async () => {
+    it("BGD-28: Boundary: Deletion with non-existent ID does nothing", async () => {
       const existingSteps = [
         { id: "step-1", param: { type: "click", label: "Click" } },
       ]
@@ -864,7 +864,7 @@ describe("background.ts - CRUD Operations", () => {
       )
     })
 
-    it("BGD-29: 境界値: 空のsteps配列での削除処理", async () => {
+    it("BGD-29: Boundary: Deletion processing with empty steps array", async () => {
       const mockRecordingData = { steps: [] }
       mockStorage.get.mockResolvedValue(mockRecordingData)
 
@@ -882,7 +882,7 @@ describe("background.ts - CRUD Operations", () => {
   })
 
   describe("reset() function", () => {
-    it("BGD-31: 正常系: ステップ配列のリセットが成功する", async () => {
+    it("BGD-31: Normal case: Step array reset succeeds", async () => {
       const mockSender = { tab: { id: 123 } }
       const mockRecordingData = {
         steps: [{ id: "step-1", param: { type: "click" } }],
@@ -905,7 +905,7 @@ describe("background.ts - CRUD Operations", () => {
       )
     })
 
-    it("BGD-32: 正常系: startUrlが存在する場合、タブがURLに復帰する", async () => {
+    it("BGD-32: Normal case: Tab returns to URL when startUrl exists", async () => {
       const mockSender = { tab: { id: 123 } }
       const mockRecordingData = {
         steps: [{ id: "step-1" }],
@@ -924,7 +924,7 @@ describe("background.ts - CRUD Operations", () => {
       })
     })
 
-    it("BGD-33: 境界値: startUrlが存在しない場合", async () => {
+    it("BGD-33: Boundary: When startUrl does not exist", async () => {
       const mockSender = { tab: { id: 123 } }
       const mockRecordingData = {
         steps: [{ id: "step-1" }],
@@ -941,7 +941,7 @@ describe("background.ts - CRUD Operations", () => {
       expect(global.chrome.tabs.update).not.toHaveBeenCalled()
     })
 
-    it("BGD-34: 境界値: tabIdが存在しない場合", async () => {
+    it("BGD-34: Boundary: When tabId does not exist", async () => {
       const mockSender = { tab: null }
       const mockRecordingData = {
         steps: [{ id: "step-1" }],
@@ -959,7 +959,7 @@ describe("background.ts - CRUD Operations", () => {
       expect(mockStorage.set).toHaveBeenCalled() // Still resets steps
     })
 
-    it("BGD-35: 異常系: chrome.tabs.update でエラーが発生した場合", async () => {
+    it("BGD-35: Error case: When chrome.tabs.update error occurs", async () => {
       const mockSender = { tab: { id: 123 } }
       const mockRecordingData = {
         steps: [{ id: "step-1", param: { type: "click" } }],

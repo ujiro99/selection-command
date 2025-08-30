@@ -25,7 +25,7 @@ describe("background.ts - Recorder Management Operations", () => {
     const mockSender = { tab: { id: 123, windowId: 1, index: 0 } }
     const mockResponse = vi.fn()
 
-    it("BGD-76: 正常系: POPUPモードでレコーダーウィンドウが開設される", async () => {
+    it("BGD-76: Normal case: Recorder window is opened in POPUP mode", async () => {
       const mockParam = {
         startUrl: "https://example.com",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
@@ -61,7 +61,7 @@ describe("background.ts - Recorder Management Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-77: 正常系: TABモードでレコーダータブが開設される", async () => {
+    it("BGD-77: Normal case: Recorder tab is opened in TAB mode", async () => {
       const mockParam = {
         startUrl: "https://example.com",
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
@@ -84,52 +84,7 @@ describe("background.ts - Recorder Management Operations", () => {
       })
     })
 
-    it("BGD-84: 境界値: ウィンドウ作成時にtabsが存在しない場合", async () => {
-      const mockParam = {
-        startUrl: "https://example.com",
-        openMode: PAGE_ACTION_OPEN_MODE.POPUP,
-        size: { width: 800, height: 600 },
-        screen: { width: 1920, height: 1080, top: 0, left: 0 },
-      }
-
-      const mockWindow = { tabs: null }
-      global.chrome.windows.create = vi.fn().mockResolvedValue(mockWindow)
-
-      openRecorder(mockParam as any, mockSender as any, mockResponse)
-      await vi.runAllTimersAsync()
-
-      expect(mockConsole.error).toHaveBeenCalledWith(
-        "Failed to open the recorder.",
-      )
-    })
-
-    it("BGD-85: 境界値: senderのtabが存在しない場合", async () => {
-      const mockParam = {
-        startUrl: "https://example.com",
-        openMode: PAGE_ACTION_OPEN_MODE.TAB,
-        size: { width: 800, height: 600 },
-        screen: { width: 1920, height: 1080, top: 0, left: 0 },
-      }
-
-      const mockSenderNoTab = { tab: null }
-      const mockCurrentTab = { id: 555, windowId: 2, index: 1 }
-      mockGetCurrentTab.mockResolvedValue(mockCurrentTab)
-      global.chrome.tabs.create = vi.fn().mockResolvedValue({ id: 777 })
-      mockStorage.get.mockResolvedValue({})
-      mockStorage.set.mockResolvedValue(undefined)
-
-      openRecorder(mockParam as any, mockSenderNoTab as any, mockResponse)
-      await vi.runAllTimersAsync()
-
-      expect(mockGetCurrentTab).toHaveBeenCalled()
-      expect(global.chrome.tabs.create).toHaveBeenCalledWith({
-        url: "https://example.com",
-        windowId: 2,
-        index: 2, // currentTab.index + 1
-      })
-    })
-
-    it("BGD-78: 正常系: ウィンドウサイズと位置が正しく計算される", async () => {
+    it("BGD-78: Normal case: Window size and position are calculated correctly", async () => {
       const mockParam = {
         startUrl: "https://example.com",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
@@ -155,7 +110,7 @@ describe("background.ts - Recorder Management Operations", () => {
       })
     })
 
-    it("BGD-79: 正常系: recordingTabIdが適切に設定される", async () => {
+    it("BGD-79: Normal case: recordingTabId is set appropriately", async () => {
       const mockParam = {
         startUrl: "https://example.com",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
@@ -178,7 +133,7 @@ describe("background.ts - Recorder Management Operations", () => {
       )
     })
 
-    it("BGD-80: 異常系: Chrome.windows.create でエラーが発生した場合", async () => {
+    it("BGD-80: Error case: When Chrome.windows.create error occurs", async () => {
       const mockParam = {
         startUrl: "https://example.com",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
@@ -222,7 +177,7 @@ describe("background.ts - Recorder Management Operations", () => {
       expect(localMockResponse).toHaveBeenCalledWith(false)
     }, 10000)
 
-    it("BGD-81: 異常系: Chrome.tabs.create でエラーが発生した場合", async () => {
+    it("BGD-81: Error case: When Chrome.tabs.create error occurs", async () => {
       const mockParam = {
         startUrl: "https://example.com",
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
@@ -244,7 +199,7 @@ describe("background.ts - Recorder Management Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-82: 異常系: Storage.get でエラーが発生した場合", async () => {
+    it("BGD-82: Error case: When Storage.get error occurs", async () => {
       const mockParam = {
         startUrl: "https://example.com",
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
@@ -264,7 +219,7 @@ describe("background.ts - Recorder Management Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-83: 異常系: Storage.set でエラーが発生した場合", async () => {
+    it("BGD-83: Error case: When Storage.set error occurs", async () => {
       const mockParam = {
         startUrl: "https://example.com",
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
@@ -286,12 +241,57 @@ describe("background.ts - Recorder Management Operations", () => {
       )
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
+
+    it("BGD-84: Boundary: When tabs do not exist during window creation", async () => {
+      const mockParam = {
+        startUrl: "https://example.com",
+        openMode: PAGE_ACTION_OPEN_MODE.POPUP,
+        size: { width: 800, height: 600 },
+        screen: { width: 1920, height: 1080, top: 0, left: 0 },
+      }
+
+      const mockWindow = { tabs: null }
+      global.chrome.windows.create = vi.fn().mockResolvedValue(mockWindow)
+
+      openRecorder(mockParam as any, mockSender as any, mockResponse)
+      await vi.runAllTimersAsync()
+
+      expect(mockConsole.error).toHaveBeenCalledWith(
+        "Failed to open the recorder.",
+      )
+    })
+
+    it("BGD-85: Boundary: When sender tab does not exist", async () => {
+      const mockParam = {
+        startUrl: "https://example.com",
+        openMode: PAGE_ACTION_OPEN_MODE.TAB,
+        size: { width: 800, height: 600 },
+        screen: { width: 1920, height: 1080, top: 0, left: 0 },
+      }
+
+      const mockSenderNoTab = { tab: null }
+      const mockCurrentTab = { id: 555, windowId: 2, index: 1 }
+      mockGetCurrentTab.mockResolvedValue(mockCurrentTab)
+      global.chrome.tabs.create = vi.fn().mockResolvedValue({ id: 777 })
+      mockStorage.get.mockResolvedValue({})
+      mockStorage.set.mockResolvedValue(undefined)
+
+      openRecorder(mockParam as any, mockSenderNoTab as any, mockResponse)
+      await vi.runAllTimersAsync()
+
+      expect(mockGetCurrentTab).toHaveBeenCalled()
+      expect(global.chrome.tabs.create).toHaveBeenCalledWith({
+        url: "https://example.com",
+        windowId: 2,
+        index: 2, // currentTab.index + 1
+      })
+    })
   })
 
   describe("closeRecorder() function", () => {
     const mockSender = { tab: { id: 123 } }
 
-    it("BGD-86: 正常系: レコーダータブの終了が成功する", async () => {
+    it("BGD-86: Normal case: Recorder tab termination succeeds", async () => {
       const mockResponse = vi.fn()
       mockStorage.get.mockResolvedValue({ recordingTabId: 123 })
       mockStorage.set.mockResolvedValue(undefined)
@@ -306,7 +306,7 @@ describe("background.ts - Recorder Management Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-87: 正常系: recordingTabIdがundefinedに設定される", async () => {
+    it("BGD-87: Normal case: recordingTabId is set to undefined", async () => {
       const mockResponse = vi.fn()
       const mockContext = { recordingTabId: 123 }
       mockStorage.get.mockResolvedValue(mockContext)
@@ -322,7 +322,7 @@ describe("background.ts - Recorder Management Operations", () => {
       )
     })
 
-    it("BGD-88: 正常系: タブが削除される", async () => {
+    it("BGD-88: Normal case: Tab is removed", async () => {
       const mockResponse = vi.fn()
       mockStorage.get.mockResolvedValue({ recordingTabId: 456 })
       mockStorage.set.mockResolvedValue(undefined)
@@ -335,7 +335,7 @@ describe("background.ts - Recorder Management Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-89: 異常系: Storage.set でエラーが発生した場合", async () => {
+    it("BGD-89: Error case: When Storage.set error occurs", async () => {
       const mockResponse = vi.fn()
       mockStorage.get.mockResolvedValue({ recordingTabId: 123 })
       mockStorage.set.mockRejectedValue(new Error("Storage set error"))
@@ -350,7 +350,7 @@ describe("background.ts - Recorder Management Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-90: 異常系: 初期化時のStorage.get でエラーが発生した場合", async () => {
+    it("BGD-90: Error case: When Storage.get error occurs during initialization", async () => {
       const mockResponse = vi.fn()
       mockStorage.get.mockRejectedValue(new Error("Storage get error"))
 
@@ -367,7 +367,7 @@ describe("background.ts - Recorder Management Operations", () => {
 
   describe("Chrome event listeners", () => {
     describe("tabs.onUpdated listener", () => {
-      it("BGD-91: 正常系: 記録中タブのURL変更でurlChangedフラグが設定される", async () => {
+      it("BGD-91: Normal case: urlChanged flag is set when recording tab URL changes", async () => {
         const mockContext = { recordingTabId: 123 }
         mockStorage.get.mockResolvedValue(mockContext)
         mockStorage.set.mockResolvedValue(undefined)
@@ -387,7 +387,7 @@ describe("background.ts - Recorder Management Operations", () => {
         )
       })
 
-      it("BGD-92: 境界値: 記録中ではないタブのURL変更は無視される", async () => {
+      it("BGD-92: Boundary: URL changes in non-recording tabs are ignored", async () => {
         const mockContext = { recordingTabId: 123 }
         mockStorage.get.mockResolvedValue(mockContext)
 
@@ -402,7 +402,7 @@ describe("background.ts - Recorder Management Operations", () => {
         expect(mockStorage.update).not.toHaveBeenCalled()
       })
 
-      it("BGD-93: 境界値: 同じURLへの変更は無視される", async () => {
+      it("BGD-93: Boundary: Changes to the same URL are ignored", async () => {
         const mockContext = {
           recordingTabId: 123,
         }
@@ -428,7 +428,7 @@ describe("background.ts - Recorder Management Operations", () => {
     })
 
     describe("tabs.onRemoved listener", () => {
-      it("BGD-95: 正常系: 記録中タブが削除された場合recordingTabIdがリセットされる", async () => {
+      it("BGD-95: Normal case: recordingTabId is reset when recording tab is removed", async () => {
         const mockContext = { recordingTabId: 123 }
         mockStorage.get.mockResolvedValue(mockContext)
         mockStorage.set.mockResolvedValue(undefined)
@@ -445,7 +445,7 @@ describe("background.ts - Recorder Management Operations", () => {
         )
       })
 
-      it("BGD-96: 境界値: 記録中ではないタブの削除は無視される", async () => {
+      it("BGD-96: Boundary: Removal of non-recording tabs is ignored", async () => {
         const mockContext = { recordingTabId: 123 }
         mockStorage.get.mockResolvedValue(mockContext)
 
@@ -459,7 +459,7 @@ describe("background.ts - Recorder Management Operations", () => {
     })
 
     describe("windows.onBoundsChanged listener", () => {
-      it("BGD-97: 正常系: 記録中ウィンドウのサイズ変更がIPCで送信される", async () => {
+      it("BGD-97: Normal case: Recording window size changes are sent via IPC", async () => {
         const mockContext = { recordingTabId: 123 }
         mockStorage.get.mockResolvedValue(mockContext)
         mockIpc.sendTab.mockResolvedValue(undefined)
@@ -485,7 +485,7 @@ describe("background.ts - Recorder Management Operations", () => {
         )
       })
 
-      it("BGD-98: 境界値: 記録中ではないウィンドウの変更は無視される", async () => {
+      it("BGD-98: Boundary: Changes to non-recording windows are ignored", async () => {
         const mockContext = { recordingTabId: 123 }
         mockStorage.get.mockResolvedValue(mockContext)
         global.chrome.tabs.query = vi.fn().mockResolvedValue([])

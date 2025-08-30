@@ -300,64 +300,42 @@ vi.mock("@/services/commandMetrics", () => ({
 
 ## テストファイル構造
 
-```typescript
-describe("background.ts", () => {
-  describe("add() function", () => {
-    describe("Basic functionality", () => {
-      /* BGD-01〜05 */
-    });
-    describe("Operation integration logic", () => {
-      /* BGD-06〜15 */
-    });
-    describe("Error handling", () => {
-      /* BGD-16〜20 */
-    });
-  });
+### ファイル分割方針
 
-  describe("update() function", () => {
-    /* BGD-21〜25 */
-  });
-  describe("remove() function", () => {
-    /* BGD-26〜30 */
-  });
-  describe("reset() function", () => {
-    /* BGD-31〜35 */
-  });
-  describe("openAndRun() function", () => {
-    /* BGD-36〜50 */
-  });
-  describe("preview() function", () => {
-    /* BGD-51〜55 */
-  });
-  describe("run() function", () => {
-    /* BGD-56〜70 */
-  });
-  describe("stopRunner() function", () => {
-    /* BGD-71〜75 */
-  });
-  describe("openRecorder() function", () => {
-    /* BGD-76〜85 */
-  });
-  describe("closeRecorder() function", () => {
-    /* BGD-86〜90 */
-  });
-  describe("Chrome event listeners", () => {
-    /* BGD-91〜100 */
-  });
-});
-```
+`background.ts`の単体テストは機能別に3つのファイルに分割されています：
 
-## 実装方針
+#### 1. `background-crud.test.ts` (BGD-01〜BGD-35)
 
-1. **既存パターンの踏襲**: 他のテストファイルと同様のモック構造を使用
-2. **包括的なカバレッジ**: 各関数の正常系・異常系・境界値を網羅
-3. **非同期処理の適切なテスト**: async/await とモックの組み合わせ
-4. **Chrome API モックの活用**: setup.ts の StorageMockFactory を効果的に使用
-5. **型安全性**: TypeScript の型システムを活用した安全なテスト
+**対象機能**: CRUD操作（作成・読取・更新・削除）
 
-## 期待される成果
+- `add()` - ページアクションステップの追加
+- `update()` - 既存ステップの部分更新
+- `remove()` - ステップの削除
+- `reset()` - 記録のリセットと開始URLへの復帰
 
-- background.ts の全エクスポート関数の100%テストカバレッジ
-- Chrome イベントリスナーの動作確認
-- 複雑な操作統合ロジックの確実なテスト
-- 将来的なリファクタリングに対する堅牢な回帰テスト基盤
+**テスト方針**: データ操作ロジックと操作統合機能に重点を置いたテスト
+
+#### 2. `background-execution.test.ts` (BGD-36〜BGD-75)
+
+**対象機能**: 実行系操作
+
+- `openAndRun()` - 新しいタブ/ウィンドウでの実行
+- `preview()` - プレビュー実行（開始URLからの実行）
+- `stopRunner()` - 実行停止
+- `run()` - ステップの順次実行（内部関数、間接的にテスト）
+
+**テスト方針**: 実行フローとエラーハンドリングに重点を置いたテスト
+
+#### 3. `background-recorder.test.ts` (BGD-76〜BGD-100)
+
+**対象機能**: レコーダー管理とChromeイベント監視
+
+- `openRecorder()` - レコーダーウィンドウ/タブの開設
+- `closeRecorder()` - レコーダーの終了
+- Chrome イベントリスナー（`tabs.onUpdated`, `tabs.onRemoved`, `windows.onBoundsChanged`）
+
+**テスト方針**: UI管理とブラウザイベント処理に重点を置いたテスト
+
+### 共通テスト環境
+
+全3ファイルで`background-shared.ts`の共通モック環境を使用し、一貫性のあるテスト実行環境を提供します。
