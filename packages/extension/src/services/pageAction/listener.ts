@@ -2,7 +2,14 @@ import getXPath from "get-xpath"
 import { RobulaPlus } from "@/lib/robula-plus"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { PageAction, convReadableKeysToSymbols } from "@/services/pageAction"
-import { isTextNode, isSvgElement, getFocusNode } from "@/services/dom"
+import {
+  isTextNode,
+  isSvgElement,
+  getFocusNode,
+  isInput,
+  isTextarea,
+  isEditable,
+} from "@/services/dom"
 import { PAGE_ACTION_EVENT, SelectorType } from "@/const"
 import type { PageActionStep } from "@/types"
 import { isPopup, isEmpty, generateRandomID, truncate } from "@/lib/utils"
@@ -30,18 +37,6 @@ const isTargetKey = (e: KeyboardEvent): boolean => {
   if (["Tab", "Enter"].includes(e.key)) return true
   if (e.ctrlKey || e.metaKey) return true
   return false
-}
-
-const isInput = (e: any): e is HTMLInputElement => {
-  return e instanceof HTMLInputElement
-}
-
-const isTextarea = (e: any): e is HTMLTextAreaElement => {
-  return e instanceof HTMLTextAreaElement
-}
-
-const isEditable = (e: any): boolean => {
-  return e.isContentEditable
 }
 
 const modifierPressed = (e: KeyboardEvent | PageAction.Keyboard): boolean => {

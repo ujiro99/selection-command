@@ -910,6 +910,40 @@ describe("backgroundDispatcher", () => {
       expect(mockElement.dispatchEvent).toHaveBeenCalledTimes(1) // input event
     })
 
+    it("BDI-03b: Should preserve line breaks in ContentEditable element", async () => {
+      const mockElement = mockElements.contentEditableDiv
+      mockElement.innerText = "existing"
+      mockDocument.querySelector.mockReturnValue(mockElement)
+
+      const mockRange = {
+        selectNodeContents: vi.fn(),
+        collapse: vi.fn(),
+      }
+      const mockSelection = {
+        removeAllRanges: vi.fn(),
+        addRange: vi.fn(),
+      }
+      mockDocument.createRange.mockReturnValue(mockRange)
+      mockWindow.getSelection.mockReturnValue(mockSelection)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".contenteditable",
+        selectorType: SelectorType.css,
+        label: "ContentEditable",
+        value: "line1\nline2\nline3",
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      }
+
+      const result = await BackgroundPageActionDispatcher.input(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockElement.innerText).toBe("existingline1\nline2\nline3")
+      expect(mockElement.dispatchEvent).toHaveBeenCalledTimes(1) // input event
+    })
+
     it("BDI-04: Should replace selectedText variable", async () => {
       const mockElement = mockElements.input
       mockElement.value = ""

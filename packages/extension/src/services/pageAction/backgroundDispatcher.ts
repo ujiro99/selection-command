@@ -1,8 +1,16 @@
-import { getElementByXPath, isValidXPath } from "@/services/dom"
+import {
+  getElementByXPath,
+  isValidXPath,
+  inputContentEditable,
+} from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import { PageAction, ActionReturn } from "./dispatcher"
-import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
+import {
+  SelectorType,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_TIMEOUT as TIMEOUT,
+} from "@/const"
 
 /**
  * Find element by selector type with unified logic.
@@ -214,16 +222,22 @@ export const BackgroundPageActionDispatcher = {
           element.dispatchEvent(inputEvent)
           element.dispatchEvent(changeEvent)
         } else if (element.isContentEditable) {
-          element.innerText = element.innerText + value
-          // Move cursor to the end of the content
-          const range = document.createRange()
-          const selection = window.getSelection()
-          range.selectNodeContents(element)
-          range.collapse(false)
-          selection?.removeAllRanges()
-          selection?.addRange(range)
-          const inputEvent = new Event("input", { bubbles: true })
-          element.dispatchEvent(inputEvent)
+          const typeEnter = async () => {
+            await BackgroundPageActionDispatcher.keyboard({
+              type: PAGE_ACTION_EVENT.keyboard,
+              label: "",
+              key: "Enter",
+              code: "Enter",
+              keyCode: 13,
+              shiftKey: true,
+              ctrlKey: false,
+              altKey: false,
+              metaKey: false,
+              targetSelector: selector,
+              selectorType: selectorType,
+            })
+          }
+          await inputContentEditable(element, value, 0, typeEnter)
         }
       }
     } else {

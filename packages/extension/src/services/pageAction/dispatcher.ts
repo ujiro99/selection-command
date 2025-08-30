@@ -1,5 +1,10 @@
 import userEvent from "@testing-library/user-event"
-import { getElementByXPath, isValidXPath } from "@/services/dom"
+import {
+  getElementByXPath,
+  isValidXPath,
+  isEditable,
+  inputContentEditable,
+} from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import {
@@ -221,7 +226,30 @@ export const PageActionDispatcher = {
       let value = safeInterpolate(param.value, variables)
       value = value.replace(/{/g, "{{") // escape
       if (!isEmpty(value)) {
-        await user.type(element, value, { skipClick: true })
+        if (!isEditable(element)) {
+          await user.type(element, value, { skipClick: true })
+        } else {
+          /*
+           * Line breaks in value don't work in Perplexity's input field,
+           * so split by line breaks and handle with insertText + Enter key
+           */
+          const typeEnter = async () => {
+            await PageActionDispatcher.keyboard({
+              type: PAGE_ACTION_EVENT.keyboard,
+              label: "",
+              key: "Enter",
+              code: "Enter",
+              keyCode: 13,
+              shiftKey: true,
+              ctrlKey: false,
+              altKey: false,
+              metaKey: false,
+              targetSelector: selector,
+              selectorType: selectorType,
+            })
+          }
+          await inputContentEditable(element, value, 40, typeEnter)
+        }
       }
     } else {
       console.warn(`Element not found for: ${selector}`)
