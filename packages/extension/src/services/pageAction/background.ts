@@ -67,6 +67,10 @@ export const add = (
   response: (res: unknown) => void,
 ): boolean => {
   const add = async () => {
+    if (step == null || step.param == null) {
+      response(false)
+      return
+    }
     const type = step.param.type
     const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
@@ -105,6 +109,7 @@ export const add = (
         const prevSelector = (prev.param as PageAction.Input).selector
         if (selector === prevSelector) {
           // Skip adding click to combine operations on the same input element.
+          response(true)
           return
         }
       } else if (type === "doubleClick" && prevType === "click") {
@@ -250,7 +255,11 @@ export const reset = (_: any, sender: Sender): boolean => {
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
     if (tabId && option.startUrl) {
+      try {
       await chrome.tabs.update(tabId, { url: option.startUrl })
+      } catch (e) {
+        console.error("Failed to reload the tab:", e)
+      }
     }
     await Storage.set<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
@@ -559,6 +568,7 @@ export const openRecorder = (
   const open = async () => {
     const t = Math.floor((screen.height - size.height) / 2) + screen.top
     const l = Math.floor((screen.width - size.width) / 2) + screen.left
+    try {
     if (openMode === PAGE_ACTION_OPEN_MODE.POPUP) {
       const w = await chrome.windows.create({
         url: startUrl,
@@ -583,6 +593,11 @@ export const openRecorder = (
       await setRecordingTabId(recorderTab.id)
     }
     response(true)
+    } catch (e) {
+      console.error("Failed to open the recorder:", e)
+      response(false)
+      return
+    }
   }
   open()
   return true
@@ -593,16 +608,30 @@ export const closeRecorder = (
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  setRecordingTabId(undefined).then(() => {
+  setRecordingTabId(undefined)
+    .then(() => {
     sender.tab && chrome.tabs.remove(sender.tab.id!)
     response(true)
   })
+    .catch((e) => {
+      console.error("Failed to close the recorder:", e)
+      response(false)
+    })
   return true
 }
 
-let lastUrl: string | null = null
-chrome.tabs.onUpdated.addListener(
-  (id: number, info: chrome.tabs.TabChangeInfo) => {
+export let lastUrl: string | null = null
+
+export const resetLastUrl = () => {
+  lastUrl = null
+}
+
+// Export for testing
+export const onTabUpdated = (
+  id: number,
+  info: chrome.tabs.TabChangeInfo,
+  _tab: chrome.tabs.Tab,
+) => {
     Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
       (data) => {
         if (data.recordingTabId !== id) return
@@ -619,10 +648,15 @@ chrome.tabs.onUpdated.addListener(
         lastUrl = info.url
       },
     )
-  },
-)
+}
 
-chrome.tabs.onRemoved.addListener(async (tabId) => {
+chrome.tabs.onUpdated.addListener(onTabUpdated)
+
+// Export for testing
+export const onTabRemoved = async (
+  tabId: number,
+  _removeInfo: chrome.tabs.TabRemoveInfo,
+) => {
   const context = await Storage.get<PageActionContext>(
     SESSION_STORAGE_KEY.PA_CONTEXT,
   )
@@ -631,10 +665,12 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
     // Reset the recording tab id if recording.
     setRecordingTabId(undefined)
   }
-})
+}
 
-chrome.windows.onBoundsChanged.addListener(
-  async (window: chrome.windows.Window) => {
+chrome.tabs.onRemoved.addListener(onTabRemoved)
+
+// Export for testing
+export const onWindowBoundsChanged = async (window: chrome.windows.Window) => {
     const context = await Storage.get<PageActionContext>(
       SESSION_STORAGE_KEY.PA_CONTEXT,
     )
@@ -647,5 +683,6 @@ chrome.windows.onBoundsChanged.addListener(
         height: window.height,
       })
     }
-  },
-)
+}
+
+chrome.windows.onBoundsChanged.addListener(onWindowBoundsChanged)

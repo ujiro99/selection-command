@@ -5,7 +5,6 @@ import { PageAction, convReadableKeysToSymbols } from "@/services/pageAction"
 import {
   isTextNode,
   isSvgElement,
-  getFocusNode,
   isInput,
   isTextarea,
   isEditable,
