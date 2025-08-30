@@ -153,86 +153,15 @@ describe("background.ts - Execution Operations", () => {
       )
     })
 
-    it("BGD-41: Error case: When commandId does not exist", async () => {
-      const mockParam = {
-        openMode: PAGE_ACTION_OPEN_MODE.TAB,
-        url: "https://example.com",
-        commandId: "nonexistent-cmd",
-        selectedText: "selected",
-      }
-
-      mockStorage.getCommands.mockResolvedValue([])
-
-      openAndRun(mockParam as any, mockSender as any, mockResponse)
-      await vi.runAllTimersAsync()
-
-      expect(mockConsole.error).toHaveBeenCalledWith(
-        "PageActionCommand is not valid",
-      )
-      expect(mockResponse).toHaveBeenCalledWith(false)
-    })
-
-    it("BGD-42: Error case: When command is not a PageActionCommand", async () => {
-      const mockParam = {
-        openMode: PAGE_ACTION_OPEN_MODE.TAB,
-        url: "https://example.com",
-        commandId: "cmd-1",
-        selectedText: "selected",
-      }
-
-      const mockCommand = { id: "cmd-1", type: "other" }
-      mockStorage.getCommands.mockResolvedValue([mockCommand])
-      mockIsPageActionCommand.mockReturnValue(false)
-
-      openAndRun(mockParam as any, mockSender as any, mockResponse)
-      await vi.runAllTimersAsync()
-
-      expect(mockConsole.error).toHaveBeenCalledWith(
-        "PageActionCommand is not valid",
-      )
-      expect(mockResponse).toHaveBeenCalledWith(false)
-    })
-
-    it("BGD-43: Error case: When pageActionOption does not exist", async () => {
-      const mockParam = {
-        openMode: PAGE_ACTION_OPEN_MODE.TAB,
-        url: "https://example.com",
-        commandId: "cmd-1",
-        selectedText: "selected",
-      }
-
-      const mockCommand = {
-        id: "cmd-1",
-        pageActionOption: null,
-      }
-
-      mockStorage.getCommands.mockResolvedValue([mockCommand])
-
-      openAndRun(mockParam as any, mockSender as any, mockResponse)
-      await vi.runAllTimersAsync()
-
-      expect(mockConsole.error).toHaveBeenCalledWith(
-        "PageActionOption not found",
-      )
-      expect(mockResponse).toHaveBeenCalledWith(false)
-    })
-
     it("BGD-44: Normal case: Use clipboardText when selectedText is empty and useClipboard is true", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: { url: "https://example.com", useClipboard: true },
         commandId: "cmd-1",
         selectedText: "",
+        steps: [{ id: "step-1", param: { type: "click" } }],
       }
 
-      const mockCommand = {
-        id: "cmd-1",
-        pageActionOption: {
-          steps: [{ id: "step-1", param: { type: "click" } }],
-        },
-      }
-
-      mockStorage.getCommands.mockResolvedValue([mockCommand])
       mockIsEmpty.mockReturnValue(true)
       mockIsUrlParam.mockReturnValue(true)
       mockOpenTab.mockResolvedValue({

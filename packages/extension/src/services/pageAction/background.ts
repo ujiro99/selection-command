@@ -151,28 +151,45 @@ export const add = (
           const prevParam = prevInput.param as PageAction.Input
           if (param.selector === prevParam.selector) {
             // Check if the new value contains newlines
-            if (param.value.includes('\n')) {
+            if (param.value.includes("\n")) {
               // For multiline input, check if previous value also contains newlines
-              if (prevParam.value.includes('\n')) {
+              if (prevParam.value.includes("\n")) {
                 // Both multiline: use global replace with proper escaping
-                const escapedValue = prevParam.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-                param.value = param.value.replace(new RegExp(escapedValue, 'g'), "")
+                const escapedValue = prevParam.value.replace(
+                  /[.*+?^${}()|[\]\\]/g,
+                  "\\$&",
+                )
+                param.value = param.value.replace(
+                  new RegExp(escapedValue, "g"),
+                  "",
+                )
               } else {
                 // Previous is single line, new is multiline: remove only lines that exactly match
-                const lines = param.value.split('\n')
-                const filteredLines = lines.filter(line => line !== prevParam.value)
-                param.value = filteredLines.join('\n')
+                const lines = param.value.split("\n")
+                const filteredLines = lines.filter(
+                  (line) => line !== prevParam.value,
+                )
+                param.value = filteredLines.join("\n")
               }
             } else {
               // For single line input, use global replace to remove all occurrences
-              const escapedValue = prevParam.value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-              param.value = param.value.replace(new RegExp(escapedValue, 'g'), "")
+              const escapedValue = prevParam.value.replace(
+                /[.*+?^${}()|[\]\\]/g,
+                "\\$&",
+              )
+              param.value = param.value.replace(
+                new RegExp(escapedValue, "g"),
+                "",
+              )
             }
           }
         }
         // Clean up empty lines at start and end only for multiline input
-        if (param.value.includes('\n')) {
-          param.value = param.value.replace(/^\n+/, '').replace(/\n+$/, '').replace(/\n{2,}/g, '\n')
+        if (param.value.includes("\n")) {
+          param.value = param.value
+            .replace(/^\n+/, "")
+            .replace(/\n+$/, "")
+            .replace(/\n{2,}/g, "\n")
         }
         console.debug(param.value)
       }
@@ -296,7 +313,7 @@ export const reset = (_: any, sender: Sender): boolean => {
 }
 
 export type OpenAndRunProps = Omit<OpenPopupProps, "type"> &
-  Omit<RunPageAction, "steps" | "clipboardText">
+  Omit<RunPageAction, "clipboardText">
 
 export const openAndRun = (
   param: OpenAndRunProps,
@@ -352,25 +369,11 @@ export const openAndRun = (
       selectedText = clipboardText
     }
 
-    const commands = await Storage.getCommands()
-    const cmd = commands.find((c) => c.id === param.commandId)
-    if (cmd == null || !isPageActionCommand(cmd)) {
-      console.error("PageActionCommand is not valid")
-      response(false)
-      return
-    }
-
-    if (cmd.pageActionOption == null) {
-      console.error("PageActionOption not found")
-      response(false)
-      return true
-    }
-
     // Wait until ipc connection is established.
     await Ipc.ensureConnection(tabId)
 
     // Run the steps on the popup.
-    const steps = cmd.pageActionOption.steps
+    const steps = param.steps
     const userVariables = param.userVariables || []
     run(
       { ...param, tabId, steps, selectedText, clipboardText, userVariables },
