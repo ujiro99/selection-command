@@ -9,7 +9,7 @@ import {
 
 import { CommandType } from "./CommandType"
 
-import { COMMAND_CATEGORY, COMMAND_CATEGORY_GROUPS } from "@/const"
+import { COMMAND_TYPE, COMMAND_TYPE_GROUPS } from "@/const"
 import { t as _t } from "@/services/i18n"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -17,7 +17,7 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 interface CommandTypeSelectionDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSelect: (category: COMMAND_CATEGORY) => void
+  onSelect: (type: COMMAND_TYPE) => void
 }
 
 export const CommandTypeSelectionDialog = ({
@@ -25,8 +25,8 @@ export const CommandTypeSelectionDialog = ({
   onOpenChange,
   onSelect,
 }: CommandTypeSelectionDialogProps) => {
-  const handleCardClick = (category: COMMAND_CATEGORY) => {
-    onSelect(category)
+  const handleCardClick = (type: COMMAND_TYPE) => {
+    onSelect(type)
     onOpenChange(false)
   }
 
@@ -41,16 +41,16 @@ export const CommandTypeSelectionDialog = ({
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6 py-4">
-            {COMMAND_CATEGORY_GROUPS.map((group) => (
+            {COMMAND_TYPE_GROUPS.map((group) => (
               <div key={group.titleKey}>
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">
                   {t(group.titleKey)}
                 </h3>
                 <div className="grid grid-cols-3 gap-4">
-                  {group.categories.map((category) => (
+                  {group.types.map((type) => (
                     <CommandType
-                      key={category}
-                      category={category}
+                      key={type}
+                      type={type}
                       onClick={handleCardClick}
                       compact={false}
                     />

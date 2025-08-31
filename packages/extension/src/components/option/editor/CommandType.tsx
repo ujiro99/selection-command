@@ -10,7 +10,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-import { COMMAND_CATEGORY, COMMAND_CATEGORY_METADATA } from "@/const"
+import { COMMAND_TYPE, COMMAND_TYPE_METADATA } from "@/const"
 import { t as _t } from "@/services/i18n"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -27,27 +27,27 @@ const IconMap = {
 } as const
 
 interface CommandTypeProps {
-  category: COMMAND_CATEGORY
-  onClick: (category: COMMAND_CATEGORY) => void
+  type: COMMAND_TYPE
+  onClick: (type: COMMAND_TYPE) => void
   compact?: boolean
   disabled?: boolean
 }
 
 export const CommandType = forwardRef<HTMLButtonElement, CommandTypeProps>(
-  ({ category, onClick, compact, disabled }: CommandTypeProps, ref) => {
-    const metadata = COMMAND_CATEGORY_METADATA[category]
+  ({ type, onClick, compact, disabled }: CommandTypeProps, ref) => {
+    const metadata = COMMAND_TYPE_METADATA[type]
     const IconComponent = IconMap[metadata.iconName as keyof typeof IconMap]
 
     return (
       <button
-        key={category}
+        key={type}
         type="button"
         className={cn(
           "group px-4 py-2 border rounded-lg transition-all duration-200 text-left",
           !disabled && "hover:bg-gray-50 hover:border-gray-300",
           !compact && "hover:shadow-md",
         )}
-        onClick={() => onClick(category)}
+        onClick={() => onClick(type)}
         disabled={disabled}
         ref={ref}
       >

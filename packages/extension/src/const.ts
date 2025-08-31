@@ -22,8 +22,8 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = "addPageRule",
 }
 
-// Abstract command categories for simplified command creation
-export enum COMMAND_CATEGORY {
+// Abstract command types for simplified command creation
+export enum COMMAND_TYPE {
   SEARCH = "search",
   PAGE_ACTION = "pageAction",
   COPY = "copy",
@@ -33,93 +33,93 @@ export enum COMMAND_CATEGORY {
   OPTION = "option",
 }
 
-export const OPEN_MODE_CATEGORY_MAP = {
-  [OPEN_MODE.POPUP]: COMMAND_CATEGORY.SEARCH,
-  [OPEN_MODE.WINDOW]: COMMAND_CATEGORY.SEARCH,
-  [OPEN_MODE.TAB]: COMMAND_CATEGORY.SEARCH,
-  [OPEN_MODE.BACKGROUND_TAB]: COMMAND_CATEGORY.SEARCH,
-  [OPEN_MODE.API]: COMMAND_CATEGORY.API,
-  [OPEN_MODE.PAGE_ACTION]: COMMAND_CATEGORY.PAGE_ACTION,
-  [OPEN_MODE.LINK_POPUP]: COMMAND_CATEGORY.LINK_POPUP,
-  [OPEN_MODE.COPY]: COMMAND_CATEGORY.COPY,
-  [OPEN_MODE.GET_TEXT_STYLES]: COMMAND_CATEGORY.GET_TEXT_STYLES,
-  [OPEN_MODE.OPTION]: COMMAND_CATEGORY.OPTION,
-  [OPEN_MODE.ADD_PAGE_RULE]: COMMAND_CATEGORY.OPTION,
+export const OPEN_MODE_TYPE_MAP = {
+  [OPEN_MODE.POPUP]: COMMAND_TYPE.SEARCH,
+  [OPEN_MODE.WINDOW]: COMMAND_TYPE.SEARCH,
+  [OPEN_MODE.TAB]: COMMAND_TYPE.SEARCH,
+  [OPEN_MODE.BACKGROUND_TAB]: COMMAND_TYPE.SEARCH,
+  [OPEN_MODE.API]: COMMAND_TYPE.API,
+  [OPEN_MODE.PAGE_ACTION]: COMMAND_TYPE.PAGE_ACTION,
+  [OPEN_MODE.LINK_POPUP]: COMMAND_TYPE.LINK_POPUP,
+  [OPEN_MODE.COPY]: COMMAND_TYPE.COPY,
+  [OPEN_MODE.GET_TEXT_STYLES]: COMMAND_TYPE.GET_TEXT_STYLES,
+  [OPEN_MODE.OPTION]: COMMAND_TYPE.OPTION,
+  [OPEN_MODE.ADD_PAGE_RULE]: COMMAND_TYPE.OPTION,
 } as const
 
-// Reverse mapping: COMMAND_CATEGORY -> OPEN_MODE[]
-export const COMMAND_CATEGORY_OPEN_MODES_MAP = {
-  [COMMAND_CATEGORY.SEARCH]: [
+// Reverse mapping: COMMAND_TYPE -> OPEN_MODE[]
+export const COMMAND_TYPE_OPEN_MODES_MAP = {
+  [COMMAND_TYPE.SEARCH]: [
     OPEN_MODE.POPUP,
     OPEN_MODE.WINDOW,
     OPEN_MODE.TAB,
     OPEN_MODE.BACKGROUND_TAB,
   ],
-  [COMMAND_CATEGORY.API]: [OPEN_MODE.API],
-  [COMMAND_CATEGORY.PAGE_ACTION]: [OPEN_MODE.PAGE_ACTION],
-  [COMMAND_CATEGORY.LINK_POPUP]: [OPEN_MODE.LINK_POPUP],
-  [COMMAND_CATEGORY.COPY]: [OPEN_MODE.COPY],
-  [COMMAND_CATEGORY.GET_TEXT_STYLES]: [OPEN_MODE.GET_TEXT_STYLES],
-  [COMMAND_CATEGORY.OPTION]: [OPEN_MODE.OPTION, OPEN_MODE.ADD_PAGE_RULE],
+  [COMMAND_TYPE.API]: [OPEN_MODE.API],
+  [COMMAND_TYPE.PAGE_ACTION]: [OPEN_MODE.PAGE_ACTION],
+  [COMMAND_TYPE.LINK_POPUP]: [OPEN_MODE.LINK_POPUP],
+  [COMMAND_TYPE.COPY]: [OPEN_MODE.COPY],
+  [COMMAND_TYPE.GET_TEXT_STYLES]: [OPEN_MODE.GET_TEXT_STYLES],
+  [COMMAND_TYPE.OPTION]: [OPEN_MODE.OPTION, OPEN_MODE.ADD_PAGE_RULE],
 } as const
 
-// Metadata for command categories
-export const COMMAND_CATEGORY_METADATA = {
-  [COMMAND_CATEGORY.SEARCH]: {
+// Metadata for command types
+export const COMMAND_TYPE_METADATA = {
+  [COMMAND_TYPE.SEARCH]: {
     iconName: "Search",
-    titleKey: "commandCategory_search_title",
-    descKey: "commandCategory_search_desc",
+    titleKey: "commandType_search_title",
+    descKey: "commandType_search_desc",
   },
-  [COMMAND_CATEGORY.PAGE_ACTION]: {
+  [COMMAND_TYPE.PAGE_ACTION]: {
     iconName: "Play",
-    titleKey: "commandCategory_pageAction_title",
-    descKey: "commandCategory_pageAction_desc",
+    titleKey: "commandType_pageAction_title",
+    descKey: "commandType_pageAction_desc",
   },
-  [COMMAND_CATEGORY.COPY]: {
+  [COMMAND_TYPE.COPY]: {
     iconName: "Copy",
-    titleKey: "commandCategory_copy_title",
-    descKey: "commandCategory_copy_desc",
+    titleKey: "commandType_copy_title",
+    descKey: "commandType_copy_desc",
   },
-  [COMMAND_CATEGORY.LINK_POPUP]: {
+  [COMMAND_TYPE.LINK_POPUP]: {
     iconName: "Link",
-    titleKey: "commandCategory_linkPopup_title",
-    descKey: "commandCategory_linkPopup_desc",
+    titleKey: "commandType_linkPopup_title",
+    descKey: "commandType_linkPopup_desc",
   },
-  [COMMAND_CATEGORY.GET_TEXT_STYLES]: {
+  [COMMAND_TYPE.GET_TEXT_STYLES]: {
     iconName: "Paintbrush",
-    titleKey: "commandCategory_getTextStyles_title",
-    descKey: "commandCategory_getTextStyles_desc",
+    titleKey: "commandType_getTextStyles_title",
+    descKey: "commandType_getTextStyles_desc",
   },
-  [COMMAND_CATEGORY.API]: {
+  [COMMAND_TYPE.API]: {
     iconName: "Code",
-    titleKey: "commandCategory_api_title",
-    descKey: "commandCategory_api_desc",
+    titleKey: "commandType_api_title",
+    descKey: "commandType_api_desc",
   },
   // For type safety, even if not displayed.
-  [COMMAND_CATEGORY.OPTION]: {
+  [COMMAND_TYPE.OPTION]: {
     iconName: "EllipsisVertical",
     titleKey: "",
     descKey: "",
   },
 } as const
 
-// Command category groups for organized display
-export const COMMAND_CATEGORY_GROUPS = [
+// Command type groups for organized display
+export const COMMAND_TYPE_GROUPS = [
   {
     titleKey: "commandGroup_webPage_title",
-    categories: [COMMAND_CATEGORY.SEARCH, COMMAND_CATEGORY.PAGE_ACTION],
+    types: [COMMAND_TYPE.SEARCH, COMMAND_TYPE.PAGE_ACTION],
   },
   {
     titleKey: "commandGroup_singleFunction_title",
-    categories: [
-      COMMAND_CATEGORY.COPY,
-      COMMAND_CATEGORY.LINK_POPUP,
-      COMMAND_CATEGORY.GET_TEXT_STYLES,
+    types: [
+      COMMAND_TYPE.COPY,
+      COMMAND_TYPE.LINK_POPUP,
+      COMMAND_TYPE.GET_TEXT_STYLES,
     ],
   },
   {
     titleKey: "commandGroup_experimental_title",
-    categories: [COMMAND_CATEGORY.API],
+    types: [COMMAND_TYPE.API],
   },
 ] as const
 

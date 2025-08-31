@@ -320,46 +320,46 @@
   "Option_commandType_description": {
     "message": "作成するコマンドの種類を選択してください"
   },
-  "Option_commandCategory": {
+  "Option_commandType": {
     "message": "コマンドの種類"
   },
-  "Option_commandCategory_search_title": {
+  "Option_commandType_search_title": {
     "message": "検索"
   },
-  "Option_commandCategory_search_desc": {
+  "Option_commandType_search_desc": {
     "message": "選択したテキストを検索します"
   },
-  "Option_commandCategory_pageAction_title": {
+  "Option_commandType_pageAction_title": {
     "message": "ページアクション"
   },
-  "Option_commandCategory_pageAction_desc": {
+  "Option_commandType_pageAction_desc": {
     "message": "Webページ上の操作を記録・再生します"
   },
-  "Option_commandCategory_copy_title": {
+  "Option_commandType_copy_title": {
     "message": "テキストコピー"
   },
-  "Option_commandCategory_copy_desc": {
+  "Option_commandType_copy_desc": {
     "message": "選択テキストをクリップボードにコピーします"
   },
-  "Option_commandCategory_linkPopup_title": {
+  "Option_commandType_linkPopup_title": {
     "message": "リンクポップアップ"
   },
-  "Option_commandCategory_linkPopup_desc": {
+  "Option_commandType_linkPopup_desc": {
     "message": "選択したテキスト内のリンクを一括で開きます"
   },
-  "Option_commandCategory_getTextStyles_title": {
+  "Option_commandType_getTextStyles_title": {
     "message": "スタイル取得"
   },
-  "Option_commandCategory_getTextStyles_desc": {
+  "Option_commandType_getTextStyles_desc": {
     "message": "選択テキストのスタイル情報を取得します"
   },
-  "Option_commandCategory_api_title": {
+  "Option_commandType_api_title": {
     "message": "API"
   },
-  "Option_commandCategory_api_desc": {
+  "Option_commandType_api_desc": {
     "message": "APIにfetchリクエストを送信します"
   },
-  "Option_commandCategory_on_edit": {
+  "Option_commandType_on_edit": {
     "message": "一度保存したコマンドの種類は変更できません"
   },
   "Option_commandGroup_webPage_title": {

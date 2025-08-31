@@ -299,40 +299,40 @@
   "Option_commandType_description": {
     "message": "कृपया उस कमांड का प्रकार चुनें जिसे आप बनाना चाहते हैं"
   },
-  "Option_commandCategory_search_title": {
+  "Option_commandType_search_title": {
     "message": "खोज"
   },
-  "Option_commandCategory_search_desc": {
+  "Option_commandType_search_desc": {
     "message": "चयनित टेक्स्ट को खोजें"
   },
-  "Option_commandCategory_pageAction_title": {
+  "Option_commandType_pageAction_title": {
     "message": "पेज एक्शन"
   },
-  "Option_commandCategory_pageAction_desc": {
+  "Option_commandType_pageAction_desc": {
     "message": "वेब पेज ऑपरेशन रिकॉर्ड और रीप्ले करें"
   },
-  "Option_commandCategory_copy_title": {
+  "Option_commandType_copy_title": {
     "message": "टेक्स्ट कॉपी करें"
   },
-  "Option_commandCategory_copy_desc": {
+  "Option_commandType_copy_desc": {
     "message": "चयनित टेक्स्ट को क्लिपबोर्ड में कॉपी करें"
   },
-  "Option_commandCategory_linkPopup_title": {
+  "Option_commandType_linkPopup_title": {
     "message": "लिंक पॉपअप"
   },
-  "Option_commandCategory_linkPopup_desc": {
+  "Option_commandType_linkPopup_desc": {
     "message": "चयनित टेक्स्ट में लिंक्स को बल्क में खोलें"
   },
-  "Option_commandCategory_getTextStyles_title": {
+  "Option_commandType_getTextStyles_title": {
     "message": "स्टाइल प्राप्त करें"
   },
-  "Option_commandCategory_getTextStyles_desc": {
+  "Option_commandType_getTextStyles_desc": {
     "message": "चयनित टेक्स्ट की स्टाइल जानकारी प्राप्त करें"
   },
-  "Option_commandCategory_api_title": {
+  "Option_commandType_api_title": {
     "message": "API"
   },
-  "Option_commandCategory_api_desc": {
+  "Option_commandType_api_desc": {
     "message": "API को fetch अनुरोध भेजें"
   },
   "Option_commandGroup_webPage_title": {

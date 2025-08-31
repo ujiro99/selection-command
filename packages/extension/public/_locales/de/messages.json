@@ -299,40 +299,40 @@
   "Option_commandType_description": {
     "message": "Bitte wählen Sie den Typ des Befehls, den Sie erstellen möchten"
   },
-  "Option_commandCategory_search_title": {
+  "Option_commandType_search_title": {
     "message": "Suchen"
   },
-  "Option_commandCategory_search_desc": {
+  "Option_commandType_search_desc": {
     "message": "Den ausgewählten Text durchsuchen"
   },
-  "Option_commandCategory_pageAction_title": {
+  "Option_commandType_pageAction_title": {
     "message": "Page Action"
   },
-  "Option_commandCategory_pageAction_desc": {
+  "Option_commandType_pageAction_desc": {
     "message": "Webseiten-Operationen aufzeichnen und wiedergeben"
   },
-  "Option_commandCategory_copy_title": {
+  "Option_commandType_copy_title": {
     "message": "Text kopieren"
   },
-  "Option_commandCategory_copy_desc": {
+  "Option_commandType_copy_desc": {
     "message": "Ausgewählten Text in die Zwischenablage kopieren"
   },
-  "Option_commandCategory_linkPopup_title": {
+  "Option_commandType_linkPopup_title": {
     "message": "Link-Popup"
   },
-  "Option_commandCategory_linkPopup_desc": {
+  "Option_commandType_linkPopup_desc": {
     "message": "Links im ausgewählten Text in einem Rutsch öffnen"
   },
-  "Option_commandCategory_getTextStyles_title": {
+  "Option_commandType_getTextStyles_title": {
     "message": "Stile abrufen"
   },
-  "Option_commandCategory_getTextStyles_desc": {
+  "Option_commandType_getTextStyles_desc": {
     "message": "Stilinformationen des ausgewählten Textes abrufen"
   },
-  "Option_commandCategory_api_title": {
+  "Option_commandType_api_title": {
     "message": "API"
   },
-  "Option_commandCategory_api_desc": {
+  "Option_commandType_api_desc": {
     "message": "Fetch-Anfrage an API senden"
   },
   "Option_commandGroup_webPage_title": {

@@ -62,8 +62,8 @@ import {
   PAGE_ACTION_OPEN_MODE,
   ICON_NOT_FOUND,
   SCREEN,
-  COMMAND_CATEGORY,
-  COMMAND_CATEGORY_OPEN_MODES_MAP,
+  COMMAND_TYPE,
+  COMMAND_TYPE_OPEN_MODES_MAP,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -198,7 +198,7 @@ type CommandEditDialogProps = {
   onSubmit: (command: SelectionCommand) => void
   folders: CommandFolder[]
   command?: SelectionCommand
-  selectedCategory: COMMAND_CATEGORY
+  selectedType: COMMAND_TYPE
   onTypeClick: () => void
 }
 
@@ -216,7 +216,7 @@ const CommandEditDialogInner = ({
   onSubmit,
   folders,
   command,
-  selectedCategory,
+  selectedType,
   onTypeClick,
 }: CommandEditDialogProps) => {
   const [initialized, setInitialized] = useState(false)
@@ -234,7 +234,7 @@ const CommandEditDialogInner = ({
   const isUpdate = command != null
 
   // Determine if open mode selection should be shown
-  const shouldShowOpenModeSelect = selectedCategory === COMMAND_CATEGORY.SEARCH
+  const shouldShowOpenModeSelect = selectedType === COMMAND_TYPE.SEARCH
 
   const variableArray = useFieldArray({
     name: "variables",
@@ -295,9 +295,9 @@ const CommandEditDialogInner = ({
   }
 
   useEffect(() => {
-    // Get default open mode for the selected category
-    const getDefaultOpenMode = (category: COMMAND_CATEGORY) => {
-      const modes = COMMAND_CATEGORY_OPEN_MODES_MAP[category]
+    // Get default open mode for the selected type
+    const getDefaultOpenMode = (type: COMMAND_TYPE) => {
+      const modes = COMMAND_TYPE_OPEN_MODES_MAP[type]
       return modes?.[0] ?? DEFAULT_MODE
     }
 
@@ -309,15 +309,15 @@ const CommandEditDialogInner = ({
       reset((command as any) ?? InitialValues)
     } else {
       // new mode
-      const initialValues = selectedCategory
-        ? getDefault(getDefaultOpenMode(selectedCategory), {
+      const initialValues = selectedType
+        ? getDefault(getDefaultOpenMode(selectedType), {
             id: "",
             title: "",
           } as CommandSchemaType)
         : InitialValues
       reset(initialValues)
     }
-  }, [command, selectedCategory, reset])
+  }, [command, selectedType, reset])
 
   useEffect(() => {
     if (openMode === preOpenMode) return
@@ -392,11 +392,11 @@ const CommandEditDialogInner = ({
             <div id="CommandEditForm" className="space-y-3">
               <FormItem className="flex items-start gap-1">
                 <div className="w-2/6">
-                  <FormLabel>{t("commandCategory")}</FormLabel>
+                  <FormLabel>{t("commandType")}</FormLabel>
                 </div>
                 <div className="w-4/6 relative">
                   <CommandType
-                    category={selectedCategory}
+                    type={selectedType}
                     onClick={onTypeClick}
                     compact={true}
                     disabled={isUpdate}
@@ -404,7 +404,7 @@ const CommandEditDialogInner = ({
                   />
                   {isUpdate && (
                     <Tooltip
-                      text={t("commandCategory_on_edit")}
+                      text={t("commandType_on_edit")}
                       positionElm={commandTypeRef.current}
                     />
                   )}
@@ -492,7 +492,7 @@ const CommandEditDialogInner = ({
                 />
               )}
 
-              {selectedCategory === COMMAND_CATEGORY.SEARCH ? (
+              {selectedType === COMMAND_TYPE.SEARCH ? (
                 <OpenModeToggleField
                   control={form.control}
                   name="openMode"

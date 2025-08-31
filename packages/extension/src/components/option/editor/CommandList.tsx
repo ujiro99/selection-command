@@ -27,7 +27,7 @@ import {
 } from "@/types/schema"
 
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import { SCREEN, COMMAND_CATEGORY, OPEN_MODE_CATEGORY_MAP } from "@/const"
+import { SCREEN, COMMAND_TYPE, OPEN_MODE_TYPE_MAP } from "@/const"
 import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
 // Imported services and hooks
@@ -106,7 +106,7 @@ export const CommandList = ({ control }: CommandListProps) => {
   const [typeSelectionDialogOpen, setTypeSelectionDialogOpen] = useState(false)
   const [commandDialogOpen, _setCommandDialogOpen] = useState(false)
   const [folderDialogOpen, _setFolderDialogOpen] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<COMMAND_CATEGORY>()
+  const [selectedType, setSelectedType] = useState<COMMAND_TYPE>()
   const addCommandButtonRef = useRef<HTMLButtonElement>(null)
   const addFolderButtonRef = useRef<HTMLButtonElement>(null)
   const commandsRef = useRef<HTMLUListElement>(null)
@@ -158,14 +158,14 @@ export const CommandList = ({ control }: CommandListProps) => {
     _setFolderDialogOpen(open)
   }
 
-  const handleTypeSelect = (category: COMMAND_CATEGORY) => {
-    setSelectedCategory(category)
+  const handleTypeSelect = (type: COMMAND_TYPE) => {
+    setSelectedType(type)
     setTypeSelectionDialogOpen(false)
     setCommandDialogOpen(true)
   }
 
   const handleTypeClick = () => {
-    setSelectedCategory(undefined)
+    setSelectedType(undefined)
     setTypeSelectionDialogOpen(true)
     setCommandDialogOpen(false)
   }
@@ -198,8 +198,8 @@ export const CommandList = ({ control }: CommandListProps) => {
     editDataRef.current = node.content
     if (isCommand(node.content)) {
       const command = node.content as SelectionCommand
-      const category = OPEN_MODE_CATEGORY_MAP[command.openMode]
-      setSelectedCategory(category)
+      const type = OPEN_MODE_TYPE_MAP[command.openMode]
+      setSelectedType(type)
       setCommandDialogOpen(true)
     } else {
       setFolderDialogOpen(true)
@@ -296,7 +296,7 @@ export const CommandList = ({ control }: CommandListProps) => {
         onSubmit={(command) => commandUpsert(command)}
         folders={folderArray.fields}
         command={editDataRef.current as SelectionCommand}
-        selectedCategory={selectedCategory ?? COMMAND_CATEGORY.SEARCH}
+        selectedType={selectedType ?? COMMAND_TYPE.SEARCH}
         onTypeClick={handleTypeClick}
       />
       <FolderEditDialog
