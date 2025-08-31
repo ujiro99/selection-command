@@ -38,68 +38,9 @@ import { userStyleSchema, UserStyleType, UserStylesType } from "@/types/schema"
 
 import { STYLE_VARIABLE } from "@/const"
 import { cn, hyphen2Underscore } from "@/lib/utils"
+import { Attributes } from "@/services/option/userStyles"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-
-type AttributesType = {
-  type: "string" | "number" | "color"
-  default: string | number
-  max?: number
-  min?: number
-  step?: number
-}
-
-type AttributeMap = Record<STYLE_VARIABLE, AttributesType>
-
-const Attributes: AttributeMap = {
-  [STYLE_VARIABLE.BACKGROUND_COLOR]: {
-    type: "color",
-    default: "#FFFFFF",
-  },
-  [STYLE_VARIABLE.BORDER_COLOR]: {
-    type: "color",
-    default: "#F3F4F6",
-  },
-  [STYLE_VARIABLE.FONT_SCALE]: {
-    type: "number",
-    default: 1,
-    max: 3,
-    min: 0.5,
-    step: 0.1,
-  },
-  [STYLE_VARIABLE.FONT_COLOR]: {
-    type: "color",
-    default: "#0F172A",
-  },
-  [STYLE_VARIABLE.IMAGE_SCALE]: {
-    type: "number",
-    default: 1,
-    max: 3,
-    min: 0.5,
-    step: 0.1,
-  },
-  [STYLE_VARIABLE.PADDING_SCALE]: {
-    type: "number",
-    default: 1,
-    max: 3,
-    min: 0.5,
-    step: 0.1,
-  },
-  [STYLE_VARIABLE.POPUP_DELAY]: {
-    type: "number",
-    default: 250,
-    max: 1000,
-    min: 0,
-    step: 10,
-  },
-  [STYLE_VARIABLE.POPUP_DURATION]: {
-    type: "number",
-    default: 150,
-    max: 1000,
-    min: 0,
-    step: 10,
-  },
-}
 
 type UnitMap = Record<STYLE_VARIABLE, string | undefined>
 const Units: UnitMap = {
@@ -120,6 +61,13 @@ const DefaultValue = {
 
 const isValidStyle = (variable: string): variable is STYLE_VARIABLE => {
   return Object.values(STYLE_VARIABLE).includes(variable as STYLE_VARIABLE)
+}
+
+const isEditable = (variable: STYLE_VARIABLE) => {
+  return (
+    variable !== STYLE_VARIABLE.POPUP_DELAY &&
+    variable !== STYLE_VARIABLE.POPUP_DURATION
+  )
 }
 
 type UserStyleListProps = {
@@ -200,6 +148,7 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
           <FormControl>
             <ul className="">
               {array.fields
+                .filter((f) => isEditable(f.name))
                 .filter((f) => isValidStyle(f.name))
                 .map((field, index) => (
                   <li
@@ -323,6 +272,7 @@ export const UserStyleDialog = ({
                         </FormControl>
                         <SelectContent>
                           {Object.values(STYLE_VARIABLE)
+                            .filter((opt) => isEditable(opt))
                             .filter((opt) => !exclude.includes(opt))
                             .map((opt) => (
                               <SelectItem

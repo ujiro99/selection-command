@@ -17,6 +17,7 @@ import { InputField } from "@/components/option/field/InputField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { SwitchField } from "@/components/option/field/SwitchField"
 import { PopupPlacementField } from "@/components/option/field/PopupPlacementField"
+import { PopupAnimation } from "@/components/option/editor/PopupAnimation"
 import { CommandList } from "@/components/option/editor/CommandList"
 import {
   PageRuleList,
@@ -395,6 +396,8 @@ export function SettingForm({ className }: { className?: string }) {
                 defaultValues={getValues("popupPlacement")}
               />
             )}
+
+          <PopupAnimation control={form.control} register={register} />
         </section>
         <hr />
         <section id="commands" className="space-y-3">

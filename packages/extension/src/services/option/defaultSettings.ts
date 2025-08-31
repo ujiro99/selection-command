@@ -13,6 +13,7 @@ import {
   SPACE_ENCODING,
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
+  STYLE_VARIABLE,
 } from "@/const"
 
 export const PopupPlacement = {
@@ -108,15 +109,23 @@ export default {
   },
   userStyles: [
     {
-      name: "padding-scale",
+      name: STYLE_VARIABLE.POPUP_DELAY,
+      value: 250,
+    },
+    {
+      name: STYLE_VARIABLE.POPUP_DURATION,
+      value: 150,
+    },
+    {
+      name: STYLE_VARIABLE.PADDING_SCALE,
       value: "1.5",
     },
     {
-      name: "image-scale",
+      name: STYLE_VARIABLE.IMAGE_SCALE,
       value: "1.1",
     },
     {
-      name: "font-scale",
+      name: STYLE_VARIABLE.FONT_SCALE,
       value: "1.1",
     },
   ],
