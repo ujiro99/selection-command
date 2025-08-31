@@ -794,9 +794,6 @@
   "review_request_button": {
     "message": "Escrever uma Avaliação"
   },
-  "review_request_close": {
-    "message": "Agora Não"
-  },
   "Option_shortcuts": {
     "message": "Teclas de Atalho"
   },
@@ -958,5 +955,155 @@
   },
   "Option_parentFolder_desc": {
     "message": "Selecionar pasta pai"
+  },
+  "Option_rootFolder": {
+    "message": "Raiz (sem pai)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "Assistente IA"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Digite uma palavra-chave de pesquisa e URL de resultados de pesquisa, e a IA gerará um modelo de URL de pesquisa."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Executar com Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Executando..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Como usar:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Palavra-chave de pesquisa"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "ex: test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "URL da página de resultados de pesquisa"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Digite qualquer palavra-chave de pesquisa"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Copie e cole a URL da página de resultados de pesquisa para essa palavra-chave"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Clique em \"Executar com Gemini\" para que a IA gere um modelo de URL de pesquisa"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Use o modelo gerado no campo URL de pesquisa do comando"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Assistente de URL de Pesquisa"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Por favor, digite uma palavra-chave de pesquisa"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Por favor, digite uma URL válida"
+  },
+  "Option_userVariable_add": {
+    "message": "Adicionar variável"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Máximo de $max$ variáveis permitidas",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "Nome da variável"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nome da variável já existe"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nome da variável é obrigatório"
+  },
+  "Option_userVariable_value": {
+    "message": "Valor"
+  },
+  "Option_userVariables": {
+    "message": "Variáveis do Usuário"
+  },
+  "Option_userVariables_desc": {
+    "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
+  },
+  "Option_commandType": {
+    "message": "Tipo de Comando"
+  },
+  "Option_commandType_on_edit": {
+    "message": "Uma vez salvo, o tipo de comando não pode ser alterado"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Enviar solicitação para API e exibir resultados"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Abrir texto selecionado em aba em segundo plano"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Aba em Segundo Plano"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Copiar texto selecionado para a área de transferência"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Copiar Texto"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Obter informações de estilo do texto selecionado"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Obter Estilos"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Abrir links selecionados em popup"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Popup de Links"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Gravar e reproduzir operações do navegador"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Ação de Página"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Abrir texto selecionado em janela popup"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Popup"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Abrir texto selecionado em nova aba"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "Nova Aba"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Abrir texto selecionado em nova janela"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "Nova Janela"
+  },
+  "review_request_later": {
+    "message": "Mais tarde"
   }
 }

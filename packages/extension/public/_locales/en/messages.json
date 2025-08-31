@@ -839,9 +839,6 @@
   "review_request_button": {
     "message": "Write a Review"
   },
-  "review_request_close": {
-    "message": "Not Now"
-  },
   "Option_shortcuts": {
     "message": "Shortcut Keys"
   },
@@ -1012,5 +1009,68 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Please enter a valid URL"
+  },
+  "Option_commandType": {
+    "message": "Command Type"
+  },
+  "Option_commandType_on_edit": {
+    "message": "Once saved, the command type cannot be changed"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Send request to API and display results"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Open selected text in background tab"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Background Tab"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Copy selected text to clipboard"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Copy Text"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Get style information of selected text"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Get Styles"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Open selected links in popup"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Link Popup"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Record and replay browser operations"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Page Action"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Open selected text in popup window"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Popup"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Open selected text in new tab"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "New Tab"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Open selected text in new window"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "New Window"
+  },
+  "review_request_later": {
+    "message": "Later"
   }
 }

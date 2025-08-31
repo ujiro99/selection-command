@@ -794,9 +794,6 @@
   "review_request_button": {
     "message": "写评论"
   },
-  "review_request_close": {
-    "message": "稍后"
-  },
   "Option_shortcuts": {
     "message": "快捷键"
   },
@@ -955,5 +952,155 @@
   },
   "Option_parentFolder_desc": {
     "message": "选择父文件夹"
+  },
+  "Option_rootFolder": {
+    "message": "根目录（无父级）"
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI 助手"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "输入搜索关键词和搜索结果 URL，AI 将生成搜索 URL 模板。"
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "使用 Gemini 执行"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "正在执行..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "使用方法："
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "搜索关键词"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "例：test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "搜索结果页面 URL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "输入任意搜索关键词"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "复制并粘贴该关键词搜索结果页面的 URL"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "点击\"使用 Gemini 执行\"让 AI 生成搜索 URL 模板"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "在命令的搜索 URL 字段中使用生成的模板"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "搜索 URL 助手"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "请输入搜索关键词"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "请输入有效的 URL"
+  },
+  "Option_userVariable_add": {
+    "message": "添加变量"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "最多允许 $max$ 个变量",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "变量名"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "变量名已存在"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
+  },
+  "Option_userVariable_name_required": {
+    "message": "变量名是必需的"
+  },
+  "Option_userVariable_value": {
+    "message": "值"
+  },
+  "Option_userVariables": {
+    "message": "用户变量"
+  },
+  "Option_userVariables_desc": {
+    "message": "为输入字段定义自定义变量（最多 5 个）"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
+  },
+  "Option_commandType": {
+    "message": "命令类型"
+  },
+  "Option_commandType_on_edit": {
+    "message": "一旦保存，命令类型就无法更改"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "向 API 发送请求并显示结果"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "在后台标签页中打开选中的文本"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "后台标签页"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "将选中的文本复制到剪贴板"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "复制文本"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "获取选中文本的样式信息"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "获取样式"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "在弹窗中打开选中的链接"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "链接弹窗"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "录制和回放浏览器操作"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "页面操作"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "在弹窗窗口中打开选中的文本"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "弹窗"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "在新标签页中打开选中的文本"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "新标签页"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "在新窗口中打开选中的文本"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "新窗口"
+  },
+  "review_request_later": {
+    "message": "稍后"
   }
 }

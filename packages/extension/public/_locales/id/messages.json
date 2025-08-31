@@ -794,9 +794,6 @@
   "review_request_button": {
     "message": "Tulis Ulasan"
   },
-  "review_request_close": {
-    "message": "Tidak Sekarang"
-  },
   "Option_shortcuts": {
     "message": "Tombol Pintas"
   },
@@ -906,39 +903,6 @@
     "message": "Tampilkan tab dan aktifkan.<wbr>Tampilkan di sebelah kanan tab saat ini."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "Variabel Pengguna"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "Tentukan variabel kustom untuk digunakan dalam Page Actions Anda. Variabel ini dapat digunakan dalam field input dengan {{namaVariabel}}."
-    },
-    "Option_userVariable_name": {
-      "message": "Nama"
-    },
-    "Option_userVariable_value": {
-      "message": "Nilai"
-    },
-    "Option_userVariable_add": {
-      "message": "Tambah Variabel"
-    },
-    "Option_userVariable_name_required": {
-      "message": "Nama variabel diperlukan"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "Nama harus dimulai dengan huruf dan hanya boleh berisi huruf, angka, dan underscore"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "Nama variabel sudah ada"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "Maksimal $max$ variabel diizinkan",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
     "message": "Buka tab di latar belakang.<wbr>Tampilkan di sebelah kanan tab saat ini."
   },
   "Option_title_desc": {
@@ -958,5 +922,155 @@
   },
   "Option_parentFolder_desc": {
     "message": "Pilih folder induk"
+  },
+  "Option_rootFolder": {
+    "message": "Root (tidak ada induk)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "Asisten AI"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Masukkan kata kunci pencarian dan URL hasil pencarian, dan AI akan menghasilkan template URL pencarian."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Jalankan dengan Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Menjalankan..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Cara penggunaan:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Kata kunci pencarian"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "contoh: test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "URL halaman hasil pencarian"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Masukkan kata kunci pencarian apa pun"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Salin & tempel URL halaman hasil pencarian untuk kata kunci tersebut"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Klik \"Jalankan dengan Gemini\" untuk membuat AI menghasilkan template URL pencarian"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Gunakan template yang dihasilkan di bidang URL pencarian perintah"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Asisten URL Pencarian"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Silakan masukkan kata kunci pencarian"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Silakan masukkan URL yang valid"
+  },
+  "Option_userVariable_add": {
+    "message": "Tambah variabel"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maksimal $max$ variabel diizinkan",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "Nama variabel"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nama variabel sudah ada"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nama variabel harus dimulai dengan huruf dan hanya berisi huruf, angka, dan garis bawah"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nama variabel diperlukan"
+  },
+  "Option_userVariable_value": {
+    "message": "Nilai"
+  },
+  "Option_userVariables": {
+    "message": "Variabel Pengguna"
+  },
+  "Option_userVariables_desc": {
+    "message": "Tentukan variabel kustom untuk field input (maks 5)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Nama variabel harus dimulai dengan huruf dan hanya berisi huruf, angka, dan garis bawah"
+  },
+  "Option_commandType": {
+    "message": "Jenis Perintah"
+  },
+  "Option_commandType_on_edit": {
+    "message": "Setelah disimpan, jenis perintah tidak dapat diubah"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Kirim permintaan ke API dan tampilkan hasilnya"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Buka teks yang dipilih di tab latar belakang"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Tab Latar Belakang"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Salin teks yang dipilih ke clipboard"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Salin Teks"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Dapatkan informasi gaya dari teks yang dipilih"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Dapatkan Gaya"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Buka tautan yang dipilih di popup"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Popup Tautan"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Rekam dan mainkan ulang operasi browser"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Aksi Halaman"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Buka teks yang dipilih di jendela popup"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Popup"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Buka teks yang dipilih di tab baru"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "Tab Baru"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Buka teks yang dipilih di jendela baru"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "Jendela Baru"
+  },
+  "review_request_later": {
+    "message": "Nanti"
   }
 }

@@ -794,9 +794,6 @@
   "review_request_button": {
     "message": "Tulis Ulasan"
   },
-  "review_request_close": {
-    "message": "Bukan Sekarang"
-  },
   "Option_shortcuts": {
     "message": "Kekunci Pintas"
   },
@@ -958,5 +955,155 @@
   },
   "Option_parentFolder_desc": {
     "message": "Pilih folder induk"
+  },
+  "Option_rootFolder": {
+    "message": "Akar (tiada induk)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "Pembantu AI"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Masukkan kata kunci carian dan URL hasil carian, dan AI akan menjana templat URL carian."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Jalankan dengan Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Sedang menjalankan..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Cara penggunaan:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Kata kunci carian"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "cth: test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "URL halaman hasil carian"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Masukkan sebarang kata kunci carian"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Salin & tampal URL halaman hasil carian untuk kata kunci tersebut"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Klik \"Jalankan dengan Gemini\" untuk biarkan AI menjana templat URL carian"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Gunakan templat yang dijana dalam medan URL carian arahan"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Pembantu URL Carian"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Sila masukkan kata kunci carian"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Sila masukkan URL yang sah"
+  },
+  "Option_userVariable_add": {
+    "message": "Tambah pembolehubah"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maksimum $max$ pembolehubah dibenarkan",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "Nama pembolehubah"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nama pembolehubah sudah wujud"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nama pembolehubah diperlukan"
+  },
+  "Option_userVariable_value": {
+    "message": "Nilai"
+  },
+  "Option_userVariables": {
+    "message": "Pembolehubah Pengguna"
+  },
+  "Option_userVariables_desc": {
+    "message": "Takrifkan pembolehubah tersuai untuk medan input (maks 5)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
+  },
+  "Option_commandType": {
+    "message": "Jenis Arahan"
+  },
+  "Option_commandType_on_edit": {
+    "message": "Setelah disimpan, jenis arahan tidak boleh diubah"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Hantar permintaan ke API dan paparkan hasil"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Buka teks terpilih dalam tab latar belakang"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Tab Latar Belakang"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Salin teks terpilih ke papan klip"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Salin Teks"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Dapatkan maklumat gaya teks terpilih"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Dapatkan Gaya"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Buka pautan terpilih dalam popup"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Popup Pautan"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Rakam dan mainkan semula operasi pelayar"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Tindakan Halaman"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Buka teks terpilih dalam tetingkap popup"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Popup"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Buka teks terpilih dalam tab baru"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "Tab Baru"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Buka teks terpilih dalam tetingkap baru"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "Tetingkap Baru"
+  },
+  "review_request_later": {
+    "message": "Kemudian"
   }
 }

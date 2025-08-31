@@ -794,9 +794,6 @@
   "review_request_button": {
     "message": "Bewertung schreiben"
   },
-  "review_request_close": {
-    "message": "Nicht jetzt"
-  },
   "Option_shortcuts": {
     "message": "Tastenkombinationen"
   },
@@ -903,39 +900,6 @@
     "message": "Tab anzeigen und aktivieren.<wbr>Rechts vom aktuellen Tab anzeigen."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "Benutzervariablen"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "Definieren Sie benutzerdefinierte Variablen für die Verwendung in Ihren Page Actions. Diese Variablen können in Eingabefeldern mit {{variableName}} verwendet werden."
-    },
-    "Option_userVariable_name": {
-      "message": "Name"
-    },
-    "Option_userVariable_value": {
-      "message": "Wert"
-    },
-    "Option_userVariable_add": {
-      "message": "Variable hinzufügen"
-    },
-    "Option_userVariable_name_required": {
-      "message": "Variablenname ist erforderlich"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "Name muss mit einem Buchstaben beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "Variablenname bereits vorhanden"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "Maximal $max$ Variablen sind erlaubt",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
   },
   "Option_title_desc": {
@@ -955,5 +919,155 @@
   },
   "Option_parentFolder_desc": {
     "message": "Übergeordneten Ordner auswählen"
+  },
+  "Option_rootFolder": {
+    "message": "Stamm (kein Übergeordnet)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "KI-Assistenz"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Geben Sie ein Suchschlüsselwort und eine Suchergebnis-URL ein, und lassen Sie KI eine Such-URL generieren."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Mit Gemini ausführen"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Wird gestartet..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Anwendung:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Suchschlüsselwort"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "z.B. test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "Suchergebnis-Seiten-URL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Beliebiges Suchschlüsselwort eingeben"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Kopieren und Einfügen der URL der Suchergebnisseite für das Schlüsselwort"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Klicken Sie auf \"Mit Gemini ausführen\", um KI eine Such-URL-Vorlage generieren zu lassen"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Verwenden Sie die generierte Vorlage im Such-URL-Feld des Befehls"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Such-URL-Assistenz"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Bitte geben Sie ein Suchschlüsselwort ein"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Bitte geben Sie eine gültige URL ein"
+  },
+  "Option_userVariable_add": {
+    "message": "Variable hinzufügen"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maximal $max$ Variablen erlaubt",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "Variablenname"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Variablenname bereits vorhanden"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Variablenname muss mit Buchstabe beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Variablenname ist erforderlich"
+  },
+  "Option_userVariable_value": {
+    "message": "Wert"
+  },
+  "Option_userVariables": {
+    "message": "Benutzervariablen"
+  },
+  "Option_userVariables_desc": {
+    "message": "Benutzerdefinierte Variablen für Eingabefelder definieren (max. 5)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Variablenname muss mit einem Buchstaben beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
+  },
+  "Option_commandType": {
+    "message": "Befehlstyp"
+  },
+  "Option_commandType_on_edit": {
+    "message": "Einmal gespeichert, kann der Befehlstyp nicht mehr geändert werden"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Anfrage an API senden und Ergebnisse anzeigen"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Ausgewählten Text im Hintergrundtab öffnen"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Hintergrundtab"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Ausgewählten Text in die Zwischenablage kopieren"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Text kopieren"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Stilinformationen des ausgewählten Texts abrufen"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Stile abrufen"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Ausgewählte Links in Popup öffnen"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Link-Popup"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Browser-Operationen aufzeichnen und wiedergeben"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Seitenaktion"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Ausgewählten Text im Popup-Fenster öffnen"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Popup"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Ausgewählten Text in neuem Tab öffnen"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "Neuer Tab"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Ausgewählten Text in neuem Fenster öffnen"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "Neues Fenster"
+  },
+  "review_request_later": {
+    "message": "Später"
   }
 }

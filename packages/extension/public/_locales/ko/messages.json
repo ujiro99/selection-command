@@ -794,9 +794,6 @@
   "review_request_button": {
     "message": "리뷰 작성"
   },
-  "review_request_close": {
-    "message": "나중에"
-  },
   "Option_shortcuts": {
     "message": "단축키"
   },
@@ -955,5 +952,155 @@
   },
   "Option_parentFolder_desc": {
     "message": "상위 폴더를 선택하세요"
+  },
+  "Option_rootFolder": {
+    "message": "루트 (상위 없음)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI 어시스턴트"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "검색 키워드와 검색 결과 URL을 입력하면 AI가 검색 URL 템플릿을 생성합니다."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Gemini로 실행"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "실행 중..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "사용 법:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "검색 키워드"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "예: test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "검색 결과 페이지 URL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "임의의 검색 키워드 입력"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "해당 키워드의 검색 결과 페이지 URL 복사 & 붙여넣기"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "\"Gemini로 실행\" 클릭하여 AI가 검색 URL 템플릿을 생성하도록 하기"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "명령어의 검색 URL 필드에 생성된 템플릿 사용"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "검색 URL 어시스턴트"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "검색 키워드를 입력하세요"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "유효한 URL을 입력하세요"
+  },
+  "Option_userVariable_add": {
+    "message": "변수 추가"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "최대 $max$개의 변수가 허용됩니다",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "변수 이름"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "변수 이름이 이미 존재합니다"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
+  },
+  "Option_userVariable_name_required": {
+    "message": "변수 이름이 필요합니다"
+  },
+  "Option_userVariable_value": {
+    "message": "값"
+  },
+  "Option_userVariables": {
+    "message": "사용자 변수"
+  },
+  "Option_userVariables_desc": {
+    "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
+  },
+  "Option_commandType": {
+    "message": "명령어 유형"
+  },
+  "Option_commandType_on_edit": {
+    "message": "한 번 저장되면 명령어 유형을 변경할 수 없습니다"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "API에 요청을 보내고 결과를 표시"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "선택된 텍스트를 백그라운드 탭에서 열기"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "백그라운드 탭"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "선택된 텍스트를 클립보드에 복사"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "텍스트 복사"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "선택된 텍스트의 스타일 정보 가져오기"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "스타일 가져오기"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "선택된 링크를 팝업에서 열기"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "링크 팝업"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "브라우저 작업을 녹화하고 재생"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "페이지 액션"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "선택된 텍스트를 팝업 창에서 열기"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "팝업"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "선택된 텍스트를 새 탭에서 열기"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "새 탭"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "선택된 텍스트를 새 창에서 열기"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "새 창"
+  },
+  "review_request_later": {
+    "message": "나중에"
   }
 }
