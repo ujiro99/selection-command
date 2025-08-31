@@ -1148,5 +1148,22 @@
     ],
     "id": "57e42438-c5cc-5ee6-a036-6d228250b1c2",
     "addedAt": "2025-08-18T00:55:07.791Z"
+  },
+  {
+    "id": "73571a59-bd3a-598c-972d-9e25745f76d0",
+    "title": "カーリル",
+    "searchUrl": "https://calil.jp/search?q=%s",
+    "description": "図書館蔵書検索サービス「カーリル」で本を検索します",
+    "iconUrl": "https://calil.jp/favicon.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search",
+      "Library",
+      "Japanese",
+      "Books"
+    ],
+    "addedAt": "2025-08-31T11:22:52.654Z"
   }
 ]

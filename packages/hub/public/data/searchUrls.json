@@ -32,5 +32,6 @@
   "https://www.coupang.com/np/search?component=&q=%s",
   "https://duckduckgo.com/?q=%s&t=&ia=web",
   "https://www.rottentomatoes.com/search?search=%s",
-  "https://store.steampowered.com/search/?term=%s"
+  "https://store.steampowered.com/search/?term=%s",
+  "https://calil.jp/search?q=%s"
 ]

@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 12
+    "count": 13
   },
   {
     "name": "Language",
@@ -21,7 +21,7 @@
   },
   {
     "name": "Japanese",
-    "count": 18
+    "count": 19
   },
   {
     "name": "Design",
@@ -109,6 +109,14 @@
   },
   {
     "name": "Game",
+    "count": 1
+  },
+  {
+    "name": "Library",
+    "count": 1
+  },
+  {
+    "name": "Books",
     "count": 1
   }
 ]
