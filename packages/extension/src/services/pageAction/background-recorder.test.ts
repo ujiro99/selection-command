@@ -121,15 +121,14 @@ describe("background.ts - Recorder Management Operations", () => {
       const mockWindow = { tabs: [{ id: 888 }] }
       global.chrome.windows.create = vi.fn().mockResolvedValue(mockWindow)
       mockStorage.get.mockResolvedValue({})
+      mockStorage.update.mockResolvedValue(true)
 
       openRecorder(mockParam as any, mockSender as any, mockResponse)
       await vi.runAllTimersAsync()
 
-      expect(mockStorage.set).toHaveBeenCalledWith(
+      expect(mockStorage.update).toHaveBeenCalledWith(
         "pa_context",
-        expect.objectContaining({
-          recordingTabId: 888,
-        }),
+        expect.any(Function),
       )
     })
 
@@ -230,7 +229,7 @@ describe("background.ts - Recorder Management Operations", () => {
       const mockTab = { id: 888 }
       global.chrome.tabs.create = vi.fn().mockResolvedValue(mockTab)
       mockStorage.get.mockResolvedValue({})
-      mockStorage.set.mockRejectedValue(new Error("Storage set error"))
+      mockStorage.update.mockRejectedValue(new Error("Storage update error"))
 
       openRecorder(mockParam as any, mockSender as any, mockResponse)
       await vi.runAllTimersAsync()
@@ -293,8 +292,7 @@ describe("background.ts - Recorder Management Operations", () => {
 
     it("BGD-86: Normal case: Recorder tab termination succeeds", async () => {
       const mockResponse = vi.fn()
-      mockStorage.get.mockResolvedValue({ recordingTabId: 123 })
-      mockStorage.set.mockResolvedValue(undefined)
+      mockStorage.update.mockResolvedValue()
       global.chrome.tabs.remove = vi.fn().mockResolvedValue(undefined)
 
       const result = closeRecorder({}, mockSender as any, mockResponse)
@@ -309,23 +307,24 @@ describe("background.ts - Recorder Management Operations", () => {
     it("BGD-87: Normal case: recordingTabId is set to undefined", async () => {
       const mockResponse = vi.fn()
       const mockContext = { recordingTabId: 123 }
-      mockStorage.get.mockResolvedValue(mockContext)
+      mockStorage.update.mockResolvedValue(mockContext)
 
       closeRecorder({}, mockSender as any, mockResponse)
       await vi.runAllTimersAsync()
 
-      expect(mockStorage.set).toHaveBeenCalledWith(
+      expect(mockStorage.update).toHaveBeenCalledWith(
         "pa_context",
-        expect.objectContaining({
-          recordingTabId: undefined,
-        }),
+        expect.any(Function),
       )
+
+      const passedFunction = mockStorage.update.mock.calls[0][1]
+      const result = passedFunction()
+      expect(result).toStrictEqual({ recordingTabId: undefined })
     })
 
     it("BGD-88: Normal case: Tab is removed", async () => {
       const mockResponse = vi.fn()
-      mockStorage.get.mockResolvedValue({ recordingTabId: 456 })
-      mockStorage.set.mockResolvedValue(undefined)
+      mockStorage.update.mockResolvedValue({ recordingTabId: 456 })
       global.chrome.tabs.remove = vi.fn().mockResolvedValue(undefined)
 
       closeRecorder({}, mockSender as any, mockResponse)
@@ -335,10 +334,9 @@ describe("background.ts - Recorder Management Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-89: Error case: When Storage.set error occurs", async () => {
+    it("BGD-89: Error case: When Storage.update error occurs", async () => {
       const mockResponse = vi.fn()
-      mockStorage.get.mockResolvedValue({ recordingTabId: 123 })
-      mockStorage.set.mockRejectedValue(new Error("Storage set error"))
+      mockStorage.update.mockRejectedValue(new Error("Storage set error"))
 
       closeRecorder({}, mockSender as any, mockResponse)
       await vi.runAllTimersAsync()
@@ -430,19 +428,22 @@ describe("background.ts - Recorder Management Operations", () => {
     describe("tabs.onRemoved listener", () => {
       it("BGD-95: Normal case: recordingTabId is reset when recording tab is removed", async () => {
         const mockContext = { recordingTabId: 123 }
-        mockStorage.get.mockResolvedValue(mockContext)
-        mockStorage.set.mockResolvedValue(undefined)
+        mockStorage.update.mockResolvedValue(mockContext)
 
         onTabRemoved(123, { windowId: 1, isWindowClosing: false })
 
         await vi.runAllTimersAsync()
 
-        expect(mockStorage.set).toHaveBeenCalledWith(
+        expect(mockStorage.update).toHaveBeenCalledWith(
           "pa_context",
-          expect.objectContaining({
-            recordingTabId: undefined,
-          }),
+          expect.any(Function),
         )
+
+        const passedFunction = mockStorage.update.mock.calls[0][1]
+        const result = passedFunction()
+        expect(result).toStrictEqual({
+          recordingTabId: undefined,
+        })
       })
 
       it("BGD-96: Boundary: Removal of non-recording tabs is ignored", async () => {

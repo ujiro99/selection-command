@@ -171,6 +171,10 @@ export const BaseStorage = {
   addListener: <T>(key: KEY, cb: ChangedCallback<T>) => {
     changedCallbacks[key] = changedCallbacks[key] ?? []
     changedCallbacks[key].push(cb)
+
+    return () => {
+      BaseStorage.removeListener(key, cb)
+    }
   },
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

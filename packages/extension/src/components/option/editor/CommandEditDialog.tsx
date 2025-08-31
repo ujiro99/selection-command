@@ -345,7 +345,7 @@ const CommandEditDialogInner = ({
   }, [open, setIconUrlSrc])
 
   useEffect(() => {
-    Storage.addListener<PageActionRecordingData>(
+    return Storage.addListener<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
       ({ size, steps }) => {
         if (steps == null) return

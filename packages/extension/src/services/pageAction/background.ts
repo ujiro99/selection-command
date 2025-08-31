@@ -569,13 +569,13 @@ export const stopRunner = (
 }
 
 const setRecordingTabId = async (tabId: number | undefined) => {
-  const context = await Storage.get<PageActionContext>(
+  return await Storage.update<PageActionContext>(
     SESSION_STORAGE_KEY.PA_CONTEXT,
+    (data) => ({
+      ...data,
+      recordingTabId: tabId,
+    }),
   )
-  await Storage.set(SESSION_STORAGE_KEY.PA_CONTEXT, {
-    ...context,
-    recordingTabId: tabId,
-  })
 }
 
 export const openRecorder = (
