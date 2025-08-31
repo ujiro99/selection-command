@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Reemplazar `%s` con el texto seleccionado."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* Se actualiza automáticamente cuando se cambia la URL de búsqueda."
-  },
   "Option_iconUrl": {
     "message": "URL del Icono"
   },
@@ -275,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Pestaña"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Pestaña en segundo plano"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -289,6 +289,60 @@
   },
   "Option_openMode_pageAction": {
     "message": "Acción de Página"
+  },
+  "Option_displayMode": {
+    "message": "Método de Visualización de Ventana"
+  },
+  "Option_commandType_title": {
+    "message": "Seleccionar Tipo de Comando"
+  },
+  "Option_commandType_description": {
+    "message": "Por favor seleccione el tipo de comando que desea crear"
+  },
+  "Option_commandType_search_title": {
+    "message": "Búsqueda"
+  },
+  "Option_commandType_search_desc": {
+    "message": "Buscar el texto seleccionado"
+  },
+  "Option_commandType_pageAction_title": {
+    "message": "Page Action"
+  },
+  "Option_commandType_pageAction_desc": {
+    "message": "Grabar y reproducir operaciones de páginas web"
+  },
+  "Option_commandType_copy_title": {
+    "message": "Copiar Texto"
+  },
+  "Option_commandType_copy_desc": {
+    "message": "Copiar el texto seleccionado al portapapeles"
+  },
+  "Option_commandType_linkPopup_title": {
+    "message": "Emergente de Enlace"
+  },
+  "Option_commandType_linkPopup_desc": {
+    "message": "Abrir enlaces en el texto seleccionado en lote"
+  },
+  "Option_commandType_getTextStyles_title": {
+    "message": "Obtener Estilos"
+  },
+  "Option_commandType_getTextStyles_desc": {
+    "message": "Obtener información de estilo del texto seleccionado"
+  },
+  "Option_commandType_api_title": {
+    "message": "API"
+  },
+  "Option_commandType_api_desc": {
+    "message": "Enviar solicitud fetch a la API"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Lanzadores de Página Web"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "Funciones Individuales"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "Experimental"
   },
   "Option_openMode_previewPopup": {
     "message": "Emergente"
@@ -740,9 +794,6 @@
   "review_request_button": {
     "message": "Escribir una Reseña"
   },
-  "review_request_close": {
-    "message": "Ahora No"
-  },
   "Option_shortcuts": {
     "message": "Teclas de Acceso Rápido"
   },
@@ -838,5 +889,185 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Error al restaurar desde respaldo."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Ventana de interfaz simple.<wbr>Se cierra automáticamente al perder el foco."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Abrir en nueva ventana."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Mostrar pestaña y activarla.<wbr>Mostrar a la derecha de la pestaña actual."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Abrir pestaña en segundo plano.<wbr>Mostrar a la derecha de la pestaña actual."
+  },
+  "Option_title_desc": {
+    "message": "Se muestra como el título del comando."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Ejecutar `fetch api` a la URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Método de visualización de ventana."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Comportamiento al hacer Ctrl + clic en el menú."
+  },
+  "Option_parentFolder": {
+    "message": "Carpeta Padre"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Seleccionar carpeta padre"
+  },
+  "Option_rootFolder": {
+    "message": "Raíz (sin padre)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "Asistente IA"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Ingrese una palabra clave de búsqueda y una URL de resultados de búsqueda, y la IA generará una plantilla de URL de búsqueda."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Ejecutar con Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Ejecutando..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Cómo usar:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Palabra clave de búsqueda"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "ej. test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "URL de página de resultados de búsqueda"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Ingresar cualquier palabra clave de búsqueda"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Copiar y pegar la URL de la página de resultados de búsqueda para esa palabra clave"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Hacer clic en \"Ejecutar con Gemini\" para que la IA genere una plantilla de URL de búsqueda"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Usar la plantilla generada en el campo de URL de búsqueda del comando"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Asistente de URL de Búsqueda"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Por favor ingrese una palabra clave de búsqueda"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Por favor ingrese una URL válida"
+  },
+  "Option_userVariable_add": {
+    "message": "Agregar variable"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Máximo $max$ variables permitidas",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "Nombre de variable"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "El nombre de variable ya existe"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "El nombre de variable debe comenzar con letra y contener solo letras, números y guiones bajos"
+  },
+  "Option_userVariable_name_required": {
+    "message": "El nombre de variable es requerido"
+  },
+  "Option_userVariable_value": {
+    "message": "Valor"
+  },
+  "Option_userVariables": {
+    "message": "Variables de Usuario"
+  },
+  "Option_userVariables_desc": {
+    "message": "Definir variables personalizadas para campos de entrada (máx 5)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "El nombre de variable debe comenzar con una letra y contener solo letras, números y guiones bajos"
+  },
+  "Option_commandType": {
+    "message": "Tipo de Comando"
+  },
+  "Option_commandType_on_edit": {
+    "message": "Una vez guardado, el tipo de comando no se puede cambiar"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Enviar solicitud a API y mostrar resultados"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Abrir texto seleccionado en pestaña en segundo plano"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Pestaña en Segundo Plano"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Copiar texto seleccionado al portapapeles"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Copiar Texto"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Obtener información de estilo del texto seleccionado"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Obtener Estilos"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Abrir enlaces seleccionados en popup"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Popup de Enlaces"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Grabar y reproducir operaciones del navegador"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Acción de Página"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Abrir texto seleccionado en ventana popup"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Popup"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Abrir texto seleccionado en nueva pestaña"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "Nueva Pestaña"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Abrir texto seleccionado en nueva ventana"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "Nueva Ventana"
+  },
+  "review_request_later": {
+    "message": "Luego"
   }
 }

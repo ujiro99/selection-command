@@ -2,7 +2,7 @@ import { Storage } from "@/services/storage"
 import { BgData } from "@/services/backgroundData"
 import { SESSION_STORAGE_KEY } from "@/services/storage/const"
 import { PAGE_ACTION_OPEN_MODE } from "@/const"
-import type { PageActionStep } from "@/types"
+import type { PageActionStep, UserVariable } from "@/types"
 import { isServiceWorker } from "@/lib/utils"
 
 // Constants for connection
@@ -69,6 +69,7 @@ export type RunPageAction = {
   srcUrl: string
   selectedText: string
   clipboardText: string
+  userVariables?: Array<UserVariable>
 }
 
 export namespace ExecPageAction {
@@ -78,6 +79,7 @@ export namespace ExecPageAction {
     clipboardText: string
     step: PageActionStep
     openMode: PAGE_ACTION_OPEN_MODE
+    userVariables?: Array<UserVariable>
   }
   export type Return = {
     result: boolean

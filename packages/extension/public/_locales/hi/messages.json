@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "चयनित टेक्स्ट के साथ `%s` को प्रतिस्थापित करता है।"
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* खोज URL स्वचालित रूप से अपडेट होगा जब संशोधित किया जाएगा।"
-  },
   "Option_iconUrl": {
     "message": "आइकन URL"
   },
@@ -275,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "टैब"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "बैकग्राउंड टैब"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -289,6 +289,60 @@
   },
   "Option_openMode_pageAction": {
     "message": "पेज एक्शन"
+  },
+  "Option_displayMode": {
+    "message": "विंडो प्रदर्शन विधि"
+  },
+  "Option_commandType_title": {
+    "message": "कमांड प्रकार चुनें"
+  },
+  "Option_commandType_description": {
+    "message": "कृपया उस कमांड का प्रकार चुनें जिसे आप बनाना चाहते हैं"
+  },
+  "Option_commandType_search_title": {
+    "message": "खोज"
+  },
+  "Option_commandType_search_desc": {
+    "message": "चयनित टेक्स्ट को खोजें"
+  },
+  "Option_commandType_pageAction_title": {
+    "message": "पेज एक्शन"
+  },
+  "Option_commandType_pageAction_desc": {
+    "message": "वेब पेज ऑपरेशन रिकॉर्ड और रीप्ले करें"
+  },
+  "Option_commandType_copy_title": {
+    "message": "टेक्स्ट कॉपी करें"
+  },
+  "Option_commandType_copy_desc": {
+    "message": "चयनित टेक्स्ट को क्लिपबोर्ड में कॉपी करें"
+  },
+  "Option_commandType_linkPopup_title": {
+    "message": "लिंक पॉपअप"
+  },
+  "Option_commandType_linkPopup_desc": {
+    "message": "चयनित टेक्स्ट में लिंक्स को बल्क में खोलें"
+  },
+  "Option_commandType_getTextStyles_title": {
+    "message": "स्टाइल प्राप्त करें"
+  },
+  "Option_commandType_getTextStyles_desc": {
+    "message": "चयनित टेक्स्ट की स्टाइल जानकारी प्राप्त करें"
+  },
+  "Option_commandType_api_title": {
+    "message": "API"
+  },
+  "Option_commandType_api_desc": {
+    "message": "API को fetch अनुरोध भेजें"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "वेब पेज लॉन्चर्स"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "एकल फ़ंक्शन"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "प्रयोगात्मक"
   },
   "Option_openMode_previewPopup": {
     "message": "पॉपअप"
@@ -740,9 +794,6 @@
   "review_request_button": {
     "message": "समीक्षा लिखें"
   },
-  "review_request_close": {
-    "message": "बाद में"
-  },
   "Option_shortcuts": {
     "message": "शॉर्टकट"
   },
@@ -838,5 +889,185 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "बैकअप से पुनर्स्थापना विफल।"
+  },
+  "Option_openMode_popup_desc": {
+    "message": "सरल UI विंडो।<wbr>फोकस खोने पर स्वचालित रूप से बंद हो जाता है।"
+  },
+  "Option_openMode_window_desc": {
+    "message": "नई विंडो में खोलें।"
+  },
+  "Option_openMode_tab_desc": {
+    "message": "टैब दिखाएँ और सक्रिय करें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "बैकग्राउंड में टैब खोलें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
+  },
+  "Option_title_desc": {
+    "message": "कमांड शीर्षक के रूप में प्रदर्शित होता है।"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "URL पर `fetch api` निष्पादित करें।"
+  },
+  "Option_displayMode_desc": {
+    "message": "विंडो प्रदर्शन विधि।"
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "मेन्यू पर Ctrl + क्लिक करने पर व्यवहार।"
+  },
+  "Option_parentFolder": {
+    "message": "मूल फ़ोल्डर"
+  },
+  "Option_parentFolder_desc": {
+    "message": "मूल फ़ोल्डर चुनें"
+  },
+  "Option_rootFolder": {
+    "message": "मूल (कोई माता-पिता नहीं)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI सहायक"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "खोज कीवर्ड और खोज परिणाम URL दर्ज करें, और AI एक खोज URL टेम्पलेट गेनरेट करेगा।"
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Gemini के साथ चलाएं"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "चला रहा है..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "कैसे उपयोग करें:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "खोज कीवर्ड"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "उदा. test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "खोज परिणाम पेज URL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "कोई भी खोज कीवर्ड दर्ज करें"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "उस कीवर्ड के खोज परिणाम पेज का URL कॉपी और पेस्ट करें"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "\"Gemini के साथ चलाएं\" पर क्लिक करके AI से खोज URL टेम्पलेट गेनरेट कराएं"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "आदेश के खोज URL फ़ील्ड में गेनरेट किे गए टेम्पलेट का उपयोग करें"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "खोज URL सहायक"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "कृपया खोज कीवर्ड दर्ज करें"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "कृपया वैध URL दर्ज करें"
+  },
+  "Option_userVariable_add": {
+    "message": "वेरिएबल जोड़ें"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "अधिकतम $max$ वेरिएबल की अनुमति",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "वेरिएबल नाम"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "वेरिएबल नाम पहले से मौजूद है"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
+  },
+  "Option_userVariable_name_required": {
+    "message": "वेरिएबल नाम आवश्यक है"
+  },
+  "Option_userVariable_value": {
+    "message": "मान"
+  },
+  "Option_userVariables": {
+    "message": "उपयोगकर्ता चर"
+  },
+  "Option_userVariables_desc": {
+    "message": "इनपुट फ़ील्ड के लिए कस्टम वेरिएबल परिभाषित करें (अधिकतम 5)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
+  },
+  "Option_commandType": {
+    "message": "कमांड प्रकार"
+  },
+  "Option_commandType_on_edit": {
+    "message": "एक बार सहेजे जाने पर, कमांड प्रकार बदला नहीं जा सकता"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "API में अनुरोध भेजें और परिणाम दिखाएं"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "चयनित टेक्स्ट को बैकग्राउंड टैब में खोलें"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "बैकग्राउंड टैब"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "चयनित टेक्स्ट को क्लिपबोर्ड में कॉपी करें"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "टेक्स्ट कॉपी करें"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "चयनित टेक्स्ट की शैली जानकारी प्राप्त करें"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "स्टाइल प्राप्त करें"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "चयनित लिंक को पॉपअप में खोलें"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "लिंक पॉपअप"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "ब्राउज़र ऑपरेशन रिकॉर्ड और रीप्ले करें"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "पेज एक्शन"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "चयनित टेक्स्ट को पॉपअप विंडो में खोलें"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "पॉपअप"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "चयनित टेक्स्ट को नए टैब में खोलें"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "नया टैब"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "चयनित टेक्स्ट को नई विंडो में खोलें"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "नई विंडो"
+  },
+  "review_request_later": {
+    "message": "बाद में"
   }
 }

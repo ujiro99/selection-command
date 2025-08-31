@@ -8,17 +8,12 @@ export const Tab = {
   async execute({
     selectionText,
     command,
-    useSecondary,
     useClipboard,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
       return
     }
-
-    const { openMode, openModeSecondary } = command
-    const background =
-      useSecondary && (!openModeSecondary || openMode === openModeSecondary)
 
     Ipc.send<OpenTabProps>(BgCommand.openTab, {
       url: {
@@ -27,7 +22,7 @@ export const Tab = {
         selectionText,
         useClipboard: useClipboard ?? false,
       },
-      active: !background,
+      active: true,
     })
   },
 }

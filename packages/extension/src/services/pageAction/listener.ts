@@ -2,7 +2,13 @@ import getXPath from "get-xpath"
 import { RobulaPlus } from "@/lib/robula-plus"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { PageAction, convReadableKeysToSymbols } from "@/services/pageAction"
-import { isTextNode, isSvgElement, getFocusNode } from "@/services/dom"
+import {
+  isTextNode,
+  isSvgElement,
+  isInput,
+  isTextarea,
+  isEditable,
+} from "@/services/dom"
 import { PAGE_ACTION_EVENT, SelectorType } from "@/const"
 import type { PageActionStep } from "@/types"
 import { isPopup, isEmpty, generateRandomID, truncate } from "@/lib/utils"
@@ -30,18 +36,6 @@ const isTargetKey = (e: KeyboardEvent): boolean => {
   if (["Tab", "Enter"].includes(e.key)) return true
   if (e.ctrlKey || e.metaKey) return true
   return false
-}
-
-const isInput = (e: any): e is HTMLInputElement => {
-  return e instanceof HTMLInputElement
-}
-
-const isTextarea = (e: any): e is HTMLTextAreaElement => {
-  return e instanceof HTMLTextAreaElement
-}
-
-const isEditable = (e: any): boolean => {
-  return e.isContentEditable
 }
 
 const modifierPressed = (e: KeyboardEvent | PageAction.Keyboard): boolean => {
@@ -168,7 +162,6 @@ export const PageActionListener = (() => {
     async click(e: MouseEvent) {
       // Ignore click events that are triggered by mouse down event.
       if (lastMouseDownTarget === e.target && e.type === "click") {
-        console.debug("ignore click", e)
         lastMouseDownTarget = null
         return
       } else {
@@ -274,7 +267,7 @@ export const PageActionListener = (() => {
     },
     async input(e: Event) {
       if (isPopup(e.target as HTMLElement)) return
-      let target = e.target as HTMLElement
+      const target = e.target as HTMLElement
       let value: string | null = null
       if (isInput(target) || isTextarea(target)) {
         value = target.value
@@ -283,7 +276,6 @@ export const PageActionListener = (() => {
       } else if (isTextNode(target)) {
         value = target.nodeValue
       }
-      target = getFocusNode(e) ?? target
 
       // For input state detection
       lastInputTarget = target

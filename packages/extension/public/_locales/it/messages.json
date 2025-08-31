@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Sostituisce `%s` con il testo selezionato."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* L'URL di ricerca verrà aggiornato automaticamente quando modificato."
-  },
   "Option_iconUrl": {
     "message": "URL icona"
   },
@@ -275,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Scheda"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Scheda in background"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -289,6 +289,60 @@
   },
   "Option_openMode_pageAction": {
     "message": "Azione pagina"
+  },
+  "Option_displayMode": {
+    "message": "Metodo di Visualizzazione Finestra"
+  },
+  "Option_commandType_title": {
+    "message": "Seleziona Tipo di Comando"
+  },
+  "Option_commandType_description": {
+    "message": "Seleziona il tipo di comando che desideri creare"
+  },
+  "Option_commandType_search_title": {
+    "message": "Ricerca"
+  },
+  "Option_commandType_search_desc": {
+    "message": "Cerca il testo selezionato"
+  },
+  "Option_commandType_pageAction_title": {
+    "message": "Azione Pagina"
+  },
+  "Option_commandType_pageAction_desc": {
+    "message": "Registra e riproduci operazioni delle pagine web"
+  },
+  "Option_commandType_copy_title": {
+    "message": "Copia Testo"
+  },
+  "Option_commandType_copy_desc": {
+    "message": "Copia il testo selezionato negli appunti"
+  },
+  "Option_commandType_linkPopup_title": {
+    "message": "Popup Link"
+  },
+  "Option_commandType_linkPopup_desc": {
+    "message": "Apri i link nel testo selezionato in blocco"
+  },
+  "Option_commandType_getTextStyles_title": {
+    "message": "Ottieni Stili"
+  },
+  "Option_commandType_getTextStyles_desc": {
+    "message": "Ottieni informazioni sullo stile del testo selezionato"
+  },
+  "Option_commandType_api_title": {
+    "message": "API"
+  },
+  "Option_commandType_api_desc": {
+    "message": "Invia richiesta fetch all'API"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Lanciatori Pagina Web"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "Funzioni Singole"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "Sperimentale"
   },
   "Option_openMode_previewPopup": {
     "message": "Pop-up"
@@ -740,9 +794,6 @@
   "review_request_button": {
     "message": "Scrivi recensione"
   },
-  "review_request_close": {
-    "message": "Più tardi"
-  },
   "Option_shortcuts": {
     "message": "Scorciatoie"
   },
@@ -838,5 +889,218 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Ripristino da backup fallito."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Finestra interfaccia semplice.<wbr>Si chiude automaticamente perdendo il focus."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Apri in nuova finestra."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Mostra scheda e attivala.<wbr>Mostra a destra della scheda corrente."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "Variabili Utente"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "Definisci variabili personalizzate da utilizzare nelle tue Page Actions. Queste variabili possono essere utilizzate nei campi di input con {{nomeVariabile}}."
+    },
+    "Option_userVariable_name": {
+      "message": "Nome"
+    },
+    "Option_userVariable_value": {
+      "message": "Valore"
+    },
+    "Option_userVariable_add": {
+      "message": "Aggiungi Variabile"
+    },
+    "Option_userVariable_name_required": {
+      "message": "Il nome della variabile è richiesto"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "Il nome deve iniziare con una lettera e può contenere solo lettere, numeri e underscore"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "Il nome della variabile esiste già"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "Sono consentite massimo $max$ variabili",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
+    },
+    "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
+  },
+  "Option_title_desc": {
+    "message": "Visualizzato come titolo del comando."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Eseguire `fetch api` all'URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Metodo di visualizzazione finestra."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Comportamento quando si fa Ctrl + clic sul menu."
+  },
+  "Option_parentFolder": {
+    "message": "Cartella Genitore"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Seleziona cartella genitore"
+  },
+  "Option_rootFolder": {
+    "message": "Radice (nessun genitore)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "Assistente IA"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Inserisci una parola chiave di ricerca e un URL dei risultati di ricerca, e l'IA genererà un modello di URL di ricerca."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Esegui con Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Esecuzione in corso..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Come usare:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Parola chiave di ricerca"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "es. test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "URL della pagina dei risultati di ricerca"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Inserisci qualsiasi parola chiave di ricerca"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Copia e incolla l'URL della pagina dei risultati di ricerca per quella parola chiave"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Fai clic su \"Esegui con Gemini\" per far generare all'IA un modello di URL di ricerca"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Usa il modello generato nel campo URL di ricerca del comando"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Assistente URL di Ricerca"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Inserisci una parola chiave di ricerca"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Inserisci un URL valido"
+  },
+  "Option_userVariable_add": {
+    "message": "Aggiungi variabile"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Massimo $max$ variabili consentite",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "Nome variabile"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Il nome della variabile esiste già"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Il nome della variabile deve iniziare con una lettera e contenere solo lettere, numeri e trattini bassi"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Il nome della variabile è richiesto"
+  },
+  "Option_userVariable_value": {
+    "message": "Valore"
+  },
+  "Option_userVariables": {
+    "message": "Variabili Utente"
+  },
+  "Option_userVariables_desc": {
+    "message": "Definisci variabili personalizzate per i campi di input (max 5)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Il nome della variabile deve iniziare con una lettera e contenere solo lettere, numeri e trattini bassi"
+  },
+  "Option_commandType": {
+    "message": "Tipo di Comando"
+  },
+  "Option_commandType_on_edit": {
+    "message": "Una volta salvato, il tipo di comando non può essere modificato"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Invia richiesta all'API e mostra i risultati"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Apri il testo selezionato in una scheda in background"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Scheda in Background"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Copia il testo selezionato negli appunti"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Copia Testo"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Ottieni informazioni sullo stile del testo selezionato"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Ottieni Stili"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Apri i link selezionati in popup"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Popup Link"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Registra e riproduci operazioni del browser"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Azione Pagina"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Apri il testo selezionato in una finestra popup"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Popup"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Apri il testo selezionato in una nuova scheda"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "Nuova Scheda"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Apri il testo selezionato in una nuova finestra"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "Nuova Finestra"
+  },
+  "review_request_later": {
+    "message": "Dopo"
   }
 }

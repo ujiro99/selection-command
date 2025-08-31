@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "`%s`를 선택한 텍스트로 대체합니다."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* 검색 URL이 변경되면 자동으로 업데이트됩니다."
-  },
   "Option_iconUrl": {
     "message": "아이콘 URL"
   },
@@ -275,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "탭"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "백그라운드 탭"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -289,6 +289,60 @@
   },
   "Option_openMode_pageAction": {
     "message": "페이지 작업"
+  },
+  "Option_displayMode": {
+    "message": "창 표시 방법"
+  },
+  "Option_commandType_title": {
+    "message": "명령 유형 선택"
+  },
+  "Option_commandType_description": {
+    "message": "생성하려는 명령 유형을 선택하세요"
+  },
+  "Option_commandType_search_title": {
+    "message": "검색"
+  },
+  "Option_commandType_search_desc": {
+    "message": "선택한 텍스트를 검색합니다"
+  },
+  "Option_commandType_pageAction_title": {
+    "message": "페이지 작업"
+  },
+  "Option_commandType_pageAction_desc": {
+    "message": "웹 페이지 작업을 기록하고 재생합니다"
+  },
+  "Option_commandType_copy_title": {
+    "message": "텍스트 복사"
+  },
+  "Option_commandType_copy_desc": {
+    "message": "선택한 텍스트를 클립보드에 복사합니다"
+  },
+  "Option_commandType_linkPopup_title": {
+    "message": "링크 팝업"
+  },
+  "Option_commandType_linkPopup_desc": {
+    "message": "선택한 텍스트의 링크를 일괄로 엽니다"
+  },
+  "Option_commandType_getTextStyles_title": {
+    "message": "스타일 가져오기"
+  },
+  "Option_commandType_getTextStyles_desc": {
+    "message": "선택한 텍스트의 스타일 정보를 가져옵니다"
+  },
+  "Option_commandType_api_title": {
+    "message": "API"
+  },
+  "Option_commandType_api_desc": {
+    "message": "API에 fetch 요청을 보냅니다"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "웹 페이지 런처"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "단일 기능"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "실험적"
   },
   "Option_openMode_previewPopup": {
     "message": "팝업"
@@ -740,9 +794,6 @@
   "review_request_button": {
     "message": "리뷰 작성"
   },
-  "review_request_close": {
-    "message": "나중에"
-  },
   "Option_shortcuts": {
     "message": "단축키"
   },
@@ -838,5 +889,218 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "백업에서 복원하지 못했습니다."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "간단한 UI 창.<wbr>포커스를 잃으면 자동으로 닫힙니다."
+  },
+  "Option_openMode_window_desc": {
+    "message": "새 창에서 열기."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "탭을 표시하고 활성화.<wbr>현재 탭 오른쪽에 표시합니다."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "사용자 변수"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "페이지 액션에서 사용할 사용자 정의 변수를 정의합니다. 이러한 변수는 입력 필드에서 {{변수명}} 형태로 사용할 수 있습니다."
+    },
+    "Option_userVariable_name": {
+      "message": "이름"
+    },
+    "Option_userVariable_value": {
+      "message": "값"
+    },
+    "Option_userVariable_add": {
+      "message": "변수 추가"
+    },
+    "Option_userVariable_name_required": {
+      "message": "변수 이름이 필요합니다"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "이름은 문자로 시작해야 하며 문자, 숫자, 언더스코어만 포함할 수 있습니다"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "변수 이름이 이미 존재합니다"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "최대 $max$개의 변수가 허용됩니다",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
+    },
+    "message": "백그라운드에서 탭 열기.<wbr>현재 탭 오른쪽에 표시합니다."
+  },
+  "Option_title_desc": {
+    "message": "명령 제목으로 표시됩니다."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "URL에 `fetch api`를 실행합니다."
+  },
+  "Option_displayMode_desc": {
+    "message": "창 표시 방법."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "메뉴를 Ctrl + 클릭했을 때의 동작입니다."
+  },
+  "Option_parentFolder": {
+    "message": "상위 폴더"
+  },
+  "Option_parentFolder_desc": {
+    "message": "상위 폴더를 선택하세요"
+  },
+  "Option_rootFolder": {
+    "message": "루트 (상위 없음)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI 어시스턴트"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "검색 키워드와 검색 결과 URL을 입력하면 AI가 검색 URL 템플릿을 생성합니다."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Gemini로 실행"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "실행 중..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "사용 법:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "검색 키워드"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "예: test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "검색 결과 페이지 URL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "임의의 검색 키워드 입력"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "해당 키워드의 검색 결과 페이지 URL 복사 & 붙여넣기"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "\"Gemini로 실행\" 클릭하여 AI가 검색 URL 템플릿을 생성하도록 하기"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "명령어의 검색 URL 필드에 생성된 템플릿 사용"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "검색 URL 어시스턴트"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "검색 키워드를 입력하세요"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "유효한 URL을 입력하세요"
+  },
+  "Option_userVariable_add": {
+    "message": "변수 추가"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "최대 $max$개의 변수가 허용됩니다",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "변수 이름"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "변수 이름이 이미 존재합니다"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
+  },
+  "Option_userVariable_name_required": {
+    "message": "변수 이름이 필요합니다"
+  },
+  "Option_userVariable_value": {
+    "message": "값"
+  },
+  "Option_userVariables": {
+    "message": "사용자 변수"
+  },
+  "Option_userVariables_desc": {
+    "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
+  },
+  "Option_commandType": {
+    "message": "명령어 유형"
+  },
+  "Option_commandType_on_edit": {
+    "message": "한 번 저장되면 명령어 유형을 변경할 수 없습니다"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "API에 요청을 보내고 결과를 표시"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "선택된 텍스트를 백그라운드 탭에서 열기"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "백그라운드 탭"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "선택된 텍스트를 클립보드에 복사"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "텍스트 복사"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "선택된 텍스트의 스타일 정보 가져오기"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "스타일 가져오기"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "선택된 링크를 팝업에서 열기"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "링크 팝업"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "브라우저 작업을 녹화하고 재생"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "페이지 액션"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "선택된 텍스트를 팝업 창에서 열기"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "팝업"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "선택된 텍스트를 새 탭에서 열기"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "새 탭"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "선택된 텍스트를 새 창에서 열기"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "새 창"
+  },
+  "review_request_later": {
+    "message": "나중에"
   }
 }

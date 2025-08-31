@@ -227,6 +227,9 @@
   "Option_title": {
     "message": "タイトル"
   },
+  "Option_title_desc": {
+    "message": "コマンドのタイトルとして表示されます。"
+  },
   "Option_searchUrl": {
     "message": "検索URL"
   },
@@ -266,17 +269,23 @@
   "Option_openMode": {
     "message": "Open Mode"
   },
+  "Option_displayMode": {
+    "message": "ウィンドウ表示方法"
+  },
+  "Option_displayMode_desc": {
+    "message": "ウィンドウの表示方法です。"
+  },
   "Option_openMode_popup": {
-    "message": "Popup"
+    "message": "ポップアップ"
   },
   "Option_openMode_window": {
-    "message": "Window"
+    "message": "ウィンドウ"
   },
   "Option_openMode_tab": {
-    "message": "Tab"
+    "message": "タブ"
   },
   "Option_openMode_backgroundTab": {
-    "message": "Background Tab"
+    "message": "バックグラウンドタブ"
   },
   "Option_openMode_api": {
     "message": "API"
@@ -291,7 +300,130 @@
     "message": "テキストのスタイル取得"
   },
   "Option_openMode_pageAction": {
-    "message": "Page Action"
+    "message": "ページアクション"
+  },
+  "Option_openMode_popup_desc": {
+    "message": "シンプルなUIのウィンドウ。<wbr>フォーカスを外すと自動で消える。"
+  },
+  "Option_openMode_window_desc": {
+    "message": "新しいウィンドウを開く。"
+  },
+  "Option_openMode_tab_desc": {
+    "message": "タブを表示してアクティブにする。<wbr>表示中タブの右側に表示する。"
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
+  },
+  "Option_commandType_title": {
+    "message": "コマンドの種類を選ぶ"
+  },
+  "Option_commandType_description": {
+    "message": "作成するコマンドの種類を選択してください"
+  },
+  "Option_commandType": {
+    "message": "コマンドの種類"
+  },
+  "Option_commandType_search_title": {
+    "message": "検索"
+  },
+  "Option_commandType_search_desc": {
+    "message": "選択したテキストを検索します"
+  },
+  "Option_commandType_pageAction_title": {
+    "message": "ページアクション"
+  },
+  "Option_commandType_pageAction_desc": {
+    "message": "Webページ上の操作を記録・再生します"
+  },
+  "Option_commandType_copy_title": {
+    "message": "テキストコピー"
+  },
+  "Option_commandType_copy_desc": {
+    "message": "選択テキストをクリップボードにコピーします"
+  },
+  "Option_commandType_linkPopup_title": {
+    "message": "リンクポップアップ"
+  },
+  "Option_commandType_linkPopup_desc": {
+    "message": "選択したテキスト内のリンクを一括で開きます"
+  },
+  "Option_commandType_getTextStyles_title": {
+    "message": "スタイル取得"
+  },
+  "Option_commandType_getTextStyles_desc": {
+    "message": "選択テキストのスタイル情報を取得します"
+  },
+  "Option_commandType_api_title": {
+    "message": "API"
+  },
+  "Option_commandType_api_desc": {
+    "message": "APIにfetchリクエストを送信します"
+  },
+  "Option_commandType_on_edit": {
+    "message": "一度保存したコマンドの種類は変更できません"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Webページ起動"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "単機能"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "実験的"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "ポップアップ"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "選択テキストをポップアップウィンドウで開きます"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "新しいウィンドウ"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "選択テキストを新しいウィンドウで開きます"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "新しいタブ"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "選択テキストを新しいタブで開きます"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "バックグラウンドタブ"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "選択テキストをバックグラウンドタブで開きます"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "APIにリクエストを送信して結果を表示します"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "ページアクション"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "ブラウザ操作を記録・再生します"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "リンクポップアップ"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "選択されたリンクをポップアップで開きます"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "テキストコピー"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "選択テキストをクリップボードにコピーします"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "スタイル取得"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "選択テキストのスタイル情報を取得します"
   },
   "Option_openMode_previewPopup": {
     "message": "Popup"
@@ -301,6 +433,9 @@
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "メニューをCtrl + クリックしたときの動作です。"
   },
   "Option_parentFolderId": {
     "message": "フォルダ"
@@ -358,6 +493,39 @@
   },
   "Option_pageAction_delay": {
     "message": "遅延時間"
+  },
+  "Option_userVariables": {
+    "message": "ユーザー変数"
+  },
+  "Option_userVariables_desc": {
+    "message": "入力時に使用できる独自の変数を定義します（最大5個）"
+  },
+  "Option_userVariable_name": {
+    "message": "変数名"
+  },
+  "Option_userVariable_value": {
+    "message": "値"
+  },
+  "Option_userVariable_add": {
+    "message": "変数を追加"
+  },
+  "Option_userVariable_name_required": {
+    "message": "変数名は必須です"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "変数名は英字で始まり、英数字とアンダースコアのみ使用できます"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "変数名が重複しています"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "最大$max$個まで追加できます",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
@@ -581,6 +749,9 @@
       }
     }
   },
+  "Option_zod_invalid_variable_name": {
+    "message": "変数名は文字で始まり、文字、数字、アンダースコアのみを含む必要があります"
+  },
   "Option_zod_string_min": {
     "message": "長さ $key$ 文字以上で入力してください。",
     "placeholders": {
@@ -660,10 +831,10 @@
     "message": "リセット"
   },
   "help_pageAction_title": {
-    "message": "Page Actionの使い方"
+    "message": "ページアクションの使い方"
   },
   "help_pageAction_description": {
-    "message": "Page Actionは、<b>ユーザー操作を記録・再現</b>する機能です。"
+    "message": "ページアクションは、<b>ユーザー操作を記録・再現</b>する機能です。"
   },
   "help_pageAction_example": {
     "message": "例として、以下のような使い方ができます。"
@@ -672,7 +843,7 @@
     "message": "<li>決まったプロンプト＋選択文字列をLLMへ入力</li><li>URLをテキスト欄へ入力して、ボタンを押す</li><li>などなど...</li>"
   },
   "help_pageAction_record": {
-    "message": "Page Actionは、<b>RECボタンから</b>記録できます。"
+    "message": "ページアクションは、<b>RECボタンから</b>記録できます。"
   },
   "help_pageAction_record_procedure": {
     "message": "【作成手順】"
@@ -681,7 +852,7 @@
     "message": "<li>操作したいページのURLを入力し、RECボタンを押して記録を開始します。</li><li>ウィンドウが開いたら記録したい操作を行います。</li><li>完了したら、記録メニューのCompleteボタンを押します。</li>"
   },
   "help_pageAction_record_detail": {
-    "message": "Page Actionでは<b>以下の操作</b>を記録できます。"
+    "message": "ページアクションでは<b>以下の操作</b>を記録できます。"
   },
   "help_pageAction_action": {
     "message": "操作"
@@ -729,7 +900,7 @@
     "message": "これらの操作を、最大10ステップまで記録できます"
   },
   "help_pageAction_edit": {
-    "message": "<b>Page Actionの編集</b>について"
+    "message": "<b>ページアクションの編集</b>について"
   },
   "help_pageAction_edit_desc": {
     "message": "<li>テキスト入力の編集とステップの削除は、設定画面からも実行できます。</li><li>既存のPageActionをコピーし、一部だけ編集したコマンドを簡単に作成できます。</li>"
@@ -738,7 +909,7 @@
     "message": "<b>コマンドの共有</b>について"
   },
   "help_pageAction_share_desc": {
-    "message": "Selection Command Hubから、<b>Page Actionコマンドの共有と取得</b>ができます。 "
+    "message": "Selection Command Hubから、<b>ページアクションコマンドの共有と取得</b>ができます。 "
   },
   "review_request_title": {
     "message": "Selection Commandを使っていただき、ありがとうございます！"
@@ -847,5 +1018,53 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "バックアップからの復元に失敗しました。"
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI アシスト"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "検索URL アシスト"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "検索キーワードと検索結果URLを入力して、実行ボタンを押してください。\nAIが検索URLを生成します。"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "検索キーワード"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "例: test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "検索結果ページのURL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "使用方法："
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "任意の検索キーワードを入力"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "そのキーワードで実際に検索。結果ページのURLをコピー&ペースト"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "「Geminiで実行」をクリック → AIが検索URLを生成"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "生成された検索URLを、コマンドの検索URL欄にコピー&ペースト"
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Geminiで実行"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "起動中..."
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "検索キーワードを入力してください"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "有効なURLを入力してください"
   }
 }

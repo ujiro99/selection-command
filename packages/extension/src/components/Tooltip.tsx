@@ -49,7 +49,7 @@ export function Tooltip(props: PopupProps) {
       setShouldRender(false)
     }
     return () => clearTimeout(timer)
-  }, [isOpen])
+  }, [isOpen, delay])
 
   if (props.disabled || !elm) {
     return null

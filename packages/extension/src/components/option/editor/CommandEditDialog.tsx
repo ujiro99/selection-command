@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -27,6 +27,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormDescription,
 } from "@/components/ui/form"
 
 import {
@@ -42,8 +43,14 @@ import { InputField } from "@/components/option/field/InputField"
 import { IconField } from "@/components/option/field/IconField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { TextareaField } from "@/components/option/field/TextareaField"
+import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { PageActionSection } from "@/components/option/editor/PageActionSection"
 import { PageActionHelp } from "@/components/help/PageActionHelp"
+import { CommandType } from "@/components/option/editor/CommandType"
+import { SearchUrlAssistButton } from "@/components/option/editor/SearchUrlAssistButton"
+import { SearchUrlAssistDialog } from "@/components/option/editor/SearchUrlAssistDialog"
+import { MenuImage } from "@/components/menu/MenuImage"
+import { Tooltip } from "@/components/Tooltip"
 import { PageActionStep } from "@/types/schema"
 
 import {
@@ -55,6 +62,8 @@ import {
   PAGE_ACTION_OPEN_MODE,
   ICON_NOT_FOUND,
   SCREEN,
+  COMMAND_TYPE,
+  COMMAND_TYPE_OPEN_MODES_MAP,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -67,7 +76,7 @@ import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
-import { isEmpty, e2a, cn } from "@/lib/utils"
+import { isEmpty, e2a, cn, parseGeminiUrl } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -189,24 +198,14 @@ type CommandEditDialogProps = {
   onSubmit: (command: SelectionCommand) => void
   folders: CommandFolder[]
   command?: SelectionCommand
+  selectedType: COMMAND_TYPE
+  onTypeClick: () => void
 }
 
-export const CommandEditDialog = ({
-  open,
-  onOpenChange,
-  onSubmit,
-  folders,
-  command,
-}: CommandEditDialogProps) => {
+export const CommandEditDialog = (param: CommandEditDialogProps) => {
   return (
     <FaviconContextProvider>
-      <CommandEditDialogInner
-        open={open}
-        onOpenChange={onOpenChange}
-        onSubmit={onSubmit}
-        folders={folders}
-        command={command}
-      />
+      <CommandEditDialogInner {...param} />
     </FaviconContextProvider>
   )
 }
@@ -217,8 +216,12 @@ const CommandEditDialogInner = ({
   onSubmit,
   folders,
   command,
+  selectedType,
+  onTypeClick,
 }: CommandEditDialogProps) => {
   const [initialized, setInitialized] = useState(false)
+  const [assistDialogOpen, setAssistDialogOpen] = useState(false)
+  const commandTypeRef = useRef(null)
 
   const form = useForm<CommandSchemaType>({
     resolver: zodResolver(commandSchema),
@@ -229,6 +232,9 @@ const CommandEditDialogInner = ({
   const { setIconUrlSrc, subscribe } = useFavicon()
 
   const isUpdate = command != null
+
+  // Determine if open mode selection should be shown
+  const shouldShowOpenModeSelect = selectedType === COMMAND_TYPE.SEARCH
 
   const variableArray = useFieldArray({
     name: "variables",
@@ -289,17 +295,29 @@ const CommandEditDialogInner = ({
   }
 
   useEffect(() => {
+    // Get default open mode for the selected type
+    const getDefaultOpenMode = (type: COMMAND_TYPE) => {
+      const modes = COMMAND_TYPE_OPEN_MODES_MAP[type]
+      return modes?.[0] ?? DEFAULT_MODE
+    }
+
     if (command != null) {
+      // edit mode
       if (isEmpty(command.parentFolderId)) {
         command.parentFolderId = ROOT_FOLDER
       }
       reset((command as any) ?? InitialValues)
     } else {
-      setTimeout(() => {
-        reset(InitialValues)
-      }, 100)
+      // new mode
+      const initialValues = selectedType
+        ? getDefault(getDefaultOpenMode(selectedType), {
+            id: "",
+            title: "",
+          } as CommandSchemaType)
+        : InitialValues
+      reset(initialValues)
     }
-  }, [command, reset])
+  }, [command, selectedType, reset])
 
   useEffect(() => {
     if (openMode === preOpenMode) return
@@ -327,7 +345,7 @@ const CommandEditDialogInner = ({
   }, [open, setIconUrlSrc])
 
   useEffect(() => {
-    Storage.addListener<PageActionRecordingData>(
+    return Storage.addListener<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
       ({ size, steps }) => {
         if (steps == null) return
@@ -371,80 +389,147 @@ const CommandEditDialogInner = ({
           </DialogHeader>
           <DialogDescription>{t("Command_input")}</DialogDescription>
           <Form {...form}>
-            <div id="CommandEditForm" className="space-y-2">
-              <FormField
-                control={form.control}
-                name="id"
-                render={({ field }) => (
-                  <FormItem className="hidden">
-                    <FormControl>
-                      <input
-                        {...register("id", { value: field.value })}
-                        type="hidden"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+            <div id="CommandEditForm" className="space-y-3">
+              <FormItem className="flex items-start gap-1">
+                <div className="w-2/6">
+                  <FormLabel>{t("commandType")}</FormLabel>
+                </div>
+                <div className="w-4/6 relative">
+                  <CommandType
+                    type={selectedType}
+                    onClick={onTypeClick}
+                    compact={true}
+                    disabled={isUpdate}
+                    ref={commandTypeRef}
+                  />
+                  {isUpdate && (
+                    <Tooltip
+                      text={t("commandType_on_edit")}
+                      positionElm={commandTypeRef.current}
+                    />
+                  )}
+                </div>
+              </FormItem>
 
               <InputField
                 control={form.control}
                 name="title"
                 formLabel={t("title")}
+                description={t("title_desc")}
                 inputProps={{
                   type: "string",
                   ...register("title", {}),
                 }}
               />
 
-              <SelectField
-                control={form.control}
-                name="openMode"
-                formLabel="Open Mode"
-                options={e2a(OPEN_MODE)
-                  .filter(
-                    (mode) =>
-                      mode !== OPEN_MODE.ADD_PAGE_RULE &&
-                      mode !== OPEN_MODE.OPTION,
-                  )
-                  .map((mode) => ({
-                    name: t(`openMode_${mode}`),
-                    value: mode,
-                  }))}
-              />
+              {(SEARCH_OPEN_MODE.includes(openMode as any) ||
+                openMode === OPEN_MODE.API) && (
+                <FormField
+                  control={form.control}
+                  name="searchUrl"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-1">
+                      <div className="w-2/6">
+                        <FormLabel>{t("searchUrl")}</FormLabel>
+                        <FormDescription>
+                          {openMode === OPEN_MODE.API
+                            ? t("searchUrl_desc_api")
+                            : t("searchUrl_desc")}
+                        </FormDescription>
+                      </div>
+                      <div className="w-4/6 relative">
+                        <div className="flex-1 relative">
+                          {!isEmpty(getValues("iconUrl")) && (
+                            <MenuImage
+                              className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+                              src={getValues("iconUrl")}
+                              alt="Preview of image"
+                            />
+                          )}
+                          <FormControl>
+                            <Input
+                              className={cn(
+                                !isEmpty(getValues("iconUrl")) && "pl-10",
+                              )}
+                              inputClassName={cn(
+                                !isEmpty(searchUrl) && "pr-11",
+                              )}
+                              type="string"
+                              {...field}
+                              {...register("searchUrl", {})}
+                              onBlur={(e) => {
+                                const value = e.target.value
+                                const parsedUrl = parseGeminiUrl(value)
+                                if (parsedUrl !== value) {
+                                  setValue("searchUrl", parsedUrl)
+                                }
+                                field.onBlur()
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                        {SEARCH_OPEN_MODE.includes(openMode as any) && (
+                          <SearchUrlAssistButton
+                            onClick={() => {
+                              setAssistDialogOpen(true)
+                              sendEvent(
+                                ANALYTICS_EVENTS.OPEN_DIALOG,
+                                {
+                                  event_label: "search_url_assist",
+                                },
+                                SCREEN.OPTION,
+                              )
+                            }}
+                            disabled={false}
+                            className="absolute top-1.5 right-1.5"
+                            compact={!isEmpty(searchUrl)}
+                          />
+                        )}
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              {selectedType === COMMAND_TYPE.SEARCH ? (
+                <OpenModeToggleField
+                  control={form.control}
+                  name="openMode"
+                  formLabel={t("displayMode")}
+                  type="search"
+                  description={t("displayMode_desc")}
+                />
+              ) : (
+                shouldShowOpenModeSelect && (
+                  <SelectField
+                    control={form.control}
+                    name="openMode"
+                    formLabel="Open Mode"
+                    options={e2a(OPEN_MODE)
+                      .filter(
+                        (mode) =>
+                          mode !== OPEN_MODE.ADD_PAGE_RULE &&
+                          mode !== OPEN_MODE.OPTION,
+                      )
+                      .map((mode) => ({
+                        name: t(`openMode_${mode}`),
+                        value: mode,
+                      }))}
+                  />
+                )
+              )}
 
               {SEARCH_OPEN_MODE.includes(openMode as any) && (
                 <SelectField
                   control={form.control}
                   name="openModeSecondary"
                   formLabel={t("openModeSecondary")}
+                  description={t("openModeSecondary_desc")}
                   options={SEARCH_OPEN_MODE.map((mode) => ({
                     name: t(`openMode_${mode}`),
                     value: mode,
                   }))}
-                />
-              )}
-
-              {(SEARCH_OPEN_MODE.includes(openMode as any) ||
-                openMode === OPEN_MODE.API) && (
-                <InputField
-                  control={form.control}
-                  name="searchUrl"
-                  formLabel={t("searchUrl")}
-                  inputProps={{
-                    type: "string",
-                    ...register("searchUrl", {}),
-                  }}
-                  description={
-                    openMode === OPEN_MODE.API
-                      ? t("searchUrl_desc_api")
-                      : t("searchUrl_desc")
-                  }
-                  previewUrl={
-                    !isEmpty(getValues("searchUrl"))
-                      ? getValues("iconUrl")
-                      : undefined
-                  }
                 />
               )}
 
@@ -617,6 +702,21 @@ const CommandEditDialogInner = ({
                       level: calcLevel(folder, folders),
                     }))}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="id"
+                    render={({ field }) => (
+                      <FormItem className="hidden">
+                        <FormControl>
+                          <input
+                            {...register("id", { value: field.value })}
+                            type="hidden"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                 </CollapsibleContent>
               </Collapsible>
             </div>
@@ -658,6 +758,11 @@ const CommandEditDialogInner = ({
           </DialogFooter>
         </DialogContent>
       </DialogPortal>
+
+      <SearchUrlAssistDialog
+        open={assistDialogOpen}
+        onOpenChange={setAssistDialogOpen}
+      />
     </Dialog>
   )
 }

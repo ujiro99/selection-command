@@ -5,6 +5,7 @@ import { SelectorType, PAGE_ACTION_EVENT } from "@/const"
 vi.mock("@/services/dom", () => ({
   getElementByXPath: vi.fn(),
   isValidXPath: vi.fn(),
+  inputContentEditable: vi.fn(),
 }))
 
 vi.mock("@/lib/utils", () => ({
@@ -36,12 +37,17 @@ vi.mock("@/const", async () => {
 
 // Import modules after mocking
 import { BackgroundPageActionDispatcher } from "./backgroundDispatcher"
-import { getElementByXPath, isValidXPath } from "@/services/dom"
+import {
+  getElementByXPath,
+  isValidXPath,
+  inputContentEditable,
+} from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 
 // Get references to mocked functions
 const mockGetElementByXPath = getElementByXPath as any
 const mockIsValidXPath = isValidXPath as any
+const mockInputContentEditable = inputContentEditable as any
 const mockSafeInterpolate = safeInterpolate as any
 const mockIsMac = isMac as any
 const mockIsEmpty = isEmpty as any
@@ -876,6 +882,11 @@ describe("backgroundDispatcher", () => {
       const mockElement = mockElements.contentEditableDiv
       mockElement.innerText = "existing"
       mockDocument.querySelector.mockReturnValue(mockElement)
+      mockInputContentEditable.mockImplementation(
+        async (element: any, value: string) => {
+          element.innerText = element.innerText + value
+        },
+      )
 
       const mockRange = {
         selectNodeContents: vi.fn(),
@@ -903,11 +914,56 @@ describe("backgroundDispatcher", () => {
 
       expect(result).toEqual([true])
       expect(mockElement.innerText).toBe("existingtest text")
-      expect(mockRange.selectNodeContents).toHaveBeenCalledWith(mockElement)
-      expect(mockRange.collapse).toHaveBeenCalledWith(false)
-      expect(mockSelection.removeAllRanges).toHaveBeenCalled()
-      expect(mockSelection.addRange).toHaveBeenCalledWith(mockRange)
-      expect(mockElement.dispatchEvent).toHaveBeenCalledTimes(1) // input event
+      expect(mockInputContentEditable).toHaveBeenCalledWith(
+        mockElement,
+        "test text",
+        0,
+        expect.any(Function),
+      )
+    })
+
+    it("BDI-03b: Should preserve line breaks in ContentEditable element", async () => {
+      const mockElement = mockElements.contentEditableDiv
+      mockElement.innerText = "existing"
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      mockInputContentEditable.mockImplementation(
+        async (element: any, value: string) => {
+          element.innerText = element.innerText + value
+        },
+      )
+
+      const mockRange = {
+        selectNodeContents: vi.fn(),
+        collapse: vi.fn(),
+      }
+      const mockSelection = {
+        removeAllRanges: vi.fn(),
+        addRange: vi.fn(),
+      }
+      mockDocument.createRange.mockReturnValue(mockRange)
+      mockWindow.getSelection.mockReturnValue(mockSelection)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".contenteditable",
+        selectorType: SelectorType.css,
+        label: "ContentEditable",
+        value: "line1\nline2\nline3",
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      }
+
+      const result = await BackgroundPageActionDispatcher.input(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockElement.innerText).toBe("existingline1\nline2\nline3")
+      expect(mockInputContentEditable).toHaveBeenCalledWith(
+        mockElement,
+        "line1\nline2\nline3",
+        0,
+        expect.any(Function),
+      )
     })
 
     it("BDI-04: Should replace selectedText variable", async () => {

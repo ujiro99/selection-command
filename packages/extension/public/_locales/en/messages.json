@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Replace `%s` with the selected text."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* Automatically updated when the search URL is changed."
-  },
   "Option_iconUrl": {
     "message": "Icon URL"
   },
@@ -266,6 +263,9 @@
   "Option_openMode": {
     "message": "Open Mode"
   },
+  "Option_displayMode": {
+    "message": "Window Display Method"
+  },
   "Option_openMode_popup": {
     "message": "Popup"
   },
@@ -292,6 +292,57 @@
   },
   "Option_openMode_pageAction": {
     "message": "Page Action"
+  },
+  "Option_commandType_title": {
+    "message": "Select Command Type"
+  },
+  "Option_commandType_description": {
+    "message": "Please select the type of command you want to create"
+  },
+  "Option_commandType_search_title": {
+    "message": "Search"
+  },
+  "Option_commandType_search_desc": {
+    "message": "Search the selected text"
+  },
+  "Option_commandType_pageAction_title": {
+    "message": "Page Action"
+  },
+  "Option_commandType_pageAction_desc": {
+    "message": "Record and replay web page operations"
+  },
+  "Option_commandType_copy_title": {
+    "message": "Copy Text"
+  },
+  "Option_commandType_copy_desc": {
+    "message": "Copy selected text to clipboard"
+  },
+  "Option_commandType_linkPopup_title": {
+    "message": "Link Popup"
+  },
+  "Option_commandType_linkPopup_desc": {
+    "message": "Open links in selected text in bulk"
+  },
+  "Option_commandType_getTextStyles_title": {
+    "message": "Get Styles"
+  },
+  "Option_commandType_getTextStyles_desc": {
+    "message": "Get style information of selected text"
+  },
+  "Option_commandType_api_title": {
+    "message": "API"
+  },
+  "Option_commandType_api_desc": {
+    "message": "Send fetch request to API"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Web Page Launchers"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "Single Functions"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "Experimental"
   },
   "Option_openMode_previewPopup": {
     "message": "Popup"
@@ -358,6 +409,39 @@
   },
   "Option_pageAction_delay": {
     "message": "Delay time"
+  },
+  "Option_userVariables": {
+    "message": "User Variables"
+  },
+  "Option_userVariables_desc": {
+    "message": "Define custom variables for input fields (max 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Variable name"
+  },
+  "Option_userVariable_value": {
+    "message": "Value"
+  },
+  "Option_userVariable_add": {
+    "message": "Add variable"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Variable name is required"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Variable name must start with letter and contain only letters, numbers, and underscores"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Variable name already exists"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maximum $max$ variables allowed",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "Link Preview"
@@ -581,6 +665,9 @@
       }
     }
   },
+  "Option_zod_invalid_variable_name": {
+    "message": "Variable name must start with a letter and contain only letters, numbers, and underscores"
+  },
   "Option_zod_string_min": {
     "message": "Please enter a string of $key$ characters or more.",
     "placeholders": {
@@ -752,9 +839,6 @@
   "review_request_button": {
     "message": "Write a Review"
   },
-  "review_request_close": {
-    "message": "Not Now"
-  },
   "Option_shortcuts": {
     "message": "Shortcut Keys"
   },
@@ -853,5 +937,140 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Failed to restore from backup."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Simple UI window.<wbr>Automatically closes when losing focus."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Open in new window."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Display tab and make it active.<wbr>Show to the right of current tab."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "Open tab in background.<wbr>Show to the right of current tab."
+  },
+  "Option_title_desc": {
+    "message": "Displayed as the command title."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Execute `fetch api` to the URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Window display method."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Behavior when Ctrl + clicking the menu."
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI Assist"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Search URL Assist"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Enter a search keyword and search result URL, and AI will generate a search URL template."
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Search keyword"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "e.g., test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "Search result page URL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "How to use:"
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Enter any search keyword"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Copy & paste the URL of the search results page for that keyword"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Click \"Execute with Gemini\" to have AI generate a search URL template"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Use the generated template in the search URL field of the command"
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Execute with Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Launching..."
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Please enter a search keyword"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Please enter a valid URL"
+  },
+  "Option_commandType": {
+    "message": "Command Type"
+  },
+  "Option_commandType_on_edit": {
+    "message": "Once saved, the command type cannot be changed"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Send request to API and display results"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Open selected text in background tab"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Background Tab"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Copy selected text to clipboard"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Copy Text"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Get style information of selected text"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Get Styles"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Open selected links in popup"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Link Popup"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Record and replay browser operations"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Page Action"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Open selected text in popup window"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Popup"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Open selected text in new tab"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "New Tab"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Open selected text in new window"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "New Window"
+  },
+  "review_request_later": {
+    "message": "Later"
   }
 }

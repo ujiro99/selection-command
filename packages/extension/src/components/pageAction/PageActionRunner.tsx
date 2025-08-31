@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useMemo, useRef } from "react"
 import {
   Ban,
   Check,
@@ -18,29 +18,35 @@ import { cn, isEmpty } from "@/lib/utils"
 
 export function PageActionRunner(): JSX.Element {
   usePageActionRunner()
-  const { isRunning, status } = usePageActionContext()
-  const results = status?.results ?? []
-  const [visible, setVisible] = useState(false)
+  const { status } = usePageActionContext()
+  const [results, setResults] = useState<PageActiontResult[]>()
   const [progress, setProgress] = useState(0)
   const startTimeRef = useRef<number>(0)
   const progressTORef = useRef<number>()
 
-  const hasError = (results: PageActiontResult[]): boolean => {
+  const visible = results && results.length > 0
+
+  const hasError = useMemo((): boolean => {
+    if (results == null) return false
     return results.some((r) => r.status === EXEC_STATE.Failed)
-  }
+  }, [results])
 
   useEffect(() => {
-    if (!isRunning) return
-    setVisible(true)
-  }, [isRunning])
+    if (status == null) return
+    if (status.results.length === 0) return
+    // Start of execution.
+    setResults(status.results)
+  }, [status])
 
   useEffect(() => {
     if (status == null) return
 
-    setVisible(true)
     setProgress(0)
     clearTimeout(progressTORef.current)
-    if (hasError(status.results)) return
+
+    // Don't show progress if there's an error.
+    if (hasError) return
+
     startTimeRef.current = Date.now()
     const result = status.results.find(
       (r: PageActiontResult) => r.stepId === status.stepId,
@@ -49,13 +55,14 @@ export function PageActionRunner(): JSX.Element {
     progressTORef.current = window.setInterval(() => {
       const prgrs = ((Date.now() - startTimeRef.current) / duration) * 100
       if (prgrs >= 100) {
+        // Execution finished.
         clearTimeout(progressTORef.current)
-        setVisible(false)
+        setResults([])
         return
       }
       setProgress(prgrs)
     }, 50)
-  }, [status])
+  }, [status, hasError])
 
   return (
     <div
@@ -74,16 +81,16 @@ export function PageActionRunner(): JSX.Element {
           )}
         />
       </div>
-      {hasError(results) && (
+      {hasError && (
         <button
           className="absolute right-1 top-1.5 pointer-events-auto bg-white/80 rounded-full p-1"
-          onClick={() => setVisible(false)}
+          onClick={() => setResults([])}
         >
           <X size={12} className="stroke-gray-500" />
         </button>
       )}
       <ul className="text-xs text-gray-600 p-2 pt-1.5">
-        {results.map((result) => (
+        {results?.map((result) => (
           <Step key={result.stepId} result={result} />
         ))}
       </ul>

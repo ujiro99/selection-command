@@ -1,6 +1,6 @@
 import type { Point } from "@/types"
 
-import { isEmpty } from "@/lib/utils"
+import { isEmpty, sleep } from "@/lib/utils"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -257,7 +257,7 @@ export function getScrollableAncestors(element: HTMLElement): HTMLElement[] {
   return scrollableAncestors
 }
 
-export const isInput = (
+export const isInputOrTextarea = (
   target: EventTarget | null,
 ): target is HTMLInputElement | HTMLTextAreaElement => {
   if (target == null) return false
@@ -285,7 +285,7 @@ export const isInput = (
  * @param {Node} node The node to check.
  * @returns {boolean} True if the node is a document node.
  */
-export const isHtmlElement = (node: any | null): node is HTMLElement => {
+export const isHtmlElement = (node: unknown): node is HTMLElement => {
   return node instanceof HTMLElement
 }
 
@@ -294,9 +294,23 @@ export const isHtmlElement = (node: any | null): node is HTMLElement => {
  * @param {Node} node The node to check.
  * @returns {boolean} True if the node is a text node.
  */
-export const isTextNode = (node: any | null): node is Text => {
+export const isTextNode = (node: unknown): node is Text => {
   if (node == null) return false
+  if (!(node instanceof Node)) return false
   return node.nodeType === Node.TEXT_NODE
+}
+
+export const isInput = (e: unknown): e is HTMLInputElement => {
+  return e instanceof HTMLInputElement
+}
+
+export const isTextarea = (e: unknown): e is HTMLTextAreaElement => {
+  return e instanceof HTMLTextAreaElement
+}
+
+export const isEditable = (e: unknown): boolean => {
+  if (!(e instanceof HTMLElement)) return false
+  return e?.isContentEditable
 }
 
 /**
@@ -306,7 +320,7 @@ export const isTextNode = (node: any | null): node is Text => {
  */
 export const getFocusNode = (e: Event): HTMLElement | null => {
   const s = window.getSelection()
-  if (isInput(e.target)) {
+  if (isInputOrTextarea(e.target)) {
     return e.target
   } else if (isHtmlElement(s?.focusNode)) {
     return s.focusNode
@@ -468,4 +482,33 @@ function getPath(elm: Element, uniqueElement?: Element): string[] {
     elm = elm.parentNode as Element
   }
   return path
+}
+
+/**
+ * Input text into a contenteditable element, simulating typing with delays.
+ *
+ * @param {HTMLElement} el The contenteditable element to input text into.
+ * @param {string} value The text to input, with '\n' for line breaks.
+ * @param {number} interval The delay in milliseconds between line breaks.
+ * @param {() => Promise<void>} onBreak The async function to call on each line break.
+ *
+ * @return {Promise<boolean>} True if input was successful, false if the element is not editable.
+ * */
+export async function inputContentEditable(
+  el: HTMLElement,
+  value: string,
+  interval: number,
+  onBreak: () => Promise<void>,
+): Promise<boolean> {
+  if (!isEditable(el)) return false
+  el.focus()
+  const values = value.split("\n")
+  for (const [idx, val] of values.entries()) {
+    document.execCommand("insertText", false, val)
+    if (idx < values.length - 1) {
+      await onBreak()
+      await sleep(interval)
+    }
+  }
+  return true
 }

@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "将`%s`替换为选中的文本。"
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* 修改时搜索URL将自动更新。"
-  },
   "Option_iconUrl": {
     "message": "图标URL"
   },
@@ -275,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "标签页"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "后台标签页"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -289,6 +289,60 @@
   },
   "Option_openMode_pageAction": {
     "message": "页面操作"
+  },
+  "Option_displayMode": {
+    "message": "窗口显示方式"
+  },
+  "Option_commandType_title": {
+    "message": "选择命令类型"
+  },
+  "Option_commandType_description": {
+    "message": "请选择您要创建的命令类型"
+  },
+  "Option_commandType_search_title": {
+    "message": "搜索"
+  },
+  "Option_commandType_search_desc": {
+    "message": "搜索选中的文本"
+  },
+  "Option_commandType_pageAction_title": {
+    "message": "页面操作"
+  },
+  "Option_commandType_pageAction_desc": {
+    "message": "录制和重放网页操作"
+  },
+  "Option_commandType_copy_title": {
+    "message": "复制文本"
+  },
+  "Option_commandType_copy_desc": {
+    "message": "将选中的文本复制到剪贴板"
+  },
+  "Option_commandType_linkPopup_title": {
+    "message": "链接弹出窗口"
+  },
+  "Option_commandType_linkPopup_desc": {
+    "message": "批量打开选中文本中的链接"
+  },
+  "Option_commandType_getTextStyles_title": {
+    "message": "获取样式"
+  },
+  "Option_commandType_getTextStyles_desc": {
+    "message": "获取选中文本的样式信息"
+  },
+  "Option_commandType_api_title": {
+    "message": "API"
+  },
+  "Option_commandType_api_desc": {
+    "message": "向API发送fetch请求"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "网页启动器"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "单一功能"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "实验性"
   },
   "Option_openMode_previewPopup": {
     "message": "弹出窗口"
@@ -740,9 +794,6 @@
   "review_request_button": {
     "message": "写评论"
   },
-  "review_request_close": {
-    "message": "稍后"
-  },
   "Option_shortcuts": {
     "message": "快捷键"
   },
@@ -838,5 +889,218 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "从备份恢复失败。"
+  },
+  "Option_openMode_popup_desc": {
+    "message": "简单的UI窗口。<wbr>失去焦点时自动关闭。"
+  },
+  "Option_openMode_window_desc": {
+    "message": "在新窗口中打开。"
+  },
+  "Option_openMode_tab_desc": {
+    "message": "显示标签页并激活。<wbr>显示在当前标签页的右侧。"
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "用户变量"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "定义在页面操作中使用的自定义变量。这些变量可以在输入字段中使用{{变量名}}的形式。"
+    },
+    "Option_userVariable_name": {
+      "message": "名称"
+    },
+    "Option_userVariable_value": {
+      "message": "值"
+    },
+    "Option_userVariable_add": {
+      "message": "添加变量"
+    },
+    "Option_userVariable_name_required": {
+      "message": "变量名是必需的"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "名称必须以字母开头，只能包含字母、数字和下划线"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "变量名已存在"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "最多允许$max$个变量",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
+    },
+    "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
+  },
+  "Option_title_desc": {
+    "message": "显示为命令标题。"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "对URL执行`fetch api`。"
+  },
+  "Option_displayMode_desc": {
+    "message": "窗口显示方式。"
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Ctrl + 点击菜单时的行为。"
+  },
+  "Option_parentFolder": {
+    "message": "父文件夹"
+  },
+  "Option_parentFolder_desc": {
+    "message": "选择父文件夹"
+  },
+  "Option_rootFolder": {
+    "message": "根目录（无父级）"
+  },
+  "Option_searchUrlAssist": {
+    "message": "AI 助手"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "输入搜索关键词和搜索结果 URL，AI 将生成搜索 URL 模板。"
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "使用 Gemini 执行"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "正在执行..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "使用方法："
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "搜索关键词"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "例：test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "搜索结果页面 URL"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "输入任意搜索关键词"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "复制并粘贴该关键词搜索结果页面的 URL"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "点击\"使用 Gemini 执行\"让 AI 生成搜索 URL 模板"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "在命令的搜索 URL 字段中使用生成的模板"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "搜索 URL 助手"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "请输入搜索关键词"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "请输入有效的 URL"
+  },
+  "Option_userVariable_add": {
+    "message": "添加变量"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "最多允许 $max$ 个变量",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "变量名"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "变量名已存在"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
+  },
+  "Option_userVariable_name_required": {
+    "message": "变量名是必需的"
+  },
+  "Option_userVariable_value": {
+    "message": "值"
+  },
+  "Option_userVariables": {
+    "message": "用户变量"
+  },
+  "Option_userVariables_desc": {
+    "message": "为输入字段定义自定义变量（最多 5 个）"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
+  },
+  "Option_commandType": {
+    "message": "命令类型"
+  },
+  "Option_commandType_on_edit": {
+    "message": "一旦保存，命令类型就无法更改"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "向 API 发送请求并显示结果"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "在后台标签页中打开选中的文本"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "后台标签页"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "将选中的文本复制到剪贴板"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "复制文本"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "获取选中文本的样式信息"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "获取样式"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "在弹窗中打开选中的链接"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "链接弹窗"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "录制和回放浏览器操作"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "页面操作"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "在弹窗窗口中打开选中的文本"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "弹窗"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "在新标签页中打开选中的文本"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "新标签页"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "在新窗口中打开选中的文本"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "新窗口"
+  },
+  "review_request_later": {
+    "message": "稍后"
   }
 }

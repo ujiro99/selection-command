@@ -1,21 +1,21 @@
 import { useState } from "react"
 import { useFieldArray } from "react-hook-form"
 import { Disc3 } from "lucide-react"
-import { PAGE_ACTION_OPEN_MODE } from "@/const"
 import { FormLabel, FormDescription } from "@/components/ui/form"
 import type { PageAction } from "@/services/pageAction"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { cn, e2a, isEmpty, capitalize } from "@/lib/utils"
+import { cn, isEmpty, capitalize } from "@/lib/utils"
 import { PageActionStep } from "@/types/schema"
 import { DeepPartial } from "@/types"
 
 import { InputField } from "@/components/option/field/InputField"
-import { SelectField } from "@/components/option/field/SelectField"
+import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { StepList } from "@/components/pageAction/StepList"
 import { InputEditor } from "@/components/pageAction/InputEditor"
 import { RemoveDialog } from "@/components/option/RemoveDialog"
 import { TypeIcon } from "@/components/pageAction/TypeIcon"
+// import { UserVariablesField } from "@/components/option/field/UserVariablesField"
 
 type PageActionSectionProps = {
   form: any
@@ -99,18 +99,22 @@ export const PageActionSection = ({
         previewUrl={getValues("iconUrl")}
       />
 
-      <SelectField
+      <OpenModeToggleField
         control={form.control}
         name="pageActionOption.openMode"
         formLabel={t("pageAction_openMode")}
-        options={e2a(PAGE_ACTION_OPEN_MODE)
-          .filter((mode) => mode !== PAGE_ACTION_OPEN_MODE.NONE)
-          .map((mode) => ({
-            name: t(`openMode_${mode}`),
-            value: mode,
-          }))}
+        description={t("displayMode_desc")}
+        type="pageAction"
       />
 
+      {/*
+      <UserVariablesField
+        control={form.control}
+        name="pageActionOption.userVariables"
+        formLabel={t("userVariables")}
+        description={t("userVariables_tooltip")}
+      />
+      */}
       <div className="w-full flex items-center gap-1 pt-4">
         <div className="w-2/6">
           <FormLabel>{t("pageAction_title")}</FormLabel>

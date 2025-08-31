@@ -1,8 +1,16 @@
-import { getElementByXPath, isValidXPath } from "@/services/dom"
+import {
+  getElementByXPath,
+  isValidXPath,
+  inputContentEditable,
+} from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import { PageAction, ActionReturn } from "./dispatcher"
-import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
+import {
+  SelectorType,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_TIMEOUT as TIMEOUT,
+} from "@/const"
 
 /**
  * Find element by selector type with unified logic.
@@ -170,8 +178,14 @@ export const BackgroundPageActionDispatcher = {
   },
 
   input: async (param: PageAction.InputExec): ActionReturn => {
-    const { selector, selectorType, srcUrl, selectedText, clipboardText } =
-      param
+    const {
+      selector,
+      selectorType,
+      srcUrl,
+      selectedText,
+      clipboardText,
+      userVariables,
+    } = param
 
     const element = await waitForElementBackground(selector, selectorType)
     if (element) {
@@ -180,6 +194,14 @@ export const BackgroundPageActionDispatcher = {
         [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
         [InsertSymbol[INSERT.URL]]: srcUrl,
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
+        // Add user variables
+        ...(userVariables?.reduce(
+          (acc, variable) => {
+            acc[variable.name] = variable.value
+            return acc
+          },
+          {} as Record<string, string>,
+        ) || {}),
       }
       let value = safeInterpolate(param.value, variables)
       value = value.replace(/{/g, "{{") // escape
@@ -200,16 +222,22 @@ export const BackgroundPageActionDispatcher = {
           element.dispatchEvent(inputEvent)
           element.dispatchEvent(changeEvent)
         } else if (element.isContentEditable) {
-          element.innerText = element.innerText + value
-          // Move cursor to the end of the content
-          const range = document.createRange()
-          const selection = window.getSelection()
-          range.selectNodeContents(element)
-          range.collapse(false)
-          selection?.removeAllRanges()
-          selection?.addRange(range)
-          const inputEvent = new Event("input", { bubbles: true })
-          element.dispatchEvent(inputEvent)
+          const typeEnter = async () => {
+            await BackgroundPageActionDispatcher.keyboard({
+              type: PAGE_ACTION_EVENT.keyboard,
+              label: "",
+              key: "Enter",
+              code: "Enter",
+              keyCode: 13,
+              shiftKey: true,
+              ctrlKey: false,
+              altKey: false,
+              metaKey: false,
+              targetSelector: selector,
+              selectorType: selectorType,
+            })
+          }
+          await inputContentEditable(element, value, 0, typeEnter)
         }
       }
     } else {

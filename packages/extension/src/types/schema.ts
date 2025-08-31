@@ -20,6 +20,7 @@ import { isEmpty } from "@/lib/utils"
 export const SEARCH_OPEN_MODE = [
   OPEN_MODE.POPUP,
   OPEN_MODE.TAB,
+  OPEN_MODE.BACKGROUND_TAB,
   OPEN_MODE.WINDOW,
 ] as const
 
@@ -207,10 +208,19 @@ const PageActionStepSchema = z.object({
 })
 export type PageActionStep = z.infer<typeof PageActionStepSchema>
 
+export const userVariableSchema = z.object({
+  name: z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
+    message: t("zod_invalid_variable_name"),
+  }),
+  value: z.string(),
+})
+export type UserVariableType = z.infer<typeof userVariableSchema>
+
 export const PageActionOption = z.object({
   startUrl: z.string(),
   openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
   steps: z.array(PageActionStepSchema),
+  userVariables: z.array(userVariableSchema).max(5).optional(),
 })
 
 const pageActionSchema = z.object({

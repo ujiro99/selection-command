@@ -19,7 +19,7 @@ import { Point } from "@/types"
 import { isPopup, cn } from "@/lib/utils"
 import {
   getScrollableAncestors,
-  isInput,
+  isInputOrTextarea,
   isTextNode,
   isHtmlElement,
   getFocusNode,
@@ -33,7 +33,7 @@ enum MENU {
 
 const isTargetEditable = (target: EventTarget | null): boolean => {
   if (target == null) return false
-  if (isInput(target)) return true
+  if (isInputOrTextarea(target)) return true
   if (target instanceof HTMLElement) {
     return target.isContentEditable
   }
@@ -76,7 +76,7 @@ function getSelectionOffsets(elm: HTMLElement | Text): {
 const insertText = (targetElm: HTMLElement | Text, value: string) => {
   const { start, end, focusNode } = getSelectionOffsets(targetElm)
   if (focusNode == null) return
-  if (isInput(focusNode)) {
+  if (isInputOrTextarea(focusNode)) {
     const text = focusNode.value
     const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)
     focusNode.value = newText

@@ -233,9 +233,6 @@
   "Option_searchUrl_desc": {
     "message": "Заменяет `%s` на выбранный текст."
   },
-  "Option_searchUrl_desc_api": {
-    "message": "* URL поиска будет автоматически обновлен при изменении."
-  },
   "Option_iconUrl": {
     "message": "URL иконки"
   },
@@ -275,6 +272,9 @@
   "Option_openMode_tab": {
     "message": "Вкладка"
   },
+  "Option_openMode_backgroundTab": {
+    "message": "Фоновая вкладка"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -289,6 +289,60 @@
   },
   "Option_openMode_pageAction": {
     "message": "Действие страницы"
+  },
+  "Option_displayMode": {
+    "message": "Способ отображения окна"
+  },
+  "Option_commandType_title": {
+    "message": "Выбрать тип команды"
+  },
+  "Option_commandType_description": {
+    "message": "Пожалуйста, выберите тип команды, которую вы хотите создать"
+  },
+  "Option_commandType_search_title": {
+    "message": "Поиск"
+  },
+  "Option_commandType_search_desc": {
+    "message": "Поиск выбранного текста"
+  },
+  "Option_commandType_pageAction_title": {
+    "message": "Действие страницы"
+  },
+  "Option_commandType_pageAction_desc": {
+    "message": "Записывать и воспроизводить операции веб-страниц"
+  },
+  "Option_commandType_copy_title": {
+    "message": "Копировать текст"
+  },
+  "Option_commandType_copy_desc": {
+    "message": "Копировать выбранный текст в буфер обмена"
+  },
+  "Option_commandType_linkPopup_title": {
+    "message": "Всплывающее окно ссылки"
+  },
+  "Option_commandType_linkPopup_desc": {
+    "message": "Открыть ссылки в выбранном тексте в пакетном режиме"
+  },
+  "Option_commandType_getTextStyles_title": {
+    "message": "Получить стили"
+  },
+  "Option_commandType_getTextStyles_desc": {
+    "message": "Получить информацию о стиле выбранного текста"
+  },
+  "Option_commandType_api_title": {
+    "message": "API"
+  },
+  "Option_commandType_api_desc": {
+    "message": "Отправить fetch запрос в API"
+  },
+  "Option_commandGroup_webPage_title": {
+    "message": "Запуск веб-страниц"
+  },
+  "Option_commandGroup_singleFunction_title": {
+    "message": "Одиночные функции"
+  },
+  "Option_commandGroup_experimental_title": {
+    "message": "Экспериментальные"
   },
   "Option_openMode_previewPopup": {
     "message": "Всплывающее окно"
@@ -740,9 +794,6 @@
   "review_request_button": {
     "message": "Написать отзыв"
   },
-  "review_request_close": {
-    "message": "Позже"
-  },
   "Option_shortcuts": {
     "message": "Горячие клавиши"
   },
@@ -838,5 +889,218 @@
   },
   "Option_RestoreFromBackup_failed": {
     "message": "Не удалось восстановить из резервной копии."
+  },
+  "Option_openMode_popup_desc": {
+    "message": "Простое окно интерфейса.<wbr>Автоматически закрывается при потере фокуса."
+  },
+  "Option_openMode_window_desc": {
+    "message": "Открыть в новом окне."
+  },
+  "Option_openMode_tab_desc": {
+    "message": "Показать вкладку и активировать.<wbr>Показать справа от текущей вкладки."
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "Option_userVariables": {
+      "message": "Пользовательские переменные"
+    },
+    "Option_userVariables_tooltip": {
+      "message": "Определите пользовательские переменные для использования в ваших Page Actions. Эти переменные можно использовать в полях ввода с {{имяПеременной}}."
+    },
+    "Option_userVariable_name": {
+      "message": "Имя"
+    },
+    "Option_userVariable_value": {
+      "message": "Значение"
+    },
+    "Option_userVariable_add": {
+      "message": "Добавить переменную"
+    },
+    "Option_userVariable_name_required": {
+      "message": "Имя переменной обязательно"
+    },
+    "Option_userVariable_name_invalid": {
+      "message": "Имя должно начинаться с буквы и может содержать только буквы, цифры и подчеркивания"
+    },
+    "Option_userVariable_name_duplicate": {
+      "message": "Имя переменной уже существует"
+    },
+    "Option_userVariable_max_reached": {
+      "message": "Разрешено максимум $max$ переменных",
+      "placeholders": {
+        "max": {
+          "content": "$1",
+          "example": "5"
+        }
+      }
+    },
+    "message": "Открыть вкладку в фоновом режиме.<wbr>Показать справа от текущей вкладки."
+  },
+  "Option_title_desc": {
+    "message": "Отображается как заголовок команды."
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "Выполнить `fetch api` к URL."
+  },
+  "Option_displayMode_desc": {
+    "message": "Способ отображения окна."
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "Поведение при Ctrl + клике по меню."
+  },
+  "Option_parentFolder": {
+    "message": "Родительская Папка"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Выберите родительскую папку"
+  },
+  "Option_rootFolder": {
+    "message": "Корень (нет родителя)"
+  },
+  "Option_searchUrlAssist": {
+    "message": "Помощник ИИ"
+  },
+  "Option_searchUrlAssist_desc": {
+    "message": "Введите ключевое слово поиска и URL результатов поиска, и ИИ создаст шаблон URL поиска."
+  },
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Выполнить с Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Выполнение..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Как использовать:"
+  },
+  "Option_searchUrlAssist_searchKeyword": {
+    "message": "Ключевое слово поиска"
+  },
+  "Option_searchUrlAssist_searchKeyword_placeholder": {
+    "message": "напр.: test"
+  },
+  "Option_searchUrlAssist_searchResultUrl": {
+    "message": "URL страницы результатов поиска"
+  },
+  "Option_searchUrlAssist_searchResultUrl_placeholder": {
+    "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_step1": {
+    "message": "Введите любое ключевое слово поиска"
+  },
+  "Option_searchUrlAssist_step2": {
+    "message": "Скопируйте и вставьте URL страницы результатов поиска для этого ключевого слова"
+  },
+  "Option_searchUrlAssist_step3": {
+    "message": "Нажмите \"Выполнить с Gemini\", чтобы ИИ создал шаблон URL поиска"
+  },
+  "Option_searchUrlAssist_step4": {
+    "message": "Используйте созданный шаблон в поле URL поиска команды"
+  },
+  "Option_searchUrlAssist_title": {
+    "message": "Помощник URL Поиска"
+  },
+  "Option_searchUrlAssist_validation_keyword_required": {
+    "message": "Пожалуйста, введите ключевое слово поиска"
+  },
+  "Option_searchUrlAssist_validation_url_invalid": {
+    "message": "Пожалуйста, введите действительный URL"
+  },
+  "Option_userVariable_add": {
+    "message": "Добавить переменную"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Максимум $max$ переменных разрешено",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "Option_userVariable_name": {
+    "message": "Имя переменной"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Имя переменной уже существует"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Имя переменной обязательно"
+  },
+  "Option_userVariable_value": {
+    "message": "Значение"
+  },
+  "Option_userVariables": {
+    "message": "Пользовательские Переменные"
+  },
+  "Option_userVariables_desc": {
+    "message": "Определить пользовательские переменные для полей ввода (макс 5)"
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
+  },
+  "Option_commandType": {
+    "message": "Тип Команды"
+  },
+  "Option_commandType_on_edit": {
+    "message": "После сохранения тип команды нельзя изменить"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "Отправить запрос к API и показать результаты"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "Открыть выделенный текст в фоновой вкладке"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "Фоновая Вкладка"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "Скопировать выделенный текст в буфер обмена"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "Скопировать Текст"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "Получить информацию о стиле выделенного текста"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "Получить Стили"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "Открыть выбранные ссылки в попапе"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "Попап Ссылок"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "Записывать и воспроизводить операции браузера"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "Действие Страницы"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "Открыть выделенный текст в окне попапа"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "Попап"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "Открыть выделенный текст в новой вкладке"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "Новая Вкладка"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "Открыть выделенный текст в новом окне"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "Новое Окно"
+  },
+  "review_request_later": {
+    "message": "Позже"
   }
 }

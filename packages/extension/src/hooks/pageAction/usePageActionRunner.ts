@@ -37,7 +37,14 @@ export function usePageActionRunner() {
   const execute = async (
     message: ExecPageAction.Message,
   ): Promise<ExecPageAction.Return> => {
-    const { step, srcUrl, selectedText, clipboardText, openMode } = message
+    const {
+      step,
+      srcUrl,
+      selectedText,
+      clipboardText,
+      openMode,
+      userVariables,
+    } = message
     const type = step.param.type
 
     // Select dispatcher based on openMode
@@ -84,6 +91,7 @@ export function usePageActionRunner() {
             srcUrl,
             selectedText,
             clipboardText,
+            userVariables,
           } as PageAction.InputExec)
           break
         case "scroll":
