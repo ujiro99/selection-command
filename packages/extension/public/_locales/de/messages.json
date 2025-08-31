@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Menü-Anzeigeposition von globalen Einstellungen erben"
   },
+  "Option_popupAnimation": {
+    "message": "Menü-Anzeigeanimation"
+  },
   "Option_inherit": {
     "message": "Erben"
   },
@@ -564,16 +567,16 @@
     "message": "Geben Sie die Abstands-Skalierung an. Standard: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Anzeigeverzögerung"
+    "message": "Popup-Anzeigeverzögerung"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Geben Sie die Zeit bis zum Beginn der Anzeige an. Standard: 250 ms"
+    "message": "Zeit bis zum Start der Anzeige. Standard: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Anzeigeanimationszeit"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Geben Sie die Anzeigeanimationszeit an. Standard: 150 ms"
+    "message": "Animationsdauer beim Anzeigen. Standard: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Bearbeiten"

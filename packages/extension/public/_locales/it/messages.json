@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Eredita posizione menu dalle impostazioni globali"
   },
+  "Option_popupAnimation": {
+    "message": "Animazione Visualizzazione Menu"
+  },
   "Option_inherit": {
     "message": "Eredita"
   },
@@ -564,16 +567,16 @@
     "message": "Specifica la scala del padding. Predefinito: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Ritardo visualizzazione"
+    "message": "Ritardo Visualizzazione Popup"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Specifica il tempo fino all'inizio della visualizzazione. Predefinito: 250 ms"
+    "message": "Tempo fino all'inizio della visualizzazione. Predefinito: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Durata animazione visualizzazione"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Specifica la durata dell'animazione di visualizzazione. Predefinito: 150 ms"
+    "message": "Durata dell'animazione durante la visualizzazione. Predefinito: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Modifica"

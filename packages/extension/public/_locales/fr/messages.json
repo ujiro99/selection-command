@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Hériter de la Position d'Affichage du Menu depuis les paramètres globaux"
   },
+  "Option_popupAnimation": {
+    "message": "Animation d'Affichage du Menu"
+  },
   "Option_inherit": {
     "message": "Hériter"
   },
@@ -564,16 +567,16 @@
     "message": "Spécifiez l'échelle de taille de marge. Par défaut : 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Délai d'affichage"
+    "message": "Délai d'Affichage du Popup"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Spécifiez le temps avant le début de l'affichage. Par défaut : 250 ms"
+    "message": "Temps jusqu'au début de l'affichage. Par défaut : 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Temps d'animation d'affichage"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Spécifiez le temps d'animation d'affichage. Par défaut : 150 ms"
+    "message": "Durée de l'animation lors de l'affichage. Par défaut : 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Modifier"

@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Inherit Menu Display Position from global settings"
   },
+  "Option_popupAnimation": {
+    "message": "Menu Display Animation"
+  },
   "Option_inherit": {
     "message": "Inherit"
   },
@@ -606,16 +609,16 @@
     "message": "Specify the margin size scaling. Default: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Display delay"
+    "message": "Popup Display Delay"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Specify the amount of time before the display begins. Default: 250 ms"
+    "message": "Time until display starts. Default: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Display animation time"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Specify the display animation time. Default: 150 ms"
+    "message": "Animation duration when showing. Default: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Edit"

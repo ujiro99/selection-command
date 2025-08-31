@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Warisi Posisi Tampilan Menu dari pengaturan global"
   },
+  "Option_popupAnimation": {
+    "message": "Animasi Tampilan Menu"
+  },
   "Option_inherit": {
     "message": "Warisi"
   },
@@ -564,16 +567,16 @@
     "message": "Tentukan penskalaan ukuran margin. Default: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Tunda tampilan"
+    "message": "Tunda Tampilan Popup"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Tentukan jumlah waktu sebelum tampilan dimulai. Default: 250 ms"
+    "message": "Waktu hingga tampilan dimulai. Default: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Waktu animasi tampilan"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Tentukan waktu animasi tampilan. Default: 150 ms"
+    "message": "Durasi animasi saat menampilkan. Default: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Edit"

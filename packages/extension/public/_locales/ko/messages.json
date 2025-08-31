@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "전역 설정에서 메뉴 표시 위치 상속"
   },
+  "Option_popupAnimation": {
+    "message": "메뉴 표시 애니메이션"
+  },
   "Option_inherit": {
     "message": "상속"
   },
@@ -564,16 +567,16 @@
     "message": "여백 스케일을 지정합니다. 기본값: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "표시 지연"
+    "message": "팝업 표시 지연"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "표시 시작까지의 시간을 지정합니다. 기본값: 250 ms"
+    "message": "표시 시작까지의 시간. 기본값: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "표시 애니메이션 시간"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "표시 애니메이션 시간을 지정합니다. 기본값: 150 ms"
+    "message": "표시시 애니메이션 지속 시간. 기본값: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "편집"

@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Herdar Posição de Exibição do Menu das configurações globais"
   },
+  "Option_popupAnimation": {
+    "message": "Animação de Exibição do Menu"
+  },
   "Option_inherit": {
     "message": "Herdar"
   },
@@ -564,16 +567,16 @@
     "message": "Especifique a escala do tamanho da margem. Padrão: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Atraso de exibição"
+    "message": "Atraso de Exibição do Popup"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Especifique a quantidade de tempo antes do início da exibição. Padrão: 250 ms"
+    "message": "Tempo até o início da exibição. Padrão: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Tempo de animação de exibição"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Especifique o tempo de animação de exibição. Padrão: 150 ms"
+    "message": "Duração da animação ao exibir. Padrão: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Editar"

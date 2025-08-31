@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Heredar Posición de Visualización del Menú desde la configuración global"
   },
+  "Option_popupAnimation": {
+    "message": "Animación de Visualización del Menú"
+  },
   "Option_inherit": {
     "message": "Heredar"
   },
@@ -564,16 +567,16 @@
     "message": "Especifique la escala de tamaño de margen. Predeterminado: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Retraso de visualización"
+    "message": "Retraso de Visualización del Popup"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Especifique la cantidad de tiempo antes de que comience la visualización. Predeterminado: 250 ms"
+    "message": "Tiempo hasta que inicie la visualización. Predeterminado: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Tiempo de animación de visualización"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Especifique el tiempo de animación de visualización. Predeterminado: 150 ms"
+    "message": "Duración de la animación al mostrar. Predeterminado: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Editar"

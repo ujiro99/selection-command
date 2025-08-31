@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "从全局设置获取菜单位置"
   },
+  "Option_popupAnimation": {
+    "message": "菜单显示动画"
+  },
   "Option_inherit": {
     "message": "获取"
   },
@@ -564,16 +567,16 @@
     "message": "指定内边距的缩放。默认：1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "显示延迟"
+    "message": "弹窗显示延迟"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "指定显示开始前的时间。默认：250毫秒"
+    "message": "到显示开始的时间。默认：250毫秒"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "显示动画持续时间"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "指定显示动画的持续时间。默认：150毫秒"
+    "message": "显示时的动画持续时间。默认：150毫秒"
   },
   "Option_edit_tooltip": {
     "message": "编辑"

@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Наследовать позицию меню из глобальных настроек"
   },
+  "Option_popupAnimation": {
+    "message": "Анимация Отображения Меню"
+  },
   "Option_inherit": {
     "message": "Наследовать"
   },
@@ -564,16 +567,16 @@
     "message": "Укажите масштаб отступов. По умолчанию: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Задержка отображения"
+    "message": "Задержка Отображения Попапа"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Укажите время до начала отображения. По умолчанию: 250 мс"
+    "message": "Время до начала отображения. По умолчанию: 250 мс"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Длительность анимации отображения"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Укажите длительность анимации отображения. По умолчанию: 150 мс"
+    "message": "Длительность анимации при отображении. По умолчанию: 150 мс"
   },
   "Option_edit_tooltip": {
     "message": "Редактировать"

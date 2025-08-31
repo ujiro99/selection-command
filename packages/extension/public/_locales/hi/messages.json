@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "वैश्विक सेटिंग्स से मेनू प्लेसमेंट प्राप्त करें"
   },
+  "Option_popupAnimation": {
+    "message": "मेनू प्रदर्शन एनिमेशन"
+  },
   "Option_inherit": {
     "message": "प्राप्त करें"
   },
@@ -564,16 +567,16 @@
     "message": "पैडिंग का स्केल निर्दिष्ट करें। डिफ़ॉल्ट: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "प्रदर्शन विलंब"
+    "message": "पॉपअप प्रदर्शन विलंब"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "प्रदर्शन शुरू होने तक का समय निर्दिष्ट करें। डिफ़ॉल्ट: 250 मिलीसेकंड"
+    "message": "प्रदर्शन शुरू होने तक का समय। डिफ़ॉल्ट: 250 मिलीसेकंड"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "प्रदर्शन एनिमेशन अवधि"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "प्रदर्शन एनिमेशन की अवधि निर्दिष्ट करें। डिफ़ॉल्ट: 150 मिलीसेकंड"
+    "message": "दिखाते वक्त एनिमेशन की अवधि। डिफ़ॉल्ट: 150 मिलीसेकंड"
   },
   "Option_edit_tooltip": {
     "message": "संपादित करें"
