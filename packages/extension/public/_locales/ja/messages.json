@@ -677,6 +677,12 @@
   "Option_userStyles_desc_font_scale": {
     "message": "文字サイズの倍率を指定します。デフォルト: 1"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "文字の色"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "文字の色を指定します。デフォルト: #0F172A"
+  },
   "Option_userStyles_option_image_scale": {
     "message": "アイコンサイズの倍率"
   },

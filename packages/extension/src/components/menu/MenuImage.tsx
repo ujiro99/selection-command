@@ -21,7 +21,11 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
   return hasUrl ? (
     <img className={props.className} src={props.src} alt={props.alt} />
   ) : hasSvg ? (
-    <div className={cn(css.menuImage, props.className)} ref={setSvgElm} />
+    <div
+      className={cn(css.menuImage, props.className)}
+      style={{ color: "hsl(var(--foreground))" }}
+      ref={setSvgElm}
+    />
   ) : (
     <></>
   )

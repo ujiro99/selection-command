@@ -244,6 +244,7 @@ export enum STYLE_VARIABLE {
   BACKGROUND_COLOR = "background-color",
   BORDER_COLOR = "border-color",
   FONT_SCALE = "font-scale",
+  FONT_COLOR = "font-color",
   IMAGE_SCALE = "image-scale",
   PADDING_SCALE = "padding-scale",
   POPUP_DELAY = "popup-delay",

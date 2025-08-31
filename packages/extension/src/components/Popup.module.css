@@ -1,6 +1,7 @@
 .popup {
   border: solid 1px var(--sc-bd-color);
   font-family: var(--font-family);
+  color: var(--sc-font-color);
 
   /* CSS variable interface */
   --sc-bg-color-h: var(--sc-background-color-h, 0deg);
@@ -10,6 +11,7 @@
   --sc-bd-color-s: var(--sc-border-color-s, 14%);
   --sc-bd-color-l: var(--sc-border-color-l, 96%);
   --sc-font-size: calc(var(--sc-font-scale, 1) * 12px);
+  --sc-font-color: #0f172a;
   --sc-image-size: calc(var(--sc-image-scale, 1) * 16px);
   --sc-padding: calc(var(--sc-padding-scale, 1) * 4px);
   --sc-delay: calc(var(--sc-popup-delay, 250) * 1ms);
@@ -19,8 +21,7 @@
   --background: var(--sc-bg-color-h) var(--sc-bg-color-s) var(--sc-bg-color-l);
   --foreground: 222.2 47.4% 11.2%;
   --border: var(--sc-bd-color-h) var(--sc-bd-color-s) var(--sc-bd-color-l);
-  --accent: var(--sc-bg-color-h) var(--sc-bg-color-s)
-    calc(var(--sc-bg-color-l) - 6%);
+  --accent: var(--sc-bg-color-h) var(--sc-bg-color-s) calc(var(--sc-bg-color-l) - 6%);
   --accent-foreground: 224 71% 4%;
 }
 
@@ -35,7 +36,7 @@
 .previewContainer {
   position: relative;
 
-  & > div {
+  &>div {
     transform: translate(0, 0) !important;
   }
 }

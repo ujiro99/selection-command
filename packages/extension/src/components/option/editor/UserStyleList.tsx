@@ -67,6 +67,10 @@ const Attributes: AttributeMap = {
     min: 0.5,
     step: 0.1,
   },
+  [STYLE_VARIABLE.FONT_COLOR]: {
+    type: "color",
+    default: "#0F172A",
+  },
   [STYLE_VARIABLE.IMAGE_SCALE]: {
     type: "number",
     default: 1,
@@ -102,6 +106,7 @@ const Units: UnitMap = {
   [STYLE_VARIABLE.BACKGROUND_COLOR]: undefined,
   [STYLE_VARIABLE.BORDER_COLOR]: undefined,
   [STYLE_VARIABLE.FONT_SCALE]: undefined,
+  [STYLE_VARIABLE.FONT_COLOR]: undefined,
   [STYLE_VARIABLE.IMAGE_SCALE]: undefined,
   [STYLE_VARIABLE.PADDING_SCALE]: undefined,
   [STYLE_VARIABLE.POPUP_DELAY]: "ms",
