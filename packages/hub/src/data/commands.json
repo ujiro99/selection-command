@@ -574,6 +574,7 @@
   {
     "id": "bf22c686-f557-558a-aa24-a619fcf9220c",
     "title": "陽キャ変換",
+    "revision": 1,
     "description": "選択したテキストを陽キャ風に変換します。",
     "iconUrl": "https://cdn.oaistatic.com/assets/favicon-l4nq08hd.svg",
     "openMode": "pageAction",
@@ -583,76 +584,90 @@
       "Character"
     ],
     "pageActionOption": {
-      "startUrl": "https://chatgpt.com/",
       "openMode": "popup",
+      "startUrl": "https://chatgpt.com/",
       "steps": [
         {
-          "id": "diaq1mthv",
+          "delayMs": 0,
+          "id": "9su956mvj",
           "param": {
-            "type": "start",
-            "label": "Start"
-          }
+            "label": "Start",
+            "type": "start"
+          },
+          "skipRenderWait": false
         },
         {
-          "id": "y6htzvewk",
+          "delayMs": 0,
+          "id": "l1qzh0bhh",
           "param": {
-            "type": "click",
-            "label": "Inputへフォーカス",
-            "selector": "//p",
-            "selectorType": "xpath"
-          }
-        },
-        {
-          "id": "mf2yadsdw",
-          "param": {
-            "type": "input",
-            "label": "プロンプト入力",
+            "label": "Focus textarea",
             "selector": "//p",
             "selectorType": "xpath",
-            "value": "以下の文章を、絵文字をたくさん使った陽キャウェイ系で、でもちょっとドジで天然な憎めないタイプの青年が書いた文章へ変換してください。"
-          }
+            "type": "click"
+          },
+          "skipRenderWait": false
         },
         {
-          "id": "0m0pbdr63",
+          "delayMs": 0,
+          "id": "45pxvv3bv",
           "param": {
-            "type": "keyboard",
-            "label": "改行",
-            "key": "Enter",
-            "code": "Enter",
-            "keyCode": 13,
-            "shiftKey": true,
-            "ctrlKey": false,
-            "altKey": false,
-            "metaKey": false,
-            "targetSelector": "//form/*/*/*/*/*/div",
-            "selectorType": "xpath"
-          }
-        },
-        {
-          "id": "7kts6hc0o",
-          "param": {
+            "label": "プロンプト入力",
+            "selector": "//form/*/*/*/*/div",
+            "selectorType": "xpath",
             "type": "input",
-            "label": "選択テキスト入力",
+            "value": "以下の文章を、絵文字をたくさん使った陽キャウェイ系で、でもちょっとドジで天然な憎めないタイプの青年が書いた文章へ変換してください。"
+          },
+          "skipRenderWait": false
+        },
+        {
+          "delayMs": 0,
+          "id": "klfisx13d",
+          "param": {
+            "altKey": false,
+            "code": "Enter",
+            "ctrlKey": false,
+            "key": "Enter",
+            "keyCode": 13,
+            "label": "改行",
+            "metaKey": false,
+            "selectorType": "xpath",
+            "shiftKey": true,
+            "targetSelector": "//form/*/*/*/*/div",
+            "type": "keyboard"
+          },
+          "skipRenderWait": false
+        },
+        {
+          "delayMs": 0,
+          "id": "p2iivnliz",
+          "param": {
+            "label": "選択テキスト挿入",
             "selector": "//p[2]",
             "selectorType": "xpath",
-            "value": "\n{{SelectedText}}"
-          }
+            "type": "input",
+            "value": "{{SelectedText}}"
+          },
+          "skipRenderWait": false
         },
         {
-          "id": "2hllzva57",
+          "delayMs": 0,
+          "id": "ue1kl6s5m",
           "param": {
-            "type": "click",
-            "label": "送信",
+            "label": "Submit",
             "selector": "//*[@aria-label='Send prompt']/*",
-            "selectorType": "xpath"
-          }
+            "selectorType": "xpath",
+            "type": "click"
+          },
+          "skipRenderWait": false
         },
         {
-          "id": "f5kk1wuca",
+          "delayMs": 0,
+          "id": "4zbqwz67c",
           "param": {
-            "type": "end",
-            "label": "End"
-          }
+            "label": "End",
+            "type": "end"
+          },
+          "skipRenderWait": false
         }
       ]
     },
