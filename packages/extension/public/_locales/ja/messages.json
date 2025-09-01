@@ -1035,16 +1035,16 @@
     "message": "検索URL アシスト"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "検索キーワードと検索結果URLを入力して、実行ボタンを押してください。\nAIが検索URLを生成します。"
+    "message": "検索キーワードと検索結果ページのURLを入力して、実行ボタンを押してください。\nAIが検索URLを生成します。"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "検索キーワード"
+    "message": "(1) 検索キーワード"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "例: test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "検索結果ページのURL"
+    "message": "(2) 検索結果ページのURL"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
@@ -1053,15 +1053,18 @@
     "message": "使用方法："
   },
   "Option_searchUrlAssist_step1": {
-    "message": "任意の検索キーワードを入力"
+    "message": "「(1)検索キーワード」へ任意の単語を入力"
   },
   "Option_searchUrlAssist_step2": {
-    "message": "そのキーワードで実際に検索。結果ページのURLをコピー&ペースト"
+    "message": "目的のサービスでその単語を検索し、結果ページのURLをコピー"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "「Geminiで実行」をクリック → AIが検索URLを生成"
+    "message": "そのURLを「(2)検索結果ページのURL」へペースト"
   },
   "Option_searchUrlAssist_step4": {
+    "message": "「Geminiで実行」をクリック → AIが検索URLを生成"
+  },
+  "Option_searchUrlAssist_step5": {
     "message": "生成された検索URLを、コマンドの検索URL欄にコピー&ペースト"
   },
   "Option_searchUrlAssist_executeButton": {

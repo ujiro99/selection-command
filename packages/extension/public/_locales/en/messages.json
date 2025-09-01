@@ -972,16 +972,16 @@
     "message": "Search URL Assist"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Enter a search keyword and search result URL, and AI will generate a search URL template."
+    "message": "Enter a search keyword and search result page URL, then click the execute button.\nAI will generate a search URL."
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Search keyword"
+    "message": "(1) Search keyword"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "e.g., test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "Search result page URL"
+    "message": "(2) Search result page URL"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
@@ -990,16 +990,19 @@
     "message": "How to use:"
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Enter any search keyword"
+    "message": "Enter any word in \"(1) Search keyword\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Copy & paste the URL of the search results page for that keyword"
+    "message": "Search that word on your target service and copy the result page URL"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Click \"Execute with Gemini\" to have AI generate a search URL template"
+    "message": "Paste that URL to \"(2) Search result page URL\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Use the generated template in the search URL field of the command"
+    "message": "Click \"Execute with Gemini\" → AI generates a search URL"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Copy & paste the generated search URL to the command's search URL field"
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Execute with Gemini"

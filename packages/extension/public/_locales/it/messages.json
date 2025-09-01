@@ -963,7 +963,7 @@
     "message": "Assistente IA"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Inserisci una parola chiave di ricerca e un URL dei risultati di ricerca, e l'IA genererà un modello di URL di ricerca."
+    "message": "Inserisci una parola chiave di ricerca e l'URL della pagina dei risultati di ricerca, poi clicca il pulsante esegui.\nL'IA genererà un URL di ricerca."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Esegui con Gemini"
@@ -975,28 +975,31 @@
     "message": "Come usare:"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Parola chiave di ricerca"
+    "message": "(1) Parola chiave di ricerca"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "es. test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "URL della pagina dei risultati di ricerca"
+    "message": "(2) URL della pagina dei risultati di ricerca"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Inserisci qualsiasi parola chiave di ricerca"
+    "message": "Inserisci qualsiasi parola in \"(1) Parola chiave di ricerca\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Copia e incolla l'URL della pagina dei risultati di ricerca per quella parola chiave"
+    "message": "Cerca quella parola nel servizio desiderato e copia l'URL della pagina dei risultati"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Fai clic su \"Esegui con Gemini\" per far generare all'IA un modello di URL di ricerca"
+    "message": "Incolla quell'URL in \"(2) URL della pagina dei risultati di ricerca\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Usa il modello generato nel campo URL di ricerca del comando"
+    "message": "Fai clic su \"Esegui con Gemini\" → L'IA genera un URL di ricerca"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Copia e incolla l'URL di ricerca generato nel campo URL di ricerca del comando"
   },
   "Option_searchUrlAssist_title": {
     "message": "Assistente URL di Ricerca"

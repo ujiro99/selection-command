@@ -930,7 +930,7 @@
     "message": "Asistente IA"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Ingrese una palabra clave de búsqueda y una URL de resultados de búsqueda, y la IA generará una plantilla de URL de búsqueda."
+    "message": "Ingrese una palabra clave de búsqueda y una URL de la página de resultados de búsqueda, luego haga clic en el botón de ejecutar.\nLa IA generará una URL de búsqueda."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Ejecutar con Gemini"
@@ -942,28 +942,31 @@
     "message": "Cómo usar:"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Palabra clave de búsqueda"
+    "message": "(1) Palabra clave de búsqueda"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "ej. test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "URL de página de resultados de búsqueda"
+    "message": "(2) URL de página de resultados de búsqueda"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Ingresar cualquier palabra clave de búsqueda"
+    "message": "Ingrese cualquier palabra en \"(1) Palabra clave de búsqueda\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Copiar y pegar la URL de la página de resultados de búsqueda para esa palabra clave"
+    "message": "Busque esa palabra en su servicio deseado y copie la URL de la página de resultados"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Hacer clic en \"Ejecutar con Gemini\" para que la IA genere una plantilla de URL de búsqueda"
+    "message": "Pegue esa URL en \"(2) URL de página de resultados de búsqueda\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Usar la plantilla generada en el campo de URL de búsqueda del comando"
+    "message": "Haga clic en \"Ejecutar con Gemini\" → La IA genera una URL de búsqueda"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Copie y pegue la URL de búsqueda generada en el campo de URL de búsqueda del comando"
   },
   "Option_searchUrlAssist_title": {
     "message": "Asistente de URL de Búsqueda"

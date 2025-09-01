@@ -930,7 +930,7 @@
     "message": "KI-Assistenz"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Geben Sie ein Suchschlüsselwort und eine Suchergebnis-URL ein, und lassen Sie KI eine Such-URL generieren."
+    "message": "Geben Sie ein Suchschlüsselwort und eine Suchergebnis-URL ein, dann klicken Sie auf die Ausführen-Schaltfläche.\nKI generiert eine Such-URL."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Mit Gemini ausführen"
@@ -942,28 +942,31 @@
     "message": "Anwendung:"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Suchschlüsselwort"
+    "message": "(1) Suchschlüsselwort"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "z.B. test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "Suchergebnis-Seiten-URL"
+    "message": "(2) Suchergebnis-Seiten-URL"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Beliebiges Suchschlüsselwort eingeben"
+    "message": "Geben Sie ein beliebiges Wort in \"(1) Suchschlüsselwort\" ein"
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Kopieren und Einfügen der URL der Suchergebnisseite für das Schlüsselwort"
+    "message": "Suchen Sie dieses Wort auf Ihrem gewünschten Service und kopieren Sie die Ergebnis-Seiten-URL"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Klicken Sie auf \"Mit Gemini ausführen\", um KI eine Such-URL-Vorlage generieren zu lassen"
+    "message": "Fügen Sie diese URL in \"(2) Suchergebnis-Seiten-URL\" ein"
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Verwenden Sie die generierte Vorlage im Such-URL-Feld des Befehls"
+    "message": "Klicken Sie auf \"Mit Gemini ausführen\" → KI generiert eine Such-URL"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Kopieren Sie die generierte Such-URL und fügen Sie sie in das Such-URL-Feld des Befehls ein"
   },
   "Option_searchUrlAssist_title": {
     "message": "Such-URL-Assistenz"

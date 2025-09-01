@@ -933,7 +933,7 @@
     "message": "Asisten AI"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Masukkan kata kunci pencarian dan URL hasil pencarian, dan AI akan menghasilkan template URL pencarian."
+    "message": "Masukkan kata kunci pencarian dan URL halaman hasil pencarian, lalu klik tombol eksekusi.\nAI akan menghasilkan URL pencarian."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Jalankan dengan Gemini"
@@ -945,28 +945,31 @@
     "message": "Cara penggunaan:"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Kata kunci pencarian"
+    "message": "(1) Kata kunci pencarian"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "contoh: test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "URL halaman hasil pencarian"
+    "message": "(2) URL halaman hasil pencarian"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Masukkan kata kunci pencarian apa pun"
+    "message": "Masukkan kata apa pun di \"(1) Kata kunci pencarian\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Salin & tempel URL halaman hasil pencarian untuk kata kunci tersebut"
+    "message": "Cari kata tersebut di layanan yang diinginkan dan salin URL halaman hasil"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Klik \"Jalankan dengan Gemini\" untuk membuat AI menghasilkan template URL pencarian"
+    "message": "Tempel URL tersebut ke \"(2) URL halaman hasil pencarian\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Gunakan template yang dihasilkan di bidang URL pencarian perintah"
+    "message": "Klik \"Jalankan dengan Gemini\" → AI menghasilkan URL pencarian"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Salin & tempel URL pencarian yang dihasilkan ke bidang URL pencarian perintah"
   },
   "Option_searchUrlAssist_title": {
     "message": "Asisten URL Pencarian"

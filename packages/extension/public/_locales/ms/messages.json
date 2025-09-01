@@ -966,7 +966,7 @@
     "message": "Pembantu AI"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Masukkan kata kunci carian dan URL hasil carian, dan AI akan menjana templat URL carian."
+    "message": "Masukkan kata kunci carian dan URL halaman hasil carian, kemudian klik butang laksana.\nAI akan menjana URL carian."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Jalankan dengan Gemini"
@@ -978,28 +978,31 @@
     "message": "Cara penggunaan:"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Kata kunci carian"
+    "message": "(1) Kata kunci carian"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "cth: test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "URL halaman hasil carian"
+    "message": "(2) URL halaman hasil carian"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Masukkan sebarang kata kunci carian"
+    "message": "Masukkan sebarang perkataan dalam \"(1) Kata kunci carian\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Salin & tampal URL halaman hasil carian untuk kata kunci tersebut"
+    "message": "Cari perkataan tersebut di perkhidmatan yang dikehendaki dan salin URL halaman hasil"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Klik \"Jalankan dengan Gemini\" untuk biarkan AI menjana templat URL carian"
+    "message": "Tampal URL tersebut ke \"(2) URL halaman hasil carian\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Gunakan templat yang dijana dalam medan URL carian arahan"
+    "message": "Klik \"Jalankan dengan Gemini\" → AI menjana URL carian"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Salin & tampal URL carian yang dijana ke medan URL carian arahan"
   },
   "Option_searchUrlAssist_title": {
     "message": "Pembantu URL Carian"

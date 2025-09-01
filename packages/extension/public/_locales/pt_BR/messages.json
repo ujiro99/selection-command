@@ -966,7 +966,7 @@
     "message": "Assistente IA"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Digite uma palavra-chave de pesquisa e URL de resultados de pesquisa, e a IA gerará um modelo de URL de pesquisa."
+    "message": "Digite uma palavra-chave de pesquisa e a URL da página de resultados de pesquisa, depois clique no botão executar.\nA IA gerará uma URL de pesquisa."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Executar com Gemini"
@@ -978,28 +978,31 @@
     "message": "Como usar:"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Palavra-chave de pesquisa"
+    "message": "(1) Palavra-chave de pesquisa"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "ex: test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "URL da página de resultados de pesquisa"
+    "message": "(2) URL da página de resultados de pesquisa"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Digite qualquer palavra-chave de pesquisa"
+    "message": "Digite qualquer palavra em \"(1) Palavra-chave de pesquisa\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Copie e cole a URL da página de resultados de pesquisa para essa palavra-chave"
+    "message": "Pesquise essa palavra no seu serviço desejado e copie a URL da página de resultados"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Clique em \"Executar com Gemini\" para que a IA gere um modelo de URL de pesquisa"
+    "message": "Cole essa URL em \"(2) URL da página de resultados de pesquisa\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Use o modelo gerado no campo URL de pesquisa do comando"
+    "message": "Clique em \"Executar com Gemini\" → A IA gera uma URL de pesquisa"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Copie e cole a URL de pesquisa gerada no campo URL de pesquisa do comando"
   },
   "Option_searchUrlAssist_title": {
     "message": "Assistente de URL de Pesquisa"
