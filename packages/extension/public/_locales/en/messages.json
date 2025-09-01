@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Inherit Menu Display Position from global settings"
   },
+  "Option_popupAnimation": {
+    "message": "Menu Display Animation"
+  },
   "Option_inherit": {
     "message": "Inherit"
   },
@@ -606,16 +609,16 @@
     "message": "Specify the margin size scaling. Default: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Display delay"
+    "message": "Popup Display Delay"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Specify the amount of time before the display begins. Default: 250 ms"
+    "message": "Time until display starts. Default: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Display animation time"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Specify the display animation time. Default: 150 ms"
+    "message": "Animation duration when showing. Default: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Edit"
@@ -969,34 +972,37 @@
     "message": "Search URL Assist"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Enter a search keyword and search result URL, and AI will generate a search URL template."
+    "message": "Enter a search keyword and search result page URL, then click the execute button.\nAI will generate a search URL."
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Search keyword"
+    "message": "(1) Search keyword"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "e.g., test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "Search result page URL"
+    "message": "(2) Search result page URL"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "How to use:"
+    "message": "How to use"
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Enter any search keyword"
+    "message": "Enter any word in \"(1) Search keyword\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Copy & paste the URL of the search results page for that keyword"
+    "message": "Search that word on your target service and copy the result page URL"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Click \"Execute with Gemini\" to have AI generate a search URL template"
+    "message": "Paste that URL to \"(2) Search result page URL\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Use the generated template in the search URL field of the command"
+    "message": "Click \"Execute with Gemini\" → AI generates a search URL"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Copy the generated search URL and paste it into the command's search URL field"
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Execute with Gemini"

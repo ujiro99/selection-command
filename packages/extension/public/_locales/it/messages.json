@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Eredita posizione menu dalle impostazioni globali"
   },
+  "Option_popupAnimation": {
+    "message": "Animazione Visualizzazione Menu"
+  },
   "Option_inherit": {
     "message": "Eredita"
   },
@@ -564,16 +567,16 @@
     "message": "Specifica la scala del padding. Predefinito: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Ritardo visualizzazione"
+    "message": "Ritardo Visualizzazione Popup"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Specifica il tempo fino all'inizio della visualizzazione. Predefinito: 250 ms"
+    "message": "Tempo fino all'inizio della visualizzazione. Predefinito: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Durata animazione visualizzazione"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Specifica la durata dell'animazione di visualizzazione. Predefinito: 150 ms"
+    "message": "Durata dell'animazione durante la visualizzazione. Predefinito: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Modifica"
@@ -960,7 +963,7 @@
     "message": "Assistente IA"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Inserisci una parola chiave di ricerca e un URL dei risultati di ricerca, e l'IA genererà un modello di URL di ricerca."
+    "message": "Inserisci una parola chiave di ricerca e l'URL della pagina dei risultati di ricerca, poi clicca il pulsante esegui.\nL'IA genererà un URL di ricerca."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Esegui con Gemini"
@@ -969,31 +972,34 @@
     "message": "Esecuzione in corso..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Come usare:"
+    "message": "Modalità d'uso"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Parola chiave di ricerca"
+    "message": "(1) Parola chiave di ricerca"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "es. test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "URL della pagina dei risultati di ricerca"
+    "message": "(2) URL della pagina dei risultati di ricerca"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Inserisci qualsiasi parola chiave di ricerca"
+    "message": "Inserisci qualsiasi parola in \"(1) Parola chiave di ricerca\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Copia e incolla l'URL della pagina dei risultati di ricerca per quella parola chiave"
+    "message": "Cerca quella parola nel servizio desiderato e copia l'URL della pagina dei risultati"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Fai clic su \"Esegui con Gemini\" per far generare all'IA un modello di URL di ricerca"
+    "message": "Incolla quell'URL in \"(2) URL della pagina dei risultati di ricerca\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Usa il modello generato nel campo URL di ricerca del comando"
+    "message": "Fai clic su \"Esegui con Gemini\" → L'IA genera un URL di ricerca"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Copia e incolla l'URL di ricerca generato nel campo URL di ricerca del comando"
   },
   "Option_searchUrlAssist_title": {
     "message": "Assistente URL di Ricerca"

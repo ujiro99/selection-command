@@ -9,7 +9,7 @@ export const searchUrlAssistAction = {
   openMode: OPEN_MODE.PAGE_ACTION,
   popupOption: {
     height: 600,
-    width: 960,
+    width: 1000,
   },
   pageActionOption: {
     openMode: PAGE_ACTION_OPEN_MODE.POPUP,

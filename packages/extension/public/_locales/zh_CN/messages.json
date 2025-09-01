@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "从全局设置获取菜单位置"
   },
+  "Option_popupAnimation": {
+    "message": "菜单显示动画"
+  },
   "Option_inherit": {
     "message": "获取"
   },
@@ -564,16 +567,16 @@
     "message": "指定内边距的缩放。默认：1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "显示延迟"
+    "message": "弹窗显示延迟"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "指定显示开始前的时间。默认：250毫秒"
+    "message": "到显示开始的时间。默认：250毫秒"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "显示动画持续时间"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "指定显示动画的持续时间。默认：150毫秒"
+    "message": "显示时的动画持续时间。默认：150毫秒"
   },
   "Option_edit_tooltip": {
     "message": "编辑"
@@ -960,7 +963,7 @@
     "message": "AI 助手"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "输入搜索关键词和搜索结果 URL，AI 将生成搜索 URL 模板。"
+    "message": "输入搜索关键词和搜索结果页面的 URL，然后点击执行按钮。\nAI 将生成搜索 URL。"
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "使用 Gemini 执行"
@@ -969,31 +972,34 @@
     "message": "正在执行..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "使用方法："
+    "message": "使用方法"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "搜索关键词"
+    "message": "(1) 搜索关键词"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "例：test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "搜索结果页面 URL"
+    "message": "(2) 搜索结果页面 URL"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "输入任意搜索关键词"
+    "message": "在“(1) 搜索关键词”中输入任意单词"
   },
   "Option_searchUrlAssist_step2": {
-    "message": "复制并粘贴该关键词搜索结果页面的 URL"
+    "message": "在您的目标服务中搜索该单词，并复制结果页面的 URL"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "点击\"使用 Gemini 执行\"让 AI 生成搜索 URL 模板"
+    "message": "将该 URL 粘贴到“(2) 搜索结果页面 URL”"
   },
   "Option_searchUrlAssist_step4": {
-    "message": "在命令的搜索 URL 字段中使用生成的模板"
+    "message": "点击“使用 Gemini 执行” → AI 生成搜索 URL"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "复制生成的搜索 URL 并粘贴到命令的搜索 URL 字段"
   },
   "Option_searchUrlAssist_title": {
     "message": "搜索 URL 助手"

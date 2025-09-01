@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Наследовать позицию меню из глобальных настроек"
   },
+  "Option_popupAnimation": {
+    "message": "Анимация Отображения Меню"
+  },
   "Option_inherit": {
     "message": "Наследовать"
   },
@@ -564,16 +567,16 @@
     "message": "Укажите масштаб отступов. По умолчанию: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Задержка отображения"
+    "message": "Задержка Отображения Попапа"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Укажите время до начала отображения. По умолчанию: 250 мс"
+    "message": "Время до начала отображения. По умолчанию: 250 мс"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Длительность анимации отображения"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Укажите длительность анимации отображения. По умолчанию: 150 мс"
+    "message": "Длительность анимации при отображении. По умолчанию: 150 мс"
   },
   "Option_edit_tooltip": {
     "message": "Редактировать"
@@ -960,7 +963,7 @@
     "message": "Помощник ИИ"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Введите ключевое слово поиска и URL результатов поиска, и ИИ создаст шаблон URL поиска."
+    "message": "Введите ключевое слово поиска и URL страницы результатов поиска, затем нажмите кнопку выполнить.\nИИ создаст URL поиска."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Выполнить с Gemini"
@@ -969,31 +972,34 @@
     "message": "Выполнение..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Как использовать:"
+    "message": "Способ использования"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Ключевое слово поиска"
+    "message": "(1) Ключевое слово поиска"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "напр.: test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "URL страницы результатов поиска"
+    "message": "(2) URL страницы результатов поиска"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Введите любое ключевое слово поиска"
+    "message": "Введите любое слово в \"(1) Ключевое слово поиска\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Скопируйте и вставьте URL страницы результатов поиска для этого ключевого слова"
+    "message": "Поищите это слово в желаемом сервисе и скопируйте URL страницы результатов"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Нажмите \"Выполнить с Gemini\", чтобы ИИ создал шаблон URL поиска"
+    "message": "Вставьте этот URL в \"(2) URL страницы результатов поиска\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Используйте созданный шаблон в поле URL поиска команды"
+    "message": "Нажмите \"Выполнить с Gemini\" → ИИ создаст URL поиска"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Скопируйте созданный URL поиска и вставьте в поле URL поиска команды"
   },
   "Option_searchUrlAssist_title": {
     "message": "Помощник URL Поиска"

@@ -16,7 +16,8 @@ import { LoadingIcon } from "@/components/option/LoadingIcon"
 import { InputField } from "@/components/option/field/InputField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { SwitchField } from "@/components/option/field/SwitchField"
-import { PopupPlacementField } from "@/components/option/field/PopupPlacementField"
+import { PopupPlacement } from "@/components/option/editor/PopupPlacement"
+import { PopupAnimation } from "@/components/option/editor/PopupAnimation"
 import { CommandList } from "@/components/option/editor/CommandList"
 import {
   PageRuleList,
@@ -231,6 +232,42 @@ export function SettingForm({ className }: { className?: string }) {
     setValue("popupPlacement", popupPlacement)
   }
 
+  const handlePopupAnimationSubmit = async (data: {
+    popupDelay: number
+    popupDuration: number
+  }) => {
+    const userStyles = getValues("userStyles")
+    const updatedStyles = userStyles.map((style) => {
+      if (style.name === STYLE_VARIABLE.POPUP_DELAY) {
+        return { ...style, value: data.popupDelay }
+      }
+      if (style.name === STYLE_VARIABLE.POPUP_DURATION) {
+        return { ...style, value: data.popupDuration }
+      }
+      return style
+    })
+    setValue("userStyles", updatedStyles)
+  }
+
+  const getAnimationDefaultValues = () => {
+    const userStyles = getValues("userStyles") || []
+    const popupDelay =
+      userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)?.value || 0
+    const popupDuration =
+      userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DURATION)?.value ||
+      0
+    return {
+      popupDelay:
+        typeof popupDelay === "number"
+          ? popupDelay
+          : parseInt(String(popupDelay)) || 0,
+      popupDuration:
+        typeof popupDuration === "number"
+          ? popupDuration
+          : parseInt(String(popupDuration)) || 0,
+    }
+  }
+
   // Set default value for startupMethod.
   useEffect(() => {
     if (startupMethod === STARTUP_METHOD.KEYBOARD) {
@@ -390,11 +427,18 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {getValues("popupPlacement") != null &&
             startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
-              <PopupPlacementField
+              <PopupPlacement
                 onSubmit={handlePopupPlacementSubmit}
                 defaultValues={getValues("popupPlacement")}
               />
             )}
+
+          {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
+            <PopupAnimation
+              onSubmit={handlePopupAnimationSubmit}
+              defaultValues={getAnimationDefaultValues()}
+            />
+          )}
         </section>
         <hr />
         <section id="commands" className="space-y-3">

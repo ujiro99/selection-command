@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "वैश्विक सेटिंग्स से मेनू प्लेसमेंट प्राप्त करें"
   },
+  "Option_popupAnimation": {
+    "message": "मेनू प्रदर्शन एनिमेशन"
+  },
   "Option_inherit": {
     "message": "प्राप्त करें"
   },
@@ -564,16 +567,16 @@
     "message": "पैडिंग का स्केल निर्दिष्ट करें। डिफ़ॉल्ट: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "प्रदर्शन विलंब"
+    "message": "पॉपअप प्रदर्शन विलंब"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "प्रदर्शन शुरू होने तक का समय निर्दिष्ट करें। डिफ़ॉल्ट: 250 मिलीसेकंड"
+    "message": "प्रदर्शन शुरू होने तक का समय। डिफ़ॉल्ट: 250 मिलीसेकंड"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "प्रदर्शन एनिमेशन अवधि"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "प्रदर्शन एनिमेशन की अवधि निर्दिष्ट करें। डिफ़ॉल्ट: 150 मिलीसेकंड"
+    "message": "दिखाते वक्त एनिमेशन की अवधि। डिफ़ॉल्ट: 150 मिलीसेकंड"
   },
   "Option_edit_tooltip": {
     "message": "संपादित करें"
@@ -927,7 +930,7 @@
     "message": "AI सहायक"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "खोज कीवर्ड और खोज परिणाम URL दर्ज करें, और AI एक खोज URL टेम्पलेट गेनरेट करेगा।"
+    "message": "खोज कीवर्ड और खोज परिणाम पेज का URL दर्ज करें, फिर एक्जीक्यूट बटन दबाएं।\nAI एक खोज URL गेनरेट करेगा।"
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Gemini के साथ चलाएं"
@@ -936,31 +939,34 @@
     "message": "चला रहा है..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "कैसे उपयोग करें:"
+    "message": "उपयोग की विधि"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "खोज कीवर्ड"
+    "message": "(1) खोज कीवर्ड"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "उदा. test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "खोज परिणाम पेज URL"
+    "message": "(2) खोज परिणाम पेज URL"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "कोई भी खोज कीवर्ड दर्ज करें"
+    "message": "\"(1) खोज कीवर्ड\" में कोई भी शब्द दर्ज करें"
   },
   "Option_searchUrlAssist_step2": {
-    "message": "उस कीवर्ड के खोज परिणाम पेज का URL कॉपी और पेस्ट करें"
+    "message": "अपनी वांछित सेवा पर उस शब्द को खोजें और परिणाम पेज का URL कॉपी करें"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "\"Gemini के साथ चलाएं\" पर क्लिक करके AI से खोज URL टेम्पलेट गेनरेट कराएं"
+    "message": "उस URL को \"(2) खोज परिणाम पेज URL\" में पेस्ट करें"
   },
   "Option_searchUrlAssist_step4": {
-    "message": "आदेश के खोज URL फ़ील्ड में गेनरेट किे गए टेम्पलेट का उपयोग करें"
+    "message": "\"Gemini के साथ चलाएं\" पर क्लिक करें → AI खोज URL गेनरेट करता है"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "जेनरेट किया गया खोज URL कॉपी करके कमांड के खोज URL फ़ील्ड में पेस्ट करें"
   },
   "Option_searchUrlAssist_title": {
     "message": "खोज URL सहायक"

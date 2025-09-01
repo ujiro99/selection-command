@@ -6,27 +6,24 @@ export type Command = SelectionCommand & Analytics
 
 export type SelectionCommand = SearchCommand | PageActionCommand
 
-export type SearchCommand = {
+type BaseCommand = {
   id: string
   title: string
+  openMode: OPEN_MODE
   description: string
+  iconUrl: string
   tags: Tag[]
   addedAt: string
-  openMode: OPEN_MODE
+  revision?: number
+}
+
+export type SearchCommand = BaseCommand & {
   searchUrl: string
-  iconUrl: string
   openModeSecondary: OPEN_MODE
   spaceEncoding: SPACE_ENCODING
 }
 
-export type PageActionCommand = {
-  id: string
-  title: string
-  description: string
-  tags: Tag[]
-  addedAt: string
-  openMode: OPEN_MODE
-  iconUrl: string
+export type PageActionCommand = BaseCommand & {
   pageActionOption: PageActionOption
 }
 

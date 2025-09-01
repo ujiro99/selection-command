@@ -1,9 +1,8 @@
 import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { MousePointer } from "lucide-react"
+import { MousePointer, Check } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Check } from "lucide-react"
 
 import { InputField } from "@/components/option/field/InputField"
 import {
@@ -23,7 +22,7 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 type PopupPlacementType = z.infer<typeof popupPlacementSchema>
 
-type PopupPlacementFieldType = {
+export type PopupPlacementFieldType = {
   onSubmit: (data: PopupPlacementType) => void
   defaultValues: PopupPlacementType
 }
@@ -58,138 +57,135 @@ export const PopupPlacementField = ({
   const isAlignOffsetDisabled = align === ALIGN.center
 
   return (
-    <section>
-      <h2 className="text-sm font-bold">{t("popupPlacement")}</h2>
-      <div className="flex flex-col gap-4 ml-4 mt-3">
-        <FormField
-          control={form.control}
-          name="side"
-          render={({ field }) => (
-            <FormItem className="flex items-start gap-1">
-              <div className="w-2/6">
-                <FormLabel>{t("popupPlacement_side")}</FormLabel>
-                <FormDescription className="mt-2 text-balance break-keep wrap-anywhere">
-                  {t("popupPlacement_side_desc")}
-                </FormDescription>
-              </div>
-              <div className="w-4/6">
-                <FormControl>
-                  <ToggleGroup
-                    type="single"
-                    variant="outline"
-                    value={field.value}
-                    onValueChange={(val) => {
-                      if (val) field.onChange(val)
-                    }}
-                    className="grid grid-cols-3 gap-2 p-0.5"
-                  >
-                    <div />
-                    <SideItem side={SIDE.top} current={field.value} />
-                    <div />
+    <div className="flex flex-col gap-4 ml-4">
+      <FormField
+        control={form.control}
+        name="side"
+        render={({ field }) => (
+          <FormItem className="flex items-start gap-1">
+            <div className="w-2/6">
+              <FormLabel>{t("popupPlacement_side")}</FormLabel>
+              <FormDescription className="mt-2 text-balance break-keep wrap-anywhere">
+                {t("popupPlacement_side_desc")}
+              </FormDescription>
+            </div>
+            <div className="w-4/6">
+              <FormControl>
+                <ToggleGroup
+                  type="single"
+                  variant="outline"
+                  value={field.value}
+                  onValueChange={(val) => {
+                    if (val) field.onChange(val)
+                  }}
+                  className="grid grid-cols-3 gap-2 p-0.5"
+                >
+                  <div />
+                  <SideItem side={SIDE.top} current={field.value} />
+                  <div />
 
-                    <SideItem side={SIDE.left} current={field.value} />
-                    <div className="flex items-center flex-col gap-0.5">
-                      <MousePointer size={18} />
-                      <span>{t("mouse_pointer")}</span>
-                    </div>
-                    <SideItem side={SIDE.right} current={field.value} />
+                  <SideItem side={SIDE.left} current={field.value} />
+                  <div className="flex items-center flex-col gap-0.5">
+                    <MousePointer size={18} />
+                    <span>{t("mouse_pointer")}</span>
+                  </div>
+                  <SideItem side={SIDE.right} current={field.value} />
 
-                    <div />
-                    <SideItem side={SIDE.bottom} current={field.value} />
-                    <div />
-                  </ToggleGroup>
-                </FormControl>
-                <FormMessage />
-              </div>
-            </FormItem>
-          )}
-        />
-        <InputField
-          control={form.control}
-          name="sideOffset"
-          formLabel={t("popupPlacement_sideOffset")}
-          description={t("popupPlacement_sideOffset_desc")}
-          unit="px"
-          inputProps={{
-            type: "number",
-            min: 0,
-            max: 100,
-            step: 5,
-            ...register("sideOffset", {
-              valueAsNumber: true,
-            }),
-          }}
-        />
-        <FormField
-          control={form.control}
-          name="align"
-          render={({ field }) => (
-            <FormItem className="flex items-start gap-1">
-              <div className="w-2/6">
-                <FormLabel>{t("popupPlacement_align")}</FormLabel>
-                <FormDescription className="text-balance break-keep wrap-anywhere">
-                  {t("popupPlacement_align_desc")}
-                </FormDescription>
-              </div>
-              <div className="w-4/6">
-                <FormControl>
-                  <ToggleGroup
-                    type="single"
-                    variant="outline"
-                    value={field.value}
-                    onValueChange={(val) => {
-                      if (val) field.onChange(val)
-                    }}
-                    className="grid grid-cols-3 gap-2 p-0.5"
-                  >
-                    <AlignItem
-                      side={side}
-                      align={ALIGN.start}
-                      current={field.value}
-                    />
-                    <AlignItem
-                      side={side}
-                      align={ALIGN.center}
-                      current={field.value}
-                    />
-                    <AlignItem
-                      side={side}
-                      align={ALIGN.end}
-                      current={field.value}
-                    />
-                  </ToggleGroup>
-                </FormControl>
-                <FormMessage />
-              </div>
-            </FormItem>
-          )}
-        />
-        <InputField
-          control={form.control}
-          name="alignOffset"
-          formLabel={t("popupPlacement_alignOffset")}
-          description={
-            isAlignOffsetDisabled
-              ? t("popupPlacement_alignOffset_disabled")
-              : t("popupPlacement_alignOffset_desc")
-          }
-          unit="px"
-          inputProps={{
-            type: "number",
-            min: -100,
-            max: 100,
-            step: 5,
-            disabled: isAlignOffsetDisabled,
-            className: cn(
-              isAlignOffsetDisabled && "opacity-80 cursor-not-allowed",
-            ),
-            ...register("alignOffset", {
-              valueAsNumber: true,
-            }),
-          }}
-        />
-      </div>
-    </section>
+                  <div />
+                  <SideItem side={SIDE.bottom} current={field.value} />
+                  <div />
+                </ToggleGroup>
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        )}
+      />
+      <InputField
+        control={form.control}
+        name="sideOffset"
+        formLabel={t("popupPlacement_sideOffset")}
+        description={t("popupPlacement_sideOffset_desc")}
+        unit="px"
+        inputProps={{
+          type: "number",
+          min: 0,
+          max: 100,
+          step: 5,
+          ...register("sideOffset", {
+            valueAsNumber: true,
+          }),
+        }}
+      />
+      <FormField
+        control={form.control}
+        name="align"
+        render={({ field }) => (
+          <FormItem className="flex items-start gap-1">
+            <div className="w-2/6">
+              <FormLabel>{t("popupPlacement_align")}</FormLabel>
+              <FormDescription className="text-balance break-keep wrap-anywhere">
+                {t("popupPlacement_align_desc")}
+              </FormDescription>
+            </div>
+            <div className="w-4/6">
+              <FormControl>
+                <ToggleGroup
+                  type="single"
+                  variant="outline"
+                  value={field.value}
+                  onValueChange={(val) => {
+                    if (val) field.onChange(val)
+                  }}
+                  className="grid grid-cols-3 gap-2 p-0.5"
+                >
+                  <AlignItem
+                    side={side}
+                    align={ALIGN.start}
+                    current={field.value}
+                  />
+                  <AlignItem
+                    side={side}
+                    align={ALIGN.center}
+                    current={field.value}
+                  />
+                  <AlignItem
+                    side={side}
+                    align={ALIGN.end}
+                    current={field.value}
+                  />
+                </ToggleGroup>
+              </FormControl>
+              <FormMessage />
+            </div>
+          </FormItem>
+        )}
+      />
+      <InputField
+        control={form.control}
+        name="alignOffset"
+        formLabel={t("popupPlacement_alignOffset")}
+        description={
+          isAlignOffsetDisabled
+            ? t("popupPlacement_alignOffset_disabled")
+            : t("popupPlacement_alignOffset_desc")
+        }
+        unit="px"
+        inputProps={{
+          type: "number",
+          min: -100,
+          max: 100,
+          step: 5,
+          disabled: isAlignOffsetDisabled,
+          className: cn(
+            isAlignOffsetDisabled && "opacity-80 cursor-not-allowed",
+          ),
+          ...register("alignOffset", {
+            valueAsNumber: true,
+          }),
+        }}
+      />
+    </div>
   )
 }
 

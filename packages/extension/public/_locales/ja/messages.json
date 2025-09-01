@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "メニュー表示位置を全体設定から継承"
   },
+  "Option_popupAnimation": {
+    "message": "メニュー表示アニメーション"
+  },
   "Option_inherit": {
     "message": "継承"
   },
@@ -677,6 +680,12 @@
   "Option_userStyles_desc_font_scale": {
     "message": "文字サイズの倍率を指定します。デフォルト: 1"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "文字の色"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "文字の色を指定します。デフォルト: #0F172A"
+  },
   "Option_userStyles_option_image_scale": {
     "message": "アイコンサイズの倍率"
   },
@@ -690,16 +699,16 @@
     "message": "余白サイズの倍率を指定します。デフォルト: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "表示遅延"
+    "message": "ポップアップ表示遅延"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "表示が開始されるまでの時間を指定します。デフォルト: 250 ms"
+    "message": "表示が開始されるまでの時間。デフォルト: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "表示アニメーション時間"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "表示開始時のアニメーション時間を指定します。デフォルト: 150 ms"
+    "message": "表示開始時のアニメーション時間。デフォルト: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "編集"
@@ -1026,34 +1035,37 @@
     "message": "検索URL アシスト"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "検索キーワードと検索結果URLを入力して、実行ボタンを押してください。\nAIが検索URLを生成します。"
+    "message": "検索キーワードと検索結果ページのURLを入力して、実行ボタンを押してください。\nAIが検索URLを生成します。"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "検索キーワード"
+    "message": "(1) 検索キーワード"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "例: test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "検索結果ページのURL"
+    "message": "(2) 検索結果ページのURL"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "使用方法："
+    "message": "使用方法"
   },
   "Option_searchUrlAssist_step1": {
-    "message": "任意の検索キーワードを入力"
+    "message": "「(1)検索キーワード」へ任意の単語を入力"
   },
   "Option_searchUrlAssist_step2": {
-    "message": "そのキーワードで実際に検索。結果ページのURLをコピー&ペースト"
+    "message": "目的のサービスでその単語を検索し、結果ページのURLをコピー"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "「Geminiで実行」をクリック → AIが検索URLを生成"
+    "message": "そのURLを「(2)検索結果ページのURL」へペースト"
   },
   "Option_searchUrlAssist_step4": {
-    "message": "生成された検索URLを、コマンドの検索URL欄にコピー&ペースト"
+    "message": "「Geminiで実行」をクリック → AIが検索URLを生成"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "生成された検索URLをコピーし、コマンドの検索URL欄へペースト"
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Geminiで実行"

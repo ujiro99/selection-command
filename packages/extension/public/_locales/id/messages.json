@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "Warisi Posisi Tampilan Menu dari pengaturan global"
   },
+  "Option_popupAnimation": {
+    "message": "Animasi Tampilan Menu"
+  },
   "Option_inherit": {
     "message": "Warisi"
   },
@@ -564,16 +567,16 @@
     "message": "Tentukan penskalaan ukuran margin. Default: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "Tunda tampilan"
+    "message": "Tunda Tampilan Popup"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "Tentukan jumlah waktu sebelum tampilan dimulai. Default: 250 ms"
+    "message": "Waktu hingga tampilan dimulai. Default: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "Waktu animasi tampilan"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "Tentukan waktu animasi tampilan. Default: 150 ms"
+    "message": "Durasi animasi saat menampilkan. Default: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "Edit"
@@ -930,7 +933,7 @@
     "message": "Asisten AI"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "Masukkan kata kunci pencarian dan URL hasil pencarian, dan AI akan menghasilkan template URL pencarian."
+    "message": "Masukkan kata kunci pencarian dan URL halaman hasil pencarian, lalu klik tombol eksekusi.\nAI akan menghasilkan URL pencarian."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Jalankan dengan Gemini"
@@ -939,31 +942,34 @@
     "message": "Menjalankan..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Cara penggunaan:"
+    "message": "Cara penggunaan"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "Kata kunci pencarian"
+    "message": "(1) Kata kunci pencarian"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "contoh: test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "URL halaman hasil pencarian"
+    "message": "(2) URL halaman hasil pencarian"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "Masukkan kata kunci pencarian apa pun"
+    "message": "Masukkan kata apa pun di \"(1) Kata kunci pencarian\""
   },
   "Option_searchUrlAssist_step2": {
-    "message": "Salin & tempel URL halaman hasil pencarian untuk kata kunci tersebut"
+    "message": "Cari kata tersebut di layanan yang diinginkan dan salin URL halaman hasil"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "Klik \"Jalankan dengan Gemini\" untuk membuat AI menghasilkan template URL pencarian"
+    "message": "Tempel URL tersebut ke \"(2) URL halaman hasil pencarian\""
   },
   "Option_searchUrlAssist_step4": {
-    "message": "Gunakan template yang dihasilkan di bidang URL pencarian perintah"
+    "message": "Klik \"Jalankan dengan Gemini\" → AI menghasilkan URL pencarian"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "Salin URL pencarian yang dihasilkan dan tempelkan ke bidang URL pencarian perintah"
   },
   "Option_searchUrlAssist_title": {
     "message": "Asisten URL Pencarian"

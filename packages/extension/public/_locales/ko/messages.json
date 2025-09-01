@@ -200,6 +200,9 @@
   "Option_inheritPopupPlacement": {
     "message": "전역 설정에서 메뉴 표시 위치 상속"
   },
+  "Option_popupAnimation": {
+    "message": "메뉴 표시 애니메이션"
+  },
   "Option_inherit": {
     "message": "상속"
   },
@@ -564,16 +567,16 @@
     "message": "여백 스케일을 지정합니다. 기본값: 1"
   },
   "Option_userStyles_option_popup_delay": {
-    "message": "표시 지연"
+    "message": "팝업 표시 지연"
   },
   "Option_userStyles_desc_popup_delay": {
-    "message": "표시 시작까지의 시간을 지정합니다. 기본값: 250 ms"
+    "message": "표시 시작까지의 시간. 기본값: 250 ms"
   },
   "Option_userStyles_option_popup_duration": {
     "message": "표시 애니메이션 시간"
   },
   "Option_userStyles_desc_popup_duration": {
-    "message": "표시 애니메이션 시간을 지정합니다. 기본값: 150 ms"
+    "message": "표시시 애니메이션 지속 시간. 기본값: 150 ms"
   },
   "Option_edit_tooltip": {
     "message": "편집"
@@ -960,7 +963,7 @@
     "message": "AI 어시스턴트"
   },
   "Option_searchUrlAssist_desc": {
-    "message": "검색 키워드와 검색 결과 URL을 입력하면 AI가 검색 URL 템플릿을 생성합니다."
+    "message": "검색 키워드와 검색 결과 페이지 URL을 입력하고 실행 버튼을 클릭하세요.\nAI가 검색 URL을 생성합니다."
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Gemini로 실행"
@@ -969,31 +972,34 @@
     "message": "실행 중..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "사용 법:"
+    "message": "사용 방법"
   },
   "Option_searchUrlAssist_searchKeyword": {
-    "message": "검색 키워드"
+    "message": "(1) 검색 키워드"
   },
   "Option_searchUrlAssist_searchKeyword_placeholder": {
     "message": "예: test"
   },
   "Option_searchUrlAssist_searchResultUrl": {
-    "message": "검색 결과 페이지 URL"
+    "message": "(2) 검색 결과 페이지 URL"
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_step1": {
-    "message": "임의의 검색 키워드 입력"
+    "message": "\"(1) 검색 키워드\"에 임의의 단어 입력"
   },
   "Option_searchUrlAssist_step2": {
-    "message": "해당 키워드의 검색 결과 페이지 URL 복사 & 붙여넣기"
+    "message": "원하는 서비스에서 해당 단어를 검색하고 결과 페이지 URL 복사"
   },
   "Option_searchUrlAssist_step3": {
-    "message": "\"Gemini로 실행\" 클릭하여 AI가 검색 URL 템플릿을 생성하도록 하기"
+    "message": "그 URL을 \"(2) 검색 결과 페이지 URL\"에 붙여넣기"
   },
   "Option_searchUrlAssist_step4": {
-    "message": "명령어의 검색 URL 필드에 생성된 템플릿 사용"
+    "message": "\"Gemini로 실행\" 클릭 → AI가 검색 URL 생성"
+  },
+  "Option_searchUrlAssist_step5": {
+    "message": "생성된 검색 URL을 복사하여 명령의 검색 URL 필드에 붙여넣기"
   },
   "Option_searchUrlAssist_title": {
     "message": "검색 URL 어시스턴트"

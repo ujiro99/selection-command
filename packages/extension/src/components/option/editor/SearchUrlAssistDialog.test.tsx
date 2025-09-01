@@ -85,6 +85,21 @@ vi.mock("@/components/ui/button", () => ({
   ),
 }))
 
+// Mock Collapsible components
+vi.mock("@/components/ui/collapsible", () => ({
+  Collapsible: ({ children }: any) => (
+    <div data-testid="collapsible">{children}</div>
+  ),
+  CollapsibleTrigger: ({ children, onClick }: any) => (
+    <button data-testid="collapsible-trigger" onClick={onClick}>
+      {children}
+    </button>
+  ),
+  CollapsibleContent: ({ children }: any) => (
+    <div data-testid="collapsible-content">{children}</div>
+  ),
+}))
+
 // Mock react-hook-form
 vi.mock("react-hook-form", () => ({
   useForm: () => ({
@@ -112,14 +127,16 @@ vi.mock("@/services/i18n", () => ({
       Option_searchUrlAssist_searchResultUrl: "Search result page URL",
       Option_searchUrlAssist_searchResultUrl_placeholder:
         "https://www.google.com/search?q=test&...",
-      Option_searchUrlAssist_howToUse: "How to use:",
-      Option_searchUrlAssist_step1: "Enter any search keyword",
+      Option_searchUrlAssist_howToUse: "How to use",
+      Option_searchUrlAssist_step1: 'Enter any word in "(1) Search keyword"',
       Option_searchUrlAssist_step2:
         "Copy & paste the URL of the search results page for that keyword",
       Option_searchUrlAssist_step3:
         'Click "Execute with Gemini" to have AI generate a search URL template',
       Option_searchUrlAssist_step4:
         "Use the generated template in the search URL field of the command",
+      Option_searchUrlAssist_step5:
+        "Copy the generated search URL and paste it into the command's search URL field",
       Option_searchUrlAssist_executeButton: "Execute with Gemini",
       Option_searchUrlAssist_executing: "Launching...",
       Option_searchUrlAssist_validation_keyword_required:
@@ -172,6 +189,51 @@ vi.mock("@/const", async (importOriginal) => {
   }
 })
 
+// Mock CSS modules
+vi.mock("@/components/ui/collapsible.module.css", () => ({
+  default: {
+    collapse: "collapse-class",
+    iconRight: "icon-right-class",
+    CollapsibleContent: "collapsible-content-class",
+  },
+}))
+
+// Mock Lucide React icons
+vi.mock("lucide-react", () => ({
+  Sparkles: ({ size, className }: any) => (
+    <div data-testid="sparkles-icon" data-size={size} className={className} />
+  ),
+  CircleHelp: ({ className }: any) => (
+    <div data-testid="circle-help-icon" className={className} />
+  ),
+  ChevronRight: ({ size, className }: any) => (
+    <div
+      data-testid="chevron-right-icon"
+      data-size={size}
+      className={className}
+    />
+  ),
+}))
+
+// Mock PageAction and searchUrlAssistAction
+vi.mock("@/action/pageAction", () => ({
+  PageAction: {
+    execute: vi.fn(),
+  },
+}))
+
+vi.mock("@/services/searchUrlAssist", () => ({
+  searchUrlAssistAction: {
+    id: "search-url-assist",
+    title: "Search URL Assist",
+  },
+}))
+
+// Mock lib/utils
+vi.mock("@/lib/utils", () => ({
+  cn: (...args: any[]) => args.filter(Boolean).join(" "),
+}))
+
 describe("SearchUrlAssistDialog", () => {
   const mockOnOpenChange = vi.fn()
 
@@ -218,11 +280,17 @@ describe("SearchUrlAssistDialog", () => {
       <SearchUrlAssistDialog open={true} onOpenChange={mockOnOpenChange} />,
     )
 
-    expect(screen.getByText("How to use:")).toBeInTheDocument()
-    expect(screen.getByText("Enter any search keyword")).toBeInTheDocument()
+    // Click the collapsible trigger to expand usage instructions
+    const trigger = screen.getByTestId("collapsible-trigger")
+    trigger.click()
+
+    expect(screen.getByText("How to use")).toBeInTheDocument()
+    expect(
+      screen.getByText('Enter any word in "(1) Search keyword"'),
+    ).toBeInTheDocument()
     expect(
       screen.getByText(
-        "Copy & paste the URL of the search results page for that keyword",
+        "Copy the generated search URL and paste it into the command's search URL field",
       ),
     ).toBeInTheDocument()
   })
