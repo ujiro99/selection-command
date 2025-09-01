@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { ChevronRight } from "lucide-react"
@@ -50,7 +50,7 @@ export const PopupAnimation = ({ onSubmit, defaultValues }: Props) => {
     mode: "onChange",
     defaultValues: defaultValues,
   })
-  const { register } = form
+  const { register, reset } = form
 
   useEffect(() => {
     const subscription = form.subscribe({
@@ -68,16 +68,19 @@ export const PopupAnimation = ({ onSubmit, defaultValues }: Props) => {
   }, [onSubmit, form])
 
   // Sync local form when defaultValues change from parent
-  useEffect(() => {
-    const currentValues = form.getValues()
-    const hasChanged =
-      currentValues.popupDelay !== defaultValues.popupDelay ||
-      currentValues.popupDuration !== defaultValues.popupDuration
+  const previousDefaultValuesRef = useRef(defaultValues)
 
-    if (hasChanged) {
-      form.reset(defaultValues)
+  useEffect(() => {
+    const previousValues = previousDefaultValuesRef.current
+    const hasDefaultValuesChanged =
+      previousValues.popupDelay !== defaultValues.popupDelay ||
+      previousValues.popupDuration !== defaultValues.popupDuration
+
+    if (hasDefaultValuesChanged) {
+      reset(defaultValues)
+      previousDefaultValuesRef.current = defaultValues
     }
-  }, [defaultValues, form])
+  }, [defaultValues.popupDelay, defaultValues.popupDuration, reset])
 
   const animations = [
     {

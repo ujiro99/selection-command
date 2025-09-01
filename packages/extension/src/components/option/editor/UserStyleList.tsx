@@ -201,7 +201,7 @@ type UserStyleDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (variable: UserStyleType) => void
-  variable: UserStyleType
+  variable: UserStyleType & { _id?: string }
   exclude: STYLE_VARIABLE[]
 }
 
@@ -212,7 +212,7 @@ export const UserStyleDialog = ({
   variable,
   exclude,
 }: UserStyleDialogProps) => {
-  const isUpdate = (variable as any)._id != null
+  const isUpdate = variable._id != null
   const form = useForm<UserStyleType>({
     resolver: zodResolver(userStyleSchema),
     mode: "onChange",
