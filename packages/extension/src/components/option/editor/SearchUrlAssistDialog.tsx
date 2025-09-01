@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Sparkles } from "lucide-react"
+import { Sparkles, CircleHelp } from "lucide-react"
 
 import {
   Dialog,
@@ -139,14 +139,27 @@ export const SearchUrlAssistDialog = ({
             />
 
             <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800">
-              <p className="font-medium mb-1">
+              <p className="font-medium mb-1 flex items-center gap-1">
+                <CircleHelp className="size-4" />
                 {t("searchUrlAssist_howToUse")}
               </p>
+              <video
+                controls
+                controlsList="nodownload noremoteplayback"
+                disablePictureInPicture
+                className="rounded-md w-[80%] my-2 mx-auto"
+              >
+                <source
+                  src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/Search/Search%20URL%20AI%20assist.mp4"
+                  type="video/mp4"
+                />
+              </video>
               <ol className="list-decimal list-inside space-y-1 text-sm">
                 <li>{t("searchUrlAssist_step1")}</li>
                 <li>{t("searchUrlAssist_step2")}</li>
                 <li>{t("searchUrlAssist_step3")}</li>
                 <li>{t("searchUrlAssist_step4")}</li>
+                <li>{t("searchUrlAssist_step5")}</li>
               </ol>
             </div>
           </div>
