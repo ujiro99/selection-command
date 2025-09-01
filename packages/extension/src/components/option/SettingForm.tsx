@@ -16,7 +16,7 @@ import { LoadingIcon } from "@/components/option/LoadingIcon"
 import { InputField } from "@/components/option/field/InputField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { SwitchField } from "@/components/option/field/SwitchField"
-import { PopupPlacementField } from "@/components/option/field/PopupPlacementField"
+import { PopupPlacement } from "@/components/option/editor/PopupPlacement"
 import { PopupAnimation } from "@/components/option/editor/PopupAnimation"
 import { CommandList } from "@/components/option/editor/CommandList"
 import {
@@ -427,7 +427,7 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {getValues("popupPlacement") != null &&
             startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
-              <PopupPlacementField
+              <PopupPlacement
                 onSubmit={handlePopupPlacementSubmit}
                 defaultValues={getValues("popupPlacement")}
               />

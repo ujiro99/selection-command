@@ -30,7 +30,7 @@ import { e2a, cn } from "@/lib/utils"
 import type { PageRule, PopupPlacementOrInherit } from "@/types"
 import { popupPlacementSchema } from "@/types/schema"
 
-import css from "./CommandEditDialog.module.css"
+import css from "@/components/ui/collapsible.module.css"
 
 export const pageRuleSchema = z.object({
   urlPattern: z.string().url({ message: t("zod_url") }),
