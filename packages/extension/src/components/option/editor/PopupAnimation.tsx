@@ -64,7 +64,7 @@ export const PopupAnimation = ({ onSubmit, defaultValues }: Props) => {
       },
     })
 
-    return subscription
+    return () => subscription()
   }, [onSubmit, form])
 
   // Sync local form when defaultValues change from parent
