@@ -1050,7 +1050,7 @@
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "使用方法："
+    "message": "使用方法"
   },
   "Option_searchUrlAssist_step1": {
     "message": "「(1)検索キーワード」へ任意の単語を入力"
@@ -1065,7 +1065,7 @@
     "message": "「Geminiで実行」をクリック → AIが検索URLを生成"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "生成された検索URLを、コマンドの検索URL欄にコピー&ペースト"
+    "message": "生成された検索URLをコピーし、コマンドの検索URL欄へペースト"
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Geminiで実行"

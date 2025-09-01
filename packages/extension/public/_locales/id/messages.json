@@ -942,7 +942,7 @@
     "message": "Menjalankan..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Cara penggunaan:"
+    "message": "Cara penggunaan"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Kata kunci pencarian"
@@ -969,7 +969,7 @@
     "message": "Klik \"Jalankan dengan Gemini\" → AI menghasilkan URL pencarian"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "Salin & tempel URL pencarian yang dihasilkan ke bidang URL pencarian perintah"
+    "message": "Salin URL pencarian yang dihasilkan dan tempelkan ke bidang URL pencarian perintah"
   },
   "Option_searchUrlAssist_title": {
     "message": "Asisten URL Pencarian"

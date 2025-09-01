@@ -972,7 +972,7 @@
     "message": "Выполнение..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Как использовать:"
+    "message": "Способ использования"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Ключевое слово поиска"
@@ -999,7 +999,7 @@
     "message": "Нажмите \"Выполнить с Gemini\" → ИИ создаст URL поиска"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "Скопируйте и вставьте созданный URL поиска в поле URL поиска команды"
+    "message": "Скопируйте созданный URL поиска и вставьте в поле URL поиска команды"
   },
   "Option_searchUrlAssist_title": {
     "message": "Помощник URL Поиска"

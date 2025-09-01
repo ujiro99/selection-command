@@ -975,7 +975,7 @@
     "message": "Sedang menjalankan..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Cara penggunaan:"
+    "message": "Cara penggunaan"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Kata kunci carian"
@@ -1002,7 +1002,7 @@
     "message": "Klik \"Jalankan dengan Gemini\" → AI menjana URL carian"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "Salin & tampal URL carian yang dijana ke medan URL carian arahan"
+    "message": "Salin URL carian yang dijana dan tampal ke medan URL carian arahan"
   },
   "Option_searchUrlAssist_title": {
     "message": "Pembantu URL Carian"

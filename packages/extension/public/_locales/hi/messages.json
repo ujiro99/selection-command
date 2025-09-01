@@ -939,7 +939,7 @@
     "message": "चला रहा है..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "कैसे उपयोग करें:"
+    "message": "उपयोग की विधि"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) खोज कीवर्ड"
@@ -966,7 +966,7 @@
     "message": "\"Gemini के साथ चलाएं\" पर क्लिक करें → AI खोज URL गेनरेट करता है"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "गेनरेट किया गया खोज URL कॉपी करें और कमांड के खोज URL फ़ील्ड में पेस्ट करें"
+    "message": "जेनरेट किया गया खोज URL कॉपी करके कमांड के खोज URL फ़ील्ड में पेस्ट करें"
   },
   "Option_searchUrlAssist_title": {
     "message": "खोज URL सहायक"

@@ -939,7 +939,7 @@
     "message": "Exécution en cours..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Comment utiliser :"
+    "message": "Mode d'utilisation"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Mot-clé de recherche"
@@ -966,7 +966,7 @@
     "message": "Cliquez sur \"Exécuter avec Gemini\" → L'IA génère une URL de recherche"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "Copiez et collez l'URL de recherche générée dans le champ URL de recherche de la commande"
+    "message": "Copiez l'URL de recherche générée et collez-la dans le champ URL de recherche de la commande"
   },
   "Option_searchUrlAssist_title": {
     "message": "Assistant d'URL de Recherche"

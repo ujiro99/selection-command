@@ -975,7 +975,7 @@
     "message": "Executando..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Como usar:"
+    "message": "Modo de usar"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Palavra-chave de pesquisa"
@@ -1002,7 +1002,7 @@
     "message": "Clique em \"Executar com Gemini\" → A IA gera uma URL de pesquisa"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "Copie e cole a URL de pesquisa gerada no campo URL de pesquisa do comando"
+    "message": "Copie a URL de pesquisa gerada e cole no campo URL de pesquisa do comando"
   },
   "Option_searchUrlAssist_title": {
     "message": "Assistente de URL de Pesquisa"

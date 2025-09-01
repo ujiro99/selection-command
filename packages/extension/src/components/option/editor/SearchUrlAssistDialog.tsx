@@ -2,7 +2,8 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Sparkles, CircleHelp } from "lucide-react"
+import { Sparkles, CircleHelp, ChevronRight } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 import {
   Dialog,
@@ -21,6 +22,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
@@ -29,6 +35,8 @@ import { searchUrlAssistAction } from "@/services/searchUrlAssist"
 import { PageAction } from "@/action/pageAction"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+
+import css from "@/components/ui/collapsible.module.css"
 
 const assistFormSchema = z.object({
   searchKeyword: z
@@ -111,6 +119,7 @@ export const SearchUrlAssistDialog = ({
                         "searchUrlAssist_searchKeyword_placeholder",
                       )}
                       disabled={isProcessing}
+                      className="mt-1"
                     />
                   </FormControl>
                   <FormMessage />
@@ -131,6 +140,7 @@ export const SearchUrlAssistDialog = ({
                         "searchUrlAssist_searchResultUrl_placeholder",
                       )}
                       disabled={isProcessing}
+                      className="mt-1"
                     />
                   </FormControl>
                   <FormMessage />
@@ -138,29 +148,36 @@ export const SearchUrlAssistDialog = ({
               )}
             />
 
-            <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800">
-              <p className="font-medium mb-1 flex items-center gap-1">
-                <CircleHelp className="size-4" />
-                {t("searchUrlAssist_howToUse")}
-              </p>
-              <video
-                controls
-                controlsList="nodownload noremoteplayback"
-                disablePictureInPicture
-                className="rounded-md w-[80%] my-2 mx-auto"
-              >
-                <source
-                  src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/Search/Search%20URL%20AI%20assist.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              <ol className="list-decimal list-inside space-y-1 text-sm">
-                <li>{t("searchUrlAssist_step1")}</li>
-                <li>{t("searchUrlAssist_step2")}</li>
-                <li>{t("searchUrlAssist_step3")}</li>
-                <li>{t("searchUrlAssist_step4")}</li>
-                <li>{t("searchUrlAssist_step5")}</li>
-              </ol>
+            <div className="bg-blue-50 p-2 rounded-lg text-sm text-blue-800">
+              <Collapsible className={css.collapse}>
+                <CollapsibleTrigger className="flex items-center gap-1 hover:bg-blue-100 px-2 h-[40px] rounded-lg text-sm font-semibold transition">
+                  <CircleHelp className="size-4" />
+                  {t("searchUrlAssist_howToUse")}
+                  <ChevronRight size={16} className={cn(css.iconRight)} />
+                </CollapsibleTrigger>
+                <CollapsibleContent
+                  className={cn(css.CollapsibleContent, "px-2 py-1 space-y-3")}
+                >
+                  <video
+                    controls
+                    controlsList="nodownload noremoteplayback"
+                    disablePictureInPicture
+                    className="rounded-md w-full mx-auto aspect-[3/2]"
+                  >
+                    <source
+                      src="https://github.com/ujiro99/selection-command/raw/refs/heads/main/docs/Search/Search%20URL%20AI%20assist.mp4"
+                      type="video/mp4"
+                    />
+                  </video>
+                  <ol className="list-decimal list-inside space-y-1 text-sm">
+                    <li>{t("searchUrlAssist_step1")}</li>
+                    <li>{t("searchUrlAssist_step2")}</li>
+                    <li>{t("searchUrlAssist_step3")}</li>
+                    <li>{t("searchUrlAssist_step4")}</li>
+                    <li>{t("searchUrlAssist_step5")}</li>
+                  </ol>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           </div>
         </Form>

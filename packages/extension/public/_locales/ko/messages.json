@@ -972,7 +972,7 @@
     "message": "실행 중..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "사용 법:"
+    "message": "사용 방법"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) 검색 키워드"
@@ -999,7 +999,7 @@
     "message": "\"Gemini로 실행\" 클릭 → AI가 검색 URL 생성"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "생성된 검색 URL을 명령의 검색 URL 필드에 복사 & 붙여넣기"
+    "message": "생성된 검색 URL을 복사하여 명령의 검색 URL 필드에 붙여넣기"
   },
   "Option_searchUrlAssist_title": {
     "message": "검색 URL 어시스턴트"

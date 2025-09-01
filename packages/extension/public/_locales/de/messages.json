@@ -939,7 +939,7 @@
     "message": "Wird gestartet..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "Anwendung:"
+    "message": "Verwendung"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Suchschlüsselwort"
@@ -966,7 +966,7 @@
     "message": "Klicken Sie auf \"Mit Gemini ausführen\" → KI generiert eine Such-URL"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "Kopieren Sie die generierte Such-URL und fügen Sie sie in das Such-URL-Feld des Befehls ein"
+    "message": "Kopiere die generierte Such-URL und füge sie in das Such-URL-Feld des Befehls ein"
   },
   "Option_searchUrlAssist_title": {
     "message": "Such-URL-Assistenz"

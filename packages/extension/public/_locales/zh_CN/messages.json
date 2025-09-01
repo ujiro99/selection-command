@@ -972,7 +972,7 @@
     "message": "正在执行..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "使用方法："
+    "message": "使用方法"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) 搜索关键词"
@@ -999,7 +999,7 @@
     "message": "点击“使用 Gemini 执行” → AI 生成搜索 URL"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "将生成的搜索 URL 复制并粘贴到命令的搜索 URL 字段"
+    "message": "复制生成的搜索 URL 并粘贴到命令的搜索 URL 字段"
   },
   "Option_searchUrlAssist_title": {
     "message": "搜索 URL 助手"

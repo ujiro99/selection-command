@@ -987,7 +987,7 @@
     "message": "https://www.google.com/search?q=test&..."
   },
   "Option_searchUrlAssist_howToUse": {
-    "message": "How to use:"
+    "message": "How to use"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Enter any word in \"(1) Search keyword\""
@@ -1002,7 +1002,7 @@
     "message": "Click \"Execute with Gemini\" → AI generates a search URL"
   },
   "Option_searchUrlAssist_step5": {
-    "message": "Copy & paste the generated search URL to the command's search URL field"
+    "message": "Copy the generated search URL and paste it into the command's search URL field"
   },
   "Option_searchUrlAssist_executeButton": {
     "message": "Execute with Gemini"
