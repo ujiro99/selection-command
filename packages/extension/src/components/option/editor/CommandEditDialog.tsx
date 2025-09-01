@@ -93,6 +93,7 @@ import type {
 } from "@/types"
 
 import css from "./CommandEditDialog.module.css"
+import collapsibleCss from "@/components/ui/collapsible.module.css"
 import { calcLevel } from "@/services/option/commandTree"
 
 const EmptyFolder = {
@@ -643,22 +644,25 @@ const CommandEditDialogInner = ({
               {/* details */}
 
               <Collapsible
-                className={cn(css.collapse, "flex flex-col items-end")}
+                className={cn(
+                  collapsibleCss.collapse,
+                  "flex flex-col items-end",
+                )}
               >
                 <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
                   <ChevronsUpDown
                     size={18}
-                    className={cn(css.icon, css.iconUpDown)}
+                    className={cn(css.icon, collapsibleCss.iconUpDown)}
                   />
                   <ChevronsDownUp
                     size={18}
-                    className={cn(css.icon, css.iconDownUp)}
+                    className={cn(css.icon, collapsibleCss.iconDownUp)}
                   />
                   <span className="ml-0.5">{t("labelDetail")}</span>
                 </CollapsibleTrigger>
                 <CollapsibleContent
                   className={cn(
-                    css.CollapsibleContent,
+                    collapsibleCss.CollapsibleContent,
                     "w-full space-y-3 pt-2",
                   )}
                 >

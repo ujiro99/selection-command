@@ -433,10 +433,12 @@ export function SettingForm({ className }: { className?: string }) {
               />
             )}
 
-          <PopupAnimation
-            onSubmit={handlePopupAnimationSubmit}
-            defaultValues={getAnimationDefaultValues()}
-          />
+          {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
+            <PopupAnimation
+              onSubmit={handlePopupAnimationSubmit}
+              defaultValues={getAnimationDefaultValues()}
+            />
+          )}
         </section>
         <hr />
         <section id="commands" className="space-y-3">

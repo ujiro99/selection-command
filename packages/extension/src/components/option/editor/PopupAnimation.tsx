@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form"
 import { useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { ChevronRight } from "lucide-react"
 import {
   FormControl,
   FormItem,
@@ -9,6 +10,11 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import { Input } from "@/components/ui/input"
 
 import { Attributes } from "@/services/option/userStyles"
@@ -16,6 +22,8 @@ import { Attributes } from "@/services/option/userStyles"
 import { STYLE_VARIABLE } from "@/const"
 import { cn, hyphen2Underscore } from "@/lib/utils"
 import { t } from "@/services/i18n"
+
+import collapsibleCss from "@/components/ui/collapsible.module.css"
 
 // Animation schema for local form
 const animationSchema = z.object({
@@ -83,36 +91,42 @@ export const PopupAnimation = ({ onSubmit, defaultValues }: Props) => {
   ]
 
   return (
-    <section className="pt-4">
-      <h2 className="text-sm font-bold">{t("Option_popupAnimation")}</h2>
-      <div className="flex flex-col space-y-3 ml-4 mt-3">
-        {animations.map(({ key, variable }) => {
-          const attr = Attributes[variable]
-          const name = hyphen2Underscore(variable)
-          const labelText = t(`Option_userStyles_option_${name}`)
-          const descText = t(`Option_userStyles_desc_${name}`)
+    <Collapsible className={cn(collapsibleCss.collapse, "flex flex-col")}>
+      <CollapsibleTrigger className="flex items-center hover:bg-gray-100 -ml-2 px-2 h-[40px] rounded-lg text-sm font-bold self-start transition">
+        <span className="mr-1">{t("Option_popupAnimation")}</span>
+        <ChevronRight size={18} className={cn(collapsibleCss.iconRight)} />
+      </CollapsibleTrigger>
+      <CollapsibleContent
+        className={cn(collapsibleCss.CollapsibleContent, "w-full py-4")}
+      >
+        <div className="flex flex-col space-y-3 ml-4">
+          {animations.map(({ key, variable }) => {
+            const attr = Attributes[variable]
+            const name = hyphen2Underscore(variable)
+            const labelText = t(`Option_userStyles_option_${name}`)
+            const descText = t(`Option_userStyles_desc_${name}`)
 
-          return (
-            <FormItem className="flex items-center gap-1" key={key}>
-              <div className="w-2/6">
-                <FormLabel>{labelText}</FormLabel>
-                <FormDescription>{descText}</FormDescription>
-              </div>
-              <div className="w-4/6 relative">
-                <FormControl>
-                  <Input
-                    className={cn("pl-10")}
-                    unit={"ms"}
-                    {...register(key, { valueAsNumber: true })}
-                    {...attr}
-                  />
-                </FormControl>
-                <FormMessage />
-              </div>
-            </FormItem>
-          )
-        })}
-      </div>
-    </section>
+            return (
+              <FormItem className="flex items-center gap-1" key={key}>
+                <div className="w-2/6">
+                  <FormLabel>{labelText}</FormLabel>
+                  <FormDescription>{descText}</FormDescription>
+                </div>
+                <div className="w-4/6 relative">
+                  <FormControl>
+                    <Input
+                      unit={"ms"}
+                      {...register(key, { valueAsNumber: true })}
+                      {...attr}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )
+          })}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
   )
 }
