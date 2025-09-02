@@ -203,8 +203,8 @@ export const BackgroundPageActionDispatcher = {
           {} as Record<string, string>,
         ) || {}),
       }
-      let value = safeInterpolate(param.value, variables)
-      value = value.replace(/{/g, "{{") // escape
+
+      const value = safeInterpolate(param.value, variables)
 
       if (!isEmpty(value)) {
         // Direct value assignment for background tabs
