@@ -30,9 +30,9 @@ export namespace PageAction {
 
   export type Click = {
     type:
-      | PAGE_ACTION_EVENT.click
-      | PAGE_ACTION_EVENT.doubleClick
-      | PAGE_ACTION_EVENT.tripleClick
+    | PAGE_ACTION_EVENT.click
+    | PAGE_ACTION_EVENT.doubleClick
+    | PAGE_ACTION_EVENT.tripleClick
     label: string
     selector: string
     selectorType: SelectorType
@@ -224,9 +224,9 @@ export const PageActionDispatcher = {
         ) || {}),
       }
       let value = safeInterpolate(param.value, variables)
-      value = value.replace(/{/g, "{{") // escape
       if (!isEmpty(value)) {
         if (!isEditable(element)) {
+          value = value.replace(/{/g, "{{") // escape
           await user.type(element, value, { skipClick: true })
         } else {
           /*

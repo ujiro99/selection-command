@@ -51,7 +51,9 @@ import { toCommandTree, toFlatten } from "@/services/option/commandTree"
 import { isCommand, removeUnstoredParam } from "@/services/option/commandUtils"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
-import DefaultSettings from "@/services/option/defaultSettings"
+import DefaultSettings, {
+  emptySettings,
+} from "@/services/option/defaultSettings"
 
 import {
   commandSchema,
@@ -122,6 +124,17 @@ export function SettingForm({ className }: { className?: string }) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
+    defaultValues: {
+      startupMethod: emptySettings.startupMethod,
+      popupPlacement: emptySettings.popupPlacement,
+      style: emptySettings.style,
+      commands: [], // Empty array to avoid type conflicts
+      folders: emptySettings.folders,
+      linkCommand: emptySettings.linkCommand,
+      pageRules: emptySettings.pageRules,
+      userStyles: emptySettings.userStyles,
+      shortcuts: emptySettings.shortcuts,
+    },
   })
   const { reset, getValues, setValue, register, subscribe } = form
 
@@ -157,7 +170,8 @@ export function SettingForm({ className }: { className?: string }) {
   const updateFormSettings = async () => {
     isLoadingRef.current = true
     const settings = await loadSettingsData()
-    reset(settings)
+    // Use reset with keepDefaultValues to maintain controlled behavior
+    reset(settings, { keepDefaultValues: false })
     await sleep(100)
     isLoadingRef.current = false
   }
@@ -524,25 +538,25 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {linkCommandMethod ===
             LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
-            <InputField
-              control={form.control}
-              name="linkCommand.startupMethod.leftClickHoldParam"
-              formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
-              description={t(
-                "linkCommandStartupMethod_leftClickHoldParam_desc",
-              )}
-              unit="ms"
-              inputProps={{
-                type: "number",
-                min: 50,
-                max: 500,
-                step: 10,
-                ...register("linkCommand.startupMethod.leftClickHoldParam", {
-                  valueAsNumber: true,
-                }),
-              }}
-            />
-          )}
+              <InputField
+                control={form.control}
+                name="linkCommand.startupMethod.leftClickHoldParam"
+                formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
+                description={t(
+                  "linkCommandStartupMethod_leftClickHoldParam_desc",
+                )}
+                unit="ms"
+                inputProps={{
+                  type: "number",
+                  min: 50,
+                  max: 500,
+                  step: 10,
+                  ...register("linkCommand.startupMethod.leftClickHoldParam", {
+                    valueAsNumber: true,
+                  }),
+                }}
+              />
+            )}
           <SwitchField
             control={form.control}
             name="linkCommand.showIndicator"
