@@ -16,7 +16,6 @@ export class RobulaPlus {
     "class",
     "title",
     "alt",
-    "value",
   ]
   private attributeBlackList: string[] = [
     "href",
@@ -29,6 +28,7 @@ export class RobulaPlus {
     "style",
     "size",
     "maxlength",
+    "value",
   ]
 
   // Flag to determine whether to detect random number patterns
@@ -579,7 +579,6 @@ export class RobulaPlusOptions {
     "class",
     "title",
     "alt",
-    "value",
   ]
   public attributeBlackList: string[] = [
     "href",
@@ -592,6 +591,7 @@ export class RobulaPlusOptions {
     "style",
     "size",
     "maxlength",
+    "value",
   ]
   public avoidRandomPatterns?: boolean
   public randomPatterns?: RegExp[]
