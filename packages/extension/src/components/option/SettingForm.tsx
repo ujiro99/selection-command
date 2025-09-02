@@ -53,6 +53,7 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import DefaultSettings, {
   emptySettings,
+  POPUP_DELAY_DEFAULT,
 } from "@/services/option/defaultSettings"
 
 import {
@@ -295,18 +296,23 @@ export function SettingForm({ className }: { className?: string }) {
         setValue("startupMethod.leftClickHoldParam", 200)
       }
     }
+
+    let newDelay
     if (
       startupMethod === STARTUP_METHOD.KEYBOARD ||
       startupMethod === STARTUP_METHOD.LEFT_CLICK_HOLD
     ) {
-      const userStyles = getValues("userStyles")
-      if (userStyles.every((s) => s.name !== STYLE_VARIABLE.POPUP_DELAY)) {
-        setValue("userStyles", [
-          ...userStyles,
-          { name: STYLE_VARIABLE.POPUP_DELAY, value: 0 },
-        ])
-      }
+      newDelay = 0
+    } else {
+      newDelay = POPUP_DELAY_DEFAULT
     }
+    const userStyles = getValues("userStyles").filter(
+      (s) => s.name !== STYLE_VARIABLE.POPUP_DELAY,
+    )
+    setValue("userStyles", [
+      ...userStyles,
+      { name: STYLE_VARIABLE.POPUP_DELAY, value: newDelay },
+    ])
   }, [startupMethod])
 
   // Set default value for linkCommand.startupMethod.
