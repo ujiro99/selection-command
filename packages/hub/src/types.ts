@@ -33,7 +33,7 @@ export type CommandInJson = Omit<SelectionCommand, "tags"> & {
 
 export type CommandInMessage = Omit<
   SelectionCommand,
-  "id" | "description" | "tags" | "addedAt"
+  "id" | "description" | "tags" | "addedAt" | "revision"
 >
 
 export type Analytics = {
