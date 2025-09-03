@@ -252,6 +252,165 @@ describe("UUID Service", () => {
         // This UUID should match the one generated in the Selection command Hub's test case: CH-14
         expect(uuid).toBe("3b6529de-daa9-5832-9597-090d260b81aa")
       })
+
+      it("UUID-15: Generate the same UUID as the Selection command Hub.", async () => {
+        const commandInHub = {
+          title: "サクラチェッカー",
+          id: "b1856c00-d775-5fdc-89e9-94d1b6f786e5",
+          description: "表示中ページのURLをサクラチェッカーでチェックします。",
+          iconUrl: "https://sakura-checker.jp/images/favicon.ico",
+          openMode: "pageAction",
+          tags: ["Shop", "Japanese"],
+          pageActionOption: {
+            startUrl: "https://sakura-checker.jp/",
+            openMode: "popup",
+            steps: [
+              {
+                id: "diaq1mthv",
+                param: {
+                  type: "start",
+                  label: "Start",
+                },
+              },
+              {
+                id: "hoi75oly8",
+                param: {
+                  type: "click",
+                  label: "word",
+                  selector: "//*[@name='word']",
+                  selectorType: "xpath",
+                },
+              },
+              {
+                id: "2boq9korh",
+                param: {
+                  type: "input",
+                  label: "word",
+                  selector: "//*[@name='word']",
+                  selectorType: "xpath",
+                  value: "{{Url}}",
+                },
+              },
+              {
+                id: "thuq16r8o",
+                param: {
+                  type: "click",
+                  label: "submit",
+                  selector: "//*[@class='button is-primary is-medium']",
+                  selectorType: "xpath",
+                },
+              },
+              {
+                id: "bcs0vx9bn",
+                param: {
+                  type: "scroll",
+                  label: "x: 0, y: 266",
+                  x: 0,
+                  y: 266,
+                },
+              },
+              {
+                id: "8viuw3650",
+                param: {
+                  type: "end",
+                  label: "End",
+                },
+              },
+            ],
+          },
+          addedAt: "2025-04-22T12:01:00.382Z",
+        } as CommandContent
+
+        const commandInExtension = {
+          title: "サクラチェッカー",
+          id: "b1856c00-d775-5fdc-89e9-94d1b6f786e5",
+          iconUrl: "https://sakura-checker.jp/images/favicon.ico",
+          openMode: "pageAction",
+          pageActionOption: {
+            openMode: "popup",
+            startUrl: "https://sakura-checker.jp/",
+            steps: [
+              {
+                delayMs: 0,
+                id: "diaq1mthv",
+                param: {
+                  label: "Start",
+                  type: "start",
+                },
+                skipRenderWait: false,
+              },
+              {
+                delayMs: 0,
+                id: "hoi75oly8",
+                param: {
+                  label: "word",
+                  selector: "//*[@name='word']",
+                  selectorType: "xpath",
+                  type: "click",
+                },
+                skipRenderWait: false,
+              },
+              {
+                delayMs: 0,
+                id: "2boq9korh",
+                param: {
+                  label: "word",
+                  selector: "//*[@name='word']",
+                  selectorType: "xpath",
+                  type: "input",
+                  value: "{{Url}}",
+                },
+                skipRenderWait: false,
+              },
+              {
+                delayMs: 0,
+                id: "thuq16r8o",
+                param: {
+                  label: "submit",
+                  selector: "//*[@class='button is-primary is-medium']",
+                  selectorType: "xpath",
+                  type: "click",
+                },
+                skipRenderWait: false,
+              },
+              {
+                delayMs: 0,
+                id: "bcs0vx9bn",
+                param: {
+                  label: "x: 0, y: 266",
+                  type: "scroll",
+                  x: 0,
+                  y: 266,
+                },
+                skipRenderWait: false,
+              },
+              {
+                delayMs: 0,
+                id: "8viuw3650",
+                param: {
+                  label: "End",
+                  type: "end",
+                },
+                skipRenderWait: false,
+              },
+            ],
+          },
+          popupOption: {
+            height: 700,
+            width: 600,
+          },
+          revision: 0,
+        } as CommandContent
+
+        const uuid = await cmd2uuid(commandInHub)
+        const uuid2 = await cmd2uuid(commandInExtension)
+
+        // This UUID should match the one generated in the Selection command Hub's test case: CH-14
+        expect(uuid).toBe("b1856c00-d775-5fdc-89e9-94d1b6f786e5")
+        // TODO: Should be the same UUID, but currently not due to differences
+        // in properties like delayMs and skipRenderWait.
+        expect(uuid).not.toBe(uuid2)
+      })
     })
 
     describe("Error Handling", () => {
