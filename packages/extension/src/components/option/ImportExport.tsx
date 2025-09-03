@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { Dialog } from "./Dialog"
-import type { UserSettings, Caches } from "@/types"
+import type { UserSettings, Caches, ShortcutSettings } from "@/types"
 
 import { Storage, STORAGE_KEY, LOCAL_STORAGE_KEY } from "@/services/storage"
 import {
@@ -215,6 +215,7 @@ export function ImportExport() {
   const handleExport = async () => {
     const data = await Storage.get<UserSettings>(STORAGE_KEY.USER)
     data.commands = await Storage.getCommands()
+    data.shortcuts = await Storage.get<ShortcutSettings>(STORAGE_KEY.SHORTCUTS)
 
     // for back compatibility
     // cache key to image data url
@@ -262,7 +263,7 @@ export function ImportExport() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ;(async () => {
+      ; (async () => {
         const { commandExecutionCount = 0, hasShownReviewRequest = false } =
           await enhancedSettings.get()
         const data = await migrate({
@@ -284,7 +285,7 @@ export function ImportExport() {
 
   const handleRestoreClose = (ret: boolean) => {
     if (ret) {
-      ;(async () => {
+      ; (async () => {
         try {
           let backupCommands: any[] = []
 
@@ -378,8 +379,8 @@ export function ImportExport() {
             )
               ? t("Option_RestoreFromBackup_checking")
               : !Object.values(backupData).some(
-                    (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
-                  )
+                (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
+              )
                 ? t("Option_RestoreFromBackup_no_backup")
                 : t("Option_RestoreFromBackup_tooltip")
           }
