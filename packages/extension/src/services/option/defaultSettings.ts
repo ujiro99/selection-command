@@ -55,6 +55,8 @@ export const emptySettings: SettingsType = {
   shortcuts: { shortcuts: [] },
 }
 
+export const POPUP_DELAY_DEFAULT = 250
+
 export default {
   settingVersion: VERSION,
   popupPlacement: PopupPlacement,
@@ -110,7 +112,7 @@ export default {
   userStyles: [
     {
       name: STYLE_VARIABLE.POPUP_DELAY,
-      value: 250,
+      value: POPUP_DELAY_DEFAULT,
     },
     {
       name: STYLE_VARIABLE.POPUP_DURATION,

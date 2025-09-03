@@ -54,7 +54,7 @@ const mockIsEmpty = isEmpty as any
 
 // Mock console methods
 const mockConsole = {
-  warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
+  warn: vi.spyOn(console, "warn").mockImplementation(() => { }),
 }
 
 // Mock DOM elements
@@ -1120,7 +1120,7 @@ describe("backgroundDispatcher", () => {
       await BackgroundPageActionDispatcher.input(param as any)
 
       // The value should be escaped after interpolation
-      expect(mockElement.value).toContain("test {{value}")
+      expect(mockElement.value).toContain("test {value}")
     })
 
     it("BDI-09: Should append to existing value", async () => {
