@@ -19,7 +19,7 @@ import collapsibleCss from "@/components/ui/collapsible.module.css"
 export const PopupPlacement = (param: PopupPlacementFieldType) => {
   return (
     <Collapsible className={cn(collapsibleCss.collapse, "flex flex-col")}>
-      <CollapsibleTrigger className="flex items-center hover:bg-gray-100 -ml-2 px-2 h-[40px] rounded-lg text-sm font-semibold self-start transition">
+      <CollapsibleTrigger className="flex items-center justify-between hover:bg-gray-100 -ml-2 px-2 w-[100% + 8px] h-[40px] rounded-lg text-sm font-semibold transition">
         <span className="mr-1">{t("popupPlacement")}</span>
         <ChevronRight size={18} className={cn(collapsibleCss.iconRight)} />
       </CollapsibleTrigger>

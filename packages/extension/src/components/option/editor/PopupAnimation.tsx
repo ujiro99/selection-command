@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { ChevronRight } from "lucide-react"
+
 import {
   FormControl,
   FormItem,
@@ -95,7 +96,7 @@ export const PopupAnimation = ({ onSubmit, defaultValues }: Props) => {
 
   return (
     <Collapsible className={cn(collapsibleCss.collapse, "flex flex-col")}>
-      <CollapsibleTrigger className="flex items-center hover:bg-gray-100 -ml-2 px-2 h-[40px] rounded-lg text-sm font-semibold self-start transition">
+      <CollapsibleTrigger className="flex items-center justify-between hover:bg-gray-100 -ml-2 px-2 w-[100% + 8px] h-[40px] rounded-lg text-sm font-semibold transition">
         <span className="mr-1">{t("Option_popupAnimation")}</span>
         <ChevronRight size={18} className={cn(collapsibleCss.iconRight)} />
       </CollapsibleTrigger>
