@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { useForm, useFieldArray, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -188,10 +188,16 @@ const getDefault = (openMode: OPEN_MODE, base?: CommandSchemaType) => {
 
 const DEFAULT_MODE = OPEN_MODE.POPUP
 
-const InitialValues = getDefault(DEFAULT_MODE, {
-  id: "",
-  title: "",
-} as CommandSchemaType)
+// Get default open mode for the selected type
+const typeToOpenMode = (type: COMMAND_TYPE) => {
+  const modes = COMMAND_TYPE_OPEN_MODES_MAP[type]
+  return modes?.[0] ?? DEFAULT_MODE
+}
+
+type OpenModeFromType = Exclude<
+  ReturnType<typeof typeToOpenMode>,
+  OPEN_MODE.OPTION | OPEN_MODE.LINK_POPUP
+>
 
 type CommandEditDialogProps = {
   open: boolean
@@ -224,6 +230,20 @@ const CommandEditDialogInner = ({
   const [assistDialogOpen, setAssistDialogOpen] = useState(false)
   const commandTypeRef = useRef(null)
 
+  const initialOpenMode = useMemo(
+    () => typeToOpenMode(selectedType),
+    [selectedType],
+  )
+
+  const InitialValues = useMemo(
+    () =>
+      getDefault(initialOpenMode, {
+        id: "",
+        title: "",
+      } as CommandSchemaType),
+    [initialOpenMode],
+  )
+
   const form = useForm<CommandSchemaType>({
     resolver: zodResolver(commandSchema),
     mode: "onChange",
@@ -246,7 +266,7 @@ const CommandEditDialogInner = ({
   const openMode = useWatch({
     control: form.control,
     name: "openMode",
-    defaultValue: DEFAULT_MODE,
+    defaultValue: initialOpenMode as OpenModeFromType,
   })
   const preOpenMode = usePrevious(openMode)
 
@@ -296,12 +316,6 @@ const CommandEditDialogInner = ({
   }
 
   useEffect(() => {
-    // Get default open mode for the selected type
-    const getDefaultOpenMode = (type: COMMAND_TYPE) => {
-      const modes = COMMAND_TYPE_OPEN_MODES_MAP[type]
-      return modes?.[0] ?? DEFAULT_MODE
-    }
-
     if (command != null) {
       // edit mode
       if (isEmpty(command.parentFolderId)) {
@@ -310,15 +324,9 @@ const CommandEditDialogInner = ({
       reset((command as any) ?? InitialValues)
     } else {
       // new mode
-      const initialValues = selectedType
-        ? getDefault(getDefaultOpenMode(selectedType), {
-            id: "",
-            title: "",
-          } as CommandSchemaType)
-        : InitialValues
-      reset(initialValues)
+      reset(InitialValues)
     }
-  }, [command, selectedType, reset])
+  }, [command, InitialValues, reset])
 
   useEffect(() => {
     if (openMode === preOpenMode) return
@@ -425,73 +433,73 @@ const CommandEditDialogInner = ({
 
               {(SEARCH_OPEN_MODE.includes(openMode as any) ||
                 openMode === OPEN_MODE.API) && (
-                <FormField
-                  control={form.control}
-                  name="searchUrl"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-1">
-                      <div className="w-2/6">
-                        <FormLabel>{t("searchUrl")}</FormLabel>
-                        <FormDescription>
-                          {openMode === OPEN_MODE.API
-                            ? t("searchUrl_desc_api")
-                            : t("searchUrl_desc")}
-                        </FormDescription>
-                      </div>
-                      <div className="w-4/6 relative">
-                        <div className="flex-1 relative">
-                          {!isEmpty(getValues("iconUrl")) && (
-                            <MenuImage
-                              className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
-                              src={getValues("iconUrl")}
-                              alt="Preview of image"
+                  <FormField
+                    control={form.control}
+                    name="searchUrl"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-1">
+                        <div className="w-2/6">
+                          <FormLabel>{t("searchUrl")}</FormLabel>
+                          <FormDescription>
+                            {openMode === OPEN_MODE.API
+                              ? t("searchUrl_desc_api")
+                              : t("searchUrl_desc")}
+                          </FormDescription>
+                        </div>
+                        <div className="w-4/6 relative">
+                          <div className="flex-1 relative">
+                            {!isEmpty(getValues("iconUrl")) && (
+                              <MenuImage
+                                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+                                src={getValues("iconUrl")}
+                                alt="Preview of image"
+                              />
+                            )}
+                            <FormControl>
+                              <Input
+                                className={cn(
+                                  !isEmpty(getValues("iconUrl")) && "pl-10",
+                                )}
+                                inputClassName={cn(
+                                  !isEmpty(searchUrl) && "pr-11",
+                                )}
+                                type="string"
+                                {...field}
+                                {...register("searchUrl", {})}
+                                onBlur={(e) => {
+                                  const value = e.target.value
+                                  const parsedUrl = parseGeminiUrl(value)
+                                  if (parsedUrl !== value) {
+                                    setValue("searchUrl", parsedUrl)
+                                  }
+                                  field.onBlur()
+                                }}
+                              />
+                            </FormControl>
+                          </div>
+                          {SEARCH_OPEN_MODE.includes(openMode as any) && (
+                            <SearchUrlAssistButton
+                              onClick={() => {
+                                setAssistDialogOpen(true)
+                                sendEvent(
+                                  ANALYTICS_EVENTS.OPEN_DIALOG,
+                                  {
+                                    event_label: "search_url_assist",
+                                  },
+                                  SCREEN.OPTION,
+                                )
+                              }}
+                              disabled={false}
+                              className="absolute top-1.5 right-1.5"
+                              compact={!isEmpty(searchUrl)}
                             />
                           )}
-                          <FormControl>
-                            <Input
-                              className={cn(
-                                !isEmpty(getValues("iconUrl")) && "pl-10",
-                              )}
-                              inputClassName={cn(
-                                !isEmpty(searchUrl) && "pr-11",
-                              )}
-                              type="string"
-                              {...field}
-                              {...register("searchUrl", {})}
-                              onBlur={(e) => {
-                                const value = e.target.value
-                                const parsedUrl = parseGeminiUrl(value)
-                                if (parsedUrl !== value) {
-                                  setValue("searchUrl", parsedUrl)
-                                }
-                                field.onBlur()
-                              }}
-                            />
-                          </FormControl>
+                          <FormMessage />
                         </div>
-                        {SEARCH_OPEN_MODE.includes(openMode as any) && (
-                          <SearchUrlAssistButton
-                            onClick={() => {
-                              setAssistDialogOpen(true)
-                              sendEvent(
-                                ANALYTICS_EVENTS.OPEN_DIALOG,
-                                {
-                                  event_label: "search_url_assist",
-                                },
-                                SCREEN.OPTION,
-                              )
-                            }}
-                            disabled={false}
-                            className="absolute top-1.5 right-1.5"
-                            compact={!isEmpty(searchUrl)}
-                          />
-                        )}
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              )}
+                      </FormItem>
+                    )}
+                  />
+                )}
 
               {selectedType === COMMAND_TYPE.SEARCH ? (
                 <OpenModeToggleField
@@ -673,7 +681,7 @@ const CommandEditDialogInner = ({
                     formLabel={t("iconUrl")}
                     description={
                       SEARCH_OPEN_MODE.includes(openMode as any) ||
-                      openMode === OPEN_MODE.API
+                        openMode === OPEN_MODE.API
                         ? t("iconUrl_desc")
                         : openMode === OPEN_MODE.PAGE_ACTION
                           ? t("iconUrl_desc_pageAction")
