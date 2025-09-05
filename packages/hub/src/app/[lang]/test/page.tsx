@@ -1,39 +1,17 @@
 "use client"
 
-import { useEffect, useRef } from "react"
 import css from "@/app/page.module.css"
 import { Button } from "@/components/ui/button"
-import Quill from "quill"
+import dynamic from "next/dynamic"
 import "quill/dist/quill.snow.css"
 
+// Dynamically import Quill editor for client-side only
+const QuillWrapper = dynamic(() => import("./QuillWrapper"), {
+  ssr: false,
+  loading: () => <div>Loading editor...</div>,
+})
+
 export default function Page() {
-  const quillRef = useRef<HTMLDivElement>(null)
-  const quillInstanceRef = useRef<Quill | null>(null)
-
-  useEffect(() => {
-    if (quillRef.current && !quillInstanceRef.current) {
-      quillInstanceRef.current = new Quill(quillRef.current, {
-        theme: "snow",
-        placeholder: "Write something...",
-        modules: {
-          toolbar: [
-            [{ header: [1, 2, false] }],
-            ["bold", "italic", "underline"],
-            ["link", "blockquote", "code-block"],
-            [{ list: "ordered" }, { list: "bullet" }],
-            ["clean"],
-          ],
-        },
-      })
-    }
-
-    return () => {
-      if (quillInstanceRef.current) {
-        quillInstanceRef.current = null
-      }
-    }
-  }, [])
-
   // File save (Blob + a element download)
   function saveFile() {
     const blob = new Blob(["File save test"], { type: "text/plain" })
@@ -98,10 +76,7 @@ export default function Page() {
 
         <div>
           <h3 className="mb-2 font-bold">WYSIWYG Editor Test</h3>
-          <div
-            ref={quillRef}
-            style={{ minHeight: "200px", backgroundColor: "white" }}
-          />
+          <QuillWrapper />
         </div>
 
         <div className="flex gap-2">
