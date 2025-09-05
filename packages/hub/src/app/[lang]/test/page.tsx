@@ -1,5 +1,6 @@
 "use client"
 
+import { Send } from "lucide-react"
 import css from "@/app/page.module.css"
 import { Button } from "@/components/ui/button"
 import dynamic from "next/dynamic"
@@ -62,22 +63,35 @@ export default function Page() {
       <div className="w-full space-y-4">
         <h2>Browser Feature Test</h2>
 
-        <div>
-          <h3 className="mb-2 font-bold">Input</h3>
-          <input
-            className="border border-stone-300 rounded-md w-full px-2 py-1"
-            type="text"
-          />
-        </div>
-        <div>
-          <h3 className="mb-2 font-bold">Textarea</h3>
-          <textarea className="border border-stone-300 rounded-md w-full px-2 py-1" />
-        </div>
+        <form className="space-y-2">
+          <div>
+            <h3 className="mb-2 font-bold">Input</h3>
+            <input
+              className="border border-stone-300 rounded-md w-full px-2 py-1"
+              type="text"
+            />
+          </div>
 
-        <div>
-          <h3 className="mb-2 font-bold">WYSIWYG Editor Test</h3>
-          <QuillWrapper />
-        </div>
+          <div>
+            <h3 className="mb-2 font-bold">Textarea</h3>
+            <textarea className="border border-stone-300 rounded-md w-full px-2 py-1" />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">WYSIWYG Editor Test</h3>
+            <QuillWrapper />
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-400 text-white rounded-md"
+            >
+              <Send size={16} />
+              Send
+            </Button>
+          </div>
+        </form>
 
         <div className="flex gap-2">
           <Button onClick={() => window.alert("This is an alert dialog")}>
