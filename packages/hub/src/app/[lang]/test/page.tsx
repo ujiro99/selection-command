@@ -1,9 +1,39 @@
 "use client"
 
+import { useEffect, useRef } from "react"
 import css from "@/app/page.module.css"
 import { Button } from "@/components/ui/button"
+import Quill from "quill"
+import "quill/dist/quill.snow.css"
 
 export default function Page() {
+  const quillRef = useRef<HTMLDivElement>(null)
+  const quillInstanceRef = useRef<Quill | null>(null)
+
+  useEffect(() => {
+    if (quillRef.current && !quillInstanceRef.current) {
+      quillInstanceRef.current = new Quill(quillRef.current, {
+        theme: "snow",
+        placeholder: "Write something...",
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, false] }],
+            ["bold", "italic", "underline"],
+            ["link", "blockquote", "code-block"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["clean"],
+          ],
+        },
+      })
+    }
+
+    return () => {
+      if (quillInstanceRef.current) {
+        quillInstanceRef.current = null
+      }
+    }
+  }, [])
+
   // File save (Blob + a element download)
   function saveFile() {
     const blob = new Blob(["File save test"], { type: "text/plain" })
@@ -52,19 +82,28 @@ export default function Page() {
   return (
     <main className={css.main}>
       <div className="w-full space-y-4">
+        <h2>Browser Feature Test</h2>
+
         <div>
-          <label>Input</label>
+          <h3 className="mb-2 font-bold">Input</h3>
           <input
             className="border border-stone-300 rounded-md w-full px-2 py-1"
             type="text"
           />
         </div>
         <div>
-          <label>Textarea</label>
+          <h3 className="mb-2 font-bold">Textarea</h3>
           <textarea className="border border-stone-300 rounded-md w-full px-2 py-1" />
         </div>
 
-        <h1>Browser Feature Test</h1>
+        <div>
+          <h3 className="mb-2 font-bold">WYSIWYG Editor Test</h3>
+          <div
+            ref={quillRef}
+            style={{ minHeight: "200px", backgroundColor: "white" }}
+          />
+        </div>
+
         <div className="flex gap-2">
           <Button onClick={() => window.alert("This is an alert dialog")}>
             alert
