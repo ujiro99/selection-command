@@ -33,5 +33,7 @@
   "https://duckduckgo.com/?q=%s&t=&ia=web",
   "https://www.rottentomatoes.com/search?search=%s",
   "https://store.steampowered.com/search/?term=%s",
-  "https://calil.jp/search?q=%s"
+  "https://calil.jp/search?q=%s",
+  "https://kagi.com/search?q=%s",
+  "https://www.bing.com/search?q=%s"
 ]
