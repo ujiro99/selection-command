@@ -1,0 +1,71 @@
+{
+  "TestPage": {
+    "selectors": {
+      "textInput": ["div[contenteditable='true'].ql-editor"],
+      "sendButton": ["form button[type='submit']"]
+    },
+    "popupPlacement": {
+      "alignOffset": -10,
+      "sideOffset": 22
+    }
+  },
+  "ChatPage": {
+    "selectors": {
+      "textInput": [
+        "#prompt-textarea",
+        "[data-testid='prompt-textarea']",
+        "#main form textarea"
+      ],
+      "sendButton": [
+        "[data-testid='send-button']",
+        "[data-testid='composer-speech-button']",
+        "[id='composer-submit-button']",
+        "button[type='submit']"
+      ]
+    },
+    "popupPlacement": {
+      "alignOffset": -18,
+      "sideOffset": 22
+    }
+  },
+  "Claude": {
+    "selectors": {
+      "textInput": [
+        "div[contenteditable='true'][aria-label]",
+        "div[contenteditable='true'].ProseMirror"
+      ],
+      "sendButton": ["button[type=button][aria-label][disabled]"]
+    },
+    "popupPlacement": {
+      "alignOffset": -14,
+      "sideOffset": 22
+    }
+  },
+  "Gemini": {
+    "selectors": {
+      "textInput": [".ql-editor[contenteditable='true']"],
+      "sendButton": [
+        "button.send-button",
+        "button mat-icon[fonticon='send']",
+        "speech-dictation-mic-button"
+      ]
+    },
+    "popupPlacement": {
+      "alignOffset": -20,
+      "sideOffset": 24
+    }
+  },
+  "Perplexity": {
+    "selectors": {
+      "textInput": ["div#ask-input"],
+      "sendButton": [
+        "button[data-testid='submit-button']",
+        "button[type='button']:has(svg.tabler-icon)]"
+      ]
+    },
+    "popupPlacement": {
+      "alignOffset": -16,
+      "sideOffset": 20
+    }
+  }
+}
