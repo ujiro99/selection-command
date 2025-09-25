@@ -37,7 +37,10 @@
         "div[contenteditable='true'][aria-label]",
         "div[contenteditable='true'].ProseMirror"
       ],
-      "sendButton": ["button[type=button][aria-label][disabled]"]
+      "sendButton": [
+        "button.bg-accent-main-000",
+        "button[type=button][aria-label][disabled]"
+      ]
     },
     "popupPlacement": {
       "alignOffset": -14,
