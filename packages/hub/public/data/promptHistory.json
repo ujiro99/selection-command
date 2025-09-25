@@ -10,8 +10,8 @@
       "sideOffset": 22
     }
   },
-  "ChatPage": {
-    "serviceName": "ChatPage",
+  "ChatGPT": {
+    "serviceName": "ChatGPT",
     "selectors": {
       "textInput": [
         "#prompt-textarea",
