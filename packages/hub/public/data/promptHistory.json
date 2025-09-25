@@ -1,5 +1,6 @@
 {
   "TestPage": {
+    "serviceName": "TestPage",
     "selectors": {
       "textInput": ["div[contenteditable='true'].ql-editor"],
       "sendButton": ["form button[type='submit']"]
@@ -10,6 +11,7 @@
     }
   },
   "ChatPage": {
+    "serviceName": "ChatPage",
     "selectors": {
       "textInput": [
         "#prompt-textarea",
@@ -29,6 +31,7 @@
     }
   },
   "Claude": {
+    "serviceName": "Claude",
     "selectors": {
       "textInput": [
         "div[contenteditable='true'][aria-label]",
@@ -42,6 +45,7 @@
     }
   },
   "Gemini": {
+    "serviceName": "Gemini",
     "selectors": {
       "textInput": [".ql-editor[contenteditable='true']"],
       "sendButton": [
@@ -56,6 +60,7 @@
     }
   },
   "Perplexity": {
+    "serviceName": "Perplexity",
     "selectors": {
       "textInput": ["div#ask-input"],
       "sendButton": [
