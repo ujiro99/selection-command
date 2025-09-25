@@ -2,8 +2,12 @@
   "TestPage": {
     "serviceName": "TestPage",
     "selectors": {
-      "textInput": ["div[contenteditable='true'].ql-editor"],
-      "sendButton": ["form button[type='submit']"]
+      "textInput": [
+        "div[contenteditable='true'].ql-editor"
+      ],
+      "sendButton": [
+        "form button[type='submit']"
+      ]
     },
     "popupPlacement": {
       "alignOffset": -10,
@@ -50,7 +54,9 @@
   "Gemini": {
     "serviceName": "Gemini",
     "selectors": {
-      "textInput": [".ql-editor[contenteditable='true']"],
+      "textInput": [
+        ".ql-editor[contenteditable='true']"
+      ],
       "sendButton": [
         "button.send-button",
         "button mat-icon[fonticon='send']",
@@ -65,10 +71,12 @@
   "Perplexity": {
     "serviceName": "Perplexity",
     "selectors": {
-      "textInput": ["div#ask-input"],
+      "textInput": [
+        "div#ask-input"
+      ],
       "sendButton": [
         "button[data-testid='submit-button']",
-        "button[type='button']:has(svg.tabler-icon)]"
+        "button[type='button'].bg-super:has(svg.tabler-icon)"
       ]
     },
     "popupPlacement": {
