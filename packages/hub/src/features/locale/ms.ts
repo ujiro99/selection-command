@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Popup",
         [OPEN_MODE.WINDOW]: "Tetingkap",
         [OPEN_MODE.TAB]: "Tab",
+        [OPEN_MODE.BACKGROUND_TAB]: "Tab Latar Belakang",
         [OPEN_MODE.PAGE_ACTION]: "Tindakan Halaman",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "URL Halaman Mula",
         description: "URL halaman di mana tindakan halaman akan bermula.",
         faviconAlt: "Favicon URL halaman mula",
+      },
+      openMode: {
+        label: "Kaedah Paparan Tetingkap",
+        description: "Bagaimana tetingkap dipaparkan.",
       },
     },
   },

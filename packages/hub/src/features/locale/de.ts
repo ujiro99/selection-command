@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Popup",
         [OPEN_MODE.WINDOW]: "Fenster",
         [OPEN_MODE.TAB]: "Tab",
+        [OPEN_MODE.BACKGROUND_TAB]: "Hintergrund-Tab",
         [OPEN_MODE.PAGE_ACTION]: "Seitenaktion",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "Startseiten-URL",
         description: "URL der Seite, auf der die Seitenaktion beginnen soll.",
         faviconAlt: "Favicon der Startseiten-URL",
+      },
+      openMode: {
+        label: "Fensteranzeige-Methode",
+        description: "Wie das Fenster angezeigt wird.",
       },
     },
   },

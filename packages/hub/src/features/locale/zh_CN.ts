@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "弹出窗口",
         [OPEN_MODE.WINDOW]: "窗口",
         [OPEN_MODE.TAB]: "标签页",
+        [OPEN_MODE.BACKGROUND_TAB]: "后台标签页",
         [OPEN_MODE.PAGE_ACTION]: "页面操作",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "起始页面URL",
         description: "页面操作将开始的页面URL。",
         faviconAlt: "起始页面URL的网站图标",
+      },
+      openMode: {
+        label: "窗口显示方式",
+        description: "窗口的显示方式。",
       },
     },
   },

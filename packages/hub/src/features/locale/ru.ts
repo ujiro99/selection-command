@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Всплывающее окно",
         [OPEN_MODE.WINDOW]: "Окно",
         [OPEN_MODE.TAB]: "Вкладка",
+        [OPEN_MODE.BACKGROUND_TAB]: "Фоновая вкладка",
         [OPEN_MODE.PAGE_ACTION]: "Действие страницы",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "URL начальной страницы",
         description: "URL страницы, с которой начнется действие страницы.",
         faviconAlt: "Фавикон URL начальной страницы",
+      },
+      openMode: {
+        label: "Метод отображения окна",
+        description: "Как отображается окно.",
       },
     },
   },

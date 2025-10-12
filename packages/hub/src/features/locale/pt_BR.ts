@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Popup",
         [OPEN_MODE.WINDOW]: "Janela",
         [OPEN_MODE.TAB]: "Aba",
+        [OPEN_MODE.BACKGROUND_TAB]: "Aba em segundo plano",
         [OPEN_MODE.PAGE_ACTION]: "Ação da Página",
       },
     },
@@ -96,6 +97,10 @@ const lang = {
         label: "URL da Página Inicial",
         description: "URL da página onde a ação da página será iniciada.",
         faviconAlt: "Favicon da URL da página inicial",
+      },
+      openMode: {
+        label: "Método de Exibição da Janela",
+        description: "Como a janela é exibida.",
       },
     },
   },

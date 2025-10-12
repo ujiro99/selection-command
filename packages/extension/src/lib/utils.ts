@@ -6,8 +6,8 @@ import {
   capitalize,
   isEmpty,
   sleep,
-} from "../../../shared/src"
-import { normalizeObject } from "../../../shared/src/utils/common"
+} from "@shared"
+import { normalizeObject } from "@shared/utils/common"
 
 // Re-export for other files to use
 export { cn, isSearchCommand, capitalize, isEmpty, sleep, normalizeObject }

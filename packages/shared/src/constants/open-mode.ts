@@ -5,6 +5,7 @@ export enum OPEN_MODE {
   POPUP = "popup",
   WINDOW = "window",
   TAB = "tab",
+  BACKGROUND_TAB = "backgroundTab",
   API = "api",
   PAGE_ACTION = "pageAction",
   LINK_POPUP = "linkPopup",
@@ -17,4 +18,12 @@ export enum OPEN_MODE {
 export enum SPACE_ENCODING {
   PLUS = "plus",
   PERCENT = "percent",
+}
+
+export enum PAGE_ACTION_OPEN_MODE {
+  NONE = "none",
+  POPUP = OPEN_MODE.POPUP,
+  TAB = OPEN_MODE.TAB,
+  BACKGROUND_TAB = OPEN_MODE.BACKGROUND_TAB,
+  WINDOW = OPEN_MODE.WINDOW,
 }

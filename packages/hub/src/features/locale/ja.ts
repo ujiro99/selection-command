@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Popup",
         [OPEN_MODE.WINDOW]: "Window",
         [OPEN_MODE.TAB]: "Tab",
+        [OPEN_MODE.BACKGROUND_TAB]: "Background Tab",
         [OPEN_MODE.PAGE_ACTION]: "PageAction",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "開始URL",
         description: "ページアクションを開始するURLです。",
         faviconAlt: "開始URLのファビコン",
+      },
+      openMode: {
+        label: "ウィンドウ表示方法",
+        description: "ウィンドウの表示方法です。",
       },
     },
   },

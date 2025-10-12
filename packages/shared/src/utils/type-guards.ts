@@ -8,7 +8,12 @@ export function isSearchCommand(cmd: unknown): cmd is SearchCommand {
   if (!cmd || typeof cmd !== "object") {
     return false;
   }
-  const modes = [OPEN_MODE.POPUP, OPEN_MODE.TAB, OPEN_MODE.WINDOW];
+  const modes = [
+    OPEN_MODE.POPUP,
+    OPEN_MODE.TAB,
+    OPEN_MODE.WINDOW,
+    OPEN_MODE.BACKGROUND_TAB,
+  ];
   return modes.includes((cmd as SearchCommand).openMode);
 }
 

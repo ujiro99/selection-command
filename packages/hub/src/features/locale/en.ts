@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Popup",
         [OPEN_MODE.WINDOW]: "Window",
         [OPEN_MODE.TAB]: "Tab",
+        [OPEN_MODE.BACKGROUND_TAB]: "Background Tab",
         [OPEN_MODE.PAGE_ACTION]: "PageAction",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "Start Page URL",
         description: "URL to start the page action.",
         faviconAlt: "Start url's favicon",
+      },
+      openMode: {
+        label: "Window Display Method",
+        description: "How the window is displayed.",
       },
     },
   },

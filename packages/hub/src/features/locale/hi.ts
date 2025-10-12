@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "पॉपअप",
         [OPEN_MODE.WINDOW]: "विंडो",
         [OPEN_MODE.TAB]: "टैब",
+        [OPEN_MODE.BACKGROUND_TAB]: "बैकग्राउंड टैब",
         [OPEN_MODE.PAGE_ACTION]: "पेज एक्शन",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "प्रारंभ पृष्ठ URL",
         description: "पृष्ठ क्रिया शुरू होने वाले पृष्ठ का URL।",
         faviconAlt: "प्रारंभ पृष्ठ URL का फेविकॉन",
+      },
+      openMode: {
+        label: "विंडो प्रदर्शन विधि",
+        description: "विंडो कैसे प्रदर्शित की जाती है।",
       },
     },
   },
