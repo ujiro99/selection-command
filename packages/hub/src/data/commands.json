@@ -1208,5 +1208,66 @@
       "Job"
     ],
     "addedAt": "2025-10-12T11:10:59.936Z"
+  },
+  {
+    "id": "e024de34-3251-570d-9bd4-7eebb29d951d",
+    "title": "3秒敬語",
+    "description": "選択した文字列を洗練された敬語に変換します。",
+    "iconUrl": "https://3keigo.com/assets/favicon-Y9oMKmxK.svg",
+    "openMode": "pageAction",
+    "tags": [
+      "Japanese",
+      "Tool",
+      "Conversion"
+    ],
+    "pageActionOption": {
+      "startUrl": "https://3keigo.com/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "85agleazg",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "v3uzhfxap",
+          "param": {
+            "type": "click",
+            "label": "メッセージを入力...",
+            "selector": "//*[@id='input']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "7qd8650nm",
+          "param": {
+            "type": "input",
+            "label": "メッセージを入力...",
+            "selector": "//*[@id='input']",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "2v2u2mdqb",
+          "param": {
+            "type": "click",
+            "label": "敬語にする",
+            "selector": "//*[@id='gene']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "34tw58dyn",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2025-10-12T12:50:28.702Z"
   }
 ]
