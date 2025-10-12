@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Popup",
         [OPEN_MODE.WINDOW]: "Jendela",
         [OPEN_MODE.TAB]: "Tab",
+        [OPEN_MODE.BACKGROUND_TAB]: "Tab Latar Belakang",
         [OPEN_MODE.PAGE_ACTION]: "Aksi Halaman",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "URL Halaman Awal",
         description: "URL halaman di mana tindakan halaman akan dimulai.",
         faviconAlt: "Favicon URL halaman awal",
+      },
+      openMode: {
+        label: "Metode Tampilan Jendela",
+        description: "Cara jendela ditampilkan.",
       },
     },
   },

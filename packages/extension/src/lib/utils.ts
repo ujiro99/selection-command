@@ -6,8 +6,8 @@ import {
   capitalize,
   isEmpty,
   sleep,
-} from "../../../shared/src"
-import { normalizeObject } from "../../../shared/src/utils/common"
+} from "@shared"
+import { normalizeObject } from "@shared/utils/common"
 
 // Re-export for other files to use
 export { cn, isSearchCommand, capitalize, isEmpty, sleep, normalizeObject }
@@ -69,27 +69,28 @@ export function toUrl(
   if (useClipboard && isEmpty(text)) {
     text = clipboardText ?? ""
   }
-  let textEscaped = text
-  if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
-    textEscaped = text.replaceAll(" ", "+")
-  } else if (spaceEncoding === SPACE_ENCODING.PERCENT) {
-    // do nothing
-  }
-  textEscaped = text.replaceAll("/", "\\/")
+  // Escape forward slashes first
+  let textEscaped = text.replaceAll("/", "\\/")
+  // URL encode the text
   textEscaped = encodeURIComponent(textEscaped)
+  // Apply space encoding based on the spaceEncoding parameter
+  if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
+    // Replace %20 (default URL encoding for space) with +
+    textEscaped = textEscaped.replaceAll("%20", "+")
+  }
   return searchUrl?.replace("%s", textEscaped)
 }
 
 export function escapeJson(str: string) {
   return str
     .replace(/[\\]/g, "\\\\")
-    .replace(/[\/]/g, "\\/")
+    .replace(/[/]/g, "\\/")
     .replace(/[\b]/g, "\\b")
     .replace(/[\f]/g, "\\f")
     .replace(/[\n]/g, "\\n")
     .replace(/[\r]/g, "\\r")
     .replace(/[\t]/g, "\\t")
-    .replace(/[\"]/g, '\\"')
+    .replace(/["]/g, '\\"')
     .replace(/\\'/g, "\\'")
 }
 

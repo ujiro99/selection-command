@@ -1,8 +1,20 @@
-export enum OPEN_MODE {
-  POPUP = "popup",
-  WINDOW = "window",
-  TAB = "tab",
-  PAGE_ACTION = "pageAction",
+import { OPEN_MODE as _OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@shared"
+export { PAGE_ACTION_OPEN_MODE }
+
+export enum OPEN_MODE_SEARCH {
+  POPUP = _OPEN_MODE.POPUP,
+  WINDOW = _OPEN_MODE.WINDOW,
+  TAB = _OPEN_MODE.TAB,
+  BACKGROUND_TAB = _OPEN_MODE.BACKGROUND_TAB,
+}
+
+export enum OPEN_MODE_PAGE_ACTION {
+  PAGE_ACTION = _OPEN_MODE.PAGE_ACTION,
+}
+
+export const OPEN_MODE = {
+  ...OPEN_MODE_SEARCH,
+  ...OPEN_MODE_PAGE_ACTION,
 }
 
 export enum SPACE_ENCODING {
@@ -16,12 +28,6 @@ export enum SORT_ORDER {
   download = "download",
   star = "star",
   addedAt = "addedAt",
-}
-
-export enum PAGE_ACTION_OPEN_MODE {
-  NONE = "none",
-  POPUP = OPEN_MODE.POPUP,
-  TAB = OPEN_MODE.TAB,
 }
 
 export enum PAGE_ACTION_EVENT {

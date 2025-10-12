@@ -56,6 +56,7 @@ export const emptySettings: SettingsType = {
 }
 
 export const POPUP_DELAY_DEFAULT = 250
+export const POPUP_DULATION_DEFAULT = 150
 
 export default {
   settingVersion: VERSION,
@@ -116,7 +117,7 @@ export default {
     },
     {
       name: STYLE_VARIABLE.POPUP_DURATION,
-      value: 150,
+      value: POPUP_DULATION_DEFAULT,
     },
     {
       name: STYLE_VARIABLE.PADDING_SCALE,

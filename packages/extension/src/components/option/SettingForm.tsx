@@ -54,6 +54,7 @@ import { Settings } from "@/services/settings/settings"
 import DefaultSettings, {
   emptySettings,
   POPUP_DELAY_DEFAULT,
+  POPUP_DULATION_DEFAULT,
 } from "@/services/option/defaultSettings"
 
 import {
@@ -252,34 +253,38 @@ export function SettingForm({ className }: { className?: string }) {
     popupDuration: number
   }) => {
     const userStyles = getValues("userStyles")
-    const updatedStyles = userStyles.map((style) => {
-      if (style.name === STYLE_VARIABLE.POPUP_DELAY) {
-        return { ...style, value: data.popupDelay }
-      }
-      if (style.name === STYLE_VARIABLE.POPUP_DURATION) {
-        return { ...style, value: data.popupDuration }
-      }
-      return style
-    })
+    const updatedStyles = userStyles.filter(
+      (style) =>
+        style.name !== STYLE_VARIABLE.POPUP_DELAY &&
+        style.name !== STYLE_VARIABLE.POPUP_DURATION,
+    )
+    updatedStyles.push(
+      { name: STYLE_VARIABLE.POPUP_DELAY, value: data.popupDelay },
+      { name: STYLE_VARIABLE.POPUP_DURATION, value: data.popupDuration },
+    )
     setValue("userStyles", updatedStyles)
   }
 
   const getAnimationDefaultValues = () => {
     const userStyles = getValues("userStyles") || []
-    const popupDelay =
-      userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DELAY)?.value || 0
-    const popupDuration =
-      userStyles.find((s) => s.name === STYLE_VARIABLE.POPUP_DURATION)?.value ||
-      0
+    let popupDelay = userStyles.find(
+      (s) => s.name === STYLE_VARIABLE.POPUP_DELAY,
+    )?.value
+    if (popupDelay == null) popupDelay = POPUP_DELAY_DEFAULT
+
+    let popupDuration = userStyles.find(
+      (s) => s.name === STYLE_VARIABLE.POPUP_DURATION,
+    )?.value
+    if (popupDuration == null) popupDuration = POPUP_DULATION_DEFAULT
     return {
       popupDelay:
         typeof popupDelay === "number"
           ? popupDelay
-          : parseInt(String(popupDelay)) || 0,
+          : parseInt(String(popupDelay)),
       popupDuration:
         typeof popupDuration === "number"
           ? popupDuration
-          : parseInt(String(popupDuration)) || 0,
+          : parseInt(String(popupDuration)),
     }
   }
 
@@ -313,7 +318,7 @@ export function SettingForm({ className }: { className?: string }) {
       ...userStyles,
       { name: STYLE_VARIABLE.POPUP_DELAY, value: newDelay },
     ])
-  }, [startupMethod])
+  }, [startupMethod, setValue, getValues])
 
   // Set default value for linkCommand.startupMethod.
   useEffect(() => {
@@ -544,25 +549,25 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {linkCommandMethod ===
             LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
-              <InputField
-                control={form.control}
-                name="linkCommand.startupMethod.leftClickHoldParam"
-                formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
-                description={t(
-                  "linkCommandStartupMethod_leftClickHoldParam_desc",
-                )}
-                unit="ms"
-                inputProps={{
-                  type: "number",
-                  min: 50,
-                  max: 500,
-                  step: 10,
-                  ...register("linkCommand.startupMethod.leftClickHoldParam", {
-                    valueAsNumber: true,
-                  }),
-                }}
-              />
-            )}
+            <InputField
+              control={form.control}
+              name="linkCommand.startupMethod.leftClickHoldParam"
+              formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
+              description={t(
+                "linkCommandStartupMethod_leftClickHoldParam_desc",
+              )}
+              unit="ms"
+              inputProps={{
+                type: "number",
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register("linkCommand.startupMethod.leftClickHoldParam", {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
           <SwitchField
             control={form.control}
             name="linkCommand.showIndicator"

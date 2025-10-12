@@ -6,8 +6,8 @@ export {
   capitalize,
   isEmpty,
   sleep,
-} from "../../../shared/src"
-import { normalizeObject } from "../../../shared/src/utils/common"
+} from "@shared"
+import { normalizeObject } from "@shared/utils/common"
 import { v5 as uuidv5 } from "uuid"
 import { createHash } from "crypto"
 import { parse } from "tldts"
@@ -96,4 +96,27 @@ export const onHover = (
   }
 
   return callbacks
+}
+
+// Get only enum values (filter out reverse mappings)
+// For enums with reverse mappings like: { POPUP: 'popup', popup: 'POPUP' }
+// This returns only the actual values: ['popup', 'window', 'tab', ...]
+export const enumToValues = <T extends Record<string, string>>(
+  enumObj: T,
+): string[] => {
+  const values = Object.values(enumObj)
+  const uniqueValues = new Set<string>()
+
+  for (const val of values) {
+    // If the value is a key in the enum, it's part of reverse mapping
+    // Only add values that are lowercase or camelCase (not UPPERCASE keys)
+    if (
+      val === val.toLowerCase() ||
+      val.charAt(0) === val.charAt(0).toLowerCase()
+    ) {
+      uniqueValues.add(val)
+    }
+  }
+
+  return Array.from(uniqueValues)
 }

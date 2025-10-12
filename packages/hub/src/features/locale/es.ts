@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Ventana emergente",
         [OPEN_MODE.WINDOW]: "Ventana",
         [OPEN_MODE.TAB]: "Pestaña",
+        [OPEN_MODE.BACKGROUND_TAB]: "Pestaña en segundo plano",
         [OPEN_MODE.PAGE_ACTION]: "Acción de página",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "URL de página inicial",
         description: "URL de la página donde comenzará la acción de página.",
         faviconAlt: "Favicon de la URL de página inicial",
+      },
+      openMode: {
+        label: "Método de visualización de ventana",
+        description: "Cómo se muestra la ventana.",
       },
     },
   },

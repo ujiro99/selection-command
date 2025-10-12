@@ -1,3 +1,6 @@
+import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@shared"
+export { OPEN_MODE, PAGE_ACTION_OPEN_MODE }
+
 export const APP_ID = "selection-command"
 export const VERSION = __APP_VERSION__ as string
 
@@ -7,20 +10,6 @@ export const VERSION = __APP_VERSION__ as string
  */
 const environment = import.meta.env.MODE ?? "development"
 export const isDebug = environment === "development"
-
-export enum OPEN_MODE {
-  POPUP = "popup",
-  WINDOW = "window",
-  TAB = "tab",
-  BACKGROUND_TAB = "backgroundTab",
-  API = "api",
-  PAGE_ACTION = "pageAction",
-  LINK_POPUP = "linkPopup",
-  COPY = "copy",
-  GET_TEXT_STYLES = "getTextStyles",
-  OPTION = "option",
-  ADD_PAGE_RULE = "addPageRule",
-}
 
 // Abstract command types for simplified command creation
 export enum COMMAND_TYPE {
@@ -146,14 +135,6 @@ export enum ExecState {
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = "previewPopup",
   PREVIEW_WINDOW = "previewWindow",
-}
-
-export enum PAGE_ACTION_OPEN_MODE {
-  NONE = "none",
-  POPUP = OPEN_MODE.POPUP,
-  TAB = OPEN_MODE.TAB,
-  BACKGROUND_TAB = OPEN_MODE.BACKGROUND_TAB,
-  WINDOW = OPEN_MODE.WINDOW,
 }
 
 export enum SIDE {

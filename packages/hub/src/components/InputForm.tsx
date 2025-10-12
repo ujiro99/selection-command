@@ -40,10 +40,15 @@ import { Button } from "@/components/ui/button"
 import { StepList } from "@/components/pageAction/StepList"
 
 import { getSearchUrl } from "@/features/command"
-import { isEmpty } from "@/lib/utils"
+import { isEmpty, enumToValues } from "@/lib/utils"
 import type { CommandInMessage } from "@/types"
 import { PageActionOption } from "@/types/schema"
-import { OPEN_MODE, SPACE_ENCODING, PAGE_ACTION_OPEN_MODE } from "@/const"
+import {
+  OPEN_MODE,
+  OPEN_MODE_SEARCH,
+  PAGE_ACTION_OPEN_MODE,
+  SPACE_ENCODING,
+} from "@/const"
 import { useLocale } from "@/hooks/useLocale"
 
 import css from "./CommandForm.module.css"
@@ -57,8 +62,8 @@ const searchCommandSchema = z.object({
       message: "unique",
     }),
   iconUrl: z.string().url({ message: "url" }),
-  openMode: z.enum([OPEN_MODE.POPUP, OPEN_MODE.TAB, OPEN_MODE.WINDOW]),
-  openModeSecondary: z.nativeEnum(OPEN_MODE),
+  openMode: z.nativeEnum(OPEN_MODE_SEARCH),
+  openModeSecondary: z.nativeEnum(OPEN_MODE_SEARCH),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
   description: z.string().max(200, {
     message: "max200",
@@ -125,8 +130,6 @@ const DefaultValue = {
   },
 }
 
-const SEARCH_MODE = [OPEN_MODE.POPUP, OPEN_MODE.TAB, OPEN_MODE.WINDOW]
-
 const STORAGE_KEY = "CommandShareFormData"
 
 let onChagneSearchUrlTO = 0
@@ -156,6 +159,7 @@ export function InputForm(props: InputProps) {
     name: "openMode",
     defaultValue: OPEN_MODE.POPUP,
   })
+  const isSearch = openMode !== OPEN_MODE.PAGE_ACTION
 
   const pageActionSteps = useWatch({
     control: form.control,
@@ -219,24 +223,24 @@ export function InputForm(props: InputProps) {
     const isPageAction = _data.openMode === OPEN_MODE.PAGE_ACTION
     const data = isSearch
       ? {
+        title: DOMPurify.sanitize(_data.title),
+        searchUrl: DOMPurify.sanitize(_data.searchUrl),
+        description: DOMPurify.sanitize(_data.description),
+        iconUrl: DOMPurify.sanitize(_data.iconUrl),
+        openMode: _data.openMode,
+        openModeSecondary: _data.openModeSecondary,
+        spaceEncoding: _data.spaceEncoding,
+        tags: _data.tags,
+      }
+      : isPageAction
+        ? {
           title: DOMPurify.sanitize(_data.title),
-          searchUrl: DOMPurify.sanitize(_data.searchUrl),
           description: DOMPurify.sanitize(_data.description),
           iconUrl: DOMPurify.sanitize(_data.iconUrl),
           openMode: _data.openMode,
-          openModeSecondary: _data.openModeSecondary,
-          spaceEncoding: _data.spaceEncoding,
           tags: _data.tags,
+          pageActionOption: sanitizePageActionOption(_data.pageActionOption),
         }
-      : isPageAction
-        ? {
-            title: DOMPurify.sanitize(_data.title),
-            description: DOMPurify.sanitize(_data.description),
-            iconUrl: DOMPurify.sanitize(_data.iconUrl),
-            openMode: _data.openMode,
-            tags: _data.tags,
-            pageActionOption: sanitizePageActionOption(_data.pageActionOption),
-          }
         : null
     if (data != null) {
       props.onFormSubmit(data as FormValues)
@@ -288,6 +292,7 @@ export function InputForm(props: InputProps) {
           "pageActionOption",
         ] as (keyof CommandInMessage)[]
         params.forEach((key) => {
+          console.log("set", key, cmd[key] ?? DefaultValue[key])
           setValue(key as FormKeys, cmd[key] ?? DefaultValue[key])
         })
         form.trigger(params)
@@ -339,7 +344,7 @@ export function InputForm(props: InputProps) {
           )}
         />
 
-        {SEARCH_MODE.includes(openMode) && (
+        {isSearch && (
           <FormField
             control={form.control}
             name="searchUrl"
@@ -376,7 +381,7 @@ export function InputForm(props: InputProps) {
           />
         )}
 
-        {openMode === OPEN_MODE.PAGE_ACTION && (
+        {!isSearch && (
           <>
             <FormField
               control={form.control}
@@ -540,46 +545,46 @@ export function InputForm(props: InputProps) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="openMode"
-              render={({ field }) => (
-                <FormItem className="flex items-center">
-                  <div className="w-2/5">
-                    <FormLabel>{t.openMode.label}</FormLabel>
-                    <FormDescription className="leading-tight">
-                      {t.openMode.description}
-                    </FormDescription>
-                  </div>
-                  <div {...autofillProps(3, "w-3/5 rounded-md relative")}>
-                    <Select
-                      onValueChange={field.onChange}
-                      value={field.value}
-                      disabled={openMode === OPEN_MODE.PAGE_ACTION}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="">
-                          <SelectValue placeholder="Select a OpenMode" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          {Object.values(OPEN_MODE).map((mode) => (
-                            <SelectItem key={mode} value={mode}>
-                              {t.openMode.options[mode]}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <FormMessageLocale lang={lang} />
-                  </div>
-                </FormItem>
-              )}
-            />
 
-            {SEARCH_MODE.includes(openMode) && (
+            {isSearch && (
               <>
+                <FormField
+                  control={form.control}
+                  name="openMode"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center">
+                      <div className="w-2/5">
+                        <FormLabel>{t.openMode.label}</FormLabel>
+                        <FormDescription className="leading-tight">
+                          {t.openMode.description}
+                        </FormDescription>
+                      </div>
+                      <div {...autofillProps(3, "w-3/5 rounded-md relative")}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Select a OpenMode" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              {enumToValues(OPEN_MODE_SEARCH).map((mode) => (
+                                <SelectItem key={mode} value={mode}>
+                                  {t.openMode.options[mode as OPEN_MODE_SEARCH]}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <FormMessageLocale lang={lang} />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="openModeSecondary"
@@ -603,15 +608,11 @@ export function InputForm(props: InputProps) {
                           </FormControl>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectItem value={OPEN_MODE.POPUP}>
-                                {t.openMode.options.popup}
-                              </SelectItem>
-                              <SelectItem value={OPEN_MODE.TAB}>
-                                {t.openMode.options.tab}
-                              </SelectItem>
-                              <SelectItem value={OPEN_MODE.WINDOW}>
-                                {t.openMode.options.window}
-                              </SelectItem>
+                              {enumToValues(OPEN_MODE_SEARCH).map((mode) => (
+                                <SelectItem key={mode} value={mode}>
+                                  {t.openMode.options[mode as OPEN_MODE_SEARCH]}
+                                </SelectItem>
+                              ))}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
@@ -650,6 +651,55 @@ export function InputForm(props: InputProps) {
                               <SelectItem value={SPACE_ENCODING.PERCENT}>
                                 {t.spaceEncoding.options.percent}
                               </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <FormMessageLocale lang={lang} />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
+            {!isSearch && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="pageActionOption.openMode"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center">
+                      <div className="w-2/5">
+                        <FormLabel>
+                          {t.PageActionOption.openMode.label}
+                        </FormLabel>
+                        <FormDescription className="leading-tight">
+                          {t.PageActionOption.openMode.description}
+                        </FormDescription>
+                      </div>
+                      <div {...autofillProps(3, "w-3/5 rounded-md relative")}>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Select a OpenMode" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              {enumToValues(PAGE_ACTION_OPEN_MODE)
+                                .filter((p) => p != PAGE_ACTION_OPEN_MODE.NONE)
+                                .map((mode) => (
+                                  <SelectItem key={mode} value={mode}>
+                                    {
+                                      t.openMode.options[
+                                      mode as OPEN_MODE_SEARCH
+                                      ]
+                                    }
+                                  </SelectItem>
+                                ))}
                             </SelectGroup>
                           </SelectContent>
                         </Select>

@@ -13,7 +13,7 @@ import { StepList } from "@/components/pageAction/StepList"
 import { useLocale } from "@/hooks/useLocale"
 import { cmd2uuid } from "@/features/command"
 import type { CommandInJson, Tag as TagType } from "@/types"
-import { OPEN_MODE } from "@/const"
+import { OPEN_MODE, OPEN_MODE_SEARCH } from "@/const"
 
 import css from "./CommandForm.module.css"
 
@@ -181,12 +181,12 @@ function ConfirmForm(props: ConfirmProps) {
         />
         <IconItem label={t.iconUrl.label} value={cmd.iconUrl} />
         <Item label={t.tags.label} value={tagNames(cmd.tags)} />
-        <Item
-          label={t.openMode.label}
-          value={t.openMode.options[cmd.openMode]}
-        />
         {isSearch && (
           <>
+            <Item
+              label={t.openMode.label}
+              value={t.openMode.options[cmd.openMode]}
+            />
             <Item
               label={t.openModeSecondary.label}
               value={t.openMode.options[cmd.openModeSecondary]}
@@ -203,6 +203,14 @@ function ConfirmForm(props: ConfirmProps) {
               {t.pageAction.label}
             </label>
             <StepList className="py-3" steps={cmd.pageActionOption.steps} />
+            <Item
+              label={t.PageActionOption.openMode.label}
+              value={
+                t.openMode.options[
+                cmd.pageActionOption.openMode as unknown as OPEN_MODE_SEARCH
+                ]
+              }
+            />
           </div>
         )}
       </div>

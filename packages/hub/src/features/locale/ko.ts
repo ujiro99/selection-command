@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "팝업",
         [OPEN_MODE.WINDOW]: "창",
         [OPEN_MODE.TAB]: "탭",
+        [OPEN_MODE.BACKGROUND_TAB]: "백그라운드 탭",
         [OPEN_MODE.PAGE_ACTION]: "페이지 액션",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "시작 페이지 URL",
         description: "페이지 액션이 시작될 페이지의 URL입니다.",
         faviconAlt: "시작 페이지 URL의 파비콘",
+      },
+      openMode: {
+        label: "창 표시 방법",
+        description: "창이 표시되는 방법입니다.",
       },
     },
   },

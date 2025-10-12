@@ -9,6 +9,7 @@ import {
   onHover,
   capitalize,
   sleep,
+  enumToValues,
 } from "./utils"
 import { OPEN_MODE } from "@/const"
 import type { SearchCommand, PageActionCommand } from "@/types"
@@ -417,6 +418,195 @@ describe("Utility Functions", () => {
 
       // Assert
       expect(mockCallback).toHaveBeenCalled()
+    })
+  })
+
+  describe("enumToValues function", () => {
+    describe("Normal cases", () => {
+      test("UTIL-26: Normal case: extracts values from enum with reverse mapping", () => {
+        // Arrange
+        enum OpenMode {
+          POPUP = "popup",
+          TAB = "tab",
+          WINDOW = "window",
+        }
+
+        // Act
+        const result = enumToValues(OpenMode)
+
+        // Assert
+        expect(result).toHaveLength(3)
+        expect(result).toContain("popup")
+        expect(result).toContain("tab")
+        expect(result).toContain("window")
+        expect(result).not.toContain("POPUP")
+        expect(result).not.toContain("TAB")
+        expect(result).not.toContain("WINDOW")
+      })
+
+      test("UTIL-27: Normal case: handles mixed lowercase and camelCase values", () => {
+        // Arrange
+        const mixedEnum = {
+          FIRST_VALUE: "firstValue",
+          SECOND_VALUE: "secondValue",
+          THIRD: "lowercase",
+        }
+
+        // Act
+        const result = enumToValues(mixedEnum)
+
+        // Assert
+        expect(result).toHaveLength(3)
+        expect(result).toContain("firstValue")
+        expect(result).toContain("secondValue")
+        expect(result).toContain("lowercase")
+      })
+
+      test("UTIL-28: Normal case: handles all lowercase values", () => {
+        // Arrange
+        const lowerCaseEnum = {
+          RED: "red",
+          BLUE: "blue",
+          GREEN: "green",
+        }
+
+        // Act
+        const result = enumToValues(lowerCaseEnum)
+
+        // Assert
+        expect(result).toHaveLength(3)
+        expect(result).toContain("red")
+        expect(result).toContain("blue")
+        expect(result).toContain("green")
+      })
+    })
+
+    describe("Edge cases", () => {
+      test("UTIL-29: Edge case: returns empty array for empty enum object", () => {
+        // Arrange
+        const emptyEnum = {}
+
+        // Act
+        const result = enumToValues(emptyEnum)
+
+        // Assert
+        expect(result).toEqual([])
+      })
+
+      test("UTIL-30: Edge case: handles single value enum", () => {
+        // Arrange
+        const singleEnum = {
+          ONLY: "only",
+        }
+
+        // Act
+        const result = enumToValues(singleEnum)
+
+        // Assert
+        expect(result).toHaveLength(1)
+        expect(result).toContain("only")
+      })
+
+      test("UTIL-31: Edge case: removes duplicate values using Set", () => {
+        // Arrange
+        const duplicateEnum = {
+          FIRST: "value",
+          SECOND: "value",
+          THIRD: "other",
+        }
+
+        // Act
+        const result = enumToValues(duplicateEnum)
+
+        // Assert
+        expect(result).toHaveLength(2)
+        expect(result).toContain("value")
+        expect(result).toContain("other")
+      })
+
+      test("UTIL-32: Edge case: excludes uppercase-only values", () => {
+        // Arrange
+        const upperCaseEnum = {
+          KEY1: "UPPERCASE",
+          KEY2: "lowercase",
+        }
+
+        // Act
+        const result = enumToValues(upperCaseEnum)
+
+        // Assert
+        expect(result).toHaveLength(1)
+        expect(result).toContain("lowercase")
+        expect(result).not.toContain("UPPERCASE")
+      })
+
+      test("UTIL-33: Edge case: excludes PascalCase values", () => {
+        // Arrange
+        const pascalEnum = {
+          FIRST: "PascalCase",
+          SECOND: "camelCase",
+          THIRD: "lowercase",
+        }
+
+        // Act
+        const result = enumToValues(pascalEnum)
+
+        // Assert
+        expect(result).toHaveLength(2)
+        expect(result).toContain("camelCase")
+        expect(result).toContain("lowercase")
+        expect(result).not.toContain("PascalCase")
+      })
+
+      test("UTIL-34: Edge case: handles values with numbers", () => {
+        // Arrange
+        const numericEnum = {
+          VERSION1: "value1",
+          VERSION2: "value2",
+        }
+
+        // Act
+        const result = enumToValues(numericEnum)
+
+        // Assert
+        expect(result).toHaveLength(2)
+        expect(result).toContain("value1")
+        expect(result).toContain("value2")
+      })
+    })
+
+    describe("Boundary cases", () => {
+      test("UTIL-35: Boundary case: handles single character values", () => {
+        // Arrange
+        const singleCharEnum = {
+          A: "a",
+          B: "b",
+        }
+
+        // Act
+        const result = enumToValues(singleCharEnum)
+
+        // Assert
+        expect(result).toHaveLength(2)
+        expect(result).toContain("a")
+        expect(result).toContain("b")
+      })
+
+      test("UTIL-36: Boundary case: handles values with special characters", () => {
+        // Arrange
+        const specialEnum = {
+          KEY1: "value-with-dash",
+          KEY2: "value_with_underscore",
+        }
+
+        // Act
+        const result = enumToValues(specialEnum)
+
+        // Assert
+        expect(result).toHaveLength(2)
+        expect(result).toContain("value-with-dash")
+        expect(result).toContain("value_with_underscore")
+      })
     })
   })
 })

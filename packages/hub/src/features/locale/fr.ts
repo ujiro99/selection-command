@@ -68,6 +68,7 @@ const lang = {
         [OPEN_MODE.POPUP]: "Popup",
         [OPEN_MODE.WINDOW]: "Fenêtre",
         [OPEN_MODE.TAB]: "Onglet",
+        [OPEN_MODE.BACKGROUND_TAB]: "Onglet en arrière-plan",
         [OPEN_MODE.PAGE_ACTION]: "Action de page",
       },
     },
@@ -95,6 +96,10 @@ const lang = {
         label: "URL de la page de départ",
         description: "URL de la page où l'action de page commencera.",
         faviconAlt: "Favicon de l'URL de la page de départ",
+      },
+      openMode: {
+        label: "Méthode d'affichage de la fenêtre",
+        description: "Comment la fenêtre est affichée.",
       },
     },
   },
