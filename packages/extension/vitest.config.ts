@@ -16,6 +16,7 @@ export default mergeConfig(
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),
+        "@shared": resolve(__dirname, "../shared/src"),
         "@import-if": resolve(__dirname, "./src/test/__mocks__/import-if"),
       },
     },

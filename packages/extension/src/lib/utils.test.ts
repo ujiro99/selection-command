@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest"
-import { parseGeminiUrl } from "./utils"
+import { parseGeminiUrl, toUrl } from "./utils"
+import { SPACE_ENCODING } from "@/const"
+import type { UrlParam } from "@/types"
 
 describe("parseGeminiMarkdownUrl", () => {
   it("PMU-01: extracts URL from markdown link format", () => {
@@ -54,5 +56,127 @@ describe("parseGeminiMarkdownUrl", () => {
     const expected = "https://mail.google.com/mail/u/0/#search/%s"
 
     expect(parseGeminiUrl(input)).toBe(expected)
+  })
+})
+
+describe("toUrl", () => {
+  it("TU-01: returns the string as-is when input is a string", () => {
+    const input = "https://example.com/search?q=test"
+    expect(toUrl(input)).toBe(input)
+  })
+
+  it("TU-02: converts UrlParam with PLUS space encoding (default)", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "hello world",
+    }
+    expect(toUrl(param)).toBe("https://example.com/search?q=hello+world")
+  })
+
+  it("TU-03: converts UrlParam with PERCENT space encoding", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "hello world",
+      spaceEncoding: SPACE_ENCODING.PERCENT,
+    }
+    expect(toUrl(param)).toBe("https://example.com/search?q=hello%20world")
+  })
+
+  it("TU-04: converts UrlParam with explicit PLUS space encoding", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "hello world",
+      spaceEncoding: SPACE_ENCODING.PLUS,
+    }
+    expect(toUrl(param)).toBe("https://example.com/search?q=hello+world")
+  })
+
+  it("TU-05: escapes forward slashes in text", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "hello/world",
+    }
+    expect(toUrl(param)).toBe("https://example.com/search?q=hello%5C%2Fworld")
+  })
+
+  it("TU-06: uses clipboard text when useClipboard is true and selectionText is empty", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "",
+      useClipboard: true,
+    }
+    const clipboardText = "clipboard content"
+    expect(toUrl(param, clipboardText)).toBe(
+      "https://example.com/search?q=clipboard+content",
+    )
+  })
+
+  it("TU-07: prefers selectionText over clipboard when both are present", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "selection",
+      useClipboard: true,
+    }
+    const clipboardText = "clipboard"
+    expect(toUrl(param, clipboardText)).toBe(
+      "https://example.com/search?q=selection",
+    )
+  })
+
+  it("TU-08: uses empty string when useClipboard is true but clipboard is undefined", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "",
+      useClipboard: true,
+    }
+    expect(toUrl(param)).toBe("https://example.com/search?q=")
+  })
+
+  it("TU-09: URL encodes special characters", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "hello@world#test",
+    }
+    expect(toUrl(param)).toBe(
+      "https://example.com/search?q=hello%40world%23test",
+    )
+  })
+
+  it("TU-10: handles empty selectionText", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "",
+    }
+    expect(toUrl(param)).toBe("https://example.com/search?q=")
+  })
+
+  it("TU-11: handles text with multiple spaces", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "hello   world   test",
+    }
+    expect(toUrl(param)).toBe(
+      "https://example.com/search?q=hello+++world+++test",
+    )
+  })
+
+  it("TU-12: handles Japanese text", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "こんにちは 世界",
+    }
+    expect(toUrl(param)).toBe(
+      "https://example.com/search?q=%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF+%E4%B8%96%E7%95%8C",
+    )
+  })
+
+  it("TU-13: handles text with newlines and tabs", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/search?q=%s",
+      selectionText: "hello\nworld\ttest",
+    }
+    expect(toUrl(param)).toBe(
+      "https://example.com/search?q=hello%0Aworld%09test",
+    )
   })
 })
