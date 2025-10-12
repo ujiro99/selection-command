@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 15
+    "count": 16
   },
   {
     "name": "Language",
@@ -117,6 +117,10 @@
   },
   {
     "name": "Books",
+    "count": 1
+  },
+  {
+    "name": "Job",
     "count": 1
   }
 ]

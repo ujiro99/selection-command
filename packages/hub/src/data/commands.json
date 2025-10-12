@@ -1193,5 +1193,20 @@
       "Search"
     ],
     "addedAt": "2025-09-13T13:54:49.206Z"
+  },
+  {
+    "id": "72afa313-f8a6-5f60-a789-2d20151d9d5c",
+    "title": "Glassdoor",
+    "searchUrl": "https://www.glassdoor.com/Search/results.htm?keyword=%s",
+    "description": "Search job listings on Glassdoor.",
+    "iconUrl": "https://www.glassdoor.com/favicon.ico",
+    "openMode": "tab",
+    "openModeSecondary": "backgroundTab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search",
+      "Job"
+    ],
+    "addedAt": "2025-10-12T11:10:59.936Z"
   }
 ]
