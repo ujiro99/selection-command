@@ -102,8 +102,8 @@ export function getCommands(): Command[] {
     }))
     return {
       ...command,
-      openMode: command.openMode as OPEN_MODE,
-      openModeSecondary: command.openModeSecondary as OPEN_MODE,
+      openMode: command.openMode,
+      openModeSecondary: command.openModeSecondary,
       spaceEncoding: command.spaceEncoding as SPACE_ENCODING,
       tags,
       download: dl.eventCount + oldDl.eventCount,

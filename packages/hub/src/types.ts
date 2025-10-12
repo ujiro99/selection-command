@@ -1,10 +1,16 @@
-import type { OPEN_MODE, SPACE_ENCODING } from "@/const"
+import type {
+  OPEN_MODE_SEARCH,
+  OPEN_MODE_PAGE_ACTION,
+  SPACE_ENCODING,
+} from "@/const"
 import type { LanguageType } from "@/features/locale"
 import type { PageActionOption } from "@/types/pageAction"
 
 export type Command = SelectionCommand & Analytics
 
 export type SelectionCommand = SearchCommand | PageActionCommand
+
+type OPEN_MODE = OPEN_MODE_SEARCH | OPEN_MODE_PAGE_ACTION
 
 type BaseCommand = {
   id: string
