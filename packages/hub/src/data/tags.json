@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 16
+    "count": 17
   },
   {
     "name": "Language",
@@ -82,6 +82,10 @@
   {
     "name": "AI",
     "count": 6
+  },
+  {
+    "name": "Map",
+    "count": 2
   },
   {
     "name": "Dictionary",

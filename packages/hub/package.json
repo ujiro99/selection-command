@@ -15,6 +15,7 @@
     "analytics": "node ./scripts/fetch-ga-data.js",
     "tags": "node ./scripts/update-tags.mjs",
     "urls": "node ./scripts/update-searchUrls.mjs",
+    "add-command": "yarn tags && yarn urls",
     "pretty-quick": "pretty-quick"
   },
   "dependencies": {
