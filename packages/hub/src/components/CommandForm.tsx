@@ -56,7 +56,7 @@ export function CommandForm() {
     setStep(STEP.SENDING)
     // Send data to Google Apps Script
     const url =
-      "https://script.google.com/macros/s/AKfycbxhdkl8vb0mxDlKqiHlF1ND461sIVp7nenuKOuNP4Shq1xMgvWyRQsg5Dl2Z0eRnxE/exec"
+      "https://script.google.com/macros/s/AKfycbwkLaCIh2xOq1fobxThzeVAE711C_z7JhXmKxh4bLIgMvHPuADTmgzndqowhStQR-nh/exec"
     const submit = async () => {
       try {
         const ret = await fetch(url, {
