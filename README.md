@@ -4,7 +4,7 @@
 **Selection Command** is a Chrome Extension that allows you to perform various actions on selected text on a web page.  
 
 ## Install
-<a href="https://chromewebstore.google.com/detail/selection-command/nlnhbibaommoelemmdfnkjkgoppkohje" title="open chrome webstore">
+<a href="https://chromewebstore.google.com/detail/selection-command/nlnhbibaommoelemmdfnkjkgoppkohje?utm_source=github&utm_medium=referral&utm_content=banner" title="open chrome webstore">
 <img src="https://github.com/ujiro99/optimize-ab-selector/blob/master/docs/assets/chrome-webstore-small.png?raw=true" alt="chrome webstore" width="200">
 </a>
 
