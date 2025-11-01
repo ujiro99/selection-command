@@ -1078,5 +1078,26 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "有効なURLを入力してください"
+  },
+  "developersupport_title": {
+    "message": "開発者を応援"
+  },
+  "developersupport_review": {
+    "message": "ストアでレビュー"
+  },
+  "developersupport_coffee": {
+    "message": "気持ちを届ける"
+  },
+  "usersupport_title": {
+    "message": "ヘルプ"
+  },
+  "usersupport_contact": {
+    "message": "サポート窓口"
+  },
+  "usersupport_description": {
+    "message": "お問い合わせや機能要望はこちら"
+  },
+  "prompthistory_banner_description": {
+    "message": "ChatGPTなどでプロンプトを再利用できる新しいツール✨"
   }
 }

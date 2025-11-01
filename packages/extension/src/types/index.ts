@@ -148,6 +148,7 @@ type UserStars = {
 export type UserStats = {
   commandExecutionCount: number
   hasShownReviewRequest: boolean
+  hasDismissedPromptHistoryBanner: boolean
 }
 
 export type ShortcutCommand = {

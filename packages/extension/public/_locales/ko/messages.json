@@ -1108,5 +1108,26 @@
   },
   "review_request_later": {
     "message": "나중에"
+  },
+  "developersupport_title": {
+    "message": "개발자 후원"
+  },
+  "developersupport_review": {
+    "message": "Chrome 웹 스토어에서 리뷰하기"
+  },
+  "developersupport_coffee": {
+    "message": "후원하기"
+  },
+  "usersupport_title": {
+    "message": "도움말"
+  },
+  "usersupport_contact": {
+    "message": "지원 센터"
+  },
+  "usersupport_description": {
+    "message": "문의 사항이나 기능 요청은 여기로"
+  },
+  "prompthistory_banner_description": {
+    "message": "ChatGPT 등에서 프롬프트를 재사용할 수 있는 새로운 도구✨"
   }
 }

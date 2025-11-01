@@ -1108,5 +1108,26 @@
   },
   "review_request_later": {
     "message": "Позже"
+  },
+  "developersupport_title": {
+    "message": "Поддержать разработчика"
+  },
+  "developersupport_review": {
+    "message": "Оставить отзыв в Chrome Web Store"
+  },
+  "developersupport_coffee": {
+    "message": "Отправить вашу поддержку"
+  },
+  "usersupport_title": {
+    "message": "Помощь"
+  },
+  "usersupport_contact": {
+    "message": "Поддержка"
+  },
+  "usersupport_description": {
+    "message": "Свяжитесь с нами по вопросам или запросам функций"
+  },
+  "prompthistory_banner_description": {
+    "message": "Новый инструмент для повторного использования подсказок для ChatGPT и других✨"
   }
 }

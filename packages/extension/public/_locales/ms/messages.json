@@ -1111,5 +1111,26 @@
   },
   "review_request_later": {
     "message": "Kemudian"
+  },
+  "developersupport_title": {
+    "message": "Sokong Pembangun"
+  },
+  "developersupport_review": {
+    "message": "Ulas di Chrome Web Store"
+  },
+  "developersupport_coffee": {
+    "message": "Hantar sokongan anda"
+  },
+  "usersupport_title": {
+    "message": "Bantuan"
+  },
+  "usersupport_contact": {
+    "message": "Sokongan"
+  },
+  "usersupport_description": {
+    "message": "Hubungi kami untuk soalan atau permintaan fitur"
+  },
+  "prompthistory_banner_description": {
+    "message": "Alat baharu untuk menggunakan semula gesaan untuk ChatGPT dan lain-lain✨"
   }
 }

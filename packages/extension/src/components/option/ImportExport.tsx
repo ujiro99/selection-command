@@ -264,12 +264,16 @@ export function ImportExport() {
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
       ; (async () => {
-        const { commandExecutionCount = 0, hasShownReviewRequest = false } =
-          await enhancedSettings.get()
+        const {
+          commandExecutionCount = 0,
+          hasShownReviewRequest = false,
+          hasDismissedPromptHistoryBanner = false,
+        } = await enhancedSettings.get()
         const data = await migrate({
           ...importJson,
           commandExecutionCount,
           hasShownReviewRequest,
+          hasDismissedPromptHistoryBanner,
           stars: [],
         })
         await Settings.set(data)

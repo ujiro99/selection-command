@@ -129,12 +129,18 @@ export const Settings = {
     data.commands = []
 
     // Remove UserStats, stars and shortcuts from data
-    const { commandExecutionCount, hasShownReviewRequest, stars, ...restData } =
-      data
+    const {
+      commandExecutionCount,
+      hasShownReviewRequest,
+      hasDismissedPromptHistoryBanner,
+      stars,
+      ...restData
+    } = data
 
     const userStats: UserStats = {
       commandExecutionCount,
       hasShownReviewRequest,
+      hasDismissedPromptHistoryBanner,
     }
 
     ps.push(Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats))

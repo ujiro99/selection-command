@@ -372,6 +372,7 @@ describe("useSettings hooks", () => {
         stars: [],
         commandExecutionCount: 0,
         hasShownReviewRequest: false,
+        hasDismissedPromptHistoryBanner: false,
       } as SettingsType
 
       mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)
@@ -690,6 +691,7 @@ describe("useSettings hooks", () => {
         stars: [],
         commandExecutionCount: 0,
         hasShownReviewRequest: false,
+        hasDismissedPromptHistoryBanner: false,
       } as SettingsType
 
       mockEnhancedSettings.getSection.mockResolvedValueOnce(mockSettings)

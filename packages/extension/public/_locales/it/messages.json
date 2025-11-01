@@ -1108,5 +1108,26 @@
   },
   "review_request_later": {
     "message": "Dopo"
+  },
+  "developersupport_title": {
+    "message": "Supporta lo sviluppatore"
+  },
+  "developersupport_review": {
+    "message": "Recensisci su Chrome Web Store"
+  },
+  "developersupport_coffee": {
+    "message": "Invia il tuo supporto"
+  },
+  "usersupport_title": {
+    "message": "Aiuto"
+  },
+  "usersupport_contact": {
+    "message": "Supporto"
+  },
+  "usersupport_description": {
+    "message": "Contattaci per domande o richieste di funzionalità"
+  },
+  "prompthistory_banner_description": {
+    "message": "Un nuovo strumento per riutilizzare i prompt per ChatGPT e altro✨"
   }
 }

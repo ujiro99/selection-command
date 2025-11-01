@@ -52,6 +52,7 @@ export const emptySettings: SettingsType = {
   stars: [],
   commandExecutionCount: 0,
   hasShownReviewRequest: false,
+  hasDismissedPromptHistoryBanner: false,
   shortcuts: { shortcuts: [] },
 }
 

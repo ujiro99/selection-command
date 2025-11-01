@@ -187,6 +187,7 @@ describe("Settings", () => {
       ...DefaultSettings,
       commandExecutionCount: 0,
       hasShownReviewRequest: false,
+      hasDismissedPromptHistoryBanner: false,
       stars: [] as Star[],
     }
 
@@ -205,6 +206,8 @@ describe("Settings", () => {
       expect(mockStorage.set).toHaveBeenCalledWith(STORAGE_KEY.USER_STATS, {
         commandExecutionCount: mockSettings.commandExecutionCount,
         hasShownReviewRequest: mockSettings.hasShownReviewRequest,
+        hasDismissedPromptHistoryBanner:
+          mockSettings.hasDismissedPromptHistoryBanner,
       })
       expect(mockStorage.set).toHaveBeenCalledWith(
         STORAGE_KEY.SHORTCUTS,
@@ -627,6 +630,7 @@ describe("migrate function", () => {
       ...DefaultSettings,
       commandExecutionCount: 0,
       hasShownReviewRequest: false,
+      hasDismissedPromptHistoryBanner: false,
       stars: [] as Star[],
     }
 
