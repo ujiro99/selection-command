@@ -13,9 +13,15 @@ export function PromptHistoryBanner() {
 
   useEffect(() => {
     const checkVisibility = async () => {
-      const settings = await Settings.get()
-      const dismissed = settings.hasDismissedPromptHistoryBanner ?? false
-      setIsVisible(!dismissed)
+      try {
+        const settings = await Settings.get()
+        const dismissed = settings.hasDismissedPromptHistoryBanner ?? false
+        setIsVisible(!dismissed)
+      } catch (error) {
+        // If settings retrieval fails, don't show the banner
+        console.error("Failed to load banner settings:", error)
+        setIsVisible(false)
+      }
     }
     checkVisibility()
   }, [])
@@ -23,8 +29,13 @@ export function PromptHistoryBanner() {
   const handleDismiss = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    await Settings.update("hasDismissedPromptHistoryBanner", () => true)
-    setIsVisible(false)
+    try {
+      await Settings.update("hasDismissedPromptHistoryBanner", () => true)
+      setIsVisible(false)
+    } catch (error) {
+      // If settings update fails, log the error but keep the banner visible
+      console.error("Failed to save banner dismissal:", error)
+    }
   }
 
   if (!isVisible) return null
