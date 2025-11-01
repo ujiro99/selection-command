@@ -42,7 +42,7 @@ describe("Service Layer Migration", () => {
 
   it("MG-02-b: should use enhancedSettings.get() in contextMenus", async () => {
     // Mock chrome.contextMenus.removeAll to call the callback
-    ;(chrome.contextMenus.removeAll as any).mockImplementation(async () => {
+    ; (chrome.contextMenus.removeAll as any).mockImplementation(async () => {
       return
     })
 
@@ -95,8 +95,8 @@ describe("Context Menu Multi-level Hierarchy", () => {
     // Clear commandIdObj between tests
     ContextMenu.commandIdObj = {}
 
-    // Mock chrome.contextMenus.removeAll to call the callback
-    ;(chrome.contextMenus.removeAll as any).mockImplementation(async () => {})
+      // Mock chrome.contextMenus.removeAll to call the callback
+      ; (chrome.contextMenus.removeAll as any).mockImplementation(async () => { })
 
     // Mock chrome.runtime.lastError
     global.chrome.runtime = {
@@ -245,9 +245,6 @@ describe("Context Menu Multi-level Hierarchy", () => {
 
     it("CM-05: should update menu when settings change", async () => {
       const mockRemoveAll = chrome.contextMenus.removeAll as any
-      const mockRemoveListener = chrome.contextMenus.onClicked
-        .removeListener as any
-      const mockAddListener = chrome.contextMenus.onClicked.addListener as any
 
       // Initial settings
       const initialFolders = [createFolder("folder1", "Folder 1")]
