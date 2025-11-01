@@ -428,6 +428,8 @@ if (isDebug) {
 }
 
 chrome.runtime.onInstalled.addListener((details) => {
+  ContextMenu.init()
+
   chrome.storage.session.setAccessLevel({
     accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
   })
@@ -449,9 +451,6 @@ chrome.runtime.onInstalled.addListener((details) => {
 
 chrome.runtime.onStartup.addListener(() => {
   console.debug("Service worker started")
-
-  // Initialize context menu
-  ContextMenu.init()
 
   // Check for daily backup on browser startup
   checkAndPerformDailyBackup()
