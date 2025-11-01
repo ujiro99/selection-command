@@ -65,6 +65,7 @@ export class EnhancedSettings {
         : Promise.resolve({
             commandExecutionCount: 0,
             hasShownReviewRequest: false,
+            hasDismissedPromptHistoryBanner: false,
           }),
     ])
 
@@ -91,7 +92,11 @@ export class EnhancedSettings {
     const userStats =
       userStatsResult.status === "fulfilled"
         ? userStatsResult.value
-        : { commandExecutionCount: 0, hasShownReviewRequest: false }
+        : {
+            commandExecutionCount: 0,
+            hasShownReviewRequest: false,
+            hasDismissedPromptHistoryBanner: false,
+          }
 
     // Merge settings
     const mergedSettings = this.mergeSettings({

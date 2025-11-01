@@ -187,6 +187,7 @@ describe("Settings", () => {
       ...DefaultSettings,
       commandExecutionCount: 0,
       hasShownReviewRequest: false,
+      hasDismissedPromptHistoryBanner: false,
       stars: [] as Star[],
     }
 
@@ -627,6 +628,7 @@ describe("migrate function", () => {
       ...DefaultSettings,
       commandExecutionCount: 0,
       hasShownReviewRequest: false,
+      hasDismissedPromptHistoryBanner: false,
       stars: [] as Star[],
     }
 

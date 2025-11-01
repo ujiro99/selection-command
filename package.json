@@ -17,7 +17,7 @@
     "lint": "yarn workspaces run lint",
     "test": "yarn workspace @selection-command/extension test:run; yarn workspace @selection-command/hub test:run",
     "test:coverage": "yarn workspaces run test:coverage",
-    "tsc": "yarn workspaces run tsc",
+    "tsc": "yarn workspaces run tsc -b",
     "clean": "yarn workspaces run clean && rm -rf node_modules"
   },
   "devDependencies": {
