@@ -56,13 +56,11 @@ export const ContextMenu = {
       initDelayTO = setTimeout(async () => {
         // Cleanup previous context menus.
         await chrome.contextMenus.removeAll()
-        chrome.contextMenus.onClicked.removeListener(ContextMenu.onClicked)
 
         // Reinitialize context menus based on settings.
         const settings = await enhancedSettings.get()
         if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
-          await ContextMenu.addMenus(settings)
-          chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+          ContextMenu.addMenus(settings)
         }
         resolve()
       }, 10)
@@ -71,7 +69,7 @@ export const ContextMenu = {
 
   commandIdObj: {} as { [key: string | number]: Command },
 
-  addMenus: async (settings: SettingsType) => {
+  addMenus: (settings: SettingsType) => {
     const contexts = ["selection"] as chrome.contextMenus.ContextType[]
     const commands = settings.commands.filter(isMenuCommand)
     const folders = settings.folders
@@ -138,6 +136,43 @@ export const ContextMenu = {
           id: command.id,
         })
         ContextMenu.commandIdObj[menuId] = command
+      }
+    }
+  },
+
+  syncCommandIdObj: async () => {
+    try {
+      const settings = await enhancedSettings.get()
+      if (settings.startupMethod.method === STARTUP_METHOD.CONTEXT_MENU) {
+        const commands = settings.commands.filter(isMenuCommand)
+        const folders = settings.folders
+
+        // Create hierarchical tree structure
+        const tree = toCommandTree(commands, folders)
+
+        // Clear existing commandIdObj
+        ContextMenu.commandIdObj = {}
+
+        // Build commandIdObj from tree structure
+        ContextMenu.buildCommandIdObj(tree)
+      }
+    } catch (error) {
+      // Ignore errors during initialization (e.g., in test environment)
+      console.debug("Failed to sync commandIdObj:", error)
+    }
+  },
+
+  buildCommandIdObj: (nodes: CommandTreeNode[]) => {
+    for (const node of nodes) {
+      if (node.type === "folder") {
+        // Recursively process child nodes
+        if (node.children && node.children.length > 0) {
+          ContextMenu.buildCommandIdObj(node.children)
+        }
+      } else {
+        // Add command to commandIdObj
+        const command = node.content as Command
+        ContextMenu.commandIdObj[command.id] = command
       }
     }
   },
