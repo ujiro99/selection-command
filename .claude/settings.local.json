@@ -55,7 +55,8 @@
       "mcp__serena__think_about_task_adherence",
       "mcp__serena__think_about_whether_you_are_done",
       "mcp__serena__write_memory",
-      "Bash(yarn build:*)"
+      "Bash(yarn build:*)",
+      "mcp__serena__initial_instructions"
     ],
     "deny": []
   }

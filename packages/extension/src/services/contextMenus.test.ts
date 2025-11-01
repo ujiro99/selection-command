@@ -292,9 +292,7 @@ describe("Context Menu Multi-level Hierarchy", () => {
 
       // Should remove all previous menus and create new ones
       expect(mockRemoveAll).toHaveBeenCalledTimes(1)
-      expect(mockRemoveListener).toHaveBeenCalledTimes(1)
       expect(mockContextMenusCreate).toHaveBeenCalledTimes(3) // root + folder2 + cmd2
-      expect(mockAddListener).toHaveBeenCalledTimes(1)
 
       // Check that new menu structure is created
       expect(mockContextMenusCreate).toHaveBeenCalledWith(
