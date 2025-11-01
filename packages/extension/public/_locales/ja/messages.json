@@ -1078,5 +1078,14 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "有効なURLを入力してください"
+  },
+  "developersupport_title": {
+    "message": "開発者を応援"
+  },
+  "developersupport_review": {
+    "message": "ストアでレビュー"
+  },
+  "developersupport_coffee": {
+    "message": "気持ちを届ける"
   }
 }

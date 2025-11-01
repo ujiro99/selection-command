@@ -1111,5 +1111,14 @@
   },
   "review_request_later": {
     "message": "Kemudian"
+  },
+  "developersupport_title": {
+    "message": "Sokong Pembangun"
+  },
+  "developersupport_review": {
+    "message": "Ulas di Chrome Web Store"
+  },
+  "developersupport_coffee": {
+    "message": "Hantar sokongan anda"
   }
 }

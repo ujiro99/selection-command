@@ -1111,5 +1111,14 @@
   },
   "review_request_later": {
     "message": "Mais tarde"
+  },
+  "developersupport_title": {
+    "message": "Apoiar o programador"
+  },
+  "developersupport_review": {
+    "message": "Avaliar na Chrome Web Store"
+  },
+  "developersupport_coffee": {
+    "message": "Envie o seu apoio"
   }
 }

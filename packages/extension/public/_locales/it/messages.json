@@ -1108,5 +1108,14 @@
   },
   "review_request_later": {
     "message": "Dopo"
+  },
+  "developersupport_title": {
+    "message": "Supporta lo sviluppatore"
+  },
+  "developersupport_review": {
+    "message": "Recensisci su Chrome Web Store"
+  },
+  "developersupport_coffee": {
+    "message": "Invia il tuo supporto"
   }
 }

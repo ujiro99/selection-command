@@ -1108,5 +1108,14 @@
   },
   "review_request_later": {
     "message": "稍后"
+  },
+  "developersupport_title": {
+    "message": "支持开发者"
+  },
+  "developersupport_review": {
+    "message": "在 Chrome 网上应用店评价"
+  },
+  "developersupport_coffee": {
+    "message": "发送您的支持"
   }
 }

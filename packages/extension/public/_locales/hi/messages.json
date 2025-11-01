@@ -1075,5 +1075,14 @@
   },
   "review_request_later": {
     "message": "बाद में"
+  },
+  "developersupport_title": {
+    "message": "डेवलपर का समर्थन करें"
+  },
+  "developersupport_review": {
+    "message": "Chrome Web Store पर समीक्षा करें"
+  },
+  "developersupport_coffee": {
+    "message": "अपना समर्थन भेजें"
   }
 }
