@@ -1088,6 +1088,15 @@
   "developersupport_coffee": {
     "message": "Kirim dukungan Anda"
   },
+  "usersupport_title": {
+    "message": "Bantuan"
+  },
+  "usersupport_contact": {
+    "message": "Dukungan"
+  },
+  "usersupport_description": {
+    "message": "Hubungi kami untuk pertanyaan atau permintaan fitur"
+  },
   "prompthistory_banner_description": {
     "message": "Alat baru untuk menggunakan kembali prompt untuk ChatGPT dan lainnya✨"
   }

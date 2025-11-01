@@ -1088,6 +1088,15 @@
   "developersupport_coffee": {
     "message": "Send your support"
   },
+  "usersupport_title": {
+    "message": "Help"
+  },
+  "usersupport_contact": {
+    "message": "Support"
+  },
+  "usersupport_description": {
+    "message": "Contact us for questions or feature requests"
+  },
   "prompthistory_banner_description": {
     "message": "A new tool to reuse prompts for ChatGPT and more✨"
   }

@@ -1118,6 +1118,15 @@
   "developersupport_coffee": {
     "message": "Invia il tuo supporto"
   },
+  "usersupport_title": {
+    "message": "Aiuto"
+  },
+  "usersupport_contact": {
+    "message": "Supporto"
+  },
+  "usersupport_description": {
+    "message": "Contattaci per domande o richieste di funzionalità"
+  },
   "prompthistory_banner_description": {
     "message": "Un nuovo strumento per riutilizzare i prompt per ChatGPT e altro✨"
   }

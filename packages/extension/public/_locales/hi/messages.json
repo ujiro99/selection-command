@@ -1085,6 +1085,15 @@
   "developersupport_coffee": {
     "message": "अपना समर्थन भेजें"
   },
+  "usersupport_title": {
+    "message": "मदद"
+  },
+  "usersupport_contact": {
+    "message": "समर्थन"
+  },
+  "usersupport_description": {
+    "message": "प्रश्नों या सुविधा अनुरोधों के लिए हमसे संपर्क करें"
+  },
   "prompthistory_banner_description": {
     "message": "ChatGPT और अधिक के लिए प्रॉम्प्ट का पुन: उपयोग करने के लिए एक नया उपकरण।✨"
   }

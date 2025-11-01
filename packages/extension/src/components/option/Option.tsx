@@ -7,6 +7,7 @@ import { APP_ID, VERSION } from "@/const"
 import { Popup } from "@/components/Popup"
 import { TableOfContents } from "@/components/option/TableOfContents"
 import { ImportExport } from "@/components/option/ImportExport"
+import { UserSupport } from "@/components/option/UserSupport"
 import { DeveloperSupport } from "@/components/option/DeveloperSupport"
 import { HubBanner } from "@/components/option/HubBanner"
 import { SettingForm } from "@/components/option/SettingForm"
@@ -75,6 +76,7 @@ export function Option() {
           <div className="sticky top-20">
             <TableOfContents onClick={onClickMenu} />
             <ImportExport />
+            <UserSupport />
             <DeveloperSupport />
           </div>
         </aside>

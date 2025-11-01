@@ -1118,6 +1118,15 @@
   "developersupport_coffee": {
     "message": "发送您的支持"
   },
+  "usersupport_title": {
+    "message": "帮助"
+  },
+  "usersupport_contact": {
+    "message": "支持窗口"
+  },
+  "usersupport_description": {
+    "message": "如有问题或功能请求，请联系我们"
+  },
   "prompthistory_banner_description": {
     "message": "用于在 ChatGPT 等中重用提示的新工具✨"
   }
