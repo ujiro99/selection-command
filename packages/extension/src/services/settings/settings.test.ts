@@ -206,6 +206,8 @@ describe("Settings", () => {
       expect(mockStorage.set).toHaveBeenCalledWith(STORAGE_KEY.USER_STATS, {
         commandExecutionCount: mockSettings.commandExecutionCount,
         hasShownReviewRequest: mockSettings.hasShownReviewRequest,
+        hasDismissedPromptHistoryBanner:
+          mockSettings.hasDismissedPromptHistoryBanner,
       })
       expect(mockStorage.set).toHaveBeenCalledWith(
         STORAGE_KEY.SHORTCUTS,
