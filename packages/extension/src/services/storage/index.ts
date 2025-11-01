@@ -56,6 +56,7 @@ const DEFAULTS = {
   [STORAGE_KEY.USER_STATS]: {
     commandExecutionCount: 0,
     hasShownReviewRequest: false,
+    hasDismissedPromptHistoryBanner: false,
   },
   [STORAGE_KEY.SHORTCUTS]: {
     shortcuts: [],

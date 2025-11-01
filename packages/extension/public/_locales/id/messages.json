@@ -1087,5 +1087,8 @@
   },
   "developersupport_coffee": {
     "message": "Kirim dukungan Anda"
+  },
+  "prompthistory_banner_description": {
+    "message": "Alat baru untuk menggunakan kembali prompt untuk ChatGPT dan lainnya✨"
   }
 }

@@ -1087,5 +1087,8 @@
   },
   "developersupport_coffee": {
     "message": "気持ちを届ける"
+  },
+  "prompthistory_banner_description": {
+    "message": "ChatGPTなどでプロンプトを再利用できる新しいツール✨"
   }
 }

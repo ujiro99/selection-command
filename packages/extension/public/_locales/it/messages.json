@@ -1117,5 +1117,8 @@
   },
   "developersupport_coffee": {
     "message": "Invia il tuo supporto"
+  },
+  "prompthistory_banner_description": {
+    "message": "Un nuovo strumento per riutilizzare i prompt per ChatGPT e altro✨"
   }
 }

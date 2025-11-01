@@ -1117,5 +1117,8 @@
   },
   "developersupport_coffee": {
     "message": "Отправить вашу поддержку"
+  },
+  "prompthistory_banner_description": {
+    "message": "Новый инструмент для повторного использования подсказок для ChatGPT и других✨"
   }
 }

@@ -1120,5 +1120,8 @@
   },
   "developersupport_coffee": {
     "message": "Hantar sokongan anda"
+  },
+  "prompthistory_banner_description": {
+    "message": "Alat baharu untuk menggunakan semula gesaan untuk ChatGPT dan lain-lain✨"
   }
 }

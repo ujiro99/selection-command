@@ -1117,5 +1117,8 @@
   },
   "developersupport_coffee": {
     "message": "发送您的支持"
+  },
+  "prompthistory_banner_description": {
+    "message": "用于在 ChatGPT 等中重用提示的新工具✨"
   }
 }
