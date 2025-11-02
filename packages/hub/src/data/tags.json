@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 17
+    "count": 19
   },
   {
     "name": "Language",
@@ -65,7 +65,7 @@
   },
   {
     "name": "Media",
-    "count": 7
+    "count": 8
   },
   {
     "name": "SNS",
@@ -77,7 +77,7 @@
   },
   {
     "name": "Movie",
-    "count": 4
+    "count": 5
   },
   {
     "name": "AI",
@@ -89,7 +89,7 @@
   },
   {
     "name": "Dictionary",
-    "count": 1
+    "count": 2
   },
   {
     "name": "Character",
@@ -129,6 +129,14 @@
   },
   {
     "name": "Conversion",
+    "count": 1
+  },
+  {
+    "name": "TV",
+    "count": 1
+  },
+  {
+    "name": "English",
     "count": 1
   }
 ]

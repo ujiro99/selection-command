@@ -1126,5 +1126,29 @@
     "spaceEncoding": "plus",
     "tags": ["Search", "Map"],
     "addedAt": "2025-10-29T18:48:33.711Z"
+  },
+  {
+    "id": "1b80a9bd-be76-5876-a1a1-8033d676d53e",
+    "title": "IMDb",
+    "searchUrl": "https://www.imdb.com/find?q=%s&s=all",
+    "description": "Search for information about movies, television, and more.",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=64&domain_url=https://www.imdb.com/find?q=%s&s=all",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "Media", "Movie", "TV"],
+    "addedAt": "2025-11-02T01:16:52.257Z"
+  },
+  {
+    "id": "033bdab3-f0f3-5a95-90aa-78ac86e2fcc1",
+    "title": "Oxford Advanced Learner's Dictionary",
+    "searchUrl": "https://www.oxfordlearnersdictionaries.com/definition/english/%s",
+    "description": "Search in the Oxford Advanced Learner's Dictionary (English-English Dictionary)",
+    "iconUrl": "https://www.oxfordlearnersdictionaries.com/external/images/favicon.ico?version=2.3.73",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "Dictionary", "English"],
+    "addedAt": "2025-11-02T01:19:20.536Z"
   }
 ]
