@@ -5,11 +5,11 @@
   },
   {
     "name": "Language",
-    "count": 2
+    "count": 4
   },
   {
     "name": "Translation",
-    "count": 2
+    "count": 4
   },
   {
     "name": "翻訳",
@@ -81,7 +81,7 @@
   },
   {
     "name": "AI",
-    "count": 6
+    "count": 8
   },
   {
     "name": "Map",
@@ -89,7 +89,7 @@
   },
   {
     "name": "Dictionary",
-    "count": 2
+    "count": 3
   },
   {
     "name": "Character",
@@ -137,6 +137,6 @@
   },
   {
     "name": "English",
-    "count": 1
+    "count": 3
   }
 ]

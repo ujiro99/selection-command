@@ -565,7 +565,7 @@
           "id": "ue1kl6s5m",
           "param": {
             "label": "Submit",
-            "selector": "//*[@aria-label='Send prompt']/*",
+            "selector": "//*[@data-testid='send-button']/*",
             "selectorType": "xpath",
             "type": "click"
           },
@@ -620,7 +620,7 @@
           "id": "paoqgubiv",
           "param": {
             "label": "Send prompt",
-            "selector": "//*[@aria-label='Send prompt']/*",
+            "selector": "//*[@data-testid='send-button']/*",
             "selectorType": "xpath",
             "type": "click"
           },
@@ -1150,5 +1150,101 @@
     "spaceEncoding": "plus",
     "tags": ["Search", "Dictionary", "English"],
     "addedAt": "2025-11-02T01:19:20.536Z"
+  },
+  {
+    "id": "0745a377-f0d3-5399-aecb-bd7561059e70",
+    "title": "Gemini Translate into English",
+    "description": "Translate the selected text into English using Gemini.",
+    "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "openMode": "pageAction",
+    "tags": ["AI", "Language", "Dictionary", "Translation", "English"],
+    "pageActionOption": {
+      "startUrl": "https://gemini.google.com/app",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "1clkfxbrr",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "gmavyqlj2",
+          "param": {
+            "type": "input",
+            "label": "Ask Gemini",
+            "selector": "//*[@data-gramm='false']/*",
+            "selectorType": "xpath",
+            "value": "Translate into English.\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "umb7r0prx",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@data-mat-icon-name='send']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "stjwk2dnp",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2025-11-02T14:49:08.054Z"
+  },
+  {
+    "id": "e7219d76-be8b-5a06-be6e-e988ad910a44",
+    "title": "ChatGPT Translate into English",
+    "description": "Tlanslate the selected text into English using ChatGPT.",
+    "iconUrl": "https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico",
+    "openMode": "pageAction",
+    "tags": ["AI", "Language", "Translation", "English"],
+    "pageActionOption": {
+      "startUrl": "https://chatgpt.com/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "fdz6a6dyl",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "sbsw7b3r8",
+          "param": {
+            "type": "input",
+            "label": "Input prompt",
+            "selector": "//p",
+            "selectorType": "xpath",
+            "value": "Translate into English.\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "paoqgubiv",
+          "param": {
+            "type": "click",
+            "label": "Send prompt",
+            "selector": "//*[@data-testid='send-button']/*",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "tjllchitd",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2025-11-02T14:45:23.393Z"
   }
 ]
