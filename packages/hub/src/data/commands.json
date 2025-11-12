@@ -72,6 +72,7 @@
     "addedAt": "2024-12-18T03:00:19.785Z"
   },
   {
+    "id": "618ad67a-cdb9-5206-85e1-481957b84e41",
     "title": "メルカリ相場",
     "searchUrl": "https://jp.mercari.com/search?keyword=%s&status=sold_out%7Ctrading&sort=created_time&order=desc",
     "description": "メルカリの相場を検索します",
@@ -80,8 +81,19 @@
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
     "tags": ["Shop", "Japanese"],
-    "id": "618ad67a-cdb9-5206-85e1-481957b84e41",
     "addedAt": "2024-12-23T13:49:39.766Z"
+  },
+  {
+    "id": "c140279a-6c11-5ca9-891c-9886021eae6a",
+    "title": "メルカリ相場(個人、目立った傷・汚れなし)",
+    "searchUrl": "https://jp.mercari.com/search?keyword=%s&order=&item_condition_id=3&status=sold_out&item_types=mercari",
+    "description": "メルカリの相場を検索します（個人、目立った傷・汚れなし）",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=64&domain_url=https://jp.mercari.com/search?keyword=%s&order=&item_condition_id=3&status=sold_out&item_types=mercari",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Shop", "Japanese"],
+    "addedAt": "2025-11-11T13:25:13.415Z"
   },
   {
     "title": "メルカリ",
