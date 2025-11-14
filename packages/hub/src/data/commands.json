@@ -1258,5 +1258,17 @@
       ]
     },
     "addedAt": "2025-11-02T14:45:23.393Z"
+  },
+  {
+    "id": "5f08f067-f83b-57f5-b942-d2d377527406",
+    "title": "カカクコム",
+    "searchUrl": "https://search.kakaku.com/%s/",
+    "description": "価格.comで商品の価格を検索します",
+    "iconUrl": "https://img1.kakaku.k-img.com/images/favicon/kakaku_favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Shop", "Japanese"],
+    "addedAt": "2025-11-14T19:14:39.847Z"
   }
 ]

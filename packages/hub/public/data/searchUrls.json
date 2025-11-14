@@ -40,5 +40,6 @@
   "https://www.glassdoor.com/Search/results.htm?keyword=%s",
   "https://www.openstreetmap.org/search?query=%s",
   "https://www.imdb.com/find?q=%s&s=all",
-  "https://www.oxfordlearnersdictionaries.com/definition/english/%s"
+  "https://www.oxfordlearnersdictionaries.com/definition/english/%s",
+  "https://search.kakaku.com/%s/"
 ]
