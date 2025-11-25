@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 19
+    "count": 20
   },
   {
     "name": "Language",
@@ -37,7 +37,7 @@
   },
   {
     "name": "Shop",
-    "count": 10
+    "count": 11
   },
   {
     "name": "Manual",
@@ -81,7 +81,7 @@
   },
   {
     "name": "AI",
-    "count": 8
+    "count": 10
   },
   {
     "name": "Map",
@@ -138,5 +138,13 @@
   {
     "name": "English",
     "count": 3
+  },
+  {
+    "name": "Automation",
+    "count": 1
+  },
+  {
+    "name": "Amazon",
+    "count": 1
   }
 ]

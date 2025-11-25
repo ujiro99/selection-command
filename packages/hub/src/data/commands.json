@@ -1270,5 +1270,122 @@
     "spaceEncoding": "plus",
     "tags": ["Shop", "Japanese"],
     "addedAt": "2025-11-14T19:14:39.847Z"
+  },
+  {
+    "id": "0fc61a8a-f1c2-5fc7-b41c-bdfed9158835",
+    "title": "Gemini autocopy",
+    "description": "Ask Gemini, and Auto copy answer",
+    "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "openMode": "pageAction",
+    "tags": ["AI", "Automation"],
+    "pageActionOption": {
+      "startUrl": "https://gemini.google.com/app",
+      "openMode": "backgroundTab",
+      "steps": [
+        {
+          "id": "1clkfxbrr",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "gmavyqlj2",
+          "param": {
+            "type": "input",
+            "label": "Ask Gemini",
+            "selector": "//*[@data-gramm='false']/*",
+            "selectorType": "xpath",
+            "value": "Leg het volgende zo kort mogelijk uit, of geef zo kort mogelijk antwoord:\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "umb7r0prx",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@data-mat-icon-name='send']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "38nso0l80",
+          "param": {
+            "type": "click",
+            "label": "",
+            "selector": "//*[@data-test-id='copy-button']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "od925ayxs",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2025-11-24T19:20:26.788Z"
+  },
+  {
+    "id": "73209a9a-c9a8-55b8-872a-c3b36b81b256",
+    "title": "Copilot",
+    "description": "Gopilotで選択テキストを解説します",
+    "iconUrl": "https://copilot.microsoft.com/static/cmc/favicon.svg",
+    "openMode": "pageAction",
+    "tags": ["AI"],
+    "pageActionOption": {
+      "startUrl": "https://copilot.microsoft.com/",
+      "openMode": "popup",
+      "steps": [
+        {
+          "id": "fdz6a6dyl",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "8ra2et7u1",
+          "param": {
+            "type": "input",
+            "label": "Copilot へメッセージを送る",
+            "selector": "//*[@role='textbox']",
+            "selectorType": "xpath",
+            "value": "以下を解説して。\n{{SelectedText}}"
+          }
+        },
+        {
+          "id": "fzfnqklom",
+          "param": {
+            "type": "click",
+            "label": "メッセージの送信",
+            "selector": "//*[@data-testid='submit-button']/*",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "fc3fxeuia",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2025-11-24T14:34:22.819Z"
+  },
+  {
+    "id": "1d8cdcca-7f11-5409-bb56-fdbfdf4b0175",
+    "title": "Keepa",
+    "searchUrl": "https://keepa.com/#!search/5-%s",
+    "description": "Check the Amazon price history for the selected item",
+    "iconUrl": "https://cdn.keepa.com/favicon-32x32.png",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "Shop", "Amazon"],
+    "addedAt": "2025-11-24T14:32:59.534Z"
   }
 ]
