@@ -231,7 +231,7 @@
     "title": "Perplexity",
     "searchUrl": "https://www.perplexity.ai/search/new?q=%s",
     "description": "Perplexityで検索します",
-    "iconUrl": "https://www.perplexity.ai/favicon.ico",
+    "iconUrl": "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/perplexity-ai-icon.png",
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
@@ -1387,5 +1387,17 @@
     "spaceEncoding": "plus",
     "tags": ["Search", "Shop", "Amazon"],
     "addedAt": "2025-11-24T14:32:59.534Z"
+  },
+  {
+    "id": "516bef29-dec6-5dd7-b427-815078b9d18e",
+    "title": "Everything",
+    "searchUrl": "http://localhost/?search=%s",
+    "description": "快速検索ツール、everythingのHTTPサーバー機能を使ってローカルファイルを検索",
+    "iconUrl": "https://www.voidtools.com/favicon.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Desktop", "Search", "Tool"],
+    "addedAt": "2025-12-05T14:26:05.298Z"
   }
 ]

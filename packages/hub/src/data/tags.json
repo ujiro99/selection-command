@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 20
+    "count": 21
   },
   {
     "name": "Language",
@@ -17,7 +17,7 @@
   },
   {
     "name": "Tool",
-    "count": 9
+    "count": 10
   },
   {
     "name": "Japanese",
@@ -145,6 +145,10 @@
   },
   {
     "name": "Amazon",
+    "count": 1
+  },
+  {
+    "name": "Desktop",
     "count": 1
   }
 ]
