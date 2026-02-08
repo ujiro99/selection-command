@@ -525,7 +525,7 @@ export function SettingForm({ className }: { className?: string }) {
                 description={t("instantCommandModifierKey_desc")}
                 placeholder={t("instantCommandModifierKey_placeholder")}
                 options={e2a(KEYBOARD)
-                  .filter((k) => k != KEYBOARD.META)
+                  .filter((k) => k !== KEYBOARD.META)
                   .map((key) => ({
                     name: t(`keyboardParam_${key}_${os}`),
                     value: key,

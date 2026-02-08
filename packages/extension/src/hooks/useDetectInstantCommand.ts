@@ -76,14 +76,5 @@ export function useDetectInstantCommand(positionElm: Element | null) {
     return () => {
       window.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [
-    enabled,
-    command,
-    modifierKey,
-    checkModifierKey,
-    executeCommand,
-    positionElm,
-    target,
-    selectionText,
-  ])
+  }, [enabled, command, modifierKey, checkModifierKey, executeCommand, target])
 }
