@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "प्रतीक्षा समय"
   },
+  "Option_instantCommand": {
+    "message": "तत्काल आदेश"
+  },
+  "Option_instantCommand_desc": {
+    "message": "संशोधक कुंजी दबाए रखते हुए पाठ का चयन करते समय निर्दिष्ट आदेश को तुरंत निष्पादित करता है।"
+  },
+  "Option_instantCommandEnabled": {
+    "message": "तत्काल आदेश सक्षम करें"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "जब सक्षम किया जाता है, तो आदेशों को मेनू प्रदर्शित किए बिना तुरंत निष्पादित किया जाता है।"
+  },
+  "Option_instantCommandId": {
+    "message": "निष्पादित करने के लिए आदेश"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "संशोधक कुंजी के साथ संयुक्त निष्पादित करने के लिए आदेश चुनें।"
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "एक आदेश चुनें..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "संशोधक कुंजी"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "पाठ का चयन करते समय दबाई जाने वाली कुंजी चुनें।"
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "एक कुंजी चुनें..."
+  },
   "Option_linkCommand": {
     "message": "लिंक प्रीव्यू"
   },

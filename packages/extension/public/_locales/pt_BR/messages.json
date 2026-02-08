@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "Tempo de atraso"
   },
+  "Option_instantCommand": {
+    "message": "Comando Instantâneo"
+  },
+  "Option_instantCommand_desc": {
+    "message": "Executa um comando especificado instantaneamente ao selecionar texto enquanto segura uma tecla modificadora."
+  },
+  "Option_instantCommandEnabled": {
+    "message": "Ativar Comando Instantâneo"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "Quando ativado, executa comandos instantaneamente sem exibir o menu."
+  },
+  "Option_instantCommandId": {
+    "message": "Comando a Executar"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "Selecione o comando a executar quando combinado com a tecla modificadora."
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "Selecione um comando..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "Tecla Modificadora"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "Selecione a tecla a ser pressionada ao selecionar texto."
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "Selecione uma tecla..."
+  },
   "Option_linkCommand": {
     "message": "Visualização de Link"
   },

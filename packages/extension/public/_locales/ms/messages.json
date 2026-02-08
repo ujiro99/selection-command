@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "Masa kelewatan"
   },
+  "Option_instantCommand": {
+    "message": "Perintah Segera"
+  },
+  "Option_instantCommand_desc": {
+    "message": "Melaksanakan perintah yang ditentukan dengan segera apabila teks dipilih sambil memegang kunci pengubah."
+  },
+  "Option_instantCommandEnabled": {
+    "message": "Aktifkan Perintah Segera"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "Apabila diaktifkan, perintah dilaksanakan dengan segera tanpa menampilkan menu."
+  },
+  "Option_instantCommandId": {
+    "message": "Perintah untuk Dilaksanakan"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "Pilih perintah untuk dilaksanakan apabila digabungkan dengan kunci pengubah."
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "Pilih perintah..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "Kunci Pengubah"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "Pilih kunci yang akan dipegang apabila memilih teks."
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "Pilih kunci..."
+  },
   "Option_linkCommand": {
     "message": "Pratonton Pautan"
   },

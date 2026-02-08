@@ -12,6 +12,7 @@ import {
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   STYLE_VARIABLE,
+  KEYBOARD,
 } from "@/const"
 
 import { t } from "@/services/i18n"
@@ -296,6 +297,12 @@ export const ShortcutCommandSchema = z.object({
 
 export const shortcutSettingsSchema = z.object({
   shortcuts: z.array(ShortcutCommandSchema),
+})
+
+export const instantCommandSettingsSchema = z.object({
+  enabled: z.boolean(),
+  commandId: z.string().optional(),
+  modifierKey: z.nativeEnum(KEYBOARD).optional(),
 })
 
 export const userStyleSchema = z.object({

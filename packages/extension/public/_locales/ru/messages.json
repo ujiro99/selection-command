@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "Время ожидания"
   },
+  "Option_instantCommand": {
+    "message": "Мгновенная команда"
+  },
+  "Option_instantCommand_desc": {
+    "message": "Выполняет указанную команду мгновенно при выборе текста с нажатой клавишей-модификатором."
+  },
+  "Option_instantCommandEnabled": {
+    "message": "Включить мгновенную команду"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "При включении команды выполняются мгновенно без отображения меню."
+  },
+  "Option_instantCommandId": {
+    "message": "Команда для выполнения"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "Выберите команду для выполнения в сочетании с клавишей-модификатором."
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "Выберите команду..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "Клавиша-модификатор"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "Выберите клавишу для нажатия при выборе текста."
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "Выберите клавишу..."
+  },
   "Option_linkCommand": {
     "message": "Предпросмотр ссылки"
   },
