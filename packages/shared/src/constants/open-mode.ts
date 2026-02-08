@@ -4,7 +4,6 @@
 export enum OPEN_MODE {
   POPUP = "popup",
   WINDOW = "window",
-  FULLSCREEN = "fullscreen",
   TAB = "tab",
   BACKGROUND_TAB = "backgroundTab",
   API = "api",
@@ -27,5 +26,5 @@ export enum PAGE_ACTION_OPEN_MODE {
   TAB = OPEN_MODE.TAB,
   BACKGROUND_TAB = OPEN_MODE.BACKGROUND_TAB,
   WINDOW = OPEN_MODE.WINDOW,
-  FULLSCREEN = OPEN_MODE.FULLSCREEN,
+  FULLSCREEN = "fullscreen",
 }

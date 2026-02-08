@@ -32,7 +32,7 @@ const getIconForMode = (mode: string) => {
   if (mode === OPEN_MODE.WINDOW || mode === PAGE_ACTION_OPEN_MODE.WINDOW) {
     return "/setting/open_mode/window.png"
   }
-  if (mode === OPEN_MODE.FULLSCREEN || mode === PAGE_ACTION_OPEN_MODE.FULLSCREEN) {
+  if (mode === PAGE_ACTION_OPEN_MODE.FULLSCREEN) {
     return "/setting/open_mode/fullscreen.png"
   }
   return "/setting/open_mode/popup.png"
