@@ -626,7 +626,14 @@ chrome.windows.onFocusChanged.addListener(async (windowId) => {
   }
 
   try {
-    const settings = await Settings.get()
+    let settings
+    try {
+      settings = await Settings.get()
+    } catch (error) {
+      console.error("Failed to get settings for side panel auto-hide:", error)
+      return
+    }
+
     if (!settings.sidePanelAutoHide) {
       return
     }

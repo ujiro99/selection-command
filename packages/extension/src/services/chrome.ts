@@ -608,11 +608,6 @@ export const openSidePanel = async (
     console.warn("Failed to get current tab:", e)
   }
 
-  let useClipboard = false
-  if (isUrlParam(url)) {
-    useClipboard = url.useClipboard ?? false
-  }
-
   const targetTabId = currentTab?.id
   if (!targetTabId) {
     console.error("No valid tab ID for side panel")
@@ -632,38 +627,8 @@ export const openSidePanel = async (
   // Open the side panel
   await chrome.sidePanel.open({ tabId: targetTabId })
 
-  // Handle clipboard if needed
-  let clipboardText = ""
-  if (useClipboard) {
-    try {
-      const tab = await chrome.tabs.create({
-        url: chrome.runtime.getURL("src/clipboard.html"),
-        active: false,
-        windowId: currentTab?.windowId,
-      })
-
-      const result = await readClipboardContent(tab.id as number)
-      clipboardText = result.data ?? ""
-
-      // Update side panel URL with clipboard content
-      const finalUrl = toUrl(url)
-      await chrome.sidePanel.setOptions({
-        tabId: targetTabId,
-        path: finalUrl,
-        enabled: true,
-      })
-
-      // Close the temporary clipboard tab
-      if (tab.id) {
-        await chrome.tabs.remove(tab.id)
-      }
-    } catch (e) {
-      console.warn("Failed to read clipboard for side panel:", e)
-    }
-  }
-
   return {
     tabId: targetTabId,
-    clipboardText,
+    clipboardText: "",
   }
 }

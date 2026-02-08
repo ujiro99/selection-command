@@ -111,7 +111,9 @@ export const openSidePanel = (
     // Register the tab ID for auto-hide tracking
     if (tabId) {
       await BgData.update((data) => ({
-        sidePanelTabs: [...data.sidePanelTabs, tabId],
+        sidePanelTabs: data.sidePanelTabs.includes(tabId)
+          ? data.sidePanelTabs
+          : [...data.sidePanelTabs, tabId],
       }))
     }
     response(true)
