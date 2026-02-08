@@ -6,6 +6,7 @@ export enum OPEN_MODE {
   WINDOW = "window",
   TAB = "tab",
   BACKGROUND_TAB = "backgroundTab",
+  SIDE_PANEL = "sidePanel",
   API = "api",
   PAGE_ACTION = "pageAction",
   LINK_POPUP = "linkPopup",
@@ -26,4 +27,5 @@ export enum PAGE_ACTION_OPEN_MODE {
   TAB = OPEN_MODE.TAB,
   BACKGROUND_TAB = OPEN_MODE.BACKGROUND_TAB,
   WINDOW = OPEN_MODE.WINDOW,
+  SIDE_PANEL = OPEN_MODE.SIDE_PANEL,
 }

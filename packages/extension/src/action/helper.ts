@@ -3,9 +3,11 @@ import {
   openPopupWindow,
   openPopupWindowMultiple,
   openTab as openTabWithClipboard,
+  openSidePanel as openSidePanelWithClipboard,
   OpenPopupsProps,
   OpenPopupProps,
   OpenTabProps,
+  OpenSidePanelProps,
 } from "@/services/chrome"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { Ipc, TabCommand } from "@/services/ipc"
@@ -91,6 +93,19 @@ export const openTab = (
   response: (res: unknown) => void,
 ): boolean => {
   openTabWithClipboard(param).then(({ tabId }) => {
+    incrementCommandExecutionCount(tabId).then(() => {
+      response(true)
+    })
+  })
+  return true
+}
+
+export const openSidePanel = (
+  param: OpenSidePanelProps,
+  _: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  openSidePanelWithClipboard(param).then(({ tabId }) => {
     incrementCommandExecutionCount(tabId).then(() => {
       response(true)
     })

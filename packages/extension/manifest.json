@@ -31,7 +31,8 @@
     "contextMenus",
     "declarativeNetRequest",
     "clipboardRead",
-    "system.display"
+    "system.display",
+    "sidePanel"
   ],
   "host_permissions": ["http://*/*", "https://*/*"],
   "web_accessible_resources": [

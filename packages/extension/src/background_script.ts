@@ -83,6 +83,7 @@ const commandFuncs = {
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [BgCommand.openTab]: ActionHelper.openTab,
+  [BgCommand.openSidePanel]: ActionHelper.openSidePanel,
   [BgCommand.execApi]: ActionHelper.execApi,
 
   [BgCommand.openOption]: (): boolean => {
