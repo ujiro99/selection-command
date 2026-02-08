@@ -11,6 +11,7 @@ import {
 } from "@/services/chrome"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { Ipc, TabCommand } from "@/services/ipc"
+import { BgData } from "@/services/backgroundData"
 import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
@@ -102,13 +103,18 @@ export const openTab = (
 
 export const openSidePanel = (
   param: OpenSidePanelProps,
-  _: Sender,
+  _sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  openSidePanelWithClipboard(param).then(({ tabId }) => {
-    incrementCommandExecutionCount(tabId).then(() => {
-      response(true)
-    })
+  openSidePanelWithClipboard(param).then(async ({ tabId }) => {
+    await incrementCommandExecutionCount(tabId)
+    // Register the tab ID for auto-hide tracking
+    if (tabId) {
+      await BgData.update((data) => ({
+        sidePanelTabs: [...data.sidePanelTabs, tabId],
+      }))
+    }
+    response(true)
   })
   return true
 }
