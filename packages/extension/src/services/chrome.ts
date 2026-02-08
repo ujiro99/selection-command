@@ -583,3 +583,52 @@ export async function closeWindow(
     console.warn(log, e)
   }
 }
+
+export type OpenSidePanelProps = {
+  url: string | UrlParam
+  tabId?: number
+}
+
+/**
+ * Open a side panel with the specified URL
+ * @param {OpenSidePanelProps} param - Parameters for opening the side panel
+ * @returns {Promise<OpenResult>} Result containing tab ID and clipboard text
+ */
+export const openSidePanel = async (
+  param: OpenSidePanelProps,
+): Promise<OpenResult> => {
+  const { url, tabId } = param
+
+  let currentTab: chrome.tabs.Tab | null = null
+  try {
+    currentTab = tabId
+      ? await chrome.tabs.get(tabId)
+      : await getCurrentTab()
+  } catch (e) {
+    console.warn("Failed to get current tab:", e)
+  }
+
+  const targetTabId = currentTab?.id
+  if (!targetTabId) {
+    console.error("No valid tab ID for side panel")
+    return {
+      tabId: undefined,
+      clipboardText: "",
+    }
+  }
+
+  // Set the side panel options for the tab
+  await chrome.sidePanel.setOptions({
+    tabId: targetTabId,
+    path: toUrl(url),
+    enabled: true,
+  })
+
+  // Open the side panel
+  await chrome.sidePanel.open({ tabId: targetTabId })
+
+  return {
+    tabId: targetTabId,
+    clipboardText: "",
+  }
+}

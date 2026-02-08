@@ -12,6 +12,7 @@ export class BgData {
   public pageActionStop: boolean
   public activeScreenId: string | null
   public connectedTabs: number[]
+  public sidePanelTabs: number[]
 
   private constructor(val: BgData | undefined) {
     this.windowStack = val?.windowStack ?? []
@@ -19,6 +20,7 @@ export class BgData {
     this.pageActionStop = val?.pageActionStop ?? false
     this.activeScreenId = val?.activeScreenId ?? null
     this.connectedTabs = val?.connectedTabs ?? []
+    this.sidePanelTabs = val?.sidePanelTabs ?? []
   }
 
   public static init() {

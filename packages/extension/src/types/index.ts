@@ -172,6 +172,7 @@ export type UserSettings = {
   style: STYLE
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
+  sidePanelAutoHide?: boolean
 }
 
 export type SettingsType = UserSettings & UserStats & UserStars

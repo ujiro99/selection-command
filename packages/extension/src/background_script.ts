@@ -83,6 +83,7 @@ const commandFuncs = {
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [BgCommand.openTab]: ActionHelper.openTab,
+  [BgCommand.openSidePanel]: ActionHelper.openSidePanel,
   [BgCommand.execApi]: ActionHelper.execApi,
 
   [BgCommand.openOption]: (): boolean => {
@@ -598,6 +599,74 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     )
   } catch (error) {
     console.error("Failed to execute shortcut command:", error)
+  }
+})
+
+// SidePanel auto-hide functionality
+// Track tabs with active side panels
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url) {
+    // URL changed, remove from tracking
+    BgData.update((data) => ({
+      sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+    }))
+  }
+})
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+  BgData.update((data) => ({
+    sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+  }))
+})
+
+// Listen for window focus changes
+chrome.windows.onFocusChanged.addListener(async (windowId) => {
+  if (windowId === chrome.windows.WINDOW_ID_NONE) {
+    return
+  }
+
+  try {
+    let settings
+    try {
+      settings = await Settings.get()
+    } catch (error) {
+      console.error("Failed to get settings for side panel auto-hide:", error)
+      return
+    }
+
+    if (!settings.sidePanelAutoHide) {
+      return
+    }
+
+    // Get all tabs in the focused window
+    const tabs = await chrome.tabs.query({ windowId, active: true })
+    if (tabs.length === 0) {
+      return
+    }
+
+    const activeTab = tabs[0]
+    if (!activeTab.id) {
+      return
+    }
+
+    const bgData = BgData.get()
+    // Check if this tab has an active side panel
+    if (bgData.sidePanelTabs.includes(activeTab.id)) {
+      // Close the side panel for this tab
+      try {
+        await chrome.sidePanel.setOptions({
+          tabId: activeTab.id,
+          enabled: false,
+        })
+        await BgData.update((data) => ({
+          sidePanelTabs: data.sidePanelTabs.filter((id) => id !== activeTab.id),
+        }))
+      } catch (e) {
+        console.warn("Failed to close side panel:", e)
+      }
+    }
+  } catch (error) {
+    console.error("Error in window focus handler:", error)
   }
 })
 

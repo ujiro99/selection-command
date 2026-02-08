@@ -54,6 +54,7 @@ export const emptySettings: SettingsType = {
   hasShownReviewRequest: false,
   hasDismissedPromptHistoryBanner: false,
   shortcuts: { shortcuts: [] },
+  sidePanelAutoHide: true,
 }
 
 export const POPUP_DELAY_DEFAULT = 250
