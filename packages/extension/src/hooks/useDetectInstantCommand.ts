@@ -12,7 +12,7 @@ import { isEmpty, isMac } from "@/lib/utils"
 export function useDetectInstantCommand(positionElm: Element | null) {
   const { userSettings: settings } = useUserSettings()
   const { selectionText, target } = useSelectContext()
-  const executeCommand = useCommandExecutor()
+  const { executeCommand } = useCommandExecutor()
 
   const enabled = settings.instantCommand?.enabled ?? false
   const commandId = settings.instantCommand?.commandId
@@ -57,12 +57,10 @@ export function useDetectInstantCommand(positionElm: Element | null) {
       if (!selectedText || isEmpty(selectedText)) return
 
       // Execute the instant command
-      const position = positionElm
-        ? {
-            x: event.clientX,
-            y: event.clientY,
-          }
-        : null
+      const position = {
+        x: event.clientX,
+        y: event.clientY,
+      }
 
       executeCommand({
         command,
