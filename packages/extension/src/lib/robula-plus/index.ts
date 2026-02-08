@@ -12,6 +12,9 @@
  */
 export class RobulaPlus {
   private attributePriorizationList: string[] = [
+    "data-testid",
+    "data-test-id",
+    "data-test",
     "name",
     "class",
     "title",
@@ -29,6 +32,7 @@ export class RobulaPlus {
     "size",
     "maxlength",
     "value",
+    "aria-label",
   ]
 
   // Flag to determine whether to detect random number patterns
@@ -93,9 +97,10 @@ export class RobulaPlus {
       const xPath: XPath = xPathList.shift()!
       let temp: XPath[] = []
       temp = temp.concat(this.transfConvertStar(xPath, element))
+      temp = temp.concat(this.transfAddDataTestId(xPath, element))
       temp = temp.concat(this.transfAddId(xPath, element))
-      temp = temp.concat(this.transfAddText(xPath, element))
       temp = temp.concat(this.transfAddAttribute(xPath, element))
+      temp = temp.concat(this.transfAddText(xPath, element))
       temp = temp.concat(this.transfAddAttributeSet(xPath, element))
       temp = temp.concat(this.transfAddPosition(xPath, element))
       temp = temp.concat(this.transfAddLevel(xPath, element))
@@ -179,6 +184,30 @@ export class RobulaPlus {
         const newXPath: XPath = new XPath(xPath.getValue())
         newXPath.addPredicateToHead(`[@id='${ancestor.id}']`)
         output.push(newXPath)
+      }
+    }
+    return output
+  }
+
+  public transfAddDataTestId(xPath: XPath, element: Element): XPath[] {
+    const output: XPath[] = []
+    const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
+    
+    if (!xPath.headHasAnyPredicates()) {
+      // Check for data-testid type attributes in priority order
+      const dataTestIdAttributes = ["data-testid", "data-test-id", "data-test"]
+      
+      for (const attrName of dataTestIdAttributes) {
+        const attrValue = ancestor.getAttribute(attrName)
+        // For data-testid attributes, we don't check for random patterns
+        // because these are explicitly set by developers for testing purposes
+        if (attrValue) {
+          const newXPath: XPath = new XPath(xPath.getValue())
+          newXPath.addPredicateToHead(`[@${attrName}='${attrValue}']`)
+          output.push(newXPath)
+          // Return immediately after finding the first data-test* attribute
+          break
+        }
       }
     }
     return output
@@ -575,6 +604,9 @@ export class RobulaPlusOptions {
    */
 
   public attributePriorizationList: string[] = [
+    "data-testid",
+    "data-test-id",
+    "data-test",
     "name",
     "class",
     "title",
@@ -592,6 +624,7 @@ export class RobulaPlusOptions {
     "size",
     "maxlength",
     "value",
+    "aria-label",
   ]
   public avoidRandomPatterns?: boolean
   public randomPatterns?: RegExp[]
