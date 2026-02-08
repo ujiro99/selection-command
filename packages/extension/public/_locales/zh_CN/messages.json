@@ -899,6 +899,12 @@
   "Option_openMode_window_desc": {
     "message": "在新窗口中打开。"
   },
+  "Option_openMode_fullscreen": {
+    "message": "全屏"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "以全屏模式打开。"
+  },
   "Option_openMode_tab_desc": {
     "message": "显示标签页并激活。<wbr>显示在当前标签页的右侧。"
   },

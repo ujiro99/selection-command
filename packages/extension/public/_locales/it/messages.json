@@ -899,6 +899,12 @@
   "Option_openMode_window_desc": {
     "message": "Apri in nuova finestra."
   },
+  "Option_openMode_fullscreen": {
+    "message": "Schermo intero"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "Apri in modalità schermo intero."
+  },
   "Option_openMode_tab_desc": {
     "message": "Mostra scheda e attivala.<wbr>Mostra a destra della scheda corrente."
   },

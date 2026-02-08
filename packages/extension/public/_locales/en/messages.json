@@ -947,6 +947,12 @@
   "Option_openMode_window_desc": {
     "message": "Open in new window."
   },
+  "Option_openMode_fullscreen": {
+    "message": "Fullscreen"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "Open in fullscreen mode."
+  },
   "Option_openMode_tab_desc": {
     "message": "Display tab and make it active.<wbr>Show to the right of current tab."
   },

@@ -899,6 +899,12 @@
   "Option_openMode_window_desc": {
     "message": "Ouvrir dans une nouvelle fenêtre."
   },
+  "Option_openMode_fullscreen": {
+    "message": "Plein écran"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "Ouvrir en mode plein écran."
+  },
   "Option_openMode_tab_desc": {
     "message": "Afficher l'onglet et l'activer.<wbr>Afficher à droite de l'onglet actuel."
   },

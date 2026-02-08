@@ -32,6 +32,9 @@ const getIconForMode = (mode: string) => {
   if (mode === OPEN_MODE.WINDOW || mode === PAGE_ACTION_OPEN_MODE.WINDOW) {
     return "/setting/open_mode/window.png"
   }
+  if (mode === OPEN_MODE.FULLSCREEN || mode === PAGE_ACTION_OPEN_MODE.FULLSCREEN) {
+    return "/setting/open_mode/fullscreen.png"
+  }
   return "/setting/open_mode/popup.png"
 }
 
@@ -46,6 +49,7 @@ const SEARCH_MODES = [
 const PAGE_ACTION_MODES = [
   PAGE_ACTION_OPEN_MODE.POPUP,
   PAGE_ACTION_OPEN_MODE.WINDOW,
+  PAGE_ACTION_OPEN_MODE.FULLSCREEN,
   PAGE_ACTION_OPEN_MODE.TAB,
   PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
 ] as const
@@ -66,6 +70,7 @@ export const OpenModeToggleField = ({
   type,
 }: OpenModeToggleFieldProps) => {
   const modes = type === "search" ? SEARCH_MODES : PAGE_ACTION_MODES
+  const gridCols = modes.length === 4 ? "grid-cols-4" : "grid-cols-5"
 
   return (
     <FormField
@@ -86,7 +91,7 @@ export const OpenModeToggleField = ({
                 onValueChange={(val) => {
                   if (val) field.onChange(val)
                 }}
-                className="grid grid-cols-4 gap-2 py-1"
+                className={`grid ${gridCols} gap-2 py-1`}
               >
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)

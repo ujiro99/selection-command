@@ -355,16 +355,22 @@ const readClipboardContent = async (
 const openWindowAndReadClipboard = async (
   param: ReadClipboardParam,
 ): Promise<ReadClipboardResult> => {
-  const w = await chrome.windows.create({
+  const createParams: chrome.windows.CreateData = {
     url: chrome.runtime.getURL("src/clipboard.html"),
     focused: true,
     type: param.type,
-    width: param.width,
-    height: param.height,
-    left: param.left,
-    top: param.top,
     incognito: param.incognito,
-  })
+  }
+
+  // For fullscreen, we need to use state instead of width/height/left/top
+  if (param.type === POPUP_TYPE.NORMAL) {
+    createParams.width = param.width
+    createParams.height = param.height
+    createParams.left = param.left
+    createParams.top = param.top
+  }
+
+  const w = await chrome.windows.create(createParams)
 
   const result = await readClipboardContent(w.tabs?.[0].id as number)
 

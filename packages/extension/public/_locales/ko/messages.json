@@ -899,6 +899,12 @@
   "Option_openMode_window_desc": {
     "message": "새 창에서 열기."
   },
+  "Option_openMode_fullscreen": {
+    "message": "전체 화면"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "전체 화면 모드로 열기."
+  },
   "Option_openMode_tab_desc": {
     "message": "탭을 표시하고 활성화.<wbr>현재 탭 오른쪽에 표시합니다."
   },

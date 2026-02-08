@@ -311,6 +311,12 @@
   "Option_openMode_window_desc": {
     "message": "新しいウィンドウを開く。"
   },
+  "Option_openMode_fullscreen": {
+    "message": "フルスクリーン"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "フルスクリーンで開く。"
+  },
   "Option_openMode_tab_desc": {
     "message": "タブを表示してアクティブにする。<wbr>表示中タブの右側に表示する。"
   },

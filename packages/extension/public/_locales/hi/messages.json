@@ -899,6 +899,12 @@
   "Option_openMode_window_desc": {
     "message": "नई विंडो में खोलें।"
   },
+  "Option_openMode_fullscreen": {
+    "message": "पूर्ण स्क्रीन"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "पूर्ण स्क्रीन मोड में खोलें।"
+  },
   "Option_openMode_tab_desc": {
     "message": "टैब दिखाएँ और सक्रिय करें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
   },

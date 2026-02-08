@@ -340,16 +340,25 @@ export const openAndRun = (
       tabId = ret.tabId
       clipboardText = ret.clipboardText
     } else {
-      // Popup and Window modes
+      // Popup, Window, and Fullscreen modes
       const ret = await openPopupWindow({
         ...param,
         type:
-          param.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
+          param.openMode === PAGE_ACTION_OPEN_MODE.WINDOW ||
+          param.openMode === PAGE_ACTION_OPEN_MODE.FULLSCREEN
             ? POPUP_TYPE.NORMAL
             : POPUP_TYPE.POPUP,
       })
       tabId = ret.tabId
       clipboardText = ret.clipboardText
+      
+      // Set window to fullscreen if requested
+      if (param.openMode === PAGE_ACTION_OPEN_MODE.FULLSCREEN && ret.tabId) {
+        const tab = await chrome.tabs.get(ret.tabId)
+        if (tab.windowId) {
+          await chrome.windows.update(tab.windowId, { state: "fullscreen" })
+        }
+      }
     }
 
     if (tabId == null) {
@@ -604,6 +613,27 @@ export const openRecorder = (
         })
         if (w.tabs) {
           await setRecordingTabId(w.tabs[0].id)
+        } else {
+          console.error("Failed to open the recorder.")
+        }
+      } else if (
+        openMode === PAGE_ACTION_OPEN_MODE.WINDOW ||
+        openMode === PAGE_ACTION_OPEN_MODE.FULLSCREEN
+      ) {
+        const w = await chrome.windows.create({
+          url: startUrl,
+          width: size.width,
+          height: size.height,
+          top: t,
+          left: l,
+          type: POPUP_TYPE.NORMAL,
+        })
+        if (w.tabs) {
+          await setRecordingTabId(w.tabs[0].id)
+          // Set window to fullscreen if requested
+          if (openMode === PAGE_ACTION_OPEN_MODE.FULLSCREEN && w.id) {
+            await chrome.windows.update(w.id, { state: "fullscreen" })
+          }
         } else {
           console.error("Failed to open the recorder.")
         }
