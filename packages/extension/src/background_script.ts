@@ -34,7 +34,7 @@ BgData.init()
 type Sender = chrome.runtime.MessageSender
 
 // Popup auto-close delay timer
-let popupAutoCloseTimer: number | null = null
+let popupAutoCloseTimer: NodeJS.Timeout | null = null
 
 export type addPageRuleProps = {
   url: string
@@ -398,7 +398,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Execute close based on delay setting
   if (autoCloseDelay != null && autoCloseDelay > 0) {
     // Delayed close: Set timeout
-    popupAutoCloseTimer = setTimeout(closeWindows, autoCloseDelay) as unknown as number
+    popupAutoCloseTimer = setTimeout(closeWindows, autoCloseDelay)
   } else {
     // Immediate close: No delay configured
     await closeWindows()
