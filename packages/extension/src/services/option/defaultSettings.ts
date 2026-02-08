@@ -36,6 +36,7 @@ export const emptySettings: SettingsType = {
     alignOffset: 0,
     sideOffset: 0,
   },
+  popupAutoCloseDelay: undefined,
   linkCommand: {
     enabled: LINK_COMMAND_ENABLED.ENABLE,
     openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
