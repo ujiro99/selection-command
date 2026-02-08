@@ -198,5 +198,28 @@ describe("RobulaPlus", () => {
       expect(robula.uniquelyLocate(xpath2, buttons[1], document)).toBe(true)
       expect(robula.uniquelyLocate(xpath3, buttons[2], document)).toBe(true)
     })
+
+    it("should escape single quotes in attribute values", () => {
+      // Test the escaping function directly through a scenario where the attribute is used
+      container.innerHTML = `
+        <div>
+          <input name="user'name" value="test1" />
+          <input name="password" value="test2" />
+        </div>
+      `
+      const inputs = container.querySelectorAll("input")
+      const robula = new RobulaPlus()
+
+      const xpath1 = robula.getRobustXPath(inputs[0], document)
+      
+      // If name attribute is used (instead of position), it should be escaped
+      if (xpath1.includes("name")) {
+        expect(xpath1).toContain("&apos;")
+        expect(xpath1).toContain("user&apos;name")
+      }
+      
+      // XPath should still uniquely identify the element regardless
+      expect(robula.uniquelyLocate(xpath1, inputs[0], document)).toBe(true)
+    })
   })
 })

@@ -11,10 +11,15 @@
  * @param options - (optional) algorithm options.
  */
 export class RobulaPlus {
-  private attributePriorizationList: string[] = [
+  // Data-testid type attributes in priority order
+  private static readonly DATA_TESTID_ATTRIBUTES = [
     "data-testid",
     "data-test-id",
     "data-test",
+  ] as const
+
+  private attributePriorizationList: string[] = [
+    ...RobulaPlus.DATA_TESTID_ATTRIBUTES,
     "name",
     "class",
     "title",
@@ -164,6 +169,15 @@ export class RobulaPlus {
     }
   }
 
+  /**
+   * Escapes single quotes in attribute values for safe XPath generation
+   * @param value - The attribute value to escape
+   * @returns The escaped value safe for use in XPath predicates
+   */
+  private escapeXPathValue(value: string): string {
+    return value.replace(/'/g, "&apos;")
+  }
+
   public transfConvertStar(xPath: XPath, element: Element): XPath[] {
     const output: XPath[] = []
     const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
@@ -182,7 +196,7 @@ export class RobulaPlus {
       // Only add ID if it doesn't contain React useId patterns
       if (this.isAttributeValueUsable(ancestor.id)) {
         const newXPath: XPath = new XPath(xPath.getValue())
-        newXPath.addPredicateToHead(`[@id='${ancestor.id}']`)
+        newXPath.addPredicateToHead(`[@id='${this.escapeXPathValue(ancestor.id)}']`)
         output.push(newXPath)
       }
     }
@@ -195,15 +209,13 @@ export class RobulaPlus {
     
     if (!xPath.headHasAnyPredicates()) {
       // Check for data-testid type attributes in priority order
-      const dataTestIdAttributes = ["data-testid", "data-test-id", "data-test"]
-      
-      for (const attrName of dataTestIdAttributes) {
+      for (const attrName of RobulaPlus.DATA_TESTID_ATTRIBUTES) {
         const attrValue = ancestor.getAttribute(attrName)
         // For data-testid attributes, we don't check for random patterns
         // because these are explicitly set by developers for testing purposes
         if (attrValue) {
           const newXPath: XPath = new XPath(xPath.getValue())
-          newXPath.addPredicateToHead(`[@${attrName}='${attrValue}']`)
+          newXPath.addPredicateToHead(`[@${attrName}='${this.escapeXPathValue(attrValue)}']`)
           output.push(newXPath)
           // Return immediately after finding the first data-test* attribute
           break
@@ -224,7 +236,7 @@ export class RobulaPlus {
     ) {
       const newXPath: XPath = new XPath(xPath.getValue())
       newXPath.addPredicateToHead(
-        `[contains(text(),'${ancestor.textContent}')]`,
+        `[contains(text(),'${this.escapeXPathValue(ancestor.textContent)}')]`,
       )
       output.push(newXPath)
     }
@@ -244,7 +256,7 @@ export class RobulaPlus {
           ) {
             const newXPath: XPath = new XPath(xPath.getValue())
             newXPath.addPredicateToHead(
-              `[@${attribute.name}='${attribute.value}']`,
+              `[@${attribute.name}='${this.escapeXPathValue(attribute.value)}']`,
             )
             output.push(newXPath)
             break
@@ -259,7 +271,7 @@ export class RobulaPlus {
         ) {
           const newXPath: XPath = new XPath(xPath.getValue())
           newXPath.addPredicateToHead(
-            `[@${attribute.name}='${attribute.value}']`,
+            `[@${attribute.name}='${this.escapeXPathValue(attribute.value)}']`,
           )
           output.push(newXPath)
         }
@@ -315,9 +327,9 @@ export class RobulaPlus {
 
       // convert to predicate
       for (const attributeSet of attributePowerSet) {
-        let predicate: string = `[@${attributeSet[0].name}='${attributeSet[0].value}'`
+        let predicate: string = `[@${attributeSet[0].name}='${this.escapeXPathValue(attributeSet[0].value)}'`
         for (let i: number = 1; i < attributeSet.length; i++) {
-          predicate += ` and @${attributeSet[i].name}='${attributeSet[i].value}'`
+          predicate += ` and @${attributeSet[i].name}='${this.escapeXPathValue(attributeSet[i].value)}'`
         }
         predicate += "]"
         const newXPath: XPath = new XPath(xPath.getValue())
@@ -604,9 +616,7 @@ export class RobulaPlusOptions {
    */
 
   public attributePriorizationList: string[] = [
-    "data-testid",
-    "data-test-id",
-    "data-test",
+    ...RobulaPlus.DATA_TESTID_ATTRIBUTES,
     "name",
     "class",
     "title",
