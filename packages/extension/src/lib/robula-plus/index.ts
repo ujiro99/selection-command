@@ -174,7 +174,10 @@ export class RobulaPlus {
    * @param value - The attribute value to escape
    * @returns The escaped value safe for use in XPath predicates
    */
-  private escapeXPathValue(value: string): string {
+  private escapeXPathValue(value: string | null | undefined): string {
+    if (value === null || value === undefined) {
+      return ""
+    }
     return value.replace(/'/g, "&apos;")
   }
 
