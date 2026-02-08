@@ -83,7 +83,6 @@ const formSchema = z
       .number({ message: t("zod_number") })
       .min(0, { message: t("zod_number_min", ["0"]) })
       .max(10000, { message: t("zod_number_max", ["10000"]) })
-      .nullable()
       .optional(),
     style: z.nativeEnum(STYLE),
     commands: z.array(commandSchema).min(1),
@@ -486,7 +485,7 @@ export function SettingForm({ className }: { className?: string }) {
                 step: 100,
                 placeholder: t("popupAutoCloseDelay_placeholder"),
                 ...register("popupAutoCloseDelay", {
-                  valueAsNumber: true,
+                  setValueAs: (v) => (v === "" || isNaN(v) ? undefined : Number(v)),
                 }),
               }}
             />
