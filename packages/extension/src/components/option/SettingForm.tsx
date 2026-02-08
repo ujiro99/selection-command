@@ -79,6 +79,11 @@ const formSchema = z
       })
       .strict(),
     popupPlacement: popupPlacementSchema,
+    popupAutoCloseDelay: z
+      .number({ message: t("zod_number") })
+      .min(0, { message: t("zod_number_min", ["0"]) })
+      .max(10000, { message: t("zod_number_max", ["10000"]) })
+      .optional(),
     style: z.nativeEnum(STYLE),
     commands: z.array(commandSchema).min(1),
     folders: z.array(folderSchema),
@@ -129,6 +134,7 @@ export function SettingForm({ className }: { className?: string }) {
     defaultValues: {
       startupMethod: emptySettings.startupMethod,
       popupPlacement: emptySettings.popupPlacement,
+      popupAutoCloseDelay: emptySettings.popupAutoCloseDelay,
       style: emptySettings.style,
       commands: [], // Empty array to avoid type conflicts
       folders: emptySettings.folders,
@@ -462,6 +468,26 @@ export function SettingForm({ className }: { className?: string }) {
             <PopupAnimation
               onSubmit={handlePopupAnimationSubmit}
               defaultValues={getAnimationDefaultValues()}
+            />
+          )}
+
+          {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
+            <InputField
+              control={form.control}
+              name="popupAutoCloseDelay"
+              formLabel={t("popupAutoCloseDelay")}
+              formDescription={t("popupAutoCloseDelay_desc")}
+              unit="ms"
+              inputProps={{
+                type: "number",
+                min: 0,
+                max: 10000,
+                step: 100,
+                placeholder: t("popupAutoCloseDelay_placeholder"),
+                ...register("popupAutoCloseDelay", {
+                  valueAsNumber: true,
+                }),
+              }}
             />
           )}
         </section>

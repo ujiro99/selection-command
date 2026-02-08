@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "Menu Display Animation"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Popup Auto-Close Delay"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Set the delay time before the popup automatically closes after losing focus. Set to 0 or leave empty for immediate close."
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (close immediately)"
+  },
   "Option_inherit": {
     "message": "Inherit"
   },
