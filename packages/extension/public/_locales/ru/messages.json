@@ -899,6 +899,12 @@
   "Option_openMode_window_desc": {
     "message": "Открыть в новом окне."
   },
+  "Option_openMode_fullscreen": {
+    "message": "Полноэкранный"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "Открыть в полноэкранном режиме."
+  },
   "Option_openMode_tab_desc": {
     "message": "Показать вкладку и активировать.<wbr>Показать справа от текущей вкладки."
   },

@@ -902,6 +902,12 @@
   "Option_openMode_window_desc": {
     "message": "Abrir em nova janela."
   },
+  "Option_openMode_fullscreen": {
+    "message": "Tela cheia"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "Abrir em modo de tela cheia."
+  },
   "Option_openMode_tab_desc": {
     "message": "Exibir aba e ativá-la.<wbr>Exibir à direita da aba atual."
   },

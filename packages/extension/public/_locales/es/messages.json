@@ -899,6 +899,12 @@
   "Option_openMode_window_desc": {
     "message": "Abrir en nueva ventana."
   },
+  "Option_openMode_fullscreen": {
+    "message": "Pantalla completa"
+  },
+  "Option_openMode_fullscreen_desc": {
+    "message": "Abrir en modo de pantalla completa."
+  },
   "Option_openMode_tab_desc": {
     "message": "Mostrar pestaña y activarla.<wbr>Mostrar a la derecha de la pestaña actual."
   },
