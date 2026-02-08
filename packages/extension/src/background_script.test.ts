@@ -378,3 +378,239 @@ describe("Background Script Migration", () => {
     )
   })
 })
+
+describe("Popup Auto-Close Delay", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it("PAC-01: should close popups immediately when delay is not set", async () => {
+    // Mock WindowStackManager
+    const mockGetWindowsToClose = vi.fn().mockResolvedValue([
+      { id: 100, commandId: "test", srcWindowId: 1 },
+    ])
+    const mockRemoveWindow = vi.fn().mockResolvedValue(undefined)
+    
+    vi.doMock("@/services/windowStackManager", () => ({
+      WindowStackManager: {
+        getWindowsToClose: mockGetWindowsToClose,
+        removeWindow: mockRemoveWindow,
+      },
+    }))
+
+    // Mock closeWindow
+    const mockCloseWindow = vi.fn().mockResolvedValue(undefined)
+    vi.doMock("@/services/chrome", () => ({
+      closeWindow: mockCloseWindow,
+      windowExists: vi.fn(),
+    }))
+
+    // Mock Settings to return no delay
+    mockSettings.get.mockResolvedValue({
+      popupAutoCloseDelay: undefined,
+      commands: [],
+      folders: [],
+      pageRules: [],
+      stars: [],
+      shortcuts: { shortcuts: [] },
+      commandExecutionCount: 0,
+      hasShownReviewRequest: false,
+    } as any)
+
+    // Mock Storage
+    const mockStorageSet = vi.fn().mockResolvedValue(undefined)
+    vi.doMock("@/services/storage", () => ({
+      Storage: {
+        set: mockStorageSet,
+      },
+      SESSION_STORAGE_KEY: {
+        SELECTION_TEXT: "selectionText",
+      },
+    }))
+
+    // Mock updateActiveScreenId
+    vi.doMock("@/services/screen", () => ({
+      updateActiveScreenId: vi.fn().mockResolvedValue(undefined),
+    }))
+
+    // Clear module cache and re-import
+    vi.resetModules()
+    await import("./background_script")
+
+    // Get the registered listener
+    const listenerCalls = (chrome.windows.onFocusChanged.addListener as any)
+      .mock.calls
+    expect(listenerCalls.length).toBeGreaterThan(0)
+    const focusChangedListener = listenerCalls[listenerCalls.length - 1][0]
+
+    // Trigger focus change
+    await focusChangedListener(200)
+    
+    // Wait for async operations
+    await vi.runAllTimersAsync()
+
+    // Verify window was closed immediately (no setTimeout)
+    expect(mockCloseWindow).toHaveBeenCalledWith(100, "onFocusChanged")
+    expect(mockRemoveWindow).toHaveBeenCalledWith(100)
+  })
+
+  it("PAC-02: should delay popup close when delay is set", async () => {
+    const delay = 1000 // 1 second
+
+    // Mock WindowStackManager
+    const mockGetWindowsToClose = vi.fn().mockResolvedValue([
+      { id: 100, commandId: "test", srcWindowId: 1 },
+    ])
+    const mockRemoveWindow = vi.fn().mockResolvedValue(undefined)
+    
+    vi.doMock("@/services/windowStackManager", () => ({
+      WindowStackManager: {
+        getWindowsToClose: mockGetWindowsToClose,
+        removeWindow: mockRemoveWindow,
+      },
+    }))
+
+    // Mock closeWindow
+    const mockCloseWindow = vi.fn().mockResolvedValue(undefined)
+    vi.doMock("@/services/chrome", () => ({
+      closeWindow: mockCloseWindow,
+      windowExists: vi.fn(),
+    }))
+
+    // Mock Settings to return delay
+    mockSettings.get.mockResolvedValue({
+      popupAutoCloseDelay: delay,
+      commands: [],
+      folders: [],
+      pageRules: [],
+      stars: [],
+      shortcuts: { shortcuts: [] },
+      commandExecutionCount: 0,
+      hasShownReviewRequest: false,
+    } as any)
+
+    // Mock Storage
+    const mockStorageSet = vi.fn().mockResolvedValue(undefined)
+    vi.doMock("@/services/storage", () => ({
+      Storage: {
+        set: mockStorageSet,
+      },
+      SESSION_STORAGE_KEY: {
+        SELECTION_TEXT: "selectionText",
+      },
+    }))
+
+    // Mock updateActiveScreenId
+    vi.doMock("@/services/screen", () => ({
+      updateActiveScreenId: vi.fn().mockResolvedValue(undefined),
+    }))
+
+    // Clear module cache and re-import
+    vi.resetModules()
+    await import("./background_script")
+
+    // Get the registered listener
+    const listenerCalls = (chrome.windows.onFocusChanged.addListener as any)
+      .mock.calls
+    const focusChangedListener = listenerCalls[listenerCalls.length - 1][0]
+
+    // Trigger focus change
+    await focusChangedListener(200)
+
+    // Window should not be closed immediately
+    expect(mockCloseWindow).not.toHaveBeenCalled()
+
+    // Advance timers by the delay amount
+    await vi.advanceTimersByTimeAsync(delay)
+
+    // Now window should be closed
+    expect(mockCloseWindow).toHaveBeenCalledWith(100, "onFocusChanged")
+    expect(mockRemoveWindow).toHaveBeenCalledWith(100)
+  })
+
+  it("PAC-03: should cancel timeout when focus returns before delay", async () => {
+    const delay = 1000 // 1 second
+
+    // Mock WindowStackManager - first returns windows to close, then empty array
+    const mockGetWindowsToClose = vi
+      .fn()
+      .mockResolvedValueOnce([{ id: 100, commandId: "test", srcWindowId: 1 }])
+      .mockResolvedValueOnce([]) // No windows to close when focus returns
+    const mockRemoveWindow = vi.fn().mockResolvedValue(undefined)
+    
+    vi.doMock("@/services/windowStackManager", () => ({
+      WindowStackManager: {
+        getWindowsToClose: mockGetWindowsToClose,
+        removeWindow: mockRemoveWindow,
+      },
+    }))
+
+    // Mock closeWindow
+    const mockCloseWindow = vi.fn().mockResolvedValue(undefined)
+    vi.doMock("@/services/chrome", () => ({
+      closeWindow: mockCloseWindow,
+      windowExists: vi.fn(),
+    }))
+
+    // Mock Settings to return delay
+    mockSettings.get.mockResolvedValue({
+      popupAutoCloseDelay: delay,
+      commands: [],
+      folders: [],
+      pageRules: [],
+      stars: [],
+      shortcuts: { shortcuts: [] },
+      commandExecutionCount: 0,
+      hasShownReviewRequest: false,
+    } as any)
+
+    // Mock Storage
+    const mockStorageSet = vi.fn().mockResolvedValue(undefined)
+    vi.doMock("@/services/storage", () => ({
+      Storage: {
+        set: mockStorageSet,
+      },
+      SESSION_STORAGE_KEY: {
+        SELECTION_TEXT: "selectionText",
+      },
+    }))
+
+    // Mock updateActiveScreenId
+    vi.doMock("@/services/screen", () => ({
+      updateActiveScreenId: vi.fn().mockResolvedValue(undefined),
+    }))
+
+    // Clear module cache and re-import
+    vi.resetModules()
+    await import("./background_script")
+
+    // Get the registered listener
+    const listenerCalls = (chrome.windows.onFocusChanged.addListener as any)
+      .mock.calls
+    const focusChangedListener = listenerCalls[listenerCalls.length - 1][0]
+
+    // Trigger focus change (popup loses focus)
+    await focusChangedListener(200)
+
+    // Window should not be closed yet
+    expect(mockCloseWindow).not.toHaveBeenCalled()
+
+    // Advance timers only halfway
+    await vi.advanceTimersByTimeAsync(delay / 2)
+
+    // Focus returns to popup (no windows to close)
+    await focusChangedListener(100)
+
+    // Advance remaining time
+    await vi.advanceTimersByTimeAsync(delay / 2 + 100)
+
+    // Window should NOT be closed because timeout was cancelled
+    expect(mockCloseWindow).not.toHaveBeenCalled()
+    expect(mockRemoveWindow).not.toHaveBeenCalled()
+  })
+})
