@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "Temps de délai"
   },
+  "Option_instantCommand": {
+    "message": "Commande Instantanée"
+  },
+  "Option_instantCommand_desc": {
+    "message": "Exécute une commande spécifiée instantanément lorsque du texte est sélectionné tout en maintenant une touche de modification."
+  },
+  "Option_instantCommandEnabled": {
+    "message": "Activer la Commande Instantanée"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "Lorsqu'elle est activée, les commandes s'exécutent instantanément sans afficher le menu."
+  },
+  "Option_instantCommandId": {
+    "message": "Commande à Exécuter"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "Sélectionnez la commande à exécuter lorsqu'elle est combinée avec la touche de modification."
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "Sélectionner une commande..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "Touche de Modification"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "Sélectionnez la touche à maintenir enfoncée lors de la sélection de texte."
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "Sélectionner une touche..."
+  },
   "Option_linkCommand": {
     "message": "Aperçu du Lien"
   },

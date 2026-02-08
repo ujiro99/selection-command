@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "等待时间"
   },
+  "Option_instantCommand": {
+    "message": "即时命令"
+  },
+  "Option_instantCommand_desc": {
+    "message": "在按住修饰键的同时选择文本时，立即执行指定的命令。"
+  },
+  "Option_instantCommandEnabled": {
+    "message": "启用即时命令"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "启用后，将立即执行命令，而不显示菜单。"
+  },
+  "Option_instantCommandId": {
+    "message": "要执行的命令"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "选择与修饰键组合执行的命令。"
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "选择一个命令..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "修饰键"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "选择选择文本时要按住的键。"
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "选择一个键..."
+  },
   "Option_linkCommand": {
     "message": "链接预览"
   },

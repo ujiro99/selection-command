@@ -54,6 +54,7 @@ export const emptySettings: SettingsType = {
   hasShownReviewRequest: false,
   hasDismissedPromptHistoryBanner: false,
   shortcuts: { shortcuts: [] },
+  instantCommand: { enabled: false },
 }
 
 export const POPUP_DELAY_DEFAULT = 250
@@ -152,6 +153,9 @@ export default {
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
       },
     ],
+  },
+  instantCommand: {
+    enabled: false,
   },
 } as UserSettings
 

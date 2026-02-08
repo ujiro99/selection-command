@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "지연 시간"
   },
+  "Option_instantCommand": {
+    "message": "즉시 명령어"
+  },
+  "Option_instantCommand_desc": {
+    "message": "한정자 키를 누르면서 텍스트를 선택할 때 지정된 명령어를 즉시 실행합니다."
+  },
+  "Option_instantCommandEnabled": {
+    "message": "즉시 명령어 활성화"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "활성화되면 메뉴를 표시하지 않고 명령어를 즉시 실행합니다."
+  },
+  "Option_instantCommandId": {
+    "message": "실행할 명령어"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "한정자 키와 함께 실행할 명령어를 선택합니다."
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "명령어를 선택하세요..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "한정자 키"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "텍스트를 선택할 때 누를 키를 선택합니다."
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "키를 선택하세요..."
+  },
   "Option_linkCommand": {
     "message": "링크 미리보기"
   },

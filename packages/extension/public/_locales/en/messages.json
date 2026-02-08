@@ -446,6 +446,36 @@
       }
     }
   },
+  "Option_instantCommand": {
+    "message": "Instant Command"
+  },
+  "Option_instantCommand_desc": {
+    "message": "Execute a specified command instantly when selecting text while holding a modifier key."
+  },
+  "Option_instantCommandEnabled": {
+    "message": "Enable Instant Command"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "When enabled, execute commands instantly without showing the menu."
+  },
+  "Option_instantCommandId": {
+    "message": "Command to Execute"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "Select the command to execute when combined with the modifier key."
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "Select a command..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "Modifier Key"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "Select the key to hold when selecting text."
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "Select a key..."
+  },
   "Option_linkCommand": {
     "message": "Link Preview"
   },
