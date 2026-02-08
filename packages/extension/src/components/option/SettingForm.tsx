@@ -485,7 +485,7 @@ export function SettingForm({ className }: { className?: string }) {
                 step: 100,
                 placeholder: t("popupAutoCloseDelay_placeholder"),
                 ...register("popupAutoCloseDelay", {
-                  setValueAs: (v) => (v === "" || isNaN(v) ? undefined : Number(v)),
+                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
                 }),
               }}
             />
