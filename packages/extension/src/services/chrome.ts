@@ -362,7 +362,7 @@ const openWindowAndReadClipboard = async (
     incognito: param.incognito,
   }
 
-  // For fullscreen, we need to use state instead of width/height/left/top
+  // Only set dimensions for non-fullscreen windows; fullscreen state is applied after creation
   if (param.type === POPUP_TYPE.NORMAL) {
     createParams.width = param.width
     createParams.height = param.height

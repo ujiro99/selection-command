@@ -351,7 +351,7 @@ export const openAndRun = (
       })
       tabId = ret.tabId
       clipboardText = ret.clipboardText
-      
+
       // Set window to fullscreen if requested
       if (param.openMode === PAGE_ACTION_OPEN_MODE.FULLSCREEN && ret.tabId) {
         const tab = await chrome.tabs.get(ret.tabId)
