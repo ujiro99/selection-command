@@ -396,7 +396,7 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   }
 
   // Execute close based on delay setting
-  if (autoCloseDelay != null && autoCloseDelay > 0) {
+  if (autoCloseDelay !== undefined && autoCloseDelay > 0) {
     // Delayed close: Set timeout
     popupAutoCloseTimer = setTimeout(closeWindows, autoCloseDelay)
   } else {
