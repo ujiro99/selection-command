@@ -530,6 +530,36 @@
       }
     }
   },
+  "Option_instantCommand": {
+    "message": "インスタントコマンド"
+  },
+  "Option_instantCommand_desc": {
+    "message": "モディファイアキーを押しながらテキスト選択すると、指定したコマンドを即座に実行します。"
+  },
+  "Option_instantCommandEnabled": {
+    "message": "インスタントコマンドを有効化"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "この機能を有効にすると、メニューを表示せずにコマンドを即座に実行できます。"
+  },
+  "Option_instantCommandId": {
+    "message": "実行するコマンド"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "モディファイアキーと組み合わせて実行するコマンドを選択してください。"
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "コマンドを選択..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "モディファイアキー"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "テキスト選択時に押すキーを選択してください。"
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "キーを選択..."
+  },
   "Option_linkCommand": {
     "message": "リンクプレビュー"
   },

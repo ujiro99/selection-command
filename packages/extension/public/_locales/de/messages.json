@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "Verzögerungszeit"
   },
+  "Option_instantCommand": {
+    "message": "Sofortbefehl"
+  },
+  "Option_instantCommand_desc": {
+    "message": "Führt einen angegebenen Befehl sofort aus, wenn beim Halten einer Modifizierertaste Text ausgewählt wird."
+  },
+  "Option_instantCommandEnabled": {
+    "message": "Sofortbefehl aktivieren"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "Wenn aktiviert, werden Befehle sofort ausgeführt, ohne das Menü anzuzeigen."
+  },
+  "Option_instantCommandId": {
+    "message": "Auszuführender Befehl"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "Wählen Sie den Befehl aus, der zusammen mit der Modifizierertaste ausgeführt werden soll."
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "Befehl auswählen..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "Modifizierertaste"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "Wählen Sie die Taste aus, die beim Auswählen von Text gedrückt werden soll."
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "Taste auswählen..."
+  },
   "Option_linkCommand": {
     "message": "Link-Vorschau"
   },

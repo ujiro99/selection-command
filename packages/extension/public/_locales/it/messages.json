@@ -404,6 +404,36 @@
   "Option_pageAction_delay": {
     "message": "Tempo di attesa"
   },
+  "Option_instantCommand": {
+    "message": "Comando Istantaneo"
+  },
+  "Option_instantCommand_desc": {
+    "message": "Esegue un comando specificato istantaneamente quando si seleziona il testo mentre si tiene premuto un tasto modificatore."
+  },
+  "Option_instantCommandEnabled": {
+    "message": "Abilita Comando Istantaneo"
+  },
+  "Option_instantCommandEnabled_desc": {
+    "message": "Se abilitato, esegue i comandi istantaneamente senza visualizzare il menu."
+  },
+  "Option_instantCommandId": {
+    "message": "Comando da Eseguire"
+  },
+  "Option_instantCommandId_desc": {
+    "message": "Seleziona il comando da eseguire quando combinato con il tasto modificatore."
+  },
+  "Option_instantCommandId_placeholder": {
+    "message": "Seleziona un comando..."
+  },
+  "Option_instantCommandModifierKey": {
+    "message": "Tasto Modificatore"
+  },
+  "Option_instantCommandModifierKey_desc": {
+    "message": "Seleziona il tasto da tenere premuto durante la selezione del testo."
+  },
+  "Option_instantCommandModifierKey_placeholder": {
+    "message": "Seleziona un tasto..."
+  },
   "Option_linkCommand": {
     "message": "Anteprima link"
   },

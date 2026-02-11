@@ -9,6 +9,7 @@ import {
   Eye,
   BookOpen,
   Paintbrush,
+  Zap,
 } from "lucide-react"
 
 import { Form } from "@/components/ui/form"
@@ -63,6 +64,7 @@ import {
   popupPlacementSchema,
   shortcutSettingsSchema,
   userStyleSchema,
+  instantCommandSettingsSchema,
 } from "@/types/schema"
 
 const formSchema = z
@@ -110,6 +112,7 @@ const formSchema = z
     pageRules: z.array(pageRuleSchema),
     userStyles: z.array(userStyleSchema),
     shortcuts: shortcutSettingsSchema,
+    instantCommand: instantCommandSettingsSchema.optional(),
   })
   .strict()
 
@@ -136,6 +139,7 @@ export function SettingForm({ className }: { className?: string }) {
       pageRules: emptySettings.pageRules,
       userStyles: emptySettings.userStyles,
       shortcuts: emptySettings.shortcuts,
+      instantCommand: emptySettings.instantCommand,
     },
   })
   const { reset, getValues, setValue, register, subscribe } = form
@@ -150,6 +154,12 @@ export function SettingForm({ className }: { className?: string }) {
     control: form.control,
     name: "linkCommand.startupMethod.method",
     defaultValue: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+  })
+
+  const instantCommandEnabled = useWatch({
+    control: form.control,
+    name: "instantCommand.enabled",
+    defaultValue: false,
   })
 
   // Common function to load and transform settings data
@@ -478,6 +488,51 @@ export function SettingForm({ className }: { className?: string }) {
 
         <section id="shortcuts" className="space-y-3">
           <ShortcutList control={form.control} />
+        </section>
+        <hr />
+
+        <section id="instantCommand" className="space-y-3">
+          <h3 className="text-xl font-semibold flex items-center">
+            <Zap size={22} className="mr-2 stroke-gray-600" />
+            {t("instantCommand")}
+          </h3>
+          <p className="text-base">{t("instantCommand_desc")}</p>
+          <SwitchField
+            control={form.control}
+            name="instantCommand.enabled"
+            formLabel={t("instantCommandEnabled")}
+            description={t("instantCommandEnabled_desc")}
+          />
+          {instantCommandEnabled && (
+            <>
+              <SelectField
+                control={form.control}
+                name="instantCommand.commandId"
+                formLabel={t("instantCommandId")}
+                description={t("instantCommandId_desc")}
+                placeholder={t("instantCommandId_placeholder")}
+                options={getValues("commands")
+                  .filter(isMenuCommand)
+                  .map((cmd) => ({
+                    name: cmd.title,
+                    value: cmd.id,
+                  }))}
+              />
+              <SelectField
+                control={form.control}
+                name="instantCommand.modifierKey"
+                formLabel={t("instantCommandModifierKey")}
+                description={t("instantCommandModifierKey_desc")}
+                placeholder={t("instantCommandModifierKey_placeholder")}
+                options={e2a(KEYBOARD)
+                  .filter((k) => k !== KEYBOARD.META)
+                  .map((key) => ({
+                    name: t(`keyboardParam_${key}_${os}`),
+                    value: key,
+                  }))}
+              />
+            </>
+          )}
         </section>
         <hr />
 
