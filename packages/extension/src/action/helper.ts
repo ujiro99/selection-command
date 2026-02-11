@@ -3,7 +3,7 @@ import {
   openPopupWindow,
   openPopupWindowMultiple,
   openTab as openTabWithClipboard,
-  openSidePanel as openSidePanelWithClipboard,
+  openSidePanel as _openSidePanel,
   OpenPopupsProps,
   OpenPopupProps,
   OpenTabProps,
@@ -103,22 +103,35 @@ export const openTab = (
 
 export const openSidePanel = (
   param: OpenSidePanelProps,
-  _sender: Sender,
-  response: (res: unknown) => void,
+  sender: Sender,
 ): boolean => {
-  openSidePanelWithClipboard(param).then(async ({ tabId }) => {
-    await incrementCommandExecutionCount(tabId)
-    // Register the tab ID for auto-hide tracking
-    if (tabId) {
-      await BgData.update((data) => ({
-        sidePanelTabs: data.sidePanelTabs.includes(tabId)
-          ? data.sidePanelTabs
-          : [...data.sidePanelTabs, tabId],
-      }))
-    }
-    response(true)
-  })
-  return true
+  const tabId = sender.tab?.id
+
+  try {
+    // Since it needs to be tied to a user action, avoid asynchronous processing
+    // and open the side panel immediately.
+    _openSidePanel({
+      ...param,
+      tabId,
+    })
+      .then(() => {
+        incrementCommandExecutionCount(tabId)
+      })
+      .then(() => {
+        // Register the tab ID for auto-hide tracking
+        if (tabId) {
+          return BgData.update((data) => ({
+            sidePanelTabs: data.sidePanelTabs.includes(tabId)
+              ? data.sidePanelTabs
+              : [...data.sidePanelTabs, tabId],
+          }))
+        }
+      })
+  } catch (error) {
+    console.error("[ActionHelper.openSidePanel] Error:", error)
+  }
+
+  return false
 }
 
 function bindVariables(

@@ -1,8 +1,8 @@
-import { Ipc, BgCommand } from "@/services/ipc"
-import { isValidString } from "@/lib/utils"
+import { isValidString, toUrl } from "@/lib/utils"
 import { SPACE_ENCODING } from "@/const"
 import type { ExecuteCommandParams } from "@/types"
 import type { OpenSidePanelProps } from "@/services/chrome"
+import { Ipc, BgCommand } from "@/services/ipc"
 
 export const SidePanel = {
   async execute({
@@ -15,13 +15,20 @@ export const SidePanel = {
       return
     }
 
-    Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
-      url: {
+    try {
+      const url = toUrl({
         searchUrl: command.searchUrl,
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
         useClipboard: useClipboard ?? false,
-      },
-    })
+      })
+
+      Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+        url,
+      })
+    } catch (error) {
+      console.error("Failed to open side panel:", error)
+      throw error
+    }
   },
 }

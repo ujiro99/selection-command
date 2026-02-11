@@ -56,7 +56,10 @@
       "mcp__serena__think_about_whether_you_are_done",
       "mcp__serena__write_memory",
       "Bash(yarn build:*)",
-      "mcp__serena__initial_instructions"
+      "mcp__serena__initial_instructions",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

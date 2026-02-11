@@ -330,11 +330,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        port.onMessage.addListener(function (msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -590,35 +590,25 @@ export type OpenSidePanelProps = {
 }
 
 /**
- * Open a side panel with the specified URL
+ * Open a side panel with the specified URL (background script context only)
  * @param {OpenSidePanelProps} param - Parameters for opening the side panel
  * @returns {Promise<OpenResult>} Result containing tab ID and clipboard text
  */
 export const openSidePanel = async (
   param: OpenSidePanelProps,
-): Promise<OpenResult> => {
+): Promise<{ tabId: number | undefined }> => {
   const { url, tabId } = param
 
-  let currentTab: chrome.tabs.Tab | null = null
-  try {
-    currentTab = tabId
-      ? await chrome.tabs.get(tabId)
-      : await getCurrentTab()
-  } catch (e) {
-    console.warn("Failed to get current tab:", e)
-  }
-
-  const targetTabId = currentTab?.id
+  const targetTabId = tabId
   if (!targetTabId) {
     console.error("No valid tab ID for side panel")
     return {
       tabId: undefined,
-      clipboardText: "",
     }
   }
 
   // Set the side panel options for the tab
-  await chrome.sidePanel.setOptions({
+  chrome.sidePanel.setOptions({
     tabId: targetTabId,
     path: toUrl(url),
     enabled: true,
@@ -629,6 +619,24 @@ export const openSidePanel = async (
 
   return {
     tabId: targetTabId,
-    clipboardText: "",
+  }
+}
+
+/**
+ * Close the side panel for the specified tab
+ * @param {number} tabId - The ID of the tab to close the side panel for
+ * @returns {Promise<void>} A promise that resolves when the side panel is closed
+ */
+export const closeSidePanel = async (tabId: number): Promise<void> => {
+  try {
+    await chrome.sidePanel.setOptions({
+      tabId: tabId,
+      enabled: false,
+    })
+    await BgData.update((data) => ({
+      sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+    }))
+  } catch (e) {
+    console.warn("Failed to close side panel:", e)
   }
 }

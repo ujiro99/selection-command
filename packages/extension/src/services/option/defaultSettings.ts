@@ -54,7 +54,9 @@ export const emptySettings: SettingsType = {
   hasShownReviewRequest: false,
   hasDismissedPromptHistoryBanner: false,
   shortcuts: { shortcuts: [] },
-  sidePanelAutoHide: true,
+  windowOption: {
+    sidePanelAutoHide: true,
+  },
 }
 
 export const POPUP_DELAY_DEFAULT = 250
@@ -153,6 +155,9 @@ export default {
         noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
       },
     ],
+  },
+  windowOption: {
+    sidePanelAutoHide: true,
   },
 } as UserSettings
 

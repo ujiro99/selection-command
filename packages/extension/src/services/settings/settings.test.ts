@@ -637,4 +637,37 @@ describe("migrate function", () => {
     const result = await migrate(latestData)
     expect(result).toEqual(latestData)
   })
+
+  it("ST-33: should migrate from version 0.14.2 and add windowOption", async () => {
+    const oldData = {
+      settingVersion: "0.14.2",
+      commands: [],
+      folders: [],
+      pageRules: [],
+      // windowOption is missing
+    } as any
+
+    const result = await migrate(oldData)
+
+    expect(result.settingVersion).toBe(VERSION)
+    expect(result.windowOption).toBeDefined()
+    expect(result.windowOption.sidePanelAutoHide).toBe(true)
+  })
+
+  it("ST-33-a: should not override existing windowOption during migration", async () => {
+    const oldData = {
+      settingVersion: "0.14.2",
+      commands: [],
+      folders: [],
+      pageRules: [],
+      windowOption: {
+        sidePanelAutoHide: false, // Custom value
+      },
+    } as any
+
+    const result = await migrate(oldData)
+
+    expect(result.windowOption).toBeDefined()
+    expect(result.windowOption.sidePanelAutoHide).toBe(false) // Should preserve existing value
+  })
 })
