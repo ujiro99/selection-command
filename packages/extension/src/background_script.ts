@@ -33,6 +33,9 @@ BgData.init()
 
 type Sender = chrome.runtime.MessageSender
 
+// Popup auto-close delay timer
+let popupAutoCloseTimer: NodeJS.Timeout | null = null
+
 export type addPageRuleProps = {
   url: string
 }
@@ -361,13 +364,40 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Update active screen ID
   await updateActiveScreenId(windowId)
 
+  // Cancel any existing timer
+  if (popupAutoCloseTimer !== null) {
+    clearTimeout(popupAutoCloseTimer)
+    popupAutoCloseTimer = null
+  }
+
   // Get windows to close based on focus change
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
 
-  // Execute close for all windows that need to be closed
-  for (const window of windowsToClose) {
-    await closeWindow(window.id, "onFocusChanged")
-    await WindowStackManager.removeWindow(window.id)
+  // If there are no windows to close, nothing to do
+  if (windowsToClose.length === 0) {
+    return
+  }
+
+  // Get the auto-close delay setting
+  const settings = await Settings.get()
+  const autoCloseDelay = settings.popupAutoCloseDelay
+
+  // Define the close function
+  const closeWindows = async () => {
+    for (const window of windowsToClose) {
+      await closeWindow(window.id, "onFocusChanged")
+      await WindowStackManager.removeWindow(window.id)
+    }
+    popupAutoCloseTimer = null
+  }
+
+  // Execute close based on delay setting
+  if (autoCloseDelay !== undefined && autoCloseDelay > 0) {
+    // Delayed close: Set timeout
+    popupAutoCloseTimer = setTimeout(closeWindows, autoCloseDelay)
+  } else {
+    // Immediate close: No delay configured
+    await closeWindows()
   }
 })
 
