@@ -17,6 +17,7 @@ export enum BgCommand {
   openPopupAndClick = "openPopupAndClick",
   openTab = "openTab",
   openSidePanel = "openSidePanel",
+  closeSidePanel = "closeSidePanel",
   openOption = "openOption",
   openShortcuts = "openShortcuts",
   addPageRule = "addPageRule",

@@ -628,14 +628,25 @@ export const openSidePanel = async (
  * @returns {Promise<void>} A promise that resolves when the side panel is closed
  */
 export const closeSidePanel = async (tabId: number): Promise<void> => {
+  const cleanup = async () => {
+    try {
+      await BgData.update((data) => ({
+        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+      }))
+      await chrome.sidePanel.setOptions({
+        tabId: tabId,
+        enabled: false,
+      })
+    } catch (e) {
+      console.warn("Failed to cleanup side panel:", e)
+    } finally {
+      chrome.sidePanel.onClosed.removeListener(cleanup)
+    }
+  }
+
   try {
-    await chrome.sidePanel.setOptions({
-      tabId: tabId,
-      enabled: false,
-    })
-    await BgData.update((data) => ({
-      sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-    }))
+    chrome.sidePanel.onClosed.addListener(cleanup)
+    await chrome.sidePanel.close({ tabId: tabId })
   } catch (e) {
     console.warn("Failed to close side panel:", e)
   }
