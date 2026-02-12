@@ -364,22 +364,18 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Update active screen ID
   await updateActiveScreenId(windowId)
 
-  // Get windows to close based on focus change
-  const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
-
-  // If there are no windows to close, cancel any pending auto-close timer
-  if (windowsToClose.length === 0) {
-    if (popupAutoCloseTimer !== null) {
-      clearTimeout(popupAutoCloseTimer)
-      popupAutoCloseTimer = null
-    }
-    return
-  }
-
   // Cancel any existing timer
   if (popupAutoCloseTimer !== null) {
     clearTimeout(popupAutoCloseTimer)
     popupAutoCloseTimer = null
+  }
+
+  // Get windows to close based on focus change
+  const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
+
+  // If there are no windows to close, nothing to do
+  if (windowsToClose.length === 0) {
+    return
   }
 
   // Get the auto-close delay setting
