@@ -15,7 +15,7 @@ import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
-import { closeWindow, windowExists, closeSidePanel } from "@/services/chrome"
+import { closeWindow, windowExists } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
@@ -50,7 +50,7 @@ const getTabId = (
   return false
 }
 
-const onConnect = async function (port: chrome.runtime.Port) {
+const onConnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -60,7 +60,7 @@ const onConnect = async function (port: chrome.runtime.Port) {
     }))
   }
 }
-const onDisconnect = async function (port: chrome.runtime.Port) {
+const onDisconnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -139,24 +139,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-          id: params.id,
-          title: params.title,
-          searchUrl: params.searchUrl,
-          iconUrl: params.iconUrl,
-          openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
-          popupOption: PopupOption,
-        }
+        id: params.id,
+        title: params.title,
+        searchUrl: params.searchUrl,
+        iconUrl: params.iconUrl,
+        openMode: params.openMode,
+        openModeSecondary: params.openModeSecondary,
+        spaceEncoding: params.spaceEncoding,
+        popupOption: PopupOption,
+      }
       : isPageAction
         ? {
-            id: params.id,
-            title: params.title,
-            iconUrl: params.iconUrl,
-            openMode: params.openMode,
-            pageActionOption: params.pageActionOption,
-            popupOption: PopupOption,
-          }
+          id: params.id,
+          title: params.title,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          pageActionOption: params.pageActionOption,
+          popupOption: PopupOption,
+        }
         : null
 
     if (!cmd) {
@@ -419,17 +419,6 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
   }
-
-  // Close side panel on other tabs
-  const settings = await enhancedSettings.get()
-  const sidePanelAutoHide = settings.windowOption.sidePanelAutoHide
-  if (sidePanelAutoHide) {
-    const activeTabId = activeInfo.tabId
-    const bgData = BgData.get()
-    if (bgData.sidePanelTabs.includes(activeTabId)) {
-      await closeSidePanel(activeTabId)
-    }
-  }
 })
 
 if (isDebug) {
@@ -511,17 +500,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-// Initialize commandIdObj and register listener at top-level
-// to ensure they are available when service worker restarts
-;(async () => {
-  try {
-    await ContextMenu.syncCommandIdObj()
-    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-  } catch (error) {
-    // Ignore errors during initialization (e.g., in test environment)
-    console.debug("Failed to initialize context menu listener:", error)
-  }
-})()
+  // Initialize commandIdObj and register listener at top-level
+  // to ensure they are available when service worker restarts
+  ; (async () => {
+    try {
+      await ContextMenu.syncCommandIdObj()
+      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+    } catch (error) {
+      // Ignore errors during initialization (e.g., in test environment)
+      console.debug("Failed to initialize context menu listener:", error)
+    }
+  })()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
