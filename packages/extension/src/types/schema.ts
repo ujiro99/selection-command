@@ -22,6 +22,7 @@ export const SEARCH_OPEN_MODE = [
   OPEN_MODE.TAB,
   OPEN_MODE.BACKGROUND_TAB,
   OPEN_MODE.WINDOW,
+  OPEN_MODE.SIDE_PANEL,
 ] as const
 
 const searchSchema = z.object({

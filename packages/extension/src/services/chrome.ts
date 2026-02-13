@@ -330,11 +330,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        port.onMessage.addListener(function (msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -581,5 +581,73 @@ export async function closeWindow(
     await chrome.windows.remove(windowId)
   } catch (e) {
     console.warn(log, e)
+  }
+}
+
+export type OpenSidePanelProps = {
+  url: string | UrlParam
+  tabId?: number
+}
+
+/**
+ * Open a side panel with the specified URL (background script context only)
+ * @param {OpenSidePanelProps} param - Parameters for opening the side panel
+ * @returns {Promise<OpenResult>} Result containing tab ID and clipboard text
+ */
+export const openSidePanel = async (
+  param: OpenSidePanelProps,
+): Promise<{ tabId: number | undefined }> => {
+  const { url, tabId } = param
+
+  const targetTabId = tabId
+  if (!targetTabId) {
+    console.error("No valid tab ID for side panel")
+    return {
+      tabId: undefined,
+    }
+  }
+
+  // Set the side panel options for the tab
+  chrome.sidePanel.setOptions({
+    tabId: targetTabId,
+    path: toUrl(url),
+    enabled: true,
+  })
+
+  // Open the side panel
+  await chrome.sidePanel.open({ tabId: targetTabId })
+
+  return {
+    tabId: targetTabId,
+  }
+}
+
+/**
+ * Close the side panel for the specified tab
+ * @param {number} tabId - The ID of the tab to close the side panel for
+ * @returns {Promise<void>} A promise that resolves when the side panel is closed
+ */
+export const closeSidePanel = async (tabId: number): Promise<void> => {
+  const cleanup = async () => {
+    try {
+      await BgData.update((data) => ({
+        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+      }))
+      await chrome.sidePanel.setOptions({
+        tabId: tabId,
+        enabled: false,
+      })
+    } catch (e) {
+      console.warn("Failed to cleanup side panel:", e)
+    } finally {
+      chrome.sidePanel.onClosed.removeListener(cleanup)
+    }
+  }
+
+  try {
+    chrome.sidePanel.onClosed.addListener(cleanup)
+    await chrome.sidePanel.close({ tabId: tabId })
+  } catch (e) {
+    console.warn("Failed to close side panel:", e)
   }
 }

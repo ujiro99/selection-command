@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Panel Samping"
+  },
   "Option_openMode_linkPopup": {
     "message": "Pop-up Tautan"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Warna Border"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Warna font"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Tentukan warna border menu. Default: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Tentukan warna font. Default: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Penskalaan ukuran font"
@@ -907,6 +916,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Tampilkan di sebelah kanan tab saat ini."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Buka di panel samping."
   },
   "Option_title_desc": {
     "message": "Ditampilkan sebagai judul perintah."

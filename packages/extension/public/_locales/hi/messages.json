@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "साइड पैनल"
+  },
   "Option_openMode_linkPopup": {
     "message": "लिंक पॉपअप"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "बॉर्डर रंग"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "फ़ॉन्ट का रंग"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "मेनू का बॉर्डर रंग निर्दिष्ट करें। डिफ़ॉल्ट: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "फ़ॉन्ट का रंग निर्दिष्ट करें। डिफ़ॉल्ट: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "फ़ॉन्ट साइज़ स्केल"
@@ -904,6 +913,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "बैकग्राउंड में टैब खोलें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "साइड पैनल में खोलें।"
   },
   "Option_title_desc": {
     "message": "कमांड शीर्षक के रूप में प्रदर्शित होता है।"

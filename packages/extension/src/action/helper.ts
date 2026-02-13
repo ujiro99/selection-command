@@ -3,12 +3,17 @@ import {
   openPopupWindow,
   openPopupWindowMultiple,
   openTab as openTabWithClipboard,
+  openSidePanel as _openSidePanel,
+  closeSidePanel as _closeSidePanel,
   OpenPopupsProps,
   OpenPopupProps,
   OpenTabProps,
+  OpenSidePanelProps,
 } from "@/services/chrome"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand } from "@/services/ipc"
+import { BgData } from "@/services/backgroundData"
 import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
@@ -96,6 +101,56 @@ export const openTab = (
     })
   })
   return true
+}
+
+export const openSidePanel = (
+  param: OpenSidePanelProps,
+  sender: Sender,
+): boolean => {
+  const tabId = sender.tab?.id
+
+  try {
+    // Since it needs to be tied to a user action, avoid asynchronous processing
+    // and open the side panel immediately.
+    _openSidePanel({
+      ...param,
+      tabId,
+    })
+      .then(() => {
+        incrementCommandExecutionCount(tabId)
+      })
+      .then(() => {
+        // Register the tab ID for auto-hide tracking
+        if (tabId) {
+          return BgData.update((data) => ({
+            sidePanelTabs: data.sidePanelTabs.includes(tabId)
+              ? data.sidePanelTabs
+              : [...data.sidePanelTabs, tabId],
+          }))
+        }
+      })
+  } catch (error) {
+    console.error("[ActionHelper.openSidePanel] Error:", error)
+  }
+
+  return false
+}
+
+export const closeSidePanel = (_: any, sender: Sender) => {
+  const tabId = sender.tab?.id
+  if (tabId == null) return
+
+  enhancedSettings.get().then(async (settings) => {
+    const sidePanelAutoHide = settings.windowOption.sidePanelAutoHide
+    if (sidePanelAutoHide) {
+      const bgData = BgData.get()
+      if (bgData.sidePanelTabs.includes(tabId)) {
+        await _closeSidePanel(tabId)
+      }
+    }
+  })
+
+  return false
 }
 
 function bindVariables(

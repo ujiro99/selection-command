@@ -3,6 +3,7 @@ import { Popup } from "./popup"
 import { Window } from "./window"
 import { Tab } from "./tab"
 import { BackgroundTab } from "./backgroundTab"
+import { SidePanel } from "./sidePanel"
 import { Api } from "./api"
 import { SelectedLinkPopup } from "./selectedLinkPopup"
 import { Copy } from "./copy"
@@ -18,6 +19,7 @@ export const actions = {
   [OPEN_MODE.WINDOW]: Window,
   [OPEN_MODE.TAB]: Tab,
   [OPEN_MODE.BACKGROUND_TAB]: BackgroundTab,
+  [OPEN_MODE.SIDE_PANEL]: SidePanel,
   [OPEN_MODE.API]: Api,
   [OPEN_MODE.LINK_POPUP]: SelectedLinkPopup,
   [OPEN_MODE.COPY]: Copy,

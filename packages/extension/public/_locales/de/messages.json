@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Seitenpanel"
+  },
   "Option_openMode_linkPopup": {
     "message": "Link-Popup"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Rahmenfarbe"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Schriftfarbe"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Geben Sie die Rahmenfarbe des Menüs an. Standard: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Geben Sie die Schriftfarbe an. Standard: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Schriftgrößen-Skalierung"
@@ -904,6 +913,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Im Seitenpanel öffnen."
   },
   "Option_title_desc": {
     "message": "Wird als Befehlstitel angezeigt."
