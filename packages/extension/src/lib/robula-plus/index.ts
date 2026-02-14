@@ -11,7 +11,15 @@
  * @param options - (optional) algorithm options.
  */
 export class RobulaPlus {
+  // Data-testid type attributes in priority order
+  private static readonly DATA_TESTID_ATTRIBUTES = [
+    "data-testid",
+    "data-test-id",
+    "data-test",
+  ] as const
+
   private attributePriorizationList: string[] = [
+    ...RobulaPlus.DATA_TESTID_ATTRIBUTES,
     "name",
     "class",
     "title",
@@ -29,6 +37,7 @@ export class RobulaPlus {
     "size",
     "maxlength",
     "value",
+    "aria-label",
   ]
 
   // Flag to determine whether to detect random number patterns
@@ -93,9 +102,10 @@ export class RobulaPlus {
       const xPath: XPath = xPathList.shift()!
       let temp: XPath[] = []
       temp = temp.concat(this.transfConvertStar(xPath, element))
+      temp = temp.concat(this.transfAddDataTestId(xPath, element))
       temp = temp.concat(this.transfAddId(xPath, element))
-      temp = temp.concat(this.transfAddText(xPath, element))
       temp = temp.concat(this.transfAddAttribute(xPath, element))
+      temp = temp.concat(this.transfAddText(xPath, element))
       temp = temp.concat(this.transfAddAttributeSet(xPath, element))
       temp = temp.concat(this.transfAddPosition(xPath, element))
       temp = temp.concat(this.transfAddLevel(xPath, element))
@@ -159,6 +169,18 @@ export class RobulaPlus {
     }
   }
 
+  /**
+   * Escapes single quotes in attribute values for safe XPath generation
+   * @param value - The attribute value to escape
+   * @returns The escaped value safe for use in XPath predicates
+   */
+  private escapeXPathValue(value: string | null | undefined): string {
+    if (value === null || value === undefined) {
+      return ""
+    }
+    return value.replace(/'/g, "&apos;")
+  }
+
   public transfConvertStar(xPath: XPath, element: Element): XPath[] {
     const output: XPath[] = []
     const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
@@ -177,8 +199,30 @@ export class RobulaPlus {
       // Only add ID if it doesn't contain React useId patterns
       if (this.isAttributeValueUsable(ancestor.id)) {
         const newXPath: XPath = new XPath(xPath.getValue())
-        newXPath.addPredicateToHead(`[@id='${ancestor.id}']`)
+        newXPath.addPredicateToHead(`[@id='${this.escapeXPathValue(ancestor.id)}']`)
         output.push(newXPath)
+      }
+    }
+    return output
+  }
+
+  public transfAddDataTestId(xPath: XPath, element: Element): XPath[] {
+    const output: XPath[] = []
+    const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
+    
+    if (!xPath.headHasAnyPredicates()) {
+      // Check for data-testid type attributes in priority order
+      for (const attrName of RobulaPlus.DATA_TESTID_ATTRIBUTES) {
+        const attrValue = ancestor.getAttribute(attrName)
+        // For data-testid attributes, we don't check for random patterns
+        // because these are explicitly set by developers for testing purposes
+        if (attrValue) {
+          const newXPath: XPath = new XPath(xPath.getValue())
+          newXPath.addPredicateToHead(`[@${attrName}='${this.escapeXPathValue(attrValue)}']`)
+          output.push(newXPath)
+          // Return immediately after finding the first data-test* attribute
+          break
+        }
       }
     }
     return output
@@ -195,7 +239,7 @@ export class RobulaPlus {
     ) {
       const newXPath: XPath = new XPath(xPath.getValue())
       newXPath.addPredicateToHead(
-        `[contains(text(),'${ancestor.textContent}')]`,
+        `[contains(text(),'${this.escapeXPathValue(ancestor.textContent)}')]`,
       )
       output.push(newXPath)
     }
@@ -215,7 +259,7 @@ export class RobulaPlus {
           ) {
             const newXPath: XPath = new XPath(xPath.getValue())
             newXPath.addPredicateToHead(
-              `[@${attribute.name}='${attribute.value}']`,
+              `[@${attribute.name}='${this.escapeXPathValue(attribute.value)}']`,
             )
             output.push(newXPath)
             break
@@ -230,7 +274,7 @@ export class RobulaPlus {
         ) {
           const newXPath: XPath = new XPath(xPath.getValue())
           newXPath.addPredicateToHead(
-            `[@${attribute.name}='${attribute.value}']`,
+            `[@${attribute.name}='${this.escapeXPathValue(attribute.value)}']`,
           )
           output.push(newXPath)
         }
@@ -286,9 +330,9 @@ export class RobulaPlus {
 
       // convert to predicate
       for (const attributeSet of attributePowerSet) {
-        let predicate: string = `[@${attributeSet[0].name}='${attributeSet[0].value}'`
+        let predicate: string = `[@${attributeSet[0].name}='${this.escapeXPathValue(attributeSet[0].value)}'`
         for (let i: number = 1; i < attributeSet.length; i++) {
-          predicate += ` and @${attributeSet[i].name}='${attributeSet[i].value}'`
+          predicate += ` and @${attributeSet[i].name}='${this.escapeXPathValue(attributeSet[i].value)}'`
         }
         predicate += "]"
         const newXPath: XPath = new XPath(xPath.getValue())
@@ -575,6 +619,7 @@ export class RobulaPlusOptions {
    */
 
   public attributePriorizationList: string[] = [
+    ...RobulaPlus.DATA_TESTID_ATTRIBUTES,
     "name",
     "class",
     "title",
@@ -592,6 +637,7 @@ export class RobulaPlusOptions {
     "size",
     "maxlength",
     "value",
+    "aria-label",
   ]
   public avoidRandomPatterns?: boolean
   public randomPatterns?: RegExp[]
