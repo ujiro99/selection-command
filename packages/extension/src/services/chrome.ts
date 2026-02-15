@@ -51,7 +51,7 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
 
     const onUpdated = async (
       tabId: number,
-      changeInfo: chrome.tabs.TabChangeInfo,
+      changeInfo: chrome.tabs.OnUpdatedInfo,
       tab: chrome.tabs.Tab,
     ) => {
       if (w == null) {
@@ -366,10 +366,10 @@ const openWindowAndReadClipboard = async (
     incognito: param.incognito,
   })
 
-  const result = await readClipboardContent(w.tabs?.[0].id as number)
+  const result = await readClipboardContent(w!.tabs![0].id as number)
 
   return {
-    window: w,
+    window: w!,
     clipboardText: result.data ?? "",
     err: result.err,
   }
@@ -433,7 +433,7 @@ export const openPopupWindow = async (
       )
     }
   } else {
-    window = await chrome.windows.create({
+    window = (await chrome.windows.create({
       url: toUrl(url),
       type,
       width,
@@ -441,7 +441,7 @@ export const openPopupWindow = async (
       top: at,
       left: al,
       incognito: current.incognito,
-    })
+    }))!
   }
 
   await updateBackgroundData([window], param.commandId, current.id, type)
@@ -468,28 +468,29 @@ export const openPopupWindowMultiple = async (
 
   const type = param.type ?? POPUP_TYPE.POPUP
   const windows = await Promise.all(
-    param.urls.reverse().map((url, idx) => {
-      const { top: t, left: l } = adjustWindowPosition(
-        top,
-        left,
-        width,
-        height,
-        screen,
-        idx,
-      )
-      return chrome.windows.create({
-        url,
-        width,
-        height,
-        top: t,
-        left: l,
-        type,
-        incognito: current.incognito,
+    param.urls
+      .reverse()
+      .map((url, idx) => {
+        const { top: t, left: l } = adjustWindowPosition(
+          top,
+          left,
+          width,
+          height,
+          screen,
+          idx,
+        )
+        return chrome.windows.create({
+          url,
+          width,
+          height,
+          top: t,
+          left: l,
+          type,
+          incognito: current.incognito,
+        })
       })
-    }),
+      .filter((p): p is Promise<chrome.windows.Window> => p !== null),
   )
-
-  await updateBackgroundData(windows, param.commandId, current.id, type)
 
   const tabIds = windows.reduce((tabIds, w) => {
     w.tabs?.forEach((t) => t.id && tabIds.push(t.id))

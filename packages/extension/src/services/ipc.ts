@@ -252,7 +252,7 @@ export const Ipc = {
         if (onTabUpdated) chrome.tabs.onUpdated.removeListener(onTabUpdated)
       }
 
-      const onTabUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
+      const onTabUpdated = (id: number, info: chrome.tabs.OnUpdatedInfo) => {
         if (tabId === id && info.status === "complete") {
           cleanup()
           resolve()
