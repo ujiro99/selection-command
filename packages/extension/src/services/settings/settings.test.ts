@@ -651,7 +651,7 @@ describe("migrate function", () => {
 
     expect(result.settingVersion).toBe(VERSION)
     expect(result.windowOption).toBeDefined()
-    expect(result.windowOption.sidePanelAutoHide).toBe(true)
+    expect(result.windowOption.sidePanelAutoHide).toBe(false)
   })
 
   it("ST-33-a: should not override existing windowOption during migration", async () => {
@@ -661,13 +661,13 @@ describe("migrate function", () => {
       folders: [],
       pageRules: [],
       windowOption: {
-        sidePanelAutoHide: false, // Custom value
+        sidePanelAutoHide: true, // Custom value
       },
     } as any
 
     const result = await migrate(oldData)
 
     expect(result.windowOption).toBeDefined()
-    expect(result.windowOption.sidePanelAutoHide).toBe(false) // Should preserve existing value
+    expect(result.windowOption.sidePanelAutoHide).toBe(true) // Should preserve existing value
   })
 })

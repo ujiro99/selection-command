@@ -55,7 +55,7 @@ export const emptySettings: SettingsType = {
   hasDismissedPromptHistoryBanner: false,
   shortcuts: { shortcuts: [] },
   windowOption: {
-    sidePanelAutoHide: true,
+    sidePanelAutoHide: false,
   },
 }
 
@@ -157,7 +157,7 @@ export default {
     ],
   },
   windowOption: {
-    sidePanelAutoHide: true,
+    sidePanelAutoHide: false,
   },
 } as UserSettings
 
