@@ -40,18 +40,20 @@ const isValidUrl = (url: string): boolean => {
  */
 export function useSidePanelNavigation() {
   const { tabId } = useTabContext()
+  const [activeTabId, setActiveTabId] = useState<number | null>(null)
   const [isSidePanelPage, setIsSidePanelPage] = useState(false)
-
-  console.log("Initializing useSidePanelNavigation for tabId:", tabId)
 
   // Detect if current context is a SidePanel
   useEffect(() => {
-    setIsSidePanelPage(isSidePanel(tabId))
+    Ipc.getActiveTabId().then((activeTabId) => {
+      setIsSidePanelPage(isSidePanel(tabId, activeTabId))
+      setActiveTabId(activeTabId)
+    })
   }, [tabId])
 
   // Hook link clicks
   useEffect(() => {
-    if (!isSidePanelPage && !tabId) return
+    if (!isSidePanelPage) return
 
     const handleClick = (e: MouseEvent) => {
       const anchor = findAnchorElement(e)
@@ -71,7 +73,7 @@ export function useSidePanelNavigation() {
       e.stopPropagation()
 
       // Notify background script
-      Ipc.send(BgCommand.navigateSidePanel, { url: href, tabId })
+      Ipc.send(BgCommand.navigateSidePanel, { url: href, tabId: activeTabId })
     }
 
     // Register in capture phase (executes before other handlers)
@@ -80,5 +82,5 @@ export function useSidePanelNavigation() {
     return () => {
       document.removeEventListener("click", handleClick, { capture: true })
     }
-  }, [isSidePanelPage, tabId])
+  }, [isSidePanelPage, activeTabId])
 }

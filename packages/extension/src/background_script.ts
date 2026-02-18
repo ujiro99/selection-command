@@ -46,17 +46,19 @@ const getTabId = (
   sender: Sender,
   response: (res: unknown) => void,
 ) => {
-  console.debug("getTabId called with sender:", sender)
-  if (sender.tab?.id) {
-    // Called from content script: tab ID is available in sender
-    response(sender.tab.id)
-    return false
-  }
-  // Called from extension page (e.g. side panel): query the active tab instead
+  response(sender.tab?.id)
+  return true
+}
+
+const getActiveTabId = (
+  _: unknown,
+  _sender: Sender,
+  response: (res: unknown) => void,
+) => {
   chrome.tabs
     .query({ active: true, lastFocusedWindow: true })
     .then(([tab]) => response(tab?.id))
-  return true // Indicates async response
+  return true
 }
 
 const onConnect = async function (port: chrome.runtime.Port) {
@@ -318,6 +320,7 @@ const commandFuncs = {
   },
 
   [BgCommand.getTabId]: getTabId,
+  [BgCommand.getActiveTabId]: getActiveTabId,
 
   //
   // PageAction

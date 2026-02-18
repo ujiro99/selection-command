@@ -492,6 +492,8 @@ export const openPopupWindowMultiple = async (
       .filter((p): p is Promise<chrome.windows.Window> => p !== null),
   )
 
+  await updateBackgroundData(windows, param.commandId, current.id, type)
+
   const tabIds = windows.reduce((tabIds, w) => {
     w.tabs?.forEach((t) => t.id && tabIds.push(t.id))
     return tabIds
@@ -679,8 +681,7 @@ export const updateSidePanelUrl = async (
       path: url,
       enabled: true,
     })
-
-    console.debug("[updateSidePanelUrl] Updated:", { tabId, url })
+    // console.debug("[updateSidePanelUrl] Updated:", { tabId, url })
   } catch (error) {
     console.error("[updateSidePanelUrl] Failed:", error)
     throw error

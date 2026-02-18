@@ -79,6 +79,7 @@ describe("useSidePanelNavigation", () => {
 
     expect(sendSpy).toHaveBeenCalledWith(BgCommand.navigateSidePanel, {
       url: "https://example.com/",
+      tabId: 123,
     })
 
     document.body.removeChild(link)
@@ -221,6 +222,7 @@ describe("useSidePanelNavigation", () => {
 
     expect(sendSpy).toHaveBeenCalledWith(BgCommand.navigateSidePanel, {
       url: "https://example.com/",
+      tabId: 123,
     })
 
     document.body.removeChild(link)

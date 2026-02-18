@@ -22,8 +22,8 @@ describe("helper", () => {
 
   describe("navigateSidePanel", () => {
     it("NSP-01: Should return false when tabId is null", () => {
-      const param = { url: "https://example.com" }
-      const sender = { tab: { id: undefined } } as any
+      const param = { url: "https://example.com", tabId: null }
+      const sender = {} as any
 
       const result = navigateSidePanel(param, sender)
 
@@ -31,8 +31,8 @@ describe("helper", () => {
     })
 
     it("NSP-02: Should return false for invalid URL", () => {
-      const param = { url: "not-a-valid-url" }
-      const sender = { tab: { id: 123 } } as any
+      const param = { url: "not-a-valid-url", tabId: 123 }
+      const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
         sidePanelTabs: [123],
@@ -44,8 +44,8 @@ describe("helper", () => {
     })
 
     it("NSP-03: Should return false for javascript: protocol", () => {
-      const param = { url: "javascript:alert('test')" }
-      const sender = { tab: { id: 123 } } as any
+      const param = { url: "javascript:alert('test')", tabId: 123 }
+      const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
         sidePanelTabs: [123],
@@ -57,8 +57,8 @@ describe("helper", () => {
     })
 
     it("NSP-04: Should return false for data: protocol", () => {
-      const param = { url: "data:text/html,<h1>Test</h1>" }
-      const sender = { tab: { id: 123 } } as any
+      const param = { url: "data:text/html,<h1>Test</h1>", tabId: 123 }
+      const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
         sidePanelTabs: [123],
@@ -70,8 +70,8 @@ describe("helper", () => {
     })
 
     it("NSP-05: Should return false when tab is not in sidePanelTabs", () => {
-      const param = { url: "https://example.com" }
-      const sender = { tab: { id: 123 } } as any
+      const param = { url: "https://example.com", tabId: 123 }
+      const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
         sidePanelTabs: [456, 789], // Different tab IDs
@@ -85,8 +85,8 @@ describe("helper", () => {
     it("NSP-06: Should update URL when all conditions are met", async () => {
       const tabId = 123
       const url = "https://example.com"
-      const param = { url }
-      const sender = { tab: { id: tabId } } as any
+      const param = { url, tabId }
+      const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
         sidePanelTabs: [tabId],
@@ -109,8 +109,8 @@ describe("helper", () => {
     it("NSP-07: Should handle updateSidePanelUrl errors gracefully", async () => {
       const tabId = 123
       const url = "https://example.com"
-      const param = { url }
-      const sender = { tab: { id: tabId } } as any
+      const param = { url, tabId }
+      const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
         sidePanelTabs: [tabId],
@@ -143,8 +143,8 @@ describe("helper", () => {
     it("NSP-08: Should update BgData.sidePanelUrls after successful URL update", async () => {
       const tabId = 123
       const url = "https://example.com"
-      const param = { url }
-      const sender = { tab: { id: tabId } } as any
+      const param = { url, tabId }
+      const sender = {} as any
 
       const mockData = {
         sidePanelTabs: [tabId],

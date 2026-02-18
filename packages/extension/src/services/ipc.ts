@@ -29,6 +29,7 @@ export enum BgCommand {
   onHidden = "onHidden",
   toggleStar = "toggleStar",
   getTabId = "getTabId",
+  getActiveTabId = "getActiveTabId",
   setClipboard = "setClipboard",
   // PageAction
   addPageAction = "addPageAction",
@@ -67,7 +68,7 @@ export type ClipboardResult = {
 
 export type NavigateSidePanelProps = {
   url: string
-  tabId: number
+  tabId: number | null
 }
 
 export type RunPageAction = {
@@ -449,6 +450,10 @@ export const Ipc = {
 
   async getTabId() {
     return Ipc.send(BgCommand.getTabId)
+  },
+
+  async getActiveTabId() {
+    return Ipc.send(BgCommand.getActiveTabId)
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {
