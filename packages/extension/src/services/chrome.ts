@@ -590,6 +590,11 @@ export type OpenSidePanelProps = {
   tabId?: number
 }
 
+export type UpdateSidePanelUrlProps = {
+  url: string
+  tabId: number
+}
+
 /**
  * Open a side panel with the specified URL (background script context only)
  * @param {OpenSidePanelProps} param - Parameters for opening the side panel
@@ -631,9 +636,13 @@ export const openSidePanel = async (
 export const closeSidePanel = async (tabId: number): Promise<void> => {
   const cleanup = async () => {
     try {
-      await BgData.update((data) => ({
-        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-      }))
+      await BgData.update((data) => {
+        const { [tabId]: _, ...rest } = data.sidePanelUrls
+        return {
+          sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+          sidePanelUrls: rest,
+        }
+      })
       await chrome.sidePanel.setOptions({
         tabId: tabId,
         enabled: false,
@@ -650,5 +659,30 @@ export const closeSidePanel = async (tabId: number): Promise<void> => {
     await chrome.sidePanel.close({ tabId: tabId })
   } catch (e) {
     console.warn("Failed to close side panel:", e)
+  }
+}
+
+/**
+ * Update the side panel URL for the specified tab
+ * @param {UpdateSidePanelUrlProps} param - Parameters containing URL and tab ID
+ * @returns {Promise<void>} A promise that resolves when the URL is updated
+ */
+export const updateSidePanelUrl = async (
+  param: UpdateSidePanelUrlProps,
+): Promise<void> => {
+  const { url, tabId } = param
+
+  try {
+    // Update the side panel URL
+    await chrome.sidePanel.setOptions({
+      tabId: tabId,
+      path: url,
+      enabled: true,
+    })
+
+    console.debug("[updateSidePanelUrl] Updated:", { tabId, url })
+  } catch (error) {
+    console.error("[updateSidePanelUrl] Failed:", error)
+    throw error
   }
 }

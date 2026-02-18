@@ -18,6 +18,7 @@ export enum BgCommand {
   openTab = "openTab",
   openSidePanel = "openSidePanel",
   closeSidePanel = "closeSidePanel",
+  navigateSidePanel = "navigateSidePanel",
   openOption = "openOption",
   openShortcuts = "openShortcuts",
   addPageRule = "addPageRule",
@@ -62,6 +63,11 @@ export type ClickElementProps = {
 export type ClipboardResult = {
   data: string | undefined
   err?: string
+}
+
+export type NavigateSidePanelProps = {
+  url: string
+  tabId: number
 }
 
 export type RunPageAction = {

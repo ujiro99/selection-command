@@ -5,6 +5,7 @@ import {
   openTab as openTabWithClipboard,
   openSidePanel as _openSidePanel,
   closeSidePanel as _closeSidePanel,
+  updateSidePanelUrl as _updateSidePanelUrl,
   OpenPopupsProps,
   OpenPopupProps,
   OpenTabProps,
@@ -12,7 +13,7 @@ import {
 } from "@/services/chrome"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
-import { Ipc, TabCommand } from "@/services/ipc"
+import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
 import { BgData } from "@/services/backgroundData"
 import type { CommandVariable } from "@/types"
 
@@ -149,6 +150,55 @@ export const closeSidePanel = (_: any, sender: Sender) => {
       }
     }
   })
+
+  return false
+}
+
+export const navigateSidePanel = (
+  param: NavigateSidePanelProps,
+  _sender: Sender,
+): boolean => {
+  const { url, tabId } = param
+
+  // URL validation
+  try {
+    const urlObj = new URL(url)
+    if (urlObj.protocol === "javascript:" || urlObj.protocol === "data:") {
+      console.warn("[navigateSidePanel] Invalid protocol:", urlObj.protocol)
+      return false
+    }
+  } catch (e) {
+    console.error("[navigateSidePanel] Invalid URL:", url, e)
+    return false
+  }
+
+  // Tab ID validation
+  if (tabId == null) {
+    console.warn("[navigateSidePanel] No tab ID")
+    return false
+  }
+
+  // Check if tab is in sidePanelTabs
+  const bgData = BgData.get()
+  if (!bgData.sidePanelTabs.includes(tabId)) {
+    console.warn("[navigateSidePanel] Tab is not in sidePanelTabs:", tabId)
+    return false
+  }
+
+  // Update URL
+  _updateSidePanelUrl({ url, tabId })
+    .then(() => {
+      // Update BgData's sidePanelUrls
+      return BgData.update((data) => ({
+        sidePanelUrls: {
+          ...data.sidePanelUrls,
+          [tabId]: url,
+        },
+      }))
+    })
+    .catch((error) => {
+      console.error("[navigateSidePanel] Error:", error)
+    })
 
   return false
 }
