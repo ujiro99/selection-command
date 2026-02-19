@@ -391,6 +391,26 @@ export function validateUserVariables(variables: UserVariable[]): boolean {
 }
 
 /**
+ * Checks whether a URL matches a pattern with wildcard (*) support.
+ * `*` in the pattern matches any sequence of characters (including empty).
+ *
+ * Example:
+ *   matchesPageActionUrl("https://example.com/*", "https://example.com/path?q=1") → true
+ *   matchesPageActionUrl("https://example.com/page", "https://example.com/page") → true
+ *   matchesPageActionUrl("https://example.com/page", "https://other.com/page")   → false
+ */
+export function matchesPageActionUrl(pattern: string, url: string): boolean {
+  if (!pattern.includes("*")) {
+    return pattern === url
+  }
+  // Escape regex special chars except *, then replace * with .*
+  const regexStr = pattern
+    .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+    .replace(/\*/g, ".*")
+  return new RegExp(`^${regexStr}$`).test(url)
+}
+
+/**
  * Parse markdown URL format in Gemini and extract the actual URL.
  * @param {string} text - Text that might contain markdown URL
  * @returns {string} Extracted URL or original text if no markdown URL found

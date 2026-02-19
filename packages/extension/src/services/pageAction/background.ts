@@ -30,6 +30,7 @@ import {
   isEmpty,
   isUrl,
   isUrlParam,
+  matchesPageActionUrl,
   sleep,
 } from "@/lib/utils"
 import type {
@@ -339,6 +340,29 @@ export const openAndRun = (
       })
       tabId = ret.tabId
       clipboardText = ret.clipboardText
+    } else if (param.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
+      // Execute on the current active tab without opening a new tab/window
+      const currentTab = await getCurrentTab()
+      if (!currentTab?.id) {
+        console.error("No active tab found")
+        response(false)
+        return
+      }
+      const startUrl = isUrlParam(param.url) ? null : param.url
+      if (
+        startUrl &&
+        currentTab.url &&
+        !matchesPageActionUrl(startUrl, currentTab.url)
+      ) {
+        console.warn("Current tab URL does not match the recorded start URL", {
+          startUrl,
+          currentUrl: currentTab.url,
+        })
+        response(false)
+        return
+      }
+      tabId = currentTab.id
+      clipboardText = ""
     } else {
       // Popup and Window modes
       const ret = await openPopupWindow({

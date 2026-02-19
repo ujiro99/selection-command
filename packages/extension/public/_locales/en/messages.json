@@ -953,6 +953,12 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Open tab in background.<wbr>Show to the right of current tab."
   },
+  "Option_openMode_currentTab": {
+    "message": "Current Tab"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Run on the current active tab.<wbr>URL must match the recorded start URL."
+  },
   "Option_title_desc": {
     "message": "Displayed as the command title."
   },

@@ -56,7 +56,8 @@
       "mcp__serena__think_about_whether_you_are_done",
       "mcp__serena__write_memory",
       "Bash(yarn build:*)",
-      "mcp__serena__initial_instructions"
+      "mcp__serena__initial_instructions",
+      "Bash(yarn workspace:*)"
     ],
     "deny": []
   }

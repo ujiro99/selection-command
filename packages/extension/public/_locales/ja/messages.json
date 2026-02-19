@@ -317,6 +317,12 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
   },
+  "Option_openMode_currentTab": {
+    "message": "現在のタブ"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "現在アクティブなタブで実行する。<wbr>URLが記録時の開始URLと一致する必要がある。"
+  },
   "Option_commandType_title": {
     "message": "コマンドの種類を選ぶ"
   },
