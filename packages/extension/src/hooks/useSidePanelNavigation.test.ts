@@ -8,6 +8,7 @@ import { isSidePanel } from "@/services/sidePanelDetector"
 vi.mock("@/services/ipc", () => ({
   Ipc: {
     send: vi.fn(),
+    getActiveTabId: vi.fn().mockResolvedValue(123),
   },
   BgCommand: {
     navigateSidePanel: "navigateSidePanel",

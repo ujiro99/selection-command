@@ -61,7 +61,9 @@
       "WebFetch(domain:api.github.com)",
       "Bash(curl:*)",
       "Bash(python3:*)",
-      "Bash(yarn list:*)"
+      "Bash(yarn list:*)",
+      "Bash(yarn test:run:*)",
+      "Bash(npx tsx:*)"
     ],
     "deny": []
   }
