@@ -47,7 +47,7 @@ const getTabId = (
   response: (res: unknown) => void,
 ) => {
   response(sender.tab?.id)
-  return true
+  return false
 }
 
 const getActiveTabId = (
@@ -61,7 +61,7 @@ const getActiveTabId = (
   return true
 }
 
-const onConnect = async function (port: chrome.runtime.Port) {
+const onConnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -71,7 +71,7 @@ const onConnect = async function (port: chrome.runtime.Port) {
     }))
   }
 }
-const onDisconnect = async function (port: chrome.runtime.Port) {
+const onDisconnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -151,24 +151,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-          id: params.id,
-          title: params.title,
-          searchUrl: params.searchUrl,
-          iconUrl: params.iconUrl,
-          openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
-          popupOption: PopupOption,
-        }
+        id: params.id,
+        title: params.title,
+        searchUrl: params.searchUrl,
+        iconUrl: params.iconUrl,
+        openMode: params.openMode,
+        openModeSecondary: params.openModeSecondary,
+        spaceEncoding: params.spaceEncoding,
+        popupOption: PopupOption,
+      }
       : isPageAction
         ? {
-            id: params.id,
-            title: params.title,
-            iconUrl: params.iconUrl,
-            openMode: params.openMode,
-            pageActionOption: params.pageActionOption,
-            popupOption: PopupOption,
-          }
+          id: params.id,
+          title: params.title,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          pageActionOption: params.pageActionOption,
+          popupOption: PopupOption,
+        }
         : null
 
     if (!cmd) {
@@ -513,17 +513,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-// Initialize commandIdObj and register listener at top-level
-// to ensure they are available when service worker restarts
-;(async () => {
-  try {
-    await ContextMenu.syncCommandIdObj()
-    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-  } catch (error) {
-    // Ignore errors during initialization (e.g., in test environment)
-    console.debug("Failed to initialize context menu listener:", error)
-  }
-})()
+  // Initialize commandIdObj and register listener at top-level
+  // to ensure they are available when service worker restarts
+  ; (async () => {
+    try {
+      await ContextMenu.syncCommandIdObj()
+      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+    } catch (error) {
+      // Ignore errors during initialization (e.g., in test environment)
+      console.debug("Failed to initialize context menu listener:", error)
+    }
+  })()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
