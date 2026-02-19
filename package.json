@@ -18,7 +18,8 @@
     "test": "yarn workspace @selection-command/extension test:run; yarn workspace @selection-command/hub test:run",
     "test:coverage": "yarn workspaces run test:coverage",
     "tsc": "yarn workspaces run tsc -b",
-    "clean": "yarn workspaces run clean && rm -rf node_modules"
+    "clean": "yarn workspaces run clean && rm -rf node_modules",
+    "add-command": "yarn workspace @selection-command/hub add-command"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
