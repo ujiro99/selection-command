@@ -1399,5 +1399,62 @@
     "spaceEncoding": "plus",
     "tags": ["Desktop", "Search", "Tool"],
     "addedAt": "2025-12-05T14:26:05.298Z"
+  },
+  {
+    "id": "de6172e4-c771-50b6-ae56-aa07fe9b4725",
+    "title": "bilibili",
+    "description": "搜索哔哩哔哩相关视频",
+    "iconUrl": "https://i0.hdslb.com/bfs/static/jinkela/long/images/favicon.ico",
+    "openMode": "pageAction",
+    "tags": ["Search", "Media", "Chinese"],
+    "pageActionOption": {
+      "startUrl": "https://search.bilibili.com/all",
+      "openMode": "tab",
+      "steps": [
+        {
+          "id": "v5yzjn0nf",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "m8ig54xgb",
+          "param": {
+            "type": "click",
+            "label": "输入关键字搜索",
+            "selector": "//*[@class='search-input-el']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "iedjgyj2g",
+          "param": {
+            "type": "input",
+            "label": "输入关键字搜索",
+            "selector": "//*[@class='search-input-el']",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "or0woh3oz",
+          "param": {
+            "type": "click",
+            "label": "搜索",
+            "selector": "//*[@class='vui_button vui_button--blue vui_button--lg search-button']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "jiz09t0vd",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2026-02-19T05:26:36.556Z"
   }
 ]
