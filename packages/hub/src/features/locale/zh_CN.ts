@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "窗口",
         [OPEN_MODE.TAB]: "标签页",
         [OPEN_MODE.BACKGROUND_TAB]: "后台标签页",
+        [OPEN_MODE.SIDE_PANEL]: "侧边栏",
         [OPEN_MODE.PAGE_ACTION]: "页面操作",
       },
     },
