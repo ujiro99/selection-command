@@ -330,11 +330,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function (port) {
+      chrome.runtime.onConnect.addListener(function(port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function (msg) {
+        port.onMessage.addListener(function(msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -616,6 +616,7 @@ export const openSidePanel = async (
   }
 
   // Set the side panel options for the tab
+  // Do not await here because sidePanel.open() must be executed within a user gesture.
   chrome.sidePanel.setOptions({
     tabId: targetTabId,
     path: toUrl(url),
