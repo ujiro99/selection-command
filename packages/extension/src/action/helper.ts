@@ -166,7 +166,6 @@ export const closeSidePanel = (
 export const navigateSidePanel = (
   param: NavigateSidePanelProps,
   _sender: Sender,
-  response: (res: unknown) => void,
 ): boolean => {
   const { url, tabId } = param
 
@@ -195,7 +194,7 @@ export const navigateSidePanel = (
     return false
   }
 
-  // Update URL
+  // Fire-and-forget: update URL in the background
   _updateSidePanelUrl({ url, tabId })
     .then(() => {
       // Update BgData's sidePanelUrls
@@ -206,15 +205,11 @@ export const navigateSidePanel = (
         },
       }))
     })
-    .then(() => {
-      response(true)
-    })
     .catch((error) => {
       console.error("[navigateSidePanel] Error:", error)
-      response(false)
     })
 
-  return true
+  return false
 }
 
 function bindVariables(
