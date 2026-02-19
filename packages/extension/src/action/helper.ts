@@ -129,6 +129,8 @@ export const openSidePanel = (
             : [...data.sidePanelTabs, tabId],
         }))
       }
+    })
+    .then(() => {
       response(true)
     })
     .catch((error) => {
