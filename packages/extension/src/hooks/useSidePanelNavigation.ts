@@ -27,8 +27,13 @@ const findAnchorElement = (e: MouseEvent): HTMLAnchorElement | null => {
 const isValidUrl = (url: string): boolean => {
   try {
     const urlObj = new URL(url)
-    // Exclude javascript: and data: protocols
-    return urlObj.protocol !== "javascript:" && urlObj.protocol !== "data:"
+    // Allow only http: and https: protocols for security
+    const ALLOWED_PROTOCOLS = ['http:', 'https:']
+    if (!ALLOWED_PROTOCOLS.includes(urlObj.protocol)) {
+      console.warn("[navigateSidePanel] Blocked protocol:", urlObj.protocol)
+      return false
+    }
+    return true
   } catch {
     return false
   }
@@ -41,18 +46,18 @@ const isValidUrl = (url: string): boolean => {
 export function useSidePanelNavigation() {
   const { tabId } = useTabContext()
   const [activeTabId, setActiveTabId] = useState<number | null>(null)
-  const [isSidePanelPage, setIsSidePanelPage] = useState(false)
 
   // Detect if current context is a SidePanel
   useEffect(() => {
-    Ipc.getActiveTabId().then((activeTabId) => {
-      setIsSidePanelPage(isSidePanel(tabId, activeTabId))
-      setActiveTabId(activeTabId)
+    Ipc.getActiveTabId().then((id) => {
+      setActiveTabId(id)
     })
   }, [tabId])
 
   // Hook link clicks
   useEffect(() => {
+    // Derive isSidePanelPage from activeTabId as single source of truth
+    const isSidePanelPage = activeTabId !== null && isSidePanel(tabId, activeTabId)
     if (!isSidePanelPage) return
 
     const handleClick = (e: MouseEvent) => {
@@ -82,5 +87,5 @@ export function useSidePanelNavigation() {
     return () => {
       document.removeEventListener("click", handleClick, { capture: true })
     }
-  }, [isSidePanelPage, activeTabId])
+  }, [tabId, activeTabId])
 }
