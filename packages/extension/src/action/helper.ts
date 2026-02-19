@@ -107,39 +107,47 @@ export const openTab = (
 export const openSidePanel = (
   param: OpenSidePanelProps,
   sender: Sender,
+  response: (res: unknown) => void,
 ): boolean => {
   const tabId = sender.tab?.id
 
-  try {
-    // Since it needs to be tied to a user action, avoid asynchronous processing
-    // and open the side panel immediately.
-    _openSidePanel({
-      ...param,
-      tabId,
+  // Since it needs to be tied to a user action, avoid asynchronous processing
+  // and open the side panel immediately.
+  _openSidePanel({
+    ...param,
+    tabId,
+  })
+    .then(() => {
+      incrementCommandExecutionCount(tabId)
     })
-      .then(() => {
-        incrementCommandExecutionCount(tabId)
-      })
-      .then(() => {
-        // Register the tab ID for auto-hide tracking
-        if (tabId) {
-          return BgData.update((data) => ({
-            sidePanelTabs: data.sidePanelTabs.includes(tabId)
-              ? data.sidePanelTabs
-              : [...data.sidePanelTabs, tabId],
-          }))
-        }
-      })
-  } catch (error) {
-    console.error("[ActionHelper.openSidePanel] Error:", error)
-  }
+    .then(() => {
+      // Register the tab ID for tracking
+      if (tabId) {
+        return BgData.update((data) => ({
+          sidePanelTabs: data.sidePanelTabs.includes(tabId)
+            ? data.sidePanelTabs
+            : [...data.sidePanelTabs, tabId],
+        }))
+      }
+      response(true)
+    })
+    .catch((error) => {
+      console.error("Error during side panel operations:", error)
+      response(false)
+    })
 
-  return false
+  return true
 }
 
-export const closeSidePanel = (_: any, sender: Sender) => {
+export const closeSidePanel = (
+  _: any,
+  sender: Sender,
+  response: (res: unknown) => void,
+) => {
   const tabId = sender.tab?.id
-  if (tabId == null) return
+  if (tabId == null) {
+    return false
+  }
 
   enhancedSettings.get().then(async (settings) => {
     const sidePanelAutoHide = settings.windowOption.sidePanelAutoHide
@@ -149,14 +157,16 @@ export const closeSidePanel = (_: any, sender: Sender) => {
         await _closeSidePanel(tabId)
       }
     }
+    response(true)
   })
 
-  return false
+  return true
 }
 
 export const navigateSidePanel = (
   param: NavigateSidePanelProps,
   _sender: Sender,
+  response: (res: unknown) => void,
 ): boolean => {
   const { url, tabId } = param
 
@@ -196,11 +206,15 @@ export const navigateSidePanel = (
         },
       }))
     })
+    .then(() => {
+      response(true)
+    })
     .catch((error) => {
       console.error("[navigateSidePanel] Error:", error)
+      response(false)
     })
 
-  return false
+  return true
 }
 
 function bindVariables(
