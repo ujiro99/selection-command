@@ -161,6 +161,12 @@ export type ShortcutSettings = {
   shortcuts: Array<ShortcutCommand>
 }
 
+export type InstantCommandSettings = {
+  enabled: boolean
+  commandId?: string
+  modifierKey?: KEYBOARD
+}
+
 export type UserSettings = {
   settingVersion: Version
   startupMethod: StartupMethod
@@ -172,6 +178,7 @@ export type UserSettings = {
   style: STYLE
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
+  instantCommand?: InstantCommandSettings
 }
 
 export type SettingsType = UserSettings & UserStats & UserStars

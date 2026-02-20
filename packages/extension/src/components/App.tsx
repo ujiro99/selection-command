@@ -15,6 +15,7 @@ import { SelectContextProvider } from "@/providers/SelectContextProvider"
 import { TabContextProvider } from "@/providers/TabContextProvider"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
+import { useDetectInstantCommand } from "@/hooks/useDetectInstantCommand"
 import type { ShowToastParam } from "@/types"
 
 type Props = {
@@ -24,6 +25,9 @@ type Props = {
 export function App({ rootElm }: Props) {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
+
+  // Detect and execute instant command
+  useDetectInstantCommand(positionElm)
 
   useEffect(() => {
     const handleShowToast = (
