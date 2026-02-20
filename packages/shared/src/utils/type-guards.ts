@@ -13,6 +13,7 @@ export function isSearchCommand(cmd: unknown): cmd is SearchCommand {
     OPEN_MODE.TAB,
     OPEN_MODE.WINDOW,
     OPEN_MODE.BACKGROUND_TAB,
+    OPEN_MODE.SIDE_PANEL,
   ];
   return modes.includes((cmd as SearchCommand).openMode);
 }
