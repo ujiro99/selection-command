@@ -7022,9 +7022,9 @@ slash@^3.0.0:
   resolved "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
-"sonner@github:ujiro99/sonner":
+"sonner@git+https://github.com/ujiro99/sonner.git":
   version "2.0.6"
-  resolved "git+ssh://git@github.com/ujiro99/sonner.git#59cf29241aff032b9c81280be769ac5ba3da13d4"
+  resolved "git+https://github.com/ujiro99/sonner.git#59cf29241aff032b9c81280be769ac5ba3da13d4"
 
 source-map-js@^1.0.2, source-map-js@^1.2.0, source-map-js@^1.2.1:
   version "1.2.1"
