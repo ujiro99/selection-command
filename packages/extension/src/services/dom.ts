@@ -308,7 +308,7 @@ export const isTextarea = (e: unknown): e is HTMLTextAreaElement => {
   return e instanceof HTMLTextAreaElement
 }
 
-export const isEditable = (e: unknown): e is HTMLElement => {
+export const isEditable = (e: unknown): boolean => {
   if (!(e instanceof HTMLElement)) return false
   return e?.isContentEditable
 }

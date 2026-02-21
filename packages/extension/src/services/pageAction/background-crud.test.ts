@@ -692,6 +692,155 @@ describe("background.ts - CRUD Operations", () => {
         const savedData = setCall![1]
         expect(savedData.steps[2].param.value).toBe("bbb")
       })
+
+      it("BGD-15-f: Integration: Previous click is removed when click → input on same element", async () => {
+        const existingStep = {
+          id: "click-1",
+          param: { type: "click", selector: ".test-input", label: "Click" },
+        }
+        const newStep = {
+          id: "input-1",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "hello",
+          },
+        }
+
+        const mockRecordingData = { steps: [existingStep] }
+        mockStorage.get.mockImplementation((key: string) => {
+          if (key === "pa_recording") return Promise.resolve(mockRecordingData)
+          return Promise.resolve({ urlChanged: false })
+        })
+
+        add(newStep as any, mockSender as any, mockResponse)
+        await vi.runAllTimersAsync()
+
+        const setCall = mockStorage.set.mock.calls.find(
+          (call: any[]) => call[0] === "pa_recording",
+        )
+        const savedData = setCall![1]
+        // click is removed; only input + End remain
+        expect(savedData.steps).toHaveLength(2)
+        expect(savedData.steps[0]).toBe(newStep)
+        expect(savedData.steps[1].param.type).toBe("end")
+      })
+
+      it("BGD-15-g: Integration: Previous doubleClick is removed when doubleClick → input on same element", async () => {
+        const existingStep = {
+          id: "double-1",
+          param: {
+            type: "doubleClick",
+            selector: ".test-input",
+            label: "Double Click",
+          },
+        }
+        const newStep = {
+          id: "input-1",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "hello",
+          },
+        }
+
+        const mockRecordingData = { steps: [existingStep] }
+        mockStorage.get.mockImplementation((key: string) => {
+          if (key === "pa_recording") return Promise.resolve(mockRecordingData)
+          return Promise.resolve({ urlChanged: false })
+        })
+
+        add(newStep as any, mockSender as any, mockResponse)
+        await vi.runAllTimersAsync()
+
+        const setCall = mockStorage.set.mock.calls.find(
+          (call: any[]) => call[0] === "pa_recording",
+        )
+        const savedData = setCall![1]
+        // doubleClick is removed; only input + End remain
+        expect(savedData.steps).toHaveLength(2)
+        expect(savedData.steps[0]).toBe(newStep)
+        expect(savedData.steps[1].param.type).toBe("end")
+      })
+
+      it("BGD-15-h: Integration: Previous tripleClick is removed when tripleClick → input on same element", async () => {
+        const existingStep = {
+          id: "triple-1",
+          param: {
+            type: "tripleClick",
+            selector: ".test-input",
+            label: "Triple Click",
+          },
+        }
+        const newStep = {
+          id: "input-1",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "hello",
+          },
+        }
+
+        const mockRecordingData = { steps: [existingStep] }
+        mockStorage.get.mockImplementation((key: string) => {
+          if (key === "pa_recording") return Promise.resolve(mockRecordingData)
+          return Promise.resolve({ urlChanged: false })
+        })
+
+        add(newStep as any, mockSender as any, mockResponse)
+        await vi.runAllTimersAsync()
+
+        const setCall = mockStorage.set.mock.calls.find(
+          (call: any[]) => call[0] === "pa_recording",
+        )
+        const savedData = setCall![1]
+        // tripleClick is removed; only input + End remain
+        expect(savedData.steps).toHaveLength(2)
+        expect(savedData.steps[0]).toBe(newStep)
+        expect(savedData.steps[1].param.type).toBe("end")
+      })
+
+      it("BGD-15-i: Boundary: Previous click is NOT removed when click → input on different element", async () => {
+        const existingStep = {
+          id: "click-1",
+          param: {
+            type: "click",
+            selector: ".other-element",
+            label: "Click",
+          },
+        }
+        const newStep = {
+          id: "input-1",
+          param: {
+            type: "input",
+            selector: ".test-input",
+            label: "Input",
+            value: "hello",
+          },
+        }
+
+        const mockRecordingData = { steps: [existingStep] }
+        mockStorage.get.mockImplementation((key: string) => {
+          if (key === "pa_recording") return Promise.resolve(mockRecordingData)
+          return Promise.resolve({ urlChanged: false })
+        })
+
+        add(newStep as any, mockSender as any, mockResponse)
+        await vi.runAllTimersAsync()
+
+        const setCall = mockStorage.set.mock.calls.find(
+          (call: any[]) => call[0] === "pa_recording",
+        )
+        const savedData = setCall![1]
+        // click is preserved because selectors differ; click + input + End
+        expect(savedData.steps).toHaveLength(3)
+        expect(savedData.steps[0]).toBe(existingStep)
+        expect(savedData.steps[1]).toBe(newStep)
+        expect(savedData.steps[2].param.type).toBe("end")
+      })
     })
 
     describe("Error handling", () => {

@@ -67,7 +67,13 @@ const getLabel = (e: Element): string => {
           : e.type
   } else if (isSvgElement(e)) {
     return getLabel(e.parentNode as Element)
-  } else if (e instanceof HTMLParagraphElement || isEditable(e)) {
+  } else if (e instanceof HTMLParagraphElement) {
+    label =
+      e.dataset.placeholder ||
+      e.parentElement?.dataset.placeholder ||
+      e.ariaLabel ||
+      e.innerText
+  } else if (e instanceof HTMLElement && isEditable(e)) {
     label =
       e.dataset.placeholder ||
       e.parentElement?.dataset.placeholder ||
@@ -334,10 +340,10 @@ export const PageActionListener = (() => {
         value = target.value
       } else if (target instanceof HTMLSelectElement) {
         value = target.value
-      } else if (isTextNode(target)) {
-        value = target.nodeValue
       } else if (isEditable(target)) {
         value = target.innerText
+      } else if (isTextNode(target)) {
+        value = target.nodeValue
       }
 
       // For input state detection
@@ -423,6 +429,13 @@ export const PageActionListener = (() => {
     window.removeEventListener("keydown", func.keyboard, opt)
     window.removeEventListener("input", func.input, opt)
     window.removeEventListener("scroll", func.scroll, opt)
+    // Reset all session state to ensure a clean slate for the next recording session.
+    focusElm = null
+    focusXpath = null
+    lastMouseDownTarget = null
+    rawMouseDownTarget = null
+    lastInputTarget = null
+    lockedInputSelector = null
   }
 
   return { start, stop }

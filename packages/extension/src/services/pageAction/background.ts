@@ -133,7 +133,8 @@ export const add = (
           step.delayMs = DELAY_AFTER_URL_CHANGED
         }
       } else if (type === "input") {
-        // Remove preceding click for select elements; the input step is sufficient for replay
+        // Remove preceding click on the same element when an input step follows;
+        // the input step is sufficient for replay (the dispatcher applies focus if needed).
         if (
           prevType === "click" ||
           prevType === "doubleClick" ||

@@ -45,7 +45,7 @@ export const PageAction = {
     const url: UrlParam = {
       searchUrl: command.pageActionOption.startUrl,
       selectionText,
-      useClipboard: needClipboard || useClipboard,
+      useClipboard: needClipboard || (useClipboard ?? false),
     }
 
     const openMode = useSecondary
