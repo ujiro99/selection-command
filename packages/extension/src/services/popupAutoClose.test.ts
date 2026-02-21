@@ -1,15 +1,27 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+
+// Mock all dependencies before importing PopupAutoClose
+vi.mock("@/services/settings/enhancedSettings", () => ({
+  enhancedSettings: {
+    getSection: vi.fn(),
+  },
+}))
+vi.mock("@/services/settings/settingsCache")
+vi.mock("@/services/chrome", () => ({
+  closeWindow: vi.fn(),
+}))
+vi.mock("@/services/windowStackManager", () => ({
+  WindowStackManager: {
+    removeWindow: vi.fn(),
+  },
+}))
+
 import { PopupAutoClose } from "./popupAutoClose"
-import { Settings } from "@/services/settings/settings"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { closeWindow } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 
-// Mock dependencies
-vi.mock("@/services/settings/settings")
-vi.mock("@/services/chrome")
-vi.mock("@/services/windowStackManager")
-
-const mockSettings = vi.mocked(Settings)
+const mockEnhancedSettings = vi.mocked(enhancedSettings)
 const mockCloseWindow = vi.mocked(closeWindow)
 const mockWindowStackManager = vi.mocked(WindowStackManager)
 
@@ -34,8 +46,10 @@ describe("PopupAutoClose", () => {
     it("should close windows immediately when delay is undefined", async () => {
       const windows = [{ id: 100, commandId: "test", srcWindowId: 1 }]
       
-      mockSettings.get.mockResolvedValue({
-        popupAutoCloseDelay: undefined,
+      mockEnhancedSettings.getSection.mockResolvedValue({
+        windowOption: {
+          popupAutoCloseDelay: undefined,
+        },
       } as any)
 
       await PopupAutoClose.scheduleClose(windows)
@@ -48,8 +62,10 @@ describe("PopupAutoClose", () => {
     it("should close windows immediately when delay is 0", async () => {
       const windows = [{ id: 100, commandId: "test", srcWindowId: 1 }]
       
-      mockSettings.get.mockResolvedValue({
-        popupAutoCloseDelay: 0,
+      mockEnhancedSettings.getSection.mockResolvedValue({
+        windowOption: {
+          popupAutoCloseDelay: 0,
+        },
       } as any)
 
       await PopupAutoClose.scheduleClose(windows)
@@ -63,8 +79,10 @@ describe("PopupAutoClose", () => {
       const delay = 1000
       const windows = [{ id: 100, commandId: "test", srcWindowId: 1 }]
       
-      mockSettings.get.mockResolvedValue({
-        popupAutoCloseDelay: delay,
+      mockEnhancedSettings.getSection.mockResolvedValue({
+        windowOption: {
+          popupAutoCloseDelay: delay,
+        },
       } as any)
 
       await PopupAutoClose.scheduleClose(windows)
@@ -86,8 +104,10 @@ describe("PopupAutoClose", () => {
         { id: 101, commandId: "test2", srcWindowId: 1 },
       ]
       
-      mockSettings.get.mockResolvedValue({
-        popupAutoCloseDelay: undefined,
+      mockEnhancedSettings.getSection.mockResolvedValue({
+        windowOption: {
+          popupAutoCloseDelay: undefined,
+        },
       } as any)
 
       await PopupAutoClose.scheduleClose(windows)
@@ -102,8 +122,8 @@ describe("PopupAutoClose", () => {
     it("should do nothing when no windows to close", async () => {
       await PopupAutoClose.scheduleClose([])
 
-      // Should not call Settings.get or closeWindow
-      expect(mockSettings.get).not.toHaveBeenCalled()
+      // Should not call enhancedSettings.getSection or closeWindow
+      expect(mockEnhancedSettings.getSection).not.toHaveBeenCalled()
       expect(mockCloseWindow).not.toHaveBeenCalled()
     })
 
@@ -112,8 +132,10 @@ describe("PopupAutoClose", () => {
       const windows1 = [{ id: 100, commandId: "test1", srcWindowId: 1 }]
       const windows2 = [{ id: 101, commandId: "test2", srcWindowId: 1 }]
       
-      mockSettings.get.mockResolvedValue({
-        popupAutoCloseDelay: delay,
+      mockEnhancedSettings.getSection.mockResolvedValue({
+        windowOption: {
+          popupAutoCloseDelay: delay,
+        },
       } as any)
 
       // Schedule first close

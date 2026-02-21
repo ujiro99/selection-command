@@ -9,6 +9,7 @@ import {
   Eye,
   BookOpen,
   Paintbrush,
+  AppWindow,
 } from "lucide-react"
 
 import { Form } from "@/components/ui/form"
@@ -79,11 +80,16 @@ const formSchema = z
       })
       .strict(),
     popupPlacement: popupPlacementSchema,
-    popupAutoCloseDelay: z
-      .number({ message: t("zod_number") })
-      .min(0, { message: t("zod_number_min", ["0"]) })
-      .max(10000, { message: t("zod_number_max", ["10000"]) })
-      .optional(),
+    windowOption: z
+      .object({
+        sidePanelAutoHide: z.boolean(),
+        popupAutoCloseDelay: z
+          .number({ message: t("zod_number") })
+          .min(0, { message: t("zod_number_min", ["0"]) })
+          .max(10000, { message: t("zod_number_max", ["10000"]) })
+          .optional(),
+      })
+      .strict(),
     style: z.nativeEnum(STYLE),
     commands: z.array(commandSchema).min(1),
     folders: z.array(folderSchema),
@@ -134,7 +140,7 @@ export function SettingForm({ className }: { className?: string }) {
     defaultValues: {
       startupMethod: emptySettings.startupMethod,
       popupPlacement: emptySettings.popupPlacement,
-      popupAutoCloseDelay: emptySettings.popupAutoCloseDelay,
+      windowOption: emptySettings.windowOption,
       style: emptySettings.style,
       commands: [], // Empty array to avoid type conflicts
       folders: emptySettings.folders,
@@ -470,26 +476,6 @@ export function SettingForm({ className }: { className?: string }) {
               defaultValues={getAnimationDefaultValues()}
             />
           )}
-
-          {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
-            <InputField
-              control={form.control}
-              name="popupAutoCloseDelay"
-              formLabel={t("popupAutoCloseDelay")}
-              formDescription={t("popupAutoCloseDelay_desc")}
-              unit="ms"
-              inputProps={{
-                type: "number",
-                min: 0,
-                max: 10000,
-                step: 100,
-                placeholder: t("popupAutoCloseDelay_placeholder"),
-                ...register("popupAutoCloseDelay", {
-                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
-                }),
-              }}
-            />
-          )}
         </section>
         <hr />
         <section id="commands" className="space-y-3">
@@ -575,31 +561,60 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {linkCommandMethod ===
             LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
-            <InputField
-              control={form.control}
-              name="linkCommand.startupMethod.leftClickHoldParam"
-              formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
-              description={t(
-                "linkCommandStartupMethod_leftClickHoldParam_desc",
-              )}
-              unit="ms"
-              inputProps={{
-                type: "number",
-                min: 50,
-                max: 500,
-                step: 10,
-                ...register("linkCommand.startupMethod.leftClickHoldParam", {
-                  valueAsNumber: true,
-                }),
-              }}
-            />
-          )}
+              <InputField
+                control={form.control}
+                name="linkCommand.startupMethod.leftClickHoldParam"
+                formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
+                description={t(
+                  "linkCommandStartupMethod_leftClickHoldParam_desc",
+                )}
+                unit="ms"
+                inputProps={{
+                  type: "number",
+                  min: 50,
+                  max: 500,
+                  step: 10,
+                  ...register("linkCommand.startupMethod.leftClickHoldParam", {
+                    valueAsNumber: true,
+                  }),
+                }}
+              />
+            )}
           <SwitchField
             control={form.control}
             name="linkCommand.showIndicator"
             formLabel={t("showIndicator")}
             description={t("showIndicator_desc")}
           />
+        </section>
+        <hr />
+
+        <section id="windowSettings" className="space-y-3">
+          <h3 className="text-xl font-semibold flex items-center">
+            <AppWindow size={22} className="mr-2 stroke-gray-600" />
+            {t("windowSettings")}
+          </h3>
+          <p className="text-base">{t("windowSettings_desc")}</p>
+
+          {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
+            <InputField
+              control={form.control}
+              name="windowOption.popupAutoCloseDelay"
+              formLabel={t("popupAutoCloseDelay")}
+              tooltip={t("popupAutoCloseDelay_desc")}
+              unit="ms"
+              inputProps={{
+                type: "number",
+                min: 0,
+                max: 10000,
+                step: 100,
+                placeholder: t("popupAutoCloseDelay_placeholder"),
+                ...register("windowOption.popupAutoCloseDelay", {
+                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                }),
+              }}
+            />
+          )}
         </section>
         <hr />
 

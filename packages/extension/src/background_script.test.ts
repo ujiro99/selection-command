@@ -7,6 +7,7 @@ import { POPUP_ENABLED, LINK_COMMAND_ENABLED } from "@/const"
 // Mock dependencies
 vi.mock("@/services/settings/enhancedSettings")
 vi.mock("@/services/settings/settings")
+vi.mock("@/services/settings/settingsCache")
 vi.mock("@/services/storage")
 vi.mock("@/services/chrome")
 vi.mock("@/services/backgroundData")
@@ -410,16 +411,11 @@ describe("Popup Auto-Close Delay", () => {
       windowExists: vi.fn(),
     }))
 
-    // Mock Settings to return no delay
-    mockSettings.get.mockResolvedValue({
-      popupAutoCloseDelay: undefined,
-      commands: [],
-      folders: [],
-      pageRules: [],
-      stars: [],
-      shortcuts: { shortcuts: [] },
-      commandExecutionCount: 0,
-      hasShownReviewRequest: false,
+    // Mock enhancedSettings to return no delay
+    mockEnhancedSettings.getSection.mockResolvedValue({
+      windowOption: {
+        popupAutoCloseDelay: undefined,
+      },
     } as any)
 
     // Mock Storage
@@ -482,16 +478,11 @@ describe("Popup Auto-Close Delay", () => {
       windowExists: vi.fn(),
     }))
 
-    // Mock Settings to return delay
-    mockSettings.get.mockResolvedValue({
-      popupAutoCloseDelay: delay,
-      commands: [],
-      folders: [],
-      pageRules: [],
-      stars: [],
-      shortcuts: { shortcuts: [] },
-      commandExecutionCount: 0,
-      hasShownReviewRequest: false,
+    // Mock enhancedSettings to return delay
+    mockEnhancedSettings.getSection.mockResolvedValue({
+      windowOption: {
+        popupAutoCloseDelay: delay,
+      },
     } as any)
 
     // Mock Storage
@@ -557,16 +548,11 @@ describe("Popup Auto-Close Delay", () => {
       windowExists: vi.fn(),
     }))
 
-    // Mock Settings to return delay
-    mockSettings.get.mockResolvedValue({
-      popupAutoCloseDelay: delay,
-      commands: [],
-      folders: [],
-      pageRules: [],
-      stars: [],
-      shortcuts: { shortcuts: [] },
-      commandExecutionCount: 0,
-      hasShownReviewRequest: false,
+    // Mock enhancedSettings to return delay
+    mockEnhancedSettings.getSection.mockResolvedValue({
+      windowOption: {
+        popupAutoCloseDelay: delay,
+      },
     } as any)
 
     // Mock Storage

@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "Exibe o restante para a visualização."
   },
+  "Option_windowSettings": {
+    "message": "Configurações da Janela"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Configure o comportamento da janela e as configurações de popup."
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "Atraso de Fechamento Automático do Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Defina o tempo de atraso antes que o popup feche automaticamente após perder o foco. Defina como 0 ou deixe vazio para fechamento imediato.\nMáximo: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (fechar imediatamente)"
+  },
   "Option_folders": {
     "message": "Pastas"
   },

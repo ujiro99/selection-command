@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "Mostra il tempo rimanente fino all'anteprima."
   },
+  "Option_windowSettings": {
+    "message": "Impostazioni Finestra"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Configura il comportamento della finestra e le impostazioni popup."
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "Ritardo Chiusura Automatica Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Imposta il tempo di ritardo prima che il popup si chiuda automaticamente dopo aver perso il focus. Imposta 0 o lascia vuoto per la chiusura immediata.\nMassimo: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (chiudi immediatamente)"
+  },
   "Option_folders": {
     "message": "Cartelle"
   },

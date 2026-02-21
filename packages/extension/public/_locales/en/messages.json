@@ -512,6 +512,12 @@
   "Option_showIndicator_desc": {
     "message": "Displays the remaining to the preview."
   },
+  "Option_windowSettings": {
+    "message": "Window Settings"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Configure window behavior and popup settings."
+  },
   "Option_folders": {
     "message": "Folders"
   },

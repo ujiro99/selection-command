@@ -1,4 +1,5 @@
-import { Settings } from "@/services/settings/settings"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { closeWindow } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import type { WindowType } from "@/types"
@@ -35,8 +36,10 @@ export class PopupAutoClose {
     }
 
     // Get the auto-close delay setting
-    const settings = await Settings.get()
-    const autoCloseDelay = settings.popupAutoCloseDelay
+    const userSettings = await enhancedSettings.getSection(
+      CACHE_SECTIONS.USER_SETTINGS,
+    )
+    const autoCloseDelay = userSettings.windowOption.popupAutoCloseDelay
 
     // Define the close function
     const closeWindows = async () => {

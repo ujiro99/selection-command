@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "Menampilkan sisa ke pratinjau."
   },
+  "Option_windowSettings": {
+    "message": "Pengaturan Jendela"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Konfigurasi perilaku jendela dan pengaturan popup."
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "Penundaan Penutupan Otomatis Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Atur waktu penundaan sebelum popup secara otomatis menutup setelah kehilangan fokus. Atur ke 0 atau biarkan kosong untuk penutupan segera.\nMaksimum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (tutup segera)"
+  },
   "Option_folders": {
     "message": "Folder"
   },
