@@ -199,4 +199,87 @@ describe("RobulaPlus", () => {
       expect(robula.uniquelyLocate(xpath3, buttons[2], document)).toBe(true)
     })
   })
+
+  describe("XPath quote escaping", () => {
+    it("should handle single quotes in data-testid values", () => {
+      container.innerHTML = `
+        <div>
+          <button data-testid="user's-button">Button 1</button>
+          <button data-testid="admin-button">Button 2</button>
+        </div>
+      `
+      const buttons = container.querySelectorAll("button")
+      const robula = new RobulaPlus()
+
+      const xpath1 = robula.getRobustXPath(buttons[0], document)
+      
+      // Should use data-testid and properly escape the single quote
+      expect(xpath1).toContain("data-testid")
+      // XPath should use double quotes when value contains single quote
+      expect(xpath1).toMatch(/data-testid="user's-button"/)
+      
+      // XPath should uniquely identify the element
+      expect(robula.uniquelyLocate(xpath1, buttons[0], document)).toBe(true)
+    })
+
+    it("should handle double quotes in data-testid values", () => {
+      container.innerHTML = `
+        <div>
+          <button data-testid='say-"hello"'>Button 1</button>
+          <button data-testid="other-button">Button 2</button>
+        </div>
+      `
+      const buttons = container.querySelectorAll("button")
+      const robula = new RobulaPlus()
+
+      const xpath1 = robula.getRobustXPath(buttons[0], document)
+      
+      // Should use data-testid and properly escape the double quotes
+      expect(xpath1).toContain("data-testid")
+      // XPath should use single quotes when value contains double quote
+      expect(xpath1).toMatch(/data-testid='say-"hello"'/)
+      
+      // XPath should uniquely identify the element
+      expect(robula.uniquelyLocate(xpath1, buttons[0], document)).toBe(true)
+    })
+
+    it("should handle both single and double quotes in data-testid values", () => {
+      container.innerHTML = `
+        <div>
+          <button data-testid='it&apos;s-a-"test"'>Button 1</button>
+          <button data-testid="other-button">Button 2</button>
+        </div>
+      `
+      const buttons = container.querySelectorAll("button")
+      const robula = new RobulaPlus()
+
+      const xpath1 = robula.getRobustXPath(buttons[0], document)
+      
+      // Should use data-testid and use concat() for mixed quotes
+      expect(xpath1).toContain("data-testid")
+      expect(xpath1).toContain("concat(")
+      
+      // XPath should uniquely identify the element
+      expect(robula.uniquelyLocate(xpath1, buttons[0], document)).toBe(true)
+    })
+
+    it("should handle single quotes in text content", () => {
+      container.innerHTML = `
+        <div>
+          <span>It's a test</span>
+          <span>Another test</span>
+        </div>
+      `
+      const spans = container.querySelectorAll("span")
+      const robula = new RobulaPlus()
+
+      const xpath1 = robula.getRobustXPath(spans[0], document)
+      
+      // XPath should use contains() with properly escaped text
+      expect(xpath1).toContain("contains(text(),")
+      
+      // XPath should uniquely identify the element
+      expect(robula.uniquelyLocate(xpath1, spans[0], document)).toBe(true)
+    })
+  })
 })

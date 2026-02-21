@@ -12,7 +12,7 @@
  */
 export class RobulaPlus {
   // Data-testid type attributes in priority order
-  private static readonly DATA_TESTID_ATTRIBUTES = [
+  public static readonly DATA_TESTID_ATTRIBUTES = [
     "data-testid",
     "data-test-id",
     "data-test",
@@ -170,15 +170,53 @@ export class RobulaPlus {
   }
 
   /**
-   * Escapes single quotes in attribute values for safe XPath generation
+   * Creates a properly escaped XPath string literal
    * @param value - The attribute value to escape
    * @returns The escaped value safe for use in XPath predicates
+   * 
+   * @remarks
+   * XPath 1.0 doesn't support escape sequences, so we need to use different approaches:
+   * - If value contains no quotes: use single quotes 'value'
+   * - If value contains only single quotes: use double quotes "value"
+   * - If value contains both: use concat() to combine parts
    */
   private escapeXPathValue(value: string | null | undefined): string {
     if (value === null || value === undefined) {
-      return ""
+      return "''"
     }
-    return value.replace(/'/g, "&apos;")
+    
+    const hasSingleQuote = value.includes("'")
+    const hasDoubleQuote = value.includes('"')
+    
+    // No quotes - use single quotes
+    if (!hasSingleQuote && !hasDoubleQuote) {
+      return `'${value}'`
+    }
+    
+    // Only single quotes - use double quotes
+    if (hasSingleQuote && !hasDoubleQuote) {
+      return `"${value}"`
+    }
+    
+    // Only double quotes - use single quotes
+    if (!hasSingleQuote && hasDoubleQuote) {
+      return `'${value}'`
+    }
+    
+    // Both types of quotes - use concat()
+    // Split by single quote and wrap each part
+    const parts = value.split("'")
+    const concatParts = parts.map((part, index) => {
+      if (index === parts.length - 1) {
+        // Last part - no quote after
+        return `'${part}'`
+      } else {
+        // Add the single quote as a separate part
+        return `'${part}',"'"`
+      }
+    })
+    
+    return `concat(${concatParts.join(",")})`
   }
 
   public transfConvertStar(xPath: XPath, element: Element): XPath[] {
@@ -199,7 +237,7 @@ export class RobulaPlus {
       // Only add ID if it doesn't contain React useId patterns
       if (this.isAttributeValueUsable(ancestor.id)) {
         const newXPath: XPath = new XPath(xPath.getValue())
-        newXPath.addPredicateToHead(`[@id='${this.escapeXPathValue(ancestor.id)}']`)
+        newXPath.addPredicateToHead(`[@id=${this.escapeXPathValue(ancestor.id)}]`)
         output.push(newXPath)
       }
     }
@@ -218,7 +256,7 @@ export class RobulaPlus {
         // because these are explicitly set by developers for testing purposes
         if (attrValue) {
           const newXPath: XPath = new XPath(xPath.getValue())
-          newXPath.addPredicateToHead(`[@${attrName}='${this.escapeXPathValue(attrValue)}']`)
+          newXPath.addPredicateToHead(`[@${attrName}=${this.escapeXPathValue(attrValue)}]`)
           output.push(newXPath)
           // Return immediately after finding the first data-test* attribute
           break
@@ -239,7 +277,7 @@ export class RobulaPlus {
     ) {
       const newXPath: XPath = new XPath(xPath.getValue())
       newXPath.addPredicateToHead(
-        `[contains(text(),'${this.escapeXPathValue(ancestor.textContent)}')]`,
+        `[contains(text(),${this.escapeXPathValue(ancestor.textContent)})]`,
       )
       output.push(newXPath)
     }
@@ -259,7 +297,7 @@ export class RobulaPlus {
           ) {
             const newXPath: XPath = new XPath(xPath.getValue())
             newXPath.addPredicateToHead(
-              `[@${attribute.name}='${this.escapeXPathValue(attribute.value)}']`,
+              `[@${attribute.name}=${this.escapeXPathValue(attribute.value)}]`,
             )
             output.push(newXPath)
             break
@@ -274,7 +312,7 @@ export class RobulaPlus {
         ) {
           const newXPath: XPath = new XPath(xPath.getValue())
           newXPath.addPredicateToHead(
-            `[@${attribute.name}='${this.escapeXPathValue(attribute.value)}']`,
+            `[@${attribute.name}=${this.escapeXPathValue(attribute.value)}]`,
           )
           output.push(newXPath)
         }
@@ -330,9 +368,9 @@ export class RobulaPlus {
 
       // convert to predicate
       for (const attributeSet of attributePowerSet) {
-        let predicate: string = `[@${attributeSet[0].name}='${this.escapeXPathValue(attributeSet[0].value)}'`
+        let predicate: string = `[@${attributeSet[0].name}=${this.escapeXPathValue(attributeSet[0].value)}`
         for (let i: number = 1; i < attributeSet.length; i++) {
-          predicate += ` and @${attributeSet[i].name}='${this.escapeXPathValue(attributeSet[i].value)}'`
+          predicate += ` and @${attributeSet[i].name}=${this.escapeXPathValue(attributeSet[i].value)}`
         }
         predicate += "]"
         const newXPath: XPath = new XPath(xPath.getValue())
