@@ -765,7 +765,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[1].param.type).toBe("end")
       })
 
-      it("BGD-15-h: Integration: Previous tripleClick is removed when tripleClick → input on same element", async () => {
+      it("BGD-15-h: Integration: Previous tripleClick is not removed", async () => {
         const existingStep = {
           id: "triple-1",
           param: {
@@ -797,10 +797,11 @@ describe("background.ts - CRUD Operations", () => {
           (call: any[]) => call[0] === "pa_recording",
         )
         const savedData = setCall![1]
-        // tripleClick is removed; only input + End remain
-        expect(savedData.steps).toHaveLength(2)
-        expect(savedData.steps[0]).toBe(newStep)
-        expect(savedData.steps[1].param.type).toBe("end")
+        // tripleClick is not removed;
+        expect(savedData.steps).toHaveLength(3)
+        expect(savedData.steps[0]).toBe(existingStep)
+        expect(savedData.steps[1]).toBe(newStep)
+        expect(savedData.steps[2].param.type).toBe("end")
       })
 
       it("BGD-15-i: Boundary: Previous click is NOT removed when click → input on different element", async () => {
