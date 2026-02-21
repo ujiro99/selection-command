@@ -1406,7 +1406,7 @@
     "id": "de6172e4-c771-50b6-ae56-aa07fe9b4725",
     "title": "bilibili",
     "description": "搜索哔哩哔哩相关视频",
-    "iconUrl": "https://i0.hdslb.com/bfs/static/jinkela/long/images/favicon.ico",
+    "iconUrl": "https://cdn.brandfetch.io/idJarLS8mp/w/512/h/464/theme/dark/symbol.png?c=1bxid64Mup7aczewSAYMX&t=1668073271606",
     "openMode": "pageAction",
     "tags": ["Search", "Media", "Chinese"],
     "pageActionOption": {
