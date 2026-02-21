@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Check } from "lucide-react"
+import Bowser from "bowser"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   FormControl,
@@ -12,6 +13,10 @@ import { Tooltip } from "@/components/Tooltip"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
+
+const isEdge =
+  Bowser.getParser(window.navigator.userAgent).getBrowserName() ===
+  "Microsoft Edge"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -38,14 +43,14 @@ const getIconForMode = (mode: string) => {
   return "/setting/open_mode/popup.png"
 }
 
-// Order of options
+// Order of options (SidePanel is not supported on Microsoft Edge)
 const SEARCH_MODES = [
   OPEN_MODE.POPUP,
   OPEN_MODE.WINDOW,
   OPEN_MODE.TAB,
   OPEN_MODE.BACKGROUND_TAB,
-  OPEN_MODE.SIDE_PANEL,
-] as const
+  ...(isEdge ? [] : [OPEN_MODE.SIDE_PANEL]),
+]
 
 const PAGE_ACTION_MODES = [
   PAGE_ACTION_OPEN_MODE.POPUP,
