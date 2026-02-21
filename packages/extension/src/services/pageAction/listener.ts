@@ -88,6 +88,24 @@ let rawMouseDownTarget: HTMLElement | null = null
 let lastInputTarget: HTMLElement | null = null
 
 /**
+ * XPath locked at the time of the first `input` event on a contenteditable
+ * element (e.g. Quill editor). Some WYSIWYG editors mutate the element's
+ * class names when editing begins — for example, Quill adds `ql-blank` to the
+ * editor div while it is empty and removes it on the first keystroke. Because
+ * RobulaPlus includes class names in generated XPaths, consecutive `input`
+ * events on the very same DOM element can produce different XPath strings,
+ * which prevents background.ts from recognising them as the same element and
+ * combining them into a single step.
+ *
+ * To solve this we compute the XPath once (on the first `input` event, after
+ * the DOM has already been updated) and reuse it for every subsequent event on
+ * the same focused element. The lock is cleared whenever focus moves to a
+ * different element so that unrelated editable elements get their own fresh
+ * XPath.
+ */
+let lockedInputSelector: string | null = null
+
+/**
  * Get the robust XPath of an element.
  * @param {Element} e - The element to get the XPath of.
  * @param {string} type - The type of event (optional).
@@ -154,7 +172,13 @@ interface EventsFunctions {
 
 export const PageActionListener = (() => {
   const onFocusIn = (event: FocusEvent) => {
-    focusElm = event.target as HTMLElement
+    const newFocusElm = event.target as HTMLElement
+    // Clear the locked selector whenever focus moves to a different element so
+    // that the next editable element gets its own fresh XPath.
+    if (focusElm !== newFocusElm) {
+      lockedInputSelector = null
+    }
+    focusElm = newFocusElm
     if (isPopup(focusElm)) return
     focusXpath = getXPathM(focusElm)
   }
@@ -320,7 +344,25 @@ export const PageActionListener = (() => {
       lastInputTarget = target
 
       const stepId = generateRandomID()
-      const xpath = getXPathM(target, e.type)
+
+      // For contenteditable elements (e.g. Quill), use a locked XPath that was
+      // computed on the first input event. This prevents selector mismatches
+      // caused by WYSIWYG editors mutating class names (e.g. Quill's `ql-blank`)
+      // between the empty state and the editing state, which would otherwise
+      // make background.ts treat consecutive events as different elements and
+      // skip combining them into a single step.
+      let xpath: string
+      if (isEditable(target) && target === focusElm) {
+        if (!lockedInputSelector) {
+          // Compute and lock the XPath on the first input event. By this point
+          // the DOM has already been updated (e.g. `ql-blank` removed), so the
+          // resulting XPath is valid for both matching and later replay.
+          lockedInputSelector = getXPathM(target, e.type)
+        }
+        xpath = lockedInputSelector
+      } else {
+        xpath = getXPathM(target, e.type)
+      }
       if (value != null) {
         value = convReadableKeysToSymbols(value)
         Ipc.send<PageActionStep>(BgCommand.addPageAction, {
