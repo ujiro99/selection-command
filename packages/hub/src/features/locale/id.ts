@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "Jendela",
         [OPEN_MODE.TAB]: "Tab",
         [OPEN_MODE.BACKGROUND_TAB]: "Tab Latar Belakang",
+        [OPEN_MODE.SIDE_PANEL]: "Panel Samping",
         [OPEN_MODE.PAGE_ACTION]: "Aksi Halaman",
       },
     },

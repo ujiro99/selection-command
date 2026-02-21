@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Panel lateral"
+  },
   "Option_openMode_linkPopup": {
     "message": "Emergente de Enlace"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Color del Borde"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Color de fuente"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Especifique el color del borde del menú. Predeterminado: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Especificar el color de fuente. Predeterminado: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Escala de tamaño de fuente"
@@ -904,6 +913,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir pestaña en segundo plano.<wbr>Mostrar a la derecha de la pestaña actual."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Abrir en panel lateral."
   },
   "Option_title_desc": {
     "message": "Se muestra como el título del comando."

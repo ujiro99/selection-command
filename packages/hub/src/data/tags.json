@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 21
+    "count": 22
   },
   {
     "name": "Language",
@@ -65,7 +65,7 @@
   },
   {
     "name": "Media",
-    "count": 8
+    "count": 9
   },
   {
     "name": "SNS",
@@ -149,6 +149,10 @@
   },
   {
     "name": "Desktop",
+    "count": 1
+  },
+  {
+    "name": "Chinese",
     "count": 1
   }
 ]

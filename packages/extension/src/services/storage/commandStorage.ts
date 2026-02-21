@@ -26,7 +26,7 @@ let debounceTO: NodeJS.Timeout
 chrome.storage.onChanged.addListener((changes) => {
   const commands = [] as Command[]
   for (const [k, { newValue }] of Object.entries(changes)) {
-    if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
+    if (k.startsWith(CMD_PREFIX)) commands.push(newValue as Command)
   }
   if (commands.filter((c) => c).length > 0) {
     clearTimeout(debounceTO)
@@ -488,7 +488,9 @@ export class CommandStorage {
     const keys = Array.from({ length: count }, (_, i) => cmdSyncKey(i))
     const result = await chrome.storage.sync.get(keys)
 
-    return keys.map((key) => result[key]).filter((cmd) => cmd != null)
+    return keys
+      .map((key) => result[key] as Command)
+      .filter((cmd) => cmd != null)
   }
 
   private async loadFromLocal(count: number): Promise<Command[]> {
@@ -497,7 +499,9 @@ export class CommandStorage {
     const keys = Array.from({ length: count }, (_, i) => cmdLocalKey(i))
     const result = await chrome.storage.local.get(keys)
 
-    return keys.map((key) => result[key]).filter((cmd) => cmd != null)
+    return keys
+      .map((key) => result[key] as Command)
+      .filter((cmd) => cmd != null)
   }
 
   private reorderCommands(commands: Command[], order: string[]): Command[] {

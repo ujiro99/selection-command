@@ -3,6 +3,7 @@ import { Popup } from "./popup"
 import { Window } from "./window"
 import { Tab } from "./tab"
 import { BackgroundTab } from "./backgroundTab"
+import { SidePanel } from "./sidePanel"
 import { Api } from "./api"
 import { PageAction } from "./pageAction"
 import { executeAction } from "./executor"
@@ -13,6 +14,7 @@ export const actionsForBackground = {
   [OPEN_MODE_BG.WINDOW]: Window,
   [OPEN_MODE_BG.TAB]: Tab,
   [OPEN_MODE_BG.BACKGROUND_TAB]: BackgroundTab,
+  [OPEN_MODE_BG.SIDE_PANEL]: SidePanel,
   [OPEN_MODE_BG.API]: Api,
   [OPEN_MODE_BG.PAGE_ACTION]: PageAction,
 }
