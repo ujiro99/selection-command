@@ -142,7 +142,7 @@ export const openSidePanel = (
 }
 
 export const closeSidePanel = (
-  _: any,
+  _: unknown,
   sender: Sender,
   response: (res: unknown) => void,
 ) => {

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { describe, it, expect, vi, beforeEach } from "vitest"
 import { renderHook, waitFor } from "@testing-library/react"
 import { useSidePanelNavigation } from "./useSidePanelNavigation"
 import { Ipc, BgCommand } from "@/services/ipc"
@@ -26,11 +26,6 @@ vi.mock("@/hooks/useTabContext", () => ({
 describe("useSidePanelNavigation", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-  })
-
-  afterEach(() => {
-    // Clean up event listeners
-    document.removeEventListener("click", () => {}, { capture: true })
   })
 
   it("SPN-01: Should not attach click listener when not in SidePanel", async () => {

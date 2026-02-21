@@ -12,7 +12,7 @@ export const isSidePanel = (
   tabId: number | null | undefined,
   activeTabId: number | null | undefined,
 ): boolean => {
-  if (tabId != null) return false // In sidePanel, tabId is null.
+  if (tabId != null) return false // Side panel context has no tabId (it's null/undefined)
   if (!activeTabId) return false
 
   // Check if tab is in sidePanelTabs

@@ -28,7 +28,7 @@ const isValidUrl = (url: string): boolean => {
   try {
     const urlObj = new URL(url)
     // Allow only http: and https: protocols for security
-    const ALLOWED_PROTOCOLS = ['http:', 'https:']
+    const ALLOWED_PROTOCOLS = ["http:", "https:"]
     if (!ALLOWED_PROTOCOLS.includes(urlObj.protocol)) {
       console.warn("[navigateSidePanel] Blocked protocol:", urlObj.protocol)
       return false
@@ -49,15 +49,19 @@ export function useSidePanelNavigation() {
 
   // Detect if current context is a SidePanel
   useEffect(() => {
-    Ipc.getActiveTabId().then((id) => {
-      setActiveTabId(id)
-    })
+    Ipc.getActiveTabId()
+      .then((id) => {
+        setActiveTabId(id)
+      })
+      .catch((e) => {
+        console.error("Failed to get active tab ID:", e)
+      })
   }, [tabId])
 
   // Hook link clicks
   useEffect(() => {
     // Derive isSidePanelPage from activeTabId as single source of truth
-    const isSidePanelPage = activeTabId !== null && isSidePanel(tabId, activeTabId)
+    const isSidePanelPage = isSidePanel(tabId, activeTabId)
     if (!isSidePanelPage) return
 
     const handleClick = (e: MouseEvent) => {
