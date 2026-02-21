@@ -288,9 +288,11 @@ const commandFuncs = {
         return
       }
 
-      // Remove the window.
-      await closeWindow(windowId, "onHidden")
-      await WindowStackManager.removeWindow(windowId)
+      // Schedule popup window to close with configured delay
+      const window = layer.find((w) => w.id === windowId)
+      if (window) {
+        await PopupAutoClose.scheduleClose([window])
+      }
       response(false)
     }
 
