@@ -32,6 +32,9 @@ const getIconForMode = (mode: string) => {
   if (mode === OPEN_MODE.WINDOW || mode === PAGE_ACTION_OPEN_MODE.WINDOW) {
     return "/setting/open_mode/window.png"
   }
+  if (mode === OPEN_MODE.SIDE_PANEL) {
+    return "/setting/open_mode/side_panel.png"
+  }
   return "/setting/open_mode/popup.png"
 }
 
@@ -41,6 +44,7 @@ const SEARCH_MODES = [
   OPEN_MODE.WINDOW,
   OPEN_MODE.TAB,
   OPEN_MODE.BACKGROUND_TAB,
+  OPEN_MODE.SIDE_PANEL,
 ] as const
 
 const PAGE_ACTION_MODES = [

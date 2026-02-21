@@ -130,12 +130,10 @@ export const BaseStorage = {
     // For dynamic keys (like command keys), return the raw value or undefined
     // For static keys, use the default value from DEFAULTS
     const hasDefault = key in DEFAULTS
-    return (
-      result[key] ??
+    return (result[key] ??
       (hasDefault
         ? structuredClone(DEFAULTS[key as keyof typeof DEFAULTS])
-        : undefined)
-    )
+        : undefined)) as T
   },
 
   set: async <T>(key: KEY, value: T): Promise<boolean> => {

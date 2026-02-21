@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Pannello laterale"
+  },
   "Option_openMode_linkPopup": {
     "message": "Pop-up link"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Colore bordo"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Colore carattere"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Specifica il colore del bordo del menu. Predefinito: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Specifica il colore del carattere. Predefinito: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Scala dimensione font"
@@ -903,40 +912,10 @@
     "message": "Mostra scheda e attivala.<wbr>Mostra a destra della scheda corrente."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "Variabili Utente"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "Definisci variabili personalizzate da utilizzare nelle tue Page Actions. Queste variabili possono essere utilizzate nei campi di input con {{nomeVariabile}}."
-    },
-    "Option_userVariable_name": {
-      "message": "Nome"
-    },
-    "Option_userVariable_value": {
-      "message": "Valore"
-    },
-    "Option_userVariable_add": {
-      "message": "Aggiungi Variabile"
-    },
-    "Option_userVariable_name_required": {
-      "message": "Il nome della variabile è richiesto"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "Il nome deve iniziare con una lettera e può contenere solo lettere, numeri e underscore"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "Il nome della variabile esiste già"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "Sono consentite massimo $max$ variabili",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
     "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Apri nel pannello laterale."
   },
   "Option_title_desc": {
     "message": "Visualizzato come titolo del comando."
