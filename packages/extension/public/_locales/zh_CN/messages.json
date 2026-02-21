@@ -1108,5 +1108,14 @@
   },
   "prompthistory_banner_description": {
     "message": "用于在 ChatGPT 等中重用提示的新工具✨"
+  },
+  "Option_windowState": {
+    "message": "窗口状态"
+  },
+  "Option_windowState_normal": {
+    "message": "正常"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "全屏"
   }
 }

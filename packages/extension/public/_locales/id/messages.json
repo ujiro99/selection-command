@@ -1111,5 +1111,14 @@
   },
   "prompthistory_banner_description": {
     "message": "Alat baru untuk menggunakan kembali prompt untuk ChatGPT dan lainnya✨"
+  },
+  "Option_windowState": {
+    "message": "Status jendela"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Layar penuh"
   }
 }

@@ -1,7 +1,7 @@
 import { sleep, toUrl, isOverBytes, isUrlParam } from "@/lib/utils"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
-import { POPUP_OFFSET, POPUP_TYPE } from "@/const"
+import { POPUP_OFFSET, POPUP_TYPE, WINDOW_STATE } from "@/const"
 import { BgData } from "@/services/backgroundData"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { BgCommand, ClipboardResult, TabCommand } from "@/services/ipc"
@@ -103,6 +103,7 @@ export type OpenPopupProps = {
   height: number
   screen: ScreenSize
   type: POPUP_TYPE
+  windowState?: WINDOW_STATE
 }
 
 export type OpenPopupsProps = {
@@ -388,6 +389,7 @@ export const openPopupWindow = async (
   }
 
   const type = param.type ?? POPUP_TYPE.POPUP
+  const isFullscreen = param.windowState === WINDOW_STATE.FULLSCREEN
   const { top: at, left: al } = adjustWindowPosition(
     top,
     left,
@@ -436,10 +438,11 @@ export const openPopupWindow = async (
     window = (await chrome.windows.create({
       url: toUrl(url),
       type,
-      width,
-      height,
-      top: at,
-      left: al,
+      width: isFullscreen ? undefined : width,
+      height: isFullscreen ? undefined : height,
+      top: isFullscreen ? undefined : at,
+      left: isFullscreen ? undefined : al,
+      state: isFullscreen ? "fullscreen" : undefined,
       incognito: current.incognito,
     }))!
   }

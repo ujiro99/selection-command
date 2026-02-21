@@ -1111,5 +1111,14 @@
   },
   "prompthistory_banner_description": {
     "message": "A new tool to reuse prompts for ChatGPT and more✨"
+  },
+  "Option_windowState": {
+    "message": "Window State"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Fullscreen"
   }
 }

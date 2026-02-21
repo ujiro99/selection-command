@@ -1108,5 +1108,14 @@
   },
   "prompthistory_banner_description": {
     "message": "ChatGPT 등에서 프롬프트를 재사용할 수 있는 새로운 도구✨"
+  },
+  "Option_windowState": {
+    "message": "창 상태"
+  },
+  "Option_windowState_normal": {
+    "message": "보통"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "전체 화면"
   }
 }

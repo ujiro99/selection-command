@@ -1111,5 +1111,14 @@
   },
   "prompthistory_banner_description": {
     "message": "Uma nova ferramenta para reutilizar prompts no ChatGPT e mais✨"
+  },
+  "Option_windowState": {
+    "message": "Estado da janela"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Tela cheia"
   }
 }

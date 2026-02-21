@@ -1105,5 +1105,14 @@
   },
   "prompthistory_banner_description": {
     "message": "ChatGPTなどでプロンプトを再利用できる新しいツール✨"
+  },
+  "Option_windowState": {
+    "message": "ウィンドウ表示"
+  },
+  "Option_windowState_normal": {
+    "message": "通常"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "フルスクリーン"
   }
 }

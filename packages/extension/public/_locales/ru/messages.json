@@ -1108,5 +1108,14 @@
   },
   "prompthistory_banner_description": {
     "message": "Новый инструмент для повторного использования подсказок для ChatGPT и других✨"
+  },
+  "Option_windowState": {
+    "message": "Состояние окна"
+  },
+  "Option_windowState_normal": {
+    "message": "Обычное"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Полный экран"
   }
 }
