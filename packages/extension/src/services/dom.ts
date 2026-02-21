@@ -7,7 +7,7 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
     const img = new Image()
     img.crossOrigin = "Anonymous"
     const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
-    img.onload = function () {
+    img.onload = function() {
       const canvas = document.createElement("canvas")
       const ctx = canvas.getContext("2d")
       canvas.height = img.naturalHeight
@@ -308,7 +308,7 @@ export const isTextarea = (e: unknown): e is HTMLTextAreaElement => {
   return e instanceof HTMLTextAreaElement
 }
 
-export const isEditable = (e: unknown): boolean => {
+export const isEditable = (e: unknown): e is HTMLElement => {
   if (!(e instanceof HTMLElement)) return false
   return e?.isContentEditable
 }

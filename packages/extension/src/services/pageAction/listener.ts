@@ -67,7 +67,7 @@ const getLabel = (e: Element): string => {
           : e.type
   } else if (isSvgElement(e)) {
     return getLabel(e.parentNode as Element)
-  } else if (e instanceof HTMLParagraphElement) {
+  } else if (e instanceof HTMLParagraphElement || isEditable(e)) {
     label =
       e.dataset.placeholder ||
       e.parentElement?.dataset.placeholder ||
@@ -334,10 +334,10 @@ export const PageActionListener = (() => {
         value = target.value
       } else if (target instanceof HTMLSelectElement) {
         value = target.value
-      } else if (isEditable(target)) {
-        value = target.innerText
       } else if (isTextNode(target)) {
         value = target.nodeValue
+      } else if (isEditable(target)) {
+        value = target.innerText
       }
 
       // For input state detection
