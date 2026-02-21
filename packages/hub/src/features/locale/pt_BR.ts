@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "Janela",
         [OPEN_MODE.TAB]: "Aba",
         [OPEN_MODE.BACKGROUND_TAB]: "Aba em segundo plano",
+        [OPEN_MODE.SIDE_PANEL]: "Painel Lateral",
         [OPEN_MODE.PAGE_ACTION]: "Ação da Página",
       },
     },

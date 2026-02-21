@@ -6,6 +6,7 @@ export enum OPEN_MODE {
   WINDOW = "window",
   TAB = "tab",
   BACKGROUND_TAB = "backgroundTab",
+  SIDE_PANEL = "sidePanel",
   API = "api",
   PAGE_ACTION = "pageAction",
   LINK_POPUP = "linkPopup",

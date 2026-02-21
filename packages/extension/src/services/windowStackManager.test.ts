@@ -34,6 +34,8 @@ describe("WindowStackManager", () => {
     pageActionStop: false,
     activeScreenId: null,
     connectedTabs: [],
+    sidePanelTabs: [],
+    sidePanelUrls: {},
   })
 
   const expectStackUpdate = (

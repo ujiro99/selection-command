@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Боковая панель"
+  },
   "Option_openMode_linkPopup": {
     "message": "Всплывающее окно ссылки"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Цвет границы"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Цвет шрифта"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Укажите цвет границы меню. По умолчанию: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Укажите цвет шрифта. По умолчанию: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Масштаб размера шрифта"
@@ -909,40 +918,40 @@
     "message": "Показать вкладку и активировать.<wbr>Показать справа от текущей вкладки."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "Пользовательские переменные"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "Определите пользовательские переменные для использования в ваших Page Actions. Эти переменные можно использовать в полях ввода с {{имяПеременной}}."
-    },
-    "Option_userVariable_name": {
-      "message": "Имя"
-    },
-    "Option_userVariable_value": {
-      "message": "Значение"
-    },
-    "Option_userVariable_add": {
-      "message": "Добавить переменную"
-    },
-    "Option_userVariable_name_required": {
-      "message": "Имя переменной обязательно"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "Имя должно начинаться с буквы и может содержать только буквы, цифры и подчеркивания"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "Имя переменной уже существует"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "Разрешено максимум $max$ переменных",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
     "message": "Открыть вкладку в фоновом режиме.<wbr>Показать справа от текущей вкладки."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Открыть в боковой панели."
+  },
+  "Option_userVariables": {
+    "message": "Пользовательские Переменные"
+  },
+  "Option_userVariable_name": {
+    "message": "Имя переменной"
+  },
+  "Option_userVariable_value": {
+    "message": "Значение"
+  },
+  "Option_userVariable_add": {
+    "message": "Добавить переменную"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Имя переменной обязательно"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Имя переменной уже существует"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Максимум $max$ переменных разрешено",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_title_desc": {
     "message": "Отображается как заголовок команды."
@@ -1015,36 +1024,6 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Пожалуйста, введите действительный URL"
-  },
-  "Option_userVariable_add": {
-    "message": "Добавить переменную"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Максимум $max$ переменных разрешено",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Имя переменной"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Имя переменной уже существует"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Имя переменной обязательно"
-  },
-  "Option_userVariable_value": {
-    "message": "Значение"
-  },
-  "Option_userVariables": {
-    "message": "Пользовательские Переменные"
   },
   "Option_userVariables_desc": {
     "message": "Определить пользовательские переменные для полей ввода (макс 5)"

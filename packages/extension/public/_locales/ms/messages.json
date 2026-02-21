@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Panel Sisi"
+  },
   "Option_openMode_linkPopup": {
     "message": "Pop-up Pautan"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Warna Sempadan"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Warna fon"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Nyatakan warna sempadan menu. Lalai: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Tentukan warna fon. Lalai: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Penskalaan saiz fon"
@@ -912,40 +921,40 @@
     "message": "Papar tab dan aktifkan.<wbr>Papar di sebelah kanan tab semasa."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "Pembolehubah Pengguna"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "Tentukan pembolehubah tersuai untuk digunakan dalam Tindakan Halaman anda. Pembolehubah ini boleh digunakan dalam medan input dengan {{namaPembolehubah}}."
-    },
-    "Option_userVariable_name": {
-      "message": "Nama"
-    },
-    "Option_userVariable_value": {
-      "message": "Nilai"
-    },
-    "Option_userVariable_add": {
-      "message": "Tambah Pembolehubah"
-    },
-    "Option_userVariable_name_required": {
-      "message": "Nama pembolehubah diperlukan"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "Nama mesti bermula dengan huruf dan hanya boleh mengandungi huruf, nombor dan garis bawah"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "Nama pembolehubah sudah wujud"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "Maksimum $max$ pembolehubah dibenarkan",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
+    "message": "Buka tab di latar belakang.<wbr>Paparkan di sebelah kanan tab semasa."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Buka dalam panel sisi."
+  },
+  "Option_userVariables": {
+    "message": "Pembolehubah Pengguna"
+  },
+  "Option_userVariable_name": {
+    "message": "Nama pembolehubah"
+  },
+  "Option_userVariable_value": {
+    "message": "Nilai"
+  },
+  "Option_userVariable_add": {
+    "message": "Tambah pembolehubah"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nama pembolehubah diperlukan"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nama pembolehubah sudah wujud"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maksimum $max$ pembolehubah dibenarkan",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
       }
-    },
-    "message": "Buka tab di latar belakang.<wbr>Papar di sebelah kanan tab semasa."
+    }
   },
   "Option_title_desc": {
     "message": "Dipaparkan sebagai tajuk arahan."
@@ -1018,36 +1027,6 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Sila masukkan URL yang sah"
-  },
-  "Option_userVariable_add": {
-    "message": "Tambah pembolehubah"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Maksimum $max$ pembolehubah dibenarkan",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Nama pembolehubah"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Nama pembolehubah sudah wujud"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Nama pembolehubah diperlukan"
-  },
-  "Option_userVariable_value": {
-    "message": "Nilai"
-  },
-  "Option_userVariables": {
-    "message": "Pembolehubah Pengguna"
   },
   "Option_userVariables_desc": {
     "message": "Takrifkan pembolehubah tersuai untuk medan input (maks 5)"

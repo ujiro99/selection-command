@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "사이드 패널"
+  },
   "Option_openMode_linkPopup": {
     "message": "링크 팝업"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "테두리 색상"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "글꼴 색상"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "메뉴의 테두리 색상을 지정합니다. 기본값: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "글꼴 색상을 지정합니다. 기본값: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "글꼴 크기 스케일"
@@ -909,40 +918,40 @@
     "message": "탭을 표시하고 활성화.<wbr>현재 탭 오른쪽에 표시합니다."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "사용자 변수"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "페이지 액션에서 사용할 사용자 정의 변수를 정의합니다. 이러한 변수는 입력 필드에서 {{변수명}} 형태로 사용할 수 있습니다."
-    },
-    "Option_userVariable_name": {
-      "message": "이름"
-    },
-    "Option_userVariable_value": {
-      "message": "값"
-    },
-    "Option_userVariable_add": {
-      "message": "변수 추가"
-    },
-    "Option_userVariable_name_required": {
-      "message": "변수 이름이 필요합니다"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "이름은 문자로 시작해야 하며 문자, 숫자, 언더스코어만 포함할 수 있습니다"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "변수 이름이 이미 존재합니다"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "최대 $max$개의 변수가 허용됩니다",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
     "message": "백그라운드에서 탭 열기.<wbr>현재 탭 오른쪽에 표시합니다."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "사이드 패널에서 열기."
+  },
+  "Option_userVariables": {
+    "message": "사용자 변수"
+  },
+  "Option_userVariable_name": {
+    "message": "변수 이름"
+  },
+  "Option_userVariable_value": {
+    "message": "값"
+  },
+  "Option_userVariable_add": {
+    "message": "변수 추가"
+  },
+  "Option_userVariable_name_required": {
+    "message": "변수 이름이 필요합니다"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "변수 이름이 이미 존재합니다"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "최대 $max$개의 변수가 허용됩니다",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_title_desc": {
     "message": "명령 제목으로 표시됩니다."
@@ -1015,36 +1024,6 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "유효한 URL을 입력하세요"
-  },
-  "Option_userVariable_add": {
-    "message": "변수 추가"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "최대 $max$개의 변수가 허용됩니다",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "변수 이름"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "변수 이름이 이미 존재합니다"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
-  },
-  "Option_userVariable_name_required": {
-    "message": "변수 이름이 필요합니다"
-  },
-  "Option_userVariable_value": {
-    "message": "값"
-  },
-  "Option_userVariables": {
-    "message": "사용자 변수"
   },
   "Option_userVariables_desc": {
     "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"

@@ -239,6 +239,10 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
     data.settingVersion = VERSION as Version
     data = migrate0_11_9(data)
   }
+  if (versionDiff(data.settingVersion, "0.14.3") === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate0_14_3(data)
+  }
 
   return data
 }
@@ -337,5 +341,14 @@ const migrate0_11_9 = (data: SettingsType): SettingsType => {
     })
   }
 
+  return data
+}
+
+const migrate0_14_3 = (data: SettingsType): SettingsType => {
+  // Add windowOption if not exists
+  if (data.windowOption == null) {
+    data.windowOption = DefaultSettings.windowOption
+    console.debug("migrate 0.14.3: added windowOption")
+  }
   return data
 }

@@ -4,6 +4,8 @@ import type { WindowLayer } from "@/types"
 type updater = (val: BgData) => BgData
 type updaterPartial = (val: BgData) => Partial<BgData>
 
+type watchCallback = (newVal: BgData, oldVal: BgData) => void
+
 export class BgData {
   private static instance: BgData
 
@@ -12,6 +14,8 @@ export class BgData {
   public pageActionStop: boolean
   public activeScreenId: string | null
   public connectedTabs: number[]
+  public sidePanelTabs: number[]
+  public sidePanelUrls: Record<number, string>
 
   private constructor(val: BgData | undefined) {
     this.windowStack = val?.windowStack ?? []
@@ -19,6 +23,8 @@ export class BgData {
     this.pageActionStop = val?.pageActionStop ?? false
     this.activeScreenId = val?.activeScreenId ?? null
     this.connectedTabs = val?.connectedTabs ?? []
+    this.sidePanelTabs = val?.sidePanelTabs ?? []
+    this.sidePanelUrls = val?.sidePanelUrls ?? {}
   }
 
   public static init() {
@@ -62,5 +68,9 @@ export class BgData {
       }
     }
     return Storage.set(SESSION_STORAGE_KEY.BG, BgData.instance)
+  }
+
+  public static watch(cb: watchCallback): () => void {
+    return Storage.addListener(SESSION_STORAGE_KEY.BG, cb)
   }
 }

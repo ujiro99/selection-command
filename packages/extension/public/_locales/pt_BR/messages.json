@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Painel lateral"
+  },
   "Option_openMode_linkPopup": {
     "message": "Pop-up de Link"
   },
@@ -545,8 +548,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Cor da Borda"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Cor da fonte"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Especifique a cor da borda do menu. Padrão: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Especificar a cor da fonte. Padrão: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Escala do tamanho da fonte"
@@ -912,40 +921,40 @@
     "message": "Exibir aba e ativá-la.<wbr>Exibir à direita da aba atual."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "Variáveis do Usuário"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "Defina variáveis personalizadas para usar em suas Page Actions. Essas variáveis podem ser usadas em campos de entrada com {{nomeVariável}}."
-    },
-    "Option_userVariable_name": {
-      "message": "Nome"
-    },
-    "Option_userVariable_value": {
-      "message": "Valor"
-    },
-    "Option_userVariable_add": {
-      "message": "Adicionar Variável"
-    },
-    "Option_userVariable_name_required": {
-      "message": "O nome da variável é obrigatório"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "O nome deve começar com uma letra e pode conter apenas letras, números e sublinhados"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "Nome da variável já existe"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "Máximo de $max$ variáveis permitidas",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
+    "message": "Abrir aba em segundo plano.<wbr>Mostrar à direita da aba atual."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Abrir no painel lateral."
+  },
+  "Option_userVariables": {
+    "message": "Variáveis do Usuário"
+  },
+  "Option_userVariable_name": {
+    "message": "Nome da variável"
+  },
+  "Option_userVariable_value": {
+    "message": "Valor"
+  },
+  "Option_userVariable_add": {
+    "message": "Adicionar variável"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nome da variável é obrigatório"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nome da variável já existe"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Máximo de $max$ variáveis permitidas",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
       }
-    },
-    "message": "Abrir aba em segundo plano.<wbr>Exibir à direita da aba atual."
+    }
   },
   "Option_title_desc": {
     "message": "Exibido como título do comando."
@@ -1018,36 +1027,6 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Por favor, digite uma URL válida"
-  },
-  "Option_userVariable_add": {
-    "message": "Adicionar variável"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Máximo de $max$ variáveis permitidas",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Nome da variável"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Nome da variável já existe"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Nome da variável é obrigatório"
-  },
-  "Option_userVariable_value": {
-    "message": "Valor"
-  },
-  "Option_userVariables": {
-    "message": "Variáveis do Usuário"
   },
   "Option_userVariables_desc": {
     "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"

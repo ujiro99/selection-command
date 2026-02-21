@@ -290,6 +290,9 @@
   "Option_openMode_backgroundTab": {
     "message": "バックグラウンドタブ"
   },
+  "Option_openMode_sidePanel": {
+    "message": "サイドパネル"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -322,6 +325,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "サイドパネルで開く。"
   },
   "Option_commandType_title": {
     "message": "コマンドの種類を選ぶ"
