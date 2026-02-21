@@ -19,7 +19,7 @@ export class RobulaPlus {
   ] as const
 
   private attributePriorizationList: string[] = [
-    ...RobulaPlus.DATA_TESTID_ATTRIBUTES,
+    // DATA_TESTID_ATTRIBUTES are excluded here; handled exclusively by transfAddDataTestId
     "name",
     "class",
     "title",
@@ -173,7 +173,7 @@ export class RobulaPlus {
    * Creates a properly escaped XPath string literal
    * @param value - The attribute value to escape
    * @returns The escaped value safe for use in XPath predicates
-   * 
+   *
    * @remarks
    * XPath 1.0 doesn't support escape sequences, so we need to use different approaches:
    * - If value contains no quotes: use single quotes 'value'
@@ -184,25 +184,25 @@ export class RobulaPlus {
     if (value === null || value === undefined) {
       return "''"
     }
-    
+
     const hasSingleQuote = value.includes("'")
     const hasDoubleQuote = value.includes('"')
-    
+
     // No quotes - use single quotes
     if (!hasSingleQuote && !hasDoubleQuote) {
       return `'${value}'`
     }
-    
+
     // Only single quotes - use double quotes
     if (hasSingleQuote && !hasDoubleQuote) {
       return `"${value}"`
     }
-    
+
     // Only double quotes - use single quotes
     if (!hasSingleQuote && hasDoubleQuote) {
       return `'${value}'`
     }
-    
+
     // Both types of quotes - use concat()
     // Split by single quote and wrap each part
     const parts = value.split("'")
@@ -215,7 +215,7 @@ export class RobulaPlus {
         return `'${part}',"'"`
       }
     })
-    
+
     return `concat(${concatParts.join(",")})`
   }
 
@@ -237,7 +237,9 @@ export class RobulaPlus {
       // Only add ID if it doesn't contain React useId patterns
       if (this.isAttributeValueUsable(ancestor.id)) {
         const newXPath: XPath = new XPath(xPath.getValue())
-        newXPath.addPredicateToHead(`[@id=${this.escapeXPathValue(ancestor.id)}]`)
+        newXPath.addPredicateToHead(
+          `[@id=${this.escapeXPathValue(ancestor.id)}]`,
+        )
         output.push(newXPath)
       }
     }
@@ -247,7 +249,7 @@ export class RobulaPlus {
   public transfAddDataTestId(xPath: XPath, element: Element): XPath[] {
     const output: XPath[] = []
     const ancestor: Element = this.getAncestor(element, xPath.getLength() - 1)
-    
+
     if (!xPath.headHasAnyPredicates()) {
       // Check for data-testid type attributes in priority order
       for (const attrName of RobulaPlus.DATA_TESTID_ATTRIBUTES) {
@@ -256,7 +258,9 @@ export class RobulaPlus {
         // because these are explicitly set by developers for testing purposes
         if (attrValue) {
           const newXPath: XPath = new XPath(xPath.getValue())
-          newXPath.addPredicateToHead(`[@${attrName}=${this.escapeXPathValue(attrValue)}]`)
+          newXPath.addPredicateToHead(
+            `[@${attrName}=${this.escapeXPathValue(attrValue)}]`,
+          )
           output.push(newXPath)
           // Return immediately after finding the first data-test* attribute
           break
@@ -304,10 +308,14 @@ export class RobulaPlus {
           }
         }
       }
-      // append all other non-blacklist and non-random attributes to output
+      // append all other non-blacklist, non-priority, non-data-testid attributes to output
+      // (DATA_TESTID_ATTRIBUTES are handled exclusively by transfAddDataTestId)
       for (const attribute of ancestor.attributes) {
         if (
           !this.attributePriorizationList.includes(attribute.name) &&
+          !RobulaPlus.DATA_TESTID_ATTRIBUTES.includes(
+            attribute.name as (typeof RobulaPlus.DATA_TESTID_ATTRIBUTES)[number],
+          ) &&
           this.isAttributeUsable(attribute)
         ) {
           const newXPath: XPath = new XPath(xPath.getValue())
@@ -657,7 +665,7 @@ export class RobulaPlusOptions {
    */
 
   public attributePriorizationList: string[] = [
-    ...RobulaPlus.DATA_TESTID_ATTRIBUTES,
+    // DATA_TESTID_ATTRIBUTES are excluded here; handled exclusively by transfAddDataTestId
     "name",
     "class",
     "title",

@@ -110,15 +110,37 @@ describe("RobulaPlus", () => {
       `
       const buttons = container.querySelectorAll("button")
       const robula = new RobulaPlus()
-      
+
       const xpath1 = robula.getRobustXPath(buttons[0], document)
       const xpath2 = robula.getRobustXPath(buttons[1], document)
 
       // Should NOT use aria-label anywhere in the XPath
       expect(xpath1).not.toContain("aria-label")
       expect(xpath2).not.toContain("aria-label")
-      
+
       // The XPaths should still uniquely identify each button (using position or other attributes)
+      expect(robula.uniquelyLocate(xpath1, buttons[0], document)).toBe(true)
+      expect(robula.uniquelyLocate(xpath2, buttons[1], document)).toBe(true)
+    })
+
+    it("should not use aria-label even when it's the only attribute distinguishing sibling elements", () => {
+      container.innerHTML = `
+        <div class="actions">
+          <button aria-label="送信" class="btn-action">送信</button>
+          <button aria-label="キャンセル" class="btn-action">キャンセル</button>
+        </div>
+      `
+      const buttons = container.querySelectorAll("button")
+      const robula = new RobulaPlus()
+
+      const xpath1 = robula.getRobustXPath(buttons[0], document)
+      const xpath2 = robula.getRobustXPath(buttons[1], document)
+
+      // Should NOT use aria-label even though it's the only distinguishing attribute
+      expect(xpath1).not.toContain("aria-label")
+      expect(xpath2).not.toContain("aria-label")
+
+      // The XPaths should still uniquely identify each button (using position)
       expect(robula.uniquelyLocate(xpath1, buttons[0], document)).toBe(true)
       expect(robula.uniquelyLocate(xpath2, buttons[1], document)).toBe(true)
     })
@@ -212,12 +234,12 @@ describe("RobulaPlus", () => {
       const robula = new RobulaPlus()
 
       const xpath1 = robula.getRobustXPath(buttons[0], document)
-      
+
       // Should use data-testid and properly escape the single quote
       expect(xpath1).toContain("data-testid")
       // XPath should use double quotes when value contains single quote
       expect(xpath1).toMatch(/data-testid="user's-button"/)
-      
+
       // XPath should uniquely identify the element
       expect(robula.uniquelyLocate(xpath1, buttons[0], document)).toBe(true)
     })
@@ -233,12 +255,12 @@ describe("RobulaPlus", () => {
       const robula = new RobulaPlus()
 
       const xpath1 = robula.getRobustXPath(buttons[0], document)
-      
+
       // Should use data-testid and properly escape the double quotes
       expect(xpath1).toContain("data-testid")
       // XPath should use single quotes when value contains double quote
       expect(xpath1).toMatch(/data-testid='say-"hello"'/)
-      
+
       // XPath should uniquely identify the element
       expect(robula.uniquelyLocate(xpath1, buttons[0], document)).toBe(true)
     })
@@ -254,11 +276,11 @@ describe("RobulaPlus", () => {
       const robula = new RobulaPlus()
 
       const xpath1 = robula.getRobustXPath(buttons[0], document)
-      
+
       // Should use data-testid and use concat() for mixed quotes
       expect(xpath1).toContain("data-testid")
       expect(xpath1).toContain("concat(")
-      
+
       // XPath should uniquely identify the element
       expect(robula.uniquelyLocate(xpath1, buttons[0], document)).toBe(true)
     })
@@ -274,10 +296,10 @@ describe("RobulaPlus", () => {
       const robula = new RobulaPlus()
 
       const xpath1 = robula.getRobustXPath(spans[0], document)
-      
+
       // XPath should use contains() with properly escaped text
       expect(xpath1).toContain("contains(text(),")
-      
+
       // XPath should uniquely identify the element
       expect(robula.uniquelyLocate(xpath1, spans[0], document)).toBe(true)
     })
