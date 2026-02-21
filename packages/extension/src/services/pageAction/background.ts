@@ -133,6 +133,18 @@ export const add = (
           step.delayMs = DELAY_AFTER_URL_CHANGED
         }
       } else if (type === "input") {
+        // Remove preceding click for select elements; the input step is sufficient for replay
+        if (
+          prevType === "click" ||
+          prevType === "doubleClick" ||
+          prevType === "tripleClick"
+        ) {
+          const selector = (step.param as PageAction.Input).selector
+          const prevSelector = (prev.param as PageAction.Click).selector
+          if (selector === prevSelector) {
+            steps.pop()
+          }
+        }
         // Combine operations on the same input element.
         if (prevType === "input") {
           const selector = (step.param as PageAction.Input).selector

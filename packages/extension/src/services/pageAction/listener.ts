@@ -84,6 +84,7 @@ const getLabel = (e: Element): string => {
 let focusElm: HTMLElement | null = null
 let focusXpath: string | null = null
 let lastMouseDownTarget: HTMLElement | null = null
+let rawMouseDownTarget: HTMLElement | null = null
 let lastInputTarget: HTMLElement | null = null
 
 /**
@@ -160,6 +161,11 @@ export const PageActionListener = (() => {
 
   const func: EventsFunctions = {
     async click(e: MouseEvent) {
+      // Track raw mousedown target for label-triggered click detection
+      if (e.type === "mousedown") {
+        rawMouseDownTarget = e.target as HTMLElement
+      }
+
       // Ignore click events that are triggered by mouse down event.
       if (lastMouseDownTarget === e.target && e.type === "click") {
         lastMouseDownTarget = null
@@ -174,6 +180,28 @@ export const PageActionListener = (() => {
 
       const target = e.target as HTMLElement
       if (isInputting(target)) return
+
+      // Skip click events on checkbox/radio triggered by a parent label element.
+      // When a user clicks inside a <label>, the browser synthetically dispatches
+      // a click to the associated input. We detect this by checking if the
+      // rawMouseDownTarget (the physically clicked element) belongs to a label
+      // that contains or references this checkbox/radio input.
+      if (
+        e.type === "click" &&
+        isInput(target) &&
+        (target.type === "checkbox" || target.type === "radio") &&
+        rawMouseDownTarget != null &&
+        rawMouseDownTarget !== target
+      ) {
+        const parentLabel = rawMouseDownTarget.closest("label")
+        if (
+          parentLabel != null &&
+          (parentLabel.contains(target) ||
+            parentLabel.htmlFor === (target as HTMLInputElement).id)
+        ) {
+          return
+        }
+      }
 
       let xpath = getXPathM(target)
       let label = getLabel(target as Element)
@@ -268,8 +296,19 @@ export const PageActionListener = (() => {
     async input(e: Event) {
       if (isPopup(e.target as HTMLElement)) return
       const target = e.target as HTMLElement
+
+      // Skip checkbox/radio - state changes are captured by click events only
+      if (
+        isInput(target) &&
+        (target.type === "checkbox" || target.type === "radio")
+      ) {
+        return
+      }
+
       let value: string | null = null
       if (isInput(target) || isTextarea(target)) {
+        value = target.value
+      } else if (target instanceof HTMLSelectElement) {
         value = target.value
       } else if (isEditable(target)) {
         value = target.innerText
