@@ -17,6 +17,7 @@ import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
+import { PopupAutoClose } from "@/services/popupAutoClose"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
@@ -32,9 +33,6 @@ importIf("production", "./lib/sentry/initialize")
 BgData.init()
 
 type Sender = chrome.runtime.MessageSender
-
-// Popup auto-close delay timer
-let popupAutoCloseTimer: NodeJS.Timeout | null = null
 
 export type addPageRuleProps = {
   url: string
@@ -379,41 +377,11 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Update active screen ID
   await updateActiveScreenId(windowId)
 
-  // Cancel any existing timer
-  if (popupAutoCloseTimer !== null) {
-    clearTimeout(popupAutoCloseTimer)
-    popupAutoCloseTimer = null
-  }
-
   // Get windows to close based on focus change
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
 
-  // If there are no windows to close, nothing to do
-  if (windowsToClose.length === 0) {
-    return
-  }
-
-  // Get the auto-close delay setting
-  const settings = await Settings.get()
-  const autoCloseDelay = settings.popupAutoCloseDelay
-
-  // Define the close function
-  const closeWindows = async () => {
-    for (const window of windowsToClose) {
-      await closeWindow(window.id, "onFocusChanged")
-      await WindowStackManager.removeWindow(window.id)
-    }
-    popupAutoCloseTimer = null
-  }
-
-  // Execute close based on delay setting
-  if (autoCloseDelay !== undefined && autoCloseDelay > 0) {
-    // Delayed close: Set timeout
-    popupAutoCloseTimer = setTimeout(closeWindows, autoCloseDelay)
-  } else {
-    // Immediate close: No delay configured
-    await closeWindows()
-  }
+  // Schedule popup windows to close with configured delay
+  await PopupAutoClose.scheduleClose(windowsToClose)
 })
 
 chrome.windows.onRemoved.addListener((windowId: number) => {
