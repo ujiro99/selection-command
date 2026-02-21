@@ -281,6 +281,9 @@
   "Option_openMode_backgroundTab": {
     "message": "Background Tab"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Side Panel"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -587,8 +590,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Border Color"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Font color"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Specify the border color of the menu. Default: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Specify font color. Default: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Font size scaling"
@@ -952,6 +961,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Open tab in background.<wbr>Show to the right of current tab."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Open in side panel."
   },
   "Option_title_desc": {
     "message": "Displayed as the command title."

@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "विंडो",
         [OPEN_MODE.TAB]: "टैब",
         [OPEN_MODE.BACKGROUND_TAB]: "बैकग्राउंड टैब",
+        [OPEN_MODE.SIDE_PANEL]: "साइड पैनल",
         [OPEN_MODE.PAGE_ACTION]: "पेज एक्शन",
       },
     },

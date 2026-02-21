@@ -50,7 +50,18 @@ const getTabId = (
   return false
 }
 
-const onConnect = async function (port: chrome.runtime.Port) {
+const getActiveTabId = (
+  _: unknown,
+  _sender: Sender,
+  response: (res: unknown) => void,
+) => {
+  chrome.tabs
+    .query({ active: true, lastFocusedWindow: true })
+    .then(([tab]) => response(tab?.id))
+  return true
+}
+
+const onConnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -60,7 +71,7 @@ const onConnect = async function (port: chrome.runtime.Port) {
     }))
   }
 }
-const onDisconnect = async function (port: chrome.runtime.Port) {
+const onDisconnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -83,6 +94,9 @@ const commandFuncs = {
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [BgCommand.openTab]: ActionHelper.openTab,
+  [BgCommand.openSidePanel]: ActionHelper.openSidePanel,
+  [BgCommand.closeSidePanel]: ActionHelper.closeSidePanel,
+  [BgCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
   [BgCommand.execApi]: ActionHelper.execApi,
 
   [BgCommand.openOption]: (): boolean => {
@@ -137,24 +151,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-          id: params.id,
-          title: params.title,
-          searchUrl: params.searchUrl,
-          iconUrl: params.iconUrl,
-          openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
-          popupOption: PopupOption,
-        }
+        id: params.id,
+        title: params.title,
+        searchUrl: params.searchUrl,
+        iconUrl: params.iconUrl,
+        openMode: params.openMode,
+        openModeSecondary: params.openModeSecondary,
+        spaceEncoding: params.spaceEncoding,
+        popupOption: PopupOption,
+      }
       : isPageAction
         ? {
-            id: params.id,
-            title: params.title,
-            iconUrl: params.iconUrl,
-            openMode: params.openMode,
-            pageActionOption: params.pageActionOption,
-            popupOption: PopupOption,
-          }
+          id: params.id,
+          title: params.title,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          pageActionOption: params.pageActionOption,
+          popupOption: PopupOption,
+        }
         : null
 
     if (!cmd) {
@@ -306,6 +320,7 @@ const commandFuncs = {
   },
 
   [BgCommand.getTabId]: getTabId,
+  [BgCommand.getActiveTabId]: getActiveTabId,
 
   //
   // PageAction
@@ -498,17 +513,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-// Initialize commandIdObj and register listener at top-level
-// to ensure they are available when service worker restarts
-;(async () => {
-  try {
-    await ContextMenu.syncCommandIdObj()
-    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-  } catch (error) {
-    // Ignore errors during initialization (e.g., in test environment)
-    console.debug("Failed to initialize context menu listener:", error)
-  }
-})()
+  // Initialize commandIdObj and register listener at top-level
+  // to ensure they are available when service worker restarts
+  ; (async () => {
+    try {
+      await ContextMenu.syncCommandIdObj()
+      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+    } catch (error) {
+      // Ignore errors during initialization (e.g., in test environment)
+      console.debug("Failed to initialize context menu listener:", error)
+    }
+  })()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
@@ -599,6 +614,18 @@ chrome.commands.onCommand.addListener(async (commandName) => {
   } catch (error) {
     console.error("Failed to execute shortcut command:", error)
   }
+})
+
+// SidePanel auto-hide functionality
+// Track tabs with active side panels
+chrome.tabs.onRemoved.addListener((tabId) => {
+  BgData.update((data) => {
+    const { [tabId]: _, ...rest } = data.sidePanelUrls
+    return {
+      sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+      sidePanelUrls: rest,
+    }
+  })
 })
 
 // Export functions for testing

@@ -17,7 +17,12 @@ export interface BaseCommand {
  * Search command with URL
  */
 export interface SearchCommand extends BaseCommand {
-  openMode: OPEN_MODE.POPUP | OPEN_MODE.TAB | OPEN_MODE.WINDOW;
+  openMode:
+  | OPEN_MODE.POPUP
+  | OPEN_MODE.TAB
+  | OPEN_MODE.WINDOW
+  | OPEN_MODE.BACKGROUND_TAB
+  | OPEN_MODE.SIDE_PANEL;
   searchUrl: string;
   openModeSecondary: OPEN_MODE;
   spaceEncoding: SPACE_ENCODING;

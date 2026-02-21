@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "창",
         [OPEN_MODE.TAB]: "탭",
         [OPEN_MODE.BACKGROUND_TAB]: "백그라운드 탭",
+        [OPEN_MODE.SIDE_PANEL]: "사이드 패널",
         [OPEN_MODE.PAGE_ACTION]: "페이지 액션",
       },
     },

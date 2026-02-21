@@ -75,6 +75,7 @@ const createMockUserSettings = (
   style: STYLE.HORIZONTAL,
   userStyles: [],
   shortcuts: { shortcuts: [] },
+  windowOption: { sidePanelAutoHide: false },
   ...overrides,
 })
 

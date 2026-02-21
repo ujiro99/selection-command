@@ -602,8 +602,8 @@ export const openRecorder = (
           left: l,
           type: POPUP_TYPE.POPUP,
         })
-        if (w.tabs) {
-          await setRecordingTabId(w.tabs[0].id)
+        if (w?.tabs) {
+          await setRecordingTabId(w!.tabs![0].id)
         } else {
           console.error("Failed to open the recorder.")
         }
@@ -653,7 +653,7 @@ export const resetLastUrl = () => {
 // Export for testing
 export const onTabUpdated = (
   id: number,
-  info: chrome.tabs.TabChangeInfo,
+  info: chrome.tabs.OnUpdatedInfo,
   _tab: chrome.tabs.Tab,
 ) => {
   Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
@@ -679,7 +679,7 @@ chrome.tabs.onUpdated.addListener(onTabUpdated)
 // Export for testing
 export const onTabRemoved = async (
   tabId: number,
-  _removeInfo: chrome.tabs.TabRemoveInfo,
+  _removeInfo: chrome.tabs.OnRemovedInfo,
 ) => {
   const context = await Storage.get<PageActionContext>(
     SESSION_STORAGE_KEY.PA_CONTEXT,

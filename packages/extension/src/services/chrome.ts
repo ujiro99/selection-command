@@ -51,7 +51,7 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
 
     const onUpdated = async (
       tabId: number,
-      changeInfo: chrome.tabs.TabChangeInfo,
+      changeInfo: chrome.tabs.OnUpdatedInfo,
       tab: chrome.tabs.Tab,
     ) => {
       if (w == null) {
@@ -366,10 +366,10 @@ const openWindowAndReadClipboard = async (
     incognito: param.incognito,
   })
 
-  const result = await readClipboardContent(w.tabs?.[0].id as number)
+  const result = await readClipboardContent(w!.tabs![0].id as number)
 
   return {
-    window: w,
+    window: w!,
     clipboardText: result.data ?? "",
     err: result.err,
   }
@@ -433,7 +433,7 @@ export const openPopupWindow = async (
       )
     }
   } else {
-    window = await chrome.windows.create({
+    window = (await chrome.windows.create({
       url: toUrl(url),
       type,
       width,
@@ -441,7 +441,7 @@ export const openPopupWindow = async (
       top: at,
       left: al,
       incognito: current.incognito,
-    })
+    }))!
   }
 
   await updateBackgroundData([window], param.commandId, current.id, type)
@@ -468,25 +468,28 @@ export const openPopupWindowMultiple = async (
 
   const type = param.type ?? POPUP_TYPE.POPUP
   const windows = await Promise.all(
-    param.urls.reverse().map((url, idx) => {
-      const { top: t, left: l } = adjustWindowPosition(
-        top,
-        left,
-        width,
-        height,
-        screen,
-        idx,
-      )
-      return chrome.windows.create({
-        url,
-        width,
-        height,
-        top: t,
-        left: l,
-        type,
-        incognito: current.incognito,
+    param.urls
+      .reverse()
+      .map((url, idx) => {
+        const { top: t, left: l } = adjustWindowPosition(
+          top,
+          left,
+          width,
+          height,
+          screen,
+          idx,
+        )
+        return chrome.windows.create({
+          url,
+          width,
+          height,
+          top: t,
+          left: l,
+          type,
+          incognito: current.incognito,
+        })
       })
-    }),
+      .filter((p): p is Promise<chrome.windows.Window> => p !== null),
   )
 
   await updateBackgroundData(windows, param.commandId, current.id, type)
@@ -581,5 +584,103 @@ export async function closeWindow(
     await chrome.windows.remove(windowId)
   } catch (e) {
     console.warn(log, e)
+  }
+}
+
+export type OpenSidePanelProps = {
+  url: string | UrlParam
+  tabId?: number
+}
+
+export type UpdateSidePanelUrlProps = {
+  url: string
+  tabId: number
+}
+
+/**
+ * Open a side panel with the specified URL (background script context only)
+ * @param {OpenSidePanelProps} param - Parameters for opening the side panel
+ * @returns {Promise<OpenResult>} Result containing tab ID and clipboard text
+ */
+export const openSidePanel = async (
+  param: OpenSidePanelProps,
+): Promise<{ tabId: number | undefined }> => {
+  const { url, tabId } = param
+
+  const targetTabId = tabId
+  if (!targetTabId) {
+    console.error("No valid tab ID for side panel")
+    return {
+      tabId: undefined,
+    }
+  }
+
+  // Set the side panel options for the tab
+  // Do not await here because sidePanel.open() must be executed within a user gesture.
+  chrome.sidePanel.setOptions({
+    tabId: targetTabId,
+    path: toUrl(url),
+    enabled: true,
+  })
+
+  // Open the side panel
+  await chrome.sidePanel.open({ tabId: targetTabId })
+
+  return {
+    tabId: targetTabId,
+  }
+}
+
+/**
+ * Close the side panel for the specified tab
+ * @param {number} tabId - The ID of the tab to close the side panel for
+ * @returns {Promise<void>} A promise that resolves when the side panel is closed
+ */
+export const closeSidePanel = async (tabId: number): Promise<void> => {
+  try {
+    await chrome.sidePanel.close({ tabId: tabId })
+  } catch (e) {
+    console.warn("Failed to close side panel:", e)
+  }
+
+  // Cleanup regardless of whether close succeeded
+  try {
+    await BgData.update((data) => {
+      const { [tabId]: _, ...rest } = data.sidePanelUrls
+      return {
+        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+        sidePanelUrls: rest,
+      }
+    })
+    await chrome.sidePanel.setOptions({
+      tabId: tabId,
+      enabled: false,
+    })
+  } catch (e) {
+    console.warn("Failed to cleanup side panel:", e)
+  }
+}
+
+/**
+ * Update the side panel URL for the specified tab
+ * @param {UpdateSidePanelUrlProps} param - Parameters containing URL and tab ID
+ * @returns {Promise<void>} A promise that resolves when the URL is updated
+ */
+export const updateSidePanelUrl = async (
+  param: UpdateSidePanelUrlProps,
+): Promise<void> => {
+  const { url, tabId } = param
+
+  try {
+    // Update the side panel URL
+    await chrome.sidePanel.setOptions({
+      tabId: tabId,
+      path: url,
+      enabled: true,
+    })
+    // console.debug("[updateSidePanelUrl] Updated:", { tabId, url })
+  } catch (error) {
+    console.error("[updateSidePanelUrl] Failed:", error)
+    throw error
   }
 }
