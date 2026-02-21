@@ -63,18 +63,120 @@ export default function Page() {
       <div className="w-full space-y-4">
         <h2>Browser Feature Test</h2>
 
-        <form className="space-y-2">
+        <form className="space-y-4">
           <div>
-            <h3 className="mb-2 font-bold">Input</h3>
+            <h3 className="mb-2 font-bold">Text</h3>
             <input
               className="border border-stone-300 rounded-md w-full px-2 py-1"
               type="text"
+              placeholder="text input"
+            />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Password</h3>
+            <input
+              className="border border-stone-300 rounded-md w-full px-2 py-1"
+              type="password"
+              placeholder="password input"
+            />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Number</h3>
+            <input
+              className="border border-stone-300 rounded-md w-full px-2 py-1"
+              type="number"
+              defaultValue={0}
             />
           </div>
 
           <div>
             <h3 className="mb-2 font-bold">Textarea</h3>
             <textarea className="border border-stone-300 rounded-md w-full px-2 py-1" />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Checkbox</h3>
+            <div className="flex flex-col gap-1">
+              <label className="flex items-center gap-2">
+                <input type="checkbox" defaultChecked />
+                <span>Checkbox 1 (checked)</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" />
+                <span>Checkbox 2 (unchecked)</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" />
+                <span>Checkbox 3 (unchecked)</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Radio</h3>
+            <div className="flex flex-col gap-1">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="radio-group"
+                  value="option1"
+                  defaultChecked
+                />
+                <span>Option 1</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="radio-group" value="option2" />
+                <span>Option 2</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="radio-group" value="option3" />
+                <span>Option 3</span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Select</h3>
+            <select className="border border-stone-300 rounded-md w-full px-2 py-1">
+              <option value="">-- Select an option --</option>
+              <option value="apple">Apple</option>
+              <option value="banana">Banana</option>
+              <option value="cherry">Cherry</option>
+            </select>
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Range</h3>
+            <input
+              type="range"
+              className="w-full"
+              min={0}
+              max={100}
+              defaultValue={50}
+            />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Color</h3>
+            <input type="color" defaultValue="#3b82f6" />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Date</h3>
+            <input
+              className="border border-stone-300 rounded-md px-2 py-1"
+              type="date"
+            />
+          </div>
+
+          <div>
+            <h3 className="mb-2 font-bold">Time</h3>
+            <input
+              className="border border-stone-300 rounded-md px-2 py-1"
+              type="time"
+            />
           </div>
 
           <div>
