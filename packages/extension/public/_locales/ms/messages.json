@@ -1126,5 +1126,17 @@
   },
   "prompthistory_banner_description": {
     "message": "Alat baharu untuk menggunakan semula gesaan untuk ChatGPT dan lain-lain✨"
+  },
+  "Option_windowState": {
+    "message": "Keadaan tetingkap"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Dimaksimumkan"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Skrin penuh"
   }
 }

@@ -17,6 +17,7 @@ import type {
   PAGE_ACTION_EXEC_STATE,
   ExecState,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
+  WINDOW_STATE,
 } from "@/const"
 import type { PageAction } from "@/services/pageAction"
 import { INHERIT } from "@/const"
@@ -51,6 +52,7 @@ export type SearchCommand = {
   parentFolderId?: string
   popupOption?: PopupOption
   spaceEncoding?: SPACE_ENCODING
+  windowState?: WINDOW_STATE
 }
 
 export type CopyCommand = SearchCommand & {

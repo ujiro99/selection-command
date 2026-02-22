@@ -1123,5 +1123,17 @@
   },
   "prompthistory_banner_description": {
     "message": "Una nueva herramienta para reutilizar prompts en ChatGPT y más✨"
+  },
+  "Option_windowState": {
+    "message": "Estado de ventana"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Maximizado"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Pantalla completa"
   }
 }

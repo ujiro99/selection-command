@@ -1,7 +1,7 @@
 import { sleep, toUrl, isOverBytes, isUrlParam } from "@/lib/utils"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
-import { POPUP_OFFSET, POPUP_TYPE } from "@/const"
+import { POPUP_OFFSET, POPUP_TYPE, WINDOW_STATE } from "@/const"
 import { BgData } from "@/services/backgroundData"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { BgCommand, ClipboardResult, TabCommand } from "@/services/ipc"
@@ -103,6 +103,7 @@ export type OpenPopupProps = {
   height: number
   screen: ScreenSize
   type: POPUP_TYPE
+  windowState?: WINDOW_STATE
 }
 
 export type OpenPopupsProps = {
@@ -330,11 +331,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        port.onMessage.addListener(function (msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -388,6 +389,8 @@ export const openPopupWindow = async (
   }
 
   const type = param.type ?? POPUP_TYPE.POPUP
+  const isFullscreen = param.windowState === WINDOW_STATE.FULLSCREEN
+  const isMaximized = param.windowState === WINDOW_STATE.MAXIMIZED
   const { top: at, left: al } = adjustWindowPosition(
     top,
     left,
@@ -432,16 +435,34 @@ export const openPopupWindow = async (
         },
       )
     }
+
+    if (isFullscreen || isMaximized) {
+      await chrome.windows.update(window.id!, {
+        state: isFullscreen ? "fullscreen" : "maximized",
+      })
+    }
   } else {
+    const usesWindowState = isFullscreen || isMaximized
+    const windowState = isFullscreen
+      ? "fullscreen"
+      : isMaximized
+        ? "maximized"
+        : undefined
     window = (await chrome.windows.create({
       url: toUrl(url),
       type,
-      width,
-      height,
-      top: at,
-      left: al,
+      width: usesWindowState ? undefined : width,
+      height: usesWindowState ? undefined : height,
+      top: usesWindowState ? undefined : at,
+      left: usesWindowState ? undefined : al,
+      state: windowState,
       incognito: current.incognito,
     }))!
+    if (isFullscreen) {
+      // On macOS, even if you open with state: "fullscreen",
+      // it may not actually go fullscreen, so switch to fullscreen after opening.
+      await chrome.windows.update(window.id!, { state: "fullscreen" })
+    }
   }
 
   await updateBackgroundData([window], param.commandId, current.id, type)

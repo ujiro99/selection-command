@@ -12,6 +12,7 @@ import {
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   STYLE_VARIABLE,
+  WINDOW_STATE,
 } from "@/const"
 
 import { t } from "@/services/i18n"
@@ -44,6 +45,7 @@ const searchSchema = z.object({
       height: z.number().min(1),
     })
     .optional(),
+  windowState: z.nativeEnum(WINDOW_STATE).optional(),
 })
 
 type SearchType = z.infer<typeof searchSchema>

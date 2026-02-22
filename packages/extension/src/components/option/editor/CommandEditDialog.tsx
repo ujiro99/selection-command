@@ -64,6 +64,7 @@ import {
   SCREEN,
   COMMAND_TYPE,
   COMMAND_TYPE_OPEN_MODES_MAP,
+  WINDOW_STATE,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -538,6 +539,18 @@ const CommandEditDialogInner = ({
                   options={SEARCH_OPEN_MODE.map((mode) => ({
                     name: t(`openMode_${mode}`),
                     value: mode,
+                  }))}
+                />
+              )}
+
+              {openMode === OPEN_MODE.WINDOW && (
+                <SelectField
+                  control={form.control}
+                  name="windowState"
+                  formLabel={t("windowState")}
+                  options={Object.values(WINDOW_STATE).map((state) => ({
+                    name: t(`windowState_${state}`),
+                    value: state,
                   }))}
                 />
               )}
