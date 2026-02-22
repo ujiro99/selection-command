@@ -9,7 +9,7 @@ import type { WindowType } from "@/types"
  * Manages automatic closing of popup windows with configurable delay
  */
 export class PopupAutoClose {
-  private static timer: NodeJS.Timeout | null = null
+  private static timer: ReturnType<typeof setTimeout> | null = null
 
   /**
    * Cancel any pending auto-close timer
@@ -24,9 +24,13 @@ export class PopupAutoClose {
   /**
    * Schedule popup windows to close with configured delay
    * @param windowsToClose - Array of windows to close
+   * @param reason - Reason for closing (e.g., "onFocusChanged", "onHidden")
    * @returns Promise that resolves when windows are closed or timer is set
    */
-  static async scheduleClose(windowsToClose: WindowType[]): Promise<void> {
+  static async scheduleClose(
+    windowsToClose: WindowType[],
+    reason: string = "onFocusChanged",
+  ): Promise<void> {
     // Cancel any existing timer first
     this.cancelTimer()
 
@@ -43,11 +47,14 @@ export class PopupAutoClose {
 
     // Define the close function
     const closeWindows = async () => {
-      for (const window of windowsToClose) {
-        await closeWindow(window.id, "onFocusChanged")
-        await WindowStackManager.removeWindow(window.id)
+      try {
+        for (const window of windowsToClose) {
+          await closeWindow(window.id, reason)
+          await WindowStackManager.removeWindow(window.id)
+        }
+      } finally {
+        this.timer = null
       }
-      this.timer = null
     }
 
     // Execute close based on delay setting

@@ -162,5 +162,41 @@ describe("PopupAutoClose", () => {
       // Now second window should be closed
       expect(mockCloseWindow).toHaveBeenCalledWith(101, "onFocusChanged")
     })
+
+    it("should use custom reason when provided", async () => {
+      const windows = [{ id: 100, commandId: "test", srcWindowId: 1 }]
+      
+      mockEnhancedSettings.getSection.mockResolvedValue({
+        windowOption: {
+          popupAutoCloseDelay: 0,
+        },
+      } as any)
+
+      await PopupAutoClose.scheduleClose(windows, "onHidden")
+
+      // Should close with custom reason
+      expect(mockCloseWindow).toHaveBeenCalledWith(100, "onHidden")
+    })
+
+    it("should handle errors and still clear timer", async () => {
+      const windows = [
+        { id: 100, commandId: "test1", srcWindowId: 1 },
+        { id: 101, commandId: "test2", srcWindowId: 1 },
+      ]
+      
+      mockEnhancedSettings.getSection.mockResolvedValue({
+        windowOption: {
+          popupAutoCloseDelay: 0,
+        },
+      } as any)
+
+      // Make first closeWindow call fail
+      mockCloseWindow.mockRejectedValueOnce(new Error("Close failed"))
+
+      await expect(PopupAutoClose.scheduleClose(windows)).rejects.toThrow("Close failed")
+
+      // Timer should still be cleared even after error
+      expect(mockCloseWindow).toHaveBeenCalledTimes(1)
+    })
   })
 })

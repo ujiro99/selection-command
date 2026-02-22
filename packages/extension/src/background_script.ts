@@ -291,7 +291,7 @@ const commandFuncs = {
       // Schedule popup window to close with configured delay
       const window = layer.find((w) => w.id === windowId)
       if (window) {
-        await PopupAutoClose.scheduleClose([window])
+        await PopupAutoClose.scheduleClose([window], "onHidden")
       }
       response(false)
     }
