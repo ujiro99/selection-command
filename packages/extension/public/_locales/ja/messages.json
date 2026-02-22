@@ -1112,6 +1112,9 @@
   "Option_windowState_normal": {
     "message": "通常"
   },
+  "Option_windowState_maximized": {
+    "message": "最大化"
+  },
   "Option_windowState_fullscreen": {
     "message": "フルスクリーン"
   }

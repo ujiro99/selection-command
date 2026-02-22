@@ -1118,6 +1118,9 @@
   "Option_windowState_normal": {
     "message": "Normal"
   },
+  "Option_windowState_maximized": {
+    "message": "Maximizado"
+  },
   "Option_windowState_fullscreen": {
     "message": "Ecrã inteiro"
   }

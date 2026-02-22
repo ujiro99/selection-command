@@ -1118,6 +1118,9 @@
   "Option_windowState_normal": {
     "message": "Normal"
   },
+  "Option_windowState_maximized": {
+    "message": "Dimaksimumkan"
+  },
   "Option_windowState_fullscreen": {
     "message": "Skrin penuh"
   }

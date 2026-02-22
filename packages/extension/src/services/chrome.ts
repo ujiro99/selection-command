@@ -331,11 +331,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        port.onMessage.addListener(function (msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -390,6 +390,7 @@ export const openPopupWindow = async (
 
   const type = param.type ?? POPUP_TYPE.POPUP
   const isFullscreen = param.windowState === WINDOW_STATE.FULLSCREEN
+  const isMaximized = param.windowState === WINDOW_STATE.MAXIMIZED
   const { top: at, left: al } = adjustWindowPosition(
     top,
     left,
@@ -435,14 +436,20 @@ export const openPopupWindow = async (
       )
     }
   } else {
+    const usesWindowState = isFullscreen || isMaximized
+    const windowState = isFullscreen
+      ? "fullscreen"
+      : isMaximized
+        ? "maximized"
+        : undefined
     window = (await chrome.windows.create({
       url: toUrl(url),
       type,
-      width: isFullscreen ? undefined : width,
-      height: isFullscreen ? undefined : height,
-      top: isFullscreen ? undefined : at,
-      left: isFullscreen ? undefined : al,
-      state: isFullscreen ? "fullscreen" : undefined,
+      width: usesWindowState ? undefined : width,
+      height: usesWindowState ? undefined : height,
+      top: usesWindowState ? undefined : at,
+      left: usesWindowState ? undefined : al,
+      state: windowState,
       incognito: current.incognito,
     }))!
     if (isFullscreen) {

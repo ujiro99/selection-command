@@ -1115,6 +1115,9 @@
   "Option_windowState_normal": {
     "message": "正常"
   },
+  "Option_windowState_maximized": {
+    "message": "最大化"
+  },
   "Option_windowState_fullscreen": {
     "message": "全屏"
   }

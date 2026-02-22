@@ -1115,6 +1115,9 @@
   "Option_windowState_normal": {
     "message": "Normale"
   },
+  "Option_windowState_maximized": {
+    "message": "Massimizzato"
+  },
   "Option_windowState_fullscreen": {
     "message": "Schermo intero"
   }

@@ -167,6 +167,7 @@ export enum POPUP_TYPE {
 
 export enum WINDOW_STATE {
   NORMAL = "normal",
+  MAXIMIZED = "maximized",
   FULLSCREEN = "fullscreen",
 }
 

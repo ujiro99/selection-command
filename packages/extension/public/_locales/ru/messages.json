@@ -1115,6 +1115,9 @@
   "Option_windowState_normal": {
     "message": "Обычное"
   },
+  "Option_windowState_maximized": {
+    "message": "Развёрнуто"
+  },
   "Option_windowState_fullscreen": {
     "message": "Полный экран"
   }
