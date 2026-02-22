@@ -195,8 +195,14 @@ describe("PopupAutoClose", () => {
 
       await expect(PopupAutoClose.scheduleClose(windows)).rejects.toThrow("Close failed")
 
-      // Timer should still be cleared even after error
-      expect(mockCloseWindow).toHaveBeenCalledTimes(1)
+      // Timer should still be cleared - verify by scheduling another close
+      mockCloseWindow.mockResolvedValue(undefined)
+      const windows2 = [{ id: 102, commandId: "test3", srcWindowId: 1 }]
+      
+      await PopupAutoClose.scheduleClose(windows2)
+      
+      // Should work fine, proving timer was cleared
+      expect(mockCloseWindow).toHaveBeenCalledWith(102, "onFocusChanged")
     })
   })
 })

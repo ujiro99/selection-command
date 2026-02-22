@@ -5,6 +5,11 @@ import { WindowStackManager } from "@/services/windowStackManager"
 import type { WindowType } from "@/types"
 
 /**
+ * Valid reasons for closing popup windows
+ */
+export type CloseReason = "onFocusChanged" | "onHidden"
+
+/**
  * Popup Auto-Close Manager
  * Manages automatic closing of popup windows with configurable delay
  */
@@ -29,7 +34,7 @@ export class PopupAutoClose {
    */
   static async scheduleClose(
     windowsToClose: WindowType[],
-    reason: string = "onFocusChanged",
+    reason: CloseReason = "onFocusChanged",
   ): Promise<void> {
     // Cancel any existing timer first
     this.cancelTimer()
