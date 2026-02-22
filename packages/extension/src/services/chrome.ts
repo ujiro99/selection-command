@@ -435,6 +435,12 @@ export const openPopupWindow = async (
         },
       )
     }
+
+    if (isFullscreen || isMaximized) {
+      await chrome.windows.update(window.id!, {
+        state: isFullscreen ? "fullscreen" : "maximized",
+      })
+    }
   } else {
     const usesWindowState = isFullscreen || isMaximized
     const windowState = isFullscreen

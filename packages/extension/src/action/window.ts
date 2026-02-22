@@ -4,7 +4,7 @@ import { getScreenSize, getWindowPosition } from "@/services/screen"
 import { POPUP_TYPE, SPACE_ENCODING } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import type { OpenPopupProps } from "@/services/chrome"
-import type { ExecuteCommandParams, SearchCommand } from "@/types"
+import type { ExecuteCommandParams } from "@/types"
 
 export const Window = {
   async execute({
@@ -39,7 +39,7 @@ export const Window = {
       width: command.popupOption?.width ?? PopupOption.width,
       screen,
       type: POPUP_TYPE.NORMAL,
-      windowState: (command as SearchCommand).windowState,
+      windowState: command.windowState,
     })
   },
 }
