@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 22
+    "count": 23
   },
   {
     "name": "Language",
@@ -153,6 +153,18 @@
   },
   {
     "name": "Chinese",
+    "count": 1
+  },
+  {
+    "name": "Russia",
+    "count": 1
+  },
+  {
+    "name": "Поиск",
+    "count": 1
+  },
+  {
+    "name": "Россия",
     "count": 1
   }
 ]
