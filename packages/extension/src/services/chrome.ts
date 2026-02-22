@@ -445,6 +445,11 @@ export const openPopupWindow = async (
       state: isFullscreen ? "fullscreen" : undefined,
       incognito: current.incognito,
     }))!
+    if (isFullscreen) {
+      // On macOS, even if you open with state: "fullscreen",
+      // it may not actually go fullscreen, so switch to fullscreen after opening.
+      await chrome.windows.update(window.id!, { state: "fullscreen" })
+    }
   }
 
   await updateBackgroundData([window], param.commandId, current.id, type)
