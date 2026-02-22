@@ -1,3 +1,4 @@
+import { useRef } from "react"
 import { Input } from "@/components/ui/input"
 import {
   FormControl,
@@ -8,6 +9,8 @@ import {
   FormDescription,
 } from "@/components/ui/form"
 import { MenuImage } from "@/components/menu/MenuImage"
+import { Info } from "lucide-react"
+import { Tooltip } from "@/components/Tooltip"
 
 type InputFieldType = {
   control: any
@@ -16,6 +19,7 @@ type InputFieldType = {
   inputProps: React.ComponentProps<typeof Input>
   unit?: string
   description?: string
+  tooltip?: string
   previewUrl?: string
 }
 
@@ -28,9 +32,12 @@ export const InputField = ({
   inputProps,
   unit,
   description,
+  tooltip,
   previewUrl,
 }: InputFieldType) => {
   const hasPreview = !isEmpty(previewUrl)
+  const span = useRef<HTMLSpanElement>(null)
+
   return (
     <FormField
       control={control}
@@ -38,8 +45,28 @@ export const InputField = ({
       render={({ field }) => (
         <FormItem className="flex items-center gap-1">
           <div className="w-2/6">
-            <FormLabel>{formLabel}</FormLabel>
+            <FormLabel
+              className={cn(tooltip && "flex items-center gap-1 mr-1")}
+            >
+              <span>{formLabel}</span>
+              {tooltip && (
+                <span
+                  ref={span}
+                  className="cursor-pointer p-1 rounded hover:bg-gray-100 transition-background"
+                >
+                  <Info className="size-4 text-foreground/60" />
+                </span>
+              )}
+            </FormLabel>
             {description && <FormDescription>{description}</FormDescription>}
+            {tooltip && (
+              <Tooltip
+                positionElm={span.current}
+                text={tooltip}
+                className="max-w-64 whitespace-pre-wrap"
+                delay={200}
+              />
+            )}
           </div>
           <div className="w-4/6 relative">
             {hasPreview && (

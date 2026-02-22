@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "प्रीव्यू तक शेष समय दिखाएं।"
   },
+  "Option_windowSettings": {
+    "message": "विंडो सेटिंग्स"
+  },
+  "Option_windowSettings_desc": {
+    "message": "विंडो व्यवहार और पॉपअप सेटिंग्स को कॉन्फ़िगर करें।"
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "पॉपअप ऑटो-क्लोज़ विलंब"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "फोकस खोने के बाद पॉपअप के स्वचालित रूप से बंद होने से पहले विलंब का समय सेट करें। तुरंत बंद करने के लिए 0 सेट करें या खाली छोड़ दें।\nअधिकतम: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (तुरंत बंद करें)"
+  },
   "Option_folders": {
     "message": "फ़ोल्डर्स"
   },

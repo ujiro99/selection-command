@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "Muestra el tiempo restante hasta la vista previa."
   },
+  "Option_windowSettings": {
+    "message": "Configuración de Ventana"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Configure el comportamiento de la ventana y la configuración de ventanas emergentes."
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "Retardo de Cierre Automático de Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Establezca el tiempo de retardo antes de que el popup se cierre automáticamente después de perder el foco. Establezca 0 o déjelo vacío para cierre inmediato.\nMáximo: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (cerrar inmediatamente)"
+  },
   "Option_folders": {
     "message": "Carpetas"
   },

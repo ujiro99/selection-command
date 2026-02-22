@@ -17,6 +17,7 @@ import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
+import { PopupAutoClose } from "@/services/popupAutoClose"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
@@ -287,9 +288,11 @@ const commandFuncs = {
         return
       }
 
-      // Remove the window.
-      await closeWindow(windowId, "onHidden")
-      await WindowStackManager.removeWindow(windowId)
+      // Schedule popup window to close with configured delay
+      const window = layer.find((w) => w.id === windowId)
+      if (window) {
+        await PopupAutoClose.scheduleClose([window], "onHidden")
+      }
       response(false)
     }
 
@@ -379,11 +382,8 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Get windows to close based on focus change
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
 
-  // Execute close for all windows that need to be closed
-  for (const window of windowsToClose) {
-    await closeWindow(window.id, "onFocusChanged")
-    await WindowStackManager.removeWindow(window.id)
-  }
+  // Schedule popup windows to close with configured delay
+  await PopupAutoClose.scheduleClose(windowsToClose)
 })
 
 chrome.windows.onRemoved.addListener((windowId: number) => {

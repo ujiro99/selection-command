@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "Показывать оставшееся время до предпросмотра."
   },
+  "Option_windowSettings": {
+    "message": "Настройки Окна"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Настройте поведение окна и параметры всплывающих окон."
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "Задержка Автозакрытия Всплывающего Окна"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Установите время задержки перед автоматическим закрытием всплывающего окна после потери фокуса. Установите 0 или оставьте пустым для немедленного закрытия.\nМаксимум: 10000 мс"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (закрыть немедленно)"
+  },
   "Option_folders": {
     "message": "Папки"
   },
