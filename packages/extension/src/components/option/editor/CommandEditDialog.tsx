@@ -81,11 +81,14 @@ import { isEmpty, e2a, cn, parseGeminiUrl } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
+import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
+import { isSearchOpenMode } from "@shared/utils/type-guards"
+
 import {
-  SEARCH_OPEN_MODE,
   isSearchType,
   commandSchema,
   CommandSchemaType,
+  isPageActionType,
 } from "@/types/schema"
 import type {
   SelectionCommand,
@@ -102,12 +105,32 @@ const EmptyFolder = {
   title: t("Command_rootFolder"),
 } as CommandFolder
 
-const getDefault = (openMode: OPEN_MODE, base?: CommandSchemaType) => {
-  if (SEARCH_OPEN_MODE.includes(openMode as any)) {
-    let searchUrl = ""
-    if (base && (base as any).pageActionOption?.startUrl) {
-      searchUrl = (base as any).pageActionOption.startUrl
+const getDefault = (
+  openMode: OPEN_MODE,
+  base?: CommandSchemaType,
+  preOpenMode?: OPEN_MODE,
+) => {
+  if (isSearchOpenMode(openMode)) {
+    if (
+      openMode === OPEN_MODE.WINDOW &&
+      isSearchType(base) &&
+      base.windowState == null
+    ) {
+      return {
+        ...base,
+        windowState: WINDOW_STATE.NORMAL,
+      }
     }
+
+    if (isSearchOpenMode(preOpenMode)) {
+      return base
+    }
+
+    let searchUrl = ""
+    if (base && isPageActionType(base) && base.pageActionOption.startUrl) {
+      searchUrl = base.pageActionOption.startUrl
+    }
+
     return {
       ...base,
       searchUrl,
@@ -332,13 +355,9 @@ const CommandEditDialogInner = ({
   useEffect(() => {
     if (openMode === preOpenMode) return
     if (openMode === command?.openMode) return
-    if (
-      SEARCH_OPEN_MODE.includes(openMode as any) &&
-      SEARCH_OPEN_MODE.includes(preOpenMode as any)
-    ) {
-      return
-    }
-    reset(getDefault(openMode, getValues()))
+    // Update initial values when the open mode changes,
+    // but only when the openMode has changed
+    reset(getDefault(openMode, getValues(), preOpenMode))
   }, [command?.openMode, preOpenMode, openMode, reset, getValues])
 
   useEffect(() => {
@@ -432,75 +451,74 @@ const CommandEditDialogInner = ({
                 }}
               />
 
-              {(SEARCH_OPEN_MODE.includes(openMode as any) ||
-                openMode === OPEN_MODE.API) && (
-                  <FormField
-                    control={form.control}
-                    name="searchUrl"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center gap-1">
-                        <div className="w-2/6">
-                          <FormLabel>{t("searchUrl")}</FormLabel>
-                          <FormDescription>
-                            {openMode === OPEN_MODE.API
-                              ? t("searchUrl_desc_api")
-                              : t("searchUrl_desc")}
-                          </FormDescription>
-                        </div>
-                        <div className="w-4/6 relative">
-                          <div className="flex-1 relative">
-                            {!isEmpty(getValues("iconUrl")) && (
-                              <MenuImage
-                                className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
-                                src={getValues("iconUrl")}
-                                alt="Preview of image"
-                              />
-                            )}
-                            <FormControl>
-                              <Input
-                                className={cn(
-                                  !isEmpty(getValues("iconUrl")) && "pl-10",
-                                )}
-                                inputClassName={cn(
-                                  !isEmpty(searchUrl) && "pr-11",
-                                )}
-                                type="string"
-                                {...field}
-                                {...register("searchUrl", {})}
-                                onBlur={(e) => {
-                                  const value = e.target.value
-                                  const parsedUrl = parseGeminiUrl(value)
-                                  if (parsedUrl !== value) {
-                                    setValue("searchUrl", parsedUrl)
-                                  }
-                                  field.onBlur()
-                                }}
-                              />
-                            </FormControl>
-                          </div>
-                          {SEARCH_OPEN_MODE.includes(openMode as any) && (
-                            <SearchUrlAssistButton
-                              onClick={() => {
-                                setAssistDialogOpen(true)
-                                sendEvent(
-                                  ANALYTICS_EVENTS.OPEN_DIALOG,
-                                  {
-                                    event_label: "search_url_assist",
-                                  },
-                                  SCREEN.OPTION,
-                                )
-                              }}
-                              disabled={false}
-                              className="absolute top-1.5 right-1.5"
-                              compact={!isEmpty(searchUrl)}
+              {(isSearchOpenMode(openMode) || openMode === OPEN_MODE.API) && (
+                <FormField
+                  control={form.control}
+                  name="searchUrl"
+                  render={({ field }) => (
+                    <FormItem className="flex items-center gap-1">
+                      <div className="w-2/6">
+                        <FormLabel>{t("searchUrl")}</FormLabel>
+                        <FormDescription>
+                          {openMode === OPEN_MODE.API
+                            ? t("searchUrl_desc_api")
+                            : t("searchUrl_desc")}
+                        </FormDescription>
+                      </div>
+                      <div className="w-4/6 relative">
+                        <div className="flex-1 relative">
+                          {!isEmpty(getValues("iconUrl")) && (
+                            <MenuImage
+                              className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+                              src={getValues("iconUrl")}
+                              alt="Preview of image"
                             />
                           )}
-                          <FormMessage />
+                          <FormControl>
+                            <Input
+                              className={cn(
+                                !isEmpty(getValues("iconUrl")) && "pl-10",
+                              )}
+                              inputClassName={cn(
+                                !isEmpty(searchUrl) && "pr-11",
+                              )}
+                              type="string"
+                              {...field}
+                              {...register("searchUrl", {})}
+                              onBlur={(e) => {
+                                const value = e.target.value
+                                const parsedUrl = parseGeminiUrl(value)
+                                if (parsedUrl !== value) {
+                                  setValue("searchUrl", parsedUrl)
+                                }
+                                field.onBlur()
+                              }}
+                            />
+                          </FormControl>
                         </div>
-                      </FormItem>
-                    )}
-                  />
-                )}
+                        {isSearchOpenMode(openMode) && (
+                          <SearchUrlAssistButton
+                            onClick={() => {
+                              setAssistDialogOpen(true)
+                              sendEvent(
+                                ANALYTICS_EVENTS.OPEN_DIALOG,
+                                {
+                                  event_label: "search_url_assist",
+                                },
+                                SCREEN.OPTION,
+                              )
+                            }}
+                            disabled={false}
+                            className="absolute top-1.5 right-1.5"
+                            compact={!isEmpty(searchUrl)}
+                          />
+                        )}
+                        <FormMessage />
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              )}
 
               {selectedType === COMMAND_TYPE.SEARCH ? (
                 <OpenModeToggleField
@@ -530,7 +548,7 @@ const CommandEditDialogInner = ({
                 )
               )}
 
-              {SEARCH_OPEN_MODE.includes(openMode as any) && (
+              {isSearchOpenMode(openMode) && (
                 <SelectField
                   control={form.control}
                   name="openModeSecondary"
@@ -693,8 +711,7 @@ const CommandEditDialogInner = ({
                     nameSvg="iconSvg"
                     formLabel={t("iconUrl")}
                     description={
-                      SEARCH_OPEN_MODE.includes(openMode as any) ||
-                        openMode === OPEN_MODE.API
+                      isSearchOpenMode(openMode) || openMode === OPEN_MODE.API
                         ? t("iconUrl_desc")
                         : openMode === OPEN_MODE.PAGE_ACTION
                           ? t("iconUrl_desc_pageAction")
@@ -702,7 +719,7 @@ const CommandEditDialogInner = ({
                     }
                   />
 
-                  {SEARCH_OPEN_MODE.includes(openMode as any) && (
+                  {isSearchOpenMode(openMode) && (
                     <SelectField
                       control={form.control}
                       name="spaceEncoding"
@@ -768,6 +785,9 @@ const CommandEditDialogInner = ({
                         width: Number(data.popupOption.width),
                         height: Number(data.popupOption.height),
                       }
+                    }
+                    if (data.openMode !== OPEN_MODE.WINDOW) {
+                      delete data.windowState
                     }
                   }
                   onSubmit(data)

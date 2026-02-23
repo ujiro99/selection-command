@@ -16,6 +16,17 @@ export enum OPEN_MODE {
   ADD_PAGE_RULE = "addPageRule",
 }
 
+/**
+ * Open modes that are valid for search commands
+ */
+export const SEARCH_OPEN_MODE = [
+  OPEN_MODE.POPUP,
+  OPEN_MODE.TAB,
+  OPEN_MODE.BACKGROUND_TAB,
+  OPEN_MODE.WINDOW,
+  OPEN_MODE.SIDE_PANEL,
+] as const;
+
 export enum SPACE_ENCODING {
   PLUS = "plus",
   PERCENT = "percent",

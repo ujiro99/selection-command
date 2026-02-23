@@ -17,14 +17,7 @@ import {
 
 import { t } from "@/services/i18n"
 import { isEmpty } from "@/lib/utils"
-
-export const SEARCH_OPEN_MODE = [
-  OPEN_MODE.POPUP,
-  OPEN_MODE.TAB,
-  OPEN_MODE.BACKGROUND_TAB,
-  OPEN_MODE.WINDOW,
-  OPEN_MODE.SIDE_PANEL,
-] as const
+import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode.ts"
 
 const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),
@@ -244,6 +237,18 @@ const pageActionSchema = z.object({
     .optional(),
   pageActionOption: PageActionOption,
 })
+
+export const isPageActionType = (
+  data: unknown,
+): data is z.infer<typeof pageActionSchema> => {
+  if (!data || typeof data !== "object") {
+    return false
+  }
+  if (!("openMode" in data)) {
+    return false
+  }
+  return data.openMode === OPEN_MODE.PAGE_ACTION
+}
 
 export const commandSchema = z.discriminatedUnion("openMode", [
   searchSchema,
