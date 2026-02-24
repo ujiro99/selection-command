@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "Анимация Отображения Меню"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Задержка Автозакрытия Всплывающего Окна"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Установите время задержки перед автоматическим закрытием всплывающего окна после потери фокуса. Установите 0 или оставьте пустым для немедленного закрытия.\nМаксимум: 10000 мс"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (закрыть немедленно)"
+  },
   "Option_inherit": {
     "message": "Наследовать"
   },
@@ -266,6 +275,9 @@
   "Option_openMode": {
     "message": "Режим открытия"
   },
+  "Option_displayMode": {
+    "message": "Способ отображения окна"
+  },
   "Option_openMode_popup": {
     "message": "Всплывающее окно"
   },
@@ -278,11 +290,11 @@
   "Option_openMode_backgroundTab": {
     "message": "Фоновая вкладка"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "Боковая панель"
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "Всплывающее окно ссылки"
@@ -295,9 +307,6 @@
   },
   "Option_openMode_pageAction": {
     "message": "Действие страницы"
-  },
-  "Option_displayMode": {
-    "message": "Способ отображения окна"
   },
   "Option_commandType_title": {
     "message": "Выбрать тип команды"
@@ -362,6 +371,15 @@
   "Option_parentFolderId": {
     "message": "Папка"
   },
+  "Option_parentFolder": {
+    "message": "Родительская Папка"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Выберите родительскую папку"
+  },
+  "Option_rootFolder": {
+    "message": "Корень (нет родителя)"
+  },
   "Option_copyOption": {
     "message": "Формат копирования"
   },
@@ -406,6 +424,39 @@
   },
   "Option_pageAction_delay": {
     "message": "Время ожидания"
+  },
+  "Option_userVariables": {
+    "message": "Пользовательские Переменные"
+  },
+  "Option_userVariables_desc": {
+    "message": "Определить пользовательские переменные для полей ввода (макс 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Имя переменной"
+  },
+  "Option_userVariable_value": {
+    "message": "Значение"
+  },
+  "Option_userVariable_add": {
+    "message": "Добавить переменную"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Имя переменной обязательно"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Имя переменной уже существует"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Максимум $max$ переменных разрешено",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "Предпросмотр ссылки"
@@ -466,15 +517,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "Настройте поведение окна и параметры всплывающих окон."
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "Задержка Автозакрытия Всплывающего Окна"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "Установите время задержки перед автоматическим закрытием всплывающего окна после потери фокуса. Установите 0 или оставьте пустым для немедленного закрытия.\nМаксимум: 10000 мс"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0 (закрыть немедленно)"
   },
   "Option_folders": {
     "message": "Папки"
@@ -649,6 +691,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
   },
   "Option_zod_string_min": {
     "message": "Введите строку длиной не менее $key$ символов.",
@@ -932,36 +977,6 @@
   "Option_openMode_sidePanel_desc": {
     "message": "Открыть в боковой панели."
   },
-  "Option_userVariables": {
-    "message": "Пользовательские Переменные"
-  },
-  "Option_userVariable_name": {
-    "message": "Имя переменной"
-  },
-  "Option_userVariable_value": {
-    "message": "Значение"
-  },
-  "Option_userVariable_add": {
-    "message": "Добавить переменную"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Имя переменной обязательно"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Имя переменной уже существует"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Максимум $max$ переменных разрешено",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
   "Option_title_desc": {
     "message": "Отображается как заголовок команды."
   },
@@ -974,29 +989,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Поведение при Ctrl + клике по меню."
   },
-  "Option_parentFolder": {
-    "message": "Родительская Папка"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Выберите родительскую папку"
-  },
-  "Option_rootFolder": {
-    "message": "Корень (нет родителя)"
-  },
   "Option_searchUrlAssist": {
     "message": "Помощник ИИ"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Помощник URL Поиска"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Введите ключевое слово поиска и URL страницы результатов поиска, затем нажмите кнопку выполнить.\nИИ создаст URL поиска."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Выполнить с Gemini"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "Выполнение..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Способ использования"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Ключевое слово поиска"
@@ -1009,6 +1009,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Способ использования"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Введите любое слово в \"(1) Ключевое слово поиска\""
@@ -1025,20 +1028,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Скопируйте созданный URL поиска и вставьте в поле URL поиска команды"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Помощник URL Поиска"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Выполнить с Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Выполнение..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Пожалуйста, введите ключевое слово поиска"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Пожалуйста, введите действительный URL"
-  },
-  "Option_userVariables_desc": {
-    "message": "Определить пользовательские переменные для полей ввода (макс 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
   },
   "Option_commandType": {
     "message": "Тип Команды"

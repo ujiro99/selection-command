@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "मेनू प्रदर्शन एनिमेशन"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "पॉपअप ऑटो-क्लोज़ विलंब"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "फोकस खोने के बाद पॉपअप के स्वचालित रूप से बंद होने से पहले विलंब का समय सेट करें। तुरंत बंद करने के लिए 0 सेट करें या खाली छोड़ दें।\nअधिकतम: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (तुरंत बंद करें)"
+  },
   "Option_inherit": {
     "message": "प्राप्त करें"
   },
@@ -266,6 +275,9 @@
   "Option_openMode": {
     "message": "खुलने का मोड"
   },
+  "Option_displayMode": {
+    "message": "विंडो प्रदर्शन विधि"
+  },
   "Option_openMode_popup": {
     "message": "पॉपअप"
   },
@@ -278,11 +290,11 @@
   "Option_openMode_backgroundTab": {
     "message": "बैकग्राउंड टैब"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "साइड पैनल"
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "लिंक पॉपअप"
@@ -295,9 +307,6 @@
   },
   "Option_openMode_pageAction": {
     "message": "पेज एक्शन"
-  },
-  "Option_displayMode": {
-    "message": "विंडो प्रदर्शन विधि"
   },
   "Option_commandType_title": {
     "message": "कमांड प्रकार चुनें"
@@ -362,6 +371,15 @@
   "Option_parentFolderId": {
     "message": "फ़ोल्डर"
   },
+  "Option_parentFolder": {
+    "message": "मूल फ़ोल्डर"
+  },
+  "Option_parentFolder_desc": {
+    "message": "मूल फ़ोल्डर चुनें"
+  },
+  "Option_rootFolder": {
+    "message": "मूल (कोई माता-पिता नहीं)"
+  },
   "Option_copyOption": {
     "message": "कॉपी प्रारूप"
   },
@@ -406,6 +424,39 @@
   },
   "Option_pageAction_delay": {
     "message": "प्रतीक्षा समय"
+  },
+  "Option_userVariables": {
+    "message": "उपयोगकर्ता चर"
+  },
+  "Option_userVariables_desc": {
+    "message": "इनपुट फ़ील्ड के लिए कस्टम वेरिएबल परिभाषित करें (अधिकतम 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "वेरिएबल नाम"
+  },
+  "Option_userVariable_value": {
+    "message": "मान"
+  },
+  "Option_userVariable_add": {
+    "message": "वेरिएबल जोड़ें"
+  },
+  "Option_userVariable_name_required": {
+    "message": "वेरिएबल नाम आवश्यक है"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "वेरिएबल नाम पहले से मौजूद है"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "अधिकतम $max$ वेरिएबल की अनुमति",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "लिंक प्रीव्यू"
@@ -466,15 +517,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "विंडो व्यवहार और पॉपअप सेटिंग्स को कॉन्फ़िगर करें।"
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "पॉपअप ऑटो-क्लोज़ विलंब"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "फोकस खोने के बाद पॉपअप के स्वचालित रूप से बंद होने से पहले विलंब का समय सेट करें। तुरंत बंद करने के लिए 0 सेट करें या खाली छोड़ दें।\nअधिकतम: 10000 ms"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0 (तुरंत बंद करें)"
   },
   "Option_folders": {
     "message": "फ़ोल्डर्स"
@@ -649,6 +691,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
   },
   "Option_zod_string_min": {
     "message": "कम से कम $key$ वर्णों की स्ट्रिंग दर्ज करें।",
@@ -944,29 +989,14 @@
   "Option_openModeSecondary_desc": {
     "message": "मेन्यू पर Ctrl + क्लिक करने पर व्यवहार।"
   },
-  "Option_parentFolder": {
-    "message": "मूल फ़ोल्डर"
-  },
-  "Option_parentFolder_desc": {
-    "message": "मूल फ़ोल्डर चुनें"
-  },
-  "Option_rootFolder": {
-    "message": "मूल (कोई माता-पिता नहीं)"
-  },
   "Option_searchUrlAssist": {
     "message": "AI सहायक"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "खोज URL सहायक"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "खोज कीवर्ड और खोज परिणाम पेज का URL दर्ज करें, फिर एक्जीक्यूट बटन दबाएं।\nAI एक खोज URL गेनरेट करेगा।"
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Gemini के साथ चलाएं"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "चला रहा है..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "उपयोग की विधि"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) खोज कीवर्ड"
@@ -979,6 +1009,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "उपयोग की विधि"
   },
   "Option_searchUrlAssist_step1": {
     "message": "\"(1) खोज कीवर्ड\" में कोई भी शब्द दर्ज करें"
@@ -995,50 +1028,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "जेनरेट किया गया खोज URL कॉपी करके कमांड के खोज URL फ़ील्ड में पेस्ट करें"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "खोज URL सहायक"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Gemini के साथ चलाएं"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "चला रहा है..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "कृपया खोज कीवर्ड दर्ज करें"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "कृपया वैध URL दर्ज करें"
-  },
-  "Option_userVariable_add": {
-    "message": "वेरिएबल जोड़ें"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "अधिकतम $max$ वेरिएबल की अनुमति",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "वेरिएबल नाम"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "वेरिएबल नाम पहले से मौजूद है"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
-  },
-  "Option_userVariable_name_required": {
-    "message": "वेरिएबल नाम आवश्यक है"
-  },
-  "Option_userVariable_value": {
-    "message": "मान"
-  },
-  "Option_userVariables": {
-    "message": "उपयोगकर्ता चर"
-  },
-  "Option_userVariables_desc": {
-    "message": "इनपुट फ़ील्ड के लिए कस्टम वेरिएबल परिभाषित करें (अधिकतम 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
   },
   "Option_commandType": {
     "message": "कमांड प्रकार"
