@@ -27,7 +27,7 @@ export function App({ rootElm }: Props) {
   const [isHover, setIsHover] = useState<boolean>(false)
 
   // Detect and execute instant command
-  useDetectInstantCommand(positionElm)
+  useDetectInstantCommand()
 
   useEffect(() => {
     const handleShowToast = (

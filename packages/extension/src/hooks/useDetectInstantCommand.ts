@@ -9,7 +9,7 @@ import { isEmpty, isMac } from "@/lib/utils"
 /**
  * Hook to detect and execute instant command when modifier key + text selection occurs
  */
-export function useDetectInstantCommand(positionElm: Element | null) {
+export function useDetectInstantCommand() {
   const { userSettings: settings } = useUserSettings()
   const { selectionText, target } = useSelectContext()
   const { executeCommand } = useCommandExecutor()
@@ -51,10 +51,8 @@ export function useDetectInstantCommand(positionElm: Element | null) {
       // Check if modifier key is pressed
       if (!checkModifierKey(event)) return
 
-      // Check if there's selected text
-      const selection = window.getSelection()
-      const selectedText = selection?.toString().trim()
-      if (!selectedText || isEmpty(selectedText)) return
+      // Check if there's selected text (from context)
+      if (!selectionText || isEmpty(selectionText)) return
 
       // Execute the instant command
       const position = {
@@ -65,7 +63,7 @@ export function useDetectInstantCommand(positionElm: Element | null) {
       executeCommand({
         command,
         position,
-        selectionText: selectedText,
+        selectionText,
         target: target ?? null,
       })
     }
@@ -76,5 +74,13 @@ export function useDetectInstantCommand(positionElm: Element | null) {
     return () => {
       window.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [enabled, command, modifierKey, checkModifierKey, executeCommand, target])
+  }, [
+    enabled,
+    command,
+    modifierKey,
+    checkModifierKey,
+    executeCommand,
+    target,
+    selectionText,
+  ])
 }
