@@ -1110,7 +1110,10 @@
     "message": "Новый инструмент для повторного использования подсказок для ChatGPT и других✨"
   },
   "Option_windowState": {
-    "message": "Состояние окна"
+    "message": "Размер окна"
+  },
+  "Option_windowState_desc": {
+    "message": "Размер отображаемого окна"
   },
   "Option_windowState_normal": {
     "message": "Обычное"

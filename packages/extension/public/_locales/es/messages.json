@@ -1110,7 +1110,10 @@
     "message": "Una nueva herramienta para reutilizar prompts en ChatGPT y más✨"
   },
   "Option_windowState": {
-    "message": "Estado de ventana"
+    "message": "Tamaño de ventana"
+  },
+  "Option_windowState_desc": {
+    "message": "Tamaño de la ventana a mostrar"
   },
   "Option_windowState_normal": {
     "message": "Normal"

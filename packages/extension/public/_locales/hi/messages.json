@@ -1110,7 +1110,10 @@
     "message": "ChatGPT और अधिक के लिए प्रॉम्प्ट का पुन: उपयोग करने के लिए एक नया उपकरण।✨"
   },
   "Option_windowState": {
-    "message": "विंडो स्थिति"
+    "message": "विंडो का आकार"
+  },
+  "Option_windowState_desc": {
+    "message": "प्रदर्शित करने के लिए विंडो का आकार"
   },
   "Option_windowState_normal": {
     "message": "सामान्य"

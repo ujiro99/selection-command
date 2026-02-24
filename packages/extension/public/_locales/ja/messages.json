@@ -1107,7 +1107,10 @@
     "message": "ChatGPTなどでプロンプトを再利用できる新しいツール✨"
   },
   "Option_windowState": {
-    "message": "ウィンドウ表示"
+    "message": "ウィンドウのサイズ"
+  },
+  "Option_windowState_desc": {
+    "message": "表示するウィンドウのサイズ"
   },
   "Option_windowState_normal": {
     "message": "通常"

@@ -1113,7 +1113,10 @@
     "message": "Alat baharu untuk menggunakan semula gesaan untuk ChatGPT dan lain-lain✨"
   },
   "Option_windowState": {
-    "message": "Keadaan tetingkap"
+    "message": "Saiz tetingkap"
+  },
+  "Option_windowState_desc": {
+    "message": "Saiz tetingkap untuk dipaparkan"
   },
   "Option_windowState_normal": {
     "message": "Normal"
