@@ -81,6 +81,7 @@ export type CopyOption = "default" | "text"
 
 type WindowOption = {
   sidePanelAutoHide: boolean
+  popupAutoCloseDelay?: number
 }
 
 type LinkCommandStartupMethod = {

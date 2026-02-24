@@ -1458,5 +1458,17 @@
       ]
     },
     "addedAt": "2026-02-19T05:26:36.556Z"
+  },
+  {
+    "id": "3dbae0ea-3108-5d5e-a5a9-22d8bfe0c933",
+    "title": "Яндекс",
+    "searchUrl": "https://yandex.ru/search/?text=%s",
+    "description": "Я выполняю веб‑поиск в Яндексе.",
+    "iconUrl": "https://yastatic.net/s3/web4static/_/v2/static/media/AppFavicon-Icon_size64_ru.0ca38ff5.png",
+    "openMode": "popup",
+    "openModeSecondary": "backgroundTab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "Russia", "Поиск", "Россия"],
+    "addedAt": "2026-02-21T07:37:20.886Z"
   }
 ]

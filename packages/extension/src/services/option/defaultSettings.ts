@@ -56,6 +56,7 @@ export const emptySettings: SettingsType = {
   shortcuts: { shortcuts: [] },
   windowOption: {
     sidePanelAutoHide: false,
+    popupAutoCloseDelay: 0,
   },
 }
 
@@ -158,6 +159,7 @@ export default {
   },
   windowOption: {
     sidePanelAutoHide: false,
+    popupAutoCloseDelay: 0,
   },
 } as UserSettings
 

@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "显示预览前的剩余时间。"
   },
+  "Option_windowSettings": {
+    "message": "窗口设置"
+  },
+  "Option_windowSettings_desc": {
+    "message": "配置窗口行为和弹出窗口设置。"
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "弹出窗口自动关闭延迟"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "设置弹出窗口失去焦点后自动关闭前的延迟时间。设置为0或留空表示立即关闭。\n最大值：10000毫秒"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0（立即关闭）"
+  },
   "Option_folders": {
     "message": "文件夹"
   },

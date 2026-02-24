@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "Memaparkan baki ke pratonton."
   },
+  "Option_windowSettings": {
+    "message": "Tetapan Tetingkap"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Konfigurasi tingkah laku tetingkap dan tetapan popup."
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "Kelewatan Penutupan Auto Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Tetapkan masa kelewatan sebelum popup menutup secara automatik selepas kehilangan fokus. Tetapkan ke 0 atau biarkan kosong untuk penutupan segera.\nMaksimum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (tutup segera)"
+  },
   "Option_folders": {
     "message": "Folder"
   },

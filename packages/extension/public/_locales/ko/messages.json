@@ -461,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "미리보기까지 남은 시간을 표시합니다."
   },
+  "Option_windowSettings": {
+    "message": "창 설정"
+  },
+  "Option_windowSettings_desc": {
+    "message": "창 동작 및 팝업 설정을 구성합니다."
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "팝업 자동 닫기 지연"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "포커스를 잃은 후 팝업이 자동으로 닫히기 전 지연 시간을 설정합니다. 즉시 닫으려면 0으로 설정하거나 비워 두십시오.\n최대: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (즉시 닫기)"
+  },
   "Option_folders": {
     "message": "폴더"
   },

@@ -133,6 +133,16 @@ export const add = (
           step.delayMs = DELAY_AFTER_URL_CHANGED
         }
       } else if (type === "input") {
+        // Remove preceding click on the same element when an input step follows;
+        // the input step is sufficient for replay (the dispatcher applies focus if needed).
+        // * Don't remove if the click is a tripleClick, as they may indicate special interactions (e.g. select all text).
+        if (prevType === "click" || prevType === "doubleClick") {
+          const selector = (step.param as PageAction.Input).selector
+          const prevSelector = (prev.param as PageAction.Click).selector
+          if (selector === prevSelector) {
+            steps.pop()
+          }
+        }
         // Combine operations on the same input element.
         if (prevType === "input") {
           const selector = (step.param as PageAction.Input).selector
