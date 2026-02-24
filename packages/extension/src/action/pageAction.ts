@@ -53,7 +53,10 @@ export const PageAction = {
         ? PAGE_ACTION_OPEN_MODE.WINDOW
         : command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
           ? PAGE_ACTION_OPEN_MODE.TAB
-          : PAGE_ACTION_OPEN_MODE.TAB
+          : command.pageActionOption.openMode ===
+              PAGE_ACTION_OPEN_MODE.CURRENT_TAB
+            ? PAGE_ACTION_OPEN_MODE.TAB // Open in new tab when secondary is pressed
+            : PAGE_ACTION_OPEN_MODE.TAB
       : command.pageActionOption.openMode
 
     const windowPosition = await getWindowPosition()

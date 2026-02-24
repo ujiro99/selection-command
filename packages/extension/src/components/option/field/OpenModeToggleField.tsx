@@ -37,6 +37,9 @@ const getIconForMode = (mode: string) => {
   if (mode === OPEN_MODE.WINDOW || mode === PAGE_ACTION_OPEN_MODE.WINDOW) {
     return "/setting/open_mode/window.png"
   }
+  if (mode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
+    return "/setting/open_mode/currentTab.png"
+  }
   if (mode === OPEN_MODE.SIDE_PANEL) {
     return "/setting/open_mode/side_panel.png"
   }
@@ -57,6 +60,7 @@ const PAGE_ACTION_MODES = [
   PAGE_ACTION_OPEN_MODE.WINDOW,
   PAGE_ACTION_OPEN_MODE.TAB,
   PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
+  PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
 ] as const
 
 type OpenModeToggleFieldProps = {
@@ -95,7 +99,10 @@ export const OpenModeToggleField = ({
                 onValueChange={(val) => {
                   if (val) field.onChange(val)
                 }}
-                className="grid grid-cols-4 gap-2 py-1"
+                className={cn(
+                  "grid gap-2 py-1",
+                  type === "pageAction" ? "grid-cols-5" : "grid-cols-4",
+                )}
               >
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)

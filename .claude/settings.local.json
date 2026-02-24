@@ -35,6 +35,7 @@
       "Bash(yarn tsc:*)",
       "Bash(yarn workspace @selection-command/extension:*)",
       "Bash(yarn workspace @selection-command/hub:*)",
+      "Bash(yarn workspace:*)",
       "WebFetch(domain:api.github.com)",
       "WebFetch(domain:developer.chrome.com)",
       "WebFetch(domain:docs.dndkit.com)",

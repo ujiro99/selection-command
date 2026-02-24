@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { parseGeminiUrl, toUrl } from "./utils"
+import { parseGeminiUrl, toUrl, matchesPageActionUrl } from "./utils"
 import { SPACE_ENCODING } from "@/const"
 import type { UrlParam } from "@/types"
 
@@ -178,5 +178,76 @@ describe("toUrl", () => {
     expect(toUrl(param)).toBe(
       "https://example.com/search?q=hello%0Aworld%09test",
     )
+  })
+})
+
+describe("matchesPageActionUrl", () => {
+  it("MU-01: exact match without wildcard", () => {
+    expect(
+      matchesPageActionUrl(
+        "https://example.com/page",
+        "https://example.com/page",
+      ),
+    ).toBe(true)
+  })
+
+  it("MU-02: no match without wildcard - different domain", () => {
+    expect(
+      matchesPageActionUrl(
+        "https://example.com/page",
+        "https://other.com/page",
+      ),
+    ).toBe(false)
+  })
+
+  it("MU-03: no match without wildcard - different path", () => {
+    expect(
+      matchesPageActionUrl(
+        "https://example.com/page",
+        "https://example.com/other",
+      ),
+    ).toBe(false)
+  })
+
+  it("MU-04: wildcard matches any path suffix", () => {
+    expect(
+      matchesPageActionUrl(
+        "https://example.com/*",
+        "https://example.com/path?q=1",
+      ),
+    ).toBe(true)
+  })
+
+  it("MU-05: wildcard at end of path matches query string", () => {
+    expect(
+      matchesPageActionUrl(
+        "https://example.com/search*",
+        "https://example.com/search?q=foo",
+      ),
+    ).toBe(true)
+  })
+
+  it("MU-06: wildcard in hostname matches subdomain", () => {
+    expect(
+      matchesPageActionUrl(
+        "https://*.example.com/page",
+        "https://sub.example.com/page",
+      ),
+    ).toBe(true)
+  })
+
+  it("MU-07: wildcard does not match different domain", () => {
+    expect(
+      matchesPageActionUrl("https://example.com/*", "https://other.com/path"),
+    ).toBe(false)
+  })
+
+  it("MU-08: wildcard matches empty suffix", () => {
+    expect(
+      matchesPageActionUrl(
+        "https://example.com/path*",
+        "https://example.com/path",
+      ),
+    ).toBe(true)
   })
 })
