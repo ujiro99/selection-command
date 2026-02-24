@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "メニュー表示アニメーション"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "ポップアップ自動クローズまでの時間"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "ポップアップウィンドウのフォーカスが外れてから自動的に閉じるまでの時間を設定します。0または未設定の場合は即座に閉じます。 \n最大：10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (即座に閉じる)"
+  },
   "Option_inherit": {
     "message": "継承"
   },
@@ -290,6 +299,9 @@
   "Option_openMode_backgroundTab": {
     "message": "バックグラウンドタブ"
   },
+  "Option_openMode_sidePanel": {
+    "message": "サイドパネル"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -322,6 +334,9 @@
   },
   "Option_openMode_currentTab_desc": {
     "message": "現在アクティブなタブで実行する。<wbr>URLが記録時の開始URLと一致する必要がある。"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "サイドパネルで開く。"
   },
   "Option_commandType_title": {
     "message": "コマンドの種類を選ぶ"
@@ -589,6 +604,12 @@
   },
   "Option_showIndicator_desc": {
     "message": "プレビューまでの残りを表示します。"
+  },
+  "Option_windowSettings": {
+    "message": "ウィンドウ設定"
+  },
+  "Option_windowSettings_desc": {
+    "message": "ウィンドウやポップアップの設定を行います。"
   },
   "Option_folders": {
     "message": "フォルダ"

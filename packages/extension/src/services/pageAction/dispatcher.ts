@@ -225,8 +225,37 @@ export const PageActionDispatcher = {
       }
       let value = safeInterpolate(param.value, variables)
       if (!isEmpty(value)) {
+        // For select elements: set value directly and dispatch change event
+        if (element instanceof HTMLSelectElement) {
+          element.value = value
+          element.dispatchEvent(new Event("change", { bubbles: true }))
+          return [true]
+        }
+
+        // For non-text input types: set value directly and dispatch events
+        if (
+          element instanceof HTMLInputElement &&
+          [
+            "range",
+            "color",
+            "date",
+            "datetime-local",
+            "month",
+            "week",
+            "time",
+          ].includes(element.type)
+        ) {
+          element.value = value
+          element.dispatchEvent(new Event("input", { bubbles: true }))
+          element.dispatchEvent(new Event("change", { bubbles: true }))
+          return [true]
+        }
+
         if (!isEditable(element)) {
           value = value.replace(/{/g, "{{") // escape
+          // Ensure focus before typing, since preceding click may have been
+          // removed by recording optimization in background.ts.
+          element.focus()
           await user.type(element, value, { skipClick: true })
         } else {
           /*

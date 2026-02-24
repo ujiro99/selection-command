@@ -84,7 +84,7 @@
     "addedAt": "2024-12-23T13:49:39.766Z"
   },
   {
-    "id": "c140279a-6c11-5ca9-891c-9886021eae6a",
+    "id": "4dda7207-3fd6-5c52-9cfd-cf6798374086",
     "title": "メルカリ相場(個人、目立った傷・汚れなし)",
     "searchUrl": "https://jp.mercari.com/search?keyword=%s&order=&item_condition_id=3&status=sold_out&item_types=mercari",
     "description": "メルカリの相場を検索します（個人、目立った傷・汚れなし）",
@@ -237,7 +237,8 @@
     "spaceEncoding": "plus",
     "tags": ["Search", "AI"],
     "id": "008a609d-e0d0-5461-aa34-b44d58e2616b",
-    "addedAt": "2025-02-26T12:44:05.718Z"
+    "addedAt": "2025-02-26T12:44:05.718Z",
+    "revision": 1
   },
   {
     "title": "Youtube",
@@ -597,7 +598,9 @@
     "addedAt": "2025-08-19T12:22:59.671Z"
   },
   {
+    "id": "5bd801be-edf1-5787-91e0-48df29230fed",
     "title": "ChatGPT",
+    "revision": 1,
     "description": "Ask ChatGPT to explain the selected text.",
     "iconUrl": "https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico",
     "openMode": "pageAction",
@@ -649,7 +652,6 @@
         }
       ]
     },
-    "id": "5bd801be-edf1-5787-91e0-48df29230fed",
     "addedAt": "2025-04-22T14:01:16.433Z"
   },
   {
@@ -1212,9 +1214,9 @@
     "addedAt": "2025-11-02T14:49:08.054Z"
   },
   {
-    "id": "e7219d76-be8b-5a06-be6e-e988ad910a44",
+    "id": "a2da3f09-8540-5c14-96a8-50da3582cd91",
     "title": "ChatGPT Translate into English",
-    "description": "Tlanslate the selected text into English using ChatGPT.",
+    "description": "Translate the selected text into English using ChatGPT.",
     "iconUrl": "https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico",
     "openMode": "pageAction",
     "tags": ["AI", "Language", "Translation", "English"],
@@ -1272,7 +1274,7 @@
     "addedAt": "2025-11-14T19:14:39.847Z"
   },
   {
-    "id": "0fc61a8a-f1c2-5fc7-b41c-bdfed9158835",
+    "id": "e2979626-96a4-5526-bc7a-17a4496eae3c",
     "title": "Gemini autocopy",
     "description": "Ask Gemini, and Auto copy answer",
     "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
@@ -1329,7 +1331,7 @@
     "addedAt": "2025-11-24T19:20:26.788Z"
   },
   {
-    "id": "73209a9a-c9a8-55b8-872a-c3b36b81b256",
+    "id": "27aa0db5-ae34-5aaf-b293-a88b8b52bdfc",
     "title": "Copilot",
     "description": "Gopilotで選択テキストを解説します",
     "iconUrl": "https://copilot.microsoft.com/static/cmc/favicon.svg",
@@ -1389,7 +1391,7 @@
     "addedAt": "2025-11-24T14:32:59.534Z"
   },
   {
-    "id": "516bef29-dec6-5dd7-b427-815078b9d18e",
+    "id": "0fcdcd8e-8a2f-5c97-a2fe-a6c25a294f22",
     "title": "Everything",
     "searchUrl": "http://localhost/?search=%s",
     "description": "快速検索ツール、everythingのHTTPサーバー機能を使ってローカルファイルを検索",
@@ -1399,5 +1401,74 @@
     "spaceEncoding": "plus",
     "tags": ["Desktop", "Search", "Tool"],
     "addedAt": "2025-12-05T14:26:05.298Z"
+  },
+  {
+    "id": "ad7e96eb-f2eb-547d-8263-6fa2f18bcb18",
+    "title": "bilibili",
+    "description": "搜索哔哩哔哩相关视频",
+    "iconUrl": "https://cdn.brandfetch.io/idJarLS8mp/w/512/h/464/theme/dark/symbol.png?c=1bxid64Mup7aczewSAYMX&t=1668073271606",
+    "openMode": "pageAction",
+    "tags": ["Search", "Media", "Chinese"],
+    "pageActionOption": {
+      "startUrl": "https://search.bilibili.com/all",
+      "openMode": "tab",
+      "steps": [
+        {
+          "id": "v5yzjn0nf",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "m8ig54xgb",
+          "param": {
+            "type": "click",
+            "label": "输入关键字搜索",
+            "selector": "//*[@class='search-input-el']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "iedjgyj2g",
+          "param": {
+            "type": "input",
+            "label": "输入关键字搜索",
+            "selector": "//*[@class='search-input-el']",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "or0woh3oz",
+          "param": {
+            "type": "click",
+            "label": "搜索",
+            "selector": "//*[@class='vui_button vui_button--blue vui_button--lg search-button']",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "jiz09t0vd",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2026-02-19T05:26:36.556Z"
+  },
+  {
+    "id": "3dbae0ea-3108-5d5e-a5a9-22d8bfe0c933",
+    "title": "Яндекс",
+    "searchUrl": "https://yandex.ru/search/?text=%s",
+    "description": "Я выполняю веб‑поиск в Яндексе.",
+    "iconUrl": "https://yastatic.net/s3/web4static/_/v2/static/media/AppFavicon-Icon_size64_ru.0ca38ff5.png",
+    "openMode": "popup",
+    "openModeSecondary": "backgroundTab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "Russia", "Поиск", "Россия"],
+    "addedAt": "2026-02-21T07:37:20.886Z"
   }
 ]

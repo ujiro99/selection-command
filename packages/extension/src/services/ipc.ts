@@ -16,6 +16,9 @@ export enum BgCommand {
   openPopups = "openPopups",
   openPopupAndClick = "openPopupAndClick",
   openTab = "openTab",
+  openSidePanel = "openSidePanel",
+  closeSidePanel = "closeSidePanel",
+  navigateSidePanel = "navigateSidePanel",
   openOption = "openOption",
   openShortcuts = "openShortcuts",
   addPageRule = "addPageRule",
@@ -26,6 +29,7 @@ export enum BgCommand {
   onHidden = "onHidden",
   toggleStar = "toggleStar",
   getTabId = "getTabId",
+  getActiveTabId = "getActiveTabId",
   setClipboard = "setClipboard",
   // PageAction
   addPageAction = "addPageAction",
@@ -60,6 +64,11 @@ export type ClickElementProps = {
 export type ClipboardResult = {
   data: string | undefined
   err?: string
+}
+
+export type NavigateSidePanelProps = {
+  url: string
+  tabId: number | null
 }
 
 export type RunPageAction = {
@@ -250,7 +259,7 @@ export const Ipc = {
         if (onTabUpdated) chrome.tabs.onUpdated.removeListener(onTabUpdated)
       }
 
-      const onTabUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
+      const onTabUpdated = (id: number, info: chrome.tabs.OnUpdatedInfo) => {
         if (tabId === id && info.status === "complete") {
           cleanup()
           resolve()
@@ -441,6 +450,10 @@ export const Ipc = {
 
   async getTabId() {
     return Ipc.send(BgCommand.getTabId)
+  },
+
+  async getActiveTabId() {
+    return Ipc.send(BgCommand.getActiveTabId)
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {

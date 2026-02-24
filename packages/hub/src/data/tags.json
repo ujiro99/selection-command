@@ -1,7 +1,7 @@
 [
   {
     "name": "Search",
-    "count": 21
+    "count": 23
   },
   {
     "name": "Language",
@@ -65,7 +65,7 @@
   },
   {
     "name": "Media",
-    "count": 8
+    "count": 9
   },
   {
     "name": "SNS",
@@ -149,6 +149,22 @@
   },
   {
     "name": "Desktop",
+    "count": 1
+  },
+  {
+    "name": "Chinese",
+    "count": 1
+  },
+  {
+    "name": "Russia",
+    "count": 1
+  },
+  {
+    "name": "Поиск",
+    "count": 1
+  },
+  {
+    "name": "Россия",
     "count": 1
   }
 ]

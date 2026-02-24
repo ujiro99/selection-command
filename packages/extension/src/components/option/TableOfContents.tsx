@@ -7,6 +7,7 @@ import {
   BookOpen,
   Paintbrush,
   Keyboard,
+  AppWindow,
 } from "lucide-react"
 import styles from "./TableOfContents.module.css"
 import optionCss from "./Option.module.css"
@@ -21,6 +22,7 @@ export const TableOfContents = (props: Props) => {
     "commands",
     "shortcuts",
     "linkCommand",
+    "windowSettings",
     "pageRules",
     "userStyles",
   ]
@@ -73,6 +75,8 @@ const Icon = ({
       return <Eye size={size} className={className} />
     case "shortcuts":
       return <Keyboard size={size} className={className} />
+    case "windowSettings":
+      return <AppWindow size={size} className={className} />
     case "pageRules":
       return <BookOpen size={size} className={className} />
     case "userStyles":

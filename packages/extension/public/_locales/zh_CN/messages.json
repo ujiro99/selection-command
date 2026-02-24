@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "侧边栏"
+  },
   "Option_openMode_linkPopup": {
     "message": "链接弹出窗口"
   },
@@ -458,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "显示预览前的剩余时间。"
   },
+  "Option_windowSettings": {
+    "message": "窗口设置"
+  },
+  "Option_windowSettings_desc": {
+    "message": "配置窗口行为和弹出窗口设置。"
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "弹出窗口自动关闭延迟"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "设置弹出窗口失去焦点后自动关闭前的延迟时间。设置为0或留空表示立即关闭。\n最大值：10000毫秒"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0（立即关闭）"
+  },
   "Option_folders": {
     "message": "文件夹"
   },
@@ -545,8 +563,14 @@
   "Option_userStyles_option_border_color": {
     "message": "边框颜色"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "字体颜色"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "指定菜单的边框颜色。默认：#F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "指定字体颜色。默认值：#0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "字体大小缩放"
@@ -903,40 +927,40 @@
     "message": "显示标签页并激活。<wbr>显示在当前标签页的右侧。"
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "用户变量"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "定义在页面操作中使用的自定义变量。这些变量可以在输入字段中使用{{变量名}}的形式。"
-    },
-    "Option_userVariable_name": {
-      "message": "名称"
-    },
-    "Option_userVariable_value": {
-      "message": "值"
-    },
-    "Option_userVariable_add": {
-      "message": "添加变量"
-    },
-    "Option_userVariable_name_required": {
-      "message": "变量名是必需的"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "名称必须以字母开头，只能包含字母、数字和下划线"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "变量名已存在"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "最多允许$max$个变量",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
     "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "在侧边栏中打开。"
+  },
+  "Option_userVariables": {
+    "message": "用户变量"
+  },
+  "Option_userVariable_name": {
+    "message": "变量名"
+  },
+  "Option_userVariable_value": {
+    "message": "值"
+  },
+  "Option_userVariable_add": {
+    "message": "添加变量"
+  },
+  "Option_userVariable_name_required": {
+    "message": "变量名是必需的"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "变量名已存在"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "最多允许$max$个变量",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_title_desc": {
     "message": "显示为命令标题。"
@@ -1009,36 +1033,6 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "请输入有效的 URL"
-  },
-  "Option_userVariable_add": {
-    "message": "添加变量"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "最多允许 $max$ 个变量",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "变量名"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "变量名已存在"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
-  },
-  "Option_userVariable_name_required": {
-    "message": "变量名是必需的"
-  },
-  "Option_userVariable_value": {
-    "message": "值"
-  },
-  "Option_userVariables": {
-    "message": "用户变量"
   },
   "Option_userVariables_desc": {
     "message": "为输入字段定义自定义变量（最多 5 个）"

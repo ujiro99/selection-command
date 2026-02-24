@@ -77,6 +77,11 @@ export type PopupOption = {
 
 export type CopyOption = "default" | "text"
 
+type WindowOption = {
+  sidePanelAutoHide: boolean
+  popupAutoCloseDelay?: number
+}
+
 type LinkCommandStartupMethod = {
   method: LINK_COMMAND_STARTUP_METHOD
   threshold?: number
@@ -172,6 +177,7 @@ export type UserSettings = {
   style: STYLE
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
+  windowOption: WindowOption
 }
 
 export type SettingsType = UserSettings & UserStats & UserStars

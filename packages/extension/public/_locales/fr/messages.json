@@ -281,6 +281,9 @@
   "Option_openMode_api": {
     "message": "API"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Panneau latéral"
+  },
   "Option_openMode_linkPopup": {
     "message": "Pop-up de Lien"
   },
@@ -458,6 +461,21 @@
   "Option_showIndicator_desc": {
     "message": "Affiche le temps restant jusqu'à l'aperçu."
   },
+  "Option_windowSettings": {
+    "message": "Paramètres de Fenêtre"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Configurez le comportement de la fenêtre et les paramètres de popup."
+  },
+  "Option_popupAutoCloseDelay": {
+    "message": "Délai de Fermeture Automatique du Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Définissez le délai avant que le popup se ferme automatiquement après avoir perdu le focus. Définissez 0 ou laissez vide pour une fermeture immédiate.\nMaximum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (fermer immédiatement)"
+  },
   "Option_folders": {
     "message": "Dossiers"
   },
@@ -545,8 +563,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Couleur de la Bordure"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Couleur de police"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Spécifiez la couleur de la bordure du menu. Par défaut : #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Spécifier la couleur de police. Par défaut: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Échelle de taille de police"
@@ -904,6 +928,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Ouvrir l'onglet en arrière-plan.<wbr>Afficher à droite de l'onglet actuel."
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Ouvrir dans le panneau latéral."
   },
   "Option_title_desc": {
     "message": "Affiché comme titre de commande."

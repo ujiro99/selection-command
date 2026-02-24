@@ -43,5 +43,6 @@
   "https://www.oxfordlearnersdictionaries.com/definition/english/%s",
   "https://search.kakaku.com/%s/",
   "https://keepa.com/#!search/5-%s",
-  "http://localhost/?search=%s"
+  "http://localhost/?search=%s",
+  "https://yandex.ru/search/?text=%s"
 ]

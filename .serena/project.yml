@@ -95,18 +95,23 @@ encoding: utf-8
 #   rego                ruby                ruby_solargraph     rust                scala
 #   swift               terraform           toml                typescript          typescript_vts
 #   vue                 yaml                zig
-#   (This list may be outdated. For the current list, see values of Language enum here:
-#   https://github.com/oraios/serena/blob/main/src/solidlsp/ls_config.py
-#   For some languages, there are alternative language servers, e.g. csharp_omnisharp, ruby_solargraph.)
-# Note:
-#   - For C, use cpp
-#   - For JavaScript, use typescript
-#   - For Free Pascal/Lazarus, use pascal
-# Special requirements:
-#   Some languages require additional setup/installations.
-#   See here for details: https://oraios.github.io/serena/01-about/020_programming-languages.html#language-servers
-# When using multiple languages, the first language server that supports a given file will be used for that file.
-# The first language is the default language and the respective language server will be used as a fallback.
-# Note that when using the JetBrains backend, language servers are not used and this list is correspondingly ignored.
+#   powershell          python              python_jedi         r                   rego
+#   ruby                ruby_solargraph     rust                scala               swift
+#   terraform           toml                typescript          typescript_vts      vue
+#   yaml                zig
+#
 languages:
   - typescript
+
+# time budget (seconds) per tool call for the retrieval of additional symbol information
+# such as docstrings or parameter information.
+# This overrides the corresponding setting in the global configuration; see the documentation there.
+# If null or missing, use the setting from the global configuration.
+symbol_info_budget:
+
+# The language backend to use for this project.
+# If not set, the global setting from serena_config.yml is used.
+# Valid values: LSP, JetBrains
+# Note: the backend is fixed at startup. If a project with a different backend
+# is activated post-init, an error will be returned.
+language_backend:

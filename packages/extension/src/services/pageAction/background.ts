@@ -134,6 +134,16 @@ export const add = (
           step.delayMs = DELAY_AFTER_URL_CHANGED
         }
       } else if (type === "input") {
+        // Remove preceding click on the same element when an input step follows;
+        // the input step is sufficient for replay (the dispatcher applies focus if needed).
+        // * Don't remove if the click is a tripleClick, as they may indicate special interactions (e.g. select all text).
+        if (prevType === "click" || prevType === "doubleClick") {
+          const selector = (step.param as PageAction.Input).selector
+          const prevSelector = (prev.param as PageAction.Click).selector
+          if (selector === prevSelector) {
+            steps.pop()
+          }
+        }
         // Combine operations on the same input element.
         if (prevType === "input") {
           const selector = (step.param as PageAction.Input).selector
@@ -626,8 +636,8 @@ export const openRecorder = (
           left: l,
           type: POPUP_TYPE.POPUP,
         })
-        if (w.tabs) {
-          await setRecordingTabId(w.tabs[0].id)
+        if (w?.tabs) {
+          await setRecordingTabId(w!.tabs![0].id)
         } else {
           console.error("Failed to open the recorder.")
         }
@@ -677,7 +687,7 @@ export const resetLastUrl = () => {
 // Export for testing
 export const onTabUpdated = (
   id: number,
-  info: chrome.tabs.TabChangeInfo,
+  info: chrome.tabs.OnUpdatedInfo,
   _tab: chrome.tabs.Tab,
 ) => {
   Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
@@ -703,7 +713,7 @@ chrome.tabs.onUpdated.addListener(onTabUpdated)
 // Export for testing
 export const onTabRemoved = async (
   tabId: number,
-  _removeInfo: chrome.tabs.TabRemoveInfo,
+  _removeInfo: chrome.tabs.OnRemovedInfo,
 ) => {
   const context = await Storage.get<PageActionContext>(
     SESSION_STORAGE_KEY.PA_CONTEXT,

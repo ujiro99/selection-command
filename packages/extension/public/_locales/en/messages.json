@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "Menu Display Animation"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Popup Auto-Close Delay"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Set the delay time before the popup automatically closes after losing focus. Set to 0 or leave empty for immediate close.\nMaximum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (close immediately)"
+  },
   "Option_inherit": {
     "message": "Inherit"
   },
@@ -280,6 +289,12 @@
   },
   "Option_openMode_backgroundTab": {
     "message": "Background Tab"
+  },
+  "Option_openMode_sidePanel": {
+    "message": "Side Panel"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Open in side panel."
   },
   "Option_openMode_api": {
     "message": "API"
@@ -500,6 +515,12 @@
   "Option_showIndicator_desc": {
     "message": "Displays the remaining to the preview."
   },
+  "Option_windowSettings": {
+    "message": "Window Settings"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Configure window behavior and popup settings."
+  },
   "Option_folders": {
     "message": "Folders"
   },
@@ -587,8 +608,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Border Color"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Font color"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Specify the border color of the menu. Default: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Specify font color. Default: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Font size scaling"

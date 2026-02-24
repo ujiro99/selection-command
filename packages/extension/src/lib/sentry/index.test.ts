@@ -714,7 +714,7 @@ describe("Sentry Configuration Management Tests", () => {
 
       // Act
       const result = await chrome.storage.sync.get([STORAGE_KEY.USER])
-      const userSettings = result[STORAGE_KEY.USER]
+      const userSettings = result[STORAGE_KEY.USER] as any
 
       // Assert
       expect(userSettings).toEqual(mockStorageData[STORAGE_KEY.USER])
@@ -736,7 +736,7 @@ describe("Sentry Configuration Management Tests", () => {
 
       // Act
       const result = await chrome.storage.sync.get([STORAGE_KEY.USER])
-      const userSettings = result[STORAGE_KEY.USER]
+      const userSettings = result[STORAGE_KEY.USER] as any
 
       // Assert
       expect(userSettings).toEqual(emptyStorageData[STORAGE_KEY.USER])
