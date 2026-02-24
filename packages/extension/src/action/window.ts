@@ -39,6 +39,7 @@ export const Window = {
       width: command.popupOption?.width ?? PopupOption.width,
       screen,
       type: POPUP_TYPE.NORMAL,
+      windowState: command.windowState,
     })
   },
 }

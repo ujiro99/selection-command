@@ -1123,5 +1123,20 @@
   },
   "prompthistory_banner_description": {
     "message": "ChatGPT और अधिक के लिए प्रॉम्प्ट का पुन: उपयोग करने के लिए एक नया उपकरण।✨"
+  },
+  "Option_windowState": {
+    "message": "विंडो का आकार"
+  },
+  "Option_windowState_desc": {
+    "message": "प्रदर्शित करने के लिए विंडो का आकार"
+  },
+  "Option_windowState_normal": {
+    "message": "सामान्य"
+  },
+  "Option_windowState_maximized": {
+    "message": "अधिकतम"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "पूर्ण स्क्रीन"
   }
 }

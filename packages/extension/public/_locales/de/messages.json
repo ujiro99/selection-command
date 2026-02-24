@@ -1123,5 +1123,20 @@
   },
   "prompthistory_banner_description": {
     "message": "Ein neues Tool zum Wiederverwenden von Prompts für ChatGPT und mehr✨"
+  },
+  "Option_windowState": {
+    "message": "Fenstergröße"
+  },
+  "Option_windowState_desc": {
+    "message": "Anzuzeigende Fenstergröße"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Maximiert"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Vollbild"
   }
 }

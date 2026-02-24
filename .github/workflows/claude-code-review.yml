@@ -57,6 +57,7 @@ jobs:
             Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
 
             結果は日本語で記載してください。
+            結果には具体的なコードのファイルパスと行番号を含めてください。
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/cli-reference for available options

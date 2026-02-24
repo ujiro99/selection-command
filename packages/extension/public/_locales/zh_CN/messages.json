@@ -1123,5 +1123,20 @@
   },
   "prompthistory_banner_description": {
     "message": "用于在 ChatGPT 等中重用提示的新工具✨"
+  },
+  "Option_windowState": {
+    "message": "窗口大小"
+  },
+  "Option_windowState_desc": {
+    "message": "显示窗口的大小"
+  },
+  "Option_windowState_normal": {
+    "message": "正常"
+  },
+  "Option_windowState_maximized": {
+    "message": "最大化"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "全屏"
   }
 }

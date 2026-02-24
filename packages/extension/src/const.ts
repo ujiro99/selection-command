@@ -165,6 +165,12 @@ export enum POPUP_TYPE {
   POPUP = "popup",
 }
 
+export enum WINDOW_STATE {
+  NORMAL = "normal",
+  MAXIMIZED = "maximized",
+  FULLSCREEN = "fullscreen",
+}
+
 export enum KEYBOARD {
   SHIFT = "Shift",
   CTRL = "Control",

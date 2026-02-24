@@ -39,6 +39,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { InputField } from "@/components/option/field/InputField"
 import { IconField } from "@/components/option/field/IconField"
 import { SelectField } from "@/components/option/field/SelectField"
@@ -64,6 +65,7 @@ import {
   SCREEN,
   COMMAND_TYPE,
   COMMAND_TYPE_OPEN_MODES_MAP,
+  WINDOW_STATE,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -80,11 +82,14 @@ import { isEmpty, e2a, cn, parseGeminiUrl } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
+import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
+import { isSearchOpenMode } from "@shared/utils/type-guards"
+
 import {
-  SEARCH_OPEN_MODE,
   isSearchType,
   commandSchema,
   CommandSchemaType,
+  isPageActionType,
 } from "@/types/schema"
 import type {
   SelectionCommand,
@@ -101,12 +106,30 @@ const EmptyFolder = {
   title: t("Command_rootFolder"),
 } as CommandFolder
 
-const getDefault = (openMode: OPEN_MODE, base?: CommandSchemaType) => {
-  if (SEARCH_OPEN_MODE.includes(openMode as any)) {
-    let searchUrl = ""
-    if (base && (base as any).pageActionOption?.startUrl) {
-      searchUrl = (base as any).pageActionOption.startUrl
+const getDefault = (
+  openMode: OPEN_MODE,
+  base?: CommandSchemaType,
+  preOpenMode?: OPEN_MODE,
+) => {
+  if (isSearchOpenMode(openMode)) {
+    if (isSearchOpenMode(preOpenMode)) {
+      // Staying in search mode: add default windowState when switching to WINDOW
+      if (
+        openMode === OPEN_MODE.WINDOW &&
+        isSearchType(base) &&
+        base.windowState == null
+      ) {
+        return { ...base, windowState: WINDOW_STATE.NORMAL }
+      }
+      return base
     }
+
+    // Switching from non-search mode (e.g. PAGE_ACTION) to search mode
+    let searchUrl = ""
+    if (base && isPageActionType(base) && base.pageActionOption.startUrl) {
+      searchUrl = base.pageActionOption.startUrl
+    }
+
     return {
       ...base,
       searchUrl,
@@ -118,6 +141,10 @@ const getDefault = (openMode: OPEN_MODE, base?: CommandSchemaType) => {
         width: POPUP_OPTION.width,
         height: POPUP_OPTION.height,
       },
+      // Set default windowState when the target mode is WINDOW
+      ...(openMode === OPEN_MODE.WINDOW
+        ? { windowState: WINDOW_STATE.NORMAL }
+        : {}),
     }
   }
   if (openMode === OPEN_MODE.API) {
@@ -331,13 +358,9 @@ const CommandEditDialogInner = ({
   useEffect(() => {
     if (openMode === preOpenMode) return
     if (openMode === command?.openMode) return
-    if (
-      SEARCH_OPEN_MODE.includes(openMode as any) &&
-      SEARCH_OPEN_MODE.includes(preOpenMode as any)
-    ) {
-      return
-    }
-    reset(getDefault(openMode, getValues()))
+    // Update initial values when the open mode changes,
+    // but only when the openMode has changed
+    reset(getDefault(openMode, getValues(), preOpenMode))
   }, [command?.openMode, preOpenMode, openMode, reset, getValues])
 
   useEffect(() => {
@@ -386,7 +409,7 @@ const CommandEditDialogInner = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl pr-2">
           <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />
@@ -397,42 +420,43 @@ const CommandEditDialogInner = ({
             )}
           </DialogHeader>
           <DialogDescription>{t("Command_input")}</DialogDescription>
+
           <Form {...form}>
-            <div id="CommandEditForm" className="space-y-3">
-              <FormItem className="flex items-start gap-1">
-                <div className="w-2/6">
-                  <FormLabel>{t("commandType")}</FormLabel>
-                </div>
-                <div className="w-4/6 relative">
-                  <CommandType
-                    type={selectedType}
-                    onClick={onTypeClick}
-                    compact={true}
-                    disabled={isUpdate}
-                    ref={commandTypeRef}
-                  />
-                  {isUpdate && (
-                    <Tooltip
-                      text={t("commandType_on_edit")}
-                      positionElm={commandTypeRef.current}
+            <ScrollArea className="max-h-[70dvh]" viewportClassName="pr-4">
+              <div id="CommandEditForm" className="space-y-3">
+                <FormItem className="flex items-start gap-1">
+                  <div className="w-2/6">
+                    <FormLabel>{t("commandType")}</FormLabel>
+                  </div>
+                  <div className="w-4/6 relative">
+                    <CommandType
+                      type={selectedType}
+                      onClick={onTypeClick}
+                      compact={true}
+                      disabled={isUpdate}
+                      ref={commandTypeRef}
                     />
-                  )}
-                </div>
-              </FormItem>
+                    {isUpdate && (
+                      <Tooltip
+                        text={t("commandType_on_edit")}
+                        positionElm={commandTypeRef.current}
+                      />
+                    )}
+                  </div>
+                </FormItem>
 
-              <InputField
-                control={form.control}
-                name="title"
-                formLabel={t("title")}
-                description={t("title_desc")}
-                inputProps={{
-                  type: "string",
-                  ...register("title", {}),
-                }}
-              />
+                <InputField
+                  control={form.control}
+                  name="title"
+                  formLabel={t("title")}
+                  description={t("title_desc")}
+                  inputProps={{
+                    type: "string",
+                    ...register("title", {}),
+                  }}
+                />
 
-              {(SEARCH_OPEN_MODE.includes(openMode as any) ||
-                openMode === OPEN_MODE.API) && (
+                {(isSearchOpenMode(openMode) || openMode === OPEN_MODE.API) && (
                   <FormField
                     control={form.control}
                     name="searchUrl"
@@ -477,7 +501,7 @@ const CommandEditDialogInner = ({
                               />
                             </FormControl>
                           </div>
-                          {SEARCH_OPEN_MODE.includes(openMode as any) && (
+                          {isSearchOpenMode(openMode) && (
                             <SearchUrlAssistButton
                               onClick={() => {
                                 setAssistDialogOpen(true)
@@ -501,239 +525,255 @@ const CommandEditDialogInner = ({
                   />
                 )}
 
-              {selectedType === COMMAND_TYPE.SEARCH ? (
-                <OpenModeToggleField
-                  control={form.control}
-                  name="openMode"
-                  formLabel={t("displayMode")}
-                  type="search"
-                  description={t("displayMode_desc")}
-                />
-              ) : (
-                shouldShowOpenModeSelect && (
-                  <SelectField
+                {selectedType === COMMAND_TYPE.SEARCH ? (
+                  <OpenModeToggleField
                     control={form.control}
                     name="openMode"
-                    formLabel="Open Mode"
-                    options={e2a(OPEN_MODE)
-                      .filter(
-                        (mode) =>
-                          mode !== OPEN_MODE.ADD_PAGE_RULE &&
-                          mode !== OPEN_MODE.OPTION,
-                      )
-                      .map((mode) => ({
-                        name: t(`openMode_${mode}`),
-                        value: mode,
-                      }))}
+                    formLabel={t("displayMode")}
+                    type="search"
+                    description={t("displayMode_desc")}
                   />
-                )
-              )}
-
-              {SEARCH_OPEN_MODE.includes(openMode as any) && (
-                <SelectField
-                  control={form.control}
-                  name="openModeSecondary"
-                  formLabel={t("openModeSecondary")}
-                  description={t("openModeSecondary_desc")}
-                  options={SEARCH_OPEN_MODE.map((mode) => ({
-                    name: t(`openMode_${mode}`),
-                    value: mode,
-                  }))}
-                />
-              )}
-
-              {openMode === OPEN_MODE.PAGE_ACTION && (
-                <PageActionSection
-                  form={form}
-                  openRecorder={openPageActionRecorder}
-                />
-              )}
-
-              {openMode === OPEN_MODE.API && (
-                <>
-                  <TextareaField
-                    control={form.control}
-                    name="fetchOptions"
-                    formLabel={t("fetchOptions")}
-                    className="font-mono text-xs sm:text-xs lg:text-sm"
-                  />
-                  <FormField
-                    control={form.control}
-                    name="variables"
-                    render={() => (
-                      <FormItem className="flex items-center">
-                        <div className="w-2/6">
-                          <FormLabel>{t("variables")}</FormLabel>
-                        </div>
-                        <div className="w-4/6">
-                          <FormControl>
-                            <ul className="">
-                              {variableArray.fields.map((field, index) => (
-                                <li
-                                  key={field._id}
-                                  className="flex items-center gap-2 p-1"
-                                >
-                                  <FormField
-                                    control={form.control}
-                                    name={`variables.${index}.name`}
-                                    render={({ field }) => (
-                                      <FormItem className="flex items-center gap-1 w-1/2">
-                                        <FormLabel className="text-xs text-right">
-                                          {t("variableName")}
-                                        </FormLabel>
-                                        <FormControl className="flex-1">
-                                          <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <FormField
-                                    control={form.control}
-                                    name={`variables.${index}.value`}
-                                    render={({ field }) => (
-                                      <FormItem className="flex items-center gap-1 w-1/2">
-                                        <FormLabel className="text-xs text-right">
-                                          {t("variableValue")}
-                                        </FormLabel>
-                                        <FormControl>
-                                          <Input {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                  <button
-                                    type="button"
-                                    className="group transition p-1.5 flex-none rounded-lg hover:bg-red-200 hover:scale-[1.1]"
-                                    onClick={() => variableArray.remove(index)}
-                                  >
-                                    <Trash2
-                                      className="stroke-gray-500 group-hover:stroke-red-500"
-                                      size={16}
-                                    />
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          </FormControl>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            className="relative mt-1 rounded-lg h-7 left-[50%] translate-x-[-50%]"
-                            onClick={() =>
-                              variableArray.append({
-                                name: "",
-                                value: "",
-                              })
-                            }
-                          >
-                            <Plus />
-                          </Button>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
-
-              {openMode === OPEN_MODE.COPY && (
-                <SelectField
-                  control={form.control}
-                  name="copyOption"
-                  formLabel={t("copyOption")}
-                  options={e2a(COPY_OPTION).map((opt) => ({
-                    name: t(`copyOption_${opt}`),
-                    value: opt,
-                  }))}
-                />
-              )}
-
-              {/* details */}
-
-              <Collapsible
-                className={cn(
-                  collapsibleCss.collapse,
-                  "flex flex-col items-end",
-                )}
-              >
-                <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
-                  <ChevronsUpDown
-                    size={18}
-                    className={cn(css.icon, collapsibleCss.iconUpDown)}
-                  />
-                  <ChevronsDownUp
-                    size={18}
-                    className={cn(css.icon, collapsibleCss.iconDownUp)}
-                  />
-                  <span className="ml-0.5">{t("labelDetail")}</span>
-                </CollapsibleTrigger>
-                <CollapsibleContent
-                  className={cn(
-                    collapsibleCss.CollapsibleContent,
-                    "w-full space-y-3 pt-2",
-                  )}
-                >
-                  <IconField
-                    control={form.control}
-                    nameUrl="iconUrl"
-                    nameSvg="iconSvg"
-                    formLabel={t("iconUrl")}
-                    description={
-                      SEARCH_OPEN_MODE.includes(openMode as any) ||
-                        openMode === OPEN_MODE.API
-                        ? t("iconUrl_desc")
-                        : openMode === OPEN_MODE.PAGE_ACTION
-                          ? t("iconUrl_desc_pageAction")
-                          : ""
-                    }
-                  />
-
-                  {SEARCH_OPEN_MODE.includes(openMode as any) && (
+                ) : (
+                  shouldShowOpenModeSelect && (
                     <SelectField
                       control={form.control}
-                      name="spaceEncoding"
-                      formLabel={t("spaceEncoding")}
-                      options={e2a(SPACE_ENCODING).map((enc) => ({
-                        name: t(`spaceEncoding_${enc}`),
-                        value: enc,
-                      }))}
-                      description={t("spaceEncoding_desc")}
+                      name="openMode"
+                      formLabel="Open Mode"
+                      options={e2a(OPEN_MODE)
+                        .filter(
+                          (mode) =>
+                            mode !== OPEN_MODE.ADD_PAGE_RULE &&
+                            mode !== OPEN_MODE.OPTION,
+                        )
+                        .map((mode) => ({
+                          name: t(`openMode_${mode}`),
+                          value: mode,
+                        }))}
                     />
-                  )}
+                  )
+                )}
 
+                {isSearchOpenMode(openMode) && (
                   <SelectField
                     control={form.control}
-                    name="parentFolderId"
-                    formLabel={t("parentFolderId")}
-                    options={[EmptyFolder, ...folders].map((folder) => ({
-                      name: folder.title,
-                      value: folder.id,
-                      iconUrl: folder.iconUrl,
-                      iconSvg: folder.iconSvg,
-                      level: calcLevel(folder, folders),
+                    name="openModeSecondary"
+                    formLabel={t("openModeSecondary")}
+                    description={t("openModeSecondary_desc")}
+                    options={SEARCH_OPEN_MODE.map((mode) => ({
+                      name: t(`openMode_${mode}`),
+                      value: mode,
                     }))}
                   />
+                )}
 
-                  <FormField
-                    control={form.control}
-                    name="id"
-                    render={({ field }) => (
-                      <FormItem className="hidden">
-                        <FormControl>
-                          <input
-                            {...register("id", { value: field.value })}
-                            type="hidden"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
+                {openMode === OPEN_MODE.PAGE_ACTION && (
+                  <PageActionSection
+                    form={form}
+                    openRecorder={openPageActionRecorder}
                   />
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
+                )}
+
+                {openMode === OPEN_MODE.API && (
+                  <>
+                    <TextareaField
+                      control={form.control}
+                      name="fetchOptions"
+                      formLabel={t("fetchOptions")}
+                      className="font-mono text-xs sm:text-xs lg:text-sm"
+                    />
+                    <FormField
+                      control={form.control}
+                      name="variables"
+                      render={() => (
+                        <FormItem className="flex items-center">
+                          <div className="w-2/6">
+                            <FormLabel>{t("variables")}</FormLabel>
+                          </div>
+                          <div className="w-4/6">
+                            <FormControl>
+                              <ul className="">
+                                {variableArray.fields.map((field, index) => (
+                                  <li
+                                    key={field._id}
+                                    className="flex items-center gap-2 p-1"
+                                  >
+                                    <FormField
+                                      control={form.control}
+                                      name={`variables.${index}.name`}
+                                      render={({ field }) => (
+                                        <FormItem className="flex items-center gap-1 w-1/2">
+                                          <FormLabel className="text-xs text-right">
+                                            {t("variableName")}
+                                          </FormLabel>
+                                          <FormControl className="flex-1">
+                                            <Input {...field} />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      control={form.control}
+                                      name={`variables.${index}.value`}
+                                      render={({ field }) => (
+                                        <FormItem className="flex items-center gap-1 w-1/2">
+                                          <FormLabel className="text-xs text-right">
+                                            {t("variableValue")}
+                                          </FormLabel>
+                                          <FormControl>
+                                            <Input {...field} />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <button
+                                      type="button"
+                                      className="group transition p-1.5 flex-none rounded-lg hover:bg-red-200 hover:scale-[1.1]"
+                                      onClick={() =>
+                                        variableArray.remove(index)
+                                      }
+                                    >
+                                      <Trash2
+                                        className="stroke-gray-500 group-hover:stroke-red-500"
+                                        size={16}
+                                      />
+                                    </button>
+                                  </li>
+                                ))}
+                              </ul>
+                            </FormControl>
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              className="relative mt-1 rounded-lg h-7 left-[50%] translate-x-[-50%]"
+                              onClick={() =>
+                                variableArray.append({
+                                  name: "",
+                                  value: "",
+                                })
+                              }
+                            >
+                              <Plus />
+                            </Button>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+
+                {openMode === OPEN_MODE.COPY && (
+                  <SelectField
+                    control={form.control}
+                    name="copyOption"
+                    formLabel={t("copyOption")}
+                    options={e2a(COPY_OPTION).map((opt) => ({
+                      name: t(`copyOption_${opt}`),
+                      value: opt,
+                    }))}
+                  />
+                )}
+
+                {/* details */}
+
+                <Collapsible
+                  className={cn(
+                    collapsibleCss.collapse,
+                    "flex flex-col items-end",
+                  )}
+                >
+                  <CollapsibleTrigger className="flex items-center hover:bg-gray-200 p-2 py-1.5 rounded-lg text-sm">
+                    <ChevronsUpDown
+                      size={18}
+                      className={cn(css.icon, collapsibleCss.iconUpDown)}
+                    />
+                    <ChevronsDownUp
+                      size={18}
+                      className={cn(css.icon, collapsibleCss.iconDownUp)}
+                    />
+                    <span className="ml-0.5">{t("labelDetail")}</span>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent
+                    className={cn(
+                      collapsibleCss.CollapsibleContent,
+                      "w-full space-y-3 pt-2",
+                    )}
+                  >
+                    <IconField
+                      control={form.control}
+                      nameUrl="iconUrl"
+                      nameSvg="iconSvg"
+                      formLabel={t("iconUrl")}
+                      description={
+                        isSearchOpenMode(openMode) || openMode === OPEN_MODE.API
+                          ? t("iconUrl_desc")
+                          : openMode === OPEN_MODE.PAGE_ACTION
+                            ? t("iconUrl_desc_pageAction")
+                            : ""
+                      }
+                    />
+
+                    {isSearchOpenMode(openMode) && (
+                      <SelectField
+                        control={form.control}
+                        name="spaceEncoding"
+                        formLabel={t("spaceEncoding")}
+                        options={e2a(SPACE_ENCODING).map((enc) => ({
+                          name: t(`spaceEncoding_${enc}`),
+                          value: enc,
+                        }))}
+                        description={t("spaceEncoding_desc")}
+                      />
+                    )}
+
+                    {openMode === OPEN_MODE.WINDOW && (
+                      <SelectField
+                        control={form.control}
+                        name="windowState"
+                        formLabel={t("windowState")}
+                        description={t("windowState_desc")}
+                        options={Object.values(WINDOW_STATE).map((state) => ({
+                          name: t(`windowState_${state}`),
+                          value: state,
+                        }))}
+                      />
+                    )}
+
+                    <SelectField
+                      control={form.control}
+                      name="parentFolderId"
+                      formLabel={t("parentFolderId")}
+                      options={[EmptyFolder, ...folders].map((folder) => ({
+                        name: folder.title,
+                        value: folder.id,
+                        iconUrl: folder.iconUrl,
+                        iconSvg: folder.iconSvg,
+                        level: calcLevel(folder, folders),
+                      }))}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="id"
+                      render={({ field }) => (
+                        <FormItem className="hidden">
+                          <FormControl>
+                            <input
+                              {...register("id", { value: field.value })}
+                              type="hidden"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+            </ScrollArea>
           </Form>
-          <DialogFooter className="pt-0">
+
+          <DialogFooter className="pt-0 pr-4">
             <DialogClose asChild>
               <Button type="button" variant="secondary" size="lg">
                 {t("labelCancel")}
@@ -755,6 +795,9 @@ const CommandEditDialogInner = ({
                         width: Number(data.popupOption.width),
                         height: Number(data.popupOption.height),
                       }
+                    }
+                    if (data.openMode !== OPEN_MODE.WINDOW) {
+                      delete data.windowState
                     }
                   }
                   onSubmit(data)
