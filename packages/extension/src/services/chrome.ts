@@ -124,6 +124,7 @@ export type OpenTabProps = {
 
 type ReadClipboardParam = Omit<OpenPopupsProps, "urls"> & {
   incognito: boolean
+  state?: "fullscreen" | "maximized"
 }
 
 type ReadClipboardResult = {
@@ -356,14 +357,17 @@ const readClipboardContent = async (
 const openWindowAndReadClipboard = async (
   param: ReadClipboardParam,
 ): Promise<ReadClipboardResult> => {
+  const usesWindowState =
+    param.state === "fullscreen" || param.state === "maximized"
   const w = await chrome.windows.create({
     url: chrome.runtime.getURL("src/clipboard.html"),
     focused: true,
     type: param.type,
-    width: param.width,
-    height: param.height,
-    left: param.left,
-    top: param.top,
+    width: usesWindowState ? undefined : param.width,
+    height: usesWindowState ? undefined : param.height,
+    left: usesWindowState ? undefined : param.left,
+    top: usesWindowState ? undefined : param.top,
+    state: param.state,
     incognito: param.incognito,
   })
 
@@ -399,6 +403,13 @@ export const openPopupWindow = async (
     screen,
   )
 
+  const usesWindowState = isFullscreen || isMaximized
+  const windowState = isFullscreen
+    ? "fullscreen"
+    : isMaximized
+      ? "maximized"
+      : undefined
+
   let window: chrome.windows.Window
   let clipboardText = ""
 
@@ -411,16 +422,23 @@ export const openPopupWindow = async (
       height,
       top: at,
       left: al,
+      state: windowState,
       incognito: current.incognito,
     })
     window = result.window
     clipboardText = result.clipboardText
 
-    await chrome.tabs.update(window.tabs?.[0].id as number, {
-      url: toUrl(url, clipboardText),
-    })
-    if (chrome.runtime.lastError) {
-      console.error(chrome.runtime.lastError)
+    try {
+      await chrome.tabs.update(window.tabs?.[0].id as number, {
+        url: toUrl(url, clipboardText),
+      })
+      if (isFullscreen) {
+        // On macOS, even if you open with state: "fullscreen",
+        // it may not actually go fullscreen, so switch to fullscreen after opening.
+        await chrome.windows.update(window.id!, { state: "fullscreen" })
+      }
+    } catch (e) {
+      console.error(e)
     }
 
     if (result.err) {
@@ -435,19 +453,7 @@ export const openPopupWindow = async (
         },
       )
     }
-
-    if (isFullscreen || isMaximized) {
-      await chrome.windows.update(window.id!, {
-        state: isFullscreen ? "fullscreen" : "maximized",
-      })
-    }
   } else {
-    const usesWindowState = isFullscreen || isMaximized
-    const windowState = isFullscreen
-      ? "fullscreen"
-      : isMaximized
-        ? "maximized"
-        : undefined
     window = (await chrome.windows.create({
       url: toUrl(url),
       type,
@@ -458,10 +464,14 @@ export const openPopupWindow = async (
       state: windowState,
       incognito: current.incognito,
     }))!
-    if (isFullscreen) {
-      // On macOS, even if you open with state: "fullscreen",
-      // it may not actually go fullscreen, so switch to fullscreen after opening.
-      await chrome.windows.update(window.id!, { state: "fullscreen" })
+    try {
+      if (isFullscreen) {
+        // On macOS, even if you open with state: "fullscreen",
+        // it may not actually go fullscreen, so switch to fullscreen after opening.
+        await chrome.windows.update(window.id!, { state: "fullscreen" })
+      }
+    } catch (e) {
+      console.error(e)
     }
   }
 

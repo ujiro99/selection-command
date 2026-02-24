@@ -17,7 +17,7 @@ import {
 
 import { t } from "@/services/i18n"
 import { isEmpty } from "@/lib/utils"
-import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode.ts"
+import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 
 const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),

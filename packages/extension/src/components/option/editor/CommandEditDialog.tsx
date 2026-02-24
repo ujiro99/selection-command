@@ -112,21 +112,19 @@ const getDefault = (
   preOpenMode?: OPEN_MODE,
 ) => {
   if (isSearchOpenMode(openMode)) {
-    if (
-      openMode === OPEN_MODE.WINDOW &&
-      isSearchType(base) &&
-      base.windowState == null
-    ) {
-      return {
-        ...base,
-        windowState: WINDOW_STATE.NORMAL,
-      }
-    }
-
     if (isSearchOpenMode(preOpenMode)) {
+      // Staying in search mode: add default windowState when switching to WINDOW
+      if (
+        openMode === OPEN_MODE.WINDOW &&
+        isSearchType(base) &&
+        base.windowState == null
+      ) {
+        return { ...base, windowState: WINDOW_STATE.NORMAL }
+      }
       return base
     }
 
+    // Switching from non-search mode (e.g. PAGE_ACTION) to search mode
     let searchUrl = ""
     if (base && isPageActionType(base) && base.pageActionOption.startUrl) {
       searchUrl = base.pageActionOption.startUrl
@@ -143,6 +141,10 @@ const getDefault = (
         width: POPUP_OPTION.width,
         height: POPUP_OPTION.height,
       },
+      // Set default windowState when the target mode is WINDOW
+      ...(openMode === OPEN_MODE.WINDOW
+        ? { windowState: WINDOW_STATE.NORMAL }
+        : {}),
     }
   }
   if (openMode === OPEN_MODE.API) {
