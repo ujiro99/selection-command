@@ -23,9 +23,9 @@ test("E2E-02: popup menu appears on text selection", async ({ page }) => {
 
   await testPage.selectText()
 
-  // The popup menu portals to document.body via Radix UI.
-  // It becomes visible with data-state="open" after the popup delay (~250ms).
+  // selectText() already waits until [data-state="open"] appears, so a short
+  // timeout is sufficient here.
   await expect(page.locator('[data-state="open"]')).toBeVisible({
-    timeout: 3000,
+    timeout: 1000,
   })
 })
