@@ -1470,5 +1470,88 @@
     "spaceEncoding": "plus",
     "tags": ["Search", "Russia", "Поиск", "Россия"],
     "addedAt": "2026-02-21T07:37:20.886Z"
+  },
+  {
+    "id": "a9cc440b-6e07-5dbc-acab-5753c1fc8166",
+    "title": "ChatGPT Assist",
+    "description": "Asks ChatGPT to assist with highlighted text. Useful for doing research on concepts or products. Works in the first quarter of 2026.",
+    "iconUrl": "https://chat.openai.com/favicon.ico",
+    "openMode": "pageAction",
+    "tags": ["AI"],
+    "pageActionOption": {
+      "startUrl": "https://chatgpt.com/",
+      "openMode": "tab",
+      "steps": [
+        {
+          "id": "9su956mvj",
+          "param": {
+            "type": "start",
+            "label": "Start"
+          }
+        },
+        {
+          "id": "l1qzh0bhh",
+          "param": {
+            "type": "click",
+            "label": "Focus textarea",
+            "selector": "//p",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "45pxvv3bv",
+          "param": {
+            "type": "input",
+            "label": "Prompt Input",
+            "selector": "//form/*/*/*/*/div",
+            "selectorType": "xpath",
+            "value": "Assist     with    the     \nfollowing          \n\n                                                             \n                                                                                            \n                    "
+          }
+        },
+        {
+          "id": "klfisx13d",
+          "param": {
+            "type": "keyboard",
+            "label": "Line breaks Delayed",
+            "key": "Enter",
+            "code": "Enter",
+            "keyCode": 13,
+            "shiftKey": true,
+            "ctrlKey": false,
+            "altKey": false,
+            "metaKey": false,
+            "targetSelector": "//form/*/*/*/*/div",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "p2iivnliz",
+          "param": {
+            "type": "input",
+            "label": "Insert selected text",
+            "selector": "//p[2]",
+            "selectorType": "xpath",
+            "value": "{{SelectedText}}"
+          }
+        },
+        {
+          "id": "ue1kl6s5m",
+          "param": {
+            "type": "click",
+            "label": "Submit",
+            "selector": "//*[@data-testid='send-button']/*",
+            "selectorType": "xpath"
+          }
+        },
+        {
+          "id": "4zbqwz67c",
+          "param": {
+            "type": "end",
+            "label": "End"
+          }
+        }
+      ]
+    },
+    "addedAt": "2026-02-25T06:59:45.402Z"
   }
 ]

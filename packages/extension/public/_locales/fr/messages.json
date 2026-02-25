@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "Animation d'Affichage du Menu"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Délai de Fermeture Automatique du Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Définissez le délai avant que le popup se ferme automatiquement après avoir perdu le focus. Définissez 0 ou laissez vide pour une fermeture immédiate.\nMaximum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (fermer immédiatement)"
+  },
   "Option_inherit": {
     "message": "Hériter"
   },
@@ -266,6 +275,9 @@
   "Option_openMode": {
     "message": "Mode d'Ouverture"
   },
+  "Option_displayMode": {
+    "message": "Méthode d'Affichage de Fenêtre"
+  },
   "Option_openMode_popup": {
     "message": "Pop-up"
   },
@@ -278,11 +290,11 @@
   "Option_openMode_backgroundTab": {
     "message": "Onglet en arrière-plan"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "Panneau latéral"
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "Pop-up de Lien"
@@ -295,9 +307,6 @@
   },
   "Option_openMode_pageAction": {
     "message": "Action de Page"
-  },
-  "Option_displayMode": {
-    "message": "Méthode d'Affichage de Fenêtre"
   },
   "Option_commandType_title": {
     "message": "Sélectionner le Type de Commande"
@@ -362,6 +371,15 @@
   "Option_parentFolderId": {
     "message": "Dossier"
   },
+  "Option_parentFolder": {
+    "message": "Dossier Parent"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Sélectionner le dossier parent"
+  },
+  "Option_rootFolder": {
+    "message": "Racine (sans parent)"
+  },
   "Option_copyOption": {
     "message": "Format de copie"
   },
@@ -406,6 +424,39 @@
   },
   "Option_pageAction_delay": {
     "message": "Temps de délai"
+  },
+  "Option_userVariables": {
+    "message": "Variables Utilisateur"
+  },
+  "Option_userVariables_desc": {
+    "message": "Définir des variables personnalisées pour les champs de saisie (max 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Nom de variable"
+  },
+  "Option_userVariable_value": {
+    "message": "Valeur"
+  },
+  "Option_userVariable_add": {
+    "message": "Ajouter une variable"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Le nom de variable est requis"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Le nom de variable doit commencer par une lettre et ne contenir que des lettres, chiffres et traits de soulignement"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Le nom de variable existe déjà"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maximum $max$ variables autorisées",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "Aperçu du Lien"
@@ -466,15 +517,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "Configurez le comportement de la fenêtre et les paramètres de popup."
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "Délai de Fermeture Automatique du Popup"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "Définissez le délai avant que le popup se ferme automatiquement après avoir perdu le focus. Définissez 0 ou laissez vide pour une fermeture immédiate.\nMaximum: 10000 ms"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0 (fermer immédiatement)"
   },
   "Option_folders": {
     "message": "Dossiers"
@@ -649,6 +691,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Le nom de variable doit commencer par une lettre et ne contenir que des lettres, chiffres et traits de soulignement"
   },
   "Option_zod_string_min": {
     "message": "Veuillez saisir une chaîne de $key$ caractères ou plus.",
@@ -944,29 +989,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Comportement lors du Ctrl + clic sur le menu."
   },
-  "Option_parentFolder": {
-    "message": "Dossier Parent"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Sélectionner le dossier parent"
-  },
-  "Option_rootFolder": {
-    "message": "Racine (sans parent)"
-  },
   "Option_searchUrlAssist": {
     "message": "Assistant IA"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Assistant d'URL de Recherche"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Entrez un mot-clé de recherche et l'URL de la page de résultats de recherche, puis cliquez sur le bouton d'exécution.\nL'IA générera une URL de recherche."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Exécuter avec Gemini"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "Exécution en cours..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Mode d'utilisation"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Mot-clé de recherche"
@@ -979,6 +1009,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Mode d'utilisation"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Entrez n'importe quel mot dans \"(1) Mot-clé de recherche\""
@@ -995,50 +1028,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Copiez l'URL de recherche générée et collez-la dans le champ URL de recherche de la commande"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Assistant d'URL de Recherche"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Exécuter avec Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Exécution en cours..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Veuillez entrer un mot-clé de recherche"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Veuillez entrer une URL valide"
-  },
-  "Option_userVariable_add": {
-    "message": "Ajouter une variable"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Maximum $max$ variables autorisées",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Nom de variable"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Le nom de variable existe déjà"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Le nom de variable doit commencer par une lettre et ne contenir que des lettres, chiffres et traits de soulignement"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Le nom de variable est requis"
-  },
-  "Option_userVariable_value": {
-    "message": "Valeur"
-  },
-  "Option_userVariables": {
-    "message": "Variables Utilisateur"
-  },
-  "Option_userVariables_desc": {
-    "message": "Définir des variables personnalisées pour les champs de saisie (max 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Le nom de variable doit commencer par une lettre et ne contenir que des lettres, chiffres et traits de soulignement"
   },
   "Option_commandType": {
     "message": "Type de Commande"
