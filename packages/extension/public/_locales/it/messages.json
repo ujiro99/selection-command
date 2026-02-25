@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "Animazione Visualizzazione Menu"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Ritardo Chiusura Automatica Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Imposta il tempo di ritardo prima che il popup si chiuda automaticamente dopo aver perso il focus. Imposta 0 o lascia vuoto per la chiusura immediata.\nMassimo: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (chiudi immediatamente)"
+  },
   "Option_inherit": {
     "message": "Eredita"
   },
@@ -266,6 +275,9 @@
   "Option_openMode": {
     "message": "Modalità apertura"
   },
+  "Option_displayMode": {
+    "message": "Metodo di Visualizzazione Finestra"
+  },
   "Option_openMode_popup": {
     "message": "Pop-up"
   },
@@ -278,11 +290,11 @@
   "Option_openMode_backgroundTab": {
     "message": "Scheda in background"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "Pannello laterale"
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "Pop-up link"
@@ -295,9 +307,6 @@
   },
   "Option_openMode_pageAction": {
     "message": "Azione pagina"
-  },
-  "Option_displayMode": {
-    "message": "Metodo di Visualizzazione Finestra"
   },
   "Option_commandType_title": {
     "message": "Seleziona Tipo di Comando"
@@ -362,6 +371,15 @@
   "Option_parentFolderId": {
     "message": "Cartella"
   },
+  "Option_parentFolder": {
+    "message": "Cartella Genitore"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Seleziona cartella genitore"
+  },
+  "Option_rootFolder": {
+    "message": "Radice (nessun genitore)"
+  },
   "Option_copyOption": {
     "message": "Formato copia"
   },
@@ -406,6 +424,39 @@
   },
   "Option_pageAction_delay": {
     "message": "Tempo di attesa"
+  },
+  "Option_userVariables": {
+    "message": "Variabili Utente"
+  },
+  "Option_userVariables_desc": {
+    "message": "Definisci variabili personalizzate per i campi di input (max 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Nome variabile"
+  },
+  "Option_userVariable_value": {
+    "message": "Valore"
+  },
+  "Option_userVariable_add": {
+    "message": "Aggiungi variabile"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Il nome della variabile è richiesto"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Il nome della variabile deve iniziare con una lettera e contenere solo lettere, numeri e trattini bassi"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Il nome della variabile esiste già"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Massimo $max$ variabili consentite",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "Anteprima link"
@@ -466,15 +517,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "Configura il comportamento della finestra e le impostazioni popup."
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "Ritardo Chiusura Automatica Popup"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "Imposta il tempo di ritardo prima che il popup si chiuda automaticamente dopo aver perso il focus. Imposta 0 o lascia vuoto per la chiusura immediata.\nMassimo: 10000 ms"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0 (chiudi immediatamente)"
   },
   "Option_folders": {
     "message": "Cartelle"
@@ -649,6 +691,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Il nome della variabile deve iniziare con una lettera e contenere solo lettere, numeri e trattini bassi"
   },
   "Option_zod_string_min": {
     "message": "Inserisci una stringa con almeno $key$ caratteri.",
@@ -944,29 +989,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Comportamento quando si fa Ctrl + clic sul menu."
   },
-  "Option_parentFolder": {
-    "message": "Cartella Genitore"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Seleziona cartella genitore"
-  },
-  "Option_rootFolder": {
-    "message": "Radice (nessun genitore)"
-  },
   "Option_searchUrlAssist": {
     "message": "Assistente IA"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Assistente URL di Ricerca"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Inserisci una parola chiave di ricerca e l'URL della pagina dei risultati di ricerca, poi clicca il pulsante esegui.\nL'IA genererà un URL di ricerca."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Esegui con Gemini"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "Esecuzione in corso..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Modalità d'uso"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Parola chiave di ricerca"
@@ -979,6 +1009,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Modalità d'uso"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Inserisci qualsiasi parola in \"(1) Parola chiave di ricerca\""
@@ -995,50 +1028,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Copia e incolla l'URL di ricerca generato nel campo URL di ricerca del comando"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Assistente URL di Ricerca"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Esegui con Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Esecuzione in corso..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Inserisci una parola chiave di ricerca"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Inserisci un URL valido"
-  },
-  "Option_userVariable_add": {
-    "message": "Aggiungi variabile"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Massimo $max$ variabili consentite",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Nome variabile"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Il nome della variabile esiste già"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Il nome della variabile deve iniziare con una lettera e contenere solo lettere, numeri e trattini bassi"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Il nome della variabile è richiesto"
-  },
-  "Option_userVariable_value": {
-    "message": "Valore"
-  },
-  "Option_userVariables": {
-    "message": "Variabili Utente"
-  },
-  "Option_userVariables_desc": {
-    "message": "Definisci variabili personalizzate per i campi di input (max 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Il nome della variabile deve iniziare con una lettera e contenere solo lettere, numeri e trattini bassi"
   },
   "Option_commandType": {
     "message": "Tipo di Comando"

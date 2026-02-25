@@ -239,17 +239,11 @@
   "Option_title": {
     "message": "タイトル"
   },
-  "Option_title_desc": {
-    "message": "コマンドのタイトルとして表示されます。"
-  },
   "Option_searchUrl": {
     "message": "検索URL"
   },
   "Option_searchUrl_desc": {
     "message": "`%s`を選択テキストに置き換えて表示します。"
-  },
-  "Option_searchUrl_desc_api": {
-    "message": "URLに`fetch api`を実行します。"
   },
   "Option_iconUrl": {
     "message": "アイコンURL"
@@ -284,9 +278,6 @@
   "Option_displayMode": {
     "message": "ウィンドウ表示方法"
   },
-  "Option_displayMode_desc": {
-    "message": "ウィンドウの表示方法です。"
-  },
   "Option_openMode_popup": {
     "message": "ポップアップ"
   },
@@ -317,29 +308,11 @@
   "Option_openMode_pageAction": {
     "message": "ページアクション"
   },
-  "Option_openMode_popup_desc": {
-    "message": "シンプルなUIのウィンドウ。<wbr>フォーカスを外すと自動で消える。"
-  },
-  "Option_openMode_window_desc": {
-    "message": "新しいウィンドウを開く。"
-  },
-  "Option_openMode_tab_desc": {
-    "message": "タブを表示してアクティブにする。<wbr>表示中タブの右側に表示する。"
-  },
-  "Option_openMode_backgroundTab_desc": {
-    "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
-  },
-  "Option_openMode_sidePanel_desc": {
-    "message": "サイドパネルで開く。"
-  },
   "Option_commandType_title": {
     "message": "コマンドの種類を選ぶ"
   },
   "Option_commandType_description": {
     "message": "作成するコマンドの種類を選択してください"
-  },
-  "Option_commandType": {
-    "message": "コマンドの種類"
   },
   "Option_commandType_search_title": {
     "message": "検索"
@@ -377,9 +350,6 @@
   "Option_commandType_api_desc": {
     "message": "APIにfetchリクエストを送信します"
   },
-  "Option_commandType_on_edit": {
-    "message": "一度保存したコマンドの種類は変更できません"
-  },
   "Option_commandGroup_webPage_title": {
     "message": "Webページ起動"
   },
@@ -389,60 +359,6 @@
   "Option_commandGroup_experimental_title": {
     "message": "実験的"
   },
-  "Option_openModeCard_popup_title": {
-    "message": "ポップアップ"
-  },
-  "Option_openModeCard_popup_desc": {
-    "message": "選択テキストをポップアップウィンドウで開きます"
-  },
-  "Option_openModeCard_window_title": {
-    "message": "新しいウィンドウ"
-  },
-  "Option_openModeCard_window_desc": {
-    "message": "選択テキストを新しいウィンドウで開きます"
-  },
-  "Option_openModeCard_tab_title": {
-    "message": "新しいタブ"
-  },
-  "Option_openModeCard_tab_desc": {
-    "message": "選択テキストを新しいタブで開きます"
-  },
-  "Option_openModeCard_backgroundTab_title": {
-    "message": "バックグラウンドタブ"
-  },
-  "Option_openModeCard_backgroundTab_desc": {
-    "message": "選択テキストをバックグラウンドタブで開きます"
-  },
-  "Option_openModeCard_api_title": {
-    "message": "API"
-  },
-  "Option_openModeCard_api_desc": {
-    "message": "APIにリクエストを送信して結果を表示します"
-  },
-  "Option_openModeCard_pageAction_title": {
-    "message": "ページアクション"
-  },
-  "Option_openModeCard_pageAction_desc": {
-    "message": "ブラウザ操作を記録・再生します"
-  },
-  "Option_openModeCard_linkPopup_title": {
-    "message": "リンクポップアップ"
-  },
-  "Option_openModeCard_linkPopup_desc": {
-    "message": "選択されたリンクをポップアップで開きます"
-  },
-  "Option_openModeCard_copy_title": {
-    "message": "テキストコピー"
-  },
-  "Option_openModeCard_copy_desc": {
-    "message": "選択テキストをクリップボードにコピーします"
-  },
-  "Option_openModeCard_getTextStyles_title": {
-    "message": "スタイル取得"
-  },
-  "Option_openModeCard_getTextStyles_desc": {
-    "message": "選択テキストのスタイル情報を取得します"
-  },
   "Option_openMode_previewPopup": {
     "message": "Popup"
   },
@@ -451,9 +367,6 @@
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"
-  },
-  "Option_openModeSecondary_desc": {
-    "message": "メニューをCtrl + クリックしたときの動作です。"
   },
   "Option_parentFolderId": {
     "message": "フォルダ"
@@ -641,11 +554,11 @@
   "Option_pageRules": {
     "message": "ページルール"
   },
-  "Option_pageRules_desc": {
-    "message": "サイト毎の設定値です。"
-  },
   "Option_pageRules_tooltip": {
     "message": "ページルールを作成します。"
+  },
+  "Option_pageRules_desc": {
+    "message": "サイト毎の設定値です。"
   },
   "Option_pageRules_add": {
     "message": "ページルール編集"
@@ -692,20 +605,20 @@
   "Option_userStyles_option_border_color": {
     "message": "枠線色"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "文字の色"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "メニューの枠線色を指定します。デフォルト: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "文字の色を指定します。デフォルト: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "文字サイズの倍率"
   },
   "Option_userStyles_desc_font_scale": {
     "message": "文字サイズの倍率を指定します。デフォルト: 1"
-  },
-  "Option_userStyles_option_font_color": {
-    "message": "文字の色"
-  },
-  "Option_userStyles_desc_font_color": {
-    "message": "文字の色を指定します。デフォルト: #0F172A"
   },
   "Option_userStyles_option_image_scale": {
     "message": "アイコンサイズの倍率"
@@ -950,9 +863,6 @@
   "review_request_button": {
     "message": "レビューする"
   },
-  "review_request_later": {
-    "message": "後で"
-  },
   "Option_shortcuts": {
     "message": "ショートカットキー"
   },
@@ -965,14 +875,14 @@
   "Option_shortcuts_settings_link": {
     "message": "キー設定"
   },
-  "Option_shortcut_not_set": {
-    "message": "未設定"
+  "Option_shortcut_text_selection_only": {
+    "message": "テキスト選択中のみ"
   },
   "Option_shortcut_select_placeholder": {
     "message": "コマンドを選択"
   },
-  "Option_shortcut_text_selection_only": {
-    "message": "テキスト選択中のみ"
+  "Option_shortcut_not_set": {
+    "message": "未設定"
   },
   "Option_shortcut_no_selection_behavior": {
     "message": "テキスト未選択時"
@@ -1049,6 +959,33 @@
   "Option_RestoreFromBackup_failed": {
     "message": "バックアップからの復元に失敗しました。"
   },
+  "Option_openMode_popup_desc": {
+    "message": "シンプルなUIのウィンドウ。<wbr>フォーカスを外すと自動で消える。"
+  },
+  "Option_openMode_window_desc": {
+    "message": "新しいウィンドウを開く。"
+  },
+  "Option_openMode_tab_desc": {
+    "message": "タブを表示してアクティブにする。<wbr>表示中タブの右側に表示する。"
+  },
+  "Option_openMode_backgroundTab_desc": {
+    "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "サイドパネルで開く。"
+  },
+  "Option_title_desc": {
+    "message": "コマンドのタイトルとして表示されます。"
+  },
+  "Option_searchUrl_desc_api": {
+    "message": "URLに`fetch api`を実行します。"
+  },
+  "Option_displayMode_desc": {
+    "message": "ウィンドウの表示方法です。"
+  },
+  "Option_openModeSecondary_desc": {
+    "message": "メニューをCtrl + クリックしたときの動作です。"
+  },
   "Option_searchUrlAssist": {
     "message": "AI アシスト"
   },
@@ -1099,6 +1036,69 @@
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "有効なURLを入力してください"
+  },
+  "Option_commandType": {
+    "message": "コマンドの種類"
+  },
+  "Option_commandType_on_edit": {
+    "message": "一度保存したコマンドの種類は変更できません"
+  },
+  "Option_openModeCard_api_desc": {
+    "message": "APIにリクエストを送信して結果を表示します"
+  },
+  "Option_openModeCard_api_title": {
+    "message": "API"
+  },
+  "Option_openModeCard_backgroundTab_desc": {
+    "message": "選択テキストをバックグラウンドタブで開きます"
+  },
+  "Option_openModeCard_backgroundTab_title": {
+    "message": "バックグラウンドタブ"
+  },
+  "Option_openModeCard_copy_desc": {
+    "message": "選択テキストをクリップボードにコピーします"
+  },
+  "Option_openModeCard_copy_title": {
+    "message": "テキストコピー"
+  },
+  "Option_openModeCard_getTextStyles_desc": {
+    "message": "選択テキストのスタイル情報を取得します"
+  },
+  "Option_openModeCard_getTextStyles_title": {
+    "message": "スタイル取得"
+  },
+  "Option_openModeCard_linkPopup_desc": {
+    "message": "選択されたリンクをポップアップで開きます"
+  },
+  "Option_openModeCard_linkPopup_title": {
+    "message": "リンクポップアップ"
+  },
+  "Option_openModeCard_pageAction_desc": {
+    "message": "ブラウザ操作を記録・再生します"
+  },
+  "Option_openModeCard_pageAction_title": {
+    "message": "ページアクション"
+  },
+  "Option_openModeCard_popup_desc": {
+    "message": "選択テキストをポップアップウィンドウで開きます"
+  },
+  "Option_openModeCard_popup_title": {
+    "message": "ポップアップ"
+  },
+  "Option_openModeCard_tab_desc": {
+    "message": "選択テキストを新しいタブで開きます"
+  },
+  "Option_openModeCard_tab_title": {
+    "message": "新しいタブ"
+  },
+  "Option_openModeCard_window_desc": {
+    "message": "選択テキストを新しいウィンドウで開きます"
+  },
+  "Option_openModeCard_window_title": {
+    "message": "新しいウィンドウ"
+  },
+  "review_request_later": {
+    "message": "後で"
   },
   "developersupport_title": {
     "message": "開発者を応援"

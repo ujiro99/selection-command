@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "메뉴 표시 애니메이션"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "팝업 자동 닫기 지연"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "포커스를 잃은 후 팝업이 자동으로 닫히기 전 지연 시간을 설정합니다. 즉시 닫으려면 0으로 설정하거나 비워 두십시오.\n최대: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (즉시 닫기)"
+  },
   "Option_inherit": {
     "message": "상속"
   },
@@ -266,6 +275,9 @@
   "Option_openMode": {
     "message": "열기 모드"
   },
+  "Option_displayMode": {
+    "message": "창 표시 방법"
+  },
   "Option_openMode_popup": {
     "message": "팝업"
   },
@@ -278,11 +290,11 @@
   "Option_openMode_backgroundTab": {
     "message": "백그라운드 탭"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "사이드 패널"
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "링크 팝업"
@@ -295,9 +307,6 @@
   },
   "Option_openMode_pageAction": {
     "message": "페이지 작업"
-  },
-  "Option_displayMode": {
-    "message": "창 표시 방법"
   },
   "Option_commandType_title": {
     "message": "명령 유형 선택"
@@ -362,6 +371,15 @@
   "Option_parentFolderId": {
     "message": "폴더"
   },
+  "Option_parentFolder": {
+    "message": "상위 폴더"
+  },
+  "Option_parentFolder_desc": {
+    "message": "상위 폴더를 선택하세요"
+  },
+  "Option_rootFolder": {
+    "message": "루트 (상위 없음)"
+  },
   "Option_copyOption": {
     "message": "복사 형식"
   },
@@ -406,6 +424,39 @@
   },
   "Option_pageAction_delay": {
     "message": "지연 시간"
+  },
+  "Option_userVariables": {
+    "message": "사용자 변수"
+  },
+  "Option_userVariables_desc": {
+    "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"
+  },
+  "Option_userVariable_name": {
+    "message": "변수 이름"
+  },
+  "Option_userVariable_value": {
+    "message": "값"
+  },
+  "Option_userVariable_add": {
+    "message": "변수 추가"
+  },
+  "Option_userVariable_name_required": {
+    "message": "변수 이름이 필요합니다"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "변수 이름이 이미 존재합니다"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "최대 $max$개의 변수가 허용됩니다",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "링크 미리보기"
@@ -466,15 +517,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "창 동작 및 팝업 설정을 구성합니다."
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "팝업 자동 닫기 지연"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "포커스를 잃은 후 팝업이 자동으로 닫히기 전 지연 시간을 설정합니다. 즉시 닫으려면 0으로 설정하거나 비워 두십시오.\n최대: 10000 ms"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0 (즉시 닫기)"
   },
   "Option_folders": {
     "message": "폴더"
@@ -649,6 +691,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
   },
   "Option_zod_string_min": {
     "message": "$key$자 이상의 문자열을 입력하세요.",
@@ -932,36 +977,6 @@
   "Option_openMode_sidePanel_desc": {
     "message": "사이드 패널에서 열기."
   },
-  "Option_userVariables": {
-    "message": "사용자 변수"
-  },
-  "Option_userVariable_name": {
-    "message": "변수 이름"
-  },
-  "Option_userVariable_value": {
-    "message": "값"
-  },
-  "Option_userVariable_add": {
-    "message": "변수 추가"
-  },
-  "Option_userVariable_name_required": {
-    "message": "변수 이름이 필요합니다"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "변수 이름이 이미 존재합니다"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "최대 $max$개의 변수가 허용됩니다",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
   "Option_title_desc": {
     "message": "명령 제목으로 표시됩니다."
   },
@@ -974,29 +989,14 @@
   "Option_openModeSecondary_desc": {
     "message": "메뉴를 Ctrl + 클릭했을 때의 동작입니다."
   },
-  "Option_parentFolder": {
-    "message": "상위 폴더"
-  },
-  "Option_parentFolder_desc": {
-    "message": "상위 폴더를 선택하세요"
-  },
-  "Option_rootFolder": {
-    "message": "루트 (상위 없음)"
-  },
   "Option_searchUrlAssist": {
     "message": "AI 어시스턴트"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "검색 URL 어시스턴트"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "검색 키워드와 검색 결과 페이지 URL을 입력하고 실행 버튼을 클릭하세요.\nAI가 검색 URL을 생성합니다."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Gemini로 실행"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "실행 중..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "사용 방법"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) 검색 키워드"
@@ -1009,6 +1009,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "사용 방법"
   },
   "Option_searchUrlAssist_step1": {
     "message": "\"(1) 검색 키워드\"에 임의의 단어 입력"
@@ -1025,20 +1028,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "생성된 검색 URL을 복사하여 명령의 검색 URL 필드에 붙여넣기"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "검색 URL 어시스턴트"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Gemini로 실행"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "실행 중..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "검색 키워드를 입력하세요"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "유효한 URL을 입력하세요"
-  },
-  "Option_userVariables_desc": {
-    "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
   },
   "Option_commandType": {
     "message": "명령어 유형"

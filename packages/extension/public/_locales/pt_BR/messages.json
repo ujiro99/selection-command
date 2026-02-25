@@ -203,6 +203,15 @@
   "Option_popupAnimation": {
     "message": "Animação de Exibição do Menu"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Atraso de Fechamento Automático do Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Defina o tempo de atraso antes que o popup feche automaticamente após perder o foco. Defina como 0 ou deixe vazio para fechamento imediato.\nMáximo: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (fechar imediatamente)"
+  },
   "Option_inherit": {
     "message": "Herdar"
   },
@@ -266,6 +275,9 @@
   "Option_openMode": {
     "message": "Modo de Abertura"
   },
+  "Option_displayMode": {
+    "message": "Método de Exibição de Janela"
+  },
   "Option_openMode_popup": {
     "message": "Pop-up"
   },
@@ -278,11 +290,11 @@
   "Option_openMode_backgroundTab": {
     "message": "Aba em segundo plano"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "Painel lateral"
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "Pop-up de Link"
@@ -295,9 +307,6 @@
   },
   "Option_openMode_pageAction": {
     "message": "Ação de Página"
-  },
-  "Option_displayMode": {
-    "message": "Método de Exibição de Janela"
   },
   "Option_commandType_title": {
     "message": "Selecionar Tipo de Comando"
@@ -362,6 +371,15 @@
   "Option_parentFolderId": {
     "message": "Pasta"
   },
+  "Option_parentFolder": {
+    "message": "Pasta Pai"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Selecionar pasta pai"
+  },
+  "Option_rootFolder": {
+    "message": "Raiz (sem pai)"
+  },
   "Option_copyOption": {
     "message": "Formato de cópia"
   },
@@ -406,6 +424,39 @@
   },
   "Option_pageAction_delay": {
     "message": "Tempo de atraso"
+  },
+  "Option_userVariables": {
+    "message": "Variáveis do Usuário"
+  },
+  "Option_userVariables_desc": {
+    "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Nome da variável"
+  },
+  "Option_userVariable_value": {
+    "message": "Valor"
+  },
+  "Option_userVariable_add": {
+    "message": "Adicionar variável"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nome da variável é obrigatório"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nome da variável já existe"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Máximo de $max$ variáveis permitidas",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "Visualização de Link"
@@ -466,15 +517,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "Configure o comportamento da janela e as configurações de popup."
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "Atraso de Fechamento Automático do Popup"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "Defina o tempo de atraso antes que o popup feche automaticamente após perder o foco. Defina como 0 ou deixe vazio para fechamento imediato.\nMáximo: 10000 ms"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0 (fechar imediatamente)"
   },
   "Option_folders": {
     "message": "Pastas"
@@ -649,6 +691,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
   },
   "Option_zod_string_min": {
     "message": "Por favor, insira uma string de $key$ caracteres ou mais.",
@@ -935,36 +980,6 @@
   "Option_openMode_sidePanel_desc": {
     "message": "Abrir no painel lateral."
   },
-  "Option_userVariables": {
-    "message": "Variáveis do Usuário"
-  },
-  "Option_userVariable_name": {
-    "message": "Nome da variável"
-  },
-  "Option_userVariable_value": {
-    "message": "Valor"
-  },
-  "Option_userVariable_add": {
-    "message": "Adicionar variável"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Nome da variável é obrigatório"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Nome da variável já existe"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Máximo de $max$ variáveis permitidas",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
   "Option_title_desc": {
     "message": "Exibido como título do comando."
   },
@@ -977,29 +992,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Comportamento ao fazer Ctrl + clique no menu."
   },
-  "Option_parentFolder": {
-    "message": "Pasta Pai"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Selecionar pasta pai"
-  },
-  "Option_rootFolder": {
-    "message": "Raiz (sem pai)"
-  },
   "Option_searchUrlAssist": {
     "message": "Assistente IA"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Assistente de URL de Pesquisa"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Digite uma palavra-chave de pesquisa e a URL da página de resultados de pesquisa, depois clique no botão executar.\nA IA gerará uma URL de pesquisa."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Executar com Gemini"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "Executando..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Modo de usar"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Palavra-chave de pesquisa"
@@ -1012,6 +1012,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Modo de usar"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Digite qualquer palavra em \"(1) Palavra-chave de pesquisa\""
@@ -1028,20 +1031,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Copie a URL de pesquisa gerada e cole no campo URL de pesquisa do comando"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Assistente de URL de Pesquisa"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Executar com Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Executando..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Por favor, digite uma palavra-chave de pesquisa"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Por favor, digite uma URL válida"
-  },
-  "Option_userVariables_desc": {
-    "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
   },
   "Option_commandType": {
     "message": "Tipo de Comando"
