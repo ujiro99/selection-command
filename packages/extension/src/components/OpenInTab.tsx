@@ -7,9 +7,6 @@ let isPageUnloading = false
 
 export function OpenInTab(): JSX.Element {
   const [enableOpenInTab, setEnableOpenInTab] = useState(false)
-  const [isPageReady, setIsPageReady] = useState(
-    document.readyState === "complete",
-  )
 
   const onClickOpenTab = () => {
     Ipc.send(BgCommand.openInTab)
@@ -19,16 +16,6 @@ export function OpenInTab(): JSX.Element {
     Ipc.send(BgCommand.canOpenInTab).then((result) => {
       setEnableOpenInTab(result)
     })
-  }, [])
-
-  useEffect(() => {
-    if (document.readyState === "complete") {
-      setIsPageReady(true)
-      return
-    }
-    const handler = () => setIsPageReady(true)
-    window.addEventListener("load", handler)
-    return () => window.removeEventListener("load", handler)
   }, [])
 
   useEffect(() => {
@@ -56,8 +43,8 @@ export function OpenInTab(): JSX.Element {
 
   return (
     <>
-      {enableOpenInTab && isPageReady && (
-        <div className="OpenInTab">
+      {enableOpenInTab && (
+        <div className="OpenInTab" style={{ visibility: "hidden" }}>
           <button
             type="button"
             className="OpenInTab__button"
