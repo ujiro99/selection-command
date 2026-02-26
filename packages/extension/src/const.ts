@@ -10,6 +10,7 @@ export const VERSION = __APP_VERSION__ as string
  */
 const environment = import.meta.env.MODE ?? "development"
 export const isDebug = environment === "development"
+export const isE2E = environment === "e2e"
 
 // Abstract command types for simplified command creation
 export enum COMMAND_TYPE {

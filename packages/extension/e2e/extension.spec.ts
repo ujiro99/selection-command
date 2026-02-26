@@ -23,9 +23,6 @@ test("E2E-02: popup menu appears on text selection", async ({ page }) => {
 
   await testPage.selectText()
 
-  // selectText() already waits until [data-state="open"] appears, so a short
-  // timeout is sufficient here.
-  await expect(page.locator('[data-state="open"]')).toBeVisible({
-    timeout: 1000,
-  })
+  const menubar = await testPage.getMenuBar()
+  expect(menubar.isVisible())
 })

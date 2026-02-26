@@ -13,6 +13,7 @@
     "dev:hub": "yarn workspace @selection-command/hub dev",
     "build": "yarn workspaces run build",
     "build:extension": "yarn workspace @selection-command/extension build",
+    "build:e2e": "yarn workspace @selection-command/extension build:e2e",
     "build:hub": "yarn workspace @selection-command/hub build",
     "lint": "yarn workspaces run lint",
     "test": "yarn workspace @selection-command/extension test:run; yarn workspace @selection-command/hub test:run",

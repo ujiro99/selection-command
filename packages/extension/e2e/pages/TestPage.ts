@@ -1,4 +1,5 @@
 import { expect, type Page } from "@playwright/test"
+import { TEST_IDS } from "@/testIds"
 
 const TEST_URL = "https://ujiro99.github.io/selection-command/en/test"
 const APP_ID = "selection-command"
@@ -40,7 +41,7 @@ export class TestPage {
    */
   async selectText(): Promise<void> {
     await this.page.waitForFunction(
-      () => {
+      (testIds) => {
         const heading = document.querySelector("h1, h2, h3")
         if (!heading) return false
 
@@ -84,12 +85,20 @@ export class TestPage {
         )
 
         // The popup portals into document.body via Radix UI. It appears after a
-        // ~250ms delay. Polling at 500ms gives the popup time to render before
-        // the next check, without requiring any external library internals.
-        return !!document.querySelector('[data-state="open"]')
+        // ~250ms delay. Polling at 300ms gives the popup time to render before
+        // the next check.
+        const el = document.getElementById(testIds.appId)
+        return (
+          el?.shadowRoot?.querySelector(`[data-testid='${testIds.menuBar}']`) !=
+          null
+        )
       },
-      undefined,
-      { polling: 500, timeout: 10_000 },
+      { ...TEST_IDS, appId: APP_ID },
+      { polling: 300, timeout: 10_000 },
     )
+  }
+
+  async getMenuBar(): Promise<ReturnType<Page["locator"]>> {
+    return this.page.locator(`[data-testid="${TEST_IDS.menuBar}"]`)
   }
 }
