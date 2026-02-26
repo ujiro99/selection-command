@@ -29,9 +29,6 @@ jobs:
       - name: Run lint
         run: yarn lint
 
-      - name: Run tests
-        run: yarn test --run
-
       - name: Run tests with coverage
         run: yarn test:coverage --run
 
@@ -60,8 +57,20 @@ jobs:
       - name: Build extension
         run: yarn build:e2e
 
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-chromium-${{ hashFiles('yarn.lock') }}
+
       - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install chromium --with-deps
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
 
       - name: Run E2E tests
         run: yarn test:e2e
