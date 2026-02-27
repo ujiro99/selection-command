@@ -63,6 +63,8 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: playwright-chromium-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            playwright-chromium-
 
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
