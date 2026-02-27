@@ -8,12 +8,20 @@ import { getScreenSize } from "@/services/screen"
 import { DRAG_OPEN_MODE, POPUP_TYPE } from "@/const"
 import { isEmpty } from "@/lib/utils"
 import type { ExecuteCommandParams } from "@/types"
+import type { OpenSidePanelProps } from "@/services/chrome"
 
 export const LinkPreview = {
   async execute({ command, position, target }: ExecuteCommandParams) {
     if (position && target) {
       const elm = findAnchorElementFromParent(target) as HTMLAnchorElement
       const href = elm?.href
+
+      if (command.openMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL) {
+        if (!isEmpty(href)) {
+          Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, { url: href })
+        }
+        return
+      }
 
       const type =
         command.openMode === DRAG_OPEN_MODE.PREVIEW_POPUP

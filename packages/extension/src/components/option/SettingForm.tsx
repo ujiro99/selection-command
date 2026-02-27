@@ -615,6 +615,12 @@ export function SettingForm({ className }: { className?: string }) {
               }}
             />
           )}
+          <SwitchField
+            control={form.control}
+            name="windowOption.sidePanelAutoHide"
+            formLabel={t("sidePanelAutoHide")}
+            description={t("sidePanelAutoHide_desc")}
+          />
         </section>
         <hr />
 

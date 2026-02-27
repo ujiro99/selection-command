@@ -212,6 +212,12 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (即座に閉じる)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "サイドパネル自動非表示"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "メインのパネルをクリックしたときに、サイドパネルを自動的に非表示にします。"
+  },
   "Option_inherit": {
     "message": "継承"
   },
@@ -364,6 +370,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Window"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "サイドパネル"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"

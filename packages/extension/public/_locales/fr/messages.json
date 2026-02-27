@@ -212,6 +212,12 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (fermer immédiatement)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Side Panel Auto-Hide"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Automatically hide the side panel when the main panel is clicked."
+  },
   "Option_inherit": {
     "message": "Hériter"
   },
@@ -364,6 +370,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Fenêtre"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Side Panel"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clic"
