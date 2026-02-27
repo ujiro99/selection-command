@@ -213,10 +213,10 @@
     "message": "0 (तुरंत बंद करें)"
   },
   "Option_sidePanelAutoHide": {
-    "message": "Side Panel Auto-Hide"
+    "message": "साइड पैनल स्वतः छिपाएं"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "मुख्य पैनल पर क्लिक करने पर साइड पैनल को स्वतः छिपा देता है।"
   },
   "Option_inherit": {
     "message": "प्राप्त करें"
@@ -372,7 +372,7 @@
     "message": "विंडो"
   },
   "Option_openMode_previewSidePanel": {
-    "message": "Side Panel"
+    "message": "साइड पैनल"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + क्लिक"

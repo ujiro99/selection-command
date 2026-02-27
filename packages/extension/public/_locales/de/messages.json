@@ -213,10 +213,10 @@
     "message": "0 (sofort schließen)"
   },
   "Option_sidePanelAutoHide": {
-    "message": "Side Panel Auto-Hide"
+    "message": "Seitenbereich automatisch ausblenden"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "Blendet den Seitenbereich automatisch aus, wenn in den Hauptbereich geklickt wird."
   },
   "Option_inherit": {
     "message": "Erben"
@@ -372,7 +372,7 @@
     "message": "Fenster"
   },
   "Option_openMode_previewSidePanel": {
-    "message": "Side Panel"
+    "message": "Seitenbereich"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Strg + Klick"

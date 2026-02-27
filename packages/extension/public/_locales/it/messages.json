@@ -213,10 +213,10 @@
     "message": "0 (chiudi immediatamente)"
   },
   "Option_sidePanelAutoHide": {
-    "message": "Side Panel Auto-Hide"
+    "message": "Nascondi automaticamente il pannello laterale"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "Nasconde automaticamente il pannello laterale quando si fa clic sul pannello principale."
   },
   "Option_inherit": {
     "message": "Eredita"
@@ -372,7 +372,7 @@
     "message": "Finestra"
   },
   "Option_openMode_previewSidePanel": {
-    "message": "Side Panel"
+    "message": "Pannello laterale"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + clic"

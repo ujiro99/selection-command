@@ -213,10 +213,10 @@
     "message": "0 (cerrar inmediatamente)"
   },
   "Option_sidePanelAutoHide": {
-    "message": "Side Panel Auto-Hide"
+    "message": "Ocultar panel lateral automáticamente"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "Oculta automáticamente el panel lateral cuando se hace clic en el panel principal."
   },
   "Option_inherit": {
     "message": "Heredar"
@@ -372,7 +372,7 @@
     "message": "Ventana"
   },
   "Option_openMode_previewSidePanel": {
-    "message": "Side Panel"
+    "message": "Panel lateral"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clic"

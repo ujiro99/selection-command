@@ -213,10 +213,10 @@
     "message": "0（立即关闭）"
   },
   "Option_sidePanelAutoHide": {
-    "message": "Side Panel Auto-Hide"
+    "message": "侧边栏自动隐藏"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "点击主面板时自动隐藏侧边栏。"
   },
   "Option_inherit": {
     "message": "获取"
@@ -372,7 +372,7 @@
     "message": "窗口"
   },
   "Option_openMode_previewSidePanel": {
-    "message": "Side Panel"
+    "message": "侧边栏"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + 点击"

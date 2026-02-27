@@ -213,10 +213,10 @@
     "message": "0 (закрыть немедленно)"
   },
   "Option_sidePanelAutoHide": {
-    "message": "Side Panel Auto-Hide"
+    "message": "Автоматически скрывать боковую панель"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "Автоматически скрывает боковую панель при клике на основную панель."
   },
   "Option_inherit": {
     "message": "Наследовать"
@@ -372,7 +372,7 @@
     "message": "Окно"
   },
   "Option_openMode_previewSidePanel": {
-    "message": "Side Panel"
+    "message": "Боковая панель"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + клик"

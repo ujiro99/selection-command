@@ -213,10 +213,10 @@
     "message": "0 (fermer immédiatement)"
   },
   "Option_sidePanelAutoHide": {
-    "message": "Side Panel Auto-Hide"
+    "message": "Masquage automatique du panneau latéral"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "Masque automatiquement le panneau latéral lorsque le panneau principal est cliqué."
   },
   "Option_inherit": {
     "message": "Hériter"
@@ -372,7 +372,7 @@
     "message": "Fenêtre"
   },
   "Option_openMode_previewSidePanel": {
-    "message": "Side Panel"
+    "message": "Panneau latéral"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clic"

@@ -213,10 +213,10 @@
     "message": "0 (즉시 닫기)"
   },
   "Option_sidePanelAutoHide": {
-    "message": "Side Panel Auto-Hide"
+    "message": "사이드 패널 자동 숨기기"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "메인 패널을 클릭하면 사이드 패널이 자동으로 숨겨집니다."
   },
   "Option_inherit": {
     "message": "상속"
@@ -372,7 +372,7 @@
     "message": "창"
   },
   "Option_openMode_previewSidePanel": {
-    "message": "Side Panel"
+    "message": "사이드 패널"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + 클릭"
