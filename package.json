@@ -27,7 +27,6 @@
     "@eslint/js": "^9.17.0",
     "@playwright/test": "^1.58.2",
     "@testing-library/jest-dom": "^6.7.0",
-    "@testing-library/react": "^16.3.0",
     "@types/node": "^20.10.6",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
@@ -46,5 +45,6 @@
   "engines": {
     "node": ">=18.0.0",
     "yarn": ">=1.22.0"
-  }
+  },
+  "dependencies": {}
 }

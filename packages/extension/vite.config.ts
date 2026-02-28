@@ -9,8 +9,7 @@ import viteTouchCss from "./src/lib/vite-plugin-touch-css"
 import removeCssFromContentScript from "./src/lib/vite-plugin-manifest"
 import refreshLocales from "./src/lib/vite-plugin-refresh-locales"
 import packageJson from "./package.json"
-import { vitePluginMacro } from "vite-plugin-macro"
-import { provideImportIf } from "./macros/importIfProvider"
+import { importIfPlugin } from "./src/lib/vite-plugin-import-if"
 
 const shouldUploadSourcemaps = process.env.UPLOAD_SOURCEMAP_TO_SENTRY === "true"
 
@@ -22,11 +21,7 @@ export default defineConfig(({ mode }) => {
   const plugins = [
     react(),
     crx({ manifest }),
-    vitePluginMacro({
-      typesPath: path.resolve(__dirname, "./src/types/macros.d.ts"),
-    })
-      .use(provideImportIf({ mode }))
-      .toPlugin(),
+    ...importIfPlugin({ mode }),
     viteTouchCss({
       cssFilePaths: [path.resolve(__dirname, "src/components/App.css")],
       watchRegexp: /src/,
