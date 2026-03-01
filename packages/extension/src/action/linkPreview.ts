@@ -18,7 +18,10 @@ export const LinkPreview = {
 
       if (command.openMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL) {
         if (!isEmpty(href)) {
-          Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, { url: href })
+          Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+            url: href,
+            isLinkCommand: true,
+          })
         }
         return
       }

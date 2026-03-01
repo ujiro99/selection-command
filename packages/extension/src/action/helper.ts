@@ -123,10 +123,19 @@ export const openSidePanel = (
     .then(() => {
       // Register the tab ID for tracking
       if (tabId) {
+        // Update BgData to include the new side panel tab ID
+        // If it's a link command, add to linkCommandSidePanelTabs; otherwise, add to sidePanelTabs.
         return BgData.update((data) => ({
-          sidePanelTabs: data.sidePanelTabs.includes(tabId)
-            ? data.sidePanelTabs
-            : [...data.sidePanelTabs, tabId],
+          sidePanelTabs: !param.isLinkCommand
+            ? data.sidePanelTabs.includes(tabId)
+              ? data.sidePanelTabs
+              : [...data.sidePanelTabs, tabId]
+            : data.sidePanelTabs.filter((id) => id !== tabId),
+          linkCommandSidePanelTabs: param.isLinkCommand
+            ? data.linkCommandSidePanelTabs.includes(tabId)
+              ? data.linkCommandSidePanelTabs
+              : [...data.linkCommandSidePanelTabs, tabId]
+            : data.linkCommandSidePanelTabs.filter((id) => id !== tabId),
         }))
       }
     })
@@ -150,7 +159,6 @@ export const closeSidePanel = (
   if (tabId == null) {
     return false
   }
-
   enhancedSettings.get().then(async (settings) => {
     const sidePanelAutoHide = settings.windowOption.sidePanelAutoHide
     if (sidePanelAutoHide) {
@@ -159,10 +167,41 @@ export const closeSidePanel = (
         await _closeSidePanel(tabId)
       }
     }
+    const linkCommandSidePanelAutoHide = settings.linkCommand.sidePanelAutoHide
+    if (linkCommandSidePanelAutoHide) {
+      const bgData = BgData.get()
+      if (bgData.linkCommandSidePanelTabs.includes(tabId)) {
+        await _closeSidePanel(tabId)
+      }
+    }
     response(true)
   })
 
   return true
+}
+
+/**
+ * Handle side panel closed event for a tab
+ * @param {number} tabId - The ID of the tab whose side panel was closed
+ * @return {Promise<void>} A promise that resolves when the side panel closed event is handled
+ * This function is called when a side panel is closed, either by user action or programmatically.
+ */
+export const sidePanelClosed = async (tabId?: number): Promise<void> => {
+  if (!tabId) return
+  try {
+    BgData.update((data) => {
+      const { [tabId]: _, ...rest } = data.sidePanelUrls
+      return {
+        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
+        linkCommandSidePanelTabs: data.linkCommandSidePanelTabs.filter(
+          (id) => id !== tabId,
+        ),
+        sidePanelUrls: rest,
+      }
+    })
+  } catch (e) {
+    console.warn("Failed to cleanup side panel:", e)
+  }
 }
 
 export const navigateSidePanel = (

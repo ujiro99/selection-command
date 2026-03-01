@@ -243,6 +243,10 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
     data.settingVersion = VERSION as Version
     data = migrate0_14_3(data)
   }
+  if (versionDiff(data.settingVersion, "0.15.0") === VersionDiff.Old) {
+    data.settingVersion = VERSION as Version
+    data = migrate0_15_0(data)
+  }
 
   return data
 }
@@ -349,6 +353,16 @@ const migrate0_14_3 = (data: SettingsType): SettingsType => {
   if (data.windowOption == null) {
     data.windowOption = DefaultSettings.windowOption
     console.debug("migrate 0.14.3: added windowOption")
+  }
+  return data
+}
+
+const migrate0_15_0 = (data: SettingsType): SettingsType => {
+  // Add linkCommand.sidePanelAutoHide if not exists
+  if (data.linkCommand != null && data.linkCommand.sidePanelAutoHide == null) {
+    data.linkCommand.sidePanelAutoHide =
+      DefaultSettings.linkCommand.sidePanelAutoHide
+    console.debug("migrate 0.15.0: added linkCommand.sidePanelAutoHide")
   }
   return data
 }

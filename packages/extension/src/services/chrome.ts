@@ -332,11 +332,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function (port) {
+      chrome.runtime.onConnect.addListener(function(port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function (msg) {
+        port.onMessage.addListener(function(msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -621,6 +621,7 @@ export async function closeWindow(
 export type OpenSidePanelProps = {
   url: string | UrlParam
   tabId?: number
+  isLinkCommand?: boolean
 }
 
 export type UpdateSidePanelUrlProps = {
@@ -672,23 +673,6 @@ export const closeSidePanel = async (tabId: number): Promise<void> => {
     await chrome.sidePanel.close({ tabId: tabId })
   } catch (e) {
     console.warn("Failed to close side panel:", e)
-  }
-
-  // Cleanup regardless of whether close succeeded
-  try {
-    await BgData.update((data) => {
-      const { [tabId]: _, ...rest } = data.sidePanelUrls
-      return {
-        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-        sidePanelUrls: rest,
-      }
-    })
-    await chrome.sidePanel.setOptions({
-      tabId: tabId,
-      enabled: false,
-    })
-  } catch (e) {
-    console.warn("Failed to cleanup side panel:", e)
   }
 }
 

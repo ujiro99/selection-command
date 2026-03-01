@@ -618,15 +618,10 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
 // SidePanel auto-hide functionality
 // Track tabs with active side panels
-chrome.tabs.onRemoved.addListener((tabId) => {
-  BgData.update((data) => {
-    const { [tabId]: _, ...rest } = data.sidePanelUrls
-    return {
-      sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-      sidePanelUrls: rest,
-    }
-  })
-})
+chrome.tabs.onRemoved.addListener(ActionHelper.sidePanelClosed)
+chrome.sidePanel.onClosed.addListener(({ tabId }) =>
+  ActionHelper.sidePanelClosed(tabId),
+)
 
 // Export functions for testing
 export const testExports = {

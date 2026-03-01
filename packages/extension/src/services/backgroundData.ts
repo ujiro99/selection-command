@@ -15,6 +15,7 @@ export class BgData {
   public activeScreenId: string | null
   public connectedTabs: number[]
   public sidePanelTabs: number[]
+  public linkCommandSidePanelTabs: number[]
   public sidePanelUrls: Record<number, string>
 
   private constructor(val: BgData | undefined) {
@@ -24,6 +25,7 @@ export class BgData {
     this.activeScreenId = val?.activeScreenId ?? null
     this.connectedTabs = val?.connectedTabs ?? []
     this.sidePanelTabs = val?.sidePanelTabs ?? []
+    this.linkCommandSidePanelTabs = val?.linkCommandSidePanelTabs ?? []
     this.sidePanelUrls = val?.sidePanelUrls ?? {}
   }
 

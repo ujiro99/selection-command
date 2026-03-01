@@ -100,6 +100,7 @@ const formSchema = z
           .refine((v) => v !== LINK_COMMAND_ENABLED.INHERIT),
         openMode: z.nativeEnum(DRAG_OPEN_MODE),
         showIndicator: z.boolean(),
+        sidePanelAutoHide: z.boolean(),
         startupMethod: z
           .object({
             method: z.nativeEnum(LINK_COMMAND_STARTUP_METHOD),
@@ -561,30 +562,36 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {linkCommandMethod ===
             LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
-              <InputField
-                control={form.control}
-                name="linkCommand.startupMethod.leftClickHoldParam"
-                formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
-                description={t(
-                  "linkCommandStartupMethod_leftClickHoldParam_desc",
-                )}
-                unit="ms"
-                inputProps={{
-                  type: "number",
-                  min: 50,
-                  max: 500,
-                  step: 10,
-                  ...register("linkCommand.startupMethod.leftClickHoldParam", {
-                    valueAsNumber: true,
-                  }),
-                }}
-              />
-            )}
+            <InputField
+              control={form.control}
+              name="linkCommand.startupMethod.leftClickHoldParam"
+              formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
+              description={t(
+                "linkCommandStartupMethod_leftClickHoldParam_desc",
+              )}
+              unit="ms"
+              inputProps={{
+                type: "number",
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register("linkCommand.startupMethod.leftClickHoldParam", {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
           <SwitchField
             control={form.control}
             name="linkCommand.showIndicator"
             formLabel={t("showIndicator")}
             description={t("showIndicator_desc")}
+          />
+          <SwitchField
+            control={form.control}
+            name="linkCommand.sidePanelAutoHide"
+            formLabel={t("sidePanelAutoHide_link")}
+            description={t("sidePanelAutoHide_link_desc")}
           />
         </section>
         <hr />
