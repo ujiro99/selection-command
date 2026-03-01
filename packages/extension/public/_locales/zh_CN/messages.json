@@ -216,7 +216,13 @@
     "message": "侧边栏自动隐藏"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "点击主面板时自动隐藏侧边栏。"
+    "message": "通过命令打开侧边栏时，点击主面板自动隐藏侧边栏。"
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "侧边栏自动隐藏"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "显示链接预览时，点击主面板自动隐藏侧边栏。"
   },
   "Option_inherit": {
     "message": "获取"

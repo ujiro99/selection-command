@@ -216,7 +216,13 @@
     "message": "Side Panel Auto-Hide"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "Automatically hide the side panel when the main panel is clicked."
+    "message": "Automatically hide the side panel when the main panel is clicked while the side panel is open via a command."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Side Panel Auto-Hide"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Automatically hide the side panel when the main panel is clicked while displaying the link preview."
   },
   "Option_inherit": {
     "message": "Inherit"

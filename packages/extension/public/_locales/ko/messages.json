@@ -216,7 +216,13 @@
     "message": "사이드 패널 자동 숨기기"
   },
   "Option_sidePanelAutoHide_desc": {
-    "message": "메인 패널을 클릭하면 사이드 패널이 자동으로 숨겨집니다."
+    "message": "명령을 통해 사이드 패널이 열려 있는 동안 메인 패널을 클릭하면 사이드 패널이 자동으로 숨겨집니다."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "사이드 패널 자동 숨기기"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "링크 미리보기 표시 중 메인 패널을 클릭하면 사이드 패널이 자동으로 숨겨집니다."
   },
   "Option_inherit": {
     "message": "상속"
