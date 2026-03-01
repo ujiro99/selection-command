@@ -3,13 +3,10 @@ import { getScreenSize, getWindowPosition } from "@/services/screen"
 import { isValidString, generateRandomID } from "@/lib/utils"
 import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_CONTROL, PAGE_ACTION_EVENT, SelectorType } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
-import type { ExecuteCommandParams, PageActionStep } from "@/types"
+import type { ExecuteCommandParams, PageActionStep, AiPromptCommand } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
 import { findAiService } from "@/services/aiPrompt"
-
-const isAiPromptCommand = (command: any): boolean => {
-  return command.openMode === "aiPrompt" && command.aiPromptOption != null
-}
+import { isAiPromptType } from "@/types/schema"
 
 export const AiPrompt = {
   async execute({
@@ -18,12 +15,13 @@ export const AiPrompt = {
     position,
     useSecondary,
   }: ExecuteCommandParams) {
-    if (!isAiPromptCommand(command)) {
+    if (!isAiPromptType(command)) {
       console.error("command is not for AiPrompt.")
       return
     }
 
-    const aiPromptOption = (command as any).aiPromptOption
+    const aiPromptCmd = command as unknown as AiPromptCommand
+    const aiPromptOption = aiPromptCmd.aiPromptOption
     const service = findAiService(aiPromptOption.serviceId)
 
     if (!service) {
@@ -49,9 +47,9 @@ export const AiPrompt = {
           : PAGE_ACTION_OPEN_MODE.TAB
       : aiPromptOption.openMode
 
-    // Build dynamic page action steps for the AI service
-    const inputSelector = service.inputSelectors[0]
-    const submitSelector = service.submitSelectors[0]
+    // Join multiple selectors with comma to support fallback matching via querySelector
+    const inputSelector = service.inputSelectors.join(", ")
+    const submitSelector = service.submitSelectors.join(", ")
 
     const steps: PageActionStep[] = [
       {
@@ -110,8 +108,8 @@ export const AiPrompt = {
       steps,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),
-      height: (command as any).popupOption?.height ?? PopupOption.height,
-      width: (command as any).popupOption?.width ?? PopupOption.width,
+      height: aiPromptCmd.popupOption?.height ?? PopupOption.height,
+      width: aiPromptCmd.popupOption?.width ?? PopupOption.width,
       screen,
       selectedText: selectionText,
       srcUrl: location.href,
