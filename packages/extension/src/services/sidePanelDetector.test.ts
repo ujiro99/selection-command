@@ -25,7 +25,7 @@ describe("sidePanelDetector", () => {
 
     it("SPD-01-a: Should continue checking when tabId is undefined (treated same as null)", () => {
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [789], // activeTabId not in list
+        sidePanelTabs: [{ tabId: 789, isLinkCommand: false }],
       } as any)
 
       const result = isSidePanel(undefined, 789)
@@ -41,7 +41,7 @@ describe("sidePanelDetector", () => {
 
     it("SPD-03: Should return false when activeTabId is not in sidePanelTabs", () => {
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [789], // activeTabId not in list
+        sidePanelTabs: [{ tabId: 789, isLinkCommand: false }], // activeTabId not in list
       } as any)
 
       const result = isSidePanel(null, 456)
@@ -52,7 +52,7 @@ describe("sidePanelDetector", () => {
 
     it("SPD-04: Should return true when all conditions are met", () => {
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [456],
+        sidePanelTabs: [{ tabId: 456, isLinkCommand: false }],
       } as any)
 
       const result = isSidePanel(null, 456)

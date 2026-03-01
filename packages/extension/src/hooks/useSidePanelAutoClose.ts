@@ -17,11 +17,9 @@ export function useSidePanelAutoClose() {
         setIsLinkCommand(false)
         return
       }
-      setSidePanelVisible(
-        data.sidePanelTabs.includes(tabId) ||
-        data.linkCommandSidePanelTabs.includes(tabId),
-      )
-      setIsLinkCommand(data.linkCommandSidePanelTabs.includes(tabId))
+      const tab = data.sidePanelTabs.find((t) => t.tabId === tabId)
+      setSidePanelVisible(tab != null)
+      setIsLinkCommand(tab?.isLinkCommand ?? false)
     }
 
     const initialData = BgData.get()

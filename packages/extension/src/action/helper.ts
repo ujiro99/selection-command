@@ -123,19 +123,11 @@ export const openSidePanel = (
     .then(() => {
       // Register the tab ID for tracking
       if (tabId) {
-        // Update BgData to include the new side panel tab ID
-        // If it's a link command, add to linkCommandSidePanelTabs; otherwise, add to sidePanelTabs.
+        const newEntry = { tabId, isLinkCommand: param.isLinkCommand ?? false }
         return BgData.update((data) => ({
-          sidePanelTabs: !param.isLinkCommand
-            ? data.sidePanelTabs.includes(tabId)
-              ? data.sidePanelTabs
-              : [...data.sidePanelTabs, tabId]
-            : data.sidePanelTabs.filter((id) => id !== tabId),
-          linkCommandSidePanelTabs: param.isLinkCommand
-            ? data.linkCommandSidePanelTabs.includes(tabId)
-              ? data.linkCommandSidePanelTabs
-              : [...data.linkCommandSidePanelTabs, tabId]
-            : data.linkCommandSidePanelTabs.filter((id) => id !== tabId),
+          sidePanelTabs: data.sidePanelTabs.some((t) => t.tabId === tabId)
+            ? data.sidePanelTabs.map((t) => (t.tabId === tabId ? newEntry : t))
+            : [...data.sidePanelTabs, newEntry],
         }))
       }
     })
@@ -160,17 +152,13 @@ export const closeSidePanel = (
     return false
   }
   enhancedSettings.get().then(async (settings) => {
-    const sidePanelAutoHide = settings.windowOption.sidePanelAutoHide
-    if (sidePanelAutoHide) {
-      const bgData = BgData.get()
-      if (bgData.sidePanelTabs.includes(tabId)) {
-        await _closeSidePanel(tabId)
-      }
-    }
-    const linkCommandSidePanelAutoHide = settings.linkCommand.sidePanelAutoHide
-    if (linkCommandSidePanelAutoHide) {
-      const bgData = BgData.get()
-      if (bgData.linkCommandSidePanelTabs.includes(tabId)) {
+    const bgData = BgData.get()
+    const tab = bgData.sidePanelTabs.find((t) => t.tabId === tabId)
+    if (tab) {
+      const autoHideEnabled = tab.isLinkCommand
+        ? settings.linkCommand.sidePanelAutoHide
+        : settings.windowOption.sidePanelAutoHide
+      if (autoHideEnabled) {
         await _closeSidePanel(tabId)
       }
     }
@@ -192,10 +180,7 @@ export const sidePanelClosed = async (tabId?: number): Promise<void> => {
     BgData.update((data) => {
       const { [tabId]: _, ...rest } = data.sidePanelUrls
       return {
-        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-        linkCommandSidePanelTabs: data.linkCommandSidePanelTabs.filter(
-          (id) => id !== tabId,
-        ),
+        sidePanelTabs: data.sidePanelTabs.filter((t) => t.tabId !== tabId),
         sidePanelUrls: rest,
       }
     })
@@ -230,7 +215,7 @@ export const navigateSidePanel = (
 
   // Check if tab is in sidePanelTabs
   const bgData = BgData.get()
-  if (!bgData.sidePanelTabs.includes(tabId)) {
+  if (!bgData.sidePanelTabs.some((t) => t.tabId === tabId)) {
     console.warn("[navigateSidePanel] Tab is not in sidePanelTabs:", tabId)
     return false
   }

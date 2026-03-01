@@ -6,6 +6,11 @@ type updaterPartial = (val: BgData) => Partial<BgData>
 
 type watchCallback = (newVal: BgData, oldVal: BgData) => void
 
+export type SidePanelTab = {
+  tabId: number
+  isLinkCommand: boolean
+}
+
 export class BgData {
   private static instance: BgData
 
@@ -14,8 +19,7 @@ export class BgData {
   public pageActionStop: boolean
   public activeScreenId: string | null
   public connectedTabs: number[]
-  public sidePanelTabs: number[]
-  public linkCommandSidePanelTabs: number[]
+  public sidePanelTabs: SidePanelTab[]
   public sidePanelUrls: Record<number, string>
 
   private constructor(val: BgData | undefined) {
@@ -25,7 +29,6 @@ export class BgData {
     this.activeScreenId = val?.activeScreenId ?? null
     this.connectedTabs = val?.connectedTabs ?? []
     this.sidePanelTabs = val?.sidePanelTabs ?? []
-    this.linkCommandSidePanelTabs = val?.linkCommandSidePanelTabs ?? []
     this.sidePanelUrls = val?.sidePanelUrls ?? {}
   }
 
