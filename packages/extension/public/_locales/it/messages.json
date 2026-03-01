@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "Azione pagina"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt AI"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Esegui un prompt predefinito su un servizio AI"
+  },
   "Option_commandType_title": {
     "message": "Seleziona Tipo di Comando"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Registra e riproduci operazioni delle pagine web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt AI"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Esegui un prompt predefinito su un servizio AI"
   },
   "Option_commandType_copy_title": {
     "message": "Copia Testo"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Tempo di attesa"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Servizio AI"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Seleziona il servizio AI da utilizzare"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Modello prompt. Usa il menu di inserimento per aggiungere variabili (testo selezionato, URL, appunti)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Inserisci il tuo prompt qui..."
   },
   "Option_userVariables": {
     "message": "Variabili Utente"

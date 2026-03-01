@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "Действие страницы"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "AI-промпт"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Запускает предопределённый промпт в сервисе ИИ"
+  },
   "Option_commandType_title": {
     "message": "Выбрать тип команды"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Записывать и воспроизводить операции веб-страниц"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI-промпт"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Запускает предопределённый промпт в сервисе ИИ"
   },
   "Option_commandType_copy_title": {
     "message": "Копировать текст"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Время ожидания"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Сервис ИИ"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Выберите сервис ИИ для использования"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Промпт"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Шаблон промпта. Используйте меню вставки для добавления переменных (выбранный текст, URL, буфер обмена)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Введите ваш промпт здесь..."
   },
   "Option_userVariables": {
     "message": "Пользовательские Переменные"

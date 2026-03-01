@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "Ação de Página"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt de IA"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Execute um prompt predefinido num serviço de IA"
+  },
   "Option_commandType_title": {
     "message": "Selecionar Tipo de Comando"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Gravar e reproduzir operações de páginas web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt de IA"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Execute um prompt predefinido num serviço de IA"
   },
   "Option_commandType_copy_title": {
     "message": "Copiar Texto"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Tempo de atraso"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Serviço de IA"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Selecione o serviço de IA a utilizar"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Modelo de prompt. Use o menu de inserção para adicionar variáveis (texto selecionado, URL, área de transferência)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Introduza o seu prompt aqui..."
   },
   "Option_userVariables": {
     "message": "Variáveis do Utilizador"

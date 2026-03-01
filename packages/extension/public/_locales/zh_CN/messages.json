@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "页面操作"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "AI提示词"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "在AI服务上运行预定义的提示词"
+  },
   "Option_commandType_title": {
     "message": "选择命令类型"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "录制和重放网页操作"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI提示词"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "在AI服务上运行预定义的提示词"
   },
   "Option_commandType_copy_title": {
     "message": "复制文本"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "等待时间"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI服务"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "选择要使用的AI服务"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "提示词"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "提示词模板。使用插入菜单添加变量（选中文本、URL、剪贴板）。"
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "在此输入您的提示词..."
   },
   "Option_userVariables": {
     "message": "用户变量"

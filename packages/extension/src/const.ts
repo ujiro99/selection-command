@@ -16,6 +16,7 @@ export const isE2E = environment === "e2e"
 export enum COMMAND_TYPE {
   SEARCH = "search",
   PAGE_ACTION = "pageAction",
+  AI_PROMPT = "aiPrompt",
   COPY = "copy",
   LINK_POPUP = "linkPopup",
   GET_TEXT_STYLES = "getTextStyles",
@@ -31,6 +32,7 @@ export const OPEN_MODE_TYPE_MAP = {
   [OPEN_MODE.SIDE_PANEL]: COMMAND_TYPE.SEARCH,
   [OPEN_MODE.API]: COMMAND_TYPE.API,
   [OPEN_MODE.PAGE_ACTION]: COMMAND_TYPE.PAGE_ACTION,
+  [OPEN_MODE.AI_PROMPT]: COMMAND_TYPE.AI_PROMPT,
   [OPEN_MODE.LINK_POPUP]: COMMAND_TYPE.LINK_POPUP,
   [OPEN_MODE.COPY]: COMMAND_TYPE.COPY,
   [OPEN_MODE.GET_TEXT_STYLES]: COMMAND_TYPE.GET_TEXT_STYLES,
@@ -49,6 +51,7 @@ export const COMMAND_TYPE_OPEN_MODES_MAP = {
   ],
   [COMMAND_TYPE.API]: [OPEN_MODE.API],
   [COMMAND_TYPE.PAGE_ACTION]: [OPEN_MODE.PAGE_ACTION],
+  [COMMAND_TYPE.AI_PROMPT]: [OPEN_MODE.AI_PROMPT],
   [COMMAND_TYPE.LINK_POPUP]: [OPEN_MODE.LINK_POPUP],
   [COMMAND_TYPE.COPY]: [OPEN_MODE.COPY],
   [COMMAND_TYPE.GET_TEXT_STYLES]: [OPEN_MODE.GET_TEXT_STYLES],
@@ -66,6 +69,11 @@ export const COMMAND_TYPE_METADATA = {
     iconName: "Play",
     titleKey: "commandType_pageAction_title",
     descKey: "commandType_pageAction_desc",
+  },
+  [COMMAND_TYPE.AI_PROMPT]: {
+    iconName: "BotMessageSquare",
+    titleKey: "commandType_aiPrompt_title",
+    descKey: "commandType_aiPrompt_desc",
   },
   [COMMAND_TYPE.COPY]: {
     iconName: "Copy",
@@ -99,7 +107,7 @@ export const COMMAND_TYPE_METADATA = {
 export const COMMAND_TYPE_GROUPS = [
   {
     titleKey: "commandGroup_webPage_title",
-    types: [COMMAND_TYPE.SEARCH, COMMAND_TYPE.PAGE_ACTION],
+    types: [COMMAND_TYPE.SEARCH, COMMAND_TYPE.PAGE_ACTION, COMMAND_TYPE.AI_PROMPT],
   },
   {
     titleKey: "commandGroup_singleFunction_title",
@@ -127,6 +135,7 @@ export enum OPEN_MODE_BG {
   SIDE_PANEL = OPEN_MODE.SIDE_PANEL,
   API = OPEN_MODE.API,
   PAGE_ACTION = OPEN_MODE.PAGE_ACTION,
+  AI_PROMPT = OPEN_MODE.AI_PROMPT,
 }
 
 export enum ExecState {

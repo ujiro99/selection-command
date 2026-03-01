@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "Seitenaktion"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "KI-Prompt"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Führt einen vordefinierten Prompt auf einem KI-Dienst aus"
+  },
   "Option_commandType_title": {
     "message": "Befehlstyp wählen"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Webseiten-Operationen aufzeichnen und wiedergeben"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "KI-Prompt"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Führt einen vordefinierten Prompt auf einem KI-Dienst aus"
   },
   "Option_commandType_copy_title": {
     "message": "Text kopieren"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Verzögerungszeit"
+  },
+  "Option_aiPrompt_service": {
+    "message": "KI-Dienst"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Wählen Sie den zu verwendenden KI-Dienst aus"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Prompt-Vorlage. Verwenden Sie das Einfügemenü, um Variablen hinzuzufügen (ausgewählter Text, URL, Zwischenablage)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Prompt hier eingeben..."
   },
   "Option_userVariables": {
     "message": "Benutzervariablen"
