@@ -20,7 +20,6 @@ type AiPromptSectionProps = {
 }
 
 export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
-  const { register } = form
   const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
@@ -75,7 +74,6 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
               <FormControl>
                 <Textarea
                   {...field}
-                  {...register("aiPromptOption.prompt", {})}
                   ref={(el) => {
                     setTextarea(el)
                     textareaRef.current = el
