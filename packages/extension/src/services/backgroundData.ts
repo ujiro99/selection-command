@@ -28,7 +28,10 @@ export class BgData {
     this.pageActionStop = val?.pageActionStop ?? false
     this.activeScreenId = val?.activeScreenId ?? null
     this.connectedTabs = val?.connectedTabs ?? []
-    this.sidePanelTabs = val?.sidePanelTabs ?? []
+    // Normalize sidePanelTabs: convert legacy number[] entries to SidePanelTab objects
+    this.sidePanelTabs = (val?.sidePanelTabs ?? []).map((t) =>
+      typeof t === "number" ? { tabId: t, isLinkCommand: false } : t,
+    )
     this.sidePanelUrls = val?.sidePanelUrls ?? {}
   }
 

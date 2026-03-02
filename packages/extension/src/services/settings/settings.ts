@@ -222,28 +222,32 @@ const removeOptionSettings = (data: SettingsType): void => {
 }
 
 export const migrate = async (data: SettingsType): Promise<SettingsType> => {
-  if (versionDiff(data.settingVersion, "0.10.0") === VersionDiff.Old) {
+  // Use the original version for all comparisons so that intermediate
+  // settingVersion updates do not cause later migrations to be skipped.
+  const originalVersion = data.settingVersion
+
+  if (versionDiff(originalVersion, "0.10.0") === VersionDiff.Old) {
     data = await migrate0_10_0(data)
   }
-  if (versionDiff(data.settingVersion, "0.10.3") === VersionDiff.Old) {
+  if (versionDiff(originalVersion, "0.10.3") === VersionDiff.Old) {
     data = migrate0_10_3(data)
   }
-  if (versionDiff(data.settingVersion, "0.11.3") === VersionDiff.Old) {
+  if (versionDiff(originalVersion, "0.11.3") === VersionDiff.Old) {
     data = migrate0_11_3(data)
   }
-  if (versionDiff(data.settingVersion, "0.11.5") === VersionDiff.Old) {
+  if (versionDiff(originalVersion, "0.11.5") === VersionDiff.Old) {
     data.settingVersion = VERSION as Version
     data = migrate0_11_5(data)
   }
-  if (versionDiff(data.settingVersion, "0.11.9") === VersionDiff.Old) {
+  if (versionDiff(originalVersion, "0.11.9") === VersionDiff.Old) {
     data.settingVersion = VERSION as Version
     data = migrate0_11_9(data)
   }
-  if (versionDiff(data.settingVersion, "0.14.3") === VersionDiff.Old) {
+  if (versionDiff(originalVersion, "0.14.3") === VersionDiff.Old) {
     data.settingVersion = VERSION as Version
     data = migrate0_14_3(data)
   }
-  if (versionDiff(data.settingVersion, "0.15.0") === VersionDiff.Old) {
+  if (versionDiff(originalVersion, "0.15.0") === VersionDiff.Old) {
     data.settingVersion = VERSION as Version
     data = migrate0_15_0(data)
   }

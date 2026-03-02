@@ -177,7 +177,7 @@ export const closeSidePanel = (
 export const sidePanelClosed = async (tabId?: number): Promise<void> => {
   if (!tabId) return
   try {
-    BgData.update((data) => {
+    await BgData.update((data) => {
       const { [tabId]: _, ...rest } = data.sidePanelUrls
       return {
         sidePanelTabs: data.sidePanelTabs.filter((t) => t.tabId !== tabId),
