@@ -40,6 +40,7 @@ export type SelectionCommand =
   | CopyCommand
   | ApiCommand
   | PageActionCommand
+  | AiPromptCommand
 
 export type SearchCommand = {
   id: string
@@ -66,6 +67,16 @@ export type ApiCommand = SearchCommand & {
 
 export type PageActionCommand = SearchCommand & {
   pageActionOption: PageActionOption
+}
+
+export type AiPromptOption = {
+  serviceId: string
+  prompt: string
+  openMode: PAGE_ACTION_OPEN_MODE
+}
+
+export type AiPromptCommand = SearchCommand & {
+  aiPromptOption: AiPromptOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, "openMode"> & {

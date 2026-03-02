@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "पेज एक्शन"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "AI प्रॉम्प्ट"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "AI सेवा पर पूर्व-निर्धारित प्रॉम्प्ट चलाएं"
+  },
   "Option_commandType_title": {
     "message": "कमांड प्रकार चुनें"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "वेब पेज ऑपरेशन रिकॉर्ड और रीप्ले करें"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI प्रॉम्प्ट"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "AI सेवा पर पूर्व-निर्धारित प्रॉम्प्ट चलाएं"
   },
   "Option_commandType_copy_title": {
     "message": "टेक्स्ट कॉपी करें"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "प्रतीक्षा समय"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI सेवा"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "उपयोग करने के लिए AI सेवा चुनें"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "प्रॉम्प्ट"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "प्रॉम्प्ट टेम्पलेट। वेरिएबल जोड़ने के लिए इन्सर्ट मेनू का उपयोग करें (चुना गया टेक्स्ट, URL, क्लिपबोर्ड)।"
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "यहाँ अपना प्रॉम्प्ट दर्ज करें..."
   },
   "Option_userVariables": {
     "message": "उपयोगकर्ता चर"

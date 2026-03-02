@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "Tindakan Halaman"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt AI"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Jalankan prompt yang telah ditetapkan pada perkhidmatan AI"
+  },
   "Option_commandType_title": {
     "message": "Pilih Jenis Arahan"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Rakam dan mainkan operasi halaman web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt AI"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Jalankan prompt yang telah ditetapkan pada perkhidmatan AI"
   },
   "Option_commandType_copy_title": {
     "message": "Salin Teks"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Masa kelewatan"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Perkhidmatan AI"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Pilih perkhidmatan AI yang hendak digunakan"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Templat prompt. Gunakan menu sisipan untuk menambah pemboleh ubah (teks dipilih, URL, papan klip)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Masukkan prompt anda di sini..."
   },
   "Option_userVariables": {
     "message": "Pembolehubah Pengguna"

@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "페이지 작업"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "AI 프롬프트"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "AI 서비스에서 미리 정의된 프롬프트를 실행합니다"
+  },
   "Option_commandType_title": {
     "message": "명령 유형 선택"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "웹 페이지 작업을 기록하고 재생합니다"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI 프롬프트"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "AI 서비스에서 미리 정의된 프롬프트를 실행합니다"
   },
   "Option_commandType_copy_title": {
     "message": "텍스트 복사"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "지연 시간"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI 서비스"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "사용할 AI 서비스를 선택하세요"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "프롬프트"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "프롬프트 템플릿. 삽입 메뉴를 사용하여 변수(선택된 텍스트, URL, 클립보드)를 추가하세요."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "여기에 프롬프트를 입력하세요..."
   },
   "Option_userVariables": {
     "message": "사용자 변수"

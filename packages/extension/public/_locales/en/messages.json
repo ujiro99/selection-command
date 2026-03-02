@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "Page Action"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "AI Prompt"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Run a predefined prompt on an AI service"
+  },
   "Option_commandType_title": {
     "message": "Select Command Type"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Record and replay web page operations"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI Prompt"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Run a predefined prompt on an AI service"
   },
   "Option_commandType_copy_title": {
     "message": "Copy Text"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Delay time"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI Service"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Select the AI service to use"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Prompt template. Use the insert menu to add variables (selected text, URL, clipboard)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Enter your prompt here..."
   },
   "Option_userVariables": {
     "message": "User Variables"

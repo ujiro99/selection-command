@@ -308,6 +308,12 @@
   "Option_openMode_pageAction": {
     "message": "ページアクション"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "AIプロンプト"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "AIサービスで定義済みのプロンプトを実行します"
+  },
   "Option_commandType_title": {
     "message": "コマンドの種類を選ぶ"
   },
@@ -325,6 +331,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Webページ上の操作を記録・再生します"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AIプロンプト"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "AIサービスで定義済みのプロンプトを実行します"
   },
   "Option_commandType_copy_title": {
     "message": "テキストコピー"
@@ -424,6 +436,21 @@
   },
   "Option_pageAction_delay": {
     "message": "遅延時間"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AIサービス"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "使用するAIサービスを選択してください"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "プロンプト"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "プロンプトのテンプレート。挿入メニューで変数（選択テキスト、URL、クリップボード）を追加できます。"
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "プロンプトをここに入力..."
   },
   "Option_userVariables": {
     "message": "ユーザー変数"

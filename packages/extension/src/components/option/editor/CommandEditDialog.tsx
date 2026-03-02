@@ -46,6 +46,7 @@ import { SelectField } from "@/components/option/field/SelectField"
 import { TextareaField } from "@/components/option/field/TextareaField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { PageActionSection } from "@/components/option/editor/PageActionSection"
+import { AiPromptSection } from "@/components/option/editor/AiPromptSection"
 import { PageActionHelp } from "@/components/help/PageActionHelp"
 import { CommandType } from "@/components/option/editor/CommandType"
 import { SearchUrlAssistButton } from "@/components/option/editor/SearchUrlAssistButton"
@@ -209,6 +210,22 @@ const getDefault = (
         "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png",
       openMode: OPEN_MODE.GET_TEXT_STYLES as const,
       parentFolderId: ROOT_FOLDER,
+    }
+  }
+  if (openMode === OPEN_MODE.AI_PROMPT) {
+    return {
+      ...base,
+      openMode: OPEN_MODE.AI_PROMPT as const,
+      parentFolderId: ROOT_FOLDER,
+      popupOption: {
+        width: POPUP_OPTION.width + 100,
+        height: POPUP_OPTION.height + 50,
+      },
+      aiPromptOption: {
+        serviceId: "chatgpt",
+        prompt: "",
+        openMode: PAGE_ACTION_OPEN_MODE.POPUP,
+      },
     }
   }
 }
@@ -573,6 +590,10 @@ const CommandEditDialogInner = ({
                   />
                 )}
 
+                {openMode === OPEN_MODE.AI_PROMPT && (
+                  <AiPromptSection form={form} />
+                )}
+
                 {openMode === OPEN_MODE.API && (
                   <>
                     <TextareaField
@@ -708,7 +729,8 @@ const CommandEditDialogInner = ({
                       description={
                         isSearchOpenMode(openMode) || openMode === OPEN_MODE.API
                           ? t("iconUrl_desc")
-                          : openMode === OPEN_MODE.PAGE_ACTION
+                          : openMode === OPEN_MODE.PAGE_ACTION ||
+                              openMode === OPEN_MODE.AI_PROMPT
                             ? t("iconUrl_desc_pageAction")
                             : ""
                       }

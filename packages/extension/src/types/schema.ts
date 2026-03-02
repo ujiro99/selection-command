@@ -250,10 +250,48 @@ export const isPageActionType = (
   return data.openMode === OPEN_MODE.PAGE_ACTION
 }
 
+export const AiPromptOptionSchema = z.object({
+  serviceId: z.string().min(1),
+  prompt: z.string(),
+  openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
+})
+
+const aiPromptSchema = z.object({
+  openMode: z.enum([OPEN_MODE.AI_PROMPT]),
+  id: z.string(),
+  revision: z.number().optional(),
+  parentFolderId: z.string().optional(),
+  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
+  iconUrl: z
+    .string()
+    .url({ message: t("zod_url") })
+    .max(1000, { message: t("zod_string_max", ["1000"]) }),
+  popupOption: z
+    .object({
+      width: z.number().min(1),
+      height: z.number().min(1),
+    })
+    .optional(),
+  aiPromptOption: AiPromptOptionSchema,
+})
+
+export const isAiPromptType = (
+  data: unknown,
+): data is z.infer<typeof aiPromptSchema> => {
+  if (!data || typeof data !== "object") {
+    return false
+  }
+  if (!("openMode" in data)) {
+    return false
+  }
+  return data.openMode === OPEN_MODE.AI_PROMPT
+}
+
 export const commandSchema = z.discriminatedUnion("openMode", [
   searchSchema,
   apiSchema,
   pageActionSchema,
+  aiPromptSchema,
   linkPopupSchema,
   copySchema,
   textStyleSchema,
