@@ -332,11 +332,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        port.onMessage.addListener(function (msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -674,6 +674,7 @@ export const closeSidePanel = async (tabId: number): Promise<void> => {
   } catch (e) {
     console.warn("Failed to close side panel:", e)
   }
+  await sleep(1000) // Wait for the side panel to close before disabling it
   try {
     await chrome.sidePanel.setOptions({
       tabId: tabId,
