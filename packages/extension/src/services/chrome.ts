@@ -674,6 +674,14 @@ export const closeSidePanel = async (tabId: number): Promise<void> => {
   } catch (e) {
     console.warn("Failed to close side panel:", e)
   }
+  try {
+    await chrome.sidePanel.setOptions({
+      tabId: tabId,
+      enabled: false,
+    })
+  } catch (e) {
+    console.warn("Failed to disable side panel:", e)
+  }
 }
 
 /**

@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useState } from "react"
 import { Switch } from "@/components/ui/switch"
 
 import {
@@ -28,7 +28,7 @@ export const SwitchField = ({
   description,
   tooltip,
 }: SwitchFieldType) => {
-  const span = useRef<HTMLSpanElement>(null)
+  const [spanEl, setSpanEl] = useState<HTMLSpanElement | null>(null)
 
   return (
     <FormField
@@ -43,7 +43,7 @@ export const SwitchField = ({
               <span>{formLabel}</span>
               {tooltip && (
                 <span
-                  ref={span}
+                  ref={setSpanEl}
                   className="cursor-pointer p-1 rounded hover:bg-gray-100 transition-background"
                 >
                   <Info className="size-4 text-foreground/60" />
@@ -53,7 +53,7 @@ export const SwitchField = ({
             {description && <FormDescription>{description}</FormDescription>}
             {tooltip && (
               <Tooltip
-                positionElm={span.current}
+                positionElm={spanEl}
                 text={tooltip}
                 className="max-w-64 whitespace-pre-wrap"
                 delay={200}

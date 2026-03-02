@@ -163,6 +163,9 @@ export const closeSidePanel = (
       }
     }
     response(true)
+  }).catch((err) => {
+    console.warn("Failed to handle panel click:", err)
+    response(false)
   })
 
   return true
