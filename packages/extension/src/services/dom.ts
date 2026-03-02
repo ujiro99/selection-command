@@ -17,6 +17,10 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
       resolve(dataURL)
       clearTimeout(id)
     }
+    img.onerror = function() {
+      clearTimeout(id)
+      reject(new Error(`Failed to load image: ${src}`))
+    }
     img.src = src
   })
 }
