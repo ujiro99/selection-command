@@ -5,6 +5,7 @@ import { useUserSettings } from "@/hooks/useSettings"
 import { useDetectStartup } from "@/hooks/useDetectStartup"
 import { useTabCommandReceiver } from "@/hooks/useTabCommandReceiver"
 import { useSidePanelNavigation } from "@/hooks/useSidePanelNavigation"
+import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
 import { hexToHsl, isMac, onHover, cn } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
@@ -29,6 +30,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
   (props: PopupProps, ref) => {
     useTabCommandReceiver()
     useSidePanelNavigation()
+    useSidePanelAutoClose()
 
     const { userSettings } = useUserSettings()
     const [inTransition, setInTransition] = useState(false)

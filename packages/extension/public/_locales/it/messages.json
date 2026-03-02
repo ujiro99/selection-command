@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (chiudi immediatamente)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Nascondi automaticamente il pannello laterale"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Nasconde automaticamente il pannello laterale quando si fa clic sul pannello principale mentre il pannello laterale è aperto tramite un comando."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Nascondi automaticamente il pannello laterale"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Nasconde automaticamente il pannello laterale quando si fa clic sul pannello principale durante la visualizzazione dell'anteprima del collegamento."
+  },
   "Option_inherit": {
     "message": "Eredita"
   },
@@ -364,6 +376,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Finestra"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Pannello laterale"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + clic"

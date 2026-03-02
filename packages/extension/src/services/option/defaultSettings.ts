@@ -40,6 +40,7 @@ export const emptySettings: SettingsType = {
     enabled: LINK_COMMAND_ENABLED.ENABLE,
     openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
     showIndicator: true,
+    sidePanelAutoHide: false,
     startupMethod: {
       method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
       keyboardParam: KEYBOARD.SHIFT,
@@ -71,6 +72,7 @@ export default {
     enabled: LINK_COMMAND_ENABLED.ENABLE,
     openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
     showIndicator: true,
+    sidePanelAutoHide: false,
     startupMethod: {
       method: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
       keyboardParam: KEYBOARD.SHIFT,

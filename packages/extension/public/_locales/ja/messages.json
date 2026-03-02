@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (即座に閉じる)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "サイドパネル自動非表示"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "コマンドによりサイドパネルを表示している時、メインのパネルをクリックしたときに、サイドパネルを自動的に非表示にします。"
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "サイドパネル自動非表示"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "リンクプレビューの表示中、メインのパネルをクリックしたときに、サイドパネルを自動的に非表示にします。"
+  },
   "Option_inherit": {
     "message": "継承"
   },
@@ -360,10 +372,13 @@
     "message": "実験的"
   },
   "Option_openMode_previewPopup": {
-    "message": "Popup"
+    "message": "ポップアップ"
   },
   "Option_openMode_previewWindow": {
-    "message": "Window"
+    "message": "ウィンドウ"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "サイドパネル"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + クリック"

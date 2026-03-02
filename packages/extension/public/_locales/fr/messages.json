@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (fermer immédiatement)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Masquage automatique du panneau latéral"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Masque automatiquement le panneau latéral lorsque le panneau principal est cliqué pendant que le panneau latéral est ouvert via une commande."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Masquage automatique du panneau latéral"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Masque automatiquement le panneau latéral lorsque le panneau principal est cliqué pendant l'affichage de l'aperçu du lien."
+  },
   "Option_inherit": {
     "message": "Hériter"
   },
@@ -364,6 +376,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Fenêtre"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Panneau latéral"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clic"

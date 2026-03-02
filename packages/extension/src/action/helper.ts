@@ -123,10 +123,11 @@ export const openSidePanel = (
     .then(() => {
       // Register the tab ID for tracking
       if (tabId) {
+        const newEntry = { tabId, isLinkCommand: param.isLinkCommand ?? false }
         return BgData.update((data) => ({
-          sidePanelTabs: data.sidePanelTabs.includes(tabId)
-            ? data.sidePanelTabs
-            : [...data.sidePanelTabs, tabId],
+          sidePanelTabs: data.sidePanelTabs.some((t) => t.tabId === tabId)
+            ? data.sidePanelTabs.map((t) => (t.tabId === tabId ? newEntry : t))
+            : [...data.sidePanelTabs, newEntry],
         }))
       }
     })
@@ -150,12 +151,14 @@ export const closeSidePanel = (
   if (tabId == null) {
     return false
   }
-
   enhancedSettings.get().then(async (settings) => {
-    const sidePanelAutoHide = settings.windowOption.sidePanelAutoHide
-    if (sidePanelAutoHide) {
-      const bgData = BgData.get()
-      if (bgData.sidePanelTabs.includes(tabId)) {
+    const bgData = BgData.get()
+    const tab = bgData.sidePanelTabs.find((t) => t.tabId === tabId)
+    if (tab) {
+      const autoHideEnabled = tab.isLinkCommand
+        ? settings.linkCommand.sidePanelAutoHide
+        : settings.windowOption.sidePanelAutoHide
+      if (autoHideEnabled) {
         await _closeSidePanel(tabId)
       }
     }
@@ -163,6 +166,27 @@ export const closeSidePanel = (
   })
 
   return true
+}
+
+/**
+ * Handle side panel closed event for a tab
+ * @param {number} tabId - The ID of the tab whose side panel was closed
+ * @return {Promise<void>} A promise that resolves when the side panel closed event is handled
+ * This function is called when a side panel is closed, either by user action or programmatically.
+ */
+export const sidePanelClosed = async (tabId?: number): Promise<void> => {
+  if (!tabId) return
+  try {
+    await BgData.update((data) => {
+      const { [tabId]: _, ...rest } = data.sidePanelUrls
+      return {
+        sidePanelTabs: data.sidePanelTabs.filter((t) => t.tabId !== tabId),
+        sidePanelUrls: rest,
+      }
+    })
+  } catch (e) {
+    console.warn("Failed to cleanup side panel:", e)
+  }
 }
 
 export const navigateSidePanel = (
@@ -191,7 +215,7 @@ export const navigateSidePanel = (
 
   // Check if tab is in sidePanelTabs
   const bgData = BgData.get()
-  if (!bgData.sidePanelTabs.includes(tabId)) {
+  if (!bgData.sidePanelTabs.some((t) => t.tabId === tabId)) {
     console.warn("[navigateSidePanel] Tab is not in sidePanelTabs:", tabId)
     return false
   }

@@ -96,6 +96,7 @@ type LinkCommandSettings = {
   openMode: DRAG_OPEN_MODE
   showIndicator: boolean
   startupMethod: LinkCommandStartupMethod
+  sidePanelAutoHide: boolean
 }
 
 export type CommandFolder = {

@@ -35,7 +35,7 @@ describe("helper", () => {
       const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [123],
+        sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
       } as any)
 
       const result = navigateSidePanel(param, sender)
@@ -48,7 +48,7 @@ describe("helper", () => {
       const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [123],
+        sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
       } as any)
 
       const result = navigateSidePanel(param, sender)
@@ -61,7 +61,7 @@ describe("helper", () => {
       const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [123],
+        sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
       } as any)
 
       const result = navigateSidePanel(param, sender)
@@ -74,7 +74,10 @@ describe("helper", () => {
       const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [456, 789], // Different tab IDs
+        sidePanelTabs: [
+          { tabId: 456, isLinkCommand: false },
+          { tabId: 789, isLinkCommand: false },
+        ], // Different tab IDs
       } as any)
 
       const result = navigateSidePanel(param, sender)
@@ -89,7 +92,7 @@ describe("helper", () => {
       const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [tabId],
+        sidePanelTabs: [{ tabId, isLinkCommand: false }],
         sidePanelUrls: {},
       } as any)
 
@@ -113,7 +116,7 @@ describe("helper", () => {
       const sender = {} as any
 
       vi.mocked(BgData.get).mockReturnValue({
-        sidePanelTabs: [tabId],
+        sidePanelTabs: [{ tabId, isLinkCommand: false }],
         sidePanelUrls: {},
       } as any)
 
@@ -147,7 +150,7 @@ describe("helper", () => {
       const sender = {} as any
 
       const mockData = {
-        sidePanelTabs: [tabId],
+        sidePanelTabs: [{ tabId, isLinkCommand: false }],
         sidePanelUrls: {},
       } as any
 

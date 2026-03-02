@@ -9,6 +9,11 @@ const API_SECRET = import.meta.env.VITE_API_SECRET
 const DEFAULT_ENGAGEMENT_TIME_IN_MSEC = 100
 const SESSION_EXPIRATION_IN_MIN = 30
 
+// Disable analytics in CI environments
+const IS_CI =
+  typeof process !== "undefined" && process.env && process.env.CI === "true"
+const DISABLE_ANALYTICS = IS_CI
+
 export const ANALYTICS_EVENTS = {
   SELECTION_COMMAND: "selection_command",
   LINK_COMMAND: "link_command",
@@ -28,13 +33,18 @@ export const ANALYTICS_EVENTS = {
 export type AnalyticsEventName =
   (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS]
 
-// https://developer.chrome.com/docs/extensions/how-to/integrate/google-analytics-4?t
+// https://developer.chrome.com/docs/extensions/how-to/integrate/google-analytics-4
 
 export async function sendEvent(
   name: AnalyticsEventName,
   params: any,
   screen = SCREEN.CONTENT_SCRIPT,
 ) {
+  // Do not send analytics data if running in CI.
+  if (DISABLE_ANALYTICS || !MEASUREMENT_ID || !API_SECRET) {
+    return
+  }
+
   const endpoint = isDebug ? GA_DEBUG_ENDPOINT : GA_ENDPOINT
   try {
     const res = await fetch(
