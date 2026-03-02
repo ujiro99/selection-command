@@ -236,22 +236,19 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
     data = migrate0_11_3(data)
   }
   if (versionDiff(originalVersion, "0.11.5") === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = migrate0_11_5(data)
   }
   if (versionDiff(originalVersion, "0.11.9") === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = migrate0_11_9(data)
   }
   if (versionDiff(originalVersion, "0.14.3") === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = migrate0_14_3(data)
   }
   if (versionDiff(originalVersion, "0.15.0") === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
     data = migrate0_15_0(data)
   }
 
+  data.settingVersion = VERSION as Version
   return data
 }
 
