@@ -61,7 +61,8 @@
       "mcp__serena__think_about_task_adherence",
       "mcp__serena__think_about_whether_you_are_done",
       "mcp__serena__write_memory",
-      "WebFetch(domain:ujiro99.github.io)"
+      "WebFetch(domain:ujiro99.github.io)",
+      "mcp__serena__list_memories"
     ],
     "deny": []
   }
