@@ -389,6 +389,12 @@
   "Option_startUrl_desc": {
     "message": "URL da página onde a ação começa."
   },
+  "Option_recordUrl": {
+    "message": "URL de Gravação"
+  },
+  "Option_recordUrl_desc": {
+    "message": "URL para navegar ao abrir o gravador. Usado apenas durante a edição."
+  },
   "Option_pageAction_title": {
     "message": "Ações"
   },

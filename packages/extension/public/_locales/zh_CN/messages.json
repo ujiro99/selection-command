@@ -389,6 +389,12 @@
   "Option_startUrl_desc": {
     "message": "操作开始的页面URL。"
   },
+  "Option_recordUrl": {
+    "message": "录制URL"
+  },
+  "Option_recordUrl_desc": {
+    "message": "打开录制器时导航到的URL。仅在编辑时使用。"
+  },
   "Option_pageAction_title": {
     "message": "操作"
   },

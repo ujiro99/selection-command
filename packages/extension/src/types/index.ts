@@ -208,6 +208,7 @@ export type PageActionStep = {
 
 export type PageActionOption = {
   startUrl: string
+  recordUrl?: string
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
   userVariables?: Array<UserVariable>
