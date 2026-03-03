@@ -33,6 +33,7 @@ describe("WindowStackManager", () => {
     normalWindows: [],
     pageActionStop: false,
     activeScreenId: null,
+    activeTabId: null,
     connectedTabs: [],
     sidePanelTabs: [],
     sidePanelUrls: {},
