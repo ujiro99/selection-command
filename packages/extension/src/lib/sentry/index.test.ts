@@ -914,3 +914,64 @@ describe("Sentry Configuration Management Tests", () => {
     })
   })
 })
+
+describe("Sentry beforeSend filter tests", () => {
+  it("ST-BF-01: should return null for errors with 'Extension context invalidated' in value", () => {
+    const event = {
+      exception: {
+        values: [
+          {
+            value: "Extension context invalidated",
+            type: "Error",
+          },
+        ],
+      },
+    } as any
+
+    const result = TestUtils.customBeforeSend(event)
+
+    expect(result).toBeNull()
+  })
+
+  it("ST-BF-02: should return null for errors with 'Extension context invalidated' in type", () => {
+    const event = {
+      exception: {
+        values: [
+          {
+            value: "Some message",
+            type: "Extension context invalidated",
+          },
+        ],
+      },
+    } as any
+
+    const result = TestUtils.customBeforeSend(event)
+
+    expect(result).toBeNull()
+  })
+
+  it("ST-BF-03: should return the event for unrelated errors", () => {
+    const event = {
+      exception: {
+        values: [
+          {
+            value: "TypeError: Cannot read property",
+            type: "TypeError",
+          },
+        ],
+      },
+    } as any
+
+    const result = TestUtils.customBeforeSend(event)
+
+    expect(result).toBe(event)
+  })
+
+  it("ST-BF-04: should return the event when exception values are absent", () => {
+    const event = { message: "some message" } as any
+
+    const result = TestUtils.customBeforeSend(event)
+
+    expect(result).toBe(event)
+  })
+})

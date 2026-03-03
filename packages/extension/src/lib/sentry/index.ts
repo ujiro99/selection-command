@@ -169,6 +169,7 @@ export const TestUtils = {
   // Test utility function to check if Sentry is initialized
   isInitialized,
   sanitizeUrl,
+  customBeforeSend,
 }
 
 export { ErrorBoundary } from "./ErrorBoundary"
