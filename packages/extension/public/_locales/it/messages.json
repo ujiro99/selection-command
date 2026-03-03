@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "L'URL dell'icona verrà aggiornato automaticamente quando l'URL iniziale viene modificato."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Visualizzato come icona del menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Compilazione automatica"
   },

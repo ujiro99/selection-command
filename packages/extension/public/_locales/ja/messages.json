@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "開始URLを変更すると自動で更新します。"
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "メニューのアイコンとして表示されます。"
+  },
   "Option_iconUrl_autofill": {
     "message": "自動検出"
   },

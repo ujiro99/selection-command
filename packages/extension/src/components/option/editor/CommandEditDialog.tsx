@@ -224,7 +224,7 @@ const getDefault = (
       aiPromptOption: {
         serviceId: "chatgpt",
         prompt: "",
-        openMode: PAGE_ACTION_OPEN_MODE.POPUP,
+        openMode: OPEN_MODE.POPUP,
       },
     }
   }
@@ -729,10 +729,11 @@ const CommandEditDialogInner = ({
                       description={
                         isSearchOpenMode(openMode) || openMode === OPEN_MODE.API
                           ? t("iconUrl_desc")
-                          : openMode === OPEN_MODE.PAGE_ACTION ||
-                              openMode === OPEN_MODE.AI_PROMPT
+                          : openMode === OPEN_MODE.PAGE_ACTION
                             ? t("iconUrl_desc_pageAction")
-                            : ""
+                            : openMode === OPEN_MODE.AI_PROMPT
+                              ? t("iconUrl_desc_aiPrompt")
+                              : ""
                       }
                     />
 

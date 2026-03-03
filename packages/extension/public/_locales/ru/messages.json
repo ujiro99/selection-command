@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "URL иконки будет автоматически обновлен при изменении начального URL."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Отображается как значок меню."
+  },
   "Option_iconUrl_autofill": {
     "message": "Автозаполнение"
   },

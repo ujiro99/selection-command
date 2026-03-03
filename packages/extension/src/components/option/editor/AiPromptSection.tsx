@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react"
 import {
   FormControl,
   FormField,
@@ -21,18 +21,6 @@ type AiPromptSectionProps = {
 
 export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
   const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-
-  const updateHeight = (elm: HTMLTextAreaElement) => {
-    elm.style.height = "5px"
-    elm.style.height = elm.scrollHeight + "px"
-  }
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      updateHeight(textareaRef.current)
-    }
-  }, [])
 
   const serviceOptions = AI_SERVICES.map((s) => ({
     name: s.name,
@@ -54,7 +42,7 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
         name="aiPromptOption.openMode"
         formLabel={t("pageAction_openMode")}
         description={t("displayMode_desc")}
-        type="pageAction"
+        type="search"
       />
 
       <FormField
@@ -76,15 +64,11 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
                   {...field}
                   ref={(el) => {
                     setTextarea(el)
-                    textareaRef.current = el
                     field.ref(el)
                   }}
                   rows={5}
                   placeholder={t("aiPrompt_prompt_placeholder")}
-                  className="resize-none max-h-80"
-                  onInput={(e) => {
-                    updateHeight(e.target as HTMLTextAreaElement)
-                  }}
+                  className="max-h-80"
                 />
               </FormControl>
               <FormMessage />

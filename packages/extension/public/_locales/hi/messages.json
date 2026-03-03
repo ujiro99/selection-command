@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "प्रारंभिक URL के संशोधित होने पर आइकन URL स्वचालित रूप से अपडेट होगा।"
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "मेनू आइकन के रूप में प्रदर्शित होता है।"
+  },
   "Option_iconUrl_autofill": {
     "message": "स्वतः भरें"
   },

@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Automatically updated when the Start URL is changed."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Displayed as the menu icon."
+  },
   "Option_iconUrl_autofill": {
     "message": "Autofill"
   },

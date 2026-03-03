@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Diperbarui secara otomatis saat URL Mulai diubah."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Ditampilkan sebagai ikon menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Isi Otomatis"
   },

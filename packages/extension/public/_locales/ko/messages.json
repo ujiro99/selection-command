@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "시작 URL이 변경되면 자동으로 업데이트됩니다."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "메뉴 아이콘으로 표시됩니다."
+  },
   "Option_iconUrl_autofill": {
     "message": "자동 채우기"
   },

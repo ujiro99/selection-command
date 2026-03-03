@@ -253,7 +253,7 @@ export const isPageActionType = (
 export const AiPromptOptionSchema = z.object({
   serviceId: z.string().min(1),
   prompt: z.string(),
-  openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
+  openMode: z.enum(SEARCH_OPEN_MODE),
 })
 
 const aiPromptSchema = z.object({

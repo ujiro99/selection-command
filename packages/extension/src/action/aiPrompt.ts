@@ -1,10 +1,17 @@
 import { Ipc, BgCommand } from "@/services/ipc"
 import { getScreenSize, getWindowPosition } from "@/services/screen"
 import { isValidString, generateRandomID } from "@/lib/utils"
-import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_CONTROL, PAGE_ACTION_EVENT, SelectorType } from "@/const"
+import {
+  OPEN_MODE,
+  PAGE_ACTION_OPEN_MODE,
+  PAGE_ACTION_CONTROL,
+  PAGE_ACTION_EVENT,
+  SelectorType,
+} from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import type { ExecuteCommandParams, PageActionStep, AiPromptCommand } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
+import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
 
@@ -39,13 +46,36 @@ export const AiPrompt = {
       return
     }
 
+    // Handle side panel mode separately (no page action steps)
+    if (aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL) {
+      Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+        url: service.url,
+      })
+      return
+    }
+
+    // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
+    const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
+      switch (mode) {
+        case OPEN_MODE.TAB:
+          return PAGE_ACTION_OPEN_MODE.TAB
+        case OPEN_MODE.BACKGROUND_TAB:
+          return PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
+        case OPEN_MODE.WINDOW:
+          return PAGE_ACTION_OPEN_MODE.WINDOW
+        default:
+          return PAGE_ACTION_OPEN_MODE.POPUP
+      }
+    }
+
+    const baseMode = toPageActionMode(aiPromptOption.openMode)
     const openMode = useSecondary
-      ? aiPromptOption.openMode === PAGE_ACTION_OPEN_MODE.TAB
+      ? baseMode === PAGE_ACTION_OPEN_MODE.TAB
         ? PAGE_ACTION_OPEN_MODE.WINDOW
-        : aiPromptOption.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
+        : baseMode === PAGE_ACTION_OPEN_MODE.WINDOW
           ? PAGE_ACTION_OPEN_MODE.TAB
           : PAGE_ACTION_OPEN_MODE.TAB
-      : aiPromptOption.openMode
+      : baseMode
 
     // Join multiple selectors with comma to support fallback matching via querySelector
     const inputSelector = service.inputSelectors.join(", ")

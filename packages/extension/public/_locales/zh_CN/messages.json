@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "修改初始URL时图标URL将自动更新。"
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "显示为菜单图标。"
+  },
   "Option_iconUrl_autofill": {
     "message": "自动填充"
   },

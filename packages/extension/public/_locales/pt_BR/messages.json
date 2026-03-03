@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Atualizado automaticamente quando a URL Inicial é alterada."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Exibido como ícone do menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Preenchimento Automático"
   },

@@ -257,6 +257,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Mis à jour automatiquement lorsque l'URL de démarrage est modifiée."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Affiché comme icône du menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Remplissage automatique"
   },

@@ -72,7 +72,7 @@ export type PageActionCommand = SearchCommand & {
 export type AiPromptOption = {
   serviceId: string
   prompt: string
-  openMode: PAGE_ACTION_OPEN_MODE
+  openMode: OPEN_MODE
 }
 
 export type AiPromptCommand = SearchCommand & {
