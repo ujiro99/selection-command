@@ -127,18 +127,23 @@ export const BaseStorage = {
   get: async <T>(key: KEY): Promise<T> => {
     const area = detectStorageArea(key)
     const hasDefault = key in DEFAULTS
-    const defaultValue = hasDefault
-      ? structuredClone(DEFAULTS[key as keyof typeof DEFAULTS])
-      : undefined
+    const getDefault = () =>
+      (hasDefault
+        ? structuredClone(DEFAULTS[key as keyof typeof DEFAULTS])
+        : undefined) as T
     try {
       const result = await area.get(`${key}`)
+      const value = result[key]
       // For dynamic keys (like command keys), return the raw value or undefined
       // For static keys, use the default value from DEFAULTS
-      return (result[key] ?? defaultValue) as T
+      if (value == null) {
+        return getDefault()
+      }
+      return value as T
     } catch (error) {
       if (isContextInvalidated(error)) {
         console.warn("Extension context invalidated, ignoring storage get")
-        return defaultValue as T
+        return getDefault()
       }
       throw error
     }
