@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   FormControl,
   FormField,
@@ -21,6 +21,19 @@ type AiPromptSectionProps = {
 
 export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
   const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
+
+  const serviceId = form.watch("aiPromptOption.serviceId")
+
+  // Auto-set iconUrl to the selected service's favicon when iconUrl is not set
+  useEffect(() => {
+    if (!serviceId) return
+    const currentIconUrl = form.getValues("iconUrl")
+    if (currentIconUrl) return
+    const service = AI_SERVICES.find((s) => s.id === serviceId)
+    if (service?.faviconUrl) {
+      form.setValue("iconUrl", service.faviconUrl)
+    }
+  }, [serviceId, form])
 
   const serviceOptions = AI_SERVICES.map((s) => ({
     name: s.name,

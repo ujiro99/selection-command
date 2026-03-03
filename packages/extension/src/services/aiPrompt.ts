@@ -7,6 +7,7 @@ export type AiService = {
   id: string
   name: string
   url: string
+  faviconUrl: string
   inputSelectors: string[]
   submitSelectors: string[]
   selectorType: SelectorType
@@ -21,6 +22,7 @@ export const AI_SERVICES: AiService[] = [
     id: "chatgpt",
     name: "ChatGPT",
     url: "https://chatgpt.com",
+    faviconUrl: "https://chatgpt.com/favicon.ico",
     inputSelectors: [
       "#prompt-textarea",
       "[data-testid='prompt-textarea']",
@@ -37,6 +39,7 @@ export const AI_SERVICES: AiService[] = [
     id: "gemini",
     name: "Gemini",
     url: "https://gemini.google.com/app",
+    faviconUrl: "https://gemini.google.com/favicon.ico",
     inputSelectors: [".ql-editor[contenteditable='true']"],
     submitSelectors: [
       "button.send-button",
@@ -48,6 +51,7 @@ export const AI_SERVICES: AiService[] = [
     id: "claude",
     name: "Claude",
     url: "https://claude.ai/new",
+    faviconUrl: "https://claude.ai/favicon.ico",
     inputSelectors: [
       "div[contenteditable='true'][aria-label]",
       "div[contenteditable='true'].ProseMirror",
@@ -62,6 +66,7 @@ export const AI_SERVICES: AiService[] = [
     id: "perplexity",
     name: "Perplexity",
     url: "https://perplexity.ai",
+    faviconUrl: "https://www.perplexity.ai/favicon.ico",
     inputSelectors: [
       "div#ask-input",
       "div[contenteditable='true'][role='textbox']",
