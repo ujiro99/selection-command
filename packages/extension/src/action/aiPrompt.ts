@@ -14,6 +14,7 @@ import type { OpenAndRunProps } from "@/services/pageAction/background"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
+import { convReadableKeysToSymbols } from "@/services/pageAction"
 
 export const AiPrompt = {
   async execute({
@@ -100,7 +101,7 @@ export const AiPrompt = {
           label: "Input prompt",
           selector: inputSelector,
           selectorType: SelectorType.css,
-          value: aiPromptOption.prompt,
+          value: convReadableKeysToSymbols(aiPromptOption.prompt),
         },
       },
       {
