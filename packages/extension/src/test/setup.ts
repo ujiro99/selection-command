@@ -341,6 +341,12 @@ global.chrome = {
       addListener: vi.fn(),
     },
   },
+  sidePanel: {
+    onClosed: {
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+    },
+  },
 } as any
 
 // Mock window.matchMedia

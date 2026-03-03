@@ -332,11 +332,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function (port) {
+      chrome.runtime.onConnect.addListener(function(port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function (msg) {
+        port.onMessage.addListener(function(msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -621,6 +621,7 @@ export async function closeWindow(
 export type OpenSidePanelProps = {
   url: string | UrlParam
   tabId?: number
+  isLinkCommand?: boolean
 }
 
 export type UpdateSidePanelUrlProps = {
@@ -640,7 +641,7 @@ export const openSidePanel = async (
 
   const targetTabId = tabId
   if (!targetTabId) {
-    console.error("No valid tab ID for side panel")
+    console.warn("No valid tab ID for side panel")
     return {
       tabId: undefined,
     }
@@ -662,6 +663,8 @@ export const openSidePanel = async (
   }
 }
 
+const SIDE_PANEL_CLOSE_ANIMATION = 1000
+
 /**
  * Close the side panel for the specified tab
  * @param {number} tabId - The ID of the tab to close the side panel for
@@ -673,22 +676,15 @@ export const closeSidePanel = async (tabId: number): Promise<void> => {
   } catch (e) {
     console.warn("Failed to close side panel:", e)
   }
-
-  // Cleanup regardless of whether close succeeded
+  // Wait for the side panel close animation to finish before disabling it to prevent visual glitches.
+  await sleep(SIDE_PANEL_CLOSE_ANIMATION)
   try {
-    await BgData.update((data) => {
-      const { [tabId]: _, ...rest } = data.sidePanelUrls
-      return {
-        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-        sidePanelUrls: rest,
-      }
-    })
     await chrome.sidePanel.setOptions({
       tabId: tabId,
       enabled: false,
     })
   } catch (e) {
-    console.warn("Failed to cleanup side panel:", e)
+    console.warn("Failed to disable side panel:", e)
   }
 }
 
