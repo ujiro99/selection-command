@@ -84,6 +84,9 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.SELECTION_TEXT]: "",
 } as const
 
+const isContextInvalidated = (error: unknown): boolean =>
+  error instanceof Error && error.message.includes("Extension context invalidated")
+
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
   if (Object.values(STORAGE_KEY).includes(key)) {
     return chrome.storage.sync
@@ -138,13 +141,19 @@ export const BaseStorage = {
 
   set: async <T>(key: KEY, value: T): Promise<boolean> => {
     const area = detectStorageArea(key)
-
-    if (area === chrome.storage.sync) {
-      await debouncedSyncSet({ [key.toString()]: value })
+    try {
+      if (area === chrome.storage.sync) {
+        await debouncedSyncSet({ [key.toString()]: value })
+      } else {
+        await area.set({ [key]: value })
+      }
       return true
-    } else {
-      await area.set({ [key]: value })
-      return true
+    } catch (error) {
+      if (isContextInvalidated(error)) {
+        console.warn("Extension context invalidated, ignoring storage set")
+        return false
+      }
+      throw error
     }
   },
 

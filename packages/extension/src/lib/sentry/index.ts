@@ -66,6 +66,16 @@ function isInitialized(): boolean {
 
 // Custom beforeSend hook to sanitize data
 const customBeforeSend = (event: ErrorEvent): ErrorEvent | null => {
+  // Ignore "Extension context invalidated" errors - these occur when the extension
+  // is updated while content scripts are still running. Users need to reload the page.
+  const exceptionValue = event.exception?.values?.[0]
+  if (
+    exceptionValue?.value?.includes("Extension context invalidated") ||
+    exceptionValue?.type?.includes("Extension context invalidated")
+  ) {
+    return null
+  }
+
   // Sanitize URL information
   if (event.request?.url) {
     event.request.url = sanitizeUrl(event.request.url)
