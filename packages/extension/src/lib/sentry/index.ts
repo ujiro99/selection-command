@@ -66,6 +66,17 @@ function isInitialized(): boolean {
 
 // Custom beforeSend hook to sanitize data
 const customBeforeSend = (event: ErrorEvent): ErrorEvent | null => {
+  // Filter out null/empty errors (e.g., Error: null from null rejections)
+  const values = event.exception?.values
+  if (values && values.length > 0) {
+    const hasMessage = values.some(
+      (v) => v.value != null && v.value !== "" && v.value !== "null",
+    )
+    if (!hasMessage) {
+      return null
+    }
+  }
+
   // Sanitize URL information
   if (event.request?.url) {
     event.request.url = sanitizeUrl(event.request.url)
@@ -128,12 +139,16 @@ export async function initSentry(): Promise<void> {
 
     self.addEventListener("error", (event) => {
       // console.debug("Service Worker error:", event.error)
-      Sentry.captureException(event.error as Error)
+      if (event.error != null) {
+        Sentry.captureException(event.error as Error)
+      }
     })
 
     self.addEventListener("unhandledrejection", (event) => {
       // console.debug("Service Worker unhandled rejection:", event.reason)
-      Sentry.captureException(event.reason as Error)
+      if (event.reason != null) {
+        Sentry.captureException(event.reason as Error)
+      }
     })
 
     // console.log("Sentry initialized successfully")
@@ -144,8 +159,8 @@ export async function initSentry(): Promise<void> {
 
 // Export Sentry instance for use throughout the application
 export const Sentry = {
-  captureException: (error: Error) => {
-    if (sentryScope) {
+  captureException: (error: unknown) => {
+    if (sentryScope && error != null) {
       sentryScope.captureException(error)
     }
   },
@@ -159,6 +174,7 @@ export const TestUtils = {
   // Test utility function to check if Sentry is initialized
   isInitialized,
   sanitizeUrl,
+  customBeforeSend,
 }
 
 export { ErrorBoundary } from "./ErrorBoundary"
