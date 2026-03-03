@@ -132,9 +132,6 @@ export const BaseStorage = {
       : undefined
     try {
       const result = await area.get(`${key}`)
-      if (chrome.runtime.lastError != null) {
-        throw chrome.runtime.lastError
-      }
       // For dynamic keys (like command keys), return the raw value or undefined
       // For static keys, use the default value from DEFAULTS
       return (result[key] ?? defaultValue) as T
