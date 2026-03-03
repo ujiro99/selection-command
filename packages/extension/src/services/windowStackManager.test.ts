@@ -316,6 +316,25 @@ describe("WindowStackManager", () => {
     })
   })
 
+  describe("BgData not initialized", () => {
+    it("should return empty array when BgData.get() returns undefined", async () => {
+      mockBgDataGet.mockReturnValue(undefined as any)
+
+      const result = await WindowStackManager.getStack()
+
+      expect(result).toEqual([])
+    })
+
+    it("should treat stack as empty when BgData.get() returns undefined on addWindow", async () => {
+      mockBgDataGet.mockReturnValue(undefined as any)
+      const window = createTestWindow(1, "cmd1", 0)
+
+      await WindowStackManager.addWindow(window)
+
+      expectStackUpdate([[window]])
+    })
+  })
+
   describe("ServiceWorker Persistence", () => {
     it("should load stack from BgData on each operation", async () => {
       const window = createTestWindow(1, "cmd1", 0)
