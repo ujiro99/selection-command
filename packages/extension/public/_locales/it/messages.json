@@ -389,6 +389,12 @@
   "Option_startUrl_desc": {
     "message": "URL della pagina dove inizia l'azione."
   },
+  "Option_recordUrl": {
+    "message": "URL di registrazione"
+  },
+  "Option_recordUrl_desc": {
+    "message": "URL a cui navigare all'apertura del registratore. Utilizzato solo durante la modifica."
+  },
   "Option_pageAction_title": {
     "message": "Azione"
   },
