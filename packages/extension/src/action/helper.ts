@@ -190,7 +190,7 @@ export const closeSidePanel = (
  * This function is called when a side panel is closed, either by user action or programmatically.
  */
 export const sidePanelClosed = async (tabId?: number): Promise<void> => {
-  if (!tabId) return
+  if (tabId == null) return
   try {
     await BgData.update((data) => {
       const { [tabId]: _, ...rest } = data.sidePanelUrls
