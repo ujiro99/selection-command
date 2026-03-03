@@ -109,7 +109,16 @@ export const openSidePanel = (
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  const tabId = sender.tab?.id
+  let tabId = sender.tab?.id
+  if (tabId == null) {
+    const bgData = BgData.get()
+    if (bgData.activeTabId == null) {
+      console.warn("No active tab ID available for opening side panel")
+      response(false)
+      return false
+    }
+    tabId = bgData.activeTabId
+  }
 
   // Since it needs to be tied to a user action, avoid asynchronous processing
   // and open the side panel immediately.
@@ -151,22 +160,25 @@ export const closeSidePanel = (
   if (tabId == null) {
     return false
   }
-  enhancedSettings.get().then(async (settings) => {
-    const bgData = BgData.get()
-    const tab = bgData.sidePanelTabs.find((t) => t.tabId === tabId)
-    if (tab) {
-      const autoHideEnabled = tab.isLinkCommand
-        ? settings.linkCommand.sidePanelAutoHide
-        : settings.windowOption.sidePanelAutoHide
-      if (autoHideEnabled) {
-        await _closeSidePanel(tabId)
+  enhancedSettings
+    .get()
+    .then(async (settings) => {
+      const bgData = BgData.get()
+      const tab = bgData.sidePanelTabs.find((t) => t.tabId === tabId)
+      if (tab) {
+        const autoHideEnabled = tab.isLinkCommand
+          ? settings.linkCommand.sidePanelAutoHide
+          : settings.windowOption.sidePanelAutoHide
+        if (autoHideEnabled) {
+          await _closeSidePanel(tabId)
+        }
       }
-    }
-    response(true)
-  }).catch((err) => {
-    console.warn("Failed to handle panel click:", err)
-    response(false)
-  })
+      response(true)
+    })
+    .catch((err) => {
+      console.warn("Failed to handle panel click:", err)
+      response(false)
+    })
 
   return true
 }

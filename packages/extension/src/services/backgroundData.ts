@@ -18,6 +18,7 @@ export class BgData {
   public normalWindows: WindowLayer
   public pageActionStop: boolean
   public activeScreenId: string | null
+  public activeTabId: number | null
   public connectedTabs: number[]
   public sidePanelTabs: SidePanelTab[]
   public sidePanelUrls: Record<number, string>
@@ -27,6 +28,7 @@ export class BgData {
     this.normalWindows = val?.normalWindows ?? []
     this.pageActionStop = val?.pageActionStop ?? false
     this.activeScreenId = val?.activeScreenId ?? null
+    this.activeTabId = val?.activeTabId ?? null
     this.connectedTabs = val?.connectedTabs ?? []
     // Normalize sidePanelTabs: convert legacy number[] entries to SidePanelTab objects
     this.sidePanelTabs = (val?.sidePanelTabs ?? []).map((t) =>

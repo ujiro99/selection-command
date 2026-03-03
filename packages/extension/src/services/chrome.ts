@@ -641,7 +641,7 @@ export const openSidePanel = async (
 
   const targetTabId = tabId
   if (!targetTabId) {
-    console.error("No valid tab ID for side panel")
+    console.warn("No valid tab ID for side panel")
     return {
       tabId: undefined,
     }

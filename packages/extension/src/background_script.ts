@@ -15,7 +15,7 @@ import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
-import { closeWindow, windowExists } from "@/services/chrome"
+import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
@@ -56,13 +56,11 @@ const getActiveTabId = (
   _sender: Sender,
   response: (res: unknown) => void,
 ) => {
-  chrome.tabs
-    .query({ active: true, lastFocusedWindow: true })
-    .then(([tab]) => response(tab?.id))
+  getCurrentTab().then((tab) => response(tab?.id))
   return true
 }
 
-const onConnect = async function(port: chrome.runtime.Port) {
+const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -72,7 +70,7 @@ const onConnect = async function(port: chrome.runtime.Port) {
     }))
   }
 }
-const onDisconnect = async function(port: chrome.runtime.Port) {
+const onDisconnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -152,24 +150,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-        id: params.id,
-        title: params.title,
-        searchUrl: params.searchUrl,
-        iconUrl: params.iconUrl,
-        openMode: params.openMode,
-        openModeSecondary: params.openModeSecondary,
-        spaceEncoding: params.spaceEncoding,
-        popupOption: PopupOption,
-      }
-      : isPageAction
-        ? {
           id: params.id,
           title: params.title,
+          searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
           openMode: params.openMode,
-          pageActionOption: params.pageActionOption,
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
           popupOption: PopupOption,
         }
+      : isPageAction
+        ? {
+            id: params.id,
+            title: params.title,
+            iconUrl: params.iconUrl,
+            openMode: params.openMode,
+            pageActionOption: params.pageActionOption,
+            popupOption: PopupOption,
+          }
         : null
 
     if (!cmd) {
@@ -362,6 +360,16 @@ const updateWindowSize = async (
   }
 }
 
+const updateActiveTabId = async (activeTabId?: number) => {
+  if (activeTabId == null) {
+    const activeTab = await getCurrentTab()
+    activeTabId = activeTab?.id
+  }
+  if (activeTabId != null) {
+    await BgData.update({ activeTabId })
+  }
+}
+
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
     url: OPTION_PAGE_PATH,
@@ -378,6 +386,9 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 
   // Update active screen ID
   await updateActiveScreenId(windowId)
+
+  // Update active tab ID
+  await updateActiveTabId()
 
   // Get windows to close based on focus change
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
@@ -429,6 +440,9 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     if (tab.windowId) {
       await updateActiveScreenId(tab.windowId)
     }
+
+    // Update active tab ID
+    await updateActiveTabId(tab.id)
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
   }
@@ -513,17 +527,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-  // Initialize commandIdObj and register listener at top-level
-  // to ensure they are available when service worker restarts
-  ; (async () => {
-    try {
-      await ContextMenu.syncCommandIdObj()
-      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-    } catch (error) {
-      // Ignore errors during initialization (e.g., in test environment)
-      console.debug("Failed to initialize context menu listener:", error)
-    }
-  })()
+// Initialize commandIdObj and register listener at top-level
+// to ensure they are available when service worker restarts
+;(async () => {
+  try {
+    await ContextMenu.syncCommandIdObj()
+    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+  } catch (error) {
+    // Ignore errors during initialization (e.g., in test environment)
+    console.debug("Failed to initialize context menu listener:", error)
+  }
+})()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
@@ -618,7 +632,10 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
 // SidePanel auto-hide functionality
 // Track tabs with active side panels
-chrome.tabs.onRemoved.addListener(ActionHelper.sidePanelClosed)
+chrome.tabs.onRemoved.addListener((tabId) => {
+  ActionHelper.sidePanelClosed(tabId)
+  updateActiveTabId()
+})
 chrome.sidePanel.onClosed.addListener(({ tabId }) =>
   ActionHelper.sidePanelClosed(tabId),
 )
