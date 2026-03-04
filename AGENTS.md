@@ -59,9 +59,11 @@ yarn clean                 # 全パッケージのクリーンアップ
 ```bash
 yarn dev                   # 開発モード
 yarn build                 # ビルド
+yarn build:e2e             # e2e用にビルド
 yarn test                  # テスト実行
 yarn test:ui               # テストUIモード
 yarn test:coverage         # カバレッジ測定
+yarn test:e2e              # playwright test
 yarn lint                  # ESLint実行
 yarn zip                   # 配布用zip作成
 ```

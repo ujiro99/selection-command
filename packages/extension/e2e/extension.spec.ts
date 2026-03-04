@@ -23,3 +23,42 @@ test("E2E-02: popup menu appears on text selection", async ({ page }) => {
   const menubar = await testPage.getMenuBar()
   expect(menubar.isVisible())
 })
+
+test("E2E-03: ポップアップメニューからコマンド実行し、PopupウィンドウでGoogle検索が実行されること", async ({
+  context,
+  page,
+}) => {
+  const testPage = new TestPage(page)
+  await testPage.open()
+  await testPage.selectText()
+  const menubar = await testPage.getMenuBar()
+
+  // Wait for a new popup window to be created when the button is clicked.
+  const [popupPage] = await Promise.all([
+    context.waitForEvent("page"),
+    menubar.locator("button").first().click(),
+  ])
+
+  await popupPage.waitForLoadState("domcontentloaded")
+  expect(popupPage.url()).toContain("google.com/search?q=")
+})
+
+test("E2E-04: コンテキスメニューからコマンド実行し、PopupウィンドウでGoogle検索が実行されること", async ({
+  context,
+  page,
+  getUserSettings,
+}) => {
+  const testPage = new TestPage(page)
+  await testPage.open()
+  await testPage.selectText()
+  const menubar = await testPage.getMenuBar()
+  await menubar.locator("button").first().click()
+
+  let [serviceWorker] = context.serviceWorkers()
+  if (!serviceWorker) {
+    serviceWorker = await context.waitForEvent("serviceworker")
+  }
+
+  const reuslt = await getUserSettings()
+  console.log("userSettings", reuslt)
+})

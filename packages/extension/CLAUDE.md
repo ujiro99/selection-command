@@ -21,6 +21,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `yarn test:ui` - VitestのUIモードでテストを実行
 - `yarn test:coverage` - テストカバレッジを測定
 - `yarn test src/path/to/file.test.ts` - 単一テストファイルの実行
+- `yarn test:e2e` - playwrightを使用したE2Eテストの実行
 - `yarn pretty-quick` - Prettierによるコード整形
 - `yarn zip` - ビルドされたdistフォルダから配布可能な拡張機能のzipファイルを作成
 
@@ -57,7 +58,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **主要機能:**
 
 - **ページアクション** - ブラウザ自動化シーケンスの記録と再生
-- **コマンドハブ** - コマンドの共有と発見のためのWebインターフェース（`pages/`内の独立したNext.jsアプリ）
 - **コンテキストメニュー** - 選択したテキストに対する右クリックアクション
 - **設定管理** - 構成とユーザー設定のインポート/エクスポート
 
