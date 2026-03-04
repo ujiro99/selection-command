@@ -1,4 +1,4 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
 import { getScreenSize, getWindowPosition } from "@/services/screen"
 import { isValidString, generateRandomID } from "@/lib/utils"
 import {
@@ -15,6 +15,7 @@ import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
 import { convReadableKeysToSymbols } from "@/services/pageAction"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 
 export const AiPrompt = {
   async execute({
@@ -46,37 +47,6 @@ export const AiPrompt = {
       console.error("position is null.")
       return
     }
-
-    // Handle side panel mode separately (no page action steps)
-    if (aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL) {
-      Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
-        url: service.url,
-      })
-      return
-    }
-
-    // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
-    const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
-      switch (mode) {
-        case OPEN_MODE.TAB:
-          return PAGE_ACTION_OPEN_MODE.TAB
-        case OPEN_MODE.BACKGROUND_TAB:
-          return PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
-        case OPEN_MODE.WINDOW:
-          return PAGE_ACTION_OPEN_MODE.WINDOW
-        default:
-          return PAGE_ACTION_OPEN_MODE.POPUP
-      }
-    }
-
-    const baseMode = toPageActionMode(aiPromptOption.openMode)
-    const openMode = useSecondary
-      ? baseMode === PAGE_ACTION_OPEN_MODE.TAB
-        ? PAGE_ACTION_OPEN_MODE.WINDOW
-        : baseMode === PAGE_ACTION_OPEN_MODE.WINDOW
-          ? PAGE_ACTION_OPEN_MODE.TAB
-          : PAGE_ACTION_OPEN_MODE.TAB
-      : baseMode
 
     // Join multiple selectors with comma to support fallback matching via querySelector
     const inputSelector = service.inputSelectors.join(", ")
@@ -125,6 +95,54 @@ export const AiPrompt = {
         },
       },
     ]
+
+    // Handle side panel mode: store pending steps in session storage, then open
+    // the side panel. The background onConnect handler will pick up the pending
+    // steps when the side panel content script establishes a port connection.
+    if (aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL) {
+      const pending: SidePanelPendingAction = {
+        url: service.url,
+        steps,
+        selectedText: selectionText,
+        srcUrl: location.href,
+      }
+      try {
+        await Storage.set<SidePanelPendingAction>(
+          SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+          pending,
+        )
+      } catch (e) {
+        console.error("Failed to store pending side panel action:", e)
+        return
+      }
+      Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+        url: service.url,
+      })
+      return
+    }
+
+    // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
+    const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
+      switch (mode) {
+        case OPEN_MODE.TAB:
+          return PAGE_ACTION_OPEN_MODE.TAB
+        case OPEN_MODE.BACKGROUND_TAB:
+          return PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
+        case OPEN_MODE.WINDOW:
+          return PAGE_ACTION_OPEN_MODE.WINDOW
+        default:
+          return PAGE_ACTION_OPEN_MODE.POPUP
+      }
+    }
+
+    const baseMode = toPageActionMode(aiPromptOption.openMode)
+    const openMode = useSecondary
+      ? baseMode === PAGE_ACTION_OPEN_MODE.TAB
+        ? PAGE_ACTION_OPEN_MODE.WINDOW
+        : baseMode === PAGE_ACTION_OPEN_MODE.WINDOW
+          ? PAGE_ACTION_OPEN_MODE.TAB
+          : PAGE_ACTION_OPEN_MODE.TAB
+      : baseMode
 
     const windowPosition = await getWindowPosition()
     const screen = await getScreenSize()

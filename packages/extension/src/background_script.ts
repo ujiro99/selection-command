@@ -9,6 +9,7 @@ import {
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
+import type { IpcCallback, SidePanelPendingAction } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
@@ -21,7 +22,6 @@ import { PopupAutoClose } from "@/services/popupAutoClose"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
-import type { IpcCallback } from "@/services/ipc"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
@@ -70,6 +70,25 @@ const onConnect = async function(port: chrome.runtime.Port) {
     BgData.update((data) => ({
       connectedTabs: [...data.connectedTabs, tabId],
     }))
+  } else {
+    // Side panel pages have no tab.id (port.sender.origin is set instead).
+    // Check if there is a pending AI prompt action stored by aiPrompt.ts and
+    // run the page action steps through the port.
+    const origin = port.sender?.origin
+    if (!origin) return
+    const pending = await Storage.get<SidePanelPendingAction | null>(
+      SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+    )
+    if (!pending?.url || !pending?.steps?.length) return
+    try {
+      const pendingOrigin = new URL(pending.url).origin
+      if (origin !== pendingOrigin) return
+    } catch {
+      return
+    }
+    // Clear pending action so it is not reused on subsequent connections
+    await Storage.set(SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING, null)
+    PageActionBackground.runViaPort(port, pending)
   }
 }
 const onDisconnect = async function(port: chrome.runtime.Port) {

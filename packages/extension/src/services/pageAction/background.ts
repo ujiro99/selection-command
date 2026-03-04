@@ -4,6 +4,7 @@ import {
   TabCommand,
   RunPageAction,
   ExecPageAction,
+  SidePanelPendingAction,
 } from "@/services/ipc"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import type { PageAction } from "@/services/pageAction"
@@ -323,6 +324,86 @@ export const reset = (_: any, sender: Sender): boolean => {
 
 export type OpenAndRunProps = Omit<OpenPopupProps, "type"> &
   Omit<RunPageAction, "clipboardText">
+
+/**
+ * Run page action steps through a long-lived port connection.
+ * Used for side panel pages which cannot be reached via chrome.tabs.sendMessage
+ * because side panels have no tab.id from the messaging API's perspective.
+ * The side panel content script routes port messages to the same execPageAction
+ * listeners registered by usePageActionRunner via Ipc.setSharedPort().
+ */
+export const runViaPort = (
+  port: chrome.runtime.Port,
+  param: SidePanelPendingAction,
+): void => {
+  const { steps, selectedText, srcUrl } = param
+
+  const executeStep = (
+    step: PageActionStep,
+  ): Promise<ExecPageAction.Return> => {
+    return new Promise<ExecPageAction.Return>((resolve, reject) => {
+      const id = generateRandomID()
+      const timeout = setTimeout(() => {
+        port.onMessage.removeListener(onMsg)
+        reject(new Error(`Timeout executing step: ${step.id}`))
+      }, TIMEOUT + (step.delayMs ?? 0))
+
+      const onMsg = (msg: Record<string, unknown>) => {
+        if (msg?.command === "portResponse" && msg.id === id) {
+          clearTimeout(timeout)
+          port.onMessage.removeListener(onMsg)
+          resolve(msg.result as ExecPageAction.Return)
+        }
+      }
+      port.onMessage.addListener(onMsg)
+
+      port.postMessage({
+        command: TabCommand.execPageAction,
+        id,
+        param: {
+          step,
+          srcUrl,
+          selectedText,
+          clipboardText: "",
+          openMode: PAGE_ACTION_OPEN_MODE.TAB,
+          userVariables: [],
+        },
+      })
+    })
+  }
+
+  const _run = async () => {
+    for (const step of steps) {
+      const delay = step.delayMs ?? 0
+      if (delay > 0) {
+        await sleep(delay)
+      }
+
+      let result: ExecPageAction.Return
+      try {
+        result = await executeStep(step)
+      } catch (e) {
+        console.error("Side panel page action step error:", e)
+        break
+      }
+
+      if (!result.result) {
+        console.error(
+          "Side panel page action step failed:",
+          result.message,
+          step,
+        )
+        break
+      }
+
+      if (step.param.type === PAGE_ACTION_CONTROL.end) {
+        break
+      }
+    }
+  }
+
+  _run()
+}
 
 export const openAndRun = (
   param: OpenAndRunProps,
