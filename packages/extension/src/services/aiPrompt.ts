@@ -39,12 +39,10 @@ export const AI_SERVICES: AiService[] = [
     id: "gemini",
     name: "Gemini",
     url: "https://gemini.google.com/app",
-    faviconUrl: "https://gemini.google.com/favicon.ico",
+    faviconUrl:
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
     inputSelectors: [".ql-editor[contenteditable='true']"],
-    submitSelectors: [
-      "button.send-button",
-      "button mat-icon[fonticon='send']",
-    ],
+    submitSelectors: ["button.send-button", "button mat-icon[fonticon='send']"],
     selectorType: SelectorType.css,
   },
   {
@@ -66,7 +64,7 @@ export const AI_SERVICES: AiService[] = [
     id: "perplexity",
     name: "Perplexity",
     url: "https://perplexity.ai",
-    faviconUrl: "https://www.perplexity.ai/favicon.ico",
+    faviconUrl: "https://favicon.im/perplexity.ai",
     inputSelectors: [
       "div#ask-input",
       "div[contenteditable='true'][role='textbox']",

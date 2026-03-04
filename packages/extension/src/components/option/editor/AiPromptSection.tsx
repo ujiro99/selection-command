@@ -28,7 +28,10 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
   useEffect(() => {
     if (!serviceId) return
     const currentIconUrl = form.getValues("iconUrl")
-    if (currentIconUrl) return
+    const isDefaultIcon = AI_SERVICES.some(
+      (s) => s.faviconUrl === currentIconUrl,
+    )
+    if (currentIconUrl && !isDefaultIcon) return
     const service = AI_SERVICES.find((s) => s.id === serviceId)
     if (service?.faviconUrl) {
       form.setValue("iconUrl", service.faviconUrl)
