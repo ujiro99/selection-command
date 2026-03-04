@@ -283,8 +283,15 @@ export type ShowToastParam = {
 
 export type Caches = {
   images: ImageCache
+  aiServices?: AiServicesCache
 }
 
 export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
+}
+
+export type AiServicesCache = {
+  /** Fetch date in "YYYY-MM-DD" format for daily TTL */
+  date: string
+  services: import("@/services/aiPrompt").AiService[]
 }

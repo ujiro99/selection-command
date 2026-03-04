@@ -11,9 +11,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { InputMenu } from "@/components/pageAction/InputPopup"
-import { AI_SERVICES } from "@/services/aiPrompt"
+import { getAiServicesFallback } from "@/services/aiPrompt"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+
+const AI_SERVICES = getAiServicesFallback()
 
 type AiPromptSectionProps = {
   form: any

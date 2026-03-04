@@ -31,7 +31,7 @@ export const AiPrompt = {
 
     const aiPromptCmd = command as unknown as AiPromptCommand
     const aiPromptOption = aiPromptCmd.aiPromptOption
-    const service = findAiService(aiPromptOption.serviceId)
+    const service = await findAiService(aiPromptOption.serviceId)
 
     if (!service) {
       console.error(`AI service not found: ${aiPromptOption.serviceId}`)
