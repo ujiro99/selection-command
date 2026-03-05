@@ -32,6 +32,10 @@ importIf("production", "./lib/sentry/initialize")
 
 BgData.init()
 
+// Retained port for the currently open side panel (no tab.id context).
+// Set when the side panel connects, cleared on disconnect.
+let sidePanelPort: chrome.runtime.Port | null = null
+
 type Sender = chrome.runtime.MessageSender
 
 export type addPageRuleProps = {
@@ -62,7 +66,7 @@ const getActiveTabId = (
   return true
 }
 
-const onConnect = async function(port: chrome.runtime.Port) {
+const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -72,6 +76,13 @@ const onConnect = async function(port: chrome.runtime.Port) {
     }))
   } else {
     // Side panel pages have no tab.id (port.sender.origin is set instead).
+    // Always retain the side panel port for use when the panel is already open.
+    sidePanelPort = port
+    port.onDisconnect.addListener(() => {
+      if (sidePanelPort === port) {
+        sidePanelPort = null
+      }
+    })
     // Check if there is a pending AI prompt action stored by aiPrompt.ts and
     // run the page action steps through the port.
     const origin = port.sender?.origin
@@ -91,7 +102,7 @@ const onConnect = async function(port: chrome.runtime.Port) {
     PageActionBackground.runViaPort(port, pending)
   }
 }
-const onDisconnect = async function(port: chrome.runtime.Port) {
+const onDisconnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -114,7 +125,44 @@ const commandFuncs = {
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [BgCommand.openTab]: ActionHelper.openTab,
-  [BgCommand.openSidePanel]: ActionHelper.openSidePanel,
+  [BgCommand.openSidePanel]: (
+    param: Parameters<typeof ActionHelper.openSidePanel>[0],
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    return ActionHelper.openSidePanel(
+      param,
+      sender,
+      async (result: unknown) => {
+        // If the side panel was already open (port retained), execute pending action
+        // via the existing port without waiting for a new onConnect event.
+        if (result === true && sidePanelPort !== null) {
+          const port = sidePanelPort
+          const origin = port.sender?.origin
+          if (origin) {
+            const pending = await Storage.get<SidePanelPendingAction | null>(
+              SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+            )
+            if (pending?.url && pending?.steps?.length) {
+              try {
+                const pendingOrigin = new URL(pending.url).origin
+                if (origin === pendingOrigin) {
+                  await Storage.set(
+                    SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+                    null,
+                  )
+                  PageActionBackground.runViaPort(port, pending)
+                }
+              } catch {
+                // URL parse error - skip
+              }
+            }
+          }
+        }
+        response(result)
+      },
+    )
+  },
   [BgCommand.closeSidePanel]: ActionHelper.closeSidePanel,
   [BgCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
   [BgCommand.execApi]: ActionHelper.execApi,
@@ -171,24 +219,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-        id: params.id,
-        title: params.title,
-        searchUrl: params.searchUrl,
-        iconUrl: params.iconUrl,
-        openMode: params.openMode,
-        openModeSecondary: params.openModeSecondary,
-        spaceEncoding: params.spaceEncoding,
-        popupOption: PopupOption,
-      }
-      : isPageAction
-        ? {
           id: params.id,
           title: params.title,
+          searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
           openMode: params.openMode,
-          pageActionOption: params.pageActionOption,
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
           popupOption: PopupOption,
         }
+      : isPageAction
+        ? {
+            id: params.id,
+            title: params.title,
+            iconUrl: params.iconUrl,
+            openMode: params.openMode,
+            pageActionOption: params.pageActionOption,
+            popupOption: PopupOption,
+          }
         : null
 
     if (!cmd) {
@@ -532,17 +580,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-  // Initialize commandIdObj and register listener at top-level
-  // to ensure they are available when service worker restarts
-  ; (async () => {
-    try {
-      await ContextMenu.syncCommandIdObj()
-      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-    } catch (error) {
-      // Ignore errors during initialization (e.g., in test environment)
-      console.debug("Failed to initialize context menu listener:", error)
-    }
-  })()
+// Initialize commandIdObj and register listener at top-level
+// to ensure they are available when service worker restarts
+;(async () => {
+  try {
+    await ContextMenu.syncCommandIdObj()
+    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+  } catch (error) {
+    // Ignore errors during initialization (e.g., in test environment)
+    console.debug("Failed to initialize context menu listener:", error)
+  }
+})()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
