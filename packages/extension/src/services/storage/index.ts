@@ -84,6 +84,10 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.SELECTION_TEXT]: "",
 } as const
 
+const isContextInvalidated = (error: unknown): boolean =>
+  error instanceof Error &&
+  error.message.includes("Extension context invalidated")
+
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
   if (Object.values(STORAGE_KEY).includes(key)) {
     return chrome.storage.sync
@@ -123,28 +127,44 @@ type UpdateFunc<T> = (currentVal: T) => T
 export const BaseStorage = {
   get: async <T>(key: KEY): Promise<T> => {
     const area = detectStorageArea(key)
-    const result = await area.get(`${key}`)
-    if (chrome.runtime.lastError != null) {
-      throw chrome.runtime.lastError
-    }
-    // For dynamic keys (like command keys), return the raw value or undefined
-    // For static keys, use the default value from DEFAULTS
     const hasDefault = key in DEFAULTS
-    return (result[key] ??
+    const getDefault = () =>
       (hasDefault
         ? structuredClone(DEFAULTS[key as keyof typeof DEFAULTS])
-        : undefined)) as T
+        : undefined) as T
+    try {
+      const result = await area.get(`${key}`)
+      const value = result[key]
+      // For dynamic keys (like command keys), return the raw value or undefined
+      // For static keys, use the default value from DEFAULTS
+      if (value == null) {
+        return getDefault()
+      }
+      return value as T
+    } catch (error) {
+      if (isContextInvalidated(error)) {
+        console.debug("Extension context invalidated, ignoring storage get")
+        return getDefault()
+      }
+      throw error
+    }
   },
 
   set: async <T>(key: KEY, value: T): Promise<boolean> => {
     const area = detectStorageArea(key)
-
-    if (area === chrome.storage.sync) {
-      await debouncedSyncSet({ [key.toString()]: value })
+    try {
+      if (area === chrome.storage.sync) {
+        await debouncedSyncSet({ [key.toString()]: value })
+      } else {
+        await area.set({ [key]: value })
+      }
       return true
-    } else {
-      await area.set({ [key]: value })
-      return true
+    } catch (error) {
+      if (isContextInvalidated(error)) {
+        console.debug("Extension context invalidated, ignoring storage set")
+        return false
+      }
+      throw error
     }
   },
 

@@ -66,13 +66,22 @@ function isInitialized(): boolean {
 
 // Custom beforeSend hook to sanitize data
 const customBeforeSend = (event: ErrorEvent): ErrorEvent | null => {
-  // Filter out null/empty errors (e.g., Error: null from null rejections)
   const values = event.exception?.values
   if (values && values.length > 0) {
+    // Filter out null/empty errors (e.g., Error: null from null rejections)
     const hasMessage = values.some(
       (v) => v.value != null && v.value !== "" && v.value !== "null",
     )
     if (!hasMessage) {
+      return null
+    }
+
+    // Ignore "Extension context invalidated" errors - these occur when the extension
+    // is updated while content scripts are still running. Users need to reload the page.
+    if (
+      values[0].value?.includes("Extension context invalidated") ||
+      values[0].type?.includes("Extension context invalidated")
+    ) {
       return null
     }
   }
