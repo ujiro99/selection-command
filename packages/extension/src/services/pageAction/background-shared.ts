@@ -12,6 +12,7 @@ vi.mock("@/services/storage", () => ({
   SESSION_STORAGE_KEY: {
     PA_RECORDING: "pa_recording",
     PA_CONTEXT: "pa_context",
+    PA_SIDE_PANEL_PENDING: "pa_side_panel_pending",
   },
 }))
 

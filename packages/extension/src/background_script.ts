@@ -9,7 +9,7 @@ import {
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
-import type { IpcCallback, SidePanelPendingAction } from "@/services/ipc"
+import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
@@ -31,10 +31,6 @@ import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
 
 BgData.init()
-
-// Retained port for the currently open side panel (no tab.id context).
-// Set when the side panel connects, cleared on disconnect.
-let sidePanelPort: chrome.runtime.Port | null = null
 
 type Sender = chrome.runtime.MessageSender
 
@@ -74,30 +70,7 @@ const onConnect = async function (port: chrome.runtime.Port) {
     }))
   } else {
     // Side panel pages have no tab.id (port.sender.origin is set instead).
-    // Always retain the side panel port for use when the panel is already open.
-    sidePanelPort = port
-    port.onDisconnect.addListener(() => {
-      if (sidePanelPort === port) {
-        sidePanelPort = null
-      }
-    })
-    // Check if there is a pending AI prompt action stored by aiPrompt.ts and
-    // run the page action steps through the port.
-    const origin = port.sender?.origin
-    if (!origin) return
-    const pending = await Storage.get<SidePanelPendingAction | null>(
-      SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
-    )
-    if (!pending?.url || !pending?.steps?.length) return
-    try {
-      const pendingOrigin = new URL(pending.url).origin
-      if (origin !== pendingOrigin) return
-    } catch {
-      return
-    }
-    // Clear pending action so it is not reused on subsequent connections
-    await Storage.set(SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING, null)
-    PageActionBackground.runViaPort(port, pending)
+    await PageActionBackground.handleSidePanelConnect(port)
   }
 }
 const onDisconnect = async function (port: chrome.runtime.Port) {
@@ -134,28 +107,8 @@ const commandFuncs = {
       async (result: unknown) => {
         // If the side panel was already open (port retained), execute pending action
         // via the existing port without waiting for a new onConnect event.
-        if (result === true && sidePanelPort !== null) {
-          const port = sidePanelPort
-          const origin = port.sender?.origin
-          if (origin) {
-            const pending = await Storage.get<SidePanelPendingAction | null>(
-              SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
-            )
-            if (pending?.url && pending?.steps?.length) {
-              try {
-                const pendingOrigin = new URL(pending.url).origin
-                if (origin === pendingOrigin) {
-                  await Storage.set(
-                    SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
-                    null,
-                  )
-                  PageActionBackground.runViaPort(port, pending)
-                }
-              } catch {
-                // URL parse error - skip
-              }
-            }
-          }
+        if (result === true) {
+          await PageActionBackground.handleSidePanelOpened()
         }
         response(result)
       },

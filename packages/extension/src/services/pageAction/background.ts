@@ -801,3 +801,62 @@ export const onWindowBoundsChanged = async (window: chrome.windows.Window) => {
 }
 
 chrome.windows.onBoundsChanged.addListener(onWindowBoundsChanged)
+
+// ---------------------------------------------------------------------------
+// Side panel connection management
+// ---------------------------------------------------------------------------
+
+// Retained port for the currently open side panel (no tab.id context).
+// Set when the side panel connects, cleared on disconnect.
+let sidePanelPort: chrome.runtime.Port | null = null
+
+/**
+ * Check for a pending AI prompt page action in session storage.
+ * If a pending action exists for the port's origin, clears the stored action
+ * and runs the steps through the port.
+ */
+const runPendingSidePanelAction = async (
+  port: chrome.runtime.Port,
+): Promise<void> => {
+  const origin = port.sender?.origin
+  if (!origin) return
+  const pending = await Storage.get<SidePanelPendingAction | null>(
+    SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+  )
+  if (!pending?.url || !pending?.steps?.length) return
+  try {
+    const pendingOrigin = new URL(pending.url).origin
+    if (origin !== pendingOrigin) return
+  } catch {
+    return
+  }
+  await Storage.set(SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING, null)
+  runViaPort(port, pending)
+}
+
+/**
+ * Handle a new side panel port connection.
+ * Retains the port and runs any pending page action steps for the panel's origin.
+ * Called from background_script.ts onConnect when port.sender.tab.id is absent.
+ */
+export const handleSidePanelConnect = async (
+  port: chrome.runtime.Port,
+): Promise<void> => {
+  sidePanelPort = port
+  port.onDisconnect.addListener(() => {
+    if (sidePanelPort === port) {
+      sidePanelPort = null
+    }
+  })
+  await runPendingSidePanelAction(port)
+}
+
+/**
+ * Check for a pending page action and run it via the currently retained
+ * side panel port. Called after openSidePanel resolves when the side panel
+ * was already open (i.e. no new onConnect event will fire).
+ */
+export const handleSidePanelOpened = async (): Promise<void> => {
+  if (sidePanelPort === null) return
+  await runPendingSidePanelAction(sidePanelPort)
+}
