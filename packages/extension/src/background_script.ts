@@ -16,7 +16,7 @@ import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
-import { closeWindow, windowExists } from "@/services/chrome"
+import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
@@ -60,9 +60,7 @@ const getActiveTabId = (
   _sender: Sender,
   response: (res: unknown) => void,
 ) => {
-  chrome.tabs
-    .query({ active: true, lastFocusedWindow: true })
-    .then(([tab]) => response(tab?.id))
+  getCurrentTab().then((tab) => response(tab?.id))
   return true
 }
 
@@ -429,6 +427,16 @@ const updateWindowSize = async (
   }
 }
 
+const updateActiveTabId = async (activeTabId?: number) => {
+  if (activeTabId == null) {
+    const activeTab = await getCurrentTab()
+    activeTabId = activeTab?.id
+  }
+  if (activeTabId != null) {
+    await BgData.update({ activeTabId })
+  }
+}
+
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
     url: OPTION_PAGE_PATH,
@@ -445,6 +453,9 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 
   // Update active screen ID
   await updateActiveScreenId(windowId)
+
+  // Update active tab ID
+  await updateActiveTabId()
 
   // Get windows to close based on focus change
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
@@ -496,6 +507,9 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     if (tab.windowId) {
       await updateActiveScreenId(tab.windowId)
     }
+
+    // Update active tab ID
+    await updateActiveTabId(tab.id)
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
   }
@@ -686,14 +700,12 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 // SidePanel auto-hide functionality
 // Track tabs with active side panels
 chrome.tabs.onRemoved.addListener((tabId) => {
-  BgData.update((data) => {
-    const { [tabId]: _, ...rest } = data.sidePanelUrls
-    return {
-      sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-      sidePanelUrls: rest,
-    }
-  })
+  ActionHelper.sidePanelClosed(tabId)
+  updateActiveTabId()
 })
+chrome.sidePanel.onClosed.addListener(({ tabId }) =>
+  ActionHelper.sidePanelClosed(tabId),
+)
 
 // Export functions for testing
 export const testExports = {

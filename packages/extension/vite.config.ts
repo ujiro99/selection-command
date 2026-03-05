@@ -113,6 +113,27 @@ export default defineConfig(({ mode }) => {
         "@shared": path.resolve(__dirname, "../shared/src"),
       },
     },
+    esbuild: {
+      // Remove console statements except error/warn in production
+      pure:
+        mode === "production"
+          ? [
+              "console.log",
+              "console.debug",
+              "console.info",
+              "console.trace",
+              "console.dir",
+              "console.count",
+              "console.countReset",
+              "console.group",
+              "console.groupCollapsed",
+              "console.groupEnd",
+              "console.time",
+              "console.timeEnd",
+              "console.timeLog",
+            ]
+          : [],
+    },
     build: {
       sourcemap: shouldUploadSourcemaps, // For Sentry
       emptyOutDir: !isWatchMode, // prevent deleting the dist folder when running in watch mode
