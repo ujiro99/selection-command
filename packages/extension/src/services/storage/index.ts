@@ -85,7 +85,8 @@ const DEFAULTS = {
 } as const
 
 const isContextInvalidated = (error: unknown): boolean =>
-  error instanceof Error && error.message.includes("Extension context invalidated")
+  error instanceof Error &&
+  error.message.includes("Extension context invalidated")
 
 const detectStorageArea = (key: KEY): chrome.storage.StorageArea => {
   if (Object.values(STORAGE_KEY).includes(key)) {
@@ -142,7 +143,7 @@ export const BaseStorage = {
       return value as T
     } catch (error) {
       if (isContextInvalidated(error)) {
-        console.warn("Extension context invalidated, ignoring storage get")
+        console.debug("Extension context invalidated, ignoring storage get")
         return getDefault()
       }
       throw error
@@ -160,7 +161,7 @@ export const BaseStorage = {
       return true
     } catch (error) {
       if (isContextInvalidated(error)) {
-        console.warn("Extension context invalidated, ignoring storage set")
+        console.debug("Extension context invalidated, ignoring storage set")
         return false
       }
       throw error
