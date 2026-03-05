@@ -662,6 +662,83 @@ describe("Sentry Performance Tests", () => {
   })
 })
 
+describe("Sentry Null Error Filtering Tests", () => {
+  beforeEach(() => {
+    if (mockSentryClient?.init) mockSentryClient.init.mockClear()
+    if (mockSentryScope?.captureException)
+      mockSentryScope.captureException.mockClear()
+    mockIsDebug.value = false
+    TestUtils.reset()
+    mockChromeStorageSync.get.mockResolvedValue({
+      [STORAGE_KEY.USER]: { pageRules: [] },
+    })
+    Object.defineProperty(window, "location", {
+      value: { href: "https://example.com/test" },
+      writable: true,
+    })
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  describe("ST-NULL-01: Sentry.captureException should ignore null/undefined errors", () => {
+    it("should not capture null errors", async () => {
+      await initSentry()
+      Sentry.captureException(null)
+      expect(mockSentryScope.captureException).not.toHaveBeenCalled()
+    })
+
+    it("should not capture undefined errors", async () => {
+      await initSentry()
+      Sentry.captureException(undefined)
+      expect(mockSentryScope.captureException).not.toHaveBeenCalled()
+    })
+
+    it("should still capture non-null errors", async () => {
+      await initSentry()
+      const err = new Error("real error")
+      Sentry.captureException(err)
+      expect(mockSentryScope.captureException).toHaveBeenCalledWith(err)
+    })
+  })
+
+  describe("ST-NULL-02: customBeforeSend should filter out null/empty error messages", () => {
+    it("should return null when exception value is 'null'", () => {
+      const event = {
+        exception: { values: [{ value: "null", type: "Error" }] },
+      } as any
+      expect(TestUtils.customBeforeSend(event)).toBeNull()
+    })
+
+    it("should return null when exception value is empty string", () => {
+      const event = {
+        exception: { values: [{ value: "", type: "Error" }] },
+      } as any
+      expect(TestUtils.customBeforeSend(event)).toBeNull()
+    })
+
+    it("should return null when exception value is null", () => {
+      const event = {
+        exception: { values: [{ value: null, type: "Error" }] },
+      } as any
+      expect(TestUtils.customBeforeSend(event)).toBeNull()
+    })
+
+    it("should pass through events with meaningful error messages", () => {
+      const event = {
+        exception: { values: [{ value: "Something went wrong", type: "Error" }] },
+      } as any
+      expect(TestUtils.customBeforeSend(event)).not.toBeNull()
+    })
+
+    it("should pass through events with no exception data", () => {
+      const event = {} as any
+      expect(TestUtils.customBeforeSend(event)).not.toBeNull()
+    })
+  })
+})
+
 describe("Sentry Configuration Management Tests", () => {
   beforeEach(() => {
     // Clear only call history, not implementations

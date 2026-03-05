@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (fechar imediatamente)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Ocultar painel lateral automaticamente"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Oculta automaticamente o painel lateral quando o painel principal é clicado enquanto o painel lateral está aberto via um comando."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Ocultar painel lateral automaticamente"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Oculta automaticamente o painel lateral quando o painel principal é clicado durante a visualização da pré-visualização do link."
+  },
   "Option_inherit": {
     "message": "Herdar"
   },
@@ -364,6 +376,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Janela"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Painel lateral"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clique"

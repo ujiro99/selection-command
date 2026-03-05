@@ -66,14 +66,24 @@ function isInitialized(): boolean {
 
 // Custom beforeSend hook to sanitize data
 const customBeforeSend = (event: ErrorEvent): ErrorEvent | null => {
-  // Ignore "Extension context invalidated" errors - these occur when the extension
-  // is updated while content scripts are still running. Users need to reload the page.
-  const exceptionValue = event.exception?.values?.[0]
-  if (
-    exceptionValue?.value?.includes("Extension context invalidated") ||
-    exceptionValue?.type?.includes("Extension context invalidated")
-  ) {
-    return null
+  const values = event.exception?.values
+  if (values && values.length > 0) {
+    // Filter out null/empty errors (e.g., Error: null from null rejections)
+    const hasMessage = values.some(
+      (v) => v.value != null && v.value !== "" && v.value !== "null",
+    )
+    if (!hasMessage) {
+      return null
+    }
+
+    // Ignore "Extension context invalidated" errors - these occur when the extension
+    // is updated while content scripts are still running. Users need to reload the page.
+    if (
+      values[0].value?.includes("Extension context invalidated") ||
+      values[0].type?.includes("Extension context invalidated")
+    ) {
+      return null
+    }
   }
 
   // Sanitize URL information
@@ -138,12 +148,16 @@ export async function initSentry(): Promise<void> {
 
     self.addEventListener("error", (event) => {
       // console.debug("Service Worker error:", event.error)
-      Sentry.captureException(event.error as Error)
+      if (event.error != null) {
+        Sentry.captureException(event.error as Error)
+      }
     })
 
     self.addEventListener("unhandledrejection", (event) => {
       // console.debug("Service Worker unhandled rejection:", event.reason)
-      Sentry.captureException(event.reason as Error)
+      if (event.reason != null) {
+        Sentry.captureException(event.reason as Error)
+      }
     })
 
     // console.log("Sentry initialized successfully")
@@ -154,8 +168,8 @@ export async function initSentry(): Promise<void> {
 
 // Export Sentry instance for use throughout the application
 export const Sentry = {
-  captureException: (error: Error) => {
-    if (sentryScope) {
+  captureException: (error: unknown) => {
+    if (sentryScope && error != null) {
       sentryScope.captureException(error)
     }
   },

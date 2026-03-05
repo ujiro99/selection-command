@@ -139,6 +139,7 @@ export enum ExecState {
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = "previewPopup",
   PREVIEW_WINDOW = "previewWindow",
+  PREVIEW_SIDE_PANEL = "previewSidePanel",
 }
 
 export enum SIDE {

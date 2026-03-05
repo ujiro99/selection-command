@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (cerrar inmediatamente)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Ocultar panel lateral automáticamente"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Oculta automáticamente el panel lateral cuando se hace clic en el panel principal mientras el panel lateral está abierto a través de un comando."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Ocultar panel lateral automáticamente"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Oculta automáticamente el panel lateral cuando se hace clic en el panel principal mientras se muestra la vista previa del enlace."
+  },
   "Option_inherit": {
     "message": "Heredar"
   },
@@ -364,6 +376,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Ventana"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Panel lateral"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clic"
