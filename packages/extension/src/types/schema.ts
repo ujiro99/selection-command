@@ -140,6 +140,7 @@ const PageActionStartSchema = z.object({
   type: z.literal(PAGE_ACTION_CONTROL.start),
   label: z.string(),
   url: z.string().optional(),
+  mode: z.enum(["pageAction", "aiPrompt"]),
 })
 
 const PageActionEndSchema = z.object({

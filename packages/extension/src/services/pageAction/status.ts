@@ -5,7 +5,8 @@ import type {
   PageActionStatus,
   PageActionStep,
 } from "@/types"
-import { PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
+import type { PageAction } from "@/services/pageAction"
+import { PAGE_ACTION_TIMEOUT as TIMEOUT, PAGE_ACTION_CONTROL } from "@/const"
 
 /**
  * RunningStatus manages the execution status of page actions across multiple tabs.
@@ -15,6 +16,14 @@ export const RunningStatus = {
   initTab: async (tabId: number, steps: PageActionStep[]) => {
     if (steps.length === 0) {
       throw new Error("Steps array cannot be empty")
+    }
+
+    const startStep = steps.find(
+      (s) => s.param.type === PAGE_ACTION_CONTROL.start,
+    )
+    if ((startStep?.param as PageAction.Start).mode === "aiPrompt") {
+      // Don't track AI Prompt actions in RunningStatus, as they are handled separately
+      return
     }
 
     const multiStatus =

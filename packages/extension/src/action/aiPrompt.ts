@@ -72,11 +72,12 @@ export const AiPrompt = {
         param: {
           type: PAGE_ACTION_CONTROL.start,
           label: "Start",
+          mode: "aiPrompt",
         },
       },
       {
         id: generateRandomID(),
-        delayMs: 500,
+        delayMs: 200,
         skipRenderWait: false,
         param: {
           type: PAGE_ACTION_EVENT.input,

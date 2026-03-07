@@ -86,6 +86,7 @@ export const add = (
         param: {
           type: PAGE_ACTION_CONTROL.start,
           label: "Start",
+          mode: "pageAction",
         },
       })
     }
