@@ -70,7 +70,7 @@ const AI_SERVICES_FALLBACK: AiService[] = [
   {
     id: "perplexity",
     name: "Perplexity",
-    url: "https://perplexity.ai",
+    url: "https://www.perplexity.ai",
     faviconUrl: "https://favicon.im/perplexity.ai",
     inputSelectors: [
       "div#ask-input",
@@ -176,7 +176,9 @@ export const getAiServices = async (): Promise<AiService[]> => {
 /**
  * Find an AI service by its ID (async, uses getAiServices with caching).
  */
-export const findAiService = async (id: string): Promise<AiService | undefined> => {
+export const findAiService = async (
+  id: string,
+): Promise<AiService | undefined> => {
   const services = await getAiServices()
   return services.find((s) => s.id === id)
 }

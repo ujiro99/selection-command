@@ -45,7 +45,7 @@
   {
     "id": "perplexity",
     "name": "Perplexity",
-    "url": "https://perplexity.ai",
+    "url": "https://www.perplexity.ai",
     "faviconUrl": "https://favicon.im/perplexity.ai",
     "inputSelectors": [
       "div#ask-input",
