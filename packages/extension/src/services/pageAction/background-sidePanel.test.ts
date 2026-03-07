@@ -51,6 +51,7 @@ const createPendingAction = () => ({
   ],
   selectedText: "test",
   srcUrl: "https://example.com",
+  clipboardText: "",
 })
 
 // -------------------------------------------------------------------------
@@ -197,7 +198,7 @@ describe("background.ts - Side Panel Connection", () => {
       expect(mockStorage.get).not.toHaveBeenCalled()
     })
 
-    it("SP-10: Runs pending action via retained port when origins match", async () => {
+    it("SP-10: Sends navigate step via retained port without clearing storage", async () => {
       const port = createMockPort("https://chatgpt.com")
       mockStorage.get.mockResolvedValueOnce(null) // First call: no pending during connect
 
@@ -206,42 +207,63 @@ describe("background.ts - Side Panel Connection", () => {
       // Now simulate a pending action that arrives after connect
       const pending = createPendingAction()
       mockStorage.get.mockResolvedValue(pending)
-      mockStorage.set.mockResolvedValue(undefined)
 
       await handleSidePanelOpened()
 
-      expect(mockStorage.set).toHaveBeenCalledWith(
-        "pa_side_panel_pending",
-        null,
-      )
+      // Storage must NOT be cleared — the original steps remain for runPendingSidePanelAction
+      expect(mockStorage.set).not.toHaveBeenCalled()
+
+      // A navigate step for the pending URL is sent to trigger a page reload
       expect(port.postMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           command: "execPageAction",
           param: expect.objectContaining({
-            step: pending.steps[0],
+            step: expect.objectContaining({
+              param: expect.objectContaining({
+                type: "navigate",
+                url: pending.url,
+              }),
+            }),
           }),
         }),
       )
     })
 
-    it("SP-11: Does nothing when pending action origins do not match retained port", async () => {
+    it("SP-11: Sends navigate step even when pending action URL differs from retained port origin", async () => {
       const port = createMockPort("https://chatgpt.com")
       mockStorage.get.mockResolvedValueOnce(null) // No pending during connect
 
       await handleSidePanelConnect(port as any)
 
-      // Pending action for a different service
+      // Pending action for a different service — navigate should still be sent
+      const targetUrl = "https://gemini.google.com"
       mockStorage.get.mockResolvedValue({
-        url: "https://gemini.google.com",
+        url: targetUrl,
         steps: [{ id: "s", param: { type: "click" }, delayMs: 0 }],
         selectedText: "",
         srcUrl: "",
+        clipboardText: "",
       })
 
       await handleSidePanelOpened()
 
+      // Storage must NOT be cleared
       expect(mockStorage.set).not.toHaveBeenCalled()
-      expect(port.postMessage).not.toHaveBeenCalled()
+
+      // Navigate step sent to the target URL regardless of origin
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            step: expect.objectContaining({
+              param: expect.objectContaining({
+                type: "navigate",
+                url: targetUrl,
+              }),
+            }),
+          }),
+        }),
+      )
     })
   })
 })

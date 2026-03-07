@@ -147,6 +147,12 @@ const PageActionEndSchema = z.object({
   label: z.string(),
 })
 
+const PageActionNavigateSchema = z.object({
+  type: z.literal(PAGE_ACTION_CONTROL.navigate),
+  label: z.string(),
+  url: z.string(),
+})
+
 const PageActionClickSchema = z.object({
   type: z.enum([
     PAGE_ACTION_EVENT.click,
@@ -190,6 +196,7 @@ const PageActionScrollSchema = z.object({
 const PageActionParameterSchema = z.discriminatedUnion("type", [
   PageActionStartSchema,
   PageActionEndSchema,
+  PageActionNavigateSchema,
   PageActionClickSchema,
   PageActionInputSchema,
   PageActionKeyboardSchema,

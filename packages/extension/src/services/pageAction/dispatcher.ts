@@ -16,7 +16,14 @@ import {
 import type { UserVariable } from "@/types"
 
 export namespace PageAction {
-  export type Parameter = Start | End | Click | Input | Keyboard | Scroll
+  export type Parameter =
+    | Start
+    | End
+    | Navigate
+    | Click
+    | Input
+    | Keyboard
+    | Scroll
 
   export type Start = {
     type: PAGE_ACTION_CONTROL.start
@@ -28,11 +35,17 @@ export namespace PageAction {
     label: string
   }
 
+  export type Navigate = {
+    type: PAGE_ACTION_CONTROL.navigate
+    label: string
+    url: string
+  }
+
   export type Click = {
     type:
-    | PAGE_ACTION_EVENT.click
-    | PAGE_ACTION_EVENT.doubleClick
-    | PAGE_ACTION_EVENT.tripleClick
+      | PAGE_ACTION_EVENT.click
+      | PAGE_ACTION_EVENT.doubleClick
+      | PAGE_ACTION_EVENT.tripleClick
     label: string
     selector: string
     selectorType: SelectorType
@@ -124,6 +137,11 @@ async function waitForElement(
 export type ActionReturn = Promise<[boolean, string?]>
 
 export const PageActionDispatcher = {
+  navigate: async (param: PageAction.Navigate): ActionReturn => {
+    window.location.href = param.url
+    return [true]
+  },
+
   click: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
     const user = userEvent.setup()

@@ -77,6 +77,11 @@ async function waitForElementBackground(
  * Uses direct DOM event dispatching instead of userEvent for better compatibility in background tabs
  */
 export const BackgroundPageActionDispatcher = {
+  navigate: async (param: PageAction.Navigate): ActionReturn => {
+    window.location.href = param.url
+    return [true]
+  },
+
   click: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
 

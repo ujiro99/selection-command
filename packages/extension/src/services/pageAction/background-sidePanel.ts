@@ -30,6 +30,25 @@ export const runViaPort = (
   ): Promise<ExecPageAction.Return> => {
     return new Promise<ExecPageAction.Return>((resolve, reject) => {
       const id = generateRandomID()
+
+      // Navigate causes immediate port disconnect - resolve after posting without waiting for response
+      if (step.param.type === PAGE_ACTION_CONTROL.navigate) {
+        port.postMessage({
+          command: TabCommand.execPageAction,
+          id,
+          param: {
+            step,
+            srcUrl,
+            selectedText,
+            clipboardText,
+            openMode: PAGE_ACTION_OPEN_MODE.TAB,
+            userVariables: [],
+          },
+        })
+        resolve({ result: true })
+        return
+      }
+
       const timeout = setTimeout(
         () => {
           port.onMessage.removeListener(onMsg)
@@ -86,6 +105,11 @@ export const runViaPort = (
         break
       }
 
+      // Navigate causes page reload - remaining steps will run after reconnect
+      if (step.param.type === PAGE_ACTION_CONTROL.navigate) {
+        break
+      }
+
       if (step.param.type === PAGE_ACTION_CONTROL.end) {
         break
       }
@@ -100,7 +124,19 @@ export const runViaPort = (
 let sidePanelPort: chrome.runtime.Port | null = null
 
 /**
- * Check for a pending AI prompt page action in session storage.
+ * Read a pending side panel action from session storage.
+ * Returns the action if valid, otherwise null.
+ */
+const getPendingAction = async (): Promise<SidePanelPendingAction | null> => {
+  const pending = await Storage.get<SidePanelPendingAction | null>(
+    SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+  )
+  if (!pending?.url || !pending?.steps?.length) return null
+  return pending
+}
+
+/**
+ * Check for a pending side panel action in session storage.
  * If a pending action exists for the port's origin, clears the stored action
  * and runs the steps through the port.
  */
@@ -109,10 +145,8 @@ const runPendingSidePanelAction = async (
 ): Promise<void> => {
   const origin = port.sender?.origin
   if (!origin) return
-  const pending = await Storage.get<SidePanelPendingAction | null>(
-    SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
-  )
-  if (!pending?.url || !pending?.steps?.length) return
+  const pending = await getPendingAction()
+  if (!pending) return
   try {
     const pendingOrigin = new URL(pending.url).origin
     if (origin !== pendingOrigin) return
@@ -141,11 +175,36 @@ export const handleSidePanelConnect = async (
 }
 
 /**
- * Check for a pending page action and run it via the currently retained
- * side panel port. Called after openSidePanel resolves when the side panel
- * was already open (i.e. no new onConnect event will fire).
+ * Handle the case where the side panel was already open when a page action was triggered.
+ * Navigates the panel to the target URL to trigger a page reload and port reconnect,
+ * after which handleSidePanelConnect will pick up the pending steps from storage and run them.
+ * Called after openSidePanel resolves when no new onConnect event will fire.
  */
 export const handleSidePanelOpened = async (): Promise<void> => {
   if (sidePanelPort === null) return
-  await runPendingSidePanelAction(sidePanelPort)
+
+  const pending = await getPendingAction()
+  if (!pending) return
+
+  // Navigate to trigger a page reload and port reconnect.
+  // The pending steps remain in storage and will be executed by
+  // runPendingSidePanelAction when the panel reconnects.
+  runViaPort(sidePanelPort, {
+    url: pending.url,
+    steps: [
+      {
+        id: generateRandomID(),
+        delayMs: 0,
+        skipRenderWait: false,
+        param: {
+          type: PAGE_ACTION_CONTROL.navigate,
+          label: "",
+          url: pending.url,
+        },
+      },
+    ],
+    selectedText: pending.selectedText,
+    srcUrl: pending.srcUrl,
+    clipboardText: pending.clipboardText,
+  })
 }

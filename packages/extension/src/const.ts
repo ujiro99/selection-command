@@ -107,7 +107,11 @@ export const COMMAND_TYPE_METADATA = {
 export const COMMAND_TYPE_GROUPS = [
   {
     titleKey: "commandGroup_webPage_title",
-    types: [COMMAND_TYPE.SEARCH, COMMAND_TYPE.PAGE_ACTION, COMMAND_TYPE.AI_PROMPT],
+    types: [
+      COMMAND_TYPE.SEARCH,
+      COMMAND_TYPE.PAGE_ACTION,
+      COMMAND_TYPE.AI_PROMPT,
+    ],
   },
   {
     titleKey: "commandGroup_singleFunction_title",
@@ -277,6 +281,7 @@ export enum PAGE_ACTION_EVENT {
 export enum PAGE_ACTION_CONTROL {
   start = "start",
   end = "end",
+  navigate = "navigate",
 }
 
 export enum PAGE_ACTION_EXEC_STATE {

@@ -76,6 +76,7 @@ vi.mock("@/const", async () => {
     PAGE_ACTION_CONTROL: {
       start: "start",
       end: "end",
+      navigate: "navigate",
     },
     PAGE_ACTION_OPEN_MODE: {
       TAB: "tab",
