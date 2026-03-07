@@ -224,9 +224,9 @@ const getDefault = (
       aiPromptOption: {
         serviceId: "chatgpt",
         prompt: "",
-        openMode: OPEN_MODE.POPUP,
+        openMode: OPEN_MODE.POPUP as (typeof SEARCH_OPEN_MODE)[number],
       },
-    }
+    } as CommandSchemaType
   }
 }
 

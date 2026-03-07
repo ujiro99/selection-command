@@ -1,5 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from "vitest"
-import { setupBackgroundTestEnvironment, mockStorage } from "./background-shared"
+import { describe, it, expect, vi } from "vitest"
+import {
+  setupBackgroundTestEnvironment,
+  mockStorage,
+} from "./background-shared"
 import { handleSidePanelConnect, handleSidePanelOpened } from "./background"
 
 // Setup test environment (applies vi.mock calls from background-shared.ts)

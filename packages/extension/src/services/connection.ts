@@ -1,6 +1,10 @@
 import { CONNECTION_APP, TabCommand, Ipc } from "@/services/ipc"
 import { BgData } from "@/services/backgroundData"
 
+/**
+ * Establish a port connection from the Content Script to the Background Script.
+ */
+
 Ipc.getTabId().then((tabId) => {
   const bgData = BgData.get()
   const isConnected = bgData?.connectedTabs?.includes(tabId) ?? false
