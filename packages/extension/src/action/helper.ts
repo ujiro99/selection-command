@@ -1,4 +1,4 @@
-import { escapeJson } from "@/lib/utils"
+import { escapeJson, toUrl } from "@/lib/utils"
 import {
   openPopupWindow,
   openPopupWindowMultiple,
@@ -11,6 +11,7 @@ import {
   OpenTabProps,
   OpenSidePanelProps,
 } from "@/services/chrome"
+import { registerSidePanelTab } from "@/services/pageAction/background-sidePanel"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
@@ -139,6 +140,9 @@ export const openSidePanel = (
             : [...data.sidePanelTabs, newEntry],
         }))
       }
+    })
+    .then(() => {
+      registerSidePanelTab(tabId, toUrl(param.url))
     })
     .then(() => {
       response(true)

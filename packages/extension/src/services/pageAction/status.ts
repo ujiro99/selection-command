@@ -21,7 +21,7 @@ export const RunningStatus = {
     const startStep = steps.find(
       (s) => s.param.type === PAGE_ACTION_CONTROL.start,
     )
-    if ((startStep?.param as PageAction.Start).mode === "aiPrompt") {
+    if ((startStep?.param as PageAction.Start)?.mode === "aiPrompt") {
       // Don't track AI Prompt actions in RunningStatus, as they are handled separately
       return
     }
@@ -64,7 +64,7 @@ export const RunningStatus = {
 
         // Check if the tab exists before updating
         if (!currentMultiStatus[tabId]) {
-          // console.warn(`Tab ${tabId} not found in running status`)
+          console.debug(`Tab ${tabId} not found in running status`)
           return currentMultiStatus
         }
 

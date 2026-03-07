@@ -725,4 +725,5 @@ chrome.windows.onBoundsChanged.addListener(onWindowBoundsChanged)
 export {
   handleSidePanelConnect,
   handleSidePanelOpened,
+  registerSidePanelTab,
 } from "./background-sidePanel"

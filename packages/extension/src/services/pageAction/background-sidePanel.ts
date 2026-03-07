@@ -119,9 +119,35 @@ export const runViaPort = (
   _run()
 }
 
-// Retained port for the currently open side panel (no tab.id context).
-// Set when the side panel connects, cleared on disconnect.
-let sidePanelPort: chrome.runtime.Port | null = null
+// Map of tabId → retained port for open side panels.
+const sidePanelPorts = new Map<number, chrome.runtime.Port>()
+// Queue of tabIds waiting for a port connection, keyed by origin (FIFO for same-origin multi-tab).
+const originToTabIdQueue = new Map<string, number[]>()
+// The tabId most recently registered via registerSidePanelTab, used by handleSidePanelOpened.
+let lastOpenedTabId: number | null = null
+
+/**
+ * Called from ActionHelper.openSidePanel when a side panel is about to open.
+ * Registers the tab ID so the next port connection from this origin maps to the correct tab.
+ */
+export const registerSidePanelTab = (tabId: number, url: string): void => {
+  lastOpenedTabId = tabId
+  try {
+    const origin = new URL(url).origin
+    const queue = originToTabIdQueue.get(origin) ?? []
+    queue.push(tabId)
+    originToTabIdQueue.set(origin, queue)
+  } catch {
+    // ignore invalid URLs
+  }
+}
+
+/** Reset internal state — for testing only. */
+export const resetSidePanelState = (): void => {
+  sidePanelPorts.clear()
+  originToTabIdQueue.clear()
+  lastOpenedTabId = null
+}
 
 /**
  * Read a pending side panel action from session storage.
@@ -159,18 +185,29 @@ const runPendingSidePanelAction = async (
 
 /**
  * Handle a new side panel port connection.
- * Retains the port and runs any pending page action steps for the panel's origin.
+ * If a tabId is queued for this origin, registers the port in sidePanelPorts and
+ * attaches a disconnect listener. Always runs any pending page action steps.
  * Called from background_script.ts onConnect when port.sender.tab.id is absent.
  */
 export const handleSidePanelConnect = async (
   port: chrome.runtime.Port,
 ): Promise<void> => {
-  sidePanelPort = port
-  port.onDisconnect.addListener(() => {
-    if (sidePanelPort === port) {
-      sidePanelPort = null
-    }
-  })
+  const origin = port.sender?.origin
+  if (!origin) return
+
+  // Dequeue the tabId registered for this origin (FIFO for same-origin multi-tab).
+  const queue = originToTabIdQueue.get(origin)
+  if (queue?.length) {
+    const tabId = queue.shift()!
+    if (queue.length === 0) originToTabIdQueue.delete(origin)
+    sidePanelPorts.set(tabId, port)
+    port.onDisconnect.addListener(() => {
+      if (sidePanelPorts.get(tabId) === port) {
+        sidePanelPorts.delete(tabId)
+      }
+    })
+  }
+
   await runPendingSidePanelAction(port)
 }
 
@@ -181,7 +218,11 @@ export const handleSidePanelConnect = async (
  * Called after openSidePanel resolves when no new onConnect event will fire.
  */
 export const handleSidePanelOpened = async (): Promise<void> => {
-  if (sidePanelPort === null) return
+  const tabId = lastOpenedTabId
+  if (tabId == null) return
+
+  const port = sidePanelPorts.get(tabId)
+  if (!port) return
 
   const pending = await getPendingAction()
   if (!pending) return
@@ -189,7 +230,7 @@ export const handleSidePanelOpened = async (): Promise<void> => {
   // Navigate to trigger a page reload and port reconnect.
   // The pending steps remain in storage and will be executed by
   // runPendingSidePanelAction when the panel reconnects.
-  runViaPort(sidePanelPort, {
+  runViaPort(port, {
     url: pending.url,
     steps: [
       {

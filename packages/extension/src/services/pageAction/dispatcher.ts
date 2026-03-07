@@ -28,7 +28,7 @@ export namespace PageAction {
   export type Start = {
     type: PAGE_ACTION_CONTROL.start
     label: string
-    mode: "pageAction" | "aiPrompt"
+    mode?: "pageAction" | "aiPrompt"
   }
 
   export type End = {

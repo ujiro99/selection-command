@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest"
+import { describe, it, expect, vi, beforeEach } from "vitest"
 import {
   setupBackgroundTestEnvironment,
   mockStorage,
@@ -6,10 +6,16 @@ import {
 import {
   handleSidePanelConnect,
   handleSidePanelOpened,
+  registerSidePanelTab,
+  resetSidePanelState,
 } from "./background-sidePanel"
 
 // Setup test environment (applies vi.mock calls from background-shared.ts)
 setupBackgroundTestEnvironment()
+
+beforeEach(() => {
+  resetSidePanelState()
+})
 
 // -------------------------------------------------------------------------
 // Helpers
@@ -42,6 +48,7 @@ const createMockPort = (origin?: string): MockPort => ({
 })
 
 const PENDING_URL = "https://chatgpt.com"
+const TAB_ID = 42
 
 const createPendingAction = () => ({
   url: PENDING_URL,
@@ -60,10 +67,11 @@ const createPendingAction = () => ({
 
 describe("background.ts - Side Panel Connection", () => {
   describe("handleSidePanelConnect()", () => {
-    it("SP-01: Registers a disconnect listener on the port", async () => {
+    it("SP-01: Registers a disconnect listener on the port when tabId is queued", async () => {
       const port = createMockPort("https://chatgpt.com")
       mockStorage.get.mockResolvedValue(null)
 
+      registerSidePanelTab(TAB_ID, PENDING_URL)
       await handleSidePanelConnect(port as any)
 
       expect(port.onDisconnect.addListener).toHaveBeenCalledTimes(1)
@@ -73,6 +81,7 @@ describe("background.ts - Side Panel Connection", () => {
       const port = createMockPort("https://chatgpt.com")
       mockStorage.get.mockResolvedValue(null)
 
+      registerSidePanelTab(TAB_ID, PENDING_URL)
       await handleSidePanelConnect(port as any)
 
       // Port should be retained; handleSidePanelOpened with no pending action
@@ -83,7 +92,7 @@ describe("background.ts - Side Panel Connection", () => {
       const disconnectCallback = port.onDisconnect.addListener.mock.calls[0][0]
       disconnectCallback()
 
-      // After disconnect, handleSidePanelOpened should do nothing (port is null)
+      // After disconnect, handleSidePanelOpened should do nothing (port removed from map)
       // We verify this by checking Storage.get is NOT called a second time
       const getCallCountBefore = mockStorage.get.mock.calls.length
       await handleSidePanelOpened()
@@ -91,7 +100,7 @@ describe("background.ts - Side Panel Connection", () => {
     })
 
     it("SP-03: Does nothing when port has no origin", async () => {
-      const port = createMockPort() // no origin, has tab.id
+      const port = createMockPort()
       port.sender = {} // no origin, no tab
 
       await handleSidePanelConnect(port as any)
@@ -182,9 +191,11 @@ describe("background.ts - Side Panel Connection", () => {
 
   describe("handleSidePanelOpened()", () => {
     it("SP-09: Does nothing when no side panel port is retained (after disconnect)", async () => {
-      // Connect a port then simulate disconnect to ensure sidePanelPort is null
+      // Connect a port then simulate disconnect to ensure port is removed from map
       const port = createMockPort("https://chatgpt.com")
       mockStorage.get.mockResolvedValue(null)
+
+      registerSidePanelTab(TAB_ID, PENDING_URL)
       await handleSidePanelConnect(port as any)
 
       // Simulate disconnect to clear the retained port
@@ -202,6 +213,7 @@ describe("background.ts - Side Panel Connection", () => {
       const port = createMockPort("https://chatgpt.com")
       mockStorage.get.mockResolvedValueOnce(null) // First call: no pending during connect
 
+      registerSidePanelTab(TAB_ID, PENDING_URL)
       await handleSidePanelConnect(port as any)
 
       // Now simulate a pending action that arrives after connect
@@ -233,6 +245,7 @@ describe("background.ts - Side Panel Connection", () => {
       const port = createMockPort("https://chatgpt.com")
       mockStorage.get.mockResolvedValueOnce(null) // No pending during connect
 
+      registerSidePanelTab(TAB_ID, PENDING_URL)
       await handleSidePanelConnect(port as any)
 
       // Pending action for a different service — navigate should still be sent
