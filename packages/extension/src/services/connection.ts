@@ -1,6 +1,10 @@
 import { CONNECTION_APP, TabCommand, Ipc } from "@/services/ipc"
 import { BgData } from "@/services/backgroundData"
 
+/**
+ * Establish a port connection from the Content Script to the Background Script.
+ */
+
 Ipc.getTabId().then((tabId) => {
   const bgData = BgData.get()
   const isConnected = bgData?.connectedTabs?.includes(tabId) ?? false
@@ -23,6 +27,10 @@ const connect = () => {
   try {
     // from content script
     const port = chrome.runtime.connect({ name: CONNECTION_APP })
+    // Enable port-based message routing so the background can send messages
+    // directly to this content script (needed for side panel pages which have
+    // no tab.id and cannot be reached via chrome.tabs.sendMessage).
+    Ipc.bridgePortToListeners(port)
     port.onMessage.addListener(function (msg) {
       if (msg.command === TabCommand.connected) {
         // console.debug("Connected to service worker", port)

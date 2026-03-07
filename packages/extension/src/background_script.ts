@@ -9,6 +9,7 @@ import {
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
+import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
@@ -21,7 +22,6 @@ import { PopupAutoClose } from "@/services/popupAutoClose"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
-import type { IpcCallback } from "@/services/ipc"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
@@ -68,6 +68,9 @@ const onConnect = async function (port: chrome.runtime.Port) {
     BgData.update((data) => ({
       connectedTabs: [...data.connectedTabs, tabId],
     }))
+  } else {
+    // Side panel pages have no tab.id (port.sender.origin is set instead).
+    await PageActionBackground.handleSidePanelConnect(port)
   }
 }
 const onDisconnect = async function (port: chrome.runtime.Port) {
@@ -93,7 +96,24 @@ const commandFuncs = {
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [BgCommand.openTab]: ActionHelper.openTab,
-  [BgCommand.openSidePanel]: ActionHelper.openSidePanel,
+  [BgCommand.openSidePanel]: (
+    param: Parameters<typeof ActionHelper.openSidePanel>[0],
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    return ActionHelper.openSidePanel(
+      param,
+      sender,
+      async (result: unknown) => {
+        // If the side panel was already open (port retained), execute pending action
+        // via the existing port without waiting for a new onConnect event.
+        if (result === true) {
+          await PageActionBackground.handleSidePanelOpened()
+        }
+        response(result)
+      },
+    )
+  },
   [BgCommand.closeSidePanel]: ActionHelper.closeSidePanel,
   [BgCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
   [BgCommand.execApi]: ActionHelper.execApi,

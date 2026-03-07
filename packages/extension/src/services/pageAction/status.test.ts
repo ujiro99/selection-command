@@ -23,6 +23,7 @@ vi.mock("@/services/storage", () => ({
 
 // Mock console methods
 const mockConsole = {
+  debug: vi.spyOn(console, "debug").mockImplementation(() => {}),
   warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
   error: vi.spyOn(console, "error").mockImplementation(() => {}),
 }
@@ -85,6 +86,7 @@ describe("RunningStatus", () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    mockConsole.debug.mockClear()
     mockConsole.warn.mockClear()
     mockConsole.error.mockClear()
   })
@@ -200,7 +202,7 @@ describe("RunningStatus", () => {
 
       await RunningStatus.updateTab(mockTabId, "step1", EXEC_STATE.Done)
 
-      expect(mockConsole.warn).toHaveBeenCalledWith(
+      expect(mockConsole.debug).toHaveBeenCalledWith(
         `Tab ${mockTabId} not found in running status`,
       )
     })

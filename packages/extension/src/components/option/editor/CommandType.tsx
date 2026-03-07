@@ -7,6 +7,7 @@ import {
   Copy,
   Paintbrush,
   EllipsisVertical,
+  BotMessageSquare,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -24,6 +25,7 @@ const IconMap = {
   Copy,
   Paintbrush,
   EllipsisVertical,
+  BotMessageSquare,
 } as const
 
 interface CommandTypeProps {

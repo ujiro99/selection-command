@@ -86,6 +86,7 @@ export const add = (
         param: {
           type: PAGE_ACTION_CONTROL.start,
           label: "Start",
+          mode: "pageAction",
         },
       })
     }
@@ -720,3 +721,9 @@ export const onWindowBoundsChanged = async (window: chrome.windows.Window) => {
 }
 
 chrome.windows.onBoundsChanged.addListener(onWindowBoundsChanged)
+
+export {
+  handleSidePanelConnect,
+  handleSidePanelOpened,
+  registerSidePanelTab,
+} from "./background-sidePanel"

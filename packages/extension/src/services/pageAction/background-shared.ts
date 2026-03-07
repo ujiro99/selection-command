@@ -12,6 +12,7 @@ vi.mock("@/services/storage", () => ({
   SESSION_STORAGE_KEY: {
     PA_RECORDING: "pa_recording",
     PA_CONTEXT: "pa_context",
+    PA_SIDE_PANEL_PENDING: "pa_side_panel_pending",
   },
 }))
 
@@ -75,6 +76,7 @@ vi.mock("@/const", async () => {
     PAGE_ACTION_CONTROL: {
       start: "start",
       end: "end",
+      navigate: "navigate",
     },
     PAGE_ACTION_OPEN_MODE: {
       TAB: "tab",

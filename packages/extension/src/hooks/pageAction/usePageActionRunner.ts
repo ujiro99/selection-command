@@ -65,6 +65,11 @@ export function usePageActionRunner() {
         case "start":
           result = true
           break
+        case "navigate":
+          ;[result, msg] = await dispatcher.navigate(
+            step.param as PageAction.Navigate,
+          )
+          break
         case "click":
           ;[result, msg] = await dispatcher.click(
             step.param as PageAction.Click,
