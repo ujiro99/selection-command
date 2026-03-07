@@ -336,17 +336,20 @@ export const runViaPort = (
   port: chrome.runtime.Port,
   param: SidePanelPendingAction,
 ): void => {
-  const { steps, selectedText, srcUrl } = param
+  const { steps, selectedText, srcUrl, clipboardText } = param
 
   const executeStep = (
     step: PageActionStep,
   ): Promise<ExecPageAction.Return> => {
     return new Promise<ExecPageAction.Return>((resolve, reject) => {
       const id = generateRandomID()
-      const timeout = setTimeout(() => {
-        port.onMessage.removeListener(onMsg)
-        reject(new Error(`Timeout executing step: ${step.id}`))
-      }, TIMEOUT + (step.delayMs ?? 0))
+      const timeout = setTimeout(
+        () => {
+          port.onMessage.removeListener(onMsg)
+          reject(new Error(`Timeout executing step: ${step.id}`))
+        },
+        TIMEOUT + (step.delayMs ?? 0),
+      )
 
       const onMsg = (msg: Record<string, unknown>) => {
         if (msg?.command === "portResponse" && msg.id === id) {
@@ -364,7 +367,7 @@ export const runViaPort = (
           step,
           srcUrl,
           selectedText,
-          clipboardText: "",
+          clipboardText,
           openMode: PAGE_ACTION_OPEN_MODE.TAB,
           userVariables: [],
         },

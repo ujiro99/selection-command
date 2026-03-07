@@ -9,7 +9,11 @@ import {
   SelectorType,
 } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
-import type { ExecuteCommandParams, PageActionStep, AiPromptCommand } from "@/types"
+import type {
+  ExecuteCommandParams,
+  PageActionStep,
+  AiPromptCommand,
+} from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
@@ -27,6 +31,14 @@ export const AiPrompt = {
     if (!isAiPromptType(command)) {
       console.error("command is not for AiPrompt.")
       return
+    }
+
+    // Read clipboard text for interpolation, but don't block execution if it fails.
+    let clipboardText: string = ""
+    try {
+      clipboardText = await navigator.clipboard.readText()
+    } catch (e) {
+      console.warn("Failed to read clipboard text:", e)
     }
 
     const aiPromptCmd = command as unknown as AiPromptCommand
@@ -105,6 +117,7 @@ export const AiPrompt = {
         steps,
         selectedText: selectionText,
         srcUrl: location.href,
+        clipboardText,
       }
       try {
         await Storage.set<SidePanelPendingAction>(

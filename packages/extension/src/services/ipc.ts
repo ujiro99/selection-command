@@ -91,6 +91,7 @@ export type SidePanelPendingAction = {
   steps: PageActionStep[]
   selectedText: string
   srcUrl: string
+  clipboardText: string
 }
 
 export namespace ExecPageAction {
@@ -448,11 +449,11 @@ export const Ipc = {
         msg.param,
         port.sender ?? ({} as chrome.runtime.MessageSender),
         (result: unknown) => {
-        try {
-          port.postMessage({ command: "portResponse", id: msg.id, result })
-        } catch (e) {
-          console.error("Failed to send port response:", e)
-        }
+          try {
+            port.postMessage({ command: "portResponse", id: msg.id, result })
+          } catch (e) {
+            console.error("Failed to send port response:", e)
+          }
         },
       )
     })
