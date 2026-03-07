@@ -426,7 +426,7 @@ const CommandEditDialogInner = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogContent className="max-w-2xl pr-2">
+        <DialogContent className="max-w-3xl pr-2">
           <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />

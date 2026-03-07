@@ -71,7 +71,7 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
         control={form.control}
         name="aiPromptOption.prompt"
         render={({ field }) => (
-          <FormItem className="flex items-start gap-1">
+          <FormItem className="flex items-start gap-1 pt-10">
             <div className="w-2/6">
               <FormLabel>{t("aiPrompt_prompt")}</FormLabel>
               <FormDescription>{t("aiPrompt_prompt_desc")}</FormDescription>
@@ -79,7 +79,7 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
             <div className="w-4/6 relative">
               <InputMenu
                 targetElm={textarea}
-                className="w-fit relative left-[100%] -translate-x-[100%] -top-1 mb-1"
+                className="w-fit relative absolute -top-10 right-0"
               />
               <FormControl>
                 <Textarea
@@ -93,7 +93,7 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
                     setTextarea(el)
                     field.ref(el)
                   }}
-                  rows={5}
+                  rows={6}
                   placeholder={t("aiPrompt_prompt_placeholder")}
                   className="max-h-80"
                 />
