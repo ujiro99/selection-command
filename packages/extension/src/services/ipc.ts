@@ -438,19 +438,23 @@ export const Ipc = {
    * (which cannot be reached via chrome.tabs.sendMessage).
    * @param port - The port established by chrome.runtime.connect
    */
-  setSharedPort(port: chrome.runtime.Port) {
+  bridgePortToListeners(port: chrome.runtime.Port) {
     port.onMessage.addListener((msg: Record<string, unknown>) => {
       const command = msg?.command as string | undefined
       if (!command) return
       const callback = Ipc.listeners[command]
       if (!callback) return
-      callback(msg.param, port.sender ?? ({} as chrome.runtime.MessageSender), (result: unknown) => {
+      callback(
+        msg.param,
+        port.sender ?? ({} as chrome.runtime.MessageSender),
+        (result: unknown) => {
         try {
           port.postMessage({ command: "portResponse", id: msg.id, result })
         } catch (e) {
           console.error("Failed to send port response:", e)
         }
-      })
+        },
+      )
     })
   },
 

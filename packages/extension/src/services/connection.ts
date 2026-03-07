@@ -30,7 +30,7 @@ const connect = () => {
     // Enable port-based message routing so the background can send messages
     // directly to this content script (needed for side panel pages which have
     // no tab.id and cannot be reached via chrome.tabs.sendMessage).
-    Ipc.setSharedPort(port)
+    Ipc.bridgePortToListeners(port)
     port.onMessage.addListener(function (msg) {
       if (msg.command === TabCommand.connected) {
         // console.debug("Connected to service worker", port)

@@ -330,7 +330,7 @@ export type OpenAndRunProps = Omit<OpenPopupProps, "type"> &
  * Used for side panel pages which cannot be reached via chrome.tabs.sendMessage
  * because side panels have no tab.id from the messaging API's perspective.
  * The side panel content script routes port messages to the same execPageAction
- * listeners registered by usePageActionRunner via Ipc.setSharedPort().
+ * listeners registered by usePageActionRunner via Ipc.bridgePortToListeners().
  */
 export const runViaPort = (
   port: chrome.runtime.Port,
