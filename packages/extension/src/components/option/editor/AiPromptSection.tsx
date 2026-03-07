@@ -11,6 +11,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { InputMenu } from "@/components/pageAction/InputPopup"
+import {
+  convSymbolsToReadableKeys,
+  convReadableKeysToSymbols,
+} from "@/services/pageAction"
 import { getAiServicesFallback } from "@/services/aiPrompt"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -79,7 +83,12 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
               />
               <FormControl>
                 <Textarea
-                  {...field}
+                  value={convSymbolsToReadableKeys(field.value)}
+                  onChange={(e) =>
+                    field.onChange(convReadableKeysToSymbols(e.target.value))
+                  }
+                  onBlur={field.onBlur}
+                  name={field.name}
                   ref={(el) => {
                     setTextarea(el)
                     field.ref(el)

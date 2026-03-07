@@ -62,9 +62,9 @@ export const RunningStatus = {
         // Ensure multiStatus is properly typed
         const currentMultiStatus: MultiTabPageActionStatus = multiStatus ?? {}
 
-        // Type-safe check for tab existence
+        // Check if the tab exists before updating
         if (!currentMultiStatus[tabId]) {
-          console.warn(`Tab ${tabId} not found in running status`)
+          // console.warn(`Tab ${tabId} not found in running status`)
           return currentMultiStatus
         }
 
