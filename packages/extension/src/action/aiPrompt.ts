@@ -9,18 +9,27 @@ import {
   SelectorType,
 } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
-import type {
-  ExecuteCommandParams,
-  PageActionStep,
-  AiPromptCommand,
-  UrlParam,
-} from "@/types"
+import type { ExecuteCommandParams, PageActionStep, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
 import { InsertSymbol, INSERT } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+
+// Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
+const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
+  switch (mode) {
+    case OPEN_MODE.TAB:
+      return PAGE_ACTION_OPEN_MODE.TAB
+    case OPEN_MODE.BACKGROUND_TAB:
+      return PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
+    case OPEN_MODE.WINDOW:
+      return PAGE_ACTION_OPEN_MODE.WINDOW
+    default:
+      return PAGE_ACTION_OPEN_MODE.POPUP
+  }
+}
 
 export const AiPrompt = {
   async execute({
@@ -43,8 +52,7 @@ export const AiPrompt = {
       console.warn("Failed to read clipboard text:", e)
     }
 
-    const aiPromptCmd = command as unknown as AiPromptCommand
-    const aiPromptOption = aiPromptCmd.aiPromptOption
+    const aiPromptOption = command.aiPromptOption
     const service = await findAiService(aiPromptOption.serviceId)
 
     if (!service) {
@@ -54,11 +62,6 @@ export const AiPrompt = {
 
     if (!isValidString(service.url)) {
       console.error("AI service URL is not valid.")
-      return
-    }
-
-    if (position === null) {
-      console.error("position is null.")
       return
     }
 
@@ -137,18 +140,10 @@ export const AiPrompt = {
       return
     }
 
-    // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
-    const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
-      switch (mode) {
-        case OPEN_MODE.TAB:
-          return PAGE_ACTION_OPEN_MODE.TAB
-        case OPEN_MODE.BACKGROUND_TAB:
-          return PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
-        case OPEN_MODE.WINDOW:
-          return PAGE_ACTION_OPEN_MODE.WINDOW
-        default:
-          return PAGE_ACTION_OPEN_MODE.POPUP
-      }
+    // position is required for non-SIDE_PANEL modes (e.g. popup placement)
+    if (position === null) {
+      console.error("position is null.")
+      return
     }
 
     const baseMode = toPageActionMode(aiPromptOption.openMode)
@@ -179,8 +174,8 @@ export const AiPrompt = {
       steps,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),
-      height: aiPromptCmd.popupOption?.height ?? PopupOption.height,
-      width: aiPromptCmd.popupOption?.width ?? PopupOption.width,
+      height: command.popupOption?.height ?? PopupOption.height,
+      width: command.popupOption?.width ?? PopupOption.width,
       screen,
       selectedText: selectionText,
       srcUrl: location.href,

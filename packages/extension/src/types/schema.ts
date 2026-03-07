@@ -18,6 +18,7 @@ import {
 import { t } from "@/services/i18n"
 import { isEmpty } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
+import type { AiPromptCommand } from "@/types"
 
 const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),
@@ -283,9 +284,7 @@ const aiPromptSchema = z.object({
   aiPromptOption: AiPromptOptionSchema,
 })
 
-export const isAiPromptType = (
-  data: unknown,
-): data is z.infer<typeof aiPromptSchema> => {
+export const isAiPromptType = (data: unknown): data is AiPromptCommand => {
   if (!data || typeof data !== "object") {
     return false
   }
