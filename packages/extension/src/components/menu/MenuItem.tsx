@@ -4,10 +4,10 @@ import { popupContext } from "@/components/Popup"
 import { Tooltip } from "../Tooltip"
 import { Icon } from "@/components/Icon"
 import { ResultPopup } from "@/components/result/ResultPopup"
-import { linksInSelection } from "@/services/dom"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useCommandExecutor } from "@/hooks/useCommandExecutor"
-import { OPEN_MODE, ExecState } from "@/const"
+import { getCommandEnabled } from "@/lib/commandEnabled"
+import { ExecState } from "@/const"
 import type { Command } from "@/types"
 
 import css from "./Menu.module.css"
@@ -23,18 +23,12 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
-  const { openMode, iconUrl, title } = props.command
+  const { iconUrl, title } = props.command
   const { selectionText, target } = useSelectContext()
   const { isPreview, inTransition } = useContext(popupContext)
-  let message = itemState.message || title
-  let enable = true
-
-  if (openMode === OPEN_MODE.LINK_POPUP) {
-    const links = linksInSelection()
-    console.debug("links", links)
-    enable = links.length > 0
-    message = `${links.length} links`
-  }
+  const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
+  let message = itemState.message || defaultMessage
+  let enable = enabled
 
   function handleClick(e: React.MouseEvent) {
     if (isPreview) {
