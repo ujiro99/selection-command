@@ -3,7 +3,10 @@ import {
   setupBackgroundTestEnvironment,
   mockStorage,
 } from "./background-shared"
-import { handleSidePanelConnect, handleSidePanelOpened } from "./background"
+import {
+  handleSidePanelConnect,
+  handleSidePanelOpened,
+} from "./background-sidePanel"
 
 // Setup test environment (applies vi.mock calls from background-shared.ts)
 setupBackgroundTestEnvironment()
