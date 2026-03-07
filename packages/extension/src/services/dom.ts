@@ -75,9 +75,17 @@ export type ScreenSize = {
 
 /**
  * Get the text of the selected range.
+ * Also handles selections inside <input> and <textarea> elements,
+ * which are not reflected by document.getSelection().
  * @returns {string} The text of the selected range.
  */
 export function getSelectionText(): string {
+  const active = document.activeElement
+  if (isInputOrTextarea(active)) {
+    const start = active.selectionStart ?? 0
+    const end = active.selectionEnd ?? 0
+    return active.value.slice(start, end).trim()
+  }
   const s = document.getSelection()
   if (s != null && s.rangeCount > 0) {
     return s.toString().trim()
