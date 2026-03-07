@@ -718,7 +718,7 @@ const CommandEditDialogInner = ({
                   <CollapsibleContent
                     className={cn(
                       collapsibleCss.CollapsibleContent,
-                      "w-full space-y-3 pt-2",
+                      "w-full space-y-3 py-2",
                     )}
                   >
                     <IconField

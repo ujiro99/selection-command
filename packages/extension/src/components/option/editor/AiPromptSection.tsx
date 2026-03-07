@@ -47,6 +47,7 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
   const serviceOptions = AI_SERVICES.map((s) => ({
     name: s.name,
     value: s.id,
+    iconUrl: s.faviconUrl,
   }))
 
   return (

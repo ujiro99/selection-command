@@ -62,8 +62,8 @@ const AI_SERVICES_FALLBACK: AiService[] = [
       "div[contenteditable='true'].ProseMirror",
     ],
     submitSelectors: [
-      "button.bg-accent-main-000",
-      "button[type=button][aria-label][disabled]",
+      "#main-content button.Button_claude__c_hZy",
+      "#main-content button[data-state='closed']",
     ],
     selectorType: SelectorType.css,
   },
