@@ -80,7 +80,7 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
             <div className="w-4/6 relative">
               <InputMenu
                 targetElm={textarea}
-                className="w-fit relative absolute -top-10 right-0"
+                className="w-fit absolute -top-10 right-0"
               />
               <FormControl>
                 <Textarea
