@@ -1,6 +1,7 @@
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { linksInSelection } from "@/services/dom"
 import { isPageActionCommand, matchesPageActionUrl } from "@/lib/utils"
+import { t } from "@/services/i18n"
 import type { Command } from "@/types"
 
 export type CommandEnabled = {
@@ -31,7 +32,7 @@ export function getCommandEnabled(
       pageActionOption.startUrl &&
       !matchesPageActionUrl(pageActionOption.startUrl, currentUrl)
     ) {
-      return { enabled: false, message: title }
+      return { enabled: false, message: t("Menu_disabled_urlNotMatch") }
     }
   }
 

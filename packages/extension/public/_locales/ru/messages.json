@@ -1123,5 +1123,8 @@
   },
   "prompthistory_banner_description": {
     "message": "Новый инструмент для повторного использования подсказок для ChatGPT и других✨"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Невозможно выполнить на этой странице (начальный URL не совпадает)"
   }
 }

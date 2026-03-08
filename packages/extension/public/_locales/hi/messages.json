@@ -1123,5 +1123,8 @@
   },
   "prompthistory_banner_description": {
     "message": "ChatGPT और अधिक के लिए प्रॉम्प्ट का पुन: उपयोग करने के लिए एक नया उपकरण।✨"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "इस पेज पर नहीं चला सकते (प्रारंभ URL मेल नहीं खाता)"
   }
 }

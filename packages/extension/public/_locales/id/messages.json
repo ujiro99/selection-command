@@ -1126,5 +1126,8 @@
   },
   "prompthistory_banner_description": {
     "message": "Alat baru untuk menggunakan kembali prompt untuk ChatGPT dan lainnya✨"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Tidak dapat dijalankan di halaman ini (URL awal tidak cocok)"
   }
 }

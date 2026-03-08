@@ -1123,5 +1123,8 @@
   },
   "prompthistory_banner_description": {
     "message": "Ein neues Tool zum Wiederverwenden von Prompts für ChatGPT und mehr✨"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Kann auf dieser Seite nicht ausgeführt werden (Start-URL stimmt nicht überein)"
   }
 }

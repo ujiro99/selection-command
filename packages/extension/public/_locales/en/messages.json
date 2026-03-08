@@ -1132,5 +1132,8 @@
   },
   "prompthistory_banner_description": {
     "message": "A new tool to reuse prompts for ChatGPT and more✨"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Cannot run on this page (start URL does not match)"
   }
 }

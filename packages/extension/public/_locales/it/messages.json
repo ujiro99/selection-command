@@ -1123,5 +1123,8 @@
   },
   "prompthistory_banner_description": {
     "message": "Un nuovo strumento per riutilizzare i prompt per ChatGPT e altro✨"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Impossibile eseguire su questa pagina (l'URL iniziale non corrisponde)"
   }
 }

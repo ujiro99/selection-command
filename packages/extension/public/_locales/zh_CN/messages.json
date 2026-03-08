@@ -1123,5 +1123,8 @@
   },
   "prompthistory_banner_description": {
     "message": "用于在 ChatGPT 等中重用提示的新工具✨"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "无法在此页面运行（起始URL不匹配）"
   }
 }
