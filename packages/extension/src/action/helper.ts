@@ -1,4 +1,4 @@
-import { escapeJson } from "@/lib/utils"
+import { escapeJson, toUrl } from "@/lib/utils"
 import {
   openPopupWindow,
   openPopupWindowMultiple,
@@ -11,6 +11,7 @@ import {
   OpenTabProps,
   OpenSidePanelProps,
 } from "@/services/chrome"
+import { registerSidePanelTab } from "@/services/pageAction/background-sidePanel"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
@@ -109,7 +110,16 @@ export const openSidePanel = (
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  const tabId = sender.tab?.id
+  let tabId = sender.tab?.id
+  if (tabId == null) {
+    const bgData = BgData.get()
+    if (bgData.activeTabId == null) {
+      console.warn("No active tab ID available for opening side panel")
+      response(false)
+      return false
+    }
+    tabId = bgData.activeTabId
+  }
 
   // Since it needs to be tied to a user action, avoid asynchronous processing
   // and open the side panel immediately.
@@ -123,12 +133,16 @@ export const openSidePanel = (
     .then(() => {
       // Register the tab ID for tracking
       if (tabId) {
+        const newEntry = { tabId, isLinkCommand: param.isLinkCommand ?? false }
         return BgData.update((data) => ({
-          sidePanelTabs: data.sidePanelTabs.includes(tabId)
-            ? data.sidePanelTabs
-            : [...data.sidePanelTabs, tabId],
+          sidePanelTabs: data.sidePanelTabs.some((t) => t.tabId === tabId)
+            ? data.sidePanelTabs.map((t) => (t.tabId === tabId ? newEntry : t))
+            : [...data.sidePanelTabs, newEntry],
         }))
       }
+    })
+    .then(() => {
+      registerSidePanelTab(tabId, toUrl(param.url))
     })
     .then(() => {
       response(true)
@@ -150,19 +164,48 @@ export const closeSidePanel = (
   if (tabId == null) {
     return false
   }
-
-  enhancedSettings.get().then(async (settings) => {
-    const sidePanelAutoHide = settings.windowOption.sidePanelAutoHide
-    if (sidePanelAutoHide) {
+  enhancedSettings
+    .get()
+    .then(async (settings) => {
       const bgData = BgData.get()
-      if (bgData.sidePanelTabs.includes(tabId)) {
-        await _closeSidePanel(tabId)
+      const tab = bgData.sidePanelTabs.find((t) => t.tabId === tabId)
+      if (tab) {
+        const autoHideEnabled = tab.isLinkCommand
+          ? settings.linkCommand.sidePanelAutoHide
+          : settings.windowOption.sidePanelAutoHide
+        if (autoHideEnabled) {
+          await _closeSidePanel(tabId)
+        }
       }
-    }
-    response(true)
-  })
+      response(true)
+    })
+    .catch((err) => {
+      console.warn("Failed to handle panel click:", err)
+      response(false)
+    })
 
   return true
+}
+
+/**
+ * Handle side panel closed event for a tab
+ * @param {number} tabId - The ID of the tab whose side panel was closed
+ * @return {Promise<void>} A promise that resolves when the side panel closed event is handled
+ * This function is called when a side panel is closed, either by user action or programmatically.
+ */
+export const sidePanelClosed = async (tabId?: number): Promise<void> => {
+  if (tabId == null) return
+  try {
+    await BgData.update((data) => {
+      const { [tabId]: _, ...rest } = data.sidePanelUrls
+      return {
+        sidePanelTabs: data.sidePanelTabs.filter((t) => t.tabId !== tabId),
+        sidePanelUrls: rest,
+      }
+    })
+  } catch (e) {
+    console.warn("Failed to cleanup side panel:", e)
+  }
 }
 
 export const navigateSidePanel = (
@@ -191,7 +234,7 @@ export const navigateSidePanel = (
 
   // Check if tab is in sidePanelTabs
   const bgData = BgData.get()
-  if (!bgData.sidePanelTabs.includes(tabId)) {
+  if (!bgData.sidePanelTabs.some((t) => t.tabId === tabId)) {
     console.warn("[navigateSidePanel] Tab is not in sidePanelTabs:", tabId)
     return false
   }

@@ -392,11 +392,11 @@ describe("Popup Auto-Close Delay", () => {
 
   it("PAC-01: should close popups immediately when delay is not set", async () => {
     // Mock WindowStackManager
-    const mockGetWindowsToClose = vi.fn().mockResolvedValue([
-      { id: 100, commandId: "test", srcWindowId: 1 },
-    ])
+    const mockGetWindowsToClose = vi
+      .fn()
+      .mockResolvedValue([{ id: 100, commandId: "test", srcWindowId: 1 }])
     const mockRemoveWindow = vi.fn().mockResolvedValue(undefined)
-    
+
     vi.doMock("@/services/windowStackManager", () => ({
       WindowStackManager: {
         getWindowsToClose: mockGetWindowsToClose,
@@ -409,6 +409,7 @@ describe("Popup Auto-Close Delay", () => {
     vi.doMock("@/services/chrome", () => ({
       closeWindow: mockCloseWindow,
       windowExists: vi.fn(),
+      getCurrentTab: vi.fn().mockResolvedValue({ id: 1 }),
     }))
 
     // Mock enhancedSettings to return no delay
@@ -446,7 +447,7 @@ describe("Popup Auto-Close Delay", () => {
 
     // Trigger focus change
     await focusChangedListener(200)
-    
+
     // Wait for async operations
     await vi.runAllTimersAsync()
 
@@ -459,11 +460,11 @@ describe("Popup Auto-Close Delay", () => {
     const delay = 1000 // 1 second
 
     // Mock WindowStackManager
-    const mockGetWindowsToClose = vi.fn().mockResolvedValue([
-      { id: 100, commandId: "test", srcWindowId: 1 },
-    ])
+    const mockGetWindowsToClose = vi
+      .fn()
+      .mockResolvedValue([{ id: 100, commandId: "test", srcWindowId: 1 }])
     const mockRemoveWindow = vi.fn().mockResolvedValue(undefined)
-    
+
     vi.doMock("@/services/windowStackManager", () => ({
       WindowStackManager: {
         getWindowsToClose: mockGetWindowsToClose,
@@ -476,6 +477,7 @@ describe("Popup Auto-Close Delay", () => {
     vi.doMock("@/services/chrome", () => ({
       closeWindow: mockCloseWindow,
       windowExists: vi.fn(),
+      getCurrentTab: vi.fn().mockResolvedValue({ id: 1 }),
     }))
 
     // Mock enhancedSettings to return delay
@@ -533,7 +535,7 @@ describe("Popup Auto-Close Delay", () => {
       .mockResolvedValueOnce([{ id: 100, commandId: "test", srcWindowId: 1 }])
       .mockResolvedValueOnce([]) // No windows to close when focus returns
     const mockRemoveWindow = vi.fn().mockResolvedValue(undefined)
-    
+
     vi.doMock("@/services/windowStackManager", () => ({
       WindowStackManager: {
         getWindowsToClose: mockGetWindowsToClose,
@@ -546,6 +548,7 @@ describe("Popup Auto-Close Delay", () => {
     vi.doMock("@/services/chrome", () => ({
       closeWindow: mockCloseWindow,
       windowExists: vi.fn(),
+      getCurrentTab: vi.fn().mockResolvedValue({ id: 1 }),
     }))
 
     // Mock enhancedSettings to return delay

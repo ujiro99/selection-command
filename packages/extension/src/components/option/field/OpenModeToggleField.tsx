@@ -99,10 +99,7 @@ export const OpenModeToggleField = ({
                 onValueChange={(val) => {
                   if (val) field.onChange(val)
                 }}
-                className={cn(
-                  "grid gap-2 py-1",
-                  type === "pageAction" ? "grid-cols-5" : "grid-cols-4",
-                )}
+                className="grid grid-cols-5 gap-2 py-1"
               >
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)

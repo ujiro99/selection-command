@@ -90,7 +90,7 @@ export const SelectField = ({
             {description && <FormDescription>{description}</FormDescription>}
           </div>
           <div className="w-4/6">
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select onValueChange={field.onChange} value={field.value ?? ""}>
               <FormControl>
                 <SelectTrigger className="relative">
                   <SelectValue placeholder={placeholder} />

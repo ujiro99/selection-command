@@ -9,19 +9,19 @@ import {
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
+import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
-import { closeWindow, windowExists } from "@/services/chrome"
+import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
-import type { IpcCallback } from "@/services/ipc"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
@@ -56,13 +56,11 @@ const getActiveTabId = (
   _sender: Sender,
   response: (res: unknown) => void,
 ) => {
-  chrome.tabs
-    .query({ active: true, lastFocusedWindow: true })
-    .then(([tab]) => response(tab?.id))
+  getCurrentTab().then((tab) => response(tab?.id))
   return true
 }
 
-const onConnect = async function(port: chrome.runtime.Port) {
+const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -70,9 +68,12 @@ const onConnect = async function(port: chrome.runtime.Port) {
     BgData.update((data) => ({
       connectedTabs: [...data.connectedTabs, tabId],
     }))
+  } else {
+    // Side panel pages have no tab.id (port.sender.origin is set instead).
+    await PageActionBackground.handleSidePanelConnect(port)
   }
 }
-const onDisconnect = async function(port: chrome.runtime.Port) {
+const onDisconnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -95,7 +96,24 @@ const commandFuncs = {
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [BgCommand.openTab]: ActionHelper.openTab,
-  [BgCommand.openSidePanel]: ActionHelper.openSidePanel,
+  [BgCommand.openSidePanel]: (
+    param: Parameters<typeof ActionHelper.openSidePanel>[0],
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    return ActionHelper.openSidePanel(
+      param,
+      sender,
+      async (result: unknown) => {
+        // If the side panel was already open (port retained), execute pending action
+        // via the existing port without waiting for a new onConnect event.
+        if (result === true) {
+          await PageActionBackground.handleSidePanelOpened()
+        }
+        response(result)
+      },
+    )
+  },
   [BgCommand.closeSidePanel]: ActionHelper.closeSidePanel,
   [BgCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
   [BgCommand.execApi]: ActionHelper.execApi,
@@ -152,24 +170,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-        id: params.id,
-        title: params.title,
-        searchUrl: params.searchUrl,
-        iconUrl: params.iconUrl,
-        openMode: params.openMode,
-        openModeSecondary: params.openModeSecondary,
-        spaceEncoding: params.spaceEncoding,
-        popupOption: PopupOption,
-      }
-      : isPageAction
-        ? {
           id: params.id,
           title: params.title,
+          searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
           openMode: params.openMode,
-          pageActionOption: params.pageActionOption,
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
           popupOption: PopupOption,
         }
+      : isPageAction
+        ? {
+            id: params.id,
+            title: params.title,
+            iconUrl: params.iconUrl,
+            openMode: params.openMode,
+            pageActionOption: params.pageActionOption,
+            popupOption: PopupOption,
+          }
         : null
 
     if (!cmd) {
@@ -362,6 +380,16 @@ const updateWindowSize = async (
   }
 }
 
+const updateActiveTabId = async (activeTabId?: number) => {
+  if (activeTabId == null) {
+    const activeTab = await getCurrentTab()
+    activeTabId = activeTab?.id
+  }
+  if (activeTabId != null) {
+    await BgData.update({ activeTabId })
+  }
+}
+
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
     url: OPTION_PAGE_PATH,
@@ -378,6 +406,9 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 
   // Update active screen ID
   await updateActiveScreenId(windowId)
+
+  // Update active tab ID
+  await updateActiveTabId()
 
   // Get windows to close based on focus change
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
@@ -429,6 +460,9 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     if (tab.windowId) {
       await updateActiveScreenId(tab.windowId)
     }
+
+    // Update active tab ID
+    await updateActiveTabId(tab.id)
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
   }
@@ -513,17 +547,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-  // Initialize commandIdObj and register listener at top-level
-  // to ensure they are available when service worker restarts
-  ; (async () => {
-    try {
-      await ContextMenu.syncCommandIdObj()
-      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-    } catch (error) {
-      // Ignore errors during initialization (e.g., in test environment)
-      console.debug("Failed to initialize context menu listener:", error)
-    }
-  })()
+// Initialize commandIdObj and register listener at top-level
+// to ensure they are available when service worker restarts
+;(async () => {
+  try {
+    await ContextMenu.syncCommandIdObj()
+    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+  } catch (error) {
+    // Ignore errors during initialization (e.g., in test environment)
+    console.debug("Failed to initialize context menu listener:", error)
+  }
+})()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
@@ -619,14 +653,12 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 // SidePanel auto-hide functionality
 // Track tabs with active side panels
 chrome.tabs.onRemoved.addListener((tabId) => {
-  BgData.update((data) => {
-    const { [tabId]: _, ...rest } = data.sidePanelUrls
-    return {
-      sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-      sidePanelUrls: rest,
-    }
-  })
+  ActionHelper.sidePanelClosed(tabId)
+  updateActiveTabId()
 })
+chrome.sidePanel.onClosed.addListener(({ tabId }) =>
+  ActionHelper.sidePanelClosed(tabId),
+)
 
 // Export functions for testing
 export const testExports = {

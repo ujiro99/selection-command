@@ -54,7 +54,7 @@ const mockIsEmpty = isEmpty as any
 
 // Mock console methods
 const mockConsole = {
-  warn: vi.spyOn(console, "warn").mockImplementation(() => { }),
+  warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
 }
 
 // Mock DOM elements
@@ -917,8 +917,9 @@ describe("backgroundDispatcher", () => {
       expect(mockInputContentEditable).toHaveBeenCalledWith(
         mockElement,
         "test text",
-        0,
-        expect.any(Function),
+        1,
+        null,
+        false,
       )
     })
 
@@ -961,8 +962,9 @@ describe("backgroundDispatcher", () => {
       expect(mockInputContentEditable).toHaveBeenCalledWith(
         mockElement,
         "line1\nline2\nline3",
-        0,
-        expect.any(Function),
+        1,
+        null,
+        false,
       )
     })
 

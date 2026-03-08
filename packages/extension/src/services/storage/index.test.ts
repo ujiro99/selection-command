@@ -7,6 +7,20 @@ const mockChromeStorageSync = {
   }),
 }
 
+const mockChromeStorageLocal = {
+  get: vi.fn(),
+  set: vi.fn(),
+}
+
+const mockChromeStorageSession = {
+  get: vi.fn(),
+  set: vi.fn(),
+}
+
+const mockChromeStorageOnChanged = {
+  addListener: vi.fn(),
+}
+
 const mockChromeRuntime = {
   lastError: undefined as chrome.runtime.LastError | undefined,
 }
@@ -15,12 +29,16 @@ const mockChromeRuntime = {
 vi.stubGlobal("chrome", {
   storage: {
     sync: mockChromeStorageSync,
+    local: mockChromeStorageLocal,
+    session: mockChromeStorageSession,
+    onChanged: mockChromeStorageOnChanged,
   },
   runtime: mockChromeRuntime,
 })
 
 // Import module after mocking
-import { debouncedSyncSet } from "./index"
+import { debouncedSyncSet, BaseStorage } from "./index"
+import { LOCAL_STORAGE_KEY } from "./const"
 
 describe("debouncedSyncSet", () => {
   beforeEach(() => {
@@ -188,5 +206,65 @@ describe("debouncedSyncSet", () => {
         expect.any(Function),
       )
     })
+  })
+})
+
+describe("BaseStorage.get", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it("BS-GET-01: returns default value when Extension context invalidated error occurs", async () => {
+    const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {})
+    mockChromeStorageLocal.get.mockRejectedValue(
+      new Error("Extension context invalidated"),
+    )
+
+    const result = await BaseStorage.get(LOCAL_STORAGE_KEY.CLIENT_ID)
+
+    expect(result).toBe("") // default value for CLIENT_ID
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Extension context invalidated, ignoring storage get",
+    )
+    consoleSpy.mockRestore()
+  })
+
+  it("BS-GET-02: re-throws when error is not Extension context invalidated", async () => {
+    const storageError = new Error("Quota exceeded")
+    mockChromeStorageLocal.get.mockRejectedValue(storageError)
+
+    await expect(BaseStorage.get(LOCAL_STORAGE_KEY.CLIENT_ID)).rejects.toThrow(
+      "Quota exceeded",
+    )
+  })
+})
+
+describe("BaseStorage.set", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it("BS-SET-01: returns false when Extension context invalidated error occurs", async () => {
+    const consoleSpy = vi.spyOn(console, "debug").mockImplementation(() => {})
+    mockChromeStorageLocal.set.mockRejectedValue(
+      new Error("Extension context invalidated"),
+    )
+
+    const result = await BaseStorage.set(LOCAL_STORAGE_KEY.CLIENT_ID, "value")
+
+    expect(result).toBe(false)
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Extension context invalidated, ignoring storage set",
+    )
+    consoleSpy.mockRestore()
+  })
+
+  it("BS-SET-02: re-throws when error is not Extension context invalidated", async () => {
+    const storageError = new Error("Quota exceeded")
+    mockChromeStorageLocal.set.mockRejectedValue(storageError)
+
+    await expect(
+      BaseStorage.set(LOCAL_STORAGE_KEY.CLIENT_ID, "value"),
+    ).rejects.toThrow("Quota exceeded")
   })
 })

@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "菜单显示动画"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "弹出窗口自动关闭延迟"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "设置弹出窗口失去焦点后自动关闭前的延迟时间。设置为0或留空表示立即关闭。\n最大值：10000毫秒"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0（立即关闭）"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "侧边栏自动隐藏"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "通过命令打开侧边栏时，点击主面板自动隐藏侧边栏。"
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "侧边栏自动隐藏"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "显示链接预览时，点击主面板自动隐藏侧边栏。"
+  },
   "Option_inherit": {
     "message": "获取"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "修改初始URL时图标URL将自动更新。"
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "显示为菜单图标。"
+  },
   "Option_iconUrl_autofill": {
     "message": "自动填充"
   },
@@ -266,6 +290,9 @@
   "Option_openMode": {
     "message": "打开模式"
   },
+  "Option_displayMode": {
+    "message": "窗口显示方式"
+  },
   "Option_openMode_popup": {
     "message": "弹出窗口"
   },
@@ -278,11 +305,14 @@
   "Option_openMode_backgroundTab": {
     "message": "后台标签页"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "侧边栏"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "在侧边栏中打开。"
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "链接弹出窗口"
@@ -296,8 +326,11 @@
   "Option_openMode_pageAction": {
     "message": "页面操作"
   },
-  "Option_displayMode": {
-    "message": "窗口显示方式"
+  "Option_openMode_aiPrompt": {
+    "message": "AI提示词"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "在AI服务上运行预定义的提示词"
   },
   "Option_commandType_title": {
     "message": "选择命令类型"
@@ -316,6 +349,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "录制和重放网页操作"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI提示词"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "在AI服务上运行预定义的提示词"
   },
   "Option_commandType_copy_title": {
     "message": "复制文本"
@@ -356,11 +395,23 @@
   "Option_openMode_previewWindow": {
     "message": "窗口"
   },
+  "Option_openMode_previewSidePanel": {
+    "message": "侧边栏"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + 点击"
   },
   "Option_parentFolderId": {
     "message": "文件夹"
+  },
+  "Option_parentFolder": {
+    "message": "父文件夹"
+  },
+  "Option_parentFolder_desc": {
+    "message": "选择父文件夹"
+  },
+  "Option_rootFolder": {
+    "message": "根目录（无父级）"
   },
   "Option_copyOption": {
     "message": "复制格式"
@@ -406,6 +457,54 @@
   },
   "Option_pageAction_delay": {
     "message": "等待时间"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI服务"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "选择要使用的AI服务"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "提示词"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "提示词模板。使用插入菜单添加变量（选中文本、URL、剪贴板）。"
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "在此输入您的提示词..."
+  },
+  "Option_userVariables": {
+    "message": "用户变量"
+  },
+  "Option_userVariables_desc": {
+    "message": "为输入字段定义自定义变量（最多 5 个）"
+  },
+  "Option_userVariable_name": {
+    "message": "变量名"
+  },
+  "Option_userVariable_value": {
+    "message": "值"
+  },
+  "Option_userVariable_add": {
+    "message": "添加变量"
+  },
+  "Option_userVariable_name_required": {
+    "message": "变量名是必需的"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "变量名已存在"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "最多允许$max$个变量",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "链接预览"
@@ -466,15 +565,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "配置窗口行为和弹出窗口设置。"
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "弹出窗口自动关闭延迟"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "设置弹出窗口失去焦点后自动关闭前的延迟时间。设置为0或留空表示立即关闭。\n最大值：10000毫秒"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0（立即关闭）"
   },
   "Option_folders": {
     "message": "文件夹"
@@ -649,6 +739,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
   },
   "Option_zod_string_min": {
     "message": "请输入至少$key$个字符的字符串。",
@@ -929,38 +1022,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "在侧边栏中打开。"
+  "Option_openMode_currentTab": {
+    "message": "当前标签页"
   },
-  "Option_userVariables": {
-    "message": "用户变量"
-  },
-  "Option_userVariable_name": {
-    "message": "变量名"
-  },
-  "Option_userVariable_value": {
-    "message": "值"
-  },
-  "Option_userVariable_add": {
-    "message": "添加变量"
-  },
-  "Option_userVariable_name_required": {
-    "message": "变量名是必需的"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "变量名已存在"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "最多允许$max$个变量",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
+  "Option_openMode_currentTab_desc": {
+    "message": "在当前活动标签页中运行。<wbr>URL 必须与记录的起始 URL 匹配。"
   },
   "Option_title_desc": {
     "message": "显示为命令标题。"
@@ -974,29 +1040,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Ctrl + 点击菜单时的行为。"
   },
-  "Option_parentFolder": {
-    "message": "父文件夹"
-  },
-  "Option_parentFolder_desc": {
-    "message": "选择父文件夹"
-  },
-  "Option_rootFolder": {
-    "message": "根目录（无父级）"
-  },
   "Option_searchUrlAssist": {
     "message": "AI 助手"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "搜索 URL 助手"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "输入搜索关键词和搜索结果页面的 URL，然后点击执行按钮。\nAI 将生成搜索 URL。"
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "使用 Gemini 执行"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "正在执行..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "使用方法"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) 搜索关键词"
@@ -1009,6 +1060,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "使用方法"
   },
   "Option_searchUrlAssist_step1": {
     "message": "在“(1) 搜索关键词”中输入任意单词"
@@ -1025,20 +1079,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "复制生成的搜索 URL 并粘贴到命令的搜索 URL 字段"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "搜索 URL 助手"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "使用 Gemini 执行"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "正在执行..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "请输入搜索关键词"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "请输入有效的 URL"
-  },
-  "Option_userVariables_desc": {
-    "message": "为输入字段定义自定义变量（最多 5 个）"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
   },
   "Option_commandType": {
     "message": "命令类型"
@@ -1123,5 +1174,20 @@
   },
   "prompthistory_banner_description": {
     "message": "用于在 ChatGPT 等中重用提示的新工具✨"
+  },
+  "Option_windowState": {
+    "message": "窗口大小"
+  },
+  "Option_windowState_desc": {
+    "message": "显示窗口的大小"
+  },
+  "Option_windowState_normal": {
+    "message": "正常"
+  },
+  "Option_windowState_maximized": {
+    "message": "最大化"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "全屏"
   }
 }

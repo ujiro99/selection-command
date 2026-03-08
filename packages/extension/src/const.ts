@@ -10,11 +10,13 @@ export const VERSION = __APP_VERSION__ as string
  */
 const environment = import.meta.env.MODE ?? "development"
 export const isDebug = environment === "development"
+export const isE2E = environment === "e2e"
 
 // Abstract command types for simplified command creation
 export enum COMMAND_TYPE {
   SEARCH = "search",
   PAGE_ACTION = "pageAction",
+  AI_PROMPT = "aiPrompt",
   COPY = "copy",
   LINK_POPUP = "linkPopup",
   GET_TEXT_STYLES = "getTextStyles",
@@ -30,6 +32,7 @@ export const OPEN_MODE_TYPE_MAP = {
   [OPEN_MODE.SIDE_PANEL]: COMMAND_TYPE.SEARCH,
   [OPEN_MODE.API]: COMMAND_TYPE.API,
   [OPEN_MODE.PAGE_ACTION]: COMMAND_TYPE.PAGE_ACTION,
+  [OPEN_MODE.AI_PROMPT]: COMMAND_TYPE.AI_PROMPT,
   [OPEN_MODE.LINK_POPUP]: COMMAND_TYPE.LINK_POPUP,
   [OPEN_MODE.COPY]: COMMAND_TYPE.COPY,
   [OPEN_MODE.GET_TEXT_STYLES]: COMMAND_TYPE.GET_TEXT_STYLES,
@@ -48,6 +51,7 @@ export const COMMAND_TYPE_OPEN_MODES_MAP = {
   ],
   [COMMAND_TYPE.API]: [OPEN_MODE.API],
   [COMMAND_TYPE.PAGE_ACTION]: [OPEN_MODE.PAGE_ACTION],
+  [COMMAND_TYPE.AI_PROMPT]: [OPEN_MODE.AI_PROMPT],
   [COMMAND_TYPE.LINK_POPUP]: [OPEN_MODE.LINK_POPUP],
   [COMMAND_TYPE.COPY]: [OPEN_MODE.COPY],
   [COMMAND_TYPE.GET_TEXT_STYLES]: [OPEN_MODE.GET_TEXT_STYLES],
@@ -65,6 +69,11 @@ export const COMMAND_TYPE_METADATA = {
     iconName: "Play",
     titleKey: "commandType_pageAction_title",
     descKey: "commandType_pageAction_desc",
+  },
+  [COMMAND_TYPE.AI_PROMPT]: {
+    iconName: "BotMessageSquare",
+    titleKey: "commandType_aiPrompt_title",
+    descKey: "commandType_aiPrompt_desc",
   },
   [COMMAND_TYPE.COPY]: {
     iconName: "Copy",
@@ -98,7 +107,11 @@ export const COMMAND_TYPE_METADATA = {
 export const COMMAND_TYPE_GROUPS = [
   {
     titleKey: "commandGroup_webPage_title",
-    types: [COMMAND_TYPE.SEARCH, COMMAND_TYPE.PAGE_ACTION],
+    types: [
+      COMMAND_TYPE.SEARCH,
+      COMMAND_TYPE.PAGE_ACTION,
+      COMMAND_TYPE.AI_PROMPT,
+    ],
   },
   {
     titleKey: "commandGroup_singleFunction_title",
@@ -126,6 +139,7 @@ export enum OPEN_MODE_BG {
   SIDE_PANEL = OPEN_MODE.SIDE_PANEL,
   API = OPEN_MODE.API,
   PAGE_ACTION = OPEN_MODE.PAGE_ACTION,
+  AI_PROMPT = OPEN_MODE.AI_PROMPT,
 }
 
 export enum ExecState {
@@ -138,6 +152,7 @@ export enum ExecState {
 export enum DRAG_OPEN_MODE {
   PREVIEW_POPUP = "previewPopup",
   PREVIEW_WINDOW = "previewWindow",
+  PREVIEW_SIDE_PANEL = "previewSidePanel",
 }
 
 export enum SIDE {
@@ -163,6 +178,12 @@ export enum STARTUP_METHOD {
 export enum POPUP_TYPE {
   NORMAL = "normal",
   POPUP = "popup",
+}
+
+export enum WINDOW_STATE {
+  NORMAL = "normal",
+  MAXIMIZED = "maximized",
+  FULLSCREEN = "fullscreen",
 }
 
 export enum KEYBOARD {
@@ -260,6 +281,7 @@ export enum PAGE_ACTION_EVENT {
 export enum PAGE_ACTION_CONTROL {
   start = "start",
   end = "end",
+  navigate = "navigate",
 }
 
 export enum PAGE_ACTION_EXEC_STATE {
