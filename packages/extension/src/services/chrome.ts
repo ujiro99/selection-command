@@ -332,11 +332,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        port.onMessage.addListener(function (msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -375,6 +375,28 @@ const openWindowAndReadClipboard = async (
 
   return {
     window: w!,
+    clipboardText: result.data ?? "",
+    err: result.err,
+  }
+}
+
+export const openWindowAndReadClipboardThenClose = async (): Promise<{
+  clipboardText: string
+  err?: string
+}> => {
+  const w = await chrome.windows.create({
+    url: chrome.runtime.getURL("src/clipboard.html"),
+    focused: true,
+    type: "popup",
+    width: 1,
+    height: 1,
+    left: 0,
+    top: 0,
+    state: "normal",
+  })
+  const result = await readClipboardContent(w!.tabs![0].id as number)
+  await closeWindow(w!.id!, "readClipboard close window")
+  return {
     clipboardText: result.data ?? "",
     err: result.err,
   }
