@@ -440,6 +440,12 @@
   "Option_startUrl_desc": {
     "message": "URL страницы, где начинается действие."
   },
+  "Option_recordUrl": {
+    "message": "URL рекордера"
+  },
+  "Option_recordUrl_desc": {
+    "message": "URL для перехода при открытии рекордера. Используется только при редактировании."
+  },
   "Option_pageAction_title": {
     "message": "Действие"
   },

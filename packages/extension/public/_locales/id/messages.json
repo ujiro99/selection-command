@@ -440,6 +440,12 @@
   "Option_startUrl_desc": {
     "message": "URL halaman di mana tindakan dimulai."
   },
+  "Option_recordUrl": {
+    "message": "URL Perekam"
+  },
+  "Option_recordUrl_desc": {
+    "message": "URL untuk dinavigasi saat membuka perekam. Hanya digunakan saat pengeditan."
+  },
   "Option_pageAction_title": {
     "message": "Tindakan"
   },

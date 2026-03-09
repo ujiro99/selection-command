@@ -440,6 +440,12 @@
   "Option_startUrl_desc": {
     "message": "アクションを開始するページのURL"
   },
+  "Option_recordUrl": {
+    "message": "レコーダー用URL"
+  },
+  "Option_recordUrl_desc": {
+    "message": "レコーダーを起動するときに遷移するURL。編集時のみ使用します。"
+  },
   "Option_pageAction_title": {
     "message": "Actions"
   },
