@@ -34,7 +34,10 @@ export const PageActionSection = ({
     keyName: "_id",
   })
   const steps = pageActionArray.fields as unknown as PageActionStep[]
-  const recDisabled = !getValues("pageActionOption.startUrl")
+  const recDisabled = !(
+    getValues("pageActionOption.recordUrl") ||
+    getValues("pageActionOption.startUrl")
+  )
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
@@ -97,6 +100,17 @@ export const PageActionSection = ({
         }}
         description={t("startUrl_desc")}
         previewUrl={getValues("iconUrl")}
+      />
+
+      <InputField
+        control={form.control}
+        name="pageActionOption.recordUrl"
+        formLabel={t("recordUrl")}
+        inputProps={{
+          type: "string",
+          ...register("pageActionOption.recordUrl", {}),
+        }}
+        description={t("recordUrl_desc")}
       />
 
       <OpenModeToggleField

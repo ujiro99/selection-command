@@ -440,6 +440,12 @@
   "Option_startUrl_desc": {
     "message": "URL of the page where the action starts."
   },
+  "Option_recordUrl": {
+    "message": "Recorder URL"
+  },
+  "Option_recordUrl_desc": {
+    "message": "URL to navigate when opening the recorder. Used only during editing."
+  },
   "Option_pageAction_title": {
     "message": "Actions"
   },

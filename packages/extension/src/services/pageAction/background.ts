@@ -305,9 +305,10 @@ export const reset = (_: any, sender: Sender): boolean => {
     const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
-    if (tabId && option.startUrl) {
+    const reloadUrl = option.recordUrl || option.startUrl
+    if (tabId && reloadUrl) {
       try {
-        await chrome.tabs.update(tabId, { url: option.startUrl })
+        await chrome.tabs.update(tabId, { url: reloadUrl })
       } catch (e) {
         console.error("Failed to reload the tab:", e)
       }

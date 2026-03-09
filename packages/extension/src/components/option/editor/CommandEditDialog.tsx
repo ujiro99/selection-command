@@ -326,6 +326,12 @@ const CommandEditDialogInner = ({
     defaultValue: "",
   })
 
+  const recordUrl = useWatch({
+    control: form.control,
+    name: "pageActionOption.recordUrl",
+    defaultValue: "",
+  })
+
   const iconUrl = useWatch({
     control: form.control,
     name: "iconUrl",
@@ -335,17 +341,19 @@ const CommandEditDialogInner = ({
   const iconUrlSrc = searchUrl || startUrl
 
   const openPageActionRecorder = async () => {
+    const recUrl = recordUrl || startUrl
     await Storage.set<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
       {
         startUrl,
+        recordUrl,
         openMode: getValues("pageActionOption.openMode"),
         size: getValues("popupOption") ?? POPUP_OPTION,
         steps: getValues("pageActionOption.steps"),
       },
     )
     await Ipc.send(BgCommand.startPageActionRecorder, {
-      startUrl,
+      startUrl: recUrl,
       openMode: getValues("pageActionOption.openMode"),
       size: getValues("popupOption") ?? POPUP_OPTION,
       screen: await getScreenSize(),
