@@ -390,7 +390,7 @@
     "message": "पेज का URL जहां एक्शन शुरू होता है।"
   },
   "Option_recordUrl": {
-    "message": "रिकॉर्ड URL"
+    "message": "रिकॉर्डर URL"
   },
   "Option_recordUrl_desc": {
     "message": "रिकॉर्डर खोलते समय नेविगेट करने का URL। केवल संपादन के दौरान उपयोग किया जाता है।"

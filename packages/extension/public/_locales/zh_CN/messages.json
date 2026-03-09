@@ -390,7 +390,7 @@
     "message": "操作开始的页面URL。"
   },
   "Option_recordUrl": {
-    "message": "录制URL"
+    "message": "录制器URL"
   },
   "Option_recordUrl_desc": {
     "message": "打开录制器时导航到的URL。仅在编辑时使用。"

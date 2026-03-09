@@ -501,7 +501,7 @@
     "message": "アクションを開始するページのURL"
   },
   "Option_recordUrl": {
-    "message": "記録URL"
+    "message": "レコーダー用URL"
   },
   "Option_recordUrl_desc": {
     "message": "レコーダーを起動するときに遷移するURL。編集時のみ使用します。"

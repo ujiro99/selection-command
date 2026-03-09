@@ -390,7 +390,7 @@
     "message": "URL della pagina dove inizia l'azione."
   },
   "Option_recordUrl": {
-    "message": "URL di registrazione"
+    "message": "URL del registratore"
   },
   "Option_recordUrl_desc": {
     "message": "URL a cui navigare all'apertura del registratore. Utilizzato solo durante la modifica."

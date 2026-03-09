@@ -390,7 +390,7 @@
     "message": "URL de la page où l'action commence."
   },
   "Option_recordUrl": {
-    "message": "URL d'enregistrement"
+    "message": "URL de l'enregistreur"
   },
   "Option_recordUrl_desc": {
     "message": "URL vers laquelle naviguer lors de l'ouverture de l'enregistreur. Utilisée uniquement lors de l'édition."

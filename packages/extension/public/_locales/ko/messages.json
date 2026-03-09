@@ -390,7 +390,7 @@
     "message": "작업이 시작되는 페이지의 URL."
   },
   "Option_recordUrl": {
-    "message": "녹화 URL"
+    "message": "레코더 URL"
   },
   "Option_recordUrl_desc": {
     "message": "레코더를 열 때 이동할 URL. 편집 중에만 사용됩니다."
