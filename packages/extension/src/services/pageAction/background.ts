@@ -324,7 +324,9 @@ export const reset = (_: any, sender: Sender): boolean => {
 }
 
 export type OpenAndRunProps = Omit<OpenPopupProps, "type"> &
-  Omit<RunPageAction, "clipboardText">
+  Omit<RunPageAction, "clipboardText"> & {
+    clipboardText?: string
+  }
 
 export const openAndRun = (
   param: OpenAndRunProps,
@@ -373,7 +375,7 @@ export const openAndRun = (
         return
       }
       tabId = currentTab.id
-      clipboardText = ""
+      clipboardText = param.clipboardText ?? ""
     } else {
       // Popup and Window modes
       const ret = await openPopupWindow({

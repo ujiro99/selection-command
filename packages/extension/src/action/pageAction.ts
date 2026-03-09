@@ -34,6 +34,14 @@ export const PageAction = {
       return
     }
 
+    // Read clipboard text for interpolation, but don't block execution if it fails.
+    let clipboardText: string = ""
+    try {
+      clipboardText = await navigator.clipboard.readText()
+    } catch (e) {
+      console.warn("Failed to read clipboard text:", e)
+    }
+
     // Checks if any step requires clipboard data
     const needClipboard = command.pageActionOption.steps.some((step) => {
       return (
@@ -71,6 +79,7 @@ export const PageAction = {
       selectedText: selectionText,
       srcUrl: location.href,
       openMode,
+      clipboardText,
       userVariables: userVariables ?? command.pageActionOption.userVariables,
     })
   },
