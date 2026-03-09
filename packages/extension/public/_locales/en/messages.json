@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (close immediately)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Side Panel Auto-Hide"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Automatically hide the side panel when the main panel is clicked while the side panel is open via a command."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Side Panel Auto-Hide"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Automatically hide the side panel when the main panel is clicked while displaying the link preview."
+  },
   "Option_inherit": {
     "message": "Inherit"
   },
@@ -256,6 +268,9 @@
   },
   "Option_iconUrl_desc_pageAction": {
     "message": "Automatically updated when the Start URL is changed."
+  },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Displayed as the menu icon."
   },
   "Option_iconUrl_autofill": {
     "message": "Autofill"
@@ -311,6 +326,12 @@
   "Option_openMode_pageAction": {
     "message": "Page Action"
   },
+  "Option_openMode_aiPrompt": {
+    "message": "AI Prompt"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Run a predefined prompt on an AI service"
+  },
   "Option_commandType_title": {
     "message": "Select Command Type"
   },
@@ -328,6 +349,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Record and replay web page operations"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI Prompt"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Run a predefined prompt on an AI service"
   },
   "Option_commandType_copy_title": {
     "message": "Copy Text"
@@ -367,6 +394,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Window"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Side Panel"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Click"
@@ -427,6 +457,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Delay time"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI Service"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Select the AI service to use"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Prompt template. Use the insert menu to add variables (selected text, URL, clipboard)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Enter your prompt here..."
   },
   "Option_userVariables": {
     "message": "User Variables"
@@ -1132,6 +1177,21 @@
   },
   "prompthistory_banner_description": {
     "message": "A new tool to reuse prompts for ChatGPT and more✨"
+  },
+  "Option_windowState": {
+    "message": "Window Size"
+  },
+  "Option_windowState_desc": {
+    "message": "Window size to display"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Maximized"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Fullscreen"
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Cannot run on this page (start URL does not match)"

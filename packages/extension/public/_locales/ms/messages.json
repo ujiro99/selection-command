@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "Animasi Paparan Menu"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Kelewatan Penutupan Auto Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Tetapkan masa kelewatan sebelum popup menutup secara automatik selepas kehilangan fokus. Tetapkan ke 0 atau biarkan kosong untuk penutupan segera.\nMaksimum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (tutup segera)"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "Sembunyikan Panel Sisi Secara Automatik"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Menyembunyikan panel sisi secara automatik apabila panel utama diklik semasa panel sisi dibuka melalui perintah."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Sembunyikan Panel Sisi Secara Automatik"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Menyembunyikan panel sisi secara automatik apabila panel utama diklik semasa memaparkan pratonton pautan."
+  },
   "Option_inherit": {
     "message": "Warisi"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Dikemas kini secara automatik apabila URL Permulaan diubah."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Dipaparkan sebagai ikon menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Isi Automatik"
   },
@@ -266,6 +290,9 @@
   "Option_openMode": {
     "message": "Mod Buka"
   },
+  "Option_displayMode": {
+    "message": "Kaedah Paparan Tetingkap"
+  },
   "Option_openMode_popup": {
     "message": "Pop-up"
   },
@@ -278,11 +305,14 @@
   "Option_openMode_backgroundTab": {
     "message": "Tab Latar Belakang"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "Panel Sisi"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Buka dalam panel sisi."
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "Pop-up Pautan"
@@ -296,8 +326,11 @@
   "Option_openMode_pageAction": {
     "message": "Tindakan Halaman"
   },
-  "Option_displayMode": {
-    "message": "Kaedah Paparan Tetingkap"
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt AI"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Jalankan prompt yang telah ditetapkan pada perkhidmatan AI"
   },
   "Option_commandType_title": {
     "message": "Pilih Jenis Arahan"
@@ -316,6 +349,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Rakam dan mainkan operasi halaman web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt AI"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Jalankan prompt yang telah ditetapkan pada perkhidmatan AI"
   },
   "Option_commandType_copy_title": {
     "message": "Salin Teks"
@@ -356,11 +395,23 @@
   "Option_openMode_previewWindow": {
     "message": "Tetingkap"
   },
+  "Option_openMode_previewSidePanel": {
+    "message": "Panel Sisi"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Klik"
   },
   "Option_parentFolderId": {
     "message": "Folder"
+  },
+  "Option_parentFolder": {
+    "message": "Folder Induk"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Pilih folder induk"
+  },
+  "Option_rootFolder": {
+    "message": "Akar (tiada induk)"
   },
   "Option_copyOption": {
     "message": "Format salinan"
@@ -406,6 +457,54 @@
   },
   "Option_pageAction_delay": {
     "message": "Masa kelewatan"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Perkhidmatan AI"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Pilih perkhidmatan AI yang hendak digunakan"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Templat prompt. Gunakan menu sisipan untuk menambah pemboleh ubah (teks dipilih, URL, papan klip)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Masukkan prompt anda di sini..."
+  },
+  "Option_userVariables": {
+    "message": "Pembolehubah Pengguna"
+  },
+  "Option_userVariables_desc": {
+    "message": "Takrifkan pembolehubah tersuai untuk medan input (maks 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Nama pembolehubah"
+  },
+  "Option_userVariable_value": {
+    "message": "Nilai"
+  },
+  "Option_userVariable_add": {
+    "message": "Tambah pembolehubah"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nama pembolehubah diperlukan"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nama pembolehubah sudah wujud"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maksimum $max$ pembolehubah dibenarkan",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "Pratonton Pautan"
@@ -466,15 +565,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "Konfigurasi tingkah laku tetingkap dan tetapan popup."
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "Kelewatan Penutupan Auto Popup"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "Tetapkan masa kelewatan sebelum popup menutup secara automatik selepas kehilangan fokus. Tetapkan ke 0 atau biarkan kosong untuk penutupan segera.\nMaksimum: 10000 ms"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0 (tutup segera)"
   },
   "Option_folders": {
     "message": "Folder"
@@ -649,6 +739,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
   },
   "Option_zod_string_min": {
     "message": "Sila masukkan rentetan $key$ aksara atau lebih.",
@@ -932,38 +1025,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Paparkan di sebelah kanan tab semasa."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Buka dalam panel sisi."
+  "Option_openMode_currentTab": {
+    "message": "Tab Semasa"
   },
-  "Option_userVariables": {
-    "message": "Pembolehubah Pengguna"
-  },
-  "Option_userVariable_name": {
-    "message": "Nama pembolehubah"
-  },
-  "Option_userVariable_value": {
-    "message": "Nilai"
-  },
-  "Option_userVariable_add": {
-    "message": "Tambah pembolehubah"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Nama pembolehubah diperlukan"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Nama pembolehubah sudah wujud"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Maksimum $max$ pembolehubah dibenarkan",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
+  "Option_openMode_currentTab_desc": {
+    "message": "Jalankan pada tab aktif semasa.<wbr>URL mesti sepadan dengan URL permulaan yang direkodkan."
   },
   "Option_title_desc": {
     "message": "Dipaparkan sebagai tajuk arahan."
@@ -977,29 +1043,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Tingkah laku semasa Ctrl + klik menu."
   },
-  "Option_parentFolder": {
-    "message": "Folder Induk"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Pilih folder induk"
-  },
-  "Option_rootFolder": {
-    "message": "Akar (tiada induk)"
-  },
   "Option_searchUrlAssist": {
     "message": "Pembantu AI"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Pembantu URL Carian"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Masukkan kata kunci carian dan URL halaman hasil carian, kemudian klik butang laksana.\nAI akan menjana URL carian."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Jalankan dengan Gemini"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "Sedang menjalankan..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Cara penggunaan"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Kata kunci carian"
@@ -1012,6 +1063,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Cara penggunaan"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Masukkan sebarang perkataan dalam \"(1) Kata kunci carian\""
@@ -1028,20 +1082,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Salin URL carian yang dijana dan tampal ke medan URL carian arahan"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Pembantu URL Carian"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Jalankan dengan Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Sedang menjalankan..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Sila masukkan kata kunci carian"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Sila masukkan URL yang sah"
-  },
-  "Option_userVariables_desc": {
-    "message": "Takrifkan pembolehubah tersuai untuk medan input (maks 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
   },
   "Option_commandType": {
     "message": "Jenis Arahan"
@@ -1126,6 +1177,21 @@
   },
   "prompthistory_banner_description": {
     "message": "Alat baharu untuk menggunakan semula gesaan untuk ChatGPT dan lain-lain✨"
+  },
+  "Option_windowState": {
+    "message": "Saiz tetingkap"
+  },
+  "Option_windowState_desc": {
+    "message": "Saiz tetingkap untuk dipaparkan"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Dimaksimumkan"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Skrin penuh"
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak boleh dijalankan pada halaman ini (URL mula tidak sepadan)"

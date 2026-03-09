@@ -8,6 +8,7 @@ export default mergeConfig(
   defineConfig({
     test: {
       setupFiles: ["./src/test/setup.ts"],
+      exclude: ["**/node_modules/**", "**/e2e/**"],
     },
     define: {
       __APP_NAME__: JSON.stringify(packageJson.name),

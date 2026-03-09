@@ -33,6 +33,7 @@ export const paramToStr = (param: PageAction.Parameter): string => {
   switch (param.type) {
     case PAGE_ACTION_CONTROL.start:
     case PAGE_ACTION_CONTROL.end:
+    case PAGE_ACTION_CONTROL.navigate:
     case PAGE_ACTION_EVENT.click:
     case PAGE_ACTION_EVENT.doubleClick:
     case PAGE_ACTION_EVENT.tripleClick:

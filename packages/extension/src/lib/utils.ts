@@ -18,6 +18,7 @@ import type {
   SelectionCommand,
   LinkCommand,
   PageActionCommand,
+  AiPromptCommand,
   UrlParam,
   UserVariable,
 } from "@/types"
@@ -160,6 +161,13 @@ export function isLinkCommand(command: Command): command is LinkCommand {
  */
 export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
   return _isPageActionCommand(cmd)
+}
+
+export function isAiPromptCommand(cmd: unknown): cmd is AiPromptCommand {
+  if (!cmd || typeof cmd !== "object") {
+    return false
+  }
+  return (cmd as AiPromptCommand).openMode === OPEN_MODE.AI_PROMPT
 }
 
 export function isPopup(elm: Element): boolean {

@@ -17,7 +17,7 @@ export const isSidePanel = (
 
   // Check if tab is in sidePanelTabs
   const bgData = BgData.get()
-  if (!bgData.sidePanelTabs.includes(activeTabId)) return false
+  if (!bgData.sidePanelTabs.some((t) => t.tabId === activeTabId)) return false
 
   return true
 }

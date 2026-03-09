@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "Animasi Tampilan Menu"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Penundaan Penutupan Otomatis Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Atur waktu penundaan sebelum popup secara otomatis menutup setelah kehilangan fokus. Atur ke 0 atau biarkan kosong untuk penutupan segera.\nMaksimum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (tutup segera)"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "Sembunyikan Panel Samping Otomatis"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Secara otomatis menyembunyikan panel samping saat panel utama diklik saat panel samping terbuka melalui perintah."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Sembunyikan Panel Samping Otomatis"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Secara otomatis menyembunyikan panel samping saat panel utama diklik saat menampilkan pratinjau tautan."
+  },
   "Option_inherit": {
     "message": "Warisi"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Diperbarui secara otomatis saat URL Mulai diubah."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Ditampilkan sebagai ikon menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Isi Otomatis"
   },
@@ -266,6 +290,9 @@
   "Option_openMode": {
     "message": "Mode Buka"
   },
+  "Option_displayMode": {
+    "message": "Metode Tampilan Jendela"
+  },
   "Option_openMode_popup": {
     "message": "Pop-up"
   },
@@ -278,11 +305,14 @@
   "Option_openMode_backgroundTab": {
     "message": "Tab Latar Belakang"
   },
-  "Option_openMode_api": {
-    "message": "API"
-  },
   "Option_openMode_sidePanel": {
     "message": "Panel Samping"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Buka di panel samping."
+  },
+  "Option_openMode_api": {
+    "message": "API"
   },
   "Option_openMode_linkPopup": {
     "message": "Pop-up Tautan"
@@ -296,8 +326,11 @@
   "Option_openMode_pageAction": {
     "message": "Tindakan Halaman"
   },
-  "Option_displayMode": {
-    "message": "Metode Tampilan Jendela"
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt AI"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Jalankan prompt yang telah ditentukan pada layanan AI"
   },
   "Option_commandType_title": {
     "message": "Pilih Jenis Perintah"
@@ -316,6 +349,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Rekam dan putar operasi halaman web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt AI"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Jalankan prompt yang telah ditentukan pada layanan AI"
   },
   "Option_commandType_copy_title": {
     "message": "Salin Teks"
@@ -356,11 +395,23 @@
   "Option_openMode_previewWindow": {
     "message": "Jendela"
   },
+  "Option_openMode_previewSidePanel": {
+    "message": "Panel Samping"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Klik"
   },
   "Option_parentFolderId": {
     "message": "Folder"
+  },
+  "Option_parentFolder": {
+    "message": "Folder Induk"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Pilih folder induk"
+  },
+  "Option_rootFolder": {
+    "message": "Root (tidak ada induk)"
   },
   "Option_copyOption": {
     "message": "Format salinan"
@@ -406,6 +457,54 @@
   },
   "Option_pageAction_delay": {
     "message": "Waktu tunda"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Layanan AI"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Pilih layanan AI yang akan digunakan"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Template prompt. Gunakan menu sisipan untuk menambahkan variabel (teks pilihan, URL, clipboard)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Masukkan prompt Anda di sini..."
+  },
+  "Option_userVariables": {
+    "message": "Variabel Pengguna"
+  },
+  "Option_userVariables_desc": {
+    "message": "Tentukan variabel kustom untuk field input (maks 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Nama variabel"
+  },
+  "Option_userVariable_value": {
+    "message": "Nilai"
+  },
+  "Option_userVariable_add": {
+    "message": "Tambah variabel"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nama variabel diperlukan"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nama variabel harus dimulai dengan huruf dan hanya berisi huruf, angka, dan garis bawah"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nama variabel sudah ada"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maksimal $max$ variabel diizinkan",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_linkCommand": {
     "message": "Pratinjau Tautan"
@@ -466,15 +565,6 @@
   },
   "Option_windowSettings_desc": {
     "message": "Konfigurasi perilaku jendela dan pengaturan popup."
-  },
-  "Option_popupAutoCloseDelay": {
-    "message": "Penundaan Penutupan Otomatis Popup"
-  },
-  "Option_popupAutoCloseDelay_desc": {
-    "message": "Atur waktu penundaan sebelum popup secara otomatis menutup setelah kehilangan fokus. Atur ke 0 atau biarkan kosong untuk penutupan segera.\nMaksimum: 10000 ms"
-  },
-  "Option_popupAutoCloseDelay_placeholder": {
-    "message": "0 (tutup segera)"
   },
   "Option_folders": {
     "message": "Folder"
@@ -649,6 +739,9 @@
         "example": "100"
       }
     }
+  },
+  "Option_zod_invalid_variable_name": {
+    "message": "Nama variabel harus dimulai dengan huruf dan hanya berisi huruf, angka, dan garis bawah"
   },
   "Option_zod_string_min": {
     "message": "Silakan masukkan string $key$ karakter atau lebih.",
@@ -932,8 +1025,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Tampilkan di sebelah kanan tab saat ini."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Buka di panel samping."
+  "Option_openMode_currentTab": {
+    "message": "Tab Saat Ini"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Jalankan di tab aktif saat ini.<wbr>URL harus cocok dengan URL awal yang direkam."
   },
   "Option_title_desc": {
     "message": "Ditampilkan sebagai judul perintah."
@@ -947,29 +1043,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Perilaku saat Ctrl + klik menu."
   },
-  "Option_parentFolder": {
-    "message": "Folder Induk"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Pilih folder induk"
-  },
-  "Option_rootFolder": {
-    "message": "Root (tidak ada induk)"
-  },
   "Option_searchUrlAssist": {
     "message": "Asisten AI"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Asisten URL Pencarian"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Masukkan kata kunci pencarian dan URL halaman hasil pencarian, lalu klik tombol eksekusi.\nAI akan menghasilkan URL pencarian."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Jalankan dengan Gemini"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "Menjalankan..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Cara penggunaan"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Kata kunci pencarian"
@@ -982,6 +1063,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Cara penggunaan"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Masukkan kata apa pun di \"(1) Kata kunci pencarian\""
@@ -998,50 +1082,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Salin URL pencarian yang dihasilkan dan tempelkan ke bidang URL pencarian perintah"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Asisten URL Pencarian"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Jalankan dengan Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Menjalankan..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Silakan masukkan kata kunci pencarian"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Silakan masukkan URL yang valid"
-  },
-  "Option_userVariable_add": {
-    "message": "Tambah variabel"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Maksimal $max$ variabel diizinkan",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Nama variabel"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Nama variabel sudah ada"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Nama variabel harus dimulai dengan huruf dan hanya berisi huruf, angka, dan garis bawah"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Nama variabel diperlukan"
-  },
-  "Option_userVariable_value": {
-    "message": "Nilai"
-  },
-  "Option_userVariables": {
-    "message": "Variabel Pengguna"
-  },
-  "Option_userVariables_desc": {
-    "message": "Tentukan variabel kustom untuk field input (maks 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Nama variabel harus dimulai dengan huruf dan hanya berisi huruf, angka, dan garis bawah"
   },
   "Option_commandType": {
     "message": "Jenis Perintah"
@@ -1126,6 +1177,21 @@
   },
   "prompthistory_banner_description": {
     "message": "Alat baru untuk menggunakan kembali prompt untuk ChatGPT dan lainnya✨"
+  },
+  "Option_windowState": {
+    "message": "Ukuran jendela"
+  },
+  "Option_windowState_desc": {
+    "message": "Ukuran jendela yang ditampilkan"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Maksimalkan"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Layar penuh"
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak dapat dijalankan di halaman ini (URL awal tidak cocok)"

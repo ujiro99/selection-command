@@ -6,11 +6,7 @@ import {
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import { PageAction, ActionReturn } from "./dispatcher"
-import {
-  SelectorType,
-  PAGE_ACTION_EVENT,
-  PAGE_ACTION_TIMEOUT as TIMEOUT,
-} from "@/const"
+import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
 
 /**
  * Find element by selector type with unified logic.
@@ -77,6 +73,11 @@ async function waitForElementBackground(
  * Uses direct DOM event dispatching instead of userEvent for better compatibility in background tabs
  */
 export const BackgroundPageActionDispatcher = {
+  navigate: async (param: PageAction.Navigate): ActionReturn => {
+    window.location.href = param.url
+    return [true]
+  },
+
   click: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
 
@@ -222,22 +223,14 @@ export const BackgroundPageActionDispatcher = {
           element.dispatchEvent(inputEvent)
           element.dispatchEvent(changeEvent)
         } else if (element.isContentEditable) {
-          const typeEnter = async () => {
-            await BackgroundPageActionDispatcher.keyboard({
-              type: PAGE_ACTION_EVENT.keyboard,
-              label: "",
-              key: "Enter",
-              code: "Enter",
-              keyCode: 13,
-              shiftKey: true,
-              ctrlKey: false,
-              altKey: false,
-              metaKey: false,
-              targetSelector: selector,
-              selectorType: selectorType,
-            })
+          let legacyMode = false
+          if (location.href.includes("perplexity.ai")) {
+            // Legacy mode specifically for Perplexity.ai's contenteditable field.
+            // This is because it has some special handling that breaks the usual input simulation.
+            legacyMode = true
+            await inputContentEditable(element, "\n", 0, null, legacyMode)
           }
-          await inputContentEditable(element, value, 0, typeEnter)
+          await inputContentEditable(element, value, 1, null, legacyMode)
         }
       }
     } else {

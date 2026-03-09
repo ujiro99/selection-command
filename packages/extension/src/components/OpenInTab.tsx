@@ -44,7 +44,7 @@ export function OpenInTab(): JSX.Element {
   return (
     <>
       {enableOpenInTab && (
-        <div className="OpenInTab">
+        <div className="OpenInTab" style={{ visibility: "hidden" }}>
           <button
             type="button"
             className="OpenInTab__button"

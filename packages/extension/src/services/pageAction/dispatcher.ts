@@ -16,11 +16,19 @@ import {
 import type { UserVariable } from "@/types"
 
 export namespace PageAction {
-  export type Parameter = Start | End | Click | Input | Keyboard | Scroll
+  export type Parameter =
+    | Start
+    | End
+    | Navigate
+    | Click
+    | Input
+    | Keyboard
+    | Scroll
 
   export type Start = {
     type: PAGE_ACTION_CONTROL.start
     label: string
+    mode?: "pageAction" | "aiPrompt"
   }
 
   export type End = {
@@ -28,11 +36,17 @@ export namespace PageAction {
     label: string
   }
 
+  export type Navigate = {
+    type: PAGE_ACTION_CONTROL.navigate
+    label: string
+    url: string
+  }
+
   export type Click = {
     type:
-    | PAGE_ACTION_EVENT.click
-    | PAGE_ACTION_EVENT.doubleClick
-    | PAGE_ACTION_EVENT.tripleClick
+      | PAGE_ACTION_EVENT.click
+      | PAGE_ACTION_EVENT.doubleClick
+      | PAGE_ACTION_EVENT.tripleClick
     label: string
     selector: string
     selectorType: SelectorType
@@ -124,6 +138,11 @@ async function waitForElement(
 export type ActionReturn = Promise<[boolean, string?]>
 
 export const PageActionDispatcher = {
+  navigate: async (param: PageAction.Navigate): ActionReturn => {
+    window.location.href = param.url
+    return [true]
+  },
+
   click: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
     const user = userEvent.setup()
@@ -258,26 +277,14 @@ export const PageActionDispatcher = {
           element.focus()
           await user.type(element, value, { skipClick: true })
         } else {
-          /*
-           * Line breaks in value don't work in Perplexity's input field,
-           * so split by line breaks and handle with insertText + Enter key
-           */
-          const typeEnter = async () => {
-            await PageActionDispatcher.keyboard({
-              type: PAGE_ACTION_EVENT.keyboard,
-              label: "",
-              key: "Enter",
-              code: "Enter",
-              keyCode: 13,
-              shiftKey: true,
-              ctrlKey: false,
-              altKey: false,
-              metaKey: false,
-              targetSelector: selector,
-              selectorType: selectorType,
-            })
+          let legacyMode = false
+          if (location.href.includes("perplexity.ai")) {
+            // Legacy mode specifically for Perplexity.ai's contenteditable field.
+            // This is because it has some special handling that breaks the usual input simulation.
+            legacyMode = true
+            await inputContentEditable(element, "\n", 0, null, legacyMode)
           }
-          await inputContentEditable(element, value, 40, typeEnter)
+          await inputContentEditable(element, value, 40, null, legacyMode)
         }
       }
     } else {
