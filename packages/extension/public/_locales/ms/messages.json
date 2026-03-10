@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL halaman di mana tindakan bermula."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Untuk \"Tab Semasa\", hanya halaman yang sepadan dengan URL ini boleh dilaksanakan. Anda boleh menggunakan kad liar \"*\"."
+  },
   "Option_recordUrl": {
     "message": "URL Perakam"
   },

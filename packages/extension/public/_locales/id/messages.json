@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL halaman di mana tindakan dimulai."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Untuk \"Tab Saat Ini\", hanya halaman yang cocok dengan URL ini yang dapat dijalankan. Anda dapat menggunakan wildcard \"*\"."
+  },
   "Option_recordUrl": {
     "message": "URL Perekam"
   },

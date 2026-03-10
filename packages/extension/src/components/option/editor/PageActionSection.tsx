@@ -9,6 +9,7 @@ import { cn, isEmpty, capitalize } from "@/lib/utils"
 import { PageActionStep } from "@/types/schema"
 import { DeepPartial } from "@/types"
 
+import { PAGE_ACTION_OPEN_MODE } from "@/const"
 import { InputField } from "@/components/option/field/InputField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { StepList } from "@/components/pageAction/StepList"
@@ -26,7 +27,8 @@ export const PageActionSection = ({
   form,
   openRecorder,
 }: PageActionSectionProps) => {
-  const { register, getValues } = form
+  const { register, getValues, watch } = form
+  const openMode = watch("pageActionOption.openMode")
 
   const pageActionArray = useFieldArray({
     name: "pageActionOption.steps",
@@ -99,19 +101,26 @@ export const PageActionSection = ({
           ...register("pageActionOption.startUrl", {}),
         }}
         description={t("startUrl_desc")}
+        inputDescription={
+          openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB
+            ? t("startUrl_desc_currentTab")
+            : undefined
+        }
         previewUrl={getValues("iconUrl")}
       />
 
-      <InputField
-        control={form.control}
-        name="pageActionOption.recordUrl"
-        formLabel={t("recordUrl")}
-        inputProps={{
-          type: "string",
-          ...register("pageActionOption.recordUrl", {}),
-        }}
-        description={t("recordUrl_desc")}
-      />
+      {openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && (
+        <InputField
+          control={form.control}
+          name="pageActionOption.recordUrl"
+          formLabel={t("recordUrl")}
+          inputProps={{
+            type: "string",
+            ...register("pageActionOption.recordUrl", {}),
+          }}
+          description={t("recordUrl_desc")}
+        />
+      )}
 
       <OpenModeToggleField
         control={form.control}

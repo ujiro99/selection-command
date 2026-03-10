@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "작업이 시작되는 페이지의 URL."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "\"현재 탭\"의 경우 이 URL과 일치하는 페이지에서만 실행할 수 있습니다. 와일드카드 \"*\"를 사용할 수 있습니다."
+  },
   "Option_recordUrl": {
     "message": "레코더 URL"
   },

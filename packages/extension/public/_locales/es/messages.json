@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL de la página donde comienza la acción."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Para \"Pestaña Actual\", solo se pueden ejecutar páginas que coincidan con esta URL. Puede usar el comodín \"*\"."
+  },
   "Option_recordUrl": {
     "message": "URL del Grabador"
   },

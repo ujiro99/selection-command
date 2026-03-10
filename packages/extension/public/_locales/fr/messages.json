@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL de la page où l'action commence."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Pour \"Onglet Actuel\", seules les pages correspondant à cette URL peuvent être exécutées. Vous pouvez utiliser le caractère générique \"*\"."
+  },
   "Option_recordUrl": {
     "message": "URL de l'enregistreur"
   },

@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "पेज का URL जहां एक्शन शुरू होता है।"
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "\"वर्तमान टैब\" के लिए, केवल इस URL से मेल खाने वाले पेज ही चलाए जा सकते हैं। आप वाइल्डकार्ड \"*\" का उपयोग कर सकते हैं।"
+  },
   "Option_recordUrl": {
     "message": "रिकॉर्डर URL"
   },

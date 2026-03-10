@@ -19,6 +19,7 @@ type InputFieldType = {
   inputProps: React.ComponentProps<typeof Input>
   unit?: string
   description?: string
+  inputDescription?: string
   tooltip?: string
   previewUrl?: string
 }
@@ -32,6 +33,7 @@ export const InputField = ({
   inputProps,
   unit,
   description,
+  inputDescription,
   tooltip,
   previewUrl,
 }: InputFieldType) => {
@@ -84,6 +86,11 @@ export const InputField = ({
                 {...inputProps}
               />
             </FormControl>
+            {inputDescription && (
+              <FormDescription className="mt-1">
+                {inputDescription}
+              </FormDescription>
+            )}
             <FormMessage />
           </div>
         </FormItem>

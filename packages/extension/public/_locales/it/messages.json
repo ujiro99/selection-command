@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL della pagina dove inizia l'azione."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Per \"Scheda Corrente\", è possibile eseguire solo le pagine corrispondenti a questo URL. È possibile utilizzare il carattere jolly \"*\"."
+  },
   "Option_recordUrl": {
     "message": "URL del registratore"
   },
