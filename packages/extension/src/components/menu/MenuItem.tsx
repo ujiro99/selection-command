@@ -27,8 +27,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const { selectionText, target } = useSelectContext()
   const { isPreview, inTransition } = useContext(popupContext)
   const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
-  let message = itemState.message || defaultMessage
-  let enable = enabled
+  const message = itemState.message || defaultMessage
 
   function handleClick(e: React.MouseEvent) {
     if (isPreview) {
@@ -67,7 +66,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         )}
         ref={buttonRef}
         onClick={handleClick}
-        disabled={!enable}
+        disabled={!enabled}
       >
         <ImageWithState state={itemState.state} iconUrl={iconUrl} />
         {!onlyIcon && <span className={css.itemTitle}>{title}</span>}
@@ -75,7 +74,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       <Tooltip
         text={message}
         positionElm={buttonRef.current}
-        disabled={!onlyIcon || inTransition}
+        disabled={inTransition || (!onlyIcon && enabled)}
       />
       <ResultPopup
         visible={result != null}
