@@ -1200,6 +1200,6 @@
     "message": "Layar penuh"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "Tidak dapat dijalankan di halaman ini (URL awal tidak cocok)"
+    "message": "Tidak dapat dijalankan di halaman ini (URL Mulai tidak cocok)"
   }
 }

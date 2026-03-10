@@ -65,7 +65,8 @@
       "WebFetch(domain:ujiro99.github.io)",
       "mcp__serena__list_memories",
       "Bash(git stash:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(for lang:*)"
     ],
     "deny": []
   }

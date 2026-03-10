@@ -1197,6 +1197,6 @@
     "message": "Plein écran"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "Impossible d'exécuter sur cette page (l'URL de départ ne correspond pas)"
+    "message": "Impossible d'exécuter sur cette page (l'URL de démarrage ne correspond pas)"
   }
 }

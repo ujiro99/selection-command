@@ -1194,6 +1194,6 @@
     "message": "フルスクリーン"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "このページでは実行できません（起動URLが一致しません）"
+    "message": "このページでは実行できません（開始URLが一致しません）"
   }
 }
