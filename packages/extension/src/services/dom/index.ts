@@ -1,13 +1,13 @@
 import type { Point } from "@/types"
 
-import { isEmpty, sleep } from "@/lib/utils"
+import { isEmpty } from "@/lib/utils"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = "Anonymous"
     const id = setTimeout(() => reject(`toDataURL timeout: ${src}`), 1000)
-    img.onload = function() {
+    img.onload = function () {
       const canvas = document.createElement("canvas")
       const ctx = canvas.getContext("2d")
       canvas.height = img.naturalHeight
@@ -17,7 +17,7 @@ export function toDataURL(src: string, outputFormat?: string): Promise<string> {
       resolve(dataURL)
       clearTimeout(id)
     }
-    img.onerror = function() {
+    img.onerror = function () {
       clearTimeout(id)
       reject(new Error(`Failed to load image: ${src}`))
     }
@@ -496,31 +496,4 @@ function getPath(elm: Element, uniqueElement?: Element): string[] {
   return path
 }
 
-/**
- * Input text into a contenteditable element, simulating typing with delays.
- *
- * @param {HTMLElement} el The contenteditable element to input text into.
- * @param {string} value The text to input, with '\n' for line breaks.
- * @param {number} interval The delay in milliseconds between line breaks.
- * @param {() => Promise<void>} onBreak The async function to call on each line break.
- *
- * @return {Promise<boolean>} True if input was successful, false if the element is not editable.
- * */
-export async function inputContentEditable(
-  el: HTMLElement,
-  value: string,
-  interval: number,
-  onBreak: () => Promise<void>,
-): Promise<boolean> {
-  if (!isEditable(el)) return false
-  el.focus()
-  const values = value.split("\n")
-  for (const [idx, val] of values.entries()) {
-    document.execCommand("insertText", false, val)
-    if (idx < values.length - 1) {
-      await onBreak()
-      await sleep(interval)
-    }
-  }
-  return true
-}
+export { inputContentEditable } from "./inputUtils"

@@ -95,7 +95,7 @@ export const OpenModeToggleField = ({
                 onValueChange={(val) => {
                   if (val) field.onChange(val)
                 }}
-                className="grid grid-cols-4 gap-2 py-1"
+                className="grid grid-cols-5 gap-2 py-1"
               >
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)

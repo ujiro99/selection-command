@@ -46,6 +46,7 @@ import { SelectField } from "@/components/option/field/SelectField"
 import { TextareaField } from "@/components/option/field/TextareaField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { PageActionSection } from "@/components/option/editor/PageActionSection"
+import { AiPromptSection } from "@/components/option/editor/AiPromptSection"
 import { PageActionHelp } from "@/components/help/PageActionHelp"
 import { CommandType } from "@/components/option/editor/CommandType"
 import { SearchUrlAssistButton } from "@/components/option/editor/SearchUrlAssistButton"
@@ -210,6 +211,22 @@ const getDefault = (
       openMode: OPEN_MODE.GET_TEXT_STYLES as const,
       parentFolderId: ROOT_FOLDER,
     }
+  }
+  if (openMode === OPEN_MODE.AI_PROMPT) {
+    return {
+      ...base,
+      openMode: OPEN_MODE.AI_PROMPT as const,
+      parentFolderId: ROOT_FOLDER,
+      popupOption: {
+        width: POPUP_OPTION.width + 100,
+        height: POPUP_OPTION.height + 50,
+      },
+      aiPromptOption: {
+        serviceId: "chatgpt",
+        prompt: "",
+        openMode: OPEN_MODE.POPUP as (typeof SEARCH_OPEN_MODE)[number],
+      },
+    } as CommandSchemaType
   }
 }
 
@@ -409,7 +426,7 @@ const CommandEditDialogInner = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogContent className="max-w-2xl pr-2">
+        <DialogContent className="max-w-3xl pr-2">
           <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />
@@ -573,6 +590,10 @@ const CommandEditDialogInner = ({
                   />
                 )}
 
+                {openMode === OPEN_MODE.AI_PROMPT && (
+                  <AiPromptSection form={form} />
+                )}
+
                 {openMode === OPEN_MODE.API && (
                   <>
                     <TextareaField
@@ -697,7 +718,7 @@ const CommandEditDialogInner = ({
                   <CollapsibleContent
                     className={cn(
                       collapsibleCss.CollapsibleContent,
-                      "w-full space-y-3 pt-2",
+                      "w-full space-y-3 py-2",
                     )}
                   >
                     <IconField
@@ -710,7 +731,9 @@ const CommandEditDialogInner = ({
                           ? t("iconUrl_desc")
                           : openMode === OPEN_MODE.PAGE_ACTION
                             ? t("iconUrl_desc_pageAction")
-                            : ""
+                            : openMode === OPEN_MODE.AI_PROMPT
+                              ? t("iconUrl_desc_aiPrompt")
+                              : ""
                       }
                     />
 

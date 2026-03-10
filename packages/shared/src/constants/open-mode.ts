@@ -9,6 +9,7 @@ export enum OPEN_MODE {
   SIDE_PANEL = "sidePanel",
   API = "api",
   PAGE_ACTION = "pageAction",
+  AI_PROMPT = "aiPrompt",
   LINK_POPUP = "linkPopup",
   COPY = "copy",
   GET_TEXT_STYLES = "getTextStyles",

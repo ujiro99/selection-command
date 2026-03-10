@@ -18,6 +18,7 @@ import {
 import { t } from "@/services/i18n"
 import { isEmpty } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
+import type { AiPromptCommand } from "@/types"
 
 const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),
@@ -140,11 +141,18 @@ const PageActionStartSchema = z.object({
   type: z.literal(PAGE_ACTION_CONTROL.start),
   label: z.string(),
   url: z.string().optional(),
+  mode: z.enum(["pageAction", "aiPrompt"]).optional(),
 })
 
 const PageActionEndSchema = z.object({
   type: z.literal(PAGE_ACTION_CONTROL.end),
   label: z.string(),
+})
+
+const PageActionNavigateSchema = z.object({
+  type: z.literal(PAGE_ACTION_CONTROL.navigate),
+  label: z.string(),
+  url: z.string(),
 })
 
 const PageActionClickSchema = z.object({
@@ -190,6 +198,7 @@ const PageActionScrollSchema = z.object({
 const PageActionParameterSchema = z.discriminatedUnion("type", [
   PageActionStartSchema,
   PageActionEndSchema,
+  PageActionNavigateSchema,
   PageActionClickSchema,
   PageActionInputSchema,
   PageActionKeyboardSchema,
@@ -250,10 +259,46 @@ export const isPageActionType = (
   return data.openMode === OPEN_MODE.PAGE_ACTION
 }
 
+export const AiPromptOptionSchema = z.object({
+  serviceId: z.string().min(1),
+  prompt: z.string(),
+  openMode: z.enum(SEARCH_OPEN_MODE),
+})
+
+const aiPromptSchema = z.object({
+  openMode: z.enum([OPEN_MODE.AI_PROMPT]),
+  id: z.string(),
+  revision: z.number().optional(),
+  parentFolderId: z.string().optional(),
+  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
+  iconUrl: z
+    .string()
+    .url({ message: t("zod_url") })
+    .max(1000, { message: t("zod_string_max", ["1000"]) }),
+  popupOption: z
+    .object({
+      width: z.number().min(1),
+      height: z.number().min(1),
+    })
+    .optional(),
+  aiPromptOption: AiPromptOptionSchema,
+})
+
+export const isAiPromptType = (data: unknown): data is AiPromptCommand => {
+  if (!data || typeof data !== "object") {
+    return false
+  }
+  if (!("openMode" in data)) {
+    return false
+  }
+  return data.openMode === OPEN_MODE.AI_PROMPT
+}
+
 export const commandSchema = z.discriminatedUnion("openMode", [
   searchSchema,
   apiSchema,
   pageActionSchema,
+  aiPromptSchema,
   linkPopupSchema,
   copySchema,
   textStyleSchema,
