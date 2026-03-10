@@ -447,7 +447,7 @@
     "message": "录制器URL"
   },
   "Option_recordUrl_desc": {
-    "message": "打开录制器时导航到的URL。仅在编辑时使用。"
+    "message": "启动录制器时显示的URL。仅在设置画面中使用。"
   },
   "Option_pageAction_title": {
     "message": "操作"

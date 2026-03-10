@@ -447,7 +447,7 @@
     "message": "URL de l'enregistreur"
   },
   "Option_recordUrl_desc": {
-    "message": "URL vers laquelle naviguer lors de l'ouverture de l'enregistreur. Utilisée uniquement lors de l'édition."
+    "message": "URL à afficher lors du démarrage de l'enregistreur. Utilisée uniquement dans l'écran des paramètres."
   },
   "Option_pageAction_title": {
     "message": "Actions"

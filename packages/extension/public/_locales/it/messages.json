@@ -447,7 +447,7 @@
     "message": "URL del registratore"
   },
   "Option_recordUrl_desc": {
-    "message": "URL a cui navigare all'apertura del registratore. Utilizzato solo durante la modifica."
+    "message": "URL da visualizzare all'avvio del registratore. Utilizzato solo nella schermata delle impostazioni."
   },
   "Option_pageAction_title": {
     "message": "Azione"

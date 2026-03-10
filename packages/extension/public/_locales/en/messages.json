@@ -447,7 +447,7 @@
     "message": "Recorder URL"
   },
   "Option_recordUrl_desc": {
-    "message": "URL to navigate when opening the recorder. Used only during editing."
+    "message": "URL to navigate when launching the recorder. Used only in the settings screen."
   },
   "Option_pageAction_title": {
     "message": "Actions"

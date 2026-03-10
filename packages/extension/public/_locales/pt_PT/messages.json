@@ -447,7 +447,7 @@
     "message": "URL do Gravador"
   },
   "Option_recordUrl_desc": {
-    "message": "URL para navegar ao abrir o gravador. Usado apenas durante a edição."
+    "message": "URL a apresentar ao iniciar o gravador. Utilizado apenas no ecrã de definições."
   },
   "Option_pageAction_title": {
     "message": "Ações"

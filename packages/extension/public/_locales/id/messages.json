@@ -447,7 +447,7 @@
     "message": "URL Perekam"
   },
   "Option_recordUrl_desc": {
-    "message": "URL untuk dinavigasi saat membuka perekam. Hanya digunakan saat pengeditan."
+    "message": "URL yang ditampilkan saat membuka perekam. Hanya digunakan di layar pengaturan."
   },
   "Option_pageAction_title": {
     "message": "Tindakan"
