@@ -14,7 +14,7 @@ import {
   openTab,
   getCurrentTab,
   OpenPopupProps,
-  openWindowAndReadClipboardThenClose,
+  readClipboard,
 } from "@/services/chrome"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import {
@@ -356,8 +356,6 @@ export const openAndRun = (
     } else if (param.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
       // Current tab execution without opening a new tab/window.
 
-      const clipboard = await openWindowAndReadClipboardThenClose()
-
       // Execute on the current active tab without opening a new tab/window
       const currentTab = await getCurrentTab()
       if (!currentTab?.id) {
@@ -379,6 +377,9 @@ export const openAndRun = (
         return
       }
       tabId = currentTab.id
+
+      // Get clipboard text.
+      const clipboard = await readClipboard()
       clipboardText = clipboard.clipboardText
     } else {
       // Popup and Window modes
