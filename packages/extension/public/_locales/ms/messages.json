@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL halaman di mana tindakan bermula."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Untuk \"Tab Semasa\", hanya halaman yang sepadan dengan URL ini boleh dilaksanakan. Anda boleh menggunakan kad liar \"*\"."
+  },
   "Option_recordUrl": {
     "message": "URL Perakam"
   },
@@ -1198,5 +1201,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Skrin penuh"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Tidak boleh dijalankan pada halaman ini (URL Permulaan tidak sepadan)"
   }
 }

@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL of the page where the action starts."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "For \"Current Tab\", only pages matching this URL can be executed. You can use the wildcard \"*\"."
+  },
   "Option_recordUrl": {
     "message": "Recorder URL"
   },
@@ -1198,5 +1201,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Fullscreen"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Cannot run on this page (start URL does not match)"
   }
 }

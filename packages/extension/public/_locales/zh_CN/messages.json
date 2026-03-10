@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "操作开始的页面URL。"
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "对于\"当前标签页\"，只有与此URL匹配的页面才能执行。可以使用通配符\"*\"。"
+  },
   "Option_recordUrl": {
     "message": "录制器URL"
   },
@@ -1195,5 +1198,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "全屏"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "无法在此页面运行（初始URL不匹配）"
   }
 }

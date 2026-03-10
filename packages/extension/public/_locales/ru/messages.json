@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL страницы, где начинается действие."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Для \"Текущей вкладки\" могут быть выполнены только страницы, соответствующие этому URL. Вы можете использовать подстановочный знак \"*\"."
+  },
   "Option_recordUrl": {
     "message": "URL рекордера"
   },
@@ -1195,5 +1198,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Полный экран"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Невозможно выполнить на этой странице (начальный URL не совпадает)"
   }
 }

@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "アクションを開始するページのURL"
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "「現在のタブ」の場合は、このURLにマッチしたページのみ実行できます。ワイルドカード「*」を使用できます。"
+  },
   "Option_recordUrl": {
     "message": "レコーダー用URL"
   },
@@ -1192,5 +1195,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "フルスクリーン"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "このページでは実行できません（開始URLが一致しません）"
   }
 }

@@ -440,6 +440,9 @@
   "Option_startUrl_desc": {
     "message": "URL da página onde a ação começa."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Para \"Separador Atual\", apenas as páginas que correspondam a este URL podem ser executadas. Pode utilizar o curinga \"*\"."
+  },
   "Option_recordUrl": {
     "message": "URL do Gravador"
   },
@@ -1198,5 +1201,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Ecrã inteiro"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Não é possível executar nesta página (URL inicial não corresponde)"
   }
 }
