@@ -2,6 +2,7 @@ import { Storage } from "@/services/storage"
 import { STORAGE_KEY } from "@/services/storage/const"
 import DefaultSettings, {
   DefaultCommands,
+  getDefaultCommands,
   PopupPlacement,
 } from "../option/defaultSettings"
 import {
@@ -185,7 +186,7 @@ export const Settings = {
 
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
-    await Storage.setCommands(DefaultCommands)
+    await Storage.setCommands(getDefaultCommands(chrome.i18n.getUILanguage()))
     await Storage.set<ShortcutSettings>(
       STORAGE_KEY.SHORTCUTS,
       DefaultSettings.shortcuts,
