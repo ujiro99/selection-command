@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useFieldArray } from "react-hook-form"
 import { Disc3 } from "lucide-react"
 import { FormLabel, FormDescription } from "@/components/ui/form"
@@ -27,8 +27,21 @@ export const PageActionSection = ({
   form,
   openRecorder,
 }: PageActionSectionProps) => {
-  const { register, getValues, watch } = form
+  const { register, getValues, watch, setValue } = form
   const openMode = watch("pageActionOption.openMode")
+
+  // When openMode changes to CURRENT_TAB, copy startUrl to recordUrl if recordUrl is empty
+  useEffect(() => {
+    if (openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
+      const recordUrl = getValues("pageActionOption.recordUrl")
+      if (!recordUrl) {
+        setValue(
+          "pageActionOption.recordUrl",
+          getValues("pageActionOption.startUrl"),
+        )
+      }
+    }
+  }, [openMode])
 
   const pageActionArray = useFieldArray({
     name: "pageActionOption.steps",
