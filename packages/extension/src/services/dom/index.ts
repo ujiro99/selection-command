@@ -371,6 +371,43 @@ export function getInputSelectionEndPoint(
 }
 
 /**
+ * Get the visual coordinates of the selection end position in a contenteditable element.
+ * Uses the Range API to accurately measure the position of the selection end.
+ *
+ * @returns {Point | null} The bottom-left coordinates of the selection end position.
+ */
+export function getEditableSelectionEndPoint(): Point | null {
+  const selection = window.getSelection()
+  if (!selection || selection.rangeCount === 0) {
+    return null
+  }
+
+  const range = selection.getRangeAt(0)
+  // Collapse to selection end to get the end position coordinates
+  const endRange = range.cloneRange()
+  endRange.collapse(false)
+
+  const rect = endRange.getBoundingClientRect()
+  if (rect.width === 0 && rect.height === 0) {
+    // Fallback: insert a temporary zero-width space to measure position.
+    // The span is immediately removed after measurement; endRange is not used
+    // afterwards so its state after the DOM mutation is not relevant.
+    const span = document.createElement("span")
+    span.textContent = "\u200B" // Zero-width space
+    endRange.insertNode(span)
+    const spanRect = span.getBoundingClientRect()
+    span.remove()
+
+    if (spanRect.width === 0 && spanRect.height === 0) {
+      return null
+    }
+    return { x: spanRect.left, y: spanRect.bottom }
+  }
+
+  return { x: rect.left, y: rect.bottom }
+}
+
+/**
  * check if the node is a HtmlElment.
  * @param {Node} node The node to check.
  * @returns {boolean} True if the node is a document node.

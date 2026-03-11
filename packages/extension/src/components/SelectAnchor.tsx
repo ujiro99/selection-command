@@ -9,6 +9,8 @@ import {
   getSelectionText,
   isInputOrTextarea,
   getInputSelectionEndPoint,
+  getEditableSelectionEndPoint,
+  isEditable,
 } from "@/services/dom"
 import { Point } from "@/types"
 
@@ -160,17 +162,25 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   useEffect(() => {
     const onKeyUp = () => {
       const active = document.activeElement
-      if (isInputOrTextarea(active)) {
+      const inFormControl = isInputOrTextarea(active)
+      const inEditable = isEditable(active)
+      if (inFormControl || inEditable) {
         const text = getSelectionText()
         if (text) {
-          // Use mirror div technique to get the actual selection end position,
-          // since Range.getBoundingClientRect() is not available for form controls.
-          const selectionEndPoint = getInputSelectionEndPoint(active)
+          let selectionEndPoint: Point | null = null
+          if (inFormControl) {
+            // Use mirror div technique since Range.getBoundingClientRect() is not available for form controls.
+            selectionEndPoint = getInputSelectionEndPoint(active)
+            if (!selectionEndPoint) {
+              const rect = active.getBoundingClientRect()
+              selectionEndPoint = { x: rect.right, y: rect.bottom }
+            }
+          } else {
+            // Use Range API to get the actual selection end position in contenteditable elements.
+            selectionEndPoint = getEditableSelectionEndPoint()
+          }
           if (selectionEndPoint) {
             setAnchor(selectionEndPoint)
-          } else {
-            const rect = active.getBoundingClientRect()
-            setAnchor({ x: rect.right, y: rect.bottom })
           }
           return
         }
