@@ -5,7 +5,11 @@ import { useSelectContext } from "@/hooks/useSelectContext"
 import { useLeftClickHold } from "@/hooks/useLeftClickHold"
 import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from "@/const"
 import { isEmpty, isPopup } from "@/lib/utils"
-import { getSelectionText, isInputOrTextarea } from "@/services/dom"
+import {
+  getSelectionText,
+  isInputOrTextarea,
+  getInputSelectionEndPoint,
+} from "@/services/dom"
 import { Point } from "@/types"
 
 const SIZE = 40
@@ -159,10 +163,15 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       if (isInputOrTextarea(active)) {
         const text = getSelectionText()
         if (text) {
-          // Since Range.getBoundingClientRect() is not available for form controls,
-          // position the anchor at the bottom-right of the input/textarea element.
-          const rect = active.getBoundingClientRect()
-          setAnchor({ x: rect.right, y: rect.bottom })
+          // Use mirror div technique to get the actual selection end position,
+          // since Range.getBoundingClientRect() is not available for form controls.
+          const selectionEndPoint = getInputSelectionEndPoint(active)
+          if (selectionEndPoint) {
+            setAnchor(selectionEndPoint)
+          } else {
+            const rect = active.getBoundingClientRect()
+            setAnchor({ x: rect.right, y: rect.bottom })
+          }
           return
         }
         releaseAnchor(true)

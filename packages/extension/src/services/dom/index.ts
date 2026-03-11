@@ -293,6 +293,84 @@ export const isInputOrTextarea = (
 }
 
 /**
+ * Get the visual coordinates of the selection end position in an input/textarea element.
+ * Uses the mirror div technique to accurately measure text position within form controls,
+ * since Range.getBoundingClientRect() is not available for input/textarea.
+ *
+ * @param element The input or textarea element.
+ * @returns {Point | null} The bottom-left coordinates of the selection end character.
+ */
+export function getInputSelectionEndPoint(
+  element: HTMLInputElement | HTMLTextAreaElement,
+): Point | null {
+  // If no selection, return null
+  if (element.selectionEnd === null) return null
+  const caretPos = element.selectionEnd
+  const computed = window.getComputedStyle(element)
+
+  // Create a mirror div with the same styling as the input/textarea
+  const mirror = document.createElement("div")
+  const stylesToCopy = [
+    "font-family",
+    "font-size",
+    "font-weight",
+    "font-style",
+    "letter-spacing",
+    "text-transform",
+    "word-spacing",
+    "text-indent",
+    "white-space",
+    "line-height",
+    "padding",
+    "border",
+    "box-sizing",
+  ]
+  stylesToCopy.forEach((style) => {
+    mirror.style.setProperty(style, computed.getPropertyValue(style))
+  })
+
+  // Position off-screen so it doesn't affect layout
+  mirror.style.position = "absolute"
+  mirror.style.visibility = "hidden"
+  mirror.style.top = "-9999px"
+  mirror.style.left = "-9999px"
+  mirror.style.width = computed.width
+  mirror.style.height = computed.height
+  mirror.style.overflow = "hidden"
+
+  if (element instanceof HTMLTextAreaElement) {
+    mirror.style.wordWrap = computed.wordWrap || "break-word"
+    mirror.style.whiteSpace = "pre-wrap"
+  } else {
+    mirror.style.whiteSpace = "nowrap"
+  }
+
+  document.body.appendChild(mirror)
+  try {
+    // Copy text up to selectionEnd, then add a marker span
+    mirror.textContent = element.value.substring(0, caretPos)
+    const marker = document.createElement("span")
+    marker.textContent = "\u200B" // Zero-width space as position marker
+    mirror.appendChild(marker)
+
+    const markerRect = marker.getBoundingClientRect()
+    const inputRect = element.getBoundingClientRect()
+    const mirrorRect = mirror.getBoundingClientRect()
+
+    // markerRect is off-screen, so compute its offset within the mirror
+    // and apply that offset to the actual input element's position.
+    // Subtract scrollLeft/scrollTop to account for scrolled content inside the input.
+    const x = inputRect.left + (markerRect.left - mirrorRect.left) - element.scrollLeft
+    // Use markerRect.bottom (bottom of the character line) so the popup appears below the selection.
+    const y = inputRect.top + (markerRect.bottom - mirrorRect.top) - element.scrollTop
+
+    return { x, y }
+  } finally {
+    document.body.removeChild(mirror)
+  }
+}
+
+/**
  * check if the node is a HtmlElment.
  * @param {Node} node The node to check.
  * @returns {boolean} True if the node is a document node.
