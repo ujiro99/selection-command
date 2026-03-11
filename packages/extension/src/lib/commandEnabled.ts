@@ -12,7 +12,7 @@ export type CommandEnabled = {
 /**
  * Determines whether a command can be executed in the current context.
  * - LINK_POPUP: checks if there are links in the selection
- * - PAGE_ACTION (CURRENT_TAB): checks if the current page URL matches the command's startUrl pattern
+ * - PAGE_ACTION (CURRENT_TAB): checks if the current page URL matches the command's pageUrl pattern
  */
 export function getCommandEnabled(
   command: Command,
@@ -29,10 +29,13 @@ export function getCommandEnabled(
     const { pageActionOption } = command
     if (
       pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB &&
-      pageActionOption.startUrl &&
-      !matchesPageActionUrl(pageActionOption.startUrl, currentUrl)
+      pageActionOption.pageUrl &&
+      !matchesPageActionUrl(pageActionOption.pageUrl, currentUrl)
     ) {
-      return { enabled: false, message: t("Menu_disabled_urlNotMatch") }
+      return {
+        enabled: false,
+        message: `${title}\n${t("Menu_disabled_urlNotMatch")}`,
+      }
     }
   }
 

@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "Untuk \"Tab Semasa\", hanya halaman yang sepadan dengan URL ini boleh dilaksanakan. Anda boleh menggunakan kad liar \"*\"."
   },
-  "Option_recordUrl": {
-    "message": "URL Perakam"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL halaman untuk memulakan rakaman tindakan. Digunakan hanya di skrin tetapan."
   },
-  "Option_recordUrl_desc": {
-    "message": "URL yang dipaparkan semasa melancarkan perakam. Digunakan hanya di skrin tetapan."
+  "Option_pageUrl": {
+    "message": "URL Halaman"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Hanya boleh dilaksanakan pada halaman yang sepadan dengan URL ini. Anda boleh menggunakan wildcard «*»."
   },
   "Option_pageAction_title": {
     "message": "Tindakan"
@@ -1203,6 +1206,6 @@
     "message": "Skrin penuh"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "Tidak boleh dijalankan pada halaman ini (URL Permulaan tidak sepadan)"
+    "message": "Tidak boleh dijalankan pada halaman ini (URL Halaman tidak sepadan)"
   }
 }

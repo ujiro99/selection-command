@@ -62,6 +62,7 @@ export const PageAction = {
     Ipc.send<OpenAndRunProps>(BgCommand.openAndRunPageAction, {
       commandId: command.id,
       url,
+      pageUrl: command.pageActionOption.pageUrl,
       steps: command.pageActionOption.steps,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),

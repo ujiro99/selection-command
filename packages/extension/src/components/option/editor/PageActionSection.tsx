@@ -30,13 +30,13 @@ export const PageActionSection = ({
   const { register, getValues, watch, setValue } = form
   const openMode = watch("pageActionOption.openMode")
 
-  // When openMode changes to CURRENT_TAB, copy startUrl to recordUrl if recordUrl is empty
+  // When openMode changes to CURRENT_TAB, copy startUrl to pageUrl if pageUrl is empty
   useEffect(() => {
     if (openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
-      const recordUrl = getValues("pageActionOption.recordUrl")
-      if (!recordUrl) {
+      const pageUrl = getValues("pageActionOption.pageUrl")
+      if (!pageUrl) {
         setValue(
-          "pageActionOption.recordUrl",
+          "pageActionOption.pageUrl",
           getValues("pageActionOption.startUrl"),
         )
       }
@@ -49,10 +49,7 @@ export const PageActionSection = ({
     keyName: "_id",
   })
   const steps = pageActionArray.fields as unknown as PageActionStep[]
-  const recDisabled = !(
-    getValues("pageActionOption.recordUrl") ||
-    getValues("pageActionOption.startUrl")
-  )
+  const recDisabled = !getValues("pageActionOption.startUrl")
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
@@ -113,11 +110,10 @@ export const PageActionSection = ({
           type: "string",
           ...register("pageActionOption.startUrl", {}),
         }}
-        description={t("startUrl_desc")}
-        inputDescription={
+        description={
           openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB
-            ? t("startUrl_desc_currentTab")
-            : undefined
+            ? t("startUrl_desc_currentTab_recorder")
+            : t("startUrl_desc")
         }
         previewUrl={getValues("iconUrl")}
       />
@@ -125,13 +121,13 @@ export const PageActionSection = ({
       {openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && (
         <InputField
           control={form.control}
-          name="pageActionOption.recordUrl"
-          formLabel={t("recordUrl")}
+          name="pageActionOption.pageUrl"
+          formLabel={t("pageUrl")}
           inputProps={{
             type: "string",
-            ...register("pageActionOption.recordUrl", {}),
+            ...register("pageActionOption.pageUrl", {}),
           }}
-          description={t("recordUrl_desc")}
+          description={t("pageUrl_desc")}
         />
       )}
 

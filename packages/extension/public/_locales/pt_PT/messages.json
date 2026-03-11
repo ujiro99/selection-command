@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "Para \"Separador Atual\", apenas as páginas que correspondam a este URL podem ser executadas. Pode utilizar o curinga \"*\"."
   },
-  "Option_recordUrl": {
-    "message": "URL do Gravador"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL da página para iniciar a gravação de ações. Utilizado apenas no ecrã de definições."
   },
-  "Option_recordUrl_desc": {
-    "message": "URL a apresentar ao iniciar o gravador. Utilizado apenas no ecrã de definições."
+  "Option_pageUrl": {
+    "message": "URL da página"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Pode ser executado apenas em páginas que correspondam a este URL. Pode utilizar o carácter universal «*»."
   },
   "Option_pageAction_title": {
     "message": "Ações"
@@ -1203,6 +1206,6 @@
     "message": "Ecrã inteiro"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "Não é possível executar nesta página (URL inicial não corresponde)"
+    "message": "Não é possível executar nesta página (URL da página não corresponde)"
   }
 }

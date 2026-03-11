@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "For \"Current Tab\", only pages matching this URL can be executed. You can use the wildcard \"*\"."
   },
-  "Option_recordUrl": {
-    "message": "Recorder URL"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL of the page to start recording actions. Used only in the settings screen."
   },
-  "Option_recordUrl_desc": {
-    "message": "URL to navigate when launching the recorder. Used only in the settings screen."
+  "Option_pageUrl": {
+    "message": "Page URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Only pages matching this URL can be executed. You can use the wildcard \"*\"."
   },
   "Option_pageAction_title": {
     "message": "Actions"
@@ -1203,6 +1206,6 @@
     "message": "Fullscreen"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "Cannot run on this page (start URL does not match)"
+    "message": "Cannot run on this page (page URL does not match)"
   }
 }

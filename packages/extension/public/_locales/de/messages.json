@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "Bei \"Aktueller Tab\" können nur Seiten ausgeführt werden, die dieser URL entsprechen. Sie können den Platzhalter \"*\" verwenden."
   },
-  "Option_recordUrl": {
-    "message": "Recorder-URL"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL der Seite, von der die Aktionsaufzeichnung gestartet wird. Wird nur im Einstellungsbildschirm verwendet."
   },
-  "Option_recordUrl_desc": {
-    "message": "URL, die beim Starten des Recorders angezeigt wird. Wird nur im Einstellungsbildschirm verwendet."
+  "Option_pageUrl": {
+    "message": "Seiten-URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Kann nur auf Seiten ausgeführt werden, die dieser URL entsprechen. Sie können den Platzhalter \"*\" verwenden."
   },
   "Option_pageAction_title": {
     "message": "Aktionen"
@@ -1200,6 +1203,6 @@
     "message": "Vollbild"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "Kann auf dieser Seite nicht ausgeführt werden (Start-URL stimmt nicht überein)"
+    "message": "Kann auf dieser Seite nicht ausgeführt werden (Seiten-URL stimmt nicht überein)"
   }
 }

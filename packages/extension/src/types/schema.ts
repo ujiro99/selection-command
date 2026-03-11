@@ -223,7 +223,7 @@ export type UserVariableType = z.infer<typeof userVariableSchema>
 
 export const PageActionOption = z.object({
   startUrl: z.string(),
-  recordUrl: z.string().optional(),
+  pageUrl: z.string().optional(), // URL pattern for command enablement (currentTab only)
   openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
   steps: z.array(PageActionStepSchema),
   userVariables: z.array(userVariableSchema).max(5).optional(),

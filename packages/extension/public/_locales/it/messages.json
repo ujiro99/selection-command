@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "Per \"Scheda Corrente\", è possibile eseguire solo le pagine corrispondenti a questo URL. È possibile utilizzare il carattere jolly \"*\"."
   },
-  "Option_recordUrl": {
-    "message": "URL del registratore"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL della pagina da cui avviare la registrazione delle azioni. Utilizzato solo nella schermata delle impostazioni."
   },
-  "Option_recordUrl_desc": {
-    "message": "URL da visualizzare all'avvio del registratore. Utilizzato solo nella schermata delle impostazioni."
+  "Option_pageUrl": {
+    "message": "URL della pagina"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Può essere eseguito solo sulle pagine corrispondenti a questo URL. È possibile utilizzare il carattere jolly «*»."
   },
   "Option_pageAction_title": {
     "message": "Azione"
@@ -1200,6 +1203,6 @@
     "message": "Schermo intero"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "Impossibile eseguire su questa pagina (l'URL iniziale non corrisponde)"
+    "message": "Impossibile eseguire su questa pagina (l'URL della pagina non corrisponde)"
   }
 }

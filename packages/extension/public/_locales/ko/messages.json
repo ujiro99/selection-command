@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "\"현재 탭\"의 경우 이 URL과 일치하는 페이지에서만 실행할 수 있습니다. 와일드카드 \"*\"를 사용할 수 있습니다."
   },
-  "Option_recordUrl": {
-    "message": "레코더 URL"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "액션 기록을 시작할 페이지의 URL. 설정 화면에서만 사용됩니다."
   },
-  "Option_recordUrl_desc": {
-    "message": "레코더 시작 시 표시할 URL. 설정 화면에서만 사용됩니다."
+  "Option_pageUrl": {
+    "message": "페이지 URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "이 URL과 일치하는 페이지에서만 실행할 수 있습니다. 와일드카드 「*」를 사용할 수 있습니다."
   },
   "Option_pageAction_title": {
     "message": "작업"
@@ -1200,6 +1203,6 @@
     "message": "전체 화면"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "이 페이지에서 실행할 수 없습니다 (시작 URL이 일치하지 않습니다)"
+    "message": "이 페이지에서 실행할 수 없습니다 (페이지 URL이 일치하지 않습니다)"
   }
 }

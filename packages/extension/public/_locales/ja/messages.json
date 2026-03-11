@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "「現在のタブ」の場合は、このURLにマッチしたページのみ実行できます。ワイルドカード「*」を使用できます。"
   },
-  "Option_recordUrl": {
-    "message": "レコーダー用URL"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "アクションの記録を開始するページのURL。設定画面でのみ使用します。"
   },
-  "Option_recordUrl_desc": {
-    "message": "レコーダー起動時に表示するURL。設定画面でのみ使用します。"
+  "Option_pageUrl": {
+    "message": "ページURL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "このURLにマッチしたページのみ実行できます。ワイルドカード「*」を使用できます。"
   },
   "Option_pageAction_title": {
     "message": "Actions"
@@ -1197,6 +1200,6 @@
     "message": "フルスクリーン"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "このページでは実行できません（開始URLが一致しません）"
+    "message": "このページでは実行できません（ページURLが一致しません）"
   }
 }

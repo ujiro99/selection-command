@@ -20,15 +20,17 @@ const baseCommand: SearchCommand = {
 }
 
 // PAGE_ACTION + CURRENT_TAB command fixture helper
+// pageUrl: URL pattern for command enablement matching (currentTab only)
 function makePageActionCommand(
-  startUrl: string,
+  pageUrl: string,
   openMode: PAGE_ACTION_OPEN_MODE = PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
 ): PageActionCommand {
   return {
     ...baseCommand,
     openMode: OPEN_MODE.PAGE_ACTION,
     pageActionOption: {
-      startUrl,
+      startUrl: "https://example.com/recorder", // recorder URL (separate from pattern)
+      pageUrl,
       openMode,
       steps: [],
     },
@@ -43,8 +45,8 @@ describe("getCommandEnabled", () => {
   describe("LINK_POPUP", () => {
     it("GCE-01: enabled when links exist in selection", () => {
       mockLinksInSelection.mockReturnValue([
-        document.createElement("a"),
-        document.createElement("a"),
+        "https://example.com",
+        "https://example.org",
       ])
       const command = { ...baseCommand, openMode: OPEN_MODE.LINK_POPUP }
       const result = getCommandEnabled(command)
@@ -62,26 +64,26 @@ describe("getCommandEnabled", () => {
   })
 
   describe("PAGE_ACTION + CURRENT_TAB", () => {
-    it("GCE-03: enabled when currentUrl matches startUrl exactly", () => {
+    it("GCE-03: enabled when currentUrl matches pageUrl exactly", () => {
       const command = makePageActionCommand("https://example.com/page")
       const result = getCommandEnabled(command, "https://example.com/page")
       expect(result.enabled).toBe(true)
     })
 
-    it("GCE-04: enabled when currentUrl matches startUrl with wildcard", () => {
+    it("GCE-04: enabled when currentUrl matches pageUrl with wildcard", () => {
       const command = makePageActionCommand("https://example.com/*")
       const result = getCommandEnabled(command, "https://example.com/any/path")
       expect(result.enabled).toBe(true)
     })
 
-    it("GCE-05: disabled when currentUrl does not match startUrl", () => {
+    it("GCE-05: disabled when currentUrl does not match pageUrl", () => {
       const command = makePageActionCommand("https://example.com/page")
       const result = getCommandEnabled(command, "https://other.com/page")
       expect(result.enabled).toBe(false)
       expect(result.message).toBe("Menu_disabled_urlNotMatch")
     })
 
-    it("GCE-06: enabled when startUrl is empty string", () => {
+    it("GCE-06: enabled when pageUrl is empty string", () => {
       const command = makePageActionCommand("")
       const result = getCommandEnabled(command, "https://example.com/page")
       expect(result.enabled).toBe(true)

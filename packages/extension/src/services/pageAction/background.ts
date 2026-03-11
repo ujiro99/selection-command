@@ -305,7 +305,7 @@ export const reset = (_: any, sender: Sender): boolean => {
     const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
-    const reloadUrl = option.recordUrl || option.startUrl
+    const reloadUrl = option.startUrl
     if (tabId && reloadUrl) {
       try {
         await chrome.tabs.update(tabId, { url: reloadUrl })
@@ -326,7 +326,9 @@ export const reset = (_: any, sender: Sender): boolean => {
 }
 
 export type OpenAndRunProps = Omit<OpenPopupProps, "type"> &
-  Omit<RunPageAction, "clipboardText">
+  Omit<RunPageAction, "clipboardText"> & {
+    pageUrl?: string // URL pattern for command enablement (currentTab only)
+  }
 
 export const openAndRun = (
   param: OpenAndRunProps,
@@ -363,14 +365,14 @@ export const openAndRun = (
         response(false)
         return
       }
-      const startUrl = isUrlParam(param.url) ? null : param.url
+      const pageUrl = param.pageUrl ?? null
       if (
-        startUrl &&
+        pageUrl &&
         currentTab.url &&
-        !matchesPageActionUrl(startUrl, currentTab.url)
+        !matchesPageActionUrl(pageUrl, currentTab.url)
       ) {
-        console.warn("Current tab URL does not match the recorded start URL", {
-          startUrl,
+        console.warn("Current tab URL does not match the pageUrl pattern", {
+          pageUrl,
           currentUrl: currentTab.url,
         })
         response(false)

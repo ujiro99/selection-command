@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "Para \"Pestaña Actual\", solo se pueden ejecutar páginas que coincidan con esta URL. Puede usar el comodín \"*\"."
   },
-  "Option_recordUrl": {
-    "message": "URL del Grabador"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL de la página para iniciar la grabación de acciones. Se usa solo en la pantalla de configuración."
   },
-  "Option_recordUrl_desc": {
-    "message": "URL que se muestra al iniciar el grabador. Se usa solo en la pantalla de configuración."
+  "Option_pageUrl": {
+    "message": "URL de la página"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Solo se puede ejecutar en páginas que coincidan con esta URL. Puede usar el comodín «*»."
   },
   "Option_pageAction_title": {
     "message": "Acciones"
@@ -1200,6 +1203,6 @@
     "message": "Pantalla completa"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "No se puede ejecutar en esta página (la URL de inicio no coincide)"
+    "message": "No se puede ejecutar en esta página (la URL de la página no coincide)"
   }
 }

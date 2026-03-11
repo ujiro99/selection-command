@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "\"वर्तमान टैब\" के लिए, केवल इस URL से मेल खाने वाले पेज ही चलाए जा सकते हैं। आप वाइल्डकार्ड \"*\" का उपयोग कर सकते हैं।"
   },
-  "Option_recordUrl": {
-    "message": "रिकॉर्डर URL"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "क्रियाएं रिकॉर्ड करना शुरू करने के लिए पृष्ठ का URL। केवल सेटिंग स्क्रीन में उपयोग किया जाता है।"
   },
-  "Option_recordUrl_desc": {
-    "message": "रिकॉर्डर लॉन्च करते समय प्रदर्शित होने वाला URL। केवल सेटिंग स्क्रीन में उपयोग किया जाता है।"
+  "Option_pageUrl": {
+    "message": "पृष्ठ URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "केवल इस URL से मेल खाने वाले पृष्ठों पर ही निष्पादित किया जा सकता है। आप वाइल्डकार्ड «*» का उपयोग कर सकते हैं।"
   },
   "Option_pageAction_title": {
     "message": "एक्शन"
@@ -1200,6 +1203,6 @@
     "message": "पूर्ण स्क्रीन"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "इस पेज पर नहीं चला सकते (प्रारंभिक URL मेल नहीं खाता)"
+    "message": "इस पेज पर नहीं चला सकते (पृष्ठ URL मेल नहीं खाता)"
   }
 }

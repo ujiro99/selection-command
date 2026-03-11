@@ -443,11 +443,14 @@
   "Option_startUrl_desc_currentTab": {
     "message": "Pour \"Onglet Actuel\", seules les pages correspondant à cette URL peuvent être exécutées. Vous pouvez utiliser le caractère générique \"*\"."
   },
-  "Option_recordUrl": {
-    "message": "URL de l'enregistreur"
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL de la page pour démarrer l'enregistrement des actions. Utilisée uniquement dans l'écran des paramètres."
   },
-  "Option_recordUrl_desc": {
-    "message": "URL à afficher lors du démarrage de l'enregistreur. Utilisée uniquement dans l'écran des paramètres."
+  "Option_pageUrl": {
+    "message": "URL de la page"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Peut s'exécuter uniquement sur les pages correspondant à cette URL. Vous pouvez utiliser le caractère générique « * »."
   },
   "Option_pageAction_title": {
     "message": "Actions"
@@ -1200,6 +1203,6 @@
     "message": "Plein écran"
   },
   "Menu_disabled_urlNotMatch": {
-    "message": "Impossible d'exécuter sur cette page (l'URL de démarrage ne correspond pas)"
+    "message": "Impossible d'exécuter sur cette page (l'URL de la page ne correspond pas)"
   }
 }
