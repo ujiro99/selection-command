@@ -381,7 +381,7 @@ const openWindowAndReadClipboard = async (
 }
 
 /**
- * Open a temprary window to read clipboard content and return the result.
+ * Open a temporary window to read clipboard content and return the result.
  * @returns {Promise<{ clipboardText: string; err?: string }>} The clipboard content and any error message
  *
  * Note: This function opens a temporary window to read the clipboard content,
