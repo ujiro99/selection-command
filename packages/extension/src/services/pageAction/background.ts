@@ -40,7 +40,9 @@ import type {
   PageActionContext,
   PopupOption,
   DeepPartial,
+  ShowToastParam,
 } from "@/types"
+import { t } from "@/services/i18n"
 import { BgData } from "@/services/backgroundData"
 
 BgData.init()
@@ -338,7 +340,7 @@ export const openAndRun = (
   const open = async () => {
     let tabId: number | undefined
     let selectedText = param.selectedText
-    let clipboardText: string
+    let clipboardText = ""
 
     if (param.openMode === PAGE_ACTION_OPEN_MODE.TAB) {
       const ret = await openTab({
@@ -380,9 +382,18 @@ export const openAndRun = (
       }
       tabId = currentTab.id
 
-      // Get clipboard text.
-      const clipboard = await readClipboard()
-      clipboardText = clipboard.clipboardText
+      // Get clipboard text only when needed.
+      if (isUrlParam(param.url) && param.url.useClipboard) {
+        const clipboard = await readClipboard()
+        clipboardText = clipboard.clipboardText
+        if (clipboard.err) {
+          await Ipc.sendTab<ShowToastParam>(tabId, TabCommand.showToast, {
+            title: t("clipboard_error_title"),
+            description: t("clipboard_error_description"),
+            action: t("clipboard_error_action"),
+          })
+        }
+      }
     } else {
       // Popup and Window modes
       const ret = await openPopupWindow({
