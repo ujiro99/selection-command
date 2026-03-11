@@ -457,33 +457,11 @@ const CMD_GEMINI_JA = {
   title: "Gemini - 日本語",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "以下について解説してください。\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "以下について解説してください。\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -629,33 +607,11 @@ const CMD_GEMINI_ZH = {
   title: "Gemini - 中文",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "请解释以下内容。\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "请解释以下内容。\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -693,33 +649,11 @@ const CMD_GEMINI_KO = {
   title: "Gemini - 한국어",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "다음에 대해 설명해 주세요.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "다음에 대해 설명해 주세요.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -770,36 +704,27 @@ const CMD_GEMINI_RU = {
   title: "Gemini - Русский",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "Пожалуйста, объясните следующее.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "Пожалуйста, объясните следующее.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_WILDBERRIES = {
+  id: "5e4a6c7d-8f9b-4b0c-1d2e-3f4a5b6c7d8e",
+  revision: 0,
+  iconUrl: "https://www.wildberries.ru/favicon.ico",
+  openMode: OPEN_MODE.TAB,
+  openModeSecondary: OPEN_MODE.TAB,
+  searchUrl: "https://www.wildberries.ru/catalog/0/search.aspx?search=%s",
+  title: "Wildberries",
+  parentFolderId: FOLDER_SEARCH,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+  spaceEncoding: SPACE_ENCODING.PLUS,
 }
 
 // de: Germany
@@ -835,33 +760,11 @@ const CMD_GEMINI_DE = {
   title: "Gemini - Deutsch",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "Bitte erkläre Folgendes.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "Bitte erkläre Folgendes.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -900,33 +803,11 @@ const CMD_GEMINI_FR = {
   title: "Gemini - Français",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "Veuillez expliquer ce qui suit.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "Veuillez expliquer ce qui suit.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -965,33 +846,11 @@ const CMD_GEMINI_ES = {
   title: "Gemini - Español",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "Por favor, explica lo siguiente.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "Por favor, explica lo siguiente.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -1030,33 +889,11 @@ const CMD_GEMINI_PT = {
   title: "Gemini - Português",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "Por favor, explique o seguinte.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "Por favor, explique o seguinte.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -1109,33 +946,11 @@ const CMD_GEMINI_HI = {
   title: "Gemini - हिन्दी",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "कृपया निम्नलिखित के बारे में बताएं।\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "कृपया निम्नलिखित के बारे में बताएं।\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -1174,33 +989,11 @@ const CMD_GEMINI_ID = {
   title: "Gemini - Indonesia",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "Tolong jelaskan hal berikut.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "Tolong jelaskan hal berikut.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -1239,33 +1032,11 @@ const CMD_GEMINI_MS = {
   title: "Gemini - Melayu",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "Sila terangkan perkara berikut.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "Sila terangkan perkara berikut.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -1291,33 +1062,11 @@ const CMD_GEMINI_IT = {
   title: "Gemini - Italiano",
   iconUrl:
     "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-  openMode: OPEN_MODE.PAGE_ACTION,
-  pageActionOption: {
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "Si prega di spiegare quanto segue.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
-    startUrl: "https://gemini.google.com/app",
-    steps: [
-      { id: "1clkfxbrr", param: { label: "Start", type: "start" } },
-      {
-        id: "gmavyqlj2",
-        param: {
-          label: "Ask Gemini",
-          selector: "//*[@data-gramm='false']/*",
-          selectorType: "xpath",
-          type: "input",
-          value: "Si prega di spiegare quanto segue.\n{{SelectedText}}",
-        },
-      },
-      {
-        id: "umb7r0prx",
-        param: {
-          label: "",
-          selector: "//*[@data-mat-icon-name='send']",
-          selectorType: "xpath",
-          type: "click",
-        },
-      },
-      { id: "stjwk2dnp", param: { label: "End", type: "end" } },
-    ],
   },
   parentFolderId: FOLDER_ACTION,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -1387,6 +1136,7 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_GOOGLE,
       CMD_GOOGLE_IMAGE,
       CMD_OZON,
+      CMD_WILDBERRIES,
       CMD_GEMINI_RU,
       CMD_YOUTUBE,
       CMD_VK,

@@ -47,6 +47,7 @@ describe("getDefaultCommands", () => {
     const titles = commands.map((c) => c.title)
     expect(titles).toContain("Яндекс")
     expect(titles).toContain("Ozon")
+    expect(titles).toContain("Wildberries")
   })
 
   it("DS-07: should return German commands for de locale", () => {
@@ -152,6 +153,22 @@ describe("getDefaultCommands", () => {
       const ids = commands.map((c) => c.id)
       const uniqueIds = new Set(ids)
       expect(uniqueIds.size, `Duplicate IDs found for locale: ${locale}`).toBe(ids.length)
+    }
+  })
+
+  it("DS-20: locale Gemini commands should use AI_PROMPT open mode", () => {
+    const locales = ["ja", "zh-CN", "ko", "ru", "de", "fr", "es", "pt-BR", "hi", "id", "ms", "it"]
+    for (const locale of locales) {
+      const commands = getDefaultCommands(locale)
+      const geminiCmds = commands.filter((c) => c.title.startsWith("Gemini"))
+      expect(geminiCmds.length, `No Gemini command for locale: ${locale}`).toBeGreaterThan(0)
+      for (const cmd of geminiCmds) {
+        expect((cmd as any).openMode, `Gemini in ${locale} should use AI_PROMPT`).toBe("aiPrompt")
+        expect((cmd as any).aiPromptOption).toBeDefined()
+        expect((cmd as any).aiPromptOption.serviceId).toBe("gemini")
+        expect((cmd as any).aiPromptOption.prompt).toContain("{{SelectedText}}")
+        expect((cmd as any).pageActionOption).toBeUndefined()
+      }
     }
   })
 })
