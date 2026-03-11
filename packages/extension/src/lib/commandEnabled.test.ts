@@ -80,7 +80,7 @@ describe("getCommandEnabled", () => {
       const command = makePageActionCommand("https://example.com/page")
       const result = getCommandEnabled(command, "https://other.com/page")
       expect(result.enabled).toBe(false)
-      expect(result.message).toBe("Menu_disabled_urlNotMatch")
+      expect(result.message).toBe("Test Command\nMenu_disabled_urlNotMatch")
     })
 
     it("GCE-06: enabled when pageUrl is empty string", () => {
