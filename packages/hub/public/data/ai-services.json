@@ -52,7 +52,9 @@
       "div[contenteditable='true'][role='textbox']"
     ],
     "submitSelectors": [
+      "button[type='button']:has(use[*|href='#pplx-icon-custom-perplexity-v2v'])",
       "button[type='button']:has(use[*|href='#pplx-icon-arrow-up'])",
+      "button[type='button']:has(use[*|href^='#pplx-icon-arrow-right'])",
       "button[aria-label='Submit']"
     ]
   }
