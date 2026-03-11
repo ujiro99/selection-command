@@ -567,7 +567,7 @@ export const openPopupWindowMultiple = async (
 export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
   const { url, active } = param
 
-  let currentTab: chrome.tabs.Tab | null = null
+  let currentTab: chrome.tabs.Tab | undefined
   try {
     currentTab = await getCurrentTab()
   } catch (e) {
@@ -625,7 +625,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
  * Get the current tab.
  * @returns {Promise<chrome.tabs.Tab>}
  */
-export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
+export async function getCurrentTab(): Promise<chrome.tabs.Tab | undefined> {
   const queryOptions = { active: true, lastFocusedWindow: true }
   const [tab] = await chrome.tabs.query(queryOptions)
   return tab

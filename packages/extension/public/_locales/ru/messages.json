@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "Введите в формате URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "URL страницы обязателен при выборе режима текущей вкладки."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Будет вставлен выбранный текст",
     "description": "for INSERT.SELECTED_TEXT"

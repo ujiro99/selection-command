@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "Veuillez saisir au format URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "L'URL de la page est obligatoire lorsque le mode onglet actuel est sélectionné."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Le texte sélectionné sera inséré",
     "description": "for INSERT.SELECTED_TEXT"

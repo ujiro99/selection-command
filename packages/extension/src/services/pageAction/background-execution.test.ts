@@ -218,7 +218,11 @@ describe("background.ts - Execution Operations", () => {
       mockMatchesPageActionUrl.mockReturnValue(true)
       mockStorage.getCommands.mockResolvedValue([mockCommand])
 
-      const result = openAndRun(mockParam as any, mockSender as any, mockResponse)
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
       expect(result).toBe(true)
       await vi.runAllTimersAsync()
 
@@ -239,7 +243,11 @@ describe("background.ts - Execution Operations", () => {
 
       mockGetCurrentTab.mockResolvedValue(null)
 
-      const result = openAndRun(mockParam as any, mockSender as any, mockResponse)
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
       expect(result).toBe(true)
       await vi.runAllTimersAsync()
 
@@ -262,7 +270,11 @@ describe("background.ts - Execution Operations", () => {
       })
       mockMatchesPageActionUrl.mockReturnValue(false)
 
-      const result = openAndRun(mockParam as any, mockSender as any, mockResponse)
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
       expect(result).toBe(true)
       await vi.runAllTimersAsync()
 
@@ -304,7 +316,11 @@ describe("background.ts - Execution Operations", () => {
       })
       mockStorage.getCommands.mockResolvedValue([mockCommand])
 
-      const result = openAndRun(mockParam as any, mockSender as any, mockResponse)
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
       expect(result).toBe(true)
       await vi.runAllTimersAsync()
 
@@ -335,7 +351,11 @@ describe("background.ts - Execution Operations", () => {
       mockIsUrlParam.mockReturnValue(true)
       mockStorage.getCommands.mockResolvedValue([mockCommand])
 
-      const result = openAndRun(mockParam as any, mockSender as any, mockResponse)
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
       expect(result).toBe(true)
       await vi.runAllTimersAsync()
 
@@ -391,10 +411,6 @@ describe("background.ts - Execution Operations", () => {
       )
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
-
-    // BGD-48: Skipped - openAndRun() with IPC errors causes unhandled rejections
-
-    // BGD-49: Skipped - openAndRun() with openTab errors causes unhandled rejections
   })
 
   describe("preview() function", () => {

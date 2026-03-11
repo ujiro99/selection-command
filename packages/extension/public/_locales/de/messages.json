@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "Bitte geben Sie im URL-Format ein."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "Seiten-URL ist erforderlich, wenn der aktuelle Tab-Modus ausgewählt ist."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Der ausgewählte Text wird eingefügt",
     "description": "for INSERT.SELECTED_TEXT"

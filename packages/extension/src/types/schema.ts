@@ -221,13 +221,23 @@ export const userVariableSchema = z.object({
 })
 export type UserVariableType = z.infer<typeof userVariableSchema>
 
-export const PageActionOption = z.object({
-  startUrl: z.string(),
-  pageUrl: z.string().optional(), // URL pattern for command enablement (currentTab only)
-  openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
-  steps: z.array(PageActionStepSchema),
-  userVariables: z.array(userVariableSchema).max(5).optional(),
-})
+export const PageActionOption = z
+  .object({
+    startUrl: z.string(),
+    pageUrl: z.string().optional(), // URL pattern for command enablement (currentTab only)
+    openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
+    steps: z.array(PageActionStepSchema),
+    userVariables: z.array(userVariableSchema).max(5).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && !data.pageUrl) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["pageUrl"],
+        message: t("zod_pageUrl_required_for_currentTab"),
+      })
+    }
+  })
 
 const pageActionSchema = z.object({
   openMode: z.enum([OPEN_MODE.PAGE_ACTION]),

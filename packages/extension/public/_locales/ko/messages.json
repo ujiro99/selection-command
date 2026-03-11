@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "URL 형식으로 입력하세요."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "현재 탭 모드가 선택된 경우 페이지 URL은 필수입니다."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "선택한 텍스트가 삽입됩니다",
     "description": "for INSERT.SELECTED_TEXT"

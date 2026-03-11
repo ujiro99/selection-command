@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "Inserisci nel formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "L'URL della pagina è obbligatorio quando è selezionata la modalità scheda corrente."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Il testo selezionato verrà inserito",
     "description": "for INSERT.SELECTED_TEXT"

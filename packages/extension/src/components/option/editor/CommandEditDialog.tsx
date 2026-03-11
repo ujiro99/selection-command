@@ -172,6 +172,7 @@ const getDefault = (
       },
       pageActionOption: {
         startUrl,
+        pageUrl: "",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         steps: [],
       },

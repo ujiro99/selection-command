@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "Por favor, introduzca en formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "La URL de página es obligatoria cuando se selecciona el modo de pestaña actual."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Se insertará el texto seleccionado",
     "description": "for INSERT.SELECTED_TEXT"

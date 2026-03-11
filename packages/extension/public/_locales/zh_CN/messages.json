@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "请以URL格式输入。"
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "选择当前标签页模式时，页面 URL 为必填项。"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "将插入选中的文本",
     "description": "for INSERT.SELECTED_TEXT"

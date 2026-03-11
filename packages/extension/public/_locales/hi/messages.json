@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "URL प्रारूप में दर्ज करें।"
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "वर्तमान टैब मोड चुने जाने पर पेज URL आवश्यक है।"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "चयनित टेक्स्ट डाला जाएगा",
     "description": "for INSERT.SELECTED_TEXT"

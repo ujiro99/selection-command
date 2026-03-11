@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "Por favor, insira no formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "O URL da página é obrigatório quando o modo de separador atual é selecionado."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "O texto selecionado será inserido",
     "description": "for INSERT.SELECTED_TEXT"

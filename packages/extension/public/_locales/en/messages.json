@@ -776,6 +776,10 @@
   "Option_zod_url": {
     "message": "Please enter in URL format."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "Page URL is required when Current Tab mode is selected.",
+    "description": "Zod validation error shown on the pageUrl field when openMode is CURRENT_TAB and pageUrl is empty"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Selected text will be inserted",
     "description": "for INSERT.SELECTED_TEXT"

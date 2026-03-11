@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "Sila masukkan dalam format URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "URL halaman diperlukan apabila mod tab semasa dipilih."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Teks yang dipilih akan dimasukkan",
     "description": "for INSERT.SELECTED_TEXT"

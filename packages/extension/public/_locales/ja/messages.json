@@ -776,6 +776,9 @@
   "Option_zod_url": {
     "message": "URL形式で入力してください。"
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "現在のタブ選択中は、ページURLは必須です。"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "選択テキストが挿入されます"
   },

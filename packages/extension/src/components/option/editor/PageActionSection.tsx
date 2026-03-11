@@ -41,7 +41,7 @@ export const PageActionSection = ({
         )
       }
     }
-  }, [openMode])
+  }, [openMode, getValues, setValue])
 
   const pageActionArray = useFieldArray({
     name: "pageActionOption.steps",

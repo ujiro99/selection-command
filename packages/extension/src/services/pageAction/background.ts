@@ -666,8 +666,8 @@ export const openRecorder = (
         const tab = sender.tab || (await getCurrentTab())
         const recorderTab = await chrome.tabs.create({
           url: startUrl,
-          windowId: tab.windowId,
-          index: tab.index + 1,
+          windowId: tab?.windowId,
+          index: (tab?.index ?? 0) + 1,
         })
         await setRecordingTabId(recorderTab.id)
       }
