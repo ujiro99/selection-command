@@ -4,6 +4,7 @@
   "description": "Shared utilities and types for Selection Command",
   "private": true,
   "main": "dist/index.js",
+  "type": "module",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",

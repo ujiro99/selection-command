@@ -427,7 +427,7 @@ const CMD_LINK_PREVIEW = {
 }
 
 const CMD_GOOGLE = {
-  id: "723ee9f1-150b-54ad-aeac-5fbfd0ae3650",
+  id: "0cb9dbbc-c0cf-53c6-93e5-016363705216",
   revision: 0,
   iconUrl: "https://www.google.com/favicon.ico",
   openMode: OPEN_MODE.POPUP,
