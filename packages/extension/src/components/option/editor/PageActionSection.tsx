@@ -9,6 +9,9 @@ import { cn, isEmpty, capitalize } from "@/lib/utils"
 import { PageActionStep } from "@/types/schema"
 import { DeepPartial } from "@/types"
 
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
+import collapsibleCss from "@/components/ui/collapsible.module.css"
+
 import { PAGE_ACTION_OPEN_MODE } from "@/const"
 import { InputField } from "@/components/option/field/InputField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
@@ -118,18 +121,23 @@ export const PageActionSection = ({
         previewUrl={getValues("iconUrl")}
       />
 
-      {openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && (
-        <InputField
-          control={form.control}
-          name="pageActionOption.pageUrl"
-          formLabel={t("pageUrl")}
-          inputProps={{
-            type: "string",
-            ...register("pageActionOption.pageUrl", {}),
-          }}
-          description={t("pageUrl_desc")}
-        />
-      )}
+      <Collapsible
+        className={collapsibleCss.collapsible}
+        open={openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB}
+      >
+        <CollapsibleContent className={cn(collapsibleCss.CollapsibleContent)}>
+          <InputField
+            control={form.control}
+            name="pageActionOption.pageUrl"
+            formLabel={t("pageUrl")}
+            inputProps={{
+              type: "string",
+              ...register("pageActionOption.pageUrl", {}),
+            }}
+            description={t("pageUrl_desc")}
+          />
+        </CollapsibleContent>
+      </Collapsible>
 
       <OpenModeToggleField
         control={form.control}
