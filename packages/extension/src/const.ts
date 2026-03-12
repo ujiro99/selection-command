@@ -226,6 +226,8 @@ export enum STYLE {
 export enum SPACE_ENCODING {
   PLUS = "plus",
   PERCENT = "percent",
+  DASH = "dash",
+  UNDERSCORE = "underscore",
 }
 
 export enum COPY_OPTION {

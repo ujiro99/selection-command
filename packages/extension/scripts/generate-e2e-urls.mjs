@@ -15,6 +15,16 @@ const SRC_PATH = path.resolve(
   "../src/services/option/defaultSettings.ts",
 )
 const OUT_PATH = path.resolve(__dirname, "../e2e/generated-command-urls.ts")
+const IGNORE_PATH = path.resolve(__dirname, "e2e-ignore-urls.txt")
+
+// Load ignored URLs from the ignore list
+const ignoreUrls = new Set(
+  fs
+    .readFileSync(IGNORE_PATH, "utf-8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#")),
+)
 
 const src = fs.readFileSync(SRC_PATH, "utf-8")
 
@@ -157,7 +167,7 @@ const allEntries = [...defaultEntries, ...localeEntries]
 const seen = new Set()
 const unique = []
 for (const entry of allEntries) {
-  if (!seen.has(entry.searchUrl)) {
+  if (!seen.has(entry.searchUrl) && !ignoreUrls.has(entry.searchUrl)) {
     seen.add(entry.searchUrl)
     unique.push(entry)
   }

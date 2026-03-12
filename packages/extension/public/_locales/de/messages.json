@@ -287,6 +287,12 @@
   "Option_spaceEncoding_percent": {
     "message": "Prozent (%20)"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "Bindestrich (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Unterstrich (_)"
+  },
   "Option_openMode": {
     "message": "Öffnungsmodus"
   },

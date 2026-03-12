@@ -1,0 +1,7 @@
+https://www.zhihu.com/search?q=%s
+https://www.coupang.com/np/search?q=%s
+https://www.ozon.ru/search/?text=%s
+https://www.wildberries.ru/catalog/0/search.aspx?search=%s
+https://www.leboncoin.fr/recherche?text=%s
+https://lista.mercadolivre.com.br/%s
+https://www.flipkart.com/search?q=%s

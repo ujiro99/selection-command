@@ -496,8 +496,7 @@ const CMD_NETFLIX = {
 const CMD_DRIVE = {
   id: "125fdc5e-a97d-5f81-92c4-2a6cbfc3662f",
   revision: 0,
-  iconUrl:
-    "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+  iconUrl: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://drive.google.com/drive/search?q=%s",
@@ -827,17 +826,43 @@ const CMD_AMAZON_ES = {
   spaceEncoding: SPACE_ENCODING.PLUS,
 }
 
-const CMD_MERCADOLIBRE = {
+const CMD_EBAY_ES = {
   id: "9d8f0b1c-2e3a-4f4b-5c6d-7e8f9a0b1c2d",
   revision: 0,
-  iconUrl: "https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/6.6.92/mercadolibre/favicon.svg",
+  iconUrl: "https://www.ebay.es/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
-  searchUrl: "https://listado.mercadolibre.com/%s",
-  title: "MercadoLibre",
+  searchUrl: "https://www.ebay.es/sch/i.html?_nkw=%s",
+  title: "eBay",
   parentFolderId: FOLDER_SEARCH,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
   spaceEncoding: SPACE_ENCODING.PLUS,
+}
+
+const CMD_EL_CORTE_INGLES = {
+  id: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+  revision: 0,
+  iconUrl: "https://www.elcorteingles.es/favicon.ico",
+  openMode: OPEN_MODE.TAB,
+  openModeSecondary: OPEN_MODE.TAB,
+  searchUrl: "https://www.elcorteingles.es/search-nwx/?s=%s",
+  title: "El Corte Inglés",
+  parentFolderId: FOLDER_SEARCH,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+  spaceEncoding: SPACE_ENCODING.PLUS,
+}
+
+const CMD_ALIEXPRESS_ES = {
+  id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+  revision: 0,
+  iconUrl: "https://ae01.alicdn.com/images/eng/nn/favicon/aliexpress_v3.ico",
+  openMode: OPEN_MODE.TAB,
+  openModeSecondary: OPEN_MODE.TAB,
+  searchUrl: "https://ja.aliexpress.com/w/wholesale-%s.html",
+  title: "AliExpress",
+  parentFolderId: FOLDER_SEARCH,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+  spaceEncoding: SPACE_ENCODING.DASH,
 }
 
 const CMD_GEMINI_ES = {
@@ -873,7 +898,8 @@ const CMD_AMAZON_BR = {
 const CMD_MERCADO_LIVRE_BR = {
   id: "0e9a1c2d-3f4b-4a5c-6d7e-8f9a0b1c2d3e",
   revision: 0,
-  iconUrl: "https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/6.6.92/mercadolibre/favicon.svg",
+  iconUrl:
+    "https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/6.6.92/mercadolibre/favicon.svg",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://lista.mercadolivre.com.br/%s",
@@ -930,7 +956,8 @@ const CMD_AMAZON_IN = {
 const CMD_FLIPKART = {
   id: "2a1c3e4f-5b6d-4c7e-8f9a-0b1c2d3e4f5a",
   revision: 0,
-  iconUrl: "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/favicon-144px.png",
+  iconUrl:
+    "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/favicon-144px.png",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.flipkart.com/search?q=%s",
@@ -960,7 +987,8 @@ const CMD_GEMINI_HI = {
 const CMD_TOKOPEDIA = {
   id: "3b2d4f5a-6c7e-4d8f-9a0b-1c2d3e4f5a6b",
   revision: 0,
-  iconUrl: "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/11/16/2fdf5dc5-abe5-454e-b8ec-bdf4e96d5c60.png",
+  iconUrl:
+    "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/11/16/2fdf5dc5-abe5-454e-b8ec-bdf4e96d5c60.png",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.tokopedia.com/search?st=product&q=%s",
@@ -1016,7 +1044,8 @@ const CMD_SHOPEE_MY = {
 const CMD_LAZADA_MY = {
   id: "6e5a7c8d-9f0b-4a1c-2d3e-4f5a6b7c8d9e",
   revision: 0,
-  iconUrl: "https://lzd-img-global.slatic.net/g/tps/tfs/TB1uGoZXkT2gK0jSZFkXXcIQFXa-114-114.png",
+  iconUrl:
+    "https://lzd-img-global.slatic.net/g/tps/tfs/TB1uGoZXkT2gK0jSZFkXXcIQFXa-114-114.png",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.lazada.com.my/catalog/?q=%s",
@@ -1181,7 +1210,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_GOOGLE,
       CMD_GOOGLE_IMAGE,
       CMD_AMAZON_ES,
-      CMD_MERCADOLIBRE,
+      CMD_EBAY_ES,
+      CMD_EL_CORTE_INGLES,
+      CMD_ALIEXPRESS_ES,
       CMD_GEMINI_ES,
       CMD_YOUTUBE,
       CMD_NETFLIX,

@@ -287,6 +287,12 @@
   "Option_spaceEncoding_percent": {
     "message": "百分比（%20）"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "连字符（-）"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "下划线（_）"
+  },
   "Option_openMode": {
     "message": "打开模式"
   },

@@ -69,7 +69,9 @@ describe("getDefaultCommands", () => {
   it("DS-09: should return Spanish commands for es locale", () => {
     const commands = getDefaultCommands("es")
     const titles = commands.map((c) => c.title)
-    expect(titles).toContain("MercadoLibre")
+    expect(titles).toContain("eBay")
+    expect(titles).toContain("El Corte Inglés")
+    expect(titles).toContain("AliExpress")
     const amazonCmd = commands.find((c) => c.title === "Amazon")
     expect((amazonCmd as any).searchUrl).toContain("amazon.es")
   })
@@ -118,18 +120,47 @@ describe("getDefaultCommands", () => {
 
   it("DS-16: all locale command sets should include a link preview command", () => {
     const locales = [
-      "ja", "zh-CN", "ko", "ru", "de", "fr", "es",
-      "pt-BR", "pt", "hi", "id", "ms", "it", "en",
+      "ja",
+      "zh-CN",
+      "ko",
+      "ru",
+      "de",
+      "fr",
+      "es",
+      "pt-BR",
+      "pt",
+      "hi",
+      "id",
+      "ms",
+      "it",
+      "en",
     ]
     for (const locale of locales) {
       const commands = getDefaultCommands(locale)
       const linkCmd = commands.find(isLinkCommand)
-      expect(linkCmd, `Missing link command for locale: ${locale}`).toBeDefined()
+      expect(
+        linkCmd,
+        `Missing link command for locale: ${locale}`,
+      ).toBeDefined()
     }
   })
 
   it("DS-17: all locale command sets should include Google", () => {
-    const locales = ["ja", "ko", "ru", "de", "fr", "es", "pt-BR", "pt", "hi", "id", "ms", "it", "en"]
+    const locales = [
+      "ja",
+      "ko",
+      "ru",
+      "de",
+      "fr",
+      "es",
+      "pt-BR",
+      "pt",
+      "hi",
+      "id",
+      "ms",
+      "it",
+      "en",
+    ]
     for (const locale of locales) {
       const commands = getDefaultCommands(locale)
       const googleCmd = commands.find((c) => c.title === "Google")
@@ -145,25 +176,58 @@ describe("getDefaultCommands", () => {
 
   it("DS-19: all command IDs should be unique within each locale set", () => {
     const locales = [
-      "ja", "zh-CN", "ko", "ru", "de", "fr", "es",
-      "pt-BR", "pt", "hi", "id", "ms", "it", "en",
+      "ja",
+      "zh-CN",
+      "ko",
+      "ru",
+      "de",
+      "fr",
+      "es",
+      "pt-BR",
+      "pt",
+      "hi",
+      "id",
+      "ms",
+      "it",
+      "en",
     ]
     for (const locale of locales) {
       const commands = getDefaultCommands(locale)
       const ids = commands.map((c) => c.id)
       const uniqueIds = new Set(ids)
-      expect(uniqueIds.size, `Duplicate IDs found for locale: ${locale}`).toBe(ids.length)
+      expect(uniqueIds.size, `Duplicate IDs found for locale: ${locale}`).toBe(
+        ids.length,
+      )
     }
   })
 
   it("DS-20: locale Gemini commands should use AI_PROMPT open mode", () => {
-    const locales = ["ja", "zh-CN", "ko", "ru", "de", "fr", "es", "pt-BR", "hi", "id", "ms", "it"]
+    const locales = [
+      "ja",
+      "zh-CN",
+      "ko",
+      "ru",
+      "de",
+      "fr",
+      "es",
+      "pt-BR",
+      "hi",
+      "id",
+      "ms",
+      "it",
+    ]
     for (const locale of locales) {
       const commands = getDefaultCommands(locale)
       const geminiCmds = commands.filter((c) => c.title.startsWith("Gemini"))
-      expect(geminiCmds.length, `No Gemini command for locale: ${locale}`).toBeGreaterThan(0)
+      expect(
+        geminiCmds.length,
+        `No Gemini command for locale: ${locale}`,
+      ).toBeGreaterThan(0)
       for (const cmd of geminiCmds) {
-        expect((cmd as any).openMode, `Gemini in ${locale} should use AI_PROMPT`).toBe("aiPrompt")
+        expect(
+          (cmd as any).openMode,
+          `Gemini in ${locale} should use AI_PROMPT`,
+        ).toBe("aiPrompt")
         expect((cmd as any).aiPromptOption).toBeDefined()
         expect((cmd as any).aiPromptOption.serviceId).toBe("gemini")
         expect((cmd as any).aiPromptOption.prompt).toContain("{{SelectedText}}")

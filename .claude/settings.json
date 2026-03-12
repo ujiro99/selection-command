@@ -1,4 +1,6 @@
 {
+  "$schema": "https://code.claude.com/schemas/settings.schema.json",
+  "plansDirectory": "./docs",
   "hooks": {
     "PostToolUse": [
       {

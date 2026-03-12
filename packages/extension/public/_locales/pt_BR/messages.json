@@ -287,6 +287,12 @@
   "Option_spaceEncoding_percent": {
     "message": "Porcentagem (%20)"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "Hífen (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Sublinhado (_)"
+  },
   "Option_openMode": {
     "message": "Modo de Abertura"
   },
