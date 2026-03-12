@@ -305,7 +305,10 @@ export function getInputSelectionEndPoint(
 ): Point | null {
   // If no selection, return null
   if (element.selectionEnd === null) return null
-  const caretPos = element.selectionEnd
+  const caretPos =
+    element.selectionDirection === "backward"
+      ? (element.selectionStart ?? 0)
+      : (element.selectionEnd ?? 0)
   const computed = window.getComputedStyle(element)
 
   // Create a mirror div with the same styling as the input/textarea
@@ -360,9 +363,11 @@ export function getInputSelectionEndPoint(
     // markerRect is off-screen, so compute its offset within the mirror
     // and apply that offset to the actual input element's position.
     // Subtract scrollLeft/scrollTop to account for scrolled content inside the input.
-    const x = inputRect.left + (markerRect.left - mirrorRect.left) - element.scrollLeft
+    const x =
+      inputRect.left + (markerRect.left - mirrorRect.left) - element.scrollLeft
     // Use markerRect.bottom (bottom of the character line) so the popup appears below the selection.
-    const y = inputRect.top + (markerRect.bottom - mirrorRect.top) - element.scrollTop
+    const y =
+      inputRect.top + (markerRect.bottom - mirrorRect.top) - element.scrollTop
 
     return { x, y }
   } finally {
@@ -382,10 +387,11 @@ export function getEditableSelectionEndPoint(): Point | null {
     return null
   }
 
-  const range = selection.getRangeAt(0)
   // Collapse to selection end to get the end position coordinates
+  const range = selection.getRangeAt(0)
   const endRange = range.cloneRange()
-  endRange.collapse(false)
+  endRange.setStart(selection.focusNode!, selection.focusOffset)
+  endRange.setEnd(selection.focusNode!, selection.focusOffset)
 
   const rect = endRange.getBoundingClientRect()
   if (rect.width === 0 && rect.height === 0) {
