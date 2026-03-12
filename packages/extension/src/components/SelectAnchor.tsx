@@ -160,11 +160,25 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   }, [point, isMouseDown, setIsDragging, releaseAnchor])
 
   useEffect(() => {
-    const onKeyUp = () => {
+    const onKeyUp = (e: KeyboardEvent) => {
       const active = document.activeElement
       const inFormControl = isInputOrTextarea(active)
       const inEditable = isEditable(active)
       if (inFormControl || inEditable) {
+        // When no selection is active, only process keys that can create one
+        // (Shift+arrows, Ctrl/Cmd+A, etc.) to avoid unnecessary computation.
+        // When a selection is already active (point != null), process all keys
+        // so we can detect deselection and call releaseAnchor.
+        // Include modifier keyups (Meta/Control) because on macOS,
+        // Cmd+A may not fire a keyup for "a" — only the Meta keyup fires.
+        const mayChangeSelection =
+          e.shiftKey ||
+          (e.key === "a" && (e.ctrlKey || e.metaKey)) ||
+          e.key === "Meta" ||
+          e.key === "Control"
+        if (!mayChangeSelection && !point) {
+          return
+        }
         const text = getSelectionText()
         if (text) {
           let selectionEndPoint: Point | null = null
