@@ -360,14 +360,13 @@ export const openAndRun = (
     } else if (param.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
       // Current tab execution without opening a new tab/window.
 
-      // Execute on the current active tab without opening a new tab/window
       const currentTab = await getCurrentTab()
       if (!currentTab?.id) {
         console.error("No active tab found")
         response(false)
         return
       }
-      const pageUrl = param.pageUrl ?? null
+      const pageUrl = param.pageUrl
       if (
         pageUrl &&
         currentTab.url &&

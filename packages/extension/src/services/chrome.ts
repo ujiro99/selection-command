@@ -371,10 +371,14 @@ const openWindowAndReadClipboard = async (
     incognito: param.incognito,
   })
 
-  const result = await readClipboardContent(w!.tabs![0].id as number)
+  const tab = w?.tabs?.[0]
+  if (!tab?.id || !w?.id) {
+    throw new Error("Failed to create clipboard window")
+  }
+  const result = await readClipboardContent(tab.id)
 
   return {
-    window: w!,
+    window: w,
     clipboardText: result.data ?? "",
     err: result.err,
   }
@@ -402,8 +406,12 @@ export const readClipboard = async (): Promise<{
     top: 0,
     state: "normal",
   })
-  const result = await readClipboardContent(w!.tabs![0].id as number)
-  await closeWindow(w!.id!, "readClipboard close window")
+  const tab = w?.tabs?.[0]
+  if (!tab?.id || !w?.id) {
+    throw new Error("Failed to create clipboard window")
+  }
+  const result = await readClipboardContent(tab.id)
+  await closeWindow(w.id, "readClipboard close window")
   return {
     clipboardText: result.data ?? "",
     err: result.err,
