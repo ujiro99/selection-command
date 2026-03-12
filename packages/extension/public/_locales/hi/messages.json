@@ -308,6 +308,9 @@
   "Option_openMode_sidePanel": {
     "message": "साइड पैनल"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "साइड पैनल में खोलें।"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -436,6 +439,18 @@
   },
   "Option_startUrl_desc": {
     "message": "पेज का URL जहां एक्शन शुरू होता है।"
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "\"वर्तमान टैब\" के लिए, केवल इस URL से मेल खाने वाले पेज ही चलाए जा सकते हैं। आप वाइल्डकार्ड \"*\" का उपयोग कर सकते हैं।"
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "क्रियाएं रिकॉर्ड करना शुरू करने के लिए पृष्ठ का URL। केवल सेटिंग स्क्रीन में उपयोग किया जाता है।"
+  },
+  "Option_pageUrl": {
+    "message": "पृष्ठ URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "केवल इस URL से मेल खाने वाले पृष्ठों पर ही निष्पादित किया जा सकता है। आप वाइल्डकार्ड «*» का उपयोग कर सकते हैं।"
   },
   "Option_pageAction_title": {
     "message": "एक्शन"
@@ -761,6 +776,9 @@
   "Option_zod_url": {
     "message": "URL प्रारूप में दर्ज करें।"
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "वर्तमान टैब मोड चुने जाने पर पेज URL आवश्यक है।"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "चयनित टेक्स्ट डाला जाएगा",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1019,8 +1037,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "बैकग्राउंड में टैब खोलें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "साइड पैनल में खोलें।"
+  "Option_openMode_currentTab": {
+    "message": "वर्तमान टैब"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "वर्तमान सक्रिय टैब पर चलाएं।<wbr>URL रिकॉर्ड की गई प्रारंभ URL से मेल खाना चाहिए।"
   },
   "Option_title_desc": {
     "message": "कमांड शीर्षक के रूप में प्रदर्शित होता है।"
@@ -1183,5 +1204,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "पूर्ण स्क्रीन"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "इस पेज पर नहीं चला सकते (पृष्ठ URL मेल नहीं खाता)"
   }
 }

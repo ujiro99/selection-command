@@ -222,6 +222,7 @@ export type PageActionStep = {
 
 export type PageActionOption = {
   startUrl: string
+  pageUrl?: string // URL pattern for command enablement (currentTab only)
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
   userVariables?: Array<UserVariable>

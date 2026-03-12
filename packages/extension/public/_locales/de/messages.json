@@ -308,6 +308,9 @@
   "Option_openMode_sidePanel": {
     "message": "Seitenpanel"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Im Seitenpanel öffnen."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -436,6 +439,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL der Seite, auf der die Aktion beginnt."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Bei \"Aktueller Tab\" können nur Seiten ausgeführt werden, die dieser URL entsprechen. Sie können den Platzhalter \"*\" verwenden."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL der Seite, von der die Aktionsaufzeichnung gestartet wird. Wird nur im Einstellungsbildschirm verwendet."
+  },
+  "Option_pageUrl": {
+    "message": "Seiten-URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Kann nur auf Seiten ausgeführt werden, die dieser URL entsprechen. Sie können den Platzhalter \"*\" verwenden."
   },
   "Option_pageAction_title": {
     "message": "Aktionen"
@@ -761,6 +776,9 @@
   "Option_zod_url": {
     "message": "Bitte geben Sie im URL-Format ein."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "Seiten-URL ist erforderlich, wenn der aktuelle Tab-Modus ausgewählt ist."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Der ausgewählte Text wird eingefügt",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1019,8 +1037,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Im Seitenpanel öffnen."
+  "Option_openMode_currentTab": {
+    "message": "Aktueller Tab"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Im aktuellen aktiven Tab ausführen.<wbr>URL muss mit der aufgezeichneten Start-URL übereinstimmen."
   },
   "Option_title_desc": {
     "message": "Wird als Befehlstitel angezeigt."
@@ -1183,5 +1204,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Vollbild"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Kann auf dieser Seite nicht ausgeführt werden (Seiten-URL stimmt nicht überein)"
   }
 }

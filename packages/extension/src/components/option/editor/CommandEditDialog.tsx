@@ -172,6 +172,7 @@ const getDefault = (
       },
       pageActionOption: {
         startUrl,
+        pageUrl: "",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         steps: [],
       },
@@ -326,6 +327,12 @@ const CommandEditDialogInner = ({
     defaultValue: "",
   })
 
+  const pageUrl = useWatch({
+    control: form.control,
+    name: "pageActionOption.pageUrl",
+    defaultValue: "",
+  })
+
   const iconUrl = useWatch({
     control: form.control,
     name: "iconUrl",
@@ -339,6 +346,7 @@ const CommandEditDialogInner = ({
       SESSION_STORAGE_KEY.PA_RECORDING,
       {
         startUrl,
+        pageUrl,
         openMode: getValues("pageActionOption.openMode"),
         size: getValues("popupOption") ?? POPUP_OPTION,
         steps: getValues("pageActionOption.steps"),

@@ -308,6 +308,9 @@
   "Option_openMode_sidePanel": {
     "message": "사이드 패널"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "사이드 패널에서 열기."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -436,6 +439,18 @@
   },
   "Option_startUrl_desc": {
     "message": "작업이 시작되는 페이지의 URL."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "\"현재 탭\"의 경우 이 URL과 일치하는 페이지에서만 실행할 수 있습니다. 와일드카드 \"*\"를 사용할 수 있습니다."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "액션 기록을 시작할 페이지의 URL. 설정 화면에서만 사용됩니다."
+  },
+  "Option_pageUrl": {
+    "message": "페이지 URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "이 URL과 일치하는 페이지에서만 실행할 수 있습니다. 와일드카드 「*」를 사용할 수 있습니다."
   },
   "Option_pageAction_title": {
     "message": "작업"
@@ -761,6 +776,9 @@
   "Option_zod_url": {
     "message": "URL 형식으로 입력하세요."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "현재 탭 모드가 선택된 경우 페이지 URL은 필수입니다."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "선택한 텍스트가 삽입됩니다",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1019,8 +1037,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "백그라운드에서 탭 열기.<wbr>현재 탭 오른쪽에 표시합니다."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "사이드 패널에서 열기."
+  "Option_openMode_currentTab": {
+    "message": "현재 탭"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "현재 활성 탭에서 실행합니다.<wbr>URL은 기록된 시작 URL과 일치해야 합니다."
   },
   "Option_title_desc": {
     "message": "명령 제목으로 표시됩니다."
@@ -1183,5 +1204,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "전체 화면"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "이 페이지에서 실행할 수 없습니다 (페이지 URL이 일치하지 않습니다)"
   }
 }

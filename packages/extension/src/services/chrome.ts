@@ -332,11 +332,11 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      chrome.runtime.onConnect.addListener(function (port) {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        port.onMessage.addListener(function (msg) {
           if (msg.command === BgCommand.setClipboard) {
             resolve(msg.data)
           }
@@ -371,10 +371,48 @@ const openWindowAndReadClipboard = async (
     incognito: param.incognito,
   })
 
-  const result = await readClipboardContent(w!.tabs![0].id as number)
+  const tab = w?.tabs?.[0]
+  if (!tab?.id || !w?.id) {
+    throw new Error("Failed to create clipboard window")
+  }
+  const result = await readClipboardContent(tab.id)
 
   return {
-    window: w!,
+    window: w,
+    clipboardText: result.data ?? "",
+    err: result.err,
+  }
+}
+
+/**
+ * Open a temporary window to read clipboard content and return the result.
+ * @returns {Promise<{ clipboardText: string; err?: string }>} The clipboard content and any error message
+ *
+ * Note: This function opens a temporary window to read the clipboard content,
+ *       which is necessary due to browser security restrictions.
+ *       The window is closed immediately after reading the clipboard.
+ */
+export const readClipboard = async (): Promise<{
+  clipboardText: string
+  err?: string
+}> => {
+  const w = await chrome.windows.create({
+    url: chrome.runtime.getURL("src/clipboard.html"),
+    focused: true,
+    type: "popup",
+    width: 1,
+    height: 1,
+    left: 0,
+    top: 0,
+    state: "normal",
+  })
+  const tab = w?.tabs?.[0]
+  if (!tab?.id || !w?.id) {
+    throw new Error("Failed to create clipboard window")
+  }
+  const result = await readClipboardContent(tab.id)
+  await closeWindow(w.id, "readClipboard close window")
+  return {
     clipboardText: result.data ?? "",
     err: result.err,
   }
@@ -537,7 +575,7 @@ export const openPopupWindowMultiple = async (
 export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
   const { url, active } = param
 
-  let currentTab: chrome.tabs.Tab | null = null
+  let currentTab: chrome.tabs.Tab | undefined
   try {
     currentTab = await getCurrentTab()
   } catch (e) {
@@ -595,7 +633,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
  * Get the current tab.
  * @returns {Promise<chrome.tabs.Tab>}
  */
-export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
+export async function getCurrentTab(): Promise<chrome.tabs.Tab | undefined> {
   const queryOptions = { active: true, lastFocusedWindow: true }
   const [tab] = await chrome.tabs.query(queryOptions)
   return tab

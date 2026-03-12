@@ -308,6 +308,9 @@
   "Option_openMode_sidePanel": {
     "message": "Panneau latéral"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Ouvrir dans le panneau latéral."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -436,6 +439,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL de la page où l'action commence."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Pour \"Onglet Actuel\", seules les pages correspondant à cette URL peuvent être exécutées. Vous pouvez utiliser le caractère générique \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL de la page pour démarrer l'enregistrement des actions. Utilisée uniquement dans l'écran des paramètres."
+  },
+  "Option_pageUrl": {
+    "message": "URL de la page"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Peut s'exécuter uniquement sur les pages correspondant à cette URL. Vous pouvez utiliser le caractère générique « * »."
   },
   "Option_pageAction_title": {
     "message": "Actions"
@@ -761,6 +776,9 @@
   "Option_zod_url": {
     "message": "Veuillez saisir au format URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "L'URL de la page est obligatoire lorsque le mode onglet actuel est sélectionné."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Le texte sélectionné sera inséré",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1019,8 +1037,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Ouvrir l'onglet en arrière-plan.<wbr>Afficher à droite de l'onglet actuel."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Ouvrir dans le panneau latéral."
+  "Option_openMode_currentTab": {
+    "message": "Onglet actuel"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Exécuter sur l'onglet actif actuel.<wbr>L'URL doit correspondre à l'URL de départ enregistrée."
   },
   "Option_title_desc": {
     "message": "Affiché comme titre de commande."
@@ -1183,5 +1204,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Plein écran"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Impossible d'exécuter sur cette page (l'URL de la page ne correspond pas)"
   }
 }
