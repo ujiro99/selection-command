@@ -376,6 +376,104 @@ export function getInputSelectionEndPoint(
 }
 
 /**
+ * Find the contenteditable root element containing the given node.
+ */
+function findContentEditableRoot(node: Node): HTMLElement | null {
+  let current: Node | null = node
+  while (current) {
+    if (
+      current instanceof HTMLElement &&
+      current.isContentEditable &&
+      (current.getAttribute("contenteditable") === "true" ||
+        current.getAttribute("contenteditable") === "")
+    ) {
+      return current
+    }
+    current = current.parentNode
+  }
+  return null
+}
+
+/**
+ * Find the equivalent node in a cloned DOM tree by traversing the same
+ * child-index path from the root.
+ */
+function findEquivalentNode(
+  originalRoot: Node,
+  cloneRoot: Node,
+  target: Node,
+): Node | null {
+  const path: number[] = []
+  let current: Node | null = target
+  while (current && current !== originalRoot) {
+    const parent: Node | null = current.parentNode
+    if (!parent) return null
+    const index = Array.from(parent.childNodes).indexOf(current as ChildNode)
+    path.unshift(index)
+    current = parent
+  }
+  if (current !== originalRoot) return null
+
+  let cloneNode: Node = cloneRoot
+  for (const idx of path) {
+    if (idx >= cloneNode.childNodes.length) return null
+    cloneNode = cloneNode.childNodes[idx]
+  }
+  return cloneNode
+}
+
+/**
+ * Measure the caret position by inserting a marker into an off-screen clone
+ * of the contenteditable element, avoiding mutations to the live DOM.
+ */
+function measurePositionInClone(
+  editableRoot: HTMLElement,
+  focusNode: Node,
+  focusOffset: number,
+): Point | null {
+  const clone = editableRoot.cloneNode(true) as HTMLElement
+  const computed = window.getComputedStyle(editableRoot)
+
+  // Position off-screen so it doesn't affect layout
+  clone.style.position = "absolute"
+  clone.style.visibility = "hidden"
+  clone.style.top = "-9999px"
+  clone.style.left = "-9999px"
+  clone.style.width = computed.width
+  clone.style.height = computed.height
+  clone.style.overflow = "hidden"
+
+  document.body.appendChild(clone)
+  try {
+    const cloneNode = findEquivalentNode(editableRoot, clone, focusNode)
+    if (!cloneNode) return null
+
+    const cloneRange = document.createRange()
+    cloneRange.setStart(cloneNode, focusOffset)
+    cloneRange.setEnd(cloneNode, focusOffset)
+
+    const span = document.createElement("span")
+    span.textContent = "\u200B"
+    cloneRange.insertNode(span)
+    const spanRect = span.getBoundingClientRect()
+
+    if (spanRect.width === 0 && spanRect.height === 0) {
+      return null
+    }
+
+    // Convert clone coordinates back to original element coordinates
+    const cloneRect = clone.getBoundingClientRect()
+    const origRect = editableRoot.getBoundingClientRect()
+    const x = origRect.left + (spanRect.left - cloneRect.left)
+    const y = origRect.top + (spanRect.bottom - cloneRect.top)
+
+    return { x, y }
+  } finally {
+    document.body.removeChild(clone)
+  }
+}
+
+/**
  * Get the visual coordinates of the selection end position in a contenteditable element.
  * Uses the Range API to accurately measure the position of the selection end.
  *
@@ -395,19 +493,15 @@ export function getEditableSelectionEndPoint(): Point | null {
 
   const rect = endRange.getBoundingClientRect()
   if (rect.width === 0 && rect.height === 0) {
-    // Fallback: insert a temporary zero-width space to measure position.
-    // The span is immediately removed after measurement; endRange is not used
-    // afterwards so its state after the DOM mutation is not relevant.
-    const span = document.createElement("span")
-    span.textContent = "\u200B" // Zero-width space
-    endRange.insertNode(span)
-    const spanRect = span.getBoundingClientRect()
-    span.remove()
+    // Fallback: measure position without mutating the live DOM.
+    // Use an off-screen clone of the contenteditable element to avoid
+    // triggering MutationObservers or framework re-renders.
+    const focusNode = selection.focusNode!
+    const focusOffset = selection.focusOffset
+    const editableRoot = findContentEditableRoot(focusNode)
+    if (!editableRoot) return null
 
-    if (spanRect.width === 0 && spanRect.height === 0) {
-      return null
-    }
-    return { x: spanRect.left, y: spanRect.bottom }
+    return measurePositionInClone(editableRoot, focusNode, focusOffset)
   }
 
   return { x: rect.left, y: rect.bottom }
