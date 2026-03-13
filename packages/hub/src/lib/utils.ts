@@ -7,25 +7,9 @@ export {
   isEmpty,
   sleep,
 } from "@shared"
-import { normalizeObject } from "@shared/utils/common"
-import { v5 as uuidv5 } from "uuid"
-import { createHash } from "crypto"
 import { parse } from "tldts"
 
-/**
- * Generate UUID from object, using UUIDv5.
- * Property order independent - same content produces same UUID regardless of key order.
- * @param obj Object to generate UUID from.
- * @returns UUID.
- */
-export function generateUUIDFromObject(obj: object): string {
-  const normalizedObj = normalizeObject(obj)
-  const objString = JSON.stringify(normalizedObj)
-  const hash = createHash("sha1").update(objString).digest("hex")
-  // UUIDv5 from https://ujiro99.github.io/selection-command/
-  const namespace = "fe352db3-6a8e-5d07-9aaf-c45a2e9d9f5c"
-  return uuidv5(hash, namespace)
-}
+export { generateUUIDFromObject } from "@shared/utils/uuid"
 
 // Type guards and common utilities are now imported from shared package
 

@@ -2,17 +2,11 @@ import Commands from "@/data/commands.json"
 import IdHistory from "@/data/command-id-history.json"
 import Analytics from "@/data/analytics.json"
 import { OPEN_MODE, SPACE_ENCODING } from "@/const"
-import {
-  Command,
-  SelectionCommand,
-  SearchCommand,
-  PageActionCommand,
-} from "@/types"
-import {
-  generateUUIDFromObject,
-  isSearchCommand,
-  isPageActionCommand,
-} from "@/lib/utils"
+import { Command, SearchCommand, PageActionCommand } from "@/types"
+import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
+import { generateUUIDFromObject } from "@shared/utils/uuid"
+
+export { cmd2uuid } from "@shared/utils/uuid"
 
 export function cmd2text(cmd: Command): string {
   if (isSearchCommand(cmd)) {
@@ -33,41 +27,6 @@ export function cmd2text(cmd: Command): string {
     }
     return JSON.stringify({
       id: pageActionCmd.id,
-      title: pageActionCmd.title,
-      iconUrl: pageActionCmd.iconUrl,
-      openMode: pageActionCmd.openMode,
-      pageActionOption: pageActionCmd.pageActionOption,
-    })
-  } else {
-    throw new Error("Invalid command")
-  }
-}
-
-type CommandContent = Omit<
-  SelectionCommand,
-  "id" | "tags" | "addedAt" | "description"
->
-
-export function cmd2uuid(cmd: CommandContent): string {
-  if (isSearchCommand(cmd)) {
-    const searchCmd = cmd as Omit<
-      SearchCommand,
-      "id" | "tags" | "addedAt" | "description"
-    >
-    return generateUUIDFromObject({
-      title: searchCmd.title,
-      searchUrl: searchCmd.searchUrl,
-      iconUrl: searchCmd.iconUrl,
-      openMode: searchCmd.openMode,
-      openModeSecondary: searchCmd.openModeSecondary,
-      spaceEncoding: searchCmd.spaceEncoding,
-    })
-  } else if (isPageActionCommand(cmd)) {
-    const pageActionCmd = cmd as Omit<
-      PageActionCommand,
-      "id" | "tags" | "addedAt" | "description"
-    >
-    return generateUUIDFromObject({
       title: pageActionCmd.title,
       iconUrl: pageActionCmd.iconUrl,
       openMode: pageActionCmd.openMode,

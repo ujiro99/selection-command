@@ -10,6 +10,7 @@ import {
   BookOpen,
   Paintbrush,
   Zap,
+  AppWindow,
 } from "lucide-react"
 
 import { Form } from "@/components/ui/form"
@@ -81,6 +82,16 @@ const formSchema = z
       })
       .strict(),
     popupPlacement: popupPlacementSchema,
+    windowOption: z
+      .object({
+        sidePanelAutoHide: z.boolean(),
+        popupAutoCloseDelay: z
+          .number({ message: t("zod_number") })
+          .min(0, { message: t("zod_number_min", ["0"]) })
+          .max(10000, { message: t("zod_number_max", ["10000"]) })
+          .optional(),
+      })
+      .strict(),
     style: z.nativeEnum(STYLE),
     commands: z.array(commandSchema).min(1),
     folders: z.array(folderSchema),
@@ -91,6 +102,7 @@ const formSchema = z
           .refine((v) => v !== LINK_COMMAND_ENABLED.INHERIT),
         openMode: z.nativeEnum(DRAG_OPEN_MODE),
         showIndicator: z.boolean(),
+        sidePanelAutoHide: z.boolean(),
         startupMethod: z
           .object({
             method: z.nativeEnum(LINK_COMMAND_STARTUP_METHOD),
@@ -132,6 +144,7 @@ export function SettingForm({ className }: { className?: string }) {
     defaultValues: {
       startupMethod: emptySettings.startupMethod,
       popupPlacement: emptySettings.popupPlacement,
+      windowOption: emptySettings.windowOption,
       style: emptySettings.style,
       commands: [], // Empty array to avoid type conflicts
       folders: emptySettings.folders,
@@ -160,6 +173,12 @@ export function SettingForm({ className }: { className?: string }) {
     control: form.control,
     name: "instantCommand.enabled",
     defaultValue: false,
+  })
+
+  const linkCommandOpenMode = useWatch({
+    control: form.control,
+    name: "linkCommand.openMode",
+    defaultValue: DRAG_OPEN_MODE.PREVIEW_POPUP,
   })
 
   // Common function to load and transform settings data
@@ -604,30 +623,72 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {linkCommandMethod ===
             LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
-            <InputField
-              control={form.control}
-              name="linkCommand.startupMethod.leftClickHoldParam"
-              formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
-              description={t(
-                "linkCommandStartupMethod_leftClickHoldParam_desc",
-              )}
-              unit="ms"
-              inputProps={{
-                type: "number",
-                min: 50,
-                max: 500,
-                step: 10,
-                ...register("linkCommand.startupMethod.leftClickHoldParam", {
-                  valueAsNumber: true,
-                }),
-              }}
-            />
-          )}
+              <InputField
+                control={form.control}
+                name="linkCommand.startupMethod.leftClickHoldParam"
+                formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
+                description={t(
+                  "linkCommandStartupMethod_leftClickHoldParam_desc",
+                )}
+                unit="ms"
+                inputProps={{
+                  type: "number",
+                  min: 50,
+                  max: 500,
+                  step: 10,
+                  ...register("linkCommand.startupMethod.leftClickHoldParam", {
+                    valueAsNumber: true,
+                  }),
+                }}
+              />
+            )}
           <SwitchField
             control={form.control}
             name="linkCommand.showIndicator"
             formLabel={t("showIndicator")}
             description={t("showIndicator_desc")}
+          />
+          {linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL && (
+            <SwitchField
+              control={form.control}
+              name="linkCommand.sidePanelAutoHide"
+              formLabel={t("sidePanelAutoHide_link")}
+              tooltip={t("sidePanelAutoHide_link_desc")}
+            />
+          )}
+        </section>
+        <hr />
+
+        <section id="windowSettings" className="space-y-3">
+          <h3 className="text-xl font-semibold flex items-center">
+            <AppWindow size={22} className="mr-2 stroke-gray-600" />
+            {t("windowSettings")}
+          </h3>
+          <p className="text-base">{t("windowSettings_desc")}</p>
+
+          <InputField
+            control={form.control}
+            name="windowOption.popupAutoCloseDelay"
+            formLabel={t("popupAutoCloseDelay")}
+            tooltip={t("popupAutoCloseDelay_desc")}
+            unit="ms"
+            inputProps={{
+              type: "number",
+              min: 0,
+              max: 10000,
+              step: 100,
+              placeholder: t("popupAutoCloseDelay_placeholder"),
+              ...register("windowOption.popupAutoCloseDelay", {
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              }),
+            }}
+          />
+
+          <SwitchField
+            control={form.control}
+            name="windowOption.sidePanelAutoHide"
+            formLabel={t("sidePanelAutoHide")}
+            tooltip={t("sidePanelAutoHide_desc")}
           />
         </section>
         <hr />

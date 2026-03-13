@@ -33,7 +33,10 @@ describe("WindowStackManager", () => {
     normalWindows: [],
     pageActionStop: false,
     activeScreenId: null,
+    activeTabId: null,
     connectedTabs: [],
+    sidePanelTabs: [],
+    sidePanelUrls: {},
   })
 
   const expectStackUpdate = (
@@ -311,6 +314,25 @@ describe("WindowStackManager", () => {
       await WindowStackManager.removeWindow(2)
 
       expectStackUpdate([[windowA], [windowC], [windowD]], initialStack)
+    })
+  })
+
+  describe("BgData not initialized", () => {
+    it("should return empty array when BgData.get() returns undefined", async () => {
+      mockBgDataGet.mockReturnValue(undefined as any)
+
+      const result = await WindowStackManager.getStack()
+
+      expect(result).toEqual([])
+    })
+
+    it("should treat stack as empty when BgData.get() returns undefined on addWindow", async () => {
+      mockBgDataGet.mockReturnValue(undefined as any)
+      const window = createTestWindow(1, "cmd1", 0)
+
+      await WindowStackManager.addWindow(window)
+
+      expectStackUpdate([[window]])
     })
   })
 

@@ -12,6 +12,7 @@ vi.mock("@/services/storage", () => ({
   SESSION_STORAGE_KEY: {
     PA_RECORDING: "pa_recording",
     PA_CONTEXT: "pa_context",
+    PA_SIDE_PANEL_PENDING: "pa_side_panel_pending",
   },
 }))
 
@@ -30,6 +31,7 @@ vi.mock("@/services/chrome", () => ({
   openPopupWindow: vi.fn(),
   openTab: vi.fn(),
   getCurrentTab: vi.fn(),
+  readClipboard: vi.fn(),
 }))
 
 vi.mock("@/services/backgroundData", () => ({
@@ -59,6 +61,7 @@ vi.mock("@/lib/utils", () => ({
   isPageActionCommand: vi.fn(),
   isUrl: vi.fn(),
   isUrlParam: vi.fn(),
+  matchesPageActionUrl: vi.fn(),
   sleep: vi.fn(),
 }))
 
@@ -75,12 +78,14 @@ vi.mock("@/const", async () => {
     PAGE_ACTION_CONTROL: {
       start: "start",
       end: "end",
+      navigate: "navigate",
     },
     PAGE_ACTION_OPEN_MODE: {
       TAB: "tab",
       BACKGROUND_TAB: "background_tab",
       POPUP: "popup",
       WINDOW: "window",
+      CURRENT_TAB: "currentTab",
     },
     PAGE_ACTION_EXEC_STATE: {
       Start: "Start",
@@ -98,7 +103,7 @@ vi.mock("@/const", async () => {
 // Import modules after mocking
 import { Storage } from "@/services/storage"
 import { Ipc } from "@/services/ipc"
-import { openPopupWindow, openTab, getCurrentTab } from "@/services/chrome"
+import { openPopupWindow, openTab, getCurrentTab, readClipboard } from "@/services/chrome"
 import { BgData } from "@/services/backgroundData"
 import { RunningStatus } from "@/services/pageAction"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
@@ -108,6 +113,7 @@ import {
   isPageActionCommand,
   isUrl,
   isUrlParam,
+  matchesPageActionUrl,
   sleep,
 } from "@/lib/utils"
 import { resetLastUrl } from "./background"
@@ -120,6 +126,7 @@ export const mockRunningStatus = RunningStatus as any
 export const mockOpenPopupWindow = openPopupWindow as any
 export const mockOpenTab = openTab as any
 export const mockGetCurrentTab = getCurrentTab as any
+export const mockReadClipboard = readClipboard as any
 export const mockIncrementCommandExecutionCount =
   incrementCommandExecutionCount as any
 export const mockGenerateRandomID = generateRandomID as any
@@ -127,6 +134,7 @@ export const mockIsEmpty = isEmpty as any
 export const mockIsPageActionCommand = isPageActionCommand as any
 export const mockIsUrl = isUrl as any
 export const mockIsUrlParam = isUrlParam as any
+export const mockMatchesPageActionUrl = matchesPageActionUrl as any
 export const mockSleep = sleep as any
 
 // Mock console methods
@@ -154,6 +162,7 @@ export const setupBackgroundTestEnvironment = () => {
     mockIsPageActionCommand.mockReturnValue(true)
     mockIsUrl.mockReturnValue(true)
     mockIsUrlParam.mockReturnValue(false)
+    mockMatchesPageActionUrl.mockReturnValue(true)
     mockSleep.mockResolvedValue(undefined)
     mockIncrementCommandExecutionCount.mockResolvedValue(undefined)
     mockIpc.ensureConnection.mockResolvedValue(undefined)

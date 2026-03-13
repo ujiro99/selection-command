@@ -1,4 +1,4 @@
-import { DefaultCommands } from "../option/defaultSettings"
+import { getDefaultCommands } from "../option/defaultSettings"
 import { Command } from "@/types"
 import { CommandMetadata, GlobalCommandMetadata } from "@/types/command"
 import {
@@ -10,6 +10,7 @@ import {
   CMD_LOCAL_KEY,
 } from "./const"
 import { BaseStorage, debouncedSyncSet, cmdSyncKey, cmdLocalKey } from "./index"
+import { getUILanguage } from "@/services/i18n"
 
 // Storage interface for dependency injection
 interface StorageInterface {
@@ -26,7 +27,7 @@ let debounceTO: NodeJS.Timeout
 chrome.storage.onChanged.addListener((changes) => {
   const commands = [] as Command[]
   for (const [k, { newValue }] of Object.entries(changes)) {
-    if (k.startsWith(CMD_PREFIX)) commands.push(newValue)
+    if (k.startsWith(CMD_PREFIX)) commands.push(newValue as Command)
   }
   if (commands.filter((c) => c).length > 0) {
     clearTimeout(debounceTO)
@@ -300,9 +301,9 @@ export class CommandStorage {
       const [syncMetadata, localMetadata] = metadata
 
       if (!syncMetadata && !localMetadata && !globalMetadata) {
-        // First load, return default commands.
+        // First load, return locale-specific default commands.
         console.debug("No metadata found, returning default commands...")
-        return DefaultCommands
+        return getDefaultCommands(getUILanguage())
       }
 
       // Step 2: Load commands from both storage areas
@@ -366,10 +367,11 @@ export class CommandStorage {
     const [syncMetadata, localMetadata] =
       await this.metadataManager.loadCommandMetadata()
 
-    // If update first time, set DefaultCommands.
+    // If update first time, set locale-specific default commands.
     if (!syncMetadata) {
       console.debug("Update first time, set DefaultCommands.")
-      const updated = DefaultCommands.reduce(
+      const localeDefaults = getDefaultCommands(getUILanguage())
+      const updated = localeDefaults.reduce(
         (acc, cmd, i) => {
           const found = commands.find((c) => c.id === cmd.id)
           if (found) {
@@ -488,7 +490,9 @@ export class CommandStorage {
     const keys = Array.from({ length: count }, (_, i) => cmdSyncKey(i))
     const result = await chrome.storage.sync.get(keys)
 
-    return keys.map((key) => result[key]).filter((cmd) => cmd != null)
+    return keys
+      .map((key) => result[key] as Command)
+      .filter((cmd) => cmd != null)
   }
 
   private async loadFromLocal(count: number): Promise<Command[]> {
@@ -497,7 +501,9 @@ export class CommandStorage {
     const keys = Array.from({ length: count }, (_, i) => cmdLocalKey(i))
     const result = await chrome.storage.local.get(keys)
 
-    return keys.map((key) => result[key]).filter((cmd) => cmd != null)
+    return keys
+      .map((key) => result[key] as Command)
+      .filter((cmd) => cmd != null)
   }
 
   private reorderCommands(commands: Command[], order: string[]): Command[] {

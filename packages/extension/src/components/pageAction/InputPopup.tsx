@@ -79,7 +79,18 @@ const insertText = (targetElm: HTMLElement | Text, value: string) => {
   if (isInputOrTextarea(focusNode)) {
     const text = focusNode.value
     const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)
-    focusNode.value = newText
+    // Use the native prototype setter so React's synthetic onChange fires
+    // correctly for both uncontrolled and controlled (React Hook Form) inputs.
+    const proto =
+      focusNode instanceof HTMLTextAreaElement
+        ? HTMLTextAreaElement.prototype
+        : HTMLInputElement.prototype
+    const nativeSetter = Object.getOwnPropertyDescriptor(proto, "value")?.set
+    if (nativeSetter) {
+      nativeSetter.call(focusNode, newText)
+    } else {
+      focusNode.value = newText
+    }
   } else if (isTextNode(focusNode)) {
     const text = focusNode.nodeValue
     const newText = text.slice(0, start) + `{{${value}}}` + text.slice(end)

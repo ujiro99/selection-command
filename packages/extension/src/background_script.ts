@@ -9,18 +9,19 @@ import {
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
+import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
-import { closeWindow, windowExists } from "@/services/chrome"
+import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
+import { PopupAutoClose } from "@/services/popupAutoClose"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
-import type { IpcCallback } from "@/services/ipc"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { updateActiveScreenId } from "@/services/screen"
@@ -50,6 +51,15 @@ const getTabId = (
   return false
 }
 
+const getActiveTabId = (
+  _: unknown,
+  _sender: Sender,
+  response: (res: unknown) => void,
+) => {
+  getCurrentTab().then((tab) => response(tab?.id))
+  return true
+}
+
 const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
@@ -58,6 +68,9 @@ const onConnect = async function (port: chrome.runtime.Port) {
     BgData.update((data) => ({
       connectedTabs: [...data.connectedTabs, tabId],
     }))
+  } else {
+    // Side panel pages have no tab.id (port.sender.origin is set instead).
+    await PageActionBackground.handleSidePanelConnect(port)
   }
 }
 const onDisconnect = async function (port: chrome.runtime.Port) {
@@ -83,6 +96,26 @@ const commandFuncs = {
   [BgCommand.openPopups]: ActionHelper.openPopups,
   [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
   [BgCommand.openTab]: ActionHelper.openTab,
+  [BgCommand.openSidePanel]: (
+    param: Parameters<typeof ActionHelper.openSidePanel>[0],
+    sender: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    return ActionHelper.openSidePanel(
+      param,
+      sender,
+      async (result: unknown) => {
+        // If the side panel was already open (port retained), execute pending action
+        // via the existing port without waiting for a new onConnect event.
+        if (result === true) {
+          await PageActionBackground.handleSidePanelOpened()
+        }
+        response(result)
+      },
+    )
+  },
+  [BgCommand.closeSidePanel]: ActionHelper.closeSidePanel,
+  [BgCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
   [BgCommand.execApi]: ActionHelper.execApi,
 
   [BgCommand.openOption]: (): boolean => {
@@ -273,9 +306,11 @@ const commandFuncs = {
         return
       }
 
-      // Remove the window.
-      await closeWindow(windowId, "onHidden")
-      await WindowStackManager.removeWindow(windowId)
+      // Schedule popup window to close with configured delay
+      const window = layer.find((w) => w.id === windowId)
+      if (window) {
+        await PopupAutoClose.scheduleClose([window], "onHidden")
+      }
       response(false)
     }
 
@@ -306,6 +341,7 @@ const commandFuncs = {
   },
 
   [BgCommand.getTabId]: getTabId,
+  [BgCommand.getActiveTabId]: getActiveTabId,
 
   //
   // PageAction
@@ -344,6 +380,16 @@ const updateWindowSize = async (
   }
 }
 
+const updateActiveTabId = async (activeTabId?: number) => {
+  if (activeTabId == null) {
+    const activeTab = await getCurrentTab()
+    activeTabId = activeTab?.id
+  }
+  if (activeTabId != null) {
+    await BgData.update({ activeTabId })
+  }
+}
+
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
     url: OPTION_PAGE_PATH,
@@ -361,14 +407,14 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Update active screen ID
   await updateActiveScreenId(windowId)
 
+  // Update active tab ID
+  await updateActiveTabId()
+
   // Get windows to close based on focus change
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
 
-  // Execute close for all windows that need to be closed
-  for (const window of windowsToClose) {
-    await closeWindow(window.id, "onFocusChanged")
-    await WindowStackManager.removeWindow(window.id)
-  }
+  // Schedule popup windows to close with configured delay
+  await PopupAutoClose.scheduleClose(windowsToClose)
 })
 
 chrome.windows.onRemoved.addListener((windowId: number) => {
@@ -414,6 +460,9 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     if (tab.windowId) {
       await updateActiveScreenId(tab.windowId)
     }
+
+    // Update active tab ID
+    await updateActiveTabId(tab.id)
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
   }
@@ -600,6 +649,16 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     console.error("Failed to execute shortcut command:", error)
   }
 })
+
+// SidePanel auto-hide functionality
+// Track tabs with active side panels
+chrome.tabs.onRemoved.addListener((tabId) => {
+  ActionHelper.sidePanelClosed(tabId)
+  updateActiveTabId()
+})
+chrome.sidePanel.onClosed.addListener(({ tabId }) =>
+  ActionHelper.sidePanelClosed(tabId),
+)
 
 // Export functions for testing
 export const testExports = {

@@ -1,10 +1,11 @@
 import { Ipc, BgCommand } from "@/services/ipc"
 import { getScreenSize, getWindowPosition } from "@/services/screen"
 import { isValidString, isPageActionCommand } from "@/lib/utils"
-import { PAGE_ACTION_OPEN_MODE } from "@/const"
+import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import type { ExecuteCommandParams, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
+import { INSERT, InsertSymbol } from "@/services/pageAction"
 
 type PageActionParams = {
   userVariables?: Array<{ name: string; value: string }>
@@ -33,10 +34,18 @@ export const PageAction = {
       return
     }
 
+    // Checks if any step requires clipboard data
+    const needClipboard = command.pageActionOption.steps.some((step) => {
+      return (
+        step.param.type === PAGE_ACTION_EVENT.input &&
+        step.param.value.includes(InsertSymbol[INSERT.CLIPBOARD])
+      )
+    })
+
     const url: UrlParam = {
       searchUrl: command.pageActionOption.startUrl,
       selectionText,
-      useClipboard: useClipboard ?? false,
+      useClipboard: needClipboard || (useClipboard ?? false),
     }
 
     const openMode = useSecondary
@@ -44,7 +53,7 @@ export const PageAction = {
         ? PAGE_ACTION_OPEN_MODE.WINDOW
         : command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
           ? PAGE_ACTION_OPEN_MODE.TAB
-          : PAGE_ACTION_OPEN_MODE.TAB
+          : PAGE_ACTION_OPEN_MODE.TAB // Open in new tab when secondary is pressed
       : command.pageActionOption.openMode
 
     const windowPosition = await getWindowPosition()
@@ -53,6 +62,7 @@ export const PageAction = {
     Ipc.send<OpenAndRunProps>(BgCommand.openAndRunPageAction, {
       commandId: command.id,
       url,
+      pageUrl: command.pageActionOption.pageUrl,
       steps: command.pageActionOption.steps,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),

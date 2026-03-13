@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "Animação de Exibição do Menu"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Atraso de Fecho Automático do Popup"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Defina o tempo de atraso antes que o popup feche automaticamente após perder o foco. Defina como 0 ou deixe vazio para fecho imediato.\nMáximo: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (fechar imediatamente)"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "Ocultar painel lateral automaticamente"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Oculta automaticamente o painel lateral quando o painel principal é clicado enquanto o painel lateral está aberto via um comando."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Ocultar painel lateral automaticamente"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Oculta automaticamente o painel lateral quando o painel principal é clicado durante a visualização da pré-visualização do link."
+  },
   "Option_inherit": {
     "message": "Herdar"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Atualizado automaticamente quando a URL Inicial é alterada."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Apresentado como ícone do menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Preenchimento Automático"
   },
@@ -263,8 +287,17 @@
   "Option_spaceEncoding_percent": {
     "message": "Percentagem (%20)"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "Hífen (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Sublinhado (_)"
+  },
   "Option_openMode": {
     "message": "Modo de Abertura"
+  },
+  "Option_displayMode": {
+    "message": "Método de Exibição de Janela"
   },
   "Option_openMode_popup": {
     "message": "Pop-up"
@@ -277,6 +310,12 @@
   },
   "Option_openMode_backgroundTab": {
     "message": "Separador em segundo plano"
+  },
+  "Option_openMode_sidePanel": {
+    "message": "Painel lateral"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Abrir no painel lateral."
   },
   "Option_openMode_api": {
     "message": "API"
@@ -293,8 +332,11 @@
   "Option_openMode_pageAction": {
     "message": "Ação de Página"
   },
-  "Option_displayMode": {
-    "message": "Método de Exibição de Janela"
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt de IA"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Execute um prompt predefinido num serviço de IA"
   },
   "Option_commandType_title": {
     "message": "Selecionar Tipo de Comando"
@@ -313,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Gravar e reproduzir operações de páginas web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt de IA"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Execute um prompt predefinido num serviço de IA"
   },
   "Option_commandType_copy_title": {
     "message": "Copiar Texto"
@@ -353,11 +401,23 @@
   "Option_openMode_previewWindow": {
     "message": "Janela"
   },
+  "Option_openMode_previewSidePanel": {
+    "message": "Painel lateral"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clique"
   },
   "Option_parentFolderId": {
     "message": "Pasta"
+  },
+  "Option_parentFolder": {
+    "message": "Pasta Pai"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Selecionar pasta pai"
+  },
+  "Option_rootFolder": {
+    "message": "Raiz (sem pai)"
   },
   "Option_copyOption": {
     "message": "Formato de cópia"
@@ -386,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "URL da página onde a ação começa."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Para \"Separador Atual\", apenas as páginas que correspondam a este URL podem ser executadas. Pode utilizar o curinga \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL da página para iniciar a gravação de ações. Utilizado apenas no ecrã de definições."
+  },
+  "Option_pageUrl": {
+    "message": "URL da página"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Pode ser executado apenas em páginas que correspondam a este URL. Pode utilizar o carácter universal «*»."
+  },
   "Option_pageAction_title": {
     "message": "Ações"
   },
@@ -403,6 +475,54 @@
   },
   "Option_pageAction_delay": {
     "message": "Tempo de atraso"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Serviço de IA"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Selecione o serviço de IA a utilizar"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Modelo de prompt. Use o menu de inserção para adicionar variáveis (texto selecionado, URL, área de transferência)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Introduza o seu prompt aqui..."
+  },
+  "Option_userVariables": {
+    "message": "Variáveis do Utilizador"
+  },
+  "Option_userVariables_desc": {
+    "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Nome da variável"
+  },
+  "Option_userVariable_value": {
+    "message": "Valor"
+  },
+  "Option_userVariable_add": {
+    "message": "Adicionar variável"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Nome da variável é obrigatório"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Nome da variável já existe"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Máximo de $max$ variáveis permitidas",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_instantCommand": {
     "message": "Comando Instantâneo"
@@ -487,6 +607,12 @@
   },
   "Option_showIndicator_desc": {
     "message": "Exibe o restante para a visualização."
+  },
+  "Option_windowSettings": {
+    "message": "Definições da Janela"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Configure o comportamento da janela e as definições de popup."
   },
   "Option_folders": {
     "message": "Pastas"
@@ -575,8 +701,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Cor da Borda"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Cor do tipo de letra"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Especifique a cor da borda do menu. Padrão: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Especificar a cor do tipo de letra. Predefinido: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Escala do tamanho da fonte"
@@ -656,6 +788,9 @@
       }
     }
   },
+  "Option_zod_invalid_variable_name": {
+    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
+  },
   "Option_zod_string_min": {
     "message": "Por favor, insira uma string de $key$ caracteres ou mais.",
     "placeholders": {
@@ -676,6 +811,9 @@
   },
   "Option_zod_url": {
     "message": "Por favor, insira no formato URL."
+  },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "O URL da página é obrigatório quando o modo de separador atual é selecionado."
   },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "O texto selecionado será inserido",
@@ -936,40 +1074,13 @@
     "message": "Exibir separador e activá-lo.<wbr>Exibir à direita do separador actual."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "Variáveis do Utilizador"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "Defina variáveis personalizadas para utilizar nas suas Page Actions. Estas variáveis podem ser utilizadas em campos de entrada com {{nomeVariável}}."
-    },
-    "Option_userVariable_name": {
-      "message": "Nome"
-    },
-    "Option_userVariable_value": {
-      "message": "Valor"
-    },
-    "Option_userVariable_add": {
-      "message": "Adicionar Variável"
-    },
-    "Option_userVariable_name_required": {
-      "message": "O nome da variável é obrigatório"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "O nome deve começar com uma letra e pode conter apenas letras, números e sublinhados"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "Nome da variável já existe"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "Máximo de $max$ variáveis permitidas",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
-    "message": "Abrir separador em segundo plano.<wbr>Exibir à direita do separador actual."
+    "message": "Abrir separador em segundo plano.<wbr>Mostrar à direita do separador atual."
+  },
+  "Option_openMode_currentTab": {
+    "message": "Separador atual"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Executar no separador ativo atual.<wbr>O URL deve corresponder ao URL de início gravado."
   },
   "Option_title_desc": {
     "message": "Exibido como título do comando."
@@ -983,29 +1094,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Comportamento ao fazer Ctrl + clique no menu."
   },
-  "Option_parentFolder": {
-    "message": "Pasta Pai"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Selecionar pasta pai"
-  },
-  "Option_rootFolder": {
-    "message": "Raiz (sem pai)"
-  },
   "Option_searchUrlAssist": {
     "message": "Assistente IA"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Assistente de URL de Pesquisa"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Digite uma palavra-chave de pesquisa e o URL da página de resultados de pesquisa, depois clique no botão executar.\nA IA gerará um URL de pesquisa."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Executar com Gemini"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "A executar..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Como usar"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Palavra-chave de pesquisa"
@@ -1018,6 +1114,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Como usar"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Digite qualquer palavra em \"(1) Palavra-chave de pesquisa\""
@@ -1034,50 +1133,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Copie o URL de pesquisa gerado e cole no campo URL de pesquisa do comando"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Assistente de URL de Pesquisa"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Executar com Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "A executar..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Por favor, digite uma palavra-chave de pesquisa"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Por favor, digite uma URL válida"
-  },
-  "Option_userVariable_add": {
-    "message": "Adicionar variável"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Máximo de $max$ variáveis permitidas",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Nome da variável"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Nome da variável já existe"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Nome da variável é obrigatório"
-  },
-  "Option_userVariable_value": {
-    "message": "Valor"
-  },
-  "Option_userVariables": {
-    "message": "Variáveis do Utilizador"
-  },
-  "Option_userVariables_desc": {
-    "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
   },
   "Option_commandType": {
     "message": "Tipo de Comando"
@@ -1162,5 +1228,23 @@
   },
   "prompthistory_banner_description": {
     "message": "Uma nova ferramenta para reutilizar prompts no ChatGPT e mais✨"
+  },
+  "Option_windowState": {
+    "message": "Tamanho da janela"
+  },
+  "Option_windowState_desc": {
+    "message": "Tamanho da janela a apresentar"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Maximizado"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Ecrã inteiro"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Não é possível executar nesta página (URL da página não corresponde)"
   }
 }

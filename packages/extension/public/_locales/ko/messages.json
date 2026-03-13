@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "메뉴 표시 애니메이션"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "팝업 자동 닫기 지연"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "포커스를 잃은 후 팝업이 자동으로 닫히기 전 지연 시간을 설정합니다. 즉시 닫으려면 0으로 설정하거나 비워 두십시오.\n최대: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (즉시 닫기)"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "사이드 패널 자동 숨기기"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "명령을 통해 사이드 패널이 열려 있는 동안 메인 패널을 클릭하면 사이드 패널이 자동으로 숨겨집니다."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "사이드 패널 자동 숨기기"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "링크 미리보기 표시 중 메인 패널을 클릭하면 사이드 패널이 자동으로 숨겨집니다."
+  },
   "Option_inherit": {
     "message": "상속"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "시작 URL이 변경되면 자동으로 업데이트됩니다."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "메뉴 아이콘으로 표시됩니다."
+  },
   "Option_iconUrl_autofill": {
     "message": "자동 채우기"
   },
@@ -263,8 +287,17 @@
   "Option_spaceEncoding_percent": {
     "message": "퍼센트 (%20)"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "대시 (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "밑줄 (_)"
+  },
   "Option_openMode": {
     "message": "열기 모드"
+  },
+  "Option_displayMode": {
+    "message": "창 표시 방법"
   },
   "Option_openMode_popup": {
     "message": "팝업"
@@ -277,6 +310,12 @@
   },
   "Option_openMode_backgroundTab": {
     "message": "백그라운드 탭"
+  },
+  "Option_openMode_sidePanel": {
+    "message": "사이드 패널"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "사이드 패널에서 열기."
   },
   "Option_openMode_api": {
     "message": "API"
@@ -293,8 +332,11 @@
   "Option_openMode_pageAction": {
     "message": "페이지 작업"
   },
-  "Option_displayMode": {
-    "message": "창 표시 방법"
+  "Option_openMode_aiPrompt": {
+    "message": "AI 프롬프트"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "AI 서비스에서 미리 정의된 프롬프트를 실행합니다"
   },
   "Option_commandType_title": {
     "message": "명령 유형 선택"
@@ -313,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "웹 페이지 작업을 기록하고 재생합니다"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI 프롬프트"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "AI 서비스에서 미리 정의된 프롬프트를 실행합니다"
   },
   "Option_commandType_copy_title": {
     "message": "텍스트 복사"
@@ -353,11 +401,23 @@
   "Option_openMode_previewWindow": {
     "message": "창"
   },
+  "Option_openMode_previewSidePanel": {
+    "message": "사이드 패널"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + 클릭"
   },
   "Option_parentFolderId": {
     "message": "폴더"
+  },
+  "Option_parentFolder": {
+    "message": "상위 폴더"
+  },
+  "Option_parentFolder_desc": {
+    "message": "상위 폴더를 선택하세요"
+  },
+  "Option_rootFolder": {
+    "message": "루트 (상위 없음)"
   },
   "Option_copyOption": {
     "message": "복사 형식"
@@ -386,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "작업이 시작되는 페이지의 URL."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "\"현재 탭\"의 경우 이 URL과 일치하는 페이지에서만 실행할 수 있습니다. 와일드카드 \"*\"를 사용할 수 있습니다."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "액션 기록을 시작할 페이지의 URL. 설정 화면에서만 사용됩니다."
+  },
+  "Option_pageUrl": {
+    "message": "페이지 URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "이 URL과 일치하는 페이지에서만 실행할 수 있습니다. 와일드카드 「*」를 사용할 수 있습니다."
+  },
   "Option_pageAction_title": {
     "message": "작업"
   },
@@ -403,6 +475,54 @@
   },
   "Option_pageAction_delay": {
     "message": "지연 시간"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI 서비스"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "사용할 AI 서비스를 선택하세요"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "프롬프트"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "프롬프트 템플릿. 삽입 메뉴를 사용하여 변수(선택된 텍스트, URL, 클립보드)를 추가하세요."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "여기에 프롬프트를 입력하세요..."
+  },
+  "Option_userVariables": {
+    "message": "사용자 변수"
+  },
+  "Option_userVariables_desc": {
+    "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"
+  },
+  "Option_userVariable_name": {
+    "message": "변수 이름"
+  },
+  "Option_userVariable_value": {
+    "message": "값"
+  },
+  "Option_userVariable_add": {
+    "message": "변수 추가"
+  },
+  "Option_userVariable_name_required": {
+    "message": "변수 이름이 필요합니다"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "변수 이름이 이미 존재합니다"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "최대 $max$개의 변수가 허용됩니다",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_instantCommand": {
     "message": "즉시 명령어"
@@ -487,6 +607,12 @@
   },
   "Option_showIndicator_desc": {
     "message": "미리보기까지 남은 시간을 표시합니다."
+  },
+  "Option_windowSettings": {
+    "message": "창 설정"
+  },
+  "Option_windowSettings_desc": {
+    "message": "창 동작 및 팝업 설정을 구성합니다."
   },
   "Option_folders": {
     "message": "폴더"
@@ -575,8 +701,14 @@
   "Option_userStyles_option_border_color": {
     "message": "테두리 색상"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "글꼴 색상"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "메뉴의 테두리 색상을 지정합니다. 기본값: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "글꼴 색상을 지정합니다. 기본값: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "글꼴 크기 스케일"
@@ -656,6 +788,9 @@
       }
     }
   },
+  "Option_zod_invalid_variable_name": {
+    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
+  },
   "Option_zod_string_min": {
     "message": "$key$자 이상의 문자열을 입력하세요.",
     "placeholders": {
@@ -676,6 +811,9 @@
   },
   "Option_zod_url": {
     "message": "URL 형식으로 입력하세요."
+  },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "현재 탭 모드가 선택된 경우 페이지 URL은 필수입니다."
   },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "선택한 텍스트가 삽입됩니다",
@@ -933,40 +1071,13 @@
     "message": "탭을 표시하고 활성화.<wbr>현재 탭 오른쪽에 표시합니다."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "사용자 변수"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "페이지 액션에서 사용할 사용자 정의 변수를 정의합니다. 이러한 변수는 입력 필드에서 {{변수명}} 형태로 사용할 수 있습니다."
-    },
-    "Option_userVariable_name": {
-      "message": "이름"
-    },
-    "Option_userVariable_value": {
-      "message": "값"
-    },
-    "Option_userVariable_add": {
-      "message": "변수 추가"
-    },
-    "Option_userVariable_name_required": {
-      "message": "변수 이름이 필요합니다"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "이름은 문자로 시작해야 하며 문자, 숫자, 언더스코어만 포함할 수 있습니다"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "변수 이름이 이미 존재합니다"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "최대 $max$개의 변수가 허용됩니다",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
     "message": "백그라운드에서 탭 열기.<wbr>현재 탭 오른쪽에 표시합니다."
+  },
+  "Option_openMode_currentTab": {
+    "message": "현재 탭"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "현재 활성 탭에서 실행합니다.<wbr>URL은 기록된 시작 URL과 일치해야 합니다."
   },
   "Option_title_desc": {
     "message": "명령 제목으로 표시됩니다."
@@ -980,29 +1091,14 @@
   "Option_openModeSecondary_desc": {
     "message": "메뉴를 Ctrl + 클릭했을 때의 동작입니다."
   },
-  "Option_parentFolder": {
-    "message": "상위 폴더"
-  },
-  "Option_parentFolder_desc": {
-    "message": "상위 폴더를 선택하세요"
-  },
-  "Option_rootFolder": {
-    "message": "루트 (상위 없음)"
-  },
   "Option_searchUrlAssist": {
     "message": "AI 어시스턴트"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "검색 URL 어시스턴트"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "검색 키워드와 검색 결과 페이지 URL을 입력하고 실행 버튼을 클릭하세요.\nAI가 검색 URL을 생성합니다."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Gemini로 실행"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "실행 중..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "사용 방법"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) 검색 키워드"
@@ -1015,6 +1111,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "사용 방법"
   },
   "Option_searchUrlAssist_step1": {
     "message": "\"(1) 검색 키워드\"에 임의의 단어 입력"
@@ -1031,50 +1130,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "생성된 검색 URL을 복사하여 명령의 검색 URL 필드에 붙여넣기"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "검색 URL 어시스턴트"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Gemini로 실행"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "실행 중..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "검색 키워드를 입력하세요"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "유효한 URL을 입력하세요"
-  },
-  "Option_userVariable_add": {
-    "message": "변수 추가"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "최대 $max$개의 변수가 허용됩니다",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "변수 이름"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "변수 이름이 이미 존재합니다"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
-  },
-  "Option_userVariable_name_required": {
-    "message": "변수 이름이 필요합니다"
-  },
-  "Option_userVariable_value": {
-    "message": "값"
-  },
-  "Option_userVariables": {
-    "message": "사용자 변수"
-  },
-  "Option_userVariables_desc": {
-    "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
   },
   "Option_commandType": {
     "message": "명령어 유형"
@@ -1159,5 +1225,23 @@
   },
   "prompthistory_banner_description": {
     "message": "ChatGPT 등에서 프롬프트를 재사용할 수 있는 새로운 도구✨"
+  },
+  "Option_windowState": {
+    "message": "창 크기"
+  },
+  "Option_windowState_desc": {
+    "message": "표시할 창 크기"
+  },
+  "Option_windowState_normal": {
+    "message": "보통"
+  },
+  "Option_windowState_maximized": {
+    "message": "최대화"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "전체 화면"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "이 페이지에서 실행할 수 없습니다 (페이지 URL이 일치하지 않습니다)"
   }
 }

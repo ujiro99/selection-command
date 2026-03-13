@@ -1,7 +1,7 @@
 import { sleep, toUrl, isOverBytes, isUrlParam } from "@/lib/utils"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
-import { POPUP_OFFSET, POPUP_TYPE } from "@/const"
+import { POPUP_OFFSET, POPUP_TYPE, WINDOW_STATE } from "@/const"
 import { BgData } from "@/services/backgroundData"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { BgCommand, ClipboardResult, TabCommand } from "@/services/ipc"
@@ -51,7 +51,7 @@ export const fetchIconUrl = async (url: string): Promise<string> => {
 
     const onUpdated = async (
       tabId: number,
-      changeInfo: chrome.tabs.TabChangeInfo,
+      changeInfo: chrome.tabs.OnUpdatedInfo,
       tab: chrome.tabs.Tab,
     ) => {
       if (w == null) {
@@ -103,6 +103,7 @@ export type OpenPopupProps = {
   height: number
   screen: ScreenSize
   type: POPUP_TYPE
+  windowState?: WINDOW_STATE
 }
 
 export type OpenPopupsProps = {
@@ -123,6 +124,7 @@ export type OpenTabProps = {
 
 type ReadClipboardParam = Omit<OpenPopupsProps, "urls"> & {
   incognito: boolean
+  state?: "fullscreen" | "maximized"
 }
 
 type ReadClipboardResult = {
@@ -330,16 +332,20 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function(port) {
+      const onConnect = (port: chrome.runtime.Port) => {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function(msg) {
+        const onMessage = (msg: { command: string; data: ClipboardResult }) => {
           if (msg.command === BgCommand.setClipboard) {
+            port.onMessage.removeListener(onMessage)
+            chrome.runtime.onConnect.removeListener(onConnect)
             resolve(msg.data)
           }
-        })
-      })
+        }
+        port.onMessage.addListener(onMessage)
+      }
+      chrome.runtime.onConnect.addListener(onConnect)
       if (chrome.runtime.lastError) {
         throw new Error(chrome.runtime.lastError.message)
       }
@@ -355,21 +361,62 @@ const readClipboardContent = async (
 const openWindowAndReadClipboard = async (
   param: ReadClipboardParam,
 ): Promise<ReadClipboardResult> => {
+  const usesWindowState =
+    param.state === "fullscreen" || param.state === "maximized"
   const w = await chrome.windows.create({
     url: chrome.runtime.getURL("src/clipboard.html"),
     focused: true,
     type: param.type,
-    width: param.width,
-    height: param.height,
-    left: param.left,
-    top: param.top,
+    width: usesWindowState ? undefined : param.width,
+    height: usesWindowState ? undefined : param.height,
+    left: usesWindowState ? undefined : param.left,
+    top: usesWindowState ? undefined : param.top,
+    state: param.state,
     incognito: param.incognito,
   })
 
-  const result = await readClipboardContent(w.tabs?.[0].id as number)
+  const tab = w?.tabs?.[0]
+  if (!tab?.id || !w?.id) {
+    throw new Error("Failed to create clipboard window")
+  }
+  const result = await readClipboardContent(tab.id)
 
   return {
     window: w,
+    clipboardText: result.data ?? "",
+    err: result.err,
+  }
+}
+
+/**
+ * Open a temporary window to read clipboard content and return the result.
+ * @returns {Promise<{ clipboardText: string; err?: string }>} The clipboard content and any error message
+ *
+ * Note: This function opens a temporary window to read the clipboard content,
+ *       which is necessary due to browser security restrictions.
+ *       The window is closed immediately after reading the clipboard.
+ */
+export const readClipboard = async (): Promise<{
+  clipboardText: string
+  err?: string
+}> => {
+  const w = await chrome.windows.create({
+    url: chrome.runtime.getURL("src/clipboard.html"),
+    focused: true,
+    type: "popup",
+    width: 1,
+    height: 1,
+    left: 0,
+    top: 0,
+    state: "normal",
+  })
+  const tab = w?.tabs?.[0]
+  if (!tab?.id || !w?.id) {
+    throw new Error("Failed to create clipboard window")
+  }
+  const result = await readClipboardContent(tab.id)
+  await closeWindow(w.id, "readClipboard close window")
+  return {
     clipboardText: result.data ?? "",
     err: result.err,
   }
@@ -388,6 +435,8 @@ export const openPopupWindow = async (
   }
 
   const type = param.type ?? POPUP_TYPE.POPUP
+  const isFullscreen = param.windowState === WINDOW_STATE.FULLSCREEN
+  const isMaximized = param.windowState === WINDOW_STATE.MAXIMIZED
   const { top: at, left: al } = adjustWindowPosition(
     top,
     left,
@@ -395,6 +444,13 @@ export const openPopupWindow = async (
     height,
     screen,
   )
+
+  const usesWindowState = isFullscreen || isMaximized
+  const windowState = isFullscreen
+    ? "fullscreen"
+    : isMaximized
+      ? "maximized"
+      : undefined
 
   let window: chrome.windows.Window
   let clipboardText = ""
@@ -408,16 +464,23 @@ export const openPopupWindow = async (
       height,
       top: at,
       left: al,
+      state: windowState,
       incognito: current.incognito,
     })
     window = result.window
     clipboardText = result.clipboardText
 
-    await chrome.tabs.update(window.tabs?.[0].id as number, {
-      url: toUrl(url, clipboardText),
-    })
-    if (chrome.runtime.lastError) {
-      console.error(chrome.runtime.lastError)
+    try {
+      await chrome.tabs.update(window.tabs?.[0].id as number, {
+        url: toUrl(url, clipboardText),
+      })
+      if (isFullscreen) {
+        // On macOS, even if you open with state: "fullscreen",
+        // it may not actually go fullscreen, so switch to fullscreen after opening.
+        await chrome.windows.update(window.id!, { state: "fullscreen" })
+      }
+    } catch (e) {
+      console.error(e)
     }
 
     if (result.err) {
@@ -433,15 +496,25 @@ export const openPopupWindow = async (
       )
     }
   } else {
-    window = await chrome.windows.create({
+    window = (await chrome.windows.create({
       url: toUrl(url),
       type,
-      width,
-      height,
-      top: at,
-      left: al,
+      width: usesWindowState ? undefined : width,
+      height: usesWindowState ? undefined : height,
+      top: usesWindowState ? undefined : at,
+      left: usesWindowState ? undefined : al,
+      state: windowState,
       incognito: current.incognito,
-    })
+    }))!
+    try {
+      if (isFullscreen) {
+        // On macOS, even if you open with state: "fullscreen",
+        // it may not actually go fullscreen, so switch to fullscreen after opening.
+        await chrome.windows.update(window.id!, { state: "fullscreen" })
+      }
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   await updateBackgroundData([window], param.commandId, current.id, type)
@@ -468,25 +541,28 @@ export const openPopupWindowMultiple = async (
 
   const type = param.type ?? POPUP_TYPE.POPUP
   const windows = await Promise.all(
-    param.urls.reverse().map((url, idx) => {
-      const { top: t, left: l } = adjustWindowPosition(
-        top,
-        left,
-        width,
-        height,
-        screen,
-        idx,
-      )
-      return chrome.windows.create({
-        url,
-        width,
-        height,
-        top: t,
-        left: l,
-        type,
-        incognito: current.incognito,
+    param.urls
+      .reverse()
+      .map((url, idx) => {
+        const { top: t, left: l } = adjustWindowPosition(
+          top,
+          left,
+          width,
+          height,
+          screen,
+          idx,
+        )
+        return chrome.windows.create({
+          url,
+          width,
+          height,
+          top: t,
+          left: l,
+          type,
+          incognito: current.incognito,
+        })
       })
-    }),
+      .filter((p): p is Promise<chrome.windows.Window> => p !== null),
   )
 
   await updateBackgroundData(windows, param.commandId, current.id, type)
@@ -503,7 +579,7 @@ export const openPopupWindowMultiple = async (
 export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
   const { url, active } = param
 
-  let currentTab: chrome.tabs.Tab | null = null
+  let currentTab: chrome.tabs.Tab | undefined
   try {
     currentTab = await getCurrentTab()
   } catch (e) {
@@ -561,7 +637,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
  * Get the current tab.
  * @returns {Promise<chrome.tabs.Tab>}
  */
-export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
+export async function getCurrentTab(): Promise<chrome.tabs.Tab | undefined> {
   const queryOptions = { active: true, lastFocusedWindow: true }
   const [tab] = await chrome.tabs.query(queryOptions)
   return tab
@@ -581,5 +657,99 @@ export async function closeWindow(
     await chrome.windows.remove(windowId)
   } catch (e) {
     console.warn(log, e)
+  }
+}
+
+export type OpenSidePanelProps = {
+  url: string | UrlParam
+  tabId?: number
+  isLinkCommand?: boolean
+}
+
+export type UpdateSidePanelUrlProps = {
+  url: string
+  tabId: number
+}
+
+/**
+ * Open a side panel with the specified URL (background script context only)
+ * @param {OpenSidePanelProps} param - Parameters for opening the side panel
+ * @returns {Promise<OpenResult>} Result containing tab ID and clipboard text
+ */
+export const openSidePanel = async (
+  param: OpenSidePanelProps,
+): Promise<{ tabId: number | undefined }> => {
+  const { url, tabId } = param
+
+  const targetTabId = tabId
+  if (!targetTabId) {
+    console.warn("No valid tab ID for side panel")
+    return {
+      tabId: undefined,
+    }
+  }
+
+  // Set the side panel options for the tab
+  // Do not await here because sidePanel.open() must be executed within a user gesture.
+  chrome.sidePanel.setOptions({
+    tabId: targetTabId,
+    path: toUrl(url),
+    enabled: true,
+  })
+
+  // Open the side panel
+  await chrome.sidePanel.open({ tabId: targetTabId })
+
+  return {
+    tabId: targetTabId,
+  }
+}
+
+const SIDE_PANEL_CLOSE_ANIMATION = 1000
+
+/**
+ * Close the side panel for the specified tab
+ * @param {number} tabId - The ID of the tab to close the side panel for
+ * @returns {Promise<void>} A promise that resolves when the side panel is closed
+ */
+export const closeSidePanel = async (tabId: number): Promise<void> => {
+  try {
+    await chrome.sidePanel.close({ tabId: tabId })
+  } catch (e) {
+    console.warn("Failed to close side panel:", e)
+  }
+  // Wait for the side panel close animation to finish before disabling it to prevent visual glitches.
+  await sleep(SIDE_PANEL_CLOSE_ANIMATION)
+  try {
+    await chrome.sidePanel.setOptions({
+      tabId: tabId,
+      enabled: false,
+    })
+  } catch (e) {
+    console.warn("Failed to disable side panel:", e)
+  }
+}
+
+/**
+ * Update the side panel URL for the specified tab
+ * @param {UpdateSidePanelUrlProps} param - Parameters containing URL and tab ID
+ * @returns {Promise<void>} A promise that resolves when the URL is updated
+ */
+export const updateSidePanelUrl = async (
+  param: UpdateSidePanelUrlProps,
+): Promise<void> => {
+  const { url, tabId } = param
+
+  try {
+    // Update the side panel URL
+    await chrome.sidePanel.setOptions({
+      tabId: tabId,
+      path: url,
+      enabled: true,
+    })
+    // console.debug("[updateSidePanelUrl] Updated:", { tabId, url })
+  } catch (error) {
+    console.error("[updateSidePanelUrl] Failed:", error)
+    throw error
   }
 }

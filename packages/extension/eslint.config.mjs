@@ -16,4 +16,11 @@ export default tseslint.config(...rootConfig, {
       { allowConstantExport: true },
     ],
   },
+},
+{
+  // Playwright fixtures use a `use` callback that conflicts with React hooks rules
+  files: ["e2e/**/*.{ts,tsx}"],
+  rules: {
+    "react-hooks/rules-of-hooks": "off",
+  },
 })

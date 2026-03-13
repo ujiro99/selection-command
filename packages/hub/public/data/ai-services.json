@@ -1,0 +1,61 @@
+[
+  {
+    "id": "chatgpt",
+    "name": "ChatGPT",
+    "url": "https://chatgpt.com",
+    "faviconUrl": "https://chatgpt.com/favicon.ico",
+    "inputSelectors": [
+      "#prompt-textarea",
+      "[data-testid='prompt-textarea']",
+      "#main form textarea"
+    ],
+    "submitSelectors": [
+      "form button.composer-submit-button-color",
+      "button#composer-submit-button",
+      "button[data-testid='composer-speech-button']"
+    ]
+  },
+  {
+    "id": "gemini",
+    "name": "Gemini",
+    "url": "https://gemini.google.com/app",
+    "faviconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
+    "inputSelectors": [
+      ".ql-editor[contenteditable='true']"
+    ],
+    "submitSelectors": [
+      "button.send-button",
+      "button mat-icon[fonticon='send']"
+    ]
+  },
+  {
+    "id": "claude",
+    "name": "Claude",
+    "url": "https://claude.ai/new",
+    "faviconUrl": "https://claude.ai/favicon.ico",
+    "inputSelectors": [
+      "div[contenteditable='true'][aria-label]",
+      "div[contenteditable='true'].ProseMirror"
+    ],
+    "submitSelectors": [
+      "#main-content button.Button_claude__c_hZy",
+      "#main-content button[data-state='closed']"
+    ]
+  },
+  {
+    "id": "perplexity",
+    "name": "Perplexity",
+    "url": "https://www.perplexity.ai",
+    "faviconUrl": "https://favicon.im/perplexity.ai",
+    "inputSelectors": [
+      "div#ask-input",
+      "div[contenteditable='true'][role='textbox']"
+    ],
+    "submitSelectors": [
+      "button[type='button']:has(use[*|href='#pplx-icon-custom-perplexity-v2v'])",
+      "button[type='button']:has(use[*|href='#pplx-icon-arrow-up'])",
+      "button[type='button']:has(use[*|href^='#pplx-icon-arrow-right'])",
+      "button[aria-label='Submit']"
+    ]
+  }
+]

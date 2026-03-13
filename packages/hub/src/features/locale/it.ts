@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "Finestra",
         [OPEN_MODE.TAB]: "Scheda",
         [OPEN_MODE.BACKGROUND_TAB]: "Scheda in background",
+        [OPEN_MODE.SIDE_PANEL]: "Pannello laterale",
         [OPEN_MODE.PAGE_ACTION]: "Azione Pagina",
       },
     },

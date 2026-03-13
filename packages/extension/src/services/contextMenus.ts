@@ -15,6 +15,10 @@ export type executeActionProps = {
 }
 
 type Callback = () => void
+type Contexts = [
+  `${chrome.contextMenus.ContextType}`,
+  ...`${chrome.contextMenus.ContextType}`[],
+]
 
 const callbacks = new Map<number | string, Callback>()
 
@@ -70,7 +74,7 @@ export const ContextMenu = {
   commandIdObj: {} as { [key: string | number]: Command },
 
   addMenus: (settings: SettingsType) => {
-    const contexts = ["selection"] as chrome.contextMenus.ContextType[]
+    const contexts = ["selection"] as Contexts
     const commands = settings.commands.filter(isMenuCommand)
     const folders = settings.folders
 
@@ -91,7 +95,7 @@ export const ContextMenu = {
   addMenusRecursive: (
     nodes: CommandTreeNode[],
     parentId: string | number,
-    contexts: chrome.contextMenus.ContextType[],
+    contexts: Contexts,
     callbacks: Map<number | string, Callback> = new Map(),
   ) => {
     for (const node of nodes) {

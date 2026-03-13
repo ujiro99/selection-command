@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client"
-import { APP_ID, isDebug } from "./const"
+import { APP_ID, isDebug, isE2E } from "./const"
 import { App } from "./components/App"
 import icons from "./icons.svg?raw"
 import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
@@ -14,7 +14,7 @@ try {
   const rootDom = document.createElement("div")
   rootDom.id = APP_ID
   document.body.insertAdjacentElement("afterend", rootDom)
-  const mode = isDebug ? "open" : "closed" // 'open' for debugging
+  const mode = isDebug || isE2E ? "open" : "closed" // 'open' for debugging and e2e
   const shadow = rootDom.attachShadow({ mode })
   shadow.innerHTML = icons
   const root = createRoot(shadow)

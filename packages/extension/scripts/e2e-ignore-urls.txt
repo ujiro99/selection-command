@@ -1,0 +1,12 @@
+https://lista.mercadolivre.com.br/%s
+https://www.amazon.com.br/s?k=%s
+https://www.amazon.de/s?k=%s
+https://www.amazon.fr/s?k=%s
+https://www.amazon.in/s?k=%s
+https://www.amazon.it/s?k=%s
+https://www.coupang.com/np/search?q=%s
+https://www.flipkart.com/search?q=%s
+https://www.leboncoin.fr/recherche?text=%s
+https://www.ozon.ru/search/?text=%s
+https://www.wildberries.ru/catalog/0/search.aspx?search=%s
+https://www.zhihu.com/search?q=%s

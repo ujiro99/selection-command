@@ -19,6 +19,9 @@ vi.mock("../option/defaultSettings", () => ({
     shortcuts: { shortcuts: [] },
     commandExecutionCount: 0,
     hasShownReviewRequest: false,
+    windowOption: {
+      sidePanelAutoHide: true,
+    },
   },
 }))
 
@@ -542,6 +545,37 @@ describe("EnhancedSettings", () => {
             hasShownReviewRequest: mockUserStats.hasShownReviewRequest,
           }),
         )
+      })
+
+      it("ES-23: should include windowOption in merged settings", async () => {
+        const mockCommands = [{ id: "1", title: "Command", iconUrl: "" }]
+        const mockUserSettings = {
+          settingVersion: "1.0.0",
+          folders: [],
+          pageRules: [],
+          windowOption: {
+            sidePanelAutoHide: true,
+          },
+        }
+        const mockStars: { id: string }[] = []
+        const mockShortcuts = { shortcuts: [] }
+        const mockUserStats = {
+          commandExecutionCount: 0,
+          hasShownReviewRequest: false,
+        }
+
+        mockSettingsCache.get
+          .mockResolvedValueOnce(mockCommands)
+          .mockResolvedValueOnce(mockUserSettings)
+          .mockResolvedValueOnce(mockStars)
+          .mockResolvedValueOnce(mockShortcuts)
+          .mockResolvedValueOnce(mockUserStats)
+
+        const result = await enhancedSettings.get()
+
+        // Verify windowOption is included in the merged settings
+        expect(result.windowOption).toBeDefined()
+        expect(result.windowOption.sidePanelAutoHide).toBe(true)
       })
     })
 

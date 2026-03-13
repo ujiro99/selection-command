@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "Анимация Отображения Меню"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Задержка Автозакрытия Всплывающего Окна"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Установите время задержки перед автоматическим закрытием всплывающего окна после потери фокуса. Установите 0 или оставьте пустым для немедленного закрытия.\nМаксимум: 10000 мс"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (закрыть немедленно)"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "Автоматически скрывать боковую панель"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Автоматически скрывает боковую панель при клике на основную панель, пока боковая панель открыта через команду."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Автоматически скрывать боковую панель"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Автоматически скрывает боковую панель при клике на основную панель во время отображения предварительного просмотра ссылки."
+  },
   "Option_inherit": {
     "message": "Наследовать"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "URL иконки будет автоматически обновлен при изменении начального URL."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Отображается как значок меню."
+  },
   "Option_iconUrl_autofill": {
     "message": "Автозаполнение"
   },
@@ -263,8 +287,17 @@
   "Option_spaceEncoding_percent": {
     "message": "Процент (%20)"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "Дефис (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Подчёркивание (_)"
+  },
   "Option_openMode": {
     "message": "Режим открытия"
+  },
+  "Option_displayMode": {
+    "message": "Способ отображения окна"
   },
   "Option_openMode_popup": {
     "message": "Всплывающее окно"
@@ -277,6 +310,12 @@
   },
   "Option_openMode_backgroundTab": {
     "message": "Фоновая вкладка"
+  },
+  "Option_openMode_sidePanel": {
+    "message": "Боковая панель"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Открыть в боковой панели."
   },
   "Option_openMode_api": {
     "message": "API"
@@ -293,8 +332,11 @@
   "Option_openMode_pageAction": {
     "message": "Действие страницы"
   },
-  "Option_displayMode": {
-    "message": "Способ отображения окна"
+  "Option_openMode_aiPrompt": {
+    "message": "AI-промпт"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Запускает предопределённый промпт в сервисе ИИ"
   },
   "Option_commandType_title": {
     "message": "Выбрать тип команды"
@@ -313,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Записывать и воспроизводить операции веб-страниц"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI-промпт"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Запускает предопределённый промпт в сервисе ИИ"
   },
   "Option_commandType_copy_title": {
     "message": "Копировать текст"
@@ -353,11 +401,23 @@
   "Option_openMode_previewWindow": {
     "message": "Окно"
   },
+  "Option_openMode_previewSidePanel": {
+    "message": "Боковая панель"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + клик"
   },
   "Option_parentFolderId": {
     "message": "Папка"
+  },
+  "Option_parentFolder": {
+    "message": "Родительская Папка"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Выберите родительскую папку"
+  },
+  "Option_rootFolder": {
+    "message": "Корень (нет родителя)"
   },
   "Option_copyOption": {
     "message": "Формат копирования"
@@ -386,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "URL страницы, где начинается действие."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Для \"Текущей вкладки\" могут быть выполнены только страницы, соответствующие этому URL. Вы можете использовать подстановочный знак \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL страницы для начала записи действий. Используется только на экране настроек."
+  },
+  "Option_pageUrl": {
+    "message": "URL страницы"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Можно запускать только на страницах, соответствующих этому URL. Можно использовать подстановочный знак «*»."
+  },
   "Option_pageAction_title": {
     "message": "Действие"
   },
@@ -403,6 +475,54 @@
   },
   "Option_pageAction_delay": {
     "message": "Время ожидания"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Сервис ИИ"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Выберите сервис ИИ для использования"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Промпт"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Шаблон промпта. Используйте меню вставки для добавления переменных (выбранный текст, URL, буфер обмена)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Введите ваш промпт здесь..."
+  },
+  "Option_userVariables": {
+    "message": "Пользовательские Переменные"
+  },
+  "Option_userVariables_desc": {
+    "message": "Определить пользовательские переменные для полей ввода (макс 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Имя переменной"
+  },
+  "Option_userVariable_value": {
+    "message": "Значение"
+  },
+  "Option_userVariable_add": {
+    "message": "Добавить переменную"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Имя переменной обязательно"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Имя переменной уже существует"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Максимум $max$ переменных разрешено",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_instantCommand": {
     "message": "Мгновенная команда"
@@ -487,6 +607,12 @@
   },
   "Option_showIndicator_desc": {
     "message": "Показывать оставшееся время до предпросмотра."
+  },
+  "Option_windowSettings": {
+    "message": "Настройки Окна"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Настройте поведение окна и параметры всплывающих окон."
   },
   "Option_folders": {
     "message": "Папки"
@@ -575,8 +701,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Цвет границы"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Цвет шрифта"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Укажите цвет границы меню. По умолчанию: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Укажите цвет шрифта. По умолчанию: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Масштаб размера шрифта"
@@ -656,6 +788,9 @@
       }
     }
   },
+  "Option_zod_invalid_variable_name": {
+    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
+  },
   "Option_zod_string_min": {
     "message": "Введите строку длиной не менее $key$ символов.",
     "placeholders": {
@@ -676,6 +811,9 @@
   },
   "Option_zod_url": {
     "message": "Введите в формате URL."
+  },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "URL страницы обязателен при выборе режима текущей вкладки."
   },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Будет вставлен выбранный текст",
@@ -933,40 +1071,13 @@
     "message": "Показать вкладку и активировать.<wbr>Показать справа от текущей вкладки."
   },
   "Option_openMode_backgroundTab_desc": {
-    "Option_userVariables": {
-      "message": "Пользовательские переменные"
-    },
-    "Option_userVariables_tooltip": {
-      "message": "Определите пользовательские переменные для использования в ваших Page Actions. Эти переменные можно использовать в полях ввода с {{имяПеременной}}."
-    },
-    "Option_userVariable_name": {
-      "message": "Имя"
-    },
-    "Option_userVariable_value": {
-      "message": "Значение"
-    },
-    "Option_userVariable_add": {
-      "message": "Добавить переменную"
-    },
-    "Option_userVariable_name_required": {
-      "message": "Имя переменной обязательно"
-    },
-    "Option_userVariable_name_invalid": {
-      "message": "Имя должно начинаться с буквы и может содержать только буквы, цифры и подчеркивания"
-    },
-    "Option_userVariable_name_duplicate": {
-      "message": "Имя переменной уже существует"
-    },
-    "Option_userVariable_max_reached": {
-      "message": "Разрешено максимум $max$ переменных",
-      "placeholders": {
-        "max": {
-          "content": "$1",
-          "example": "5"
-        }
-      }
-    },
     "message": "Открыть вкладку в фоновом режиме.<wbr>Показать справа от текущей вкладки."
+  },
+  "Option_openMode_currentTab": {
+    "message": "Текущая вкладка"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Выполнить в текущей активной вкладке.<wbr>URL должен совпадать с записанным начальным URL."
   },
   "Option_title_desc": {
     "message": "Отображается как заголовок команды."
@@ -980,29 +1091,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Поведение при Ctrl + клике по меню."
   },
-  "Option_parentFolder": {
-    "message": "Родительская Папка"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Выберите родительскую папку"
-  },
-  "Option_rootFolder": {
-    "message": "Корень (нет родителя)"
-  },
   "Option_searchUrlAssist": {
     "message": "Помощник ИИ"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Помощник URL Поиска"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Введите ключевое слово поиска и URL страницы результатов поиска, затем нажмите кнопку выполнить.\nИИ создаст URL поиска."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Выполнить с Gemini"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "Выполнение..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Способ использования"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Ключевое слово поиска"
@@ -1015,6 +1111,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Способ использования"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Введите любое слово в \"(1) Ключевое слово поиска\""
@@ -1031,50 +1130,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Скопируйте созданный URL поиска и вставьте в поле URL поиска команды"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Помощник URL Поиска"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Выполнить с Gemini"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Выполнение..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Пожалуйста, введите ключевое слово поиска"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Пожалуйста, введите действительный URL"
-  },
-  "Option_userVariable_add": {
-    "message": "Добавить переменную"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Максимум $max$ переменных разрешено",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Имя переменной"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Имя переменной уже существует"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Имя переменной обязательно"
-  },
-  "Option_userVariable_value": {
-    "message": "Значение"
-  },
-  "Option_userVariables": {
-    "message": "Пользовательские Переменные"
-  },
-  "Option_userVariables_desc": {
-    "message": "Определить пользовательские переменные для полей ввода (макс 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
   },
   "Option_commandType": {
     "message": "Тип Команды"
@@ -1159,5 +1225,23 @@
   },
   "prompthistory_banner_description": {
     "message": "Новый инструмент для повторного использования подсказок для ChatGPT и других✨"
+  },
+  "Option_windowState": {
+    "message": "Размер окна"
+  },
+  "Option_windowState_desc": {
+    "message": "Размер отображаемого окна"
+  },
+  "Option_windowState_normal": {
+    "message": "Обычное"
+  },
+  "Option_windowState_maximized": {
+    "message": "Развёрнуто"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Полный экран"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Невозможно выполнить на этой странице (URL страницы не совпадает)"
   }
 }

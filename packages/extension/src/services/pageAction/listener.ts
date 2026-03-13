@@ -73,6 +73,12 @@ const getLabel = (e: Element): string => {
       e.parentElement?.dataset.placeholder ||
       e.ariaLabel ||
       e.innerText
+  } else if (e instanceof HTMLElement && isEditable(e)) {
+    label =
+      e.dataset.placeholder ||
+      e.parentElement?.dataset.placeholder ||
+      e.ariaLabel ||
+      e.innerText
   } else if (e instanceof HTMLElement) {
     label = !isEmpty(e.ariaLabel) ? e.ariaLabel || "" : e.innerText
   } else {
@@ -84,7 +90,26 @@ const getLabel = (e: Element): string => {
 let focusElm: HTMLElement | null = null
 let focusXpath: string | null = null
 let lastMouseDownTarget: HTMLElement | null = null
+let rawMouseDownTarget: HTMLElement | null = null
 let lastInputTarget: HTMLElement | null = null
+
+/**
+ * XPath locked at the time of the first `input` event on a contenteditable
+ * element (e.g. Quill editor). Some WYSIWYG editors mutate the element's
+ * class names when editing begins — for example, Quill adds `ql-blank` to the
+ * editor div while it is empty and removes it on the first keystroke. Because
+ * RobulaPlus includes class names in generated XPaths, consecutive `input`
+ * events on the very same DOM element can produce different XPath strings,
+ * which prevents background.ts from recognising them as the same element and
+ * combining them into a single step.
+ *
+ * To solve this we compute the XPath once (on the first `input` event, after
+ * the DOM has already been updated) and reuse it for every subsequent event on
+ * the same focused element. The lock is cleared whenever focus moves to a
+ * different element so that unrelated editable elements get their own fresh
+ * XPath.
+ */
+let lockedInputSelector: string | null = null
 
 /**
  * Get the robust XPath of an element.
@@ -153,13 +178,24 @@ interface EventsFunctions {
 
 export const PageActionListener = (() => {
   const onFocusIn = (event: FocusEvent) => {
-    focusElm = event.target as HTMLElement
+    const newFocusElm = event.target as HTMLElement
+    // Clear the locked selector whenever focus moves to a different element so
+    // that the next editable element gets its own fresh XPath.
+    if (focusElm !== newFocusElm) {
+      lockedInputSelector = null
+    }
+    focusElm = newFocusElm
     if (isPopup(focusElm)) return
     focusXpath = getXPathM(focusElm)
   }
 
   const func: EventsFunctions = {
     async click(e: MouseEvent) {
+      // Track raw mousedown target for label-triggered click detection
+      if (e.type === "mousedown") {
+        rawMouseDownTarget = e.target as HTMLElement
+      }
+
       // Ignore click events that are triggered by mouse down event.
       if (lastMouseDownTarget === e.target && e.type === "click") {
         lastMouseDownTarget = null
@@ -174,6 +210,28 @@ export const PageActionListener = (() => {
 
       const target = e.target as HTMLElement
       if (isInputting(target)) return
+
+      // Skip click events on checkbox/radio triggered by a parent label element.
+      // When a user clicks inside a <label>, the browser synthetically dispatches
+      // a click to the associated input. We detect this by checking if the
+      // rawMouseDownTarget (the physically clicked element) belongs to a label
+      // that contains or references this checkbox/radio input.
+      if (
+        e.type === "click" &&
+        isInput(target) &&
+        (target.type === "checkbox" || target.type === "radio") &&
+        rawMouseDownTarget != null &&
+        rawMouseDownTarget !== target
+      ) {
+        const parentLabel = rawMouseDownTarget.closest("label")
+        if (
+          parentLabel != null &&
+          (parentLabel.contains(target) ||
+            parentLabel.htmlFor === (target as HTMLInputElement).id)
+        ) {
+          return
+        }
+      }
 
       let xpath = getXPathM(target)
       let label = getLabel(target as Element)
@@ -268,8 +326,19 @@ export const PageActionListener = (() => {
     async input(e: Event) {
       if (isPopup(e.target as HTMLElement)) return
       const target = e.target as HTMLElement
+
+      // Skip checkbox/radio - state changes are captured by click events only
+      if (
+        isInput(target) &&
+        (target.type === "checkbox" || target.type === "radio")
+      ) {
+        return
+      }
+
       let value: string | null = null
       if (isInput(target) || isTextarea(target)) {
+        value = target.value
+      } else if (target instanceof HTMLSelectElement) {
         value = target.value
       } else if (isEditable(target)) {
         value = target.innerText
@@ -281,7 +350,25 @@ export const PageActionListener = (() => {
       lastInputTarget = target
 
       const stepId = generateRandomID()
-      const xpath = getXPathM(target, e.type)
+
+      // For contenteditable elements (e.g. Quill), use a locked XPath that was
+      // computed on the first input event. This prevents selector mismatches
+      // caused by WYSIWYG editors mutating class names (e.g. Quill's `ql-blank`)
+      // between the empty state and the editing state, which would otherwise
+      // make background.ts treat consecutive events as different elements and
+      // skip combining them into a single step.
+      let xpath: string
+      if (isEditable(target) && target === focusElm) {
+        if (!lockedInputSelector) {
+          // Compute and lock the XPath on the first input event. By this point
+          // the DOM has already been updated (e.g. `ql-blank` removed), so the
+          // resulting XPath is valid for both matching and later replay.
+          lockedInputSelector = getXPathM(target, e.type)
+        }
+        xpath = lockedInputSelector
+      } else {
+        xpath = getXPathM(target, e.type)
+      }
       if (value != null) {
         value = convReadableKeysToSymbols(value)
         Ipc.send<PageActionStep>(BgCommand.addPageAction, {
@@ -342,6 +429,13 @@ export const PageActionListener = (() => {
     window.removeEventListener("keydown", func.keyboard, opt)
     window.removeEventListener("input", func.input, opt)
     window.removeEventListener("scroll", func.scroll, opt)
+    // Reset all session state to ensure a clean slate for the next recording session.
+    focusElm = null
+    focusXpath = null
+    lastMouseDownTarget = null
+    rawMouseDownTarget = null
+    lastInputTarget = null
+    lockedInputSelector = null
   }
 
   return { start, stop }

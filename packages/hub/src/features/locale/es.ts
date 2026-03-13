@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "Ventana",
         [OPEN_MODE.TAB]: "Pestaña",
         [OPEN_MODE.BACKGROUND_TAB]: "Pestaña en segundo plano",
+        [OPEN_MODE.SIDE_PANEL]: "Panel lateral",
         [OPEN_MODE.PAGE_ACTION]: "Acción de página",
       },
     },

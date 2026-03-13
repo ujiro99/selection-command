@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "Menu Display Animation"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Popup Auto-Close Delay"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Set the delay time before the popup automatically closes after losing focus. Set to 0 or leave empty for immediate close.\nMaximum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (close immediately)"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "Side Panel Auto-Hide"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Automatically hide the side panel when the main panel is clicked while the side panel is open via a command."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Side Panel Auto-Hide"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Automatically hide the side panel when the main panel is clicked while displaying the link preview."
+  },
   "Option_inherit": {
     "message": "Inherit"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Automatically updated when the Start URL is changed."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Displayed as the menu icon."
+  },
   "Option_iconUrl_autofill": {
     "message": "Autofill"
   },
@@ -262,6 +286,12 @@
   },
   "Option_spaceEncoding_percent": {
     "message": "Percent (%20)"
+  },
+  "Option_spaceEncoding_dash": {
+    "message": "Dash (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Underscore (_)"
   },
   "Option_openMode": {
     "message": "Open Mode"
@@ -281,6 +311,12 @@
   "Option_openMode_backgroundTab": {
     "message": "Background Tab"
   },
+  "Option_openMode_sidePanel": {
+    "message": "Side Panel"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Open in side panel."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -295,6 +331,12 @@
   },
   "Option_openMode_pageAction": {
     "message": "Page Action"
+  },
+  "Option_openMode_aiPrompt": {
+    "message": "AI Prompt"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Run a predefined prompt on an AI service"
   },
   "Option_commandType_title": {
     "message": "Select Command Type"
@@ -313,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Record and replay web page operations"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI Prompt"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Run a predefined prompt on an AI service"
   },
   "Option_commandType_copy_title": {
     "message": "Copy Text"
@@ -352,6 +400,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Window"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Side Panel"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Click"
@@ -395,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "URL of the page where the action starts."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "For \"Current Tab\", only pages matching this URL can be executed. You can use the wildcard \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL of the page to start recording actions. Used only in the settings screen."
+  },
+  "Option_pageUrl": {
+    "message": "Page URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Only pages matching this URL can be executed. You can use the wildcard \"*\"."
+  },
   "Option_pageAction_title": {
     "message": "Actions"
   },
@@ -412,6 +475,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Delay time"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI Service"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Select the AI service to use"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Prompt template. Use the insert menu to add variables (selected text, URL, clipboard)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Enter your prompt here..."
   },
   "Option_userVariables": {
     "message": "User Variables"
@@ -530,6 +608,12 @@
   "Option_showIndicator_desc": {
     "message": "Displays the remaining to the preview."
   },
+  "Option_windowSettings": {
+    "message": "Window Settings"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Configure window behavior and popup settings."
+  },
   "Option_folders": {
     "message": "Folders"
   },
@@ -617,8 +701,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Border Color"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Font color"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Specify the border color of the menu. Default: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Specify font color. Default: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Font size scaling"
@@ -721,6 +811,10 @@
   },
   "Option_zod_url": {
     "message": "Please enter in URL format."
+  },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "Page URL is required when Current Tab mode is selected.",
+    "description": "Zod validation error shown on the pageUrl field when openMode is CURRENT_TAB and pageUrl is empty"
   },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Selected text will be inserted",
@@ -983,6 +1077,12 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Open tab in background.<wbr>Show to the right of current tab."
   },
+  "Option_openMode_currentTab": {
+    "message": "Current Tab"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Run on the current active tab.<wbr>URL must match the recorded start URL."
+  },
   "Option_title_desc": {
     "message": "Displayed as the command title."
   },
@@ -1129,5 +1229,23 @@
   },
   "prompthistory_banner_description": {
     "message": "A new tool to reuse prompts for ChatGPT and more✨"
+  },
+  "Option_windowState": {
+    "message": "Window Size"
+  },
+  "Option_windowState_desc": {
+    "message": "Window size to display"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Maximized"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Fullscreen"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Cannot run on this page (page URL does not match)"
   }
 }

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Check } from "lucide-react"
+import Bowser from "bowser"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   FormControl,
@@ -12,6 +13,10 @@ import { Tooltip } from "@/components/Tooltip"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
+
+const isEdge =
+  Bowser.getParser(window.navigator.userAgent).getBrowserName() ===
+  "Microsoft Edge"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -32,22 +37,30 @@ const getIconForMode = (mode: string) => {
   if (mode === OPEN_MODE.WINDOW || mode === PAGE_ACTION_OPEN_MODE.WINDOW) {
     return "/setting/open_mode/window.png"
   }
+  if (mode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
+    return "/setting/open_mode/currentTab.png"
+  }
+  if (mode === OPEN_MODE.SIDE_PANEL) {
+    return "/setting/open_mode/side_panel.png"
+  }
   return "/setting/open_mode/popup.png"
 }
 
-// Order of options
+// Order of options (SidePanel is not supported on Microsoft Edge)
 const SEARCH_MODES = [
   OPEN_MODE.POPUP,
   OPEN_MODE.WINDOW,
   OPEN_MODE.TAB,
   OPEN_MODE.BACKGROUND_TAB,
-] as const
+  ...(isEdge ? [] : [OPEN_MODE.SIDE_PANEL]),
+]
 
 const PAGE_ACTION_MODES = [
   PAGE_ACTION_OPEN_MODE.POPUP,
   PAGE_ACTION_OPEN_MODE.WINDOW,
   PAGE_ACTION_OPEN_MODE.TAB,
   PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
+  PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
 ] as const
 
 type OpenModeToggleFieldProps = {
@@ -86,7 +99,7 @@ export const OpenModeToggleField = ({
                 onValueChange={(val) => {
                   if (val) field.onChange(val)
                 }}
-                className="grid grid-cols-4 gap-2 py-1"
+                className="grid grid-cols-5 gap-2 py-1"
               >
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)

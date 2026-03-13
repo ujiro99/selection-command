@@ -17,6 +17,7 @@ import type {
   PAGE_ACTION_EXEC_STATE,
   ExecState,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
+  WINDOW_STATE,
 } from "@/const"
 import type { PageAction } from "@/services/pageAction"
 import { INHERIT } from "@/const"
@@ -39,6 +40,7 @@ export type SelectionCommand =
   | CopyCommand
   | ApiCommand
   | PageActionCommand
+  | AiPromptCommand
 
 export type SearchCommand = {
   id: string
@@ -51,6 +53,7 @@ export type SearchCommand = {
   parentFolderId?: string
   popupOption?: PopupOption
   spaceEncoding?: SPACE_ENCODING
+  windowState?: WINDOW_STATE
 }
 
 export type CopyCommand = SearchCommand & {
@@ -66,6 +69,16 @@ export type PageActionCommand = SearchCommand & {
   pageActionOption: PageActionOption
 }
 
+export type AiPromptOption = {
+  serviceId: string
+  prompt: string
+  openMode: OPEN_MODE
+}
+
+export type AiPromptCommand = SearchCommand & {
+  aiPromptOption: AiPromptOption
+}
+
 export type LinkCommand = Omit<SelectionCommand, "openMode"> & {
   openMode: DRAG_OPEN_MODE
 }
@@ -76,6 +89,11 @@ export type PopupOption = {
 }
 
 export type CopyOption = "default" | "text"
+
+type WindowOption = {
+  sidePanelAutoHide: boolean
+  popupAutoCloseDelay?: number
+}
 
 type LinkCommandStartupMethod = {
   method: LINK_COMMAND_STARTUP_METHOD
@@ -89,6 +107,7 @@ type LinkCommandSettings = {
   openMode: DRAG_OPEN_MODE
   showIndicator: boolean
   startupMethod: LinkCommandStartupMethod
+  sidePanelAutoHide: boolean
 }
 
 export type CommandFolder = {
@@ -179,6 +198,7 @@ export type UserSettings = {
   userStyles: Array<StyleVariable>
   shortcuts: ShortcutSettings
   instantCommand?: InstantCommandSettings
+  windowOption: WindowOption
 }
 
 export type SettingsType = UserSettings & UserStats & UserStars
@@ -209,6 +229,7 @@ export type PageActionStep = {
 
 export type PageActionOption = {
   startUrl: string
+  pageUrl?: string // URL pattern for command enablement (currentTab only)
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
   userVariables?: Array<UserVariable>
@@ -271,8 +292,15 @@ export type ShowToastParam = {
 
 export type Caches = {
   images: ImageCache
+  aiServices?: AiServicesCache
 }
 
 export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
+}
+
+export type AiServicesCache = {
+  /** Fetch date in "YYYY-MM-DD" format for daily TTL */
+  date: string
+  services: import("@/services/aiPrompt").AiService[]
 }

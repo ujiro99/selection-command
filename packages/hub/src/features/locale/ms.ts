@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "Tetingkap",
         [OPEN_MODE.TAB]: "Tab",
         [OPEN_MODE.BACKGROUND_TAB]: "Tab Latar Belakang",
+        [OPEN_MODE.SIDE_PANEL]: "Panel Sisi",
         [OPEN_MODE.PAGE_ACTION]: "Tindakan Halaman",
       },
     },

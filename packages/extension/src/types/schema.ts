@@ -13,17 +13,13 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   STYLE_VARIABLE,
   KEYBOARD,
+  WINDOW_STATE,
 } from "@/const"
 
 import { t } from "@/services/i18n"
 import { isEmpty } from "@/lib/utils"
-
-export const SEARCH_OPEN_MODE = [
-  OPEN_MODE.POPUP,
-  OPEN_MODE.TAB,
-  OPEN_MODE.BACKGROUND_TAB,
-  OPEN_MODE.WINDOW,
-] as const
+import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
+import type { AiPromptCommand } from "@/types"
 
 const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),
@@ -44,6 +40,7 @@ const searchSchema = z.object({
       height: z.number().min(1),
     })
     .optional(),
+  windowState: z.nativeEnum(WINDOW_STATE).optional(),
 })
 
 type SearchType = z.infer<typeof searchSchema>
@@ -145,11 +142,18 @@ const PageActionStartSchema = z.object({
   type: z.literal(PAGE_ACTION_CONTROL.start),
   label: z.string(),
   url: z.string().optional(),
+  mode: z.enum(["pageAction", "aiPrompt"]).optional(),
 })
 
 const PageActionEndSchema = z.object({
   type: z.literal(PAGE_ACTION_CONTROL.end),
   label: z.string(),
+})
+
+const PageActionNavigateSchema = z.object({
+  type: z.literal(PAGE_ACTION_CONTROL.navigate),
+  label: z.string(),
+  url: z.string(),
 })
 
 const PageActionClickSchema = z.object({
@@ -195,6 +199,7 @@ const PageActionScrollSchema = z.object({
 const PageActionParameterSchema = z.discriminatedUnion("type", [
   PageActionStartSchema,
   PageActionEndSchema,
+  PageActionNavigateSchema,
   PageActionClickSchema,
   PageActionInputSchema,
   PageActionKeyboardSchema,
@@ -217,12 +222,23 @@ export const userVariableSchema = z.object({
 })
 export type UserVariableType = z.infer<typeof userVariableSchema>
 
-export const PageActionOption = z.object({
-  startUrl: z.string(),
-  openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
-  steps: z.array(PageActionStepSchema),
-  userVariables: z.array(userVariableSchema).max(5).optional(),
-})
+export const PageActionOption = z
+  .object({
+    startUrl: z.string(),
+    pageUrl: z.string().optional(), // URL pattern for command enablement (currentTab only)
+    openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
+    steps: z.array(PageActionStepSchema),
+    userVariables: z.array(userVariableSchema).max(5).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && !data.pageUrl) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["pageUrl"],
+        message: t("zod_pageUrl_required_for_currentTab"),
+      })
+    }
+  })
 
 const pageActionSchema = z.object({
   openMode: z.enum([OPEN_MODE.PAGE_ACTION]),
@@ -243,10 +259,58 @@ const pageActionSchema = z.object({
   pageActionOption: PageActionOption,
 })
 
+export const isPageActionType = (
+  data: unknown,
+): data is z.infer<typeof pageActionSchema> => {
+  if (!data || typeof data !== "object") {
+    return false
+  }
+  if (!("openMode" in data)) {
+    return false
+  }
+  return data.openMode === OPEN_MODE.PAGE_ACTION
+}
+
+export const AiPromptOptionSchema = z.object({
+  serviceId: z.string().min(1),
+  prompt: z.string(),
+  openMode: z.enum(SEARCH_OPEN_MODE),
+})
+
+const aiPromptSchema = z.object({
+  openMode: z.enum([OPEN_MODE.AI_PROMPT]),
+  id: z.string(),
+  revision: z.number().optional(),
+  parentFolderId: z.string().optional(),
+  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
+  iconUrl: z
+    .string()
+    .url({ message: t("zod_url") })
+    .max(1000, { message: t("zod_string_max", ["1000"]) }),
+  popupOption: z
+    .object({
+      width: z.number().min(1),
+      height: z.number().min(1),
+    })
+    .optional(),
+  aiPromptOption: AiPromptOptionSchema,
+})
+
+export const isAiPromptType = (data: unknown): data is AiPromptCommand => {
+  if (!data || typeof data !== "object") {
+    return false
+  }
+  if (!("openMode" in data)) {
+    return false
+  }
+  return data.openMode === OPEN_MODE.AI_PROMPT
+}
+
 export const commandSchema = z.discriminatedUnion("openMode", [
   searchSchema,
   apiSchema,
   pageActionSchema,
+  aiPromptSchema,
   linkPopupSchema,
   copySchema,
   textStyleSchema,

@@ -14,6 +14,7 @@ import {
   openTab,
   getCurrentTab,
   OpenPopupProps,
+  readClipboard,
 } from "@/services/chrome"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import {
@@ -30,6 +31,7 @@ import {
   isEmpty,
   isUrl,
   isUrlParam,
+  matchesPageActionUrl,
   sleep,
 } from "@/lib/utils"
 import type {
@@ -38,7 +40,9 @@ import type {
   PageActionContext,
   PopupOption,
   DeepPartial,
+  ShowToastParam,
 } from "@/types"
+import { t } from "@/services/i18n"
 import { BgData } from "@/services/backgroundData"
 
 BgData.init()
@@ -86,6 +90,7 @@ export const add = (
         param: {
           type: PAGE_ACTION_CONTROL.start,
           label: "Start",
+          mode: "pageAction",
         },
       })
     }
@@ -133,6 +138,16 @@ export const add = (
           step.delayMs = DELAY_AFTER_URL_CHANGED
         }
       } else if (type === "input") {
+        // Remove preceding click on the same element when an input step follows;
+        // the input step is sufficient for replay (the dispatcher applies focus if needed).
+        // * Don't remove if the click is a tripleClick, as they may indicate special interactions (e.g. select all text).
+        if (prevType === "click" || prevType === "doubleClick") {
+          const selector = (step.param as PageAction.Input).selector
+          const prevSelector = (prev.param as PageAction.Click).selector
+          if (selector === prevSelector) {
+            steps.pop()
+          }
+        }
         // Combine operations on the same input element.
         if (prevType === "input") {
           const selector = (step.param as PageAction.Input).selector
@@ -292,9 +307,10 @@ export const reset = (_: any, sender: Sender): boolean => {
     const option = await Storage.get<PageActionRecordingData>(
       SESSION_STORAGE_KEY.PA_RECORDING,
     )
-    if (tabId && option.startUrl) {
+    const reloadUrl = option.startUrl
+    if (tabId && reloadUrl) {
       try {
-        await chrome.tabs.update(tabId, { url: option.startUrl })
+        await chrome.tabs.update(tabId, { url: reloadUrl })
       } catch (e) {
         console.error("Failed to reload the tab:", e)
       }
@@ -312,7 +328,9 @@ export const reset = (_: any, sender: Sender): boolean => {
 }
 
 export type OpenAndRunProps = Omit<OpenPopupProps, "type"> &
-  Omit<RunPageAction, "clipboardText">
+  Omit<RunPageAction, "clipboardText"> & {
+    pageUrl?: string // URL pattern for command enablement (currentTab only)
+  }
 
 export const openAndRun = (
   param: OpenAndRunProps,
@@ -322,7 +340,7 @@ export const openAndRun = (
   const open = async () => {
     let tabId: number | undefined
     let selectedText = param.selectedText
-    let clipboardText: string
+    let clipboardText = ""
 
     if (param.openMode === PAGE_ACTION_OPEN_MODE.TAB) {
       const ret = await openTab({
@@ -339,6 +357,42 @@ export const openAndRun = (
       })
       tabId = ret.tabId
       clipboardText = ret.clipboardText
+    } else if (param.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
+      // Current tab execution without opening a new tab/window.
+
+      const currentTab = await getCurrentTab()
+      if (!currentTab?.id) {
+        console.error("No active tab found")
+        response(false)
+        return
+      }
+      const pageUrl = param.pageUrl
+      if (
+        pageUrl &&
+        currentTab.url &&
+        !matchesPageActionUrl(pageUrl, currentTab.url)
+      ) {
+        console.warn("Current tab URL does not match the pageUrl pattern", {
+          pageUrl,
+          currentUrl: currentTab.url,
+        })
+        response(false)
+        return
+      }
+      tabId = currentTab.id
+
+      // Get clipboard text only when needed.
+      if (isUrlParam(param.url) && param.url.useClipboard) {
+        const clipboard = await readClipboard()
+        clipboardText = clipboard.clipboardText
+        if (clipboard.err) {
+          await Ipc.sendTab<ShowToastParam>(tabId, TabCommand.showToast, {
+            title: t("clipboard_error_title"),
+            description: t("clipboard_error_description"),
+            action: t("clipboard_error_action"),
+          })
+        }
+      }
     } else {
       // Popup and Window modes
       const ret = await openPopupWindow({
@@ -602,8 +656,8 @@ export const openRecorder = (
           left: l,
           type: POPUP_TYPE.POPUP,
         })
-        if (w.tabs) {
-          await setRecordingTabId(w.tabs[0].id)
+        if (w?.tabs) {
+          await setRecordingTabId(w!.tabs![0].id)
         } else {
           console.error("Failed to open the recorder.")
         }
@@ -611,8 +665,8 @@ export const openRecorder = (
         const tab = sender.tab || (await getCurrentTab())
         const recorderTab = await chrome.tabs.create({
           url: startUrl,
-          windowId: tab.windowId,
-          index: tab.index + 1,
+          windowId: tab?.windowId,
+          index: (tab?.index ?? 0) + 1,
         })
         await setRecordingTabId(recorderTab.id)
       }
@@ -653,7 +707,7 @@ export const resetLastUrl = () => {
 // Export for testing
 export const onTabUpdated = (
   id: number,
-  info: chrome.tabs.TabChangeInfo,
+  info: chrome.tabs.OnUpdatedInfo,
   _tab: chrome.tabs.Tab,
 ) => {
   Storage.get<PageActionContext>(SESSION_STORAGE_KEY.PA_CONTEXT).then(
@@ -679,7 +733,7 @@ chrome.tabs.onUpdated.addListener(onTabUpdated)
 // Export for testing
 export const onTabRemoved = async (
   tabId: number,
-  _removeInfo: chrome.tabs.TabRemoveInfo,
+  _removeInfo: chrome.tabs.OnRemovedInfo,
 ) => {
   const context = await Storage.get<PageActionContext>(
     SESSION_STORAGE_KEY.PA_CONTEXT,
@@ -710,3 +764,9 @@ export const onWindowBoundsChanged = async (window: chrome.windows.Window) => {
 }
 
 chrome.windows.onBoundsChanged.addListener(onWindowBoundsChanged)
+
+export {
+  handleSidePanelConnect,
+  handleSidePanelOpened,
+  registerSidePanelTab,
+} from "./background-sidePanel"

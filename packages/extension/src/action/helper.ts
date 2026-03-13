@@ -1,14 +1,21 @@
-import { escapeJson } from "@/lib/utils"
+import { escapeJson, toUrl } from "@/lib/utils"
 import {
   openPopupWindow,
   openPopupWindowMultiple,
   openTab as openTabWithClipboard,
+  openSidePanel as _openSidePanel,
+  closeSidePanel as _closeSidePanel,
+  updateSidePanelUrl as _updateSidePanelUrl,
   OpenPopupsProps,
   OpenPopupProps,
   OpenTabProps,
+  OpenSidePanelProps,
 } from "@/services/chrome"
+import { registerSidePanelTab } from "@/services/pageAction/background-sidePanel"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
-import { Ipc, TabCommand } from "@/services/ipc"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
+import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
+import { BgData } from "@/services/backgroundData"
 import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
@@ -96,6 +103,158 @@ export const openTab = (
     })
   })
   return true
+}
+
+export const openSidePanel = (
+  param: OpenSidePanelProps,
+  sender: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  let tabId = sender.tab?.id
+  if (tabId == null) {
+    const bgData = BgData.get()
+    if (bgData.activeTabId == null) {
+      console.warn("No active tab ID available for opening side panel")
+      response(false)
+      return false
+    }
+    tabId = bgData.activeTabId
+  }
+
+  // Since it needs to be tied to a user action, avoid asynchronous processing
+  // and open the side panel immediately.
+  _openSidePanel({
+    ...param,
+    tabId,
+  })
+    .then(() => {
+      incrementCommandExecutionCount(tabId)
+    })
+    .then(() => {
+      // Register the tab ID for tracking
+      if (tabId) {
+        const newEntry = { tabId, isLinkCommand: param.isLinkCommand ?? false }
+        return BgData.update((data) => ({
+          sidePanelTabs: data.sidePanelTabs.some((t) => t.tabId === tabId)
+            ? data.sidePanelTabs.map((t) => (t.tabId === tabId ? newEntry : t))
+            : [...data.sidePanelTabs, newEntry],
+        }))
+      }
+    })
+    .then(() => {
+      registerSidePanelTab(tabId, toUrl(param.url))
+    })
+    .then(() => {
+      response(true)
+    })
+    .catch((error) => {
+      console.error("Error during side panel operations:", error)
+      response(false)
+    })
+
+  return true
+}
+
+export const closeSidePanel = (
+  _: unknown,
+  sender: Sender,
+  response: (res: unknown) => void,
+) => {
+  const tabId = sender.tab?.id
+  if (tabId == null) {
+    return false
+  }
+  enhancedSettings
+    .get()
+    .then(async (settings) => {
+      const bgData = BgData.get()
+      const tab = bgData.sidePanelTabs.find((t) => t.tabId === tabId)
+      if (tab) {
+        const autoHideEnabled = tab.isLinkCommand
+          ? settings.linkCommand.sidePanelAutoHide
+          : settings.windowOption.sidePanelAutoHide
+        if (autoHideEnabled) {
+          await _closeSidePanel(tabId)
+        }
+      }
+      response(true)
+    })
+    .catch((err) => {
+      console.warn("Failed to handle panel click:", err)
+      response(false)
+    })
+
+  return true
+}
+
+/**
+ * Handle side panel closed event for a tab
+ * @param {number} tabId - The ID of the tab whose side panel was closed
+ * @return {Promise<void>} A promise that resolves when the side panel closed event is handled
+ * This function is called when a side panel is closed, either by user action or programmatically.
+ */
+export const sidePanelClosed = async (tabId?: number): Promise<void> => {
+  if (tabId == null) return
+  try {
+    await BgData.update((data) => {
+      const { [tabId]: _, ...rest } = data.sidePanelUrls
+      return {
+        sidePanelTabs: data.sidePanelTabs.filter((t) => t.tabId !== tabId),
+        sidePanelUrls: rest,
+      }
+    })
+  } catch (e) {
+    console.warn("Failed to cleanup side panel:", e)
+  }
+}
+
+export const navigateSidePanel = (
+  param: NavigateSidePanelProps,
+  _sender: Sender,
+): boolean => {
+  const { url, tabId } = param
+
+  // URL validation
+  try {
+    const urlObj = new URL(url)
+    if (urlObj.protocol === "javascript:" || urlObj.protocol === "data:") {
+      console.warn("[navigateSidePanel] Invalid protocol:", urlObj.protocol)
+      return false
+    }
+  } catch (e) {
+    console.error("[navigateSidePanel] Invalid URL:", url, e)
+    return false
+  }
+
+  // Tab ID validation
+  if (tabId == null) {
+    console.warn("[navigateSidePanel] No tab ID")
+    return false
+  }
+
+  // Check if tab is in sidePanelTabs
+  const bgData = BgData.get()
+  if (!bgData.sidePanelTabs.some((t) => t.tabId === tabId)) {
+    console.warn("[navigateSidePanel] Tab is not in sidePanelTabs:", tabId)
+    return false
+  }
+
+  // Fire-and-forget: update URL in the background
+  _updateSidePanelUrl({ url, tabId })
+    .then(() => {
+      // Update BgData's sidePanelUrls
+      return BgData.update((data) => ({
+        sidePanelUrls: {
+          ...data.sidePanelUrls,
+          [tabId]: url,
+        },
+      }))
+    })
+    .catch((error) => {
+      console.error("[navigateSidePanel] Error:", error)
+    })
+
+  return false
 }
 
 function bindVariables(

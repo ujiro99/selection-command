@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "मेनू प्रदर्शन एनिमेशन"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "पॉपअप ऑटो-क्लोज़ विलंब"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "फोकस खोने के बाद पॉपअप के स्वचालित रूप से बंद होने से पहले विलंब का समय सेट करें। तुरंत बंद करने के लिए 0 सेट करें या खाली छोड़ दें।\nअधिकतम: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (तुरंत बंद करें)"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "साइड पैनल स्वतः छिपाएं"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "कमांड के माध्यम से साइड पैनल खुले होने पर मुख्य पैनल पर क्लिक करने पर साइड पैनल को स्वतः छिपा देता है।"
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "साइड पैनल स्वतः छिपाएं"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "लिंक पूर्वावलोकन प्रदर्शित करते समय मुख्य पैनल पर क्लिक करने पर साइड पैनल को स्वतः छिपा देता है।"
+  },
   "Option_inherit": {
     "message": "प्राप्त करें"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "प्रारंभिक URL के संशोधित होने पर आइकन URL स्वचालित रूप से अपडेट होगा।"
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "मेनू आइकन के रूप में प्रदर्शित होता है।"
+  },
   "Option_iconUrl_autofill": {
     "message": "स्वतः भरें"
   },
@@ -263,8 +287,17 @@
   "Option_spaceEncoding_percent": {
     "message": "प्रतिशत (%20)"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "डैश (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "अंडरस्कोर (_)"
+  },
   "Option_openMode": {
     "message": "खुलने का मोड"
+  },
+  "Option_displayMode": {
+    "message": "विंडो प्रदर्शन विधि"
   },
   "Option_openMode_popup": {
     "message": "पॉपअप"
@@ -277,6 +310,12 @@
   },
   "Option_openMode_backgroundTab": {
     "message": "बैकग्राउंड टैब"
+  },
+  "Option_openMode_sidePanel": {
+    "message": "साइड पैनल"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "साइड पैनल में खोलें।"
   },
   "Option_openMode_api": {
     "message": "API"
@@ -293,8 +332,11 @@
   "Option_openMode_pageAction": {
     "message": "पेज एक्शन"
   },
-  "Option_displayMode": {
-    "message": "विंडो प्रदर्शन विधि"
+  "Option_openMode_aiPrompt": {
+    "message": "AI प्रॉम्प्ट"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "AI सेवा पर पूर्व-निर्धारित प्रॉम्प्ट चलाएं"
   },
   "Option_commandType_title": {
     "message": "कमांड प्रकार चुनें"
@@ -313,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "वेब पेज ऑपरेशन रिकॉर्ड और रीप्ले करें"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI प्रॉम्प्ट"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "AI सेवा पर पूर्व-निर्धारित प्रॉम्प्ट चलाएं"
   },
   "Option_commandType_copy_title": {
     "message": "टेक्स्ट कॉपी करें"
@@ -353,11 +401,23 @@
   "Option_openMode_previewWindow": {
     "message": "विंडो"
   },
+  "Option_openMode_previewSidePanel": {
+    "message": "साइड पैनल"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + क्लिक"
   },
   "Option_parentFolderId": {
     "message": "फ़ोल्डर"
+  },
+  "Option_parentFolder": {
+    "message": "मूल फ़ोल्डर"
+  },
+  "Option_parentFolder_desc": {
+    "message": "मूल फ़ोल्डर चुनें"
+  },
+  "Option_rootFolder": {
+    "message": "मूल (कोई माता-पिता नहीं)"
   },
   "Option_copyOption": {
     "message": "कॉपी प्रारूप"
@@ -386,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "पेज का URL जहां एक्शन शुरू होता है।"
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "\"वर्तमान टैब\" के लिए, केवल इस URL से मेल खाने वाले पेज ही चलाए जा सकते हैं। आप वाइल्डकार्ड \"*\" का उपयोग कर सकते हैं।"
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "क्रियाएं रिकॉर्ड करना शुरू करने के लिए पृष्ठ का URL। केवल सेटिंग स्क्रीन में उपयोग किया जाता है।"
+  },
+  "Option_pageUrl": {
+    "message": "पृष्ठ URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "केवल इस URL से मेल खाने वाले पृष्ठों पर ही निष्पादित किया जा सकता है। आप वाइल्डकार्ड «*» का उपयोग कर सकते हैं।"
+  },
   "Option_pageAction_title": {
     "message": "एक्शन"
   },
@@ -403,6 +475,54 @@
   },
   "Option_pageAction_delay": {
     "message": "प्रतीक्षा समय"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI सेवा"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "उपयोग करने के लिए AI सेवा चुनें"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "प्रॉम्प्ट"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "प्रॉम्प्ट टेम्पलेट। वेरिएबल जोड़ने के लिए इन्सर्ट मेनू का उपयोग करें (चुना गया टेक्स्ट, URL, क्लिपबोर्ड)।"
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "यहाँ अपना प्रॉम्प्ट दर्ज करें..."
+  },
+  "Option_userVariables": {
+    "message": "उपयोगकर्ता चर"
+  },
+  "Option_userVariables_desc": {
+    "message": "इनपुट फ़ील्ड के लिए कस्टम वेरिएबल परिभाषित करें (अधिकतम 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "वेरिएबल नाम"
+  },
+  "Option_userVariable_value": {
+    "message": "मान"
+  },
+  "Option_userVariable_add": {
+    "message": "वेरिएबल जोड़ें"
+  },
+  "Option_userVariable_name_required": {
+    "message": "वेरिएबल नाम आवश्यक है"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "वेरिएबल नाम पहले से मौजूद है"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "अधिकतम $max$ वेरिएबल की अनुमति",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_instantCommand": {
     "message": "तत्काल आदेश"
@@ -487,6 +607,12 @@
   },
   "Option_showIndicator_desc": {
     "message": "प्रीव्यू तक शेष समय दिखाएं।"
+  },
+  "Option_windowSettings": {
+    "message": "विंडो सेटिंग्स"
+  },
+  "Option_windowSettings_desc": {
+    "message": "विंडो व्यवहार और पॉपअप सेटिंग्स को कॉन्फ़िगर करें।"
   },
   "Option_folders": {
     "message": "फ़ोल्डर्स"
@@ -575,8 +701,14 @@
   "Option_userStyles_option_border_color": {
     "message": "बॉर्डर रंग"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "फ़ॉन्ट का रंग"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "मेनू का बॉर्डर रंग निर्दिष्ट करें। डिफ़ॉल्ट: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "फ़ॉन्ट का रंग निर्दिष्ट करें। डिफ़ॉल्ट: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "फ़ॉन्ट साइज़ स्केल"
@@ -656,6 +788,9 @@
       }
     }
   },
+  "Option_zod_invalid_variable_name": {
+    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
+  },
   "Option_zod_string_min": {
     "message": "कम से कम $key$ वर्णों की स्ट्रिंग दर्ज करें।",
     "placeholders": {
@@ -676,6 +811,9 @@
   },
   "Option_zod_url": {
     "message": "URL प्रारूप में दर्ज करें।"
+  },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "वर्तमान टैब मोड चुने जाने पर पेज URL आवश्यक है।"
   },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "चयनित टेक्स्ट डाला जाएगा",
@@ -935,6 +1073,12 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "बैकग्राउंड में टैब खोलें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
   },
+  "Option_openMode_currentTab": {
+    "message": "वर्तमान टैब"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "वर्तमान सक्रिय टैब पर चलाएं।<wbr>URL रिकॉर्ड की गई प्रारंभ URL से मेल खाना चाहिए।"
+  },
   "Option_title_desc": {
     "message": "कमांड शीर्षक के रूप में प्रदर्शित होता है।"
   },
@@ -947,29 +1091,14 @@
   "Option_openModeSecondary_desc": {
     "message": "मेन्यू पर Ctrl + क्लिक करने पर व्यवहार।"
   },
-  "Option_parentFolder": {
-    "message": "मूल फ़ोल्डर"
-  },
-  "Option_parentFolder_desc": {
-    "message": "मूल फ़ोल्डर चुनें"
-  },
-  "Option_rootFolder": {
-    "message": "मूल (कोई माता-पिता नहीं)"
-  },
   "Option_searchUrlAssist": {
     "message": "AI सहायक"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "खोज URL सहायक"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "खोज कीवर्ड और खोज परिणाम पेज का URL दर्ज करें, फिर एक्जीक्यूट बटन दबाएं।\nAI एक खोज URL गेनरेट करेगा।"
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Gemini के साथ चलाएं"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "चला रहा है..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "उपयोग की विधि"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) खोज कीवर्ड"
@@ -982,6 +1111,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "उपयोग की विधि"
   },
   "Option_searchUrlAssist_step1": {
     "message": "\"(1) खोज कीवर्ड\" में कोई भी शब्द दर्ज करें"
@@ -998,50 +1130,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "जेनरेट किया गया खोज URL कॉपी करके कमांड के खोज URL फ़ील्ड में पेस्ट करें"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "खोज URL सहायक"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Gemini के साथ चलाएं"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "चला रहा है..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "कृपया खोज कीवर्ड दर्ज करें"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "कृपया वैध URL दर्ज करें"
-  },
-  "Option_userVariable_add": {
-    "message": "वेरिएबल जोड़ें"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "अधिकतम $max$ वेरिएबल की अनुमति",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "वेरिएबल नाम"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "वेरिएबल नाम पहले से मौजूद है"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
-  },
-  "Option_userVariable_name_required": {
-    "message": "वेरिएबल नाम आवश्यक है"
-  },
-  "Option_userVariable_value": {
-    "message": "मान"
-  },
-  "Option_userVariables": {
-    "message": "उपयोगकर्ता चर"
-  },
-  "Option_userVariables_desc": {
-    "message": "इनपुट फ़ील्ड के लिए कस्टम वेरिएबल परिभाषित करें (अधिकतम 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
   },
   "Option_commandType": {
     "message": "कमांड प्रकार"
@@ -1126,5 +1225,23 @@
   },
   "prompthistory_banner_description": {
     "message": "ChatGPT और अधिक के लिए प्रॉम्प्ट का पुन: उपयोग करने के लिए एक नया उपकरण।✨"
+  },
+  "Option_windowState": {
+    "message": "विंडो का आकार"
+  },
+  "Option_windowState_desc": {
+    "message": "प्रदर्शित करने के लिए विंडो का आकार"
+  },
+  "Option_windowState_normal": {
+    "message": "सामान्य"
+  },
+  "Option_windowState_maximized": {
+    "message": "अधिकतम"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "पूर्ण स्क्रीन"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "इस पेज पर नहीं चला सकते (पृष्ठ URL मेल नहीं खाता)"
   }
 }

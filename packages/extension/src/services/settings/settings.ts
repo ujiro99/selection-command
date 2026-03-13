@@ -2,6 +2,7 @@ import { Storage } from "@/services/storage"
 import { STORAGE_KEY } from "@/services/storage/const"
 import DefaultSettings, {
   DefaultCommands,
+  getDefaultCommands,
   PopupPlacement,
 } from "../option/defaultSettings"
 import {
@@ -32,6 +33,7 @@ import {
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"
+import { getUILanguage } from "@/services/i18n"
 
 const callbacks = [] as (() => void)[]
 
@@ -185,7 +187,7 @@ export const Settings = {
 
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
-    await Storage.setCommands(DefaultCommands)
+    await Storage.setCommands(getDefaultCommands(getUILanguage()))
     await Storage.set<ShortcutSettings>(
       STORAGE_KEY.SHORTCUTS,
       DefaultSettings.shortcuts,
@@ -222,24 +224,31 @@ const removeOptionSettings = (data: SettingsType): void => {
 }
 
 export const migrate = async (data: SettingsType): Promise<SettingsType> => {
-  if (versionDiff(data.settingVersion, "0.10.0") === VersionDiff.Old) {
+  const currentVersion = data.settingVersion
+
+  if (versionDiff(currentVersion, "0.10.0") === VersionDiff.Old) {
     data = await migrate0_10_0(data)
   }
-  if (versionDiff(data.settingVersion, "0.10.3") === VersionDiff.Old) {
+  if (versionDiff(currentVersion, "0.10.3") === VersionDiff.Old) {
     data = migrate0_10_3(data)
   }
-  if (versionDiff(data.settingVersion, "0.11.3") === VersionDiff.Old) {
+  if (versionDiff(currentVersion, "0.11.3") === VersionDiff.Old) {
     data = migrate0_11_3(data)
   }
-  if (versionDiff(data.settingVersion, "0.11.5") === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
+  if (versionDiff(currentVersion, "0.11.5") === VersionDiff.Old) {
     data = migrate0_11_5(data)
   }
-  if (versionDiff(data.settingVersion, "0.11.9") === VersionDiff.Old) {
-    data.settingVersion = VERSION as Version
+  if (versionDiff(currentVersion, "0.11.9") === VersionDiff.Old) {
     data = migrate0_11_9(data)
   }
+  if (versionDiff(currentVersion, "0.14.3") === VersionDiff.Old) {
+    data = migrate0_14_3(data)
+  }
+  if (versionDiff(currentVersion, "0.15.1") === VersionDiff.Old) {
+    data = migrate0_15_1(data)
+  }
 
+  data.settingVersion = VERSION as Version
   return data
 }
 
@@ -337,5 +346,24 @@ const migrate0_11_9 = (data: SettingsType): SettingsType => {
     })
   }
 
+  return data
+}
+
+const migrate0_14_3 = (data: SettingsType): SettingsType => {
+  // Add windowOption if not exists
+  if (data.windowOption == null) {
+    data.windowOption = DefaultSettings.windowOption
+    console.debug("migrate 0.14.3: added windowOption")
+  }
+  return data
+}
+
+const migrate0_15_1 = (data: SettingsType): SettingsType => {
+  // Add linkCommand.sidePanelAutoHide if not exists
+  if (data.linkCommand != null && data.linkCommand.sidePanelAutoHide == null) {
+    data.linkCommand.sidePanelAutoHide =
+      DefaultSettings.linkCommand.sidePanelAutoHide
+    console.debug("migrate 0.15.1: added linkCommand.sidePanelAutoHide")
+  }
   return data
 }

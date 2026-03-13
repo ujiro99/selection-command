@@ -203,6 +203,27 @@
   "Option_popupAnimation": {
     "message": "Menü-Anzeigeanimation"
   },
+  "Option_popupAutoCloseDelay": {
+    "message": "Popup-Autoschluss-Verzögerung"
+  },
+  "Option_popupAutoCloseDelay_desc": {
+    "message": "Stellen Sie die Verzögerungszeit ein, bevor das Popup nach dem Verlust des Fokus automatisch geschlossen wird. Stellen Sie 0 ein oder lassen Sie es leer für sofortiges Schließen.\nMaximum: 10000 ms"
+  },
+  "Option_popupAutoCloseDelay_placeholder": {
+    "message": "0 (sofort schließen)"
+  },
+  "Option_sidePanelAutoHide": {
+    "message": "Seitenbereich automatisch ausblenden"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Blendet den Seitenbereich automatisch aus, wenn in den Hauptbereich geklickt wird, während der Seitenbereich über einen Befehl geöffnet ist."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Seitenbereich automatisch ausblenden"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Blendet den Seitenbereich automatisch aus, wenn in den Hauptbereich geklickt wird, während die Linkvorschau angezeigt wird."
+  },
   "Option_inherit": {
     "message": "Erben"
   },
@@ -248,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Wird automatisch aktualisiert, wenn die Start-URL geändert wird."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Wird als Menü-Symbol angezeigt."
+  },
   "Option_iconUrl_autofill": {
     "message": "Automatisch ausfüllen"
   },
@@ -263,8 +287,17 @@
   "Option_spaceEncoding_percent": {
     "message": "Prozent (%20)"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "Bindestrich (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Unterstrich (_)"
+  },
   "Option_openMode": {
     "message": "Öffnungsmodus"
+  },
+  "Option_displayMode": {
+    "message": "Fenster-Anzeigemethode"
   },
   "Option_openMode_popup": {
     "message": "Popup"
@@ -277,6 +310,12 @@
   },
   "Option_openMode_backgroundTab": {
     "message": "Hintergrund-Tab"
+  },
+  "Option_openMode_sidePanel": {
+    "message": "Seitenpanel"
+  },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Im Seitenpanel öffnen."
   },
   "Option_openMode_api": {
     "message": "API"
@@ -293,8 +332,11 @@
   "Option_openMode_pageAction": {
     "message": "Seitenaktion"
   },
-  "Option_displayMode": {
-    "message": "Fenster-Anzeigemethode"
+  "Option_openMode_aiPrompt": {
+    "message": "KI-Prompt"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Führt einen vordefinierten Prompt auf einem KI-Dienst aus"
   },
   "Option_commandType_title": {
     "message": "Befehlstyp wählen"
@@ -313,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Webseiten-Operationen aufzeichnen und wiedergeben"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "KI-Prompt"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Führt einen vordefinierten Prompt auf einem KI-Dienst aus"
   },
   "Option_commandType_copy_title": {
     "message": "Text kopieren"
@@ -353,11 +401,23 @@
   "Option_openMode_previewWindow": {
     "message": "Fenster"
   },
+  "Option_openMode_previewSidePanel": {
+    "message": "Seitenbereich"
+  },
   "Option_openModeSecondary": {
     "message": " ┗ Strg + Klick"
   },
   "Option_parentFolderId": {
     "message": "Ordner"
+  },
+  "Option_parentFolder": {
+    "message": "Übergeordneter Ordner"
+  },
+  "Option_parentFolder_desc": {
+    "message": "Übergeordneten Ordner auswählen"
+  },
+  "Option_rootFolder": {
+    "message": "Stamm (kein Übergeordnet)"
   },
   "Option_copyOption": {
     "message": "Kopierformat"
@@ -386,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "URL der Seite, auf der die Aktion beginnt."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Bei \"Aktueller Tab\" können nur Seiten ausgeführt werden, die dieser URL entsprechen. Sie können den Platzhalter \"*\" verwenden."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL der Seite, von der die Aktionsaufzeichnung gestartet wird. Wird nur im Einstellungsbildschirm verwendet."
+  },
+  "Option_pageUrl": {
+    "message": "Seiten-URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Kann nur auf Seiten ausgeführt werden, die dieser URL entsprechen. Sie können den Platzhalter \"*\" verwenden."
+  },
   "Option_pageAction_title": {
     "message": "Aktionen"
   },
@@ -403,6 +475,54 @@
   },
   "Option_pageAction_delay": {
     "message": "Verzögerungszeit"
+  },
+  "Option_aiPrompt_service": {
+    "message": "KI-Dienst"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Wählen Sie den zu verwendenden KI-Dienst aus"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Prompt-Vorlage. Verwenden Sie das Einfügemenü, um Variablen hinzuzufügen (ausgewählter Text, URL, Zwischenablage)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Prompt hier eingeben..."
+  },
+  "Option_userVariables": {
+    "message": "Benutzervariablen"
+  },
+  "Option_userVariables_desc": {
+    "message": "Benutzerdefinierte Variablen für Eingabefelder definieren (max. 5)"
+  },
+  "Option_userVariable_name": {
+    "message": "Variablenname"
+  },
+  "Option_userVariable_value": {
+    "message": "Wert"
+  },
+  "Option_userVariable_add": {
+    "message": "Variable hinzufügen"
+  },
+  "Option_userVariable_name_required": {
+    "message": "Variablenname ist erforderlich"
+  },
+  "Option_userVariable_name_invalid": {
+    "message": "Variablenname muss mit Buchstabe beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
+  },
+  "Option_userVariable_name_duplicate": {
+    "message": "Variablenname bereits vorhanden"
+  },
+  "Option_userVariable_max_reached": {
+    "message": "Maximal $max$ Variablen erlaubt",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "Option_instantCommand": {
     "message": "Sofortbefehl"
@@ -487,6 +607,12 @@
   },
   "Option_showIndicator_desc": {
     "message": "Zeigt die verbleibende Zeit bis zur Vorschau an."
+  },
+  "Option_windowSettings": {
+    "message": "Fenstereinstellungen"
+  },
+  "Option_windowSettings_desc": {
+    "message": "Konfigurieren Sie das Fensterverhalten und Popup-Einstellungen."
   },
   "Option_folders": {
     "message": "Ordner"
@@ -575,8 +701,14 @@
   "Option_userStyles_option_border_color": {
     "message": "Rahmenfarbe"
   },
+  "Option_userStyles_option_font_color": {
+    "message": "Schriftfarbe"
+  },
   "Option_userStyles_desc_border_color": {
     "message": "Geben Sie die Rahmenfarbe des Menüs an. Standard: #F3F4F6"
+  },
+  "Option_userStyles_desc_font_color": {
+    "message": "Geben Sie die Schriftfarbe an. Standard: #0F172A"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Schriftgrößen-Skalierung"
@@ -656,6 +788,9 @@
       }
     }
   },
+  "Option_zod_invalid_variable_name": {
+    "message": "Variablenname muss mit einem Buchstaben beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
+  },
   "Option_zod_string_min": {
     "message": "Bitte geben Sie eine Zeichenkette mit $key$ oder mehr Zeichen ein.",
     "placeholders": {
@@ -676,6 +811,9 @@
   },
   "Option_zod_url": {
     "message": "Bitte geben Sie im URL-Format ein."
+  },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "Seiten-URL ist erforderlich, wenn der aktuelle Tab-Modus ausgewählt ist."
   },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Der ausgewählte Text wird eingefügt",
@@ -935,6 +1073,12 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
   },
+  "Option_openMode_currentTab": {
+    "message": "Aktueller Tab"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Im aktuellen aktiven Tab ausführen.<wbr>URL muss mit der aufgezeichneten Start-URL übereinstimmen."
+  },
   "Option_title_desc": {
     "message": "Wird als Befehlstitel angezeigt."
   },
@@ -947,29 +1091,14 @@
   "Option_openModeSecondary_desc": {
     "message": "Verhalten beim Strg + Klicken des Menüs."
   },
-  "Option_parentFolder": {
-    "message": "Übergeordneter Ordner"
-  },
-  "Option_parentFolder_desc": {
-    "message": "Übergeordneten Ordner auswählen"
-  },
-  "Option_rootFolder": {
-    "message": "Stamm (kein Übergeordnet)"
-  },
   "Option_searchUrlAssist": {
     "message": "KI-Assistenz"
   },
+  "Option_searchUrlAssist_title": {
+    "message": "Such-URL-Assistenz"
+  },
   "Option_searchUrlAssist_desc": {
     "message": "Geben Sie ein Suchschlüsselwort und eine Suchergebnis-URL ein, dann klicken Sie auf die Ausführen-Schaltfläche.\nKI generiert eine Such-URL."
-  },
-  "Option_searchUrlAssist_executeButton": {
-    "message": "Mit Gemini ausführen"
-  },
-  "Option_searchUrlAssist_executing": {
-    "message": "Wird gestartet..."
-  },
-  "Option_searchUrlAssist_howToUse": {
-    "message": "Verwendung"
   },
   "Option_searchUrlAssist_searchKeyword": {
     "message": "(1) Suchschlüsselwort"
@@ -982,6 +1111,9 @@
   },
   "Option_searchUrlAssist_searchResultUrl_placeholder": {
     "message": "https://www.google.com/search?q=test&..."
+  },
+  "Option_searchUrlAssist_howToUse": {
+    "message": "Verwendung"
   },
   "Option_searchUrlAssist_step1": {
     "message": "Geben Sie ein beliebiges Wort in \"(1) Suchschlüsselwort\" ein"
@@ -998,50 +1130,17 @@
   "Option_searchUrlAssist_step5": {
     "message": "Kopiere die generierte Such-URL und füge sie in das Such-URL-Feld des Befehls ein"
   },
-  "Option_searchUrlAssist_title": {
-    "message": "Such-URL-Assistenz"
+  "Option_searchUrlAssist_executeButton": {
+    "message": "Mit Gemini ausführen"
+  },
+  "Option_searchUrlAssist_executing": {
+    "message": "Wird gestartet..."
   },
   "Option_searchUrlAssist_validation_keyword_required": {
     "message": "Bitte geben Sie ein Suchschlüsselwort ein"
   },
   "Option_searchUrlAssist_validation_url_invalid": {
     "message": "Bitte geben Sie eine gültige URL ein"
-  },
-  "Option_userVariable_add": {
-    "message": "Variable hinzufügen"
-  },
-  "Option_userVariable_max_reached": {
-    "message": "Maximal $max$ Variablen erlaubt",
-    "placeholders": {
-      "max": {
-        "content": "$1",
-        "example": "5"
-      }
-    }
-  },
-  "Option_userVariable_name": {
-    "message": "Variablenname"
-  },
-  "Option_userVariable_name_duplicate": {
-    "message": "Variablenname bereits vorhanden"
-  },
-  "Option_userVariable_name_invalid": {
-    "message": "Variablenname muss mit Buchstabe beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
-  },
-  "Option_userVariable_name_required": {
-    "message": "Variablenname ist erforderlich"
-  },
-  "Option_userVariable_value": {
-    "message": "Wert"
-  },
-  "Option_userVariables": {
-    "message": "Benutzervariablen"
-  },
-  "Option_userVariables_desc": {
-    "message": "Benutzerdefinierte Variablen für Eingabefelder definieren (max. 5)"
-  },
-  "Option_zod_invalid_variable_name": {
-    "message": "Variablenname muss mit einem Buchstaben beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
   },
   "Option_commandType": {
     "message": "Befehlstyp"
@@ -1126,5 +1225,23 @@
   },
   "prompthistory_banner_description": {
     "message": "Ein neues Tool zum Wiederverwenden von Prompts für ChatGPT und mehr✨"
+  },
+  "Option_windowState": {
+    "message": "Fenstergröße"
+  },
+  "Option_windowState_desc": {
+    "message": "Anzuzeigende Fenstergröße"
+  },
+  "Option_windowState_normal": {
+    "message": "Normal"
+  },
+  "Option_windowState_maximized": {
+    "message": "Maximiert"
+  },
+  "Option_windowState_fullscreen": {
+    "message": "Vollbild"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Kann auf dieser Seite nicht ausgeführt werden (Seiten-URL stimmt nicht überein)"
   }
 }

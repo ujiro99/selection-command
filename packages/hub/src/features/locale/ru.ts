@@ -69,6 +69,7 @@ const lang = {
         [OPEN_MODE.WINDOW]: "Окно",
         [OPEN_MODE.TAB]: "Вкладка",
         [OPEN_MODE.BACKGROUND_TAB]: "Фоновая вкладка",
+        [OPEN_MODE.SIDE_PANEL]: "Боковая панель",
         [OPEN_MODE.PAGE_ACTION]: "Действие страницы",
       },
     },

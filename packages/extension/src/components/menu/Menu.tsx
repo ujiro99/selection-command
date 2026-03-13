@@ -8,6 +8,7 @@ import {
 import { ScrollAreaConditional } from "@/components/ui/scroll-area"
 
 import { STYLE, SIDE } from "@/const"
+import { TEST_IDS } from "@/testIds"
 import { MenuItem } from "./MenuItem"
 import { Icon } from "@/components/Icon"
 import { HoverArea } from "@/components/menu/HoverArea"
@@ -50,6 +51,7 @@ export function Menu(): JSX.Element {
         [css.menuVertical]: !isHorizontal,
       })}
       ref={menuRef}
+      data-testid={TEST_IDS.menuBar}
     >
       {commandTree.map((node) => (
         <MenuTreeNode
@@ -189,19 +191,19 @@ const MenuFolder = (props: {
   const baseSize = anchorRef.current?.getBoundingClientRect().height ?? 0
   const menubarStyle = isHorizontal
     ? {
-        maxWidth:
-          baseSize * 10 /* buttons */ +
-          1 * 9 /* gap */ +
-          2 * 2 /* padding */ +
-          1 * 2 /* border */,
-      }
+      maxWidth:
+        baseSize * 10 /* buttons */ +
+        1 * 9 /* gap */ +
+        2 * 2 /* padding */ +
+        1 * 2 /* border */,
+    }
     : {
-        maxHeight:
-          baseSize * 11.5 /* buttons */ +
-          1 * 10 /* gap */ +
-          2 * 2 /* padding */ +
-          1 * 2 /* border */,
-      }
+      maxHeight:
+        baseSize * 11.5 /* buttons */ +
+        1 * 10 /* gap */ +
+        2 * 2 /* padding */ +
+        1 * 2 /* border */,
+    }
 
   return (
     <MenubarMenu value={folder.id}>

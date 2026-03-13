@@ -16,6 +16,9 @@ export enum BgCommand {
   openPopups = "openPopups",
   openPopupAndClick = "openPopupAndClick",
   openTab = "openTab",
+  openSidePanel = "openSidePanel",
+  closeSidePanel = "closeSidePanel",
+  navigateSidePanel = "navigateSidePanel",
   openOption = "openOption",
   openShortcuts = "openShortcuts",
   addPageRule = "addPageRule",
@@ -26,6 +29,7 @@ export enum BgCommand {
   onHidden = "onHidden",
   toggleStar = "toggleStar",
   getTabId = "getTabId",
+  getActiveTabId = "getActiveTabId",
   setClipboard = "setClipboard",
   // PageAction
   addPageAction = "addPageAction",
@@ -62,6 +66,11 @@ export type ClipboardResult = {
   err?: string
 }
 
+export type NavigateSidePanelProps = {
+  url: string
+  tabId: number | null
+}
+
 export type RunPageAction = {
   tabId?: number
   openMode: PAGE_ACTION_OPEN_MODE
@@ -70,6 +79,20 @@ export type RunPageAction = {
   selectedText: string
   clipboardText: string
   userVariables?: Array<UserVariable>
+}
+
+/**
+ * Pending page action data for side panel execution.
+ * Stored in session storage so the background can retrieve it when the side
+ * panel content script connects via port (side panels have no tab.id).
+ */
+export type SidePanelPendingAction = {
+  url: string
+  steps: PageActionStep[]
+  selectedText: string
+  srcUrl: string
+  clipboardText: string
+  useClipboard?: boolean
 }
 
 export namespace ExecPageAction {
@@ -250,7 +273,7 @@ export const Ipc = {
         if (onTabUpdated) chrome.tabs.onUpdated.removeListener(onTabUpdated)
       }
 
-      const onTabUpdated = (id: number, info: chrome.tabs.TabChangeInfo) => {
+      const onTabUpdated = (id: number, info: chrome.tabs.OnUpdatedInfo) => {
         if (tabId === id && info.status === "complete") {
           cleanup()
           resolve()
@@ -410,6 +433,33 @@ export const Ipc = {
 
   listeners: {} as { [key: string]: IpcCallback },
 
+  /**
+   * Register a port for bidirectional communication with a side panel.
+   * Routes incoming port messages to the same listeners registered via addListener,
+   * allowing the background script to reach side panel content scripts
+   * (which cannot be reached via chrome.tabs.sendMessage).
+   * @param port - The port established by chrome.runtime.connect
+   */
+  bridgePortToListeners(port: chrome.runtime.Port) {
+    port.onMessage.addListener((msg: Record<string, unknown>) => {
+      const command = msg?.command as string | undefined
+      if (!command) return
+      const callback = Ipc.listeners[command]
+      if (!callback) return
+      callback(
+        msg.param,
+        port.sender ?? ({} as chrome.runtime.MessageSender),
+        (result: unknown) => {
+          try {
+            port.postMessage({ command: "portResponse", id: msg.id, result })
+          } catch (e) {
+            console.error("Failed to send port response:", e)
+          }
+        },
+      )
+    })
+  },
+
   addListener<M = any>(command: IpcCommand, callback: IpcCallback<M>) {
     const listener = (
       request: Request,
@@ -441,6 +491,10 @@ export const Ipc = {
 
   async getTabId() {
     return Ipc.send(BgCommand.getTabId)
+  },
+
+  async getActiveTabId() {
+    return Ipc.send(BgCommand.getActiveTabId)
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {

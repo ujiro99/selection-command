@@ -48,7 +48,11 @@ const getStorageUsage = async (): Promise<StorageUsageData> => {
 describe("storageUsage", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    global.chrome.runtime.lastError = undefined
+    Object.defineProperty(global.chrome.runtime, "lastError", {
+      value: undefined,
+      writable: true,
+      configurable: true,
+    })
   })
 
   afterEach(() => {
