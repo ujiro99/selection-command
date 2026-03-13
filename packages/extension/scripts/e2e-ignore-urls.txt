@@ -1,7 +1,5 @@
 https://lista.mercadolivre.com.br/%s
-https://www.amazon.co.jp/s?k=%s
 https://www.amazon.com.br/s?k=%s
-https://www.amazon.com/s?k=%s
 https://www.amazon.de/s?k=%s
 https://www.amazon.fr/s?k=%s
 https://www.amazon.in/s?k=%s
