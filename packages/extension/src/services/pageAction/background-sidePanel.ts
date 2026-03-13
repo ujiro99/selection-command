@@ -4,6 +4,7 @@ import {
   SidePanelPendingAction,
 } from "@/services/ipc"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { readClipboard } from "@/services/chrome"
 import {
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_OPEN_MODE,
@@ -180,6 +181,14 @@ const runPendingSidePanelAction = async (
     return
   }
   await Storage.set(SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING, null)
+  if (pending.useClipboard) {
+    try {
+      const clipboard = await readClipboard()
+      pending.clipboardText = clipboard.clipboardText
+    } catch (e) {
+      console.warn("Failed to read clipboard in background:", e)
+    }
+  }
   runViaPort(port, pending)
 }
 

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import {
   setupBackgroundTestEnvironment,
   mockStorage,
+  mockReadClipboard,
 } from "./background-shared"
 import {
   handleSidePanelConnect,
@@ -183,6 +184,43 @@ describe("background.ts - Side Panel Connection", () => {
             step: pending.steps[0],
             selectedText: pending.selectedText,
             srcUrl: pending.srcUrl,
+          }),
+        }),
+      )
+    })
+
+    it("SP-12: Does not call readClipboard when useClipboard is false", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const pending = { ...createPendingAction(), useClipboard: false }
+      mockStorage.get.mockResolvedValue(pending)
+      mockStorage.set.mockResolvedValue(undefined)
+
+      await handleSidePanelConnect(port as any)
+
+      expect(mockReadClipboard).not.toHaveBeenCalled()
+    })
+
+    it("SP-13: Reads clipboard from background context when useClipboard is true", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const pending = {
+        ...createPendingAction(),
+        useClipboard: true,
+        clipboardText: "",
+      }
+      mockStorage.get.mockResolvedValue(pending)
+      mockStorage.set.mockResolvedValue(undefined)
+      mockReadClipboard.mockResolvedValue({ clipboardText: "clipboard content" })
+
+      await handleSidePanelConnect(port as any)
+
+      expect(mockReadClipboard).toHaveBeenCalledTimes(1)
+
+      // The step should be posted with the clipboard text from background
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            clipboardText: "clipboard content",
           }),
         }),
       )

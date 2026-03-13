@@ -44,14 +44,6 @@ export const AiPrompt = {
       return
     }
 
-    // Read clipboard text for interpolation, but don't block execution if it fails.
-    let clipboardText: string = ""
-    try {
-      clipboardText = await navigator.clipboard.readText()
-    } catch (e) {
-      console.warn("Failed to read clipboard text:", e)
-    }
-
     const aiPromptOption = command.aiPromptOption
     const service = await findAiService(aiPromptOption.serviceId)
 
@@ -114,16 +106,24 @@ export const AiPrompt = {
       },
     ]
 
+    // Checks if any step requires clipboard data
+    const needClipboard = aiPromptOption.prompt.includes(
+      InsertSymbol[INSERT.CLIPBOARD],
+    )
+
     // Handle side panel mode: store pending steps in session storage, then open
     // the side panel. The background onConnect handler will pick up the pending
     // steps when the side panel content script establishes a port connection.
+    // Clipboard reading is deferred to the background script context to avoid
+    // browser security restrictions on navigator.clipboard in content scripts.
     if (aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL) {
       const pending: SidePanelPendingAction = {
         url: service.url,
         steps,
         selectedText: selectionText,
         srcUrl: location.href,
-        clipboardText,
+        clipboardText: "",
+        useClipboard: needClipboard || (useClipboard ?? false),
       }
       try {
         await Storage.set<SidePanelPendingAction>(
@@ -158,10 +158,6 @@ export const AiPrompt = {
     const windowPosition = await getWindowPosition()
     const screen = await getScreenSize()
 
-    // Checks if any step requires clipboard data
-    const needClipboard = aiPromptOption.prompt.includes(
-      InsertSymbol[INSERT.CLIPBOARD],
-    )
     const url: UrlParam = {
       searchUrl: service.url,
       selectionText,

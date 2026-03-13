@@ -92,6 +92,7 @@ export type SidePanelPendingAction = {
   selectedText: string
   srcUrl: string
   clipboardText: string
+  useClipboard?: boolean
 }
 
 export namespace ExecPageAction {
