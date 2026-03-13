@@ -45,7 +45,7 @@ export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
   return modes.includes((cmd as PageActionCommand).openMode);
 }
 
-export function isAiPromptType(data: unknown): data is AiPromptCommand {
+export function isAiPromptCommand(data: unknown): data is AiPromptCommand {
   if (!data || typeof data !== "object") {
     return false;
   }

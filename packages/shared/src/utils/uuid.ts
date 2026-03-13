@@ -2,7 +2,7 @@ import { normalizeObject } from "./common";
 import {
   isSearchCommand,
   isPageActionCommand,
-  isAiPromptType,
+  isAiPromptCommand,
 } from "./type-guards";
 import { v5 as uuidv5 } from "uuid";
 import { createHash } from "crypto";
@@ -44,7 +44,7 @@ export function cmd2uuid(cmd: unknown): string {
       openMode: cmd.openMode,
       pageActionOption: cmd.pageActionOption,
     });
-  } else if (isAiPromptType(cmd)) {
+  } else if (isAiPromptCommand(cmd)) {
     return generateUUIDFromObject({
       title: cmd.title,
       iconUrl: cmd.iconUrl,

@@ -353,7 +353,6 @@ const CMD_LINK_PREVIEW = {
   id: "$$drag-1",
   revision: 0,
   title: "Link Preview",
-  searchUrl: "",
   openMode: DRAG_OPEN_MODE.PREVIEW_POPUP,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }

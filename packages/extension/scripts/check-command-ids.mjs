@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { generateUUIDFromObject } from "../../shared/src/utils/uuid.ts"
+import { cmd2uuid } from "../../shared/src/utils/uuid.ts"
 
 /**
  * Generates UUIDs for each CMD_* command in defaultSettings.ts using the same
@@ -38,7 +38,7 @@ const OPEN_MODE = {
   AI_PROMPT: "aiPrompt",
 }
 
-const SEARCH_MODES = new Set([
+const CHECKABLE_MODES = new Set([
   OPEN_MODE.POPUP,
   OPEN_MODE.TAB,
   OPEN_MODE.WINDOW,
@@ -222,17 +222,8 @@ for (const { name, parsed } of commands) {
   const openMode = parsed.openMode
 
   // Determine command type
-  if (SEARCH_MODES.has(openMode)) {
-    // Search command: use {title, searchUrl, iconUrl, openMode, openModeSecondary, spaceEncoding}
-    const obj = {
-      title: parsed.title,
-      searchUrl: parsed.searchUrl,
-      iconUrl: parsed.iconUrl,
-      openMode: parsed.openMode,
-      openModeSecondary: parsed.openModeSecondary,
-      spaceEncoding: parsed.spaceEncoding,
-    }
-    const generatedId = generateUUIDFromObject(obj)
+  if (CHECKABLE_MODES.has(openMode)) {
+    const generatedId = cmd2uuid(parsed)
     const check = currentId === generatedId ? "OK" : "MISMATCH"
     console.log(
       `${name.padEnd(PAD_NAME)} ${generatedId.padEnd(PAD_ID)} ${check}${check === "MISMATCH" ? ` (current: ${currentId})` : ""}`,
