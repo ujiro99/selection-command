@@ -31,16 +31,84 @@ const src = fs.readFileSync(SRC_PATH, "utf-8")
 // -------------------------------------------------------------------
 // Helper: find the index of the matching closing brace for an opening
 // brace at `openIdx`.
+// NOTE: Braces inside string literals and comments are ignored.
 // -------------------------------------------------------------------
 function findMatchingBrace(text, openIdx) {
   let depth = 0
+  let inSingleQuote = false
+  let inDoubleQuote = false
+  let inTemplateLiteral = false
+  let inLineComment = false
+  let inBlockComment = false
+
   for (let i = openIdx; i < text.length; i++) {
-    if (text[i] === "{") depth++
-    else if (text[i] === "}") {
+    const ch = text[i]
+    const next = text[i + 1]
+    const prev = text[i - 1]
+
+    // 行コメントの終了判定
+    if (inLineComment) {
+      if (ch === "\n") {
+        inLineComment = false
+      }
+      continue
+    }
+
+    // ブロックコメントの終了判定
+    if (inBlockComment) {
+      if (ch === "*" && next === "/") {
+        inBlockComment = false
+        i++ // "*/" を飛ばす
+      }
+      continue
+    }
+
+    // いずれの文字列リテラル内でもない場合のみコメント開始を判定
+    if (!inSingleQuote && !inDoubleQuote && !inTemplateLiteral) {
+      if (ch === "/" && next === "/") {
+        inLineComment = true
+        i++ // "//" を飛ばす
+        continue
+      }
+      if (ch === "/" && next === "*") {
+        inBlockComment = true
+        i++ // "/*" を飛ばす
+        continue
+      }
+    }
+
+    // コメント外でのみ文字列リテラルの開始/終了を判定
+    if (!inLineComment && !inBlockComment) {
+      if (!inDoubleQuote && !inTemplateLiteral && ch === "'" && prev !== "\\") {
+        inSingleQuote = !inSingleQuote
+        continue
+      }
+      if (!inSingleQuote && !inTemplateLiteral && ch === '"' && prev !== "\\") {
+        inDoubleQuote = !inDoubleQuote
+        continue
+      }
+      if (!inSingleQuote && !inDoubleQuote && ch === "`" && prev !== "\\") {
+        inTemplateLiteral = !inTemplateLiteral
+        continue
+      }
+    }
+
+    // いずれかの文字列リテラル内では波括弧を無視
+    if (inSingleQuote || inDoubleQuote || inTemplateLiteral) {
+      continue
+    }
+
+    // コード本体のみで波括弧のネストをカウント
+    if (ch === "{") {
+      depth++
+    } else if (ch === "}") {
       depth--
-      if (depth === 0) return i
+      if (depth === 0) {
+        return i
+      }
     }
   }
+
   return -1
 }
 
