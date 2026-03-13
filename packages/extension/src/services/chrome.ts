@@ -332,16 +332,20 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function (port) {
+      const onConnect = (port: chrome.runtime.Port) => {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function (msg) {
+        const onMessage = (msg: { command: string; data: ClipboardResult }) => {
           if (msg.command === BgCommand.setClipboard) {
+            port.onMessage.removeListener(onMessage)
+            chrome.runtime.onConnect.removeListener(onConnect)
             resolve(msg.data)
           }
-        })
-      })
+        }
+        port.onMessage.addListener(onMessage)
+      }
+      chrome.runtime.onConnect.addListener(onConnect)
       if (chrome.runtime.lastError) {
         throw new Error(chrome.runtime.lastError.message)
       }
