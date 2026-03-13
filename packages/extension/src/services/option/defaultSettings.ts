@@ -279,58 +279,6 @@ export const DefaultCommands = [
     },
   },
   {
-    id: "e2001b8a-a20c-5d33-983b-bf6c6d55a63c",
-    revision: 0,
-    title: "Gemini - 日本語",
-    iconUrl:
-      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-    openMode: OPEN_MODE.PAGE_ACTION,
-    pageActionOption: {
-      openMode: OPEN_MODE.POPUP,
-      startUrl: "https://gemini.google.com/app",
-      steps: [
-        {
-          id: "1clkfxbrr",
-          param: {
-            label: "Start",
-            type: "start",
-          },
-        },
-        {
-          id: "gmavyqlj2",
-          param: {
-            label: "Ask Gemini",
-            selector: "//*[@data-gramm='false']/*",
-            selectorType: "xpath",
-            type: "input",
-            value: "以下について解説してください。\n{{SelectedText}}",
-          },
-        },
-        {
-          id: "umb7r0prx",
-          param: {
-            label: "",
-            selector: "//*[@data-mat-icon-name='send']",
-            selectorType: "xpath",
-            type: "click",
-          },
-        },
-        {
-          id: "stjwk2dnp",
-          param: {
-            label: "End",
-            type: "end",
-          },
-        },
-      ],
-    },
-    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
-    popupOption: {
-      width: PopupOption.width,
-      height: PopupOption.height,
-    },
-  },
-  {
     id: "2e0cd6fe-a232-402e-846c-2104f0639995",
     revision: 0,
     iconUrl: "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
@@ -385,22 +333,6 @@ export const DefaultCommands = [
     openModeSecondary: OPEN_MODE.TAB,
     searchUrl: "https://drive.google.com/drive/search?q=%s",
     title: "Drive",
-    parentFolderId: "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
-    popupOption: {
-      width: PopupOption.width,
-      height: PopupOption.height,
-    },
-    spaceEncoding: SPACE_ENCODING.PLUS,
-  },
-  {
-    id: "6c6d45d6-735b-43bd-b4c8-5dc5104c23ed",
-    revision: 0,
-    iconUrl: "https://ssl.gstatic.com/translate/favicon.ico",
-    openMode: OPEN_MODE.TAB,
-    openModeSecondary: OPEN_MODE.TAB,
-    searchUrl:
-      "https://translate.google.co.jp/?hl=ja&sl=auto&text=%s&op=translate",
-    title: "en to ja",
     parentFolderId: "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
     popupOption: {
       width: PopupOption.width,
@@ -524,13 +456,14 @@ const CMD_EN_TO_JA = {
 
 // ja: Japan
 const CMD_YAHOO_JAPAN = {
-  id: "bc1132b4-581b-55b1-bd00-4835756ff98a",
+  id: "2bcb5d3a-15b6-5e3f-b59d-94b0fdc68ea9",
   revision: 0,
-  iconUrl: "https://s.yimg.jp/images/top/sp2/cmn/logo-170307.png",
+  iconUrl: "https://s.yimg.jp/c/icon/s/bsc/2.0/favicon.ico",
   openMode: OPEN_MODE.POPUP,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://search.yahoo.co.jp/search?p=%s",
   title: "Yahoo! Japan",
+  parentFolderId: FOLDER_SEARCH,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
   spaceEncoding: SPACE_ENCODING.PLUS,
 }
@@ -626,6 +559,7 @@ const CMD_NAVER = {
   searchUrl: "https://search.naver.com/search.naver?query=%s",
   title: "네이버",
   popupOption: { width: PopupOption.width, height: PopupOption.height },
+  parentFolderId: FOLDER_SEARCH,
   spaceEncoding: SPACE_ENCODING.PLUS,
 }
 
@@ -784,9 +718,9 @@ const CMD_AMAZON_FR = {
 }
 
 const CMD_LEBONCOIN = {
-  id: "aa74b659-5078-5b1c-bd97-6f1e5474575b",
+  id: "6f046a4c-1567-5b90-bef5-9ed79dfad6d7",
   revision: 0,
-  iconUrl: "https://www.leboncoin.fr/favicon.ico",
+  iconUrl: "https://www.leboncoin.fr/_next/static/media/favicon.6fd07af6.svg",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.leboncoin.fr/recherche?text=%s",
@@ -840,9 +774,10 @@ const CMD_EBAY_ES = {
 }
 
 const CMD_EL_CORTE_INGLES = {
-  id: "9dd52da7-8ac9-56f6-a1f5-e7b389db5692",
+  id: "6a262b63-9fe3-5b84-8677-7dfc7a6149f8",
   revision: 0,
-  iconUrl: "https://www.elcorteingles.es/favicon.ico",
+  iconUrl:
+    "https://cdn.grupoelcorteingles.es/statics/front-msh3-eci-es/assets//stylesheets/favicons/vuestore/favicon.ico?_MTI6MDMtMDI6MjQ6MDA",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.elcorteingles.es/search-nwx/?s=%s",
@@ -853,12 +788,12 @@ const CMD_EL_CORTE_INGLES = {
 }
 
 const CMD_ALIEXPRESS_ES = {
-  id: "5db5d968-c2a8-5dd6-9166-e82da0a91ec5",
+  id: "3f5ed184-2a50-5f78-98e2-f4d7312141b4",
   revision: 0,
-  iconUrl: "https://ae01.alicdn.com/images/eng/nn/favicon/aliexpress_v3.ico",
+  iconUrl: "https://ae01.alicdn.com/kf/S05616f829f70427eb3389e1489f66613F.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
-  searchUrl: "https://ja.aliexpress.com/w/wholesale-%s.html",
+  searchUrl: "https://es.aliexpress.com/w/wholesale-%s.html",
   title: "AliExpress",
   parentFolderId: FOLDER_SEARCH,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
@@ -957,7 +892,7 @@ const CMD_FLIPKART = {
   id: "f024b680-b534-5b4a-9544-19c03bf9ea1b",
   revision: 0,
   iconUrl:
-    "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/favicon-144px.png",
+    "https://static-assets-web.flixcart.com/www/promos/new/20150528-140547-favicon-retina.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.flipkart.com/search?q=%s",
@@ -988,7 +923,7 @@ const CMD_TOKOPEDIA = {
   id: "10aacba2-936f-5512-a5ea-7d2fc55fb897",
   revision: 0,
   iconUrl:
-    "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/11/16/2fdf5dc5-abe5-454e-b8ec-bdf4e96d5c60.png",
+    "https://p16-images-comn-sg.tokopedia-static.net/tos-alisg-i-zr7vqa5nfb-sg/assets-tokopedia-lite/prod/icon144.png~tplv-zr7vqa5nfb-image.image",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.tokopedia.com/search?st=product&q=%s",
@@ -1042,10 +977,9 @@ const CMD_SHOPEE_MY = {
 }
 
 const CMD_LAZADA_MY = {
-  id: "c3f4558e-5502-521c-9d2a-45393198f968",
+  id: "aefb2b74-0803-5a63-9abd-253c4bae3888",
   revision: 0,
-  iconUrl:
-    "https://lzd-img-global.slatic.net/g/tps/tfs/TB1uGoZXkT2gK0jSZFkXXcIQFXa-114-114.png",
+  iconUrl: "https://www.lazada.com.my/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.lazada.com.my/catalog/?q=%s",
@@ -1080,6 +1014,32 @@ const CMD_AMAZON_IT = {
   openModeSecondary: OPEN_MODE.TAB,
   searchUrl: "https://www.amazon.it/s?k=%s",
   title: "Amazon",
+  parentFolderId: FOLDER_SEARCH,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+  spaceEncoding: SPACE_ENCODING.PLUS,
+}
+
+const CMD_EBAY_IT = {
+  id: "5db2eb4a-8169-5141-8332-32440097a0f5",
+  revision: 0,
+  iconUrl: "https://www.ebay.it/favicon.ico",
+  openMode: OPEN_MODE.TAB,
+  openModeSecondary: OPEN_MODE.TAB,
+  searchUrl: "https://www.ebay.it/sch/i.html?_nkw=%s",
+  title: "eBay.it",
+  parentFolderId: FOLDER_SEARCH,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+  spaceEncoding: SPACE_ENCODING.PLUS,
+}
+
+const CMD_ZALANDO_IT = {
+  id: "433426f0-7817-58aa-bc21-4b030e6918f8",
+  revision: 0,
+  iconUrl: "https://www.zalando.it/favicon.ico",
+  openMode: OPEN_MODE.TAB,
+  openModeSecondary: OPEN_MODE.TAB,
+  searchUrl: "https://www.zalando.it/catalogo/?q=%s",
+  title: "Zalando.it",
   parentFolderId: FOLDER_SEARCH,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
   spaceEncoding: SPACE_ENCODING.PLUS,
@@ -1302,6 +1262,8 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_GOOGLE,
       CMD_GOOGLE_IMAGE,
       CMD_AMAZON_IT,
+      CMD_EBAY_IT,
+      CMD_ZALANDO_IT,
       CMD_GEMINI_IT,
       CMD_YOUTUBE,
       CMD_NETFLIX,

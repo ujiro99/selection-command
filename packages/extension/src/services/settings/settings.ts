@@ -33,6 +33,7 @@ import {
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"
+import { getUILanguage } from "@/services/i18n"
 
 const callbacks = [] as (() => void)[]
 
@@ -186,7 +187,7 @@ export const Settings = {
 
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
-    await Storage.setCommands(getDefaultCommands(chrome.i18n.getUILanguage()))
+    await Storage.setCommands(getDefaultCommands(getUILanguage()))
     await Storage.set<ShortcutSettings>(
       STORAGE_KEY.SHORTCUTS,
       DefaultSettings.shortcuts,

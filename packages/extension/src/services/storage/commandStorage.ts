@@ -1,6 +1,4 @@
-import {
-  getDefaultCommands,
-} from "../option/defaultSettings"
+import { getDefaultCommands } from "../option/defaultSettings"
 import { Command } from "@/types"
 import { CommandMetadata, GlobalCommandMetadata } from "@/types/command"
 import {
@@ -12,6 +10,7 @@ import {
   CMD_LOCAL_KEY,
 } from "./const"
 import { BaseStorage, debouncedSyncSet, cmdSyncKey, cmdLocalKey } from "./index"
+import { getUILanguage } from "@/services/i18n"
 
 // Storage interface for dependency injection
 interface StorageInterface {
@@ -304,7 +303,7 @@ export class CommandStorage {
       if (!syncMetadata && !localMetadata && !globalMetadata) {
         // First load, return locale-specific default commands.
         console.debug("No metadata found, returning default commands...")
-        return getDefaultCommands(chrome.i18n.getUILanguage())
+        return getDefaultCommands(getUILanguage())
       }
 
       // Step 2: Load commands from both storage areas
@@ -371,7 +370,7 @@ export class CommandStorage {
     // If update first time, set locale-specific default commands.
     if (!syncMetadata) {
       console.debug("Update first time, set DefaultCommands.")
-      const localeDefaults = getDefaultCommands(chrome.i18n.getUILanguage())
+      const localeDefaults = getDefaultCommands(getUILanguage())
       const updated = localeDefaults.reduce(
         (acc, cmd, i) => {
           const found = commands.find((c) => c.id === cmd.id)
