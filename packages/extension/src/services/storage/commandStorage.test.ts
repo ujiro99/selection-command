@@ -34,17 +34,19 @@ vi.mock("@/const", async (importOriginal) => {
 
 vi.mock("../option/defaultSettings", async (importOriginal) => {
   const actual: any = await importOriginal()
+  const mockDefaultCommands = [
+    {
+      id: "default-1",
+      title: "Default Command 1",
+      iconUrl: "",
+      searchUrl: "https://example.com?q=%s",
+      openMode: "popup",
+    },
+  ]
   return {
     ...actual,
-    DefaultCommands: [
-      {
-        id: "default-1",
-        title: "Default Command 1",
-        iconUrl: "",
-        searchUrl: "https://example.com?q=%s",
-        openMode: "popup",
-      },
-    ],
+    DefaultCommands: mockDefaultCommands,
+    getDefaultCommands: vi.fn(() => mockDefaultCommands),
   }
 })
 
@@ -139,6 +141,9 @@ global.chrome = {
   },
   runtime: {
     lastError: null as any,
+  },
+  i18n: {
+    getUILanguage: vi.fn(() => "en"),
   },
 } as any
 

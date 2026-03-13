@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:e2e": "tsc -b && vite build --mode e2e",
+    "build:e2e": "node scripts/generate-e2e-urls.mjs && tsc -b && vite build --mode e2e",
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -15,6 +15,7 @@
     "test:coverage": "vitest --coverage",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
+    "check-ids": "tsx scripts/check-command-ids.mjs",
     "zip": "npm-build-zip --source=dist --destination=build",
     "test:e2e": "playwright test"
   },
@@ -76,6 +77,7 @@
     "glob": "^10.3.10",
     "globals": "^15.14.0",
     "npm-build-zip": "^1.0.4",
+    "tsx": "^4.21.0",
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5",
     "vite-plugin-css-injected-by-js": "^3.5.2",

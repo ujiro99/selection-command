@@ -287,6 +287,12 @@
   "Option_spaceEncoding_percent": {
     "message": "प्रतिशत (%20)"
   },
+  "Option_spaceEncoding_dash": {
+    "message": "डैश (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "अंडरस्कोर (_)"
+  },
   "Option_openMode": {
     "message": "खुलने का मोड"
   },

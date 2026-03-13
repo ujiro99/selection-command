@@ -2,6 +2,7 @@ import { Storage } from "@/services/storage"
 import { STORAGE_KEY } from "@/services/storage/const"
 import DefaultSettings, {
   DefaultCommands,
+  getDefaultCommands,
   PopupPlacement,
 } from "../option/defaultSettings"
 import {
@@ -32,6 +33,7 @@ import {
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
 import { LOCAL_STORAGE_KEY } from "../storage"
+import { getUILanguage } from "@/services/i18n"
 
 const callbacks = [] as (() => void)[]
 
@@ -185,7 +187,7 @@ export const Settings = {
 
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
-    await Storage.setCommands(DefaultCommands)
+    await Storage.setCommands(getDefaultCommands(getUILanguage()))
     await Storage.set<ShortcutSettings>(
       STORAGE_KEY.SHORTCUTS,
       DefaultSettings.shortcuts,

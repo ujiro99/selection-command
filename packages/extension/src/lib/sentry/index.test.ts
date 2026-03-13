@@ -727,7 +727,9 @@ describe("Sentry Null Error Filtering Tests", () => {
 
     it("should pass through events with meaningful error messages", () => {
       const event = {
-        exception: { values: [{ value: "Something went wrong", type: "Error" }] },
+        exception: {
+          values: [{ value: "Something went wrong", type: "Error" }],
+        },
       } as any
       expect(TestUtils.customBeforeSend(event)).not.toBeNull()
     })

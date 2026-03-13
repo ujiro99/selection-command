@@ -91,6 +91,26 @@ describe("toUrl", () => {
     expect(toUrl(param)).toBe("https://example.com/search?q=hello+world")
   })
 
+  it("TU-04-a: converts UrlParam with DASH space encoding", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/w/wholesale-%s.html",
+      selectionText: "hello world",
+      spaceEncoding: SPACE_ENCODING.DASH,
+    }
+    expect(toUrl(param)).toBe(
+      "https://example.com/w/wholesale-hello-world.html",
+    )
+  })
+
+  it("TU-04-b: converts UrlParam with UNDERSCORE space encoding", () => {
+    const param: UrlParam = {
+      searchUrl: "https://en.wikipedia.org/wiki/%s",
+      selectionText: "hello world",
+      spaceEncoding: SPACE_ENCODING.UNDERSCORE,
+    }
+    expect(toUrl(param)).toBe("https://en.wikipedia.org/wiki/hello_world")
+  })
+
   it("TU-05: escapes forward slashes in text", () => {
     const param: UrlParam = {
       searchUrl: "https://example.com/search?q=%s",

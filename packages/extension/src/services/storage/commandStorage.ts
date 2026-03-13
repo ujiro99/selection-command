@@ -1,4 +1,4 @@
-import { DefaultCommands } from "../option/defaultSettings"
+import { getDefaultCommands } from "../option/defaultSettings"
 import { Command } from "@/types"
 import { CommandMetadata, GlobalCommandMetadata } from "@/types/command"
 import {
@@ -10,6 +10,7 @@ import {
   CMD_LOCAL_KEY,
 } from "./const"
 import { BaseStorage, debouncedSyncSet, cmdSyncKey, cmdLocalKey } from "./index"
+import { getUILanguage } from "@/services/i18n"
 
 // Storage interface for dependency injection
 interface StorageInterface {
@@ -300,9 +301,9 @@ export class CommandStorage {
       const [syncMetadata, localMetadata] = metadata
 
       if (!syncMetadata && !localMetadata && !globalMetadata) {
-        // First load, return default commands.
+        // First load, return locale-specific default commands.
         console.debug("No metadata found, returning default commands...")
-        return DefaultCommands
+        return getDefaultCommands(getUILanguage())
       }
 
       // Step 2: Load commands from both storage areas
@@ -366,10 +367,11 @@ export class CommandStorage {
     const [syncMetadata, localMetadata] =
       await this.metadataManager.loadCommandMetadata()
 
-    // If update first time, set DefaultCommands.
+    // If update first time, set locale-specific default commands.
     if (!syncMetadata) {
       console.debug("Update first time, set DefaultCommands.")
-      const updated = DefaultCommands.reduce(
+      const localeDefaults = getDefaultCommands(getUILanguage())
+      const updated = localeDefaults.reduce(
         (acc, cmd, i) => {
           const found = commands.find((c) => c.id === cmd.id)
           if (found) {
