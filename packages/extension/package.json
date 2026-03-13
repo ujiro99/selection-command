@@ -15,7 +15,7 @@
     "test:coverage": "vitest --coverage",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
-    "check-ids": "node scripts/check-command-ids.mjs",
+    "check-ids": "npx tsx scripts/check-command-ids.mjs",
     "zip": "npm-build-zip --source=dist --destination=build",
     "test:e2e": "playwright test"
   },

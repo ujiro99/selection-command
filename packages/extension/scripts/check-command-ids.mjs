@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { normalizeObject } from "../../shared/src/utils/common.ts"
+import { generateUUIDFromObject } from "../../shared/src/utils/uuid.ts"
 
 /**
  * Generates UUIDs for each CMD_* command in defaultSettings.ts using the same
@@ -14,12 +14,7 @@ import { normalizeObject } from "../../shared/src/utils/common.ts"
  */
 import fs from "fs"
 import path from "path"
-import crypto from "crypto"
 import { fileURLToPath } from "url"
-import { createRequire } from "module"
-
-const require = createRequire(import.meta.url)
-const { v5: uuidv5 } = require("uuid")
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const SRC_PATH = path.resolve(
@@ -60,15 +55,6 @@ const SPACE_ENCODING = {
   PERCENT: "percent",
   DASH: "dash",
   UNDERSCORE: "underscore",
-}
-
-// ---- Helpers (mirroring uuid.ts) ----
-
-function generateUUIDFromObject(obj) {
-  const objString = JSON.stringify(normalizeObject(obj))
-  const hash = crypto.createHash("sha1").update(objString).digest("hex")
-  const namespace = "fe352db3-6a8e-5d07-9aaf-c45a2e9d9f5c"
-  return uuidv5(hash, namespace)
 }
 
 // ---- Resolve enum references in a value string ----
