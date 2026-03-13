@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 import { cmd2uuid } from "../../shared/src/utils/uuid.ts"
 

@@ -1,6 +1,6 @@
 export function getUILanguage(): string {
   const FORCE_LANG = import.meta.env.VITE_FORCE_LANG
-  if (FORCE_LANG) {
+  if (import.meta.env.DEV && FORCE_LANG) {
     return FORCE_LANG
   }
   return chrome.i18n.getUILanguage()
