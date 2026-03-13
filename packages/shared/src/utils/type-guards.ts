@@ -1,4 +1,8 @@
-import type { SearchCommand, PageActionCommand } from "../types/command";
+import type {
+  SearchCommand,
+  PageActionCommand,
+  AiPromptCommand,
+} from "../types/command";
 import { OPEN_MODE, SEARCH_OPEN_MODE } from "../constants";
 
 /**
@@ -39,4 +43,14 @@ export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
   }
   const modes = [OPEN_MODE.PAGE_ACTION];
   return modes.includes((cmd as PageActionCommand).openMode);
+}
+
+export function isAiPromptType(data: unknown): data is AiPromptCommand {
+  if (!data || typeof data !== "object") {
+    return false;
+  }
+  if (!("openMode" in data)) {
+    return false;
+  }
+  return data.openMode === OPEN_MODE.AI_PROMPT;
 }

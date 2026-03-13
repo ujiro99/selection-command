@@ -33,6 +33,7 @@
       "Bash(yarn test:run:*)",
       "Bash(yarn tsc)",
       "Bash(yarn tsc:*)",
+      "Bash(yarn check-ids)",
       "Bash(yarn workspace @selection-command/extension:*)",
       "Bash(yarn workspace @selection-command/hub:*)",
       "WebFetch(domain:api.github.com)",

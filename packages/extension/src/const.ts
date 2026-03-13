@@ -1,5 +1,5 @@
-import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@shared"
-export { OPEN_MODE, PAGE_ACTION_OPEN_MODE }
+import { OPEN_MODE } from "@shared"
+export { OPEN_MODE, PAGE_ACTION_OPEN_MODE, SEARCH_OPEN_MODE } from "@shared"
 
 export const APP_ID = "selection-command"
 export const VERSION = __APP_VERSION__ as string

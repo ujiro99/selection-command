@@ -42,6 +42,8 @@ const SEARCH_MODES = new Set([
   OPEN_MODE.WINDOW,
   OPEN_MODE.BACKGROUND_TAB,
   OPEN_MODE.SIDE_PANEL,
+  OPEN_MODE.AI_PROMPT,
+  OPEN_MODE.PAGE_ACTION,
 ])
 
 const DRAG_OPEN_MODE = {
@@ -167,17 +169,6 @@ for (const { name, parsed } of commands) {
     const check = currentId === generatedId ? "OK" : "MISMATCH"
     console.log(
       `${name.padEnd(PAD_NAME)} ${generatedId.padEnd(PAD_ID)} ${check}${check === "MISMATCH" ? ` (current: ${currentId})` : ""}`,
-    )
-  } else if (openMode === OPEN_MODE.PAGE_ACTION) {
-    // Page action commands are defined in the legacy DefaultCommands with inline pageActionOption.
-    // CMD_* consts for page actions don't exist in current code, but handle just in case.
-    console.log(
-      `${name.padEnd(PAD_NAME)} ${"(pageAction - N/A)".padEnd(PAD_ID)} SKIP`,
-    )
-  } else if (openMode === OPEN_MODE.AI_PROMPT) {
-    // AI_PROMPT commands are not handled by cmd2uuid
-    console.log(
-      `${name.padEnd(PAD_NAME)} ${"(aiPrompt - N/A)".padEnd(PAD_ID)} SKIP`,
     )
   } else {
     // Drag commands or other special types

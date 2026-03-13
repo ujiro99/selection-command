@@ -439,7 +439,7 @@ const CMD_GOOGLE = {
 }
 
 const CMD_GOOGLE_IMAGE = {
-  id: "18998bac-4e6c-503f-b3ea-b9198edef7c3",
+  id: "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
   revision: 0,
   iconUrl: "https://www.google.com/favicon.ico",
   openMode: OPEN_MODE.POPUP,
@@ -452,7 +452,7 @@ const CMD_GOOGLE_IMAGE = {
 }
 
 const CMD_GEMINI_JA = {
-  id: "e2001b8a-a20c-5d33-983b-bf6c6d55a63c",
+  id: "8f1dd05d-8bfc-508c-977b-e1e741811551",
   revision: 0,
   title: "Gemini - 日本語",
   iconUrl:
@@ -468,7 +468,7 @@ const CMD_GEMINI_JA = {
 }
 
 const CMD_YOUTUBE = {
-  id: "2e0cd6fe-a232-402e-846c-2104f0639995",
+  id: "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
   revision: 0,
   iconUrl: "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
   openMode: OPEN_MODE.TAB,
@@ -481,7 +481,7 @@ const CMD_YOUTUBE = {
 }
 
 const CMD_NETFLIX = {
-  id: "409aba7d-c49e-5e81-b8a6-a862f2651b3e",
+  id: "fb9cb6ad-76e3-5aa8-82a7-ade233edcec0",
   revision: 0,
   iconUrl: "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
   openMode: OPEN_MODE.TAB,
@@ -494,7 +494,7 @@ const CMD_NETFLIX = {
 }
 
 const CMD_DRIVE = {
-  id: "125fdc5e-a97d-5f81-92c4-2a6cbfc3662f",
+  id: "dd05d527-92db-5102-9a88-4a5b31fa7512",
   revision: 0,
   iconUrl: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
   openMode: OPEN_MODE.TAB,
@@ -507,7 +507,7 @@ const CMD_DRIVE = {
 }
 
 const CMD_EN_TO_JA = {
-  id: "6c6d45d6-735b-43bd-b4c8-5dc5104c23ed",
+  id: "0ce8e887-e464-545b-923e-3f03181e3841",
   revision: 0,
   iconUrl: "https://ssl.gstatic.com/translate/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -524,7 +524,7 @@ const CMD_EN_TO_JA = {
 
 // ja: Japan
 const CMD_YAHOO_JAPAN = {
-  id: "3f2b4d5e-6a7c-4b8d-9e0f-1a2b3c4d5e6f",
+  id: "bc1132b4-581b-55b1-bd00-4835756ff98a",
   revision: 0,
   iconUrl: "https://s.yimg.jp/images/top/sp2/cmn/logo-170307.png",
   openMode: OPEN_MODE.POPUP,
@@ -536,7 +536,7 @@ const CMD_YAHOO_JAPAN = {
 }
 
 const CMD_AMAZON_JP = {
-  id: "7f6b8d9e-0a1c-4b2d-3e4f-5a6b7c8d9e0f",
+  id: "9d61d45c-36ab-5ebf-ad42-d3f3a42810bf",
   revision: 0,
   iconUrl: "https://www.amazon.co.jp/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -550,7 +550,7 @@ const CMD_AMAZON_JP = {
 
 // zh_CN: China
 const CMD_BAIDU = {
-  id: "6c5e7a8b-9d0f-4e1a-2b3c-4d5e6f7a8b9c",
+  id: "f004f082-f4e5-5ba7-af0a-2db1f8a55d37",
   revision: 0,
   iconUrl: "https://www.baidu.com/favicon.ico",
   openMode: OPEN_MODE.POPUP,
@@ -562,7 +562,7 @@ const CMD_BAIDU = {
 }
 
 const CMD_BILIBILI = {
-  id: "7d6f8b9c-0e1a-4f2b-3c4d-5e6f7a8b9c0d",
+  id: "b2f4c26c-ae12-5261-b7ed-5c24b2b9fb56",
   revision: 0,
   iconUrl: "https://www.bilibili.com/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -575,7 +575,7 @@ const CMD_BILIBILI = {
 }
 
 const CMD_JD = {
-  id: "8e7a9c0d-1f2b-4a3c-4d5e-6f7a8b9c0d1e",
+  id: "8ce5625c-e9f9-5b13-93ba-23ac954fe6ba",
   revision: 0,
   iconUrl: "https://www.jd.com/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -588,7 +588,7 @@ const CMD_JD = {
 }
 
 const CMD_ZHIHU = {
-  id: "9f8b0d1e-2a3c-4b4d-5e6f-7a8b9c0d1e2f",
+  id: "0458f7cd-4e84-5b9e-a3ee-fd35d3f84a41",
   revision: 0,
   iconUrl: "https://static.zhihu.com/static/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -601,7 +601,7 @@ const CMD_ZHIHU = {
 }
 
 const CMD_GEMINI_ZH = {
-  id: "a1b2c3d4-e5f6-4789-8abc-def012345601",
+  id: "e5f4cd16-3d09-5872-abfb-748d3ee44d4d",
   revision: 0,
   title: "Gemini - 中文",
   iconUrl:
@@ -618,7 +618,7 @@ const CMD_GEMINI_ZH = {
 
 // ko: Korea
 const CMD_NAVER = {
-  id: "0a9c1e2f-3b4d-4c5e-6f7a-8b9c0d1e2f3a",
+  id: "31887e39-e3fa-5799-9094-0ac03dd30508",
   revision: 0,
   iconUrl: "https://www.naver.com/favicon.ico",
   openMode: OPEN_MODE.POPUP,
@@ -630,7 +630,7 @@ const CMD_NAVER = {
 }
 
 const CMD_COUPANG = {
-  id: "1b0d2f3a-4c5e-4d6f-7a8b-9c0d1e2f3a4b",
+  id: "6b2d5167-1253-5a14-8b72-0b9679c38474",
   revision: 0,
   iconUrl: "https://www.coupang.com/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -643,7 +643,7 @@ const CMD_COUPANG = {
 }
 
 const CMD_GEMINI_KO = {
-  id: "b2c3d4e5-f6a7-4890-9bcd-ef0123456702",
+  id: "55cbdee1-8b93-555a-9b6e-664583e47749",
   revision: 0,
   title: "Gemini - 한국어",
   iconUrl:
@@ -660,7 +660,7 @@ const CMD_GEMINI_KO = {
 
 // ru: Russia
 const CMD_YANDEX = {
-  id: "2c1e3a4b-5d6f-4e7a-8b9c-0d1e2f3a4b5c",
+  id: "7b8ef164-c070-5112-820e-f4d1b6a22ff3",
   revision: 0,
   iconUrl: "https://yandex.ru/favicon.ico",
   openMode: OPEN_MODE.POPUP,
@@ -672,7 +672,7 @@ const CMD_YANDEX = {
 }
 
 const CMD_VK = {
-  id: "3d2f4b5c-6e7a-4f8b-9c0d-1e2f3a4b5c6d",
+  id: "9897e8ae-2940-5eea-b4ac-8a55648d3dff",
   revision: 0,
   iconUrl: "https://vk.com/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -685,7 +685,7 @@ const CMD_VK = {
 }
 
 const CMD_OZON = {
-  id: "4e3a5c6d-7f8b-4a9c-0d1e-2f3a4b5c6d7e",
+  id: "c9524f7d-1ae0-5600-a455-9b29e8286a33",
   revision: 0,
   iconUrl: "https://www.ozon.ru/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -698,7 +698,7 @@ const CMD_OZON = {
 }
 
 const CMD_GEMINI_RU = {
-  id: "c3d4e5f6-a7b8-4901-abcd-f01234567803",
+  id: "9ffb5af5-3f25-58b3-a5bb-4a1981f670f2",
   revision: 0,
   title: "Gemini - Русский",
   iconUrl:
@@ -714,7 +714,7 @@ const CMD_GEMINI_RU = {
 }
 
 const CMD_WILDBERRIES = {
-  id: "5e4a6c7d-8f9b-4b0c-1d2e-3f4a5b6c7d8e",
+  id: "95146f74-3436-54b8-9019-0facc146d9ac",
   revision: 0,
   iconUrl: "https://www.wildberries.ru/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -728,7 +728,7 @@ const CMD_WILDBERRIES = {
 
 // de: Germany
 const CMD_AMAZON_DE = {
-  id: "a0b1c2d3-e4f5-4a6b-8c7d-9e0f1a2b3c4d",
+  id: "e7f7a81e-fc01-55f7-b692-139d3183d27c",
   revision: 0,
   iconUrl: "https://www.amazon.de/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -741,7 +741,7 @@ const CMD_AMAZON_DE = {
 }
 
 const CMD_EBAY_DE = {
-  id: "6a5c7e8f-9b0d-4c1e-2f3a-4b5c6d7e8f9a",
+  id: "6cbac506-1ef4-514e-a830-66e182fc9903",
   revision: 0,
   iconUrl: "https://www.ebay.de/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -754,7 +754,7 @@ const CMD_EBAY_DE = {
 }
 
 const CMD_GEMINI_DE = {
-  id: "d4e5f6a7-b8c9-4012-bcde-012345678904",
+  id: "365a54c6-0324-57be-84e5-ab56a3a7d1f0",
   revision: 0,
   title: "Gemini - Deutsch",
   iconUrl:
@@ -771,7 +771,7 @@ const CMD_GEMINI_DE = {
 
 // fr: France
 const CMD_AMAZON_FR = {
-  id: "b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+  id: "4d48cb20-92be-5745-affc-5efa8946884f",
   revision: 0,
   iconUrl: "https://www.amazon.fr/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -784,7 +784,7 @@ const CMD_AMAZON_FR = {
 }
 
 const CMD_LEBONCOIN = {
-  id: "8c7e9a0b-1d2f-4e3a-4b5c-6d7e8f9a0b1c",
+  id: "aa74b659-5078-5b1c-bd97-6f1e5474575b",
   revision: 0,
   iconUrl: "https://www.leboncoin.fr/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -797,7 +797,7 @@ const CMD_LEBONCOIN = {
 }
 
 const CMD_GEMINI_FR = {
-  id: "e5f6a7b8-c9d0-4123-cdef-123456789005",
+  id: "28514807-91d0-5b78-9c6e-6f66d28480de",
   revision: 0,
   title: "Gemini - Français",
   iconUrl:
@@ -814,7 +814,7 @@ const CMD_GEMINI_FR = {
 
 // es: Spanish
 const CMD_AMAZON_ES = {
-  id: "c2d3e4f5-a6b7-4c8d-9e0f-1a2b3c4d5e6f",
+  id: "f78091a8-142b-586c-b29c-63fad083cba1",
   revision: 0,
   iconUrl: "https://www.amazon.es/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -827,7 +827,7 @@ const CMD_AMAZON_ES = {
 }
 
 const CMD_EBAY_ES = {
-  id: "9d8f0b1c-2e3a-4f4b-5c6d-7e8f9a0b1c2d",
+  id: "57cc9467-178b-5a83-81ce-0d913a662637",
   revision: 0,
   iconUrl: "https://www.ebay.es/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -840,7 +840,7 @@ const CMD_EBAY_ES = {
 }
 
 const CMD_EL_CORTE_INGLES = {
-  id: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+  id: "9dd52da7-8ac9-56f6-a1f5-e7b389db5692",
   revision: 0,
   iconUrl: "https://www.elcorteingles.es/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -853,7 +853,7 @@ const CMD_EL_CORTE_INGLES = {
 }
 
 const CMD_ALIEXPRESS_ES = {
-  id: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+  id: "5db5d968-c2a8-5dd6-9166-e82da0a91ec5",
   revision: 0,
   iconUrl: "https://ae01.alicdn.com/images/eng/nn/favicon/aliexpress_v3.ico",
   openMode: OPEN_MODE.TAB,
@@ -866,7 +866,7 @@ const CMD_ALIEXPRESS_ES = {
 }
 
 const CMD_GEMINI_ES = {
-  id: "f6a7b8c9-d0e1-4234-def0-234567890106",
+  id: "8657cbce-7041-59ee-99bd-0059d7725773",
   revision: 0,
   title: "Gemini - Español",
   iconUrl:
@@ -883,7 +883,7 @@ const CMD_GEMINI_ES = {
 
 // pt-BR: Brazil
 const CMD_AMAZON_BR = {
-  id: "d3e4f5a6-b7c8-4d9e-0f1a-2b3c4d5e6f7a",
+  id: "57f5d511-5102-5e15-8b5e-c54e1d29e65e",
   revision: 0,
   iconUrl: "https://www.amazon.com.br/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -896,7 +896,7 @@ const CMD_AMAZON_BR = {
 }
 
 const CMD_MERCADO_LIVRE_BR = {
-  id: "0e9a1c2d-3f4b-4a5c-6d7e-8f9a0b1c2d3e",
+  id: "0d095a4d-dc48-53d4-b6dc-ba2d65d3ec46",
   revision: 0,
   iconUrl:
     "https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/6.6.92/mercadolibre/favicon.svg",
@@ -910,7 +910,7 @@ const CMD_MERCADO_LIVRE_BR = {
 }
 
 const CMD_GEMINI_PT = {
-  id: "a7b8c9d0-e1f2-4345-ef01-345678901207",
+  id: "f698f5d8-445a-5425-b147-52ae5d612253",
   revision: 0,
   title: "Gemini - Português",
   iconUrl:
@@ -927,7 +927,7 @@ const CMD_GEMINI_PT = {
 
 // pt-PT: Portugal
 const CMD_OLX_PT = {
-  id: "b8c9d0e1-f2a3-4456-f012-456789012308",
+  id: "bec3f4b8-0929-53bb-adcb-cd68795cf360",
   revision: 0,
   iconUrl: "https://www.olx.pt/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -941,7 +941,7 @@ const CMD_OLX_PT = {
 
 // hi: India
 const CMD_AMAZON_IN = {
-  id: "e4f5a6b7-c8d9-4e0f-1a2b-3c4d5e6f7a8b",
+  id: "2dcbe879-de97-5099-b647-c70f56272b67",
   revision: 0,
   iconUrl: "https://www.amazon.in/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -954,7 +954,7 @@ const CMD_AMAZON_IN = {
 }
 
 const CMD_FLIPKART = {
-  id: "2a1c3e4f-5b6d-4c7e-8f9a-0b1c2d3e4f5a",
+  id: "f024b680-b534-5b4a-9544-19c03bf9ea1b",
   revision: 0,
   iconUrl:
     "https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/favicon-144px.png",
@@ -968,7 +968,7 @@ const CMD_FLIPKART = {
 }
 
 const CMD_GEMINI_HI = {
-  id: "c9d0e1f2-a3b4-4567-0123-567890123409",
+  id: "b6c74d17-9f37-5cd8-89a8-e2a83db6fa46",
   revision: 0,
   title: "Gemini - हिन्दी",
   iconUrl:
@@ -985,7 +985,7 @@ const CMD_GEMINI_HI = {
 
 // id: Indonesia
 const CMD_TOKOPEDIA = {
-  id: "3b2d4f5a-6c7e-4d8f-9a0b-1c2d3e4f5a6b",
+  id: "10aacba2-936f-5512-a5ea-7d2fc55fb897",
   revision: 0,
   iconUrl:
     "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/11/16/2fdf5dc5-abe5-454e-b8ec-bdf4e96d5c60.png",
@@ -999,7 +999,7 @@ const CMD_TOKOPEDIA = {
 }
 
 const CMD_SHOPEE_ID = {
-  id: "4c3e5a6b-7d8f-4e9a-0b1c-2d3e4f5a6b7c",
+  id: "be521b5f-2d9c-5312-9001-6c1c83a79fa6",
   revision: 0,
   iconUrl: "https://shopee.co.id/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -1012,7 +1012,7 @@ const CMD_SHOPEE_ID = {
 }
 
 const CMD_GEMINI_ID = {
-  id: "d0e1f2a3-b4c5-4678-1234-67890123450a",
+  id: "2c3d8dab-4d2f-5a48-a475-c5633d53e104",
   revision: 0,
   title: "Gemini - Indonesia",
   iconUrl:
@@ -1029,7 +1029,7 @@ const CMD_GEMINI_ID = {
 
 // ms: Malaysia
 const CMD_SHOPEE_MY = {
-  id: "5d4f6b7c-8e9a-4f0b-1c2d-3e4f5a6b7c8d",
+  id: "d583ed37-a972-5f96-a927-ecbfaac9519f",
   revision: 0,
   iconUrl: "https://shopee.com.my/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -1042,7 +1042,7 @@ const CMD_SHOPEE_MY = {
 }
 
 const CMD_LAZADA_MY = {
-  id: "6e5a7c8d-9f0b-4a1c-2d3e-4f5a6b7c8d9e",
+  id: "c3f4558e-5502-521c-9d2a-45393198f968",
   revision: 0,
   iconUrl:
     "https://lzd-img-global.slatic.net/g/tps/tfs/TB1uGoZXkT2gK0jSZFkXXcIQFXa-114-114.png",
@@ -1056,7 +1056,7 @@ const CMD_LAZADA_MY = {
 }
 
 const CMD_GEMINI_MS = {
-  id: "e1f2a3b4-c5d6-4789-2345-78901234560b",
+  id: "d49c2724-8ee4-5cf3-9966-12ef7542275a",
   revision: 0,
   title: "Gemini - Melayu",
   iconUrl:
@@ -1073,7 +1073,7 @@ const CMD_GEMINI_MS = {
 
 // it: Italy
 const CMD_AMAZON_IT = {
-  id: "f5a6b7c8-d9e0-4f1a-2b3c-4d5e6f7a8b9c",
+  id: "630aeda8-3baa-5a8d-a9ef-1a6d80dc48bc",
   revision: 0,
   iconUrl: "https://www.amazon.it/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -1086,7 +1086,7 @@ const CMD_AMAZON_IT = {
 }
 
 const CMD_GEMINI_IT = {
-  id: "f2a3b4c5-d6e7-4890-3456-89012345670c",
+  id: "f52fc864-fd82-5d0b-b014-00cc111f7978",
   revision: 0,
   title: "Gemini - Italiano",
   iconUrl:

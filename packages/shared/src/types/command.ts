@@ -1,4 +1,4 @@
-import type { OPEN_MODE, SPACE_ENCODING } from "../constants";
+import type { OPEN_MODE, SEARCH_OPEN_MODE, SPACE_ENCODING } from "../constants";
 
 /**
  * Base command structure shared across packages
@@ -48,3 +48,30 @@ export interface Tag {
   id: string;
   name: string;
 }
+
+/**
+ * AI Prompt command structure
+ */
+export type AiPromptCommand = SearchCommand & {
+  aiPromptOption: AiPromptOption;
+};
+
+/**
+ * AI Prompt options structure
+ */
+export type AiPromptOption = {
+  /**
+   * The ID of the AI service to use.
+   * @see `packages/hub/public/data/ai-services.json`
+   */
+  serviceId: string;
+  /**
+   * The prompt text to send to the AI service.
+   * This can include variables that will be replaced with actual values when the command is executed.
+   */
+  prompt: string;
+  /**
+   * The mode in which to open the AI service.
+   */
+  openMode: (typeof SEARCH_OPEN_MODE)[number];
+};
