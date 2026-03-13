@@ -196,6 +196,8 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
           if (selectionEndPoint) {
             selectionEndPoint.y -= 8 // Adjust to match the mouse cursor selection.
             setAnchor(selectionEndPoint)
+          } else {
+            releaseAnchor(true)
           }
           return
         }

@@ -488,8 +488,10 @@ export function getEditableSelectionEndPoint(): Point | null {
   // Collapse to selection end to get the end position coordinates
   const range = selection.getRangeAt(0)
   const endRange = range.cloneRange()
-  endRange.setStart(selection.focusNode!, selection.focusOffset)
-  endRange.setEnd(selection.focusNode!, selection.focusOffset)
+
+  if (!selection.focusNode) return null
+  endRange.setStart(selection.focusNode, selection.focusOffset)
+  endRange.setEnd(selection.focusNode, selection.focusOffset)
 
   const rect = endRange.getBoundingClientRect()
   if (rect.width === 0 && rect.height === 0) {
