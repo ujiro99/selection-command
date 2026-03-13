@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Painel lateral"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Abrir no painel lateral."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL da página onde a ação começa."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Para \"Aba Atual\", somente páginas que correspondam a esta URL podem ser executadas. Você pode usar o curinga \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL da página para iniciar a gravação de ações. Usado apenas na tela de configurações."
+  },
+  "Option_pageUrl": {
+    "message": "URL da página"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Pode ser executado apenas em páginas que correspondam a esta URL. Você pode usar o curinga «*»."
   },
   "Option_pageAction_title": {
     "message": "Ações"
@@ -767,6 +782,9 @@
   "Option_zod_url": {
     "message": "Por favor, insira no formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "O URL da página é obrigatório quando o modo de aba atual é selecionado."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "O texto selecionado será inserido",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1028,8 +1046,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir aba em segundo plano.<wbr>Mostrar à direita da aba atual."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Abrir no painel lateral."
+  "Option_openMode_currentTab": {
+    "message": "Aba atual"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Executar na aba ativa atual.<wbr>A URL deve corresponder à URL inicial gravada."
   },
   "Option_title_desc": {
     "message": "Exibido como título do comando."
@@ -1192,5 +1213,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Tela cheia"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Não é possível executar nesta página (URL da página não corresponde)"
   }
 }

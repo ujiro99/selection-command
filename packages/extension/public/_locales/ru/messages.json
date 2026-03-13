@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Боковая панель"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Открыть в боковой панели."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL страницы, где начинается действие."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Для \"Текущей вкладки\" могут быть выполнены только страницы, соответствующие этому URL. Вы можете использовать подстановочный знак \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL страницы для начала записи действий. Используется только на экране настроек."
+  },
+  "Option_pageUrl": {
+    "message": "URL страницы"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Можно запускать только на страницах, соответствующих этому URL. Можно использовать подстановочный знак «*»."
   },
   "Option_pageAction_title": {
     "message": "Действие"
@@ -767,6 +782,9 @@
   "Option_zod_url": {
     "message": "Введите в формате URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "URL страницы обязателен при выборе режима текущей вкладки."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Будет вставлен выбранный текст",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1025,8 +1043,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Открыть вкладку в фоновом режиме.<wbr>Показать справа от текущей вкладки."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Открыть в боковой панели."
+  "Option_openMode_currentTab": {
+    "message": "Текущая вкладка"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Выполнить в текущей активной вкладке.<wbr>URL должен совпадать с записанным начальным URL."
   },
   "Option_title_desc": {
     "message": "Отображается как заголовок команды."
@@ -1189,5 +1210,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Полный экран"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Невозможно выполнить на этой странице (URL страницы не совпадает)"
   }
 }

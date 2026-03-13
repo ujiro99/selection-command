@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useFieldArray } from "react-hook-form"
 import { Disc3 } from "lucide-react"
 import { FormLabel, FormDescription } from "@/components/ui/form"
@@ -9,6 +9,10 @@ import { cn, isEmpty, capitalize } from "@/lib/utils"
 import { PageActionStep } from "@/types/schema"
 import { DeepPartial } from "@/types"
 
+import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
+import collapsibleCss from "@/components/ui/collapsible.module.css"
+
+import { PAGE_ACTION_OPEN_MODE } from "@/const"
 import { InputField } from "@/components/option/field/InputField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { StepList } from "@/components/pageAction/StepList"
@@ -26,7 +30,21 @@ export const PageActionSection = ({
   form,
   openRecorder,
 }: PageActionSectionProps) => {
-  const { register, getValues } = form
+  const { register, getValues, watch, setValue } = form
+  const openMode = watch("pageActionOption.openMode")
+
+  // When openMode changes to CURRENT_TAB, copy startUrl to pageUrl if pageUrl is empty
+  useEffect(() => {
+    if (openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
+      const pageUrl = getValues("pageActionOption.pageUrl")
+      if (!pageUrl) {
+        setValue(
+          "pageActionOption.pageUrl",
+          getValues("pageActionOption.startUrl"),
+        )
+      }
+    }
+  }, [openMode, getValues, setValue])
 
   const pageActionArray = useFieldArray({
     name: "pageActionOption.steps",
@@ -95,9 +113,31 @@ export const PageActionSection = ({
           type: "string",
           ...register("pageActionOption.startUrl", {}),
         }}
-        description={t("startUrl_desc")}
+        description={
+          openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB
+            ? t("startUrl_desc_currentTab_recorder")
+            : t("startUrl_desc")
+        }
         previewUrl={getValues("iconUrl")}
       />
+
+      <Collapsible
+        className={collapsibleCss.collapsible}
+        open={openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB}
+      >
+        <CollapsibleContent className={cn(collapsibleCss.CollapsibleContent)}>
+          <InputField
+            control={form.control}
+            name="pageActionOption.pageUrl"
+            formLabel={t("pageUrl")}
+            inputProps={{
+              type: "string",
+              ...register("pageActionOption.pageUrl", {}),
+            }}
+            description={t("pageUrl_desc")}
+          />
+        </CollapsibleContent>
+      </Collapsible>
 
       <OpenModeToggleField
         control={form.control}

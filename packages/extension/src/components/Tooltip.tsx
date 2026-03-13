@@ -63,14 +63,14 @@ export function Tooltip(props: PopupProps) {
       {shouldRender && (
         <PopoverContent
           className={clsx(
-            "bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 text-xs text-white shadow-md",
+            "bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 shadow-md",
             props.className,
           )}
           side={side === SIDE.bottom ? SIDE.bottom : "top"}
           arrowPadding={-1}
           onOpenAutoFocus={noFocus}
         >
-          {props.text}
+          <p className="text-xs text-white whitespace-pre-wrap">{props.text}</p>
           <PopoverArrow className="fill-gray-800" height={6} />
         </PopoverContent>
       )}

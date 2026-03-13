@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Side Panel"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Open in side panel."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL of the page where the action starts."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "For \"Current Tab\", only pages matching this URL can be executed. You can use the wildcard \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL of the page to start recording actions. Used only in the settings screen."
+  },
+  "Option_pageUrl": {
+    "message": "Page URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Only pages matching this URL can be executed. You can use the wildcard \"*\"."
   },
   "Option_pageAction_title": {
     "message": "Actions"
@@ -767,6 +782,10 @@
   "Option_zod_url": {
     "message": "Please enter in URL format."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "Page URL is required when Current Tab mode is selected.",
+    "description": "Zod validation error shown on the pageUrl field when openMode is CURRENT_TAB and pageUrl is empty"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Selected text will be inserted",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1028,8 +1047,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Open tab in background.<wbr>Show to the right of current tab."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Open in side panel."
+  "Option_openMode_currentTab": {
+    "message": "Current Tab"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Run on the current active tab.<wbr>URL must match the recorded start URL."
   },
   "Option_title_desc": {
     "message": "Displayed as the command title."
@@ -1192,5 +1214,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Fullscreen"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Cannot run on this page (page URL does not match)"
   }
 }

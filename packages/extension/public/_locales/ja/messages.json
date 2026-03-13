@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "サイドパネル"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "サイドパネルで開く。"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "アクションを開始するページのURL"
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "「現在のタブ」の場合は、このURLにマッチしたページのみ実行できます。ワイルドカード「*」を使用できます。"
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "アクションの記録を開始するページのURL。設定画面でのみ使用します。"
+  },
+  "Option_pageUrl": {
+    "message": "ページURL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "このURLにマッチしたページのみ実行できます。ワイルドカード「*」を使用できます。"
   },
   "Option_pageAction_title": {
     "message": "Actions"
@@ -767,6 +782,9 @@
   "Option_zod_url": {
     "message": "URL形式で入力してください。"
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "現在のタブ選択中は、ページURLは必須です。"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "選択テキストが挿入されます"
   },
@@ -1022,8 +1040,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "サイドパネルで開く。"
+  "Option_openMode_currentTab": {
+    "message": "現在のタブ"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "現在アクティブなタブで実行する。<wbr>URLが記録時の開始URLと一致する必要がある。"
   },
   "Option_title_desc": {
     "message": "コマンドのタイトルとして表示されます。"
@@ -1186,5 +1207,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "フルスクリーン"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "このページでは実行できません（ページURLが一致しません）"
   }
 }

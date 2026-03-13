@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Panel lateral"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Abrir en panel lateral."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL de la página donde comienza la acción."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Para \"Pestaña Actual\", solo se pueden ejecutar páginas que coincidan con esta URL. Puede usar el comodín \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL de la página para iniciar la grabación de acciones. Se usa solo en la pantalla de configuración."
+  },
+  "Option_pageUrl": {
+    "message": "URL de la página"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Solo se puede ejecutar en páginas que coincidan con esta URL. Puede usar el comodín «*»."
   },
   "Option_pageAction_title": {
     "message": "Acciones"
@@ -767,6 +782,9 @@
   "Option_zod_url": {
     "message": "Por favor, introduzca en formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "La URL de página es obligatoria cuando se selecciona el modo de pestaña actual."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Se insertará el texto seleccionado",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1025,8 +1043,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir pestaña en segundo plano.<wbr>Mostrar a la derecha de la pestaña actual."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Abrir en panel lateral."
+  "Option_openMode_currentTab": {
+    "message": "Pestaña actual"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Ejecutar en la pestaña activa actual.<wbr>La URL debe coincidir con la URL de inicio registrada."
   },
   "Option_title_desc": {
     "message": "Se muestra como el título del comando."
@@ -1189,5 +1210,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Pantalla completa"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "No se puede ejecutar en esta página (la URL de la página no coincide)"
   }
 }

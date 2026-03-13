@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Panel Samping"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Buka di panel samping."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL halaman di mana tindakan dimulai."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Untuk \"Tab Saat Ini\", hanya halaman yang cocok dengan URL ini yang dapat dijalankan. Anda dapat menggunakan wildcard \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL halaman untuk memulai perekaman tindakan. Hanya digunakan di layar pengaturan."
+  },
+  "Option_pageUrl": {
+    "message": "URL Halaman"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Hanya dapat dijalankan di halaman yang sesuai dengan URL ini. Anda dapat menggunakan wildcard «*»."
   },
   "Option_pageAction_title": {
     "message": "Tindakan"
@@ -767,6 +782,9 @@
   "Option_zod_url": {
     "message": "Silakan masukkan dalam format URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "URL halaman wajib diisi saat mode tab saat ini dipilih."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Teks yang dipilih akan dimasukkan",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1028,8 +1046,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Tampilkan di sebelah kanan tab saat ini."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Buka di panel samping."
+  "Option_openMode_currentTab": {
+    "message": "Tab Saat Ini"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Jalankan di tab aktif saat ini.<wbr>URL harus cocok dengan URL awal yang direkam."
   },
   "Option_title_desc": {
     "message": "Ditampilkan sebagai judul perintah."
@@ -1192,5 +1213,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Layar penuh"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Tidak dapat dijalankan di halaman ini (URL Halaman tidak cocok)"
   }
 }

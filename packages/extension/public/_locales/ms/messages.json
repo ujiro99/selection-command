@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Panel Sisi"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Buka dalam panel sisi."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL halaman di mana tindakan bermula."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Untuk \"Tab Semasa\", hanya halaman yang sepadan dengan URL ini boleh dilaksanakan. Anda boleh menggunakan kad liar \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL halaman untuk memulakan rakaman tindakan. Digunakan hanya di skrin tetapan."
+  },
+  "Option_pageUrl": {
+    "message": "URL Halaman"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Hanya boleh dilaksanakan pada halaman yang sepadan dengan URL ini. Anda boleh menggunakan wildcard «*»."
   },
   "Option_pageAction_title": {
     "message": "Tindakan"
@@ -767,6 +782,9 @@
   "Option_zod_url": {
     "message": "Sila masukkan dalam format URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "URL halaman diperlukan apabila mod tab semasa dipilih."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Teks yang dipilih akan dimasukkan",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1028,8 +1046,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Paparkan di sebelah kanan tab semasa."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Buka dalam panel sisi."
+  "Option_openMode_currentTab": {
+    "message": "Tab Semasa"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Jalankan pada tab aktif semasa.<wbr>URL mesti sepadan dengan URL permulaan yang direkodkan."
   },
   "Option_title_desc": {
     "message": "Dipaparkan sebagai tajuk arahan."
@@ -1192,5 +1213,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Skrin penuh"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Tidak boleh dijalankan pada halaman ini (URL Halaman tidak sepadan)"
   }
 }

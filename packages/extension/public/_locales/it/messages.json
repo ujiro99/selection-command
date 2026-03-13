@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Pannello laterale"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Apri nel pannello laterale."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "URL della pagina dove inizia l'azione."
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Per \"Scheda Corrente\", è possibile eseguire solo le pagine corrispondenti a questo URL. È possibile utilizzare il carattere jolly \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL della pagina da cui avviare la registrazione delle azioni. Utilizzato solo nella schermata delle impostazioni."
+  },
+  "Option_pageUrl": {
+    "message": "URL della pagina"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Può essere eseguito solo sulle pagine corrispondenti a questo URL. È possibile utilizzare il carattere jolly «*»."
   },
   "Option_pageAction_title": {
     "message": "Azione"
@@ -767,6 +782,9 @@
   "Option_zod_url": {
     "message": "Inserisci nel formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "L'URL della pagina è obbligatorio quando è selezionata la modalità scheda corrente."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Il testo selezionato verrà inserito",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1025,8 +1043,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Apri nel pannello laterale."
+  "Option_openMode_currentTab": {
+    "message": "Scheda corrente"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Esegui sulla scheda attiva corrente.<wbr>L'URL deve corrispondere all'URL di avvio registrata."
   },
   "Option_title_desc": {
     "message": "Visualizzato come titolo del comando."
@@ -1189,5 +1210,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Schermo intero"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Impossibile eseguire su questa pagina (l'URL della pagina non corrisponde)"
   }
 }

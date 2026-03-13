@@ -314,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "侧边栏"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "在侧边栏中打开。"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -442,6 +445,18 @@
   },
   "Option_startUrl_desc": {
     "message": "操作开始的页面URL。"
+  },
+  "Option_startUrl_desc_currentTab": {
+    "message": "对于\"当前标签页\"，只有与此URL匹配的页面才能执行。可以使用通配符\"*\"。"
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "开始录制动作的页面URL。仅在设置画面中使用。"
+  },
+  "Option_pageUrl": {
+    "message": "页面URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "仅能在匹配此URL的页面上执行。可以使用通配符「*」。"
   },
   "Option_pageAction_title": {
     "message": "操作"
@@ -767,6 +782,9 @@
   "Option_zod_url": {
     "message": "请以URL格式输入。"
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "选择当前标签页模式时，页面 URL 为必填项。"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "将插入选中的文本",
     "description": "for INSERT.SELECTED_TEXT"
@@ -1025,8 +1043,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "在侧边栏中打开。"
+  "Option_openMode_currentTab": {
+    "message": "当前标签页"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "在当前活动标签页中运行。<wbr>URL 必须与记录的起始 URL 匹配。"
   },
   "Option_title_desc": {
     "message": "显示为命令标题。"
@@ -1189,5 +1210,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "全屏"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "无法在此页面运行（页面URL不匹配）"
   }
 }
