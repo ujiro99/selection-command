@@ -25,9 +25,9 @@ export function generateUUIDFromObject(obj: object): string {
 /**
  * Generate UUID from command content.
  * Extracts relevant fields based on command type before generating UUID.
- * Accepts any object with an openMode property - type guards narrow internally.
+ * Accepts any value - type guards narrow internally to the correct command type.
  */
-export function cmd2uuid(cmd: Record<string, unknown>): string {
+export function cmd2uuid(cmd: unknown): string {
   if (isSearchCommand(cmd)) {
     return generateUUIDFromObject({
       title: cmd.title,
