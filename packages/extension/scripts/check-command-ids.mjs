@@ -10,7 +10,9 @@ import { generateUUIDFromObject } from "../../shared/src/utils/uuid.ts"
  *   <const名> <生成id> <check結果>
  *
  * Usage:
- *   node scripts/check-command-ids.mjs
+ *   yarn check-ids
+ *   # or
+ *   tsx scripts/check-command-ids.mjs
  */
 import fs from "fs"
 import path from "path"
