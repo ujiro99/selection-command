@@ -340,6 +340,80 @@ export const DefaultCommands = [
     },
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
+  {
+    id: "d509db9f-c67b-49ff-b8bb-cc690dde9bb3",
+    revision: 0,
+    title: "Page Summary",
+    iconUrl:
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    openMode: OPEN_MODE.AI_PROMPT,
+    aiPromptOption: {
+      serviceId: "gemini",
+      prompt: "Please summarize the content of the following page.\n{{Url}}",
+      openMode: OPEN_MODE.POPUP,
+    },
+    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    popupOption: {
+      width: PopupOption.width,
+      height: PopupOption.height,
+    },
+  },
+  {
+    id: "24b6c6ec-611a-475f-bd38-a66b2c63e940",
+    revision: 0,
+    title: "YouTube Summary",
+    iconUrl:
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    openMode: OPEN_MODE.AI_PROMPT,
+    aiPromptOption: {
+      serviceId: "gemini",
+      prompt:
+        "Please summarize the content of the following YouTube video.\n{{Url}}",
+      openMode: OPEN_MODE.POPUP,
+    },
+    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    popupOption: {
+      width: PopupOption.width,
+      height: PopupOption.height,
+    },
+  },
+  {
+    id: "8002e7e4-93c1-4309-a27b-ac609fa8c938",
+    revision: 0,
+    title: "Translation",
+    iconUrl:
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    openMode: OPEN_MODE.AI_PROMPT,
+    aiPromptOption: {
+      serviceId: "gemini",
+      prompt:
+        "Please translate the following text between English and the detected language.\n{{SelectedText}}",
+      openMode: OPEN_MODE.POPUP,
+    },
+    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    popupOption: {
+      width: PopupOption.width,
+      height: PopupOption.height,
+    },
+  },
+  {
+    id: "28c07577-ca62-42e5-8673-3f512fd7233e",
+    revision: 0,
+    title: "Gemini",
+    iconUrl:
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    openMode: OPEN_MODE.AI_PROMPT,
+    aiPromptOption: {
+      serviceId: "gemini",
+      prompt: "Please explain the following.\n{{SelectedText}}",
+      openMode: OPEN_MODE.POPUP,
+    },
+    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    popupOption: {
+      width: PopupOption.width,
+      height: PopupOption.height,
+    },
+  },
 ] as Command[]
 
 // Folder IDs from the default settings
@@ -1060,6 +1134,617 @@ const CMD_GEMINI_IT = {
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
+// ---- AI Prompt: Page Summary commands ----
+
+const CMD_PAGE_SUMMARY_JA = {
+  id: "648f500a-f8b2-46c7-9683-f1916adcbbb7",
+  revision: 0,
+  title: "ページの概要生成",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "以下のURLのページを日本語で要約してください。\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_ZH = {
+  id: "57d72f27-678d-4aba-854e-56f2c9abe87e",
+  revision: 0,
+  title: "页面摘要",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "请用中文总结以下网页的内容。\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_KO = {
+  id: "20d51224-7bde-42d7-823c-655f7ba0cfc3",
+  revision: 0,
+  title: "페이지 요약",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "다음 URL의 페이지 내용을 한국어로 요약해 주세요.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_RU = {
+  id: "db0cb04d-00e8-4bd2-baa5-776e16757a4e",
+  revision: 0,
+  title: "Краткое содержание страницы",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Пожалуйста, кратко изложите содержание следующей страницы на русском языке.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_DE = {
+  id: "f6bd173a-ba43-41ca-83b1-6951e64e04b7",
+  revision: 0,
+  title: "Seitenzusammenfassung",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Bitte fasse den Inhalt der folgenden Seite auf Deutsch zusammen.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_FR = {
+  id: "4f8995cd-b0b5-4ad7-8108-2d2762b94e1d",
+  revision: 0,
+  title: "Résumé de la page",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Veuillez résumer le contenu de la page suivante en français.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_ES = {
+  id: "e8619dcd-b5a0-483e-9d16-2a8c4ca6d6e1",
+  revision: 0,
+  title: "Resumen de página",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Por favor, resume el contenido de la siguiente página en español.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_PT = {
+  id: "bf7e7fe7-ccc9-4518-9256-91768e70f250",
+  revision: 0,
+  title: "Resumo da página",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Por favor, resuma o conteúdo da seguinte página em português.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_HI = {
+  id: "44982cfd-17f9-41ef-bbfc-f3ccfa6df01f",
+  revision: 0,
+  title: "पृष्ठ सारांश",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "कृपया निम्नलिखित पृष्ठ की सामग्री को हिंदी में सारांशित करें।\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_ID = {
+  id: "f6518297-518c-4680-a06b-72df5a51790b",
+  revision: 0,
+  title: "Ringkasan halaman",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Tolong ringkas konten halaman berikut dalam bahasa Indonesia.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_MS = {
+  id: "b7614ea8-8252-47d5-b579-4a4a575f1bed",
+  revision: 0,
+  title: "Ringkasan halaman",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Sila ringkaskan kandungan halaman berikut dalam Bahasa Melayu.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_PAGE_SUMMARY_IT = {
+  id: "f6b5d608-80d9-43a8-85be-5b856b67e748",
+  revision: 0,
+  title: "Riepilogo pagina",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Si prega di riassumere il contenuto della pagina seguente in italiano.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+// ---- AI Prompt: YouTube Summary commands ----
+
+const CMD_YOUTUBE_SUMMARY_JA = {
+  id: "6e8ade53-37dd-43e6-9371-57e42e303b31",
+  revision: 0,
+  title: "YouTubeの概要生成",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "以下のYouTube動画の内容を日本語で要約してください。\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_ZH = {
+  id: "69da0bf1-0832-4351-863f-aa94cd343112",
+  revision: 0,
+  title: "YouTube摘要",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "请用中文总结以下YouTube视频的内容。\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_KO = {
+  id: "0fc30726-b243-49dd-afda-dddc5995892e",
+  revision: 0,
+  title: "YouTube 요약",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "다음 YouTube 동영상의 내용을 한국어로 요약해 주세요.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_RU = {
+  id: "801d77e1-43b5-4dc1-8494-360f2b1df353",
+  revision: 0,
+  title: "Краткое содержание YouTube",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Пожалуйста, кратко изложите содержание следующего видео на YouTube на русском языке.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_DE = {
+  id: "20cae897-a78a-40ed-bdff-99346c6a6cc8",
+  revision: 0,
+  title: "YouTube-Zusammenfassung",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Bitte fasse den Inhalt des folgenden YouTube-Videos auf Deutsch zusammen.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_FR = {
+  id: "7a0a0210-fb6b-4c97-a3c0-9a632f3c3d77",
+  revision: 0,
+  title: "Résumé YouTube",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Veuillez résumer le contenu de la vidéo YouTube suivante en français.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_ES = {
+  id: "be56d46d-040d-4751-9115-906a37311d9b",
+  revision: 0,
+  title: "Resumen de YouTube",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Por favor, resume el contenido del siguiente video de YouTube en español.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_PT = {
+  id: "6db5b24d-f693-44ae-81b9-4905c45d25b9",
+  revision: 0,
+  title: "Resumo do YouTube",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Por favor, resuma o conteúdo do seguinte vídeo do YouTube em português.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_HI = {
+  id: "96a89579-8461-4dac-8ef7-14f624472bbc",
+  revision: 0,
+  title: "YouTube सारांश",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "कृपया निम्नलिखित YouTube वीडियो की सामग्री को हिंदी में सारांशित करें।\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_ID = {
+  id: "ce885044-5063-4f0d-8634-f4c9413a6102",
+  revision: 0,
+  title: "Ringkasan YouTube",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Tolong ringkas konten video YouTube berikut dalam bahasa Indonesia.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_MS = {
+  id: "50936368-aa1c-419b-bacb-b573b9df464a",
+  revision: 0,
+  title: "Ringkasan YouTube",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Sila ringkaskan kandungan video YouTube berikut dalam Bahasa Melayu.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_YOUTUBE_SUMMARY_IT = {
+  id: "50d293f7-919b-460d-be2f-d526264c98d0",
+  revision: 0,
+  title: "Riepilogo YouTube",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Si prega di riassumere il contenuto del seguente video di YouTube in italiano.\n{{Url}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+// ---- AI Prompt: Translation commands ----
+
+const CMD_TRANSLATE_JA = {
+  id: "20dc745d-48d9-441f-a18e-3087b92b2cbc",
+  revision: 0,
+  title: "選択テキストの相互翻訳",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "以下のテキストを日本語と英語の間で翻訳してください。\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_ZH = {
+  id: "b3394991-657f-4ebf-a88f-f952049c8066",
+  revision: 0,
+  title: "文本互译",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt: "请将以下文本在中英文之间进行互译。\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_KO = {
+  id: "f0a55d6e-e113-4b48-82cd-cecd1a945757",
+  revision: 0,
+  title: "텍스트 번역",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "다음 텍스트를 한국어와 영어 사이에서 번역해 주세요.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_RU = {
+  id: "212a3fc9-a7b3-4cab-8f4c-dc5c090d9670",
+  revision: 0,
+  title: "Перевод текста",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Пожалуйста, переведите следующий текст между русским и английским языками.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_DE = {
+  id: "bc527ef8-b5c2-4c33-8687-c11717aff672",
+  revision: 0,
+  title: "Textübersetzung",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Bitte übersetze den folgenden Text zwischen Deutsch und Englisch.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_FR = {
+  id: "edfeef6f-2edf-48c4-86ed-4bf59fe9d148",
+  revision: 0,
+  title: "Traduction de texte",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Veuillez traduire le texte suivant entre le français et l'anglais.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_ES = {
+  id: "c0ff198e-4bae-4a39-a687-abb4efc0d446",
+  revision: 0,
+  title: "Traducción de texto",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Por favor, traduce el siguiente texto entre español e inglés.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_PT = {
+  id: "61e313b7-07e8-4598-a982-6b4ccf48ad56",
+  revision: 0,
+  title: "Tradução de texto",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Por favor, traduza o seguinte texto entre português e inglês.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_HI = {
+  id: "d2124ef8-60b2-468b-9dbc-752b5fd1f9f5",
+  revision: 0,
+  title: "पाठ अनुवाद",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "कृपया निम्नलिखित पाठ को हिंदी और अंग्रेजी के बीच अनुवाद करें।\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_ID = {
+  id: "0cb41d5c-adee-406b-a784-d7e004340c20",
+  revision: 0,
+  title: "Terjemahan teks",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Tolong terjemahkan teks berikut antara bahasa Indonesia dan bahasa Inggris.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_MS = {
+  id: "ce7173a4-050e-4452-be8f-48237c76f850",
+  revision: 0,
+  title: "Terjemahan teks",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Sila terjemahkan teks berikut antara Bahasa Melayu dan Bahasa Inggeris.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
+const CMD_TRANSLATE_IT = {
+  id: "402736b0-982c-4061-8e84-ef2f1c607d12",
+  revision: 0,
+  title: "Traduzione testo",
+  iconUrl:
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+  openMode: OPEN_MODE.AI_PROMPT,
+  aiPromptOption: {
+    serviceId: "gemini",
+    prompt:
+      "Si prega di tradurre il seguente testo tra italiano e inglese.\n{{SelectedText}}",
+    openMode: OPEN_MODE.POPUP,
+  },
+  parentFolderId: FOLDER_ACTION,
+  popupOption: { width: PopupOption.width, height: PopupOption.height },
+}
+
 /**
  * Returns locale-appropriate default commands.
  * Falls back to global English defaults for unknown locales.
@@ -1079,6 +1764,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_AMAZON_JP,
       CMD_YAHOO_JAPAN,
       CMD_GEMINI_JA,
+      CMD_PAGE_SUMMARY_JA,
+      CMD_YOUTUBE_SUMMARY_JA,
+      CMD_TRANSLATE_JA,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1095,6 +1783,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_GOOGLE_IMAGE,
       CMD_JD,
       CMD_GEMINI_ZH,
+      CMD_PAGE_SUMMARY_ZH,
+      CMD_YOUTUBE_SUMMARY_ZH,
+      CMD_TRANSLATE_ZH,
       CMD_BILIBILI,
       CMD_DRIVE,
       CMD_ZHIHU,
@@ -1110,6 +1801,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_GOOGLE_IMAGE,
       CMD_COUPANG,
       CMD_GEMINI_KO,
+      CMD_PAGE_SUMMARY_KO,
+      CMD_YOUTUBE_SUMMARY_KO,
+      CMD_TRANSLATE_KO,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1126,6 +1820,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_OZON,
       CMD_WILDBERRIES,
       CMD_GEMINI_RU,
+      CMD_PAGE_SUMMARY_RU,
+      CMD_YOUTUBE_SUMMARY_RU,
+      CMD_TRANSLATE_RU,
       CMD_YOUTUBE,
       CMD_VK,
       CMD_DRIVE,
@@ -1141,6 +1838,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_AMAZON_DE,
       CMD_EBAY_DE,
       CMD_GEMINI_DE,
+      CMD_PAGE_SUMMARY_DE,
+      CMD_YOUTUBE_SUMMARY_DE,
+      CMD_TRANSLATE_DE,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1156,6 +1856,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_AMAZON_FR,
       CMD_LEBONCOIN,
       CMD_GEMINI_FR,
+      CMD_PAGE_SUMMARY_FR,
+      CMD_YOUTUBE_SUMMARY_FR,
+      CMD_TRANSLATE_FR,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1173,6 +1876,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_EL_CORTE_INGLES,
       CMD_ALIEXPRESS_ES,
       CMD_GEMINI_ES,
+      CMD_PAGE_SUMMARY_ES,
+      CMD_YOUTUBE_SUMMARY_ES,
+      CMD_TRANSLATE_ES,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1188,6 +1894,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_AMAZON_BR,
       CMD_MERCADO_LIVRE_BR,
       CMD_GEMINI_PT,
+      CMD_PAGE_SUMMARY_PT,
+      CMD_YOUTUBE_SUMMARY_PT,
+      CMD_TRANSLATE_PT,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1203,6 +1912,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_AMAZON_ES,
       CMD_OLX_PT,
       CMD_GEMINI_PT,
+      CMD_PAGE_SUMMARY_PT,
+      CMD_YOUTUBE_SUMMARY_PT,
+      CMD_TRANSLATE_PT,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1218,6 +1930,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_AMAZON_IN,
       CMD_FLIPKART,
       CMD_GEMINI_HI,
+      CMD_PAGE_SUMMARY_HI,
+      CMD_YOUTUBE_SUMMARY_HI,
+      CMD_TRANSLATE_HI,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1233,6 +1948,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_TOKOPEDIA,
       CMD_SHOPEE_ID,
       CMD_GEMINI_ID,
+      CMD_PAGE_SUMMARY_ID,
+      CMD_YOUTUBE_SUMMARY_ID,
+      CMD_TRANSLATE_ID,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1248,6 +1966,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_SHOPEE_MY,
       CMD_LAZADA_MY,
       CMD_GEMINI_MS,
+      CMD_PAGE_SUMMARY_MS,
+      CMD_YOUTUBE_SUMMARY_MS,
+      CMD_TRANSLATE_MS,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,
@@ -1264,6 +1985,9 @@ export function getDefaultCommands(locale?: string): Command[] {
       CMD_EBAY_IT,
       CMD_ZALANDO_IT,
       CMD_GEMINI_IT,
+      CMD_PAGE_SUMMARY_IT,
+      CMD_YOUTUBE_SUMMARY_IT,
+      CMD_TRANSLATE_IT,
       CMD_YOUTUBE,
       CMD_NETFLIX,
       CMD_DRIVE,

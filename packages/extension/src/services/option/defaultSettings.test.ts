@@ -235,4 +235,102 @@ describe("getDefaultCommands", () => {
       }
     }
   })
+
+  it("DS-21: all locale command sets should include page summary, YouTube summary and translation AI prompt commands", () => {
+    const locales = [
+      "ja",
+      "zh-CN",
+      "ko",
+      "ru",
+      "de",
+      "fr",
+      "es",
+      "pt-BR",
+      "pt",
+      "hi",
+      "id",
+      "ms",
+      "it",
+      "en",
+    ]
+    for (const locale of locales) {
+      const commands = getDefaultCommands(locale)
+      const aiPromptCmds = commands.filter(
+        (c) => (c as any).openMode === "aiPrompt",
+      )
+      // Each locale should have at least 4 AI prompt commands
+      // (explanation + page summary + YouTube summary + translation)
+      expect(
+        aiPromptCmds.length,
+        `Locale ${locale} should have at least 4 AI prompt commands`,
+      ).toBeGreaterThanOrEqual(4)
+      // Page summary: uses {{Url}} in prompt
+      const pageSummaryCmd = aiPromptCmds.find((c) =>
+        (c as any).aiPromptOption.prompt.includes("{{Url}}") &&
+        !(c as any).aiPromptOption.prompt.toLowerCase().includes("youtube"),
+      )
+      expect(
+        pageSummaryCmd,
+        `Missing page summary command for locale: ${locale}`,
+      ).toBeDefined()
+      // YouTube summary: uses {{Url}} and mentions YouTube in prompt
+      const youtubeSummaryCmd = aiPromptCmds.find((c) =>
+        (c as any).aiPromptOption.prompt.includes("{{Url}}") &&
+        (c as any).aiPromptOption.prompt.toLowerCase().includes("youtube"),
+      )
+      expect(
+        youtubeSummaryCmd,
+        `Missing YouTube summary command for locale: ${locale}`,
+      ).toBeDefined()
+      // Translation: uses {{SelectedText}} in prompt, and refers to translation
+      const translationCmd = aiPromptCmds.find((c) =>
+        (c as any).aiPromptOption.prompt.includes("{{SelectedText}}") &&
+        (c as any).aiPromptOption.prompt.match(
+          /translat|翻[訳译]|互译|번역|перевод|переве|übersetz|tradu|terjemah|अनुवाद/i,
+        ),
+      )
+      expect(
+        translationCmd,
+        `Missing translation command for locale: ${locale}`,
+      ).toBeDefined()
+    }
+  })
+
+  it("DS-22: page summary and YouTube summary commands should use {{Url}} not {{SelectedText}}", () => {
+    const locales = [
+      "ja",
+      "zh-CN",
+      "ko",
+      "ru",
+      "de",
+      "fr",
+      "es",
+      "pt-BR",
+      "pt",
+      "hi",
+      "id",
+      "ms",
+      "it",
+      "en",
+    ]
+    for (const locale of locales) {
+      const commands = getDefaultCommands(locale)
+      const aiPromptCmds = commands.filter(
+        (c) => (c as any).openMode === "aiPrompt",
+      )
+      const urlBasedCmds = aiPromptCmds.filter((c) =>
+        (c as any).aiPromptOption.prompt.includes("{{Url}}"),
+      )
+      expect(
+        urlBasedCmds.length,
+        `Locale ${locale} should have at least 2 URL-based AI prompt commands`,
+      ).toBeGreaterThanOrEqual(2)
+      for (const cmd of urlBasedCmds) {
+        expect(
+          (cmd as any).aiPromptOption.prompt,
+          `URL-based AI prompt in ${locale} should not contain {{SelectedText}}`,
+        ).not.toContain("{{SelectedText}}")
+      }
+    }
+  })
 })
