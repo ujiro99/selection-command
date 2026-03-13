@@ -88,13 +88,78 @@ function resolveValue(raw) {
 function parseObjectBody(body) {
   const result = {}
   let depth = 0
+  let inBlockComment = false
+  let inString = null
+  let escapeNext = false
   const lines = body.split("\n")
   for (const line of lines) {
-    // Track brace/bracket depth to skip nested structures
-    for (const ch of line) {
-      if (ch === "{" || ch === "[") depth++
-      else if (ch === "}" || ch === "]") depth--
+    // Track brace/bracket depth to skip nested structures.
+    // クォート内やコメント内に出現する括弧は depth に影響させない。
+    escapeNext = false
+    let i = 0
+    while (i < line.length) {
+      const ch = line[i]
+      const next = i + 1 < line.length ? line[i + 1] : ""
+
+      // 文字列リテラル内
+      if (inString) {
+        if (escapeNext) {
+          escapeNext = false
+          i++
+          continue
+        }
+        if (ch === "\\") {
+          escapeNext = true
+          i++
+          continue
+        }
+        if (ch === inString) {
+          inString = null
+        }
+        i++
+        continue
+      }
+
+      // ブロックコメント内
+      if (inBlockComment) {
+        if (ch === "*" && next === "/") {
+          inBlockComment = false
+          i += 2
+          continue
+        }
+        i++
+        continue
+      }
+
+      // 行コメント開始
+      if (ch === "/" && next === "/") {
+        break
+      }
+
+      // ブロックコメント開始
+      if (ch === "/" && next === "*") {
+        inBlockComment = true
+        i += 2
+        continue
+      }
+
+      // 文字列開始
+      if (ch === '"' || ch === "'" || ch === "`") {
+        inString = ch
+        i++
+        continue
+      }
+
+      // 括弧カウント（文字列・コメント以外のみ）
+      if (ch === "{" || ch === "[") {
+        depth++
+      } else if (ch === "}" || ch === "]") {
+        depth--
+      }
+
+      i++
     }
+
     // Only parse top-level key: value pairs (depth === 0 before this line)
     if (depth > 0) continue
     const m = line.match(/^\s*(\w+)\s*:\s*(.+)/)
