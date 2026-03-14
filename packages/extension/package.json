@@ -4,10 +4,11 @@
   "private": true,
   "author": "ujiro99",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:e2e": "node scripts/generate-e2e-urls.mjs && tsc -b && vite build --mode e2e",
+    "build:e2e": "vite-node --config scripts/vite.config.ts scripts/generate-e2e-urls.ts && tsc -b && vite build --mode e2e",
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -15,7 +16,7 @@
     "test:coverage": "vitest --coverage",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
-    "check-ids": "tsx scripts/check-command-ids.mjs",
+    "check-ids": "vite-node --config scripts/vite.config.ts scripts/check-command-ids.ts",
     "zip": "npm-build-zip --source=dist --destination=build",
     "test:e2e": "playwright test"
   },

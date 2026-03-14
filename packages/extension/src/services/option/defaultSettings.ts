@@ -1752,248 +1752,205 @@ const CMD_TRANSLATE_IT = {
  * @param locale - BCP 47 locale string (e.g. "ja", "zh-CN", "pt-BR").
  *                 Typically obtained via chrome.i18n.getUILanguage().
  */
+// Locale-specific command sets keyed by language code.
+// Exact-match keys (e.g. "pt-br") take priority over prefix keys (e.g. "pt").
+export const LOCALE_COMMANDS = {
+  ja: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_AMAZON_JP,
+    CMD_YAHOO_JAPAN,
+    CMD_GEMINI_JA,
+    CMD_PAGE_SUMMARY_JA,
+    CMD_YOUTUBE_SUMMARY_JA,
+    CMD_TRANSLATE_JA,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+    CMD_EN_TO_JA,
+  ],
+  zh: [
+    CMD_LINK_PREVIEW,
+    CMD_BAIDU,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_JD,
+    CMD_GEMINI_ZH,
+    CMD_PAGE_SUMMARY_ZH,
+    CMD_YOUTUBE_SUMMARY_ZH,
+    CMD_TRANSLATE_ZH,
+    CMD_BILIBILI,
+    CMD_DRIVE,
+    CMD_ZHIHU,
+  ],
+  ko: [
+    CMD_LINK_PREVIEW,
+    CMD_NAVER,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_COUPANG,
+    CMD_GEMINI_KO,
+    CMD_PAGE_SUMMARY_KO,
+    CMD_YOUTUBE_SUMMARY_KO,
+    CMD_TRANSLATE_KO,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  ru: [
+    CMD_LINK_PREVIEW,
+    CMD_YANDEX,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_OZON,
+    CMD_WILDBERRIES,
+    CMD_GEMINI_RU,
+    CMD_PAGE_SUMMARY_RU,
+    CMD_YOUTUBE_SUMMARY_RU,
+    CMD_TRANSLATE_RU,
+    CMD_YOUTUBE,
+    CMD_VK,
+    CMD_DRIVE,
+  ],
+  de: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_AMAZON_DE,
+    CMD_EBAY_DE,
+    CMD_GEMINI_DE,
+    CMD_PAGE_SUMMARY_DE,
+    CMD_YOUTUBE_SUMMARY_DE,
+    CMD_TRANSLATE_DE,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  fr: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_AMAZON_FR,
+    CMD_LEBONCOIN,
+    CMD_GEMINI_FR,
+    CMD_PAGE_SUMMARY_FR,
+    CMD_YOUTUBE_SUMMARY_FR,
+    CMD_TRANSLATE_FR,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  es: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_AMAZON_ES,
+    CMD_EBAY_ES,
+    CMD_EL_CORTE_INGLES,
+    CMD_ALIEXPRESS_ES,
+    CMD_GEMINI_ES,
+    CMD_PAGE_SUMMARY_ES,
+    CMD_YOUTUBE_SUMMARY_ES,
+    CMD_TRANSLATE_ES,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  "pt-br": [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_AMAZON_BR,
+    CMD_MERCADO_LIVRE_BR,
+    CMD_GEMINI_PT,
+    CMD_PAGE_SUMMARY_PT,
+    CMD_YOUTUBE_SUMMARY_PT,
+    CMD_TRANSLATE_PT,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  pt: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_AMAZON_ES,
+    CMD_OLX_PT,
+    CMD_GEMINI_PT,
+    CMD_PAGE_SUMMARY_PT,
+    CMD_YOUTUBE_SUMMARY_PT,
+    CMD_TRANSLATE_PT,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  hi: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_AMAZON_IN,
+    CMD_FLIPKART,
+    CMD_GEMINI_HI,
+    CMD_PAGE_SUMMARY_HI,
+    CMD_YOUTUBE_SUMMARY_HI,
+    CMD_TRANSLATE_HI,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  id: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_TOKOPEDIA,
+    CMD_SHOPEE_ID,
+    CMD_GEMINI_ID,
+    CMD_PAGE_SUMMARY_ID,
+    CMD_YOUTUBE_SUMMARY_ID,
+    CMD_TRANSLATE_ID,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  ms: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_SHOPEE_MY,
+    CMD_LAZADA_MY,
+    CMD_GEMINI_MS,
+    CMD_PAGE_SUMMARY_MS,
+    CMD_YOUTUBE_SUMMARY_MS,
+    CMD_TRANSLATE_MS,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+  it: [
+    CMD_LINK_PREVIEW,
+    CMD_GOOGLE,
+    CMD_GOOGLE_IMAGE,
+    CMD_AMAZON_IT,
+    CMD_EBAY_IT,
+    CMD_ZALANDO_IT,
+    CMD_GEMINI_IT,
+    CMD_PAGE_SUMMARY_IT,
+    CMD_YOUTUBE_SUMMARY_IT,
+    CMD_TRANSLATE_IT,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
+    CMD_DRIVE,
+  ],
+} as Record<string, Command[]>
+
 export function getDefaultCommands(locale?: string): Command[] {
   const lang = (locale ?? "").toLowerCase().replace("_", "-")
 
-  // ja: Japan
-  if (lang.startsWith("ja")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_AMAZON_JP,
-      CMD_YAHOO_JAPAN,
-      CMD_GEMINI_JA,
-      CMD_PAGE_SUMMARY_JA,
-      CMD_YOUTUBE_SUMMARY_JA,
-      CMD_TRANSLATE_JA,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-      CMD_EN_TO_JA,
-    ] as Command[]
-  }
+  // Try exact match first (e.g. "pt-br"), then prefix match (e.g. "pt")
+  const exactMatch = LOCALE_COMMANDS[lang]
+  if (exactMatch) return exactMatch
 
-  // zh: China (Simplified/Traditional)
-  if (lang.startsWith("zh")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_BAIDU,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_JD,
-      CMD_GEMINI_ZH,
-      CMD_PAGE_SUMMARY_ZH,
-      CMD_YOUTUBE_SUMMARY_ZH,
-      CMD_TRANSLATE_ZH,
-      CMD_BILIBILI,
-      CMD_DRIVE,
-      CMD_ZHIHU,
-    ] as Command[]
-  }
-
-  // ko: Korea
-  if (lang.startsWith("ko")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_NAVER,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_COUPANG,
-      CMD_GEMINI_KO,
-      CMD_PAGE_SUMMARY_KO,
-      CMD_YOUTUBE_SUMMARY_KO,
-      CMD_TRANSLATE_KO,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // ru: Russia
-  if (lang.startsWith("ru")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_YANDEX,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_OZON,
-      CMD_WILDBERRIES,
-      CMD_GEMINI_RU,
-      CMD_PAGE_SUMMARY_RU,
-      CMD_YOUTUBE_SUMMARY_RU,
-      CMD_TRANSLATE_RU,
-      CMD_YOUTUBE,
-      CMD_VK,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // de: Germany
-  if (lang.startsWith("de")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_AMAZON_DE,
-      CMD_EBAY_DE,
-      CMD_GEMINI_DE,
-      CMD_PAGE_SUMMARY_DE,
-      CMD_YOUTUBE_SUMMARY_DE,
-      CMD_TRANSLATE_DE,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // fr: France
-  if (lang.startsWith("fr")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_AMAZON_FR,
-      CMD_LEBONCOIN,
-      CMD_GEMINI_FR,
-      CMD_PAGE_SUMMARY_FR,
-      CMD_YOUTUBE_SUMMARY_FR,
-      CMD_TRANSLATE_FR,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // es: Spanish-speaking
-  if (lang.startsWith("es")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_AMAZON_ES,
-      CMD_EBAY_ES,
-      CMD_EL_CORTE_INGLES,
-      CMD_ALIEXPRESS_ES,
-      CMD_GEMINI_ES,
-      CMD_PAGE_SUMMARY_ES,
-      CMD_YOUTUBE_SUMMARY_ES,
-      CMD_TRANSLATE_ES,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // pt-BR: Brazil
-  if (lang === "pt-br") {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_AMAZON_BR,
-      CMD_MERCADO_LIVRE_BR,
-      CMD_GEMINI_PT,
-      CMD_PAGE_SUMMARY_PT,
-      CMD_YOUTUBE_SUMMARY_PT,
-      CMD_TRANSLATE_PT,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // pt: Portugal and other Portuguese-speaking
-  if (lang.startsWith("pt")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_AMAZON_ES,
-      CMD_OLX_PT,
-      CMD_GEMINI_PT,
-      CMD_PAGE_SUMMARY_PT,
-      CMD_YOUTUBE_SUMMARY_PT,
-      CMD_TRANSLATE_PT,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // hi: India (Hindi)
-  if (lang.startsWith("hi")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_AMAZON_IN,
-      CMD_FLIPKART,
-      CMD_GEMINI_HI,
-      CMD_PAGE_SUMMARY_HI,
-      CMD_YOUTUBE_SUMMARY_HI,
-      CMD_TRANSLATE_HI,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // id: Indonesia
-  if (lang.startsWith("id")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_TOKOPEDIA,
-      CMD_SHOPEE_ID,
-      CMD_GEMINI_ID,
-      CMD_PAGE_SUMMARY_ID,
-      CMD_YOUTUBE_SUMMARY_ID,
-      CMD_TRANSLATE_ID,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // ms: Malaysia
-  if (lang.startsWith("ms")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_SHOPEE_MY,
-      CMD_LAZADA_MY,
-      CMD_GEMINI_MS,
-      CMD_PAGE_SUMMARY_MS,
-      CMD_YOUTUBE_SUMMARY_MS,
-      CMD_TRANSLATE_MS,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // it: Italy
-  if (lang.startsWith("it")) {
-    return [
-      CMD_LINK_PREVIEW,
-      CMD_GOOGLE,
-      CMD_GOOGLE_IMAGE,
-      CMD_AMAZON_IT,
-      CMD_EBAY_IT,
-      CMD_ZALANDO_IT,
-      CMD_GEMINI_IT,
-      CMD_PAGE_SUMMARY_IT,
-      CMD_YOUTUBE_SUMMARY_IT,
-      CMD_TRANSLATE_IT,
-      CMD_YOUTUBE,
-      CMD_NETFLIX,
-      CMD_DRIVE,
-    ] as Command[]
-  }
-
-  // Default: English / global
-  return DefaultCommands
+  const prefixKey = Object.keys(LOCALE_COMMANDS).find((k) => lang.startsWith(k))
+  return prefixKey ? LOCALE_COMMANDS[prefixKey] : DefaultCommands
 }
