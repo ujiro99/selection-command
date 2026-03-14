@@ -457,7 +457,7 @@ const CMD_GOOGLE_IMAGE = {
 }
 
 const CMD_GEMINI_JA = {
-  id: "8f1dd05d-8bfc-508c-977b-e1e741811551",
+  id: "1d320825-1e78-5f98-b73c-1bb48412e98c",
   revision: 0,
   title: "Gemini - 日本語",
   iconUrl:
@@ -512,7 +512,7 @@ const CMD_DRIVE = {
 }
 
 const CMD_EN_TO_JA = {
-  id: "0ce8e887-e464-545b-923e-3f03181e3841",
+  id: "9a3fca67-e618-5dd3-9ecd-9eb2d088041a",
   revision: 0,
   iconUrl: "https://ssl.gstatic.com/translate/favicon.ico",
   openMode: OPEN_MODE.TAB,
@@ -607,7 +607,7 @@ const CMD_ZHIHU = {
 }
 
 const CMD_GEMINI_ZH = {
-  id: "e5f4cd16-3d09-5872-abfb-748d3ee44d4d",
+  id: "7a97ca1a-00da-536c-a77f-09b6ca2840b6",
   revision: 0,
   title: "Gemini - 中文",
   iconUrl:
@@ -650,7 +650,7 @@ const CMD_COUPANG = {
 }
 
 const CMD_GEMINI_KO = {
-  id: "55cbdee1-8b93-555a-9b6e-664583e47749",
+  id: "02cff7da-117c-589d-9b32-0c3946180257",
   revision: 0,
   title: "Gemini - 한국어",
   iconUrl:
@@ -705,7 +705,7 @@ const CMD_OZON = {
 }
 
 const CMD_GEMINI_RU = {
-  id: "9ffb5af5-3f25-58b3-a5bb-4a1981f670f2",
+  id: "ae036565-4b06-5820-8132-d05f21327c2e",
   revision: 0,
   title: "Gemini - Русский",
   iconUrl:
@@ -761,7 +761,7 @@ const CMD_EBAY_DE = {
 }
 
 const CMD_GEMINI_DE = {
-  id: "365a54c6-0324-57be-84e5-ab56a3a7d1f0",
+  id: "de4e4860-e81b-5d39-bbf5-b85516d99bdf",
   revision: 0,
   title: "Gemini - Deutsch",
   iconUrl:
@@ -804,7 +804,7 @@ const CMD_LEBONCOIN = {
 }
 
 const CMD_GEMINI_FR = {
-  id: "28514807-91d0-5b78-9c6e-6f66d28480de",
+  id: "db893fd8-80f3-5f15-9d76-dcd0e202c8c9",
   revision: 0,
   title: "Gemini - Français",
   iconUrl:
@@ -847,7 +847,7 @@ const CMD_EBAY_ES = {
 }
 
 const CMD_EL_CORTE_INGLES = {
-  id: "6a262b63-9fe3-5b84-8677-7dfc7a6149f8",
+  id: "8e6d9feb-c7fc-5a9b-b441-1cdba5ffbd10",
   revision: 0,
   iconUrl:
     "https://cdn.grupoelcorteingles.es/statics/front-msh3-eci-es/assets//stylesheets/favicons/vuestore/favicon.ico?_MTI6MDMtMDI6MjQ6MDA",
@@ -874,7 +874,7 @@ const CMD_ALIEXPRESS_ES = {
 }
 
 const CMD_GEMINI_ES = {
-  id: "8657cbce-7041-59ee-99bd-0059d7725773",
+  id: "0e1b2488-fa94-5873-ac84-e0b5fd322a9e",
   revision: 0,
   title: "Gemini - Español",
   iconUrl:
@@ -904,7 +904,7 @@ const CMD_AMAZON_BR = {
 }
 
 const CMD_MERCADO_LIVRE_BR = {
-  id: "0d095a4d-dc48-53d4-b6dc-ba2d65d3ec46",
+  id: "322a91ca-efc6-5a8d-9e00-3538b819665b",
   revision: 0,
   iconUrl:
     "https://http2.mlstatic.com/frontend-assets/ml-web-navigation/ui-navigation/6.6.92/mercadolibre/favicon.svg",
@@ -918,7 +918,7 @@ const CMD_MERCADO_LIVRE_BR = {
 }
 
 const CMD_GEMINI_PT = {
-  id: "f698f5d8-445a-5425-b147-52ae5d612253",
+  id: "81ce215c-fabc-576f-a079-311e093c87b1",
   revision: 0,
   title: "Gemini - Português",
   iconUrl:
@@ -962,7 +962,7 @@ const CMD_AMAZON_IN = {
 }
 
 const CMD_FLIPKART = {
-  id: "f024b680-b534-5b4a-9544-19c03bf9ea1b",
+  id: "2483f07e-b860-5687-8db8-907c87020bc6",
   revision: 0,
   iconUrl:
     "https://static-assets-web.flixcart.com/www/promos/new/20150528-140547-favicon-retina.ico",
@@ -976,7 +976,7 @@ const CMD_FLIPKART = {
 }
 
 const CMD_GEMINI_HI = {
-  id: "b6c74d17-9f37-5cd8-89a8-e2a83db6fa46",
+  id: "e2315dec-3b61-5857-ac49-e4dc1cbf23ab",
   revision: 0,
   title: "Gemini - हिन्दी",
   iconUrl:
@@ -993,7 +993,7 @@ const CMD_GEMINI_HI = {
 
 // id: Indonesia
 const CMD_TOKOPEDIA = {
-  id: "10aacba2-936f-5512-a5ea-7d2fc55fb897",
+  id: "e09dbc37-f018-5444-8b0c-c10158a049b3",
   revision: 0,
   iconUrl:
     "https://p16-images-comn-sg.tokopedia-static.net/tos-alisg-i-zr7vqa5nfb-sg/assets-tokopedia-lite/prod/icon144.png~tplv-zr7vqa5nfb-image.image",
@@ -1020,7 +1020,7 @@ const CMD_SHOPEE_ID = {
 }
 
 const CMD_GEMINI_ID = {
-  id: "2c3d8dab-4d2f-5a48-a475-c5633d53e104",
+  id: "4875bd38-150f-5fb5-899d-0ff59e918588",
   revision: 0,
   title: "Gemini - Indonesia",
   iconUrl:
@@ -1063,7 +1063,7 @@ const CMD_LAZADA_MY = {
 }
 
 const CMD_GEMINI_MS = {
-  id: "d49c2724-8ee4-5cf3-9966-12ef7542275a",
+  id: "ba62af6d-e6ab-5573-aa86-f193f7cd5cdf",
   revision: 0,
   title: "Gemini - Melayu",
   iconUrl:
@@ -1119,7 +1119,7 @@ const CMD_ZALANDO_IT = {
 }
 
 const CMD_GEMINI_IT = {
-  id: "f52fc864-fd82-5d0b-b014-00cc111f7978",
+  id: "9b6c7262-5fea-5fba-b682-12502b7f8c21",
   revision: 0,
   title: "Gemini - Italiano",
   iconUrl:
@@ -1137,7 +1137,7 @@ const CMD_GEMINI_IT = {
 // ---- AI Prompt: Page Summary commands ----
 
 const CMD_PAGE_SUMMARY_JA = {
-  id: "648f500a-f8b2-46c7-9683-f1916adcbbb7",
+  id: "8dae343a-7168-5fe1-81aa-53c00671ba80",
   revision: 0,
   title: "ページの概要生成",
   iconUrl:
@@ -1153,7 +1153,7 @@ const CMD_PAGE_SUMMARY_JA = {
 }
 
 const CMD_PAGE_SUMMARY_ZH = {
-  id: "57d72f27-678d-4aba-854e-56f2c9abe87e",
+  id: "0b36cf0a-b9d6-5604-9532-e85302514c16",
   revision: 0,
   title: "页面摘要",
   iconUrl:
@@ -1169,7 +1169,7 @@ const CMD_PAGE_SUMMARY_ZH = {
 }
 
 const CMD_PAGE_SUMMARY_KO = {
-  id: "20d51224-7bde-42d7-823c-655f7ba0cfc3",
+  id: "1acc8a29-59a8-5d22-8d3f-932acef5f333",
   revision: 0,
   title: "페이지 요약",
   iconUrl:
@@ -1185,7 +1185,7 @@ const CMD_PAGE_SUMMARY_KO = {
 }
 
 const CMD_PAGE_SUMMARY_RU = {
-  id: "db0cb04d-00e8-4bd2-baa5-776e16757a4e",
+  id: "026ae75a-d24c-5d51-bf56-e1a9ce3e6132",
   revision: 0,
   title: "Краткое содержание страницы",
   iconUrl:
@@ -1202,7 +1202,7 @@ const CMD_PAGE_SUMMARY_RU = {
 }
 
 const CMD_PAGE_SUMMARY_DE = {
-  id: "f6bd173a-ba43-41ca-83b1-6951e64e04b7",
+  id: "7d3c36fd-d697-5996-9834-f677014ba365",
   revision: 0,
   title: "Seitenzusammenfassung",
   iconUrl:
@@ -1219,7 +1219,7 @@ const CMD_PAGE_SUMMARY_DE = {
 }
 
 const CMD_PAGE_SUMMARY_FR = {
-  id: "4f8995cd-b0b5-4ad7-8108-2d2762b94e1d",
+  id: "9d7c49c8-b9bb-580b-8a19-37d3d1eac2bf",
   revision: 0,
   title: "Résumé de la page",
   iconUrl:
@@ -1236,7 +1236,7 @@ const CMD_PAGE_SUMMARY_FR = {
 }
 
 const CMD_PAGE_SUMMARY_ES = {
-  id: "e8619dcd-b5a0-483e-9d16-2a8c4ca6d6e1",
+  id: "9a0879c6-e21c-5da2-ac44-02580607560f",
   revision: 0,
   title: "Resumen de página",
   iconUrl:
@@ -1253,7 +1253,7 @@ const CMD_PAGE_SUMMARY_ES = {
 }
 
 const CMD_PAGE_SUMMARY_PT = {
-  id: "bf7e7fe7-ccc9-4518-9256-91768e70f250",
+  id: "1b07e1bd-b73c-59c7-ae15-c4281b3f7f86",
   revision: 0,
   title: "Resumo da página",
   iconUrl:
@@ -1270,7 +1270,7 @@ const CMD_PAGE_SUMMARY_PT = {
 }
 
 const CMD_PAGE_SUMMARY_HI = {
-  id: "44982cfd-17f9-41ef-bbfc-f3ccfa6df01f",
+  id: "6943a6bb-0061-5f86-98b9-65b73cabc0b8",
   revision: 0,
   title: "पृष्ठ सारांश",
   iconUrl:
@@ -1287,7 +1287,7 @@ const CMD_PAGE_SUMMARY_HI = {
 }
 
 const CMD_PAGE_SUMMARY_ID = {
-  id: "f6518297-518c-4680-a06b-72df5a51790b",
+  id: "33381921-4f31-5884-9364-598b5fa03285",
   revision: 0,
   title: "Ringkasan halaman",
   iconUrl:
@@ -1304,7 +1304,7 @@ const CMD_PAGE_SUMMARY_ID = {
 }
 
 const CMD_PAGE_SUMMARY_MS = {
-  id: "b7614ea8-8252-47d5-b579-4a4a575f1bed",
+  id: "a1773db0-4c0a-5568-8962-69272e08751b",
   revision: 0,
   title: "Ringkasan halaman",
   iconUrl:
@@ -1321,7 +1321,7 @@ const CMD_PAGE_SUMMARY_MS = {
 }
 
 const CMD_PAGE_SUMMARY_IT = {
-  id: "f6b5d608-80d9-43a8-85be-5b856b67e748",
+  id: "a69cbdc4-44bc-586c-8802-0b65eb1e53d2",
   revision: 0,
   title: "Riepilogo pagina",
   iconUrl:
@@ -1340,7 +1340,7 @@ const CMD_PAGE_SUMMARY_IT = {
 // ---- AI Prompt: YouTube Summary commands ----
 
 const CMD_YOUTUBE_SUMMARY_JA = {
-  id: "6e8ade53-37dd-43e6-9371-57e42e303b31",
+  id: "2e3ac565-1e4f-5eb3-a9b8-9ed35afec16e",
   revision: 0,
   title: "YouTubeの概要生成",
   iconUrl:
@@ -1356,7 +1356,7 @@ const CMD_YOUTUBE_SUMMARY_JA = {
 }
 
 const CMD_YOUTUBE_SUMMARY_ZH = {
-  id: "69da0bf1-0832-4351-863f-aa94cd343112",
+  id: "c3493b59-14f8-5d48-9045-6453ab6842db",
   revision: 0,
   title: "YouTube摘要",
   iconUrl:
@@ -1372,7 +1372,7 @@ const CMD_YOUTUBE_SUMMARY_ZH = {
 }
 
 const CMD_YOUTUBE_SUMMARY_KO = {
-  id: "0fc30726-b243-49dd-afda-dddc5995892e",
+  id: "9d5e2285-f85c-525f-b0f2-ff6b250d0c66",
   revision: 0,
   title: "YouTube 요약",
   iconUrl:
@@ -1388,7 +1388,7 @@ const CMD_YOUTUBE_SUMMARY_KO = {
 }
 
 const CMD_YOUTUBE_SUMMARY_RU = {
-  id: "801d77e1-43b5-4dc1-8494-360f2b1df353",
+  id: "e0f2cd1a-d783-5a8a-8f73-1593a270b201",
   revision: 0,
   title: "Краткое содержание YouTube",
   iconUrl:
@@ -1405,7 +1405,7 @@ const CMD_YOUTUBE_SUMMARY_RU = {
 }
 
 const CMD_YOUTUBE_SUMMARY_DE = {
-  id: "20cae897-a78a-40ed-bdff-99346c6a6cc8",
+  id: "340d9418-6e4b-5924-aa5c-c464bdfe0f00",
   revision: 0,
   title: "YouTube-Zusammenfassung",
   iconUrl:
@@ -1422,7 +1422,7 @@ const CMD_YOUTUBE_SUMMARY_DE = {
 }
 
 const CMD_YOUTUBE_SUMMARY_FR = {
-  id: "7a0a0210-fb6b-4c97-a3c0-9a632f3c3d77",
+  id: "aced5600-b0f5-5cdf-a6e8-22dd0990933b",
   revision: 0,
   title: "Résumé YouTube",
   iconUrl:
@@ -1439,7 +1439,7 @@ const CMD_YOUTUBE_SUMMARY_FR = {
 }
 
 const CMD_YOUTUBE_SUMMARY_ES = {
-  id: "be56d46d-040d-4751-9115-906a37311d9b",
+  id: "fe8d2de7-d5cf-5401-9a84-8f7b94fe0dc7",
   revision: 0,
   title: "Resumen de YouTube",
   iconUrl:
@@ -1456,7 +1456,7 @@ const CMD_YOUTUBE_SUMMARY_ES = {
 }
 
 const CMD_YOUTUBE_SUMMARY_PT = {
-  id: "6db5b24d-f693-44ae-81b9-4905c45d25b9",
+  id: "508dcbd2-4d9d-5b76-99b7-3c8f22c669e8",
   revision: 0,
   title: "Resumo do YouTube",
   iconUrl:
@@ -1473,7 +1473,7 @@ const CMD_YOUTUBE_SUMMARY_PT = {
 }
 
 const CMD_YOUTUBE_SUMMARY_HI = {
-  id: "96a89579-8461-4dac-8ef7-14f624472bbc",
+  id: "eb15fea0-5bfe-5a79-b87d-527debadd2c8",
   revision: 0,
   title: "YouTube सारांश",
   iconUrl:
@@ -1490,7 +1490,7 @@ const CMD_YOUTUBE_SUMMARY_HI = {
 }
 
 const CMD_YOUTUBE_SUMMARY_ID = {
-  id: "ce885044-5063-4f0d-8634-f4c9413a6102",
+  id: "c45929d2-3a91-5dcc-84b2-a0fe51ec5ff9",
   revision: 0,
   title: "Ringkasan YouTube",
   iconUrl:
@@ -1507,7 +1507,7 @@ const CMD_YOUTUBE_SUMMARY_ID = {
 }
 
 const CMD_YOUTUBE_SUMMARY_MS = {
-  id: "50936368-aa1c-419b-bacb-b573b9df464a",
+  id: "fa412165-8dfc-5f79-b5d8-6ce5b3a4c5f8",
   revision: 0,
   title: "Ringkasan YouTube",
   iconUrl:
@@ -1524,7 +1524,7 @@ const CMD_YOUTUBE_SUMMARY_MS = {
 }
 
 const CMD_YOUTUBE_SUMMARY_IT = {
-  id: "50d293f7-919b-460d-be2f-d526264c98d0",
+  id: "f89c080f-0ed5-5f12-a555-e94e0bf7572f",
   revision: 0,
   title: "Riepilogo YouTube",
   iconUrl:
@@ -1543,7 +1543,7 @@ const CMD_YOUTUBE_SUMMARY_IT = {
 // ---- AI Prompt: Translation commands ----
 
 const CMD_TRANSLATE_JA = {
-  id: "20dc745d-48d9-441f-a18e-3087b92b2cbc",
+  id: "c6dd7dcc-b342-517e-aed0-36a74fd007a2",
   revision: 0,
   title: "選択テキストの相互翻訳",
   iconUrl:
@@ -1560,7 +1560,7 @@ const CMD_TRANSLATE_JA = {
 }
 
 const CMD_TRANSLATE_ZH = {
-  id: "b3394991-657f-4ebf-a88f-f952049c8066",
+  id: "c6f1cfe2-b982-5941-b62e-743b859c0cea",
   revision: 0,
   title: "文本互译",
   iconUrl:
@@ -1576,7 +1576,7 @@ const CMD_TRANSLATE_ZH = {
 }
 
 const CMD_TRANSLATE_KO = {
-  id: "f0a55d6e-e113-4b48-82cd-cecd1a945757",
+  id: "ec4abe19-5ba3-569c-8df1-3735fbd2f086",
   revision: 0,
   title: "텍스트 번역",
   iconUrl:
@@ -1593,7 +1593,7 @@ const CMD_TRANSLATE_KO = {
 }
 
 const CMD_TRANSLATE_RU = {
-  id: "212a3fc9-a7b3-4cab-8f4c-dc5c090d9670",
+  id: "5973d8a1-3634-5e4e-8979-2c684efa3baf",
   revision: 0,
   title: "Перевод текста",
   iconUrl:
@@ -1610,7 +1610,7 @@ const CMD_TRANSLATE_RU = {
 }
 
 const CMD_TRANSLATE_DE = {
-  id: "bc527ef8-b5c2-4c33-8687-c11717aff672",
+  id: "cd834add-0189-5ee1-88d0-48e4968439c9",
   revision: 0,
   title: "Textübersetzung",
   iconUrl:
@@ -1627,7 +1627,7 @@ const CMD_TRANSLATE_DE = {
 }
 
 const CMD_TRANSLATE_FR = {
-  id: "edfeef6f-2edf-48c4-86ed-4bf59fe9d148",
+  id: "75162ab2-5868-590c-bf75-d91a492352fc",
   revision: 0,
   title: "Traduction de texte",
   iconUrl:
@@ -1644,7 +1644,7 @@ const CMD_TRANSLATE_FR = {
 }
 
 const CMD_TRANSLATE_ES = {
-  id: "c0ff198e-4bae-4a39-a687-abb4efc0d446",
+  id: "141e9098-a8d0-5d8f-8e76-9da22e43af31",
   revision: 0,
   title: "Traducción de texto",
   iconUrl:
@@ -1661,7 +1661,7 @@ const CMD_TRANSLATE_ES = {
 }
 
 const CMD_TRANSLATE_PT = {
-  id: "61e313b7-07e8-4598-a982-6b4ccf48ad56",
+  id: "99b00ce3-8856-58a8-9892-86193280f9ca",
   revision: 0,
   title: "Tradução de texto",
   iconUrl:
@@ -1678,7 +1678,7 @@ const CMD_TRANSLATE_PT = {
 }
 
 const CMD_TRANSLATE_HI = {
-  id: "d2124ef8-60b2-468b-9dbc-752b5fd1f9f5",
+  id: "27dfe2d4-0645-5e67-b3d3-075b00fba514",
   revision: 0,
   title: "पाठ अनुवाद",
   iconUrl:
@@ -1695,7 +1695,7 @@ const CMD_TRANSLATE_HI = {
 }
 
 const CMD_TRANSLATE_ID = {
-  id: "0cb41d5c-adee-406b-a784-d7e004340c20",
+  id: "ff811237-adce-55be-b7d8-76ae00f2ffe4",
   revision: 0,
   title: "Terjemahan teks",
   iconUrl:
@@ -1712,7 +1712,7 @@ const CMD_TRANSLATE_ID = {
 }
 
 const CMD_TRANSLATE_MS = {
-  id: "ce7173a4-050e-4452-be8f-48237c76f850",
+  id: "55978ac1-2bfc-5b06-8a95-73055b534dc5",
   revision: 0,
   title: "Terjemahan teks",
   iconUrl:
@@ -1729,7 +1729,7 @@ const CMD_TRANSLATE_MS = {
 }
 
 const CMD_TRANSLATE_IT = {
-  id: "402736b0-982c-4061-8e84-ef2f1c607d12",
+  id: "42840fa4-17e8-5b02-8319-c5f081179a93",
   revision: 0,
   title: "Traduzione testo",
   iconUrl:
