@@ -64,6 +64,12 @@ export const emptySettings: SettingsType = {
 export const POPUP_DELAY_DEFAULT = 250
 export const POPUP_DULATION_DEFAULT = 150
 
+// Folder IDs from the default settings
+const FOLDER_SEARCH = "222d6489-4eca-48fd-8590-fceb30545bab"
+const FOLDER_ACTION = "0f2167ab-2e1b-4972-954c-71eec058ab14"
+const FOLDER_MEDIA = "a3495269-0a4d-4866-a519-bca75ed1c246"
+const FOLDER_WORK = "01710cf1-ec8b-497f-8d1f-9cb716567bc4"
+
 export default {
   settingVersion: VERSION,
   popupPlacement: PopupPlacement,
@@ -85,7 +91,7 @@ export default {
       title: "Search",
       iconUrl:
         "https://cdn3.iconfinder.com/data/icons/feather-5/24/search-1024.png",
-      id: "222d6489-4eca-48fd-8590-fceb30545bab",
+      id: FOLDER_SEARCH,
       onlyIcon: true,
     },
     {
@@ -93,7 +99,7 @@ export default {
       iconUrl: "",
       iconSvg:
         '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap-icon lucide-zap"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>',
-      id: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      id: FOLDER_ACTION,
       onlyIcon: true,
     },
     {
@@ -101,7 +107,7 @@ export default {
       iconUrl: "",
       iconSvg:
         '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-monitor-play-icon lucide-monitor-play"><path d="M10 7.75a.75.75 0 0 1 1.142-.638l3.664 2.249a.75.75 0 0 1 0 1.278l-3.664 2.25a.75.75 0 0 1-1.142-.64z"/><path d="M12 17v4"/><path d="M8 21h8"/><rect x="2" y="3" width="20" height="14" rx="2"/></svg>',
-      id: "a3495269-0a4d-4866-a519-bca75ed1c246",
+      id: FOLDER_MEDIA,
       onlyIcon: true,
     },
     {
@@ -109,7 +115,7 @@ export default {
       iconUrl: "",
       iconSvg:
         '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-icon lucide-folder"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>',
-      id: "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
+      id: FOLDER_WORK,
     },
   ],
   pageRules: [],
@@ -183,7 +189,7 @@ export const DefaultCommands = [
     },
   },
   {
-    id: "723ee9f1-150b-54ad-aeac-5fbfd0ae3650",
+    id: "0cb9dbbc-c0cf-53c6-93e5-016363705216",
     revision: 0,
     iconUrl: "https://www.google.com/favicon.ico",
     openMode: OPEN_MODE.POPUP,
@@ -197,14 +203,14 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "18998bac-4e6c-503f-b3ea-b9198edef7c3",
+    id: "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
     revision: 0,
     iconUrl: "https://www.google.com/favicon.ico",
     openMode: OPEN_MODE.POPUP,
     openModeSecondary: OPEN_MODE.TAB,
     searchUrl: "https://google.com/search?q=%s&tbm=isch",
     title: "Google Image",
-    parentFolderId: "222d6489-4eca-48fd-8590-fceb30545bab",
+    parentFolderId: FOLDER_SEARCH,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
@@ -212,14 +218,14 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "92f8f4e8-3cd8-4e01-9908-811d72448670",
+    id: "c0d05ae1-f007-5bd0-8fa6-e3bc0b79ca97",
     revision: 0,
     iconUrl: "https://www.amazon.com/favicon.ico",
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
     searchUrl: "https://www.amazon.com/s?k=%s",
     title: "Amazon",
-    parentFolderId: "222d6489-4eca-48fd-8590-fceb30545bab",
+    parentFolderId: FOLDER_SEARCH,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
@@ -272,21 +278,21 @@ export const DefaultCommands = [
         },
       ],
     },
-    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    parentFolderId: FOLDER_ACTION,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
     },
   },
   {
-    id: "2e0cd6fe-a232-402e-846c-2104f0639995",
+    id: "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
     revision: 0,
     iconUrl: "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
     searchUrl: "https://www.youtube.com/results?search_query=%s",
     title: "Youtube",
-    parentFolderId: "a3495269-0a4d-4866-a519-bca75ed1c246",
+    parentFolderId: FOLDER_MEDIA,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
@@ -294,7 +300,7 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "409aba7d-c49e-5e81-b8a6-a862f2651b3e",
+    id: "fb9cb6ad-76e3-5aa8-82a7-ade233edcec0",
     revision: 0,
     iconUrl:
       "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
@@ -302,7 +308,7 @@ export const DefaultCommands = [
     openModeSecondary: OPEN_MODE.TAB,
     searchUrl: "https://www.netflix.com/search?q=%s",
     title: "Netflix",
-    parentFolderId: "a3495269-0a4d-4866-a519-bca75ed1c246",
+    parentFolderId: FOLDER_MEDIA,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
@@ -310,14 +316,14 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "54f3e785-960a-5a70-9c80-cfbf0357c4c7",
+    id: "30797fb1-5bc7-585a-ba53-fa5420e417d9",
     revision: 0,
     iconUrl: "https://s.pinimg.com/webapp/favicon-22eb868c.png",
     openMode: OPEN_MODE.TAB,
     openModeSecondary: OPEN_MODE.TAB,
     searchUrl: "https://www.pinterest.com/search/pins/?q=%s",
     title: "Pinterest",
-    parentFolderId: "a3495269-0a4d-4866-a519-bca75ed1c246",
+    parentFolderId: FOLDER_MEDIA,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
@@ -325,7 +331,7 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "125fdc5e-a97d-5f81-92c4-2a6cbfc3662f",
+    id: "dd05d527-92db-5102-9a88-4a5b31fa7512",
     revision: 0,
     iconUrl:
       "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
@@ -333,7 +339,7 @@ export const DefaultCommands = [
     openModeSecondary: OPEN_MODE.TAB,
     searchUrl: "https://drive.google.com/drive/search?q=%s",
     title: "Drive",
-    parentFolderId: "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
+    parentFolderId: FOLDER_WORK,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
@@ -341,7 +347,7 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "d509db9f-c67b-49ff-b8bb-cc690dde9bb3",
+    id: "eeaca339-e026-5ce8-a83c-7fe01a96ee73",
     revision: 0,
     title: "Page Summary",
     iconUrl:
@@ -352,14 +358,14 @@ export const DefaultCommands = [
       prompt: "Please summarize the content of the following page.\n{{Url}}",
       openMode: OPEN_MODE.POPUP,
     },
-    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    parentFolderId: FOLDER_ACTION,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
     },
   },
   {
-    id: "24b6c6ec-611a-475f-bd38-a66b2c63e940",
+    id: "638d5524-92b3-5eec-a9a8-9a36e9e97d1d",
     revision: 0,
     title: "YouTube Summary",
     iconUrl:
@@ -371,14 +377,14 @@ export const DefaultCommands = [
         "Please summarize the content of the following YouTube video.\n{{Url}}",
       openMode: OPEN_MODE.POPUP,
     },
-    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    parentFolderId: FOLDER_ACTION,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
     },
   },
   {
-    id: "8002e7e4-93c1-4309-a27b-ac609fa8c938",
+    id: "08dc5308-af4d-5f15-b86f-0432fc9d59e4",
     revision: 0,
     title: "Translation",
     iconUrl:
@@ -390,14 +396,14 @@ export const DefaultCommands = [
         "Please translate the following text between English and the detected language.\n{{SelectedText}}",
       openMode: OPEN_MODE.POPUP,
     },
-    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    parentFolderId: FOLDER_ACTION,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
     },
   },
   {
-    id: "28c07577-ca62-42e5-8673-3f512fd7233e",
+    id: "a26b4c84-b56a-5e56-bf7d-2dde3998a756",
     revision: 0,
     title: "Gemini",
     iconUrl:
@@ -408,19 +414,13 @@ export const DefaultCommands = [
       prompt: "Please explain the following.\n{{SelectedText}}",
       openMode: OPEN_MODE.POPUP,
     },
-    parentFolderId: "0f2167ab-2e1b-4972-954c-71eec058ab14",
+    parentFolderId: FOLDER_ACTION,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
     },
   },
 ] as Command[]
-
-// Folder IDs from the default settings
-const FOLDER_SEARCH = "222d6489-4eca-48fd-8590-fceb30545bab"
-const FOLDER_ACTION = "0f2167ab-2e1b-4972-954c-71eec058ab14"
-const FOLDER_MEDIA = "a3495269-0a4d-4866-a519-bca75ed1c246"
-const FOLDER_WORK = "01710cf1-ec8b-497f-8d1f-9cb716567bc4"
 
 // Common commands shared across locales
 const CMD_LINK_PREVIEW = {

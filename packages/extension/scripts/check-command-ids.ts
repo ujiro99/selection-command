@@ -1,6 +1,9 @@
 #!/usr/bin/env vite-node
 import { cmd2uuid } from "@shared/utils/uuid"
-import { LOCALE_COMMANDS } from "@/services/option/defaultSettings"
+import {
+  DefaultCommands,
+  LOCALE_COMMANDS,
+} from "@/services/option/defaultSettings"
 import { OPEN_MODE } from "@/const"
 
 /**
@@ -22,9 +25,16 @@ const CHECKABLE_MODES = new Set<string>([
   OPEN_MODE.PAGE_ACTION,
 ])
 
-// Collect all unique commands across locales
+// Collect all unique commands from DefaultCommands and all locales
 const seen = new Set<string>()
 const commands: Array<{ title: string; parsed: Record<string, string> }> = []
+
+for (const cmd of DefaultCommands) {
+  const c = cmd as Record<string, string>
+  if (seen.has(c.id)) continue
+  seen.add(c.id)
+  commands.push({ title: c.title, parsed: c })
+}
 
 for (const cmds of Object.values(LOCALE_COMMANDS)) {
   for (const cmd of cmds) {
