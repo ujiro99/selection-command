@@ -67,6 +67,7 @@ export const POPUP_DULATION_DEFAULT = 150
 // Folder IDs from the default settings
 const FOLDER_SEARCH = "222d6489-4eca-48fd-8590-fceb30545bab"
 const FOLDER_ACTION = "0f2167ab-2e1b-4972-954c-71eec058ab14"
+const FOLDER_AI = "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae"
 const FOLDER_MEDIA = "a3495269-0a4d-4866-a519-bca75ed1c246"
 const FOLDER_WORK = "01710cf1-ec8b-497f-8d1f-9cb716567bc4"
 
@@ -100,6 +101,14 @@ export default {
       iconSvg:
         '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap-icon lucide-zap"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>',
       id: FOLDER_ACTION,
+      onlyIcon: true,
+    },
+    {
+      title: "AI",
+      iconUrl: "",
+      iconSvg:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wand-sparkles-icon lucide-wand-sparkles"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>',
+      id: FOLDER_AI,
       onlyIcon: true,
     },
     {
@@ -233,58 +242,6 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "06964cb6-019d-511f-b16f-18c7bbd2c785",
-    revision: 0,
-    title: "Gemini",
-    iconUrl:
-      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
-    openMode: OPEN_MODE.PAGE_ACTION,
-    pageActionOption: {
-      openMode: OPEN_MODE.POPUP,
-      startUrl: "https://gemini.google.com/app",
-      steps: [
-        {
-          id: "1clkfxbrr",
-          param: {
-            label: "Start",
-            type: "start",
-          },
-        },
-        {
-          id: "gmavyqlj2",
-          param: {
-            label: "Ask Gemini",
-            selector: "//*[@data-gramm='false']/*",
-            selectorType: "xpath",
-            type: "input",
-            value: "Please explain the following.\n{{SelectedText}}",
-          },
-        },
-        {
-          id: "umb7r0prx",
-          param: {
-            label: "",
-            selector: "//*[@data-mat-icon-name='send']",
-            selectorType: "xpath",
-            type: "click",
-          },
-        },
-        {
-          id: "stjwk2dnp",
-          param: {
-            label: "End",
-            type: "end",
-          },
-        },
-      ],
-    },
-    parentFolderId: FOLDER_ACTION,
-    popupOption: {
-      width: PopupOption.width,
-      height: PopupOption.height,
-    },
-  },
-  {
     id: "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
     revision: 0,
     iconUrl: "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
@@ -347,7 +304,7 @@ export const DefaultCommands = [
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
   {
-    id: "eeaca339-e026-5ce8-a83c-7fe01a96ee73",
+    id: "69179b92-b6f1-5265-b4e4-e4d8443eabac",
     revision: 0,
     title: "Page Summary",
     iconUrl:
@@ -356,16 +313,16 @@ export const DefaultCommands = [
     aiPromptOption: {
       serviceId: "gemini",
       prompt: "Please summarize the content of the following page.\n{{Url}}",
-      openMode: OPEN_MODE.POPUP,
+      openMode: OPEN_MODE.SIDE_PANEL,
     },
-    parentFolderId: FOLDER_ACTION,
+    parentFolderId: FOLDER_AI,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
     },
   },
   {
-    id: "638d5524-92b3-5eec-a9a8-9a36e9e97d1d",
+    id: "4d0666a4-3c4f-5ebc-8da4-36fc876e9dd9",
     revision: 0,
     title: "YouTube Summary",
     iconUrl:
@@ -375,16 +332,16 @@ export const DefaultCommands = [
       serviceId: "gemini",
       prompt:
         "Please summarize the content of the following YouTube video.\n{{Url}}",
-      openMode: OPEN_MODE.POPUP,
+      openMode: OPEN_MODE.SIDE_PANEL,
     },
-    parentFolderId: FOLDER_ACTION,
+    parentFolderId: FOLDER_AI,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
     },
   },
   {
-    id: "08dc5308-af4d-5f15-b86f-0432fc9d59e4",
+    id: "9ce6febc-3d60-5e34-bc1e-0499bde34f77",
     revision: 0,
     title: "Translation",
     iconUrl:
@@ -394,9 +351,9 @@ export const DefaultCommands = [
       serviceId: "gemini",
       prompt:
         "Please translate the following text between English and the detected language.\n{{SelectedText}}",
-      openMode: OPEN_MODE.POPUP,
+      openMode: OPEN_MODE.SIDE_PANEL,
     },
-    parentFolderId: FOLDER_ACTION,
+    parentFolderId: FOLDER_AI,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
@@ -414,7 +371,7 @@ export const DefaultCommands = [
       prompt: "Please explain the following.\n{{SelectedText}}",
       openMode: OPEN_MODE.POPUP,
     },
-    parentFolderId: FOLDER_ACTION,
+    parentFolderId: FOLDER_AI,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
@@ -468,7 +425,7 @@ const CMD_GEMINI_JA = {
     prompt: "以下について解説してください。\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -523,6 +480,65 @@ const CMD_EN_TO_JA = {
   parentFolderId: FOLDER_WORK,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
   spaceEncoding: SPACE_ENCODING.PLUS,
+}
+
+const CMD_CHARACTER_COUNTER = {
+  id: "03646140-c83f-5ee6-87ba-8feb12030af0",
+  revision: 0,
+  title: "Character Counter",
+  iconUrl: "https://web-toolbox.dev/favicon.svg",
+  parentFolderId: FOLDER_ACTION,
+  openMode: OPEN_MODE.PAGE_ACTION,
+  pageActionOption: {
+    startUrl: "https://web-toolbox.dev/tools/character-counter",
+    openMode: "popup",
+    steps: [
+      {
+        id: "b28aqptaq",
+        param: {
+          type: "start",
+          label: "Start",
+          url: "https://web-toolbox.dev/tools/character-counter",
+        },
+      },
+      {
+        id: "xswttnk5r",
+        param: {
+          type: "click",
+          label: "textarea",
+          selector: "//textarea",
+          selectorType: "xpath",
+        },
+        delayMs: 100,
+      },
+      {
+        id: "pycqdt0ap",
+        param: {
+          type: "input",
+          label: "文字入力",
+          selector: "//textarea",
+          selectorType: "xpath",
+          value: "{{SelectedText}}",
+        },
+      },
+      {
+        id: "8tsr1lz9m",
+        param: {
+          type: "scroll",
+          label: "表示位置までスクロール",
+          x: 0,
+          y: 812,
+        },
+      },
+      {
+        id: "erkxkfph0",
+        param: {
+          type: "end",
+          label: "End",
+        },
+      },
+    ],
+  },
 }
 
 // ---- Locale-specific command definitions ----
@@ -618,7 +634,7 @@ const CMD_GEMINI_ZH = {
     prompt: "请解释以下内容。\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -661,7 +677,7 @@ const CMD_GEMINI_KO = {
     prompt: "다음에 대해 설명해 주세요.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -716,7 +732,7 @@ const CMD_GEMINI_RU = {
     prompt: "Пожалуйста, объясните следующее.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -772,7 +788,7 @@ const CMD_GEMINI_DE = {
     prompt: "Bitte erkläre Folgendes.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -815,7 +831,7 @@ const CMD_GEMINI_FR = {
     prompt: "Veuillez expliquer ce qui suit.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -885,7 +901,7 @@ const CMD_GEMINI_ES = {
     prompt: "Por favor, explica lo siguiente.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -929,7 +945,7 @@ const CMD_GEMINI_PT = {
     prompt: "Por favor, explique o seguinte.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -987,7 +1003,7 @@ const CMD_GEMINI_HI = {
     prompt: "कृपया निम्नलिखित के बारे में बताएं।\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -1031,7 +1047,7 @@ const CMD_GEMINI_ID = {
     prompt: "Tolong jelaskan hal berikut.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -1074,7 +1090,7 @@ const CMD_GEMINI_MS = {
     prompt: "Sila terangkan perkara berikut.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -1130,14 +1146,14 @@ const CMD_GEMINI_IT = {
     prompt: "Si prega di spiegare quanto segue.\n{{SelectedText}}",
     openMode: OPEN_MODE.POPUP,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 // ---- AI Prompt: Page Summary commands ----
 
 const CMD_PAGE_SUMMARY_JA = {
-  id: "8dae343a-7168-5fe1-81aa-53c00671ba80",
+  id: "afe67f66-fc8d-555f-9e51-2d1491906faf",
   revision: 0,
   title: "ページの概要生成",
   iconUrl:
@@ -1146,14 +1162,14 @@ const CMD_PAGE_SUMMARY_JA = {
   aiPromptOption: {
     serviceId: "gemini",
     prompt: "以下のURLのページを日本語で要約してください。\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_ZH = {
-  id: "0b36cf0a-b9d6-5604-9532-e85302514c16",
+  id: "2ae69b7e-be6e-515d-af88-996a26ab4509",
   revision: 0,
   title: "页面摘要",
   iconUrl:
@@ -1162,14 +1178,14 @@ const CMD_PAGE_SUMMARY_ZH = {
   aiPromptOption: {
     serviceId: "gemini",
     prompt: "请用中文总结以下网页的内容。\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_KO = {
-  id: "1acc8a29-59a8-5d22-8d3f-932acef5f333",
+  id: "9edd9c6c-f4e1-5afe-8e8c-50d5ad7d32df",
   revision: 0,
   title: "페이지 요약",
   iconUrl:
@@ -1178,14 +1194,14 @@ const CMD_PAGE_SUMMARY_KO = {
   aiPromptOption: {
     serviceId: "gemini",
     prompt: "다음 URL의 페이지 내용을 한국어로 요약해 주세요.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_RU = {
-  id: "026ae75a-d24c-5d51-bf56-e1a9ce3e6132",
+  id: "f0d38781-227b-5993-b32f-2d1fc2a5fb48",
   revision: 0,
   title: "Краткое содержание страницы",
   iconUrl:
@@ -1195,14 +1211,14 @@ const CMD_PAGE_SUMMARY_RU = {
     serviceId: "gemini",
     prompt:
       "Пожалуйста, кратко изложите содержание следующей страницы на русском языке.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_DE = {
-  id: "7d3c36fd-d697-5996-9834-f677014ba365",
+  id: "aa8412b2-c5c0-5642-b978-c94dfb465aa5",
   revision: 0,
   title: "Seitenzusammenfassung",
   iconUrl:
@@ -1212,14 +1228,14 @@ const CMD_PAGE_SUMMARY_DE = {
     serviceId: "gemini",
     prompt:
       "Bitte fasse den Inhalt der folgenden Seite auf Deutsch zusammen.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_FR = {
-  id: "9d7c49c8-b9bb-580b-8a19-37d3d1eac2bf",
+  id: "b681aae6-7bee-5ef0-9602-e282eb6e8380",
   revision: 0,
   title: "Résumé de la page",
   iconUrl:
@@ -1229,14 +1245,14 @@ const CMD_PAGE_SUMMARY_FR = {
     serviceId: "gemini",
     prompt:
       "Veuillez résumer le contenu de la page suivante en français.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_ES = {
-  id: "9a0879c6-e21c-5da2-ac44-02580607560f",
+  id: "f84d29d0-9b1f-503e-ba17-3115c0299b37",
   revision: 0,
   title: "Resumen de página",
   iconUrl:
@@ -1246,14 +1262,14 @@ const CMD_PAGE_SUMMARY_ES = {
     serviceId: "gemini",
     prompt:
       "Por favor, resume el contenido de la siguiente página en español.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_PT = {
-  id: "1b07e1bd-b73c-59c7-ae15-c4281b3f7f86",
+  id: "27e66097-ee7a-5bc9-9b93-38bd7d78a003",
   revision: 0,
   title: "Resumo da página",
   iconUrl:
@@ -1263,14 +1279,14 @@ const CMD_PAGE_SUMMARY_PT = {
     serviceId: "gemini",
     prompt:
       "Por favor, resuma o conteúdo da seguinte página em português.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_HI = {
-  id: "6943a6bb-0061-5f86-98b9-65b73cabc0b8",
+  id: "03c3a86d-d80f-5092-b62a-bd8f8d9416e1",
   revision: 0,
   title: "पृष्ठ सारांश",
   iconUrl:
@@ -1280,14 +1296,14 @@ const CMD_PAGE_SUMMARY_HI = {
     serviceId: "gemini",
     prompt:
       "कृपया निम्नलिखित पृष्ठ की सामग्री को हिंदी में सारांशित करें।\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_ID = {
-  id: "33381921-4f31-5884-9364-598b5fa03285",
+  id: "d7e7b5e3-d502-5ee1-b27a-8b144ceef395",
   revision: 0,
   title: "Ringkasan halaman",
   iconUrl:
@@ -1297,14 +1313,14 @@ const CMD_PAGE_SUMMARY_ID = {
     serviceId: "gemini",
     prompt:
       "Tolong ringkas konten halaman berikut dalam bahasa Indonesia.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_MS = {
-  id: "a1773db0-4c0a-5568-8962-69272e08751b",
+  id: "d73e6c46-5c98-563d-b572-b0f44f274ee1",
   revision: 0,
   title: "Ringkasan halaman",
   iconUrl:
@@ -1314,14 +1330,14 @@ const CMD_PAGE_SUMMARY_MS = {
     serviceId: "gemini",
     prompt:
       "Sila ringkaskan kandungan halaman berikut dalam Bahasa Melayu.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_PAGE_SUMMARY_IT = {
-  id: "a69cbdc4-44bc-586c-8802-0b65eb1e53d2",
+  id: "3f883a69-d5af-516c-8d2e-85470b83dae3",
   revision: 0,
   title: "Riepilogo pagina",
   iconUrl:
@@ -1331,16 +1347,16 @@ const CMD_PAGE_SUMMARY_IT = {
     serviceId: "gemini",
     prompt:
       "Si prega di riassumere il contenuto della pagina seguente in italiano.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 // ---- AI Prompt: YouTube Summary commands ----
 
 const CMD_YOUTUBE_SUMMARY_JA = {
-  id: "2e3ac565-1e4f-5eb3-a9b8-9ed35afec16e",
+  id: "7afd0cb7-45a4-5943-a00d-b04d12317eb1",
   revision: 0,
   title: "YouTubeの概要生成",
   iconUrl:
@@ -1349,14 +1365,14 @@ const CMD_YOUTUBE_SUMMARY_JA = {
   aiPromptOption: {
     serviceId: "gemini",
     prompt: "以下のYouTube動画の内容を日本語で要約してください。\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_ZH = {
-  id: "c3493b59-14f8-5d48-9045-6453ab6842db",
+  id: "35f2e8fc-653b-54bc-b7a5-e0a60c76af7c",
   revision: 0,
   title: "YouTube摘要",
   iconUrl:
@@ -1365,14 +1381,14 @@ const CMD_YOUTUBE_SUMMARY_ZH = {
   aiPromptOption: {
     serviceId: "gemini",
     prompt: "请用中文总结以下YouTube视频的内容。\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_KO = {
-  id: "9d5e2285-f85c-525f-b0f2-ff6b250d0c66",
+  id: "07a072a4-c1f0-5e5a-9259-2a8467f52388",
   revision: 0,
   title: "YouTube 요약",
   iconUrl:
@@ -1381,14 +1397,14 @@ const CMD_YOUTUBE_SUMMARY_KO = {
   aiPromptOption: {
     serviceId: "gemini",
     prompt: "다음 YouTube 동영상의 내용을 한국어로 요약해 주세요.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_RU = {
-  id: "e0f2cd1a-d783-5a8a-8f73-1593a270b201",
+  id: "9f67ba1e-a8b0-5271-89a4-501a3d20bd08",
   revision: 0,
   title: "Краткое содержание YouTube",
   iconUrl:
@@ -1398,14 +1414,14 @@ const CMD_YOUTUBE_SUMMARY_RU = {
     serviceId: "gemini",
     prompt:
       "Пожалуйста, кратко изложите содержание следующего видео на YouTube на русском языке.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_DE = {
-  id: "340d9418-6e4b-5924-aa5c-c464bdfe0f00",
+  id: "075aaa5d-fb7c-5d41-b252-0be55dda3462",
   revision: 0,
   title: "YouTube-Zusammenfassung",
   iconUrl:
@@ -1415,14 +1431,14 @@ const CMD_YOUTUBE_SUMMARY_DE = {
     serviceId: "gemini",
     prompt:
       "Bitte fasse den Inhalt des folgenden YouTube-Videos auf Deutsch zusammen.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_FR = {
-  id: "aced5600-b0f5-5cdf-a6e8-22dd0990933b",
+  id: "8aa29111-e8f0-5374-8e6d-b2e410dfdca8",
   revision: 0,
   title: "Résumé YouTube",
   iconUrl:
@@ -1432,14 +1448,14 @@ const CMD_YOUTUBE_SUMMARY_FR = {
     serviceId: "gemini",
     prompt:
       "Veuillez résumer le contenu de la vidéo YouTube suivante en français.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_ES = {
-  id: "fe8d2de7-d5cf-5401-9a84-8f7b94fe0dc7",
+  id: "e1edae1f-e78c-5052-adfd-c39863ea613c",
   revision: 0,
   title: "Resumen de YouTube",
   iconUrl:
@@ -1449,14 +1465,14 @@ const CMD_YOUTUBE_SUMMARY_ES = {
     serviceId: "gemini",
     prompt:
       "Por favor, resume el contenido del siguiente video de YouTube en español.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_PT = {
-  id: "508dcbd2-4d9d-5b76-99b7-3c8f22c669e8",
+  id: "2e21b51f-86a0-51ed-9231-116adb093b46",
   revision: 0,
   title: "Resumo do YouTube",
   iconUrl:
@@ -1466,14 +1482,14 @@ const CMD_YOUTUBE_SUMMARY_PT = {
     serviceId: "gemini",
     prompt:
       "Por favor, resuma o conteúdo do seguinte vídeo do YouTube em português.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_HI = {
-  id: "eb15fea0-5bfe-5a79-b87d-527debadd2c8",
+  id: "1497d212-d290-5a11-9913-e15d9e68df7d",
   revision: 0,
   title: "YouTube सारांश",
   iconUrl:
@@ -1483,14 +1499,14 @@ const CMD_YOUTUBE_SUMMARY_HI = {
     serviceId: "gemini",
     prompt:
       "कृपया निम्नलिखित YouTube वीडियो की सामग्री को हिंदी में सारांशित करें।\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_ID = {
-  id: "c45929d2-3a91-5dcc-84b2-a0fe51ec5ff9",
+  id: "89a86b00-c71c-5505-9b95-a50723090a34",
   revision: 0,
   title: "Ringkasan YouTube",
   iconUrl:
@@ -1500,14 +1516,14 @@ const CMD_YOUTUBE_SUMMARY_ID = {
     serviceId: "gemini",
     prompt:
       "Tolong ringkas konten video YouTube berikut dalam bahasa Indonesia.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_MS = {
-  id: "fa412165-8dfc-5f79-b5d8-6ce5b3a4c5f8",
+  id: "6cd49bd1-0d99-5bb9-9af5-93ceddbdc7e7",
   revision: 0,
   title: "Ringkasan YouTube",
   iconUrl:
@@ -1517,14 +1533,14 @@ const CMD_YOUTUBE_SUMMARY_MS = {
     serviceId: "gemini",
     prompt:
       "Sila ringkaskan kandungan video YouTube berikut dalam Bahasa Melayu.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_YOUTUBE_SUMMARY_IT = {
-  id: "f89c080f-0ed5-5f12-a555-e94e0bf7572f",
+  id: "9b53d9b0-6515-512c-a3a3-4ec03b4e25c8",
   revision: 0,
   title: "Riepilogo YouTube",
   iconUrl:
@@ -1534,16 +1550,16 @@ const CMD_YOUTUBE_SUMMARY_IT = {
     serviceId: "gemini",
     prompt:
       "Si prega di riassumere il contenuto del seguente video di YouTube in italiano.\n{{Url}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 // ---- AI Prompt: Translation commands ----
 
 const CMD_TRANSLATE_JA = {
-  id: "c6dd7dcc-b342-517e-aed0-36a74fd007a2",
+  id: "a8d027bf-7926-56c4-ad4d-610ef10c22b3",
   revision: 0,
   title: "選択テキストの相互翻訳",
   iconUrl:
@@ -1553,14 +1569,14 @@ const CMD_TRANSLATE_JA = {
     serviceId: "gemini",
     prompt:
       "以下のテキストを日本語と英語の間で翻訳してください。\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_ZH = {
-  id: "c6f1cfe2-b982-5941-b62e-743b859c0cea",
+  id: "e58f08e6-930d-5bff-a8d4-fd5247b30e57",
   revision: 0,
   title: "文本互译",
   iconUrl:
@@ -1569,14 +1585,14 @@ const CMD_TRANSLATE_ZH = {
   aiPromptOption: {
     serviceId: "gemini",
     prompt: "请将以下文本在中英文之间进行互译。\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_KO = {
-  id: "ec4abe19-5ba3-569c-8df1-3735fbd2f086",
+  id: "96648587-9316-51d0-99cc-57344f83832c",
   revision: 0,
   title: "텍스트 번역",
   iconUrl:
@@ -1586,14 +1602,14 @@ const CMD_TRANSLATE_KO = {
     serviceId: "gemini",
     prompt:
       "다음 텍스트를 한국어와 영어 사이에서 번역해 주세요.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_RU = {
-  id: "5973d8a1-3634-5e4e-8979-2c684efa3baf",
+  id: "73e7dfc0-6aa1-5102-9a00-bfcc612a8fdc",
   revision: 0,
   title: "Перевод текста",
   iconUrl:
@@ -1603,14 +1619,14 @@ const CMD_TRANSLATE_RU = {
     serviceId: "gemini",
     prompt:
       "Пожалуйста, переведите следующий текст между русским и английским языками.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_DE = {
-  id: "cd834add-0189-5ee1-88d0-48e4968439c9",
+  id: "247a65b1-7b38-5489-b6b2-27530a4d0e5b",
   revision: 0,
   title: "Textübersetzung",
   iconUrl:
@@ -1620,14 +1636,14 @@ const CMD_TRANSLATE_DE = {
     serviceId: "gemini",
     prompt:
       "Bitte übersetze den folgenden Text zwischen Deutsch und Englisch.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_FR = {
-  id: "75162ab2-5868-590c-bf75-d91a492352fc",
+  id: "bd1c80ea-2362-5140-a93b-c2020012a61c",
   revision: 0,
   title: "Traduction de texte",
   iconUrl:
@@ -1637,14 +1653,14 @@ const CMD_TRANSLATE_FR = {
     serviceId: "gemini",
     prompt:
       "Veuillez traduire le texte suivant entre le français et l'anglais.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_ES = {
-  id: "141e9098-a8d0-5d8f-8e76-9da22e43af31",
+  id: "484fdcfc-5a74-51aa-8e84-885226911983",
   revision: 0,
   title: "Traducción de texto",
   iconUrl:
@@ -1654,14 +1670,14 @@ const CMD_TRANSLATE_ES = {
     serviceId: "gemini",
     prompt:
       "Por favor, traduce el siguiente texto entre español e inglés.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_PT = {
-  id: "99b00ce3-8856-58a8-9892-86193280f9ca",
+  id: "a470aca5-81bd-5c3b-bb66-a763d5d1030a",
   revision: 0,
   title: "Tradução de texto",
   iconUrl:
@@ -1671,14 +1687,14 @@ const CMD_TRANSLATE_PT = {
     serviceId: "gemini",
     prompt:
       "Por favor, traduza o seguinte texto entre português e inglês.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_HI = {
-  id: "27dfe2d4-0645-5e67-b3d3-075b00fba514",
+  id: "08f5b563-871b-57f7-9e2c-e7b86a99f0ec",
   revision: 0,
   title: "पाठ अनुवाद",
   iconUrl:
@@ -1688,14 +1704,14 @@ const CMD_TRANSLATE_HI = {
     serviceId: "gemini",
     prompt:
       "कृपया निम्नलिखित पाठ को हिंदी और अंग्रेजी के बीच अनुवाद करें।\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_ID = {
-  id: "ff811237-adce-55be-b7d8-76ae00f2ffe4",
+  id: "981877d3-8d5c-5a0c-9f9d-d2308ab4b11e",
   revision: 0,
   title: "Terjemahan teks",
   iconUrl:
@@ -1705,14 +1721,14 @@ const CMD_TRANSLATE_ID = {
     serviceId: "gemini",
     prompt:
       "Tolong terjemahkan teks berikut antara bahasa Indonesia dan bahasa Inggris.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_MS = {
-  id: "55978ac1-2bfc-5b06-8a95-73055b534dc5",
+  id: "d5ad304a-41f2-5afd-b46d-7662a81fc194",
   revision: 0,
   title: "Terjemahan teks",
   iconUrl:
@@ -1722,14 +1738,14 @@ const CMD_TRANSLATE_MS = {
     serviceId: "gemini",
     prompt:
       "Sila terjemahkan teks berikut antara Bahasa Melayu dan Bahasa Inggeris.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
 const CMD_TRANSLATE_IT = {
-  id: "42840fa4-17e8-5b02-8319-c5f081179a93",
+  id: "cea27aac-3a5b-5010-9dcc-335d13f65958",
   revision: 0,
   title: "Traduzione testo",
   iconUrl:
@@ -1739,9 +1755,9 @@ const CMD_TRANSLATE_IT = {
     serviceId: "gemini",
     prompt:
       "Si prega di tradurre il seguente testo tra italiano e inglese.\n{{SelectedText}}",
-    openMode: OPEN_MODE.POPUP,
+    openMode: OPEN_MODE.SIDE_PANEL,
   },
-  parentFolderId: FOLDER_ACTION,
+  parentFolderId: FOLDER_AI,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
 }
 
@@ -1761,12 +1777,13 @@ export const LOCALE_COMMANDS = {
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_JP,
     CMD_YAHOO_JAPAN,
+    CMD_YOUTUBE,
+    CMD_NETFLIX,
     CMD_GEMINI_JA,
+    CMD_CHARACTER_COUNTER,
     CMD_PAGE_SUMMARY_JA,
     CMD_YOUTUBE_SUMMARY_JA,
     CMD_TRANSLATE_JA,
-    CMD_YOUTUBE,
-    CMD_NETFLIX,
     CMD_DRIVE,
     CMD_EN_TO_JA,
   ],
@@ -1783,6 +1800,7 @@ export const LOCALE_COMMANDS = {
     CMD_BILIBILI,
     CMD_DRIVE,
     CMD_ZHIHU,
+    CMD_CHARACTER_COUNTER,
   ],
   ko: [
     CMD_LINK_PREVIEW,
@@ -1797,6 +1815,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   ru: [
     CMD_LINK_PREVIEW,
@@ -1812,6 +1831,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_VK,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   de: [
     CMD_LINK_PREVIEW,
@@ -1826,6 +1846,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   fr: [
     CMD_LINK_PREVIEW,
@@ -1840,6 +1861,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   es: [
     CMD_LINK_PREVIEW,
@@ -1856,6 +1878,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   "pt-br": [
     CMD_LINK_PREVIEW,
@@ -1870,6 +1893,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   pt: [
     CMD_LINK_PREVIEW,
@@ -1884,6 +1908,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   hi: [
     CMD_LINK_PREVIEW,
@@ -1898,6 +1923,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   id: [
     CMD_LINK_PREVIEW,
@@ -1912,6 +1938,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   ms: [
     CMD_LINK_PREVIEW,
@@ -1926,6 +1953,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
   it: [
     CMD_LINK_PREVIEW,
@@ -1941,6 +1969,7 @@ export const LOCALE_COMMANDS = {
     CMD_YOUTUBE,
     CMD_NETFLIX,
     CMD_DRIVE,
+    CMD_CHARACTER_COUNTER,
   ],
 } as Record<string, Command[]>
 
