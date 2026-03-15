@@ -2,6 +2,7 @@ import { SelectorType } from "@/const"
 import { HUB_URL } from "@/const"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { Caches } from "@/types"
+import aiServicesJson from "../../../hub/public/data/ai-services.json"
 
 /**
  * Defines selectors and configuration for a supported AI service.
@@ -18,69 +19,6 @@ export type AiService = {
 
 /** External endpoint URL for AI service config data. */
 const AI_SERVICES_URL = `${HUB_URL}/data/ai-services.json`
-
-/**
- * List of supported AI services with their DOM selectors.
- * Used as fallback when the external fetch fails and no cache is available.
- * Selector arrays are tried in order, using the first one that matches.
- */
-const AI_SERVICES_FALLBACK: AiService[] = [
-  {
-    id: "chatgpt",
-    name: "ChatGPT",
-    url: "https://chatgpt.com",
-    faviconUrl: "https://chatgpt.com/favicon.ico",
-    inputSelectors: ["#prompt-textarea", "[data-testid='prompt-textarea']"],
-    submitSelectors: [
-      "form button.composer-submit-button-color",
-      "button#composer-submit-button",
-      "button[data-testid='composer-speech-button']",
-    ],
-    selectorType: SelectorType.css,
-  },
-  {
-    id: "gemini",
-    name: "Gemini",
-    url: "https://gemini.google.com/app",
-    faviconUrl:
-      "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
-    inputSelectors: [".ql-editor[contenteditable='true']"],
-    submitSelectors: ["button.send-button", "button mat-icon[fonticon='send']"],
-    selectorType: SelectorType.css,
-  },
-  {
-    id: "claude",
-    name: "Claude",
-    url: "https://claude.ai/new",
-    faviconUrl: "https://claude.ai/favicon.ico",
-    inputSelectors: [
-      "div[contenteditable='true'][aria-label]",
-      "div[contenteditable='true'].ProseMirror",
-    ],
-    submitSelectors: [
-      "#main-content button.Button_claude__c_hZy",
-      "#main-content button[data-state='closed']",
-    ],
-    selectorType: SelectorType.css,
-  },
-  {
-    id: "perplexity",
-    name: "Perplexity",
-    url: "https://www.perplexity.ai",
-    faviconUrl: "https://favicon.im/perplexity.ai",
-    inputSelectors: [
-      "div#ask-input",
-      "div[contenteditable='true'][role='textbox']",
-    ],
-    submitSelectors: [
-      "button[type='button']:has(use[*|href='#pplx-icon-custom-perplexity-v2v'])",
-      "button[type='button']:has(use[*|href='#pplx-icon-arrow-up'])",
-      "button[type='button']:has(use[*|href^='#pplx-icon-arrow-right'])",
-      "button[aria-label='Submit']",
-    ],
-    selectorType: SelectorType.css,
-  },
-]
 
 /** Today's date string "YYYY-MM-DD" used as cache TTL key. */
 const todayStr = (): string => new Date().toISOString().slice(0, 10)
@@ -117,6 +55,14 @@ const normalizeServices = (raw: unknown[]): AiService[] => {
   }
   return results
 }
+
+/**
+ * List of supported AI services with their DOM selectors.
+ * Built from the hub's ai-services.json at compile time.
+ * Used as fallback when the external fetch fails and no cache is available.
+ * Selector arrays are tried in order, using the first one that matches.
+ */
+const AI_SERVICES_FALLBACK: AiService[] = normalizeServices(aiServicesJson)
 
 /**
  * Retrieve AI service definitions.
