@@ -1,6 +1,27 @@
 import { describe, it, expect } from "vitest"
 import { DefaultCommands, getDefaultCommands } from "./defaultSettings"
 import { isLinkCommand } from "@/lib/utils"
+import { INSERT, InsertSymbol } from "@/services/pageAction"
+
+const SYM_SELECTED_TEXT = `{{${InsertSymbol[INSERT.SELECTED_TEXT]}}}`
+const SYM_URL = `{{${InsertSymbol[INSERT.URL]}}}`
+
+const ALL_LOCALES = [
+  "ja",
+  "zh-CN",
+  "ko",
+  "ru",
+  "de",
+  "fr",
+  "es",
+  "pt-BR",
+  "pt",
+  "hi",
+  "id",
+  "ms",
+  "it",
+  "en",
+]
 
 describe("getDefaultCommands", () => {
   it("DS-01: should return DefaultCommands for English locale", () => {
@@ -15,127 +36,93 @@ describe("getDefaultCommands", () => {
     expect(getDefaultCommands("xx")).toEqual(DefaultCommands)
   })
 
-  it("DS-03: should return Japanese commands for ja locale", () => {
-    const commands = getDefaultCommands("ja")
-    expect(commands).not.toEqual(DefaultCommands)
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("Yahoo! Japan")
-    // Should include Amazon.co.jp
-    const amazonCmd = commands.find((c) => c.title === "Amazon")
-    expect(amazonCmd).toBeDefined()
-    expect((amazonCmd as any).searchUrl).toContain("amazon.co.jp")
-    // Should include Japanese Gemini
-    expect(titles.some((t) => t.includes("日本語"))).toBe(true)
-  })
+  const localeExpectations: Array<{
+    id: string
+    locale: string
+    expectedTitles: string[]
+    amazonDomain?: string
+    geminiTitlePart?: string
+  }> = [
+    {
+      id: "DS-03",
+      locale: "ja",
+      expectedTitles: ["Yahoo! Japan"],
+      amazonDomain: "amazon.co.jp",
+      geminiTitlePart: "日本語",
+    },
+    { id: "DS-04", locale: "zh-CN", expectedTitles: ["百度", "哔哩哔哩"] },
+    { id: "DS-05", locale: "ko", expectedTitles: ["네이버", "쿠팡"] },
+    {
+      id: "DS-06",
+      locale: "ru",
+      expectedTitles: ["Яндекс", "Ozon", "Wildberries"],
+    },
+    {
+      id: "DS-07",
+      locale: "de",
+      expectedTitles: ["eBay"],
+      amazonDomain: "amazon.de",
+    },
+    {
+      id: "DS-08",
+      locale: "fr",
+      expectedTitles: ["leboncoin"],
+      amazonDomain: "amazon.fr",
+    },
+    {
+      id: "DS-09",
+      locale: "es",
+      expectedTitles: ["eBay", "El Corte Inglés", "AliExpress"],
+      amazonDomain: "amazon.es",
+    },
+    {
+      id: "DS-10",
+      locale: "pt-BR",
+      expectedTitles: ["Mercado Livre"],
+      amazonDomain: "amazon.com.br",
+    },
+    { id: "DS-11", locale: "pt", expectedTitles: ["OLX"] },
+    {
+      id: "DS-12",
+      locale: "hi",
+      expectedTitles: ["Flipkart"],
+      amazonDomain: "amazon.in",
+    },
+    { id: "DS-13", locale: "id", expectedTitles: ["Tokopedia", "Shopee"] },
+    { id: "DS-14", locale: "ms", expectedTitles: ["Lazada", "Shopee"] },
+    {
+      id: "DS-15",
+      locale: "it",
+      expectedTitles: [],
+      amazonDomain: "amazon.it",
+    },
+  ]
 
-  it("DS-04: should return Chinese commands for zh locale", () => {
-    const commands = getDefaultCommands("zh-CN")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("百度")
-    expect(titles).toContain("哔哩哔哩")
-  })
+  it.each(localeExpectations)(
+    "$id: $locale locale should include expected commands",
+    ({ locale, expectedTitles, amazonDomain, geminiTitlePart }) => {
+      const commands = getDefaultCommands(locale)
+      expect(commands).not.toEqual(DefaultCommands)
+      const titles = commands.map((c) => c.title)
 
-  it("DS-05: should return Korean commands for ko locale", () => {
-    const commands = getDefaultCommands("ko")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("네이버")
-    expect(titles).toContain("쿠팡")
-  })
+      for (const title of expectedTitles) {
+        expect(titles).toContain(title)
+      }
 
-  it("DS-06: should return Russian commands for ru locale", () => {
-    const commands = getDefaultCommands("ru")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("Яндекс")
-    expect(titles).toContain("Ozon")
-    expect(titles).toContain("Wildberries")
-  })
+      if (amazonDomain) {
+        const amazonCmd = commands.find((c) => c.title === "Amazon")
+        expect(amazonCmd).toBeDefined()
+        expect((amazonCmd as any).searchUrl).toContain(amazonDomain)
+      }
 
-  it("DS-07: should return German commands for de locale", () => {
-    const commands = getDefaultCommands("de")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("eBay")
-    const amazonCmd = commands.find((c) => c.title === "Amazon")
-    expect((amazonCmd as any).searchUrl).toContain("amazon.de")
-  })
-
-  it("DS-08: should return French commands for fr locale", () => {
-    const commands = getDefaultCommands("fr")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("leboncoin")
-    const amazonCmd = commands.find((c) => c.title === "Amazon")
-    expect((amazonCmd as any).searchUrl).toContain("amazon.fr")
-  })
-
-  it("DS-09: should return Spanish commands for es locale", () => {
-    const commands = getDefaultCommands("es")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("eBay")
-    expect(titles).toContain("El Corte Inglés")
-    expect(titles).toContain("AliExpress")
-    const amazonCmd = commands.find((c) => c.title === "Amazon")
-    expect((amazonCmd as any).searchUrl).toContain("amazon.es")
-  })
-
-  it("DS-10: should return Brazilian Portuguese commands for pt-BR locale", () => {
-    const commands = getDefaultCommands("pt-BR")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("Mercado Livre")
-    const amazonCmd = commands.find((c) => c.title === "Amazon")
-    expect((amazonCmd as any).searchUrl).toContain("amazon.com.br")
-  })
-
-  it("DS-11: should return Portuguese commands for pt locale", () => {
-    const commands = getDefaultCommands("pt")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("OLX")
-  })
-
-  it("DS-12: should return Hindi/India commands for hi locale", () => {
-    const commands = getDefaultCommands("hi")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("Flipkart")
-    const amazonCmd = commands.find((c) => c.title === "Amazon")
-    expect((amazonCmd as any).searchUrl).toContain("amazon.in")
-  })
-
-  it("DS-13: should return Indonesian commands for id locale", () => {
-    const commands = getDefaultCommands("id")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("Tokopedia")
-    expect(titles).toContain("Shopee")
-  })
-
-  it("DS-14: should return Malay commands for ms locale", () => {
-    const commands = getDefaultCommands("ms")
-    const titles = commands.map((c) => c.title)
-    expect(titles).toContain("Lazada")
-    expect(titles).toContain("Shopee")
-  })
-
-  it("DS-15: should return Italian commands for it locale", () => {
-    const commands = getDefaultCommands("it")
-    const amazonCmd = commands.find((c) => c.title === "Amazon")
-    expect((amazonCmd as any).searchUrl).toContain("amazon.it")
-  })
+      if (geminiTitlePart) {
+        expect(titles.some((t) => t.includes(geminiTitlePart))).toBe(true)
+      }
+    },
+  )
 
   it("DS-16: all locale command sets should include a link preview command", () => {
-    const locales = [
-      "ja",
-      "zh-CN",
-      "ko",
-      "ru",
-      "de",
-      "fr",
-      "es",
-      "pt-BR",
-      "pt",
-      "hi",
-      "id",
-      "ms",
-      "it",
-      "en",
-    ]
-    for (const locale of locales) {
+    for (const locale of ALL_LOCALES) {
       const commands = getDefaultCommands(locale)
       const linkCmd = commands.find(isLinkCommand)
       expect(
@@ -146,21 +133,7 @@ describe("getDefaultCommands", () => {
   })
 
   it("DS-17: all locale command sets should include Google", () => {
-    const locales = [
-      "ja",
-      "ko",
-      "ru",
-      "de",
-      "fr",
-      "es",
-      "pt-BR",
-      "pt",
-      "hi",
-      "id",
-      "ms",
-      "it",
-      "en",
-    ]
+    const locales = ALL_LOCALES.filter((l) => l !== "zh-CN")
     for (const locale of locales) {
       const commands = getDefaultCommands(locale)
       const googleCmd = commands.find((c) => c.title === "Google")
@@ -175,23 +148,7 @@ describe("getDefaultCommands", () => {
   })
 
   it("DS-19: all command IDs should be unique within each locale set", () => {
-    const locales = [
-      "ja",
-      "zh-CN",
-      "ko",
-      "ru",
-      "de",
-      "fr",
-      "es",
-      "pt-BR",
-      "pt",
-      "hi",
-      "id",
-      "ms",
-      "it",
-      "en",
-    ]
-    for (const locale of locales) {
+    for (const locale of ALL_LOCALES) {
       const commands = getDefaultCommands(locale)
       const ids = commands.map((c) => c.id)
       const uniqueIds = new Set(ids)
@@ -202,20 +159,7 @@ describe("getDefaultCommands", () => {
   })
 
   it("DS-20: locale Gemini commands should use AI_PROMPT open mode", () => {
-    const locales = [
-      "ja",
-      "zh-CN",
-      "ko",
-      "ru",
-      "de",
-      "fr",
-      "es",
-      "pt-BR",
-      "hi",
-      "id",
-      "ms",
-      "it",
-    ]
+    const locales = ALL_LOCALES.filter((l) => l !== "en" && l !== "pt")
     for (const locale of locales) {
       const commands = getDefaultCommands(locale)
       const geminiCmds = commands.filter((c) => c.title.startsWith("Gemini"))
@@ -230,30 +174,14 @@ describe("getDefaultCommands", () => {
         ).toBe("aiPrompt")
         expect((cmd as any).aiPromptOption).toBeDefined()
         expect((cmd as any).aiPromptOption.serviceId).toBe("gemini")
-        expect((cmd as any).aiPromptOption.prompt).toContain("{{SelectedText}}")
+        expect((cmd as any).aiPromptOption.prompt).toContain(SYM_SELECTED_TEXT)
         expect((cmd as any).pageActionOption).toBeUndefined()
       }
     }
   })
 
   it("DS-21: all locale command sets should include page summary, YouTube summary and translation AI prompt commands", () => {
-    const locales = [
-      "ja",
-      "zh-CN",
-      "ko",
-      "ru",
-      "de",
-      "fr",
-      "es",
-      "pt-BR",
-      "pt",
-      "hi",
-      "id",
-      "ms",
-      "it",
-      "en",
-    ]
-    for (const locale of locales) {
+    for (const locale of ALL_LOCALES) {
       const commands = getDefaultCommands(locale)
       const aiPromptCmds = commands.filter(
         (c) => (c as any).openMode === "aiPrompt",
@@ -265,29 +193,32 @@ describe("getDefaultCommands", () => {
         `Locale ${locale} should have at least 4 AI prompt commands`,
       ).toBeGreaterThanOrEqual(4)
       // Page summary: uses {{Url}} in prompt
-      const pageSummaryCmd = aiPromptCmds.find((c) =>
-        (c as any).aiPromptOption.prompt.includes("{{Url}}") &&
-        !(c as any).aiPromptOption.prompt.toLowerCase().includes("youtube"),
+      const pageSummaryCmd = aiPromptCmds.find(
+        (c) =>
+          (c as any).aiPromptOption.prompt.includes(SYM_URL) &&
+          !(c as any).aiPromptOption.prompt.toLowerCase().includes("youtube"),
       )
       expect(
         pageSummaryCmd,
         `Missing page summary command for locale: ${locale}`,
       ).toBeDefined()
       // YouTube summary: uses {{Url}} and mentions YouTube in prompt
-      const youtubeSummaryCmd = aiPromptCmds.find((c) =>
-        (c as any).aiPromptOption.prompt.includes("{{Url}}") &&
-        (c as any).aiPromptOption.prompt.toLowerCase().includes("youtube"),
+      const youtubeSummaryCmd = aiPromptCmds.find(
+        (c) =>
+          (c as any).aiPromptOption.prompt.includes(SYM_URL) &&
+          (c as any).aiPromptOption.prompt.toLowerCase().includes("youtube"),
       )
       expect(
         youtubeSummaryCmd,
         `Missing YouTube summary command for locale: ${locale}`,
       ).toBeDefined()
       // Translation: uses {{SelectedText}} in prompt, and refers to translation
-      const translationCmd = aiPromptCmds.find((c) =>
-        (c as any).aiPromptOption.prompt.includes("{{SelectedText}}") &&
-        (c as any).aiPromptOption.prompt.match(
-          /translat|翻[訳译]|互译|번역|перевод|переве|übersetz|tradu|terjemah|अनुवाद/i,
-        ),
+      const translationCmd = aiPromptCmds.find(
+        (c) =>
+          (c as any).aiPromptOption.prompt.includes(SYM_SELECTED_TEXT) &&
+          (c as any).aiPromptOption.prompt.match(
+            /translat|翻[訳译]|互译|번역|перевод|переве|übersetz|tradu|terjemah|अनुवाद/i,
+          ),
       )
       expect(
         translationCmd,
@@ -297,29 +228,13 @@ describe("getDefaultCommands", () => {
   })
 
   it("DS-22: page summary and YouTube summary commands should use {{Url}} not {{SelectedText}}", () => {
-    const locales = [
-      "ja",
-      "zh-CN",
-      "ko",
-      "ru",
-      "de",
-      "fr",
-      "es",
-      "pt-BR",
-      "pt",
-      "hi",
-      "id",
-      "ms",
-      "it",
-      "en",
-    ]
-    for (const locale of locales) {
+    for (const locale of ALL_LOCALES) {
       const commands = getDefaultCommands(locale)
       const aiPromptCmds = commands.filter(
         (c) => (c as any).openMode === "aiPrompt",
       )
       const urlBasedCmds = aiPromptCmds.filter((c) =>
-        (c as any).aiPromptOption.prompt.includes("{{Url}}"),
+        (c as any).aiPromptOption.prompt.includes(SYM_URL),
       )
       expect(
         urlBasedCmds.length,
@@ -329,7 +244,7 @@ describe("getDefaultCommands", () => {
         expect(
           (cmd as any).aiPromptOption.prompt,
           `URL-based AI prompt in ${locale} should not contain {{SelectedText}}`,
-        ).not.toContain("{{SelectedText}}")
+        ).not.toContain(SYM_SELECTED_TEXT)
       }
     }
   })
