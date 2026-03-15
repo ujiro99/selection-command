@@ -60,7 +60,7 @@ const getActiveTabId = (
   return true
 }
 
-const onConnect = async function (port: chrome.runtime.Port) {
+const onConnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -73,7 +73,7 @@ const onConnect = async function (port: chrome.runtime.Port) {
     await PageActionBackground.handleSidePanelConnect(port)
   }
 }
-const onDisconnect = async function (port: chrome.runtime.Port) {
+const onDisconnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -170,24 +170,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-          id: params.id,
-          title: params.title,
-          searchUrl: params.searchUrl,
-          iconUrl: params.iconUrl,
-          openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
-          popupOption: PopupOption,
-        }
+        id: params.id,
+        title: params.title,
+        searchUrl: params.searchUrl,
+        iconUrl: params.iconUrl,
+        openMode: params.openMode,
+        openModeSecondary: params.openModeSecondary,
+        spaceEncoding: params.spaceEncoding,
+        popupOption: PopupOption,
+      }
       : isPageAction
         ? {
-            id: params.id,
-            title: params.title,
-            iconUrl: params.iconUrl,
-            openMode: params.openMode,
-            pageActionOption: params.pageActionOption,
-            popupOption: PopupOption,
-          }
+          id: params.id,
+          title: params.title,
+          iconUrl: params.iconUrl,
+          openMode: params.openMode,
+          pageActionOption: params.pageActionOption,
+          popupOption: PopupOption,
+        }
         : null
 
     if (!cmd) {
@@ -229,6 +229,7 @@ const commandFuncs = {
   ) => {
     const handleOpenInTab = async () => {
       let w: WindowType | undefined
+      const targetUrl = sender.tab?.url ?? sender.url
 
       const stack = await WindowStackManager.getStack()
       for (const layer of stack) {
@@ -241,7 +242,7 @@ const commandFuncs = {
       }
       if (!w || w.srcWindowId == null) {
         console.warn("window not found", sender.tab?.windowId)
-        chrome.tabs.create({ url: sender.url })
+        chrome.tabs.create({ url: targetUrl })
         await closeWindow(sender.tab?.windowId as number, "openInTab")
         await WindowStackManager.removeWindow(sender.tab?.windowId as number)
         response(true)
@@ -261,10 +262,7 @@ const commandFuncs = {
       }
 
       if (targetId) {
-        chrome.tabs.create({
-          url: sender.url,
-          windowId: targetId,
-        })
+        chrome.tabs.create({ url: targetUrl, windowId: targetId })
         await closeWindow(sender.tab?.windowId as number, "openInTab")
         await WindowStackManager.removeWindow(sender.tab?.windowId as number)
         response(true)
@@ -547,17 +545,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-// Initialize commandIdObj and register listener at top-level
-// to ensure they are available when service worker restarts
-;(async () => {
-  try {
-    await ContextMenu.syncCommandIdObj()
-    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-  } catch (error) {
-    // Ignore errors during initialization (e.g., in test environment)
-    console.debug("Failed to initialize context menu listener:", error)
-  }
-})()
+  // Initialize commandIdObj and register listener at top-level
+  // to ensure they are available when service worker restarts
+  ; (async () => {
+    try {
+      await ContextMenu.syncCommandIdObj()
+      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+    } catch (error) {
+      // Ignore errors during initialization (e.g., in test environment)
+      console.debug("Failed to initialize context menu listener:", error)
+    }
+  })()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
