@@ -222,15 +222,33 @@ export const BackgroundPageActionDispatcher = {
           const changeEvent = new Event("change", { bubbles: true })
           element.dispatchEvent(inputEvent)
           element.dispatchEvent(changeEvent)
-        } else if (element.isContentEditable) {
-          let legacyMode = false
-          if (location.href.includes("perplexity.ai")) {
-            // Legacy mode specifically for Perplexity.ai's contenteditable field.
-            // This is because it has some special handling that breaks the usual input simulation.
-            legacyMode = true
-            await inputContentEditable(element, "\n", 0, null, legacyMode)
+        } else {
+          // Resolve the target input element: use the matched element if it is
+          // directly contenteditable, otherwise search for a contenteditable
+          // child. This handles sites like ChatGPT where #prompt-textarea may
+          // be a wrapper div containing the actual Lexical editor.
+          // Use [contenteditable] (not [contenteditable="true"]) to also
+          // match elements with empty or inherited contenteditable values,
+          // then verify editability with isEditable().
+          const inputTarget = element.isContentEditable
+            ? element
+            : (() => {
+                const candidate = element.querySelector(
+                  "[contenteditable]",
+                ) as HTMLElement | null
+                return candidate?.isContentEditable ? candidate : null
+              })()
+
+          if (inputTarget) {
+            let legacyMode = false
+            if (location.href.includes("perplexity.ai")) {
+              // Legacy mode specifically for Perplexity.ai's contenteditable field.
+              // This is because it has some special handling that breaks the usual input simulation.
+              legacyMode = true
+              await inputContentEditable(inputTarget, "\n", 0, null, legacyMode)
+            }
+            await inputContentEditable(inputTarget, value, 1, null, legacyMode)
           }
-          await inputContentEditable(element, value, 1, null, legacyMode)
         }
       }
     } else {

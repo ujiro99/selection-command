@@ -270,21 +270,40 @@ export const PageActionDispatcher = {
           return [true]
         }
 
-        if (!isEditable(element)) {
-          value = value.replace(/{/g, "{{") // escape
-          // Ensure focus before typing, since preceding click may have been
-          // removed by recording optimization in background.ts.
-          element.focus()
-          await user.type(element, value, { skipClick: true })
+        // Resolve the target input element: use the matched element if it is
+        // directly contenteditable, otherwise search for a contenteditable
+        // child. This handles sites like ChatGPT where #prompt-textarea may
+        // be a wrapper div containing the actual Lexical editor.
+        let inputTarget: HTMLElement | null = null
+        if (isEditable(element)) {
+          inputTarget = element
         } else {
+          // Use [contenteditable] (not [contenteditable="true"]) to also
+          // match elements with empty or inherited contenteditable values,
+          // then verify editability with isEditable().
+          const candidate = element.querySelector(
+            "[contenteditable]",
+          ) as HTMLElement | null
+          if (candidate && isEditable(candidate)) {
+            inputTarget = candidate
+          }
+        }
+
+        if (inputTarget) {
           let legacyMode = false
           if (location.href.includes("perplexity.ai")) {
             // Legacy mode specifically for Perplexity.ai's contenteditable field.
             // This is because it has some special handling that breaks the usual input simulation.
             legacyMode = true
-            await inputContentEditable(element, "\n", 0, null, legacyMode)
+            await inputContentEditable(inputTarget, "\n", 0, null, legacyMode)
           }
-          await inputContentEditable(element, value, 40, null, legacyMode)
+          await inputContentEditable(inputTarget, value, 40, null, legacyMode)
+        } else {
+          value = value.replace(/{/g, "{{") // escape
+          // Ensure focus before typing, since preceding click may have been
+          // removed by recording optimization in background.ts.
+          element.focus()
+          await user.type(element, value, { skipClick: true })
         }
       }
     } else {

@@ -38,8 +38,13 @@ export async function inputContentEditable(
         if (selection.rangeCount > 0) {
           range = selection.getRangeAt(0)
         } else {
-          // In gemini, rangeCount is 0 initially.
+          // rangeCount is 0 initially (e.g., in Gemini).
+          // Create a range positioned at the end of the element's content so
+          // that insertNode places the text inside the contenteditable instead
+          // of at the document root.
           range = document.createRange()
+          range.selectNodeContents(el)
+          range.collapse(false)
         }
 
         // If nodeAtCaret is provided, set the range to the end of that node
@@ -54,11 +59,22 @@ export async function inputContentEditable(
             range.setEnd(n, nodeAtCaret.textContent?.length || 0)
           }
           nodeAtCaret = undefined // Only use nodeAtCaret for the first insertion
+        } else if (!el.contains(range.commonAncestorContainer)) {
+          // Ensure the range is inside the contenteditable element.
+          // This handles cases where rangeCount is 0 (e.g. Gemini) or the
+          // range is outside the element after programmatic focus.
+          range.selectNodeContents(el)
+          range.collapse(false)
         }
 
         // Insert text node at caret position
         const node = document.createTextNode(val)
         range.insertNode(node)
+
+        // Notify the editor about the inserted text. React-based editors
+        // (e.g. ChatGPT's Lexical editor) rely on this event to reconcile
+        // their internal state with the DOM change.
+        el.dispatchEvent(new Event("input", { bubbles: true, cancelable: true }))
 
         // Move caret to end of inserted text node
         const lastOffset = node.length
@@ -71,9 +87,9 @@ export async function inputContentEditable(
 
     if (idx < values.length - 1) {
       // For all but the last line, simulate Shift+Enter for line break
-      interval > 0 && (await sleep(interval / 2))
+      await sleep(interval / 2)
       await typeShiftEnter(el)
-      interval > 0 && (await sleep(interval / 2))
+      await sleep(interval / 2)
     }
   }
   return true
