@@ -6,8 +6,7 @@
     "faviconUrl": "https://chatgpt.com/favicon.ico",
     "inputSelectors": [
       "#prompt-textarea",
-      "[data-testid='prompt-textarea']",
-      "#main form textarea"
+      "[data-testid='prompt-textarea']"
     ],
     "submitSelectors": [
       "form button.composer-submit-button-color",
