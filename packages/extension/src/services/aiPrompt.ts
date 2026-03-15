@@ -30,11 +30,7 @@ const AI_SERVICES_FALLBACK: AiService[] = [
     name: "ChatGPT",
     url: "https://chatgpt.com",
     faviconUrl: "https://chatgpt.com/favicon.ico",
-    inputSelectors: [
-      "#prompt-textarea",
-      "[data-testid='prompt-textarea']",
-      "#main form textarea",
-    ],
+    inputSelectors: ["#prompt-textarea", "[data-testid='prompt-textarea']"],
     submitSelectors: [
       "form button.composer-submit-button-color",
       "button#composer-submit-button",
@@ -77,7 +73,9 @@ const AI_SERVICES_FALLBACK: AiService[] = [
       "div[contenteditable='true'][role='textbox']",
     ],
     submitSelectors: [
+      "button[type='button']:has(use[*|href='#pplx-icon-custom-perplexity-v2v'])",
       "button[type='button']:has(use[*|href='#pplx-icon-arrow-up'])",
+      "button[type='button']:has(use[*|href^='#pplx-icon-arrow-right'])",
       "button[aria-label='Submit']",
     ],
     selectorType: SelectorType.css,
