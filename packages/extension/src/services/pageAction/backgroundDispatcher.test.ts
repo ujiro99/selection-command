@@ -103,6 +103,26 @@ const mockElements = {
     div.dispatchEvent = vi.fn()
     return div
   })(),
+  wrapperWithContentEditable: (() => {
+    // A non-contenteditable wrapper div containing a contenteditable child,
+    // similar to ChatGPT's #prompt-textarea structure.
+    const wrapper = document.createElement("div")
+    wrapper.dispatchEvent = vi.fn()
+    const inner = document.createElement("div")
+    inner.contentEditable = "true"
+    Object.defineProperty(inner, "isContentEditable", {
+      value: true,
+      writable: true,
+    })
+    inner.innerText = ""
+    inner.dispatchEvent = vi.fn()
+    wrapper.appendChild(inner)
+    wrapper.querySelector = vi.fn().mockImplementation((selector: string) => {
+      if (selector === "[contenteditable]") return inner
+      return null
+    })
+    return { wrapper, inner }
+  })(),
 }
 
 // Mock global objects
@@ -148,6 +168,9 @@ describe("backgroundDispatcher", () => {
     mockElements.textarea.dispatchEvent = vi.fn()
     mockElements.div.dispatchEvent = vi.fn()
     mockElements.contentEditableDiv.dispatchEvent = vi.fn()
+    mockElements.wrapperWithContentEditable.wrapper.dispatchEvent = vi.fn()
+    mockElements.wrapperWithContentEditable.inner.dispatchEvent = vi.fn()
+    mockElements.wrapperWithContentEditable.inner.innerText = ""
   })
 
   afterEach(() => {
@@ -962,6 +985,39 @@ describe("backgroundDispatcher", () => {
       expect(mockInputContentEditable).toHaveBeenCalledWith(
         mockElement,
         "line1\nline2\nline3",
+        1,
+        null,
+        false,
+      )
+    })
+
+    it("BDI-03c: Should input text into contenteditable child of wrapper element", async () => {
+      const { wrapper, inner } = mockElements.wrapperWithContentEditable
+      inner.innerText = ""
+      mockDocument.querySelector.mockReturnValue(wrapper)
+      mockInputContentEditable.mockImplementation(
+        async (element: any, value: string) => {
+          element.innerText = element.innerText + value
+        },
+      )
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: "#prompt-textarea",
+        selectorType: SelectorType.css,
+        label: "Prompt",
+        value: "test text",
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      }
+
+      const result = await BackgroundPageActionDispatcher.input(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockInputContentEditable).toHaveBeenCalledWith(
+        inner,
+        "test text",
         1,
         null,
         false,
