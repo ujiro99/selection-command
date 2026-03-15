@@ -109,8 +109,8 @@ export const COMMAND_TYPE_GROUPS = [
     titleKey: "commandGroup_webPage_title",
     types: [
       COMMAND_TYPE.SEARCH,
-      COMMAND_TYPE.PAGE_ACTION,
       COMMAND_TYPE.AI_PROMPT,
+      COMMAND_TYPE.PAGE_ACTION,
     ],
   },
   {
