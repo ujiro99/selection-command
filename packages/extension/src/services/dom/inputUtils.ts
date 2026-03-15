@@ -77,8 +77,14 @@ export async function inputContentEditable(
     }
   }
 
-  // Dispatch input event to notify frameworks of the text change
-  el.dispatchEvent(new Event("input", { bubbles: true }))
+  // Dispatch InputEvent to notify frameworks of the text change
+  const inputEvent = new InputEvent("input", {
+    inputType: "insertText",
+    data: value,
+    bubbles: true,
+    cancelable: false,
+  })
+  el.dispatchEvent(inputEvent)
 
   return true
 }
