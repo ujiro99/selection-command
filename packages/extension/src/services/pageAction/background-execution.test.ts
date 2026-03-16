@@ -6,6 +6,9 @@ import {
   mockBgData,
   mockOpenTab,
   mockOpenPopupWindow,
+  mockGetCurrentTab,
+  mockReadClipboard,
+  mockMatchesPageActionUrl,
   mockIncrementCommandExecutionCount,
   mockIsEmpty,
   mockIsUrl,
@@ -152,6 +155,214 @@ describe("background.ts - Execution Operations", () => {
       )
     })
 
+    it("BGD-40: Normal case: Execution in current tab with CURRENT_TAB mode", async () => {
+      const mockParam = {
+        openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
+        url: "https://example.com",
+        commandId: "cmd-1",
+        selectedText: "selected",
+        userVariables: [],
+      }
+
+      const mockCommand = {
+        id: "cmd-1",
+        pageActionOption: {
+          steps: [{ id: "step-1", param: { type: "click" } }],
+        },
+      }
+
+      mockGetCurrentTab.mockResolvedValue({
+        id: 555,
+        url: "https://example.com/page",
+      })
+      mockStorage.getCommands.mockResolvedValue([mockCommand])
+
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
+      expect(result).toBe(true)
+
+      await vi.runAllTimersAsync()
+
+      // Should not open a new tab/window
+      expect(mockOpenTab).not.toHaveBeenCalled()
+      expect(mockOpenPopupWindow).not.toHaveBeenCalled()
+      // Should use the current tab's id
+      expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
+      expect(mockIncrementCommandExecutionCount).toHaveBeenCalled()
+    })
+
+    it("BGD-41: Normal case: Execution proceeds when pageUrl pattern matches current tab URL", async () => {
+      const mockParam = {
+        openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
+        url: "https://example.com",
+        commandId: "cmd-1",
+        selectedText: "selected",
+        pageUrl: "https://example.com/*",
+        userVariables: [],
+      }
+
+      const mockCommand = {
+        id: "cmd-1",
+        pageActionOption: {
+          steps: [{ id: "step-1", param: { type: "click" } }],
+        },
+      }
+
+      mockGetCurrentTab.mockResolvedValue({
+        id: 555,
+        url: "https://example.com/page",
+      })
+      mockMatchesPageActionUrl.mockReturnValue(true)
+      mockStorage.getCommands.mockResolvedValue([mockCommand])
+
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
+      expect(result).toBe(true)
+      await vi.runAllTimersAsync()
+
+      expect(mockMatchesPageActionUrl).toHaveBeenCalledWith(
+        "https://example.com/*",
+        "https://example.com/page",
+      )
+      expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
+    })
+
+    it("BGD-42: Error case: response(false) when no active tab found in CURRENT_TAB mode", async () => {
+      const mockParam = {
+        openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
+        url: "https://example.com",
+        commandId: "cmd-1",
+        selectedText: "selected",
+      }
+
+      mockGetCurrentTab.mockResolvedValue(null)
+
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
+      expect(result).toBe(true)
+      await vi.runAllTimersAsync()
+
+      expect(mockConsole.error).toHaveBeenCalledWith("No active tab found")
+      expect(mockResponse).toHaveBeenCalledWith(false)
+    })
+
+    it("BGD-43: Error case: response(false) when current tab URL does not match pageUrl pattern", async () => {
+      const mockParam = {
+        openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
+        url: "https://example.com",
+        commandId: "cmd-1",
+        selectedText: "selected",
+        pageUrl: "https://example.com/*",
+      }
+
+      mockGetCurrentTab.mockResolvedValue({
+        id: 555,
+        url: "https://other.com/page",
+      })
+      mockMatchesPageActionUrl.mockReturnValue(false)
+
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
+      expect(result).toBe(true)
+      await vi.runAllTimersAsync()
+
+      expect(mockConsole.warn).toHaveBeenCalledWith(
+        "Current tab URL does not match the pageUrl pattern",
+        expect.objectContaining({
+          pageUrl: "https://example.com/*",
+          currentUrl: "https://other.com/page",
+        }),
+      )
+      expect(mockResponse).toHaveBeenCalledWith(false)
+      expect(mockOpenTab).not.toHaveBeenCalled()
+    })
+
+    it("BGD-45: Normal case: Clipboard is fetched in CURRENT_TAB mode when useClipboard is true", async () => {
+      const mockParam = {
+        openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
+        url: { url: "https://example.com", useClipboard: true },
+        commandId: "cmd-1",
+        selectedText: "selected",
+        userVariables: [],
+      }
+
+      const mockCommand = {
+        id: "cmd-1",
+        pageActionOption: {
+          steps: [{ id: "step-1", param: { type: "click" } }],
+        },
+      }
+
+      mockGetCurrentTab.mockResolvedValue({
+        id: 555,
+        url: "https://example.com/page",
+      })
+      mockIsUrlParam.mockReturnValue(true)
+      mockReadClipboard.mockResolvedValue({
+        clipboardText: "clipboard content",
+        err: null,
+      })
+      mockStorage.getCommands.mockResolvedValue([mockCommand])
+
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
+      expect(result).toBe(true)
+      await vi.runAllTimersAsync()
+
+      expect(mockReadClipboard).toHaveBeenCalled()
+      expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
+    })
+
+    it("BGD-46: Normal case: Clipboard is NOT fetched in CURRENT_TAB mode when useClipboard is false", async () => {
+      const mockParam = {
+        openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
+        url: { url: "https://example.com", useClipboard: false },
+        commandId: "cmd-1",
+        selectedText: "selected",
+        userVariables: [],
+      }
+
+      const mockCommand = {
+        id: "cmd-1",
+        pageActionOption: {
+          steps: [{ id: "step-1", param: { type: "click" } }],
+        },
+      }
+
+      mockGetCurrentTab.mockResolvedValue({
+        id: 555,
+        url: "https://example.com/page",
+      })
+      mockIsUrlParam.mockReturnValue(true)
+      mockStorage.getCommands.mockResolvedValue([mockCommand])
+
+      const result = openAndRun(
+        mockParam as any,
+        mockSender as any,
+        mockResponse,
+      )
+      expect(result).toBe(true)
+      await vi.runAllTimersAsync()
+
+      expect(mockReadClipboard).not.toHaveBeenCalled()
+      expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
+    })
+
     it("BGD-44: Normal case: Use clipboardText when selectedText is empty and useClipboard is true", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
@@ -200,10 +411,6 @@ describe("background.ts - Execution Operations", () => {
       )
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
-
-    // BGD-48: Skipped - openAndRun() with IPC errors causes unhandled rejections
-
-    // BGD-49: Skipped - openAndRun() with openTab errors causes unhandled rejections
   })
 
   describe("preview() function", () => {

@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (fechar imediatamente)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Ocultar painel lateral automaticamente"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Oculta automaticamente o painel lateral quando o painel principal é clicado enquanto o painel lateral está aberto via um comando."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Ocultar painel lateral automaticamente"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Oculta automaticamente o painel lateral quando o painel principal é clicado durante a exibição da pré-visualização do link."
+  },
   "Option_inherit": {
     "message": "Herdar"
   },
@@ -257,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Atualizado automaticamente quando a URL Inicial é alterada."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Exibido como ícone do menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Preenchimento Automático"
   },
@@ -271,6 +286,12 @@
   },
   "Option_spaceEncoding_percent": {
     "message": "Porcentagem (%20)"
+  },
+  "Option_spaceEncoding_dash": {
+    "message": "Hífen (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Sublinhado (_)"
   },
   "Option_openMode": {
     "message": "Modo de Abertura"
@@ -293,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Painel lateral"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Abrir no painel lateral."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -307,6 +331,12 @@
   },
   "Option_openMode_pageAction": {
     "message": "Ação de Página"
+  },
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt de IA"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Execute um prompt predefinido em um serviço de IA"
   },
   "Option_commandType_title": {
     "message": "Selecionar Tipo de Comando"
@@ -325,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Gravar e reproduzir operações de páginas web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt de IA"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Execute um prompt predefinido em um serviço de IA"
   },
   "Option_commandType_copy_title": {
     "message": "Copiar Texto"
@@ -364,6 +400,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Janela"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Painel lateral"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clique"
@@ -407,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "URL da página onde a ação começa."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Para \"Aba Atual\", somente páginas que correspondam a esta URL podem ser executadas. Você pode usar o curinga \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL da página para iniciar a gravação de ações. Usado apenas na tela de configurações."
+  },
+  "Option_pageUrl": {
+    "message": "URL da página"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Pode ser executado apenas em páginas que correspondam a esta URL. Você pode usar o curinga «*»."
+  },
   "Option_pageAction_title": {
     "message": "Ações"
   },
@@ -424,6 +475,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Tempo de atraso"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Serviço de IA"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Selecione o serviço de IA a ser usado"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Modelo de prompt. Use o menu de inserção para adicionar variáveis (texto selecionado, URL, área de transferência)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Digite seu prompt aqui..."
   },
   "Option_userVariables": {
     "message": "Variáveis do Usuário"
@@ -716,6 +782,9 @@
   "Option_zod_url": {
     "message": "Por favor, insira no formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "O URL da página é obrigatório quando o modo de aba atual é selecionado."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "O texto selecionado será inserido",
     "description": "for INSERT.SELECTED_TEXT"
@@ -977,8 +1046,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir aba em segundo plano.<wbr>Mostrar à direita da aba atual."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Abrir no painel lateral."
+  "Option_openMode_currentTab": {
+    "message": "Aba atual"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Executar na aba ativa atual.<wbr>A URL deve corresponder à URL inicial gravada."
   },
   "Option_title_desc": {
     "message": "Exibido como título do comando."
@@ -1141,5 +1213,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Tela cheia"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Não é possível executar nesta página (URL da página não corresponde)"
   }
 }

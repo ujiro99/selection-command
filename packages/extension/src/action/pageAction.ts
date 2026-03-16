@@ -53,7 +53,7 @@ export const PageAction = {
         ? PAGE_ACTION_OPEN_MODE.WINDOW
         : command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.WINDOW
           ? PAGE_ACTION_OPEN_MODE.TAB
-          : PAGE_ACTION_OPEN_MODE.TAB
+          : PAGE_ACTION_OPEN_MODE.TAB // Open in new tab when secondary is pressed
       : command.pageActionOption.openMode
 
     const windowPosition = await getWindowPosition()
@@ -62,6 +62,7 @@ export const PageAction = {
     Ipc.send<OpenAndRunProps>(BgCommand.openAndRunPageAction, {
       commandId: command.id,
       url,
+      pageUrl: command.pageActionOption.pageUrl,
       steps: command.pageActionOption.steps,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),

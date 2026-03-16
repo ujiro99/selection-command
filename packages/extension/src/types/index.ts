@@ -40,6 +40,7 @@ export type SelectionCommand =
   | CopyCommand
   | ApiCommand
   | PageActionCommand
+  | AiPromptCommand
 
 export type SearchCommand = {
   id: string
@@ -66,6 +67,16 @@ export type ApiCommand = SearchCommand & {
 
 export type PageActionCommand = SearchCommand & {
   pageActionOption: PageActionOption
+}
+
+export type AiPromptOption = {
+  serviceId: string
+  prompt: string
+  openMode: OPEN_MODE
+}
+
+export type AiPromptCommand = SearchCommand & {
+  aiPromptOption: AiPromptOption
 }
 
 export type LinkCommand = Omit<SelectionCommand, "openMode"> & {
@@ -96,6 +107,7 @@ type LinkCommandSettings = {
   openMode: DRAG_OPEN_MODE
   showIndicator: boolean
   startupMethod: LinkCommandStartupMethod
+  sidePanelAutoHide: boolean
 }
 
 export type CommandFolder = {
@@ -210,6 +222,7 @@ export type PageActionStep = {
 
 export type PageActionOption = {
   startUrl: string
+  pageUrl?: string // URL pattern for command enablement (currentTab only)
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
   userVariables?: Array<UserVariable>
@@ -272,8 +285,15 @@ export type ShowToastParam = {
 
 export type Caches = {
   images: ImageCache
+  aiServices?: AiServicesCache
 }
 
 export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
+}
+
+export type AiServicesCache = {
+  /** Fetch date in "YYYY-MM-DD" format for daily TTL */
+  date: string
+  services: import("@/services/aiPrompt").AiService[]
 }

@@ -81,6 +81,20 @@ export type RunPageAction = {
   userVariables?: Array<UserVariable>
 }
 
+/**
+ * Pending page action data for side panel execution.
+ * Stored in session storage so the background can retrieve it when the side
+ * panel content script connects via port (side panels have no tab.id).
+ */
+export type SidePanelPendingAction = {
+  url: string
+  steps: PageActionStep[]
+  selectedText: string
+  srcUrl: string
+  clipboardText: string
+  useClipboard?: boolean
+}
+
 export namespace ExecPageAction {
   export type Message = {
     srcUrl: string
@@ -418,6 +432,33 @@ export const Ipc = {
   },
 
   listeners: {} as { [key: string]: IpcCallback },
+
+  /**
+   * Register a port for bidirectional communication with a side panel.
+   * Routes incoming port messages to the same listeners registered via addListener,
+   * allowing the background script to reach side panel content scripts
+   * (which cannot be reached via chrome.tabs.sendMessage).
+   * @param port - The port established by chrome.runtime.connect
+   */
+  bridgePortToListeners(port: chrome.runtime.Port) {
+    port.onMessage.addListener((msg: Record<string, unknown>) => {
+      const command = msg?.command as string | undefined
+      if (!command) return
+      const callback = Ipc.listeners[command]
+      if (!callback) return
+      callback(
+        msg.param,
+        port.sender ?? ({} as chrome.runtime.MessageSender),
+        (result: unknown) => {
+          try {
+            port.postMessage({ command: "portResponse", id: msg.id, result })
+          } catch (e) {
+            console.error("Failed to send port response:", e)
+          }
+        },
+      )
+    })
+  },
 
   addListener<M = any>(command: IpcCommand, callback: IpcCallback<M>) {
     const listener = (

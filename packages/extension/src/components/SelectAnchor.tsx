@@ -5,7 +5,13 @@ import { useSelectContext } from "@/hooks/useSelectContext"
 import { useLeftClickHold } from "@/hooks/useLeftClickHold"
 import { MOUSE, EXIT_DURATION, STARTUP_METHOD } from "@/const"
 import { isEmpty, isPopup } from "@/lib/utils"
-import { getSelectionText } from "@/services/dom"
+import {
+  getSelectionText,
+  isInputOrTextarea,
+  getInputSelectionEndPoint,
+  getEditableSelectionEndPoint,
+  isEditable,
+} from "@/services/dom"
 import { Point } from "@/types"
 
 const SIZE = 40
@@ -53,6 +59,8 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
       const s = document.getSelection()
       if (s && s.rangeCount > 0) {
         setTarget(s.getRangeAt(0).startContainer.parentElement as Element)
+      } else if (isInputOrTextarea(document.activeElement)) {
+        setTarget(document.activeElement)
       } else {
         setTarget(null)
       }
@@ -152,7 +160,50 @@ export const SelectAnchor = forwardRef<HTMLDivElement>((_props, ref) => {
   }, [point, isMouseDown, setIsDragging, releaseAnchor])
 
   useEffect(() => {
-    const onKeyUp = () => {
+    const onKeyUp = (e: KeyboardEvent) => {
+      const active = document.activeElement
+      const inFormControl = isInputOrTextarea(active)
+      const inEditable = isEditable(active)
+      if (inFormControl || inEditable) {
+        // When no selection is active, only process keys that can create one
+        // (Shift+arrows, Ctrl/Cmd+A, etc.) to avoid unnecessary computation.
+        // When a selection is already active (point != null), process all keys
+        // so we can detect deselection and call releaseAnchor.
+        // Include modifier keyups (Meta/Control) because on macOS,
+        // Cmd+A may not fire a keyup for "a" — only the Meta keyup fires.
+        const mayChangeSelection =
+          e.shiftKey ||
+          (e.key === "a" && (e.ctrlKey || e.metaKey)) ||
+          e.key === "Meta" ||
+          e.key === "Control"
+        if (!mayChangeSelection && !point) {
+          return
+        }
+        const text = getSelectionText()
+        if (text) {
+          let selectionEndPoint: Point | null = null
+          if (inFormControl) {
+            // Use mirror div technique since Range.getBoundingClientRect() is not available for form controls.
+            selectionEndPoint = getInputSelectionEndPoint(active)
+            if (!selectionEndPoint) {
+              const rect = active.getBoundingClientRect()
+              selectionEndPoint = { x: rect.right, y: rect.bottom }
+            }
+          } else {
+            // Use Range API to get the actual selection end position in contenteditable elements.
+            selectionEndPoint = getEditableSelectionEndPoint()
+          }
+          if (selectionEndPoint) {
+            selectionEndPoint.y -= 8 // Adjust to match the mouse cursor selection.
+            setAnchor(selectionEndPoint)
+          } else {
+            releaseAnchor(true)
+          }
+          return
+        }
+        releaseAnchor(true)
+        return
+      }
       if (!selectionText) {
         releaseAnchor(true)
       }

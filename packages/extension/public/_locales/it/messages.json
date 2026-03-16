@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (chiudi immediatamente)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Nascondi automaticamente il pannello laterale"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Nasconde automaticamente il pannello laterale quando si fa clic sul pannello principale mentre il pannello laterale è aperto tramite un comando."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Nascondi automaticamente il pannello laterale"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Nasconde automaticamente il pannello laterale quando si fa clic sul pannello principale durante la visualizzazione dell'anteprima del collegamento."
+  },
   "Option_inherit": {
     "message": "Eredita"
   },
@@ -257,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "L'URL dell'icona verrà aggiornato automaticamente quando l'URL iniziale viene modificato."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Visualizzato come icona del menu."
+  },
   "Option_iconUrl_autofill": {
     "message": "Compilazione automatica"
   },
@@ -271,6 +286,12 @@
   },
   "Option_spaceEncoding_percent": {
     "message": "Percentuale (%20)"
+  },
+  "Option_spaceEncoding_dash": {
+    "message": "Trattino (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Trattino basso (_)"
   },
   "Option_openMode": {
     "message": "Modalità apertura"
@@ -293,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Pannello laterale"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Apri nel pannello laterale."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -307,6 +331,12 @@
   },
   "Option_openMode_pageAction": {
     "message": "Azione pagina"
+  },
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt AI"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Esegui un prompt predefinito su un servizio AI"
   },
   "Option_commandType_title": {
     "message": "Seleziona Tipo di Comando"
@@ -325,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Registra e riproduci operazioni delle pagine web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt AI"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Esegui un prompt predefinito su un servizio AI"
   },
   "Option_commandType_copy_title": {
     "message": "Copia Testo"
@@ -364,6 +400,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Finestra"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Pannello laterale"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + clic"
@@ -407,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "URL della pagina dove inizia l'azione."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Per \"Scheda Corrente\", è possibile eseguire solo le pagine corrispondenti a questo URL. È possibile utilizzare il carattere jolly \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL della pagina da cui avviare la registrazione delle azioni. Utilizzato solo nella schermata delle impostazioni."
+  },
+  "Option_pageUrl": {
+    "message": "URL della pagina"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Può essere eseguito solo sulle pagine corrispondenti a questo URL. È possibile utilizzare il carattere jolly «*»."
+  },
   "Option_pageAction_title": {
     "message": "Azione"
   },
@@ -424,6 +475,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Tempo di attesa"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Servizio AI"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Seleziona il servizio AI da utilizzare"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Modello prompt. Usa il menu di inserimento per aggiungere variabili (testo selezionato, URL, appunti)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Inserisci il tuo prompt qui..."
   },
   "Option_userVariables": {
     "message": "Variabili Utente"
@@ -716,6 +782,9 @@
   "Option_zod_url": {
     "message": "Inserisci nel formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "L'URL della pagina è obbligatorio quando è selezionata la modalità scheda corrente."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Il testo selezionato verrà inserito",
     "description": "for INSERT.SELECTED_TEXT"
@@ -974,8 +1043,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Apri nel pannello laterale."
+  "Option_openMode_currentTab": {
+    "message": "Scheda corrente"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Esegui sulla scheda attiva corrente.<wbr>L'URL deve corrispondere all'URL di avvio registrata."
   },
   "Option_title_desc": {
     "message": "Visualizzato come titolo del comando."
@@ -1138,5 +1210,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Schermo intero"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "Impossibile eseguire su questa pagina (l'URL della pagina non corrisponde)"
   }
 }

@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0 (cerrar inmediatamente)"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "Ocultar panel lateral automáticamente"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "Oculta automáticamente el panel lateral cuando se hace clic en el panel principal mientras el panel lateral está abierto a través de un comando."
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "Ocultar panel lateral automáticamente"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "Oculta automáticamente el panel lateral cuando se hace clic en el panel principal mientras se muestra la vista previa del enlace."
+  },
   "Option_inherit": {
     "message": "Heredar"
   },
@@ -257,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "Se actualiza automáticamente cuando se cambia la URL de inicio."
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "Se muestra como el icono del menú."
+  },
   "Option_iconUrl_autofill": {
     "message": "Autocompletar"
   },
@@ -271,6 +286,12 @@
   },
   "Option_spaceEncoding_percent": {
     "message": "Porcentaje (%20)"
+  },
+  "Option_spaceEncoding_dash": {
+    "message": "Guión (-)"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "Guión bajo (_)"
   },
   "Option_openMode": {
     "message": "Modo de Apertura"
@@ -293,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "Panel lateral"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "Abrir en panel lateral."
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -307,6 +331,12 @@
   },
   "Option_openMode_pageAction": {
     "message": "Acción de Página"
+  },
+  "Option_openMode_aiPrompt": {
+    "message": "Prompt IA"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "Ejecuta un prompt predefinido en un servicio de IA"
   },
   "Option_commandType_title": {
     "message": "Seleccionar Tipo de Comando"
@@ -325,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "Grabar y reproducir operaciones de páginas web"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "Prompt IA"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "Ejecuta un prompt predefinido en un servicio de IA"
   },
   "Option_commandType_copy_title": {
     "message": "Copiar Texto"
@@ -364,6 +400,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "Ventana"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "Panel lateral"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + Clic"
@@ -407,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "URL de la página donde comienza la acción."
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "Para \"Pestaña Actual\", solo se pueden ejecutar páginas que coincidan con esta URL. Puede usar el comodín \"*\"."
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "URL de la página para iniciar la grabación de acciones. Se usa solo en la pantalla de configuración."
+  },
+  "Option_pageUrl": {
+    "message": "URL de la página"
+  },
+  "Option_pageUrl_desc": {
+    "message": "Solo se puede ejecutar en páginas que coincidan con esta URL. Puede usar el comodín «*»."
+  },
   "Option_pageAction_title": {
     "message": "Acciones"
   },
@@ -424,6 +475,21 @@
   },
   "Option_pageAction_delay": {
     "message": "Tiempo de retraso"
+  },
+  "Option_aiPrompt_service": {
+    "message": "Servicio IA"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "Selecciona el servicio de IA a utilizar"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "Prompt"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "Plantilla de prompt. Usa el menú de inserción para agregar variables (texto seleccionado, URL, portapapeles)."
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "Ingresa tu prompt aquí..."
   },
   "Option_userVariables": {
     "message": "Variables de Usuario"
@@ -716,6 +782,9 @@
   "Option_zod_url": {
     "message": "Por favor, introduzca en formato URL."
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "La URL de página es obligatoria cuando se selecciona el modo de pestaña actual."
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "Se insertará el texto seleccionado",
     "description": "for INSERT.SELECTED_TEXT"
@@ -974,8 +1043,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir pestaña en segundo plano.<wbr>Mostrar a la derecha de la pestaña actual."
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "Abrir en panel lateral."
+  "Option_openMode_currentTab": {
+    "message": "Pestaña actual"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "Ejecutar en la pestaña activa actual.<wbr>La URL debe coincidir con la URL de inicio registrada."
   },
   "Option_title_desc": {
     "message": "Se muestra como el título del comando."
@@ -1138,5 +1210,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "Pantalla completa"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "No se puede ejecutar en esta página (la URL de la página no coincide)"
   }
 }

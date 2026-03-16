@@ -212,6 +212,18 @@
   "Option_popupAutoCloseDelay_placeholder": {
     "message": "0（立即关闭）"
   },
+  "Option_sidePanelAutoHide": {
+    "message": "侧边栏自动隐藏"
+  },
+  "Option_sidePanelAutoHide_desc": {
+    "message": "通过命令打开侧边栏时，点击主面板自动隐藏侧边栏。"
+  },
+  "Option_sidePanelAutoHide_link": {
+    "message": "侧边栏自动隐藏"
+  },
+  "Option_sidePanelAutoHide_link_desc": {
+    "message": "显示链接预览时，点击主面板自动隐藏侧边栏。"
+  },
   "Option_inherit": {
     "message": "获取"
   },
@@ -257,6 +269,9 @@
   "Option_iconUrl_desc_pageAction": {
     "message": "修改初始URL时图标URL将自动更新。"
   },
+  "Option_iconUrl_desc_aiPrompt": {
+    "message": "显示为菜单图标。"
+  },
   "Option_iconUrl_autofill": {
     "message": "自动填充"
   },
@@ -271,6 +286,12 @@
   },
   "Option_spaceEncoding_percent": {
     "message": "百分比（%20）"
+  },
+  "Option_spaceEncoding_dash": {
+    "message": "连字符（-）"
+  },
+  "Option_spaceEncoding_underscore": {
+    "message": "下划线（_）"
   },
   "Option_openMode": {
     "message": "打开模式"
@@ -293,6 +314,9 @@
   "Option_openMode_sidePanel": {
     "message": "侧边栏"
   },
+  "Option_openMode_sidePanel_desc": {
+    "message": "在侧边栏中打开。"
+  },
   "Option_openMode_api": {
     "message": "API"
   },
@@ -307,6 +331,12 @@
   },
   "Option_openMode_pageAction": {
     "message": "页面操作"
+  },
+  "Option_openMode_aiPrompt": {
+    "message": "AI提示词"
+  },
+  "Option_openMode_aiPrompt_desc": {
+    "message": "在AI服务上运行预定义的提示词"
   },
   "Option_commandType_title": {
     "message": "选择命令类型"
@@ -325,6 +355,12 @@
   },
   "Option_commandType_pageAction_desc": {
     "message": "录制和重放网页操作"
+  },
+  "Option_commandType_aiPrompt_title": {
+    "message": "AI提示词"
+  },
+  "Option_commandType_aiPrompt_desc": {
+    "message": "在AI服务上运行预定义的提示词"
   },
   "Option_commandType_copy_title": {
     "message": "复制文本"
@@ -364,6 +400,9 @@
   },
   "Option_openMode_previewWindow": {
     "message": "窗口"
+  },
+  "Option_openMode_previewSidePanel": {
+    "message": "侧边栏"
   },
   "Option_openModeSecondary": {
     "message": " ┗ Ctrl + 点击"
@@ -407,6 +446,18 @@
   "Option_startUrl_desc": {
     "message": "操作开始的页面URL。"
   },
+  "Option_startUrl_desc_currentTab": {
+    "message": "对于\"当前标签页\"，只有与此URL匹配的页面才能执行。可以使用通配符\"*\"。"
+  },
+  "Option_startUrl_desc_currentTab_recorder": {
+    "message": "开始录制动作的页面URL。仅在设置画面中使用。"
+  },
+  "Option_pageUrl": {
+    "message": "页面URL"
+  },
+  "Option_pageUrl_desc": {
+    "message": "仅能在匹配此URL的页面上执行。可以使用通配符「*」。"
+  },
   "Option_pageAction_title": {
     "message": "操作"
   },
@@ -424,6 +475,21 @@
   },
   "Option_pageAction_delay": {
     "message": "等待时间"
+  },
+  "Option_aiPrompt_service": {
+    "message": "AI服务"
+  },
+  "Option_aiPrompt_service_desc": {
+    "message": "选择要使用的AI服务"
+  },
+  "Option_aiPrompt_prompt": {
+    "message": "提示词"
+  },
+  "Option_aiPrompt_prompt_desc": {
+    "message": "提示词模板。使用插入菜单添加变量（选中文本、URL、剪贴板）。"
+  },
+  "Option_aiPrompt_prompt_placeholder": {
+    "message": "在此输入您的提示词..."
   },
   "Option_userVariables": {
     "message": "用户变量"
@@ -716,6 +782,9 @@
   "Option_zod_url": {
     "message": "请以URL格式输入。"
   },
+  "zod_pageUrl_required_for_currentTab": {
+    "message": "选择当前标签页模式时，页面 URL 为必填项。"
+  },
   "PageAction_InputMenu_mark_selectedText": {
     "message": "将插入选中的文本",
     "description": "for INSERT.SELECTED_TEXT"
@@ -974,8 +1043,11 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
   },
-  "Option_openMode_sidePanel_desc": {
-    "message": "在侧边栏中打开。"
+  "Option_openMode_currentTab": {
+    "message": "当前标签页"
+  },
+  "Option_openMode_currentTab_desc": {
+    "message": "在当前活动标签页中运行。<wbr>URL 必须与记录的起始 URL 匹配。"
   },
   "Option_title_desc": {
     "message": "显示为命令标题。"
@@ -1138,5 +1210,8 @@
   },
   "Option_windowState_fullscreen": {
     "message": "全屏"
+  },
+  "Menu_disabled_urlNotMatch": {
+    "message": "无法在此页面运行（页面URL不匹配）"
   }
 }

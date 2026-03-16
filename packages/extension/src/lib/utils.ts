@@ -18,6 +18,7 @@ import type {
   SelectionCommand,
   LinkCommand,
   PageActionCommand,
+  AiPromptCommand,
   UrlParam,
   UserVariable,
 } from "@/types"
@@ -77,6 +78,10 @@ export function toUrl(
   if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
     // Replace %20 (default URL encoding for space) with +
     textEscaped = textEscaped.replaceAll("%20", "+")
+  } else if (spaceEncoding === SPACE_ENCODING.DASH) {
+    textEscaped = textEscaped.replaceAll("%20", "-")
+  } else if (spaceEncoding === SPACE_ENCODING.UNDERSCORE) {
+    textEscaped = textEscaped.replaceAll("%20", "_")
   }
   return searchUrl?.replace("%s", textEscaped)
 }
@@ -160,6 +165,13 @@ export function isLinkCommand(command: Command): command is LinkCommand {
  */
 export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
   return _isPageActionCommand(cmd)
+}
+
+export function isAiPromptCommand(cmd: unknown): cmd is AiPromptCommand {
+  if (!cmd || typeof cmd !== "object") {
+    return false
+  }
+  return (cmd as AiPromptCommand).openMode === OPEN_MODE.AI_PROMPT
 }
 
 export function isPopup(elm: Element): boolean {
@@ -388,6 +400,26 @@ export function validateUserVariables(variables: UserVariable[]): boolean {
   return variables.every(
     (v) => isValidVariableName(v.name) && typeof v.value === "string",
   )
+}
+
+/**
+ * Checks whether a URL matches a pattern with wildcard (*) support.
+ * `*` in the pattern matches any sequence of characters (including empty).
+ *
+ * Example:
+ *   matchesPageActionUrl("https://example.com/*", "https://example.com/path?q=1") → true
+ *   matchesPageActionUrl("https://example.com/page", "https://example.com/page") → true
+ *   matchesPageActionUrl("https://example.com/page", "https://other.com/page")   → false
+ */
+export function matchesPageActionUrl(pattern: string, url: string): boolean {
+  if (!pattern.includes("*")) {
+    return pattern === url
+  }
+  // Escape regex special chars except *, then replace * with .*
+  const regexStr = pattern
+    .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+    .replace(/\*/g, ".*")
+  return new RegExp(`^${regexStr}$`).test(url)
 }
 
 /**

@@ -1,13 +1,14 @@
 {
   "name": "@selection-command/extension",
-  "version": "0.14.2",
+  "version": "0.16.0",
   "private": true,
   "author": "ujiro99",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:e2e": "tsc -b && vite build --mode e2e",
+    "build:e2e": "vite-node --config scripts/vite.config.ts scripts/generate-e2e-urls.ts && tsc -b && vite build --mode e2e",
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -15,6 +16,7 @@
     "test:coverage": "vitest --coverage",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
+    "check-ids": "vite-node --config scripts/vite.config.ts scripts/check-command-ids.ts",
     "zip": "npm-build-zip --source=dist --destination=build",
     "test:e2e": "playwright test"
   },
@@ -62,6 +64,7 @@
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.0.0-beta.30",
     "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.3.0",
     "@types/chrome": "^0.1.36",
     "@types/jest": "^29.5.11",
     "@types/platform": "^1.3.6",
@@ -75,10 +78,10 @@
     "glob": "^10.3.10",
     "globals": "^15.14.0",
     "npm-build-zip": "^1.0.4",
+    "tsx": "^4.21.0",
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5",
     "vite-plugin-css-injected-by-js": "^3.5.2",
-    "vite-plugin-macro": "^0.2.0",
     "webextension-polyfill": "^0.10.0"
   },
   "browserslist": {

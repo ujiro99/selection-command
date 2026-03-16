@@ -100,6 +100,7 @@ const formSchema = z
           .refine((v) => v !== LINK_COMMAND_ENABLED.INHERIT),
         openMode: z.nativeEnum(DRAG_OPEN_MODE),
         showIndicator: z.boolean(),
+        sidePanelAutoHide: z.boolean(),
         startupMethod: z
           .object({
             method: z.nativeEnum(LINK_COMMAND_STARTUP_METHOD),
@@ -162,6 +163,12 @@ export function SettingForm({ className }: { className?: string }) {
     control: form.control,
     name: "linkCommand.startupMethod.method",
     defaultValue: LINK_COMMAND_STARTUP_METHOD.KEYBOARD,
+  })
+
+  const linkCommandOpenMode = useWatch({
+    control: form.control,
+    name: "linkCommand.openMode",
+    defaultValue: DRAG_OPEN_MODE.PREVIEW_POPUP,
   })
 
   // Common function to load and transform settings data
@@ -586,6 +593,14 @@ export function SettingForm({ className }: { className?: string }) {
             formLabel={t("showIndicator")}
             description={t("showIndicator_desc")}
           />
+          {linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL && (
+            <SwitchField
+              control={form.control}
+              name="linkCommand.sidePanelAutoHide"
+              formLabel={t("sidePanelAutoHide_link")}
+              tooltip={t("sidePanelAutoHide_link_desc")}
+            />
+          )}
         </section>
         <hr />
 
@@ -596,25 +611,30 @@ export function SettingForm({ className }: { className?: string }) {
           </h3>
           <p className="text-base">{t("windowSettings_desc")}</p>
 
-          {startupMethod !== STARTUP_METHOD.CONTEXT_MENU && (
-            <InputField
-              control={form.control}
-              name="windowOption.popupAutoCloseDelay"
-              formLabel={t("popupAutoCloseDelay")}
-              tooltip={t("popupAutoCloseDelay_desc")}
-              unit="ms"
-              inputProps={{
-                type: "number",
-                min: 0,
-                max: 10000,
-                step: 100,
-                placeholder: t("popupAutoCloseDelay_placeholder"),
-                ...register("windowOption.popupAutoCloseDelay", {
-                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
-                }),
-              }}
-            />
-          )}
+          <InputField
+            control={form.control}
+            name="windowOption.popupAutoCloseDelay"
+            formLabel={t("popupAutoCloseDelay")}
+            tooltip={t("popupAutoCloseDelay_desc")}
+            unit="ms"
+            inputProps={{
+              type: "number",
+              min: 0,
+              max: 10000,
+              step: 100,
+              placeholder: t("popupAutoCloseDelay_placeholder"),
+              ...register("windowOption.popupAutoCloseDelay", {
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
+              }),
+            }}
+          />
+
+          <SwitchField
+            control={form.control}
+            name="windowOption.sidePanelAutoHide"
+            formLabel={t("sidePanelAutoHide")}
+            tooltip={t("sidePanelAutoHide_desc")}
+          />
         </section>
         <hr />
 

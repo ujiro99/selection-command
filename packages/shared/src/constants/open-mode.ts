@@ -9,6 +9,7 @@ export enum OPEN_MODE {
   SIDE_PANEL = "sidePanel",
   API = "api",
   PAGE_ACTION = "pageAction",
+  AI_PROMPT = "aiPrompt",
   LINK_POPUP = "linkPopup",
   COPY = "copy",
   GET_TEXT_STYLES = "getTextStyles",
@@ -38,4 +39,5 @@ export enum PAGE_ACTION_OPEN_MODE {
   TAB = OPEN_MODE.TAB,
   BACKGROUND_TAB = OPEN_MODE.BACKGROUND_TAB,
   WINDOW = OPEN_MODE.WINDOW,
+  CURRENT_TAB = "currentTab",
 }

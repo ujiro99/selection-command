@@ -18,7 +18,7 @@ export class WindowStackManager {
    */
   private static async loadStack(): Promise<WindowLayer[]> {
     const data = BgData.get()
-    return data.windowStack
+    return data?.windowStack ?? []
   }
 
   /**

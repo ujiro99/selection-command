@@ -332,16 +332,20 @@ const readClipboardContent = async (
 ): Promise<ClipboardResult> => {
   try {
     const result = await new Promise<ClipboardResult>((resolve) => {
-      chrome.runtime.onConnect.addListener(function (port) {
+      const onConnect = (port: chrome.runtime.Port) => {
         if (port.sender?.tab?.id !== tabId) {
           return
         }
-        port.onMessage.addListener(function (msg) {
+        const onMessage = (msg: { command: string; data: ClipboardResult }) => {
           if (msg.command === BgCommand.setClipboard) {
+            port.onMessage.removeListener(onMessage)
+            chrome.runtime.onConnect.removeListener(onConnect)
             resolve(msg.data)
           }
-        })
-      })
+        }
+        port.onMessage.addListener(onMessage)
+      }
+      chrome.runtime.onConnect.addListener(onConnect)
       if (chrome.runtime.lastError) {
         throw new Error(chrome.runtime.lastError.message)
       }
@@ -371,10 +375,48 @@ const openWindowAndReadClipboard = async (
     incognito: param.incognito,
   })
 
-  const result = await readClipboardContent(w!.tabs![0].id as number)
+  const tab = w?.tabs?.[0]
+  if (!tab?.id || !w?.id) {
+    throw new Error("Failed to create clipboard window")
+  }
+  const result = await readClipboardContent(tab.id)
 
   return {
-    window: w!,
+    window: w,
+    clipboardText: result.data ?? "",
+    err: result.err,
+  }
+}
+
+/**
+ * Open a temporary window to read clipboard content and return the result.
+ * @returns {Promise<{ clipboardText: string; err?: string }>} The clipboard content and any error message
+ *
+ * Note: This function opens a temporary window to read the clipboard content,
+ *       which is necessary due to browser security restrictions.
+ *       The window is closed immediately after reading the clipboard.
+ */
+export const readClipboard = async (): Promise<{
+  clipboardText: string
+  err?: string
+}> => {
+  const w = await chrome.windows.create({
+    url: chrome.runtime.getURL("src/clipboard.html"),
+    focused: true,
+    type: "popup",
+    width: 1,
+    height: 1,
+    left: 0,
+    top: 0,
+    state: "normal",
+  })
+  const tab = w?.tabs?.[0]
+  if (!tab?.id || !w?.id) {
+    throw new Error("Failed to create clipboard window")
+  }
+  const result = await readClipboardContent(tab.id)
+  await closeWindow(w.id, "readClipboard close window")
+  return {
     clipboardText: result.data ?? "",
     err: result.err,
   }
@@ -537,7 +579,7 @@ export const openPopupWindowMultiple = async (
 export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
   const { url, active } = param
 
-  let currentTab: chrome.tabs.Tab | null = null
+  let currentTab: chrome.tabs.Tab | undefined
   try {
     currentTab = await getCurrentTab()
   } catch (e) {
@@ -595,7 +637,7 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
  * Get the current tab.
  * @returns {Promise<chrome.tabs.Tab>}
  */
-export async function getCurrentTab(): Promise<chrome.tabs.Tab> {
+export async function getCurrentTab(): Promise<chrome.tabs.Tab | undefined> {
   const queryOptions = { active: true, lastFocusedWindow: true }
   const [tab] = await chrome.tabs.query(queryOptions)
   return tab
@@ -621,6 +663,7 @@ export async function closeWindow(
 export type OpenSidePanelProps = {
   url: string | UrlParam
   tabId?: number
+  isLinkCommand?: boolean
 }
 
 export type UpdateSidePanelUrlProps = {
@@ -640,7 +683,7 @@ export const openSidePanel = async (
 
   const targetTabId = tabId
   if (!targetTabId) {
-    console.error("No valid tab ID for side panel")
+    console.warn("No valid tab ID for side panel")
     return {
       tabId: undefined,
     }
@@ -662,6 +705,8 @@ export const openSidePanel = async (
   }
 }
 
+const SIDE_PANEL_CLOSE_ANIMATION = 1000
+
 /**
  * Close the side panel for the specified tab
  * @param {number} tabId - The ID of the tab to close the side panel for
@@ -673,22 +718,15 @@ export const closeSidePanel = async (tabId: number): Promise<void> => {
   } catch (e) {
     console.warn("Failed to close side panel:", e)
   }
-
-  // Cleanup regardless of whether close succeeded
+  // Wait for the side panel close animation to finish before disabling it to prevent visual glitches.
+  await sleep(SIDE_PANEL_CLOSE_ANIMATION)
   try {
-    await BgData.update((data) => {
-      const { [tabId]: _, ...rest } = data.sidePanelUrls
-      return {
-        sidePanelTabs: data.sidePanelTabs.filter((id) => id !== tabId),
-        sidePanelUrls: rest,
-      }
-    })
     await chrome.sidePanel.setOptions({
       tabId: tabId,
       enabled: false,
     })
   } catch (e) {
-    console.warn("Failed to cleanup side panel:", e)
+    console.warn("Failed to disable side panel:", e)
   }
 }
 
