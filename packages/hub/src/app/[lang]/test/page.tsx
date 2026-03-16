@@ -5,6 +5,7 @@ import css from "@/app/page.module.css"
 import { Button } from "@/components/ui/button"
 import dynamic from "next/dynamic"
 import "quill/dist/quill.snow.css"
+import { useSearchParams } from "next/navigation"
 
 // Dynamically import Quill editor for client-side only
 const QuillWrapper = dynamic(() => import("./QuillWrapper"), {
@@ -13,6 +14,9 @@ const QuillWrapper = dynamic(() => import("./QuillWrapper"), {
 })
 
 export default function Page() {
+  const searchParams = useSearchParams()
+  const search = searchParams.get("k") ?? ""
+
   // File save (Blob + a element download)
   function saveFile() {
     const blob = new Blob(["File save test"], { type: "text/plain" })
@@ -31,9 +35,9 @@ export default function Page() {
         (pos) =>
           console.log(
             "Geolocation success: " +
-              pos.coords.latitude +
-              "," +
-              pos.coords.longitude,
+            pos.coords.latitude +
+            "," +
+            pos.coords.longitude,
           ),
         (err) => console.log("Geolocation error: " + err.message),
       )
@@ -61,7 +65,14 @@ export default function Page() {
   return (
     <main className={css.main}>
       <div className="w-full space-y-4">
-        <h2>Browser Feature Test</h2>
+        <h2 className="text-lg font-bold">Browser Feature Test</h2>
+
+        <section className="py-4">
+          <h3 className="mb-2 font-bold">Search Query Parameter</h3>
+          <pre className="bg-stone-100 px-3 py-2 rounded-md min-h-10">
+            <code>{search}</code>
+          </pre>
+        </section>
 
         <form className="space-y-4">
           <div>
