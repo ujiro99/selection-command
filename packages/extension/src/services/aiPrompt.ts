@@ -2,7 +2,6 @@ import { SelectorType } from "@/const"
 import { HUB_URL } from "@/const"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { Caches } from "@/types"
-import aiServicesJson from "../../../hub/public/data/ai-services.json"
 
 /**
  * Defines selectors and configuration for a supported AI service.
@@ -25,8 +24,8 @@ const todayStr = (): string => new Date().toISOString().slice(0, 10)
 
 /**
  * Normalize raw JSON data fetched from the external endpoint into AiService[].
- * Items that are missing required fields (id, url, inputSelectors, submitSelectors)
- * are silently skipped.  The external JSON may omit `selectorType`, defaulting to CSS.
+ * - Items that are missing required fields (id, url, inputSelectors, submitSelectors) are silently skipped.
+ * - The external JSON may omit `selectorType`, defaulting to `CSS`.
  */
 const normalizeServices = (raw: unknown[]): AiService[] => {
   const results: AiService[] = []
@@ -62,7 +61,8 @@ const normalizeServices = (raw: unknown[]): AiService[] => {
  * Used as fallback when the external fetch fails and no cache is available.
  * Selector arrays are tried in order, using the first one that matches.
  */
-const AI_SERVICES_FALLBACK: AiService[] = normalizeServices(aiServicesJson)
+const AI_SERVICES_FALLBACK: AiService[] =
+  normalizeServices(__AI_SERVICES_JSON__)
 
 /**
  * Retrieve AI service definitions.

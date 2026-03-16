@@ -1,3 +1,4 @@
+import fs from "fs"
 import { defineConfig, mergeConfig } from "vitest/config"
 import { resolve } from "path"
 import packageJson from "./package.json"
@@ -13,6 +14,10 @@ export default mergeConfig(
     define: {
       __APP_NAME__: JSON.stringify(packageJson.name),
       __APP_VERSION__: JSON.stringify(packageJson.version),
+      __AI_SERVICES_JSON__: fs.readFileSync(
+        resolve(__dirname, "../hub/public/data/ai-services.json"),
+        "utf-8",
+      ),
     },
     resolve: {
       alias: {
