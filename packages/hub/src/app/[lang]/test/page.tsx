@@ -70,7 +70,7 @@ export default function Page() {
         <section className="py-4">
           <h3 className="mb-2 font-bold">Search Query Parameter</h3>
           <pre className="bg-stone-100 px-3 py-2 rounded-md min-h-10">
-            <code>{search}</code>
+            <code data-testid="searchQuery">{search}</code>
           </pre>
         </section>
 
