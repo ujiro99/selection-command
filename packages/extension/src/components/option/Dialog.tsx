@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogPortal,
 } from "@/components/ui/dialog"
+import { TEST_IDS } from "@/testIds.ts"
 
 import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
@@ -46,12 +47,14 @@ export function Dialog(props: Props) {
               className={cn(css.button, "disabled:opacity-50")}
               onClick={() => props.onClose(true)}
               disabled={props.okDisabled}
+              data-testid={TEST_IDS.optionDialogOk}
             >
               {props.okText}
             </button>
             <button
               className={css.buttonCancel}
               onClick={() => props.onClose(false)}
+              data-testid={TEST_IDS.optionDialogCancel}
             >
               {t("labelCancel")}
             </button>
