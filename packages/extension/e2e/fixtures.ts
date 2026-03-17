@@ -11,6 +11,11 @@ import { fileURLToPath } from "url"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pathToExtension = path.join(__dirname, "../dist")
 
+type StorageChangeMap = {
+  [key: string]: chrome.storage.StorageChange
+}
+export type WaitForStorageChange = () => Promise<StorageChangeMap>
+
 type Fixtures = {
   context: BrowserContext
   extensionId: string
@@ -24,7 +29,7 @@ type Fixtures = {
  */
 export const test = base.extend<Fixtures>({
   // eslint-disable-next-line no-empty-pattern
-  context: async ({}, use) => {
+  context: async ({ }, use) => {
     // When running with --debug, PWDEBUG is set; show the browser window in that case.
     const isDebug = !!process.env.PWDEBUG
     const context = await chromium.launchPersistentContext("", {
