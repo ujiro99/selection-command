@@ -60,7 +60,7 @@ const getActiveTabId = (
   return true
 }
 
-const onConnect = async function(port: chrome.runtime.Port) {
+const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -73,7 +73,7 @@ const onConnect = async function(port: chrome.runtime.Port) {
     await PageActionBackground.handleSidePanelConnect(port)
   }
 }
-const onDisconnect = async function(port: chrome.runtime.Port) {
+const onDisconnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -170,24 +170,24 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-        id: params.id,
-        title: params.title,
-        searchUrl: params.searchUrl,
-        iconUrl: params.iconUrl,
-        openMode: params.openMode,
-        openModeSecondary: params.openModeSecondary,
-        spaceEncoding: params.spaceEncoding,
-        popupOption: PopupOption,
-      }
-      : isPageAction
-        ? {
           id: params.id,
           title: params.title,
+          searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
           openMode: params.openMode,
-          pageActionOption: params.pageActionOption,
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
           popupOption: PopupOption,
         }
+      : isPageAction
+        ? {
+            id: params.id,
+            title: params.title,
+            iconUrl: params.iconUrl,
+            openMode: params.openMode,
+            pageActionOption: params.pageActionOption,
+            popupOption: PopupOption,
+          }
         : null
 
     if (!cmd) {
@@ -474,8 +474,13 @@ if (isDebug) {
   })
 }
 
-chrome.runtime.onInstalled.addListener((details) => {
-  ContextMenu.init()
+chrome.runtime.onInstalled.addListener(async (details) => {
+  // Initialize default settings on install
+  if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    await Settings.reset()
+  }
+
+  await ContextMenu.init()
 
   chrome.storage.session.setAccessLevel({
     accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
@@ -490,10 +495,10 @@ chrome.runtime.onInstalled.addListener((details) => {
   }
 
   // Check for daily backup on startup
-  checkAndPerformDailyBackup()
+  await checkAndPerformDailyBackup()
 
   // Check for weekly backup on startup
-  checkAndPerformWeeklyBackup()
+  await checkAndPerformWeeklyBackup()
 })
 
 chrome.runtime.onStartup.addListener(() => {
@@ -545,17 +550,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-  // Initialize commandIdObj and register listener at top-level
-  // to ensure they are available when service worker restarts
-  ; (async () => {
-    try {
-      await ContextMenu.syncCommandIdObj()
-      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-    } catch (error) {
-      // Ignore errors during initialization (e.g., in test environment)
-      console.debug("Failed to initialize context menu listener:", error)
-    }
-  })()
+// Initialize commandIdObj and register listener at top-level
+// to ensure they are available when service worker restarts
+;(async () => {
+  try {
+    await ContextMenu.syncCommandIdObj()
+    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+  } catch (error) {
+    // Ignore errors during initialization (e.g., in test environment)
+    console.debug("Failed to initialize context menu listener:", error)
+  }
+})()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
