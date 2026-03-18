@@ -10,6 +10,9 @@ function sleep(msec: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, msec))
 }
 
+// Load test settings from the JSON file.
+// This is used to provide consistent test data for the importSettings method.
+import testSettings from "../data/test-settings.json" with { type: "json" }
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
 
@@ -23,7 +26,7 @@ export class OptionsPage {
   constructor(
     private readonly context: BrowserContext,
     private readonly extensionId: string,
-    private readonly getUserSettings: () => Promise<UserSettings>,
+    private readonly getCommands: () => Promise<UserSettings["commands"]>,
   ) {
     this.page = null
   }
@@ -97,17 +100,20 @@ export class OptionsPage {
     await reloadPromise
 
     // Wait for the settings to be loaded with commands
-    let settings
+    let commands
     let timeout = 5000 // Maximum wait time of 5 seconds
     const interval = 40 // milliseconds
     do {
       await sleep(interval)
-      settings = await this.getUserSettings()
+      commands = await this.getCommands()
       timeout -= interval
-    } while (settings == null && timeout > 0)
+    } while (
+      (commands == null || commands.length !== testSettings.commands.length) &&
+      timeout > 0
+    )
 
-    if (settings == null) {
-      console.error("Failed to import settings")
+    if (commands == null || commands.length !== testSettings.commands.length) {
+      console.error("Failed to import settings", commands?.length)
       throw new Error("Failed to import settings")
     }
   }

@@ -5,8 +5,10 @@ import {
   type BrowserContext,
 } from "@playwright/test"
 import path from "path"
-import type { UserSettings } from "@/types"
 import { fileURLToPath } from "url"
+
+import type { UserSettings, Command } from "@/types"
+import type { CommandMetadata } from "@/types/command"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pathToExtension = path.join(__dirname, "../dist")
@@ -20,8 +22,10 @@ type Fixtures = {
   context: BrowserContext
   extensionId: string
   extensionBackground: Page
+  getSyncStorage: (key: string) => Promise<unknown>
   getUserSettings: () => Promise<UserSettings>
   setUserSettings: (newSettings: Partial<UserSettings>) => Promise<UserSettings>
+  getCommands: () => Promise<UserSettings["commands"]>
 }
 
 /**
@@ -29,7 +33,7 @@ type Fixtures = {
  */
 export const test = base.extend<Fixtures>({
   // eslint-disable-next-line no-empty-pattern
-  context: async ({ }, use) => {
+  context: async ({}, use) => {
     // When running with --debug, PWDEBUG is set; show the browser window in that case.
     const isDebug = !!process.env.PWDEBUG
     const context = await chromium.launchPersistentContext("", {
@@ -68,6 +72,31 @@ export const test = base.extend<Fixtures>({
     await bg.goto(`chrome-extension://${extensionId}/src/options_page.html`)
     await use(bg)
     await bg.close()
+  },
+
+  getCommands: async ({ context }, use) => {
+    let [serviceWorker] = context.serviceWorkers()
+    if (!serviceWorker) {
+      serviceWorker = await context.waitForEvent("serviceworker")
+    }
+    await use(async () => {
+      const result = await serviceWorker.evaluate(async () => {
+        const { 5: metaData } = await chrome.storage.sync.get<{
+          "5": CommandMetadata
+        }>("5")
+        const count = metaData.count
+
+        const CMD_PREFIX = "cmd-"
+        const cmdSyncKey = (idx: number): string => `${CMD_PREFIX}${idx}`
+        const keys = Array.from({ length: count }, (_, i) => cmdSyncKey(i))
+        const result = await chrome.storage.sync.get(keys)
+
+        return keys
+          .map((key) => result[key] as Command)
+          .filter((cmd) => cmd != null)
+      })
+      return result
+    })
   },
 
   getUserSettings: async ({ context }, use) => {

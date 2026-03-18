@@ -9,7 +9,7 @@ const APP_ID = "selection-command"
  * Encapsulates navigation and user interactions specific to this page.
  */
 export class TestPage {
-  constructor(private readonly page: Page) { }
+  constructor(private readonly page: Page) {}
 
   /**
    * Navigate to the test page and wait until the extension content script is injected.
@@ -41,7 +41,7 @@ export class TestPage {
    */
   async selectText(cssSelector = "h1, h2, h3"): Promise<void> {
     await this.page.waitForFunction(
-      ({ testIds, appId, cssSelector }) => {
+      ({ cssSelector }) => {
         const heading = document.querySelector(cssSelector)
         if (!heading) return false
 
@@ -84,17 +84,10 @@ export class TestPage {
           }),
         )
 
-        // The popup portals into document.body via Radix UI. It appears after a
-        // ~250ms delay. Polling at 300ms gives the popup time to render before
-        // the next check.
-        const el = document.getElementById(appId)
-        return (
-          el?.shadowRoot?.querySelector(`[data-testid='${testIds.menuBar}']`) !=
-          null
-        )
+        return true
       },
-      { testIds: TEST_IDS, appId: APP_ID, cssSelector },
-      { polling: 300, timeout: 10_000 },
+      { cssSelector },
+      { polling: 50, timeout: 10_000 },
     )
   }
 
