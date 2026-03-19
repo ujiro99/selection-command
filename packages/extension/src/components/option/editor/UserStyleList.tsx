@@ -150,38 +150,44 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
               {array.fields
                 .filter((f) => isEditable(f.name))
                 .filter((f) => isValidStyle(f.name))
-                .map((field, index) => (
-                  <li
-                    key={field._id}
-                    className={cn(
-                      "flex items-center gap-2 px-2 py-1",
-                      index !== 0 ? "border-t" : "",
-                    )}
-                  >
-                    <p className="text-base font-mono flex-1 p-2">
-                      <span className="inline-block w-1/2">
-                        {t(
-                          `userStyles_option_${hyphen2Underscore(field.name)}`,
-                        )}
-                      </span>
-                      <span className="inline-block w-1/2 text-center">
-                        {field.value}
-                      </span>
-                    </p>
-                    <div className="flex gap-0.5 items-center">
-                      <EditButton
-                        onClick={() => {
-                          editorRef.current = field
-                          setDialogOpen(true)
-                        }}
-                      />
-                      <RemoveButton
-                        title={`${field.name}: ${field.value}`}
-                        onRemove={() => array.remove(index)}
-                      />
-                    </div>
-                  </li>
-                ))}
+                .map((field, filteredIndex) => {
+                  const originalIndex = array.fields.findIndex(
+                    (f) => f._id === field._id,
+                  )
+                  if (originalIndex === -1) return null
+                  return (
+                    <li
+                      key={field._id}
+                      className={cn(
+                        "flex items-center gap-2 px-2 py-1",
+                        filteredIndex !== 0 ? "border-t" : "",
+                      )}
+                    >
+                      <p className="text-base font-mono flex-1 p-2">
+                        <span className="inline-block w-1/2">
+                          {t(
+                            `userStyles_option_${hyphen2Underscore(field.name)}`,
+                          )}
+                        </span>
+                        <span className="inline-block w-1/2 text-center">
+                          {field.value}
+                        </span>
+                      </p>
+                      <div className="flex gap-0.5 items-center">
+                        <EditButton
+                          onClick={() => {
+                            editorRef.current = field
+                            setDialogOpen(true)
+                          }}
+                        />
+                        <RemoveButton
+                          title={`${field.name}: ${field.value}`}
+                          onRemove={() => array.remove(originalIndex)}
+                        />
+                      </div>
+                    </li>
+                  )
+                })}
             </ul>
           </FormControl>
           <UserStyleDialog
