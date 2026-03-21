@@ -1,14 +1,10 @@
 import path from "path"
 
-import { Page, type BrowserContext } from "@playwright/test"
+import { expect, Page, type BrowserContext } from "@playwright/test"
 
 import { TEST_IDS } from "@/testIds"
 import { fileURLToPath } from "url"
 import type { UserSettings } from "@/types"
-
-function sleep(msec: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, msec))
-}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
@@ -62,25 +58,21 @@ export class OptionsPage {
   async importSettings(): Promise<void> {
     if (!this.page) {
       await this.open()
-      if (!this.page) {
-        throw new Error("Failed to open options page")
-      }
     }
+    const page = this.page!
 
     // Open the import dialog
-    await this.page.locator(`[data-testid="${TEST_IDS.importButton}"]`).click()
+    await page.locator(`[data-testid="${TEST_IDS.importButton}"]`).click()
 
     // Set the file on the hidden file input
-    const fileInput = this.page.locator(
+    const fileInput = page.locator(
       `[data-testid="${TEST_IDS.importFileInput}"]`,
     )
     await fileInput.setInputFiles(TEST_SETTINGS_PATH)
 
     // Wait for the file to be read and OK button to be enabled
-    const okButton = this.page.locator(
-      `[data-testid="${TEST_IDS.optionDialogOk}"]`,
-    )
-    await this.page.waitForFunction(
+    const okButton = page.locator(`[data-testid="${TEST_IDS.optionDialogOk}"]`)
+    await page.waitForFunction(
       (testId) => {
         const button = document.querySelector(
           `[data-testid="${testId}"]`,
@@ -92,23 +84,17 @@ export class OptionsPage {
     )
 
     // Confirm the import and wait for page reload
-    const reloadPromise = this.page.waitForLoadState("domcontentloaded")
+    const reloadPromise = page.waitForLoadState("domcontentloaded")
     await okButton.click()
     await reloadPromise
 
     // Wait for the settings to be loaded with commands
-    let settings
-    let timeout = 5000 // Maximum wait time of 5 seconds
-    const interval = 40 // milliseconds
-    do {
-      await sleep(interval)
-      settings = await this.getUserSettings()
-      timeout -= interval
-    } while (settings == null && timeout > 0)
-
-    if (settings == null) {
-      console.error("Failed to import settings")
-      throw new Error("Failed to import settings")
-    }
+    await expect
+      .poll(async () => await this.getUserSettings(), {
+        message: "User settings should be loaded with commands after import",
+        timeout: 5000,
+        intervals: [40],
+      })
+      .not.toBeUndefined()
   }
 }

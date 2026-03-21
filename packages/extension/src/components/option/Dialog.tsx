@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogPortal,
 } from "@/components/ui/dialog"
-import { TEST_IDS } from "@/testIds.ts"
+import { TEST_IDS } from "@/testIds"
 
 import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
