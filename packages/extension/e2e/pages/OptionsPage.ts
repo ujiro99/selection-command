@@ -1,4 +1,5 @@
 import path from "path"
+import fs from "fs"
 
 import { Page, type BrowserContext } from "@playwright/test"
 
@@ -10,9 +11,6 @@ function sleep(msec: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, msec))
 }
 
-// Load test settings from the JSON file.
-// This is used to provide consistent test data for the importSettings method.
-import testSettings from "../data/test-settings.json" with { type: "json" }
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
 
@@ -53,22 +51,23 @@ export class OptionsPage {
   }
 
   /**
-   * Import test settings from the test-settings.json file.
-   *
-   * Steps:
-   *   1. Click the import button to open the import dialog.
-   *   2. Set the test-settings.json file on the file input.
-   *   3. Wait for the file to be read and OK button to be enabled.
-   *   4. Click OK to execute the import.
-   *   5. Wait for the page to reload and settings to be saved.
+   * Import settings from a given file path.
+   * Defaults to the standard test-settings.json.
    */
-  async importSettings(): Promise<void> {
+  async importSettings(
+    settingsPath: string = TEST_SETTINGS_PATH,
+  ): Promise<void> {
     if (!this.page) {
       await this.open()
       if (!this.page) {
         throw new Error("Failed to open options page")
       }
     }
+
+    // Load the settings file to know the expected command count
+    const rawJson = fs.readFileSync(settingsPath, "utf-8")
+    const settingsJson = JSON.parse(rawJson)
+    const expectedCommandCount: number = settingsJson.commands?.length ?? 0
 
     // Open the import dialog
     await this.page.locator(`[data-testid="${TEST_IDS.importButton}"]`).click()
@@ -77,7 +76,7 @@ export class OptionsPage {
     const fileInput = this.page.locator(
       `[data-testid="${TEST_IDS.importFileInput}"]`,
     )
-    await fileInput.setInputFiles(TEST_SETTINGS_PATH)
+    await fileInput.setInputFiles(settingsPath)
 
     // Wait for the file to be read and OK button to be enabled
     const okButton = this.page.locator(
@@ -108,13 +107,61 @@ export class OptionsPage {
       commands = await this.getCommands()
       timeout -= interval
     } while (
-      (commands == null || commands.length !== testSettings.commands.length) &&
+      (commands == null || commands.length !== expectedCommandCount) &&
       timeout > 0
     )
 
-    if (commands == null || commands.length !== testSettings.commands.length) {
-      console.error("Failed to import settings", commands?.length)
+    if (commands == null || commands.length !== expectedCommandCount) {
+      console.error(
+        "Failed to import settings",
+        commands?.length,
+        "expected:",
+        expectedCommandCount,
+      )
       throw new Error("Failed to import settings")
     }
+  }
+
+  /**
+   * Export current settings and return the downloaded file content as a string.
+   */
+  async exportSettings(): Promise<string> {
+    if (!this.page) {
+      await this.open()
+      if (!this.page) {
+        throw new Error("Failed to open options page")
+      }
+    }
+
+    const downloadPromise = this.page.waitForEvent("download")
+    await this.page.locator(`[data-testid="${TEST_IDS.exportButton}"]`).click()
+    const download = await downloadPromise
+    const filePath = await download.path()
+    if (!filePath) throw new Error("Download path is null")
+    return fs.readFileSync(filePath, "utf-8")
+  }
+
+  /**
+   * Reset settings to defaults via the Reset button and confirm the dialog.
+   */
+  async resetSettings(): Promise<void> {
+    if (!this.page) {
+      await this.open()
+      if (!this.page) {
+        throw new Error("Failed to open options page")
+      }
+    }
+
+    await this.page.locator(`[data-testid="${TEST_IDS.resetButton}"]`).click()
+
+    // Wait for the confirm dialog and click OK
+    const okButton = this.page.locator(
+      `[data-testid="${TEST_IDS.optionDialogOk}"]`,
+    )
+    await okButton.waitFor({ state: "visible", timeout: 5000 })
+    const reloadPromise = this.page.waitForLoadState("domcontentloaded")
+    await okButton.click()
+    await reloadPromise
+    await sleep(500)
   }
 }

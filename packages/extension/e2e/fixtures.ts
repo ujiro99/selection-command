@@ -81,19 +81,38 @@ export const test = base.extend<Fixtures>({
     }
     await use(async () => {
       const result = await serviceWorker.evaluate(async () => {
-        const { 5: metaData } = await chrome.storage.sync.get<{
+        // 1. Load commands from sync storage.
+        const { 5: syncMetaData } = await chrome.storage.sync.get<{
           "5": CommandMetadata
         }>("5")
-        const count = metaData.count
+        const syncCount = syncMetaData.count
 
         const CMD_PREFIX = "cmd-"
         const cmdSyncKey = (idx: number): string => `${CMD_PREFIX}${idx}`
-        const keys = Array.from({ length: count }, (_, i) => cmdSyncKey(i))
-        const result = await chrome.storage.sync.get(keys)
+        const syncKeys = Array.from({ length: syncCount }, (_, i) =>
+          cmdSyncKey(i),
+        )
+        const syncResult = await chrome.storage.sync.get(syncKeys)
+        const syncCommands = syncKeys.map((key) => syncResult[key] as Command)
 
-        return keys
-          .map((key) => result[key] as Command)
-          .filter((cmd) => cmd != null)
+        // 2. Load commands from local storage
+        const LOCAL_COMMAND_METADATA = "localCommandMetadata"
+        const { [LOCAL_COMMAND_METADATA]: localMetaData } =
+          await chrome.storage.local.get<{
+            [LOCAL_COMMAND_METADATA]: CommandMetadata
+          }>(LOCAL_COMMAND_METADATA)
+        const localCount = localMetaData.count
+
+        const cmdLocalKey = (idx: number): string => `${CMD_PREFIX}local-${idx}`
+        const localKeys = Array.from({ length: localCount }, (_, i) =>
+          cmdLocalKey(i),
+        )
+        const localResult = await chrome.storage.sync.get(syncKeys)
+        const localCommands = localKeys.map(
+          (key) => localResult[key] as Command,
+        )
+
+        return [...syncCommands, ...localCommands].filter((cmd) => cmd != null)
       })
       return result
     })

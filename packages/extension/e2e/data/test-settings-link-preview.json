@@ -1,0 +1,60 @@
+{
+  "commands": [
+    {
+      "id": "$$drag-1",
+      "openMode": "previewPopup",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "Link Preview"
+    }
+  ],
+  "folders": [],
+  "linkCommand": {
+    "enabled": "Enable",
+    "openMode": "previewSidePanel",
+    "showIndicator": true,
+    "sidePanelAutoHide": true,
+    "startupMethod": {
+      "keyboardParam": "Shift",
+      "leftClickHoldParam": 200,
+      "method": "keyboard",
+      "threshold": 50
+    }
+  },
+  "pageRules": [],
+  "popupPlacement": {
+    "align": "start",
+    "alignOffset": 0,
+    "side": "top",
+    "sideOffset": 0
+  },
+  "settingVersion": "0.16.0",
+  "shortcuts": {
+    "shortcuts": []
+  },
+  "startupMethod": {
+    "method": "textSelection"
+  },
+  "style": "horizontal",
+  "userStyles": [
+    {
+      "name": "popup-delay",
+      "value": 250
+    },
+    {
+      "name": "popup-duration",
+      "value": 150
+    },
+    {
+      "name": "padding-scale",
+      "value": "1.5"
+    }
+  ],
+  "windowOption": {
+    "popupAutoCloseDelay": 0,
+    "sidePanelAutoHide": false
+  }
+}

@@ -1,7 +1,6 @@
 import { createRoot } from "react-dom/client"
 import { APP_ID, isDebug, isE2E } from "./const"
 import { App } from "./components/App"
-import icons from "./icons.svg?raw"
 import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
 import "@/services/connection"
 
@@ -16,7 +15,6 @@ try {
   document.body.insertAdjacentElement("afterend", rootDom)
   const mode = isDebug || isE2E ? "open" : "closed" // 'open' for debugging and e2e
   const shadow = rootDom.attachShadow({ mode })
-  shadow.innerHTML = icons
   const root = createRoot(shadow)
   root.render(
     <ErrorBoundary>
@@ -39,9 +37,10 @@ try {
       })
   }
 
+  console.log("Content script initialized successfully", { isDebug, isE2E })
   if (!isDebug) {
     // Putting styles into ShadowDom
-    insertCss(shadow, "/assets/icons.css")
+    insertCss(shadow, "/assets/components.css")
     insertCss(shadow, "/assets/content_script.css")
   }
 

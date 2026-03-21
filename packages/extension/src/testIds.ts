@@ -4,4 +4,6 @@ export const TEST_IDS = {
   importFileInput: "import-file-input",
   optionDialogOk: "option-dialog-ok",
   optionDialogCancel: "option-dialog-cancel",
+  exportButton: "export-button",
+  resetButton: "reset-button",
 }

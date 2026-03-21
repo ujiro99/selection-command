@@ -1,6 +1,16 @@
 {
   "commands": [
     {
+      "id": "$$drag-1",
+      "openMode": "previewPopup",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "Link Preview"
+    },
+    {
       "iconUrl": "https://ujiro99.github.io/selection-command/favicon.ico",
       "id": "13b4e831-7fac-4b72-a1ae-c82655b3819e",
       "openMode": "popup",
@@ -262,14 +272,164 @@
       "title": "en to ja"
     },
     {
-      "id": "$$drag-1",
-      "openMode": "previewPopup",
+      "id": "cmd-test-window",
+      "openMode": "window",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
       "popupOption": {
         "height": 700,
         "width": 600
       },
       "revision": 0,
-      "title": "Link Preview"
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "テストページ (Window)"
+    },
+    {
+      "id": "cmd-test-sidepanel",
+      "openMode": "sidePanel",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "テストページ (SidePanel)"
+    },
+    {
+      "id": "cmd-test-copy",
+      "openMode": "copy",
+      "parentFolderId": "RootFolder",
+      "revision": 0,
+      "title": "テキストコピー"
+    },
+    {
+      "id": "cmd-test-linkpopup",
+      "openMode": "linkPopup",
+      "parentFolderId": "RootFolder",
+      "revision": 0,
+      "title": "リンクポップアップ"
+    },
+    {
+      "id": "cmd-test-deepl",
+      "openMode": "tab",
+      "openModeSecondary": "tab",
+      "parentFolderId": "lang-folder-001",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://www.deepl.com/translator#auto/ja/%s",
+      "spaceEncoding": "plus",
+      "title": "DeepL"
+    },
+    {
+      "aiPromptOption": {
+        "openMode": "sidePanel",
+        "prompt": "以下のテキストについて説明してください。\n{{Clipboard}}",
+        "serviceId": "gemini"
+      },
+      "id": "cmd-test-ai-clipboard",
+      "openMode": "aiPrompt",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "クリップボード展開テスト"
+    },
+    {
+      "id": "cmd-test-pa-tab",
+      "openMode": "pageAction",
+      "pageActionOption": {
+        "openMode": "tab",
+        "startUrl": "https://web-toolbox.dev/tools/character-counter",
+        "steps": [
+          {
+            "delayMs": 0,
+            "id": "pa-tab-s1",
+            "param": {
+              "label": "Start",
+              "type": "start",
+              "url": "https://web-toolbox.dev/tools/character-counter"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 500,
+            "id": "pa-tab-s2",
+            "param": {
+              "label": "文字入力",
+              "selector": "//textarea",
+              "selectorType": "xpath",
+              "type": "input",
+              "value": "{{SelectedText}}"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 0,
+            "id": "pa-tab-s3",
+            "param": {
+              "label": "End",
+              "type": "end"
+            },
+            "skipRenderWait": false
+          }
+        ]
+      },
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "revision": 0,
+      "title": "Character Counter (Tab)"
+    },
+    {
+      "id": "cmd-test-pa-bgtab",
+      "openMode": "pageAction",
+      "pageActionOption": {
+        "openMode": "backgroundTab",
+        "startUrl": "https://web-toolbox.dev/tools/character-counter",
+        "steps": [
+          {
+            "delayMs": 0,
+            "id": "pa-bgtab-s1",
+            "param": {
+              "label": "Start",
+              "type": "start",
+              "url": "https://web-toolbox.dev/tools/character-counter"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 500,
+            "id": "pa-bgtab-s2",
+            "param": {
+              "label": "文字入力",
+              "selector": "//textarea",
+              "selectorType": "xpath",
+              "type": "input",
+              "value": "{{SelectedText}}"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 0,
+            "id": "pa-bgtab-s3",
+            "param": {
+              "label": "End",
+              "type": "end"
+            },
+            "skipRenderWait": false
+          }
+        ]
+      },
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "revision": 0,
+      "title": "Character Counter (BG Tab)"
     }
   ],
   "folders": [
@@ -305,6 +465,12 @@
       "iconUrl": "",
       "id": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
       "title": "Work"
+    },
+    {
+      "iconUrl": "",
+      "id": "lang-folder-001",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "title": "Lang"
     }
   ],
   "linkCommand": {
