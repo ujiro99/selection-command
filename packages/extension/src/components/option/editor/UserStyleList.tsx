@@ -155,6 +155,9 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
                     (f) => f._id === field._id,
                   )
                   if (originalIndex === -1) return null
+                  const fieldLabel = t(
+                    `userStyles_option_${hyphen2Underscore(field.name)}`,
+                  )
                   return (
                     <li
                       key={field._id}
@@ -164,11 +167,7 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
                       )}
                     >
                       <p className="text-base font-mono flex-1 p-2">
-                        <span className="inline-block w-1/2">
-                          {t(
-                            `userStyles_option_${hyphen2Underscore(field.name)}`,
-                          )}
-                        </span>
+                        <span className="inline-block w-1/2">{fieldLabel}</span>
                         <span className="inline-block w-1/2 text-center">
                           {field.value}
                         </span>
@@ -181,7 +180,7 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
                           }}
                         />
                         <RemoveButton
-                          title={`${field.name}: ${field.value}`}
+                          title={`${fieldLabel}: ${field.value}`}
                           onRemove={() => array.remove(originalIndex)}
                         />
                       </div>
