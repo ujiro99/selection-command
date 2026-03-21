@@ -15,15 +15,14 @@ export type ScreenSize = {
 
 export async function updateActiveScreenId(windowId: number): Promise<void> {
   try {
-    const exists = await windowExists(windowId)
-    if (!exists) {
+    const result = await windowExists(windowId)
+    if (!result.exists) {
       console.warn(`Window ${windowId} does not exist for screen ID update`)
       return
     }
 
-    const window = await chrome.windows.get(windowId)
-    const left = window.left ?? 0
-    const top = window.top ?? 0
+    const left = result.window.left ?? 0
+    const top = result.window.top ?? 0
 
     // Find the display that contains the window
     const displays = await chrome.system.display.getInfo()
@@ -44,7 +43,7 @@ export async function updateActiveScreenId(windowId: number): Promise<void> {
       }))
     }
   } catch (error) {
-    console.error("Failed to update active screen ID:", error)
+    console.warn("Failed to update active screen ID:", error)
   }
 }
 

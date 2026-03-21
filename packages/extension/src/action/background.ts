@@ -3,19 +3,17 @@ import { Popup } from "./popup"
 import { Window } from "./window"
 import { Tab } from "./tab"
 import { BackgroundTab } from "./backgroundTab"
-import { SidePanel } from "./sidePanel"
 import { Api } from "./api"
 import { PageAction } from "./pageAction"
 import { AiPrompt } from "./aiPrompt"
 import { executeAction } from "./executor"
 import type { ExecuteCommandParams } from "@/types"
 
-export const actionsForBackground = {
+const actionsForBackground = {
   [OPEN_MODE_BG.POPUP]: Popup,
   [OPEN_MODE_BG.WINDOW]: Window,
   [OPEN_MODE_BG.TAB]: Tab,
   [OPEN_MODE_BG.BACKGROUND_TAB]: BackgroundTab,
-  [OPEN_MODE_BG.SIDE_PANEL]: SidePanel,
   [OPEN_MODE_BG.API]: Api,
   [OPEN_MODE_BG.PAGE_ACTION]: PageAction,
   [OPEN_MODE_BG.AI_PROMPT]: AiPrompt,

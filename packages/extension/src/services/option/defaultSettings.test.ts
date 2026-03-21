@@ -1,10 +1,10 @@
 import { describe, it, expect } from "vitest"
 import { DefaultCommands, getDefaultCommands } from "./defaultSettings"
 import { isLinkCommand } from "@/lib/utils"
-import { INSERT, InsertSymbol } from "@/services/pageAction"
+import { INSERT, toInsertTemplate } from "@/services/pageAction"
 
-const SYM_SELECTED_TEXT = `{{${InsertSymbol[INSERT.SELECTED_TEXT]}}}`
-const SYM_URL = `{{${InsertSymbol[INSERT.URL]}}}`
+const SYM_SELECTED_TEXT = toInsertTemplate(INSERT.SELECTED_TEXT)
+const SYM_URL = toInsertTemplate(INSERT.URL)
 
 const ALL_LOCALES = [
   "ja",
