@@ -24,7 +24,7 @@ export const SidePanel = {
     } catch (e) {
       console.warn("Failed to read clipboard text:", e)
 
-      const tabId = await Ipc.getTabId()
+      const tabId = await Ipc.getActiveTabId()
       await Ipc.sendTab<ShowToastParam>(tabId, TabCommand.showToast, {
         title: t("clipboard_error_title"),
         description: t("clipboard_error_description"),
