@@ -1,5 +1,6 @@
 import { test, expect } from "./fixtures"
 import { TestPage } from "./pages/TestPage"
+import { OptionsPage } from "./pages/OptionsPage"
 
 /**
  * E2E-01: Verify that the extension content script is injected into the test page.
@@ -24,41 +25,31 @@ test("E2E-02: popup menu appears on text selection", async ({ page }) => {
   expect(menubar.isVisible())
 })
 
-test("E2E-03: ポップアップメニューからコマンド実行し、PopupウィンドウでGoogle検索が実行されること", async ({
+test("E2E-03: executing a command from the popup menu performs search on test page in a popup window", async ({
   context,
+  extensionId,
+  getUserSettings,
   page,
 }) => {
+  // Import test settings to ensure the first menu item is a Testpage command.
+  const optionsPage = new OptionsPage(context, extensionId, getUserSettings)
+  await optionsPage.open()
+  await optionsPage.importSettings()
+  await optionsPage.close()
+
+  // Arrange: Open the test page and select text to show the popup menu.
   const testPage = new TestPage(page)
   await testPage.open()
-  await testPage.selectText()
+  await testPage.selectText("h2")
   const menubar = await testPage.getMenuBar()
 
-  // Wait for a new popup window to be created when the button is clicked.
+  // Act: Wait for a new popup window to be created when the button is clicked.
   const [popupPage] = await Promise.all([
     context.waitForEvent("page"),
     menubar.locator("button").first().click(),
   ])
-
   await popupPage.waitForLoadState("domcontentloaded")
-  expect(popupPage.url()).toContain("google.com/search?q=")
-})
 
-test("E2E-04: コンテキスメニューからコマンド実行し、PopupウィンドウでGoogle検索が実行されること", async ({
-  context,
-  page,
-  getUserSettings,
-}) => {
-  const testPage = new TestPage(page)
-  await testPage.open()
-  await testPage.selectText()
-  const menubar = await testPage.getMenuBar()
-  await menubar.locator("button").first().click()
-
-  let [serviceWorker] = context.serviceWorkers()
-  if (!serviceWorker) {
-    serviceWorker = await context.waitForEvent("serviceworker")
-  }
-
-  const reuslt = await getUserSettings()
-  console.log("userSettings", reuslt)
+  // Assert
+  expect(popupPage.url()).toContain("?k=Browser")
 })
