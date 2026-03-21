@@ -199,9 +199,7 @@ interface PageActionOption {
 
 **Hub開発:**
 
-- commands.jsonの手動更新後は`yarn tags`でタグ統計更新
 - 多言語対応時は各言語ファイルの更新が必要
-- 分析データは`yarn analytics`で手動更新
 
 **テスト:**
 

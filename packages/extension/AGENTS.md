@@ -1,8 +1,8 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI Agent when working with code in this repository.
 
-このファイルは、このリポジトリのコードを扱う際にClaude Code (claude.ai/code)に対するガイダンスを提供します。
+このファイルは、このリポジトリのコードを扱う際にAI Agentに対するガイダンスを提供します。
 
 ## 基本ルール
 
@@ -10,7 +10,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **コードのスタイル**: TypeScriptのコーディング規約に従うこと。特に、変数名、関数名はキャメルケースを使用し、クラス名はパスカルケースを使用する。
 - **コード内の言語**: コード内のコメントは英語で記述すること。
 - **コードの品質**: コードは読みやすく、保守しやすいように書くこと。コメントは必要な箇所へ記載し、複雑なロジックには説明を加える。
-- **テキストのエンコーディング**: UTF-8を使用すること。
 
 ## 開発コマンド
 
@@ -57,6 +56,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **主要機能:**
 
+- **検索コマンド** - 選択テキストを使用した検索URLの生成と新しいポップアップ|ウィンドウ|タブ|サイドパネルでのオープン
+- **AIプロンプト** - 選択テキストをあらかじめ定義したAI用のプロンプトテンプレートに展開し、AIサービスに送信
 - **ページアクション** - ブラウザ自動化シーケンスの記録と再生
 - **コンテキストメニュー** - 選択したテキストに対する右クリックアクション
 - **設定管理** - 構成とユーザー設定のインポート/エクスポート
