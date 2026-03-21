@@ -701,6 +701,7 @@ export const openSidePanel = async (
     await chrome.sidePanel.open({ tabId })
   } catch (e) {
     console.error("Failed to open side panel:", e)
+    throw e
   }
 
   return { tabId }
