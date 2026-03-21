@@ -681,8 +681,7 @@ export const openSidePanel = async (
 ): Promise<{ tabId: number | undefined }> => {
   const { url, tabId } = param
 
-  const targetTabId = tabId
-  if (!targetTabId) {
+  if (!tabId) {
     console.warn("No valid tab ID for side panel")
     return {
       tabId: undefined,
@@ -692,17 +691,19 @@ export const openSidePanel = async (
   // Set the side panel options for the tab
   // Do not await here because sidePanel.open() must be executed within a user gesture.
   chrome.sidePanel.setOptions({
-    tabId: targetTabId,
+    tabId,
     path: toUrl(url),
     enabled: true,
   })
 
   // Open the side panel
-  await chrome.sidePanel.open({ tabId: targetTabId })
-
-  return {
-    tabId: targetTabId,
+  try {
+    await chrome.sidePanel.open({ tabId })
+  } catch (e) {
+    console.error("Failed to open side panel:", e)
   }
+
+  return { tabId }
 }
 
 const SIDE_PANEL_CLOSE_ANIMATION = 1000
