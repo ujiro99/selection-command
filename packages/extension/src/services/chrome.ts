@@ -15,12 +15,16 @@ BgData.init()
  * @param {number} windowId - The ID of the window to check
  * @returns {Promise<boolean>} True if the window exists, false otherwise
  */
-export const windowExists = async (windowId: number): Promise<boolean> => {
+export const windowExists = async (
+  windowId: number,
+): Promise<
+  { exists: true; window: chrome.windows.Window } | { exists: false }
+> => {
   try {
-    await chrome.windows.get(windowId)
-    return true
+    const window = await chrome.windows.get(windowId)
+    return { exists: true, window }
   } catch {
-    return false
+    return { exists: false }
   }
 }
 
