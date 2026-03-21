@@ -25,7 +25,7 @@ import {
 import { cn } from "@/lib/utils"
 import css from "./ShortcutList.module.css"
 import { isAiPromptType } from "@/types/schema"
-import { InsertSymbol, INSERT } from "@/services/pageAction"
+import { INSERT, toInsertTemplate } from "@/services/pageAction"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -39,8 +39,8 @@ const isTextSelectionOnly = (command: Command) => {
     const option = command.aiPromptOption
 
     const willUseClipboard =
-      option.prompt.includes(InsertSymbol[INSERT.CLIPBOARD]) ||
-      option.prompt.includes(InsertSymbol[INSERT.SELECTED_TEXT])
+      option.prompt.includes(toInsertTemplate(INSERT.CLIPBOARD)) ||
+      option.prompt.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
     return option.openMode === OPEN_MODE.SIDE_PANEL && willUseClipboard
   }
 
@@ -50,18 +50,18 @@ const isTextSelectionOnly = (command: Command) => {
 const createNameRender = (command: Command) => {
   return isTextSelectionOnly(command)
     ? (name: string) => (
-      <span className="truncate">
-        {name}
-        <span
-          className={cn(
-            "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap",
-            css.tag,
-          )}
-        >
-          {t("shortcut_text_selection_only")}
+        <span className="truncate">
+          {name}
+          <span
+            className={cn(
+              "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap",
+              css.tag,
+            )}
+          >
+            {t("shortcut_text_selection_only")}
+          </span>
         </span>
-      </span>
-    )
+      )
     : undefined
 }
 
@@ -141,7 +141,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
         cmd &&
         isTextSelectionOnly(cmd) &&
         shortcut?.noSelectionBehavior !==
-        SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
+          SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
       ) {
         setValue(
           `shortcuts.shortcuts.${index}.noSelectionBehavior`,

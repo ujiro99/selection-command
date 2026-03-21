@@ -16,3 +16,7 @@ export const InsertSymbol = {
   [INSERT.URL]: "Url",
   [INSERT.CLIPBOARD]: "Clipboard",
 }
+
+/** Returns the template placeholder string for a given INSERT key, e.g. "{{Clipboard}}" */
+export const toInsertTemplate = (key: INSERT): string =>
+  `{{${InsertSymbol[key]}}}`

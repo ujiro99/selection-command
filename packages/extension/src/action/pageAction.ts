@@ -5,7 +5,7 @@ import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import type { ExecuteCommandParams, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
-import { INSERT, InsertSymbol } from "@/services/pageAction"
+import { INSERT, toInsertTemplate } from "@/services/pageAction"
 
 type PageActionParams = {
   userVariables?: Array<{ name: string; value: string }>
@@ -38,7 +38,7 @@ export const PageAction = {
     const needClipboard = command.pageActionOption.steps.some((step) => {
       return (
         step.param.type === PAGE_ACTION_EVENT.input &&
-        step.param.value.includes(InsertSymbol[INSERT.CLIPBOARD])
+        step.param.value.includes(toInsertTemplate(INSERT.CLIPBOARD))
       )
     })
 
