@@ -21,12 +21,12 @@
 | E2E-15   | メニュースタイル   | 横並び                       | -                             | 実装済   |
 | E2E-16   | メニュースタイル   | 縦並び                       | -                             | 実装済   |
 | E2E-20   | 検索コマンド       | OpenMode                     | Popup                         | 実装済   |
-| E2E-21   | 検索コマンド       | OpenMode                     | Tab                           | 未実装   |
-| E2E-22   | 検索コマンド       | OpenMode                     | Window                        | 未実装   |
-| E2E-23   | 検索コマンド       | OpenMode                     | SidePanel                     | 未実装   |
-| E2E-24   | 検索コマンド       | フォルダ格納                 | none                          | 未実装   |
-| E2E-25   | 検索コマンド       | フォルダ格納                 | Shop                          | 未実装   |
-| E2E-26   | 検索コマンド       | フォルダ格納                 | AI → Lang                     | 未実装   |
+| E2E-21   | 検索コマンド       | OpenMode                     | Tab                           | 実装済   |
+| E2E-22   | 検索コマンド       | OpenMode                     | Window                        | 実装済   |
+| E2E-23   | 検索コマンド       | OpenMode                     | SidePanel                     | スキップ |
+| E2E-24   | 検索コマンド       | フォルダ格納                 | none                          | 実装済   |
+| E2E-25   | 検索コマンド       | フォルダ格納                 | Shop                          | 実装済   |
+| E2E-26   | 検索コマンド       | フォルダ格納                 | AI → Lang                     | 実装済   |
 | E2E-30   | 単機能コマンド     | Copy Text                    | -                             | 未実装   |
 | E2E-31   | 単機能コマンド     | Link Popup                   | 複数リンクを開く              | 未実装   |
 | E2E-40   | PageActionコマンド | 記録                         | クリック                      | 未実装   |

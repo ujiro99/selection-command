@@ -64,6 +64,8 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           },
           "rounded-sm ",
         )}
+        role="menuitem"
+        name={title}
         ref={buttonRef}
         onClick={handleClick}
         disabled={!enabled}
@@ -97,7 +99,7 @@ function ImageWithState(props: ImageProps): JSX.Element {
   return (
     <>
       {status === ExecState.NONE && (
-        <img className={css.itemImg} src={iconUrl} alt="icon" />
+        <img className={css.itemImg} src={iconUrl} alt="" aria-hidden="true" />
       )}
       {status === ExecState.EXECUTING && (
         <Icon
