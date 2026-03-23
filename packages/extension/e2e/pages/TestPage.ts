@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test"
+import { expect, type Page, type Locator } from "@playwright/test"
 import { TEST_IDS } from "@/testIds"
 
 const TEST_URL = "https://ujiro99.github.io/selection-command/en/test"
@@ -9,7 +9,7 @@ const APP_ID = "selection-command"
  * Encapsulates navigation and user interactions specific to this page.
  */
 export class TestPage {
-  constructor(private readonly page: Page) {}
+  constructor(private readonly page: Page) { }
 
   /**
    * Navigate to the test page and wait until the extension content script is injected.
@@ -88,6 +88,54 @@ export class TestPage {
       },
       { cssSelector },
       { polling: 50, timeout: 10_000 },
+    )
+  }
+
+  /**
+   * Simulate a left-click hold (long-press) without clearing the text selection.
+   *
+   * locator.click({ delay }) uses CDP Input.dispatchMouseEvent which causes
+   * Chrome (--headless=new) to fire selectionchange on mousedown and collapse
+   * the selection. This sets selectionText = "" → enable = false in
+   * useLeftClickHold → release() → clearTimeout, so the hold is never detected.
+   *
+   * window.dispatchEvent with a synthetic JS MouseEvent does NOT trigger the
+   * browser's built-in selection-clearing behavior, so the text selection is
+   * preserved through the entire hold period and the extension's timeout fires
+   * correctly.
+   */
+  async leftClickHold(locator: Locator, holdMs: number): Promise<void> {
+    const box = await locator.boundingBox()
+    if (!box) throw new Error("Element has no bounding box")
+    const x = box.x + box.width / 2
+    const y = box.y + box.height / 2
+
+    await this.page.evaluate(
+      ({ x, y }) => {
+        window.dispatchEvent(
+          new MouseEvent("mousedown", {
+            bubbles: true,
+            button: 0,
+            clientX: x,
+            clientY: y,
+          }),
+        )
+      },
+      { x, y },
+    )
+    await this.page.waitForTimeout(holdMs)
+    await this.page.evaluate(
+      ({ x, y }) => {
+        window.dispatchEvent(
+          new MouseEvent("mouseup", {
+            bubbles: true,
+            button: 0,
+            clientX: x,
+            clientY: y,
+          }),
+        )
+      },
+      { x, y },
     )
   }
 

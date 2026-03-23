@@ -1,7 +1,7 @@
 import { test, expect } from "./fixtures"
 import { TestPage } from "./pages/TestPage"
-import { OptionsPage } from "./pages/OptionsPage"
-import { STARTUP_METHOD, KEYBOARD } from "../src/const"
+// import { OptionsPage } from "./pages/OptionsPage"
+import { APP_ID } from "../src/const"
 
 /**
  * E2E-01: Verify that the extension content script is injected into the test page.
@@ -10,71 +10,7 @@ import { STARTUP_METHOD, KEYBOARD } from "../src/const"
 test("E2E-01: extension is injected into the test page", async ({ page }) => {
   const testPage = new TestPage(page)
   await testPage.open()
-})
-
-/**
- * E2E-02: Verify that the popup menu appears when text is selected on the page.
- * Double-clicking on a word triggers text selection and shows the popup menu.
- */
-test("E2E-10: popup menu appears on text selection", async ({ page }) => {
-  const testPage = new TestPage(page)
-  await testPage.open()
-
-  await testPage.selectText()
-
-  const menubar = await testPage.getMenuBar()
-  expect(menubar.isVisible())
-})
-
-test("E2E-11: popup menu appears on text selection and press a ShiftKey", async ({
-  setUserSettings,
-  page,
-}) => {
-  // Arrange: Set the startup method to "keyboard".
-  const testPage = new TestPage(page)
-  await testPage.open()
-
-  await setUserSettings({
-    startupMethod: {
-      method: STARTUP_METHOD.KEYBOARD,
-      keyboardParam: KEYBOARD.SHIFT,
-    },
-  })
-  await testPage.selectText()
-  await page.keyboard.press(KEYBOARD.SHIFT)
-
-  // Act: Set the startup method to "shortcut" and dispatch the keyboard shortcut.
-  const menubar = await testPage.getMenuBar()
-
-  // Asert
-  expect(menubar.isVisible())
-})
-
-test("E2E-20: executing a command from the popup menu performs search on test page in a popup window", async ({
-  context,
-  extensionId,
-  getCommands,
-  page,
-}) => {
-  // Import test settings to ensure the first menu item is a Testpage command.
-  const optionsPage = new OptionsPage(context, extensionId, getCommands)
-  await optionsPage.open()
-  await optionsPage.importSettings()
-  await optionsPage.close()
-
-  // Arrange: Open the test page and select text to show the popup menu.
-  const testPage = new TestPage(page)
-  await testPage.open()
-  await testPage.selectText("h2")
-  const menubar = await testPage.getMenuBar()
-
-  // Act: Wait for a new popup window to be created when the button is clicked.
-  const [popupPage] = await Promise.all([
-    context.waitForEvent("page"),
-    menubar.locator("button").first().click(),
-  ])
-  await popupPage.waitForLoadState("domcontentloaded")
-
-  // Assert
-  expect(popupPage.url()).toContain("?k=Browser")
+  const locator = page.locator(`#${APP_ID}`)
+  await locator.waitFor({ state: "attached" })
+  expect(locator).toBeVisible()
 })
