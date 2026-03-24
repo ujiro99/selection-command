@@ -304,14 +304,20 @@
       "openMode": "copy",
       "parentFolderId": "RootFolder",
       "revision": 0,
-      "title": "テキストコピー"
+      "title": "テキストコピー",
+      "iconUrl": "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png"
     },
     {
       "id": "cmd-test-linkpopup",
       "openMode": "linkPopup",
       "parentFolderId": "RootFolder",
       "revision": 0,
-      "title": "リンクポップアップ"
+      "title": "リンクポップアップ",
+      "iconUrl": "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      }
     },
     {
       "id": "cmd-test-deepl",

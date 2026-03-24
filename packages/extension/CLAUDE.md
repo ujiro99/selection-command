@@ -16,6 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `yarn dev` - Viteを使用した開発モードの開始
 - `yarn build` - 拡張機能のビルド（TypeScriptコンパイル + Viteビルドを実行）
+- `yarn build:e2e` - E2Eテスト用にビルド（E2Eテスト実行前に必ずこれを実行して最新のビルドを生成すること）
 - `yarn lint` - ESLintを実行してコード品質をチェック
 - `yarn test` - Vitestを使用したテストの実行
 - `yarn test:ui` - VitestのUIモードでテストを実行
@@ -70,6 +71,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **スタイリング**: CSS Modules + Tailwind CSS(ver.3)
 - **状態管理**: React hooks with Chrome extension storage APIs
 - **テスト**: Vitest with jsdom for unit/integration testing
+- **e2eテスト**: Playwright for browser automation testing
 - **コード品質**: ESLint for code quality
 
 ### プロジェクト構造の注意事項
@@ -104,11 +106,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **テスト設計書**: 各機能のテストケースを明確に定義
   - 機能ごとにテストケースを分類し、優先順位を付ける
   - 正常系、異常系、境界値テストを含める
-- **ユニットテスト**: 各関数やコンポーネントの個別テスト
-  - テスト間の副作用を最小限に抑えるため、モックの使用は最低限にする
-  - Arrange-Act-Assertパターンを使用
-  - 共通的なモックは `src/test/setup.ts` に配置
 - **テストケースの名前**: 機能名と期待される動作を明示的に記述する
   - テストケース名の接頭辞は、機能名の略称と通し番号を使用（例: `SU-` for Storage Usage）
     - 後から追加した場合は、さらに記号を付けて区別（例: SU-01-a）
   - 例: ✅ SU-01: 正常系: 基本的な使用量計算が正しく行われる
+- **ユニットテスト**: 各関数やコンポーネントの個別テスト
+  - テスト間の副作用を最小限に抑えるため、モックの使用は最低限にする
+  - Arrange-Act-Assertパターンを使用
+  - 共通的なモックは `src/test/setup.ts` に配置
+- **e2eテスト**: Playwrightを使用した、シナリオベースのブラウザ自動化テスト
+  - Arrange-Act-Assertパターンを使用
+  - Page Object Model パターンを使用して、頻出する操作を抽象化する
+    - `packages/extension/e2e/pages/` にページオブジェクトを配置
+  - 詳細な設計書は `docs/test/e2e-test-spec.md` を参照、更新すること
+  - テストの実行前には、必ず `yarn build:e2e` を実行して最新のe2e向けビルドを生成すること

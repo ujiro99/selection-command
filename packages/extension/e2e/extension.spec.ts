@@ -10,7 +10,5 @@ import { APP_ID } from "../src/const"
 test("E2E-01: extension is injected into the test page", async ({ page }) => {
   const testPage = new TestPage(page)
   await testPage.open()
-  const locator = page.locator(`#${APP_ID}`)
-  await locator.waitFor({ state: "attached" })
-  expect(locator).toBeVisible()
+  expect(page.locator(`#${APP_ID}`)).toBeVisible()
 })

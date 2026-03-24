@@ -42,14 +42,14 @@ export class TestPage {
   async selectText(cssSelector = "h1, h2, h3"): Promise<void> {
     await this.page.waitForFunction(
       ({ cssSelector }) => {
-        const heading = document.querySelector(cssSelector)
-        if (!heading) return false
+        const element = document.querySelector(cssSelector)
+        if (!element) return false
 
         // Scroll into view so getBoundingClientRect() returns valid coordinates.
-        heading.scrollIntoView()
+        element.scrollIntoView()
 
         // Find the first non-empty text node to build a selection range.
-        const textNode = Array.from(heading.childNodes).find(
+        const textNode = Array.from(element.childNodes).find(
           (n) =>
             n.nodeType === Node.TEXT_NODE &&
             (n.textContent?.trim().length ?? 0) > 0,
@@ -74,7 +74,7 @@ export class TestPage {
         // Dispatch dblclick so SelectAnchor's onDouble handler fires and calls setAnchor().
         // button: 0 (left) is required by isTargetEvent(); bubbles: true reaches document.
         const rect = range.getBoundingClientRect()
-        heading.dispatchEvent(
+        element.dispatchEvent(
           new MouseEvent("dblclick", {
             bubbles: true,
             cancelable: true,
@@ -136,6 +136,91 @@ export class TestPage {
         )
       },
       { x, y },
+    )
+  }
+
+  /**
+   * Select text spanning from the first matching element of startSelector to
+   * the last matching element of endSelector using the Selection API, then
+   * dispatch the mouse/selection events the extension listens for.
+   *
+   * Uses the same polling approach as selectText() to handle the race condition
+   * where the extension's useEffect listeners are not yet registered when the
+   * page first loads.
+   *
+   * The selection covers the full text of both elements: it starts at the
+   * beginning of the first text node inside startSelector's element and ends
+   * at the end of the last text node inside endSelector's element, thereby
+   * encompassing the rectangular region that includes both elements.
+   */
+  async selectRange(startSelector: string, endSelector: string): Promise<void> {
+    await this.page.waitForFunction(
+      ({ startSelector, endSelector }) => {
+        const startElement = document.querySelector(startSelector)
+        const endElement = document.querySelector(endSelector)
+        if (!startElement || !endElement) return false
+
+        startElement.scrollIntoView()
+
+        // Walk the subtree and return the first non-empty Text node.
+        const findFirstTextNode = (el: Element): Text | null => {
+          const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+          let node: Node | null
+          while ((node = walker.nextNode())) {
+            if ((node.textContent?.trim().length ?? 0) > 0) return node as Text
+          }
+          return null
+        }
+
+        // Walk the subtree and return the last non-empty Text node.
+        const findLastTextNode = (el: Element): Text | null => {
+          const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+          let last: Text | null = null
+          let node: Node | null
+          while ((node = walker.nextNode())) {
+            if ((node.textContent?.trim().length ?? 0) > 0) last = node as Text
+          }
+          return last
+        }
+
+        const startNode = findFirstTextNode(startElement)
+        const endNode = findLastTextNode(endElement)
+        if (!startNode || !endNode) return false
+
+        const range = document.createRange()
+        range.setStart(startNode, 0)
+        range.setEnd(endNode, endNode.textContent?.length ?? 0)
+
+        const selection = window.getSelection()!
+        selection.removeAllRanges()
+        selection.addRange(range)
+
+        document.dispatchEvent(new Event("selectionchange"))
+
+        // Dispatch dblclick at the end element so SelectAnchor's onDouble()
+        // handler fires and calls setAnchor(), which is required for the popup
+        // to appear. Using mousedown + mouseup does NOT work here because
+        // SelectAnchor's mouseup handler only calls onDrag() when isDragging
+        // is already true — and isDragging is set by mousemove events that are
+        // only listened for while isMouseDown (React state) is true. Since
+        // React state updates are asynchronous, a synthetic mousemove
+        // dispatched right after mousedown is lost. dblclick bypasses this
+        // entirely via the onDouble() → setAnchor() path.
+        const endRect = endElement.getBoundingClientRect()
+        endElement.dispatchEvent(
+          new MouseEvent("dblclick", {
+            bubbles: true,
+            cancelable: true,
+            button: 0,
+            clientX: endRect.right,
+            clientY: endRect.bottom,
+          }),
+        )
+
+        return true
+      },
+      { startSelector, endSelector },
+      { polling: 50, timeout: 10_000 },
     )
   }
 
