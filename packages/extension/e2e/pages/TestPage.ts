@@ -1,22 +1,20 @@
-import { expect, type Page, type Locator } from "@playwright/test"
+import { type Page, type Locator } from "@playwright/test"
 import { TEST_IDS } from "@/testIds"
 
 const TEST_URL = "https://ujiro99.github.io/selection-command/en/test"
-const APP_ID = "selection-command"
 
 /**
  * Page Object for the extension's test page.
  * Encapsulates navigation and user interactions specific to this page.
  */
 export class TestPage {
-  constructor(private readonly page: Page) { }
+  constructor(private readonly page: Page) {}
 
   /**
    * Navigate to the test page and wait until the extension content script is injected.
    */
   async open(): Promise<void> {
     await this.page.goto(TEST_URL)
-    await expect(this.page.locator(`#${APP_ID}`)).toBeAttached()
   }
 
   /**

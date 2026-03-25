@@ -1,6 +1,5 @@
 import { test, expect } from "./fixtures"
 import { TestPage } from "./pages/TestPage"
-// import { OptionsPage } from "./pages/OptionsPage"
 import { APP_ID } from "../src/const"
 
 /**
@@ -10,5 +9,5 @@ import { APP_ID } from "../src/const"
 test("E2E-01: extension is injected into the test page", async ({ page }) => {
   const testPage = new TestPage(page)
   await testPage.open()
-  expect(page.locator(`#${APP_ID}`)).toBeVisible()
+  await expect(page.locator(`#${APP_ID}`)).toBeAttached()
 })
