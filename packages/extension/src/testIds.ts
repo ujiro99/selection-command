@@ -6,4 +6,10 @@ export const TEST_IDS = {
   optionDialogCancel: "option-dialog-cancel",
   exportButton: "export-button",
   resetButton: "reset-button",
+  userStyleAddButton: "user-style-add-button",
+  userStyleSaveButton: "user-style-save-button",
+  userStyleItem: "user-style-item",
+  userStyleEditButton: "user-style-edit-button",
+  userStyleRemoveButton: "user-style-remove-button",
+  userStyleRemoveOkButton: "user-style-remove-ok-button",
 }

@@ -9,6 +9,7 @@ type EditButtonProps = {
   size?: number
   className?: string
   classNameIcon?: string
+  "data-testid"?: string
 }
 
 export const EditButton = ({
@@ -16,6 +17,7 @@ export const EditButton = ({
   size = 16,
   className,
   classNameIcon,
+  "data-testid": dataTestId,
 }: EditButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const handleClick = (e: React.SyntheticEvent) => {
@@ -31,6 +33,7 @@ export const EditButton = ({
           className,
         )}
         onClick={handleClick}
+        data-testid={dataTestId}
       >
         <Pencil
           className={cn(

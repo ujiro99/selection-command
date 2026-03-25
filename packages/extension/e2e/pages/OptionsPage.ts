@@ -124,6 +124,76 @@ export class OptionsPage {
   }
 
   /**
+   * Add a user style via the UI (add button → dialog → save).
+   * Waits for the auto-save debounce to flush to storage.
+   */
+  async addUserStyle(name: string, value: string): Promise<void> {
+    if (!this.page) throw new Error("Options page not open")
+    const page = this.page
+
+    const addButton = page.locator(
+      `[data-testid="${TEST_IDS.userStyleAddButton}"]`,
+    )
+    await addButton.scrollIntoViewIfNeeded()
+    await addButton.click()
+
+    // Wait for the dialog content to appear
+    const dialog = page.locator("#UserStyleDialog")
+    await dialog.waitFor({ state: "visible", timeout: 3000 })
+
+    // Open the variable name dropdown and select the target option
+    const selectTrigger = dialog.locator('[role="combobox"]')
+    await selectTrigger.click()
+    await page.locator(`[data-value="${name}"]`).click()
+
+    // Fill in the color/value field (after variable change resets the default)
+    const valueInput = dialog.locator("input")
+    await valueInput.evaluate((el: HTMLInputElement, v: string) => {
+      const setter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        "value",
+      )?.set
+      setter?.call(el, v)
+      el.dispatchEvent(new Event("input", { bubbles: true }))
+      el.dispatchEvent(new Event("change", { bubbles: true }))
+    }, value)
+
+    // Click the save button in the dialog
+    await page
+      .locator(`[data-testid="${TEST_IDS.userStyleSaveButton}"]`)
+      .click()
+
+    // Wait for the 500ms auto-save debounce to flush to storage
+    await page.waitForTimeout(700)
+  }
+
+  /**
+   * Remove a user style by variable name via the UI (remove button → confirm dialog).
+   * Waits for the auto-save debounce to flush to storage.
+   */
+  async removeUserStyle(name: string): Promise<void> {
+    if (!this.page) throw new Error("Options page not open")
+    const page = this.page
+
+    const item = page.locator(
+      `[data-testid="${TEST_IDS.userStyleItem}"][data-name="${name}"]`,
+    )
+    await item.scrollIntoViewIfNeeded()
+    await item
+      .locator(`[data-testid="${TEST_IDS.userStyleRemoveButton}"]`)
+      .click()
+
+    const okButton = page.locator(
+      `[data-testid="${TEST_IDS.userStyleRemoveOkButton}"]`,
+    )
+    await okButton.waitFor({ state: "visible", timeout: 3000 })
+    await okButton.click()
+
+    // Wait for the 500ms auto-save debounce to flush to storage
+    await page.waitForTimeout(700)
+  }
+
+  /**
    * Reset settings to defaults via the Reset button and confirm the dialog.
    */
   async resetSettings(): Promise<void> {
