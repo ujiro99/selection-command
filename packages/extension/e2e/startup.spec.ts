@@ -30,7 +30,7 @@ test("E2E-11: popup menu appears on text selection and press a ShiftKey", async 
       keyboardParam: KEYBOARD.SHIFT,
     },
   })
-  await testPage.selectText()
+  await testPage.selectText("h1, h2, h3", false)
   await page.keyboard.press(KEYBOARD.SHIFT)
 
   // Act: Set the startup method to "shortcut" and dispatch the keyboard shortcut.
@@ -57,7 +57,7 @@ test("E2E-12: popup menu appears on left-click hold (150ms)", async ({
     },
   })
 
-  await testPage.selectText("h1, h2")
+  await testPage.selectText("h1, h2", false)
 
   // Long-press via synthetic MouseEvent to preserve text selection in headless mode.
   // locator.click({ delay }) uses CDP which fires selectionchange on mousedown and

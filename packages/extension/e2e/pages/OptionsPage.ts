@@ -89,6 +89,11 @@ export class OptionsPage {
     await okButton.click()
     await reloadPromise
 
+    // Load the settings file to know the expected command count
+    const rawJson = fs.readFileSync(settingsPath, "utf-8")
+    const settingsJson = JSON.parse(rawJson)
+    const expectedCommandCount: number = settingsJson.commands?.length ?? 0
+
     // Wait for the settings to be loaded with commands
     await expect
       .poll(async () => await this.getCommands(), {
@@ -96,7 +101,7 @@ export class OptionsPage {
         timeout: 5000,
         intervals: [40],
       })
-      .not.toBeUndefined()
+      .toHaveLength(expectedCommandCount)
   }
 
   /**
