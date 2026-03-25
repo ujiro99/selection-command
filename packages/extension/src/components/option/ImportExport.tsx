@@ -17,7 +17,7 @@ import { t } from "@/services/i18n"
 import { Download, Upload, Undo2, RotateCcw } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import type { BackupData } from "@/services/storage/backupManager"
-import { TEST_IDS } from "@/testIds.ts"
+import { TEST_IDS } from "@/testIds"
 
 import css from "./Option.module.css"
 

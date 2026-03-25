@@ -250,8 +250,8 @@ const commandFuncs = {
       }
 
       let targetId: number | undefined
-      const windowIdExists = await windowExists(w.srcWindowId)
-      if (windowIdExists) {
+      const { exists } = await windowExists(w.srcWindowId)
+      if (exists) {
         targetId = w.srcWindowId
       } else {
         const current = await chrome.windows.getCurrent()
@@ -452,15 +452,9 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     console.error("Failed to close menu:", error)
   }
 
-  // Get the active tab's window and update screen ID
   try {
-    const tab = await chrome.tabs.get(activeInfo.tabId)
-    if (tab.windowId) {
-      await updateActiveScreenId(tab.windowId)
-    }
-
-    // Update active tab ID
-    await updateActiveTabId(tab.id)
+    await updateActiveScreenId(activeInfo.windowId)
+    await updateActiveTabId(activeInfo.tabId)
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
   }
@@ -585,18 +579,11 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    // Get active tab
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
     const command = settings.commands.find((c) => c.id === shortcut.commandId)
     if (!command) {
       console.warn(`Command not found: ${shortcut.commandId}`)
       return
     }
-
-    const enableSendTab =
-      tab?.id &&
-      !tab.url?.startsWith("chrome") &&
-      !tab.url?.includes("chromewebstore.google.com")
 
     const selectionText = await Storage.get<string>(
       SESSION_STORAGE_KEY.SELECTION_TEXT,
@@ -617,6 +604,13 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         useClipboard = true
       }
     }
+
+    // Get active tab
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+    const enableSendTab =
+      tab?.id &&
+      !tab.url?.startsWith("chrome") &&
+      !tab.url?.includes("chromewebstore.google.com")
 
     let ret: unknown
     if (enableSendTab) {

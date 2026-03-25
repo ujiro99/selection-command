@@ -1553,5 +1553,17 @@
       ]
     },
     "addedAt": "2026-02-25T06:59:45.402Z"
+  },
+  {
+    "id": "441f1a06-8f3a-5c09-9904-7b64c970c06d",
+    "title": "リアルタイム",
+    "searchUrl": "https://search.yahoo.co.jp/realtime/search?p=%s",
+    "description": "選択テキストをYahooリアルタイム検索で検索。",
+    "iconUrl": "https://s.yimg.jp/c/icon/s/bsc/2.0/favicon.ico",
+    "openMode": "tab",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Tool"],
+    "addedAt": "2026-03-21T12:54:47.024Z"
   }
 ]

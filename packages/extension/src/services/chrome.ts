@@ -15,12 +15,16 @@ BgData.init()
  * @param {number} windowId - The ID of the window to check
  * @returns {Promise<boolean>} True if the window exists, false otherwise
  */
-export const windowExists = async (windowId: number): Promise<boolean> => {
+export const windowExists = async (
+  windowId: number,
+): Promise<
+  { exists: true; window: chrome.windows.Window } | { exists: false }
+> => {
   try {
-    await chrome.windows.get(windowId)
-    return true
+    const window = await chrome.windows.get(windowId)
+    return { exists: true, window }
   } catch {
-    return false
+    return { exists: false }
   }
 }
 
@@ -681,8 +685,7 @@ export const openSidePanel = async (
 ): Promise<{ tabId: number | undefined }> => {
   const { url, tabId } = param
 
-  const targetTabId = tabId
-  if (!targetTabId) {
+  if (!tabId) {
     console.warn("No valid tab ID for side panel")
     return {
       tabId: undefined,
@@ -692,17 +695,20 @@ export const openSidePanel = async (
   // Set the side panel options for the tab
   // Do not await here because sidePanel.open() must be executed within a user gesture.
   chrome.sidePanel.setOptions({
-    tabId: targetTabId,
+    tabId,
     path: toUrl(url),
     enabled: true,
   })
 
   // Open the side panel
-  await chrome.sidePanel.open({ tabId: targetTabId })
-
-  return {
-    tabId: targetTabId,
+  try {
+    await chrome.sidePanel.open({ tabId })
+  } catch (e) {
+    console.error("Failed to open side panel:", e)
+    throw e
   }
+
+  return { tabId }
 }
 
 const SIDE_PANEL_CLOSE_ANIMATION = 1000

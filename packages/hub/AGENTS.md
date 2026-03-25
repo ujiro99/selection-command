@@ -1,8 +1,8 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI Agent when working with code in this repository.
 
-このファイルは、このリポジトリのコードを扱う際にClaude Code (claude.ai/code)に対するガイダンスを提供します。
+このファイルは、このリポジトリのコードを扱う際にAI Agentに対するガイダンスを提供します。
 
 ## 基本ルール
 

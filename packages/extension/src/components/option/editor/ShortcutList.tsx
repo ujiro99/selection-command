@@ -1,5 +1,10 @@
 import { useEffect, useState, useMemo } from "react"
-import { Control, useFieldArray, useWatch } from "react-hook-form"
+import {
+  Control,
+  useFieldArray,
+  useWatch,
+  useFormContext,
+} from "react-hook-form"
 import { Keyboard, SquareArrowOutUpRight } from "lucide-react"
 import { SelectField } from "@/components/option/field/SelectField"
 import type { SelectOptionType } from "@/components/option/field/SelectField"
@@ -7,6 +12,7 @@ import { t as _t } from "@/services/i18n"
 import { Ipc, BgCommand } from "@/services/ipc"
 import type { Command, CommandFolder, ShortcutCommand } from "@/types"
 import {
+  OPEN_MODE,
   OPEN_MODE_BG,
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
@@ -18,6 +24,8 @@ import {
 } from "@/services/option/commandTree"
 import { cn } from "@/lib/utils"
 import css from "./ShortcutList.module.css"
+import { isAiPromptType } from "@/types/schema"
+import { INSERT, toInsertTemplate } from "@/services/pageAction"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -25,11 +33,22 @@ type ShortcutListProps = {
   control: Control<any>
 }
 
-const isTextSelectionOnly = (openMode: string) =>
-  !Object.values(OPEN_MODE_BG).includes(openMode as any)
+const isTextSelectionOnly = (command: Command) => {
+  const { openMode } = command
+  if (isAiPromptType(command)) {
+    const option = command.aiPromptOption
 
-const createNameRender = (openMode: string) => {
-  return isTextSelectionOnly(openMode)
+    const willUseClipboard =
+      option.prompt.includes(toInsertTemplate(INSERT.CLIPBOARD)) ||
+      option.prompt.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
+    return option.openMode === OPEN_MODE.SIDE_PANEL && willUseClipboard
+  }
+
+  return !Object.values(OPEN_MODE_BG).includes(openMode as any)
+}
+
+const createNameRender = (command: Command) => {
+  return isTextSelectionOnly(command)
     ? (name: string) => (
         <span className="truncate">
           {name}
@@ -66,7 +85,7 @@ const flattenCommandsAndFolders = (
         name: command.title,
         value: command.id,
         iconUrl: command.iconUrl,
-        nameRender: createNameRender(command.openMode),
+        nameRender: createNameRender(command),
         level: level,
       })
     } else {
@@ -90,6 +109,7 @@ const flattenCommandsAndFolders = (
 
 export function ShortcutList({ control }: ShortcutListProps) {
   const [commands, setCommands] = useState<chrome.commands.Command[]>([])
+  const { setValue } = useFormContext()
   const { fields, replace } = useFieldArray<{
     shortcuts: { shortcuts: ShortcutCommand[] }
   }>({
@@ -110,6 +130,26 @@ export function ShortcutList({ control }: ShortcutListProps) {
     control,
     name: "shortcuts.shortcuts",
   })
+
+  useEffect(() => {
+    if (!shortcutValues) return
+    shortcutValues.forEach((shortcut: ShortcutCommand, index: number) => {
+      const cmd = userCommands.find(
+        (c: Command) => c?.id === shortcut?.commandId,
+      )
+      if (
+        cmd &&
+        isTextSelectionOnly(cmd) &&
+        shortcut?.noSelectionBehavior !==
+          SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
+      ) {
+        setValue(
+          `shortcuts.shortcuts.${index}.noSelectionBehavior`,
+          SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING,
+        )
+      }
+    })
+  }, [shortcutValues, userCommands, setValue])
 
   const updateCommands = () => {
     chrome.commands.getAll((cmds) => {
@@ -210,8 +250,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
           const selectedCmd = userCommands.find(
             (c: Command) => c?.id === targetId,
           )
-          const showNoSel =
-            selectedCmd && !isTextSelectionOnly(selectedCmd.openMode)
+          const showNoSel = selectedCmd && !isTextSelectionOnly(selectedCmd)
 
           return (
             <div key={field.id} className="space-y-2">
