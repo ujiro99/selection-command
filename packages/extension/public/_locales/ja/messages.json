@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "※ 横並びのときのみ有効"
   },
+  "Option_folder_style": {
+    "message": "メニュースタイル"
+  },
+  "Option_folder_style_desc": {
+    "message": "このフォルダのメニュー表示スタイルを設定します"
+  },
   "Option_pageRules": {
     "message": "ページルール"
   },

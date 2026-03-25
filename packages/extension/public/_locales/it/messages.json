@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* Efficace solo in modalità orizzontale"
   },
+  "Option_folder_style": {
+    "message": "Stile del menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Imposta lo stile di visualizzazione del menu per questa cartella"
+  },
   "Option_pageRules": {
     "message": "Regole pagina"
   },
