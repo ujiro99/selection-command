@@ -8,7 +8,7 @@ import {
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import type { PageAction } from "@/services/pageAction"
 import { RunningStatus } from "@/services/pageAction"
-import { getScreenSize } from "@/services/screen"
+import { getScreenSize, ScreenSize } from "@/services/screen"
 import {
   openPopupWindow,
   openTab,
@@ -637,13 +637,14 @@ export const openRecorder = (
     startUrl: string
     openMode: PAGE_ACTION_OPEN_MODE
     size: PopupOption
+    screen?: ScreenSize
   },
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
   const { startUrl, openMode, size } = param
   const open = async () => {
-    const screen = await getScreenSize()
+    const screen = param.screen ?? (await getScreenSize())
     const t = Math.floor((screen.height - size.height) / 2) + screen.top
     const l = Math.floor((screen.width - size.width) / 2) + screen.left
     try {
