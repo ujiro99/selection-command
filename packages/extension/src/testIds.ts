@@ -12,4 +12,6 @@ export const TEST_IDS = {
   userStyleEditButton: "user-style-edit-button",
   userStyleRemoveButton: "user-style-remove-button",
   userStyleRemoveOkButton: "user-style-remove-ok-button",
+  selectTrigger: (name: string) => `select-trigger-${name.replace(/\./g, "-")}`,
+  selectItem: (name: string) => `select-item-${name.replace(/\./g, "-")}`,
 }

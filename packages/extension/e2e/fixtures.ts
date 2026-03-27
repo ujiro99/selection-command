@@ -6,6 +6,7 @@ import {
 } from "@playwright/test"
 import path from "path"
 import { fileURLToPath } from "url"
+import { attachSWConsole } from "./utils/logConsole"
 
 import type { UserSettings, Command } from "@/types"
 import type { CommandMetadata } from "@/types/command"
@@ -26,6 +27,7 @@ type Fixtures = {
   getUserSettings: () => Promise<UserSettings>
   setUserSettings: (newSettings: Partial<UserSettings>) => Promise<UserSettings>
   getCommands: () => Promise<UserSettings["commands"]>
+  isAllWindowsNormal: () => Promise<boolean>
 }
 
 /**
@@ -48,6 +50,14 @@ export const test = base.extend<Fixtures>({
         `--load-extension=${pathToExtension}`,
       ],
     })
+
+    // Wait for the service worker to be ready before proceeding, so tests can interact with it immediately.
+    let [sw] = context.serviceWorkers()
+    if (!sw) {
+      sw = await context.waitForEvent("serviceworker")
+    }
+    attachSWConsole(sw)
+
     await use(context)
     await context.close()
   },
@@ -158,6 +168,20 @@ export const test = base.extend<Fixtures>({
         },
         newSettings,
       )
+      return result
+    })
+  },
+
+  isAllWindowsNormal: async ({ context }, use) => {
+    let [serviceWorker] = context.serviceWorkers()
+    if (!serviceWorker) {
+      serviceWorker = await context.waitForEvent("serviceworker")
+    }
+    await use(async () => {
+      const result = await serviceWorker.evaluate(async () => {
+        const windows = await chrome.windows.getAll({ populate: false })
+        return !windows.some((win) => win.type !== "normal")
+      })
       return result
     })
   },

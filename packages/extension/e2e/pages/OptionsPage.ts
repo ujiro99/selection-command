@@ -194,6 +194,34 @@ export class OptionsPage {
   }
 
   /**
+   * Change the linkCommand.openMode via UI selection.
+   * Scrolls to the linkCommand section, opens the select dropdown,
+   * picks the given mode, and waits for the auto-save debounce.
+   */
+  async setLinkCommandOpenMode(mode: string): Promise<void> {
+    if (!this.page) {
+      await this.open()
+      if (!this.page) {
+        throw new Error("Failed to open options page")
+      }
+    }
+    const page = this.page
+
+    const trigger = page.locator(
+      `[data-testid="${TEST_IDS.selectTrigger("linkCommand.openMode")}"]`,
+    )
+    await trigger.scrollIntoViewIfNeeded()
+    await trigger.click()
+
+    const item = page.locator(`[data-testid="${TEST_IDS.selectItem(mode)}"]`)
+    await item.waitFor({ state: "visible", timeout: 3000 })
+    await item.click()
+
+    // Wait for the 500ms auto-save debounce to flush to storage
+    await page.waitForTimeout(700)
+  }
+
+  /**
    * Reset settings to defaults via the Reset button and confirm the dialog.
    */
   async resetSettings(): Promise<void> {

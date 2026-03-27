@@ -1,6 +1,6 @@
 import { Ipc, BgCommand } from "@/services/ipc"
 import { isValidString } from "@/lib/utils"
-import { getScreenSize, getWindowPosition } from "@/services/screen"
+import { getWindowPosition } from "@/services/screen"
 import { POPUP_TYPE, SPACE_ENCODING } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import type { OpenPopupProps } from "@/services/chrome"
@@ -23,7 +23,6 @@ export const Window = {
     }
 
     const windowPosition = await getWindowPosition()
-    const screen = await getScreenSize()
 
     Ipc.send<OpenPopupProps>(BgCommand.openPopup, {
       commandId: command.id,
@@ -37,7 +36,6 @@ export const Window = {
       left: Math.floor(windowPosition.left + position.x),
       height: command.popupOption?.height ?? PopupOption.height,
       width: command.popupOption?.width ?? PopupOption.width,
-      screen,
       type: POPUP_TYPE.NORMAL,
       windowState: command.windowState,
     })

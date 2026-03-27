@@ -24,7 +24,6 @@ import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { updateActiveScreenId } from "@/services/screen"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { importIf } from "@import-if"
@@ -402,9 +401,6 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     return
   }
 
-  // Update active screen ID
-  await updateActiveScreenId(windowId)
-
   // Update active tab ID
   await updateActiveTabId()
 
@@ -453,7 +449,6 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   }
 
   try {
-    await updateActiveScreenId(activeInfo.windowId)
     await updateActiveTabId(activeInfo.tabId)
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
