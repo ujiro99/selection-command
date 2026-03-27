@@ -18,6 +18,7 @@ export default defineConfig({
         "**/coverage/**",
         "**/e2e/**",
         "**/scripts/**",
+        "**/*.config.ts",
       ],
     },
   },
