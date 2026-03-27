@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* 仅在水平模式下有效"
   },
+  "Option_folder_style": {
+    "message": "菜单样式"
+  },
+  "Option_folder_style_desc": {
+    "message": "为此文件夹设置菜单显示样式"
+  },
   "Option_pageRules": {
     "message": "页面规则"
   },

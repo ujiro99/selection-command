@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* Effective only when horizontal"
   },
+  "Option_folder_style": {
+    "message": "Menu Style"
+  },
+  "Option_folder_style_desc": {
+    "message": "Set the menu display style for this folder"
+  },
   "Option_pageRules": {
     "message": "Page Rules"
   },

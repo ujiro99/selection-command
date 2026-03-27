@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* 수평 모드에서만 효과적"
   },
+  "Option_folder_style": {
+    "message": "메뉴 스타일"
+  },
+  "Option_folder_style_desc": {
+    "message": "이 폴더의 메뉴 표시 스타일을 설정합니다"
+  },
   "Option_pageRules": {
     "message": "페이지 규칙"
   },

@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* केवल क्षैतिज मोड में प्रभावी"
   },
+  "Option_folder_style": {
+    "message": "मेनू शैली"
+  },
+  "Option_folder_style_desc": {
+    "message": "इस फ़ोल्डर के लिए मेनू प्रदर्शन शैली सेट करें"
+  },
   "Option_pageRules": {
     "message": "पेज नियम"
   },

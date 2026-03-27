@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* Berkesan hanya apabila mendatar"
   },
+  "Option_folder_style": {
+    "message": "Gaya Menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Tetapkan gaya paparan menu untuk folder ini"
+  },
   "Option_pageRules": {
     "message": "Peraturan Halaman"
   },

@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* Efektif hanya saat horisontal"
   },
+  "Option_folder_style": {
+    "message": "Gaya Menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Atur gaya tampilan menu untuk folder ini"
+  },
   "Option_pageRules": {
     "message": "Aturan Halaman"
   },

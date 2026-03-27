@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* Эффективно только в горизонтальном режиме"
   },
+  "Option_folder_style": {
+    "message": "Стиль меню"
+  },
+  "Option_folder_style_desc": {
+    "message": "Установите стиль отображения меню для этой папки"
+  },
   "Option_pageRules": {
     "message": "Правила страницы"
   },

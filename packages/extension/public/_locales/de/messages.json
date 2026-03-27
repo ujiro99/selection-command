@@ -617,6 +617,12 @@
   "Option_onlyIcon_desc": {
     "message": "* Nur im horizontalen Modus wirksam"
   },
+  "Option_folder_style": {
+    "message": "Menüstil"
+  },
+  "Option_folder_style_desc": {
+    "message": "Legt den Menüanzeigestil für diesen Ordner fest"
+  },
   "Option_pageRules": {
     "message": "Seitenregeln"
   },

@@ -13,6 +13,7 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   STYLE_VARIABLE,
   WINDOW_STATE,
+  FOLDER_STYLE,
 } from "@/const"
 
 import { t } from "@/services/i18n"
@@ -326,6 +327,7 @@ export const folderSchema = z
     iconSvg: z.string().optional(),
     onlyIcon: z.boolean().optional(),
     parentFolderId: z.string().optional(),
+    style: z.nativeEnum(FOLDER_STYLE).optional(),
   })
   .refine((data) => !isEmpty(data.iconUrl) || !isEmpty(data.iconSvg), {
     path: ["iconSvg"],
