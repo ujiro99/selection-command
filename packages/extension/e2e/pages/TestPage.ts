@@ -41,13 +41,24 @@ export class TestPage {
    * listeners are registered the popup appears within 250ms and the next poll
    * detects it.
    */
-  async selectText(
-    cssSelector = "h1, h2, h3",
-    waitForMenu = true,
-  ): Promise<void> {
+  async selectText(selector = "h1, h2, h3", waitForMenu = true): Promise<void> {
+    const isXPath = selector.startsWith("/") || selector.startsWith("./")
     await this.page.waitForFunction(
-      ({ cssSelector, appId, menuBarTestId, waitForMenu }) => {
-        const element = document.querySelector(cssSelector)
+      ({ selector, isXPath, appId, menuBarTestId, waitForMenu }) => {
+        let element: Element | null = null
+        if (isXPath) {
+          const result = document.evaluate(
+            selector,
+            document,
+            null,
+            XPathResult.FIRST_ORDERED_NODE_TYPE,
+            null,
+          )
+          console.log("XPath result:", result)
+          element = result.singleNodeValue as Element | null
+        } else {
+          element = document.querySelector(selector)
+        }
         if (!element) return false
 
         // Scroll into view so getBoundingClientRect() returns valid coordinates.
@@ -105,7 +116,8 @@ export class TestPage {
         return !!shadowRoot?.querySelector(`[data-testid="${menuBarTestId}"]`)
       },
       {
-        cssSelector,
+        selector,
+        isXPath,
         appId: APP_ID,
         menuBarTestId: TEST_IDS.menuBar,
         waitForMenu,

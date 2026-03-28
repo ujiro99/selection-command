@@ -168,7 +168,7 @@
     },
     {
       "aiPromptOption": {
-        "openMode": "sidePanel",
+        "openMode": "tab",
         "prompt": "以下のテキストを日本語と英語の間で翻訳してください。\n{{SelectedText}}",
         "serviceId": "gemini"
       },
@@ -335,7 +335,7 @@
     },
     {
       "aiPromptOption": {
-        "openMode": "sidePanel",
+        "openMode": "popup",
         "prompt": "以下のテキストについて説明してください。\n{{Clipboard}}",
         "serviceId": "gemini"
       },
