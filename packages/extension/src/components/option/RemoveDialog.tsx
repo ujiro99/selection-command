@@ -21,9 +21,13 @@ type RemoveDialogProps = {
   onRemove: () => void
   children: React.ReactNode
   portal?: boolean
+  "data-testid-ok"?: string
 }
 
-export const RemoveDialog = (props: RemoveDialogProps) => {
+export const RemoveDialog = ({
+  "data-testid-ok": dataTestIdOk,
+  ...props
+}: RemoveDialogProps) => {
   const closeRef = useRef<HTMLButtonElement>(null)
   const handleOpenAutoFocus = (e: Event) => {
     closeRef.current?.focus()
@@ -53,6 +57,7 @@ export const RemoveDialog = (props: RemoveDialogProps) => {
                 size="lg"
                 onClick={() => props.onRemove()}
                 ref={closeRef}
+                data-testid={dataTestIdOk}
               >
                 <Trash2 />
                 {t("Option_remove_ok")}

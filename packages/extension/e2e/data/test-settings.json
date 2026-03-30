@@ -1,6 +1,16 @@
 {
   "commands": [
     {
+      "id": "$$drag-1",
+      "openMode": "previewPopup",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "Link Preview"
+    },
+    {
       "iconUrl": "https://ujiro99.github.io/selection-command/favicon.ico",
       "id": "13b4e831-7fac-4b72-a1ae-c82655b3819e",
       "openMode": "popup",
@@ -158,7 +168,7 @@
     },
     {
       "aiPromptOption": {
-        "openMode": "sidePanel",
+        "openMode": "tab",
         "prompt": "以下のテキストを日本語と英語の間で翻訳してください。\n{{SelectedText}}",
         "serviceId": "gemini"
       },
@@ -174,62 +184,68 @@
       "title": "選択テキストの相互翻訳"
     },
     {
-      "iconUrl": "https://web-toolbox.dev/favicon.svg",
-      "id": "03646140-c83f-5ee6-87ba-8feb12030af0",
+      "id": "b1856c00-d775-5fdc-89e9-94d1b6f786e5",
+      "title": "Sakura Checker",
       "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "iconUrl": "https://sakura-checker.jp/images/favicon.ico",
       "pageActionOption": {
-        "openMode": "popup",
-        "startUrl": "https://web-toolbox.dev/tools/character-counter",
+        "startUrl": "https://sakura-checker.jp/",
+        "openMode": "backgroundTab",
         "steps": [
           {
-            "id": "b28aqptaq",
+            "id": "diaq1mthv",
             "param": {
-              "label": "Start",
               "type": "start",
-              "url": "https://web-toolbox.dev/tools/character-counter"
+              "label": "Start"
             }
           },
           {
-            "delayMs": 100,
-            "id": "xswttnk5r",
+            "id": "hoi75oly8",
             "param": {
-              "label": "textarea",
-              "selector": "//textarea",
-              "selectorType": "xpath",
-              "type": "click"
+              "type": "click",
+              "label": "word",
+              "selector": "//*[@name='word']",
+              "selectorType": "xpath"
             }
           },
           {
-            "id": "pycqdt0ap",
+            "id": "2boq9korh",
             "param": {
-              "label": "文字入力",
-              "selector": "//textarea",
-              "selectorType": "xpath",
               "type": "input",
-              "value": "{{SelectedText}}"
+              "label": "word",
+              "selector": "//*[@name='word']",
+              "selectorType": "xpath",
+              "value": "{{Url}}"
             }
           },
           {
-            "id": "8tsr1lz9m",
+            "id": "thuq16r8o",
             "param": {
-              "label": "表示位置までスクロール",
+              "type": "click",
+              "label": "submit",
+              "selector": "//*[@class='button is-primary is-medium']",
+              "selectorType": "xpath"
+            }
+          },
+          {
+            "id": "bcs0vx9bn",
+            "param": {
               "type": "scroll",
+              "label": "x: 0, y: 266",
               "x": 0,
-              "y": 812
+              "y": 266
             }
           },
           {
-            "id": "erkxkfph0",
+            "id": "8viuw3650",
             "param": {
-              "label": "End",
-              "type": "end"
+              "type": "end",
+              "label": "End"
             }
           }
         ]
-      },
-      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
-      "revision": 0,
-      "title": "Character Counter"
+      }
     },
     {
       "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
@@ -251,7 +267,7 @@
       "id": "9a3fca67-e618-5dd3-9ecd-9eb2d088041a",
       "openMode": "tab",
       "openModeSecondary": "tab",
-      "parentFolderId": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
+      "parentFolderId": "RootFolder",
       "popupOption": {
         "height": 700,
         "width": 600
@@ -262,14 +278,170 @@
       "title": "en to ja"
     },
     {
-      "id": "$$drag-1",
-      "openMode": "previewPopup",
+      "id": "cmd-test-window",
+      "openMode": "window",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
       "popupOption": {
         "height": 700,
         "width": 600
       },
       "revision": 0,
-      "title": "Link Preview"
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "テストページ (Window)"
+    },
+    {
+      "id": "cmd-test-sidepanel",
+      "openMode": "sidePanel",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "テストページ (SidePanel)"
+    },
+    {
+      "id": "cmd-test-copy",
+      "openMode": "copy",
+      "parentFolderId": "RootFolder",
+      "revision": 0,
+      "title": "テキストコピー",
+      "iconUrl": "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png"
+    },
+    {
+      "id": "cmd-test-linkpopup",
+      "openMode": "linkPopup",
+      "parentFolderId": "RootFolder",
+      "revision": 0,
+      "title": "リンクポップアップ",
+      "iconUrl": "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      }
+    },
+    {
+      "id": "cmd-test-deepl",
+      "openMode": "tab",
+      "openModeSecondary": "tab",
+      "parentFolderId": "lang-folder-001",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://www.deepl.com/translator#auto/ja/%s",
+      "spaceEncoding": "plus",
+      "title": "DeepL"
+    },
+    {
+      "aiPromptOption": {
+        "openMode": "popup",
+        "prompt": "以下のテキストについて説明してください。\n{{Clipboard}}",
+        "serviceId": "gemini"
+      },
+      "id": "cmd-test-ai-clipboard",
+      "openMode": "aiPrompt",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "クリップボード展開テスト"
+    },
+    {
+      "id": "cmd-test-pa-tab",
+      "title": "Character Counter (Tab)",
+      "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "pageActionOption": {
+        "openMode": "tab",
+        "startUrl": "https://web-toolbox.dev/tools/character-counter",
+        "steps": [
+          {
+            "delayMs": 0,
+            "id": "pa-tab-s1",
+            "param": {
+              "label": "Start",
+              "type": "start",
+              "url": "https://web-toolbox.dev/tools/character-counter"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 500,
+            "id": "pa-tab-s2",
+            "param": {
+              "label": "文字入力",
+              "selector": "//textarea",
+              "selectorType": "xpath",
+              "type": "input",
+              "value": "{{SelectedText}}"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 0,
+            "id": "pa-tab-s3",
+            "param": {
+              "label": "End",
+              "type": "end"
+            },
+            "skipRenderWait": false
+          }
+        ]
+      },
+      "revision": 0
+    },
+    {
+      "id": "cmd-test-pa-bgtab",
+      "title": "Character Counter (BG Tab)",
+      "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "pageActionOption": {
+        "openMode": "backgroundTab",
+        "startUrl": "https://web-toolbox.dev/tools/character-counter",
+        "steps": [
+          {
+            "delayMs": 0,
+            "id": "pa-bgtab-s1",
+            "param": {
+              "label": "Start",
+              "type": "start",
+              "url": "https://web-toolbox.dev/tools/character-counter"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 500,
+            "id": "pa-bgtab-s2",
+            "param": {
+              "label": "文字入力",
+              "selector": "//textarea",
+              "selectorType": "xpath",
+              "type": "input",
+              "value": "{{SelectedText}}"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 0,
+            "id": "pa-bgtab-s3",
+            "param": {
+              "label": "End",
+              "type": "end"
+            },
+            "skipRenderWait": false
+          }
+        ]
+      },
+      "revision": 0
     }
   ],
   "folders": [
@@ -305,6 +477,12 @@
       "iconUrl": "",
       "id": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
       "title": "Work"
+    },
+    {
+      "iconUrl": "",
+      "id": "lang-folder-001",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "title": "Lang"
     }
   ],
   "linkCommand": {

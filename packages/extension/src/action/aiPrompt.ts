@@ -1,5 +1,5 @@
 import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
-import { getScreenSize, getWindowPosition } from "@/services/screen"
+import { getWindowPosition } from "@/services/screen"
 import { isValidString, generateRandomID } from "@/lib/utils"
 import {
   OPEN_MODE,
@@ -156,7 +156,6 @@ export const AiPrompt = {
       : baseMode
 
     const windowPosition = await getWindowPosition()
-    const screen = await getScreenSize()
 
     const url: UrlParam = {
       searchUrl: service.url,
@@ -172,7 +171,6 @@ export const AiPrompt = {
       left: Math.floor(windowPosition.left + position.x),
       height: command.popupOption?.height ?? PopupOption.height,
       width: command.popupOption?.width ?? PopupOption.width,
-      screen,
       selectedText: selectionText,
       srcUrl: location.href,
       openMode,

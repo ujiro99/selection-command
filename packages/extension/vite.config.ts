@@ -123,20 +123,20 @@ export default defineConfig(({ mode }) => {
       pure:
         mode === "production"
           ? [
-            "console.log",
-            "console.debug",
-            "console.info",
-            "console.trace",
-            "console.dir",
-            "console.count",
-            "console.countReset",
-            "console.group",
-            "console.groupCollapsed",
-            "console.groupEnd",
-            "console.time",
-            "console.timeEnd",
-            "console.timeLog",
-          ]
+              "console.log",
+              "console.debug",
+              "console.info",
+              "console.trace",
+              "console.dir",
+              "console.count",
+              "console.countReset",
+              "console.group",
+              "console.groupCollapsed",
+              "console.groupEnd",
+              "console.time",
+              "console.timeEnd",
+              "console.timeLog",
+            ]
           : [],
     },
     build: {
@@ -148,11 +148,13 @@ export default defineConfig(({ mode }) => {
         },
         output: {
           assetFileNames: (assetInfo) => {
-            const keepNames = [
-              "content_script.css",
-              "icons.css",
-              "command_hub.css",
-            ]
+            if (
+              assetInfo.source != null &&
+              assetInfo.source.toString().match(/^\._popup/)
+            ) {
+              return `assets/components.css`
+            }
+            const keepNames = ["content_script.css", "command_hub.css"]
             if (
               assetInfo.names?.length > 0 &&
               keepNames.includes(assetInfo.names[0])
