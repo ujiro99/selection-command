@@ -19,6 +19,7 @@ import {
   PAGE_ACTION_OPEN_MODE,
   PAGE_ACTION_EXEC_STATE as EXEC_STATE,
 } from "@/const"
+import { TEST_IDS } from "@/testIds"
 
 import css from "./PageActionRecorder.module.css"
 
@@ -144,7 +145,11 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
           )}
 
           <div className="flex gap-2">
-            <button className={css.button} onClick={() => finish()}>
+            <button
+              className={css.button}
+              onClick={() => finish()}
+              data-testid={TEST_IDS.pageActionCompleteButton}
+            >
               <Check size={iconSize} className="stroke-gray-600" />
               <span className={css.buttonLabel}>
                 {t("PageAction_Controller_complete")}

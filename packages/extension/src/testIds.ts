@@ -12,6 +12,12 @@ export const TEST_IDS = {
   userStyleEditButton: "user-style-edit-button",
   userStyleRemoveButton: "user-style-remove-button",
   userStyleRemoveOkButton: "user-style-remove-ok-button",
+  addFolderButton: "add-folder-button",
+  addCommandButton: "add-command-button",
+  commandType: (type: string) => `command-type-${type}`,
+  recButton: "rec-button",
+  pageActionCompleteButton: "page-action-complete-button",
+  pageActionStep: (type: string) => `page-action-step-${type}`,
   selectTrigger: (name: string) => `select-trigger-${name.replace(/\./g, "-")}`,
   selectItem: (name: string) => `select-item-${name.replace(/\./g, "-")}`,
 }

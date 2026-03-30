@@ -184,62 +184,68 @@
       "title": "選択テキストの相互翻訳"
     },
     {
-      "iconUrl": "https://web-toolbox.dev/favicon.svg",
-      "id": "03646140-c83f-5ee6-87ba-8feb12030af0",
+      "id": "b1856c00-d775-5fdc-89e9-94d1b6f786e5",
+      "title": "Sakura Checker",
       "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "iconUrl": "https://sakura-checker.jp/images/favicon.ico",
       "pageActionOption": {
-        "openMode": "popup",
-        "startUrl": "https://web-toolbox.dev/tools/character-counter",
+        "startUrl": "https://sakura-checker.jp/",
+        "openMode": "backgroundTab",
         "steps": [
           {
-            "id": "b28aqptaq",
+            "id": "diaq1mthv",
             "param": {
-              "label": "Start",
               "type": "start",
-              "url": "https://web-toolbox.dev/tools/character-counter"
+              "label": "Start"
             }
           },
           {
-            "delayMs": 100,
-            "id": "xswttnk5r",
+            "id": "hoi75oly8",
             "param": {
-              "label": "textarea",
-              "selector": "//textarea",
-              "selectorType": "xpath",
-              "type": "click"
+              "type": "click",
+              "label": "word",
+              "selector": "//*[@name='word']",
+              "selectorType": "xpath"
             }
           },
           {
-            "id": "pycqdt0ap",
+            "id": "2boq9korh",
             "param": {
-              "label": "文字入力",
-              "selector": "//textarea",
-              "selectorType": "xpath",
               "type": "input",
-              "value": "{{SelectedText}}"
+              "label": "word",
+              "selector": "//*[@name='word']",
+              "selectorType": "xpath",
+              "value": "{{Url}}"
             }
           },
           {
-            "id": "8tsr1lz9m",
+            "id": "thuq16r8o",
             "param": {
-              "label": "表示位置までスクロール",
+              "type": "click",
+              "label": "submit",
+              "selector": "//*[@class='button is-primary is-medium']",
+              "selectorType": "xpath"
+            }
+          },
+          {
+            "id": "bcs0vx9bn",
+            "param": {
               "type": "scroll",
+              "label": "x: 0, y: 266",
               "x": 0,
-              "y": 812
+              "y": 266
             }
           },
           {
-            "id": "erkxkfph0",
+            "id": "8viuw3650",
             "param": {
-              "label": "End",
-              "type": "end"
+              "type": "end",
+              "label": "End"
             }
           }
         ]
-      },
-      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
-      "revision": 0,
-      "title": "Character Counter"
+      }
     },
     {
       "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
@@ -351,7 +357,9 @@
     },
     {
       "id": "cmd-test-pa-tab",
+      "title": "Character Counter (Tab)",
       "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
       "pageActionOption": {
         "openMode": "tab",
         "startUrl": "https://web-toolbox.dev/tools/character-counter",
@@ -389,13 +397,13 @@
           }
         ]
       },
-      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
-      "revision": 0,
-      "title": "Character Counter (Tab)"
+      "revision": 0
     },
     {
       "id": "cmd-test-pa-bgtab",
+      "title": "Character Counter (BG Tab)",
       "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
       "pageActionOption": {
         "openMode": "backgroundTab",
         "startUrl": "https://web-toolbox.dev/tools/character-counter",
@@ -433,9 +441,7 @@
           }
         ]
       },
-      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
-      "revision": 0,
-      "title": "Character Counter (BG Tab)"
+      "revision": 0
     }
   ],
   "folders": [

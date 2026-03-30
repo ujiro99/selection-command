@@ -29,13 +29,13 @@
 | E2E-26   | 検索コマンド       | フォルダ格納                 | AI → Lang                     | 実装済   |
 | E2E-30   | 単機能コマンド     | Copy Text                    | -                             | 実装済   |
 | E2E-31   | 単機能コマンド     | Link Popup                   | 複数リンクを開く              | 実装済   |
-| E2E-40   | PageActionコマンド | 記録                         | クリック                      | 未実装   |
-| E2E-41   | PageActionコマンド | 記録                         | Enter                         | 未実装   |
-| E2E-42   | PageActionコマンド | 記録                         | テキスト入力(input)           | 未実装   |
-| E2E-43   | PageActionコマンド | 記録                         | テキスト入力(contentEditable) | 未実装   |
-| E2E-44   | PageActionコマンド | 記録                         | スクロール                    | 未実装   |
-| E2E-45   | PageActionコマンド | 再生                         | Sakuraチェッカー              | 未実装   |
-| E2E-46   | PageActionコマンド | 再生（バックグラウンドタブ） | Sakuraチェッカー              | 未実装   |
+| E2E-40   | PageActionコマンド | 記録                         | クリック                      | 実装済   |
+| E2E-41   | PageActionコマンド | 記録                         | Enter                         | 実装済   |
+| E2E-42   | PageActionコマンド | 記録                         | テキスト入力(input)           | 実装済   |
+| E2E-43   | PageActionコマンド | 記録                         | テキスト入力(contentEditable) | 実装済   |
+| E2E-44   | PageActionコマンド | 記録                         | スクロール                    | 実装済   |
+| E2E-45   | PageActionコマンド | 再生                         | Sakuraチェッカー              | 実装済   |
+| E2E-46   | PageActionコマンド | 再生（バックグラウンドタブ） | Sakuraチェッカー              | 実装済   |
 | E2E-50   | AiPromptコマンド   | OpenMode                     | Popup                         | 実装済   |
 | E2E-51   | AiPromptコマンド   | OpenMode                     | Tab                           | 実装済   |
 | E2E-52   | AiPromptコマンド   | クリップボード               | Popup                         | 実装済   |
