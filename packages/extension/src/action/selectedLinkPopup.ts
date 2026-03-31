@@ -12,8 +12,8 @@ export const SelectedLinkPopup = {
         urls: linksInSelection(),
         top: Math.floor(window.screenTop + position.y),
         left: Math.floor(window.screenLeft + position.x + 20),
-        height: command.popupOption?.height ?? 0,
-        width: command.popupOption?.width ?? 0,
+        height: command.popupOption?.height,
+        width: command.popupOption?.width,
         type: POPUP_TYPE.POPUP,
       })
     }
