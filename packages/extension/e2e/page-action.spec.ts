@@ -4,6 +4,7 @@ import { TestPage } from "./pages/TestPage"
 import { OptionsPage } from "./pages/OptionsPage"
 import { TEST_IDS } from "@/testIds"
 import { COMMAND_TYPE } from "@/const"
+import { attachConsole } from "./utils/logConsole"
 
 const TEST_URL = "https://ujiro99.github.io/selection-command/en/test"
 
@@ -95,14 +96,18 @@ test.describe("PageAction Commands", () => {
   test("E2E-41: PageAction recording captures Enter key", async ({
     context,
     extensionId,
+    page,
   }) => {
+    attachConsole(page)
+
     const { optionsPage, recorderPage, completeButton } = await openRecorder(
       context,
       extensionId,
     )
 
-    // Click a text input to focus it (records a click step), then press Enter
-    await recorderPage.locator('input[type="text"]').first().click()
+    // Click a WYSIWYG editor's contentEditable element to focus it (records a click step), then press Enter
+    const editor = recorderPage.locator("[contenteditable='true']").first()
+    await editor.click()
     await recorderPage.keyboard.press("Enter")
 
     // Verify the keyboard step appears in the Controller's step list
