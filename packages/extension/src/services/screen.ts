@@ -81,11 +81,23 @@ export async function getScreenSize(): Promise<ScreenSize> {
         "Failed to get screen size in service worker, using fallback:",
         error,
       )
-      return {
-        width: 0,
-        height: 0,
-        left: 0,
-        top: 0,
+      // Fallback: use the current window's size as a minimum screen estimate
+      try {
+        const w = await chrome.windows.getCurrent()
+        return {
+          width: w.width ?? 1280,
+          height: w.height ?? 800,
+          left: 0,
+          top: 0,
+        }
+      } catch (fallbackError) {
+        console.warn("Fallback screen size estimation failed:", fallbackError)
+        return {
+          width: 1280,
+          height: 800,
+          left: 0,
+          top: 0,
+        }
       }
     }
   } else {
