@@ -29,7 +29,7 @@ test.describe("Single Function Commands", () => {
 
     // Act: click the "テキストコピー" menu item
     const menubar = await testPage.getMenuBar()
-    await menubar.locator("[role='menuitem'][name='テキストコピー']").click()
+    await menubar.locator("[role='menuitem'][aria-label='テキストコピー']").click()
     await page.waitForTimeout(100)
 
     // Assert: clipboard content matches the selected text
@@ -63,7 +63,7 @@ test.describe("Single Function Commands", () => {
     const menubar = await testPage.getMenuBar()
     await Promise.all([
       context.waitForEvent("page", { timeout: 5000 }),
-      menubar.locator("[role='menuitem'][name='リンクポップアップ']").click(),
+      menubar.locator("[role='menuitem'][aria-label='リンクポップアップ']").click(),
     ])
 
     // Assert: at least one new popup window was opened

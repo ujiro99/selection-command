@@ -65,7 +65,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           "rounded-sm ",
         )}
         role="menuitem"
-        name={title}
+        aria-label={title}
         ref={buttonRef}
         onClick={handleClick}
         disabled={!enabled}

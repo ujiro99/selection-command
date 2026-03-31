@@ -28,7 +28,7 @@ test.describe("AiPrompt Commands", () => {
 
     const [popupPage] = await Promise.all([
       context.waitForEvent("page"),
-      page.locator("[role='menuitem'][name='Gemini - 日本語']").click(),
+      page.locator("[role='menuitem'][aria-label='Gemini - 日本語']").click(),
     ])
     await popupPage.waitForLoadState("domcontentloaded")
 
@@ -62,7 +62,7 @@ test.describe("AiPrompt Commands", () => {
 
     const [newPage] = await Promise.all([
       context.waitForEvent("page"),
-      page.locator("[role='menuitem'][name='選択テキストの相互翻訳']").click(),
+      page.locator("[role='menuitem'][aria-label='選択テキストの相互翻訳']").click(),
     ])
     await newPage.waitForLoadState("domcontentloaded")
 
@@ -99,7 +99,7 @@ test.describe("AiPrompt Commands", () => {
     const [popupPage] = await Promise.all([
       context.waitForEvent("page"),
       page
-        .locator("[role='menuitem'][name='クリップボード展開テスト']")
+        .locator("[role='menuitem'][aria-label='クリップボード展開テスト']")
         .click(),
     ])
     await popupPage.waitForURL(/gemini/)

@@ -53,7 +53,7 @@ test.describe("Search Command", () => {
 
     const [newPage] = await Promise.all([
       context.waitForEvent("page"),
-      menubar.locator("[role='menuitem'][name='en to ja']").click(),
+      menubar.locator("[role='menuitem'][aria-label='en to ja']").click(),
     ])
     await newPage.waitForLoadState("domcontentloaded")
 
@@ -76,7 +76,7 @@ test.describe("Search Command", () => {
     const [newPage] = await Promise.all([
       context.waitForEvent("page"),
       menubar
-        .locator("[role='menuitem'][name='テストページ (Window)']")
+        .locator("[role='menuitem'][aria-label='テストページ (Window)']")
         .click(),
     ])
     await newPage.waitForLoadState("domcontentloaded")
@@ -96,7 +96,7 @@ test.describe("Search Command", () => {
     await testPage.selectText("h2")
     const menubar = await testPage.getMenuBar()
     await menubar
-      .locator("[role='menuitem'][name='テストページ (SidePanel)']")
+      .locator("[role='menuitem'][aria-label='テストページ (SidePanel)']")
       .click()
     // Verification of side panel opening is not reliably possible in headless Chrome
   })
@@ -114,7 +114,7 @@ test.describe("Search Command", () => {
 
     // "テストページ検索" is at RootFolder — visible without opening any folder
     await expect(
-      menubar.locator("[role='menuitem'][name='テストページ検索']"),
+      menubar.locator("[role='menuitem'][aria-label='テストページ検索']"),
     ).toBeVisible()
   })
 
@@ -135,7 +135,7 @@ test.describe("Search Command", () => {
       .hover()
 
     // Drive and "en to ja" are inside Work folder
-    await expect(page.locator("[role='menuitem'][name='Drive']")).toBeVisible()
+    await expect(page.locator("[role='menuitem'][aria-label='Drive']")).toBeVisible()
   })
 
   /**
@@ -161,6 +161,6 @@ test.describe("Search Command", () => {
       .hover()
 
     // DeepL is inside Lang folder
-    await expect(page.locator("[role='menuitem'][name='DeepL']")).toBeVisible()
+    await expect(page.locator("[role='menuitem'][aria-label='DeepL']")).toBeVisible()
   })
 })

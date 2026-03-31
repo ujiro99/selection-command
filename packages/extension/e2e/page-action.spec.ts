@@ -227,7 +227,7 @@ test.describe("PageAction Commands", () => {
 
     const [newPage] = await Promise.all([
       context.waitForEvent("page", { timeout: 5000 }),
-      page.locator("[role='menuitem'][name='Character Counter (Tab)']").click(),
+      page.locator("[role='menuitem'][aria-label='Character Counter (Tab)']").click(),
     ])
     await newPage.waitForLoadState("domcontentloaded")
 
@@ -272,7 +272,7 @@ test.describe("PageAction Commands", () => {
 
     const [newPage] = await Promise.all([
       context.waitForEvent("page", { timeout: 5000 }),
-      page.locator("[role='menuitem'][name='Sakura Checker']").click(),
+      page.locator("[role='menuitem'][aria-label='Sakura Checker']").click(),
     ])
     await newPage.waitForLoadState("domcontentloaded")
 
