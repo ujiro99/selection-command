@@ -54,7 +54,6 @@ export class TestPage {
             XPathResult.FIRST_ORDERED_NODE_TYPE,
             null,
           )
-          console.log("XPath result:", result)
           element = result.singleNodeValue as Element | null
         } else {
           element = document.querySelector(selector)
