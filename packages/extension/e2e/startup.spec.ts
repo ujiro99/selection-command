@@ -13,7 +13,7 @@ test("E2E-10: popup menu appears on text selection", async ({ page }) => {
   await testPage.selectText()
 
   const menubar = await testPage.getMenuBar()
-  expect(menubar.isVisible())
+  await expect(menubar).toBeVisible()
 })
 
 test("E2E-11: popup menu appears on text selection and press a ShiftKey", async ({
@@ -37,7 +37,7 @@ test("E2E-11: popup menu appears on text selection and press a ShiftKey", async 
   const menubar = await testPage.getMenuBar()
 
   // Asert
-  expect(menubar.isVisible())
+  await expect(menubar).toBeVisible()
 })
 
 /**

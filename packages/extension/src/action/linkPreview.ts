@@ -40,8 +40,8 @@ export const LinkPreview = {
           urls: [href],
           top: Math.floor(position.y),
           left: Math.floor(position.x),
-          height: command.popupOption?.height ?? 0,
-          width: command.popupOption?.width ?? 0,
+          height: command.popupOption?.height,
+          width: command.popupOption?.width,
           type,
         })
         return
@@ -58,8 +58,8 @@ export const LinkPreview = {
           url: location.href,
           top: Math.floor(position.y),
           left: Math.floor(position.x),
-          height: command.popupOption?.height ?? 0,
-          width: command.popupOption?.width ?? 0,
+          height: command.popupOption?.height,
+          width: command.popupOption?.width,
           selector,
           type,
         })
