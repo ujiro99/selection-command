@@ -94,7 +94,7 @@ export const test = base.extend<Fixtures>({
         const { 5: syncMetaData } = await chrome.storage.sync.get<{
           "5": CommandMetadata
         }>("5")
-        const syncCount = syncMetaData.count
+        const syncCount = syncMetaData?.count ?? 0
 
         const CMD_PREFIX = "cmd-"
         const cmdSyncKey = (idx: number): string => `${CMD_PREFIX}${idx}`
@@ -110,7 +110,7 @@ export const test = base.extend<Fixtures>({
           await chrome.storage.local.get<{
             [LOCAL_COMMAND_METADATA]: CommandMetadata
           }>(LOCAL_COMMAND_METADATA)
-        const localCount = localMetaData.count
+        const localCount = localMetaData?.count ?? 0
 
         const cmdLocalKey = (idx: number): string => `${CMD_PREFIX}local-${idx}`
         const localKeys = Array.from({ length: localCount }, (_, i) =>
