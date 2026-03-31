@@ -23,7 +23,6 @@ type Fixtures = {
   context: BrowserContext
   extensionId: string
   extensionBackground: Page
-  getSyncStorage: (key: string) => Promise<unknown>
   getUserSettings: () => Promise<UserSettings>
   setUserSettings: (newSettings: Partial<UserSettings>) => Promise<UserSettings>
   getCommands: () => Promise<UserSettings["commands"]>
