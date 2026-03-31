@@ -116,7 +116,7 @@ export const test = base.extend<Fixtures>({
         const localKeys = Array.from({ length: localCount }, (_, i) =>
           cmdLocalKey(i),
         )
-        const localResult = await chrome.storage.sync.get(syncKeys)
+        const localResult = await chrome.storage.local.get(localKeys)
         const localCommands = localKeys.map(
           (key) => localResult[key] as Command,
         )
