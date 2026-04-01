@@ -464,30 +464,34 @@ if (isDebug) {
 }
 
 chrome.runtime.onInstalled.addListener(async (details) => {
-  // Initialize default settings on install
-  if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
-    await Settings.reset()
+  try {
+    // Initialize default settings on install
+    if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+      await Settings.reset()
+    }
+
+    await ContextMenu.init()
+
+    chrome.storage.session.setAccessLevel({
+      accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
+    })
+
+    if (
+      details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
+      details.reason === chrome.runtime.OnInstalledReason.UPDATE
+    ) {
+      // Set uninstall survey URL
+      chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
+    }
+
+    // Check for daily backup on startup
+    await checkAndPerformDailyBackup()
+
+    // Check for weekly backup on startup
+    await checkAndPerformWeeklyBackup()
+  } catch (error) {
+    console.error("Error during onInstalled initialization:", error)
   }
-
-  await ContextMenu.init()
-
-  chrome.storage.session.setAccessLevel({
-    accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
-  })
-
-  if (
-    details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
-    details.reason === chrome.runtime.OnInstalledReason.UPDATE
-  ) {
-    // Set uninstall survey URL
-    chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
-  }
-
-  // Check for daily backup on startup
-  await checkAndPerformDailyBackup()
-
-  // Check for weekly backup on startup
-  await checkAndPerformWeeklyBackup()
 })
 
 chrome.runtime.onStartup.addListener(() => {

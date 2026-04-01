@@ -34,7 +34,7 @@
 | E2E-42   | PageActionコマンド | 記録                         | テキスト入力(input)           | 実装済   |
 | E2E-43   | PageActionコマンド | 記録                         | テキスト入力(contentEditable) | 実装済   |
 | E2E-44   | PageActionコマンド | 記録                         | スクロール                    | 実装済   |
-| E2E-45   | PageActionコマンド | 再生                         | Sakuraチェッカー              | 実装済   |
+| E2E-45   | PageActionコマンド | 再生                         | Character Counter             | 実装済   |
 | E2E-46   | PageActionコマンド | 再生（バックグラウンドタブ） | Sakuraチェッカー              | 実装済   |
 | E2E-50   | AiPromptコマンド   | OpenMode                     | Popup                         | 実装済   |
 | E2E-51   | AiPromptコマンド   | OpenMode                     | Tab                           | 実装済   |
@@ -452,23 +452,24 @@
 
 ---
 
-#### E2E-45: PageAction 再生 / Sakuraチェッカー
+#### E2E-45: PageAction 再生 / Character Counter
 
 **事前条件**
 
-- Sakuraチェッカー用 PageAction コマンドが設定済み
+- Character Counter用 PageAction コマンドが設定済み
 - テストページが開かれている
 
 **手順**
 
 1. テストページを開く
 2. テキストを選択してポップアップメニューを表示する
-3. Sakuraチェッカー PageAction コマンドをクリックする
+3. Character Counter PageAction コマンドをクリックする
 
 **期待動作**
 
-- Sakuraチェッカーのページが開く（新しいタブまたはポップアップ）
+- Character Counterのページが開く（新しいタブ）
 - 開いたページの URL にテストページの URL が含まれる
+- Character Counterのページ内に選択テキストが入力される
 
 ---
 

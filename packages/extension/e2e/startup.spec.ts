@@ -24,6 +24,7 @@ test("E2E-11: popup menu appears on text selection and press a ShiftKey", async 
   const testPage = new TestPage(page)
   await testPage.open()
 
+  // Act: Set the startup method to "keyboard" and dispatch a Shift key press after selecting text.
   await setUserSettings({
     startupMethod: {
       method: STARTUP_METHOD.KEYBOARD,
@@ -33,10 +34,8 @@ test("E2E-11: popup menu appears on text selection and press a ShiftKey", async 
   await testPage.selectText("h1, h2, h3", false)
   await page.keyboard.press(KEYBOARD.SHIFT)
 
-  // Act: Set the startup method to "shortcut" and dispatch the keyboard shortcut.
+  // Assert
   const menubar = await testPage.getMenuBar()
-
-  // Asert
   await expect(menubar).toBeVisible()
 })
 

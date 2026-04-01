@@ -1,5 +1,8 @@
 import { isServiceWorker } from "@/lib/utils"
 
+const DEFAULT_SCREEN_WIDTH = 1280
+const DEFAULT_SCREEN_HEIGHT = 800
+
 type WindowPosition = {
   top: number
   left: number
@@ -85,16 +88,16 @@ export async function getScreenSize(): Promise<ScreenSize> {
       try {
         const w = await chrome.windows.getCurrent()
         return {
-          width: w.width ?? 1280,
-          height: w.height ?? 800,
+          width: w.width ?? DEFAULT_SCREEN_WIDTH,
+          height: w.height ?? DEFAULT_SCREEN_HEIGHT,
           left: 0,
           top: 0,
         }
       } catch (fallbackError) {
         console.warn("Fallback screen size estimation failed:", fallbackError)
         return {
-          width: 1280,
-          height: 800,
+          width: DEFAULT_SCREEN_WIDTH,
+          height: DEFAULT_SCREEN_HEIGHT,
           left: 0,
           top: 0,
         }
