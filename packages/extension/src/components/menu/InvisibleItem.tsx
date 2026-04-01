@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useMemo } from "react"
 import { cn } from "@/lib/utils"
 
 import { ResultPopup } from "@/components/result/ResultPopup"
-import { Icon } from "@/components/Icon"
+import { RefreshCw, Check, AlertCircle } from "lucide-react"
 import { useContextMenu } from "@/hooks/useContextMenu"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useCommandExecutor } from "@/hooks/useCommandExecutor"
@@ -108,16 +108,15 @@ function IconWithState(props: ImageProps): JSX.Element {
       )}
     >
       {status === ExecState.EXECUTING && (
-        <Icon
+        <RefreshCw
           className={`${css.itemImg} ${css.apiIconLoading} rotate`}
-          name="refresh"
         />
       )}
       {status === ExecState.SUCCESS && (
-        <Icon className={`${css.itemImg} ${css.apiIconSuccess}`} name="check" />
+        <Check className={`${css.itemImg} ${css.apiIconSuccess}`} />
       )}
       {status === ExecState.FAIL && (
-        <Icon className={`${css.itemImg} ${css.apiIconError}`} name="error" />
+        <AlertCircle className={`${css.itemImg} ${css.apiIconError}`} />
       )}
     </div>
   )

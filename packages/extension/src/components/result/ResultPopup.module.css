@@ -14,7 +14,6 @@
   cursor: pointer;
   transition:
     color,
-    fill,
     background ease-out 0.2s;
   border: none;
   border-radius: 6px;
@@ -29,7 +28,6 @@
     width: var(--icon-size);
     height: var(--icon-size);
     color: var(--gray-400);
-    fill: var(--gray-400);
   }
 
   &:hover {
@@ -38,11 +36,10 @@
 
     svg {
       color: var(--gray-600);
-      fill: var(--gray-600);
     }
 
     svg.buttonSuccess {
-      fill: var(--blue-500);
+      color: var(--blue-500);
     }
   }
 }
