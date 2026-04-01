@@ -32,9 +32,9 @@
   height: 20px;
   margin-right: 4px;
   padding-bottom: 2px;
-  fill: var(--gray-400);
-  transition: fill 250ms;
+  color: var(--gray-400);
+  transition: color 250ms;
 }
 .OpenInTab__icon:hover {
-  fill: var(--gray-700);
+  color: var(--gray-700);
 }

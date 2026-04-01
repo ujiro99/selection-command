@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Ipc, BgCommand } from "@/services/ipc"
-import { Icon } from "../components/Icon"
+import { ExternalLink } from "lucide-react"
 import "./OpenInTab.css"
 
 let isPageUnloading = false
@@ -50,7 +50,7 @@ export function OpenInTab(): JSX.Element {
             className="OpenInTab__button"
             onClick={onClickOpenTab}
           >
-            <Icon name="open-outline" className="OpenInTab__icon" />
+            <ExternalLink className="OpenInTab__icon" />
             Open in Tab
           </button>
         </div>

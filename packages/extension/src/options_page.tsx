@@ -1,7 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import { Option } from "@/components/option/Option"
-import icons from "./icons.svg?raw"
 import { getCurrentLocale } from "@/services/i18n"
 import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
 
@@ -19,7 +18,6 @@ document.documentElement.lang = getCurrentLocale()
 const root = document.getElementById("root")
 if (root) {
   try {
-    root.insertAdjacentHTML("afterend", icons)
     ReactDOM.createRoot(root).render(
       <React.StrictMode>
         <ErrorBoundary>
