@@ -1,6 +1,7 @@
 import { test, expect } from "./fixtures"
 import { TestPage } from "./pages/TestPage"
 import { OptionsPage } from "./pages/OptionsPage"
+import { STYLE_VARIABLE } from "@/const"
 
 test.describe("User Styles", () => {
   test.beforeEach(async ({ context, extensionId, getCommands }) => {
@@ -113,15 +114,17 @@ test.describe("User Styles", () => {
     const currentSettings = await getUserSettings()
     // Add or update background-color style variable
     const hasBackgroundColor = currentSettings.userStyles.some(
-      (s) => s.name === "background-color",
+      (s) => s.name === STYLE_VARIABLE.BACKGROUND_COLOR,
     )
     const updatedStyles = hasBackgroundColor
       ? currentSettings.userStyles.map((s) =>
-          s.name === "background-color" ? { ...s, value: "#ff0000" } : s,
+          s.name === STYLE_VARIABLE.BACKGROUND_COLOR
+            ? { ...s, value: "#ff0000" }
+            : s,
         )
       : [
           ...currentSettings.userStyles,
-          { name: "background-color", value: "#ff0000" } as any,
+          { name: STYLE_VARIABLE.BACKGROUND_COLOR, value: "#ff0000" },
         ]
 
     await setUserSettings({ userStyles: updatedStyles })
@@ -155,9 +158,9 @@ test.describe("User Styles", () => {
     const currentSettings = await getUserSettings()
     const withBg = [
       ...currentSettings.userStyles.filter(
-        (s) => s.name !== "background-color",
+        (s) => s.name !== STYLE_VARIABLE.BACKGROUND_COLOR,
       ),
-      { name: "background-color", value: "#ff0000" } as any,
+      { name: STYLE_VARIABLE.BACKGROUND_COLOR, value: "#ff0000" },
     ]
     await setUserSettings({ userStyles: withBg })
 
@@ -195,7 +198,7 @@ test.describe("User Styles", () => {
     // Add font-color via the options page UI
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
-    await optionsPage.addUserStyle("font-color", "#ff0000")
+    await optionsPage.addUserStyle(STYLE_VARIABLE.FONT_COLOR, "#ff0000")
     await optionsPage.close()
 
     // Verify the font color is applied in the popup menu
@@ -226,14 +229,14 @@ test.describe("User Styles", () => {
     await setUserSettings({
       userStyles: [
         ...currentSettings.userStyles,
-        { name: "font-color", value: "#ff0000" } as any,
+        { name: STYLE_VARIABLE.FONT_COLOR, value: "#ff0000" },
       ],
     })
 
     // Remove font-color via the options page UI
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
-    await optionsPage.removeUserStyle("font-color")
+    await optionsPage.removeUserStyle(STYLE_VARIABLE.FONT_COLOR)
     await optionsPage.close()
 
     // Verify font color is back to default in the popup menu
@@ -249,13 +252,19 @@ test.describe("User Styles", () => {
     // Verify other user styles (e.g. padding-scale) are unaffected
     const updatedSettings = await getUserSettings()
     expect(
-      updatedSettings.userStyles.some((s) => s.name === "padding-scale"),
+      updatedSettings.userStyles.some(
+        (s) => s.name === STYLE_VARIABLE.PADDING_SCALE,
+      ),
     ).toBe(true)
     expect(
-      updatedSettings.userStyles.some((s) => s.name === "image-scale"),
+      updatedSettings.userStyles.some(
+        (s) => s.name === STYLE_VARIABLE.IMAGE_SCALE,
+      ),
     ).toBe(true)
     expect(
-      updatedSettings.userStyles.some((s) => s.name === "font-scale"),
+      updatedSettings.userStyles.some(
+        (s) => s.name === STYLE_VARIABLE.FONT_SCALE,
+      ),
     ).toBe(true)
   })
 })
