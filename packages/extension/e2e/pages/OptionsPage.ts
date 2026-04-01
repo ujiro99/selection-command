@@ -7,10 +7,6 @@ import { TEST_IDS } from "@/testIds"
 import { fileURLToPath } from "url"
 import type { UserSettings } from "@/types"
 
-function sleep(msec: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, msec))
-}
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
 
@@ -242,6 +238,6 @@ export class OptionsPage {
     const reloadPromise = this.page.waitForLoadState("domcontentloaded")
     await okButton.click()
     await reloadPromise
-    await sleep(500)
+    await this.page.waitForTimeout(500)
   }
 }

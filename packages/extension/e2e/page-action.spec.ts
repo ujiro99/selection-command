@@ -227,7 +227,9 @@ test.describe("PageAction Commands", () => {
 
     const [newPage] = await Promise.all([
       context.waitForEvent("page", { timeout: 5000 }),
-      page.locator("[role='menuitem'][aria-label='Character Counter (Tab)']").click(),
+      page
+        .locator("[role='menuitem'][aria-label='Character Counter (Tab)']")
+        .click(),
     ])
     await newPage.waitForLoadState("domcontentloaded")
 
@@ -235,7 +237,7 @@ test.describe("PageAction Commands", () => {
     await newPage.waitForFunction(
       () => {
         const textarea = document.querySelector("textarea")
-        return textarea ? textarea.value : null
+        return textarea ? textarea.value === "Browser" : false
       },
       null,
       { timeout: 10_000 },
