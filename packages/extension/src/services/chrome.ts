@@ -105,8 +105,8 @@ export type OpenPopupProps = {
   url: string | UrlParam
   top: number
   left: number
-  width: number
-  height: number
+  width: number | undefined
+  height: number | undefined
   type: POPUP_TYPE
   windowState?: WINDOW_STATE
 }
@@ -116,8 +116,8 @@ export type OpenPopupsProps = {
   urls: string[]
   top: number
   left: number
-  width: number
-  height: number
+  width: number | undefined
+  height: number | undefined
   type: POPUP_TYPE
 }
 
@@ -159,8 +159,8 @@ type OpenResult = {
 const adjustWindowPosition = (
   top: number,
   left: number,
-  width: number,
-  height: number,
+  width: number | undefined,
+  height: number | undefined,
   screen: ScreenSize,
   offset: number = 0,
 ): { top: number; left: number } => {
