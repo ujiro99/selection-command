@@ -10,7 +10,7 @@ import { ScrollAreaConditional } from "@/components/ui/scroll-area"
 import { STYLE, SIDE } from "@/const"
 import { TEST_IDS } from "@/testIds"
 import { MenuItem } from "./MenuItem"
-import { Icon } from "@/components/Icon"
+import { ChevronRight } from "lucide-react"
 import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { popupContext } from "@/components/Popup"
@@ -228,7 +228,7 @@ const MenuFolder = (props: {
         {!(folder.onlyIcon && isHorizontal) && (
           <span className={cn(css.itemTitle, css.title)}>{folder.title}</span>
         )}
-        {!isHorizontal && <Icon name="chevron" className={css.icon} />}
+        {!isHorizontal && <ChevronRight className={css.icon} />}
       </MenubarTrigger>
       <MenubarContent
         side={menuSide}

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { sleep } from "@/lib/utils"
 import { ExecState } from "@/const"
 import css from "@/components/result/ResultPopup.module.css"
-import { Icon } from "@/components/Icon"
+import { Copy, Check } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 
 const toName = (str: string) => {
@@ -45,9 +45,9 @@ export function TextStyle({ styles }: Props) {
           disabled={status === ExecState.SUCCESS}
           ref={setButtonElm}
         >
-          {status === ExecState.NONE && <Icon name="copy" />}
+          {status === ExecState.NONE && <Copy />}
           {status === ExecState.SUCCESS && (
-            <Icon name="check" className={css.buttonSuccess} />
+            <Check className={css.buttonSuccess} />
           )}
         </button>
         <Tooltip positionElm={buttonElm} text={message} />
