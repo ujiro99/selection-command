@@ -7,6 +7,11 @@ import {
 import path from "path"
 import { fileURLToPath } from "url"
 import { attachSWConsole } from "./utils/logConsole"
+import {
+  STORAGE_KEY,
+  LOCAL_STORAGE_KEY,
+  CMD_PREFIX,
+} from "@/services/storage/const"
 
 import type { UserSettings, Command } from "@/types"
 import type { CommandMetadata } from "@/types/command"
@@ -89,40 +94,49 @@ export const test = base.extend<Fixtures>({
       serviceWorker = await context.waitForEvent("serviceworker")
     }
     await use(async () => {
-      const result = await serviceWorker.evaluate(async () => {
-        // 1. Load commands from sync storage.
-        const { 5: syncMetaData } = await chrome.storage.sync.get<{
-          "5": CommandMetadata
-        }>("5")
-        const syncCount = syncMetaData?.count ?? 0
+      const result = await serviceWorker.evaluate(
+        async ({ CMD_META_SYNC, CMD_META_LOCAL, CMD_PREFIX }) => {
+          // 1. Load commands from sync storage.
+          const { [CMD_META_SYNC]: syncMetaData } =
+            await chrome.storage.sync.get<{
+              [CMD_META_SYNC]: CommandMetadata
+            }>(CMD_META_SYNC)
+          const syncCount = syncMetaData?.count ?? 0
 
-        const CMD_PREFIX = "cmd-"
-        const cmdSyncKey = (idx: number): string => `${CMD_PREFIX}${idx}`
-        const syncKeys = Array.from({ length: syncCount }, (_, i) =>
-          cmdSyncKey(i),
-        )
-        const syncResult = await chrome.storage.sync.get(syncKeys)
-        const syncCommands = syncKeys.map((key) => syncResult[key] as Command)
+          const cmdSyncKey = (idx: number): string => `${CMD_PREFIX}${idx}`
+          const syncKeys = Array.from({ length: syncCount }, (_, i) =>
+            cmdSyncKey(i),
+          )
+          const syncResult = await chrome.storage.sync.get(syncKeys)
+          const syncCommands = syncKeys.map((key) => syncResult[key] as Command)
 
-        // 2. Load commands from local storage
-        const LOCAL_COMMAND_METADATA = "localCommandMetadata"
-        const { [LOCAL_COMMAND_METADATA]: localMetaData } =
-          await chrome.storage.local.get<{
-            [LOCAL_COMMAND_METADATA]: CommandMetadata
-          }>(LOCAL_COMMAND_METADATA)
-        const localCount = localMetaData?.count ?? 0
+          // 2. Load commands from local storage
+          const { [CMD_META_LOCAL]: localMetaData } =
+            await chrome.storage.local.get<{
+              [CMD_META_LOCAL]: CommandMetadata
+            }>(CMD_META_LOCAL)
+          const localCount = localMetaData?.count ?? 0
 
-        const cmdLocalKey = (idx: number): string => `${CMD_PREFIX}local-${idx}`
-        const localKeys = Array.from({ length: localCount }, (_, i) =>
-          cmdLocalKey(i),
-        )
-        const localResult = await chrome.storage.local.get(localKeys)
-        const localCommands = localKeys.map(
-          (key) => localResult[key] as Command,
-        )
+          const cmdLocalKey = (idx: number): string =>
+            `${CMD_PREFIX}local-${idx}`
+          const localKeys = Array.from({ length: localCount }, (_, i) =>
+            cmdLocalKey(i),
+          )
+          const localResult = await chrome.storage.local.get(localKeys)
+          const localCommands = localKeys.map(
+            (key) => localResult[key] as Command,
+          )
 
-        return [...syncCommands, ...localCommands].filter((cmd) => cmd != null)
-      })
+          return [...syncCommands, ...localCommands].filter(
+            (cmd) => cmd != null,
+          )
+        },
+        {
+          CMD_META_SYNC: `${STORAGE_KEY.SYNC_COMMAND_METADATA}` as const,
+          CMD_META_LOCAL: LOCAL_STORAGE_KEY.LOCAL_COMMAND_METADATA as const,
+          CMD_PREFIX,
+        },
+      )
       return result
     })
   },
@@ -134,12 +148,15 @@ export const test = base.extend<Fixtures>({
     }
 
     await use(async () => {
-      const result = await serviceWorker.evaluate(async () => {
-        const { 0: userSettings } = await chrome.storage.sync.get<{
-          "0": UserSettings
-        }>("0")
-        return userSettings
-      })
+      const result = await serviceWorker.evaluate(
+        async ({ USER_KEY }) => {
+          const result = await chrome.storage.sync.get<{
+            [USER_KEY]: UserSettings
+          }>(USER_KEY)
+          return result[USER_KEY]
+        },
+        { USER_KEY: `${STORAGE_KEY.USER}` as const },
+      )
       return result
     })
   },
@@ -152,20 +169,26 @@ export const test = base.extend<Fixtures>({
 
     await use(async (newSettings: Partial<UserSettings>) => {
       const result = await serviceWorker.evaluate(
-        async (settings: Partial<UserSettings>) => {
-          const { 0: userSettings } = await chrome.storage.sync.get<{
-            "0": UserSettings
-          }>("0")
+        async ({
+          settings,
+          USER_KEY,
+        }: {
+          settings: Partial<UserSettings>
+          USER_KEY: `${STORAGE_KEY.USER}`
+        }) => {
+          const stored = await chrome.storage.sync.get<{
+            [USER_KEY]: UserSettings
+          }>(USER_KEY)
           const updatedSettings = {
-            ...userSettings,
+            ...stored[USER_KEY],
             ...settings,
           }
           await chrome.storage.sync.set({
-            "0": updatedSettings,
+            [USER_KEY]: updatedSettings,
           })
           return updatedSettings
         },
-        newSettings,
+        { settings: newSettings, USER_KEY: `${STORAGE_KEY.USER}` as const },
       )
       return result
     })
