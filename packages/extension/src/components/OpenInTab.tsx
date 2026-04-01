@@ -47,7 +47,7 @@ export function OpenInTab(): JSX.Element {
         <div className="OpenInTab" style={{ visibility: "hidden" }}>
           <button
             type="button"
-            className="OpenInTab__button text-sm text-foreground/60 hover:text-foreground cursor-pointer gap-2"
+            className="OpenInTab__button rounded flex items-center px-2 py-1 text-xs text-foreground/60 hover:text-foreground cursor-pointer gap-1.5"
             onClick={onClickOpenTab}
           >
             <ExternalLink className="OpenInTab__icon size-4" />

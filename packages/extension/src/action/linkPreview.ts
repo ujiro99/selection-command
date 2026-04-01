@@ -4,11 +4,14 @@ import {
   findClickableElement,
   getSelectorFromElement,
 } from "@/services/dom"
-import { getScreenSize } from "@/services/screen"
 import { DRAG_OPEN_MODE, POPUP_TYPE } from "@/const"
 import { isEmpty } from "@/lib/utils"
 import type { ExecuteCommandParams } from "@/types"
-import type { OpenSidePanelProps } from "@/services/chrome"
+import type {
+  OpenPopupsProps,
+  OpenSidePanelProps,
+  OpenPopupAndClickProps,
+} from "@/services/chrome"
 
 export const LinkPreview = {
   async execute({ command, position, target }: ExecuteCommandParams) {
@@ -32,14 +35,13 @@ export const LinkPreview = {
           : POPUP_TYPE.NORMAL
 
       if (!isEmpty(href)) {
-        Ipc.send(BgCommand.openPopups, {
+        Ipc.send<OpenPopupsProps>(BgCommand.openPopups, {
           commandId: command.id,
           urls: [href],
           top: Math.floor(position.y),
           left: Math.floor(position.x),
           height: command.popupOption?.height,
           width: command.popupOption?.width,
-          screen: await getScreenSize(),
           type,
         })
         return
@@ -48,16 +50,16 @@ export const LinkPreview = {
       console.warn("Href not found, trying to find clickable element")
 
       const clickElm = findClickableElement(target)
+
       if (clickElm) {
         const selector = getSelectorFromElement(clickElm)
-        Ipc.send(BgCommand.openPopupAndClick, {
+        Ipc.send<OpenPopupAndClickProps>(BgCommand.openPopupAndClick, {
           commandId: command.id,
-          urls: [location.href],
+          url: location.href,
           top: Math.floor(position.y),
           left: Math.floor(position.x),
           height: command.popupOption?.height,
           width: command.popupOption?.width,
-          screen: await getScreenSize(),
           selector,
           type,
         })

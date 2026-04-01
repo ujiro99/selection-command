@@ -76,3 +76,11 @@ jobs:
 
       - name: Run E2E tests
         run: yarn test:e2e
+
+      - name: Upload E2E test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: packages/extension/test-results/
+          retention-days: 7

@@ -215,6 +215,8 @@ const MenuFolder = (props: {
           "pointer-events-none": inTransition,
         })}
         ref={anchorRef}
+        aria-haspopup="menu"
+        title={folder.title}
         {...onHover(onHoverTrigger, folder.id)}
       >
         <MenuImage

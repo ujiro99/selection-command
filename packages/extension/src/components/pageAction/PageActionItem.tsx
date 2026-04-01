@@ -47,10 +47,11 @@ type Props = {
   onClickRemove: (id: string) => void
   onClickEdit: (id: string) => void
   onChange: (id: string, partial: DeepPartial<PageActionStep>) => void
+  testId?: string
 }
 
 export function PageActionItem(props: Props): JSX.Element {
-  const { step, currentId, failedId, failedMessage } = props
+  const { step, currentId, failedId, failedMessage, testId } = props
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -134,6 +135,7 @@ export function PageActionItem(props: Props): JSX.Element {
       )}
       ref={anchorRef}
       {...onHover(onHoverTrigger, true)}
+      data-testid={testId}
     >
       {/* List icon */}
       <div

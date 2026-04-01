@@ -39,6 +39,7 @@ try {
 
   if (!isDebug) {
     // Putting styles into ShadowDom
+    insertCss(shadow, "/assets/components.css")
     insertCss(shadow, "/assets/content_script.css")
   }
 
