@@ -4,6 +4,7 @@ import { OptionsPage } from "./pages/OptionsPage"
 
 test.describe("Search Command", () => {
   test.beforeEach(async ({ context, extensionId, getCommands }) => {
+    // Import test settings to ensure the first menu item is a Testpage command.
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
     await optionsPage.importSettings()
@@ -12,16 +13,8 @@ test.describe("Search Command", () => {
 
   test("E2E-20: executing a command from the popup menu performs search on test page in a popup window", async ({
     context,
-    extensionId,
-    getCommands,
     page,
   }) => {
-    // Import test settings to ensure the first menu item is a Testpage command.
-    const optionsPage = new OptionsPage(context, extensionId, getCommands)
-    await optionsPage.open()
-    await optionsPage.importSettings()
-    await optionsPage.close()
-
     // Arrange: Open the test page and select text to show the popup menu.
     const testPage = new TestPage(page)
     await testPage.open()
@@ -135,7 +128,9 @@ test.describe("Search Command", () => {
       .hover()
 
     // Drive and "en to ja" are inside Work folder
-    await expect(page.locator("[role='menuitem'][aria-label='Drive']")).toBeVisible()
+    await expect(
+      page.locator("[role='menuitem'][aria-label='Drive']"),
+    ).toBeVisible()
   })
 
   /**
@@ -161,6 +156,8 @@ test.describe("Search Command", () => {
       .hover()
 
     // DeepL is inside Lang folder
-    await expect(page.locator("[role='menuitem'][aria-label='DeepL']")).toBeVisible()
+    await expect(
+      page.locator("[role='menuitem'][aria-label='DeepL']"),
+    ).toBeVisible()
   })
 })
