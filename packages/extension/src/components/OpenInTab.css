@@ -8,13 +8,8 @@
 
 .OpenInTab__button {
   background: #f9f9f9;
-  border-radius: 6px;
   border: none;
   filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
-  display: flex;
-  align-items: center;
-  padding: 4px 8px;
-  cursor: pointer;
   transition:
     color 250ms,
     background-color 250ms;
