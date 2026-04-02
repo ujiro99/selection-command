@@ -486,7 +486,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Prompt template. Use the insert menu to add variables (selected text, URL, clipboard)."
+    "message": "Prompt template. Use the insert menu to add variables (selected text, URL, clipboard, browser language)."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Enter your prompt here..."
@@ -798,6 +798,10 @@
     "message": "The clipboard text  will be inserted",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Your browser language will be inserted",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insert Text"
   },
@@ -809,6 +813,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Clipboard"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Browser language"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit the content"

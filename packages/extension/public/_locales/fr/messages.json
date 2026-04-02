@@ -486,7 +486,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Modèle de prompt. Utilisez le menu d'insertion pour ajouter des variables (texte sélectionné, URL, presse-papiers)."
+    "message": "Modèle d'invite. Utilisez le menu d'insertion pour ajouter des variables (texte sélectionné, URL, presse-papiers, langue du navigateur)."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Saisissez votre prompt ici..."
@@ -797,6 +797,10 @@
     "message": "Le texte du presse-papiers sera inséré",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "La langue de votre navigateur sera insérée",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insérer du Texte"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Presse-papiers"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Langue du navigateur"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifier le contenu"

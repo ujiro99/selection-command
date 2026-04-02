@@ -486,7 +486,7 @@
     "message": "Промпт"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Шаблон промпта. Используйте меню вставки для добавления переменных (выбранный текст, URL, буфер обмена)."
+    "message": "Шаблон подсказки. Используйте меню вставки для добавления переменных (выделенный текст, URL, буфер обмена, язык браузера)."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Введите ваш промпт здесь..."
@@ -797,6 +797,10 @@
     "message": "Будет вставлен текст из буфера обмена",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Будет вставлен язык вашего браузера",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Вставить текст"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Буфер обмена"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Язык браузера"
   },
   "PageAction_InputEditor_title": {
     "message": "Редактировать содержимое"

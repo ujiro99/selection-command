@@ -486,7 +486,7 @@
     "message": "提示词"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "提示词模板。使用插入菜单添加变量（选中文本、URL、剪贴板）。"
+    "message": "提示模板。使用插入菜单添加变量（选定文本、URL、剪贴板、浏览器语言）。"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "在此输入您的提示词..."
@@ -797,6 +797,10 @@
     "message": "将从剪贴板插入文本",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "您的浏览器语言将被插入",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "插入文本"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "剪贴板"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "浏览器语言"
   },
   "PageAction_InputEditor_title": {
     "message": "编辑内容"

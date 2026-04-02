@@ -486,7 +486,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Prompt-Vorlage. Verwenden Sie das Einfügemenü, um Variablen hinzuzufügen (ausgewählter Text, URL, Zwischenablage)."
+    "message": "Eingabeaufforderungsvorlage. Verwenden Sie das Einfügemenü, um Variablen hinzuzufügen (ausgewählter Text, URL, Zwischenablage, Browsersprache)."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Prompt hier eingeben..."
@@ -797,6 +797,10 @@
     "message": "Der Text aus der Zwischenablage wird eingefügt",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Ihre Browsersprache wird eingefügt",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Text einfügen"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Zwischenablage"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Browsersprache"
   },
   "PageAction_InputEditor_title": {
     "message": "Inhalt bearbeiten"

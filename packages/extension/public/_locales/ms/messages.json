@@ -486,7 +486,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Templat prompt. Gunakan menu sisipan untuk menambah pemboleh ubah (teks dipilih, URL, papan klip)."
+    "message": "Templat gesaan. Gunakan menu sisip untuk menambah pembolehubah (teks terpilih, URL, papan keratan, bahasa pelayar)."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Masukkan prompt anda di sini..."
@@ -797,6 +797,10 @@
     "message": "Teks papan klip akan dimasukkan",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Bahasa pelayar anda akan disisipkan",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Papan Klip"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Bahasa pelayar"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit kandungan"

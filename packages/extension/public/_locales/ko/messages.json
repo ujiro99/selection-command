@@ -486,7 +486,7 @@
     "message": "프롬프트"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "프롬프트 템플릿. 삽입 메뉴를 사용하여 변수(선택된 텍스트, URL, 클립보드)를 추가하세요."
+    "message": "프롬프트 템플릿. 삽입 메뉴를 사용하여 변수(선택한 텍스트, URL, 클립보드, 브라우저 언어)를 추가하세요."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "여기에 프롬프트를 입력하세요..."
@@ -797,6 +797,10 @@
     "message": "클립보드의 텍스트가 삽입됩니다",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "브라우저 언어가 삽입됩니다",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "텍스트 삽입"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "클립보드"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "브라우저 언어"
   },
   "PageAction_InputEditor_title": {
     "message": "내용 편집"

@@ -486,7 +486,7 @@
     "message": "प्रॉम्प्ट"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "प्रॉम्प्ट टेम्पलेट। वेरिएबल जोड़ने के लिए इन्सर्ट मेनू का उपयोग करें (चुना गया टेक्स्ट, URL, क्लिपबोर्ड)।"
+    "message": "प्रॉम्प्ट टेम्पलेट। चयनित टेक्स्ट, URL, क्लिपबोर्ड, ब्राउज़र भाषा जैसे चर जोड़ने के लिए इन्सर्ट मेनू का उपयोग करें।"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "यहाँ अपना प्रॉम्प्ट दर्ज करें..."
@@ -797,6 +797,10 @@
     "message": "क्लिपबोर्ड से टेक्स्ट डाला जाएगा",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "आपकी ब्राउज़र भाषा डाली जाएगी",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "टेक्स्ट डालें"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "क्लिपबोर्ड"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "ब्राउज़र भाषा"
   },
   "PageAction_InputEditor_title": {
     "message": "सामग्री संपादित करें"

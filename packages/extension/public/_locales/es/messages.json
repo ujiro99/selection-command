@@ -486,7 +486,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Plantilla de prompt. Usa el menú de inserción para agregar variables (texto seleccionado, URL, portapapeles)."
+    "message": "Plantilla de indicaciones. Use el menú de inserción para agregar variables (texto seleccionado, URL, portapapeles, idioma del navegador)."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Ingresa tu prompt aquí..."
@@ -797,6 +797,10 @@
     "message": "Se insertará el texto del portapapeles",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Se insertará el idioma de su navegador",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insertar Texto"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Portapapeles"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Idioma del navegador"
   },
   "PageAction_InputEditor_title": {
     "message": "Editar el contenido"

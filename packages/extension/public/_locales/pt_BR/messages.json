@@ -486,7 +486,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Modelo de prompt. Use o menu de inserção para adicionar variáveis (texto selecionado, URL, área de transferência)."
+    "message": "Modelo de prompt. Use o menu de inserção para adicionar variáveis (texto selecionado, URL, área de transferência, idioma do navegador)."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Digite seu prompt aqui..."
@@ -797,6 +797,10 @@
     "message": "O texto da área de transferência será inserido",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "O idioma do seu navegador será inserido",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserir Texto"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Área de transferência"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Idioma do navegador"
   },
   "PageAction_InputEditor_title": {
     "message": "Editar o conteúdo"

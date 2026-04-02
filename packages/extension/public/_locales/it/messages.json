@@ -486,7 +486,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Modello prompt. Usa il menu di inserimento per aggiungere variabili (testo selezionato, URL, appunti)."
+    "message": "Modello di prompt. Usa il menu di inserimento per aggiungere variabili (testo selezionato, URL, appunti, lingua del browser)."
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Inserisci il tuo prompt qui..."
@@ -797,6 +797,10 @@
     "message": "Il testo negli appunti verrà inserito",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "La lingua del tuo browser verrà inserita",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserisci testo"
   },
@@ -808,6 +812,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Appunti"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Lingua del browser"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifica contenuto"
