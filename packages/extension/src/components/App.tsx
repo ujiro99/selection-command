@@ -16,7 +16,10 @@ import { TabContextProvider } from "@/providers/TabContextProvider"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { useDetectInstantCommand } from "@/hooks/useDetectInstantCommand"
+import { BgData } from "@/services/backgroundData"
 import type { ShowToastParam } from "@/types"
+
+BgData.init()
 
 type Props = {
   rootElm: HTMLElement

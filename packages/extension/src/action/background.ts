@@ -10,7 +10,7 @@ import { AiPrompt } from "./aiPrompt"
 import { executeAction } from "./executor"
 import type { ExecuteCommandParams } from "@/types"
 
-export const actionsForBackground = {
+const actionsForBackground = {
   [OPEN_MODE_BG.POPUP]: Popup,
   [OPEN_MODE_BG.WINDOW]: Window,
   [OPEN_MODE_BG.TAB]: Tab,

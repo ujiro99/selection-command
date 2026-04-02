@@ -5,6 +5,7 @@ import type { PageActionStep, DeepPartial } from "@/types"
 
 import { PAGE_ACTION_MAX, PAGE_ACTION_CONTROL } from "@/const"
 import { e2a } from "@/lib/utils"
+import { TEST_IDS } from "@/testIds"
 
 const noop = () => {}
 
@@ -43,6 +44,7 @@ export function StepList(props: Props): JSX.Element {
           onClickRemove={onClickRemove}
           onClickEdit={onClickEdit}
           onChange={onChange}
+          testId={TEST_IDS.pageActionStep(step.param.type)}
           className={cn(
             "relative",
             i > 0 &&

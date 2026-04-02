@@ -1,5 +1,7 @@
-import { BgData } from "@/services/backgroundData"
-import { windowExists } from "@/services/chrome"
+import { isServiceWorker } from "@/lib/utils"
+
+const DEFAULT_SCREEN_WIDTH = 1280
+const DEFAULT_SCREEN_HEIGHT = 800
 
 type WindowPosition = {
   top: number
@@ -11,41 +13,6 @@ export type ScreenSize = {
   height: number
   left: number
   top: number
-}
-
-export async function updateActiveScreenId(windowId: number): Promise<void> {
-  try {
-    const exists = await windowExists(windowId)
-    if (!exists) {
-      console.warn(`Window ${windowId} does not exist for screen ID update`)
-      return
-    }
-
-    const window = await chrome.windows.get(windowId)
-    const left = window.left ?? 0
-    const top = window.top ?? 0
-
-    // Find the display that contains the window
-    const displays = await chrome.system.display.getInfo()
-    const display = displays.find((d) => {
-      return (
-        left >= d.bounds.left &&
-        left < d.bounds.left + d.bounds.width &&
-        top >= d.bounds.top &&
-        top < d.bounds.top + d.bounds.height
-      )
-    })
-
-    if (display) {
-      // Update BgData with the active screen ID
-      await BgData.set((data) => ({
-        ...data,
-        activeScreenId: display.id,
-      }))
-    }
-  } catch (error) {
-    console.error("Failed to update active screen ID:", error)
-  }
 }
 
 export async function getWindowPosition(): Promise<WindowPosition> {
@@ -71,29 +38,72 @@ export async function getWindowPosition(): Promise<WindowPosition> {
 }
 
 export async function getScreenSize(): Promise<ScreenSize> {
-  try {
-    // For background_script.ts
-    const displays = await chrome.system.display.getInfo()
-    const activeScreenId = BgData.get().activeScreenId
+  if (isServiceWorker()) {
+    try {
+      // For background_script.ts
+      const [displays, currentWindow] = await Promise.all([
+        chrome.system.display.getInfo(),
+        chrome.windows.getCurrent(),
+      ])
 
-    // Use the screen with active screen ID if it exists,
-    // otherwise use the primary display
-    const targetDisplay = activeScreenId
-      ? displays.find((d) => d.id === activeScreenId)
-      : displays.find((d) => d.isPrimary)
+      let targetDisplay
+      const currentWindowLeft = currentWindow.left
+      const currentWindowTop = currentWindow.top
 
-    if (!targetDisplay) {
-      throw new Error("Target display not found")
+      if (currentWindowLeft != null && currentWindowTop != null) {
+        // Find the monitor that contains the active window's left position
+        targetDisplay =
+          displays.find((d) => {
+            const a = d.workArea
+            return (
+              currentWindowLeft >= a.left &&
+              currentWindowLeft < a.left + a.width &&
+              currentWindowTop >= a.top &&
+              currentWindowTop < a.top + a.height
+            )
+          }) ??
+          displays.find((d) => d.isPrimary) ??
+          displays[0]
+      } else {
+        // If left/top cannot be retrieved, prefer returning the primary monitor
+        targetDisplay = displays.find((d) => d.isPrimary) ?? displays[0]
+      }
+
+      if (!targetDisplay) {
+        throw new Error("Target display not found")
+      }
+
+      return {
+        width: targetDisplay.bounds.width,
+        height: targetDisplay.bounds.height,
+        left: targetDisplay.bounds.left,
+        top: targetDisplay.bounds.top,
+      }
+    } catch (error) {
+      console.warn(
+        "Failed to get screen size in service worker, using fallback:",
+        error,
+      )
+      // Fallback: use the current window's size as a minimum screen estimate
+      try {
+        const w = await chrome.windows.getCurrent()
+        return {
+          width: w.width ?? DEFAULT_SCREEN_WIDTH,
+          height: w.height ?? DEFAULT_SCREEN_HEIGHT,
+          left: 0,
+          top: 0,
+        }
+      } catch (fallbackError) {
+        console.warn("Fallback screen size estimation failed:", fallbackError)
+        return {
+          width: DEFAULT_SCREEN_WIDTH,
+          height: DEFAULT_SCREEN_HEIGHT,
+          left: 0,
+          top: 0,
+        }
+      }
     }
-
-    return {
-      width: targetDisplay.bounds.width,
-      height: targetDisplay.bounds.height,
-      left: targetDisplay.bounds.left,
-      top: targetDisplay.bounds.top,
-    }
-  } catch (error) {
-    // For tabs
+  } else {
     return {
       width: window.screen.width,
       height: window.screen.height,

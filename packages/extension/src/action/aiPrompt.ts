@@ -1,5 +1,5 @@
 import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
-import { getScreenSize, getWindowPosition } from "@/services/screen"
+import { getWindowPosition } from "@/services/screen"
 import { isValidString, generateRandomID } from "@/lib/utils"
 import {
   OPEN_MODE,
@@ -14,7 +14,7 @@ import type { OpenAndRunProps } from "@/services/pageAction/background"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
-import { InsertSymbol, INSERT } from "@/services/pageAction"
+import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 
 // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
@@ -108,7 +108,7 @@ export const AiPrompt = {
 
     // Checks if any step requires clipboard data
     const needClipboard = aiPromptOption.prompt.includes(
-      InsertSymbol[INSERT.CLIPBOARD],
+      toInsertTemplate(INSERT.CLIPBOARD),
     )
 
     // Handle side panel mode: store pending steps in session storage, then open
@@ -156,7 +156,6 @@ export const AiPrompt = {
       : baseMode
 
     const windowPosition = await getWindowPosition()
-    const screen = await getScreenSize()
 
     const url: UrlParam = {
       searchUrl: service.url,
@@ -172,7 +171,6 @@ export const AiPrompt = {
       left: Math.floor(windowPosition.left + position.x),
       height: command.popupOption?.height ?? PopupOption.height,
       width: command.popupOption?.width ?? PopupOption.width,
-      screen,
       selectedText: selectionText,
       srcUrl: location.href,
       openMode,

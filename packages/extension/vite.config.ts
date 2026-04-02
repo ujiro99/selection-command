@@ -1,3 +1,4 @@
+import fs from "fs"
 import path from "path"
 import { defineConfig, loadEnv } from "vite"
 import react from "@vitejs/plugin-react"
@@ -106,6 +107,10 @@ export default defineConfig(({ mode }) => {
     define: {
       __APP_NAME__: JSON.stringify(packageJson.name),
       __APP_VERSION__: JSON.stringify(packageJson.version),
+      __AI_SERVICES_JSON__: fs.readFileSync(
+        path.resolve(__dirname, "../hub/public/data/ai-services.json"),
+        "utf-8",
+      ),
     },
     resolve: {
       alias: {
@@ -142,12 +147,21 @@ export default defineConfig(({ mode }) => {
           clipboard: "src/clipboard.html",
         },
         output: {
+          // Group all CSS module files into a named chunk so that the
+          // extracted CSS asset gets a predictable name ("components.css").
+          // This avoids content-based heuristics in assetFileNames.
+          manualChunks(id) {
+            if (/\.module\.css(\?.*)?$/.test(id)) {
+              return "components"
+            }
+          },
           assetFileNames: (assetInfo) => {
-            const keepNames = [
-              "content_script.css",
-              "icons.css",
-              "command_hub.css",
-            ]
+            // Filename-based detection: CSS modules are grouped into the
+            // "components" chunk above, so their CSS asset is named "components.css".
+            if (assetInfo.names?.[0] === "components.css") {
+              return `assets/components.css`
+            }
+            const keepNames = ["content_script.css", "command_hub.css"]
             if (
               assetInfo.names?.length > 0 &&
               keepNames.includes(assetInfo.names[0])

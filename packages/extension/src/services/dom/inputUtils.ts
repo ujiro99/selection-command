@@ -76,6 +76,16 @@ export async function inputContentEditable(
       interval > 0 && (await sleep(interval / 2))
     }
   }
+
+  // Dispatch InputEvent to notify frameworks of the text change
+  const inputEvent = new InputEvent("input", {
+    inputType: "insertText",
+    data: value,
+    bubbles: true,
+    cancelable: false,
+  })
+  el.dispatchEvent(inputEvent)
+
   return true
 }
 
@@ -95,4 +105,12 @@ async function typeShiftEnter(node: Node): Promise<void> {
     cancelable: true,
   })
   node.dispatchEvent(down)
+
+  // Dispatch InputEvent to notify frameworks (e.g., Lexical) of the line break
+  const inputEvent = new InputEvent("input", {
+    inputType: "insertLineBreak",
+    bubbles: true,
+    cancelable: false,
+  })
+  node.dispatchEvent(inputEvent)
 }

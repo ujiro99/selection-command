@@ -1,0 +1,177 @@
+import { test, expect } from "./fixtures"
+import { OptionsPage } from "./pages/OptionsPage"
+
+const HUB_URL = "https://ujiro99.github.io/selection-command"
+
+const tryGetCommandId = (commandData: string | null): string => {
+  if (!commandData) {
+    throw new Error("Hub button is missing required data-command attribute")
+  }
+  let parsedCommand: unknown
+  try {
+    parsedCommand = JSON.parse(commandData)
+  } catch (error) {
+    throw new Error(
+      `Failed to parse data-command JSON from Hub button: ${(error as Error).message}`,
+    )
+  }
+  const commandId =
+    typeof parsedCommand === "object" &&
+    parsedCommand !== null &&
+    "id" in parsedCommand &&
+    typeof (parsedCommand as { id: unknown }).id === "string"
+      ? (parsedCommand as { id: string }).id
+      : null
+  if (!commandId) {
+    throw new Error(
+      `Parsed data-command JSON does not contain a valid "id": ${commandData}`,
+    )
+  }
+  return commandId
+}
+
+test.describe("Command Hub", () => {
+  /**
+   * E2E-90: Verify that a PageAction command can be installed from the Hub.
+   */
+  test("E2E-90: install PageAction command from Hub", async ({
+    context,
+    extensionId,
+    getCommands,
+    page,
+  }) => {
+    // Reset to a clean state first
+    const optionsPage = new OptionsPage(context, extensionId, getCommands)
+    await optionsPage.open()
+    await optionsPage.resetSettings()
+    await optionsPage.close()
+
+    const commandsBefore = await getCommands()
+    const countBefore = commandsBefore?.length ?? 0
+
+    // Navigate to the Hub
+    await page.goto(HUB_URL)
+    await page.waitForLoadState("domcontentloaded")
+
+    // Find a download button for a PageAction command on the Hub page.
+    // The extension injects download functionality for buttons with data-command attribute.
+    const downloadButton = page
+      .locator('button[data-command*=\'"openMode":"pageAction"\']')
+      .filter({ hasNot: page.locator('[data-installed="true"]') })
+      .first()
+    await downloadButton.waitFor({ state: "visible", timeout: 5000 })
+    await downloadButton.click()
+    await expect
+      .poll(
+        async () => {
+          const commands = await getCommands()
+          return (commands?.length ?? 0) > countBefore
+        },
+        { timeout: 5000 },
+      )
+      .toBe(true)
+  })
+
+  /**
+   * E2E-91: Verify that clicking a download button on the Hub adds the command.
+   */
+  test("E2E-91: download button on Hub adds command to settings", async ({
+    context,
+    extensionId,
+    getCommands,
+    page,
+  }) => {
+    const optionsPage = new OptionsPage(context, extensionId, getCommands)
+    await optionsPage.open()
+    await optionsPage.resetSettings()
+    await optionsPage.close()
+
+    const commandsBefore = await getCommands()
+    const countBefore = commandsBefore?.length ?? 0
+
+    await page.goto(HUB_URL)
+    await page.waitForLoadState("domcontentloaded")
+
+    // Find any available download button
+    const downloadButton = page
+      .locator('button[data-command*=\'"openMode":"popup"\']')
+      .filter({ hasNot: page.locator('[data-installed="true"]') })
+      .first()
+
+    await downloadButton.waitFor({ state: "visible", timeout: 5000 })
+
+    // Get the command identifier for verification
+    const commandData = await downloadButton.getAttribute("data-command")
+    tryGetCommandId(commandData)
+
+    await downloadButton.click()
+    await expect
+      .poll(
+        async () => {
+          const commands = await getCommands()
+          return (commands?.length ?? 0) > countBefore
+        },
+        { timeout: 5000 },
+      )
+      .toBe(true)
+  })
+
+  /**
+   * E2E-92: Verify that deleting a hub-installed command restores the download button.
+   */
+  test("E2E-92: deleting a hub-installed command restores the download button", async ({
+    context,
+    extensionId,
+    getCommands,
+    page,
+  }) => {
+    const optionsPage = new OptionsPage(context, extensionId, getCommands)
+    await optionsPage.open()
+    await optionsPage.resetSettings()
+    await optionsPage.close()
+
+    // Step 1: Install a command from the Hub
+    await page.goto(HUB_URL)
+    await page.waitForLoadState("domcontentloaded")
+
+    // Find any available download button
+    const downloadButton = page
+      .locator('button[data-command*=\'"openMode":"popup"\']')
+      .filter({ hasNot: page.locator('[data-installed="true"]') })
+      .first()
+
+    await downloadButton.waitFor({ state: "visible", timeout: 5000 })
+
+    const commandData = await downloadButton.getAttribute("data-command")
+    const commandId = tryGetCommandId(commandData)
+
+    await downloadButton.click()
+    await expect
+      .poll(
+        async () => {
+          const commands = await getCommands()
+          return commands?.find((cmd) => cmd.id === commandId) !== undefined
+        },
+        { timeout: 5000 },
+      )
+      .toBe(true)
+
+    // Step 2: Delete the command via settings
+    await optionsPage.open()
+    // Use setUserSettings or direct storage manipulation to remove the command
+    // Here we just reset to simulate "deletion" for verification purposes
+    await optionsPage.resetSettings()
+    await optionsPage.close()
+
+    // Step 3: Reload the Hub and verify the download button is restored
+    await page.goto(HUB_URL)
+    await page.waitForLoadState("domcontentloaded")
+
+    // The download button for the deleted command should be available again
+    const restoredButton = page.locator(
+      `button[data-command*='"id":"${commandId}"']`,
+    )
+    await restoredButton.waitFor({ state: "visible", timeout: 5000 })
+    expect(restoredButton).toBeVisible()
+  })
+})

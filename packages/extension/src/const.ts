@@ -2,13 +2,15 @@ import { OPEN_MODE } from "@shared"
 export { OPEN_MODE, PAGE_ACTION_OPEN_MODE, SEARCH_OPEN_MODE } from "@shared"
 
 export const APP_ID = "selection-command"
-export const VERSION = __APP_VERSION__ as string
+export const VERSION = (
+  typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "0.0.0"
+) as string
 
 /**
  * Setting value to switch the debug log output from this module.
  * true: enables all log. | false: disables debug log.
  */
-const environment = import.meta.env.MODE ?? "development"
+const environment = import.meta.env?.MODE ?? "development"
 export const isDebug = environment === "development"
 export const isE2E = environment === "e2e"
 
@@ -109,8 +111,8 @@ export const COMMAND_TYPE_GROUPS = [
     titleKey: "commandGroup_webPage_title",
     types: [
       COMMAND_TYPE.SEARCH,
-      COMMAND_TYPE.PAGE_ACTION,
       COMMAND_TYPE.AI_PROMPT,
+      COMMAND_TYPE.PAGE_ACTION,
     ],
   },
   {

@@ -528,19 +528,19 @@
     "message": "Commande Instantanée"
   },
   "Option_instantCommand_desc": {
-    "message": "Exécute une commande spécifiée instantanément lorsque du texte est sélectionné tout en maintenant une touche de modification."
+    "message": "Exécute une commande spécifiée instantanément lorsque du texte est sélectionné en maintenant une touche de modification."
   },
   "Option_instantCommandEnabled": {
     "message": "Activer la Commande Instantanée"
   },
   "Option_instantCommandEnabled_desc": {
-    "message": "Lorsqu'elle est activée, les commandes s'exécutent instantanément sans afficher le menu."
+    "message": "Lorsque activé, les commandes seront exécutées instantanément sans afficher le menu."
   },
   "Option_instantCommandId": {
-    "message": "Commande à Exécuter"
+    "message": "Commande à exécuter"
   },
   "Option_instantCommandId_desc": {
-    "message": "Sélectionnez la commande à exécuter lorsqu'elle est combinée avec la touche de modification."
+    "message": "Sélectionnez la commande qui sera exécutée avec la touche de modification."
   },
   "Option_instantCommandId_placeholder": {
     "message": "Sélectionner une commande..."

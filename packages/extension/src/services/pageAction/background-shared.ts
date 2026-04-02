@@ -59,6 +59,7 @@ vi.mock("@/lib/utils", () => ({
   generateRandomID: vi.fn(() => "test-id"),
   isEmpty: vi.fn(),
   isPageActionCommand: vi.fn(),
+  isServiceWorker: vi.fn(() => true),
   isUrl: vi.fn(),
   isUrlParam: vi.fn(),
   matchesPageActionUrl: vi.fn(),
@@ -103,7 +104,12 @@ vi.mock("@/const", async () => {
 // Import modules after mocking
 import { Storage } from "@/services/storage"
 import { Ipc } from "@/services/ipc"
-import { openPopupWindow, openTab, getCurrentTab, readClipboard } from "@/services/chrome"
+import {
+  openPopupWindow,
+  openTab,
+  getCurrentTab,
+  readClipboard,
+} from "@/services/chrome"
 import { BgData } from "@/services/backgroundData"
 import { RunningStatus } from "@/services/pageAction"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"

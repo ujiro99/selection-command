@@ -1,11 +1,11 @@
 import { Ipc, BgCommand } from "@/services/ipc"
-import { getScreenSize, getWindowPosition } from "@/services/screen"
+import { getWindowPosition } from "@/services/screen"
 import { isValidString, isPageActionCommand } from "@/lib/utils"
 import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import type { ExecuteCommandParams, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
-import { INSERT, InsertSymbol } from "@/services/pageAction"
+import { INSERT, toInsertTemplate } from "@/services/pageAction"
 
 type PageActionParams = {
   userVariables?: Array<{ name: string; value: string }>
@@ -38,7 +38,7 @@ export const PageAction = {
     const needClipboard = command.pageActionOption.steps.some((step) => {
       return (
         step.param.type === PAGE_ACTION_EVENT.input &&
-        step.param.value.includes(InsertSymbol[INSERT.CLIPBOARD])
+        step.param.value.includes(toInsertTemplate(INSERT.CLIPBOARD))
       )
     })
 
@@ -57,7 +57,6 @@ export const PageAction = {
       : command.pageActionOption.openMode
 
     const windowPosition = await getWindowPosition()
-    const screen = await getScreenSize()
 
     Ipc.send<OpenAndRunProps>(BgCommand.openAndRunPageAction, {
       commandId: command.id,
@@ -68,7 +67,6 @@ export const PageAction = {
       left: Math.floor(windowPosition.left + position.x),
       height: command.popupOption?.height ?? PopupOption.height,
       width: command.popupOption?.width ?? PopupOption.width,
-      screen,
       selectedText: selectionText,
       srcUrl: location.href,
       openMode,

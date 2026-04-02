@@ -5,12 +5,24 @@ import css from "@/app/page.module.css"
 import { Button } from "@/components/ui/button"
 import dynamic from "next/dynamic"
 import "quill/dist/quill.snow.css"
+import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 // Dynamically import Quill editor for client-side only
 const QuillWrapper = dynamic(() => import("./QuillWrapper"), {
   ssr: false,
   loading: () => <div>Loading editor...</div>,
 })
+
+function SearchQuery() {
+  const searchParams = useSearchParams()
+  const search = searchParams.get("k") ?? ""
+  return (
+    <pre className="bg-stone-100 px-3 py-2 rounded-md min-h-10">
+      <code data-testid="searchQuery">{search}</code>
+    </pre>
+  )
+}
 
 export default function Page() {
   // File save (Blob + a element download)
@@ -61,7 +73,14 @@ export default function Page() {
   return (
     <main className={css.main}>
       <div className="w-full space-y-4">
-        <h2>Browser Feature Test</h2>
+        <h2 className="text-lg font-bold">Browser Feature Test</h2>
+
+        <section className="py-4">
+          <h3 className="mb-2 font-bold">Search Query Parameter</h3>
+          <Suspense fallback={<div>Loading...</div>}>
+            <SearchQuery />
+          </Suspense>
+        </section>
 
         <form className="space-y-4">
           <div>

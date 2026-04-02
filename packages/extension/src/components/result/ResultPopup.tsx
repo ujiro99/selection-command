@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 
 import { useUserSettings } from "@/hooks/useSettings"
-import { Icon } from "@/components/Icon"
+import { X } from "lucide-react"
 import popupCss from "@/components/Popup.module.css"
 import { SIDE } from "@/const"
 import css from "./ResultPopup.module.css"
@@ -40,7 +40,7 @@ export function ResultPopup(props: PopupProps) {
               className={cn(css.closeButton, css.resultPopupButton)}
               onClick={props.onClose}
             >
-              <Icon name="close" />
+              <X />
             </button>
           )}
         </div>

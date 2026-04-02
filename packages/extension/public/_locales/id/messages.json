@@ -528,19 +528,19 @@
     "message": "Perintah Instan"
   },
   "Option_instantCommand_desc": {
-    "message": "Menjalankan perintah yang ditentukan secara instan saat memilih teks sambil menahan tombol pengubah."
+    "message": "Mengeksekusi perintah yang ditentukan secara instan saat teks dipilih sambil menahan tombol pengubah."
   },
   "Option_instantCommandEnabled": {
     "message": "Aktifkan Perintah Instan"
   },
   "Option_instantCommandEnabled_desc": {
-    "message": "Ketika diaktifkan, perintah dijalankan secara instan tanpa menampilkan menu."
+    "message": "Saat diaktifkan, perintah akan dieksekusi secara instan tanpa menampilkan menu."
   },
   "Option_instantCommandId": {
-    "message": "Perintah untuk Dijalankan"
+    "message": "Perintah yang akan dieksekusi"
   },
   "Option_instantCommandId_desc": {
-    "message": "Pilih perintah yang akan dijalankan saat digabungkan dengan tombol pengubah."
+    "message": "Pilih perintah yang akan dieksekusi bersama tombol pengubah."
   },
   "Option_instantCommandId_placeholder": {
     "message": "Pilih perintah..."
@@ -549,7 +549,7 @@
     "message": "Tombol Pengubah"
   },
   "Option_instantCommandModifierKey_desc": {
-    "message": "Pilih tombol yang akan ditahan saat memilih teks."
+    "message": "Pilih tombol yang harus ditekan saat memilih teks."
   },
   "Option_instantCommandModifierKey_placeholder": {
     "message": "Pilih tombol..."

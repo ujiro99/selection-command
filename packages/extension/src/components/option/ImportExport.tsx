@@ -17,6 +17,7 @@ import { t } from "@/services/i18n"
 import { Download, Upload, Undo2, RotateCcw } from "lucide-react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import type { BackupData } from "@/services/storage/backupManager"
+import { TEST_IDS } from "@/testIds"
 
 import css from "./Option.module.css"
 
@@ -263,7 +264,7 @@ export function ImportExport() {
 
   const handleImportClose = (ret: boolean) => {
     if (ret && importJson != null) {
-      ; (async () => {
+      ;(async () => {
         const {
           commandExecutionCount = 0,
           hasShownReviewRequest = false,
@@ -289,7 +290,7 @@ export function ImportExport() {
 
   const handleRestoreClose = (ret: boolean) => {
     if (ret) {
-      ; (async () => {
+      ;(async () => {
         try {
           let backupCommands: any[] = []
 
@@ -365,11 +366,17 @@ export function ImportExport() {
           onClick={() => setImportDialog(true)}
           className={css.menuButton}
           type="button"
+          data-testid={TEST_IDS.importButton}
         >
           <Download size={18} className="mr-2 stroke-gray-600" />
           {t("Option_Import")}
         </button>
-        <button onClick={handleExport} className={css.menuButton} type="button">
+        <button
+          onClick={handleExport}
+          className={css.menuButton}
+          type="button"
+          data-testid={TEST_IDS.exportButton}
+        >
           <Upload size={18} className="mr-2 stroke-gray-600" />
           {t("Option_Export")}
         </button>
@@ -383,8 +390,8 @@ export function ImportExport() {
             )
               ? t("Option_RestoreFromBackup_checking")
               : !Object.values(backupData).some(
-                (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
-              )
+                    (backup) => backup.status === BACKUP_STATUS.AVAILABLE,
+                  )
                 ? t("Option_RestoreFromBackup_no_backup")
                 : t("Option_RestoreFromBackup_tooltip")
           }
@@ -392,7 +399,12 @@ export function ImportExport() {
           <RotateCcw size={18} className="mr-2 stroke-gray-600" />
           {t("Option_RestoreFromBackup")}
         </button>
-        <button onClick={handleReset} className={css.menuButton} type="button">
+        <button
+          onClick={handleReset}
+          className={css.menuButton}
+          type="button"
+          data-testid={TEST_IDS.resetButton}
+        >
           <Undo2 size={18} className="mr-2 stroke-gray-600" />
           {t("Option_Reset")}
         </button>
@@ -426,6 +438,7 @@ export function ImportExport() {
           onChange={handleImport}
           ref={inputFile}
           className={`${css.buttonImport}`}
+          data-testid={TEST_IDS.importFileInput}
         />
       </Dialog>
       <Dialog

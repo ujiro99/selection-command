@@ -13,6 +13,7 @@ import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
 import collapsibleCss from "@/components/ui/collapsible.module.css"
 
 import { PAGE_ACTION_OPEN_MODE } from "@/const"
+import { TEST_IDS } from "@/testIds"
 import { InputField } from "@/components/option/field/InputField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
 import { StepList } from "@/components/pageAction/StepList"
@@ -177,6 +178,7 @@ export const PageActionSection = ({
             )}
             disabled={recDisabled}
             onClick={openRecorder}
+            data-testid={TEST_IDS.recButton}
           >
             <Disc3
               className="stroke-white mr-1.5 group-hover/record:animate-spin-slow"

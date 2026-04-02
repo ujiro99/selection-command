@@ -59,9 +59,11 @@ yarn clean                 # 全パッケージのクリーンアップ
 ```bash
 yarn dev                   # 開発モード
 yarn build                 # ビルド
+yarn build:e2e             # e2e用にビルド
 yarn test                  # テスト実行
 yarn test:ui               # テストUIモード
 yarn test:coverage         # カバレッジ測定
+yarn test:e2e              # playwright test
 yarn lint                  # ESLint実行
 yarn zip                   # 配布用zip作成
 ```
@@ -197,9 +199,7 @@ interface PageActionOption {
 
 **Hub開発:**
 
-- commands.jsonの手動更新後は`yarn tags`でタグ統計更新
 - 多言語対応時は各言語ファイルの更新が必要
-- 分析データは`yarn analytics`で手動更新
 
 **テスト:**
 

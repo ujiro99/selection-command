@@ -528,22 +528,22 @@
     "message": "Comando Istantaneo"
   },
   "Option_instantCommand_desc": {
-    "message": "Esegue un comando specificato istantaneamente quando si seleziona il testo mentre si tiene premuto un tasto modificatore."
+    "message": "Esegue un comando specificato istantaneamente quando il testo viene selezionato tenendo premuto un tasto modificatore."
   },
   "Option_instantCommandEnabled": {
     "message": "Abilita Comando Istantaneo"
   },
   "Option_instantCommandEnabled_desc": {
-    "message": "Se abilitato, esegue i comandi istantaneamente senza visualizzare il menu."
+    "message": "Quando abilitato, i comandi verranno eseguiti istantaneamente senza visualizzare il menu."
   },
   "Option_instantCommandId": {
-    "message": "Comando da Eseguire"
+    "message": "Comando da eseguire"
   },
   "Option_instantCommandId_desc": {
-    "message": "Seleziona il comando da eseguire quando combinato con il tasto modificatore."
+    "message": "Seleziona il comando che verrà eseguito insieme al tasto modificatore."
   },
   "Option_instantCommandId_placeholder": {
-    "message": "Seleziona un comando..."
+    "message": "Seleziona comando..."
   },
   "Option_instantCommandModifierKey": {
     "message": "Tasto Modificatore"
@@ -552,7 +552,7 @@
     "message": "Seleziona il tasto da tenere premuto durante la selezione del testo."
   },
   "Option_instantCommandModifierKey_placeholder": {
-    "message": "Seleziona un tasto..."
+    "message": "Seleziona tasto..."
   },
   "Option_linkCommand": {
     "message": "Anteprima link"

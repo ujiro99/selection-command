@@ -430,11 +430,6 @@ describe("Popup Auto-Close Delay", () => {
       },
     }))
 
-    // Mock updateActiveScreenId
-    vi.doMock("@/services/screen", () => ({
-      updateActiveScreenId: vi.fn().mockResolvedValue(undefined),
-    }))
-
     // Clear module cache and re-import
     vi.resetModules()
     await import("./background_script")
@@ -496,11 +491,6 @@ describe("Popup Auto-Close Delay", () => {
       SESSION_STORAGE_KEY: {
         SELECTION_TEXT: "selectionText",
       },
-    }))
-
-    // Mock updateActiveScreenId
-    vi.doMock("@/services/screen", () => ({
-      updateActiveScreenId: vi.fn().mockResolvedValue(undefined),
     }))
 
     // Clear module cache and re-import
@@ -567,11 +557,6 @@ describe("Popup Auto-Close Delay", () => {
       SESSION_STORAGE_KEY: {
         SELECTION_TEXT: "selectionText",
       },
-    }))
-
-    // Mock updateActiveScreenId
-    vi.doMock("@/services/screen", () => ({
-      updateActiveScreenId: vi.fn().mockResolvedValue(undefined),
     }))
 
     // Clear module cache and re-import

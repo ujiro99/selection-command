@@ -1,0 +1,557 @@
+{
+  "commands": [
+    {
+      "id": "$$drag-1",
+      "openMode": "previewPopup",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "Link Preview"
+    },
+    {
+      "iconUrl": "https://ujiro99.github.io/selection-command/favicon.ico",
+      "id": "13b4e831-7fac-4b72-a1ae-c82655b3819e",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "テストページ検索"
+    },
+    {
+      "iconUrl": "https://www.google.com/favicon.ico",
+      "id": "0cb9dbbc-c0cf-53c6-93e5-016363705216",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "222d6489-4eca-48fd-8590-fceb30545bab",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://google.com/search?q=%s",
+      "spaceEncoding": "plus",
+      "title": "Google"
+    },
+    {
+      "iconUrl": "https://www.google.com/favicon.ico",
+      "id": "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "222d6489-4eca-48fd-8590-fceb30545bab",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://google.com/search?q=%s&tbm=isch",
+      "spaceEncoding": "plus",
+      "title": "Google Image"
+    },
+    {
+      "iconUrl": "https://www.amazon.co.jp/favicon.ico",
+      "id": "9d61d45c-36ab-5ebf-ad42-d3f3a42810bf",
+      "openMode": "tab",
+      "openModeSecondary": "tab",
+      "parentFolderId": "222d6489-4eca-48fd-8590-fceb30545bab",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://www.amazon.co.jp/s?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Amazon"
+    },
+    {
+      "iconUrl": "https://s.yimg.jp/c/icon/s/bsc/2.0/favicon.ico",
+      "id": "2bcb5d3a-15b6-5e3f-b59d-94b0fdc68ea9",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "222d6489-4eca-48fd-8590-fceb30545bab",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://search.yahoo.co.jp/search?p=%s",
+      "spaceEncoding": "plus",
+      "title": "Yahoo! Japan"
+    },
+    {
+      "iconUrl": "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
+      "id": "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
+      "openMode": "tab",
+      "openModeSecondary": "tab",
+      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://www.youtube.com/results?search_query=%s",
+      "spaceEncoding": "plus",
+      "title": "Youtube"
+    },
+    {
+      "iconUrl": "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
+      "id": "fb9cb6ad-76e3-5aa8-82a7-ade233edcec0",
+      "openMode": "tab",
+      "openModeSecondary": "tab",
+      "parentFolderId": "a3495269-0a4d-4866-a519-bca75ed1c246",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://www.netflix.com/search?q=%s",
+      "spaceEncoding": "plus",
+      "title": "Netflix"
+    },
+    {
+      "aiPromptOption": {
+        "openMode": "popup",
+        "prompt": "以下について解説してください。\n{{SelectedText}}",
+        "serviceId": "gemini"
+      },
+      "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      "id": "1d320825-1e78-5f98-b73c-1bb48412e98c",
+      "openMode": "aiPrompt",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "Gemini - 日本語"
+    },
+    {
+      "aiPromptOption": {
+        "openMode": "sidePanel",
+        "prompt": "以下のURLのページを日本語で要約してください。\n{{Url}}",
+        "serviceId": "gemini"
+      },
+      "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      "id": "afe67f66-fc8d-555f-9e51-2d1491906faf",
+      "openMode": "aiPrompt",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "ページの概要生成"
+    },
+    {
+      "aiPromptOption": {
+        "openMode": "sidePanel",
+        "prompt": "以下のYouTube動画の内容を日本語で要約してください。\n{{Url}}",
+        "serviceId": "gemini"
+      },
+      "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      "id": "7afd0cb7-45a4-5943-a00d-b04d12317eb1",
+      "openMode": "aiPrompt",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "YouTubeの概要生成"
+    },
+    {
+      "aiPromptOption": {
+        "openMode": "tab",
+        "prompt": "以下のテキストを日本語と英語の間で翻訳してください。\n{{SelectedText}}",
+        "serviceId": "gemini"
+      },
+      "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      "id": "a8d027bf-7926-56c4-ad4d-610ef10c22b3",
+      "openMode": "aiPrompt",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "選択テキストの相互翻訳"
+    },
+    {
+      "id": "b1856c00-d775-5fdc-89e9-94d1b6f786e5",
+      "title": "Sakura Checker",
+      "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "iconUrl": "https://sakura-checker.jp/images/favicon.ico",
+      "pageActionOption": {
+        "startUrl": "https://sakura-checker.jp/",
+        "openMode": "backgroundTab",
+        "steps": [
+          {
+            "id": "diaq1mthv",
+            "param": {
+              "type": "start",
+              "label": "Start"
+            }
+          },
+          {
+            "id": "hoi75oly8",
+            "param": {
+              "type": "click",
+              "label": "word",
+              "selector": "//*[@name='word']",
+              "selectorType": "xpath"
+            }
+          },
+          {
+            "id": "2boq9korh",
+            "param": {
+              "type": "input",
+              "label": "word",
+              "selector": "//*[@name='word']",
+              "selectorType": "xpath",
+              "value": "{{Url}}"
+            }
+          },
+          {
+            "id": "thuq16r8o",
+            "param": {
+              "type": "click",
+              "label": "submit",
+              "selector": "//*[@class='button is-primary is-medium']",
+              "selectorType": "xpath"
+            }
+          },
+          {
+            "id": "bcs0vx9bn",
+            "param": {
+              "type": "scroll",
+              "label": "x: 0, y: 266",
+              "x": 0,
+              "y": 266
+            }
+          },
+          {
+            "id": "8viuw3650",
+            "param": {
+              "type": "end",
+              "label": "End"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+      "id": "dd05d527-92db-5102-9a88-4a5b31fa7512",
+      "openMode": "tab",
+      "openModeSecondary": "tab",
+      "parentFolderId": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://drive.google.com/drive/search?q=%s",
+      "spaceEncoding": "plus",
+      "title": "Drive"
+    },
+    {
+      "iconUrl": "https://ssl.gstatic.com/translate/favicon.ico",
+      "id": "9a3fca67-e618-5dd3-9ecd-9eb2d088041a",
+      "openMode": "tab",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://translate.google.co.jp/?hl=ja&sl=auto&text=%s&op=translate",
+      "spaceEncoding": "plus",
+      "title": "en to ja"
+    },
+    {
+      "id": "cmd-test-window",
+      "openMode": "window",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "テストページ (Window)"
+    },
+    {
+      "id": "cmd-test-sidepanel",
+      "openMode": "sidePanel",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "テストページ (SidePanel)"
+    },
+    {
+      "id": "cmd-test-copy",
+      "openMode": "copy",
+      "parentFolderId": "RootFolder",
+      "revision": 0,
+      "title": "テキストコピー",
+      "iconUrl": "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png"
+    },
+    {
+      "id": "cmd-test-linkpopup",
+      "openMode": "linkPopup",
+      "parentFolderId": "RootFolder",
+      "revision": 0,
+      "title": "リンクポップアップ",
+      "iconUrl": "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      }
+    },
+    {
+      "id": "cmd-test-deepl",
+      "openMode": "tab",
+      "openModeSecondary": "tab",
+      "parentFolderId": "lang-folder-001",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://www.deepl.com/translator#auto/ja/%s",
+      "spaceEncoding": "plus",
+      "title": "DeepL"
+    },
+    {
+      "aiPromptOption": {
+        "openMode": "popup",
+        "prompt": "以下のテキストについて説明してください。\n{{Clipboard}}",
+        "serviceId": "gemini"
+      },
+      "id": "cmd-test-ai-clipboard",
+      "openMode": "aiPrompt",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "クリップボード展開テスト"
+    },
+    {
+      "id": "cmd-test-pa-tab",
+      "title": "Character Counter (Tab)",
+      "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "pageActionOption": {
+        "openMode": "tab",
+        "startUrl": "https://web-toolbox.dev/tools/character-counter",
+        "steps": [
+          {
+            "delayMs": 0,
+            "id": "pa-tab-s1",
+            "param": {
+              "label": "Start",
+              "type": "start",
+              "url": "https://web-toolbox.dev/tools/character-counter"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 500,
+            "id": "pa-tab-s2",
+            "param": {
+              "label": "文字入力",
+              "selector": "//textarea",
+              "selectorType": "xpath",
+              "type": "input",
+              "value": "{{SelectedText}}"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 0,
+            "id": "pa-tab-s3",
+            "param": {
+              "label": "End",
+              "type": "end"
+            },
+            "skipRenderWait": false
+          }
+        ]
+      },
+      "revision": 0
+    },
+    {
+      "id": "cmd-test-pa-bgtab",
+      "title": "Character Counter (BG Tab)",
+      "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "pageActionOption": {
+        "openMode": "backgroundTab",
+        "startUrl": "https://web-toolbox.dev/tools/character-counter",
+        "steps": [
+          {
+            "delayMs": 0,
+            "id": "pa-bgtab-s1",
+            "param": {
+              "label": "Start",
+              "type": "start",
+              "url": "https://web-toolbox.dev/tools/character-counter"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 500,
+            "id": "pa-bgtab-s2",
+            "param": {
+              "label": "文字入力",
+              "selector": "//textarea",
+              "selectorType": "xpath",
+              "type": "input",
+              "value": "{{SelectedText}}"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 0,
+            "id": "pa-bgtab-s3",
+            "param": {
+              "label": "End",
+              "type": "end"
+            },
+            "skipRenderWait": false
+          }
+        ]
+      },
+      "revision": 0
+    }
+  ],
+  "folders": [
+    {
+      "iconUrl": "https://cdn3.iconfinder.com/data/icons/feather-5/24/search-1024.png",
+      "id": "222d6489-4eca-48fd-8590-fceb30545bab",
+      "onlyIcon": true,
+      "title": "Search"
+    },
+    {
+      "iconSvg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-zap-icon lucide-zap\"><path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"/></svg>",
+      "iconUrl": "",
+      "id": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "onlyIcon": true,
+      "title": "Action"
+    },
+    {
+      "iconSvg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-wand-sparkles-icon lucide-wand-sparkles\"><path d=\"m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72\"/><path d=\"m14 7 3 3\"/><path d=\"M5 6v4\"/><path d=\"M19 14v4\"/><path d=\"M10 2v2\"/><path d=\"M7 8H3\"/><path d=\"M21 16h-4\"/><path d=\"M11 3H9\"/></svg>",
+      "iconUrl": "",
+      "id": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "onlyIcon": true,
+      "title": "AI"
+    },
+    {
+      "iconSvg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-monitor-play-icon lucide-monitor-play\"><path d=\"M10 7.75a.75.75 0 0 1 1.142-.638l3.664 2.249a.75.75 0 0 1 0 1.278l-3.664 2.25a.75.75 0 0 1-1.142-.64z\"/><path d=\"M12 17v4\"/><path d=\"M8 21h8\"/><rect x=\"2\" y=\"3\" width=\"20\" height=\"14\" rx=\"2\"/></svg>",
+      "iconUrl": "",
+      "id": "a3495269-0a4d-4866-a519-bca75ed1c246",
+      "onlyIcon": true,
+      "title": "Media"
+    },
+    {
+      "iconSvg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder-icon lucide-folder\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"/></svg>",
+      "iconUrl": "",
+      "id": "01710cf1-ec8b-497f-8d1f-9cb716567bc4",
+      "title": "Work"
+    },
+    {
+      "iconUrl": "",
+      "id": "lang-folder-001",
+      "parentFolderId": "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae",
+      "title": "Lang"
+    }
+  ],
+  "linkCommand": {
+    "enabled": "Enable",
+    "openMode": "previewPopup",
+    "showIndicator": true,
+    "sidePanelAutoHide": false,
+    "startupMethod": {
+      "keyboardParam": "Shift",
+      "leftClickHoldParam": 200,
+      "method": "keyboard",
+      "threshold": 150
+    }
+  },
+  "pageRules": [],
+  "popupPlacement": {
+    "align": "start",
+    "alignOffset": 0,
+    "side": "top",
+    "sideOffset": 0
+  },
+  "settingVersion": "0.16.0",
+  "shortcuts": {
+    "shortcuts": [
+      {
+        "commandId": "_placeholder_",
+        "id": "slot_1",
+        "noSelectionBehavior": "useClipboard"
+      },
+      {
+        "commandId": "_placeholder_",
+        "id": "slot_2",
+        "noSelectionBehavior": "useClipboard"
+      },
+      {
+        "commandId": "_placeholder_",
+        "id": "slot_3",
+        "noSelectionBehavior": "useClipboard"
+      }
+    ]
+  },
+  "startupMethod": {
+    "method": "textSelection"
+  },
+  "style": "horizontal",
+  "userStyles": [
+    {
+      "name": "popup-delay",
+      "value": 250
+    },
+    {
+      "name": "popup-duration",
+      "value": 150
+    },
+    {
+      "name": "padding-scale",
+      "value": "1.5"
+    },
+    {
+      "name": "image-scale",
+      "value": "1.1"
+    },
+    {
+      "name": "font-scale",
+      "value": "1.1"
+    }
+  ],
+  "windowOption": {
+    "popupAutoCloseDelay": 0,
+    "sidePanelAutoHide": false
+  }
+}

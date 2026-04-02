@@ -1,21 +1,20 @@
 {
   "name": "@selection-command/extension",
-  "version": "0.16.0",
+  "version": "0.17.0",
   "private": true,
   "author": "ujiro99",
   "license": "MIT",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:e2e": "node scripts/generate-e2e-urls.mjs && tsc -b && vite build --mode e2e",
+    "build:e2e": "vite-node --config scripts/vite.config.ts scripts/generate-e2e-urls.ts && tsc -b && vite build --mode e2e",
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest --coverage",
-    "pretty-quick": "pretty-quick",
-    "precommit": "pretty-quick --staged",
-    "check-ids": "tsx scripts/check-command-ids.mjs",
+    "check-ids": "vite-node --config scripts/vite.config.ts scripts/check-command-ids.ts",
     "zip": "npm-build-zip --source=dist --destination=build",
     "test:e2e": "playwright test"
   },
@@ -90,11 +89,5 @@
     "development": [
       "last 3 chrome version"
     ]
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": false,
-    "tabWidth": 2,
-    "trailingComma": "all"
   }
 }

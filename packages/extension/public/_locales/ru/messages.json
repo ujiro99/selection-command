@@ -528,31 +528,31 @@
     "message": "Мгновенная команда"
   },
   "Option_instantCommand_desc": {
-    "message": "Выполняет указанную команду мгновенно при выборе текста с нажатой клавишей-модификатором."
+    "message": "Мгновенно выполняет указанную команду при выборе текста с удержанием клавиши-модификатора."
   },
   "Option_instantCommandEnabled": {
     "message": "Включить мгновенную команду"
   },
   "Option_instantCommandEnabled_desc": {
-    "message": "При включении команды выполняются мгновенно без отображения меню."
+    "message": "Когда включено, команды будут выполняться мгновенно без отображения меню."
   },
   "Option_instantCommandId": {
     "message": "Команда для выполнения"
   },
   "Option_instantCommandId_desc": {
-    "message": "Выберите команду для выполнения в сочетании с клавишей-модификатором."
+    "message": "Выберите команду, которая будет выполняться вместе с клавишей-модификатором."
   },
   "Option_instantCommandId_placeholder": {
-    "message": "Выберите команду..."
+    "message": "Выбрать команду..."
   },
   "Option_instantCommandModifierKey": {
     "message": "Клавиша-модификатор"
   },
   "Option_instantCommandModifierKey_desc": {
-    "message": "Выберите клавишу для нажатия при выборе текста."
+    "message": "Выберите клавишу, которую нужно удерживать при выборе текста."
   },
   "Option_instantCommandModifierKey_placeholder": {
-    "message": "Выберите клавишу..."
+    "message": "Выбрать клавишу..."
   },
   "Option_linkCommand": {
     "message": "Предпросмотр ссылки"

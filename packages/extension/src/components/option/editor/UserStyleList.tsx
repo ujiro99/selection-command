@@ -40,6 +40,7 @@ import { STYLE_VARIABLE } from "@/const"
 import { cn, hyphen2Underscore } from "@/lib/utils"
 import { Attributes } from "@/services/option/userStyles"
 import { t as _t } from "@/services/i18n"
+import { TEST_IDS } from "@/testIds"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 type UnitMap = Record<STYLE_VARIABLE, string | undefined>
@@ -132,6 +133,7 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
               }}
               ref={addButtonRef}
               disabled={selectedAll}
+              data-testid={TEST_IDS.userStyleAddButton}
             >
               <Paintbrush />
               {t("userStyles")
@@ -150,38 +152,48 @@ export const UserStyleList = ({ control }: UserStyleListProps) => {
               {array.fields
                 .filter((f) => isEditable(f.name))
                 .filter((f) => isValidStyle(f.name))
-                .map((field, index) => (
-                  <li
-                    key={field._id}
-                    className={cn(
-                      "flex items-center gap-2 px-2 py-1",
-                      index !== 0 ? "border-t" : "",
-                    )}
-                  >
-                    <p className="text-base font-mono flex-1 p-2">
-                      <span className="inline-block w-1/2">
-                        {t(
-                          `userStyles_option_${hyphen2Underscore(field.name)}`,
-                        )}
-                      </span>
-                      <span className="inline-block w-1/2 text-center">
-                        {field.value}
-                      </span>
-                    </p>
-                    <div className="flex gap-0.5 items-center">
-                      <EditButton
-                        onClick={() => {
-                          editorRef.current = field
-                          setDialogOpen(true)
-                        }}
-                      />
-                      <RemoveButton
-                        title={`${field.name}: ${field.value}`}
-                        onRemove={() => array.remove(index)}
-                      />
-                    </div>
-                  </li>
-                ))}
+                .map((field, filteredIndex) => {
+                  const originalIndex = array.fields.findIndex(
+                    (f) => f._id === field._id,
+                  )
+                  if (originalIndex === -1) return null
+                  const fieldLabel = t(
+                    `userStyles_option_${hyphen2Underscore(field.name)}`,
+                  )
+                  return (
+                    <li
+                      key={field._id}
+                      className={cn(
+                        "flex items-center gap-2 px-2 py-1",
+                        filteredIndex !== 0 ? "border-t" : "",
+                      )}
+                      data-testid={TEST_IDS.userStyleItem}
+                      data-name={field.name}
+                    >
+                      <p className="text-base font-mono flex-1 p-2">
+                        <span className="inline-block w-1/2">{fieldLabel}</span>
+                        <span className="inline-block w-1/2 text-center">
+                          {field.value}
+                        </span>
+                      </p>
+                      <div className="flex gap-0.5 items-center">
+                        <EditButton
+                          onClick={() => {
+                            editorRef.current = field
+                            setDialogOpen(true)
+                          }}
+                          data-testid={TEST_IDS.userStyleEditButton}
+                        />
+                        <RemoveButton
+                          title={`${fieldLabel}: ${field.value}`}
+                          onRemove={() => array.remove(originalIndex)}
+                          data-testid={TEST_IDS.userStyleRemoveButton}
+                          data-testid-ok={TEST_IDS.userStyleRemoveOkButton}
+                        />
+                      </div>
+                    </li>
+                  )
+                })}
             </ul>
           </FormControl>
           <UserStyleDialog
@@ -279,6 +291,7 @@ export const UserStyleDialog = ({
                                 value={opt}
                                 key={opt}
                                 className="hover:bg-gray-100"
+                                data-value={opt}
                               >
                                 {t(
                                   `userStyles_option_${hyphen2Underscore(opt)}`,
@@ -327,6 +340,7 @@ export const UserStyleDialog = ({
                 onSubmit(data)
                 onOpenChange(false)
               })}
+              data-testid={TEST_IDS.userStyleSaveButton}
             >
               <Save />
               {isUpdate ? t("labelUpdate") : t("labelSave")}

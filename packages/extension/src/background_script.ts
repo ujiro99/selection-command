@@ -24,7 +24,6 @@ import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { updateActiveScreenId } from "@/services/screen"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { importIf } from "@import-if"
@@ -229,6 +228,7 @@ const commandFuncs = {
   ) => {
     const handleOpenInTab = async () => {
       let w: WindowType | undefined
+      const targetUrl = sender.tab?.url ?? sender.url
 
       const stack = await WindowStackManager.getStack()
       for (const layer of stack) {
@@ -241,7 +241,7 @@ const commandFuncs = {
       }
       if (!w || w.srcWindowId == null) {
         console.warn("window not found", sender.tab?.windowId)
-        chrome.tabs.create({ url: sender.url })
+        chrome.tabs.create({ url: targetUrl })
         await closeWindow(sender.tab?.windowId as number, "openInTab")
         await WindowStackManager.removeWindow(sender.tab?.windowId as number)
         response(true)
@@ -249,8 +249,8 @@ const commandFuncs = {
       }
 
       let targetId: number | undefined
-      const windowIdExists = await windowExists(w.srcWindowId)
-      if (windowIdExists) {
+      const { exists } = await windowExists(w.srcWindowId)
+      if (exists) {
         targetId = w.srcWindowId
       } else {
         const current = await chrome.windows.getCurrent()
@@ -261,10 +261,7 @@ const commandFuncs = {
       }
 
       if (targetId) {
-        chrome.tabs.create({
-          url: sender.url,
-          windowId: targetId,
-        })
+        chrome.tabs.create({ url: targetUrl, windowId: targetId })
         await closeWindow(sender.tab?.windowId as number, "openInTab")
         await WindowStackManager.removeWindow(sender.tab?.windowId as number)
         response(true)
@@ -404,8 +401,8 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     return
   }
 
-  // Update active screen ID
-  await updateActiveScreenId(windowId)
+  // Update active tab ID
+  await updateActiveTabId()
 
   // Update active tab ID
   await updateActiveTabId()
@@ -454,15 +451,8 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
     console.error("Failed to close menu:", error)
   }
 
-  // Get the active tab's window and update screen ID
   try {
-    const tab = await chrome.tabs.get(activeInfo.tabId)
-    if (tab.windowId) {
-      await updateActiveScreenId(tab.windowId)
-    }
-
-    // Update active tab ID
-    await updateActiveTabId(tab.id)
+    await updateActiveTabId(activeInfo.tabId)
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
   }
@@ -476,26 +466,35 @@ if (isDebug) {
   })
 }
 
-chrome.runtime.onInstalled.addListener((details) => {
-  ContextMenu.init()
+chrome.runtime.onInstalled.addListener(async (details) => {
+  try {
+    // Initialize default settings on install
+    if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+      await Settings.reset()
+    }
 
-  chrome.storage.session.setAccessLevel({
-    accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
-  })
+    await ContextMenu.init()
 
-  if (
-    details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
-    details.reason === chrome.runtime.OnInstalledReason.UPDATE
-  ) {
-    // Set uninstall survey URL
-    chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
+    chrome.storage.session.setAccessLevel({
+      accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
+    })
+
+    if (
+      details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
+      details.reason === chrome.runtime.OnInstalledReason.UPDATE
+    ) {
+      // Set uninstall survey URL
+      chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
+    }
+
+    // Check for daily backup on startup
+    await checkAndPerformDailyBackup()
+
+    // Check for weekly backup on startup
+    await checkAndPerformWeeklyBackup()
+  } catch (error) {
+    console.error("Error during onInstalled initialization:", error)
   }
-
-  // Check for daily backup on startup
-  checkAndPerformDailyBackup()
-
-  // Check for weekly backup on startup
-  checkAndPerformWeeklyBackup()
 })
 
 chrome.runtime.onStartup.addListener(() => {
@@ -582,18 +581,11 @@ chrome.commands.onCommand.addListener(async (commandName) => {
       return
     }
 
-    // Get active tab
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
     const command = settings.commands.find((c) => c.id === shortcut.commandId)
     if (!command) {
       console.warn(`Command not found: ${shortcut.commandId}`)
       return
     }
-
-    const enableSendTab =
-      tab?.id &&
-      !tab.url?.startsWith("chrome") &&
-      !tab.url?.includes("chromewebstore.google.com")
 
     const selectionText = await Storage.get<string>(
       SESSION_STORAGE_KEY.SELECTION_TEXT,
@@ -614,6 +606,13 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         useClipboard = true
       }
     }
+
+    // Get active tab
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+    const enableSendTab =
+      tab?.id &&
+      !tab.url?.startsWith("chrome") &&
+      !tab.url?.includes("chromewebstore.google.com")
 
     let ret: unknown
     if (enableSendTab) {

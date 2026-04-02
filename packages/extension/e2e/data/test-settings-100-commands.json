@@ -1,0 +1,1474 @@
+{
+  "commands": [
+    {
+      "id": "$$drag-1",
+      "openMode": "previewPopup",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "Link Preview"
+    },
+    {
+      "id": "cmd-bulk-001",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 001"
+    },
+    {
+      "id": "cmd-bulk-002",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 002"
+    },
+    {
+      "id": "cmd-bulk-003",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 003"
+    },
+    {
+      "id": "cmd-bulk-004",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 004"
+    },
+    {
+      "id": "cmd-bulk-005",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 005"
+    },
+    {
+      "id": "cmd-bulk-006",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 006"
+    },
+    {
+      "id": "cmd-bulk-007",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 007"
+    },
+    {
+      "id": "cmd-bulk-008",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 008"
+    },
+    {
+      "id": "cmd-bulk-009",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 009"
+    },
+    {
+      "id": "cmd-bulk-010",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 010"
+    },
+    {
+      "id": "cmd-bulk-011",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 011"
+    },
+    {
+      "id": "cmd-bulk-012",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 012"
+    },
+    {
+      "id": "cmd-bulk-013",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 013"
+    },
+    {
+      "id": "cmd-bulk-014",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 014"
+    },
+    {
+      "id": "cmd-bulk-015",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 015"
+    },
+    {
+      "id": "cmd-bulk-016",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 016"
+    },
+    {
+      "id": "cmd-bulk-017",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 017"
+    },
+    {
+      "id": "cmd-bulk-018",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 018"
+    },
+    {
+      "id": "cmd-bulk-019",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 019"
+    },
+    {
+      "id": "cmd-bulk-020",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 020"
+    },
+    {
+      "id": "cmd-bulk-021",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 021"
+    },
+    {
+      "id": "cmd-bulk-022",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 022"
+    },
+    {
+      "id": "cmd-bulk-023",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 023"
+    },
+    {
+      "id": "cmd-bulk-024",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 024"
+    },
+    {
+      "id": "cmd-bulk-025",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 025"
+    },
+    {
+      "id": "cmd-bulk-026",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 026"
+    },
+    {
+      "id": "cmd-bulk-027",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 027"
+    },
+    {
+      "id": "cmd-bulk-028",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 028"
+    },
+    {
+      "id": "cmd-bulk-029",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 029"
+    },
+    {
+      "id": "cmd-bulk-030",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 030"
+    },
+    {
+      "id": "cmd-bulk-031",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 031"
+    },
+    {
+      "id": "cmd-bulk-032",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 032"
+    },
+    {
+      "id": "cmd-bulk-033",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 033"
+    },
+    {
+      "id": "cmd-bulk-034",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 034"
+    },
+    {
+      "id": "cmd-bulk-035",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 035"
+    },
+    {
+      "id": "cmd-bulk-036",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 036"
+    },
+    {
+      "id": "cmd-bulk-037",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 037"
+    },
+    {
+      "id": "cmd-bulk-038",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 038"
+    },
+    {
+      "id": "cmd-bulk-039",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 039"
+    },
+    {
+      "id": "cmd-bulk-040",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 040"
+    },
+    {
+      "id": "cmd-bulk-041",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 041"
+    },
+    {
+      "id": "cmd-bulk-042",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 042"
+    },
+    {
+      "id": "cmd-bulk-043",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 043"
+    },
+    {
+      "id": "cmd-bulk-044",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 044"
+    },
+    {
+      "id": "cmd-bulk-045",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 045"
+    },
+    {
+      "id": "cmd-bulk-046",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 046"
+    },
+    {
+      "id": "cmd-bulk-047",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 047"
+    },
+    {
+      "id": "cmd-bulk-048",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 048"
+    },
+    {
+      "id": "cmd-bulk-049",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 049"
+    },
+    {
+      "id": "cmd-bulk-050",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 050"
+    },
+    {
+      "id": "cmd-bulk-051",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 051"
+    },
+    {
+      "id": "cmd-bulk-052",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 052"
+    },
+    {
+      "id": "cmd-bulk-053",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 053"
+    },
+    {
+      "id": "cmd-bulk-054",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 054"
+    },
+    {
+      "id": "cmd-bulk-055",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 055"
+    },
+    {
+      "id": "cmd-bulk-056",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 056"
+    },
+    {
+      "id": "cmd-bulk-057",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 057"
+    },
+    {
+      "id": "cmd-bulk-058",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 058"
+    },
+    {
+      "id": "cmd-bulk-059",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 059"
+    },
+    {
+      "id": "cmd-bulk-060",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 060"
+    },
+    {
+      "id": "cmd-bulk-061",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 061"
+    },
+    {
+      "id": "cmd-bulk-062",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 062"
+    },
+    {
+      "id": "cmd-bulk-063",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 063"
+    },
+    {
+      "id": "cmd-bulk-064",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 064"
+    },
+    {
+      "id": "cmd-bulk-065",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 065"
+    },
+    {
+      "id": "cmd-bulk-066",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 066"
+    },
+    {
+      "id": "cmd-bulk-067",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 067"
+    },
+    {
+      "id": "cmd-bulk-068",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 068"
+    },
+    {
+      "id": "cmd-bulk-069",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 069"
+    },
+    {
+      "id": "cmd-bulk-070",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 070"
+    },
+    {
+      "id": "cmd-bulk-071",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 071"
+    },
+    {
+      "id": "cmd-bulk-072",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 072"
+    },
+    {
+      "id": "cmd-bulk-073",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 073"
+    },
+    {
+      "id": "cmd-bulk-074",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 074"
+    },
+    {
+      "id": "cmd-bulk-075",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 075"
+    },
+    {
+      "id": "cmd-bulk-076",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 076"
+    },
+    {
+      "id": "cmd-bulk-077",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 077"
+    },
+    {
+      "id": "cmd-bulk-078",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 078"
+    },
+    {
+      "id": "cmd-bulk-079",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 079"
+    },
+    {
+      "id": "cmd-bulk-080",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 080"
+    },
+    {
+      "id": "cmd-bulk-081",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 081"
+    },
+    {
+      "id": "cmd-bulk-082",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 082"
+    },
+    {
+      "id": "cmd-bulk-083",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 083"
+    },
+    {
+      "id": "cmd-bulk-084",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 084"
+    },
+    {
+      "id": "cmd-bulk-085",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 085"
+    },
+    {
+      "id": "cmd-bulk-086",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 086"
+    },
+    {
+      "id": "cmd-bulk-087",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 087"
+    },
+    {
+      "id": "cmd-bulk-088",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 088"
+    },
+    {
+      "id": "cmd-bulk-089",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 089"
+    },
+    {
+      "id": "cmd-bulk-090",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 090"
+    },
+    {
+      "id": "cmd-bulk-091",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 091"
+    },
+    {
+      "id": "cmd-bulk-092",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 092"
+    },
+    {
+      "id": "cmd-bulk-093",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 093"
+    },
+    {
+      "id": "cmd-bulk-094",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 094"
+    },
+    {
+      "id": "cmd-bulk-095",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 095"
+    },
+    {
+      "id": "cmd-bulk-096",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 096"
+    },
+    {
+      "id": "cmd-bulk-097",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 097"
+    },
+    {
+      "id": "cmd-bulk-098",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 098"
+    },
+    {
+      "id": "cmd-bulk-099",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 099"
+    },
+    {
+      "id": "cmd-bulk-100",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 100"
+    },
+    {
+      "id": "cmd-bulk-101",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://ujiro99.github.io/selection-command/en/test?k=%s",
+      "spaceEncoding": "plus",
+      "title": "Test Command 101"
+    }
+  ],
+  "folders": [],
+  "linkCommand": {
+    "enabled": "Enable",
+    "openMode": "previewPopup",
+    "showIndicator": true,
+    "sidePanelAutoHide": false,
+    "startupMethod": {
+      "keyboardParam": "Shift",
+      "leftClickHoldParam": 200,
+      "method": "keyboard",
+      "threshold": 150
+    }
+  },
+  "pageRules": [],
+  "popupPlacement": {
+    "align": "start",
+    "alignOffset": 0,
+    "side": "top",
+    "sideOffset": 0
+  },
+  "settingVersion": "0.16.0",
+  "shortcuts": {
+    "shortcuts": []
+  },
+  "startupMethod": {
+    "method": "textSelection"
+  },
+  "style": "horizontal",
+  "userStyles": [
+    {
+      "name": "popup-delay",
+      "value": 250
+    },
+    {
+      "name": "popup-duration",
+      "value": 150
+    },
+    {
+      "name": "padding-scale",
+      "value": "1.5"
+    }
+  ],
+  "windowOption": {
+    "popupAutoCloseDelay": 0,
+    "sidePanelAutoHide": false
+  }
+}

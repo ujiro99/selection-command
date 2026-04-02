@@ -2,9 +2,11 @@ import { sleep, toUrl, isOverBytes, isUrlParam } from "@/lib/utils"
 import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import { POPUP_OFFSET, POPUP_TYPE, WINDOW_STATE } from "@/const"
+import { PopupOption } from "@/services/option/defaultSettings"
 import { BgData } from "@/services/backgroundData"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { BgCommand, ClipboardResult, TabCommand } from "@/services/ipc"
+import { getScreenSize } from "@/services/screen"
 import { Ipc } from "@/services/ipc"
 import { t } from "@/services/i18n"
 
@@ -15,12 +17,16 @@ BgData.init()
  * @param {number} windowId - The ID of the window to check
  * @returns {Promise<boolean>} True if the window exists, false otherwise
  */
-export const windowExists = async (windowId: number): Promise<boolean> => {
+export const windowExists = async (
+  windowId: number,
+): Promise<
+  { exists: true; window: chrome.windows.Window } | { exists: false }
+> => {
   try {
-    await chrome.windows.get(windowId)
-    return true
+    const window = await chrome.windows.get(windowId)
+    return { exists: true, window }
   } catch {
-    return false
+    return { exists: false }
   }
 }
 
@@ -99,9 +105,8 @@ export type OpenPopupProps = {
   url: string | UrlParam
   top: number
   left: number
-  width: number
-  height: number
-  screen: ScreenSize
+  width: number | undefined
+  height: number | undefined
   type: POPUP_TYPE
   windowState?: WINDOW_STATE
 }
@@ -111,10 +116,13 @@ export type OpenPopupsProps = {
   urls: string[]
   top: number
   left: number
-  width: number
-  height: number
-  screen: ScreenSize
+  width: number | undefined
+  height: number | undefined
   type: POPUP_TYPE
+}
+
+export type OpenPopupAndClickProps = OpenPopupProps & {
+  selector: string
 }
 
 export type OpenTabProps = {
@@ -151,23 +159,27 @@ type OpenResult = {
 const adjustWindowPosition = (
   top: number,
   left: number,
-  width: number,
-  height: number,
+  width: number | undefined,
+  height: number | undefined,
   screen: ScreenSize,
   offset: number = 0,
 ): { top: number; left: number } => {
   let t = top + POPUP_OFFSET * offset
   let l = left + POPUP_OFFSET * offset
 
-  if (screen.height < t + height - screen.top) {
+  // Use default height and width if not provided or invalid
+  const _height = height && height > 0 ? height : PopupOption.height
+  const _width = width && width > 0 ? width : PopupOption.width
+
+  if (screen.height < t + _height - screen.top) {
     t =
-      Math.floor((screen.height - height) / 2) +
+      Math.floor((screen.height - _height) / 2) +
       screen.top +
       POPUP_OFFSET * offset
   }
-  if (screen.width < l + width - screen.left) {
+  if (screen.width < l + _width - screen.left) {
     l =
-      Math.floor((screen.width - width) / 2) +
+      Math.floor((screen.width - _width) / 2) +
       screen.left +
       POPUP_OFFSET * offset
   }
@@ -425,7 +437,7 @@ export const readClipboard = async (): Promise<{
 export const openPopupWindow = async (
   param: OpenPopupProps,
 ): Promise<OpenResult> => {
-  const { top, left, width, height, screen, url } = param
+  const { top, left, width, height, url } = param
   let current: chrome.windows.Window
 
   try {
@@ -433,6 +445,8 @@ export const openPopupWindow = async (
   } catch (e) {
     current = { id: undefined, incognito: false } as chrome.windows.Window
   }
+
+  const screenSize = await getScreenSize()
 
   const type = param.type ?? POPUP_TYPE.POPUP
   const isFullscreen = param.windowState === WINDOW_STATE.FULLSCREEN
@@ -442,7 +456,7 @@ export const openPopupWindow = async (
     left,
     width,
     height,
-    screen,
+    screenSize,
   )
 
   const usesWindowState = isFullscreen || isMaximized
@@ -458,7 +472,6 @@ export const openPopupWindow = async (
   if (isUrlParam(url) && url.useClipboard) {
     const result = await openWindowAndReadClipboard({
       commandId: param.commandId,
-      screen: param.screen,
       type,
       width,
       height,
@@ -531,7 +544,7 @@ export const openPopupWindow = async (
 export const openPopupWindowMultiple = async (
   param: OpenPopupsProps,
 ): Promise<number[]> => {
-  const { top, left, width, height, screen } = param
+  const { top, left, width, height } = param
   let current: chrome.windows.Window
   try {
     current = await chrome.windows.getCurrent()
@@ -540,6 +553,8 @@ export const openPopupWindowMultiple = async (
   }
 
   const type = param.type ?? POPUP_TYPE.POPUP
+  const screenSize = await getScreenSize()
+
   const windows = await Promise.all(
     param.urls
       .reverse()
@@ -549,7 +564,7 @@ export const openPopupWindowMultiple = async (
           left,
           width,
           height,
-          screen,
+          screenSize,
           idx,
         )
         return chrome.windows.create({
@@ -681,8 +696,7 @@ export const openSidePanel = async (
 ): Promise<{ tabId: number | undefined }> => {
   const { url, tabId } = param
 
-  const targetTabId = tabId
-  if (!targetTabId) {
+  if (!tabId) {
     console.warn("No valid tab ID for side panel")
     return {
       tabId: undefined,
@@ -692,17 +706,20 @@ export const openSidePanel = async (
   // Set the side panel options for the tab
   // Do not await here because sidePanel.open() must be executed within a user gesture.
   chrome.sidePanel.setOptions({
-    tabId: targetTabId,
+    tabId,
     path: toUrl(url),
     enabled: true,
   })
 
   // Open the side panel
-  await chrome.sidePanel.open({ tabId: targetTabId })
-
-  return {
-    tabId: targetTabId,
+  try {
+    await chrome.sidePanel.open({ tabId })
+  } catch (e) {
+    console.error("Failed to open side panel:", e)
+    throw e
   }
+
+  return { tabId }
 }
 
 const SIDE_PANEL_CLOSE_ANIMATION = 1000

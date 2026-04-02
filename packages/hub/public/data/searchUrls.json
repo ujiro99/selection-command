@@ -44,5 +44,6 @@
   "https://search.kakaku.com/%s/",
   "https://keepa.com/#!search/5-%s",
   "http://localhost/?search=%s",
-  "https://yandex.ru/search/?text=%s"
+  "https://yandex.ru/search/?text=%s",
+  "https://search.yahoo.co.jp/realtime/search?p=%s"
 ]

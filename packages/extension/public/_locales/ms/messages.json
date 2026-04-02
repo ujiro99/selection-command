@@ -525,34 +525,34 @@
     }
   },
   "Option_instantCommand": {
-    "message": "Perintah Segera"
+    "message": "Arahan Segera"
   },
   "Option_instantCommand_desc": {
-    "message": "Melaksanakan perintah yang ditentukan dengan segera apabila teks dipilih sambil memegang kunci pengubah."
+    "message": "Melaksanakan arahan yang ditentukan dengan serta-merta apabila teks dipilih sambil menahan kekunci pengubah."
   },
   "Option_instantCommandEnabled": {
-    "message": "Aktifkan Perintah Segera"
+    "message": "Dayakan Arahan Segera"
   },
   "Option_instantCommandEnabled_desc": {
-    "message": "Apabila diaktifkan, perintah dilaksanakan dengan segera tanpa menampilkan menu."
+    "message": "Apabila didayakan, arahan akan dilaksanakan dengan serta-merta tanpa memaparkan menu."
   },
   "Option_instantCommandId": {
-    "message": "Perintah untuk Dilaksanakan"
+    "message": "Arahan untuk dilaksanakan"
   },
   "Option_instantCommandId_desc": {
-    "message": "Pilih perintah untuk dilaksanakan apabila digabungkan dengan kunci pengubah."
+    "message": "Pilih arahan yang akan dilaksanakan bersama kekunci pengubah."
   },
   "Option_instantCommandId_placeholder": {
-    "message": "Pilih perintah..."
+    "message": "Pilih arahan..."
   },
   "Option_instantCommandModifierKey": {
-    "message": "Kunci Pengubah"
+    "message": "Kekunci Pengubah"
   },
   "Option_instantCommandModifierKey_desc": {
-    "message": "Pilih kunci yang akan dipegang apabila memilih teks."
+    "message": "Pilih kekunci yang perlu ditekan apabila memilih teks."
   },
   "Option_instantCommandModifierKey_placeholder": {
-    "message": "Pilih kunci..."
+    "message": "Pilih kekunci..."
   },
   "Option_linkCommand": {
     "message": "Pratonton Pautan"
