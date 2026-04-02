@@ -31,7 +31,7 @@ export async function executeAction({
     target: target ?? null,
   })
 
-  sendEvent(ANALYTICS_EVENTS.SELECTION_COMMAND, { id: mode })
+  sendEvent(ANALYTICS_EVENTS.SELECTION_COMMAND, { event_label: mode })
 
   return res
 }
