@@ -254,6 +254,8 @@ test.describe("PageAction Commands", () => {
     context,
     page,
   }) => {
+    test.skip(!!process.env.CI, "Do not run tests for external services in CI.")
+
     await page.goto("https://www.amazon.com/")
     await page.waitForLoadState("domcontentloaded")
     await page.locator(".a-list-item .a-link-normal").first().click()

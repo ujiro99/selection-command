@@ -117,13 +117,16 @@ test.describe("Command Hub", () => {
     const commandData = await downloadButton.getAttribute("data-command")
     const commandId = commandData ? JSON.parse(commandData).id : null
     await downloadButton.click()
-    await page.waitForTimeout(500)
 
-    const commandsAfterInstall = await getCommands()
-    const installedCommand = commandsAfterInstall?.find(
-      (cmd) => cmd.id === commandId,
-    )
-    expect(installedCommand).toBeDefined()
+    await expect
+      .poll(
+        async () => {
+          const commands = await getCommands()
+          return commands?.find((cmd) => cmd.id === commandId) !== undefined
+        },
+        { timeout: 5000 },
+      )
+      .toBe(true)
 
     // Step 2: Delete the command via settings
     await optionsPage.open()
@@ -140,7 +143,7 @@ test.describe("Command Hub", () => {
     const restoredButton = page.locator(
       `button[data-command*='"id":"${commandId}"']`,
     )
-    const isRestoredVisible = await restoredButton.isVisible()
-    expect(isRestoredVisible).toBe(true)
+    await restoredButton.waitFor({ state: "visible", timeout: 5000 })
+    expect(restoredButton).toBeVisible()
   })
 })
