@@ -3,6 +3,33 @@ import { OptionsPage } from "./pages/OptionsPage"
 
 const HUB_URL = "https://ujiro99.github.io/selection-command"
 
+const tryGetCommandId = (commandData: string | null): string => {
+  if (!commandData) {
+    throw new Error("Hub button is missing required data-command attribute")
+  }
+  let parsedCommand: unknown
+  try {
+    parsedCommand = JSON.parse(commandData)
+  } catch (error) {
+    throw new Error(
+      `Failed to parse data-command JSON from Hub button: ${(error as Error).message}`,
+    )
+  }
+  const commandId =
+    typeof parsedCommand === "object" &&
+    parsedCommand !== null &&
+    "id" in parsedCommand &&
+    typeof (parsedCommand as { id: unknown }).id === "string"
+      ? (parsedCommand as { id: string }).id
+      : null
+  if (!commandId) {
+    throw new Error(
+      `Parsed data-command JSON does not contain a valid "id": ${commandData}`,
+    )
+  }
+  return commandId
+}
+
 test.describe("Command Hub", () => {
   /**
    * E2E-90: Verify that a PageAction command can be installed from the Hub.
@@ -32,18 +59,17 @@ test.describe("Command Hub", () => {
       .locator('button[data-command*=\'"openMode":"pageAction"\']')
       .filter({ hasNot: page.locator('[data-installed="true"]') })
       .first()
-
-    const isVisible = await downloadButton.isVisible()
-    if (!isVisible) {
-      test.skip(true, "No installable PageAction commands found on hub page")
-      return
-    }
-
+    await downloadButton.waitFor({ state: "visible", timeout: 5000 })
     await downloadButton.click()
-    await page.waitForTimeout(500)
-
-    const commandsAfter = await getCommands()
-    expect(commandsAfter?.length ?? 0).toBeGreaterThan(countBefore)
+    await expect
+      .poll(
+        async () => {
+          const commands = await getCommands()
+          return (commands?.length ?? 0) > countBefore
+        },
+        { timeout: 5000 },
+      )
+      .toBe(true)
   })
 
   /**
@@ -72,21 +98,22 @@ test.describe("Command Hub", () => {
       .filter({ hasNot: page.locator('[data-installed="true"]') })
       .first()
 
-    const isVisible = await downloadButton.isVisible()
-    if (!isVisible) {
-      test.skip(true, "No download buttons found on hub page")
-      return
-    }
+    await downloadButton.waitFor({ state: "visible", timeout: 5000 })
 
     // Get the command identifier for verification
-    const commandId = await downloadButton.getAttribute("data-command")
+    const commandData = await downloadButton.getAttribute("data-command")
+    tryGetCommandId(commandData)
 
     await downloadButton.click()
-    await page.waitForTimeout(500)
-
-    const commandsAfter = await getCommands()
-    expect(commandsAfter?.length ?? 0).toBeGreaterThan(countBefore)
-    expect(commandId).toBeTruthy()
+    await expect
+      .poll(
+        async () => {
+          const commands = await getCommands()
+          return (commands?.length ?? 0) > countBefore
+        },
+        { timeout: 5000 },
+      )
+      .toBe(true)
   })
 
   /**
@@ -107,23 +134,27 @@ test.describe("Command Hub", () => {
     await page.goto(HUB_URL)
     await page.waitForLoadState("domcontentloaded")
 
-    const downloadButton = page.locator("button[data-command]").first()
-    const isVisible = await downloadButton.isVisible()
-    if (!isVisible) {
-      test.skip(true, "No download buttons found on hub page")
-      return
-    }
+    // Find any available download button
+    const downloadButton = page
+      .locator('button[data-command*=\'"openMode":"popup"\']')
+      .filter({ hasNot: page.locator('[data-installed="true"]') })
+      .first()
+
+    await downloadButton.waitFor({ state: "visible", timeout: 5000 })
 
     const commandData = await downloadButton.getAttribute("data-command")
-    const commandId = commandData ? JSON.parse(commandData).id : null
-    await downloadButton.click()
-    await page.waitForTimeout(500)
+    const commandId = tryGetCommandId(commandData)
 
-    const commandsAfterInstall = await getCommands()
-    const installedCommand = commandsAfterInstall?.find(
-      (cmd) => cmd.id === commandId,
-    )
-    expect(installedCommand).toBeDefined()
+    await downloadButton.click()
+    await expect
+      .poll(
+        async () => {
+          const commands = await getCommands()
+          return commands?.find((cmd) => cmd.id === commandId) !== undefined
+        },
+        { timeout: 5000 },
+      )
+      .toBe(true)
 
     // Step 2: Delete the command via settings
     await optionsPage.open()
@@ -140,7 +171,7 @@ test.describe("Command Hub", () => {
     const restoredButton = page.locator(
       `button[data-command*='"id":"${commandId}"']`,
     )
-    const isRestoredVisible = await restoredButton.isVisible()
-    expect(isRestoredVisible).toBe(true)
+    await restoredButton.waitFor({ state: "visible", timeout: 5000 })
+    expect(restoredButton).toBeVisible()
   })
 })

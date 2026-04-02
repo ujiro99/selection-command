@@ -238,6 +238,6 @@ export class OptionsPage {
     const reloadPromise = this.page.waitForLoadState("domcontentloaded")
     await okButton.click()
     await reloadPromise
-    await this.page.waitForTimeout(500)
+    await this.page.waitForTimeout(100)
   }
 }
