@@ -1,5 +1,5 @@
 import { Storage, LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "./storage"
-import { isDebug, APP_ID, VERSION, SCREEN } from "@/const"
+import { isDebug, isE2E, APP_ID, VERSION, SCREEN } from "@/const"
 import { SessionData } from "@/types"
 
 const GA_ENDPOINT = "https://www.google-analytics.com/mp/collect"
@@ -9,10 +9,10 @@ const API_SECRET = import.meta.env.VITE_API_SECRET
 const DEFAULT_ENGAGEMENT_TIME_IN_MSEC = 100
 const SESSION_EXPIRATION_IN_MIN = 30
 
-// Disable analytics in CI environments
+// Disable analytics in CI environments or e2e builds
 const IS_CI =
   typeof process !== "undefined" && process.env && process.env.CI === "true"
-const DISABLE_ANALYTICS = IS_CI
+const DISABLE_ANALYTICS = IS_CI || isE2E
 
 export const ANALYTICS_EVENTS = {
   SELECTION_COMMAND: "selection_command",
@@ -40,7 +40,7 @@ export async function sendEvent(
   params: any,
   screen = SCREEN.CONTENT_SCRIPT,
 ) {
-  // Do not send analytics data if running in CI.
+  // Do not send analytics data if running in CI or e2e build.
   if (DISABLE_ANALYTICS || !MEASUREMENT_ID || !API_SECRET) {
     return
   }
