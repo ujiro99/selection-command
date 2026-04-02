@@ -59,14 +59,7 @@ test.describe("Command Hub", () => {
       .locator('button[data-command*=\'"openMode":"pageAction"\']')
       .filter({ hasNot: page.locator('[data-installed="true"]') })
       .first()
-
     await downloadButton.waitFor({ state: "visible", timeout: 5000 })
-    const isVisible = await downloadButton.isVisible()
-    if (!isVisible) {
-      test.skip(true, "No installable PageAction commands found on hub page")
-      return
-    }
-
     await downloadButton.click()
     await expect
       .poll(
@@ -106,11 +99,6 @@ test.describe("Command Hub", () => {
       .first()
 
     await downloadButton.waitFor({ state: "visible", timeout: 5000 })
-    const isVisible = await downloadButton.isVisible()
-    if (!isVisible) {
-      test.skip(true, "No download buttons found on hub page")
-      return
-    }
 
     // Get the command identifier for verification
     const commandData = await downloadButton.getAttribute("data-command")
@@ -153,11 +141,6 @@ test.describe("Command Hub", () => {
       .first()
 
     await downloadButton.waitFor({ state: "visible", timeout: 5000 })
-    const isVisible = await downloadButton.isVisible()
-    if (!isVisible) {
-      test.skip(true, "No download buttons found on hub page")
-      return
-    }
 
     const commandData = await downloadButton.getAttribute("data-command")
     const commandId = tryGetCommandId(commandData)
