@@ -8,6 +8,10 @@ import type { UserSettings } from "@/types"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
+export const MENU_STYLE_SETTINGS_PATH = path.join(
+  __dirname,
+  "../data/menu-style-settings.json",
+)
 
 /**
  * Page Object for the extension's options page.
@@ -46,20 +50,21 @@ export class OptionsPage {
   }
 
   /**
-   * Import test settings from the test-settings.json file.
+   * Import test settings from the specified settings file (defaults to test-settings.json).
    *
    * Steps:
    *   1. Click the import button to open the import dialog.
-   *   2. Set the test-settings.json file on the file input.
+   *   2. Set the settings file on the file input.
    *   3. Wait for the file to be read and OK button to be enabled.
    *   4. Click OK to execute the import.
    *   5. Wait for the page to reload and settings to be saved.
    */
-  async importSettings(): Promise<void> {
+  async importSettings(settingsPath?: string): Promise<void> {
     if (!this.page) {
       await this.open()
     }
     const page = this.page!
+    const filePath = settingsPath ?? TEST_SETTINGS_PATH
 
     // Open the import dialog
     await page.locator(`[data-testid="${TEST_IDS.importButton}"]`).click()
@@ -68,7 +73,7 @@ export class OptionsPage {
     const fileInput = page.locator(
       `[data-testid="${TEST_IDS.importFileInput}"]`,
     )
-    await fileInput.setInputFiles(TEST_SETTINGS_PATH)
+    await fileInput.setInputFiles(filePath)
 
     // Wait for the file to be read and OK button to be enabled
     const okButton = page.locator(`[data-testid="${TEST_IDS.optionDialogOk}"]`)

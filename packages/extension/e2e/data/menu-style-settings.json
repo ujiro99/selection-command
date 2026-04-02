@@ -1,0 +1,110 @@
+{
+  "commands": [
+    {
+      "id": "ms-cmd-root",
+      "title": "Root",
+      "iconUrl": "https://www.google.com/favicon.ico",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://google.com/search?q=%s",
+      "spaceEncoding": "plus"
+    },
+    {
+      "id": "ms-cmd-folder-1",
+      "title": "Item 1",
+      "iconUrl": "https://www.google.com/favicon.ico",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "ms-test-folder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://google.com/search?q=%s",
+      "spaceEncoding": "plus"
+    },
+    {
+      "id": "ms-cmd-folder-2",
+      "title": "Item 2",
+      "iconUrl": "https://www.bing.com/favicon.ico",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "ms-test-folder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "https://bing.com/search?q=%s",
+      "spaceEncoding": "plus"
+    }
+  ],
+  "folders": [
+    {
+      "id": "ms-test-folder",
+      "title": "TestFolder",
+      "iconUrl": "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
+      "onlyIcon": false
+    }
+  ],
+  "style": "horizontal",
+  "startupMethod": {
+    "method": "textSelection"
+  },
+  "popupPlacement": {
+    "side": "top",
+    "align": "start",
+    "sideOffset": 0,
+    "alignOffset": 0
+  },
+  "pageRules": [],
+  "userStyles": [
+    {
+      "name": "popup-delay",
+      "value": 250
+    },
+    {
+      "name": "popup-duration",
+      "value": 150
+    },
+    {
+      "name": "padding-scale",
+      "value": "1.5"
+    },
+    {
+      "name": "image-scale",
+      "value": "1.1"
+    },
+    {
+      "name": "font-scale",
+      "value": "1.1"
+    }
+  ],
+  "linkCommand": {
+    "enabled": "Enable",
+    "openMode": "previewPopup",
+    "showIndicator": true,
+    "sidePanelAutoHide": false,
+    "startupMethod": {
+      "keyboardParam": "Shift",
+      "leftClickHoldParam": 200,
+      "method": "keyboard",
+      "threshold": 150
+    }
+  },
+  "shortcuts": {
+    "shortcuts": []
+  },
+  "windowOption": {
+    "popupAutoCloseDelay": 0,
+    "sidePanelAutoHide": false
+  },
+  "settingVersion": "0.16.0"
+}
