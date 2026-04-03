@@ -19,12 +19,18 @@ vi.mock("@/services/pageAction", () => ({
     SELECTED_TEXT: "selectedText",
     URL: "url",
     CLIPBOARD: "clipboard",
+    LANG: "lang",
   },
   InsertSymbol: {
     selectedText: "{{selectedText}}",
     url: "{{url}}",
     clipboard: "{{clipboard}}",
+    lang: "{{lang}}",
   },
+}))
+
+vi.mock("@/services/i18n", () => ({
+  getUILanguage: vi.fn(() => "en"),
 }))
 
 vi.mock("@/const", async () => {
@@ -43,6 +49,7 @@ import {
   inputContentEditable,
 } from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
+import { getUILanguage } from "@/services/i18n"
 
 // Get references to mocked functions
 const mockGetElementByXPath = getElementByXPath as any
@@ -51,6 +58,7 @@ const mockInputContentEditable = inputContentEditable as any
 const mockSafeInterpolate = safeInterpolate as any
 const mockIsMac = isMac as any
 const mockIsEmpty = isEmpty as any
+const mockGetUILanguage = getUILanguage as any
 
 // Mock console methods
 const mockConsole = {
@@ -134,6 +142,7 @@ describe("backgroundDispatcher", () => {
     mockSafeInterpolate.mockImplementation((str: string) => str)
     mockIsMac.mockReturnValue(false)
     mockIsEmpty.mockImplementation((str: string) => !str || str.length === 0)
+    mockGetUILanguage.mockReturnValue("en")
 
     // Setup global mocks
     global.document = mockDocument as any
@@ -1243,6 +1252,72 @@ describe("backgroundDispatcher", () => {
       expect(result).toEqual([false, "Element not found: Not Found"])
       expect(mockConsole.warn).toHaveBeenCalledWith(
         "Element not found for: .not-found",
+      )
+    })
+
+    it("BDI-14: Should include lang variable in the variable map", async () => {
+      const mockElement = mockElements.input
+      mockElement.value = ""
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      mockGetUILanguage.mockReturnValue("ja")
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".input",
+        selectorType: SelectorType.css,
+        label: "Input",
+        value: "{{lang}}",
+        srcUrl: "",
+        selectedText: "",
+        clipboardText: "",
+      }
+
+      await BackgroundPageActionDispatcher.input(param as any)
+
+      expect(mockSafeInterpolate).toHaveBeenCalledWith(
+        "{{lang}}",
+        expect.objectContaining({
+          "{{lang}}": "ja",
+        }),
+      )
+    })
+
+    it("BDI-15: Should replace multiple variables including lang", async () => {
+      const mockElement = mockElements.input
+      mockElement.value = ""
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      mockGetUILanguage.mockReturnValue("zh-CN")
+      mockSafeInterpolate.mockImplementation(
+        (template: string, vars: Record<string, string>) => {
+          let result = template
+          Object.entries(vars).forEach(([key, value]) => {
+            result = result.replace(key, value as string)
+          })
+          return result
+        },
+      )
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".input",
+        selectorType: SelectorType.css,
+        label: "Input",
+        value: "{{selectedText}} ({{lang}})",
+        srcUrl: "https://example.com",
+        selectedText: "hello",
+        clipboardText: "",
+      }
+
+      const result = await BackgroundPageActionDispatcher.input(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockSafeInterpolate).toHaveBeenCalledWith(
+        "{{selectedText}} ({{lang}})",
+        expect.objectContaining({
+          "{{selectedText}}": "hello",
+          "{{url}}": "https://example.com",
+          "{{lang}}": "zh-CN",
+        }),
       )
     })
   })
