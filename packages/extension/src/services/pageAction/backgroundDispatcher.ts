@@ -223,14 +223,7 @@ export const BackgroundPageActionDispatcher = {
           element.dispatchEvent(inputEvent)
           element.dispatchEvent(changeEvent)
         } else if (element.isContentEditable) {
-          let legacyMode = false
-          if (location.href.includes("perplexity.ai")) {
-            // Legacy mode specifically for Perplexity.ai's contenteditable field.
-            // This is because it has some special handling that breaks the usual input simulation.
-            legacyMode = true
-            await inputContentEditable(element, "\n", 0, null, legacyMode)
-          }
-          await inputContentEditable(element, value, 1, null, legacyMode)
+          await inputContentEditable(element, value, 1, null)
         }
       }
     } else {

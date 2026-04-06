@@ -24,14 +24,14 @@ export async function inputContentEditable(
 ): Promise<boolean> {
   if (!isEditable(el)) return false
   el.focus()
-  const values = value.split("\n")
 
-  for (const [idx, val] of values.entries()) {
-    if (legacyMode) {
-      // Legacy mode when insertNode does not work correctly
-      // Used in perplexy.ai's chat input field
-      document.execCommand("insertText", false, val)
-    } else {
+  if (legacyMode) {
+    // Legacy mode when insertNode does not work correctly
+    document.execCommand("insertText", false, value)
+  } else {
+    const values = value.split("\n")
+
+    for (const [idx, val] of values.entries()) {
       const selection = window.getSelection()
       if (selection) {
         let range: Range
@@ -67,24 +67,24 @@ export async function inputContentEditable(
         selection.removeAllRanges()
         selection.addRange(range)
       }
+
+      if (idx < values.length - 1) {
+        // For all but the last line, simulate Shift+Enter for line break
+        interval > 0 && (await sleep(interval / 2))
+        await typeShiftEnter(el)
+        interval > 0 && (await sleep(interval / 2))
+      }
     }
 
-    if (idx < values.length - 1) {
-      // For all but the last line, simulate Shift+Enter for line break
-      interval > 0 && (await sleep(interval / 2))
-      await typeShiftEnter(el)
-      interval > 0 && (await sleep(interval / 2))
-    }
+    // Dispatch InputEvent to notify frameworks of the text change
+    const inputEvent = new InputEvent("input", {
+      inputType: "insertText",
+      data: value,
+      bubbles: true,
+      cancelable: false,
+    })
+    el.dispatchEvent(inputEvent)
   }
-
-  // Dispatch InputEvent to notify frameworks of the text change
-  const inputEvent = new InputEvent("input", {
-    inputType: "insertText",
-    data: value,
-    bubbles: true,
-    cancelable: false,
-  })
-  el.dispatchEvent(inputEvent)
 
   return true
 }
