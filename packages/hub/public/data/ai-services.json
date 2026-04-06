@@ -31,10 +31,7 @@
       "div[contenteditable='true'][aria-label]",
       "div[contenteditable='true'].ProseMirror"
     ],
-    "submitSelectors": [
-      "#main-content button.Button_claude__c_hZy",
-      "#main-content button[data-state='closed']"
-    ]
+    "submitSelectors": ["#main-content button._claude_1abo4_159"]
   },
   {
     "id": "perplexity",
