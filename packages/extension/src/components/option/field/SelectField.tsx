@@ -19,9 +19,6 @@ import { MenuImage } from "@/components/menu/MenuImage"
 import { TEST_IDS } from "@/testIds"
 import { Info } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
-import { TEST_IDS } from "@/testIds"
-import { Info } from "lucide-react"
-import { Tooltip } from "@/components/Tooltip"
 
 export type SelectOptionType = {
   name: string

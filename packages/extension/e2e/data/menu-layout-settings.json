@@ -1,6 +1,16 @@
 {
   "commands": [
     {
+      "id": "$$drag-1",
+      "openMode": "previewPopup",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "Link Preview"
+    },
+    {
       "id": "ms-cmd-root",
       "title": "Root",
       "iconUrl": "https://www.google.com/favicon.ico",

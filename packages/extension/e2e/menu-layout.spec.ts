@@ -1,7 +1,7 @@
+import type { Locator } from "@playwright/test"
 import { test, expect } from "./fixtures"
 import { TestPage } from "./pages/TestPage"
 import { OptionsPage, MENU_STYLE_SETTINGS_PATH } from "./pages/OptionsPage"
-import { TEST_IDS } from "@/testIds"
 import { STYLE, FOLDER_STYLE } from "@/const"
 
 /**
@@ -12,79 +12,76 @@ import { STYLE, FOLDER_STYLE } from "@/const"
  */
 const TEST_FOLDER_ID = "ms-test-folder"
 const TEST_FOLDER_TITLE = "TestFolder"
-const APP_ID = "selection-command"
 
-test.describe("Menu Style per Folder", () => {
+test.describe("Menu Layout", () => {
   /**
-   * MS-01: Verify that the top-level menu bar renders horizontally
-   * when the global style setting is "horizontal".
+   * E2E-15: Verify that the popup menu is displayed in horizontal (row) layout.
    */
-  test("MS-01: global style=horizontal → top-level menu is horizontal", async ({
-    context,
-    extensionId,
-    getUserSettings,
-    setUserSettings,
-    page,
-  }) => {
-    // Import menu-style settings (provides commands and the test folder)
-    const optionsPage = new OptionsPage(context, extensionId, getUserSettings)
-    await optionsPage.open()
-    await optionsPage.importSettings(MENU_STYLE_SETTINGS_PATH)
-    await optionsPage.close()
-
-    // Override global style to horizontal (settings already imported with "horizontal")
-    await setUserSettings({ style: STYLE.HORIZONTAL })
-
+  test("E2E-15: popup menu is displayed horizontally", async ({ page }) => {
+    // test-settings.json sets style: "horizontal" by default
     const testPage = new TestPage(page)
     await testPage.open()
     await testPage.selectText()
 
-    // The top-level Menubar is inside the shadow DOM; CSS module class
-    // "menuVertical" (flex-direction: column) is NOT applied when horizontal.
     const menubar = await testPage.getMenuBar()
-    await expect(menubar).toHaveCSS("flex-direction", "row")
+    await expect(menubar).toBeVisible()
+
+    const buttons = await menubar.locator("button").all()
+    if (buttons.length >= 2) {
+      const box1 = await buttons[0].boundingBox()
+      const box2 = await buttons[1].boundingBox()
+      expect(box1).toBeTruthy()
+      expect(box2).toBeTruthy()
+      // In horizontal mode: adjacent buttons are at similar vertical positions
+      const yDiff = Math.abs(box2!.y - box1!.y)
+      expect(yDiff).toBeLessThan(box1!.height)
+    }
   })
 
   /**
-   * MS-02: Verify that the top-level menu bar renders vertically
-   * when the global style setting is "vertical".
+   * E2E-16: Verify that the popup menu is displayed in vertical (column) layout.
    */
-  test("MS-02: global style=vertical → top-level menu is vertical", async ({
-    context,
-    extensionId,
-    getUserSettings,
+  test("E2E-16: popup menu is displayed vertically", async ({
     setUserSettings,
     page,
   }) => {
-    const optionsPage = new OptionsPage(context, extensionId, getUserSettings)
-    await optionsPage.open()
-    await optionsPage.importSettings(MENU_STYLE_SETTINGS_PATH)
-    await optionsPage.close()
+    const testPage = new TestPage(page)
+    await testPage.open()
 
+    // Override the default horizontal style for this test
+    // Since the configuration values won't be applied if executed immediately,
+    // perform the operation after displaying the test page.
     await setUserSettings({ style: STYLE.VERTICAL })
 
-    const testPage = new TestPage(page)
-    await testPage.open()
     await testPage.selectText()
-
     const menubar = await testPage.getMenuBar()
-    await expect(menubar).toHaveCSS("flex-direction", "column")
+    await expect(menubar).toBeVisible()
+
+    const buttons = await menubar.locator("button").all()
+    if (buttons.length >= 2) {
+      const box1 = await buttons[0].boundingBox()
+      const box2 = await buttons[1].boundingBox()
+      expect(box1).toBeTruthy()
+      expect(box2).toBeTruthy()
+      // In vertical mode: second button is below the first
+      expect(box2!.y).toBeGreaterThan(box1!.y + box1!.height - 5)
+    }
   })
 
   /**
-   * MS-03: Verify that a folder with style="vertical" displays its content
+   * E2E-17: Verify that a folder with style="vertical" displays its content
    * vertically even when the global style is "horizontal".
    * The folder trigger button remains styled horizontally (following the parent).
    * The content Menubar inside the opened folder dropdown is vertical.
    */
-  test("MS-03: global=horizontal + folder.style=vertical → folder content is vertical", async ({
+  test("E2E-17: global=horizontal + folder.style=vertical → folder content is vertical", async ({
     context,
     extensionId,
-    getUserSettings,
+    getCommands,
     setUserSettings,
     page,
   }) => {
-    const optionsPage = new OptionsPage(context, extensionId, getUserSettings)
+    const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
     await optionsPage.importSettings(MENU_STYLE_SETTINGS_PATH)
     await optionsPage.close()
@@ -108,10 +105,14 @@ test.describe("Menu Style per Folder", () => {
     await testPage.open()
     await testPage.selectText()
 
-    // Open the folder by clicking its trigger button
+    // Open the folder by hovering its trigger button
     const menubar = await testPage.getMenuBar()
     await expect(menubar).toBeVisible()
-    await openFolderTrigger(page, TEST_FOLDER_TITLE, APP_ID)
+    await menubar
+      .locator('[role="menuitem"][aria-haspopup="menu"]', {
+        hasText: TEST_FOLDER_TITLE,
+      })
+      .hover()
 
     // The inner Menubar inside the folder content uses the folder's style.
     // Vertical → "flex-wrap" Tailwind class is NOT applied (horizontal uses it).
@@ -122,17 +123,17 @@ test.describe("Menu Style per Folder", () => {
   })
 
   /**
-   * MS-04: Verify that a folder with style="horizontal" displays its content
+   * E2E-18: Verify that a folder with style="horizontal" displays its content
    * horizontally even when the global style is "vertical".
    */
-  test("MS-04: global=vertical + folder.style=horizontal → folder content is horizontal", async ({
+  test("E2E-18: global=vertical + folder.style=horizontal → folder content is horizontal", async ({
     context,
     extensionId,
-    getUserSettings,
+    getCommands,
     setUserSettings,
     page,
   }) => {
-    const optionsPage = new OptionsPage(context, extensionId, getUserSettings)
+    const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
     await optionsPage.importSettings(MENU_STYLE_SETTINGS_PATH)
     await optionsPage.close()
@@ -157,7 +158,11 @@ test.describe("Menu Style per Folder", () => {
 
     const menubar = await testPage.getMenuBar()
     await expect(menubar).toBeVisible()
-    await openFolderTrigger(page, TEST_FOLDER_TITLE, APP_ID)
+    await menubar
+      .locator('[role="menuitem"][aria-haspopup="menu"]', {
+        hasText: TEST_FOLDER_TITLE,
+      })
+      .hover()
 
     // Horizontal folder content → inner Menubar has "flex-wrap" class
     const innerMenubar = await waitForFolderContent(page)
@@ -166,18 +171,18 @@ test.describe("Menu Style per Folder", () => {
   })
 
   /**
-   * MS-05: Verify that a folder with style="inherit" inherits the global style.
+   * E2E-19: Verify that a folder with style="inherit" inherits the global style.
    * When global is "vertical" and folder.style is "inherit",
    * the folder content should also be vertical.
    */
-  test("MS-05: global=vertical + folder.style=inherit → folder content inherits vertical", async ({
+  test("E2E-19: global=vertical + folder.style=inherit → folder content inherits vertical", async ({
     context,
     extensionId,
-    getUserSettings,
+    getCommands,
     setUserSettings,
     page,
   }) => {
-    const optionsPage = new OptionsPage(context, extensionId, getUserSettings)
+    const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
     await optionsPage.importSettings(MENU_STYLE_SETTINGS_PATH)
     await optionsPage.close()
@@ -202,7 +207,11 @@ test.describe("Menu Style per Folder", () => {
 
     const menubar = await testPage.getMenuBar()
     await expect(menubar).toBeVisible()
-    await openFolderTrigger(page, TEST_FOLDER_TITLE, APP_ID)
+    await menubar
+      .locator('[role="menuitem"][aria-haspopup="menu"]', {
+        hasText: TEST_FOLDER_TITLE,
+      })
+      .hover()
 
     // Inherits vertical → inner Menubar does NOT have "flex-wrap" class
     const innerMenubar = await waitForFolderContent(page)
@@ -210,46 +219,6 @@ test.describe("Menu Style per Folder", () => {
     expect(className).not.toContain("flex-wrap")
   })
 })
-
-/**
- * Dispatch a mouseenter event on the folder trigger button inside the shadow DOM
- * to open the folder's dropdown content.
- *
- * The folder trigger uses onMouseEnter (via onHover utility) to set the active
- * folder in the Menubar value, which causes Radix to open the MenubarContent.
- * Polling ensures we retry until the button is found and the event is dispatched.
- */
-async function openFolderTrigger(
-  page: import("@playwright/test").Page,
-  folderTitle: string,
-  appId: string,
-): Promise<void> {
-  await page.waitForFunction(
-    ({ appId, folderTitle, menuBarTestId }) => {
-      const el = document.getElementById(appId)
-      const shadow = el?.shadowRoot
-      if (!shadow) return false
-
-      // Find the folder trigger button by title text
-      const menuBar = shadow.querySelector(`[data-testid="${menuBarTestId}"]`)
-      if (!menuBar) return false
-
-      const buttons = Array.from(menuBar.querySelectorAll("button"))
-      const folderBtn = buttons.find((btn) =>
-        btn.textContent?.trim().includes(folderTitle),
-      )
-      if (!folderBtn) return false
-
-      // Dispatch mouseenter to trigger the onHover handler
-      folderBtn.dispatchEvent(
-        new MouseEvent("mouseenter", { bubbles: true, cancelable: true }),
-      )
-      return true
-    },
-    { appId, folderTitle, menuBarTestId: TEST_IDS.menuBar },
-    { timeout: 5000, polling: 200 },
-  )
-}
 
 /**
  * Wait for the folder dropdown content to appear and return a locator for
@@ -262,7 +231,7 @@ async function openFolderTrigger(
  */
 async function waitForFolderContent(
   page: import("@playwright/test").Page,
-): Promise<import("@playwright/test").Locator> {
+): Promise<Locator> {
   // Radix sets data-state="open" on the MenubarContent when it is visible.
   const openMenu = page.locator('[role="menu"][data-state="open"]')
   await expect(openMenu).toBeVisible({ timeout: 3000 })

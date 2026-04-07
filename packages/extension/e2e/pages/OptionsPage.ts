@@ -11,7 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
 export const MENU_STYLE_SETTINGS_PATH = path.join(
   __dirname,
-  "../data/menu-style-settings.json",
+  "../data/menu-layout-settings.json",
 )
 
 /**
