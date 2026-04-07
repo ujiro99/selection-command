@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 
 import { COMMAND_TYPE, COMMAND_TYPE_METADATA } from "@/const"
 import { t as _t } from "@/services/i18n"
+import { TEST_IDS } from "@/testIds"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -52,6 +53,7 @@ export const CommandType = forwardRef<HTMLButtonElement, CommandTypeProps>(
         onClick={() => onClick(type)}
         disabled={disabled}
         ref={ref}
+        data-testid={TEST_IDS.commandType(type)}
       >
         <div
           className={cn(

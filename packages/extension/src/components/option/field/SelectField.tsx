@@ -16,6 +16,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { MenuImage } from "@/components/menu/MenuImage"
+import { TEST_IDS } from "@/testIds"
+import { Info } from "lucide-react"
+import { Tooltip } from "@/components/Tooltip"
+import { TEST_IDS } from "@/testIds"
 import { Info } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 
@@ -71,6 +75,7 @@ const renderOption = (opt: SelectOptionType) => {
       key={opt.value}
       className={`${opt.isGroup ? "pointer-events-none" : "hover:bg-gray-100"}`}
       style={{ paddingLeft }}
+      data-testid={TEST_IDS.selectItem(opt.value)}
     >
       {renderOptionContent(opt)}
     </SelectItem>
@@ -128,7 +133,10 @@ export const SelectField = ({
               value={field.value ?? fallbackValue ?? ""}
             >
               <FormControl>
-                <SelectTrigger className="relative">
+                <SelectTrigger
+                  className="relative"
+                  data-testid={TEST_IDS.selectTrigger(name)}
+                >
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
               </FormControl>

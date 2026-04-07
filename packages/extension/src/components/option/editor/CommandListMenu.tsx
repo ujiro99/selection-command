@@ -4,6 +4,7 @@ import { Terminal, FolderPlus, Search } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { HUB_URL } from "@/const"
 import { t as _t } from "@/services/i18n"
+import { TEST_IDS } from "@/testIds"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 interface Props {
@@ -33,6 +34,7 @@ export const CommandListMenu: React.FC<Props> = ({
         variant="outline"
         className="absolute left-[255px] px-2 w-24 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group font-mono"
         onClick={onAddFolder}
+        data-testid={TEST_IDS.addFolderButton}
       >
         <FolderPlus />
         {t("folders")}
@@ -47,6 +49,7 @@ export const CommandListMenu: React.FC<Props> = ({
         variant="outline"
         className="absolute left-[360px] px-2 w-24 rounded-md transition hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group font-mono"
         onClick={onAddCommand}
+        data-testid={TEST_IDS.addCommandButton}
       >
         <Terminal className="stroke-gray-600 group-hover:stroke-gray-700" />
         {t("Command")}

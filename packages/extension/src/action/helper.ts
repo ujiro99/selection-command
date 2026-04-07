@@ -8,6 +8,7 @@ import {
   updateSidePanelUrl as _updateSidePanelUrl,
   OpenPopupsProps,
   OpenPopupProps,
+  OpenPopupAndClickProps,
   OpenTabProps,
   OpenSidePanelProps,
 } from "@/services/chrome"
@@ -19,10 +20,6 @@ import { BgData } from "@/services/backgroundData"
 import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
-
-type OpenPopupAndClickProps = OpenPopupProps & {
-  selector: string
-}
 
 type execApiProps = {
   url: string
@@ -43,7 +40,7 @@ export const openPopup = (
       await openPopupWindow(param)
       response(true)
     } catch (error) {
-      console.error("Failed to execute openPopups:", error)
+      console.error("Failed to execute openPopupWindow:", error)
       response(false)
     }
   })
@@ -60,7 +57,7 @@ export const openPopups = (
       await openPopupWindowMultiple(param)
       response(true)
     } catch (error) {
-      console.error("Failed to execute openPopups:", error)
+      console.error("Failed to execute openPopupWindowMultiple:", error)
       response(false)
     }
   })

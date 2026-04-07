@@ -10,7 +10,9 @@ import { COMMAND_URLS } from "./generated-command-urls"
  * The %s placeholder is replaced with "test" for each request.
  */
 
-test.describe.skip("E2E-URL: Default command URLs return HTTP 200", () => {
+test.describe("E2E-URL: Default command URLs return HTTP 200", () => {
+  test.skip(!!process.env.CI, "Do not run tests for external services in CI.")
+
   for (const { title, locale, searchUrl } of COMMAND_URLS) {
     const url = searchUrl.replace("%s", "test")
     test(`${title} (${locale}): ${url}`, async ({ request }) => {

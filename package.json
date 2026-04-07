@@ -22,7 +22,8 @@
     "tsc": "yarn workspaces run tsc -b",
     "clean": "yarn workspaces run clean && rm -rf node_modules",
     "add-command": "yarn workspace @selection-command/hub add-command",
-    "check-ids": "yarn workspace @selection-command/extension check-ids"
+    "check-ids": "yarn workspace @selection-command/extension check-ids",
+    "pretty-quick": "pretty-quick"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
@@ -47,5 +48,11 @@
     "node": ">=18.0.0",
     "yarn": ">=1.22.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "prettier": {
+    "semi": false,
+    "singleQuote": false,
+    "tabWidth": 2,
+    "trailingComma": "all"
+  }
 }

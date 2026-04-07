@@ -24,7 +24,6 @@ import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { updateActiveScreenId } from "@/services/screen"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { importIf } from "@import-if"
@@ -402,9 +401,6 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
     return
   }
 
-  // Update active screen ID
-  await updateActiveScreenId(windowId)
-
   // Update active tab ID
   await updateActiveTabId()
 
@@ -453,7 +449,6 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   }
 
   try {
-    await updateActiveScreenId(activeInfo.windowId)
     await updateActiveTabId(activeInfo.tabId)
   } catch (error) {
     console.error("Failed to get active screen ID:", error)
@@ -468,26 +463,35 @@ if (isDebug) {
   })
 }
 
-chrome.runtime.onInstalled.addListener((details) => {
-  ContextMenu.init()
+chrome.runtime.onInstalled.addListener(async (details) => {
+  try {
+    // Initialize default settings on install
+    if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+      await Settings.reset()
+    }
 
-  chrome.storage.session.setAccessLevel({
-    accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
-  })
+    await ContextMenu.init()
 
-  if (
-    details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
-    details.reason === chrome.runtime.OnInstalledReason.UPDATE
-  ) {
-    // Set uninstall survey URL
-    chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
+    chrome.storage.session.setAccessLevel({
+      accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
+    })
+
+    if (
+      details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
+      details.reason === chrome.runtime.OnInstalledReason.UPDATE
+    ) {
+      // Set uninstall survey URL
+      chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
+    }
+
+    // Check for daily backup on startup
+    await checkAndPerformDailyBackup()
+
+    // Check for weekly backup on startup
+    await checkAndPerformWeeklyBackup()
+  } catch (error) {
+    console.error("Error during onInstalled initialization:", error)
   }
-
-  // Check for daily backup on startup
-  checkAndPerformDailyBackup()
-
-  // Check for weekly backup on startup
-  checkAndPerformWeeklyBackup()
 })
 
 chrome.runtime.onStartup.addListener(() => {

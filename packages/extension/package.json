@@ -91,11 +91,5 @@
     "development": [
       "last 3 chrome version"
     ]
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": false,
-    "tabWidth": 2,
-    "trailingComma": "all"
   }
 }

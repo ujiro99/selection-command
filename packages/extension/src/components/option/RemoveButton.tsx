@@ -13,6 +13,8 @@ type RemoveButtonProps = {
   iconSvg?: string
   size?: number
   className?: string
+  "data-testid"?: string
+  "data-testid-ok"?: string
 }
 
 export const RemoveButton = ({
@@ -22,6 +24,8 @@ export const RemoveButton = ({
   onRemove,
   size = 16,
   className,
+  "data-testid": dataTestId,
+  "data-testid-ok": dataTestIdOk,
 }: RemoveButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
@@ -36,6 +40,7 @@ export const RemoveButton = ({
         )}
         onClick={() => setOpen(true)}
         ref={buttonRef}
+        data-testid={dataTestId}
       >
         <Trash2
           className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
@@ -47,6 +52,7 @@ export const RemoveButton = ({
         open={open}
         onOpenChange={setOpen}
         onRemove={onRemove}
+        data-testid-ok={dataTestIdOk}
       >
         <>
           {(iconUrl != null || iconSvg != null) && (
