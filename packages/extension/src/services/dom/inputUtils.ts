@@ -25,12 +25,19 @@ export async function inputContentEditable(
   if (!isEditable(el)) return false
   el.focus()
 
+  const values = value.split("\n")
   if (legacyMode) {
-    // Legacy mode when insertNode does not work correctly
-    document.execCommand("insertText", false, value)
+    // Use LegacyMode when range.insertNode is not reflected in a contentEditable element.
+    for (const [idx, val] of values.entries()) {
+      document.execCommand("insertText", false, val)
+      if (idx < values.length - 1) {
+        // For all but the last line, simulate Shift+Enter for line break
+        interval > 0 && (await sleep(interval / 2))
+        await typeShiftEnter(el)
+        interval > 0 && (await sleep(interval / 2))
+      }
+    }
   } else {
-    const values = value.split("\n")
-
     for (const [idx, val] of values.entries()) {
       const selection = window.getSelection()
       if (selection) {
