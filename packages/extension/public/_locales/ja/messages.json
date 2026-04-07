@@ -801,7 +801,7 @@
     "message": "クリップボードから挿入されます"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "ブラウザの言語が挿入されます",
+    "message": "ブラウザの言語コードが挿入されます。(例：en, es, zh_CN)",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {
@@ -817,7 +817,7 @@
     "message": "クリップボード"
   },
   "PageAction_InputMenu_lang": {
-    "message": "ブラウザ言語"
+    "message": "ブラウザ言語コード"
   },
   "PageAction_InputEditor_title": {
     "message": "Inputアクションの編集"
