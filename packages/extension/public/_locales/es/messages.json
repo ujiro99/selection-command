@@ -231,7 +231,7 @@
     "message": "Puntero del Ratón"
   },
   "Option_style": {
-    "message": "Estilo del Menú"
+    "message": "Disposición del menú"
   },
   "Option_style_vertical": {
     "message": "Vertical"
@@ -615,13 +615,13 @@
     "message": "Mostrar solo icono"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efectivo solo cuando es horizontal"
+    "message": "* Efectivo solo cuando la carpeta principal es horizontal"
   },
   "Option_folder_style": {
-    "message": "Estilo del menú"
+    "message": "Disposición del menú"
   },
   "Option_folder_style_desc": {
-    "message": "Establece el estilo de visualización del menú para esta carpeta"
+    "message": "Establece la disposición del menú para esta carpeta. Seleccione 'Heredar' para usar la misma disposición que la carpeta principal."
   },
   "Option_pageRules": {
     "message": "Reglas de Página"

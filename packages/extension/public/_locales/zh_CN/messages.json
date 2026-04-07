@@ -231,7 +231,7 @@
     "message": "鼠标指针"
   },
   "Option_style": {
-    "message": "菜单样式"
+    "message": "菜单排列"
   },
   "Option_style_vertical": {
     "message": "垂直"
@@ -615,13 +615,13 @@
     "message": "仅显示图标"
   },
   "Option_onlyIcon_desc": {
-    "message": "* 仅在水平模式下有效"
+    "message": "* 仅在父文件夹为水平模式时有效"
   },
   "Option_folder_style": {
-    "message": "菜单样式"
+    "message": "菜单排列"
   },
   "Option_folder_style_desc": {
-    "message": "为此文件夹设置菜单显示样式"
+    "message": "为此文件夹设置菜单排列方式。选择'获取'可使用与父文件夹相同的排列方式。"
   },
   "Option_pageRules": {
     "message": "页面规则"

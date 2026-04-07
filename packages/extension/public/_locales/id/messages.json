@@ -231,7 +231,7 @@
     "message": "Kursor Mouse"
   },
   "Option_style": {
-    "message": "Gaya Menu"
+    "message": "Tata Letak Menu"
   },
   "Option_style_vertical": {
     "message": "Vertikal"
@@ -615,13 +615,13 @@
     "message": "Tampilkan ikon saja"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efektif hanya saat horisontal"
+    "message": "* Efektif hanya saat folder induk horisontal"
   },
   "Option_folder_style": {
-    "message": "Gaya Menu"
+    "message": "Tata Letak Menu"
   },
   "Option_folder_style_desc": {
-    "message": "Atur gaya tampilan menu untuk folder ini"
+    "message": "Atur tata letak menu untuk folder ini. Pilih 'Warisi' untuk menggunakan tata letak yang sama dengan folder induk."
   },
   "Option_pageRules": {
     "message": "Aturan Halaman"

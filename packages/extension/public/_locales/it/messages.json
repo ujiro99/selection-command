@@ -231,7 +231,7 @@
     "message": "Puntatore mouse"
   },
   "Option_style": {
-    "message": "Stile menu"
+    "message": "Layout menu"
   },
   "Option_style_vertical": {
     "message": "Verticale"
@@ -615,13 +615,13 @@
     "message": "Mostra solo icona"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efficace solo in modalità orizzontale"
+    "message": "* Efficace solo quando la cartella principale è orizzontale"
   },
   "Option_folder_style": {
-    "message": "Stile del menu"
+    "message": "Layout del menu"
   },
   "Option_folder_style_desc": {
-    "message": "Imposta lo stile di visualizzazione del menu per questa cartella"
+    "message": "Imposta il layout del menu per questa cartella. Seleziona 'Eredita' per utilizzare lo stesso layout della cartella principale."
   },
   "Option_pageRules": {
     "message": "Regole pagina"

@@ -134,7 +134,7 @@ export const FolderEditDialog = ({
                 control={form.control}
                 name="style"
                 formLabel={t("folder_style")}
-                description={t("folder_style_desc")}
+                tooltip={t("folder_style_desc")}
                 options={[
                   { value: FOLDER_STYLE.INHERIT, name: t("inherit") },
                   {
