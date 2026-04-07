@@ -45,9 +45,9 @@ export namespace PageAction {
 
   export type Click = {
     type:
-      | PAGE_ACTION_EVENT.click
-      | PAGE_ACTION_EVENT.doubleClick
-      | PAGE_ACTION_EVENT.tripleClick
+    | PAGE_ACTION_EVENT.click
+    | PAGE_ACTION_EVENT.doubleClick
+    | PAGE_ACTION_EVENT.tripleClick
     label: string
     selector: string
     selectorType: SelectorType
@@ -279,14 +279,7 @@ export const PageActionDispatcher = {
           element.focus()
           await user.type(element, value, { skipClick: true })
         } else {
-          let legacyMode = false
-          if (location.href.includes("perplexity.ai")) {
-            // Legacy mode specifically for Perplexity.ai's contenteditable field.
-            // This is because it has some special handling that breaks the usual input simulation.
-            legacyMode = true
-            await inputContentEditable(element, "\n", 0, null, legacyMode)
-          }
-          await inputContentEditable(element, value, 40, null, legacyMode)
+          await inputContentEditable(element, value, 40, null)
         }
       }
     } else {

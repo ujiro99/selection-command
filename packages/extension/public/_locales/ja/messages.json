@@ -231,7 +231,7 @@
     "message": "マウスポインタ"
   },
   "Option_style": {
-    "message": "メニュースタイル"
+    "message": "メニューの並び方"
   },
   "Option_style_vertical": {
     "message": "縦並び"
@@ -615,7 +615,13 @@
     "message": "アイコンのみ表示"
   },
   "Option_onlyIcon_desc": {
-    "message": "※ 横並びのときのみ有効"
+    "message": "※ 親フォルダが横並びのときのみ有効"
+  },
+  "Option_folder_style": {
+    "message": "メニューの並び方"
+  },
+  "Option_folder_style_desc": {
+    "message": "このフォルダのメニューの並び方を指定します。\"継承\"を選択すると親フォルダと同じになります。"
   },
   "Option_pageRules": {
     "message": "ページルール"

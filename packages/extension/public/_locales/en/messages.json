@@ -231,7 +231,7 @@
     "message": "Mouse Pointer"
   },
   "Option_style": {
-    "message": "Menu Style"
+    "message": "Menu Layout"
   },
   "Option_style_vertical": {
     "message": "Vertical"
@@ -615,7 +615,14 @@
     "message": "Display icon only"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Effective only when horizontal"
+    "message": "* Effective only when parent folder is horizontal"
+  },
+  "Option_folder_style": {
+    "message": "Menu Layout"
+  },
+  "Option_folder_style_desc": {
+    "message": "Set the menu layout for this folder. Select 'Inherit' to use the same layout as the parent folder.",
+    "description": "Also includes description of `Option_inherit`"
   },
   "Option_pageRules": {
     "message": "Page Rules"

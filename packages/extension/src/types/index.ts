@@ -5,6 +5,7 @@ import type {
   SIDE,
   ALIGN,
   STYLE,
+  FOLDER_STYLE,
   KEYBOARD,
   STARTUP_METHOD,
   SPACE_ENCODING,
@@ -117,6 +118,7 @@ export type CommandFolder = {
   iconSvg?: string
   onlyIcon?: boolean
   parentFolderId?: string
+  style?: FOLDER_STYLE
 }
 
 export type CommandVariable = {

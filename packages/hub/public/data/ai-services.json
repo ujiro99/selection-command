@@ -32,8 +32,8 @@
       "div[contenteditable='true'].ProseMirror"
     ],
     "submitSelectors": [
-      "#main-content button.Button_claude__c_hZy",
-      "#main-content button[data-state='closed']"
+      "#main-content button._claude_1abo4_159",
+      "#main-content button.can-focus:has(svg[viewBox='0 0 256 256'])"
     ]
   },
   {

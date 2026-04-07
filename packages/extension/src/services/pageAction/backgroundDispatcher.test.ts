@@ -62,7 +62,7 @@ const mockGetUILanguage = getUILanguage as any
 
 // Mock console methods
 const mockConsole = {
-  warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
+  warn: vi.spyOn(console, "warn").mockImplementation(() => { }),
 }
 
 // Mock DOM elements
@@ -928,7 +928,6 @@ describe("backgroundDispatcher", () => {
         "test text",
         1,
         null,
-        false,
       )
     })
 
@@ -973,7 +972,6 @@ describe("backgroundDispatcher", () => {
         "line1\nline2\nline3",
         1,
         null,
-        false,
       )
     })
 

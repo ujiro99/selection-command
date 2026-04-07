@@ -231,7 +231,7 @@
     "message": "माउस पॉइंटर"
   },
   "Option_style": {
-    "message": "मेनू शैली"
+    "message": "मेनू लेआउट"
   },
   "Option_style_vertical": {
     "message": "लंबवत"
@@ -615,7 +615,13 @@
     "message": "केवल आइकन दिखाएं"
   },
   "Option_onlyIcon_desc": {
-    "message": "* केवल क्षैतिज मोड में प्रभावी"
+    "message": "* केवल तब प्रभावी जब मूल फ़ोल्डर क्षैतिज हो"
+  },
+  "Option_folder_style": {
+    "message": "मेनू लेआउट"
+  },
+  "Option_folder_style_desc": {
+    "message": "इस फ़ोल्डर के लिए मेनू लेआउट सेट करें। मूल फ़ोल्डर के समान लेआउट उपयोग करने के लिए 'प्राप्त करें' चुनें।"
   },
   "Option_pageRules": {
     "message": "पेज नियम"
