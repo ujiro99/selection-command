@@ -308,7 +308,7 @@ export const DefaultCommands = [
     revision: 0,
     title: "Page Summary",
     iconUrl:
-      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
     openMode: OPEN_MODE.AI_PROMPT,
     aiPromptOption: {
       serviceId: "gemini",
@@ -326,7 +326,7 @@ export const DefaultCommands = [
     revision: 0,
     title: "YouTube Summary",
     iconUrl:
-      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
     openMode: OPEN_MODE.AI_PROMPT,
     aiPromptOption: {
       serviceId: "gemini",
@@ -345,7 +345,7 @@ export const DefaultCommands = [
     revision: 0,
     title: "Translation",
     iconUrl:
-      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
     openMode: OPEN_MODE.AI_PROMPT,
     aiPromptOption: {
       serviceId: "gemini",
@@ -364,7 +364,7 @@ export const DefaultCommands = [
     revision: 0,
     title: "Gemini",
     iconUrl:
-      "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
     openMode: OPEN_MODE.AI_PROMPT,
     aiPromptOption: {
       serviceId: "gemini",
@@ -418,7 +418,7 @@ const CMD_GEMINI_JA = {
   revision: 0,
   title: "Gemini - 日本語",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -627,7 +627,7 @@ const CMD_GEMINI_ZH = {
   revision: 0,
   title: "Gemini - 中文",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -670,7 +670,7 @@ const CMD_GEMINI_KO = {
   revision: 0,
   title: "Gemini - 한국어",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -725,7 +725,7 @@ const CMD_GEMINI_RU = {
   revision: 0,
   title: "Gemini - Русский",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -781,7 +781,7 @@ const CMD_GEMINI_DE = {
   revision: 0,
   title: "Gemini - Deutsch",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -824,7 +824,7 @@ const CMD_GEMINI_FR = {
   revision: 0,
   title: "Gemini - Français",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -894,7 +894,7 @@ const CMD_GEMINI_ES = {
   revision: 0,
   title: "Gemini - Español",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -938,7 +938,7 @@ const CMD_GEMINI_PT = {
   revision: 0,
   title: "Gemini - Português",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -996,7 +996,7 @@ const CMD_GEMINI_HI = {
   revision: 0,
   title: "Gemini - हिन्दी",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1040,7 +1040,7 @@ const CMD_GEMINI_ID = {
   revision: 0,
   title: "Gemini - Indonesia",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1083,7 +1083,7 @@ const CMD_GEMINI_MS = {
   revision: 0,
   title: "Gemini - Melayu",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1139,7 +1139,7 @@ const CMD_GEMINI_IT = {
   revision: 0,
   title: "Gemini - Italiano",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1157,7 +1157,7 @@ const CMD_PAGE_SUMMARY_JA = {
   revision: 0,
   title: "ページの概要生成",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1173,7 +1173,7 @@ const CMD_PAGE_SUMMARY_ZH = {
   revision: 0,
   title: "页面摘要",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1189,7 +1189,7 @@ const CMD_PAGE_SUMMARY_KO = {
   revision: 0,
   title: "페이지 요약",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1205,7 +1205,7 @@ const CMD_PAGE_SUMMARY_RU = {
   revision: 0,
   title: "Краткое содержание страницы",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1222,7 +1222,7 @@ const CMD_PAGE_SUMMARY_DE = {
   revision: 0,
   title: "Seitenzusammenfassung",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1239,7 +1239,7 @@ const CMD_PAGE_SUMMARY_FR = {
   revision: 0,
   title: "Résumé de la page",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1256,7 +1256,7 @@ const CMD_PAGE_SUMMARY_ES = {
   revision: 0,
   title: "Resumen de página",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1273,7 +1273,7 @@ const CMD_PAGE_SUMMARY_PT = {
   revision: 0,
   title: "Resumo da página",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1290,7 +1290,7 @@ const CMD_PAGE_SUMMARY_HI = {
   revision: 0,
   title: "पृष्ठ सारांश",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1307,7 +1307,7 @@ const CMD_PAGE_SUMMARY_ID = {
   revision: 0,
   title: "Ringkasan halaman",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1324,7 +1324,7 @@ const CMD_PAGE_SUMMARY_MS = {
   revision: 0,
   title: "Ringkasan halaman",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1341,7 +1341,7 @@ const CMD_PAGE_SUMMARY_IT = {
   revision: 0,
   title: "Riepilogo pagina",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1360,7 +1360,7 @@ const CMD_YOUTUBE_SUMMARY_JA = {
   revision: 0,
   title: "YouTubeの概要生成",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1376,7 +1376,7 @@ const CMD_YOUTUBE_SUMMARY_ZH = {
   revision: 0,
   title: "YouTube摘要",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1392,7 +1392,7 @@ const CMD_YOUTUBE_SUMMARY_KO = {
   revision: 0,
   title: "YouTube 요약",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1408,7 +1408,7 @@ const CMD_YOUTUBE_SUMMARY_RU = {
   revision: 0,
   title: "Краткое содержание YouTube",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1425,7 +1425,7 @@ const CMD_YOUTUBE_SUMMARY_DE = {
   revision: 0,
   title: "YouTube-Zusammenfassung",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1442,7 +1442,7 @@ const CMD_YOUTUBE_SUMMARY_FR = {
   revision: 0,
   title: "Résumé YouTube",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1459,7 +1459,7 @@ const CMD_YOUTUBE_SUMMARY_ES = {
   revision: 0,
   title: "Resumen de YouTube",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1476,7 +1476,7 @@ const CMD_YOUTUBE_SUMMARY_PT = {
   revision: 0,
   title: "Resumo do YouTube",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1493,7 +1493,7 @@ const CMD_YOUTUBE_SUMMARY_HI = {
   revision: 0,
   title: "YouTube सारांश",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1510,7 +1510,7 @@ const CMD_YOUTUBE_SUMMARY_ID = {
   revision: 0,
   title: "Ringkasan YouTube",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1527,7 +1527,7 @@ const CMD_YOUTUBE_SUMMARY_MS = {
   revision: 0,
   title: "Ringkasan YouTube",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1544,7 +1544,7 @@ const CMD_YOUTUBE_SUMMARY_IT = {
   revision: 0,
   title: "Riepilogo YouTube",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1563,7 +1563,7 @@ const CMD_TRANSLATE_JA = {
   revision: 0,
   title: "選択テキストの相互翻訳",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1580,7 +1580,7 @@ const CMD_TRANSLATE_ZH = {
   revision: 0,
   title: "文本互译",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1596,7 +1596,7 @@ const CMD_TRANSLATE_KO = {
   revision: 0,
   title: "텍스트 번역",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1613,7 +1613,7 @@ const CMD_TRANSLATE_RU = {
   revision: 0,
   title: "Перевод текста",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1630,7 +1630,7 @@ const CMD_TRANSLATE_DE = {
   revision: 0,
   title: "Textübersetzung",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1647,7 +1647,7 @@ const CMD_TRANSLATE_FR = {
   revision: 0,
   title: "Traduction de texte",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1664,7 +1664,7 @@ const CMD_TRANSLATE_ES = {
   revision: 0,
   title: "Traducción de texto",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1681,7 +1681,7 @@ const CMD_TRANSLATE_PT = {
   revision: 0,
   title: "Tradução de texto",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1698,7 +1698,7 @@ const CMD_TRANSLATE_HI = {
   revision: 0,
   title: "पाठ अनुवाद",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1715,7 +1715,7 @@ const CMD_TRANSLATE_ID = {
   revision: 0,
   title: "Terjemahan teks",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1732,7 +1732,7 @@ const CMD_TRANSLATE_MS = {
   revision: 0,
   title: "Terjemahan teks",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",
@@ -1749,7 +1749,7 @@ const CMD_TRANSLATE_IT = {
   revision: 0,
   title: "Traduzione testo",
   iconUrl:
-    "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+    "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
   openMode: OPEN_MODE.AI_PROMPT,
   aiPromptOption: {
     serviceId: "gemini",

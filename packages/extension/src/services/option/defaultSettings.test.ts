@@ -227,6 +227,25 @@ describe("getDefaultCommands", () => {
     }
   })
 
+  it("DS-23: all AI_PROMPT commands with serviceId 'gemini' should use the current Gemini icon URL", () => {
+    const GEMINI_ICON_URL =
+      "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg"
+    for (const locale of ALL_LOCALES) {
+      const commands = getDefaultCommands(locale)
+      const geminiAiCmds = commands.filter(
+        (c) =>
+          (c as any).openMode === "aiPrompt" &&
+          (c as any).aiPromptOption?.serviceId === "gemini",
+      )
+      for (const cmd of geminiAiCmds) {
+        expect(
+          (cmd as any).iconUrl,
+          `Gemini AI prompt command "${(cmd as any).title}" in locale "${locale}" should use the current Gemini icon URL`,
+        ).toBe(GEMINI_ICON_URL)
+      }
+    }
+  })
+
   it("DS-22: page summary and YouTube summary commands should use {{Url}} not {{SelectedText}}", () => {
     for (const locale of ALL_LOCALES) {
       const commands = getDefaultCommands(locale)
