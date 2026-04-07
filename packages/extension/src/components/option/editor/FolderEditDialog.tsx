@@ -135,6 +135,7 @@ export const FolderEditDialog = ({
                 name="style"
                 formLabel={t("folder_style")}
                 tooltip={t("folder_style_desc")}
+                fallbackValue={FOLDER_STYLE.INHERIT}
                 options={[
                   { value: FOLDER_STYLE.INHERIT, name: t("inherit") },
                   {

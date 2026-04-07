@@ -39,6 +39,7 @@ export type SelectFieldType = {
   description?: string
   labelClass?: string
   tooltip?: string
+  fallbackValue?: string
 }
 
 const renderOptionContent = (opt: SelectOptionType) => {
@@ -85,6 +86,7 @@ export const SelectField = ({
   description,
   labelClass,
   tooltip,
+  fallbackValue,
 }: SelectFieldType) => {
   const span = useRef<HTMLSpanElement>(null)
   return (
@@ -121,7 +123,10 @@ export const SelectField = ({
             )}
           </div>
           <div className="w-4/6">
-            <Select onValueChange={field.onChange} value={field.value ?? ""}>
+            <Select
+              onValueChange={field.onChange}
+              value={field.value ?? fallbackValue ?? ""}
+            >
               <FormControl>
                 <SelectTrigger className="relative">
                   <SelectValue placeholder={placeholder} />
