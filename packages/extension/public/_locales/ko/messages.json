@@ -231,7 +231,7 @@
     "message": "마우스 포인터"
   },
   "Option_style": {
-    "message": "메뉴 스타일"
+    "message": "메뉴 레이아웃"
   },
   "Option_style_vertical": {
     "message": "수직"
@@ -615,7 +615,13 @@
     "message": "아이콘만 표시"
   },
   "Option_onlyIcon_desc": {
-    "message": "* 수평 모드에서만 효과적"
+    "message": "* 상위 폴더가 수평일 때만 효과적"
+  },
+  "Option_folder_style": {
+    "message": "메뉴 레이아웃"
+  },
+  "Option_folder_style_desc": {
+    "message": "이 폴더의 메뉴 레이아웃을 설정합니다. '상속'을 선택하면 상위 폴더와 동일한 레이아웃이 적용됩니다."
   },
   "Option_pageRules": {
     "message": "페이지 규칙"

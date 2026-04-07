@@ -21,7 +21,7 @@ import { SwitchField } from "@/components/option/field/SwitchField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { isEmpty } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
-import { ROOT_FOLDER } from "@/const"
+import { ROOT_FOLDER, FOLDER_STYLE } from "@/const"
 import { folderSchema } from "@/types/schema"
 import { getDescendantFolderIds } from "@/services/option/commandUtils"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -50,6 +50,7 @@ export const FolderEditDialog = ({
       "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
     onlyIcon: true,
     parentFolderId: ROOT_FOLDER,
+    style: FOLDER_STYLE.INHERIT,
   }
 
   const form = useForm<z.infer<typeof folderSchema>>({
@@ -128,6 +129,24 @@ export const FolderEditDialog = ({
                 name="onlyIcon"
                 formLabel={t("onlyIcon")}
                 description={t("onlyIcon_desc")}
+              />
+              <SelectField
+                control={form.control}
+                name="style"
+                formLabel={t("folder_style")}
+                tooltip={t("folder_style_desc")}
+                fallbackValue={FOLDER_STYLE.INHERIT}
+                options={[
+                  { value: FOLDER_STYLE.INHERIT, name: t("inherit") },
+                  {
+                    value: FOLDER_STYLE.HORIZONTAL,
+                    name: t("style_horizontal"),
+                  },
+                  {
+                    value: FOLDER_STYLE.VERTICAL,
+                    name: t("style_vertical"),
+                  },
+                ]}
               />
             </div>
           </Form>

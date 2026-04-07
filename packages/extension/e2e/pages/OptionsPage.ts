@@ -9,6 +9,10 @@ import type { UserSettings } from "@/types"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
+export const MENU_STYLE_SETTINGS_PATH = path.join(
+  __dirname,
+  "../data/menu-layout-settings.json",
+)
 
 /**
  * Page Object for the extension's options page.
@@ -57,6 +61,7 @@ export class OptionsPage {
       await this.open()
     }
     const page = this.page!
+    const filePath = settingsPath ?? TEST_SETTINGS_PATH
 
     // Open the import dialog
     await page.locator(`[data-testid="${TEST_IDS.importButton}"]`).click()
@@ -65,7 +70,7 @@ export class OptionsPage {
     const fileInput = page.locator(
       `[data-testid="${TEST_IDS.importFileInput}"]`,
     )
-    await fileInput.setInputFiles(settingsPath)
+    await fileInput.setInputFiles(filePath)
 
     // Wait for the file to be read and OK button to be enabled
     const okButton = page.locator(`[data-testid="${TEST_IDS.optionDialogOk}"]`)

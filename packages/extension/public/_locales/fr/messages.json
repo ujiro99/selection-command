@@ -231,7 +231,7 @@
     "message": "Pointeur de la Souris"
   },
   "Option_style": {
-    "message": "Style du Menu"
+    "message": "Disposition du menu"
   },
   "Option_style_vertical": {
     "message": "Vertical"
@@ -615,7 +615,13 @@
     "message": "Afficher uniquement l'icône"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efficace uniquement en mode horizontal"
+    "message": "* Efficace uniquement lorsque le dossier parent est horizontal"
+  },
+  "Option_folder_style": {
+    "message": "Disposition du menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Définit la disposition du menu pour ce dossier. Sélectionnez 'Hériter' pour utiliser la même disposition que le dossier parent."
   },
   "Option_pageRules": {
     "message": "Règles de Page"

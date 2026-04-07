@@ -231,7 +231,7 @@
     "message": "Mauszeiger"
   },
   "Option_style": {
-    "message": "Menü-Stil"
+    "message": "Menü-Layout"
   },
   "Option_style_vertical": {
     "message": "Vertikal"
@@ -615,7 +615,13 @@
     "message": "Nur Symbol anzeigen"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Nur im horizontalen Modus wirksam"
+    "message": "* Nur wirksam, wenn der übergeordnete Ordner horizontal ist"
+  },
+  "Option_folder_style": {
+    "message": "Menü-Layout"
+  },
+  "Option_folder_style_desc": {
+    "message": "Legt das Menü-Layout für diesen Ordner fest. Wählen Sie 'Erben', um dasselbe Layout wie der übergeordnete Ordner zu verwenden."
   },
   "Option_pageRules": {
     "message": "Seitenregeln"

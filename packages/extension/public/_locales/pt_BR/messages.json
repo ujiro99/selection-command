@@ -231,7 +231,7 @@
     "message": "Ponteiro do Mouse"
   },
   "Option_style": {
-    "message": "Estilo do Menu"
+    "message": "Layout do menu"
   },
   "Option_style_vertical": {
     "message": "Vertical"
@@ -615,7 +615,13 @@
     "message": "Exibir apenas ícone"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efetivo apenas quando horizontal"
+    "message": "* Efetivo apenas quando a pasta pai é horizontal"
+  },
+  "Option_folder_style": {
+    "message": "Layout do menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Defina o layout do menu para esta pasta. Selecione 'Herdar' para usar o mesmo layout da pasta pai."
   },
   "Option_pageRules": {
     "message": "Regras de Página"

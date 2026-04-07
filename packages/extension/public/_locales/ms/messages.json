@@ -231,7 +231,7 @@
     "message": "Penunjuk Tetikus"
   },
   "Option_style": {
-    "message": "Gaya Menu"
+    "message": "Tataletak Menu"
   },
   "Option_style_vertical": {
     "message": "Menegak"
@@ -615,7 +615,13 @@
     "message": "Paparkan ikon sahaja"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Berkesan hanya apabila mendatar"
+    "message": "* Berkesan hanya apabila folder induk mendatar"
+  },
+  "Option_folder_style": {
+    "message": "Tataletak Menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Tetapkan tataletak menu untuk folder ini. Pilih 'Warisi' untuk menggunakan tataletak yang sama dengan folder induk."
   },
   "Option_pageRules": {
     "message": "Peraturan Halaman"

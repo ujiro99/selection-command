@@ -224,6 +224,12 @@ export enum STYLE {
   VERTICAL = "vertical",
 }
 
+export enum FOLDER_STYLE {
+  INHERIT = "inherit",
+  HORIZONTAL = "horizontal",
+  VERTICAL = "vertical",
+}
+
 export enum SPACE_ENCODING {
   PLUS = "plus",
   PERCENT = "percent",
