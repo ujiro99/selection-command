@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest"
 import { DefaultCommands, getDefaultCommands } from "./defaultSettings"
 import { isLinkCommand } from "@/lib/utils"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
+import { getAiServicesFallback } from "@/services/aiPrompt"
 
 const SYM_SELECTED_TEXT = toInsertTemplate(INSERT.SELECTED_TEXT)
 const SYM_URL = toInsertTemplate(INSERT.URL)
@@ -228,8 +229,9 @@ describe("getDefaultCommands", () => {
   })
 
   it("DS-23: all AI_PROMPT commands with serviceId 'gemini' should use the current Gemini icon URL", () => {
-    const GEMINI_ICON_URL =
-      "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg"
+    const geminiService = getAiServicesFallback().find((s) => s.id === "gemini")
+    expect(geminiService, "Gemini service must exist in ai-services.json").toBeDefined()
+    const expectedIconUrl = geminiService!.faviconUrl
     for (const locale of ALL_LOCALES) {
       const commands = getDefaultCommands(locale)
       const geminiAiCmds = commands.filter(
@@ -241,7 +243,7 @@ describe("getDefaultCommands", () => {
         expect(
           (cmd as any).iconUrl,
           `Gemini AI prompt command "${(cmd as any).title}" in locale "${locale}" should use the current Gemini icon URL`,
-        ).toBe(GEMINI_ICON_URL)
+        ).toBe(expectedIconUrl)
       }
     }
   })
