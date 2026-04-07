@@ -2,6 +2,7 @@ import { test, expect } from "./fixtures"
 import { TestPage } from "./pages/TestPage"
 import { OptionsPage, MENU_STYLE_SETTINGS_PATH } from "./pages/OptionsPage"
 import { TEST_IDS } from "@/testIds"
+import { STYLE, FOLDER_STYLE } from "@/const"
 
 /**
  * The test folder defined in menu-style-settings.json.
@@ -32,7 +33,7 @@ test.describe("Menu Style per Folder", () => {
     await optionsPage.close()
 
     // Override global style to horizontal (settings already imported with "horizontal")
-    await setUserSettings({ style: "horizontal" })
+    await setUserSettings({ style: STYLE.HORIZONTAL })
 
     const testPage = new TestPage(page)
     await testPage.open()
@@ -60,7 +61,7 @@ test.describe("Menu Style per Folder", () => {
     await optionsPage.importSettings(MENU_STYLE_SETTINGS_PATH)
     await optionsPage.close()
 
-    await setUserSettings({ style: "vertical" })
+    await setUserSettings({ style: STYLE.VERTICAL })
 
     const testPage = new TestPage(page)
     await testPage.open()
@@ -90,7 +91,7 @@ test.describe("Menu Style per Folder", () => {
 
     // Set global to horizontal, folder to vertical
     await setUserSettings({
-      style: "horizontal",
+      style: STYLE.HORIZONTAL,
       folders: [
         {
           id: TEST_FOLDER_ID,
@@ -98,7 +99,7 @@ test.describe("Menu Style per Folder", () => {
           iconUrl:
             "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
           onlyIcon: false,
-          style: "vertical",
+          style: FOLDER_STYLE.VERTICAL,
         },
       ],
     })
@@ -137,7 +138,7 @@ test.describe("Menu Style per Folder", () => {
     await optionsPage.close()
 
     await setUserSettings({
-      style: "vertical",
+      style: STYLE.VERTICAL,
       folders: [
         {
           id: TEST_FOLDER_ID,
@@ -145,7 +146,7 @@ test.describe("Menu Style per Folder", () => {
           iconUrl:
             "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
           onlyIcon: false,
-          style: "horizontal",
+          style: FOLDER_STYLE.HORIZONTAL,
         },
       ],
     })
@@ -182,7 +183,7 @@ test.describe("Menu Style per Folder", () => {
     await optionsPage.close()
 
     await setUserSettings({
-      style: "vertical",
+      style: STYLE.VERTICAL,
       folders: [
         {
           id: TEST_FOLDER_ID,
@@ -190,7 +191,7 @@ test.describe("Menu Style per Folder", () => {
           iconUrl:
             "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
           onlyIcon: false,
-          style: "inherit",
+          style: FOLDER_STYLE.INHERIT,
         },
       ],
     })
@@ -230,9 +231,7 @@ async function openFolderTrigger(
       if (!shadow) return false
 
       // Find the folder trigger button by title text
-      const menuBar = shadow.querySelector(
-        `[data-testid="${menuBarTestId}"]`,
-      )
+      const menuBar = shadow.querySelector(`[data-testid="${menuBarTestId}"]`)
       if (!menuBar) return false
 
       const buttons = Array.from(menuBar.querySelectorAll("button"))
