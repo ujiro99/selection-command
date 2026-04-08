@@ -231,7 +231,7 @@
     "message": "鼠标指针"
   },
   "Option_style": {
-    "message": "菜单样式"
+    "message": "菜单排列"
   },
   "Option_style_vertical": {
     "message": "垂直"
@@ -486,7 +486,10 @@
     "message": "提示词"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "提示词模板。使用插入菜单添加变量（选中文本、URL、剪贴板）。"
+    "message": "这是要输入的提示模板。您可以从文本插入菜单中添加变量。"
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・浏览器语言代码示例：en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "在此输入您的提示词..."
@@ -615,7 +618,13 @@
     "message": "仅显示图标"
   },
   "Option_onlyIcon_desc": {
-    "message": "* 仅在水平模式下有效"
+    "message": "* 仅在父文件夹为水平模式时有效"
+  },
+  "Option_folder_style": {
+    "message": "菜单排列"
+  },
+  "Option_folder_style_desc": {
+    "message": "为此文件夹设置菜单排列方式。选择'获取'可使用与父文件夹相同的排列方式。"
   },
   "Option_pageRules": {
     "message": "页面规则"
@@ -797,6 +806,10 @@
     "message": "将从剪贴板插入文本",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "将插入浏览器语言代码",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "插入文本"
   },
@@ -808,6 +821,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "剪贴板"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "浏览器语言"
   },
   "PageAction_InputEditor_title": {
     "message": "编辑内容"

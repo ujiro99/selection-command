@@ -231,7 +231,7 @@
     "message": "Mouse Pointer"
   },
   "Option_style": {
-    "message": "Menu Style"
+    "message": "Menu Layout"
   },
   "Option_style_vertical": {
     "message": "Vertical"
@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Prompt template. Use the insert menu to add variables (selected text, URL, clipboard)."
+    "message": "This is the prompt template to enter. You can add variables from the text insert menu."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Browser language code example: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Enter your prompt here..."
@@ -615,7 +618,14 @@
     "message": "Display icon only"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Effective only when horizontal"
+    "message": "* Effective only when parent folder is horizontal"
+  },
+  "Option_folder_style": {
+    "message": "Menu Layout"
+  },
+  "Option_folder_style_desc": {
+    "message": "Set the menu layout for this folder. Select 'Inherit' to use the same layout as the parent folder.",
+    "description": "Also includes description of `Option_inherit`"
   },
   "Option_pageRules": {
     "message": "Page Rules"
@@ -798,6 +808,10 @@
     "message": "The clipboard text  will be inserted",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Your browser language code will be inserted",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insert Text"
   },
@@ -809,6 +823,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Clipboard"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Browser language"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit the content"

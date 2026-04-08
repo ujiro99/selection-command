@@ -7,6 +7,7 @@ import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import { PageAction, ActionReturn } from "./dispatcher"
 import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
+import { getUILanguage } from "@/services/i18n"
 
 /**
  * Find element by selector type with unified logic.
@@ -195,6 +196,7 @@ export const BackgroundPageActionDispatcher = {
         [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
         [InsertSymbol[INSERT.URL]]: srcUrl,
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
+        [InsertSymbol[INSERT.LANG]]: getUILanguage(),
         // Add user variables
         ...(userVariables?.reduce(
           (acc, variable) => {

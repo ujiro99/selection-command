@@ -231,7 +231,7 @@
     "message": "Pointeur de la Souris"
   },
   "Option_style": {
-    "message": "Style du Menu"
+    "message": "Disposition du menu"
   },
   "Option_style_vertical": {
     "message": "Vertical"
@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Modèle de prompt. Utilisez le menu d'insertion pour ajouter des variables (texte sélectionné, URL, presse-papiers)."
+    "message": "Ceci est le modèle de message à saisir. Vous pouvez ajouter des variables depuis le menu d'insertion de texte."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Exemple de code de langue du navigateur : en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Saisissez votre prompt ici..."
@@ -615,7 +618,13 @@
     "message": "Afficher uniquement l'icône"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efficace uniquement en mode horizontal"
+    "message": "* Efficace uniquement lorsque le dossier parent est horizontal"
+  },
+  "Option_folder_style": {
+    "message": "Disposition du menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Définit la disposition du menu pour ce dossier. Sélectionnez 'Hériter' pour utiliser la même disposition que le dossier parent."
   },
   "Option_pageRules": {
     "message": "Règles de Page"
@@ -797,6 +806,10 @@
     "message": "Le texte du presse-papiers sera inséré",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Le code de langue de votre navigateur sera inséré",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insérer du Texte"
   },
@@ -808,6 +821,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Presse-papiers"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Langue du navigateur"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifier le contenu"

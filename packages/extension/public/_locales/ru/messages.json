@@ -231,7 +231,7 @@
     "message": "Указатель мыши"
   },
   "Option_style": {
-    "message": "Стиль меню"
+    "message": "Расположение меню"
   },
   "Option_style_vertical": {
     "message": "Вертикальный"
@@ -486,7 +486,10 @@
     "message": "Промпт"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Шаблон промпта. Используйте меню вставки для добавления переменных (выбранный текст, URL, буфер обмена)."
+    "message": "Это шаблон вводимого запроса. Вы можете добавлять переменные из меню вставки текста."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Пример языкового кода браузера: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Введите ваш промпт здесь..."
@@ -615,7 +618,13 @@
     "message": "Показывать только иконку"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Эффективно только в горизонтальном режиме"
+    "message": "* Эффективно только когда родительская папка горизонтальна"
+  },
+  "Option_folder_style": {
+    "message": "Расположение меню"
+  },
+  "Option_folder_style_desc": {
+    "message": "Установите расположение меню для этой папки. Выберите 'Наследовать', чтобы использовать то же расположение, что и в родительской папке."
   },
   "Option_pageRules": {
     "message": "Правила страницы"
@@ -797,6 +806,10 @@
     "message": "Будет вставлен текст из буфера обмена",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Будет вставлен языковой код вашего браузера",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Вставить текст"
   },
@@ -808,6 +821,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Буфер обмена"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Язык браузера"
   },
   "PageAction_InputEditor_title": {
     "message": "Редактировать содержимое"

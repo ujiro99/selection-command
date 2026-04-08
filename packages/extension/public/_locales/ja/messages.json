@@ -231,7 +231,7 @@
     "message": "マウスポインタ"
   },
   "Option_style": {
-    "message": "メニュースタイル"
+    "message": "メニューの並び方"
   },
   "Option_style_vertical": {
     "message": "縦並び"
@@ -486,7 +486,10 @@
     "message": "プロンプト"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "プロンプトのテンプレート。挿入メニューで変数（選択テキスト、URL、クリップボード）を追加できます。"
+    "message": "入力するプロンプトのテンプレートです。テキスト挿入メニューから変数を追加できます。"
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・ブラウザ言語コードの例: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "プロンプトをここに入力..."
@@ -615,7 +618,13 @@
     "message": "アイコンのみ表示"
   },
   "Option_onlyIcon_desc": {
-    "message": "※ 横並びのときのみ有効"
+    "message": "※ 親フォルダが横並びのときのみ有効"
+  },
+  "Option_folder_style": {
+    "message": "メニューの並び方"
+  },
+  "Option_folder_style_desc": {
+    "message": "このフォルダのメニューの並び方を指定します。\"継承\"を選択すると親フォルダと同じになります。"
   },
   "Option_pageRules": {
     "message": "ページルール"
@@ -794,6 +803,10 @@
   "PageAction_InputMenu_mark_clipboard": {
     "message": "クリップボードから挿入されます"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "ブラウザ言語コードが挿入されます",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "テキスト挿入"
   },
@@ -805,6 +818,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "クリップボード"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "ブラウザ言語コード"
   },
   "PageAction_InputEditor_title": {
     "message": "Inputアクションの編集"

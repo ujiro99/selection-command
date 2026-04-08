@@ -231,7 +231,7 @@
     "message": "Puntatore mouse"
   },
   "Option_style": {
-    "message": "Stile menu"
+    "message": "Layout menu"
   },
   "Option_style_vertical": {
     "message": "Verticale"
@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Modello prompt. Usa il menu di inserimento per aggiungere variabili (testo selezionato, URL, appunti)."
+    "message": "Questo è il modello del prompt da inserire. Puoi aggiungere variabili dal menu di inserimento testo."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Esempio di codice lingua del browser: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Inserisci il tuo prompt qui..."
@@ -615,7 +618,13 @@
     "message": "Mostra solo icona"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efficace solo in modalità orizzontale"
+    "message": "* Efficace solo quando la cartella principale è orizzontale"
+  },
+  "Option_folder_style": {
+    "message": "Layout del menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Imposta il layout del menu per questa cartella. Seleziona 'Eredita' per utilizzare lo stesso layout della cartella principale."
   },
   "Option_pageRules": {
     "message": "Regole pagina"
@@ -797,6 +806,10 @@
     "message": "Il testo negli appunti verrà inserito",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Verrà inserito il codice lingua del tuo browser",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserisci testo"
   },
@@ -808,6 +821,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Appunti"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Lingua del browser"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifica contenuto"

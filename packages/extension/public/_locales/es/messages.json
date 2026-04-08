@@ -231,7 +231,7 @@
     "message": "Puntero del Ratón"
   },
   "Option_style": {
-    "message": "Estilo del Menú"
+    "message": "Disposición del menú"
   },
   "Option_style_vertical": {
     "message": "Vertical"
@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Plantilla de prompt. Usa el menú de inserción para agregar variables (texto seleccionado, URL, portapapeles)."
+    "message": "Esta es la plantilla del mensaje a introducir. Puede añadir variables desde el menú de inserción de texto."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Ejemplo de código de idioma del navegador: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Ingresa tu prompt aquí..."
@@ -615,7 +618,13 @@
     "message": "Mostrar solo icono"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Efectivo solo cuando es horizontal"
+    "message": "* Efectivo solo cuando la carpeta principal es horizontal"
+  },
+  "Option_folder_style": {
+    "message": "Disposición del menú"
+  },
+  "Option_folder_style_desc": {
+    "message": "Establece la disposición del menú para esta carpeta. Seleccione 'Heredar' para usar la misma disposición que la carpeta principal."
   },
   "Option_pageRules": {
     "message": "Reglas de Página"
@@ -797,6 +806,10 @@
     "message": "Se insertará el texto del portapapeles",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Se insertará el código de idioma de su navegador",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insertar Texto"
   },
@@ -808,6 +821,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Portapapeles"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Idioma del navegador"
   },
   "PageAction_InputEditor_title": {
     "message": "Editar el contenido"

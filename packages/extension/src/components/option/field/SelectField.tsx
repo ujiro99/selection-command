@@ -1,3 +1,5 @@
+import { useRef } from "react"
+import { cn } from "@/lib/utils"
 import {
   FormControl,
   FormField,
@@ -15,6 +17,8 @@ import {
 } from "@/components/ui/select"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { TEST_IDS } from "@/testIds"
+import { Info } from "lucide-react"
+import { Tooltip } from "@/components/Tooltip"
 
 export type SelectOptionType = {
   name: string
@@ -24,6 +28,7 @@ export type SelectOptionType = {
   iconSvg?: string
   level?: number
   isGroup?: boolean
+  tooltip?: string
 }
 
 export type SelectFieldType = {
@@ -34,6 +39,8 @@ export type SelectFieldType = {
   placeholder?: string
   description?: string
   labelClass?: string
+  tooltip?: string
+  fallbackValue?: string
 }
 
 const renderOptionContent = (opt: SelectOptionType) => {
@@ -80,7 +87,10 @@ export const SelectField = ({
   placeholder,
   description,
   labelClass,
+  tooltip,
+  fallbackValue,
 }: SelectFieldType) => {
+  const span = useRef<HTMLSpanElement>(null)
   return (
     <FormField
       control={control}
@@ -88,11 +98,37 @@ export const SelectField = ({
       render={({ field }) => (
         <FormItem className="flex items-center gap-1">
           <div className="w-2/6">
-            <FormLabel className={labelClass}>{formLabel}</FormLabel>
+            <FormLabel
+              className={cn(
+                tooltip && "flex items-center gap-1 mr-1",
+                labelClass,
+              )}
+            >
+              <span>{formLabel}</span>
+              {tooltip && (
+                <span
+                  ref={span}
+                  className="cursor-pointer p-1 rounded hover:bg-gray-100 transition-background"
+                >
+                  <Info className="size-4 text-foreground/60" />
+                </span>
+              )}
+            </FormLabel>
             {description && <FormDescription>{description}</FormDescription>}
+            {tooltip && (
+              <Tooltip
+                positionElm={span.current}
+                text={tooltip}
+                className="max-w-64 whitespace-pre-wrap"
+                delay={200}
+              />
+            )}
           </div>
           <div className="w-4/6">
-            <Select onValueChange={field.onChange} value={field.value ?? ""}>
+            <Select
+              onValueChange={field.onChange}
+              value={field.value ?? fallbackValue ?? ""}
+            >
               <FormControl>
                 <SelectTrigger
                   className="relative"

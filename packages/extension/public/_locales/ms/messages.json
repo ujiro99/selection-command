@@ -231,7 +231,7 @@
     "message": "Penunjuk Tetikus"
   },
   "Option_style": {
-    "message": "Gaya Menu"
+    "message": "Tataletak Menu"
   },
   "Option_style_vertical": {
     "message": "Menegak"
@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Templat prompt. Gunakan menu sisipan untuk menambah pemboleh ubah (teks dipilih, URL, papan klip)."
+    "message": "Ini ialah templat gesaan yang hendak dimasukkan. Anda boleh menambah pemboleh ubah dari menu sisipan teks."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Contoh kod bahasa pelayar: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Masukkan prompt anda di sini..."
@@ -615,7 +618,13 @@
     "message": "Paparkan ikon sahaja"
   },
   "Option_onlyIcon_desc": {
-    "message": "* Berkesan hanya apabila mendatar"
+    "message": "* Berkesan hanya apabila folder induk mendatar"
+  },
+  "Option_folder_style": {
+    "message": "Tataletak Menu"
+  },
+  "Option_folder_style_desc": {
+    "message": "Tetapkan tataletak menu untuk folder ini. Pilih 'Warisi' untuk menggunakan tataletak yang sama dengan folder induk."
   },
   "Option_pageRules": {
     "message": "Peraturan Halaman"
@@ -797,6 +806,10 @@
     "message": "Teks papan klip akan dimasukkan",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Kod bahasa pelayar anda akan disisipkan",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -808,6 +821,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Papan Klip"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Bahasa pelayar"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit kandungan"

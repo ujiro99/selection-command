@@ -10,6 +10,7 @@ export function convReadableKeysToSymbols(value: string): string {
     [t(LocaleKey + INSERT.SELECTED_TEXT)]: InsertSymbol[INSERT.SELECTED_TEXT],
     [t(LocaleKey + INSERT.URL)]: InsertSymbol[INSERT.URL],
     [t(LocaleKey + INSERT.CLIPBOARD)]: InsertSymbol[INSERT.CLIPBOARD],
+    [t(LocaleKey + INSERT.LANG)]: InsertSymbol[INSERT.LANG],
   }
   Object.entries(symbols).forEach(([key, val]) => {
     value = value!.replace(new RegExp(key, "g"), val)
@@ -22,6 +23,7 @@ export function convSymbolsToReadableKeys(value: string): string {
     [InsertSymbol[INSERT.SELECTED_TEXT]]: t(LocaleKey + INSERT.SELECTED_TEXT),
     [InsertSymbol[INSERT.URL]]: t(LocaleKey + INSERT.URL),
     [InsertSymbol[INSERT.CLIPBOARD]]: t(LocaleKey + INSERT.CLIPBOARD),
+    [InsertSymbol[INSERT.LANG]]: t(LocaleKey + INSERT.LANG),
   }
   Object.entries(symbols).forEach(([key, val]) => {
     value = value!.replace(new RegExp(key, "g"), val)

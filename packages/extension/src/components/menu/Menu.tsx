@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/menubar"
 import { ScrollAreaConditional } from "@/components/ui/scroll-area"
 
-import { STYLE, SIDE } from "@/const"
+import { STYLE, SIDE, FOLDER_STYLE } from "@/const"
 import { TEST_IDS } from "@/testIds"
 import { MenuItem } from "./MenuItem"
 import { ChevronRight } from "lucide-react"
@@ -119,6 +119,14 @@ const MenuFolder = (props: {
   const activeFolder = triggeredFolder || hoveredFolder
   const { inTransition } = React.useContext(popupContext)
 
+  // Resolve the effective style for this folder's content.
+  // INHERIT: use parent style (isHorizontal), otherwise use folder's explicit style setting.
+  const folderStyleSetting = folder.style ?? FOLDER_STYLE.INHERIT
+  const isHorizontalContent =
+    folderStyleSetting === FOLDER_STYLE.INHERIT
+      ? isHorizontal
+      : folderStyleSetting === FOLDER_STYLE.HORIZONTAL
+
   const menuSide = isHorizontal
     ? props.side === SIDE.bottom
       ? SIDE.bottom
@@ -189,7 +197,7 @@ const MenuFolder = (props: {
   }, [folder.id])
 
   const baseSize = anchorRef.current?.getBoundingClientRect().height ?? 0
-  const menubarStyle = isHorizontal
+  const menubarStyle = isHorizontalContent
     ? {
       maxWidth:
         baseSize * 10 /* buttons */ +
@@ -232,25 +240,25 @@ const MenuFolder = (props: {
       </MenubarTrigger>
       <MenubarContent
         side={menuSide}
-        sideOffset={isHorizontal ? 2 : -2}
-        className={cn({ flex: isHorizontal })}
+        sideOffset={isHorizontal ? 2 : -2} // offset based on trigger button position in parent menu
+        className={cn({ flex: isHorizontalContent })}
         ref={contentRef}
         onCloseAutoFocus={(e) => e.preventDefault()}
         {...onHover(props.onHoverContent, folder.id)}
       >
-        <ScrollAreaConditional scrollEnabled={!isHorizontal}>
+        <ScrollAreaConditional scrollEnabled={!isHorizontalContent}>
           <Menubar
             value={activeFolder}
             style={menubarStyle}
             className={cn({
-              [css.menuVertical]: !isHorizontal,
-              "flex-wrap": isHorizontal,
+              [css.menuVertical]: !isHorizontalContent,
+              "flex-wrap": isHorizontalContent,
             })}
           >
             {children?.map((child) => (
               <MenuTreeNode
                 node={child}
-                isHorizontal={isHorizontal}
+                isHorizontal={isHorizontalContent}
                 side={props.side}
                 menuRef={props.menuRef}
                 onHoverTrigger={setTriggeredFolder}
