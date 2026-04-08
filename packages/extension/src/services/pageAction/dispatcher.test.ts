@@ -73,7 +73,7 @@ const mockUserEventSetup = (userEvent as any).setup as ReturnType<typeof vi.fn>
 
 // Mock console methods
 const mockConsole = {
-  warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
+  warn: vi.spyOn(console, "warn").mockImplementation(() => { }),
 }
 
 // Mock DOM elements
@@ -291,7 +291,6 @@ describe("PageActionDispatcher", () => {
         "test text",
         40,
         null,
-        false,
       )
     })
 
