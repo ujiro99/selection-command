@@ -14,6 +14,7 @@ import {
   PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from "@/const"
 import type { UserVariable } from "@/types"
+import { getUILanguage } from "@/services/i18n"
 
 export namespace PageAction {
   export type Parameter =
@@ -233,6 +234,7 @@ export const PageActionDispatcher = {
         [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
         [InsertSymbol[INSERT.URL]]: srcUrl,
         [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
+        [InsertSymbol[INSERT.LANG]]: getUILanguage(),
         // Add user variables
         ...(userVariables?.reduce(
           (acc, variable) => {

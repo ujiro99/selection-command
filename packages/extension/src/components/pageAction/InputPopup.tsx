@@ -3,6 +3,7 @@ import {
   TextCursorInput,
   Link2,
   Clipboard,
+  Languages,
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
@@ -300,6 +301,10 @@ export function InputMenu(props: MenuProps): JSX.Element {
           <InputMenuItem onClick={onClickItem} value={INSERT.CLIPBOARD}>
             <Clipboard size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_clipboard")}
+          </InputMenuItem>
+          <InputMenuItem onClick={onClickItem} value={INSERT.LANG}>
+            <Languages size={16} className="mr-2 stroke-gray-600" />
+            {t("PageAction_InputMenu_lang")}
           </InputMenuItem>
         </MenubarContent>
       </MenubarMenu>

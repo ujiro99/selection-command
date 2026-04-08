@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Template prompt. Gunakan menu sisipan untuk menambahkan variabel (teks pilihan, URL, clipboard)."
+    "message": "Ini adalah template prompt yang dimasukkan. Anda dapat menambahkan variabel dari menu penyisipan teks."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Contoh kode bahasa browser: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Masukkan prompt Anda di sini..."
@@ -803,6 +806,10 @@
     "message": "Teks papan klip akan dimasukkan",
     "description": "for INSERT.CLIPBOARD"
   },
+  "PageAction_InputMenu_mark_lang": {
+    "message": "Kode bahasa browser Anda akan disisipkan",
+    "description": "for INSERT.LANG"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -814,6 +821,9 @@
   },
   "PageAction_InputMenu_clipboard": {
     "message": "Papan Klip"
+  },
+  "PageAction_InputMenu_lang": {
+    "message": "Bahasa browser"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit konten"

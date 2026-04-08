@@ -76,6 +76,9 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
             <div className="w-2/6">
               <FormLabel>{t("aiPrompt_prompt")}</FormLabel>
               <FormDescription>{t("aiPrompt_prompt_desc")}</FormDescription>
+              <FormDescription className="mt-1">
+                {t("aiPrompt_prompt_desc_2")}
+              </FormDescription>
             </div>
             <div className="w-4/6 relative">
               <InputMenu
