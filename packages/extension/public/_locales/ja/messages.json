@@ -486,7 +486,10 @@
     "message": "プロンプト"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "プロンプトのテンプレート。挿入メニューで変数（選択テキスト、URL、クリップボード、ブラウザ言語）を追加できます。"
+    "message": "入力するプロンプトのテンプレートです。テキスト挿入メニューから変数を追加できます。"
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・ブラウザ言語コードの例: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "プロンプトをここに入力..."
@@ -801,7 +804,7 @@
     "message": "クリップボードから挿入されます"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "ブラウザの言語コードが挿入されます。(例：en, es, zh_CN)",
+    "message": "ブラウザ言語コードが挿入されます",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

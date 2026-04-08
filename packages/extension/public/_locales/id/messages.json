@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Template prompt. Gunakan menu sisipkan untuk menambahkan variabel (teks terpilih, URL, clipboard, bahasa browser)."
+    "message": "Ini adalah template prompt yang dimasukkan. Anda dapat menambahkan variabel dari menu penyisipan teks."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Contoh kode bahasa browser: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Masukkan prompt Anda di sini..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "Bahasa browser Anda akan disisipkan",
+    "message": "Kode bahasa browser Anda akan disisipkan",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

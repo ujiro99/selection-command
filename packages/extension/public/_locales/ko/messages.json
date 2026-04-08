@@ -486,7 +486,10 @@
     "message": "프롬프트"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "프롬프트 템플릿. 삽입 메뉴를 사용하여 변수(선택한 텍스트, URL, 클립보드, 브라우저 언어)를 추가하세요."
+    "message": "입력할 프롬프트 템플릿입니다. 텍스트 삽입 메뉴에서 변수를 추가할 수 있습니다."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・브라우저 언어 코드 예시: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "여기에 프롬프트를 입력하세요..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "브라우저 언어가 삽입됩니다",
+    "message": "브라우저 언어 코드가 삽입됩니다",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

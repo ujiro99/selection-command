@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Eingabeaufforderungsvorlage. Verwenden Sie das Einfügemenü, um Variablen hinzuzufügen (ausgewählter Text, URL, Zwischenablage, Browsersprache)."
+    "message": "Dies ist die einzugebende Promptvorlage. Sie können Variablen über das Texteinfügemenü hinzufügen."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Beispiel für Browser-Sprachcode: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Prompt hier eingeben..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "Ihre Browsersprache wird eingefügt",
+    "message": "Ihr Browser-Sprachcode wird eingefügt",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

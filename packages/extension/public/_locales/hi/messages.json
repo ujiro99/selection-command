@@ -486,7 +486,10 @@
     "message": "प्रॉम्प्ट"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "प्रॉम्प्ट टेम्पलेट। चयनित टेक्स्ट, URL, क्लिपबोर्ड, ब्राउज़र भाषा जैसे चर जोड़ने के लिए इन्सर्ट मेनू का उपयोग करें।"
+    "message": "यह दर्ज करने के लिए प्रॉम्प्ट टेम्पलेट है। आप टेक्स्ट इन्सर्ट मेनू से चर जोड़ सकते हैं।"
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・ब्राउज़र भाषा कोड उदाहरण: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "यहाँ अपना प्रॉम्प्ट दर्ज करें..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "आपकी ब्राउज़र भाषा डाली जाएगी",
+    "message": "आपके ब्राउज़र का भाषा कोड डाला जाएगा",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

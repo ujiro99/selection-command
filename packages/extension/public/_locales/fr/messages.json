@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Modèle d'invite. Utilisez le menu d'insertion pour ajouter des variables (texte sélectionné, URL, presse-papiers, langue du navigateur)."
+    "message": "Ceci est le modèle de message à saisir. Vous pouvez ajouter des variables depuis le menu d'insertion de texte."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Exemple de code de langue du navigateur : en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Saisissez votre prompt ici..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "La langue de votre navigateur sera insérée",
+    "message": "Le code de langue de votre navigateur sera inséré",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

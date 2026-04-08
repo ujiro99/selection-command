@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Templat gesaan. Gunakan menu sisip untuk menambah pembolehubah (teks terpilih, URL, papan keratan, bahasa pelayar)."
+    "message": "Ini ialah templat gesaan yang hendak dimasukkan. Anda boleh menambah pemboleh ubah dari menu sisipan teks."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Contoh kod bahasa pelayar: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Masukkan prompt anda di sini..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "Bahasa pelayar anda akan disisipkan",
+    "message": "Kod bahasa pelayar anda akan disisipkan",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

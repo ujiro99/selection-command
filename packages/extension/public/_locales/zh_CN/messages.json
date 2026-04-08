@@ -486,7 +486,10 @@
     "message": "提示词"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "提示模板。使用插入菜单添加变量（选定文本、URL、剪贴板、浏览器语言）。"
+    "message": "这是要输入的提示模板。您可以从文本插入菜单中添加变量。"
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・浏览器语言代码示例：en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "在此输入您的提示词..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "您的浏览器语言将被插入",
+    "message": "将插入浏览器语言代码",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

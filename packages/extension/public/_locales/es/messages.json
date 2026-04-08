@@ -486,7 +486,10 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Plantilla de indicaciones. Use el menú de inserción para agregar variables (texto seleccionado, URL, portapapeles, idioma del navegador)."
+    "message": "Esta es la plantilla del mensaje a introducir. Puede añadir variables desde el menú de inserción de texto."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Ejemplo de código de idioma del navegador: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Ingresa tu prompt aquí..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "Se insertará el idioma de su navegador",
+    "message": "Se insertará el código de idioma de su navegador",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {

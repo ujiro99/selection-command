@@ -486,7 +486,10 @@
     "message": "Промпт"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Шаблон подсказки. Используйте меню вставки для добавления переменных (выделенный текст, URL, буфер обмена, язык браузера)."
+    "message": "Это шаблон вводимого запроса. Вы можете добавлять переменные из меню вставки текста."
+  },
+  "Option_aiPrompt_prompt_desc_2": {
+    "message": "・Пример языкового кода браузера: en, es, zh_CN"
   },
   "Option_aiPrompt_prompt_placeholder": {
     "message": "Введите ваш промпт здесь..."
@@ -804,7 +807,7 @@
     "description": "for INSERT.CLIPBOARD"
   },
   "PageAction_InputMenu_mark_lang": {
-    "message": "Будет вставлен язык вашего браузера",
+    "message": "Будет вставлен языковой код вашего браузера",
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_insertText": {
