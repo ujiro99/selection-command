@@ -16,7 +16,7 @@ import {
   STYLE_VARIABLE,
   FOLDER_STYLE,
 } from "@/const"
-import { getAiServicesFallback } from "@/services/aiPrompt"
+import { getAiServicesFallback } from "@/services/aiPromptFallback"
 
 // Derive icon URLs from ai-services.json (single source of truth)
 const _aiServices = getAiServicesFallback()

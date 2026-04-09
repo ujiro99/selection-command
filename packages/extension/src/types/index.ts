@@ -20,8 +20,8 @@ import type {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   WINDOW_STATE,
 } from "@/const"
+import { INHERIT, SelectorType } from "@/const"
 import type { PageAction } from "@/services/pageAction"
-import { INHERIT } from "@/const"
 
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P]
@@ -294,8 +294,21 @@ export type ImageCache = {
   [id: string]: string // key: url or uuid, value: data:image/png;base64
 }
 
+/**
+ * Defines selectors and configuration for a supported AI service.
+ */
+export type AiService = {
+  id: string
+  name: string
+  url: string
+  faviconUrl: string
+  inputSelectors: string[]
+  submitSelectors: string[]
+  selectorType: SelectorType
+}
+
 export type AiServicesCache = {
   /** Fetch date in "YYYY-MM-DD" format for daily TTL */
   date: string
-  services: import("@/services/aiPrompt").AiService[]
+  services: AiService[]
 }

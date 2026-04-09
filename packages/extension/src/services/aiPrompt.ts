@@ -1,68 +1,19 @@
-import { SelectorType } from "@/const"
 import { HUB_URL } from "@/const"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
-import type { Caches } from "@/types"
+import type { Caches, AiService } from "@/types"
+import {
+  normalizeServices,
+  AI_SERVICES_FALLBACK,
+  getAiServicesFallback,
+} from "@/services/aiPromptFallback"
 
-/**
- * Defines selectors and configuration for a supported AI service.
- */
-export type AiService = {
-  id: string
-  name: string
-  url: string
-  faviconUrl: string
-  inputSelectors: string[]
-  submitSelectors: string[]
-  selectorType: SelectorType
-}
+export { getAiServicesFallback }
 
 /** External endpoint URL for AI service config data. */
 const AI_SERVICES_URL = `${HUB_URL}/data/ai-services.json`
 
 /** Today's date string "YYYY-MM-DD" used as cache TTL key. */
 const todayStr = (): string => new Date().toISOString().slice(0, 10)
-
-/**
- * Normalize raw JSON data fetched from the external endpoint into AiService[].
- * - Items that are missing required fields (id, url, inputSelectors, submitSelectors) are silently skipped.
- * - The external JSON may omit `selectorType`, defaulting to `CSS`.
- */
-const normalizeServices = (raw: unknown[]): AiService[] => {
-  const results: AiService[] = []
-  for (const item of raw) {
-    const s = item as Partial<AiService>
-    if (
-      !s.id ||
-      !s.url ||
-      !Array.isArray(s.inputSelectors) ||
-      !Array.isArray(s.submitSelectors) ||
-      s.inputSelectors.length === 0 ||
-      s.submitSelectors.length === 0
-    ) {
-      console.warn("Skipping invalid AI service entry:", s)
-      continue
-    }
-    results.push({
-      id: s.id,
-      name: s.name ?? s.id,
-      url: s.url,
-      faviconUrl: s.faviconUrl ?? "",
-      inputSelectors: s.inputSelectors,
-      submitSelectors: s.submitSelectors,
-      selectorType: s.selectorType ?? SelectorType.css,
-    })
-  }
-  return results
-}
-
-/**
- * List of supported AI services with their DOM selectors.
- * Built from the hub's ai-services.json at compile time.
- * Used as fallback when the external fetch fails and no cache is available.
- * Selector arrays are tried in order, using the first one that matches.
- */
-const AI_SERVICES_FALLBACK: AiService[] =
-  normalizeServices(__AI_SERVICES_JSON__)
 
 /**
  * Retrieve AI service definitions.
@@ -126,9 +77,3 @@ export const findAiService = async (
   const services = await getAiServices()
   return services.find((s) => s.id === id)
 }
-
-/**
- * Return the list of AI services synchronously using only the hardcoded fallback.
- * Used in UI contexts where async is not available (e.g. option section rendering).
- */
-export const getAiServicesFallback = (): AiService[] => AI_SERVICES_FALLBACK
