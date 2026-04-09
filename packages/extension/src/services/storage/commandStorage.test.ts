@@ -32,10 +32,6 @@ vi.mock("@/const", async (importOriginal) => {
   }
 })
 
-vi.mock("@/services/aiPrompt", () => ({
-  getAiServicesFallback: vi.fn(() => []),
-}))
-
 vi.mock("../option/defaultSettings", async (importOriginal) => {
   const actual: any = await importOriginal()
   const mockDefaultCommands = [
