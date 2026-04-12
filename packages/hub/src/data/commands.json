@@ -1565,5 +1565,17 @@
     "spaceEncoding": "plus",
     "tags": ["Tool"],
     "addedAt": "2026-03-21T12:54:47.024Z"
+  },
+  {
+    "id": "3cd05534-d1f9-5344-8ce4-900ceeb8fbb2",
+    "title": "Ceek.jp News",
+    "searchUrl": "https://news.ceek.jp/search.cgi?q=%s",
+    "description": "日本語の最新ニュースの検索",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=64&domain_url=https://news.ceek.jp/",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["Search", "News"],
+    "addedAt": "2026-04-12T04:19:57.112Z"
   }
 ]
