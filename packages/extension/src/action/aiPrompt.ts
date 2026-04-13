@@ -74,6 +74,10 @@ export const AiPrompt = {
 
     if (useQueryUrl) {
       // Pre-expand the prompt template with synchronously available variables.
+      // INSERT.CLIPBOARD is intentionally excluded here: clipboard text is not
+      // available in the content script context and must be read asynchronously
+      // in the background. When the prompt contains {{Clipboard}}, useQueryUrl
+      // is false and the DOM input approach is used instead.
       const expandedPrompt = safeInterpolate(aiPromptOption.prompt, {
         [InsertSymbol[INSERT.SELECTED_TEXT]]: selectionText,
         [InsertSymbol[INSERT.URL]]: location.href,
@@ -103,7 +107,7 @@ export const AiPrompt = {
         },
         // When autoSubmit is true (e.g. Perplexity) the service processes the
         // prompt automatically after navigation, so no submit click is needed.
-        ...(service.autoSubmit || !submitSelector
+        ...(service.autoSubmit || submitSelector.length === 0
           ? []
           : [
               {

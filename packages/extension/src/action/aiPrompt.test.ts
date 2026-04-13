@@ -260,8 +260,7 @@ describe("AiPrompt.execute", () => {
       expect(Storage.set).toHaveBeenCalled()
       const storedPending = vi.mocked(Storage.set).mock.calls[0][1] as any
       // The pending URL should be the resolved query URL (with prompt embedded), not the plain service URL
-      expect(storedPending.url).toContain("chatgpt.com")
-      expect(storedPending.url).toContain("prompt=")
+      expect(storedPending.url).toMatch(/chatgpt\.com\/\?prompt=.+/)
     })
 
     it("AP-10: should NOT include input step in side panel pending steps when queryUrl is used", async () => {
