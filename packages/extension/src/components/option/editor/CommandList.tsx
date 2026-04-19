@@ -49,6 +49,7 @@ import {
 import { isValidDrop } from "@/services/option/dragAndDrop"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
+import { setCommandSource } from "@/services/commandSource"
 import { CommandListMenu } from "./CommandListMenu"
 import { CommandTreeRenderer } from "./CommandTreeRenderer"
 
@@ -253,8 +254,7 @@ export const CommandList = ({ control }: CommandListProps) => {
     const cmd = commandArray.fields[index]
     cmd.id = crypto.randomUUID()
     cmd.title = title
-    cmd.sourceType = COMMAND_SOURCE_TYPE.SELF_CREATED
-    cmd.sourceId = cmd.id
+    Object.assign(cmd, setCommandSource(cmd, COMMAND_SOURCE_TYPE.SELF_CREATED))
     commandArray.insert(index + 1, cmd)
   }
 

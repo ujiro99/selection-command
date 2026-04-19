@@ -79,6 +79,7 @@ import { Ipc, BgCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import { setCommandSource } from "@/services/commandSource"
 
 import { isEmpty, e2a, cn, parseGeminiUrl } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
@@ -816,14 +817,17 @@ const CommandEditDialogInner = ({
               size="lg"
               onClick={form.handleSubmit(
                 (data) => {
-                  if (isEmpty(data.id)) data.id = crypto.randomUUID()
+                  const isNewCommand = isEmpty(data.id)
+                  if (isNewCommand) data.id = crypto.randomUUID()
                   if (data.revision == null) data.revision = 0
-                  if (data.sourceType == null) {
-                    data.sourceType = isUpdate
-                      ? COMMAND_SOURCE_TYPE.UNKNOWN
-                      : COMMAND_SOURCE_TYPE.SELF_CREATED
+                  if (isNewCommand && data.sourceType == null) {
+                    Object.assign(
+                      data,
+                      setCommandSource(data, COMMAND_SOURCE_TYPE.SELF_CREATED),
+                    )
+                  } else if (isNewCommand && isEmpty(data.sourceId)) {
+                    data.sourceId = data.id
                   }
-                  if (isEmpty(data.sourceId)) data.sourceId = data.id
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
                   }
