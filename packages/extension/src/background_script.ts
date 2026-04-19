@@ -6,6 +6,7 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
   SCREEN,
+  COMMAND_SOURCE_TYPE,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
@@ -25,6 +26,7 @@ import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import { setCommandSource } from "@/services/commandSource"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -195,7 +197,13 @@ const commandFuncs = {
       return true
     }
 
-    Settings.addCommands([cmd]).then(() => {
+    const commandWithSource = setCommandSource(
+      cmd,
+      COMMAND_SOURCE_TYPE.HUB_COMMUNITY,
+      params.id,
+    )
+
+    Settings.addCommands([commandWithSource]).then(() => {
       response(true)
     })
     return true

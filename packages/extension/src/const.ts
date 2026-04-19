@@ -337,6 +337,12 @@ export const COMMAND_USAGE = {
   },
 } as const
 
+export enum COMMAND_SOURCE_TYPE {
+  SELF_CREATED = "selfCreated",
+  HUB_COMMUNITY = "hubCommunity",
+  UNKNOWN = "unknown",
+}
+
 export const SHORTCUT_PLACEHOLDER = "_placeholder_"
 
 export enum SHORTCUT_NO_SELECTION_BEHAVIOR {

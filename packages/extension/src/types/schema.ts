@@ -14,12 +14,18 @@ import {
   STYLE_VARIABLE,
   WINDOW_STATE,
   FOLDER_STYLE,
+  COMMAND_SOURCE_TYPE,
 } from "@/const"
 
 import { t } from "@/services/i18n"
 import { isEmpty } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import type { AiPromptCommand } from "@/types"
+
+const commandSourceSchema = {
+  sourceType: z.nativeEnum(COMMAND_SOURCE_TYPE).optional(),
+  sourceId: z.string().optional(),
+}
 
 const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),
@@ -34,6 +40,7 @@ const searchSchema = z.object({
   parentFolderId: z.string().optional(),
   openModeSecondary: z.enum(SEARCH_OPEN_MODE),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
+  ...commandSourceSchema,
   popupOption: z
     .object({
       width: z.number().min(1),
@@ -69,6 +76,7 @@ const apiSchema = z.object({
   searchUrl: z.string().url({ message: t("zod_url") }),
   parentFolderId: z.string().optional(),
   fetchOptions: z.string().optional(),
+  ...commandSourceSchema,
   variables: z
     .array(
       z.object({
@@ -84,6 +92,7 @@ const linkPopupSchema = z.object({
   id: z.string(),
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
+  ...commandSourceSchema,
   title: z
     .string()
     .min(1, { message: t("zod_string_min", ["1"]) })
@@ -106,6 +115,7 @@ const copySchema = z.object({
   id: z.string(),
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
+  ...commandSourceSchema,
   title: z
     .string()
     .min(1, { message: t("zod_string_min", ["1"]) })
@@ -125,6 +135,7 @@ const textStyleSchema = z.object({
   id: z.string(),
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
+  ...commandSourceSchema,
   title: z
     .string()
     .min(1, { message: t("zod_string_min", ["1"]) })
@@ -245,6 +256,7 @@ const pageActionSchema = z.object({
   id: z.string(),
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
+  ...commandSourceSchema,
   title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
   iconUrl: z
     .string()
@@ -282,6 +294,7 @@ const aiPromptSchema = z.object({
   id: z.string(),
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
+  ...commandSourceSchema,
   title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
   iconUrl: z
     .string()

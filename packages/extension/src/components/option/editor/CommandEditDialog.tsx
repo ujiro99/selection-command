@@ -67,6 +67,7 @@ import {
   COMMAND_TYPE,
   COMMAND_TYPE_OPEN_MODES_MAP,
   WINDOW_STATE,
+  COMMAND_SOURCE_TYPE,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -817,6 +818,12 @@ const CommandEditDialogInner = ({
                 (data) => {
                   if (isEmpty(data.id)) data.id = crypto.randomUUID()
                   if (data.revision == null) data.revision = 0
+                  if (data.sourceType == null) {
+                    data.sourceType = isUpdate
+                      ? COMMAND_SOURCE_TYPE.UNKNOWN
+                      : COMMAND_SOURCE_TYPE.SELF_CREATED
+                  }
+                  if (isEmpty(data.sourceId)) data.sourceId = data.id
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
                   }
