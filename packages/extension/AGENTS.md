@@ -82,6 +82,23 @@ This file provides guidance to AI Agent when working with code in this repositor
 - コンテンツスクリプトのスタイリング分離にShadow DOMを使用
 - 堅牢なXPathセレクター生成のためのRobula+アルゴリズムを実装（`src/lib/robula-plus/`）
 
+### CSSビルドの重要な仕様
+
+**`@crxjs/vite-plugin` の CSS 自動注入問題**
+
+`@crxjs/vite-plugin` は、content_script の JS ファイル内の CSS import を検出すると、
+ビルド後の `manifest.json` の `content_scripts[].css` フィールドに自動的に追加する。
+
+Chrome はこの `css` フィールドに列挙されたスタイルシートを **Shadow DOM ではなくページの `<document>` に直接注入**する（Chromeの仕様）。
+これにより Tailwind CSS のグローバルリセットなどがページ全体に適用され、ページのスタイルを破壊する。
+
+**対策**: `src/lib/vite-plugin-manifest.ts` の `removeCssFromContentScript` プラグインが、
+ビルド後に全 content_script エントリーの `css` フィールドを削除する。
+CSS は各スクリプト（`content_script.tsx`, `command_hub.tsx`）の Shadow DOM 初期化時に `insertCss()` で手動注入している。
+
+> content_script に CSS import を追加する際は、manifest 経由での自動注入が抑制されていることを確認すること。
+> 新たな content_script エントリーを追加した場合も同様に Shadow DOM への手動注入が必要。
+
 **パスエイリアス**:
 
 - `@/` - `src/`ディレクトリへのエイリアス
