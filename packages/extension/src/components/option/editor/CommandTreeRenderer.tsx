@@ -3,15 +3,17 @@ import { SortableItem } from "@/components/option/SortableItem"
 import { EditButton } from "@/components/option/EditButton"
 import { CopyButton } from "@/components/option/CopyButton"
 import { RemoveButton } from "@/components/option/RemoveButton"
+import { ShareButton } from "@/components/option/ShareButton"
 import { MenuImage } from "@/components/menu/MenuImage"
 import type { FlattenNode } from "@/services/option/commandTree"
-import type { CommandFolder } from "@/types"
+import type { CommandFolder, SelectionCommand } from "@/types"
 import {
   isCommand,
   isFolder,
   isPageActionCommand,
 } from "@/services/option/commandUtils"
 import { calcLevel } from "@/services/option/commandTree"
+import { NEW_HUB_SHAREABLE_OPEN_MODES } from "@/const"
 
 interface Props {
   nodes: FlattenNode[]
@@ -68,6 +70,10 @@ export const CommandTreeRenderer: React.FC<Props> = ({
               </div>
             </div>
             <div className="flex gap-0.5 items-center">
+              {isCommand(field.content) &&
+                NEW_HUB_SHAREABLE_OPEN_MODES.has(field.content.openMode) && (
+                  <ShareButton command={field.content as SelectionCommand} />
+                )}
               {isPageActionCommand(field.content) && (
                 <CopyButton
                   srcTitle={field.content.title}

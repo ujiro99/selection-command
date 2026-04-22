@@ -726,6 +726,10 @@
   "Option_copy_tooltip": {
     "message": "Duplicate"
   },
+  "Option_shareButton_tooltip": {
+    "message": "Share to Hub",
+    "description": "Tooltip for the share button in the command list. Opens the new Selection Command Hub in a new tab with the command pre-filled."
+  },
   "Option_remove_title": {
     "message": "Delete this?"
   },

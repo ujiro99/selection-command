@@ -725,6 +725,9 @@
   "Option_copy_tooltip": {
     "message": "复制"
   },
+  "Option_shareButton_tooltip": {
+    "message": "分享到 Hub"
+  },
   "Option_remove_title": {
     "message": "您确定要删除吗？"
   },

@@ -725,6 +725,9 @@
   "Option_copy_tooltip": {
     "message": "コピー"
   },
+  "Option_shareButton_tooltip": {
+    "message": "Hubに共有"
+  },
   "Option_remove_title": {
     "message": "削除しますか？"
   },

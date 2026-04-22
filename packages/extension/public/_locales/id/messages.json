@@ -725,6 +725,9 @@
   "Option_copy_tooltip": {
     "message": "Duplikat"
   },
+  "Option_shareButton_tooltip": {
+    "message": "Bagikan ke Hub"
+  },
   "Option_remove_title": {
     "message": "Hapus ini?"
   },

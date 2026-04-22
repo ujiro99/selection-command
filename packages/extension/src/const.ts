@@ -322,6 +322,37 @@ export const HUB_URL = isDebug
   ? "http://localhost:3000"
   : "https://ujiro99.github.io/selection-command"
 
+export const NEW_HUB_URL =
+  import.meta.env.VITE_NEW_HUB_URL ?? "https://selection-command-hub.pages.dev"
+
+export const NEW_HUB_SUPPORTED_LOCALES = [
+  "ja",
+  "en",
+  "ko",
+  "zh-CN",
+  "de",
+  "es",
+  "fr",
+  "hi",
+  "id",
+  "it",
+  "ms",
+  "pt-BR",
+  "pt-PT",
+  "ru",
+] as const
+
+export type NewHubLocale = (typeof NEW_HUB_SUPPORTED_LOCALES)[number]
+
+export const NEW_HUB_SHAREABLE_OPEN_MODES: ReadonlySet<string> = new Set([
+  OPEN_MODE.POPUP,
+  OPEN_MODE.TAB,
+  OPEN_MODE.WINDOW,
+  OPEN_MODE.BACKGROUND_TAB,
+  OPEN_MODE.SIDE_PANEL,
+  OPEN_MODE.PAGE_ACTION,
+])
+
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
 export const PAGE_ACTION_TIMEOUT = 5000

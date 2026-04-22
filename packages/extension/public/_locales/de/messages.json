@@ -725,6 +725,9 @@
   "Option_copy_tooltip": {
     "message": "Duplizieren"
   },
+  "Option_shareButton_tooltip": {
+    "message": "Mit Hub teilen"
+  },
   "Option_remove_title": {
     "message": "Dies löschen?"
   },
