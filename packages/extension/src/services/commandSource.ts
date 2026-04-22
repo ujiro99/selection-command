@@ -17,9 +17,7 @@ export const setCommandSource = <T extends CommandSourceFields>(
   sourceType: COMMAND_SOURCE_TYPE,
   sourceId?: string,
 ): T => {
-  return {
-    ...command,
-    sourceType,
-    sourceId: sourceId ?? command.id,
-  }
+  command.sourceType = sourceType
+  command.sourceId = sourceId ?? command.id
+  return command
 }

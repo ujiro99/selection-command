@@ -254,7 +254,7 @@ export const CommandList = ({ control }: CommandListProps) => {
     const cmd = commandArray.fields[index]
     cmd.id = crypto.randomUUID()
     cmd.title = title
-    Object.assign(cmd, setCommandSource(cmd, COMMAND_SOURCE_TYPE.SELF_CREATED))
+    setCommandSource(cmd, COMMAND_SOURCE_TYPE.SELF_CREATED)
     commandArray.insert(index + 1, cmd)
   }
 

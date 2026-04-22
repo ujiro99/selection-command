@@ -26,7 +26,6 @@ import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import { setCommandSource } from "@/services/commandSource"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -168,6 +167,17 @@ const commandFuncs = {
     const params = JSON.parse(param.command)
     const isSearch = isSearchCommand(params)
     const isPageAction = isPageActionCommand(params)
+    const sourceType = (params as { sourceType?: unknown }).sourceType
+    const sourceId = (params as { sourceId?: unknown }).sourceId
+    const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
+      sourceType as COMMAND_SOURCE_TYPE,
+    )
+      ? (sourceType as COMMAND_SOURCE_TYPE)
+      : undefined
+    const sourceInfo = {
+      sourceType: normalizedSourceType,
+      sourceId: typeof sourceId === "string" ? sourceId : undefined,
+    }
 
     const cmd = isSearch
       ? {
@@ -175,16 +185,18 @@ const commandFuncs = {
           title: params.title,
           searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
+          ...sourceInfo,
           openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
-          popupOption: PopupOption,
-        }
+            openModeSecondary: params.openModeSecondary,
+            spaceEncoding: params.spaceEncoding,
+            popupOption: PopupOption,
+          }
       : isPageAction
         ? {
             id: params.id,
             title: params.title,
             iconUrl: params.iconUrl,
+            ...sourceInfo,
             openMode: params.openMode,
             pageActionOption: params.pageActionOption,
             popupOption: PopupOption,
@@ -197,13 +209,7 @@ const commandFuncs = {
       return true
     }
 
-    const commandWithSource = setCommandSource(
-      cmd,
-      COMMAND_SOURCE_TYPE.HUB_COMMUNITY,
-      params.id,
-    )
-
-    Settings.addCommands([commandWithSource]).then(() => {
+    Settings.addCommands([cmd]).then(() => {
       response(true)
     })
     return true

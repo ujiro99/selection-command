@@ -79,7 +79,6 @@ import { Ipc, BgCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import { setCommandSource } from "@/services/commandSource"
 
 import { isEmpty, e2a, cn, parseGeminiUrl } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
@@ -114,6 +113,16 @@ const getDefault = (
   base?: CommandSchemaType,
   preOpenMode?: OPEN_MODE,
 ) => {
+  const sourceDefaults = isEmpty(base?.id)
+    ? {
+        sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
+        sourceId: base?.sourceId ?? "",
+      }
+    : {
+        sourceType: base?.sourceType,
+        sourceId: base?.sourceId,
+      }
+
   if (isSearchOpenMode(openMode)) {
     if (isSearchOpenMode(preOpenMode)) {
       // Staying in search mode: add default windowState when switching to WINDOW
@@ -122,9 +131,9 @@ const getDefault = (
         isSearchType(base) &&
         base.windowState == null
       ) {
-        return { ...base, windowState: WINDOW_STATE.NORMAL }
+        return { ...base, ...sourceDefaults, windowState: WINDOW_STATE.NORMAL }
       }
-      return base
+      return { ...base, ...sourceDefaults }
     }
 
     // Switching from non-search mode (e.g. PAGE_ACTION) to search mode
@@ -135,6 +144,7 @@ const getDefault = (
 
     return {
       ...base,
+      ...sourceDefaults,
       searchUrl,
       openMode: OPEN_MODE.POPUP as const,
       openModeSecondary: OPEN_MODE.TAB as const,
@@ -153,6 +163,7 @@ const getDefault = (
   if (openMode === OPEN_MODE.API) {
     return {
       ...base,
+      ...sourceDefaults,
       openMode: OPEN_MODE.API as const,
       fetchOptions: "",
       variables: [],
@@ -166,6 +177,7 @@ const getDefault = (
     }
     return {
       ...base,
+      ...sourceDefaults,
       openMode: OPEN_MODE.PAGE_ACTION as const,
       parentFolderId: ROOT_FOLDER,
       popupOption: {
@@ -183,6 +195,7 @@ const getDefault = (
   if (openMode === OPEN_MODE.LINK_POPUP) {
     return {
       ...base,
+      ...sourceDefaults,
       title: "Link Popup",
       iconUrl:
         "https://cdn3.iconfinder.com/data/icons/fluent-regular-24px-vol-5/24/ic_fluent_open_24_regular-1024.png",
@@ -197,6 +210,7 @@ const getDefault = (
   if (openMode === OPEN_MODE.COPY) {
     return {
       ...base,
+      ...sourceDefaults,
       title: "Copy text",
       iconUrl:
         "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png",
@@ -208,6 +222,7 @@ const getDefault = (
   if (openMode === OPEN_MODE.GET_TEXT_STYLES) {
     return {
       ...base,
+      ...sourceDefaults,
       title: "Get Text Styles",
       iconUrl:
         "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png",
@@ -218,6 +233,7 @@ const getDefault = (
   if (openMode === OPEN_MODE.AI_PROMPT) {
     return {
       ...base,
+      ...sourceDefaults,
       openMode: OPEN_MODE.AI_PROMPT as const,
       parentFolderId: ROOT_FOLDER,
       popupOption: {
@@ -820,14 +836,7 @@ const CommandEditDialogInner = ({
                   const isNewCommand = isEmpty(data.id)
                   if (isNewCommand) data.id = crypto.randomUUID()
                   if (data.revision == null) data.revision = 0
-                  if (isNewCommand && data.sourceType == null) {
-                    Object.assign(
-                      data,
-                      setCommandSource(data, COMMAND_SOURCE_TYPE.SELF_CREATED),
-                    )
-                  } else if (isNewCommand && isEmpty(data.sourceId)) {
-                    data.sourceId = data.id
-                  }
+                  if (isNewCommand && isEmpty(data.sourceId)) data.sourceId = data.id
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
                   }
