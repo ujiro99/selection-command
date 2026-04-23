@@ -1,12 +1,17 @@
 import Commands from "@/data/commands.json"
 import IdHistory from "@/data/command-id-history.json"
 import Analytics from "@/data/analytics.json"
-import { OPEN_MODE, SPACE_ENCODING } from "@/const"
+import { OPEN_MODE, SPACE_ENCODING, HUB_SRC_UUID } from "@/const"
 import { Command, SearchCommand, PageActionCommand } from "@/types"
 import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
 import { generateUUIDFromObject } from "@shared/utils/uuid"
 
 export { cmd2uuid } from "@shared/utils/uuid"
+
+const sourceInfo = {
+  sourceType: "hubCommunity",
+  sourceId: HUB_SRC_UUID,
+}
 
 export function cmd2text(cmd: Command): string {
   if (isSearchCommand(cmd)) {
@@ -19,6 +24,7 @@ export function cmd2text(cmd: Command): string {
       openMode: searchCmd.openMode,
       openModeSecondary: searchCmd.openModeSecondary,
       spaceEncoding: searchCmd.spaceEncoding,
+      ...sourceInfo,
     })
   } else if (isPageActionCommand(cmd)) {
     const pageActionCmd = cmd as PageActionCommand & {
@@ -31,6 +37,7 @@ export function cmd2text(cmd: Command): string {
       iconUrl: pageActionCmd.iconUrl,
       openMode: pageActionCmd.openMode,
       pageActionOption: pageActionCmd.pageActionOption,
+      ...sourceInfo,
     })
   } else {
     throw new Error("Invalid command")

@@ -19,6 +19,7 @@ import type {
   ExecState,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   WINDOW_STATE,
+  COMMAND_SOURCE_TYPE,
 } from "@/const"
 import { INHERIT, SelectorType } from "@/const"
 import type { PageAction } from "@/services/pageAction"
@@ -48,6 +49,8 @@ export type SearchCommand = {
   title: string
   revision?: number
   iconUrl: string
+  sourceType?: COMMAND_SOURCE_TYPE
+  sourceId?: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
   searchUrl?: string

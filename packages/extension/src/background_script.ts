@@ -6,6 +6,7 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
   SCREEN,
+  COMMAND_SOURCE_TYPE,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
@@ -166,6 +167,17 @@ const commandFuncs = {
     const params = JSON.parse(param.command)
     const isSearch = isSearchCommand(params)
     const isPageAction = isPageActionCommand(params)
+    const sourceType = (params as { sourceType?: unknown }).sourceType
+    const sourceId = (params as { sourceId?: unknown }).sourceId
+    const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
+      sourceType as COMMAND_SOURCE_TYPE,
+    )
+      ? (sourceType as COMMAND_SOURCE_TYPE)
+      : undefined
+    const sourceInfo = {
+      sourceType: normalizedSourceType,
+      sourceId: typeof sourceId === "string" ? sourceId : undefined,
+    }
 
     const cmd = isSearch
       ? {
@@ -173,6 +185,7 @@ const commandFuncs = {
           title: params.title,
           searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
+          ...sourceInfo,
           openMode: params.openMode,
           openModeSecondary: params.openModeSecondary,
           spaceEncoding: params.spaceEncoding,
@@ -183,6 +196,7 @@ const commandFuncs = {
             id: params.id,
             title: params.title,
             iconUrl: params.iconUrl,
+            ...sourceInfo,
             openMode: params.openMode,
             pageActionOption: params.pageActionOption,
             popupOption: PopupOption,
