@@ -82,7 +82,7 @@ const MenubarSubContent = React.forwardRef<
 ))
 MenubarSubContent.displayName = MenubarPrimitive.SubContent.displayName
 
-// Prevent focus from being returned to the trigger from the underlying page when menu closes.
+// Prevent focus from being returned to the menu trigger when the dropdown closes.
 const noFocus = (e: Event) => e.preventDefault()
 
 const MenubarContent = React.forwardRef<
