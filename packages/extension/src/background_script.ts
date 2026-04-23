@@ -20,7 +20,7 @@ import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
-import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
+import { isSearchCommand, isPageActionCommand, matchesPageActionUrl } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
@@ -136,24 +136,31 @@ const commandFuncs = {
     const add = async () => {
       const settings = await enhancedSettings.get()
       const pageRules = settings.pageRules ?? []
-      if (pageRules.find((r) => r.urlPattern === param.url) == null) {
+      const matchingRule = pageRules.find((r) =>
+        matchesPageActionUrl(r.urlPattern, param.url),
+      )
+      if (matchingRule == null) {
         pageRules.push({
           urlPattern: param.url,
           popupEnabled: POPUP_ENABLED.ENABLE,
           popupPlacement: PopupPlacement,
           linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
         })
+        await Settings.set(
+          {
+            ...settings,
+            pageRules,
+          },
+          true,
+        )
+        chrome.tabs.create({
+          url: `${OPTION_PAGE_PATH}#pageRules`,
+        })
+      } else {
+        chrome.tabs.create({
+          url: `${OPTION_PAGE_PATH}?editPageRule=${encodeURIComponent(matchingRule.urlPattern)}#pageRules`,
+        })
       }
-      await Settings.set(
-        {
-          ...settings,
-          pageRules,
-        },
-        true,
-      )
-      chrome.tabs.create({
-        url: `${OPTION_PAGE_PATH}#pageRules`,
-      })
     }
     add()
     return false

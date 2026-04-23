@@ -64,6 +64,7 @@ export const PageRuleList = ({
   const [dialogOpen, _setDialogOpen] = useState(false)
   const editorRef = useRef(DefaultRule)
   const addButtonRef = useRef<HTMLButtonElement>(null)
+  const editParamHandledRef = useRef(false)
 
   const setDialogOpen = (open: boolean) => {
     _setDialogOpen(open)
@@ -77,6 +78,29 @@ export const PageRuleList = ({
     name: "pageRules",
     keyName: "_id",
   })
+
+  // Auto-open the dialog for a specific rule when the editPageRule URL param is set
+  useEffect(() => {
+    if (editParamHandledRef.current) return
+    const params = new URLSearchParams(location.search)
+    const editPattern = params.get("editPageRule")
+    if (!editPattern) {
+      editParamHandledRef.current = true
+      return
+    }
+    if (pageRuleArray.fields.length === 0) return
+    editParamHandledRef.current = true
+    const url = new URL(location.href)
+    url.searchParams.delete("editPageRule")
+    history.replaceState(null, "", url)
+    const field = pageRuleArray.fields.find(
+      (f) => f.urlPattern === editPattern,
+    )
+    if (field) {
+      editorRef.current = field
+      setDialogOpen(true)
+    }
+  }, [pageRuleArray.fields])
 
   const upsert = (rule: PageRule) => {
     const index = pageRuleArray.fields.findIndex(
