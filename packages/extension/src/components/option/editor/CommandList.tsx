@@ -32,6 +32,7 @@ import {
   COMMAND_TYPE,
   OPEN_MODE_TYPE_MAP,
   COMMAND_SOURCE_TYPE,
+  COMMAND_SOURCE_ID,
 } from "@/const"
 import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
@@ -254,7 +255,7 @@ export const CommandList = ({ control }: CommandListProps) => {
     cmd.id = crypto.randomUUID()
     cmd.title = title
     cmd.sourceType = COMMAND_SOURCE_TYPE.SELF_CREATED
-    cmd.sourceId = undefined // Clear sourceId to indicate it's a self created command
+    cmd.sourceId = COMMAND_SOURCE_ID.SELF_CREATED
     commandArray.insert(index + 1, cmd)
   }
 
