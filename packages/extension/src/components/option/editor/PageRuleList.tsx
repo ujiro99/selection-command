@@ -64,7 +64,9 @@ const extractDomain = (urlPattern: string): string => {
   try {
     return new URL(urlPattern.replace(/\*/g, "x")).hostname
   } catch {
-    return urlPattern
+    // Fallback for regex-style patterns: extract domain-like substring
+    const match = urlPattern.match(/https?:\/\/([^/\\*^$[\](){}|?+.]+)/)
+    return match ? match[1] : urlPattern
   }
 }
 
@@ -102,6 +104,7 @@ export const PageRuleList = ({
   }
 
   const sortedFilteredFields = useMemo(() => {
+    // Preserve original indices for correct remove/update operations
     let items = pageRuleArray.fields.map((field, index) => ({ field, index }))
 
     // Filter by URL
