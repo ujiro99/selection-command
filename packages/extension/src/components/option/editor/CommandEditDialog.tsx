@@ -116,7 +116,7 @@ const getDefault = (
   const sourceDefaults = isEmpty(base?.id)
     ? {
         sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
-        sourceId: base?.sourceId ?? "",
+        sourceId: base?.sourceId,
       }
     : {
         sourceType: base?.sourceType,
@@ -833,10 +833,8 @@ const CommandEditDialogInner = ({
               size="lg"
               onClick={form.handleSubmit(
                 (data) => {
-                  const isNewCommand = isEmpty(data.id)
-                  if (isNewCommand) data.id = crypto.randomUUID()
+                  if (isEmpty(data.id)) data.id = crypto.randomUUID()
                   if (data.revision == null) data.revision = 0
-                  if (isNewCommand && isEmpty(data.sourceId)) data.sourceId = data.id
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
                   }

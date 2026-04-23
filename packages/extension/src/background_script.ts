@@ -187,10 +187,10 @@ const commandFuncs = {
           iconUrl: params.iconUrl,
           ...sourceInfo,
           openMode: params.openMode,
-            openModeSecondary: params.openModeSecondary,
-            spaceEncoding: params.spaceEncoding,
-            popupOption: PopupOption,
-          }
+          openModeSecondary: params.openModeSecondary,
+          spaceEncoding: params.spaceEncoding,
+          popupOption: PopupOption,
+        }
       : isPageAction
         ? {
             id: params.id,

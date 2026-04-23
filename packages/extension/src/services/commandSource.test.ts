@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { COMMAND_SOURCE_TYPE } from "@/const"
-import { resolveCommandSource, setCommandSource } from "./commandSource"
+import { resolveCommandSource } from "./commandSource"
 
 describe("commandSource", () => {
   it("returns existing source fields", () => {
@@ -25,17 +25,5 @@ describe("commandSource", () => {
       sourceType: COMMAND_SOURCE_TYPE.UNKNOWN,
       sourceId: "cmd-2",
     })
-  })
-
-  it("mutates source fields with default sourceId", () => {
-    const target = {
-      id: "cmd-3",
-      openMode: "tab",
-    } as any
-    const command = setCommandSource(target, COMMAND_SOURCE_TYPE.SELF_CREATED)
-
-    expect(command).toBe(target)
-    expect(command.sourceType).toBe(COMMAND_SOURCE_TYPE.SELF_CREATED)
-    expect(command.sourceId).toBe("cmd-3")
   })
 })

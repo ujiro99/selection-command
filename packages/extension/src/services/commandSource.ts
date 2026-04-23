@@ -1,23 +1,16 @@
 import { COMMAND_SOURCE_TYPE } from "@/const"
 import type { SelectionCommand } from "@/types"
 
-type CommandSourceFields = Pick<SelectionCommand, "id" | "sourceType" | "sourceId">
+type CommandSourceFields = Pick<
+  SelectionCommand,
+  "id" | "sourceType" | "sourceId"
+>
 
 export const resolveCommandSource = (
   command: CommandSourceFields,
-): { sourceType: COMMAND_SOURCE_TYPE; sourceId: string } => {
+): { sourceType: COMMAND_SOURCE_TYPE; sourceId: string | undefined } => {
   return {
     sourceType: command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN,
-    sourceId: command.sourceId ?? command.id,
+    sourceId: command.sourceId,
   }
-}
-
-export const setCommandSource = <T extends CommandSourceFields>(
-  command: T,
-  sourceType: COMMAND_SOURCE_TYPE,
-  sourceId?: string,
-): T => {
-  command.sourceType = sourceType
-  command.sourceId = sourceId ?? command.id
-  return command
 }

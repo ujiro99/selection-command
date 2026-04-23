@@ -59,5 +59,7 @@ export const HUB_URL = isDebug
   ? "http://localhost:3000"
   : "https://ujiro99.github.io/selection-command"
 
+export const HUB_SRC_UUID = "019db85f-3c82-70b2-bd1e-f22d07ca4915"
+
 export const OTHER_OPTION = "__other_option__" as const
 export const UNINSTALL_OTHER_OPTION = "__other_option__" as const
