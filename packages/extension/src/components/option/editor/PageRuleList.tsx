@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useMemo } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Save, BookOpen } from "lucide-react"
+import { Save, BookOpen, ArrowUp, ArrowDown, ArrowUpDown, Search } from "lucide-react"
 import {
   Dialog,
   DialogClose,
@@ -37,6 +37,7 @@ export const pageRuleSchema = z.object({
   popupEnabled: z.nativeEnum(POPUP_ENABLED),
   popupPlacement: z.union([z.literal("inherit"), popupPlacementSchema]),
   linkCommandEnabled: z.nativeEnum(LINK_COMMAND_ENABLED),
+  createdAt: z.number().optional(),
 })
 
 const pageRulesSchema = z.object({
@@ -57,6 +58,16 @@ type PageRuleListProps = {
   linkCommandEnabled: LINK_COMMAND_ENABLED
 }
 
+type SortBy = "domain" | "createdAt" | "priority"
+
+const extractDomain = (urlPattern: string): string => {
+  try {
+    return new URL(urlPattern.replace(/\*/g, "x")).hostname
+  } catch {
+    return urlPattern
+  }
+}
+
 export const PageRuleList = ({
   control,
   linkCommandEnabled,
@@ -64,6 +75,9 @@ export const PageRuleList = ({
   const [dialogOpen, _setDialogOpen] = useState(false)
   const editorRef = useRef(DefaultRule)
   const addButtonRef = useRef<HTMLButtonElement>(null)
+  const [sortBy, setSortBy] = useState<SortBy>("priority")
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+  const [filterUrl, setFilterUrl] = useState("")
 
   const setDialogOpen = (open: boolean) => {
     _setDialogOpen(open)
@@ -78,14 +92,60 @@ export const PageRuleList = ({
     keyName: "_id",
   })
 
+  const handleSortClick = (column: SortBy) => {
+    if (sortBy === column) {
+      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
+    } else {
+      setSortBy(column)
+      setSortOrder("asc")
+    }
+  }
+
+  const sortedFilteredFields = useMemo(() => {
+    let items = pageRuleArray.fields.map((field, index) => ({ field, index }))
+
+    // Filter by URL
+    if (filterUrl.trim()) {
+      items = items.filter(({ field }) => {
+        try {
+          const re = new RegExp(field.urlPattern)
+          return re.test(filterUrl)
+        } catch {
+          return false
+        }
+      })
+    }
+
+    // Sort
+    items.sort((a, b) => {
+      let cmp = 0
+      if (sortBy === "domain") {
+        cmp = extractDomain(a.field.urlPattern).localeCompare(
+          extractDomain(b.field.urlPattern),
+        )
+      } else if (sortBy === "createdAt") {
+        const aTime = a.field.createdAt ?? 0
+        const bTime = b.field.createdAt ?? 0
+        cmp = aTime - bTime
+      } else {
+        // priority: preserve original array order
+        cmp = a.index - b.index
+      }
+      return sortOrder === "asc" ? cmp : -cmp
+    })
+
+    return items
+  }, [pageRuleArray.fields, sortBy, sortOrder, filterUrl])
+
   const upsert = (rule: PageRule) => {
     const index = pageRuleArray.fields.findIndex(
       (field) => field.urlPattern === rule.urlPattern,
     )
     if (index === -1) {
-      pageRuleArray.append(rule)
+      pageRuleArray.append({ ...rule, createdAt: Date.now() })
     } else {
-      pageRuleArray.update(index, rule)
+      const existingCreatedAt = pageRuleArray.fields[index].createdAt
+      pageRuleArray.update(index, { ...rule, createdAt: existingCreatedAt })
     }
   }
 
@@ -115,60 +175,106 @@ export const PageRuleList = ({
               text={t("pageRules_tooltip")}
             />
           </div>
+          <div className="flex flex-col gap-2 mt-2">
+            <div className="flex items-center gap-1 text-sm text-gray-600">
+              <span className="mr-1 shrink-0">{t("pageRules_sortBy")}</span>
+              {(["domain", "createdAt", "priority"] as SortBy[]).map(
+                (column) => (
+                  <button
+                    key={column}
+                    type="button"
+                    onClick={() => handleSortClick(column)}
+                    className={cn(
+                      "flex items-center gap-0.5 px-2 py-1 rounded-md text-xs border transition",
+                      sortBy === column
+                        ? "bg-gray-200 border-gray-400 text-gray-800"
+                        : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50",
+                    )}
+                  >
+                    {t(`pageRules_sortBy_${column}`)}
+                    {sortBy === column ? (
+                      sortOrder === "asc" ? (
+                        <ArrowUp size={12} />
+                      ) : (
+                        <ArrowDown size={12} />
+                      )
+                    ) : (
+                      <ArrowUpDown size={12} />
+                    )}
+                  </button>
+                ),
+              )}
+            </div>
+            <div className="relative">
+              <Search
+                size={14}
+                className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+              />
+              <input
+                type="text"
+                value={filterUrl}
+                onChange={(e) => setFilterUrl(e.target.value)}
+                placeholder={t("pageRules_filter_placeholder")}
+                className="w-full pl-7 pr-3 h-8 text-sm rounded-md border border-input bg-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              />
+            </div>
+          </div>
           <FormControl>
             <ul>
-              {pageRuleArray.fields.map((field, index) => (
-                <li
-                  key={field._id}
-                  className={cn(
-                    "flex items-center gap-2 px-2 py-1",
-                    index !== 0 ? "border-t" : "",
-                  )}
-                >
-                  <div className="flex-1 px-1 py-2 overflow-hidden">
-                    <p className="flex items-center">
-                      <img
-                        src={`https://www.google.com/s2/favicons?sz=64&domain_url=${field.urlPattern}`}
-                        alt="favicon"
-                        className="w-5 h-5 inline-block mr-2 rounded"
+              {sortedFilteredFields.map(
+                ({ field, index: originalIndex }, renderIndex) => (
+                  <li
+                    key={field._id}
+                    className={cn(
+                      "flex items-center gap-2 px-2 py-1",
+                      renderIndex !== 0 ? "border-t" : "",
+                    )}
+                  >
+                    <div className="flex-1 px-1 py-2 overflow-hidden">
+                      <p className="flex items-center">
+                        <img
+                          src={`https://www.google.com/s2/favicons?sz=64&domain_url=${field.urlPattern}`}
+                          alt="favicon"
+                          className="w-5 h-5 inline-block mr-2 rounded"
+                        />
+                        <span className="text-base font-mono truncate">
+                          {field.urlPattern}
+                        </span>
+                      </p>
+                      <ul className="mt-1 text-gray-500 flex flex-wrap gap-x-3 gap-y-1">
+                        <li>
+                          {t("popupEnabled")}: {t(`${field.popupEnabled}`)}
+                        </li>
+                        <li>
+                          {t("popupPlacement")}:{" "}
+                          {field.popupPlacement === INHERIT
+                            ? t("inherit")
+                            : `${field.popupPlacement.side} ${field.popupPlacement.align}`}
+                        </li>
+                        <li>
+                          {t("linkCommandEnabled")}:{" "}
+                          {t(`linkCommand_enabled${field.linkCommandEnabled}`, [
+                            t(`linkCommand_enabled${linkCommandEnabled}`),
+                          ])}
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="flex gap-0.5 items-center">
+                      <EditButton
+                        onClick={() => {
+                          editorRef.current = field
+                          setDialogOpen(true)
+                        }}
                       />
-                      <span className="text-base font-mono truncate">
-                        {field.urlPattern}
-                      </span>
-                    </p>
-                    <ul className="mt-1 text-gray-500 flex flex-wrap gap-x-3 gap-y-1">
-                      <li>
-                        {t("popupEnabled")}: {t(`${field.popupEnabled}`)}
-                      </li>
-                      <li>
-                        {t("popupPlacement")}:{" "}
-                        {field.popupPlacement === INHERIT
-                          ? t("inherit")
-                          : `${field.popupPlacement.side} ${field.popupPlacement.align}`}
-                      </li>
-                      <li>
-                        {t("linkCommandEnabled")}:{" "}
-                        {t(`linkCommand_enabled${field.linkCommandEnabled}`, [
-                          t(`linkCommand_enabled${linkCommandEnabled}`),
-                        ])}
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="flex gap-0.5 items-center">
-                    <EditButton
-                      onClick={() => {
-                        editorRef.current = field
-                        setDialogOpen(true)
-                      }}
-                    />
-                    <RemoveButton
-                      title={field.urlPattern}
-                      iconUrl={`https://www.google.com/s2/favicons?sz=64&domain_url=${field.urlPattern}`}
-                      onRemove={() => pageRuleArray.remove(index)}
-                    />
-                  </div>
-                </li>
-              ))}
+                      <RemoveButton
+                        title={field.urlPattern}
+                        iconUrl={`https://www.google.com/s2/favicons?sz=64&domain_url=${field.urlPattern}`}
+                        onRemove={() => pageRuleArray.remove(originalIndex)}
+                      />
+                    </div>
+                  </li>
+                ),
+              )}
             </ul>
           </FormControl>
           <PageRuleDialog

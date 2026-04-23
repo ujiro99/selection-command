@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "Sila masukkan Peraturan Halaman."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Susun:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Domain"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Dicipta"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Keutamaan"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Tapis mengikut URL..."
+  },
   "Option_urlPattern": {
     "message": "Pola URL"
   },

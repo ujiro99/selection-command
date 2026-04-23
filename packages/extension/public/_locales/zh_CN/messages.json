@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "输入页面规则。"
   },
+  "Option_pageRules_sortBy": {
+    "message": "排序："
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "域名"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "创建日期"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "优先级"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "按URL过滤..."
+  },
   "Option_urlPattern": {
     "message": "URL模式"
   },
