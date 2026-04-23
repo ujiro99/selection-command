@@ -79,7 +79,9 @@ export const PageRuleList = ({
     keyName: "_id",
   })
 
-  // Auto-open the dialog for a specific rule when the editPageRule URL param is set
+  // Auto-open the dialog for a specific rule when the editPageRule URL param is set.
+  // location.search is fixed at page load (set via chrome.tabs.create), so it is
+  // safe to read it without adding it to the dependency array.
   useEffect(() => {
     if (editParamHandledRef.current) return
     const params = new URLSearchParams(location.search)
@@ -88,6 +90,7 @@ export const PageRuleList = ({
       editParamHandledRef.current = true
       return
     }
+    // Wait until settings are loaded from Chrome storage (fields starts as empty default)
     if (pageRuleArray.fields.length === 0) return
     editParamHandledRef.current = true
     const url = new URL(location.href)
