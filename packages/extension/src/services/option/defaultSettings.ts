@@ -16,7 +16,7 @@ import {
   STYLE_VARIABLE,
   FOLDER_STYLE,
   COMMAND_SOURCE_TYPE,
-  DEFAULT_SRC_UUID,
+  COMMAND_SOURCE_ID,
 } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 
@@ -1933,7 +1933,7 @@ export const LOCALE_COMMANDS = {
 
 const SourceInfo = {
   sourceType: COMMAND_SOURCE_TYPE.DEFAULT,
-  sourceId: DEFAULT_SRC_UUID,
+  sourceId: COMMAND_SOURCE_ID.DEFAULT,
 }
 
 function assignSourceInfo(commands: Command[]): Command[] {

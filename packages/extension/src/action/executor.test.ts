@@ -65,7 +65,7 @@ describe("executeAction", () => {
       expect.objectContaining({
         command_id: "cmd-2",
         source_type: COMMAND_SOURCE_TYPE.UNKNOWN,
-        source_id: "cmd-2",
+        source_id: undefined,
       }),
     )
   })

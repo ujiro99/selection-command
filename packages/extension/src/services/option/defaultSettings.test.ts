@@ -3,9 +3,16 @@ import { DefaultCommands, getDefaultCommands } from "./defaultSettings"
 import { isLinkCommand } from "@/lib/utils"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { getAiServicesFallback } from "@/services/aiPrompt"
+import { COMMAND_SOURCE_TYPE, COMMAND_SOURCE_ID } from "@/const"
 
 const SYM_SELECTED_TEXT = toInsertTemplate(INSERT.SELECTED_TEXT)
 const SYM_URL = toInsertTemplate(INSERT.URL)
+
+const DefaultCommandsWithSource = DefaultCommands.map((cmd) => ({
+  ...cmd,
+  sourceType: COMMAND_SOURCE_TYPE.DEFAULT,
+  sourceId: COMMAND_SOURCE_ID.DEFAULT,
+}))
 
 const ALL_LOCALES = [
   "ja",
@@ -26,15 +33,15 @@ const ALL_LOCALES = [
 
 describe("getDefaultCommands", () => {
   it("DS-01: should return DefaultCommands for English locale", () => {
-    expect(getDefaultCommands("en")).toEqual(DefaultCommands)
-    expect(getDefaultCommands("en-US")).toEqual(DefaultCommands)
-    expect(getDefaultCommands("en-GB")).toEqual(DefaultCommands)
+    expect(getDefaultCommands("en")).toEqual(DefaultCommandsWithSource)
+    expect(getDefaultCommands("en-US")).toEqual(DefaultCommandsWithSource)
+    expect(getDefaultCommands("en-GB")).toEqual(DefaultCommandsWithSource)
   })
 
   it("DS-02: should return DefaultCommands for unknown locale", () => {
-    expect(getDefaultCommands("")).toEqual(DefaultCommands)
-    expect(getDefaultCommands(undefined)).toEqual(DefaultCommands)
-    expect(getDefaultCommands("xx")).toEqual(DefaultCommands)
+    expect(getDefaultCommands("")).toEqual(DefaultCommandsWithSource)
+    expect(getDefaultCommands(undefined)).toEqual(DefaultCommandsWithSource)
+    expect(getDefaultCommands("xx")).toEqual(DefaultCommandsWithSource)
   })
 
   const localeExpectations: Array<{
@@ -230,7 +237,10 @@ describe("getDefaultCommands", () => {
 
   it("DS-23: all AI_PROMPT commands with serviceId 'gemini' should use the current Gemini icon URL", () => {
     const geminiService = getAiServicesFallback().find((s) => s.id === "gemini")
-    expect(geminiService, "Gemini service must exist in ai-services.json").toBeDefined()
+    expect(
+      geminiService,
+      "Gemini service must exist in ai-services.json",
+    ).toBeDefined()
     const expectedIconUrl = geminiService!.faviconUrl
     for (const locale of ALL_LOCALES) {
       const commands = getDefaultCommands(locale)

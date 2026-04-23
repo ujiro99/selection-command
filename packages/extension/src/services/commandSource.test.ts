@@ -16,14 +16,14 @@ describe("commandSource", () => {
     })
   })
 
-  it("falls back to unknown and command id", () => {
+  it("falls back to unknown source type when sourceType is missing", () => {
     const source = resolveCommandSource({
       id: "cmd-2",
     } as any)
 
     expect(source).toEqual({
       sourceType: COMMAND_SOURCE_TYPE.UNKNOWN,
-      sourceId: "cmd-2",
+      sourceId: undefined,
     })
   })
 })

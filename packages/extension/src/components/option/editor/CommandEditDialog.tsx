@@ -68,6 +68,7 @@ import {
   COMMAND_TYPE_OPEN_MODES_MAP,
   WINDOW_STATE,
   COMMAND_SOURCE_TYPE,
+  COMMAND_SOURCE_ID,
 } from "@/const"
 
 import { FaviconEvent } from "@/context/faviconContext"
@@ -116,7 +117,7 @@ const getDefault = (
   const sourceDefaults = isEmpty(base?.id)
     ? {
         sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
-        sourceId: base?.sourceId,
+        sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
       }
     : {
         sourceType: base?.sourceType,

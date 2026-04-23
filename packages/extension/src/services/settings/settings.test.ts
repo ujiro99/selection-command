@@ -2,7 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Settings, migrate } from "./settings"
 import { Storage, STORAGE_KEY } from "../storage"
 import { OptionSettings } from "../option/optionSettings"
-import DefaultSettings, { DefaultCommands } from "../option/defaultSettings"
+import DefaultSettings, {
+  DefaultCommands,
+  getDefaultCommands,
+} from "../option/defaultSettings"
 import { toDataURL } from "../dom"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
@@ -459,7 +462,9 @@ describe("Settings", () => {
         STORAGE_KEY.USER,
         DefaultSettings,
       )
-      expect(mockStorage.setCommands).toHaveBeenCalledWith(DefaultCommands)
+      expect(mockStorage.setCommands).toHaveBeenCalledWith(
+        getDefaultCommands("en"),
+      )
       expect(mockStorage.set).toHaveBeenCalledWith(
         STORAGE_KEY.SHORTCUTS,
         DefaultSettings.shortcuts,

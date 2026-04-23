@@ -344,7 +344,10 @@ export enum COMMAND_SOURCE_TYPE {
   UNKNOWN = "unknown",
 }
 
-export const DEFAULT_SRC_UUID = "019db873-cc03-7484-86f1-2d349389ea2b"
+export const COMMAND_SOURCE_ID = {
+  DEFAULT: "019db873-cc03-7484-86f1-2d349389ea2b",
+  SELF_CREATED: "019db8a1-4021-7ae7-8a5d-474bf132e8ff",
+}
 
 export const SHORTCUT_PLACEHOLDER = "_placeholder_"
 
