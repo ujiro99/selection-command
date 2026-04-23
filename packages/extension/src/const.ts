@@ -338,10 +338,13 @@ export const COMMAND_USAGE = {
 } as const
 
 export enum COMMAND_SOURCE_TYPE {
+  DEFAULT = "default",
   SELF_CREATED = "selfCreated",
   HUB_COMMUNITY = "hubCommunity",
   UNKNOWN = "unknown",
 }
+
+export const DEFAULT_SRC_UUID = "019db873-cc03-7484-86f1-2d349389ea2b"
 
 export const SHORTCUT_PLACEHOLDER = "_placeholder_"
 

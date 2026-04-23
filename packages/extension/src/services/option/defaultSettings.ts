@@ -15,6 +15,8 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   STYLE_VARIABLE,
   FOLDER_STYLE,
+  COMMAND_SOURCE_TYPE,
+  DEFAULT_SRC_UUID,
 } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 
@@ -1929,13 +1931,23 @@ export const LOCALE_COMMANDS = {
   ],
 } as Record<string, Command[]>
 
+const SourceInfo = {
+  sourceType: COMMAND_SOURCE_TYPE.DEFAULT,
+  sourceId: DEFAULT_SRC_UUID,
+}
+
+function assignSourceInfo(commands: Command[]): Command[] {
+  return commands.map((cmd) => ({ ...cmd, ...SourceInfo }))
+}
+
 export function getDefaultCommands(locale?: string): Command[] {
   const lang = (locale ?? "").toLowerCase().replace("_", "-")
 
   // Try exact match first (e.g. "pt-br"), then prefix match (e.g. "pt")
   const exactMatch = LOCALE_COMMANDS[lang]
-  if (exactMatch) return exactMatch
+  if (exactMatch) return assignSourceInfo(exactMatch)
 
   const prefixKey = Object.keys(LOCALE_COMMANDS).find((k) => lang.startsWith(k))
-  return prefixKey ? LOCALE_COMMANDS[prefixKey] : DefaultCommands
+  const commands = prefixKey ? LOCALE_COMMANDS[prefixKey] : DefaultCommands
+  return assignSourceInfo(commands)
 }
