@@ -5,7 +5,8 @@ import { getKeyLabel } from "@/services/pageAction/listener"
 
 export const LocaleKey = "PageAction_InputMenu_mark_"
 
-export function convReadableKeysToSymbols(value: string): string {
+export function convReadableKeysToSymbols(value?: string | null): string {
+  let normalizedValue = value ?? ""
   const symbols = {
     [t(LocaleKey + INSERT.SELECTED_TEXT)]: InsertSymbol[INSERT.SELECTED_TEXT],
     [t(LocaleKey + INSERT.URL)]: InsertSymbol[INSERT.URL],
@@ -13,12 +14,13 @@ export function convReadableKeysToSymbols(value: string): string {
     [t(LocaleKey + INSERT.LANG)]: InsertSymbol[INSERT.LANG],
   }
   Object.entries(symbols).forEach(([key, val]) => {
-    value = value!.replace(new RegExp(key, "g"), val)
+    normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
   })
-  return value
+  return normalizedValue
 }
 
-export function convSymbolsToReadableKeys(value: string): string {
+export function convSymbolsToReadableKeys(value?: string | null): string {
+  let normalizedValue = value ?? ""
   const symbols = {
     [InsertSymbol[INSERT.SELECTED_TEXT]]: t(LocaleKey + INSERT.SELECTED_TEXT),
     [InsertSymbol[INSERT.URL]]: t(LocaleKey + INSERT.URL),
@@ -26,9 +28,9 @@ export function convSymbolsToReadableKeys(value: string): string {
     [InsertSymbol[INSERT.LANG]]: t(LocaleKey + INSERT.LANG),
   }
   Object.entries(symbols).forEach(([key, val]) => {
-    value = value!.replace(new RegExp(key, "g"), val)
+    normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
   })
-  return value
+  return normalizedValue
 }
 
 export const paramToStr = (param: PageAction.Parameter): string => {
