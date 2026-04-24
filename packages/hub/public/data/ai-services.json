@@ -6,6 +6,10 @@
     "queryUrl": "https://chatgpt.com/?prompt=%s",
     "autoSubmit": false,
     "faviconUrl": "https://chatgpt.com/favicon.ico",
+    "inputSelectors": [
+      "#prompt-textarea",
+      "[data-testid='prompt-textarea']"
+    ],
     "submitSelectors": [
       "form button.composer-submit-button-color",
       "button#composer-submit-button",
@@ -32,6 +36,10 @@
     "queryUrl": "https://claude.ai/new?q=%s",
     "autoSubmit": false,
     "faviconUrl": "https://favicon.im/claude.ai",
+    "inputSelectors": [
+      "div[contenteditable='true'][aria-label]",
+      "div[contenteditable='true'].ProseMirror"
+    ],
     "submitSelectors": [
       "#main-content button._claude_1abo4_159",
       "#main-content button.can-focus:has(svg[viewBox='0 0 256 256'])"
@@ -43,6 +51,16 @@
     "url": "https://www.perplexity.ai",
     "queryUrl": "https://www.perplexity.ai/search/new?q=%s",
     "autoSubmit": true,
-    "faviconUrl": "https://favicon.im/perplexity.ai"
+    "faviconUrl": "https://favicon.im/perplexity.ai",
+    "inputSelectors": [
+      "div#ask-input",
+      "div[contenteditable='true'][role='textbox']"
+    ],
+    "submitSelectors": [
+      "button[type='button']:has(use[*|href='#pplx-icon-custom-perplexity-v2v'])",
+      "button[type='button']:has(use[*|href='#pplx-icon-arrow-up'])",
+      "button[type='button']:has(use[*|href^='#pplx-icon-arrow-right'])",
+      "button[aria-label='Submit']"
+    ]
   }
 ]
