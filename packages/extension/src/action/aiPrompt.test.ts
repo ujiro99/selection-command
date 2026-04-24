@@ -3,9 +3,7 @@ import { AiPrompt } from "./aiPrompt"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
 import { Storage } from "@/services/storage"
-import { getWindowPosition } from "@/services/screen"
-import { getUILanguage } from "@/services/i18n"
-import { OPEN_MODE, PAGE_ACTION_CONTROL, PAGE_ACTION_EVENT } from "@/const"
+import { OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import type { AiService } from "@/types"
 
 vi.mock("@/services/ipc", () => ({
