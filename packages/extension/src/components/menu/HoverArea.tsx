@@ -1,8 +1,8 @@
 import { useState, useEffect, type RefObject } from "react"
 
 type Props = {
-  anchorRef: RefObject<HTMLButtonElement>
-  contentRef: RefObject<HTMLDivElement>
+  anchorRef: RefObject<HTMLElement>
+  contentRef: RefObject<HTMLElement>
   isHorizontal: boolean
 }
 

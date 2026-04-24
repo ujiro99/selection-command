@@ -65,32 +65,16 @@ export function PageActionItem(props: Props): JSX.Element {
   const isKey = isKeyboardParam(param)
   const isScroll = isScrollParam(param)
 
-  // For HoverArea
   const contentRef = useRef<HTMLDivElement | null>(null)
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
-  const [contentRect, setContentRect] = useState<DOMRect | null>(null)
 
   const onHoverTrigger = (hover: boolean) => {
     if (isEditing && !hover) return
     setIsOpen(hover)
-    // Delay to wait finishing animation.
-    setTimeout(() => {
-      if (anchorRef.current && contentRef.current) {
-        setAnchorRect(anchorRef.current.getBoundingClientRect())
-        setContentRect(contentRef.current.getBoundingClientRect())
-      }
-    }, 250)
   }
 
   const handlePointerDownOutside = () => {
     handleClickEditFinish()
     setIsOpen(false)
-    setTimeout(() => {
-      if (anchorRef.current && contentRef.current) {
-        setAnchorRect(anchorRef.current.getBoundingClientRect())
-        setContentRect(contentRef.current.getBoundingClientRect())
-      }
-    }, 250)
   }
 
   const handleClickEdit = () => {
@@ -248,8 +232,8 @@ export function PageActionItem(props: Props): JSX.Element {
             </div>
             <PopoverArrow className="fill-white mt-[-1px]" height={6} />
             <HoverArea
-              anchor={anchorRect}
-              content={contentRect}
+              anchorRef={anchorRef}
+              contentRef={contentRef}
               isHorizontal={true}
             />
           </PopoverContent>
