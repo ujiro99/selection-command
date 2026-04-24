@@ -26,6 +26,7 @@ export function Menu(): JSX.Element {
         { [css.menuVertical]: !isHorizontal },
       )}
       ref={menuRef}
+      role="menubar"
       data-testid={TEST_IDS.menuBar}
     >
       {commandTree.map((node) => (

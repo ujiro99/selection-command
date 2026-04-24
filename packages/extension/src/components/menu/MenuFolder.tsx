@@ -75,7 +75,7 @@ export const MenuFolder = (props: {
   const { folder, children, isHorizontal, depth = 0 } = props
   const [triggeredFolder, setTriggeredFolder] = useState("")
   const [hoveredFolder, setHoveredFolder] = useState("")
-  const activeFolder = triggeredFolder || hoveredFolder
+  const childActiveFolder = triggeredFolder || hoveredFolder
   const { inTransition } = React.useContext(popupContext)
 
   // Resolve the effective style for this folder's content.
@@ -172,7 +172,7 @@ export const MenuFolder = (props: {
                 menuRef={props.menuRef}
                 onHoverTrigger={setTriggeredFolder}
                 onHoverContent={setHoveredFolder}
-                activeFolder={activeFolder}
+                activeFolder={childActiveFolder}
                 depth={depth + 1}
                 key={child.content.id}
               />
