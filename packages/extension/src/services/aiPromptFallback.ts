@@ -3,7 +3,7 @@ import type { AiService } from "@/types"
 
 /**
  * Normalize raw JSON data fetched from the external endpoint into AiService[].
- * Items missing required fields are silently skipped.
+ * Items missing required fields are skipped with a warning.
  * Services with a queryUrl may omit inputSelectors/submitSelectors.
  */
 export const normalizeServices = (raw: unknown[]): AiService[] => {
