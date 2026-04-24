@@ -1,10 +1,5 @@
-import React, { useState, useRef, useEffect } from "react"
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-} from "@/components/ui/menubar"
+import React, { useState, useRef } from "react"
+import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { ScrollAreaConditional } from "@/components/ui/scroll-area"
 
 import { SIDE, FOLDER_STYLE } from "@/const"
@@ -25,6 +20,7 @@ export type MenuTreeNodeProps = {
   menuRef: React.RefObject<HTMLDivElement>
   onHoverTrigger: (enterVal: any) => void
   onHoverContent: (enterVal: any) => void
+  activeFolder: string
   depth?: number
 }
 
@@ -36,6 +32,7 @@ export const MenuTreeNode = (props: MenuTreeNodeProps): JSX.Element => {
     menuRef,
     onHoverTrigger,
     onHoverContent,
+    activeFolder,
     depth = 0,
   } = props
 
@@ -57,6 +54,7 @@ export const MenuTreeNode = (props: MenuTreeNodeProps): JSX.Element => {
         menuRef={menuRef}
         onHoverTrigger={onHoverTrigger}
         onHoverContent={onHoverContent}
+        activeFolder={activeFolder}
         depth={depth}
       />
     )
@@ -71,6 +69,7 @@ export const MenuFolder = (props: {
   menuRef: React.RefObject<HTMLDivElement>
   onHoverTrigger: (enterVal: any) => void
   onHoverContent: (enterVal: any) => void
+  activeFolder: string
   depth?: number
 }) => {
   const { folder, children, isHorizontal, depth = 0 } = props
@@ -93,68 +92,8 @@ export const MenuFolder = (props: {
       : SIDE.top
     : SIDE.right
 
-  // For HoverArea
   const anchorRef = useRef<HTMLButtonElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
-  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
-  const [contentRect, setContentRect] = useState<DOMRect | null>(null)
-  const resizeObserverRef = useRef<ResizeObserver | null>(null)
-
-  const updateRects = () => {
-    if (anchorRef.current && contentRef.current) {
-      setAnchorRect(anchorRef.current.getBoundingClientRect())
-      setContentRect(contentRef.current.getBoundingClientRect())
-    }
-  }
-
-  const onHoverTrigger = (enterVal: any) => {
-    props.onHoverTrigger(enterVal)
-
-    // Initial rect update
-    updateRects()
-
-    // Setup ResizeObserver if not already setup
-    if (!resizeObserverRef.current) {
-      resizeObserverRef.current = new ResizeObserver(() => {
-        updateRects()
-      })
-
-      // Observe anchor element
-      if (anchorRef.current) {
-        resizeObserverRef.current.observe(anchorRef.current)
-      }
-
-      // Observe content element if available, otherwise retry once
-      if (contentRef.current) {
-        resizeObserverRef.current.observe(contentRef.current)
-      } else {
-        setTimeout(() => {
-          if (contentRef.current && resizeObserverRef.current) {
-            resizeObserverRef.current.observe(contentRef.current)
-            updateRects()
-          }
-        }, 50)
-      }
-    }
-  }
-
-  // Cleanup ResizeObserver on unmount
-  useEffect(() => {
-    return () => {
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect()
-        resizeObserverRef.current = null
-      }
-    }
-  }, [])
-
-  // Also cleanup when folder changes
-  useEffect(() => {
-    if (resizeObserverRef.current) {
-      resizeObserverRef.current.disconnect()
-      resizeObserverRef.current = null
-    }
-  }, [folder.id])
 
   const baseSize = anchorRef.current?.getBoundingClientRect().height ?? 0
   const menubarStyle = isHorizontalContent
@@ -174,43 +113,49 @@ export const MenuFolder = (props: {
       }
 
   return (
-    <MenubarMenu value={folder.id}>
-      <MenubarTrigger
-        className={cn(css.item, css.folder, {
-          [css.itemHorizontal]: isHorizontal,
-          [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
-          [css.folderHorizontal]: isHorizontal,
-          "pointer-events-none": inTransition,
-        })}
-        ref={anchorRef}
-        aria-haspopup="menu"
-        title={folder.title}
-        {...onHover(onHoverTrigger, folder.id)}
-      >
-        <MenuImage
-          className={css.itemImg}
-          src={folder.iconUrl}
-          svg={folder.iconSvg}
-          alt={folder.title}
-        />
-        {!(folder.onlyIcon && isHorizontal) && (
-          <span className={cn(css.itemTitle, css.title)}>{folder.title}</span>
-        )}
-        {!isHorizontal && <ChevronRight className={css.icon} />}
-      </MenubarTrigger>
-      <MenubarContent
+    <Popover open={props.activeFolder === folder.id}>
+      <PopoverAnchor asChild>
+        <button
+          className={cn("rounded-sm", css.item, css.folder, {
+            [css.itemHorizontal]: isHorizontal,
+            [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
+            [css.folderHorizontal]: isHorizontal,
+            "pointer-events-none": inTransition,
+            "bg-accent text-accent-foreground":
+              props.activeFolder === folder.id,
+          })}
+          ref={anchorRef}
+          aria-haspopup="menu"
+          title={folder.title}
+          {...onHover(props.onHoverTrigger, folder.id)}
+        >
+          <MenuImage
+            className={css.itemImg}
+            src={folder.iconUrl}
+            svg={folder.iconSvg}
+            alt={folder.title}
+          />
+          {!(folder.onlyIcon && isHorizontal) && (
+            <span className={cn(css.itemTitle, css.title)}>{folder.title}</span>
+          )}
+          {!isHorizontal && <ChevronRight className={css.icon} />}
+        </button>
+      </PopoverAnchor>
+      <PopoverContent
         side={menuSide}
-        sideOffset={isHorizontal ? 2 : -2} // offset based on trigger button position in parent menu
-        className={cn({ flex: isHorizontalContent })}
+        sideOffset={isHorizontal ? 2 : -2}
+        align="start"
+        className={cn("bg-background border", {
+          flex: isHorizontalContent,
+        })}
         ref={contentRef}
-        onCloseAutoFocus={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
         {...onHover(props.onHoverContent, folder.id)}
       >
         <ScrollAreaConditional scrollEnabled={!isHorizontalContent}>
-          <Menubar
-            value={activeFolder}
+          <div
             style={menubarStyle}
-            className={cn({
+            className={cn("flex items-center p-0.5 gap-[1px]", {
               [css.menuVertical]: !isHorizontalContent,
               "flex-wrap": isHorizontalContent,
             })}
@@ -223,18 +168,19 @@ export const MenuFolder = (props: {
                 menuRef={props.menuRef}
                 onHoverTrigger={setTriggeredFolder}
                 onHoverContent={setHoveredFolder}
+                activeFolder={activeFolder}
                 depth={depth + 1}
                 key={child.content.id}
               />
             ))}
-          </Menubar>
+          </div>
         </ScrollAreaConditional>
         <HoverArea
-          anchor={anchorRect}
-          content={contentRect}
+          anchorRef={anchorRef}
+          contentRef={contentRef}
           isHorizontal={isHorizontal}
         />
-      </MenubarContent>
-    </MenubarMenu>
+      </PopoverContent>
+    </Popover>
   )
 }

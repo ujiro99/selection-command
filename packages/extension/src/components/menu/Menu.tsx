@@ -1,5 +1,4 @@
 import { useRef, useState } from "react"
-import { Menubar } from "@/components/ui/menubar"
 
 import { STYLE, SIDE } from "@/const"
 import { TEST_IDS } from "@/testIds"
@@ -21,11 +20,11 @@ export function Menu(): JSX.Element {
   const activeFolder = hoverTrigger || hoverContent
 
   return (
-    <Menubar
-      value={activeFolder}
-      className={cn({
-        [css.menuVertical]: !isHorizontal,
-      })}
+    <div
+      className={cn(
+        "flex items-center p-0.5 gap-[1px] border rounded-md bg-background",
+        { [css.menuVertical]: !isHorizontal },
+      )}
       ref={menuRef}
       data-testid={TEST_IDS.menuBar}
     >
@@ -38,8 +37,9 @@ export function Menu(): JSX.Element {
           menuRef={menuRef}
           onHoverTrigger={setHoverTrigger}
           onHoverContent={setHoverContent}
+          activeFolder={activeFolder}
         />
       ))}
-    </Menubar>
+    </div>
   )
 }
