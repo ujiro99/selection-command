@@ -125,6 +125,7 @@ export const MenuFolder = (props: {
               props.activeFolder === folder.id,
           })}
           ref={anchorRef}
+          role="menuitem"
           aria-haspopup="menu"
           title={folder.title}
           {...onHover(props.onHoverTrigger, folder.id)}
@@ -150,6 +151,7 @@ export const MenuFolder = (props: {
         })}
         ref={contentRef}
         onInteractOutside={(e) => e.preventDefault()}
+        role="menu"
         {...onHover(props.onHoverContent, folder.id)}
       >
         <ScrollAreaConditional scrollEnabled={!isHorizontalContent}>
@@ -159,6 +161,8 @@ export const MenuFolder = (props: {
               [css.menuVertical]: !isHorizontalContent,
               "flex-wrap": isHorizontalContent,
             })}
+            data-orientation={isHorizontalContent ? "horizontal" : "vertical"}
+            role="menubar"
           >
             {children?.map((child) => (
               <MenuTreeNode

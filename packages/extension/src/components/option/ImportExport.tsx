@@ -430,6 +430,7 @@ export function ImportExport() {
           />
         )}
         okText={t("Option_Import")}
+        okDisabled={importJson == null}
       >
         <input
           type="file"
