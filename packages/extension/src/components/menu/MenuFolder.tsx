@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useContext, useLayoutEffect } from "react"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { ScrollAreaConditional } from "@/components/ui/scroll-area"
 
@@ -18,8 +18,8 @@ export type MenuTreeNodeProps = {
   isHorizontal: boolean
   side: SIDE
   menuRef: React.RefObject<HTMLDivElement>
-  onHoverTrigger: (enterVal: any) => void
-  onHoverContent: (enterVal: any) => void
+  onHoverTrigger: (enterVal: string) => void
+  onHoverContent: (enterVal: string) => void
   activeFolder: string
   depth?: number
 }
@@ -67,16 +67,17 @@ export const MenuFolder = (props: {
   isHorizontal: boolean
   side: SIDE
   menuRef: React.RefObject<HTMLDivElement>
-  onHoverTrigger: (enterVal: any) => void
-  onHoverContent: (enterVal: any) => void
+  onHoverTrigger: (enterVal: string) => void
+  onHoverContent: (enterVal: string) => void
   activeFolder: string
   depth?: number
 }) => {
   const { folder, children, isHorizontal, depth = 0 } = props
+  const isOpen = props.activeFolder === folder.id
   const [triggeredFolder, setTriggeredFolder] = useState("")
   const [hoveredFolder, setHoveredFolder] = useState("")
   const childActiveFolder = triggeredFolder || hoveredFolder
-  const { inTransition } = React.useContext(popupContext)
+  const { inTransition } = useContext(popupContext)
 
   // Resolve the effective style for this folder's content.
   // INHERIT: use parent style (isHorizontal), otherwise use folder's explicit style setting.
@@ -95,7 +96,14 @@ export const MenuFolder = (props: {
   const anchorRef = useRef<HTMLButtonElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
 
-  const baseSize = anchorRef.current?.getBoundingClientRect().height ?? 0
+  // Anchor button height used to cap the popover content size (maxWidth/maxHeight) so
+  // it doesn't grow beyond a fixed number of items.
+  const [baseSize, setBaseSize] = useState(0)
+  useLayoutEffect(() => {
+    if (anchorRef.current && isOpen) {
+      setBaseSize(anchorRef.current.getBoundingClientRect().height)
+    }
+  }, [isOpen])
   const menubarStyle = isHorizontalContent
     ? {
         maxWidth:
@@ -113,7 +121,7 @@ export const MenuFolder = (props: {
       }
 
   return (
-    <Popover open={props.activeFolder === folder.id}>
+    <Popover open={isOpen}>
       <PopoverAnchor asChild>
         <button
           className={cn("rounded-sm", css.item, css.folder, {
@@ -121,12 +129,12 @@ export const MenuFolder = (props: {
             [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
             [css.folderHorizontal]: isHorizontal,
             "pointer-events-none": inTransition,
-            "bg-accent text-accent-foreground":
-              props.activeFolder === folder.id,
+            "bg-accent text-accent-foreground": isOpen,
           })}
           ref={anchorRef}
           role="menuitem"
           aria-haspopup="menu"
+          aria-expanded={isOpen}
           title={folder.title}
           {...onHover(props.onHoverTrigger, folder.id)}
         >
