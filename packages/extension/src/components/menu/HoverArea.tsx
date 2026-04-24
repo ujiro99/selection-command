@@ -20,8 +20,10 @@ export const HoverArea = (props: Props) => {
 
     let rafId: number | null = null
     let isMonitoring = false
+    let disposed = false
 
     const update = () => {
+      if (disposed) return
       setAnchorRect(anchor.getBoundingClientRect())
       setContentRect(content.getBoundingClientRect())
     }
@@ -85,6 +87,7 @@ export const HoverArea = (props: Props) => {
     resizeObserver.observe(content)
 
     return () => {
+      disposed = true
       stop()
       clearTimeout(fallbackTimeout)
       resizeObserver.disconnect()
