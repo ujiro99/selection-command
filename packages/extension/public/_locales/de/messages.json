@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "Bitte geben Sie die Seitenregel ein."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Sortieren:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Domain"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Erstellt"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Priorität"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Nach URL-Muster filtern..."
+  },
   "Option_urlPattern": {
     "message": "URL-Muster"
   },

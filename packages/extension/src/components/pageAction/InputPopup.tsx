@@ -219,7 +219,6 @@ export function InputPopup(): JSX.Element {
 
   const anchor = isTextNode(targetElm) ? targetElm.parentElement : targetElm
   const align = calcAlign(targetElm, mousePos?.x ?? 0)
-  const noFocus = (e: Event) => e.preventDefault()
 
   return (
     <>
@@ -232,7 +231,6 @@ export function InputPopup(): JSX.Element {
             side={"top"}
             align={align}
             sideOffset={8}
-            onOpenAutoFocus={noFocus}
           >
             <InputMenu targetElm={targetElm} disabled={disabled} />
           </PopoverContent>

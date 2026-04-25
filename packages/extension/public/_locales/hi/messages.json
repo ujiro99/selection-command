@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "पेज नियम दर्ज करें।"
   },
+  "Option_pageRules_sortBy": {
+    "message": "क्रमबद्ध करें:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "डोमेन"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "बनाया गया"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "प्राथमिकता"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "URL पैटर्न द्वारा फ़िल्टर करें..."
+  },
   "Option_urlPattern": {
     "message": "URL पैटर्न"
   },

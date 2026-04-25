@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "페이지 규칙을 입력하세요."
   },
+  "Option_pageRules_sortBy": {
+    "message": "정렬:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "도메인"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "생성일"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "우선순위"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "URL 패턴으로 필터..."
+  },
   "Option_urlPattern": {
     "message": "URL 패턴"
   },

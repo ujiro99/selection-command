@@ -71,20 +71,18 @@ export function toUrl(
   if (useClipboard && isEmpty(text)) {
     text = clipboardText ?? ""
   }
-  // Escape forward slashes first
-  let textEscaped = text.replaceAll("/", "\\/")
   // URL encode the text
-  textEscaped = encodeURIComponent(textEscaped)
+  let textEncoded = encodeURIComponent(text)
   // Apply space encoding based on the spaceEncoding parameter
   if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
     // Replace %20 (default URL encoding for space) with +
-    textEscaped = textEscaped.replaceAll("%20", "+")
+    textEncoded = textEncoded.replaceAll("%20", "+")
   } else if (spaceEncoding === SPACE_ENCODING.DASH) {
-    textEscaped = textEscaped.replaceAll("%20", "-")
+    textEncoded = textEncoded.replaceAll("%20", "-")
   } else if (spaceEncoding === SPACE_ENCODING.UNDERSCORE) {
-    textEscaped = textEscaped.replaceAll("%20", "_")
+    textEncoded = textEncoded.replaceAll("%20", "_")
   }
-  return searchUrl?.replace("%s", textEscaped)
+  return searchUrl?.replace("%s", textEncoded)
 }
 
 export function escapeJson(str: string) {
