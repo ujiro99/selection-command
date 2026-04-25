@@ -3,8 +3,13 @@
     "id": "chatgpt",
     "name": "ChatGPT",
     "url": "https://chatgpt.com",
+    "queryUrl": "https://chatgpt.com/?prompt=%s",
+    "autoSubmit": false,
     "faviconUrl": "https://chatgpt.com/favicon.ico",
-    "inputSelectors": ["#prompt-textarea", "[data-testid='prompt-textarea']"],
+    "inputSelectors": [
+      "#prompt-textarea",
+      "[data-testid='prompt-textarea']"
+    ],
     "submitSelectors": [
       "form button.composer-submit-button-color",
       "button#composer-submit-button",
@@ -16,7 +21,9 @@
     "name": "Gemini",
     "url": "https://gemini.google.com/app",
     "faviconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
-    "inputSelectors": [".ql-editor[contenteditable='true']"],
+    "inputSelectors": [
+      ".ql-editor[contenteditable='true']"
+    ],
     "submitSelectors": [
       "button.send-button",
       "button mat-icon[fonticon='send']"
@@ -26,6 +33,8 @@
     "id": "claude",
     "name": "Claude",
     "url": "https://claude.ai/new",
+    "queryUrl": "https://claude.ai/new?q=%s",
+    "autoSubmit": false,
     "faviconUrl": "https://favicon.im/claude.ai",
     "inputSelectors": [
       "div[contenteditable='true'][aria-label]",
@@ -40,6 +49,8 @@
     "id": "perplexity",
     "name": "Perplexity",
     "url": "https://www.perplexity.ai",
+    "queryUrl": "https://www.perplexity.ai/search/new?q=%s",
+    "autoSubmit": true,
     "faviconUrl": "https://favicon.im/perplexity.ai",
     "inputSelectors": [
       "div#ask-input",

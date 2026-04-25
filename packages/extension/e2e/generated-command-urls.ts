@@ -8,7 +8,6 @@ export type UrlEntry = { title: string; locale: string; searchUrl: string }
 export const COMMAND_URLS: UrlEntry[] = [
   { title: "Google", locale: "en", searchUrl: "https://google.com/search?q=%s" },
   { title: "Google Image", locale: "en", searchUrl: "https://google.com/search?q=%s&tbm=isch" },
-  { title: "Amazon", locale: "en", searchUrl: "https://www.amazon.com/s?k=%s" },
   { title: "Youtube", locale: "en", searchUrl: "https://www.youtube.com/results?search_query=%s" },
   { title: "Netflix", locale: "en", searchUrl: "https://www.netflix.com/search?q=%s" },
   { title: "Pinterest", locale: "en", searchUrl: "https://www.pinterest.com/search/pins/?q=%s" },
