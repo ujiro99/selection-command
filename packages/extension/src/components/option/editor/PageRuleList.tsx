@@ -121,9 +121,9 @@ export const PageRuleList = ({
     }
   }, [pageRuleArray.fields])
 
-  const upsert = (rule: PageRule) => {
+  const upsert = (rule: PageRule, originalUrlPattern: string) => {
     const index = pageRuleArray.fields.findIndex(
-      (field) => field.urlPattern === rule.urlPattern,
+      (field) => field.urlPattern === originalUrlPattern,
     )
     if (index === -1) {
       pageRuleArray.append(rule)
@@ -218,7 +218,7 @@ export const PageRuleList = ({
           <PageRuleDialog
             open={dialogOpen}
             onOpenChange={setDialogOpen}
-            onSubmit={(rule) => upsert(rule)}
+            onSubmit={(rule) => upsert(rule, editorRef.current.urlPattern)}
             linkCommandEnabled={linkCommandEnabled}
             rule={editorRef.current ?? DefaultRule}
           />
