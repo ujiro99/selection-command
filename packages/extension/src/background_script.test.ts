@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { BgCommand } from "@/services/ipc"
-import { POPUP_ENABLED, LINK_COMMAND_ENABLED } from "@/const"
 
 // Mock dependencies
 vi.mock("@/services/settings/enhancedSettings")
@@ -106,52 +105,31 @@ describe("Background Script Migration", () => {
     mockSettings.updateCommands.mockResolvedValue(true)
   })
 
-  it("MG-01-a: should call enhancedSettings.get() in addPageRule function and pass correct values to Settings.set", async () => {
-    // Setup initial settings data that enhancedSettings.get() should return
+  it("MG-01-a: should call enhancedSettings.get() in addPageRule and open option page with addPageRule param when no matching rule exists", async () => {
     const initialSettings = createTestSettings()
     mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
 
-    // Import the module and get test exports
     const { testExports } = await import("./background_script")
 
-    // Call the addPageRule function
-    const mockResponse = vi.fn()
     const mockSender = {} as chrome.runtime.MessageSender
     const newUrl = "https://example.com"
 
     testExports.commandFuncs[BgCommand.addPageRule](
       { url: newUrl },
       mockSender,
-      mockResponse,
+      vi.fn(),
     )
 
-    // Wait for async operations
     await new Promise((resolve) => setTimeout(resolve, 10))
 
-    // This should fail initially because the function still uses Settings.get() instead of enhancedSettings.get()
     expect(mockEnhancedSettings.get).toHaveBeenCalled()
-
-    // Verify that Settings.set was called with the correct merged data
-    // This test expects the function to:
-    // 1. Call enhancedSettings.get() to get current settings
-    // 2. Merge the new pageRule with existing ones
-    // 3. Call Settings.set() with the merged result
-    expect(mockSettings.set).toHaveBeenCalledWith(
+    expect(mockSettings.set).not.toHaveBeenCalled()
+    expect(chrome.tabs.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        pageRules: expect.arrayContaining([
-          // Existing rule should be preserved
-          expect.objectContaining({
-            urlPattern: "https://existing.com",
-          }),
-          // New rule should be added
-          expect.objectContaining({
-            urlPattern: newUrl,
-            popupEnabled: POPUP_ENABLED.ENABLE,
-            linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
-          }),
-        ]),
+        url: expect.stringContaining(
+          `addPageRule=${encodeURIComponent(newUrl)}`,
+        ),
       }),
-      true,
     )
   })
 
