@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "ページルールを入力してください。"
   },
+  "Option_pageRules_sortBy": {
+    "message": "並び替え:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "ドメイン"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "作成日"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "優先度"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "URLパターンでフィルタ..."
+  },
   "Option_urlPattern": {
     "message": "URLパターン"
   },

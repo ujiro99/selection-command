@@ -148,6 +148,7 @@ export type PageRule = {
   popupEnabled: POPUP_ENABLED
   popupPlacement: PopupPlacementOrInherit
   linkCommandEnabled: LINK_COMMAND_ENABLED
+  createdAt?: number
 }
 
 export type StyleVariable = {

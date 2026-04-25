@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "Veuillez saisir la Règle de Page."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Trier :"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Domaine"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Créé"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Priorité"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Filtrer par modèle d'URL..."
+  },
   "Option_urlPattern": {
     "message": "Modèle d'URL"
   },

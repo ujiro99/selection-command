@@ -142,6 +142,7 @@ const commandFuncs = {
           popupEnabled: POPUP_ENABLED.ENABLE,
           popupPlacement: PopupPlacement,
           linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
+          createdAt: Date.now(),
         })
       }
       await Settings.set(
