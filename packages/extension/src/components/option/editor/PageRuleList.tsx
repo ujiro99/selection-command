@@ -26,7 +26,7 @@ import { PopupPlacement } from "@/services/option/defaultSettings"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT } from "@/const"
-import { e2a, cn } from "@/lib/utils"
+import { e2a, cn, scrollToSelector } from "@/lib/utils"
 import type { PageRule, PopupPlacementOrInherit } from "@/types"
 import { popupPlacementSchema } from "@/types/schema"
 
@@ -79,29 +79,45 @@ export const PageRuleList = ({
     keyName: "_id",
   })
 
-  // Auto-open the dialog for a specific rule when the editPageRule URL param is set.
+  // Auto-open the dialog when addPageRule or editPageRule URL param is set.
   // location.search is fixed at page load (set via chrome.tabs.create), so it is
   // safe to read it without adding it to the dependency array.
   useEffect(() => {
     if (editParamHandledRef.current) return
     const params = new URLSearchParams(location.search)
+    const addPattern = params.get("addPageRule")
     const editPattern = params.get("editPageRule")
-    if (!editPattern) {
+
+    if (!addPattern && !editPattern) {
       editParamHandledRef.current = true
       return
     }
+
+    if (addPattern) {
+      editParamHandledRef.current = true
+      const url = new URL(location.href)
+      url.searchParams.delete("addPageRule")
+      history.replaceState(null, "", url)
+      editorRef.current = { ...DefaultRule, urlPattern: addPattern }
+      setDialogOpen(true)
+      setTimeout(() => scrollToSelector("#pageRules"), 200)
+      return
+    }
+
     // Wait until settings are loaded from Chrome storage (fields starts as empty default)
     if (pageRuleArray.fields.length === 0) return
     editParamHandledRef.current = true
     const url = new URL(location.href)
     url.searchParams.delete("editPageRule")
     history.replaceState(null, "", url)
-    const field = pageRuleArray.fields.find(
-      (f) => f.urlPattern === editPattern,
-    )
+    const field = pageRuleArray.fields.find((f) => f.urlPattern === editPattern)
     if (field) {
       editorRef.current = field
       setDialogOpen(true)
+      setTimeout(
+        () => scrollToSelector(`[id="pageRule-${field.urlPattern}"]`),
+        200,
+      )
     }
   }, [pageRuleArray.fields])
 
@@ -147,6 +163,7 @@ export const PageRuleList = ({
               {pageRuleArray.fields.map((field, index) => (
                 <li
                   key={field._id}
+                  id={`pageRule-${field.urlPattern}`}
                   className={cn(
                     "flex items-center gap-2 px-2 py-1",
                     index !== 0 ? "border-t" : "",
@@ -245,17 +262,19 @@ export const PageRuleDialog = ({
     setIsCollapsibleOpen(!inherit)
   }
 
+  const resetRef = useRef(0)
   useEffect(() => {
+    clearTimeout(resetRef.current)
     if (rule != null && rule.urlPattern !== DefaultRule.urlPattern) {
       reset(rule)
       setIsCollapsibleOpen(rule.popupPlacement !== INHERIT)
     } else {
-      setTimeout(() => {
+      resetRef.current = window.setTimeout(() => {
         reset(DefaultRule)
         setIsCollapsibleOpen(false)
       }, 200)
     }
-  }, [rule])
+  }, [rule, reset])
 
   const isUpdate = rule != null
 

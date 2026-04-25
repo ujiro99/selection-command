@@ -1,7 +1,5 @@
 import {
   isDebug,
-  LINK_COMMAND_ENABLED,
-  POPUP_ENABLED,
   OPTION_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
@@ -13,14 +11,18 @@ import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
 import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
-import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
+import { PopupOption } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
-import { isSearchCommand, isPageActionCommand, matchesPageActionUrl } from "@/lib/utils"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  findMatchingPageRule,
+} from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
@@ -136,25 +138,10 @@ const commandFuncs = {
     const add = async () => {
       const settings = await enhancedSettings.get()
       const pageRules = settings.pageRules ?? []
-      const matchingRule = pageRules.find((r) =>
-        matchesPageActionUrl(r.urlPattern, param.url),
-      )
+      const matchingRule = findMatchingPageRule(pageRules, param.url)
       if (matchingRule == null) {
-        pageRules.push({
-          urlPattern: param.url,
-          popupEnabled: POPUP_ENABLED.ENABLE,
-          popupPlacement: PopupPlacement,
-          linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
-        })
-        await Settings.set(
-          {
-            ...settings,
-            pageRules,
-          },
-          true,
-        )
         chrome.tabs.create({
-          url: `${OPTION_PAGE_PATH}#pageRules`,
+          url: `${OPTION_PAGE_PATH}?addPageRule=${encodeURIComponent(param.url)}#pageRules`,
         })
       } else {
         chrome.tabs.create({

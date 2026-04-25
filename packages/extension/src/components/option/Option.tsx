@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 
 import { Settings } from "@/services/settings/settings"
-import { capitalize } from "@/lib/utils"
+import { capitalize, scrollToSelector } from "@/lib/utils"
 import { APP_ID, VERSION } from "@/const"
 
 import { Popup } from "@/components/Popup"
@@ -15,8 +15,6 @@ import StorageUsage from "@/components/option/StorageUsage"
 import { PromptHistoryBanner } from "@/components/option/PromptHistoryBanner"
 
 import css from "./Option.module.css"
-
-const SCROLL_OFFSET = 80
 
 export function Option() {
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
@@ -45,16 +43,7 @@ export function Option() {
   }, [])
 
   const onClickMenu = (hash: string) => {
-    if (!hash) return
-    const elm = document.querySelector(hash)
-    if (elm != null) {
-      const targetPosition =
-        elm.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET
-      window.scrollTo({
-        top: targetPosition,
-        behavior: "smooth",
-      })
-    }
+    scrollToSelector(hash)
   }
 
   return (

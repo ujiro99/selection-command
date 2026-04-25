@@ -15,28 +15,8 @@ import type {
   UserSettings,
   PageRule,
 } from "@/types"
-import { isEmpty } from "@/lib/utils"
+import { isEmpty, findMatchingPageRule } from "@/lib/utils"
 import { INHERIT } from "@/const"
-
-// Find page rule that matches current URL
-function findMatchingPageRule(
-  settings: Partial<SettingsType>,
-): PageRule | undefined {
-  if (!settings || typeof window === "undefined") return undefined
-
-  const rule = (settings.pageRules || [])
-    .filter((r) => !isEmpty(r.urlPattern))
-    .find((rule) => {
-      try {
-        const re = new RegExp(rule.urlPattern)
-        return window.location.href.match(re) != null
-      } catch {
-        return false
-      }
-    })
-
-  return rule
-}
 
 // Apply page rule to settings, modifying popupPlacement if needed
 function applyPageRuleToSettings(
@@ -55,16 +35,16 @@ function applyPageRuleToSettings(
 // Type definitions for section-specific hook return values
 type SectionData<T extends CacheSection> =
   T extends typeof CACHE_SECTIONS.COMMANDS
-  ? Command[]
-  : T extends typeof CACHE_SECTIONS.USER_SETTINGS
-  ? UserSettings
-  : T extends typeof CACHE_SECTIONS.STARS
-  ? Star[]
-  : T extends typeof CACHE_SECTIONS.SHORTCUTS
-  ? ShortcutSettings
-  : T extends typeof CACHE_SECTIONS.USER_STATS
-  ? UserStats
-  : any
+    ? Command[]
+    : T extends typeof CACHE_SECTIONS.USER_SETTINGS
+      ? UserSettings
+      : T extends typeof CACHE_SECTIONS.STARS
+        ? Star[]
+        : T extends typeof CACHE_SECTIONS.SHORTCUTS
+          ? ShortcutSettings
+          : T extends typeof CACHE_SECTIONS.USER_STATS
+            ? UserStats
+            : any
 
 // Common async data fetching hook
 function useAsyncData<T>(
@@ -175,7 +155,8 @@ export function useUserSettings() {
   // Find matching page rule and apply to settings
   const pageRule = useMemo(() => {
     if (!data) return undefined
-    return findMatchingPageRule(data)
+    if (typeof window === "undefined") return undefined
+    return findMatchingPageRule(data.pageRules ?? [], window.location.href)
   }, [data])
 
   const userSettings = useMemo(() => {
