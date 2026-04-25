@@ -5,11 +5,22 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Save,
   BookOpen,
-  ArrowUp,
-  ArrowDown,
-  ArrowUpDown,
+  ArrowUpAZ,
+  ArrowDownZA,
+  ArrowUp10,
+  ArrowDown01,
+  CalendarArrowDown,
+  CalendarArrowUp,
   Search,
 } from "lucide-react"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Dialog,
   DialogClose,
@@ -67,6 +78,33 @@ type PageRuleListProps = {
 
 type SortBy = "domain" | "createdAt" | "priority"
 
+const SortByArrow = ({
+  sortBy,
+  sortOrder,
+}: {
+  sortBy: SortBy
+  sortOrder: "asc" | "desc"
+}) => {
+  if (sortBy === "domain") {
+    return sortOrder === "asc" ? (
+      <ArrowUpAZ size={18} className="stroke-gray-500" />
+    ) : (
+      <ArrowDownZA size={18} className="stroke-gray-500" />
+    )
+  } else if (sortBy === "createdAt") {
+    return sortOrder === "asc" ? (
+      <CalendarArrowUp size={18} className="stroke-gray-500" />
+    ) : (
+      <CalendarArrowDown size={18} className="stroke-gray-500" />
+    )
+  }
+  return sortOrder === "asc" ? (
+    <ArrowUp10 size={18} className="stroke-gray-500" />
+  ) : (
+    <ArrowDown01 size={18} className="stroke-gray-500" />
+  )
+}
+
 const extractDomain = (urlPattern: string): string => {
   try {
     return new URL(urlPattern.replace(/\*/g, "x")).hostname
@@ -101,13 +139,13 @@ export const PageRuleList = ({
     keyName: "_id",
   })
 
-  const handleSortClick = (column: SortBy) => {
-    if (sortBy === column) {
-      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
-    } else {
-      setSortBy(column)
-      setSortOrder("asc")
-    }
+  const handleSortByChange = (column: SortBy) => {
+    setSortBy(column)
+    setSortOrder("asc")
+  }
+
+  const handleSortOrderToggle = () => {
+    setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
   }
 
   const sortedFilteredFields = useMemo(() => {
@@ -164,12 +202,21 @@ export const PageRuleList = ({
       control={control}
       name="pageRules"
       render={() => (
-        <FormItem>
-          <div className="relative">
+        <FormItem className="relative">
+          <div
+            className="absolute -top-11"
+            style={
+              {
+                left: addButtonRef.current?.offsetWidth
+                  ? `calc(100% - ${addButtonRef.current?.offsetWidth}px)`
+                  : 0,
+              } as React.CSSProperties
+            }
+          >
             <Button
               type="button"
               variant="outline"
-              className="absolute bottom-0 left-[100%] translate-x-[-105%] px-2 rounded-md transition font-mono hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
+              className="px-2 rounded-md transition font-mono hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setDialogOpen(true)}
               ref={addButtonRef}
             >
@@ -185,37 +232,8 @@ export const PageRuleList = ({
               text={t("pageRules_tooltip")}
             />
           </div>
-          <div className="flex flex-col gap-2 mt-2">
-            <div className="flex items-center gap-1 text-sm text-gray-600">
-              <span className="mr-1 shrink-0">{t("pageRules_sortBy")}</span>
-              {(["domain", "createdAt", "priority"] as SortBy[]).map(
-                (column) => (
-                  <button
-                    key={column}
-                    type="button"
-                    onClick={() => handleSortClick(column)}
-                    className={cn(
-                      "flex items-center gap-0.5 px-2 py-1 rounded-md text-xs border transition",
-                      sortBy === column
-                        ? "bg-gray-200 border-gray-400 text-gray-800"
-                        : "bg-white border-gray-200 text-gray-500 hover:bg-gray-50",
-                    )}
-                  >
-                    {t(`pageRules_sortBy_${column}`)}
-                    {sortBy === column ? (
-                      sortOrder === "asc" ? (
-                        <ArrowUp size={12} />
-                      ) : (
-                        <ArrowDown size={12} />
-                      )
-                    ) : (
-                      <ArrowUpDown size={12} />
-                    )}
-                  </button>
-                ),
-              )}
-            </div>
-            <div className="relative">
+          <div className="flex gap-4 mt-4">
+            <div className="relative flex-1">
               <Search
                 size={14}
                 className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
@@ -227,6 +245,34 @@ export const PageRuleList = ({
                 placeholder={t("pageRules_filter_placeholder")}
                 className="w-full pl-7 pr-3 h-8 text-sm rounded-md border border-input bg-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               />
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="text-sm text-gray-600 mr-1 shrink-0">
+                {t("pageRules_sortBy")}
+              </span>
+              <Select onValueChange={handleSortByChange} value={sortBy}>
+                <SelectTrigger className="text-sm h-8 w-auto min-w-28 rounded-lg">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {(["priority", "domain", "createdAt"] as SortBy[]).map(
+                      (column) => (
+                        <SelectItem value={column} key={column}>
+                          {t(`pageRules_sortBy_${column}`)}
+                        </SelectItem>
+                      ),
+                    )}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <button
+                type="button"
+                onClick={handleSortOrderToggle}
+                className="px-1.5 py-1 border border-input shadow-sm bg-white rounded-lg hover:bg-accent transition duration-50 leading-none"
+              >
+                <SortByArrow sortBy={sortBy} sortOrder={sortOrder} />
+              </button>
             </div>
           </div>
           <FormControl>
