@@ -1,6 +1,11 @@
 import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
 import { getWindowPosition } from "@/services/screen"
-import { isValidString, generateRandomID, safeInterpolate, toUrl } from "@/lib/utils"
+import {
+  isValidString,
+  generateRandomID,
+  safeInterpolate,
+  toUrl,
+} from "@/lib/utils"
 import {
   OPEN_MODE,
   PAGE_ACTION_OPEN_MODE,
@@ -94,6 +99,12 @@ export const AiPrompt = {
 
       // Build steps without the DOM input step.
       const submitSelector = service.submitSelectors.join(", ")
+      if (!service.autoSubmit && submitSelector.length === 0) {
+        console.warn(
+          `[AiPrompt] queryUrl mode: submitSelectors is empty for "${service.id}" but autoSubmit is false. Submit step will be skipped.`,
+        )
+      }
+
       steps = [
         {
           id: generateRandomID(),
@@ -202,7 +213,8 @@ export const AiPrompt = {
         selectedText: selectionText,
         srcUrl: location.href,
         clipboardText: "",
-        useClipboard: !useQueryUrl && (needClipboard || (useClipboard ?? false)),
+        useClipboard:
+          !useQueryUrl && (needClipboard || (useClipboard ?? false)),
       }
       try {
         await Storage.set<SidePanelPendingAction>(
