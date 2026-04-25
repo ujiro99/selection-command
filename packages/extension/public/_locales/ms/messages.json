@@ -654,7 +654,7 @@
     "message": "Keutamaan"
   },
   "Option_pageRules_filter_placeholder": {
-    "message": "Tapis mengikut URL..."
+    "message": "Tapis mengikut corak URL..."
   },
   "Option_urlPattern": {
     "message": "Pola URL"

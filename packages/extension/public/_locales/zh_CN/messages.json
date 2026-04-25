@@ -654,7 +654,7 @@
     "message": "优先级"
   },
   "Option_pageRules_filter_placeholder": {
-    "message": "按URL过滤..."
+    "message": "按URL模式过滤..."
   },
   "Option_urlPattern": {
     "message": "URL模式"

@@ -654,7 +654,7 @@
     "message": "우선순위"
   },
   "Option_pageRules_filter_placeholder": {
-    "message": "URL로 필터..."
+    "message": "URL 패턴으로 필터..."
   },
   "Option_urlPattern": {
     "message": "URL 패턴"

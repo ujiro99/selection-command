@@ -2,7 +2,14 @@ import { useEffect, useState, useRef, useMemo } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Save, BookOpen, ArrowUp, ArrowDown, ArrowUpDown, Search } from "lucide-react"
+import {
+  Save,
+  BookOpen,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+  Search,
+} from "lucide-react"
 import {
   Dialog,
   DialogClose,
@@ -79,7 +86,7 @@ export const PageRuleList = ({
   const addButtonRef = useRef<HTMLButtonElement>(null)
   const [sortBy, setSortBy] = useState<SortBy>("priority")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
-  const [filterUrl, setFilterUrl] = useState("")
+  const [urlPatternQuery, setUrlPatternQuery] = useState("")
 
   const setDialogOpen = (open: boolean) => {
     _setDialogOpen(open)
@@ -108,11 +115,11 @@ export const PageRuleList = ({
     let items = pageRuleArray.fields.map((field, index) => ({ field, index }))
 
     // Filter by URL
-    if (filterUrl.trim()) {
+    if (urlPatternQuery.trim()) {
       items = items.filter(({ field }) => {
         try {
-          const re = new RegExp(field.urlPattern)
-          return re.test(filterUrl)
+          const re = new RegExp(urlPatternQuery)
+          return re.test(field.urlPattern)
         } catch {
           return false
         }
@@ -138,7 +145,7 @@ export const PageRuleList = ({
     })
 
     return items
-  }, [pageRuleArray.fields, sortBy, sortOrder, filterUrl])
+  }, [pageRuleArray.fields, sortBy, sortOrder, urlPatternQuery])
 
   const upsert = (rule: PageRule) => {
     const index = pageRuleArray.fields.findIndex(
@@ -215,8 +222,8 @@ export const PageRuleList = ({
               />
               <input
                 type="text"
-                value={filterUrl}
-                onChange={(e) => setFilterUrl(e.target.value)}
+                value={urlPatternQuery}
+                onChange={(e) => setUrlPatternQuery(e.target.value)}
                 placeholder={t("pageRules_filter_placeholder")}
                 className="w-full pl-7 pr-3 h-8 text-sm rounded-md border border-input bg-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
               />

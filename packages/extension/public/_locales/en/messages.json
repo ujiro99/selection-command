@@ -655,7 +655,7 @@
     "message": "Priority"
   },
   "Option_pageRules_filter_placeholder": {
-    "message": "Filter by URL..."
+    "message": "Filter by URL pattern..."
   },
   "Option_urlPattern": {
     "message": "URL Pattern"

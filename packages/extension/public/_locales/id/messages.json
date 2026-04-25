@@ -654,7 +654,7 @@
     "message": "Prioritas"
   },
   "Option_pageRules_filter_placeholder": {
-    "message": "Filter berdasarkan URL..."
+    "message": "Filter berdasarkan pola URL..."
   },
   "Option_urlPattern": {
     "message": "Pola URL"

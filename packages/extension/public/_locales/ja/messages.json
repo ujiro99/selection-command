@@ -654,7 +654,7 @@
     "message": "優先度"
   },
   "Option_pageRules_filter_placeholder": {
-    "message": "URLでフィルタ..."
+    "message": "URLパターンでフィルタ..."
   },
   "Option_urlPattern": {
     "message": "URLパターン"
