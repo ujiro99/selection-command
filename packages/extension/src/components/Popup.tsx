@@ -102,8 +102,6 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       }
     }, [visible])
 
-    const noFocus = (e: Event) => e.preventDefault()
-
     const handleOnHover = (hover: boolean) => {
       setIsHover(hover)
       props.onHover?.(hover)
@@ -123,8 +121,6 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
               alignOffset={alignOffset}
               className={cn(css.popup, isPreview && "z-10 mt-2")}
               style={userStyles}
-              onOpenAutoFocus={noFocus}
-              onCloseAutoFocus={noFocus}
               {...onHover(handleOnHover, true)}
             >
               {!isContextMenu ? <Menu /> : null}

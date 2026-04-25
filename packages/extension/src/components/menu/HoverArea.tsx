@@ -1,13 +1,109 @@
+import { useState, useEffect, type RefObject } from "react"
+
 type Props = {
-  anchor: DOMRect | null
-  content: DOMRect | null
+  anchorRef: RefObject<HTMLElement>
+  contentRef: RefObject<HTMLElement>
   isHorizontal: boolean
 }
 
 type Placement = "top" | "bottom" | "left" | "right"
 
 export const HoverArea = (props: Props) => {
-  const { anchor, content, isHorizontal } = props
+  const { anchorRef, contentRef, isHorizontal } = props
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null)
+  const [contentRect, setContentRect] = useState<DOMRect | null>(null)
+
+  useEffect(() => {
+    const anchor = anchorRef.current
+    const content = contentRef.current
+    if (!anchor || !content) return
+
+    let rafId: number | null = null
+    let isMonitoring = false
+    let disposed = false
+
+    const update = () => {
+      if (disposed) return
+      setAnchorRect(anchor.getBoundingClientRect())
+      setContentRect(content.getBoundingClientRect())
+    }
+
+    const loop = () => {
+      if (isMonitoring) {
+        update()
+        rafId = requestAnimationFrame(loop)
+      }
+    }
+
+    const start = () => {
+      if (!isMonitoring) {
+        isMonitoring = true
+        loop()
+      }
+    }
+
+    const stop = () => {
+      isMonitoring = false
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+      }
+      update()
+    }
+
+    update()
+
+    // Track opening animation immediately on mount
+    start()
+
+    // Fallback: stop after 500ms if no animation events fire
+    const fallbackTimeout = setTimeout(stop, 500)
+
+    const onAnimationStart = () => start()
+    const onAnimationEnd = () => {
+      clearTimeout(fallbackTimeout)
+      stop()
+    }
+
+    const startEvents = ["animationstart", "transitionstart"] as const
+    const endEvents = [
+      "animationend",
+      "transitionend",
+      "animationcancel",
+      "transitioncancel",
+    ] as const
+
+    startEvents.forEach((e) => {
+      anchor.addEventListener(e, onAnimationStart)
+      content.addEventListener(e, onAnimationStart)
+    })
+    endEvents.forEach((e) => {
+      anchor.addEventListener(e, onAnimationEnd)
+      content.addEventListener(e, onAnimationEnd)
+    })
+
+    const resizeObserver = new ResizeObserver(update)
+    resizeObserver.observe(anchor)
+    resizeObserver.observe(content)
+
+    return () => {
+      disposed = true
+      stop()
+      clearTimeout(fallbackTimeout)
+      resizeObserver.disconnect()
+      startEvents.forEach((e) => {
+        anchor.removeEventListener(e, onAnimationStart)
+        content.removeEventListener(e, onAnimationStart)
+      })
+      endEvents.forEach((e) => {
+        anchor.removeEventListener(e, onAnimationEnd)
+        content.removeEventListener(e, onAnimationEnd)
+      })
+    }
+  }, [anchorRef, contentRef])
+
+  const anchor = anchorRect
+  const content = contentRect
 
   if (!anchor || !content) {
     return null
