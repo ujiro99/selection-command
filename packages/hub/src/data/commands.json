@@ -1577,5 +1577,17 @@
     "spaceEncoding": "plus",
     "tags": ["Search", "News"],
     "addedAt": "2026-04-12T04:19:57.112Z"
+  },
+  {
+    "id": "d014f5d2-addf-5711-aa96-325931752f70",
+    "title": "greasy",
+    "searchUrl": "https://greasyfork.org/en/scripts?sort=updated&q=%s",
+    "description": "search in greasyfork.com for userscripts",
+    "iconUrl": "https://greasyfork.org/vite/assets/blacklogo16-DftkYuVe.png",
+    "openMode": "sidePanel",
+    "openModeSecondary": "backgroundTab",
+    "spaceEncoding": "percent",
+    "tags": ["Search"],
+    "addedAt": "2026-04-25T18:33:42.549Z"
   }
 ]
