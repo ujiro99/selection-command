@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { AiPrompt } from "./aiPrompt"
+import { AiPrompt, convertUrlsToMarkdown } from "./aiPrompt"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
 import { Storage } from "@/services/storage"
@@ -77,6 +77,7 @@ const makeAutoSubmitService = (overrides?: Partial<AiService>): AiService => ({
   selectorType: "css" as any,
   queryUrl: "https://www.perplexity.ai/search/new?q=%s",
   autoSubmit: true,
+  urlToMarkdown: true,
   ...overrides,
 })
 
@@ -279,6 +280,123 @@ describe("AiPrompt.execute", () => {
       const storedPending = vi.mocked(Storage.set).mock.calls[0][1] as any
       const stepTypes = storedPending.steps.map((s: any) => s.param.type)
       expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.input)
+    })
+  })
+
+  describe("URL to Markdown conversion (urlToMarkdown)", () => {
+    it("AP-11: should convert bare URLs to Markdown format when urlToMarkdown is true", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeAutoSubmitService())
+
+      await AiPrompt.execute({
+        selectionText: "https://example.com/page",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "perplexity",
+            prompt: "Summarize: {{SelectedText}}",
+          },
+        } as any,
+        position: { x: 0, y: 0 },
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      expect(sentArgs.url.selectionText).toBe(
+        "Summarize: [https://example.com/page](https://example.com/page)",
+      )
+    })
+
+    it("AP-12: should convert {{Url}} expansion to Markdown format when urlToMarkdown is true", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeAutoSubmitService())
+
+      await AiPrompt.execute({
+        selectionText: "hello",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "perplexity",
+            prompt: "Summarize {{Url}}",
+          },
+        } as any,
+        position: { x: 0, y: 0 },
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      // location.href is "https://example.com/page" from beforeEach mock
+      expect(sentArgs.url.selectionText).toBe(
+        "Summarize [https://example.com/page](https://example.com/page)",
+      )
+    })
+
+    it("AP-13: should NOT convert URLs when urlToMarkdown is false", async () => {
+      vi.mocked(findAiService).mockResolvedValue(
+        makeQueryService({ urlToMarkdown: false }),
+      )
+
+      await AiPrompt.execute({
+        selectionText: "https://example.com/page",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            prompt: "Summarize: {{SelectedText}}",
+          },
+        } as any,
+        position: { x: 0, y: 0 },
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      expect(sentArgs.url.selectionText).toBe("Summarize: https://example.com/page")
+    })
+  })
+
+  describe("convertUrlsToMarkdown", () => {
+    it("CU-01: should convert a bare URL to Markdown link format", () => {
+      expect(convertUrlsToMarkdown("https://example.com")).toBe(
+        "[https://example.com](https://example.com)",
+      )
+    })
+
+    it("CU-02: should convert multiple bare URLs in text", () => {
+      const result = convertUrlsToMarkdown(
+        "Check https://example.com and https://other.com for details",
+      )
+      expect(result).toBe(
+        "Check [https://example.com](https://example.com) and [https://other.com](https://other.com) for details",
+      )
+    })
+
+    it("CU-03: should not double-convert URLs already in Markdown format", () => {
+      const input = "[https://example.com](https://example.com)"
+      expect(convertUrlsToMarkdown(input)).toBe(input)
+    })
+
+    it("CU-03b: should not convert Markdown links with non-URL text labels", () => {
+      const input = "[Example Site](https://example.com)"
+      expect(convertUrlsToMarkdown(input)).toBe(input)
+    })
+
+    it("CU-04: should handle text with no URLs unchanged", () => {
+      expect(convertUrlsToMarkdown("hello world")).toBe("hello world")
+    })
+
+    it("CU-05: should convert http URLs as well as https", () => {
+      expect(convertUrlsToMarkdown("http://example.com")).toBe(
+        "[http://example.com](http://example.com)",
+      )
+    })
+
+    it("CU-06: should strip trailing comma from URL", () => {
+      const result = convertUrlsToMarkdown("Check https://example.com, please")
+      expect(result).toBe(
+        "Check [https://example.com](https://example.com), please",
+      )
+    })
+
+    it("CU-07: should strip trailing period from URL", () => {
+      const result = convertUrlsToMarkdown("See https://example.com.")
+      expect(result).toBe("See [https://example.com](https://example.com).")
     })
   })
 })

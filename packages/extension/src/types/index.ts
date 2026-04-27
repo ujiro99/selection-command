@@ -313,6 +313,8 @@ export type AiService = {
   queryUrl?: string
   /** When true, the service processes the prompt automatically after navigation (no submit click needed). */
   autoSubmit?: boolean
+  /** When true, bare URLs in the prompt are converted to Markdown link format [URL](URL) before sending via queryUrl. */
+  urlToMarkdown?: boolean
 }
 
 export type AiServicesCache = {

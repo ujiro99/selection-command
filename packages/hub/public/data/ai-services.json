@@ -51,6 +51,7 @@
     "url": "https://www.perplexity.ai",
     "queryUrl": "https://www.perplexity.ai/search/new?q=%s",
     "autoSubmit": true,
+    "urlToMarkdown": true,
     "faviconUrl": "https://favicon.im/perplexity.ai",
     "inputSelectors": [
       "div#ask-input",
