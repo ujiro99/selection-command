@@ -216,12 +216,11 @@ const commandFuncs = {
   ): boolean => {
     const remove = async () => {
       const current = await Storage.getCommands()
-      const found = current.find((c) => c.id === param.id)
-      if (!found) {
+      const newCommands = current.filter((c) => c.id !== param.id)
+      if (newCommands.length === current.length) {
         response(false)
         return
       }
-      const newCommands = current.filter((c) => c.id !== param.id)
       await Storage.setCommands(newCommands)
       response(true)
     }

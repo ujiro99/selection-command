@@ -118,7 +118,9 @@ export const DownloadButton = (): JSX.Element => {
   }, [open])
 
   useEffect(() => {
+    const hubOrigin = new URL(HUB_URL).origin
     const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== hubOrigin) return
       const { action, command, id } = event.data ?? {}
       if (action === "AddCommand") {
         if (typeof command !== "string") return
