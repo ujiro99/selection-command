@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import clsx from "clsx"
+import { toast, Toaster } from "sonner"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { useSection } from "@/hooks/useSettings"
 import { useDetectUrlChanged } from "@/hooks/useDetectUrlChanged"
@@ -12,6 +13,7 @@ import {
   PopoverArrow,
 } from "@/components/ui/popover"
 import { SCREEN } from "@/const"
+import { t } from "@/services/i18n"
 
 const TooltipDuration = 2000
 
@@ -115,21 +117,61 @@ export const DownloadButton = (): JSX.Element => {
     return () => clearTimeout(timer)
   }, [open])
 
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const { action, command, id } = event.data ?? {}
+      if (action === "AddCommand") {
+        if (typeof command !== "string") return
+        Ipc.send(BgCommand.addCommand, { command })
+          .then((res) => {
+            if (res) {
+              toast.success(t("commandHub_add_success"))
+            } else {
+              toast.error(t("commandHub_add_error"))
+            }
+          })
+          .catch(() => {
+            toast.error(t("commandHub_add_error"))
+          })
+      } else if (action === "DeleteCommand") {
+        if (typeof id !== "string") return
+        Ipc.send(BgCommand.removeCommand, { id })
+          .then((res) => {
+            if (res) {
+              toast.success(t("commandHub_delete_success"))
+            } else {
+              toast.error(t("commandHub_delete_error"))
+            }
+          })
+          .catch(() => {
+            toast.error(t("commandHub_delete_error"))
+          })
+      }
+    }
+    window.addEventListener("message", handleMessage)
+    return () => {
+      window.removeEventListener("message", handleMessage)
+    }
+  }, [])
+
   return (
-    <Popover open={open}>
-      <PopoverAnchor virtualRef={{ current: position }} />
-      {shouldRender && (
-        <PopoverContent
-          className={clsx(
-            "bg-stone-800 min-w-4 px-2 py-1.5 text-xs text-white shadow-md",
-          )}
-          side="top"
-          arrowPadding={-1}
-        >
-          Command added!
-          <PopoverArrow className="fill-gray-800" height={6} />
-        </PopoverContent>
-      )}
-    </Popover>
+    <>
+      <Toaster position="bottom-center" />
+      <Popover open={open}>
+        <PopoverAnchor virtualRef={{ current: position }} />
+        {shouldRender && (
+          <PopoverContent
+            className={clsx(
+              "bg-stone-800 min-w-4 px-2 py-1.5 text-xs text-white shadow-md",
+            )}
+            side="top"
+            arrowPadding={-1}
+          >
+            Command added!
+            <PopoverArrow className="fill-gray-800" height={6} />
+          </PopoverContent>
+        )}
+      </Popover>
+    </>
   )
 }

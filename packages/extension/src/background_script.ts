@@ -209,6 +209,26 @@ const commandFuncs = {
     return true
   },
 
+  [BgCommand.removeCommand]: (
+    param: { id: string },
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const remove = async () => {
+      const current = await Storage.getCommands()
+      const found = current.find((c) => c.id === param.id)
+      if (!found) {
+        response(false)
+        return
+      }
+      const newCommands = current.filter((c) => c.id !== param.id)
+      await Storage.setCommands(newCommands)
+      response(true)
+    }
+    remove()
+    return true
+  },
+
   [BgCommand.canOpenInTab]: (
     _: unknown,
     sender: Sender,

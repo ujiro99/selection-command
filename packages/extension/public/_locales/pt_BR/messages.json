@@ -1247,5 +1247,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Não é possível executar nesta página (URL da página não corresponde)"
+  },
+  "commandHub_add_success": {
+    "message": "Comando adicionado!"
+  },
+  "commandHub_add_error": {
+    "message": "Falha ao adicionar o comando."
+  },
+  "commandHub_delete_success": {
+    "message": "Comando excluído."
+  },
+  "commandHub_delete_error": {
+    "message": "Falha ao excluir o comando."
   }
 }

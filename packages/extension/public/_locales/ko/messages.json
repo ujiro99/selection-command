@@ -1244,5 +1244,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "이 페이지에서 실행할 수 없습니다 (페이지 URL이 일치하지 않습니다)"
+  },
+  "commandHub_add_success": {
+    "message": "명령이 추가되었습니다!"
+  },
+  "commandHub_add_error": {
+    "message": "명령 추가에 실패했습니다."
+  },
+  "commandHub_delete_success": {
+    "message": "명령이 삭제되었습니다."
+  },
+  "commandHub_delete_error": {
+    "message": "명령 삭제에 실패했습니다."
   }
 }

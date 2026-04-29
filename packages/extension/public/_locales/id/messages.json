@@ -1247,5 +1247,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak dapat dijalankan di halaman ini (URL Halaman tidak cocok)"
+  },
+  "commandHub_add_success": {
+    "message": "Perintah ditambahkan!"
+  },
+  "commandHub_add_error": {
+    "message": "Gagal menambahkan perintah."
+  },
+  "commandHub_delete_success": {
+    "message": "Perintah dihapus."
+  },
+  "commandHub_delete_error": {
+    "message": "Gagal menghapus perintah."
   }
 }
