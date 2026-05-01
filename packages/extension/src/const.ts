@@ -351,6 +351,7 @@ export const NEW_HUB_SHAREABLE_OPEN_MODES: ReadonlySet<string> = new Set([
   OPEN_MODE.BACKGROUND_TAB,
   OPEN_MODE.SIDE_PANEL,
   OPEN_MODE.PAGE_ACTION,
+  OPEN_MODE.AI_PROMPT,
 ])
 
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Share2 } from "lucide-react"
+import { Share } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import { shareCommandToHub } from "@/services/hubShare"
@@ -28,7 +28,7 @@ export const ShareButton = ({ command }: Props) => {
       )}
       onClick={handleClick}
     >
-      <Share2
+      <Share
         className={cn(
           "stroke-gray-500 group-hover/share-btn:stroke-green-600",
           status === "sent" && "stroke-green-600",
