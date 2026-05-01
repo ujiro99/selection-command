@@ -203,9 +203,21 @@ const commandFuncs = {
       return true
     }
 
-    Settings.addCommands([cmd]).then(() => {
-      response(true)
-    })
+    Settings.addCommands([cmd])
+      .then(() => {
+        return sendEvent(
+          ANALYTICS_EVENTS.COMMAND_ADD,
+          {
+            event_label: cmd.openMode,
+            source_type: sourceInfo.sourceType,
+            source_id: sourceInfo.sourceId,
+          },
+          SCREEN.COMMAND_HUB,
+        )
+      })
+      .then(() => {
+        response(true)
+      })
     return true
   },
 
@@ -216,12 +228,22 @@ const commandFuncs = {
   ): boolean => {
     const remove = async () => {
       const current = await Storage.getCommands()
-      const newCommands = current.filter((c) => c.id !== param.id)
-      if (newCommands.length === current.length) {
-        response(false)
-        return
+      const commandToRemove = current.find((c) => c.id === param.id)
+      if (commandToRemove) {
+        const newCommands = current.filter((c) => c.id !== param.id)
+        if (newCommands.length === current.length) {
+          response(false)
+          return
+        }
+        await Storage.setCommands(newCommands)
+        await sendEvent(
+          ANALYTICS_EVENTS.COMMAND_REMOVE,
+          {
+            event_label: commandToRemove.openMode,
+          },
+          SCREEN.COMMAND_HUB,
+        )
       }
-      await Storage.setCommands(newCommands)
       response(true)
     }
     remove()

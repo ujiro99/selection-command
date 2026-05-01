@@ -12,7 +12,7 @@ import {
   PopoverAnchor,
   PopoverArrow,
 } from "@/components/ui/popover"
-import { SCREEN } from "@/const"
+import { SCREEN, HUB_URL } from "@/const"
 import { t } from "@/services/i18n"
 
 const TooltipDuration = 2000
@@ -32,6 +32,10 @@ export const DownloadButton = (): JSX.Element => {
       const id = button.dataset.id
       if (command == null) return
       button.dataset.clickable = "true"
+
+      // Deprecated:
+      // We will remove this in the future.
+      // Please use postMessage to communicate with the content script.
       button.addEventListener("click", () => {
         Ipc.send(BgCommand.addCommand, { command }).then((res) => {
           if (res) {
