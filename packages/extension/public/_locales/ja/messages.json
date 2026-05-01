@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "ページルールを入力してください。"
   },
+  "Option_pageRules_sortBy": {
+    "message": "並び替え:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "ドメイン"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "作成日"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "優先度"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "URLパターンでフィルタ..."
+  },
   "Option_urlPattern": {
     "message": "URLパターン"
   },
@@ -1229,5 +1244,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "このページでは実行できません（ページURLが一致しません）"
+  },
+  "commandHub_add_success": {
+    "message": "コマンドを追加しました！"
+  },
+  "commandHub_add_error": {
+    "message": "コマンドの追加に失敗しました。"
+  },
+  "commandHub_delete_success": {
+    "message": "コマンドを削除しました。"
+  },
+  "commandHub_delete_error": {
+    "message": "コマンドの削除に失敗しました。"
   }
 }

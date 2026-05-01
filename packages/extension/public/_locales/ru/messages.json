@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "Введите правило страницы."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Сортировка:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Домен"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Создано"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Приоритет"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Фильтр по шаблону URL..."
+  },
   "Option_urlPattern": {
     "message": "Шаблон URL"
   },
@@ -1232,5 +1247,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Невозможно выполнить на этой странице (URL страницы не совпадает)"
+  },
+  "commandHub_add_success": {
+    "message": "Команда добавлена!"
+  },
+  "commandHub_add_error": {
+    "message": "Не удалось добавить команду."
+  },
+  "commandHub_delete_success": {
+    "message": "Команда удалена."
+  },
+  "commandHub_delete_error": {
+    "message": "Не удалось удалить команду."
   }
 }

@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from "vitest"
 import { cmd2text, cmd2uuid, getCommands, getSearchUrl } from "./command"
-import { OPEN_MODE, SPACE_ENCODING } from "@/const"
+import { OPEN_MODE, SPACE_ENCODING, HUB_SRC_UUID } from "@/const"
 import type { SearchCommand, PageActionCommand } from "@/types"
 
 vi.mock("@/data/commands.json", () => ({
@@ -46,20 +46,20 @@ describe("Command Operations", () => {
     test("CH-01: Normal case: SearchCommand is correctly converted to JSON", () => {
       // Arrange
       const searchCommand: SearchCommand & { download: number; star: number } =
-      {
-        id: "test-id",
-        title: "Test Command",
-        description: "Test Description",
-        tags: [],
-        addedAt: "2024-01-01",
-        openMode: OPEN_MODE.POPUP,
-        searchUrl: "https://example.com/search?q=%s",
-        iconUrl: "https://example.com/icon.ico",
-        openModeSecondary: OPEN_MODE.TAB,
-        spaceEncoding: SPACE_ENCODING.PLUS,
-        download: 0,
-        star: 0,
-      }
+        {
+          id: "test-id",
+          title: "Test Command",
+          description: "Test Description",
+          tags: [],
+          addedAt: "2024-01-01",
+          openMode: OPEN_MODE.POPUP,
+          searchUrl: "https://example.com/search?q=%s",
+          iconUrl: "https://example.com/icon.ico",
+          openModeSecondary: OPEN_MODE.TAB,
+          spaceEncoding: SPACE_ENCODING.PLUS,
+          download: 0,
+          star: 0,
+        }
 
       // Act
       const result = cmd2text(searchCommand)
@@ -74,6 +74,8 @@ describe("Command Operations", () => {
         openMode: OPEN_MODE.POPUP,
         openModeSecondary: OPEN_MODE.TAB,
         spaceEncoding: SPACE_ENCODING.PLUS,
+        sourceType: "hubCommunity",
+        sourceId: HUB_SRC_UUID,
       })
     })
 
@@ -114,6 +116,8 @@ describe("Command Operations", () => {
           openMode: "none",
           steps: [],
         },
+        sourceType: "hubCommunity",
+        sourceId: HUB_SRC_UUID,
       })
     })
 

@@ -1,25 +1,28 @@
 import {
   isDebug,
-  LINK_COMMAND_ENABLED,
-  POPUP_ENABLED,
   OPTION_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
   SCREEN,
+  COMMAND_SOURCE_TYPE,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
 import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
-import { PopupOption, PopupPlacement } from "@/services/option/defaultSettings"
+import { PopupOption } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
-import { isSearchCommand, isPageActionCommand } from "@/lib/utils"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  findMatchingPageRule,
+} from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
@@ -135,24 +138,16 @@ const commandFuncs = {
     const add = async () => {
       const settings = await enhancedSettings.get()
       const pageRules = settings.pageRules ?? []
-      if (pageRules.find((r) => r.urlPattern === param.url) == null) {
-        pageRules.push({
-          urlPattern: param.url,
-          popupEnabled: POPUP_ENABLED.ENABLE,
-          popupPlacement: PopupPlacement,
-          linkCommandEnabled: LINK_COMMAND_ENABLED.INHERIT,
+      const matchingRule = findMatchingPageRule(pageRules, param.url)
+      if (matchingRule == null) {
+        chrome.tabs.create({
+          url: `${OPTION_PAGE_PATH}?addPageRule=${encodeURIComponent(param.url)}#pageRules`,
+        })
+      } else {
+        chrome.tabs.create({
+          url: `${OPTION_PAGE_PATH}?editPageRule=${encodeURIComponent(matchingRule.urlPattern)}#pageRules`,
         })
       }
-      await Settings.set(
-        {
-          ...settings,
-          pageRules,
-        },
-        true,
-      )
-      chrome.tabs.create({
-        url: `${OPTION_PAGE_PATH}#pageRules`,
-      })
     }
     add()
     return false
@@ -166,6 +161,17 @@ const commandFuncs = {
     const params = JSON.parse(param.command)
     const isSearch = isSearchCommand(params)
     const isPageAction = isPageActionCommand(params)
+    const sourceType = (params as { sourceType?: unknown }).sourceType
+    const sourceId = (params as { sourceId?: unknown }).sourceId
+    const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
+      sourceType as COMMAND_SOURCE_TYPE,
+    )
+      ? (sourceType as COMMAND_SOURCE_TYPE)
+      : undefined
+    const sourceInfo = {
+      sourceType: normalizedSourceType,
+      sourceId: typeof sourceId === "string" ? sourceId : undefined,
+    }
 
     const cmd = isSearch
       ? {
@@ -173,6 +179,7 @@ const commandFuncs = {
           title: params.title,
           searchUrl: params.searchUrl,
           iconUrl: params.iconUrl,
+          ...sourceInfo,
           openMode: params.openMode,
           openModeSecondary: params.openModeSecondary,
           spaceEncoding: params.spaceEncoding,
@@ -183,6 +190,7 @@ const commandFuncs = {
             id: params.id,
             title: params.title,
             iconUrl: params.iconUrl,
+            ...sourceInfo,
             openMode: params.openMode,
             pageActionOption: params.pageActionOption,
             popupOption: PopupOption,
@@ -195,9 +203,50 @@ const commandFuncs = {
       return true
     }
 
-    Settings.addCommands([cmd]).then(() => {
+    Settings.addCommands([cmd])
+      .then(() => {
+        return sendEvent(
+          ANALYTICS_EVENTS.COMMAND_ADD,
+          {
+            event_label: cmd.openMode,
+            source_type: sourceInfo.sourceType,
+            source_id: sourceInfo.sourceId,
+          },
+          SCREEN.COMMAND_HUB,
+        )
+      })
+      .then(() => {
+        response(true)
+      })
+    return true
+  },
+
+  [BgCommand.removeCommand]: (
+    param: { id: string },
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const remove = async () => {
+      const current = await Storage.getCommands()
+      const commandToRemove = current.find((c) => c.id === param.id)
+      if (commandToRemove) {
+        const newCommands = current.filter((c) => c.id !== param.id)
+        if (newCommands.length === current.length) {
+          response(false)
+          return
+        }
+        await Storage.setCommands(newCommands)
+        await sendEvent(
+          ANALYTICS_EVENTS.COMMAND_REMOVE,
+          {
+            event_label: commandToRemove.openMode,
+          },
+          SCREEN.COMMAND_HUB,
+        )
+      }
       response(true)
-    })
+    }
+    remove()
     return true
   },
 

@@ -111,12 +111,12 @@ describe("toUrl", () => {
     expect(toUrl(param)).toBe("https://en.wikipedia.org/wiki/hello_world")
   })
 
-  it("TU-05: escapes forward slashes in text", () => {
+  it("TU-05: Encode slashes in the text using URL encoding.", () => {
     const param: UrlParam = {
       searchUrl: "https://example.com/search?q=%s",
       selectionText: "hello/world",
     }
-    expect(toUrl(param)).toBe("https://example.com/search?q=hello%5C%2Fworld")
+    expect(toUrl(param)).toBe("https://example.com/search?q=hello%2Fworld")
   })
 
   it("TU-06: uses clipboard text when useClipboard is true and selectionText is empty", () => {

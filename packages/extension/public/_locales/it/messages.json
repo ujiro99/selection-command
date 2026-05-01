@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "Inserisci la regola pagina."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Ordina:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Dominio"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Creato"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Priorità"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Filtra per pattern URL..."
+  },
   "Option_urlPattern": {
     "message": "Modello URL"
   },
@@ -1232,5 +1247,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Impossibile eseguire su questa pagina (l'URL della pagina non corrisponde)"
+  },
+  "commandHub_add_success": {
+    "message": "Comando aggiunto!"
+  },
+  "commandHub_add_error": {
+    "message": "Impossibile aggiungere il comando."
+  },
+  "commandHub_delete_success": {
+    "message": "Comando eliminato."
+  },
+  "commandHub_delete_error": {
+    "message": "Impossibile eliminare il comando."
   }
 }

@@ -21,6 +21,7 @@ import type {
   AiPromptCommand,
   UrlParam,
   UserVariable,
+  PageRule,
 } from "@/types"
 
 // cn function is now imported from shared package
@@ -70,20 +71,18 @@ export function toUrl(
   if (useClipboard && isEmpty(text)) {
     text = clipboardText ?? ""
   }
-  // Escape forward slashes first
-  let textEscaped = text.replaceAll("/", "\\/")
   // URL encode the text
-  textEscaped = encodeURIComponent(textEscaped)
+  let textEncoded = encodeURIComponent(text)
   // Apply space encoding based on the spaceEncoding parameter
   if (!spaceEncoding || spaceEncoding === SPACE_ENCODING.PLUS) {
     // Replace %20 (default URL encoding for space) with +
-    textEscaped = textEscaped.replaceAll("%20", "+")
+    textEncoded = textEncoded.replaceAll("%20", "+")
   } else if (spaceEncoding === SPACE_ENCODING.DASH) {
-    textEscaped = textEscaped.replaceAll("%20", "-")
+    textEncoded = textEncoded.replaceAll("%20", "-")
   } else if (spaceEncoding === SPACE_ENCODING.UNDERSCORE) {
-    textEscaped = textEscaped.replaceAll("%20", "_")
+    textEncoded = textEncoded.replaceAll("%20", "_")
   }
-  return searchUrl?.replace("%s", textEscaped)
+  return searchUrl?.replace("%s", textEncoded)
 }
 
 export function escapeJson(str: string) {
@@ -420,6 +419,39 @@ export function matchesPageActionUrl(pattern: string, url: string): boolean {
     .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
     .replace(/\*/g, ".*")
   return new RegExp(`^${regexStr}$`).test(url)
+}
+
+/**
+ * Finds the first PageRule whose urlPattern (treated as a regex) matches the given URL.
+ */
+export function findMatchingPageRule(
+  pageRules: PageRule[],
+  url: string,
+): PageRule | undefined {
+  return pageRules
+    .filter((r) => !isEmpty(r.urlPattern))
+    .find((rule) => {
+      try {
+        return new RegExp(rule.urlPattern).test(url)
+      } catch {
+        return false
+      }
+    })
+}
+
+const SCROLL_OFFSET = 80
+
+/**
+ * Smoothly scrolls the page so that the element matching `selector` is visible,
+ * accounting for a fixed header offset.
+ */
+export function scrollToSelector(selector: string): void {
+  if (!selector) return
+  const elm = document.querySelector(selector)
+  if (elm == null) return
+  const targetPosition =
+    elm.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET
+  window.scrollTo({ top: targetPosition, behavior: "smooth" })
 }
 
 /**

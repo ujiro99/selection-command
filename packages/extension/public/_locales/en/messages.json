@@ -642,6 +642,21 @@
   "Option_pageRules_add_desc": {
     "message": "Please enter the Page Rule."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Sort:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Domain"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Created"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Priority"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Filter by URL pattern..."
+  },
   "Option_urlPattern": {
     "message": "URL Pattern"
   },
@@ -1238,5 +1253,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Cannot run on this page (page URL does not match)"
+  },
+  "commandHub_add_success": {
+    "message": "Command added!"
+  },
+  "commandHub_add_error": {
+    "message": "Failed to add command."
+  },
+  "commandHub_delete_success": {
+    "message": "Command deleted."
+  },
+  "commandHub_delete_error": {
+    "message": "Failed to delete command."
   }
 }

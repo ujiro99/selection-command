@@ -3,20 +3,24 @@ import type { AiService } from "@/types"
 
 /**
  * Normalize raw JSON data fetched from the external endpoint into AiService[].
- * Items missing required fields are silently skipped.
+ * Items missing required fields are skipped with a warning.
+ * Services with a queryUrl may omit inputSelectors/submitSelectors.
  */
 export const normalizeServices = (raw: unknown[]): AiService[] => {
   const results: AiService[] = []
   for (const item of raw) {
     const s = item as Partial<AiService>
-    if (
-      !s.id ||
-      !s.url ||
-      !Array.isArray(s.inputSelectors) ||
-      !Array.isArray(s.submitSelectors) ||
-      s.inputSelectors.length === 0 ||
-      s.submitSelectors.length === 0
-    ) {
+    if (!s.id || !s.url) {
+      console.warn("Skipping invalid AI service entry:", s)
+      continue
+    }
+    const hasQueryUrl = typeof s.queryUrl === "string" && s.queryUrl.length > 0
+    const hasSelectors =
+      Array.isArray(s.inputSelectors) &&
+      Array.isArray(s.submitSelectors) &&
+      s.inputSelectors.length > 0 &&
+      s.submitSelectors.length > 0
+    if (!hasQueryUrl && !hasSelectors) {
       console.warn("Skipping invalid AI service entry:", s)
       continue
     }
@@ -25,9 +29,12 @@ export const normalizeServices = (raw: unknown[]): AiService[] => {
       name: s.name ?? s.id,
       url: s.url,
       faviconUrl: s.faviconUrl ?? "",
-      inputSelectors: s.inputSelectors,
-      submitSelectors: s.submitSelectors,
+      inputSelectors: s.inputSelectors ?? [],
+      submitSelectors: s.submitSelectors ?? [],
       selectorType: s.selectorType ?? SelectorType.css,
+      queryUrl: s.queryUrl,
+      autoSubmit: s.autoSubmit,
+      urlToMarkdown: s.urlToMarkdown,
     })
   }
   return results

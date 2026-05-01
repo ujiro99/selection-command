@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "Silakan masukkan Aturan Halaman."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Urutkan:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Domain"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Dibuat"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Prioritas"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Filter berdasarkan pola URL..."
+  },
   "Option_urlPattern": {
     "message": "Pola URL"
   },
@@ -1235,5 +1250,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak dapat dijalankan di halaman ini (URL Halaman tidak cocok)"
+  },
+  "commandHub_add_success": {
+    "message": "Perintah ditambahkan!"
+  },
+  "commandHub_add_error": {
+    "message": "Gagal menambahkan perintah."
+  },
+  "commandHub_delete_success": {
+    "message": "Perintah dihapus."
+  },
+  "commandHub_delete_error": {
+    "message": "Gagal menghapus perintah."
   }
 }

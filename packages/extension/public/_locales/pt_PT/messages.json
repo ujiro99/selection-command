@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "Por favor, insira a Regra de Página."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Ordenar:"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Domínio"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Criado"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Prioridade"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Filtrar por padrão de URL..."
+  },
   "Option_urlPattern": {
     "message": "Padrão de URL"
   },
@@ -1235,5 +1250,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Não é possível executar nesta página (URL da página não corresponde)"
+  },
+  "commandHub_add_success": {
+    "message": "Comando adicionado!"
+  },
+  "commandHub_add_error": {
+    "message": "Falha ao adicionar o comando."
+  },
+  "commandHub_delete_success": {
+    "message": "Comando eliminado."
+  },
+  "commandHub_delete_error": {
+    "message": "Falha ao eliminar o comando."
   }
 }

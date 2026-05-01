@@ -19,6 +19,7 @@ import type {
   ExecState,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   WINDOW_STATE,
+  COMMAND_SOURCE_TYPE,
 } from "@/const"
 import { INHERIT, SelectorType } from "@/const"
 import type { PageAction } from "@/services/pageAction"
@@ -48,6 +49,8 @@ export type SearchCommand = {
   title: string
   revision?: number
   iconUrl: string
+  sourceType?: COMMAND_SOURCE_TYPE
+  sourceId?: string
   openMode: OPEN_MODE
   openModeSecondary?: OPEN_MODE
   searchUrl?: string
@@ -145,6 +148,7 @@ export type PageRule = {
   popupEnabled: POPUP_ENABLED
   popupPlacement: PopupPlacementOrInherit
   linkCommandEnabled: LINK_COMMAND_ENABLED
+  createdAt?: number
 }
 
 export type StyleVariable = {
@@ -305,6 +309,12 @@ export type AiService = {
   inputSelectors: string[]
   submitSelectors: string[]
   selectorType: SelectorType
+  /** URL template with %s placeholder for prompt injection via URL query parameter. */
+  queryUrl?: string
+  /** When true, the service processes the prompt automatically after navigation (no submit click needed). */
+  autoSubmit?: boolean
+  /** When true, bare URLs in the prompt are converted to Markdown link format [URL](URL) before sending via queryUrl. */
+  urlToMarkdown?: boolean
 }
 
 export type AiServicesCache = {

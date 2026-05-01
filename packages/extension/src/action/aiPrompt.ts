@@ -1,6 +1,11 @@
 import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
 import { getWindowPosition } from "@/services/screen"
-import { isValidString, generateRandomID } from "@/lib/utils"
+import {
+  isValidString,
+  generateRandomID,
+  safeInterpolate,
+  toUrl,
+} from "@/lib/utils"
 import {
   OPEN_MODE,
   PAGE_ACTION_OPEN_MODE,
@@ -14,8 +19,30 @@ import type { OpenAndRunProps } from "@/services/pageAction/background"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
-import { INSERT, toInsertTemplate } from "@/services/pageAction"
+import { INSERT, InsertSymbol, toInsertTemplate } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
+import { getUILanguage } from "@/services/i18n"
+
+/**
+ * Convert bare URLs in text to Markdown link format [URL](URL).
+ * URLs already in Markdown link format ([text](url)) are returned unchanged.
+ * Trailing punctuation characters that are unlikely to be part of the URL are
+ * excluded from the link and preserved in the surrounding text.
+ */
+export const convertUrlsToMarkdown = (text: string): string => {
+  // The alternation tries the markdown link pattern first; if matched, leave it
+  // unchanged. Otherwise, convert bare URLs to [URL](URL) format.
+  return text.replace(
+    /\[[^\]]*\]\(([^)]*)\)|https?:\/\/[^\s<>"')\]]+/g,
+    (match) => {
+      if (match.startsWith("[")) return match
+      // Strip trailing punctuation that is unlikely to be part of the URL
+      const trimmed = match.replace(/[.,!?;:)'"]+$/, "")
+      const trailing = match.slice(trimmed.length)
+      return `[${trimmed}](${trimmed})${trailing}`
+    },
+  )
+}
 
 // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
 const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
@@ -57,59 +84,147 @@ export const AiPrompt = {
       return
     }
 
-    // Join multiple selectors with comma to support fallback matching via querySelector
-    const inputSelector = service.inputSelectors.join(", ")
-    const submitSelector = service.submitSelectors.join(", ")
-
-    const steps: PageActionStep[] = [
-      {
-        id: generateRandomID(),
-        delayMs: 0,
-        skipRenderWait: false,
-        param: {
-          type: PAGE_ACTION_CONTROL.start,
-          label: "Start",
-          mode: "aiPrompt",
-        },
-      },
-      {
-        id: generateRandomID(),
-        delayMs: 200,
-        skipRenderWait: false,
-        param: {
-          type: PAGE_ACTION_EVENT.input,
-          label: "Input prompt",
-          selector: inputSelector,
-          selectorType: SelectorType.css,
-          value: aiPromptOption.prompt,
-        },
-      },
-      {
-        id: generateRandomID(),
-        delayMs: 200,
-        skipRenderWait: false,
-        param: {
-          type: PAGE_ACTION_EVENT.click,
-          label: "Submit",
-          selector: submitSelector,
-          selectorType: SelectorType.css,
-        },
-      },
-      {
-        id: generateRandomID(),
-        delayMs: 0,
-        skipRenderWait: false,
-        param: {
-          type: PAGE_ACTION_CONTROL.end,
-          label: "End",
-        },
-      },
-    ]
-
     // Checks if any step requires clipboard data
     const needClipboard = aiPromptOption.prompt.includes(
       toInsertTemplate(INSERT.CLIPBOARD),
     )
+
+    // Use URL query input when the service supports it and clipboard is not needed.
+    // Clipboard text is unavailable in the content script context, so fall back to
+    // DOM input when the prompt template contains the clipboard placeholder.
+    const useQueryUrl = isValidString(service.queryUrl) && !needClipboard
+
+    let steps: PageActionStep[]
+    let serviceUrl: string
+    let urlParam: UrlParam
+
+    if (useQueryUrl) {
+      // Pre-expand the prompt template with synchronously available variables.
+      // INSERT.CLIPBOARD is intentionally excluded here: clipboard text is not
+      // available in the content script context and must be read asynchronously
+      // in the background. When the prompt contains {{Clipboard}}, useQueryUrl
+      // is false and the DOM input approach is used instead.
+      const expandedPrompt = safeInterpolate(aiPromptOption.prompt, {
+        [InsertSymbol[INSERT.SELECTED_TEXT]]: selectionText,
+        [InsertSymbol[INSERT.URL]]: location.href,
+        [InsertSymbol[INSERT.LANG]]: getUILanguage(),
+      })
+
+      const finalPrompt = service.urlToMarkdown
+        ? convertUrlsToMarkdown(expandedPrompt)
+        : expandedPrompt
+
+      urlParam = {
+        searchUrl: service.queryUrl!,
+        selectionText: finalPrompt,
+        useClipboard: false,
+      }
+      // Resolve the final URL for cases that require a plain string (e.g. side panel).
+      serviceUrl = toUrl(urlParam) as string
+
+      // Build steps without the DOM input step.
+      const submitSelector = service.submitSelectors.join(", ")
+      if (!service.autoSubmit && submitSelector.length === 0) {
+        console.warn(
+          `[AiPrompt] queryUrl mode: submitSelectors is empty for "${service.id}" but autoSubmit is false. Submit step will be skipped.`,
+        )
+      }
+
+      steps = [
+        {
+          id: generateRandomID(),
+          delayMs: 0,
+          skipRenderWait: false,
+          param: {
+            type: PAGE_ACTION_CONTROL.start,
+            label: "Start",
+            mode: "aiPrompt",
+          },
+        },
+        // When autoSubmit is true (e.g. Perplexity) the service processes the
+        // prompt automatically after navigation, so no submit click is needed.
+        ...(service.autoSubmit || submitSelector.length === 0
+          ? []
+          : [
+              {
+                id: generateRandomID(),
+                delayMs: 200,
+                skipRenderWait: false,
+                param: {
+                  type: PAGE_ACTION_EVENT.click,
+                  label: "Submit",
+                  selector: submitSelector,
+                  selectorType: SelectorType.css,
+                },
+              } as PageActionStep,
+            ]),
+        {
+          id: generateRandomID(),
+          delayMs: 0,
+          skipRenderWait: false,
+          param: {
+            type: PAGE_ACTION_CONTROL.end,
+            label: "End",
+          },
+        },
+      ]
+    } else {
+      // DOM input approach: type the prompt into the service's input element.
+      const inputSelector = service.inputSelectors.join(", ")
+      const submitSelector = service.submitSelectors.join(", ")
+
+      serviceUrl = service.url
+      urlParam = {
+        searchUrl: service.url,
+        selectionText,
+        useClipboard: needClipboard || (useClipboard ?? false),
+      }
+
+      steps = [
+        {
+          id: generateRandomID(),
+          delayMs: 0,
+          skipRenderWait: false,
+          param: {
+            type: PAGE_ACTION_CONTROL.start,
+            label: "Start",
+            mode: "aiPrompt",
+          },
+        },
+        {
+          id: generateRandomID(),
+          delayMs: 200,
+          skipRenderWait: false,
+          param: {
+            type: PAGE_ACTION_EVENT.input,
+            label: "Input prompt",
+            selector: inputSelector,
+            selectorType: SelectorType.css,
+            value: aiPromptOption.prompt,
+          },
+        },
+        {
+          id: generateRandomID(),
+          delayMs: 200,
+          skipRenderWait: false,
+          param: {
+            type: PAGE_ACTION_EVENT.click,
+            label: "Submit",
+            selector: submitSelector,
+            selectorType: SelectorType.css,
+          },
+        },
+        {
+          id: generateRandomID(),
+          delayMs: 0,
+          skipRenderWait: false,
+          param: {
+            type: PAGE_ACTION_CONTROL.end,
+            label: "End",
+          },
+        },
+      ]
+    }
 
     // Handle side panel mode: store pending steps in session storage, then open
     // the side panel. The background onConnect handler will pick up the pending
@@ -118,12 +233,13 @@ export const AiPrompt = {
     // browser security restrictions on navigator.clipboard in content scripts.
     if (aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL) {
       const pending: SidePanelPendingAction = {
-        url: service.url,
+        url: serviceUrl,
         steps,
         selectedText: selectionText,
         srcUrl: location.href,
         clipboardText: "",
-        useClipboard: needClipboard || (useClipboard ?? false),
+        useClipboard:
+          !useQueryUrl && (needClipboard || (useClipboard ?? false)),
       }
       try {
         await Storage.set<SidePanelPendingAction>(
@@ -135,7 +251,7 @@ export const AiPrompt = {
         return
       }
       Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
-        url: service.url,
+        url: serviceUrl,
       })
       return
     }
@@ -157,15 +273,9 @@ export const AiPrompt = {
 
     const windowPosition = await getWindowPosition()
 
-    const url: UrlParam = {
-      searchUrl: service.url,
-      selectionText,
-      useClipboard: needClipboard || (useClipboard ?? false),
-    }
-
     Ipc.send<OpenAndRunProps>(BgCommand.openAndRunPageAction, {
       commandId: command.id,
-      url,
+      url: urlParam,
       steps,
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),

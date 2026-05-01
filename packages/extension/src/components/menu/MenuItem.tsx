@@ -62,7 +62,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
             [css.itemHorizontal]: onlyIcon,
             ["hover:bg-accent"]: !inTransition,
           },
-          "rounded-sm ",
+          "rounded-sm",
         )}
         role="menuitem"
         aria-label={title}
@@ -102,9 +102,7 @@ function ImageWithState(props: ImageProps): JSX.Element {
         <img className={css.itemImg} src={iconUrl} alt="" aria-hidden="true" />
       )}
       {status === ExecState.EXECUTING && (
-        <RefreshCw
-          className={`${css.itemImg} ${css.apiIconLoading} rotate`}
-        />
+        <RefreshCw className={`${css.itemImg} ${css.apiIconLoading} rotate`} />
       )}
       {status === ExecState.SUCCESS && (
         <Check className={`${css.itemImg} ${css.apiIconSuccess}`} />

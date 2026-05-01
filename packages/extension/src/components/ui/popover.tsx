@@ -10,6 +10,9 @@ const PopoverAnchor = PopoverPrimitive.Anchor
 
 const PopoverTrigger = PopoverPrimitive.Trigger
 
+// Prevent focus from being stolen from the underlying page when popup opens/closes.
+const noFocus = (e: Event) => e.preventDefault()
+
 const PopoverContent = React.forwardRef<
   React.ElementRef<typeof PopoverPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
@@ -18,6 +21,8 @@ const PopoverContent = React.forwardRef<
     ref={ref}
     align={align}
     sideOffset={sideOffset}
+    onOpenAutoFocus={noFocus}
+    onCloseAutoFocus={noFocus}
     className={cn(
       "z-[2147483647] rounded-md shadow-xl outline-none",
       "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",

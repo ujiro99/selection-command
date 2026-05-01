@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "输入页面规则。"
   },
+  "Option_pageRules_sortBy": {
+    "message": "排序："
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "域名"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "创建日期"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "优先级"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "按URL模式过滤..."
+  },
   "Option_urlPattern": {
     "message": "URL模式"
   },
@@ -1232,5 +1247,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "无法在此页面运行（页面URL不匹配）"
+  },
+  "commandHub_add_success": {
+    "message": "命令已添加！"
+  },
+  "commandHub_add_error": {
+    "message": "添加命令失败。"
+  },
+  "commandHub_delete_success": {
+    "message": "命令已删除。"
+  },
+  "commandHub_delete_error": {
+    "message": "删除命令失败。"
   }
 }

@@ -641,6 +641,21 @@
   "Option_pageRules_add_desc": {
     "message": "Veuillez saisir la Règle de Page."
   },
+  "Option_pageRules_sortBy": {
+    "message": "Trier :"
+  },
+  "Option_pageRules_sortBy_domain": {
+    "message": "Domaine"
+  },
+  "Option_pageRules_sortBy_createdAt": {
+    "message": "Créé"
+  },
+  "Option_pageRules_sortBy_priority": {
+    "message": "Priorité"
+  },
+  "Option_pageRules_filter_placeholder": {
+    "message": "Filtrer par modèle d'URL..."
+  },
   "Option_urlPattern": {
     "message": "Modèle d'URL"
   },
@@ -1232,5 +1247,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Impossible d'exécuter sur cette page (l'URL de la page ne correspond pas)"
+  },
+  "commandHub_add_success": {
+    "message": "Commande ajoutée !"
+  },
+  "commandHub_add_error": {
+    "message": "Échec de l'ajout de la commande."
+  },
+  "commandHub_delete_success": {
+    "message": "Commande supprimée."
+  },
+  "commandHub_delete_error": {
+    "message": "Échec de la suppression de la commande."
   }
 }

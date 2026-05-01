@@ -16,11 +16,14 @@ export default function removeCssFromContentScript(): Plugin {
         const manifest = JSON.parse(src as string)
         const { content_scripts } = manifest
         if (!content_scripts) return
-        const cn = content_scripts.find((cs: any) =>
-          cs.js.some((file: string) => file.match(/content_script.tsx/)),
-        )
-        if (!cn) return
-        delete cn.css
+        // Remove the css field from all content_script entries.
+        // crxjs automatically adds CSS imports as manifest css[], but Chrome
+        // injects those into the page document (not Shadow DOM), breaking page styles.
+        // Both content_script.tsx and command_hub.tsx inject CSS manually into
+        // their Shadow roots, so manifest-level CSS injection must be suppressed.
+        for (const cs of content_scripts) {
+          delete cs.css
+        }
 
         // write
         fs.writeFileSync(
