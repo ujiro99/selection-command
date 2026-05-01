@@ -23,6 +23,27 @@ import { INSERT, InsertSymbol, toInsertTemplate } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
 
+/**
+ * Convert bare URLs in text to Markdown link format [URL](URL).
+ * URLs already in Markdown link format ([text](url)) are returned unchanged.
+ * Trailing punctuation characters that are unlikely to be part of the URL are
+ * excluded from the link and preserved in the surrounding text.
+ */
+export const convertUrlsToMarkdown = (text: string): string => {
+  // The alternation tries the markdown link pattern first; if matched, leave it
+  // unchanged. Otherwise, convert bare URLs to [URL](URL) format.
+  return text.replace(
+    /\[[^\]]*\]\(([^)]*)\)|https?:\/\/[^\s<>"')\]]+/g,
+    (match) => {
+      if (match.startsWith("[")) return match
+      // Strip trailing punctuation that is unlikely to be part of the URL
+      const trimmed = match.replace(/[.,!?;:)'"]+$/, "")
+      const trailing = match.slice(trimmed.length)
+      return `[${trimmed}](${trimmed})${trailing}`
+    },
+  )
+}
+
 // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
 const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
   switch (mode) {
@@ -89,9 +110,13 @@ export const AiPrompt = {
         [InsertSymbol[INSERT.LANG]]: getUILanguage(),
       })
 
+      const finalPrompt = service.urlToMarkdown
+        ? convertUrlsToMarkdown(expandedPrompt)
+        : expandedPrompt
+
       urlParam = {
         searchUrl: service.queryUrl!,
-        selectionText: expandedPrompt,
+        selectionText: finalPrompt,
         useClipboard: false,
       }
       // Resolve the final URL for cases that require a plain string (e.g. side panel).

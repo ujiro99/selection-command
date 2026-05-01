@@ -34,6 +34,7 @@ export const normalizeServices = (raw: unknown[]): AiService[] => {
       selectorType: s.selectorType ?? SelectorType.css,
       queryUrl: s.queryUrl,
       autoSubmit: s.autoSubmit,
+      urlToMarkdown: s.urlToMarkdown,
     })
   }
   return results
