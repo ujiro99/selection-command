@@ -61,6 +61,7 @@
       "button[type='button']:has(use[*|href='#pplx-icon-custom-perplexity-v2v'])",
       "button[type='button']:has(use[*|href='#pplx-icon-arrow-up'])",
       "button[type='button']:has(use[*|href^='#pplx-icon-arrow-right'])",
+      "button[type='button']:has(use[*|href^='#pplx-icon-player-stop-filled'])",
       "button[aria-label='Submit']"
     ]
   }

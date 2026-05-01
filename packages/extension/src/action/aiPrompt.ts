@@ -33,7 +33,7 @@ export const convertUrlsToMarkdown = (text: string): string => {
   // The alternation tries the markdown link pattern first; if matched, leave it
   // unchanged. Otherwise, convert bare URLs to [URL](URL) format.
   return text.replace(
-    /\[[^\]]*\]\([^)]*\)|https?:\/\/[^\s]+/g,
+    /\[[^\]]*\]\(([^)]*)\)|https?:\/\/[^\s<>"')\]]+/g,
     (match) => {
       if (match.startsWith("[")) return match
       // Strip trailing punctuation that is unlikely to be part of the URL
