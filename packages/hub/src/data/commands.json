@@ -1589,5 +1589,17 @@
     "spaceEncoding": "percent",
     "tags": ["Search"],
     "addedAt": "2026-04-25T18:33:42.549Z"
+  },
+  {
+    "id": "63ce5c4c-e070-5913-a8d3-6ff832a934fd",
+    "title": "MissAV",
+    "searchUrl": "https://missav123.com/ja/search/%s",
+    "description": "",
+    "iconUrl": "https://missav123.com/img/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": ["fc2"],
+    "addedAt": "2026-05-01T06:19:45.815Z"
   }
 ]
