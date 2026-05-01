@@ -1247,5 +1247,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak boleh dijalankan pada halaman ini (URL Halaman tidak sepadan)"
+  },
+  "commandHub_add_success": {
+    "message": "Arahan ditambahkan!"
+  },
+  "commandHub_add_error": {
+    "message": "Gagal menambah arahan."
+  },
+  "commandHub_delete_success": {
+    "message": "Arahan dipadam."
+  },
+  "commandHub_delete_error": {
+    "message": "Gagal memadam arahan."
   }
 }

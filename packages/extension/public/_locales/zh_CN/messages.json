@@ -1244,5 +1244,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "无法在此页面运行（页面URL不匹配）"
+  },
+  "commandHub_add_success": {
+    "message": "命令已添加！"
+  },
+  "commandHub_add_error": {
+    "message": "添加命令失败。"
+  },
+  "commandHub_delete_success": {
+    "message": "命令已删除。"
+  },
+  "commandHub_delete_error": {
+    "message": "删除命令失败。"
   }
 }

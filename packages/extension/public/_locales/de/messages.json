@@ -1244,5 +1244,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Kann auf dieser Seite nicht ausgeführt werden (Seiten-URL stimmt nicht überein)"
+  },
+  "commandHub_add_success": {
+    "message": "Befehl hinzugefügt!"
+  },
+  "commandHub_add_error": {
+    "message": "Fehler beim Hinzufügen des Befehls."
+  },
+  "commandHub_delete_success": {
+    "message": "Befehl gelöscht."
+  },
+  "commandHub_delete_error": {
+    "message": "Fehler beim Löschen des Befehls."
   }
 }

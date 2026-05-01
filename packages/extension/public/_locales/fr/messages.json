@@ -1244,5 +1244,17 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Impossible d'exécuter sur cette page (l'URL de la page ne correspond pas)"
+  },
+  "commandHub_add_success": {
+    "message": "Commande ajoutée !"
+  },
+  "commandHub_add_error": {
+    "message": "Échec de l'ajout de la commande."
+  },
+  "commandHub_delete_success": {
+    "message": "Commande supprimée."
+  },
+  "commandHub_delete_error": {
+    "message": "Échec de la suppression de la commande."
   }
 }

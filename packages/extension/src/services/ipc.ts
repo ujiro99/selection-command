@@ -23,6 +23,7 @@ export enum BgCommand {
   openShortcuts = "openShortcuts",
   addPageRule = "addPageRule",
   addCommand = "addCommand",
+  removeCommand = "removeCommand",
   execApi = "execApi",
   canOpenInTab = "canOpenInTab",
   openInTab = "openInTab",

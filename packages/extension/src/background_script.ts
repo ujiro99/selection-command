@@ -203,9 +203,50 @@ const commandFuncs = {
       return true
     }
 
-    Settings.addCommands([cmd]).then(() => {
+    Settings.addCommands([cmd])
+      .then(() => {
+        return sendEvent(
+          ANALYTICS_EVENTS.COMMAND_ADD,
+          {
+            event_label: cmd.openMode,
+            source_type: sourceInfo.sourceType,
+            source_id: sourceInfo.sourceId,
+          },
+          SCREEN.COMMAND_HUB,
+        )
+      })
+      .then(() => {
+        response(true)
+      })
+    return true
+  },
+
+  [BgCommand.removeCommand]: (
+    param: { id: string },
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const remove = async () => {
+      const current = await Storage.getCommands()
+      const commandToRemove = current.find((c) => c.id === param.id)
+      if (commandToRemove) {
+        const newCommands = current.filter((c) => c.id !== param.id)
+        if (newCommands.length === current.length) {
+          response(false)
+          return
+        }
+        await Storage.setCommands(newCommands)
+        await sendEvent(
+          ANALYTICS_EVENTS.COMMAND_REMOVE,
+          {
+            event_label: commandToRemove.openMode,
+          },
+          SCREEN.COMMAND_HUB,
+        )
+      }
       response(true)
-    })
+    }
+    remove()
     return true
   },
 
