@@ -16,9 +16,10 @@ export interface SubmitCommandInput {
   title: string
   description?: string
   iconUrl?: string
+  targetUrl: string
   openMode: string
   commandData: Record<string, unknown>
-  locale?: string
+  locale: string
   tags?: string[]
 }
 
@@ -49,18 +50,26 @@ export function toSubmitCommandInput(
 ): SubmitCommandInput | null {
   const { title, iconUrl, openMode } = cmd
 
+  const baseInput = {
+    title,
+    iconUrl,
+    openMode,
+    locale: getHubLocale(),
+  }
+
   if (openMode === OPEN_MODE.PAGE_ACTION) {
     const pa = cmd as PageActionCommand
+    const targetUrl = pa.pageActionOption?.startUrl ?? null
     return {
-      title,
-      iconUrl: iconUrl || undefined,
-      openMode,
+      ...baseInput,
+      targetUrl,
       commandData: {
-        steps: pa.pageActionOption.steps,
-        startUrl: pa.pageActionOption.startUrl,
-        openMode: pa.pageActionOption.openMode,
+        pageActionOption: {
+          steps: pa.pageActionOption.steps,
+          startUrl: pa.pageActionOption.startUrl,
+          openMode: pa.pageActionOption.openMode,
+        },
       },
-      locale: getHubLocale(),
     }
   }
 
@@ -68,16 +77,15 @@ export function toSubmitCommandInput(
   const sc = cmd as SearchCommand
   if (!sc.searchUrl) return null
 
+  const targetUrl = sc.searchUrl
   const commandData: Record<string, unknown> = { searchUrl: sc.searchUrl }
   if (sc.openModeSecondary) commandData.openModeSecondary = sc.openModeSecondary
   if (sc.spaceEncoding) commandData.spaceEncoding = sc.spaceEncoding
 
   return {
-    title,
-    iconUrl: iconUrl || undefined,
-    openMode,
+    ...baseInput,
+    targetUrl,
     commandData,
-    locale: getHubLocale(),
   }
 }
 
@@ -91,7 +99,7 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
   if (!input) return false
 
   const locale = getHubLocale()
-  const hubUrl = `${NEW_HUB_URL}/${locale}`
+  const hubUrl = `${NEW_HUB_URL}/${locale}/dashboard/commands`
 
   const hubWindow = window.open(hubUrl, "_blank")
   if (!hubWindow) {

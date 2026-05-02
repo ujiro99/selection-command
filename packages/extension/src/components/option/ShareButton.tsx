@@ -3,7 +3,13 @@ import { Share } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import { shareCommandToHub } from "@/services/hubShare"
+import { NEW_HUB_SHAREABLE_OPEN_MODES, COMMAND_SOURCE_TYPE } from "@/const"
 import type { SelectionCommand } from "@/types"
+
+const VALID_SOURCE_TYPES = new Set([
+  COMMAND_SOURCE_TYPE.SELF_CREATED,
+  COMMAND_SOURCE_TYPE.UNKNOWN,
+])
 
 type Props = {
   command: SelectionCommand
@@ -17,6 +23,13 @@ export const ShareButton = ({ command }: Props) => {
     const ok = shareCommandToHub(command)
     setStatus(ok ? "sent" : "error")
     setTimeout(() => setStatus("idle"), 2000)
+  }
+
+  if (
+    !NEW_HUB_SHAREABLE_OPEN_MODES.has(command.openMode) ||
+    !VALID_SOURCE_TYPES.has(command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN)
+  ) {
+    return null
   }
 
   return (
