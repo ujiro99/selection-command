@@ -12,7 +12,7 @@ import type {
   AiPromptCommand,
 } from "@/types"
 
-// ---- 型定義 ---------------------------------------------------------------
+// ---- Type definitions ------------------------------------------------------
 
 export interface SubmitCommandInput {
   title: string
@@ -25,7 +25,7 @@ export interface SubmitCommandInput {
   tags?: string[]
 }
 
-// ---- ロケール解決 ----------------------------------------------------------
+// ---- Locale resolution -----------------------------------------------------
 
 export function getHubLocale(): NewHubLocale {
   const lang = (
@@ -34,18 +34,18 @@ export function getHubLocale(): NewHubLocale {
     "en"
   ).toLowerCase()
 
-  // 完全一致
+  // Exact match
   for (const locale of NEW_HUB_SUPPORTED_LOCALES) {
     if (lang === locale.toLowerCase()) return locale
   }
-  // 前方一致（例: "zh-tw" → "zh-CN"、"pt-br" → "pt-BR"）
+  // Prefix match (e.g. "zh-tw" → "zh-CN", "pt-br" → "pt-BR")
   for (const locale of NEW_HUB_SUPPORTED_LOCALES) {
     if (lang.startsWith(locale.split("-")[0].toLowerCase())) return locale
   }
   return "en"
 }
 
-// ---- コマンドデータ変換 ----------------------------------------------------
+// ---- Command data conversion -----------------------------------------------
 
 export function toSubmitCommandInput(
   cmd: SelectionCommand,
@@ -93,7 +93,7 @@ export function toSubmitCommandInput(
     }
   }
 
-  // Search 系（popup / tab / window / backgroundTab / sidePanel）
+  // Search-based commands (popup / tab / window / backgroundTab / sidePanel)
   const sc = cmd as SearchCommand
   if (!sc.searchUrl) return null
 
@@ -109,10 +109,10 @@ export function toSubmitCommandInput(
   }
 }
 
-// ---- 共有メイン処理 --------------------------------------------------------
+// ---- Share main logic ------------------------------------------------------
 
 const RETRY_INTERVAL_MS = 500
-const MAX_RETRIES = 20 // 10秒
+const MAX_RETRIES = 20 // 10 seconds
 
 export function shareCommandToHub(command: SelectionCommand): boolean {
   const input = toSubmitCommandInput(command)
@@ -138,7 +138,7 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
     window.removeEventListener("message", onAck)
   }
 
-  // Hub からの ack を受け取ったらリトライを停止する
+  // Stop retrying once an ack is received from the Hub
   const onAck = (event: MessageEvent) => {
     if (event.origin !== NEW_HUB_URL) return
     if ((event.data as { type?: string })?.type === "share-command-ack") {
@@ -159,9 +159,9 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
         { type: "share-command", command: input },
         NEW_HUB_URL,
       )
-      // ack が来るまで clearInterval しない
+      // Keep the interval running until ack is received
     } catch {
-      // hub ウィンドウがまだロード中 → 次のリトライへ
+      // Hub window still loading — retry on next tick
     }
   }, RETRY_INTERVAL_MS)
 
