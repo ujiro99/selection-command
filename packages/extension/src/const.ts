@@ -323,7 +323,7 @@ export const HUB_URL = isDebug
   : "https://ujiro99.github.io/selection-command"
 
 export const NEW_HUB_URL =
-  import.meta.env.VITE_NEW_HUB_URL ?? "https://selection-command-hub.pages.dev"
+  import.meta.env?.VITE_NEW_HUB_URL ?? "https://selection-command-hub.pages.dev"
 
 export const NEW_HUB_SUPPORTED_LOCALES = [
   "de",

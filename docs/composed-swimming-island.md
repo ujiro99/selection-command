@@ -98,6 +98,7 @@ export const NEW_HUB_SHAREABLE_OPEN_MODES: ReadonlySet<string> = new Set([
   OPEN_MODE.BACKGROUND_TAB,
   OPEN_MODE.SIDE_PANEL,
   OPEN_MODE.PAGE_ACTION,
+  OPEN_MODE.AI_PROMPT, // 意図的なスコープ拡張: AiPrompt コマンドも Hub に共有可能
 ])
 ```
 

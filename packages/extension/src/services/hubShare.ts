@@ -18,7 +18,7 @@ export interface SubmitCommandInput {
   title: string
   description?: string
   iconUrl?: string
-  targetUrl: string
+  targetUrl: string | null
   openMode: string
   commandData: Record<string, unknown>
   locale: string
@@ -38,7 +38,10 @@ export function getHubLocale(): NewHubLocale {
   for (const locale of NEW_HUB_SUPPORTED_LOCALES) {
     if (lang === locale.toLowerCase()) return locale
   }
-  // Prefix match (e.g. "zh-tw" → "zh-CN", "pt-br" → "pt-BR")
+  // Prefix match (e.g. "zh-tw" → "zh-CN", "pt-br" → "pt-BR").
+  // Note: a bare "pt" browser locale resolves to the first matching entry in
+  // NEW_HUB_SUPPORTED_LOCALES (currently "pt-BR"). pt-PT users should have
+  // "pt-PT" set as their browser language to get the correct locale.
   for (const locale of NEW_HUB_SUPPORTED_LOCALES) {
     if (lang.startsWith(locale.split("-")[0].toLowerCase())) return locale
   }
@@ -123,8 +126,7 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
     return false
   }
 
-  const locale = getHubLocale()
-  const hubUrl = `${NEW_HUB_URL}/${locale}/dashboard/commands`
+  const hubUrl = `${NEW_HUB_URL}/${input.locale}/dashboard/commands`
   const hubWindow = window.open(hubUrl, "_blank")
   if (!hubWindow) {
     console.error("[HubShare] Failed to open Hub page.")
@@ -160,8 +162,13 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
         NEW_HUB_URL,
       )
       // Keep the interval running until ack is received
-    } catch {
-      // Hub window still loading — retry on next tick
+    } catch (err) {
+      if (err instanceof DOMException) {
+        // Hub window still loading — retry on next tick
+      } else {
+        cleanup()
+        console.error("[HubShare] Unexpected error during postMessage:", err)
+      }
     }
   }, RETRY_INTERVAL_MS)
 
