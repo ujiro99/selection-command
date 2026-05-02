@@ -93,6 +93,7 @@ import {
   commandSchema,
   CommandSchemaType,
   isPageActionType,
+  isAiPromptType,
 } from "@/types/schema"
 import type {
   SelectionCommand,
@@ -358,6 +359,17 @@ const CommandEditDialogInner = ({
     defaultValue: "",
   })
 
+  const pageActionOption = useWatch({
+    control: form.control,
+    name: "pageActionOption",
+  })
+
+  const aiPromptPrompt = useWatch({
+    control: form.control,
+    name: "aiPromptOption.prompt",
+    defaultValue: "",
+  })
+
   const iconUrlSrc = searchUrl || startUrl
 
   const openPageActionRecorder = async () => {
@@ -449,6 +461,42 @@ const CommandEditDialogInner = ({
       unsubscribe.forEach((unsub) => unsub())
     }
   }, [])
+
+  useEffect(() => {
+    if (!initialized) return
+    if (!isUpdate) return
+    if (!isSearchType(command)) return
+    if (command.sourceType === COMMAND_SOURCE_TYPE.SELF_CREATED) return
+    if (searchUrl !== command.searchUrl) {
+      setValue("sourceType", COMMAND_SOURCE_TYPE.SELF_UPDATED)
+      setValue("sourceId", COMMAND_SOURCE_ID.SELF_UPDATED)
+    }
+  }, [initialized, isUpdate, searchUrl, command, setValue])
+
+  useEffect(() => {
+    if (!initialized) return
+    if (!isUpdate) return
+    if (!isPageActionType(command)) return
+    if (command.sourceType === COMMAND_SOURCE_TYPE.SELF_CREATED) return
+    if (
+      JSON.stringify(pageActionOption) !==
+      JSON.stringify(command.pageActionOption)
+    ) {
+      setValue("sourceType", COMMAND_SOURCE_TYPE.SELF_UPDATED)
+      setValue("sourceId", COMMAND_SOURCE_ID.SELF_UPDATED)
+    }
+  }, [initialized, isUpdate, pageActionOption, command, setValue])
+
+  useEffect(() => {
+    if (!initialized) return
+    if (!isUpdate) return
+    if (!isAiPromptType(command)) return
+    if (command.sourceType === COMMAND_SOURCE_TYPE.SELF_CREATED) return
+    if (aiPromptPrompt !== command.aiPromptOption.prompt) {
+      setValue("sourceType", COMMAND_SOURCE_TYPE.SELF_UPDATED)
+      setValue("sourceId", COMMAND_SOURCE_ID.SELF_UPDATED)
+    }
+  }, [initialized, isUpdate, aiPromptPrompt, command, setValue])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

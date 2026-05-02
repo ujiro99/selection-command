@@ -8,6 +8,7 @@ import type { SelectionCommand } from "@/types"
 
 const VALID_SOURCE_TYPES = new Set([
   COMMAND_SOURCE_TYPE.SELF_CREATED,
+  COMMAND_SOURCE_TYPE.SELF_UPDATED,
   COMMAND_SOURCE_TYPE.UNKNOWN,
 ])
 

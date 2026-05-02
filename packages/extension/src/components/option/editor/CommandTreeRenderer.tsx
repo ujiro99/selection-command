@@ -13,7 +13,6 @@ import {
   isPageActionCommand,
 } from "@/services/option/commandUtils"
 import { calcLevel } from "@/services/option/commandTree"
-import { NEW_HUB_SHAREABLE_OPEN_MODES } from "@/const"
 
 interface Props {
   nodes: FlattenNode[]

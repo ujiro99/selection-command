@@ -4,10 +4,12 @@ import {
   OPEN_MODE,
   type NewHubLocale,
 } from "@/const"
+import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import type {
   SelectionCommand,
   SearchCommand,
   PageActionCommand,
+  AiPromptCommand,
 } from "@/types"
 
 // ---- 型定義 ---------------------------------------------------------------
@@ -57,6 +59,24 @@ export function toSubmitCommandInput(
     locale: getHubLocale(),
   }
 
+  if (openMode === OPEN_MODE.AI_PROMPT) {
+    const ai = cmd as AiPromptCommand
+    const { serviceId } = ai.aiPromptOption
+    const service = getAiServicesFallback().find((s) => s.id === serviceId)
+    const targetUrl = service?.url ?? ""
+    return {
+      ...baseInput,
+      targetUrl,
+      commandData: {
+        aiPromptOption: {
+          serviceId,
+          prompt: ai.aiPromptOption.prompt,
+          openMode: ai.aiPromptOption.openMode,
+        },
+      },
+    }
+  }
+
   if (openMode === OPEN_MODE.PAGE_ACTION) {
     const pa = cmd as PageActionCommand
     const targetUrl = pa.pageActionOption?.startUrl ?? null
@@ -96,11 +116,15 @@ const MAX_RETRIES = 20 // 10秒
 
 export function shareCommandToHub(command: SelectionCommand): boolean {
   const input = toSubmitCommandInput(command)
-  if (!input) return false
+  if (!input) {
+    console.warn(
+      "Unsupported command type or missing data. Cannot share to Hub.",
+    )
+    return false
+  }
 
   const locale = getHubLocale()
   const hubUrl = `${NEW_HUB_URL}/${locale}/dashboard/commands`
-
   const hubWindow = window.open(hubUrl, "_blank")
   if (!hubWindow) {
     console.error("[HubShare] Failed to open Hub page.")

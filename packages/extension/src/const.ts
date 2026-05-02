@@ -326,20 +326,20 @@ export const NEW_HUB_URL =
   import.meta.env.VITE_NEW_HUB_URL ?? "https://selection-command-hub.pages.dev"
 
 export const NEW_HUB_SUPPORTED_LOCALES = [
-  "ja",
-  "en",
-  "ko",
-  "zh-CN",
   "de",
+  "en",
   "es",
   "fr",
   "hi",
   "id",
   "it",
+  "ja",
+  "ko",
   "ms",
   "pt-BR",
   "pt-PT",
   "ru",
+  "zh-CN",
 ] as const
 
 export type NewHubLocale = (typeof NEW_HUB_SUPPORTED_LOCALES)[number]
@@ -372,6 +372,7 @@ export const COMMAND_USAGE = {
 export enum COMMAND_SOURCE_TYPE {
   DEFAULT = "default",
   SELF_CREATED = "selfCreated",
+  SELF_UPDATED = "selfUpdated",
   HUB_COMMUNITY = "hubCommunity",
   UNKNOWN = "unknown",
 }
@@ -379,6 +380,7 @@ export enum COMMAND_SOURCE_TYPE {
 export const COMMAND_SOURCE_ID = {
   DEFAULT: "019db873-cc03-7484-86f1-2d349389ea2b",
   SELF_CREATED: "019db8a1-4021-7ae7-8a5d-474bf132e8ff",
+  SELF_UPDATED: "019de776-d3ea-76af-99fe-340ae9bab54d",
 }
 
 export const SHORTCUT_PLACEHOLDER = "_placeholder_"
