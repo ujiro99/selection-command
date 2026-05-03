@@ -117,7 +117,11 @@ export function toSubmitCommandInput(
 const RETRY_INTERVAL_MS = 500
 const MAX_RETRIES = 20 // 10 seconds
 
+let isSharing = false
+
 export function shareCommandToHub(command: SelectionCommand): boolean {
+  if (isSharing) return false
+
   const input = toSubmitCommandInput(command)
   if (!input) {
     console.warn(
@@ -133,11 +137,13 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
     return false
   }
 
+  isSharing = true
   let retries = 0
 
   const cleanup = () => {
     clearInterval(timer)
     window.removeEventListener("message", onAck)
+    isSharing = false
   }
 
   // Stop retrying once an ack is received from the Hub
@@ -151,6 +157,10 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
 
   const timer = setInterval(() => {
     retries++
+    if (hubWindow.closed) {
+      cleanup()
+      return
+    }
     if (retries > MAX_RETRIES) {
       cleanup()
       console.error("[HubShare] Hub page did not respond in time.")
