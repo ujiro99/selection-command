@@ -133,7 +133,7 @@ export const DownloadButton = (): JSX.Element => {
    *   command: string  // JSON-stringified command object (see below)
    * }
    *
-   * The `command` field is a JSON string representing either a SearchCommand or a PageActionCommand.
+   * The `command` field is a JSON string representing a SearchCommand, an AiPromptCommand, or a PageActionCommand.
    *
    * SearchCommand (openMode is one of "popup" | "tab" | "window" | "backgroundTab" | "sidePanel"):
    * {
@@ -144,6 +144,21 @@ export const DownloadButton = (): JSX.Element => {
    *   openMode: string,          // How to open the result: "popup" | "tab" | "window" | "backgroundTab" | "sidePanel"
    *   openModeSecondary?: string, // Secondary open mode (optional)
    *   spaceEncoding?: string,    // Space encoding in URL: "plus" | "percent" (optional)
+   *   sourceType?: string,       // Origin of the command: "default" | "selfCreated" | "hubCommunity" | "unknown" (optional)
+   *   sourceId?: string          // Identifier of the source (optional)
+   * }
+   *
+   * AiPromptCommand (openMode is "aiPrompt"):
+   * {
+   *   id: string,                // Unique command identifier
+   *   title: string,             // Display name of the command
+   *   iconUrl: string,           // URL of the command icon
+   *   openMode: "aiPrompt",      // Must be "aiPrompt" for AI prompt commands
+   *   aiPromptOption: {
+   *     serviceId: string,       // ID of the AI service to use (see hub/public/data/ai-services.json)
+   *     prompt: string,          // Prompt text sent to the AI service (supports variable placeholders)
+   *     openMode: string         // How to open the AI service result: "popup" | "tab" | "window" | etc.
+   *   },
    *   sourceType?: string,       // Origin of the command: "default" | "selfCreated" | "hubCommunity" | "unknown" (optional)
    *   sourceId?: string          // Identifier of the source (optional)
    * }

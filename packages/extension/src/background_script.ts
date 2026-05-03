@@ -21,6 +21,7 @@ import { PopupAutoClose } from "@/services/popupAutoClose"
 import {
   isSearchCommand,
   isPageActionCommand,
+  isAiPromptCommand,
   findMatchingPageRule,
 } from "@/lib/utils"
 import { execute } from "@/action/background"
@@ -161,6 +162,7 @@ const commandFuncs = {
     const params = JSON.parse(param.command)
     const isSearch = isSearchCommand(params)
     const isPageAction = isPageActionCommand(params)
+    const isAiPrompt = isAiPromptCommand(params)
     const sourceType = (params as { sourceType?: unknown }).sourceType
     const sourceId = (params as { sourceId?: unknown }).sourceId
     const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
@@ -185,17 +187,27 @@ const commandFuncs = {
           spaceEncoding: params.spaceEncoding,
           popupOption: PopupOption,
         }
-      : isPageAction
+      : isAiPrompt
         ? {
             id: params.id,
             title: params.title,
             iconUrl: params.iconUrl,
             ...sourceInfo,
             openMode: params.openMode,
-            pageActionOption: params.pageActionOption,
+            aiPromptOption: params.aiPromptOption,
             popupOption: PopupOption,
           }
-        : null
+        : isPageAction
+          ? {
+              id: params.id,
+              title: params.title,
+              iconUrl: params.iconUrl,
+              ...sourceInfo,
+              openMode: params.openMode,
+              pageActionOption: params.pageActionOption,
+              popupOption: PopupOption,
+            }
+          : null
 
     if (!cmd) {
       console.error("invalid command", param.command)
