@@ -6,7 +6,7 @@ import { RemoveButton } from "@/components/option/RemoveButton"
 import { ShareButton } from "@/components/option/ShareButton"
 import { MenuImage } from "@/components/menu/MenuImage"
 import type { FlattenNode } from "@/services/option/commandTree"
-import type { CommandFolder, SelectionCommand } from "@/types"
+import type { CommandFolder } from "@/types"
 import {
   isCommand,
   isFolder,

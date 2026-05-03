@@ -11,3 +11,6 @@ https://www.leboncoin.fr/recherche?text=%s
 https://www.ozon.ru/search/?text=%s
 https://www.wildberries.ru/catalog/0/search.aspx?search=%s
 https://www.zhihu.com/search?q=%s
+https://www.ebay.de/sch/i.html?_nkw=%s
+https://www.ebay.es/sch/i.html?_nkw=%s
+https://www.ebay.it/sch/i.html?_nkw=%s

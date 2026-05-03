@@ -21,9 +21,7 @@ export const COMMAND_URLS: UrlEntry[] = [
   { title: "네이버", locale: "ko", searchUrl: "https://search.naver.com/search.naver?query=%s" },
   { title: "Яндекс", locale: "ru", searchUrl: "https://yandex.ru/search/?text=%s" },
   { title: "ВКонтакте", locale: "ru", searchUrl: "https://vk.com/search?c%5Bq%5D=%s" },
-  { title: "eBay", locale: "de", searchUrl: "https://www.ebay.de/sch/i.html?_nkw=%s" },
   { title: "Amazon", locale: "es", searchUrl: "https://www.amazon.es/s?k=%s" },
-  { title: "eBay", locale: "es", searchUrl: "https://www.ebay.es/sch/i.html?_nkw=%s" },
   { title: "El Corte Inglés", locale: "es", searchUrl: "https://www.elcorteingles.es/search-nwx/?s=%s" },
   { title: "AliExpress", locale: "es", searchUrl: "https://es.aliexpress.com/w/wholesale-%s.html" },
   { title: "OLX", locale: "pt", searchUrl: "https://www.olx.pt/ads/?q=%s" },
@@ -31,6 +29,5 @@ export const COMMAND_URLS: UrlEntry[] = [
   { title: "Shopee", locale: "id", searchUrl: "https://shopee.co.id/search?keyword=%s" },
   { title: "Shopee", locale: "ms", searchUrl: "https://shopee.com.my/search?keyword=%s" },
   { title: "Lazada", locale: "ms", searchUrl: "https://www.lazada.com.my/catalog/?q=%s" },
-  { title: "eBay.it", locale: "it", searchUrl: "https://www.ebay.it/sch/i.html?_nkw=%s" },
   { title: "Zalando.it", locale: "it", searchUrl: "https://www.zalando.it/catalogo/?q=%s" },
 ]
