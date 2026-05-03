@@ -121,6 +121,56 @@ export const DownloadButton = (): JSX.Element => {
     return () => clearTimeout(timer)
   }, [open])
 
+  /**
+   * External postMessage API for adding/deleting commands from the Hub.
+   *
+   * This content script listens for messages from the Hub page (origin must match HUB_URL).
+   * The message object must have the following shape:
+   *
+   * --- AddCommand ---
+   * {
+   *   action: "AddCommand",
+   *   command: string  // JSON-stringified command object (see below)
+   * }
+   *
+   * The `command` field is a JSON string representing either a SearchCommand or a PageActionCommand.
+   *
+   * SearchCommand (openMode is one of "popup" | "tab" | "window" | "backgroundTab" | "sidePanel"):
+   * {
+   *   id: string,                // Unique command identifier
+   *   title: string,             // Display name of the command
+   *   searchUrl: string,         // Search URL template (%s is replaced with selected text)
+   *   iconUrl: string,           // URL of the command icon
+   *   openMode: string,          // How to open the result: "popup" | "tab" | "window" | "backgroundTab" | "sidePanel"
+   *   openModeSecondary?: string, // Secondary open mode (optional)
+   *   spaceEncoding?: string,    // Space encoding in URL: "plus" | "percent" (optional)
+   *   sourceType?: string,       // Origin of the command: "default" | "selfCreated" | "hubCommunity" | "unknown" (optional)
+   *   sourceId?: string          // Identifier of the source (optional)
+   * }
+   *
+   * PageActionCommand (openMode is "pageAction"):
+   * {
+   *   id: string,                // Unique command identifier
+   *   title: string,             // Display name of the command
+   *   iconUrl: string,           // URL of the command icon
+   *   openMode: "pageAction",    // Must be "pageAction" for page action commands
+   *   pageActionOption: {
+   *     startUrl: string,        // URL to open when executing the page action
+   *     pageUrl?: string,        // URL pattern for command enablement (currentTab mode only, optional)
+   *     openMode: string,        // How to open the page: "none" | "popup" | "tab" | "backgroundTab" | "window" | "currentTab"
+   *     steps: Array<PageActionStep>, // Sequence of automation steps to execute
+   *     userVariables?: Array<{ name: string, value: string }> // User-defined variables (optional)
+   *   },
+   *   sourceType?: string,       // Origin of the command: "default" | "selfCreated" | "hubCommunity" | "unknown" (optional)
+   *   sourceId?: string          // Identifier of the source (optional)
+   * }
+   *
+   * --- DeleteCommand ---
+   * {
+   *   action: "DeleteCommand",
+   *   id: string  // ID of the command to remove
+   * }
+   */
   useEffect(() => {
     const hubOrigin = new URL(HUB_URL).origin
     const handleMessage = (event: MessageEvent) => {
