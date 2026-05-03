@@ -740,6 +740,9 @@
   "Option_copy_tooltip": {
     "message": "Duplicar"
   },
+  "Option_shareButton_tooltip": {
+    "message": "Partilhar no Hub"
+  },
   "Option_remove_title": {
     "message": "Eliminar isto?"
   },

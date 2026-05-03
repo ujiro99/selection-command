@@ -322,6 +322,38 @@ export const HUB_URL = isDebug
   ? "http://localhost:3000"
   : "https://ujiro99.github.io/selection-command"
 
+export const NEW_HUB_URL =
+  import.meta.env?.VITE_NEW_HUB_URL ?? "https://selection-command-hub.pages.dev"
+
+export const NEW_HUB_SUPPORTED_LOCALES = [
+  "de",
+  "en",
+  "es",
+  "fr",
+  "hi",
+  "id",
+  "it",
+  "ja",
+  "ko",
+  "ms",
+  "pt-PT",
+  "pt-BR",
+  "ru",
+  "zh-CN",
+] as const
+
+export type NewHubLocale = (typeof NEW_HUB_SUPPORTED_LOCALES)[number]
+
+export const NEW_HUB_SHAREABLE_OPEN_MODES: ReadonlySet<string> = new Set([
+  OPEN_MODE.POPUP,
+  OPEN_MODE.TAB,
+  OPEN_MODE.WINDOW,
+  OPEN_MODE.BACKGROUND_TAB,
+  OPEN_MODE.SIDE_PANEL,
+  OPEN_MODE.PAGE_ACTION,
+  OPEN_MODE.AI_PROMPT,
+])
+
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
 export const PAGE_ACTION_TIMEOUT = 5000
@@ -340,6 +372,7 @@ export const COMMAND_USAGE = {
 export enum COMMAND_SOURCE_TYPE {
   DEFAULT = "default",
   SELF_CREATED = "selfCreated",
+  SELF_UPDATED = "selfUpdated",
   HUB_COMMUNITY = "hubCommunity",
   UNKNOWN = "unknown",
 }
@@ -347,6 +380,7 @@ export enum COMMAND_SOURCE_TYPE {
 export const COMMAND_SOURCE_ID = {
   DEFAULT: "019db873-cc03-7484-86f1-2d349389ea2b",
   SELF_CREATED: "019db8a1-4021-7ae7-8a5d-474bf132e8ff",
+  SELF_UPDATED: "019de776-d3ea-76af-99fe-340ae9bab54d",
 }
 
 export const SHORTCUT_PLACEHOLDER = "_placeholder_"

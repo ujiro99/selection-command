@@ -740,6 +740,9 @@
   "Option_copy_tooltip": {
     "message": "डुप्लिकेट"
   },
+  "Option_shareButton_tooltip": {
+    "message": "Hub पर साझा करें"
+  },
   "Option_remove_title": {
     "message": "क्या आप वाकई इसे हटाना चाहते हैं?"
   },

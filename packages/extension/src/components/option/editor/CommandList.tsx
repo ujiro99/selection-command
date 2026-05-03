@@ -27,13 +27,7 @@ import {
 } from "@/types/schema"
 
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import {
-  SCREEN,
-  COMMAND_TYPE,
-  OPEN_MODE_TYPE_MAP,
-  COMMAND_SOURCE_TYPE,
-  COMMAND_SOURCE_ID,
-} from "@/const"
+import { SCREEN, COMMAND_TYPE, OPEN_MODE_TYPE_MAP } from "@/const"
 import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
 // Imported services and hooks
@@ -254,8 +248,6 @@ export const CommandList = ({ control }: CommandListProps) => {
     const cmd = commandArray.fields[index]
     cmd.id = crypto.randomUUID()
     cmd.title = title
-    cmd.sourceType = COMMAND_SOURCE_TYPE.SELF_CREATED
-    cmd.sourceId = COMMAND_SOURCE_ID.SELF_CREATED
     commandArray.insert(index + 1, cmd)
   }
 

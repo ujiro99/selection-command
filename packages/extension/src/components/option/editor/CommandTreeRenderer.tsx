@@ -3,9 +3,10 @@ import { SortableItem } from "@/components/option/SortableItem"
 import { EditButton } from "@/components/option/EditButton"
 import { CopyButton } from "@/components/option/CopyButton"
 import { RemoveButton } from "@/components/option/RemoveButton"
+import { ShareButton } from "@/components/option/ShareButton"
 import { MenuImage } from "@/components/menu/MenuImage"
 import type { FlattenNode } from "@/services/option/commandTree"
-import type { CommandFolder } from "@/types"
+import type { CommandFolder, SelectionCommand } from "@/types"
 import {
   isCommand,
   isFolder,
@@ -68,6 +69,9 @@ export const CommandTreeRenderer: React.FC<Props> = ({
               </div>
             </div>
             <div className="flex gap-0.5 items-center">
+              {isCommand(field.content) && (
+                <ShareButton command={field.content} />
+              )}
               {isPageActionCommand(field.content) && (
                 <CopyButton
                   srcTitle={field.content.title}

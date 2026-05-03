@@ -93,6 +93,7 @@ import {
   commandSchema,
   CommandSchemaType,
   isPageActionType,
+  isAiPromptType,
 } from "@/types/schema"
 import type {
   SelectionCommand,
@@ -358,6 +359,17 @@ const CommandEditDialogInner = ({
     defaultValue: "",
   })
 
+  const pageActionOption = useWatch({
+    control: form.control,
+    name: "pageActionOption",
+  })
+
+  const aiPromptPrompt = useWatch({
+    control: form.control,
+    name: "aiPromptOption.prompt",
+    defaultValue: "",
+  })
+
   const iconUrlSrc = searchUrl || startUrl
 
   const openPageActionRecorder = async () => {
@@ -449,6 +461,35 @@ const CommandEditDialogInner = ({
       unsubscribe.forEach((unsub) => unsub())
     }
   }, [])
+
+  useEffect(() => {
+    if (!initialized) return
+    if (!isUpdate) return
+    if (command.sourceType === COMMAND_SOURCE_TYPE.SELF_CREATED) return
+    if (getValues("sourceType") === COMMAND_SOURCE_TYPE.SELF_UPDATED) return
+
+    const changed =
+      (isSearchType(command) && searchUrl !== command.searchUrl) ||
+      (isPageActionType(command) &&
+        JSON.stringify(pageActionOption) !==
+          JSON.stringify(command.pageActionOption)) ||
+      (isAiPromptType(command) &&
+        aiPromptPrompt !== command.aiPromptOption.prompt)
+
+    if (changed) {
+      setValue("sourceType", COMMAND_SOURCE_TYPE.SELF_UPDATED)
+      setValue("sourceId", COMMAND_SOURCE_ID.SELF_UPDATED)
+    }
+  }, [
+    initialized,
+    isUpdate,
+    searchUrl,
+    pageActionOption,
+    aiPromptPrompt,
+    command,
+    getValues,
+    setValue,
+  ])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
