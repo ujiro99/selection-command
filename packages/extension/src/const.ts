@@ -336,8 +336,8 @@ export const NEW_HUB_SUPPORTED_LOCALES = [
   "ja",
   "ko",
   "ms",
-  "pt-BR",
   "pt-PT",
+  "pt-BR",
   "ru",
   "zh-CN",
 ] as const

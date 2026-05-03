@@ -70,7 +70,7 @@ export const CommandTreeRenderer: React.FC<Props> = ({
             </div>
             <div className="flex gap-0.5 items-center">
               {isCommand(field.content) && (
-                <ShareButton command={field.content as SelectionCommand} />
+                <ShareButton command={field.content} />
               )}
               {isPageActionCommand(field.content) && (
                 <CopyButton

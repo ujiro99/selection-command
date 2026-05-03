@@ -28,20 +28,14 @@ export interface SubmitCommandInput {
 // ---- Locale resolution -----------------------------------------------------
 
 export function getHubLocale(): NewHubLocale {
-  const lang = (
-    chrome.i18n.getUILanguage() ??
-    navigator.language ??
-    "en"
-  ).toLowerCase()
+  const uiLang = chrome.i18n.getUILanguage()
+  const lang = (uiLang || navigator.language || "en").toLowerCase()
 
   // Exact match
   for (const locale of NEW_HUB_SUPPORTED_LOCALES) {
     if (lang === locale.toLowerCase()) return locale
   }
   // Prefix match (e.g. "zh-tw" → "zh-CN", "pt-br" → "pt-BR").
-  // Note: a bare "pt" browser locale resolves to the first matching entry in
-  // NEW_HUB_SUPPORTED_LOCALES (currently "pt-BR"). pt-PT users should have
-  // "pt-PT" set as their browser language to get the correct locale.
   for (const locale of NEW_HUB_SUPPORTED_LOCALES) {
     if (lang.startsWith(locale.split("-")[0].toLowerCase())) return locale
   }
@@ -118,6 +112,11 @@ const RETRY_INTERVAL_MS = 500
 const MAX_RETRIES = 20 // 10 seconds
 
 let isSharing = false
+
+// Exposed for testing purposes to reset the sharing state between tests
+export function _resetShareState(): void {
+  isSharing = false
+}
 
 export function shareCommandToHub(command: SelectionCommand): boolean {
   if (isSharing) return false

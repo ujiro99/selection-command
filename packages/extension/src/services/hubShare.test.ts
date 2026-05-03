@@ -3,6 +3,7 @@ import {
   getHubLocale,
   toSubmitCommandInput,
   shareCommandToHub,
+  _resetShareState,
 } from "./hubShare"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import type { SearchCommand, PageActionCommand, AiPromptCommand } from "@/types"
@@ -232,6 +233,7 @@ describe("shareCommandToHub", () => {
   })
 
   afterEach(() => {
+    _resetShareState()
     vi.restoreAllMocks()
     vi.useRealTimers()
   })
