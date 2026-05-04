@@ -1,29 +1,18 @@
 import {
   NEW_HUB_URL,
   NEW_HUB_SUPPORTED_LOCALES,
-  OPEN_MODE,
   type NewHubLocale,
 } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
-import type {
-  SelectionCommand,
-  SearchCommand,
-  PageActionCommand,
-  AiPromptCommand,
-} from "@/types"
+import { isAiPromptCommand, isPageActionCommand } from "@/lib/utils"
+import type { SelectionCommand, SearchCommand } from "@/types"
 
 // ---- Type definitions ------------------------------------------------------
 
-export interface SubmitCommandInput {
-  title: string
-  description?: string
-  iconUrl?: string
-  targetUrl: string | null
-  openMode: string
-  commandData: Record<string, unknown>
+export type SubmitCommandInput = {
   locale: string
-  tags?: string[]
-}
+  targetUrl: string
+} & SelectionCommand
 
 // ---- Locale resolution -----------------------------------------------------
 
@@ -47,62 +36,30 @@ export function getHubLocale(): NewHubLocale {
 export function toSubmitCommandInput(
   cmd: SelectionCommand,
 ): SubmitCommandInput | null {
-  const { title, iconUrl, openMode } = cmd
-
-  const baseInput = {
-    title,
-    iconUrl,
-    openMode,
-    locale: getHubLocale(),
+  // Search-based commands require a searchUrl
+  if (
+    !isAiPromptCommand(cmd) &&
+    !isPageActionCommand(cmd) &&
+    !(cmd as SearchCommand).searchUrl
+  ) {
+    return null
   }
 
-  if (openMode === OPEN_MODE.AI_PROMPT) {
-    const ai = cmd as AiPromptCommand
-    const { serviceId } = ai.aiPromptOption
+  let targetUrl: string
+  if (isAiPromptCommand(cmd)) {
+    const { serviceId } = cmd.aiPromptOption
     const service = getAiServicesFallback().find((s) => s.id === serviceId)
-    const targetUrl = service?.url ?? ""
-    return {
-      ...baseInput,
-      targetUrl,
-      commandData: {
-        aiPromptOption: {
-          serviceId,
-          prompt: ai.aiPromptOption.prompt,
-          openMode: ai.aiPromptOption.openMode,
-        },
-      },
-    }
+    targetUrl = service?.url ?? ""
+  } else if (isPageActionCommand(cmd)) {
+    targetUrl = cmd.pageActionOption?.startUrl ?? ""
+  } else {
+    targetUrl = (cmd as SearchCommand).searchUrl ?? ""
   }
-
-  if (openMode === OPEN_MODE.PAGE_ACTION) {
-    const pa = cmd as PageActionCommand
-    const targetUrl = pa.pageActionOption?.startUrl ?? null
-    return {
-      ...baseInput,
-      targetUrl,
-      commandData: {
-        pageActionOption: {
-          steps: pa.pageActionOption.steps,
-          startUrl: pa.pageActionOption.startUrl,
-          openMode: pa.pageActionOption.openMode,
-        },
-      },
-    }
-  }
-
-  // Search-based commands (popup / tab / window / backgroundTab / sidePanel)
-  const sc = cmd as SearchCommand
-  if (!sc.searchUrl) return null
-
-  const targetUrl = sc.searchUrl
-  const commandData: Record<string, unknown> = { searchUrl: sc.searchUrl }
-  if (sc.openModeSecondary) commandData.openModeSecondary = sc.openModeSecondary
-  if (sc.spaceEncoding) commandData.spaceEncoding = sc.spaceEncoding
 
   return {
-    ...baseInput,
+    ...cmd,
     targetUrl,
-    commandData,
+    locale: getHubLocale(),
   }
 }
 

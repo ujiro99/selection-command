@@ -159,12 +159,12 @@ const commandFuncs = {
     _: Sender,
     response: (res: unknown) => void,
   ): boolean => {
-    const params = JSON.parse(param.command)
-    const isSearch = isSearchCommand(params)
-    const isPageAction = isPageActionCommand(params)
-    const isAiPrompt = isAiPromptCommand(params)
-    const sourceType = (params as { sourceType?: unknown }).sourceType
-    const sourceId = (params as { sourceId?: unknown }).sourceId
+    const command = JSON.parse(param.command)
+    const isSearch = isSearchCommand(command)
+    const isPageAction = isPageActionCommand(command)
+    const isAiPrompt = isAiPromptCommand(command)
+    const sourceType = (command as { sourceType?: unknown }).sourceType
+    const sourceId = (command as { sourceId?: unknown }).sourceId
     const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
       sourceType as COMMAND_SOURCE_TYPE,
     )
@@ -177,34 +177,34 @@ const commandFuncs = {
 
     const cmd = isSearch
       ? {
-          id: params.id,
-          title: params.title,
-          searchUrl: params.searchUrl,
-          iconUrl: params.iconUrl,
+          id: command.id,
+          title: command.title,
+          searchUrl: command.searchUrl,
+          iconUrl: command.iconUrl,
           ...sourceInfo,
-          openMode: params.openMode,
-          openModeSecondary: params.openModeSecondary,
-          spaceEncoding: params.spaceEncoding,
+          openMode: command.openMode,
+          openModeSecondary: command.openModeSecondary,
+          spaceEncoding: command.spaceEncoding,
           popupOption: PopupOption,
         }
       : isAiPrompt
         ? {
-            id: params.id,
-            title: params.title,
-            iconUrl: params.iconUrl,
+            id: command.id,
+            title: command.title,
+            iconUrl: command.iconUrl,
             ...sourceInfo,
-            openMode: params.openMode,
-            aiPromptOption: params.aiPromptOption,
+            openMode: command.openMode,
+            aiPromptOption: command.aiPromptOption,
             popupOption: PopupOption,
           }
         : isPageAction
           ? {
-              id: params.id,
-              title: params.title,
-              iconUrl: params.iconUrl,
+              id: command.id,
+              title: command.title,
+              iconUrl: command.iconUrl,
               ...sourceInfo,
-              openMode: params.openMode,
-              pageActionOption: params.pageActionOption,
+              openMode: command.openMode,
+              pageActionOption: command.pageActionOption,
               popupOption: PopupOption,
             }
           : null

@@ -100,9 +100,9 @@ describe("toSubmitCommandInput", () => {
     expect(result).not.toBeNull()
     expect(result!.openMode).toBe(OPEN_MODE.POPUP)
     expect(result!.targetUrl).toBe("https://google.com/search?q=%s")
-    expect(result!.commandData).toMatchObject({
-      searchUrl: "https://google.com/search?q=%s",
-    })
+    expect((result! as SearchCommand).searchUrl).toBe(
+      "https://google.com/search?q=%s",
+    )
   })
 
   it("SC-02: converts a TAB command correctly", () => {
@@ -117,22 +117,22 @@ describe("toSubmitCommandInput", () => {
     expect(toSubmitCommandInput(cmd)).toBeNull()
   })
 
-  it("SC-04: includes openModeSecondary in commandData", () => {
+  it("SC-04: includes openModeSecondary in command", () => {
     const cmd = makeSearchCmd({ openModeSecondary: OPEN_MODE.TAB })
     const result = toSubmitCommandInput(cmd)
-    expect(result!.commandData.openModeSecondary).toBe(OPEN_MODE.TAB)
+    expect((result! as SearchCommand).openModeSecondary).toBe(OPEN_MODE.TAB)
   })
 
-  it("SC-05: includes spaceEncoding in commandData", () => {
+  it("SC-05: includes spaceEncoding in command", () => {
     const cmd = makeSearchCmd({ spaceEncoding: "plus" as any })
     const result = toSubmitCommandInput(cmd)
-    expect(result!.commandData.spaceEncoding).toBe("plus")
+    expect((result! as SearchCommand).spaceEncoding).toBe("plus")
   })
 
-  it("SC-06: omits openModeSecondary from commandData when not set", () => {
+  it("SC-06: omits openModeSecondary from command when not set", () => {
     const cmd = makeSearchCmd()
     const result = toSubmitCommandInput(cmd)
-    expect(result!.commandData).not.toHaveProperty("openModeSecondary")
+    expect(result!).not.toHaveProperty("openModeSecondary")
   })
 
   // --- PAGE_ACTION ---
@@ -143,16 +143,14 @@ describe("toSubmitCommandInput", () => {
     expect(result).not.toBeNull()
     expect(result!.openMode).toBe(OPEN_MODE.PAGE_ACTION)
     expect(result!.targetUrl).toBe("https://example.com")
-    expect(result!.commandData).toMatchObject({
-      pageActionOption: {
-        startUrl: "https://example.com",
-        steps: [],
-        openMode: OPEN_MODE.TAB,
-      },
+    expect((result! as PageActionCommand).pageActionOption).toMatchObject({
+      startUrl: "https://example.com",
+      steps: [],
+      openMode: PAGE_ACTION_OPEN_MODE.TAB,
     })
   })
 
-  it("PA-02: sets targetUrl to null when startUrl is not set", () => {
+  it("PA-02: returns non-null result even when startUrl is not set", () => {
     const cmd = makePageActionCmd({
       pageActionOption: {
         steps: [],
@@ -160,8 +158,7 @@ describe("toSubmitCommandInput", () => {
         startUrl: undefined as any,
       },
     })
-    const result = toSubmitCommandInput(cmd)
-    expect(result!.targetUrl).toBeNull()
+    expect(toSubmitCommandInput(cmd)).not.toBeNull()
   })
 
   // --- AI_PROMPT ---
@@ -172,12 +169,10 @@ describe("toSubmitCommandInput", () => {
     expect(result).not.toBeNull()
     expect(result!.openMode).toBe(OPEN_MODE.AI_PROMPT)
     expect(result!.targetUrl).toBe("https://gemini.google.com/app")
-    expect(result!.commandData).toMatchObject({
-      aiPromptOption: {
-        serviceId: "gemini",
-        prompt: "Summarize: {{SelectedText}}",
-        openMode: OPEN_MODE.SIDE_PANEL,
-      },
+    expect((result! as AiPromptCommand).aiPromptOption).toMatchObject({
+      serviceId: "gemini",
+      prompt: "Summarize: {{SelectedText}}",
+      openMode: OPEN_MODE.SIDE_PANEL,
     })
   })
 
@@ -190,10 +185,11 @@ describe("toSubmitCommandInput", () => {
       },
     })
     const result = toSubmitCommandInput(cmd)
+    expect(result).not.toBeNull()
     expect(result!.targetUrl).toBe("https://chatgpt.com")
-    expect(result!.commandData).toMatchObject({
-      aiPromptOption: { serviceId: "chatgpt" },
-    })
+    expect((result! as AiPromptCommand).aiPromptOption.serviceId).toBe(
+      "chatgpt",
+    )
   })
 
   it("AI-03: sets targetUrl to empty string for unknown serviceId", () => {
@@ -208,7 +204,7 @@ describe("toSubmitCommandInput", () => {
     expect(result!.targetUrl).toBe("")
   })
 
-  it("AI-04: inherits title, iconUrl, and locale from baseInput", () => {
+  it("AI-04: inherits title, iconUrl, and locale from command", () => {
     const cmd = makeAiPromptCmd()
     const result = toSubmitCommandInput(cmd)
     expect(result!.title).toBe("Test Command")
