@@ -77,7 +77,7 @@ export async function sendEvent(
   }
 }
 
-async function getOrCreateClientId() {
+export async function getOrCreateClientId() {
   let clientId = await Storage.get(LOCAL_STORAGE_KEY.CLIENT_ID)
   if (!clientId) {
     clientId = crypto.randomUUID()

@@ -5,7 +5,11 @@ import { Ipc, BgCommand } from "@/services/ipc"
 import { useSection } from "@/hooks/useSettings"
 import { useDetectUrlChanged } from "@/hooks/useDetectUrlChanged"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
-import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import {
+  sendEvent,
+  ANALYTICS_EVENTS,
+  getOrCreateClientId,
+} from "@/services/analytics"
 import {
   Popover,
   PopoverContent,
@@ -185,6 +189,19 @@ export const DownloadButton = (): JSX.Element => {
    *   action: "DeleteCommand",
    *   id: string  // ID of the command to remove
    * }
+   *
+   * --- AddCommandAck (response) ---
+   * {
+   *   action: "AddCommandAck",
+   *   result: boolean,    // true if the command was added successfully, false otherwise
+   *   install_id: string  // stable anonymous identifier per extension install (UUID, persisted in chrome.storage.local)
+   * }
+   *
+   * --- DeleteCommandAck (response) ---
+   * {
+   *   action: "DeleteCommandAck",
+   *   result: boolean  // true if the command was removed successfully, false otherwise
+   * }
    */
   useEffect(() => {
     const hubOrigin = new URL(HUB_URL).origin
@@ -194,15 +211,25 @@ export const DownloadButton = (): JSX.Element => {
       if (action === "AddCommand") {
         if (typeof command !== "string") return
         Ipc.send(BgCommand.addCommand, { command })
-          .then((res) => {
+          .then(async (res) => {
             if (res) {
               toast.success(t("commandHub_add_success"))
             } else {
               toast.error(t("commandHub_add_error"))
             }
+            const install_id = await getOrCreateClientId()
+            ;(event.source as WindowProxy)?.postMessage(
+              { action: "AddCommandAck", result: !!res, install_id },
+              { targetOrigin: event.origin },
+            )
           })
-          .catch(() => {
+          .catch(async () => {
             toast.error(t("commandHub_add_error"))
+            const install_id = await getOrCreateClientId()
+            ;(event.source as WindowProxy)?.postMessage(
+              { action: "AddCommandAck", result: false, install_id },
+              { targetOrigin: event.origin },
+            )
           })
       } else if (action === "DeleteCommand") {
         if (typeof id !== "string") return
@@ -213,9 +240,17 @@ export const DownloadButton = (): JSX.Element => {
             } else {
               toast.error(t("commandHub_delete_error"))
             }
+            ;(event.source as WindowProxy)?.postMessage(
+              { action: "DeleteCommandAck", result: !!res },
+              { targetOrigin: event.origin },
+            )
           })
           .catch(() => {
             toast.error(t("commandHub_delete_error"))
+            ;(event.source as WindowProxy)?.postMessage(
+              { action: "DeleteCommandAck", result: false },
+              { targetOrigin: event.origin },
+            )
           })
       }
     }
