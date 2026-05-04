@@ -1248,12 +1248,6 @@
   "Menu_disabled_urlNotMatch": {
     "message": "इस पेज पर नहीं चला सकते (पृष्ठ URL मेल नहीं खाता)"
   },
-  "commandHub_add_success": {
-    "message": "कमांड जोड़ा गया!"
-  },
-  "commandHub_add_error": {
-    "message": "कमांड जोड़ने में विफल।"
-  },
   "commandHub_delete_success": {
     "message": "कमांड हटाया गया।"
   },

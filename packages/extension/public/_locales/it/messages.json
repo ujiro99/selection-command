@@ -1248,12 +1248,6 @@
   "Menu_disabled_urlNotMatch": {
     "message": "Impossibile eseguire su questa pagina (l'URL della pagina non corrisponde)"
   },
-  "commandHub_add_success": {
-    "message": "Comando aggiunto!"
-  },
-  "commandHub_add_error": {
-    "message": "Impossibile aggiungere il comando."
-  },
   "commandHub_delete_success": {
     "message": "Comando eliminato."
   },

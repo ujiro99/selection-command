@@ -212,11 +212,6 @@ export const DownloadButton = (): JSX.Element => {
         if (typeof command !== "string") return
         Ipc.send(BgCommand.addCommand, { command })
           .then(async (res) => {
-            if (res) {
-              toast.success(t("commandHub_add_success"))
-            } else {
-              toast.error(t("commandHub_add_error"))
-            }
             const install_id = await getOrCreateClientId()
             ;(event.source as WindowProxy)?.postMessage(
               { action: "AddCommandAck", result: !!res, install_id },
@@ -224,7 +219,6 @@ export const DownloadButton = (): JSX.Element => {
             )
           })
           .catch(async () => {
-            toast.error(t("commandHub_add_error"))
             const install_id = await getOrCreateClientId()
             ;(event.source as WindowProxy)?.postMessage(
               { action: "AddCommandAck", result: false, install_id },

@@ -1254,12 +1254,6 @@
   "Menu_disabled_urlNotMatch": {
     "message": "Cannot run on this page (page URL does not match)"
   },
-  "commandHub_add_success": {
-    "message": "Command added!"
-  },
-  "commandHub_add_error": {
-    "message": "Failed to add command."
-  },
   "commandHub_delete_success": {
     "message": "Command deleted."
   },
