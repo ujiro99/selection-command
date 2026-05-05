@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 type Listener = () => void
 type Listeners = Listener[]
@@ -6,13 +6,12 @@ type Listeners = Listener[]
 export function useDetectUrlChanged() {
   const [listener, setListener] = useState<Listeners>([])
 
-  const addUrlChangeListener = (l: Listener) => {
+  const addUrlChangeListener = useCallback((l: Listener) => {
     setListener((prev) => [...prev, l])
-  }
-
-  const removeUrlChangeListener = (l: Listener) => {
-    setListener((prev) => prev.filter((f) => f !== l))
-  }
+    return () => {
+      setListener((prev) => prev.filter((f) => f !== l))
+    }
+  }, [])
 
   useEffect(() => {
     const observeUrlChange = () => {
@@ -31,5 +30,5 @@ export function useDetectUrlChanged() {
     return () => observer.disconnect()
   }, [listener])
 
-  return { addUrlChangeListener, removeUrlChangeListener }
+  return { addUrlChangeListener }
 }
