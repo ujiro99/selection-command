@@ -9,6 +9,7 @@ import {
   getOrCreateClientId,
 } from "@/services/analytics"
 import { SCREEN, HUB_URL } from "@/const"
+
 /**
  * External postMessage API for adding/deleting commands from the Hub.
  *
@@ -88,12 +89,13 @@ import { SCREEN, HUB_URL } from "@/const"
  * }
  */
 
-export const DownloadButton = (): JSX.Element => {
+export function useCommandHubBridge() {
   const { data: commands } = useSection(CACHE_SECTIONS.COMMANDS)
   const { addUrlChangeListener } = useDetectUrlChanged()
 
   const updateInstalledState = useCallback(() => {
     const ids = commands?.map((c) => c.id) ?? []
+    if (ids.length === 0) return
     const buttons = document.querySelectorAll(
       `button[data-id]`,
     ) as NodeListOf<HTMLElement>
@@ -102,7 +104,7 @@ export const DownloadButton = (): JSX.Element => {
       if (id && ids.includes(id)) {
         button.dataset.installed = "true"
       } else {
-        delete button.dataset.installed
+        button.dataset.installed = "false"
       }
     })
   }, [commands])
@@ -164,6 +166,4 @@ export const DownloadButton = (): JSX.Element => {
       window.removeEventListener("message", handleMessage)
     }
   }, [])
-
-  return <></>
 }

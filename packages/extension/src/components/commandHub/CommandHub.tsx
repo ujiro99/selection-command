@@ -1,11 +1,6 @@
-import { DownloadButton } from "@/components/commandHub/DownloadButton"
-import { StarButton } from "@/components/commandHub/StarButton"
+import { useCommandHubBridge } from "@/hooks/useCommandHubBridge"
 
 export const CommandHub = (): JSX.Element => {
-  return (
-    <>
-      <DownloadButton />
-      <StarButton />
-    </>
-  )
+  useCommandHubBridge()
+  return <></>
 }
