@@ -165,9 +165,9 @@ export function useCommandHubBridge() {
           })
       } else if (action === "RequestInstalledCommand") {
         const ids = commandsRef.current?.map((c) => c.id) ?? []
-        window.postMessage(
+        ;(event.source as WindowProxy)?.postMessage(
           { action: "SyncInstalledCommand", installedIds: ids },
-          "*",
+          { targetOrigin: event.origin },
         )
       }
     }
