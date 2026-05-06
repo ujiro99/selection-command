@@ -1250,11 +1250,5 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Não é possível executar nesta página (URL da página não corresponde)"
-  },
-  "commandHub_delete_success": {
-    "message": "Comando excluído."
-  },
-  "commandHub_delete_error": {
-    "message": "Falha ao excluir o comando."
   }
 }

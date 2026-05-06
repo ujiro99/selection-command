@@ -1250,11 +1250,5 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak dapat dijalankan di halaman ini (URL Halaman tidak cocok)"
-  },
-  "commandHub_delete_success": {
-    "message": "Perintah dihapus."
-  },
-  "commandHub_delete_error": {
-    "message": "Gagal menghapus perintah."
   }
 }

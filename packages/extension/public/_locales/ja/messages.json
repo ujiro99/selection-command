@@ -1244,11 +1244,5 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "このページでは実行できません（ページURLが一致しません）"
-  },
-  "commandHub_delete_success": {
-    "message": "コマンドを削除しました。"
-  },
-  "commandHub_delete_error": {
-    "message": "コマンドの削除に失敗しました。"
   }
 }

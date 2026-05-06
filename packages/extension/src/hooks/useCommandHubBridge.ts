@@ -124,14 +124,14 @@ export function useCommandHubBridge() {
   }, [commands])
 
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
+    const handleMessage = async (event: MessageEvent) => {
       if (event.origin !== hubOrigin) return
       const { action, command, id } = event.data ?? {}
       if (action === "AddCommand") {
         if (typeof command !== "string") return
+        const install_id = await getOrCreateClientId()
         Ipc.send(BgCommand.addCommand, { command })
           .then(async (res) => {
-            const install_id = await getOrCreateClientId()
             ;(event.source as WindowProxy)?.postMessage(
               { action: "AddCommandAck", result: !!res, install_id },
               { targetOrigin: event.origin },
@@ -150,8 +150,7 @@ export function useCommandHubBridge() {
               )
             }
           })
-          .catch(async () => {
-            const install_id = await getOrCreateClientId()
+          .catch(() => {
             ;(event.source as WindowProxy)?.postMessage(
               { action: "AddCommandAck", result: false, install_id },
               { targetOrigin: event.origin },

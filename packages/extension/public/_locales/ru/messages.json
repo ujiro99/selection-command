@@ -1247,11 +1247,5 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Невозможно выполнить на этой странице (URL страницы не совпадает)"
-  },
-  "commandHub_delete_success": {
-    "message": "Команда удалена."
-  },
-  "commandHub_delete_error": {
-    "message": "Не удалось удалить команду."
   }
 }

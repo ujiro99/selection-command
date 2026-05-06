@@ -1253,11 +1253,5 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Cannot run on this page (page URL does not match)"
-  },
-  "commandHub_delete_success": {
-    "message": "Command deleted."
-  },
-  "commandHub_delete_error": {
-    "message": "Failed to delete command."
   }
 }

@@ -1247,11 +1247,5 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "No se puede ejecutar en esta página (la URL de la página no coincide)"
-  },
-  "commandHub_delete_success": {
-    "message": "Comando eliminado."
-  },
-  "commandHub_delete_error": {
-    "message": "Error al eliminar el comando."
   }
 }
