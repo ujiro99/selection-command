@@ -7,12 +7,14 @@ import {
   ANALYTICS_EVENTS,
   getOrCreateClientId,
 } from "@/services/analytics"
-import { SCREEN, HUB_URL } from "@/const"
+import { SCREEN, NEW_HUB_URL } from "@/const"
+
+const hubOrigin = new URL(NEW_HUB_URL).origin
 
 /**
  * External postMessage API for adding/deleting commands from the Hub.
  *
- * This content script listens for messages from the Hub page (origin must match HUB_URL).
+ * This content script listens for messages from the Hub page (origin must match NEW_HUB_URL).
  * The message object must have the following shape:
  *
  * --- AddCommand ---
@@ -117,12 +119,11 @@ export function useCommandHubBridge() {
         action: "SyncInstalledCommand",
         installedIds: commands.map((c) => c.id),
       },
-      "*",
+      hubOrigin,
     )
   }, [commands])
 
   useEffect(() => {
-    const hubOrigin = new URL(HUB_URL).origin
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== hubOrigin) return
       const { action, command, id } = event.data ?? {}
@@ -135,11 +136,19 @@ export function useCommandHubBridge() {
               { action: "AddCommandAck", result: !!res, install_id },
               { targetOrigin: event.origin },
             )
-            await sendEvent(
-              ANALYTICS_EVENTS.COMMAND_HUB_ADD,
-              { id },
-              SCREEN.COMMAND_HUB,
-            )
+            if (res) {
+              let commandId: string | undefined
+              try {
+                commandId = JSON.parse(command).id
+              } catch {
+                // Ignore parse errors; analytics will be sent without id
+              }
+              await sendEvent(
+                ANALYTICS_EVENTS.COMMAND_HUB_ADD,
+                { id: commandId },
+                SCREEN.COMMAND_HUB,
+              )
+            }
           })
           .catch(async () => {
             const install_id = await getOrCreateClientId()
