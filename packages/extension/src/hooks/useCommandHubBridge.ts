@@ -1,7 +1,6 @@
-import { useEffect, useCallback } from "react"
+import { useEffect, useRef } from "react"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { useSection } from "@/hooks/useSettings"
-import { useDetectUrlChanged } from "@/hooks/useDetectUrlChanged"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import {
   sendEvent,
@@ -87,35 +86,40 @@ import { SCREEN, HUB_URL } from "@/const"
  *   action: "DeleteCommandAck",
  *   result: boolean  // true if the command was removed successfully, false otherwise
  * }
+ *
+ * --- RequestInstalledCommand (from Hub) ---
+ * {
+ *   action: "RequestInstalledCommand"
+ * }
+ *
+ * --- SyncInstalledCommand (response / proactive push) ---
+ * {
+ *   action: "SyncInstalledCommand",
+ *   installedIds: string[]  // IDs of all currently installed commands
+ * }
  */
 
 export function useCommandHubBridge() {
   const { data: commands } = useSection(CACHE_SECTIONS.COMMANDS)
-  const { addUrlChangeListener } = useDetectUrlChanged()
 
-  const updateInstalledState = useCallback(() => {
-    const ids = commands?.map((c) => c.id) ?? []
-    if (ids.length === 0) return
-    const buttons = document.querySelectorAll(
-      `button[data-id]`,
-    ) as NodeListOf<HTMLElement>
-    buttons.forEach((button) => {
-      const id = button.dataset.id
-      if (id && ids.includes(id)) {
-        button.dataset.installed = "true"
-      } else {
-        button.dataset.installed = "false"
-      }
-    })
+  // Ref keeps the message handler (empty deps) in sync with the latest commands
+  // without needing to recreate the listener on every change.
+  const commandsRef = useRef(commands)
+  useEffect(() => {
+    commandsRef.current = commands
   }, [commands])
 
+  // Proactively push installed IDs to the Hub whenever the commands list changes.
   useEffect(() => {
-    updateInstalledState()
-  }, [updateInstalledState])
-
-  useEffect(() => {
-    return addUrlChangeListener(updateInstalledState)
-  }, [commands, addUrlChangeListener, updateInstalledState])
+    if (commands == null) return
+    window.postMessage(
+      {
+        action: "SyncInstalledCommand",
+        installedIds: commands.map((c) => c.id),
+      },
+      "*",
+    )
+  }, [commands])
 
   useEffect(() => {
     const hubOrigin = new URL(HUB_URL).origin
@@ -159,6 +163,12 @@ export function useCommandHubBridge() {
               { targetOrigin: event.origin },
             )
           })
+      } else if (action === "RequestInstalledCommand") {
+        const ids = commandsRef.current?.map((c) => c.id) ?? []
+        window.postMessage(
+          { action: "SyncInstalledCommand", installedIds: ids },
+          "*",
+        )
       }
     }
     window.addEventListener("message", handleMessage)
