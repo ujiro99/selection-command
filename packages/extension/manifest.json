@@ -25,6 +25,14 @@
       "js": [
         "src/command_hub.tsx"
       ]
+    },
+    {
+      "matches": [
+        "https://selection-command-hub.pages.dev/*"
+      ],
+      "js": [
+        "src/new_command_hub.tsx"
+      ]
     }
   ],
   "background": {

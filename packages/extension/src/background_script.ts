@@ -3,6 +3,7 @@ import {
   OPTION_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
+  NEW_HUB_URL,
   SCREEN,
   COMMAND_SOURCE_TYPE,
 } from "@/const"
@@ -29,6 +30,7 @@ import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import type { SubmitCommandInput } from "@/services/hubShare"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -400,6 +402,25 @@ const commandFuncs = {
 
   [BgCommand.getTabId]: getTabId,
   [BgCommand.getActiveTabId]: getActiveTabId,
+
+  //
+  // Hub
+  //
+  [BgCommand.shareCommandToHub]: (
+    param: SubmitCommandInput,
+    _: Sender,
+    response: (res: unknown) => void,
+  ): boolean => {
+    const share = async () => {
+      // Store the command so the hub content script can pick it up after load
+      await Storage.set(SESSION_STORAGE_KEY.HUB_SHARE_PENDING, param)
+      const hubUrl = `${NEW_HUB_URL}/${param.locale}/dashboard/commands`
+      chrome.tabs.create({ url: hubUrl })
+      response(true)
+    }
+    share()
+    return true
+  },
 
   //
   // PageAction

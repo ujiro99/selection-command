@@ -32,6 +32,8 @@ export enum BgCommand {
   getTabId = "getTabId",
   getActiveTabId = "getActiveTabId",
   setClipboard = "setClipboard",
+  // Hub
+  shareCommandToHub = "shareCommandToHub",
   // PageAction
   addPageAction = "addPageAction",
   updatePageAction = "updatePageAction",

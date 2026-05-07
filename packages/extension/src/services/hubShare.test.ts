@@ -3,10 +3,20 @@ import {
   getHubLocale,
   toSubmitCommandInput,
   shareCommandToHub,
-  _resetShareState,
 } from "./hubShare"
+import { Ipc, BgCommand } from "@/services/ipc"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import type { SearchCommand, PageActionCommand, AiPromptCommand } from "@/types"
+
+// Mock the IPC module so that shareCommandToHub does not trigger real messaging
+vi.mock("@/services/ipc", () => ({
+  Ipc: {
+    send: vi.fn().mockResolvedValue(true),
+  },
+  BgCommand: {
+    shareCommandToHub: "shareCommandToHub",
+  },
+}))
 
 // ---- Fixtures --------------------------------------------------------------
 
@@ -216,104 +226,52 @@ describe("toSubmitCommandInput", () => {
 // ---- shareCommandToHub -----------------------------------------------------
 
 describe("shareCommandToHub", () => {
-  let mockHubWindow: { postMessage: ReturnType<typeof vi.fn> }
-
   beforeEach(() => {
     vi.spyOn(chrome.i18n, "getUILanguage").mockReturnValue("en")
-    vi.useFakeTimers()
-
-    mockHubWindow = { postMessage: vi.fn() }
-    vi.spyOn(window, "open").mockReturnValue(mockHubWindow as any)
-    vi.spyOn(window, "addEventListener")
-    vi.spyOn(window, "removeEventListener")
+    vi.mocked(Ipc.send).mockClear()
   })
 
   afterEach(() => {
-    _resetShareState()
     vi.restoreAllMocks()
-    vi.useRealTimers()
   })
 
-  it("SH-01: opens Hub window and returns true for a valid command", () => {
+  it("SH-01: calls Ipc.send with shareCommandToHub and returns true for a valid command", () => {
     const result = shareCommandToHub(makeSearchCmd())
     expect(result).toBe(true)
-    expect(window.open).toHaveBeenCalledWith(
-      expect.stringContaining("/en/dashboard/commands"),
-      "_blank",
+    expect(Ipc.send).toHaveBeenCalledWith(
+      BgCommand.shareCommandToHub,
+      expect.objectContaining({ locale: "en" }),
     )
   })
 
-  it("SH-02: returns false when the command has no searchUrl", () => {
+  it("SH-02: returns false and does not call Ipc.send when the command has no searchUrl", () => {
     const result = shareCommandToHub(makeSearchCmd({ searchUrl: undefined }))
     expect(result).toBe(false)
-    expect(window.open).not.toHaveBeenCalled()
-  })
-
-  it("SH-03: returns false when window.open returns null", () => {
-    vi.mocked(window.open).mockReturnValue(null)
-    const result = shareCommandToHub(makeSearchCmd())
-    expect(result).toBe(false)
-  })
-
-  it("SH-04: sends postMessage on each interval tick", () => {
-    shareCommandToHub(makeSearchCmd())
-    vi.advanceTimersByTime(500)
-    expect(mockHubWindow.postMessage).toHaveBeenCalledTimes(1)
-    expect(mockHubWindow.postMessage).toHaveBeenCalledWith(
-      expect.objectContaining({ type: "share-command" }),
-      expect.any(String),
-    )
-    vi.advanceTimersByTime(500)
-    expect(mockHubWindow.postMessage).toHaveBeenCalledTimes(2)
-  })
-
-  it("SH-05: stops retrying after receiving share-command-ack", () => {
-    const NEW_HUB_URL =
-      import.meta.env.VITE_NEW_HUB_URL ??
-      "https://selection-command-hub.pages.dev"
-
-    shareCommandToHub(makeSearchCmd())
-
-    const ackEvent = new MessageEvent("message", {
-      origin: NEW_HUB_URL,
-      data: { type: "share-command-ack" },
-    })
-    window.dispatchEvent(ackEvent)
-
-    const beforeCount = mockHubWindow.postMessage.mock.calls.length
-    vi.advanceTimersByTime(2000)
-    expect(mockHubWindow.postMessage.mock.calls.length).toBe(beforeCount)
+    expect(Ipc.send).not.toHaveBeenCalled()
   })
 
   it("SH-06: can share an AI_PROMPT command", () => {
     const result = shareCommandToHub(makeAiPromptCmd())
     expect(result).toBe(true)
-    vi.advanceTimersByTime(500)
-    expect(mockHubWindow.postMessage).toHaveBeenCalledWith(
+    expect(Ipc.send).toHaveBeenCalledWith(
+      BgCommand.shareCommandToHub,
       expect.objectContaining({
-        type: "share-command",
-        command: expect.objectContaining({
-          openMode: OPEN_MODE.AI_PROMPT,
-          targetUrl: "https://gemini.google.com/app",
-        }),
+        openMode: OPEN_MODE.AI_PROMPT,
+        targetUrl: "https://gemini.google.com/app",
       }),
-      expect.any(String),
     )
   })
 
   it("SH-07: can share a PAGE_ACTION command", () => {
     const result = shareCommandToHub(makePageActionCmd())
     expect(result).toBe(true)
-    vi.advanceTimersByTime(500)
-    expect(mockHubWindow.postMessage).toHaveBeenCalledWith(
+    expect(Ipc.send).toHaveBeenCalledWith(
+      BgCommand.shareCommandToHub,
       expect.objectContaining({
-        type: "share-command",
-        command: expect.objectContaining({
-          openMode: OPEN_MODE.PAGE_ACTION,
-          targetUrl: "https://example.com",
-        }),
+        openMode: OPEN_MODE.PAGE_ACTION,
+        targetUrl: "https://example.com",
       }),
-      expect.any(String),
     )
   })
 })
+
