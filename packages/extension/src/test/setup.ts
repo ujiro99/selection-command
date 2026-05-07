@@ -291,6 +291,7 @@ global.chrome = {
     },
     onMessageExternal: {
       addListener: vi.fn(),
+      removeListener: vi.fn(),
     },
     onConnect: {
       addListener: vi.fn(),

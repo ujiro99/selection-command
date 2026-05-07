@@ -467,7 +467,12 @@ chrome.runtime.onMessageExternal.addListener(
       // Reuse the existing addCommand listener already registered via Ipc
       Ipc.callListener<{ command: string }, boolean>(BgCommand.addCommand, {
         command,
-      }).then(sendResponse)
+      })
+        .then(sendResponse)
+        .catch((err) => {
+          console.error("[onMessageExternal] AddCommand failed:", err)
+          sendResponse(false)
+        })
       return true // async response
     }
 
@@ -475,7 +480,12 @@ chrome.runtime.onMessageExternal.addListener(
       // Reuse the existing removeCommand listener already registered via Ipc
       Ipc.callListener<{ id: string }, boolean>(BgCommand.removeCommand, {
         id,
-      }).then(sendResponse)
+      })
+        .then(sendResponse)
+        .catch((err) => {
+          console.error("[onMessageExternal] DeleteCommand failed:", err)
+          sendResponse(false)
+        })
       return true // async response
     }
 
