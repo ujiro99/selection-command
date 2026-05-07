@@ -8,10 +8,11 @@ const RETRY_INTERVAL_MS = 500
 const MAX_RETRIES = 20 // 10 seconds
 
 /**
- * Sends a pending share command to the hub page via postMessage and waits for
- * the hub's acknowledgement.  Retries at fixed intervals until ack or timeout.
+ * Starts sending a share command to the hub page via postMessage, retrying at
+ * fixed intervals until the hub acknowledges or MAX_RETRIES is exceeded.
+ * Returns a cleanup function that cancels any in-flight retries.
  */
-function sendShareCommand(command: SubmitCommandInput): () => void {
+function startShareCommandWithRetry(command: SubmitCommandInput): () => void {
   let retries = 0
 
   const cleanup = () => {
@@ -21,6 +22,8 @@ function sendShareCommand(command: SubmitCommandInput): () => void {
 
   // Stop retrying once the hub responds with an ack
   const onAck = (event: MessageEvent) => {
+    // Accept only same-origin messages from the hub page itself
+    if (event.source !== window) return
     if ((event.data as { type?: string })?.type === "share-command-ack") {
       cleanup()
     }
@@ -68,7 +71,7 @@ export function useCommandHubBridge(): void {
       // Clear immediately so a reload does not re-send the same command
       await Storage.set(SESSION_STORAGE_KEY.HUB_SHARE_PENDING, null)
 
-      cleanupShare = sendShareCommand(pending)
+      cleanupShare = startShareCommandWithRetry(pending)
     }
 
     handlePendingShare()
@@ -81,7 +84,8 @@ export function useCommandHubBridge(): void {
   // Relay hub-page messages (add / delete commands) to the background script
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      // Only accept messages from the hub page itself
+      // Only accept messages from the hub page itself (not injected scripts or iframes)
+      if (event.source !== window) return
       if (event.origin !== location.origin) return
 
       const { action, command, id } = (event.data ?? {}) as Record<
@@ -91,10 +95,14 @@ export function useCommandHubBridge(): void {
 
       if (action === "AddCommand") {
         if (typeof command !== "string") return
-        Ipc.send(BgCommand.addCommand, { command })
+        Ipc.send(BgCommand.addCommand, { command }).catch((err) => {
+          console.error("[HubBridge] Failed to add command:", err)
+        })
       } else if (action === "DeleteCommand") {
         if (typeof id !== "string") return
-        Ipc.send(BgCommand.removeCommand, { id })
+        Ipc.send(BgCommand.removeCommand, { id }).catch((err) => {
+          console.error("[HubBridge] Failed to delete command:", err)
+        })
       }
     }
 

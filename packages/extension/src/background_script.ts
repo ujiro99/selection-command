@@ -412,11 +412,16 @@ const commandFuncs = {
     response: (res: unknown) => void,
   ): boolean => {
     const share = async () => {
-      // Store the command so the hub content script can pick it up after load
-      await Storage.set(SESSION_STORAGE_KEY.HUB_SHARE_PENDING, param)
-      const hubUrl = `${NEW_HUB_URL}/${param.locale}/dashboard/commands`
-      chrome.tabs.create({ url: hubUrl })
-      response(true)
+      try {
+        // Store the command so the hub content script can pick it up after load
+        await Storage.set(SESSION_STORAGE_KEY.HUB_SHARE_PENDING, param)
+        const hubUrl = `${NEW_HUB_URL}/${param.locale}/dashboard/commands`
+        chrome.tabs.create({ url: hubUrl })
+        response(true)
+      } catch (err) {
+        console.error("[ShareCommandToHub] Failed to open hub tab:", err)
+        response(false)
+      }
     }
     share()
     return true
