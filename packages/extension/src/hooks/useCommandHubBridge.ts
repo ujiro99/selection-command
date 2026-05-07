@@ -74,7 +74,9 @@ export function useCommandHubBridge(): void {
       cleanupShare = startShareCommandWithRetry(pending)
     }
 
-    handlePendingShare()
+    handlePendingShare().catch((err) => {
+      console.error("[HubBridge] Failed to process pending share:", err)
+    })
 
     return () => {
       cleanupShare?.()

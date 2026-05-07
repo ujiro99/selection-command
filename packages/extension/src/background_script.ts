@@ -423,7 +423,9 @@ const commandFuncs = {
         response(false)
       }
     }
-    share()
+    share().catch((err) => {
+      console.error("[ShareCommandToHub] Unhandled error:", err)
+    })
     return true
   },
 
