@@ -448,6 +448,41 @@ for (const key in BgCommand) {
   Ipc.addListener(command, commandFuncs[key])
 }
 
+// Receive messages directly from the new hub page (external webpage messaging).
+// The hub page calls chrome.runtime.sendMessage(extensionId, message) to relay
+// AddCommand / DeleteCommand actions without going through a content script.
+chrome.runtime.onMessageExternal.addListener(
+  (
+    message: Record<string, unknown>,
+    sender: chrome.runtime.MessageSender,
+    sendResponse: (response?: unknown) => void,
+  ) => {
+    // Verify that the sender originates from the new hub
+    const hubOrigin = new URL(NEW_HUB_URL).origin
+    if (!sender.origin || sender.origin !== hubOrigin) return false
+
+    const { action, command, id } = message ?? {}
+
+    if (action === "AddCommand" && typeof command === "string") {
+      // Reuse the existing addCommand listener already registered via Ipc
+      Ipc.callListener<{ command: string }, boolean>(BgCommand.addCommand, {
+        command,
+      }).then(sendResponse)
+      return true // async response
+    }
+
+    if (action === "DeleteCommand" && typeof id === "string") {
+      // Reuse the existing removeCommand listener already registered via Ipc
+      Ipc.callListener<{ id: string }, boolean>(BgCommand.removeCommand, {
+        id,
+      }).then(sendResponse)
+      return true // async response
+    }
+
+    return false
+  },
+)
+
 const updateWindowSize = async (
   commandId: string,
   width: number,

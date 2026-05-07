@@ -38,6 +38,11 @@
   "background": {
     "service_worker": "src/background_script.ts"
   },
+  "externally_connectable": {
+    "matches": [
+      "https://selection-command-hub.pages.dev/*"
+    ]
+  },
   "options_page": "src/options_page.html",
   "action": {},
   "permissions": [
