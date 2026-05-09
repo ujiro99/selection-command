@@ -411,21 +411,66 @@ const commandFuncs = {
     _: Sender,
     response: (res: unknown) => void,
   ): boolean => {
+    // Retry settings for the share-command postMessage loop
+    const RETRY_INTERVAL_MS = 500
+    const MAX_RETRIES = 20 // 10 seconds
+    let retries = 0
+
     const share = async () => {
       try {
-        // Store the command so the hub content script can pick it up after load
-        await Storage.set(SESSION_STORAGE_KEY.HUB_SHARE_PENDING, param)
+        // Prepare to send the command to the hub page via port.postMessage.
+        // We need to wait for the hub page to connect.
+        const onConnect = (port: chrome.runtime.Port) => {
+          if (port.name !== "hub-share") return
+          if (port.sender?.tab?.id !== tab.id) return
+
+          chrome.runtime.onConnectExternal.removeListener(onConnect)
+
+          const cleanup = () => {
+            clearInterval(timer)
+            port.onMessage.removeListener(onMessage)
+          }
+
+          const onMessage = (msg: unknown) => {
+            if ((msg as { type?: string })?.type === "share-command-ack") {
+              cleanup()
+            }
+          }
+          port.onMessage.addListener(onMessage)
+
+          // Start the loop to post the command to the hub page until we receive an ack or exceed max retries.
+          const timer = setInterval(() => {
+            retries++
+            if (retries > MAX_RETRIES) {
+              cleanup()
+              console.error(
+                "[Hub] Hub page did not respond to share-command in time.",
+              )
+              return
+            }
+            // Post to the hub page.
+            port.postMessage({ type: "share-command", command: param })
+          }, RETRY_INTERVAL_MS)
+        }
+        chrome.runtime.onConnectExternal.addListener(onConnect)
+
+        // Open the command share page on Hub.
         const hubUrl = `${NEW_HUB_URL}/${param.locale}/dashboard/commands`
-        chrome.tabs.create({ url: hubUrl })
+        const tab = await new Promise<chrome.tabs.Tab>((resolve) =>
+          chrome.tabs.create({ url: hubUrl }, resolve),
+        )
+        if (!tab?.id) {
+          response(false)
+          return
+        }
+
         response(true)
       } catch (err) {
         console.error("[ShareCommandToHub] Failed to open hub tab:", err)
         response(false)
       }
     }
-    share().catch((err) => {
-      console.error("[ShareCommandToHub] Unhandled error:", err)
-    })
+    share()
     return true
   },
 
