@@ -3,7 +3,6 @@ import {
   OPTION_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
-  NEW_HUB_URL,
   SCREEN,
   COMMAND_SOURCE_TYPE,
 } from "@/const"
@@ -30,7 +29,7 @@ import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import type { SubmitCommandInput } from "@/services/hubShare"
+import * as HubBackground from "@/services/hub/background"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -406,73 +405,7 @@ const commandFuncs = {
   //
   // Hub
   //
-  [BgCommand.shareCommandToHub]: (
-    param: SubmitCommandInput,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    // Retry settings for the share-command postMessage loop
-    const RETRY_INTERVAL_MS = 500
-    const MAX_RETRIES = 20 // 10 seconds
-    let retries = 0
-
-    const share = async () => {
-      try {
-        // Prepare to send the command to the hub page via port.postMessage.
-        // We need to wait for the hub page to connect.
-        const onConnect = (port: chrome.runtime.Port) => {
-          if (port.name !== "hub-share") return
-          if (port.sender?.tab?.id !== tab.id) return
-
-          chrome.runtime.onConnectExternal.removeListener(onConnect)
-
-          const cleanup = () => {
-            clearInterval(timer)
-            port.onMessage.removeListener(onMessage)
-          }
-
-          const onMessage = (msg: unknown) => {
-            if ((msg as { type?: string })?.type === "share-command-ack") {
-              cleanup()
-            }
-          }
-          port.onMessage.addListener(onMessage)
-
-          // Start the loop to post the command to the hub page until we receive an ack or exceed max retries.
-          const timer = setInterval(() => {
-            retries++
-            if (retries > MAX_RETRIES) {
-              cleanup()
-              console.error(
-                "[Hub] Hub page did not respond to share-command in time.",
-              )
-              return
-            }
-            // Post to the hub page.
-            port.postMessage({ type: "share-command", command: param })
-          }, RETRY_INTERVAL_MS)
-        }
-        chrome.runtime.onConnectExternal.addListener(onConnect)
-
-        // Open the command share page on Hub.
-        const hubUrl = `${NEW_HUB_URL}/${param.locale}/dashboard/commands`
-        const tab = await new Promise<chrome.tabs.Tab>((resolve) =>
-          chrome.tabs.create({ url: hubUrl }, resolve),
-        )
-        if (!tab?.id) {
-          response(false)
-          return
-        }
-
-        response(true)
-      } catch (err) {
-        console.error("[ShareCommandToHub] Failed to open hub tab:", err)
-        response(false)
-      }
-    }
-    share()
-    return true
-  },
+  [BgCommand.shareCommandToHub]: HubBackground.shareCommandToHub,
 
   //
   // PageAction
@@ -493,69 +426,7 @@ for (const key in BgCommand) {
   Ipc.addListener(command, commandFuncs[key])
 }
 
-// Receive messages directly from the new hub page (external webpage messaging).
-// The hub page calls chrome.runtime.sendMessage(extensionId, message) to relay
-// AddCommand / DeleteCommand actions without going through a content script.
-chrome.runtime.onMessageExternal.addListener(
-  (
-    message: Record<string, unknown>,
-    sender: chrome.runtime.MessageSender,
-    sendResponse: (response?: unknown) => void,
-  ) => {
-    // Verify that the sender originates from the new hub
-    const hubOrigin = new URL(NEW_HUB_URL).origin
-    if (!sender.origin || sender.origin !== hubOrigin) return false
-
-    const { action, command, id } = message ?? {}
-    console.log("[onMessageExternal] Received message:", message)
-
-    if (action === "AddCommand" && typeof command === "string") {
-      // Reuse the existing addCommand listener already registered via Ipc
-      Ipc.callListener<{ command: string }, boolean>(BgCommand.addCommand, {
-        command,
-      })
-        .then(sendResponse)
-        .catch((err) => {
-          console.error("[onMessageExternal] AddCommand failed:", err)
-          sendResponse(false)
-        })
-      return true // async response
-    }
-
-    if (action === "DeleteCommand" && typeof id === "string") {
-      // Reuse the existing removeCommand listener already registered via Ipc
-      Ipc.callListener<{ id: string }, boolean>(BgCommand.removeCommand, {
-        id,
-      })
-        .then(sendResponse)
-        .catch((err) => {
-          console.error("[onMessageExternal] DeleteCommand failed:", err)
-          sendResponse(false)
-        })
-      return true // async response
-    }
-
-    if (action === "RequestInstalledCommand") {
-      Storage.getCommands()
-        .then((commands) => {
-          sendResponse({
-            action: "SyncInstalledCommand",
-            installedIds: commands.map((c) => c.id),
-          })
-        })
-        .catch((err) => {
-          console.error(
-            "[onMessageExternal] RequestInstalledCommand failed:",
-            err,
-          )
-          sendResponse({ action: "SyncInstalledCommand", installedIds: [] })
-        })
-      return true // async response
-    }
-
-    return false
-  },
-)
+HubBackground.initHubExternalListener()
 
 const updateWindowSize = async (
   commandId: string,
