@@ -213,7 +213,7 @@ const commandFuncs = {
 
     if (!cmd) {
       console.error("invalid command", param.command)
-      response(false)
+      response({ result: false, error: "Invalid command format" })
       return true
     }
 
@@ -230,7 +230,7 @@ const commandFuncs = {
         )
       })
       .then(() => {
-        response(true)
+        response({ result: true, install_id: cmd.id })
       })
     return true
   },
@@ -246,7 +246,7 @@ const commandFuncs = {
       if (commandToRemove) {
         const newCommands = current.filter((c) => c.id !== param.id)
         if (newCommands.length === current.length) {
-          response(false)
+          response({ result: false, error: "Command not found" })
           return
         }
         await Storage.setCommands(newCommands)
@@ -258,7 +258,7 @@ const commandFuncs = {
           SCREEN.COMMAND_HUB,
         )
       }
-      response(true)
+      response({ result: true })
     }
     remove()
     return true
@@ -462,6 +462,7 @@ chrome.runtime.onMessageExternal.addListener(
     if (!sender.origin || sender.origin !== hubOrigin) return false
 
     const { action, command, id } = message ?? {}
+    console.log("[onMessageExternal] Received message:", message)
 
     if (action === "AddCommand" && typeof command === "string") {
       // Reuse the existing addCommand listener already registered via Ipc
@@ -485,6 +486,24 @@ chrome.runtime.onMessageExternal.addListener(
         .catch((err) => {
           console.error("[onMessageExternal] DeleteCommand failed:", err)
           sendResponse(false)
+        })
+      return true // async response
+    }
+
+    if (action === "RequestInstalledCommand") {
+      Storage.getCommands()
+        .then((commands) => {
+          sendResponse({
+            action: "SyncInstalledCommand",
+            installedIds: commands.map((c) => c.id),
+          })
+        })
+        .catch((err) => {
+          console.error(
+            "[onMessageExternal] RequestInstalledCommand failed:",
+            err,
+          )
+          sendResponse({ action: "SyncInstalledCommand", installedIds: [] })
         })
       return true // async response
     }

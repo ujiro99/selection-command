@@ -28,7 +28,9 @@
     },
     {
       "matches": [
-        "https://selection-command-hub.pages.dev/*"
+        "https://selection-command.com/*",
+        "https://selection-command-hub.siro-cola.workers.dev/*",
+        "http://localhost:3000/*"
       ],
       "js": [
         "src/new_command_hub.tsx"
@@ -40,7 +42,9 @@
   },
   "externally_connectable": {
     "matches": [
-      "https://selection-command-hub.pages.dev/*"
+      "https://selection-command.com/*",
+      "https://selection-command-hub.siro-cola.workers.dev/*",
+      "http://localhost:3000/*"
     ]
   },
   "options_page": "src/options_page.html",
