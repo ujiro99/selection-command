@@ -51,6 +51,7 @@ import { PageActionHelp } from "@/components/help/PageActionHelp"
 import { CommandType } from "@/components/option/editor/CommandType"
 import { SearchUrlAssistButton } from "@/components/option/editor/SearchUrlAssistButton"
 import { SearchUrlAssistDialog } from "@/components/option/editor/SearchUrlAssistDialog"
+import { hasCommandChanged } from "@/components/option/editor/commandChangedDetector"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { Tooltip } from "@/components/Tooltip"
 import { PageActionStep } from "@/types/schema"
@@ -93,7 +94,6 @@ import {
   commandSchema,
   CommandSchemaType,
   isPageActionType,
-  isAiPromptType,
 } from "@/types/schema"
 import type {
   SelectionCommand,
@@ -468,13 +468,12 @@ const CommandEditDialogInner = ({
     if (command.sourceType === COMMAND_SOURCE_TYPE.SELF_CREATED) return
     if (getValues("sourceType") === COMMAND_SOURCE_TYPE.SELF_UPDATED) return
 
-    const changed =
-      (isSearchType(command) && searchUrl !== command.searchUrl) ||
-      (isPageActionType(command) &&
-        JSON.stringify(pageActionOption) !==
-          JSON.stringify(command.pageActionOption)) ||
-      (isAiPromptType(command) &&
-        aiPromptPrompt !== command.aiPromptOption.prompt)
+    const changed = hasCommandChanged(
+      command,
+      searchUrl,
+      pageActionOption,
+      aiPromptPrompt,
+    )
 
     if (changed) {
       setValue("sourceType", COMMAND_SOURCE_TYPE.SELF_UPDATED)
