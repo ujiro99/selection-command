@@ -1247,5 +1247,8 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "无法在此页面运行（页面URL不匹配）"
+  },
+  "hub_login": {
+    "message": "登录 Hub"
   }
 }

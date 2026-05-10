@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { shareCommandToHub, initHubExternalListener } from "./background"
 import { Ipc, BgCommand } from "@/services/ipc"
-import { Storage } from "@/services/storage"
+import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 
 vi.mock("@/services/ipc", () => ({
   Ipc: { callListener: vi.fn() },
@@ -9,11 +9,24 @@ vi.mock("@/services/ipc", () => ({
 }))
 
 vi.mock("@/services/storage", () => ({
-  Storage: { getCommands: vi.fn() },
+  Storage: { getCommands: vi.fn(), set: vi.fn() },
+  LOCAL_STORAGE_KEY: { HUB_USER: "hubUser" },
 }))
 
 vi.mock("@/const", () => ({
   NEW_HUB_URL: "https://hub.example.com",
+}))
+
+const mockSetSession = vi.fn()
+const mockSignOut = vi.fn()
+
+vi.mock("@supabase/supabase-js", () => ({
+  createClient: () => ({
+    auth: {
+      setSession: mockSetSession,
+      signOut: mockSignOut,
+    },
+  }),
 }))
 
 const HUB_ORIGIN = "https://hub.example.com"
@@ -243,6 +256,130 @@ describe("onMessageExternal - RequestInstalledCommand", () => {
         installedIds: [],
       }),
     )
+  })
+})
+
+// ---------------------------------------------------------------------------
+// onMessageExternal — SetSession
+// ---------------------------------------------------------------------------
+
+describe("onMessageExternal - SetSession", () => {
+  it("SS-01: calls setSession, stores HubUser with email, and calls sendResponse with result:true", async () => {
+    mockSetSession.mockResolvedValue({
+      data: { user: { email: "user@example.com" } },
+      error: null,
+    })
+    vi.mocked(Storage.set).mockResolvedValue(true)
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      {
+        action: "SetSession",
+        access_token: "access-tok",
+        refresh_token: "refresh-tok",
+      },
+      { origin: HUB_ORIGIN },
+      sendResponse,
+    )
+    expect(result).toBe(true)
+    expect(mockSetSession).toHaveBeenCalledWith({
+      access_token: "access-tok",
+      refresh_token: "refresh-tok",
+    })
+    await vi.waitFor(() => {
+      expect(Storage.set).toHaveBeenCalledWith(LOCAL_STORAGE_KEY.HUB_USER, {
+        name: "user@example.com",
+        image: "",
+      })
+      expect(sendResponse).toHaveBeenCalledWith({ result: true })
+    })
+  })
+
+  it("SS-02: calls sendResponse with result:false when setSession returns error", async () => {
+    mockSetSession.mockResolvedValue({
+      data: { user: null },
+      error: { message: "invalid token" },
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    listener(
+      {
+        action: "SetSession",
+        access_token: "bad-tok",
+        refresh_token: "bad-ref",
+      },
+      { origin: HUB_ORIGIN },
+      sendResponse,
+    )
+    await vi.waitFor(() =>
+      expect(sendResponse).toHaveBeenCalledWith({
+        result: false,
+        error: "invalid token",
+      }),
+    )
+    expect(Storage.set).not.toHaveBeenCalled()
+  })
+
+  it("SS-03: returns false when access_token is not a string", () => {
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "SetSession", access_token: 123, refresh_token: "ref" },
+      { origin: HUB_ORIGIN },
+      sendResponse,
+    )
+    expect(result).toBe(false)
+    expect(mockSetSession).not.toHaveBeenCalled()
+  })
+
+  it("SS-04: returns false when tokens are not provided", () => {
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "SetSession" },
+      { origin: HUB_ORIGIN },
+      sendResponse,
+    )
+    expect(result).toBe(false)
+    expect(mockSetSession).not.toHaveBeenCalled()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// onMessageExternal — ClearSession
+// ---------------------------------------------------------------------------
+
+describe("onMessageExternal - ClearSession", () => {
+  it("CS-01: calls signOut, clears HUB_USER, and calls sendResponse with result:true", async () => {
+    mockSignOut.mockResolvedValue({ error: null })
+    vi.mocked(Storage.set).mockResolvedValue(true)
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "ClearSession" },
+      { origin: HUB_ORIGIN },
+      sendResponse,
+    )
+    expect(result).toBe(true)
+    await vi.waitFor(() => {
+      expect(mockSignOut).toHaveBeenCalled()
+      expect(Storage.set).toHaveBeenCalledWith(LOCAL_STORAGE_KEY.HUB_USER, null)
+      expect(sendResponse).toHaveBeenCalledWith({ result: true })
+    })
+  })
+
+  it("CS-02: calls sendResponse with result:false when signOut rejects", async () => {
+    mockSignOut.mockRejectedValue(new Error("signout error"))
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    listener({ action: "ClearSession" }, { origin: HUB_ORIGIN }, sendResponse)
+    await vi.waitFor(() =>
+      expect(sendResponse).toHaveBeenCalledWith({
+        result: false,
+        error: "signout error",
+      }),
+    )
+    expect(Storage.set).not.toHaveBeenCalled()
   })
 })
 

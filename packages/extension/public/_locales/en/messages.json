@@ -1253,5 +1253,8 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Cannot run on this page (page URL does not match)"
+  },
+  "hub_login": {
+    "message": "Login to Hub"
   }
 }

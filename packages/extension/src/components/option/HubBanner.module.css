@@ -19,3 +19,17 @@
   font-size: 0.8rem;
   padding-left: 4px;
 }
+
+.userInfo {
+  @apply flex items-center gap-2;
+}
+
+.userAvatar {
+  @apply rounded-full;
+  object-fit: cover;
+}
+
+.userName {
+  @apply font-mono text-gray-700;
+  font-size: 0.85rem;
+}

@@ -1250,5 +1250,8 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak dapat dijalankan di halaman ini (URL Halaman tidak cocok)"
+  },
+  "hub_login": {
+    "message": "Masuk ke Hub"
   }
 }
