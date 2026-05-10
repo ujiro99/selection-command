@@ -42,6 +42,7 @@ import {
   getDescendantFolderIds,
 } from "@/services/option/commandUtils"
 import { isValidDrop } from "@/services/option/dragAndDrop"
+import { shareCommandToHub } from "@/services/hubShare"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
 import { CommandListMenu } from "./CommandListMenu"
@@ -107,10 +108,12 @@ export const CommandList = ({ control }: CommandListProps) => {
   const [commandDialogOpen, _setCommandDialogOpen] = useState(false)
   const [folderDialogOpen, _setFolderDialogOpen] = useState(false)
   const [selectedType, setSelectedType] = useState<COMMAND_TYPE>()
+  const [syncHubOnSave, setSyncHubOnSave] = useState(false)
   const addCommandButtonRef = useRef<HTMLButtonElement>(null)
   const addFolderButtonRef = useRef<HTMLButtonElement>(null)
   const commandsRef = useRef<HTMLUListElement>(null)
   const editDataRef = useRef<Command | CommandFolder | null>(null)
+  const editParamHandledRef = useRef(false)
 
   const commandArray = useFieldArray<CommandsSchemaType, "commands", "_id">({
     name: "commands",
@@ -139,6 +142,7 @@ export const CommandList = ({ control }: CommandListProps) => {
   const setCommandDialogOpen = (open: boolean) => {
     if (!open) {
       editDataRef.current = null
+      setSyncHubOnSave(false)
     } else {
       sendEvent(
         ANALYTICS_EVENTS.OPEN_DIALOG,
@@ -211,6 +215,10 @@ export const CommandList = ({ control }: CommandListProps) => {
       const idx = commandArray.fields.findIndex((f) => f.id === data.id)
       if (idx >= 0) {
         commandArray.update(idx, data as CommandSchemaType)
+        if (syncHubOnSave) {
+          shareCommandToHub(data as SelectionCommand)
+          setSyncHubOnSave(false)
+        }
         sendEvent(
           ANALYTICS_EVENTS.COMMAND_EDIT,
           {
@@ -237,6 +245,34 @@ export const CommandList = ({ control }: CommandListProps) => {
       }
     }
   }
+
+  useEffect(() => {
+    if (editParamHandledRef.current) return
+    const params = new URLSearchParams(location.search)
+    const editCommandId = params.get("editCommand")
+    const syncHub = params.get("syncHub")
+
+    if (!editCommandId) {
+      editParamHandledRef.current = true
+      return
+    }
+
+    if (commandArray.fields.length === 0) return
+
+    editParamHandledRef.current = true
+    const url = new URL(location.href)
+    url.searchParams.delete("editCommand")
+    url.searchParams.delete("syncHub")
+    history.replaceState(null, "", url)
+
+    const command = commandArray.fields.find((f) => f.id === editCommandId)
+    if (!command) return
+
+    editDataRef.current = command as SelectionCommand
+    setSelectedType(OPEN_MODE_TYPE_MAP[command.openMode])
+    setSyncHubOnSave(syncHub === "1")
+    setCommandDialogOpen(true)
+  }, [commandArray.fields])
 
   const commandCopy = (idx: number, title: string) => {
     const node = flatten[idx]

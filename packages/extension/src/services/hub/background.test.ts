@@ -15,6 +15,7 @@ vi.mock("@/services/storage", () => ({
 
 vi.mock("@/const", () => ({
   NEW_HUB_URL: "https://hub.example.com",
+  OPTION_PAGE_PATH: "src/options_page.html",
 }))
 
 const mockSetSession = vi.fn()
@@ -212,6 +213,50 @@ describe("onMessageExternal - DeleteCommand", () => {
     )
     expect(result).toBe(false)
     expect(Ipc.callListener).not.toHaveBeenCalled()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// onMessageExternal — EditCommand
+// ---------------------------------------------------------------------------
+
+describe("onMessageExternal - EditCommand", () => {
+  it("EC-01: opens options page with editCommand and syncHub params", async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN },
+      sendResponse,
+    )
+    expect(result).toBe(true)
+    expect(chrome.tabs.create).toHaveBeenCalledWith(
+      {
+        url: expect.stringContaining(
+          "src/options_page.html?editCommand=cmd-123&syncHub=1#commands",
+        ),
+      },
+      expect.any(Function),
+    )
+    await vi.waitFor(() =>
+      expect(sendResponse).toHaveBeenCalledWith({ result: true }),
+    )
+  })
+
+  it("EC-02: does not handle EditCommand when id is not a string", () => {
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "EditCommand", id: 123 },
+      { origin: HUB_ORIGIN },
+      sendResponse,
+    )
+    expect(result).toBe(false)
+    expect(chrome.tabs.create).not.toHaveBeenCalled()
   })
 })
 

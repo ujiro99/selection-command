@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import type { SupportedStorage } from "@supabase/supabase-js"
-import { NEW_HUB_URL } from "@/const"
+import { NEW_HUB_URL, OPTION_PAGE_PATH } from "@/const"
 import { Ipc, BgCommand } from "@/services/ipc"
 import type { Sender } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
@@ -154,6 +154,18 @@ function onMessageExternal(
         console.error("[onMessageExternal] DeleteCommand failed:", err)
         sendResponse({ result: false, error: err?.message ?? "Unknown error" })
       })
+    return true
+  }
+
+  if (action === "EditCommand" && typeof id === "string") {
+    chrome.tabs.create(
+      {
+        url: `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
+      },
+      (tab) => {
+        sendResponse({ result: tab?.id != null })
+      },
+    )
     return true
   }
 
