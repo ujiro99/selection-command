@@ -28,7 +28,11 @@ import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { ANALYTICS_EVENTS, sendEvent, getOrCreateClientId } from "@/services/analytics"
+import {
+  ANALYTICS_EVENTS,
+  sendEvent,
+  getOrCreateClientId,
+} from "@/services/analytics"
 import * as HubBackground from "@/services/hub/background"
 
 import { importIf } from "@import-if"
@@ -230,7 +234,7 @@ const commandFuncs = {
       })
       .then(async () => {
         const clientId = await getOrCreateClientId()
-        response({ result: true, client_id: clientId })
+        response({ result: true, install_id: clientId })
       })
       .catch((err) => {
         console.error("[addCommand] Failed:", err)
