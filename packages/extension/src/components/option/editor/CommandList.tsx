@@ -246,6 +246,8 @@ export const CommandList = ({ control }: CommandListProps) => {
     }
   }
 
+  // location.search is fixed at page load (set via chrome.tabs.create), so it is
+  // safe to read it without adding it to the dependency array.
   useEffect(() => {
     if (editParamHandledRef.current) return
     const params = new URLSearchParams(location.search)
@@ -259,14 +261,14 @@ export const CommandList = ({ control }: CommandListProps) => {
 
     if (commandArray.fields.length === 0) return
 
+    const command = commandArray.fields.find((f) => f.id === editCommandId)
     editParamHandledRef.current = true
+    if (!command) return
+
     const url = new URL(location.href)
     url.searchParams.delete("editCommand")
     url.searchParams.delete("syncHub")
     history.replaceState(null, "", url)
-
-    const command = commandArray.fields.find((f) => f.id === editCommandId)
-    if (!command) return
 
     editDataRef.current = command as SelectionCommand
     setSelectedType(OPEN_MODE_TYPE_MAP[command.openMode])
