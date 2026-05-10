@@ -10,6 +10,7 @@ import { ImportExport } from "@/components/option/ImportExport"
 import { UserSupport } from "@/components/option/UserSupport"
 import { DeveloperSupport } from "@/components/option/DeveloperSupport"
 import { HubBanner } from "@/components/option/HubBanner"
+import { HubUserInfo } from "@/components/option/HubUserInfo"
 import { SettingForm } from "@/components/option/SettingForm"
 import StorageUsage from "@/components/option/StorageUsage"
 import { PromptHistoryBanner } from "@/components/option/PromptHistoryBanner"
@@ -59,6 +60,9 @@ export function Option() {
           })}
         </h1>
         <span className={css.version}>Version: {VERSION}</span>
+        <div className="ml-auto">
+          <HubUserInfo />
+        </div>
       </header>
       <div className="flex m-auto gap-4 justify-center">
         <aside className="min-w-60">

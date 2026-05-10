@@ -17,6 +17,18 @@ vi.mock("@/const", () => ({
   NEW_HUB_URL: "https://hub.example.com",
 }))
 
+const mockSetSession = vi.fn()
+const mockSignOut = vi.fn()
+
+vi.mock("@supabase/supabase-js", () => ({
+  createClient: () => ({
+    auth: {
+      setSession: mockSetSession,
+      signOut: mockSignOut,
+    },
+  }),
+}))
+
 const HUB_ORIGIN = "https://hub.example.com"
 
 type MessageListener = (
@@ -252,34 +264,49 @@ describe("onMessageExternal - RequestInstalledCommand", () => {
 // ---------------------------------------------------------------------------
 
 describe("onMessageExternal - SetSession", () => {
-  it("SS-01: stores session data and calls sendResponse with result:true", async () => {
+  it("SS-01: calls setSession, stores HubUser with email, and calls sendResponse with result:true", async () => {
+    mockSetSession.mockResolvedValue({
+      data: { user: { email: "user@example.com" } },
+      error: null,
+    })
     vi.mocked(Storage.set).mockResolvedValue(true)
     const listener = getRegisteredListener()
     const sendResponse = vi.fn()
-    const session = { name: "Test User", image: "https://example.com/avatar.png" }
     const result = listener(
-      { action: "SetSession", session },
+      {
+        action: "SetSession",
+        access_token: "access-tok",
+        refresh_token: "refresh-tok",
+      },
       { origin: HUB_ORIGIN },
       sendResponse,
     )
     expect(result).toBe(true)
+    expect(mockSetSession).toHaveBeenCalledWith({
+      access_token: "access-tok",
+      refresh_token: "refresh-tok",
+    })
     await vi.waitFor(() => {
-      expect(Storage.set).toHaveBeenCalledWith(
-        LOCAL_STORAGE_KEY.HUB_USER,
-        session,
-      )
+      expect(Storage.set).toHaveBeenCalledWith(LOCAL_STORAGE_KEY.HUB_USER, {
+        name: "user@example.com",
+        image: "",
+      })
       expect(sendResponse).toHaveBeenCalledWith({ result: true })
     })
   })
 
-  it("SS-02: calls sendResponse with result:false when Storage.set rejects", async () => {
-    vi.mocked(Storage.set).mockRejectedValue(new Error("storage error"))
+  it("SS-02: calls sendResponse with result:false when setSession returns error", async () => {
+    mockSetSession.mockResolvedValue({
+      data: { user: null },
+      error: { message: "invalid token" },
+    })
     const listener = getRegisteredListener()
     const sendResponse = vi.fn()
     listener(
       {
         action: "SetSession",
-        session: { name: "Test User", image: "https://example.com/avatar.png" },
+        access_token: "bad-tok",
+        refresh_token: "bad-ref",
       },
       { origin: HUB_ORIGIN },
       sendResponse,
@@ -287,24 +314,25 @@ describe("onMessageExternal - SetSession", () => {
     await vi.waitFor(() =>
       expect(sendResponse).toHaveBeenCalledWith({
         result: false,
-        error: "storage error",
+        error: "invalid token",
       }),
     )
+    expect(Storage.set).not.toHaveBeenCalled()
   })
 
-  it("SS-03: returns false when session is missing required fields", () => {
+  it("SS-03: returns false when access_token is not a string", () => {
     const listener = getRegisteredListener()
     const sendResponse = vi.fn()
     const result = listener(
-      { action: "SetSession", session: { name: "Test User" } },
+      { action: "SetSession", access_token: 123, refresh_token: "ref" },
       { origin: HUB_ORIGIN },
       sendResponse,
     )
     expect(result).toBe(false)
-    expect(Storage.set).not.toHaveBeenCalled()
+    expect(mockSetSession).not.toHaveBeenCalled()
   })
 
-  it("SS-04: returns false when session is not provided", () => {
+  it("SS-04: returns false when tokens are not provided", () => {
     const listener = getRegisteredListener()
     const sendResponse = vi.fn()
     const result = listener(
@@ -313,7 +341,7 @@ describe("onMessageExternal - SetSession", () => {
       sendResponse,
     )
     expect(result).toBe(false)
-    expect(Storage.set).not.toHaveBeenCalled()
+    expect(mockSetSession).not.toHaveBeenCalled()
   })
 })
 
@@ -322,7 +350,8 @@ describe("onMessageExternal - SetSession", () => {
 // ---------------------------------------------------------------------------
 
 describe("onMessageExternal - ClearSession", () => {
-  it("CS-01: clears session data and calls sendResponse with result:true", async () => {
+  it("CS-01: calls signOut, clears HUB_USER, and calls sendResponse with result:true", async () => {
+    mockSignOut.mockResolvedValue({ error: null })
     vi.mocked(Storage.set).mockResolvedValue(true)
     const listener = getRegisteredListener()
     const sendResponse = vi.fn()
@@ -333,26 +362,24 @@ describe("onMessageExternal - ClearSession", () => {
     )
     expect(result).toBe(true)
     await vi.waitFor(() => {
+      expect(mockSignOut).toHaveBeenCalled()
       expect(Storage.set).toHaveBeenCalledWith(LOCAL_STORAGE_KEY.HUB_USER, null)
       expect(sendResponse).toHaveBeenCalledWith({ result: true })
     })
   })
 
-  it("CS-02: calls sendResponse with result:false when Storage.set rejects", async () => {
-    vi.mocked(Storage.set).mockRejectedValue(new Error("storage error"))
+  it("CS-02: calls sendResponse with result:false when signOut rejects", async () => {
+    mockSignOut.mockRejectedValue(new Error("signout error"))
     const listener = getRegisteredListener()
     const sendResponse = vi.fn()
-    listener(
-      { action: "ClearSession" },
-      { origin: HUB_ORIGIN },
-      sendResponse,
-    )
+    listener({ action: "ClearSession" }, { origin: HUB_ORIGIN }, sendResponse)
     await vi.waitFor(() =>
       expect(sendResponse).toHaveBeenCalledWith({
         result: false,
-        error: "storage error",
+        error: "signout error",
       }),
     )
+    expect(Storage.set).not.toHaveBeenCalled()
   })
 })
 

@@ -1246,6 +1246,6 @@
     "message": "このページでは実行できません（ページURLが一致しません）"
   },
   "hub_login": {
-    "message": "Hubにログイン"
+    "message": "Hubへログイン"
   }
 }

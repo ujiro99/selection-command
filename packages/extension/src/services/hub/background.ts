@@ -1,9 +1,44 @@
+import { createClient } from "@supabase/supabase-js"
+import type { SupportedStorage } from "@supabase/supabase-js"
 import { NEW_HUB_URL } from "@/const"
 import { Ipc, BgCommand } from "@/services/ipc"
 import type { Sender } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SubmitCommandInput } from "@/services/hubShare"
 import type { HubUser } from "@/types"
+
+const chromeStorageAdapter: SupportedStorage = {
+  getItem: async (key: string) => {
+    const r = await chrome.storage.local.get(key)
+    return (r[key] as string | undefined) ?? null
+  },
+  setItem: async (key: string, value: string) => {
+    await chrome.storage.local.set({ [key]: value })
+  },
+  removeItem: async (key: string) => {
+    await chrome.storage.local.remove(key)
+  },
+}
+
+let _supabase: ReturnType<typeof createClient> | undefined
+
+function getSupabase() {
+  if (!_supabase) {
+    _supabase = createClient(
+      import.meta.env.VITE_SUPABASE_URL ?? "",
+      import.meta.env.VITE_SUPABASE_ANON_KEY ?? "",
+      {
+        auth: {
+          storage: chromeStorageAdapter,
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false,
+        },
+      },
+    )
+  }
+  return _supabase
+}
 
 const RETRY_INTERVAL_MS = 100
 const MAX_RETRIES = 20 // 2 seconds
@@ -141,26 +176,41 @@ function onMessageExternal(
   }
 
   if (action === "SetSession") {
-    const session = message.session as HubUser | undefined
-    if (
-      session &&
-      typeof session.name === "string" &&
-      typeof session.image === "string"
-    ) {
-      Storage.set(LOCAL_STORAGE_KEY.HUB_USER, session)
-        .then(() => sendResponse({ result: true }))
-        .catch((err) => {
-          console.error("[onMessageExternal] SetSession failed:", err)
-          sendResponse({ result: false, error: err?.message ?? "Unknown error" })
-        })
-      return true
+    const { access_token, refresh_token } = message
+    if (typeof access_token !== "string" || typeof refresh_token !== "string") {
+      return false
     }
-    return false
+    getSupabase()
+      .auth.setSession({ access_token, refresh_token })
+      .then(async ({ data, error }) => {
+        if (error || !data.user) {
+          sendResponse({
+            result: false,
+            error: error?.message ?? "Unknown error",
+          })
+          return
+        }
+        const hubUser: HubUser = {
+          name: data.user.email ?? "",
+          image: "",
+        }
+        await Storage.set(LOCAL_STORAGE_KEY.HUB_USER, hubUser)
+        sendResponse({ result: true })
+      })
+      .catch((err) => {
+        console.error("[onMessageExternal] SetSession failed:", err)
+        sendResponse({ result: false, error: err?.message ?? "Unknown error" })
+      })
+    return true
   }
 
   if (action === "ClearSession") {
-    Storage.set(LOCAL_STORAGE_KEY.HUB_USER, null)
-      .then(() => sendResponse({ result: true }))
+    getSupabase()
+      .auth.signOut()
+      .then(async () => {
+        await Storage.set(LOCAL_STORAGE_KEY.HUB_USER, null)
+        sendResponse({ result: true })
+      })
       .catch((err) => {
         console.error("[onMessageExternal] ClearSession failed:", err)
         sendResponse({ result: false, error: err?.message ?? "Unknown error" })
