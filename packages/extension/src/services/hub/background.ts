@@ -21,8 +21,10 @@ export const shareCommandToHub = (
 
   const share = async () => {
     try {
-      // Use a named function expression so the handler can remove itself without
-      // needing a non-null assertion on the outer `onPortConnect` variable.
+      // Use a named function expression so the handler can remove itself via
+      // `portConnect` (inner self-reference, always valid inside the handler).
+      // The outer `onPortConnect` variable is used for cleanup in error paths
+      // (tab creation failure / catch block) where the inner name is not in scope.
       onPortConnect = function portConnect(port: chrome.runtime.Port) {
         if (port.name !== "hub-share") return
         if (port.sender?.tab?.id !== tabId) return

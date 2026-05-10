@@ -229,8 +229,8 @@ const commandFuncs = {
         )
       })
       .then(async () => {
-        const installId = await getOrCreateClientId()
-        response({ result: true, install_id: installId })
+        const clientId = await getOrCreateClientId()
+        response({ result: true, client_id: clientId })
       })
       .catch((err) => {
         console.error("[addCommand] Failed:", err)
