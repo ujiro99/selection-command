@@ -19,9 +19,26 @@ export default defineConfig(({ mode }) => {
   const isWatchMode = process.argv.includes("--watch")
   loadEnv(mode, process.cwd(), "")
 
+  const isProduction = mode === "production"
+  const activeManifest = isProduction
+    ? {
+        ...manifest,
+        content_scripts: manifest.content_scripts.map((cs) => ({
+          ...cs,
+          matches: cs.matches.filter((m) => !m.includes("localhost")),
+        })),
+        externally_connectable: {
+          ...manifest.externally_connectable,
+          matches: manifest.externally_connectable.matches.filter(
+            (m) => !m.includes("localhost"),
+          ),
+        },
+      }
+    : manifest
+
   const plugins = [
     react(),
-    crx({ manifest }),
+    crx({ manifest: activeManifest }),
     ...importIfPlugin({ mode }),
     viteTouchCss({
       cssFilePaths: [path.resolve(__dirname, "src/components/App.css")],

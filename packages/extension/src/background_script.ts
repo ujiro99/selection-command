@@ -28,7 +28,12 @@ import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import {
+  ANALYTICS_EVENTS,
+  sendEvent,
+  getOrCreateClientId,
+} from "@/services/analytics"
+import * as HubBackground from "@/services/hub/background"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -211,7 +216,7 @@ const commandFuncs = {
 
     if (!cmd) {
       console.error("invalid command", param.command)
-      response(false)
+      response({ result: false, error: "Invalid command format" })
       return true
     }
 
@@ -227,8 +232,13 @@ const commandFuncs = {
           SCREEN.COMMAND_HUB,
         )
       })
-      .then(() => {
-        response(true)
+      .then(async () => {
+        const clientId = await getOrCreateClientId()
+        response({ result: true, install_id: clientId })
+      })
+      .catch((err) => {
+        console.error("[addCommand] Failed:", err)
+        response({ result: false, error: err?.message ?? "Unknown error" })
       })
     return true
   },
@@ -241,22 +251,20 @@ const commandFuncs = {
     const remove = async () => {
       const current = await Storage.getCommands()
       const commandToRemove = current.find((c) => c.id === param.id)
-      if (commandToRemove) {
-        const newCommands = current.filter((c) => c.id !== param.id)
-        if (newCommands.length === current.length) {
-          response(false)
-          return
-        }
-        await Storage.setCommands(newCommands)
-        await sendEvent(
-          ANALYTICS_EVENTS.COMMAND_REMOVE,
-          {
-            event_label: commandToRemove.openMode,
-          },
-          SCREEN.COMMAND_HUB,
-        )
+      if (!commandToRemove) {
+        response({ result: false, error: "Command not found" })
+        return
       }
-      response(true)
+      const newCommands = current.filter((c) => c.id !== param.id)
+      await Storage.setCommands(newCommands)
+      await sendEvent(
+        ANALYTICS_EVENTS.COMMAND_REMOVE,
+        {
+          event_label: commandToRemove.openMode,
+        },
+        SCREEN.COMMAND_HUB,
+      )
+      response({ result: true })
     }
     remove()
     return true
@@ -402,6 +410,11 @@ const commandFuncs = {
   [BgCommand.getActiveTabId]: getActiveTabId,
 
   //
+  // Hub
+  //
+  [BgCommand.shareCommandToHub]: HubBackground.shareCommandToHub,
+
+  //
   // PageAction
   //
   [BgCommand.addPageAction]: PageActionBackground.add,
@@ -419,6 +432,8 @@ for (const key in BgCommand) {
   const command = BgCommand[key as keyof typeof BgCommand]
   Ipc.addListener(command, commandFuncs[key])
 }
+
+HubBackground.initHubExternalListener()
 
 const updateWindowSize = async (
   commandId: string,
