@@ -273,5 +273,22 @@ describe("shareCommandToHub", () => {
       }),
     )
   })
+
+  it("SH-08: logs an error when Ipc.send rejects", async () => {
+    const consoleSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined)
+    vi.mocked(Ipc.send).mockRejectedValue(new Error("network error"))
+
+    shareCommandToHub(makeSearchCmd())
+
+    // Allow microtasks to flush so the .catch() handler runs
+    await Promise.resolve()
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "[HubShare] Failed to share command:",
+      expect.any(Error),
+    )
+  })
 })
 
