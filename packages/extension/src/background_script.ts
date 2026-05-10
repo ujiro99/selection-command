@@ -232,6 +232,10 @@ const commandFuncs = {
         const installId = await getOrCreateClientId()
         response({ result: true, install_id: installId })
       })
+      .catch((err) => {
+        console.error("[addCommand] Failed:", err)
+        response({ result: false, error: err?.message ?? "Unknown error" })
+      })
     return true
   },
 

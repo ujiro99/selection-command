@@ -21,11 +21,13 @@ export const shareCommandToHub = (
 
   const share = async () => {
     try {
-      onPortConnect = (port: chrome.runtime.Port) => {
+      // Use a named function expression so the handler can remove itself without
+      // needing a non-null assertion on the outer `onPortConnect` variable.
+      onPortConnect = function portConnect(port: chrome.runtime.Port) {
         if (port.name !== "hub-share") return
         if (port.sender?.tab?.id !== tabId) return
 
-        chrome.runtime.onConnectExternal.removeListener(onPortConnect!)
+        chrome.runtime.onConnectExternal.removeListener(portConnect)
 
         const cleanup = () => {
           clearInterval(timer)
