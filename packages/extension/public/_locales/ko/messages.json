@@ -1247,5 +1247,8 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "이 페이지에서 실행할 수 없습니다 (페이지 URL이 일치하지 않습니다)"
+  },
+  "hub_login": {
+    "message": "Hub에 로그인"
   }
 }

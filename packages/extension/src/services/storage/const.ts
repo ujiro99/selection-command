@@ -16,6 +16,7 @@ export enum LOCAL_STORAGE_KEY {
   COMMANDS_BACKUP = "commandsBackup",
   DAILY_COMMANDS_BACKUP = "dailyCommandsBackup",
   WEEKLY_COMMANDS_BACKUP = "weeklyCommandsBackup",
+  HUB_USER = "hubUser",
 }
 
 export enum SESSION_STORAGE_KEY {

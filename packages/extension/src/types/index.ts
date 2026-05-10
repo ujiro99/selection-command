@@ -207,6 +207,11 @@ export type SessionData = {
   timestamp: number
 }
 
+export type HubUser = {
+  name: string
+  image: string
+}
+
 export type ExecuteCommandParams = {
   command: Command | SelectionCommand
   position: { x: number; y: number } | null

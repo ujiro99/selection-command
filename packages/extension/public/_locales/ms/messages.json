@@ -1250,5 +1250,8 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Tidak boleh dijalankan pada halaman ini (URL Halaman tidak sepadan)"
+  },
+  "hub_login": {
+    "message": "Log masuk ke Hub"
   }
 }

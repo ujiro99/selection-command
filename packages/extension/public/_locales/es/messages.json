@@ -1247,5 +1247,8 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "No se puede ejecutar en esta página (la URL de la página no coincide)"
+  },
+  "hub_login": {
+    "message": "Iniciar sesión en Hub"
   }
 }

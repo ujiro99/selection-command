@@ -1,8 +1,9 @@
 import { NEW_HUB_URL } from "@/const"
 import { Ipc, BgCommand } from "@/services/ipc"
 import type { Sender } from "@/services/ipc"
-import { Storage } from "@/services/storage"
+import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SubmitCommandInput } from "@/services/hubShare"
+import type { HubUser } from "@/types"
 
 const RETRY_INTERVAL_MS = 100
 const MAX_RETRIES = 20 // 2 seconds
@@ -135,6 +136,34 @@ function onMessageExternal(
           err,
         )
         sendResponse({ action: "SyncInstalledCommand", installedIds: [] })
+      })
+    return true
+  }
+
+  if (action === "SetSession") {
+    const session = message.session as HubUser | undefined
+    if (
+      session &&
+      typeof session.name === "string" &&
+      typeof session.image === "string"
+    ) {
+      Storage.set(LOCAL_STORAGE_KEY.HUB_USER, session)
+        .then(() => sendResponse({ result: true }))
+        .catch((err) => {
+          console.error("[onMessageExternal] SetSession failed:", err)
+          sendResponse({ result: false, error: err?.message ?? "Unknown error" })
+        })
+      return true
+    }
+    return false
+  }
+
+  if (action === "ClearSession") {
+    Storage.set(LOCAL_STORAGE_KEY.HUB_USER, null)
+      .then(() => sendResponse({ result: true }))
+      .catch((err) => {
+        console.error("[onMessageExternal] ClearSession failed:", err)
+        sendResponse({ result: false, error: err?.message ?? "Unknown error" })
       })
     return true
   }

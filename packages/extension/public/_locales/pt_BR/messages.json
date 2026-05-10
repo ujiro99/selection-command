@@ -1250,5 +1250,8 @@
   },
   "Menu_disabled_urlNotMatch": {
     "message": "Não é possível executar nesta página (URL da página não corresponde)"
+  },
+  "hub_login": {
+    "message": "Entrar no Hub"
   }
 }
