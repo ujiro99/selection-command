@@ -119,7 +119,7 @@ describe("onMessageExternal - AddCommand", () => {
     )
   })
 
-  it("AC-02: calls sendResponse(false) when Ipc.callListener rejects", async () => {
+  it("AC-02: calls sendResponse with result:false when Ipc.callListener rejects", async () => {
     vi.mocked(Ipc.callListener).mockRejectedValue(new Error("IPC error"))
     const listener = getRegisteredListener()
     const sendResponse = vi.fn()
@@ -128,7 +128,12 @@ describe("onMessageExternal - AddCommand", () => {
       { origin: HUB_ORIGIN },
       sendResponse,
     )
-    await vi.waitFor(() => expect(sendResponse).toHaveBeenCalledWith(false))
+    await vi.waitFor(() =>
+      expect(sendResponse).toHaveBeenCalledWith({
+        result: false,
+        error: "IPC error",
+      }),
+    )
   })
 
   it("AC-03: does not handle AddCommand when command is not a string", () => {
@@ -167,7 +172,7 @@ describe("onMessageExternal - DeleteCommand", () => {
     )
   })
 
-  it("DC-02: calls sendResponse(false) when Ipc.callListener rejects", async () => {
+  it("DC-02: calls sendResponse with result:false when Ipc.callListener rejects", async () => {
     vi.mocked(Ipc.callListener).mockRejectedValue(new Error("IPC error"))
     const listener = getRegisteredListener()
     const sendResponse = vi.fn()
@@ -176,7 +181,12 @@ describe("onMessageExternal - DeleteCommand", () => {
       { origin: HUB_ORIGIN },
       sendResponse,
     )
-    await vi.waitFor(() => expect(sendResponse).toHaveBeenCalledWith(false))
+    await vi.waitFor(() =>
+      expect(sendResponse).toHaveBeenCalledWith({
+        result: false,
+        error: "IPC error",
+      }),
+    )
   })
 
   it("DC-03: does not handle DeleteCommand when id is not a string", () => {
@@ -277,13 +287,14 @@ describe("shareCommandToHub", () => {
     await vi.waitFor(() => expect(response).toHaveBeenCalledWith(false))
   })
 
-  it("SH-03: calls response(false) when chrome.tabs.create throws", async () => {
+  it("SH-03: calls response(false) and removes listener when chrome.tabs.create throws", async () => {
     vi.mocked(chrome.tabs.create).mockImplementation(() => {
       throw new Error("tabs.create error")
     })
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
     await vi.waitFor(() => expect(response).toHaveBeenCalledWith(false))
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
   })
 
   it("SH-04: ignores port with wrong name", async () => {

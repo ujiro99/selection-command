@@ -28,7 +28,7 @@ import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import { ANALYTICS_EVENTS, sendEvent, getOrCreateClientId } from "@/services/analytics"
 import * as HubBackground from "@/services/hub/background"
 
 import { importIf } from "@import-if"
@@ -228,8 +228,9 @@ const commandFuncs = {
           SCREEN.COMMAND_HUB,
         )
       })
-      .then(() => {
-        response({ result: true, install_id: cmd.id })
+      .then(async () => {
+        const installId = await getOrCreateClientId()
+        response({ result: true, install_id: installId })
       })
     return true
   },
@@ -242,21 +243,19 @@ const commandFuncs = {
     const remove = async () => {
       const current = await Storage.getCommands()
       const commandToRemove = current.find((c) => c.id === param.id)
-      if (commandToRemove) {
-        const newCommands = current.filter((c) => c.id !== param.id)
-        if (newCommands.length === current.length) {
-          response({ result: false, error: "Command not found" })
-          return
-        }
-        await Storage.setCommands(newCommands)
-        await sendEvent(
-          ANALYTICS_EVENTS.COMMAND_REMOVE,
-          {
-            event_label: commandToRemove.openMode,
-          },
-          SCREEN.COMMAND_HUB,
-        )
+      if (!commandToRemove) {
+        response({ result: false, error: "Command not found" })
+        return
       }
+      const newCommands = current.filter((c) => c.id !== param.id)
+      await Storage.setCommands(newCommands)
+      await sendEvent(
+        ANALYTICS_EVENTS.COMMAND_REMOVE,
+        {
+          event_label: commandToRemove.openMode,
+        },
+        SCREEN.COMMAND_HUB,
+      )
       response({ result: true })
     }
     remove()

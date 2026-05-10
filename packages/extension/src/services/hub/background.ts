@@ -16,14 +16,16 @@ export const shareCommandToHub = (
   // tabId is set after the tab is created; onPortConnect checks against this value
   // so that early port connections (before the await resolves) are safely ignored.
   let tabId: number | undefined
+  // Declared outside try so it can be removed in the catch block as well.
+  let onPortConnect: ((port: chrome.runtime.Port) => void) | undefined
 
   const share = async () => {
     try {
-      const onPortConnect = (port: chrome.runtime.Port) => {
+      onPortConnect = (port: chrome.runtime.Port) => {
         if (port.name !== "hub-share") return
         if (port.sender?.tab?.id !== tabId) return
 
-        chrome.runtime.onConnectExternal.removeListener(onPortConnect)
+        chrome.runtime.onConnectExternal.removeListener(onPortConnect!)
 
         const cleanup = () => {
           clearInterval(timer)
@@ -66,6 +68,9 @@ export const shareCommandToHub = (
 
       response(true)
     } catch (err) {
+      if (onPortConnect) {
+        chrome.runtime.onConnectExternal.removeListener(onPortConnect)
+      }
       console.error("[ShareCommandToHub] Failed to open hub tab:", err)
       response(false)
     }
@@ -92,7 +97,7 @@ function onMessageExternal(
       .then(sendResponse)
       .catch((err) => {
         console.error("[onMessageExternal] AddCommand failed:", err)
-        sendResponse(false)
+        sendResponse({ result: false, error: err?.message ?? "Unknown error" })
       })
     return true
   }
@@ -102,7 +107,7 @@ function onMessageExternal(
       .then(sendResponse)
       .catch((err) => {
         console.error("[onMessageExternal] DeleteCommand failed:", err)
-        sendResponse(false)
+        sendResponse({ result: false, error: err?.message ?? "Unknown error" })
       })
     return true
   }
