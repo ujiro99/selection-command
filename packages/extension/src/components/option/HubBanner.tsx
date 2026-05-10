@@ -48,6 +48,9 @@ export function HubBanner() {
             alt={hubUser.name}
             width="24"
             height="24"
+            onError={(e) => {
+              e.currentTarget.style.display = "none"
+            }}
           />
           <span className={css2.userName}>{hubUser.name}</span>
         </div>
