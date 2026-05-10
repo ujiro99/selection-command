@@ -318,7 +318,7 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
-    // Let the async share() function resume past the await so `tab` is initialized
+    // Let the async share() function resume past the await so `tabId` is initialized
     await Promise.resolve()
 
     const portConnectListener = vi.mocked(

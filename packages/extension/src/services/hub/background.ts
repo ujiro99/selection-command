@@ -13,12 +13,15 @@ export const shareCommandToHub = (
   response: (res: unknown) => void,
 ): boolean => {
   let retries = 0
+  // tabId is set after the tab is created; onPortConnect checks against this value
+  // so that early port connections (before the await resolves) are safely ignored.
+  let tabId: number | undefined
 
   const share = async () => {
     try {
       const onPortConnect = (port: chrome.runtime.Port) => {
         if (port.name !== "hub-share") return
-        if (port.sender?.tab?.id !== tab.id) return
+        if (port.sender?.tab?.id !== tabId) return
 
         chrome.runtime.onConnectExternal.removeListener(onPortConnect)
 
@@ -55,9 +58,11 @@ export const shareCommandToHub = (
         chrome.tabs.create({ url: hubUrl }, resolve),
       )
       if (!tab?.id) {
+        chrome.runtime.onConnectExternal.removeListener(onPortConnect)
         response(false)
         return
       }
+      tabId = tab.id
 
       response(true)
     } catch (err) {
