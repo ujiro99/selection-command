@@ -7,6 +7,8 @@ import type { SubmitCommandInput } from "@/services/hubShare"
 const RETRY_INTERVAL_MS = 100
 const MAX_RETRIES = 20 // 2 seconds
 
+const hubOrigin = new URL(NEW_HUB_URL).origin
+
 export const shareCommandToHub = (
   param: SubmitCommandInput,
   _: Sender,
@@ -88,16 +90,16 @@ function onMessageExternal(
   sender: chrome.runtime.MessageSender,
   sendResponse: (response?: unknown) => void,
 ): boolean {
-  const hubOrigin = new URL(NEW_HUB_URL).origin
   if (!sender.origin || sender.origin !== hubOrigin) return false
 
   const { action, command, id } = message ?? {}
   console.log("[onMessageExternal] Received message:", message)
 
   if (action === "AddCommand" && typeof command === "string") {
-    Ipc.callListener<{ command: string }, boolean>(BgCommand.addCommand, {
-      command,
-    })
+    Ipc.callListener<
+      { command: string },
+      { result: boolean; error?: string; client_id?: string }
+    >(BgCommand.addCommand, { command })
       .then(sendResponse)
       .catch((err) => {
         console.error("[onMessageExternal] AddCommand failed:", err)
@@ -107,7 +109,10 @@ function onMessageExternal(
   }
 
   if (action === "DeleteCommand" && typeof id === "string") {
-    Ipc.callListener<{ id: string }, boolean>(BgCommand.removeCommand, { id })
+    Ipc.callListener<{ id: string }, { result: boolean; error?: string }>(
+      BgCommand.removeCommand,
+      { id },
+    )
       .then(sendResponse)
       .catch((err) => {
         console.error("[onMessageExternal] DeleteCommand failed:", err)

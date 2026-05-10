@@ -74,6 +74,8 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
     return false
   }
 
-  Ipc.send(BgCommand.shareCommandToHub, input)
+  void Ipc.send(BgCommand.shareCommandToHub, input).catch((err) => {
+    console.error("[HubShare] Failed to share command:", err)
+  })
   return true
 }

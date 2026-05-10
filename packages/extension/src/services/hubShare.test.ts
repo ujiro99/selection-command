@@ -228,7 +228,7 @@ describe("toSubmitCommandInput", () => {
 describe("shareCommandToHub", () => {
   beforeEach(() => {
     vi.spyOn(chrome.i18n, "getUILanguage").mockReturnValue("en")
-    vi.mocked(Ipc.send).mockClear()
+    vi.mocked(Ipc.send).mockResolvedValue(true)
   })
 
   afterEach(() => {
