@@ -212,12 +212,18 @@ function onMessageExternal(
   }
 
   if (action === "EditCommand" && typeof id === "string") {
-    _hubTabId = sender.tab?.id
+    if (sender.tab?.id == null) {
+      sendResponse({ result: false, error: "Invalid sender tab" })
+      return false
+    }
+    _hubTabId = sender.tab.id
 
     // Register the hub-edit port listener before creating the tab so Hub can
     // connect immediately after receiving the response.
     const onHubEditConnect = (port: chrome.runtime.Port) => {
       if (port.name !== "hub-edit") return
+      if (port.sender?.tab?.id !== _hubTabId) return
+      if (port.sender?.origin !== hubOrigin) return
       chrome.runtime.onConnectExternal.removeListener(onHubEditConnect)
       _hubEditPort = port
       port.onDisconnect.addListener(() => {

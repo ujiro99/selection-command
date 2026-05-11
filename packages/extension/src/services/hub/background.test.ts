@@ -230,7 +230,7 @@ describe("onMessageExternal - EditCommand", () => {
     const sendResponse = vi.fn()
     const result = listener(
       { action: "EditCommand", id: "cmd-123" },
-      { origin: HUB_ORIGIN },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
       sendResponse,
     )
     expect(result).toBe(true)
@@ -252,10 +252,76 @@ describe("onMessageExternal - EditCommand", () => {
     const sendResponse = vi.fn()
     const result = listener(
       { action: "EditCommand", id: 123 },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    expect(result).toBe(false)
+    expect(chrome.tabs.create).not.toHaveBeenCalled()
+  })
+
+  it("EC-03: ignores hub-edit port when sender tab id does not match EditCommand sender", () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    const hubEditConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+    const mockPort = {
+      name: "hub-edit",
+      sender: { tab: { id: 999 }, origin: HUB_ORIGIN },
+      onDisconnect: { addListener: vi.fn() },
+    }
+    hubEditConnectListener(mockPort as any)
+    expect(chrome.runtime.onConnectExternal.removeListener).not.toHaveBeenCalled()
+    expect(mockPort.onDisconnect.addListener).not.toHaveBeenCalled()
+  })
+
+  it("EC-04: ignores hub-edit port when sender origin does not match hub origin", () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    const hubEditConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+    const mockPort = {
+      name: "hub-edit",
+      sender: { tab: { id: 10 }, origin: "https://evil.example.com" },
+      onDisconnect: { addListener: vi.fn() },
+    }
+    hubEditConnectListener(mockPort as any)
+    expect(chrome.runtime.onConnectExternal.removeListener).not.toHaveBeenCalled()
+    expect(mockPort.onDisconnect.addListener).not.toHaveBeenCalled()
+  })
+
+  it("EC-05: returns false when EditCommand sender has no tab id", () => {
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "EditCommand", id: "cmd-123" },
       { origin: HUB_ORIGIN },
       sendResponse,
     )
     expect(result).toBe(false)
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: "Invalid sender tab",
+    })
     expect(chrome.tabs.create).not.toHaveBeenCalled()
   })
 })
