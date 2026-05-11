@@ -47,6 +47,7 @@ import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
 import { CommandListMenu } from "./CommandListMenu"
 import { CommandTreeRenderer } from "./CommandTreeRenderer"
+import { generateId } from "@/lib/utils"
 
 // Drag filtering utilities
 
@@ -263,7 +264,12 @@ export const CommandList = ({ control }: CommandListProps) => {
 
     const command = commandArray.fields.find((f) => f.id === editCommandId)
     editParamHandledRef.current = true
-    if (!command) return
+    if (!command) {
+      console.warn(
+        `Command with id ${editCommandId} not found. Cannot open edit dialog.`,
+      )
+      return
+    }
 
     const url = new URL(location.href)
     url.searchParams.delete("editCommand")
@@ -284,7 +290,7 @@ export const CommandList = ({ control }: CommandListProps) => {
     const index = commandArray.fields.findIndex((f) => f.id === node.id)
     if (index < 0) return
     const cmd = commandArray.fields[index]
-    cmd.id = crypto.randomUUID()
+    cmd.id = generateId()
     cmd.title = title
     commandArray.insert(index + 1, cmd)
   }

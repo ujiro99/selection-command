@@ -1,3 +1,5 @@
+import { v7 } from "uuid"
+
 // Import and re-export shared utilities
 import {
   cn,
@@ -313,6 +315,10 @@ export function hyphen2Underscore(input: string): string {
  */
 export function generateRandomID(): string {
   return Math.random().toString(36).substring(2, 11)
+}
+
+export function generateId(): string {
+  return v7()
 }
 
 /**

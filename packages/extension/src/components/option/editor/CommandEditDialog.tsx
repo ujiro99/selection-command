@@ -82,7 +82,7 @@ import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
-import { isEmpty, e2a, cn, parseGeminiUrl } from "@/lib/utils"
+import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -874,7 +874,7 @@ const CommandEditDialogInner = ({
               size="lg"
               onClick={form.handleSubmit(
                 (data) => {
-                  if (isEmpty(data.id)) data.id = crypto.randomUUID()
+                  if (isEmpty(data.id)) data.id = generateId()
                   if (data.revision == null) data.revision = 0
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined

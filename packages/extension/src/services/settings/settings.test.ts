@@ -10,6 +10,7 @@ import { toDataURL } from "../dom"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
 import type { Command, SettingsType, Star } from "@/types"
 import { isLinkCommand } from "@/lib/utils"
+import * as utils from "@/lib/utils"
 
 // Mock dependencies
 vi.mock("../storage")
@@ -611,14 +612,9 @@ describe("migrate function", () => {
       pageRules: [],
     } as any
 
-    // Mock crypto.randomUUID
-    const mockRandomUUID = vi.fn().mockReturnValue("random-uuid-123")
-    const originalCrypto = global.crypto
-    Object.defineProperty(global, "crypto", {
-      value: { randomUUID: mockRandomUUID },
-      writable: true,
-      configurable: true,
-    })
+    const mockGenerateId = vi
+      .spyOn(utils, "generateId")
+      .mockReturnValue("random-uuid-123")
 
     vi.mocked(DefaultCommands).find = vi.fn().mockReturnValue(undefined)
 
@@ -626,8 +622,7 @@ describe("migrate function", () => {
 
     expect(result.commands[0].id).toBe("random-uuid-123")
 
-    // Restore original crypto
-    global.crypto = originalCrypto
+    mockGenerateId.mockRestore()
   })
 
   it("ST-32: should return data unchanged for latest version", async () => {
