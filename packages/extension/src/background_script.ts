@@ -413,6 +413,7 @@ const commandFuncs = {
   // Hub
   //
   [BgCommand.shareCommandToHub]: HubBackground.shareCommandToHub,
+  [BgCommand.editCommandToHub]: HubBackground.editCommandToHub,
 
   //
   // PageAction

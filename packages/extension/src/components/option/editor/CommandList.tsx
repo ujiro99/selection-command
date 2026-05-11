@@ -42,7 +42,7 @@ import {
   getDescendantFolderIds,
 } from "@/services/option/commandUtils"
 import { isValidDrop } from "@/services/option/dragAndDrop"
-import { shareCommandToHub } from "@/services/hubShare"
+import { editCommandToHub } from "@/services/hubShare"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
 import { CommandListMenu } from "./CommandListMenu"
@@ -217,7 +217,7 @@ export const CommandList = ({ control }: CommandListProps) => {
       if (idx >= 0) {
         commandArray.update(idx, data as CommandSchemaType)
         if (syncHubOnSave) {
-          shareCommandToHub(data as SelectionCommand)
+          editCommandToHub(data as SelectionCommand)
           setSyncHubOnSave(false)
         }
         sendEvent(

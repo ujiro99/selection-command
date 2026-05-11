@@ -121,6 +121,54 @@ export const shareCommandToHub = (
   return true
 }
 
+// State set during EditCommand and cleared after edit-command-ack.
+let _hubEditPort: chrome.runtime.Port | undefined
+let _hubTabId: number | undefined
+let _editTabId: number | undefined
+
+export const editCommandToHub = (
+  param: SubmitCommandInput,
+  _: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  const port = _hubEditPort
+  if (!port) {
+    console.error("[editCommandToHub] No hub-edit port available.")
+    response(false)
+    return true
+  }
+
+  port.postMessage({ type: "edit-command", command: param })
+
+  port.onMessage.addListener(function onMsg(msg: unknown) {
+    if ((msg as { type?: string })?.type === "edit-command-ack") {
+      port.onMessage.removeListener(onMsg)
+      _hubEditPort = undefined
+
+      const editTabId = _editTabId
+      const hubTabId = _hubTabId
+      _editTabId = undefined
+      _hubTabId = undefined
+
+      Storage.updateCommands([param])
+        .catch((err) => {
+          console.error(
+            "[editCommandToHub] Failed to update local command:",
+            err,
+          )
+        })
+        .finally(() => {
+          if (editTabId != null) chrome.tabs.remove(editTabId)
+          if (hubTabId != null) chrome.tabs.update(hubTabId, { active: true })
+        })
+
+      response(true)
+    }
+  })
+
+  return true
+}
+
 function onMessageExternal(
   message: Record<string, unknown>,
   sender: chrome.runtime.MessageSender,
@@ -158,11 +206,28 @@ function onMessageExternal(
   }
 
   if (action === "EditCommand" && typeof id === "string") {
+    _hubTabId = sender.tab?.id
+
+    // Register the hub-edit port listener before creating the tab so Hub can
+    // connect immediately after receiving the response.
+    const onHubEditConnect = (port: chrome.runtime.Port) => {
+      if (port.name !== "hub-edit") return
+      chrome.runtime.onConnectExternal.removeListener(onHubEditConnect)
+      _hubEditPort = port
+      port.onDisconnect.addListener(() => {
+        _hubEditPort = undefined
+        _editTabId = undefined
+        _hubTabId = undefined
+      })
+    }
+    chrome.runtime.onConnectExternal.addListener(onHubEditConnect)
+
     chrome.tabs.create(
       {
         url: `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
       },
       (tab) => {
+        _editTabId = tab?.id ?? undefined
         sendResponse({ result: tab?.id != null })
       },
     )
