@@ -42,6 +42,8 @@ function getSupabase() {
 
 const RETRY_INTERVAL_MS = 100
 const MAX_RETRIES = 20 // 2 seconds
+const EDIT_CONNECT_TIMEOUT_MS = 10_000
+const EDIT_COMMAND_ACK_TIMEOUT_MS = 10_000
 
 const hubOrigin = new URL(NEW_HUB_URL).origin
 
@@ -125,6 +127,27 @@ export const shareCommandToHub = (
 let _hubEditPort: chrome.runtime.Port | undefined
 let _hubTabId: number | undefined
 let _editTabId: number | undefined
+let _editAckTimeout: ReturnType<typeof setTimeout> | undefined
+let _editAckListener: ((msg: unknown) => void) | undefined
+let _editPendingResponse: ((res: unknown) => void) | undefined
+
+const clearEditCommandAckWait = (port: chrome.runtime.Port) => {
+  if (_editAckTimeout) {
+    clearTimeout(_editAckTimeout)
+    _editAckTimeout = undefined
+  }
+  if (_editAckListener) {
+    port.onMessage.removeListener(_editAckListener)
+    _editAckListener = undefined
+  }
+  _editPendingResponse = undefined
+}
+
+const settleEditCommandAck = (port: chrome.runtime.Port, result: boolean) => {
+  const pendingResponse = _editPendingResponse
+  clearEditCommandAckWait(port)
+  pendingResponse?.(result)
+}
 
 export const editCommandToHub = (
   param: SubmitCommandInput,
@@ -137,12 +160,18 @@ export const editCommandToHub = (
     response(false)
     return true
   }
+  if (_editPendingResponse) {
+    console.error("[editCommandToHub] Previous edit-command request is pending.")
+    response(false)
+    return true
+  }
 
   port.postMessage({ type: "edit-command", command: param })
 
-  port.onMessage.addListener(function onMsg(msg: unknown) {
+  _editPendingResponse = response
+  _editAckListener = function onMsg(msg: unknown) {
     if ((msg as { type?: string })?.type === "edit-command-ack") {
-      port.onMessage.removeListener(onMsg)
+      clearEditCommandAckWait(port)
       _hubEditPort = undefined
 
       const editTabId = _editTabId
@@ -170,7 +199,12 @@ export const editCommandToHub = (
 
       response(true)
     }
-  })
+  }
+  port.onMessage.addListener(_editAckListener)
+  _editAckTimeout = setTimeout(() => {
+    console.error("[editCommandToHub] Hub did not acknowledge edit-command in time.")
+    settleEditCommandAck(port, false)
+  }, EDIT_COMMAND_ACK_TIMEOUT_MS)
 
   return true
 }
@@ -212,11 +246,20 @@ function onMessageExternal(
   }
 
   if (action === "EditCommand" && typeof id === "string") {
-    if (sender.tab?.id == null) {
+    if (sender.tab?.id === undefined) {
       sendResponse({ result: false, error: "Invalid sender tab" })
       return false
     }
     _hubTabId = sender.tab.id
+
+    let connectTimeout: ReturnType<typeof setTimeout> | undefined
+    const cleanupHubEditConnectListener = () => {
+      if (connectTimeout) {
+        clearTimeout(connectTimeout)
+        connectTimeout = undefined
+      }
+      chrome.runtime.onConnectExternal.removeListener(onHubEditConnect)
+    }
 
     // Register the hub-edit port listener before creating the tab so Hub can
     // connect immediately after receiving the response.
@@ -224,21 +267,38 @@ function onMessageExternal(
       if (port.name !== "hub-edit") return
       if (port.sender?.tab?.id !== _hubTabId) return
       if (port.sender?.origin !== hubOrigin) return
-      chrome.runtime.onConnectExternal.removeListener(onHubEditConnect)
+      cleanupHubEditConnectListener()
       _hubEditPort = port
       port.onDisconnect.addListener(() => {
+        if (_editPendingResponse) {
+          settleEditCommandAck(port, false)
+        }
         _hubEditPort = undefined
         _editTabId = undefined
         _hubTabId = undefined
       })
     }
     chrome.runtime.onConnectExternal.addListener(onHubEditConnect)
+    connectTimeout = setTimeout(() => {
+      cleanupHubEditConnectListener()
+      _hubEditPort = undefined
+      _editTabId = undefined
+      _hubTabId = undefined
+    }, EDIT_CONNECT_TIMEOUT_MS)
 
     chrome.tabs.create(
       {
         url: `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
       },
       (tab) => {
+        if (tab?.id == null) {
+          cleanupHubEditConnectListener()
+          _hubEditPort = undefined
+          _editTabId = undefined
+          _hubTabId = undefined
+          sendResponse({ result: false })
+          return
+        }
         _editTabId = tab?.id ?? undefined
         sendResponse({ result: tab?.id != null })
       },
