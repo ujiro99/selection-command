@@ -161,7 +161,9 @@ export const editCommandToHub = (
     return true
   }
   if (_editPendingResponse) {
-    console.error("[editCommandToHub] Previous edit-command request is pending.")
+    console.error(
+      "[editCommandToHub] Previous edit-command request is pending.",
+    )
     response(false)
     return true
   }
@@ -202,7 +204,9 @@ export const editCommandToHub = (
   }
   port.onMessage.addListener(_editAckListener)
   _editAckTimeout = setTimeout(() => {
-    console.error("[editCommandToHub] Hub did not acknowledge edit-command in time.")
+    console.error(
+      "[editCommandToHub] Hub did not acknowledge edit-command in time.",
+    )
     settleEditCommandAck(port, false)
   }, EDIT_COMMAND_ACK_TIMEOUT_MS)
 
@@ -249,6 +253,13 @@ function onMessageExternal(
     if (sender.tab?.id === undefined) {
       sendResponse({ result: false, error: "Invalid sender tab" })
       return false
+    }
+    if (_hubTabId !== undefined) {
+      console.warn(
+        "[onMessageExternal] EditCommand rejected: another edit session is in progress.",
+      )
+      sendResponse({ result: false, error: "Edit session already in progress" })
+      return true
     }
     _hubTabId = sender.tab.id
 
