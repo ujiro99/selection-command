@@ -299,8 +299,8 @@ function onMessageExternal(
           sendResponse({ result: false })
           return
         }
-        _editTabId = tab?.id ?? undefined
-        sendResponse({ result: tab?.id != null })
+        _editTabId = tab.id
+        sendResponse({ result: true })
       },
     )
     return true

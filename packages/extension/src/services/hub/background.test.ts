@@ -411,7 +411,7 @@ describe("editCommandToHub", () => {
     expect(response).toHaveBeenCalledWith(false)
   })
 
-  it("EH-02: on ack, updates storage with command shape and clears listener", async () => {
+  it("EH-02: on ack, updates storage excluding locale/targetUrl and clears listener", async () => {
     const port = setupConnectedHubEditPort()
     let onAckMessage: ((msg: unknown) => void) | undefined
     vi.mocked(port.onMessage.addListener).mockImplementation((fn) => {
