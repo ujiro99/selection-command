@@ -150,7 +150,13 @@ export const editCommandToHub = (
       _editTabId = undefined
       _hubTabId = undefined
 
-      Storage.updateCommands([param])
+      const {
+        locale: _locale,
+        targetUrl: _targetUrl,
+        ...commandToStore
+      } = param
+
+      Storage.updateCommands([commandToStore])
         .catch((err) => {
           console.error(
             "[editCommandToHub] Failed to update local command:",
