@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { useFieldArray } from "react-hook-form"
+import { useFieldArray, useFormContext } from "react-hook-form"
 
 import {
   DndContext,
@@ -28,7 +28,12 @@ import {
 
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import { SCREEN, COMMAND_TYPE, OPEN_MODE_TYPE_MAP } from "@/const"
-import type { Command, CommandFolder, SelectionCommand } from "@/types"
+import type {
+  Command,
+  CommandFolder,
+  SelectionCommand,
+  ShortcutCommand,
+} from "@/types"
 
 // Imported services and hooks
 import {
@@ -115,6 +120,8 @@ export const CommandList = ({ control }: CommandListProps) => {
   const commandsRef = useRef<HTMLUListElement>(null)
   const editDataRef = useRef<Command | CommandFolder | null>(null)
   const editParamHandledRef = useRef(false)
+
+  const { getValues, setValue } = useFormContext()
 
   const commandArray = useFieldArray<CommandsSchemaType, "commands", "_id">({
     name: "commands",
@@ -300,6 +307,12 @@ export const CommandList = ({ control }: CommandListProps) => {
     if (idx >= 0) {
       commandArray.update(idx, { ...commandArray.fields[idx], id: newId })
     }
+    const shortcuts: ShortcutCommand[] = getValues("shortcuts.shortcuts") ?? []
+    shortcuts.forEach((shortcut, index) => {
+      if (shortcut.commandId === commandId) {
+        setValue(`shortcuts.shortcuts.${index}.commandId`, newId)
+      }
+    })
   }
 
   const commandRemove = (idx: number) => {
