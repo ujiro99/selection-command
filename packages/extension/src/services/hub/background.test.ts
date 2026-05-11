@@ -47,7 +47,7 @@ function getRegisteredListener(): MessageListener {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(Storage.updateCommands).mockResolvedValue(true as any)
+  vi.mocked(Storage.updateCommands).mockResolvedValue(true)
   ;(chrome.tabs as any).remove = vi.fn()
   ;(chrome.tabs as any).update = vi.fn()
   Object.defineProperty(global.chrome.runtime, "onConnectExternal", {
@@ -374,6 +374,7 @@ describe("editCommandToHub", () => {
   const editParam = {
     id: "cmd-1",
     title: "Updated",
+    openMode: "newTab",
     locale: "en",
     targetUrl: "https://example.com",
   } as any
@@ -427,7 +428,9 @@ describe("editCommandToHub", () => {
 
     onAckMessage?.({ type: "edit-command-ack" })
 
-    expect(Storage.updateCommands).toHaveBeenCalledWith([{ id: "cmd-1", title: "Updated" }])
+    expect(Storage.updateCommands).toHaveBeenCalledWith([
+      { id: "cmd-1", title: "Updated", openMode: "newTab" },
+    ])
     expect(port.onMessage.removeListener).toHaveBeenCalled()
     expect(response).toHaveBeenCalledWith(true)
     await vi.waitFor(() => {
