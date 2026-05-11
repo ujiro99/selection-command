@@ -295,6 +295,13 @@ export const CommandList = ({ control }: CommandListProps) => {
     commandArray.insert(index + 1, cmd)
   }
 
+  const handleUpdateCommandId = (commandId: string, newId: string) => {
+    const idx = commandArray.fields.findIndex((f) => f.id === commandId)
+    if (idx >= 0) {
+      commandArray.update(idx, { ...commandArray.fields[idx], id: newId })
+    }
+  }
+
   const commandRemove = (idx: number) => {
     const node = flatten[idx]
     if (isCommand(node.content)) {
@@ -371,6 +378,7 @@ export const CommandList = ({ control }: CommandListProps) => {
               isDroppable={(node, activeNode) =>
                 isDroppable(node, activeNode, folderArray.fields)
               }
+              onUpdateCommandId={handleUpdateCommandId}
             />
           </SortableContext>
         </DndContext>

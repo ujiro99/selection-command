@@ -321,6 +321,13 @@ export function generateId(): string {
   return v7()
 }
 
+export function isUUIDv7(id: unknown): boolean {
+  if (id == null || typeof id !== "string") return false
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    id,
+  )
+}
+
 /**
  * Interpolate a string with variables.
  * @param {string} template The template string.
