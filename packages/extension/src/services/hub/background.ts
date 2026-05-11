@@ -188,18 +188,18 @@ export const editCommandToHub = (
       } = param
 
       Storage.updateCommands([commandToStore])
+        .then(() => response(true))
         .catch((err) => {
           console.error(
             "[editCommandToHub] Failed to update local command:",
             err,
           )
+          response(false)
         })
         .finally(() => {
           if (editTabId != null) chrome.tabs.remove(editTabId)
           if (hubTabId != null) chrome.tabs.update(hubTabId, { active: true })
         })
-
-      response(true)
     }
   }
   port.onMessage.addListener(_editAckListener)
@@ -264,6 +264,7 @@ function onMessageExternal(
     _hubTabId = sender.tab.id
 
     let connectTimeout: ReturnType<typeof setTimeout> | undefined
+    let sessionInvalidated = false
     const cleanupHubEditConnectListener = () => {
       if (connectTimeout) {
         clearTimeout(connectTimeout)
@@ -291,6 +292,7 @@ function onMessageExternal(
     }
     chrome.runtime.onConnectExternal.addListener(onHubEditConnect)
     connectTimeout = setTimeout(() => {
+      sessionInvalidated = true
       cleanupHubEditConnectListener()
       _hubEditPort = undefined
       _editTabId = undefined
@@ -302,6 +304,10 @@ function onMessageExternal(
         url: `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
       },
       (tab) => {
+        if (sessionInvalidated) {
+          if (tab?.id != null) chrome.tabs.remove(tab.id)
+          return
+        }
         if (tab?.id == null) {
           cleanupHubEditConnectListener()
           _hubEditPort = undefined
