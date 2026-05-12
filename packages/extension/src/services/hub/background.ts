@@ -1,11 +1,27 @@
 import { createClient } from "@supabase/supabase-js"
 import type { SupportedStorage } from "@supabase/supabase-js"
-import { NEW_HUB_URL, OPTION_PAGE_PATH } from "@/const"
-import { Ipc, BgCommand } from "@/services/ipc"
+import {
+  NEW_HUB_URL,
+  OPTION_PAGE_PATH,
+  COMMAND_SOURCE_TYPE,
+  SCREEN,
+} from "@/const"
 import type { Sender } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SubmitCommandInput } from "@/services/hubShare"
 import type { HubUser, CommandFromHub } from "@/types"
+import { Settings } from "@/services/settings/settings"
+import {
+  ANALYTICS_EVENTS,
+  sendEvent,
+  getOrCreateClientId,
+} from "@/services/analytics"
+import { PopupOption } from "@/services/option/defaultSettings"
+import {
+  isSearchCommand,
+  isPageActionCommand,
+  isAiPromptCommand,
+} from "@/lib/utils"
 
 const chromeStorageAdapter: SupportedStorage = {
   getItem: async (key: string) => {
@@ -206,6 +222,261 @@ export const editCommandToHub = (
   return true
 }
 
+export async function handleAddCommand(
+  command: string,
+  sendResponse: (response?: unknown) => void,
+): Promise<void> {
+  try {
+    const parsed = JSON.parse(command)
+    const isSearch = isSearchCommand(parsed)
+    const isPageAction = isPageActionCommand(parsed)
+    const isAiPrompt = isAiPromptCommand(parsed)
+    const sourceType = (parsed as { sourceType?: unknown }).sourceType
+    const sourceId = (parsed as { sourceId?: unknown }).sourceId
+    const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
+      sourceType as COMMAND_SOURCE_TYPE,
+    )
+      ? (sourceType as COMMAND_SOURCE_TYPE)
+      : undefined
+    const sourceInfo = {
+      sourceType: normalizedSourceType,
+      sourceId: typeof sourceId === "string" ? sourceId : undefined,
+    }
+
+    const cmd = isSearch
+      ? {
+          id: parsed.id,
+          title: parsed.title,
+          searchUrl: parsed.searchUrl,
+          iconUrl: parsed.iconUrl,
+          ...sourceInfo,
+          openMode: parsed.openMode,
+          openModeSecondary: parsed.openModeSecondary,
+          spaceEncoding: parsed.spaceEncoding,
+          popupOption: PopupOption,
+        }
+      : isAiPrompt
+        ? {
+            id: parsed.id,
+            title: parsed.title,
+            iconUrl: parsed.iconUrl,
+            ...sourceInfo,
+            openMode: parsed.openMode,
+            aiPromptOption: parsed.aiPromptOption,
+            popupOption: PopupOption,
+          }
+        : isPageAction
+          ? {
+              id: parsed.id,
+              title: parsed.title,
+              iconUrl: parsed.iconUrl,
+              ...sourceInfo,
+              openMode: parsed.openMode,
+              pageActionOption: parsed.pageActionOption,
+              popupOption: PopupOption,
+            }
+          : null
+
+    if (!cmd) {
+      console.error("[handleAddCommand] invalid command", command)
+      sendResponse({ result: false, error: "Invalid command format" })
+      return
+    }
+
+    await Settings.addCommands([cmd])
+    await sendEvent(
+      ANALYTICS_EVENTS.COMMAND_ADD,
+      {
+        event_label: cmd.openMode,
+        source_type: sourceInfo.sourceType,
+        source_id: sourceInfo.sourceId,
+      },
+      SCREEN.COMMAND_HUB,
+    )
+    const clientId = await getOrCreateClientId()
+    sendResponse({ result: true, install_id: clientId })
+  } catch (err) {
+    console.error("[handleAddCommand] Failed:", err)
+    sendResponse({
+      result: false,
+      error: (err as Error)?.message ?? "Unknown error",
+    })
+  }
+}
+
+export async function handleDeleteCommand(
+  id: string,
+  sendResponse: (response?: unknown) => void,
+): Promise<void> {
+  try {
+    const current = await Storage.getCommands()
+    const commandToRemove = current.find((c) => c.id === id)
+    if (!commandToRemove) {
+      sendResponse({ result: false, error: "Command not found" })
+      return
+    }
+    const newCommands = current.filter((c) => c.id !== id)
+    await Storage.setCommands(newCommands)
+    await sendEvent(
+      ANALYTICS_EVENTS.COMMAND_REMOVE,
+      { event_label: commandToRemove.openMode },
+      SCREEN.COMMAND_HUB,
+    )
+    sendResponse({ result: true })
+  } catch (err) {
+    console.error("[handleDeleteCommand] Failed:", err)
+    sendResponse({
+      result: false,
+      error: (err as Error)?.message ?? "Unknown error",
+    })
+  }
+}
+
+export function handleEditCommand(
+  id: string,
+  sender: chrome.runtime.MessageSender,
+  sendResponse: (response?: unknown) => void,
+): boolean {
+  if (sender.tab?.id === undefined) {
+    sendResponse({ result: false, error: "Invalid sender tab" })
+    return false
+  }
+
+  // Cancel any in-progress session; the new request takes over (last-write-wins).
+  cancelEditSession()
+
+  const newSession: EditSession = {
+    hubTabId: sender.tab.id,
+    editTabId: undefined,
+    hubEditPort: undefined,
+    ackTimeout: undefined,
+    ackListener: undefined,
+    pendingResponse: undefined,
+    cancelConnectWait: () => {},
+  }
+  _editSession = newSession
+
+  let connectTimeout: ReturnType<typeof setTimeout> | undefined
+  const cleanupHubEditConnectListener = () => {
+    if (connectTimeout) {
+      clearTimeout(connectTimeout)
+      connectTimeout = undefined
+    }
+    chrome.runtime.onConnectExternal.removeListener(onHubEditConnect)
+  }
+  newSession.cancelConnectWait = cleanupHubEditConnectListener
+
+  const onHubEditConnect = (port: chrome.runtime.Port) => {
+    if (port.name !== "hub-edit") return
+    if (port.sender?.tab?.id !== newSession.hubTabId) return
+    if (port.sender?.origin !== hubOrigin) return
+    cleanupHubEditConnectListener()
+    newSession.hubEditPort = port
+    port.onDisconnect.addListener(() => {
+      if (newSession.pendingResponse) {
+        if (newSession.ackTimeout) clearTimeout(newSession.ackTimeout)
+        if (newSession.ackListener) {
+          port.onMessage.removeListener(newSession.ackListener)
+        }
+        newSession.pendingResponse(false)
+        newSession.pendingResponse = undefined
+      }
+      if (_editSession === newSession) _editSession = undefined
+      newSession.hubEditPort = undefined
+    })
+  }
+  chrome.runtime.onConnectExternal.addListener(onHubEditConnect)
+  connectTimeout = setTimeout(() => {
+    cleanupHubEditConnectListener()
+    if (_editSession === newSession) _editSession = undefined
+  }, EDIT_CONNECT_TIMEOUT_MS)
+
+  chrome.tabs.create(
+    {
+      url: `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
+    },
+    (tab) => {
+      if (_editSession !== newSession) {
+        if (tab?.id != null) chrome.tabs.remove(tab.id)
+        sendResponse({ result: false, error: "Edit session timed out" })
+        return
+      }
+      if (tab?.id == null) {
+        cleanupHubEditConnectListener()
+        _editSession = undefined
+        sendResponse({ result: false, error: "Failed to create edit tab" })
+        return
+      }
+      newSession.editTabId = tab.id
+      sendResponse({ result: true })
+    },
+  )
+  return true
+}
+
+export async function handleRequestInstalledCommand(
+  sendResponse: (response?: unknown) => void,
+): Promise<void> {
+  try {
+    const commands = await Storage.getCommands()
+    sendResponse({
+      action: "SyncInstalledCommand",
+      installedIds: commands.map((c) => c.id),
+    })
+  } catch (err) {
+    console.error("[handleRequestInstalledCommand] Failed:", err)
+    sendResponse({ action: "SyncInstalledCommand", installedIds: [] })
+  }
+}
+
+export async function handleSetSession(
+  access_token: string,
+  refresh_token: string,
+  sendResponse: (response?: unknown) => void,
+): Promise<void> {
+  try {
+    const { data, error } = await getSupabase().auth.setSession({
+      access_token,
+      refresh_token,
+    })
+    if (error || !data.user) {
+      sendResponse({
+        result: false,
+        error: error?.message ?? "Unknown error",
+      })
+      return
+    }
+    const hubUser: HubUser = {
+      name: data.user.email ?? "",
+      image: "",
+    }
+    await Storage.set(LOCAL_STORAGE_KEY.HUB_USER, hubUser)
+    sendResponse({ result: true })
+  } catch (err) {
+    console.error("[handleSetSession] Failed:", err)
+    sendResponse({
+      result: false,
+      error: (err as Error)?.message ?? "Unknown error",
+    })
+  }
+}
+
+export async function handleClearSession(
+  sendResponse: (response?: unknown) => void,
+): Promise<void> {
+  try {
+    await getSupabase().auth.signOut()
+    await Storage.set(LOCAL_STORAGE_KEY.HUB_USER, null)
+    sendResponse({ result: true })
+  } catch (err) {
+    console.error("[handleClearSession] Failed:", err)
+    sendResponse({
+      result: false,
+      error: (err as Error)?.message ?? "Unknown error",
+    })
+  }
+}
+
 function onMessageExternal(
   message: Record<string, unknown>,
   sender: chrome.runtime.MessageSender,
@@ -217,126 +488,30 @@ function onMessageExternal(
   console.log("[onMessageExternal] Received message:", message)
 
   if (action === "AddCommand" && typeof command === "string") {
-    Ipc.callListener<
-      { command: string },
-      { result: boolean; error?: string; client_id?: string }
-    >(BgCommand.addCommand, { command })
-      .then(sendResponse)
-      .catch((err) => {
-        console.error("[onMessageExternal] AddCommand failed:", err)
-        sendResponse({ result: false, error: err?.message ?? "Unknown error" })
-      })
+    handleAddCommand(command, sendResponse).catch((err) => {
+      console.error("[onMessageExternal] AddCommand failed:", err)
+      sendResponse({ result: false, error: err?.message ?? "Unknown error" })
+    })
     return true
   }
 
   if (action === "DeleteCommand" && typeof id === "string") {
-    Ipc.callListener<{ id: string }, { result: boolean; error?: string }>(
-      BgCommand.removeCommand,
-      { id },
-    )
-      .then(sendResponse)
-      .catch((err) => {
-        console.error("[onMessageExternal] DeleteCommand failed:", err)
-        sendResponse({ result: false, error: err?.message ?? "Unknown error" })
-      })
+    handleDeleteCommand(id, sendResponse).catch((err) => {
+      console.error("[onMessageExternal] DeleteCommand failed:", err)
+      sendResponse({ result: false, error: err?.message ?? "Unknown error" })
+    })
     return true
   }
 
   if (action === "EditCommand" && typeof id === "string") {
-    if (sender.tab?.id === undefined) {
-      sendResponse({ result: false, error: "Invalid sender tab" })
-      return false
-    }
-
-    // Cancel any in-progress session; the new request takes over (last-write-wins).
-    cancelEditSession()
-
-    const newSession: EditSession = {
-      hubTabId: sender.tab.id,
-      editTabId: undefined,
-      hubEditPort: undefined,
-      ackTimeout: undefined,
-      ackListener: undefined,
-      pendingResponse: undefined,
-      cancelConnectWait: () => { },
-    }
-    _editSession = newSession
-
-    let connectTimeout: ReturnType<typeof setTimeout> | undefined
-    const cleanupHubEditConnectListener = () => {
-      if (connectTimeout) {
-        clearTimeout(connectTimeout)
-        connectTimeout = undefined
-      }
-      chrome.runtime.onConnectExternal.removeListener(onHubEditConnect)
-    }
-    newSession.cancelConnectWait = cleanupHubEditConnectListener
-
-    // Register the hub-edit port listener before creating the tab so Hub can
-    // connect immediately after receiving the response.
-    const onHubEditConnect = (port: chrome.runtime.Port) => {
-      if (port.name !== "hub-edit") return
-      if (port.sender?.tab?.id !== newSession.hubTabId) return
-      if (port.sender?.origin !== hubOrigin) return
-      cleanupHubEditConnectListener()
-      newSession.hubEditPort = port
-      port.onDisconnect.addListener(() => {
-        if (newSession.pendingResponse) {
-          if (newSession.ackTimeout) clearTimeout(newSession.ackTimeout)
-          if (newSession.ackListener) {
-            port.onMessage.removeListener(newSession.ackListener)
-          }
-          newSession.pendingResponse(false)
-          newSession.pendingResponse = undefined
-        }
-        if (_editSession === newSession) _editSession = undefined
-        newSession.hubEditPort = undefined
-      })
-    }
-    chrome.runtime.onConnectExternal.addListener(onHubEditConnect)
-    connectTimeout = setTimeout(() => {
-      cleanupHubEditConnectListener()
-      if (_editSession === newSession) _editSession = undefined
-    }, EDIT_CONNECT_TIMEOUT_MS)
-
-    chrome.tabs.create(
-      {
-        url: `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
-      },
-      (tab) => {
-        if (_editSession !== newSession) {
-          if (tab?.id != null) chrome.tabs.remove(tab.id)
-          sendResponse({ result: false, error: "Edit session timed out" })
-          return
-        }
-        if (tab?.id == null) {
-          cleanupHubEditConnectListener()
-          _editSession = undefined
-          sendResponse({ result: false, error: "Failed to create edit tab" })
-          return
-        }
-        newSession.editTabId = tab.id
-        sendResponse({ result: true })
-      },
-    )
-    return true
+    return handleEditCommand(id, sender, sendResponse)
   }
 
   if (action === "RequestInstalledCommand") {
-    Storage.getCommands()
-      .then((commands) => {
-        sendResponse({
-          action: "SyncInstalledCommand",
-          installedIds: commands.map((c) => c.id),
-        })
-      })
-      .catch((err) => {
-        console.error(
-          "[onMessageExternal] RequestInstalledCommand failed:",
-          err,
-        )
-        sendResponse({ action: "SyncInstalledCommand", installedIds: [] })
-      })
+    handleRequestInstalledCommand(sendResponse).catch((err) => {
+      console.error("[onMessageExternal] RequestInstalledCommand failed:", err)
+      sendResponse({ action: "SyncInstalledCommand", installedIds: [] })
+    })
     return true
   }
 
@@ -345,41 +520,18 @@ function onMessageExternal(
     if (typeof access_token !== "string" || typeof refresh_token !== "string") {
       return false
     }
-    getSupabase()
-      .auth.setSession({ access_token, refresh_token })
-      .then(async ({ data, error }) => {
-        if (error || !data.user) {
-          sendResponse({
-            result: false,
-            error: error?.message ?? "Unknown error",
-          })
-          return
-        }
-        const hubUser: HubUser = {
-          name: data.user.email ?? "",
-          image: "",
-        }
-        await Storage.set(LOCAL_STORAGE_KEY.HUB_USER, hubUser)
-        sendResponse({ result: true })
-      })
-      .catch((err) => {
-        console.error("[onMessageExternal] SetSession failed:", err)
-        sendResponse({ result: false, error: err?.message ?? "Unknown error" })
-      })
+    handleSetSession(access_token, refresh_token, sendResponse).catch((err) => {
+      console.error("[onMessageExternal] SetSession failed:", err)
+      sendResponse({ result: false, error: err?.message ?? "Unknown error" })
+    })
     return true
   }
 
   if (action === "ClearSession") {
-    getSupabase()
-      .auth.signOut()
-      .then(async () => {
-        await Storage.set(LOCAL_STORAGE_KEY.HUB_USER, null)
-        sendResponse({ result: true })
-      })
-      .catch((err) => {
-        console.error("[onMessageExternal] ClearSession failed:", err)
-        sendResponse({ result: false, error: err?.message ?? "Unknown error" })
-      })
+    handleClearSession(sendResponse).catch((err) => {
+      console.error("[onMessageExternal] ClearSession failed:", err)
+      sendResponse({ result: false, error: err?.message ?? "Unknown error" })
+    })
     return true
   }
 
