@@ -414,6 +414,7 @@ const commandFuncs = {
   //
   [BgCommand.shareCommandToHub]: HubBackground.shareCommandToHub,
   [BgCommand.editCommandToHub]: HubBackground.editCommandToHub,
+  [BgCommand.getSharedCommandIds]: HubBackground.getSharedCommandIds,
 
   //
   // PageAction

@@ -82,6 +82,7 @@ import { Ipc, BgCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import { shareCommandToHub } from "@/services/hubShare"
 
 import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
@@ -274,6 +275,7 @@ type CommandEditDialogProps = {
   initialCommand?: SelectionCommand
   selectedType: COMMAND_TYPE
   onTypeClick: () => void
+  isShared?: boolean
 }
 
 export const CommandEditDialog = (param: CommandEditDialogProps) => {
@@ -293,6 +295,7 @@ const CommandEditDialogInner = ({
   initialCommand,
   selectedType,
   onTypeClick,
+  isShared,
 }: CommandEditDialogProps) => {
   const [initialized, setInitialized] = useState(false)
   const [assistDialogOpen, setAssistDialogOpen] = useState(false)
@@ -326,6 +329,27 @@ const CommandEditDialogInner = ({
 
   // Determine if open mode selection should be shown
   const shouldShowOpenModeSelect = selectedType === COMMAND_TYPE.SEARCH
+
+  // Process form data before submit: apply coercions and clean up unused fields.
+  const processFormData = (data: CommandSchemaType): CommandSchemaType => {
+    if (isEmpty(data.id)) data.id = generateId()
+    if (data.revision == null) data.revision = 0
+    if (data.parentFolderId === ROOT_FOLDER) {
+      data.parentFolderId = undefined
+    }
+    if (isSearchType(data)) {
+      if (data.popupOption != null) {
+        data.popupOption = {
+          width: Number(data.popupOption.width),
+          height: Number(data.popupOption.height),
+        }
+      }
+      if (data.openMode !== OPEN_MODE.WINDOW) {
+        delete data.windowState
+      }
+    }
+    return data
+  }
 
   const variableArray = useFieldArray({
     name: "variables",
@@ -877,28 +901,32 @@ const CommandEditDialogInner = ({
                 {t("labelCancel")}
               </Button>
             </DialogClose>
+            {isShared && !isHubEdit && (
+              <Button
+                type="button"
+                size="lg"
+                onClick={form.handleSubmit(
+                  (data) => {
+                    const processed = processFormData(data)
+                    onSubmit(processed)
+                    shareCommandToHub(processed as SelectionCommand)
+                    onOpenChange(false)
+                    reset(InitialValues)
+                  },
+                  (err) => console.error(err),
+                )}
+              >
+                <Share />
+                {t("labelShare")}
+              </Button>
+            )}
             <Button
               type="button"
               size="lg"
               onClick={form.handleSubmit(
                 (data) => {
-                  if (isEmpty(data.id)) data.id = generateId()
-                  if (data.revision == null) data.revision = 0
-                  if (data.parentFolderId === ROOT_FOLDER) {
-                    data.parentFolderId = undefined
-                  }
-                  if (isSearchType(data)) {
-                    if (data.popupOption != null) {
-                      data.popupOption = {
-                        width: Number(data.popupOption.width),
-                        height: Number(data.popupOption.height),
-                      }
-                    }
-                    if (data.openMode !== OPEN_MODE.WINDOW) {
-                      delete data.windowState
-                    }
-                  }
-                  onSubmit(data)
+                  const processed = processFormData(data)
+                  onSubmit(processed)
                   onOpenChange(false)
                   reset(InitialValues)
                 },

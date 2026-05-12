@@ -91,3 +91,15 @@ export function editCommandToHub(command: SelectionCommand): boolean {
   })
   return true
 }
+
+export async function getSharedCommandIds(): Promise<string[]> {
+  try {
+    const ids = await Ipc.send<undefined, string[]>(
+      BgCommand.getSharedCommandIds,
+    )
+    return Array.isArray(ids) ? ids : []
+  } catch (err) {
+    console.error("[HubShare] Failed to get shared command IDs:", err)
+    return []
+  }
+}

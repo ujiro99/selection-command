@@ -50,6 +50,7 @@ import { isValidDrop } from "@/services/option/dragAndDrop"
 import { editCommandToHub } from "@/services/hubShare"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
+import { useSharedCommandIds } from "@/hooks/option/useSharedCommandIds"
 import { CommandListMenu } from "./CommandListMenu"
 import { CommandTreeRenderer } from "./CommandTreeRenderer"
 import { generateId } from "@/lib/utils"
@@ -120,6 +121,8 @@ export const CommandList = ({ control }: CommandListProps) => {
   const commandsRef = useRef<HTMLUListElement>(null)
   const editDataRef = useRef<Command | CommandFolder | null>(null)
   const editParamHandledRef = useRef(false)
+
+  const sharedCommandIds = useSharedCommandIds()
 
   const { getValues, setValue } = useFormContext()
 
@@ -375,6 +378,11 @@ export const CommandList = ({ control }: CommandListProps) => {
         initialCommand={editDataRef.current as SelectionCommand}
         selectedType={selectedType ?? COMMAND_TYPE.SEARCH}
         onTypeClick={handleTypeClick}
+        isShared={
+          editDataRef.current != null &&
+          isCommand(editDataRef.current) &&
+          sharedCommandIds.has(editDataRef.current.id)
+        }
       />
       <FolderEditDialog
         open={folderDialogOpen}
@@ -405,6 +413,7 @@ export const CommandList = ({ control }: CommandListProps) => {
                 isDroppable(node, activeNode, folderArray.fields)
               }
               onUpdateCommandId={handleUpdateCommandId}
+              sharedCommandIds={sharedCommandIds}
             />
           </SortableContext>
         </DndContext>

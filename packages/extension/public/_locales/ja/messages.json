@@ -749,6 +749,9 @@
   "Option_shareButton_tooltip": {
     "message": "Hubに共有"
   },
+  "Option_shareButton_shared_tooltip": {
+    "message": "共有済み"
+  },
   "Option_remove_title": {
     "message": "削除しますか？"
   },

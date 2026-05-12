@@ -389,3 +389,43 @@ function onMessageExternal(
 export function initHubExternalListener(): void {
   chrome.runtime.onMessageExternal.addListener(onMessageExternal)
 }
+
+export const getSharedCommandIds = (
+  _: unknown,
+  __: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  const fetch = async () => {
+    try {
+      const {
+        data: { session },
+      } = await getSupabase().auth.getSession()
+      if (!session) {
+        response([])
+        return
+      }
+      const res = await globalThis.fetch(`${NEW_HUB_URL}/api/me/commands`, {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      })
+      if (!res.ok) {
+        response([])
+        return
+      }
+      const raw = (await res.json()) as unknown
+      if (!Array.isArray(raw)) {
+        response([])
+        return
+      }
+      const commands = raw.filter(
+        (c): c is { id: string } =>
+          typeof c === "object" && c !== null && typeof (c as { id?: unknown }).id === "string",
+      )
+      response(commands.map((c) => c.id))
+    } catch (err) {
+      console.error("[getSharedCommandIds] Failed to fetch shared commands:", err)
+      response([])
+    }
+  }
+  fetch()
+  return true
+}
