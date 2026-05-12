@@ -332,23 +332,24 @@ const CommandEditDialogInner = ({
 
   // Process form data before submit: apply coercions and clean up unused fields.
   const processFormData = (data: CommandSchemaType): CommandSchemaType => {
-    if (isEmpty(data.id)) data.id = generateId()
-    if (data.revision == null) data.revision = 0
-    if (data.parentFolderId === ROOT_FOLDER) {
-      data.parentFolderId = undefined
+    const d = { ...data }
+    if (isEmpty(d.id)) d.id = generateId()
+    if (d.revision == null) d.revision = 0
+    if (d.parentFolderId === ROOT_FOLDER) {
+      d.parentFolderId = undefined
     }
-    if (isSearchType(data)) {
-      if (data.popupOption != null) {
-        data.popupOption = {
-          width: Number(data.popupOption.width),
-          height: Number(data.popupOption.height),
+    if (isSearchType(d)) {
+      if (d.popupOption != null) {
+        d.popupOption = {
+          width: Number(d.popupOption.width),
+          height: Number(d.popupOption.height),
         }
       }
-      if (data.openMode !== OPEN_MODE.WINDOW) {
-        delete data.windowState
+      if (d.openMode !== OPEN_MODE.WINDOW) {
+        delete d.windowState
       }
     }
-    return data
+    return d
   }
 
   const variableArray = useFieldArray({
@@ -909,7 +910,7 @@ const CommandEditDialogInner = ({
                   (data) => {
                     const processed = processFormData(data)
                     onSubmit(processed)
-                    shareCommandToHub(processed as SelectionCommand)
+                    shareCommandToHub(processed)
                     onOpenChange(false)
                     reset(InitialValues)
                   },

@@ -15,8 +15,9 @@ export function useSharedCommandIds(): Set<string> {
     let cancelled = false
 
     const fetchIds = async (hubUser: HubUser | null) => {
+      if (cancelled) return
       if (!hubUser) {
-        if (!cancelled) setSharedIds(new Set())
+        setSharedIds(new Set())
         return
       }
       const ids = await getSharedCommandIds()
