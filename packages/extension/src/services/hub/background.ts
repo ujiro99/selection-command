@@ -60,6 +60,7 @@ const RETRY_INTERVAL_MS = 100
 const MAX_RETRIES = 20 // 2 seconds
 const EDIT_CONNECT_TIMEOUT_MS = 10_000
 const EDIT_COMMAND_ACK_TIMEOUT_MS = 10_000
+const PUSH_EDIT_CONNECT_TIMEOUT_MS = 10_000
 
 const hubOrigin = new URL(NEW_HUB_URL).origin
 
@@ -245,36 +246,36 @@ export async function handleAddCommand(
 
     const cmd = isSearch
       ? {
+        id: parsed.id,
+        title: parsed.title,
+        searchUrl: parsed.searchUrl,
+        iconUrl: parsed.iconUrl,
+        ...sourceInfo,
+        openMode: parsed.openMode,
+        openModeSecondary: parsed.openModeSecondary,
+        spaceEncoding: parsed.spaceEncoding,
+        popupOption: PopupOption,
+      }
+      : isAiPrompt
+        ? {
           id: parsed.id,
           title: parsed.title,
-          searchUrl: parsed.searchUrl,
           iconUrl: parsed.iconUrl,
           ...sourceInfo,
           openMode: parsed.openMode,
-          openModeSecondary: parsed.openModeSecondary,
-          spaceEncoding: parsed.spaceEncoding,
+          aiPromptOption: parsed.aiPromptOption,
           popupOption: PopupOption,
         }
-      : isAiPrompt
-        ? {
+        : isPageAction
+          ? {
             id: parsed.id,
             title: parsed.title,
             iconUrl: parsed.iconUrl,
             ...sourceInfo,
             openMode: parsed.openMode,
-            aiPromptOption: parsed.aiPromptOption,
+            pageActionOption: parsed.pageActionOption,
             popupOption: PopupOption,
           }
-        : isPageAction
-          ? {
-              id: parsed.id,
-              title: parsed.title,
-              iconUrl: parsed.iconUrl,
-              ...sourceInfo,
-              openMode: parsed.openMode,
-              pageActionOption: parsed.pageActionOption,
-              popupOption: PopupOption,
-            }
           : null
 
     if (!cmd) {
@@ -352,7 +353,7 @@ export function handleEditCommand(
     ackTimeout: undefined,
     ackListener: undefined,
     pendingResponse: undefined,
-    cancelConnectWait: () => {},
+    cancelConnectWait: () => { },
   }
   _editSession = newSession
 
@@ -485,7 +486,7 @@ function onMessageExternal(
   if (!sender.origin || sender.origin !== hubOrigin) return false
 
   const { action, command, id } = message ?? {}
-  console.log("[onMessageExternal] Received message:", message)
+  console.debug("[onMessageExternal] Received message:", message)
 
   if (action === "AddCommand" && typeof command === "string") {
     handleAddCommand(command, sendResponse).catch((err) => {
@@ -540,6 +541,91 @@ function onMessageExternal(
 
 export function initHubExternalListener(): void {
   chrome.runtime.onMessageExternal.addListener(onMessageExternal)
+}
+
+export const pushEditToHub = (
+  param: SubmitCommandInput,
+  _: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  let tabId: number | undefined
+  let connectTimeout: ReturnType<typeof setTimeout> | undefined
+  let onPortConnect: ((port: chrome.runtime.Port) => void) | undefined
+
+  const cleanup = () => {
+    if (connectTimeout) clearTimeout(connectTimeout)
+    if (onPortConnect)
+      chrome.runtime.onConnectExternal.removeListener(onPortConnect)
+  }
+
+  const push = async () => {
+    try {
+      onPortConnect = function portConnect(port: chrome.runtime.Port) {
+        if (port.name !== "hub-edit") return
+        if (port.sender?.tab?.id !== tabId) return
+        if (port.sender?.origin !== hubOrigin) return
+
+        cleanup()
+
+        let retries = 0
+
+        const cleanupPort = () => {
+          clearInterval(timer)
+          port.onMessage.removeListener(onAck)
+        }
+
+        const onAck = (msg: unknown) => {
+          if ((msg as { type?: string })?.type === "edit-command-ack") {
+            cleanupPort()
+          }
+        }
+        port.onMessage.addListener(onAck)
+
+        // Post the command repeatedly until ack is received or max retries exceeded
+        const timer = setInterval(() => {
+          retries++
+          if (retries > MAX_RETRIES) {
+            cleanupPort()
+            console.error(
+              "[pushEditToHub] Hub did not respond to edit-command in time.",
+            )
+            return
+          }
+          port.postMessage({ type: "edit-command", command: param })
+        }, RETRY_INTERVAL_MS)
+      }
+
+      chrome.runtime.onConnectExternal.addListener(onPortConnect)
+      connectTimeout = setTimeout(() => {
+        cleanup()
+        console.error("[pushEditToHub] Hub did not connect in time.")
+      }, PUSH_EDIT_CONNECT_TIMEOUT_MS)
+
+      const tab = await new Promise<chrome.tabs.Tab>((resolve) =>
+        chrome.tabs.create(
+          {
+            url: `${NEW_HUB_URL}/${param.locale}/dashboard/commands?id=${encodeURIComponent(param.id)}`,
+          },
+          resolve,
+        ),
+      )
+
+      if (!tab?.id) {
+        cleanup()
+        response(false)
+        return
+      }
+      tabId = tab.id
+      response(true)
+    } catch (err) {
+      cleanup()
+      console.error("[pushEditToHub] Failed:", err)
+      response(false)
+    }
+  }
+
+  push()
+  return true
 }
 
 export const getSharedCommandIds = (

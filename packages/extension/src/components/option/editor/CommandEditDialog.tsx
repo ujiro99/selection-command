@@ -82,7 +82,7 @@ import { Ipc, BgCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
-import { shareCommandToHub } from "@/services/hubShare"
+import { pushEditToHub } from "@/services/hubShare"
 
 import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
@@ -910,7 +910,7 @@ const CommandEditDialogInner = ({
                   (data) => {
                     const processed = processFormData(data)
                     onSubmit(processed)
-                    shareCommandToHub(processed)
+                    pushEditToHub(processed)
                     onOpenChange(false)
                     reset(InitialValues)
                   },

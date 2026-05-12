@@ -10,6 +10,7 @@ import {
   handleRequestInstalledCommand,
   handleSetSession,
   handleClearSession,
+  pushEditToHub,
 } from "./background"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import { Settings } from "@/services/settings/settings"
@@ -1042,6 +1043,183 @@ describe("shareCommandToHub", () => {
     capturedOnMessage?.({ type: "share-command-ack" })
     expect(mockPort.onMessage.removeListener).toHaveBeenCalled()
 
+    vi.useRealTimers()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// pushEditToHub (Flow B: Extension-initiated)
+// ---------------------------------------------------------------------------
+
+describe("pushEditToHub", () => {
+  const param = {
+    id: "cmd-1",
+    locale: "en",
+    targetUrl: "https://example.com",
+  } as any
+  const sender = {} as any
+
+  it("PE-01: returns true immediately (async response marker)", () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 1 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 1 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    const result = pushEditToHub(param, sender, response)
+    expect(result).toBe(true)
+  })
+
+  it("PE-02: opens Hub dashboard/commands?id=<commandId> and calls response(true)", async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    pushEditToHub(param, sender, response)
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(true))
+    expect(chrome.tabs.create).toHaveBeenCalledWith(
+      {
+        url: expect.stringContaining(
+          "hub.example.com/en/dashboard/commands?id=cmd-1",
+        ),
+      },
+      expect.any(Function),
+    )
+    expect(chrome.runtime.onConnectExternal.addListener).toHaveBeenCalledTimes(
+      1,
+    )
+  })
+
+  it("PE-03: calls response(false) when tab.id is undefined", async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({} as chrome.tabs.Tab)
+      return Promise.resolve({} as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    pushEditToHub(param, sender, response)
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(false))
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+  })
+
+  it("PE-04: calls response(false) when chrome.tabs.create throws", async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation(() => {
+      throw new Error("tabs.create error")
+    })
+    const response = vi.fn()
+    pushEditToHub(param, sender, response)
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(false))
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+  })
+
+  it("PE-05: ignores hub-edit port from a different tab", async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    pushEditToHub(param, sender, response)
+
+    // Let async push() advance past chrome.tabs.create so tabId is set
+    await Promise.resolve()
+
+    const portConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+    const mockPort = {
+      name: "hub-edit",
+      sender: { tab: { id: 99 }, origin: HUB_ORIGIN }, // different tab ID
+      postMessage: vi.fn(),
+      onMessage: { addListener: vi.fn(), removeListener: vi.fn() },
+    }
+    portConnectListener(mockPort as any)
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(true))
+    expect(mockPort.postMessage).not.toHaveBeenCalled()
+  })
+
+  it("PE-06: ignores hub-edit port from wrong origin", async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    pushEditToHub(param, sender, response)
+
+    await Promise.resolve()
+
+    const portConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+    const mockPort = {
+      name: "hub-edit",
+      sender: { tab: { id: 42 }, origin: "https://evil.example.com" },
+      postMessage: vi.fn(),
+      onMessage: { addListener: vi.fn(), removeListener: vi.fn() },
+    }
+    portConnectListener(mockPort as any)
+
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(true))
+    expect(mockPort.postMessage).not.toHaveBeenCalled()
+  })
+
+  it("PE-07: sends edit-command via hub-edit port (retries) and removes listener on ack", async () => {
+    vi.useFakeTimers()
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    pushEditToHub(param, sender, response)
+
+    await Promise.resolve()
+
+    const portConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+
+    let capturedOnAck: ((msg: unknown) => void) | undefined
+    const mockPort = {
+      name: "hub-edit",
+      sender: { tab: { id: 42 }, origin: HUB_ORIGIN },
+      postMessage: vi.fn(),
+      onMessage: {
+        addListener: vi.fn((fn) => {
+          capturedOnAck = fn
+        }),
+        removeListener: vi.fn(),
+      },
+    }
+    portConnectListener(mockPort as any)
+
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+
+    // Advance timer to trigger first retry send
+    vi.advanceTimersByTime(200)
+
+    expect(mockPort.postMessage).toHaveBeenCalledWith({
+      type: "edit-command",
+      command: param,
+    })
+
+    capturedOnAck?.({ type: "edit-command-ack" })
+    expect(mockPort.onMessage.removeListener).toHaveBeenCalled()
+
+    vi.useRealTimers()
+  })
+
+  it("PE-08: removes listener and logs error when connect timeout passes", async () => {
+    vi.useFakeTimers()
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    pushEditToHub(param, sender, response)
+
+    await Promise.resolve()
+
+    vi.advanceTimersByTime(10_001)
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
     vi.useRealTimers()
   })
 })

@@ -33,6 +33,7 @@ export enum BgCommand {
   // Hub
   shareCommandToHub = "shareCommandToHub",
   editCommandToHub = "editCommandToHub",
+  pushEditToHub = "pushEditToHub",
   getSharedCommandIds = "getSharedCommandIds",
   // PageAction
   addPageAction = "addPageAction",

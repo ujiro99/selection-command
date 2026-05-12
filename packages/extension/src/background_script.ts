@@ -53,7 +53,7 @@ const getActiveTabId = (
   return true
 }
 
-const onConnect = async function(port: chrome.runtime.Port) {
+const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -66,7 +66,7 @@ const onConnect = async function(port: chrome.runtime.Port) {
     await PageActionBackground.handleSidePanelConnect(port)
   }
 }
-const onDisconnect = async function(port: chrome.runtime.Port) {
+const onDisconnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -288,6 +288,7 @@ const commandFuncs = {
   //
   [BgCommand.shareCommandToHub]: HubBackground.shareCommandToHub,
   [BgCommand.editCommandToHub]: HubBackground.editCommandToHub,
+  [BgCommand.pushEditToHub]: HubBackground.pushEditToHub,
   [BgCommand.getSharedCommandIds]: HubBackground.getSharedCommandIds,
 
   //
@@ -495,17 +496,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-  // Initialize commandIdObj and register listener at top-level
-  // to ensure they are available when service worker restarts
-  ; (async () => {
-    try {
-      await ContextMenu.syncCommandIdObj()
-      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-    } catch (error) {
-      // Ignore errors during initialization (e.g., in test environment)
-      console.debug("Failed to initialize context menu listener:", error)
-    }
-  })()
+// Initialize commandIdObj and register listener at top-level
+// to ensure they are available when service worker restarts
+;(async () => {
+  try {
+    await ContextMenu.syncCommandIdObj()
+    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+  } catch (error) {
+    // Ignore errors during initialization (e.g., in test environment)
+    console.debug("Failed to initialize context menu listener:", error)
+  }
+})()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
