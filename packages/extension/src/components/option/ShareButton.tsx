@@ -24,7 +24,11 @@ type Props = {
   isShared?: boolean
 }
 
-export const ShareButton = ({ command, onCommandIdChange, isShared }: Props) => {
+export const ShareButton = ({
+  command,
+  onCommandIdChange,
+  isShared,
+}: Props) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle")
 
@@ -66,6 +70,7 @@ export const ShareButton = ({ command, onCommandIdChange, isShared }: Props) => 
         className={cn(
           "outline-gray-200 p-2 rounded-md transition hover:bg-green-100 hover:scale-125 group/share-btn",
           "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
+          isShared && "bg-green-50",
         )}
         onClick={handleClick}
         ref={buttonRef}
@@ -73,7 +78,7 @@ export const ShareButton = ({ command, onCommandIdChange, isShared }: Props) => 
         <Share
           className={cn(
             "stroke-gray-500 group-hover/share-btn:stroke-green-600",
-            isShared && "stroke-green-500",
+            isShared && "stroke-green-600",
             status === "error" && "stroke-red-500",
           )}
           size={16}

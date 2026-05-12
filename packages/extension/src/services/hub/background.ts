@@ -5,7 +5,7 @@ import { Ipc, BgCommand } from "@/services/ipc"
 import type { Sender } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SubmitCommandInput } from "@/services/hubShare"
-import type { HubUser } from "@/types"
+import type { HubUser, CommandFromHub } from "@/types"
 
 const chromeStorageAdapter: SupportedStorage = {
   getItem: async (key: string) => {
@@ -258,7 +258,7 @@ function onMessageExternal(
       ackTimeout: undefined,
       ackListener: undefined,
       pendingResponse: undefined,
-      cancelConnectWait: () => {},
+      cancelConnectWait: () => { },
     }
     _editSession = newSession
 
@@ -411,18 +411,23 @@ export const getSharedCommandIds = (
         response([])
         return
       }
-      const raw = (await res.json()) as unknown
+      const raw = (await res.json()).commands as CommandFromHub[]
       if (!Array.isArray(raw)) {
         response([])
         return
       }
       const commands = raw.filter(
-        (c): c is { id: string } =>
-          typeof c === "object" && c !== null && typeof (c as { id?: unknown }).id === "string",
+        (c) =>
+          typeof c === "object" &&
+          c !== null &&
+          typeof (c as { id?: unknown }).id === "string",
       )
       response(commands.map((c) => c.id))
     } catch (err) {
-      console.error("[getSharedCommandIds] Failed to fetch shared commands:", err)
+      console.error(
+        "[getSharedCommandIds] Failed to fetch shared commands:",
+        err,
+      )
       response([])
     }
   }
