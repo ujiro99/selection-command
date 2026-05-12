@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "Criar"
   },
+  "Option_labelShare": {
+    "message": "Atualizar & Compartilhar"
+  },
   "Option_labelDetail": {
     "message": "Detalhes"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "Encontrar Comando"
+  },
+  "Option_Command_new": {
+    "message": "Criar Comando"
   },
   "Option_Command_edit": {
     "message": "Editar Comando"

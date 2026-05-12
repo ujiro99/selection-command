@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "Создать"
   },
+  "Option_labelShare": {
+    "message": "Обновить & Поделиться"
+  },
   "Option_labelDetail": {
     "message": "Детали"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "Поиск команды"
+  },
+  "Option_Command_new": {
+    "message": "Создать команду"
   },
   "Option_Command_edit": {
     "message": "Редактировать команду"

@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "创建"
   },
+  "Option_labelShare": {
+    "message": "更新 & 分享"
+  },
   "Option_labelDetail": {
     "message": "详情"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "搜索命令"
+  },
+  "Option_Command_new": {
+    "message": "创建命令"
   },
   "Option_Command_edit": {
     "message": "编辑命令"

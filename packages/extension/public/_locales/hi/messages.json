@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "बनाएं"
   },
+  "Option_labelShare": {
+    "message": "अपडेट करें & शेयर करें"
+  },
   "Option_labelDetail": {
     "message": "विवरण"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "कमांड खोजें"
+  },
+  "Option_Command_new": {
+    "message": "कमांड बनाएं"
   },
   "Option_Command_edit": {
     "message": "कमांड संपादित करें"

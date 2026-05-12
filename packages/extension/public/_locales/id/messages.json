@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "Buat"
   },
+  "Option_labelShare": {
+    "message": "Perbarui & Bagikan"
+  },
   "Option_labelDetail": {
     "message": "Detail"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "Cari Perintah"
+  },
+  "Option_Command_new": {
+    "message": "Buat Perintah"
   },
   "Option_Command_edit": {
     "message": "Edit Perintah"

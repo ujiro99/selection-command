@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "생성"
   },
+  "Option_labelShare": {
+    "message": "업데이트 & 공유"
+  },
   "Option_labelDetail": {
     "message": "상세"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "명령 검색"
+  },
+  "Option_Command_new": {
+    "message": "명령 생성"
   },
   "Option_Command_edit": {
     "message": "명령 편집"

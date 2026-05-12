@@ -355,11 +355,18 @@ export const CommandList = ({ control }: CommandListProps) => {
         onSelect={handleTypeSelect}
       />
       <CommandEditDialog
+        mode={
+          syncHubOnSave
+            ? "hubEdit"
+            : editDataRef.current != null
+              ? "edit"
+              : "new"
+        }
         open={commandDialogOpen}
         onOpenChange={setCommandDialogOpen}
         onSubmit={(command) => commandUpsert(command)}
         folders={folderArray.fields}
-        command={editDataRef.current as SelectionCommand}
+        initialCommand={editDataRef.current as SelectionCommand}
         selectedType={selectedType ?? COMMAND_TYPE.SEARCH}
         onTypeClick={handleTypeClick}
       />
