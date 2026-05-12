@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { shareCommandToHub, editCommandToHub, initHubExternalListener } from "./background"
+import {
+  shareCommandToHub,
+  editCommandToHub,
+  initHubExternalListener,
+  resetEditSession,
+} from "./background"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 
@@ -47,6 +52,7 @@ function getRegisteredListener(): MessageListener {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  resetEditSession()
   vi.mocked(Storage.updateCommands).mockResolvedValue(true)
   ;(chrome.tabs as any).remove = vi.fn()
   ;(chrome.tabs as any).update = vi.fn()
@@ -283,7 +289,9 @@ describe("onMessageExternal - EditCommand", () => {
       onDisconnect: { addListener: vi.fn() },
     }
     hubEditConnectListener(mockPort as any)
-    expect(chrome.runtime.onConnectExternal.removeListener).not.toHaveBeenCalled()
+    expect(
+      chrome.runtime.onConnectExternal.removeListener,
+    ).not.toHaveBeenCalled()
     expect(mockPort.onDisconnect.addListener).not.toHaveBeenCalled()
   })
 
@@ -308,7 +316,9 @@ describe("onMessageExternal - EditCommand", () => {
       onDisconnect: { addListener: vi.fn() },
     }
     hubEditConnectListener(mockPort as any)
-    expect(chrome.runtime.onConnectExternal.removeListener).not.toHaveBeenCalled()
+    expect(
+      chrome.runtime.onConnectExternal.removeListener,
+    ).not.toHaveBeenCalled()
     expect(mockPort.onDisconnect.addListener).not.toHaveBeenCalled()
   })
 
@@ -341,7 +351,10 @@ describe("onMessageExternal - EditCommand", () => {
       sendResponse,
     )
     await vi.waitFor(() => {
-      expect(sendResponse).toHaveBeenCalledWith({ result: false })
+      expect(sendResponse).toHaveBeenCalledWith({
+        result: false,
+        error: "Failed to create edit tab",
+      })
       expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
     })
   })
@@ -432,8 +445,8 @@ describe("editCommandToHub", () => {
       { id: "cmd-1", title: "Updated", openMode: "newTab" },
     ])
     expect(port.onMessage.removeListener).toHaveBeenCalled()
-    expect(response).toHaveBeenCalledWith(true)
     await vi.waitFor(() => {
+      expect(response).toHaveBeenCalledWith(true)
       expect(chrome.tabs.remove).toHaveBeenCalledWith(77)
       expect(chrome.tabs.update).toHaveBeenCalledWith(10, { active: true })
     })

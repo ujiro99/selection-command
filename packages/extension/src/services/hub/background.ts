@@ -135,6 +135,10 @@ type EditSession = {
 
 let _editSession: EditSession | undefined
 
+export function resetEditSession(): void {
+  _editSession = undefined
+}
+
 const cancelEditSession = () => {
   const session = _editSession
   if (!session) return
