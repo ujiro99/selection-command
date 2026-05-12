@@ -303,16 +303,22 @@ export const CommandList = ({ control }: CommandListProps) => {
   }
 
   const handleUpdateCommandId = (commandId: string, newId: string) => {
+    // Update command ID
     const idx = commandArray.fields.findIndex((f) => f.id === commandId)
     if (idx >= 0) {
       commandArray.update(idx, { ...commandArray.fields[idx], id: newId })
     }
-    const shortcuts: ShortcutCommand[] = getValues("shortcuts.shortcuts") ?? []
-    shortcuts.forEach((shortcut, index) => {
-      if (shortcut.commandId === commandId) {
-        setValue(`shortcuts.shortcuts.${index}.commandId`, newId)
-      }
-    })
+    // Update any shortcuts that reference this command ID
+    const currentShortcuts: ShortcutCommand[] =
+      getValues("shortcuts.shortcuts") ?? []
+    if (currentShortcuts.some((s) => s.commandId === commandId)) {
+      setValue(
+        "shortcuts.shortcuts",
+        currentShortcuts.map((s) =>
+          s.commandId === commandId ? { ...s, commandId: newId } : s,
+        ),
+      )
+    }
   }
 
   const commandRemove = (idx: number) => {
