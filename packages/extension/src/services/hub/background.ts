@@ -4,6 +4,7 @@ import {
   NEW_HUB_URL,
   OPTION_PAGE_PATH,
   COMMAND_SOURCE_TYPE,
+  COMMAND_SOURCE_ID,
   SCREEN,
 } from "@/const"
 import type { Sender } from "@/services/ipc"
@@ -232,8 +233,17 @@ export async function handleAddCommand(
     const isSearch = isSearchCommand(parsed)
     const isPageAction = isPageActionCommand(parsed)
     const isAiPrompt = isAiPromptCommand(parsed)
-    const sourceType = (parsed as { sourceType?: unknown }).sourceType
-    const sourceId = (parsed as { sourceId?: unknown }).sourceId
+
+    const sharedIds = await fetchMyCommandIds()
+    const isMyCommand =
+      typeof parsed.id === "string" && sharedIds.includes(parsed.id)
+
+    let sourceType = (parsed as { sourceType?: unknown }).sourceType
+    let sourceId = (parsed as { sourceId?: unknown }).sourceId
+    if (isMyCommand) {
+      sourceType = COMMAND_SOURCE_TYPE.SELF_REINSTALL
+      sourceId = COMMAND_SOURCE_ID.SELF_REINSTALL
+    }
     const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
       sourceType as COMMAND_SOURCE_TYPE,
     )
@@ -628,47 +638,39 @@ export const pushEditToHub = (
   return true
 }
 
-export const getSharedCommandIds = (
-  _: unknown,
-  __: Sender,
-  response: (res: unknown) => void,
-): boolean => {
-  const fetch = async () => {
-    try {
-      const {
-        data: { session },
-      } = await getSupabase().auth.getSession()
-      if (!session) {
-        response([])
-        return
-      }
-      const res = await globalThis.fetch(`${NEW_HUB_URL}/api/me/commands`, {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      })
-      if (!res.ok) {
-        response([])
-        return
-      }
-      const raw = (await res.json()).commands as CommandFromHub[]
-      if (!Array.isArray(raw)) {
-        response([])
-        return
-      }
-      const commands = raw.filter(
+async function fetchMyCommandIds(): Promise<string[]> {
+  try {
+    const {
+      data: { session },
+    } = await getSupabase().auth.getSession()
+    if (!session) return []
+    const res = await globalThis.fetch(`${NEW_HUB_URL}/api/me/commands`, {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+    if (!res.ok) return []
+    const raw = (await res.json()).commands as CommandFromHub[]
+    if (!Array.isArray(raw)) return []
+    return raw
+      .filter(
         (c) =>
           typeof c === "object" &&
           c !== null &&
           typeof (c as { id?: unknown }).id === "string",
       )
-      response(commands.map((c) => c.id))
-    } catch (err) {
-      console.error(
-        "[getSharedCommandIds] Failed to fetch shared commands:",
-        err,
-      )
-      response([])
-    }
+      .map((c) => c.id)
+  } catch (err) {
+    console.error("[fetchMyCommandIds] Failed:", err)
+    return []
   }
-  fetch()
+}
+
+export const getSharedCommandIds = (
+  _: unknown,
+  __: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  fetchMyCommandIds()
+    .then((ids) => response(ids))
+    .catch(() => response([]))
   return true
 }

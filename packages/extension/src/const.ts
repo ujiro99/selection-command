@@ -373,6 +373,7 @@ export enum COMMAND_SOURCE_TYPE {
   DEFAULT = "default",
   SELF_CREATED = "selfCreated",
   SELF_UPDATED = "selfUpdated",
+  SELF_REINSTALL = "selfReinstall",
   HUB_COMMUNITY = "hubCommunity",
   UNKNOWN = "unknown",
 }
@@ -381,6 +382,7 @@ export const COMMAND_SOURCE_ID = {
   DEFAULT: "019db873-cc03-7484-86f1-2d349389ea2b",
   SELF_CREATED: "019db8a1-4021-7ae7-8a5d-474bf132e8ff",
   SELF_UPDATED: "019de776-d3ea-76af-99fe-340ae9bab54d",
+  SELF_REINSTALL: "019e1b54-bc00-7be7-afdf-6d723b2847f1",
 }
 
 export const SHORTCUT_PLACEHOLDER = "_placeholder_"
