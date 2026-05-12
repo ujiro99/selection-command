@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "Cipta"
   },
+  "Option_labelShare": {
+    "message": "Kemas kini & Kongsi"
+  },
   "Option_labelDetail": {
     "message": "Butiran"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "Cari Arahan"
+  },
+  "Option_Command_new": {
+    "message": "Cipta Arahan"
   },
   "Option_Command_edit": {
     "message": "Edit Arahan"

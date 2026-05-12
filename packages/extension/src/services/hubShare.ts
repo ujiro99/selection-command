@@ -1,7 +1,4 @@
-import {
-  NEW_HUB_SUPPORTED_LOCALES,
-  type NewHubLocale,
-} from "@/const"
+import { NEW_HUB_SUPPORTED_LOCALES, type NewHubLocale } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { isAiPromptCommand, isPageActionCommand } from "@/lib/utils"
 import { Ipc, BgCommand } from "@/services/ipc"
@@ -76,6 +73,21 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
 
   void Ipc.send(BgCommand.shareCommandToHub, input).catch((err) => {
     console.error("[HubShare] Failed to share command:", err)
+  })
+  return true
+}
+
+export function editCommandToHub(command: SelectionCommand): boolean {
+  const input = toSubmitCommandInput(command)
+  if (!input) {
+    console.warn(
+      "Unsupported command type or missing data. Cannot edit on Hub.",
+    )
+    return false
+  }
+
+  void Ipc.send(BgCommand.editCommandToHub, input).catch((err) => {
+    console.error("[HubShare] Failed to edit command:", err)
   })
   return true
 }

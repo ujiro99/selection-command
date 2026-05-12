@@ -34,6 +34,7 @@ export enum BgCommand {
   setClipboard = "setClipboard",
   // Hub
   shareCommandToHub = "shareCommandToHub",
+  editCommandToHub = "editCommandToHub",
   // PageAction
   addPageAction = "addPageAction",
   updatePageAction = "updatePageAction",

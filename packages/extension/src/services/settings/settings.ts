@@ -29,6 +29,7 @@ import {
   versionDiff,
   VersionDiff,
   isLinkCommand,
+  generateId,
 } from "@/lib/utils"
 import { toDataURL } from "@/services/dom"
 import { OptionSettings } from "@/services/option/optionSettings"
@@ -305,7 +306,7 @@ const migrate0_11_5 = (data: SettingsType): SettingsType => {
     if (c.id.length === 36) return c
     c.id =
       DefaultCommands.find((dc) => dc.title === c.title)?.id ??
-      crypto.randomUUID()
+      generateId()
     return c
   })
 

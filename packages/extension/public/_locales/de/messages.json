@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "Erstellen"
   },
+  "Option_labelShare": {
+    "message": "Aktualisieren & Teilen"
+  },
   "Option_labelDetail": {
     "message": "Details"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "Befehl suchen"
+  },
+  "Option_Command_new": {
+    "message": "Befehl erstellen"
   },
   "Option_Command_edit": {
     "message": "Befehl bearbeiten"

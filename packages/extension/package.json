@@ -59,7 +59,7 @@
     "sonner": "git+https://github.com/ujiro99/sonner.git",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^11.1.0",
+    "uuid": "^14.0.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

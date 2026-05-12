@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { useFieldArray } from "react-hook-form"
+import { useFieldArray, useFormContext } from "react-hook-form"
 
 import {
   DndContext,
@@ -28,7 +28,12 @@ import {
 
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import { SCREEN, COMMAND_TYPE, OPEN_MODE_TYPE_MAP } from "@/const"
-import type { Command, CommandFolder, SelectionCommand } from "@/types"
+import type {
+  Command,
+  CommandFolder,
+  SelectionCommand,
+  ShortcutCommand,
+} from "@/types"
 
 // Imported services and hooks
 import {
@@ -42,10 +47,12 @@ import {
   getDescendantFolderIds,
 } from "@/services/option/commandUtils"
 import { isValidDrop } from "@/services/option/dragAndDrop"
+import { editCommandToHub } from "@/services/hubShare"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
 import { CommandListMenu } from "./CommandListMenu"
 import { CommandTreeRenderer } from "./CommandTreeRenderer"
+import { generateId } from "@/lib/utils"
 
 // Drag filtering utilities
 
@@ -107,10 +114,14 @@ export const CommandList = ({ control }: CommandListProps) => {
   const [commandDialogOpen, _setCommandDialogOpen] = useState(false)
   const [folderDialogOpen, _setFolderDialogOpen] = useState(false)
   const [selectedType, setSelectedType] = useState<COMMAND_TYPE>()
+  const [syncHubOnSave, setSyncHubOnSave] = useState(false)
   const addCommandButtonRef = useRef<HTMLButtonElement>(null)
   const addFolderButtonRef = useRef<HTMLButtonElement>(null)
   const commandsRef = useRef<HTMLUListElement>(null)
   const editDataRef = useRef<Command | CommandFolder | null>(null)
+  const editParamHandledRef = useRef(false)
+
+  const { getValues, setValue } = useFormContext()
 
   const commandArray = useFieldArray<CommandsSchemaType, "commands", "_id">({
     name: "commands",
@@ -139,6 +150,7 @@ export const CommandList = ({ control }: CommandListProps) => {
   const setCommandDialogOpen = (open: boolean) => {
     if (!open) {
       editDataRef.current = null
+      setSyncHubOnSave(false)
     } else {
       sendEvent(
         ANALYTICS_EVENTS.OPEN_DIALOG,
@@ -211,6 +223,10 @@ export const CommandList = ({ control }: CommandListProps) => {
       const idx = commandArray.fields.findIndex((f) => f.id === data.id)
       if (idx >= 0) {
         commandArray.update(idx, data as CommandSchemaType)
+        if (syncHubOnSave) {
+          editCommandToHub(data as SelectionCommand)
+          setSyncHubOnSave(false)
+        }
         sendEvent(
           ANALYTICS_EVENTS.COMMAND_EDIT,
           {
@@ -238,6 +254,41 @@ export const CommandList = ({ control }: CommandListProps) => {
     }
   }
 
+  // location.search is fixed at page load (set via chrome.tabs.create), so it is
+  // safe to read it without adding it to the dependency array.
+  useEffect(() => {
+    if (editParamHandledRef.current) return
+    const params = new URLSearchParams(location.search)
+    const editCommandId = params.get("editCommand")
+    const syncHub = params.get("syncHub")
+
+    if (!editCommandId) {
+      editParamHandledRef.current = true
+      return
+    }
+
+    if (commandArray.fields.length === 0) return
+
+    const command = commandArray.fields.find((f) => f.id === editCommandId)
+    editParamHandledRef.current = true
+    if (!command) {
+      console.warn(
+        `Command with id ${editCommandId} not found. Cannot open edit dialog.`,
+      )
+      return
+    }
+
+    const url = new URL(location.href)
+    url.searchParams.delete("editCommand")
+    url.searchParams.delete("syncHub")
+    history.replaceState(null, "", url)
+
+    editDataRef.current = command as SelectionCommand
+    setSelectedType(OPEN_MODE_TYPE_MAP[command.openMode])
+    setSyncHubOnSave(syncHub === "1")
+    setCommandDialogOpen(true)
+  }, [commandArray.fields])
+
   const commandCopy = (idx: number, title: string) => {
     const node = flatten[idx]
     if (isFolder(node.content)) {
@@ -246,9 +297,28 @@ export const CommandList = ({ control }: CommandListProps) => {
     const index = commandArray.fields.findIndex((f) => f.id === node.id)
     if (index < 0) return
     const cmd = commandArray.fields[index]
-    cmd.id = crypto.randomUUID()
+    cmd.id = generateId()
     cmd.title = title
     commandArray.insert(index + 1, cmd)
+  }
+
+  const handleUpdateCommandId = (commandId: string, newId: string) => {
+    // Update command ID
+    const idx = commandArray.fields.findIndex((f) => f.id === commandId)
+    if (idx >= 0) {
+      commandArray.update(idx, { ...commandArray.fields[idx], id: newId })
+    }
+    // Update any shortcuts that reference this command ID
+    const currentShortcuts: ShortcutCommand[] =
+      getValues("shortcuts.shortcuts") ?? []
+    if (currentShortcuts.some((s) => s.commandId === commandId)) {
+      setValue(
+        "shortcuts.shortcuts",
+        currentShortcuts.map((s) =>
+          s.commandId === commandId ? { ...s, commandId: newId } : s,
+        ),
+      )
+    }
   }
 
   const commandRemove = (idx: number) => {
@@ -291,11 +361,18 @@ export const CommandList = ({ control }: CommandListProps) => {
         onSelect={handleTypeSelect}
       />
       <CommandEditDialog
+        mode={
+          syncHubOnSave
+            ? "hubEdit"
+            : editDataRef.current != null
+              ? "edit"
+              : "new"
+        }
         open={commandDialogOpen}
         onOpenChange={setCommandDialogOpen}
         onSubmit={(command) => commandUpsert(command)}
         folders={folderArray.fields}
-        command={editDataRef.current as SelectionCommand}
+        initialCommand={editDataRef.current as SelectionCommand}
         selectedType={selectedType ?? COMMAND_TYPE.SEARCH}
         onTypeClick={handleTypeClick}
       />
@@ -327,6 +404,7 @@ export const CommandList = ({ control }: CommandListProps) => {
               isDroppable={(node, activeNode) =>
                 isDroppable(node, activeNode, folderArray.fields)
               }
+              onUpdateCommandId={handleUpdateCommandId}
             />
           </SortableContext>
         </DndContext>

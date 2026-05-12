@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
-import { shareCommandToHub, initHubExternalListener } from "./background"
+import {
+  shareCommandToHub,
+  editCommandToHub,
+  initHubExternalListener,
+  resetEditSession,
+} from "./background"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 
@@ -9,12 +14,13 @@ vi.mock("@/services/ipc", () => ({
 }))
 
 vi.mock("@/services/storage", () => ({
-  Storage: { getCommands: vi.fn(), set: vi.fn() },
+  Storage: { getCommands: vi.fn(), set: vi.fn(), updateCommands: vi.fn() },
   LOCAL_STORAGE_KEY: { HUB_USER: "hubUser" },
 }))
 
 vi.mock("@/const", () => ({
   NEW_HUB_URL: "https://hub.example.com",
+  OPTION_PAGE_PATH: "src/options_page.html",
 }))
 
 const mockSetSession = vi.fn()
@@ -46,6 +52,10 @@ function getRegisteredListener(): MessageListener {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  resetEditSession()
+  vi.mocked(Storage.updateCommands).mockResolvedValue(true)
+  ;(chrome.tabs as any).remove = vi.fn()
+  ;(chrome.tabs as any).update = vi.fn()
   Object.defineProperty(global.chrome.runtime, "onConnectExternal", {
     value: { addListener: vi.fn(), removeListener: vi.fn() },
     writable: true,
@@ -212,6 +222,261 @@ describe("onMessageExternal - DeleteCommand", () => {
     )
     expect(result).toBe(false)
     expect(Ipc.callListener).not.toHaveBeenCalled()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// onMessageExternal — EditCommand
+// ---------------------------------------------------------------------------
+
+describe("onMessageExternal - EditCommand", () => {
+  it("EC-01: opens options page with editCommand and syncHub params", async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    expect(result).toBe(true)
+    expect(chrome.tabs.create).toHaveBeenCalledWith(
+      {
+        url: expect.stringContaining(
+          "src/options_page.html?editCommand=cmd-123&syncHub=1#commands",
+        ),
+      },
+      expect.any(Function),
+    )
+    await vi.waitFor(() =>
+      expect(sendResponse).toHaveBeenCalledWith({ result: true }),
+    )
+  })
+
+  it("EC-02: does not handle EditCommand when id is not a string", () => {
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "EditCommand", id: 123 },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    expect(result).toBe(false)
+    expect(chrome.tabs.create).not.toHaveBeenCalled()
+  })
+
+  it("EC-03: ignores hub-edit port when sender tab id does not match EditCommand sender", () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    const hubEditConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+    const mockPort = {
+      name: "hub-edit",
+      sender: { tab: { id: 999 }, origin: HUB_ORIGIN },
+      onDisconnect: { addListener: vi.fn() },
+    }
+    hubEditConnectListener(mockPort as any)
+    expect(
+      chrome.runtime.onConnectExternal.removeListener,
+    ).not.toHaveBeenCalled()
+    expect(mockPort.onDisconnect.addListener).not.toHaveBeenCalled()
+  })
+
+  it("EC-04: ignores hub-edit port when sender origin does not match hub origin", () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    const hubEditConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+    const mockPort = {
+      name: "hub-edit",
+      sender: { tab: { id: 10 }, origin: "https://evil.example.com" },
+      onDisconnect: { addListener: vi.fn() },
+    }
+    hubEditConnectListener(mockPort as any)
+    expect(
+      chrome.runtime.onConnectExternal.removeListener,
+    ).not.toHaveBeenCalled()
+    expect(mockPort.onDisconnect.addListener).not.toHaveBeenCalled()
+  })
+
+  it("EC-05: returns false when EditCommand sender has no tab id", () => {
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    const result = listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN },
+      sendResponse,
+    )
+    expect(result).toBe(false)
+    expect(sendResponse).toHaveBeenCalledWith({
+      result: false,
+      error: "Invalid sender tab",
+    })
+    expect(chrome.tabs.create).not.toHaveBeenCalled()
+  })
+
+  it("EC-06: removes hub-edit listener when options tab creation fails", async () => {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({} as chrome.tabs.Tab)
+      return Promise.resolve({} as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    await vi.waitFor(() => {
+      expect(sendResponse).toHaveBeenCalledWith({
+        result: false,
+        error: "Failed to create edit tab",
+      })
+      expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+    })
+  })
+
+  it("EC-07: removes hub-edit listener when hub-edit connection timeout passes", () => {
+    vi.useFakeTimers()
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    const sendResponse = vi.fn()
+    listener(
+      { action: "EditCommand", id: "cmd-123" },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      sendResponse,
+    )
+    vi.advanceTimersByTime(10_001)
+    expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
+    vi.useRealTimers()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// editCommandToHub
+// ---------------------------------------------------------------------------
+
+describe("editCommandToHub", () => {
+  const sender = {} as any
+  const editParam = {
+    id: "cmd-1",
+    title: "Updated",
+    openMode: "newTab",
+    locale: "en",
+    targetUrl: "https://example.com",
+  } as any
+
+  function setupConnectedHubEditPort() {
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 77 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 77 } as chrome.tabs.Tab)
+    })
+    const listener = getRegisteredListener()
+    listener(
+      { action: "EditCommand", id: "cmd-1" },
+      { origin: HUB_ORIGIN, tab: { id: 10 } as chrome.tabs.Tab },
+      vi.fn(),
+    )
+    const hubEditConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+    const port = {
+      name: "hub-edit",
+      sender: { tab: { id: 10 }, origin: HUB_ORIGIN },
+      postMessage: vi.fn(),
+      onMessage: { addListener: vi.fn(), removeListener: vi.fn() },
+      onDisconnect: { addListener: vi.fn() },
+    }
+    hubEditConnectListener(port as any)
+    return port
+  }
+
+  it("EH-01: returns response(false) when no hub-edit port is available", () => {
+    const response = vi.fn()
+    const result = editCommandToHub(editParam, sender, response)
+    expect(result).toBe(true)
+    expect(response).toHaveBeenCalledWith(false)
+  })
+
+  it("EH-02: on ack, updates storage excluding locale/targetUrl and clears listener", async () => {
+    const port = setupConnectedHubEditPort()
+    let onAckMessage: ((msg: unknown) => void) | undefined
+    vi.mocked(port.onMessage.addListener).mockImplementation((fn) => {
+      onAckMessage = fn
+    })
+    const response = vi.fn()
+
+    editCommandToHub(editParam, sender, response)
+
+    expect(port.postMessage).toHaveBeenCalledWith({
+      type: "edit-command",
+      command: editParam,
+    })
+
+    onAckMessage?.({ type: "edit-command-ack" })
+
+    expect(Storage.updateCommands).toHaveBeenCalledWith([
+      { id: "cmd-1", title: "Updated", openMode: "newTab" },
+    ])
+    expect(port.onMessage.removeListener).toHaveBeenCalled()
+    await vi.waitFor(() => {
+      expect(response).toHaveBeenCalledWith(true)
+      expect(chrome.tabs.remove).toHaveBeenCalledWith(77)
+      expect(chrome.tabs.update).toHaveBeenCalledWith(10, { active: true })
+    })
+  })
+
+  it("EH-03: returns response(false) when ack timeout passes", () => {
+    vi.useFakeTimers()
+    const port = setupConnectedHubEditPort()
+    const response = vi.fn()
+
+    editCommandToHub(editParam, sender, response)
+    vi.advanceTimersByTime(10_001)
+
+    expect(port.onMessage.removeListener).toHaveBeenCalled()
+    expect(response).toHaveBeenCalledWith(false)
+    vi.useRealTimers()
+  })
+
+  it("EH-04: rejects duplicate request while previous ack is pending", () => {
+    vi.useFakeTimers()
+    setupConnectedHubEditPort()
+    const firstResponse = vi.fn()
+    const secondResponse = vi.fn()
+
+    editCommandToHub(editParam, sender, firstResponse)
+    editCommandToHub(editParam, sender, secondResponse)
+
+    expect(secondResponse).toHaveBeenCalledWith(false)
+    vi.runOnlyPendingTimers()
+    vi.useRealTimers()
   })
 })
 

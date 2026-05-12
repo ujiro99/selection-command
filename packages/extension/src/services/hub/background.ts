@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import type { SupportedStorage } from "@supabase/supabase-js"
-import { NEW_HUB_URL } from "@/const"
+import { NEW_HUB_URL, OPTION_PAGE_PATH } from "@/const"
 import { Ipc, BgCommand } from "@/services/ipc"
 import type { Sender } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
@@ -42,6 +42,8 @@ function getSupabase() {
 
 const RETRY_INTERVAL_MS = 100
 const MAX_RETRIES = 20 // 2 seconds
+const EDIT_CONNECT_TIMEOUT_MS = 10_000
+const EDIT_COMMAND_ACK_TIMEOUT_MS = 10_000
 
 const hubOrigin = new URL(NEW_HUB_URL).origin
 
@@ -121,6 +123,89 @@ export const shareCommandToHub = (
   return true
 }
 
+type EditSession = {
+  hubTabId: number
+  editTabId: number | undefined
+  hubEditPort: chrome.runtime.Port | undefined
+  ackTimeout: ReturnType<typeof setTimeout> | undefined
+  ackListener: ((msg: unknown) => void) | undefined
+  pendingResponse: ((res: unknown) => void) | undefined
+  cancelConnectWait: () => void
+}
+
+let _editSession: EditSession | undefined
+
+export function resetEditSession(): void {
+  _editSession = undefined
+}
+
+const cancelEditSession = () => {
+  const session = _editSession
+  if (!session) return
+  _editSession = undefined
+  session.cancelConnectWait()
+  if (session.ackTimeout) clearTimeout(session.ackTimeout)
+  if (session.ackListener && session.hubEditPort) {
+    session.hubEditPort.onMessage.removeListener(session.ackListener)
+  }
+  session.pendingResponse?.(false)
+  if (session.editTabId != null) chrome.tabs.remove(session.editTabId)
+}
+
+export const editCommandToHub = (
+  param: SubmitCommandInput,
+  _: Sender,
+  response: (res: unknown) => void,
+): boolean => {
+  const session = _editSession
+  if (!session?.hubEditPort) {
+    console.error("[editCommandToHub] No hub-edit port available.")
+    response(false)
+    return true
+  }
+  if (session.pendingResponse) {
+    console.error(
+      "[editCommandToHub] Previous edit-command request is pending.",
+    )
+    response(false)
+    return true
+  }
+
+  session.hubEditPort.postMessage({ type: "edit-command", command: param })
+
+  session.pendingResponse = response
+  session.ackListener = function onMsg(msg: unknown) {
+    if ((msg as { type?: string })?.type !== "edit-command-ack") return
+
+    if (session.ackTimeout) clearTimeout(session.ackTimeout)
+    session.hubEditPort?.onMessage.removeListener(onMsg)
+    _editSession = undefined
+
+    const { editTabId, hubTabId } = session
+    const { locale: _locale, targetUrl: _targetUrl, ...commandToStore } = param
+
+    Storage.updateCommands([commandToStore])
+      .then(() => response(true))
+      .catch((err) => {
+        console.error("[editCommandToHub] Failed to update local command:", err)
+        response(false)
+      })
+      .finally(() => {
+        if (editTabId != null) chrome.tabs.remove(editTabId)
+        if (hubTabId != null) chrome.tabs.update(hubTabId, { active: true })
+      })
+  }
+  session.hubEditPort.onMessage.addListener(session.ackListener)
+  session.ackTimeout = setTimeout(() => {
+    console.error(
+      "[editCommandToHub] Hub did not acknowledge edit-command in time.",
+    )
+    cancelEditSession()
+  }, EDIT_COMMAND_ACK_TIMEOUT_MS)
+
+  return true
+}
+
 function onMessageExternal(
   message: Record<string, unknown>,
   sender: chrome.runtime.MessageSender,
@@ -154,6 +239,86 @@ function onMessageExternal(
         console.error("[onMessageExternal] DeleteCommand failed:", err)
         sendResponse({ result: false, error: err?.message ?? "Unknown error" })
       })
+    return true
+  }
+
+  if (action === "EditCommand" && typeof id === "string") {
+    if (sender.tab?.id === undefined) {
+      sendResponse({ result: false, error: "Invalid sender tab" })
+      return false
+    }
+
+    // Cancel any in-progress session; the new request takes over (last-write-wins).
+    cancelEditSession()
+
+    const newSession: EditSession = {
+      hubTabId: sender.tab.id,
+      editTabId: undefined,
+      hubEditPort: undefined,
+      ackTimeout: undefined,
+      ackListener: undefined,
+      pendingResponse: undefined,
+      cancelConnectWait: () => {},
+    }
+    _editSession = newSession
+
+    let connectTimeout: ReturnType<typeof setTimeout> | undefined
+    const cleanupHubEditConnectListener = () => {
+      if (connectTimeout) {
+        clearTimeout(connectTimeout)
+        connectTimeout = undefined
+      }
+      chrome.runtime.onConnectExternal.removeListener(onHubEditConnect)
+    }
+    newSession.cancelConnectWait = cleanupHubEditConnectListener
+
+    // Register the hub-edit port listener before creating the tab so Hub can
+    // connect immediately after receiving the response.
+    const onHubEditConnect = (port: chrome.runtime.Port) => {
+      if (port.name !== "hub-edit") return
+      if (port.sender?.tab?.id !== newSession.hubTabId) return
+      if (port.sender?.origin !== hubOrigin) return
+      cleanupHubEditConnectListener()
+      newSession.hubEditPort = port
+      port.onDisconnect.addListener(() => {
+        if (newSession.pendingResponse) {
+          if (newSession.ackTimeout) clearTimeout(newSession.ackTimeout)
+          if (newSession.ackListener) {
+            port.onMessage.removeListener(newSession.ackListener)
+          }
+          newSession.pendingResponse(false)
+          newSession.pendingResponse = undefined
+        }
+        if (_editSession === newSession) _editSession = undefined
+        newSession.hubEditPort = undefined
+      })
+    }
+    chrome.runtime.onConnectExternal.addListener(onHubEditConnect)
+    connectTimeout = setTimeout(() => {
+      cleanupHubEditConnectListener()
+      if (_editSession === newSession) _editSession = undefined
+    }, EDIT_CONNECT_TIMEOUT_MS)
+
+    chrome.tabs.create(
+      {
+        url: `${OPTION_PAGE_PATH}?editCommand=${encodeURIComponent(id)}&syncHub=1#commands`,
+      },
+      (tab) => {
+        if (_editSession !== newSession) {
+          if (tab?.id != null) chrome.tabs.remove(tab.id)
+          sendResponse({ result: false, error: "Edit session timed out" })
+          return
+        }
+        if (tab?.id == null) {
+          cleanupHubEditConnectListener()
+          _editSession = undefined
+          sendResponse({ result: false, error: "Failed to create edit tab" })
+          return
+        }
+        newSession.editTabId = tab.id
+        sendResponse({ result: true })
+      },
+    )
     return true
   }
 

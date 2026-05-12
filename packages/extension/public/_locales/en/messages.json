@@ -50,6 +50,10 @@
   "Option_labelSave": {
     "message": "Create"
   },
+  "Option_labelShare": {
+    "message": "Update & Share",
+    "description": "Button label for updating and sharing the command to CommandHub"
+  },
   "Option_labelDetail": {
     "message": "Detail"
   },
@@ -88,6 +92,10 @@
   },
   "Option_Find": {
     "message": "Find Command"
+  },
+  "Option_Command_new": {
+    "message": "Create Command",
+    "description": "Title of the dialog for creating a new command"
   },
   "Option_Command_edit": {
     "message": "Edit Command"

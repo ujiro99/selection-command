@@ -1,3 +1,5 @@
+import { v7 } from "uuid"
+
 // Import and re-export shared utilities
 import {
   cn,
@@ -313,6 +315,17 @@ export function hyphen2Underscore(input: string): string {
  */
 export function generateRandomID(): string {
   return Math.random().toString(36).substring(2, 11)
+}
+
+export function generateId(): string {
+  return v7()
+}
+
+export function isUUIDv7(id: unknown): boolean {
+  if (id == null || typeof id !== "string") return false
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    id,
+  )
 }
 
 /**

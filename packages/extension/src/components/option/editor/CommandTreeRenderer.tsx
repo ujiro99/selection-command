@@ -22,6 +22,7 @@ interface Props {
   onRemove: (index: number) => void
   onCopy: (index: number, title: string) => void
   isDroppable: (node: FlattenNode, activeNode?: FlattenNode) => boolean
+  onUpdateCommandId?: (commandId: string, newId: string) => void
 }
 
 export const CommandTreeRenderer: React.FC<Props> = ({
@@ -32,6 +33,7 @@ export const CommandTreeRenderer: React.FC<Props> = ({
   onRemove,
   onCopy,
   isDroppable,
+  onUpdateCommandId,
 }) => {
   return (
     <>
@@ -70,7 +72,12 @@ export const CommandTreeRenderer: React.FC<Props> = ({
             </div>
             <div className="flex gap-0.5 items-center">
               {isCommand(field.content) && (
-                <ShareButton command={field.content} />
+                <ShareButton
+                  command={field.content}
+                  onCommandIdChange={(newId) =>
+                    onUpdateCommandId?.(field.content.id, newId)
+                  }
+                />
               )}
               {isPageActionCommand(field.content) && (
                 <CopyButton

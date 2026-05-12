@@ -50,6 +50,9 @@
   "Option_labelSave": {
     "message": "保存する"
   },
+  "Option_labelShare": {
+    "message": "更新 & 共有"
+  },
   "Option_labelDetail": {
     "message": "詳細"
   },
@@ -88,6 +91,9 @@
   },
   "Option_Find": {
     "message": "コマンドを探す"
+  },
+  "Option_Command_new": {
+    "message": "コマンド作成"
   },
   "Option_Command_edit": {
     "message": "コマンド編集"

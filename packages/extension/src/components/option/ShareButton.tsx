@@ -1,7 +1,7 @@
 import { useState, useRef } from "react"
 import { Share } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
-import { cn } from "@/lib/utils"
+import { cn, isUUIDv7, generateId } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import { shareCommandToHub } from "@/services/hubShare"
 import { NEW_HUB_SHAREABLE_OPEN_MODES, COMMAND_SOURCE_TYPE } from "@/const"
@@ -15,15 +15,24 @@ const VALID_SOURCE_TYPES = new Set([
 
 type Props = {
   command: SelectionCommand
+  onCommandIdChange?: (newId: string) => void
 }
 
-export const ShareButton = ({ command }: Props) => {
+export const ShareButton = ({ command, onCommandIdChange }: Props) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle")
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    const ok = shareCommandToHub(command)
+
+    let commandToShare = command
+    if (!isUUIDv7(command.id)) {
+      const newId = generateId()
+      commandToShare = { ...command, id: newId }
+      onCommandIdChange?.(newId)
+    }
+
+    const ok = shareCommandToHub(commandToShare)
     setStatus(ok ? "sent" : "error")
     setTimeout(() => setStatus("idle"), 2000)
   }

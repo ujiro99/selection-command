@@ -19,7 +19,7 @@ import { InputField } from "@/components/option/field/InputField"
 import { IconField } from "@/components/option/field/IconField"
 import { SwitchField } from "@/components/option/field/SwitchField"
 import { SelectField } from "@/components/option/field/SelectField"
-import { isEmpty } from "@/lib/utils"
+import { isEmpty, generateId } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 import { ROOT_FOLDER, FOLDER_STYLE } from "@/const"
 import { folderSchema } from "@/types/schema"
@@ -161,7 +161,7 @@ export const FolderEditDialog = ({
               type="button"
               onClick={form.handleSubmit(
                 (data) => {
-                  if (isEmpty(data.id)) data.id = crypto.randomUUID()
+                  if (isEmpty(data.id)) data.id = generateId()
                   onSubmit(data)
                   onOpenChange(false)
                   reset(DefaultValue)

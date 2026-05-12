@@ -8,6 +8,7 @@ import {
   SquareTerminal,
   ChevronsUpDown,
   ChevronsDownUp,
+  Share,
 } from "lucide-react"
 
 import {
@@ -82,7 +83,7 @@ import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
-import { isEmpty, e2a, cn, parseGeminiUrl } from "@/lib/utils"
+import { isEmpty, e2a, cn, parseGeminiUrl, generateId } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -265,11 +266,12 @@ type OpenModeFromType = Exclude<
 >
 
 type CommandEditDialogProps = {
+  mode: "new" | "edit" | "hubEdit"
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (command: SelectionCommand) => void
   folders: CommandFolder[]
-  command?: SelectionCommand
+  initialCommand?: SelectionCommand
   selectedType: COMMAND_TYPE
   onTypeClick: () => void
 }
@@ -283,11 +285,12 @@ export const CommandEditDialog = (param: CommandEditDialogProps) => {
 }
 
 const CommandEditDialogInner = ({
+  mode,
   open,
   onOpenChange,
   onSubmit,
   folders,
-  command,
+  initialCommand,
   selectedType,
   onTypeClick,
 }: CommandEditDialogProps) => {
@@ -317,7 +320,9 @@ const CommandEditDialogInner = ({
   const { register, reset, getValues, setValue, clearErrors } = form
   const { setIconUrlSrc, subscribe } = useFavicon()
 
-  const isUpdate = command != null
+  const isNew = mode === "new"
+  const isEdit = mode === "edit" || mode === "hubEdit"
+  const isHubEdit = mode === "hubEdit"
 
   // Determine if open mode selection should be shown
   const shouldShowOpenModeSelect = selectedType === COMMAND_TYPE.SEARCH
@@ -399,25 +404,25 @@ const CommandEditDialogInner = ({
   }
 
   useEffect(() => {
-    if (command != null) {
+    if (initialCommand != null) {
       // edit mode
-      if (isEmpty(command.parentFolderId)) {
-        command.parentFolderId = ROOT_FOLDER
+      if (isEmpty(initialCommand.parentFolderId)) {
+        initialCommand.parentFolderId = ROOT_FOLDER
       }
-      reset((command as any) ?? InitialValues)
+      reset((initialCommand as any) ?? InitialValues)
     } else {
       // new mode
       reset(InitialValues)
     }
-  }, [command, InitialValues, reset])
+  }, [initialCommand, InitialValues, reset])
 
   useEffect(() => {
     if (openMode === preOpenMode) return
-    if (openMode === command?.openMode) return
+    if (openMode === initialCommand?.openMode) return
     // Update initial values when the open mode changes,
     // but only when the openMode has changed
     reset(getDefault(openMode, getValues(), preOpenMode))
-  }, [command?.openMode, preOpenMode, openMode, reset, getValues])
+  }, [initialCommand?.openMode, preOpenMode, openMode, reset, getValues])
 
   useEffect(() => {
     if (!initialized) return
@@ -464,12 +469,13 @@ const CommandEditDialogInner = ({
 
   useEffect(() => {
     if (!initialized) return
-    if (!isUpdate) return
-    if (command.sourceType === COMMAND_SOURCE_TYPE.SELF_CREATED) return
+    if (!isEdit) return
+    if (!initialCommand) return
+    if (initialCommand.sourceType === COMMAND_SOURCE_TYPE.SELF_CREATED) return
     if (getValues("sourceType") === COMMAND_SOURCE_TYPE.SELF_UPDATED) return
 
     const changed = hasCommandChanged(
-      command,
+      initialCommand,
       searchUrl,
       pageActionOption,
       aiPromptPrompt,
@@ -481,11 +487,11 @@ const CommandEditDialogInner = ({
     }
   }, [
     initialized,
-    isUpdate,
+    isEdit,
     searchUrl,
     pageActionOption,
     aiPromptPrompt,
-    command,
+    initialCommand,
     getValues,
     setValue,
   ])
@@ -497,7 +503,7 @@ const CommandEditDialogInner = ({
           <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />
-              {t("Command_edit")}
+              {isNew ? t("Command_new") : t("Command_edit")}
             </DialogTitle>
             {openMode === OPEN_MODE.PAGE_ACTION && (
               <PageActionHelp className="absolute -top-4 right-2" />
@@ -517,10 +523,10 @@ const CommandEditDialogInner = ({
                       type={selectedType}
                       onClick={onTypeClick}
                       compact={true}
-                      disabled={isUpdate}
+                      disabled={isEdit}
                       ref={commandTypeRef}
                     />
-                    {isUpdate && (
+                    {isEdit && (
                       <Tooltip
                         text={t("commandType_on_edit")}
                         positionElm={commandTypeRef.current}
@@ -830,18 +836,20 @@ const CommandEditDialogInner = ({
                       />
                     )}
 
-                    <SelectField
-                      control={form.control}
-                      name="parentFolderId"
-                      formLabel={t("parentFolderId")}
-                      options={[EmptyFolder, ...folders].map((folder) => ({
-                        name: folder.title,
-                        value: folder.id,
-                        iconUrl: folder.iconUrl,
-                        iconSvg: folder.iconSvg,
-                        level: calcLevel(folder, folders),
-                      }))}
-                    />
+                    {!isHubEdit && (
+                      <SelectField
+                        control={form.control}
+                        name="parentFolderId"
+                        formLabel={t("parentFolderId")}
+                        options={[EmptyFolder, ...folders].map((folder) => ({
+                          name: folder.title,
+                          value: folder.id,
+                          iconUrl: folder.iconUrl,
+                          iconSvg: folder.iconSvg,
+                          level: calcLevel(folder, folders),
+                        }))}
+                      />
+                    )}
 
                     <FormField
                       control={form.control}
@@ -874,7 +882,7 @@ const CommandEditDialogInner = ({
               size="lg"
               onClick={form.handleSubmit(
                 (data) => {
-                  if (isEmpty(data.id)) data.id = crypto.randomUUID()
+                  if (isEmpty(data.id)) data.id = generateId()
                   if (data.revision == null) data.revision = 0
                   if (data.parentFolderId === ROOT_FOLDER) {
                     data.parentFolderId = undefined
@@ -897,8 +905,12 @@ const CommandEditDialogInner = ({
                 (err) => console.error(err),
               )}
             >
-              <Save />
-              {isUpdate ? t("labelUpdate") : t("labelSave")}
+              {isHubEdit ? <Share /> : <Save />}
+              {isHubEdit
+                ? t("labelShare")
+                : isEdit
+                  ? t("labelUpdate")
+                  : t("labelSave")}
             </Button>
           </DialogFooter>
         </DialogContent>
