@@ -749,6 +749,9 @@
   "Option_shareButton_tooltip": {
     "message": "Поделиться в Hub"
   },
+  "Option_shareButton_shared_tooltip": {
+    "message": "Уже опубликовано"
+  },
   "Option_remove_title": {
     "message": "Вы уверены, что хотите удалить это?"
   },

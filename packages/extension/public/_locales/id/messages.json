@@ -749,6 +749,9 @@
   "Option_shareButton_tooltip": {
     "message": "Bagikan ke Hub"
   },
+  "Option_shareButton_shared_tooltip": {
+    "message": "Sudah dibagikan"
+  },
   "Option_remove_title": {
     "message": "Hapus ini?"
   },

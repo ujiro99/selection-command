@@ -749,6 +749,9 @@
   "Option_shareButton_tooltip": {
     "message": "Partager sur Hub"
   },
+  "Option_shareButton_shared_tooltip": {
+    "message": "Déjà partagé"
+  },
   "Option_remove_title": {
     "message": "Supprimer ceci ?"
   },

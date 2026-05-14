@@ -212,6 +212,24 @@ export type HubUser = {
   image: string
 }
 
+export interface CommandFromHub {
+  id: string
+  userId: string | null
+  title: string
+  description: string
+  releaseNote: string
+  iconUrl: string | null
+  targetUrl: string | null
+  commandType: "search" | "pageAction" | "aiPrompt"
+  commandData: Record<string, unknown>
+  locale: string | null
+  isPublic: boolean | null
+  publishedAt: Date | null
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
+}
+
 export type ExecuteCommandParams = {
   command: Command | SelectionCommand
   position: { x: number; y: number } | null

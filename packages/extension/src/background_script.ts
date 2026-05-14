@@ -4,35 +4,24 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   HUB_URL,
   SCREEN,
-  COMMAND_SOURCE_TYPE,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
 import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
-import { PopupOption } from "@/services/option/defaultSettings"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
-import {
-  isSearchCommand,
-  isPageActionCommand,
-  isAiPromptCommand,
-  findMatchingPageRule,
-} from "@/lib/utils"
+import { findMatchingPageRule } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import {
-  ANALYTICS_EVENTS,
-  sendEvent,
-  getOrCreateClientId,
-} from "@/services/analytics"
+import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import * as HubBackground from "@/services/hub/background"
 
 import { importIf } from "@import-if"
@@ -44,10 +33,6 @@ type Sender = chrome.runtime.MessageSender
 
 export type addPageRuleProps = {
   url: string
-}
-
-type addCommandProps = {
-  command: string
 }
 
 const getTabId = (
@@ -157,117 +142,6 @@ const commandFuncs = {
     }
     add()
     return false
-  },
-
-  [BgCommand.addCommand]: (
-    param: addCommandProps,
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    const command = JSON.parse(param.command)
-    const isSearch = isSearchCommand(command)
-    const isPageAction = isPageActionCommand(command)
-    const isAiPrompt = isAiPromptCommand(command)
-    const sourceType = (command as { sourceType?: unknown }).sourceType
-    const sourceId = (command as { sourceId?: unknown }).sourceId
-    const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
-      sourceType as COMMAND_SOURCE_TYPE,
-    )
-      ? (sourceType as COMMAND_SOURCE_TYPE)
-      : undefined
-    const sourceInfo = {
-      sourceType: normalizedSourceType,
-      sourceId: typeof sourceId === "string" ? sourceId : undefined,
-    }
-
-    const cmd = isSearch
-      ? {
-          id: command.id,
-          title: command.title,
-          searchUrl: command.searchUrl,
-          iconUrl: command.iconUrl,
-          ...sourceInfo,
-          openMode: command.openMode,
-          openModeSecondary: command.openModeSecondary,
-          spaceEncoding: command.spaceEncoding,
-          popupOption: PopupOption,
-        }
-      : isAiPrompt
-        ? {
-            id: command.id,
-            title: command.title,
-            iconUrl: command.iconUrl,
-            ...sourceInfo,
-            openMode: command.openMode,
-            aiPromptOption: command.aiPromptOption,
-            popupOption: PopupOption,
-          }
-        : isPageAction
-          ? {
-              id: command.id,
-              title: command.title,
-              iconUrl: command.iconUrl,
-              ...sourceInfo,
-              openMode: command.openMode,
-              pageActionOption: command.pageActionOption,
-              popupOption: PopupOption,
-            }
-          : null
-
-    if (!cmd) {
-      console.error("invalid command", param.command)
-      response({ result: false, error: "Invalid command format" })
-      return true
-    }
-
-    Settings.addCommands([cmd])
-      .then(() => {
-        return sendEvent(
-          ANALYTICS_EVENTS.COMMAND_ADD,
-          {
-            event_label: cmd.openMode,
-            source_type: sourceInfo.sourceType,
-            source_id: sourceInfo.sourceId,
-          },
-          SCREEN.COMMAND_HUB,
-        )
-      })
-      .then(async () => {
-        const clientId = await getOrCreateClientId()
-        response({ result: true, install_id: clientId })
-      })
-      .catch((err) => {
-        console.error("[addCommand] Failed:", err)
-        response({ result: false, error: err?.message ?? "Unknown error" })
-      })
-    return true
-  },
-
-  [BgCommand.removeCommand]: (
-    param: { id: string },
-    _: Sender,
-    response: (res: unknown) => void,
-  ): boolean => {
-    const remove = async () => {
-      const current = await Storage.getCommands()
-      const commandToRemove = current.find((c) => c.id === param.id)
-      if (!commandToRemove) {
-        response({ result: false, error: "Command not found" })
-        return
-      }
-      const newCommands = current.filter((c) => c.id !== param.id)
-      await Storage.setCommands(newCommands)
-      await sendEvent(
-        ANALYTICS_EVENTS.COMMAND_REMOVE,
-        {
-          event_label: commandToRemove.openMode,
-        },
-        SCREEN.COMMAND_HUB,
-      )
-      response({ result: true })
-    }
-    remove()
-    return true
   },
 
   [BgCommand.canOpenInTab]: (
@@ -414,6 +288,8 @@ const commandFuncs = {
   //
   [BgCommand.shareCommandToHub]: HubBackground.shareCommandToHub,
   [BgCommand.editCommandToHub]: HubBackground.editCommandToHub,
+  [BgCommand.pushEditToHub]: HubBackground.pushEditToHub,
+  [BgCommand.getSharedCommandIds]: HubBackground.getSharedCommandIds,
 
   //
   // PageAction

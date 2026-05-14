@@ -749,6 +749,9 @@
   "Option_shareButton_tooltip": {
     "message": "分享到 Hub"
   },
+  "Option_shareButton_shared_tooltip": {
+    "message": "已共享"
+  },
   "Option_remove_title": {
     "message": "您确定要删除吗？"
   },

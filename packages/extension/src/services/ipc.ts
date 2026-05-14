@@ -22,8 +22,6 @@ export enum BgCommand {
   openOption = "openOption",
   openShortcuts = "openShortcuts",
   addPageRule = "addPageRule",
-  addCommand = "addCommand",
-  removeCommand = "removeCommand",
   execApi = "execApi",
   canOpenInTab = "canOpenInTab",
   openInTab = "openInTab",
@@ -35,6 +33,8 @@ export enum BgCommand {
   // Hub
   shareCommandToHub = "shareCommandToHub",
   editCommandToHub = "editCommandToHub",
+  pushEditToHub = "pushEditToHub",
+  getSharedCommandIds = "getSharedCommandIds",
   // PageAction
   addPageAction = "addPageAction",
   updatePageAction = "updatePageAction",

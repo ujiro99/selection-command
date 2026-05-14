@@ -749,6 +749,9 @@
   "Option_shareButton_tooltip": {
     "message": "Kongsi ke Hub"
   },
+  "Option_shareButton_shared_tooltip": {
+    "message": "Sudah dikongsi"
+  },
   "Option_remove_title": {
     "message": "Padam ini?"
   },

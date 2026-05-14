@@ -749,6 +749,9 @@
   "Option_shareButton_tooltip": {
     "message": "Hub에 공유"
   },
+  "Option_shareButton_shared_tooltip": {
+    "message": "이미 공유됨"
+  },
   "Option_remove_title": {
     "message": "이것을 삭제하시겠습니까?"
   },

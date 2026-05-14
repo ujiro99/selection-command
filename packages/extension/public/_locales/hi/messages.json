@@ -749,6 +749,9 @@
   "Option_shareButton_tooltip": {
     "message": "Hub पर साझा करें"
   },
+  "Option_shareButton_shared_tooltip": {
+    "message": "पहले से साझा किया गया"
+  },
   "Option_remove_title": {
     "message": "क्या आप वाकई इसे हटाना चाहते हैं?"
   },

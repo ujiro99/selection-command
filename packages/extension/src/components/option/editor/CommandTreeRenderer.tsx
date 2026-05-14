@@ -23,6 +23,7 @@ interface Props {
   onCopy: (index: number, title: string) => void
   isDroppable: (node: FlattenNode, activeNode?: FlattenNode) => boolean
   onUpdateCommandId?: (commandId: string, newId: string) => void
+  sharedCommandIds?: Set<string>
 }
 
 export const CommandTreeRenderer: React.FC<Props> = ({
@@ -34,6 +35,7 @@ export const CommandTreeRenderer: React.FC<Props> = ({
   onCopy,
   isDroppable,
   onUpdateCommandId,
+  sharedCommandIds,
 }) => {
   return (
     <>
@@ -77,6 +79,7 @@ export const CommandTreeRenderer: React.FC<Props> = ({
                   onCommandIdChange={(newId) =>
                     onUpdateCommandId?.(field.content.id, newId)
                   }
+                  isShared={sharedCommandIds?.has(field.content.id)}
                 />
               )}
               {isPageActionCommand(field.content) && (

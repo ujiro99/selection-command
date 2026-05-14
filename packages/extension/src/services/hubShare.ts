@@ -91,3 +91,30 @@ export function editCommandToHub(command: SelectionCommand): boolean {
   })
   return true
 }
+
+export function pushEditToHub(command: SelectionCommand): boolean {
+  const input = toSubmitCommandInput(command)
+  if (!input) {
+    console.warn(
+      "Unsupported command type or missing data. Cannot push edit to Hub.",
+    )
+    return false
+  }
+
+  void Ipc.send(BgCommand.pushEditToHub, input).catch((err) => {
+    console.error("[HubShare] Failed to push edit to Hub:", err)
+  })
+  return true
+}
+
+export async function getSharedCommandIds(): Promise<string[]> {
+  try {
+    const ids = await Ipc.send<undefined, string[]>(
+      BgCommand.getSharedCommandIds,
+    )
+    return Array.isArray(ids) ? ids : []
+  } catch (err) {
+    console.error("[HubShare] Failed to get shared command IDs:", err)
+    return []
+  }
+}
