@@ -4,7 +4,6 @@ import {
   NEW_HUB_URL,
   OPTION_PAGE_PATH,
   COMMAND_SOURCE_TYPE,
-  COMMAND_SOURCE_ID,
   SCREEN,
 } from "@/const"
 import type { Sender } from "@/services/ipc"
@@ -234,16 +233,8 @@ export async function handleAddCommand(
     const isPageAction = isPageActionCommand(parsed)
     const isAiPrompt = isAiPromptCommand(parsed)
 
-    const sharedIds = await fetchMyCommandIds()
-    const isMyCommand =
-      typeof parsed.id === "string" && sharedIds.includes(parsed.id)
-
-    let sourceType = (parsed as { sourceType?: unknown }).sourceType
-    let sourceId = (parsed as { sourceId?: unknown }).sourceId
-    if (isMyCommand) {
-      sourceType = COMMAND_SOURCE_TYPE.SELF_REINSTALL
-      sourceId = COMMAND_SOURCE_ID.SELF_REINSTALL
-    }
+    const sourceType = (parsed as { sourceType?: unknown }).sourceType
+    const sourceId = (parsed as { sourceId?: unknown }).sourceId
     const normalizedSourceType = Object.values(COMMAND_SOURCE_TYPE).includes(
       sourceType as COMMAND_SOURCE_TYPE,
     )
@@ -256,36 +247,36 @@ export async function handleAddCommand(
 
     const cmd = isSearch
       ? {
-        id: parsed.id,
-        title: parsed.title,
-        searchUrl: parsed.searchUrl,
-        iconUrl: parsed.iconUrl,
-        ...sourceInfo,
-        openMode: parsed.openMode,
-        openModeSecondary: parsed.openModeSecondary,
-        spaceEncoding: parsed.spaceEncoding,
-        popupOption: PopupOption,
-      }
-      : isAiPrompt
-        ? {
           id: parsed.id,
           title: parsed.title,
+          searchUrl: parsed.searchUrl,
           iconUrl: parsed.iconUrl,
           ...sourceInfo,
           openMode: parsed.openMode,
-          aiPromptOption: parsed.aiPromptOption,
+          openModeSecondary: parsed.openModeSecondary,
+          spaceEncoding: parsed.spaceEncoding,
           popupOption: PopupOption,
         }
-        : isPageAction
-          ? {
+      : isAiPrompt
+        ? {
             id: parsed.id,
             title: parsed.title,
             iconUrl: parsed.iconUrl,
             ...sourceInfo,
             openMode: parsed.openMode,
-            pageActionOption: parsed.pageActionOption,
+            aiPromptOption: parsed.aiPromptOption,
             popupOption: PopupOption,
           }
+        : isPageAction
+          ? {
+              id: parsed.id,
+              title: parsed.title,
+              iconUrl: parsed.iconUrl,
+              ...sourceInfo,
+              openMode: parsed.openMode,
+              pageActionOption: parsed.pageActionOption,
+              popupOption: PopupOption,
+            }
           : null
 
     if (!cmd) {
@@ -363,7 +354,7 @@ export function handleEditCommand(
     ackTimeout: undefined,
     ackListener: undefined,
     pendingResponse: undefined,
-    cancelConnectWait: () => { },
+    cancelConnectWait: () => {},
   }
   _editSession = newSession
 
