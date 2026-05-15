@@ -116,7 +116,7 @@ export const shareCommandToHub = (
       // Register listener before tab creation so the Hub page can connect immediately on load
       chrome.runtime.onConnectExternal.addListener(onPortConnect)
 
-      const hubUrl = `${NEW_HUB_URL}/${param.locale}/dashboard/commands`
+      const hubUrl = `${NEW_HUB_URL}/${param.locale}/dashboard/mycommands`
       const tab = await new Promise<chrome.tabs.Tab>((resolve) =>
         chrome.tabs.create({ url: hubUrl }, resolve),
       )
