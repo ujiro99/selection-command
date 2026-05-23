@@ -27,7 +27,7 @@ vi.mock("@/services/storage", () => ({
 }))
 
 vi.mock("@/services/settings/settings", () => ({
-  Settings: { addCommands: vi.fn() },
+  Settings: { addCommands: vi.fn(), updateCommandId: vi.fn() },
 }))
 
 vi.mock("@/services/analytics", () => ({
@@ -120,6 +120,7 @@ beforeEach(() => {
   resetEditSession()
   vi.mocked(Storage.updateCommands).mockResolvedValue(true)
   vi.mocked(Settings.addCommands).mockResolvedValue(true)
+  vi.mocked(Settings.updateCommandId).mockResolvedValue(undefined)
   vi.mocked(Storage.setCommands).mockResolvedValue(true)
   vi.mocked(Storage.set).mockResolvedValue(true)
   vi.mocked(sendEvent).mockResolvedValue(undefined as any)
@@ -1093,6 +1094,101 @@ describe("shareCommandToHub", () => {
         expect.any(Number),
       ),
     )
+
+    vi.useRealTimers()
+  })
+
+  it("SH-09: DUPLICATE_COMMAND_ID awaits updateCommandId before re-sending", async () => {
+    vi.useFakeTimers()
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    shareCommandToHub(param, sender, response)
+
+    await Promise.resolve()
+
+    const portConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+
+    let capturedOnMessage: ((msg: unknown) => Promise<void>) | undefined
+    const mockPort = {
+      name: "hub-share",
+      sender: { tab: { id: 42 } },
+      postMessage: vi.fn(),
+      onMessage: {
+        addListener: vi.fn((fn) => {
+          capturedOnMessage = fn
+        }),
+        removeListener: vi.fn(),
+      },
+    }
+    portConnectListener(mockPort as any)
+    vi.advanceTimersByTime(100)
+
+    // Simulate DUPLICATE_COMMAND_ID ack
+    await capturedOnMessage?.({
+      type: "share-command-ack",
+      errorCode: "DUPLICATE_COMMAND_ID",
+    })
+
+    expect(Settings.updateCommandId).toHaveBeenCalledTimes(1)
+    // postMessage for retry must happen after updateCommandId resolves
+    expect(mockPort.postMessage).toHaveBeenLastCalledWith({
+      type: "share-command",
+      command: expect.objectContaining({
+        id: expect.not.stringMatching(param.id),
+      }),
+    })
+    expect(mockPort.onMessage.removeListener).not.toHaveBeenCalled()
+
+    vi.useRealTimers()
+  })
+
+  it("SH-10: DUPLICATE_COMMAND_ID stops share if updateCommandId fails", async () => {
+    vi.useFakeTimers()
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    vi.mocked(Settings.updateCommandId).mockRejectedValue(
+      new Error("update failed"),
+    )
+    const response = vi.fn()
+    shareCommandToHub(param, sender, response)
+
+    await Promise.resolve()
+
+    const portConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+
+    let capturedOnMessage: ((msg: unknown) => Promise<void>) | undefined
+    const mockPort = {
+      name: "hub-share",
+      sender: { tab: { id: 42 } },
+      postMessage: vi.fn(),
+      onMessage: {
+        addListener: vi.fn((fn) => {
+          capturedOnMessage = fn
+        }),
+        removeListener: vi.fn(),
+      },
+    }
+    portConnectListener(mockPort as any)
+    vi.advanceTimersByTime(100)
+
+    // Simulate DUPLICATE_COMMAND_ID ack with updateCommandId failure
+    await capturedOnMessage?.({
+      type: "share-command-ack",
+      errorCode: "DUPLICATE_COMMAND_ID",
+    })
+
+    // Must not send new command since local storage update failed
+    expect(mockPort.postMessage).toHaveBeenCalledTimes(1) // only the initial retry send
+    expect(mockPort.onMessage.removeListener).toHaveBeenCalled()
 
     vi.useRealTimers()
   })

@@ -98,7 +98,7 @@ export const shareCommandToHub = (
           port.onMessage.removeListener(onMessage)
         }
 
-        const onMessage = (msg: unknown) => {
+        const onMessage = async (msg: unknown) => {
           const type = (msg as { type?: string })?.type
 
           if (type === "share-command-ack") {
@@ -114,12 +114,16 @@ export const shareCommandToHub = (
               const oldId = currentParam.id
               const newId = generateId()
 
-              Settings.updateCommandId(oldId, newId).catch((err) => {
+              try {
+                await Settings.updateCommandId(oldId, newId)
+              } catch (err) {
                 console.error(
                   "[shareCommandToHub] Failed to update command ID:",
                   err,
                 )
-              })
+                port.onMessage.removeListener(onMessage)
+                return
+              }
 
               currentParam = { ...currentParam, id: newId }
               port.postMessage({ type: "share-command", command: currentParam })
