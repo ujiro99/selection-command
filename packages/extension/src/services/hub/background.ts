@@ -18,6 +18,7 @@ import {
 } from "@/services/analytics"
 import { PopupOption } from "@/services/option/defaultSettings"
 import {
+  generateId,
   isSearchCommand,
   isPageActionCommand,
   isAiPromptCommand,
@@ -78,6 +79,10 @@ export const shareCommandToHub = (
 
   const share = async () => {
     try {
+      let currentParam = param
+      let idRegenerateCount = 0
+      const MAX_ID_REGENERATE = 3
+
       // Use a named function expression so the handler can remove itself via
       // `portConnect` (inner self-reference, always valid inside the handler).
       // The outer `onPortConnect` variable is used for cleanup in error paths
@@ -94,9 +99,33 @@ export const shareCommandToHub = (
         }
 
         const onMessage = (msg: unknown) => {
-          if ((msg as { type?: string })?.type === "share-command-ack") {
-            cleanup()
+          if ((msg as { type?: string })?.type !== "share-command-ack") return
+
+          const ack = msg as { type: string; errorCode?: string }
+
+          if (
+            ack.errorCode === "DUPLICATE_COMMAND_ID" &&
+            idRegenerateCount < MAX_ID_REGENERATE
+          ) {
+            idRegenerateCount++
+            clearInterval(timer)
+
+            const oldId = currentParam.id
+            const newId = generateId()
+
+            Settings.updateCommandId(oldId, newId).catch((err) => {
+              console.error(
+                "[shareCommandToHub] Failed to update command ID:",
+                err,
+              )
+            })
+
+            currentParam = { ...currentParam, id: newId }
+            port.postMessage({ type: "share-command", command: currentParam })
+            return
           }
+
+          cleanup()
         }
         port.onMessage.addListener(onMessage)
 
@@ -110,7 +139,7 @@ export const shareCommandToHub = (
             )
             return
           }
-          port.postMessage({ type: "share-command", command: param })
+          port.postMessage({ type: "share-command", command: currentParam })
         }, RETRY_INTERVAL_MS)
       }
       // Register listener before tab creation so the Hub page can connect immediately on load

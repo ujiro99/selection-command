@@ -186,6 +186,20 @@ export const Settings = {
     return true
   },
 
+  updateCommandId: async (oldId: string, newId: string): Promise<void> => {
+    const commands = await Storage.getCommands()
+    await Storage.setCommands(
+      commands.map((c) => (c.id === oldId ? { ...c, id: newId } : c)),
+    )
+    const shortcuts = await Storage.get<ShortcutSettings>(STORAGE_KEY.SHORTCUTS)
+    await Storage.set<ShortcutSettings>(STORAGE_KEY.SHORTCUTS, {
+      ...shortcuts,
+      shortcuts: (shortcuts?.shortcuts ?? []).map((s) =>
+        s.commandId === oldId ? { ...s, commandId: newId } : s,
+      ),
+    })
+  },
+
   reset: async () => {
     await Storage.set(STORAGE_KEY.USER, DefaultSettings)
     await Storage.setCommands(getDefaultCommands(getUILanguage()))
@@ -305,8 +319,7 @@ const migrate0_11_5 = (data: SettingsType): SettingsType => {
   data.commands = data.commands.map((c) => {
     if (c.id.length === 36) return c
     c.id =
-      DefaultCommands.find((dc) => dc.title === c.title)?.id ??
-      generateId()
+      DefaultCommands.find((dc) => dc.title === c.title)?.id ?? generateId()
     return c
   })
 
