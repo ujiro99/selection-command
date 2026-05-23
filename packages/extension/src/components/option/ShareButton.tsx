@@ -71,7 +71,6 @@ export const ShareButton = ({
         className={cn(
           "outline-gray-200 p-2 rounded-md transition hover:bg-green-100 hover:scale-125 group/share-btn",
           "disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none",
-          isShared && "bg-green-50",
         )}
         onClick={handleClick}
         ref={buttonRef}
@@ -87,7 +86,7 @@ export const ShareButton = ({
         ) : (
           <CloudCheck
             className={cn(
-              "stroke-green-600 group-hover/share-btn:stroke-green-600",
+              "stroke-gray-500 group-hover/share-btn:stroke-green-600",
               status === "error" && "stroke-red-500",
             )}
             size={16}
