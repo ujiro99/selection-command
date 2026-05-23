@@ -99,33 +99,55 @@ export const shareCommandToHub = (
         }
 
         const onMessage = (msg: unknown) => {
-          if ((msg as { type?: string })?.type !== "share-command-ack") return
+          const type = (msg as { type?: string })?.type
 
-          const ack = msg as { type: string; errorCode?: string }
+          if (type === "share-command-ack") {
+            const ack = msg as { type: string; errorCode?: string }
 
-          if (
-            ack.errorCode === "DUPLICATE_COMMAND_ID" &&
-            idRegenerateCount < MAX_ID_REGENERATE
-          ) {
-            idRegenerateCount++
+            if (
+              ack.errorCode === "DUPLICATE_COMMAND_ID" &&
+              idRegenerateCount < MAX_ID_REGENERATE
+            ) {
+              idRegenerateCount++
+              clearInterval(timer)
+
+              const oldId = currentParam.id
+              const newId = generateId()
+
+              Settings.updateCommandId(oldId, newId).catch((err) => {
+                console.error(
+                  "[shareCommandToHub] Failed to update command ID:",
+                  err,
+                )
+              })
+
+              currentParam = { ...currentParam, id: newId }
+              port.postMessage({ type: "share-command", command: currentParam })
+              return
+            }
+
+            // Stop retry timer now that ack is received
             clearInterval(timer)
 
-            const oldId = currentParam.id
-            const newId = generateId()
-
-            Settings.updateCommandId(oldId, newId).catch((err) => {
-              console.error(
-                "[shareCommandToHub] Failed to update command ID:",
-                err,
-              )
-            })
-
-            currentParam = { ...currentParam, id: newId }
-            port.postMessage({ type: "share-command", command: currentParam })
+            if (ack.errorCode) {
+              // Error: stop listening
+              port.onMessage.removeListener(onMessage)
+            }
+            // Success: keep listener to await share-command-submitted
             return
           }
 
-          cleanup()
+          if (type === "share-command-submitted") {
+            port.onMessage.removeListener(onMessage)
+            Storage.set(LOCAL_STORAGE_KEY.HUB_SHARED_AT, Date.now()).catch(
+              (err) => {
+                console.error(
+                  "[shareCommandToHub] Failed to update hubSharedAt:",
+                  err,
+                )
+              },
+            )
+          }
         }
         port.onMessage.addListener(onMessage)
 

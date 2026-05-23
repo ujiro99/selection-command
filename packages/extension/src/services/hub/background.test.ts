@@ -23,7 +23,7 @@ vi.mock("@/services/storage", () => ({
     set: vi.fn(),
     updateCommands: vi.fn(),
   },
-  LOCAL_STORAGE_KEY: { HUB_USER: "hubUser" },
+  LOCAL_STORAGE_KEY: { HUB_USER: "hubUser", HUB_SHARED_AT: "hubSharedAt" },
 }))
 
 vi.mock("@/services/settings/settings", () => ({
@@ -1003,7 +1003,7 @@ describe("shareCommandToHub", () => {
     expect(mockPort.postMessage).not.toHaveBeenCalled()
   })
 
-  it("SH-07: valid port sends share-command and removes listener on ack", async () => {
+  it("SH-07: valid port sends share-command; ack stops timer but keeps listener", async () => {
     vi.useFakeTimers()
     vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
       cb?.({ id: 42 } as chrome.tabs.Tab)
@@ -1040,8 +1040,59 @@ describe("shareCommandToHub", () => {
     })
     expect(chrome.runtime.onConnectExternal.removeListener).toHaveBeenCalled()
 
+    // ack stops the retry timer but keeps the message listener alive
     capturedOnMessage?.({ type: "share-command-ack" })
+    expect(mockPort.onMessage.removeListener).not.toHaveBeenCalled()
+
+    vi.useRealTimers()
+  })
+
+  it("SH-08: share-command-submitted updates HUB_SHARED_AT and removes listener", async () => {
+    vi.useFakeTimers()
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    shareCommandToHub(param, sender, response)
+
+    await Promise.resolve()
+
+    const portConnectListener = vi.mocked(
+      chrome.runtime.onConnectExternal.addListener,
+    ).mock.calls[0][0]
+
+    let capturedOnMessage: ((msg: unknown) => void) | undefined
+    const mockPort = {
+      name: "hub-share",
+      sender: { tab: { id: 42 } },
+      postMessage: vi.fn(),
+      onMessage: {
+        addListener: vi.fn((fn) => {
+          capturedOnMessage = fn
+        }),
+        removeListener: vi.fn(),
+      },
+    }
+    portConnectListener(mockPort as any)
+
+    vi.advanceTimersByTime(100)
+
+    capturedOnMessage?.({ type: "share-command-ack" })
+    expect(mockPort.onMessage.removeListener).not.toHaveBeenCalled()
+    expect(Storage.set).not.toHaveBeenCalledWith(
+      LOCAL_STORAGE_KEY.HUB_SHARED_AT,
+      expect.any(Number),
+    )
+
+    capturedOnMessage?.({ type: "share-command-submitted", commandId: "cmd-1" })
     expect(mockPort.onMessage.removeListener).toHaveBeenCalled()
+    await vi.waitFor(() =>
+      expect(Storage.set).toHaveBeenCalledWith(
+        LOCAL_STORAGE_KEY.HUB_SHARED_AT,
+        expect.any(Number),
+      ),
+    )
 
     vi.useRealTimers()
   })
@@ -1080,7 +1131,7 @@ describe("pushEditToHub", () => {
     expect(chrome.tabs.create).toHaveBeenCalledWith(
       {
         url: expect.stringContaining(
-          "hub.example.com/en/dashboard/commands?id=cmd-1",
+          "hub.example.com/en/dashboard/mycommands?id=cmd-1",
         ),
       },
       expect.any(Function),

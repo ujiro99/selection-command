@@ -13,8 +13,10 @@ export function useSharedCommandIds(): Set<string> {
 
   useEffect(() => {
     let cancelled = false
+    let currentHubUser: HubUser | null = null
 
     const fetchIds = async (hubUser: HubUser | null) => {
+      currentHubUser = hubUser
       if (cancelled) return
       if (!hubUser) {
         setSharedIds(new Set())
@@ -35,9 +37,16 @@ export function useSharedCommandIds(): Set<string> {
       (newVal) => fetchIds(newVal),
     )
 
+    // Re-fetch after a command is successfully shared to the hub
+    const unsubscribeSharedAt = Storage.addListener<number>(
+      LOCAL_STORAGE_KEY.HUB_SHARED_AT,
+      () => fetchIds(currentHubUser),
+    )
+
     return () => {
       cancelled = true
       unsubscribe()
+      unsubscribeSharedAt()
     }
   }, [])
 
