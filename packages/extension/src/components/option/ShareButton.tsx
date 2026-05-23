@@ -1,5 +1,5 @@
 import { useState, useRef } from "react"
-import { Share } from "lucide-react"
+import { Share, CloudCheck } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { cn, isUUIDv7, generateId } from "@/lib/utils"
 import { t } from "@/services/i18n"
@@ -39,7 +39,7 @@ export const ShareButton = ({
     if (isShared) {
       // Open the hub dashboard page for the shared command
       const locale = getHubLocale()
-      const url = `${NEW_HUB_URL}/${locale}/dashboard/commands?id=${encodeURIComponent(command.id)}`
+      const url = `${NEW_HUB_URL}/${locale}/dashboard/mycommands?id=${encodeURIComponent(command.id)}`
       chrome.tabs.create({ url })
       return
     }
@@ -76,14 +76,23 @@ export const ShareButton = ({
         onClick={handleClick}
         ref={buttonRef}
       >
-        <Share
-          className={cn(
-            "stroke-gray-500 group-hover/share-btn:stroke-green-600",
-            isShared && "stroke-green-600",
-            status === "error" && "stroke-red-500",
-          )}
-          size={16}
-        />
+        {!isShared ? (
+          <Share
+            className={cn(
+              "stroke-gray-500 group-hover/share-btn:stroke-green-600",
+              status === "error" && "stroke-red-500",
+            )}
+            size={16}
+          />
+        ) : (
+          <CloudCheck
+            className={cn(
+              "stroke-green-600 group-hover/share-btn:stroke-green-600",
+              status === "error" && "stroke-red-500",
+            )}
+            size={16}
+          />
+        )}
       </button>
       <Tooltip
         positionElm={buttonRef.current}

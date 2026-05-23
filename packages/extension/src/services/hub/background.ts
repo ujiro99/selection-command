@@ -634,7 +634,7 @@ export const pushEditToHub = (
       const tab = await new Promise<chrome.tabs.Tab>((resolve) =>
         chrome.tabs.create(
           {
-            url: `${NEW_HUB_URL}/${param.locale}/dashboard/commands?id=${encodeURIComponent(param.id)}`,
+            url: `${NEW_HUB_URL}/${param.locale}/dashboard/mycommands?id=${encodeURIComponent(param.id)}`,
           },
           resolve,
         ),
