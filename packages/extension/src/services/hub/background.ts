@@ -18,6 +18,7 @@ import {
 } from "@/services/analytics"
 import { PopupOption } from "@/services/option/defaultSettings"
 import {
+  generateId,
   isSearchCommand,
   isPageActionCommand,
   isAiPromptCommand,
@@ -78,6 +79,10 @@ export const shareCommandToHub = (
 
   const share = async () => {
     try {
+      let currentParam = param
+      let idRegenerateCount = 0
+      const MAX_ID_REGENERATE = 3
+
       // Use a named function expression so the handler can remove itself via
       // `portConnect` (inner self-reference, always valid inside the handler).
       // The outer `onPortConnect` variable is used for cleanup in error paths
@@ -93,9 +98,59 @@ export const shareCommandToHub = (
           port.onMessage.removeListener(onMessage)
         }
 
-        const onMessage = (msg: unknown) => {
-          if ((msg as { type?: string })?.type === "share-command-ack") {
-            cleanup()
+        const onMessage = async (msg: unknown) => {
+          const type = (msg as { type?: string })?.type
+
+          if (type === "share-command-ack") {
+            const ack = msg as { type: string; errorCode?: string }
+
+            if (
+              ack.errorCode === "DUPLICATE_COMMAND_ID" &&
+              idRegenerateCount < MAX_ID_REGENERATE
+            ) {
+              idRegenerateCount++
+              clearInterval(timer)
+
+              const oldId = currentParam.id
+              const newId = generateId()
+
+              try {
+                await Settings.updateCommandId(oldId, newId)
+              } catch (err) {
+                console.error(
+                  "[shareCommandToHub] Failed to update command ID:",
+                  err,
+                )
+                port.onMessage.removeListener(onMessage)
+                return
+              }
+
+              currentParam = { ...currentParam, id: newId }
+              port.postMessage({ type: "share-command", command: currentParam })
+              return
+            }
+
+            // Stop retry timer now that ack is received
+            clearInterval(timer)
+
+            if (ack.errorCode) {
+              // Error: stop listening
+              port.onMessage.removeListener(onMessage)
+            }
+            // Success: keep listener to await share-command-submitted
+            return
+          }
+
+          if (type === "share-command-submitted") {
+            port.onMessage.removeListener(onMessage)
+            Storage.set(LOCAL_STORAGE_KEY.HUB_SHARED_AT, Date.now()).catch(
+              (err) => {
+                console.error(
+                  "[shareCommandToHub] Failed to update hubSharedAt:",
+                  err,
+                )
+              },
+            )
           }
         }
         port.onMessage.addListener(onMessage)
@@ -110,7 +165,7 @@ export const shareCommandToHub = (
             )
             return
           }
-          port.postMessage({ type: "share-command", command: param })
+          port.postMessage({ type: "share-command", command: currentParam })
         }, RETRY_INTERVAL_MS)
       }
       // Register listener before tab creation so the Hub page can connect immediately on load
@@ -605,7 +660,7 @@ export const pushEditToHub = (
       const tab = await new Promise<chrome.tabs.Tab>((resolve) =>
         chrome.tabs.create(
           {
-            url: `${NEW_HUB_URL}/${param.locale}/dashboard/commands?id=${encodeURIComponent(param.id)}`,
+            url: `${NEW_HUB_URL}/${param.locale}/dashboard/mycommands?id=${encodeURIComponent(param.id)}`,
           },
           resolve,
         ),

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { useFieldArray, useFormContext } from "react-hook-form"
+import { useFieldArray } from "react-hook-form"
 
 import {
   DndContext,
@@ -28,12 +28,7 @@ import {
 
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import { SCREEN, COMMAND_TYPE, OPEN_MODE_TYPE_MAP } from "@/const"
-import type {
-  Command,
-  CommandFolder,
-  SelectionCommand,
-  ShortcutCommand,
-} from "@/types"
+import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
 // Imported services and hooks
 import {
@@ -48,6 +43,7 @@ import {
 } from "@/services/option/commandUtils"
 import { isValidDrop } from "@/services/option/dragAndDrop"
 import { editCommandToHub } from "@/services/hubShare"
+import { Settings } from "@/services/settings/settings"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
 import { useSharedCommandIds } from "@/hooks/option/useSharedCommandIds"
@@ -123,8 +119,6 @@ export const CommandList = ({ control }: CommandListProps) => {
   const editParamHandledRef = useRef(false)
 
   const sharedCommandIds = useSharedCommandIds()
-
-  const { getValues, setValue } = useFormContext()
 
   const commandArray = useFieldArray<CommandsSchemaType, "commands", "_id">({
     name: "commands",
@@ -306,22 +300,9 @@ export const CommandList = ({ control }: CommandListProps) => {
   }
 
   const handleUpdateCommandId = (commandId: string, newId: string) => {
-    // Update command ID
-    const idx = commandArray.fields.findIndex((f) => f.id === commandId)
-    if (idx >= 0) {
-      commandArray.update(idx, { ...commandArray.fields[idx], id: newId })
-    }
-    // Update any shortcuts that reference this command ID
-    const currentShortcuts: ShortcutCommand[] =
-      getValues("shortcuts.shortcuts") ?? []
-    if (currentShortcuts.some((s) => s.commandId === commandId)) {
-      setValue(
-        "shortcuts.shortcuts",
-        currentShortcuts.map((s) =>
-          s.commandId === commandId ? { ...s, commandId: newId } : s,
-        ),
-      )
-    }
+    Settings.updateCommandId(commandId, newId).catch((err) => {
+      console.error("[handleUpdateCommandId] Failed to update command ID:", err)
+    })
   }
 
   const commandRemove = (idx: number) => {
