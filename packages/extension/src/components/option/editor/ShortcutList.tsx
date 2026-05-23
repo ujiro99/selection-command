@@ -1,10 +1,5 @@
 import { useEffect, useState, useMemo } from "react"
-import {
-  Control,
-  useFieldArray,
-  useWatch,
-  useFormContext,
-} from "react-hook-form"
+import { useFieldArray, useWatch, useFormContext } from "react-hook-form"
 import { Keyboard, SquareArrowOutUpRight } from "lucide-react"
 import { SelectField } from "@/components/option/field/SelectField"
 import type { SelectOptionType } from "@/components/option/field/SelectField"
@@ -30,7 +25,7 @@ import { INSERT, toInsertTemplate } from "@/services/pageAction"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 type ShortcutListProps = {
-  control: Control<any>
+  control: any
 }
 
 const isTextSelectionOnly = (command: Command) => {
