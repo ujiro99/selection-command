@@ -37,29 +37,36 @@ export async function getWindowPosition(): Promise<WindowPosition> {
   }
 }
 
-export async function getScreenSize(): Promise<ScreenSize> {
+export async function getScreenSize(hint?: {
+  top: number
+  left: number
+}): Promise<ScreenSize> {
   if (isServiceWorker()) {
     try {
       // For background_script.ts
-      const [displays, currentWindow] = await Promise.all([
-        chrome.system.display.getInfo(),
-        chrome.windows.getCurrent(),
-      ])
+      const displays = await chrome.system.display.getInfo()
+
+      let hintTop = hint?.top
+      let hintLeft = hint?.left
+
+      if (hintTop == null || hintLeft == null) {
+        // Fall back to current window position if no hint provided
+        const currentWindow = await chrome.windows.getCurrent()
+        hintLeft = currentWindow.left ?? undefined
+        hintTop = currentWindow.top ?? undefined
+      }
 
       let targetDisplay
-      const currentWindowLeft = currentWindow.left
-      const currentWindowTop = currentWindow.top
-
-      if (currentWindowLeft != null && currentWindowTop != null) {
-        // Find the monitor that contains the active window's left position
+      if (hintLeft != null && hintTop != null) {
+        // Find the monitor that contains the given position
         targetDisplay =
           displays.find((d) => {
             const a = d.workArea
             return (
-              currentWindowLeft >= a.left &&
-              currentWindowLeft < a.left + a.width &&
-              currentWindowTop >= a.top &&
-              currentWindowTop < a.top + a.height
+              hintLeft >= a.left &&
+              hintLeft < a.left + a.width &&
+              hintTop >= a.top &&
+              hintTop < a.top + a.height
             )
           }) ??
           displays.find((d) => d.isPrimary) ??

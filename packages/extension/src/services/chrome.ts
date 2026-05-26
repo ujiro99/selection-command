@@ -446,7 +446,7 @@ export const openPopupWindow = async (
     current = { id: undefined, incognito: false } as chrome.windows.Window
   }
 
-  const screenSize = await getScreenSize()
+  const screenSize = await getScreenSize({ top, left })
 
   const type = param.type ?? POPUP_TYPE.POPUP
   const isFullscreen = param.windowState === WINDOW_STATE.FULLSCREEN
@@ -553,7 +553,7 @@ export const openPopupWindowMultiple = async (
   }
 
   const type = param.type ?? POPUP_TYPE.POPUP
-  const screenSize = await getScreenSize()
+  const screenSize = await getScreenSize({ top, left })
 
   const windows = await Promise.all(
     param.urls
