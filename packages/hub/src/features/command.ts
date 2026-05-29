@@ -85,3 +85,7 @@ export function getSearchUrl(): string[] {
         .searchUrl,
   )
 }
+
+export function getCommandById(id: string): Command | undefined {
+  return getCommands().find((command) => command.id === id)
+}

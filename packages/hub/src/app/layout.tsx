@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { GoogleTagManager } from "@next/third-parties/google"
 import localFont from "next/font/local"
 import { LanguageProvider } from "@/components/LanguageProvider"
+import { defaultMetadata } from "@/features/metadata"
 
 import "./globals.css"
 
@@ -16,10 +17,7 @@ const geistMono = localFont({
   weight: "100 900",
 })
 
-export const metadata: Metadata = {
-  title: "Selection Command Hub",
-  description: "A site for sharing Selection commands",
-}
+export const metadata: Metadata = defaultMetadata
 
 export default function RootLayout({
   children,

@@ -1,5 +1,11 @@
 import { describe, test, expect, vi } from "vitest"
-import { cmd2text, cmd2uuid, getCommands, getSearchUrl } from "./command"
+import {
+  cmd2text,
+  cmd2uuid,
+  getCommandById,
+  getCommands,
+  getSearchUrl,
+} from "./command"
 import { OPEN_MODE, SPACE_ENCODING, HUB_SRC_UUID } from "@/const"
 import type { SearchCommand, PageActionCommand } from "@/types"
 
@@ -296,6 +302,21 @@ describe("Command Operations", () => {
       // PageActionCommand is excluded because it doesn't have searchUrl
       expect(searchUrls).toHaveLength(1)
       expect(searchUrls.every((url) => url.includes("search"))).toBe(true)
+    })
+  })
+
+  describe("getCommandById function", () => {
+    test("CH-15: Normal case: command is found by id", () => {
+      const command = getCommandById("test-search-1")
+
+      expect(command).toBeDefined()
+      expect(command?.title).toBe("Test Search Command")
+    })
+
+    test("CH-16: Edge case: returns undefined for unknown id", () => {
+      const command = getCommandById("unknown-id")
+
+      expect(command).toBeUndefined()
     })
   })
 
