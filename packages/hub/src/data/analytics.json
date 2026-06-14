@@ -2,7 +2,7 @@
   "download": [
     {
       "eventId": "e024de34-3251-570d-9bd4-7eebb29d951d",
-      "eventCount": 85
+      "eventCount": 31
     },
     {
       "eventId": "5bd801be-edf1-5787-91e0-48df29230fed",
@@ -374,6 +374,10 @@
     }
   ],
   "starred": [
+    {
+      "eventId": "e024de34-3251-570d-9bd4-7eebb29d951d",
+      "eventCount": 2
+    },
     {
       "eventId": "59a9b166-b8e3-5e16-9237-aeda268ceacc",
       "eventCount": 2
