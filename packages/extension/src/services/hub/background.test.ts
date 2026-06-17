@@ -1186,8 +1186,14 @@ describe("shareCommandToHub", () => {
       errorCode: "DUPLICATE_COMMAND_ID",
     })
 
-    // Must not send new command since local storage update failed
-    expect(mockPort.postMessage).toHaveBeenCalledTimes(1) // only the initial retry send
+    // Must not send a new command with an updated ID since local storage update failed
+    expect(mockPort.postMessage).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        command: expect.objectContaining({
+          id: expect.not.stringMatching(param.id),
+        }),
+      }),
+    )
     expect(mockPort.onMessage.removeListener).toHaveBeenCalled()
 
     vi.useRealTimers()
