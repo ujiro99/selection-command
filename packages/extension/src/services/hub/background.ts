@@ -57,7 +57,7 @@ function getSupabase() {
   return _supabase
 }
 
-const RETRY_INTERVAL_MS = 100
+const RETRY_INTERVAL_MS = 200
 const MAX_RETRIES = 20 // 2 seconds
 const EDIT_CONNECT_TIMEOUT_MS = 10_000
 const EDIT_COMMAND_ACK_TIMEOUT_MS = 10_000
