@@ -151,7 +151,7 @@ function useDetectDrag(
       if (activate && command) {
         const h = command.popupOption?.height ?? PopupOption.height
         const w = command.popupOption?.width ?? PopupOption.width
-        const screen = await getScreenSize()
+        const screen = await getScreenSize({ top: e.screenY, left: e.screenX })
         const position = { x: e.screenX, y: e.screenY - 50 }
         position.x = Math.min(position.x, screen.width - w + screen.left)
         position.y = Math.min(position.y, screen.height - h + screen.top - 60)
