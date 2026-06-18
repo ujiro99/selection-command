@@ -77,14 +77,12 @@ jobs:
           restore-keys: |
             playwright-chromium-
 
+      - name: Install Playwright system dependencies
+        run: npx playwright install-deps chromium
+
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        timeout-minutes: 10
-        run: npx playwright install chromium --with-deps
-
-      - name: Install Playwright system dependencies
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        run: npx playwright install chromium
 
       - name: Run E2E tests
         run: yarn test:e2e
