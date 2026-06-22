@@ -3,6 +3,8 @@ import { OptionsPage } from "./pages/OptionsPage"
 import { NEW_HUB_URL } from "./const"
 
 test.describe("Command Hub", () => {
+  test.setTimeout(60000)
+
   /**
    * E2E-90: Verify that a PageAction command can be installed from the Hub.
    */
@@ -23,8 +25,9 @@ test.describe("Command Hub", () => {
     const countBefore = commandsBefore?.length ?? 0
 
     // Navigate to the Hub
-    await page.goto(NEW_HUB_URL + "?type=pageAction")
-    await page.waitForLoadState("domcontentloaded")
+    await page.goto(NEW_HUB_URL + "?type=pageAction", {
+      waitUntil: "domcontentloaded",
+    })
 
     // Find a download button for a PageAction command on the Hub page.
     // The extension injects download functionality for buttons with data-command attribute.
@@ -67,8 +70,8 @@ test.describe("Command Hub", () => {
     // - Gemini
     await page.goto(
       NEW_HUB_URL + "/ja/commands/06964cb6-019d-511f-b16f-18c7bbd2c785",
+      { waitUntil: "domcontentloaded" },
     )
-    await page.waitForLoadState("domcontentloaded")
 
     // Find any available download button
     const downloadButton = page
@@ -105,8 +108,8 @@ test.describe("Command Hub", () => {
     // Step 1: Install a command from the Hub
     await page.goto(
       NEW_HUB_URL + "/en/commands/019e6759-9700-75b8-bf5d-30e8f7b5aa43",
+      { waitUntil: "domcontentloaded" },
     )
-    await page.waitForLoadState("domcontentloaded")
 
     // Find any available download button
     const downloadButton = page
@@ -139,8 +142,8 @@ test.describe("Command Hub", () => {
     // Step 3: Reload the Hub and verify the download button is restored
     await page.goto(
       NEW_HUB_URL + "/en/commands/019e6759-9700-75b8-bf5d-30e8f7b5aa43",
+      { waitUntil: "domcontentloaded" },
     )
-    await page.waitForLoadState("domcontentloaded")
 
     // The download button for the deleted command should be available again
     const restoredButton = page

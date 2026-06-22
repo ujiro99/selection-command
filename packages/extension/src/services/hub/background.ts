@@ -539,10 +539,9 @@ function onMessageExternal(
   sender: chrome.runtime.MessageSender,
   sendResponse: (response?: unknown) => void,
 ): boolean {
-  if (!sender.origin || sender.origin !== hubOrigin) return false
-
   const { action, command, id } = message ?? {}
   console.debug("[onMessageExternal] Received message:", message)
+  if (!sender.origin || sender.origin !== hubOrigin) return false
 
   if (action === "AddCommand" && typeof command === "string") {
     handleAddCommand(command, sendResponse).catch((err) => {
