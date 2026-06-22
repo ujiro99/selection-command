@@ -7,11 +7,13 @@ import {
 import path from "path"
 import { fileURLToPath } from "url"
 import { attachSWConsole } from "./utils/logConsole"
+import { fetchCfAuthToken } from "./utils/cfAuth"
 import {
   STORAGE_KEY,
   LOCAL_STORAGE_KEY,
   CMD_PREFIX,
 } from "@/services/storage/const"
+import { NEW_HUB_URL } from "./const"
 
 import type { UserSettings, Command } from "@/types"
 import type { CommandMetadata } from "@/types/command"
@@ -32,6 +34,7 @@ type Fixtures = {
   setUserSettings: (newSettings: Partial<UserSettings>) => Promise<UserSettings>
   getCommands: () => Promise<UserSettings["commands"]>
   isAllWindowsNormal: () => Promise<boolean>
+  cfAccessCookie: string | null
 }
 
 /**
@@ -39,7 +42,7 @@ type Fixtures = {
  */
 export const test = base.extend<Fixtures>({
   // eslint-disable-next-line no-empty-pattern
-  context: async ({}, use) => {
+  context: async ({ }, use) => {
     // When running with --debug, PWDEBUG is set; show the browser window in that case.
     const isDebug = !!process.env.PWDEBUG
     const context = await chromium.launchPersistentContext("", {
@@ -206,6 +209,33 @@ export const test = base.extend<Fixtures>({
       })
       return result
     })
+  },
+
+  cfAccessCookie: async ({ context }, use) => {
+    const clientId = process.env.CF_ACCESS_CLIENT_ID
+    const clientSecret = process.env.CF_ACCESS_CLIENT_SECRET
+
+    let token: string | null = null
+
+    if (clientId && clientSecret) {
+      token = await fetchCfAuthToken(NEW_HUB_URL, clientId, clientSecret)
+      if (token) {
+        const { hostname } = new URL(NEW_HUB_URL)
+        await context.addCookies([
+          {
+            name: "CF_Authorization",
+            value: token,
+            domain: hostname,
+            path: "/",
+            secure: true,
+            httpOnly: true,
+            sameSite: "None",
+          },
+        ])
+      }
+    }
+
+    await use(token)
   },
 })
 

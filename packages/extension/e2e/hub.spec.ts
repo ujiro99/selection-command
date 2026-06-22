@@ -1,34 +1,6 @@
 import { test, expect } from "./fixtures"
 import { OptionsPage } from "./pages/OptionsPage"
-
-const HUB_URL = "https://ujiro99.github.io/selection-command"
-
-const tryGetCommandId = (commandData: string | null): string => {
-  if (!commandData) {
-    throw new Error("Hub button is missing required data-command attribute")
-  }
-  let parsedCommand: unknown
-  try {
-    parsedCommand = JSON.parse(commandData)
-  } catch (error) {
-    throw new Error(
-      `Failed to parse data-command JSON from Hub button: ${(error as Error).message}`,
-    )
-  }
-  const commandId =
-    typeof parsedCommand === "object" &&
-    parsedCommand !== null &&
-    "id" in parsedCommand &&
-    typeof (parsedCommand as { id: unknown }).id === "string"
-      ? (parsedCommand as { id: string }).id
-      : null
-  if (!commandId) {
-    throw new Error(
-      `Parsed data-command JSON does not contain a valid "id": ${commandData}`,
-    )
-  }
-  return commandId
-}
+import { NEW_HUB_URL } from "./const"
 
 test.describe("Command Hub", () => {
   /**
@@ -39,6 +11,7 @@ test.describe("Command Hub", () => {
     extensionId,
     getCommands,
     page,
+    cfAccessCookie: _cfAccessCookie,
   }) => {
     // Reset to a clean state first
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
@@ -50,13 +23,13 @@ test.describe("Command Hub", () => {
     const countBefore = commandsBefore?.length ?? 0
 
     // Navigate to the Hub
-    await page.goto(HUB_URL)
+    await page.goto(NEW_HUB_URL + "?type=pageAction")
     await page.waitForLoadState("domcontentloaded")
 
     // Find a download button for a PageAction command on the Hub page.
     // The extension injects download functionality for buttons with data-command attribute.
     const downloadButton = page
-      .locator('button[data-command*=\'"openMode":"pageAction"\']')
+      .locator("button[data-testid='download-btn']")
       .filter({ hasNot: page.locator('[data-installed="true"]') })
       .first()
     await downloadButton.waitFor({ state: "visible", timeout: 5000 })
@@ -73,13 +46,14 @@ test.describe("Command Hub", () => {
   })
 
   /**
-   * E2E-91: Verify that clicking a download button on the Hub adds the command.
+   * E2E-91: Verify that clicking a download button on the Detail page adds the command.
    */
-  test("E2E-91: download button on Hub adds command to settings", async ({
+  test("E2E-91: download button on Detail page adds command to settings", async ({
     context,
     extensionId,
     getCommands,
     page,
+    cfAccessCookie: _cfAccessCookie,
   }) => {
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
@@ -89,21 +63,18 @@ test.describe("Command Hub", () => {
     const commandsBefore = await getCommands()
     const countBefore = commandsBefore?.length ?? 0
 
-    await page.goto(HUB_URL)
+    // Navigate to Detail page.
+    // - Gemini
+    await page.goto(
+      NEW_HUB_URL + "/ja/commands/06964cb6-019d-511f-b16f-18c7bbd2c785",
+    )
     await page.waitForLoadState("domcontentloaded")
 
     // Find any available download button
     const downloadButton = page
-      .locator('button[data-command*=\'"openMode":"popup"\']')
-      .filter({ hasNot: page.locator('[data-installed="true"]') })
+      .locator("button[data-testid='download-btn']")
       .first()
-
     await downloadButton.waitFor({ state: "visible", timeout: 5000 })
-
-    // Get the command identifier for verification
-    const commandData = await downloadButton.getAttribute("data-command")
-    tryGetCommandId(commandData)
-
     await downloadButton.click()
     await expect
       .poll(
@@ -124,6 +95,7 @@ test.describe("Command Hub", () => {
     extensionId,
     getCommands,
     page,
+    cfAccessCookie: _cfAccessCookie,
   }) => {
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
@@ -131,19 +103,20 @@ test.describe("Command Hub", () => {
     await optionsPage.close()
 
     // Step 1: Install a command from the Hub
-    await page.goto(HUB_URL)
+    await page.goto(
+      NEW_HUB_URL + "/en/commands/019e6759-9700-75b8-bf5d-30e8f7b5aa43",
+    )
     await page.waitForLoadState("domcontentloaded")
 
     // Find any available download button
     const downloadButton = page
-      .locator('button[data-command*=\'"openMode":"popup"\']')
+      .locator("button[data-testid='download-btn']")
       .filter({ hasNot: page.locator('[data-installed="true"]') })
       .first()
 
     await downloadButton.waitFor({ state: "visible", timeout: 5000 })
 
-    const commandData = await downloadButton.getAttribute("data-command")
-    const commandId = tryGetCommandId(commandData)
+    const commandId = await downloadButton.getAttribute("data-id")
 
     await downloadButton.click()
     await expect
@@ -164,13 +137,16 @@ test.describe("Command Hub", () => {
     await optionsPage.close()
 
     // Step 3: Reload the Hub and verify the download button is restored
-    await page.goto(HUB_URL)
+    await page.goto(
+      NEW_HUB_URL + "/en/commands/019e6759-9700-75b8-bf5d-30e8f7b5aa43",
+    )
     await page.waitForLoadState("domcontentloaded")
 
     // The download button for the deleted command should be available again
-    const restoredButton = page.locator(
-      `button[data-command*='"id":"${commandId}"']`,
-    )
+    const restoredButton = page
+      .locator(`button[data-id='${commandId}']`)
+      .filter({ hasNot: page.locator('[data-installed="true"]') })
+      .first()
     await restoredButton.waitFor({ state: "visible", timeout: 5000 })
     expect(restoredButton).toBeVisible()
   })
