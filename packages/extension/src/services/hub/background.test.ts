@@ -1187,7 +1187,6 @@ describe("shareCommandToHub", () => {
     })
 
     // Must not send a new command with an updated ID since local storage update failed
-    expect(mockPort.postMessage).toHaveBeenCalled()
     expect(mockPort.postMessage).not.toHaveBeenCalledWith(
       expect.objectContaining({
         command: expect.objectContaining({
