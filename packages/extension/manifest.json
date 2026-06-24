@@ -35,6 +35,17 @@
       "js": [
         "src/new_command_hub.tsx"
       ]
+    },
+    {
+      "matches": [
+        "https://*.siro-cola.workers.dev/*"
+      ],
+      "include_globs": [
+        "https://*-selection-command-hub.siro-cola.workers.dev/*"
+      ],
+      "js": [
+        "src/new_command_hub.tsx"
+      ]
     }
   ],
   "background": {
