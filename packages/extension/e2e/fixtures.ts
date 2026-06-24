@@ -58,15 +58,18 @@ export const test = base.extend<Fixtures>({
       ],
     })
 
+    // Register the serviceworker listener BEFORE waiting for the SW so that
+    // the very first startup logs (e.g. initHubExternalListener) are captured.
+    // Without this, the SW may already be running when we call serviceWorkers()
+    // and its early logs are lost before attachSWConsole is called.
+    context.on("serviceworker", (worker) => attachSWConsole(worker))
+
     // Wait for the service worker to be ready before proceeding, so tests can interact with it immediately.
     let [sw] = context.serviceWorkers()
     if (!sw) {
       sw = await context.waitForEvent("serviceworker")
     }
     attachSWConsole(sw)
-    // MV3 service workers can be killed and restarted at any time.
-    // Attach console logging to every new SW instance so logs aren't lost on restart.
-    context.on("serviceworker", (worker) => attachSWConsole(worker))
 
     await use(context)
     await context.close()
