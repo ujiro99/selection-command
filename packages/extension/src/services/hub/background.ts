@@ -287,6 +287,12 @@ export async function handleAddCommand(
     const isSearch = isSearchCommand(parsed)
     const isPageAction = isPageActionCommand(parsed)
     const isAiPrompt = isAiPromptCommand(parsed)
+    console.debug("[handleAddCommand] Parsed:", {
+      isSearch,
+      isPageAction,
+      isAiPrompt,
+      id: parsed?.id,
+    })
 
     const sourceType = (parsed as { sourceType?: unknown }).sourceType
     const sourceId = (parsed as { sourceId?: unknown }).sourceId
@@ -341,6 +347,7 @@ export async function handleAddCommand(
     }
 
     await Settings.addCommands([cmd])
+    console.debug("[handleAddCommand] Saved command id:", cmd.id)
     await sendEvent(
       ANALYTICS_EVENTS.COMMAND_ADD,
       {
@@ -541,7 +548,13 @@ function onMessageExternal(
 ): boolean {
   const { action, command, id } = message ?? {}
   console.debug("[onMessageExternal] Received message:", message)
-  if (!sender.origin || sender.origin !== hubOrigin) return false
+  if (!sender.origin || sender.origin !== hubOrigin) {
+    console.warn(
+      `[onMessageExternal] Origin mismatch — received: "${sender.origin}", expected: "${hubOrigin}"`,
+    )
+    return false
+  }
+  console.debug("[onMessageExternal] Origin OK, action:", action)
 
   if (action === "AddCommand" && typeof command === "string") {
     handleAddCommand(command, sendResponse).catch((err) => {
@@ -595,6 +608,9 @@ function onMessageExternal(
 }
 
 export function initHubExternalListener(): void {
+  console.debug(
+    "[initHubExternalListener] Registering onMessageExternal listener",
+  )
   chrome.runtime.onMessageExternal.addListener(onMessageExternal)
 }
 

@@ -23,6 +23,12 @@ test.describe("Command Hub", () => {
 
     const commandsBefore = await getCommands()
     const countBefore = commandsBefore?.length ?? 0
+    console.log("[E2E-90] commands before:", countBefore)
+
+    // Capture Hub page console for debugging
+    page.on("console", (msg) =>
+      console.log(`[Hub page][${msg.type()}]`, msg.text()),
+    )
 
     // Navigate to the Hub
     await page.goto(NEW_HUB_URL + "?type=pageAction", {
@@ -43,6 +49,14 @@ test.describe("Command Hub", () => {
       .first()
     await downloadButton.waitFor({ state: "visible", timeout: 5000 })
     await downloadButton.click()
+    const commandsAfterClick = await getCommands()
+    console.log(
+      "[E2E-90] commands after click:",
+      commandsAfterClick?.length ?? 0,
+      "(before:",
+      countBefore,
+      ")",
+    )
     await expect
       .poll(
         async () => {

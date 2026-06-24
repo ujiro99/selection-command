@@ -10,6 +10,10 @@ export function useCommandHubBridge() {
     if (commands == null) return
     // Use window.location.origin so this works regardless of which Hub URL is
     // used (production vs. staging), avoiding silent discard from origin mismatch.
+    console.debug(
+      "useCommandHubBridge: sending installed command IDs to Hub:",
+      commands.map((c) => c.id),
+    )
     window.postMessage(
       {
         action: "SyncInstalledCommand",

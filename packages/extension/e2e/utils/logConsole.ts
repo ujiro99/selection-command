@@ -2,7 +2,6 @@ import type { ConsoleMessage, Page, Worker } from "@playwright/test"
 
 function attachConsoleListener(target: Page | Worker, prefix: string): void {
   target.on("console", async (msg: ConsoleMessage) => {
-    if (!process.env.PWDEBUG) return
     try {
       const type = msg.type().charAt(0).toUpperCase()
       const location = msg.location()
