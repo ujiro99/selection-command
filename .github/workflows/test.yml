@@ -60,6 +60,7 @@ jobs:
         run: yarn build:e2e
         env:
           VITE_NEW_HUB_URL: ${{ secrets.VITE_NEW_HUB_URL }}
+          EXTENSION_KEY: ${{ secrets.EXTENSION_KEY }}
 
       - name: Run E2E tests
         run: yarn test:e2e
