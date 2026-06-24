@@ -68,8 +68,11 @@ export const test = base.extend<Fixtures>({
     let [sw] = context.serviceWorkers()
     if (!sw) {
       sw = await context.waitForEvent("serviceworker")
+      // attachSWConsole already called by the context.on listener above
+    } else {
+      // SW was already running when the listener was registered; attach manually
+      attachSWConsole(sw)
     }
-    attachSWConsole(sw)
 
     await use(context)
     await context.close()
