@@ -42,7 +42,7 @@ type Fixtures = {
  */
 export const test = base.extend<Fixtures>({
   // eslint-disable-next-line no-empty-pattern
-  context: async ({ }, use) => {
+  context: async ({}, use) => {
     // When running with --debug, PWDEBUG is set; show the browser window in that case.
     const isDebug = !!process.env.PWDEBUG
     const context = await chromium.launchPersistentContext("", {
@@ -64,6 +64,9 @@ export const test = base.extend<Fixtures>({
       sw = await context.waitForEvent("serviceworker")
     }
     attachSWConsole(sw)
+    // MV3 service workers can be killed and restarted at any time.
+    // Attach console logging to every new SW instance so logs aren't lost on restart.
+    context.on("serviceworker", (worker) => attachSWConsole(worker))
 
     await use(context)
     await context.close()

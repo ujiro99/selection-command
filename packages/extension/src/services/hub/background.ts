@@ -609,7 +609,8 @@ function onMessageExternal(
 
 export function initHubExternalListener(): void {
   console.debug(
-    "[initHubExternalListener] Registering onMessageExternal listener",
+    "[initHubExternalListener] Registering onMessageExternal listener, hubOrigin:",
+    hubOrigin,
   )
   chrome.runtime.onMessageExternal.addListener(onMessageExternal)
 }
