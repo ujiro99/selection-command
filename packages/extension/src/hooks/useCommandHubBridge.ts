@@ -18,6 +18,7 @@ export function useCommandHubBridge() {
       {
         action: "SyncInstalledCommand",
         installedIds: commands.map((c) => c.id),
+        extensionId: chrome.runtime.id,
       },
       window.location.origin,
     )
