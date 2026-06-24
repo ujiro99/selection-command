@@ -23,6 +23,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env.e2e
 .git
 tsconfig.tsbuildinfo
 
