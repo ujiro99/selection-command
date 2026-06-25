@@ -27,11 +27,11 @@ test.describe("Command Hub", () => {
       waitUntil: "domcontentloaded",
     })
 
-    // Wait for the extension content script to initialize and push SyncInstalledCommand.
+    // Wait for the extension content script to initialize.
     // Without this, the Hub may not yet know the extension is installed when the
     // download button is clicked, causing "Chrome extension required" dialog.
     await page
-      .locator("html[data-extension-installed='true']")
+      .locator("button[data-testid='open-option-page-btn']")
       .waitFor({ timeout: 10000 })
 
     // Find a download button for a PageAction command on the Hub page.
@@ -78,7 +78,7 @@ test.describe("Command Hub", () => {
     await page.goto(url, { waitUntil: "domcontentloaded" })
 
     await page
-      .locator("html[data-extension-installed='true']")
+      .locator("button[data-testid='open-option-page-btn']")
       .waitFor({ timeout: 10000 })
 
     const downloadButton = page
@@ -119,7 +119,7 @@ test.describe("Command Hub", () => {
     await page.goto(url, { waitUntil: "domcontentloaded" })
 
     await page
-      .locator("html[data-extension-installed='true']")
+      .locator("button[data-testid='open-option-page-btn']")
       .waitFor({ timeout: 10000 })
 
     const downloadButton = page
@@ -150,7 +150,7 @@ test.describe("Command Hub", () => {
     await page.goto(url, { waitUntil: "domcontentloaded" })
 
     await page
-      .locator("html[data-extension-installed='true']")
+      .locator("button[data-testid='open-option-page-btn']")
       .waitFor({ timeout: 10000 })
 
     const restoredButton = page

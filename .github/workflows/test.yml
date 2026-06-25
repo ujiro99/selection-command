@@ -68,6 +68,7 @@ jobs:
           VITE_NEW_HUB_URL: ${{ secrets.VITE_NEW_HUB_URL }}
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+          PWDEBUG: ${{ secrets.PWDEBUG }}
 
       - name: Upload E2E test results
         if: failure()

@@ -21,7 +21,5 @@ export function useCommandHubBridge() {
       },
       window.location.origin,
     )
-    // Signal that the extension content script is ready so tests can wait for it.
-    document.documentElement.dataset.extensionInstalled = "true"
   }, [commands])
 }

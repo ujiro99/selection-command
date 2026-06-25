@@ -308,36 +308,36 @@ export async function handleAddCommand(
 
     const cmd = isSearch
       ? {
+        id: parsed.id,
+        title: parsed.title,
+        searchUrl: parsed.searchUrl,
+        iconUrl: parsed.iconUrl,
+        ...sourceInfo,
+        openMode: parsed.openMode,
+        openModeSecondary: parsed.openModeSecondary,
+        spaceEncoding: parsed.spaceEncoding,
+        popupOption: PopupOption,
+      }
+      : isAiPrompt
+        ? {
           id: parsed.id,
           title: parsed.title,
-          searchUrl: parsed.searchUrl,
           iconUrl: parsed.iconUrl,
           ...sourceInfo,
           openMode: parsed.openMode,
-          openModeSecondary: parsed.openModeSecondary,
-          spaceEncoding: parsed.spaceEncoding,
+          aiPromptOption: parsed.aiPromptOption,
           popupOption: PopupOption,
         }
-      : isAiPrompt
-        ? {
+        : isPageAction
+          ? {
             id: parsed.id,
             title: parsed.title,
             iconUrl: parsed.iconUrl,
             ...sourceInfo,
             openMode: parsed.openMode,
-            aiPromptOption: parsed.aiPromptOption,
+            pageActionOption: parsed.pageActionOption,
             popupOption: PopupOption,
           }
-        : isPageAction
-          ? {
-              id: parsed.id,
-              title: parsed.title,
-              iconUrl: parsed.iconUrl,
-              ...sourceInfo,
-              openMode: parsed.openMode,
-              pageActionOption: parsed.pageActionOption,
-              popupOption: PopupOption,
-            }
           : null
 
     if (!cmd) {
@@ -416,7 +416,7 @@ export function handleEditCommand(
     ackTimeout: undefined,
     ackListener: undefined,
     pendingResponse: undefined,
-    cancelConnectWait: () => {},
+    cancelConnectWait: () => { },
   }
   _editSession = newSession
 
@@ -555,6 +555,18 @@ function onMessageExternal(
     return false
   }
   console.debug("[onMessageExternal] Origin OK, action:", action)
+
+  if (action === "Ping") {
+    sendResponse({ result: true })
+    return false
+  }
+
+  if (action === "OpenOptionsPage") {
+    chrome.runtime.openOptionsPage().finally(() => {
+      sendResponse({ result: true })
+    })
+    return true
+  }
 
   if (action === "AddCommand" && typeof command === "string") {
     handleAddCommand(command, sendResponse).catch((err) => {
