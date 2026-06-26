@@ -25,6 +25,7 @@
       ".ql-editor[contenteditable='true']"
     ],
     "submitSelectors": [
+      "[data-test-id='send-button-container']",
       "button.send-button",
       "button mat-icon[fonticon='send']"
     ]
@@ -41,8 +42,8 @@
       "div[contenteditable='true'].ProseMirror"
     ],
     "submitSelectors": [
-      "#main-content button._claude_1abo4_159",
-      "#main-content button.can-focus:has(svg[viewBox='0 0 256 256'])"
+      "#main-content button._claude_10ocf_159",
+      "#main-content main button:not([id])"
     ]
   },
   {
