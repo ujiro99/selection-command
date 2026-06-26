@@ -1,5 +1,4 @@
 {
-  "plansDirectory": "./docs",
   "hooks": {
     "PostToolUse": [
       {
