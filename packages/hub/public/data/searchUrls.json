@@ -48,5 +48,6 @@
   "https://search.yahoo.co.jp/realtime/search?p=%s",
   "https://news.ceek.jp/search.cgi?q=%s",
   "https://greasyfork.org/en/scripts?sort=updated&q=%s",
-  "https://ff5ch.syoboi.jp/?q=%s"
+  "https://ff5ch.syoboi.jp/?q=%s",
+  " https://search.brave.com/search?q=%s"
 ]

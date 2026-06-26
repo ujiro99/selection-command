@@ -8,7 +8,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "locale": "ja",
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
@@ -21,7 +23,13 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "percent",
-    "tags": ["Language", "Translation", "翻訳", "Tool", "Japanese"],
+    "tags": [
+      "Language",
+      "Translation",
+      "翻訳",
+      "Tool",
+      "Japanese"
+    ],
     "locale": "ja",
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
@@ -34,7 +42,12 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "percent",
-    "tags": ["Language", "Translation", "Tool", "Japanese"],
+    "tags": [
+      "Language",
+      "Translation",
+      "Tool",
+      "Japanese"
+    ],
     "locale": "ja",
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
@@ -47,7 +60,11 @@
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
     "description": "Lucideでアイコンを探します",
-    "tags": ["Design", "UI", "Font"],
+    "tags": [
+      "Design",
+      "UI",
+      "Font"
+    ],
     "locale": "ja",
     "addedAt": "2024-12-16T02:02:14.795Z"
   },
@@ -59,7 +76,10 @@
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
     "description": "ヤフーオークションの落札相場で検索します",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "id": "997b30fb-47a9-583f-b538-d9ceaf7cdcbe",
     "locale": "ja",
     "addedAt": "2024-12-15T09:50:25.804Z"
@@ -72,7 +92,11 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Manual", "SaaS", "業務用"],
+    "tags": [
+      "Manual",
+      "SaaS",
+      "業務用"
+    ],
     "id": "7ee9c1a5-c18f-56cc-a1a6-1f6d7f67f434",
     "locale": "ja",
     "addedAt": "2024-12-18T03:00:19.785Z"
@@ -86,7 +110,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "locale": "ja",
     "addedAt": "2024-12-23T13:49:39.766Z"
   },
@@ -99,7 +126,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "locale": "ja",
     "addedAt": "2025-11-11T13:25:13.415Z"
   },
@@ -111,7 +141,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "id": "26075d5a-b662-5eed-9590-8b8ab0fe5cb5",
     "locale": "ja",
     "addedAt": "2024-12-23T13:49:39.765Z"
@@ -124,7 +157,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Japanese", "Development"],
+    "tags": [
+      "Japanese",
+      "Development"
+    ],
     "id": "db80c32e-b056-52bc-a0a2-662fd0640648",
     "locale": "ja",
     "addedAt": "2024-12-21T08:06:08.744Z"
@@ -137,7 +173,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Tool"],
+    "tags": [
+      "Tool"
+    ],
     "id": "6a8b33db-8c7d-528e-a9fc-c0fa0ae9d1bc",
     "locale": "ja",
     "addedAt": "2024-12-31T02:49:13.716Z"
@@ -150,7 +188,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop"],
+    "tags": [
+      "Shop"
+    ],
     "id": "f7495054-6f21-512f-a0bb-4cf515207b21",
     "locale": "ja",
     "addedAt": "2025-01-01T08:11:57.087Z"
@@ -163,7 +203,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "id": "0cb9dbbc-c0cf-53c6-93e5-016363705216",
     "locale": "ja",
     "addedAt": "2024-12-10T00:00:00.000Z"
@@ -177,7 +219,10 @@
     "locale": "ja",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Image"],
+    "tags": [
+      "Search",
+      "Image"
+    ],
     "id": "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
     "addedAt": "2024-12-10T00:00:00.000Z"
   },
@@ -189,7 +234,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["News", "Development"],
+    "tags": [
+      "News",
+      "Development"
+    ],
     "id": "a79cb2ea-daf0-565a-ad0e-34748577a533",
     "locale": "en",
     "addedAt": "2025-01-10T09:35:41.778Z"
@@ -202,7 +250,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Development"],
+    "tags": [
+      "Development"
+    ],
     "id": "8e7f849a-2503-5e63-be37-cead3cc3f5c1",
     "locale": "ja",
     "addedAt": "2025-01-10T15:52:10.668Z"
@@ -215,7 +265,12 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "SNS", "Design", "Photo"],
+    "tags": [
+      "Media",
+      "SNS",
+      "Design",
+      "Photo"
+    ],
     "id": "30797fb1-5bc7-585a-ba53-fa5420e417d9",
     "locale": "en",
     "addedAt": "2025-01-10T16:05:29.696Z"
@@ -228,7 +283,10 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "Movie"],
+    "tags": [
+      "Media",
+      "Movie"
+    ],
     "locale": "ja",
     "id": "fb9cb6ad-76e3-5aa8-82a7-ade233edcec0",
     "addedAt": "2025-01-10T16:06:57.611Z"
@@ -241,7 +299,11 @@
     "openMode": "tab",
     "openModeSecondary": "popup",
     "spaceEncoding": "plus",
-    "tags": ["Japanese", "Movie", "Media"],
+    "tags": [
+      "Japanese",
+      "Movie",
+      "Media"
+    ],
     "id": "a5078dcb-1bcb-5fc2-84e6-9305f924c767",
     "locale": "ja",
     "addedAt": "2025-02-01T07:03:50.021Z"
@@ -254,7 +316,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "AI"],
+    "tags": [
+      "Search",
+      "AI"
+    ],
     "id": "008a609d-e0d0-5461-aa34-b44d58e2616b",
     "addedAt": "2025-02-26T12:44:05.718Z",
     "locale": "ja",
@@ -268,7 +333,10 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "Movie"],
+    "tags": [
+      "Media",
+      "Movie"
+    ],
     "id": "2b6fee1e-6500-5421-af79-6fa53ddc25c1",
     "locale": "ja",
     "addedAt": "2025-03-07T03:25:26.841Z"
@@ -281,7 +349,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "id": "e16acf01-7f20-5310-aa82-31bd9c72d367",
     "locale": "ja",
     "addedAt": "2025-03-31T04:56:29.505Z"
@@ -294,7 +365,10 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Map"],
+    "tags": [
+      "Search",
+      "Map"
+    ],
     "id": "41844648-dd4a-5703-976d-3dd6cba14f74",
     "locale": "ja",
     "addedAt": "2025-04-02T09:32:45.217Z"
@@ -307,7 +381,11 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Dictionary", "Japanese"],
+    "tags": [
+      "Search",
+      "Dictionary",
+      "Japanese"
+    ],
     "id": "92d71313-cbc8-5382-9210-abf684cd674c",
     "locale": "ja",
     "addedAt": "2025-04-02T09:33:27.828Z"
@@ -317,7 +395,9 @@
     "description": "Ask Gemini to explain the selected text.",
     "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
     "openMode": "pageAction",
-    "tags": ["AI"],
+    "tags": [
+      "AI"
+    ],
     "locale": "en",
     "pageActionOption": {
       "startUrl": "https://gemini.google.com/app",
@@ -367,7 +447,10 @@
     "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
     "openMode": "pageAction",
     "locale": "ja",
-    "tags": ["AI", "Japanese"],
+    "tags": [
+      "AI",
+      "Japanese"
+    ],
     "pageActionOption": {
       "startUrl": "https://gemini.google.com/app",
       "openMode": "popup",
@@ -416,7 +499,10 @@
     "iconUrl": "https://sakura-checker.jp/images/favicon.ico",
     "locale": "ja",
     "openMode": "pageAction",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "pageActionOption": {
       "startUrl": "https://sakura-checker.jp/",
       "openMode": "popup",
@@ -483,7 +569,10 @@
     "iconUrl": "https://felo.ai/icon.ico",
     "openMode": "pageAction",
     "locale": "ja",
-    "tags": ["AI", "Japanese"],
+    "tags": [
+      "AI",
+      "Japanese"
+    ],
     "pageActionOption": {
       "startUrl": "https://felo.ai/ja/search",
       "openMode": "popup",
@@ -535,7 +624,11 @@
     "iconUrl": "https://cdn.oaistatic.com/assets/favicon-l4nq08hd.svg",
     "openMode": "pageAction",
     "locale": "ja",
-    "tags": ["AI", "Japanese", "Character"],
+    "tags": [
+      "AI",
+      "Japanese",
+      "Character"
+    ],
     "pageActionOption": {
       "openMode": "popup",
       "startUrl": "https://chatgpt.com/",
@@ -634,7 +727,9 @@
     "iconUrl": "https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico",
     "locale": "en",
     "openMode": "pageAction",
-    "tags": ["AI"],
+    "tags": [
+      "AI"
+    ],
     "pageActionOption": {
       "openMode": "popup",
       "startUrl": "https://chatgpt.com/",
@@ -693,7 +788,9 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Tool"],
+    "tags": [
+      "Tool"
+    ],
     "id": "dd05d527-92db-5102-9a88-4a5b31fa7512",
     "addedAt": "2025-04-25T22:32:40.900Z"
   },
@@ -706,7 +803,9 @@
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
     "locale": "ja",
-    "tags": ["Shop"],
+    "tags": [
+      "Shop"
+    ],
     "id": "44244ff5-b50c-5cfe-9809-d5bfe44ec111",
     "addedAt": "2025-05-03T05:21:12.343Z"
   },
@@ -718,7 +817,11 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "Blog", "Japanese"],
+    "tags": [
+      "Media",
+      "Blog",
+      "Japanese"
+    ],
     "id": "fcf3b151-0e23-5759-a84d-f5036907cc2f",
     "locale": "ja",
     "addedAt": "2025-05-03T05:27:24.162Z"
@@ -731,7 +834,11 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["SNS", "Blog", "Japanese"],
+    "tags": [
+      "SNS",
+      "Blog",
+      "Japanese"
+    ],
     "id": "e8ee7862-b709-5e05-9f71-cd8f321e1793",
     "locale": "ja",
     "addedAt": "2025-05-03T05:42:59.448Z"
@@ -744,7 +851,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "id": "a79d3357-91be-5fe5-9f73-cb06c4c4cbc1",
     "locale": "ja",
     "addedAt": "2025-05-03T05:50:10.456Z"
@@ -757,7 +866,11 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["業務用", "Tool", "Work"],
+    "tags": [
+      "業務用",
+      "Tool",
+      "Work"
+    ],
     "id": "9c504254-f529-5b0d-a6c0-ef1eb06720ea",
     "locale": "ja",
     "addedAt": "2025-05-03T09:01:38.228Z"
@@ -767,7 +880,10 @@
     "description": "Notionで選択テキストを検索します。",
     "iconUrl": "https://www.notion.so/images/favicon.ico",
     "openMode": "pageAction",
-    "tags": ["Search", "Tool"],
+    "tags": [
+      "Search",
+      "Tool"
+    ],
     "locale": "ja",
     "pageActionOption": {
       "startUrl": "https://www.notion.com/login",
@@ -824,7 +940,10 @@
     "iconUrl": "https://web-toolbox.dev/favicon.svg",
     "openMode": "pageAction",
     "locale": "ja",
-    "tags": ["Japanese", "Tool"],
+    "tags": [
+      "Japanese",
+      "Tool"
+    ],
     "pageActionOption": {
       "startUrl": "https://web-toolbox.dev/tools/character-counter",
       "openMode": "popup",
@@ -883,7 +1002,11 @@
     "iconUrl": "https://cdn3.iconfinder.com/data/icons/kicon-business/24/invoice-1024.png",
     "openMode": "pageAction",
     "locale": "ja",
-    "tags": ["業務用", "Search", "Japanese"],
+    "tags": [
+      "業務用",
+      "Search",
+      "Japanese"
+    ],
     "pageActionOption": {
       "startUrl": "https://www.houjin-bangou.nta.go.jp/",
       "openMode": "popup",
@@ -951,7 +1074,11 @@
     "iconUrl": "https://pdc-checker.b-risk.jp/favicon.ico",
     "openMode": "pageAction",
     "locale": "ja",
-    "tags": ["Tool", "Japanese", "業務用"],
+    "tags": [
+      "Tool",
+      "Japanese",
+      "業務用"
+    ],
     "pageActionOption": {
       "startUrl": "https://pdc-checker.b-risk.jp/",
       "openMode": "popup",
@@ -1012,7 +1139,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Korean"],
+    "tags": [
+      "Search",
+      "Korean"
+    ],
     "id": "3ec8fe1d-be48-5ab9-8654-a50f7f272480",
     "locale": "ko",
     "addedAt": "2025-05-12T05:17:02.980Z"
@@ -1025,7 +1155,11 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Shop", "Korean"],
+    "tags": [
+      "Search",
+      "Shop",
+      "Korean"
+    ],
     "id": "f08d4bf0-dca8-5606-8dc1-ff7f74400dd9",
     "locale": "ko",
     "addedAt": "2025-05-13T07:22:10.476Z"
@@ -1038,7 +1172,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "id": "4b8e4704-0407-5b1d-aefa-caf7d9db137e",
     "locale": "en",
     "addedAt": "2025-08-18T00:55:42.512Z"
@@ -1051,7 +1187,11 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "Movie", "Review"],
+    "tags": [
+      "Media",
+      "Movie",
+      "Review"
+    ],
     "id": "a9790b5a-994c-5d1c-8318-f403d08e3303",
     "locale": "en",
     "addedAt": "2025-08-18T00:55:19.905Z"
@@ -1064,7 +1204,10 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Media", "Game"],
+    "tags": [
+      "Media",
+      "Game"
+    ],
     "id": "57e42438-c5cc-5ee6-a036-6d228250b1c2",
     "locale": "en",
     "addedAt": "2025-08-18T00:55:07.791Z"
@@ -1078,7 +1221,12 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Library", "Japanese", "Books"],
+    "tags": [
+      "Search",
+      "Library",
+      "Japanese",
+      "Books"
+    ],
     "locale": "ja",
     "addedAt": "2025-08-31T11:22:52.654Z"
   },
@@ -1091,7 +1239,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "locale": "en",
     "addedAt": "2025-09-13T13:56:16.705Z"
   },
@@ -1104,7 +1254,9 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "locale": "en",
     "addedAt": "2025-09-13T13:54:49.206Z"
   },
@@ -1117,7 +1269,10 @@
     "openMode": "tab",
     "openModeSecondary": "backgroundTab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Job"],
+    "tags": [
+      "Search",
+      "Job"
+    ],
     "locale": "en",
     "addedAt": "2025-10-12T11:10:59.936Z"
   },
@@ -1128,7 +1283,11 @@
     "iconUrl": "https://3keigo.com/assets/favicon-Y9oMKmxK.svg",
     "openMode": "pageAction",
     "locale": "ja",
-    "tags": ["Japanese", "Tool", "Conversion"],
+    "tags": [
+      "Japanese",
+      "Tool",
+      "Conversion"
+    ],
     "pageActionOption": {
       "startUrl": "https://3keigo.com/",
       "openMode": "popup",
@@ -1188,7 +1347,10 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Map"],
+    "tags": [
+      "Search",
+      "Map"
+    ],
     "locale": "en",
     "addedAt": "2025-10-29T18:48:33.711Z"
   },
@@ -1201,7 +1363,12 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Media", "Movie", "TV"],
+    "tags": [
+      "Search",
+      "Media",
+      "Movie",
+      "TV"
+    ],
     "locale": "en",
     "addedAt": "2025-11-02T01:16:52.257Z"
   },
@@ -1214,7 +1381,11 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Dictionary", "English"],
+    "tags": [
+      "Search",
+      "Dictionary",
+      "English"
+    ],
     "locale": "en",
     "addedAt": "2025-11-02T01:19:20.536Z"
   },
@@ -1224,7 +1395,13 @@
     "description": "Translate the selected text into English using Gemini.",
     "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
     "openMode": "pageAction",
-    "tags": ["AI", "Language", "Dictionary", "Translation", "English"],
+    "tags": [
+      "AI",
+      "Language",
+      "Dictionary",
+      "Translation",
+      "English"
+    ],
     "locale": "en",
     "pageActionOption": {
       "startUrl": "https://gemini.google.com/app",
@@ -1274,7 +1451,12 @@
     "iconUrl": "https://cdn.oaistatic.com/assets/favicon-miwirzcw.ico",
     "locale": "en",
     "openMode": "pageAction",
-    "tags": ["AI", "Language", "Translation", "English"],
+    "tags": [
+      "AI",
+      "Language",
+      "Translation",
+      "English"
+    ],
     "pageActionOption": {
       "startUrl": "https://chatgpt.com/",
       "openMode": "popup",
@@ -1326,7 +1508,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Shop", "Japanese"],
+    "tags": [
+      "Shop",
+      "Japanese"
+    ],
     "addedAt": "2025-11-14T19:14:39.847Z"
   },
   {
@@ -1336,7 +1521,10 @@
     "iconUrl": "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
     "openMode": "pageAction",
     "locale": "en",
-    "tags": ["AI", "Automation"],
+    "tags": [
+      "AI",
+      "Automation"
+    ],
     "pageActionOption": {
       "startUrl": "https://gemini.google.com/app",
       "openMode": "backgroundTab",
@@ -1394,7 +1582,9 @@
     "iconUrl": "https://copilot.microsoft.com/static/cmc/favicon.svg",
     "openMode": "pageAction",
     "locale": "ja",
-    "tags": ["AI"],
+    "tags": [
+      "AI"
+    ],
     "pageActionOption": {
       "startUrl": "https://copilot.microsoft.com/",
       "openMode": "popup",
@@ -1445,7 +1635,11 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Shop", "Amazon"],
+    "tags": [
+      "Search",
+      "Shop",
+      "Amazon"
+    ],
     "locale": "en",
     "addedAt": "2025-11-24T14:32:59.534Z"
   },
@@ -1458,7 +1652,11 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Desktop", "Search", "Tool"],
+    "tags": [
+      "Desktop",
+      "Search",
+      "Tool"
+    ],
     "locale": "ja",
     "addedAt": "2025-12-05T14:26:05.298Z"
   },
@@ -1469,7 +1667,11 @@
     "iconUrl": "https://cdn.brandfetch.io/idJarLS8mp/w/512/h/464/theme/dark/symbol.png?c=1bxid64Mup7aczewSAYMX&t=1668073271606",
     "openMode": "pageAction",
     "locale": "zh-CN",
-    "tags": ["Search", "Media", "Chinese"],
+    "tags": [
+      "Search",
+      "Media",
+      "Chinese"
+    ],
     "pageActionOption": {
       "startUrl": "https://search.bilibili.com/all",
       "openMode": "tab",
@@ -1529,7 +1731,12 @@
     "openMode": "popup",
     "openModeSecondary": "backgroundTab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "Russia", "Поиск", "Россия"],
+    "tags": [
+      "Search",
+      "Russia",
+      "Поиск",
+      "Россия"
+    ],
     "locale": "ru",
     "addedAt": "2026-02-21T07:37:20.886Z"
   },
@@ -1539,7 +1746,9 @@
     "description": "Asks ChatGPT to assist with highlighted text. Useful for doing research on concepts or products. Works in the first quarter of 2026.",
     "iconUrl": "https://chat.openai.com/favicon.ico",
     "openMode": "pageAction",
-    "tags": ["AI"],
+    "tags": [
+      "AI"
+    ],
     "locale": "en",
     "pageActionOption": {
       "startUrl": "https://chatgpt.com/",
@@ -1626,7 +1835,9 @@
     "openMode": "tab",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Tool"],
+    "tags": [
+      "Tool"
+    ],
     "locale": "ja",
     "addedAt": "2026-03-21T12:54:47.024Z"
   },
@@ -1639,7 +1850,10 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search", "News"],
+    "tags": [
+      "Search",
+      "News"
+    ],
     "locale": "ja",
     "addedAt": "2026-04-12T04:19:57.112Z"
   },
@@ -1652,7 +1866,9 @@
     "openMode": "sidePanel",
     "openModeSecondary": "backgroundTab",
     "spaceEncoding": "percent",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "locale": "en",
     "addedAt": "2026-04-25T18:33:42.549Z"
   },
@@ -1665,8 +1881,25 @@
     "openMode": "popup",
     "openModeSecondary": "tab",
     "spaceEncoding": "plus",
-    "tags": ["Search"],
+    "tags": [
+      "Search"
+    ],
     "locale": "ja",
     "addedAt": "2026-05-11T18:40:36.477Z"
+  },
+  {
+    "id": "ca073f0f-2dd8-5393-80e7-83e22c1a4582",
+    "title": "Brave Search",
+    "searchUrl": " https://search.brave.com/search?q=%s",
+    "description": "Search with Brave Search.",
+    "iconUrl": "https://brave.com/favicon.ico",
+    "openMode": "popup",
+    "openModeSecondary": "tab",
+    "spaceEncoding": "plus",
+    "tags": [
+      "Search"
+    ],
+    "locale": "en",
+    "addedAt": "2026-06-26T01:24:18.328Z"
   }
 ]
