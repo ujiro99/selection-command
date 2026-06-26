@@ -1,9 +1,14 @@
 import { test, expect } from "./fixtures"
 import { OptionsPage } from "./pages/OptionsPage"
 import { NEW_HUB_URL } from "./const"
+import { mockTurnstile } from "./utils/mockTurnstile"
 
 test.describe("Command Hub", () => {
   test.setTimeout(60000)
+
+  test.beforeEach(async ({ context }) => {
+    await mockTurnstile(context)
+  })
 
   /**
    * E2E-90: Verify that a PageAction command can be installed from the Hub.
@@ -159,5 +164,18 @@ test.describe("Command Hub", () => {
       .first()
     await restoredButton.waitFor({ state: "visible", timeout: 5000 })
     expect(restoredButton).toBeVisible()
+  })
+
+  /**
+   * E2E-93:
+   */
+  test("E2E-93: command share", async ({
+    context,
+    extensionId,
+    getCommands,
+    cfAccessCookie: _cfAccessCookie,
+  }) => {
+    const optionsPage = new OptionsPage(context, extensionId, getCommands)
+    await optionsPage.createCommandAndShare()
   })
 })
