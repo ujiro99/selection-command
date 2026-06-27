@@ -354,6 +354,8 @@ export const NEW_HUB_SHAREABLE_OPEN_MODES: ReadonlySet<string> = new Set([
   OPEN_MODE.AI_PROMPT,
 ])
 
+export { HUB_SHARE_EXCLUDED_IDS } from "@/services/hub/excludedIds"
+
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
 export const PAGE_ACTION_TIMEOUT = 5000

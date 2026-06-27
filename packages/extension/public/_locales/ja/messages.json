@@ -798,7 +798,7 @@
     "message": "変数名は文字で始まり、文字、数字、アンダースコアのみを含む必要があります"
   },
   "Option_zod_string_min": {
-    "message": "長さ $key$ 文字以上で入力してください。",
+    "message": "長さ$key$文字以上で入力してください。",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -807,7 +807,7 @@
     }
   },
   "Option_zod_string_max": {
-    "message": "長さ $key$ 文字以下で入力してください。",
+    "message": "長さ$key$文字以下で入力してください。",
     "placeholders": {
       "key": {
         "content": "$1",

@@ -120,13 +120,13 @@ const getDefault = (
 ) => {
   const sourceDefaults = isEmpty(base?.id)
     ? {
-        sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
-        sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
-      }
+      sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
+      sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
+    }
     : {
-        sourceType: base?.sourceType,
-        sourceId: base?.sourceId,
-      }
+      sourceType: base?.sourceType,
+      sourceId: base?.sourceId,
+    }
 
   if (isSearchOpenMode(openMode)) {
     if (isSearchOpenMode(preOpenMode)) {
@@ -568,7 +568,6 @@ const CommandEditDialogInner = ({
                   description={t("title_desc")}
                   inputProps={{
                     type: "string",
-                    ...register("title", {}),
                   }}
                 />
 
@@ -634,7 +633,7 @@ const CommandEditDialogInner = ({
                               compact={!isEmpty(searchUrl)}
                             />
                           )}
-                          <FormMessage />
+                          <FormMessage className="mt-1" />
                         </div>
                       </FormItem>
                     )}
@@ -721,7 +720,7 @@ const CommandEditDialogInner = ({
                                       control={form.control}
                                       name={`variables.${index}.name`}
                                       render={({ field }) => (
-                                        <FormItem className="flex items-center gap-1 w-1/2">
+                                        <FormItem className="space-y-1 w-1/2">
                                           <FormLabel className="text-xs text-right">
                                             {t("variableName")}
                                           </FormLabel>
@@ -736,7 +735,7 @@ const CommandEditDialogInner = ({
                                       control={form.control}
                                       name={`variables.${index}.value`}
                                       render={({ field }) => (
-                                        <FormItem className="flex items-center gap-1 w-1/2">
+                                        <FormItem className="space-y-1 w-1/2">
                                           <FormLabel className="text-xs text-right">
                                             {t("variableValue")}
                                           </FormLabel>
