@@ -17,7 +17,6 @@
     "test:e2e": "playwright test",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
-    "check-ids": "vite-node --config scripts/vite.config.ts scripts/check-command-ids.ts",
     "zip": "npm-build-zip --source=dist --destination=build"
   },
   "dependencies": {
