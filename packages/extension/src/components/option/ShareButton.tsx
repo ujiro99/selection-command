@@ -8,6 +8,7 @@ import {
   NEW_HUB_SHAREABLE_OPEN_MODES,
   COMMAND_SOURCE_TYPE,
   NEW_HUB_URL,
+  HUB_SHARE_EXCLUDED_IDS,
 } from "@/const"
 import { getHubLocale } from "@/services/hubShare"
 import type { SelectionCommand } from "@/types"
@@ -58,6 +59,7 @@ export const ShareButton = ({
   }
 
   if (
+    HUB_SHARE_EXCLUDED_IDS.has(command.id) ||
     !NEW_HUB_SHAREABLE_OPEN_MODES.has(command.openMode) ||
     !VALID_SOURCE_TYPES.has(command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN)
   ) {
