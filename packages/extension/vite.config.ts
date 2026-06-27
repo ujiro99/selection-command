@@ -21,6 +21,8 @@ export default defineConfig(({ mode }) => {
 
   const isProduction = mode === "production"
   const isDevelopment = mode === "development"
+  // EXTENSION_KEY is the public key from the .crx file. Setting it in manifest.json
+  // pins the Chrome extension ID so it stays consistent across installs and updates.
   const extensionKey = !isDevelopment ? env.EXTENSION_KEY : undefined
 
   const activeManifest = isProduction
