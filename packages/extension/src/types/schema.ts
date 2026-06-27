@@ -31,12 +31,12 @@ const searchSchema = z.object({
   openMode: z.enum(SEARCH_OPEN_MODE),
   id: z.string(),
   revision: z.number().optional(),
-  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
+  title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
   iconUrl: z
     .string()
-    .url({ message: t("zod_url") })
-    .max(1000, { message: t("zod_string_max", ["1000"]) }),
-  searchUrl: z.string().url({ message: t("zod_url") }),
+    .url({ message: t("Option_zod_url") })
+    .max(1000, { message: t("Option_zod_string_max", ["1000"]) }),
+  searchUrl: z.string().url({ message: t("Option_zod_url") }),
   parentFolderId: z.string().optional(),
   openModeSecondary: z.enum(SEARCH_OPEN_MODE),
   spaceEncoding: z.nativeEnum(SPACE_ENCODING),
@@ -68,20 +68,22 @@ const apiSchema = z.object({
   openMode: z.literal(OPEN_MODE.API),
   id: z.string(),
   revision: z.number().optional(),
-  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
+  title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
   iconUrl: z
     .string()
-    .url({ message: t("zod_url") })
-    .max(1000, { message: t("zod_string_max", ["1000"]) }),
-  searchUrl: z.string().url({ message: t("zod_url") }),
+    .url({ message: t("Option_zod_url") })
+    .max(1000, { message: t("Option_zod_string_max", ["1000"]) }),
+  searchUrl: z.string().url({ message: t("Option_zod_url") }),
   parentFolderId: z.string().optional(),
   fetchOptions: z.string().optional(),
   ...commandSourceSchema,
   variables: z
     .array(
       z.object({
-        name: z.string({ message: t("zod_string_min", ["1"]) }),
-        value: z.string({ message: t("zod_string_min", ["1"]) }),
+        name: z.string().min(1, { message: t("Option_zod_string_min", ["1"]) }),
+        value: z
+          .string()
+          .min(1, { message: t("Option_zod_string_min", ["1"]) }),
       }),
     )
     .optional(),
@@ -95,12 +97,12 @@ const linkPopupSchema = z.object({
   ...commandSourceSchema,
   title: z
     .string()
-    .min(1, { message: t("zod_string_min", ["1"]) })
+    .min(3, { message: t("Option_zod_string_min", ["3"]) })
     .default("Link Popup"),
   iconUrl: z
     .string()
-    .url({ message: t("zod_url") })
-    .max(1000, { message: t("zod_string_max", ["1000"]) })
+    .url({ message: t("Option_zod_url") })
+    .max(1000, { message: t("Option_zod_string_max", ["1000"]) })
     .default(
       "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
     ),
@@ -118,12 +120,12 @@ const copySchema = z.object({
   ...commandSourceSchema,
   title: z
     .string()
-    .min(1, { message: t("zod_string_min", ["1"]) })
+    .min(3, { message: t("Option_zod_string_min", ["3"]) })
     .default("Copy text"),
   iconUrl: z
     .string()
-    .url({ message: t("zod_url") })
-    .max(1000, { message: t("zod_string_max", ["1000"]) })
+    .url({ message: t("Option_zod_url") })
+    .max(1000, { message: t("Option_zod_string_max", ["1000"]) })
     .default(
       "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-2/256/copy-light-1024.png",
     ),
@@ -138,12 +140,12 @@ const textStyleSchema = z.object({
   ...commandSourceSchema,
   title: z
     .string()
-    .min(1, { message: t("zod_string_min", ["1"]) })
+    .min(3, { message: t("Option_zod_string_min", ["3"]) })
     .default("Get Text Styles"),
   iconUrl: z
     .string()
-    .url({ message: t("zod_url") })
-    .max(1000, { message: t("zod_string_max", ["1000"]) })
+    .url({ message: t("Option_zod_url") })
+    .max(1000, { message: t("Option_zod_string_max", ["1000"]) })
     .default(
       "https://cdn0.iconfinder.com/data/icons/phosphor-light-vol-3/256/paint-brush-light-1024.png",
     ),
@@ -227,7 +229,7 @@ export type PageActionStep = z.infer<typeof PageActionStepSchema>
 
 export const userVariableSchema = z.object({
   name: z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
-    message: t("zod_invalid_variable_name"),
+    message: t("Option_zod_invalid_variable_name"),
   }),
   value: z.string(),
 })
@@ -257,11 +259,11 @@ const pageActionSchema = z.object({
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
+  title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
   iconUrl: z
     .string()
-    .url({ message: t("zod_url") })
-    .max(1000, { message: t("zod_string_max", ["1000"]) }),
+    .url({ message: t("Option_zod_url") })
+    .max(1000, { message: t("Option_zod_string_max", ["1000"]) }),
   popupOption: z
     .object({
       width: z.number().min(1),
@@ -295,11 +297,11 @@ const aiPromptSchema = z.object({
   revision: z.number().optional(),
   parentFolderId: z.string().optional(),
   ...commandSourceSchema,
-  title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
+  title: z.string().min(3, { message: t("Option_zod_string_min", ["3"]) }),
   iconUrl: z
     .string()
-    .url({ message: t("zod_url") })
-    .max(1000, { message: t("zod_string_max", ["1000"]) }),
+    .url({ message: t("Option_zod_url") })
+    .max(1000, { message: t("Option_zod_string_max", ["1000"]) }),
   popupOption: z
     .object({
       width: z.number().min(1),
@@ -335,7 +337,7 @@ export type CommandsSchemaType = { commands: CommandSchemaType[] }
 export const folderSchema = z
   .object({
     id: z.string(),
-    title: z.string().min(1, { message: t("zod_string_min", ["1"]) }),
+    title: z.string().min(1, { message: t("Option_zod_string_min", ["1"]) }),
     iconUrl: z.string().optional(),
     iconSvg: z.string().optional(),
     onlyIcon: z.boolean().optional(),
@@ -344,7 +346,7 @@ export const folderSchema = z
   })
   .refine((data) => !isEmpty(data.iconUrl) || !isEmpty(data.iconSvg), {
     path: ["iconSvg"],
-    message: t("icon_required"),
+    message: t("Option_icon_required"),
   })
 
 type FolderSchemaType = z.infer<typeof folderSchema>

@@ -91,7 +91,7 @@ export const InputField = ({
                 {inputDescription}
               </FormDescription>
             )}
-            <FormMessage />
+            <FormMessage className="mt-1" />
           </div>
         </FormItem>
       )}
