@@ -1,10 +1,12 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Terminal, FolderPlus, Search } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
-import { HUB_URL } from "@/const"
+import { NEW_HUB_URL } from "@/const"
 import { t as _t } from "@/services/i18n"
 import { TEST_IDS } from "@/testIds"
+import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
+import type { HubUser } from "@/types"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 interface Props {
@@ -22,6 +24,21 @@ export const CommandListMenu: React.FC<Props> = ({
   addFolderButtonRef,
   commandCount,
 }) => {
+  const [hubUser, setHubUser] = useState<HubUser | null>(null)
+
+  useEffect(() => {
+    Storage.get<HubUser | null>(LOCAL_STORAGE_KEY.HUB_USER).then(setHubUser)
+    const unsubscribe = Storage.addListener<HubUser | null>(
+      LOCAL_STORAGE_KEY.HUB_USER,
+      (newVal) => setHubUser(newVal),
+    )
+    return unsubscribe
+  }, [])
+
+  const hubButtonLink = hubUser
+    ? `${NEW_HUB_URL}/dashboard/?utm_source=optionPage&utm_medium=button`
+    : `${NEW_HUB_URL}?utm_source=optionPage&utm_medium=button`
+
   return (
     <div className="relative h-10 flex items-end">
       <span className="text-sm bg-gray-100 px-2 py-0.5 rounded font-mono tracking-tight">
@@ -64,7 +81,7 @@ export const CommandListMenu: React.FC<Props> = ({
         asChild
       >
         <a
-          href={`${HUB_URL}?utm_source=optionPage&utm_medium=button`}
+          href={hubButtonLink}
           target="_blank"
           className="font-mono text-gray-600 hover:text-gray-700"
         >
