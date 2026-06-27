@@ -2,10 +2,13 @@ import React from "react"
 import { Button } from "@/components/ui/button"
 import { Terminal, FolderPlus, Search } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
-import { HUB_URL } from "@/const"
+import { NEW_HUB_URL } from "@/const"
 import { t as _t } from "@/services/i18n"
 import { TEST_IDS } from "@/testIds"
+import { useHubUser } from "@/hooks/option/useHubUser"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+
+const UTM = "utm_source=optionPage&utm_medium=button"
 
 interface Props {
   onAddCommand: () => void
@@ -22,6 +25,11 @@ export const CommandListMenu: React.FC<Props> = ({
   addFolderButtonRef,
   commandCount,
 }) => {
+  const hubUser = useHubUser()
+  const hubButtonLink = hubUser
+    ? `${NEW_HUB_URL}/dashboard/?${UTM}`
+    : `${NEW_HUB_URL}?${UTM}`
+
   return (
     <div className="relative h-10 flex items-end">
       <span className="text-sm bg-gray-100 px-2 py-0.5 rounded font-mono tracking-tight">
@@ -64,7 +72,7 @@ export const CommandListMenu: React.FC<Props> = ({
         asChild
       >
         <a
-          href={`${HUB_URL}?utm_source=optionPage&utm_medium=button`}
+          href={hubButtonLink}
           target="_blank"
           className="font-mono text-gray-600 hover:text-gray-700"
         >
