@@ -2,7 +2,7 @@ import {
   isDebug,
   OPTION_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
-  HUB_URL,
+  NEW_HUB_URL,
   SCREEN,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
@@ -434,7 +434,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       details.reason === chrome.runtime.OnInstalledReason.UPDATE
     ) {
       // Set uninstall survey URL
-      chrome.runtime.setUninstallURL(`${HUB_URL}/uninstall`)
+      chrome.runtime.setUninstallURL(`${NEW_HUB_URL}/uninstall`)
     }
 
     // Check for daily backup on startup
