@@ -1,14 +1,9 @@
 import { test, expect } from "./fixtures"
 import { OptionsPage } from "./pages/OptionsPage"
 import { NEW_HUB_URL } from "./const"
-import { mockTurnstile } from "./utils/mockTurnstile"
 
 test.describe("Command Hub", () => {
   test.setTimeout(60000)
-
-  test.beforeEach(async ({ context }) => {
-    await mockTurnstile(context)
-  })
 
   /**
    * E2E-90: Verify that a PageAction command can be installed from the Hub.
