@@ -13,7 +13,6 @@ import { HubBanner } from "@/components/option/HubBanner"
 import { HubUserInfo } from "@/components/option/HubUserInfo"
 import { SettingForm } from "@/components/option/SettingForm"
 import StorageUsage from "@/components/option/StorageUsage"
-import { PromptHistoryBanner } from "@/components/option/PromptHistoryBanner"
 
 import css from "./Option.module.css"
 
@@ -97,7 +96,6 @@ export function Option() {
           </div>
         </aside>
       </div>
-      <PromptHistoryBanner />
     </div>
   )
 }
