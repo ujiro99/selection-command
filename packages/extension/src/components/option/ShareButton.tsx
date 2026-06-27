@@ -11,6 +11,7 @@ import {
 } from "@/const"
 import { getHubLocale } from "@/services/hubShare"
 import type { SelectionCommand } from "@/types"
+import { TEST_IDS } from "@/testIds"
 
 const VALID_SOURCE_TYPES = new Set([
   COMMAND_SOURCE_TYPE.SELF_CREATED,
@@ -74,6 +75,9 @@ export const ShareButton = ({
         )}
         onClick={handleClick}
         ref={buttonRef}
+        data-testid={
+          isShared ? TEST_IDS.sharedCommandButton : TEST_IDS.shareCommandButton
+        }
       >
         {!isShared ? (
           <Share

@@ -17,12 +17,18 @@ const shouldUploadSourcemaps = process.env.UPLOAD_SOURCEMAP_TO_SENTRY === "true"
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const isWatchMode = process.argv.includes("--watch")
-  loadEnv(mode, process.cwd(), "")
+  const env = loadEnv(mode, process.cwd(), "")
 
   const isProduction = mode === "production"
+  const isDevelopment = mode === "development"
+  // EXTENSION_KEY is the public key from the .crx file. Setting it in manifest.json
+  // pins the Chrome extension ID so it stays consistent across installs and updates.
+  const extensionKey = !isDevelopment ? env.EXTENSION_KEY : undefined
+
   const activeManifest = isProduction
     ? {
         ...manifest,
+        ...(extensionKey ? { key: extensionKey } : {}),
         content_scripts: manifest.content_scripts.map((cs) => ({
           ...cs,
           matches: cs.matches.filter((m) => !m.includes("localhost")),
@@ -34,7 +40,10 @@ export default defineConfig(({ mode }) => {
           ),
         },
       }
-    : manifest
+    : {
+        ...manifest,
+        ...(extensionKey ? { key: extensionKey } : {}),
+      }
 
   const plugins = [
     react(),

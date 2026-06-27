@@ -245,4 +245,32 @@ export class OptionsPage {
     await reloadPromise
     await this.page.waitForTimeout(100)
   }
+
+  async createCommandAndShare(): Promise<void> {
+    if (!this.page) {
+      await this.open()
+      if (!this.page) {
+        throw new Error("Failed to open options page")
+      }
+    }
+
+    await this.page
+      .locator(`[data-testid="${TEST_IDS.addCommandButton}"]`)
+      .click()
+
+    await this.page
+      .locator(`[data-testid="${TEST_IDS.commandType("aiPrompt")}"]`)
+      .click()
+
+    await this.page.locator('[name="title"]').fill("Test Command")
+
+    await this.page
+      .locator(`[data-testid="${TEST_IDS.submitCommandButton}"]`)
+      .click()
+
+    await this.page
+      .locator(`[data-testid="${TEST_IDS.shareCommandButton}"]`)
+      .last()
+      .click()
+  }
 }

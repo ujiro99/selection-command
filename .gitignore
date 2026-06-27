@@ -23,6 +23,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env.e2e
 .git
 tsconfig.tsbuildinfo
 
@@ -50,3 +51,5 @@ yarn-error.log*
 # vite
 .vite
 packages/extension/.env.development
+
+.claude/settings.local.json

@@ -7,11 +7,13 @@ import {
 import path from "path"
 import { fileURLToPath } from "url"
 import { attachSWConsole } from "./utils/logConsole"
+import { fetchCfAuthToken } from "./utils/cfAuth"
 import {
   STORAGE_KEY,
   LOCAL_STORAGE_KEY,
   CMD_PREFIX,
 } from "@/services/storage/const"
+import { NEW_HUB_URL } from "./const"
 
 import type { UserSettings, Command } from "@/types"
 import type { CommandMetadata } from "@/types/command"
@@ -32,6 +34,7 @@ type Fixtures = {
   setUserSettings: (newSettings: Partial<UserSettings>) => Promise<UserSettings>
   getCommands: () => Promise<UserSettings["commands"]>
   isAllWindowsNormal: () => Promise<boolean>
+  cfAccessCookie: string | null
 }
 
 /**
@@ -55,12 +58,21 @@ export const test = base.extend<Fixtures>({
       ],
     })
 
+    // Register the serviceworker listener BEFORE waiting for the SW so that
+    // the very first startup logs (e.g. initHubExternalListener) are captured.
+    // Without this, the SW may already be running when we call serviceWorkers()
+    // and its early logs are lost before attachSWConsole is called.
+    context.on("serviceworker", (worker) => attachSWConsole(worker))
+
     // Wait for the service worker to be ready before proceeding, so tests can interact with it immediately.
     let [sw] = context.serviceWorkers()
     if (!sw) {
       sw = await context.waitForEvent("serviceworker")
+      // attachSWConsole already called by the context.on listener above
+    } else {
+      // SW was already running when the listener was registered; attach manually
+      attachSWConsole(sw)
     }
-    attachSWConsole(sw)
 
     await use(context)
     await context.close()
@@ -206,6 +218,33 @@ export const test = base.extend<Fixtures>({
       })
       return result
     })
+  },
+
+  cfAccessCookie: async ({ context }, use) => {
+    const clientId = process.env.CF_ACCESS_CLIENT_ID
+    const clientSecret = process.env.CF_ACCESS_CLIENT_SECRET
+
+    let token: string | null = null
+
+    if (clientId && clientSecret) {
+      token = await fetchCfAuthToken(NEW_HUB_URL, clientId, clientSecret)
+      if (token) {
+        const { hostname } = new URL(NEW_HUB_URL)
+        await context.addCookies([
+          {
+            name: "CF_Authorization",
+            value: token,
+            domain: hostname,
+            path: "/",
+            secure: true,
+            httpOnly: true,
+            sameSite: "None",
+          },
+        ])
+      }
+    }
+
+    await use(token)
   },
 })
 

@@ -287,6 +287,12 @@ export async function handleAddCommand(
     const isSearch = isSearchCommand(parsed)
     const isPageAction = isPageActionCommand(parsed)
     const isAiPrompt = isAiPromptCommand(parsed)
+    console.debug("[handleAddCommand] Parsed:", {
+      isSearch,
+      isPageAction,
+      isAiPrompt,
+      id: parsed?.id,
+    })
 
     const sourceType = (parsed as { sourceType?: unknown }).sourceType
     const sourceId = (parsed as { sourceId?: unknown }).sourceId
@@ -302,36 +308,36 @@ export async function handleAddCommand(
 
     const cmd = isSearch
       ? {
+        id: parsed.id,
+        title: parsed.title,
+        searchUrl: parsed.searchUrl,
+        iconUrl: parsed.iconUrl,
+        ...sourceInfo,
+        openMode: parsed.openMode,
+        openModeSecondary: parsed.openModeSecondary,
+        spaceEncoding: parsed.spaceEncoding,
+        popupOption: PopupOption,
+      }
+      : isAiPrompt
+        ? {
           id: parsed.id,
           title: parsed.title,
-          searchUrl: parsed.searchUrl,
           iconUrl: parsed.iconUrl,
           ...sourceInfo,
           openMode: parsed.openMode,
-          openModeSecondary: parsed.openModeSecondary,
-          spaceEncoding: parsed.spaceEncoding,
+          aiPromptOption: parsed.aiPromptOption,
           popupOption: PopupOption,
         }
-      : isAiPrompt
-        ? {
+        : isPageAction
+          ? {
             id: parsed.id,
             title: parsed.title,
             iconUrl: parsed.iconUrl,
             ...sourceInfo,
             openMode: parsed.openMode,
-            aiPromptOption: parsed.aiPromptOption,
+            pageActionOption: parsed.pageActionOption,
             popupOption: PopupOption,
           }
-        : isPageAction
-          ? {
-              id: parsed.id,
-              title: parsed.title,
-              iconUrl: parsed.iconUrl,
-              ...sourceInfo,
-              openMode: parsed.openMode,
-              pageActionOption: parsed.pageActionOption,
-              popupOption: PopupOption,
-            }
           : null
 
     if (!cmd) {
@@ -341,6 +347,7 @@ export async function handleAddCommand(
     }
 
     await Settings.addCommands([cmd])
+    console.debug("[handleAddCommand] Saved command id:", cmd.id)
     await sendEvent(
       ANALYTICS_EVENTS.COMMAND_ADD,
       {
@@ -409,7 +416,7 @@ export function handleEditCommand(
     ackTimeout: undefined,
     ackListener: undefined,
     pendingResponse: undefined,
-    cancelConnectWait: () => {},
+    cancelConnectWait: () => { },
   }
   _editSession = newSession
 
@@ -539,10 +546,27 @@ function onMessageExternal(
   sender: chrome.runtime.MessageSender,
   sendResponse: (response?: unknown) => void,
 ): boolean {
-  if (!sender.origin || sender.origin !== hubOrigin) return false
-
   const { action, command, id } = message ?? {}
   console.debug("[onMessageExternal] Received message:", message)
+  if (!sender.origin || sender.origin !== hubOrigin) {
+    console.warn(
+      `[onMessageExternal] Origin mismatch — received: "${sender.origin}", expected: "${hubOrigin}"`,
+    )
+    return false
+  }
+  console.debug("[onMessageExternal] Origin OK, action:", action)
+
+  if (action === "Ping") {
+    sendResponse({ result: true })
+    return false
+  }
+
+  if (action === "OpenOptionsPage") {
+    chrome.runtime.openOptionsPage().finally(() => {
+      sendResponse({ result: true })
+    })
+    return true
+  }
 
   if (action === "AddCommand" && typeof command === "string") {
     handleAddCommand(command, sendResponse).catch((err) => {
@@ -596,6 +620,10 @@ function onMessageExternal(
 }
 
 export function initHubExternalListener(): void {
+  console.debug(
+    "[initHubExternalListener] Registering onMessageExternal listener, hubOrigin:",
+    hubOrigin,
+  )
   chrome.runtime.onMessageExternal.addListener(onMessageExternal)
 }
 

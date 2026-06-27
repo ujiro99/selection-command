@@ -258,6 +258,8 @@ test.describe("PageAction Commands", () => {
 
     await page.goto("https://www.amazon.com/")
     await page.waitForLoadState("domcontentloaded")
+    await page.locator(".a-button-text").first().click()
+    await page.waitForLoadState("domcontentloaded")
     await page.locator(".a-list-item .a-link-normal").first().click()
     await page.waitForLoadState("domcontentloaded")
 

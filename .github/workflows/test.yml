@@ -40,6 +40,8 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-jammy
 
     steps:
       - name: Checkout code
@@ -56,26 +58,17 @@ jobs:
 
       - name: Build extension
         run: yarn build:e2e
-
-      - name: Cache Playwright browsers
-        id: playwright-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-chromium-${{ hashFiles('**/package.json', 'yarn.lock') }}-v1
-          restore-keys: |
-            playwright-chromium-
-
-      - name: Install Playwright browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium --with-deps
-
-      - name: Install Playwright system dependencies
-        if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        env:
+          VITE_NEW_HUB_URL: ${{ secrets.VITE_NEW_HUB_URL }}
+          EXTENSION_KEY: ${{ secrets.EXTENSION_KEY }}
 
       - name: Run E2E tests
         run: yarn test:e2e
+        env:
+          VITE_NEW_HUB_URL: ${{ secrets.VITE_NEW_HUB_URL }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+          PWDEBUG: ${{ secrets.PWDEBUG }}
 
       - name: Upload E2E test results
         if: failure()
