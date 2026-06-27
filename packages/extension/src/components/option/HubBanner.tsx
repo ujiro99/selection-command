@@ -1,25 +1,14 @@
-import { useState, useEffect } from "react"
 import css from "./Option.module.css"
 import css2 from "./HubBanner.module.css"
 import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
 import { NEW_HUB_URL } from "@/const"
-import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
-import type { HubUser } from "@/types"
+import { useHubUser } from "@/hooks/option/useHubUser"
 
 const UTM = "utm_source=optionPage&utm_medium=banner"
 
 export function HubBanner() {
-  const [hubUser, setHubUser] = useState<HubUser | null>(null)
-
-  useEffect(() => {
-    Storage.get<HubUser | null>(LOCAL_STORAGE_KEY.HUB_USER).then(setHubUser)
-    const unsubscribe = Storage.addListener<HubUser | null>(
-      LOCAL_STORAGE_KEY.HUB_USER,
-      (newVal) => setHubUser(newVal),
-    )
-    return unsubscribe
-  }, [])
+  const hubUser = useHubUser()
 
   const hubBannerLink = hubUser
     ? `${NEW_HUB_URL}/dashboard/?${UTM}`

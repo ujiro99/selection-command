@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { Button } from "@/components/ui/button"
 import { Terminal, FolderPlus, Search } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { NEW_HUB_URL } from "@/const"
 import { t as _t } from "@/services/i18n"
 import { TEST_IDS } from "@/testIds"
-import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
-import type { HubUser } from "@/types"
+import { useHubUser } from "@/hooks/option/useHubUser"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
+
+const UTM = "utm_source=optionPage&utm_medium=button"
 
 interface Props {
   onAddCommand: () => void
@@ -24,20 +25,10 @@ export const CommandListMenu: React.FC<Props> = ({
   addFolderButtonRef,
   commandCount,
 }) => {
-  const [hubUser, setHubUser] = useState<HubUser | null>(null)
-
-  useEffect(() => {
-    Storage.get<HubUser | null>(LOCAL_STORAGE_KEY.HUB_USER).then(setHubUser)
-    const unsubscribe = Storage.addListener<HubUser | null>(
-      LOCAL_STORAGE_KEY.HUB_USER,
-      (newVal) => setHubUser(newVal),
-    )
-    return unsubscribe
-  }, [])
-
+  const hubUser = useHubUser()
   const hubButtonLink = hubUser
-    ? `${NEW_HUB_URL}/dashboard/?utm_source=optionPage&utm_medium=button`
-    : `${NEW_HUB_URL}?utm_source=optionPage&utm_medium=button`
+    ? `${NEW_HUB_URL}/dashboard/?${UTM}`
+    : `${NEW_HUB_URL}?${UTM}`
 
   return (
     <div className="relative h-10 flex items-end">

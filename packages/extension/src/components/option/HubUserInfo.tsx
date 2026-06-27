@@ -1,24 +1,12 @@
-import { useState, useEffect } from "react"
 import { LogIn } from "lucide-react"
 import { t } from "@/services/i18n"
 import { NEW_HUB_URL } from "@/const"
-import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
-import type { HubUser } from "@/types"
+import { useHubUser } from "@/hooks/option/useHubUser"
 
 const HUB_LOGIN_LINK = `${NEW_HUB_URL}/auth/login?utm_source=extension&utm_medium=optionPage`
 
 export function HubUserInfo() {
-  const [hubUser, setHubUser] = useState<HubUser | null>(null)
-
-  useEffect(() => {
-    Storage.get<HubUser | null>(LOCAL_STORAGE_KEY.HUB_USER).then(setHubUser)
-
-    const unsubscribe = Storage.addListener<HubUser | null>(
-      LOCAL_STORAGE_KEY.HUB_USER,
-      (newVal) => setHubUser(newVal),
-    )
-    return unsubscribe
-  }, [])
+  const hubUser = useHubUser()
 
   if (hubUser) {
     return (
