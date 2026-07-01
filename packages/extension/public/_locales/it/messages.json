@@ -837,8 +837,17 @@
     "message": "Verrà inserito il codice lingua del tuo browser",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Verrà allegato come file l'HTML completo della pagina"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Verrà allegato come file l'HTML dell'intervallo selezionato"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserisci testo"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Allega HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Testo selezionato"
@@ -851,6 +860,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Lingua del browser"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Pagina corrente"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Selezione"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifica contenuto"
@@ -1085,6 +1100,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Non disponibile quando il prompt include un<wbr>allegato HTML (Pagina corrente / Selezione)."
   },
   "Option_openMode_currentTab": {
     "message": "Scheda corrente"

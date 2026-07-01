@@ -834,8 +834,17 @@
     "message": "ブラウザ言語コードが挿入されます",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "ページ全体のHTMLを添付します"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "選択範囲のHTMLを添付します"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "テキスト挿入"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "HTML添付"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "選択テキスト"
@@ -848,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "ブラウザ言語コード"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "表示中のページ"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "選択範囲"
   },
   "PageAction_InputEditor_title": {
     "message": "Inputアクションの編集"
@@ -1082,6 +1097,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "プロンプトにHTML添付(表示中のページ/選択範囲)<wbr>が含まれる場合は選択できません。"
   },
   "Option_openMode_currentTab": {
     "message": "現在のタブ"

@@ -837,8 +837,17 @@
     "message": "Se insertará el código de idioma de su navegador",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Se adjuntará el HTML completo de la página como archivo"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Se adjuntará el HTML del rango seleccionado como archivo"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insertar Texto"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Adjuntar HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texto seleccionado"
@@ -851,6 +860,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Idioma del navegador"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Página actual"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Selección"
   },
   "PageAction_InputEditor_title": {
     "message": "Editar el contenido"
@@ -1085,6 +1100,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir pestaña en segundo plano.<wbr>Mostrar a la derecha de la pestaña actual."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "No disponible cuando el prompt incluye un<wbr>HTML adjunto (Página actual / Selección)."
   },
   "Option_openMode_currentTab": {
     "message": "Pestaña actual"

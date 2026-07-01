@@ -4,6 +4,7 @@ import { Ipc, BgCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
 import { Storage } from "@/services/storage"
 import { OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
+import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import type { AiService } from "@/types"
 
 vi.mock("@/services/ipc", () => ({
@@ -110,7 +111,13 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello world",
-        command: { ...baseCommand, aiPromptOption: { ...baseCommand.aiPromptOption, serviceId: "gemini" } } as any,
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+          },
+        } as any,
         position: { x: 100, y: 100 },
       })
 
@@ -118,8 +125,45 @@ describe("AiPrompt.execute", () => {
         BgCommand.openAndRunPageAction,
         expect.objectContaining({
           steps: expect.arrayContaining([
-            expect.objectContaining({ param: expect.objectContaining({ type: PAGE_ACTION_EVENT.input }) }),
-            expect.objectContaining({ param: expect.objectContaining({ type: PAGE_ACTION_EVENT.click }) }),
+            expect.objectContaining({
+              param: expect.objectContaining({ type: PAGE_ACTION_EVENT.input }),
+            }),
+            expect.objectContaining({
+              param: expect.objectContaining({ type: PAGE_ACTION_EVENT.click }),
+            }),
+          ]),
+        }),
+      )
+    })
+
+    it("AP-01b: should strip every occurrence of a repeated HTML placeholder from the input value", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeDomService())
+
+      await AiPrompt.execute({
+        selectionText: "hello world",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+            prompt: `${toInsertTemplate(INSERT.PAGE_HTML)} and again ${toInsertTemplate(INSERT.PAGE_HTML)}`,
+          },
+        } as any,
+        position: { x: 100, y: 100 },
+      })
+
+      expect(Ipc.send).toHaveBeenCalledWith(
+        BgCommand.openAndRunPageAction,
+        expect.objectContaining({
+          steps: expect.arrayContaining([
+            expect.objectContaining({
+              param: expect.objectContaining({
+                type: PAGE_ACTION_EVENT.input,
+                value: expect.not.stringContaining(
+                  toInsertTemplate(INSERT.PAGE_HTML),
+                ),
+              }),
+            }),
           ]),
         }),
       )
@@ -130,14 +174,22 @@ describe("AiPrompt.execute", () => {
 
       await AiPrompt.execute({
         selectionText: "hello",
-        command: { ...baseCommand, aiPromptOption: { ...baseCommand.aiPromptOption, serviceId: "gemini" } } as any,
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+          },
+        } as any,
         position: { x: 0, y: 0 },
       })
 
       expect(Ipc.send).toHaveBeenCalledWith(
         BgCommand.openAndRunPageAction,
         expect.objectContaining({
-          url: expect.objectContaining({ searchUrl: "https://gemini.google.com/app" }),
+          url: expect.objectContaining({
+            searchUrl: "https://gemini.google.com/app",
+          }),
         }),
       )
     })
@@ -179,7 +231,10 @@ describe("AiPrompt.execute", () => {
         selectionText: "hello",
         command: {
           ...baseCommand,
-          aiPromptOption: { ...baseCommand.aiPromptOption, serviceId: "perplexity" },
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "perplexity",
+          },
         } as any,
         position: { x: 0, y: 0 },
       })
@@ -347,7 +402,9 @@ describe("AiPrompt.execute", () => {
       })
 
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
-      expect(sentArgs.url.selectionText).toBe("Summarize: https://example.com/page")
+      expect(sentArgs.url.selectionText).toBe(
+        "Summarize: https://example.com/page",
+      )
     })
   })
 

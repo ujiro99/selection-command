@@ -837,8 +837,17 @@
     "message": "O código de idioma do seu navegador será inserido",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "O HTML completo da página será anexado como ficheiro"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "O HTML do intervalo selecionado será anexado como ficheiro"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserir Texto"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Anexar HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texto selecionado"
@@ -851,6 +860,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Idioma do navegador"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Página atual"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Seleção"
   },
   "PageAction_InputEditor_title": {
     "message": "Editar o conteúdo"
@@ -1088,6 +1103,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir separador em segundo plano.<wbr>Mostrar à direita do separador atual."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Não disponível quando o prompt inclui<wbr>um anexo HTML (Página atual / Seleção)."
   },
   "Option_openMode_currentTab": {
     "message": "Separador atual"

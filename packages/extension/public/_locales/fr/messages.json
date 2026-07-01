@@ -837,8 +837,17 @@
     "message": "Le code de langue de votre navigateur sera inséré",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Le HTML complet de la page sera joint en fichier"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Le HTML de la plage sélectionnée sera joint en fichier"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insérer du Texte"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Joindre HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texte sélectionné"
@@ -851,6 +860,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Langue du navigateur"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Page actuelle"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Sélection"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifier le contenu"
@@ -1085,6 +1100,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Ouvrir l'onglet en arrière-plan.<wbr>Afficher à droite de l'onglet actuel."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Non disponible lorsque l'invite contient<wbr>un HTML joint (Page actuelle / Sélection)."
   },
   "Option_openMode_currentTab": {
     "message": "Onglet actuel"

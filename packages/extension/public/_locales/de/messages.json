@@ -837,8 +837,17 @@
     "message": "Ihr Browser-Sprachcode wird eingefügt",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Das vollständige HTML der Seite wird als Datei angehängt"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Das HTML des ausgewählten Bereichs wird als Datei angehängt"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Text einfügen"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "HTML anhängen"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Ausgewählter Text"
@@ -851,6 +860,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Browsersprache"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Aktuelle Seite"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Auswahl"
   },
   "PageAction_InputEditor_title": {
     "message": "Inhalt bearbeiten"
@@ -1085,6 +1100,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Nicht verfügbar, wenn der Prompt einen<wbr>HTML-Anhang enthält (Aktuelle Seite / Auswahl)."
   },
   "Option_openMode_currentTab": {
     "message": "Aktueller Tab"

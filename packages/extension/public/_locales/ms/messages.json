@@ -837,8 +837,17 @@
     "message": "Kod bahasa pelayar anda akan disisipkan",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "HTML penuh halaman akan dilampirkan sebagai fail"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "HTML julat yang dipilih akan dilampirkan sebagai fail"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Lampirkan HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Teks yang dipilih"
@@ -851,6 +860,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Bahasa pelayar"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Halaman semasa"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Pilihan"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit kandungan"
@@ -1088,6 +1103,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Paparkan di sebelah kanan tab semasa."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Tidak tersedia apabila gesaan mengandungi<wbr>lampiran HTML (Halaman semasa / Pilihan)."
   },
   "Option_openMode_currentTab": {
     "message": "Tab Semasa"

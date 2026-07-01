@@ -1,10 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import {
-  getElementByXPath,
-  isValidXPath,
-  isEditable,
-  inputContentEditable,
-} from "@/services/dom"
+import { isEditable, inputContentEditable } from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import {
@@ -15,6 +10,7 @@ import {
 } from "@/const"
 import type { UserVariable } from "@/types"
 import { getUILanguage } from "@/services/i18n"
+import { queryElement } from "./queryElement"
 
 export namespace PageAction {
   export type Parameter =
@@ -23,12 +19,14 @@ export namespace PageAction {
     | Navigate
     | Click
     | Input
+    | FilePaste
     | Keyboard
     | Scroll
 
   export type Start = {
     type: PAGE_ACTION_CONTROL.start
     label: string
+    url?: string
     mode?: "pageAction" | "aiPrompt"
   }
 
@@ -45,12 +43,13 @@ export namespace PageAction {
 
   export type Click = {
     type:
-    | PAGE_ACTION_EVENT.click
-    | PAGE_ACTION_EVENT.doubleClick
-    | PAGE_ACTION_EVENT.tripleClick
+      | PAGE_ACTION_EVENT.click
+      | PAGE_ACTION_EVENT.doubleClick
+      | PAGE_ACTION_EVENT.tripleClick
     label: string
     selector: string
     selectorType: SelectorType
+    waitForClickable?: boolean
   }
 
   export type Input = {
@@ -66,6 +65,8 @@ export namespace PageAction {
     selectedText: string
     clipboardText: string
     userVariables?: UserVariable[]
+    pageHtml?: string
+    selectionHtml?: string
   }
 
   export type Keyboard = {
@@ -82,6 +83,21 @@ export namespace PageAction {
     selectorType: SelectorType
   }
 
+  export type FilePaste = {
+    type: PAGE_ACTION_EVENT.filePaste
+    label: string
+    selector: string
+    selectorType: SelectorType
+    value: string
+    fileName: string
+    fileType: string
+  }
+
+  export type FilePasteExec = FilePaste & {
+    pageHtml?: string
+    selectionHtml?: string
+  }
+
   export type Scroll = {
     type: PAGE_ACTION_EVENT.scroll
     label: string
@@ -90,47 +106,99 @@ export namespace PageAction {
   }
 }
 
-/**
- * Wait for an element to appear in the DOM.
- * @param selector - CSS selector or XPath
- * @param timeout - Maximum waiting time (milliseconds)
- * @returns Promise<HTMLElement | null> - Found element (null if not found)
- */
 async function waitForElement(
   selector: string,
   selectorType: SelectorType,
   timeout: number = TIMEOUT,
 ): Promise<HTMLElement | null> {
   const startTime = Date.now()
-
   return new Promise((resolve, reject) => {
     const interval = setInterval(() => {
       requestAnimationFrame(() => {
-        const elapsedTime = Date.now() - startTime
-        // Check if the timeout has been exceeded
-        if (elapsedTime > timeout) {
+        if (Date.now() - startTime > timeout) {
           clearInterval(interval)
           resolve(null)
           return
         }
-
-        // Find the element
-        let element: HTMLElement | null = null
-        if (selectorType === SelectorType.xpath) {
-          if (!isValidXPath(selector)) {
-            reject(`Invalid XPath: ${selector}`)
+        try {
+          const element = queryElement(selector, selectorType)
+          if (element) {
+            clearInterval(interval)
+            resolve(element)
           }
-          element = getElementByXPath(selector)
-        } else {
-          element = document.querySelector(selector)
-        }
-
-        // Found!
-        if (element) {
+        } catch (e) {
           clearInterval(interval)
-          resolve(element)
+          reject(String(e))
         }
-        // console.log('Waiting:', selector, selectorType)
+      })
+    }, 50)
+  })
+}
+
+function checkClickable(element: HTMLElement): string[] {
+  const reasons: string[] = []
+  if ("disabled" in element && (element as HTMLButtonElement).disabled)
+    reasons.push("disabled")
+  if (element.getAttribute("aria-disabled") === "true")
+    reasons.push("aria-disabled")
+  const visible =
+    typeof element.checkVisibility === "function"
+      ? element.checkVisibility({
+          opacityProperty: true,
+          visibilityProperty: true,
+        })
+      : (() => {
+          const cs = getComputedStyle(element)
+          return (
+            cs.display !== "none" &&
+            cs.visibility !== "hidden" &&
+            cs.opacity !== "0"
+          )
+        })()
+  if (!visible) reasons.push("not-visible")
+  const rect = element.getBoundingClientRect()
+  if (rect.width <= 0 || rect.height <= 0) reasons.push("zero-size")
+  if (getComputedStyle(element).pointerEvents === "none")
+    reasons.push("pointer-events-none")
+  return reasons
+}
+
+async function waitForClickable(
+  selector: string,
+  selectorType: SelectorType,
+  timeout: number = TIMEOUT,
+): Promise<HTMLElement | null> {
+  const startTime = Date.now()
+  return new Promise((resolve, reject) => {
+    let lastElement: HTMLElement | null = null
+    const interval = setInterval(() => {
+      requestAnimationFrame(() => {
+        if (Date.now() - startTime > timeout) {
+          clearInterval(interval)
+          const reasons = lastElement
+            ? checkClickable(lastElement)
+            : ["element-not-found"]
+          console.warn(
+            `waitForClickable timed out. Failing conditions: [${reasons.join(", ") || "unknown"}]`,
+            lastElement,
+          )
+          resolve(null)
+          return
+        }
+        try {
+          const element = queryElement(selector, selectorType)
+          if (element) lastElement = element
+          if (!element) return
+          const reasons = checkClickable(element)
+          if (reasons.length === 0) {
+            clearInterval(interval)
+            console.debug("Element is clickable:", element)
+            resolve(element)
+          }
+        } catch (e) {
+          clearInterval(interval)
+          reject(String(e))
+        }
       })
     }, 50)
   })
@@ -148,14 +216,15 @@ export const PageActionDispatcher = {
     const { selector, selectorType } = param
     const user = userEvent.setup()
 
-    const element = await waitForElement(selector, selectorType)
-    if (element) {
-      await user.click(element)
-    } else {
-      console.warn(`Element not found for: ${selector}`)
+    const element = param.waitForClickable
+      ? await waitForClickable(selector, selectorType, TIMEOUT * 2) // Allow more time for click
+      : await waitForElement(selector, selectorType)
+    if (!element) {
+      console.warn(`Element not found or not clickable for: ${selector}`)
       return [false, `Element not found: ${param.label}`]
     }
 
+    await user.click(element)
     return [true]
   },
 
@@ -163,14 +232,15 @@ export const PageActionDispatcher = {
     const { selector, selectorType } = param
     const user = userEvent.setup()
 
-    const element = await waitForElement(selector, selectorType)
-    if (element) {
-      await user.dblClick(element)
-    } else {
-      console.warn(`Element not found for: ${selector}`)
+    const element = param.waitForClickable
+      ? await waitForClickable(selector, selectorType, TIMEOUT * 2)
+      : await waitForElement(selector, selectorType)
+    if (!element) {
+      console.warn(`Element not found or not clickable for: ${selector}`)
       return [false, `Element not found: ${param.label}`]
     }
 
+    await user.dblClick(element)
     return [true]
   },
 
@@ -178,14 +248,15 @@ export const PageActionDispatcher = {
     const { selector, selectorType } = param
     const user = userEvent.setup()
 
-    const element = await waitForElement(selector, selectorType)
-    if (element) {
-      await user.tripleClick(element)
-    } else {
-      console.warn(`Element not found for: ${selector}`)
+    const element = param.waitForClickable
+      ? await waitForClickable(selector, selectorType, TIMEOUT * 2)
+      : await waitForElement(selector, selectorType)
+    if (!element) {
+      console.warn(`Element not found or not clickable for: ${selector}`)
       return [false, `Element not found: ${param.label}`]
     }
 
+    await user.tripleClick(element)
     return [true]
   },
 
@@ -272,14 +343,14 @@ export const PageActionDispatcher = {
           return [true]
         }
 
-        if (!isEditable(element)) {
+        if (isEditable(element)) {
+          await inputContentEditable(element, value, 10, null)
+        } else {
           value = value.replace(/{/g, "{{") // escape
           // Ensure focus before typing, since preceding click may have been
           // removed by recording optimization in background.ts.
           element.focus()
           await user.type(element, value, { skipClick: true })
-        } else {
-          await inputContentEditable(element, value, 40, null)
         }
       }
     } else {
@@ -287,6 +358,43 @@ export const PageActionDispatcher = {
       return [false, `Element not found: ${param.label}`]
     }
 
+    return [true]
+  },
+
+  filePaste: async (param: PageAction.FilePasteExec): ActionReturn => {
+    const {
+      selector,
+      selectorType,
+      pageHtml,
+      selectionHtml,
+      fileName,
+      fileType,
+    } = param
+
+    const content = safeInterpolate(param.value, {
+      [InsertSymbol[INSERT.PAGE_HTML]]: pageHtml ?? "",
+      [InsertSymbol[INSERT.SELECTION_HTML]]: selectionHtml ?? "",
+    })
+
+    const element = await waitForElement(selector, selectorType)
+    if (!element) {
+      console.warn(`Element not found for: ${selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
+
+    const blob = new Blob([content], { type: fileType })
+    const file = new File([blob], fileName, { type: fileType })
+    const dt = new DataTransfer()
+    dt.items.add(file)
+
+    element.focus()
+    element.dispatchEvent(
+      new ClipboardEvent("paste", {
+        clipboardData: dt,
+        bubbles: true,
+        cancelable: true,
+      }),
+    )
     return [true]
   },
 

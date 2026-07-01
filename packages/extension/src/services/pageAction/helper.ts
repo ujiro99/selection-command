@@ -12,6 +12,8 @@ export function convReadableKeysToSymbols(value?: string | null): string {
     [t(LocaleKey + INSERT.URL)]: InsertSymbol[INSERT.URL],
     [t(LocaleKey + INSERT.CLIPBOARD)]: InsertSymbol[INSERT.CLIPBOARD],
     [t(LocaleKey + INSERT.LANG)]: InsertSymbol[INSERT.LANG],
+    [t(LocaleKey + INSERT.PAGE_HTML)]: InsertSymbol[INSERT.PAGE_HTML],
+    [t(LocaleKey + INSERT.SELECTION_HTML)]: InsertSymbol[INSERT.SELECTION_HTML],
   }
   Object.entries(symbols).forEach(([key, val]) => {
     normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
@@ -26,6 +28,8 @@ export function convSymbolsToReadableKeys(value?: string | null): string {
     [InsertSymbol[INSERT.URL]]: t(LocaleKey + INSERT.URL),
     [InsertSymbol[INSERT.CLIPBOARD]]: t(LocaleKey + INSERT.CLIPBOARD),
     [InsertSymbol[INSERT.LANG]]: t(LocaleKey + INSERT.LANG),
+    [InsertSymbol[INSERT.PAGE_HTML]]: t(LocaleKey + INSERT.PAGE_HTML),
+    [InsertSymbol[INSERT.SELECTION_HTML]]: t(LocaleKey + INSERT.SELECTION_HTML),
   }
   Object.entries(symbols).forEach(([key, val]) => {
     normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
@@ -43,6 +47,8 @@ export const paramToStr = (param: PageAction.Parameter): string => {
     case PAGE_ACTION_EVENT.tripleClick:
       return param.label
     case PAGE_ACTION_EVENT.input:
+      return param.value
+    case PAGE_ACTION_EVENT.filePaste:
       return param.value
     case PAGE_ACTION_EVENT.keyboard:
       return getKeyLabel(param)

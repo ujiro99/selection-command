@@ -62,7 +62,7 @@ const mockGetUILanguage = getUILanguage as any
 
 // Mock console methods
 const mockConsole = {
-  warn: vi.spyOn(console, "warn").mockImplementation(() => { }),
+  warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
 }
 
 // Mock DOM elements
@@ -266,8 +266,7 @@ describe("backgroundDispatcher", () => {
       )
     })
 
-    it("WEB-05: Should handle invalid XPath gracefully", async () => {
-      vi.useFakeTimers()
+    it("WEB-05: Should reject immediately for invalid XPath instead of polling until timeout", async () => {
       mockIsValidXPath.mockReturnValue(false)
 
       const clickParam = {
@@ -277,19 +276,11 @@ describe("backgroundDispatcher", () => {
         label: "Invalid XPath",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(
-        clickParam as any,
-      )
-      // Invalid XPath returns null immediately, but still needs to timeout in the polling loop
-      vi.advanceTimersByTime(1100) // Skip timeout period
-
-      const result = await resultPromise
-
-      expect(result).toEqual([false, "Element not found: Invalid XPath"])
+      await expect(
+        BackgroundPageActionDispatcher.click(clickParam as any),
+      ).rejects.toThrow("Invalid XPath: invalid-xpath")
       expect(mockIsValidXPath).toHaveBeenCalledWith("invalid-xpath")
       expect(mockGetElementByXPath).not.toHaveBeenCalled()
-
-      vi.useRealTimers()
     })
 
     it("WEB-06: Should handle empty selector string", async () => {

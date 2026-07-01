@@ -837,8 +837,17 @@
     "message": "Будет вставлен языковой код вашего браузера",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Полный HTML страницы будет прикреплён в виде файла"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "HTML выбранного диапазона будет прикреплён в виде файла"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Вставить текст"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Прикрепить HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Выбранный текст"
@@ -851,6 +860,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Язык браузера"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Текущая страница"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Выделение"
   },
   "PageAction_InputEditor_title": {
     "message": "Редактировать содержимое"
@@ -1085,6 +1100,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Открыть вкладку в фоновом режиме.<wbr>Показать справа от текущей вкладки."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Недоступно, если запрос содержит вложение<wbr>HTML (Текущая страница / Выделение)."
   },
   "Option_openMode_currentTab": {
     "message": "Текущая вкладка"
