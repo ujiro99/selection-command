@@ -481,6 +481,8 @@ const run = (
     srcUrl,
     openMode,
     userVariables,
+    pageHtml,
+    selectionHtml,
   } = param
   const tabId = param.tabId || sender.tab?.id
   if (tabId == null) {
@@ -519,6 +521,8 @@ const run = (
         clipboardText,
         openMode,
         userVariables,
+        pageHtml,
+        selectionHtml,
       })
       if (ret == null) {
         if (retryCount >= RETRY_MAX) {

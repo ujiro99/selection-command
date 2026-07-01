@@ -837,6 +837,12 @@
     "message": "Kod bahasa pelayar anda akan disisipkan",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "HTML penuh halaman akan disisipkan"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "HTML julat yang dipilih akan disisipkan"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -851,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Bahasa pelayar"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "HTML halaman"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "HTML pilihan"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit kandungan"

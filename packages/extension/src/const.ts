@@ -285,6 +285,7 @@ export enum PAGE_ACTION_EVENT {
   keyboard = "keyboard",
   scroll = "scroll",
   input = "input",
+  filePaste = "filePaste",
 }
 
 export enum PAGE_ACTION_CONTROL {
@@ -358,7 +359,7 @@ export { HUB_SHARE_EXCLUDED_IDS } from "@/services/hub/excludedIds"
 
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
-export const PAGE_ACTION_TIMEOUT = 5000
+export const PAGE_ACTION_TIMEOUT = 5_000 // milliseconds
 
 export const OPTION_PAGE_PATH = "src/options_page.html"
 

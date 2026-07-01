@@ -837,6 +837,12 @@
     "message": "Verrà inserito il codice lingua del tuo browser",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Verrà inserito l'HTML completo della pagina"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Verrà inserito l'HTML dell'intervallo selezionato"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserisci testo"
   },
@@ -851,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Lingua del browser"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "HTML della pagina"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "HTML della selezione"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifica contenuto"

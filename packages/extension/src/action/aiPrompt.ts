@@ -19,9 +19,15 @@ import type { OpenAndRunProps } from "@/services/pageAction/background"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
-import { INSERT, InsertSymbol, toInsertTemplate } from "@/services/pageAction"
+import {
+  INSERT,
+  InsertSymbol,
+  toInsertTemplate,
+  PAGE_HTML_MAX_CHARS,
+} from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
+import { getSelectionHtml } from "@/services/dom"
 
 /**
  * Convert bare URLs in text to Markdown link format [URL](URL).
@@ -89,10 +95,28 @@ export const AiPrompt = {
       toInsertTemplate(INSERT.CLIPBOARD),
     )
 
-    // Use URL query input when the service supports it and clipboard is not needed.
-    // Clipboard text is unavailable in the content script context, so fall back to
-    // DOM input when the prompt template contains the clipboard placeholder.
-    const useQueryUrl = isValidString(service.queryUrl) && !needClipboard
+    // Detect HTML placeholders that require file-paste upload instead of text embedding.
+    // File paste cannot be used with queryUrl mode (URL length limit), so these force
+    // the DOM input path.
+    const needPageHtml = aiPromptOption.prompt.includes(
+      toInsertTemplate(INSERT.PAGE_HTML),
+    )
+    const pageHtml = needPageHtml
+      ? document.documentElement.outerHTML.slice(0, PAGE_HTML_MAX_CHARS)
+      : undefined
+
+    const needSelectionHtml = aiPromptOption.prompt.includes(
+      toInsertTemplate(INSERT.SELECTION_HTML),
+    )
+    const selectionHtml = needSelectionHtml ? getSelectionHtml() : undefined
+
+    const needFilePaste = needPageHtml || needSelectionHtml
+
+    // Use URL query input when the service supports it and neither clipboard nor
+    // file-paste content is needed. Both clipboard and HTML content require the DOM
+    // input path since they can't be embedded in a URL safely.
+    const useQueryUrl =
+      isValidString(service.queryUrl) && !needClipboard && !needFilePaste
 
     let steps: PageActionStep[]
     let serviceUrl: string
@@ -180,6 +204,51 @@ export const AiPrompt = {
         useClipboard: needClipboard || (useClipboard ?? false),
       }
 
+      // When HTML placeholders are present, build filePaste steps that upload
+      // the HTML as a text file attachment before typing the prompt.
+      // The placeholders are stripped from the input step value so the AI
+      // receives the file as an attachment and the remaining text as the prompt.
+      const filePasteSteps: PageActionStep[] = []
+      if (needPageHtml) {
+        filePasteSteps.push({
+          id: generateRandomID(),
+          delayMs: 200,
+          skipRenderWait: false,
+          param: {
+            type: PAGE_ACTION_EVENT.filePaste,
+            label: "Paste page HTML",
+            selector: inputSelector,
+            selectorType: SelectorType.css,
+            value: toInsertTemplate(INSERT.PAGE_HTML),
+            fileName: "page.html",
+            fileType: "text/html",
+          },
+        })
+      }
+      if (needSelectionHtml) {
+        filePasteSteps.push({
+          id: generateRandomID(),
+          delayMs: 200,
+          skipRenderWait: false,
+          param: {
+            type: PAGE_ACTION_EVENT.filePaste,
+            label: "Paste selection HTML",
+            selector: inputSelector,
+            selectorType: SelectorType.css,
+            value: toInsertTemplate(INSERT.SELECTION_HTML),
+            fileName: "selection.html",
+            fileType: "text/html",
+          },
+        })
+      }
+
+      const promptValue = needFilePaste
+        ? aiPromptOption.prompt
+            .replace(toInsertTemplate(INSERT.PAGE_HTML), "")
+            .replace(toInsertTemplate(INSERT.SELECTION_HTML), "")
+            .trim()
+        : aiPromptOption.prompt
+
       steps = [
         {
           id: generateRandomID(),
@@ -191,6 +260,7 @@ export const AiPrompt = {
             mode: "aiPrompt",
           },
         },
+        ...filePasteSteps,
         {
           id: generateRandomID(),
           delayMs: 200,
@@ -200,7 +270,7 @@ export const AiPrompt = {
             label: "Input prompt",
             selector: inputSelector,
             selectorType: SelectorType.css,
-            value: aiPromptOption.prompt,
+            value: promptValue,
           },
         },
         {
@@ -212,6 +282,7 @@ export const AiPrompt = {
             label: "Submit",
             selector: submitSelector,
             selectorType: SelectorType.css,
+            waitForClickable: true,
           },
         },
         {
@@ -240,6 +311,8 @@ export const AiPrompt = {
         clipboardText: "",
         useClipboard:
           !useQueryUrl && (needClipboard || (useClipboard ?? false)),
+        pageHtml,
+        selectionHtml,
       }
       try {
         await Storage.set<SidePanelPendingAction>(
@@ -284,6 +357,8 @@ export const AiPrompt = {
       selectedText: selectionText,
       srcUrl: location.href,
       openMode,
+      pageHtml,
+      selectionHtml,
     })
   },
 }

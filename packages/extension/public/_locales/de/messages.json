@@ -837,6 +837,12 @@
     "message": "Ihr Browser-Sprachcode wird eingefügt",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Das vollständige HTML der Seite wird eingefügt"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Das HTML des ausgewählten Bereichs wird eingefügt"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Text einfügen"
   },
@@ -851,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Browsersprache"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Seiten-HTML"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Auswahl-HTML"
   },
   "PageAction_InputEditor_title": {
     "message": "Inhalt bearbeiten"

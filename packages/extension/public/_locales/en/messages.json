@@ -843,6 +843,14 @@
     "message": "Your browser language code will be inserted",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "The full HTML of the page will be inserted",
+    "description": "for INSERT.PAGE_HTML — placeholder {{PageHtml}} in prompt templates"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "The HTML of the selected range will be inserted",
+    "description": "for INSERT.SELECTION_HTML — placeholder {{SelectionHtml}} in prompt templates"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insert Text"
   },
@@ -857,6 +865,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Browser language"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Page HTML"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Selection HTML"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit the content"

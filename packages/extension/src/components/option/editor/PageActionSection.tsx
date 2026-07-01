@@ -6,8 +6,7 @@ import type { PageAction } from "@/services/pageAction"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { cn, isEmpty, capitalize } from "@/lib/utils"
-import { PageActionStep } from "@/types/schema"
-import { DeepPartial } from "@/types"
+import { PageActionStep, DeepPartial } from "@/types"
 
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible"
 import collapsibleCss from "@/components/ui/collapsible.module.css"

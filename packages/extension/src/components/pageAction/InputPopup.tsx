@@ -4,6 +4,8 @@ import {
   Link2,
   Clipboard,
   Languages,
+  FileCode,
+  Code,
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
@@ -303,6 +305,14 @@ export function InputMenu(props: MenuProps): JSX.Element {
           <InputMenuItem onClick={onClickItem} value={INSERT.LANG}>
             <Languages size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_lang")}
+          </InputMenuItem>
+          <InputMenuItem onClick={onClickItem} value={INSERT.PAGE_HTML}>
+            <FileCode size={16} className="mr-2 stroke-gray-600" />
+            {t("PageAction_InputMenu_pageHtml")}
+          </InputMenuItem>
+          <InputMenuItem onClick={onClickItem} value={INSERT.SELECTION_HTML}>
+            <Code size={16} className="mr-2 stroke-gray-600" />
+            {t("PageAction_InputMenu_selectionHtml")}
           </InputMenuItem>
         </MenubarContent>
       </MenubarMenu>

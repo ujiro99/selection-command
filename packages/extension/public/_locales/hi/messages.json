@@ -837,6 +837,12 @@
     "message": "आपके ब्राउज़र का भाषा कोड डाला जाएगा",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "पृष्ठ का पूरा HTML डाला जाएगा"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "चुने गए भाग का HTML डाला जाएगा"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "टेक्स्ट डालें"
   },
@@ -851,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "ब्राउज़र भाषा"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "पृष्ठ HTML"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "चयन HTML"
   },
   "PageAction_InputEditor_title": {
     "message": "सामग्री संपादित करें"

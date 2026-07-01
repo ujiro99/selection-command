@@ -837,6 +837,12 @@
     "message": "Будет вставлен языковой код вашего браузера",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Будет вставлен полный HTML страницы"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Будет вставлен HTML выбранного диапазона"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Вставить текст"
   },
@@ -851,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Язык браузера"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "HTML страницы"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "HTML выделения"
   },
   "PageAction_InputEditor_title": {
     "message": "Редактировать содержимое"

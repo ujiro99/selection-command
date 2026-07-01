@@ -837,6 +837,12 @@
     "message": "Le code de langue de votre navigateur sera inséré",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Le HTML complet de la page sera inséré"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Le HTML de la plage sélectionnée sera inséré"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insérer du Texte"
   },
@@ -851,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Langue du navigateur"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "HTML de la page"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "HTML de la sélection"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifier le contenu"

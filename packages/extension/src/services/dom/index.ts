@@ -93,6 +93,16 @@ export function getSelectionText(): string {
   return ""
 }
 
+export function getSelectionHtml(): string {
+  const s = window.getSelection()
+  if (s == null || s.rangeCount === 0) return ""
+  const range = s.getRangeAt(0)
+  if (range.collapsed) return ""
+  const div = document.createElement("div")
+  div.appendChild(range.cloneContents())
+  return div.innerHTML
+}
+
 /**
  * Find the anchor element from the specified element.
  *

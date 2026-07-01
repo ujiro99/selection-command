@@ -25,7 +25,12 @@ function findElement(
     }
     return getElementByXPath(selector)
   } else {
-    return document.querySelector(selector)
+    const selectors = selector.split(",").map((s) => s.trim())
+    for (const sel of selectors) {
+      const el = document.querySelector(sel)
+      if (el) return el as HTMLElement
+    }
+    return null
   }
 }
 
@@ -234,6 +239,14 @@ export const BackgroundPageActionDispatcher = {
     }
 
     return [true]
+  },
+
+  filePaste: async (_param: PageAction.FilePasteExec): ActionReturn => {
+    // File paste via ClipboardEvent is not supported in background tabs.
+    console.warn(
+      "[BackgroundDispatcher] filePaste is not supported in background tab mode.",
+    )
+    return [false, "filePaste is not supported in background tab mode"]
   },
 
   scroll: async (param: PageAction.Scroll): ActionReturn => {

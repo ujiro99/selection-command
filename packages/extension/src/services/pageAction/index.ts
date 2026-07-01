@@ -10,6 +10,8 @@ export enum INSERT {
   URL = "url",
   CLIPBOARD = "clipboard",
   LANG = "lang",
+  PAGE_HTML = "pageHtml",
+  SELECTION_HTML = "selectionHtml",
 }
 
 export const InsertSymbol = {
@@ -17,7 +19,12 @@ export const InsertSymbol = {
   [INSERT.URL]: "Url",
   [INSERT.CLIPBOARD]: "Clipboard",
   [INSERT.LANG]: "Lang",
+  [INSERT.PAGE_HTML]: "PageHtml",
+  [INSERT.SELECTION_HTML]: "SelectionHtml",
 }
+
+/** Maximum number of characters to include from PAGE_HTML before truncation (≈1MB). */
+export const PAGE_HTML_MAX_CHARS = 1_000_000
 
 /** Returns the template placeholder string for a given INSERT key, e.g. "{{Clipboard}}" */
 export const toInsertTemplate = (key: INSERT): string =>

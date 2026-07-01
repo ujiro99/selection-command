@@ -178,6 +178,7 @@ const PageActionClickSchema = z.object({
   label: z.string(),
   selector: z.string(),
   selectorType: z.nativeEnum(SelectorType),
+  waitForClickable: z.boolean().optional(),
 })
 
 const PageActionInputSchema = z.object({

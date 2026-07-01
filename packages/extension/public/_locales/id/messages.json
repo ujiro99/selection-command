@@ -837,6 +837,12 @@
     "message": "Kode bahasa browser Anda akan disisipkan",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "HTML lengkap halaman akan disisipkan"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "HTML dari rentang yang dipilih akan disisipkan"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -851,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Bahasa browser"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "HTML halaman"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "HTML seleksi"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit konten"

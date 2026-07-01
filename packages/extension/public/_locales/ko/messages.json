@@ -837,6 +837,12 @@
     "message": "브라우저 언어 코드가 삽입됩니다",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "페이지의 전체 HTML이 삽입됩니다"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "선택한 범위의 HTML이 삽입됩니다"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "텍스트 삽입"
   },
@@ -851,6 +857,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "브라우저 언어"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "페이지 HTML"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "선택 HTML"
   },
   "PageAction_InputEditor_title": {
     "message": "내용 편집"

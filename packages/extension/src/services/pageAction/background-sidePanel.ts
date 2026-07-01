@@ -24,7 +24,14 @@ export const runViaPort = (
   port: chrome.runtime.Port,
   param: SidePanelPendingAction,
 ): void => {
-  const { steps, selectedText, srcUrl, clipboardText } = param
+  const {
+    steps,
+    selectedText,
+    srcUrl,
+    clipboardText,
+    pageHtml,
+    selectionHtml,
+  } = param
 
   const executeStep = (
     step: PageActionStep,
@@ -44,6 +51,8 @@ export const runViaPort = (
             clipboardText,
             openMode: PAGE_ACTION_OPEN_MODE.TAB,
             userVariables: [],
+            pageHtml,
+            selectionHtml,
           },
         })
         resolve({ result: true })
@@ -77,6 +86,8 @@ export const runViaPort = (
           clipboardText,
           openMode: PAGE_ACTION_OPEN_MODE.TAB,
           userVariables: [],
+          pageHtml,
+          selectionHtml,
         },
       })
     })
