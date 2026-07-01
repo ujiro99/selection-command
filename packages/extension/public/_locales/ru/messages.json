@@ -838,13 +838,16 @@
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_mark_pageHtml": {
-    "message": "Будет вставлен полный HTML страницы"
+    "message": "Полный HTML страницы будет прикреплён в виде файла"
   },
   "PageAction_InputMenu_mark_selectionHtml": {
-    "message": "Будет вставлен HTML выбранного диапазона"
+    "message": "HTML выбранного диапазона будет прикреплён в виде файла"
   },
   "PageAction_InputMenu_insertText": {
     "message": "Вставить текст"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Прикрепить HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Выбранный текст"
@@ -859,10 +862,10 @@
     "message": "Язык браузера"
   },
   "PageAction_InputMenu_pageHtml": {
-    "message": "HTML страницы"
+    "message": "Текущая страница"
   },
   "PageAction_InputMenu_selectionHtml": {
-    "message": "HTML выделения"
+    "message": "Выделение"
   },
   "PageAction_InputEditor_title": {
     "message": "Редактировать содержимое"

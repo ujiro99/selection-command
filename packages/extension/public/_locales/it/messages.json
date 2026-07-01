@@ -838,13 +838,16 @@
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_mark_pageHtml": {
-    "message": "Verrà inserito l'HTML completo della pagina"
+    "message": "Verrà allegato come file l'HTML completo della pagina"
   },
   "PageAction_InputMenu_mark_selectionHtml": {
-    "message": "Verrà inserito l'HTML dell'intervallo selezionato"
+    "message": "Verrà allegato come file l'HTML dell'intervallo selezionato"
   },
   "PageAction_InputMenu_insertText": {
     "message": "Inserisci testo"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Allega HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Testo selezionato"
@@ -859,10 +862,10 @@
     "message": "Lingua del browser"
   },
   "PageAction_InputMenu_pageHtml": {
-    "message": "HTML della pagina"
+    "message": "Pagina corrente"
   },
   "PageAction_InputMenu_selectionHtml": {
-    "message": "HTML della selezione"
+    "message": "Selezione"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifica contenuto"

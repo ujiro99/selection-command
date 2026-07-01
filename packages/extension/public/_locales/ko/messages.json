@@ -838,13 +838,16 @@
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_mark_pageHtml": {
-    "message": "페이지의 전체 HTML이 삽입됩니다"
+    "message": "페이지의 전체 HTML이 파일로 첨부됩니다"
   },
   "PageAction_InputMenu_mark_selectionHtml": {
-    "message": "선택한 범위의 HTML이 삽입됩니다"
+    "message": "선택한 범위의 HTML이 파일로 첨부됩니다"
   },
   "PageAction_InputMenu_insertText": {
     "message": "텍스트 삽입"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "HTML 첨부"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "선택한 텍스트"
@@ -859,10 +862,10 @@
     "message": "브라우저 언어"
   },
   "PageAction_InputMenu_pageHtml": {
-    "message": "페이지 HTML"
+    "message": "현재 페이지"
   },
   "PageAction_InputMenu_selectionHtml": {
-    "message": "선택 HTML"
+    "message": "선택 영역"
   },
   "PageAction_InputEditor_title": {
     "message": "내용 편집"

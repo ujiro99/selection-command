@@ -32,6 +32,7 @@ import { INSERT, LocaleKey } from "@/services/pageAction"
 
 enum MENU {
   INSERT = "insert",
+  FILE_PASTE = "filePaste",
 }
 
 const isTargetEditable = (target: EventTarget | null): boolean => {
@@ -194,7 +195,7 @@ export function InputPopup(): JSX.Element {
       if (isHtmlElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
-            e.target.innerText.trim().length !== 0,
+          e.target.innerText.trim().length !== 0,
         )
       }
     }
@@ -234,7 +235,11 @@ export function InputPopup(): JSX.Element {
             align={align}
             sideOffset={8}
           >
-            <InputMenu targetElm={targetElm} disabled={disabled} />
+            <InputMenu
+              targetElm={targetElm}
+              disabled={disabled}
+              hideFilePaste
+            />
           </PopoverContent>
         )}
       </Popover>
@@ -246,13 +251,14 @@ type MenuProps = {
   targetElm: HTMLElement | Text | null
   className?: string
   disabled?: boolean
+  hideFilePaste?: boolean
 }
 
 export function InputMenu(props: MenuProps): JSX.Element {
   const disabled = props.disabled ?? false
   const [selectedMenu, setSelectedMenu] = useState("")
-  const isOpen = selectedMenu === MENU.INSERT
   const iconSrc = chrome.runtime.getURL("/icon128.png")
+  const compactMode = !props.hideFilePaste
 
   const onClickItem = async (menu: INSERT) => {
     if (props.targetElm) {
@@ -260,36 +266,35 @@ export function InputMenu(props: MenuProps): JSX.Element {
     }
   }
 
-  const onMouseEnter = () => {
-    if (selectedMenu !== MENU.INSERT) {
-      setSelectedMenu(MENU.INSERT)
-    }
-  }
-
   return (
     <Menubar
-      className={props.className}
+      className={cn(compactMode && "pr-1", props.className)}
       value={selectedMenu}
       onValueChange={setSelectedMenu}
     >
       <MenubarMenu value={MENU.INSERT}>
+        <img src={iconSrc} alt="icon" className="size-[18px] ml-1.5 mr-0.5" />
         <MenubarTrigger
           className={cn(
-            "py-1 px-2 text-sm font-normal font-sans text-gray-700 cursor-pointer",
+            "p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
             disabled && "opacity-50 bg-gray-200 cursor-not-allowed",
           )}
           disabled={disabled}
-          onMouseEnter={onMouseEnter}
+          onMouseEnter={() => setSelectedMenu(MENU.INSERT)}
         >
-          <img src={iconSrc} alt="icon" className="w-[18px] h-[18px] mr-1.5" />
           {t("PageAction_InputMenu_insertText")}
-          {isOpen ? (
-            <ChevronUp size={14} className="ml-1" />
-          ) : (
-            <ChevronDown size={14} className="ml-1" />
-          )}
+          {!compactMode &&
+            (selectedMenu === MENU.INSERT ? (
+              <ChevronUp size={14} className="ml-1" />
+            ) : (
+              <ChevronDown size={14} className="ml-1" />
+            ))}
         </MenubarTrigger>
-        <MenubarContent>
+        <MenubarContent
+          className="border"
+          onMouseLeave={() => setSelectedMenu("")}
+          sideOffset={2}
+        >
           <InputMenuItem onClick={onClickItem} value={INSERT.SELECTED_TEXT}>
             <TextCursorInput size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_selectedText")}
@@ -306,16 +311,38 @@ export function InputMenu(props: MenuProps): JSX.Element {
             <Languages size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_lang")}
           </InputMenuItem>
-          <InputMenuItem onClick={onClickItem} value={INSERT.PAGE_HTML}>
-            <FileCode size={16} className="mr-2 stroke-gray-600" />
-            {t("PageAction_InputMenu_pageHtml")}
-          </InputMenuItem>
-          <InputMenuItem onClick={onClickItem} value={INSERT.SELECTION_HTML}>
-            <Code size={16} className="mr-2 stroke-gray-600" />
-            {t("PageAction_InputMenu_selectionHtml")}
-          </InputMenuItem>
         </MenubarContent>
       </MenubarMenu>
+      {!props.hideFilePaste && (
+        <MenubarMenu value={MENU.FILE_PASTE}>
+          <MenubarTrigger
+            className="p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer"
+            onMouseEnter={() => setSelectedMenu(MENU.FILE_PASTE)}
+          >
+            {t("PageAction_InputMenu_fileAttach")}
+            {!compactMode &&
+              (selectedMenu === MENU.FILE_PASTE ? (
+                <ChevronUp size={14} className="ml-1" />
+              ) : (
+                <ChevronDown size={14} className="ml-1" />
+              ))}
+          </MenubarTrigger>
+          <MenubarContent
+            className="border"
+            onMouseLeave={() => setSelectedMenu("")}
+            sideOffset={2}
+          >
+            <InputMenuItem onClick={onClickItem} value={INSERT.PAGE_HTML}>
+              <FileCode size={16} className="mr-2 stroke-gray-600" />
+              {t("PageAction_InputMenu_pageHtml")}
+            </InputMenuItem>
+            <InputMenuItem onClick={onClickItem} value={INSERT.SELECTION_HTML}>
+              <Code size={16} className="mr-2 stroke-gray-600" />
+              {t("PageAction_InputMenu_selectionHtml")}
+            </InputMenuItem>
+          </MenubarContent>
+        </MenubarMenu>
+      )}
     </Menubar>
   )
 }
@@ -333,7 +360,7 @@ function InputMenuItem(props: ItemProps): JSX.Element {
   return (
     <MenubarItem
       onClick={onClick}
-      className="px-2.5 py-2 text-sm font-normal font-sans text-gray-700 cursor-pointer"
+      className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 cursor-pointer"
       data-value={props.value}
     >
       {props.children}

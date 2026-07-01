@@ -844,15 +844,19 @@
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_mark_pageHtml": {
-    "message": "The full HTML of the page will be inserted",
+    "message": "The full HTML of the page will be attached as a file",
     "description": "for INSERT.PAGE_HTML — placeholder {{PageHtml}} in prompt templates"
   },
   "PageAction_InputMenu_mark_selectionHtml": {
-    "message": "The HTML of the selected range will be inserted",
+    "message": "The HTML of the selected range will be attached as a file",
     "description": "for INSERT.SELECTION_HTML — placeholder {{SelectionHtml}} in prompt templates"
   },
   "PageAction_InputMenu_insertText": {
     "message": "Insert Text"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Attach HTML",
+    "description": "Trigger label for the file attachment submenu in the input popup"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Selected text"
@@ -867,10 +871,10 @@
     "message": "Browser language"
   },
   "PageAction_InputMenu_pageHtml": {
-    "message": "Page HTML"
+    "message": "Current Page"
   },
   "PageAction_InputMenu_selectionHtml": {
-    "message": "Selection HTML"
+    "message": "Selection"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit the content"

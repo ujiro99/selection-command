@@ -838,13 +838,16 @@
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_mark_pageHtml": {
-    "message": "Le HTML complet de la page sera inséré"
+    "message": "Le HTML complet de la page sera joint en fichier"
   },
   "PageAction_InputMenu_mark_selectionHtml": {
-    "message": "Le HTML de la plage sélectionnée sera inséré"
+    "message": "Le HTML de la plage sélectionnée sera joint en fichier"
   },
   "PageAction_InputMenu_insertText": {
     "message": "Insérer du Texte"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Joindre HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texte sélectionné"
@@ -859,10 +862,10 @@
     "message": "Langue du navigateur"
   },
   "PageAction_InputMenu_pageHtml": {
-    "message": "HTML de la page"
+    "message": "Page actuelle"
   },
   "PageAction_InputMenu_selectionHtml": {
-    "message": "HTML de la sélection"
+    "message": "Sélection"
   },
   "PageAction_InputEditor_title": {
     "message": "Modifier le contenu"

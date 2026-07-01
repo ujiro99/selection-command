@@ -838,13 +838,16 @@
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_mark_pageHtml": {
-    "message": "HTML lengkap halaman akan disisipkan"
+    "message": "HTML lengkap halaman akan dilampirkan sebagai file"
   },
   "PageAction_InputMenu_mark_selectionHtml": {
-    "message": "HTML dari rentang yang dipilih akan disisipkan"
+    "message": "HTML dari rentang yang dipilih akan dilampirkan sebagai file"
   },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Lampirkan HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Teks yang dipilih"
@@ -859,10 +862,10 @@
     "message": "Bahasa browser"
   },
   "PageAction_InputMenu_pageHtml": {
-    "message": "HTML halaman"
+    "message": "Halaman saat ini"
   },
   "PageAction_InputMenu_selectionHtml": {
-    "message": "HTML seleksi"
+    "message": "Seleksi"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit konten"

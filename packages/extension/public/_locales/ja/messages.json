@@ -835,13 +835,16 @@
     "description": "for INSERT.LANG"
   },
   "PageAction_InputMenu_mark_pageHtml": {
-    "message": "ページ全体のHTMLが挿入されます"
+    "message": "ページ全体のHTMLを添付します"
   },
   "PageAction_InputMenu_mark_selectionHtml": {
-    "message": "選択範囲のHTMLが挿入されます"
+    "message": "選択範囲のHTMLを添付します"
   },
   "PageAction_InputMenu_insertText": {
     "message": "テキスト挿入"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "HTML添付"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "選択テキスト"
@@ -856,10 +859,10 @@
     "message": "ブラウザ言語コード"
   },
   "PageAction_InputMenu_pageHtml": {
-    "message": "ページHTML"
+    "message": "表示中のページ"
   },
   "PageAction_InputMenu_selectionHtml": {
-    "message": "選択範囲のHTML"
+    "message": "選択範囲"
   },
   "PageAction_InputEditor_title": {
     "message": "Inputアクションの編集"
