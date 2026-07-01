@@ -13,6 +13,7 @@
     "test:run": "vitest run",
     "test:coverage": "vitest --coverage",
     "analytics": "node ./scripts/fetch-ga-data.js",
+    "analytics:selection": "node ./scripts/fetch-selection-command-analytics.js",
     "tags": "node ./scripts/update-tags.mjs",
     "urls": "node ./scripts/update-searchUrls.mjs",
     "add-command": "yarn tags && yarn urls",
