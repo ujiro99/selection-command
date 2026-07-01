@@ -208,6 +208,14 @@ export const AiPrompt = {
       // the HTML as a text file attachment before typing the prompt.
       // The placeholders are stripped from the input step value so the AI
       // receives the file as an attachment and the remaining text as the prompt.
+      const pageTitle =
+        document.title
+          .replace(/[<>:"/\\|?*]/g, "")
+          .replace(/\p{Cc}/gu, "")
+          .trim()
+          .replace(/\s+/g, "-")
+          .slice(0, 64) || "page"
+
       const filePasteSteps: PageActionStep[] = []
       if (needPageHtml) {
         filePasteSteps.push({
@@ -220,7 +228,7 @@ export const AiPrompt = {
             selector: inputSelector,
             selectorType: SelectorType.css,
             value: toInsertTemplate(INSERT.PAGE_HTML),
-            fileName: "page.html",
+            fileName: `${pageTitle}.html`,
             fileType: "text/html",
           },
         })
@@ -236,7 +244,7 @@ export const AiPrompt = {
             selector: inputSelector,
             selectorType: SelectorType.css,
             value: toInsertTemplate(INSERT.SELECTION_HTML),
-            fileName: "selection.html",
+            fileName: `${pageTitle}.html`,
             fileType: "text/html",
           },
         })
