@@ -69,6 +69,10 @@ type OpenModeToggleFieldProps = {
   formLabel: string
   description?: string
   type: "search" | "pageAction"
+  /** Modes that should be shown but not selectable (e.g. incompatible with the current prompt). */
+  disabledModes?: string[]
+  /** Tooltip text shown on a disabled mode instead of its usual description. */
+  disabledReason?: string
 }
 
 export const OpenModeToggleField = ({
@@ -77,6 +81,8 @@ export const OpenModeToggleField = ({
   formLabel,
   description,
   type,
+  disabledModes,
+  disabledReason,
 }: OpenModeToggleFieldProps) => {
   const modes = type === "search" ? SEARCH_MODES : PAGE_ACTION_MODES
 
@@ -104,12 +110,15 @@ export const OpenModeToggleField = ({
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)
                   const checked = mode === field.value
+                  const disabled = disabledModes?.includes(mode) ?? false
                   return (
                     <OpenModeItem
                       key={mode}
                       mode={mode}
                       iconSrc={iconSrc}
                       checked={checked}
+                      disabled={disabled}
+                      disabledReason={disabledReason}
                     />
                   )
                 })}
@@ -126,10 +135,14 @@ const OpenModeItem = ({
   mode,
   iconSrc,
   checked,
+  disabled,
+  disabledReason,
 }: {
   mode: string
   iconSrc: string
   checked: boolean
+  disabled?: boolean
+  disabledReason?: string
 }) => {
   const [tooltipRef, setTooltipRef] = useState<HTMLElement | null>(null)
 
@@ -140,11 +153,16 @@ const OpenModeItem = ({
           <ToggleGroupItem
             ref={setTooltipRef}
             value={mode}
+            disabled={disabled}
             aria-label={t(`openMode_${mode}`)}
             className={cn(
               "relative flex-col gap-0.5 h-full w-full py-1.5 shadow-sm text-xs font-medium text-gray-600 hover:text-gray-700",
               "border transition-all duration-200",
               checked && "bg-gray-50",
+              disabled &&
+                // Override toggleVariants' `disabled:pointer-events-none` so hover
+                // still reaches this element and the reason tooltip can show.
+                "opacity-40 cursor-not-allowed hover:text-gray-600 disabled:pointer-events-auto",
             )}
           >
             {checked && (
@@ -165,7 +183,10 @@ const OpenModeItem = ({
             </span>
           </ToggleGroupItem>
           <Tooltip
-            text={t(`openMode_${mode}_desc`).replace("<wbr>", "\n")}
+            text={(disabled && disabledReason
+              ? disabledReason
+              : t(`openMode_${mode}_desc`)
+            ).replace("<wbr>", "\n")}
             className="whitespace-pre-wrap text-center"
             positionElm={tooltipRef}
           />

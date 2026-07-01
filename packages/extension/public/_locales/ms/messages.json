@@ -1104,6 +1104,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Paparkan di sebelah kanan tab semasa."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Tidak tersedia apabila gesaan mengandungi<wbr>lampiran HTML (Halaman semasa / Pilihan)."
+  },
   "Option_openMode_currentTab": {
     "message": "Tab Semasa"
   },

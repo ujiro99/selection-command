@@ -1101,6 +1101,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Nicht verfügbar, wenn der Prompt einen<wbr>HTML-Anhang enthält (Aktuelle Seite / Auswahl)."
+  },
   "Option_openMode_currentTab": {
     "message": "Aktueller Tab"
   },

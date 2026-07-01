@@ -1104,6 +1104,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Tampilkan di sebelah kanan tab saat ini."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Tidak tersedia jika prompt menyertakan<wbr>lampiran HTML (Halaman saat ini / Seleksi)."
+  },
   "Option_openMode_currentTab": {
     "message": "Tab Saat Ini"
   },

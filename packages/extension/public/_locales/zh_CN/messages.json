@@ -1101,6 +1101,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "在后台打开标签页。<wbr>显示在当前标签页的右侧。"
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "当提示词包含 HTML 附件<wbr>(当前页面/选区)时不可用。"
+  },
   "Option_openMode_currentTab": {
     "message": "当前标签页"
   },

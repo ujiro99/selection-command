@@ -1104,6 +1104,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir separador em segundo plano.<wbr>Mostrar à direita do separador atual."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Não disponível quando o prompt inclui<wbr>um anexo HTML (Página atual / Seleção)."
+  },
   "Option_openMode_currentTab": {
     "message": "Separador atual"
   },

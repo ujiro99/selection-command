@@ -14,12 +14,18 @@ import { InputMenu } from "@/components/pageAction/InputPopup"
 import {
   convSymbolsToReadableKeys,
   convReadableKeysToSymbols,
+  INSERT,
+  toInsertTemplate,
 } from "@/services/pageAction"
 import { getAiServicesFallback } from "@/services/aiPrompt"
+import { OPEN_MODE } from "@/const"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 const AI_SERVICES = getAiServicesFallback()
+
+// Background tabs cannot receive pasted files, so HTML attachments are unsupported there.
+const disabledModesForFilePaste = [OPEN_MODE.BACKGROUND_TAB]
 
 type AiPromptSectionProps = {
   form: any
@@ -29,6 +35,23 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
   const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
 
   const serviceId = form.watch("aiPromptOption.serviceId")
+  const prompt = form.watch("aiPromptOption.prompt")
+
+  const hasFileAttachPlaceholder =
+    !!prompt &&
+    (prompt.includes(toInsertTemplate(INSERT.PAGE_HTML)) ||
+      prompt.includes(toInsertTemplate(INSERT.SELECTION_HTML)))
+
+  // Fall back to Popup when the prompt gains an HTML attachment
+  // while Background Tab is selected, since that combination can't run.
+  useEffect(() => {
+    if (!hasFileAttachPlaceholder) return
+    if (
+      form.getValues("aiPromptOption.openMode") === OPEN_MODE.BACKGROUND_TAB
+    ) {
+      form.setValue("aiPromptOption.openMode", OPEN_MODE.POPUP)
+    }
+  }, [hasFileAttachPlaceholder, form])
 
   // Auto-set iconUrl to the selected service's favicon when iconUrl is not set
   useEffect(() => {
@@ -66,6 +89,10 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
         formLabel={t("pageAction_openMode")}
         description={t("displayMode_desc")}
         type="search"
+        disabledModes={
+          hasFileAttachPlaceholder ? disabledModesForFilePaste : undefined
+        }
+        disabledReason={t("openMode_backgroundTab_disabled_filePaste_desc")}
       />
 
       <FormField

@@ -1101,6 +1101,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Ouvrir l'onglet en arrière-plan.<wbr>Afficher à droite de l'onglet actuel."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Non disponible lorsque l'invite contient<wbr>un HTML joint (Page actuelle / Sélection)."
+  },
   "Option_openMode_currentTab": {
     "message": "Onglet actuel"
   },

@@ -1101,6 +1101,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Abrir pestaña en segundo plano.<wbr>Mostrar a la derecha de la pestaña actual."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "No disponible cuando el prompt incluye un<wbr>HTML adjunto (Página actual / Selección)."
+  },
   "Option_openMode_currentTab": {
     "message": "Pestaña actual"
   },

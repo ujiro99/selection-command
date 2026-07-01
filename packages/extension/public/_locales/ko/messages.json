@@ -1101,6 +1101,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "백그라운드에서 탭 열기.<wbr>현재 탭 오른쪽에 표시합니다."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "프롬프트에 HTML 첨부(현재 페이지/<wbr>선택 영역)가 포함된 경우 사용할 수 없습니다."
+  },
   "Option_openMode_currentTab": {
     "message": "현재 탭"
   },

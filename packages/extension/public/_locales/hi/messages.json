@@ -1101,6 +1101,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "बैकग्राउंड में टैब खोलें।<wbr>वर्तमान टैब के दाईं ओर दिखाएँ।"
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "जब प्रॉम्प्ट में HTML संलग्नक (वर्तमान पृष्ठ<wbr>/ चयन) शामिल हो, तो यह उपलब्ध नहीं है।"
+  },
   "Option_openMode_currentTab": {
     "message": "वर्तमान टैब"
   },

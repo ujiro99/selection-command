@@ -1101,6 +1101,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Открыть вкладку в фоновом режиме.<wbr>Показать справа от текущей вкладки."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Недоступно, если запрос содержит вложение<wbr>HTML (Текущая страница / Выделение)."
+  },
   "Option_openMode_currentTab": {
     "message": "Текущая вкладка"
   },

@@ -1098,6 +1098,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "タブをバックグラウンドで開く。<wbr>表示中タブの右側に表示する。"
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "プロンプトにHTML添付(表示中のページ/選択範囲)<wbr>が含まれる場合は選択できません。"
+  },
   "Option_openMode_currentTab": {
     "message": "現在のタブ"
   },

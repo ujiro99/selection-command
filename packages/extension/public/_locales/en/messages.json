@@ -1113,6 +1113,10 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Open tab in background.<wbr>Show to the right of current tab."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Not available when the prompt includes an<wbr>HTML attachment (Current Page / Selection).",
+    "description": "Tooltip shown on the disabled Background Tab option when the AI prompt contains a PageHtml or SelectionHtml placeholder, since background tabs cannot receive pasted files"
+  },
   "Option_openMode_currentTab": {
     "message": "Current Tab"
   },

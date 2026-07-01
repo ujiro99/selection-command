@@ -1101,6 +1101,9 @@
   "Option_openMode_backgroundTab_desc": {
     "message": "Apri scheda in background.<wbr>Mostra a destra della scheda corrente."
   },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Non disponibile quando il prompt include un<wbr>allegato HTML (Pagina corrente / Selezione)."
+  },
   "Option_openMode_currentTab": {
     "message": "Scheda corrente"
   },
