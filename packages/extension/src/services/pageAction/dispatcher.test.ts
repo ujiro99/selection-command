@@ -73,7 +73,7 @@ const mockUserEventSetup = (userEvent as any).setup as ReturnType<typeof vi.fn>
 
 // Mock console methods
 const mockConsole = {
-  warn: vi.spyOn(console, "warn").mockImplementation(() => { }),
+  warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
 }
 
 // Mock DOM elements
@@ -215,7 +215,7 @@ describe("PageActionDispatcher", () => {
 
       expect(result).toEqual([false, "Element not found: Not Found Button"])
       expect(mockConsole.warn).toHaveBeenCalledWith(
-        "Element not found for: .not-found",
+        "Element not found or not clickable for: .not-found",
       )
     })
 
@@ -289,7 +289,7 @@ describe("PageActionDispatcher", () => {
       expect(mockInputContentEditable).toHaveBeenCalledWith(
         mockElement,
         "test text",
-        40,
+        10,
         null,
       )
     })
