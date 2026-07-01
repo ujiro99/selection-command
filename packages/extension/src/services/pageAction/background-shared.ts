@@ -97,6 +97,7 @@ vi.mock("@/const", async () => {
     },
     PAGE_ACTION_EVENT: {
       keyboard: "keyboard",
+      filePaste: "filePaste",
     },
   }
 })

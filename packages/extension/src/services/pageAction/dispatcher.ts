@@ -1,10 +1,5 @@
 import userEvent from "@testing-library/user-event"
-import {
-  getElementByXPath,
-  isValidXPath,
-  isEditable,
-  inputContentEditable,
-} from "@/services/dom"
+import { isEditable, inputContentEditable } from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import {
@@ -15,6 +10,7 @@ import {
 } from "@/const"
 import type { UserVariable } from "@/types"
 import { getUILanguage } from "@/services/i18n"
+import { queryElement } from "./queryElement"
 
 export namespace PageAction {
   export type Parameter =
@@ -108,22 +104,6 @@ export namespace PageAction {
     x: number
     y: number
   }
-}
-
-function queryElement(
-  selector: string,
-  selectorType: SelectorType,
-): HTMLElement | null {
-  if (selectorType === SelectorType.xpath) {
-    if (!isValidXPath(selector)) throw new Error(`Invalid XPath: ${selector}`)
-    return getElementByXPath(selector)
-  }
-  const selectors = selector.split(",").map((s) => s.trim())
-  for (const sel of selectors) {
-    const el = document.querySelector<HTMLElement>(sel)
-    if (el) return el
-  }
-  return null
 }
 
 async function waitForElement(

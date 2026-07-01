@@ -4,6 +4,7 @@ export { BackgroundPageActionDispatcher } from "./backgroundDispatcher"
 export type { PageAction } from "./dispatcher"
 export { RunningStatus } from "./status"
 export * from "./helper"
+export { PAGE_HTML_MAX_CHARS } from "@/const"
 
 export enum INSERT {
   SELECTED_TEXT = "selectedText",
@@ -22,9 +23,6 @@ export const InsertSymbol = {
   [INSERT.PAGE_HTML]: "PageHtml",
   [INSERT.SELECTION_HTML]: "SelectionHtml",
 }
-
-/** Maximum number of characters to include from PAGE_HTML before truncation (≈1MB). */
-export const PAGE_HTML_MAX_CHARS = 1_000_000
 
 /** Returns the template placeholder string for a given INSERT key, e.g. "{{Clipboard}}" */
 export const toInsertTemplate = (key: INSERT): string =>

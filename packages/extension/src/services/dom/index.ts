@@ -1,6 +1,7 @@
 import type { Point } from "@/types"
 
 import { isEmpty } from "@/lib/utils"
+import { PAGE_HTML_MAX_CHARS } from "@/const"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -100,7 +101,7 @@ export function getSelectionHtml(): string {
   if (range.collapsed) return ""
   const div = document.createElement("div")
   div.appendChild(range.cloneContents())
-  return div.innerHTML
+  return div.innerHTML.slice(0, PAGE_HTML_MAX_CHARS)
 }
 
 /**

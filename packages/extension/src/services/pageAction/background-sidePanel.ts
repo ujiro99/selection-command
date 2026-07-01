@@ -7,6 +7,7 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { readClipboard } from "@/services/chrome"
 import {
   PAGE_ACTION_CONTROL,
+  PAGE_ACTION_EVENT,
   PAGE_ACTION_OPEN_MODE,
   PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from "@/const"
@@ -36,6 +37,13 @@ export const runViaPort = (
   const executeStep = (
     step: PageActionStep,
   ): Promise<ExecPageAction.Return> => {
+    // pageHtml/selectionHtml can be up to ~1MB; only include them for the
+    // step that actually consumes them to avoid posting that payload for
+    // every step in the sequence.
+    const isFilePaste = step.param.type === PAGE_ACTION_EVENT.filePaste
+    const stepPageHtml = isFilePaste ? pageHtml : undefined
+    const stepSelectionHtml = isFilePaste ? selectionHtml : undefined
+
     return new Promise<ExecPageAction.Return>((resolve, reject) => {
       const id = generateRandomID()
 
@@ -51,8 +59,8 @@ export const runViaPort = (
             clipboardText,
             openMode: PAGE_ACTION_OPEN_MODE.TAB,
             userVariables: [],
-            pageHtml,
-            selectionHtml,
+            pageHtml: stepPageHtml,
+            selectionHtml: stepSelectionHtml,
           },
         })
         resolve({ result: true })
@@ -86,8 +94,8 @@ export const runViaPort = (
           clipboardText,
           openMode: PAGE_ACTION_OPEN_MODE.TAB,
           userVariables: [],
-          pageHtml,
-          selectionHtml,
+          pageHtml: stepPageHtml,
+          selectionHtml: stepSelectionHtml,
         },
       })
     })

@@ -252,8 +252,8 @@ export const AiPrompt = {
 
       const promptValue = needFilePaste
         ? aiPromptOption.prompt
-            .replace(toInsertTemplate(INSERT.PAGE_HTML), "")
-            .replace(toInsertTemplate(INSERT.SELECTION_HTML), "")
+            .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
+            .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
             .trim()
         : aiPromptOption.prompt
 
