@@ -354,14 +354,10 @@ type ItemProps = {
 }
 
 function InputMenuItem(props: ItemProps): JSX.Element {
-  const onClick = (e: React.MouseEvent) => {
-    props.onClick((e.target as HTMLDivElement).dataset.value as INSERT)
-  }
   return (
     <MenubarItem
-      onClick={onClick}
+      onClick={() => props.onClick(props.value as INSERT)}
       className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 cursor-pointer"
-      data-value={props.value}
     >
       {props.children}
     </MenubarItem>
