@@ -195,7 +195,7 @@ export function InputPopup(): JSX.Element {
       if (isHtmlElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
-          e.target.innerText.trim().length !== 0,
+            e.target.innerText.trim().length !== 0,
         )
       }
     }
@@ -252,6 +252,7 @@ type MenuProps = {
   className?: string
   disabled?: boolean
   hideFilePaste?: boolean
+  fileAttachDisabled?: boolean
 }
 
 export function InputMenu(props: MenuProps): JSX.Element {
@@ -266,21 +267,34 @@ export function InputMenu(props: MenuProps): JSX.Element {
     }
   }
 
+  // Radix's MenubarTrigger switches the open menu on pointer-enter even when
+  // the trigger is `disabled` (only click/keyboard interactions respect it).
+  // Every open path (hover, click, keyboard) ultimately routes through this
+  // Menubar's onValueChange, so guarding here is the single place that
+  // reliably blocks a disabled menu from opening.
+  const onSelectedMenuChange = (value: string) => {
+    if (value === MENU.FILE_PASTE && props.fileAttachDisabled) {
+      setSelectedMenu("")
+      return
+    }
+    setSelectedMenu(value)
+  }
+
   return (
     <Menubar
       className={cn(compactMode && "pr-1", props.className)}
       value={selectedMenu}
-      onValueChange={setSelectedMenu}
+      onValueChange={onSelectedMenuChange}
     >
       <MenubarMenu value={MENU.INSERT}>
         <img src={iconSrc} alt="icon" className="size-[18px] ml-1.5 mr-0.5" />
         <MenubarTrigger
           className={cn(
             "p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
-            disabled && "opacity-50 bg-gray-200 cursor-not-allowed",
+            disabled && "opacity-60 bg-muted cursor-not-allowed",
           )}
           disabled={disabled}
-          onMouseEnter={() => setSelectedMenu(MENU.INSERT)}
+          onMouseEnter={() => onSelectedMenuChange(MENU.INSERT)}
         >
           {t("PageAction_InputMenu_insertText")}
           {!compactMode &&
@@ -316,8 +330,13 @@ export function InputMenu(props: MenuProps): JSX.Element {
       {!props.hideFilePaste && (
         <MenubarMenu value={MENU.FILE_PASTE}>
           <MenubarTrigger
-            className="p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer"
-            onMouseEnter={() => setSelectedMenu(MENU.FILE_PASTE)}
+            className={cn(
+              "p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
+              props.fileAttachDisabled &&
+                "opacity-60 bg-muted cursor-not-allowed",
+            )}
+            disabled={props.fileAttachDisabled}
+            onMouseEnter={() => onSelectedMenuChange(MENU.FILE_PASTE)}
           >
             {t("PageAction_InputMenu_fileAttach")}
             {!compactMode &&

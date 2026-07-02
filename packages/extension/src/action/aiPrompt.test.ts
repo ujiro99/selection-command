@@ -169,6 +169,83 @@ describe("AiPrompt.execute", () => {
       )
     })
 
+    it("AP-01c: should attach only PAGE_HTML and strip both HTML placeholders when the prompt contains PAGE_HTML and SELECTION_HTML", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeDomService())
+
+      await AiPrompt.execute({
+        selectionText: "hello world",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+            prompt: `${toInsertTemplate(INSERT.PAGE_HTML)} ${toInsertTemplate(INSERT.SELECTION_HTML)}`,
+          },
+        } as any,
+        position: { x: 100, y: 100 },
+      })
+
+      const call = vi
+        .mocked(Ipc.send)
+        .mock.calls.find(([cmd]) => cmd === BgCommand.openAndRunPageAction)
+      const payload = call?.[1] as any
+      const steps = payload.steps
+
+      const filePasteSteps = steps.filter(
+        (s: any) => s.param.type === PAGE_ACTION_EVENT.filePaste,
+      )
+      expect(filePasteSteps).toHaveLength(1)
+      expect(filePasteSteps[0].param.value).toBe(
+        toInsertTemplate(INSERT.PAGE_HTML),
+      )
+
+      const inputStep = steps.find(
+        (s: any) => s.param.type === PAGE_ACTION_EVENT.input,
+      )
+      expect(inputStep.param.value).not.toContain(
+        toInsertTemplate(INSERT.PAGE_HTML),
+      )
+      expect(inputStep.param.value).not.toContain(
+        toInsertTemplate(INSERT.SELECTION_HTML),
+      )
+
+      expect(payload.pageHtml).toBeDefined()
+      expect(payload.selectionHtml).toBeUndefined()
+    })
+
+    it("AP-01d: should still attach SELECTION_HTML when the prompt contains only SELECTION_HTML", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeDomService())
+
+      await AiPrompt.execute({
+        selectionText: "hello world",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+            prompt: toInsertTemplate(INSERT.SELECTION_HTML),
+          },
+        } as any,
+        position: { x: 100, y: 100 },
+      })
+
+      const call = vi
+        .mocked(Ipc.send)
+        .mock.calls.find(([cmd]) => cmd === BgCommand.openAndRunPageAction)
+      const payload = call?.[1] as any
+      const steps = payload.steps
+
+      const filePasteSteps = steps.filter(
+        (s: any) => s.param.type === PAGE_ACTION_EVENT.filePaste,
+      )
+      expect(filePasteSteps).toHaveLength(1)
+      expect(filePasteSteps[0].param.value).toBe(
+        toInsertTemplate(INSERT.SELECTION_HTML),
+      )
+      expect(payload.pageHtml).toBeUndefined()
+      expect(payload.selectionHtml).toBeDefined()
+    })
+
     it("AP-02: should use service.url as searchUrl when no queryUrl", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeDomService())
 

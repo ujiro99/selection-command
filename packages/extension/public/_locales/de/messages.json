@@ -492,7 +492,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Dies ist die einzugebende Promptvorlage. Sie können Variablen über das Texteinfügemenü hinzufügen."
+    "message": "Dies ist die einzugebende Promptvorlage. Sie können Variablen über das Menü hinzufügen."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Beispiel für Browser-Sprachcode: en, es, zh_CN"
@@ -817,6 +817,9 @@
   },
   "Option_zod_url": {
     "message": "Bitte geben Sie im URL-Format ein."
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Ein Prompt darf nur einen HTML-Anhang enthalten."
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "Seiten-URL ist erforderlich, wenn der aktuelle Tab-Modus ausgewählt ist."

@@ -492,7 +492,7 @@
     "message": "प्रॉम्प्ट"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "यह दर्ज करने के लिए प्रॉम्प्ट टेम्पलेट है। आप टेक्स्ट इन्सर्ट मेनू से चर जोड़ सकते हैं।"
+    "message": "यह दर्ज करने के लिए प्रॉम्प्ट टेम्पलेट है। आप मेनू से चर जोड़ सकते हैं।"
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・ब्राउज़र भाषा कोड उदाहरण: en, es, zh_CN"
@@ -817,6 +817,9 @@
   },
   "Option_zod_url": {
     "message": "URL प्रारूप में दर्ज करें।"
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "प्रॉम्प्ट में केवल एक HTML संलग्नक शामिल किया जा सकता है।"
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "वर्तमान टैब मोड चुने जाने पर पेज URL आवश्यक है।"

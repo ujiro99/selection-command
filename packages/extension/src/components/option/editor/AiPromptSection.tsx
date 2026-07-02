@@ -111,6 +111,7 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
               <InputMenu
                 targetElm={textarea}
                 className="w-fit absolute -top-10 right-0"
+                fileAttachDisabled={hasFileAttachPlaceholder}
               />
               <FormControl>
                 <Textarea
@@ -129,7 +130,7 @@ export const AiPromptSection = ({ form }: AiPromptSectionProps) => {
                   className="max-h-80"
                 />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="mt-1" />
             </div>
           </FormItem>
         )}

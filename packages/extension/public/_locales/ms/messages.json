@@ -492,7 +492,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Ini ialah templat gesaan yang hendak dimasukkan. Anda boleh menambah pemboleh ubah dari menu sisipan teks."
+    "message": "Ini ialah templat gesaan yang hendak dimasukkan. Anda boleh menambah pemboleh ubah dari menu."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Contoh kod bahasa pelayar: en, es, zh_CN"
@@ -817,6 +817,9 @@
   },
   "Option_zod_url": {
     "message": "Sila masukkan dalam format URL."
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Gesaan hanya boleh mengandungi satu lampiran HTML."
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "URL halaman diperlukan apabila mod tab semasa dipilih."

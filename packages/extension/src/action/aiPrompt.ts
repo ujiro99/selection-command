@@ -105,9 +105,11 @@ export const AiPrompt = {
       ? document.documentElement.outerHTML.slice(0, PAGE_HTML_MAX_CHARS)
       : undefined
 
-    const needSelectionHtml = aiPromptOption.prompt.includes(
-      toInsertTemplate(INSERT.SELECTION_HTML),
-    )
+    // Only one HTML attachment is allowed per execution; PAGE_HTML takes
+    // priority over SELECTION_HTML when the prompt contains both.
+    const needSelectionHtml =
+      !needPageHtml &&
+      aiPromptOption.prompt.includes(toInsertTemplate(INSERT.SELECTION_HTML))
     const selectionHtml = needSelectionHtml ? getSelectionHtml() : undefined
 
     const needFilePaste = needPageHtml || needSelectionHtml

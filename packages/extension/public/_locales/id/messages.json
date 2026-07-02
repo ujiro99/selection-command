@@ -492,7 +492,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Ini adalah template prompt yang dimasukkan. Anda dapat menambahkan variabel dari menu penyisipan teks."
+    "message": "Ini adalah template prompt yang dimasukkan. Anda dapat menambahkan variabel dari menu."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Contoh kode bahasa browser: en, es, zh_CN"
@@ -817,6 +817,9 @@
   },
   "Option_zod_url": {
     "message": "Silakan masukkan dalam format URL."
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Prompt hanya boleh menyertakan satu lampiran HTML."
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "URL halaman wajib diisi saat mode tab saat ini dipilih."

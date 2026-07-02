@@ -1,9 +1,23 @@
 import { t } from "@/services/i18n"
-import { INSERT, InsertSymbol, PageAction } from "@/services/pageAction"
+import {
+  INSERT,
+  InsertSymbol,
+  PageAction,
+  toInsertTemplate,
+} from "@/services/pageAction"
 import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from "@/const"
 import { getKeyLabel } from "@/services/pageAction/listener"
 
 export const LocaleKey = "PageAction_InputMenu_mark_"
+
+/** Counts the total occurrences of HTML attachment placeholders (PageHtml + SelectionHtml) in a prompt. */
+export const countHtmlAttachments = (prompt: string): number => {
+  const count = (needle: string) => prompt.split(needle).length - 1
+  return (
+    count(toInsertTemplate(INSERT.PAGE_HTML)) +
+    count(toInsertTemplate(INSERT.SELECTION_HTML))
+  )
+}
 
 export function convReadableKeysToSymbols(value?: string | null): string {
   let normalizedValue = value ?? ""

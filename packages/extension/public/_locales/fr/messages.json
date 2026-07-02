@@ -492,7 +492,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Ceci est le modèle de message à saisir. Vous pouvez ajouter des variables depuis le menu d'insertion de texte."
+    "message": "Ceci est le modèle de message à saisir. Vous pouvez ajouter des variables depuis le menu."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Exemple de code de langue du navigateur : en, es, zh_CN"
@@ -817,6 +817,9 @@
   },
   "Option_zod_url": {
     "message": "Veuillez saisir au format URL."
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Une invite ne peut inclure qu'un seul HTML joint."
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "L'URL de la page est obligatoire lorsque le mode onglet actuel est sélectionné."

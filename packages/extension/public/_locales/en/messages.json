@@ -494,7 +494,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "This is the prompt template to enter. You can add variables from the text insert menu."
+    "message": "This is the prompt template to enter. You can add variables from the menu."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Browser language code example: en, es, zh_CN"
@@ -822,6 +822,10 @@
   },
   "Option_zod_url": {
     "message": "Please enter in URL format."
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Only one HTML attachment can be included in a prompt.",
+    "description": "Zod validation error shown on the AI prompt field when it contains more than one HTML attachment placeholder (PageHtml/SelectionHtml combined)"
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "Page URL is required when Current Tab mode is selected.",

@@ -492,7 +492,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Esta es la plantilla del mensaje a introducir. Puede añadir variables desde el menú de inserción de texto."
+    "message": "Esta es la plantilla del mensaje a introducir. Puede añadir variables desde el menú."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Ejemplo de código de idioma del navegador: en, es, zh_CN"
@@ -817,6 +817,9 @@
   },
   "Option_zod_url": {
     "message": "Por favor, introduzca en formato URL."
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Un prompt solo puede incluir un HTML adjunto."
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "La URL de página es obligatoria cuando se selecciona el modo de pestaña actual."

@@ -492,7 +492,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Este é o modelo de prompt a ser inserido. Pode adicionar variáveis pelo menu de inserção de texto."
+    "message": "Este é o modelo de prompt a ser inserido. Pode adicionar variáveis pelo menu."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Exemplo de código de idioma do navegador: en, es, zh_CN"
@@ -817,6 +817,9 @@
   },
   "Option_zod_url": {
     "message": "Por favor, insira no formato URL."
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Um prompt só pode incluir um anexo HTML."
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "O URL da página é obrigatório quando o modo de separador atual é selecionado."

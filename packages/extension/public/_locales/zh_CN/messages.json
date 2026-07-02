@@ -492,7 +492,7 @@
     "message": "提示词"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "这是要输入的提示模板。您可以从文本插入菜单中添加变量。"
+    "message": "这是要输入的提示模板。您可以从菜单中添加变量。"
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・浏览器语言代码示例：en, es, zh_CN"
@@ -817,6 +817,9 @@
   },
   "Option_zod_url": {
     "message": "请以URL格式输入。"
+  },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "提示词中只能包含一个 HTML 附件。"
   },
   "zod_pageUrl_required_for_currentTab": {
     "message": "选择当前标签页模式时，页面 URL 为必填项。"
