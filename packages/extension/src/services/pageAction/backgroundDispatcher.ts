@@ -1,37 +1,15 @@
-import {
-  getElementByXPath,
-  isValidXPath,
-  inputContentEditable,
-} from "@/services/dom"
+import { inputContentEditable } from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import { PageAction, ActionReturn } from "./dispatcher"
+import { queryElement } from "./queryElement"
 import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
 import { getUILanguage } from "@/services/i18n"
 
 /**
- * Find element by selector type with unified logic.
- * @param selector - CSS selector or XPath
- * @param selectorType - Type of selector
- * @returns HTMLElement | null - Found element (null if not found or invalid)
- */
-function findElement(
-  selector: string,
-  selectorType: SelectorType,
-): HTMLElement | null {
-  if (selectorType === SelectorType.xpath) {
-    if (!isValidXPath(selector)) {
-      return null
-    }
-    return getElementByXPath(selector)
-  } else {
-    return document.querySelector(selector)
-  }
-}
-
-/**
  * Wait for an element to appear in the DOM for background tab execution.
- * Similar to waitForElement but with longer intervals and no requestAnimationFrame.
+ * Similar to dispatcher.ts's waitForElement but with longer intervals and no
+ * requestAnimationFrame.
  * @param selector - CSS selector or XPath
  * @param selectorType - Type of selector
  * @param timeout - Maximum waiting time (milliseconds)
@@ -43,7 +21,7 @@ async function waitForElementBackground(
   timeout: number = TIMEOUT,
 ): Promise<HTMLElement | null> {
   // Check immediately before starting polling (performance optimization)
-  const elm = findElement(selector, selectorType)
+  const elm = queryElement(selector, selectorType)
   if (elm) {
     return elm
   }
@@ -51,7 +29,7 @@ async function waitForElementBackground(
   // Start polling if element not found immediately
   const startTime = Date.now()
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const interval = setInterval(() => {
       const elapsedTime = Date.now() - startTime
       if (elapsedTime > timeout) {
@@ -60,10 +38,15 @@ async function waitForElementBackground(
         return
       }
 
-      const element = findElement(selector, selectorType)
-      if (element) {
+      try {
+        const element = queryElement(selector, selectorType)
+        if (element) {
+          clearInterval(interval)
+          resolve(element)
+        }
+      } catch (e) {
         clearInterval(interval)
-        resolve(element)
+        reject(String(e))
       }
     }, 100) // Background tabs use longer intervals
   })
@@ -234,6 +217,14 @@ export const BackgroundPageActionDispatcher = {
     }
 
     return [true]
+  },
+
+  filePaste: async (_param: PageAction.FilePasteExec): ActionReturn => {
+    // File paste via ClipboardEvent is not supported in background tabs.
+    console.warn(
+      "[BackgroundDispatcher] filePaste is not supported in background tab mode.",
+    )
+    return [false, "filePaste is not supported in background tab mode"]
   },
 
   scroll: async (param: PageAction.Scroll): ActionReturn => {

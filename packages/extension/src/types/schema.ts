@@ -20,6 +20,7 @@ import {
 import { t } from "@/services/i18n"
 import { isEmpty } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
+import { countHtmlAttachments } from "@/services/pageAction"
 import type { AiPromptCommand } from "@/types"
 
 const commandSourceSchema = {
@@ -178,6 +179,7 @@ const PageActionClickSchema = z.object({
   label: z.string(),
   selector: z.string(),
   selectorType: z.nativeEnum(SelectorType),
+  waitForClickable: z.boolean().optional(),
 })
 
 const PageActionInputSchema = z.object({
@@ -209,6 +211,16 @@ const PageActionScrollSchema = z.object({
   y: z.number(),
 })
 
+const PageActionFilePasteSchema = z.object({
+  type: z.literal(PAGE_ACTION_EVENT.filePaste),
+  label: z.string(),
+  selector: z.string(),
+  selectorType: z.nativeEnum(SelectorType),
+  value: z.string(),
+  fileName: z.string(),
+  fileType: z.string(),
+})
+
 const PageActionParameterSchema = z.discriminatedUnion("type", [
   PageActionStartSchema,
   PageActionEndSchema,
@@ -217,6 +229,7 @@ const PageActionParameterSchema = z.discriminatedUnion("type", [
   PageActionInputSchema,
   PageActionKeyboardSchema,
   PageActionScrollSchema,
+  PageActionFilePasteSchema,
 ])
 
 const PageActionStepSchema = z.object({
@@ -285,11 +298,21 @@ export const isPageActionType = (
   return data.openMode === OPEN_MODE.PAGE_ACTION
 }
 
-export const AiPromptOptionSchema = z.object({
-  serviceId: z.string().min(1),
-  prompt: z.string(),
-  openMode: z.enum(SEARCH_OPEN_MODE),
-})
+export const AiPromptOptionSchema = z
+  .object({
+    serviceId: z.string().min(1),
+    prompt: z.string(),
+    openMode: z.enum(SEARCH_OPEN_MODE),
+  })
+  .superRefine((data, ctx) => {
+    if (countHtmlAttachments(data.prompt) > 1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["prompt"],
+        message: t("Option_zod_aiPrompt_multipleHtmlAttachments"),
+      })
+    }
+  })
 
 const aiPromptSchema = z.object({
   openMode: z.enum([OPEN_MODE.AI_PROMPT]),

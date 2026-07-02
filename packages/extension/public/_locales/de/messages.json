@@ -492,7 +492,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Dies ist die einzugebende Promptvorlage. Sie können Variablen über das Texteinfügemenü hinzufügen."
+    "message": "Dies ist die einzugebende Promptvorlage. Sie können Variablen über das Menü hinzufügen."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Beispiel für Browser-Sprachcode: en, es, zh_CN"
@@ -818,6 +818,9 @@
   "Option_zod_url": {
     "message": "Bitte geben Sie im URL-Format ein."
   },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Ein Prompt darf nur einen HTML-Anhang enthalten."
+  },
   "zod_pageUrl_required_for_currentTab": {
     "message": "Seiten-URL ist erforderlich, wenn der aktuelle Tab-Modus ausgewählt ist."
   },
@@ -837,8 +840,17 @@
     "message": "Ihr Browser-Sprachcode wird eingefügt",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "Das vollständige HTML der Seite wird als Datei angehängt"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "Das HTML des ausgewählten Bereichs wird als Datei angehängt"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Text einfügen"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "HTML anhängen"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Ausgewählter Text"
@@ -851,6 +863,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Browsersprache"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Aktuelle Seite"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Auswahl"
   },
   "PageAction_InputEditor_title": {
     "message": "Inhalt bearbeiten"
@@ -1085,6 +1103,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Tab im Hintergrund öffnen.<wbr>Rechts vom aktuellen Tab anzeigen."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Nicht verfügbar, wenn der Prompt einen<wbr>HTML-Anhang enthält (Aktuelle Seite / Auswahl)."
   },
   "Option_openMode_currentTab": {
     "message": "Aktueller Tab"

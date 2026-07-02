@@ -74,7 +74,11 @@ describe("normalizeServices", () => {
 
   it("NS-05: should skip entries missing id or url", () => {
     const raw = [
-      { url: "https://example.com", inputSelectors: [".x"], submitSelectors: [".y"] },
+      {
+        url: "https://example.com",
+        inputSelectors: [".x"],
+        submitSelectors: [".y"],
+      },
       { id: "test", inputSelectors: [".x"], submitSelectors: [".y"] },
     ]
     const result = normalizeServices(raw)
@@ -98,8 +102,8 @@ describe("AI_SERVICES_FALLBACK", () => {
   it("AF-01: should include chatgpt with queryUrl", () => {
     const chatgpt = AI_SERVICES_FALLBACK.find((s) => s.id === "chatgpt")
     expect(chatgpt).toBeDefined()
-    expect(chatgpt?.queryUrl).toBe("https://chatgpt.com/?prompt=%s")
-    expect(chatgpt?.autoSubmit).toBe(false)
+    expect(chatgpt?.queryUrl).toBe("https://chatgpt.com/#?q=%s")
+    expect(chatgpt?.autoSubmit).toBe(true)
   })
 
   it("AF-02: should include claude with queryUrl", () => {
@@ -112,7 +116,9 @@ describe("AI_SERVICES_FALLBACK", () => {
   it("AF-03: should include perplexity with queryUrl and autoSubmit", () => {
     const perplexity = AI_SERVICES_FALLBACK.find((s) => s.id === "perplexity")
     expect(perplexity).toBeDefined()
-    expect(perplexity?.queryUrl).toBe("https://www.perplexity.ai/search/new?q=%s")
+    expect(perplexity?.queryUrl).toBe(
+      "https://www.perplexity.ai/search/new?q=%s",
+    )
     expect(perplexity?.autoSubmit).toBe(true)
   })
 

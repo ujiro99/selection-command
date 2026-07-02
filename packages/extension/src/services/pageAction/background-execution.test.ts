@@ -98,6 +98,46 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
+    it("BGD-37b: Normal case: pageHtml/selectionHtml are only sent with the filePaste step's message", async () => {
+      const mockParam = {
+        openMode: PAGE_ACTION_OPEN_MODE.TAB,
+        url: "https://example.com",
+        commandId: "cmd-1",
+        selectedText: "selected",
+        userVariables: [],
+        steps: [
+          { id: "step-1", param: { type: "click" } },
+          { id: "step-2", param: { type: "filePaste" } },
+          { id: "step-3", param: { type: "click" } },
+        ],
+        pageHtml: "<html>big page</html>",
+        selectionHtml: "<span>selection</span>",
+      }
+
+      openAndRun(mockParam as any, mockSender as any, mockResponse)
+      await vi.runAllTimersAsync()
+
+      const messageByStepId = Object.fromEntries(
+        mockIpc.sendTab.mock.calls.map(([, , message]: any[]) => [
+          message.step.id,
+          message,
+        ]),
+      )
+
+      expect(messageByStepId["step-1"]).toMatchObject({
+        pageHtml: undefined,
+        selectionHtml: undefined,
+      })
+      expect(messageByStepId["step-2"]).toMatchObject({
+        pageHtml: "<html>big page</html>",
+        selectionHtml: "<span>selection</span>",
+      })
+      expect(messageByStepId["step-3"]).toMatchObject({
+        pageHtml: undefined,
+        selectionHtml: undefined,
+      })
+    })
+
     it("BGD-38: Normal case: Execution in popup window with POPUP mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,

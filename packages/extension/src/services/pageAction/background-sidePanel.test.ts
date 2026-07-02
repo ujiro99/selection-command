@@ -189,6 +189,62 @@ describe("background.ts - Side Panel Connection", () => {
       )
     })
 
+    it("SP-08b: Omits pageHtml/selectionHtml from the message when the step is not filePaste", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const pending = {
+        ...createPendingAction(),
+        pageHtml: "<html>big page</html>",
+        selectionHtml: "<span>selection</span>",
+      }
+      mockStorage.get.mockResolvedValue(pending)
+      mockStorage.set.mockResolvedValue(undefined)
+
+      await handleSidePanelConnect(port as any)
+
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            step: pending.steps[0],
+            pageHtml: undefined,
+            selectionHtml: undefined,
+          }),
+        }),
+      )
+    })
+
+    it("SP-08c: Includes pageHtml/selectionHtml in the message when the step is filePaste", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const pending = {
+        ...createPendingAction(),
+        steps: [
+          {
+            id: "step-1",
+            param: { type: "filePaste", value: "hello" },
+            delayMs: 0,
+          },
+          { id: "step-end", param: { type: "end" }, delayMs: 0 },
+        ],
+        pageHtml: "<html>big page</html>",
+        selectionHtml: "<span>selection</span>",
+      }
+      mockStorage.get.mockResolvedValue(pending)
+      mockStorage.set.mockResolvedValue(undefined)
+
+      await handleSidePanelConnect(port as any)
+
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            step: pending.steps[0],
+            pageHtml: "<html>big page</html>",
+            selectionHtml: "<span>selection</span>",
+          }),
+        }),
+      )
+    })
+
     it("SP-12: Does not call readClipboard when useClipboard is false", async () => {
       const port = createMockPort("https://chatgpt.com")
       const pending = { ...createPendingAction(), useClipboard: false }
@@ -209,7 +265,9 @@ describe("background.ts - Side Panel Connection", () => {
       }
       mockStorage.get.mockResolvedValue(pending)
       mockStorage.set.mockResolvedValue(undefined)
-      mockReadClipboard.mockResolvedValue({ clipboardText: "clipboard content" })
+      mockReadClipboard.mockResolvedValue({
+        clipboardText: "clipboard content",
+      })
 
       await handleSidePanelConnect(port as any)
 

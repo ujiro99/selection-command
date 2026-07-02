@@ -1,6 +1,7 @@
 import type { Point } from "@/types"
 
 import { isEmpty } from "@/lib/utils"
+import { PAGE_HTML_MAX_CHARS } from "@/const"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -91,6 +92,16 @@ export function getSelectionText(): string {
     return s.toString().trim()
   }
   return ""
+}
+
+export function getSelectionHtml(): string {
+  const s = window.getSelection()
+  if (s == null || s.rangeCount === 0) return ""
+  const range = s.getRangeAt(0)
+  if (range.collapsed) return ""
+  const div = document.createElement("div")
+  div.appendChild(range.cloneContents())
+  return div.innerHTML.slice(0, PAGE_HTML_MAX_CHARS)
 }
 
 /**

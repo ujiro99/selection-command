@@ -1,9 +1,23 @@
 import { t } from "@/services/i18n"
-import { INSERT, InsertSymbol, PageAction } from "@/services/pageAction"
+import {
+  INSERT,
+  InsertSymbol,
+  PageAction,
+  toInsertTemplate,
+} from "@/services/pageAction"
 import { PAGE_ACTION_EVENT, PAGE_ACTION_CONTROL } from "@/const"
 import { getKeyLabel } from "@/services/pageAction/listener"
 
 export const LocaleKey = "PageAction_InputMenu_mark_"
+
+/** Counts the total occurrences of HTML attachment placeholders (PageHtml + SelectionHtml) in a prompt. */
+export const countHtmlAttachments = (prompt: string): number => {
+  const count = (needle: string) => prompt.split(needle).length - 1
+  return (
+    count(toInsertTemplate(INSERT.PAGE_HTML)) +
+    count(toInsertTemplate(INSERT.SELECTION_HTML))
+  )
+}
 
 export function convReadableKeysToSymbols(value?: string | null): string {
   let normalizedValue = value ?? ""
@@ -12,6 +26,8 @@ export function convReadableKeysToSymbols(value?: string | null): string {
     [t(LocaleKey + INSERT.URL)]: InsertSymbol[INSERT.URL],
     [t(LocaleKey + INSERT.CLIPBOARD)]: InsertSymbol[INSERT.CLIPBOARD],
     [t(LocaleKey + INSERT.LANG)]: InsertSymbol[INSERT.LANG],
+    [t(LocaleKey + INSERT.PAGE_HTML)]: InsertSymbol[INSERT.PAGE_HTML],
+    [t(LocaleKey + INSERT.SELECTION_HTML)]: InsertSymbol[INSERT.SELECTION_HTML],
   }
   Object.entries(symbols).forEach(([key, val]) => {
     normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
@@ -26,6 +42,8 @@ export function convSymbolsToReadableKeys(value?: string | null): string {
     [InsertSymbol[INSERT.URL]]: t(LocaleKey + INSERT.URL),
     [InsertSymbol[INSERT.CLIPBOARD]]: t(LocaleKey + INSERT.CLIPBOARD),
     [InsertSymbol[INSERT.LANG]]: t(LocaleKey + INSERT.LANG),
+    [InsertSymbol[INSERT.PAGE_HTML]]: t(LocaleKey + INSERT.PAGE_HTML),
+    [InsertSymbol[INSERT.SELECTION_HTML]]: t(LocaleKey + INSERT.SELECTION_HTML),
   }
   Object.entries(symbols).forEach(([key, val]) => {
     normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
@@ -43,6 +61,8 @@ export const paramToStr = (param: PageAction.Parameter): string => {
     case PAGE_ACTION_EVENT.tripleClick:
       return param.label
     case PAGE_ACTION_EVENT.input:
+      return param.value
+    case PAGE_ACTION_EVENT.filePaste:
       return param.value
     case PAGE_ACTION_EVENT.keyboard:
       return getKeyLabel(param)

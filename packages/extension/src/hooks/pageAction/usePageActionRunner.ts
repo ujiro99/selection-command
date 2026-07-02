@@ -44,6 +44,8 @@ export function usePageActionRunner() {
       clipboardText,
       openMode,
       userVariables,
+      pageHtml,
+      selectionHtml,
     } = message
     const type = step.param.type
 
@@ -98,6 +100,13 @@ export function usePageActionRunner() {
             clipboardText,
             userVariables,
           } as PageAction.InputExec)
+          break
+        case "filePaste":
+          ;[result, msg] = await dispatcher.filePaste({
+            ...step.param,
+            pageHtml,
+            selectionHtml,
+          } as PageAction.FilePasteExec)
           break
         case "scroll":
           ;[result, msg] = await dispatcher.scroll(

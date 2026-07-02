@@ -481,6 +481,8 @@ const run = (
     srcUrl,
     openMode,
     userVariables,
+    pageHtml,
+    selectionHtml,
   } = param
   const tabId = param.tabId || sender.tab?.id
   if (tabId == null) {
@@ -509,6 +511,10 @@ const run = (
         await sleep(delay)
       }
 
+      // pageHtml/selectionHtml can be up to ~1MB; only include them for the
+      // step that actually consumes them to avoid structured-cloning that
+      // payload on every step in the sequence.
+      const isFilePaste = step.param.type === EVENT.filePaste
       const ret = await Ipc.sendTab<
         ExecPageAction.Message,
         ExecPageAction.Return
@@ -519,6 +525,8 @@ const run = (
         clipboardText,
         openMode,
         userVariables,
+        pageHtml: isFilePaste ? pageHtml : undefined,
+        selectionHtml: isFilePaste ? selectionHtml : undefined,
       })
       if (ret == null) {
         if (retryCount >= RETRY_MAX) {

@@ -21,12 +21,16 @@ vi.mock("@/services/pageAction", () => ({
     URL: "url",
     CLIPBOARD: "clipboard",
     LANG: "lang",
+    PAGE_HTML: "pageHtml",
+    SELECTION_HTML: "selectionHtml",
   },
   InsertSymbol: {
     selectedText: "{{selectedText}}",
     url: "{{url}}",
     clipboard: "{{clipboard}}",
     lang: "{{lang}}",
+    pageHtml: "{{pageHtml}}",
+    selectionHtml: "{{selectionHtml}}",
   },
 }))
 
@@ -73,8 +77,13 @@ const mockUserEventSetup = (userEvent as any).setup as ReturnType<typeof vi.fn>
 
 // Mock console methods
 const mockConsole = {
-  warn: vi.spyOn(console, "warn").mockImplementation(() => { }),
+  warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
 }
+
+// beforeEach replaces global.document with a plain mock, so capture the real
+// createElement now to build fresh elements inside tests (e.g. for the
+// waitForClickable tests, which need a real, mutable button per test).
+const realCreateElement = document.createElement.bind(document)
 
 // Mock DOM elements
 const mockElements = {
@@ -109,6 +118,45 @@ const mockElements = {
     div.dispatchEvent = vi.fn()
     return div
   })(),
+  filePasteTarget: (() => {
+    const div = document.createElement("div")
+    div.dispatchEvent = vi.fn()
+    div.focus = vi.fn()
+    return div
+  })(),
+}
+
+// jsdom does not implement DataTransfer/ClipboardEvent, so filePaste's use
+// of `new DataTransfer()` / `new ClipboardEvent("paste", ...)` needs a
+// minimal stand-in to run under test.
+class MockDataTransfer {
+  files: File[] = []
+  items = {
+    add: (file: File) => {
+      this.files.push(file)
+    },
+  }
+}
+
+class MockClipboardEvent extends Event {
+  clipboardData: MockDataTransfer | null
+  constructor(
+    type: string,
+    init?: EventInit & { clipboardData?: MockDataTransfer },
+  ) {
+    super(type, init)
+    this.clipboardData = init?.clipboardData ?? null
+  }
+}
+
+// jsdom's File/Blob don't implement `.text()`, so read via FileReader instead.
+function readFileAsText(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsText(file)
+  })
 }
 
 // Mock global objects
@@ -165,6 +213,8 @@ describe("PageActionDispatcher", () => {
     // Setup global mocks
     global.document = mockDocument as any
     global.window = mockWindow as any
+    global.DataTransfer = MockDataTransfer as any
+    global.ClipboardEvent = MockClipboardEvent as any
     mockDocument.querySelector.mockReturnValue(null)
 
     // Reset element mocks
@@ -174,6 +224,8 @@ describe("PageActionDispatcher", () => {
     mockElements.div.dispatchEvent = vi.fn()
     mockElements.contentEditableDiv.dispatchEvent = vi.fn()
     mockElements.input.focus = vi.fn()
+    mockElements.filePasteTarget.dispatchEvent = vi.fn()
+    mockElements.filePasteTarget.focus = vi.fn()
   })
 
   afterEach(() => {
@@ -237,6 +289,91 @@ describe("PageActionDispatcher", () => {
       expect(mockIsValidXPath).toHaveBeenCalledWith("//button[@id='test']")
       expect(mockGetElementByXPath).toHaveBeenCalledWith("//button[@id='test']")
     })
+
+    it("PDC-04: Should click as soon as the element becomes clickable (waitForClickable=true)", async () => {
+      const button = realCreateElement("button")
+      button.disabled = true
+      // jsdom doesn't perform layout, so getBoundingClientRect always
+      // reports zero size; stub it to simulate a rendered, sized element.
+      button.getBoundingClientRect = vi.fn(() => ({
+        width: 10,
+        height: 10,
+      })) as any
+      button.dispatchEvent = vi.fn()
+      mockDocument.querySelector.mockReturnValue(button)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        waitForClickable: true,
+      }
+
+      const resultPromise = PageActionDispatcher.click(param as any)
+
+      // First poll tick sees the element still disabled.
+      await vi.advanceTimersByTimeAsync(60)
+      expect(mockUserInstance.click).not.toHaveBeenCalled()
+
+      // Element becomes enabled before the next poll tick.
+      button.disabled = false
+      await vi.advanceTimersByTimeAsync(60)
+
+      const result = await resultPromise
+
+      expect(result).toEqual([true])
+      expect(mockUserInstance.click).toHaveBeenCalledWith(button)
+    })
+
+    it("PDC-05: Should time out with a message describing why the element never became clickable", async () => {
+      const button = realCreateElement("button")
+      button.disabled = true
+      button.getBoundingClientRect = vi.fn(() => ({
+        width: 10,
+        height: 10,
+      })) as any
+      mockDocument.querySelector.mockReturnValue(button)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        waitForClickable: true,
+      }
+
+      const resultPromise = PageActionDispatcher.click(param as any)
+      await vi.advanceTimersByTimeAsync(2100)
+      const result = await resultPromise
+
+      expect(result).toEqual([
+        false,
+        "Element not clickable (disabled): Submit",
+      ])
+      expect(mockConsole.warn).toHaveBeenCalledWith(
+        expect.stringContaining("Failing conditions: [disabled]"),
+        button,
+      )
+    })
+
+    it("PDC-06: Should time out with 'Element not found' when the element never appears (waitForClickable=true)", async () => {
+      mockDocument.querySelector.mockReturnValue(null)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".missing",
+        selectorType: SelectorType.css,
+        label: "Missing",
+        waitForClickable: true,
+      }
+
+      const resultPromise = PageActionDispatcher.click(param as any)
+      await vi.advanceTimersByTimeAsync(2100)
+      const result = await resultPromise
+
+      expect(result).toEqual([false, "Element not found: Missing"])
+    })
   })
 
   describe("PageActionDispatcher.input", () => {
@@ -289,7 +426,7 @@ describe("PageActionDispatcher", () => {
       expect(mockInputContentEditable).toHaveBeenCalledWith(
         mockElement,
         "test text",
-        40,
+        10,
         null,
       )
     })
@@ -529,6 +666,109 @@ describe("PageActionDispatcher", () => {
         expect.objectContaining({
           myVar: "custom value",
         }),
+      )
+    })
+  })
+
+  describe("PageActionDispatcher.filePaste", () => {
+    it("PDF-01: Should return error when element not found", async () => {
+      mockDocument.querySelector.mockReturnValue(null)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.filePaste,
+        selector: ".not-found",
+        selectorType: SelectorType.css,
+        label: "Paste HTML",
+        value: "{{pageHtml}}",
+        fileName: "page.html",
+        fileType: "text/html",
+        pageHtml: "<p>hi</p>",
+      }
+
+      const resultPromise = PageActionDispatcher.filePaste(param as any)
+      vi.advanceTimersByTime(1100)
+
+      const result = await resultPromise
+
+      expect(result).toEqual([false, "Element not found: Paste HTML"])
+      expect(mockConsole.warn).toHaveBeenCalledWith(
+        "Element not found for: .not-found",
+      )
+    })
+
+    it("PDF-02: Should expand PAGE_HTML/SELECTION_HTML placeholders and paste the result as a File", async () => {
+      const mockElement = mockElements.filePasteTarget
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      mockSafeInterpolate.mockImplementation(
+        (template: string, vars: Record<string, string>) =>
+          Object.entries(vars).reduce(
+            (acc, [key, value]) => acc.split(key).join(value),
+            template,
+          ),
+      )
+
+      const param = {
+        type: PAGE_ACTION_EVENT.filePaste,
+        selector: ".chat-input",
+        selectorType: SelectorType.css,
+        label: "Paste page HTML",
+        value: "prefix {{pageHtml}} {{selectionHtml}} suffix",
+        fileName: "my-page.html",
+        fileType: "text/html",
+        pageHtml: "<h1>Page</h1>",
+        selectionHtml: "<b>Selection</b>",
+      }
+
+      const result = await PageActionDispatcher.filePaste(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockSafeInterpolate).toHaveBeenCalledWith(
+        "prefix {{pageHtml}} {{selectionHtml}} suffix",
+        {
+          "{{pageHtml}}": "<h1>Page</h1>",
+          "{{selectionHtml}}": "<b>Selection</b>",
+        },
+      )
+      expect(mockElement.focus).toHaveBeenCalled()
+      expect(mockElement.dispatchEvent).toHaveBeenCalledTimes(1)
+
+      const dispatchedEvent = (mockElement.dispatchEvent as any).mock
+        .calls[0][0]
+      expect(dispatchedEvent.type).toBe("paste")
+      expect(dispatchedEvent.bubbles).toBe(true)
+      expect(dispatchedEvent.cancelable).toBe(true)
+      expect(dispatchedEvent.clipboardData).toBeInstanceOf(MockDataTransfer)
+
+      const file = dispatchedEvent.clipboardData.files[0]
+      expect(file.name).toBe("my-page.html")
+      expect(file.type).toBe("text/html")
+      expect(await readFileAsText(file)).toBe(
+        "prefix <h1>Page</h1> <b>Selection</b> suffix",
+      )
+    })
+
+    it("PDF-03: Should default missing pageHtml/selectionHtml to empty strings", async () => {
+      const mockElement = mockElements.filePasteTarget
+      mockDocument.querySelector.mockReturnValue(mockElement)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.filePaste,
+        selector: ".chat-input",
+        selectorType: SelectorType.css,
+        label: "Paste page HTML",
+        value: "{{pageHtml}}{{selectionHtml}}",
+        fileName: "page.html",
+        fileType: "text/html",
+      }
+
+      await PageActionDispatcher.filePaste(param as any)
+
+      expect(mockSafeInterpolate).toHaveBeenCalledWith(
+        "{{pageHtml}}{{selectionHtml}}",
+        {
+          "{{pageHtml}}": "",
+          "{{selectionHtml}}": "",
+        },
       )
     })
   })

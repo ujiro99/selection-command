@@ -492,7 +492,7 @@
     "message": "Prompt"
   },
   "Option_aiPrompt_prompt_desc": {
-    "message": "Ini adalah template prompt yang dimasukkan. Anda dapat menambahkan variabel dari menu penyisipan teks."
+    "message": "Ini adalah template prompt yang dimasukkan. Anda dapat menambahkan variabel dari menu."
   },
   "Option_aiPrompt_prompt_desc_2": {
     "message": "・Contoh kode bahasa browser: en, es, zh_CN"
@@ -818,6 +818,9 @@
   "Option_zod_url": {
     "message": "Silakan masukkan dalam format URL."
   },
+  "Option_zod_aiPrompt_multipleHtmlAttachments": {
+    "message": "Prompt hanya boleh menyertakan satu lampiran HTML."
+  },
   "zod_pageUrl_required_for_currentTab": {
     "message": "URL halaman wajib diisi saat mode tab saat ini dipilih."
   },
@@ -837,8 +840,17 @@
     "message": "Kode bahasa browser Anda akan disisipkan",
     "description": "for INSERT.LANG"
   },
+  "PageAction_InputMenu_mark_pageHtml": {
+    "message": "HTML lengkap halaman akan dilampirkan sebagai file"
+  },
+  "PageAction_InputMenu_mark_selectionHtml": {
+    "message": "HTML dari rentang yang dipilih akan dilampirkan sebagai file"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
+  },
+  "PageAction_InputMenu_fileAttach": {
+    "message": "Lampirkan HTML"
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Teks yang dipilih"
@@ -851,6 +863,12 @@
   },
   "PageAction_InputMenu_lang": {
     "message": "Bahasa browser"
+  },
+  "PageAction_InputMenu_pageHtml": {
+    "message": "Halaman saat ini"
+  },
+  "PageAction_InputMenu_selectionHtml": {
+    "message": "Seleksi"
   },
   "PageAction_InputEditor_title": {
     "message": "Edit konten"
@@ -1088,6 +1106,9 @@
   },
   "Option_openMode_backgroundTab_desc": {
     "message": "Buka tab di latar belakang.<wbr>Tampilkan di sebelah kanan tab saat ini."
+  },
+  "Option_openMode_backgroundTab_disabled_filePaste_desc": {
+    "message": "Tidak tersedia jika prompt menyertakan<wbr>lampiran HTML (Halaman saat ini / Seleksi)."
   },
   "Option_openMode_currentTab": {
     "message": "Tab Saat Ini"

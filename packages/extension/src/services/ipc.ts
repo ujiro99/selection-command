@@ -83,6 +83,8 @@ export type RunPageAction = {
   selectedText: string
   clipboardText: string
   userVariables?: Array<UserVariable>
+  pageHtml?: string
+  selectionHtml?: string
 }
 
 /**
@@ -97,6 +99,8 @@ export type SidePanelPendingAction = {
   srcUrl: string
   clipboardText: string
   useClipboard?: boolean
+  pageHtml?: string
+  selectionHtml?: string
 }
 
 export namespace ExecPageAction {
@@ -107,6 +111,8 @@ export namespace ExecPageAction {
     step: PageActionStep
     openMode: PAGE_ACTION_OPEN_MODE
     userVariables?: Array<UserVariable>
+    pageHtml?: string
+    selectionHtml?: string
   }
   export type Return = {
     result: boolean
