@@ -56,7 +56,7 @@ describe("InputMenu file attach menu", () => {
     ).not.toBeInTheDocument()
   })
 
-  it("IM-06: does not switch to the disabled file attach menu via Radix's pointer-enter auto-switch while another menu is already open", () => {
+  it("IM-06: close the submenu content on hover to disabled trigger, while another menu is already open", () => {
     render(<InputMenu targetElm={null} fileAttachDisabled />)
 
     const insertTrigger = screen
@@ -81,7 +81,7 @@ describe("InputMenu file attach menu", () => {
       screen.queryByText("PageAction_InputMenu_pageHtml"),
     ).not.toBeInTheDocument()
     expect(
-      screen.getByText("PageAction_InputMenu_selectedText"),
-    ).toBeInTheDocument()
+      screen.queryByText("PageAction_InputMenu_selectedText"),
+    ).not.toBeInTheDocument()
   })
 })

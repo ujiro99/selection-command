@@ -259,7 +259,12 @@ export function InputMenu(props: MenuProps): JSX.Element {
   const disabled = props.disabled ?? false
   const [selectedMenu, setSelectedMenu] = useState("")
   const iconSrc = chrome.runtime.getURL("/icon128.png")
-  const compactMode = !props.hideFilePaste
+  // Whether the file-attach menu is rendered alongside the insert-text menu.
+  // When both are shown (the option editor's toolbar), triggers get tighter
+  // padding and no chevrons to keep the two-menu row compact; the standalone
+  // InputPopup overlay (hideFilePaste) only ever shows one menu, so it can
+  // afford the chevrons.
+  const showFileAttachMenu = !props.hideFilePaste
 
   const onClickItem = async (menu: INSERT) => {
     if (props.targetElm) {
@@ -282,7 +287,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
 
   return (
     <Menubar
-      className={cn(compactMode && "pr-1", props.className)}
+      className={cn(showFileAttachMenu && "pr-1", props.className)}
       value={selectedMenu}
       onValueChange={onSelectedMenuChange}
     >
@@ -297,7 +302,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
           onMouseEnter={() => onSelectedMenuChange(MENU.INSERT)}
         >
           {t("PageAction_InputMenu_insertText")}
-          {!compactMode &&
+          {!showFileAttachMenu &&
             (selectedMenu === MENU.INSERT ? (
               <ChevronUp size={14} className="ml-1" />
             ) : (
@@ -339,7 +344,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
             onMouseEnter={() => onSelectedMenuChange(MENU.FILE_PASTE)}
           >
             {t("PageAction_InputMenu_fileAttach")}
-            {!compactMode &&
+            {!showFileAttachMenu &&
               (selectedMenu === MENU.FILE_PASTE ? (
                 <ChevronUp size={14} className="ml-1" />
               ) : (

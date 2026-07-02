@@ -163,11 +163,13 @@ function checkClickable(element: HTMLElement): string[] {
   return reasons
 }
 
+type ClickableResult = { element: HTMLElement | null; reasons: string[] }
+
 async function waitForClickable(
   selector: string,
   selectorType: SelectorType,
   timeout: number = TIMEOUT,
-): Promise<HTMLElement | null> {
+): Promise<ClickableResult> {
   const startTime = Date.now()
   return new Promise((resolve, reject) => {
     let lastElement: HTMLElement | null = null
@@ -182,7 +184,7 @@ async function waitForClickable(
             `waitForClickable timed out. Failing conditions: [${reasons.join(", ") || "unknown"}]`,
             lastElement,
           )
-          resolve(null)
+          resolve({ element: null, reasons })
           return
         }
         try {
@@ -193,7 +195,7 @@ async function waitForClickable(
           if (reasons.length === 0) {
             clearInterval(interval)
             console.debug("Element is clickable:", element)
-            resolve(element)
+            resolve({ element, reasons: [] })
           }
         } catch (e) {
           clearInterval(interval)
@@ -202,6 +204,40 @@ async function waitForClickable(
       })
     }, 50)
   })
+}
+
+// Builds a diagnosable failure message: "not found" when the element never
+// appeared, or the specific unmet conditions (disabled, not-visible, ...)
+// when it appeared but never became clickable within the timeout.
+function clickFailureMessage(label: string, reasons: string[]): string {
+  if (reasons.length === 0 || reasons.includes("element-not-found")) {
+    return `Element not found: ${label}`
+  }
+  return `Element not clickable (${reasons.join(", ")}): ${label}`
+}
+
+async function resolveClickTarget(
+  param: PageAction.Click,
+): Promise<[HTMLElement, undefined] | [null, string]> {
+  const { selector, selectorType, label } = param
+  if (!param.waitForClickable) {
+    const element = await waitForElement(selector, selectorType)
+    if (!element) {
+      console.warn(`Element not found for: ${selector}`)
+      return [null, `Element not found: ${label}`]
+    }
+    return [element, undefined]
+  }
+
+  const { element, reasons } = await waitForClickable(
+    selector,
+    selectorType,
+    TIMEOUT * 2, // Allow more time for click
+  )
+  if (!element) {
+    return [null, clickFailureMessage(label, reasons)]
+  }
+  return [element, undefined]
 }
 
 export type ActionReturn = Promise<[boolean, string?]>
@@ -213,48 +249,27 @@ export const PageActionDispatcher = {
   },
 
   click: async (param: PageAction.Click): ActionReturn => {
-    const { selector, selectorType } = param
     const user = userEvent.setup()
-
-    const element = param.waitForClickable
-      ? await waitForClickable(selector, selectorType, TIMEOUT * 2) // Allow more time for click
-      : await waitForElement(selector, selectorType)
-    if (!element) {
-      console.warn(`Element not found or not clickable for: ${selector}`)
-      return [false, `Element not found: ${param.label}`]
-    }
+    const [element, error] = await resolveClickTarget(param)
+    if (!element) return [false, error]
 
     await user.click(element)
     return [true]
   },
 
   doubleClick: async (param: PageAction.Click): ActionReturn => {
-    const { selector, selectorType } = param
     const user = userEvent.setup()
-
-    const element = param.waitForClickable
-      ? await waitForClickable(selector, selectorType, TIMEOUT * 2)
-      : await waitForElement(selector, selectorType)
-    if (!element) {
-      console.warn(`Element not found or not clickable for: ${selector}`)
-      return [false, `Element not found: ${param.label}`]
-    }
+    const [element, error] = await resolveClickTarget(param)
+    if (!element) return [false, error]
 
     await user.dblClick(element)
     return [true]
   },
 
   tripleClick: async (param: PageAction.Click): ActionReturn => {
-    const { selector, selectorType } = param
     const user = userEvent.setup()
-
-    const element = param.waitForClickable
-      ? await waitForClickable(selector, selectorType, TIMEOUT * 2)
-      : await waitForElement(selector, selectorType)
-    if (!element) {
-      console.warn(`Element not found or not clickable for: ${selector}`)
-      return [false, `Element not found: ${param.label}`]
-    }
+    const [element, error] = await resolveClickTarget(param)
+    if (!element) return [false, error]
 
     await user.tripleClick(element)
     return [true]
