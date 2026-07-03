@@ -316,6 +316,7 @@ export enum PAGE_ACTION_CONDITION_ACTION {
 export enum PAGE_ACTION_CONDITION_TYPE {
   empty = "empty", // Target element is missing or has no text/value
   visible = "visible", // Target element exists and is visible
+  clickable = "clickable", // Target element exists and passes all clickability checks (not disabled, visible, hit-testable)
 }
 
 export const POPUP_OFFSET = 50

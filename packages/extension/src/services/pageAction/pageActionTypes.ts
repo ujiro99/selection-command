@@ -41,6 +41,10 @@ export namespace PageAction {
     conditionType: PAGE_ACTION_CONDITION_TYPE
     selector: string
     selectorType: SelectorType
+    // Only meaningful for actionType=waitUntil; controls how long to poll
+    // before giving up. Set by the caller so all timing values (this and
+    // step delayMs) are controlled centrally at the call site.
+    timeout?: number
   }
 
   export type Click = {
@@ -51,7 +55,6 @@ export namespace PageAction {
     label: string
     selector: string
     selectorType: SelectorType
-    waitForClickable?: boolean
     condition?: ClickCondition
   }
 

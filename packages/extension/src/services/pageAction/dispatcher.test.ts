@@ -87,7 +87,7 @@ const mockConsole = {
 
 // beforeEach replaces global.document with a plain mock, so capture the real
 // createElement now to build fresh elements inside tests (e.g. for the
-// waitForClickable tests, which need a real, mutable button per test).
+// clickable-condition tests, which need a real, mutable button per test).
 const realCreateElement = document.createElement.bind(document)
 
 // Mock DOM elements
@@ -295,7 +295,7 @@ describe("PageActionDispatcher", () => {
       expect(mockGetElementByXPath).toHaveBeenCalledWith("//button[@id='test']")
     })
 
-    it("PDC-04: Should click as soon as the element becomes clickable (waitForClickable=true)", async () => {
+    it("PDC-04: Should click as soon as the element becomes clickable (condition=waitUntil clickable)", async () => {
       const button = realCreateElement("button")
       button.disabled = true
       // jsdom doesn't perform layout, so getBoundingClientRect always
@@ -312,7 +312,12 @@ describe("PageActionDispatcher", () => {
         selector: ".submit",
         selectorType: SelectorType.css,
         label: "Submit",
-        waitForClickable: true,
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".submit",
+          selectorType: SelectorType.css,
+        },
       }
 
       const resultPromise = PageActionDispatcher.click(param as any)
@@ -345,7 +350,12 @@ describe("PageActionDispatcher", () => {
         selector: ".submit",
         selectorType: SelectorType.css,
         label: "Submit",
-        waitForClickable: true,
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".submit",
+          selectorType: SelectorType.css,
+        },
       }
 
       const resultPromise = PageActionDispatcher.click(param as any)
@@ -362,7 +372,7 @@ describe("PageActionDispatcher", () => {
       )
     })
 
-    it("PDC-06: Should time out with 'Element not found' when the element never appears (waitForClickable=true)", async () => {
+    it("PDC-06: Should time out with 'Element not found' when the element never appears (condition=waitUntil clickable)", async () => {
       mockDocument.querySelector.mockReturnValue(null)
 
       const param = {
@@ -370,7 +380,12 @@ describe("PageActionDispatcher", () => {
         selector: ".missing",
         selectorType: SelectorType.css,
         label: "Missing",
-        waitForClickable: true,
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".missing",
+          selectorType: SelectorType.css,
+        },
       }
 
       const resultPromise = PageActionDispatcher.click(param as any)

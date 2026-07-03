@@ -5,7 +5,6 @@ import {
   PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from "@/const"
 import { queryElement } from "./queryElement"
-import type { PageAction } from "./pageActionTypes"
 
 export async function waitForElement(
   selector: string,
@@ -90,7 +89,15 @@ export function evaluateCondition(
       return element == null || isEmpty(getElementText(element))
     case PAGE_ACTION_CONDITION_TYPE.visible:
       return element != null && isVisible(element)
+    case PAGE_ACTION_CONDITION_TYPE.clickable:
+      return element != null && checkClickable(element).length === 0
   }
+}
+
+type ConditionResult = {
+  satisfied: boolean
+  element: HTMLElement | null
+  reasons: string[]
 }
 
 export async function waitForCondition(
@@ -98,35 +105,9 @@ export async function waitForCondition(
   selector: string,
   selectorType: SelectorType,
   timeout: number = TIMEOUT,
-): Promise<boolean> {
+): Promise<ConditionResult> {
   const startTime = Date.now()
   return new Promise((resolve) => {
-    const interval = setInterval(() => {
-      requestAnimationFrame(() => {
-        if (Date.now() - startTime > timeout) {
-          clearInterval(interval)
-          resolve(false)
-          return
-        }
-        const element = queryElement(selector, selectorType)
-        if (evaluateCondition(conditionType, element)) {
-          clearInterval(interval)
-          resolve(true)
-        }
-      })
-    }, 50)
-  })
-}
-
-type ClickableResult = { element: HTMLElement | null; reasons: string[] }
-
-async function waitForClickable(
-  selector: string,
-  selectorType: SelectorType,
-  timeout: number = TIMEOUT,
-): Promise<ClickableResult> {
-  const startTime = Date.now()
-  return new Promise((resolve, reject) => {
     let lastElement: HTMLElement | null = null
     const interval = setInterval(() => {
       requestAnimationFrame(() => {
@@ -135,26 +116,20 @@ async function waitForClickable(
           const reasons = lastElement
             ? checkClickable(lastElement)
             : ["element-not-found"]
-          console.warn(
-            `waitForClickable timed out. Failing conditions: [${reasons.join(", ") || "unknown"}]`,
-            lastElement,
-          )
-          resolve({ element: null, reasons })
+          if (conditionType === PAGE_ACTION_CONDITION_TYPE.clickable) {
+            console.warn(
+              `waitForCondition timed out. Failing conditions: [${reasons.join(", ") || "unknown"}]`,
+              lastElement,
+            )
+          }
+          resolve({ satisfied: false, element: null, reasons })
           return
         }
-        try {
-          const element = queryElement(selector, selectorType)
-          if (element) lastElement = element
-          if (!element) return
-          const reasons = checkClickable(element)
-          if (reasons.length === 0) {
-            clearInterval(interval)
-            console.debug("Element is clickable:", element)
-            resolve({ element, reasons: [] })
-          }
-        } catch (e) {
+        const element = queryElement(selector, selectorType)
+        if (element) lastElement = element
+        if (element && evaluateCondition(conditionType, element)) {
           clearInterval(interval)
-          reject(String(e))
+          resolve({ satisfied: true, element, reasons: [] })
         }
       })
     }, 50)
@@ -171,26 +146,25 @@ function clickFailureMessage(label: string, reasons: string[]): string {
   return `Element not clickable (${reasons.join(", ")}): ${label}`
 }
 
-export async function resolveClickTarget(
-  param: PageAction.Click,
-): Promise<[HTMLElement, undefined] | [null, string]> {
-  const { selector, selectorType, label } = param
-  if (!param.waitForClickable) {
-    const element = await waitForElement(selector, selectorType)
-    if (!element) {
-      console.warn(`Element not found for: ${selector}`)
-      return [null, `Element not found: ${label}`]
-    }
-    return [element, undefined]
-  }
-
-  const { element, reasons } = await waitForClickable(
+// Resolves a waitUntil click condition. Only a `clickable` condition that
+// never gets satisfied is treated as a real failure (mirrors the old
+// waitForClickable behavior); other condition types are best-effort here,
+// since the caller proceeds to click regardless of the outcome.
+export async function resolveWaitUntilCondition(
+  conditionType: PAGE_ACTION_CONDITION_TYPE,
+  selector: string,
+  selectorType: SelectorType,
+  label: string,
+  timeout?: number,
+): Promise<string | undefined> {
+  const { satisfied, reasons } = await waitForCondition(
+    conditionType,
     selector,
     selectorType,
-    TIMEOUT * 2, // Allow more time for click
+    timeout,
   )
-  if (!element) {
-    return [null, clickFailureMessage(label, reasons)]
+  if (!satisfied && conditionType === PAGE_ACTION_CONDITION_TYPE.clickable) {
+    return clickFailureMessage(label, reasons)
   }
-  return [element, undefined]
+  return undefined
 }

@@ -13,6 +13,7 @@ import {
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONDITION_ACTION,
   PAGE_ACTION_CONDITION_TYPE,
+  PAGE_ACTION_TIMEOUT,
   SelectorType,
 } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
@@ -292,9 +293,9 @@ export const AiPrompt = {
       // Remove the HTML placeholders from the prompt value.
       const promptValue = needFilePaste
         ? aiPromptOption.prompt
-          .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
-          .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
-          .trim()
+            .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
+            .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
+            .trim()
         : aiPromptOption.prompt
 
       steps = [
@@ -330,7 +331,13 @@ export const AiPrompt = {
             label: "Submit",
             selector: submitSelector,
             selectorType: SelectorType.css,
-            waitForClickable: true,
+            condition: {
+              actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+              conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+              selector: submitSelector,
+              selectorType: SelectorType.css,
+              timeout: PAGE_ACTION_TIMEOUT * 2, // Allow more time for click
+            },
           },
         },
         {

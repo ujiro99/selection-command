@@ -177,6 +177,7 @@ const PageActionClickConditionSchema = z.object({
   conditionType: z.nativeEnum(PAGE_ACTION_CONDITION_TYPE),
   selector: z.string(),
   selectorType: z.nativeEnum(SelectorType),
+  timeout: z.number().optional(),
 })
 
 const PageActionClickSchema = z.object({
@@ -188,7 +189,6 @@ const PageActionClickSchema = z.object({
   label: z.string(),
   selector: z.string(),
   selectorType: z.nativeEnum(SelectorType),
-  waitForClickable: z.boolean().optional(),
   condition: PageActionClickConditionSchema.optional(),
 })
 

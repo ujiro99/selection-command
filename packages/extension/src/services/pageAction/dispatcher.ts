@@ -8,8 +8,7 @@ import { queryElement } from "./queryElement"
 import {
   waitForElement,
   evaluateCondition,
-  waitForCondition,
-  resolveClickTarget,
+  resolveWaitUntilCondition,
 } from "./elementWait"
 
 export type { PageAction, ActionReturn } from "./pageActionTypes"
@@ -23,7 +22,7 @@ export const PageActionDispatcher = {
 
   click: async (param: PageAction.Click): ActionReturn => {
     if (param.condition) {
-      const { actionType, conditionType, selector, selectorType } =
+      const { actionType, conditionType, selector, selectorType, timeout } =
         param.condition
       if (actionType === PAGE_ACTION_CONDITION_ACTION.skip) {
         const target = queryElement(selector, selectorType)
@@ -31,32 +30,48 @@ export const PageActionDispatcher = {
           return [true]
         }
       } else if (actionType === PAGE_ACTION_CONDITION_ACTION.waitUntil) {
-        await waitForCondition(conditionType, selector, selectorType)
+        const error = await resolveWaitUntilCondition(
+          conditionType,
+          selector,
+          selectorType,
+          param.label,
+          timeout,
+        )
+        if (error) return [false, error]
       }
     }
 
-    const user = userEvent.setup()
-    const [element, error] = await resolveClickTarget(param)
-    if (!element) return [false, error]
+    const element = await waitForElement(param.selector, param.selectorType)
+    if (!element) {
+      console.warn(`Element not found for: ${param.selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
 
+    const user = userEvent.setup()
     await user.click(element)
     return [true]
   },
 
   doubleClick: async (param: PageAction.Click): ActionReturn => {
-    const user = userEvent.setup()
-    const [element, error] = await resolveClickTarget(param)
-    if (!element) return [false, error]
+    const element = await waitForElement(param.selector, param.selectorType)
+    if (!element) {
+      console.warn(`Element not found for: ${param.selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
 
+    const user = userEvent.setup()
     await user.dblClick(element)
     return [true]
   },
 
   tripleClick: async (param: PageAction.Click): ActionReturn => {
-    const user = userEvent.setup()
-    const [element, error] = await resolveClickTarget(param)
-    if (!element) return [false, error]
+    const element = await waitForElement(param.selector, param.selectorType)
+    if (!element) {
+      console.warn(`Element not found for: ${param.selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
 
+    const user = userEvent.setup()
     await user.tripleClick(element)
     return [true]
   },
