@@ -3,7 +3,13 @@ import { AiPrompt, convertUrlsToMarkdown } from "./aiPrompt"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
 import { Storage } from "@/services/storage"
-import { OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
+import {
+  OPEN_MODE,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
+  SelectorType,
+} from "@/const"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import type { AiService } from "@/types"
 
@@ -301,7 +307,7 @@ describe("AiPrompt.execute", () => {
       expect(stepTypes).toContain(PAGE_ACTION_EVENT.click)
     })
 
-    it("AP-05: should NOT include submit step when autoSubmit is true", async () => {
+    it("AP-05: should include a conditional fallback submit step when autoSubmit is true", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeAutoSubmitService())
 
       await AiPrompt.execute({
@@ -318,8 +324,20 @@ describe("AiPrompt.execute", () => {
 
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
       const stepTypes = sentArgs.steps.map((s: any) => s.param.type)
-      expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.click)
       expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.input)
+      expect(stepTypes).toContain(PAGE_ACTION_EVENT.click)
+
+      const clickStep = sentArgs.steps.find(
+        (s: any) => s.param.type === PAGE_ACTION_EVENT.click,
+      )
+      // The fallback click only fires when the AI service's own auto-submit
+      // didn't clear the input, so it must carry a skip-if-empty condition.
+      expect(clickStep.param.condition).toEqual({
+        actionType: PAGE_ACTION_CONDITION_ACTION.skip,
+        conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+        selector: "div#ask-input",
+        selectorType: SelectorType.css,
+      })
     })
 
     it("AP-06: should use queryUrl as searchUrl when queryUrl is present", async () => {

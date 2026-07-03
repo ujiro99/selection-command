@@ -308,6 +308,16 @@ export enum SelectorType {
   xpath = "xpath",
 }
 
+export enum PAGE_ACTION_CONDITION_ACTION {
+  skip = "skip", // Skip the click if the condition is met
+  waitUntil = "waitUntil", // Poll until the condition is met, then proceed to click
+}
+
+export enum PAGE_ACTION_CONDITION_TYPE {
+  empty = "empty", // Target element is missing or has no text/value
+  visible = "visible", // Target element exists and is visible
+}
+
 export const POPUP_OFFSET = 50
 
 export const EXIT_DURATION = 100

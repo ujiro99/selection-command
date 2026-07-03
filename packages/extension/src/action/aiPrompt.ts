@@ -11,6 +11,8 @@ import {
   PAGE_ACTION_OPEN_MODE,
   PAGE_ACTION_CONTROL,
   PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
   SelectorType,
 } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
@@ -150,10 +152,61 @@ export const AiPrompt = {
 
       // Build steps without the DOM input step.
       const submitSelector = service.submitSelectors.join(", ")
+      const inputSelector = service.inputSelectors.join(", ")
       if (!service.autoSubmit && submitSelector.length === 0) {
         console.warn(
           `[AiPrompt] queryUrl mode: submitSelectors is empty for "${service.id}" but autoSubmit is false. Submit step will be skipped.`,
         )
+      }
+
+      // When autoSubmit is true (e.g. ChatGPT, Perplexity) the service is
+      // expected to process the prompt automatically after navigation. But
+      // this can silently fail to fire (e.g. while ChatGPT is re-validating
+      // the session right after opening the URL), leaving the prompt sitting
+      // unsent in the input. As a fallback, add a Submit click step that only
+      // fires if the input still contains the unsent prompt.
+      let submitStep: PageActionStep[] = []
+      if (
+        service.autoSubmit &&
+        submitSelector.length > 0 &&
+        inputSelector.length > 0
+      ) {
+        console.log(
+          `[AiPrompt] queryUrl mode: autoSubmit is true for "${service.id}". Adding fallback Submit step.`,
+        )
+        submitStep = [
+          {
+            id: generateRandomID(),
+            delayMs: 1000,
+            skipRenderWait: false,
+            param: {
+              type: PAGE_ACTION_EVENT.click,
+              label: "Submit (fallback)",
+              selector: submitSelector,
+              selectorType: SelectorType.css,
+              condition: {
+                actionType: PAGE_ACTION_CONDITION_ACTION.skip,
+                conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+                selector: inputSelector,
+                selectorType: SelectorType.css,
+              },
+            },
+          },
+        ]
+      } else if (!service.autoSubmit && submitSelector.length > 0) {
+        submitStep = [
+          {
+            id: generateRandomID(),
+            delayMs: 200,
+            skipRenderWait: false,
+            param: {
+              type: PAGE_ACTION_EVENT.click,
+              label: "Submit",
+              selector: submitSelector,
+              selectorType: SelectorType.css,
+            },
+          },
+        ]
       }
 
       steps = [
@@ -167,23 +220,7 @@ export const AiPrompt = {
             mode: "aiPrompt",
           },
         },
-        // When autoSubmit is true (e.g. Perplexity) the service processes the
-        // prompt automatically after navigation, so no submit click is needed.
-        ...(service.autoSubmit || submitSelector.length === 0
-          ? []
-          : [
-              {
-                id: generateRandomID(),
-                delayMs: 200,
-                skipRenderWait: false,
-                param: {
-                  type: PAGE_ACTION_EVENT.click,
-                  label: "Submit",
-                  selector: submitSelector,
-                  selectorType: SelectorType.css,
-                },
-              } as PageActionStep,
-            ]),
+        ...submitStep,
         {
           id: generateRandomID(),
           delayMs: 0,
@@ -252,11 +289,12 @@ export const AiPrompt = {
         })
       }
 
+      // Remove the HTML placeholders from the prompt value.
       const promptValue = needFilePaste
         ? aiPromptOption.prompt
-            .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
-            .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
-            .trim()
+          .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
+          .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
+          .trim()
         : aiPromptOption.prompt
 
       steps = [

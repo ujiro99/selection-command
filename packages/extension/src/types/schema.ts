@@ -8,6 +8,8 @@ import {
   PAGE_ACTION_OPEN_MODE,
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONTROL,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
   SelectorType,
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
@@ -170,6 +172,13 @@ const PageActionNavigateSchema = z.object({
   url: z.string(),
 })
 
+const PageActionClickConditionSchema = z.object({
+  actionType: z.nativeEnum(PAGE_ACTION_CONDITION_ACTION),
+  conditionType: z.nativeEnum(PAGE_ACTION_CONDITION_TYPE),
+  selector: z.string(),
+  selectorType: z.nativeEnum(SelectorType),
+})
+
 const PageActionClickSchema = z.object({
   type: z.enum([
     PAGE_ACTION_EVENT.click,
@@ -180,6 +189,7 @@ const PageActionClickSchema = z.object({
   selector: z.string(),
   selectorType: z.nativeEnum(SelectorType),
   waitForClickable: z.boolean().optional(),
+  condition: PageActionClickConditionSchema.optional(),
 })
 
 const PageActionInputSchema = z.object({
