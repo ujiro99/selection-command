@@ -2,14 +2,8 @@ import userEvent from "@testing-library/user-event"
 import { isEditable, inputContentEditable } from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
-import { PAGE_ACTION_CONDITION_ACTION } from "@/const"
 import { getUILanguage } from "@/services/i18n"
-import { queryElement } from "./queryElement"
-import {
-  waitForElement,
-  evaluateCondition,
-  resolveWaitUntilCondition,
-} from "./elementWait"
+import { waitForElement, resolveClickCondition } from "./elementWait"
 
 export type { PageAction, ActionReturn } from "./pageActionTypes"
 import type { PageAction, ActionReturn } from "./pageActionTypes"
@@ -22,23 +16,12 @@ export const PageActionDispatcher = {
 
   click: async (param: PageAction.Click): ActionReturn => {
     if (param.condition) {
-      const { actionType, conditionType, selector, selectorType, timeout } =
-        param.condition
-      if (actionType === PAGE_ACTION_CONDITION_ACTION.skip) {
-        const target = queryElement(selector, selectorType)
-        if (evaluateCondition(conditionType, target)) {
-          return [true]
-        }
-      } else if (actionType === PAGE_ACTION_CONDITION_ACTION.waitUntil) {
-        const error = await resolveWaitUntilCondition(
-          conditionType,
-          selector,
-          selectorType,
-          param.label,
-          timeout,
-        )
-        if (error) return [false, error]
-      }
+      const { skip, error } = await resolveClickCondition(
+        param.condition,
+        param.label,
+      )
+      if (skip) return [true]
+      if (error) return [false, error]
     }
 
     const element = await waitForElement(param.selector, param.selectorType)

@@ -1,10 +1,27 @@
 import { isEmpty } from "@/lib/utils"
 import {
   SelectorType,
+  PAGE_ACTION_CONDITION_ACTION,
   PAGE_ACTION_CONDITION_TYPE,
   PAGE_ACTION_TIMEOUT as TIMEOUT,
 } from "@/const"
 import { queryElement } from "./queryElement"
+import type { PageAction } from "./pageActionTypes"
+
+// Polling strategy for the wait loops below. Foreground tabs pair setInterval
+// with requestAnimationFrame for smoother, render-synced checks; background
+// tabs can't rely on rAF (it's throttled/paused for inactive tabs), so they
+// poll on a plain, longer-interval setInterval instead.
+export type PollOptions = {
+  intervalMs: number
+  useAnimationFrame: boolean
+}
+
+const FOREGROUND_POLL: PollOptions = { intervalMs: 50, useAnimationFrame: true }
+export const BACKGROUND_POLL: PollOptions = {
+  intervalMs: 100,
+  useAnimationFrame: false,
+}
 
 export async function waitForElement(
   selector: string,
@@ -107,34 +124,37 @@ export async function waitForCondition(
   selector: string,
   selectorType: SelectorType,
   timeout: number = TIMEOUT,
+  poll: PollOptions = FOREGROUND_POLL,
 ): Promise<ConditionResult> {
   const startTime = Date.now()
   return new Promise((resolve) => {
     let lastElement: HTMLElement | null = null
-    const interval = setInterval(() => {
-      requestAnimationFrame(() => {
-        if (Date.now() - startTime > timeout) {
-          clearInterval(interval)
-          const reasons = lastElement
-            ? checkClickable(lastElement)
-            : ["element-not-found"]
-          if (conditionType === PAGE_ACTION_CONDITION_TYPE.clickable) {
-            console.warn(
-              `waitForCondition timed out. Failing conditions: [${reasons.join(", ") || "unknown"}]`,
-              lastElement,
-            )
-          }
-          resolve({ satisfied: false, element: null, reasons })
-          return
+    const check = () => {
+      if (Date.now() - startTime > timeout) {
+        clearInterval(interval)
+        const reasons = lastElement
+          ? checkClickable(lastElement)
+          : ["element-not-found"]
+        if (conditionType === PAGE_ACTION_CONDITION_TYPE.clickable) {
+          console.warn(
+            `waitForCondition timed out. Failing conditions: [${reasons.join(", ") || "unknown"}]`,
+            lastElement,
+          )
         }
-        const element = queryElement(selector, selectorType)
-        if (element) lastElement = element
-        if (element && evaluateCondition(conditionType, element)) {
-          clearInterval(interval)
-          resolve({ satisfied: true, element, reasons: [] })
-        }
-      })
-    }, 50)
+        resolve({ satisfied: false, element: null, reasons })
+        return
+      }
+      const element = queryElement(selector, selectorType)
+      if (element) lastElement = element
+      if (element && evaluateCondition(conditionType, element)) {
+        clearInterval(interval)
+        resolve({ satisfied: true, element, reasons: [] })
+      }
+    }
+    const interval = setInterval(
+      () => (poll.useAnimationFrame ? requestAnimationFrame(check) : check()),
+      poll.intervalMs,
+    )
   })
 }
 
@@ -158,15 +178,43 @@ export async function resolveWaitUntilCondition(
   selectorType: SelectorType,
   label: string,
   timeout?: number,
+  poll: PollOptions = FOREGROUND_POLL,
 ): Promise<string | undefined> {
   const { satisfied, reasons } = await waitForCondition(
     conditionType,
     selector,
     selectorType,
     timeout,
+    poll,
   )
   if (!satisfied && conditionType === PAGE_ACTION_CONDITION_TYPE.clickable) {
     return clickFailureMessage(label, reasons)
   }
   return undefined
+}
+
+// Resolves a PageAction.Click's condition, shared by the foreground and
+// background dispatchers (they only differ in polling strategy, via `poll`).
+// `skip: true` means the click should be skipped entirely; a defined `error`
+// means the click should be treated as failed.
+export async function resolveClickCondition(
+  condition: PageAction.ClickCondition,
+  label: string,
+  poll: PollOptions = FOREGROUND_POLL,
+): Promise<{ skip: boolean; error?: string }> {
+  const { actionType, conditionType, selector, selectorType, timeout } =
+    condition
+  if (actionType === PAGE_ACTION_CONDITION_ACTION.skip) {
+    const target = queryElement(selector, selectorType)
+    return { skip: evaluateCondition(conditionType, target) }
+  }
+  const error = await resolveWaitUntilCondition(
+    conditionType,
+    selector,
+    selectorType,
+    label,
+    timeout,
+    poll,
+  )
+  return { skip: false, error }
 }

@@ -172,7 +172,7 @@ export const AiPrompt = {
         submitSelector.length > 0 &&
         inputSelector.length > 0
       ) {
-        console.log(
+        console.debug(
           `[AiPrompt] queryUrl mode: autoSubmit is true for "${service.id}". Adding fallback Submit step.`,
         )
         submitStep = [
@@ -297,9 +297,9 @@ export const AiPrompt = {
       // Remove the HTML placeholders from the prompt value.
       const promptValue = needFilePaste
         ? aiPromptOption.prompt
-            .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
-            .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
-            .trim()
+          .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
+          .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
+          .trim()
         : aiPromptOption.prompt
 
       steps = [
