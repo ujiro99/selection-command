@@ -3,8 +3,18 @@ import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
 import { PageAction, ActionReturn } from "./dispatcher"
 import { queryElement } from "./queryElement"
-import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
+import {
+  SelectorType,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
+  PAGE_ACTION_TIMEOUT as TIMEOUT,
+} from "@/const"
 import { getUILanguage } from "@/services/i18n"
+import {
+  evaluateCondition,
+  checkClickable,
+  clickFailureMessage,
+} from "./elementWait"
 
 /**
  * Wait for an element to appear in the DOM for background tab execution.
@@ -53,6 +63,78 @@ async function waitForElementBackground(
 }
 
 /**
+ * Wait for a PageAction.ClickCondition's conditionType to become true for
+ * background tab execution. Mirrors elementWait.ts's waitForCondition but
+ * uses the same immediate-check + plain setInterval strategy as
+ * waitForElementBackground above, since requestAnimationFrame callbacks are
+ * throttled/paused for inactive background tabs.
+ */
+async function waitForConditionBackground(
+  conditionType: PAGE_ACTION_CONDITION_TYPE,
+  selector: string,
+  selectorType: SelectorType,
+  timeout: number = TIMEOUT,
+): Promise<{ satisfied: boolean; reasons: string[] }> {
+  let lastElement = queryElement(selector, selectorType)
+  if (lastElement && evaluateCondition(conditionType, lastElement)) {
+    return { satisfied: true, reasons: [] }
+  }
+
+  const startTime = Date.now()
+
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      const elapsedTime = Date.now() - startTime
+      if (elapsedTime > timeout) {
+        clearInterval(interval)
+        const reasons = lastElement
+          ? checkClickable(lastElement)
+          : ["element-not-found"]
+        resolve({ satisfied: false, reasons })
+        return
+      }
+
+      const element = queryElement(selector, selectorType)
+      if (element) lastElement = element
+      if (element && evaluateCondition(conditionType, element)) {
+        clearInterval(interval)
+        resolve({ satisfied: true, reasons: [] })
+      }
+    }, 100) // Background tabs use longer intervals
+  })
+}
+
+// Resolves a waitUntil click condition for background tabs. Only a
+// `clickable` condition that never gets satisfied is treated as a real
+// failure; other condition types are best-effort, since the caller proceeds
+// to click regardless of the outcome (mirrors dispatcher.ts's foreground
+// resolveWaitUntilCondition).
+async function resolveWaitUntilConditionBackground(
+  conditionType: PAGE_ACTION_CONDITION_TYPE,
+  selector: string,
+  selectorType: SelectorType,
+  label: string,
+  timeout?: number,
+): Promise<string | undefined> {
+  console.debug(
+    `[BackgroundDispatcher] Waiting for condition: ${conditionType} on ${selector}`,
+  )
+  const { satisfied, reasons } = await waitForConditionBackground(
+    conditionType,
+    selector,
+    selectorType,
+    timeout,
+  )
+  console.debug(
+    `[BackgroundDispatcher] Condition result: ${satisfied ? "satisfied" : "not satisfied"}; reasons: ${reasons.join(", ")}`,
+  )
+  if (!satisfied && conditionType === PAGE_ACTION_CONDITION_TYPE.clickable) {
+    return clickFailureMessage(label, reasons)
+  }
+  return undefined
+}
+
+/**
  * Background tab dispatcher for PageAction execution
  * Uses direct DOM event dispatching instead of userEvent for better compatibility in background tabs
  */
@@ -64,6 +146,31 @@ export const BackgroundPageActionDispatcher = {
 
   click: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
+
+    if (param.condition) {
+      const {
+        actionType,
+        conditionType,
+        selector: condSelector,
+        selectorType: condSelectorType,
+        timeout,
+      } = param.condition
+      if (actionType === PAGE_ACTION_CONDITION_ACTION.skip) {
+        const target = queryElement(condSelector, condSelectorType)
+        if (evaluateCondition(conditionType, target)) {
+          return [true]
+        }
+      } else if (actionType === PAGE_ACTION_CONDITION_ACTION.waitUntil) {
+        const error = await resolveWaitUntilConditionBackground(
+          conditionType,
+          condSelector,
+          condSelectorType,
+          param.label,
+          timeout,
+        )
+        if (error) return [false, error]
+      }
+    }
 
     // Background tab element resolution (no visibility check)
     const element = await waitForElementBackground(selector, selectorType)

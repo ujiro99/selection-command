@@ -39,23 +39,25 @@ function isVisible(element: HTMLElement): boolean {
   const visible =
     typeof element.checkVisibility === "function"
       ? element.checkVisibility({
-          opacityProperty: true,
-          visibilityProperty: true,
-        })
+        opacityProperty: true,
+        visibilityProperty: true,
+      })
       : (() => {
-          const cs = getComputedStyle(element)
-          return (
-            cs.display !== "none" &&
-            cs.visibility !== "hidden" &&
-            cs.opacity !== "0"
-          )
-        })()
+        const cs = getComputedStyle(element)
+        return (
+          cs.display !== "none" &&
+          cs.visibility !== "hidden" &&
+          cs.opacity !== "0"
+        )
+      })()
   if (!visible) return false
   const rect = element.getBoundingClientRect()
   return rect.width > 0 && rect.height > 0
 }
 
-function checkClickable(element: HTMLElement): string[] {
+// Exported so background-tab dispatch (which can't rely on requestAnimationFrame
+// polling) can build the same reasons/messages via its own setInterval-based wait.
+export function checkClickable(element: HTMLElement): string[] {
   const reasons: string[] = []
   if ("disabled" in element && (element as HTMLButtonElement).disabled)
     reasons.push("disabled")
@@ -139,7 +141,7 @@ export async function waitForCondition(
 // Builds a diagnosable failure message: "not found" when the element never
 // appeared, or the specific unmet conditions (disabled, not-visible, ...)
 // when it appeared but never became clickable within the timeout.
-function clickFailureMessage(label: string, reasons: string[]): string {
+export function clickFailureMessage(label: string, reasons: string[]): string {
   if (reasons.length === 0 || reasons.includes("element-not-found")) {
     return `Element not found: ${label}`
   }

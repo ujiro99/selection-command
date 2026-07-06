@@ -1,5 +1,10 @@
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest"
-import { SelectorType, PAGE_ACTION_EVENT } from "@/const"
+import {
+  SelectorType,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
+} from "@/const"
 
 // Mock dependencies
 vi.mock("@/services/dom", () => ({
@@ -63,6 +68,17 @@ const mockGetUILanguage = getUILanguage as any
 // Mock console methods
 const mockConsole = {
   warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
+}
+
+// beforeEach replaces global.document with a plain mock, so capture the real
+// createElement now to build fresh elements inside tests (e.g. for the
+// clickable-condition tests, which need a real, mutable button per test).
+const realCreateElement = document.createElement.bind(document)
+
+// jsdom doesn't perform layout, so getBoundingClientRect always reports zero
+// size; stub it to simulate a rendered, sized element.
+function stubSize(element: HTMLElement, width = 10, height = 10) {
+  element.getBoundingClientRect = vi.fn(() => ({ width, height }) as DOMRect)
 }
 
 // Mock DOM elements
@@ -468,6 +484,177 @@ describe("backgroundDispatcher", () => {
       expect(mockConsole.warn).toHaveBeenCalledWith(
         "Element not found for: .not-found",
       )
+    })
+
+    it("BDC-05: Should skip the click when the condition selector's value is empty (actionType=skip)", async () => {
+      mockDocument.querySelector.mockImplementation((selector: string) => {
+        if (selector === ".input") return mockElements.input
+        if (selector === ".submit") return mockElements.div
+        return null
+      })
+      mockElements.input.value = ""
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.skip,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+          selector: ".input",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const result = await BackgroundPageActionDispatcher.click(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockElements.div.dispatchEvent).not.toHaveBeenCalled()
+    })
+
+    it("BDC-06: Should proceed with the click when the condition selector's value is not empty (actionType=skip)", async () => {
+      mockDocument.querySelector.mockImplementation((selector: string) => {
+        if (selector === ".input") return mockElements.input
+        if (selector === ".submit") return mockElements.div
+        return null
+      })
+      mockElements.input.value = "unsent prompt"
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.skip,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+          selector: ".input",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const result = await BackgroundPageActionDispatcher.click(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockElements.div.dispatchEvent).toHaveBeenCalledTimes(1)
+    })
+
+    it("BDC-07: Should click as soon as the element becomes clickable (condition=waitUntil clickable)", async () => {
+      const button = realCreateElement("button")
+      button.disabled = true
+      stubSize(button)
+      button.dispatchEvent = vi.fn()
+      mockDocument.querySelector.mockReturnValue(button)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".submit",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+
+      // First poll tick sees the element still disabled.
+      vi.advanceTimersByTime(100)
+      expect(button.dispatchEvent).not.toHaveBeenCalled()
+
+      // Element becomes enabled before the next poll tick.
+      button.disabled = false
+      vi.advanceTimersByTime(100)
+
+      const result = await resultPromise
+
+      expect(result).toEqual([true])
+      expect(button.dispatchEvent).toHaveBeenCalledTimes(1)
+    })
+
+    it("BDC-08: Should time out with a message describing why the element never became clickable", async () => {
+      const button = realCreateElement("button")
+      button.disabled = true
+      stubSize(button)
+      mockDocument.querySelector.mockReturnValue(button)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".submit",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+      vi.advanceTimersByTime(1100)
+      const result = await resultPromise
+
+      expect(result).toEqual([
+        false,
+        "Element not clickable (disabled): Submit",
+      ])
+    })
+
+    it("BDC-09: Should time out with 'Element not found' when the element never appears (condition=waitUntil clickable)", async () => {
+      mockDocument.querySelector.mockReturnValue(null)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".missing",
+        selectorType: SelectorType.css,
+        label: "Missing",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".missing",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+      vi.advanceTimersByTime(1100)
+      const result = await resultPromise
+
+      expect(result).toEqual([false, "Element not found: Missing"])
+    })
+
+    it("BDC-10: Should proceed with the click even if a non-clickable condition times out (actionType=waitUntil)", async () => {
+      mockDocument.querySelector.mockImplementation((selector: string) => {
+        if (selector === ".input") return mockElements.input
+        if (selector === ".submit") return mockElements.div
+        return null
+      })
+      mockElements.input.value = "unsent prompt"
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+          selector: ".input",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+      vi.advanceTimersByTime(1100)
+      const result = await resultPromise
+
+      expect(result).toEqual([true])
+      expect(mockElements.div.dispatchEvent).toHaveBeenCalledTimes(1)
     })
   })
 
