@@ -39,17 +39,17 @@ function isVisible(element: HTMLElement): boolean {
   const visible =
     typeof element.checkVisibility === "function"
       ? element.checkVisibility({
-        opacityProperty: true,
-        visibilityProperty: true,
-      })
+          opacityProperty: true,
+          visibilityProperty: true,
+        })
       : (() => {
-        const cs = getComputedStyle(element)
-        return (
-          cs.display !== "none" &&
-          cs.visibility !== "hidden" &&
-          cs.opacity !== "0"
-        )
-      })()
+          const cs = getComputedStyle(element)
+          return (
+            cs.display !== "none" &&
+            cs.visibility !== "hidden" &&
+            cs.opacity !== "0"
+          )
+        })()
   if (!visible) return false
   const rect = element.getBoundingClientRect()
   return rect.width > 0 && rect.height > 0

@@ -369,6 +369,33 @@ describe("AiPrompt.execute", () => {
       })
     })
 
+    it("AP-05a: should warn and skip the fallback submit step when autoSubmit is true but inputSelectors is empty", async () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+      vi.mocked(findAiService).mockResolvedValue(
+        makeAutoSubmitService({ inputSelectors: [] }),
+      )
+
+      await AiPrompt.execute({
+        selectionText: "hello",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "perplexity",
+          },
+        } as any,
+        position: { x: 0, y: 0 },
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      const stepTypes = sentArgs.steps.map((s: any) => s.param.type)
+      expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.click)
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Fallback Submit step will be skipped"),
+      )
+      warnSpy.mockRestore()
+    })
+
     it("AP-06: should use queryUrl as searchUrl when queryUrl is present", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeQueryService())
 

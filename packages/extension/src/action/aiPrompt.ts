@@ -208,6 +208,10 @@ export const AiPrompt = {
             },
           },
         ]
+      } else if (service.autoSubmit) {
+        console.warn(
+          `[AiPrompt] queryUrl mode: autoSubmit is true for "${service.id}" but submitSelectors or inputSelectors is empty. Fallback Submit step will be skipped.`,
+        )
       }
 
       steps = [
