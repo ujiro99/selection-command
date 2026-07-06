@@ -1,5 +1,10 @@
 import { beforeEach, afterEach, describe, it, expect, vi } from "vitest"
-import { SelectorType, PAGE_ACTION_EVENT } from "@/const"
+import {
+  SelectorType,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
+} from "@/const"
 
 // Mock dependencies
 vi.mock("@/services/dom", () => ({
@@ -82,7 +87,7 @@ const mockConsole = {
 
 // beforeEach replaces global.document with a plain mock, so capture the real
 // createElement now to build fresh elements inside tests (e.g. for the
-// waitForClickable tests, which need a real, mutable button per test).
+// clickable-condition tests, which need a real, mutable button per test).
 const realCreateElement = document.createElement.bind(document)
 
 // Mock DOM elements
@@ -290,7 +295,7 @@ describe("PageActionDispatcher", () => {
       expect(mockGetElementByXPath).toHaveBeenCalledWith("//button[@id='test']")
     })
 
-    it("PDC-04: Should click as soon as the element becomes clickable (waitForClickable=true)", async () => {
+    it("PDC-04: Should click as soon as the element becomes clickable (condition=waitUntil clickable)", async () => {
       const button = realCreateElement("button")
       button.disabled = true
       // jsdom doesn't perform layout, so getBoundingClientRect always
@@ -307,7 +312,12 @@ describe("PageActionDispatcher", () => {
         selector: ".submit",
         selectorType: SelectorType.css,
         label: "Submit",
-        waitForClickable: true,
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".submit",
+          selectorType: SelectorType.css,
+        },
       }
 
       const resultPromise = PageActionDispatcher.click(param as any)
@@ -340,7 +350,12 @@ describe("PageActionDispatcher", () => {
         selector: ".submit",
         selectorType: SelectorType.css,
         label: "Submit",
-        waitForClickable: true,
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".submit",
+          selectorType: SelectorType.css,
+        },
       }
 
       const resultPromise = PageActionDispatcher.click(param as any)
@@ -357,7 +372,7 @@ describe("PageActionDispatcher", () => {
       )
     })
 
-    it("PDC-06: Should time out with 'Element not found' when the element never appears (waitForClickable=true)", async () => {
+    it("PDC-06: Should time out with 'Element not found' when the element never appears (condition=waitUntil clickable)", async () => {
       mockDocument.querySelector.mockReturnValue(null)
 
       const param = {
@@ -365,7 +380,12 @@ describe("PageActionDispatcher", () => {
         selector: ".missing",
         selectorType: SelectorType.css,
         label: "Missing",
-        waitForClickable: true,
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+          selector: ".missing",
+          selectorType: SelectorType.css,
+        },
       }
 
       const resultPromise = PageActionDispatcher.click(param as any)
@@ -373,6 +393,97 @@ describe("PageActionDispatcher", () => {
       const result = await resultPromise
 
       expect(result).toEqual([false, "Element not found: Missing"])
+    })
+
+    it("PDC-07: Should skip the click when the condition selector's value is empty (actionType=skip)", async () => {
+      mockDocument.querySelector.mockImplementation((selector: string) => {
+        if (selector === ".input") return mockElements.input
+        if (selector === ".submit") return mockElements.div
+        return null
+      })
+      mockElements.input.value = ""
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.skip,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+          selector: ".input",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const result = await PageActionDispatcher.click(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockUserInstance.click).not.toHaveBeenCalled()
+    })
+
+    it("PDC-08: Should proceed with the click when the condition selector's value is not empty (actionType=skip)", async () => {
+      mockDocument.querySelector.mockImplementation((selector: string) => {
+        if (selector === ".input") return mockElements.input
+        if (selector === ".submit") return mockElements.div
+        return null
+      })
+      mockElements.input.value = "unsent prompt"
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.skip,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+          selector: ".input",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const result = await PageActionDispatcher.click(param as any)
+
+      expect(result).toEqual([true])
+      expect(mockUserInstance.click).toHaveBeenCalledWith(mockElements.div)
+    })
+
+    it("PDC-09: Should wait until the condition is met before clicking (actionType=waitUntil)", async () => {
+      mockDocument.querySelector.mockImplementation((selector: string) => {
+        if (selector === ".input") return mockElements.input
+        if (selector === ".submit") return mockElements.div
+        return null
+      })
+      mockElements.input.value = "still typing"
+
+      const param = {
+        type: PAGE_ACTION_EVENT.click,
+        selector: ".submit",
+        selectorType: SelectorType.css,
+        label: "Submit",
+        condition: {
+          actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+          conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+          selector: ".input",
+          selectorType: SelectorType.css,
+        },
+      }
+
+      const resultPromise = PageActionDispatcher.click(param as any)
+
+      // First poll tick sees the input still non-empty.
+      await vi.advanceTimersByTimeAsync(60)
+      expect(mockUserInstance.click).not.toHaveBeenCalled()
+
+      // Input becomes empty before the next poll tick.
+      mockElements.input.value = ""
+      await vi.advanceTimersByTimeAsync(60)
+
+      const result = await resultPromise
+
+      expect(result).toEqual([true])
+      expect(mockUserInstance.click).toHaveBeenCalledWith(mockElements.div)
     })
   })
 

@@ -162,14 +162,14 @@ Google Analytics → scripts/fetch-ga-data.js → analytics.json
 
 ```typescript
 interface BaseCommand {
-  id: string;
-  title: string;
-  openMode: OPEN_MODE;
+  id: string
+  title: string
+  openMode: OPEN_MODE
   // ... 基本プロパティ
 }
 
 interface PageActionCommand extends BaseCommand {
-  pageActionOption: unknown; // パッケージごとに具体化
+  pageActionOption: unknown // パッケージごとに具体化
 }
 ```
 
@@ -177,9 +177,9 @@ interface PageActionCommand extends BaseCommand {
 
 ```typescript
 interface PageActionOption {
-  startUrl: string;
-  openMode: PAGE_ACTION_OPEN_MODE;
-  steps: Array<PageActionStep>;
+  startUrl: string
+  openMode: PAGE_ACTION_OPEN_MODE
+  steps: Array<PageActionStep>
 }
 ```
 

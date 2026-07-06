@@ -3,7 +3,14 @@ import { AiPrompt, convertUrlsToMarkdown } from "./aiPrompt"
 import { Ipc, BgCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
 import { Storage } from "@/services/storage"
-import { OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
+import {
+  OPEN_MODE,
+  PAGE_ACTION_EVENT,
+  PAGE_ACTION_CONDITION_ACTION,
+  PAGE_ACTION_CONDITION_TYPE,
+  PAGE_ACTION_TIMEOUT,
+  SelectorType,
+} from "@/const"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import type { AiService } from "@/types"
 
@@ -134,6 +141,34 @@ describe("AiPrompt.execute", () => {
           ]),
         }),
       )
+    })
+
+    it("AP-01e: the submit step waits for clickability with an explicit, doubled timeout", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeDomService())
+
+      await AiPrompt.execute({
+        selectionText: "hello world",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+          },
+        } as any,
+        position: { x: 100, y: 100 },
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      const clickStep = sentArgs.steps.find(
+        (s: any) => s.param.type === PAGE_ACTION_EVENT.click,
+      )
+      expect(clickStep.param.condition).toEqual({
+        actionType: PAGE_ACTION_CONDITION_ACTION.waitUntil,
+        conditionType: PAGE_ACTION_CONDITION_TYPE.clickable,
+        selector: "button.send",
+        selectorType: SelectorType.css,
+        timeout: PAGE_ACTION_TIMEOUT * 2,
+      })
     })
 
     it("AP-01b: should strip every occurrence of a repeated HTML placeholder from the input value", async () => {
@@ -301,7 +336,7 @@ describe("AiPrompt.execute", () => {
       expect(stepTypes).toContain(PAGE_ACTION_EVENT.click)
     })
 
-    it("AP-05: should NOT include submit step when autoSubmit is true", async () => {
+    it("AP-05: should include a conditional fallback submit step when autoSubmit is true", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeAutoSubmitService())
 
       await AiPrompt.execute({
@@ -318,8 +353,47 @@ describe("AiPrompt.execute", () => {
 
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
       const stepTypes = sentArgs.steps.map((s: any) => s.param.type)
-      expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.click)
       expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.input)
+      expect(stepTypes).toContain(PAGE_ACTION_EVENT.click)
+
+      const clickStep = sentArgs.steps.find(
+        (s: any) => s.param.type === PAGE_ACTION_EVENT.click,
+      )
+      // The fallback click only fires when the AI service's own auto-submit
+      // didn't clear the input, so it must carry a skip-if-empty condition.
+      expect(clickStep.param.condition).toEqual({
+        actionType: PAGE_ACTION_CONDITION_ACTION.skip,
+        conditionType: PAGE_ACTION_CONDITION_TYPE.empty,
+        selector: "div#ask-input",
+        selectorType: SelectorType.css,
+      })
+    })
+
+    it("AP-05a: should warn and skip the fallback submit step when autoSubmit is true but inputSelectors is empty", async () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+      vi.mocked(findAiService).mockResolvedValue(
+        makeAutoSubmitService({ inputSelectors: [] }),
+      )
+
+      await AiPrompt.execute({
+        selectionText: "hello",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "perplexity",
+          },
+        } as any,
+        position: { x: 0, y: 0 },
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      const stepTypes = sentArgs.steps.map((s: any) => s.param.type)
+      expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.click)
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Fallback Submit step will be skipped"),
+      )
+      warnSpy.mockRestore()
     })
 
     it("AP-06: should use queryUrl as searchUrl when queryUrl is present", async () => {

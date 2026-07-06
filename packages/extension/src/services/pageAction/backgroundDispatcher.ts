@@ -5,6 +5,7 @@ import { PageAction, ActionReturn } from "./dispatcher"
 import { queryElement } from "./queryElement"
 import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
 import { getUILanguage } from "@/services/i18n"
+import { resolveClickCondition, BACKGROUND_POLL } from "./elementWait"
 
 /**
  * Wait for an element to appear in the DOM for background tab execution.
@@ -64,6 +65,16 @@ export const BackgroundPageActionDispatcher = {
 
   click: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
+
+    if (param.condition) {
+      const { skip, error } = await resolveClickCondition(
+        param.condition,
+        param.label,
+        BACKGROUND_POLL,
+      )
+      if (skip) return [true]
+      if (error) return [false, error]
+    }
 
     // Background tab element resolution (no visibility check)
     const element = await waitForElementBackground(selector, selectorType)

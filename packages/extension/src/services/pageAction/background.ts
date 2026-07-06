@@ -62,7 +62,7 @@ const EndAction = {
 }
 
 const DELAY_AFTER_URL_CHANGED = 100
-const RETRY_MAX = 5
+const RETRY_MAX = 10
 
 export const add = (
   step: PageActionStep,

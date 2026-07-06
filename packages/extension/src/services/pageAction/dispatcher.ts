@@ -2,245 +2,11 @@ import userEvent from "@testing-library/user-event"
 import { isEditable, inputContentEditable } from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
-import {
-  SelectorType,
-  PAGE_ACTION_EVENT,
-  PAGE_ACTION_CONTROL,
-  PAGE_ACTION_TIMEOUT as TIMEOUT,
-} from "@/const"
-import type { UserVariable } from "@/types"
 import { getUILanguage } from "@/services/i18n"
-import { queryElement } from "./queryElement"
+import { waitForElement, resolveClickCondition } from "./elementWait"
 
-export namespace PageAction {
-  export type Parameter =
-    | Start
-    | End
-    | Navigate
-    | Click
-    | Input
-    | FilePaste
-    | Keyboard
-    | Scroll
-
-  export type Start = {
-    type: PAGE_ACTION_CONTROL.start
-    label: string
-    url?: string
-    mode?: "pageAction" | "aiPrompt"
-  }
-
-  export type End = {
-    type: PAGE_ACTION_CONTROL.end
-    label: string
-  }
-
-  export type Navigate = {
-    type: PAGE_ACTION_CONTROL.navigate
-    label: string
-    url: string
-  }
-
-  export type Click = {
-    type:
-      | PAGE_ACTION_EVENT.click
-      | PAGE_ACTION_EVENT.doubleClick
-      | PAGE_ACTION_EVENT.tripleClick
-    label: string
-    selector: string
-    selectorType: SelectorType
-    waitForClickable?: boolean
-  }
-
-  export type Input = {
-    type: PAGE_ACTION_EVENT.input
-    label: string
-    selector: string
-    selectorType: SelectorType
-    value: string
-  }
-
-  export type InputExec = Input & {
-    srcUrl: string
-    selectedText: string
-    clipboardText: string
-    userVariables?: UserVariable[]
-    pageHtml?: string
-    selectionHtml?: string
-  }
-
-  export type Keyboard = {
-    type: PAGE_ACTION_EVENT.keyboard
-    label: string
-    key: string
-    code: string
-    keyCode: number
-    shiftKey: boolean
-    ctrlKey: boolean
-    altKey: boolean
-    metaKey: boolean
-    targetSelector: string
-    selectorType: SelectorType
-  }
-
-  export type FilePaste = {
-    type: PAGE_ACTION_EVENT.filePaste
-    label: string
-    selector: string
-    selectorType: SelectorType
-    value: string
-    fileName: string
-    fileType: string
-  }
-
-  export type FilePasteExec = FilePaste & {
-    pageHtml?: string
-    selectionHtml?: string
-  }
-
-  export type Scroll = {
-    type: PAGE_ACTION_EVENT.scroll
-    label: string
-    x: number
-    y: number
-  }
-}
-
-async function waitForElement(
-  selector: string,
-  selectorType: SelectorType,
-  timeout: number = TIMEOUT,
-): Promise<HTMLElement | null> {
-  const startTime = Date.now()
-  return new Promise((resolve, reject) => {
-    const interval = setInterval(() => {
-      requestAnimationFrame(() => {
-        if (Date.now() - startTime > timeout) {
-          clearInterval(interval)
-          resolve(null)
-          return
-        }
-        try {
-          const element = queryElement(selector, selectorType)
-          if (element) {
-            clearInterval(interval)
-            resolve(element)
-          }
-        } catch (e) {
-          clearInterval(interval)
-          reject(String(e))
-        }
-      })
-    }, 50)
-  })
-}
-
-function checkClickable(element: HTMLElement): string[] {
-  const reasons: string[] = []
-  if ("disabled" in element && (element as HTMLButtonElement).disabled)
-    reasons.push("disabled")
-  if (element.getAttribute("aria-disabled") === "true")
-    reasons.push("aria-disabled")
-  const visible =
-    typeof element.checkVisibility === "function"
-      ? element.checkVisibility({
-          opacityProperty: true,
-          visibilityProperty: true,
-        })
-      : (() => {
-          const cs = getComputedStyle(element)
-          return (
-            cs.display !== "none" &&
-            cs.visibility !== "hidden" &&
-            cs.opacity !== "0"
-          )
-        })()
-  if (!visible) reasons.push("not-visible")
-  const rect = element.getBoundingClientRect()
-  if (rect.width <= 0 || rect.height <= 0) reasons.push("zero-size")
-  if (getComputedStyle(element).pointerEvents === "none")
-    reasons.push("pointer-events-none")
-  return reasons
-}
-
-type ClickableResult = { element: HTMLElement | null; reasons: string[] }
-
-async function waitForClickable(
-  selector: string,
-  selectorType: SelectorType,
-  timeout: number = TIMEOUT,
-): Promise<ClickableResult> {
-  const startTime = Date.now()
-  return new Promise((resolve, reject) => {
-    let lastElement: HTMLElement | null = null
-    const interval = setInterval(() => {
-      requestAnimationFrame(() => {
-        if (Date.now() - startTime > timeout) {
-          clearInterval(interval)
-          const reasons = lastElement
-            ? checkClickable(lastElement)
-            : ["element-not-found"]
-          console.warn(
-            `waitForClickable timed out. Failing conditions: [${reasons.join(", ") || "unknown"}]`,
-            lastElement,
-          )
-          resolve({ element: null, reasons })
-          return
-        }
-        try {
-          const element = queryElement(selector, selectorType)
-          if (element) lastElement = element
-          if (!element) return
-          const reasons = checkClickable(element)
-          if (reasons.length === 0) {
-            clearInterval(interval)
-            console.debug("Element is clickable:", element)
-            resolve({ element, reasons: [] })
-          }
-        } catch (e) {
-          clearInterval(interval)
-          reject(String(e))
-        }
-      })
-    }, 50)
-  })
-}
-
-// Builds a diagnosable failure message: "not found" when the element never
-// appeared, or the specific unmet conditions (disabled, not-visible, ...)
-// when it appeared but never became clickable within the timeout.
-function clickFailureMessage(label: string, reasons: string[]): string {
-  if (reasons.length === 0 || reasons.includes("element-not-found")) {
-    return `Element not found: ${label}`
-  }
-  return `Element not clickable (${reasons.join(", ")}): ${label}`
-}
-
-async function resolveClickTarget(
-  param: PageAction.Click,
-): Promise<[HTMLElement, undefined] | [null, string]> {
-  const { selector, selectorType, label } = param
-  if (!param.waitForClickable) {
-    const element = await waitForElement(selector, selectorType)
-    if (!element) {
-      console.warn(`Element not found for: ${selector}`)
-      return [null, `Element not found: ${label}`]
-    }
-    return [element, undefined]
-  }
-
-  const { element, reasons } = await waitForClickable(
-    selector,
-    selectorType,
-    TIMEOUT * 2, // Allow more time for click
-  )
-  if (!element) {
-    return [null, clickFailureMessage(label, reasons)]
-  }
-  return [element, undefined]
-}
-
-export type ActionReturn = Promise<[boolean, string?]>
+export type { PageAction, ActionReturn } from "./pageActionTypes"
+import type { PageAction, ActionReturn } from "./pageActionTypes"
 
 export const PageActionDispatcher = {
   navigate: async (param: PageAction.Navigate): ActionReturn => {
@@ -249,28 +15,46 @@ export const PageActionDispatcher = {
   },
 
   click: async (param: PageAction.Click): ActionReturn => {
-    const user = userEvent.setup()
-    const [element, error] = await resolveClickTarget(param)
-    if (!element) return [false, error]
+    if (param.condition) {
+      const { skip, error } = await resolveClickCondition(
+        param.condition,
+        param.label,
+      )
+      if (skip) return [true]
+      if (error) return [false, error]
+    }
 
+    const element = await waitForElement(param.selector, param.selectorType)
+    if (!element) {
+      console.warn(`Element not found for: ${param.selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
+
+    const user = userEvent.setup()
     await user.click(element)
     return [true]
   },
 
   doubleClick: async (param: PageAction.Click): ActionReturn => {
-    const user = userEvent.setup()
-    const [element, error] = await resolveClickTarget(param)
-    if (!element) return [false, error]
+    const element = await waitForElement(param.selector, param.selectorType)
+    if (!element) {
+      console.warn(`Element not found for: ${param.selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
 
+    const user = userEvent.setup()
     await user.dblClick(element)
     return [true]
   },
 
   tripleClick: async (param: PageAction.Click): ActionReturn => {
-    const user = userEvent.setup()
-    const [element, error] = await resolveClickTarget(param)
-    if (!element) return [false, error]
+    const element = await waitForElement(param.selector, param.selectorType)
+    if (!element) {
+      console.warn(`Element not found for: ${param.selector}`)
+      return [false, `Element not found: ${param.label}`]
+    }
 
+    const user = userEvent.setup()
     await user.tripleClick(element)
     return [true]
   },
