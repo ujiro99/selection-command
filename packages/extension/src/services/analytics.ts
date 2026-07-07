@@ -24,7 +24,7 @@ export const ANALYTICS_EVENTS = {
   COMMAND_ADD: "command_add",
   COMMAND_EDIT: "command_edit",
   COMMAND_REMOVE: "command_remove",
-  COMMAND_SHARE_FORM: "command_share_form",
+  COMMAND_SHARE: "command_share",
   COMMAND_HUB_ADD: "command_hub_add",
   COMMAND_HUB_STAR_ADD: "command_hub_star_add",
   COMMAND_HUB_STAR_REMOVE: "command_hub_star_remove",
