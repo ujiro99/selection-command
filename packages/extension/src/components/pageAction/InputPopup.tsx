@@ -156,7 +156,7 @@ const useVisibleDelay = (props: useDelayProps) => {
     return () => {
       clearTimeout(delayTimer)
     }
-  }, [visible])
+  }, [visible, updater])
 }
 
 export function InputPopup(): JSX.Element {
@@ -173,16 +173,18 @@ export function InputPopup(): JSX.Element {
       setTargetElm(getFocusNode(e))
     }
 
-    const onFocusIn = (e: any) => {
+    const onFocusIn = (e: FocusEvent) => {
+      if (!e.target) return
       if (!isTargetEditable(e.target)) return
-      if (isPopup(e.target)) return
+      if (isPopup(e.target as Element)) return
       setMenuVisible(true)
       updateTarget(e)
     }
 
-    const onFocusOut = (e: any) => {
+    const onFocusOut = (e: FocusEvent) => {
+      if (!e.relatedTarget) return
       if (!isTargetEditable(e.target)) return
-      if (isPopup(e.relatedTarget)) return
+      if (isPopup(e.relatedTarget as Element)) return
       setMenuVisible(false)
       setTargetElm(null)
     }
@@ -287,7 +289,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
 
   return (
     <Menubar
-      className={cn(showFileAttachMenu && "pr-1", props.className)}
+      className={props.className}
       value={selectedMenu}
       onValueChange={onSelectedMenuChange}
     >
@@ -332,40 +334,40 @@ export function InputMenu(props: MenuProps): JSX.Element {
           </InputMenuItem>
         </MenubarContent>
       </MenubarMenu>
-      {!props.hideFilePaste && (
-        <MenubarMenu value={MENU.FILE_PASTE}>
-          <MenubarTrigger
-            className={cn(
-              "p-1 pl-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
-              props.fileAttachDisabled &&
-                "opacity-60 bg-muted cursor-not-allowed",
-            )}
-            disabled={props.fileAttachDisabled}
-            onMouseEnter={() => onSelectedMenuChange(MENU.FILE_PASTE)}
-          >
-            {t("PageAction_InputMenu_fileAttach")}
-            {!showFileAttachMenu &&
-              (selectedMenu === MENU.FILE_PASTE ? (
-                <ChevronUp size={14} className="ml-1" />
-              ) : (
-                <ChevronDown size={14} className="ml-1" />
-              ))}
-          </MenubarTrigger>
-          <MenubarContent
-            className="border"
-            onMouseLeave={() => setSelectedMenu("")}
-            sideOffset={2}
-          >
-            <InputMenuItem onClick={onClickItem} value={INSERT.PAGE_HTML}>
-              <FileCode size={16} className="mr-2 stroke-gray-600" />
-              {t("PageAction_InputMenu_pageHtml")}
-            </InputMenuItem>
-            <InputMenuItem onClick={onClickItem} value={INSERT.SELECTION_HTML}>
-              <Code size={16} className="mr-2 stroke-gray-600" />
-              {t("PageAction_InputMenu_selectionHtml")}
-            </InputMenuItem>
-          </MenubarContent>
-        </MenubarMenu>
+      {showFileAttachMenu && (
+        <>
+          <div className="shrink-0 self-stretch mx-px my-[2px] bg-border w-px" />
+          <MenubarMenu value={MENU.FILE_PASTE}>
+            <MenubarTrigger
+              className={cn(
+                "p-1 px-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
+                props.fileAttachDisabled &&
+                  "opacity-60 bg-muted cursor-not-allowed",
+              )}
+              disabled={props.fileAttachDisabled}
+              onMouseEnter={() => onSelectedMenuChange(MENU.FILE_PASTE)}
+            >
+              {t("PageAction_InputMenu_fileAttach")}
+            </MenubarTrigger>
+            <MenubarContent
+              className="border"
+              onMouseLeave={() => setSelectedMenu("")}
+              sideOffset={2}
+            >
+              <InputMenuItem onClick={onClickItem} value={INSERT.PAGE_HTML}>
+                <FileCode size={16} className="mr-2 stroke-gray-600" />
+                {t("PageAction_InputMenu_pageHtml")}
+              </InputMenuItem>
+              <InputMenuItem
+                onClick={onClickItem}
+                value={INSERT.SELECTION_HTML}
+              >
+                <Code size={16} className="mr-2 stroke-gray-600" />
+                {t("PageAction_InputMenu_selectionHtml")}
+              </InputMenuItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </>
       )}
     </Menubar>
   )
@@ -438,7 +440,7 @@ function FocusOutline(props: FocusOutlineProps): JSX.Element {
     requestAnimationFrame(() => {
       setRect(container?.getBoundingClientRect())
     })
-  }, [shouldRender])
+  }, [container, shouldRender])
 
   if (elm == null || rect == null || !visible) return <></>
 
