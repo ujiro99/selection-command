@@ -58,11 +58,13 @@ export const ShareButton = ({
     setStatus(ok ? "sent" : "error")
     setTimeout(() => setStatus("idle"), 2000)
 
-    sendEvent(
-      ANALYTICS_EVENTS.COMMAND_SHARE,
-      { event_label: "share-button" },
-      SCREEN.OPTION,
-    )
+    if (ok) {
+      sendEvent(
+        ANALYTICS_EVENTS.COMMAND_SHARE,
+        { event_label: "share-button" },
+        SCREEN.OPTION,
+      )
+    }
   }
 
   if (
