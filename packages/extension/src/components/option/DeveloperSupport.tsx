@@ -1,11 +1,23 @@
 import { Star, Coffee } from "lucide-react"
 import { t } from "@/services/i18n"
+import {
+  CHROME_WEB_STORE_REVIEWS_URL,
+  UTM_SOURCE,
+  UTM_MEDIUM,
+  withUtmParams,
+} from "@shared"
 import css from "./Option.module.css"
 
-const Parameter =
-  "?utm_source=optionPage&utm_medium=link&utm_campaign=developerSupport"
-const CHROME_STORE_URL = `https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje${Parameter}`
-const COFFEE_URL = `https://buymeacoffee.com/yujiro.takeda${Parameter}`
+const UTM_PARAMS = {
+  source: UTM_SOURCE.OPTION_PAGE,
+  medium: UTM_MEDIUM.LINK,
+  campaign: "developer-support",
+}
+const CHROME_STORE_URL = withUtmParams(CHROME_WEB_STORE_REVIEWS_URL, UTM_PARAMS)
+const COFFEE_URL = withUtmParams(
+  "https://buymeacoffee.com/yujiro.takeda",
+  UTM_PARAMS,
+)
 
 export function DeveloperSupport() {
   return (

@@ -2,8 +2,12 @@ import { LogIn } from "lucide-react"
 import { t } from "@/services/i18n"
 import { NEW_HUB_URL } from "@/const"
 import { useHubUser } from "@/hooks/option/useHubUser"
+import { UTM_SOURCE, UTM_MEDIUM, withUtmParams } from "@shared"
 
-const HUB_LOGIN_LINK = `${NEW_HUB_URL}/auth/login?utm_source=extension&utm_medium=optionPage`
+const HUB_LOGIN_LINK = withUtmParams(`${NEW_HUB_URL}/auth/login`, {
+  source: UTM_SOURCE.OPTION_PAGE,
+  medium: UTM_MEDIUM.LINK,
+})
 
 export function HubUserInfo() {
   const hubUser = useHubUser()

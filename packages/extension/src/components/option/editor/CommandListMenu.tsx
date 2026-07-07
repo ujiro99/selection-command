@@ -6,9 +6,11 @@ import { NEW_HUB_URL } from "@/const"
 import { t as _t } from "@/services/i18n"
 import { TEST_IDS } from "@/testIds"
 import { useHubUser } from "@/hooks/option/useHubUser"
+import { getHubLocale } from "@/services/hubShare"
+import { UTM_SOURCE, UTM_MEDIUM, withUtmParams } from "@shared"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
-const UTM = "utm_source=optionPage&utm_medium=button"
+const UTM_PARAMS = { source: UTM_SOURCE.OPTION_PAGE, medium: UTM_MEDIUM.BUTTON }
 
 interface Props {
   onAddCommand: () => void
@@ -26,9 +28,13 @@ export const CommandListMenu: React.FC<Props> = ({
   commandCount,
 }) => {
   const hubUser = useHubUser()
-  const hubButtonLink = hubUser
-    ? `${NEW_HUB_URL}/dashboard/?${UTM}`
-    : `${NEW_HUB_URL}?${UTM}`
+  const locale = getHubLocale()
+  const hubButtonLink = withUtmParams(
+    hubUser
+      ? `${NEW_HUB_URL}/${locale}/dashboard/commands`
+      : `${NEW_HUB_URL}/${locale}`,
+    UTM_PARAMS,
+  )
 
   return (
     <div className="relative h-10 flex items-end">
