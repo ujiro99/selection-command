@@ -4,15 +4,20 @@ import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
 import { NEW_HUB_URL } from "@/const"
 import { useHubUser } from "@/hooks/option/useHubUser"
+import { getHubLocale } from "@/services/hubShare"
+import { UTM_SOURCE, UTM_MEDIUM, withUtmParams } from "@shared"
 
-const UTM = "utm_source=optionPage&utm_medium=banner"
+const UTM_PARAMS = { source: UTM_SOURCE.OPTION_PAGE, medium: UTM_MEDIUM.BANNER }
 
 export function HubBanner() {
   const hubUser = useHubUser()
-
-  const hubBannerLink = hubUser
-    ? `${NEW_HUB_URL}/dashboard/?${UTM}`
-    : `${NEW_HUB_URL}?${UTM}`
+  const locale = getHubLocale()
+  const hubBannerLink = withUtmParams(
+    hubUser
+      ? `${NEW_HUB_URL}/${locale}/dashboard/commands`
+      : `${NEW_HUB_URL}/${locale}`,
+    UTM_PARAMS,
+  )
 
   return (
     <div className={css.menu}>

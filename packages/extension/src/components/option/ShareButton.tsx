@@ -3,14 +3,15 @@ import { Share, CloudCheck } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { cn, isUUIDv7, generateId } from "@/lib/utils"
 import { t } from "@/services/i18n"
-import { shareCommandToHub } from "@/services/hubShare"
+import { shareCommandToHub, getHubLocale } from "@/services/hubShare"
+import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import {
   NEW_HUB_SHAREABLE_OPEN_MODES,
   COMMAND_SOURCE_TYPE,
   NEW_HUB_URL,
   HUB_SHARE_EXCLUDED_IDS,
+  SCREEN,
 } from "@/const"
-import { getHubLocale } from "@/services/hubShare"
 import type { SelectionCommand } from "@/types"
 import { TEST_IDS } from "@/testIds"
 
@@ -56,6 +57,14 @@ export const ShareButton = ({
     const ok = shareCommandToHub(commandToShare)
     setStatus(ok ? "sent" : "error")
     setTimeout(() => setStatus("idle"), 2000)
+
+    if (ok) {
+      sendEvent(
+        ANALYTICS_EVENTS.COMMAND_SHARE,
+        { event_label: "share-button" },
+        SCREEN.OPTION,
+      )
+    }
   }
 
   if (

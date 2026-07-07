@@ -4,9 +4,18 @@ import { cn } from "@/lib/utils"
 import { PartyPopper } from "lucide-react"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import { SCREEN } from "@/const"
+import {
+  CHROME_WEB_STORE_REVIEWS_URL,
+  UTM_SOURCE,
+  UTM_MEDIUM,
+  withUtmParams,
+} from "@shared"
 
-const REVIEW_URL =
-  "https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/reviews"
+const REVIEW_URL = withUtmParams(CHROME_WEB_STORE_REVIEWS_URL, {
+  source: UTM_SOURCE.EXTENSION,
+  medium: UTM_MEDIUM.TOAST,
+  campaign: "review-request",
+})
 const ICON_URL = chrome.runtime.getURL("icon128.png")
 
 export function showReviewRequestToast(onAccept: () => void): void {

@@ -81,14 +81,14 @@ export const MyCommands = (): JSX.Element => {
     if (elm == null || elm2 == null) return
     const a = elm.getAnimations()[0]
     if (a != null) {
-      ;(a.currentTime as number) += diff
+      ; (a.currentTime as number) += diff
       if ((a.currentTime as number) < 0) {
         a.currentTime = 0
       }
     }
     const a2 = elm2.getAnimations()[0]
     if (a2 != null) {
-      ;(a2.currentTime as number) += diff
+      ; (a2.currentTime as number) += diff
       if ((a2.currentTime as number) < 0) {
         a2.currentTime = 0
       }
@@ -222,7 +222,7 @@ const ListItem = (props: ItemProps): JSX.Element => {
     // Send a message to Commad Hub.
     window.postMessage({ action: "InsertCommand", data: c }, "*")
     sendEvent(
-      ANALYTICS_EVENTS.COMMAND_SHARE_FORM,
+      ANALYTICS_EVENTS.COMMAND_SHARE,
       { event_label: "input-my-command" },
       SCREEN.COMMAND_FORM,
     )

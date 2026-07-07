@@ -1,10 +1,18 @@
 import { HelpCircle } from "lucide-react"
 import { t } from "@/services/i18n"
+import {
+  CHROME_WEB_STORE_SUPPORT_URL,
+  UTM_SOURCE,
+  UTM_MEDIUM,
+  withUtmParams,
+} from "@shared"
 import css from "./Option.module.css"
 
-const Parameter =
-  "?utm_source=optionPage&utm_medium=link&utm_campaign=userSupport"
-const SUPPORT_URL = `https://chromewebstore.google.com/detail/nlnhbibaommoelemmdfnkjkgoppkohje/support${Parameter}`
+const SUPPORT_URL = withUtmParams(CHROME_WEB_STORE_SUPPORT_URL, {
+  source: UTM_SOURCE.OPTION_PAGE,
+  medium: UTM_MEDIUM.LINK,
+  campaign: "user-support",
+})
 
 export function UserSupport() {
   return (
