@@ -22,15 +22,10 @@ import type { OpenAndRunProps } from "@/services/pageAction/background"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
-import {
-  INSERT,
-  InsertSymbol,
-  toInsertTemplate,
-  PAGE_HTML_MAX_CHARS,
-} from "@/services/pageAction"
+import { INSERT, InsertSymbol, toInsertTemplate } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
-import { getSelectionHtml } from "@/services/dom"
+import { getSelectionHtml, getPageHtml } from "@/services/dom"
 
 /**
  * Convert bare URLs in text to Markdown link format [URL](URL).
@@ -104,9 +99,7 @@ export const AiPrompt = {
     const needPageHtml = aiPromptOption.prompt.includes(
       toInsertTemplate(INSERT.PAGE_HTML),
     )
-    const pageHtml = needPageHtml
-      ? document.documentElement.outerHTML.slice(0, PAGE_HTML_MAX_CHARS)
-      : undefined
+    const pageHtml = needPageHtml ? getPageHtml() : undefined
 
     // Only one HTML attachment is allowed per execution; PAGE_HTML takes
     // priority over SELECTION_HTML when the prompt contains both.
@@ -297,9 +290,9 @@ export const AiPrompt = {
       // Remove the HTML placeholders from the prompt value.
       const promptValue = needFilePaste
         ? aiPromptOption.prompt
-          .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
-          .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
-          .trim()
+            .replaceAll(toInsertTemplate(INSERT.PAGE_HTML), "")
+            .replaceAll(toInsertTemplate(INSERT.SELECTION_HTML), "")
+            .trim()
         : aiPromptOption.prompt
 
       steps = [

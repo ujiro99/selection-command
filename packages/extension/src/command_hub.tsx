@@ -26,7 +26,7 @@ const cloneCss = (from: ShadowRoot, to: ShadowRoot, selector: string) => {
 
 function setupCommandHub() {
   const rootDom = document.createElement("div")
-  rootDom.id = `${APP_ID}-command-hub`
+  rootDom.id = `${APP_ID}-hub`
   document.body.insertAdjacentElement("afterend", rootDom)
   const shadow = rootDom.attachShadow({ mode })
   const root = createRoot(shadow)
