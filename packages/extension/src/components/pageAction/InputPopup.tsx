@@ -182,7 +182,6 @@ export function InputPopup(): JSX.Element {
     }
 
     const onFocusOut = (e: FocusEvent) => {
-      if (!e.relatedTarget) return
       if (!isTargetEditable(e.target)) return
       if (isPopup(e.relatedTarget as Element)) return
       setMenuVisible(false)
@@ -197,7 +196,7 @@ export function InputPopup(): JSX.Element {
       if (isHtmlElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
-            e.target.innerText.trim().length !== 0,
+          e.target.innerText.trim().length !== 0,
         )
       }
     }
@@ -342,7 +341,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
               className={cn(
                 "p-1 px-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
                 props.fileAttachDisabled &&
-                  "opacity-60 bg-muted cursor-not-allowed",
+                "opacity-60 bg-muted cursor-not-allowed",
               )}
               disabled={props.fileAttachDisabled}
               onMouseEnter={() => onSelectedMenuChange(MENU.FILE_PASTE)}

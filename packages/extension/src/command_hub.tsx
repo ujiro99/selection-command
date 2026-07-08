@@ -45,9 +45,7 @@ function renderMyCommands() {
     container.style.display = "block"
 
     if (isDebug) {
-      const from = document.getElementById(
-        "selection-command-command-hub",
-      )?.shadowRoot
+      const from = document.getElementById(`${APP_ID}-hub`)?.shadowRoot
       from && cloneCss(from, shadow, "style")
     } else {
       insertCss(shadow)
