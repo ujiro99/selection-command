@@ -4,6 +4,7 @@ import { Ipc, BgCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
 import { Storage } from "@/services/storage"
 import {
+  APP_ID,
   OPEN_MODE,
   PAGE_ACTION_EVENT,
   PAGE_ACTION_CONDITION_ACTION,
@@ -246,6 +247,44 @@ describe("AiPrompt.execute", () => {
 
       expect(payload.pageHtml).toBeDefined()
       expect(payload.selectionHtml).toBeUndefined()
+    })
+
+    it("AP-01c-2: pageHtml should exclude the extension's own injected UI containers", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeDomService())
+
+      const rootDom = document.createElement("div")
+      rootDom.id = APP_ID
+      document.body.appendChild(rootDom)
+
+      const hubDom = document.createElement("div")
+      hubDom.id = `${APP_ID}-hub`
+      document.body.appendChild(hubDom)
+
+      try {
+        await AiPrompt.execute({
+          selectionText: "hello world",
+          command: {
+            ...baseCommand,
+            aiPromptOption: {
+              ...baseCommand.aiPromptOption,
+              serviceId: "gemini",
+              prompt: toInsertTemplate(INSERT.PAGE_HTML),
+            },
+          } as any,
+          position: { x: 100, y: 100 },
+        })
+
+        const call = vi
+          .mocked(Ipc.send)
+          .mock.calls.find(([cmd]) => cmd === BgCommand.openAndRunPageAction)
+        const payload = call?.[1] as any
+
+        expect(payload.pageHtml).not.toContain(`id="${APP_ID}"`)
+        expect(payload.pageHtml).not.toContain(`id="${APP_ID}-hub"`)
+      } finally {
+        rootDom.remove()
+        hubDom.remove()
+      }
     })
 
     it("AP-01d: should still attach SELECTION_HTML when the prompt contains only SELECTION_HTML", async () => {

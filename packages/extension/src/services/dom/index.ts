@@ -1,7 +1,7 @@
 import type { Point } from "@/types"
 
 import { isEmpty } from "@/lib/utils"
-import { PAGE_HTML_MAX_CHARS } from "@/const"
+import { APP_ID, PAGE_HTML_MAX_CHARS } from "@/const"
 
 export function toDataURL(src: string, outputFormat?: string): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -102,6 +102,18 @@ export function getSelectionHtml(): string {
   const div = document.createElement("div")
   div.appendChild(range.cloneContents())
   return div.innerHTML.slice(0, PAGE_HTML_MAX_CHARS)
+}
+
+/**
+ * Get the page's outer HTML, excluding the extension's own injected UI
+ * containers (content script root and Command Hub root) so they aren't
+ * sent along as page content.
+ */
+export function getPageHtml(): string {
+  const clone = document.documentElement.cloneNode(true) as HTMLElement
+  clone.querySelector(`#${APP_ID}`)?.remove()
+  clone.querySelector(`#${APP_ID}-hub`)?.remove()
+  return clone.outerHTML.slice(0, PAGE_HTML_MAX_CHARS)
 }
 
 /**

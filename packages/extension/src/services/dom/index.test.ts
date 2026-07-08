@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { APP_ID } from "@/const"
 import {
   getSelectionText,
   getInputSelectionEndPoint,
   getEditableSelectionEndPoint,
+  getPageHtml,
   isInputOrTextarea,
   isEditable,
 } from "./index"
@@ -239,6 +241,69 @@ describe("getEditableSelectionEndPoint", () => {
     expect(result).toEqual({ x: 100, y: 120 })
 
     vi.mocked(window.getSelection).mockRestore()
+  })
+})
+
+describe("getPageHtml", () => {
+  afterEach(() => {
+    document.body.innerHTML = ""
+  })
+
+  it("GPH-01: excludes the content script's injected container", () => {
+    const marker = document.createElement("p")
+    marker.textContent = "page content"
+    document.body.appendChild(marker)
+
+    const rootDom = document.createElement("div")
+    rootDom.id = APP_ID
+    document.body.appendChild(rootDom)
+
+    const html = getPageHtml()
+    expect(html).not.toContain(`id="${APP_ID}"`)
+    expect(html).toContain("page content")
+  })
+
+  it("GPH-02: excludes the Command Hub's injected container", () => {
+    const marker = document.createElement("p")
+    marker.textContent = "page content"
+    document.body.appendChild(marker)
+
+    const hubDom = document.createElement("div")
+    hubDom.id = `${APP_ID}-hub`
+    document.body.appendChild(hubDom)
+
+    const html = getPageHtml()
+    expect(html).not.toContain(`id="${APP_ID}-hub"`)
+    expect(html).toContain("page content")
+  })
+
+  it("GPH-03: excludes both injected containers when present together", () => {
+    const marker = document.createElement("p")
+    marker.textContent = "page content"
+    document.body.appendChild(marker)
+
+    const rootDom = document.createElement("div")
+    rootDom.id = APP_ID
+    document.body.appendChild(rootDom)
+
+    const hubDom = document.createElement("div")
+    hubDom.id = `${APP_ID}-hub`
+    document.body.appendChild(hubDom)
+
+    const html = getPageHtml()
+    expect(html).not.toContain(`id="${APP_ID}"`)
+    expect(html).not.toContain(`id="${APP_ID}-hub"`)
+    expect(html).toContain("page content")
+  })
+
+  it("GPH-04: returns page HTML unchanged when no injected containers exist", () => {
+    const marker = document.createElement("p")
+    marker.textContent = "page content"
+    document.body.appendChild(marker)
+
+    const html = getPageHtml()
+    expect(html).toContain("page content")
+    expect(html).toContain("<html")
   })
 })
 
