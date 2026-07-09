@@ -5,6 +5,7 @@ import { OptionSettings } from "../option/optionSettings"
 import DefaultSettings, {
   DefaultCommands,
   getDefaultCommands,
+  COMMAND_SEARCH_ID,
 } from "../option/defaultSettings"
 import { toDataURL } from "../dom"
 import { OPTION_FOLDER, VERSION, OPEN_MODE } from "@/const"
@@ -669,5 +670,41 @@ describe("migrate function", () => {
 
     expect(result.windowOption).toBeDefined()
     expect(result.windowOption.sidePanelAutoHide).toBe(true) // Should preserve existing value
+  })
+
+  it("ST-34: should add Search Commands on Hub command if not exists", async () => {
+    const oldData = {
+      settingVersion: "1.1.0",
+      commands: [],
+      folders: [],
+      pageRules: [],
+    } as any
+
+    const result = await migrate(oldData)
+
+    const cmd = result.commands.find((c: Command) => c.id === COMMAND_SEARCH_ID)
+    expect(cmd).toBeDefined()
+    expect(mockStorage.setCommands).toHaveBeenCalled()
+  })
+
+  it("ST-34-a: should not duplicate Search Commands on Hub command if already exists", async () => {
+    const existing = {
+      id: COMMAND_SEARCH_ID,
+      title: "Search Commands on Hub",
+    }
+    const oldData = {
+      settingVersion: "1.1.0",
+      commands: [existing],
+      folders: [],
+      pageRules: [],
+    } as any
+
+    const result = await migrate(oldData)
+
+    const matches = result.commands.filter(
+      (c: Command) => c.id === COMMAND_SEARCH_ID,
+    )
+    expect(matches).toHaveLength(1)
+    expect(matches[0]).toBe(existing)
   })
 })

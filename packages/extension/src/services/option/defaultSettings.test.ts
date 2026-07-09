@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest"
-import { DefaultCommands, getDefaultCommands } from "./defaultSettings"
+import {
+  DefaultCommands,
+  getDefaultCommands,
+  COMMAND_SEARCH_ID,
+} from "./defaultSettings"
 import { isLinkCommand } from "@/lib/utils"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { getAiServicesFallback } from "@/services/aiPrompt"
@@ -277,6 +281,19 @@ describe("getDefaultCommands", () => {
           `URL-based AI prompt in ${locale} should not contain {{SelectedText}}`,
         ).not.toContain(SYM_SELECTED_TEXT)
       }
+    }
+  })
+
+  it("DS-24: all locale command sets should include a Search Commands on Hub command", () => {
+    for (const locale of ALL_LOCALES) {
+      const commands = getDefaultCommands(locale)
+      const cmd = commands.find((c) => c.id === COMMAND_SEARCH_ID)
+      expect(
+        cmd,
+        `Missing command search command for locale: ${locale}`,
+      ).toBeDefined()
+      expect((cmd as any).openMode).toBe("sidePanel")
+      expect((cmd as any).searchUrl).toContain("%pageUrl")
     }
   })
 })

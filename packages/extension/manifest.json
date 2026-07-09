@@ -81,6 +81,7 @@
       ],
       "resources": [
         "assets/*.css",
+        "images/*",
         "icon128.png"
       ]
     }
