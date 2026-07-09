@@ -21,6 +21,7 @@ export const BackgroundTab = {
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
         useClipboard: useClipboard ?? false,
+        pageUrl: location.href,
       },
       active: false,
     })

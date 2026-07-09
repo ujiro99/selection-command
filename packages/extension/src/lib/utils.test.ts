@@ -199,6 +199,47 @@ describe("toUrl", () => {
       "https://example.com/search?q=hello%0Aworld%09test",
     )
   })
+
+  it("TU-14: replaces %pageUrl with the encoded pageUrl", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/share?url=%pageUrl",
+      selectionText: "",
+      pageUrl: "https://source.example.com/article",
+    }
+    expect(toUrl(param)).toBe(
+      "https://example.com/share?url=https%3A%2F%2Fsource.example.com%2Farticle",
+    )
+  })
+
+  it("TU-15: replaces both %s and %pageUrl in the same searchUrl", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/share?url=%pageUrl&text=%s",
+      selectionText: "hello world",
+      pageUrl: "https://source.example.com/article",
+    }
+    expect(toUrl(param)).toBe(
+      "https://example.com/share?url=https%3A%2F%2Fsource.example.com%2Farticle&text=hello+world",
+    )
+  })
+
+  it("TU-16: replaces %pageUrl with an empty string when pageUrl is not set", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/share?url=%pageUrl",
+      selectionText: "",
+    }
+    expect(toUrl(param)).toBe("https://example.com/share?url=")
+  })
+
+  it("TU-17: URL encodes reserved characters in pageUrl", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/share?url=%pageUrl",
+      selectionText: "",
+      pageUrl: "https://source.example.com/search?q=a&b=1#section",
+    }
+    expect(toUrl(param)).toBe(
+      "https://example.com/share?url=https%3A%2F%2Fsource.example.com%2Fsearch%3Fq%3Da%26b%3D1%23section",
+    )
+  })
 })
 
 describe("matchesPageActionUrl", () => {

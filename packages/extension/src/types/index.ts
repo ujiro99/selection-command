@@ -304,6 +304,7 @@ export type UrlParam = {
   selectionText: string
   spaceEncoding?: SPACE_ENCODING
   useClipboard?: boolean
+  pageUrl?: string
 }
 
 export type ShowToastParam = {
