@@ -450,7 +450,7 @@ const CMD_COMMAND_SEARCH_HI = createCommandSearchCommand(
   "Hub पर कमांड खोजें",
   "hi",
 )
-const CMD_COMMAND_SEARCH_ID = createCommandSearchCommand(
+const CMD_COMMAND_SEARCH_ID_LANG = createCommandSearchCommand(
   "Cari Perintah di Hub",
   "id",
 )
@@ -1985,7 +1985,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
-    CMD_COMMAND_SEARCH_ID,
+    CMD_COMMAND_SEARCH_ID_LANG,
   ],
   ms: [
     CMD_LINK_PREVIEW,

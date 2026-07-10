@@ -674,7 +674,7 @@ describe("migrate function", () => {
 
   it("ST-34: should add Search Commands on Hub command if not exists", async () => {
     const oldData = {
-      settingVersion: "1.1.0",
+      settingVersion: "1.0.0",
       commands: [],
       folders: [],
       pageRules: [],
@@ -693,7 +693,7 @@ describe("migrate function", () => {
       title: "Search Commands on Hub",
     }
     const oldData = {
-      settingVersion: "1.1.0",
+      settingVersion: "1.0.0",
       commands: [existing],
       folders: [],
       pageRules: [],

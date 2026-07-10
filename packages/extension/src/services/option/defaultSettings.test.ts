@@ -292,7 +292,7 @@ describe("getDefaultCommands", () => {
         cmd,
         `Missing command search command for locale: ${locale}`,
       ).toBeDefined()
-      expect((cmd as any).openMode).toBe("sidePanel")
+      expect((cmd as any).openMode).toBe("popup")
       expect((cmd as any).searchUrl).toContain("%pageUrl")
     }
   })
