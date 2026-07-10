@@ -585,6 +585,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         selectionText,
         target: null,
         useClipboard,
+        pageUrl: tab?.url ?? "",
       })
     }
     sendEvent(

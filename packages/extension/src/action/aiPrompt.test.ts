@@ -106,11 +106,6 @@ const baseCommand = {
 describe("AiPrompt.execute", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Mock location.href for content script context
-    Object.defineProperty(window, "location", {
-      value: { href: "https://example.com/page" },
-      writable: true,
-    })
   })
 
   describe("DOM input approach (no queryUrl)", () => {
@@ -565,10 +560,10 @@ describe("AiPrompt.execute", () => {
           },
         } as any,
         position: { x: 0, y: 0 },
+        pageUrl: "https://example.com/page",
       })
 
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
-      // location.href is "https://example.com/page" from beforeEach mock
       expect(sentArgs.url.selectionText).toBe(
         "Summarize [https://example.com/page](https://example.com/page)",
       )

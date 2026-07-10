@@ -19,6 +19,7 @@ export const PageAction = {
     useSecondary,
     useClipboard,
     userVariables,
+    pageUrl,
   }: ExecuteCommandParams & PageActionParams) {
     if (!isPageActionCommand(command)) {
       console.error("command is not for PageAction.")
@@ -46,7 +47,7 @@ export const PageAction = {
       searchUrl: command.pageActionOption.startUrl,
       selectionText,
       useClipboard: needClipboard || (useClipboard ?? false),
-      pageUrl: location.href,
+      pageUrl: pageUrl ?? "",
     }
 
     const openMode = useSecondary
@@ -69,7 +70,7 @@ export const PageAction = {
       height: command.popupOption?.height ?? PopupOption.height,
       width: command.popupOption?.width ?? PopupOption.width,
       selectedText: selectionText,
-      srcUrl: location.href,
+      srcUrl: pageUrl ?? "",
       openMode,
       userVariables: userVariables ?? command.pageActionOption.userVariables,
     })

@@ -12,6 +12,7 @@ export async function executeAction({
   useSecondary = false,
   useClipboard = false,
   changeState,
+  pageUrl,
 }: ExecuteCommandParams & { actions: Record<string, any> }) {
   let mode = command.openMode as OPEN_MODE
   if (
@@ -30,6 +31,7 @@ export async function executeAction({
     useClipboard,
     changeState: changeState ?? (() => {}),
     target: target ?? null,
+    pageUrl,
   })
 
   const { sourceType, sourceId } = resolveCommandSource(command)

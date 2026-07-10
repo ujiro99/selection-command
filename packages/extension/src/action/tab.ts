@@ -9,6 +9,7 @@ export const Tab = {
     selectionText,
     command,
     useClipboard,
+    pageUrl,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
@@ -21,7 +22,7 @@ export const Tab = {
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
         useClipboard: useClipboard ?? false,
-        pageUrl: location.href,
+        pageUrl: pageUrl ?? "",
       },
       active: true,
     })

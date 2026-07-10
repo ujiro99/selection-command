@@ -12,6 +12,7 @@ export const Window = {
     command,
     position,
     useClipboard,
+    pageUrl,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
@@ -31,7 +32,7 @@ export const Window = {
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
         useClipboard: useClipboard ?? false,
-        pageUrl: location.href,
+        pageUrl: pageUrl ?? "",
       },
       top: Math.floor(windowPosition.top + position.y),
       left: Math.floor(windowPosition.left + position.x),

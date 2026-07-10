@@ -353,6 +353,7 @@ describe("Background Script Migration", () => {
         selectionText: "test selection text",
         target: null,
         useClipboard: false,
+        pageUrl: "https://example.com",
       }),
     )
   })
