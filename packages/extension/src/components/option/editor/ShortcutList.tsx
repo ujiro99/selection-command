@@ -62,6 +62,28 @@ const isTextSelectionOnly = (command: Command) => {
   return !Object.values(OPEN_MODE_BG).includes(openMode as any)
 }
 
+// Checks whether the command references the selected text or clipboard at
+// all, regardless of openMode. Used to decide whether the "no selection
+// behavior" setting has any effect on the command.
+const referencesSelection = (command: Command): boolean => {
+  if (isSearchType(command) || command.openMode === OPEN_MODE.API) {
+    return command.searchUrl?.includes("%s") ?? false
+  }
+
+  if (isPageActionType(command)) {
+    return command.pageActionOption.steps.some((step) =>
+      hasSelectionOrClipboardPlaceholder(paramToStr(step.param)),
+    )
+  }
+
+  if (isAiPromptType(command)) {
+    return hasSelectionOrClipboardPlaceholder(command.aiPromptOption.prompt)
+  }
+
+  // copy / getTextStyles / linkPopup always operate on the current selection.
+  return true
+}
+
 const createNameRender = (command: Command) => {
   return isTextSelectionOnly(command)
     ? (name: string) => (
@@ -265,7 +287,10 @@ export function ShortcutList({ control }: ShortcutListProps) {
           const selectedCmd = userCommands.find(
             (c: Command) => c?.id === targetId,
           )
-          const showNoSel = selectedCmd && !isTextSelectionOnly(selectedCmd)
+          const showNoSel =
+            selectedCmd &&
+            !isTextSelectionOnly(selectedCmd) &&
+            referencesSelection(selectedCmd)
 
           return (
             <div key={field.id} className="space-y-2">
