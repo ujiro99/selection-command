@@ -19,8 +19,9 @@ import {
 } from "@/services/option/commandTree"
 import { cn } from "@/lib/utils"
 import css from "./ShortcutList.module.css"
-import { isAiPromptType } from "@/types/schema"
+import { isAiPromptType, isSearchType, isPageActionType } from "@/types/schema"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
+import { paramToStr } from "@/services/pageAction/helper"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -28,14 +29,33 @@ type ShortcutListProps = {
   control: any
 }
 
+// Checks whether the given text references the selected text or clipboard placeholder.
+const hasSelectionOrClipboardPlaceholder = (text: string) =>
+  text.includes(toInsertTemplate(INSERT.SELECTED_TEXT)) ||
+  text.includes(toInsertTemplate(INSERT.CLIPBOARD))
+
 const isTextSelectionOnly = (command: Command) => {
   const { openMode } = command
+
+  if (isSearchType(command)) {
+    // Clipboard access doesn't work in SidePanel mode, so a selection is
+    // required only when the searchUrl actually needs text (%s).
+    return (
+      openMode === OPEN_MODE.SIDE_PANEL &&
+      (command.searchUrl?.includes("%s") ?? false)
+    )
+  }
+
+  if (isPageActionType(command)) {
+    // A selection is required if any step references selected text or clipboard.
+    return command.pageActionOption.steps.some((step) =>
+      hasSelectionOrClipboardPlaceholder(paramToStr(step.param)),
+    )
+  }
+
   if (isAiPromptType(command)) {
     const option = command.aiPromptOption
-
-    const willUseClipboard =
-      option.prompt.includes(toInsertTemplate(INSERT.CLIPBOARD)) ||
-      option.prompt.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
+    const willUseClipboard = hasSelectionOrClipboardPlaceholder(option.prompt)
     return option.openMode === OPEN_MODE.SIDE_PANEL && willUseClipboard
   }
 
