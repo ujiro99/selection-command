@@ -394,7 +394,10 @@ export const DefaultCommands = [
 // variant shares COMMAND_SEARCH_ID so the settings migration can detect
 // whether a user already has one, regardless of which locale it was added in.
 function createCommandSearchCommand(title: string, hubLocale: string): Command {
-  const iconUrl = chrome.runtime.getURL("images/search_command.png")
+  const iconUrl =
+    typeof chrome !== "undefined" && chrome.runtime?.getURL
+      ? chrome.runtime.getURL("images/search_command.png")
+      : ""
   return {
     id: COMMAND_SEARCH_ID,
     title,
