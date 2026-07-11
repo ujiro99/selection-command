@@ -35,27 +35,38 @@ const hasSelectionOrClipboardPlaceholder = (text: string) =>
   text.includes(toInsertTemplate(INSERT.SELECTED_TEXT)) ||
   text.includes(toInsertTemplate(INSERT.CLIPBOARD))
 
-// Checks whether the command references the selected text or clipboard at
-// all, regardless of openMode. Used to decide whether the "no selection
-// behavior" setting has any effect on the command.
-const willUseClipboard = (command: Command): boolean => {
+const hasSelectionPlaceholder = (text: string) =>
+  text.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
+
+// Checks whether the command references a placeholder matched by
+// `hasPlaceholder`, regardless of openMode.
+const referencesPlaceholder = (
+  command: Command,
+  hasPlaceholder: (text: string) => boolean,
+): boolean => {
   if (isSearchType(command) || command.openMode === OPEN_MODE.API) {
     return command.searchUrl?.includes("%s") ?? false
   }
 
   if (isPageActionType(command)) {
     return command.pageActionOption.steps.some((step) =>
-      hasSelectionOrClipboardPlaceholder(paramToStr(step.param)),
+      hasPlaceholder(paramToStr(step.param)),
     )
   }
 
   if (isAiPromptType(command)) {
-    return hasSelectionOrClipboardPlaceholder(command.aiPromptOption.prompt)
+    return hasPlaceholder(command.aiPromptOption.prompt)
   }
 
   // copy / getTextStyles / linkPopup always operate on the current selection.
   return true
 }
+
+// Checks whether the command references the selected text or clipboard at
+// all, regardless of openMode. Used to decide whether the "no selection
+// behavior" setting has any effect on the command.
+const willUseClipboard = (command: Command): boolean =>
+  referencesPlaceholder(command, hasSelectionOrClipboardPlaceholder)
 
 const isTextSelectionOnly = (command: Command) => {
   const { openMode } = command
@@ -83,43 +94,24 @@ const isTextSelectionOnly = (command: Command) => {
   return !Object.values(OPEN_MODE_BG).includes(openMode as any)
 }
 
-const hasSelectionPlaceholder = (text: string) =>
-  text.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
-
-const referencesSelection = (command: Command): boolean => {
-  if (isSearchType(command) || command.openMode === OPEN_MODE.API) {
-    return command.searchUrl?.includes("%s") ?? false
-  }
-
-  if (isPageActionType(command)) {
-    return command.pageActionOption.steps.some((step) =>
-      hasSelectionPlaceholder(paramToStr(step.param)),
-    )
-  }
-
-  if (isAiPromptType(command)) {
-    return hasSelectionPlaceholder(command.aiPromptOption.prompt)
-  }
-
-  // copy / getTextStyles / linkPopup always operate on the current selection.
-  return true
-}
+const referencesSelection = (command: Command): boolean =>
+  referencesPlaceholder(command, hasSelectionPlaceholder)
 
 const createNameRender = (command: Command) => {
   return isTextSelectionOnly(command)
     ? (name: string) => (
-      <span className="truncate">
-        {name}
-        <span
-          className={cn(
-            "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap",
-            css.tag,
-          )}
-        >
-          {t("shortcut_text_selection_only")}
+        <span className="truncate">
+          {name}
+          <span
+            className={cn(
+              "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap",
+              css.tag,
+            )}
+          >
+            {t("shortcut_text_selection_only")}
+          </span>
         </span>
-      </span>
-    )
+      )
     : undefined
 }
 
@@ -201,7 +193,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
         cmd &&
         isTextSelectionOnly(cmd) &&
         shortcut?.noSelectionBehavior !==
-        SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
+          SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
       ) {
         setValue(
           `shortcuts.shortcuts.${index}.noSelectionBehavior`,
