@@ -42,8 +42,8 @@
       "div[contenteditable='true'].ProseMirror"
     ],
     "submitSelectors": [
-      "#main-content button._claude_10ocf_159",
-      "#main-content main button:not([id])"
+      "#main-content button:has(span.bg-fill-brand)",
+      "#main-content button[data-cds='Button'][data-trigger-disabled]"
     ]
   },
   {
