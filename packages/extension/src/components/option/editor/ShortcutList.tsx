@@ -9,6 +9,7 @@ import type { Command, CommandFolder, ShortcutCommand } from "@/types"
 import {
   OPEN_MODE,
   OPEN_MODE_BG,
+  PAGE_ACTION_OPEN_MODE,
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from "@/const"
@@ -34,38 +35,10 @@ const hasSelectionOrClipboardPlaceholder = (text: string) =>
   text.includes(toInsertTemplate(INSERT.SELECTED_TEXT)) ||
   text.includes(toInsertTemplate(INSERT.CLIPBOARD))
 
-const isTextSelectionOnly = (command: Command) => {
-  const { openMode } = command
-
-  if (isSearchType(command)) {
-    // Clipboard access doesn't work in SidePanel mode, so a selection is
-    // required only when the searchUrl actually needs text (%s).
-    return (
-      openMode === OPEN_MODE.SIDE_PANEL &&
-      (command.searchUrl?.includes("%s") ?? false)
-    )
-  }
-
-  if (isPageActionType(command)) {
-    // A selection is required if any step references selected text or clipboard.
-    return command.pageActionOption.steps.some((step) =>
-      hasSelectionOrClipboardPlaceholder(paramToStr(step.param)),
-    )
-  }
-
-  if (isAiPromptType(command)) {
-    const option = command.aiPromptOption
-    const willUseClipboard = hasSelectionOrClipboardPlaceholder(option.prompt)
-    return option.openMode === OPEN_MODE.SIDE_PANEL && willUseClipboard
-  }
-
-  return !Object.values(OPEN_MODE_BG).includes(openMode as any)
-}
-
 // Checks whether the command references the selected text or clipboard at
 // all, regardless of openMode. Used to decide whether the "no selection
 // behavior" setting has any effect on the command.
-const referencesSelection = (command: Command): boolean => {
+const willUseClipboard = (command: Command): boolean => {
   if (isSearchType(command) || command.openMode === OPEN_MODE.API) {
     return command.searchUrl?.includes("%s") ?? false
   }
@@ -84,21 +57,69 @@ const referencesSelection = (command: Command): boolean => {
   return true
 }
 
+const isTextSelectionOnly = (command: Command) => {
+  const { openMode } = command
+
+  if (isSearchType(command)) {
+    // Clipboard access doesn't work in SidePanel mode, so a selection is
+    // required only when the command actually needs text (%s).
+    return openMode === OPEN_MODE.SIDE_PANEL && willUseClipboard(command)
+  }
+
+  if (isPageActionType(command)) {
+    return (
+      command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB &&
+      willUseClipboard(command)
+    )
+  }
+
+  if (isAiPromptType(command)) {
+    return (
+      command.aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL &&
+      willUseClipboard(command)
+    )
+  }
+
+  return !Object.values(OPEN_MODE_BG).includes(openMode as any)
+}
+
+const hasSelectionPlaceholder = (text: string) =>
+  text.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
+
+const referencesSelection = (command: Command): boolean => {
+  if (isSearchType(command) || command.openMode === OPEN_MODE.API) {
+    return command.searchUrl?.includes("%s") ?? false
+  }
+
+  if (isPageActionType(command)) {
+    return command.pageActionOption.steps.some((step) =>
+      hasSelectionPlaceholder(paramToStr(step.param)),
+    )
+  }
+
+  if (isAiPromptType(command)) {
+    return hasSelectionPlaceholder(command.aiPromptOption.prompt)
+  }
+
+  // copy / getTextStyles / linkPopup always operate on the current selection.
+  return true
+}
+
 const createNameRender = (command: Command) => {
   return isTextSelectionOnly(command)
     ? (name: string) => (
-        <span className="truncate">
-          {name}
-          <span
-            className={cn(
-              "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap",
-              css.tag,
-            )}
-          >
-            {t("shortcut_text_selection_only")}
-          </span>
+      <span className="truncate">
+        {name}
+        <span
+          className={cn(
+            "absolute right-4 border rounded-lg px-2 py-0.5 text-[10px] text-gray-600 bg-gray-100 whitespace-nowrap",
+            css.tag,
+          )}
+        >
+          {t("shortcut_text_selection_only")}
         </span>
-      )
+      </span>
+    )
     : undefined
 }
 
@@ -168,6 +189,8 @@ export function ShortcutList({ control }: ShortcutListProps) {
     name: "shortcuts.shortcuts",
   })
 
+  const isShortcutsEmpty = fields.length === 0
+
   useEffect(() => {
     if (!shortcutValues) return
     shortcutValues.forEach((shortcut: ShortcutCommand, index: number) => {
@@ -178,7 +201,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
         cmd &&
         isTextSelectionOnly(cmd) &&
         shortcut?.noSelectionBehavior !==
-          SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
+        SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
       ) {
         setValue(
           `shortcuts.shortcuts.${index}.noSelectionBehavior`,
@@ -221,14 +244,14 @@ export function ShortcutList({ control }: ShortcutListProps) {
 
   useEffect(() => {
     // Initialize the shortcuts
-    if (fields.length !== 0) return
+    if (!isShortcutsEmpty) return
     const initialData = commands.map((cmd) => ({
       id: cmd.name || "",
       commandId: SHORTCUT_PLACEHOLDER,
       noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
     }))
     replace(initialData)
-  }, [replace, commands, userCommands])
+  }, [isShortcutsEmpty, replace, commands, userCommands])
 
   const options = useMemo(
     () => flattenCommandsAndFolders(userCommands, folders),
