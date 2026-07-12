@@ -2,7 +2,7 @@
   "commands": [
     {
       "id": "$$drag-1",
-      "openMode": "previewPopup",
+      "openMode": "previewSidePanel",
       "popupOption": {
         "height": 700,
         "width": 600

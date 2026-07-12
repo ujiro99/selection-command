@@ -7,6 +7,12 @@ import { TEST_IDS } from "@/testIds"
 import { fileURLToPath } from "url"
 import type { UserSettings } from "@/types"
 
+// Mirrors COMMAND_SEARCH_ID in src/services/option/defaultSettings.ts.
+// Not imported directly: that module pulls in aiPromptFallback.ts, which
+// relies on a build-time define (__AI_SERVICES_JSON__) that isn't set
+// when this file is loaded by the Playwright test runner.
+const COMMAND_SEARCH_ID = "019f470a-cea5-7d6f-86cf-e7df9fb14ff1"
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
 export const MENU_STYLE_SETTINGS_PATH = path.join(
@@ -90,10 +96,14 @@ export class OptionsPage {
     await okButton.click()
     await reloadPromise
 
-    // Load the settings file to know the expected command count
+    // Load the settings file to know the expected command count.
+    // Note: the migrate1_1_0 step backfills the "Search Commands on Hub"
+    // command for settings that predate it, so account for that here.
     const rawJson = fs.readFileSync(settingsPath, "utf-8")
     const settingsJson = JSON.parse(rawJson)
-    const expectedCommandCount: number = settingsJson.commands?.length ?? 0
+    const commands: Array<{ id: string }> = settingsJson.commands ?? []
+    const hasCommandSearch = commands.some((c) => c.id === COMMAND_SEARCH_ID)
+    const expectedCommandCount = commands.length + (hasCommandSearch ? 0 : 1)
 
     // Wait for the settings to be loaded with commands
     await expect

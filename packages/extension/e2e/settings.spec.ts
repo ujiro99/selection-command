@@ -74,7 +74,8 @@ test.describe("Settings Page", () => {
 
     const commands = await getCommands()
     expect(commands).not.toBeNull()
-    expect(commands.length).toBe(102)
+    // 102 commands in the fixture + 1 "Search Commands on Hub" backfilled by migrate1_1_0
+    expect(commands.length).toBe(103)
   })
 
   /**
