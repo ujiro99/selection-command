@@ -91,10 +91,16 @@ export class OptionsPage {
       { timeout: 5000 },
     )
 
-    // Confirm the import and wait for page reload
-    const reloadPromise = page.waitForLoadState("domcontentloaded")
+    // Confirm the import and wait for page reload.
+    // Note: page.waitForLoadState("domcontentloaded") resolves immediately
+    // if the page is already in that state (which it is here, from the
+    // initial page load), so it doesn't actually wait for the reload
+    // triggered by the import. Wait for a real "framenavigated" event
+    // instead, which only fires on an actual navigation.
+    const navPromise = page.waitForEvent("framenavigated")
     await okButton.click()
-    await reloadPromise
+    await navPromise
+    await page.waitForLoadState("domcontentloaded")
 
     // Load the settings file to know the expected command count.
     // Note: the migrate1_1_0 step backfills the "Search Commands on Hub"
