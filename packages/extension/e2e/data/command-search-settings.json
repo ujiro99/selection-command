@@ -21,7 +21,7 @@
         "width": 600
       },
       "revision": 0,
-      "searchUrl": "https://selection-command.com/ja?q=%pageUrl",
+      "searchUrl": "%NEW_HUB_URL%/ja?q=%pageUrl",
       "spaceEncoding": "plus"
     }
   ],

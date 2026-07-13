@@ -61,17 +61,24 @@ export class OptionsPage {
   }
 
   /**
-   * Import settings from a given file path.
+   * Import settings from a given file path, or a settings object.
    * Defaults to the standard test-settings.json.
+   *
+   * A settings object is useful when a test needs to embed an env-dependent
+   * value (e.g. NEW_HUB_URL) into the imported commands, since a static JSON
+   * file on disk cannot reference test-time constants.
    */
   async importSettings(
-    settingsPath: string = TEST_SETTINGS_PATH,
+    settings: string | Record<string, unknown> = TEST_SETTINGS_PATH,
   ): Promise<void> {
     if (!this.page) {
       await this.open()
     }
     const page = this.page!
-    const filePath = settingsPath ?? TEST_SETTINGS_PATH
+    const isPath = typeof settings === "string"
+    const rawJson = isPath
+      ? fs.readFileSync(settings, "utf-8")
+      : JSON.stringify(settings)
 
     // Open the import dialog
     await page.locator(`[data-testid="${TEST_IDS.importButton}"]`).click()
@@ -80,7 +87,15 @@ export class OptionsPage {
     const fileInput = page.locator(
       `[data-testid="${TEST_IDS.importFileInput}"]`,
     )
-    await fileInput.setInputFiles(filePath)
+    if (isPath) {
+      await fileInput.setInputFiles(settings)
+    } else {
+      await fileInput.setInputFiles({
+        name: "settings.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(rawJson, "utf-8"),
+      })
+    }
 
     // Wait for the file to be read and OK button to be enabled
     const okButton = page.locator(`[data-testid="${TEST_IDS.optionDialogOk}"]`)
@@ -106,10 +121,9 @@ export class OptionsPage {
     await navPromise
     await page.waitForLoadState("domcontentloaded")
 
-    // Load the settings file to know the expected command count.
+    // Use the settings we just imported to know the expected command count.
     // Note: the migrate1_1_0 step backfills the "Search Commands on Hub"
     // command for settings that predate it, so account for that here.
-    const rawJson = fs.readFileSync(settingsPath, "utf-8")
     const settingsJson = JSON.parse(rawJson)
     const commands: Array<{ id: string }> = settingsJson.commands ?? []
     const hasCommandSearch = commands.some((c) => c.id === COMMAND_SEARCH_ID)
