@@ -36,8 +36,7 @@ This file provides guidance to AI Agent when working with code in this repositor
      動作確認するためのテストページ
    - `packages/extension/e2e/pages/TestPage.ts` がこのページの URL を
      ハードコードしており、複数の spec ファイルから利用されている
-   - このページ配下のコンポーネント（Header/Footer/CookieConsent/
-     LocaleSelector など）は、App Router のレイアウト要件を満たすために
+   - このページ配下のコンポーネント（Header/Footer/LocaleSelector など）は、App Router のレイアウト要件を満たすために
      最小限残っているだけで、機能的な意味は薄い
 
 ## 開発コマンド
@@ -52,8 +51,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 
 - `public/data/ai-services.json` - Extension が参照する唯一のデータファイル
 - `src/app/[lang]/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）
-- `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の
-  必須レイアウト（Header/Footer/CookieConsent/LanguageProvider を保持）
+- `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が
   無条件にバレルインポートするため削除できない）
 - `src/components/ui/` - shadcn/ui のうち button, separator, select のみ残存
@@ -66,7 +64,7 @@ Google Analytics 連携・お問い合わせフォーム等は、全て新リポ
 （selection-command-hub）に移行済みで、このパッケージには存在しない。
 関連する `commands.json`, `tags.json`, `searchUrls.json`, `pageActionIds.json`
 等のデータファイルおよび生成スクリプト（旧 `scripts/update-tags.mjs` 等）も
-削除済み。Footer・CookieConsent 内の法的ページへのリンクも、対応するページの
+削除済み。Footer 内の法的ページへのリンクも、対応するページの
 削除に合わせて除去している。
 
 ## 開発時の注意事項
