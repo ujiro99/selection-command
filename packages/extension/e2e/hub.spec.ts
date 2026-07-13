@@ -1,3 +1,5 @@
+import fs from "fs"
+
 import { test, expect } from "./fixtures"
 import { OptionsPage, COMMAND_SEARCH_SETTINGS_PATH } from "./pages/OptionsPage"
 import { TestPage } from "./pages/TestPage"
@@ -185,10 +187,24 @@ test.describe("Command Hub", () => {
     extensionId,
     getCommands,
     page,
+    cfAccessCookie: _cfAccessCookie,
   }) => {
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.open()
-    await optionsPage.importSettings(COMMAND_SEARCH_SETTINGS_PATH)
+
+    // The command's searchUrl is normally hardcoded to the production Hub
+    // domain (see createCommandSearchCommand in defaultSettings.ts), which
+    // Cloudflare's bot-protection blocks in CI. Point it at NEW_HUB_URL (the
+    // staging Hub used by the other tests in this file) instead, by patching
+    // the template's placeholder before importing.
+    const settingsTemplate = fs.readFileSync(
+      COMMAND_SEARCH_SETTINGS_PATH,
+      "utf-8",
+    )
+    const settings = JSON.parse(
+      settingsTemplate.replace("%NEW_HUB_URL%", NEW_HUB_URL),
+    )
+    await optionsPage.importSettings(settings)
     await optionsPage.close()
 
     // Arrange: navigate to a real page and select text to show the popup menu.
@@ -209,24 +225,17 @@ test.describe("Command Hub", () => {
     await hubPage.waitForLoadState("domcontentloaded")
 
     // Assert: navigated to the Hub search page with the visited page's URL as the query.
-    // Compare origin/pathname/q individually rather than the full URL string: Cloudflare's
-    // bot-protection JS challenge (seen in CI) appends an extra "__cf_chl_rt_tk" param after
-    // it passes, which would break an exact string match.
     const hubUrl = new URL(hubPage.url())
-    expect(hubUrl.origin + hubUrl.pathname).toBe(
-      "https://selection-command.com/ja",
-    )
+    expect(hubUrl.origin + hubUrl.pathname).toBe(`${NEW_HUB_URL}/ja`)
     expect(hubUrl.searchParams.get("q")).toBe(targetUrl)
 
     // Assert: results are not limited to a single ("News") command — Google and
     // Google Image search commands are present among the results too.
-    // A generous timeout here also covers Cloudflare's JS challenge page (see above),
-    // which can delay the final content from rendering by a few seconds.
     await expect(
       hubPage.locator(
         "[data-testid='download-btn'][data-id='0cb9dbbc-c0cf-53c6-93e5-016363705216']",
       ),
-    ).toBeVisible({ timeout: 20000 })
+    ).toBeVisible({ timeout: 15000 })
     await expect(
       hubPage.locator(
         "[data-testid='download-btn'][data-id='26c47b36-c3c8-528c-9ad2-c972dfc6f4df']",
