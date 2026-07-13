@@ -27,9 +27,9 @@ export default async function LangLayout(props: Props) {
     : DefaultLanguage
   return (
     <div className={css.container}>
-      <Header lang={lang} />
+      <Header />
       {children}
-      <Footer lang={lang} />
+      <Footer />
       <CookieConsent lang={lang} />
     </div>
   )
