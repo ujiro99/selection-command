@@ -209,16 +209,24 @@ test.describe("Command Hub", () => {
     await hubPage.waitForLoadState("domcontentloaded")
 
     // Assert: navigated to the Hub search page with the visited page's URL as the query.
-    const expectedUrl = `https://selection-command.com/ja?q=${encodeURIComponent(targetUrl)}`
-    expect(hubPage.url()).toBe(expectedUrl)
+    // Compare origin/pathname/q individually rather than the full URL string: Cloudflare's
+    // bot-protection JS challenge (seen in CI) appends an extra "__cf_chl_rt_tk" param after
+    // it passes, which would break an exact string match.
+    const hubUrl = new URL(hubPage.url())
+    expect(hubUrl.origin + hubUrl.pathname).toBe(
+      "https://selection-command.com/ja",
+    )
+    expect(hubUrl.searchParams.get("q")).toBe(targetUrl)
 
     // Assert: results are not limited to a single ("News") command — Google and
     // Google Image search commands are present among the results too.
+    // A generous timeout here also covers Cloudflare's JS challenge page (see above),
+    // which can delay the final content from rendering by a few seconds.
     await expect(
       hubPage.locator(
         "[data-testid='download-btn'][data-id='0cb9dbbc-c0cf-53c6-93e5-016363705216']",
       ),
-    ).toBeVisible({ timeout: 15000 })
+    ).toBeVisible({ timeout: 20000 })
     await expect(
       hubPage.locator(
         "[data-testid='download-btn'][data-id='26c47b36-c3c8-528c-9ad2-c972dfc6f4df']",
