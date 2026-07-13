@@ -131,6 +131,12 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Pilih kekunci"
   },
+  "Option_keepMenuOpenOnTabChange": {
+    "message": "Kekalkan Menu Terbuka Semasa Tukar Tab"
+  },
+  "Option_keepMenuOpenOnTabChange_desc": {
+    "message": "Mengekalkan menu pemilihan dan teks yang dipilih apabila anda menukar tab atau tetingkap selepas menjalankan arahan, supaya anda boleh kembali dan menjalankan arahan lain pada pilihan yang sama."
+  },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
   },

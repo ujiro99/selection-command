@@ -131,6 +131,12 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Seleccione una tecla"
   },
+  "Option_keepMenuOpenOnTabChange": {
+    "message": "Mantener el menú abierto al cambiar de pestaña"
+  },
+  "Option_keepMenuOpenOnTabChange_desc": {
+    "message": "Mantiene el menú de selección y el texto seleccionado al cambiar de pestaña o ventana después de ejecutar un comando, para poder volver y ejecutar otro comando sobre la misma selección."
+  },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
   },

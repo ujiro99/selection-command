@@ -347,8 +347,11 @@ chrome.action.onClicked.addListener(() => {
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
-  // Clear selection text
-  await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
+  const settings = await enhancedSettings.get()
+  if (!settings.startupMethod?.keepMenuOpenOnTabChange) {
+    // Clear selection text
+    await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
+  }
 
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     return
@@ -393,12 +396,15 @@ chrome.windows.onBoundsChanged.addListener(async (window) => {
 })
 
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  // Force close the menu
-  try {
-    const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
-    ret.filter((v) => v).forEach((v) => console.debug(v))
-  } catch (error) {
-    console.error("Failed to close menu:", error)
+  const settings = await enhancedSettings.get()
+  if (!settings.startupMethod?.keepMenuOpenOnTabChange) {
+    // Force close the menu
+    try {
+      const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
+      ret.filter((v) => v).forEach((v) => console.debug(v))
+    } catch (error) {
+      console.error("Failed to close menu:", error)
+    }
   }
 
   try {

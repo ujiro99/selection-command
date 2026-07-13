@@ -131,6 +131,12 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Выберите клавишу"
   },
+  "Option_keepMenuOpenOnTabChange": {
+    "message": "Не закрывать меню при переключении вкладок"
+  },
+  "Option_keepMenuOpenOnTabChange_desc": {
+    "message": "Сохраняет меню выбора и выделенный текст при переключении вкладок или окон после выполнения команды, чтобы вы могли вернуться и выполнить другую команду для того же выделения."
+  },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
   },
