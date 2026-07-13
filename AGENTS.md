@@ -22,9 +22,9 @@
    - React + TypeScript + Vite
 
 2. **packages/hub** (`@selection-command/hub`)
-   - コマンド共有・発見のWebプラットフォーム
-   - Next.js 15 + App Router
-   - 11言語対応の国際化
+   - `ai-services.json` の静的ホスティング + Extension の e2e テストページ配信のみを担う縮小版 Next.js アプリ
+   - コマンド共有プラットフォームとしてのフル機能は新リポジトリ（[selection-command-hub](https://github.com/ujiro99/selection-command-hub)、selection-command.com）に移行済み
+   - 詳細は `packages/hub/AGENTS.md` を参照
 
 3. **packages/shared** (`@selection-command/shared`)
    - 共通ユーティリティと型定義
@@ -35,7 +35,7 @@
 ```bash
 # 拡張機能の開発
 yarn dev                   # extensionの開発モード開始
-yarn dev:hub               # hubの開発モード開始
+yarn dev:hub               # hub（テストページ/ai-services.json配信用）の開発モード開始
 
 # ビルド
 yarn build                 # 全パッケージのビルド
@@ -73,9 +73,6 @@ yarn zip                   # 配布用zip作成
 ```bash
 yarn dev                   # Next.js開発サーバー（Turbo）
 yarn build                 # プロダクションビルド
-yarn analytics             # GA分析データ更新
-yarn tags                  # タグ統計更新
-yarn urls                  # 検索URL更新
 ```
 
 **Shared (packages/shared):**
@@ -93,33 +90,35 @@ yarn dev                   # watch モード
 
 ```
 ┌────────────────────────┐    ┌─────────────────────┐
-│   Chrome Extension     │    │    Command Hub      │
+│   Chrome Extension     │    │  Hub（静的アセット）│
 │   (packages/ext)       │◄──►│   (packages/hub)    │
 │                        │    │                     │
-│ • コンテンツスクリプト │    │ • コマンド共有      │
-│ • バックグラウンド     │    │ • 検索・発見        │
-│ • オプションページ     │    │ • 多言語対応        │
-│ • ページアクション     │    │ • 分析機能          │
+│ • コンテンツスクリプト │    │ • ai-services.json  │
+│ • バックグラウンド     │    │   配信              │
+│ • オプションページ     │    │ • e2eテストページ   │
+│ • ページアクション     │    │                     │
 └────────────────────────┘    └─────────────────────┘
-           │                            │
-           └──────────┬─────────────────┘
-                      │
-           ┌─────────────────────┐
-           │   Shared Package    │
-           │  (packages/shared)  │
-           │                     │
-           │ • 共通型定義        │
-           │ • ユーティリティ    │
-           │ • 型ガード          │
-           └─────────────────────┘
+             │
+             │
+  ┌─────────────────────┐
+  │   Shared Package    │
+  │  (packages/shared)  │
+  │                     │
+  │ • 共通型定義        │
+  │ • ユーティリティ    │
+  │ • 型ガード          │
+  └─────────────────────┘
 ```
+
+※ コマンド共有・検索・発見のプラットフォーム（旧 Command Hub のフル機能）は
+新リポジトリ（selection-command-hub）に移行済み。上記の `packages/hub` は
+その旧実装の残骸ではなく、Extension が依存する静的アセット配信専用に縮小した別物。
 
 ### 主要な連携ポイント
 
 1. **型システム共有**: SharedパッケージでBaseCommandなどの基本型を定義し、ExtensionとHubで拡張
-2. **コマンドデータ**: Hubで管理するcommands.jsonをExtensionで参照
-3. **国際化**: Hubの多言語対応とExtensionのlocalesファイルが連携
-4. **ページアクション**: ExtensionのPageActionがHubで共有・発見される
+2. **AIサービス定義**: `packages/hub/public/data/ai-services.json` を Extension がビルド時/実行時の両方で参照
+3. **e2eテスト**: `packages/hub` がデプロイする `/en/test` ページを Extension の Playwright テストが利用
 
 ### Chrome拡張機能の構造 (packages/extension)
 
@@ -139,22 +138,11 @@ yarn dev                   # watch モード
 - `src/services/pageAction/` - 自動化シーケンス処理
 - `src/lib/robula-plus/` - 堅牢なXPathセレクター生成
 
-### Hubプラットフォームの構造 (packages/hub)
+### Hub の構造 (packages/hub)
 
-**機能:**
-
-- コマンドライブラリの検索・発見
-- タグベースでのカテゴライズ
-- Google Analytics統合
-- 11言語の国際化対応
-
-**データフロー:**
-
-```
-commands.json → フィルタリング・検索 → UI表示
-commands.json → scripts/update-tags.mjs → tags.json
-Google Analytics → scripts/fetch-ga-data.js → analytics.json
-```
+`packages/hub` は「ai-services.json の静的ホスティング」と「Extension の
+e2eテストページ配信」のみを担う縮小版アプリ。詳細は `packages/hub/AGENTS.md`
+を参照。
 
 ### 型システムの設計
 
@@ -199,7 +187,8 @@ interface PageActionOption {
 
 **Hub開発:**
 
-- 多言語対応時は各言語ファイルの更新が必要
+- Hub は縮小版のため新機能は追加しない。コマンド共有プラットフォームとしての機能拡張は新リポジトリ（selection-command-hub）側で行う
+- `ai-services.json` とテストページの変更時は Extension 側への影響を確認すること
 
 **テスト:**
 
@@ -210,5 +199,5 @@ interface PageActionOption {
 **ビルド・配布:**
 
 - Extension: `yarn zip`で配布用zipファイル作成
-- Hub: Vercel等での静的サイト配布
+- Hub: GitHub Pages（`.github/workflows/pages.yml`）で静的サイト配布
 - Shared: TypeScript declarations自動生成

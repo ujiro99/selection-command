@@ -5,7 +5,6 @@ import {
   isEmpty,
   isSearchCommand,
   isPageActionCommand,
-  sortUrlsByDomain,
   onHover,
   capitalize,
   sleep,
@@ -231,53 +230,6 @@ describe("Utility Functions", () => {
       expect(isPageActionCommand(searchCommand)).toBe(false)
       expect(isPageActionCommand(emptyObject)).toBe(false)
       expect(isPageActionCommand(null)).toBe(false)
-    })
-  })
-
-  describe("sortUrlsByDomain function", () => {
-    test("UTIL-14: Normal case: sorted by domain name", () => {
-      // Arrange
-      const urls = [
-        { url: "https://zzz.example.com" },
-        { url: "https://aaa.example.com" },
-        { url: "https://bbb.example.com" },
-      ]
-
-      // Act
-      const sorted = sortUrlsByDomain(urls, (item) => item.url)
-
-      // Assert
-      expect(sorted[0].url).toBe("https://aaa.example.com")
-      expect(sorted[1].url).toBe("https://bbb.example.com")
-      expect(sorted[2].url).toBe("https://zzz.example.com")
-    })
-
-    test("UTIL-15: Normal case: sorted by different domains", () => {
-      // Arrange
-      const urls = [
-        { url: "https://zebra.com" },
-        { url: "https://apple.com" },
-        { url: "https://microsoft.com" },
-      ]
-
-      // Act
-      const sorted = sortUrlsByDomain(urls, (item) => item.url)
-
-      // Assert
-      expect(sorted[0].url).toBe("https://apple.com")
-      expect(sorted[1].url).toBe("https://microsoft.com")
-      expect(sorted[2].url).toBe("https://zebra.com")
-    })
-
-    test("UTIL-16: Edge case: returns empty array for empty array", () => {
-      // Arrange
-      const emptyArray: { url: string }[] = []
-
-      // Act
-      const sorted = sortUrlsByDomain(emptyArray, (item) => item.url)
-
-      // Assert
-      expect(sorted).toEqual([])
     })
   })
 

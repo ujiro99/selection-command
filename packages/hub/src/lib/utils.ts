@@ -7,39 +7,10 @@ export {
   isEmpty,
   sleep,
 } from "@shared"
-import { parse } from "tldts"
 
 export { generateUUIDFromObject } from "@shared/utils/uuid"
 
 // Type guards and common utilities are now imported from shared package
-
-/**
- * Sort URLs by domain.
- * @param collection Collenctionss to sort which has URL property.
- * @param getUrlFunc Property name of the URL.
- * @returns Sorted URLs.
- */
-export function sortUrlsByDomain<V>(
-  collection: V[],
-  getUrlFunc: (c: V) => string,
-): V[] {
-  return collection.sort((a, b) => {
-    const parsedA = parse(getUrlFunc(a))
-    const parsedB = parse(getUrlFunc(b))
-
-    // Compare the domain and TLD of the URL.
-    // e.g. 'www.example.com' and 'example.com' are the same domain.
-    const domainA = `${parsedA.domain}.${parsedA.publicSuffix}`
-    const domainB = `${parsedB.domain}.${parsedB.publicSuffix}`
-    if (domainA !== domainB) {
-      return domainA.localeCompare(domainB)
-    }
-
-    // Compare the subdomain of the URL.
-    // e.g. 'www.example.com' and 'sub.example.com' are different domains.
-    return (parsedA.subdomain || "").localeCompare(parsedB.subdomain || "")
-  })
-}
 
 let hoverTo = 0
 

@@ -94,7 +94,7 @@ Chrome はこの `css` フィールドに列挙されたスタイルシートを
 
 **対策**: `src/lib/vite-plugin-manifest.ts` の `removeCssFromContentScript` プラグインが、
 ビルド後に全 content_script エントリーの `css` フィールドを削除する。
-CSS は各スクリプト（`content_script.tsx`, `command_hub.tsx`）の Shadow DOM 初期化時に `insertCss()` で手動注入している。
+CSS は `content_script.tsx` の Shadow DOM 初期化時に `insertCss()` で手動注入している。
 
 > content_script に CSS import を追加する際は、manifest 経由での自動注入が抑制されていることを確認すること。
 > 新たな content_script エントリーを追加した場合も同様に Shadow DOM への手動注入が必要。

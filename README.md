@@ -11,7 +11,7 @@
 ## Selection Command Hub
 
 You can share and obtain commands in the Selection Command Hub.  
-[Selection Command Hub](https://ujiro99.github.io/selection-command/)
+[Selection Command Hub](https://selection-command.com/)
 
 ## Dependencies
 

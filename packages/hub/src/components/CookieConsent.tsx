@@ -1,9 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
 import Script from "next/script"
-import { CookieIcon, ChevronsRight } from "lucide-react"
+import { CookieIcon } from "lucide-react"
 import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
 import { LangProps } from "@/types"
@@ -41,7 +40,6 @@ export function CookieConsent({ lang }: Props): JSX.Element {
   const [isOpen, setIsOpen] = useState(false)
   const [hide, setHide] = useState(false)
   const [consentMode, setConsentMode] = useState<boolean | null>(null)
-  const about = getDict(lang).about
   const t = getDict(lang).cookieConsent
 
   const accept = () => {
@@ -122,13 +120,6 @@ export function CookieConsent({ lang }: Props): JSX.Element {
           </div>
           <div className="px-3">
             <p className="text-sm text-left text-stone-600">{t.message}</p>
-            <Link
-              className={cn("flex items-center mt-2", "text-sm text-stone-600")}
-              href={`/${lang}/cookie`}
-            >
-              <ChevronsRight className="inline mr-1" size={16} />
-              <span>{about.cookie}</span>
-            </Link>
           </div>
           <div className="px-8 pt-3 py-3 flex items-center gap-4">
             <Button
