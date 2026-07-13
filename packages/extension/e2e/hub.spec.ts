@@ -154,11 +154,10 @@ test.describe("Command Hub", () => {
       .waitFor({ timeout: 10000 })
 
     const restoredButton = page
-      .locator(`button[data-id='${commandId}']`)
+      .locator(`button[data-testid='download-btn'][data-id='${commandId}']`)
       .filter({ hasNot: page.locator('[data-installed="true"]') })
       .first()
-    await restoredButton.waitFor({ state: "visible", timeout: 5000 })
-    expect(restoredButton).toBeVisible()
+    await expect(restoredButton).toBeVisible({ timeout: 10000 })
   })
 
   /**
