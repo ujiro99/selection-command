@@ -19,6 +19,10 @@ export const MENU_STYLE_SETTINGS_PATH = path.join(
   __dirname,
   "../data/menu-layout-settings.json",
 )
+export const COMMAND_SEARCH_SETTINGS_PATH = path.join(
+  __dirname,
+  "../data/command-search-settings.json",
+)
 
 /**
  * Page Object for the extension's options page.

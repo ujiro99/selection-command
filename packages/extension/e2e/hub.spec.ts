@@ -1,5 +1,6 @@
 import { test, expect } from "./fixtures"
-import { OptionsPage } from "./pages/OptionsPage"
+import { OptionsPage, COMMAND_SEARCH_SETTINGS_PATH } from "./pages/OptionsPage"
+import { TestPage } from "./pages/TestPage"
 import { NEW_HUB_URL } from "./const"
 
 test.describe("Command Hub", () => {
@@ -171,5 +172,62 @@ test.describe("Command Hub", () => {
   }) => {
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
     await optionsPage.createCommandAndShare()
+  })
+
+  /**
+   * E2E-94: Verify that the "Search Commands on Hub" command (COMMAND_SEARCH_ID)
+   * opens the Hub with the current page's URL as the search query, and that the
+   * results are not limited to a single command but include multiple commands
+   * registered on the Hub (e.g. Google, Google Image).
+   */
+  test("E2E-94: command search searches the Hub for the current page URL", async ({
+    context,
+    extensionId,
+    getCommands,
+    page,
+  }) => {
+    const optionsPage = new OptionsPage(context, extensionId, getCommands)
+    await optionsPage.open()
+    await optionsPage.importSettings(COMMAND_SEARCH_SETTINGS_PATH)
+    await optionsPage.close()
+
+    // Arrange: navigate to a real page and select text to show the popup menu.
+    const targetUrl = "https://news.google.com/home?hl=ja&gl=JP&ceid=JP%3Aja"
+    const testPage = new TestPage(page)
+    await testPage.open(targetUrl)
+    await testPage.selectText()
+    const menubar = await testPage.getMenuBar()
+
+    // Act: click "Search Commands on Hub" and capture the page it opens.
+    // Selected by position rather than aria-label (which mirrors the command's
+    // title and could render in a different language in CI): the imported
+    // settings define only one clickable root-level command.
+    const [hubPage] = await Promise.all([
+      context.waitForEvent("page"),
+      menubar.locator("[role='menuitem']").first().click(),
+    ])
+    await hubPage.waitForLoadState("domcontentloaded")
+
+    // Assert: navigated to the Hub search page with the visited page's URL as the query.
+    const expectedUrl = `https://selection-command.com/ja?q=${encodeURIComponent(targetUrl)}`
+    expect(hubPage.url()).toBe(expectedUrl)
+
+    // Assert: results are not limited to a single ("News") command — Google and
+    // Google Image search commands are present among the results too.
+    await expect(
+      hubPage.locator(
+        "[data-testid='download-btn'][data-id='0cb9dbbc-c0cf-53c6-93e5-016363705216']",
+      ),
+    ).toBeVisible({ timeout: 15000 })
+    await expect(
+      hubPage.locator(
+        "[data-testid='download-btn'][data-id='26c47b36-c3c8-528c-9ad2-c972dfc6f4df']",
+      ),
+    ).toBeVisible()
+
+    const resultCount = await hubPage
+      .locator("[data-testid='download-btn']")
+      .count()
+    expect(resultCount).toBeGreaterThan(1)
   })
 })
