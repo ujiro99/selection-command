@@ -7,11 +7,21 @@ import { TEST_IDS } from "@/testIds"
 import { fileURLToPath } from "url"
 import type { UserSettings } from "@/types"
 
+// Mirrors COMMAND_SEARCH_ID in src/services/option/defaultSettings.ts.
+// Not imported directly: that module pulls in aiPromptFallback.ts, which
+// relies on a build-time define (__AI_SERVICES_JSON__) that isn't set
+// when this file is loaded by the Playwright test runner.
+const COMMAND_SEARCH_ID = "019f470a-cea5-7d6f-86cf-e7df9fb14ff1"
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const TEST_SETTINGS_PATH = path.join(__dirname, "../data/test-settings.json")
 export const MENU_STYLE_SETTINGS_PATH = path.join(
   __dirname,
   "../data/menu-layout-settings.json",
+)
+export const COMMAND_SEARCH_SETTINGS_PATH = path.join(
+  __dirname,
+  "../data/command-search-settings.json",
 )
 
 /**
@@ -51,17 +61,24 @@ export class OptionsPage {
   }
 
   /**
-   * Import settings from a given file path.
+   * Import settings from a given file path, or a settings object.
    * Defaults to the standard test-settings.json.
+   *
+   * A settings object is useful when a test needs to embed an env-dependent
+   * value (e.g. NEW_HUB_URL) into the imported commands, since a static JSON
+   * file on disk cannot reference test-time constants.
    */
   async importSettings(
-    settingsPath: string = TEST_SETTINGS_PATH,
+    settings: string | Record<string, unknown> = TEST_SETTINGS_PATH,
   ): Promise<void> {
     if (!this.page) {
       await this.open()
     }
     const page = this.page!
-    const filePath = settingsPath ?? TEST_SETTINGS_PATH
+    const isPath = typeof settings === "string"
+    const rawJson = isPath
+      ? fs.readFileSync(settings, "utf-8")
+      : JSON.stringify(settings)
 
     // Open the import dialog
     await page.locator(`[data-testid="${TEST_IDS.importButton}"]`).click()
@@ -70,7 +87,15 @@ export class OptionsPage {
     const fileInput = page.locator(
       `[data-testid="${TEST_IDS.importFileInput}"]`,
     )
-    await fileInput.setInputFiles(filePath)
+    if (isPath) {
+      await fileInput.setInputFiles(settings)
+    } else {
+      await fileInput.setInputFiles({
+        name: "settings.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(rawJson, "utf-8"),
+      })
+    }
 
     // Wait for the file to be read and OK button to be enabled
     const okButton = page.locator(`[data-testid="${TEST_IDS.optionDialogOk}"]`)
@@ -85,15 +110,24 @@ export class OptionsPage {
       { timeout: 5000 },
     )
 
-    // Confirm the import and wait for page reload
-    const reloadPromise = page.waitForLoadState("domcontentloaded")
+    // Confirm the import and wait for page reload.
+    // Note: page.waitForLoadState("domcontentloaded") resolves immediately
+    // if the page is already in that state (which it is here, from the
+    // initial page load), so it doesn't actually wait for the reload
+    // triggered by the import. Wait for a real "framenavigated" event
+    // instead, which only fires on an actual navigation.
+    const navPromise = page.waitForEvent("framenavigated")
     await okButton.click()
-    await reloadPromise
+    await navPromise
+    await page.waitForLoadState("domcontentloaded")
 
-    // Load the settings file to know the expected command count
-    const rawJson = fs.readFileSync(settingsPath, "utf-8")
+    // Use the settings we just imported to know the expected command count.
+    // Note: the migrate1_1_0 step backfills the "Search Commands on Hub"
+    // command for settings that predate it, so account for that here.
     const settingsJson = JSON.parse(rawJson)
-    const expectedCommandCount: number = settingsJson.commands?.length ?? 0
+    const commands: Array<{ id: string }> = settingsJson.commands ?? []
+    const hasCommandSearch = commands.some((c) => c.id === COMMAND_SEARCH_ID)
+    const expectedCommandCount = commands.length + (hasCommandSearch ? 0 : 1)
 
     // Wait for the settings to be loaded with commands
     await expect

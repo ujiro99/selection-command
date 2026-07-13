@@ -9,6 +9,7 @@ export const BackgroundTab = {
     selectionText,
     command,
     useClipboard,
+    pageUrl,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
       console.error("searchUrl is not valid.")
@@ -21,6 +22,7 @@ export const BackgroundTab = {
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
         selectionText,
         useClipboard: useClipboard ?? false,
+        pageUrl: pageUrl ?? "",
       },
       active: false,
     })

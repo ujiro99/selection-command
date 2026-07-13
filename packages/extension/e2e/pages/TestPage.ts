@@ -12,10 +12,11 @@ export class TestPage {
   constructor(private readonly page: Page) {}
 
   /**
-   * Navigate to the test page and wait until the extension content script is injected.
+   * Navigate to the given page (defaults to the extension's test page) and
+   * wait until the extension content script is injected.
    */
-  async open(): Promise<void> {
-    await this.page.goto(TEST_URL)
+  async open(url: string = TEST_URL): Promise<void> {
+    await this.page.goto(url)
     await this.page
       .locator(`#${APP_ID}`)
       .waitFor({ state: "attached", timeout: 10_000 })

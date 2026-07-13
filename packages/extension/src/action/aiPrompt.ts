@@ -69,6 +69,7 @@ export const AiPrompt = {
     position,
     useSecondary,
     useClipboard,
+    pageUrl,
   }: ExecuteCommandParams) {
     if (!isAiPromptType(command)) {
       console.error("command is not for AiPrompt.")
@@ -128,7 +129,7 @@ export const AiPrompt = {
       // is false and the DOM input approach is used instead.
       const expandedPrompt = safeInterpolate(aiPromptOption.prompt, {
         [InsertSymbol[INSERT.SELECTED_TEXT]]: selectionText,
-        [InsertSymbol[INSERT.URL]]: location.href,
+        [InsertSymbol[INSERT.URL]]: pageUrl ?? "",
         [InsertSymbol[INSERT.LANG]]: getUILanguage(),
       })
 
@@ -359,7 +360,7 @@ export const AiPrompt = {
         url: serviceUrl,
         steps,
         selectedText: selectionText,
-        srcUrl: location.href,
+        srcUrl: pageUrl ?? "",
         clipboardText: "",
         useClipboard:
           !useQueryUrl && (needClipboard || (useClipboard ?? false)),
@@ -407,7 +408,7 @@ export const AiPrompt = {
       height: command.popupOption?.height ?? PopupOption.height,
       width: command.popupOption?.width ?? PopupOption.width,
       selectedText: selectionText,
-      srcUrl: location.href,
+      srcUrl: pageUrl ?? "",
       openMode,
       pageHtml,
       selectionHtml,

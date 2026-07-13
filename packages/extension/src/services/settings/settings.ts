@@ -4,6 +4,7 @@ import DefaultSettings, {
   DefaultCommands,
   getDefaultCommands,
   PopupPlacement,
+  COMMAND_SEARCH_ID,
 } from "../option/defaultSettings"
 import {
   OPTION_FOLDER,
@@ -262,6 +263,9 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
   if (versionDiff(currentVersion, "0.15.1") === VersionDiff.Old) {
     data = migrate0_15_1(data)
   }
+  if (versionDiff(currentVersion, "1.1.0") === VersionDiff.Old) {
+    data = await migrate1_1_0(data)
+  }
 
   data.settingVersion = VERSION as Version
   return data
@@ -378,6 +382,22 @@ const migrate0_15_1 = (data: SettingsType): SettingsType => {
     data.linkCommand.sidePanelAutoHide =
       DefaultSettings.linkCommand.sidePanelAutoHide
     console.debug("migrate 0.15.1: added linkCommand.sidePanelAutoHide")
+  }
+  return data
+}
+
+const migrate1_1_0 = async (data: SettingsType): Promise<SettingsType> => {
+  // Add the "Search Commands on Hub" command if not exists.
+  const hasCommandSearch = data.commands.some((c) => c.id === COMMAND_SEARCH_ID)
+  if (!hasCommandSearch) {
+    const defaultCommand = getDefaultCommands(getUILanguage()).find(
+      (c) => c.id === COMMAND_SEARCH_ID,
+    )
+    if (defaultCommand != null) {
+      data.commands.push(defaultCommand)
+      await Storage.setCommands(data.commands)
+      console.debug("migrate 1.1.0: added command search")
+    }
   }
   return data
 }

@@ -1,0 +1,82 @@
+{
+  "commands": [
+    {
+      "id": "$$drag-1",
+      "openMode": "previewPopup",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "title": "Link Preview"
+    },
+    {
+      "id": "019f470a-cea5-7d6f-86cf-e7df9fb14ff1",
+      "title": "コマンドをHubで検索",
+      "openMode": "popup",
+      "openModeSecondary": "tab",
+      "parentFolderId": "RootFolder",
+      "popupOption": {
+        "height": 700,
+        "width": 600
+      },
+      "revision": 0,
+      "searchUrl": "%NEW_HUB_URL%/ja?q=%pageUrl",
+      "spaceEncoding": "plus"
+    }
+  ],
+  "folders": [],
+  "style": "horizontal",
+  "startupMethod": {
+    "method": "textSelection"
+  },
+  "popupPlacement": {
+    "side": "top",
+    "align": "start",
+    "sideOffset": 0,
+    "alignOffset": 0
+  },
+  "pageRules": [],
+  "userStyles": [
+    {
+      "name": "popup-delay",
+      "value": 250
+    },
+    {
+      "name": "popup-duration",
+      "value": 150
+    },
+    {
+      "name": "padding-scale",
+      "value": "1.5"
+    },
+    {
+      "name": "image-scale",
+      "value": "1.1"
+    },
+    {
+      "name": "font-scale",
+      "value": "1.1"
+    }
+  ],
+  "linkCommand": {
+    "enabled": "Enable",
+    "openMode": "previewPopup",
+    "showIndicator": true,
+    "sidePanelAutoHide": false,
+    "startupMethod": {
+      "keyboardParam": "Shift",
+      "leftClickHoldParam": 200,
+      "method": "keyboard",
+      "threshold": 150
+    }
+  },
+  "shortcuts": {
+    "shortcuts": []
+  },
+  "windowOption": {
+    "popupAutoCloseDelay": 0,
+    "sidePanelAutoHide": false
+  },
+  "settingVersion": "0.16.0"
+}

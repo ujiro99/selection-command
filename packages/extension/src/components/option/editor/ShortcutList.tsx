@@ -9,6 +9,7 @@ import type { Command, CommandFolder, ShortcutCommand } from "@/types"
 import {
   OPEN_MODE,
   OPEN_MODE_BG,
+  PAGE_ACTION_OPEN_MODE,
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
 } from "@/const"
@@ -19,8 +20,9 @@ import {
 } from "@/services/option/commandTree"
 import { cn } from "@/lib/utils"
 import css from "./ShortcutList.module.css"
-import { isAiPromptType } from "@/types/schema"
+import { isAiPromptType, isSearchType, isPageActionType } from "@/types/schema"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
+import { paramToStr } from "@/services/pageAction/helper"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -28,19 +30,72 @@ type ShortcutListProps = {
   control: any
 }
 
+// Checks whether the given text references the selected text or clipboard placeholder.
+const hasSelectionOrClipboardPlaceholder = (text: string) =>
+  text.includes(toInsertTemplate(INSERT.SELECTED_TEXT)) ||
+  text.includes(toInsertTemplate(INSERT.CLIPBOARD))
+
+const hasSelectionPlaceholder = (text: string) =>
+  text.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
+
+// Checks whether the command references a placeholder matched by
+// `hasPlaceholder`, regardless of openMode.
+const referencesPlaceholder = (
+  command: Command,
+  hasPlaceholder: (text: string) => boolean,
+): boolean => {
+  if (isSearchType(command) || command.openMode === OPEN_MODE.API) {
+    return command.searchUrl?.includes("%s") ?? false
+  }
+
+  if (isPageActionType(command)) {
+    return command.pageActionOption.steps.some((step) =>
+      hasPlaceholder(paramToStr(step.param)),
+    )
+  }
+
+  if (isAiPromptType(command)) {
+    return hasPlaceholder(command.aiPromptOption.prompt)
+  }
+
+  // copy / getTextStyles / linkPopup always operate on the current selection.
+  return true
+}
+
+// Checks whether the command references the selected text or clipboard at
+// all, regardless of openMode. Used to decide whether the "no selection
+// behavior" setting has any effect on the command.
+const willUseClipboard = (command: Command): boolean =>
+  referencesPlaceholder(command, hasSelectionOrClipboardPlaceholder)
+
 const isTextSelectionOnly = (command: Command) => {
   const { openMode } = command
-  if (isAiPromptType(command)) {
-    const option = command.aiPromptOption
 
-    const willUseClipboard =
-      option.prompt.includes(toInsertTemplate(INSERT.CLIPBOARD)) ||
-      option.prompt.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
-    return option.openMode === OPEN_MODE.SIDE_PANEL && willUseClipboard
+  if (isSearchType(command)) {
+    // Clipboard access doesn't work in SidePanel mode, so a selection is
+    // required only when the command actually needs text (%s).
+    return openMode === OPEN_MODE.SIDE_PANEL && willUseClipboard(command)
+  }
+
+  if (isPageActionType(command)) {
+    return (
+      command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB &&
+      willUseClipboard(command)
+    )
+  }
+
+  if (isAiPromptType(command)) {
+    return (
+      command.aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL &&
+      willUseClipboard(command)
+    )
   }
 
   return !Object.values(OPEN_MODE_BG).includes(openMode as any)
 }
+
+const referencesSelection = (command: Command): boolean =>
+  referencesPlaceholder(command, hasSelectionPlaceholder)
 
 const createNameRender = (command: Command) => {
   return isTextSelectionOnly(command)
@@ -126,6 +181,8 @@ export function ShortcutList({ control }: ShortcutListProps) {
     name: "shortcuts.shortcuts",
   })
 
+  const isShortcutsEmpty = fields.length === 0
+
   useEffect(() => {
     if (!shortcutValues) return
     shortcutValues.forEach((shortcut: ShortcutCommand, index: number) => {
@@ -179,14 +236,14 @@ export function ShortcutList({ control }: ShortcutListProps) {
 
   useEffect(() => {
     // Initialize the shortcuts
-    if (fields.length !== 0) return
+    if (!isShortcutsEmpty) return
     const initialData = commands.map((cmd) => ({
       id: cmd.name || "",
       commandId: SHORTCUT_PLACEHOLDER,
       noSelectionBehavior: SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD,
     }))
     replace(initialData)
-  }, [replace, commands, userCommands])
+  }, [isShortcutsEmpty, replace, commands, userCommands])
 
   const options = useMemo(
     () => flattenCommandsAndFolders(userCommands, folders),
@@ -245,7 +302,10 @@ export function ShortcutList({ control }: ShortcutListProps) {
           const selectedCmd = userCommands.find(
             (c: Command) => c?.id === targetId,
           )
-          const showNoSel = selectedCmd && !isTextSelectionOnly(selectedCmd)
+          const showNoSel =
+            selectedCmd &&
+            !isTextSelectionOnly(selectedCmd) &&
+            referencesSelection(selectedCmd)
 
           return (
             <div key={field.id} className="space-y-2">
