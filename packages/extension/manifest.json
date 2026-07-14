@@ -19,15 +19,6 @@
     },
     {
       "matches": [
-        "https://ujiro99.github.io/selection-command/*",
-        "http://localhost:3000/*"
-      ],
-      "js": [
-        "src/command_hub.tsx"
-      ]
-    },
-    {
-      "matches": [
         "https://selection-command.com/*",
         "https://selection-command-hub.siro-cola.workers.dev/*",
         "http://localhost:3000/*"

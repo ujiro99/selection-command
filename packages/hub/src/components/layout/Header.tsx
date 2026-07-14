@@ -1,17 +1,13 @@
-import Link from "next/link"
 import { Image } from "@/components/Image"
 import { MousePointer } from "lucide-react"
 import css from "./Header.module.css"
 import commonCss from "@/lib/common.module.css"
-import { LangProps } from "@/types"
+import { NEW_HUB_URL } from "@/const"
 
-type Props = LangProps
-
-export function Header(props: Props): JSX.Element {
-  const { lang } = props
+export function Header(): JSX.Element {
   return (
     <div>
-      <Link href={`/${lang}`} className={commonCss.hover}>
+      <a href={NEW_HUB_URL} target="_blank" className={commonCss.hover}>
         <header className="relative flex items-center sm:gap-1.5 gap-0.5 text-xl sm:text-3xl font-[family-name:var(--font-geist-mono)] font-medium">
           Selection{" "}
           <span className="bg-[#1597C9]/20 px-1.5 sm:px-2 pb-0.5 sm:py-0.5 rounded-lg">
@@ -20,7 +16,7 @@ export function Header(props: Props): JSX.Element {
           <span className="font-extralight ml-1">Hub</span>
           <MousePointer className={css.mouse} size={26} />
         </header>
-      </Link>
+      </a>
       <a
         href="https://chromewebstore.google.com/detail/selection-command/nlnhbibaommoelemmdfnkjkgoppkohje?utm_source=selection-command-hub&utm_medium=link&utm_campaign=header"
         target="_blank"

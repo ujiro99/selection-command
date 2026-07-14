@@ -95,14 +95,9 @@ export default defineConfig(({ mode }) => {
                 typeof document != "undefined" &&
                 options.attributes != null
               ) {
-                let targetId = "selection-command"
-                if (
-                  options.attributes["data-vite-dev-id"].match(/command_hub/)
-                ) {
-                  targetId = "selection-command-hub"
-                }
                 const root =
-                  document.getElementById(targetId)?.shadowRoot ?? document.head // Option page
+                  document.getElementById("selection-command")?.shadowRoot ??
+                  document.head // Option page
                 upsertCss(root)
               }
             } catch (e) {
@@ -187,7 +182,7 @@ export default defineConfig(({ mode }) => {
             if (assetInfo.names?.[0] === "components.css") {
               return `assets/components.css`
             }
-            const keepNames = ["content_script.css", "command_hub.css"]
+            const keepNames = ["content_script.css"]
             if (
               assetInfo.names?.length > 0 &&
               keepNames.includes(assetInfo.names[0])

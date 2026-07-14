@@ -1,31 +1,36 @@
-"use client"
+import Link from "next/link"
+import { NEW_HUB_URL } from "@/const"
+import { MousePointer, SquareArrowOutUpRight } from "lucide-react"
 
-import { Image } from "@/components/Image"
-import { useLocale } from "@/hooks/useLocale"
-import { getDict } from "@/features/locale"
-
-export default function NotFound() {
-  const { browserLang } = useLocale()
-  const t = getDict(browserLang).notFound
-
+export default function NotFound(): JSX.Element {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] justify-items-center min-h-screen p-8 pb-20 gap-8 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <header className="flex items-center gap-1.5 text-3xl font-[family-name:var(--font-geist-mono)] font-medium">
-        <h1 className="text-4xl">404 {t.title}</h1>
-      </header>
-      <div className="flex felx-row items-center justify-center w-full text-center font-[family-name:var(--font-geist-mono)]">
-        <p className="text-2xl mt-[-60px] whitespace-break-spaces">
-          {t.message}
-        </p>
-        <Image
-          src="/ozigi_suit_man_simple.png"
-          alt="404 Not found"
-          className="ml-8"
-          width={80}
-          height={280}
-          loading="lazy"
-        />
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 text-center font-[family-name:var(--font-geist-mono)]">
+      <h1 className="text-2xl sm:text-3xl font-medium">
+        <Link
+          href={NEW_HUB_URL}
+          className="hover:opacity-80 transition-opacity duration-200"
+        >
+          Selection
+          <span className="bg-[#1597C9]/20 mx-1.5 px-1.5 pb-0.5 sm:py-0.5 rounded-lg relative">
+            Command
+            <MousePointer
+              className="absolute -bottom-4 -right-4 fill-white"
+              size={26}
+            />
+          </span>
+          <span className="font-extralight ml-1">Hub</span>
+        </Link>
+      </h1>
+      <p className="text-stone-500 mt-2 text-base sm:text-lg">
+        is now available at
+        <Link
+          href={NEW_HUB_URL}
+          className="text-[#1597C9] underline underline-offset-4 hover:text-[#1597C9]/80 ml-3"
+        >
+          <SquareArrowOutUpRight className="inline size-4 mr-1" />
+          {NEW_HUB_URL}
+        </Link>
+      </p>
     </div>
   )
 }

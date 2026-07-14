@@ -23,14 +23,6 @@ export enum SPACE_ENCODING {
   PERCENT = "percent",
 }
 
-export enum SORT_ORDER {
-  searchUrl = "searchUrl",
-  title = "title",
-  download = "download",
-  star = "star",
-  addedAt = "addedAt",
-}
-
 export enum PAGE_ACTION_EVENT {
   click = "click",
   doubleClick = "doubleClick",
@@ -52,14 +44,7 @@ export enum SelectorType {
 
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
-const environment = process.env.NODE_ENV || "development"
-export const isDebug = environment === "development"
-
-export const HUB_URL = isDebug
-  ? "http://localhost:3000"
-  : "https://ujiro99.github.io/selection-command"
-
 export const HUB_SRC_UUID = "019db85f-3c82-70b2-bd1e-f22d07ca4915"
 
-export const OTHER_OPTION = "__other_option__" as const
-export const UNINSTALL_OTHER_OPTION = "__other_option__" as const
+// The full-featured Selection Command Hub, migrated to its own repository.
+export const NEW_HUB_URL = "https://selection-command.com"

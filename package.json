@@ -21,7 +21,6 @@
     "test:e2e": "yarn workspace @selection-command/extension test:e2e",
     "tsc": "yarn workspaces run tsc -b",
     "clean": "yarn workspaces run clean && rm -rf node_modules",
-    "add-command": "yarn workspace @selection-command/hub add-command",
     "pretty-quick": "pretty-quick"
   },
   "devDependencies": {
