@@ -10,13 +10,14 @@ import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
 import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
-import { findMatchingPageRule } from "@/lib/utils"
+import { findMatchingPageRule, isEmpty } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
@@ -53,7 +54,7 @@ const getActiveTabId = (
   return true
 }
 
-const onConnect = async function (port: chrome.runtime.Port) {
+const onConnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
@@ -66,7 +67,7 @@ const onConnect = async function (port: chrome.runtime.Port) {
     await PageActionBackground.handleSidePanelConnect(port)
   }
 }
-const onDisconnect = async function (port: chrome.runtime.Port) {
+const onDisconnect = async function(port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   if (chrome.runtime.lastError) {
     if (
@@ -347,7 +348,7 @@ chrome.action.onClicked.addListener(() => {
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
-  const settings = await enhancedSettings.get()
+  const settings = await enhancedSettings.getSection(CACHE_SECTIONS.CACHES)
   if (!settings.startupMethod?.keepMenuOpenOnTabChange) {
     // Clear selection text
     await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
@@ -396,7 +397,7 @@ chrome.windows.onBoundsChanged.addListener(async (window) => {
 })
 
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  const settings = await enhancedSettings.get()
+  const settings = await enhancedSettings.getSection(CACHE_SECTIONS.CACHES)
   if (!settings.startupMethod?.keepMenuOpenOnTabChange) {
     // Force close the menu
     try {
@@ -502,17 +503,17 @@ const checkAndPerformLegacyBackup = async () => {
   }
 }
 
-// Initialize commandIdObj and register listener at top-level
-// to ensure they are available when service worker restarts
-;(async () => {
-  try {
-    await ContextMenu.syncCommandIdObj()
-    chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
-  } catch (error) {
-    // Ignore errors during initialization (e.g., in test environment)
-    console.debug("Failed to initialize context menu listener:", error)
-  }
-})()
+  // Initialize commandIdObj and register listener at top-level
+  // to ensure they are available when service worker restarts
+  ; (async () => {
+    try {
+      await ContextMenu.syncCommandIdObj()
+      chrome.contextMenus.onClicked.addListener(ContextMenu.onClicked)
+    } catch (error) {
+      // Ignore errors during initialization (e.g., in test environment)
+      console.debug("Failed to initialize context menu listener:", error)
+    }
+  })()
 
 Settings.addChangedListener(() => ContextMenu.init())
 
@@ -549,7 +550,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
     // If no text is selected, handle according to noSelectionBehavior
     let useClipboard = false
-    if (!selectionText) {
+    if (isEmpty(selectionText)) {
       if (
         shortcut.noSelectionBehavior ===
         SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
