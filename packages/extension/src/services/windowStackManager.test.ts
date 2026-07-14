@@ -36,6 +36,7 @@ describe("WindowStackManager", () => {
     connectedTabs: [],
     sidePanelTabs: [],
     sidePanelUrls: {},
+    revision: 0,
   })
 
   const expectStackUpdate = (
