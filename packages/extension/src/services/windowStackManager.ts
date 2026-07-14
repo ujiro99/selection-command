@@ -2,71 +2,88 @@ import { BgData } from "./backgroundData"
 import type { WindowType, WindowLayer } from "@/types"
 
 /**
+ * Insert a window into the stack, placing it in the layer after its parent
+ * (or a new layer if none exists). Mutates and returns the given stack.
+ */
+const insertWindow = (
+  stack: WindowLayer[],
+  window: WindowType,
+  parentWindowId?: number,
+): WindowLayer[] => {
+  if (parentWindowId) {
+    // Find the layer containing the parent window
+    const parentLayerIndex = stack.findIndex((layer) =>
+      layer.some((w) => w.id === parentWindowId),
+    )
+
+    if (parentLayerIndex >= 0) {
+      // Check if there's already a layer after the parent layer
+      const nextLayerIndex = parentLayerIndex + 1
+      if (nextLayerIndex < stack.length) {
+        // Add to existing next layer
+        stack[nextLayerIndex].push(window)
+      } else {
+        // Create new layer after the parent layer
+        stack.splice(nextLayerIndex, 0, [window])
+      }
+    } else {
+      // Parent not found, check if there's already a layer with the same srcWindowId
+      const existingLayerWithSameSrc = stack.find(
+        (layer) => layer.length > 0 && layer[0].srcWindowId === parentWindowId,
+      )
+
+      if (existingLayerWithSameSrc) {
+        // Add to existing layer with same srcWindowId
+        existingLayerWithSameSrc.push(window)
+      } else {
+        // Create new layer at the end
+        stack.push([window])
+      }
+    }
+  } else {
+    // No parent specified, add to end
+    stack.push([window])
+  }
+
+  return stack
+}
+
+// Deep-copies the layers (but not the window objects) so mutations never
+// affect the array BgData.instance was still referencing.
+const cloneStack = (stack: WindowLayer[]): WindowLayer[] =>
+  stack.map((layer) => [...layer])
+
+/**
  * Window Stack Manager
  * Manages popup window stack structure for ServiceWorker environment
  */
 export class WindowStackManager {
   /**
-   * Save stack to BgData
-   */
-  private static async saveStack(stack: WindowLayer[]): Promise<void> {
-    await BgData.update(() => ({ windowStack: stack }))
-  }
-
-  /**
    * Load stack from BgData
    */
   private static async loadStack(): Promise<WindowLayer[]> {
+    await BgData.ready()
     const data = BgData.get()
     return data?.windowStack ?? []
   }
 
   /**
    * Add window to stack.
+   *
+   * Reads and writes atomically via BgData.update() so a concurrent update
+   * (e.g. activeTabId tracking) can't cause this addition to be lost.
    */
   static async addWindow(
     window: WindowType,
     parentWindowId?: number,
   ): Promise<void> {
-    const stack = await this.loadStack()
-
-    if (parentWindowId) {
-      // Find the layer containing the parent window
-      const parentLayerIndex = stack.findIndex((layer) =>
-        layer.some((w) => w.id === parentWindowId),
-      )
-
-      if (parentLayerIndex >= 0) {
-        // Check if there's already a layer after the parent layer
-        const nextLayerIndex = parentLayerIndex + 1
-        if (nextLayerIndex < stack.length) {
-          // Add to existing next layer
-          stack[nextLayerIndex].push(window)
-        } else {
-          // Create new layer after the parent layer
-          stack.splice(nextLayerIndex, 0, [window])
-        }
-      } else {
-        // Parent not found, check if there's already a layer with the same srcWindowId
-        const existingLayerWithSameSrc = stack.find(
-          (layer) =>
-            layer.length > 0 && layer[0].srcWindowId === parentWindowId,
-        )
-
-        if (existingLayerWithSameSrc) {
-          // Add to existing layer with same srcWindowId
-          existingLayerWithSameSrc.push(window)
-        } else {
-          // Create new layer at the end
-          stack.push([window])
-        }
-      }
-    } else {
-      // No parent specified, add to end
-      stack.push([window])
-    }
-
-    await this.saveStack(stack)
+    await BgData.update((data) => ({
+      windowStack: insertWindow(
+        cloneStack(data.windowStack ?? []),
+        window,
+        parentWindowId,
+      ),
+    }))
   }
 
   /**
@@ -78,77 +95,40 @@ export class WindowStackManager {
       parentWindowId?: number
     }>,
   ): Promise<void> {
-    const stack = await this.loadStack()
-
-    // Process each window addition
-    for (const { window, parentWindowId } of windowsToAdd) {
-      if (parentWindowId) {
-        // Find the layer containing the parent window
-        const parentLayerIndex = stack.findIndex((layer) =>
-          layer.some((w) => w.id === parentWindowId),
-        )
-
-        if (parentLayerIndex >= 0) {
-          // Check if there's already a layer after the parent layer
-          const nextLayerIndex = parentLayerIndex + 1
-          if (nextLayerIndex < stack.length) {
-            // Add to existing next layer
-            stack[nextLayerIndex].push(window)
-          } else {
-            // Create new layer after the parent layer
-            stack.splice(nextLayerIndex, 0, [window])
-          }
-        } else {
-          // Parent not found, check if there's already a layer with the same srcWindowId
-          const existingLayerWithSameSrc = stack.find(
-            (layer) =>
-              layer.length > 0 && layer[0].srcWindowId === parentWindowId,
-          )
-
-          if (existingLayerWithSameSrc) {
-            // Add to existing layer with same srcWindowId
-            existingLayerWithSameSrc.push(window)
-          } else {
-            // Create new layer at the end
-            stack.push([window])
-          }
-        }
-      } else {
-        // No parent specified, add to end
-        stack.push([window])
+    await BgData.update((data) => {
+      let stack = cloneStack(data.windowStack ?? [])
+      for (const { window, parentWindowId } of windowsToAdd) {
+        stack = insertWindow(stack, window, parentWindowId)
       }
-    }
-
-    await this.saveStack(stack)
+      return { windowStack: stack }
+    })
   }
 
   /**
    * Remove window from stack
    */
   static async removeWindow(windowId: number): Promise<void> {
-    const stack = await this.loadStack()
-    let changed = false
+    await BgData.update((data) => {
+      const stack = cloneStack(data.windowStack ?? [])
 
-    for (let layerIndex = 0; layerIndex < stack.length; layerIndex++) {
-      const layer = stack[layerIndex]
-      const windowIndex = layer.findIndex((w) => w.id === windowId)
+      for (let layerIndex = 0; layerIndex < stack.length; layerIndex++) {
+        const layer = stack[layerIndex]
+        const windowIndex = layer.findIndex((w) => w.id === windowId)
 
-      if (windowIndex >= 0) {
-        // Remove window from layer
-        layer.splice(windowIndex, 1)
-        changed = true
+        if (windowIndex >= 0) {
+          // Remove window from layer
+          layer.splice(windowIndex, 1)
 
-        // If layer is empty, remove the layer
-        if (layer.length === 0) {
-          stack.splice(layerIndex, 1)
+          // If layer is empty, remove the layer
+          if (layer.length === 0) {
+            stack.splice(layerIndex, 1)
+          }
+          break
         }
-        break
       }
-    }
 
-    if (changed) {
-      await this.saveStack(stack)
-    }
+      return { windowStack: stack }
+    })
   }
 
   /**
@@ -189,15 +169,12 @@ export class WindowStackManager {
    * Clean up empty layers
    */
   static async cleanupEmptyLayers(): Promise<void> {
-    const stack = await this.loadStack()
-    const originalLength = stack.length
-
-    // Remove empty layers
-    const cleanedStack = stack.filter((layer) => layer.length > 0)
-
-    // Only save if there were changes
-    if (cleanedStack.length !== originalLength) {
-      await this.saveStack(cleanedStack)
-    }
+    await BgData.update((data) => {
+      const stack = data.windowStack ?? []
+      const cleanedStack = stack.filter((layer) => layer.length > 0)
+      return cleanedStack.length !== stack.length
+        ? { windowStack: cleanedStack }
+        : {}
+    })
   }
 }

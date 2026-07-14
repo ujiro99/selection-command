@@ -168,13 +168,14 @@ describe("WindowStackManager", () => {
 
       it("should handle removal of non-existent window", async () => {
         const window1 = createTestWindow(1, "cmd1", 0)
+        const initialStack = [[window1]]
 
-        mockBgDataGet.mockReturnValue(createBgData([[window1]]))
+        mockBgDataGet.mockReturnValue(createBgData(initialStack))
 
         await WindowStackManager.removeWindow(999)
 
-        // Should not update if window not found
-        expect(mockBgDataUpdate).not.toHaveBeenCalled()
+        // Update runs atomically, but the resulting stack is unchanged
+        expectStackUpdate([[window1]], initialStack)
       })
     })
   })
@@ -269,15 +270,21 @@ describe("WindowStackManager", () => {
         expectStackUpdate([[window1]], initialStack)
       })
 
-      it("should not update if no empty layers", async () => {
+      it("should not change the stack if no empty layers", async () => {
         const window1 = createTestWindow(1, "cmd1", 0)
         const window2 = createTestWindow(2, "cmd2", 1)
+        const initialStack = [[window1], [window2]]
 
-        mockBgDataGet.mockReturnValue(createBgData([[window1], [window2]]))
+        mockBgDataGet.mockReturnValue(createBgData(initialStack))
 
         await WindowStackManager.cleanupEmptyLayers()
 
-        expect(mockBgDataUpdate).not.toHaveBeenCalled()
+        expect(mockBgDataUpdate).toHaveBeenCalledTimes(1)
+        const updateCall = mockBgDataUpdate.mock.calls[0][0] as (
+          data: any,
+        ) => any
+        const updatedData = updateCall(createBgData(initialStack))
+        expect(updatedData.windowStack).toBeUndefined()
       })
     })
   })
@@ -336,12 +343,19 @@ describe("WindowStackManager", () => {
   })
 
   describe("ServiceWorker Persistence", () => {
-    it("should load stack from BgData on each operation", async () => {
+    it("should load stack from BgData for read operations", async () => {
+      mockBgDataGet.mockReturnValue(createBgData([]))
+
+      await WindowStackManager.getStack()
+
+      expect(mockBgDataGet).toHaveBeenCalledTimes(1)
+    })
+
+    it("should update the stack atomically for addWindow", async () => {
       const window = createTestWindow(1, "cmd1", 0)
 
       await WindowStackManager.addWindow(window)
 
-      expect(mockBgDataGet).toHaveBeenCalledTimes(1)
       expect(mockBgDataUpdate).toHaveBeenCalledTimes(1)
     })
 
