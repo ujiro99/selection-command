@@ -48,6 +48,9 @@ export async function execute({
     useSecondary,
     useClipboard,
     changeState,
+    // This module only ever runs in the content script's page context, so
+    // location.href here correctly reflects the visited page.
+    pageUrl: location.href,
     actions,
   })
 }

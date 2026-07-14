@@ -12,100 +12,67 @@ This file provides guidance to AI Agent when working with code in this repositor
 - **コードの品質**: コードは読みやすく、保守しやすいように書くこと。コメントは必要な箇所へ記載し、複雑なロジックには説明を加える。
 - **テキストのエンコーディング**: UTF-8を使用すること。
 
+## このパッケージの役割
+
+`packages/hub` は、かつて Selection Command のコマンド共有・発見プラットフォーム
+（Next.js 15 フル機能アプリ）でしたが、そのアプリケーションは新しいリポジトリ
+（https://github.com/ujiro99/selection-command-hub、selection-command.com へデプロイ）に移行しました。
+
+このパッケージに残っているのは、以下の2つの責務のみです。
+
+1. **ai-services.json の静的ホスティング**
+   - `public/data/ai-services.json` を GitHub Pages で静的配信する
+   - Extension の AiPrompt コマンドが以下の2通りで参照する
+     - ビルド時: `packages/extension/vite.config.ts` 等が
+       `fs.readFileSync("../hub/public/data/ai-services.json")` で直接読み込む
+     - 実行時: `packages/extension/src/services/aiPrompt.ts` が
+       `${HUB_URL}/data/ai-services.json` に fetch する
+   - このファイルを変更・削除する際は、必ず Extension 側のこれら2箇所への
+     影響を確認すること
+
+2. **e2e テスト用ページの配信**
+   - `src/app/[lang]/test/page.tsx`（`/en/test` など）は、Extension の
+     Playwright e2e テストが実際にデプロイされたページにアクセスして
+     動作確認するためのテストページ
+   - `packages/extension/e2e/pages/TestPage.ts` がこのページの URL を
+     ハードコードしており、複数の spec ファイルから利用されている
+   - このページ配下のコンポーネント（Header/Footer/LocaleSelector など）は、App Router のレイアウト要件を満たすために
+     最小限残っているだけで、機能的な意味は薄い
+
 ## 開発コマンド
 
 - `yarn dev` - Next.js開発サーバーの開始（Turbopack使用）
-- `yarn build` - プロダクションビルドの実行
+- `yarn build` - プロダクションビルド（GitHub Pages 用の静的エクスポート）
 - `yarn start` - プロダクションサーバーの開始
-- `yarn lint` - Next.js ESLintによるコード品質チェック
-- `yarn analytics` - Google Analyticsからデータを取得してanalyticsファイルを更新
-- `yarn tags` - commands.jsonからタグ情報を抽出してtags.jsonを更新
-- `yarn urls` - searchUrlsファイルを更新
+- `yarn lint` - ESLintによるコード品質チェック
+- `yarn test` / `test:run` / `test:coverage` - Vitest
 
-## アーキテクチャ概要
+## プロジェクト構造（縮小後）
 
-これは**Selection Command Hub**と呼ばれるNext.js 15アプリケーションで、
-Chrome拡張機能である、`Selection Command` のコマンド共有・発見プラットフォームとして機能します。
+- `public/data/ai-services.json` - Extension が参照する唯一のデータファイル
+- `src/app/[lang]/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）
+- `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
+- `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が
+  無条件にバレルインポートするため削除できない）
+- `src/components/ui/` - shadcn/ui のうち button, separator, select のみ残存
+- `src/lib/utils.ts` - 共通ユーティリティ（`cn` 等、`@shared` からの re-export）
 
-### 主要機能
+## 削除済みの機能
 
-- **コマンドライブラリ**: 検索URL、ページアクションなどの共有可能なコマンドのカタログ
-- **多言語対応**: 11言語に対応した国際化機能
-- **タグベース検索**: コマンドのカテゴライズと検索機能
-- **分析機能**: Google Analytics統合による使用状況の追跡
-- **レスポンシブデザイン**: モバイル・デスクトップ対応のUI
+コマンド共有・検索・タグ・多言語ページ（privacy/terms/cookie）・
+Google Analytics 連携・お問い合わせフォーム等は、全て新リポジトリ
+（selection-command-hub）に移行済みで、このパッケージには存在しない。
+関連する `commands.json`, `tags.json`, `searchUrls.json`, `pageActionIds.json`
+等のデータファイルおよび生成スクリプト（旧 `scripts/update-tags.mjs` 等）も
+削除済み。Footer 内の法的ページへのリンクも、対応するページの
+削除に合わせて除去している。
 
-### プロジェクト構造
+## 開発時の注意事項
 
-**App Router構造** (`src/app/`):
-
-- `page.tsx` - ルートページ（英語デフォルト）
-- `[lang]/` - 国際化対応のページ群
-  - `page.tsx` - メインコマンドリストページ
-  - `tag/[tag]/` - タグ別コマンド表示
-  - `privacy/`, `terms/`, `cookie/` - 法的ページ（各言語対応）
-  - `uninstall/` - アンインストール理由収集ページ
-
-**機能別モジュール** (`src/features/`):
-
-- `command.ts` - コマンド操作とフィルタリングのビジネスロジック
-- `tag.ts` - タグ関連機能
-- `locale/` - 多言語対応のメッセージファイル
-
-**コンポーネント** (`src/components/`):
-
-- `ui/` - shadcn/uiベースの再利用可能UIコンポーネント
-- `layout/` - ヘッダー、フッター、コマンドリスト等のレイアウトコンポーネント
-- `pageAction/` - ページアクション表示専用コンポーネント
-- `CommandForm.tsx` - コマンド追加フォーム
-- `CookieConsent.tsx` - Cookie同意管理
-
-**データ管理** (`src/data/`):
-
-- `commands.json` - コマンドのマスターデータ
-- `tags.json` - タグ統計（スクリプトで自動生成）
-- `analytics.json` - GA分析データ（スクリプトで自動生成）
-
-**型定義** (`src/types/`):
-
-- `pageAction.ts` - ページアクション関連の詳細な型定義
-- `schema.ts` - フォームバリデーション用スキーマ
-
-### 技術スタック
-
-- **フレームワーク**: Next.js 15 with App Router
-- **React**: React 19 RC
-- **スタイリング**: Tailwind CSS + shadcn/ui コンポーネント
-- **フォーム**: react-hook-form + zod バリデーション
-- **国際化**: カスタム実装（src/features/locale）
-- **分析**: Google Analytics Data API
-- **アニメーション**: Tailwind CSS + カスタムキーフレーム
-- **SEO**: next-sitemap による自動サイトマップ生成
-
-### データフロー
-
-1. **コマンドデータ**: `src/data/commands.json` → フィルタリング・検索 → UI表示
-2. **タグ統計**: commands.json → `scripts/update-tags.mjs` → `src/data/tags.json`
-3. **分析データ**: Google Analytics → `scripts/fetch-ga-data.js` → `src/data/analytics.json`
-4. **検索URL**: 動的生成 → `scripts/update-searchUrls.mjs` → `public/data/searchUrls.json`
-
-### 国際化の仕組み
-
-- **URLベース**: `/[lang]/` 動的ルートで言語切り替え
-- **メッセージファイル**: `src/features/locale/[lang].ts` で各言語の翻訳を管理
-- **フォールバック**: 英語（en）をデフォルト言語として使用
-- **法的ページ**: privacy、terms、cookieページは各言語版を個別ファイルで管理
-
-### ビルド・デプロイメント
-
-- **ビルド後処理**: サイトマップ生成、タグ更新、検索URL更新を自動実行
-- **静的生成**: 基本的にSSGで高速化
-- **分析更新**: 手動でanalytics scriptを実行してデータ更新
-
-### 開発時の注意事項
-
-- このプロジェクトは拡張機能のメインコード（`../src/`）とは完全に独立
-- 新しいコマンドは`src/data/commands.json`に手動追加
-- タグ統計は`yarn tags`で自動更新される
-- 多言語対応時は各言語ファイルの更新が必要
-- ページアクション型コマンドは複雑な型定義（`src/types/pageAction.ts`）を使用
+- このパッケージへの新機能追加は基本的に行わない。コマンド共有プラットフォーム
+  としての機能拡張は新リポジトリ（selection-command-hub）側で行うこと
+- `public/data/ai-services.json` を編集する場合は、Extension 側
+  （vite.config.ts の `__AI_SERVICES_JSON__` define、aiPrompt.ts の fetch）が
+  壊れないことを確認すること
+- `src/app/[lang]/test/page.tsx` を変更する場合は、`packages/extension/e2e/` の
+  対応する spec が壊れないことを確認すること（本番反映後の e2e 実行で最終確認）

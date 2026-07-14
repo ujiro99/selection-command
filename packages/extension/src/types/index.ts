@@ -243,6 +243,7 @@ export type ExecuteCommandParams = {
   useSecondary?: boolean
   useClipboard?: boolean
   changeState?: (state: ExecState, message?: string) => void
+  pageUrl?: string
 }
 
 export type ActionTypes = PAGE_ACTION_EVENT | PAGE_ACTION_CONTROL
@@ -309,6 +310,7 @@ export type UrlParam = {
   selectionText: string
   spaceEncoding?: SPACE_ENCODING
   useClipboard?: boolean
+  pageUrl?: string
 }
 
 export type ShowToastParam = {

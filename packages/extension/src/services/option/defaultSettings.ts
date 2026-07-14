@@ -83,6 +83,10 @@ const FOLDER_AI = "e4994c63-cfa7-4e49-9dfe-a79e6120a1ae"
 const FOLDER_MEDIA = "a3495269-0a4d-4866-a519-bca75ed1c246"
 const FOLDER_WORK = "01710cf1-ec8b-497f-8d1f-9cb716567bc4"
 
+// Fixed ID for the "Search Commands on Hub" default command, used by the
+// settings migration to detect whether a user already has it.
+export const COMMAND_SEARCH_ID = "019f470a-cea5-7d6f-86cf-e7df9fb14ff1"
+
 export default {
   settingVersion: VERSION,
   popupPlacement: PopupPlacement,
@@ -387,7 +391,84 @@ export const DefaultCommands = [
       height: PopupOption.height,
     },
   },
+  createCommandSearchCommand("Search Commands on Hub", "en"),
 ] as Command[]
+
+// Creates a "Search Commands on Hub" command for the given locale. Every
+// variant shares COMMAND_SEARCH_ID so the settings migration can detect
+// whether a user already has one, regardless of which locale it was added in.
+function createCommandSearchCommand(title: string, hubLocale: string): Command {
+  const iconUrl =
+    typeof chrome !== "undefined" && chrome.runtime?.getURL
+      ? chrome.runtime.getURL("images/search_command.png")
+      : ""
+  return {
+    id: COMMAND_SEARCH_ID,
+    title,
+    iconUrl,
+    openMode: OPEN_MODE.POPUP,
+    openModeSecondary: OPEN_MODE.TAB,
+    searchUrl: `https://selection-command.com/${hubLocale}?q=%pageUrl`,
+    popupOption: {
+      width: PopupOption.width,
+      height: PopupOption.height,
+    },
+    spaceEncoding: SPACE_ENCODING.PLUS,
+  } as Command
+}
+
+const CMD_COMMAND_SEARCH_JA = createCommandSearchCommand(
+  "コマンドをHubで検索",
+  "ja",
+)
+const CMD_COMMAND_SEARCH_ZH = createCommandSearchCommand(
+  "在 Hub 中搜索命令",
+  "zh-CN",
+)
+const CMD_COMMAND_SEARCH_KO = createCommandSearchCommand(
+  "Hub에서 명령어 검색",
+  "ko",
+)
+const CMD_COMMAND_SEARCH_RU = createCommandSearchCommand(
+  "Поиск команд в Hub",
+  "ru",
+)
+const CMD_COMMAND_SEARCH_DE = createCommandSearchCommand(
+  "Befehle im Hub suchen",
+  "de",
+)
+const CMD_COMMAND_SEARCH_FR = createCommandSearchCommand(
+  "Rechercher des commandes sur Hub",
+  "fr",
+)
+const CMD_COMMAND_SEARCH_ES = createCommandSearchCommand(
+  "Buscar comandos en Hub",
+  "es",
+)
+const CMD_COMMAND_SEARCH_PT_BR = createCommandSearchCommand(
+  "Pesquisar comandos no Hub",
+  "pt-BR",
+)
+const CMD_COMMAND_SEARCH_PT = createCommandSearchCommand(
+  "Pesquisar comandos no Hub",
+  "pt-PT",
+)
+const CMD_COMMAND_SEARCH_HI = createCommandSearchCommand(
+  "Hub पर कमांड खोजें",
+  "hi",
+)
+const CMD_COMMAND_SEARCH_ID_LANG = createCommandSearchCommand(
+  "Cari Perintah di Hub",
+  "id",
+)
+const CMD_COMMAND_SEARCH_MS = createCommandSearchCommand(
+  "Cari Perintah di Hub",
+  "ms",
+)
+const CMD_COMMAND_SEARCH_IT = createCommandSearchCommand(
+  "Cerca comandi su Hub",
+  "it",
+)
 
 // Common commands shared across locales
 const CMD_LINK_PREVIEW = {
@@ -1748,6 +1829,7 @@ export const LOCALE_COMMANDS = {
     CMD_TRANSLATE_JA,
     CMD_DRIVE,
     CMD_EN_TO_JA,
+    CMD_COMMAND_SEARCH_JA,
   ],
   zh: [
     CMD_LINK_PREVIEW,
@@ -1763,6 +1845,7 @@ export const LOCALE_COMMANDS = {
     CMD_DRIVE,
     CMD_ZHIHU,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_ZH,
   ],
   ko: [
     CMD_LINK_PREVIEW,
@@ -1778,6 +1861,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_KO,
   ],
   ru: [
     CMD_LINK_PREVIEW,
@@ -1794,6 +1878,7 @@ export const LOCALE_COMMANDS = {
     CMD_VK,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_RU,
   ],
   de: [
     CMD_LINK_PREVIEW,
@@ -1809,6 +1894,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_DE,
   ],
   fr: [
     CMD_LINK_PREVIEW,
@@ -1824,6 +1910,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_FR,
   ],
   es: [
     CMD_LINK_PREVIEW,
@@ -1841,6 +1928,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_ES,
   ],
   "pt-br": [
     CMD_LINK_PREVIEW,
@@ -1856,6 +1944,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_PT_BR,
   ],
   pt: [
     CMD_LINK_PREVIEW,
@@ -1871,6 +1960,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_PT,
   ],
   hi: [
     CMD_LINK_PREVIEW,
@@ -1886,6 +1976,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_HI,
   ],
   id: [
     CMD_LINK_PREVIEW,
@@ -1901,6 +1992,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_ID_LANG,
   ],
   ms: [
     CMD_LINK_PREVIEW,
@@ -1916,6 +2008,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_MS,
   ],
   it: [
     CMD_LINK_PREVIEW,
@@ -1932,6 +2025,7 @@ export const LOCALE_COMMANDS = {
     CMD_NETFLIX,
     CMD_DRIVE,
     CMD_CHARACTER_COUNTER,
+    CMD_COMMAND_SEARCH_IT,
   ],
 } as Record<string, Command[]>
 

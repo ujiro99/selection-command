@@ -27,6 +27,7 @@ export async function execute({
   useSecondary = false,
   useClipboard = false,
   changeState,
+  pageUrl,
 }: ExecuteCommandParams) {
   return executeAction({
     command,
@@ -36,6 +37,7 @@ export async function execute({
     useSecondary,
     useClipboard,
     changeState,
+    pageUrl,
     actions: actionsForBackground,
   })
 }

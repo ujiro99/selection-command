@@ -84,7 +84,9 @@ export function toUrl(
   } else if (spaceEncoding === SPACE_ENCODING.UNDERSCORE) {
     textEncoded = textEncoded.replaceAll("%20", "_")
   }
-  return searchUrl?.replace("%s", textEncoded)
+  let url = searchUrl?.replace("%s", textEncoded)
+  url = url?.replace("%pageUrl", encodeURIComponent(param.pageUrl ?? ""))
+  return url
 }
 
 export function escapeJson(str: string) {
