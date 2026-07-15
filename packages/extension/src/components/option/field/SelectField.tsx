@@ -72,7 +72,7 @@ const renderOption = (opt: SelectOptionType) => {
       key={opt.value}
       className={`${opt.isGroup ? "pointer-events-none" : "hover:bg-gray-100"}`}
       style={{ paddingLeft }}
-      data-testid={TEST_IDS.selectItem(opt.value)}
+      data-testid={TEST_IDS.selectItem(`${opt.value}`)}
     >
       {renderOptionContent(opt)}
     </SelectItem>

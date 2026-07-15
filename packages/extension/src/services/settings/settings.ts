@@ -266,9 +266,6 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
   if (versionDiff(currentVersion, "1.1.0") === VersionDiff.Old) {
     data = await migrate1_1_0(data)
   }
-  if (versionDiff(currentVersion, "1.1.1") === VersionDiff.Old) {
-    data = migrate1_1_1(data)
-  }
 
   data.settingVersion = VERSION as Version
   return data
@@ -398,14 +395,9 @@ const migrate1_1_0 = async (data: SettingsType): Promise<SettingsType> => {
     )
     if (defaultCommand != null) {
       data.commands.push(defaultCommand)
-      await Storage.setCommands(data.commands)
       console.debug("migrate 1.1.0: added command search")
     }
   }
-  return data
-}
-
-const migrate1_1_1 = (data: SettingsType): SettingsType => {
   // Add startupMethod.keepMenuOpenOnTabChange if not exists
   if (
     data.startupMethod != null &&
@@ -413,7 +405,7 @@ const migrate1_1_1 = (data: SettingsType): SettingsType => {
   ) {
     data.startupMethod.keepMenuOpenOnTabChange =
       DefaultSettings.startupMethod.keepMenuOpenOnTabChange
-    console.debug("migrate 1.1.1: added startupMethod.keepMenuOpenOnTabChange")
+    console.debug("migrate 1.1.0: added startupMethod.keepMenuOpenOnTabChange")
   }
   return data
 }
