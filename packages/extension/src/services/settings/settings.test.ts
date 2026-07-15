@@ -684,7 +684,9 @@ describe("migrate function", () => {
 
     const cmd = result.commands.find((c: Command) => c.id === COMMAND_SEARCH_ID)
     expect(cmd).toBeDefined()
-    expect(mockStorage.setCommands).toHaveBeenCalled()
+    // Storage.setCommands is intentionally not called here: migrate() runs
+    // during Storage.get, and triggering a write there would be unsafe.
+    // The migrated command is persisted by the caller once the read completes.
   })
 
   it("ST-34-a: should not duplicate Search Commands on Hub command if already exists", async () => {

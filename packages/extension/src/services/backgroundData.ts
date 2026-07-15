@@ -13,6 +13,12 @@ export type SidePanelTab = {
 
 export class BgData {
   private static instance: BgData
+  // Resolves once the persisted state has been loaded at least once.
+  private static readyPromise: Promise<void> | null = null
+  // Highest revision this context has written or observed. Used to reject
+  // stale chrome.storage.onChanged echoes (including echoes of this
+  // context's own writes) that would otherwise roll back newer local state.
+  private static currentRevision = 0
 
   public windowStack: WindowLayer[]
   public normalWindows: WindowLayer
@@ -21,6 +27,7 @@ export class BgData {
   public connectedTabs: number[]
   public sidePanelTabs: SidePanelTab[]
   public sidePanelUrls: Record<number, string>
+  public revision: number
 
   private constructor(val: BgData | undefined) {
     this.windowStack = val?.windowStack ?? []
@@ -33,18 +40,45 @@ export class BgData {
       typeof t === "number" ? { tabId: t, isLinkCommand: false } : t,
     )
     this.sidePanelUrls = val?.sidePanelUrls ?? {}
+    this.revision = val?.revision ?? 0
+  }
+
+  // Advances and returns the revision to stamp on a local write.
+  private static nextRevision(): number {
+    BgData.currentRevision += 1
+    return BgData.currentRevision
   }
 
   public static init() {
-    if (!BgData.instance) {
-      Storage.get<BgData>(SESSION_STORAGE_KEY.BG).then((val: BgData) => {
+    if (BgData.readyPromise) return
+
+    // Provide a safe, empty default synchronously so BgData.get() never
+    // returns undefined while the persisted state is still loading.
+    BgData.instance = new BgData(undefined)
+
+    BgData.readyPromise = Storage.get<BgData>(SESSION_STORAGE_KEY.BG).then(
+      (val: BgData) => {
+        BgData.currentRevision = val?.revision ?? 0
         BgData.instance = new BgData(val)
-        console.debug("BgData initialized", BgData.instance)
-      })
-      Storage.addListener(SESSION_STORAGE_KEY.BG, (val: BgData) => {
-        BgData.instance = new BgData(val)
-        // console.debug("BgData updated", BgData.instance)
-      })
+      },
+    )
+    Storage.addListener(SESSION_STORAGE_KEY.BG, (val: BgData) => {
+      // Ignore stale echoes (e.g. of this context's own earlier write) that
+      // a more recent local update has already superseded, otherwise they
+      // would silently roll back state such as windowStack.
+      if ((val?.revision ?? 0) < BgData.currentRevision) {
+        return
+      }
+      BgData.currentRevision = val?.revision ?? BgData.currentRevision
+      BgData.instance = new BgData(val)
+    })
+  }
+
+  // Waits until the persisted state has been loaded at least once, so
+  // callers never read or write on top of the synchronous empty default.
+  public static async ready(): Promise<void> {
+    if (BgData.readyPromise) {
+      await BgData.readyPromise
     }
   }
 
@@ -52,28 +86,22 @@ export class BgData {
     return BgData.instance
   }
 
-  public static set(val: BgData | updater): Promise<boolean> {
-    if (val instanceof Function) {
-      BgData.instance = val(BgData.instance)
-    } else {
-      BgData.instance = val
-    }
+  public static async set(val: BgData | updater): Promise<boolean> {
+    await BgData.ready()
+    const next = val instanceof Function ? val(BgData.instance) : val
+    BgData.instance = { ...next, revision: BgData.nextRevision() }
     return Storage.set(SESSION_STORAGE_KEY.BG, BgData.instance)
   }
 
-  public static update(
+  public static async update(
     val: Partial<BgData> | updaterPartial,
   ): Promise<boolean> {
-    if (val instanceof Function) {
-      BgData.instance = {
-        ...BgData.instance,
-        ...val(BgData.instance),
-      }
-    } else {
-      BgData.instance = {
-        ...BgData.instance,
-        ...val,
-      }
+    await BgData.ready()
+    const partial = val instanceof Function ? val(BgData.instance) : val
+    BgData.instance = {
+      ...BgData.instance,
+      ...partial,
+      revision: BgData.nextRevision(),
     }
     return Storage.set(SESSION_STORAGE_KEY.BG, BgData.instance)
   }

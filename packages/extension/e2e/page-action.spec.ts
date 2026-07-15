@@ -256,10 +256,11 @@ test.describe("PageAction Commands", () => {
   }) => {
     test.skip(!!process.env.CI, "Do not run tests for external services in CI.")
 
+    // Open Amazon.com
     await page.goto("https://www.amazon.com/")
     await page.waitForLoadState("domcontentloaded")
-    await page.locator(".a-button-text").first().click()
-    await page.waitForLoadState("domcontentloaded")
+
+    // Click the first product link to navigate to a product page
     await page.locator(".a-list-item .a-link-normal").first().click()
     await page.waitForLoadState("domcontentloaded")
 

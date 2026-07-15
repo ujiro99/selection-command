@@ -350,6 +350,10 @@ global.chrome = {
       addListener: vi.fn(),
       removeListener: vi.fn(),
     },
+    onOpened: {
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+    },
   },
 } as any
 

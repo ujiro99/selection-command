@@ -10,13 +10,14 @@ import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
 import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import * as PageActionBackground from "@/services/pageAction/background"
 import { BgData } from "@/services/backgroundData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
-import { findMatchingPageRule } from "@/lib/utils"
+import { findMatchingPageRule, isEmpty } from "@/lib/utils"
 import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
@@ -340,6 +341,17 @@ const updateActiveTabId = async (activeTabId?: number) => {
   }
 }
 
+// Clears the selection text unless the user opted to keep the menu open
+// across tab/window changes.
+const clearSelectionTextUnlessKeepOpen = async () => {
+  const settings = await enhancedSettings.getSection(
+    CACHE_SECTIONS.USER_SETTINGS,
+  )
+  if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
+    await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
+  }
+}
+
 chrome.action.onClicked.addListener(() => {
   chrome.tabs.create({
     url: OPTION_PAGE_PATH,
@@ -347,10 +359,8 @@ chrome.action.onClicked.addListener(() => {
 })
 
 chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
-  // Clear selection text
-  await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
-
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
+    await clearSelectionTextUnlessKeepOpen()
     return
   }
 
@@ -360,8 +370,12 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   // Get windows to close based on focus change
   const windowsToClose = await WindowStackManager.getWindowsToClose(windowId)
 
-  // Schedule popup windows to close with configured delay
+  // Schedule popup windows to close with configured delay.
+  // Run this before the settings fetch below so popup auto-close isn't
+  // delayed behind it and doesn't race with overlapping focus-change events.
   await PopupAutoClose.scheduleClose(windowsToClose)
+
+  await clearSelectionTextUnlessKeepOpen()
 })
 
 chrome.windows.onRemoved.addListener((windowId: number) => {
@@ -393,12 +407,17 @@ chrome.windows.onBoundsChanged.addListener(async (window) => {
 })
 
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  // Force close the menu
-  try {
-    const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
-    ret.filter((v) => v).forEach((v) => console.debug(v))
-  } catch (error) {
-    console.error("Failed to close menu:", error)
+  const settings = await enhancedSettings.getSection(
+    CACHE_SECTIONS.USER_SETTINGS,
+  )
+  if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
+    // Force close the menu
+    try {
+      const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
+      ret.filter((v) => v).forEach((v) => console.debug(v))
+    } catch (error) {
+      console.error("Failed to close menu:", error)
+    }
   }
 
   try {
@@ -543,7 +562,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
 
     // If no text is selected, handle according to noSelectionBehavior
     let useClipboard = false
-    if (!selectionText) {
+    if (isEmpty(selectionText)) {
       if (
         shortcut.noSelectionBehavior ===
         SHORTCUT_NO_SELECTION_BEHAVIOR.DO_NOTHING
@@ -599,6 +618,27 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     console.error("Failed to execute shortcut command:", error)
   }
 })
+
+try {
+  chrome.sidePanel.onOpened.addListener(async () => {
+    const settings = await enhancedSettings.getSection(
+      CACHE_SECTIONS.USER_SETTINGS,
+    )
+    if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
+      // Force close the menu
+      try {
+        const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
+        ret.filter((v) => v).forEach((v) => console.debug(v))
+      } catch (error) {
+        console.error("Failed to close menu:", error)
+      }
+    }
+  })
+} catch (error) {
+  // Ignore errors during initialization (e.g., in test environment, or on
+  // Chrome versions without chrome.sidePanel.onOpened)
+  console.debug("Failed to initialize sidePanel onOpened listener:", error)
+}
 
 // SidePanel auto-hide functionality
 // Track tabs with active side panels

@@ -133,6 +133,13 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Select a key"
   },
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "Keep Menu Open on Focus Change",
+    "description": "Toggle label. When enabled, switching tabs/windows or opening the side panel after running a command does not close the selection menu."
+  },
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "Keep the selection menu and selected text when you switch tabs or windows, or open the side panel, after running a command, so you can come back and run another command on the same selection."
+  },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
   },

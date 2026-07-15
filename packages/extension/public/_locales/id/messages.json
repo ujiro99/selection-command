@@ -131,6 +131,12 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Pilih tombol"
   },
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "Pertahankan Menu Terbuka Saat Fokus Berubah"
+  },
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "Mempertahankan menu pilihan dan teks yang dipilih saat Anda berpindah tab atau jendela, atau membuka panel sisi, setelah menjalankan perintah, sehingga Anda dapat kembali dan menjalankan perintah lain pada pilihan yang sama."
+  },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
   },

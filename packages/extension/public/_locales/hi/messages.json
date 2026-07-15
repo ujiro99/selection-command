@@ -131,6 +131,12 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "कुंजी चुनें"
   },
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "फ़ोकस बदलने पर मेनू खुला रखें"
+  },
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "कमांड चलाने के बाद टैब या विंडो बदलने पर, या साइड पैनल खोलने पर भी चयन मेनू और चयनित टेक्स्ट को बनाए रखता है, ताकि आप वापस आकर उसी चयन पर दूसरा कमांड चला सकें।"
+  },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"
   },

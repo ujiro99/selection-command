@@ -94,6 +94,8 @@ export type PopupOption = {
 
 export type CopyOption = "default" | "text"
 
+// Settings for the behavior of windows/panels opened as a result of command execution
+// (e.g. side panel, popup window). Not related to the selection menu itself.
 type WindowOption = {
   sidePanelAutoHide: boolean
   popupAutoCloseDelay?: number
@@ -156,10 +158,14 @@ export type StyleVariable = {
   value: string
 }
 
+// Settings for how the selection menu itself is triggered and displayed
+// (e.g. trigger method, and whether it stays open when focus moves away
+// from the menu, such as switching tabs/windows or opening the side panel).
 export type StartupMethod = {
   method: STARTUP_METHOD
   keyboardParam?: KEYBOARD
   leftClickHoldParam?: number
+  keepMenuOpenOnFocusChange?: boolean
 }
 
 export type Star = {
