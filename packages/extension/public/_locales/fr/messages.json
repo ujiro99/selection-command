@@ -131,11 +131,11 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Sélectionner une touche"
   },
-  "Option_keepMenuOpenOnTabChange": {
-    "message": "Garder le menu ouvert lors du changement d'onglet"
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "Garder le menu ouvert lors d'un changement de focus"
   },
-  "Option_keepMenuOpenOnTabChange_desc": {
-    "message": "Conserve le menu de sélection et le texte sélectionné lorsque vous changez d'onglet ou de fenêtre après avoir exécuté une commande, afin de pouvoir revenir et exécuter une autre commande sur la même sélection."
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "Conserve le menu de sélection et le texte sélectionné lorsque vous changez d'onglet ou de fenêtre, ou que vous ouvrez le panneau latéral, après avoir exécuté une commande, afin de pouvoir revenir et exécuter une autre commande sur la même sélection."
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"

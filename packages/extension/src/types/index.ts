@@ -159,12 +159,13 @@ export type StyleVariable = {
 }
 
 // Settings for how the selection menu itself is triggered and displayed
-// (e.g. trigger method, and whether it stays open across tab/window changes).
+// (e.g. trigger method, and whether it stays open when focus moves away
+// from the menu, such as switching tabs/windows or opening the side panel).
 export type StartupMethod = {
   method: STARTUP_METHOD
   keyboardParam?: KEYBOARD
   leftClickHoldParam?: number
-  keepMenuOpenOnTabChange?: boolean
+  keepMenuOpenOnFocusChange?: boolean
 }
 
 export type Star = {

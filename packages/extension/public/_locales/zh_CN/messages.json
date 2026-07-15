@@ -131,11 +131,11 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "选择键"
   },
-  "Option_keepMenuOpenOnTabChange": {
-    "message": "切换标签页时保持菜单打开"
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "切换焦点时保持菜单打开"
   },
-  "Option_keepMenuOpenOnTabChange_desc": {
-    "message": "执行命令后切换标签页或窗口时,保持选择菜单和已选文本不变,方便返回后对同一选择内容执行其他命令。"
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "执行命令后切换标签页、窗口或打开侧边栏时,保持选择菜单和已选文本不变,方便返回后对同一选择内容执行其他命令。"
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"

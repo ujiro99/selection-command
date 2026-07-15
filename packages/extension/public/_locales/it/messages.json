@@ -131,11 +131,11 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Seleziona tasto"
   },
-  "Option_keepMenuOpenOnTabChange": {
-    "message": "Mantieni il menu aperto al cambio scheda"
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "Mantieni il menu aperto al cambio di focus"
   },
-  "Option_keepMenuOpenOnTabChange_desc": {
-    "message": "Mantiene il menu di selezione e il testo selezionato quando si cambia scheda o finestra dopo aver eseguito un comando, così da poter tornare ed eseguire un altro comando sulla stessa selezione."
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "Mantiene il menu di selezione e il testo selezionato quando si cambia scheda o finestra, o si apre il pannello laterale, dopo aver eseguito un comando, così da poter tornare ed eseguire un altro comando sulla stessa selezione."
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"

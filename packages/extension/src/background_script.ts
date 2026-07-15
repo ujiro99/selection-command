@@ -347,7 +347,7 @@ const clearSelectionTextUnlessKeepOpen = async () => {
   const settings = await enhancedSettings.getSection(
     CACHE_SECTIONS.USER_SETTINGS,
   )
-  if (!settings.startupMethod?.keepMenuOpenOnTabChange) {
+  if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
     await Storage.set(SESSION_STORAGE_KEY.SELECTION_TEXT, "")
   }
 }
@@ -410,7 +410,7 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   const settings = await enhancedSettings.getSection(
     CACHE_SECTIONS.USER_SETTINGS,
   )
-  if (!settings.startupMethod?.keepMenuOpenOnTabChange) {
+  if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
     // Force close the menu
     try {
       const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
@@ -624,7 +624,7 @@ try {
     const settings = await enhancedSettings.getSection(
       CACHE_SECTIONS.USER_SETTINGS,
     )
-    if (!settings.startupMethod?.keepMenuOpenOnTabChange) {
+    if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
       // Force close the menu
       try {
         const ret = await Ipc.sendAllTab(TabCommand.closeMenu)

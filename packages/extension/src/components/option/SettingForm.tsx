@@ -77,7 +77,7 @@ const formSchema = z
           .min(50, { message: t("zod_number_min", ["50"]) })
           .max(500, { message: t("zod_number_max", ["500"]) })
           .optional(),
-        keepMenuOpenOnTabChange: z.boolean().optional(),
+        keepMenuOpenOnFocusChange: z.boolean().optional(),
       })
       .strict(),
     popupPlacement: popupPlacementSchema,
@@ -487,9 +487,9 @@ export function SettingForm({ className }: { className?: string }) {
 
           <SwitchField
             control={form.control}
-            name="startupMethod.keepMenuOpenOnTabChange"
-            formLabel={t("keepMenuOpenOnTabChange")}
-            tooltip={t("keepMenuOpenOnTabChange_desc")}
+            name="startupMethod.keepMenuOpenOnFocusChange"
+            formLabel={t("keepMenuOpenOnFocusChange")}
+            tooltip={t("keepMenuOpenOnFocusChange_desc")}
           />
         </section>
         <hr />

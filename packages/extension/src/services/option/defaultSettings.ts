@@ -60,7 +60,7 @@ export const emptySettings: SettingsType = {
   userStyles: [],
   startupMethod: {
     method: STARTUP_METHOD.TEXT_SELECTION,
-    keepMenuOpenOnTabChange: false,
+    keepMenuOpenOnFocusChange: false,
   },
   stars: [],
   commandExecutionCount: 0,
@@ -148,7 +148,7 @@ export default {
   style: STYLE.HORIZONTAL,
   startupMethod: {
     method: STARTUP_METHOD.TEXT_SELECTION,
-    keepMenuOpenOnTabChange: false,
+    keepMenuOpenOnFocusChange: false,
   },
   userStyles: [
     {

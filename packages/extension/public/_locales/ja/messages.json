@@ -131,11 +131,11 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "キーを選択"
   },
-  "Option_keepMenuOpenOnTabChange": {
-    "message": "タブ切り替え時もメニューを維持する"
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "フォーカス切替時もメニューを維持する"
   },
-  "Option_keepMenuOpenOnTabChange_desc": {
-    "message": "コマンド実行後に別タブやウィンドウへ移動しても、選択メニューと選択テキストを維持します。戻ってきたときに続けて別のコマンドを実行できます。"
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "コマンド実行後に別タブやウィンドウへ移動したり、サイドパネルを開いたりしても、選択メニューと選択テキストを維持します。戻ってきたときに続けて別のコマンドを実行できます。"
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"

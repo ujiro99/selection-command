@@ -131,11 +131,11 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Taste auswählen"
   },
-  "Option_keepMenuOpenOnTabChange": {
-    "message": "Menü bei Tab-Wechsel geöffnet lassen"
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "Menü bei Fokuswechsel geöffnet lassen"
   },
-  "Option_keepMenuOpenOnTabChange_desc": {
-    "message": "Behält das Auswahlmenü und den ausgewählten Text bei, wenn Sie nach dem Ausführen eines Befehls den Tab oder das Fenster wechseln, sodass Sie zurückkehren und einen weiteren Befehl für dieselbe Auswahl ausführen können."
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "Behält das Auswahlmenü und den ausgewählten Text bei, wenn Sie nach dem Ausführen eines Befehls den Tab oder das Fenster wechseln oder die Seitenleiste öffnen, sodass Sie zurückkehren und einen weiteren Befehl für dieselbe Auswahl ausführen können."
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Strg"

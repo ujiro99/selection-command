@@ -131,11 +131,11 @@
   "Option_startupMethod_keyboard_placeholder": {
     "message": "Selecione uma tecla"
   },
-  "Option_keepMenuOpenOnTabChange": {
-    "message": "Manter Menu Aberto ao Trocar de Aba"
+  "Option_keepMenuOpenOnFocusChange": {
+    "message": "Manter Menu Aberto ao Mudar o Foco"
   },
-  "Option_keepMenuOpenOnTabChange_desc": {
-    "message": "Mantém o menu de seleção e o texto selecionado ao trocar de aba ou janela após executar um comando, para que você possa voltar e executar outro comando na mesma seleção."
+  "Option_keepMenuOpenOnFocusChange_desc": {
+    "message": "Mantém o menu de seleção e o texto selecionado ao trocar de aba ou janela, ou abrir o painel lateral, após executar um comando, para que você possa voltar e executar outro comando na mesma seleção."
   },
   "Option_keyboardParam_Control_windows": {
     "message": "Ctrl"

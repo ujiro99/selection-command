@@ -398,14 +398,16 @@ const migrate1_1_0 = async (data: SettingsType): Promise<SettingsType> => {
       console.debug("migrate 1.1.0: added command search")
     }
   }
-  // Add startupMethod.keepMenuOpenOnTabChange if not exists
+  // Add startupMethod.keepMenuOpenOnFocusChange if not exists
   if (
     data.startupMethod != null &&
-    data.startupMethod.keepMenuOpenOnTabChange == null
+    data.startupMethod.keepMenuOpenOnFocusChange == null
   ) {
-    data.startupMethod.keepMenuOpenOnTabChange =
-      DefaultSettings.startupMethod.keepMenuOpenOnTabChange
-    console.debug("migrate 1.1.0: added startupMethod.keepMenuOpenOnTabChange")
+    data.startupMethod.keepMenuOpenOnFocusChange =
+      DefaultSettings.startupMethod.keepMenuOpenOnFocusChange
+    console.debug(
+      "migrate 1.1.0: added startupMethod.keepMenuOpenOnFocusChange",
+    )
   }
   return data
 }
