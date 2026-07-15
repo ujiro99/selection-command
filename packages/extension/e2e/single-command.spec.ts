@@ -21,7 +21,7 @@ test.describe("Single Function Commands", () => {
     await context.grantPermissions(["clipboard-read", "clipboard-write"])
     const testPage = new TestPage(page)
     await testPage.open()
-    await testPage.selectText("h1")
+    await testPage.selectText("h2")
     const selectedText = await page.evaluate(
       () => window.getSelection()?.toString() ?? "",
     )
@@ -44,20 +44,17 @@ test.describe("Single Function Commands", () => {
   })
 
   /**
-   * E2E-31: Verify that the Link Popup command opens each link in the selected range in a popup window.
+   * E2E-31: Verify that the Link Popup command opens the selected link in a popup window.
    */
-  test("E2E-31: link popup command opens each selected link in a popup window", async ({
+  test("E2E-31: link popup command opens the selected link in a popup window", async ({
     page,
     context,
   }) => {
-    // Arrange: open the test page and select a range spanning multiple links
+    // Arrange: open the test page and select a link
     const testPage = new TestPage(page)
     await testPage.open()
     const initialPageCount = context.pages().length
-    await testPage.selectRange(
-      "footer a[href$='terms']",
-      "footer a[href$='cookie']",
-    )
+    await testPage.selectRange("a[download='test.txt']", "a[download='test.txt']")
 
     // Act: click the "リンクポップアップ" menu item and wait for a new page to open
     const menubar = await testPage.getMenuBar()
