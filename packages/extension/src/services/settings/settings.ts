@@ -264,7 +264,7 @@ export const migrate = async (data: SettingsType): Promise<SettingsType> => {
     data = migrate0_15_1(data)
   }
   if (versionDiff(currentVersion, "1.1.0") === VersionDiff.Old) {
-    data = await migrate1_1_0(data)
+    data = migrate1_1_0(data)
   }
 
   data.settingVersion = VERSION as Version
@@ -386,7 +386,7 @@ const migrate0_15_1 = (data: SettingsType): SettingsType => {
   return data
 }
 
-const migrate1_1_0 = async (data: SettingsType): Promise<SettingsType> => {
+const migrate1_1_0 = (data: SettingsType): SettingsType => {
   // Add the "Search Commands on Hub" command if not exists.
   const hasCommandSearch = data.commands.some((c) => c.id === COMMAND_SEARCH_ID)
   if (!hasCommandSearch) {
