@@ -1039,7 +1039,7 @@ const CMD_OLX_PT = {
   iconUrl: "https://www.olx.pt/favicon.ico",
   openMode: OPEN_MODE.TAB,
   openModeSecondary: OPEN_MODE.TAB,
-  searchUrl: "https://www.olx.pt/ads/?q=%s",
+  searchUrl: "https://www.olx.pt/ads/q-%s/",
   title: "OLX",
   parentFolderId: FOLDER_SEARCH,
   popupOption: { width: PopupOption.width, height: PopupOption.height },
