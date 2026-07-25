@@ -370,6 +370,11 @@ export const NEW_HUB_SHAREABLE_OPEN_MODES: ReadonlySet<string> = new Set([
 
 export { HUB_SHARE_EXCLUDED_IDS } from "@/services/hub/excludedIds"
 
+// When true, the ShareButton always shows regardless of the exclusion/eligibility
+// checks. Used for a support-only build that migrates past default commands to
+// the Hub (see .env.support).
+export const IS_SUPPORT_BUILD = import.meta.env?.VITE_SUPPORT_BUILD === "true"
+
 export const PAGE_ACTION_MAX = 12 // 10 actions + 1 start + 1 end
 
 export const PAGE_ACTION_TIMEOUT = 5_000 // milliseconds

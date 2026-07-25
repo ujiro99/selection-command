@@ -10,6 +10,7 @@ import {
   COMMAND_SOURCE_TYPE,
   NEW_HUB_URL,
   HUB_SHARE_EXCLUDED_IDS,
+  IS_SUPPORT_BUILD,
   SCREEN,
 } from "@/const"
 import type { SelectionCommand } from "@/types"
@@ -68,9 +69,12 @@ export const ShareButton = ({
   }
 
   if (
-    HUB_SHARE_EXCLUDED_IDS.has(command.id) ||
-    !NEW_HUB_SHAREABLE_OPEN_MODES.has(command.openMode) ||
-    !VALID_SOURCE_TYPES.has(command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN)
+    !IS_SUPPORT_BUILD &&
+    (HUB_SHARE_EXCLUDED_IDS.has(command.id) ||
+      !NEW_HUB_SHAREABLE_OPEN_MODES.has(command.openMode) ||
+      !VALID_SOURCE_TYPES.has(
+        command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN,
+      ))
   ) {
     return null
   }
