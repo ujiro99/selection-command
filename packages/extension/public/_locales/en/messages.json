@@ -1013,6 +1013,17 @@
   "review_request_button": {
     "message": "Write a Review"
   },
+  "hub_share_toast_message": {
+    "message": "Would you like to share this command with the Selection Command Hub?",
+    "description": "Toast message shown once, right after a new command is created, inviting the user to share it to the Hub."
+  },
+  "hub_share_toast_button": {
+    "message": "Share",
+    "description": "Button label to share the newly created command to the Hub from the toast."
+  },
+  "hub_share_toast_later": {
+    "message": "Later"
+  },
   "Option_shortcuts": {
     "message": "Shortcut Keys"
   },

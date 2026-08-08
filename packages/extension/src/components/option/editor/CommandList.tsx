@@ -42,7 +42,8 @@ import {
   getDescendantFolderIds,
 } from "@/services/option/commandUtils"
 import { isValidDrop } from "@/services/option/dragAndDrop"
-import { editCommandToHub } from "@/services/hubShare"
+import { editCommandToHub, isHubShareable } from "@/services/hubShare"
+import { showHubShareToast } from "@/components/option/HubShareToast"
 import { Settings } from "@/services/settings/settings"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
@@ -240,6 +241,16 @@ export const CommandList = ({ control }: CommandListProps) => {
           },
           SCREEN.OPTION,
         )
+        Settings.get().then((settings) => {
+          if (
+            !settings.hasShownHubShareToast &&
+            isHubShareable(data as SelectionCommand)
+          ) {
+            showHubShareToast(data as SelectionCommand, () => {
+              Settings.update("hasShownHubShareToast", () => true)
+            })
+          }
+        })
       }
     } else {
       const idx = folderArray.fields.findIndex((f) => f.id === data.id)

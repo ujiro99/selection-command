@@ -47,26 +47,27 @@ export class EnhancedSettings {
         : Promise.resolve([]),
       sections.includes(CACHE_SECTIONS.USER_SETTINGS)
         ? settingsCache.get<UserSettings>(
-          CACHE_SECTIONS.USER_SETTINGS,
-          forceFresh,
-        )
+            CACHE_SECTIONS.USER_SETTINGS,
+            forceFresh,
+          )
         : Promise.resolve(DefaultSettings as UserSettings),
       sections.includes(CACHE_SECTIONS.STARS)
         ? settingsCache.get<Star[]>(CACHE_SECTIONS.STARS, forceFresh)
         : Promise.resolve([]),
       sections.includes(CACHE_SECTIONS.SHORTCUTS)
         ? settingsCache.get<ShortcutSettings>(
-          CACHE_SECTIONS.SHORTCUTS,
-          forceFresh,
-        )
+            CACHE_SECTIONS.SHORTCUTS,
+            forceFresh,
+          )
         : Promise.resolve({ shortcuts: [] }),
       sections.includes(CACHE_SECTIONS.USER_STATS)
         ? settingsCache.get<UserStats>(CACHE_SECTIONS.USER_STATS, forceFresh)
         : Promise.resolve({
-          commandExecutionCount: 0,
-          hasShownReviewRequest: false,
-          hasDismissedPromptHistoryBanner: false,
-        }),
+            commandExecutionCount: 0,
+            hasShownReviewRequest: false,
+            hasDismissedPromptHistoryBanner: false,
+            hasShownHubShareToast: false,
+          }),
     ])
 
     // Process results
@@ -93,10 +94,11 @@ export class EnhancedSettings {
       userStatsResult.status === "fulfilled"
         ? userStatsResult.value
         : {
-          commandExecutionCount: 0,
-          hasShownReviewRequest: false,
-          hasDismissedPromptHistoryBanner: false,
-        }
+            commandExecutionCount: 0,
+            hasShownReviewRequest: false,
+            hasDismissedPromptHistoryBanner: false,
+            hasShownHubShareToast: false,
+          }
 
     // Merge settings
     const mergedSettings = this.mergeSettings({
@@ -128,16 +130,16 @@ export class EnhancedSettings {
     forceFresh = false,
   ): Promise<
     K extends "commands"
-    ? Command[]
-    : K extends "userSettings"
-    ? UserSettings
-    : K extends "stars"
-    ? Star[]
-    : K extends "shortcuts"
-    ? ShortcutSettings
-    : K extends "userStats"
-    ? UserStats
-    : any
+      ? Command[]
+      : K extends "userSettings"
+        ? UserSettings
+        : K extends "stars"
+          ? Star[]
+          : K extends "shortcuts"
+            ? ShortcutSettings
+            : K extends "userStats"
+              ? UserStats
+              : any
   > {
     if (section === CACHE_SECTIONS.COMMANDS) {
       let commands = await settingsCache.get<Command[]>(
@@ -182,6 +184,7 @@ export class EnhancedSettings {
       hasShownReviewRequest: data.userStats.hasShownReviewRequest,
       hasDismissedPromptHistoryBanner:
         data.userStats.hasDismissedPromptHistoryBanner,
+      hasShownHubShareToast: data.userStats.hasShownHubShareToast,
     } as SettingsType
   }
 

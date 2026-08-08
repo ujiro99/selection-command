@@ -180,6 +180,7 @@ export type UserStats = {
   commandExecutionCount: number
   hasShownReviewRequest: boolean
   hasDismissedPromptHistoryBanner: boolean
+  hasShownHubShareToast: boolean
 }
 
 export type ShortcutCommand = {

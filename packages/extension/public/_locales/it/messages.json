@@ -1002,6 +1002,15 @@
   "review_request_button": {
     "message": "Scrivi recensione"
   },
+  "hub_share_toast_message": {
+    "message": "Vuoi condividere questo comando con Selection Command Hub?"
+  },
+  "hub_share_toast_button": {
+    "message": "Condividi"
+  },
+  "hub_share_toast_later": {
+    "message": "Dopo"
+  },
   "Option_shortcuts": {
     "message": "Scorciatoie"
   },

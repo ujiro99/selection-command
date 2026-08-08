@@ -1002,6 +1002,15 @@
   "review_request_button": {
     "message": "Tulis Ulasan"
   },
+  "hub_share_toast_message": {
+    "message": "Ingin membagikan perintah ini ke Selection Command Hub?"
+  },
+  "hub_share_toast_button": {
+    "message": "Bagikan"
+  },
+  "hub_share_toast_later": {
+    "message": "Nanti"
+  },
   "Option_shortcuts": {
     "message": "Tombol Pintas"
   },

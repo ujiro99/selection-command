@@ -1002,6 +1002,15 @@
   "review_request_button": {
     "message": "写评论"
   },
+  "hub_share_toast_message": {
+    "message": "要将此命令分享到 Selection Command Hub 吗？"
+  },
+  "hub_share_toast_button": {
+    "message": "分享"
+  },
+  "hub_share_toast_later": {
+    "message": "稍后"
+  },
   "Option_shortcuts": {
     "message": "快捷键"
   },

@@ -1002,6 +1002,15 @@
   "review_request_button": {
     "message": "리뷰 작성"
   },
+  "hub_share_toast_message": {
+    "message": "이 명령을 Selection Command Hub에 공유하시겠습니까?"
+  },
+  "hub_share_toast_button": {
+    "message": "공유하기"
+  },
+  "hub_share_toast_later": {
+    "message": "나중에"
+  },
   "Option_shortcuts": {
     "message": "단축키"
   },

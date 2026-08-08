@@ -269,12 +269,14 @@ export function ImportExport() {
           commandExecutionCount = 0,
           hasShownReviewRequest = false,
           hasDismissedPromptHistoryBanner = false,
+          hasShownHubShareToast = false,
         } = await enhancedSettings.get()
         const data = await migrate({
           ...importJson,
           commandExecutionCount,
           hasShownReviewRequest,
           hasDismissedPromptHistoryBanner,
+          hasShownHubShareToast,
           stars: [],
         })
         await Settings.set(data)
