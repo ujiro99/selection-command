@@ -5,6 +5,7 @@ import { cn, isUUIDv7, generateId } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import { shareCommandToHub, getHubLocale } from "@/services/hubShare"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import {
   NEW_HUB_SHAREABLE_OPEN_MODES,
   COMMAND_SOURCE_TYPE,
@@ -37,7 +38,7 @@ export const ShareButton = ({
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [status, setStatus] = useState<"idle" | "sent" | "error">("idle")
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
 
     if (isShared) {
@@ -56,6 +57,18 @@ export const ShareButton = ({
     }
 
     const ok = shareCommandToHub(commandToShare)
+
+    // Users who have never signed in to the hub are redirected to the
+    // sign-up page instead (see shareCommandToHub in services/hub/background.ts);
+    // nothing is actually shared yet, so leave the button idle and skip
+    // the share analytics event for this case.
+    const registered = await Storage.get<boolean>(
+      LOCAL_STORAGE_KEY.HUB_REGISTERED,
+    )
+    if (!registered) {
+      return
+    }
+
     setStatus(ok ? "sent" : "error")
     setTimeout(() => setStatus("idle"), 2000)
 
