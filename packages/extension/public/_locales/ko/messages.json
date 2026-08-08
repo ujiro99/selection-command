@@ -356,6 +356,9 @@
   "Option_commandType_description": {
     "message": "생성하려는 명령 유형을 선택하세요"
   },
+  "Option_commandType_hubLink": {
+    "message": "명령 찾기"
+  },
   "Option_commandType_search_title": {
     "message": "검색"
   },
