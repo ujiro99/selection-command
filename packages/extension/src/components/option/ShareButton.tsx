@@ -36,7 +36,9 @@ export const ShareButton = ({
   isShared,
 }: Props) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const [status, setStatus] = useState<"idle" | "sent" | "error">("idle")
+  const [status, setStatus] = useState<"idle" | "pending" | "sent" | "error">(
+    "idle",
+  )
 
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -49,6 +51,10 @@ export const ShareButton = ({
       return
     }
 
+    // Disable the button immediately to prevent duplicate shares/signup
+    // tabs from rapid repeated clicks while the storage lookup below runs.
+    setStatus("pending")
+
     let commandToShare = command
     if (!isUUIDv7(command.id)) {
       const newId = generateId()
@@ -58,6 +64,12 @@ export const ShareButton = ({
 
     const ok = shareCommandToHub(commandToShare)
 
+    if (!ok) {
+      setStatus("error")
+      setTimeout(() => setStatus("idle"), 2000)
+      return
+    }
+
     // Users who have never signed in to the hub are redirected to the
     // sign-up page instead (see shareCommandToHub in services/hub/background.ts);
     // nothing is actually shared yet, so leave the button idle and skip
@@ -66,19 +78,18 @@ export const ShareButton = ({
       LOCAL_STORAGE_KEY.HUB_REGISTERED,
     )
     if (!registered) {
+      setStatus("idle")
       return
     }
 
-    setStatus(ok ? "sent" : "error")
+    setStatus("sent")
     setTimeout(() => setStatus("idle"), 2000)
 
-    if (ok) {
-      sendEvent(
-        ANALYTICS_EVENTS.COMMAND_SHARE,
-        { event_label: "share-button" },
-        SCREEN.OPTION,
-      )
-    }
+    sendEvent(
+      ANALYTICS_EVENTS.COMMAND_SHARE,
+      { event_label: "share-button" },
+      SCREEN.OPTION,
+    )
   }
 
   if (
