@@ -120,13 +120,13 @@ const getDefault = (
 ) => {
   const sourceDefaults = isEmpty(base?.id)
     ? {
-      sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
-      sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
-    }
+        sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
+        sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
+      }
     : {
-      sourceType: base?.sourceType,
-      sourceId: base?.sourceId,
-    }
+        sourceType: base?.sourceType,
+        sourceId: base?.sourceId,
+      }
 
   if (isSearchOpenMode(openMode)) {
     if (isSearchOpenMode(preOpenMode)) {
@@ -610,6 +610,7 @@ const CommandEditDialogInner = ({
                                   const parsedUrl = parseGeminiUrl(value)
                                   if (parsedUrl !== value) {
                                     setValue("searchUrl", parsedUrl)
+                                    clearErrors("searchUrl")
                                   }
                                   field.onBlur()
                                 }}
