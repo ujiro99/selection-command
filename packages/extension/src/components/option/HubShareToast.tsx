@@ -10,8 +10,9 @@ import type { SelectionCommand } from "@/types"
 /**
  * Shows a one-time toast on the options page suggesting the user share a
  * newly created command to the Selection Command Hub. `onShown` is invoked
- * regardless of which button is clicked, so callers can persist a
- * "don't show again" flag as soon as the toast has been presented.
+ * whenever the toast is dismissed — by clicking either button, or via the
+ * auto-close timeout — so callers can persist a "don't show again" flag as
+ * soon as the toast has been presented.
  */
 export function showHubShareToast(
   command: SelectionCommand,
@@ -68,6 +69,9 @@ export function showHubShareToast(
     ),
     {
       duration: 60 * 1000,
+      onAutoClose: () => {
+        onShown()
+      },
     },
   )
 }

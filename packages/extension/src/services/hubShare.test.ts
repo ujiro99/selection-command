@@ -3,9 +3,10 @@ import {
   getHubLocale,
   toSubmitCommandInput,
   shareCommandToHub,
+  isHubShareable,
 } from "./hubShare"
 import { Ipc, BgCommand } from "@/services/ipc"
-import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
+import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, COMMAND_SOURCE_TYPE } from "@/const"
 import type { SearchCommand, PageActionCommand, AiPromptCommand } from "@/types"
 
 // Mock the IPC module so that shareCommandToHub does not trigger real messaging
@@ -292,3 +293,91 @@ describe("shareCommandToHub", () => {
   })
 })
 
+// ---- isHubShareable ---------------------------------------------------------
+
+describe("isHubShareable", () => {
+  it("HS-01: returns false for a command in the exclusion list", () => {
+    const cmd = makeSearchCmd({
+      id: "0",
+      sourceType: COMMAND_SOURCE_TYPE.SELF_CREATED,
+    })
+    expect(isHubShareable(cmd)).toBe(false)
+  })
+
+  it("HS-02: returns false for a non-shareable openMode", () => {
+    const cmd = makeSearchCmd({
+      openMode: OPEN_MODE.COPY,
+      sourceType: COMMAND_SOURCE_TYPE.SELF_CREATED,
+    })
+    expect(isHubShareable(cmd)).toBe(false)
+  })
+
+  it("HS-03: returns false for a DEFAULT sourceType", () => {
+    const cmd = makeSearchCmd({ sourceType: COMMAND_SOURCE_TYPE.DEFAULT })
+    expect(isHubShareable(cmd)).toBe(false)
+  })
+
+  it("HS-04: returns false for a HUB_COMMUNITY sourceType", () => {
+    const cmd = makeSearchCmd({
+      sourceType: COMMAND_SOURCE_TYPE.HUB_COMMUNITY,
+    })
+    expect(isHubShareable(cmd)).toBe(false)
+  })
+
+  it("HS-05: returns true for a SELF_CREATED sourceType", () => {
+    const cmd = makeSearchCmd({
+      sourceType: COMMAND_SOURCE_TYPE.SELF_CREATED,
+    })
+    expect(isHubShareable(cmd)).toBe(true)
+  })
+
+  it("HS-06: returns true for a SELF_UPDATED sourceType", () => {
+    const cmd = makeSearchCmd({
+      sourceType: COMMAND_SOURCE_TYPE.SELF_UPDATED,
+    })
+    expect(isHubShareable(cmd)).toBe(true)
+  })
+
+  it("HS-07: returns true for a SELF_REINSTALL sourceType", () => {
+    const cmd = makeSearchCmd({
+      sourceType: COMMAND_SOURCE_TYPE.SELF_REINSTALL,
+    })
+    expect(isHubShareable(cmd)).toBe(true)
+  })
+
+  it("HS-08: treats a missing sourceType as UNKNOWN and returns true", () => {
+    const cmd = makeSearchCmd({ sourceType: undefined })
+    expect(isHubShareable(cmd)).toBe(true)
+  })
+
+  it("HS-09: returns true when all eligibility conditions are met", () => {
+    const cmd = makeSearchCmd({
+      id: "not-excluded",
+      openMode: OPEN_MODE.TAB,
+      sourceType: COMMAND_SOURCE_TYPE.SELF_CREATED,
+    })
+    expect(isHubShareable(cmd)).toBe(true)
+  })
+})
+
+describe("isHubShareable (support build)", () => {
+  beforeEach(() => {
+    vi.resetModules()
+    vi.stubEnv("VITE_SUPPORT_BUILD", "true")
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it("HS-10: bypasses all eligibility checks when IS_SUPPORT_BUILD is true", async () => {
+    const { isHubShareable: isHubShareableSupportBuild } =
+      await import("./hubShare")
+    const cmd = makeSearchCmd({
+      id: "0", // normally excluded
+      openMode: OPEN_MODE.COPY, // normally non-shareable
+      sourceType: COMMAND_SOURCE_TYPE.DEFAULT, // normally non-shareable
+    })
+    expect(isHubShareableSupportBuild(cmd)).toBe(true)
+  })
+})
