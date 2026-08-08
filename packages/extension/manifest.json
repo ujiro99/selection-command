@@ -2,20 +2,15 @@
   "manifest_version": 3,
   "name": "__MSG_extName__",
   "description": "__MSG_extDescription__",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "default_locale": "en",
   "icons": {
     "128": "icon128.png"
   },
   "content_scripts": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": [
-        "src/content_script.tsx"
-      ]
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["src/content_script.tsx"]
     },
     {
       "matches": [
@@ -23,20 +18,14 @@
         "https://selection-command-hub.siro-cola.workers.dev/*",
         "http://localhost:3000/*"
       ],
-      "js": [
-        "src/new_command_hub.tsx"
-      ]
+      "js": ["src/new_command_hub.tsx"]
     },
     {
-      "matches": [
-        "https://*.siro-cola.workers.dev/*"
-      ],
+      "matches": ["https://*.siro-cola.workers.dev/*"],
       "include_globs": [
         "https://*-selection-command-hub.siro-cola.workers.dev/*"
       ],
-      "js": [
-        "src/new_command_hub.tsx"
-      ]
+      "js": ["src/new_command_hub.tsx"]
     }
   ],
   "background": {
@@ -60,21 +49,11 @@
     "system.display",
     "sidePanel"
   ],
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "web_accessible_resources": [
     {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "resources": [
-        "assets/*.css",
-        "images/*",
-        "icon128.png"
-      ]
+      "matches": ["http://*/*", "https://*/*"],
+      "resources": ["assets/*.css", "images/*", "icon128.png"]
     }
   ],
   "commands": {
