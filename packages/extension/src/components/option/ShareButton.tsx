@@ -42,9 +42,7 @@ export const ShareButton = ({
     }
 
     // Disable the button immediately to prevent duplicate shares/signup
-    // tabs from rapid repeated clicks while the 
-    
-    lookup below runs.
+    // tabs from rapid repeated clicks while the lookup below runs.
     setStatus("pending")
 
     let commandToShare = command

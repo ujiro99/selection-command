@@ -28,14 +28,19 @@ export function showHubShareToast(
 
   toast.custom(
     (toastId) => (
-      <div className="flex flex-col bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-gray-800">
-        <div className="flex flex-row gap-3 items-center mb-4">
-          <Share className="stroke-sky-500 shrink-0" size={20} />
-          <span className="text-sm">{t("hub_share_toast_message")}</span>
+      <div className="flex flex-col bg-white border border-gray-200 rounded-lg shadow-lg px-5 py-4 text-gray-800">
+        <div className="flex flex-col gap-2 items-start mb-4">
+          <img
+            src="/SelectionCommandHub_new.png"
+            alt="Selection Command Hub"
+            width="260"
+            className="pointer-events-none select-none"
+          />
+          <span className="text-base">{t("hub_share_toast_message")}</span>
         </div>
         <div className="flex flex-row gap-3">
           <button
-            className="flex-1 h-9 px-3 rounded-md border border-gray-300 bg-white text-sm font-medium transition hover:bg-gray-50"
+            className="flex-1 h-9 px-3 rounded-lg border border-gray-300 bg-white text-sm font-medium transition hover:bg-gray-50"
             onClick={() => {
               toast.dismiss(toastId)
               onShown()
@@ -45,8 +50,8 @@ export function showHubShareToast(
           </button>
           <button
             className={cn(
-              "flex items-center justify-center gap-2 flex-1 h-9 px-3 rounded-md transition",
-              "text-sm text-white border border-sky-500 bg-sky-400 hover:bg-sky-500 font-medium hover:scale-110",
+              "flex items-center justify-center gap-2 flex-1 h-9 px-3 rounded-lg transition",
+              "text-base text-white border border-sky-600 bg-sky-500 hover:bg-sky-600 font-medium hover:scale-105",
             )}
             onClick={() => {
               shareCommandToHub(command)
@@ -61,8 +66,8 @@ export function showHubShareToast(
               onShown()
             }}
           >
-            {t("hub_share_toast_button")}
             <Share className="inline" size={16} />
+            {t("hub_share_toast_button")}
           </button>
         </div>
       </div>
