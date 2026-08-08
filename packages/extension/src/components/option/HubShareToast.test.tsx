@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react"
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import userEvent from "@testing-library/user-event"
 import { toast } from "sonner"
 import { showHubShareToast } from "./HubShareToast"
@@ -60,10 +60,18 @@ function renderToastBody(toastId: string | number = "toast-1") {
 describe("showHubShareToast", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useFakeTimers()
   })
 
-  it("HST-01: sends an open_dialog analytics event", () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it("HST-01: sends an open_dialog analytics event after the show delay", () => {
     showHubShareToast(command, vi.fn())
+    expect(mockSendEvent).not.toHaveBeenCalled()
+
+    vi.advanceTimersByTime(2000)
 
     expect(mockSendEvent).toHaveBeenCalledWith(
       "open_dialog",
@@ -72,8 +80,11 @@ describe("showHubShareToast", () => {
     )
   })
 
-  it("HST-02: calls toast.custom with a 60 second duration", () => {
+  it("HST-02: calls toast.custom with a 60 second duration after the show delay", () => {
     showHubShareToast(command, vi.fn())
+    expect(mockToastCustom).not.toHaveBeenCalled()
+
+    vi.advanceTimersByTime(2000)
 
     expect(mockToastCustom).toHaveBeenCalledWith(
       expect.any(Function),
@@ -83,6 +94,7 @@ describe("showHubShareToast", () => {
 
   it("HST-03: renders the message and both buttons", () => {
     showHubShareToast(command, vi.fn())
+    vi.advanceTimersByTime(2000)
     renderToastBody()
 
     expect(
@@ -93,9 +105,11 @@ describe("showHubShareToast", () => {
   })
 
   it("HST-04: clicking 'Later' dismisses the toast and calls onShown without sharing", async () => {
-    const user = userEvent.setup()
     const onShown = vi.fn()
     showHubShareToast(command, onShown)
+    vi.advanceTimersByTime(2000)
+    vi.useRealTimers()
+    const user = userEvent.setup()
     renderToastBody("toast-1")
 
     await user.click(screen.getByRole("button", { name: "Later" }))
@@ -106,9 +120,11 @@ describe("showHubShareToast", () => {
   })
 
   it("HST-05: clicking 'Share' shares the command, dismisses the toast, and calls onShown", async () => {
-    const user = userEvent.setup()
     const onShown = vi.fn()
     showHubShareToast(command, onShown)
+    vi.advanceTimersByTime(2000)
+    vi.useRealTimers()
+    const user = userEvent.setup()
     renderToastBody("toast-1")
 
     await user.click(screen.getByRole("button", { name: /Share/ }))
@@ -126,6 +142,7 @@ describe("showHubShareToast", () => {
   it("HST-06: calls onShown when the toast auto-closes via timeout", () => {
     const onShown = vi.fn()
     showHubShareToast(command, onShown)
+    vi.advanceTimersByTime(2000)
 
     const [, options] = mockToastCustom.mock.calls[0]
     options?.onAutoClose?.({} as never)

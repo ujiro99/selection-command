@@ -7,6 +7,9 @@ import { SCREEN } from "@/const"
 import { shareCommandToHub } from "@/services/hubShare"
 import type { SelectionCommand } from "@/types"
 
+// Delay before showing the toast so it doesn't overlap the dialog's close animation.
+const SHOW_DELAY_MS = 2000
+
 /**
  * Shows a one-time toast on the options page suggesting the user share a
  * newly created command to the Selection Command Hub. `onShown` is invoked
@@ -15,6 +18,15 @@ import type { SelectionCommand } from "@/types"
  * soon as the toast has been presented.
  */
 export function showHubShareToast(
+  command: SelectionCommand,
+  onShown: () => void,
+): void {
+  setTimeout(() => {
+    showHubShareToastNow(command, onShown)
+  }, SHOW_DELAY_MS)
+}
+
+function showHubShareToastNow(
   command: SelectionCommand,
   onShown: () => void,
 ): void {
