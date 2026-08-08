@@ -1,6 +1,6 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
-import { Plus, FolderPlus } from "lucide-react"
+import { FolderPlus, SquareChevronRight } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { t as _t } from "@/services/i18n"
 import { TEST_IDS } from "@/testIds"
@@ -52,7 +52,7 @@ export const CommandListMenu: React.FC<Props> = ({
           onClick={onAddCommand}
           data-testid={TEST_IDS.addCommandButton}
         >
-          <Plus className="stroke-gray-600 group-hover:stroke-gray-700" />
+          <SquareChevronRight className="stroke-gray-600 group-hover:stroke-gray-700" />
           {t("Command")}
         </Button>
         <Tooltip
