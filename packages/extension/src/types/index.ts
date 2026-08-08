@@ -339,6 +339,8 @@ export type AiService = {
   faviconUrl: string
   inputSelectors: string[]
   submitSelectors: string[]
+  /** Selectors for the button that copies the service's generated response to the clipboard. */
+  copySelectors: string[]
   selectorType: SelectorType
   /** URL template with %s placeholder for prompt injection via URL query parameter. */
   queryUrl?: string

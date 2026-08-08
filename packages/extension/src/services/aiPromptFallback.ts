@@ -31,6 +31,7 @@ export const normalizeServices = (raw: unknown[]): AiService[] => {
       faviconUrl: s.faviconUrl ?? "",
       inputSelectors: s.inputSelectors ?? [],
       submitSelectors: s.submitSelectors ?? [],
+      copySelectors: s.copySelectors ?? [],
       selectorType: s.selectorType ?? SelectorType.css,
       queryUrl: s.queryUrl,
       autoSubmit: s.autoSubmit,

@@ -59,6 +59,7 @@ const makeDomService = (overrides?: Partial<AiService>): AiService => ({
   faviconUrl: "",
   inputSelectors: [".ql-editor"],
   submitSelectors: ["button.send"],
+  copySelectors: [],
   selectorType: "css" as any,
   ...overrides,
 })
@@ -70,6 +71,7 @@ const makeQueryService = (overrides?: Partial<AiService>): AiService => ({
   faviconUrl: "",
   inputSelectors: ["#prompt-textarea"],
   submitSelectors: ["button#submit"],
+  copySelectors: [],
   selectorType: "css" as any,
   queryUrl: "https://chatgpt.com/?prompt=%s",
   autoSubmit: false,
@@ -83,6 +85,7 @@ const makeAutoSubmitService = (overrides?: Partial<AiService>): AiService => ({
   faviconUrl: "",
   inputSelectors: ["div#ask-input"],
   submitSelectors: ["button[aria-label='Submit']"],
+  copySelectors: [],
   selectorType: "css" as any,
   queryUrl: "https://www.perplexity.ai/search/new?q=%s",
   autoSubmit: true,

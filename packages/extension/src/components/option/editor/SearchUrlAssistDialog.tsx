@@ -31,7 +31,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 import { t as _t } from "@/services/i18n"
-import { searchUrlAssistAction } from "@/services/searchUrlAssist"
+import {
+  createSearchUrlAssistAction,
+  SEARCH_URL_ASSIST_SERVICE_ID,
+} from "@/services/searchUrlAssist"
+import { findAiService } from "@/services/aiPrompt"
 import { PageAction } from "@/action/pageAction"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
@@ -71,7 +75,13 @@ export const SearchUrlAssistDialog = ({
     setIsProcessing(true)
 
     try {
-      const command = searchUrlAssistAction
+      const service = await findAiService(SEARCH_URL_ASSIST_SERVICE_ID)
+      if (!service) {
+        console.error(`AI service not found: ${SEARCH_URL_ASSIST_SERVICE_ID}`)
+        return
+      }
+
+      const command = createSearchUrlAssistAction(service)
       PageAction.execute({
         selectionText: "",
         command,
