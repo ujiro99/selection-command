@@ -255,6 +255,12 @@ export const CommandList = ({ control }: CommandListProps) => {
               })
             }
           })
+          .catch((err) => {
+            console.error(
+              "[CommandList] Failed to load user stats for hub share toast:",
+              err,
+            )
+          })
       }
     } else {
       const idx = folderArray.fields.findIndex((f) => f.id === data.id)
