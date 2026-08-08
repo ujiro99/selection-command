@@ -42,7 +42,10 @@ import {
   getDescendantFolderIds,
 } from "@/services/option/commandUtils"
 import { isValidDrop } from "@/services/option/dragAndDrop"
-import { editCommandToHub } from "@/services/hubShare"
+import { editCommandToHub, isHubShareable } from "@/services/hubShare"
+import { showHubShareToast } from "@/components/option/HubShareToast"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
@@ -240,6 +243,24 @@ export const CommandList = ({ control }: CommandListProps) => {
           },
           SCREEN.OPTION,
         )
+        enhancedSettings
+          .getSection(CACHE_SECTIONS.USER_STATS)
+          .then((userStats) => {
+            if (
+              !userStats.hasShownHubShareToast &&
+              isHubShareable(data as SelectionCommand)
+            ) {
+              showHubShareToast(data as SelectionCommand, () => {
+                Settings.update("hasShownHubShareToast", () => true)
+              })
+            }
+          })
+          .catch((err) => {
+            console.error(
+              "[CommandList] Failed to load user stats for hub share toast:",
+              err,
+            )
+          })
       }
     } else {
       const idx = folderArray.fields.findIndex((f) => f.id === data.id)

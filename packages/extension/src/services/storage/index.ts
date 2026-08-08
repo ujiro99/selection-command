@@ -57,6 +57,7 @@ const DEFAULTS = {
     commandExecutionCount: 0,
     hasShownReviewRequest: false,
     hasDismissedPromptHistoryBanner: false,
+    hasShownHubShareToast: false,
   },
   [STORAGE_KEY.SHORTCUTS]: {
     shortcuts: [],

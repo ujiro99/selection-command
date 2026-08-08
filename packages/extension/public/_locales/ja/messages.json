@@ -1002,6 +1002,15 @@
   "review_request_button": {
     "message": "レビューする"
   },
+  "hub_share_toast_message": {
+    "message": "コマンドをSelection Command Hubへ共有しませんか？"
+  },
+  "hub_share_toast_button": {
+    "message": "共有する"
+  },
+  "hub_share_toast_later": {
+    "message": "後で"
+  },
   "Option_shortcuts": {
     "message": "ショートカットキー"
   },

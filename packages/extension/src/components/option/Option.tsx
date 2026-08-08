@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { Toaster } from "sonner"
 
 import { Settings } from "@/services/settings/settings"
 import { capitalize, scrollToSelector } from "@/lib/utils"
@@ -48,6 +49,7 @@ export function Option() {
 
   return (
     <div>
+      <Toaster />
       <header className={css.titleHeader}>
         <h1 className={css.title}>
           {APP_ID.split("-").map((n) => {

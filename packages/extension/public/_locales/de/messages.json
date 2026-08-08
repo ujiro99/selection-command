@@ -1005,6 +1005,15 @@
   "review_request_button": {
     "message": "Bewertung schreiben"
   },
+  "hub_share_toast_message": {
+    "message": "Möchten Sie diesen Befehl mit dem Selection Command Hub teilen?"
+  },
+  "hub_share_toast_button": {
+    "message": "Teilen"
+  },
+  "hub_share_toast_later": {
+    "message": "Später"
+  },
   "Option_shortcuts": {
     "message": "Tastenkombinationen"
   },

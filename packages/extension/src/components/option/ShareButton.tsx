@@ -3,26 +3,16 @@ import { Share, CloudCheck } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { cn, isUUIDv7, generateId } from "@/lib/utils"
 import { t } from "@/services/i18n"
-import { shareCommandToHub, getHubLocale } from "@/services/hubShare"
+import {
+  shareCommandToHub,
+  getHubLocale,
+  isHubShareable,
+} from "@/services/hubShare"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
-import {
-  NEW_HUB_SHAREABLE_OPEN_MODES,
-  COMMAND_SOURCE_TYPE,
-  NEW_HUB_URL,
-  HUB_SHARE_EXCLUDED_IDS,
-  IS_SUPPORT_BUILD,
-  SCREEN,
-} from "@/const"
+import { NEW_HUB_URL, SCREEN } from "@/const"
 import type { SelectionCommand } from "@/types"
 import { TEST_IDS } from "@/testIds"
-
-const VALID_SOURCE_TYPES = new Set([
-  COMMAND_SOURCE_TYPE.SELF_CREATED,
-  COMMAND_SOURCE_TYPE.SELF_UPDATED,
-  COMMAND_SOURCE_TYPE.SELF_REINSTALL,
-  COMMAND_SOURCE_TYPE.UNKNOWN,
-])
 
 type Props = {
   command: SelectionCommand
@@ -52,7 +42,7 @@ export const ShareButton = ({
     }
 
     // Disable the button immediately to prevent duplicate shares/signup
-    // tabs from rapid repeated clicks while the storage lookup below runs.
+    // tabs from rapid repeated clicks while the lookup below runs.
     setStatus("pending")
 
     let commandToShare = command
@@ -92,14 +82,7 @@ export const ShareButton = ({
     )
   }
 
-  if (
-    !IS_SUPPORT_BUILD &&
-    (HUB_SHARE_EXCLUDED_IDS.has(command.id) ||
-      !NEW_HUB_SHAREABLE_OPEN_MODES.has(command.openMode) ||
-      !VALID_SOURCE_TYPES.has(
-        command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN,
-      ))
-  ) {
+  if (!isHubShareable(command)) {
     return null
   }
 
