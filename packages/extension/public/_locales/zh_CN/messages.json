@@ -356,6 +356,9 @@
   "Option_commandType_description": {
     "message": "请选择您要创建的命令类型"
   },
+  "Option_commandType_hubLink": {
+    "message": "查找命令"
+  },
   "Option_commandType_search_title": {
     "message": "搜索"
   },

@@ -21,9 +21,14 @@ vi.mock("@/services/storage", () => ({
     getCommands: vi.fn(),
     setCommands: vi.fn(),
     set: vi.fn(),
+    get: vi.fn(),
     updateCommands: vi.fn(),
   },
-  LOCAL_STORAGE_KEY: { HUB_USER: "hubUser", HUB_SHARED_AT: "hubSharedAt" },
+  LOCAL_STORAGE_KEY: {
+    HUB_USER: "hubUser",
+    HUB_SHARED_AT: "hubSharedAt",
+    HUB_REGISTERED: "hubRegistered",
+  },
 }))
 
 vi.mock("@/services/settings/settings", () => ({
@@ -123,6 +128,7 @@ beforeEach(() => {
   vi.mocked(Settings.updateCommandId).mockResolvedValue(undefined)
   vi.mocked(Storage.setCommands).mockResolvedValue(true)
   vi.mocked(Storage.set).mockResolvedValue(true)
+  vi.mocked(Storage.get).mockResolvedValue(true)
   vi.mocked(sendEvent).mockResolvedValue(undefined as any)
   vi.mocked(getOrCreateClientId).mockResolvedValue("client-id-123")
   ;(chrome.tabs as any).remove = vi.fn()
@@ -936,6 +942,23 @@ describe("shareCommandToHub", () => {
     )
   })
 
+  it("SH-02b: opens the sign-up page instead of the dashboard, and skips the port handshake, when the user has never registered", async () => {
+    vi.mocked(Storage.get).mockResolvedValue(false)
+    vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
+      cb?.({ id: 42 } as chrome.tabs.Tab)
+      return Promise.resolve({ id: 42 } as chrome.tabs.Tab)
+    })
+    const response = vi.fn()
+    shareCommandToHub(param, sender, response)
+    await vi.waitFor(() => expect(response).toHaveBeenCalledWith(true))
+
+    expect(chrome.tabs.create).toHaveBeenCalledWith(
+      { url: `${HUB_ORIGIN}/auth/signup` },
+      expect.any(Function),
+    )
+    expect(chrome.runtime.onConnectExternal.addListener).not.toHaveBeenCalled()
+  })
+
   it("SH-03: calls response(false) when tab.id is undefined", async () => {
     vi.mocked(chrome.tabs.create).mockImplementation((_opts, cb) => {
       cb?.({} as chrome.tabs.Tab)
@@ -963,6 +986,8 @@ describe("shareCommandToHub", () => {
     })
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
+
+    await Promise.resolve()
 
     const portConnectListener = vi.mocked(
       chrome.runtime.onConnectExternal.addListener,
@@ -1013,6 +1038,9 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
+    // Two ticks: one for the HUB_REGISTERED check, one for the tab-creation
+    // await that assigns tabId before the port-connect handler can match it.
+    await Promise.resolve()
     await Promise.resolve()
 
     const portConnectListener = vi.mocked(
@@ -1057,6 +1085,9 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
+    // Two ticks: one for the HUB_REGISTERED check, one for the tab-creation
+    // await that assigns tabId before the port-connect handler can match it.
+    await Promise.resolve()
     await Promise.resolve()
 
     const portConnectListener = vi.mocked(
@@ -1107,6 +1138,9 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
+    // Two ticks: one for the HUB_REGISTERED check, one for the tab-creation
+    // await that assigns tabId before the port-connect handler can match it.
+    await Promise.resolve()
     await Promise.resolve()
 
     const portConnectListener = vi.mocked(
@@ -1159,6 +1193,9 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
+    // Two ticks: one for the HUB_REGISTERED check, one for the tab-creation
+    // await that assigns tabId before the port-connect handler can match it.
+    await Promise.resolve()
     await Promise.resolve()
 
     const portConnectListener = vi.mocked(

@@ -223,10 +223,24 @@ vi.mock("@/action/pageAction", () => ({
 }))
 
 vi.mock("@/services/searchUrlAssist", () => ({
-  searchUrlAssistAction: {
+  SEARCH_URL_ASSIST_SERVICE_ID: "gemini",
+  createSearchUrlAssistAction: vi.fn(() => ({
     id: "search-url-assist",
     title: "Search URL Assist",
-  },
+  })),
+}))
+
+vi.mock("@/services/aiPrompt", () => ({
+  findAiService: vi.fn().mockResolvedValue({
+    id: "gemini",
+    name: "Gemini",
+    url: "https://gemini.google.com/app",
+    faviconUrl: "",
+    inputSelectors: [".ql-editor[contenteditable='true']"],
+    submitSelectors: ["[data-test-id='send-button-container'] button"],
+    copySelectors: ["copy-button button"],
+    selectorType: "css",
+  }),
 }))
 
 // Mock lib/utils
