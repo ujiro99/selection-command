@@ -1,5 +1,12 @@
 import { Storage, LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY } from "./storage"
-import { isDebug, isE2E, APP_ID, VERSION, SCREEN } from "@/const"
+import {
+  isDebug,
+  isE2E,
+  APP_ID,
+  VERSION,
+  SCREEN,
+  type CommandAnalyticsCategory,
+} from "@/const"
 import { SessionData } from "@/types"
 
 const GA_ENDPOINT = "https://www.google-analytics.com/mp/collect"
@@ -15,23 +22,76 @@ const IS_CI =
 const DISABLE_ANALYTICS = IS_CI || isE2E
 
 export const ANALYTICS_EVENTS = {
-  SELECTION_COMMAND: "selection_command",
+  INSTALLED: "installed",
+  OPTION_SCREEN_OPENED: "option_screen_opened",
+  HUB_SCREEN_OPENED: "hub_screen_opened",
+  COMMAND_CREATE_SEARCH: "command_create_search",
+  COMMAND_CREATE_AIPROMPT: "command_create_aiprompt",
+  COMMAND_CREATE_OTHER: "command_create_other",
+  HUB_ADD_SEARCH: "hub_add_search",
+  HUB_ADD_AIPROMPT: "hub_add_aiprompt",
+  HUB_ADD_OTHER: "hub_add_other",
+  SELECTION_COMMAND_SEARCH: "selection_command_search",
+  SELECTION_COMMAND_AIPROMPT: "selection_command_aiprompt",
+  SELECTION_COMMAND_OTHER: "selection_command_other",
   LINK_COMMAND: "link_command",
+  FOLDER_CREATE: "folder_create",
+  PAGE_RULE_CREATE: "page_rule_create",
   SHORTCUT: "shortcut",
   SHOW_HELP: "show_help",
   SHOW_REVIEW_URL: "show_review_url",
   OPEN_DIALOG: "open_dialog",
-  COMMAND_ADD: "command_add",
   COMMAND_EDIT: "command_edit",
   COMMAND_REMOVE: "command_remove",
   COMMAND_SHARE: "command_share",
-  COMMAND_HUB_ADD: "command_hub_add",
-  COMMAND_HUB_STAR_ADD: "command_hub_star_add",
-  COMMAND_HUB_STAR_REMOVE: "command_hub_star_remove",
 } as const
 
 export type AnalyticsEventName =
   (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS]
+
+// Per-command-type analytics events, keyed by the coarse category derived
+// from getCommandAnalyticsCategory().
+const COMMAND_CREATE_EVENTS: Record<
+  CommandAnalyticsCategory,
+  AnalyticsEventName
+> = {
+  search: ANALYTICS_EVENTS.COMMAND_CREATE_SEARCH,
+  aiprompt: ANALYTICS_EVENTS.COMMAND_CREATE_AIPROMPT,
+  other: ANALYTICS_EVENTS.COMMAND_CREATE_OTHER,
+}
+
+const HUB_ADD_EVENTS: Record<CommandAnalyticsCategory, AnalyticsEventName> = {
+  search: ANALYTICS_EVENTS.HUB_ADD_SEARCH,
+  aiprompt: ANALYTICS_EVENTS.HUB_ADD_AIPROMPT,
+  other: ANALYTICS_EVENTS.HUB_ADD_OTHER,
+}
+
+const SELECTION_COMMAND_EVENTS: Record<
+  CommandAnalyticsCategory,
+  AnalyticsEventName
+> = {
+  search: ANALYTICS_EVENTS.SELECTION_COMMAND_SEARCH,
+  aiprompt: ANALYTICS_EVENTS.SELECTION_COMMAND_AIPROMPT,
+  other: ANALYTICS_EVENTS.SELECTION_COMMAND_OTHER,
+}
+
+export function getCommandCreateEvent(
+  category: CommandAnalyticsCategory,
+): AnalyticsEventName {
+  return COMMAND_CREATE_EVENTS[category]
+}
+
+export function getHubAddEvent(
+  category: CommandAnalyticsCategory,
+): AnalyticsEventName {
+  return HUB_ADD_EVENTS[category]
+}
+
+export function getSelectionCommandEvent(
+  category: CommandAnalyticsCategory,
+): AnalyticsEventName {
+  return SELECTION_COMMAND_EVENTS[category]
+}
 
 // https://developer.chrome.com/docs/extensions/how-to/integrate/google-analytics-4
 
@@ -40,6 +100,8 @@ export async function sendEvent(
   params: any,
   screen = SCREEN.CONTENT_SCRIPT,
 ) {
+  console.debug(`[analytics] sendEvent: ${name}`, params, screen)
+
   // Do not send analytics data if running in CI or e2e build.
   if (DISABLE_ANALYTICS || !MEASUREMENT_ID || !API_SECRET) {
     return

@@ -37,11 +37,14 @@ vi.mock("@/services/settings/settings", () => ({
 
 vi.mock("@/services/analytics", () => ({
   ANALYTICS_EVENTS: {
-    COMMAND_ADD: "command_add",
+    HUB_ADD_SEARCH: "hub_add_search",
+    HUB_ADD_AIPROMPT: "hub_add_aiprompt",
+    HUB_ADD_OTHER: "hub_add_other",
     COMMAND_REMOVE: "command_remove",
   },
   sendEvent: vi.fn(),
   getOrCreateClientId: vi.fn(),
+  getHubAddEvent: vi.fn(() => "hub_add_other"),
 }))
 
 vi.mock("@/const", async (importOriginal) => {

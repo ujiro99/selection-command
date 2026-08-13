@@ -43,7 +43,8 @@ import { PopupPlacementField } from "@/components/option/field/PopupPlacementFie
 import { PopupPlacement } from "@/services/option/defaultSettings"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT } from "@/const"
+import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT, SCREEN } from "@/const"
 import { e2a, cn, scrollToSelector } from "@/lib/utils"
 import type { PageRule, PopupPlacementOrInherit } from "@/types"
 import { popupPlacementSchema } from "@/types/schema"
@@ -234,6 +235,7 @@ export const PageRuleList = ({
     )
     if (index === -1) {
       pageRuleArray.append({ ...rule, createdAt: Date.now() })
+      sendEvent(ANALYTICS_EVENTS.PAGE_RULE_CREATE, {}, SCREEN.OPTION)
     } else {
       const existingCreatedAt = pageRuleArray.fields[index].createdAt
       pageRuleArray.update(index, { ...rule, createdAt: existingCreatedAt })

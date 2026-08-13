@@ -1,6 +1,6 @@
 import type { ExecuteCommandParams } from "@/types"
-import { OPEN_MODE } from "@/const"
-import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import { OPEN_MODE, getCommandAnalyticsCategory } from "@/const"
+import { sendEvent, getSelectionCommandEvent } from "@/services/analytics"
 import { resolveCommandSource } from "@/services/commandSource"
 
 export async function executeAction({
@@ -36,7 +36,7 @@ export async function executeAction({
 
   const { sourceType, sourceId } = resolveCommandSource(command)
 
-  sendEvent(ANALYTICS_EVENTS.SELECTION_COMMAND, {
+  sendEvent(getSelectionCommandEvent(getCommandAnalyticsCategory(mode)), {
     event_label: mode,
     command_id: command.id,
     source_type: sourceType,

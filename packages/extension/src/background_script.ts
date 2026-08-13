@@ -440,6 +440,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     // Initialize default settings on install
     if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
       await Settings.reset()
+      sendEvent(ANALYTICS_EVENTS.INSTALLED, {}, SCREEN.SERVICE_WORKER)
     }
 
     await ContextMenu.init()

@@ -35,7 +35,7 @@ describe("executeAction", () => {
     })
 
     expect(sendEvent).toHaveBeenCalledWith(
-      ANALYTICS_EVENTS.SELECTION_COMMAND,
+      ANALYTICS_EVENTS.SELECTION_COMMAND_SEARCH,
       expect.objectContaining({
         command_id: "cmd-1",
         source_type: COMMAND_SOURCE_TYPE.HUB_COMMUNITY,
@@ -61,7 +61,7 @@ describe("executeAction", () => {
     })
 
     expect(sendEvent).toHaveBeenCalledWith(
-      ANALYTICS_EVENTS.SELECTION_COMMAND,
+      ANALYTICS_EVENTS.SELECTION_COMMAND_SEARCH,
       expect.objectContaining({
         command_id: "cmd-2",
         source_type: COMMAND_SOURCE_TYPE.UNKNOWN,
