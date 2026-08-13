@@ -3,7 +3,6 @@ import {
   ANALYTICS_EVENTS,
   getCommandCreateEvent,
   getHubAddEvent,
-  getSelectionCommandEvent,
 } from "@/services/analytics"
 
 describe("getCommandCreateEvent", () => {
@@ -23,15 +22,5 @@ describe("getHubAddEvent", () => {
     ["other", ANALYTICS_EVENTS.HUB_ADD_OTHER],
   ] as const)("maps category %s to %s", (category, expected) => {
     expect(getHubAddEvent(category)).toBe(expected)
-  })
-})
-
-describe("getSelectionCommandEvent", () => {
-  it.each([
-    ["search", ANALYTICS_EVENTS.SELECTION_COMMAND_SEARCH],
-    ["aiprompt", ANALYTICS_EVENTS.SELECTION_COMMAND_AIPROMPT],
-    ["other", ANALYTICS_EVENTS.SELECTION_COMMAND_OTHER],
-  ] as const)("maps category %s to %s", (category, expected) => {
-    expect(getSelectionCommandEvent(category)).toBe(expected)
   })
 })

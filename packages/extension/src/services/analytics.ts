@@ -31,9 +31,11 @@ export const ANALYTICS_EVENTS = {
   HUB_ADD_SEARCH: "hub_add_search",
   HUB_ADD_AIPROMPT: "hub_add_aiprompt",
   HUB_ADD_OTHER: "hub_add_other",
-  SELECTION_COMMAND_SEARCH: "selection_command_search",
-  SELECTION_COMMAND_AIPROMPT: "selection_command_aiprompt",
-  SELECTION_COMMAND_OTHER: "selection_command_other",
+  // Kept as a single event (not split by search/aiprompt/other) to stay
+  // compatible with the execution-count aggregation on the Selection
+  // Command Hub side, which still reads the unsplit "selection_command"
+  // event name.
+  SELECTION_COMMAND: "selection_command",
   LINK_COMMAND: "link_command",
   FOLDER_CREATE: "folder_create",
   PAGE_RULE_CREATE: "page_rule_create",
@@ -66,15 +68,6 @@ const HUB_ADD_EVENTS: Record<CommandAnalyticsCategory, AnalyticsEventName> = {
   other: ANALYTICS_EVENTS.HUB_ADD_OTHER,
 }
 
-const SELECTION_COMMAND_EVENTS: Record<
-  CommandAnalyticsCategory,
-  AnalyticsEventName
-> = {
-  search: ANALYTICS_EVENTS.SELECTION_COMMAND_SEARCH,
-  aiprompt: ANALYTICS_EVENTS.SELECTION_COMMAND_AIPROMPT,
-  other: ANALYTICS_EVENTS.SELECTION_COMMAND_OTHER,
-}
-
 export function getCommandCreateEvent(
   category: CommandAnalyticsCategory,
 ): AnalyticsEventName {
@@ -85,12 +78,6 @@ export function getHubAddEvent(
   category: CommandAnalyticsCategory,
 ): AnalyticsEventName {
   return HUB_ADD_EVENTS[category]
-}
-
-export function getSelectionCommandEvent(
-  category: CommandAnalyticsCategory,
-): AnalyticsEventName {
-  return SELECTION_COMMAND_EVENTS[category]
 }
 
 // https://developer.chrome.com/docs/extensions/how-to/integrate/google-analytics-4
