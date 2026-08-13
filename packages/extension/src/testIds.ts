@@ -23,4 +23,8 @@ export const TEST_IDS = {
   pageActionStep: (type: string) => `page-action-step-${type}`,
   selectTrigger: (name: string) => `select-trigger-${name.replace(/\./g, "-")}`,
   selectItem: (name: string) => `select-item-${name.replace(/\./g, "-")}`,
+  pageRuleAddButton: "page-rule-add-button",
+  pageRuleUrlPatternInput: "page-rule-url-pattern-input",
+  pageRuleSaveButton: "page-rule-save-button",
+  pageRuleEditButton: "page-rule-edit-button",
 }

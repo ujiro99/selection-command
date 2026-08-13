@@ -48,6 +48,7 @@ import { POPUP_ENABLED, LINK_COMMAND_ENABLED, INHERIT, SCREEN } from "@/const"
 import { e2a, cn, scrollToSelector } from "@/lib/utils"
 import type { PageRule, PopupPlacementOrInherit } from "@/types"
 import { popupPlacementSchema } from "@/types/schema"
+import { TEST_IDS } from "@/testIds"
 
 import css from "@/components/ui/collapsible.module.css"
 
@@ -264,6 +265,7 @@ export const PageRuleList = ({
               className="px-2 rounded-md transition font-mono hover:bg-gray-100 hover:mr-1 hover:scale-[110%] group"
               onClick={() => setDialogOpen(true)}
               ref={addButtonRef}
+              data-testid={TEST_IDS.pageRuleAddButton}
             >
               <BookOpen />
               {t("pageRules")
@@ -363,6 +365,7 @@ export const PageRuleList = ({
                     </div>
                     <div className="flex gap-0.5 items-center">
                       <EditButton
+                        data-testid={TEST_IDS.pageRuleEditButton}
                         onClick={() => {
                           editorRef.current = field
                           setDialogOpen(true)
@@ -415,6 +418,12 @@ export const PageRuleDialog = ({
   const popupPlacement = watch("popupPlacement")
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false)
 
+  const urlPatternInputProps = {
+    type: "string",
+    "data-testid": TEST_IDS.pageRuleUrlPatternInput,
+    ...register("urlPattern", {}),
+  }
+
   const handlePopupPlacementSubmit = (
     data: z.infer<typeof popupPlacementSchema>,
   ) => {
@@ -459,10 +468,7 @@ export const PageRuleDialog = ({
                 control={form.control}
                 name="urlPattern"
                 formLabel={t("urlPattern")}
-                inputProps={{
-                  type: "string",
-                  ...register("urlPattern", {}),
-                }}
+                inputProps={urlPatternInputProps}
               />
               <SelectField
                 control={form.control}
@@ -533,6 +539,7 @@ export const PageRuleDialog = ({
             <Button
               size="lg"
               type="button"
+              data-testid={TEST_IDS.pageRuleSaveButton}
               onClick={form.handleSubmit((data) => {
                 onSubmit(data as PageRule)
                 onOpenChange(false)

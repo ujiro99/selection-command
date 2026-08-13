@@ -567,3 +567,56 @@ describe("Popup Auto-Close Delay", () => {
     expect(mockRemoveWindow).not.toHaveBeenCalled()
   })
 })
+
+describe("onInstalled: installed analytics event", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it("IN-01: sends the installed event when reason is install", async () => {
+    const mockSendEvent = vi.fn()
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: mockSendEvent,
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    expect(listenerCalls.length).toBeGreaterThan(0)
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.INSTALL,
+    })
+
+    expect(mockSendEvent).toHaveBeenCalledWith("installed", {}, "ServiceWorker")
+  })
+
+  it("IN-02: does not send the installed event when reason is update", async () => {
+    const mockSendEvent = vi.fn()
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: mockSendEvent,
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.UPDATE,
+    })
+
+    expect(mockSendEvent).not.toHaveBeenCalledWith(
+      "installed",
+      expect.anything(),
+      expect.anything(),
+    )
+  })
+})
