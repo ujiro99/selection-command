@@ -7,7 +7,7 @@ import {
   SCREEN,
   type CommandAnalyticsCategory,
 } from "@/const"
-import { SessionData } from "@/types"
+import { SessionData, HubUser } from "@/types"
 
 const GA_ENDPOINT = "https://www.google-analytics.com/mp/collect"
 const GA_DEBUG_ENDPOINT = "https://www.google-analytics.com/debug/mp/collect"
@@ -96,12 +96,17 @@ export async function sendEvent(
 
   const endpoint = isDebug ? GA_DEBUG_ENDPOINT : GA_ENDPOINT
   try {
+    const [{ clientId, userId }, sessionId] = await Promise.all([
+      getClientIdAndUserId(),
+      getOrCreateSessionId(),
+    ])
     const res = await fetch(
       `${endpoint}?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`,
       {
         method: "POST",
         body: JSON.stringify({
-          client_id: await getOrCreateClientId(),
+          client_id: clientId,
+          ...(userId ? { user_id: userId } : {}),
           events: [
             {
               name: name,
@@ -109,7 +114,7 @@ export async function sendEvent(
                 page_title: APP_ID,
                 app_version: VERSION,
                 screen: screen,
-                session_id: await getOrCreateSessionId(),
+                session_id: sessionId,
                 engagement_time_msec: DEFAULT_ENGAGEMENT_TIME_IN_MSEC,
                 ...params,
               },
@@ -124,6 +129,25 @@ export async function sendEvent(
   } catch (e) {
     console.warn(e)
   }
+}
+
+// Reads CLIENT_ID and HUB_USER in a single chrome.storage.local.get call
+// instead of two separate round trips, generating a client_id on first use.
+async function getClientIdAndUserId(): Promise<{
+  clientId: string
+  userId?: string
+}> {
+  const result = await chrome.storage.local.get([
+    LOCAL_STORAGE_KEY.CLIENT_ID,
+    LOCAL_STORAGE_KEY.HUB_USER,
+  ])
+  let clientId = result[LOCAL_STORAGE_KEY.CLIENT_ID] as string | undefined
+  if (!clientId) {
+    clientId = crypto.randomUUID()
+    await Storage.set(LOCAL_STORAGE_KEY.CLIENT_ID, clientId)
+  }
+  const hubUser = result[LOCAL_STORAGE_KEY.HUB_USER] as HubUser | null
+  return { clientId, userId: hubUser?.id || undefined }
 }
 
 export async function getOrCreateClientId() {

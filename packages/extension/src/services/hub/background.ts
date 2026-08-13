@@ -530,6 +530,7 @@ export async function handleSetSession(
       return
     }
     const hubUser: HubUser = {
+      id: data.user.id,
       name: data.user.email ?? "",
       image: "",
     }

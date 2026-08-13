@@ -753,7 +753,7 @@ describe("onMessageExternal - RequestInstalledCommand routing", () => {
 describe("handleSetSession", () => {
   it("SS-01: sets session, stores HubUser, and responds with result:true", async () => {
     mockSetSession.mockResolvedValue({
-      data: { user: { email: "user@example.com" } },
+      data: { user: { id: "user-id-123", email: "user@example.com" } },
       error: null,
     })
     const sendResponse = vi.fn()
@@ -764,6 +764,7 @@ describe("handleSetSession", () => {
       refresh_token: "refresh-tok",
     })
     expect(Storage.set).toHaveBeenCalledWith(LOCAL_STORAGE_KEY.HUB_USER, {
+      id: "user-id-123",
       name: "user@example.com",
       image: "",
     })
