@@ -22,7 +22,11 @@ import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import {
+  ANALYTICS_EVENTS,
+  sendEvent,
+  getOrCreateClientId,
+} from "@/services/analytics"
 import * as HubBackground from "@/services/hub/background"
 
 import { importIf } from "@import-if"
@@ -452,8 +456,11 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
       details.reason === chrome.runtime.OnInstalledReason.UPDATE
     ) {
-      // Set uninstall survey URL
-      chrome.runtime.setUninstallURL(`${NEW_HUB_URL}/uninstall`)
+      // Set uninstall survey URL with client_id for analysis
+      const clientId = await getOrCreateClientId()
+      chrome.runtime.setUninstallURL(
+        `${NEW_HUB_URL}/uninstall?client_id=${clientId}`,
+      )
     }
 
     // Check for daily backup on startup
