@@ -288,16 +288,16 @@ global.chrome = {
   },
   runtime: {
     sendMessage: vi.fn(),
-    onInstalled: {
-      addListener: vi.fn(),
-    },
+    setUninstallURL: vi.fn(),
     OnInstalledReason: {
       INSTALL: "install",
       UPDATE: "update",
       CHROME_UPDATE: "chrome_update",
       SHARED_MODULE_UPDATE: "shared_module_update",
     },
-    setUninstallURL: vi.fn(),
+    onInstalled: {
+      addListener: vi.fn(),
+    },
     onStartup: {
       addListener: vi.fn(),
     },
