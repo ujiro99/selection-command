@@ -33,7 +33,6 @@ export const COMMAND_URLS: UrlEntry[] = [
   { title: "AliExpress", locale: "es", searchUrl: "https://es.aliexpress.com/w/wholesale-%s.html" },
   { title: "Buscar comandos en Hub", locale: "es", searchUrl: "https://selection-command.com/es?q=%pageUrl" },
   { title: "Pesquisar comandos no Hub", locale: "pt-br", searchUrl: "https://selection-command.com/pt-BR?q=%pageUrl" },
-  { title: "OLX", locale: "pt", searchUrl: "https://www.olx.pt/ads/q-%s/" },
   { title: "Pesquisar comandos no Hub", locale: "pt", searchUrl: "https://selection-command.com/pt-PT?q=%pageUrl" },
   { title: "Hub पर कमांड खोजें", locale: "hi", searchUrl: "https://selection-command.com/hi?q=%pageUrl" },
   { title: "Tokopedia", locale: "id", searchUrl: "https://www.tokopedia.com/search?st=product&q=%s" },
