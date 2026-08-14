@@ -9,6 +9,7 @@ import {
 import type { Sender } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SubmitCommandInput } from "@/services/hubShare"
+import { isHubRegistered } from "@/services/hubShare"
 import type { HubUser, CommandFromHub } from "@/types"
 import { Settings } from "@/services/settings/settings"
 import {
@@ -80,9 +81,7 @@ export const shareCommandToHub = (
 
   const share = async () => {
     try {
-      const registered = await Storage.get<boolean>(
-        LOCAL_STORAGE_KEY.HUB_REGISTERED,
-      )
+      const registered = await isHubRegistered()
       if (!registered) {
         // Users who have never signed in to the hub have no account to
         // share into yet. Send them to sign up instead of the dashboard,

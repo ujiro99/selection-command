@@ -23,6 +23,7 @@ vi.mock("@/services/storage", () => ({
     set: vi.fn(),
     get: vi.fn(),
     updateCommands: vi.fn(),
+    addListener: vi.fn(),
   },
   LOCAL_STORAGE_KEY: {
     HUB_USER: "hubUser",
@@ -991,6 +992,10 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
+    // Two ticks: one for the HUB_REGISTERED check (via isHubRegistered's own
+    // await), one for the tab-creation await that assigns tabId before the
+    // port-connect handler can match it.
+    await Promise.resolve()
     await Promise.resolve()
 
     const portConnectListener = vi.mocked(
@@ -1016,6 +1021,10 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
+    // Two ticks: one for the HUB_REGISTERED check (via isHubRegistered's own
+    // await), one for the tab-creation await that assigns tabId before the
+    // port-connect handler can match it.
+    await Promise.resolve()
     await Promise.resolve()
 
     const portConnectListener = vi.mocked(
@@ -1042,8 +1051,11 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
-    // Two ticks: one for the HUB_REGISTERED check, one for the tab-creation
-    // await that assigns tabId before the port-connect handler can match it.
+    // Three ticks: two for the HUB_REGISTERED check (isHubRegistered's own
+    // await plus the async-function-return microtask), one for the
+    // tab-creation await that assigns tabId before the port-connect handler
+    // can match it.
+    await Promise.resolve()
     await Promise.resolve()
     await Promise.resolve()
 
@@ -1089,8 +1101,11 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
-    // Two ticks: one for the HUB_REGISTERED check, one for the tab-creation
-    // await that assigns tabId before the port-connect handler can match it.
+    // Three ticks: two for the HUB_REGISTERED check (isHubRegistered's own
+    // await plus the async-function-return microtask), one for the
+    // tab-creation await that assigns tabId before the port-connect handler
+    // can match it.
+    await Promise.resolve()
     await Promise.resolve()
     await Promise.resolve()
 
@@ -1142,8 +1157,11 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
-    // Two ticks: one for the HUB_REGISTERED check, one for the tab-creation
-    // await that assigns tabId before the port-connect handler can match it.
+    // Three ticks: two for the HUB_REGISTERED check (isHubRegistered's own
+    // await plus the async-function-return microtask), one for the
+    // tab-creation await that assigns tabId before the port-connect handler
+    // can match it.
+    await Promise.resolve()
     await Promise.resolve()
     await Promise.resolve()
 
@@ -1197,8 +1215,11 @@ describe("shareCommandToHub", () => {
     const response = vi.fn()
     shareCommandToHub(param, sender, response)
 
-    // Two ticks: one for the HUB_REGISTERED check, one for the tab-creation
-    // await that assigns tabId before the port-connect handler can match it.
+    // Three ticks: two for the HUB_REGISTERED check (isHubRegistered's own
+    // await plus the async-function-return microtask), one for the
+    // tab-creation await that assigns tabId before the port-connect handler
+    // can match it.
+    await Promise.resolve()
     await Promise.resolve()
     await Promise.resolve()
 

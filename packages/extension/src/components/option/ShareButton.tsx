@@ -7,9 +7,9 @@ import {
   shareCommandToHub,
   getHubLocale,
   isHubShareable,
+  isHubRegistered,
 } from "@/services/hubShare"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
-import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import { NEW_HUB_URL, SCREEN } from "@/const"
 import type { SelectionCommand } from "@/types"
 import { TEST_IDS } from "@/testIds"
@@ -64,9 +64,7 @@ export const ShareButton = ({
     // sign-up page instead (see shareCommandToHub in services/hub/background.ts);
     // nothing is actually shared yet, so leave the button idle and skip
     // the share analytics event for this case.
-    const registered = await Storage.get<boolean>(
-      LOCAL_STORAGE_KEY.HUB_REGISTERED,
-    )
+    const registered = await isHubRegistered()
     if (!registered) {
       setStatus("idle")
       return

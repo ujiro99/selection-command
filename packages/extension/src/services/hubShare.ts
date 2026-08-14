@@ -9,6 +9,7 @@ import {
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { isAiPromptCommand, isPageActionCommand } from "@/lib/utils"
 import { Ipc, BgCommand } from "@/services/ipc"
+import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SelectionCommand, SearchCommand } from "@/types"
 
 const HUB_SHAREABLE_SOURCE_TYPES = new Set([
@@ -90,6 +91,16 @@ export function isHubShareable(command: SelectionCommand): boolean {
       command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN,
     )
   )
+}
+
+/**
+ * Determines whether the user has ever signed in to the Hub.
+ * Used both to decide the ShareButton's success/idle display and to decide
+ * whether shareCommandToHub() opens the dashboard or the sign-up page,
+ * so keep this the single source of truth for that check.
+ */
+export async function isHubRegistered(): Promise<boolean> {
+  return !!(await Storage.get<boolean>(LOCAL_STORAGE_KEY.HUB_REGISTERED))
 }
 
 // ---- Share main logic ------------------------------------------------------
