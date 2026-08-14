@@ -456,11 +456,18 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
       details.reason === chrome.runtime.OnInstalledReason.UPDATE
     ) {
-      // Set uninstall survey URL with client_id for analysis
-      const clientId = await getOrCreateClientId()
-      chrome.runtime.setUninstallURL(
-        `${NEW_HUB_URL}/uninstall?client_id=${clientId}`,
-      )
+      // Set uninstall survey URL with client_id for analysis.
+      // Wrapped in its own try/catch so a failure here (e.g. storage quota
+      // error) does not skip the backup checks below.
+      try {
+        const clientId = await getOrCreateClientId()
+        chrome.runtime.setUninstallURL(
+          `${NEW_HUB_URL}/uninstall?client_id=${clientId}`,
+        )
+      } catch (error) {
+        console.error("Failed to set uninstall URL with client_id:", error)
+        chrome.runtime.setUninstallURL(`${NEW_HUB_URL}/uninstall`)
+      }
     }
 
     // Check for daily backup on startup

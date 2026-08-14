@@ -276,9 +276,21 @@ global.chrome = {
       removeListener: vi.fn(),
     },
   },
-  storage: defaultStorageMocks,
+  storage: {
+    ...defaultStorageMocks,
+    session: {
+      setAccessLevel: vi.fn(),
+    },
+  },
   runtime: {
     sendMessage: vi.fn(),
+    setUninstallURL: vi.fn(),
+    OnInstalledReason: {
+      INSTALL: "install",
+      UPDATE: "update",
+      CHROME_UPDATE: "chrome_update",
+      SHARED_MODULE_UPDATE: "shared_module_update",
+    },
     onInstalled: {
       addListener: vi.fn(),
     },
