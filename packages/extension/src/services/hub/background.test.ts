@@ -37,11 +37,14 @@ vi.mock("@/services/settings/settings", () => ({
 
 vi.mock("@/services/analytics", () => ({
   ANALYTICS_EVENTS: {
-    COMMAND_ADD: "command_add",
+    HUB_ADD_SEARCH: "hub_add_search",
+    HUB_ADD_AIPROMPT: "hub_add_aiprompt",
+    HUB_ADD_OTHER: "hub_add_other",
     COMMAND_REMOVE: "command_remove",
   },
   sendEvent: vi.fn(),
   getOrCreateClientId: vi.fn(),
+  getHubAddEvent: vi.fn(() => "hub_add_other"),
 }))
 
 vi.mock("@/const", async (importOriginal) => {
@@ -750,7 +753,7 @@ describe("onMessageExternal - RequestInstalledCommand routing", () => {
 describe("handleSetSession", () => {
   it("SS-01: sets session, stores HubUser, and responds with result:true", async () => {
     mockSetSession.mockResolvedValue({
-      data: { user: { email: "user@example.com" } },
+      data: { user: { id: "user-id-123", email: "user@example.com" } },
       error: null,
     })
     const sendResponse = vi.fn()
@@ -761,6 +764,7 @@ describe("handleSetSession", () => {
       refresh_token: "refresh-tok",
     })
     expect(Storage.set).toHaveBeenCalledWith(LOCAL_STORAGE_KEY.HUB_USER, {
+      id: "user-id-123",
       name: "user@example.com",
       image: "",
     })

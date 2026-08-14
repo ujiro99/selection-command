@@ -96,11 +96,15 @@ vi.mock("@/services/settings/settings", () => ({
 vi.mock("@/services/analytics", () => ({
   ANALYTICS_EVENTS: {
     OPEN_DIALOG: "open_dialog",
-    COMMAND_ADD: "command_add",
+    COMMAND_CREATE_SEARCH: "command_create_search",
+    COMMAND_CREATE_AIPROMPT: "command_create_aiprompt",
+    COMMAND_CREATE_OTHER: "command_create_other",
     COMMAND_EDIT: "command_edit",
     COMMAND_REMOVE: "command_remove",
+    FOLDER_CREATE: "folder_create",
   },
   sendEvent: vi.fn(),
+  getCommandCreateEvent: vi.fn(() => "command_create_other"),
 }))
 
 const mockIsHubShareable = vi.mocked(isHubShareable)

@@ -15,6 +15,7 @@ import {
   ANALYTICS_EVENTS,
   sendEvent,
   getOrCreateClientId,
+  getHubAddEvent,
 } from "@/services/analytics"
 import { PopupOption } from "@/services/option/defaultSettings"
 import {
@@ -366,7 +367,7 @@ export async function handleAddCommand(
     await Settings.addCommands([cmd])
     console.debug("[handleAddCommand] Saved command id:", cmd.id)
     await sendEvent(
-      ANALYTICS_EVENTS.COMMAND_ADD,
+      getHubAddEvent(cmd.openMode),
       {
         event_label: cmd.openMode,
         source_type: sourceInfo.sourceType,
@@ -528,6 +529,7 @@ export async function handleSetSession(
       return
     }
     const hubUser: HubUser = {
+      id: data.user.id,
       name: data.user.email ?? "",
       image: "",
     }

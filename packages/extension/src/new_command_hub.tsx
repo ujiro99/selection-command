@@ -1,11 +1,5 @@
 import { createRoot } from "react-dom/client"
-import { useCommandHubBridge } from "@/hooks/useCommandHubBridge"
-
-/** Minimal React component that activates the hub bridge hook. */
-function NewCommandHubBridge(): JSX.Element {
-  useCommandHubBridge()
-  return <></>
-}
+import { NewCommandHubBridge } from "@/components/NewCommandHubBridge"
 
 const rootDiv = document.createElement("div")
 document.body.appendChild(rootDiv)
