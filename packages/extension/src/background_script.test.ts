@@ -569,15 +569,70 @@ describe("Popup Auto-Close Delay", () => {
   })
 })
 
+describe("onInstalled: installed analytics event", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it("IN-01: sends the installed event when reason is install", async () => {
+    const mockSendEvent = vi.fn()
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: mockSendEvent,
+      getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    expect(listenerCalls.length).toBeGreaterThan(0)
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.INSTALL,
+    })
+
+    expect(mockSendEvent).toHaveBeenCalledWith("installed", {}, "ServiceWorker")
+  })
+
+  it("IN-02: does not send the installed event when reason is update", async () => {
+    const mockSendEvent = vi.fn()
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: mockSendEvent,
+      getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.UPDATE,
+    })
+
+    expect(mockSendEvent).not.toHaveBeenCalledWith(
+      "installed",
+      expect.anything(),
+      expect.anything(),
+    )
+  })
+})
+
 describe("Uninstall URL (onInstalled)", () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it("IN-01: should set uninstall URL with client_id on install", async () => {
+  it("UN-01: should set uninstall URL with client_id on install", async () => {
     const mockGetOrCreateClientId = vi.fn().mockResolvedValue("test-client-id")
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: {},
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
       sendEvent: vi.fn(),
       getOrCreateClientId: mockGetOrCreateClientId,
     }))
@@ -601,7 +656,7 @@ describe("Uninstall URL (onInstalled)", () => {
     )
   })
 
-  it("IN-02: should fall back to the uninstall URL without client_id when getOrCreateClientId fails, without skipping the rest of initialization", async () => {
+  it("UN-02: should fall back to the uninstall URL without client_id when getOrCreateClientId fails, without skipping the rest of initialization", async () => {
     const consoleErrorSpy = vi
       .spyOn(console, "error")
       .mockImplementation(() => {})
@@ -609,7 +664,7 @@ describe("Uninstall URL (onInstalled)", () => {
       .fn()
       .mockRejectedValue(new Error("Quota exceeded"))
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: {},
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
       sendEvent: vi.fn(),
       getOrCreateClientId: mockGetOrCreateClientId,
     }))

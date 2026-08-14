@@ -26,7 +26,11 @@ import {
   FoldersSchemaType,
 } from "@/types/schema"
 
-import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import {
+  ANALYTICS_EVENTS,
+  sendEvent,
+  getCommandCreateEvent,
+} from "@/services/analytics"
 import { SCREEN, COMMAND_TYPE, OPEN_MODE_TYPE_MAP } from "@/const"
 import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
@@ -237,7 +241,7 @@ export const CommandList = ({ control }: CommandListProps) => {
       } else {
         commandArray.append(data as CommandSchemaType)
         sendEvent(
-          ANALYTICS_EVENTS.COMMAND_ADD,
+          getCommandCreateEvent(data.openMode),
           {
             event_label: data.openMode,
           },
@@ -268,6 +272,7 @@ export const CommandList = ({ control }: CommandListProps) => {
         folderArray.update(idx, data)
       } else {
         folderArray.append(data)
+        sendEvent(ANALYTICS_EVENTS.FOLDER_CREATE, {}, SCREEN.OPTION)
       }
     }
   }

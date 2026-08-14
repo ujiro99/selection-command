@@ -279,6 +279,10 @@ global.chrome = {
   storage: {
     ...defaultStorageMocks,
     session: {
+      get: vi.fn(),
+      set: vi.fn(),
+      remove: vi.fn(),
+      clear: vi.fn(),
       setAccessLevel: vi.fn(),
     },
   },

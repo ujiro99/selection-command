@@ -215,6 +215,7 @@ export type SessionData = {
 }
 
 export type HubUser = {
+  id: string
   name: string
   image: string
 }
