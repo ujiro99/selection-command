@@ -5,7 +5,6 @@ import {
   OPTION_PAGE_PATH,
   COMMAND_SOURCE_TYPE,
   SCREEN,
-  getCommandAnalyticsCategory,
 } from "@/const"
 import type { Sender } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
@@ -368,7 +367,7 @@ export async function handleAddCommand(
     await Settings.addCommands([cmd])
     console.debug("[handleAddCommand] Saved command id:", cmd.id)
     await sendEvent(
-      getHubAddEvent(getCommandAnalyticsCategory(cmd.openMode)),
+      getHubAddEvent(cmd.openMode),
       {
         event_label: cmd.openMode,
         source_type: sourceInfo.sourceType,

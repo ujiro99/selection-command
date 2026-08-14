@@ -40,19 +40,7 @@ export const OPEN_MODE_TYPE_MAP = {
   [OPEN_MODE.GET_TEXT_STYLES]: COMMAND_TYPE.GET_TEXT_STYLES,
   [OPEN_MODE.OPTION]: COMMAND_TYPE.OPTION,
   [OPEN_MODE.ADD_PAGE_RULE]: COMMAND_TYPE.OPTION,
-} as const
-
-// Coarse-grained category used to group per-command-type analytics events.
-export type CommandAnalyticsCategory = "search" | "aiprompt" | "other"
-
-export function getCommandAnalyticsCategory(
-  openMode: OPEN_MODE,
-): CommandAnalyticsCategory {
-  const type = OPEN_MODE_TYPE_MAP[openMode]
-  if (type === COMMAND_TYPE.SEARCH) return "search"
-  if (type === COMMAND_TYPE.AI_PROMPT) return "aiprompt"
-  return "other"
-}
+} as const satisfies Record<OPEN_MODE, COMMAND_TYPE>
 
 // Reverse mapping: COMMAND_TYPE -> OPEN_MODE[]
 export const COMMAND_TYPE_OPEN_MODES_MAP = {

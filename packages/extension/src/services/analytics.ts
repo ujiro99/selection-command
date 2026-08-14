@@ -5,7 +5,9 @@ import {
   APP_ID,
   VERSION,
   SCREEN,
-  type CommandAnalyticsCategory,
+  OPEN_MODE,
+  OPEN_MODE_TYPE_MAP,
+  COMMAND_TYPE,
 } from "@/const"
 import { SessionData, HubUser } from "@/types"
 
@@ -51,6 +53,18 @@ export const ANALYTICS_EVENTS = {
 export type AnalyticsEventName =
   (typeof ANALYTICS_EVENTS)[keyof typeof ANALYTICS_EVENTS]
 
+// Coarse-grained category used to group per-command-type analytics events.
+type CommandAnalyticsCategory = "search" | "aiprompt" | "other"
+
+function getCommandAnalyticsCategory(
+  openMode: OPEN_MODE,
+): CommandAnalyticsCategory {
+  const type = OPEN_MODE_TYPE_MAP[openMode]
+  if (type === COMMAND_TYPE.SEARCH) return "search"
+  if (type === COMMAND_TYPE.AI_PROMPT) return "aiprompt"
+  return "other"
+}
+
 // Per-command-type analytics events, keyed by the coarse category derived
 // from getCommandAnalyticsCategory().
 const COMMAND_CREATE_EVENTS: Record<
@@ -68,17 +82,20 @@ const HUB_ADD_EVENTS: Record<CommandAnalyticsCategory, AnalyticsEventName> = {
   other: ANALYTICS_EVENTS.HUB_ADD_OTHER,
 }
 
-export function getCommandCreateEvent(
-  category: CommandAnalyticsCategory,
-): AnalyticsEventName {
-  return COMMAND_CREATE_EVENTS[category]
+// Wraps a category->event lookup table into a getter keyed directly by
+// OPEN_MODE, so callers don't need to know about CommandAnalyticsCategory.
+function createCategoryEventGetter(
+  events: Record<CommandAnalyticsCategory, AnalyticsEventName>,
+) {
+  return (openMode: OPEN_MODE): AnalyticsEventName =>
+    events[getCommandAnalyticsCategory(openMode)]
 }
 
-export function getHubAddEvent(
-  category: CommandAnalyticsCategory,
-): AnalyticsEventName {
-  return HUB_ADD_EVENTS[category]
-}
+export const getCommandCreateEvent = createCategoryEventGetter(
+  COMMAND_CREATE_EVENTS,
+)
+
+export const getHubAddEvent = createCategoryEventGetter(HUB_ADD_EVENTS)
 
 // https://developer.chrome.com/docs/extensions/how-to/integrate/google-analytics-4
 
@@ -121,6 +138,7 @@ export async function sendEvent(
             },
           ],
         }),
+        keepalive: true,
       },
     )
     if (isDebug) {

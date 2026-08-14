@@ -31,12 +31,7 @@ import {
   sendEvent,
   getCommandCreateEvent,
 } from "@/services/analytics"
-import {
-  SCREEN,
-  COMMAND_TYPE,
-  OPEN_MODE_TYPE_MAP,
-  getCommandAnalyticsCategory,
-} from "@/const"
+import { SCREEN, COMMAND_TYPE, OPEN_MODE_TYPE_MAP } from "@/const"
 import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
 // Imported services and hooks
@@ -246,7 +241,7 @@ export const CommandList = ({ control }: CommandListProps) => {
       } else {
         commandArray.append(data as CommandSchemaType)
         sendEvent(
-          getCommandCreateEvent(getCommandAnalyticsCategory(data.openMode)),
+          getCommandCreateEvent(data.openMode),
           {
             event_label: data.openMode,
           },

@@ -109,9 +109,9 @@ vi.mock("@/services/settings/settings", () => ({
   },
 }))
 
-// Use the real getCommandCreateEvent/getCommandAnalyticsCategory mapping so
-// this test also verifies CommandList wires the correct category-specific
-// event, while keeping the network-calling sendEvent stubbed out.
+// Use the real getCommandCreateEvent mapping so this test also verifies
+// CommandList wires the correct category-specific event, while keeping the
+// network-calling sendEvent stubbed out.
 vi.mock("@/services/analytics", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/services/analytics")>()
   return {
