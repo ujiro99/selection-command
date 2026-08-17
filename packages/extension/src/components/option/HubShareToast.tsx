@@ -4,7 +4,7 @@ import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 import { SCREEN } from "@/const"
-import { shareCommandToHub } from "@/services/hubShare"
+import { shareCommandToHub, isHubRegistered } from "@/services/hubShare"
 import type { SelectionCommand } from "@/types"
 
 // Delay before showing the toast so it doesn't overlap the dialog's close animation.
@@ -71,15 +71,24 @@ function showHubShareToastNow(
               "flex items-center justify-center gap-2 flex-1 h-9 px-3 rounded-lg transition",
               "text-base text-white border border-sky-600 bg-sky-500 hover:bg-sky-600 font-medium hover:scale-105",
             )}
-            onClick={() => {
+            onClick={async () => {
               shareCommandToHub(command)
-              sendEvent(
-                ANALYTICS_EVENTS.COMMAND_SHARE,
-                {
-                  event_label: "hub-share-toast",
-                },
-                SCREEN.OPTION,
-              )
+
+              // Users who have never signed in to the hub are redirected to
+              // the sign-up page instead (see shareCommandToHub in
+              // services/hub/background.ts); nothing is actually shared yet,
+              // so skip the share analytics event for this case.
+              const registered = await isHubRegistered()
+              if (registered) {
+                sendEvent(
+                  ANALYTICS_EVENTS.COMMAND_SHARE,
+                  {
+                    event_label: "hub-share-toast",
+                  },
+                  SCREEN.OPTION,
+                )
+              }
+
               toast.dismiss(toastId)
               onShown()
             }}
