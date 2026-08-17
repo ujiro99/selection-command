@@ -41,14 +41,20 @@ function showHubShareToastNow(
   toast.custom(
     (toastId) => (
       <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-5 py-4 text-gray-800">
-        <div className="flex flex-col gap-2 items-start mb-4">
+        <div className="flex flex-row gap-2 items-center mb-4">
           <img
-            src="/SelectionCommandHub_new.png"
-            alt="Selection Command Hub"
-            width="260"
-            className="pointer-events-none select-none"
+            src="/party_popper.png"
+            alt="party popper"
+            width="40"
+            className="pointer-events-none select-none animate-popup"
+            style={{ animationDelay: "500ms" }}
           />
-          <span className="text-base">{t("hub_share_toast_message")}</span>
+          <div className="">
+            <span className="text-lg font-bold">
+              {t("hub_share_toast_title")}
+            </span>
+            <span className="text-sm">{t("hub_share_toast_message")}</span>
+          </div>
         </div>
         <div className="flex flex-row gap-3">
           <button

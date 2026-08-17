@@ -1005,8 +1005,11 @@
   "review_request_button": {
     "message": "Tulis Ulasan"
   },
+  "hub_share_toast_title": {
+    "message": "Arahan berjaya dicipta!"
+  },
   "hub_share_toast_message": {
-    "message": "Adakah anda ingin berkongsi arahan ini ke Selection Command Hub?"
+    "message": "Adakah anda ingin berkongsinya ke Selection Command Hub?"
   },
   "hub_share_toast_button": {
     "message": "Kongsi"

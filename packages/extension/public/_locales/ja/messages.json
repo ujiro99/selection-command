@@ -1002,8 +1002,11 @@
   "review_request_button": {
     "message": "レビューする"
   },
+  "hub_share_toast_title": {
+    "message": "コマンドが作成されました！"
+  },
   "hub_share_toast_message": {
-    "message": "コマンドをSelection Command Hubへ共有しませんか？"
+    "message": "Selection Command Hubへ共有してみませんか？"
   },
   "hub_share_toast_button": {
     "message": "共有する"

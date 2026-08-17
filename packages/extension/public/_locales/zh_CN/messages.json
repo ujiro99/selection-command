@@ -1005,8 +1005,11 @@
   "review_request_button": {
     "message": "写评论"
   },
+  "hub_share_toast_title": {
+    "message": "命令已创建！"
+  },
   "hub_share_toast_message": {
-    "message": "要将此命令分享到 Selection Command Hub 吗？"
+    "message": "要将它分享到 Selection Command Hub 吗？"
   },
   "hub_share_toast_button": {
     "message": "分享"

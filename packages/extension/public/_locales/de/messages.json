@@ -1005,8 +1005,11 @@
   "review_request_button": {
     "message": "Bewertung schreiben"
   },
+  "hub_share_toast_title": {
+    "message": "Befehl erstellt!"
+  },
   "hub_share_toast_message": {
-    "message": "Möchten Sie diesen Befehl mit dem Selection Command Hub teilen?"
+    "message": "Möchten Sie ihn mit dem Selection Command Hub teilen?"
   },
   "hub_share_toast_button": {
     "message": "Teilen"

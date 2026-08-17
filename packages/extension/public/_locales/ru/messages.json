@@ -1005,8 +1005,11 @@
   "review_request_button": {
     "message": "Написать отзыв"
   },
+  "hub_share_toast_title": {
+    "message": "Команда создана!"
+  },
   "hub_share_toast_message": {
-    "message": "Хотите поделиться этой командой в Selection Command Hub?"
+    "message": "Хотите поделиться ею в Selection Command Hub?"
   },
   "hub_share_toast_button": {
     "message": "Поделиться"

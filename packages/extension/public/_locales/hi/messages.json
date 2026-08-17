@@ -1005,8 +1005,11 @@
   "review_request_button": {
     "message": "समीक्षा लिखें"
   },
+  "hub_share_toast_title": {
+    "message": "कमांड बन गया है!"
+  },
   "hub_share_toast_message": {
-    "message": "क्या आप इस कमांड को Selection Command Hub पर साझा करना चाहेंगे?"
+    "message": "क्या आप इसे Selection Command Hub पर साझा करना चाहेंगे?"
   },
   "hub_share_toast_button": {
     "message": "साझा करें"

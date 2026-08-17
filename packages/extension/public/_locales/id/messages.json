@@ -1005,8 +1005,11 @@
   "review_request_button": {
     "message": "Tulis Ulasan"
   },
+  "hub_share_toast_title": {
+    "message": "Perintah berhasil dibuat!"
+  },
   "hub_share_toast_message": {
-    "message": "Ingin membagikan perintah ini ke Selection Command Hub?"
+    "message": "Ingin membagikannya ke Selection Command Hub?"
   },
   "hub_share_toast_button": {
     "message": "Bagikan"

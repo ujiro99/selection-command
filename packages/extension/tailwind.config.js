@@ -30,6 +30,16 @@ module.exports = {
           "0%": { transform: "translateX(100%)" },
           "100%": { transform: "translateX(0%)" },
         },
+        popup: {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.5) translate(-10px, 10px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "scale(1)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -37,6 +47,7 @@ module.exports = {
         marquee: "marquee var(--marquee-duration) linear infinite",
         marquee2: "marquee2 var(--marquee-duration) linear infinite",
         "spin-slow": "spin 3s linear infinite",
+        popup: "popup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both",
       },
       padding: {
         0.5: "2px",
