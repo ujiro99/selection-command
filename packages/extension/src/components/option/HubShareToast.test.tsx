@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event"
 import { toast } from "sonner"
 import { showHubShareToast } from "./HubShareToast"
 import { sendEvent } from "@/services/analytics"
-import { shareCommandToHub } from "@/services/hubShare"
+import { shareCommandToHub, isHubRegistered } from "@/services/hubShare"
 import { OPEN_MODE } from "@/const"
 import type { SearchCommand } from "@/types"
 
@@ -36,12 +36,14 @@ vi.mock("@/services/analytics", () => ({
 
 vi.mock("@/services/hubShare", () => ({
   shareCommandToHub: vi.fn(),
+  isHubRegistered: vi.fn(),
 }))
 
 const mockToastCustom = vi.mocked(toast.custom)
 const mockToastDismiss = vi.mocked(toast.dismiss)
 const mockSendEvent = vi.mocked(sendEvent)
 const mockShareCommandToHub = vi.mocked(shareCommandToHub)
+const mockIsHubRegistered = vi.mocked(isHubRegistered)
 
 const command: SearchCommand = {
   id: "cmd-1",
@@ -120,6 +122,7 @@ describe("showHubShareToast", () => {
   })
 
   it("HST-05: clicking 'Share' shares the command, dismisses the toast, and calls onShown", async () => {
+    mockIsHubRegistered.mockResolvedValue(true)
     const onShown = vi.fn()
     showHubShareToast(command, onShown)
     vi.advanceTimersByTime(2000)
@@ -133,6 +136,27 @@ describe("showHubShareToast", () => {
     expect(mockSendEvent).toHaveBeenCalledWith(
       "command_share",
       { event_label: "hub-share-toast" },
+      expect.anything(),
+    )
+    expect(mockToastDismiss).toHaveBeenCalledWith("toast-1")
+    expect(onShown).toHaveBeenCalledOnce()
+  })
+
+  it("HST-07: clicking 'Share' as an unregistered user skips the analytics event", async () => {
+    mockIsHubRegistered.mockResolvedValue(false)
+    const onShown = vi.fn()
+    showHubShareToast(command, onShown)
+    vi.advanceTimersByTime(2000)
+    vi.useRealTimers()
+    const user = userEvent.setup()
+    renderToastBody("toast-1")
+
+    await user.click(screen.getByRole("button", { name: /Share/ }))
+
+    expect(mockShareCommandToHub).toHaveBeenCalledWith(command)
+    expect(mockSendEvent).not.toHaveBeenCalledWith(
+      "command_share",
+      expect.anything(),
       expect.anything(),
     )
     expect(mockToastDismiss).toHaveBeenCalledWith("toast-1")
