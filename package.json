@@ -47,6 +47,9 @@
     "yarn": ">=1.22.0"
   },
   "dependencies": {},
+  "resolutions": {
+    "@radix-ui/react-slot": "1.2.4"
+  },
   "prettier": {
     "semi": false,
     "singleQuote": false,
