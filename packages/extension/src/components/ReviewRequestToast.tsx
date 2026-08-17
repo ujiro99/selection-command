@@ -29,7 +29,7 @@ export function showReviewRequestToast(onAccept: () => void): void {
 
   toast.custom(
     (toastId) => (
-      <div className="flex flex-col bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-gray-800">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-gray-800">
         <div className="flex flex-row gap-3 items-center mb-2">
           <img src={ICON_URL} className="w-7 h-7" />
           <span className="text-base font-semibold">

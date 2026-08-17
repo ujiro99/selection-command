@@ -40,7 +40,7 @@ function showHubShareToastNow(
 
   toast.custom(
     (toastId) => (
-      <div className="flex flex-col bg-white border border-gray-200 rounded-lg shadow-lg px-5 py-4 text-gray-800">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-5 py-4 text-gray-800">
         <div className="flex flex-col gap-2 items-start mb-4">
           <img
             src="/SelectionCommandHub_new.png"
