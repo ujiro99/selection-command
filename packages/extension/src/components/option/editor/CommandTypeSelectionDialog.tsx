@@ -65,7 +65,7 @@ export const CommandTypeSelectionDialog = ({
                 href={hubButtonLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block rounded-lg border px-3 pt-2 pb-1 hover:shadow-md transition"
+                className="inline-block rounded-lg border px-3 pt-2 pb-1 transition hover:shadow-md hover:bg-gray-50 hover:border-gray-300"
               >
                 <span className="text-sm inline-flex items-center gap-1">
                   <Search className="inline size-4" />
