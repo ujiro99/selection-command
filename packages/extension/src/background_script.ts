@@ -22,7 +22,11 @@ import { execute } from "@/action/background"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
-import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import {
+  ANALYTICS_EVENTS,
+  sendEvent,
+  getOrCreateClientId,
+} from "@/services/analytics"
 import * as HubBackground from "@/services/hub/background"
 
 import { importIf } from "@import-if"
@@ -440,6 +444,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     // Initialize default settings on install
     if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
       await Settings.reset()
+      sendEvent(ANALYTICS_EVENTS.INSTALLED, {}, SCREEN.SERVICE_WORKER)
     }
 
     await ContextMenu.init()
@@ -452,8 +457,18 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
       details.reason === chrome.runtime.OnInstalledReason.UPDATE
     ) {
-      // Set uninstall survey URL
-      chrome.runtime.setUninstallURL(`${NEW_HUB_URL}/uninstall`)
+      // Set uninstall survey URL with client_id for analysis.
+      // Wrapped in its own try/catch so a failure here (e.g. storage quota
+      // error) does not skip the backup checks below.
+      try {
+        const clientId = await getOrCreateClientId()
+        chrome.runtime.setUninstallURL(
+          `${NEW_HUB_URL}/uninstall?client_id=${clientId}`,
+        )
+      } catch (error) {
+        console.error("Failed to set uninstall URL with client_id:", error)
+        chrome.runtime.setUninstallURL(`${NEW_HUB_URL}/uninstall`)
+      }
     }
 
     // Check for daily backup on startup

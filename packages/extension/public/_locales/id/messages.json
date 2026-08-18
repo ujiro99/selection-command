@@ -356,6 +356,9 @@
   "Option_commandType_description": {
     "message": "Silakan pilih jenis perintah yang ingin Anda buat"
   },
+  "Option_commandType_hubLink": {
+    "message": "Cari Perintah"
+  },
   "Option_commandType_search_title": {
     "message": "Pencarian"
   },
@@ -1001,6 +1004,18 @@
   },
   "review_request_button": {
     "message": "Tulis Ulasan"
+  },
+  "hub_share_toast_title": {
+    "message": "Perintah berhasil dibuat!"
+  },
+  "hub_share_toast_message": {
+    "message": "Ingin membagikannya ke Selection Command Hub?"
+  },
+  "hub_share_toast_button": {
+    "message": "Bagikan"
+  },
+  "hub_share_toast_later": {
+    "message": "Nanti"
   },
   "Option_shortcuts": {
     "message": "Tombol Pintas"

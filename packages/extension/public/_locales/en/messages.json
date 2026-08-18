@@ -359,6 +359,9 @@
   "Option_commandType_description": {
     "message": "Please select the type of command you want to create"
   },
+  "Option_commandType_hubLink": {
+    "message": "Find Commands"
+  },
   "Option_commandType_search_title": {
     "message": "Search"
   },
@@ -1012,6 +1015,21 @@
   },
   "review_request_button": {
     "message": "Write a Review"
+  },
+  "hub_share_toast_title": {
+    "message": "Command created!",
+    "description": "Toast title shown once, right after a new command is created."
+  },
+  "hub_share_toast_message": {
+    "message": "Want to share it with the Selection Command Hub?",
+    "description": "Toast message inviting the user to share the newly created command to the Hub."
+  },
+  "hub_share_toast_button": {
+    "message": "Share",
+    "description": "Button label to share the newly created command to the Hub from the toast."
+  },
+  "hub_share_toast_later": {
+    "message": "Later"
   },
   "Option_shortcuts": {
     "message": "Shortcut Keys"

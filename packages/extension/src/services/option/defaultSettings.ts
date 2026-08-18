@@ -66,6 +66,7 @@ export const emptySettings: SettingsType = {
   commandExecutionCount: 0,
   hasShownReviewRequest: false,
   hasDismissedPromptHistoryBanner: false,
+  hasShownHubShareToast: false,
   shortcuts: { shortcuts: [] },
   windowOption: {
     sidePanelAutoHide: false,

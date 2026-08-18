@@ -26,7 +26,11 @@ import {
   FoldersSchemaType,
 } from "@/types/schema"
 
-import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
+import {
+  ANALYTICS_EVENTS,
+  sendEvent,
+  getCommandCreateEvent,
+} from "@/services/analytics"
 import { SCREEN, COMMAND_TYPE, OPEN_MODE_TYPE_MAP } from "@/const"
 import type { Command, CommandFolder, SelectionCommand } from "@/types"
 
@@ -42,7 +46,10 @@ import {
   getDescendantFolderIds,
 } from "@/services/option/commandUtils"
 import { isValidDrop } from "@/services/option/dragAndDrop"
-import { editCommandToHub } from "@/services/hubShare"
+import { editCommandToHub, isHubShareable } from "@/services/hubShare"
+import { showHubShareToast } from "@/components/option/HubShareToast"
+import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
+import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { useCommandActions } from "@/hooks/option/useCommandActions"
 import { useCommandDragDrop } from "@/hooks/option/useCommandDragDrop"
@@ -234,12 +241,30 @@ export const CommandList = ({ control }: CommandListProps) => {
       } else {
         commandArray.append(data as CommandSchemaType)
         sendEvent(
-          ANALYTICS_EVENTS.COMMAND_ADD,
+          getCommandCreateEvent(data.openMode),
           {
             event_label: data.openMode,
           },
           SCREEN.OPTION,
         )
+        enhancedSettings
+          .getSection(CACHE_SECTIONS.USER_STATS)
+          .then((userStats) => {
+            if (
+              !userStats.hasShownHubShareToast &&
+              isHubShareable(data as SelectionCommand)
+            ) {
+              showHubShareToast(data as SelectionCommand, () => {
+                Settings.update("hasShownHubShareToast", () => true)
+              })
+            }
+          })
+          .catch((err) => {
+            console.error(
+              "[CommandList] Failed to load user stats for hub share toast:",
+              err,
+            )
+          })
       }
     } else {
       const idx = folderArray.fields.findIndex((f) => f.id === data.id)
@@ -247,6 +272,7 @@ export const CommandList = ({ control }: CommandListProps) => {
         folderArray.update(idx, data)
       } else {
         folderArray.append(data)
+        sendEvent(ANALYTICS_EVENTS.FOLDER_CREATE, {}, SCREEN.OPTION)
       }
     }
   }

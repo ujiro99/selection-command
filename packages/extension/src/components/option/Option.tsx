@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import { Toaster } from "sonner"
 
 import { Settings } from "@/services/settings/settings"
 import { capitalize, scrollToSelector } from "@/lib/utils"
-import { APP_ID, VERSION } from "@/const"
+import { APP_ID, VERSION, SCREEN } from "@/const"
+import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { Popup } from "@/components/Popup"
 import { TableOfContents } from "@/components/option/TableOfContents"
@@ -20,6 +22,7 @@ export function Option() {
   const [previewElm, setPreviewElm] = useState<Element | null>(null)
   const [popupElm, setPopupElm] = useState<Element | null>(null)
   const [popupHeight, setPopupHeight] = useState(0)
+  const hasSentScreenOpenedRef = useRef(false)
 
   useEffect(() => {
     const updateHeight = () => {
@@ -42,12 +45,21 @@ export function Option() {
     }, 50)
   }, [])
 
+  useEffect(() => {
+    // Guard against StrictMode's dev-only double effect invocation, which
+    // would otherwise send this event twice per page load.
+    if (hasSentScreenOpenedRef.current) return
+    hasSentScreenOpenedRef.current = true
+    sendEvent(ANALYTICS_EVENTS.OPTION_SCREEN_OPENED, {}, SCREEN.OPTION)
+  }, [])
+
   const onClickMenu = (hash: string) => {
     scrollToSelector(hash)
   }
 
   return (
     <div>
+      <Toaster />
       <header className={css.titleHeader}>
         <h1 className={css.title}>
           {APP_ID.split("-").map((n) => {

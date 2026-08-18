@@ -356,6 +356,9 @@
   "Option_commandType_description": {
     "message": "Sila pilih jenis arahan yang ingin anda cipta"
   },
+  "Option_commandType_hubLink": {
+    "message": "Cari Arahan"
+  },
   "Option_commandType_search_title": {
     "message": "Carian"
   },
@@ -1001,6 +1004,18 @@
   },
   "review_request_button": {
     "message": "Tulis Ulasan"
+  },
+  "hub_share_toast_title": {
+    "message": "Arahan berjaya dicipta!"
+  },
+  "hub_share_toast_message": {
+    "message": "Adakah anda ingin berkongsinya ke Selection Command Hub?"
+  },
+  "hub_share_toast_button": {
+    "message": "Kongsi"
+  },
+  "hub_share_toast_later": {
+    "message": "Kemudian"
   },
   "Option_shortcuts": {
     "message": "Kekunci Pintas"

@@ -14,3 +14,4 @@ https://www.zhihu.com/search?q=%s
 https://www.ebay.de/sch/i.html?_nkw=%s
 https://www.ebay.es/sch/i.html?_nkw=%s
 https://www.ebay.it/sch/i.html?_nkw=%s
+https://www.olx.pt/ads/q-%s/

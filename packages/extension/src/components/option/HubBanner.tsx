@@ -26,7 +26,7 @@ export function HubBanner() {
       </p>
       <a href={hubBannerLink} target="_blank" rel="noopener noreferrer">
         <img
-          className={cn(css2.banner, "shadow-xl rounded-md px-2 pt-2 pb-1")}
+          className={cn(css2.banner, "shadow-xl rounded-md px-4 pt-2 pb-1")}
           src="/SelectionCommandHub.png"
           alt="Selection Command"
           width="230"

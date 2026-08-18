@@ -356,6 +356,9 @@
   "Option_commandType_description": {
     "message": "Veuillez sélectionner le type de commande que vous souhaitez créer"
   },
+  "Option_commandType_hubLink": {
+    "message": "Rechercher des Commandes"
+  },
   "Option_commandType_search_title": {
     "message": "Recherche"
   },
@@ -1001,6 +1004,18 @@
   },
   "review_request_button": {
     "message": "Écrire un Avis"
+  },
+  "hub_share_toast_title": {
+    "message": "Commande créée !"
+  },
+  "hub_share_toast_message": {
+    "message": "Souhaitez-vous la partager avec Selection Command Hub ?"
+  },
+  "hub_share_toast_button": {
+    "message": "Partager"
+  },
+  "hub_share_toast_later": {
+    "message": "Plus tard"
   },
   "Option_shortcuts": {
     "message": "Raccourcis Clavier"

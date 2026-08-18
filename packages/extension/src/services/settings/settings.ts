@@ -137,6 +137,7 @@ export const Settings = {
       commandExecutionCount,
       hasShownReviewRequest,
       hasDismissedPromptHistoryBanner,
+      hasShownHubShareToast,
       stars,
       ...restData
     } = data
@@ -145,6 +146,7 @@ export const Settings = {
       commandExecutionCount,
       hasShownReviewRequest,
       hasDismissedPromptHistoryBanner,
+      hasShownHubShareToast,
     }
 
     ps.push(Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats))

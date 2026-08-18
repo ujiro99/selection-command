@@ -180,6 +180,7 @@ export type UserStats = {
   commandExecutionCount: number
   hasShownReviewRequest: boolean
   hasDismissedPromptHistoryBanner: boolean
+  hasShownHubShareToast: boolean
 }
 
 export type ShortcutCommand = {
@@ -214,6 +215,7 @@ export type SessionData = {
 }
 
 export type HubUser = {
+  id: string
   name: string
   image: string
 }
@@ -339,6 +341,8 @@ export type AiService = {
   faviconUrl: string
   inputSelectors: string[]
   submitSelectors: string[]
+  /** Selectors for the button that copies the service's generated response to the clipboard. */
+  copySelectors: string[]
   selectorType: SelectorType
   /** URL template with %s placeholder for prompt injection via URL query parameter. */
   queryUrl?: string

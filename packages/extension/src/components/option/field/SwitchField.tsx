@@ -37,10 +37,10 @@ export const SwitchField = ({
       render={({ field }) => (
         <FormItem className="flex items-center gap-1">
           <div className="w-2/6">
-            <FormLabel
-              className={cn(tooltip && "flex items-center gap-1 mr-1")}
-            >
-              <span>{formLabel}</span>
+            <div className={cn(tooltip && "flex items-center gap-1 mr-1")}>
+              <FormLabel>
+                <span>{formLabel}</span>
+              </FormLabel>
               {tooltip && (
                 <span
                   ref={setSpanEl}
@@ -49,7 +49,7 @@ export const SwitchField = ({
                   <Info className="size-4 text-foreground/60" />
                 </span>
               )}
-            </FormLabel>
+            </div>
             {description && <FormDescription>{description}</FormDescription>}
             {tooltip && (
               <Tooltip

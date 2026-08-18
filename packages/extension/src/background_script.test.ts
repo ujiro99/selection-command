@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { BgCommand } from "@/services/ipc"
+import { NEW_HUB_URL } from "@/const"
 
 // Mock dependencies
 vi.mock("@/services/settings/enhancedSettings")
@@ -565,5 +566,133 @@ describe("Popup Auto-Close Delay", () => {
     // Window should NOT be closed because timeout was cancelled
     expect(mockCloseWindow).not.toHaveBeenCalled()
     expect(mockRemoveWindow).not.toHaveBeenCalled()
+  })
+})
+
+describe("onInstalled: installed analytics event", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it("IN-01: sends the installed event when reason is install", async () => {
+    const mockSendEvent = vi.fn()
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: mockSendEvent,
+      getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    expect(listenerCalls.length).toBeGreaterThan(0)
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.INSTALL,
+    })
+
+    expect(mockSendEvent).toHaveBeenCalledWith("installed", {}, "ServiceWorker")
+  })
+
+  it("IN-02: does not send the installed event when reason is update", async () => {
+    const mockSendEvent = vi.fn()
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: mockSendEvent,
+      getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.UPDATE,
+    })
+
+    expect(mockSendEvent).not.toHaveBeenCalledWith(
+      "installed",
+      expect.anything(),
+      expect.anything(),
+    )
+  })
+})
+
+describe("Uninstall URL (onInstalled)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it("UN-01: should set uninstall URL with client_id on install", async () => {
+    const mockGetOrCreateClientId = vi.fn().mockResolvedValue("test-client-id")
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: vi.fn(),
+      getOrCreateClientId: mockGetOrCreateClientId,
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    expect(listenerCalls.length).toBeGreaterThan(0)
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.INSTALL,
+    })
+    await new Promise((resolve) => setTimeout(resolve, 10))
+
+    expect(mockGetOrCreateClientId).toHaveBeenCalled()
+    expect(chrome.runtime.setUninstallURL).toHaveBeenCalledWith(
+      `${NEW_HUB_URL}/uninstall?client_id=test-client-id`,
+    )
+  })
+
+  it("UN-02: should fall back to the uninstall URL without client_id when getOrCreateClientId fails, without skipping the rest of initialization", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+    const mockGetOrCreateClientId = vi
+      .fn()
+      .mockRejectedValue(new Error("Quota exceeded"))
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: vi.fn(),
+      getOrCreateClientId: mockGetOrCreateClientId,
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.INSTALL,
+    })
+    await new Promise((resolve) => setTimeout(resolve, 10))
+
+    // Falls back to the URL without client_id instead of leaving the
+    // uninstall URL unset.
+    expect(chrome.runtime.setUninstallURL).toHaveBeenCalledWith(
+      `${NEW_HUB_URL}/uninstall`,
+    )
+    // The client_id failure must not propagate to the outer catch, which
+    // would otherwise skip the daily/weekly backup checks that follow.
+    expect(consoleErrorSpy).not.toHaveBeenCalledWith(
+      "Error during onInstalled initialization:",
+      expect.anything(),
+    )
+
+    consoleErrorSpy.mockRestore()
   })
 })

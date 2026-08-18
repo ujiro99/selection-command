@@ -57,6 +57,7 @@ const DEFAULTS = {
     commandExecutionCount: 0,
     hasShownReviewRequest: false,
     hasDismissedPromptHistoryBanner: false,
+    hasShownHubShareToast: false,
   },
   [STORAGE_KEY.SHORTCUTS]: {
     shortcuts: [],
@@ -74,6 +75,7 @@ const DEFAULTS = {
   [LOCAL_STORAGE_KEY.LOCAL_COMMAND_METADATA]: null,
   [LOCAL_STORAGE_KEY.GLOBAL_COMMAND_METADATA]: null,
   [LOCAL_STORAGE_KEY.HUB_USER]: null,
+  [LOCAL_STORAGE_KEY.HUB_REGISTERED]: false,
   [SESSION_STORAGE_KEY.BG]: {},
   [SESSION_STORAGE_KEY.SESSION_DATA]: null,
   [SESSION_STORAGE_KEY.MESSAGE_QUEUE]: [],

@@ -3,25 +3,16 @@ import { Share, CloudCheck } from "lucide-react"
 import { Tooltip } from "@/components/Tooltip"
 import { cn, isUUIDv7, generateId } from "@/lib/utils"
 import { t } from "@/services/i18n"
-import { shareCommandToHub, getHubLocale } from "@/services/hubShare"
-import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import {
-  NEW_HUB_SHAREABLE_OPEN_MODES,
-  COMMAND_SOURCE_TYPE,
-  NEW_HUB_URL,
-  HUB_SHARE_EXCLUDED_IDS,
-  IS_SUPPORT_BUILD,
-  SCREEN,
-} from "@/const"
+  shareCommandToHub,
+  getHubLocale,
+  isHubShareable,
+  isHubRegistered,
+} from "@/services/hubShare"
+import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import { NEW_HUB_URL, SCREEN } from "@/const"
 import type { SelectionCommand } from "@/types"
 import { TEST_IDS } from "@/testIds"
-
-const VALID_SOURCE_TYPES = new Set([
-  COMMAND_SOURCE_TYPE.SELF_CREATED,
-  COMMAND_SOURCE_TYPE.SELF_UPDATED,
-  COMMAND_SOURCE_TYPE.SELF_REINSTALL,
-  COMMAND_SOURCE_TYPE.UNKNOWN,
-])
 
 type Props = {
   command: SelectionCommand
@@ -35,9 +26,11 @@ export const ShareButton = ({
   isShared,
 }: Props) => {
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const [status, setStatus] = useState<"idle" | "sent" | "error">("idle")
+  const [status, setStatus] = useState<"idle" | "pending" | "sent" | "error">(
+    "idle",
+  )
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation()
 
     if (isShared) {
@@ -48,6 +41,10 @@ export const ShareButton = ({
       return
     }
 
+    // Disable the button immediately to prevent duplicate shares/signup
+    // tabs from rapid repeated clicks while the lookup below runs.
+    setStatus("pending")
+
     let commandToShare = command
     if (!isUUIDv7(command.id)) {
       const newId = generateId()
@@ -56,26 +53,34 @@ export const ShareButton = ({
     }
 
     const ok = shareCommandToHub(commandToShare)
-    setStatus(ok ? "sent" : "error")
+
+    if (!ok) {
+      setStatus("error")
+      setTimeout(() => setStatus("idle"), 2000)
+      return
+    }
+
+    // Users who have never signed in to the hub are redirected to the
+    // sign-up page instead (see shareCommandToHub in services/hub/background.ts);
+    // nothing is actually shared yet, so leave the button idle and skip
+    // the share analytics event for this case.
+    const registered = await isHubRegistered()
+    if (!registered) {
+      setStatus("idle")
+      return
+    }
+
+    setStatus("sent")
     setTimeout(() => setStatus("idle"), 2000)
 
-    if (ok) {
-      sendEvent(
-        ANALYTICS_EVENTS.COMMAND_SHARE,
-        { event_label: "share-button" },
-        SCREEN.OPTION,
-      )
-    }
+    sendEvent(
+      ANALYTICS_EVENTS.COMMAND_SHARE,
+      { event_label: "share-button" },
+      SCREEN.OPTION,
+    )
   }
 
-  if (
-    !IS_SUPPORT_BUILD &&
-    (HUB_SHARE_EXCLUDED_IDS.has(command.id) ||
-      !NEW_HUB_SHAREABLE_OPEN_MODES.has(command.openMode) ||
-      !VALID_SOURCE_TYPES.has(
-        command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN,
-      ))
-  ) {
+  if (!isHubShareable(command)) {
     return null
   }
 

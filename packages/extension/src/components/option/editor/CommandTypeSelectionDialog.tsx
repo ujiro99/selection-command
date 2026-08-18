@@ -1,3 +1,4 @@
+import { Search } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -5,7 +6,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogPortal,
+  DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+
+import { NEW_HUB_URL } from "@/const"
+import { useHubUser } from "@/hooks/option/useHubUser"
+import { getHubLocale } from "@/services/hubShare"
+import { UTM_SOURCE, UTM_MEDIUM, withUtmParams } from "@shared"
+const UTM_PARAMS = { source: UTM_SOURCE.OPTION_PAGE, medium: UTM_MEDIUM.BUTTON }
 
 import { CommandType } from "./CommandType"
 
@@ -25,6 +35,15 @@ export const CommandTypeSelectionDialog = ({
   onOpenChange,
   onSelect,
 }: CommandTypeSelectionDialogProps) => {
+  const hubUser = useHubUser()
+  const locale = getHubLocale()
+  const hubButtonLink = withUtmParams(
+    hubUser
+      ? `${NEW_HUB_URL}/${locale}/dashboard/commands`
+      : `${NEW_HUB_URL}/${locale}`,
+    UTM_PARAMS,
+  )
+
   const handleCardClick = (type: COMMAND_TYPE) => {
     onSelect(type)
     onOpenChange(false)
@@ -34,12 +53,32 @@ export const CommandTypeSelectionDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
         <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>{t("commandType_title")}</DialogTitle>
-            <DialogDescription>
-              {t("commandType_description")}
-            </DialogDescription>
-          </DialogHeader>
+          <div className="flex justify-between">
+            <DialogHeader className="relative">
+              <DialogTitle>{t("commandType_title")}</DialogTitle>
+              <DialogDescription>
+                {t("commandType_description")}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="shrink-0">
+              <a
+                href={hubButtonLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block rounded-lg border px-3 pt-2 pb-1 transition hover:shadow-md hover:bg-gray-50 hover:border-gray-300"
+              >
+                <span className="text-sm inline-flex items-center gap-1">
+                  <Search className="inline size-4" />
+                  {t("commandType_hubLink")}
+                </span>
+                <img
+                  src="/SelectionCommandHub_new.png"
+                  alt="Selection Command Hub"
+                  width="200"
+                />
+              </a>
+            </div>
+          </div>
           <div className="space-y-6 py-4">
             {COMMAND_TYPE_GROUPS.map((group) => (
               <div key={group.titleKey}>
@@ -59,6 +98,13 @@ export const CommandTypeSelectionDialog = ({
               </div>
             ))}
           </div>
+          <DialogFooter className="absolute bottom-6 right-6">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary" size="lg">
+                {t("labelCancel")}
+              </Button>
+            </DialogClose>
+          </DialogFooter>
         </DialogContent>
       </DialogPortal>
     </Dialog>

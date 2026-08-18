@@ -1,8 +1,23 @@
-import { NEW_HUB_SUPPORTED_LOCALES, type NewHubLocale } from "@/const"
+import {
+  NEW_HUB_SUPPORTED_LOCALES,
+  NEW_HUB_SHAREABLE_OPEN_MODES,
+  HUB_SHARE_EXCLUDED_IDS,
+  COMMAND_SOURCE_TYPE,
+  IS_SUPPORT_BUILD,
+  type NewHubLocale,
+} from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { isAiPromptCommand, isPageActionCommand } from "@/lib/utils"
 import { Ipc, BgCommand } from "@/services/ipc"
+import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SelectionCommand, SearchCommand } from "@/types"
+
+const HUB_SHAREABLE_SOURCE_TYPES = new Set([
+  COMMAND_SOURCE_TYPE.SELF_CREATED,
+  COMMAND_SOURCE_TYPE.SELF_UPDATED,
+  COMMAND_SOURCE_TYPE.SELF_REINSTALL,
+  COMMAND_SOURCE_TYPE.UNKNOWN,
+])
 
 // ---- Type definitions ------------------------------------------------------
 
@@ -58,6 +73,34 @@ export function toSubmitCommandInput(
     targetUrl,
     locale: getHubLocale(),
   }
+}
+
+// ---- Eligibility check ------------------------------------------------------
+
+/**
+ * Determines whether a command is eligible to be shared to the Hub.
+ * Support builds bypass this check to make testing the share flow easier.
+ */
+export function isHubShareable(command: SelectionCommand): boolean {
+  if (IS_SUPPORT_BUILD) return true
+
+  return (
+    !HUB_SHARE_EXCLUDED_IDS.has(command.id) &&
+    NEW_HUB_SHAREABLE_OPEN_MODES.has(command.openMode) &&
+    HUB_SHAREABLE_SOURCE_TYPES.has(
+      command.sourceType ?? COMMAND_SOURCE_TYPE.UNKNOWN,
+    )
+  )
+}
+
+/**
+ * Determines whether the user has ever signed in to the Hub.
+ * Used both to decide the ShareButton's success/idle display and to decide
+ * whether shareCommandToHub() opens the dashboard or the sign-up page,
+ * so keep this the single source of truth for that check.
+ */
+export async function isHubRegistered(): Promise<boolean> {
+  return !!(await Storage.get<boolean>(LOCAL_STORAGE_KEY.HUB_REGISTERED))
 }
 
 // ---- Share main logic ------------------------------------------------------

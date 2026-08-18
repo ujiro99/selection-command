@@ -9,12 +9,14 @@ import {
 import type { Sender } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SubmitCommandInput } from "@/services/hubShare"
+import { isHubRegistered } from "@/services/hubShare"
 import type { HubUser, CommandFromHub } from "@/types"
 import { Settings } from "@/services/settings/settings"
 import {
   ANALYTICS_EVENTS,
   sendEvent,
   getOrCreateClientId,
+  getHubAddEvent,
 } from "@/services/analytics"
 import { PopupOption } from "@/services/option/defaultSettings"
 import {
@@ -79,6 +81,21 @@ export const shareCommandToHub = (
 
   const share = async () => {
     try {
+      const registered = await isHubRegistered()
+      if (!registered) {
+        // Users who have never signed in to the hub have no account to
+        // share into yet. Send them to sign up instead of the dashboard,
+        // which would otherwise just bounce them to the login screen.
+        // The "hub-share" port handshake below is only implemented on the
+        // dashboard page, so it can't succeed here and is skipped.
+        const signupUrl = `${NEW_HUB_URL}/auth/signup`
+        const tab = await new Promise<chrome.tabs.Tab>((resolve) =>
+          chrome.tabs.create({ url: signupUrl }, resolve),
+        )
+        response(!!tab?.id)
+        return
+      }
+
       let currentParam = param
       let idRegenerateCount = 0
       const MAX_ID_REGENERATE = 3
@@ -308,36 +325,36 @@ export async function handleAddCommand(
 
     const cmd = isSearch
       ? {
-        id: parsed.id,
-        title: parsed.title,
-        searchUrl: parsed.searchUrl,
-        iconUrl: parsed.iconUrl,
-        ...sourceInfo,
-        openMode: parsed.openMode,
-        openModeSecondary: parsed.openModeSecondary,
-        spaceEncoding: parsed.spaceEncoding,
-        popupOption: PopupOption,
-      }
-      : isAiPrompt
-        ? {
           id: parsed.id,
           title: parsed.title,
+          searchUrl: parsed.searchUrl,
           iconUrl: parsed.iconUrl,
           ...sourceInfo,
           openMode: parsed.openMode,
-          aiPromptOption: parsed.aiPromptOption,
+          openModeSecondary: parsed.openModeSecondary,
+          spaceEncoding: parsed.spaceEncoding,
           popupOption: PopupOption,
         }
-        : isPageAction
-          ? {
+      : isAiPrompt
+        ? {
             id: parsed.id,
             title: parsed.title,
             iconUrl: parsed.iconUrl,
             ...sourceInfo,
             openMode: parsed.openMode,
-            pageActionOption: parsed.pageActionOption,
+            aiPromptOption: parsed.aiPromptOption,
             popupOption: PopupOption,
           }
+        : isPageAction
+          ? {
+              id: parsed.id,
+              title: parsed.title,
+              iconUrl: parsed.iconUrl,
+              ...sourceInfo,
+              openMode: parsed.openMode,
+              pageActionOption: parsed.pageActionOption,
+              popupOption: PopupOption,
+            }
           : null
 
     if (!cmd) {
@@ -349,7 +366,7 @@ export async function handleAddCommand(
     await Settings.addCommands([cmd])
     console.debug("[handleAddCommand] Saved command id:", cmd.id)
     await sendEvent(
-      ANALYTICS_EVENTS.COMMAND_ADD,
+      getHubAddEvent(cmd.openMode),
       {
         event_label: cmd.openMode,
         source_type: sourceInfo.sourceType,
@@ -416,7 +433,7 @@ export function handleEditCommand(
     ackTimeout: undefined,
     ackListener: undefined,
     pendingResponse: undefined,
-    cancelConnectWait: () => { },
+    cancelConnectWait: () => {},
   }
   _editSession = newSession
 
@@ -511,10 +528,14 @@ export async function handleSetSession(
       return
     }
     const hubUser: HubUser = {
+      id: data.user.id,
       name: data.user.email ?? "",
       image: "",
     }
     await Storage.set(LOCAL_STORAGE_KEY.HUB_USER, hubUser)
+    // Once authenticated, remember it permanently (not cleared on sign-out)
+    // so the extension can tell "signed up before" apart from "signed in now".
+    await Storage.set(LOCAL_STORAGE_KEY.HUB_REGISTERED, true)
     sendResponse({ result: true })
   } catch (err) {
     console.error("[handleSetSession] Failed:", err)
