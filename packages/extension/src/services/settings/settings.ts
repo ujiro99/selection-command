@@ -138,6 +138,7 @@ export const Settings = {
       hasShownReviewRequest,
       hasDismissedPromptHistoryBanner,
       hasShownHubShareToast,
+      hasShownOnboarding,
       stars,
       ...restData
     } = data
@@ -147,6 +148,7 @@ export const Settings = {
       hasShownReviewRequest,
       hasDismissedPromptHistoryBanner,
       hasShownHubShareToast,
+      hasShownOnboarding,
     }
 
     ps.push(Storage.set<UserStats>(STORAGE_KEY.USER_STATS, userStats))

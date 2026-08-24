@@ -1301,5 +1301,71 @@
   },
   "hub_login": {
     "message": "Iniciar sesión en Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "¡Gracias por instalar Selection Command!"
+  },
+  "onboarding_step0Body": {
+    "message": "Probémoslo durante un minuto, usándolo sobre la marcha."
+  },
+  "onboarding_startButton": {
+    "message": "Empezar"
+  },
+  "onboarding_skipButton": {
+    "message": "Omitir"
+  },
+  "onboarding_step1Explain": {
+    "message": "Selecciona el siguiente texto para probar una búsqueda al instante."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Con Selection Command puedes buscar, preguntar a la IA o previsualizar enlaces con un solo clic."
+  },
+  "onboarding_step1Callout": {
+    "message": "Haz clic en este comando para buscar en Google."
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Listo: ahora puedes buscar al instante cualquier texto que selecciones."
+  },
+  "onboarding_nextButton": {
+    "message": "Siguiente"
+  },
+  "onboarding_step2Explain": {
+    "message": "A continuación, preguntemos a la IA sobre el siguiente texto."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Esta es una extensión que te permite insertar el texto seleccionado de una página web en una plantilla de prompt y ejecutarlo. Piensa en algunas ideas de para qué podrías usarla."
+  },
+  "onboarding_step2Callout": {
+    "message": "Haz clic en este comando para enviar tu selección a la IA."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Ahora puedes preguntarle a la IA sobre cualquier cosa que selecciones, sin salir de la página que estás leyendo."
+  },
+  "onboarding_step3Explain": {
+    "message": "Por último, previsualicemos un enlace sin abrir una nueva pestaña. Haz clic en el siguiente enlace manteniendo pulsada la tecla Shift."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Enlace de ejemplo"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Puedes previsualizar enlaces sin salir de la página."
+  },
+  "onboarding_step4Explain": {
+    "message": "Los comandos que acabas de probar se pueden editar, eliminar o añadir en cualquier momento desde la configuración."
+  },
+  "onboarding_finishButton": {
+    "message": "Finalizar"
+  },
+  "onboarding_completeTitle": {
+    "message": "¡Todo listo!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command ya está listo para usarse. Solo selecciona texto en cualquier página para empezar."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Abrir configuración"
+  },
+  "onboarding_closeButton": {
+    "message": "Cerrar"
   }
 }

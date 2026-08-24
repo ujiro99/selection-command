@@ -21,6 +21,7 @@ import {
 } from "@/services/dom"
 import { getScreenSize } from "@/services/screen"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import { dispatchCommandExecuted } from "@/components/onboarding/onboardingEvents"
 
 const isTargetEvent = (e: MouseEvent): boolean => {
   return (
@@ -78,6 +79,10 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
         target,
       })
       sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, { event_label: "link_preview" })
+      dispatchCommandExecuted({
+        commandId: command.id,
+        commandType: command.openMode,
+      })
     },
     [command],
   )

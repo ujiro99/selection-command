@@ -66,6 +66,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         )}
         role="menuitem"
         aria-label={title}
+        data-command-id={props.command.id}
         ref={buttonRef}
         onClick={handleClick}
         disabled={!enabled}

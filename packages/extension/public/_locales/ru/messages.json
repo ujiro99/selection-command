@@ -1301,5 +1301,71 @@
   },
   "hub_login": {
     "message": "Войти в Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Спасибо за установку Selection Command!"
+  },
+  "onboarding_step0Body": {
+    "message": "Давайте потратим примерно минуту, чтобы попробовать его в деле."
+  },
+  "onboarding_startButton": {
+    "message": "Начать"
+  },
+  "onboarding_skipButton": {
+    "message": "Пропустить"
+  },
+  "onboarding_step1Explain": {
+    "message": "Выделите текст ниже, чтобы сразу попробовать поиск."
+  },
+  "onboarding_step1TargetText": {
+    "message": "С Selection Command вы можете искать, спрашивать ИИ или просматривать ссылки одним щелчком."
+  },
+  "onboarding_step1Callout": {
+    "message": "Нажмите эту команду, чтобы выполнить поиск в Google."
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Готово — теперь вы можете мгновенно искать всё, что выделите."
+  },
+  "onboarding_nextButton": {
+    "message": "Далее"
+  },
+  "onboarding_step2Explain": {
+    "message": "Далее давайте спросим ИИ о тексте ниже."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Это расширение позволяет вставлять выделенный текст с веб-страницы в шаблон запроса и выполнять его. Подумайте, для чего это можно использовать."
+  },
+  "onboarding_step2Callout": {
+    "message": "Нажмите эту команду, чтобы отправить выделенный текст в ИИ."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Теперь вы можете спрашивать ИИ о чём угодно прямо на странице, которую читаете."
+  },
+  "onboarding_step3Explain": {
+    "message": "Наконец, давайте просмотрим ссылку без открытия новой вкладки. Щёлкните по ссылке ниже, удерживая Shift."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Пример ссылки"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Вы можете просматривать ссылки, не покидая страницу."
+  },
+  "onboarding_step4Explain": {
+    "message": "Команды, которые вы только что попробовали, можно в любой момент изменить, удалить или добавить новые в настройках."
+  },
+  "onboarding_finishButton": {
+    "message": "Готово"
+  },
+  "onboarding_completeTitle": {
+    "message": "Всё готово!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command готов к использованию — просто выделите текст на любой странице, чтобы начать."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Открыть настройки"
+  },
+  "onboarding_closeButton": {
+    "message": "Закрыть"
   }
 }

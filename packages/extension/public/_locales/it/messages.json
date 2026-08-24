@@ -1301,5 +1301,71 @@
   },
   "hub_login": {
     "message": "Accedi all'Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Grazie per aver installato Selection Command!"
+  },
+  "onboarding_step0Body": {
+    "message": "Proviamolo per circa un minuto, usandolo direttamente."
+  },
+  "onboarding_startButton": {
+    "message": "Inizia"
+  },
+  "onboarding_skipButton": {
+    "message": "Salta"
+  },
+  "onboarding_step1Explain": {
+    "message": "Seleziona il testo qui sotto per provare subito una ricerca."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Con Selection Command puoi cercare, chiedere all'IA o visualizzare l'anteprima dei link con un solo clic."
+  },
+  "onboarding_step1Callout": {
+    "message": "Fai clic su questo comando per cercare su Google."
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Fatto: ora puoi cercare all'istante qualsiasi cosa selezioni."
+  },
+  "onboarding_nextButton": {
+    "message": "Avanti"
+  },
+  "onboarding_step2Explain": {
+    "message": "Ora chiediamo all'IA il testo qui sotto."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Questa è un'estensione che ti permette di inserire il testo selezionato da una pagina web in un modello di prompt ed eseguirlo. Pensa a qualche idea su come potresti usarla."
+  },
+  "onboarding_step2Callout": {
+    "message": "Fai clic su questo comando per inviare la tua selezione all'IA."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Ora puoi chiedere all'IA qualsiasi cosa selezioni, direttamente dalla pagina che stai leggendo."
+  },
+  "onboarding_step3Explain": {
+    "message": "Infine, visualizziamo l'anteprima di un link senza aprire una nuova scheda. Fai clic sul link qui sotto tenendo premuto Shift."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Link di esempio"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Puoi visualizzare l'anteprima dei link senza lasciare la pagina."
+  },
+  "onboarding_step4Explain": {
+    "message": "I comandi che hai appena provato possono essere modificati, rimossi o aggiunti in qualsiasi momento dalle impostazioni."
+  },
+  "onboarding_finishButton": {
+    "message": "Fine"
+  },
+  "onboarding_completeTitle": {
+    "message": "Tutto pronto!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command è pronto all'uso: seleziona del testo in qualsiasi pagina per iniziare."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Apri impostazioni"
+  },
+  "onboarding_closeButton": {
+    "message": "Chiudi"
   }
 }

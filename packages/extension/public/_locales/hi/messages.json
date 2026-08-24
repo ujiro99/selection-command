@@ -1301,5 +1301,71 @@
   },
   "hub_login": {
     "message": "Hub में लॉगिन करें"
+  },
+  "onboarding_step0Title": {
+    "message": "Selection Command इंस्टॉल करने के लिए धन्यवाद!"
+  },
+  "onboarding_step0Body": {
+    "message": "चलिए, इसे इस्तेमाल करते हुए लगभग एक मिनट में आज़माते हैं।"
+  },
+  "onboarding_startButton": {
+    "message": "शुरू करें"
+  },
+  "onboarding_skipButton": {
+    "message": "छोड़ें"
+  },
+  "onboarding_step1Explain": {
+    "message": "तुरंत सर्च आज़माने के लिए नीचे दिए गए टेक्स्ट को चुनें।"
+  },
+  "onboarding_step1TargetText": {
+    "message": "Selection Command से आप एक क्लिक में सर्च कर सकते हैं, AI से पूछ सकते हैं, या लिंक का पूर्वावलोकन देख सकते हैं।"
+  },
+  "onboarding_step1Callout": {
+    "message": "इस कमांड को चलाने पर Google पर सर्च होगा।"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "बस इतना ही — अब आप जो भी टेक्स्ट चुनें, उसे तुरंत सर्च कर सकते हैं।"
+  },
+  "onboarding_nextButton": {
+    "message": "आगे"
+  },
+  "onboarding_step2Explain": {
+    "message": "अब, नीचे दिए गए टेक्स्ट के बारे में AI से पूछते हैं।"
+  },
+  "onboarding_step2TargetText": {
+    "message": "यह एक ऐसा एक्सटेंशन है जो वेब पेज पर चुने गए टेक्स्ट को एक प्रॉम्प्ट टेम्पलेट में डालकर चला सकता है। सोचिए, इससे आप क्या-क्या कर सकते हैं।"
+  },
+  "onboarding_step2Callout": {
+    "message": "इस कमांड को चलाने पर आपकी चुनी हुई टेक्स्ट AI को भेजी जाएगी।"
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "अब आप जो पेज पढ़ रहे हैं, वहीं से चुनी हुई किसी भी चीज़ के बारे में AI से पूछ सकते हैं।"
+  },
+  "onboarding_step3Explain": {
+    "message": "आखिर में, बिना नया टैब खोले किसी लिंक का पूर्वावलोकन करते हैं। नीचे दिए गए लिंक पर Shift दबाकर क्लिक करें।"
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "नमूना लिंक"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "अब आप पेज छोड़े बिना लिंक का पूर्वावलोकन कर सकते हैं।"
+  },
+  "onboarding_step4Explain": {
+    "message": "अभी आज़माए गए कमांड को आप सेटिंग्स में कभी भी संपादित, हटा या नए जोड़ सकते हैं।"
+  },
+  "onboarding_finishButton": {
+    "message": "समाप्त करें"
+  },
+  "onboarding_completeTitle": {
+    "message": "सब तैयार है!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command उपयोग के लिए तैयार है। शुरू करने के लिए किसी भी पेज पर टेक्स्ट चुनें।"
+  },
+  "onboarding_openSettingsButton": {
+    "message": "सेटिंग्स खोलें"
+  },
+  "onboarding_closeButton": {
+    "message": "बंद करें"
   }
 }

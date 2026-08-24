@@ -19,6 +19,7 @@ import {
   COMMAND_SOURCE_ID,
 } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
+import { createOnboardingAiPromptCommand } from "@/components/onboarding/onboardingCommand"
 
 // Derive icon URLs from ai-services.json (single source of truth)
 const _aiServices = getAiServicesFallback()
@@ -67,6 +68,7 @@ export const emptySettings: SettingsType = {
   hasShownReviewRequest: false,
   hasDismissedPromptHistoryBanner: false,
   hasShownHubShareToast: false,
+  hasShownOnboarding: false,
   shortcuts: { shortcuts: [] },
   windowOption: {
     sidePanelAutoHide: false,
@@ -204,6 +206,82 @@ export const PopupOption = {
   height: 700,
 }
 
+// Onboarding's Step2 AiPrompt command (see src/components/onboarding/).
+// Kept as a normal, permanent default command per locale rather than being
+// injected/removed around the onboarding flow. Declared here (before
+// DefaultCommands/LOCALE_COMMANDS use them below) since `const` bindings
+// are not hoisted.
+const CMD_ONBOARDING_AI_EN = createOnboardingAiPromptCommand(
+  "Ask AI",
+  "Please execute the following prompt.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_JA = createOnboardingAiPromptCommand(
+  "AIに質問",
+  "以下のプロンプトを実行してください。\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_ZH = createOnboardingAiPromptCommand(
+  "询问AI",
+  "请执行以下提示词。\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_KO = createOnboardingAiPromptCommand(
+  "AI에게 질문",
+  "다음 프롬프트를 실행해 주세요.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_RU = createOnboardingAiPromptCommand(
+  "Спросить ИИ",
+  "Пожалуйста, выполните следующий запрос.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_DE = createOnboardingAiPromptCommand(
+  "KI fragen",
+  "Bitte führen Sie den folgenden Prompt aus.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_FR = createOnboardingAiPromptCommand(
+  "Demander à l'IA",
+  "Veuillez exécuter le prompt suivant.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_ES = createOnboardingAiPromptCommand(
+  "Preguntar a la IA",
+  "Por favor, ejecuta el siguiente prompt.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_PT_BR = createOnboardingAiPromptCommand(
+  "Perguntar à IA",
+  "Por favor, execute o seguinte prompt.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_PT = createOnboardingAiPromptCommand(
+  "Perguntar à IA",
+  "Por favor, execute o seguinte prompt.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_HI = createOnboardingAiPromptCommand(
+  "AI से पूछें",
+  "कृपया निम्नलिखित प्रॉम्प्ट को निष्पादित करें।\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_ID = createOnboardingAiPromptCommand(
+  "Tanya AI",
+  "Silakan jalankan prompt berikut.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_MS = createOnboardingAiPromptCommand(
+  "Tanya AI",
+  "Sila jalankan gesaan berikut.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+const CMD_ONBOARDING_AI_IT = createOnboardingAiPromptCommand(
+  "Chiedi all'IA",
+  "Esegui il seguente prompt.\n\n{{SelectedText}}",
+  GEMINI_ICON_URL,
+)
+
 export const DefaultCommands = [
   {
     id: "$$drag-1",
@@ -245,6 +323,7 @@ export const DefaultCommands = [
     },
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
+  CMD_ONBOARDING_AI_EN,
   {
     id: "c0d05ae1-f007-5bd0-8fa6-e3bc0b79ca97",
     revision: 0,
@@ -1819,6 +1898,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_JA,
     CMD_AMAZON_JP,
     CMD_YAHOO_JAPAN,
     CMD_YOUTUBE,
@@ -1837,6 +1917,7 @@ export const LOCALE_COMMANDS = {
     CMD_BAIDU,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_ZH,
     CMD_JD,
     CMD_GEMINI_ZH,
     CMD_PAGE_SUMMARY_ZH,
@@ -1853,6 +1934,7 @@ export const LOCALE_COMMANDS = {
     CMD_NAVER,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_KO,
     CMD_COUPANG,
     CMD_GEMINI_KO,
     CMD_PAGE_SUMMARY_KO,
@@ -1869,6 +1951,7 @@ export const LOCALE_COMMANDS = {
     CMD_YANDEX,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_RU,
     CMD_OZON,
     CMD_WILDBERRIES,
     CMD_GEMINI_RU,
@@ -1885,6 +1968,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_DE,
     CMD_AMAZON_DE,
     CMD_EBAY_DE,
     CMD_GEMINI_DE,
@@ -1901,6 +1985,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_FR,
     CMD_AMAZON_FR,
     CMD_LEBONCOIN,
     CMD_GEMINI_FR,
@@ -1917,6 +2002,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_ES,
     CMD_AMAZON_ES,
     CMD_EBAY_ES,
     CMD_EL_CORTE_INGLES,
@@ -1935,6 +2021,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_PT_BR,
     CMD_AMAZON_BR,
     CMD_MERCADO_LIVRE_BR,
     CMD_GEMINI_PT,
@@ -1951,6 +2038,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_PT,
     CMD_AMAZON_ES,
     CMD_OLX_PT,
     CMD_GEMINI_PT,
@@ -1967,6 +2055,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_HI,
     CMD_AMAZON_IN,
     CMD_FLIPKART,
     CMD_GEMINI_HI,
@@ -1983,6 +2072,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_ID,
     CMD_TOKOPEDIA,
     CMD_SHOPEE_ID,
     CMD_GEMINI_ID,
@@ -1999,6 +2089,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_MS,
     CMD_SHOPEE_MY,
     CMD_LAZADA_MY,
     CMD_GEMINI_MS,
@@ -2015,6 +2106,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
     CMD_GOOGLE_IMAGE,
+    CMD_ONBOARDING_AI_IT,
     CMD_AMAZON_IT,
     CMD_EBAY_IT,
     CMD_ZALANDO_IT,

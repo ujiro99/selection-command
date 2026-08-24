@@ -1304,5 +1304,71 @@
   },
   "hub_login": {
     "message": "Entrar no Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Obrigado por instalar o Selection Command!"
+  },
+  "onboarding_step0Body": {
+    "message": "Vamos experimentar por cerca de um minuto, usando na prática."
+  },
+  "onboarding_startButton": {
+    "message": "Começar"
+  },
+  "onboarding_skipButton": {
+    "message": "Pular"
+  },
+  "onboarding_step1Explain": {
+    "message": "Selecione o texto abaixo para testar uma pesquisa agora mesmo."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Com o Selection Command, você pode pesquisar, perguntar à IA ou pré-visualizar links com um clique."
+  },
+  "onboarding_step1Callout": {
+    "message": "Clique neste comando para pesquisar no Google."
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Pronto — agora você pode pesquisar instantaneamente qualquer coisa que selecionar."
+  },
+  "onboarding_nextButton": {
+    "message": "Próximo"
+  },
+  "onboarding_step2Explain": {
+    "message": "A seguir, vamos perguntar à IA sobre o texto abaixo."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Esta é uma extensão que permite inserir o texto selecionado de uma página da web em um modelo de prompt e executá-lo. Pense em algumas ideias do que você poderia fazer com ela."
+  },
+  "onboarding_step2Callout": {
+    "message": "Clique neste comando para enviar sua seleção para a IA."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Agora você pode perguntar à IA sobre qualquer coisa que selecionar, direto da página que está lendo."
+  },
+  "onboarding_step3Explain": {
+    "message": "Por fim, vamos pré-visualizar um link sem abrir uma nova aba. Clique no link abaixo segurando a tecla Shift."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Link de exemplo"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Você pode pré-visualizar links sem sair da página."
+  },
+  "onboarding_step4Explain": {
+    "message": "Os comandos que você experimentou podem ser editados, removidos ou adicionados a qualquer momento nas configurações."
+  },
+  "onboarding_finishButton": {
+    "message": "Concluir"
+  },
+  "onboarding_completeTitle": {
+    "message": "Tudo pronto!"
+  },
+  "onboarding_completeBody": {
+    "message": "O Selection Command está pronto para uso. Basta selecionar um texto em qualquer página para começar."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Abrir configurações"
+  },
+  "onboarding_closeButton": {
+    "message": "Fechar"
   }
 }

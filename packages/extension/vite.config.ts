@@ -27,23 +27,23 @@ export default defineConfig(({ mode }) => {
 
   const activeManifest = isProduction
     ? {
-      ...manifest,
-      ...(extensionKey ? { key: extensionKey } : {}),
-      content_scripts: manifest.content_scripts.map((cs) => ({
-        ...cs,
-        matches: cs.matches.filter((m) => !m.includes("localhost")),
-      })),
-      externally_connectable: {
-        ...manifest.externally_connectable,
-        matches: manifest.externally_connectable.matches.filter(
-          (m) => !m.includes("localhost"),
-        ),
-      },
-    }
+        ...manifest,
+        ...(extensionKey ? { key: extensionKey } : {}),
+        content_scripts: manifest.content_scripts.map((cs) => ({
+          ...cs,
+          matches: cs.matches.filter((m) => !m.includes("localhost")),
+        })),
+        externally_connectable: {
+          ...manifest.externally_connectable,
+          matches: manifest.externally_connectable.matches.filter(
+            (m) => !m.includes("localhost"),
+          ),
+        },
+      }
     : {
-      ...manifest,
-      ...(extensionKey ? { key: extensionKey } : {}),
-    }
+        ...manifest,
+        ...(extensionKey ? { key: extensionKey } : {}),
+      }
 
   const plugins = [
     react(),
@@ -144,20 +144,20 @@ export default defineConfig(({ mode }) => {
       pure:
         mode === "production"
           ? [
-            "console.log",
-            "console.debug",
-            "console.info",
-            "console.trace",
-            "console.dir",
-            "console.count",
-            "console.countReset",
-            "console.group",
-            "console.groupCollapsed",
-            "console.groupEnd",
-            "console.time",
-            "console.timeEnd",
-            "console.timeLog",
-          ]
+              "console.log",
+              "console.debug",
+              "console.info",
+              "console.trace",
+              "console.dir",
+              "console.count",
+              "console.countReset",
+              "console.group",
+              "console.groupCollapsed",
+              "console.groupEnd",
+              "console.time",
+              "console.timeEnd",
+              "console.timeLog",
+            ]
           : [],
     },
     build: {
@@ -166,6 +166,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           clipboard: "src/clipboard.html",
+          onboarding: "src/onboarding_page.html",
         },
         output: {
           // Group all CSS module files into a named chunk so that the

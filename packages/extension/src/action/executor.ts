@@ -2,6 +2,7 @@ import type { ExecuteCommandParams } from "@/types"
 import { OPEN_MODE } from "@/const"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import { resolveCommandSource } from "@/services/commandSource"
+import { dispatchCommandExecuted } from "@/components/onboarding/onboardingEvents"
 
 export async function executeAction({
   actions,
@@ -42,6 +43,8 @@ export async function executeAction({
     source_type: sourceType,
     source_id: sourceId,
   })
+
+  dispatchCommandExecuted({ commandId: command.id, commandType: mode })
 
   return res
 }

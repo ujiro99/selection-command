@@ -1,0 +1,32 @@
+.fadeIn {
+  animation: 0.35s onboardingFadeInUp forwards;
+}
+
+@keyframes onboardingFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.spotlight {
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.55);
+  border-radius: 6px;
+  animation: 1.8s onboardingPulse ease-in-out infinite;
+}
+
+@keyframes onboardingPulse {
+  0%,
+  100% {
+    outline: 2px solid rgba(255, 255, 255, 0.9);
+    outline-offset: 2px;
+  }
+  50% {
+    outline: 2px solid rgba(255, 255, 255, 0.35);
+    outline-offset: 4px;
+  }
+}

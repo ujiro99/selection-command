@@ -1301,5 +1301,71 @@
   },
   "hub_login": {
     "message": "登录 Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "感谢您安装 Selection Command！"
+  },
+  "onboarding_step0Body": {
+    "message": "让我们花一分钟时间，边操作边体验一下吧。"
+  },
+  "onboarding_startButton": {
+    "message": "开始体验"
+  },
+  "onboarding_skipButton": {
+    "message": "跳过"
+  },
+  "onboarding_step1Explain": {
+    "message": "选择下面的文本，立即试试搜索功能。"
+  },
+  "onboarding_step1TargetText": {
+    "message": "使用 Selection Command，只需一键即可搜索、询问 AI 或预览链接。"
+  },
+  "onboarding_step1Callout": {
+    "message": "点击此命令即可使用 Google 搜索。"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "就是这样——现在您可以立即搜索所选的任何内容。"
+  },
+  "onboarding_nextButton": {
+    "message": "下一步"
+  },
+  "onboarding_step2Explain": {
+    "message": "接下来，让我们向 AI 询问下面这段文字。"
+  },
+  "onboarding_step2TargetText": {
+    "message": "这是一个可以将网页上选中的文字嵌入提示词模板并执行的扩展程序，想想它能帮你做些什么。"
+  },
+  "onboarding_step2Callout": {
+    "message": "点击此命令即可将所选文字发送给 AI。"
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "现在，您可以在阅读网页的同时，就您选择的任何内容向 AI 提问。"
+  },
+  "onboarding_step3Explain": {
+    "message": "最后，让我们在不打开新标签页的情况下预览链接。请按住 Shift 键点击下面的链接。"
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "示例链接"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "您可以在不离开当前页面的情况下预览链接。"
+  },
+  "onboarding_step4Explain": {
+    "message": "您刚刚体验的命令，随时可以在设置页面中编辑、删除或添加新的命令。"
+  },
+  "onboarding_finishButton": {
+    "message": "完成"
+  },
+  "onboarding_completeTitle": {
+    "message": "一切就绪！"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command 已准备就绪。选中页面上的任意文本即可开始使用。"
+  },
+  "onboarding_openSettingsButton": {
+    "message": "打开设置"
+  },
+  "onboarding_closeButton": {
+    "message": "关闭"
   }
 }

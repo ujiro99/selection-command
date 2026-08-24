@@ -271,6 +271,7 @@ export enum SCREEN {
   SERVICE_WORKER = "ServiceWorker",
   COMMAND_HUB = "CommandHub",
   COMMAND_FORM = "CommandForm",
+  ONBOARDING = "Onboarding",
 }
 
 export const POPUP_OPTION = {
@@ -383,6 +384,8 @@ export const PAGE_ACTION_TIMEOUT = 5_000 // milliseconds
 export const PAGE_HTML_MAX_CHARS = 1_000_000
 
 export const OPTION_PAGE_PATH = "src/options_page.html"
+
+export const ONBOARDING_PAGE_PATH = "src/onboarding_page.html"
 
 export const COMMAND_USAGE = {
   REVIEW_THRESHOLD: 100,

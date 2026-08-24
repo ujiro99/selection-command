@@ -69,4 +69,26 @@ describe("executeAction", () => {
       }),
     )
   })
+
+  it("dispatches an onboarding:command-executed window event", async () => {
+    const execute = vi.fn().mockResolvedValue("ok")
+    const actions = {
+      [OPEN_MODE.TAB]: { execute },
+    } as Record<string, { execute: () => Promise<string> }>
+    const dispatchSpy = vi.spyOn(window, "dispatchEvent")
+
+    await executeAction({
+      actions,
+      command: { id: "cmd-3", openMode: OPEN_MODE.TAB } as any,
+      position: null,
+      selectionText: "text",
+    })
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "onboarding:command-executed",
+        detail: { commandId: "cmd-3", commandType: OPEN_MODE.TAB },
+      }),
+    )
+  })
 })

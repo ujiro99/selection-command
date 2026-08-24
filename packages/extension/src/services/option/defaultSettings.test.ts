@@ -8,6 +8,7 @@ import { isLinkCommand } from "@/lib/utils"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { getAiServicesFallback } from "@/services/aiPrompt"
 import { COMMAND_SOURCE_TYPE, COMMAND_SOURCE_ID } from "@/const"
+import { ONBOARDING_AI_PROMPT_COMMAND_ID } from "@/components/onboarding/onboardingCommand"
 
 const SYM_SELECTED_TEXT = toInsertTemplate(INSERT.SELECTED_TEXT)
 const SYM_URL = toInsertTemplate(INSERT.URL)
@@ -294,6 +295,20 @@ describe("getDefaultCommands", () => {
       ).toBeDefined()
       expect((cmd as any).openMode).toBe("popup")
       expect((cmd as any).searchUrl).toContain("%pageUrl")
+    }
+  })
+
+  it("DS-25: all locale command sets should include the onboarding AiPrompt command", () => {
+    for (const locale of ALL_LOCALES) {
+      const commands = getDefaultCommands(locale)
+      const cmd = commands.find((c) => c.id === ONBOARDING_AI_PROMPT_COMMAND_ID)
+      expect(
+        cmd,
+        `Missing onboarding AiPrompt command for locale: ${locale}`,
+      ).toBeDefined()
+      expect((cmd as any).openMode).toBe("aiPrompt")
+      expect((cmd as any).aiPromptOption.prompt).toContain(SYM_SELECTED_TEXT)
+      expect((cmd as any).parentFolderId).toBeUndefined()
     }
   })
 })

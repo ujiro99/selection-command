@@ -622,6 +622,52 @@ describe("onInstalled: installed analytics event", () => {
       expect.anything(),
     )
   })
+
+  it("IN-03: opens the onboarding page tab when reason is install", async () => {
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: vi.fn(),
+      getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.INSTALL,
+    })
+
+    expect(chrome.tabs.create).toHaveBeenCalledWith({
+      url: "src/onboarding_page.html",
+    })
+  })
+
+  it("IN-04: does not open the onboarding page tab when reason is update", async () => {
+    vi.doMock("@/services/analytics", () => ({
+      ANALYTICS_EVENTS: { INSTALLED: "installed" },
+      sendEvent: vi.fn(),
+      getOrCreateClientId: vi.fn().mockResolvedValue("test-client-id"),
+    }))
+
+    vi.resetModules()
+    await import("./background_script")
+
+    const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
+      .calls
+    const onInstalledListener = listenerCalls[0][0]
+
+    await onInstalledListener({
+      reason: chrome.runtime.OnInstalledReason.UPDATE,
+    })
+
+    expect(chrome.tabs.create).not.toHaveBeenCalledWith(
+      expect.objectContaining({ url: "src/onboarding_page.html" }),
+    )
+  })
 })
 
 describe("Uninstall URL (onInstalled)", () => {

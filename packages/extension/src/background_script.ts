@@ -1,6 +1,7 @@
 import {
   isDebug,
   OPTION_PAGE_PATH,
+  ONBOARDING_PAGE_PATH,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   NEW_HUB_URL,
   SCREEN,
@@ -445,6 +446,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
       await Settings.reset()
       sendEvent(ANALYTICS_EVENTS.INSTALLED, {}, SCREEN.SERVICE_WORKER)
+      chrome.tabs.create({ url: ONBOARDING_PAGE_PATH })
     }
 
     await ContextMenu.init()

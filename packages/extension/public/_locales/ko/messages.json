@@ -1301,5 +1301,71 @@
   },
   "hub_login": {
     "message": "Hub에 로그인"
+  },
+  "onboarding_step0Title": {
+    "message": "Selection Command을 설치해 주셔서 감사합니다!"
+  },
+  "onboarding_step0Body": {
+    "message": "먼저 1분 동안 직접 사용해보며 체험해 봅시다."
+  },
+  "onboarding_startButton": {
+    "message": "시작하기"
+  },
+  "onboarding_skipButton": {
+    "message": "건너뛰기"
+  },
+  "onboarding_step1Explain": {
+    "message": "아래 텍스트를 선택해서 바로 검색해 보세요."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Selection Command를 사용하면 검색, AI에게 질문, 링크 미리보기를 클릭 한 번으로 실행할 수 있습니다."
+  },
+  "onboarding_step1Callout": {
+    "message": "이 명령을 실행하면 Google로 검색할 수 있습니다."
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "이제 궁금했던 정보를 바로 검색할 수 있게 되었습니다."
+  },
+  "onboarding_nextButton": {
+    "message": "다음"
+  },
+  "onboarding_step2Explain": {
+    "message": "다음으로 아래 텍스트에 대해 AI에게 물어봅시다."
+  },
+  "onboarding_step2TargetText": {
+    "message": "웹페이지의 텍스트를 프롬프트 템플릿에 넣어 실행할 수 있는 확장 프로그램으로 무엇을 할 수 있을지 아이디어를 생각해 보세요."
+  },
+  "onboarding_step2Callout": {
+    "message": "이 명령을 실행하면 선택한 텍스트를 AI로 보낼 수 있습니다."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "이제 페이지를 읽으면서 바로 AI에게 무엇이든 물어볼 수 있습니다."
+  },
+  "onboarding_step3Explain": {
+    "message": "마지막으로 새 탭을 열지 않고 링크를 미리 볼까요? 아래 링크를 Shift+클릭하세요."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "샘플 링크"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "페이지를 벗어나지 않고 링크를 미리 볼 수 있습니다."
+  },
+  "onboarding_step4Explain": {
+    "message": "지금까지 사용해본 명령어는 설정 화면에서 언제든지 편집, 삭제하거나 새로 추가할 수 있습니다."
+  },
+  "onboarding_finishButton": {
+    "message": "완료"
+  },
+  "onboarding_completeTitle": {
+    "message": "준비가 완료되었습니다!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command를 사용할 준비가 되었습니다. 페이지에서 텍스트를 선택해 바로 사용해 보세요."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "설정 열기"
+  },
+  "onboarding_closeButton": {
+    "message": "닫기"
   }
 }

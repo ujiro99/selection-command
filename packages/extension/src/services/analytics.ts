@@ -48,6 +48,12 @@ export const ANALYTICS_EVENTS = {
   COMMAND_EDIT: "command_edit",
   COMMAND_REMOVE: "command_remove",
   COMMAND_SHARE: "command_share",
+  ONBOARDING_START: "onboarding_start",
+  ONBOARDING_SKIP: "onboarding_skip",
+  ONBOARDING_FIRST_SELECTION: "onboarding_first_selection",
+  ONBOARDING_COMMAND_EXECUTE: "onboarding_command_execute",
+  ONBOARDING_FIRST_VALUE: "onboarding_first_value",
+  ONBOARDING_COMPLETE: "onboarding_complete",
 } as const
 
 export type AnalyticsEventName =

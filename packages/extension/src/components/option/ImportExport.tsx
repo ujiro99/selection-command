@@ -270,6 +270,7 @@ export function ImportExport() {
           hasShownReviewRequest = false,
           hasDismissedPromptHistoryBanner = false,
           hasShownHubShareToast = false,
+          hasShownOnboarding = false,
         } = await enhancedSettings.get()
         const data = await migrate({
           ...importJson,
@@ -277,6 +278,7 @@ export function ImportExport() {
           hasShownReviewRequest,
           hasDismissedPromptHistoryBanner,
           hasShownHubShareToast,
+          hasShownOnboarding,
           stars: [],
         })
         await Settings.set(data)

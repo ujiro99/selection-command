@@ -1319,5 +1319,93 @@
   },
   "hub_login": {
     "message": "Login to Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Thanks for installing Selection Command!",
+    "description": "Onboarding Step0 (intro screen) heading, shown right after install."
+  },
+  "onboarding_step0Body": {
+    "message": "Let's try it out for about a minute, using it as you go.",
+    "description": "Onboarding Step0 (intro screen) body text."
+  },
+  "onboarding_startButton": {
+    "message": "Get Started",
+    "description": "Onboarding Step0 button that advances to Step1 (Search)."
+  },
+  "onboarding_skipButton": {
+    "message": "Skip",
+    "description": "Button shown on every onboarding step to end the onboarding early."
+  },
+  "onboarding_step1Explain": {
+    "message": "Select the text below to try a search right away.",
+    "description": "Onboarding Step1 (Search command) instruction shown before the user selects the sample text."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Selection Command lets you search, ask AI, or preview links in a single click.",
+    "description": "Onboarding Step1 sample text the user is asked to select to trigger the real popup menu."
+  },
+  "onboarding_step1Callout": {
+    "message": "Click this command to search Google.",
+    "description": "Onboarding Step1 callout/speech-bubble text pointing at the default Google search command in the popup menu."
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "That's it - you can now search for anything you select in an instant.",
+    "description": "Onboarding Step1 value message shown after the user runs the search command and returns to the onboarding tab."
+  },
+  "onboarding_nextButton": {
+    "message": "Next",
+    "description": "Button that advances from a step's value message to the next onboarding step."
+  },
+  "onboarding_step2Explain": {
+    "message": "Next, let's ask AI about the text below.",
+    "description": "Onboarding Step2 (AiPrompt command) instruction shown before the user selects the sample text."
+  },
+  "onboarding_step2TargetText": {
+    "message": "This is an extension that lets you embed selected text from a web page into a prompt template and run it. Think of some ideas for what you could use it for.",
+    "description": "Onboarding Step2 sample text the user is asked to select to trigger the AiPrompt command."
+  },
+  "onboarding_step2Callout": {
+    "message": "Click this command to send your selection to AI.",
+    "description": "Onboarding Step2 callout/speech-bubble text pointing at the onboarding's dedicated AiPrompt command in the popup menu."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "You can now ask AI about anything you select, right from the page you're reading.",
+    "description": "Onboarding Step2 value message shown after the user runs the AiPrompt command."
+  },
+  "onboarding_step3Explain": {
+    "message": "Finally, let's preview a link without opening a new tab. Shift+click the link below.",
+    "description": "Onboarding Step3 (Link Preview) instruction."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Sample Link",
+    "description": "Label of the sample link shown in Onboarding Step3 for the user to Shift+click."
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "You can preview links without leaving the page.",
+    "description": "Onboarding Step3 value message shown after the user triggers Link Preview."
+  },
+  "onboarding_step4Explain": {
+    "message": "The commands you tried can be edited, removed, or added to anytime from Settings.",
+    "description": "Onboarding Step4 (Customize) explanation shown after Link Preview, before the final Complete screen."
+  },
+  "onboarding_finishButton": {
+    "message": "Finish",
+    "description": "Onboarding Step4 button that advances to the final Complete screen."
+  },
+  "onboarding_completeTitle": {
+    "message": "You're all set!",
+    "description": "Onboarding Step5 (Complete) heading, the final screen."
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command is ready to use - just select text on any page to get started.",
+    "description": "Onboarding Step5 (Complete) body text."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Open Settings",
+    "description": "Onboarding Step5 button that opens the extension's options page."
+  },
+  "onboarding_closeButton": {
+    "message": "Close",
+    "description": "Onboarding Step5 button that closes the onboarding tab."
   }
 }

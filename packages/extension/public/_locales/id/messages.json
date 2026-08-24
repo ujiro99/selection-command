@@ -1304,5 +1304,71 @@
   },
   "hub_login": {
     "message": "Masuk ke Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Terima kasih telah menginstal Selection Command!"
+  },
+  "onboarding_step0Body": {
+    "message": "Mari coba selama sekitar satu menit sambil langsung mempraktikkannya."
+  },
+  "onboarding_startButton": {
+    "message": "Mulai"
+  },
+  "onboarding_skipButton": {
+    "message": "Lewati"
+  },
+  "onboarding_step1Explain": {
+    "message": "Pilih teks di bawah ini untuk langsung mencoba pencarian."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Dengan Selection Command, Anda bisa mencari, bertanya ke AI, atau melihat pratinjau tautan hanya dengan satu klik."
+  },
+  "onboarding_step1Callout": {
+    "message": "Klik perintah ini untuk mencari di Google."
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Selesai — sekarang Anda bisa langsung mencari apa pun yang Anda pilih."
+  },
+  "onboarding_nextButton": {
+    "message": "Berikutnya"
+  },
+  "onboarding_step2Explain": {
+    "message": "Selanjutnya, mari tanyakan ke AI tentang teks di bawah ini."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Ini adalah ekstensi yang memungkinkan Anda menyematkan teks yang dipilih dari halaman web ke dalam templat prompt dan menjalankannya. Pikirkan beberapa ide tentang apa yang bisa Anda lakukan dengannya."
+  },
+  "onboarding_step2Callout": {
+    "message": "Klik perintah ini untuk mengirim teks yang dipilih ke AI."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Sekarang Anda bisa bertanya ke AI tentang apa pun yang Anda pilih, langsung dari halaman yang sedang Anda baca."
+  },
+  "onboarding_step3Explain": {
+    "message": "Terakhir, mari pratinjau sebuah tautan tanpa membuka tab baru. Klik tautan di bawah ini sambil menekan tombol Shift."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Tautan Contoh"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Anda bisa melihat pratinjau tautan tanpa meninggalkan halaman."
+  },
+  "onboarding_step4Explain": {
+    "message": "Perintah yang baru saja Anda coba dapat diedit, dihapus, atau ditambahkan kapan saja dari Pengaturan."
+  },
+  "onboarding_finishButton": {
+    "message": "Selesai"
+  },
+  "onboarding_completeTitle": {
+    "message": "Semua sudah siap!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command siap digunakan. Cukup pilih teks di halaman mana pun untuk memulai."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Buka Pengaturan"
+  },
+  "onboarding_closeButton": {
+    "message": "Tutup"
   }
 }
