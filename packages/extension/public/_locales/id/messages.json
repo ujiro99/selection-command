@@ -1339,7 +1339,7 @@
     "message": "Ini adalah ekstensi yang memungkinkan Anda menyematkan teks yang dipilih dari halaman web ke dalam templat prompt dan menjalankannya. Pikirkan beberapa ide tentang apa yang bisa Anda lakukan dengannya."
   },
   "onboarding_step2Callout": {
-    "message": "Klik perintah ini untuk mengirim teks yang dipilih ke AI."
+    "message": "Klik perintah ini untuk mengirim teks yang dipilih melalui prompt AI yang sudah diatur sebelumnya."
   },
   "onboarding_step2ValueMessage": {
     "message": "Sekarang Anda bisa bertanya ke AI tentang apa pun yang Anda pilih, langsung dari halaman yang sedang Anda baca."
@@ -1370,5 +1370,20 @@
   },
   "onboarding_closeButton": {
     "message": "Tutup"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Kembali ke tab ini dan pesan ini akan hilang secara otomatis."
+  },
+  "onboarding_step1Pattern": {
+    "message": "Pilih → Perintah → Cari"
+  },
+  "onboarding_step2Pattern": {
+    "message": "Pilih → Perintah → AI"
+  },
+  "onboarding_step3Pattern": {
+    "message": "Pilih → Perintah → Pratinjau"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Jelajahi Command Hub"
   }
 }

@@ -1336,7 +1336,7 @@
     "message": "Questa è un'estensione che ti permette di inserire il testo selezionato da una pagina web in un modello di prompt ed eseguirlo. Pensa a qualche idea su come potresti usarla."
   },
   "onboarding_step2Callout": {
-    "message": "Fai clic su questo comando per inviare la tua selezione all'IA."
+    "message": "Fai clic su questo comando per inviare la selezione tramite un prompt IA preimpostato."
   },
   "onboarding_step2ValueMessage": {
     "message": "Ora puoi chiedere all'IA qualsiasi cosa selezioni, direttamente dalla pagina che stai leggendo."
@@ -1367,5 +1367,20 @@
   },
   "onboarding_closeButton": {
     "message": "Chiudi"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Torna a questa scheda e il messaggio scomparirà automaticamente."
+  },
+  "onboarding_step1Pattern": {
+    "message": "Selezione → Comando → Ricerca"
+  },
+  "onboarding_step2Pattern": {
+    "message": "Selezione → Comando → IA"
+  },
+  "onboarding_step3Pattern": {
+    "message": "Selezione → Comando → Anteprima"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Esplora il Command Hub"
   }
 }

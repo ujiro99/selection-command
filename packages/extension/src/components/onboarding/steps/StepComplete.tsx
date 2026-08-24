@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { t } from "@/services/i18n"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
+import { closeOnboardingTab } from "../onboardingWindow"
 import type { UseOnboardingState } from "../useOnboardingState"
 
 type Props = {
@@ -34,7 +35,7 @@ export function StepComplete({ onboarding }: Props) {
         <button
           type="button"
           className="rounded-md px-5 py-2.5 text-sm font-medium text-gray-500 hover:text-gray-700"
-          onClick={() => window.close()}
+          onClick={() => closeOnboardingTab()}
         >
           {t("onboarding_closeButton")}
         </button>

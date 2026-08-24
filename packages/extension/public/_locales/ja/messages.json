@@ -1333,7 +1333,7 @@
     "message": "Webページ上のテキストをプロンプトテンプレートに埋め込んで実行できる拡張機能で、どんなことが出来るか、アイデアを考えてください。"
   },
   "onboarding_step2Callout": {
-    "message": "このコマンドを実行すると、選択したテキストをAIに送れます。"
+    "message": "このコマンドを実行すると、選択したテキストをあらかじめ設定したプロンプトでAIに送れます。"
   },
   "onboarding_step2ValueMessage": {
     "message": "Webページを読みながら、その場でAIに質問できました。"
@@ -1364,5 +1364,20 @@
   },
   "onboarding_closeButton": {
     "message": "閉じる"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "もとの画面を選択すると、自動的に消えます"
+  },
+  "onboarding_step1Pattern": {
+    "message": "選択 → コマンド → 検索"
+  },
+  "onboarding_step2Pattern": {
+    "message": "選択 → コマンド → AI"
+  },
+  "onboarding_step3Pattern": {
+    "message": "選択 → コマンド → プレビュー"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Command Hubを見る"
   }
 }

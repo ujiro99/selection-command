@@ -1336,7 +1336,7 @@
     "message": "Dies ist eine Erweiterung, mit der du markierten Text von einer Webseite in eine Prompt-Vorlage einfügen und ausführen kannst. Überlege dir ein paar Ideen, wofür du sie nutzen könntest."
   },
   "onboarding_step2Callout": {
-    "message": "Klicke auf diesen Befehl, um deine Auswahl an die KI zu senden."
+    "message": "Führe diesen Befehl aus, um deine Auswahl über einen voreingestellten KI-Prompt zu senden."
   },
   "onboarding_step2ValueMessage": {
     "message": "Jetzt kannst du die KI direkt auf der Seite, die du liest, zu allem fragen, was du markierst."
@@ -1367,5 +1367,20 @@
   },
   "onboarding_closeButton": {
     "message": "Schließen"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Wechsle zurück zu diesem Tab, dann verschwindet diese Meldung automatisch."
+  },
+  "onboarding_step1Pattern": {
+    "message": "Auswählen → Befehl → Suchen"
+  },
+  "onboarding_step2Pattern": {
+    "message": "Auswählen → Befehl → KI fragen"
+  },
+  "onboarding_step3Pattern": {
+    "message": "Auswählen → Befehl → Vorschau"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Command Hub durchsuchen"
   }
 }

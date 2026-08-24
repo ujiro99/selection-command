@@ -38,6 +38,9 @@ export function StepLinkPreview({ onboarding }: Props) {
             <p className="max-w-md text-base text-gray-600">
               {t("onboarding_step3ValueMessage")}
             </p>
+            <p className="text-xs font-medium tracking-wide text-gray-400 uppercase">
+              {t("onboarding_step3Pattern")}
+            </p>
             <button
               type="button"
               className="rounded-md bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-700"

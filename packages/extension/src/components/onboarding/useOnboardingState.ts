@@ -5,6 +5,7 @@ import { sendOnboardingEvent } from "./onboardingAnalytics"
 import { Settings } from "@/services/settings/settings"
 import { getCurrentLocale } from "@/services/i18n"
 import { VERSION } from "@/const"
+import { closeOnboardingTab } from "./onboardingWindow"
 
 export type UseOnboardingState = ReturnType<typeof useOnboardingState>
 
@@ -56,17 +57,23 @@ export function useOnboardingState() {
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_FIRST_VALUE)
   }, [])
 
-  const markFinished = useCallback(() => {
+  const markFinished = useCallback(async () => {
     if (finishedRef.current) return
     finishedRef.current = true
     // Never show the onboarding tab again after this run, whether the user
-    // completed it or skipped partway through.
-    Settings.update("hasShownOnboarding", () => true)
+    // completed it or skipped partway through. Awaited by callers so the
+    // setting is persisted before the tab closes.
+    await Settings.update("hasShownOnboarding", () => true)
   }, [])
 
-  const skip = useCallback(() => {
+  // Unlike Complete's "Close" button (a deliberate final step the user
+  // reaches after reading the summary), Skip fires immediately on click, so
+  // there's no natural delay for the settings write to land - explicitly
+  // await it before closing the tab.
+  const skip = useCallback(async () => {
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_SKIP, { step })
-    markFinished()
+    await markFinished()
+    await closeOnboardingTab()
   }, [step, markFinished])
 
   const complete = useCallback(() => {

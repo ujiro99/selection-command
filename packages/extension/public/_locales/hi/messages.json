@@ -1336,7 +1336,7 @@
     "message": "यह एक ऐसा एक्सटेंशन है जो वेब पेज पर चुने गए टेक्स्ट को एक प्रॉम्प्ट टेम्पलेट में डालकर चला सकता है। सोचिए, इससे आप क्या-क्या कर सकते हैं।"
   },
   "onboarding_step2Callout": {
-    "message": "इस कमांड को चलाने पर आपकी चुनी हुई टेक्स्ट AI को भेजी जाएगी।"
+    "message": "इस कमांड को चलाने पर आपका चयन पहले से सेट किए गए प्रॉम्प्ट के ज़रिए AI को भेजा जाता है।"
   },
   "onboarding_step2ValueMessage": {
     "message": "अब आप जो पेज पढ़ रहे हैं, वहीं से चुनी हुई किसी भी चीज़ के बारे में AI से पूछ सकते हैं।"
@@ -1367,5 +1367,20 @@
   },
   "onboarding_closeButton": {
     "message": "बंद करें"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "इस टैब पर वापस आएं और यह संदेश अपने आप गायब हो जाएगा।"
+  },
+  "onboarding_step1Pattern": {
+    "message": "चयन → कमांड → खोज"
+  },
+  "onboarding_step2Pattern": {
+    "message": "चयन → कमांड → AI"
+  },
+  "onboarding_step3Pattern": {
+    "message": "चयन → कमांड → पूर्वावलोकन"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Command Hub देखें"
   }
 }

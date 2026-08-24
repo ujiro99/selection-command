@@ -30,6 +30,7 @@ export enum BgCommand {
   getTabId = "getTabId",
   getActiveTabId = "getActiveTabId",
   setClipboard = "setClipboard",
+  closeTab = "closeTab",
   // Hub
   shareCommandToHub = "shareCommandToHub",
   editCommandToHub = "editCommandToHub",

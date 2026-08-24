@@ -1336,7 +1336,7 @@
     "message": "Esta es una extensión que te permite insertar el texto seleccionado de una página web en una plantilla de prompt y ejecutarlo. Piensa en algunas ideas de para qué podrías usarla."
   },
   "onboarding_step2Callout": {
-    "message": "Haz clic en este comando para enviar tu selección a la IA."
+    "message": "Haz clic en este comando para enviar tu selección a través de un prompt de IA preconfigurado."
   },
   "onboarding_step2ValueMessage": {
     "message": "Ahora puedes preguntarle a la IA sobre cualquier cosa que selecciones, sin salir de la página que estás leyendo."
@@ -1367,5 +1367,20 @@
   },
   "onboarding_closeButton": {
     "message": "Cerrar"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Vuelve a esta pestaña y este mensaje desaparecerá automáticamente."
+  },
+  "onboarding_step1Pattern": {
+    "message": "Selección → Comando → Búsqueda"
+  },
+  "onboarding_step2Pattern": {
+    "message": "Selección → Comando → IA"
+  },
+  "onboarding_step3Pattern": {
+    "message": "Selección → Comando → Vista previa"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Explorar el Command Hub"
   }
 }

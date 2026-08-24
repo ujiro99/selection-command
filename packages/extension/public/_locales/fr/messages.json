@@ -1336,7 +1336,7 @@
     "message": "Il s'agit d'une extension qui permet d'intégrer le texte sélectionné d'une page web dans un modèle de prompt et de l'exécuter. Réfléchissez à quelques idées d'utilisation."
   },
   "onboarding_step2Callout": {
-    "message": "Cliquez sur cette commande pour envoyer votre sélection à l'IA."
+    "message": "Cliquez sur cette commande pour envoyer votre sélection via un prompt IA préconfiguré."
   },
   "onboarding_step2ValueMessage": {
     "message": "Vous pouvez désormais interroger l'IA sur tout ce que vous sélectionnez, directement depuis la page que vous lisez."
@@ -1367,5 +1367,20 @@
   },
   "onboarding_closeButton": {
     "message": "Fermer"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Revenez à cet onglet et ce message disparaîtra automatiquement."
+  },
+  "onboarding_step1Pattern": {
+    "message": "Sélection → Commande → Recherche"
+  },
+  "onboarding_step2Pattern": {
+    "message": "Sélection → Commande → IA"
+  },
+  "onboarding_step3Pattern": {
+    "message": "Sélection → Commande → Aperçu"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Parcourir le Command Hub"
   }
 }

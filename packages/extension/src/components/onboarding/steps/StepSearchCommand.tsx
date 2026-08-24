@@ -11,6 +11,7 @@ import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
+import css from "../Onboarding.module.css"
 
 type Props = {
   onboarding: UseOnboardingState
@@ -106,6 +107,9 @@ export function StepSearchCommand({ onboarding }: Props) {
             <p className="max-w-md text-base text-gray-600">
               {t("onboarding_step1ValueMessage")}
             </p>
+            <p className="text-xs font-medium tracking-wide text-gray-400 uppercase">
+              {t("onboarding_step1Pattern")}
+            </p>
             <button
               type="button"
               className="rounded-md bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-700"
@@ -114,6 +118,10 @@ export function StepSearchCommand({ onboarding }: Props) {
               {t("onboarding_nextButton")}
             </button>
           </div>
+        ) : phase === StepPhase.WAIT_RETURN ? (
+          <p className={`max-w-md text-base text-gray-600 ${css.returnHint}`}>
+            {t("onboarding_step1ReturnHint")}
+          </p>
         ) : (
           <p className="max-w-md text-base text-gray-600">
             {t("onboarding_step1Explain")}

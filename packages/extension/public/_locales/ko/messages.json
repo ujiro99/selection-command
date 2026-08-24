@@ -1336,7 +1336,7 @@
     "message": "웹페이지의 텍스트를 프롬프트 템플릿에 넣어 실행할 수 있는 확장 프로그램으로 무엇을 할 수 있을지 아이디어를 생각해 보세요."
   },
   "onboarding_step2Callout": {
-    "message": "이 명령을 실행하면 선택한 텍스트를 AI로 보낼 수 있습니다."
+    "message": "이 명령을 실행하면 선택한 텍스트를 미리 설정된 프롬프트로 AI에 보낼 수 있습니다."
   },
   "onboarding_step2ValueMessage": {
     "message": "이제 페이지를 읽으면서 바로 AI에게 무엇이든 물어볼 수 있습니다."
@@ -1367,5 +1367,20 @@
   },
   "onboarding_closeButton": {
     "message": "닫기"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "이 탭으로 돌아오면 이 메시지는 자동으로 사라집니다."
+  },
+  "onboarding_step1Pattern": {
+    "message": "선택 → 명령 → 검색"
+  },
+  "onboarding_step2Pattern": {
+    "message": "선택 → 명령 → AI"
+  },
+  "onboarding_step3Pattern": {
+    "message": "선택 → 명령 → 미리보기"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Command Hub 둘러보기"
   }
 }

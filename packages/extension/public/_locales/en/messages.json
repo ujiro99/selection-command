@@ -1365,7 +1365,7 @@
     "description": "Onboarding Step2 sample text the user is asked to select to trigger the AiPrompt command."
   },
   "onboarding_step2Callout": {
-    "message": "Click this command to send your selection to AI.",
+    "message": "Click this command to send your selection through a pre-set AI prompt.",
     "description": "Onboarding Step2 callout/speech-bubble text pointing at the onboarding's dedicated AiPrompt command in the popup menu."
   },
   "onboarding_step2ValueMessage": {
@@ -1407,5 +1407,25 @@
   "onboarding_closeButton": {
     "message": "Close",
     "description": "Onboarding Step5 button that closes the onboarding tab."
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Switch back to this tab and this message disappears automatically.",
+    "description": "Onboarding Step1 hint shown while waiting for the user to return from the search command's popup/tab."
+  },
+  "onboarding_step1Pattern": {
+    "message": "Select → Command → Search",
+    "description": "Onboarding Step1 short pattern caption reinforcing the select-command-result mental model."
+  },
+  "onboarding_step2Pattern": {
+    "message": "Select → Command → Ask AI",
+    "description": "Onboarding Step2 short pattern caption reinforcing the select-command-result mental model."
+  },
+  "onboarding_step3Pattern": {
+    "message": "Select → Command → Preview",
+    "description": "Onboarding Step3 short pattern caption reinforcing the select-command-result mental model."
+  },
+  "onboarding_step4HubLink": {
+    "message": "Browse the Command Hub",
+    "description": "Onboarding Step4 link label pointing to the Command Hub to discover more commands."
   }
 }

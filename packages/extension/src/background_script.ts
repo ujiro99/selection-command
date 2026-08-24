@@ -59,6 +59,30 @@ const getActiveTabId = (
   return true
 }
 
+// Closes the sender's own tab. Routed through the background script (rather
+// than the page calling chrome.tabs.remove() on itself) since a page closing
+// its own tab is the more robust pattern - it keeps tab lifecycle decisions
+// in one place alongside the rest of the extension's tab management.
+//
+// Responds *before* removing the tab, not after: the sender is awaiting this
+// response in the very tab we're about to close, so if the response only
+// arrived once chrome.tabs.remove() had resolved, that await would be racing
+// its own tab's teardown. Acknowledging first lets the sender's promise
+// settle cleanly while its tab is still fully alive; the removal itself
+// follows as a fire-and-forget side effect.
+const closeTab = (
+  _: unknown,
+  sender: Sender,
+  response: (res: unknown) => void,
+) => {
+  const tabId = sender.tab?.id
+  response(tabId != null)
+  if (tabId != null) {
+    chrome.tabs.remove(tabId)
+  }
+  return false
+}
+
 const onConnect = async function (port: chrome.runtime.Port) {
   if (port.name !== CONNECTION_APP) return
   port.onDisconnect.addListener(() => onDisconnect(port))
@@ -288,6 +312,7 @@ const commandFuncs = {
 
   [BgCommand.getTabId]: getTabId,
   [BgCommand.getActiveTabId]: getActiveTabId,
+  [BgCommand.closeTab]: closeTab,
 
   //
   // Hub

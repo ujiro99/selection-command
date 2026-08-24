@@ -1339,7 +1339,7 @@
     "message": "Ini adalah sambungan yang membolehkan anda menyisipkan teks yang dipilih daripada halaman web ke dalam templat gesaan dan menjalankannya. Fikirkan beberapa idea tentang apa yang boleh anda lakukan dengannya."
   },
   "onboarding_step2Callout": {
-    "message": "Klik arahan ini untuk menghantar pilihan anda kepada AI."
+    "message": "Klik perintah ini untuk menghantar pilihan anda melalui gesaan AI yang telah ditetapkan."
   },
   "onboarding_step2ValueMessage": {
     "message": "Kini anda boleh bertanya kepada AI tentang apa sahaja yang anda pilih, terus daripada halaman yang sedang anda baca."
@@ -1370,5 +1370,20 @@
   },
   "onboarding_closeButton": {
     "message": "Tutup"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Kembali ke tab ini dan mesej ini akan hilang secara automatik."
+  },
+  "onboarding_step1Pattern": {
+    "message": "Pilih → Perintah → Cari"
+  },
+  "onboarding_step2Pattern": {
+    "message": "Pilih → Perintah → AI"
+  },
+  "onboarding_step3Pattern": {
+    "message": "Pilih → Perintah → Pratonton"
+  },
+  "onboarding_step4HubLink": {
+    "message": "Terokai Command Hub"
   }
 }
