@@ -39,18 +39,17 @@ export function OnboardingTargetText({ text, demoActive, selected }: Props) {
 
       <div
         className={cn(
-          "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 shadow-[0_1px_2px_rgba(15,23,42,.04),0_14px_30px_-20px_rgba(15,23,42,.3)]",
-          selected ? "border-blue-200 bg-blue-50" : "border-slate-200 bg-white",
+          "relative max-w-[560px] rounded-lg border px-[26px] py-5 text-left text-base leading-[1.9] text-slate-800 shadow-[0_1px_2px_rgba(15,23,42,.04),0_14px_30px_-20px_rgba(15,23,42,.3)] select-text",
+          "border-slate-200 bg-white",
           !selected &&
-            !runDemo &&
-            "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
+          !runDemo &&
+          "[--onboarding-ring-color:rgba(8,47,73,0.16)] animate-onboarding-ring motion-reduce:animate-none",
         )}
       >
         <span
           ref={textRef}
           className={cn(
             "[box-decoration-break:clone]",
-            selected && "rounded-sm bg-blue-200",
             // `runDemo` is already false when prefers-reduced-motion is on
             // (see usePrefersReducedMotion() above), so no motion-reduce:
             // variant is needed here.

@@ -120,7 +120,7 @@ export function StepSearchCommand({ onboarding }: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-10 select-none">
       <OnboardingFadeIn
         key={phase}
         className="flex flex-col items-center gap-4"
@@ -130,13 +130,7 @@ export function StepSearchCommand({ onboarding }: Props) {
             {t("onboarding_step1ReturnHint")}
           </p>
         ) : (
-          <p
-            className={
-              phase === StepPhase.EXPLAIN
-                ? "max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-900"
-                : "max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-500"
-            }
-          >
+          <p className="max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-900">
             {t("onboarding_step1Explain")}
           </p>
         )}

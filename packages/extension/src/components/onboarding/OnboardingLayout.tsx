@@ -24,7 +24,7 @@ export function OnboardingLayout({ step, onSkip, children }: Props) {
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-white">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(56%_50%_at_50%_46%,rgba(15,23,42,0)_0%,rgba(15,23,42,0)_52%,rgba(15,23,42,0.12)_100%)]"
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(56%_50%_at_50%_50%,rgba(15,23,42,0)_0%,rgba(15,23,42,0)_52%,rgba(15,23,42,0.12)_100%)]"
       />
 
       <div className="relative z-10 flex items-center justify-between px-10 py-5">
