@@ -4,6 +4,7 @@ import { SelectAnchor } from "@/components/SelectAnchor"
 import { Popup } from "@/components/Popup"
 import { LinkSelector } from "@/components/LinkSelector"
 import { useOnboardingState } from "./useOnboardingState"
+import { OnboardingLayout } from "./OnboardingLayout"
 import { StepIntro } from "./steps/StepIntro"
 import { StepSearchCommand } from "./steps/StepSearchCommand"
 import { StepAiPromptCommand } from "./steps/StepAiPromptCommand"
@@ -21,7 +22,7 @@ export function OnboardingPage() {
 
   return (
     <SelectContextProvider isPopupHover={isHover}>
-      <div className="mx-auto max-w-2xl px-6">
+      <OnboardingLayout step={onboarding.step} onSkip={onboarding.skip}>
         {onboarding.step === OnboardingStep.INTRO && (
           <StepIntro onboarding={onboarding} />
         )}
@@ -40,7 +41,7 @@ export function OnboardingPage() {
         {onboarding.step === OnboardingStep.COMPLETE && (
           <StepComplete onboarding={onboarding} />
         )}
-      </div>
+      </OnboardingLayout>
 
       <SelectAnchor ref={setPositionElm} />
       <Popup positionElm={positionElm} onHover={setIsHover} />

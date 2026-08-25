@@ -1323,14 +1323,26 @@
   "onboarding_step1TargetText": {
     "message": "Dengan Selection Command, Anda bisa mencari, bertanya ke AI, atau melihat pratinjau tautan hanya dengan satu klik."
   },
+  "onboarding_selectHint": {
+    "message": "Seret untuk memilih teks di bawah"
+  },
+  "onboarding_railSelect": {
+    "message": "Pilih"
+  },
+  "onboarding_railCommand": {
+    "message": "Perintah"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Cari"
+  },
   "onboarding_step1Callout": {
     "message": "Klik perintah ini untuk mencari di Google."
   },
+  "onboarding_step1ReturnHint": {
+    "message": "Kembali ke tab ini dan pesan ini akan hilang secara otomatis."
+  },
   "onboarding_step1ValueMessage": {
     "message": "Selesai — sekarang Anda bisa langsung mencari apa pun yang Anda pilih."
-  },
-  "onboarding_nextButton": {
-    "message": "Berikutnya"
   },
   "onboarding_step2Explain": {
     "message": "Selanjutnya, mari tanyakan ke AI tentang teks di bawah ini."
@@ -1341,6 +1353,9 @@
   "onboarding_step2Callout": {
     "message": "Klik perintah ini untuk mengirim teks yang dipilih melalui prompt AI yang sudah diatur sebelumnya."
   },
+  "onboarding_railResultAi": {
+    "message": "AI"
+  },
   "onboarding_step2ValueMessage": {
     "message": "Sekarang Anda bisa bertanya ke AI tentang apa pun yang Anda pilih, langsung dari halaman yang sedang Anda baca."
   },
@@ -1350,14 +1365,29 @@
   "onboarding_step3LinkLabel": {
     "message": "Tautan Contoh"
   },
+  "onboarding_clickKeycap": {
+    "message": "Klik"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Pratinjau"
+  },
   "onboarding_step3ValueMessage": {
     "message": "Anda bisa melihat pratinjau tautan tanpa meninggalkan halaman."
   },
-  "onboarding_step4Explain": {
-    "message": "Perintah yang baru saja Anda coba dapat diedit, dihapus, atau ditambahkan kapan saja dari Pengaturan."
+  "onboarding_nextButton": {
+    "message": "Berikutnya"
   },
-  "onboarding_finishButton": {
-    "message": "Selesai"
+  "onboarding_step4Explain": {
+    "message": "Perintah yang Anda coba dapat ditambahkan atau diedit kapan saja dari Pengaturan atau Selection Command Hub."
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "Edit di Pengaturan"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Temukan lebih banyak di Command Hub"
+  },
+  "onboarding_step4HubAddChip": {
+    "message": "Tambah"
   },
   "onboarding_completeTitle": {
     "message": "Semua sudah siap!"
@@ -1369,21 +1399,6 @@
     "message": "Buka Pengaturan"
   },
   "onboarding_closeButton": {
-    "message": "Tutup"
-  },
-  "onboarding_step1ReturnHint": {
-    "message": "Kembali ke tab ini dan pesan ini akan hilang secara otomatis."
-  },
-  "onboarding_step1Pattern": {
-    "message": "Pilih → Perintah → Cari"
-  },
-  "onboarding_step2Pattern": {
-    "message": "Pilih → Perintah → AI"
-  },
-  "onboarding_step3Pattern": {
-    "message": "Pilih → Perintah → Pratinjau"
-  },
-  "onboarding_step4HubLink": {
-    "message": "Jelajahi Command Hub"
+    "message": "Tutup dan coba sekarang"
   }
 }

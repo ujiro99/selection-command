@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { t } from "@/services/i18n"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { isEmpty } from "@/lib/utils"
 import { ONBOARDING_AI_PROMPT_COMMAND_ID } from "../onboardingCommand"
 import { subscribeCommandExecuted } from "../onboardingEvents"
-import { OnboardingOverlay } from "../OnboardingOverlay"
 import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
+import { OnboardingTargetText } from "../OnboardingTargetText"
+import { OnboardingRail } from "../OnboardingRail"
+import { OnboardingValueShown } from "../OnboardingValueShown"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
 
@@ -17,11 +19,11 @@ type Props = {
 // Step2: run the onboarding's dedicated AiPrompt command (see
 // onboardingCommand.ts), which opens the side panel - unlike Step1's search,
 // the onboarding page never loses visibility here, so there's no separate
-// "wait for the user to come back" phase.
+// "wait for the user to come back" phase, and the rail only ever needs
+// beats 0 (selecting) and 1 (running the command).
 export function StepAiPromptCommand({ onboarding }: Props) {
   const { phase, setPhase } = onboarding
   const { selectionText } = useSelectContext()
-  const targetTextRef = useRef<HTMLSpanElement>(null)
   const [calloutElm, setCalloutElm] = useState<Element | null>(null)
 
   useEffect(() => {
@@ -65,56 +67,49 @@ export function StepAiPromptCommand({ onboarding }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
+  if (phase === StepPhase.VALUE_SHOWN) {
+    return (
+      <OnboardingValueShown
+        message={t("onboarding_step2ValueMessage")}
+        resultLabel={t("onboarding_railResultAi")}
+        onNext={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
+      />
+    )
+  }
+
   return (
-    <div className="flex flex-col items-center gap-6 py-16 text-center">
-      <OnboardingFadeIn key={phase}>
-        {phase === StepPhase.VALUE_SHOWN ? (
-          <div className="flex flex-col items-center gap-4">
-            <p className="max-w-md text-base text-gray-600">
-              {t("onboarding_step2ValueMessage")}
-            </p>
-            <p className="text-xs font-medium tracking-wide text-gray-400 uppercase">
-              {t("onboarding_step2Pattern")}
-            </p>
-            <button
-              type="button"
-              className="rounded-md bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-700"
-              onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
-            >
-              {t("onboarding_nextButton")}
-            </button>
-          </div>
-        ) : (
-          <p className="max-w-md text-base text-gray-600">
-            {t("onboarding_step2Explain")}
-          </p>
-        )}
+    <div className="flex flex-col items-center gap-4">
+      <OnboardingFadeIn
+        key={phase}
+        className="flex flex-col items-center gap-4"
+      >
+        <p
+          className={
+            phase === StepPhase.EXPLAIN
+              ? "max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-900"
+              : "max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-500"
+          }
+        >
+          {t("onboarding_step2Explain")}
+        </p>
       </OnboardingFadeIn>
 
-      {phase !== StepPhase.VALUE_SHOWN && (
-        <span
-          ref={targetTextRef}
-          className="rounded-md bg-gray-100 px-4 py-3 text-base"
-        >
-          {t("onboarding_step2TargetText")}
-        </span>
-      )}
-
-      {phase === StepPhase.EXPLAIN && (
-        <OnboardingOverlay targetRef={targetTextRef} />
-      )}
+      <OnboardingTargetText
+        text={t("onboarding_step2TargetText")}
+        demoActive={phase === StepPhase.EXPLAIN}
+        selected={phase !== StepPhase.EXPLAIN}
+      />
 
       <OnboardingCallout targetElm={calloutElm} open={calloutElm != null}>
         {t("onboarding_step2Callout")}
       </OnboardingCallout>
 
-      <button
-        type="button"
-        className="text-sm text-gray-400 hover:text-gray-600"
-        onClick={onboarding.skip}
-      >
-        {t("onboarding_skipButton")}
-      </button>
+      <OnboardingRail
+        selectLabel={t("onboarding_railSelect")}
+        commandLabel={t("onboarding_railCommand")}
+        resultLabel={t("onboarding_railResultAi")}
+        activeBeat={phase === StepPhase.WAIT_EXECUTE ? 1 : 0}
+      />
     </div>
   )
 }

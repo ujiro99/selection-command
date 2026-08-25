@@ -1320,14 +1320,26 @@
   "onboarding_step1TargetText": {
     "message": "С Selection Command вы можете искать, спрашивать ИИ или просматривать ссылки одним щелчком."
   },
+  "onboarding_selectHint": {
+    "message": "Перетащите, чтобы выделить текст ниже"
+  },
+  "onboarding_railSelect": {
+    "message": "Выделение"
+  },
+  "onboarding_railCommand": {
+    "message": "Команда"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Поиск"
+  },
   "onboarding_step1Callout": {
     "message": "Нажмите эту команду, чтобы выполнить поиск в Google."
   },
+  "onboarding_step1ReturnHint": {
+    "message": "Вернитесь на эту вкладку, и сообщение исчезнет автоматически."
+  },
   "onboarding_step1ValueMessage": {
     "message": "Готово — теперь вы можете мгновенно искать всё, что выделите."
-  },
-  "onboarding_nextButton": {
-    "message": "Далее"
   },
   "onboarding_step2Explain": {
     "message": "Далее давайте спросим ИИ о тексте ниже."
@@ -1338,6 +1350,9 @@
   "onboarding_step2Callout": {
     "message": "Нажмите эту команду, чтобы отправить выделенный текст через заранее заданный запрос к ИИ."
   },
+  "onboarding_railResultAi": {
+    "message": "ИИ"
+  },
   "onboarding_step2ValueMessage": {
     "message": "Теперь вы можете спрашивать ИИ о чём угодно прямо на странице, которую читаете."
   },
@@ -1347,14 +1362,29 @@
   "onboarding_step3LinkLabel": {
     "message": "Пример ссылки"
   },
+  "onboarding_clickKeycap": {
+    "message": "Клик"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Просмотр"
+  },
   "onboarding_step3ValueMessage": {
     "message": "Вы можете просматривать ссылки, не покидая страницу."
   },
-  "onboarding_step4Explain": {
-    "message": "Команды, которые вы только что попробовали, можно в любой момент изменить, удалить или добавить новые в настройках."
+  "onboarding_nextButton": {
+    "message": "Далее"
   },
-  "onboarding_finishButton": {
-    "message": "Готово"
+  "onboarding_step4Explain": {
+    "message": "Команды, которые вы попробовали, можно в любой момент добавить или изменить в настройках или в Selection Command Hub."
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "Изменить в настройках"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Найти больше в Command Hub"
+  },
+  "onboarding_step4HubAddChip": {
+    "message": "Добавить"
   },
   "onboarding_completeTitle": {
     "message": "Всё готово!"
@@ -1366,21 +1396,6 @@
     "message": "Открыть настройки"
   },
   "onboarding_closeButton": {
-    "message": "Закрыть"
-  },
-  "onboarding_step1ReturnHint": {
-    "message": "Вернитесь на эту вкладку, и сообщение исчезнет автоматически."
-  },
-  "onboarding_step1Pattern": {
-    "message": "Выделение → Команда → Поиск"
-  },
-  "onboarding_step2Pattern": {
-    "message": "Выделение → Команда → ИИ"
-  },
-  "onboarding_step3Pattern": {
-    "message": "Выделение → Команда → Просмотр"
-  },
-  "onboarding_step4HubLink": {
-    "message": "Открыть Command Hub"
+    "message": "Закрыть и попробовать"
   }
 }

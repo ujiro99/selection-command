@@ -6,7 +6,6 @@
 export const UTM_SOURCE = {
   OPTION_PAGE: "option-page",
   EXTENSION: "extension",
-  ONBOARDING: "onboarding",
 } as const
 export type UtmSource = (typeof UTM_SOURCE)[keyof typeof UTM_SOURCE]
 

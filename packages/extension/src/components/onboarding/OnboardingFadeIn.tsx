@@ -1,6 +1,5 @@
 import { ReactNode } from "react"
 import clsx from "clsx"
-import css from "./Onboarding.module.css"
 
 type Props = {
   children: ReactNode
@@ -12,5 +11,14 @@ type Props = {
 // `key`-less CSS animation (re-triggered by React remounting the element,
 // e.g. when the step/phase changes) rather than a JS animation library.
 export function OnboardingFadeIn({ children, className }: Props) {
-  return <div className={clsx(css.fadeIn, className)}>{children}</div>
+  return (
+    <div
+      className={clsx(
+        "motion-reduce:animate-none animate-onboarding-rise",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  )
 }

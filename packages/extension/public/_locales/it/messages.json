@@ -1320,14 +1320,26 @@
   "onboarding_step1TargetText": {
     "message": "Con Selection Command puoi cercare, chiedere all'IA o visualizzare l'anteprima dei link con un solo clic."
   },
+  "onboarding_selectHint": {
+    "message": "Trascina per selezionare il testo qui sotto"
+  },
+  "onboarding_railSelect": {
+    "message": "Seleziona"
+  },
+  "onboarding_railCommand": {
+    "message": "Comando"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Cerca"
+  },
   "onboarding_step1Callout": {
     "message": "Fai clic su questo comando per cercare su Google."
   },
+  "onboarding_step1ReturnHint": {
+    "message": "Torna a questa scheda e il messaggio scomparirà automaticamente."
+  },
   "onboarding_step1ValueMessage": {
     "message": "Fatto: ora puoi cercare all'istante qualsiasi cosa selezioni."
-  },
-  "onboarding_nextButton": {
-    "message": "Avanti"
   },
   "onboarding_step2Explain": {
     "message": "Ora chiediamo all'IA il testo qui sotto."
@@ -1338,6 +1350,9 @@
   "onboarding_step2Callout": {
     "message": "Fai clic su questo comando per inviare la selezione tramite un prompt IA preimpostato."
   },
+  "onboarding_railResultAi": {
+    "message": "IA"
+  },
   "onboarding_step2ValueMessage": {
     "message": "Ora puoi chiedere all'IA qualsiasi cosa selezioni, direttamente dalla pagina che stai leggendo."
   },
@@ -1347,14 +1362,29 @@
   "onboarding_step3LinkLabel": {
     "message": "Link di esempio"
   },
+  "onboarding_clickKeycap": {
+    "message": "Clic"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Anteprima"
+  },
   "onboarding_step3ValueMessage": {
     "message": "Puoi visualizzare l'anteprima dei link senza lasciare la pagina."
   },
-  "onboarding_step4Explain": {
-    "message": "I comandi che hai appena provato possono essere modificati, rimossi o aggiunti in qualsiasi momento dalle impostazioni."
+  "onboarding_nextButton": {
+    "message": "Avanti"
   },
-  "onboarding_finishButton": {
-    "message": "Fine"
+  "onboarding_step4Explain": {
+    "message": "I comandi che hai provato possono essere aggiunti o modificati in qualsiasi momento dalle impostazioni o dal Selection Command Hub."
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "Modifica nelle impostazioni"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Scopri altro nel Command Hub"
+  },
+  "onboarding_step4HubAddChip": {
+    "message": "Aggiungi"
   },
   "onboarding_completeTitle": {
     "message": "Tutto pronto!"
@@ -1366,21 +1396,6 @@
     "message": "Apri impostazioni"
   },
   "onboarding_closeButton": {
-    "message": "Chiudi"
-  },
-  "onboarding_step1ReturnHint": {
-    "message": "Torna a questa scheda e il messaggio scomparirà automaticamente."
-  },
-  "onboarding_step1Pattern": {
-    "message": "Selezione → Comando → Ricerca"
-  },
-  "onboarding_step2Pattern": {
-    "message": "Selezione → Comando → IA"
-  },
-  "onboarding_step3Pattern": {
-    "message": "Selezione → Comando → Anteprima"
-  },
-  "onboarding_step4HubLink": {
-    "message": "Esplora il Command Hub"
+    "message": "Chiudi e provalo"
   }
 }

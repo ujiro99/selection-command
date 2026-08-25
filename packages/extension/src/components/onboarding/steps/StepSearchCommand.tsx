@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { t } from "@/services/i18n"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useSection } from "@/hooks/useSettings"
@@ -6,15 +6,26 @@ import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { isEmpty } from "@/lib/utils"
 import { OPEN_MODE_TYPE_MAP, COMMAND_TYPE } from "@/const"
 import { subscribeCommandExecuted } from "../onboardingEvents"
-import { OnboardingOverlay } from "../OnboardingOverlay"
 import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
+import { OnboardingTargetText } from "../OnboardingTargetText"
+import { OnboardingRail } from "../OnboardingRail"
+import { OnboardingValueShown } from "../OnboardingValueShown"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
-import css from "../Onboarding.module.css"
 
 type Props = {
   onboarding: UseOnboardingState
+}
+
+// Maps this step's phase onto the select -> command -> result rail's
+// 0/1/2 beat index (see OnboardingRail). WAIT_RETURN still counts as the
+// "result" beat - the search already ran, we're just waiting for the user
+// to switch back.
+function railBeat(phase: StepPhase): 0 | 1 | 2 {
+  if (phase === StepPhase.WAIT_EXECUTE) return 1
+  if (phase === StepPhase.WAIT_RETURN) return 2
+  return 0
 }
 
 // Step1: the user's first hands-on experience - select the sample text,
@@ -24,7 +35,6 @@ export function StepSearchCommand({ onboarding }: Props) {
   const { phase, setPhase } = onboarding
   const { selectionText } = useSelectContext()
   const { data: commands } = useSection(CACHE_SECTIONS.COMMANDS)
-  const targetTextRef = useRef<HTMLSpanElement>(null)
   const [calloutElm, setCalloutElm] = useState<Element | null>(null)
 
   const googleCommand = commands?.find((c) => c.title === "Google")
@@ -99,60 +109,57 @@ export function StepSearchCommand({ onboarding }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
+  if (phase === StepPhase.VALUE_SHOWN) {
+    return (
+      <OnboardingValueShown
+        message={t("onboarding_step1ValueMessage")}
+        resultLabel={t("onboarding_railResultSearch")}
+        onNext={() => onboarding.goToStep(OnboardingStep.AI_PROMPT)}
+      />
+    )
+  }
+
   return (
-    <div className="flex flex-col items-center gap-6 py-16 text-center">
-      <OnboardingFadeIn key={phase}>
-        {phase === StepPhase.VALUE_SHOWN ? (
-          <div className="flex flex-col items-center gap-4">
-            <p className="max-w-md text-base text-gray-600">
-              {t("onboarding_step1ValueMessage")}
-            </p>
-            <p className="text-xs font-medium tracking-wide text-gray-400 uppercase">
-              {t("onboarding_step1Pattern")}
-            </p>
-            <button
-              type="button"
-              className="rounded-md bg-gray-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-700"
-              onClick={() => onboarding.goToStep(OnboardingStep.AI_PROMPT)}
-            >
-              {t("onboarding_nextButton")}
-            </button>
-          </div>
-        ) : phase === StepPhase.WAIT_RETURN ? (
-          <p className={`max-w-md text-base text-gray-600 ${css.returnHint}`}>
+    <div className="flex flex-col items-center gap-4">
+      <OnboardingFadeIn
+        key={phase}
+        className="flex flex-col items-center gap-4"
+      >
+        {phase === StepPhase.WAIT_RETURN ? (
+          <p className="inline-flex animate-onboarding-blink items-center rounded-md border border-slate-200 bg-white px-6 py-4 text-base leading-relaxed text-slate-700 shadow-[0_2px_4px_rgba(15,23,42,.04),0_22px_44px_-24px_rgba(15,23,42,.45)] motion-reduce:animate-none">
             {t("onboarding_step1ReturnHint")}
           </p>
         ) : (
-          <p className="max-w-md text-base text-gray-600">
+          <p
+            className={
+              phase === StepPhase.EXPLAIN
+                ? "max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-900"
+                : "max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-500"
+            }
+          >
             {t("onboarding_step1Explain")}
           </p>
         )}
       </OnboardingFadeIn>
 
-      {phase !== StepPhase.VALUE_SHOWN && (
-        <span
-          ref={targetTextRef}
-          className="rounded-md bg-gray-100 px-4 py-3 text-base"
-        >
-          {t("onboarding_step1TargetText")}
-        </span>
-      )}
-
-      {phase === StepPhase.EXPLAIN && (
-        <OnboardingOverlay targetRef={targetTextRef} />
+      {phase !== StepPhase.WAIT_RETURN && (
+        <OnboardingTargetText
+          text={t("onboarding_step1TargetText")}
+          demoActive={phase === StepPhase.EXPLAIN}
+          selected={phase !== StepPhase.EXPLAIN}
+        />
       )}
 
       <OnboardingCallout targetElm={calloutElm} open={calloutElm != null}>
         {t("onboarding_step1Callout")}
       </OnboardingCallout>
 
-      <button
-        type="button"
-        className="text-sm text-gray-400 hover:text-gray-600"
-        onClick={onboarding.skip}
-      >
-        {t("onboarding_skipButton")}
-      </button>
+      <OnboardingRail
+        selectLabel={t("onboarding_railSelect")}
+        commandLabel={t("onboarding_railCommand")}
+        resultLabel={t("onboarding_railResultSearch")}
+        activeBeat={railBeat(phase)}
+      />
     </div>
   )
 }

@@ -1320,14 +1320,26 @@
   "onboarding_step1TargetText": {
     "message": "Selection Command를 사용하면 검색, AI에게 질문, 링크 미리보기를 클릭 한 번으로 실행할 수 있습니다."
   },
+  "onboarding_selectHint": {
+    "message": "아래 텍스트를 드래그하여 선택하세요"
+  },
+  "onboarding_railSelect": {
+    "message": "선택"
+  },
+  "onboarding_railCommand": {
+    "message": "명령"
+  },
+  "onboarding_railResultSearch": {
+    "message": "검색"
+  },
   "onboarding_step1Callout": {
     "message": "이 명령을 실행하면 Google로 검색할 수 있습니다."
   },
+  "onboarding_step1ReturnHint": {
+    "message": "이 탭으로 돌아오면 이 메시지는 자동으로 사라집니다."
+  },
   "onboarding_step1ValueMessage": {
     "message": "이제 궁금했던 정보를 바로 검색할 수 있게 되었습니다."
-  },
-  "onboarding_nextButton": {
-    "message": "다음"
   },
   "onboarding_step2Explain": {
     "message": "다음으로 아래 텍스트에 대해 AI에게 물어봅시다."
@@ -1338,6 +1350,9 @@
   "onboarding_step2Callout": {
     "message": "이 명령을 실행하면 선택한 텍스트를 미리 설정된 프롬프트로 AI에 보낼 수 있습니다."
   },
+  "onboarding_railResultAi": {
+    "message": "AI"
+  },
   "onboarding_step2ValueMessage": {
     "message": "이제 페이지를 읽으면서 바로 AI에게 무엇이든 물어볼 수 있습니다."
   },
@@ -1347,14 +1362,29 @@
   "onboarding_step3LinkLabel": {
     "message": "샘플 링크"
   },
+  "onboarding_clickKeycap": {
+    "message": "클릭"
+  },
+  "onboarding_railResultPreview": {
+    "message": "미리보기"
+  },
   "onboarding_step3ValueMessage": {
     "message": "페이지를 벗어나지 않고 링크를 미리 볼 수 있습니다."
   },
-  "onboarding_step4Explain": {
-    "message": "지금까지 사용해본 명령어는 설정 화면에서 언제든지 편집, 삭제하거나 새로 추가할 수 있습니다."
+  "onboarding_nextButton": {
+    "message": "다음"
   },
-  "onboarding_finishButton": {
-    "message": "완료"
+  "onboarding_step4Explain": {
+    "message": "지금까지 사용해본 명령어는 설정 화면이나 Selection Command Hub에서 언제든지 추가하거나 편집할 수 있습니다."
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "설정에서 편집하기"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Command Hub에서 더 찾아보기"
+  },
+  "onboarding_step4HubAddChip": {
+    "message": "추가"
   },
   "onboarding_completeTitle": {
     "message": "준비가 완료되었습니다!"
@@ -1366,21 +1396,6 @@
     "message": "설정 열기"
   },
   "onboarding_closeButton": {
-    "message": "닫기"
-  },
-  "onboarding_step1ReturnHint": {
-    "message": "이 탭으로 돌아오면 이 메시지는 자동으로 사라집니다."
-  },
-  "onboarding_step1Pattern": {
-    "message": "선택 → 명령 → 검색"
-  },
-  "onboarding_step2Pattern": {
-    "message": "선택 → 명령 → AI"
-  },
-  "onboarding_step3Pattern": {
-    "message": "선택 → 명령 → 미리보기"
-  },
-  "onboarding_step4HubLink": {
-    "message": "Command Hub 둘러보기"
+    "message": "닫고 사용해보기"
   }
 }

@@ -1320,14 +1320,26 @@
   "onboarding_step1TargetText": {
     "message": "使用 Selection Command，只需一键即可搜索、询问 AI 或预览链接。"
   },
+  "onboarding_selectHint": {
+    "message": "拖动以选择下方文本"
+  },
+  "onboarding_railSelect": {
+    "message": "选择"
+  },
+  "onboarding_railCommand": {
+    "message": "命令"
+  },
+  "onboarding_railResultSearch": {
+    "message": "搜索"
+  },
   "onboarding_step1Callout": {
     "message": "点击此命令即可使用 Google 搜索。"
   },
+  "onboarding_step1ReturnHint": {
+    "message": "切回此标签页,该提示会自动消失。"
+  },
   "onboarding_step1ValueMessage": {
     "message": "就是这样——现在您可以立即搜索所选的任何内容。"
-  },
-  "onboarding_nextButton": {
-    "message": "下一步"
   },
   "onboarding_step2Explain": {
     "message": "接下来，让我们向 AI 询问下面这段文字。"
@@ -1338,6 +1350,9 @@
   "onboarding_step2Callout": {
     "message": "点击此命令,即可通过预设的提示词将选中内容发送给 AI。"
   },
+  "onboarding_railResultAi": {
+    "message": "AI"
+  },
   "onboarding_step2ValueMessage": {
     "message": "现在，您可以在阅读网页的同时，就您选择的任何内容向 AI 提问。"
   },
@@ -1347,14 +1362,29 @@
   "onboarding_step3LinkLabel": {
     "message": "示例链接"
   },
+  "onboarding_clickKeycap": {
+    "message": "点击"
+  },
+  "onboarding_railResultPreview": {
+    "message": "预览"
+  },
   "onboarding_step3ValueMessage": {
     "message": "您可以在不离开当前页面的情况下预览链接。"
   },
-  "onboarding_step4Explain": {
-    "message": "您刚刚体验的命令，随时可以在设置页面中编辑、删除或添加新的命令。"
+  "onboarding_nextButton": {
+    "message": "下一步"
   },
-  "onboarding_finishButton": {
-    "message": "完成"
+  "onboarding_step4Explain": {
+    "message": "您刚刚体验的命令，随时可以在设置页面或 Selection Command Hub 中添加或编辑。"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "在设置中编辑"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "在 Command Hub 中查找更多"
+  },
+  "onboarding_step4HubAddChip": {
+    "message": "添加"
   },
   "onboarding_completeTitle": {
     "message": "一切就绪！"
@@ -1366,21 +1396,6 @@
     "message": "打开设置"
   },
   "onboarding_closeButton": {
-    "message": "关闭"
-  },
-  "onboarding_step1ReturnHint": {
-    "message": "切回此标签页,该提示会自动消失。"
-  },
-  "onboarding_step1Pattern": {
-    "message": "选择 → 命令 → 搜索"
-  },
-  "onboarding_step2Pattern": {
-    "message": "选择 → 命令 → AI"
-  },
-  "onboarding_step3Pattern": {
-    "message": "选择 → 命令 → 预览"
-  },
-  "onboarding_step4HubLink": {
-    "message": "浏览 Command Hub"
+    "message": "关闭并试用"
   }
 }

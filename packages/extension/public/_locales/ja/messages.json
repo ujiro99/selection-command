@@ -1317,14 +1317,26 @@
   "onboarding_step1TargetText": {
     "message": "Selection Commandを使うと、検索・AIへの質問・リンクのプレビューをワンクリックで実行できます。"
   },
+  "onboarding_selectHint": {
+    "message": "下のテキストをドラッグして選択"
+  },
+  "onboarding_railSelect": {
+    "message": "選択"
+  },
+  "onboarding_railCommand": {
+    "message": "コマンド"
+  },
+  "onboarding_railResultSearch": {
+    "message": "検索"
+  },
   "onboarding_step1Callout": {
     "message": "このコマンドを実行すると、Googleで検索できます。"
   },
+  "onboarding_step1ReturnHint": {
+    "message": "もとの画面を選択すると、自動的に消えます"
+  },
   "onboarding_step1ValueMessage": {
     "message": "これで、気になった情報をすぐに検索できました。"
-  },
-  "onboarding_nextButton": {
-    "message": "次へ"
   },
   "onboarding_step2Explain": {
     "message": "次は、選択したテキストをAIに聞いてみましょう。"
@@ -1335,6 +1347,9 @@
   "onboarding_step2Callout": {
     "message": "このコマンドを実行すると、選択したテキストをあらかじめ設定したプロンプトでAIに送れます。"
   },
+  "onboarding_railResultAi": {
+    "message": "AI"
+  },
   "onboarding_step2ValueMessage": {
     "message": "Webページを読みながら、その場でAIに質問できました。"
   },
@@ -1344,14 +1359,29 @@
   "onboarding_step3LinkLabel": {
     "message": "サンプルリンク"
   },
+  "onboarding_clickKeycap": {
+    "message": "クリック"
+  },
+  "onboarding_railResultPreview": {
+    "message": "プレビュー"
+  },
   "onboarding_step3ValueMessage": {
     "message": "リンク先をその場で確認できました。"
   },
-  "onboarding_step4Explain": {
-    "message": "ここまで試したコマンドは、設定画面からいつでも編集・削除・追加できます。"
+  "onboarding_nextButton": {
+    "message": "次へ"
   },
-  "onboarding_finishButton": {
-    "message": "完了"
+  "onboarding_step4Explain": {
+    "message": "ここまで試したコマンドは、設定画面またはSelection Command Hubから、いつでも追加・編集できます。"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "設定画面で編集する"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Command Hubで探す"
+  },
+  "onboarding_step4HubAddChip": {
+    "message": "追加"
   },
   "onboarding_completeTitle": {
     "message": "準備は完了です！"
@@ -1363,21 +1393,6 @@
     "message": "設定を開く"
   },
   "onboarding_closeButton": {
-    "message": "閉じる"
-  },
-  "onboarding_step1ReturnHint": {
-    "message": "もとの画面を選択すると、自動的に消えます"
-  },
-  "onboarding_step1Pattern": {
-    "message": "選択 → コマンド → 検索"
-  },
-  "onboarding_step2Pattern": {
-    "message": "選択 → コマンド → AI"
-  },
-  "onboarding_step3Pattern": {
-    "message": "選択 → コマンド → プレビュー"
-  },
-  "onboarding_step4HubLink": {
-    "message": "Command Hubを見る"
+    "message": "閉じて使ってみる"
   }
 }

@@ -1320,14 +1320,26 @@
   "onboarding_step1TargetText": {
     "message": "Mit Selection Command kannst du mit einem Klick suchen, die KI fragen oder Links in der Vorschau ansehen."
   },
+  "onboarding_selectHint": {
+    "message": "Text unten durch Ziehen markieren"
+  },
+  "onboarding_railSelect": {
+    "message": "Auswählen"
+  },
+  "onboarding_railCommand": {
+    "message": "Befehl"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Suchen"
+  },
   "onboarding_step1Callout": {
     "message": "Klicke auf diesen Befehl, um mit Google zu suchen."
   },
+  "onboarding_step1ReturnHint": {
+    "message": "Wechsle zurück zu diesem Tab, dann verschwindet diese Meldung automatisch."
+  },
   "onboarding_step1ValueMessage": {
     "message": "Fertig – jetzt kannst du alles, was du markierst, sofort durchsuchen."
-  },
-  "onboarding_nextButton": {
-    "message": "Weiter"
   },
   "onboarding_step2Explain": {
     "message": "Als Nächstes fragen wir die KI zum folgenden Text."
@@ -1338,6 +1350,9 @@
   "onboarding_step2Callout": {
     "message": "Führe diesen Befehl aus, um deine Auswahl über einen voreingestellten KI-Prompt zu senden."
   },
+  "onboarding_railResultAi": {
+    "message": "KI"
+  },
   "onboarding_step2ValueMessage": {
     "message": "Jetzt kannst du die KI direkt auf der Seite, die du liest, zu allem fragen, was du markierst."
   },
@@ -1347,14 +1362,29 @@
   "onboarding_step3LinkLabel": {
     "message": "Beispiel-Link"
   },
+  "onboarding_clickKeycap": {
+    "message": "Klick"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Vorschau"
+  },
   "onboarding_step3ValueMessage": {
     "message": "Du kannst Links in der Vorschau ansehen, ohne die Seite zu verlassen."
   },
-  "onboarding_step4Explain": {
-    "message": "Die gerade ausprobierten Befehle kannst du jederzeit in den Einstellungen bearbeiten, entfernen oder neue hinzufügen."
+  "onboarding_nextButton": {
+    "message": "Weiter"
   },
-  "onboarding_finishButton": {
-    "message": "Fertig"
+  "onboarding_step4Explain": {
+    "message": "Die ausprobierten Befehle kannst du jederzeit in den Einstellungen oder im Selection Command Hub hinzufügen oder bearbeiten."
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "In den Einstellungen bearbeiten"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Mehr im Command Hub finden"
+  },
+  "onboarding_step4HubAddChip": {
+    "message": "Hinzufügen"
   },
   "onboarding_completeTitle": {
     "message": "Alles bereit!"
@@ -1366,21 +1396,6 @@
     "message": "Einstellungen öffnen"
   },
   "onboarding_closeButton": {
-    "message": "Schließen"
-  },
-  "onboarding_step1ReturnHint": {
-    "message": "Wechsle zurück zu diesem Tab, dann verschwindet diese Meldung automatisch."
-  },
-  "onboarding_step1Pattern": {
-    "message": "Auswählen → Befehl → Suchen"
-  },
-  "onboarding_step2Pattern": {
-    "message": "Auswählen → Befehl → KI fragen"
-  },
-  "onboarding_step3Pattern": {
-    "message": "Auswählen → Befehl → Vorschau"
-  },
-  "onboarding_step4HubLink": {
-    "message": "Command Hub durchsuchen"
+    "message": "Schließen und ausprobieren"
   }
 }

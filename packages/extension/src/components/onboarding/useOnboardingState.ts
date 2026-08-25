@@ -9,9 +9,37 @@ import { closeOnboardingTab } from "./onboardingWindow"
 
 export type UseOnboardingState = ReturnType<typeof useOnboardingState>
 
+// e2e-build-only escape hatch (`?step=SEARCH&phase=value_shown`) so
+// screenshot/manual-QA tooling can land directly on any step/phase without
+// driving the whole real flow. `import.meta.env.MODE` is only "e2e" for
+// `vite build --mode e2e` (see package.json's build:e2e), so this is
+// entirely inert in production and dev builds.
+function readE2eOverride(): { step: OnboardingStep; phase: StepPhase } | null {
+  if (import.meta.env.MODE !== "e2e") return null
+  const params = new URLSearchParams(window.location.search)
+  const stepParam = params.get("step")
+  if (!stepParam) return null
+
+  const step = OnboardingStep[stepParam as keyof typeof OnboardingStep]
+  if (step === undefined) return null
+
+  const phaseParam = params.get("phase")
+  const phaseValues: string[] = Object.values(StepPhase)
+  const phase =
+    phaseParam && phaseValues.includes(phaseParam)
+      ? (phaseParam as StepPhase)
+      : StepPhase.EXPLAIN
+
+  return { step, phase }
+}
+
 export function useOnboardingState() {
-  const [step, setStep] = useState<OnboardingStep>(OnboardingStep.INTRO)
-  const [phase, setPhase] = useState<StepPhase>(StepPhase.EXPLAIN)
+  const [step, setStep] = useState<OnboardingStep>(
+    () => readE2eOverride()?.step ?? OnboardingStep.INTRO,
+  )
+  const [phase, setPhase] = useState<StepPhase>(
+    () => readE2eOverride()?.phase ?? StepPhase.EXPLAIN,
+  )
   const startedAtRef = useRef<number>(Date.now())
   const firstValueSentRef = useRef(false)
   const seenSelectionStepsRef = useRef<Set<OnboardingStep>>(new Set())
