@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import clsx from "clsx"
 import {
   Popover,
@@ -6,7 +6,7 @@ import {
   PopoverAnchor,
   PopoverArrow,
 } from "@/components/ui/popover"
-import { popupContext } from "@/components/Popup"
+import { usePopupContext } from "@/hooks/usePopupContext"
 import { SIDE } from "@/const"
 
 type PopupProps = {
@@ -18,7 +18,7 @@ type PopupProps = {
 }
 
 export function Tooltip(props: PopupProps) {
-  const { side } = useContext(popupContext)
+  const { side } = usePopupContext()
   const delay = props.delay ?? 300
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)

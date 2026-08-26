@@ -1,6 +1,6 @@
-import React, { useRef, useContext } from "react"
+import React, { useRef } from "react"
 import clsx from "clsx"
-import { popupContext } from "@/components/Popup"
+import { usePopupContext } from "@/hooks/usePopupContext"
 import { Tooltip } from "../Tooltip"
 import { RefreshCw, Check, AlertCircle } from "lucide-react"
 import { ResultPopup } from "@/components/result/ResultPopup"
@@ -25,7 +25,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const onlyIcon = props.onlyIcon
   const { iconUrl, title } = props.command
   const { selectionText, target } = useSelectContext()
-  const { isPreview, inTransition } = useContext(popupContext)
+  const { isPreview, inTransition } = usePopupContext()
   const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
   const message = itemState.message || defaultMessage
 

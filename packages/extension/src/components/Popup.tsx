@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, forwardRef } from "react"
+import { useState, useEffect, forwardRef } from "react"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { Menu } from "@/components/menu/Menu"
 import { useUserSettings } from "@/hooks/useSettings"
@@ -6,6 +6,7 @@ import { useDetectStartup } from "@/hooks/useDetectStartup"
 import { useTabCommandReceiver } from "@/hooks/useTabCommandReceiver"
 import { useSidePanelNavigation } from "@/hooks/useSidePanelNavigation"
 import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
+import { popupContext } from "@/hooks/usePopupContext"
 import { hexToHsl, isMac, onHover, cn } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
@@ -17,14 +18,6 @@ export type PopupProps = {
   isPreview?: boolean
   onHover?: (hover: boolean) => void
 }
-
-type ContextType = {
-  isPreview?: boolean
-  inTransition?: boolean
-  side: SIDE
-  align: ALIGN
-}
-export const popupContext = createContext<ContextType>({} as ContextType)
 
 export const Popup = forwardRef<HTMLDivElement, PopupProps>(
   (props: PopupProps, ref) => {

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useLayoutEffect } from "react"
+import React, { useState, useRef, useLayoutEffect } from "react"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import { ScrollAreaConditional } from "@/components/ui/scroll-area"
 
@@ -7,7 +7,7 @@ import { MenuItem } from "./MenuItem"
 import { ChevronRight } from "lucide-react"
 import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
-import { popupContext } from "@/components/Popup"
+import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
 import type { Command, CommandFolder } from "@/types"
 import { cn, onHover } from "@/lib/utils"
@@ -77,7 +77,7 @@ export const MenuFolder = (props: {
   const [triggeredFolder, setTriggeredFolder] = useState("")
   const [hoveredFolder, setHoveredFolder] = useState("")
   const childActiveFolder = triggeredFolder || hoveredFolder
-  const { inTransition } = useContext(popupContext)
+  const { inTransition } = usePopupContext()
 
   // Resolve the effective style for this folder's content.
   // INHERIT: use parent style (isHorizontal), otherwise use folder's explicit style setting.
