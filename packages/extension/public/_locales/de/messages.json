@@ -1303,7 +1303,7 @@
     "message": "Beim Hub anmelden"
   },
   "onboarding_step0Title": {
-    "message": "Danke, dass du Selection Command installiert hast!"
+    "message": "Danke fürs Installieren!"
   },
   "onboarding_step0Body": {
     "message": "Lass uns das Ganze in etwa einer Minute direkt ausprobieren."
@@ -1318,7 +1318,7 @@
     "message": "Markiere den folgenden Text, um sofort eine Suche auszuprobieren."
   },
   "onboarding_step1TargetText": {
-    "message": "Mit Selection Command kannst du mit einem Klick suchen, die KI fragen oder Links in der Vorschau ansehen."
+    "message": "Eine Erweiterung, mit der du markierten Text mit einem Klick durchsuchen kannst."
   },
   "onboarding_selectHint": {
     "message": "Text unten durch Ziehen markieren"
@@ -1337,6 +1337,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "Wechsle zurück zu diesem Tab, dann verschwindet diese Meldung automatisch."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Klicke irgendwo auf den Bildschirm"
   },
   "onboarding_step1ValueMessage": {
     "message": "Fertig – jetzt kannst du alles, was du markierst, sofort durchsuchen."

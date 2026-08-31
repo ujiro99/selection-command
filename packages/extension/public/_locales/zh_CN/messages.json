@@ -1303,7 +1303,7 @@
     "message": "登录 Hub"
   },
   "onboarding_step0Title": {
-    "message": "感谢您安装 Selection Command！"
+    "message": "感谢您的安装！"
   },
   "onboarding_step0Body": {
     "message": "让我们花一分钟时间，边操作边体验一下吧。"
@@ -1318,7 +1318,7 @@
     "message": "选择下面的文本，立即试试搜索功能。"
   },
   "onboarding_step1TargetText": {
-    "message": "使用 Selection Command，只需一键即可搜索、询问 AI 或预览链接。"
+    "message": "一款可以一键搜索所选文本的扩展程序"
   },
   "onboarding_selectHint": {
     "message": "拖动以选择下方文本"
@@ -1337,6 +1337,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "切回此标签页,该提示会自动消失。"
+  },
+  "onboarding_step1Callout_2": {
+    "message": "点击屏幕上的任意位置"
   },
   "onboarding_step1ValueMessage": {
     "message": "就是这样——现在您可以立即搜索所选的任何内容。"

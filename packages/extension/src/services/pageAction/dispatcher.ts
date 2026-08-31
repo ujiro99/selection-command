@@ -15,6 +15,7 @@ export const PageActionDispatcher = {
   },
 
   click: async (param: PageAction.Click): ActionReturn => {
+    console.debug(`Clicking element: ${param.label} (${param.selector})`)
     if (param.condition) {
       const { skip, error } = await resolveClickCondition(
         param.condition,

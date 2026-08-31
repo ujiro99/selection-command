@@ -1,4 +1,4 @@
-import { Check, ChevronRight } from "lucide-react"
+import { Check, ChevronsRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // Reinforces the PRD's "select -> command -> result" mental model
@@ -41,9 +41,7 @@ export function OnboardingRail({
     <div
       className={cn(
         "flex items-center",
-        lg
-          ? "gap-3 rounded-lg border border-slate-200 bg-slate-50 px-[26px] py-4"
-          : "gap-2.5",
+        lg ? "gap-3 rounded-lg px-[26px] py-4" : "gap-2.5",
       )}
     >
       {beats.map((label, i) => {
@@ -59,14 +57,14 @@ export function OnboardingRail({
         return (
           <div key={label} className="contents">
             {i > 0 && (
-              <ChevronRight
+              <ChevronsRight
                 className={cn(
-                  lg ? "size-[15px]" : "size-3",
-                  chevronWalked ? "text-[#082f49]" : "text-slate-300",
+                  lg ? "size-[18px]" : "size-3.5",
+                  chevronWalked ? "text-sky-950" : "text-slate-300",
                   lg && "animate-onboarding-rise motion-reduce:animate-none",
                 )}
                 style={lg ? { animationDelay: `${delayMs}ms` } : undefined}
-                strokeWidth={3.2}
+                strokeWidth={3}
               />
             )}
             <div
@@ -83,7 +81,9 @@ export function OnboardingRail({
                   lg ? "size-6" : "size-[18px]",
                   state === "todo"
                     ? "bg-slate-200"
-                    : "bg-[#082f49]/[0.14] text-[#082f49]",
+                    : state === "done"
+                      ? "bg-blue-200 text-blue-800"
+                      : "bg-sky-950/[0.14] text-sky-950",
                 )}
               >
                 {state === "done" && (
@@ -93,10 +93,12 @@ export function OnboardingRail({
                   />
                 )}
                 {state === "current" && (
-                  <span className="size-1.5 rounded-full bg-[#082f49]" />
+                  <span className="size-2.5 rounded-full bg-sky-950 inline-block">
+                    <span className="w-full h-full rounded-full bg-sky-950 block animate-ping opacity-70" />
+                  </span>
                 )}
               </span>
-              <span className={state === "todo" ? "" : "text-[#082f49]"}>
+              <span className={state === "todo" ? "" : "text-sky-950"}>
                 {label}
               </span>
             </div>

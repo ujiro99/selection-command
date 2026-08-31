@@ -1303,7 +1303,7 @@
     "message": "Hub에 로그인"
   },
   "onboarding_step0Title": {
-    "message": "Selection Command을 설치해 주셔서 감사합니다!"
+    "message": "설치해 주셔서 감사합니다!"
   },
   "onboarding_step0Body": {
     "message": "먼저 1분 동안 직접 사용해보며 체험해 봅시다."
@@ -1318,7 +1318,7 @@
     "message": "아래 텍스트를 선택해서 바로 검색해 보세요."
   },
   "onboarding_step1TargetText": {
-    "message": "Selection Command를 사용하면 검색, AI에게 질문, 링크 미리보기를 클릭 한 번으로 실행할 수 있습니다."
+    "message": "선택한 텍스트를 클릭 한 번으로 검색할 수 있는 확장 프로그램"
   },
   "onboarding_selectHint": {
     "message": "아래 텍스트를 드래그하여 선택하세요"
@@ -1337,6 +1337,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "이 탭으로 돌아오면 이 메시지는 자동으로 사라집니다."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "화면 아무 곳이나 클릭"
   },
   "onboarding_step1ValueMessage": {
     "message": "이제 궁금했던 정보를 바로 검색할 수 있게 되었습니다."

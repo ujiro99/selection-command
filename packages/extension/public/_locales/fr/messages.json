@@ -1303,7 +1303,7 @@
     "message": "Se connecter au Hub"
   },
   "onboarding_step0Title": {
-    "message": "Merci d'avoir installé Selection Command !"
+    "message": "Merci pour l'installation !"
   },
   "onboarding_step0Body": {
     "message": "Prenons une minute pour l'essayer en pratique."
@@ -1318,7 +1318,7 @@
     "message": "Sélectionnez le texte ci-dessous pour essayer une recherche immédiatement."
   },
   "onboarding_step1TargetText": {
-    "message": "Avec Selection Command, vous pouvez rechercher, interroger l'IA ou prévisualiser des liens en un clic."
+    "message": "Une extension qui permet de rechercher le texte sélectionné en un clic."
   },
   "onboarding_selectHint": {
     "message": "Faites glisser pour sélectionner le texte ci-dessous"
@@ -1337,6 +1337,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "Revenez à cet onglet et ce message disparaîtra automatiquement."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Cliquez n'importe où sur l'écran"
   },
   "onboarding_step1ValueMessage": {
     "message": "Et voilà — vous pouvez désormais rechercher instantanément tout ce que vous sélectionnez."

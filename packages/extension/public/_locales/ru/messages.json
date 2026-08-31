@@ -1303,7 +1303,7 @@
     "message": "Войти в Hub"
   },
   "onboarding_step0Title": {
-    "message": "Спасибо за установку Selection Command!"
+    "message": "Спасибо за установку!"
   },
   "onboarding_step0Body": {
     "message": "Давайте потратим примерно минуту, чтобы попробовать его в деле."
@@ -1318,7 +1318,7 @@
     "message": "Выделите текст ниже, чтобы сразу попробовать поиск."
   },
   "onboarding_step1TargetText": {
-    "message": "С Selection Command вы можете искать, спрашивать ИИ или просматривать ссылки одним щелчком."
+    "message": "Расширение, позволяющее искать выделенный текст одним щелчком."
   },
   "onboarding_selectHint": {
     "message": "Перетащите, чтобы выделить текст ниже"
@@ -1337,6 +1337,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "Вернитесь на эту вкладку, и сообщение исчезнет автоматически."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Нажмите в любом месте экрана"
   },
   "onboarding_step1ValueMessage": {
     "message": "Готово — теперь вы можете мгновенно искать всё, что выделите."

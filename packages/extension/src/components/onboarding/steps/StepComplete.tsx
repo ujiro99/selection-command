@@ -30,7 +30,7 @@ export function StepComplete({ onboarding }: Props) {
     <>
       <OnboardingConfetti />
       <OnboardingFadeIn className="flex flex-col items-center gap-5">
-        <span className="flex size-[76px] animate-onboarding-pop items-center justify-center rounded-full bg-[#082f49]/[0.14] text-[#082f49] motion-reduce:animate-none motion-reduce:opacity-100">
+        <span className="flex size-[76px] animate-onboarding-pop items-center justify-center rounded-full bg-sky-950/[0.14] text-sky-950 motion-reduce:animate-none motion-reduce:opacity-100">
           <PartyPopper className="size-9" strokeWidth={1.8} />
         </span>
         <h1 className="mt-1 text-[26px] font-bold tracking-tight text-slate-900">
@@ -42,7 +42,7 @@ export function StepComplete({ onboarding }: Props) {
         <div className="mt-2.5 flex items-center gap-2.5">
           <button
             type="button"
-            className="min-h-12 rounded-md bg-[#082f49] px-8 text-[15px] font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+            className="min-h-12 rounded-md bg-sky-950 px-8 text-[15px] font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
             onClick={() => closeOnboardingTab()}
           >
             {t("onboarding_closeButton")}

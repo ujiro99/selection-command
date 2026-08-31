@@ -18,7 +18,7 @@ type PopupProps = {
 }
 
 export function Tooltip(props: PopupProps) {
-  const { side } = usePopupContext()
+  const { side, inTransition, inOnboarding } = usePopupContext()
   const delay = props.delay ?? 300
   const [isOpen, setIsOpen] = useState(false)
   const [shouldRender, setShouldRender] = useState(false)
@@ -51,7 +51,7 @@ export function Tooltip(props: PopupProps) {
     return () => clearTimeout(timer)
   }, [isOpen, delay])
 
-  if (props.disabled || !elm) {
+  if (inTransition || inOnboarding || props.disabled || !elm) {
     return null
   }
 
@@ -61,7 +61,7 @@ export function Tooltip(props: PopupProps) {
       {shouldRender && (
         <PopoverContent
           className={clsx(
-            "bg-gray-800 min-w-4 bg-gray-800 px-2 py-1.5 shadow-md",
+            "bg-gray-800 min-w-4 px-2 py-1.5 shadow-md",
             props.className,
           )}
           side={side === SIDE.bottom ? SIDE.bottom : "top"}

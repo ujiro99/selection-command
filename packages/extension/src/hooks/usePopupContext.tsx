@@ -4,6 +4,7 @@ import { SIDE, ALIGN } from "@/const"
 export type ContextType = {
   isPreview?: boolean
   inTransition?: boolean
+  inOnboarding?: boolean
   side: SIDE
   align: ALIGN
 }

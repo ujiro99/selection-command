@@ -68,6 +68,16 @@ module.exports = {
           "0%": { opacity: "0", transform: "scale(0.72)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        // Gentle vertical bob used to draw extra attention to the onboarding
+        // callout bubble. Uses the standalone `translate` property (not
+        // `transform`) so it composes with, instead of overriding, the
+        // `transform` Radix Popper uses to rotate/position PopoverArrow -
+        // both the bubble and its arrow share this animation and must move
+        // in sync.
+        "onboarding-float": {
+          "0%, 100%": { translate: "0 0" },
+          "50%": { translate: "0 -4px" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -77,12 +87,13 @@ module.exports = {
         "spin-slow": "spin 3s linear infinite",
         popup: "popup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both",
         "onboarding-rise":
-          "onboarding-rise 0.38s cubic-bezier(0.16, 1, 0.3, 1) both",
+          "onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
         "onboarding-ring": "onboarding-ring 2.4s ease-in-out 0.6s infinite",
-        "onboarding-blink": "onboarding-blink 2.4s ease-in-out 0.3s infinite",
+        "onboarding-blink": "onboarding-blink 2s ease-in-out 0.3s infinite",
         "onboarding-highlight": "onboarding-highlight 4s ease-in-out infinite",
         "onboarding-pop":
           "onboarding-pop 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both",
+        "onboarding-float": "onboarding-float 1.4s ease-in-out infinite",
       },
       padding: {
         0.5: "2px",

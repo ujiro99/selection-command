@@ -1300,7 +1300,7 @@
     "message": "Hubへログイン"
   },
   "onboarding_step0Title": {
-    "message": "Selection Commandのインストール、ありがとうございます！"
+    "message": "インストールありがとうございます！"
   },
   "onboarding_step0Body": {
     "message": "まずは1分で、実際に使いながら試してみましょう。"
@@ -1315,7 +1315,7 @@
     "message": "気になるテキストを選択して、すぐに検索してみましょう。"
   },
   "onboarding_step1TargetText": {
-    "message": "Selection Commandを使うと、検索・AIへの質問・リンクのプレビューをワンクリックで実行できます。"
+    "message": "選択テキストをワンクリックで検索できる拡張機能"
   },
   "onboarding_selectHint": {
     "message": "下のテキストをドラッグして選択"
@@ -1334,6 +1334,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "もとの画面を選択すると、自動的に消えます"
+  },
+  "onboarding_step1Callout_2": {
+    "message": "画面のどこかをクリック"
   },
   "onboarding_step1ValueMessage": {
     "message": "これで、気になった情報をすぐに検索できました。"

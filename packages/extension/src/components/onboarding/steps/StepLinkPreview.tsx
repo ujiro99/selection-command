@@ -46,6 +46,13 @@ export function StepLinkPreview({ onboarding }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-4">
+      <OnboardingRail
+        selectLabel={t("onboarding_railSelect")}
+        commandLabel={t("onboarding_railCommand")}
+        resultLabel={t("onboarding_railResultPreview")}
+        activeBeat={0}
+      />
+
       <OnboardingFadeIn
         key={phase}
         className="flex flex-col items-center gap-4"
@@ -77,13 +84,6 @@ export function StepLinkPreview({ onboarding }: Props) {
           {t("onboarding_clickKeycap")}
         </span>
       </div>
-
-      <OnboardingRail
-        selectLabel={t("onboarding_railSelect")}
-        commandLabel={t("onboarding_railCommand")}
-        resultLabel={t("onboarding_railResultPreview")}
-        activeBeat={0}
-      />
     </div>
   )
 }

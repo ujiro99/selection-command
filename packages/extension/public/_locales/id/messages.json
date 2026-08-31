@@ -1306,7 +1306,7 @@
     "message": "Masuk ke Hub"
   },
   "onboarding_step0Title": {
-    "message": "Terima kasih telah menginstal Selection Command!"
+    "message": "Terima kasih telah menginstal!"
   },
   "onboarding_step0Body": {
     "message": "Mari coba selama sekitar satu menit sambil langsung mempraktikkannya."
@@ -1321,7 +1321,7 @@
     "message": "Pilih teks di bawah ini untuk langsung mencoba pencarian."
   },
   "onboarding_step1TargetText": {
-    "message": "Dengan Selection Command, Anda bisa mencari, bertanya ke AI, atau melihat pratinjau tautan hanya dengan satu klik."
+    "message": "Ekstensi yang memungkinkan Anda mencari teks yang dipilih hanya dengan satu klik."
   },
   "onboarding_selectHint": {
     "message": "Seret untuk memilih teks di bawah"
@@ -1340,6 +1340,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "Kembali ke tab ini dan pesan ini akan hilang secara otomatis."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Klik di mana saja pada layar"
   },
   "onboarding_step1ValueMessage": {
     "message": "Selesai — sekarang Anda bisa langsung mencari apa pun yang Anda pilih."

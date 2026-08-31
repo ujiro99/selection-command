@@ -1303,7 +1303,7 @@
     "message": "Hub में लॉगिन करें"
   },
   "onboarding_step0Title": {
-    "message": "Selection Command इंस्टॉल करने के लिए धन्यवाद!"
+    "message": "इंस्टॉल करने के लिए धन्यवाद!"
   },
   "onboarding_step0Body": {
     "message": "चलिए, इसे इस्तेमाल करते हुए लगभग एक मिनट में आज़माते हैं।"
@@ -1318,7 +1318,7 @@
     "message": "तुरंत सर्च आज़माने के लिए नीचे दिए गए टेक्स्ट को चुनें।"
   },
   "onboarding_step1TargetText": {
-    "message": "Selection Command से आप एक क्लिक में सर्च कर सकते हैं, AI से पूछ सकते हैं, या लिंक का पूर्वावलोकन देख सकते हैं।"
+    "message": "एक एक्सटेंशन जिससे आप चुने हुए टेक्स्ट को एक क्लिक में सर्च कर सकते हैं।"
   },
   "onboarding_selectHint": {
     "message": "नीचे दिए गए टेक्स्ट को खींचकर चुनें"
@@ -1337,6 +1337,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "इस टैब पर वापस आएं और यह संदेश अपने आप गायब हो जाएगा।"
+  },
+  "onboarding_step1Callout_2": {
+    "message": "स्क्रीन पर कहीं भी क्लिक करें"
   },
   "onboarding_step1ValueMessage": {
     "message": "बस इतना ही — अब आप जो भी टेक्स्ट चुनें, उसे तुरंत सर्च कर सकते हैं।"

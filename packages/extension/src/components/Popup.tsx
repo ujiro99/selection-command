@@ -6,6 +6,7 @@ import { useDetectStartup } from "@/hooks/useDetectStartup"
 import { useTabCommandReceiver } from "@/hooks/useTabCommandReceiver"
 import { useSidePanelNavigation } from "@/hooks/useSidePanelNavigation"
 import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
+import { useSelectContext } from "@/hooks/useSelectContext"
 import { popupContext } from "@/hooks/usePopupContext"
 import { hexToHsl, isMac, onHover, cn } from "@/lib/utils"
 import { t } from "@/services/i18n"
@@ -16,7 +17,7 @@ import css from "./Popup.module.css"
 export type PopupProps = {
   positionElm: Element | null
   isPreview?: boolean
-  onHover?: (hover: boolean) => void
+  inOnboarding?: boolean
 }
 
 export const Popup = forwardRef<HTMLDivElement, PopupProps>(
@@ -33,6 +34,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       ...props,
       isHover,
     })
+    const { setDetectSelectionEnabled } = useSelectContext()
     const isPreview = props.isPreview === true
     const placement = userSettings?.popupPlacement
     const side = isPreview ? SIDE.bottom : (placement?.side ?? SIDE.top)
@@ -93,15 +95,29 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
         clearTimeout(transitionTimer)
         clearTimeout(delayTimer)
       }
-    }, [visible])
+    }, [visible, userSettings?.userStyles])
+
+    useEffect(() => {
+      if (!visible || props.positionElm == null) {
+        setDetectSelectionEnabled(true)
+      }
+    }, [visible, props.positionElm, setDetectSelectionEnabled])
 
     const handleOnHover = (hover: boolean) => {
       setIsHover(hover)
-      props.onHover?.(hover)
+      setDetectSelectionEnabled(!hover)
     }
 
     return (
-      <popupContext.Provider value={{ isPreview, inTransition, side, align }}>
+      <popupContext.Provider
+        value={{
+          isPreview,
+          inTransition,
+          inOnboarding: props.inOnboarding,
+          side,
+          align,
+        }}
+      >
         {isPreview && <PreviewDesc {...props} />}
         <Popover open={visible}>
           <PopoverAnchor virtualRef={{ current: props.positionElm }} />

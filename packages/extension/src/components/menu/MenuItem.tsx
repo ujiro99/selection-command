@@ -77,7 +77,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       <Tooltip
         text={message}
         positionElm={buttonRef.current}
-        disabled={inTransition || (!onlyIcon && enabled)}
+        disabled={!onlyIcon && enabled}
       />
       <ResultPopup
         visible={result != null}

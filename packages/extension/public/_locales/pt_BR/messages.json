@@ -1306,7 +1306,7 @@
     "message": "Entrar no Hub"
   },
   "onboarding_step0Title": {
-    "message": "Obrigado por instalar o Selection Command!"
+    "message": "Obrigado por instalar!"
   },
   "onboarding_step0Body": {
     "message": "Vamos experimentar por cerca de um minuto, usando na prática."
@@ -1321,7 +1321,7 @@
     "message": "Selecione o texto abaixo para testar uma pesquisa agora mesmo."
   },
   "onboarding_step1TargetText": {
-    "message": "Com o Selection Command, você pode pesquisar, perguntar à IA ou pré-visualizar links com um clique."
+    "message": "Uma extensão que permite pesquisar o texto selecionado com um clique."
   },
   "onboarding_selectHint": {
     "message": "Arraste para selecionar o texto abaixo"
@@ -1340,6 +1340,9 @@
   },
   "onboarding_step1ReturnHint": {
     "message": "Volte para esta aba e esta mensagem desaparece automaticamente."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Clique em qualquer lugar da tela"
   },
   "onboarding_step1ValueMessage": {
     "message": "Pronto — agora você pode pesquisar instantaneamente qualquer coisa que selecionar."

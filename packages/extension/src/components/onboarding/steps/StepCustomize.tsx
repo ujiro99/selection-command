@@ -55,7 +55,7 @@ export function StepCustomize({ onboarding }: Props) {
       <div className="grid w-[884px] grid-cols-2 gap-9">
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-900">
-            <span className="flex size-[22px] items-center justify-center rounded-md bg-[#082f49]/[0.14] text-[#082f49]">
+            <span className="flex size-[22px] items-center justify-center rounded-md bg-sky-950/[0.14] text-sky-950">
               <Settings className="size-3.5" strokeWidth={2} />
             </span>
             {t("onboarding_step4SettingsHeading")}
@@ -80,7 +80,7 @@ export function StepCustomize({ onboarding }: Props) {
 
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-900">
-            <span className="flex size-[22px] items-center justify-center rounded-md bg-[#082f49]/[0.14] text-[#082f49]">
+            <span className="flex size-[22px] items-center justify-center rounded-md bg-sky-950/[0.14] text-sky-950">
               <ExternalLink className="size-3.5" strokeWidth={2} />
             </span>
             {t("onboarding_step4HubHeading")}
@@ -101,7 +101,7 @@ export function StepCustomize({ onboarding }: Props) {
                   <span className="flex-1 text-[13.5px] font-medium text-slate-700">
                     {title}
                   </span>
-                  <span className="rounded-full bg-[#082f49]/[0.14] px-2.5 py-1 text-[11px] font-bold text-[#082f49]">
+                  <span className="rounded-full bg-sky-950/[0.14] px-2.5 py-1 text-[11px] font-bold text-sky-950">
                     {t("onboarding_step4HubAddChip")}
                   </span>
                 </div>
@@ -113,7 +113,7 @@ export function StepCustomize({ onboarding }: Props) {
 
       <button
         type="button"
-        className="mt-1 min-h-12 rounded-md bg-[#082f49] px-8 text-[15px] font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+        className="mt-1 min-h-12 rounded-md bg-sky-950 px-8 text-[15px] font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
         onClick={() => onboarding.goToStep(OnboardingStep.COMPLETE)}
       >
         {t("onboarding_nextButton")}

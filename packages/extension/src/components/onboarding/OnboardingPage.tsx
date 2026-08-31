@@ -18,10 +18,9 @@ import "@/components/App.css"
 export function OnboardingPage() {
   const onboarding = useOnboardingState()
   const [positionElm, setPositionElm] = useState<Element | null>(null)
-  const [isHover, setIsHover] = useState(false)
 
   return (
-    <SelectContextProvider isPopupHover={isHover}>
+    <SelectContextProvider>
       <OnboardingLayout step={onboarding.step} onSkip={onboarding.skip}>
         {onboarding.step === OnboardingStep.INTRO && (
           <StepIntro onboarding={onboarding} />
@@ -44,7 +43,7 @@ export function OnboardingPage() {
       </OnboardingLayout>
 
       <SelectAnchor ref={setPositionElm} />
-      <Popup positionElm={positionElm} onHover={setIsHover} />
+      <Popup positionElm={positionElm} inOnboarding={true} />
       <LinkSelector />
     </SelectContextProvider>
   )

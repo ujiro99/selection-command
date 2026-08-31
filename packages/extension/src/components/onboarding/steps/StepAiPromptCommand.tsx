@@ -39,21 +39,18 @@ export function StepAiPromptCommand({ onboarding }: Props) {
       setCalloutElm(null)
       return
     }
-    let cancelled = false
-    const find = () => {
-      if (cancelled) return
-      const elm = document.querySelector(
-        `[data-command-id="${ONBOARDING_AI_PROMPT_COMMAND_ID}"]`,
-      )
-      if (elm) {
-        setCalloutElm(elm)
-      } else {
-        window.setTimeout(find, 150)
-      }
+    // Observe the DOM instead of polling, so the callout both appears once
+    // the popup menu renders AND disappears if the button is later removed.
+    const selector = `[data-command-id="${ONBOARDING_AI_PROMPT_COMMAND_ID}"]`
+    const sync = () => {
+      const elm = document.querySelector(selector)
+      setCalloutElm(elm)
     }
-    find()
+    sync()
+    const observer = new MutationObserver(sync)
+    observer.observe(document.body, { childList: true, subtree: true })
     return () => {
-      cancelled = true
+      observer.disconnect()
     }
   }, [phase])
 
@@ -79,6 +76,13 @@ export function StepAiPromptCommand({ onboarding }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-4">
+      <OnboardingRail
+        selectLabel={t("onboarding_railSelect")}
+        commandLabel={t("onboarding_railCommand")}
+        resultLabel={t("onboarding_railResultAi")}
+        activeBeat={phase === StepPhase.WAIT_EXECUTE ? 1 : 0}
+      />
+
       <OnboardingFadeIn
         key={phase}
         className="flex flex-col items-center gap-4"
@@ -96,20 +100,12 @@ export function StepAiPromptCommand({ onboarding }: Props) {
 
       <OnboardingTargetText
         text={t("onboarding_step2TargetText")}
-        demoActive={phase === StepPhase.EXPLAIN}
         selected={phase !== StepPhase.EXPLAIN}
       />
 
       <OnboardingCallout targetElm={calloutElm} open={calloutElm != null}>
         {t("onboarding_step2Callout")}
       </OnboardingCallout>
-
-      <OnboardingRail
-        selectLabel={t("onboarding_railSelect")}
-        commandLabel={t("onboarding_railCommand")}
-        resultLabel={t("onboarding_railResultAi")}
-        activeBeat={phase === StepPhase.WAIT_EXECUTE ? 1 : 0}
-      />
     </div>
   )
 }

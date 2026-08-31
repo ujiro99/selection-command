@@ -5,13 +5,12 @@ import { ContextType, selectContext } from "@/hooks/useSelectContext"
 
 export const SelectContextProvider = ({
   children,
-  isPopupHover,
 }: {
   children: ReactNode
-  isPopupHover: boolean
 }) => {
   const [selectionText, _setSelectionText] = useState("")
   const [target, setTarget] = useState<Element | null>(null)
+  const [detectSelectionEnabled, setDetectSelectionEnabled] = useState(true)
 
   useEffect(() => {
     const setSelectionText = async (text: string) => {
@@ -20,7 +19,7 @@ export const SelectContextProvider = ({
     }
 
     const onSelectionchange = async () => {
-      if (isPopupHover) return
+      if (!detectSelectionEnabled) return
       const text = getSelectionText()
       await setSelectionText(text)
     }
@@ -29,12 +28,13 @@ export const SelectContextProvider = ({
     return () => {
       document.removeEventListener("selectionchange", onSelectionchange)
     }
-  }, [isPopupHover])
+  }, [detectSelectionEnabled])
 
   const value: ContextType = {
     selectionText,
     target,
     setTarget,
+    setDetectSelectionEnabled,
   }
 
   return (

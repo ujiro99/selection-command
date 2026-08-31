@@ -37,7 +37,7 @@ export function useOnboardingState() {
   const [step, setStep] = useState<OnboardingStep>(
     () => readE2eOverride()?.step ?? OnboardingStep.INTRO,
   )
-  const [phase, setPhase] = useState<StepPhase>(
+  const [phase, _setPhase] = useState<StepPhase>(
     () => readE2eOverride()?.phase ?? StepPhase.EXPLAIN,
   )
   const startedAtRef = useRef<number>(Date.now())
@@ -52,9 +52,17 @@ export function useOnboardingState() {
     })
   }, [])
 
+  const setPhase = useCallback((next: StepPhase, delay?: number) => {
+    if (delay) {
+      setTimeout(() => _setPhase(next), delay)
+      return
+    }
+    _setPhase(next)
+  }, [])
+
   const goToStep = useCallback((next: OnboardingStep) => {
     setStep(next)
-    setPhase(StepPhase.EXPLAIN)
+    _setPhase(StepPhase.EXPLAIN)
   }, [])
 
   // Records the first text/link selection observed within a given step.

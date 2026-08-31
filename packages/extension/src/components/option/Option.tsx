@@ -7,6 +7,7 @@ import { APP_ID, VERSION, SCREEN } from "@/const"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
 
 import { Popup } from "@/components/Popup"
+import { SelectContextProvider } from "@/providers/SelectContextProvider"
 import { TableOfContents } from "@/components/option/TableOfContents"
 import { ImportExport } from "@/components/option/ImportExport"
 import { UserSupport } from "@/components/option/UserSupport"
@@ -93,11 +94,13 @@ export function Option() {
               ref={setPreviewElm}
               style={{ marginBottom: Math.max(popupHeight + 5, 30) }}
             >
-              <Popup
-                positionElm={previewElm}
-                isPreview={true}
-                ref={setPopupElm}
-              />
+              <SelectContextProvider>
+                <Popup
+                  positionElm={previewElm}
+                  isPreview={true}
+                  ref={setPopupElm}
+                />
+              </SelectContextProvider>
             </div>
             <div className="pt-3">
               <HubBanner />

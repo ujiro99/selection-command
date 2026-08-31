@@ -1321,7 +1321,7 @@
     "message": "Login to Hub"
   },
   "onboarding_step0Title": {
-    "message": "Thanks for installing Selection Command!",
+    "message": "Thanks for installing!",
     "description": "Onboarding Step0 (intro screen) heading, shown right after install."
   },
   "onboarding_step0Body": {
@@ -1341,7 +1341,7 @@
     "description": "Onboarding Step1 (Search command) instruction shown before the user selects the sample text."
   },
   "onboarding_step1TargetText": {
-    "message": "Selection Command lets you search, ask AI, or preview links in a single click.",
+    "message": "An extension that lets you search selected text in a single click.",
     "description": "Onboarding Step1 sample text the user is asked to select to trigger the real popup menu."
   },
   "onboarding_selectHint": {
@@ -1367,6 +1367,10 @@
   "onboarding_step1ReturnHint": {
     "message": "Switch back to this tab and this message disappears automatically.",
     "description": "Onboarding Step1 hint shown while waiting for the user to return from the search command's popup/tab."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Click anywhere on the screen",
+    "description": "Onboarding Step1 callout/speech-bubble text prompting the user to click anywhere on the original page to dismiss the return hint and continue."
   },
   "onboarding_step1ValueMessage": {
     "message": "That's it - you can now search for anything you select in an instant.",
