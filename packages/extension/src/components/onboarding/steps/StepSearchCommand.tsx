@@ -19,19 +19,16 @@ type Props = {
   onboarding: UseOnboardingState
 }
 
-// Maps this step's phase onto the select -> command -> result rail's
-// 0/1/2 beat index (see OnboardingRail). WAIT_RETURN still counts as the
-// "result" beat - the search already ran, we're just waiting for the user
-// to switch back.
+// WAIT_RETURN still counts as the rail's "result" beat (see
+// OnboardingRail) - the search already ran, we're just waiting for the
+// user to switch back.
 function railBeat(phase: StepPhase): 0 | 1 | 2 {
   if (phase === StepPhase.WAIT_EXECUTE) return 1
   if (phase === StepPhase.WAIT_RETURN) return 2
   return 0
 }
 
-// Step1: the user's first hands-on experience - select the sample text,
-// see the real popup menu, run the (default) Google search command, and
-// come back to see the value message. This is the PRD's "First Value".
+// Step1 - the PRD's "First Value" moment.
 export function StepSearchCommand({ onboarding }: Props) {
   const { phase, setPhase } = onboarding
   const { selectionText } = useSelectContext()
@@ -41,10 +38,15 @@ export function StepSearchCommand({ onboarding }: Props) {
 
   const googleCommand = commands?.find((c) => c.title === "Google")
 
-  // EXPLAIN -> WAIT_EXECUTE: once the user selects the sample text, the real
-  // popup menu opens on its own (default startup method is text selection).
+  const isExplain = phase === StepPhase.EXPLAIN
+  const isWaitExecute = phase === StepPhase.WAIT_EXECUTE
+  const isWaitReturn = phase === StepPhase.WAIT_RETURN
+  const isValueShown = phase === StepPhase.VALUE_SHOWN
+
+  // The popup menu opens on its own once the sample text is selected
+  // (default startup method is text selection).
   useEffect(() => {
-    if (phase !== StepPhase.EXPLAIN) return
+    if (!isExplain) return
     if (isEmpty(selectionText)) return
     onboarding.recordFirstSelection(OnboardingStep.SEARCH)
     setPhase(StepPhase.WAIT_EXECUTE, 600)
@@ -58,13 +60,11 @@ export function StepSearchCommand({ onboarding }: Props) {
   // stale callout and re-anchors it to the freshly rendered button instead
   // of staying frozen at the old position.
   useEffect(() => {
-    if (phase !== StepPhase.WAIT_EXECUTE || !googleCommand) {
+    if (!isWaitExecute || !googleCommand) {
       setCalloutElm(null)
       return
     }
     if (isEmpty(selectionText)) {
-      // Selection was cleared - the popup menu is gone, hide the callout
-      // until a new selection reopens it.
       setCalloutElm(null)
       return
     }
@@ -83,14 +83,14 @@ export function StepSearchCommand({ onboarding }: Props) {
     return () => {
       observer.disconnect()
     }
-  }, [phase, googleCommand, selectionText])
+  }, [isWaitExecute, googleCommand, selectionText])
 
-  // WAIT_EXECUTE -> WAIT_RETURN: any search-type command counts (the
-  // callout points at Google specifically, but the default set has several
-  // search commands - being lenient here matches the PRD's "選択→コマンド→
-  // 検索" mental model rather than requiring one exact command).
+  // Any search-type command counts here (the callout points at Google
+  // specifically, but the default set has several search commands - being
+  // lenient matches the PRD's "選択→コマンド→検索" mental model rather than
+  // requiring one exact command).
   useEffect(() => {
-    if (phase !== StepPhase.WAIT_EXECUTE) return
+    if (!isWaitExecute) return
     return subscribeCommandExecuted(({ commandType }) => {
       onboarding.recordCommandExecuted(OnboardingStep.SEARCH, commandType)
       if (
@@ -104,15 +104,15 @@ export function StepSearchCommand({ onboarding }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  // WAIT_RETURN -> VALUE_SHOWN: the search command opens in a separate
-  // browser window (see Popup.execute -> BgCommand.openPopup ->
-  // chrome.windows.create), not a tab in this same window. Switching focus
-  // between two on-screen windows doesn't reliably fire `visibilitychange`
-  // (that API tracks tab occlusion/minimization, not window focus), so a
-  // `focus` listener on this window is needed to reliably detect the user
-  // clicking back onto the onboarding window.
+  // The search command opens in a separate browser window (see
+  // Popup.execute -> BgCommand.openPopup -> chrome.windows.create), not a
+  // tab in this same window. Switching focus between two on-screen windows
+  // doesn't reliably fire `visibilitychange` (that API tracks tab
+  // occlusion/minimization, not window focus), so a `focus` listener on
+  // this window is needed to reliably detect the user clicking back onto
+  // the onboarding window.
   useEffect(() => {
-    if (phase !== StepPhase.WAIT_RETURN) return
+    if (!isWaitReturn) return
 
     const elm = document.querySelector(
       "[data-testid='onboarding-step1-callout-anchor']",
@@ -134,22 +134,20 @@ export function StepSearchCommand({ onboarding }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  const valueShown = phase === StepPhase.VALUE_SHOWN
-
   return (
     <div
       className={cn(
         "flex flex-col items-center gap-10",
-        !valueShown && phase !== StepPhase.WAIT_RETURN && "select-none",
-        phase === StepPhase.WAIT_RETURN && "pb-40",
+        !isValueShown && !isWaitReturn && "select-none",
+        isWaitReturn && "pb-40",
       )}
     >
       <OnboardingFadeIn key={"command-type"} delay={100}>
-        {valueShown ? (
+        {isValueShown ? (
           <h2 className="text-4xl font-bold text-slate-700 flex items-center gap-2">
             <span
               className="-ml-5 flex size-14 animate-onboarding-pop items-center justify-center rounded-full bg-sky-950/[0.14] text-sky-950 brightness-[2.4] motion-reduce:animate-none motion-reduce:opacity-100"
-              style={{ animationDelay: `300ms` }}
+              style={{ animationDelay: "500ms" }}
             >
               <PartyPopper className="size-[26px]" strokeWidth={2.6} />
             </span>
@@ -166,9 +164,9 @@ export function StepSearchCommand({ onboarding }: Props) {
       <div className="flex flex-col items-center gap-4">
         <OnboardingFadeIn
           key={
-            valueShown
+            isValueShown
               ? "value-message"
-              : phase === StepPhase.WAIT_RETURN
+              : isWaitReturn
                 ? "return-hint"
                 : "explain"
           }
@@ -176,9 +174,9 @@ export function StepSearchCommand({ onboarding }: Props) {
           delay={300}
         >
           <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
-            {valueShown
+            {isValueShown
               ? t("onboarding_step1ValueMessage")
-              : phase === StepPhase.WAIT_RETURN
+              : isWaitReturn
                 ? t("onboarding_step1ReturnHint")
                 : t("onboarding_step1Explain")}
           </p>
@@ -187,19 +185,55 @@ export function StepSearchCommand({ onboarding }: Props) {
         <OnboardingFadeIn
           key="rail"
           delay={400}
-          className={valueShown ? undefined : "pb-14"}
+          className={isValueShown ? undefined : "pb-14"}
         >
           <OnboardingRail
             selectLabel={t("onboarding_railSelect")}
             commandLabel={t("onboarding_railCommand")}
             resultLabel={t("onboarding_railResultSearch")}
-            activeBeat={valueShown ? -1 : railBeat(phase)}
+            activeBeat={isValueShown ? -1 : railBeat(phase)}
             size="lg"
           />
         </OnboardingFadeIn>
       </div>
 
-      {valueShown ? (
+      {(isExplain || isWaitExecute) && (
+        <>
+          <OnboardingFadeIn key={"target-text"} delay={500}>
+            <OnboardingTargetText
+              text={t("onboarding_step1TargetText")}
+              selected={!isExplain}
+            />
+          </OnboardingFadeIn>
+          <OnboardingCallout
+            targetElm={calloutElm}
+            open={calloutElm != null}
+            openDelay={200}
+            contentClassName="duration-300"
+          >
+            {t("onboarding_step1Callout")}
+          </OnboardingCallout>
+        </>
+      )}
+
+      {isWaitReturn && (
+        <>
+          <span
+            className="size-8 shrink-0 rounded-full bg-sky-950/[0.14] text-sky-950 animate-onboarding-blink motion-reduce:animate-none"
+            data-testid="onboarding-step1-callout-anchor"
+          />
+          <OnboardingCallout
+            targetElm={returnCalloutElm}
+            open={returnCalloutElm != null}
+            openDelay={200}
+            contentClassName="duration-300"
+          >
+            {t("onboarding_step1Callout_2")}
+          </OnboardingCallout>
+        </>
+      )}
+
+      {isValueShown && (
         <OnboardingFadeIn key="next-button" delay={800}>
           <button
             type="button"
@@ -210,42 +244,6 @@ export function StepSearchCommand({ onboarding }: Props) {
             <ChevronRight className="inline-block size-5" />
           </button>
         </OnboardingFadeIn>
-      ) : (
-        <>
-          {phase === StepPhase.WAIT_RETURN && (
-            <span
-              className="size-8 shrink-0 rounded-full bg-sky-950/[0.14] text-sky-950 animate-onboarding-blink motion-reduce:animate-none"
-              data-testid="onboarding-step1-callout-anchor"
-            ></span>
-          )}
-
-          <OnboardingFadeIn key={"target-text"} delay={500}>
-            {phase !== StepPhase.WAIT_RETURN && (
-              <OnboardingTargetText
-                text={t("onboarding_step1TargetText")}
-                selected={phase !== StepPhase.EXPLAIN}
-              />
-            )}
-          </OnboardingFadeIn>
-
-          <OnboardingCallout
-            targetElm={calloutElm}
-            open={calloutElm != null}
-            openDelay={200}
-            contentClassName="duration-300"
-          >
-            {t("onboarding_step1Callout")}
-          </OnboardingCallout>
-
-          <OnboardingCallout
-            targetElm={returnCalloutElm}
-            open={returnCalloutElm != null}
-            openDelay={200}
-            contentClassName="duration-300"
-          >
-            {t("onboarding_step1Callout_2")}
-          </OnboardingCallout>
-        </>
       )}
     </div>
   )
