@@ -38,7 +38,7 @@ export function StepIntro({ onboarding }: Props) {
       <OnboardingFadeIn delay={800} className="flex justify-center">
         <button
           type="button"
-          className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+          className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 pl-8 pr-5 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
           onClick={() => onboarding.goToStep(OnboardingStep.SEARCH)}
         >
           {t("onboarding_startButton")}

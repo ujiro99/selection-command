@@ -381,8 +381,9 @@ export const Ipc = {
    * @returns Array of responses from each tab
    */
   async sendAllTab(command: IpcCommand, param?: unknown): Promise<any[]> {
+    const onboardingUrl = chrome.runtime.getURL("src/onboarding_page.html")
     const tabs = await chrome.tabs.query({
-      url: ["http://*/*", "https://*/*"],
+      url: ["http://*/*", "https://*/*", onboardingUrl],
     })
     const ps = tabs
       .filter(

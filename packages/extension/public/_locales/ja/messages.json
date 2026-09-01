@@ -1333,7 +1333,7 @@
     "message": "このコマンドを実行すると、Googleで検索できます。"
   },
   "onboarding_step1ReturnHint": {
-    "message": "もとの画面を選択すると、自動的に消えます"
+    "message": "もとの画面を選択すると、ウィンドウが自動的に消えます"
   },
   "onboarding_step1Callout_2": {
     "message": "画面のどこかをクリック"

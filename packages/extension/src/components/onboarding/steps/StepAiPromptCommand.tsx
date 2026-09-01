@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { ChevronRight } from "lucide-react"
 import { t } from "@/services/i18n"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { isEmpty } from "@/lib/utils"
@@ -8,7 +9,6 @@ import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
 import { OnboardingTargetText } from "../OnboardingTargetText"
 import { OnboardingRail } from "../OnboardingRail"
-import { OnboardingValueShown } from "../OnboardingValueShown"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
 
@@ -64,48 +64,90 @@ export function StepAiPromptCommand({ onboarding }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  if (phase === StepPhase.VALUE_SHOWN) {
-    return (
-      <OnboardingValueShown
-        message={t("onboarding_step2ValueMessage")}
-        resultLabel={t("onboarding_railResultAi")}
-        onNext={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
-      />
-    )
-  }
+  const valueShown = phase === StepPhase.VALUE_SHOWN
 
+  // Renders through this single return for every phase, including
+  // VALUE_SHOWN, instead of branching into a separate <OnboardingValueShown>
+  // subtree there - see StepSearchCommand.tsx for why: that would mount a
+  // second, independent OnboardingRail, losing the "select -> command ->
+  // result" beat animation's continuity right as the payoff screen appears.
   return (
-    <div className="flex flex-col items-center gap-4">
-      <OnboardingRail
-        selectLabel={t("onboarding_railSelect")}
-        commandLabel={t("onboarding_railCommand")}
-        resultLabel={t("onboarding_railResultAi")}
-        activeBeat={phase === StepPhase.WAIT_EXECUTE ? 1 : 0}
-      />
-
-      <OnboardingFadeIn
-        key={phase}
-        className="flex flex-col items-center gap-4"
-      >
-        <p
-          className={
-            phase === StepPhase.EXPLAIN
-              ? "max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-900"
-              : "max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-500"
-          }
-        >
-          {t("onboarding_step2Explain")}
-        </p>
+    <div className="flex flex-col items-center gap-10">
+      <OnboardingFadeIn key={"command-type"} delay={100}>
+        {!valueShown && (
+          <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
+            <span className="font-mono">2.</span>{" "}
+            {t("Option_commandType_aiPrompt_title")}
+          </h2>
+        )}
       </OnboardingFadeIn>
 
-      <OnboardingTargetText
-        text={t("onboarding_step2TargetText")}
-        selected={phase !== StepPhase.EXPLAIN}
-      />
+      <div className="flex flex-col items-center gap-4">
+        <OnboardingFadeIn
+          key={valueShown ? "value-message" : phase}
+          className="flex flex-col items-center gap-4"
+          delay={300}
+        >
+          <p
+            className={
+              valueShown || phase === StepPhase.EXPLAIN
+                ? "max-w-xl text-xl leading-[1.75] font-semibold text-slate-900"
+                : "max-w-xl text-xl leading-[1.75] font-semibold text-slate-500"
+            }
+          >
+            {valueShown
+              ? t("onboarding_step2ValueMessage")
+              : t("onboarding_step2Explain")}
+          </p>
+        </OnboardingFadeIn>
 
-      <OnboardingCallout targetElm={calloutElm} open={calloutElm != null}>
-        {t("onboarding_step2Callout")}
-      </OnboardingCallout>
+        <OnboardingFadeIn
+          key="rail"
+          delay={400}
+          className={valueShown ? undefined : "pb-14"}
+        >
+          <OnboardingRail
+            selectLabel={t("onboarding_railSelect")}
+            commandLabel={t("onboarding_railCommand")}
+            resultLabel={t("onboarding_railResultAi")}
+            activeBeat={
+              valueShown ? -1 : phase === StepPhase.WAIT_EXECUTE ? 1 : 0
+            }
+            size="lg"
+          />
+        </OnboardingFadeIn>
+      </div>
+
+      {valueShown ? (
+        <OnboardingFadeIn key="next-button" delay={800}>
+          <button
+            type="button"
+            onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
+            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+          >
+            {t("onboarding_nextButton")}
+            <ChevronRight className="inline-block size-5" />
+          </button>
+        </OnboardingFadeIn>
+      ) : (
+        <>
+          <OnboardingFadeIn key={"target-text"} delay={500}>
+            <OnboardingTargetText
+              text={t("onboarding_step2TargetText")}
+              selected={phase !== StepPhase.EXPLAIN}
+            />
+          </OnboardingFadeIn>
+
+          <OnboardingCallout
+            targetElm={calloutElm}
+            open={calloutElm != null}
+            openDelay={200}
+            contentClassName="duration-300"
+          >
+            {t("onboarding_step2Callout")}
+          </OnboardingCallout>
+        </>
+      )}
     </div>
   )
 }

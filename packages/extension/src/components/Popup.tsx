@@ -27,6 +27,8 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     useSidePanelAutoClose()
 
     const { userSettings } = useUserSettings()
+    const { setDetectSelectionEnabled } = useSelectContext()
+
     const [inTransition, setInTransition] = useState(false)
     const [shouldRender, setShouldRender] = useState(false)
     const [isHover, setIsHover] = useState(false)
@@ -34,7 +36,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       ...props,
       isHover,
     })
-    const { setDetectSelectionEnabled } = useSelectContext()
+
     const isPreview = props.isPreview === true
     const placement = userSettings?.popupPlacement
     const side = isPreview ? SIDE.bottom : (placement?.side ?? SIDE.top)

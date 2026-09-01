@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { PartyPopper } from "lucide-react"
+import { ChevronRight, PartyPopper } from "lucide-react"
 import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
 import { useSelectContext } from "@/hooks/useSelectContext"
@@ -12,7 +12,6 @@ import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
 import { OnboardingTargetText } from "../OnboardingTargetText"
 import { OnboardingRail } from "../OnboardingRail"
-import { OnboardingValueShown } from "../OnboardingValueShown"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
 
@@ -135,96 +134,119 @@ export function StepSearchCommand({ onboarding }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  if (phase === StepPhase.VALUE_SHOWN) {
-    return (
-      <OnboardingValueShown
-        message={t("onboarding_step1ValueMessage")}
-        resultLabel={t("onboarding_railResultSearch")}
-        onNext={() => onboarding.goToStep(OnboardingStep.AI_PROMPT)}
-        titleRenderer={() => (
-          <h2 className="text-4xl font-bold text-slate-700 flex items-center gap-3">
-            <span className="flex size-14 animate-onboarding-pop items-center justify-center rounded-full bg-sky-950/[0.14] text-sky-950 brightness-[2.4] motion-reduce:animate-none motion-reduce:opacity-100">
-              <PartyPopper className="size-[26px]" strokeWidth={2.6} />
-            </span>
-            {t("Option_commandType_search_title")}
-          </h2>
-        )}
-      />
-    )
-  }
+  const valueShown = phase === StepPhase.VALUE_SHOWN
 
   return (
     <div
       className={cn(
         "flex flex-col items-center gap-10",
-        phase !== StepPhase.WAIT_RETURN && "select-none",
-        phase == StepPhase.WAIT_RETURN && "pb-40",
+        !valueShown && phase !== StepPhase.WAIT_RETURN && "select-none",
+        phase === StepPhase.WAIT_RETURN && "pb-40",
       )}
     >
       <OnboardingFadeIn key={"command-type"} delay={100}>
-        <h2 className="text-4xl font-bold text-slate-700 h-14">
-          <span className="font-mono">1.</span>{" "}
-          {t("Option_commandType_search_title")}
-        </h2>
-      </OnboardingFadeIn>
-
-      <OnboardingFadeIn
-        key={phase === StepPhase.WAIT_RETURN ? "return-hint" : "explain"}
-        className="flex flex-col items-center gap-4 pb-14"
-        delay={300}
-      >
-        {phase === StepPhase.WAIT_RETURN ? (
-          <p className="max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-900 animate-onboarding-blink motion-reduce:animate-none">
-            {t("onboarding_step1ReturnHint")}
-          </p>
+        {valueShown ? (
+          <h2 className="text-4xl font-bold text-slate-700 flex items-center gap-2">
+            <span
+              className="-ml-5 flex size-14 animate-onboarding-pop items-center justify-center rounded-full bg-sky-950/[0.14] text-sky-950 brightness-[2.4] motion-reduce:animate-none motion-reduce:opacity-100"
+              style={{ animationDelay: `300ms` }}
+            >
+              <PartyPopper className="size-[26px]" strokeWidth={2.6} />
+            </span>
+            {t("Option_commandType_search_title")}
+          </h2>
         ) : (
-          <p className="max-w-[540px] text-xl leading-[1.75] font-semibold text-slate-900">
-            {t("onboarding_step1Explain")}
+          <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
+            <span className="font-mono">1.</span>{" "}
+            {t("Option_commandType_search_title")}
+          </h2>
+        )}
+      </OnboardingFadeIn>
+
+      <div className="flex flex-col items-center gap-4">
+        <OnboardingFadeIn
+          key={
+            valueShown
+              ? "value-message"
+              : phase === StepPhase.WAIT_RETURN
+                ? "return-hint"
+                : "explain"
+          }
+          className="flex flex-col items-center gap-4"
+          delay={300}
+        >
+          <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
+            {valueShown
+              ? t("onboarding_step1ValueMessage")
+              : phase === StepPhase.WAIT_RETURN
+                ? t("onboarding_step1ReturnHint")
+                : t("onboarding_step1Explain")}
           </p>
-        )}
+        </OnboardingFadeIn>
 
-        <OnboardingRail
-          selectLabel={t("onboarding_railSelect")}
-          commandLabel={t("onboarding_railCommand")}
-          resultLabel={t("onboarding_railResultSearch")}
-          activeBeat={railBeat(phase)}
-          size="lg"
-        />
-      </OnboardingFadeIn>
-
-      {phase === StepPhase.WAIT_RETURN && (
-        <span
-          className="opacity-0"
-          data-testid="onboarding-step1-callout-anchor"
-        />
-      )}
-
-      <OnboardingFadeIn key={"target-text"} delay={500}>
-        {phase !== StepPhase.WAIT_RETURN && (
-          <OnboardingTargetText
-            text={t("onboarding_step1TargetText")}
-            selected={phase !== StepPhase.EXPLAIN}
+        <OnboardingFadeIn
+          key="rail"
+          delay={400}
+          className={valueShown ? undefined : "pb-14"}
+        >
+          <OnboardingRail
+            selectLabel={t("onboarding_railSelect")}
+            commandLabel={t("onboarding_railCommand")}
+            resultLabel={t("onboarding_railResultSearch")}
+            activeBeat={valueShown ? -1 : railBeat(phase)}
+            size="lg"
           />
-        )}
-      </OnboardingFadeIn>
+        </OnboardingFadeIn>
+      </div>
 
-      <OnboardingCallout
-        targetElm={calloutElm}
-        open={calloutElm != null}
-        openDelay={200}
-        contentClassName="duration-300"
-      >
-        {t("onboarding_step1Callout")}
-      </OnboardingCallout>
+      {valueShown ? (
+        <OnboardingFadeIn key="next-button" delay={800}>
+          <button
+            type="button"
+            onClick={() => onboarding.goToStep(OnboardingStep.AI_PROMPT)}
+            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+          >
+            {t("onboarding_nextButton")}
+            <ChevronRight className="inline-block size-5" />
+          </button>
+        </OnboardingFadeIn>
+      ) : (
+        <>
+          {phase === StepPhase.WAIT_RETURN && (
+            <span
+              className="size-8 shrink-0 rounded-full bg-sky-950/[0.14] text-sky-950 animate-onboarding-blink motion-reduce:animate-none"
+              data-testid="onboarding-step1-callout-anchor"
+            ></span>
+          )}
 
-      <OnboardingCallout
-        targetElm={returnCalloutElm}
-        open={returnCalloutElm != null}
-        openDelay={200}
-        contentClassName="duration-300"
-      >
-        {t("onboarding_step1Callout_2")}
-      </OnboardingCallout>
+          <OnboardingFadeIn key={"target-text"} delay={500}>
+            {phase !== StepPhase.WAIT_RETURN && (
+              <OnboardingTargetText
+                text={t("onboarding_step1TargetText")}
+                selected={phase !== StepPhase.EXPLAIN}
+              />
+            )}
+          </OnboardingFadeIn>
+
+          <OnboardingCallout
+            targetElm={calloutElm}
+            open={calloutElm != null}
+            openDelay={200}
+            contentClassName="duration-300"
+          >
+            {t("onboarding_step1Callout")}
+          </OnboardingCallout>
+
+          <OnboardingCallout
+            targetElm={returnCalloutElm}
+            open={returnCalloutElm != null}
+            openDelay={200}
+            contentClassName="duration-300"
+          >
+            {t("onboarding_step1Callout_2")}
+          </OnboardingCallout>
+        </>
+      )}
     </div>
   )
 }

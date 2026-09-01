@@ -89,7 +89,7 @@ module.exports = {
         "onboarding-rise":
           "onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
         "onboarding-ring": "onboarding-ring 2.4s ease-in-out 0.6s infinite",
-        "onboarding-blink": "onboarding-blink 2s ease-in-out 0.3s infinite",
+        "onboarding-blink": "onboarding-blink 1.5s ease-in-out 0.3s infinite",
         "onboarding-highlight": "onboarding-highlight 4s ease-in-out infinite",
         "onboarding-pop":
           "onboarding-pop 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both",
