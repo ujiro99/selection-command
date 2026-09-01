@@ -1336,7 +1336,7 @@
     "message": "Haz clic en este comando para buscar en Google."
   },
   "onboarding_step1ReturnHint": {
-    "message": "Vuelve a esta pestaña y este mensaje desaparecerá automáticamente."
+    "message": "Vuelve a esta pestaña y la ventana se cerrará automáticamente."
   },
   "onboarding_step1Callout_2": {
     "message": "Haz clic en cualquier parte de la pantalla"
@@ -1348,10 +1348,10 @@
     "message": "A continuación, preguntemos a la IA sobre el siguiente texto."
   },
   "onboarding_step2TargetText": {
-    "message": "Esta es una extensión que te permite insertar el texto seleccionado de una página web en una plantilla de prompt y ejecutarlo. Piensa en algunas ideas de para qué podrías usarla."
+    "message": "Piensa en algunas ideas de lo que podrías hacer con una extensión de Chrome que te permite insertar texto de la web en un prompt y ejecutarlo."
   },
   "onboarding_step2Callout": {
-    "message": "Haz clic en este comando para enviar tu selección a través de un prompt de IA preconfigurado."
+    "message": "Ejecuta este comando para enviar tu texto seleccionado + un prompt a la IA."
   },
   "onboarding_railResultAi": {
     "message": "IA"
@@ -1360,7 +1360,7 @@
     "message": "Ahora puedes preguntarle a la IA sobre cualquier cosa que selecciones, sin salir de la página que estás leyendo."
   },
   "onboarding_step3Explain": {
-    "message": "Por último, previsualicemos un enlace sin abrir una nueva pestaña. Haz clic en el siguiente enlace manteniendo pulsada la tecla Shift."
+    "message": "Por último, previsualicemos un enlace sin abrir una nueva pestaña."
   },
   "onboarding_step3LinkLabel": {
     "message": "Enlace de ejemplo"

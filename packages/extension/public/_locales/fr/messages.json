@@ -1336,7 +1336,7 @@
     "message": "Cliquez sur cette commande pour rechercher sur Google."
   },
   "onboarding_step1ReturnHint": {
-    "message": "Revenez à cet onglet et ce message disparaîtra automatiquement."
+    "message": "Revenez à cet onglet et la fenêtre se fermera automatiquement."
   },
   "onboarding_step1Callout_2": {
     "message": "Cliquez n'importe où sur l'écran"
@@ -1348,10 +1348,10 @@
     "message": "Ensuite, interrogeons l'IA à propos du texte ci-dessous."
   },
   "onboarding_step2TargetText": {
-    "message": "Il s'agit d'une extension qui permet d'intégrer le texte sélectionné d'une page web dans un modèle de prompt et de l'exécuter. Réfléchissez à quelques idées d'utilisation."
+    "message": "Réfléchissez à ce que vous pourriez faire avec une extension Chrome qui permet d'intégrer du texte du web dans un prompt et de l'exécuter."
   },
   "onboarding_step2Callout": {
-    "message": "Cliquez sur cette commande pour envoyer votre sélection via un prompt IA préconfiguré."
+    "message": "Exécutez cette commande pour envoyer votre texte sélectionné + un prompt à l'IA."
   },
   "onboarding_railResultAi": {
     "message": "IA"
@@ -1360,7 +1360,7 @@
     "message": "Vous pouvez désormais interroger l'IA sur tout ce que vous sélectionnez, directement depuis la page que vous lisez."
   },
   "onboarding_step3Explain": {
-    "message": "Enfin, prévisualisons un lien sans ouvrir un nouvel onglet. Cliquez sur le lien ci-dessous en maintenant la touche Maj (Shift)."
+    "message": "Enfin, prévisualisons un lien sans ouvrir un nouvel onglet."
   },
   "onboarding_step3LinkLabel": {
     "message": "Lien d'exemple"

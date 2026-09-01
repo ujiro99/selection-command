@@ -1365,7 +1365,7 @@
     "description": "Onboarding Step1 callout/speech-bubble text pointing at the default Google search command in the popup menu."
   },
   "onboarding_step1ReturnHint": {
-    "message": "Switch back to this tab and this message disappears automatically.",
+    "message": "Switch back to this tab and the window closes automatically.",
     "description": "Onboarding Step1 hint shown while waiting for the user to return from the search command's popup/tab."
   },
   "onboarding_step1Callout_2": {
@@ -1381,11 +1381,11 @@
     "description": "Onboarding Step2 (AiPrompt command) instruction shown before the user selects the sample text."
   },
   "onboarding_step2TargetText": {
-    "message": "This is an extension that lets you embed selected text from a web page into a prompt template and run it. Think of some ideas for what you could use it for.",
+    "message": "Think of some ideas for what you could do with a Chrome extension that lets you embed text from the web into a prompt and run it.",
     "description": "Onboarding Step2 sample text the user is asked to select to trigger the AiPrompt command."
   },
   "onboarding_step2Callout": {
-    "message": "Click this command to send your selection through a pre-set AI prompt.",
+    "message": "Run this command to send your selected text + a prompt to the AI.",
     "description": "Onboarding Step2 callout/speech-bubble text pointing at the onboarding's dedicated AiPrompt command in the popup menu."
   },
   "onboarding_railResultAi": {
@@ -1397,7 +1397,7 @@
     "description": "Onboarding Step2 value message shown after the user runs the AiPrompt command."
   },
   "onboarding_step3Explain": {
-    "message": "Finally, let's preview a link without opening a new tab. Shift+click the link below.",
+    "message": "Finally, let's preview a link without opening a new tab.",
     "description": "Onboarding Step3 (Link Preview) instruction."
   },
   "onboarding_step3LinkLabel": {

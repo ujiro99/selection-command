@@ -1339,7 +1339,7 @@
     "message": "Klik arahan ini untuk mencari di Google."
   },
   "onboarding_step1ReturnHint": {
-    "message": "Kembali ke tab ini dan mesej ini akan hilang secara automatik."
+    "message": "Kembali ke tab ini dan tetingkap akan tertutup secara automatik."
   },
   "onboarding_step1Callout_2": {
     "message": "Klik di mana-mana pada skrin"
@@ -1351,10 +1351,10 @@
     "message": "Seterusnya, mari tanya AI tentang teks di bawah ini."
   },
   "onboarding_step2TargetText": {
-    "message": "Ini adalah sambungan yang membolehkan anda menyisipkan teks yang dipilih daripada halaman web ke dalam templat gesaan dan menjalankannya. Fikirkan beberapa idea tentang apa yang boleh anda lakukan dengannya."
+    "message": "Fikirkan beberapa idea tentang apa yang boleh anda lakukan dengan sambungan Chrome yang membolehkan anda menyisipkan teks daripada web ke dalam gesaan dan menjalankannya."
   },
   "onboarding_step2Callout": {
-    "message": "Klik perintah ini untuk menghantar pilihan anda melalui gesaan AI yang telah ditetapkan."
+    "message": "Jalankan arahan ini untuk menghantar teks yang dipilih + gesaan kepada AI."
   },
   "onboarding_railResultAi": {
     "message": "AI"
@@ -1363,7 +1363,7 @@
     "message": "Kini anda boleh bertanya kepada AI tentang apa sahaja yang anda pilih, terus daripada halaman yang sedang anda baca."
   },
   "onboarding_step3Explain": {
-    "message": "Akhir sekali, mari pratonton pautan tanpa membuka tab baharu. Klik pautan di bawah sambil menekan Shift."
+    "message": "Akhir sekali, mari pratonton pautan tanpa membuka tab baharu."
   },
   "onboarding_step3LinkLabel": {
     "message": "Pautan Contoh"

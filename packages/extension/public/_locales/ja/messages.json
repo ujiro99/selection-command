@@ -1345,10 +1345,10 @@
     "message": "次は、選択したテキストをAIに聞いてみましょう。"
   },
   "onboarding_step2TargetText": {
-    "message": "Webページ上のテキストをプロンプトテンプレートに埋め込んで実行できる拡張機能で、どんなことが出来るか、アイデアを考えてください。"
+    "message": "Web上のテキストをプロンプトに埋め込んで実行できるChrome拡張機能によって、どんなことが出来るかアイデアを考えてください。"
   },
   "onboarding_step2Callout": {
-    "message": "このコマンドを実行すると、選択したテキストをあらかじめ設定したプロンプトでAIに送れます。"
+    "message": "このコマンドを実行すると、選択したテキスト + プロンプトをAIに送れます。"
   },
   "onboarding_railResultAi": {
     "message": "AI"
@@ -1357,7 +1357,7 @@
     "message": "Webページを読みながら、その場でAIに質問できました。"
   },
   "onboarding_step3Explain": {
-    "message": "最後に、リンク先をタブを開かずに確認してみましょう。以下のリンクをShift+クリックしてください。"
+    "message": "最後に、リンク先をタブを開かずに確認してみましょう。"
   },
   "onboarding_step3LinkLabel": {
     "message": "サンプルリンク"

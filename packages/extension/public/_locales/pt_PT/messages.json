@@ -1339,7 +1339,7 @@
     "message": "Clique neste comando para pesquisar no Google."
   },
   "onboarding_step1ReturnHint": {
-    "message": "Volte a este separador e esta mensagem desaparece automaticamente."
+    "message": "Volte a este separador e a janela fecha-se automaticamente."
   },
   "onboarding_step1Callout_2": {
     "message": "Clique em qualquer parte do ecrã"
@@ -1351,10 +1351,10 @@
     "message": "De seguida, vamos perguntar à IA sobre o texto abaixo."
   },
   "onboarding_step2TargetText": {
-    "message": "Esta é uma extensão que permite inserir o texto selecionado de uma página web num modelo de prompt e executá-lo. Pense em algumas ideias para o que poderia usá-la."
+    "message": "Pense em algumas ideias sobre o que poderia fazer com uma extensão do Chrome que permite inserir texto da web num prompt e executá-lo."
   },
   "onboarding_step2Callout": {
-    "message": "Clique neste comando para enviar a sua seleção através de um prompt de IA pré-configurado."
+    "message": "Execute este comando para enviar o texto selecionado + um prompt para a IA."
   },
   "onboarding_railResultAi": {
     "message": "IA"
@@ -1363,7 +1363,7 @@
     "message": "Agora já pode perguntar à IA sobre o que selecionar, diretamente a partir da página que está a ler."
   },
   "onboarding_step3Explain": {
-    "message": "Por fim, vamos pré-visualizar uma ligação sem abrir um novo separador. Clique na ligação abaixo enquanto mantém premida a tecla Shift."
+    "message": "Por fim, vamos pré-visualizar uma ligação sem abrir um novo separador."
   },
   "onboarding_step3LinkLabel": {
     "message": "Ligação de exemplo"

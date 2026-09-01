@@ -1339,7 +1339,7 @@
     "message": "Klik perintah ini untuk mencari di Google."
   },
   "onboarding_step1ReturnHint": {
-    "message": "Kembali ke tab ini dan pesan ini akan hilang secara otomatis."
+    "message": "Kembali ke tab ini dan jendela akan tertutup secara otomatis."
   },
   "onboarding_step1Callout_2": {
     "message": "Klik di mana saja pada layar"
@@ -1351,10 +1351,10 @@
     "message": "Selanjutnya, mari tanyakan ke AI tentang teks di bawah ini."
   },
   "onboarding_step2TargetText": {
-    "message": "Ini adalah ekstensi yang memungkinkan Anda menyematkan teks yang dipilih dari halaman web ke dalam templat prompt dan menjalankannya. Pikirkan beberapa ide tentang apa yang bisa Anda lakukan dengannya."
+    "message": "Pikirkan ide-ide tentang apa yang bisa Anda lakukan dengan ekstensi Chrome yang dapat menyematkan teks dari web ke dalam prompt dan menjalankannya."
   },
   "onboarding_step2Callout": {
-    "message": "Klik perintah ini untuk mengirim teks yang dipilih melalui prompt AI yang sudah diatur sebelumnya."
+    "message": "Jalankan perintah ini untuk mengirim teks yang dipilih + sebuah prompt ke AI."
   },
   "onboarding_railResultAi": {
     "message": "AI"
@@ -1363,7 +1363,7 @@
     "message": "Sekarang Anda bisa bertanya ke AI tentang apa pun yang Anda pilih, langsung dari halaman yang sedang Anda baca."
   },
   "onboarding_step3Explain": {
-    "message": "Terakhir, mari pratinjau sebuah tautan tanpa membuka tab baru. Klik tautan di bawah ini sambil menekan tombol Shift."
+    "message": "Terakhir, mari pratinjau sebuah tautan tanpa membuka tab baru."
   },
   "onboarding_step3LinkLabel": {
     "message": "Tautan Contoh"

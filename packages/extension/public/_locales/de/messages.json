@@ -1336,7 +1336,7 @@
     "message": "Klicke auf diesen Befehl, um mit Google zu suchen."
   },
   "onboarding_step1ReturnHint": {
-    "message": "Wechsle zurück zu diesem Tab, dann verschwindet diese Meldung automatisch."
+    "message": "Wechsle zurück zu diesem Tab, dann schließt sich das Fenster automatisch."
   },
   "onboarding_step1Callout_2": {
     "message": "Klicke irgendwo auf den Bildschirm"
@@ -1348,10 +1348,10 @@
     "message": "Als Nächstes fragen wir die KI zum folgenden Text."
   },
   "onboarding_step2TargetText": {
-    "message": "Dies ist eine Erweiterung, mit der du markierten Text von einer Webseite in eine Prompt-Vorlage einfügen und ausführen kannst. Überlege dir ein paar Ideen, wofür du sie nutzen könntest."
+    "message": "Dies ist eine Chrome-Erweiterung, mit der du Text aus dem Web in einen Prompt einfügen und ausführen kannst - überlege dir ein paar Ideen, wofür du sie nutzen könntest."
   },
   "onboarding_step2Callout": {
-    "message": "Führe diesen Befehl aus, um deine Auswahl über einen voreingestellten KI-Prompt zu senden."
+    "message": "Führe diesen Befehl aus, um deine Auswahl + einen Prompt an die KI zu senden."
   },
   "onboarding_railResultAi": {
     "message": "KI"
@@ -1360,7 +1360,7 @@
     "message": "Jetzt kannst du die KI direkt auf der Seite, die du liest, zu allem fragen, was du markierst."
   },
   "onboarding_step3Explain": {
-    "message": "Zum Schluss schauen wir uns einen Link an, ohne einen neuen Tab zu öffnen. Klicke bei gedrückter Umschalttaste (Shift) auf den folgenden Link."
+    "message": "Zum Schluss schauen wir uns einen Link an, ohne einen neuen Tab zu öffnen."
   },
   "onboarding_step3LinkLabel": {
     "message": "Beispiel-Link"

@@ -1336,7 +1336,7 @@
     "message": "이 명령을 실행하면 Google로 검색할 수 있습니다."
   },
   "onboarding_step1ReturnHint": {
-    "message": "이 탭으로 돌아오면 이 메시지는 자동으로 사라집니다."
+    "message": "이 탭으로 돌아오면 창이 자동으로 닫힙니다."
   },
   "onboarding_step1Callout_2": {
     "message": "화면 아무 곳이나 클릭"
@@ -1348,10 +1348,10 @@
     "message": "다음으로 아래 텍스트에 대해 AI에게 물어봅시다."
   },
   "onboarding_step2TargetText": {
-    "message": "웹페이지의 텍스트를 프롬프트 템플릿에 넣어 실행할 수 있는 확장 프로그램으로 무엇을 할 수 있을지 아이디어를 생각해 보세요."
+    "message": "웹의 텍스트를 프롬프트에 넣어 실행할 수 있는 Chrome 확장 프로그램으로 무엇을 할 수 있을지 아이디어를 생각해 보세요."
   },
   "onboarding_step2Callout": {
-    "message": "이 명령을 실행하면 선택한 텍스트를 미리 설정된 프롬프트로 AI에 보낼 수 있습니다."
+    "message": "이 명령을 실행하면 선택한 텍스트 + 프롬프트를 AI에 보낼 수 있습니다."
   },
   "onboarding_railResultAi": {
     "message": "AI"
@@ -1360,7 +1360,7 @@
     "message": "이제 페이지를 읽으면서 바로 AI에게 무엇이든 물어볼 수 있습니다."
   },
   "onboarding_step3Explain": {
-    "message": "마지막으로 새 탭을 열지 않고 링크를 미리 볼까요? 아래 링크를 Shift+클릭하세요."
+    "message": "마지막으로 새 탭을 열지 않고 링크를 미리 볼까요?"
   },
   "onboarding_step3LinkLabel": {
     "message": "샘플 링크"

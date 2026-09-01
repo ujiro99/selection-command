@@ -1336,7 +1336,7 @@
     "message": "点击此命令即可使用 Google 搜索。"
   },
   "onboarding_step1ReturnHint": {
-    "message": "切回此标签页,该提示会自动消失。"
+    "message": "切回此标签页，窗口会自动关闭。"
   },
   "onboarding_step1Callout_2": {
     "message": "点击屏幕上的任意位置"
@@ -1348,10 +1348,10 @@
     "message": "接下来，让我们向 AI 询问下面这段文字。"
   },
   "onboarding_step2TargetText": {
-    "message": "这是一个可以将网页上选中的文字嵌入提示词模板并执行的扩展程序，想想它能帮你做些什么。"
+    "message": "想想你能用这个可以把网页文字嵌入提示词并执行的 Chrome 扩展程序做些什么。"
   },
   "onboarding_step2Callout": {
-    "message": "点击此命令,即可通过预设的提示词将选中内容发送给 AI。"
+    "message": "运行此命令，即可将选中文本 + 提示词发送给 AI。"
   },
   "onboarding_railResultAi": {
     "message": "AI"
@@ -1360,7 +1360,7 @@
     "message": "现在，您可以在阅读网页的同时，就您选择的任何内容向 AI 提问。"
   },
   "onboarding_step3Explain": {
-    "message": "最后，让我们在不打开新标签页的情况下预览链接。请按住 Shift 键点击下面的链接。"
+    "message": "最后，让我们在不打开新标签页的情况下预览链接。"
   },
   "onboarding_step3LinkLabel": {
     "message": "示例链接"
