@@ -1339,7 +1339,7 @@
     "message": "画面のどこかをクリック"
   },
   "onboarding_step1ValueMessage": {
-    "message": "これで、気になった情報をすぐに検索できました。"
+    "message": "これで、気になった情報をすぐに検索できました"
   },
   "onboarding_step2Explain": {
     "message": "次は、選択したテキストをAIに聞いてみましょう。"

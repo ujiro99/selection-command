@@ -1373,7 +1373,7 @@
     "description": "Onboarding Step1 callout/speech-bubble text prompting the user to click anywhere on the original page to dismiss the return hint and continue."
   },
   "onboarding_step1ValueMessage": {
-    "message": "That's it - you can now search for anything you select in an instant.",
+    "message": "That's it - you can now search for anything you select in an instant",
     "description": "Onboarding Step1 value message shown after the user runs the search command and returns to the onboarding tab."
   },
   "onboarding_step2Explain": {

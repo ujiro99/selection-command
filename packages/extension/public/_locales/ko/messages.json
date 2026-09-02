@@ -1342,7 +1342,7 @@
     "message": "화면 아무 곳이나 클릭"
   },
   "onboarding_step1ValueMessage": {
-    "message": "이제 궁금했던 정보를 바로 검색할 수 있게 되었습니다."
+    "message": "이제 궁금했던 정보를 바로 검색할 수 있게 되었습니다"
   },
   "onboarding_step2Explain": {
     "message": "다음으로 아래 텍스트에 대해 AI에게 물어봅시다."

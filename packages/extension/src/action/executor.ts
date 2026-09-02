@@ -37,12 +37,15 @@ export async function executeAction({
 
   const { sourceType, sourceId } = resolveCommandSource(command)
 
-  sendEvent(ANALYTICS_EVENTS.SELECTION_COMMAND, {
-    event_label: mode,
-    command_id: command.id,
-    source_type: sourceType,
-    source_id: sourceId,
-  })
+  // Don't send analytics events for commands executed from the extension's own pages (e.g., onBoarding, etc.)
+  if (!pageUrl?.startsWith("chrome-extension://")) {
+    sendEvent(ANALYTICS_EVENTS.SELECTION_COMMAND, {
+      event_label: mode,
+      command_id: command.id,
+      source_type: sourceType,
+      source_id: sourceId,
+    })
+  }
 
   dispatchCommandExecuted({ commandId: command.id, commandType: mode })
 

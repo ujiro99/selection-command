@@ -1342,7 +1342,7 @@
     "message": "点击屏幕上的任意位置"
   },
   "onboarding_step1ValueMessage": {
-    "message": "就是这样——现在您可以立即搜索所选的任何内容。"
+    "message": "就是这样——现在您可以立即搜索所选的任何内容"
   },
   "onboarding_step2Explain": {
     "message": "接下来，让我们向 AI 询问下面这段文字。"

@@ -62,10 +62,16 @@ module.exports = {
           "44%, 70%": { backgroundColor: "rgb(191 219 254 / 1)" },
           "82%, 100%": { backgroundColor: "rgb(191 219 254 / 0)" },
         },
-        // The one-shot scale-in used for the value-shown checkmark badge and
-        // the completion screen's party-popper icon.
+        // The one-shot scale-in used for the the completion screen's party-popper icon.
         "onboarding-pop": {
           "0%": { opacity: "0", transform: "scale(0.72)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "onboarding-pop-2": {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.72) translate(-10px, 10px)",
+          },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
         // Gentle vertical bob used to draw extra attention to the onboarding
@@ -93,6 +99,8 @@ module.exports = {
         "onboarding-highlight": "onboarding-highlight 4s ease-in-out infinite",
         "onboarding-pop":
           "onboarding-pop 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both",
+        "onboarding-pop-2":
+          "onboarding-pop-2 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both",
         "onboarding-float": "onboarding-float 1.4s ease-in-out infinite",
       },
       padding: {

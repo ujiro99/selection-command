@@ -7,6 +7,7 @@ import { ResultPopup } from "@/components/result/ResultPopup"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useCommandExecutor } from "@/hooks/useCommandExecutor"
 import { getCommandEnabled } from "@/lib/commandEnabled"
+import { PopupOption } from "@/services/option/defaultSettings"
 import { ExecState } from "@/const"
 import type { Command } from "@/types"
 
@@ -24,8 +25,8 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
   const { iconUrl, title } = props.command
+  const { isPreview, inTransition, inOnboarding } = usePopupContext()
   const { selectionText, target } = useSelectContext()
-  const { isPreview, inTransition } = usePopupContext()
   const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
   const message = itemState.message || defaultMessage
 
@@ -38,11 +39,19 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     }
 
     const rect = props.menuRef.current.getBoundingClientRect()
+    let position = { x: rect.right + 10, y: rect.top }
+
+    // オンボーディング中は画面上の説明を表示するために、右端に寄せる
+    if (inOnboarding) {
+      const screenWidth = window.screen.width
+      position = { x: screenWidth - PopupOption.width - 20, y: rect.top }
+    }
+
     const useSecondary = e.metaKey || e.ctrlKey
 
     executeCommand({
       command: props.command,
-      position: { x: rect.right + 10, y: rect.top },
+      position,
       selectionText,
       target,
       useSecondary,

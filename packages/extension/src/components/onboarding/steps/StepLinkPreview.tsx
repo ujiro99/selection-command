@@ -23,8 +23,11 @@ export function StepLinkPreview({ onboarding }: Props) {
   const { phase, setPhase } = onboarding
   const linkRef = useRef<HTMLAnchorElement>(null)
 
+  const isExplain = phase === StepPhase.EXPLAIN
+  const isValueShown = phase === StepPhase.VALUE_SHOWN
+
   useEffect(() => {
-    if (phase !== StepPhase.EXPLAIN) return
+    if (!isExplain) return
     return subscribeCommandExecuted(({ commandType }) => {
       if (!DRAG_OPEN_MODES.includes(commandType)) return
       onboarding.recordCommandExecuted(OnboardingStep.LINK_PREVIEW, commandType)
@@ -32,8 +35,6 @@ export function StepLinkPreview({ onboarding }: Props) {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
-
-  const valueShown = phase === StepPhase.VALUE_SHOWN
 
   // Renders through this single return for every phase, including
   // VALUE_SHOWN, instead of branching into a separate <OnboardingValueShown>
@@ -43,7 +44,7 @@ export function StepLinkPreview({ onboarding }: Props) {
   return (
     <div className="flex flex-col items-center gap-10">
       <OnboardingFadeIn key={"command-type"} delay={100}>
-        {!valueShown && (
+        {!isValueShown && (
           <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
             <span className="font-mono">3.</span> {t("Option_linkCommand")}
           </h2>
@@ -52,12 +53,12 @@ export function StepLinkPreview({ onboarding }: Props) {
 
       <div className="flex flex-col items-center gap-4">
         <OnboardingFadeIn
-          key={valueShown ? "value-message" : "explain"}
+          key={isValueShown ? "value-message" : "explain"}
           className="flex flex-col items-center gap-4"
           delay={300}
         >
           <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
-            {valueShown
+            {isValueShown
               ? t("onboarding_step3ValueMessage")
               : t("onboarding_step3Explain")}
           </p>
@@ -66,19 +67,19 @@ export function StepLinkPreview({ onboarding }: Props) {
         <OnboardingFadeIn
           key="rail"
           delay={400}
-          className={valueShown ? undefined : "pb-14"}
+          className={isValueShown ? undefined : "pb-14"}
         >
           <OnboardingRail
             selectLabel={t("onboarding_railSelect")}
             commandLabel={t("onboarding_railCommand")}
             resultLabel={t("onboarding_railResultPreview")}
-            activeBeat={valueShown ? -1 : 0}
+            activeBeat={isValueShown ? -1 : 0}
             size="lg"
           />
         </OnboardingFadeIn>
       </div>
 
-      {valueShown ? (
+      {isValueShown ? (
         <OnboardingFadeIn key="next-button" delay={800}>
           <button
             type="button"

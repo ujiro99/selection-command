@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ChevronRight, PartyPopper } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import { t } from "@/services/i18n"
 import { cn } from "@/lib/utils"
 import { useSelectContext } from "@/hooks/useSelectContext"
@@ -143,22 +143,10 @@ export function StepSearchCommand({ onboarding }: Props) {
       )}
     >
       <OnboardingFadeIn key={"command-type"} delay={100}>
-        {isValueShown ? (
-          <h2 className="text-4xl font-bold text-slate-700 flex items-center gap-2">
-            <span
-              className="-ml-5 flex size-14 animate-onboarding-pop items-center justify-center rounded-full bg-sky-950/[0.14] text-sky-950 brightness-[2.4] motion-reduce:animate-none motion-reduce:opacity-100"
-              style={{ animationDelay: "500ms" }}
-            >
-              <PartyPopper className="size-[26px]" strokeWidth={2.6} />
-            </span>
-            {t("Option_commandType_search_title")}
-          </h2>
-        ) : (
-          <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
-            <span className="font-mono">1.</span>{" "}
-            {t("Option_commandType_search_title")}
-          </h2>
-        )}
+        <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
+          <span className="font-mono">1.</span>{" "}
+          {t("Option_commandType_search_title")}
+        </h2>
       </OnboardingFadeIn>
 
       <div className="flex flex-col items-center gap-4">
@@ -174,11 +162,21 @@ export function StepSearchCommand({ onboarding }: Props) {
           delay={300}
         >
           <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
-            {isValueShown
-              ? t("onboarding_step1ValueMessage")
-              : isWaitReturn
-                ? t("onboarding_step1ReturnHint")
-                : t("onboarding_step1Explain")}
+            {isValueShown ? (
+              <>
+                <span>{t("onboarding_step1ValueMessage")}</span>
+                <span
+                  className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
+                  style={{ animationDelay: "700ms" }}
+                >
+                  🎉
+                </span>
+              </>
+            ) : isWaitReturn ? (
+              t("onboarding_step1ReturnHint")
+            ) : (
+              t("onboarding_step1Explain")
+            )}
           </p>
         </OnboardingFadeIn>
 
@@ -225,7 +223,7 @@ export function StepSearchCommand({ onboarding }: Props) {
           <OnboardingCallout
             targetElm={returnCalloutElm}
             open={returnCalloutElm != null}
-            openDelay={200}
+            openDelay={1000}
             contentClassName="duration-300"
           >
             {t("onboarding_step1Callout_2")}
@@ -234,7 +232,7 @@ export function StepSearchCommand({ onboarding }: Props) {
       )}
 
       {isValueShown && (
-        <OnboardingFadeIn key="next-button" delay={800}>
+        <OnboardingFadeIn key="next-button" delay={1200}>
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.AI_PROMPT)}

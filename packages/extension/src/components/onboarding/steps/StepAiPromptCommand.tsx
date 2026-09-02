@@ -26,8 +26,12 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   const { selectionText } = useSelectContext()
   const [calloutElm, setCalloutElm] = useState<Element | null>(null)
 
+  const isExplain = phase === StepPhase.EXPLAIN
+  const isWaitExecute = phase === StepPhase.WAIT_EXECUTE
+  const isValueShown = phase === StepPhase.VALUE_SHOWN
+
   useEffect(() => {
-    if (phase !== StepPhase.EXPLAIN) return
+    if (!isExplain) return
     if (isEmpty(selectionText)) return
     onboarding.recordFirstSelection(OnboardingStep.AI_PROMPT)
     setPhase(StepPhase.WAIT_EXECUTE)
@@ -35,7 +39,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   }, [phase, selectionText])
 
   useEffect(() => {
-    if (phase !== StepPhase.WAIT_EXECUTE) {
+    if (!isWaitExecute) {
       setCalloutElm(null)
       return
     }
@@ -52,10 +56,10 @@ export function StepAiPromptCommand({ onboarding }: Props) {
     return () => {
       observer.disconnect()
     }
-  }, [phase])
+  }, [isWaitExecute])
 
   useEffect(() => {
-    if (phase !== StepPhase.WAIT_EXECUTE) return
+    if (!isWaitExecute) return
     return subscribeCommandExecuted(({ commandId, commandType }) => {
       if (commandId !== ONBOARDING_AI_PROMPT_COMMAND_ID) return
       onboarding.recordCommandExecuted(OnboardingStep.AI_PROMPT, commandType)
@@ -63,8 +67,6 @@ export function StepAiPromptCommand({ onboarding }: Props) {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
-
-  const valueShown = phase === StepPhase.VALUE_SHOWN
 
   // Renders through this single return for every phase, including
   // VALUE_SHOWN, instead of branching into a separate <OnboardingValueShown>
@@ -74,7 +76,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   return (
     <div className="flex flex-col items-center gap-10">
       <OnboardingFadeIn key={"command-type"} delay={100}>
-        {!valueShown && (
+        {!isValueShown && (
           <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
             <span className="font-mono">2.</span>{" "}
             {t("Option_commandType_aiPrompt_title")}
@@ -84,18 +86,18 @@ export function StepAiPromptCommand({ onboarding }: Props) {
 
       <div className="flex flex-col items-center gap-4">
         <OnboardingFadeIn
-          key={valueShown ? "value-message" : phase}
+          key={
+            isValueShown
+              ? "value-message"
+              : isWaitExecute
+                ? "wait-execute"
+                : "explain"
+          }
           className="flex flex-col items-center gap-4"
           delay={300}
         >
-          <p
-            className={
-              valueShown || phase === StepPhase.EXPLAIN
-                ? "max-w-xl text-xl leading-[1.75] font-semibold text-slate-900"
-                : "max-w-xl text-xl leading-[1.75] font-semibold text-slate-500"
-            }
-          >
-            {valueShown
+          <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
+            {isValueShown
               ? t("onboarding_step2ValueMessage")
               : t("onboarding_step2Explain")}
           </p>
@@ -104,21 +106,19 @@ export function StepAiPromptCommand({ onboarding }: Props) {
         <OnboardingFadeIn
           key="rail"
           delay={400}
-          className={valueShown ? undefined : "pb-14"}
+          className={isValueShown ? undefined : "pb-14"}
         >
           <OnboardingRail
             selectLabel={t("onboarding_railSelect")}
             commandLabel={t("onboarding_railCommand")}
             resultLabel={t("onboarding_railResultAi")}
-            activeBeat={
-              valueShown ? -1 : phase === StepPhase.WAIT_EXECUTE ? 1 : 0
-            }
+            activeBeat={isValueShown ? -1 : isWaitExecute ? 1 : 0}
             size="lg"
           />
         </OnboardingFadeIn>
       </div>
 
-      {valueShown ? (
+      {isValueShown ? (
         <OnboardingFadeIn key="next-button" delay={800}>
           <button
             type="button"
@@ -134,7 +134,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
           <OnboardingFadeIn key={"target-text"} delay={500}>
             <OnboardingTargetText
               text={t("onboarding_step2TargetText")}
-              selected={phase !== StepPhase.EXPLAIN}
+              selected={!isExplain}
             />
           </OnboardingFadeIn>
 
