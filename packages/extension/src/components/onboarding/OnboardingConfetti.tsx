@@ -2,7 +2,15 @@ import { useEffect, useRef } from "react"
 import confetti from "canvas-confetti"
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion"
 
-const COLORS = ["#082f49", "#0284c7", "#7dd3fc", "#f59e0b", "#cbd5e1"]
+const COLORS = [
+  "#082f49",
+  "#0284c7",
+  "#7dd3fc",
+  "#f59e0b",
+  "#cbd5e1",
+  "#dc2626",
+  "#ef4444",
+]
 
 // Step5's one-shot celebration burst. Fires once on mount and never loops -
 // see the onboarding motion spec's "one thing moves at a time" rule; a
@@ -31,23 +39,33 @@ export function OnboardingConfetti() {
       useWorker: false,
     })
 
-    // angle: 270 shoots particles downward (canvas-confetti's angle 90,
-    // the default, shoots UP - a fountain/firework burst - which combined
-    // with origin.y near/above 0 sends everything off the top of the
-    // canvas and it never becomes visible). origin.y: 0 starts them right
-    // at the top edge so the fall reads immediately.
-    instance({
-      particleCount: 120,
-      spread: 100,
-      angle: 270,
-      startVelocity: 32,
-      gravity: 1,
-      ticks: 300,
-      origin: { x: 0.5, y: 0 },
-      colors: COLORS,
-    })
+    // Delay the burst slightly so it doesn't fire before the page has
+    // finished painting (avoids the first frames being dropped/invisible).
+    const timer = setTimeout(() => {
+      // angle: 270 shoots particles downward (canvas-confetti's angle 90,
+      // the default, shoots UP - a fountain/firework burst - which combined
+      // with origin.y near/above 0 sends everything off the top of the
+      // canvas and it never becomes visible). origin.y: 0 starts them right
+      // at the top edge so the fall reads immediately.
+      //
+      // ticks: 600 keeps particles alive long enough to reach the bottom
+      // of the viewport instead of being culled mid-fall.
+      instance({
+        particleCount: 120,
+        spread: 160,
+        angle: 270,
+        startVelocity: 35,
+        gravity: 0.8,
+        ticks: 200,
+        origin: { x: 0.5, y: 0 },
+        colors: COLORS,
+      })
+    }, 600)
 
-    return () => instance.reset()
+    return () => {
+      clearTimeout(timer)
+      instance.reset()
+    }
   }, [prefersReducedMotion])
 
   if (prefersReducedMotion) return null
@@ -63,7 +81,7 @@ export function OnboardingConfetti() {
       // constraints, per CSS2.1 10.6.5) - canvas-confetti's `resize: true`
       // then reads that tiny box via getBoundingClientRect() and everything
       // renders squeezed into the top-left corner.
-      className="pointer-events-none fixed inset-0 z-20 size-full"
+      className="pointer-events-none fixed inset-0 z-20 size-full !h-full"
     />
   )
 }
