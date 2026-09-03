@@ -1356,8 +1356,11 @@
   "onboarding_railResultAi": {
     "message": "IA"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "Invio del testo selezionato + prompt all'IA in corso..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "Ora puoi chiedere all'IA qualsiasi cosa selezioni, direttamente dalla pagina che stai leggendo."
+    "message": "Ora puoi chiedere all'IA qualsiasi cosa selezioni, direttamente dalla pagina che stai leggendo"
   },
   "onboarding_step3Explain": {
     "message": "Infine, visualizziamo l'anteprima di un link senza aprire una nuova scheda."
@@ -1365,14 +1368,17 @@
   "onboarding_step3LinkLabel": {
     "message": "Link di esempio"
   },
-  "onboarding_clickKeycap": {
-    "message": "Clic"
-  },
   "onboarding_railResultPreview": {
     "message": "Anteprima"
   },
+  "onboarding_step3Callout": {
+    "message": "Fai Shift+clic su questo link per visualizzarne l'anteprima."
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Torna a questa scheda e la finestra si chiuderà automaticamente."
+  },
   "onboarding_step3ValueMessage": {
-    "message": "Puoi visualizzare l'anteprima dei link senza lasciare la pagina."
+    "message": "Fatto: ora puoi visualizzare l'anteprima dei link senza lasciare la pagina"
   },
   "onboarding_nextButton": {
     "message": "Avanti"

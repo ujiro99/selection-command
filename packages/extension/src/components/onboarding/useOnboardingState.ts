@@ -9,13 +9,14 @@ import { closeOnboardingTab } from "./onboardingWindow"
 
 export type UseOnboardingState = ReturnType<typeof useOnboardingState>
 
-// e2e-build-only escape hatch (`?step=SEARCH&phase=value_shown`) so
+// development or e2e build-only escape hatch (`?step=SEARCH&phase=value_shown`) so
 // screenshot/manual-QA tooling can land directly on any step/phase without
-// driving the whole real flow. `import.meta.env.MODE` is only "e2e" for
-// `vite build --mode e2e` (see package.json's build:e2e), so this is
-// entirely inert in production and dev builds.
-function readE2eOverride(): { step: OnboardingStep; phase: StepPhase } | null {
-  if (import.meta.env.MODE !== "e2e") return null
+// driving the whole real flow.
+function readStepAndPhaseOverride(): {
+  step: OnboardingStep
+  phase: StepPhase
+} | null {
+  if (!["e2e", "development"].includes(import.meta.env.MODE)) return null
   const params = new URLSearchParams(window.location.search)
   const stepParam = params.get("step")
   if (!stepParam) return null
@@ -35,10 +36,10 @@ function readE2eOverride(): { step: OnboardingStep; phase: StepPhase } | null {
 
 export function useOnboardingState() {
   const [step, setStep] = useState<OnboardingStep>(
-    () => readE2eOverride()?.step ?? OnboardingStep.INTRO,
+    () => readStepAndPhaseOverride()?.step ?? OnboardingStep.INTRO,
   )
   const [phase, _setPhase] = useState<StepPhase>(
-    () => readE2eOverride()?.phase ?? StepPhase.EXPLAIN,
+    () => readStepAndPhaseOverride()?.phase ?? StepPhase.EXPLAIN,
   )
   const startedAtRef = useRef<number>(Date.now())
   const firstValueSentRef = useRef(false)
@@ -53,6 +54,7 @@ export function useOnboardingState() {
   }, [])
 
   const setPhase = useCallback((next: StepPhase, delay?: number) => {
+    console.log(`onboarding: setPhase(${next}, ${delay})`)
     if (delay) {
       setTimeout(() => _setPhase(next), delay)
       return

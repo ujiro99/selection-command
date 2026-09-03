@@ -1359,8 +1359,11 @@
   "onboarding_railResultAi": {
     "message": "AI"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "Menghantar teks yang dipilih + gesaan kepada AI..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "Kini anda boleh bertanya kepada AI tentang apa sahaja yang anda pilih, terus daripada halaman yang sedang anda baca."
+    "message": "Kini anda boleh bertanya kepada AI tentang apa sahaja yang anda pilih, terus daripada halaman yang sedang anda baca"
   },
   "onboarding_step3Explain": {
     "message": "Akhir sekali, mari pratonton pautan tanpa membuka tab baharu."
@@ -1368,14 +1371,17 @@
   "onboarding_step3LinkLabel": {
     "message": "Pautan Contoh"
   },
-  "onboarding_clickKeycap": {
-    "message": "Klik"
-  },
   "onboarding_railResultPreview": {
     "message": "Pratonton"
   },
+  "onboarding_step3Callout": {
+    "message": "Shift+klik pautan ini untuk pratonton."
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Kembali ke tab ini dan tetingkap akan tertutup secara automatik."
+  },
   "onboarding_step3ValueMessage": {
-    "message": "Anda boleh pratonton pautan tanpa meninggalkan halaman."
+    "message": "Selesai — kini anda boleh pratonton pautan tanpa meninggalkan halaman"
   },
   "onboarding_nextButton": {
     "message": "Seterusnya"

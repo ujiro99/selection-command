@@ -1359,8 +1359,11 @@
   "onboarding_railResultAi": {
     "message": "AI"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "Mengirim teks yang dipilih + prompt ke AI..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "Sekarang Anda bisa bertanya ke AI tentang apa pun yang Anda pilih, langsung dari halaman yang sedang Anda baca."
+    "message": "Sekarang Anda bisa bertanya ke AI tentang apa pun yang Anda pilih, langsung dari halaman yang sedang Anda baca"
   },
   "onboarding_step3Explain": {
     "message": "Terakhir, mari pratinjau sebuah tautan tanpa membuka tab baru."
@@ -1368,14 +1371,17 @@
   "onboarding_step3LinkLabel": {
     "message": "Tautan Contoh"
   },
-  "onboarding_clickKeycap": {
-    "message": "Klik"
-  },
   "onboarding_railResultPreview": {
     "message": "Pratinjau"
   },
+  "onboarding_step3Callout": {
+    "message": "Shift+klik tautan ini untuk melihat pratinjaunya."
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Kembali ke tab ini dan jendela akan tertutup secara otomatis."
+  },
   "onboarding_step3ValueMessage": {
-    "message": "Anda bisa melihat pratinjau tautan tanpa meninggalkan halaman."
+    "message": "Selesai — sekarang Anda bisa melihat pratinjau tautan tanpa meninggalkan halaman"
   },
   "onboarding_nextButton": {
     "message": "Berikutnya"

@@ -1353,8 +1353,11 @@
   "onboarding_railResultAi": {
     "message": "AI"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "選択したテキスト + プロンプトをAIへ送信中..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "Webページを読みながら、その場でAIに質問できました。"
+    "message": "Webページを読みながら、その場でAIに質問できました"
   },
   "onboarding_step3Explain": {
     "message": "最後に、リンク先をタブを開かずに確認してみましょう。"
@@ -1362,14 +1365,17 @@
   "onboarding_step3LinkLabel": {
     "message": "サンプルリンク"
   },
-  "onboarding_clickKeycap": {
-    "message": "クリック"
-  },
   "onboarding_railResultPreview": {
     "message": "プレビュー"
   },
+  "onboarding_step3Callout": {
+    "message": "このリンクをShift+クリックすると、プレビューできます。"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "もとの画面を選択すると、ウィンドウが自動的に消えます"
+  },
   "onboarding_step3ValueMessage": {
-    "message": "リンク先をその場で確認できました。"
+    "message": "これで、リンク先をその場で確認できました"
   },
   "onboarding_nextButton": {
     "message": "次へ"

@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react"
-import { ArrowBigUp, ChevronRight, MousePointerClick } from "lucide-react"
+import { useEffect, useState } from "react"
+import { ChevronRight, ArrowBigUp, MousePointerClick } from "lucide-react"
 import { t } from "@/services/i18n"
 import { DRAG_OPEN_MODE } from "@/const"
 import { subscribeCommandExecuted } from "../onboardingEvents"
+import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
 import { OnboardingRail } from "../OnboardingRail"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
@@ -14,25 +15,67 @@ type Props = {
 
 const DRAG_OPEN_MODES: readonly string[] = Object.values(DRAG_OPEN_MODE)
 
+// WAIT_RETURN counts as the rail's "result" beat, same as StepSearchCommand -
+// the preview already opened, we're just waiting for the user to switch back.
+function railBeat(phase: StepPhase): 0 | 2 {
+  if (phase === StepPhase.WAIT_RETURN) return 2
+  return 0
+}
+
 // Step3: Shift+click the sample link to trigger Link Preview. Unlike
 // Steps 1-2 this isn't triggered via text selection, so it only ever uses
-// the EXPLAIN and VALUE_SHOWN phases - the rail stays on beat 0 the whole
-// time it's visible, per the design note that "select" here stands in for
-// "pick the target" even though the gesture is a click, not a drag.
+// the EXPLAIN, WAIT_RETURN and VALUE_SHOWN phases - per the design note
+// that "select" here stands in for "pick the target" even though the
+// gesture is a click, not a drag.
 export function StepLinkPreview({ onboarding }: Props) {
   const { phase, setPhase } = onboarding
-  const linkRef = useRef<HTMLAnchorElement>(null)
+  const [linkElm, setLinkElm] = useState<HTMLElement | null>(null)
+  const [returnCalloutElm, setReturnCalloutElm] = useState<Element | null>(null)
 
   const isExplain = phase === StepPhase.EXPLAIN
+  const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
 
   useEffect(() => {
+    if (isWaitReturn) {
+      console.log("onboarding: StepLinkPreview subscribing to command executed")
+      const elm = document.querySelector(
+        "[data-testid='onboarding-step3-callout-anchor']",
+      )
+      setReturnCalloutElm(elm)
+    } else {
+      setReturnCalloutElm(null)
+    }
+
     if (!isExplain) return
+
     return subscribeCommandExecuted(({ commandType }) => {
       if (!DRAG_OPEN_MODES.includes(commandType)) return
       onboarding.recordCommandExecuted(OnboardingStep.LINK_PREVIEW, commandType)
-      setPhase(StepPhase.VALUE_SHOWN)
+      setPhase(StepPhase.WAIT_RETURN)
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase])
+
+  // The preview opens in a separate browser window/tab, so switching focus
+  // back doesn't reliably fire `visibilitychange` alone (that API tracks tab
+  // occlusion/minimization, not window focus) - a `focus` listener on this
+  // window is needed too, to reliably detect the user clicking back onto the
+  // onboarding window. See StepSearchCommand.tsx for the same pattern.
+  useEffect(() => {
+    if (!isWaitReturn) return
+
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        setPhase(StepPhase.VALUE_SHOWN, 100)
+      }
+    }
+    document.addEventListener("visibilitychange", onVisible)
+    window.addEventListener("focus", onVisible)
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible)
+      window.removeEventListener("focus", onVisible)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
@@ -44,42 +87,114 @@ export function StepLinkPreview({ onboarding }: Props) {
   return (
     <div className="flex flex-col items-center gap-10">
       <OnboardingFadeIn key={"command-type"} delay={100}>
-        {!isValueShown && (
-          <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
-            <span className="font-mono">3.</span> {t("Option_linkCommand")}
-          </h2>
-        )}
+        <h2 className="text-4xl font-bold text-slate-700 flex items-center">
+          <span className="font-mono">3.</span> {t("Option_linkCommand")}
+        </h2>
       </OnboardingFadeIn>
 
       <div className="flex flex-col items-center gap-4">
         <OnboardingFadeIn
-          key={isValueShown ? "value-message" : "explain"}
+          key={
+            isValueShown
+              ? "value-message"
+              : isWaitReturn
+                ? "return-hint"
+                : "explain"
+          }
           className="flex flex-col items-center gap-4"
           delay={300}
         >
           <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
-            {isValueShown
-              ? t("onboarding_step3ValueMessage")
-              : t("onboarding_step3Explain")}
+            {isValueShown ? (
+              <>
+                <span>{t("onboarding_step3ValueMessage")}</span>
+                <span
+                  className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
+                  style={{ animationDelay: "700ms" }}
+                >
+                  🎉
+                </span>
+              </>
+            ) : isWaitReturn ? (
+              t("onboarding_step3ReturnHint")
+            ) : (
+              t("onboarding_step3Explain")
+            )}
           </p>
         </OnboardingFadeIn>
 
-        <OnboardingFadeIn
-          key="rail"
-          delay={400}
-          className={isValueShown ? undefined : "pb-14"}
-        >
+        <OnboardingFadeIn key="rail" delay={400}>
           <OnboardingRail
             selectLabel={t("onboarding_railSelect")}
             commandLabel={t("onboarding_railCommand")}
             resultLabel={t("onboarding_railResultPreview")}
-            activeBeat={isValueShown ? -1 : 0}
+            activeBeat={isValueShown ? -1 : railBeat(phase)}
             size="lg"
           />
         </OnboardingFadeIn>
       </div>
 
-      {isValueShown ? (
+      {isExplain && (
+        <OnboardingFadeIn
+          key={"target-text"}
+          className="mt-24 flex flex-col items-center gap-8"
+          delay={500}
+        >
+          <div
+            className="flex animate-onboarding-ring items-center justify-center rounded-lg border border-slate-200 bg-white [--onboarding-ring-color:rgba(8,47,73,0.16)] motion-reduce:animate-none"
+            ref={setLinkElm}
+          >
+            <a
+              href="https://github.com/ujiro99/selection-command"
+              className="text-base px-6 py-3 text-sky-700 underline decoration-1 underline-offset-[3px] hover:text-sky-800"
+              onClick={(e) => e.preventDefault()}
+            >
+              {t("onboarding_step3LinkLabel")}
+            </a>
+          </div>
+
+          <OnboardingCallout
+            targetElm={linkElm}
+            open={linkElm != null}
+            openDelay={800}
+            contentClassName="duration-300 select-none"
+          >
+            <div className="flex flex-col items-center gap-2 pb-1">
+              {t("onboarding_step3Callout")}
+              <div className="flex items-center gap-2">
+                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 bg-white px-2.5 text-xs font-bold tracking-wide text-slate-700">
+                  <ArrowBigUp className="size-4" strokeWidth={2} />
+                  Shift
+                </span>
+                <span className="text-xs font-semibold text-slate-500">+</span>
+                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-b-2 border-slate-300 bg-white px-2.5 text-xs font-bold tracking-wide text-slate-700">
+                  <MousePointerClick className="size-4" strokeWidth={2} />
+                  {t("onboarding_clickKeycap")}
+                </span>
+              </div>
+            </div>
+          </OnboardingCallout>
+        </OnboardingFadeIn>
+      )}
+
+      {isWaitReturn && (
+        <>
+          <span
+            className="mt-10 size-8 shrink-0 rounded-full bg-sky-950/[0.14] text-sky-950 animate-onboarding-blink motion-reduce:animate-none"
+            data-testid="onboarding-step3-callout-anchor"
+          />
+          <OnboardingCallout
+            targetElm={returnCalloutElm}
+            open={returnCalloutElm != null}
+            openDelay={1000}
+            contentClassName="duration-300"
+          >
+            {t("onboarding_step1Callout_2")}
+          </OnboardingCallout>
+        </>
+      )}
+
+      {isValueShown && (
         <OnboardingFadeIn key="next-button" delay={800}>
           <button
             type="button"
@@ -89,35 +204,6 @@ export function StepLinkPreview({ onboarding }: Props) {
             {t("onboarding_nextButton")}
             <ChevronRight className="inline-block size-5" />
           </button>
-        </OnboardingFadeIn>
-      ) : (
-        <OnboardingFadeIn
-          key={"target-text"}
-          className="flex flex-col items-center gap-4"
-          delay={500}
-        >
-          <div className="flex min-h-[62px] animate-onboarding-ring items-center justify-center rounded-lg border border-slate-200 bg-white px-[30px] py-4.5 [--onboarding-ring-color:rgba(8,47,73,0.16)] motion-reduce:animate-none">
-            <a
-              ref={linkRef}
-              href="https://github.com/ujiro99/selection-command"
-              className="text-base text-sky-700 underline decoration-1 underline-offset-[3px] hover:text-sky-800"
-              onClick={(e) => e.preventDefault()}
-            >
-              {t("onboarding_step3LinkLabel")}
-            </a>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="inline-flex min-h-[28px] items-center gap-1.5 rounded-[6px] border border-b-2 border-slate-300 bg-white px-2.5 text-[11.5px] font-bold tracking-wide text-slate-700">
-              <ArrowBigUp className="size-3" strokeWidth={2} />
-              Shift
-            </span>
-            <span className="text-xs font-semibold text-slate-500">+</span>
-            <span className="inline-flex min-h-[28px] items-center gap-1.5 rounded-[6px] border border-b-2 border-slate-300 bg-white px-2.5 text-[11.5px] font-bold tracking-wide text-slate-700">
-              <MousePointerClick className="size-3" strokeWidth={2} />
-              {t("onboarding_clickKeycap")}
-            </span>
-          </div>
         </OnboardingFadeIn>
       )}
     </div>

@@ -1392,8 +1392,12 @@
     "message": "AI",
     "description": "Onboarding progress rail label for Step2's result beat (asking AI)."
   },
+  "onboarding_step2WaitReturn": {
+    "message": "Sending your selected text + prompt to AI...",
+    "description": "Onboarding Step2 hint shown briefly while the AiPrompt command's request to the AI is in flight."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "You can now ask AI about anything you select, right from the page you're reading.",
+    "message": "You can now ask AI about anything you select, right from the page you're reading",
     "description": "Onboarding Step2 value message shown after the user runs the AiPrompt command."
   },
   "onboarding_step3Explain": {
@@ -1404,16 +1408,20 @@
     "message": "Sample Link",
     "description": "Label of the sample link shown in Onboarding Step3 for the user to Shift+click."
   },
-  "onboarding_clickKeycap": {
-    "message": "Click",
-    "description": "Onboarding Step3 keycap label for the mouse click half of the Shift+click gesture, shown next to the Shift keycap."
-  },
   "onboarding_railResultPreview": {
     "message": "Preview",
     "description": "Onboarding progress rail label for Step3's result beat (previewing a link)."
   },
+  "onboarding_step3Callout": {
+    "message": "Shift+click this link to preview it.",
+    "description": "Onboarding Step3 callout/speech-bubble text pointing at the sample link, prompting the user to Shift+click it to trigger Link Preview."
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Switch back to this tab and the window closes automatically.",
+    "description": "Onboarding Step3 hint shown while waiting for the user to return from the link preview's popup/tab."
+  },
   "onboarding_step3ValueMessage": {
-    "message": "You can preview links without leaving the page.",
+    "message": "That's it - you can preview links without leaving the page",
     "description": "Onboarding Step3 value message shown after the user triggers Link Preview."
   },
   "onboarding_nextButton": {

@@ -121,7 +121,7 @@ export function StepSearchCommand({ onboarding }: Props) {
 
     const onVisible = () => {
       if (document.visibilityState === "visible") {
-        setPhase(StepPhase.VALUE_SHOWN)
+        setPhase(StepPhase.VALUE_SHOWN, 100)
         setReturnCalloutElm(null)
       }
     }
@@ -143,7 +143,7 @@ export function StepSearchCommand({ onboarding }: Props) {
       )}
     >
       <OnboardingFadeIn key={"command-type"} delay={100}>
-        <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
+        <h2 className="text-4xl font-bold text-slate-700 flex items-center">
           <span className="font-mono">1.</span>{" "}
           {t("Option_commandType_search_title")}
         </h2>

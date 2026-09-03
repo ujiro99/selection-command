@@ -1359,8 +1359,11 @@
   "onboarding_railResultAi": {
     "message": "IA"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "A enviar o texto selecionado + um prompt para a IA..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "Agora já pode perguntar à IA sobre o que selecionar, diretamente a partir da página que está a ler."
+    "message": "Agora já pode perguntar à IA sobre o que selecionar, diretamente a partir da página que está a ler"
   },
   "onboarding_step3Explain": {
     "message": "Por fim, vamos pré-visualizar uma ligação sem abrir um novo separador."
@@ -1368,14 +1371,17 @@
   "onboarding_step3LinkLabel": {
     "message": "Ligação de exemplo"
   },
-  "onboarding_clickKeycap": {
-    "message": "Clique"
-  },
   "onboarding_railResultPreview": {
     "message": "Pré-visualização"
   },
+  "onboarding_step3Callout": {
+    "message": "Shift+clique neste link para pré-visualizá-lo."
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Volte a este separador e a janela fecha-se automaticamente."
+  },
   "onboarding_step3ValueMessage": {
-    "message": "Pode pré-visualizar ligações sem sair da página."
+    "message": "Pronto — agora já pode pré-visualizar ligações sem sair da página"
   },
   "onboarding_nextButton": {
     "message": "Seguinte"

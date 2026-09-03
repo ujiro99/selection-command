@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { cn } from "@/lib/utils"
 import { ChevronRight } from "lucide-react"
 import { t } from "@/services/i18n"
 import { useSelectContext } from "@/hooks/useSelectContext"
@@ -16,6 +17,13 @@ type Props = {
   onboarding: UseOnboardingState
 }
 
+function railBeat(phase: StepPhase): 0 | 1 | 2 | -1 {
+  if (phase === StepPhase.WAIT_EXECUTE) return 1
+  if (phase === StepPhase.WAIT_RETURN) return 2
+  if (phase === StepPhase.VALUE_SHOWN) return -1
+  return 0
+}
+
 // Step2: run the onboarding's dedicated AiPrompt command (see
 // onboardingCommand.ts), which opens the side panel - unlike Step1's search,
 // the onboarding page never loses visibility here, so there's no separate
@@ -23,12 +31,17 @@ type Props = {
 // beats 0 (selecting) and 1 (running the command).
 export function StepAiPromptCommand({ onboarding }: Props) {
   const { phase, setPhase } = onboarding
-  const { selectionText } = useSelectContext()
+  const { selectionText, setSelectionText } = useSelectContext()
   const [calloutElm, setCalloutElm] = useState<Element | null>(null)
 
   const isExplain = phase === StepPhase.EXPLAIN
   const isWaitExecute = phase === StepPhase.WAIT_EXECUTE
+  const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
+
+  useEffect(() => {
+    setSelectionText("")
+  }, [setSelectionText])
 
   useEffect(() => {
     if (!isExplain) return
@@ -63,7 +76,8 @@ export function StepAiPromptCommand({ onboarding }: Props) {
     return subscribeCommandExecuted(({ commandId, commandType }) => {
       if (commandId !== ONBOARDING_AI_PROMPT_COMMAND_ID) return
       onboarding.recordCommandExecuted(OnboardingStep.AI_PROMPT, commandType)
-      setPhase(StepPhase.VALUE_SHOWN)
+      setPhase(StepPhase.WAIT_RETURN)
+      setPhase(StepPhase.VALUE_SHOWN, 5000)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
@@ -74,14 +88,12 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   // second, independent OnboardingRail, losing the "select -> command ->
   // result" beat animation's continuity right as the payoff screen appears.
   return (
-    <div className="flex flex-col items-center gap-10">
+    <div className={cn("flex flex-col items-center gap-10 select-none")}>
       <OnboardingFadeIn key={"command-type"} delay={100}>
-        {!isValueShown && (
-          <h2 className="text-4xl font-bold text-slate-700 h-14 flex items-center">
-            <span className="font-mono">2.</span>{" "}
-            {t("Option_commandType_aiPrompt_title")}
-          </h2>
-        )}
+        <h2 className="text-4xl font-bold text-slate-700 flex items-center">
+          <span className="font-mono">2.</span>{" "}
+          {t("Option_commandType_aiPrompt_title")}
+        </h2>
       </OnboardingFadeIn>
 
       <div className="flex flex-col items-center gap-4">
@@ -89,17 +101,29 @@ export function StepAiPromptCommand({ onboarding }: Props) {
           key={
             isValueShown
               ? "value-message"
-              : isWaitExecute
-                ? "wait-execute"
+              : isWaitReturn
+                ? "wait-return"
                 : "explain"
           }
           className="flex flex-col items-center gap-4"
           delay={300}
         >
           <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
-            {isValueShown
-              ? t("onboarding_step2ValueMessage")
-              : t("onboarding_step2Explain")}
+            {isValueShown ? (
+              <>
+                <span>{t("onboarding_step2ValueMessage")}</span>
+                <span
+                  className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
+                  style={{ animationDelay: "700ms" }}
+                >
+                  🎉
+                </span>
+              </>
+            ) : isWaitReturn ? (
+              t("onboarding_step2WaitReturn")
+            ) : (
+              t("onboarding_step2Explain")
+            )}
           </p>
         </OnboardingFadeIn>
 
@@ -112,24 +136,13 @@ export function StepAiPromptCommand({ onboarding }: Props) {
             selectLabel={t("onboarding_railSelect")}
             commandLabel={t("onboarding_railCommand")}
             resultLabel={t("onboarding_railResultAi")}
-            activeBeat={isValueShown ? -1 : isWaitExecute ? 1 : 0}
+            activeBeat={railBeat(phase)}
             size="lg"
           />
         </OnboardingFadeIn>
       </div>
 
-      {isValueShown ? (
-        <OnboardingFadeIn key="next-button" delay={800}>
-          <button
-            type="button"
-            onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
-            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
-          >
-            {t("onboarding_nextButton")}
-            <ChevronRight className="inline-block size-5" />
-          </button>
-        </OnboardingFadeIn>
-      ) : (
+      {!isValueShown && (
         <>
           <OnboardingFadeIn key={"target-text"} delay={500}>
             <OnboardingTargetText
@@ -147,6 +160,19 @@ export function StepAiPromptCommand({ onboarding }: Props) {
             {t("onboarding_step2Callout")}
           </OnboardingCallout>
         </>
+      )}
+
+      {isValueShown && (
+        <OnboardingFadeIn key="next-button" delay={1200}>
+          <button
+            type="button"
+            onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}
+            className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 px-8 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+          >
+            {t("onboarding_nextButton")}
+            <ChevronRight className="inline-block size-5" />
+          </button>
+        </OnboardingFadeIn>
       )}
     </div>
   )

@@ -1356,8 +1356,11 @@
   "onboarding_railResultAi": {
     "message": "KI"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "Sende deine Auswahl + einen Prompt an die KI …"
+  },
   "onboarding_step2ValueMessage": {
-    "message": "Jetzt kannst du die KI direkt auf der Seite, die du liest, zu allem fragen, was du markierst."
+    "message": "Jetzt kannst du die KI direkt auf der Seite, die du liest, zu allem fragen, was du markierst"
   },
   "onboarding_step3Explain": {
     "message": "Zum Schluss schauen wir uns einen Link an, ohne einen neuen Tab zu öffnen."
@@ -1365,14 +1368,17 @@
   "onboarding_step3LinkLabel": {
     "message": "Beispiel-Link"
   },
-  "onboarding_clickKeycap": {
-    "message": "Klick"
-  },
   "onboarding_railResultPreview": {
     "message": "Vorschau"
   },
+  "onboarding_step3Callout": {
+    "message": "Klicke mit gedrückter Umschalttaste (Shift) auf diesen Link, um ihn in der Vorschau zu öffnen."
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Wechsle zurück zu diesem Tab, dann schließt sich das Fenster automatisch."
+  },
   "onboarding_step3ValueMessage": {
-    "message": "Du kannst Links in der Vorschau ansehen, ohne die Seite zu verlassen."
+    "message": "Fertig – jetzt kannst du Links in der Vorschau ansehen, ohne die Seite zu verlassen"
   },
   "onboarding_nextButton": {
     "message": "Weiter"

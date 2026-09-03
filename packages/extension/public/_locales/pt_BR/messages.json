@@ -1359,8 +1359,11 @@
   "onboarding_railResultAi": {
     "message": "IA"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "Enviando seu texto selecionado + um prompt para a IA..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "Agora você pode perguntar à IA sobre qualquer coisa que selecionar, direto da página que está lendo."
+    "message": "Agora você pode perguntar à IA sobre qualquer coisa que selecionar, direto da página que está lendo"
   },
   "onboarding_step3Explain": {
     "message": "Por fim, vamos pré-visualizar um link sem abrir uma nova aba."
@@ -1368,14 +1371,17 @@
   "onboarding_step3LinkLabel": {
     "message": "Link de exemplo"
   },
-  "onboarding_clickKeycap": {
-    "message": "Clique"
-  },
   "onboarding_railResultPreview": {
     "message": "Pré-visualização"
   },
+  "onboarding_step3Callout": {
+    "message": "Shift+clique neste link para pré-visualizá-lo."
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Volte para esta aba e a janela se fecha automaticamente."
+  },
   "onboarding_step3ValueMessage": {
-    "message": "Você pode pré-visualizar links sem sair da página."
+    "message": "Pronto — agora você pode pré-visualizar links sem sair da página"
   },
   "onboarding_nextButton": {
     "message": "Próximo"

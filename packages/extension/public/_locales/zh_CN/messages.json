@@ -1356,8 +1356,11 @@
   "onboarding_railResultAi": {
     "message": "AI"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "正在将选中文本 + 提示词发送给 AI..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "现在，您可以在阅读网页的同时，就您选择的任何内容向 AI 提问。"
+    "message": "现在，您可以在阅读网页的同时，就您选择的任何内容向 AI 提问"
   },
   "onboarding_step3Explain": {
     "message": "最后，让我们在不打开新标签页的情况下预览链接。"
@@ -1365,14 +1368,17 @@
   "onboarding_step3LinkLabel": {
     "message": "示例链接"
   },
-  "onboarding_clickKeycap": {
-    "message": "点击"
-  },
   "onboarding_railResultPreview": {
     "message": "预览"
   },
+  "onboarding_step3Callout": {
+    "message": "按住 Shift 并点击此链接即可预览。"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "切回此标签页，窗口会自动关闭。"
+  },
   "onboarding_step3ValueMessage": {
-    "message": "您可以在不离开当前页面的情况下预览链接。"
+    "message": "就是这样——现在您可以在不离开当前页面的情况下预览链接"
   },
   "onboarding_nextButton": {
     "message": "下一步"

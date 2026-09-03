@@ -66,7 +66,9 @@ export function OnboardingCallout({
           className={cn(contentClassName, "shadow-none")}
         >
           <div className="animate-onboarding-float motion-reduce:animate-none max-w-64 rounded-md bg-gray-800 px-3 py-2 shadow-xl">
-            <p className="text-sm text-white whitespace-pre-wrap">{children}</p>
+            <div className="text-sm text-white whitespace-pre-wrap">
+              {children}
+            </div>
           </div>
           <PopoverArrow
             className="fill-gray-800 animate-onboarding-float motion-reduce:animate-none shadow-xl"

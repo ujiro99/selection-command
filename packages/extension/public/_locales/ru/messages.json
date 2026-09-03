@@ -1356,8 +1356,11 @@
   "onboarding_railResultAi": {
     "message": "ИИ"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "Отправка выделенного текста + запроса в ИИ..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "Теперь вы можете спрашивать ИИ о чём угодно прямо на странице, которую читаете."
+    "message": "Теперь вы можете спрашивать ИИ о чём угодно прямо на странице, которую читаете"
   },
   "onboarding_step3Explain": {
     "message": "Наконец, давайте просмотрим ссылку без открытия новой вкладки."
@@ -1365,14 +1368,17 @@
   "onboarding_step3LinkLabel": {
     "message": "Пример ссылки"
   },
-  "onboarding_clickKeycap": {
-    "message": "Клик"
-  },
   "onboarding_railResultPreview": {
     "message": "Просмотр"
   },
+  "onboarding_step3Callout": {
+    "message": "Нажмите Shift и щёлкните по этой ссылке, чтобы увидеть предпросмотр."
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Вернитесь на эту вкладку, и окно автоматически закроется."
+  },
   "onboarding_step3ValueMessage": {
-    "message": "Вы можете просматривать ссылки, не покидая страницу."
+    "message": "Готово — теперь вы можете просматривать ссылки, не покидая страницу"
   },
   "onboarding_nextButton": {
     "message": "Далее"

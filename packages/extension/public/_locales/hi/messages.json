@@ -1356,8 +1356,11 @@
   "onboarding_railResultAi": {
     "message": "AI"
   },
+  "onboarding_step2WaitReturn": {
+    "message": "आपका चुना हुआ टेक्स्ट + प्रॉम्प्ट AI को भेजा जा रहा है..."
+  },
   "onboarding_step2ValueMessage": {
-    "message": "अब आप जो पेज पढ़ रहे हैं, वहीं से चुनी हुई किसी भी चीज़ के बारे में AI से पूछ सकते हैं।"
+    "message": "अब आप जो पेज पढ़ रहे हैं, वहीं से चुनी हुई किसी भी चीज़ के बारे में AI से पूछ सकते हैं"
   },
   "onboarding_step3Explain": {
     "message": "आखिर में, बिना नया टैब खोले किसी लिंक का पूर्वावलोकन करते हैं।"
@@ -1365,14 +1368,17 @@
   "onboarding_step3LinkLabel": {
     "message": "नमूना लिंक"
   },
-  "onboarding_clickKeycap": {
-    "message": "क्लिक"
-  },
   "onboarding_railResultPreview": {
     "message": "पूर्वावलोकन"
   },
+  "onboarding_step3Callout": {
+    "message": "इस लिंक पर Shift दबाकर क्लिक करें और उसका पूर्वावलोकन देखें।"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "इस टैब पर वापस आएं और विंडो अपने आप बंद हो जाएगी।"
+  },
   "onboarding_step3ValueMessage": {
-    "message": "अब आप पेज छोड़े बिना लिंक का पूर्वावलोकन कर सकते हैं।"
+    "message": "बस इतना ही — अब आप पेज छोड़े बिना लिंक का पूर्वावलोकन कर सकते हैं"
   },
   "onboarding_nextButton": {
     "message": "आगे"
