@@ -45,8 +45,11 @@ export function useOnboardingState() {
   const firstValueSentRef = useRef(false)
   const seenSelectionStepsRef = useRef<Set<OnboardingStep>>(new Set())
   const finishedRef = useRef(false)
+  const hasEventSendRef = useRef(false)
 
   useEffect(() => {
+    if (hasEventSendRef.current) return
+    hasEventSendRef.current = true
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_START, {
       locale: getCurrentLocale(),
       extension_version: VERSION,
