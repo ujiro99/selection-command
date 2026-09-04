@@ -1344,6 +1344,9 @@
   "onboarding_step1ValueMessage": {
     "message": "Fatto: ora puoi cercare all'istante qualsiasi cosa selezioni"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Aggiungi il tuo motore di ricerca preferito per rendere le ricerche quotidiane ancora più veloci."
+  },
   "onboarding_step2Explain": {
     "message": "Ora chiediamo all'IA il testo qui sotto."
   },
@@ -1362,8 +1365,11 @@
   "onboarding_step2ValueMessage": {
     "message": "Ora puoi chiedere all'IA qualsiasi cosa selezioni, direttamente dalla pagina che stai leggendo"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Chiedi subito all'IA cose come \"riassumi questo\" o \"analizza questa azienda\".\nPuoi personalizzare liberamente il prompt."
+  },
   "onboarding_step3Explain": {
-    "message": "Infine, visualizziamo l'anteprima di un link senza aprire una nuova scheda."
+    "message": "Visualizziamo l'anteprima di un link senza aprire una nuova scheda."
   },
   "onboarding_step3LinkLabel": {
     "message": "Link di esempio"
@@ -1374,26 +1380,32 @@
   "onboarding_step3Callout": {
     "message": "Fai Shift+clic su questo link per visualizzarne l'anteprima."
   },
+  "onboarding_clickKeycap": {
+    "message": "Clic"
+  },
   "onboarding_step3ReturnHint": {
     "message": "Torna a questa scheda e la finestra si chiuderà automaticamente."
   },
   "onboarding_step3ValueMessage": {
     "message": "Fatto: ora puoi visualizzare l'anteprima dei link senza lasciare la pagina"
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Controlla subito i contenuti senza affollare le schede!\nRisparmia il tempo speso ad aprire e chiudere schede e concentrati su ciò che conta."
+  },
   "onboarding_nextButton": {
     "message": "Avanti"
   },
+  "onboarding_step4_title": {
+    "message": "Personalizza come preferisci"
+  },
   "onboarding_step4Explain": {
-    "message": "I comandi che hai provato possono essere aggiunti o modificati in qualsiasi momento dalle impostazioni o dal Selection Command Hub."
+    "message": "Puoi aggiungere o modificare comandi in qualsiasi momento"
   },
   "onboarding_step4SettingsHeading": {
-    "message": "Modifica nelle impostazioni"
+    "message": "Crea e modifica nelle impostazioni"
   },
   "onboarding_step4HubHeading": {
-    "message": "Scopri altro nel Command Hub"
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "Aggiungi"
+    "message": "Scopri su Selection Command Hub"
   },
   "onboarding_completeTitle": {
     "message": "Tutto pronto!"

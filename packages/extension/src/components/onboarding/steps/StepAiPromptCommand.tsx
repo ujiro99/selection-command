@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react"
 import { t } from "@/services/i18n"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { isEmpty } from "@/lib/utils"
+import { renderMultiline } from "../textUtils"
 import { ONBOARDING_AI_PROMPT_COMMAND_ID } from "../onboardingCommand"
 import { subscribeCommandExecuted } from "../onboardingEvents"
 import { OnboardingCallout } from "../OnboardingCallout"
@@ -114,7 +115,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
                 <span>{t("onboarding_step2ValueMessage")}</span>
                 <span
                   className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
-                  style={{ animationDelay: "700ms" }}
+                  style={{ animationDelay: "500ms" }}
                 >
                   🎉
                 </span>
@@ -126,6 +127,14 @@ export function StepAiPromptCommand({ onboarding }: Props) {
             )}
           </p>
         </OnboardingFadeIn>
+
+        {isValueShown && (
+          <OnboardingFadeIn key="value-submessage" delay={700}>
+            <p className="max-w-xl text-base text-slate-700 text-pretty">
+              {renderMultiline(t("onboarding_step2ValueSubmessage"))}
+            </p>
+          </OnboardingFadeIn>
+        )}
 
         <OnboardingFadeIn
           key="rail"
@@ -163,7 +172,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
       )}
 
       {isValueShown && (
-        <OnboardingFadeIn key="next-button" delay={1200}>
+        <OnboardingFadeIn key="next-button" delay={1000}>
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}

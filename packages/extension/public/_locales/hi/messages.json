@@ -1344,6 +1344,9 @@
   "onboarding_step1ValueMessage": {
     "message": "बस इतना ही — अब आप जो भी टेक्स्ट चुनें, उसे तुरंत सर्च कर सकते हैं"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "अपना पसंदीदा सर्च इंजन जोड़कर रोज़मर्रा की खोज को और तेज़ बनाएं।"
+  },
   "onboarding_step2Explain": {
     "message": "अब, नीचे दिए गए टेक्स्ट के बारे में AI से पूछते हैं।"
   },
@@ -1362,8 +1365,11 @@
   "onboarding_step2ValueMessage": {
     "message": "अब आप जो पेज पढ़ रहे हैं, वहीं से चुनी हुई किसी भी चीज़ के बारे में AI से पूछ सकते हैं"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "\"इसका सारांश दें\" या \"इस कंपनी का विश्लेषण करें\" जैसी बातें तुरंत AI से पूछें।\nप्रॉम्प्ट को अपनी इच्छानुसार अनुकूलित किया जा सकता है।"
+  },
   "onboarding_step3Explain": {
-    "message": "आखिर में, बिना नया टैब खोले किसी लिंक का पूर्वावलोकन करते हैं।"
+    "message": "बिना नया टैब खोले किसी लिंक का पूर्वावलोकन करते हैं।"
   },
   "onboarding_step3LinkLabel": {
     "message": "नमूना लिंक"
@@ -1374,26 +1380,32 @@
   "onboarding_step3Callout": {
     "message": "इस लिंक पर Shift दबाकर क्लिक करें और उसका पूर्वावलोकन देखें।"
   },
+  "onboarding_clickKeycap": {
+    "message": "क्लिक"
+  },
   "onboarding_step3ReturnHint": {
     "message": "इस टैब पर वापस आएं और विंडो अपने आप बंद हो जाएगी।"
   },
   "onboarding_step3ValueMessage": {
     "message": "बस इतना ही — अब आप पेज छोड़े बिना लिंक का पूर्वावलोकन कर सकते हैं"
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "टैब बढ़ाए बिना तुरंत सामग्री देखें!\nटैब खोलने-बंद करने में लगने वाला समय बचाएं और ज़रूरी काम पर ध्यान दें।"
+  },
   "onboarding_nextButton": {
     "message": "आगे"
   },
+  "onboarding_step4_title": {
+    "message": "अपनी पसंद के अनुसार अनुकूलित करें"
+  },
   "onboarding_step4Explain": {
-    "message": "आपने जो कमांड आज़माए, उन्हें आप सेटिंग्स या Selection Command Hub से कभी भी जोड़ या संपादित कर सकते हैं।"
+    "message": "आप कभी भी कमांड जोड़ या संपादित कर सकते हैं"
   },
   "onboarding_step4SettingsHeading": {
-    "message": "सेटिंग्स में संपादित करें"
+    "message": "सेटिंग्स में बनाएं और संपादित करें"
   },
   "onboarding_step4HubHeading": {
-    "message": "Command Hub पर और खोजें"
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "जोड़ें"
+    "message": "Selection Command Hub पर खोजें"
   },
   "onboarding_completeTitle": {
     "message": "सब तैयार है!"

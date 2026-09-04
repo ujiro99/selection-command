@@ -1347,6 +1347,9 @@
   "onboarding_step1ValueMessage": {
     "message": "Selesai — kini anda boleh mencari dengan segera apa sahaja yang anda pilih"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Tambahkan enjin carian kegemaran anda untuk menjadikan carian harian lebih pantas."
+  },
   "onboarding_step2Explain": {
     "message": "Seterusnya, mari tanya AI tentang teks di bawah ini."
   },
@@ -1365,8 +1368,11 @@
   "onboarding_step2ValueMessage": {
     "message": "Kini anda boleh bertanya kepada AI tentang apa sahaja yang anda pilih, terus daripada halaman yang sedang anda baca"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Minta AI melakukan perkara seperti \"ringkaskan ini\" atau \"analisis syarikat ini\" dengan segera.\nGesaan boleh disesuaikan mengikut citarasa anda."
+  },
   "onboarding_step3Explain": {
-    "message": "Akhir sekali, mari pratonton pautan tanpa membuka tab baharu."
+    "message": "Mari pratonton pautan tanpa membuka tab baharu."
   },
   "onboarding_step3LinkLabel": {
     "message": "Pautan Contoh"
@@ -1377,26 +1383,32 @@
   "onboarding_step3Callout": {
     "message": "Shift+klik pautan ini untuk pratonton."
   },
+  "onboarding_clickKeycap": {
+    "message": "Klik"
+  },
   "onboarding_step3ReturnHint": {
     "message": "Kembali ke tab ini dan tetingkap akan tertutup secara automatik."
   },
   "onboarding_step3ValueMessage": {
     "message": "Selesai — kini anda boleh pratonton pautan tanpa meninggalkan halaman"
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Semak kandungan serta-merta tanpa memenuhkan tab anda!\nJimatkan masa membuka dan menutup tab, dan fokus pada perkara yang penting."
+  },
   "onboarding_nextButton": {
     "message": "Seterusnya"
   },
+  "onboarding_step4_title": {
+    "message": "Sesuaikan Mengikut Citarasa Anda"
+  },
   "onboarding_step4Explain": {
-    "message": "Arahan yang anda cuba boleh ditambah atau diedit pada bila-bila masa dari Tetapan atau Selection Command Hub."
+    "message": "Anda boleh menambah atau mengedit arahan pada bila-bila masa"
   },
   "onboarding_step4SettingsHeading": {
-    "message": "Edit dalam Tetapan"
+    "message": "Cipta & Edit dalam Tetapan"
   },
   "onboarding_step4HubHeading": {
-    "message": "Cari lagi di Command Hub"
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "Tambah"
+    "message": "Temui di Selection Command Hub"
   },
   "onboarding_completeTitle": {
     "message": "Semuanya sedia!"

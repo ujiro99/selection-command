@@ -1344,6 +1344,9 @@
   "onboarding_step1ValueMessage": {
     "message": "Et voilà — vous pouvez désormais rechercher instantanément tout ce que vous sélectionnez"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Ajoutez votre moteur de recherche préféré pour rendre vos recherches quotidiennes encore plus rapides."
+  },
   "onboarding_step2Explain": {
     "message": "Ensuite, interrogeons l'IA à propos du texte ci-dessous."
   },
@@ -1362,8 +1365,11 @@
   "onboarding_step2ValueMessage": {
     "message": "Vous pouvez désormais interroger l'IA sur tout ce que vous sélectionnez, directement depuis la page que vous lisez"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Demandez instantanément à l'IA des choses comme « résume ceci » ou « analyse cette entreprise ».\nVous pouvez personnaliser le prompt librement."
+  },
   "onboarding_step3Explain": {
-    "message": "Enfin, prévisualisons un lien sans ouvrir un nouvel onglet."
+    "message": "Prévisualisons un lien sans ouvrir un nouvel onglet."
   },
   "onboarding_step3LinkLabel": {
     "message": "Lien d'exemple"
@@ -1374,26 +1380,32 @@
   "onboarding_step3Callout": {
     "message": "Faites Shift+clic sur ce lien pour le prévisualiser."
   },
+  "onboarding_clickKeycap": {
+    "message": "Clic"
+  },
   "onboarding_step3ReturnHint": {
     "message": "Revenez à cet onglet et la fenêtre se fermera automatiquement."
   },
   "onboarding_step3ValueMessage": {
     "message": "Et voilà — vous pouvez désormais prévisualiser des liens sans quitter la page"
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Consultez le contenu instantanément sans encombrer vos onglets !\nGagnez le temps passé à ouvrir et fermer des onglets, et concentrez-vous sur l'essentiel."
+  },
   "onboarding_nextButton": {
     "message": "Suivant"
   },
+  "onboarding_step4_title": {
+    "message": "Personnalisez à votre guise"
+  },
   "onboarding_step4Explain": {
-    "message": "Les commandes que vous avez essayées peuvent être ajoutées ou modifiées à tout moment depuis les paramètres ou le Selection Command Hub."
+    "message": "Vous pouvez ajouter ou modifier des commandes à tout moment"
   },
   "onboarding_step4SettingsHeading": {
-    "message": "Modifier dans les paramètres"
+    "message": "Créer et modifier dans les paramètres"
   },
   "onboarding_step4HubHeading": {
-    "message": "Découvrir plus sur le Command Hub"
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "Ajouter"
+    "message": "Découvrez sur le Selection Command Hub"
   },
   "onboarding_completeTitle": {
     "message": "Tout est prêt !"

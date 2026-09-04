@@ -1,4 +1,4 @@
-import { Settings, ExternalLink, ChevronRight } from "lucide-react"
+import { Settings, Share2, ChevronRight } from "lucide-react"
 import { t } from "@/services/i18n"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
 import { OnboardingStep } from "@/types/onboarding"
@@ -18,7 +18,7 @@ const HUB_SCREEN_URL = chrome.runtime.getURL("onboarding/HubScreen.png")
 // to start a real editing/browsing flow mid-onboarding.
 export function StepCustomize({ onboarding }: Props) {
   return (
-    <div className="flex flex-col items-center gap-10 !h-[500px]">
+    <div className="flex flex-col items-center gap-10 !h-[540px]">
       <OnboardingFadeIn key="title" delay={100}>
         <h2 className="text-4xl font-bold text-slate-700 flex items-center">
           <span className="font-mono">4.</span> {t("onboarding_step4_title")}
@@ -30,7 +30,7 @@ export function StepCustomize({ onboarding }: Props) {
           {t("onboarding_step4Explain")}
           <span
             className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
-            style={{ animationDelay: "700ms" }}
+            style={{ animationDelay: "600ms" }}
           >
             🎉
           </span>
@@ -38,11 +38,11 @@ export function StepCustomize({ onboarding }: Props) {
       </OnboardingFadeIn>
 
       <div className="grid w-[884px] grid-cols-2 gap-12">
-        <OnboardingFadeIn key="option-screen" delay={500}>
+        <OnboardingFadeIn key="option-screen" delay={1000}>
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-700">
-              <span className="flex size-[22px] items-center justify-center rounded-md bg-sky-950/[0.14] text-sky-950">
-                <Settings className="size-3.5" strokeWidth={2} />
+              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/[0.1] text-sky-950">
+                <Settings className="size-4" strokeWidth={2} />
               </span>
               {t("onboarding_step4SettingsHeading")}
             </div>
@@ -56,11 +56,11 @@ export function StepCustomize({ onboarding }: Props) {
           </div>
         </OnboardingFadeIn>
 
-        <OnboardingFadeIn key="hub-screen" delay={700}>
+        <OnboardingFadeIn key="hub-screen" delay={1200}>
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center gap-2 text-left text-sm font-bold text-slate-700">
-              <span className="flex size-[22px] items-center justify-center rounded-md bg-sky-950/[0.14] text-sky-950">
-                <ExternalLink className="size-3.5" strokeWidth={2} />
+              <span className="flex size-6 items-center justify-center rounded-md bg-sky-950/[0.1] text-sky-950">
+                <Share2 className="size-4" strokeWidth={2} />
               </span>
               {t("onboarding_step4HubHeading")}
             </div>
@@ -75,10 +75,10 @@ export function StepCustomize({ onboarding }: Props) {
         </OnboardingFadeIn>
       </div>
 
-      <OnboardingFadeIn key="next-button" delay={1000}>
+      <OnboardingFadeIn key="next-button" delay={1400}>
         <button
           type="button"
-          className="flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 pl-8 pr-5 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
+          className="mt-4 flex items-center gap-2 min-h-14 rounded-xl bg-sky-950 pl-8 pr-5 text-lg font-semibold text-white shadow-[0_10px_20px_-14px_rgba(15,23,42,.7)] hover:brightness-[1.35]"
           onClick={() => onboarding.goToStep(OnboardingStep.COMPLETE)}
         >
           {t("onboarding_nextButton")}

@@ -1341,6 +1341,9 @@
   "onboarding_step1ValueMessage": {
     "message": "これで、気になった情報をすぐに検索できました"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "好きな検索エンジンを追加すれば、いつもの検索をもっと高速にできます。"
+  },
   "onboarding_step2Explain": {
     "message": "次は、選択したテキストをAIに聞いてみましょう。"
   },
@@ -1359,8 +1362,11 @@
   "onboarding_step2ValueMessage": {
     "message": "Webページを読みながら、その場でAIに質問できました"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "「要約して」「この企業を分析」などをすぐにAIへ依頼できます。\nプロンプトは自由にカスタマイズができます。"
+  },
   "onboarding_step3Explain": {
-    "message": "最後に、リンク先をタブを開かずに確認してみましょう。"
+    "message": "リンク先をタブを開かずに確認してみましょう。"
   },
   "onboarding_step3LinkLabel": {
     "message": "サンプルリンク"
@@ -1371,11 +1377,17 @@
   "onboarding_step3Callout": {
     "message": "このリンクをShift+クリックすると、プレビューできます。"
   },
+  "onboarding_clickKeycap": {
+    "message": "クリック"
+  },
   "onboarding_step3ReturnHint": {
     "message": "もとの画面を選択すると、ウィンドウが自動的に消えます"
   },
   "onboarding_step3ValueMessage": {
     "message": "これで、リンク先をその場で確認できました"
+  },
+  "onboarding_step3ValueSubmessage": {
+    "message": "タブを散らかすことなく、内容をすぐに確認！\nタブを開く／閉じる時間を削減し、やるべきことに集中できます。"
   },
   "onboarding_nextButton": {
     "message": "次へ"

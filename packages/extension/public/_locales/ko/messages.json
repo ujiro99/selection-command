@@ -1344,6 +1344,9 @@
   "onboarding_step1ValueMessage": {
     "message": "이제 궁금했던 정보를 바로 검색할 수 있게 되었습니다"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "좋아하는 검색 엔진을 추가하면 평소 검색을 더 빠르게 할 수 있어요."
+  },
   "onboarding_step2Explain": {
     "message": "다음으로 아래 텍스트에 대해 AI에게 물어봅시다."
   },
@@ -1362,8 +1365,11 @@
   "onboarding_step2ValueMessage": {
     "message": "이제 페이지를 읽으면서 바로 AI에게 무엇이든 물어볼 수 있습니다"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "\"요약해줘\", \"이 기업을 분석해줘\" 같은 요청을 AI에 바로 할 수 있어요.\n프롬프트는 자유롭게 커스터마이징할 수 있습니다."
+  },
   "onboarding_step3Explain": {
-    "message": "마지막으로 새 탭을 열지 않고 링크를 미리 볼까요?"
+    "message": "새 탭을 열지 않고 링크를 미리 볼까요?"
   },
   "onboarding_step3LinkLabel": {
     "message": "샘플 링크"
@@ -1374,26 +1380,32 @@
   "onboarding_step3Callout": {
     "message": "이 링크를 Shift+클릭하면 미리보기를 볼 수 있습니다."
   },
+  "onboarding_clickKeycap": {
+    "message": "클릭"
+  },
   "onboarding_step3ReturnHint": {
     "message": "이 탭으로 돌아오면 창이 자동으로 닫힙니다."
   },
   "onboarding_step3ValueMessage": {
     "message": "이제 페이지를 벗어나지 않고 링크를 미리 볼 수 있습니다"
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "탭을 어지럽히지 않고 바로 내용을 확인하세요!\n탭을 열고 닫는 시간을 줄이고 해야 할 일에 집중할 수 있습니다."
+  },
   "onboarding_nextButton": {
     "message": "다음"
   },
+  "onboarding_step4_title": {
+    "message": "자유롭게 커스터마이징"
+  },
   "onboarding_step4Explain": {
-    "message": "지금까지 사용해본 명령어는 설정 화면이나 Selection Command Hub에서 언제든지 추가하거나 편집할 수 있습니다."
+    "message": "명령어는 언제든지 추가하거나 편집할 수 있어요"
   },
   "onboarding_step4SettingsHeading": {
-    "message": "설정에서 편집하기"
+    "message": "설정에서 만들고 편집하기"
   },
   "onboarding_step4HubHeading": {
-    "message": "Command Hub에서 더 찾아보기"
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "추가"
+    "message": "Selection Command Hub에서 발견하기"
   },
   "onboarding_completeTitle": {
     "message": "준비가 완료되었습니다!"

@@ -1347,6 +1347,9 @@
   "onboarding_step1ValueMessage": {
     "message": "Pronto — agora já pode pesquisar instantaneamente tudo o que selecionar"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Adicione o seu motor de pesquisa preferido para tornar as pesquisas do dia a dia ainda mais rápidas."
+  },
   "onboarding_step2Explain": {
     "message": "De seguida, vamos perguntar à IA sobre o texto abaixo."
   },
@@ -1365,8 +1368,11 @@
   "onboarding_step2ValueMessage": {
     "message": "Agora já pode perguntar à IA sobre o que selecionar, diretamente a partir da página que está a ler"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Peça à IA coisas como \"resume isto\" ou \"analisa esta empresa\" instantaneamente.\nPode personalizar o prompt livremente."
+  },
   "onboarding_step3Explain": {
-    "message": "Por fim, vamos pré-visualizar uma ligação sem abrir um novo separador."
+    "message": "Vamos pré-visualizar uma ligação sem abrir um novo separador."
   },
   "onboarding_step3LinkLabel": {
     "message": "Ligação de exemplo"
@@ -1377,26 +1383,32 @@
   "onboarding_step3Callout": {
     "message": "Shift+clique neste link para pré-visualizá-lo."
   },
+  "onboarding_clickKeycap": {
+    "message": "Clique"
+  },
   "onboarding_step3ReturnHint": {
     "message": "Volte a este separador e a janela fecha-se automaticamente."
   },
   "onboarding_step3ValueMessage": {
     "message": "Pronto — agora já pode pré-visualizar ligações sem sair da página"
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Consulte o conteúdo instantaneamente sem encher os seus separadores!\nPoupe o tempo gasto a abrir e fechar separadores e concentre-se no que importa."
+  },
   "onboarding_nextButton": {
     "message": "Seguinte"
   },
+  "onboarding_step4_title": {
+    "message": "Personalize ao Seu Gosto"
+  },
   "onboarding_step4Explain": {
-    "message": "Os comandos que acabou de experimentar podem ser adicionados ou editados a qualquer momento nas definições ou no Selection Command Hub."
+    "message": "Pode adicionar ou editar comandos a qualquer momento"
   },
   "onboarding_step4SettingsHeading": {
-    "message": "Editar nas Definições"
+    "message": "Criar e editar nas Definições"
   },
   "onboarding_step4HubHeading": {
-    "message": "Descubra mais no Command Hub"
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "Adicionar"
+    "message": "Descubra no Selection Command Hub"
   },
   "onboarding_completeTitle": {
     "message": "Tudo pronto!"

@@ -1344,6 +1344,9 @@
   "onboarding_step1ValueMessage": {
     "message": "Fertig – jetzt kannst du alles, was du markierst, sofort durchsuchen"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Füge deine bevorzugte Suchmaschine hinzu, um alltägliche Suchen noch schneller zu machen."
+  },
   "onboarding_step2Explain": {
     "message": "Als Nächstes fragen wir die KI zum folgenden Text."
   },
@@ -1362,8 +1365,11 @@
   "onboarding_step2ValueMessage": {
     "message": "Jetzt kannst du die KI direkt auf der Seite, die du liest, zu allem fragen, was du markierst"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Frag die KI sofort Dinge wie „Fasse das zusammen\" oder „Analysiere dieses Unternehmen\".\nDen Prompt kannst du frei anpassen."
+  },
   "onboarding_step3Explain": {
-    "message": "Zum Schluss schauen wir uns einen Link an, ohne einen neuen Tab zu öffnen."
+    "message": "Schauen wir uns einen Link an, ohne einen neuen Tab zu öffnen."
   },
   "onboarding_step3LinkLabel": {
     "message": "Beispiel-Link"
@@ -1374,26 +1380,32 @@
   "onboarding_step3Callout": {
     "message": "Klicke mit gedrückter Umschalttaste (Shift) auf diesen Link, um ihn in der Vorschau zu öffnen."
   },
+  "onboarding_clickKeycap": {
+    "message": "Klick"
+  },
   "onboarding_step3ReturnHint": {
     "message": "Wechsle zurück zu diesem Tab, dann schließt sich das Fenster automatisch."
   },
   "onboarding_step3ValueMessage": {
     "message": "Fertig – jetzt kannst du Links in der Vorschau ansehen, ohne die Seite zu verlassen"
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Sieh dir Inhalte sofort an, ohne deine Tabs zu überfüllen!\nSpar dir die Zeit zum Öffnen und Schließen von Tabs und bleib bei dem, was wirklich zählt."
+  },
   "onboarding_nextButton": {
     "message": "Weiter"
   },
+  "onboarding_step4_title": {
+    "message": "Frei anpassen"
+  },
   "onboarding_step4Explain": {
-    "message": "Die ausprobierten Befehle kannst du jederzeit in den Einstellungen oder im Selection Command Hub hinzufügen oder bearbeiten."
+    "message": "Befehle lassen sich jederzeit hinzufügen oder bearbeiten"
   },
   "onboarding_step4SettingsHeading": {
-    "message": "In den Einstellungen bearbeiten"
+    "message": "Erstellen & Bearbeiten in den Einstellungen"
   },
   "onboarding_step4HubHeading": {
-    "message": "Mehr im Command Hub finden"
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "Hinzufügen"
+    "message": "Entdecken im Selection Command Hub"
   },
   "onboarding_completeTitle": {
     "message": "Alles bereit!"

@@ -1376,6 +1376,10 @@
     "message": "That's it - you can now search for anything you select in an instant",
     "description": "Onboarding Step1 value message shown after the user runs the search command and returns to the onboarding tab."
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Add your favorite search engine to make everyday searches even faster.",
+    "description": "Onboarding Step1 value sub-message, shown under the main value message once the search result has been seen."
+  },
   "onboarding_step2Explain": {
     "message": "Next, let's ask AI about the text below.",
     "description": "Onboarding Step2 (AiPrompt command) instruction shown before the user selects the sample text."
@@ -1400,8 +1404,12 @@
     "message": "You can now ask AI about anything you select, right from the page you're reading",
     "description": "Onboarding Step2 value message shown after the user runs the AiPrompt command."
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Instantly ask AI things like \"summarize this\" or \"analyze this company.\"\nYou can freely customize the prompt.",
+    "description": "Onboarding Step2 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
+  },
   "onboarding_step3Explain": {
-    "message": "Finally, let's preview a link without opening a new tab.",
+    "message": "Let's preview a link without opening a new tab.",
     "description": "Onboarding Step3 (Link Preview) instruction."
   },
   "onboarding_step3LinkLabel": {
@@ -1416,6 +1424,10 @@
     "message": "Shift+click this link to preview it.",
     "description": "Onboarding Step3 callout/speech-bubble text pointing at the sample link, prompting the user to Shift+click it to trigger Link Preview."
   },
+  "onboarding_clickKeycap": {
+    "message": "Click",
+    "description": "Keycap-style label paired with a mouse-click icon in Onboarding Step3's Shift+Click callout."
+  },
   "onboarding_step3ReturnHint": {
     "message": "Switch back to this tab and the window closes automatically.",
     "description": "Onboarding Step3 hint shown while waiting for the user to return from the link preview's popup/tab."
@@ -1424,25 +1436,29 @@
     "message": "That's it - you can preview links without leaving the page",
     "description": "Onboarding Step3 value message shown after the user triggers Link Preview."
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Check the content instantly without cluttering your tabs!\nSave the time spent opening and closing tabs, and stay focused on what matters.",
+    "description": "Onboarding Step3 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
+  },
   "onboarding_nextButton": {
     "message": "Next",
     "description": "Button that advances from a step's value message to the next onboarding step."
   },
+  "onboarding_step4_title": {
+    "message": "Customize Freely",
+    "description": "Onboarding Step4 heading, shown after the numeral \"4.\" prefix in the UI. Introduces the customize step."
+  },
   "onboarding_step4Explain": {
-    "message": "The commands you tried can always be added to or edited from the settings screen or the Selection Command Hub.",
-    "description": "Onboarding Step4 (Customize) explanation shown after Link Preview, before the final Complete screen. Now covers both the settings screen and the Command Hub."
+    "message": "You can add or edit commands anytime",
+    "description": "Onboarding Step4 (Customize) explanation shown after Link Preview, before the final Complete screen. A celebratory emoji is appended directly after this text in the UI, so it intentionally omits trailing punctuation."
   },
   "onboarding_step4SettingsHeading": {
-    "message": "Edit in Settings",
-    "description": "Onboarding Step4 heading above the settings-panel mockup, pointing to the extension's own command settings screen."
+    "message": "Create & Edit in Settings",
+    "description": "Onboarding Step4 heading above the settings-panel screenshot, pointing to the extension's own command settings screen."
   },
   "onboarding_step4HubHeading": {
-    "message": "Find more on the Command Hub",
-    "description": "Onboarding Step4 heading above the Command Hub mockup, pointing to where users can discover more commands."
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "Add",
-    "description": "Onboarding Step4 chip label on each Command Hub item, indicating it can be added."
+    "message": "Discover on the Selection Command Hub",
+    "description": "Onboarding Step4 heading above the Command Hub screenshot, pointing to where users can discover more commands."
   },
   "onboarding_completeTitle": {
     "message": "You're all set!",

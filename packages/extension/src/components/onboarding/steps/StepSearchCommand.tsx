@@ -167,7 +167,7 @@ export function StepSearchCommand({ onboarding }: Props) {
                 <span>{t("onboarding_step1ValueMessage")}</span>
                 <span
                   className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
-                  style={{ animationDelay: "700ms" }}
+                  style={{ animationDelay: "500ms" }}
                 >
                   🎉
                 </span>
@@ -180,9 +180,17 @@ export function StepSearchCommand({ onboarding }: Props) {
           </p>
         </OnboardingFadeIn>
 
+        {isValueShown && (
+          <OnboardingFadeIn key="value-submessage" delay={700}>
+            <p className="max-w-xl text-base text-slate-700 text-pretty">
+              {t("onboarding_step1ValueSubmessage")}
+            </p>
+          </OnboardingFadeIn>
+        )}
+
         <OnboardingFadeIn
           key="rail"
-          delay={400}
+          delay={500}
           className={isValueShown ? undefined : "pb-14"}
         >
           <OnboardingRail
@@ -232,7 +240,7 @@ export function StepSearchCommand({ onboarding }: Props) {
       )}
 
       {isValueShown && (
-        <OnboardingFadeIn key="next-button" delay={1200}>
+        <OnboardingFadeIn key="next-button" delay={1000}>
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.AI_PROMPT)}

@@ -6,6 +6,7 @@ import { subscribeCommandExecuted } from "../onboardingEvents"
 import { OnboardingCallout } from "../OnboardingCallout"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
 import { OnboardingRail } from "../OnboardingRail"
+import { renderMultiline } from "../textUtils"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
 
@@ -110,7 +111,7 @@ export function StepLinkPreview({ onboarding }: Props) {
                 <span>{t("onboarding_step3ValueMessage")}</span>
                 <span
                   className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
-                  style={{ animationDelay: "700ms" }}
+                  style={{ animationDelay: "500ms" }}
                 >
                   🎉
                 </span>
@@ -122,6 +123,14 @@ export function StepLinkPreview({ onboarding }: Props) {
             )}
           </p>
         </OnboardingFadeIn>
+
+        {isValueShown && (
+          <OnboardingFadeIn key="value-submessage" delay={500}>
+            <p className="max-w-xl text-base text-slate-700 text-pretty">
+              {renderMultiline(t("onboarding_step3ValueSubmessage"))}
+            </p>
+          </OnboardingFadeIn>
+        )}
 
         <OnboardingFadeIn key="rail" delay={400}>
           <OnboardingRail

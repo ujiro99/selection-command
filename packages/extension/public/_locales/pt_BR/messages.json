@@ -1347,6 +1347,9 @@
   "onboarding_step1ValueMessage": {
     "message": "Pronto — agora você pode pesquisar instantaneamente qualquer coisa que selecionar"
   },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Adicione seu mecanismo de busca favorito para tornar as buscas do dia a dia ainda mais rápidas."
+  },
   "onboarding_step2Explain": {
     "message": "A seguir, vamos perguntar à IA sobre o texto abaixo."
   },
@@ -1365,8 +1368,11 @@
   "onboarding_step2ValueMessage": {
     "message": "Agora você pode perguntar à IA sobre qualquer coisa que selecionar, direto da página que está lendo"
   },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Peça à IA coisas como \"resuma isso\" ou \"analise esta empresa\" instantaneamente.\nVocê pode personalizar o prompt livremente."
+  },
   "onboarding_step3Explain": {
-    "message": "Por fim, vamos pré-visualizar um link sem abrir uma nova aba."
+    "message": "Vamos pré-visualizar um link sem abrir uma nova aba."
   },
   "onboarding_step3LinkLabel": {
     "message": "Link de exemplo"
@@ -1377,26 +1383,32 @@
   "onboarding_step3Callout": {
     "message": "Shift+clique neste link para pré-visualizá-lo."
   },
+  "onboarding_clickKeycap": {
+    "message": "Clique"
+  },
   "onboarding_step3ReturnHint": {
     "message": "Volte para esta aba e a janela se fecha automaticamente."
   },
   "onboarding_step3ValueMessage": {
     "message": "Pronto — agora você pode pré-visualizar links sem sair da página"
   },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Confira o conteúdo instantaneamente sem lotar suas abas!\nEconomize o tempo de abrir e fechar abas e foque no que importa."
+  },
   "onboarding_nextButton": {
     "message": "Próximo"
   },
+  "onboarding_step4_title": {
+    "message": "Personalize do Seu Jeito"
+  },
   "onboarding_step4Explain": {
-    "message": "Os comandos que você experimentou podem ser adicionados ou editados a qualquer momento nas configurações ou no Selection Command Hub."
+    "message": "Você pode adicionar ou editar comandos a qualquer momento"
   },
   "onboarding_step4SettingsHeading": {
-    "message": "Editar nas Configurações"
+    "message": "Criar e editar nas Configurações"
   },
   "onboarding_step4HubHeading": {
-    "message": "Encontre mais no Command Hub"
-  },
-  "onboarding_step4HubAddChip": {
-    "message": "Adicionar"
+    "message": "Descubra no Selection Command Hub"
   },
   "onboarding_completeTitle": {
     "message": "Tudo pronto!"
