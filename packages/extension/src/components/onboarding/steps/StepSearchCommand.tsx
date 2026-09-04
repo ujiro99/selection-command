@@ -146,7 +146,6 @@ export function StepSearchCommand({ onboarding }: Props) {
         OPEN_MODE_TYPE_MAP[commandType as keyof typeof OPEN_MODE_TYPE_MAP] ===
         COMMAND_TYPE.SEARCH
       ) {
-        onboarding.recordFirstValue()
         setPhase(StepPhase.WAIT_RETURN)
       }
     })

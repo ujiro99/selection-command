@@ -42,7 +42,7 @@ export function useOnboardingState() {
     () => readStepAndPhaseOverride()?.phase ?? StepPhase.EXPLAIN,
   )
   const startedAtRef = useRef<number>(Date.now())
-  const firstValueSentRef = useRef(false)
+  const seenValueStepsRef = useRef<Set<OnboardingStep>>(new Set())
   const seenSelectionStepsRef = useRef<Set<OnboardingStep>>(new Set())
   const finishedRef = useRef(false)
   const hasEventSendRef = useRef(false)
@@ -69,12 +69,21 @@ export function useOnboardingState() {
     _setPhase(StepPhase.EXPLAIN)
   }, [])
 
+  // Fires once per step, the first time that step reaches VALUE_SHOWN -
+  // that phase is each step's "the user got the payoff" moment per the PRD.
+  useEffect(() => {
+    if (phase !== StepPhase.VALUE_SHOWN) return
+    if (seenValueStepsRef.current.has(step)) return
+    seenValueStepsRef.current.add(step)
+    sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_VALUE_REACHED, { step })
+  }, [phase, step])
+
   // Records the first text/link selection observed within a given step.
   // No-ops on subsequent selections within the same step.
   const recordFirstSelection = useCallback((forStep: OnboardingStep) => {
     if (seenSelectionStepsRef.current.has(forStep)) return
     seenSelectionStepsRef.current.add(forStep)
-    sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_FIRST_SELECTION, {
+    sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_TEXT_SELECTION, {
       step: forStep,
     })
   }, [])
@@ -88,14 +97,6 @@ export function useOnboardingState() {
     },
     [],
   )
-
-  // The first successful Search command execution (Step1) is treated as
-  // "First Value" per the PRD, regardless of what happens in later steps.
-  const recordFirstValue = useCallback(() => {
-    if (firstValueSentRef.current) return
-    firstValueSentRef.current = true
-    sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_FIRST_VALUE)
-  }, [])
 
   const markFinished = useCallback(async () => {
     if (finishedRef.current) return
@@ -117,6 +118,10 @@ export function useOnboardingState() {
   }, [step, markFinished])
 
   const complete = useCallback(() => {
+    // Guard here too, not just inside markFinished() - StepComplete calls
+    // this from a mount-time useEffect, which StrictMode's dev-only double
+    // effect invocation would otherwise run twice, sending this event twice.
+    if (finishedRef.current) return
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_COMPLETE, {
       completion_time: Date.now() - startedAtRef.current,
     })
@@ -132,6 +137,5 @@ export function useOnboardingState() {
     complete,
     recordFirstSelection,
     recordCommandExecuted,
-    recordFirstValue,
   }
 }

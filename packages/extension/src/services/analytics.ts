@@ -51,9 +51,9 @@ export const ANALYTICS_EVENTS = {
   // Onboarding events, used to track user progress through the onboarding flow.
   ONBOARDING_START: "onboarding_start",
   ONBOARDING_SKIP: "onboarding_skip",
-  ONBOARDING_FIRST_SELECTION: "onboarding_first_selection",
+  ONBOARDING_TEXT_SELECTION: "onboarding_text_selection",
   ONBOARDING_COMMAND_EXECUTE: "onboarding_command_execute",
-  ONBOARDING_FIRST_VALUE: "onboarding_first_value",
+  ONBOARDING_VALUE_REACHED: "onboarding_value_reached",
   ONBOARDING_COMPLETE: "onboarding_complete",
 } as const
 
