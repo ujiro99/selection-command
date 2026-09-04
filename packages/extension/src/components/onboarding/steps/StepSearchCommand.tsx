@@ -43,6 +43,55 @@ export function StepSearchCommand({ onboarding }: Props) {
   const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
 
+  // ms, nested by phase since the same element (e.g. rail) can have a
+  // different delay depending on which phase is currently showing it. Each
+  // phase only fills in the keys it actually renders.
+  type PhaseDelays = {
+    commandType: number
+    message: number
+    rail: number
+    targetText?: number
+    targetTextCallout?: number
+    callout?: number
+    returnCallout?: number
+    emoji?: number
+    valueSubmessage?: number
+    nextButton?: number
+  }
+  const delays: Partial<Record<StepPhase, PhaseDelays>> = {
+    [StepPhase.EXPLAIN]: {
+      commandType: 100,
+      message: 300,
+      rail: 500,
+      targetText: 700,
+      targetTextCallout: 900,
+      callout: 1000,
+    },
+    [StepPhase.WAIT_EXECUTE]: {
+      commandType: 100,
+      message: 300,
+      rail: 500,
+      targetText: 500,
+      targetTextCallout: 800,
+      callout: 200,
+    },
+    [StepPhase.WAIT_RETURN]: {
+      commandType: 100,
+      message: 300,
+      rail: 500,
+      returnCallout: 1000,
+    },
+    [StepPhase.VALUE_SHOWN]: {
+      commandType: 100,
+      message: 300,
+      emoji: 500,
+      valueSubmessage: 800,
+      rail: 1200,
+      nextButton: 1400,
+    },
+  }
+  const phaseDelays = delays[phase] ?? delays[StepPhase.EXPLAIN]!
+
   // The popup menu opens on its own once the sample text is selected
   // (default startup method is text selection).
   useEffect(() => {
@@ -142,7 +191,7 @@ export function StepSearchCommand({ onboarding }: Props) {
         isWaitReturn && "pb-40",
       )}
     >
-      <OnboardingFadeIn key={"command-type"} delay={100}>
+      <OnboardingFadeIn key={"command-type"} delay={phaseDelays.commandType}>
         <h2 className="text-4xl font-bold text-slate-700 flex items-center">
           <span className="font-mono">1.</span>{" "}
           {t("Option_commandType_search_title")}
@@ -159,7 +208,7 @@ export function StepSearchCommand({ onboarding }: Props) {
                 : "explain"
           }
           className="flex flex-col items-center gap-4"
-          delay={300}
+          delay={phaseDelays.message}
         >
           <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
             {isValueShown ? (
@@ -167,7 +216,7 @@ export function StepSearchCommand({ onboarding }: Props) {
                 <span>{t("onboarding_step1ValueMessage")}</span>
                 <span
                   className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
-                  style={{ animationDelay: "500ms" }}
+                  style={{ animationDelay: `${phaseDelays.emoji}ms` }}
                 >
                   🎉
                 </span>
@@ -181,7 +230,10 @@ export function StepSearchCommand({ onboarding }: Props) {
         </OnboardingFadeIn>
 
         {isValueShown && (
-          <OnboardingFadeIn key="value-submessage" delay={700}>
+          <OnboardingFadeIn
+            key="value-submessage"
+            delay={phaseDelays.valueSubmessage}
+          >
             <p className="max-w-xl text-base text-slate-700 text-pretty">
               {t("onboarding_step1ValueSubmessage")}
             </p>
@@ -189,8 +241,8 @@ export function StepSearchCommand({ onboarding }: Props) {
         )}
 
         <OnboardingFadeIn
-          key="rail"
-          delay={500}
+          key={isValueShown ? "rail-complete" : "rail"}
+          delay={phaseDelays.rail}
           className={isValueShown ? undefined : "pb-14"}
         >
           <OnboardingRail
@@ -205,16 +257,17 @@ export function StepSearchCommand({ onboarding }: Props) {
 
       {(isExplain || isWaitExecute) && (
         <>
-          <OnboardingFadeIn key={"target-text"} delay={500}>
+          <OnboardingFadeIn key={"target-text"} delay={phaseDelays.targetText}>
             <OnboardingTargetText
               text={t("onboarding_step1TargetText")}
               selected={!isExplain}
+              calloutDelay={phaseDelays.targetTextCallout}
             />
           </OnboardingFadeIn>
           <OnboardingCallout
             targetElm={calloutElm}
             open={calloutElm != null}
-            openDelay={200}
+            openDelay={phaseDelays.callout}
             contentClassName="duration-300"
           >
             {t("onboarding_step1Callout")}
@@ -231,7 +284,7 @@ export function StepSearchCommand({ onboarding }: Props) {
           <OnboardingCallout
             targetElm={returnCalloutElm}
             open={returnCalloutElm != null}
-            openDelay={1000}
+            openDelay={phaseDelays.returnCallout}
             contentClassName="duration-300"
           >
             {t("onboarding_step1Callout_2")}
@@ -240,7 +293,7 @@ export function StepSearchCommand({ onboarding }: Props) {
       )}
 
       {isValueShown && (
-        <OnboardingFadeIn key="next-button" delay={1000}>
+        <OnboardingFadeIn key="next-button" delay={phaseDelays.nextButton}>
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.AI_PROMPT)}

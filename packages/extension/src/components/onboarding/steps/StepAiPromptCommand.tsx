@@ -40,6 +40,56 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
 
+  // ms, nested by phase since the same element (e.g. message) can have a
+  // different delay depending on which phase is currently showing it. Each
+  // phase only fills in the keys it actually renders.
+  type PhaseDelays = {
+    commandType: number
+    message: number
+    rail: number
+    targetText?: number
+    targetTextCallout?: number
+    callout?: number
+    emoji?: number
+    valueSubmessage?: number
+    nextButton?: number
+  }
+  const delays: Partial<Record<StepPhase, PhaseDelays>> = {
+    [StepPhase.EXPLAIN]: {
+      commandType: 100,
+      message: 300,
+      rail: 400,
+      targetText: 500,
+      targetTextCallout: 800,
+      callout: 200,
+    },
+    [StepPhase.WAIT_EXECUTE]: {
+      commandType: 100,
+      message: 300,
+      rail: 400,
+      targetText: 500,
+      targetTextCallout: 800,
+      callout: 200,
+    },
+    [StepPhase.WAIT_RETURN]: {
+      commandType: 100,
+      message: 300,
+      rail: 400,
+      targetText: 500,
+      targetTextCallout: 800,
+      callout: 200,
+    },
+    [StepPhase.VALUE_SHOWN]: {
+      commandType: 100,
+      message: 300,
+      emoji: 500,
+      valueSubmessage: 800,
+      rail: 1200,
+      nextButton: 1400,
+    },
+  }
+  const phaseDelays = delays[phase] ?? delays[StepPhase.EXPLAIN]!
+
   useEffect(() => {
     setSelectionText("")
   }, [setSelectionText])
@@ -90,7 +140,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   // result" beat animation's continuity right as the payoff screen appears.
   return (
     <div className={cn("flex flex-col items-center gap-10 select-none")}>
-      <OnboardingFadeIn key={"command-type"} delay={100}>
+      <OnboardingFadeIn key={"command-type"} delay={phaseDelays.commandType}>
         <h2 className="text-4xl font-bold text-slate-700 flex items-center">
           <span className="font-mono">2.</span>{" "}
           {t("Option_commandType_aiPrompt_title")}
@@ -107,7 +157,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
                 : "explain"
           }
           className="flex flex-col items-center gap-4"
-          delay={300}
+          delay={phaseDelays.message}
         >
           <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
             {isValueShown ? (
@@ -115,7 +165,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
                 <span>{t("onboarding_step2ValueMessage")}</span>
                 <span
                   className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
-                  style={{ animationDelay: "500ms" }}
+                  style={{ animationDelay: `${phaseDelays.emoji}ms` }}
                 >
                   🎉
                 </span>
@@ -129,7 +179,10 @@ export function StepAiPromptCommand({ onboarding }: Props) {
         </OnboardingFadeIn>
 
         {isValueShown && (
-          <OnboardingFadeIn key="value-submessage" delay={700}>
+          <OnboardingFadeIn
+            key="value-submessage"
+            delay={phaseDelays.valueSubmessage}
+          >
             <p className="max-w-xl text-base text-slate-700 text-pretty">
               {renderMultiline(t("onboarding_step2ValueSubmessage"))}
             </p>
@@ -137,8 +190,8 @@ export function StepAiPromptCommand({ onboarding }: Props) {
         )}
 
         <OnboardingFadeIn
-          key="rail"
-          delay={400}
+          key={isValueShown ? "rail-complete" : "rail"}
+          delay={phaseDelays.rail}
           className={isValueShown ? undefined : "pb-14"}
         >
           <OnboardingRail
@@ -153,17 +206,18 @@ export function StepAiPromptCommand({ onboarding }: Props) {
 
       {!isValueShown && (
         <>
-          <OnboardingFadeIn key={"target-text"} delay={500}>
+          <OnboardingFadeIn key={"target-text"} delay={phaseDelays.targetText}>
             <OnboardingTargetText
               text={t("onboarding_step2TargetText")}
               selected={!isExplain}
+              calloutDelay={phaseDelays.targetTextCallout}
             />
           </OnboardingFadeIn>
 
           <OnboardingCallout
             targetElm={calloutElm}
             open={calloutElm != null}
-            openDelay={200}
+            openDelay={phaseDelays.callout}
             contentClassName="duration-300"
           >
             {t("onboarding_step2Callout")}
@@ -172,7 +226,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
       )}
 
       {isValueShown && (
-        <OnboardingFadeIn key="next-button" delay={1000}>
+        <OnboardingFadeIn key="next-button" delay={phaseDelays.nextButton}>
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.LINK_PREVIEW)}

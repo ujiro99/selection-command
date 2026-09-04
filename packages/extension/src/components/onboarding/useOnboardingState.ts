@@ -57,7 +57,6 @@ export function useOnboardingState() {
   }, [])
 
   const setPhase = useCallback((next: StepPhase, delay?: number) => {
-    console.log(`onboarding: setPhase(${next}, ${delay})`)
     if (delay) {
       setTimeout(() => _setPhase(next), delay)
       return

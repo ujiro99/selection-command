@@ -37,9 +37,49 @@ export function StepLinkPreview({ onboarding }: Props) {
   const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
 
+  // ms, nested by phase since the same element (e.g. next-button) can have
+  // a different delay depending on which phase is currently showing it.
+  // Each phase only fills in the keys it actually renders. Step3 only ever
+  // uses EXPLAIN, WAIT_RETURN and VALUE_SHOWN (see the component doc
+  // comment below), so there's no waitExecute group here.
+  type PhaseDelays = {
+    commandType: number
+    message: number
+    rail: number
+    targetText?: number
+    callout?: number
+    returnCallout?: number
+    emoji?: number
+    valueSubmessage?: number
+    nextButton?: number
+  }
+  const delays: Partial<Record<StepPhase, PhaseDelays>> = {
+    [StepPhase.EXPLAIN]: {
+      commandType: 100,
+      message: 300,
+      rail: 400,
+      targetText: 500,
+      callout: 800,
+    },
+    [StepPhase.WAIT_RETURN]: {
+      commandType: 100,
+      message: 300,
+      rail: 400,
+      returnCallout: 1000,
+    },
+    [StepPhase.VALUE_SHOWN]: {
+      commandType: 100,
+      message: 300,
+      emoji: 500,
+      valueSubmessage: 800,
+      rail: 1200,
+      nextButton: 1400,
+    },
+  }
+  const phaseDelays = delays[phase] ?? delays[StepPhase.EXPLAIN]!
+
   useEffect(() => {
     if (isWaitReturn) {
-      console.log("onboarding: StepLinkPreview subscribing to command executed")
       const elm = document.querySelector(
         "[data-testid='onboarding-step3-callout-anchor']",
       )
@@ -87,7 +127,7 @@ export function StepLinkPreview({ onboarding }: Props) {
   // result" beat animation's continuity right as the payoff screen appears.
   return (
     <div className="flex flex-col items-center gap-10">
-      <OnboardingFadeIn key={"command-type"} delay={100}>
+      <OnboardingFadeIn key={"command-type"} delay={phaseDelays.commandType}>
         <h2 className="text-4xl font-bold text-slate-700 flex items-center">
           <span className="font-mono">3.</span> {t("Option_linkCommand")}
         </h2>
@@ -103,7 +143,7 @@ export function StepLinkPreview({ onboarding }: Props) {
                 : "explain"
           }
           className="flex flex-col items-center gap-4"
-          delay={300}
+          delay={phaseDelays.message}
         >
           <p className="max-w-xl text-xl leading-[1.75] font-semibold text-slate-900">
             {isValueShown ? (
@@ -111,7 +151,7 @@ export function StepLinkPreview({ onboarding }: Props) {
                 <span>{t("onboarding_step3ValueMessage")}</span>
                 <span
                   className="ml-1 inline-block animate-onboarding-pop-2 motion-reduce:animate-none"
-                  style={{ animationDelay: "500ms" }}
+                  style={{ animationDelay: `${phaseDelays.emoji}ms` }}
                 >
                   🎉
                 </span>
@@ -125,14 +165,20 @@ export function StepLinkPreview({ onboarding }: Props) {
         </OnboardingFadeIn>
 
         {isValueShown && (
-          <OnboardingFadeIn key="value-submessage" delay={500}>
+          <OnboardingFadeIn
+            key="value-submessage"
+            delay={phaseDelays.valueSubmessage}
+          >
             <p className="max-w-xl text-base text-slate-700 text-pretty">
               {renderMultiline(t("onboarding_step3ValueSubmessage"))}
             </p>
           </OnboardingFadeIn>
         )}
 
-        <OnboardingFadeIn key="rail" delay={400}>
+        <OnboardingFadeIn
+          key={isValueShown ? "rail-complete" : "rail"}
+          delay={phaseDelays.rail}
+        >
           <OnboardingRail
             selectLabel={t("onboarding_railSelect")}
             commandLabel={t("onboarding_railCommand")}
@@ -147,7 +193,7 @@ export function StepLinkPreview({ onboarding }: Props) {
         <OnboardingFadeIn
           key={"target-text"}
           className="mt-24 flex flex-col items-center gap-8"
-          delay={500}
+          delay={phaseDelays.targetText}
         >
           <div
             className="flex animate-onboarding-ring items-center justify-center rounded-lg border border-slate-200 bg-white [--onboarding-ring-color:rgba(8,47,73,0.16)] motion-reduce:animate-none"
@@ -165,7 +211,7 @@ export function StepLinkPreview({ onboarding }: Props) {
           <OnboardingCallout
             targetElm={linkElm}
             open={linkElm != null}
-            openDelay={800}
+            openDelay={phaseDelays.callout}
             contentClassName="duration-300 select-none"
           >
             <div className="flex flex-col items-center gap-2 pb-1">
@@ -195,7 +241,7 @@ export function StepLinkPreview({ onboarding }: Props) {
           <OnboardingCallout
             targetElm={returnCalloutElm}
             open={returnCalloutElm != null}
-            openDelay={1000}
+            openDelay={phaseDelays.returnCallout}
             contentClassName="duration-300"
           >
             {t("onboarding_step1Callout_2")}
@@ -204,7 +250,7 @@ export function StepLinkPreview({ onboarding }: Props) {
       )}
 
       {isValueShown && (
-        <OnboardingFadeIn key="next-button" delay={800}>
+        <OnboardingFadeIn key="next-button" delay={phaseDelays.nextButton}>
           <button
             type="button"
             onClick={() => onboarding.goToStep(OnboardingStep.CUSTOMIZE)}

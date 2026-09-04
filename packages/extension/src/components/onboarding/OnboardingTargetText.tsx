@@ -12,6 +12,10 @@ type Props = {
   // True once the user has actually selected the text (any later phase),
   // rendering it as a static, already-selected highlight instead.
   selected: boolean
+  // Delay (ms) before the "select this" callout appears. Passed in rather
+  // than hardcoded so callers manage it alongside their other phase-based
+  // delays (see each step's `delays` object).
+  calloutDelay?: number
 }
 
 // The sample text card shown on Steps 1-2. Demonstrates the "drag to
@@ -20,7 +24,7 @@ type Props = {
 // other "do this next" hint in the onboarding flow (see OnboardingCallout)
 // so first-time users recognize this as something to select rather than
 // something to read.
-export function OnboardingTargetText({ text, selected }: Props) {
+export function OnboardingTargetText({ text, selected, calloutDelay }: Props) {
   const prefersReducedMotion = usePrefersReducedMotion()
   const { selectionText } = useSelectContext()
   const textRef = useRef<HTMLSpanElement>(null)
@@ -74,7 +78,7 @@ export function OnboardingTargetText({ text, selected }: Props) {
       <OnboardingCallout
         targetElm={cardElm}
         open={showSelectHint}
-        openDelay={800}
+        openDelay={calloutDelay}
       >
         <span className="inline-flex items-center gap-1.5">
           <TextCursor className="size-3.5" strokeWidth={2} />
