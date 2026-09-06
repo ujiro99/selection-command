@@ -174,31 +174,6 @@ export default defineConfig(({ mode }) => {
           clipboard: "src/clipboard.html",
           onboarding: "src/onboarding_page.html",
         },
-        output: {
-          // Group all CSS module files into a named chunk so that the
-          // extracted CSS asset gets a predictable name ("components.css").
-          // This avoids content-based heuristics in assetFileNames.
-          manualChunks(id) {
-            if (/\.module\.css(\?.*)?$/.test(id)) {
-              return "components"
-            }
-          },
-          assetFileNames: (assetInfo) => {
-            // Filename-based detection: CSS modules are grouped into the
-            // "components" chunk above, so their CSS asset is named "components.css".
-            if (assetInfo.names?.[0] === "components.css") {
-              return `assets/components.css`
-            }
-            const keepNames = ["content_script.css"]
-            if (
-              assetInfo.names?.length > 0 &&
-              keepNames.includes(assetInfo.names[0])
-            ) {
-              return `assets/${assetInfo.names[0]}`
-            }
-            return "assets/[name]-[hash][extname]"
-          },
-        },
       },
     },
   }
