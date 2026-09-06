@@ -41,8 +41,7 @@ type DetectLinkCommandReturn = {
 }
 
 type SubHookReturn =
-  | Omit<DetectLinkCommandReturn, "showIndicator">
-  | Record<string, never>
+  Omit<DetectLinkCommandReturn, "showIndicator"> | Record<string, never>
 
 const empty = {
   inProgress: false,
@@ -57,8 +56,8 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
   const command = commands?.find(isLinkCommand) as Command
   const enabled =
     pageRule == null ||
-    pageRule.linkCommandEnabled == undefined ||
-    pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
+      pageRule.linkCommandEnabled == undefined ||
+      pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.INHERIT
       ? settings.linkCommand?.enabled === LINK_COMMAND_ENABLED.ENABLE
       : pageRule.linkCommandEnabled === LINK_COMMAND_ENABLED.ENABLE
 
@@ -78,7 +77,12 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
         changeState: onChangeState,
         target,
       })
-      sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, { event_label: "link_preview" })
+
+      if (!location.href.startsWith("chrome-extension://")) {
+        sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, {
+          event_label: "link_preview",
+        })
+      }
       dispatchCommandExecuted({
         commandId: command.id,
         commandType: command.openMode,
@@ -115,7 +119,7 @@ function useDetectDrag(
   const dragEnabled =
     enabled &&
     settings.linkCommand?.startupMethod?.method ===
-      LINK_COMMAND_STARTUP_METHOD.DRAG
+    LINK_COMMAND_STARTUP_METHOD.DRAG
 
   const threshold =
     settings.linkCommand?.startupMethod?.threshold ??
@@ -142,7 +146,7 @@ function useDetectDrag(
       const current = { x: e.clientX, y: e.clientY }
       const distance = Math.sqrt(
         Math.pow(current.x - startPosition.x, 2) +
-          Math.pow(current.y - startPosition.y, 2),
+        Math.pow(current.y - startPosition.y, 2),
       )
       setMousePosition(current)
       setInProgress(distance > playPixel)
@@ -230,7 +234,7 @@ function useDetectKeyboard(
   const keyboardEnabled =
     enabled &&
     settings.linkCommand?.startupMethod?.method ===
-      LINK_COMMAND_STARTUP_METHOD.KEYBOARD
+    LINK_COMMAND_STARTUP_METHOD.KEYBOARD
   const key = settings.linkCommand?.startupMethod?.keyboardParam
   const popupOption = command?.popupOption ?? PopupOption
   const [target, setTarget] = useState<Element | null>(null)
@@ -277,11 +281,11 @@ function useDetectKeyboard(
 
   return keyboardEnabled
     ? {
-        progress: 0,
-        mousePosition,
-        inProgress: mousePress,
-        preventLinkClick: true,
-      }
+      progress: 0,
+      mousePosition,
+      inProgress: mousePress,
+      preventLinkClick: true,
+    }
     : {}
 }
 
@@ -294,7 +298,7 @@ function useDetectClickHold(
   const clickHoldEnabled =
     enabled &&
     settings.linkCommand?.startupMethod?.method ===
-      LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
+    LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD
   const duration =
     settings.linkCommand?.startupMethod?.leftClickHoldParam ?? 200
   const detectLinkRef = useRef(false)
@@ -348,10 +352,10 @@ function useDetectClickHold(
 
   return clickHoldEnabled && detectLinkRef.current
     ? {
-        mousePosition: position,
-        inProgress: progress > playProgress,
-        progress: progress,
-        preventLinkClick: detectHoldLink,
-      }
+      mousePosition: position,
+      inProgress: progress > playProgress,
+      progress: progress,
+      preventLinkClick: detectHoldLink,
+    }
     : {}
 }
