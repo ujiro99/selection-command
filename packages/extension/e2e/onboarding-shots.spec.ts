@@ -70,7 +70,6 @@ test.describe("onboarding screenshots (design review)", () => {
       const context = await chromium.launchPersistentContext("", {
         headless: false,
         args: [
-          "--headless=new",
           `--lang=${locale}`,
           `--disable-extensions-except=${pathToExtension}`,
           `--load-extension=${pathToExtension}`,
