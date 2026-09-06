@@ -2,7 +2,10 @@ import type { ExecuteCommandParams } from "@/types"
 import { OPEN_MODE } from "@/const"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
 import { resolveCommandSource } from "@/services/commandSource"
-import { dispatchCommandExecuted } from "@/components/onboarding/onboardingEvents"
+import {
+  dispatchCommandExecuted,
+  isOnboardingPage,
+} from "@/components/onboarding/onboardingEvents"
 
 export async function executeAction({
   actions,
@@ -37,8 +40,8 @@ export async function executeAction({
 
   const { sourceType, sourceId } = resolveCommandSource(command)
 
-  // Don't send analytics events for commands executed from the extension's own pages (e.g., onBoarding, etc.)
-  if (!pageUrl?.startsWith("chrome-extension://")) {
+  // Don't send analytics events for commands executed from within the onboarding flow itself.
+  if (!isOnboardingPage(pageUrl)) {
     sendEvent(ANALYTICS_EVENTS.SELECTION_COMMAND, {
       event_label: mode,
       command_id: command.id,

@@ -1,4 +1,4 @@
-import { OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
+import { OPEN_MODE, DRAG_OPEN_MODE, ONBOARDING_PAGE_PATH } from "@/const"
 
 // Fired on `window` whenever a command (menu command or link preview) is
 // executed, regardless of whether the onboarding page is open. This keeps
@@ -28,6 +28,14 @@ export function dispatchCommandExecuted(
       { detail },
     ),
   )
+}
+
+// Whether the given page URL is the onboarding page, e.g. to skip analytics
+// events for commands executed from within the onboarding flow itself. Only
+// matches the onboarding page specifically (not extension pages in general,
+// such as the options page).
+export function isOnboardingPage(url?: string | null): boolean {
+  return url?.includes(ONBOARDING_PAGE_PATH) ?? false
 }
 
 export function subscribeCommandExecuted(

@@ -9,6 +9,7 @@ import { OnboardingRail } from "../OnboardingRail"
 import { renderMultiline } from "../textUtils"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
+import type { PhaseDelays } from "../phaseDelays"
 
 type Props = {
   onboarding: UseOnboardingState
@@ -37,22 +38,8 @@ export function StepLinkPreview({ onboarding }: Props) {
   const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
 
-  // ms, nested by phase since the same element (e.g. next-button) can have
-  // a different delay depending on which phase is currently showing it.
-  // Each phase only fills in the keys it actually renders. Step3 only ever
-  // uses EXPLAIN, WAIT_RETURN and VALUE_SHOWN (see the component doc
-  // comment below), so there's no waitExecute group here.
-  type PhaseDelays = {
-    commandType: number
-    message: number
-    rail: number
-    targetText?: number
-    callout?: number
-    returnCallout?: number
-    emoji?: number
-    valueSubmessage?: number
-    nextButton?: number
-  }
+  // Step3 only ever uses EXPLAIN, WAIT_RETURN and VALUE_SHOWN (see the
+  // component doc comment above), so there's no waitExecute group here.
   const delays: Partial<Record<StepPhase, PhaseDelays>> = {
     [StepPhase.EXPLAIN]: {
       commandType: 100,

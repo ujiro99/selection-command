@@ -48,7 +48,7 @@ export function OnboardingConfetti() {
       // canvas and it never becomes visible). origin.y: 0 starts them right
       // at the top edge so the fall reads immediately.
       //
-      // ticks: 600 keeps particles alive long enough to reach the bottom
+      // ticks: 200 keeps particles alive long enough to reach the bottom
       // of the viewport instead of being culled mid-fall.
       instance({
         particleCount: 120,

@@ -9,8 +9,8 @@ import { Ipc, BgCommand } from "@/services/ipc"
 // decisions in the background script alongside the rest of tab management.
 export async function closeOnboardingTab(): Promise<void> {
   try {
-    await Ipc.send(BgCommand.closeTab)
-    return
+    const closed = await Ipc.send<undefined, boolean>(BgCommand.closeTab)
+    if (closed) return
   } catch {
     // Fall through to window.close() below.
   }

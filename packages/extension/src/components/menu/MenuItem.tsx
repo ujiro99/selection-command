@@ -41,7 +41,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     const rect = props.menuRef.current.getBoundingClientRect()
     let position = { x: rect.right + 10, y: rect.top }
 
-    // オンボーディング中は画面上の説明を表示するために、右端に寄せる
+    // During onboarding, align to the right edge so the on-screen explanation stays visible.
     if (inOnboarding) {
       const screenWidth = window.screen.width
       position = { x: screenWidth - PopupOption.width - 20, y: rect.top }

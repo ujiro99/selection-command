@@ -14,6 +14,7 @@ import { OnboardingTargetText } from "../OnboardingTargetText"
 import { OnboardingRail } from "../OnboardingRail"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
+import type { PhaseDelays } from "../phaseDelays"
 
 type Props = {
   onboarding: UseOnboardingState
@@ -43,26 +44,11 @@ export function StepSearchCommand({ onboarding }: Props) {
   const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
 
-  // ms, nested by phase since the same element (e.g. rail) can have a
-  // different delay depending on which phase is currently showing it. Each
-  // phase only fills in the keys it actually renders.
-  type PhaseDelays = {
-    commandType: number
-    message: number
-    rail: number
-    targetText?: number
-    targetTextCallout?: number
-    callout?: number
-    returnCallout?: number
-    emoji?: number
-    valueSubmessage?: number
-    nextButton?: number
-  }
   const delays: Partial<Record<StepPhase, PhaseDelays>> = {
     [StepPhase.EXPLAIN]: {
       commandType: 100,
       message: 300,
-      rail: 500,
+      rail: 400,
       targetText: 700,
       targetTextCallout: 900,
       callout: 1000,
@@ -70,7 +56,7 @@ export function StepSearchCommand({ onboarding }: Props) {
     [StepPhase.WAIT_EXECUTE]: {
       commandType: 100,
       message: 300,
-      rail: 500,
+      rail: 400,
       targetText: 500,
       targetTextCallout: 800,
       callout: 200,
@@ -78,7 +64,7 @@ export function StepSearchCommand({ onboarding }: Props) {
     [StepPhase.WAIT_RETURN]: {
       commandType: 100,
       message: 300,
-      rail: 500,
+      rail: 400,
       returnCallout: 1000,
     },
     [StepPhase.VALUE_SHOWN]: {
@@ -141,13 +127,14 @@ export function StepSearchCommand({ onboarding }: Props) {
   useEffect(() => {
     if (!isWaitExecute) return
     return subscribeCommandExecuted(({ commandType }) => {
-      onboarding.recordCommandExecuted(OnboardingStep.SEARCH, commandType)
       if (
-        OPEN_MODE_TYPE_MAP[commandType as keyof typeof OPEN_MODE_TYPE_MAP] ===
+        OPEN_MODE_TYPE_MAP[commandType as keyof typeof OPEN_MODE_TYPE_MAP] !==
         COMMAND_TYPE.SEARCH
       ) {
-        setPhase(StepPhase.WAIT_RETURN)
+        return
       }
+      onboarding.recordCommandExecuted(OnboardingStep.SEARCH, commandType)
+      setPhase(StepPhase.WAIT_RETURN)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])

@@ -70,6 +70,43 @@ describe("executeAction", () => {
     )
   })
 
+  it("skips analytics event when executed from the onboarding page", async () => {
+    const execute = vi.fn().mockResolvedValue("ok")
+    const actions = {
+      [OPEN_MODE.TAB]: { execute },
+    } as Record<string, { execute: () => Promise<string> }>
+
+    await executeAction({
+      actions,
+      command: { id: "cmd-4", openMode: OPEN_MODE.TAB } as any,
+      position: null,
+      selectionText: "text",
+      pageUrl: "chrome-extension://abc123/src/onboarding_page.html",
+    })
+
+    expect(sendEvent).not.toHaveBeenCalled()
+  })
+
+  it("still sends analytics event when executed from another extension page", async () => {
+    const execute = vi.fn().mockResolvedValue("ok")
+    const actions = {
+      [OPEN_MODE.TAB]: { execute },
+    } as Record<string, { execute: () => Promise<string> }>
+
+    await executeAction({
+      actions,
+      command: { id: "cmd-5", openMode: OPEN_MODE.TAB } as any,
+      position: null,
+      selectionText: "text",
+      pageUrl: "chrome-extension://abc123/src/options_page.html",
+    })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      ANALYTICS_EVENTS.SELECTION_COMMAND,
+      expect.objectContaining({ command_id: "cmd-5" }),
+    )
+  })
+
   it("dispatches an onboarding:command-executed window event", async () => {
     const execute = vi.fn().mockResolvedValue("ok")
     const actions = {

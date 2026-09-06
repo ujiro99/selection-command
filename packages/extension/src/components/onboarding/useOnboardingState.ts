@@ -46,6 +46,15 @@ export function useOnboardingState() {
   const seenSelectionStepsRef = useRef<Set<OnboardingStep>>(new Set())
   const finishedRef = useRef(false)
   const hasEventSendRef = useRef(false)
+  const phaseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (phaseTimeoutRef.current != null) {
+        clearTimeout(phaseTimeoutRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (hasEventSendRef.current) return
@@ -57,14 +66,25 @@ export function useOnboardingState() {
   }, [])
 
   const setPhase = useCallback((next: StepPhase, delay?: number) => {
+    if (phaseTimeoutRef.current != null) {
+      clearTimeout(phaseTimeoutRef.current)
+      phaseTimeoutRef.current = null
+    }
     if (delay) {
-      setTimeout(() => _setPhase(next), delay)
+      phaseTimeoutRef.current = setTimeout(() => {
+        phaseTimeoutRef.current = null
+        _setPhase(next)
+      }, delay)
       return
     }
     _setPhase(next)
   }, [])
 
   const goToStep = useCallback((next: OnboardingStep) => {
+    if (phaseTimeoutRef.current != null) {
+      clearTimeout(phaseTimeoutRef.current)
+      phaseTimeoutRef.current = null
+    }
     setStep(next)
     _setPhase(StepPhase.EXPLAIN)
   }, [])
@@ -123,7 +143,8 @@ export function useOnboardingState() {
     // effect invocation would otherwise run twice, sending this event twice.
     if (finishedRef.current) return
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_COMPLETE, {
-      completion_time: Date.now() - startedAtRef.current,
+      completion_time_sec:
+        Math.round((Date.now() - startedAtRef.current) / 100) / 10,
     })
     markFinished()
   }, [markFinished])

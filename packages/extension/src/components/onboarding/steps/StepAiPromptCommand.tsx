@@ -13,6 +13,7 @@ import { OnboardingTargetText } from "../OnboardingTargetText"
 import { OnboardingRail } from "../OnboardingRail"
 import { OnboardingStep, StepPhase } from "@/types/onboarding"
 import type { UseOnboardingState } from "../useOnboardingState"
+import type { PhaseDelays } from "../phaseDelays"
 
 type Props = {
   onboarding: UseOnboardingState
@@ -41,20 +42,6 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
 
-  // ms, nested by phase since the same element (e.g. message) can have a
-  // different delay depending on which phase is currently showing it. Each
-  // phase only fills in the keys it actually renders.
-  type PhaseDelays = {
-    commandType: number
-    message: number
-    rail: number
-    targetText?: number
-    targetTextCallout?: number
-    callout?: number
-    emoji?: number
-    valueSubmessage?: number
-    nextButton?: number
-  }
   const delays: Partial<Record<StepPhase, PhaseDelays>> = {
     [StepPhase.EXPLAIN]: {
       commandType: 100,
