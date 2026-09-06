@@ -36,6 +36,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   const [calloutElm, setCalloutElm] = useState<Element | null>(null)
 
   const isExplain = phase === StepPhase.EXPLAIN
+  const isWaitSelection = phase === StepPhase.WAIT_SELECTION
   const isWaitExecute = phase === StepPhase.WAIT_EXECUTE
   const isWaitReturn = phase === StepPhase.WAIT_RETURN
   const isValueShown = phase === StepPhase.VALUE_SHOWN
@@ -91,11 +92,14 @@ export function StepAiPromptCommand({ onboarding }: Props) {
   const phaseDelays = delays[phase] ?? delays[StepPhase.EXPLAIN]!
 
   useEffect(() => {
+    if (!isExplain) return
     setSelectionText("")
-  }, [setSelectionText])
+    setPhase(StepPhase.WAIT_SELECTION)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
-    if (!isExplain) return
+    if (!isWaitSelection) return
     if (isEmpty(selectionText)) return
     onboarding.recordFirstSelection(OnboardingStep.AI_PROMPT)
     setPhase(StepPhase.WAIT_EXECUTE)
