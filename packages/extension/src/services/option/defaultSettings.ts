@@ -1931,9 +1931,9 @@ export const LOCALE_COMMANDS = {
   ],
   ko: [
     CMD_LINK_PREVIEW,
+    CMD_NAVER,
     CMD_GOOGLE,
     CMD_ONBOARDING_AI_KO,
-    CMD_NAVER,
     CMD_GOOGLE_IMAGE,
     CMD_COUPANG,
     CMD_GEMINI_KO,
