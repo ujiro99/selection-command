@@ -1390,7 +1390,7 @@
     "message": "Et voilà — vous pouvez désormais prévisualiser des liens sans quitter la page"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Consultez le contenu instantanément sans encombrer vos onglets !\nGagnez le temps passé à ouvrir et fermer des onglets, et concentrez-vous sur l'essentiel."
+    "message": "Vous avez obtenu l'information et êtes revenu aussitôt !\nCela réduit la gestion des onglets, pour que vous puissiez vous concentrer sur l'essentiel."
   },
   "onboarding_nextButton": {
     "message": "Suivant"
@@ -1411,7 +1411,7 @@
     "message": "Tout est prêt !"
   },
   "onboarding_completeBody": {
-    "message": "Selection Command est prêt à l'emploi : il vous suffit de sélectionner du texte sur n'importe quelle page pour commencer."
+    "message": "Selection Command est prêt à l'emploi.\nIl vous suffit de sélectionner du texte sur n'importe quelle page pour commencer."
   },
   "onboarding_openSettingsButton": {
     "message": "Ouvrir les paramètres"

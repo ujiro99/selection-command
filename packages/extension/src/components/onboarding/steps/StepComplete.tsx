@@ -4,6 +4,7 @@ import { t } from "@/services/i18n"
 import { OnboardingFadeIn } from "../OnboardingFadeIn"
 import { OnboardingConfetti } from "../OnboardingConfetti"
 import { closeOnboardingTab } from "../onboardingWindow"
+import { renderMultiline } from "../textUtils"
 import type { UseOnboardingState } from "../useOnboardingState"
 
 type Props = {
@@ -52,7 +53,7 @@ export function StepComplete({ onboarding }: Props) {
           delay={delays[2]}
         >
           <p className="max-w-lg text-base leading-[1.85] text-slate-700 text-pretty">
-            {t("onboarding_completeBody")}
+            {renderMultiline(t("onboarding_completeBody"))}
           </p>
         </OnboardingFadeIn>
 

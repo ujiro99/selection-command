@@ -1393,7 +1393,7 @@
     "message": "Pronto — agora já pode pré-visualizar ligações sem sair da página"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Consulte o conteúdo instantaneamente sem encher os seus separadores!\nPoupe o tempo gasto a abrir e fechar separadores e concentre-se no que importa."
+    "message": "Obteve a informação e voltou de imediato!\nIsto reduz o incómodo de mudar de separadores, para que se possa concentrar no que importa."
   },
   "onboarding_nextButton": {
     "message": "Seguinte"
@@ -1414,7 +1414,7 @@
     "message": "Tudo pronto!"
   },
   "onboarding_completeBody": {
-    "message": "O Selection Command está pronto a usar. Basta selecionar texto em qualquer página para começar."
+    "message": "O Selection Command está pronto a usar.\nBasta selecionar texto em qualquer página para começar."
   },
   "onboarding_openSettingsButton": {
     "message": "Abrir definições"

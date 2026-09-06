@@ -1390,7 +1390,7 @@
     "message": "Fatto: ora puoi visualizzare l'anteprima dei link senza lasciare la pagina"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Controlla subito i contenuti senza affollare le schede!\nRisparmia il tempo speso ad aprire e chiudere schede e concentrati su ciò che conta."
+    "message": "Hai ottenuto le informazioni e sei tornato subito indietro!\nQuesto riduce la gestione delle schede, così puoi concentrarti su ciò che conta."
   },
   "onboarding_nextButton": {
     "message": "Avanti"
@@ -1411,7 +1411,7 @@
     "message": "Tutto pronto!"
   },
   "onboarding_completeBody": {
-    "message": "Selection Command è pronto all'uso: seleziona del testo in qualsiasi pagina per iniziare."
+    "message": "Selection Command è pronto all'uso.\nSeleziona del testo in qualsiasi pagina per iniziare."
   },
   "onboarding_openSettingsButton": {
     "message": "Apri impostazioni"

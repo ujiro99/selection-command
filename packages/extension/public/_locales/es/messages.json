@@ -1390,7 +1390,7 @@
     "message": "Listo: ahora puedes previsualizar enlaces sin salir de la página"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "¡Consulta el contenido al instante sin llenar tus pestañas!\nAhorra el tiempo de abrir y cerrar pestañas, y concéntrate en lo que importa."
+    "message": "¡Obtuviste la información y volviste enseguida!\nEsto reduce el trabajo de cambiar de pestañas, para que puedas concentrarte en lo que importa."
   },
   "onboarding_nextButton": {
     "message": "Siguiente"
@@ -1411,7 +1411,7 @@
     "message": "¡Todo listo!"
   },
   "onboarding_completeBody": {
-    "message": "Selection Command ya está listo para usarse. Solo selecciona texto en cualquier página para empezar."
+    "message": "Selection Command ya está listo para usarse.\nSolo selecciona texto en cualquier página para empezar."
   },
   "onboarding_openSettingsButton": {
     "message": "Abrir configuración"

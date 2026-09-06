@@ -1393,7 +1393,7 @@
     "message": "Selesai — sekarang Anda bisa melihat pratinjau tautan tanpa meninggalkan halaman"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Periksa konten secara instan tanpa memenuhi tab Anda!\nHemat waktu membuka dan menutup tab, dan fokus pada hal yang penting."
+    "message": "Anda mendapatkan informasinya dan langsung kembali!\nIni mengurangi repotnya berpindah tab, sehingga Anda bisa fokus pada hal yang penting."
   },
   "onboarding_nextButton": {
     "message": "Berikutnya"
@@ -1414,7 +1414,7 @@
     "message": "Semua sudah siap!"
   },
   "onboarding_completeBody": {
-    "message": "Selection Command siap digunakan. Cukup pilih teks di halaman mana pun untuk memulai."
+    "message": "Selection Command siap digunakan.\nCukup pilih teks di halaman mana pun untuk memulai."
   },
   "onboarding_openSettingsButton": {
     "message": "Buka Pengaturan"

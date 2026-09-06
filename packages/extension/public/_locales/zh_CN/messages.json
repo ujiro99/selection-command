@@ -1390,7 +1390,7 @@
     "message": "就是这样——现在您可以在不离开当前页面的情况下预览链接"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "无需堆积标签页即可即时查看内容！\n节省打开和关闭标签页的时间，专注于真正重要的事情。"
+    "message": "获取信息后立即返回！\n这减少了切换标签页的麻烦，让你可以专注于真正重要的事情。"
   },
   "onboarding_nextButton": {
     "message": "下一步"
@@ -1411,7 +1411,7 @@
     "message": "一切就绪！"
   },
   "onboarding_completeBody": {
-    "message": "Selection Command 已准备就绪。选中页面上的任意文本即可开始使用。"
+    "message": "Selection Command 已准备就绪。\n选中页面上的任意文本即可开始使用。"
   },
   "onboarding_openSettingsButton": {
     "message": "打开设置"

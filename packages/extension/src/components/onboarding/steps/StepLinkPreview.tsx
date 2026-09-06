@@ -200,7 +200,7 @@ export function StepLinkPreview({ onboarding }: Props) {
             ref={setLinkElm}
           >
             <a
-              href="https://github.com/ujiro99/selection-command"
+              href="https://www.aalto.fi/en/news/one-in-four-internet-users-are-overwhelmed-by-the-clutter-in-their-browser"
               className="text-base px-6 py-3 text-sky-700 underline decoration-1 underline-offset-[3px] hover:text-sky-800"
               onClick={(e) => e.preventDefault()}
             >

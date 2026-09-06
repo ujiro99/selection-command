@@ -1393,7 +1393,7 @@
     "message": "Selesai — kini anda boleh pratonton pautan tanpa meninggalkan halaman"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Semak kandungan serta-merta tanpa memenuhkan tab anda!\nJimatkan masa membuka dan menutup tab, dan fokus pada perkara yang penting."
+    "message": "Anda mendapat maklumat dan terus kembali!\nIni mengurangkan kerumitan menukar tab, supaya anda boleh fokus pada perkara yang penting."
   },
   "onboarding_nextButton": {
     "message": "Seterusnya"
@@ -1414,7 +1414,7 @@
     "message": "Semuanya sedia!"
   },
   "onboarding_completeBody": {
-    "message": "Selection Command sedia digunakan. Pilih sahaja teks pada mana-mana halaman untuk bermula."
+    "message": "Selection Command sedia digunakan.\nPilih sahaja teks pada mana-mana halaman untuk bermula."
   },
   "onboarding_openSettingsButton": {
     "message": "Buka Tetapan"

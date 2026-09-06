@@ -1387,7 +1387,7 @@
     "message": "これで、リンク先をその場で確認できました"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "タブを散らかすことなく、内容をすぐに確認！\nタブを開く／閉じる時間を削減し、やるべきことに集中できます。"
+    "message": "情報を入手して、すぐに戻って来れました！\nこれでタブ操作の手間を削減し、やるべきことに集中できます。"
   },
   "onboarding_nextButton": {
     "message": "次へ"
@@ -1408,7 +1408,7 @@
     "message": "準備は完了です！"
   },
   "onboarding_completeBody": {
-    "message": "Selection Commandを使う準備が整いました。ページ上のテキストを選択して、さっそく使ってみましょう。"
+    "message": "Selection Commandを使う準備が整いました。\nページ上のテキストを選択して、さっそく使ってみましょう。"
   },
   "onboarding_openSettingsButton": {
     "message": "設定を開く"

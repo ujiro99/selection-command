@@ -1390,7 +1390,7 @@
     "message": "이제 페이지를 벗어나지 않고 링크를 미리 볼 수 있습니다"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "탭을 어지럽히지 않고 바로 내용을 확인하세요!\n탭을 열고 닫는 시간을 줄이고 해야 할 일에 집중할 수 있습니다."
+    "message": "정보를 얻고 바로 돌아올 수 있었어요!\n탭 전환의 번거로움을 줄여, 해야 할 일에 집중할 수 있습니다."
   },
   "onboarding_nextButton": {
     "message": "다음"
@@ -1411,7 +1411,7 @@
     "message": "준비가 완료되었습니다!"
   },
   "onboarding_completeBody": {
-    "message": "Selection Command를 사용할 준비가 되었습니다. 페이지에서 텍스트를 선택해 바로 사용해 보세요."
+    "message": "Selection Command를 사용할 준비가 되었습니다.\n페이지에서 텍스트를 선택해 바로 사용해 보세요."
   },
   "onboarding_openSettingsButton": {
     "message": "설정 열기"

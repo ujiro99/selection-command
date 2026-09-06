@@ -1390,7 +1390,7 @@
     "message": "Fertig – jetzt kannst du Links in der Vorschau ansehen, ohne die Seite zu verlassen"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Sieh dir Inhalte sofort an, ohne deine Tabs zu überfüllen!\nSpar dir die Zeit zum Öffnen und Schließen von Tabs und bleib bei dem, was wirklich zählt."
+    "message": "Du hast die Information erhalten und bist sofort zurückgekehrt!\nDas reduziert den Aufwand für Tab-Wechsel, damit du dich auf das Wesentliche konzentrieren kannst."
   },
   "onboarding_nextButton": {
     "message": "Weiter"
@@ -1411,7 +1411,7 @@
     "message": "Alles bereit!"
   },
   "onboarding_completeBody": {
-    "message": "Selection Command ist einsatzbereit – wähle einfach Text auf einer beliebigen Seite aus, um loszulegen."
+    "message": "Selection Command ist einsatzbereit.\nWähle einfach Text auf einer beliebigen Seite aus, um loszulegen."
   },
   "onboarding_openSettingsButton": {
     "message": "Einstellungen öffnen"

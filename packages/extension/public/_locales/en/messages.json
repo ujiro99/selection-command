@@ -1437,7 +1437,7 @@
     "description": "Onboarding Step3 value message shown after the user triggers Link Preview."
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Check the content instantly without cluttering your tabs!\nSave the time spent opening and closing tabs, and stay focused on what matters.",
+    "message": "You got the info and came right back!\nThis cuts down on tab-switching, so you can stay focused on what you need to do.",
     "description": "Onboarding Step3 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
   },
   "onboarding_nextButton": {
@@ -1465,8 +1465,8 @@
     "description": "Onboarding Step5 (Complete) heading, the final screen."
   },
   "onboarding_completeBody": {
-    "message": "Selection Command is ready to use - just select text on any page to get started.",
-    "description": "Onboarding Step5 (Complete) body text."
+    "message": "Selection Command is ready to use.\nJust select text on any page to get started.",
+    "description": "Onboarding Step5 (Complete) body text. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
   },
   "onboarding_openSettingsButton": {
     "message": "Open Settings",

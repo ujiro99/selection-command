@@ -1393,7 +1393,7 @@
     "message": "Pronto — agora você pode pré-visualizar links sem sair da página"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Confira o conteúdo instantaneamente sem lotar suas abas!\nEconomize o tempo de abrir e fechar abas e foque no que importa."
+    "message": "Você obteve a informação e voltou na hora!\nIsso reduz o trabalho de trocar de abas, para você focar no que importa."
   },
   "onboarding_nextButton": {
     "message": "Próximo"
@@ -1414,7 +1414,7 @@
     "message": "Tudo pronto!"
   },
   "onboarding_completeBody": {
-    "message": "O Selection Command está pronto para uso. Basta selecionar um texto em qualquer página para começar."
+    "message": "O Selection Command está pronto para uso.\nBasta selecionar um texto em qualquer página para começar."
   },
   "onboarding_openSettingsButton": {
     "message": "Abrir configurações"
