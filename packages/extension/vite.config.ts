@@ -11,6 +11,7 @@ import removeCssFromContentScript from "./src/lib/vite-plugin-manifest"
 import refreshLocales from "./src/lib/vite-plugin-refresh-locales"
 import packageJson from "./package.json"
 import { importIfPlugin } from "./src/lib/vite-plugin-import-if"
+import { CONTENT_SCRIPT_CSS_PLACEHOLDER } from "./src/lib/contentScriptCss"
 
 const shouldUploadSourcemaps = process.env.UPLOAD_SOURCEMAP_TO_SENTRY === "true"
 
@@ -132,6 +133,11 @@ export default defineConfig(({ mode }) => {
         path.resolve(__dirname, "../hub/public/data/ai-services.json"),
         "utf-8",
       ),
+      // Replaced with the real content_script CSS file list post-build.
+      // See src/lib/contentScriptCss.ts.
+      __CONTENT_SCRIPT_CSS_FILES__: JSON.stringify([
+        CONTENT_SCRIPT_CSS_PLACEHOLDER,
+      ]),
     },
     resolve: {
       alias: {
