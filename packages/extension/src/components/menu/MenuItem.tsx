@@ -43,8 +43,11 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 
     // During onboarding, align to the right edge so the on-screen explanation stays visible.
     if (inOnboarding) {
-      const x = Math.max(0, window.innerWidth - PopupOption.width - 20)
-      position = { x, y: rect.top }
+      const innerWidth = window.innerWidth
+      const x1 = innerWidth / 2 + 620 / 2 //  width of the explanation box
+      const screenWidth = window.screen.width
+      const x2 = screenWidth - PopupOption.width - 20
+      position = { x: Math.min(x1, x2), y: rect.top }
     }
 
     const useSecondary = e.metaKey || e.ctrlKey
