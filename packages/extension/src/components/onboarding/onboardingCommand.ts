@@ -1,8 +1,18 @@
 import { OPEN_MODE, POPUP_OPTION } from "@/const"
 import { INSERT, toInsertTemplate } from "@/services/pageAction/insertSymbols"
+import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import type { AiPromptCommand } from "@/types"
 
 const SELECTED_TEXT = toInsertTemplate(INSERT.SELECTED_TEXT)
+
+// The AI service used by the onboarding's AiPrompt command.
+const ONBOARDING_AI_PROMPT_SERVICE_ID = "chatgpt"
+
+// Derive the icon URL from ai-services.json (single source of truth),
+// keyed to the service actually used by aiPromptOption.serviceId below.
+const ONBOARDING_AI_PROMPT_ICON_URL =
+  getAiServicesFallback().find((s) => s.id === ONBOARDING_AI_PROMPT_SERVICE_ID)
+    ?.faviconUrl ?? ""
 
 // Fixed id for the onboarding's AiPrompt command, so the onboarding UI can
 // reliably point a callout at this specific menu button
@@ -18,16 +28,15 @@ export const ONBOARDING_AI_PROMPT_COMMAND_ID =
 export function createOnboardingAiPromptCommand(
   title: string,
   prompt: string,
-  iconUrl: string,
 ): AiPromptCommand {
   return {
     id: ONBOARDING_AI_PROMPT_COMMAND_ID,
     revision: 0,
     title,
-    iconUrl,
+    iconUrl: ONBOARDING_AI_PROMPT_ICON_URL,
     openMode: OPEN_MODE.AI_PROMPT,
     aiPromptOption: {
-      serviceId: "gemini",
+      serviceId: ONBOARDING_AI_PROMPT_SERVICE_ID,
       prompt,
       openMode: OPEN_MODE.SIDE_PANEL,
     },
@@ -111,16 +120,17 @@ const ONBOARDING_AI_PROMPT_LOCALES: Record<
 
 // Builds the onboarding AiPrompt command for every supported locale, keyed
 // the same way as ONBOARDING_AI_PROMPT_LOCALES / defaultSettings.ts's
-// LOCALE_COMMANDS. `iconUrl` is passed in rather than resolved here since
-// it comes from ai-services.json (an AI-service concern, not onboarding).
-export function createOnboardingAiPromptCommands(
-  iconUrl: string,
-): Record<string, AiPromptCommand> {
+// LOCALE_COMMANDS. The icon is resolved from ai-services.json based on
+// ONBOARDING_AI_PROMPT_SERVICE_ID, so callers no longer need to supply it.
+export function createOnboardingAiPromptCommands(): Record<
+  string,
+  AiPromptCommand
+> {
   return Object.fromEntries(
     Object.entries(ONBOARDING_AI_PROMPT_LOCALES).map(
       ([locale, { title, prompt }]) => [
         locale,
-        createOnboardingAiPromptCommand(title, prompt, iconUrl),
+        createOnboardingAiPromptCommand(title, prompt),
       ],
     ),
   )

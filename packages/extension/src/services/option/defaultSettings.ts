@@ -212,7 +212,7 @@ export const PopupOption = {
 // lives in onboardingCommand.ts; only the AI-service icon is resolved here.
 // Declared here (before DefaultCommands/LOCALE_COMMANDS use them below)
 // since `const` bindings are not hoisted.
-const ONBOARDING_AI_COMMANDS = createOnboardingAiPromptCommands(GEMINI_ICON_URL)
+const ONBOARDING_AI_COMMANDS = createOnboardingAiPromptCommands()
 const CMD_ONBOARDING_AI_EN = ONBOARDING_AI_COMMANDS.en
 const CMD_ONBOARDING_AI_JA = ONBOARDING_AI_COMMANDS.ja
 const CMD_ONBOARDING_AI_ZH = ONBOARDING_AI_COMMANDS.zh
