@@ -26,7 +26,6 @@ type Props = {
 
 export function App({ rootElm }: Props) {
   const [positionElm, setPositionElm] = useState<Element | null>(null)
-  const [isHover, setIsHover] = useState<boolean>(false)
 
   useEffect(() => {
     const handleShowToast = (
@@ -72,12 +71,9 @@ export function App({ rootElm }: Props) {
   return (
     <TabContextProvider>
       <PageActionContextProvider>
-        <SelectContextProvider isPopupHover={isHover}>
+        <SelectContextProvider>
           <SelectAnchor ref={setPositionElm} />
-          <Popup
-            positionElm={positionElm}
-            onHover={(v: boolean) => setIsHover(v)}
-          />
+          <Popup positionElm={positionElm} />
           <InvisibleItem positionElm={positionElm} />
           <LinkSelector />
           <OpenInTab />

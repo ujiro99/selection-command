@@ -48,6 +48,13 @@ export const ANALYTICS_EVENTS = {
   COMMAND_EDIT: "command_edit",
   COMMAND_REMOVE: "command_remove",
   COMMAND_SHARE: "command_share",
+  // Onboarding events, used to track user progress through the onboarding flow.
+  ONBOARDING_START: "onboarding_start",
+  ONBOARDING_SKIP: "onboarding_skip",
+  ONBOARDING_TEXT_SELECTION: "onboarding_text_selection",
+  ONBOARDING_COMMAND_EXECUTE: "onboarding_command_execute",
+  ONBOARDING_VALUE_REACHED: "onboarding_value_reached",
+  ONBOARDING_COMPLETE: "onboarding_complete",
 } as const
 
 export type AnalyticsEventName =

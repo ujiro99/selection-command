@@ -21,6 +21,10 @@ import {
 } from "@/services/dom"
 import { getScreenSize } from "@/services/screen"
 import { sendEvent, ANALYTICS_EVENTS } from "@/services/analytics"
+import {
+  dispatchCommandExecuted,
+  isOnboardingPage,
+} from "@/components/onboarding/onboardingEvents"
 
 const isTargetEvent = (e: MouseEvent): boolean => {
   return (
@@ -40,8 +44,7 @@ type DetectLinkCommandReturn = {
 }
 
 type SubHookReturn =
-  | Omit<DetectLinkCommandReturn, "showIndicator">
-  | Record<string, never>
+  Omit<DetectLinkCommandReturn, "showIndicator"> | Record<string, never>
 
 const empty = {
   inProgress: false,
@@ -77,7 +80,16 @@ export function useDetectLinkCommand(): DetectLinkCommandReturn {
         changeState: onChangeState,
         target,
       })
-      sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, { event_label: "link_preview" })
+
+      if (!isOnboardingPage(location.href)) {
+        sendEvent(ANALYTICS_EVENTS.LINK_COMMAND, {
+          event_label: "link_preview",
+        })
+      }
+      dispatchCommandExecuted({
+        commandId: command.id,
+        commandType: command.openMode,
+      })
     },
     [command],
   )

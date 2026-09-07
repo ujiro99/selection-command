@@ -1304,5 +1304,122 @@
   },
   "hub_login": {
     "message": "Entrar no Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Obrigado por instalar!"
+  },
+  "onboarding_step0Body": {
+    "message": "Vamos experimentar por cerca de um minuto, usando na prática."
+  },
+  "onboarding_startButton": {
+    "message": "Começar"
+  },
+  "onboarding_skipButton": {
+    "message": "Pular"
+  },
+  "onboarding_step1Explain": {
+    "message": "Selecione o texto abaixo para testar uma pesquisa agora mesmo."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Uma extensão que permite pesquisar o texto selecionado com um clique."
+  },
+  "onboarding_selectHint": {
+    "message": "Arraste para selecionar o texto abaixo"
+  },
+  "onboarding_railSelect": {
+    "message": "Selecionar"
+  },
+  "onboarding_railCommand": {
+    "message": "Comando"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Pesquisar"
+  },
+  "onboarding_step1Callout": {
+    "message": "Clique neste comando para pesquisar no Google."
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Volte para esta aba e a janela se fecha automaticamente."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Clique em qualquer lugar da tela"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Pronto — agora você pode pesquisar instantaneamente qualquer coisa que selecionar"
+  },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Adicione seu mecanismo de busca favorito para tornar as buscas do dia a dia ainda mais rápidas."
+  },
+  "onboarding_step2Explain": {
+    "message": "A seguir, vamos perguntar à IA sobre o texto abaixo."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Pense em algumas ideias do que você poderia fazer com uma extensão do Chrome que permite inserir texto da web em um prompt e executá-lo."
+  },
+  "onboarding_step2Callout": {
+    "message": "Execute este comando para enviar seu texto selecionado + um prompt para a IA."
+  },
+  "onboarding_railResultAi": {
+    "message": "IA"
+  },
+  "onboarding_step2WaitReturn": {
+    "message": "Enviando seu texto selecionado + um prompt para a IA..."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Agora você pode perguntar à IA sobre qualquer coisa que selecionar, direto da página que está lendo"
+  },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Peça à IA coisas como \"resuma isso\" ou \"analise esta empresa\" instantaneamente.\nVocê pode personalizar o prompt livremente."
+  },
+  "onboarding_step3Explain": {
+    "message": "Vamos pré-visualizar um link sem abrir uma nova aba."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Link de exemplo"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Pré-visualização"
+  },
+  "onboarding_step3Callout": {
+    "message": "Shift+clique neste link para pré-visualizá-lo."
+  },
+  "onboarding_clickKeycap": {
+    "message": "Clique"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Volte para esta aba e a janela se fecha automaticamente."
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Pronto — agora você pode pré-visualizar links sem sair da página"
+  },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Você obteve a informação e voltou na hora!\nIsso reduz o trabalho de trocar de abas, para você focar no que importa."
+  },
+  "onboarding_nextButton": {
+    "message": "Próximo"
+  },
+  "onboarding_step4_title": {
+    "message": "Personalize do Seu Jeito"
+  },
+  "onboarding_step4Explain": {
+    "message": "Você pode adicionar ou editar comandos a qualquer momento"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "Criar e editar nas Configurações"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Descubra no Selection Command Hub"
+  },
+  "onboarding_completeTitle": {
+    "message": "Tudo pronto!"
+  },
+  "onboarding_completeBody": {
+    "message": "O Selection Command está pronto para uso.\nBasta selecionar um texto em qualquer página para começar."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Abrir configurações"
+  },
+  "onboarding_closeButton": {
+    "message": "Fechar e experimentar"
   }
 }

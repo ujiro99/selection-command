@@ -26,6 +26,23 @@ describe("getCommandCreateEvent", () => {
   })
 })
 
+describe("ANALYTICS_EVENTS onboarding events", () => {
+  it("defines the event names used by the onboarding flow", () => {
+    expect(ANALYTICS_EVENTS.ONBOARDING_START).toBe("onboarding_start")
+    expect(ANALYTICS_EVENTS.ONBOARDING_SKIP).toBe("onboarding_skip")
+    expect(ANALYTICS_EVENTS.ONBOARDING_TEXT_SELECTION).toBe(
+      "onboarding_text_selection",
+    )
+    expect(ANALYTICS_EVENTS.ONBOARDING_COMMAND_EXECUTE).toBe(
+      "onboarding_command_execute",
+    )
+    expect(ANALYTICS_EVENTS.ONBOARDING_VALUE_REACHED).toBe(
+      "onboarding_value_reached",
+    )
+    expect(ANALYTICS_EVENTS.ONBOARDING_COMPLETE).toBe("onboarding_complete")
+  })
+})
+
 describe("getHubAddEvent", () => {
   it.each([
     [OPEN_MODE.POPUP, ANALYTICS_EVENTS.HUB_ADD_SEARCH],

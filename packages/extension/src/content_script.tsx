@@ -22,25 +22,31 @@ try {
     </ErrorBoundary>,
   )
 
-  const insertCss = (elm: ShadowRoot, filePath: string) => {
+  const insertCss = async (elm: ShadowRoot, filePath: string) => {
     const url = chrome.runtime.getURL(filePath)
-    fetch(url)
-      .then((res) => res.text())
-      .then((css) => {
-        const style = document.createElement("style")
-        style.append(document.createTextNode(css))
-        elm.insertBefore(style, elm.firstChild)
-      })
-      .catch((error) => {
-        console.error(`Failed to load CSS file: ${filePath}`, error)
-        Sentry.captureException(error)
-      })
+    try {
+      const css = await (await fetch(url)).text()
+      const style = document.createElement("style")
+      style.append(document.createTextNode(css))
+      elm.insertBefore(style, elm.firstChild)
+    } catch (error) {
+      console.error(`Failed to load CSS file: ${filePath}`, error)
+      Sentry.captureException(error)
+    }
   }
 
   if (!isDebug) {
-    // Putting styles into ShadowDom
-    insertCss(shadow, "/assets/components.css")
-    insertCss(shadow, "/assets/content_script.css")
+    // Putting styles into ShadowDom.
+    // The exact set of CSS files that content_script.tsx depends on can be
+    // split across multiple content-hashed chunks (e.g. components shared
+    // with other entry points), so __CONTENT_SCRIPT_CSS_FILES__ is a
+    // placeholder swapped for the real file list after the build finishes
+    // hashing chunks, instead of hardcoding filenames here.
+    ;(async () => {
+      for (const filePath of __CONTENT_SCRIPT_CSS_FILES__) {
+        await insertCss(shadow, `/${filePath}`)
+      }
+    })()
   }
 
   // Hide the rootDom while printing.

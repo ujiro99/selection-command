@@ -1301,5 +1301,122 @@
   },
   "hub_login": {
     "message": "Войти в Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Спасибо за установку!"
+  },
+  "onboarding_step0Body": {
+    "message": "Давайте потратим примерно минуту, чтобы попробовать его в деле."
+  },
+  "onboarding_startButton": {
+    "message": "Начать"
+  },
+  "onboarding_skipButton": {
+    "message": "Пропустить"
+  },
+  "onboarding_step1Explain": {
+    "message": "Выделите текст ниже, чтобы сразу попробовать поиск."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Расширение, позволяющее искать выделенный текст одним щелчком."
+  },
+  "onboarding_selectHint": {
+    "message": "Перетащите, чтобы выделить текст ниже"
+  },
+  "onboarding_railSelect": {
+    "message": "Выделение"
+  },
+  "onboarding_railCommand": {
+    "message": "Команда"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Поиск"
+  },
+  "onboarding_step1Callout": {
+    "message": "Нажмите эту команду, чтобы выполнить поиск в Google."
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Вернитесь на эту вкладку, и окно автоматически закроется."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Нажмите в любом месте экрана"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Готово — теперь вы можете мгновенно искать всё, что выделите"
+  },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Добавьте любимую поисковую систему, чтобы делать повседневный поиск ещё быстрее."
+  },
+  "onboarding_step2Explain": {
+    "message": "Далее давайте спросим ИИ о тексте ниже."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Подумайте, что можно сделать с помощью расширения Chrome, которое позволяет вставлять текст из интернета в запрос и выполнять его."
+  },
+  "onboarding_step2Callout": {
+    "message": "Выполните эту команду, чтобы отправить выделенный текст + запрос в ИИ."
+  },
+  "onboarding_railResultAi": {
+    "message": "ИИ"
+  },
+  "onboarding_step2WaitReturn": {
+    "message": "Отправка выделенного текста + запроса в ИИ..."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Теперь вы можете спрашивать ИИ о чём угодно прямо на странице, которую читаете"
+  },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Мгновенно просите ИИ о таких вещах, как «сделай краткое содержание» или «проанализируй эту компанию».\nПромпт можно свободно настраивать."
+  },
+  "onboarding_step3Explain": {
+    "message": "Давайте просмотрим ссылку без открытия новой вкладки."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Пример ссылки"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Просмотр"
+  },
+  "onboarding_step3Callout": {
+    "message": "Нажмите Shift и щёлкните по этой ссылке, чтобы увидеть предпросмотр."
+  },
+  "onboarding_clickKeycap": {
+    "message": "Клик"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Вернитесь на эту вкладку, и окно автоматически закроется."
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Готово — теперь вы можете просматривать ссылки, не покидая страницу"
+  },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Вы получили нужную информацию и сразу вернулись обратно!\nЭто снижает необходимость переключаться между вкладками, позволяя сосредоточиться на главном."
+  },
+  "onboarding_nextButton": {
+    "message": "Далее"
+  },
+  "onboarding_step4_title": {
+    "message": "Настройте по своему вкусу"
+  },
+  "onboarding_step4Explain": {
+    "message": "Команды можно добавлять и редактировать в любое время"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "Создать и изменить в настройках"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Найдите на Selection Command Hub"
+  },
+  "onboarding_completeTitle": {
+    "message": "Всё готово!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command готов к использованию.\nПросто выделите текст на любой странице, чтобы начать."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Открыть настройки"
+  },
+  "onboarding_closeButton": {
+    "message": "Закрыть и попробовать"
   }
 }

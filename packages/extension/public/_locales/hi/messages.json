@@ -1301,5 +1301,122 @@
   },
   "hub_login": {
     "message": "Hub में लॉगिन करें"
+  },
+  "onboarding_step0Title": {
+    "message": "इंस्टॉल करने के लिए धन्यवाद!"
+  },
+  "onboarding_step0Body": {
+    "message": "चलिए, इसे इस्तेमाल करते हुए लगभग एक मिनट में आज़माते हैं।"
+  },
+  "onboarding_startButton": {
+    "message": "शुरू करें"
+  },
+  "onboarding_skipButton": {
+    "message": "छोड़ें"
+  },
+  "onboarding_step1Explain": {
+    "message": "तुरंत सर्च आज़माने के लिए नीचे दिए गए टेक्स्ट को चुनें।"
+  },
+  "onboarding_step1TargetText": {
+    "message": "एक एक्सटेंशन जिससे आप चुने हुए टेक्स्ट को एक क्लिक में सर्च कर सकते हैं।"
+  },
+  "onboarding_selectHint": {
+    "message": "नीचे दिए गए टेक्स्ट को खींचकर चुनें"
+  },
+  "onboarding_railSelect": {
+    "message": "चयन"
+  },
+  "onboarding_railCommand": {
+    "message": "कमांड"
+  },
+  "onboarding_railResultSearch": {
+    "message": "खोजें"
+  },
+  "onboarding_step1Callout": {
+    "message": "इस कमांड को चलाने पर Google पर सर्च होगा।"
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "इस टैब पर वापस आएं और विंडो अपने आप बंद हो जाएगी।"
+  },
+  "onboarding_step1Callout_2": {
+    "message": "स्क्रीन पर कहीं भी क्लिक करें"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "बस इतना ही — अब आप जो भी टेक्स्ट चुनें, उसे तुरंत सर्च कर सकते हैं"
+  },
+  "onboarding_step1ValueSubmessage": {
+    "message": "अपना पसंदीदा सर्च इंजन जोड़कर रोज़मर्रा की खोज को और तेज़ बनाएं।"
+  },
+  "onboarding_step2Explain": {
+    "message": "अब, नीचे दिए गए टेक्स्ट के बारे में AI से पूछते हैं।"
+  },
+  "onboarding_step2TargetText": {
+    "message": "सोचिए कि आप एक ऐसे Chrome एक्सटेंशन से क्या-क्या कर सकते हैं, जो वेब पर मौजूद टेक्स्ट को प्रॉम्प्ट में डालकर चला सकता है।"
+  },
+  "onboarding_step2Callout": {
+    "message": "इस कमांड को चलाने पर आपका चुना हुआ टेक्स्ट + एक प्रॉम्प्ट AI को भेजा जाता है।"
+  },
+  "onboarding_railResultAi": {
+    "message": "AI"
+  },
+  "onboarding_step2WaitReturn": {
+    "message": "आपका चुना हुआ टेक्स्ट + प्रॉम्प्ट AI को भेजा जा रहा है..."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "अब आप जो पेज पढ़ रहे हैं, वहीं से चुनी हुई किसी भी चीज़ के बारे में AI से पूछ सकते हैं"
+  },
+  "onboarding_step2ValueSubmessage": {
+    "message": "\"इसका सारांश दें\" या \"इस कंपनी का विश्लेषण करें\" जैसी बातें तुरंत AI से पूछें।\nप्रॉम्प्ट को अपनी इच्छानुसार अनुकूलित किया जा सकता है।"
+  },
+  "onboarding_step3Explain": {
+    "message": "बिना नया टैब खोले किसी लिंक का पूर्वावलोकन करते हैं।"
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "नमूना लिंक"
+  },
+  "onboarding_railResultPreview": {
+    "message": "पूर्वावलोकन"
+  },
+  "onboarding_step3Callout": {
+    "message": "इस लिंक पर Shift दबाकर क्लिक करें और उसका पूर्वावलोकन देखें।"
+  },
+  "onboarding_clickKeycap": {
+    "message": "क्लिक"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "इस टैब पर वापस आएं और विंडो अपने आप बंद हो जाएगी।"
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "बस इतना ही — अब आप पेज छोड़े बिना लिंक का पूर्वावलोकन कर सकते हैं"
+  },
+  "onboarding_step3ValueSubmessage": {
+    "message": "आपको जानकारी मिल गई और आप तुरंत वापस आ गए!\nइससे टैब बदलने की झंझट कम होती है, ताकि आप ज़रूरी काम पर ध्यान दे सकें।"
+  },
+  "onboarding_nextButton": {
+    "message": "आगे"
+  },
+  "onboarding_step4_title": {
+    "message": "अपनी पसंद के अनुसार अनुकूलित करें"
+  },
+  "onboarding_step4Explain": {
+    "message": "आप कभी भी कमांड जोड़ या संपादित कर सकते हैं"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "सेटिंग्स में बनाएं और संपादित करें"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Selection Command Hub पर खोजें"
+  },
+  "onboarding_completeTitle": {
+    "message": "सब तैयार है!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command उपयोग के लिए तैयार है।\nशुरू करने के लिए किसी भी पेज पर टेक्स्ट चुनें।"
+  },
+  "onboarding_openSettingsButton": {
+    "message": "सेटिंग्स खोलें"
+  },
+  "onboarding_closeButton": {
+    "message": "बंद करें और आज़माएं"
   }
 }

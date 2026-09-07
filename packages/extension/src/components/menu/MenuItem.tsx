@@ -1,12 +1,13 @@
-import React, { useRef, useContext } from "react"
+import React, { useRef } from "react"
 import clsx from "clsx"
-import { popupContext } from "@/components/Popup"
+import { usePopupContext } from "@/hooks/usePopupContext"
 import { Tooltip } from "../Tooltip"
 import { RefreshCw, Check, AlertCircle } from "lucide-react"
 import { ResultPopup } from "@/components/result/ResultPopup"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { useCommandExecutor } from "@/hooks/useCommandExecutor"
 import { getCommandEnabled } from "@/lib/commandEnabled"
+import { PopupOption } from "@/services/option/defaultSettings"
 import { ExecState } from "@/const"
 import type { Command } from "@/types"
 
@@ -24,8 +25,8 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
   const { iconUrl, title } = props.command
+  const { isPreview, inTransition, inOnboarding } = usePopupContext()
   const { selectionText, target } = useSelectContext()
-  const { isPreview, inTransition } = useContext(popupContext)
   const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
   const message = itemState.message || defaultMessage
 
@@ -38,11 +39,22 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
     }
 
     const rect = props.menuRef.current.getBoundingClientRect()
+    let position = { x: rect.right + 10, y: rect.top }
+
+    // During onboarding, align to the right edge so the on-screen explanation stays visible.
+    if (inOnboarding) {
+      const innerWidth = window.innerWidth
+      const x1 = innerWidth / 2 + 620 / 2 //  width of the explanation box
+      const screenWidth = window.screen.width
+      const x2 = screenWidth - PopupOption.width - 20
+      position = { x: Math.min(x1, x2), y: rect.top }
+    }
+
     const useSecondary = e.metaKey || e.ctrlKey
 
     executeCommand({
       command: props.command,
-      position: { x: rect.right + 10, y: rect.top },
+      position,
       selectionText,
       target,
       useSecondary,
@@ -66,6 +78,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         )}
         role="menuitem"
         aria-label={title}
+        data-command-id={props.command.id}
         ref={buttonRef}
         onClick={handleClick}
         disabled={!enabled}
@@ -76,7 +89,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
       <Tooltip
         text={message}
         positionElm={buttonRef.current}
-        disabled={inTransition || (!onlyIcon && enabled)}
+        disabled={!onlyIcon && enabled}
       />
       <ResultPopup
         visible={result != null}

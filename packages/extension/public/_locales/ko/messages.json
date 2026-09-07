@@ -1301,5 +1301,122 @@
   },
   "hub_login": {
     "message": "Hub에 로그인"
+  },
+  "onboarding_step0Title": {
+    "message": "설치해 주셔서 감사합니다!"
+  },
+  "onboarding_step0Body": {
+    "message": "먼저 1분 동안 직접 사용해보며 체험해 봅시다."
+  },
+  "onboarding_startButton": {
+    "message": "시작하기"
+  },
+  "onboarding_skipButton": {
+    "message": "건너뛰기"
+  },
+  "onboarding_step1Explain": {
+    "message": "아래 텍스트를 선택해서 바로 검색해 보세요."
+  },
+  "onboarding_step1TargetText": {
+    "message": "선택한 텍스트를 클릭 한 번으로 검색할 수 있는 확장 프로그램"
+  },
+  "onboarding_selectHint": {
+    "message": "아래 텍스트를 드래그하여 선택하세요"
+  },
+  "onboarding_railSelect": {
+    "message": "선택"
+  },
+  "onboarding_railCommand": {
+    "message": "명령"
+  },
+  "onboarding_railResultSearch": {
+    "message": "검색"
+  },
+  "onboarding_step1Callout": {
+    "message": "이 명령을 실행하면 Google로 검색할 수 있습니다."
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "이 탭으로 돌아오면 창이 자동으로 닫힙니다."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "화면 아무 곳이나 클릭"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "이제 궁금했던 정보를 바로 검색할 수 있게 되었습니다"
+  },
+  "onboarding_step1ValueSubmessage": {
+    "message": "좋아하는 검색 엔진을 추가하면 평소 검색을 더 빠르게 할 수 있어요."
+  },
+  "onboarding_step2Explain": {
+    "message": "다음으로 아래 텍스트에 대해 AI에게 물어봅시다."
+  },
+  "onboarding_step2TargetText": {
+    "message": "웹의 텍스트를 프롬프트에 넣어 실행할 수 있는 Chrome 확장 프로그램으로 무엇을 할 수 있을지 아이디어를 생각해 보세요."
+  },
+  "onboarding_step2Callout": {
+    "message": "이 명령을 실행하면 선택한 텍스트 + 프롬프트를 AI에 보낼 수 있습니다."
+  },
+  "onboarding_railResultAi": {
+    "message": "AI"
+  },
+  "onboarding_step2WaitReturn": {
+    "message": "선택한 텍스트 + 프롬프트를 AI에 전송 중..."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "이제 페이지를 읽으면서 바로 AI에게 무엇이든 물어볼 수 있습니다"
+  },
+  "onboarding_step2ValueSubmessage": {
+    "message": "\"요약해줘\", \"이 기업을 분석해줘\" 같은 요청을 AI에 바로 할 수 있어요.\n프롬프트는 자유롭게 커스터마이징할 수 있습니다."
+  },
+  "onboarding_step3Explain": {
+    "message": "새 탭을 열지 않고 링크를 미리 볼까요?"
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "샘플 링크"
+  },
+  "onboarding_railResultPreview": {
+    "message": "미리보기"
+  },
+  "onboarding_step3Callout": {
+    "message": "이 링크를 Shift+클릭하면 미리보기를 볼 수 있습니다."
+  },
+  "onboarding_clickKeycap": {
+    "message": "클릭"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "이 탭으로 돌아오면 창이 자동으로 닫힙니다."
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "이제 페이지를 벗어나지 않고 링크를 미리 볼 수 있습니다"
+  },
+  "onboarding_step3ValueSubmessage": {
+    "message": "정보를 얻고 바로 돌아올 수 있었어요!\n탭 전환의 번거로움을 줄여, 해야 할 일에 집중할 수 있습니다."
+  },
+  "onboarding_nextButton": {
+    "message": "다음"
+  },
+  "onboarding_step4_title": {
+    "message": "자유롭게 커스터마이징"
+  },
+  "onboarding_step4Explain": {
+    "message": "명령어는 언제든지 추가하거나 편집할 수 있어요"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "설정에서 만들고 편집하기"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Selection Command Hub에서 발견하기"
+  },
+  "onboarding_completeTitle": {
+    "message": "준비가 완료되었습니다!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command를 사용할 준비가 되었습니다.\n페이지에서 텍스트를 선택해 바로 사용해 보세요."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "설정 열기"
+  },
+  "onboarding_closeButton": {
+    "message": "닫고 사용해보기"
   }
 }

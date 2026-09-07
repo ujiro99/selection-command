@@ -181,6 +181,7 @@ export type UserStats = {
   hasShownReviewRequest: boolean
   hasDismissedPromptHistoryBanner: boolean
   hasShownHubShareToast: boolean
+  hasShownOnboarding: boolean
 }
 
 export type ShortcutCommand = {

@@ -103,6 +103,7 @@ export function evaluateCondition(
   conditionType: PAGE_ACTION_CONDITION_TYPE,
   element: HTMLElement | null,
 ): boolean {
+  console.debug(`Evaluating condition ${conditionType} for element`, element)
   switch (conditionType) {
     case PAGE_ACTION_CONDITION_TYPE.empty:
       return element == null || isEmpty(getElementText(element))

@@ -11,6 +11,7 @@ import removeCssFromContentScript from "./src/lib/vite-plugin-manifest"
 import refreshLocales from "./src/lib/vite-plugin-refresh-locales"
 import packageJson from "./package.json"
 import { importIfPlugin } from "./src/lib/vite-plugin-import-if"
+import { CONTENT_SCRIPT_CSS_PLACEHOLDER } from "./src/lib/contentScriptCss"
 
 const shouldUploadSourcemaps = process.env.UPLOAD_SOURCEMAP_TO_SENTRY === "true"
 
@@ -27,23 +28,23 @@ export default defineConfig(({ mode }) => {
 
   const activeManifest = isProduction
     ? {
-      ...manifest,
-      ...(extensionKey ? { key: extensionKey } : {}),
-      content_scripts: manifest.content_scripts.map((cs) => ({
-        ...cs,
-        matches: cs.matches.filter((m) => !m.includes("localhost")),
-      })),
-      externally_connectable: {
-        ...manifest.externally_connectable,
-        matches: manifest.externally_connectable.matches.filter(
-          (m) => !m.includes("localhost"),
-        ),
-      },
-    }
+        ...manifest,
+        ...(extensionKey ? { key: extensionKey } : {}),
+        content_scripts: manifest.content_scripts.map((cs) => ({
+          ...cs,
+          matches: cs.matches.filter((m) => !m.includes("localhost")),
+        })),
+        externally_connectable: {
+          ...manifest.externally_connectable,
+          matches: manifest.externally_connectable.matches.filter(
+            (m) => !m.includes("localhost"),
+          ),
+        },
+      }
     : {
-      ...manifest,
-      ...(extensionKey ? { key: extensionKey } : {}),
-    }
+        ...manifest,
+        ...(extensionKey ? { key: extensionKey } : {}),
+      }
 
   const plugins = [
     react(),
@@ -132,6 +133,11 @@ export default defineConfig(({ mode }) => {
         path.resolve(__dirname, "../hub/public/data/ai-services.json"),
         "utf-8",
       ),
+      // Replaced with the real content_script CSS file list post-build.
+      // See src/lib/contentScriptCss.ts.
+      __CONTENT_SCRIPT_CSS_FILES__: JSON.stringify([
+        CONTENT_SCRIPT_CSS_PLACEHOLDER,
+      ]),
     },
     resolve: {
       alias: {
@@ -144,20 +150,20 @@ export default defineConfig(({ mode }) => {
       pure:
         mode === "production"
           ? [
-            "console.log",
-            "console.debug",
-            "console.info",
-            "console.trace",
-            "console.dir",
-            "console.count",
-            "console.countReset",
-            "console.group",
-            "console.groupCollapsed",
-            "console.groupEnd",
-            "console.time",
-            "console.timeEnd",
-            "console.timeLog",
-          ]
+              "console.log",
+              "console.debug",
+              "console.info",
+              "console.trace",
+              "console.dir",
+              "console.count",
+              "console.countReset",
+              "console.group",
+              "console.groupCollapsed",
+              "console.groupEnd",
+              "console.time",
+              "console.timeEnd",
+              "console.timeLog",
+            ]
           : [],
     },
     build: {
@@ -166,31 +172,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           clipboard: "src/clipboard.html",
-        },
-        output: {
-          // Group all CSS module files into a named chunk so that the
-          // extracted CSS asset gets a predictable name ("components.css").
-          // This avoids content-based heuristics in assetFileNames.
-          manualChunks(id) {
-            if (/\.module\.css(\?.*)?$/.test(id)) {
-              return "components"
-            }
-          },
-          assetFileNames: (assetInfo) => {
-            // Filename-based detection: CSS modules are grouped into the
-            // "components" chunk above, so their CSS asset is named "components.css".
-            if (assetInfo.names?.[0] === "components.css") {
-              return `assets/components.css`
-            }
-            const keepNames = ["content_script.css"]
-            if (
-              assetInfo.names?.length > 0 &&
-              keepNames.includes(assetInfo.names[0])
-            ) {
-              return `assets/${assetInfo.names[0]}`
-            }
-            return "assets/[name]-[hash][extname]"
-          },
+          onboarding: "src/onboarding_page.html",
         },
       },
     },

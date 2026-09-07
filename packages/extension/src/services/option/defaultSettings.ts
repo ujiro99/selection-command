@@ -19,6 +19,7 @@ import {
   COMMAND_SOURCE_ID,
 } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
+import { createOnboardingAiPromptCommands } from "@/components/onboarding/onboardingCommand"
 
 // Derive icon URLs from ai-services.json (single source of truth)
 const _aiServices = getAiServicesFallback()
@@ -67,6 +68,7 @@ export const emptySettings: SettingsType = {
   hasShownReviewRequest: false,
   hasDismissedPromptHistoryBanner: false,
   hasShownHubShareToast: false,
+  hasShownOnboarding: false,
   shortcuts: { shortcuts: [] },
   windowOption: {
     sidePanelAutoHide: false,
@@ -204,6 +206,28 @@ export const PopupOption = {
   height: 700,
 }
 
+// Onboarding's Step2 AiPrompt command (see src/components/onboarding/).
+// Kept as a normal, permanent default command per locale rather than being
+// injected/removed around the onboarding flow. Per-locale title/prompt text
+// lives in onboardingCommand.ts; only the AI-service icon is resolved here.
+// Declared here (before DefaultCommands/LOCALE_COMMANDS use them below)
+// since `const` bindings are not hoisted.
+const ONBOARDING_AI_COMMANDS = createOnboardingAiPromptCommands()
+const CMD_ONBOARDING_AI_EN = ONBOARDING_AI_COMMANDS.en
+const CMD_ONBOARDING_AI_JA = ONBOARDING_AI_COMMANDS.ja
+const CMD_ONBOARDING_AI_ZH = ONBOARDING_AI_COMMANDS.zh
+const CMD_ONBOARDING_AI_KO = ONBOARDING_AI_COMMANDS.ko
+const CMD_ONBOARDING_AI_RU = ONBOARDING_AI_COMMANDS.ru
+const CMD_ONBOARDING_AI_DE = ONBOARDING_AI_COMMANDS.de
+const CMD_ONBOARDING_AI_FR = ONBOARDING_AI_COMMANDS.fr
+const CMD_ONBOARDING_AI_ES = ONBOARDING_AI_COMMANDS.es
+const CMD_ONBOARDING_AI_PT_BR = ONBOARDING_AI_COMMANDS["pt-br"]
+const CMD_ONBOARDING_AI_PT = ONBOARDING_AI_COMMANDS.pt
+const CMD_ONBOARDING_AI_HI = ONBOARDING_AI_COMMANDS.hi
+const CMD_ONBOARDING_AI_ID = ONBOARDING_AI_COMMANDS.id
+const CMD_ONBOARDING_AI_MS = ONBOARDING_AI_COMMANDS.ms
+const CMD_ONBOARDING_AI_IT = ONBOARDING_AI_COMMANDS.it
+
 export const DefaultCommands = [
   {
     id: "$$drag-1",
@@ -230,6 +254,7 @@ export const DefaultCommands = [
     },
     spaceEncoding: SPACE_ENCODING.PLUS,
   },
+  CMD_ONBOARDING_AI_EN,
   {
     id: "26c47b36-c3c8-528c-9ad2-c972dfc6f4df",
     revision: 0,
@@ -1818,6 +1843,7 @@ export const LOCALE_COMMANDS = {
   ja: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_JA,
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_JP,
     CMD_YAHOO_JAPAN,
@@ -1836,6 +1862,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_BAIDU,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_ZH,
     CMD_GOOGLE_IMAGE,
     CMD_JD,
     CMD_GEMINI_ZH,
@@ -1852,6 +1879,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_NAVER,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_KO,
     CMD_GOOGLE_IMAGE,
     CMD_COUPANG,
     CMD_GEMINI_KO,
@@ -1868,6 +1896,7 @@ export const LOCALE_COMMANDS = {
     CMD_LINK_PREVIEW,
     CMD_YANDEX,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_RU,
     CMD_GOOGLE_IMAGE,
     CMD_OZON,
     CMD_WILDBERRIES,
@@ -1884,6 +1913,7 @@ export const LOCALE_COMMANDS = {
   de: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_DE,
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_DE,
     CMD_EBAY_DE,
@@ -1900,6 +1930,7 @@ export const LOCALE_COMMANDS = {
   fr: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_FR,
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_FR,
     CMD_LEBONCOIN,
@@ -1916,6 +1947,7 @@ export const LOCALE_COMMANDS = {
   es: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_ES,
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_ES,
     CMD_EBAY_ES,
@@ -1934,6 +1966,7 @@ export const LOCALE_COMMANDS = {
   "pt-br": [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_PT_BR,
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_BR,
     CMD_MERCADO_LIVRE_BR,
@@ -1950,6 +1983,7 @@ export const LOCALE_COMMANDS = {
   pt: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_PT,
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_ES,
     CMD_OLX_PT,
@@ -1966,6 +2000,7 @@ export const LOCALE_COMMANDS = {
   hi: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_HI,
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_IN,
     CMD_FLIPKART,
@@ -1982,6 +2017,7 @@ export const LOCALE_COMMANDS = {
   id: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_ID,
     CMD_GOOGLE_IMAGE,
     CMD_TOKOPEDIA,
     CMD_SHOPEE_ID,
@@ -1998,6 +2034,7 @@ export const LOCALE_COMMANDS = {
   ms: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_MS,
     CMD_GOOGLE_IMAGE,
     CMD_SHOPEE_MY,
     CMD_LAZADA_MY,
@@ -2014,6 +2051,7 @@ export const LOCALE_COMMANDS = {
   it: [
     CMD_LINK_PREVIEW,
     CMD_GOOGLE,
+    CMD_ONBOARDING_AI_IT,
     CMD_GOOGLE_IMAGE,
     CMD_AMAZON_IT,
     CMD_EBAY_IT,

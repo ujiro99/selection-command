@@ -1304,5 +1304,122 @@
   },
   "hub_login": {
     "message": "Log masuk ke Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Terima kasih kerana memasangnya!"
+  },
+  "onboarding_step0Body": {
+    "message": "Jom cuba selama lebih kurang seminit sambil terus menggunakannya."
+  },
+  "onboarding_startButton": {
+    "message": "Mula"
+  },
+  "onboarding_skipButton": {
+    "message": "Langkau"
+  },
+  "onboarding_step1Explain": {
+    "message": "Pilih teks di bawah untuk cuba carian dengan segera."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Sambungan yang membolehkan anda mencari teks yang dipilih hanya dengan satu klik."
+  },
+  "onboarding_selectHint": {
+    "message": "Seret untuk pilih teks di bawah"
+  },
+  "onboarding_railSelect": {
+    "message": "Pilih"
+  },
+  "onboarding_railCommand": {
+    "message": "Arahan"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Cari"
+  },
+  "onboarding_step1Callout": {
+    "message": "Klik arahan ini untuk mencari di Google."
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Kembali ke tab ini dan tetingkap akan tertutup secara automatik."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Klik di mana-mana pada skrin"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Selesai — kini anda boleh mencari dengan segera apa sahaja yang anda pilih"
+  },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Tambahkan enjin carian kegemaran anda untuk menjadikan carian harian lebih pantas."
+  },
+  "onboarding_step2Explain": {
+    "message": "Seterusnya, mari tanya AI tentang teks di bawah ini."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Fikirkan beberapa idea tentang apa yang boleh anda lakukan dengan sambungan Chrome yang membolehkan anda menyisipkan teks daripada web ke dalam gesaan dan menjalankannya."
+  },
+  "onboarding_step2Callout": {
+    "message": "Jalankan arahan ini untuk menghantar teks yang dipilih + gesaan kepada AI."
+  },
+  "onboarding_railResultAi": {
+    "message": "AI"
+  },
+  "onboarding_step2WaitReturn": {
+    "message": "Menghantar teks yang dipilih + gesaan kepada AI..."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Kini anda boleh bertanya kepada AI tentang apa sahaja yang anda pilih, terus daripada halaman yang sedang anda baca"
+  },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Minta AI melakukan perkara seperti \"ringkaskan ini\" atau \"analisis syarikat ini\" dengan segera.\nGesaan boleh disesuaikan mengikut citarasa anda."
+  },
+  "onboarding_step3Explain": {
+    "message": "Mari pratonton pautan tanpa membuka tab baharu."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Pautan Contoh"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Pratonton"
+  },
+  "onboarding_step3Callout": {
+    "message": "Shift+klik pautan ini untuk pratonton."
+  },
+  "onboarding_clickKeycap": {
+    "message": "Klik"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Kembali ke tab ini dan tetingkap akan tertutup secara automatik."
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Selesai — kini anda boleh pratonton pautan tanpa meninggalkan halaman"
+  },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Anda mendapat maklumat dan terus kembali!\nIni mengurangkan kerumitan menukar tab, supaya anda boleh fokus pada perkara yang penting."
+  },
+  "onboarding_nextButton": {
+    "message": "Seterusnya"
+  },
+  "onboarding_step4_title": {
+    "message": "Sesuaikan Mengikut Citarasa Anda"
+  },
+  "onboarding_step4Explain": {
+    "message": "Anda boleh menambah atau mengedit arahan pada bila-bila masa"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "Cipta & Edit dalam Tetapan"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Temui di Selection Command Hub"
+  },
+  "onboarding_completeTitle": {
+    "message": "Semuanya sedia!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command sedia digunakan.\nPilih sahaja teks pada mana-mana halaman untuk bermula."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Buka Tetapan"
+  },
+  "onboarding_closeButton": {
+    "message": "Tutup dan cuba sekarang"
   }
 }

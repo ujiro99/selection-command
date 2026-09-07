@@ -40,6 +40,50 @@ module.exports = {
             transform: "scale(1)",
           },
         },
+        // Onboarding-only keyframes. Namespaced with an `onboarding-` prefix
+        // (see also the `onboarding-` animation names below) so they read as
+        // a related set alongside the rest of this file's keyframes.
+        "onboarding-rise": {
+          from: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "onboarding-ring": {
+          "0%, 100%": { boxShadow: "0 0 0 0 var(--onboarding-ring-color)" },
+          "50%": { boxShadow: "0 0 0 6px var(--onboarding-ring-color)" },
+        },
+        "onboarding-blink": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.45" },
+        },
+        // Drives the selection-demo highlight span: fades a selection-blue
+        // background in, holds, then fades it out, looping.
+        "onboarding-highlight": {
+          "0%, 10%": { backgroundColor: "rgb(191 219 254 / 0)" },
+          "44%, 70%": { backgroundColor: "rgb(191 219 254 / 1)" },
+          "82%, 100%": { backgroundColor: "rgb(191 219 254 / 0)" },
+        },
+        // The one-shot scale-in used for the the completion screen's party-popper icon.
+        "onboarding-pop": {
+          "0%": { opacity: "0", transform: "scale(0.72)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "onboarding-pop-2": {
+          "0%": {
+            opacity: "0",
+            transform: "scale(0.72) translate(-10px, 10px)",
+          },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        // Gentle vertical bob used to draw extra attention to the onboarding
+        // callout bubble. Uses the standalone `translate` property (not
+        // `transform`) so it composes with, instead of overriding, the
+        // `transform` Radix Popper uses to rotate/position PopoverArrow -
+        // both the bubble and its arrow share this animation and must move
+        // in sync.
+        "onboarding-float": {
+          "0%, 100%": { translate: "0 0" },
+          "50%": { translate: "0 -4px" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -48,6 +92,16 @@ module.exports = {
         marquee2: "marquee2 var(--marquee-duration) linear infinite",
         "spin-slow": "spin 3s linear infinite",
         popup: "popup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both",
+        "onboarding-rise":
+          "onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "onboarding-ring": "onboarding-ring 2.4s ease-in-out 0.6s infinite",
+        "onboarding-blink": "onboarding-blink 1.5s ease-in-out 0.3s infinite",
+        "onboarding-highlight": "onboarding-highlight 4s ease-in-out infinite",
+        "onboarding-pop":
+          "onboarding-pop 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both",
+        "onboarding-pop-2":
+          "onboarding-pop-2 0.36s cubic-bezier(0.34, 1.4, 0.64, 1) both",
+        "onboarding-float": "onboarding-float 1.4s ease-in-out infinite",
       },
       padding: {
         0.5: "2px",

@@ -1301,5 +1301,122 @@
   },
   "hub_login": {
     "message": "Se connecter au Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Merci pour l'installation !"
+  },
+  "onboarding_step0Body": {
+    "message": "Prenons une minute pour l'essayer en pratique."
+  },
+  "onboarding_startButton": {
+    "message": "Commencer"
+  },
+  "onboarding_skipButton": {
+    "message": "Passer"
+  },
+  "onboarding_step1Explain": {
+    "message": "Sélectionnez le texte ci-dessous pour essayer une recherche immédiatement."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Une extension qui permet de rechercher le texte sélectionné en un clic."
+  },
+  "onboarding_selectHint": {
+    "message": "Faites glisser pour sélectionner le texte ci-dessous"
+  },
+  "onboarding_railSelect": {
+    "message": "Sélection"
+  },
+  "onboarding_railCommand": {
+    "message": "Commande"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Recherche"
+  },
+  "onboarding_step1Callout": {
+    "message": "Cliquez sur cette commande pour rechercher sur Google."
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Revenez à cet onglet et la fenêtre se fermera automatiquement."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Cliquez n'importe où sur l'écran"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Et voilà — vous pouvez désormais rechercher instantanément tout ce que vous sélectionnez"
+  },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Ajoutez votre moteur de recherche préféré pour rendre vos recherches quotidiennes encore plus rapides."
+  },
+  "onboarding_step2Explain": {
+    "message": "Ensuite, interrogeons l'IA à propos du texte ci-dessous."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Réfléchissez à ce que vous pourriez faire avec une extension Chrome qui permet d'intégrer du texte du web dans un prompt et de l'exécuter."
+  },
+  "onboarding_step2Callout": {
+    "message": "Exécutez cette commande pour envoyer votre texte sélectionné + un prompt à l'IA."
+  },
+  "onboarding_railResultAi": {
+    "message": "IA"
+  },
+  "onboarding_step2WaitReturn": {
+    "message": "Envoi de votre texte sélectionné + un prompt à l'IA en cours…"
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Vous pouvez désormais interroger l'IA sur tout ce que vous sélectionnez, directement depuis la page que vous lisez"
+  },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Demandez instantanément à l'IA des choses comme « résume ceci » ou « analyse cette entreprise ».\nVous pouvez personnaliser le prompt librement."
+  },
+  "onboarding_step3Explain": {
+    "message": "Prévisualisons un lien sans ouvrir un nouvel onglet."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Lien d'exemple"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Aperçu"
+  },
+  "onboarding_step3Callout": {
+    "message": "Faites Shift+clic sur ce lien pour le prévisualiser."
+  },
+  "onboarding_clickKeycap": {
+    "message": "Clic"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Revenez à cet onglet et la fenêtre se fermera automatiquement."
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Et voilà — vous pouvez désormais prévisualiser des liens sans quitter la page"
+  },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Vous avez obtenu l'information et êtes revenu aussitôt !\nCela réduit la gestion des onglets, pour que vous puissiez vous concentrer sur l'essentiel."
+  },
+  "onboarding_nextButton": {
+    "message": "Suivant"
+  },
+  "onboarding_step4_title": {
+    "message": "Personnalisez à votre guise"
+  },
+  "onboarding_step4Explain": {
+    "message": "Vous pouvez ajouter ou modifier des commandes à tout moment"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "Créer et modifier dans les paramètres"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Découvrez sur le Selection Command Hub"
+  },
+  "onboarding_completeTitle": {
+    "message": "Tout est prêt !"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command est prêt à l'emploi.\nIl vous suffit de sélectionner du texte sur n'importe quelle page pour commencer."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Ouvrir les paramètres"
+  },
+  "onboarding_closeButton": {
+    "message": "Fermer et essayer"
   }
 }

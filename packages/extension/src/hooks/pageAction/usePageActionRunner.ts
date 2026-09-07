@@ -15,11 +15,13 @@ export function usePageActionRunner() {
 
   useEffect(() => {
     const listener = (param: any, _sender: any, response: any) => {
+      console.debug("Received TabCommand.execPageAction:", param)
       execute(param).then((result) => {
         response(result)
       })
       return true
     }
+    console.debug("Adding listener for TabCommand.execPageAction")
     Ipc.addListener(TabCommand.execPageAction, listener)
     return () => {
       Ipc.removeListener(TabCommand.execPageAction)

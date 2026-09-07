@@ -67,6 +67,7 @@ export class EnhancedSettings {
             hasShownReviewRequest: false,
             hasDismissedPromptHistoryBanner: false,
             hasShownHubShareToast: false,
+            hasShownOnboarding: false,
           }),
     ])
 
@@ -98,6 +99,7 @@ export class EnhancedSettings {
             hasShownReviewRequest: false,
             hasDismissedPromptHistoryBanner: false,
             hasShownHubShareToast: false,
+            hasShownOnboarding: false,
           }
 
     // Merge settings
@@ -185,6 +187,7 @@ export class EnhancedSettings {
       hasDismissedPromptHistoryBanner:
         data.userStats.hasDismissedPromptHistoryBanner,
       hasShownHubShareToast: data.userStats.hasShownHubShareToast,
+      hasShownOnboarding: data.userStats.hasShownOnboarding,
     } as SettingsType
   }
 

@@ -1304,5 +1304,122 @@
   },
   "hub_login": {
     "message": "Masuk ke Hub"
+  },
+  "onboarding_step0Title": {
+    "message": "Terima kasih telah menginstal!"
+  },
+  "onboarding_step0Body": {
+    "message": "Mari coba selama sekitar satu menit sambil langsung mempraktikkannya."
+  },
+  "onboarding_startButton": {
+    "message": "Mulai"
+  },
+  "onboarding_skipButton": {
+    "message": "Lewati"
+  },
+  "onboarding_step1Explain": {
+    "message": "Pilih teks di bawah ini untuk langsung mencoba pencarian."
+  },
+  "onboarding_step1TargetText": {
+    "message": "Ekstensi yang memungkinkan Anda mencari teks yang dipilih hanya dengan satu klik."
+  },
+  "onboarding_selectHint": {
+    "message": "Seret untuk memilih teks di bawah"
+  },
+  "onboarding_railSelect": {
+    "message": "Pilih"
+  },
+  "onboarding_railCommand": {
+    "message": "Perintah"
+  },
+  "onboarding_railResultSearch": {
+    "message": "Cari"
+  },
+  "onboarding_step1Callout": {
+    "message": "Klik perintah ini untuk mencari di Google."
+  },
+  "onboarding_step1ReturnHint": {
+    "message": "Kembali ke tab ini dan jendela akan tertutup secara otomatis."
+  },
+  "onboarding_step1Callout_2": {
+    "message": "Klik di mana saja pada layar"
+  },
+  "onboarding_step1ValueMessage": {
+    "message": "Selesai — sekarang Anda bisa langsung mencari apa pun yang Anda pilih"
+  },
+  "onboarding_step1ValueSubmessage": {
+    "message": "Tambahkan mesin pencari favorit Anda untuk membuat pencarian sehari-hari lebih cepat."
+  },
+  "onboarding_step2Explain": {
+    "message": "Selanjutnya, mari tanyakan ke AI tentang teks di bawah ini."
+  },
+  "onboarding_step2TargetText": {
+    "message": "Pikirkan ide-ide tentang apa yang bisa Anda lakukan dengan ekstensi Chrome yang dapat menyematkan teks dari web ke dalam prompt dan menjalankannya."
+  },
+  "onboarding_step2Callout": {
+    "message": "Jalankan perintah ini untuk mengirim teks yang dipilih + sebuah prompt ke AI."
+  },
+  "onboarding_railResultAi": {
+    "message": "AI"
+  },
+  "onboarding_step2WaitReturn": {
+    "message": "Mengirim teks yang dipilih + prompt ke AI..."
+  },
+  "onboarding_step2ValueMessage": {
+    "message": "Sekarang Anda bisa bertanya ke AI tentang apa pun yang Anda pilih, langsung dari halaman yang sedang Anda baca"
+  },
+  "onboarding_step2ValueSubmessage": {
+    "message": "Segera minta AI melakukan hal seperti \"ringkas ini\" atau \"analisis perusahaan ini\".\nPrompt dapat disesuaikan secara bebas."
+  },
+  "onboarding_step3Explain": {
+    "message": "Mari pratinjau sebuah tautan tanpa membuka tab baru."
+  },
+  "onboarding_step3LinkLabel": {
+    "message": "Tautan Contoh"
+  },
+  "onboarding_railResultPreview": {
+    "message": "Pratinjau"
+  },
+  "onboarding_step3Callout": {
+    "message": "Shift+klik tautan ini untuk melihat pratinjaunya."
+  },
+  "onboarding_clickKeycap": {
+    "message": "Klik"
+  },
+  "onboarding_step3ReturnHint": {
+    "message": "Kembali ke tab ini dan jendela akan tertutup secara otomatis."
+  },
+  "onboarding_step3ValueMessage": {
+    "message": "Selesai — sekarang Anda bisa melihat pratinjau tautan tanpa meninggalkan halaman"
+  },
+  "onboarding_step3ValueSubmessage": {
+    "message": "Anda mendapatkan informasinya dan langsung kembali!\nIni mengurangi repotnya berpindah tab, sehingga Anda bisa fokus pada hal yang penting."
+  },
+  "onboarding_nextButton": {
+    "message": "Berikutnya"
+  },
+  "onboarding_step4_title": {
+    "message": "Sesuaikan Sesuka Anda"
+  },
+  "onboarding_step4Explain": {
+    "message": "Anda dapat menambah atau mengedit perintah kapan saja"
+  },
+  "onboarding_step4SettingsHeading": {
+    "message": "Buat & Edit di Pengaturan"
+  },
+  "onboarding_step4HubHeading": {
+    "message": "Temukan di Selection Command Hub"
+  },
+  "onboarding_completeTitle": {
+    "message": "Semua sudah siap!"
+  },
+  "onboarding_completeBody": {
+    "message": "Selection Command siap digunakan.\nCukup pilih teks di halaman mana pun untuk memulai."
+  },
+  "onboarding_openSettingsButton": {
+    "message": "Buka Pengaturan"
+  },
+  "onboarding_closeButton": {
+    "message": "Tutup dan coba sekarang"
   }
 }
