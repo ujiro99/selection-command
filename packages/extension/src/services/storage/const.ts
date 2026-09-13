@@ -19,6 +19,7 @@ export enum LOCAL_STORAGE_KEY {
   HUB_USER = "hubUser",
   HUB_SHARED_AT = "hubSharedAt",
   HUB_REGISTERED = "hubRegistered",
+  EXPERIMENTS = "experiments",
 }
 
 export enum SESSION_STORAGE_KEY {
