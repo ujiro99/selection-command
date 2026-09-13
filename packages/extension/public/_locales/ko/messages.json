@@ -1314,6 +1314,12 @@
   "onboarding_skipButton": {
     "message": "건너뛰기"
   },
+  "onboarding_welcomeMessage": {
+    "message": "환영합니다!"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "클릭하여 계속하기"
+  },
   "onboarding_step1Explain": {
     "message": "아래 텍스트를 선택해서 바로 검색해 보세요."
   },

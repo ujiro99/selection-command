@@ -1311,6 +1311,12 @@
   "onboarding_skipButton": {
     "message": "スキップ"
   },
+  "onboarding_welcomeMessage": {
+    "message": "ようこそ！"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "クリックして続ける"
+  },
   "onboarding_step1Explain": {
     "message": "気になるテキストを選択して、すぐに検索してみましょう。"
   },

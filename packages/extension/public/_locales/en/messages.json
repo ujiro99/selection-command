@@ -1336,6 +1336,14 @@
     "message": "Skip",
     "description": "Button shown on every onboarding step to end the onboarding early."
   },
+  "onboarding_welcomeMessage": {
+    "message": "Welcome!",
+    "description": "Onboarding variant B welcome overlay, shown for a moment before the first step."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Click to continue",
+    "description": "Accessible label for the onboarding variant B welcome overlay, which advances on click."
+  },
   "onboarding_step1Explain": {
     "message": "Select the text below to try a search right away.",
     "description": "Onboarding Step1 (Search command) instruction shown before the user selects the sample text."

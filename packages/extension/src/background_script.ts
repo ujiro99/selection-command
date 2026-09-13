@@ -29,6 +29,7 @@ import {
   getOrCreateClientId,
 } from "@/services/analytics"
 import * as HubBackground from "@/services/hub/background"
+import { ensureOnboardingAssignment } from "@/services/experiments"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -471,6 +472,15 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
       await Settings.reset()
       sendEvent(ANALYTICS_EVENTS.INSTALLED, {}, SCREEN.SERVICE_WORKER)
+      // Assign the onboarding A/B variant before the tab is created, so the
+      // page can render its first frame from storage without fetching the
+      // remote config itself. A failure here must never block onboarding -
+      // the page assigns on its own if no assignment is stored yet.
+      try {
+        await ensureOnboardingAssignment()
+      } catch (error) {
+        console.error("Failed to assign onboarding variant:", error)
+      }
       chrome.tabs.create({ url: ONBOARDING_PAGE_PATH })
     }
 

@@ -1314,6 +1314,12 @@
   "onboarding_skipButton": {
     "message": "Salta"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Benvenuto!"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Clicca per continuare"
+  },
   "onboarding_step1Explain": {
     "message": "Seleziona il testo qui sotto per provare subito una ricerca."
   },

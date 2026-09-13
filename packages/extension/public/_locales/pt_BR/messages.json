@@ -1317,6 +1317,12 @@
   "onboarding_skipButton": {
     "message": "Pular"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Bem-vindo!"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Clique para continuar"
+  },
   "onboarding_step1Explain": {
     "message": "Selecione o texto abaixo para testar uma pesquisa agora mesmo."
   },
