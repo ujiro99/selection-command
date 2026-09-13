@@ -1314,6 +1314,12 @@
   "onboarding_skipButton": {
     "message": "跳过"
   },
+  "onboarding_welcomeMessage": {
+    "message": "欢迎！"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "点击继续"
+  },
   "onboarding_step1Explain": {
     "message": "选择下面的文本，立即试试搜索功能。"
   },

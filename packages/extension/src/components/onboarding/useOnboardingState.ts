@@ -6,6 +6,11 @@ import { Settings } from "@/services/settings/settings"
 import { getCurrentLocale } from "@/services/i18n"
 import { VERSION } from "@/const"
 import { closeOnboardingTab } from "./onboardingWindow"
+import {
+  ONBOARDING_EXPERIMENT_ID,
+  getOnboardingAssignmentSync,
+} from "@/services/experiments"
+import type { ExperimentVariant } from "@/services/experiments"
 
 export type UseOnboardingState = ReturnType<typeof useOnboardingState>
 
@@ -34,13 +39,24 @@ function readStepAndPhaseOverride(): {
   return { step, phase }
 }
 
-export function useOnboardingState() {
-  const [step, setStep] = useState<OnboardingStep>(
-    () => readStepAndPhaseOverride()?.step ?? OnboardingStep.INTRO,
+// Where the flow opens, per A/B variant: the control keeps the INTRO step,
+// while variant B drops it and starts on the first real step behind a short
+// welcome overlay (see OnboardingWelcome).
+function initialStepAndPhase(variant: ExperimentVariant): {
+  step: OnboardingStep
+  phase: StepPhase
+} {
+  return variant === "B"
+    ? { step: OnboardingStep.SEARCH, phase: StepPhase.WELCOME }
+    : { step: OnboardingStep.INTRO, phase: StepPhase.EXPLAIN }
+}
+
+export function useOnboardingState(variant: ExperimentVariant) {
+  const [initial] = useState(
+    () => readStepAndPhaseOverride() ?? initialStepAndPhase(variant),
   )
-  const [phase, _setPhase] = useState<StepPhase>(
-    () => readStepAndPhaseOverride()?.phase ?? StepPhase.EXPLAIN,
-  )
+  const [step, setStep] = useState<OnboardingStep>(initial.step)
+  const [phase, _setPhase] = useState<StepPhase>(initial.phase)
   const startedAtRef = useRef<number>(Date.now())
   const seenValueStepsRef = useRef<Set<OnboardingStep>>(new Set())
   const seenSelectionStepsRef = useRef<Set<OnboardingStep>>(new Set())
@@ -62,6 +78,10 @@ export function useOnboardingState() {
     sendOnboardingEvent(ANALYTICS_EVENTS.ONBOARDING_START, {
       locale: getCurrentLocale(),
       extension_version: VERSION,
+      experiment_id: ONBOARDING_EXPERIMENT_ID,
+      // Lets a hub outage (which forces the build-time allocation) be
+      // separated out when the results are analyzed.
+      config_source: getOnboardingAssignmentSync()?.configSource ?? "unknown",
     })
   }, [])
 

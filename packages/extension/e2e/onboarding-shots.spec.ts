@@ -19,14 +19,20 @@ const pathToExtension = path.join(__dirname, "../dist")
 
 type Shot = {
   name: string
-  step: keyof typeof OnboardingStep
+  // Omitted for shots that should open on whichever screen the variant
+  // starts at (e.g. variant B's welcome overlay).
+  step?: keyof typeof OnboardingStep
   phase?: StepPhase
+  variant?: "A" | "B"
 }
 
 // One shot per visually distinct screen - not one per StepPhase transition;
 // e.g. Step2's WAIT_EXECUTE looks like Step1's, so only Step1 gets it.
 const SHOTS: Shot[] = [
   { name: "00-intro", step: "INTRO" },
+  // Variant B of the onboarding A/B test (see services/experiments): no
+  // INTRO step, a brief welcome overlay in front of the first step instead.
+  { name: "00b-welcome-variant-b", variant: "B" },
   { name: "01-search-explain", step: "SEARCH", phase: StepPhase.EXPLAIN },
   {
     name: "02-search-wait-execute",
@@ -90,8 +96,10 @@ test.describe("onboarding screenshots (design review)", () => {
         fs.mkdirSync(outDir, { recursive: true })
 
         for (const shot of SHOTS) {
-          const params = new URLSearchParams({ step: shot.step })
+          const params = new URLSearchParams()
+          if (shot.step) params.set("step", shot.step)
           if (shot.phase) params.set("phase", shot.phase)
+          if (shot.variant) params.set("variant", shot.variant)
           await page.goto(
             `chrome-extension://${extensionId}/src/onboarding_page.html?${params}`,
           )

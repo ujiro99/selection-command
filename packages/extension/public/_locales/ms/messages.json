@@ -1317,6 +1317,12 @@
   "onboarding_skipButton": {
     "message": "Langkau"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Selamat datang!"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Klik untuk teruskan"
+  },
   "onboarding_step1Explain": {
     "message": "Pilih teks di bawah untuk cuba carian dengan segera."
   },

@@ -1314,6 +1314,12 @@
   "onboarding_skipButton": {
     "message": "छोड़ें"
   },
+  "onboarding_welcomeMessage": {
+    "message": "स्वागत है!"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "जारी रखने के लिए क्लिक करें"
+  },
   "onboarding_step1Explain": {
     "message": "तुरंत सर्च आज़माने के लिए नीचे दिए गए टेक्स्ट को चुनें।"
   },

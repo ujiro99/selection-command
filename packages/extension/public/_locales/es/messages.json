@@ -1314,6 +1314,12 @@
   "onboarding_skipButton": {
     "message": "Omitir"
   },
+  "onboarding_welcomeMessage": {
+    "message": "¡Bienvenido!"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Haz clic para continuar"
+  },
   "onboarding_step1Explain": {
     "message": "Selecciona el siguiente texto para probar una búsqueda al instante."
   },
