@@ -27,12 +27,24 @@ export function OnboardingWelcome({ onDone }: Props) {
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const finishedRef = useRef(false)
 
+  // Read through a ref so `finish` - and with it the auto-advance effect
+  // below - stays referentially stable. Callers pass an inline callback, so
+  // depending on `onDone` directly would clear and restart the pending 2s
+  // timer on every re-render of the parent, and a busy parent could keep
+  // the overlay up indefinitely.
+  const onDoneRef = useRef(onDone)
+  useEffect(() => {
+    onDoneRef.current = onDone
+  }, [onDone])
+
   const finish = useCallback(() => {
     if (finishedRef.current) return
     finishedRef.current = true
     setExiting(true)
-    timersRef.current.push(setTimeout(onDone, EXIT_DURATION_MS))
-  }, [onDone])
+    timersRef.current.push(
+      setTimeout(() => onDoneRef.current(), EXIT_DURATION_MS),
+    )
+  }, [])
 
   useEffect(() => {
     timersRef.current.push(setTimeout(finish, WELCOME_DURATION_MS))

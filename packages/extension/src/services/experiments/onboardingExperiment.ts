@@ -79,9 +79,13 @@ export const ensureOnboardingAssignment =
       assignedAt: Date.now(),
     }
 
-    // Re-read inside the update so a concurrent assignment (e.g. the
-    // onboarding page racing the background script) wins consistently
-    // instead of being overwritten with a second coin flip.
+    // Re-read inside the update so an assignment that landed while the
+    // config was being fetched is kept instead of being overwritten with a
+    // second coin flip. Storage.update is a plain get/set with no locking,
+    // so this is best-effort rather than atomic: two contexts assigning at
+    // the exact same moment can still race. The install flow awaits this
+    // before opening the onboarding tab, so that window is not reachable
+    // in practice.
     let stored = assignment
     await Storage.update<Experiments>(LOCAL_STORAGE_KEY.EXPERIMENTS, (cur) => {
       const current = cur?.[ONBOARDING_EXPERIMENT_ID]

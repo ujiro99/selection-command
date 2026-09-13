@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { SelectContextProvider } from "@/providers/SelectContextProvider"
 import { SelectAnchor } from "@/components/SelectAnchor"
 import { Popup } from "@/components/Popup"
@@ -39,10 +39,16 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
   // below it stays unmounted meanwhile, so its own entrance animations start
   // only once the greeting is out of the way.
   const isWelcome = onboarding.phase === StepPhase.WELCOME
+  const { setPhase } = onboarding
+  const goToExplain = useCallback(() => setPhase(StepPhase.EXPLAIN), [setPhase])
 
   return (
     <SelectContextProvider>
-      <OnboardingLayout step={onboarding.step} onSkip={onboarding.skip}>
+      <OnboardingLayout
+        step={onboarding.step}
+        phase={onboarding.phase}
+        onSkip={onboarding.skip}
+      >
         {!isWelcome && (
           <>
             {onboarding.step === OnboardingStep.INTRO && (
@@ -67,11 +73,7 @@ function OnboardingFlow({ variant }: { variant: ExperimentVariant }) {
         )}
       </OnboardingLayout>
 
-      {isWelcome && (
-        <OnboardingWelcome
-          onDone={() => onboarding.setPhase(StepPhase.EXPLAIN)}
-        />
-      )}
+      {isWelcome && <OnboardingWelcome onDone={goToExplain} />}
 
       <SelectAnchor ref={setPositionElm} />
       <Popup positionElm={positionElm} inOnboarding={true} />

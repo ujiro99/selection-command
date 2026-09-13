@@ -47,6 +47,19 @@ describe("OnboardingWelcome", () => {
     expect(onDone).toHaveBeenCalledTimes(1)
   })
 
+  it("keeps the pending auto-advance running across parent re-renders", async () => {
+    // Callers pass an inline callback, so the overlay must not restart its
+    // timer every time the parent re-renders - it would never advance.
+    const onDone = vi.fn()
+    const { rerender } = render(<OnboardingWelcome onDone={() => onDone()} />)
+
+    await advance(WELCOME_MS - 100)
+    rerender(<OnboardingWelcome onDone={() => onDone()} />)
+    await advance(100 + EXIT_MS)
+
+    expect(onDone).toHaveBeenCalledTimes(1)
+  })
+
   it("does not call back after unmounting", async () => {
     const onDone = vi.fn()
     const { unmount } = render(<OnboardingWelcome onDone={onDone} />)

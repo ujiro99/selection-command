@@ -44,6 +44,10 @@ This file provides guidance to AI Agent when working with code in this repositor
      }
      ```
      `allocation` は variant B に割り当てるユーザーの比率（0..1）
+   - Extension 側には hub 障害時用のフォールバック値が
+     `packages/extension/src/services/experiments/experimentConfig.ts` の
+     `DEFAULT_CONFIGS` に定義されている。配分比率を恒久的に変更する場合は、
+     こちらも合わせて更新しないと hub 障害時だけ古い比率で割り当てられる
 
 3. **e2e テスト用ページの配信**
    - `src/app/[lang]/test/page.tsx`（`/en/test` など）は、Extension の

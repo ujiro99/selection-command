@@ -16,6 +16,11 @@ const FETCH_TIMEOUT_MS = 3000
  * unusable. Assignment still happens (rather than forcing everyone to the
  * control), so a hub outage doesn't skew one arm towards users who happened
  * to have connectivity problems at install time.
+ *
+ * These intentionally duplicate packages/hub/public/data/experiments.json:
+ * that file is the live control plane, this is the offline safety net. When
+ * the hub-side ratio is changed for good (as opposed to a temporary tweak),
+ * update these values too, or the fallback path keeps using the old split.
  */
 export const DEFAULT_CONFIGS: Record<string, ExperimentConfig> = {
   onboarding_v2: { enabled: true, allocation: 0.5 },
