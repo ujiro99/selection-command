@@ -398,5 +398,35 @@ describe("background.ts - Side Panel Connection", () => {
         }),
       )
     })
+
+    it("SP-15: Passes prompt and userVariables when handleSidePanelOpened navigates", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const tabId = 42
+      registerSidePanelTab(tabId, "https://chatgpt.com")
+      await handleSidePanelConnect(port as any)
+
+      const targetUrl = "https://gemini.google.com"
+      mockStorage.get.mockResolvedValue({
+        url: targetUrl,
+        steps: [{ id: "s", param: { type: "click" }, delayMs: 0 }],
+        selectedText: "test selection",
+        srcUrl: "https://src.example.com",
+        clipboardText: "test clipboard",
+        prompt: "Explain: {{SelectedText}}",
+        userVariables: [{ name: "var1", value: "val1" }],
+      })
+
+      await handleSidePanelOpened()
+
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            prompt: "Explain: {{SelectedText}}",
+            userVariables: [{ name: "var1", value: "val1" }],
+          }),
+        }),
+      )
+    })
   })
 })

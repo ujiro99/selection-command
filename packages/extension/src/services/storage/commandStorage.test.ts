@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { Command } from "@/types"
 import { CommandMetadata, GlobalCommandMetadata } from "@/types/command"
-import { OPEN_MODE } from "@/const"
+import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import {
   CMD_PREFIX,
   STORAGE_KEY,
@@ -260,6 +260,31 @@ describe("CommandStorage actual implementation tests", () => {
           isCmdKey(key),
         )
         expect(afterCommandKeys.length).toBe(2)
+      })
+
+      it("CS-01-b: should save and restore PageAction command with Side Panel openMode", async () => {
+        const pageActionCommand: Command = {
+          id: "pa-side-panel",
+          title: "Page Action Side Panel",
+          openMode: OPEN_MODE.PAGE_ACTION,
+          pageActionOption: {
+            startUrl: "https://chatgpt.com",
+            openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+            steps: [],
+            prompt: "Summarize: {{SelectedText}}",
+          },
+        } as any
+
+        await commandStorge.saveCommands([pageActionCommand])
+        const loaded = await commandStorge.loadCommands()
+        expect(loaded).toHaveLength(1)
+        expect(loaded[0].id).toBe("pa-side-panel")
+        expect((loaded[0] as any).pageActionOption.openMode).toBe(
+          PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+        )
+        expect((loaded[0] as any).pageActionOption.prompt).toBe(
+          "Summarize: {{SelectedText}}",
+        )
       })
 
       it("CS-02: should handle save errors", async () => {
