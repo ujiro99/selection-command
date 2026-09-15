@@ -107,4 +107,53 @@ describe("MenuImage - Global Icon Color Override", () => {
     expect(div).not.toBeNull()
     expect(div?.getAttribute("style")).toContain("hsl(var(--foreground))")
   })
+
+  describe("Accessibility (alt / decorative handling)", () => {
+    it("sets aria-hidden='true' and omits role='img' on masked span when alt is empty or not provided", () => {
+      const { container } = renderWithContext(
+        <MenuImage src={testUiUrl} alt="" overrideGlobalIconColor={false} isFavicon={false} />,
+        { hasIconColor: true },
+      )
+      const span = container.querySelector("span")
+      expect(span).not.toBeNull()
+      expect(span?.getAttribute("aria-hidden")).toBe("true")
+      expect(span?.getAttribute("role")).toBeNull()
+      expect(span?.getAttribute("aria-label")).toBeNull()
+    })
+
+    it("sets role='img' and aria-label on masked span when meaningful alt is provided", () => {
+      const { container } = renderWithContext(
+        <MenuImage src={testUiUrl} alt="Search Icon" overrideGlobalIconColor={false} isFavicon={false} />,
+        { hasIconColor: true },
+      )
+      const span = container.querySelector("span")
+      expect(span).not.toBeNull()
+      expect(span?.getAttribute("role")).toBe("img")
+      expect(span?.getAttribute("aria-label")).toBe("Search Icon")
+      expect(span?.getAttribute("aria-hidden")).toBeNull()
+    })
+
+    it("sets aria-hidden='true' on inline SVG div when alt is not provided", () => {
+      const { container } = renderWithContext(
+        <MenuImage svg={testSvg} />,
+        { hasIconColor: false },
+      )
+      const div = container.querySelector("div")
+      expect(div).not.toBeNull()
+      expect(div?.getAttribute("aria-hidden")).toBe("true")
+      expect(div?.getAttribute("role")).toBeNull()
+    })
+
+    it("sets role='img' and aria-label on inline SVG div when meaningful alt is provided", () => {
+      const { container } = renderWithContext(
+        <MenuImage svg={testSvg} alt="Folder Icon" />,
+        { hasIconColor: false },
+      )
+      const div = container.querySelector("div")
+      expect(div).not.toBeNull()
+      expect(div?.getAttribute("role")).toBe("img")
+      expect(div?.getAttribute("aria-label")).toBe("Folder Icon")
+      expect(div?.getAttribute("aria-hidden")).toBeNull()
+    })
+  })
 })

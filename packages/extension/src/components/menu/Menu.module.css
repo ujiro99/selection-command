@@ -18,6 +18,7 @@
   font-size: var(--sc-font-size);
   font-family: var(--font-family);
   transition: ease-out 0.15s background;
+  color: var(--sc-font-color);
 
   &:disabled {
     opacity: 0.4;
@@ -52,6 +53,7 @@
   margin-left: calc(0.4em + var(--sc-padding) / 2);
   margin-right: calc(0.4em + var(--sc-padding) / 2);
   text-align: left;
+  color: inherit;
 }
 
 .itemHorizontal {
@@ -94,6 +96,7 @@
   cursor: default;
   padding-right: calc(var(--sc-padding) / 2);
   transition: ease-out 0.15s background;
+  color: var(--sc-font-color);
 }
 
 .title {

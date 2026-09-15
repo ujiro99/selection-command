@@ -66,7 +66,10 @@ export const IconField = ({
         )}
         <div className="flex items-center justify-between gap-2 border-t pt-2">
           <div className="space-y-0.5">
-            <FormLabel className="text-sm font-normal cursor-pointer">
+            <FormLabel
+              htmlFor={nameOverride}
+              className="text-sm font-normal cursor-pointer"
+            >
               {t("overrideGlobalIconColor")}
             </FormLabel>
             <FormDescription className="text-xs">
@@ -74,6 +77,8 @@ export const IconField = ({
             </FormDescription>
           </div>
           <Switch
+            id={nameOverride}
+            aria-label={t("overrideGlobalIconColor")}
             checked={!!fieldOverride?.value}
             onCheckedChange={fieldOverride?.onChange}
           />

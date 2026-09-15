@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { isFaviconIcon } from "./favicon"
+import { isFaviconIcon, getRegistrableDomain } from "./favicon"
 import { OPEN_MODE } from "@shared/constants/open-mode"
 import type { Command } from "@/types"
 
@@ -104,6 +104,76 @@ describe("isFaviconIcon", () => {
     expect(isFaviconIcon({ url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA" })).toBe(
       false,
     )
+  })
+
+  it("does NOT match unrelated domains that share the same multi-part suffix (e.g. .co.uk)", () => {
+    const cmd = {
+      id: "cmd-uk-1",
+      title: "Foo UK",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "https://foo.co.uk/search?q=%s",
+    } as Command
+
+    // An icon hosted on bar.co.uk should NOT match foo.co.uk
+    expect(
+      isFaviconIcon({
+        url: "https://bar.co.uk/assets/icon.png",
+        command: cmd,
+      }),
+    ).toBe(false)
+
+    // An icon hosted on subdomains of foo.co.uk SHOULD match
+    expect(
+      isFaviconIcon({
+        url: "https://cdn.foo.co.uk/assets/logo.png",
+        command: cmd,
+      }),
+    ).toBe(true)
+  })
+
+  it("handles other multi-part suffixes like .co.jp and .com.au properly", () => {
+    const jpCmd = {
+      id: "cmd-jp-1",
+      title: "Store JP",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "https://store.company.co.jp/search?q=%s",
+    } as Command
+
+    expect(
+      isFaviconIcon({
+        url: "https://static.company.co.jp/images/logo.png",
+        command: jpCmd,
+      }),
+    ).toBe(true)
+    expect(
+      isFaviconIcon({
+        url: "https://other-company.co.jp/images/logo.png",
+        command: jpCmd,
+      }),
+    ).toBe(false)
+  })
+})
+
+describe("getRegistrableDomain", () => {
+  it("extracts registrable domain for standard single TLDs", () => {
+    expect(getRegistrableDomain("example.com")).toBe("example.com")
+    expect(getRegistrableDomain("www.example.com")).toBe("example.com")
+    expect(getRegistrableDomain("sub.nested.example.com")).toBe("example.com")
+    expect(getRegistrableDomain("github.io")).toBe("github.io")
+  })
+
+  it("extracts registrable domain for multi-part public suffixes", () => {
+    expect(getRegistrableDomain("foo.co.uk")).toBe("foo.co.uk")
+    expect(getRegistrableDomain("bar.co.uk")).toBe("bar.co.uk")
+    expect(getRegistrableDomain("assets.foo.co.uk")).toBe("foo.co.uk")
+    expect(getRegistrableDomain("www.store.co.jp")).toBe("store.co.jp")
+    expect(getRegistrableDomain("sub.domain.com.au")).toBe("domain.com.au")
+    expect(getRegistrableDomain("org.org.uk")).toBe("org.org.uk")
+  })
+
+  it("handles short or invalid hostnames safely", () => {
+    expect(getRegistrableDomain("localhost")).toBe("localhost")
+    expect(getRegistrableDomain("com")).toBe("com")
   })
 })
 

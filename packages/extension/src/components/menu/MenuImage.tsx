@@ -30,6 +30,8 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
     svgElm.innerHTML = props.svg
   }
 
+  const isDecorative = !props.alt || props.alt.trim() === ""
+
   return hasUrl ? (
     isRecolorActive ? (
       <span
@@ -39,11 +41,17 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
           maskImage: `url("${props.src}")`,
           backgroundColor: "var(--sc-icon-color)",
         }}
-        role="img"
-        aria-label={props.alt || ""}
+        {...(isDecorative
+          ? { "aria-hidden": "true" }
+          : { role: "img", "aria-label": props.alt })}
       />
     ) : (
-      <img className={props.className} src={props.src} alt={props.alt} />
+      <img
+        className={props.className}
+        src={props.src}
+        alt={props.alt || ""}
+        {...(isDecorative ? { "aria-hidden": "true" } : {})}
+      />
     )
   ) : hasSvg ? (
     <div
@@ -54,6 +62,9 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
           : "hsl(var(--foreground))",
       }}
       ref={setSvgElm}
+      {...(isDecorative
+        ? { "aria-hidden": "true" }
+        : { role: "img", "aria-label": props.alt })}
     />
   ) : (
     <></>

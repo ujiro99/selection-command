@@ -129,7 +129,8 @@ export const MenuFolder = (props: {
             [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
             [css.folderHorizontal]: isHorizontal,
             "pointer-events-none": inTransition,
-            "bg-accent text-accent-foreground": isOpen,
+            "bg-accent": isOpen,
+            ["hover:bg-accent"]: !inTransition,
           })}
           ref={anchorRef}
           role="menuitem"

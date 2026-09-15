@@ -2,6 +2,47 @@ import { isEmpty } from "@/lib/utils"
 import type { Command } from "@/types"
 import { OPEN_MODE } from "@shared/constants/open-mode"
 
+const SECOND_LEVEL_DOMAINS = new Set([
+  "ac",
+  "co",
+  "com",
+  "edu",
+  "firm",
+  "gen",
+  "gov",
+  "id",
+  "ind",
+  "ltd",
+  "me",
+  "net",
+  "ne",
+  "nom",
+  "or",
+  "org",
+  "re",
+])
+
+/**
+ * Extracts the registrable domain (eTLD+1) from a hostname,
+ * properly handling multi-part country-code suffixes like .co.uk, .com.au, .co.jp.
+ */
+export function getRegistrableDomain(hostname: string): string {
+  const cleanHost = hostname.toLowerCase().replace(/^www\./, "")
+  const parts = cleanHost.split(".")
+  if (parts.length <= 2) {
+    return cleanHost
+  }
+
+  const tld = parts[parts.length - 1]
+  const sld = parts[parts.length - 2]
+
+  if (tld.length === 2 && SECOND_LEVEL_DOMAINS.has(sld)) {
+    return parts.slice(-3).join(".")
+  }
+
+  return parts.slice(-2).join(".")
+}
+
 /**
  * Checks if a URL or command icon is a recognized website/brand favicon.
  */
@@ -70,10 +111,10 @@ export function isFaviconIcon(options: {
           iconHost.includes("icons8")
 
         if (!isIconLibrary) {
-          const targetRoot = targetHost.split(".").slice(-2).join(".")
-          const iconRoot = iconHost.split(".").slice(-2).join(".")
+          const targetRoot = getRegistrableDomain(targetHost)
+          const iconRoot = getRegistrableDomain(iconHost)
           if (
-            targetRoot === iconRoot ||
+            (targetRoot && iconRoot && targetRoot === iconRoot) ||
             (targetHost.includes("google") && iconHost.includes("gstatic.com"))
           ) {
             return true
