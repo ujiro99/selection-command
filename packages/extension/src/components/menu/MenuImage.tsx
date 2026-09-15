@@ -9,7 +9,7 @@ type MenuImageProps = {
   svg?: string
   alt?: string
   className?: string
-  overrideGlobalIconColor?: boolean
+  excludeFromGlobalIconColor?: boolean
   isFavicon?: boolean
 }
 
@@ -23,7 +23,7 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
     props.isFavicon ?? (hasUrl ? isFaviconIcon({ url: props.src }) : false)
 
   const isRecolorActive = Boolean(
-    hasIconColor && !props.overrideGlobalIconColor && !isFavicon,
+    hasIconColor && !props.excludeFromGlobalIconColor && !isFavicon,
   )
 
   if (svgElm && props.svg) {

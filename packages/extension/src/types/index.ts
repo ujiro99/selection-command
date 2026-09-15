@@ -49,7 +49,8 @@ export type SearchCommand = {
   title: string
   revision?: number
   iconUrl: string
-  overrideGlobalIconColor?: boolean
+  /** When true, excludes this command's icon from being recolored by the global icon color setting. */
+  excludeFromGlobalIconColor?: boolean
   sourceType?: COMMAND_SOURCE_TYPE
   sourceId?: string
   openMode: OPEN_MODE
@@ -122,7 +123,8 @@ export type CommandFolder = {
   title: string
   iconUrl?: string
   iconSvg?: string
-  overrideGlobalIconColor?: boolean
+  /** When true, excludes this folder's icon from being recolored by the global icon color setting. */
+  excludeFromGlobalIconColor?: boolean
   onlyIcon?: boolean
   parentFolderId?: string
   style?: FOLDER_STYLE

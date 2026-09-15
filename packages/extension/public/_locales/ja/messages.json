@@ -725,11 +725,17 @@
   "Option_userStyles_desc_icon_color": {
     "message": "アイコンの色を指定します。デフォルト: #0F172A"
   },
-  "Option_overrideGlobalIconColor": {
-    "message": "全体のアイコン色を上書きする"
+  "Option_excludeFromGlobalIconColor": {
+    "message": "全体のアイコン色から除外する"
   },
-  "Option_overrideGlobalIconColor_desc": {
-    "message": "モノクロアイコンに最適です。多色PNGアイコンは全体が単色で塗りつぶされる場合があります。"
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "全体のアイコン色が設定されている場合でも、このアイコン本来の色を保持します。"
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "ファビコンは自動的に全体のアイコン色から除外され、本来の色を保持します。"
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "自動"
   },
   "Option_userStyles_option_font_scale": {
     "message": "文字サイズの倍率"

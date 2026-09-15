@@ -48,7 +48,7 @@ export const FolderEditDialog = ({
     title: "",
     iconUrl:
       "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
-    overrideGlobalIconColor: false,
+    excludeFromGlobalIconColor: false,
     onlyIcon: true,
     parentFolderId: ROOT_FOLDER,
     style: FOLDER_STYLE.INHERIT,
@@ -61,7 +61,15 @@ export const FolderEditDialog = ({
   })
 
   useEffect(() => {
-    form.reset(folder ?? DefaultValue)
+    if (folder) {
+      form.reset({
+        ...DefaultValue,
+        ...folder,
+        excludeFromGlobalIconColor: folder.excludeFromGlobalIconColor ?? false,
+      })
+    } else {
+      form.reset(DefaultValue)
+    }
   }, [folder])
 
   const isUpdate = folder != null

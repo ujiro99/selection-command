@@ -91,7 +91,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         <ImageWithState
           state={itemState.state}
           iconUrl={iconUrl}
-          overrideGlobalIconColor={props.command.overrideGlobalIconColor}
+          excludeFromGlobalIconColor={props.command.excludeFromGlobalIconColor}
           isFavicon={isFaviconIcon({
             url: rawUrl,
             command: props.command,
@@ -118,12 +118,12 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 type ImageProps = {
   state: ExecState
   iconUrl: string
-  overrideGlobalIconColor?: boolean
+  excludeFromGlobalIconColor?: boolean
   isFavicon?: boolean
 }
 
 function ImageWithState(props: ImageProps): JSX.Element {
-  const { iconUrl, state: status, overrideGlobalIconColor, isFavicon } = props
+  const { iconUrl, state: status, excludeFromGlobalIconColor, isFavicon } = props
   return (
     <>
       {status === ExecState.NONE && (
@@ -131,7 +131,7 @@ function ImageWithState(props: ImageProps): JSX.Element {
           className={css.itemImg}
           src={iconUrl}
           alt=""
-          overrideGlobalIconColor={overrideGlobalIconColor}
+          excludeFromGlobalIconColor={excludeFromGlobalIconColor}
           isFavicon={isFavicon}
         />
       )}

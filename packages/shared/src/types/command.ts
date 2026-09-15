@@ -11,7 +11,10 @@ export interface BaseCommand {
   addedAt: string;
   openMode: OPEN_MODE;
   iconUrl: string;
-  overrideGlobalIconColor?: boolean;
+  /**
+   * When true, excludes this command's icon from being recolored by the global icon color setting.
+   */
+  excludeFromGlobalIconColor?: boolean;
   originalIconUrl?: string;
 }
 

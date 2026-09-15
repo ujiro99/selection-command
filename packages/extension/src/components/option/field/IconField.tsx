@@ -3,7 +3,8 @@ import { useController } from "react-hook-form"
 import { FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { MenuImage } from "@/components/menu/MenuImage"
-import { isEmpty, isValidSVG } from "@/lib/utils"
+import { isEmpty, isValidSVG, cn } from "@/lib/utils"
+import { isFaviconIcon } from "@/lib/favicon"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -13,7 +14,7 @@ type IconField = {
   control: any
   nameUrl: string
   nameSvg: string
-  nameOverride?: string
+  nameExclude?: string
   formLabel: string
   placeholder?: string
   description?: string
@@ -25,7 +26,7 @@ export const IconField = ({
   control,
   nameUrl,
   nameSvg,
-  nameOverride = "overrideGlobalIconColor",
+  nameExclude = "excludeFromGlobalIconColor",
   formLabel,
   description,
   placeholder,
@@ -38,12 +39,16 @@ export const IconField = ({
     name: nameSvg,
     control,
   })
-  const { field: fieldOverride } = useController({
-    name: nameOverride,
+  const { field: fieldExclude } = useController({
+    name: nameExclude,
     control,
   })
   const errUrl = stateUrl.errors[nameUrl]
   const errSvg = stateSvg.errors[nameSvg]
+
+  const isFavicon = Boolean(
+    !isEmpty(fieldUrl?.value) && isFaviconIcon({ url: fieldUrl.value }),
+  )
 
   return (
     <div className="flex items-start gap-1">
@@ -66,21 +71,39 @@ export const IconField = ({
         )}
         <div className="flex items-center justify-between gap-2 border-t pt-2">
           <div className="space-y-0.5">
-            <FormLabel
-              htmlFor={nameOverride}
-              className="text-sm font-normal cursor-pointer"
-            >
-              {t("overrideGlobalIconColor")}
-            </FormLabel>
+            <div className="flex items-center gap-1.5">
+              <FormLabel
+                htmlFor={nameExclude}
+                className={cn(
+                  "text-sm font-normal",
+                  isFavicon
+                    ? "cursor-default text-muted-foreground"
+                    : "cursor-pointer",
+                )}
+              >
+                {t("excludeFromGlobalIconColor")}
+              </FormLabel>
+              {isFavicon && (
+                <span
+                  data-testid="favicon-automatic-badge"
+                  className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium leading-none"
+                >
+                  {t("excludeFromGlobalIconColor_automatic")}
+                </span>
+              )}
+            </div>
             <FormDescription className="text-xs">
-              {t("overrideGlobalIconColor_desc")}
+              {isFavicon
+                ? t("excludeFromGlobalIconColor_favicon_desc")
+                : t("excludeFromGlobalIconColor_desc")}
             </FormDescription>
           </div>
           <Switch
-            id={nameOverride}
-            aria-label={t("overrideGlobalIconColor")}
-            checked={!!fieldOverride?.value}
-            onCheckedChange={fieldOverride?.onChange}
+            id={nameExclude}
+            aria-label={t("excludeFromGlobalIconColor")}
+            disabled={isFavicon}
+            checked={isFavicon ? true : !!fieldExclude?.value}
+            onCheckedChange={fieldExclude?.onChange}
           />
         </div>
       </div>

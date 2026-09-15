@@ -144,8 +144,7 @@ export const MenuFolder = (props: {
             src={folder.iconUrl}
             svg={folder.iconSvg}
             alt={folder.title}
-            overrideGlobalIconColor={folder.overrideGlobalIconColor}
-            isFavicon={false}
+            excludeFromGlobalIconColor={folder.excludeFromGlobalIconColor}
           />
           {!(folder.onlyIcon && isHorizontal) && (
             <span className={cn(css.itemTitle, css.title)}>{folder.title}</span>

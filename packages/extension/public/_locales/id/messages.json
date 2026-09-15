@@ -725,11 +725,17 @@
   "Option_userStyles_desc_icon_color": {
     "message": "Specify icon color. Default: #0F172A"
   },
-  "Option_overrideGlobalIconColor": {
-    "message": "Override global icon color"
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Exclude from global icon color"
   },
-  "Option_overrideGlobalIconColor_desc": {
-    "message": "Best for monochrome icons; multicolor PNG icons may be recolored entirely."
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Keep this icon's original color even when a global icon color is set."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Favicons are automatically excluded from the global icon color and keep their original colors."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automatic"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Penskalaan ukuran font"
