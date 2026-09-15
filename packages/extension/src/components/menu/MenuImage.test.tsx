@@ -17,7 +17,7 @@ const renderWithContext = (ui: React.ReactElement, contextValue: Partial<Context
   )
 }
 
-describe("MenuImage - Global Icon Color Override", () => {
+describe("MenuImage - Global Icon Color Exclusion", () => {
   const testUiUrl = "https://cdn3.iconfinder.com/data/icons/feather-5/24/search-1024.png"
   const testFaviconUrl = "https://www.google.com/favicon.ico"
   const testSvg = '<svg viewBox="0 0 24 24"><path d="M0 0h24v24H0z"/></svg>'
@@ -35,7 +35,7 @@ describe("MenuImage - Global Icon Color Override", () => {
 
   it("renders a masked <span> with background-color when global icon color is enabled and icon is a UI icon", () => {
     const { container } = renderWithContext(
-      <MenuImage src={testUiUrl} alt="test-icon" overrideGlobalIconColor={false} isFavicon={false} />,
+      <MenuImage src={testUiUrl} alt="test-icon" excludeFromGlobalIconColor={false} isFavicon={false} />,
       { hasIconColor: true },
     )
     const span = container.querySelector("span[role='img']")
@@ -47,7 +47,7 @@ describe("MenuImage - Global Icon Color Override", () => {
 
   it("keeps original <img> for website favicons even when global icon color is enabled", () => {
     const { container } = renderWithContext(
-      <MenuImage src={testFaviconUrl} alt="google-favicon" overrideGlobalIconColor={false} />,
+      <MenuImage src={testFaviconUrl} alt="google-favicon" excludeFromGlobalIconColor={false} />,
       { hasIconColor: true },
     )
     const img = container.querySelector("img")
@@ -56,9 +56,43 @@ describe("MenuImage - Global Icon Color Override", () => {
     expect(container.querySelector("span[role='img']")).toBeNull()
   })
 
+  it("keeps original <img> for detected favicons when manual excludeFromGlobalIconColor is absent", () => {
+    const { container } = renderWithContext(
+      <MenuImage src={testFaviconUrl} alt="google-favicon" />,
+      { hasIconColor: true },
+    )
+    const img = container.querySelector("img")
+    expect(img).not.toBeNull()
+    expect(img?.getAttribute("src")).toBe(testFaviconUrl)
+    expect(container.querySelector("span[role='img']")).toBeNull()
+  })
+
+  it("keeps original <img> for Google service icons detected as favicons even when excludeFromGlobalIconColor is false", () => {
+    const googleServiceIcon = "https://www.gstatic.com/images/branding/product/2x/calendar_2020q4_32dp.png"
+    const { container } = renderWithContext(
+      <MenuImage src={googleServiceIcon} alt="google-calendar" excludeFromGlobalIconColor={false} />,
+      { hasIconColor: true },
+    )
+    const img = container.querySelector("img")
+    expect(img).not.toBeNull()
+    expect(img?.getAttribute("src")).toBe(googleServiceIcon)
+    expect(container.querySelector("span[role='img']")).toBeNull()
+  })
+
+  it("renders a masked <span> for non-favicon UI icon when manual setting is absent", () => {
+    const { container } = renderWithContext(
+      <MenuImage src={testUiUrl} alt="test-icon" isFavicon={false} />,
+      { hasIconColor: true },
+    )
+    const span = container.querySelector("span[role='img']")
+    expect(span).not.toBeNull()
+    expect(span?.getAttribute("style")).toContain("var(--sc-icon-color)")
+    expect(container.querySelector("img")).toBeNull()
+  })
+
   it("keeps original <img> when isFavicon is explicitly passed as true", () => {
     const { container } = renderWithContext(
-      <MenuImage src={testUiUrl} alt="custom-brand" overrideGlobalIconColor={false} isFavicon={true} />,
+      <MenuImage src={testUiUrl} alt="custom-brand" excludeFromGlobalIconColor={false} isFavicon={true} />,
       { hasIconColor: true },
     )
     const img = container.querySelector("img")
@@ -67,9 +101,9 @@ describe("MenuImage - Global Icon Color Override", () => {
     expect(container.querySelector("span[role='img']")).toBeNull()
   })
 
-  it("renders a standard <img> when global icon color is enabled but overrideGlobalIconColor is true", () => {
+  it("renders a standard <img> when global icon color is enabled but excludeFromGlobalIconColor is true", () => {
     const { container } = renderWithContext(
-      <MenuImage src={testUiUrl} alt="test-icon" overrideGlobalIconColor={true} isFavicon={false} />,
+      <MenuImage src={testUiUrl} alt="test-icon" excludeFromGlobalIconColor={true} isFavicon={false} />,
       { hasIconColor: true },
     )
     const img = container.querySelector("img")
@@ -78,9 +112,90 @@ describe("MenuImage - Global Icon Color Override", () => {
     expect(container.querySelector("span[role='img']")).toBeNull()
   })
 
-  it("applies var(--sc-icon-color) to inline SVG when global icon color is enabled and override is false", () => {
+  it("enables recoloring for a custom AI Prompt icon when manual exclusion is false", () => {
+    const flaticonUrl = "https://cdn-icons-png.flaticon.com/512/11865/11865326.png"
     const { container } = renderWithContext(
-      <MenuImage svg={testSvg} overrideGlobalIconColor={false} />,
+      <MenuImage
+        src={flaticonUrl}
+        alt="AI Prompt Custom Icon"
+        excludeFromGlobalIconColor={false}
+        isFavicon={false}
+      />,
+      { hasIconColor: true },
+    )
+    const span = container.querySelector("span")
+    expect(span).not.toBeNull()
+    expect(span?.getAttribute("style")).toContain("var(--sc-icon-color)")
+    expect(span?.getAttribute("style")).toContain(flaticonUrl)
+    expect(container.querySelector("img")).toBeNull()
+  })
+
+  it("disables recoloring for a custom AI Prompt icon when excludeFromGlobalIconColor is true", () => {
+    const flaticonUrl = "https://cdn-icons-png.flaticon.com/512/11865/11865326.png"
+    const { container } = renderWithContext(
+      <MenuImage
+        src={flaticonUrl}
+        alt="AI Prompt Custom Icon"
+        excludeFromGlobalIconColor={true}
+        isFavicon={false}
+      />,
+      { hasIconColor: true },
+    )
+    const img = container.querySelector("img")
+    expect(img).not.toBeNull()
+    expect(img?.getAttribute("src")).toBe(flaticonUrl)
+    expect(container.querySelector("span")).toBeNull()
+  })
+
+  it("dynamically updates between recolorable custom icon and protected favicon on prop change", () => {
+    const customUrl = "https://cdn-icons-png.flaticon.com/512/11865/11865326.png"
+    const faviconUrl = "https://chatgpt.com/favicon.ico"
+
+    // 1. Initial render with custom icon (isFavicon: false)
+    const { container, rerender } = renderWithContext(
+      <MenuImage
+        src={customUrl}
+        alt="Icon"
+        excludeFromGlobalIconColor={false}
+        isFavicon={false}
+      />,
+      { hasIconColor: true },
+    )
+    expect(container.querySelector("span")).not.toBeNull()
+    expect(container.querySelector("img")).toBeNull()
+
+    // 2. Dynamically change to favicon (isFavicon: true)
+    rerender(
+      <popupContext.Provider value={{ side: SIDE.top, align: ALIGN.start, hasIconColor: true }}>
+        <MenuImage
+          src={faviconUrl}
+          alt="Icon"
+          excludeFromGlobalIconColor={false}
+          isFavicon={true}
+        />
+      </popupContext.Provider>,
+    )
+    expect(container.querySelector("img")).not.toBeNull()
+    expect(container.querySelector("span")).toBeNull()
+
+    // 3. Dynamically switch back to custom icon
+    rerender(
+      <popupContext.Provider value={{ side: SIDE.top, align: ALIGN.start, hasIconColor: true }}>
+        <MenuImage
+          src={customUrl}
+          alt="Icon"
+          excludeFromGlobalIconColor={false}
+          isFavicon={false}
+        />
+      </popupContext.Provider>,
+    )
+    expect(container.querySelector("span")).not.toBeNull()
+    expect(container.querySelector("img")).toBeNull()
+  })
+
+  it("applies var(--sc-icon-color) to inline SVG when global icon color is enabled and exclusion is false", () => {
+    const { container } = renderWithContext(
+      <MenuImage svg={testSvg} excludeFromGlobalIconColor={false} />,
       { hasIconColor: true },
     )
     const div = container.querySelector("div")
@@ -88,9 +203,9 @@ describe("MenuImage - Global Icon Color Override", () => {
     expect(div?.getAttribute("style")).toContain("var(--sc-icon-color)")
   })
 
-  it("keeps original foreground color on inline SVG when overrideGlobalIconColor is true", () => {
+  it("keeps original foreground color on inline SVG when excludeFromGlobalIconColor is true", () => {
     const { container } = renderWithContext(
-      <MenuImage svg={testSvg} overrideGlobalIconColor={true} />,
+      <MenuImage svg={testSvg} excludeFromGlobalIconColor={true} />,
       { hasIconColor: true },
     )
     const div = container.querySelector("div")
@@ -100,7 +215,7 @@ describe("MenuImage - Global Icon Color Override", () => {
 
   it("keeps original foreground color on inline SVG when global icon color is disabled", () => {
     const { container } = renderWithContext(
-      <MenuImage svg={testSvg} overrideGlobalIconColor={false} />,
+      <MenuImage svg={testSvg} excludeFromGlobalIconColor={false} />,
       { hasIconColor: false },
     )
     const div = container.querySelector("div")
@@ -111,7 +226,7 @@ describe("MenuImage - Global Icon Color Override", () => {
   describe("Accessibility (alt / decorative handling)", () => {
     it("sets aria-hidden='true' and omits role='img' on masked span when alt is empty or not provided", () => {
       const { container } = renderWithContext(
-        <MenuImage src={testUiUrl} alt="" overrideGlobalIconColor={false} isFavicon={false} />,
+        <MenuImage src={testUiUrl} alt="" excludeFromGlobalIconColor={false} isFavicon={false} />,
         { hasIconColor: true },
       )
       const span = container.querySelector("span")
@@ -123,7 +238,7 @@ describe("MenuImage - Global Icon Color Override", () => {
 
     it("sets role='img' and aria-label on masked span when meaningful alt is provided", () => {
       const { container } = renderWithContext(
-        <MenuImage src={testUiUrl} alt="Search Icon" overrideGlobalIconColor={false} isFavicon={false} />,
+        <MenuImage src={testUiUrl} alt="Search Icon" excludeFromGlobalIconColor={false} isFavicon={false} />,
         { hasIconColor: true },
       )
       const span = container.querySelector("span")

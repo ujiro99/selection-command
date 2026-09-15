@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest"
-import { render, screen } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { useForm, FormProvider } from "react-hook-form"
 import { IconField } from "./IconField"
 
@@ -13,48 +13,242 @@ vi.mock("@/services/i18n", () => ({
   t: (key: string) => key,
 }))
 
-function TestWrapper({ nameOverride }: { nameOverride?: string }) {
+type TestWrapperProps = {
+  initialValues?: {
+    iconUrl?: string
+    iconSvg?: string
+    excludeFromGlobalIconColor?: boolean
+    customExcludeField?: boolean
+  }
+  nameExclude?: string
+  onSubmit?: (data: any) => void
+}
+
+function TestWrapper({
+  initialValues,
+  nameExclude,
+  onSubmit,
+}: TestWrapperProps) {
   const methods = useForm({
     defaultValues: {
-      iconUrl: "https://example.com/icon.png",
-      iconSvg: "",
-      overrideGlobalIconColor: false,
-      customOverrideField: false,
+      iconUrl: initialValues?.iconUrl ?? "https://example.com/icon.png",
+      iconSvg: initialValues?.iconSvg ?? "",
+      excludeFromGlobalIconColor:
+        initialValues?.excludeFromGlobalIconColor ?? false,
+      customExcludeField: initialValues?.customExcludeField ?? false,
     },
   })
 
   return (
     <FormProvider {...methods}>
-      <IconField
-        control={methods.control}
-        nameUrl="iconUrl"
-        nameSvg="iconSvg"
-        nameOverride={nameOverride}
-        formLabel="Icon"
-      />
+      <form onSubmit={methods.handleSubmit((data) => onSubmit?.(data))}>
+        <IconField
+          control={methods.control}
+          nameUrl="iconUrl"
+          nameSvg="iconSvg"
+          nameExclude={nameExclude}
+          formLabel="Icon"
+        />
+        <button type="submit" data-testid="submit-btn">
+          Submit
+        </button>
+      </form>
     </FormProvider>
   )
 }
 
-describe("IconField Accessibility", () => {
-  it("renders the override switch with id, htmlFor, and accessible name", () => {
-    render(<TestWrapper />)
-    const toggle = screen.getByRole("switch")
-    expect(toggle).toBeDefined()
-    expect(toggle.getAttribute("id")).toBe("overrideGlobalIconColor")
-    expect(toggle.getAttribute("aria-label")).toBe("Option_overrideGlobalIconColor")
+describe("IconField - Global Icon Color Exclusion", () => {
+  const faviconUrl = "https://www.google.com/favicon.ico"
+  const nonFaviconUrl = "https://cdn3.iconfinder.com/icon.png"
+  const googleServiceIcon =
+    "https://www.gstatic.com/images/branding/product/2x/calendar_2020q4_32dp.png"
 
-    const label = document.querySelector('label[for="overrideGlobalIconColor"]')
-    expect(label).not.toBeNull()
+  describe("Accessibility and basics", () => {
+    it("renders the exclude switch with id, htmlFor, and accessible name", () => {
+      render(<TestWrapper />)
+      const toggle = screen.getByRole("switch")
+      expect(toggle).toBeDefined()
+      expect(toggle.getAttribute("id")).toBe("excludeFromGlobalIconColor")
+      expect(toggle.getAttribute("aria-label")).toBe(
+        "Option_excludeFromGlobalIconColor",
+      )
+
+      const label = document.querySelector(
+        'label[for="excludeFromGlobalIconColor"]',
+      )
+      expect(label).not.toBeNull()
+    })
+
+    it("supports custom nameExclude prop", () => {
+      render(<TestWrapper nameExclude="customExcludeField" />)
+      const toggle = screen.getByRole("switch")
+      expect(toggle.getAttribute("id")).toBe("customExcludeField")
+
+      const label = document.querySelector('label[for="customExcludeField"]')
+      expect(label).not.toBeNull()
+    })
   })
 
-  it("supports custom nameOverride prop", () => {
-    render(<TestWrapper nameOverride="customOverrideField" />)
-    const toggle = screen.getByRole("switch")
-    expect(toggle.getAttribute("id")).toBe("customOverrideField")
+  describe("Automatic favicon exclusion", () => {
+    it("disables manual toggle and shows automatic status for a website favicon", () => {
+      render(
+        <TestWrapper
+          initialValues={{
+            iconUrl: faviconUrl,
+            excludeFromGlobalIconColor: false,
+          }}
+        />,
+      )
 
-    const label = document.querySelector('label[for="customOverrideField"]')
-    expect(label).not.toBeNull()
+      const toggle = screen.getByRole("switch")
+      expect(toggle).toBeDisabled()
+      expect(toggle).toBeChecked()
+
+      // Automatic badge should be present
+      const badge = screen.getByTestId("favicon-automatic-badge")
+      expect(badge).toBeDefined()
+      expect(badge.textContent).toBe("Option_excludeFromGlobalIconColor_automatic")
+
+      // Explanation for automatic favicon exclusion
+      expect(
+        screen.getByText("Option_excludeFromGlobalIconColor_favicon_desc"),
+      ).toBeDefined()
+    })
+
+    it("disables manual toggle and shows automatic status for a Google service icon", () => {
+      render(
+        <TestWrapper
+          initialValues={{
+            iconUrl: googleServiceIcon,
+            excludeFromGlobalIconColor: false,
+          }}
+        />,
+      )
+
+      const toggle = screen.getByRole("switch")
+      expect(toggle).toBeDisabled()
+      expect(toggle).toBeChecked()
+
+      expect(screen.getByTestId("favicon-automatic-badge")).toBeDefined()
+      expect(
+        screen.getByText("Option_excludeFromGlobalIconColor_favicon_desc"),
+      ).toBeDefined()
+    })
+
+    it("enables manual toggle and shows default description for non-favicon icon", () => {
+      render(
+        <TestWrapper
+          initialValues={{
+            iconUrl: nonFaviconUrl,
+            excludeFromGlobalIconColor: false,
+          }}
+        />,
+      )
+
+      const toggle = screen.getByRole("switch")
+      expect(toggle).toBeEnabled()
+      expect(toggle).not.toBeChecked()
+
+      expect(screen.queryByTestId("favicon-automatic-badge")).toBeNull()
+      expect(
+        screen.getByText("Option_excludeFromGlobalIconColor_desc"),
+      ).toBeDefined()
+    })
+  })
+
+  describe("Dynamic URL changes and state preservation", () => {
+    it("updates automatic/manual control availability when URL changes between favicon and non-favicon", () => {
+      render(
+        <TestWrapper
+          initialValues={{
+            iconUrl: faviconUrl,
+            excludeFromGlobalIconColor: false,
+          }}
+        />,
+      )
+
+      const urlInput = screen.getByRole("textbox")
+      const toggle = screen.getByRole("switch")
+
+      // 1. Initial state with favicon: disabled & checked
+      expect(toggle).toBeDisabled()
+      expect(toggle).toBeChecked()
+      expect(screen.getByTestId("favicon-automatic-badge")).toBeDefined()
+
+      // 2. Change URL to non-favicon -> toggle becomes available, restores saved false
+      fireEvent.change(urlInput, { target: { value: nonFaviconUrl } })
+      expect(toggle).toBeEnabled()
+      expect(toggle).not.toBeChecked()
+      expect(screen.queryByTestId("favicon-automatic-badge")).toBeNull()
+
+      // 3. Manually toggle to true
+      fireEvent.click(toggle)
+      expect(toggle).toBeChecked()
+
+      // 4. Change URL back to favicon -> toggle becomes disabled, shows automatic
+      fireEvent.change(urlInput, { target: { value: faviconUrl } })
+      expect(toggle).toBeDisabled()
+      expect(toggle).toBeChecked()
+      expect(screen.getByTestId("favicon-automatic-badge")).toBeDefined()
+
+      // 5. Change URL back to non-favicon -> toggle becomes enabled, previous manual true is retained
+      fireEvent.change(urlInput, { target: { value: nonFaviconUrl } })
+      expect(toggle).toBeEnabled()
+      expect(toggle).toBeChecked()
+    })
+
+    it("does not overwrite saved manual preference when icon is a favicon and submitted", async () => {
+      const handleSubmit = vi.fn()
+      render(
+        <TestWrapper
+          initialValues={{
+            iconUrl: faviconUrl,
+            excludeFromGlobalIconColor: false,
+          }}
+          onSubmit={handleSubmit}
+        />,
+      )
+
+      fireEvent.click(screen.getByTestId("submit-btn"))
+
+      // The submitted data must have excludeFromGlobalIconColor: false
+      // Automatic favicon exclusion must NOT permanently mutate the stored field
+      await waitFor(() => {
+        expect(handleSubmit).toHaveBeenCalledWith(
+          expect.objectContaining({
+            iconUrl: faviconUrl,
+            excludeFromGlobalIconColor: false,
+          }),
+        )
+      })
+    })
+
+    it("restores correct state when reopening with favicon vs non-favicon saved values", () => {
+      // Scenario A: Saved command with favicon URL and false manual setting
+      const { unmount } = render(
+        <TestWrapper
+          initialValues={{
+            iconUrl: faviconUrl,
+            excludeFromGlobalIconColor: false,
+          }}
+        />,
+      )
+      expect(screen.getByRole("switch")).toBeDisabled()
+      expect(screen.getByRole("switch")).toBeChecked()
+      unmount()
+
+      // Scenario B: Saved command with non-favicon URL and true manual setting
+      render(
+        <TestWrapper
+          initialValues={{
+            iconUrl: nonFaviconUrl,
+            excludeFromGlobalIconColor: true,
+          }}
+        />,
+      )
+      expect(screen.getByRole("switch")).toBeEnabled()
+      expect(screen.getByRole("switch")).toBeChecked()
+    })
   })
 })
 
