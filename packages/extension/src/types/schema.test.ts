@@ -55,3 +55,90 @@ describe("AiPromptOptionSchema", () => {
     }
   })
 })
+
+describe("overrideGlobalIconColor in schemas", () => {
+  it("SC-06: accepts command with overrideGlobalIconColor true and false", () => {
+    const validSearchCmd = {
+      id: "test-cmd",
+      openMode: OPEN_MODE.POPUP,
+      title: "Test Search",
+      iconUrl: "https://example.com/icon.png",
+      searchUrl: "https://example.com/search?q=%s",
+      openModeSecondary: OPEN_MODE.TAB,
+      spaceEncoding: SPACE_ENCODING.PLUS,
+      overrideGlobalIconColor: true,
+    }
+    const res = commandSchema.safeParse(validSearchCmd)
+    expect(res.success).toBe(true)
+    if (res.success) {
+      expect(res.data.overrideGlobalIconColor).toBe(true)
+    }
+
+    const withoutOverride = {
+      ...validSearchCmd,
+      overrideGlobalIconColor: undefined,
+    }
+    const res2 = commandSchema.safeParse(withoutOverride)
+    expect(res2.success).toBe(true)
+  })
+
+  it("SC-07: accepts folder with overrideGlobalIconColor", () => {
+    const validFolder = {
+      id: "test-folder",
+      title: "Test Folder",
+      iconUrl: "https://example.com/folder.png",
+      overrideGlobalIconColor: true,
+    }
+    const res = folderSchema.safeParse(validFolder)
+    expect(res.success).toBe(true)
+    if (res.success) {
+      expect(res.data.overrideGlobalIconColor).toBe(true)
+    }
+  })
+})
+
+describe("PageActionOption in schemas", () => {
+  const basePageActionCmd = {
+    id: "test-pa-cmd",
+    openMode: OPEN_MODE.PAGE_ACTION,
+    title: "Test Page Action",
+    iconUrl: "https://example.com/icon.png",
+    pageActionOption: {
+      startUrl: "https://example.com",
+      openMode: "popup",
+      steps: [],
+    },
+  }
+
+  it("SC-08: accepts PageAction command without prompt field (backward compatibility)", () => {
+    const res = commandSchema.safeParse(basePageActionCmd)
+    expect(res.success).toBe(true)
+  })
+
+  it("SC-09: accepts PageAction command with empty prompt", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        prompt: "",
+      },
+    })
+    expect(res.success).toBe(true)
+  })
+
+  it("SC-10: accepts PageAction command with configured prompt", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        prompt: "Summarize: {{SelectedText}}",
+      },
+    })
+    expect(res.success).toBe(true)
+    if (res.success && "pageActionOption" in res.data) {
+      expect((res.data.pageActionOption as any).prompt).toBe(
+        "Summarize: {{SelectedText}}",
+      )
+    }
+  })
+})

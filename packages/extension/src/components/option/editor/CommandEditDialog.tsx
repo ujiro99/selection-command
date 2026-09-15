@@ -194,6 +194,7 @@ const getDefault = (
         pageUrl: "",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         steps: [],
+        prompt: "",
       },
     }
   }
@@ -412,6 +413,7 @@ const CommandEditDialogInner = ({
         openMode: getValues("pageActionOption.openMode"),
         size: getValues("popupOption") ?? POPUP_OPTION,
         steps: getValues("pageActionOption.steps"),
+        prompt: getValues("pageActionOption.prompt"),
       },
     )
     await Ipc.send(BgCommand.startPageActionRecorder, {

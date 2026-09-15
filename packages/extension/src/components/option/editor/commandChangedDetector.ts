@@ -18,7 +18,15 @@ export function hasCommandChanged(
   if (isPageActionType(command)) {
     const { openMode: _a, ...pao } = currentPageActionOption ?? {}
     const { openMode: _b, ...cmdPao } = command.pageActionOption
-    return JSON.stringify(pao) !== JSON.stringify(cmdPao)
+    const normalizedPao = {
+      ...pao,
+      prompt: pao.prompt || undefined,
+    }
+    const normalizedCmdPao = {
+      ...cmdPao,
+      prompt: cmdPao.prompt || undefined,
+    }
+    return JSON.stringify(normalizedPao) !== JSON.stringify(normalizedCmdPao)
   }
   if (isAiPromptType(command)) {
     return currentAiPromptPrompt !== command.aiPromptOption.prompt

@@ -90,4 +90,5 @@ export type PageActionOption = {
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
   userVariables?: Array<UserVariable>
+  prompt?: string
 }

@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "Verzögerungszeit"
   },
+  "Option_pageAction_prompt": {
+    "message": "Prompt"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Vorlage für den einzufügenden Prompt. Sie können Variablen aus dem Menü hinzufügen."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Fügen Sie dynamische Variablen wie markierten Text ein und verweisen Sie in Schritten mit {{Prompt}} darauf."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "z. B.: Fassen Sie folgenden Text zusammen:\n{{Ausgewählter Text}}"
+  },
   "Option_aiPrompt_service": {
     "message": "KI-Dienst"
   },
@@ -855,6 +867,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "Das HTML des ausgewählten Bereichs wird als Datei angehängt"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "Prompt wird eingefügt"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Text einfügen"
   },
@@ -863,6 +878,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Ausgewählter Text"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "Original-URL"

@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "Время ожидания"
   },
+  "Option_pageAction_prompt": {
+    "message": "Промпт"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Шаблон промпта для ввода. Вы можете добавлять переменные из меню."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Вставляйте динамические переменные, такие как выбранный текст, и ссылайтесь на них в шагах с помощью {{Промпт}}."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "напр.: Сократите следующий текст:\n{{Выбранный текст}}"
+  },
   "Option_aiPrompt_service": {
     "message": "Сервис ИИ"
   },
@@ -855,6 +867,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "HTML выбранного диапазона будет прикреплён в виде файла"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "Будет вставлен промпт"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Вставить текст"
   },
@@ -863,6 +878,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Выбранный текст"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Промпт"
   },
   "PageAction_InputMenu_url": {
     "message": "Оригинальный URL"

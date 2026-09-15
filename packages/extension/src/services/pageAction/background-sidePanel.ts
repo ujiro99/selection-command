@@ -32,6 +32,7 @@ export const runViaPort = (
     clipboardText,
     pageHtml,
     selectionHtml,
+    prompt,
   } = param
 
   const executeStep = (
@@ -61,6 +62,7 @@ export const runViaPort = (
             userVariables: [],
             pageHtml: stepPageHtml,
             selectionHtml: stepSelectionHtml,
+            prompt,
           },
         })
         resolve({ result: true })
@@ -96,6 +98,7 @@ export const runViaPort = (
           userVariables: [],
           pageHtml: stepPageHtml,
           selectionHtml: stepSelectionHtml,
+          prompt,
         },
       })
     })

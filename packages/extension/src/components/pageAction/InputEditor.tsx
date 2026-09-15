@@ -53,6 +53,7 @@ export function InputEditor(props: InputEditorProps) {
               targetElm={textarea}
               className="w-fit relative left-[100%] -translate-x-[100%] -top-1"
               hideFilePaste
+              showPrompt
             />
             <Textarea
               id="input-action"

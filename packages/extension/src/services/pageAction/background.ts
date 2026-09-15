@@ -429,7 +429,15 @@ export const openAndRun = (
     const steps = param.steps
     const userVariables = param.userVariables || []
     run(
-      { ...param, tabId, steps, selectedText, clipboardText, userVariables },
+      {
+        ...param,
+        tabId,
+        steps,
+        selectedText,
+        clipboardText,
+        userVariables,
+        prompt: param.prompt,
+      },
       sender,
       response,
     )
@@ -462,7 +470,11 @@ export const preview = (
       await chrome.tabs.update(tabId, { url: option.startUrl })
     }
 
-    run(param, sender, response)
+    run(
+      { ...param, prompt: param.prompt ?? option?.prompt },
+      sender,
+      response,
+    )
   }
 
   func()
@@ -483,6 +495,7 @@ const run = (
     userVariables,
     pageHtml,
     selectionHtml,
+    prompt,
   } = param
   const tabId = param.tabId || sender.tab?.id
   if (tabId == null) {
@@ -527,6 +540,7 @@ const run = (
         userVariables,
         pageHtml: isFilePaste ? pageHtml : undefined,
         selectionHtml: isFilePaste ? selectionHtml : undefined,
+        prompt,
       })
       if (ret == null) {
         if (retryCount >= RETRY_MAX) {

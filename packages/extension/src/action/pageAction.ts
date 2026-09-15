@@ -35,13 +35,26 @@ export const PageAction = {
       return
     }
 
-    // Checks if any step requires clipboard data
-    const needClipboard = command.pageActionOption.steps.some((step) => {
-      return (
+    // Checks if any step directly or indirectly requires clipboard data
+    const hasPromptStep = command.pageActionOption.steps.some(
+      (step) =>
         step.param.type === PAGE_ACTION_EVENT.input &&
-        step.param.value.includes(toInsertTemplate(INSERT.CLIPBOARD))
-      )
-    })
+        step.param.value.includes(toInsertTemplate(INSERT.PROMPT)),
+    )
+    const promptNeedsClipboard =
+      hasPromptStep &&
+      (command.pageActionOption.prompt?.includes(
+        toInsertTemplate(INSERT.CLIPBOARD),
+      ) ?? false)
+
+    const needClipboard =
+      promptNeedsClipboard ||
+      command.pageActionOption.steps.some((step) => {
+        return (
+          step.param.type === PAGE_ACTION_EVENT.input &&
+          step.param.value.includes(toInsertTemplate(INSERT.CLIPBOARD))
+        )
+      })
 
     const url: UrlParam = {
       searchUrl: command.pageActionOption.startUrl,
@@ -73,6 +86,7 @@ export const PageAction = {
       srcUrl: pageUrl ?? "",
       openMode,
       userVariables: userVariables ?? command.pageActionOption.userVariables,
+      prompt: command.pageActionOption.prompt,
     })
   },
 }

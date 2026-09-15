@@ -48,6 +48,7 @@ export function usePageActionRunner() {
       userVariables,
       pageHtml,
       selectionHtml,
+      prompt,
     } = message
     const type = step.param.type
 
@@ -101,6 +102,7 @@ export function usePageActionRunner() {
             selectedText,
             clipboardText,
             userVariables,
+            prompt,
           } as PageAction.InputExec)
           break
         case "filePaste":
