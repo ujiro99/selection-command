@@ -1,46 +1,35 @@
+import { parse } from "tldts"
 import { isEmpty } from "@/lib/utils"
 import type { Command } from "@/types"
-import { OPEN_MODE } from "@shared/constants/open-mode"
-
-const SECOND_LEVEL_DOMAINS = new Set([
-  "ac",
-  "co",
-  "com",
-  "edu",
-  "firm",
-  "gen",
-  "gov",
-  "id",
-  "ind",
-  "ltd",
-  "me",
-  "net",
-  "ne",
-  "nom",
-  "or",
-  "org",
-  "re",
-])
 
 /**
- * Extracts the registrable domain (eTLD+1) from a hostname,
- * properly handling multi-part country-code suffixes like .co.uk, .com.au, .co.jp.
+ * Extracts the registrable domain (eTLD+1) from a hostname or URL using tldts.
+ * Handles normal domains, subdomains, multi-part public suffixes (e.g. .co.uk, .co.jp),
+ * localhost, IP addresses, and invalid/empty inputs consistently.
  */
 export function getRegistrableDomain(hostname: string): string {
-  const cleanHost = hostname.toLowerCase().replace(/^www\./, "")
-  const parts = cleanHost.split(".")
-  if (parts.length <= 2) {
-    return cleanHost
+  if (!hostname || isEmpty(hostname.trim())) {
+    return ""
   }
 
-  const tld = parts[parts.length - 1]
-  const sld = parts[parts.length - 2]
+  const cleanHost = hostname.trim().toLowerCase().replace(/^www\./, "")
+  const parsed = parse(cleanHost)
 
-  if (tld.length === 2 && SECOND_LEVEL_DOMAINS.has(sld)) {
-    return parts.slice(-3).join(".")
+  if (parsed.domain) {
+    return parsed.domain
   }
 
-  return parts.slice(-2).join(".")
+  // Handle IP addresses (e.g. 127.0.0.1, 192.168.1.1, ::1)
+  if (parsed.isIp && parsed.hostname) {
+    return parsed.hostname
+  }
+
+  // Handle localhost
+  if (parsed.hostname === "localhost") {
+    return "localhost"
+  }
+
+  return ""
 }
 
 /**
@@ -51,12 +40,6 @@ export function isFaviconIcon(options: {
   command?: Command
 }): boolean {
   const { url, command } = options
-
-  // AI Prompt commands target AI web services (ChatGPT, Gemini, Claude, Perplexity)
-  // and their icons are brand logos/favicons.
-  if (command?.openMode === OPEN_MODE.AI_PROMPT) {
-    return true
-  }
 
   if (!url || isEmpty(url)) return false
 
@@ -86,10 +69,10 @@ export function isFaviconIcon(options: {
     return true
   }
 
-  // 3. Known brand icons (e.g. Google Gemini aurora SVG, gstatic AI icons)
+  // 3. Known brand icons & first-party service asset domains (e.g. Google service icons on gstatic.com, Google Gemini aurora SVG)
   if (
-    lower.includes("gemini_sparkle_aurora") ||
-    lower.includes("gstatic.com/lamda/images")
+    lower.includes("gemini_sparkle") ||
+    lower.includes("gstatic.com")
   ) {
     return true
   }
@@ -113,10 +96,7 @@ export function isFaviconIcon(options: {
         if (!isIconLibrary) {
           const targetRoot = getRegistrableDomain(targetHost)
           const iconRoot = getRegistrableDomain(iconHost)
-          if (
-            (targetRoot && iconRoot && targetRoot === iconRoot) ||
-            (targetHost.includes("google") && iconHost.includes("gstatic.com"))
-          ) {
+          if (targetRoot && iconRoot && targetRoot === iconRoot) {
             return true
           }
         }

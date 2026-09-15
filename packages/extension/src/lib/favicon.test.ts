@@ -46,25 +46,106 @@ describe("isFaviconIcon", () => {
     expect(isFaviconIcon({ url: "https://favicon.im/perplexity.ai" })).toBe(true)
   })
 
-  it("recognizes Gemini brand aurora icon", () => {
+  it("recognizes known brand icons and first-party service asset domains (Step 3)", () => {
     expect(
       isFaviconIcon({
         url: "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
       }),
     ).toBe(true)
+    expect(
+      isFaviconIcon({
+        url: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+      }),
+    ).toBe(true)
+    expect(
+      isFaviconIcon({
+        url: "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
+      }),
+    ).toBe(true)
   })
 
-  it("recognizes AI prompt commands as favicons", () => {
-    const cmd = {
-      id: "ai-1",
-      title: "Custom AI",
+  it("recognizes AI prompt commands with genuine AI-service favicon URLs as favicons", () => {
+    const chatGptCmd = {
+      id: "ai-chatgpt",
+      title: "ChatGPT",
       openMode: OPEN_MODE.AI_PROMPT,
-      iconUrl: "https://custom-ai.com/logo.png",
+      iconUrl: "https://chatgpt.com/favicon.ico",
     } as Command
-    expect(isFaviconIcon({ url: cmd.iconUrl, command: cmd })).toBe(true)
+    expect(isFaviconIcon({ url: chatGptCmd.iconUrl, command: chatGptCmd })).toBe(true)
+
+    const geminiCmd = {
+      id: "ai-gemini",
+      title: "Gemini",
+      openMode: OPEN_MODE.AI_PROMPT,
+      iconUrl: "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
+    } as Command
+    expect(isFaviconIcon({ url: geminiCmd.iconUrl, command: geminiCmd })).toBe(true)
+
+    const claudeCmd = {
+      id: "ai-claude",
+      title: "Claude",
+      openMode: OPEN_MODE.AI_PROMPT,
+      iconUrl: "https://favicon.im/claude.ai",
+    } as Command
+    expect(isFaviconIcon({ url: claudeCmd.iconUrl, command: claudeCmd })).toBe(true)
+
+    const perplexityCmd = {
+      id: "ai-perplexity",
+      title: "Perplexity",
+      openMode: OPEN_MODE.AI_PROMPT,
+      iconUrl: "https://favicon.im/perplexity.ai",
+    } as Command
+    expect(isFaviconIcon({ url: perplexityCmd.iconUrl, command: perplexityCmd })).toBe(true)
   })
 
-  it("recognizes site-hosted icons matching searchUrl domain", () => {
+  it("does NOT recognize AI prompt commands with custom Flaticon or Iconfinder URLs as favicons", () => {
+    const flaticonCmd = {
+      id: "ai-custom-flaticon",
+      title: "Run with AI",
+      openMode: OPEN_MODE.AI_PROMPT,
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/11865/11865326.png",
+    } as Command
+    expect(isFaviconIcon({ url: flaticonCmd.iconUrl, command: flaticonCmd })).toBe(false)
+
+    const iconfinderCmd = {
+      id: "ai-custom-iconfinder",
+      title: "Run with AI",
+      openMode: OPEN_MODE.AI_PROMPT,
+      iconUrl: "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
+    } as Command
+    expect(isFaviconIcon({ url: iconfinderCmd.iconUrl, command: iconfinderCmd })).toBe(false)
+  })
+
+  it("handles normal commands with genuine favicons vs custom icons appropriately", () => {
+    const normalWithFavicon = {
+      id: "norm-1",
+      title: "Google Search",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "https://www.google.com/search?q=%s",
+      iconUrl: "https://www.google.com/favicon.ico",
+    } as Command
+    expect(isFaviconIcon({ url: normalWithFavicon.iconUrl, command: normalWithFavicon })).toBe(true)
+
+    const normalWithCustom = {
+      id: "norm-2",
+      title: "Custom Command",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "https://www.google.com/search?q=%s",
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/11865/11865326.png",
+    } as Command
+    expect(isFaviconIcon({ url: normalWithCustom.iconUrl, command: normalWithCustom })).toBe(false)
+  })
+
+  it("recognizes site-hosted icons matching searchUrl domain generically (Step 4)", () => {
+    const genericCmd = {
+      id: "site-1",
+      title: "Example Site",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "https://example.com/search?q=%s",
+      iconUrl: "https://cdn.example.com/images/logo.png",
+    } as Command
+    expect(isFaviconIcon({ url: genericCmd.iconUrl, command: genericCmd })).toBe(true)
+
     const driveCmd = {
       id: "drive-1",
       title: "Drive",
@@ -96,6 +177,17 @@ describe("isFaviconIcon", () => {
         url: "images/search_command.png",
       }),
     ).toBe(false)
+  })
+
+  it("excludes icon libraries even when domain would otherwise match (generic isIconLibrary check)", () => {
+    const iconfinderCmd = {
+      id: "if-1",
+      title: "IconFinder",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "https://iconfinder.com/search?q=%s",
+      iconUrl: "https://cdn3.iconfinder.com/data/icons/feather-5/24/search-1024.png",
+    } as Command
+    expect(isFaviconIcon({ url: iconfinderCmd.iconUrl, command: iconfinderCmd })).toBe(false)
   })
 
   it("handles empty or data URLs safely", () => {
@@ -152,6 +244,46 @@ describe("isFaviconIcon", () => {
       }),
     ).toBe(false)
   })
+
+  it("correlates localhost target with localhost icon", () => {
+    const localCmd = {
+      id: "local-1",
+      title: "Local App",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "http://localhost:3000/search?q=%s",
+      iconUrl: "http://localhost:3000/app-icon.png",
+    } as Command
+    expect(isFaviconIcon({ url: localCmd.iconUrl, command: localCmd })).toBe(true)
+
+    const otherLocalCmd = {
+      id: "local-2",
+      title: "Local App",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "http://localhost:3000/search?q=%s",
+      iconUrl: "https://example.com/app-icon.png",
+    } as Command
+    expect(isFaviconIcon({ url: otherLocalCmd.iconUrl, command: otherLocalCmd })).toBe(false)
+  })
+
+  it("correlates IP address target with matching IP icon", () => {
+    const ipCmd = {
+      id: "ip-1",
+      title: "Router",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "http://192.168.1.1/search?q=%s",
+      iconUrl: "http://192.168.1.1/icon.png",
+    } as Command
+    expect(isFaviconIcon({ url: ipCmd.iconUrl, command: ipCmd })).toBe(true)
+
+    const diffIpCmd = {
+      id: "ip-2",
+      title: "Router",
+      openMode: OPEN_MODE.TAB,
+      searchUrl: "http://192.168.1.1/search?q=%s",
+      iconUrl: "http://192.168.1.2/icon.png",
+    } as Command
+    expect(isFaviconIcon({ url: diffIpCmd.iconUrl, command: diffIpCmd })).toBe(false)
+  })
 })
 
 describe("getRegistrableDomain", () => {
@@ -171,9 +303,22 @@ describe("getRegistrableDomain", () => {
     expect(getRegistrableDomain("org.org.uk")).toBe("org.org.uk")
   })
 
-  it("handles short or invalid hostnames safely", () => {
+  it("handles localhost correctly", () => {
     expect(getRegistrableDomain("localhost")).toBe("localhost")
-    expect(getRegistrableDomain("com")).toBe("com")
+    expect(getRegistrableDomain("http://localhost:3000")).toBe("localhost")
+  })
+
+  it("handles IP addresses correctly", () => {
+    expect(getRegistrableDomain("127.0.0.1")).toBe("127.0.0.1")
+    expect(getRegistrableDomain("192.168.1.1")).toBe("192.168.1.1")
+    expect(getRegistrableDomain("http://192.168.1.1:8080")).toBe("192.168.1.1")
+    expect(getRegistrableDomain("::1")).toBe("::1")
+  })
+
+  it("handles empty, whitespace, and invalid values safely", () => {
+    expect(getRegistrableDomain("")).toBe("")
+    expect(getRegistrableDomain("   ")).toBe("")
+    expect(getRegistrableDomain("invalid")).toBe("")
+    expect(getRegistrableDomain("com")).toBe("")
   })
 })
-
