@@ -719,6 +719,18 @@
   "Option_userStyles_desc_font_color": {
     "message": "文字の色を指定します。デフォルト: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "アイコンの色"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "アイコンの色を指定します。デフォルト: #0F172A"
+  },
+  "Option_overrideGlobalIconColor": {
+    "message": "全体のアイコン色を上書きする"
+  },
+  "Option_overrideGlobalIconColor_desc": {
+    "message": "モノクロアイコンに最適です。多色PNGアイコンは全体が単色で塗りつぶされる場合があります。"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "文字サイズの倍率"
   },

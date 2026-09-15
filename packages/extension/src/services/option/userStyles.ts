@@ -30,6 +30,10 @@ export const Attributes: AttributeMap = {
     type: "color",
     default: "#0F172A",
   },
+  [STYLE_VARIABLE.ICON_COLOR]: {
+    type: "color",
+    default: "#0F172A",
+  },
   [STYLE_VARIABLE.IMAGE_SCALE]: {
     type: "number",
     default: 1,

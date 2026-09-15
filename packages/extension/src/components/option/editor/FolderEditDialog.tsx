@@ -48,6 +48,7 @@ export const FolderEditDialog = ({
     title: "",
     iconUrl:
       "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
+    overrideGlobalIconColor: false,
     onlyIcon: true,
     parentFolderId: ROOT_FOLDER,
     style: FOLDER_STYLE.INHERIT,

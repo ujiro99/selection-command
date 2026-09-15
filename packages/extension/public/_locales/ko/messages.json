@@ -719,6 +719,18 @@
   "Option_userStyles_desc_font_color": {
     "message": "글꼴 색상을 지정합니다. 기본값: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Icon Color"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Specify icon color. Default: #0F172A"
+  },
+  "Option_overrideGlobalIconColor": {
+    "message": "Override global icon color"
+  },
+  "Option_overrideGlobalIconColor_desc": {
+    "message": "Best for monochrome icons; multicolor PNG icons may be recolored entirely."
+  },
   "Option_userStyles_option_font_scale": {
     "message": "글꼴 크기 스케일"
   },

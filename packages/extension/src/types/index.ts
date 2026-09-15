@@ -49,6 +49,7 @@ export type SearchCommand = {
   title: string
   revision?: number
   iconUrl: string
+  overrideGlobalIconColor?: boolean
   sourceType?: COMMAND_SOURCE_TYPE
   sourceId?: string
   openMode: OPEN_MODE
@@ -121,6 +122,7 @@ export type CommandFolder = {
   title: string
   iconUrl?: string
   iconSvg?: string
+  overrideGlobalIconColor?: boolean
   onlyIcon?: boolean
   parentFolderId?: string
   style?: FOLDER_STYLE

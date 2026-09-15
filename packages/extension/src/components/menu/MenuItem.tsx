@@ -9,6 +9,9 @@ import { useCommandExecutor } from "@/hooks/useCommandExecutor"
 import { getCommandEnabled } from "@/lib/commandEnabled"
 import { PopupOption } from "@/services/option/defaultSettings"
 import { ExecState } from "@/const"
+import { MenuImage } from "@/components/menu/MenuImage"
+import { isFaviconIcon } from "@/lib/favicon"
+import { IconUrlsContext } from "./Menu"
 import type { Command } from "@/types"
 
 import css from "./Menu.module.css"
@@ -21,6 +24,8 @@ type MenuItemProps = {
 
 export function MenuItem(props: MenuItemProps): React.ReactNode {
   const buttonRef = useRef(null)
+  const iconUrls = React.useContext(IconUrlsContext)
+  const rawUrl = iconUrls?.[props.command.id] || props.command.iconUrl
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
@@ -83,7 +88,15 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         onClick={handleClick}
         disabled={!enabled}
       >
-        <ImageWithState state={itemState.state} iconUrl={iconUrl} />
+        <ImageWithState
+          state={itemState.state}
+          iconUrl={iconUrl}
+          overrideGlobalIconColor={props.command.overrideGlobalIconColor}
+          isFavicon={isFaviconIcon({
+            url: rawUrl,
+            command: props.command,
+          })}
+        />
         {!onlyIcon && <span className={css.itemTitle}>{title}</span>}
       </button>
       <Tooltip
@@ -105,14 +118,22 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 type ImageProps = {
   state: ExecState
   iconUrl: string
+  overrideGlobalIconColor?: boolean
+  isFavicon?: boolean
 }
 
 function ImageWithState(props: ImageProps): JSX.Element {
-  const { iconUrl, state: status } = props
+  const { iconUrl, state: status, overrideGlobalIconColor, isFavicon } = props
   return (
     <>
       {status === ExecState.NONE && (
-        <img className={css.itemImg} src={iconUrl} alt="" aria-hidden="true" />
+        <MenuImage
+          className={css.itemImg}
+          src={iconUrl}
+          alt=""
+          overrideGlobalIconColor={overrideGlobalIconColor}
+          isFavicon={isFavicon}
+        />
       )}
       {status === ExecState.EXECUTING && (
         <RefreshCw className={`${css.itemImg} ${css.apiIconLoading} rotate`} />

@@ -8,7 +8,7 @@ import { useSidePanelNavigation } from "@/hooks/useSidePanelNavigation"
 import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { popupContext } from "@/hooks/usePopupContext"
-import { hexToHsl, isMac, onHover, cn } from "@/lib/utils"
+import { hexToHsl, isMac, onHover, cn, isEmpty } from "@/lib/utils"
 import { t } from "@/services/i18n"
 import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
 
@@ -110,6 +110,12 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       setDetectSelectionEnabled(!hover)
     }
 
+    const hasIconColor = Boolean(
+      userSettings?.userStyles?.some(
+        (s: any) => s.name === STYLE_VARIABLE.ICON_COLOR && !isEmpty(s.value),
+      ),
+    )
+
     return (
       <popupContext.Provider
         value={{
@@ -118,6 +124,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
           inOnboarding: props.inOnboarding,
           side,
           align,
+          hasIconColor,
         }}
       >
         {isPreview && <PreviewDesc {...props} />}

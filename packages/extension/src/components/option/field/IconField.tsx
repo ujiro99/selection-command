@@ -7,10 +7,13 @@ import { isEmpty, isValidSVG } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
+import { Switch } from "@/components/ui/switch"
+
 type IconField = {
   control: any
   nameUrl: string
   nameSvg: string
+  nameOverride?: string
   formLabel: string
   placeholder?: string
   description?: string
@@ -22,6 +25,7 @@ export const IconField = ({
   control,
   nameUrl,
   nameSvg,
+  nameOverride = "overrideGlobalIconColor",
   formLabel,
   description,
   placeholder,
@@ -34,16 +38,20 @@ export const IconField = ({
     name: nameSvg,
     control,
   })
+  const { field: fieldOverride } = useController({
+    name: nameOverride,
+    control,
+  })
   const errUrl = stateUrl.errors[nameUrl]
   const errSvg = stateSvg.errors[nameSvg]
 
   return (
-    <div className="flex items-center gap-1">
-      <div className="w-2/6">
+    <div className="flex items-start gap-1">
+      <div className="w-2/6 pt-2">
         <FormLabel>{formLabel}</FormLabel>
         {description && <FormDescription>{description}</FormDescription>}
       </div>
-      <div className="w-4/6 relative">
+      <div className="w-4/6 relative space-y-2">
         <IconUrlInput
           fieldUrl={fieldUrl}
           fieldSvg={fieldSvg}
@@ -56,6 +64,20 @@ export const IconField = ({
             {errSvg && <span>{`${errSvg.message}`}</span>}
           </p>
         )}
+        <div className="flex items-center justify-between gap-2 border-t pt-2">
+          <div className="space-y-0.5">
+            <FormLabel className="text-sm font-normal cursor-pointer">
+              {t("overrideGlobalIconColor")}
+            </FormLabel>
+            <FormDescription className="text-xs">
+              {t("overrideGlobalIconColor_desc")}
+            </FormDescription>
+          </div>
+          <Switch
+            checked={!!fieldOverride?.value}
+            onCheckedChange={fieldOverride?.onChange}
+          />
+        </div>
       </div>
     </div>
   )

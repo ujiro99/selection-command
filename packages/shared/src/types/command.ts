@@ -11,6 +11,8 @@ export interface BaseCommand {
   addedAt: string;
   openMode: OPEN_MODE;
   iconUrl: string;
+  overrideGlobalIconColor?: boolean;
+  originalIconUrl?: string;
 }
 
 /**

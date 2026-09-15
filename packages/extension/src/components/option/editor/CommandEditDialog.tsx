@@ -122,10 +122,12 @@ const getDefault = (
     ? {
         sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
         sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
+        overrideGlobalIconColor: base?.overrideGlobalIconColor ?? false,
       }
     : {
         sourceType: base?.sourceType,
         sourceId: base?.sourceId,
+        overrideGlobalIconColor: base?.overrideGlobalIconColor ?? false,
       }
 
   if (isSearchOpenMode(openMode)) {
