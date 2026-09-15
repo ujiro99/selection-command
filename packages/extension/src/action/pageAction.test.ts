@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { PageAction } from "./pageAction"
 import { Ipc, BgCommand } from "@/services/ipc"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 
 vi.mock("@/services/ipc", () => ({
   Ipc: {
@@ -9,6 +10,16 @@ vi.mock("@/services/ipc", () => ({
   },
   BgCommand: {
     openAndRunPageAction: "openAndRunPageAction",
+    openSidePanel: "openSidePanel",
+  },
+}))
+
+vi.mock("@/services/storage", () => ({
+  Storage: {
+    set: vi.fn().mockResolvedValue(undefined),
+  },
+  SESSION_STORAGE_KEY: {
+    PA_SIDE_PANEL_PENDING: "PA_SIDE_PANEL_PENDING",
   },
 }))
 
@@ -168,6 +179,134 @@ describe("PageAction.execute", () => {
         }),
       }),
     )
+  })
+
+  it("PA-05: executes in side panel mode, stores pending action in session storage, and sends openSidePanel IPC", async () => {
+    const sidePanelCommand = {
+      ...baseCommand,
+      pageActionOption: {
+        ...baseCommand.pageActionOption,
+        openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      },
+    }
+
+    await PageAction.execute({
+      command: sidePanelCommand as any,
+      selectionText: "side panel content",
+      position: { x: 50, y: 50 },
+      pageUrl: "https://origin.example.com",
+    })
+
+    expect(Storage.set).toHaveBeenCalledWith(
+      SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+      expect.objectContaining({
+        url: "https://ai.example.com",
+        steps: sidePanelCommand.pageActionOption.steps,
+        selectedText: "side panel content",
+        srcUrl: "https://origin.example.com",
+        clipboardText: "",
+        useClipboard: false,
+        prompt: "Summarize: {{SelectedText}}",
+      }),
+    )
+
+    expect(Ipc.send).toHaveBeenCalledWith(BgCommand.openSidePanel, {
+      url: "https://ai.example.com",
+    })
+    expect(Ipc.send).not.toHaveBeenCalledWith(
+      BgCommand.openAndRunPageAction,
+      expect.anything(),
+    )
+  })
+
+  it("PA-06: executes in side panel mode even when position is null", async () => {
+    const sidePanelCommand = {
+      ...baseCommand,
+      pageActionOption: {
+        ...baseCommand.pageActionOption,
+        openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      },
+    }
+
+    await PageAction.execute({
+      command: sidePanelCommand as any,
+      selectionText: "context menu invocation",
+      position: null,
+    })
+
+    expect(Storage.set).toHaveBeenCalledWith(
+      SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+      expect.objectContaining({
+        selectedText: "context menu invocation",
+      }),
+    )
+    expect(Ipc.send).toHaveBeenCalledWith(BgCommand.openSidePanel, {
+      url: "https://ai.example.com",
+    })
+  })
+
+  it("PA-07: executes in side panel mode and detects indirect clipboard usage", async () => {
+    const sidePanelCommand = {
+      ...baseCommand,
+      pageActionOption: {
+        ...baseCommand.pageActionOption,
+        openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+        prompt: "Translate clipboard: {{Clipboard}}",
+      },
+    }
+
+    await PageAction.execute({
+      command: sidePanelCommand as any,
+      selectionText: "",
+      position: { x: 50, y: 50 },
+    })
+
+    expect(Storage.set).toHaveBeenCalledWith(
+      SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+      expect.objectContaining({
+        useClipboard: true,
+        prompt: "Translate clipboard: {{Clipboard}}",
+      }),
+    )
+  })
+
+  it("PA-08: executes in side panel mode without prompt (backward compatibility)", async () => {
+    const sidePanelLegacyCommand = {
+      ...baseCommand,
+      pageActionOption: {
+        startUrl: "https://ai.example.com",
+        openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+        steps: [
+          {
+            id: "step-1",
+            param: {
+              type: PAGE_ACTION_EVENT.input,
+              label: "Input",
+              selector: "#input",
+              value: "{{SelectedText}}",
+            },
+          },
+        ],
+      },
+    }
+
+    await PageAction.execute({
+      command: sidePanelLegacyCommand as any,
+      selectionText: "legacy text",
+      position: null,
+    })
+
+    expect(Storage.set).toHaveBeenCalledWith(
+      SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+      expect.objectContaining({
+        url: "https://ai.example.com",
+        selectedText: "legacy text",
+        prompt: undefined,
+      }),
+    )
+    expect(Ipc.send).toHaveBeenCalledWith(BgCommand.openSidePanel, {
+      url: "https://ai.example.com",
+    })
   })
 })
 

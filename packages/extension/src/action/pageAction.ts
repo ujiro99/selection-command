@@ -1,4 +1,10 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import {
+  Ipc,
+  BgCommand,
+  SidePanelPendingAction,
+} from "@/services/ipc"
+import type { OpenSidePanelProps } from "@/services/chrome"
+import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getWindowPosition } from "@/services/screen"
 import { isValidString, isPageActionCommand } from "@/lib/utils"
 import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
@@ -30,10 +36,6 @@ export const PageAction = {
       console.error("searchUrl is not valid.")
       return
     }
-    if (position === null) {
-      console.error("position is null.")
-      return
-    }
 
     // Checks if any step directly or indirectly requires clipboard data
     const hasPromptStep = command.pageActionOption.steps.some(
@@ -55,6 +57,40 @@ export const PageAction = {
           step.param.value.includes(toInsertTemplate(INSERT.CLIPBOARD))
         )
       })
+
+    // Handle side panel mode: store pending steps in session storage, then open
+    // the side panel. The background onConnect handler will pick up the pending
+    // steps when the side panel content script establishes a port connection.
+    if (command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.SIDE_PANEL) {
+      const pending: SidePanelPendingAction = {
+        url: command.pageActionOption.startUrl,
+        steps: command.pageActionOption.steps,
+        selectedText: selectionText,
+        srcUrl: pageUrl ?? "",
+        clipboardText: "",
+        useClipboard: needClipboard || (useClipboard ?? false),
+        prompt: command.pageActionOption.prompt,
+        userVariables: userVariables ?? command.pageActionOption.userVariables,
+      }
+      try {
+        await Storage.set<SidePanelPendingAction>(
+          SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
+          pending,
+        )
+      } catch (e) {
+        console.error("Failed to store pending side panel action:", e)
+        return
+      }
+      Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+        url: command.pageActionOption.startUrl,
+      })
+      return
+    }
+
+    if (position === null) {
+      console.error("position is null.")
+      return
+    }
 
     const url: UrlParam = {
       searchUrl: command.pageActionOption.startUrl,

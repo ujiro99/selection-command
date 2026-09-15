@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { AiPromptOptionSchema } from "./schema"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
-import { OPEN_MODE } from "@shared/constants/open-mode"
+import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, SPACE_ENCODING } from "@/const"
 
 const baseOption = {
   serviceId: "chatgpt",
@@ -138,6 +138,42 @@ describe("PageActionOption in schemas", () => {
     if (res.success && "pageActionOption" in res.data) {
       expect((res.data.pageActionOption as any).prompt).toBe(
         "Summarize: {{SelectedText}}",
+      )
+    }
+  })
+
+  it("SC-11: accepts PageAction command with openMode SIDE_PANEL", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      },
+    })
+    expect(res.success).toBe(true)
+    if (res.success && "pageActionOption" in res.data) {
+      expect((res.data.pageActionOption as any).openMode).toBe(
+        PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      )
+    }
+  })
+
+  it("SC-12: accepts PageAction command with openMode SIDE_PANEL and configured prompt", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+        prompt: "Explain {{SelectedText}} in detail",
+      },
+    })
+    expect(res.success).toBe(true)
+    if (res.success && "pageActionOption" in res.data) {
+      expect((res.data.pageActionOption as any).openMode).toBe(
+        PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      )
+      expect((res.data.pageActionOption as any).prompt).toBe(
+        "Explain {{SelectedText}} in detail",
       )
     }
   })

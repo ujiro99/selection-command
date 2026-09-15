@@ -116,6 +116,17 @@ describe("hasCommandChanged", () => {
           "",
         ),
       ).toBe(false)
+      expect(
+        hasCommandChanged(
+          cmd,
+          "",
+          {
+            ...cmd.pageActionOption,
+            openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+          },
+          "",
+        ),
+      ).toBe(false)
     })
 
     it("returns false when prompt is unchanged or empty/undefined equivalent", () => {

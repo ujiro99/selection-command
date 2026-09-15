@@ -104,6 +104,7 @@ export type SidePanelPendingAction = {
   pageHtml?: string
   selectionHtml?: string
   prompt?: string
+  userVariables?: Array<UserVariable>
 }
 
 export namespace ExecPageAction {

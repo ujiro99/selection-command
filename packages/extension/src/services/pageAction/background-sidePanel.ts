@@ -33,6 +33,7 @@ export const runViaPort = (
     pageHtml,
     selectionHtml,
     prompt,
+    userVariables,
   } = param
 
   const executeStep = (
@@ -59,7 +60,7 @@ export const runViaPort = (
             selectedText,
             clipboardText,
             openMode: PAGE_ACTION_OPEN_MODE.TAB,
-            userVariables: [],
+            userVariables: userVariables || [],
             pageHtml: stepPageHtml,
             selectionHtml: stepSelectionHtml,
             prompt,
@@ -95,7 +96,7 @@ export const runViaPort = (
           selectedText,
           clipboardText,
           openMode: PAGE_ACTION_OPEN_MODE.TAB,
-          userVariables: [],
+          userVariables: userVariables || [],
           pageHtml: stepPageHtml,
           selectionHtml: stepSelectionHtml,
           prompt,
@@ -278,5 +279,7 @@ export const handleSidePanelOpened = async (): Promise<void> => {
     selectedText: pending.selectedText,
     srcUrl: pending.srcUrl,
     clipboardText: pending.clipboardText,
+    prompt: pending.prompt,
+    userVariables: pending.userVariables,
   })
 }

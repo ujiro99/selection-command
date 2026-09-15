@@ -245,6 +245,30 @@ describe("background.ts - Side Panel Connection", () => {
       )
     })
 
+    it("SP-08d: Includes prompt and userVariables in the message when provided in pending action", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const pending = {
+        ...createPendingAction(),
+        prompt: "Summarize this: {{SelectedText}}",
+        userVariables: [{ name: "myVar", value: "myVal" }],
+      }
+      mockStorage.get.mockResolvedValue(pending)
+      mockStorage.set.mockResolvedValue(undefined)
+
+      await handleSidePanelConnect(port as any)
+
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            step: pending.steps[0],
+            prompt: "Summarize this: {{SelectedText}}",
+            userVariables: [{ name: "myVar", value: "myVal" }],
+          }),
+        }),
+      )
+    })
+
     it("SP-12: Does not call readClipboard when useClipboard is false", async () => {
       const port = createMockPort("https://chatgpt.com")
       const pending = { ...createPendingAction(), useClipboard: false }
