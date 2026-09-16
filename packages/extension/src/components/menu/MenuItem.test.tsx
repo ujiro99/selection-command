@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest"
 import { render } from "@testing-library/react"
 import { MenuItem } from "./MenuItem"
 import { popupContext, ContextType } from "@/hooks/usePopupContext"
-import { IconUrlsContext } from "./Menu"
+import { IconUrlsContext } from "./iconUrls"
 import { SIDE, ALIGN, OPEN_MODE, ExecState } from "@/const"
 import { ONBOARDING_AI_PROMPT_COMMAND_ID } from "@/components/onboarding/onboardingCommand"
 import type { AiPromptCommand } from "@/types"
@@ -42,19 +42,17 @@ const renderMenuItem = (
   return render(
     <popupContext.Provider value={fullContext}>
       <IconUrlsContext.Provider value={iconUrls}>
-        <MenuItem
-          menuRef={menuRef}
-          onlyIcon={true}
-          command={command}
-        />
+        <MenuItem menuRef={menuRef} onlyIcon={true} command={command} />
       </IconUrlsContext.Provider>
     </popupContext.Provider>,
   )
 }
 
 describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
-  const flaticonUrl = "https://cdn-icons-png.flaticon.com/512/11865/11865326.png"
-  const cachedDataUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+  const flaticonUrl =
+    "https://cdn-icons-png.flaticon.com/512/11865/11865326.png"
+  const cachedDataUrl =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
 
   it("renders a masked <span> for AI Prompt command with custom Flaticon URL when recoloring is enabled", () => {
     const aiCommand: AiPromptCommand = {
@@ -77,10 +75,14 @@ describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
     const { container } = renderMenuItem(aiCommand, iconUrls, true)
 
     // Button should match DevTools output
-    const button = container.querySelector("button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']")
+    const button = container.querySelector(
+      "button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']",
+    )
     expect(button).not.toBeNull()
 
-    const span = button?.querySelector("span._itemImgMasked_fcefc6, span[class*='itemImgMasked']")
+    const span = button?.querySelector(
+      "span._itemImgMasked_fcefc6, span[class*='itemImgMasked']",
+    )
     expect(span).not.toBeNull()
     expect(button?.querySelector("img")).toBeNull()
     expect(span?.getAttribute("style")).toContain("var(--sc-icon-color)")
@@ -107,7 +109,9 @@ describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
 
     const { container } = renderMenuItem(aiCommand, iconUrls, true)
 
-    const button = container.querySelector("button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']")
+    const button = container.querySelector(
+      "button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']",
+    )
     expect(button).not.toBeNull()
 
     // Must render <img>, NOT masked span
@@ -138,7 +142,9 @@ describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
 
     const { container } = renderMenuItem(aiCommand, iconUrls, true)
 
-    const button = container.querySelector("button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']")
+    const button = container.querySelector(
+      "button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']",
+    )
     expect(button).not.toBeNull()
 
     // Must render <img> because genuine favicon is protected

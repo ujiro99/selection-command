@@ -11,7 +11,7 @@ import { PopupOption } from "@/services/option/defaultSettings"
 import { ExecState } from "@/const"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { shouldPreserveIconColor } from "@/lib/favicon"
-import { IconUrlsContext } from "./Menu"
+import { useCommandIconUrl } from "./iconUrls"
 import type { Command } from "@/types"
 
 import css from "./Menu.module.css"
@@ -24,8 +24,6 @@ type MenuItemProps = {
 
 export function MenuItem(props: MenuItemProps): React.ReactNode {
   const buttonRef = useRef(null)
-  const iconUrls = React.useContext(IconUrlsContext)
-  const rawUrl = iconUrls?.[props.command.id] || props.command.iconUrl
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
@@ -34,6 +32,13 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const { selectionText, target } = useSelectContext()
   const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
   const message = itemState.message || defaultMessage
+
+  // iconUrl may already be a cached data URL, so detect against the original.
+  const originalIconUrl = useCommandIconUrl(props.command.id, iconUrl)
+  const preserveOriginalColor = shouldPreserveIconColor({
+    url: originalIconUrl,
+    command: props.command,
+  })
 
   function handleClick(e: React.MouseEvent) {
     if (isPreview) {
@@ -92,10 +97,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           state={itemState.state}
           iconUrl={iconUrl}
           excludeFromGlobalIconColor={props.command.excludeFromGlobalIconColor}
-          preserveOriginalColor={shouldPreserveIconColor({
-            url: rawUrl,
-            command: props.command,
-          })}
+          preserveOriginalColor={preserveOriginalColor}
         />
         {!onlyIcon && <span className={css.itemTitle}>{title}</span>}
       </button>

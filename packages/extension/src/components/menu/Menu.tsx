@@ -1,4 +1,4 @@
-import { createContext, useRef, useState } from "react"
+import { useRef, useState } from "react"
 
 import { STYLE, SIDE } from "@/const"
 import { TEST_IDS } from "@/testIds"
@@ -7,14 +7,14 @@ import { cn, isMenuCommand } from "@/lib/utils"
 import { toCommandTree } from "@/services/option/commandTree"
 import css from "./Menu.module.css"
 import { MenuTreeNode } from "./MenuFolder"
-
-export const IconUrlsContext = createContext<Record<string, string>>({})
+import { IconUrlsContext } from "./iconUrls"
 
 export function Menu(): JSX.Element {
   const menuRef = useRef(null)
   const [hoverTrigger, setHoverTrigger] = useState("")
   const [hoverContent, setHoverContent] = useState("")
-  const { commands, folders, userSettings, iconUrls } = useSettingsWithImageCache()
+  const { commands, folders, userSettings, iconUrls } =
+    useSettingsWithImageCache()
   const isHorizontal = userSettings.style === STYLE.HORIZONTAL
   const side = userSettings.popupPlacement?.side ?? SIDE.top
 
