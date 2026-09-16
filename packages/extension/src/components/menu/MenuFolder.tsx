@@ -7,6 +7,8 @@ import { MenuItem } from "./MenuItem"
 import { ChevronRight } from "lucide-react"
 import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
+import { shouldPreserveIconColor } from "@/lib/favicon"
+import { useFolderIconUrl } from "./iconUrls"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
 import type { Command, CommandFolder } from "@/types"
@@ -79,6 +81,11 @@ export const MenuFolder = (props: {
   const childActiveFolder = triggeredFolder || hoveredFolder
   const { inTransition } = usePopupContext()
 
+  // iconUrl may already be a cached data URL, so detect against the original.
+  const preserveOriginalColor = shouldPreserveIconColor({
+    url: useFolderIconUrl(folder.id, folder.iconUrl),
+  })
+
   // Resolve the effective style for this folder's content.
   // INHERIT: use parent style (isHorizontal), otherwise use folder's explicit style setting.
   const folderStyleSetting = folder.style ?? FOLDER_STYLE.INHERIT
@@ -130,7 +137,7 @@ export const MenuFolder = (props: {
             [css.folderHorizontal]: isHorizontal,
             "pointer-events-none": inTransition,
             "bg-accent": isOpen,
-            ["hover:bg-accent"]: !inTransition,
+            "hover:bg-accent": !inTransition,
           })}
           ref={anchorRef}
           role="menuitem"
@@ -145,6 +152,7 @@ export const MenuFolder = (props: {
             svg={folder.iconSvg}
             alt={folder.title}
             excludeFromGlobalIconColor={folder.excludeFromGlobalIconColor}
+            preserveOriginalColor={preserveOriginalColor}
           />
           {!(folder.onlyIcon && isHorizontal) && (
             <span className={cn(css.itemTitle, css.title)}>{folder.title}</span>

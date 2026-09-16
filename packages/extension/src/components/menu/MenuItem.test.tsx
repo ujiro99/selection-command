@@ -41,7 +41,7 @@ const renderMenuItem = (
 
   return render(
     <popupContext.Provider value={fullContext}>
-      <IconUrlsContext.Provider value={iconUrls}>
+      <IconUrlsContext.Provider value={{ commands: iconUrls, folders: {} }}>
         <MenuItem menuRef={menuRef} onlyIcon={true} command={command} />
       </IconUrlsContext.Provider>
     </popupContext.Provider>,

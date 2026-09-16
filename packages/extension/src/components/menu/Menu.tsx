@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 
 import { STYLE, SIDE } from "@/const"
 import { TEST_IDS } from "@/testIds"
@@ -13,16 +13,21 @@ export function Menu(): JSX.Element {
   const menuRef = useRef(null)
   const [hoverTrigger, setHoverTrigger] = useState("")
   const [hoverContent, setHoverContent] = useState("")
-  const { commands, folders, userSettings, iconUrls } =
+  const { commands, folders, userSettings, iconUrls, folderIconUrls } =
     useSettingsWithImageCache()
   const isHorizontal = userSettings.style === STYLE.HORIZONTAL
   const side = userSettings.popupPlacement?.side ?? SIDE.top
+
+  const originalIconUrls = useMemo(
+    () => ({ commands: iconUrls, folders: folderIconUrls }),
+    [iconUrls, folderIconUrls],
+  )
 
   const commandTree = toCommandTree(commands.filter(isMenuCommand), folders)
   const activeFolder = hoverTrigger || hoverContent
 
   return (
-    <IconUrlsContext.Provider value={iconUrls}>
+    <IconUrlsContext.Provider value={originalIconUrls}>
       <div
         className={cn(
           "flex items-center p-0.5 gap-[1px] border rounded-md bg-background",

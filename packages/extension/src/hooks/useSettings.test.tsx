@@ -447,6 +447,9 @@ describe("useSettings hooks", () => {
       expect(result.current.iconUrls).toEqual({
         "1": "http://example.com/icon.png",
       })
+      expect(result.current.folderIconUrls).toEqual({
+        "1": "http://example.com/folder.png",
+      })
     })
 
     it("US-26: should handle folders without iconUrl", async () => {

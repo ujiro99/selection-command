@@ -175,6 +175,26 @@ export function useUserSettings() {
   }
 }
 
+type HasIconUrl = { id: string; iconUrl?: string }
+
+/** Maps ids to their configured icon URL, before image caching is applied. */
+function toIconUrlMap(items: HasIconUrl[]): Record<string, string> {
+  return items.reduce(
+    (acc, cur) => (cur.iconUrl ? { ...acc, [cur.id]: cur.iconUrl } : acc),
+    {} as Record<string, string>,
+  )
+}
+
+/** Replaces the icon URL with its cached data URL when one is available. */
+function applyImageCache<T extends HasIconUrl>(
+  item: T,
+  images: Record<string, string> | undefined,
+): T {
+  if (!item.iconUrl || !images) return item
+  const cache = images[item.iconUrl]
+  return isEmpty(cache) ? item : { ...item, iconUrl: cache }
+}
+
 // Settings hook with image cache applied
 export function useSettingsWithImageCache() {
   const { userSettings: settings, loading: loading1 } = useUserSettings()
@@ -184,42 +204,40 @@ export function useSettingsWithImageCache() {
   const { data: caches, loading: loading3 } = useSection(CACHE_SECTIONS.CACHES)
   const loading = loading1 || loading2 || loading3
 
-  const { commandsWithCache, foldersWithCache, iconUrls } = useMemo(() => {
-    if (loading || !commands) {
-      return { commandsWithCache: [], foldersWithCache: [], iconUrls: {} }
-    }
+  const { commandsWithCache, foldersWithCache, iconUrls, folderIconUrls } =
+    useMemo(() => {
+      if (loading || !commands) {
+        return {
+          commandsWithCache: [],
+          foldersWithCache: [],
+          iconUrls: {},
+          folderIconUrls: {},
+        }
+      }
 
-    // Commands with cache
-    const commandsWithCache = commands.map((c) => {
-      if (!caches || !caches.images) return c
-      const cache = caches.images[c.iconUrl]
-      const iconUrl = !isEmpty(cache) ? cache : c.iconUrl
-      return { ...c, iconUrl }
-    })
+      const folders = settings.folders || []
+      const commandsWithCache = commands.map((c) =>
+        applyImageCache(c, caches?.images),
+      )
+      const foldersWithCache = folders.map((f) =>
+        applyImageCache(f, caches?.images),
+      )
 
-    // Folders with cache
-    const foldersWithCache = (settings.folders || []).map((f) => {
-      if (!f.iconUrl) return f
-      if (!caches || !caches.images) return f
-      const cache = caches.images[f.iconUrl]
-      const iconUrl = !isEmpty(cache) ? cache : f.iconUrl
-      return { ...f, iconUrl }
-    })
-
-    // IconUrls map - contains original URLs before cache application
-    const iconUrls = commands.reduce(
-      (acc, cur) => ({ ...acc, [cur.id]: cur.iconUrl }),
-      {} as Record<string, string>,
-    )
-
-    return { commandsWithCache, foldersWithCache, iconUrls }
-  }, [settings, loading, caches, commands])
+      // IconUrls maps - contain original URLs before cache application
+      return {
+        commandsWithCache,
+        foldersWithCache,
+        iconUrls: toIconUrlMap(commands),
+        folderIconUrls: toIconUrlMap(folders),
+      }
+    }, [settings, loading, caches, commands])
 
   return {
     userSettings: settings,
     commands: commandsWithCache,
     folders: foldersWithCache,
     iconUrls,
+    folderIconUrls,
     loading,
   }
 }
