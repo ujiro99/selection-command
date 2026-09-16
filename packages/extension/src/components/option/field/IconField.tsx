@@ -2,13 +2,18 @@ import React, { useState, useRef } from "react"
 import { useController } from "react-hook-form"
 import { FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 import { MenuImage } from "@/components/menu/MenuImage"
+import { useFavicon } from "@/hooks/option/useFavicon"
 import { isEmpty, isValidSVG, cn } from "@/lib/utils"
 import { shouldPreserveIconColor } from "@/lib/favicon"
 import { t as _t } from "@/services/i18n"
+import type { CommandFolder } from "@/types"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
-import { Switch } from "@/components/ui/switch"
+/** Form field name of the manual exclusion flag, tied to the stored property. */
+const EXCLUDE_FIELD_NAME =
+  "excludeFromGlobalIconColor" satisfies keyof CommandFolder
 
 type IconField = {
   control: any
@@ -20,13 +25,11 @@ type IconField = {
   description?: string
 }
 
-import { useFavicon } from "@/hooks/option/useFavicon"
-
 export const IconField = ({
   control,
   nameUrl,
   nameSvg,
-  nameExclude = "excludeFromGlobalIconColor",
+  nameExclude = EXCLUDE_FIELD_NAME,
   formLabel,
   description,
   placeholder,
@@ -45,11 +48,6 @@ export const IconField = ({
   })
   const errUrl = stateUrl.errors[nameUrl]
   const errSvg = stateSvg.errors[nameSvg]
-
-  const isAutoPreserved = Boolean(
-    !isEmpty(fieldUrl?.value) &&
-    shouldPreserveIconColor({ url: fieldUrl.value }),
-  )
 
   return (
     <div className="flex items-start gap-1">
@@ -70,44 +68,70 @@ export const IconField = ({
             {errSvg && <span>{`${errSvg.message}`}</span>}
           </p>
         )}
-        <div className="flex items-center justify-between gap-2 border-t pt-2">
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-1.5">
-              <FormLabel
-                htmlFor={nameExclude}
-                className={cn(
-                  "text-sm font-normal",
-                  isAutoPreserved
-                    ? "cursor-default text-muted-foreground"
-                    : "cursor-pointer",
-                )}
-              >
-                {t("excludeFromGlobalIconColor")}
-              </FormLabel>
-              {isAutoPreserved && (
-                <span
-                  data-testid="favicon-automatic-badge"
-                  className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium leading-none"
-                >
-                  {t("excludeFromGlobalIconColor_automatic")}
-                </span>
-              )}
-            </div>
-            <FormDescription className="text-xs">
-              {isAutoPreserved
-                ? t("excludeFromGlobalIconColor_favicon_desc")
-                : t("excludeFromGlobalIconColor_desc")}
-            </FormDescription>
-          </div>
-          <Switch
-            id={nameExclude}
-            aria-label={t("excludeFromGlobalIconColor")}
-            disabled={isAutoPreserved}
-            checked={isAutoPreserved ? true : !!fieldExclude?.value}
-            onCheckedChange={fieldExclude?.onChange}
-          />
-        </div>
+        <GlobalIconColorToggle
+          name={nameExclude}
+          field={fieldExclude}
+          iconUrl={fieldUrl?.value}
+        />
       </div>
+    </div>
+  )
+}
+
+type GlobalIconColorToggleProps = {
+  name: string
+  field: { value?: boolean; onChange: (value: boolean) => void }
+  iconUrl?: string
+}
+
+/**
+ * Lets the user keep an icon's original colors. Icons detected as favicons or
+ * brand assets are preserved automatically and cannot be toggled off.
+ */
+const GlobalIconColorToggle = ({
+  name,
+  field,
+  iconUrl,
+}: GlobalIconColorToggleProps) => {
+  const isAutoPreserved = shouldPreserveIconColor({ url: iconUrl })
+
+  return (
+    <div className="flex items-center justify-between gap-2 border-t pt-2">
+      <div className="space-y-0.5">
+        <div className="flex items-center gap-1.5">
+          <FormLabel
+            htmlFor={name}
+            className={cn(
+              "text-sm font-normal",
+              isAutoPreserved
+                ? "cursor-default text-muted-foreground"
+                : "cursor-pointer",
+            )}
+          >
+            {t("excludeFromGlobalIconColor")}
+          </FormLabel>
+          {isAutoPreserved && (
+            <span
+              data-testid="favicon-automatic-badge"
+              className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium leading-none"
+            >
+              {t("excludeFromGlobalIconColor_automatic")}
+            </span>
+          )}
+        </div>
+        <FormDescription className="text-xs">
+          {isAutoPreserved
+            ? t("excludeFromGlobalIconColor_favicon_desc")
+            : t("excludeFromGlobalIconColor_desc")}
+        </FormDescription>
+      </div>
+      <Switch
+        id={name}
+        aria-label={t("excludeFromGlobalIconColor")}
+        disabled={isAutoPreserved}
+        checked={isAutoPreserved || !!field?.value}
+        onCheckedChange={field?.onChange}
+      />
     </div>
   )
 }
