@@ -10,7 +10,7 @@ import { getCommandEnabled } from "@/lib/commandEnabled"
 import { PopupOption } from "@/services/option/defaultSettings"
 import { ExecState } from "@/const"
 import { MenuImage } from "@/components/menu/MenuImage"
-import { isFaviconIcon } from "@/lib/favicon"
+import { shouldPreserveIconColor } from "@/lib/favicon"
 import { IconUrlsContext } from "./Menu"
 import type { Command } from "@/types"
 
@@ -92,7 +92,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           state={itemState.state}
           iconUrl={iconUrl}
           excludeFromGlobalIconColor={props.command.excludeFromGlobalIconColor}
-          isFavicon={isFaviconIcon({
+          preserveOriginalColor={shouldPreserveIconColor({
             url: rawUrl,
             command: props.command,
           })}
@@ -119,11 +119,16 @@ type ImageProps = {
   state: ExecState
   iconUrl: string
   excludeFromGlobalIconColor?: boolean
-  isFavicon?: boolean
+  preserveOriginalColor?: boolean
 }
 
 function ImageWithState(props: ImageProps): JSX.Element {
-  const { iconUrl, state: status, excludeFromGlobalIconColor, isFavicon } = props
+  const {
+    iconUrl,
+    state: status,
+    excludeFromGlobalIconColor,
+    preserveOriginalColor,
+  } = props
   return (
     <>
       {status === ExecState.NONE && (
@@ -132,7 +137,7 @@ function ImageWithState(props: ImageProps): JSX.Element {
           src={iconUrl}
           alt=""
           excludeFromGlobalIconColor={excludeFromGlobalIconColor}
-          isFavicon={isFavicon}
+          preserveOriginalColor={preserveOriginalColor}
         />
       )}
       {status === ExecState.EXECUTING && (

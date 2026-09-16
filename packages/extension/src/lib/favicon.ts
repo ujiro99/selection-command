@@ -1,9 +1,43 @@
 import { parse } from "tldts"
-import { isEmpty } from "@/lib/utils"
+import { isPageActionCommand } from "@/lib/utils"
 import type { Command } from "@/types"
+
+/** Favicon delivery services and well-known favicon endpoints. */
+const FAVICON_SERVICE_PATTERNS = [
+  "/s2/favicons",
+  "favicon.im",
+  "icon.horse",
+  "duckduckgo.com/ip3",
+]
+
+/** Conventional favicon file names. */
+const FAVICON_NAME_PATTERNS = ["favicon", "apple-touch-icon"]
+
+/** Conventional favicon extension, optionally followed by a query string. */
+const FAVICON_EXTENSION = /\.ico($|\?)/
+
+/**
+ * Brand icons and first-party service asset hosts whose colors carry meaning,
+ * e.g. Google service icons on gstatic.com or the Google Gemini aurora SVG.
+ */
+const BRAND_ASSET_PATTERNS = ["gemini_sparkle", "gstatic.com"]
+
+/**
+ * Generic icon repositories and CDN libraries. An icon served from one of these
+ * is a UI icon, never a website-specific favicon.
+ */
+const ICON_LIBRARY_PATTERNS = [
+  "iconfinder.com",
+  "fontawesome",
+  "flaticon",
+  "icons8",
+]
 
 /** Matches a bare IPv6 literal, which always contains at least two colons. */
 const BARE_IPV6 = /^[0-9a-f]*(?::[0-9a-f]*){2,}$/i
+
+const includesAny = (value: string, patterns: string[]): boolean =>
+  patterns.some((pattern) => value.includes(pattern))
 
 /**
  * Extracts the registrable domain (eTLD+1) from a hostname or URL using tldts.
@@ -11,104 +45,85 @@ const BARE_IPV6 = /^[0-9a-f]*(?::[0-9a-f]*){2,}$/i
  * localhost, IP addresses, and invalid/empty inputs consistently.
  */
 export function getRegistrableDomain(hostname: string): string {
-  if (!hostname || isEmpty(hostname.trim())) {
-    return ""
-  }
+  const host = hostname?.trim().toLowerCase()
+  if (!host) return ""
 
-  const cleanHost = hostname.trim().toLowerCase().replace(/^www\./, "")
   // tldts only recognizes IPv6 literals in bracket notation (e.g. "::1" -> "[::1]").
-  const parsed = parse(BARE_IPV6.test(cleanHost) ? `[${cleanHost}]` : cleanHost)
+  const parsed = parse(BARE_IPV6.test(host) ? `[${host}]` : host)
 
-  if (parsed.domain) {
-    return parsed.domain
-  }
+  // Normal hostnames resolve to an eTLD+1, which already excludes any subdomain.
+  if (parsed.domain) return parsed.domain
 
-  // Handle IP addresses (e.g. 127.0.0.1, 192.168.1.1, ::1)
-  if (parsed.isIp && parsed.hostname) {
-    return parsed.hostname
-  }
-
-  // Handle localhost
-  if (parsed.hostname === "localhost") {
-    return "localhost"
-  }
+  // IP addresses and localhost have no registrable domain, so use the host itself.
+  if (parsed.isIp || parsed.hostname === "localhost")
+    return parsed.hostname ?? ""
 
   return ""
 }
 
 /**
- * Checks if a URL or command icon is a recognized website/brand favicon.
+ * Checks whether a URL points at a favicon, either through a favicon delivery
+ * service or through a conventional favicon file name.
  */
-export function isFaviconIcon(options: {
+function isFaviconUrl(lowerUrl: string): boolean {
+  return (
+    includesAny(lowerUrl, FAVICON_SERVICE_PATTERNS) ||
+    includesAny(lowerUrl, FAVICON_NAME_PATTERNS) ||
+    FAVICON_EXTENSION.test(lowerUrl)
+  )
+}
+
+/** Returns the website a command targets, or undefined when it has none. */
+function getCommandTargetUrl(command: Command): string | undefined {
+  if (isPageActionCommand(command)) {
+    return command.searchUrl || command.pageActionOption?.startUrl
+  }
+  return command.searchUrl
+}
+
+/**
+ * Checks whether the icon is served from the same registrable domain as the
+ * website the command targets, which makes it that site's own brand icon.
+ */
+function isSameSiteIcon(url: string, command: Command): boolean {
+  const targetUrl = getCommandTargetUrl(command)
+  if (!targetUrl) return false
+
+  let iconHost: string
+  let targetHost: string
+  try {
+    iconHost = new URL(url).hostname
+    targetHost = new URL(targetUrl).hostname
+  } catch {
+    return false // Invalid URL format, ignore.
+  }
+
+  // Icons hosted by generic icon libraries are never website-specific.
+  if (includesAny(iconHost.toLowerCase(), ICON_LIBRARY_PATTERNS)) return false
+
+  const iconDomain = getRegistrableDomain(iconHost)
+  return iconDomain !== "" && iconDomain === getRegistrableDomain(targetHost)
+}
+
+/**
+ * Checks whether an icon must keep its original colors instead of being
+ * recolored by the global icon color setting. This covers favicons, known brand
+ * assets, and icons served by the website the command targets.
+ */
+export function shouldPreserveIconColor(options: {
   url?: string
   command?: Command
 }): boolean {
   const { url, command } = options
+  if (!url) return false
 
-  if (!url || isEmpty(url)) return false
-
-  // Base64 data URLs cannot be recognized by URL pattern directly.
-  if (url.startsWith("data:")) {
-    return false
-  }
+  // Base64 data URLs carry no recognizable URL pattern.
+  if (url.startsWith("data:")) return false
 
   const lower = url.toLowerCase()
-
-  // 1. Favicon service providers & endpoints
-  if (
-    lower.includes("/s2/favicons") ||
-    lower.includes("favicon.im") ||
-    lower.includes("icon.horse") ||
-    lower.includes("duckduckgo.com/ip3")
-  ) {
+  if (isFaviconUrl(lower) || includesAny(lower, BRAND_ASSET_PATTERNS)) {
     return true
   }
 
-  // 2. Standard favicon naming conventions
-  if (
-    lower.includes("favicon") ||
-    lower.includes("apple-touch-icon") ||
-    /\.ico($|\?)/i.test(lower)
-  ) {
-    return true
-  }
-
-  // 3. Known brand icons & first-party service asset domains (e.g. Google service icons on gstatic.com, Google Gemini aurora SVG)
-  if (
-    lower.includes("gemini_sparkle") ||
-    lower.includes("gstatic.com")
-  ) {
-    return true
-  }
-
-  // 4. Correlate icon host with command's target website (searchUrl or startUrl)
-  if (command) {
-    const targetUrl =
-      (command as any).searchUrl || (command as any).pageActionOption?.startUrl
-    if (targetUrl) {
-      try {
-        const targetHost = new URL(targetUrl).hostname.replace(/^www\./, "")
-        const iconHost = new URL(url).hostname.replace(/^www\./, "")
-
-        // Do not treat icon repositories or CDN libraries as website-specific favicons
-        const isIconLibrary =
-          iconHost.includes("iconfinder.com") ||
-          iconHost.includes("fontawesome") ||
-          iconHost.includes("flaticon") ||
-          iconHost.includes("icons8")
-
-        if (!isIconLibrary) {
-          const targetRoot = getRegistrableDomain(targetHost)
-          const iconRoot = getRegistrableDomain(iconHost)
-          if (targetRoot && iconRoot && targetRoot === iconRoot) {
-            return true
-          }
-        }
-      } catch {
-        // Invalid URL format, ignore
-      }
-    }
-  }
-
-  return false
+  return command != null && isSameSiteIcon(url, command)
 }

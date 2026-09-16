@@ -1,23 +1,29 @@
 import { describe, it, expect } from "vitest"
-import { isFaviconIcon, getRegistrableDomain } from "./favicon"
+import { shouldPreserveIconColor, getRegistrableDomain } from "./favicon"
 import { OPEN_MODE } from "@shared/constants/open-mode"
 import type { Command } from "@/types"
 
-describe("isFaviconIcon", () => {
+describe("shouldPreserveIconColor", () => {
   it("recognizes standard favicon.ico URLs", () => {
-    expect(isFaviconIcon({ url: "https://www.google.com/favicon.ico" })).toBe(true)
-    expect(isFaviconIcon({ url: "https://chatgpt.com/favicon.ico" })).toBe(true)
-    expect(isFaviconIcon({ url: "https://www.amazon.com/favicon.ico" })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: "https://www.google.com/favicon.ico" }),
+    ).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: "https://chatgpt.com/favicon.ico" }),
+    ).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: "https://www.amazon.com/favicon.ico" }),
+    ).toBe(true)
   })
 
   it("recognizes URLs containing favicon in path or filename", () => {
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://www.youtube.com/s/desktop/f574e7a2/img/favicon_32x32.png",
       }),
     ).toBe(true)
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://s.pinimg.com/webapp/favicon-22eb868c.png",
       }),
     ).toBe(true)
@@ -25,12 +31,12 @@ describe("isFaviconIcon", () => {
 
   it("recognizes .ico extensions and apple-touch-icon", () => {
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.ico",
       }),
     ).toBe(true)
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://example.com/assets/apple-touch-icon-180x180.png",
       }),
     ).toBe(true)
@@ -38,27 +44,31 @@ describe("isFaviconIcon", () => {
 
   it("recognizes favicon proxy services like Google S2 and favicon.im", () => {
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://www.google.com/s2/favicons?sz=64&domain_url=https://github.com",
       }),
     ).toBe(true)
-    expect(isFaviconIcon({ url: "https://favicon.im/claude.ai" })).toBe(true)
-    expect(isFaviconIcon({ url: "https://favicon.im/perplexity.ai" })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: "https://favicon.im/claude.ai" }),
+    ).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: "https://favicon.im/perplexity.ai" }),
+    ).toBe(true)
   })
 
   it("recognizes known brand icons and first-party service asset domains (Step 3)", () => {
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
       }),
     ).toBe(true)
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
       }),
     ).toBe(true)
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg",
       }),
     ).toBe(true)
@@ -71,15 +81,20 @@ describe("isFaviconIcon", () => {
       openMode: OPEN_MODE.AI_PROMPT,
       iconUrl: "https://chatgpt.com/favicon.ico",
     } as Command
-    expect(isFaviconIcon({ url: chatGptCmd.iconUrl, command: chatGptCmd })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: chatGptCmd.iconUrl, command: chatGptCmd }),
+    ).toBe(true)
 
     const geminiCmd = {
       id: "ai-gemini",
       title: "Gemini",
       openMode: OPEN_MODE.AI_PROMPT,
-      iconUrl: "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
+      iconUrl:
+        "https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg",
     } as Command
-    expect(isFaviconIcon({ url: geminiCmd.iconUrl, command: geminiCmd })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: geminiCmd.iconUrl, command: geminiCmd }),
+    ).toBe(true)
 
     const claudeCmd = {
       id: "ai-claude",
@@ -87,7 +102,9 @@ describe("isFaviconIcon", () => {
       openMode: OPEN_MODE.AI_PROMPT,
       iconUrl: "https://favicon.im/claude.ai",
     } as Command
-    expect(isFaviconIcon({ url: claudeCmd.iconUrl, command: claudeCmd })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: claudeCmd.iconUrl, command: claudeCmd }),
+    ).toBe(true)
 
     const perplexityCmd = {
       id: "ai-perplexity",
@@ -95,7 +112,12 @@ describe("isFaviconIcon", () => {
       openMode: OPEN_MODE.AI_PROMPT,
       iconUrl: "https://favicon.im/perplexity.ai",
     } as Command
-    expect(isFaviconIcon({ url: perplexityCmd.iconUrl, command: perplexityCmd })).toBe(true)
+    expect(
+      shouldPreserveIconColor({
+        url: perplexityCmd.iconUrl,
+        command: perplexityCmd,
+      }),
+    ).toBe(true)
   })
 
   it("does NOT recognize AI prompt commands with custom Flaticon or Iconfinder URLs as favicons", () => {
@@ -105,15 +127,26 @@ describe("isFaviconIcon", () => {
       openMode: OPEN_MODE.AI_PROMPT,
       iconUrl: "https://cdn-icons-png.flaticon.com/512/11865/11865326.png",
     } as Command
-    expect(isFaviconIcon({ url: flaticonCmd.iconUrl, command: flaticonCmd })).toBe(false)
+    expect(
+      shouldPreserveIconColor({
+        url: flaticonCmd.iconUrl,
+        command: flaticonCmd,
+      }),
+    ).toBe(false)
 
     const iconfinderCmd = {
       id: "ai-custom-iconfinder",
       title: "Run with AI",
       openMode: OPEN_MODE.AI_PROMPT,
-      iconUrl: "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
+      iconUrl:
+        "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
     } as Command
-    expect(isFaviconIcon({ url: iconfinderCmd.iconUrl, command: iconfinderCmd })).toBe(false)
+    expect(
+      shouldPreserveIconColor({
+        url: iconfinderCmd.iconUrl,
+        command: iconfinderCmd,
+      }),
+    ).toBe(false)
   })
 
   it("handles normal commands with genuine favicons vs custom icons appropriately", () => {
@@ -124,7 +157,12 @@ describe("isFaviconIcon", () => {
       searchUrl: "https://www.google.com/search?q=%s",
       iconUrl: "https://www.google.com/favicon.ico",
     } as Command
-    expect(isFaviconIcon({ url: normalWithFavicon.iconUrl, command: normalWithFavicon })).toBe(true)
+    expect(
+      shouldPreserveIconColor({
+        url: normalWithFavicon.iconUrl,
+        command: normalWithFavicon,
+      }),
+    ).toBe(true)
 
     const normalWithCustom = {
       id: "norm-2",
@@ -133,7 +171,12 @@ describe("isFaviconIcon", () => {
       searchUrl: "https://www.google.com/search?q=%s",
       iconUrl: "https://cdn-icons-png.flaticon.com/512/11865/11865326.png",
     } as Command
-    expect(isFaviconIcon({ url: normalWithCustom.iconUrl, command: normalWithCustom })).toBe(false)
+    expect(
+      shouldPreserveIconColor({
+        url: normalWithCustom.iconUrl,
+        command: normalWithCustom,
+      }),
+    ).toBe(false)
   })
 
   it("recognizes site-hosted icons matching searchUrl domain generically (Step 4)", () => {
@@ -144,36 +187,41 @@ describe("isFaviconIcon", () => {
       searchUrl: "https://example.com/search?q=%s",
       iconUrl: "https://cdn.example.com/images/logo.png",
     } as Command
-    expect(isFaviconIcon({ url: genericCmd.iconUrl, command: genericCmd })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: genericCmd.iconUrl, command: genericCmd }),
+    ).toBe(true)
 
     const driveCmd = {
       id: "drive-1",
       title: "Drive",
       openMode: OPEN_MODE.TAB,
       searchUrl: "https://drive.google.com/drive/search?q=%s",
-      iconUrl: "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
+      iconUrl:
+        "https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png",
     } as Command
-    expect(isFaviconIcon({ url: driveCmd.iconUrl, command: driveCmd })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: driveCmd.iconUrl, command: driveCmd }),
+    ).toBe(true)
   })
 
   it("does NOT recognize iconfinder or UI icon assets as favicons", () => {
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://cdn3.iconfinder.com/data/icons/feather-5/24/search-1024.png",
       }),
     ).toBe(false)
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
       }),
     ).toBe(false)
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "chrome-extension://abc/images/search_command.png",
       }),
     ).toBe(false)
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "images/search_command.png",
       }),
     ).toBe(false)
@@ -185,17 +233,25 @@ describe("isFaviconIcon", () => {
       title: "IconFinder",
       openMode: OPEN_MODE.TAB,
       searchUrl: "https://iconfinder.com/search?q=%s",
-      iconUrl: "https://cdn3.iconfinder.com/data/icons/feather-5/24/search-1024.png",
+      iconUrl:
+        "https://cdn3.iconfinder.com/data/icons/feather-5/24/search-1024.png",
     } as Command
-    expect(isFaviconIcon({ url: iconfinderCmd.iconUrl, command: iconfinderCmd })).toBe(false)
+    expect(
+      shouldPreserveIconColor({
+        url: iconfinderCmd.iconUrl,
+        command: iconfinderCmd,
+      }),
+    ).toBe(false)
   })
 
   it("handles empty or data URLs safely", () => {
-    expect(isFaviconIcon({})).toBe(false)
-    expect(isFaviconIcon({ url: "" })).toBe(false)
-    expect(isFaviconIcon({ url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA" })).toBe(
-      false,
-    )
+    expect(shouldPreserveIconColor({})).toBe(false)
+    expect(shouldPreserveIconColor({ url: "" })).toBe(false)
+    expect(
+      shouldPreserveIconColor({
+        url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA",
+      }),
+    ).toBe(false)
   })
 
   it("does NOT match unrelated domains that share the same multi-part suffix (e.g. .co.uk)", () => {
@@ -208,7 +264,7 @@ describe("isFaviconIcon", () => {
 
     // An icon hosted on bar.co.uk should NOT match foo.co.uk
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://bar.co.uk/assets/icon.png",
         command: cmd,
       }),
@@ -216,7 +272,7 @@ describe("isFaviconIcon", () => {
 
     // An icon hosted on subdomains of foo.co.uk SHOULD match
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://cdn.foo.co.uk/assets/logo.png",
         command: cmd,
       }),
@@ -232,13 +288,13 @@ describe("isFaviconIcon", () => {
     } as Command
 
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://static.company.co.jp/images/logo.png",
         command: jpCmd,
       }),
     ).toBe(true)
     expect(
-      isFaviconIcon({
+      shouldPreserveIconColor({
         url: "https://other-company.co.jp/images/logo.png",
         command: jpCmd,
       }),
@@ -253,7 +309,9 @@ describe("isFaviconIcon", () => {
       searchUrl: "http://localhost:3000/search?q=%s",
       iconUrl: "http://localhost:3000/app-icon.png",
     } as Command
-    expect(isFaviconIcon({ url: localCmd.iconUrl, command: localCmd })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: localCmd.iconUrl, command: localCmd }),
+    ).toBe(true)
 
     const otherLocalCmd = {
       id: "local-2",
@@ -262,7 +320,12 @@ describe("isFaviconIcon", () => {
       searchUrl: "http://localhost:3000/search?q=%s",
       iconUrl: "https://example.com/app-icon.png",
     } as Command
-    expect(isFaviconIcon({ url: otherLocalCmd.iconUrl, command: otherLocalCmd })).toBe(false)
+    expect(
+      shouldPreserveIconColor({
+        url: otherLocalCmd.iconUrl,
+        command: otherLocalCmd,
+      }),
+    ).toBe(false)
   })
 
   it("correlates IP address target with matching IP icon", () => {
@@ -273,7 +336,9 @@ describe("isFaviconIcon", () => {
       searchUrl: "http://192.168.1.1/search?q=%s",
       iconUrl: "http://192.168.1.1/icon.png",
     } as Command
-    expect(isFaviconIcon({ url: ipCmd.iconUrl, command: ipCmd })).toBe(true)
+    expect(
+      shouldPreserveIconColor({ url: ipCmd.iconUrl, command: ipCmd }),
+    ).toBe(true)
 
     const diffIpCmd = {
       id: "ip-2",
@@ -282,7 +347,9 @@ describe("isFaviconIcon", () => {
       searchUrl: "http://192.168.1.1/search?q=%s",
       iconUrl: "http://192.168.1.2/icon.png",
     } as Command
-    expect(isFaviconIcon({ url: diffIpCmd.iconUrl, command: diffIpCmd })).toBe(false)
+    expect(
+      shouldPreserveIconColor({ url: diffIpCmd.iconUrl, command: diffIpCmd }),
+    ).toBe(false)
   })
 })
 

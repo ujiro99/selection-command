@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { isEmpty, cn } from "@/lib/utils"
-import { isFaviconIcon } from "@/lib/favicon"
+import { shouldPreserveIconColor } from "@/lib/favicon"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
 
@@ -10,7 +10,7 @@ type MenuImageProps = {
   alt?: string
   className?: string
   excludeFromGlobalIconColor?: boolean
-  isFavicon?: boolean
+  preserveOriginalColor?: boolean
 }
 
 export function MenuImage(props: MenuImageProps): JSX.Element {
@@ -19,11 +19,12 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
   const hasUrl = !isEmpty(props.src)
   const hasSvg = !isEmpty(props.svg)
 
-  const isFavicon =
-    props.isFavicon ?? (hasUrl ? isFaviconIcon({ url: props.src }) : false)
+  const preserveOriginalColor =
+    props.preserveOriginalColor ??
+    (hasUrl ? shouldPreserveIconColor({ url: props.src }) : false)
 
   const isRecolorActive = Boolean(
-    hasIconColor && !props.excludeFromGlobalIconColor && !isFavicon,
+    hasIconColor && !props.excludeFromGlobalIconColor && !preserveOriginalColor,
   )
 
   if (svgElm && props.svg) {

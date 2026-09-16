@@ -4,7 +4,7 @@ import { FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { isEmpty, isValidSVG, cn } from "@/lib/utils"
-import { isFaviconIcon } from "@/lib/favicon"
+import { shouldPreserveIconColor } from "@/lib/favicon"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -46,8 +46,9 @@ export const IconField = ({
   const errUrl = stateUrl.errors[nameUrl]
   const errSvg = stateSvg.errors[nameSvg]
 
-  const isFavicon = Boolean(
-    !isEmpty(fieldUrl?.value) && isFaviconIcon({ url: fieldUrl.value }),
+  const isAutoPreserved = Boolean(
+    !isEmpty(fieldUrl?.value) &&
+    shouldPreserveIconColor({ url: fieldUrl.value }),
   )
 
   return (
@@ -76,14 +77,14 @@ export const IconField = ({
                 htmlFor={nameExclude}
                 className={cn(
                   "text-sm font-normal",
-                  isFavicon
+                  isAutoPreserved
                     ? "cursor-default text-muted-foreground"
                     : "cursor-pointer",
                 )}
               >
                 {t("excludeFromGlobalIconColor")}
               </FormLabel>
-              {isFavicon && (
+              {isAutoPreserved && (
                 <span
                   data-testid="favicon-automatic-badge"
                   className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium leading-none"
@@ -93,7 +94,7 @@ export const IconField = ({
               )}
             </div>
             <FormDescription className="text-xs">
-              {isFavicon
+              {isAutoPreserved
                 ? t("excludeFromGlobalIconColor_favicon_desc")
                 : t("excludeFromGlobalIconColor_desc")}
             </FormDescription>
@@ -101,8 +102,8 @@ export const IconField = ({
           <Switch
             id={nameExclude}
             aria-label={t("excludeFromGlobalIconColor")}
-            disabled={isFavicon}
-            checked={isFavicon ? true : !!fieldExclude?.value}
+            disabled={isAutoPreserved}
+            checked={isAutoPreserved ? true : !!fieldExclude?.value}
             onCheckedChange={fieldExclude?.onChange}
           />
         </div>
