@@ -2,6 +2,9 @@ import { parse } from "tldts"
 import { isEmpty } from "@/lib/utils"
 import type { Command } from "@/types"
 
+/** Matches a bare IPv6 literal, which always contains at least two colons. */
+const BARE_IPV6 = /^[0-9a-f]*(?::[0-9a-f]*){2,}$/i
+
 /**
  * Extracts the registrable domain (eTLD+1) from a hostname or URL using tldts.
  * Handles normal domains, subdomains, multi-part public suffixes (e.g. .co.uk, .co.jp),
@@ -13,7 +16,8 @@ export function getRegistrableDomain(hostname: string): string {
   }
 
   const cleanHost = hostname.trim().toLowerCase().replace(/^www\./, "")
-  const parsed = parse(cleanHost)
+  // tldts only recognizes IPv6 literals in bracket notation (e.g. "::1" -> "[::1]").
+  const parsed = parse(BARE_IPV6.test(cleanHost) ? `[${cleanHost}]` : cleanHost)
 
   if (parsed.domain) {
     return parsed.domain
