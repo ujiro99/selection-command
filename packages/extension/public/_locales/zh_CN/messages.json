@@ -720,22 +720,22 @@
     "message": "指定字体颜色。默认值：#0F172A"
   },
   "Option_userStyles_option_icon_color": {
-    "message": "Icon Color"
+    "message": "图标颜色"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Specify icon color. Default: #0F172A"
+    "message": "指定图标颜色。默认值：#0F172A"
   },
   "Option_excludeFromGlobalIconColor": {
-    "message": "Exclude from global icon color"
+    "message": "从全局图标颜色中排除"
   },
   "Option_excludeFromGlobalIconColor_desc": {
-    "message": "Keep this icon's original color even when a global icon color is set."
+    "message": "即使设置了全局图标颜色，也保留此图标的原始颜色。"
   },
   "Option_excludeFromGlobalIconColor_favicon_desc": {
-    "message": "Favicons are automatically excluded from the global icon color and keep their original colors."
+    "message": "网站图标（favicon）会自动从全局图标颜色中排除，并保留其原始颜色。"
   },
   "Option_excludeFromGlobalIconColor_automatic": {
-    "message": "Automatic"
+    "message": "自动"
   },
   "Option_userStyles_option_font_scale": {
     "message": "字体大小缩放"

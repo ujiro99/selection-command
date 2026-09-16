@@ -720,22 +720,22 @@
     "message": "Geben Sie die Schriftfarbe an. Standard: #0F172A"
   },
   "Option_userStyles_option_icon_color": {
-    "message": "Icon Color"
+    "message": "Symbolfarbe"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Specify icon color. Default: #0F172A"
+    "message": "Geben Sie die Symbolfarbe an. Standard: #0F172A"
   },
   "Option_excludeFromGlobalIconColor": {
-    "message": "Exclude from global icon color"
+    "message": "Von globaler Symbolfarbe ausschließen"
   },
   "Option_excludeFromGlobalIconColor_desc": {
-    "message": "Keep this icon's original color even when a global icon color is set."
+    "message": "Behält die ursprüngliche Farbe dieses Symbols bei, auch wenn eine globale Symbolfarbe festgelegt ist."
   },
   "Option_excludeFromGlobalIconColor_favicon_desc": {
-    "message": "Favicons are automatically excluded from the global icon color and keep their original colors."
+    "message": "Favicons werden automatisch von der globalen Symbolfarbe ausgeschlossen und behalten ihre ursprünglichen Farben."
   },
   "Option_excludeFromGlobalIconColor_automatic": {
-    "message": "Automatic"
+    "message": "Automatisch"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Schriftgrößen-Skalierung"

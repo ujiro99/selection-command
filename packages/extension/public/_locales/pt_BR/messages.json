@@ -720,22 +720,22 @@
     "message": "Especificar a cor da fonte. Padrão: #0F172A"
   },
   "Option_userStyles_option_icon_color": {
-    "message": "Icon Color"
+    "message": "Cor do Ícone"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Specify icon color. Default: #0F172A"
+    "message": "Especificar a cor do ícone. Padrão: #0F172A"
   },
   "Option_excludeFromGlobalIconColor": {
-    "message": "Exclude from global icon color"
+    "message": "Excluir da cor de ícone global"
   },
   "Option_excludeFromGlobalIconColor_desc": {
-    "message": "Keep this icon's original color even when a global icon color is set."
+    "message": "Mantém a cor original deste ícone mesmo quando uma cor de ícone global está definida."
   },
   "Option_excludeFromGlobalIconColor_favicon_desc": {
-    "message": "Favicons are automatically excluded from the global icon color and keep their original colors."
+    "message": "Favicons são automaticamente excluídos da cor de ícone global e mantêm suas cores originais."
   },
   "Option_excludeFromGlobalIconColor_automatic": {
-    "message": "Automatic"
+    "message": "Automático"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Escala do tamanho da fonte"

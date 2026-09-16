@@ -720,22 +720,22 @@
     "message": "Укажите цвет шрифта. По умолчанию: #0F172A"
   },
   "Option_userStyles_option_icon_color": {
-    "message": "Icon Color"
+    "message": "Цвет иконок"
   },
   "Option_userStyles_desc_icon_color": {
-    "message": "Specify icon color. Default: #0F172A"
+    "message": "Укажите цвет иконок. По умолчанию: #0F172A"
   },
   "Option_excludeFromGlobalIconColor": {
-    "message": "Exclude from global icon color"
+    "message": "Исключить из глобального цвета иконок"
   },
   "Option_excludeFromGlobalIconColor_desc": {
-    "message": "Keep this icon's original color even when a global icon color is set."
+    "message": "Сохраняет исходный цвет этой иконки, даже если задан глобальный цвет иконок."
   },
   "Option_excludeFromGlobalIconColor_favicon_desc": {
-    "message": "Favicons are automatically excluded from the global icon color and keep their original colors."
+    "message": "Фавиконки автоматически исключаются из глобального цвета иконок и сохраняют свои исходные цвета."
   },
   "Option_excludeFromGlobalIconColor_automatic": {
-    "message": "Automatic"
+    "message": "Автоматически"
   },
   "Option_userStyles_option_font_scale": {
     "message": "Масштаб размера шрифта"
