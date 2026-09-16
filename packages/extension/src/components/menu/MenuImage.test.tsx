@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { render } from "@testing-library/react"
+import css from "./Menu.module.css"
 import { MenuImage } from "./MenuImage"
 import { popupContext, ContextType } from "@/hooks/usePopupContext"
 import { SIDE, ALIGN } from "@/const"
@@ -47,7 +48,7 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
     )
     const span = container.querySelector("span[role='img']")
     expect(span).not.toBeNull()
-    expect(span?.getAttribute("style")).toContain("var(--sc-icon-color)")
+    expect(span?.classList.contains(css.itemImgMasked)).toBe(true)
     expect(span?.getAttribute("style")).toContain(testUiUrl)
     expect(container.querySelector("img")).toBeNull()
   })
@@ -106,7 +107,7 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
     )
     const span = container.querySelector("span[role='img']")
     expect(span).not.toBeNull()
-    expect(span?.getAttribute("style")).toContain("var(--sc-icon-color)")
+    expect(span?.classList.contains(css.itemImgMasked)).toBe(true)
     expect(container.querySelector("img")).toBeNull()
   })
 
@@ -156,7 +157,7 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
     )
     const span = container.querySelector("span")
     expect(span).not.toBeNull()
-    expect(span?.getAttribute("style")).toContain("var(--sc-icon-color)")
+    expect(span?.classList.contains(css.itemImgMasked)).toBe(true)
     expect(span?.getAttribute("style")).toContain(flaticonUrl)
     expect(container.querySelector("img")).toBeNull()
   })

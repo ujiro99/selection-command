@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest"
 import { render } from "@testing-library/react"
+import css from "./Menu.module.css"
 import { MenuItem } from "./MenuItem"
 import { popupContext, ContextType } from "@/hooks/usePopupContext"
 import { IconUrlsContext } from "./iconUrls"
@@ -85,7 +86,7 @@ describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
     )
     expect(span).not.toBeNull()
     expect(button?.querySelector("img")).toBeNull()
-    expect(span?.getAttribute("style")).toContain("var(--sc-icon-color)")
+    expect(span?.classList.contains(css.itemImgMasked)).toBe(true)
     expect(span?.getAttribute("style")).toContain(cachedDataUrl)
   })
 

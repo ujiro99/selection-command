@@ -41,6 +41,7 @@
   display: inline-block;
   vertical-align: middle;
   flex-shrink: 0;
+  background-color: var(--sc-icon-color);
   mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;

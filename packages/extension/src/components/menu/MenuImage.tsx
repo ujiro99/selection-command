@@ -13,61 +13,102 @@ type MenuImageProps = {
   preserveOriginalColor?: boolean
 }
 
+/** An icon without a meaningful alt is decorative and hidden from screen readers. */
+const isDecorative = (alt?: string) => !alt?.trim()
+
+/** Exposes a non-<img> element as an image to assistive technology, or hides it. */
+const imageRoleProps = (alt?: string) =>
+  isDecorative(alt)
+    ? ({ "aria-hidden": "true" } as const)
+    : ({ role: "img", "aria-label": alt } as const)
+
 export function MenuImage(props: MenuImageProps): JSX.Element {
-  const [svgElm, setSvgElm] = useState<HTMLDivElement | null>(null)
+  const { src, svg, alt, className } = props
   const { hasIconColor } = usePopupContext()
-  const hasUrl = !isEmpty(props.src)
-  const hasSvg = !isEmpty(props.svg)
 
+  // Callers that know the icon's origin pass the result in; otherwise fall back
+  // to detecting it from the URL being rendered.
   const preserveOriginalColor =
-    props.preserveOriginalColor ??
-    (hasUrl ? shouldPreserveIconColor({ url: props.src }) : false)
+    props.preserveOriginalColor ?? shouldPreserveIconColor({ url: src })
 
-  const isRecolorActive = Boolean(
+  const recolor = Boolean(
     hasIconColor && !props.excludeFromGlobalIconColor && !preserveOriginalColor,
   )
 
-  if (svgElm && props.svg) {
-    svgElm.innerHTML = props.svg
-  }
-
-  const isDecorative = !props.alt || props.alt.trim() === ""
-
-  return hasUrl ? (
-    isRecolorActive ? (
-      <span
-        className={cn(css.itemImg, css.itemImgMasked, props.className)}
-        style={{
-          WebkitMaskImage: `url("${props.src}")`,
-          maskImage: `url("${props.src}")`,
-          backgroundColor: "var(--sc-icon-color)",
-        }}
-        {...(isDecorative
-          ? { "aria-hidden": "true" }
-          : { role: "img", "aria-label": props.alt })}
-      />
+  if (!isEmpty(src)) {
+    return recolor ? (
+      <MaskedImage src={src as string} alt={alt} className={className} />
     ) : (
       <img
-        className={props.className}
-        src={props.src}
-        alt={props.alt || ""}
-        {...(isDecorative ? { "aria-hidden": "true" } : {})}
+        className={className}
+        src={src}
+        alt={alt ?? ""}
+        {...(isDecorative(alt) ? { "aria-hidden": "true" } : {})}
       />
     )
-  ) : hasSvg ? (
+  }
+
+  if (!isEmpty(svg)) {
+    return (
+      <InlineSvg
+        svg={svg as string}
+        alt={alt}
+        recolor={recolor}
+        className={className}
+      />
+    )
+  }
+
+  return <></>
+}
+
+type MaskedImageProps = {
+  src: string
+  alt?: string
+  className?: string
+}
+
+/**
+ * Renders the icon as a mask so it is painted in the global icon color.
+ * Sizing comes from className, like the plain <img> branch.
+ */
+function MaskedImage({ src, alt, className }: MaskedImageProps): JSX.Element {
+  return (
+    <span
+      className={cn(css.itemImgMasked, className)}
+      style={{ WebkitMaskImage: `url("${src}")`, maskImage: `url("${src}")` }}
+      {...imageRoleProps(alt)}
+    />
+  )
+}
+
+type InlineSvgProps = {
+  svg: string
+  alt?: string
+  recolor: boolean
+  className?: string
+}
+
+function InlineSvg({
+  svg,
+  alt,
+  recolor,
+  className,
+}: InlineSvgProps): JSX.Element {
+  const [svgElm, setSvgElm] = useState<HTMLDivElement | null>(null)
+
+  if (svgElm) {
+    svgElm.innerHTML = svg
+  }
+
+  return (
     <div
-      className={cn(css.menuImage, props.className)}
+      className={cn(css.menuImage, className)}
       style={{
-        color: isRecolorActive
-          ? "var(--sc-icon-color)"
-          : "hsl(var(--foreground))",
+        color: recolor ? "var(--sc-icon-color)" : "hsl(var(--foreground))",
       }}
       ref={setSvgElm}
-      {...(isDecorative
-        ? { "aria-hidden": "true" }
-        : { role: "img", "aria-label": props.alt })}
+      {...imageRoleProps(alt)}
     />
-  ) : (
-    <></>
   )
 }
