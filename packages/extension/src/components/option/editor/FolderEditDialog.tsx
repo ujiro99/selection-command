@@ -61,15 +61,8 @@ export const FolderEditDialog = ({
   })
 
   useEffect(() => {
-    if (folder) {
-      form.reset({
-        ...DefaultValue,
-        ...folder,
-        excludeFromGlobalIconColor: folder.excludeFromGlobalIconColor ?? false,
-      })
-    } else {
-      form.reset(DefaultValue)
-    }
+    // Merge over the defaults so properties added later are not left undefined.
+    form.reset(folder ? { ...DefaultValue, ...folder } : DefaultValue)
   }, [folder])
 
   const isUpdate = folder != null

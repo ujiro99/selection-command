@@ -82,7 +82,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           css.button,
           {
             [css.itemHorizontal]: onlyIcon,
-            ["hover:bg-accent"]: !inTransition,
+            "hover:bg-accent": !inTransition,
           },
           "rounded-sm",
         )}
