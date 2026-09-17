@@ -826,6 +826,7 @@ const CommandEditDialogInner = ({
                       control={form.control}
                       nameUrl="iconUrl"
                       nameSvg="iconSvg"
+                      nameExclude="excludeFromGlobalIconColor"
                       targetUrl={iconUrlSrc}
                       formLabel={t("iconUrl")}
                       description={

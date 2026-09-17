@@ -3,6 +3,7 @@ import { renderHook, waitFor } from "@testing-library/react"
 import { useSettingsWithImageCache } from "./useSettingsWithImageCache"
 import { enhancedSettings } from "../services/settings/enhancedSettings"
 import { settingsCache } from "../services/settings/settingsCache"
+import { Ipc } from "@/services/ipc"
 import { OPEN_MODE } from "@/const"
 import type { SettingsType, Command, Caches } from "@/types"
 
@@ -30,6 +31,7 @@ vi.mock("@/services/ipc", async (importOriginal) => {
 
 const mockEnhancedSettings = vi.mocked(enhancedSettings)
 const mockSettingsCache = vi.mocked(settingsCache)
+const mockIpcSend = vi.mocked(Ipc.send)
 
 // Mock window.location, which useUserSettings reads to match page rules
 Object.defineProperty(window, "location", {
@@ -68,6 +70,18 @@ describe("useSettingsWithImageCache", () => {
     mockEnhancedSettings.getSection.mockResolvedValue({})
     mockSettingsCache.subscribe.mockImplementation(() => {})
     mockSettingsCache.unsubscribe.mockImplementation(() => {})
+    mockIpcSend.mockImplementation(
+      async (_command: unknown, queries: unknown) =>
+        (queries as Array<{ url?: string; targetUrl?: string }>).map((query) =>
+          query.url?.includes("favicon.ico") ||
+          query.url?.includes("gstatic.com")
+            ? true
+            : query.targetUrl?.includes("https://example.com/") &&
+                query.url?.includes("cdn.example.com")
+              ? true
+              : false,
+        ),
+    )
   })
 
   afterEach(() => {
@@ -205,9 +219,9 @@ describe("useSettingsWithImageCache", () => {
 
     const { result } = await renderSettings()
 
-    expect(
-      result.current.commands.map((c) => c.preserveOriginalColor),
-    ).toEqual([true, false])
+    expect(result.current.commands.map((c) => c.preserveOriginalColor)).toEqual(
+      [true, false],
+    )
   })
 
   it("US-28: should use original URLs when cache is not available", async () => {
@@ -268,5 +282,32 @@ describe("useSettingsWithImageCache", () => {
     expect(result.current.commands).toEqual([])
     expect(result.current.folders).toEqual([])
     expect(result.current.loading).toBe(true)
+  })
+
+  it("US-30: should retry icon color resolution after an IPC length mismatch", async () => {
+    const command = {
+      id: "retry",
+      openMode: OPEN_MODE.POPUP,
+      title: "Retry",
+      iconUrl: "http://mismatch.example.com/icon.png",
+    }
+
+    mockSections({ folders: [] }, [command as Command])
+    mockSections({ folders: [] }, [command as Command])
+    mockIpcSend.mockResolvedValueOnce([]).mockResolvedValueOnce([false])
+
+    const firstRender = renderHook(() => useSettingsWithImageCache())
+    await waitFor(() => expect(mockIpcSend).toHaveBeenCalledTimes(1))
+    expect(firstRender.result.current.loading).toBe(true)
+    expect(firstRender.result.current.commands).toEqual([])
+    firstRender.unmount()
+
+    const secondRender = renderHook(() => useSettingsWithImageCache())
+    await waitFor(() => expect(secondRender.result.current.loading).toBe(false))
+
+    expect(mockIpcSend).toHaveBeenCalledTimes(2)
+    expect(secondRender.result.current.commands).toEqual([
+      { ...command, preserveOriginalColor: false },
+    ])
   })
 })

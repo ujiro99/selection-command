@@ -12,18 +12,13 @@ import { popupContext, usePopupContext } from "@/hooks/usePopupContext"
 import { isEmpty, isValidSVG, cn } from "@/lib/utils"
 import { shouldPreserveIconColor } from "@/lib/favicon"
 import { t as _t } from "@/services/i18n"
-import type { CommandFolder } from "@/types"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
-
-/** Form field name of the manual exclusion flag, tied to the stored property. */
-const EXCLUDE_FIELD_NAME =
-  "excludeFromGlobalIconColor" satisfies keyof CommandFolder
 
 type IconField = {
   control: any
   nameUrl: string
   nameSvg: string
-  nameExclude?: string
+  nameExclude: string
   formLabel: string
   placeholder?: string
   description?: string
@@ -35,7 +30,7 @@ export const IconField = ({
   control,
   nameUrl,
   nameSvg,
-  nameExclude = EXCLUDE_FIELD_NAME,
+  nameExclude,
   formLabel,
   description,
   placeholder,

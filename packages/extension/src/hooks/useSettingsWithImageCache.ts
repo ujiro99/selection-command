@@ -69,6 +69,11 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
             BgCommand.resolveIconColors,
             unknown,
           )
+          if (results.length !== unknown.length) {
+            throw new Error(
+              `Unexpected icon color response length: expected ${unknown.length}, got ${results.length}`,
+            )
+          }
           unknown.forEach((q, i) => answerCache.set(queryKey(q), results[i]))
         } catch (e) {
           // Leave them uncached so the next menu retries instead of sticking
@@ -77,9 +82,12 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
         }
       }
       if (!active) return
+      if (queries.some((q) => !answerCache.has(queryKey(q)))) {
+        return
+      }
       setAnswers({
         queries,
-        values: queries.map((q) => answerCache.get(queryKey(q)) ?? false),
+        values: queries.map((q) => answerCache.get(queryKey(q)) as boolean),
       })
     }
     resolve()

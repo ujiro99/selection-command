@@ -1,4 +1,4 @@
-import { isEmpty, cn } from "@/lib/utils"
+import { isEmpty, isValidSVG, cn } from "@/lib/utils"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
 
@@ -26,7 +26,11 @@ const imageRoleProps = (alt?: string) =>
     : ({ role: "img", "aria-label": alt } as const)
 
 const toSvgDataUrl = (svg: string) =>
-  `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+  `data:image/svg+xml;base64,${btoa(
+    Array.from(new TextEncoder().encode(svg), (byte) =>
+      String.fromCharCode(byte),
+    ).join(""),
+  )}`
 
 export function MenuImage(props: MenuImageProps): JSX.Element {
   const { src, svg, alt, className } = props
@@ -39,7 +43,7 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
   )
   const imageSrc = !isEmpty(src)
     ? (src as string)
-    : !isEmpty(svg)
+    : !isEmpty(svg) && isValidSVG(svg as string)
       ? toSvgDataUrl(svg as string)
       : undefined
 
