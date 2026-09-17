@@ -731,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "文字の色を指定します。デフォルト: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "アイコンの色"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "アイコンの色を指定します。デフォルト: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "全体のアイコン色を適用しない"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "全体のアイコン色が設定されている場合でも、このアイコン本来の色を保持します。"
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "このアイコンは全体のアイコン色設定から自動的に除外され、本来の色を保持します。"
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "自動"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "文字サイズの倍率"
   },

@@ -731,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Especificar el color de fuente. Predeterminado: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Color del icono"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Especificar el color del icono. Predeterminado: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Excluir del color de icono global"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Mantiene el color original de este icono incluso cuando se establece un color de icono global."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Los favicons se excluyen automáticamente del color de icono global y mantienen sus colores originales."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automático"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Escala de tamaño de fuente"
   },

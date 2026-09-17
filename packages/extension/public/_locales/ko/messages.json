@@ -731,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "글꼴 색상을 지정합니다. 기본값: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "아이콘 색상"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "아이콘 색상을 지정합니다. 기본값: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "전역 아이콘 색상에서 제외"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "전역 아이콘 색상이 설정되어 있어도 이 아이콘의 원래 색상을 유지합니다."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "파비콘은 전역 아이콘 색상에서 자동으로 제외되어 원래 색상을 유지합니다."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "자동"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "글꼴 크기 스케일"
   },

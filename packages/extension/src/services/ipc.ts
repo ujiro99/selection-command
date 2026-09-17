@@ -31,6 +31,7 @@ export enum BgCommand {
   getActiveTabId = "getActiveTabId",
   setClipboard = "setClipboard",
   closeTab = "closeTab",
+  resolveIconColors = "resolveIconColors",
   // Hub
   shareCommandToHub = "shareCommandToHub",
   editCommandToHub = "editCommandToHub",
@@ -64,6 +65,15 @@ export enum TabCommand {
 
 export type ClickElementProps = {
   selector: string
+}
+
+/**
+ * One icon whose recoloring decision the service worker resolves.
+ * `targetUrl` is the website the icon belongs to, when there is one.
+ */
+export type IconColorQuery = {
+  url?: string
+  targetUrl?: string
 }
 
 export type ClipboardResult = {

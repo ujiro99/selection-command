@@ -731,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Укажите цвет шрифта. По умолчанию: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Цвет иконок"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Укажите цвет иконок. По умолчанию: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Исключить из глобального цвета иконок"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Сохраняет исходный цвет этой иконки, даже если задан глобальный цвет иконок."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Фавиконки автоматически исключаются из глобального цвета иконок и сохраняют свои исходные цвета."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Автоматически"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Масштаб размера шрифта"
   },

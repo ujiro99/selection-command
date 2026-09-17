@@ -28,6 +28,7 @@ import type { AiPromptCommand } from "@/types"
 const commandSourceSchema = {
   sourceType: z.nativeEnum(COMMAND_SOURCE_TYPE).optional(),
   sourceId: z.string().optional(),
+  excludeFromGlobalIconColor: z.boolean().optional(),
 }
 
 const searchSchema = z.object({
@@ -374,6 +375,7 @@ export const folderSchema = z
     title: z.string().min(1, { message: t("Option_zod_string_min", ["1"]) }),
     iconUrl: z.string().optional(),
     iconSvg: z.string().optional(),
+    excludeFromGlobalIconColor: z.boolean().optional(),
     onlyIcon: z.boolean().optional(),
     parentFolderId: z.string().optional(),
     style: z.nativeEnum(FOLDER_STYLE).optional(),
