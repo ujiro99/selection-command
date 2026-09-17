@@ -3,6 +3,7 @@ import { renderHook, waitFor } from "@testing-library/react"
 import { useSettingsWithImageCache } from "./useSettingsWithImageCache"
 import { enhancedSettings } from "../services/settings/enhancedSettings"
 import { settingsCache } from "../services/settings/settingsCache"
+import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { Ipc } from "@/services/ipc"
 import { OPEN_MODE } from "@/const"
 import type { SettingsType, Command, Caches } from "@/types"
@@ -308,6 +309,35 @@ describe("useSettingsWithImageCache", () => {
     expect(mockIpcSend).toHaveBeenCalledTimes(2)
     expect(secondRender.result.current.commands).toEqual([
       { ...command, preserveOriginalColor: false },
+    ])
+  })
+
+  it("US-31: should use the AI service URL for AI Prompt icon preservation", async () => {
+    const chatgptUrl = getAiServicesFallback().find(
+      (s) => s.id === "chatgpt",
+    )?.url
+    expect(chatgptUrl).toBeDefined()
+
+    const command = {
+      id: "ai-prompt",
+      openMode: OPEN_MODE.AI_PROMPT,
+      title: "AI Prompt",
+      searchUrl: "https://example.com/search?q=%s",
+      iconUrl: "https://chatgpt.com/favicon.ico",
+      aiPromptOption: {
+        serviceId: "chatgpt",
+        prompt: "hello",
+        openMode: OPEN_MODE.POPUP,
+      },
+    }
+
+    mockSections({ folders: [] }, [command as Command])
+
+    const { result } = await renderSettings()
+
+    expect(chatgptUrl).toContain("chatgpt.com")
+    expect(result.current.commands).toEqual([
+      { ...command, preserveOriginalColor: true },
     ])
   })
 })
