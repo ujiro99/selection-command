@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "Masa kelewatan"
   },
+  "Option_pageAction_prompt": {
+    "message": "Prom"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Templat prom yang akan dimasukkan. Anda boleh menambah pemboleh ubah daripada menu."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Sisipkan pemboleh ubah dinamik seperti teks yang dipilih, dan rujuk dalam langkah dengan {{Prom}}."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "cth., Ringkaskan teks berikut:\n{{Teks yang dipilih}}"
+  },
   "Option_aiPrompt_service": {
     "message": "Perkhidmatan AI"
   },
@@ -873,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "HTML julat yang dipilih akan dilampirkan sebagai fail"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "Prom akan dimasukkan"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -881,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Teks yang dipilih"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Prom"
   },
   "PageAction_InputMenu_url": {
     "message": "URL Asal"

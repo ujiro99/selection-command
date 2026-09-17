@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "Tiempo de retraso"
   },
+  "Option_pageAction_prompt": {
+    "message": "Prompt"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Plantilla del prompt que se insertará. Puede agregar variables desde el menú."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Inserte variables dinámicas como texto seleccionado y referéncielas en los pasos con {{Prompt}}."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "ej.: Resume el siguiente texto:\n{{Texto seleccionado}}"
+  },
   "Option_aiPrompt_service": {
     "message": "Servicio IA"
   },
@@ -873,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "Se adjuntará el HTML del rango seleccionado como archivo"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "Se insertará el prompt"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insertar Texto"
   },
@@ -881,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texto seleccionado"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "URL de origen"

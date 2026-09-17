@@ -96,6 +96,7 @@ export type RunPageAction = {
   userVariables?: Array<UserVariable>
   pageHtml?: string
   selectionHtml?: string
+  prompt?: string
 }
 
 /**
@@ -112,6 +113,8 @@ export type SidePanelPendingAction = {
   useClipboard?: boolean
   pageHtml?: string
   selectionHtml?: string
+  prompt?: string
+  userVariables?: Array<UserVariable>
 }
 
 export namespace ExecPageAction {
@@ -124,6 +127,7 @@ export namespace ExecPageAction {
     userVariables?: Array<UserVariable>
     pageHtml?: string
     selectionHtml?: string
+    prompt?: string
   }
   export type Return = {
     result: boolean

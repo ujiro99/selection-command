@@ -10,6 +10,7 @@ export enum INSERT {
   LANG = "lang",
   PAGE_HTML = "pageHtml",
   SELECTION_HTML = "selectionHtml",
+  PROMPT = "prompt",
 }
 
 export const InsertSymbol = {
@@ -19,6 +20,7 @@ export const InsertSymbol = {
   [INSERT.LANG]: "Lang",
   [INSERT.PAGE_HTML]: "PageHtml",
   [INSERT.SELECTION_HTML]: "SelectionHtml",
+  [INSERT.PROMPT]: "Prompt",
 }
 
 /** Returns the template placeholder string for a given INSERT key, e.g. "{{Clipboard}}" */

@@ -266,6 +266,7 @@ export const PageActionOption = z
     openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
     steps: z.array(PageActionStepSchema),
     userVariables: z.array(userVariableSchema).max(5).optional(),
+    prompt: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && !data.pageUrl) {

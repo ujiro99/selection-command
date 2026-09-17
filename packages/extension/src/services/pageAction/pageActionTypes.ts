@@ -73,6 +73,7 @@ export namespace PageAction {
     userVariables?: UserVariable[]
     pageHtml?: string
     selectionHtml?: string
+    prompt?: string
   }
 
   export type Keyboard = {

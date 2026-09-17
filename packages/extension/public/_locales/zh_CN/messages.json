@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "等待时间"
   },
+  "Option_pageAction_prompt": {
+    "message": "提示词"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "这是要输入的提示词模板。可以从菜单中添加变量。"
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "可以插入选中文本等动态变量，并在步骤中通过 {{提示词}} 引用。"
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "例：请概括以下文本：\n{{将插入选中的文本}}"
+  },
   "Option_aiPrompt_service": {
     "message": "AI服务"
   },
@@ -873,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "将以文件形式附加所选范围的HTML"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "将插入提示词"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "插入文本"
   },
@@ -881,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "选中的文本"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "提示词"
   },
   "PageAction_InputMenu_url": {
     "message": "原始URL"

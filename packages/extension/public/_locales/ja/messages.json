@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "遅延時間"
   },
+  "Option_pageAction_prompt": {
+    "message": "プロンプト"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "入力するプロンプトのテンプレートです。メニューから変数を追加できます。"
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "選択テキストなどの動的変数を挿入し、ステップ内で {{プロンプトが挿入されます}} で参照できます。"
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "例：以下のテキストを要約してください。\n{{選択テキストが挿入されます}}"
+  },
   "Option_aiPrompt_service": {
     "message": "AIサービス"
   },
@@ -870,6 +882,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "選択範囲のHTMLを添付します"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "プロンプトが挿入されます"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "テキスト挿入"
   },
@@ -878,6 +893,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "選択テキスト"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "プロンプト"
   },
   "PageAction_InputMenu_url": {
     "message": "表示元URL"

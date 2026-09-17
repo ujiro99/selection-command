@@ -116,6 +116,55 @@ describe("hasCommandChanged", () => {
           "",
         ),
       ).toBe(false)
+      expect(
+        hasCommandChanged(
+          cmd,
+          "",
+          {
+            ...cmd.pageActionOption,
+            openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+          },
+          "",
+        ),
+      ).toBe(false)
+    })
+
+    it("returns false when prompt is unchanged or empty/undefined equivalent", () => {
+      const cmd = makePageActionCommand()
+      expect(
+        hasCommandChanged(
+          cmd,
+          "",
+          { ...cmd.pageActionOption, prompt: "" },
+          "",
+        ),
+      ).toBe(false)
+
+      const cmdWithPrompt = makePageActionCommand({
+        pageActionOption: { prompt: "Summarize" },
+      })
+      expect(
+        hasCommandChanged(
+          cmdWithPrompt,
+          "",
+          { ...cmdWithPrompt.pageActionOption, prompt: "Summarize" },
+          "",
+        ),
+      ).toBe(false)
+    })
+
+    it("returns true when prompt is changed", () => {
+      const cmd = makePageActionCommand({
+        pageActionOption: { prompt: "Original prompt" },
+      })
+      expect(
+        hasCommandChanged(
+          cmd,
+          "",
+          { ...cmd.pageActionOption, prompt: "Updated prompt" },
+          "",
+        ),
+      ).toBe(true)
     })
 
     it("does not throw when currentPageActionOption is null, returns true (differs from saved)", () => {

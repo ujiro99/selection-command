@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest"
 import { AiPromptOptionSchema, commandSchema, folderSchema } from "./schema"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { OPEN_MODE } from "@shared/constants/open-mode"
-import { SPACE_ENCODING } from "@/const"
+import { PAGE_ACTION_OPEN_MODE, SPACE_ENCODING } from "@/const"
 
 const baseOption = {
   serviceId: "chatgpt",
@@ -94,6 +94,88 @@ describe("excludeFromGlobalIconColor in schemas", () => {
     expect(res.success).toBe(true)
     if (res.success) {
       expect(res.data.excludeFromGlobalIconColor).toBe(true)
+    }
+  })
+})
+
+describe("PageActionOption in schemas", () => {
+  const basePageActionCmd = {
+    id: "test-pa-cmd",
+    openMode: OPEN_MODE.PAGE_ACTION,
+    title: "Test Page Action",
+    iconUrl: "https://example.com/icon.png",
+    pageActionOption: {
+      startUrl: "https://example.com",
+      openMode: "popup",
+      steps: [],
+    },
+  }
+
+  it("SC-08: accepts PageAction command without prompt field (backward compatibility)", () => {
+    const res = commandSchema.safeParse(basePageActionCmd)
+    expect(res.success).toBe(true)
+  })
+
+  it("SC-09: accepts PageAction command with empty prompt", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        prompt: "",
+      },
+    })
+    expect(res.success).toBe(true)
+  })
+
+  it("SC-10: accepts PageAction command with configured prompt", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        prompt: "Summarize: {{SelectedText}}",
+      },
+    })
+    expect(res.success).toBe(true)
+    if (res.success && res.data.openMode === OPEN_MODE.PAGE_ACTION) {
+      expect(res.data.pageActionOption.prompt).toBe(
+        "Summarize: {{SelectedText}}",
+      )
+    }
+  })
+
+  it("SC-11: accepts PageAction command with openMode SIDE_PANEL", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      },
+    })
+    expect(res.success).toBe(true)
+    if (res.success && res.data.openMode === OPEN_MODE.PAGE_ACTION) {
+      expect(res.data.pageActionOption.openMode).toBe(
+        PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      )
+    }
+  })
+
+  it("SC-12: accepts PageAction command with openMode SIDE_PANEL and configured prompt", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+        prompt: "Explain {{SelectedText}} in detail",
+      },
+    })
+    expect(res.success).toBe(true)
+    if (res.success && res.data.openMode === OPEN_MODE.PAGE_ACTION) {
+      expect(res.data.pageActionOption.openMode).toBe(
+        PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      )
+      expect(res.data.pageActionOption.prompt).toBe(
+        "Explain {{SelectedText}} in detail",
+      )
     }
   })
 })

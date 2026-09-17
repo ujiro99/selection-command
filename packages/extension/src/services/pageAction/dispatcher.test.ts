@@ -28,6 +28,7 @@ vi.mock("@/services/pageAction", () => ({
     LANG: "lang",
     PAGE_HTML: "pageHtml",
     SELECTION_HTML: "selectionHtml",
+    PROMPT: "prompt",
   },
   InsertSymbol: {
     selectedText: "{{selectedText}}",
@@ -36,6 +37,7 @@ vi.mock("@/services/pageAction", () => ({
     lang: "{{lang}}",
     pageHtml: "{{pageHtml}}",
     selectionHtml: "{{selectionHtml}}",
+    prompt: "{{prompt}}",
   },
 }))
 
@@ -776,6 +778,41 @@ describe("PageActionDispatcher", () => {
         "{{myVar}}",
         expect.objectContaining({
           myVar: "custom value",
+        }),
+      )
+    })
+
+    it("PDI-12: Should resolve prompt variable in input step", async () => {
+      const mockElement = mockElements.input
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      mockIsEditable.mockReturnValue(false)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.input,
+        selector: ".input",
+        selectorType: SelectorType.css,
+        label: "Input",
+        value: "{{prompt}}",
+        srcUrl: "https://example.com",
+        selectedText: "test selection",
+        clipboardText: "",
+        prompt: "Summarize: {{selectedText}}",
+      }
+
+      await PageActionDispatcher.input(param as any)
+
+      // First safeInterpolate call resolves prompt template
+      expect(mockSafeInterpolate).toHaveBeenCalledWith(
+        "Summarize: {{selectedText}}",
+        expect.objectContaining({
+          "{{selectedText}}": "test selection",
+        }),
+      )
+      // Second safeInterpolate call resolves input step value
+      expect(mockSafeInterpolate).toHaveBeenCalledWith(
+        "{{prompt}}",
+        expect.objectContaining({
+          "{{prompt}}": expect.any(String),
         }),
       )
     })

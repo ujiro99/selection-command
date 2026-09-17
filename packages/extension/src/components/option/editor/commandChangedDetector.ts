@@ -18,7 +18,15 @@ export function hasCommandChanged(
   if (isPageActionType(command)) {
     const { openMode: _a, ...pao } = currentPageActionOption ?? {}
     const { openMode: _b, ...cmdPao } = command.pageActionOption
-    return JSON.stringify(pao) !== JSON.stringify(cmdPao)
+    // Treat an empty prompt the same as an unset one so a no-op edit isn't flagged as a change.
+    const normalizePrompt = <T extends { prompt?: string }>(opt: T) => ({
+      ...opt,
+      prompt: opt.prompt || undefined,
+    })
+    return (
+      JSON.stringify(normalizePrompt(pao)) !==
+      JSON.stringify(normalizePrompt(cmdPao))
+    )
   }
   if (isAiPromptType(command)) {
     return currentAiPromptPrompt !== command.aiPromptOption.prompt

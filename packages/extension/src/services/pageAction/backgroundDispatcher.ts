@@ -1,11 +1,10 @@
 import { inputContentEditable } from "@/services/dom"
-import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
-import { INSERT, InsertSymbol } from "@/services/pageAction"
+import { isMac, isEmpty } from "@/lib/utils"
 import { PageAction, ActionReturn } from "./dispatcher"
 import { queryElement } from "./queryElement"
 import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
-import { getUILanguage } from "@/services/i18n"
 import { resolveClickCondition, BACKGROUND_POLL } from "./elementWait"
+import { resolveActionVariables } from "./helper"
 
 /**
  * Wait for an element to appear in the DOM for background tab execution.
@@ -181,27 +180,19 @@ export const BackgroundPageActionDispatcher = {
       selectedText,
       clipboardText,
       userVariables,
+      prompt,
     } = param
 
     const element = await waitForElementBackground(selector, selectorType)
     if (element) {
-      // Insert variables (same as original)
-      const variables = {
-        [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
-        [InsertSymbol[INSERT.URL]]: srcUrl,
-        [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
-        [InsertSymbol[INSERT.LANG]]: getUILanguage(),
-        // Add user variables
-        ...(userVariables?.reduce(
-          (acc, variable) => {
-            acc[variable.name] = variable.value
-            return acc
-          },
-          {} as Record<string, string>,
-        ) || {}),
-      }
-
-      const value = safeInterpolate(param.value, variables)
+      const value = resolveActionVariables({
+        value: param.value,
+        selectedText,
+        srcUrl,
+        clipboardText,
+        userVariables,
+        prompt,
+      })
 
       if (!isEmpty(value)) {
         // Direct value assignment for background tabs

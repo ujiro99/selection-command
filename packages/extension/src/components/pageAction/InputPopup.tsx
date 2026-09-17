@@ -8,6 +8,7 @@ import {
   Code,
   ChevronDown,
   ChevronUp,
+  Sparkles,
 } from "lucide-react"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import {
@@ -240,6 +241,7 @@ export function InputPopup(): JSX.Element {
               targetElm={targetElm}
               disabled={disabled}
               hideFilePaste
+              showPrompt
             />
           </PopoverContent>
         )}
@@ -254,6 +256,7 @@ type MenuProps = {
   disabled?: boolean
   hideFilePaste?: boolean
   fileAttachDisabled?: boolean
+  showPrompt?: boolean
 }
 
 export function InputMenu(props: MenuProps): JSX.Element {
@@ -319,6 +322,12 @@ export function InputMenu(props: MenuProps): JSX.Element {
             <TextCursorInput size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_selectedText")}
           </InputMenuItem>
+          {props.showPrompt && (
+            <InputMenuItem onClick={onClickItem} value={INSERT.PROMPT}>
+              <Sparkles size={16} className="mr-2 stroke-gray-600" />
+              {t("PageAction_InputMenu_prompt")}
+            </InputMenuItem>
+          )}
           <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
             <Link2 size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_url")}

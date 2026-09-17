@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "Tempo di attesa"
   },
+  "Option_pageAction_prompt": {
+    "message": "Prompt"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Modello di prompt da inserire. Puoi aggiungere variabili dal menu."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Inserisci variabili dinamiche come il testo selezionato e fai riferimento ad esse nei passaggi con {{Prompt}}."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "es., Riassumi il seguente testo:\n{{Testo selezionato}}"
+  },
   "Option_aiPrompt_service": {
     "message": "Servizio AI"
   },
@@ -873,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "Verrà allegato come file l'HTML dell'intervallo selezionato"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "Verrà inserito il prompt"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserisci testo"
   },
@@ -881,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Testo selezionato"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "URL originale"

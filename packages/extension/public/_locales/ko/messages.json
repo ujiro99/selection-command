@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "지연 시간"
   },
+  "Option_pageAction_prompt": {
+    "message": "프롬프트"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "입력할 프롬프트 템플릿입니다. 메뉴에서 변수를 추가할 수 있습니다."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "선택한 텍스트와 같은 동적 변수를 삽입하고 단계에서 {{프롬프트}}로 참조할 수 있습니다."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "예: 다음 텍스트 요약:\n{{선택한 텍스트}}"
+  },
   "Option_aiPrompt_service": {
     "message": "AI 서비스"
   },
@@ -873,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "선택한 범위의 HTML이 파일로 첨부됩니다"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "프롬프트가 삽입됩니다"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "텍스트 삽입"
   },
@@ -881,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "선택한 텍스트"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "프롬프트"
   },
   "PageAction_InputMenu_url": {
     "message": "원본 URL"
