@@ -10,16 +10,14 @@ import { getCommandEnabled } from "@/lib/commandEnabled"
 import { PopupOption } from "@/services/option/defaultSettings"
 import { ExecState } from "@/const"
 import { MenuImage } from "@/components/menu/MenuImage"
-import { shouldPreserveIconColor } from "@/lib/favicon"
-import { useCommandIconUrl } from "./iconUrls"
-import type { Command } from "@/types"
+import type { ResolvedCommand } from "@/hooks/useSettingsWithImageCache"
 
 import css from "./Menu.module.css"
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
   onlyIcon: boolean
-  command: Command
+  command: ResolvedCommand
 }
 
 export function MenuItem(props: MenuItemProps): React.ReactNode {
@@ -27,18 +25,11 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
-  const { iconUrl, title } = props.command
+  const { iconUrl, title, preserveOriginalColor } = props.command
   const { isPreview, inTransition, inOnboarding } = usePopupContext()
   const { selectionText, target } = useSelectContext()
   const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
   const message = itemState.message || defaultMessage
-
-  // iconUrl may already be a cached data URL, so detect against the original.
-  const originalIconUrl = useCommandIconUrl(props.command.id, iconUrl)
-  const preserveOriginalColor = shouldPreserveIconColor({
-    url: originalIconUrl,
-    command: props.command,
-  })
 
   function handleClick(e: React.MouseEvent) {
     if (isPreview) {

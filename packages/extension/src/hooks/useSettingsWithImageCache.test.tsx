@@ -1,0 +1,231 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { renderHook, act } from "@testing-library/react"
+import { useSettingsWithImageCache } from "./useSettingsWithImageCache"
+import { enhancedSettings } from "../services/settings/enhancedSettings"
+import { settingsCache } from "../services/settings/settingsCache"
+import { OPEN_MODE } from "@/const"
+import type { SettingsType, Command, Caches } from "@/types"
+
+// Mock dependencies
+vi.mock("../services/settings/enhancedSettings")
+vi.mock("../services/settings/settingsCache")
+
+const mockEnhancedSettings = vi.mocked(enhancedSettings)
+const mockSettingsCache = vi.mocked(settingsCache)
+
+// Mock window.location, which useUserSettings reads to match page rules
+Object.defineProperty(window, "location", {
+  value: {
+    href: "https://example.com/test",
+  },
+  writable: true,
+})
+
+// Sections are requested in this order: user settings, commands, caches.
+const mockSections = (
+  settings: Partial<SettingsType>,
+  commands: Command[],
+  caches?: Caches,
+) => {
+  mockEnhancedSettings.getSection
+    .mockResolvedValueOnce(settings as any)
+    .mockResolvedValueOnce(commands as any)
+    .mockResolvedValueOnce((caches ?? { images: {} }) as any)
+}
+
+const renderSettings = async () => {
+  const rendered = renderHook(() => useSettingsWithImageCache())
+
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 0))
+  })
+
+  return rendered
+}
+
+describe("useSettingsWithImageCache", () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    // Setup default mocks
+    mockEnhancedSettings.get.mockResolvedValue({} as SettingsType)
+    mockEnhancedSettings.getSection.mockResolvedValue({})
+    mockSettingsCache.subscribe.mockImplementation(() => {})
+    mockSettingsCache.unsubscribe.mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    vi.clearAllTimers()
+  })
+
+  it("US-25: should return settings with image cache applied", async () => {
+    const command = {
+      id: "1",
+      title: "Test",
+      openMode: OPEN_MODE.POPUP,
+      iconUrl: "http://example.com/icon.png",
+    }
+    const folder = {
+      id: "1",
+      title: "Folder",
+      iconUrl: "http://example.com/folder.png",
+    }
+
+    mockSections({ folders: [folder] }, [command as Command], {
+      images: {
+        "http://example.com/icon.png": "data:image/png;base64,cached",
+        "http://example.com/folder.png": "data:image/png;base64,cached2",
+      },
+    })
+
+    const { result } = await renderSettings()
+
+    expect(result.current.commands).toEqual([
+      {
+        ...command,
+        iconUrl: "data:image/png;base64,cached",
+        preserveOriginalColor: false,
+      },
+    ])
+    expect(result.current.folders).toEqual([
+      {
+        ...folder,
+        iconUrl: "data:image/png;base64,cached2",
+        preserveOriginalColor: false,
+      },
+    ])
+  })
+
+  it("US-26: should handle folders without iconUrl", async () => {
+    const folders = [
+      { id: "1", title: "Folder", iconUrl: "" },
+      { id: "2", title: "Folder2" }, // No iconUrl
+    ]
+
+    mockSections({ folders }, [])
+
+    const { result } = await renderSettings()
+
+    expect(result.current.folders).toEqual([
+      { id: "1", title: "Folder", iconUrl: "", preserveOriginalColor: false },
+      { id: "2", title: "Folder2", preserveOriginalColor: false },
+    ])
+  })
+
+  it("US-27: should decide icon recoloring from the configured URL, not the cached one", async () => {
+    const favicon = "https://chatgpt.com/favicon.ico"
+    const genericIcon = "https://cdn-icons-png.flaticon.com/512/11865/1.png"
+    const cachedFavicon = "data:image/png;base64,cached-favicon"
+    const cachedGenericIcon = "data:image/png;base64,cached-generic"
+
+    const brandCommand = {
+      id: "cmd1",
+      title: "Command 1",
+      openMode: OPEN_MODE.POPUP,
+      iconUrl: favicon,
+    }
+    const genericCommand = {
+      id: "cmd2",
+      title: "Command 2",
+      openMode: OPEN_MODE.POPUP,
+      iconUrl: genericIcon,
+    }
+    const brandFolder = { id: "folder1", title: "Folder 1", iconUrl: favicon }
+    const genericFolder = {
+      id: "folder2",
+      title: "Folder 2",
+      iconUrl: genericIcon,
+    }
+
+    mockSections(
+      { folders: [brandFolder, genericFolder] },
+      [brandCommand, genericCommand] as Command[],
+      {
+        images: {
+          [favicon]: cachedFavicon,
+          [genericIcon]: cachedGenericIcon,
+        },
+      },
+    )
+
+    const { result } = await renderSettings()
+
+    // Icons known to carry their own colors keep them, the generic ones don't.
+    expect(result.current.commands).toEqual([
+      { ...brandCommand, iconUrl: cachedFavicon, preserveOriginalColor: true },
+      {
+        ...genericCommand,
+        iconUrl: cachedGenericIcon,
+        preserveOriginalColor: false,
+      },
+    ])
+    expect(result.current.folders).toEqual([
+      { ...brandFolder, iconUrl: cachedFavicon, preserveOriginalColor: true },
+      {
+        ...genericFolder,
+        iconUrl: cachedGenericIcon,
+        preserveOriginalColor: false,
+      },
+    ])
+  })
+
+  it("US-28: should use original URLs when cache is not available", async () => {
+    const command = {
+      id: "1",
+      openMode: OPEN_MODE.POPUP,
+      title: "Test",
+      iconUrl: "http://example.com/icon.png",
+    }
+    const folder = {
+      id: "1",
+      title: "Folder",
+      iconUrl: "http://example.com/folder.png",
+    }
+
+    mockSections({ folders: [folder] }, [command as Command])
+
+    const { result } = await renderSettings()
+
+    expect(result.current.commands).toEqual([
+      { ...command, preserveOriginalColor: false },
+    ])
+    expect(result.current.folders).toEqual([
+      { ...folder, preserveOriginalColor: false },
+    ])
+  })
+
+  it("US-28-a: should handle empty cache strings", async () => {
+    const command = {
+      id: "1",
+      openMode: OPEN_MODE.POPUP,
+      title: "Test",
+      iconUrl: "http://example.com/icon.png",
+    }
+
+    mockSections({ folders: [] }, [command as Command], {
+      images: {
+        "http://example.com/icon.png": "", // Empty cache
+      },
+    })
+
+    const { result } = await renderSettings()
+
+    expect(result.current.commands).toEqual([
+      { ...command, preserveOriginalColor: false },
+    ])
+  })
+
+  it("US-29: should handle loading state", async () => {
+    // Mock a delayed response
+    mockEnhancedSettings.get.mockImplementation(
+      () => new Promise((resolve) => setTimeout(() => resolve({} as any), 100)),
+    )
+
+    const { result } = renderHook(() => useSettingsWithImageCache())
+
+    // Should return empty arrays during loading
+    expect(result.current.commands).toEqual([])
+    expect(result.current.folders).toEqual([])
+    expect(result.current.loading).toBe(true)
+  })
+})

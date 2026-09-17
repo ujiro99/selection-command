@@ -7,11 +7,12 @@ import { MenuItem } from "./MenuItem"
 import { ChevronRight } from "lucide-react"
 import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
-import { shouldPreserveIconColor } from "@/lib/favicon"
-import { useFolderIconUrl } from "./iconUrls"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
-import type { Command, CommandFolder } from "@/types"
+import type {
+  ResolvedCommand,
+  ResolvedFolder,
+} from "@/hooks/useSettingsWithImageCache"
 import { cn, onHover } from "@/lib/utils"
 import { type CommandTreeNode } from "@/services/option/commandTree"
 
@@ -43,13 +44,13 @@ export const MenuTreeNode = (props: MenuTreeNodeProps): JSX.Element => {
       <MenuItem
         menuRef={menuRef}
         onlyIcon={isHorizontal}
-        command={node.content as Command}
+        command={node.content as ResolvedCommand}
       />
     )
   } else {
     return (
       <MenuFolder
-        folder={node.content as CommandFolder}
+        folder={node.content as ResolvedFolder}
         children={node.children}
         isHorizontal={isHorizontal}
         side={side}
@@ -64,7 +65,7 @@ export const MenuTreeNode = (props: MenuTreeNodeProps): JSX.Element => {
 }
 
 export const MenuFolder = (props: {
-  folder: CommandFolder
+  folder: ResolvedFolder
   children?: CommandTreeNode[]
   isHorizontal: boolean
   side: SIDE
@@ -80,11 +81,6 @@ export const MenuFolder = (props: {
   const [hoveredFolder, setHoveredFolder] = useState("")
   const childActiveFolder = triggeredFolder || hoveredFolder
   const { inTransition } = usePopupContext()
-
-  // iconUrl may already be a cached data URL, so detect against the original.
-  const preserveOriginalColor = shouldPreserveIconColor({
-    url: useFolderIconUrl(folder.id, folder.iconUrl),
-  })
 
   // Resolve the effective style for this folder's content.
   // INHERIT: use parent style (isHorizontal), otherwise use folder's explicit style setting.
@@ -152,7 +148,7 @@ export const MenuFolder = (props: {
             svg={folder.iconSvg}
             alt={folder.title}
             excludeFromGlobalIconColor={folder.excludeFromGlobalIconColor}
-            preserveOriginalColor={preserveOriginalColor}
+            preserveOriginalColor={folder.preserveOriginalColor}
           />
           {!(folder.onlyIcon && isHorizontal) && (
             <span className={cn(css.itemTitle, css.title)}>{folder.title}</span>

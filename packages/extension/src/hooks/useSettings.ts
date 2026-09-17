@@ -15,7 +15,7 @@ import type {
   UserSettings,
   PageRule,
 } from "@/types"
-import { isEmpty, findMatchingPageRule } from "@/lib/utils"
+import { findMatchingPageRule } from "@/lib/utils"
 import { INHERIT } from "@/const"
 
 // Apply page rule to settings, modifying popupPlacement if needed
@@ -172,72 +172,5 @@ export function useUserSettings() {
     loading,
     error,
     refetch,
-  }
-}
-
-type HasIconUrl = { id: string; iconUrl?: string }
-
-/** Maps ids to their configured icon URL, before image caching is applied. */
-function toIconUrlMap(items: HasIconUrl[]): Record<string, string> {
-  return items.reduce(
-    (acc, cur) => (cur.iconUrl ? { ...acc, [cur.id]: cur.iconUrl } : acc),
-    {} as Record<string, string>,
-  )
-}
-
-/** Replaces the icon URL with its cached data URL when one is available. */
-function applyImageCache<T extends HasIconUrl>(
-  item: T,
-  images: Record<string, string> | undefined,
-): T {
-  if (!item.iconUrl || !images) return item
-  const cache = images[item.iconUrl]
-  return isEmpty(cache) ? item : { ...item, iconUrl: cache }
-}
-
-// Settings hook with image cache applied
-export function useSettingsWithImageCache() {
-  const { userSettings: settings, loading: loading1 } = useUserSettings()
-  const { data: commands, loading: loading2 } = useSection(
-    CACHE_SECTIONS.COMMANDS,
-  )
-  const { data: caches, loading: loading3 } = useSection(CACHE_SECTIONS.CACHES)
-  const loading = loading1 || loading2 || loading3
-
-  const { commandsWithCache, foldersWithCache, iconUrls, folderIconUrls } =
-    useMemo(() => {
-      if (loading || !commands) {
-        return {
-          commandsWithCache: [],
-          foldersWithCache: [],
-          iconUrls: {},
-          folderIconUrls: {},
-        }
-      }
-
-      const folders = settings.folders || []
-      const commandsWithCache = commands.map((c) =>
-        applyImageCache(c, caches?.images),
-      )
-      const foldersWithCache = folders.map((f) =>
-        applyImageCache(f, caches?.images),
-      )
-
-      // IconUrls maps - contain original URLs before cache application
-      return {
-        commandsWithCache,
-        foldersWithCache,
-        iconUrls: toIconUrlMap(commands),
-        folderIconUrls: toIconUrlMap(folders),
-      }
-    }, [settings, loading, caches, commands])
-
-  return {
-    userSettings: settings,
-    commands: commandsWithCache,
-    folders: foldersWithCache,
-    iconUrls,
-    folderIconUrls,
-    loading,
   }
 }

@@ -3,10 +3,9 @@ import { render } from "@testing-library/react"
 import css from "./Menu.module.css"
 import { MenuItem } from "./MenuItem"
 import { popupContext, ContextType } from "@/hooks/usePopupContext"
-import { IconUrlsContext } from "./iconUrls"
 import { SIDE, ALIGN, OPEN_MODE, ExecState } from "@/const"
 import { ONBOARDING_AI_PROMPT_COMMAND_ID } from "@/components/onboarding/onboardingCommand"
-import type { AiPromptCommand } from "@/types"
+import type { ResolvedCommand } from "@/hooks/useSettingsWithImageCache"
 
 vi.mock("@/hooks/useCommandExecutor", () => ({
   useCommandExecutor: () => ({
@@ -28,11 +27,7 @@ vi.mock("@/lib/commandEnabled", () => ({
   getCommandEnabled: () => ({ enabled: true, message: "" }),
 }))
 
-const renderMenuItem = (
-  command: AiPromptCommand,
-  iconUrls: Record<string, string> = {},
-  hasIconColor = true,
-) => {
+const renderMenuItem = (command: ResolvedCommand, hasIconColor = true) => {
   const fullContext: ContextType = {
     side: SIDE.top,
     align: ALIGN.start,
@@ -42,43 +37,45 @@ const renderMenuItem = (
 
   return render(
     <popupContext.Provider value={fullContext}>
-      <IconUrlsContext.Provider value={{ commands: iconUrls, folders: {} }}>
-        <MenuItem menuRef={menuRef} onlyIcon={true} command={command} />
-      </IconUrlsContext.Provider>
+      <MenuItem menuRef={menuRef} onlyIcon={true} command={command} />
     </popupContext.Provider>,
   )
 }
 
 describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
-  const flaticonUrl =
-    "https://cdn-icons-png.flaticon.com/512/11865/11865326.png"
+  // The rendered URL is the cached data URL; whether it may be recolored is
+  // resolved from the configured URL by useSettingsWithImageCache.
   const cachedDataUrl =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
 
-  it("renders a masked <span> for AI Prompt command with custom Flaticon URL when recoloring is enabled", () => {
-    const aiCommand: AiPromptCommand = {
+  const createAiCommand = (
+    overrides: Partial<ResolvedCommand> = {},
+  ): ResolvedCommand =>
+    ({
       id: ONBOARDING_AI_PROMPT_COMMAND_ID,
       title: "Run with AI",
       openMode: OPEN_MODE.AI_PROMPT,
       iconUrl: cachedDataUrl,
       excludeFromGlobalIconColor: false,
+      preserveOriginalColor: false,
       aiPromptOption: {
         serviceId: "chatgpt",
         prompt: "test",
         openMode: OPEN_MODE.SIDE_PANEL,
       },
-    } as any
+      ...overrides,
+    }) as any
 
-    const iconUrls = {
-      [ONBOARDING_AI_PROMPT_COMMAND_ID]: flaticonUrl,
-    }
-
-    const { container } = renderMenuItem(aiCommand, iconUrls, true)
-
-    // Button should match DevTools output
-    const button = container.querySelector(
+  const queryButton = (container: HTMLElement) =>
+    container.querySelector(
       "button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']",
     )
+
+  it("renders a masked <span> for an AI Prompt command whose icon may be recolored", () => {
+    const { container } = renderMenuItem(createAiCommand(), true)
+
+    // Button should match DevTools output
+    const button = queryButton(container)
     expect(button).not.toBeNull()
 
     const span = button?.querySelector(
@@ -90,29 +87,13 @@ describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
     expect(span?.getAttribute("style")).toContain(cachedDataUrl)
   })
 
-  it("renders an <img> for AI Prompt command with custom Flaticon URL when excludeFromGlobalIconColor is true", () => {
-    const aiCommand: AiPromptCommand = {
-      id: ONBOARDING_AI_PROMPT_COMMAND_ID,
-      title: "Run with AI",
-      openMode: OPEN_MODE.AI_PROMPT,
-      iconUrl: cachedDataUrl,
-      excludeFromGlobalIconColor: true,
-      aiPromptOption: {
-        serviceId: "chatgpt",
-        prompt: "test",
-        openMode: OPEN_MODE.SIDE_PANEL,
-      },
-    } as any
-
-    const iconUrls = {
-      [ONBOARDING_AI_PROMPT_COMMAND_ID]: flaticonUrl,
-    }
-
-    const { container } = renderMenuItem(aiCommand, iconUrls, true)
-
-    const button = container.querySelector(
-      "button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']",
+  it("renders an <img> for an AI Prompt command when excludeFromGlobalIconColor is true", () => {
+    const { container } = renderMenuItem(
+      createAiCommand({ excludeFromGlobalIconColor: true }),
+      true,
     )
+
+    const button = queryButton(container)
     expect(button).not.toBeNull()
 
     // Must render <img>, NOT masked span
@@ -122,33 +103,16 @@ describe("MenuItem - AI Prompt Command Icon Recoloring", () => {
     expect(img?.getAttribute("src")).toBe(cachedDataUrl)
   })
 
-  it("renders an <img> for AI Prompt command when genuine ChatGPT favicon is used (automatic protection)", () => {
-    const chatGptFavicon = "https://chatgpt.com/favicon.ico"
-    const aiCommand: AiPromptCommand = {
-      id: ONBOARDING_AI_PROMPT_COMMAND_ID,
-      title: "Run with AI",
-      openMode: OPEN_MODE.AI_PROMPT,
-      iconUrl: cachedDataUrl,
-      excludeFromGlobalIconColor: false,
-      aiPromptOption: {
-        serviceId: "chatgpt",
-        prompt: "test",
-        openMode: OPEN_MODE.SIDE_PANEL,
-      },
-    } as any
-
-    const iconUrls = {
-      [ONBOARDING_AI_PROMPT_COMMAND_ID]: chatGptFavicon,
-    }
-
-    const { container } = renderMenuItem(aiCommand, iconUrls, true)
-
-    const button = container.querySelector(
-      "button[data-command-id='8b6f2e10-9a44-5c7d-8b3f-2e6a7c1d4f90']",
+  it("renders an <img> for an AI Prompt command whose icon keeps its own colors", () => {
+    const { container } = renderMenuItem(
+      createAiCommand({ preserveOriginalColor: true }),
+      true,
     )
+
+    const button = queryButton(container)
     expect(button).not.toBeNull()
 
-    // Must render <img> because genuine favicon is protected
+    // Must render <img> because the icon is protected from recoloring
     const img = button?.querySelector("img")
     expect(img).not.toBeNull()
     expect(button?.querySelector("span[class*='itemImgMasked']")).toBeNull()
