@@ -122,10 +122,12 @@ const getDefault = (
     ? {
         sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
         sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
+        excludeFromGlobalIconColor: base?.excludeFromGlobalIconColor ?? false,
       }
     : {
         sourceType: base?.sourceType,
         sourceId: base?.sourceId,
+        excludeFromGlobalIconColor: base?.excludeFromGlobalIconColor ?? false,
       }
 
   if (isSearchOpenMode(openMode)) {
@@ -824,6 +826,7 @@ const CommandEditDialogInner = ({
                       control={form.control}
                       nameUrl="iconUrl"
                       nameSvg="iconSvg"
+                      targetUrl={iconUrlSrc}
                       formLabel={t("iconUrl")}
                       description={
                         isSearchOpenMode(openMode) || openMode === OPEN_MODE.API

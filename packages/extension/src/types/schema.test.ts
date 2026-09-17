@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest"
-import { AiPromptOptionSchema } from "./schema"
+import { AiPromptOptionSchema, commandSchema, folderSchema } from "./schema"
 import { INSERT, toInsertTemplate } from "@/services/pageAction"
 import { OPEN_MODE } from "@shared/constants/open-mode"
+import { SPACE_ENCODING } from "@/const"
 
 const baseOption = {
   serviceId: "chatgpt",
@@ -52,6 +53,47 @@ describe("AiPromptOptionSchema", () => {
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.issues[0].path).toEqual(["prompt"])
+    }
+  })
+})
+
+describe("excludeFromGlobalIconColor in schemas", () => {
+  it("SC-06: accepts command with excludeFromGlobalIconColor true and false", () => {
+    const validSearchCmd = {
+      id: "test-cmd",
+      openMode: OPEN_MODE.POPUP,
+      title: "Test Search",
+      iconUrl: "https://example.com/icon.png",
+      searchUrl: "https://example.com/search?q=%s",
+      openModeSecondary: OPEN_MODE.TAB,
+      spaceEncoding: SPACE_ENCODING.PLUS,
+      excludeFromGlobalIconColor: true,
+    }
+    const res = commandSchema.safeParse(validSearchCmd)
+    expect(res.success).toBe(true)
+    if (res.success && res.data.openMode === OPEN_MODE.POPUP) {
+      expect(res.data.excludeFromGlobalIconColor).toBe(true)
+    }
+
+    const withoutOverride = {
+      ...validSearchCmd,
+      excludeFromGlobalIconColor: undefined,
+    }
+    const res2 = commandSchema.safeParse(withoutOverride)
+    expect(res2.success).toBe(true)
+  })
+
+  it("SC-07: accepts folder with excludeFromGlobalIconColor", () => {
+    const validFolder = {
+      id: "test-folder",
+      title: "Test Folder",
+      iconUrl: "https://example.com/folder.png",
+      excludeFromGlobalIconColor: true,
+    }
+    const res = folderSchema.safeParse(validFolder)
+    expect(res.success).toBe(true)
+    if (res.success) {
+      expect(res.data.excludeFromGlobalIconColor).toBe(true)
     }
   })
 })

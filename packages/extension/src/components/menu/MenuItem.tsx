@@ -9,14 +9,15 @@ import { useCommandExecutor } from "@/hooks/useCommandExecutor"
 import { getCommandEnabled } from "@/lib/commandEnabled"
 import { PopupOption } from "@/services/option/defaultSettings"
 import { ExecState } from "@/const"
-import type { Command } from "@/types"
+import { MenuImage } from "@/components/menu/MenuImage"
+import type { ResolvedCommand } from "@/hooks/useSettingsWithImageCache"
 
 import css from "./Menu.module.css"
 
 type MenuItemProps = {
   menuRef: React.RefObject<Element>
   onlyIcon: boolean
-  command: Command
+  command: ResolvedCommand
 }
 
 export function MenuItem(props: MenuItemProps): React.ReactNode {
@@ -24,7 +25,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const onlyIcon = props.onlyIcon
-  const { iconUrl, title } = props.command
+  const { iconUrl, title, preserveOriginalColor } = props.command
   const { isPreview, inTransition, inOnboarding } = usePopupContext()
   const { selectionText, target } = useSelectContext()
   const { enabled, message: defaultMessage } = getCommandEnabled(props.command)
@@ -72,7 +73,7 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
           css.button,
           {
             [css.itemHorizontal]: onlyIcon,
-            ["hover:bg-accent"]: !inTransition,
+            "hover:bg-accent": !inTransition,
           },
           "rounded-sm",
         )}
@@ -83,7 +84,12 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
         onClick={handleClick}
         disabled={!enabled}
       >
-        <ImageWithState state={itemState.state} iconUrl={iconUrl} />
+        <ImageWithState
+          state={itemState.state}
+          iconUrl={iconUrl}
+          excludeFromGlobalIconColor={props.command.excludeFromGlobalIconColor}
+          preserveOriginalColor={preserveOriginalColor}
+        />
         {!onlyIcon && <span className={css.itemTitle}>{title}</span>}
       </button>
       <Tooltip
@@ -105,14 +111,27 @@ export function MenuItem(props: MenuItemProps): React.ReactNode {
 type ImageProps = {
   state: ExecState
   iconUrl: string
+  excludeFromGlobalIconColor?: boolean
+  preserveOriginalColor?: boolean
 }
 
 function ImageWithState(props: ImageProps): JSX.Element {
-  const { iconUrl, state: status } = props
+  const {
+    iconUrl,
+    state: status,
+    excludeFromGlobalIconColor,
+    preserveOriginalColor,
+  } = props
   return (
     <>
       {status === ExecState.NONE && (
-        <img className={css.itemImg} src={iconUrl} alt="" aria-hidden="true" />
+        <MenuImage
+          className={css.itemImg}
+          src={iconUrl}
+          alt=""
+          excludeFromGlobalIconColor={excludeFromGlobalIconColor}
+          preserveOriginalColor={preserveOriginalColor}
+        />
       )}
       {status === ExecState.EXECUTING && (
         <RefreshCw className={`${css.itemImg} ${css.apiIconLoading} rotate`} />

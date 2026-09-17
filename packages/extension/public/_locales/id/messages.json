@@ -719,6 +719,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Tentukan warna font. Default: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Warna Ikon"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Tentukan warna ikon. Default: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Kecualikan dari warna ikon global"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Mempertahankan warna asli ikon ini meskipun warna ikon global telah diatur."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Favicon secara otomatis dikecualikan dari warna ikon global dan mempertahankan warna aslinya."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Otomatis"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Penskalaan ukuran font"
   },

@@ -108,9 +108,7 @@ function IconWithState(props: ImageProps): JSX.Element {
       )}
     >
       {status === ExecState.EXECUTING && (
-        <RefreshCw
-          className={`${css.itemImg} ${css.apiIconLoading} rotate`}
-        />
+        <RefreshCw className={`${css.itemImg} ${css.apiIconLoading} rotate`} />
       )}
       {status === ExecState.SUCCESS && (
         <Check className={`${css.itemImg} ${css.apiIconSuccess}`} />

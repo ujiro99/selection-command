@@ -719,6 +719,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Tentukan warna fon. Lalai: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Warna Ikon"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Tentukan warna ikon. Lalai: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Kecualikan daripada warna ikon global"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Mengekalkan warna asal ikon ini walaupun warna ikon global ditetapkan."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Favicon dikecualikan secara automatik daripada warna ikon global dan mengekalkan warna asalnya."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automatik"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Penskalaan saiz fon"
   },

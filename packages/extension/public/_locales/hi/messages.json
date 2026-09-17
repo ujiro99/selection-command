@@ -719,6 +719,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "फ़ॉन्ट का रंग निर्दिष्ट करें। डिफ़ॉल्ट: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "आइकन का रंग"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "आइकन का रंग निर्दिष्ट करें। डिफ़ॉल्ट: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "वैश्विक आइकन रंग से बाहर रखें"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "वैश्विक आइकन रंग सेट होने पर भी इस आइकन का मूल रंग बनाए रखें।"
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "फ़ेविकॉन स्वचालित रूप से वैश्विक आइकन रंग से बाहर रखे जाते हैं और अपने मूल रंग बनाए रखते हैं।"
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "स्वचालित"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "फ़ॉन्ट साइज़ स्केल"
   },
