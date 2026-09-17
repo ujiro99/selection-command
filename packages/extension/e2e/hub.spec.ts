@@ -226,7 +226,7 @@ test.describe("Command Hub", () => {
 
     // Assert: navigated to the Hub search page with the visited page's URL as the query.
     const hubUrl = new URL(hubPage.url())
-    expect(hubUrl.origin + hubUrl.pathname).toBe(`${NEW_HUB_URL}/ja`)
+    expect(hubUrl.origin + hubUrl.pathname).toBe(`${NEW_HUB_URL}/ja/commands`)
     expect(hubUrl.searchParams.get("q")).toBe(targetUrl)
 
     // Assert: results are not limited to a single ("News") command — Google and
