@@ -211,9 +211,10 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
       <MenuImage svg={testSvg} excludeFromGlobalIconColor={false} />,
       { hasIconColor: true },
     )
-    const div = container.querySelector("div")
-    expect(div).not.toBeNull()
-    expect(div?.getAttribute("style")).toContain("var(--sc-icon-color)")
+    const span = container.querySelector("span")
+    expect(span).not.toBeNull()
+    expect(span?.classList.contains(css.itemImgMasked)).toBe(true)
+    expect(span?.getAttribute("style")).toContain("data:image/svg+xml")
   })
 
   it("keeps original foreground color on inline SVG when excludeFromGlobalIconColor is true", () => {
@@ -221,9 +222,9 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
       <MenuImage svg={testSvg} excludeFromGlobalIconColor={true} />,
       { hasIconColor: true },
     )
-    const div = container.querySelector("div")
-    expect(div).not.toBeNull()
-    expect(div?.getAttribute("style")).toContain("hsl(var(--foreground))")
+    const img = container.querySelector("img")
+    expect(img).not.toBeNull()
+    expect(img?.getAttribute("src")).toContain("data:image/svg+xml")
   })
 
   it("keeps original foreground color on inline SVG when global icon color is disabled", () => {
@@ -231,9 +232,9 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
       <MenuImage svg={testSvg} excludeFromGlobalIconColor={false} />,
       { hasIconColor: false },
     )
-    const div = container.querySelector("div")
-    expect(div).not.toBeNull()
-    expect(div?.getAttribute("style")).toContain("hsl(var(--foreground))")
+    const img = container.querySelector("img")
+    expect(img).not.toBeNull()
+    expect(img?.getAttribute("src")).toContain("data:image/svg+xml")
   })
 
   describe("Accessibility (alt / decorative handling)", () => {
@@ -271,26 +272,25 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
       expect(span?.getAttribute("aria-hidden")).toBeNull()
     })
 
-    it("sets aria-hidden='true' on inline SVG div when alt is not provided", () => {
+    it("sets aria-hidden='true' on inline SVG image when alt is not provided", () => {
       const { container } = renderWithContext(<MenuImage svg={testSvg} />, {
         hasIconColor: false,
       })
-      const div = container.querySelector("div")
-      expect(div).not.toBeNull()
-      expect(div?.getAttribute("aria-hidden")).toBe("true")
-      expect(div?.getAttribute("role")).toBeNull()
+      const img = container.querySelector("img")
+      expect(img).not.toBeNull()
+      expect(img?.getAttribute("aria-hidden")).toBe("true")
+      expect(img?.getAttribute("role")).toBeNull()
     })
 
-    it("sets role='img' and aria-label on inline SVG div when meaningful alt is provided", () => {
+    it("sets the alt text on inline SVG image when meaningful alt is provided", () => {
       const { container } = renderWithContext(
         <MenuImage svg={testSvg} alt="Folder Icon" />,
         { hasIconColor: false },
       )
-      const div = container.querySelector("div")
-      expect(div).not.toBeNull()
-      expect(div?.getAttribute("role")).toBe("img")
-      expect(div?.getAttribute("aria-label")).toBe("Folder Icon")
-      expect(div?.getAttribute("aria-hidden")).toBeNull()
+      const img = container.querySelector("img")
+      expect(img).not.toBeNull()
+      expect(img?.getAttribute("alt")).toBe("Folder Icon")
+      expect(img?.getAttribute("aria-hidden")).toBeNull()
     })
   })
 })

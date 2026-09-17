@@ -133,6 +133,7 @@ export const MenuFolder = (props: {
             [css.folderHorizontal]: isHorizontal,
             "pointer-events-none": inTransition,
             "bg-accent": isOpen,
+            "text-accent-foreground": isOpen,
             "hover:bg-accent": !inTransition,
           })}
           ref={anchorRef}

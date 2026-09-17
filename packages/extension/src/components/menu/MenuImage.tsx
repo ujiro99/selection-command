@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { isEmpty, cn } from "@/lib/utils"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
@@ -26,36 +25,33 @@ const imageRoleProps = (alt?: string) =>
     ? ({ "aria-hidden": "true" } as const)
     : ({ role: "img", "aria-label": alt } as const)
 
+const toSvgDataUrl = (svg: string) =>
+  `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+
 export function MenuImage(props: MenuImageProps): JSX.Element {
   const { src, svg, alt, className } = props
   const { hasIconColor } = usePopupContext()
 
   const recolor = Boolean(
     hasIconColor &&
-      !props.excludeFromGlobalIconColor &&
-      !props.preserveOriginalColor,
+    !props.excludeFromGlobalIconColor &&
+    !props.preserveOriginalColor,
   )
+  const imageSrc = !isEmpty(src)
+    ? (src as string)
+    : !isEmpty(svg)
+      ? toSvgDataUrl(svg as string)
+      : undefined
 
-  if (!isEmpty(src)) {
+  if (!isEmpty(imageSrc)) {
     return recolor ? (
-      <MaskedImage src={src as string} alt={alt} className={className} />
+      <MaskedImage src={imageSrc as string} alt={alt} className={className} />
     ) : (
       <img
         className={className}
-        src={src}
+        src={imageSrc}
         alt={alt ?? ""}
         {...(isDecorative(alt) ? { "aria-hidden": "true" } : {})}
-      />
-    )
-  }
-
-  if (!isEmpty(svg)) {
-    return (
-      <InlineSvg
-        svg={svg as string}
-        alt={alt}
-        recolor={recolor}
-        className={className}
       />
     )
   }
@@ -78,37 +74,6 @@ function MaskedImage({ src, alt, className }: MaskedImageProps): JSX.Element {
     <span
       className={cn(css.itemImgMasked, className)}
       style={{ WebkitMaskImage: `url("${src}")`, maskImage: `url("${src}")` }}
-      {...imageRoleProps(alt)}
-    />
-  )
-}
-
-type InlineSvgProps = {
-  svg: string
-  alt?: string
-  recolor: boolean
-  className?: string
-}
-
-function InlineSvg({
-  svg,
-  alt,
-  recolor,
-  className,
-}: InlineSvgProps): JSX.Element {
-  const [svgElm, setSvgElm] = useState<HTMLDivElement | null>(null)
-
-  if (svgElm) {
-    svgElm.innerHTML = svg
-  }
-
-  return (
-    <div
-      className={cn(css.menuImage, className)}
-      style={{
-        color: recolor ? "var(--sc-icon-color)" : "hsl(var(--foreground))",
-      }}
-      ref={setSvgElm}
       {...imageRoleProps(alt)}
     />
   )

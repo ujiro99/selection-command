@@ -65,4 +65,33 @@ describe("MenuFolder - Global Icon Color Exclusion", () => {
     })
     expect(container.querySelector("img")).not.toBeNull()
   })
+
+  it("applies the accent foreground color while the folder is open", () => {
+    const fullContext: ContextType = {
+      side: SIDE.top,
+      align: ALIGN.start,
+      hasIconColor: true,
+    }
+    const menuRef = { current: document.createElement("div") }
+    const { getByRole } = render(
+      <popupContext.Provider value={fullContext}>
+        <MenuFolder
+          folder={{
+            id: "f1",
+            title: "Folder",
+            iconUrl: cachedIconUrl,
+            preserveOriginalColor: false,
+          }}
+          isHorizontal={false}
+          side={SIDE.top}
+          menuRef={menuRef}
+          onHoverTrigger={() => {}}
+          onHoverContent={() => {}}
+          activeFolder="f1"
+        />
+      </popupContext.Provider>,
+    )
+
+    expect(getByRole("menuitem").className).toContain("text-accent-foreground")
+  })
 })
