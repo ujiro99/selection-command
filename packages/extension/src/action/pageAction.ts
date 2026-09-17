@@ -1,8 +1,4 @@
-import {
-  Ipc,
-  BgCommand,
-  SidePanelPendingAction,
-} from "@/services/ipc"
+import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getWindowPosition } from "@/services/screen"
@@ -37,31 +33,32 @@ export const PageAction = {
       return
     }
 
+    // Checks if any input step references the given insert symbol
+    const stepsReferenceInsert = (insert: INSERT) =>
+      command.pageActionOption.steps.some(
+        (step) =>
+          step.param.type === PAGE_ACTION_EVENT.input &&
+          step.param.value.includes(toInsertTemplate(insert)),
+      )
+
     // Checks if any step directly or indirectly requires clipboard data
-    const hasPromptStep = command.pageActionOption.steps.some(
-      (step) =>
-        step.param.type === PAGE_ACTION_EVENT.input &&
-        step.param.value.includes(toInsertTemplate(INSERT.PROMPT)),
-    )
+    const hasPromptStep = stepsReferenceInsert(INSERT.PROMPT)
     const promptNeedsClipboard =
       hasPromptStep &&
       (command.pageActionOption.prompt?.includes(
         toInsertTemplate(INSERT.CLIPBOARD),
-      ) ?? false)
+      ) ??
+        false)
 
     const needClipboard =
-      promptNeedsClipboard ||
-      command.pageActionOption.steps.some((step) => {
-        return (
-          step.param.type === PAGE_ACTION_EVENT.input &&
-          step.param.value.includes(toInsertTemplate(INSERT.CLIPBOARD))
-        )
-      })
+      promptNeedsClipboard || stepsReferenceInsert(INSERT.CLIPBOARD)
 
     // Handle side panel mode: store pending steps in session storage, then open
     // the side panel. The background onConnect handler will pick up the pending
     // steps when the side panel content script establishes a port connection.
-    if (command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.SIDE_PANEL) {
+    if (
+      command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.SIDE_PANEL
+    ) {
       const pending: SidePanelPendingAction = {
         url: command.pageActionOption.startUrl,
         steps: command.pageActionOption.steps,

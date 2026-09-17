@@ -436,7 +436,6 @@ export const openAndRun = (
         selectedText,
         clipboardText,
         userVariables,
-        prompt: param.prompt,
       },
       sender,
       response,
@@ -470,11 +469,7 @@ export const preview = (
       await chrome.tabs.update(tabId, { url: option.startUrl })
     }
 
-    run(
-      { ...param, prompt: param.prompt ?? option?.prompt },
-      sender,
-      response,
-    )
+    run({ ...param, prompt: param.prompt ?? option?.prompt }, sender, response)
   }
 
   func()
