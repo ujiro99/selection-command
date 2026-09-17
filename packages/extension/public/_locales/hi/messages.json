@@ -530,6 +530,15 @@
   "Option_userVariable_add": {
     "message": "वेरिएबल जोड़ें"
   },
+  "Option_userVariable_recommended": {
+    "message": "अनुशंसित – $service$ के साथ अक्सर उपयोग किया जाता है",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
+  },
   "Option_userVariable_name_required": {
     "message": "वेरिएबल नाम आवश्यक है"
   },

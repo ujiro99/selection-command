@@ -530,6 +530,15 @@
   "Option_userVariable_add": {
     "message": "変数を追加"
   },
+  "Option_userVariable_recommended": {
+    "message": "おすすめ・$service$ ではよく使われます",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
+  },
   "Option_userVariable_name_required": {
     "message": "変数名は必須です"
   },

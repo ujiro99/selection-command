@@ -530,6 +530,15 @@
   "Option_userVariable_add": {
     "message": "Ajouter une variable"
   },
+  "Option_userVariable_recommended": {
+    "message": "Recommandé – souvent utilisé avec $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
+  },
   "Option_userVariable_name_required": {
     "message": "Le nom de variable est requis"
   },

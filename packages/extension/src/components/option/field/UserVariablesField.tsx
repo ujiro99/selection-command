@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Control, useFieldArray, useFormContext } from "react-hook-form"
-import { Plus, Trash2, ChevronRight, Braces } from "lucide-react"
+import { Plus, Trash2, ChevronRight, Braces, Sparkles } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,11 +29,25 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 export const MAX_VARIABLES = 5
 
+/**
+ * A variable the surrounding context suggests creating, such as `Prompt` when
+ * the page action starts on an AI service.
+ */
+export type VariableSuggestion = {
+  /** Name given to the variable when the suggestion is accepted. */
+  name: string
+  /** Display name of what recommends it; absent when merely offered. */
+  recommendedBy?: string | null
+  /** Identity of the recommender, used to detect that it changed. */
+  recommendKey?: string | null
+}
+
 type UserVariablesFieldProps = {
   control: Control<any>
   name: string
   formLabel: string
   description?: string
+  suggestion?: VariableSuggestion
 }
 
 export const UserVariablesField = ({
@@ -41,18 +55,44 @@ export const UserVariablesField = ({
   name,
   formLabel,
   description,
+  suggestion,
 }: UserVariablesFieldProps) => {
   const { watch, setValue } = useFormContext()
   const variableArray = useFieldArray({ name, control })
   const [openId, setOpenId] = useState<string | null>(null)
   const watchedFields = watch(name) || []
+  const isFull = variableArray.fields.length >= MAX_VARIABLES
 
-  const addVariable = () => {
-    if (variableArray.fields.length >= MAX_VARIABLES) return
-    variableArray.append({ name: "", value: "" })
+  const suggestionPresent =
+    suggestion != null &&
+    watchedFields.some(
+      (field: { name?: string }) => field?.name === suggestion.name,
+    )
+
+  const addVariable = (initialName = "") => {
+    if (isFull) return
+    variableArray.append({ name: initialName, value: "" })
     const appended = variableArray.fields.length
     setOpenId(variableArray.fields[appended]?.id ?? null)
   }
+
+  // Add the recommended variable when a new recommender appears, so the editor
+  // is already open on an AI service. Tracked per recommender so dismissing it
+  // sticks, while leaving and coming back offers it again.
+  const autoAddedFor = useRef<string | null>(null)
+  useEffect(() => {
+    const key = suggestion?.recommendKey
+    if (!key) {
+      autoAddedFor.current = null
+      return
+    }
+    if (autoAddedFor.current === key) return
+    autoAddedFor.current = key
+    if (suggestionPresent || isFull || !suggestion) return
+    addVariable(suggestion.name)
+    // addVariable is recreated every render; the guarded key drives this effect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [suggestion?.recommendKey])
 
   const validateName = (value: string, index: number): string | null => {
     if (!value) return t("userVariable_name_required")
@@ -104,12 +144,31 @@ export const UserVariablesField = ({
               />
             ))}
 
-            {variableArray.fields.length < MAX_VARIABLES ? (
+            {suggestion && !suggestionPresent && !isFull && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => addVariable(suggestion.name)}
+                  className="flex items-center gap-1 rounded-md border border-dashed px-2 py-1.5 font-mono text-sm text-gray-600 transition hover:border-gray-400 hover:bg-gray-50"
+                >
+                  <Plus size={14} />
+                  {suggestion.name}
+                </button>
+                {suggestion.recommendedBy && (
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs text-emerald-700">
+                    <Sparkles size={12} className="stroke-emerald-600" />
+                    {t("userVariable_recommended", [suggestion.recommendedBy])}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {!isFull ? (
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={addVariable}
+                onClick={() => addVariable()}
                 className="relative py-4 text-xs mx-auto left-[50%] -translate-x-[50%]"
               >
                 <Plus size={16} className="mr-1" />

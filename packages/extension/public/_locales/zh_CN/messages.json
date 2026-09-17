@@ -530,6 +530,15 @@
   "Option_userVariable_add": {
     "message": "添加变量"
   },
+  "Option_userVariable_recommended": {
+    "message": "推荐 · 在 $service$ 中很常用",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
+  },
   "Option_userVariable_name_required": {
     "message": "变量名是必需的"
   },

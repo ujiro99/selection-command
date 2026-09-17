@@ -20,6 +20,10 @@ import { InputEditor } from "@/components/pageAction/InputEditor"
 import { RemoveDialog } from "@/components/option/RemoveDialog"
 import { TypeIcon } from "@/components/pageAction/TypeIcon"
 import { UserVariablesField } from "@/components/option/field/UserVariablesField"
+import { useAiServiceForUrl } from "@/hooks/option/useAiServiceForUrl"
+
+/** Variable name suggested for prompt templates on AI services. */
+const PROMPT_VARIABLE_NAME = "Prompt"
 
 type PageActionSectionProps = {
   form: any
@@ -32,6 +36,9 @@ export const PageActionSection = ({
 }: PageActionSectionProps) => {
   const { register, getValues, watch, setValue } = form
   const openMode = watch("pageActionOption.openMode")
+  // Starting on an AI service means the steps almost always paste a prompt, so
+  // that variable is recommended up front.
+  const aiService = useAiServiceForUrl(watch("pageActionOption.startUrl"))
 
   // When openMode changes to CURRENT_TAB, copy startUrl to pageUrl if pageUrl is empty
   useEffect(() => {
@@ -153,6 +160,11 @@ export const PageActionSection = ({
           name="pageActionOption.userVariables"
           formLabel={t("userVariables")}
           description={t("userVariables_desc")}
+          suggestion={{
+            name: PROMPT_VARIABLE_NAME,
+            recommendedBy: aiService?.name,
+            recommendKey: aiService?.id,
+          }}
         />
       </div>
 

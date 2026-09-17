@@ -530,6 +530,15 @@
   "Option_userVariable_add": {
     "message": "변수 추가"
   },
+  "Option_userVariable_recommended": {
+    "message": "추천 – $service$에서 자주 사용됩니다",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
+  },
   "Option_userVariable_name_required": {
     "message": "변수 이름이 필요합니다"
   },
