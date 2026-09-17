@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "Temps de délai"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prompt"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Modèle de prompt à insérer. Vous pouvez ajouter des variables depuis le menu."
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Insérez des variables dynamiques comme le texte sélectionné et référencez-les dans les étapes avec {{Prompt}}."
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "ex. : Résumez le texte suivant :\n{{Texte sélectionné}}"
-  },
   "Option_aiPrompt_service": {
     "message": "Service IA"
   },
@@ -533,6 +521,12 @@
   "Option_userVariable_value": {
     "message": "Valeur"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(sans nom)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Supprimer la variable"
+  },
   "Option_userVariable_add": {
     "message": "Ajouter une variable"
   },
@@ -541,6 +535,9 @@
   },
   "Option_userVariable_name_invalid": {
     "message": "Le nom de variable doit commencer par une lettre et ne contenir que des lettres, chiffres et traits de soulignement"
+  },
+  "Option_userVariable_name_reserved": {
+    "message": "Ce nom est réservé à une variable intégrée"
   },
   "Option_userVariable_name_duplicate": {
     "message": "Le nom de variable existe déjà"
@@ -836,6 +833,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Le nom de variable doit commencer par une lettre et ne contenir que des lettres, chiffres et traits de soulignement"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "Ce nom est réservé à une variable intégrée"
+  },
   "Option_zod_string_min": {
     "message": "Veuillez saisir une chaîne de $key$ caractères ou plus.",
     "placeholders": {
@@ -885,9 +885,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "Le HTML de la plage sélectionnée sera joint en fichier"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "Le prompt sera inséré"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Insérer du Texte"
   },
@@ -896,9 +893,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texte sélectionné"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "URL d'origine"

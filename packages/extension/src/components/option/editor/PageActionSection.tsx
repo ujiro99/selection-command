@@ -1,20 +1,8 @@
 import { useState, useEffect } from "react"
 import { useFieldArray } from "react-hook-form"
 import { Disc3 } from "lucide-react"
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormDescription,
-  FormMessage,
-} from "@/components/ui/form"
-import { Textarea } from "@/components/ui/textarea"
+import { FormLabel, FormDescription } from "@/components/ui/form"
 import type { PageAction } from "@/services/pageAction"
-import {
-  convSymbolsToReadableKeys,
-  convReadableKeysToSymbols,
-} from "@/services/pageAction"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import { cn, isEmpty, capitalize } from "@/lib/utils"
@@ -27,12 +15,11 @@ import { PAGE_ACTION_OPEN_MODE } from "@/const"
 import { TEST_IDS } from "@/testIds"
 import { InputField } from "@/components/option/field/InputField"
 import { OpenModeToggleField } from "@/components/option/field/OpenModeToggleField"
-import { InputMenu } from "@/components/pageAction/InputPopup"
 import { StepList } from "@/components/pageAction/StepList"
 import { InputEditor } from "@/components/pageAction/InputEditor"
 import { RemoveDialog } from "@/components/option/RemoveDialog"
 import { TypeIcon } from "@/components/pageAction/TypeIcon"
-// import { UserVariablesField } from "@/components/option/field/UserVariablesField"
+import { UserVariablesField } from "@/components/option/field/UserVariablesField"
 
 type PageActionSectionProps = {
   form: any
@@ -43,8 +30,6 @@ export const PageActionSection = ({
   form,
   openRecorder,
 }: PageActionSectionProps) => {
-  const [promptTextarea, setPromptTextarea] =
-    useState<HTMLTextAreaElement | null>(null)
   const { register, getValues, watch, setValue } = form
   const openMode = watch("pageActionOption.openMode")
 
@@ -162,55 +147,15 @@ export const PageActionSection = ({
         type="pageAction"
       />
 
-      <FormField
-        control={form.control}
-        name="pageActionOption.prompt"
-        render={({ field }) => (
-          <FormItem className="flex items-start gap-1 pt-10">
-            <div className="w-2/6">
-              <FormLabel>{t("pageAction_prompt")}</FormLabel>
-              <FormDescription>{t("pageAction_prompt_desc")}</FormDescription>
-              <FormDescription className="mt-1">
-                {t("pageAction_prompt_desc_2")}
-              </FormDescription>
-            </div>
-            <div className="w-4/6 relative">
-              <InputMenu
-                targetElm={promptTextarea}
-                className="w-fit absolute -top-10 right-0"
-                hideFilePaste
-              />
-              <FormControl>
-                <Textarea
-                  value={convSymbolsToReadableKeys(field.value)}
-                  onChange={(e) =>
-                    field.onChange(convReadableKeysToSymbols(e.target.value))
-                  }
-                  onBlur={field.onBlur}
-                  name={field.name}
-                  ref={(el) => {
-                    setPromptTextarea(el)
-                    field.ref(el)
-                  }}
-                  rows={6}
-                  placeholder={t("pageAction_prompt_placeholder")}
-                  className="max-h-80"
-                />
-              </FormControl>
-              <FormMessage className="mt-1" />
-            </div>
-          </FormItem>
-        )}
-      />
+      <div className="pt-10">
+        <UserVariablesField
+          control={form.control}
+          name="pageActionOption.userVariables"
+          formLabel={t("userVariables")}
+          description={t("userVariables_desc")}
+        />
+      </div>
 
-      {/*
-      <UserVariablesField
-        control={form.control}
-        name="pageActionOption.userVariables"
-        formLabel={t("userVariables")}
-        description={t("userVariables_tooltip")}
-      />
-      */}
       <div className="w-full flex items-center gap-1 pt-4">
         <div className="w-2/6">
           <FormLabel>{t("pageAction_title")}</FormLabel>
@@ -249,6 +194,7 @@ export const PageActionSection = ({
         value={editorValue}
         onSubmit={editAction}
         portal={true}
+        userVariables={watch("pageActionOption.userVariables")}
       />
       <RemoveDialog
         open={removeOpen}

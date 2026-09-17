@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "Masa kelewatan"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prom"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Templat prom yang akan dimasukkan. Anda boleh menambah pemboleh ubah daripada menu."
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Sisipkan pemboleh ubah dinamik seperti teks yang dipilih, dan rujuk dalam langkah dengan {{Prom}}."
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "cth., Ringkaskan teks berikut:\n{{Teks yang dipilih}}"
-  },
   "Option_aiPrompt_service": {
     "message": "Perkhidmatan AI"
   },
@@ -533,6 +521,12 @@
   "Option_userVariable_value": {
     "message": "Nilai"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(tanpa nama)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Buang pemboleh ubah"
+  },
   "Option_userVariable_add": {
     "message": "Tambah pembolehubah"
   },
@@ -541,6 +535,9 @@
   },
   "Option_userVariable_name_invalid": {
     "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
+  },
+  "Option_userVariable_name_reserved": {
+    "message": "Nama ini dikhaskan untuk pemboleh ubah terbina dalam"
   },
   "Option_userVariable_name_duplicate": {
     "message": "Nama pembolehubah sudah wujud"
@@ -836,6 +833,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "Nama ini dikhaskan untuk pemboleh ubah terbina dalam"
+  },
   "Option_zod_string_min": {
     "message": "Sila masukkan rentetan $key$ aksara atau lebih.",
     "placeholders": {
@@ -885,9 +885,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "HTML julat yang dipilih akan dilampirkan sebagai fail"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "Prom akan dimasukkan"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -896,9 +893,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Teks yang dipilih"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prom"
   },
   "PageAction_InputMenu_url": {
     "message": "URL Asal"

@@ -111,36 +111,63 @@ describe("PageActionOption in schemas", () => {
     },
   }
 
-  it("SC-08: accepts PageAction command without prompt field (backward compatibility)", () => {
+  it("SC-08: accepts PageAction command without userVariables (backward compatibility)", () => {
     const res = commandSchema.safeParse(basePageActionCmd)
     expect(res.success).toBe(true)
   })
 
-  it("SC-09: accepts PageAction command with empty prompt", () => {
+  it("SC-09: accepts PageAction command with an empty userVariables list", () => {
     const res = commandSchema.safeParse({
       ...basePageActionCmd,
       pageActionOption: {
         ...basePageActionCmd.pageActionOption,
-        prompt: "",
+        userVariables: [],
       },
     })
     expect(res.success).toBe(true)
   })
 
-  it("SC-10: accepts PageAction command with configured prompt", () => {
+  it("SC-10: accepts PageAction command with a configured user variable", () => {
     const res = commandSchema.safeParse({
       ...basePageActionCmd,
       pageActionOption: {
         ...basePageActionCmd.pageActionOption,
-        prompt: "Summarize: {{SelectedText}}",
+        userVariables: [
+          { name: "Prompt", value: "Summarize: {{SelectedText}}" },
+        ],
       },
     })
     expect(res.success).toBe(true)
     if (res.success && res.data.openMode === OPEN_MODE.PAGE_ACTION) {
-      expect(res.data.pageActionOption.prompt).toBe(
+      expect(res.data.pageActionOption.userVariables?.[0].value).toBe(
         "Summarize: {{SelectedText}}",
       )
     }
+  })
+
+  it("SC-13: rejects a user variable whose name collides with a built-in", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        userVariables: [{ name: "SelectedText", value: "x" }],
+      },
+    })
+    expect(res.success).toBe(false)
+  })
+
+  it("SC-14: rejects more than five user variables", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        userVariables: Array.from({ length: 6 }, (_, i) => ({
+          name: `Var${i}`,
+          value: "x",
+        })),
+      },
+    })
+    expect(res.success).toBe(false)
   })
 
   it("SC-11: accepts PageAction command with openMode SIDE_PANEL", () => {
@@ -159,13 +186,15 @@ describe("PageActionOption in schemas", () => {
     }
   })
 
-  it("SC-12: accepts PageAction command with openMode SIDE_PANEL and configured prompt", () => {
+  it("SC-12: accepts PageAction command with openMode SIDE_PANEL and a user variable", () => {
     const res = commandSchema.safeParse({
       ...basePageActionCmd,
       pageActionOption: {
         ...basePageActionCmd.pageActionOption,
         openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
-        prompt: "Explain {{SelectedText}} in detail",
+        userVariables: [
+          { name: "Prompt", value: "Explain {{SelectedText}} in detail" },
+        ],
       },
     })
     expect(res.success).toBe(true)
@@ -173,7 +202,7 @@ describe("PageActionOption in schemas", () => {
       expect(res.data.pageActionOption.openMode).toBe(
         PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
       )
-      expect(res.data.pageActionOption.prompt).toBe(
+      expect(res.data.pageActionOption.userVariables?.[0].value).toBe(
         "Explain {{SelectedText}} in detail",
       )
     }

@@ -20,7 +20,7 @@ import {
 } from "@/const"
 
 import { t } from "@/services/i18n"
-import { isEmpty } from "@/lib/utils"
+import { isEmpty, isReservedVariableName } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { countHtmlAttachments } from "@/services/pageAction"
 import type { AiPromptCommand } from "@/types"
@@ -252,9 +252,14 @@ const PageActionStepSchema = z.object({
 export type PageActionStep = z.infer<typeof PageActionStepSchema>
 
 export const userVariableSchema = z.object({
-  name: z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
-    message: t("Option_zod_invalid_variable_name"),
-  }),
+  name: z
+    .string()
+    .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
+      message: t("Option_zod_invalid_variable_name"),
+    })
+    .refine((name) => !isReservedVariableName(name), {
+      message: t("Option_zod_reserved_variable_name"),
+    }),
   value: z.string(),
 })
 export type UserVariableType = z.infer<typeof userVariableSchema>
@@ -266,7 +271,6 @@ export const PageActionOption = z
     openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
     steps: z.array(PageActionStepSchema),
     userVariables: z.array(userVariableSchema).max(5).optional(),
-    prompt: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && !data.pageUrl) {

@@ -180,7 +180,6 @@ export const BackgroundPageActionDispatcher = {
       selectedText,
       clipboardText,
       userVariables,
-      prompt,
     } = param
 
     const element = await waitForElementBackground(selector, selectorType)
@@ -191,7 +190,6 @@ export const BackgroundPageActionDispatcher = {
         srcUrl,
         clipboardText,
         userVariables,
-        prompt,
       })
 
       if (!isEmpty(value)) {

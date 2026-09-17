@@ -494,22 +494,6 @@
   "Option_pageAction_delay": {
     "message": "Delay time"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prompt",
-    "description": "Label for prompt input field in Page Action"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Prompt template to be inserted. You can add variables from the menu.",
-    "description": "Description for prompt input field in Page Action"
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Insert dynamic variables like selected text, and reference them in steps with {{Prompt}}.",
-    "description": "Detailed description for prompt usage"
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "e.g., Summarize the following text:\n{{Selected text}}",
-    "description": "Placeholder for prompt input field in Page Action"
-  },
   "Option_aiPrompt_service": {
     "message": "AI Service"
   },
@@ -540,6 +524,12 @@
   "Option_userVariable_value": {
     "message": "Value"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(unnamed)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Remove variable"
+  },
   "Option_userVariable_add": {
     "message": "Add variable"
   },
@@ -548,6 +538,9 @@
   },
   "Option_userVariable_name_invalid": {
     "message": "Variable name must start with letter and contain only letters, numbers, and underscores"
+  },
+  "Option_userVariable_name_reserved": {
+    "message": "This name is reserved for a built-in variable"
   },
   "Option_userVariable_name_duplicate": {
     "message": "Variable name already exists"
@@ -846,6 +839,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Variable name must start with a letter and contain only letters, numbers, and underscores"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "This name is reserved for a built-in variable"
+  },
   "Option_zod_string_min": {
     "message": "Please enter a string of $key$ characters or more.",
     "placeholders": {
@@ -899,10 +895,6 @@
     "message": "The HTML of the selected range will be attached as a file",
     "description": "for INSERT.SELECTION_HTML — placeholder {{SelectionHtml}} in prompt templates"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "Prompt will be inserted",
-    "description": "for INSERT.PROMPT"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Insert Text"
   },
@@ -912,10 +904,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Selected text"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prompt",
-    "description": "Menu item for inserting prompt variable"
   },
   "PageAction_InputMenu_url": {
     "message": "Origin URL"

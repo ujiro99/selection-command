@@ -782,7 +782,7 @@ describe("PageActionDispatcher", () => {
       )
     })
 
-    it("PDI-12: Should resolve prompt variable in input step", async () => {
+    it("PDI-12: Should resolve a user variable in an input step", async () => {
       const mockElement = mockElements.input
       mockDocument.querySelector.mockReturnValue(mockElement)
       mockIsEditable.mockReturnValue(false)
@@ -792,27 +792,29 @@ describe("PageActionDispatcher", () => {
         selector: ".input",
         selectorType: SelectorType.css,
         label: "Input",
-        value: "{{prompt}}",
+        value: "{{Prompt}}",
         srcUrl: "https://example.com",
         selectedText: "test selection",
         clipboardText: "",
-        prompt: "Summarize: {{selectedText}}",
+        userVariables: [
+          { name: "Prompt", value: "Summarize: {{selectedText}}" },
+        ],
       }
 
       await PageActionDispatcher.input(param as any)
 
-      // First safeInterpolate call resolves prompt template
+      // The user variable's own value is resolved against the built-ins first.
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
         "Summarize: {{selectedText}}",
         expect.objectContaining({
           "{{selectedText}}": "test selection",
         }),
       )
-      // Second safeInterpolate call resolves input step value
+      // The step value is then resolved with that variable available.
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
-        "{{prompt}}",
+        "{{Prompt}}",
         expect.objectContaining({
-          "{{prompt}}": expect.any(String),
+          Prompt: expect.any(String),
         }),
       )
     })

@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "Waktu tunda"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prompt"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Templat prompt yang akan dimasukkan. Anda dapat menambahkan variabel dari menu."
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Sisipkan variabel dinamis seperti teks yang dipilih, dan rujuk dalam langkah dengan {{Prompt}}."
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "cth., Ringkas teks berikut:\n{{Teks yang dipilih}}"
-  },
   "Option_aiPrompt_service": {
     "message": "Layanan AI"
   },
@@ -533,6 +521,12 @@
   "Option_userVariable_value": {
     "message": "Nilai"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(tanpa nama)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Hapus variabel"
+  },
   "Option_userVariable_add": {
     "message": "Tambah variabel"
   },
@@ -541,6 +535,9 @@
   },
   "Option_userVariable_name_invalid": {
     "message": "Nama variabel harus dimulai dengan huruf dan hanya berisi huruf, angka, dan garis bawah"
+  },
+  "Option_userVariable_name_reserved": {
+    "message": "Nama ini dicadangkan untuk variabel bawaan"
   },
   "Option_userVariable_name_duplicate": {
     "message": "Nama variabel sudah ada"
@@ -836,6 +833,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Nama variabel harus dimulai dengan huruf dan hanya berisi huruf, angka, dan garis bawah"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "Nama ini dicadangkan untuk variabel bawaan"
+  },
   "Option_zod_string_min": {
     "message": "Silakan masukkan string $key$ karakter atau lebih.",
     "placeholders": {
@@ -885,9 +885,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "HTML dari rentang yang dipilih akan dilampirkan sebagai file"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "Prompt akan dimasukkan"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -896,9 +893,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Teks yang dipilih"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "URL Asal"

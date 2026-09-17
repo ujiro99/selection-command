@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "遅延時間"
   },
-  "Option_pageAction_prompt": {
-    "message": "プロンプト"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "入力するプロンプトのテンプレートです。メニューから変数を追加できます。"
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "選択テキストなどの動的変数を挿入し、ステップ内で {{プロンプトが挿入されます}} で参照できます。"
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "例：以下のテキストを要約してください。\n{{選択テキストが挿入されます}}"
-  },
   "Option_aiPrompt_service": {
     "message": "AIサービス"
   },
@@ -533,6 +521,12 @@
   "Option_userVariable_value": {
     "message": "値"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(名前未設定)"
+  },
+  "Option_userVariable_remove": {
+    "message": "変数を削除"
+  },
   "Option_userVariable_add": {
     "message": "変数を追加"
   },
@@ -541,6 +535,9 @@
   },
   "Option_userVariable_name_invalid": {
     "message": "変数名は英字で始まり、英数字とアンダースコアのみ使用できます"
+  },
+  "Option_userVariable_name_reserved": {
+    "message": "この名前は組み込み変数で予約されています"
   },
   "Option_userVariable_name_duplicate": {
     "message": "変数名が重複しています"
@@ -836,6 +833,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "変数名は文字で始まり、文字、数字、アンダースコアのみを含む必要があります"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "この名前は組み込み変数で予約されています"
+  },
   "Option_zod_string_min": {
     "message": "長さ$key$文字以上で入力してください。",
     "placeholders": {
@@ -882,9 +882,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "選択範囲のHTMLを添付します"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "プロンプトが挿入されます"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "テキスト挿入"
   },
@@ -893,9 +890,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "選択テキスト"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "プロンプト"
   },
   "PageAction_InputMenu_url": {
     "message": "表示元URL"

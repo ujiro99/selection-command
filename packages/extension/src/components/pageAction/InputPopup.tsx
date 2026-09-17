@@ -8,7 +8,7 @@ import {
   Code,
   ChevronDown,
   ChevronUp,
-  Sparkles,
+  Braces,
 } from "lucide-react"
 import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover"
 import {
@@ -19,7 +19,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar"
 import { EXIT_DURATION } from "@/const"
-import { Point } from "@/types"
+import { Point, UserVariable } from "@/types"
 import { isPopup, cn } from "@/lib/utils"
 import {
   getScrollableAncestors,
@@ -160,7 +160,9 @@ const useVisibleDelay = (props: useDelayProps) => {
   }, [visible, updater])
 }
 
-export function InputPopup(): JSX.Element {
+export function InputPopup(props: {
+  userVariables?: Array<UserVariable>
+}): JSX.Element {
   const [targetElm, setTargetElm] = useState<HTMLElement | Text | null>(null)
   const [disabled, setDisabled] = useState(false)
   const [mousePos, setMousePos] = useState<Point | null>(null)
@@ -197,7 +199,7 @@ export function InputPopup(): JSX.Element {
       if (isHtmlElement(e.target)) {
         setDisabled(
           e.target.children.length > 0 &&
-          e.target.innerText.trim().length !== 0,
+            e.target.innerText.trim().length !== 0,
         )
       }
     }
@@ -241,7 +243,7 @@ export function InputPopup(): JSX.Element {
               targetElm={targetElm}
               disabled={disabled}
               hideFilePaste
-              showPrompt
+              userVariables={props.userVariables}
             />
           </PopoverContent>
         )}
@@ -256,7 +258,8 @@ type MenuProps = {
   disabled?: boolean
   hideFilePaste?: boolean
   fileAttachDisabled?: boolean
-  showPrompt?: boolean
+  /** User variables offered as insertable placeholders alongside the built-in ones. */
+  userVariables?: Array<UserVariable>
 }
 
 export function InputMenu(props: MenuProps): JSX.Element {
@@ -275,6 +278,16 @@ export function InputMenu(props: MenuProps): JSX.Element {
       insertText(props.targetElm, t(LocaleKey + menu))
     }
   }
+
+  // User variables have no readable label to translate, so their placeholder is
+  // inserted verbatim and round-trips through the symbol conversions unchanged.
+  const onClickVariable = async (name: string) => {
+    if (props.targetElm) {
+      insertText(props.targetElm, `{{${name}}}`)
+    }
+  }
+
+  const userVariables = (props.userVariables ?? []).filter((v) => v.name)
 
   // Radix's MenubarTrigger switches the open menu on pointer-enter even when
   // the trigger is `disabled` (only click/keyboard interactions respect it).
@@ -322,12 +335,6 @@ export function InputMenu(props: MenuProps): JSX.Element {
             <TextCursorInput size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_selectedText")}
           </InputMenuItem>
-          {props.showPrompt && (
-            <InputMenuItem onClick={onClickItem} value={INSERT.PROMPT}>
-              <Sparkles size={16} className="mr-2 stroke-gray-600" />
-              {t("PageAction_InputMenu_prompt")}
-            </InputMenuItem>
-          )}
           <InputMenuItem onClick={onClickItem} value={INSERT.URL}>
             <Link2 size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_url")}
@@ -340,6 +347,19 @@ export function InputMenu(props: MenuProps): JSX.Element {
             <Languages size={16} className="mr-2 stroke-gray-600" />
             {t("PageAction_InputMenu_lang")}
           </InputMenuItem>
+          {userVariables.length > 0 && (
+            <div className="my-1 h-px bg-border" role="separator" />
+          )}
+          {userVariables.map((variable) => (
+            <MenubarItem
+              key={variable.name}
+              className="cursor-pointer"
+              onClick={() => onClickVariable(variable.name)}
+            >
+              <Braces size={16} className="mr-2 stroke-gray-600" />
+              {variable.name}
+            </MenubarItem>
+          ))}
         </MenubarContent>
       </MenubarMenu>
       {showFileAttachMenu && (
@@ -350,7 +370,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
               className={cn(
                 "p-1 px-1.5 text-sm font-normal font-sans text-gray-700 cursor-pointer",
                 props.fileAttachDisabled &&
-                "opacity-60 bg-muted cursor-not-allowed",
+                  "opacity-60 bg-muted cursor-not-allowed",
               )}
               disabled={props.fileAttachDisabled}
               onMouseEnter={() => onSelectedMenuChange(MENU.FILE_PASTE)}

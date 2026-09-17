@@ -32,7 +32,6 @@ export function convReadableKeysToSymbols(value?: string | null): string {
     [t(LocaleKey + INSERT.LANG)]: InsertSymbol[INSERT.LANG],
     [t(LocaleKey + INSERT.PAGE_HTML)]: InsertSymbol[INSERT.PAGE_HTML],
     [t(LocaleKey + INSERT.SELECTION_HTML)]: InsertSymbol[INSERT.SELECTION_HTML],
-    [t(LocaleKey + INSERT.PROMPT)]: InsertSymbol[INSERT.PROMPT],
   }
   Object.entries(symbols).forEach(([key, val]) => {
     normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
@@ -49,7 +48,6 @@ export function convSymbolsToReadableKeys(value?: string | null): string {
     [InsertSymbol[INSERT.LANG]]: t(LocaleKey + INSERT.LANG),
     [InsertSymbol[INSERT.PAGE_HTML]]: t(LocaleKey + INSERT.PAGE_HTML),
     [InsertSymbol[INSERT.SELECTION_HTML]]: t(LocaleKey + INSERT.SELECTION_HTML),
-    [InsertSymbol[INSERT.PROMPT]]: t(LocaleKey + INSERT.PROMPT),
   }
   Object.entries(symbols).forEach(([key, val]) => {
     normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
@@ -63,14 +61,68 @@ export type ResolveActionVariablesParams = {
   srcUrl?: string
   clipboardText?: string
   userVariables?: Array<UserVariable>
-  prompt?: string
 }
 
 /**
- * Two-stage, non-recursive variable resolution for Page Action inputs.
- * Stage 1: Resolves the saved prompt template using base variables.
- * Stage 2: Resolves the input step value using base variables and the resolved prompt ({{Prompt}}).
- * Literal placeholders in the substituted text are never re-evaluated.
+ * Builds the built-in variables available to every Page Action template.
+ */
+const buildBuiltinVariables = (params: {
+  selectedText: string
+  srcUrl: string
+  clipboardText: string
+}): Record<string, string> => ({
+  [InsertSymbol[INSERT.SELECTED_TEXT]]: params.selectedText,
+  [InsertSymbol[INSERT.URL]]: params.srcUrl,
+  [InsertSymbol[INSERT.CLIPBOARD]]: params.clipboardText,
+  [InsertSymbol[INSERT.LANG]]: getUILanguage(),
+})
+
+/**
+ * Resolves user variables in definition order. Each value may reference the
+ * built-in variables and any user variable defined before it; a reference to a
+ * later or unknown variable is left as a literal placeholder. Interpolating
+ * each value exactly once keeps resolution non-recursive and always terminating.
+ */
+export function resolveUserVariables(
+  builtinVariables: Record<string, string>,
+  userVariables?: Array<UserVariable>,
+): Record<string, string> {
+  const resolved = { ...builtinVariables }
+  for (const variable of userVariables ?? []) {
+    resolved[variable.name] = safeInterpolate(variable.value, resolved)
+  }
+  return resolved
+}
+
+/**
+ * Checks whether a template contains the given placeholder, following
+ * references into user variables. A step that uses `{{MyVar}}` needs the
+ * clipboard when `MyVar`'s own value uses `{{Clipboard}}`, so the caller can
+ * decide up front whether reading the clipboard is necessary. Names already
+ * examined are skipped, which also makes malformed cyclic data terminate.
+ */
+export function templateReferencesInsert(
+  value: string,
+  insert: INSERT,
+  userVariables?: Array<UserVariable>,
+  visited: Set<string> = new Set(),
+): boolean {
+  if (value.includes(toInsertTemplate(insert))) return true
+  for (const variable of userVariables ?? []) {
+    if (visited.has(variable.name)) continue
+    if (!value.includes(`{{${variable.name}}}`)) continue
+    visited.add(variable.name)
+    if (
+      templateReferencesInsert(variable.value, insert, userVariables, visited)
+    ) {
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Resolves the template placeholders of a Page Action input step value.
  */
 export function resolveActionVariables(
   params: ResolveActionVariablesParams,
@@ -81,35 +133,14 @@ export function resolveActionVariables(
     srcUrl = "",
     clipboardText = "",
     userVariables,
-    prompt,
   } = params
 
-  // Stage 1: Build base variables map (intentionally excludes Prompt)
-  const baseVariables: Record<string, string> = {
-    [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
-    [InsertSymbol[INSERT.URL]]: srcUrl,
-    [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
-    [InsertSymbol[INSERT.LANG]]: getUILanguage(),
-    ...(userVariables?.reduce(
-      (acc, variable) => {
-        acc[variable.name] = variable.value
-        return acc
-      },
-      {} as Record<string, string>,
-    ) || {}),
-  }
+  const variables = resolveUserVariables(
+    buildBuiltinVariables({ selectedText, srcUrl, clipboardText }),
+    userVariables,
+  )
 
-  // Resolve prompt template with base variables if provided; safely handle missing/empty prompt
-  const resolvedPrompt = prompt ? safeInterpolate(prompt, baseVariables) : ""
-
-  // Stage 2: Combine base variables with the resolved prompt
-  const stepVariables: Record<string, string> = {
-    ...baseVariables,
-    [InsertSymbol[INSERT.PROMPT]]: resolvedPrompt,
-  }
-
-  // Single-pass replacement over value prevents recursive evaluation of substituted text
-  return safeInterpolate(value, stepVariables)
+  return safeInterpolate(value, variables)
 }
 
 export const paramToStr = (param: PageAction.Parameter): string => {
