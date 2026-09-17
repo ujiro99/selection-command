@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react"
+import React, { useState } from "react"
+import type { CSSProperties } from "react"
 import { useController } from "react-hook-form"
 import { FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -6,6 +7,8 @@ import { Switch } from "@/components/ui/switch"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { InfoTooltip } from "./InfoTooltip"
 import { useFavicon } from "@/hooks/option/useFavicon"
+import { useGlobalIconColor } from "@/hooks/option/useGlobalIconColor"
+import { popupContext, usePopupContext } from "@/hooks/usePopupContext"
 import { isEmpty, isValidSVG, cn } from "@/lib/utils"
 import { shouldPreserveIconColor } from "@/lib/favicon"
 import { t as _t } from "@/services/i18n"
@@ -60,6 +63,7 @@ export const IconField = ({
         <IconUrlInput
           fieldUrl={fieldUrl}
           fieldSvg={fieldSvg}
+          excludeFromGlobalIconColor={!!fieldExclude?.value}
           placeholder={placeholder}
         />
         <FormMessage />
@@ -141,6 +145,7 @@ const GlobalIconColorToggle = ({
 type IconUrlInputType = {
   fieldUrl: any
   fieldSvg: any
+  excludeFromGlobalIconColor?: boolean
   placeholder?: string
   onAutoFill?: (value: string) => void
 }
@@ -148,27 +153,30 @@ type IconUrlInputType = {
 const IconUrlInput = ({
   fieldUrl,
   fieldSvg,
+  excludeFromGlobalIconColor,
   placeholder,
 }: IconUrlInputType) => {
   const { isLoading } = useFavicon()
-  const svgRef = useRef<HTMLDivElement | null>(null)
+  const popup = usePopupContext()
+  const { iconColor, hasIconColor } = useGlobalIconColor()
   const hasUrl = !isEmpty(fieldUrl.value)
   const value = hasUrl ? fieldUrl.value : fieldSvg.value
-
-  if (svgRef.current) {
-    svgRef.current.innerHTML = fieldSvg.value
-  }
 
   return isLoading ? (
     <Loading />
   ) : (
-    <div>
-      <MenuImage
-        className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
-        src={fieldUrl.value}
-        svg={fieldSvg.value}
-        alt="Preview of image"
-      />
+    // The preview is rendered outside the popup, so the icon color variable
+    // MenuImage paints with has to be provided here.
+    <div style={{ "--sc-icon-color": iconColor } as CSSProperties}>
+      <popupContext.Provider value={{ ...popup, hasIconColor }}>
+        <MenuImage
+          className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+          src={fieldUrl.value}
+          svg={fieldSvg.value}
+          alt="Preview of image"
+          excludeFromGlobalIconColor={excludeFromGlobalIconColor}
+        />
+      </popupContext.Provider>
       <UrlOrSvgInput
         value={value}
         placeholder={placeholder}

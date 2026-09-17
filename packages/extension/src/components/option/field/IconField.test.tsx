@@ -1,12 +1,31 @@
-import { describe, it, expect, vi } from "vitest"
+import { describe, it, expect, vi, beforeEach } from "vitest"
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { useForm, FormProvider } from "react-hook-form"
+import css from "@/components/menu/Menu.module.css"
 import { IconField } from "./IconField"
 
 // Mock useFavicon
 vi.mock("@/hooks/option/useFavicon", () => ({
   useFavicon: () => ({ isLoading: false }),
 }))
+
+// Mock the global icon color, which is normally read from the saved settings.
+const globalIconColor = {
+  iconColor: undefined as string | undefined,
+  hasIconColor: false,
+}
+vi.mock("@/hooks/option/useGlobalIconColor", () => ({
+  useGlobalIconColor: () => globalIconColor,
+}))
+
+const setGlobalIconColor = (iconColor?: string) => {
+  globalIconColor.iconColor = iconColor
+  globalIconColor.hasIconColor = iconColor != null
+}
+
+beforeEach(() => {
+  setGlobalIconColor(undefined)
+})
 
 // Mock i18n
 vi.mock("@/services/i18n", () => ({
@@ -257,5 +276,58 @@ describe("IconField - Global Icon Color Exclusion", () => {
       expect(screen.getByRole("switch")).toBeEnabled()
       expect(screen.getByRole("switch")).toBeChecked()
     })
+  })
+})
+
+describe("IconField - Icon preview", () => {
+  const uiIconUrl = "https://cdn3.iconfinder.com/icon.png"
+  const faviconUrl = "https://www.google.com/favicon.ico"
+  const iconColor = "#FF0000"
+
+  const previewImg = () => document.querySelector("form img")
+  const previewMask = () => document.querySelector("form span[role='img']")
+
+  it("renders a plain <img> preview while no global icon color is set", () => {
+    render(<TestWrapper initialValues={{ iconUrl: uiIconUrl }} />)
+    expect(previewImg()?.getAttribute("src")).toBe(uiIconUrl)
+    expect(previewMask()).toBeNull()
+  })
+
+  it("paints the preview with the global icon color", () => {
+    setGlobalIconColor(iconColor)
+    render(<TestWrapper initialValues={{ iconUrl: uiIconUrl }} />)
+
+    const mask = previewMask()
+    expect(mask).not.toBeNull()
+    expect(mask?.classList.contains(css.itemImgMasked)).toBe(true)
+    expect(mask?.getAttribute("style")).toContain(uiIconUrl)
+    // The variable the mask is painted with is provided around the preview.
+    expect(
+      (
+        document.querySelector("form div[style]") as HTMLElement | null
+      )?.style.getPropertyValue("--sc-icon-color"),
+    ).toBe(iconColor)
+  })
+
+  it("keeps the original colors of an automatically preserved favicon", () => {
+    setGlobalIconColor(iconColor)
+    render(<TestWrapper initialValues={{ iconUrl: faviconUrl }} />)
+    expect(previewImg()?.getAttribute("src")).toBe(faviconUrl)
+    expect(previewMask()).toBeNull()
+  })
+
+  it("follows the exclude toggle in real time", () => {
+    setGlobalIconColor(iconColor)
+    render(<TestWrapper initialValues={{ iconUrl: uiIconUrl }} />)
+    expect(previewMask()).not.toBeNull()
+
+    // Turning the toggle on restores the original colors right away.
+    fireEvent.click(screen.getByRole("switch"))
+    expect(previewMask()).toBeNull()
+    expect(previewImg()?.getAttribute("src")).toBe(uiIconUrl)
+
+    // Turning it off paints the preview with the global color again.
+    fireEvent.click(screen.getByRole("switch"))
+    expect(previewMask()).not.toBeNull()
   })
 })
