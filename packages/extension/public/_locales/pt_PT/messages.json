@@ -1320,6 +1320,9 @@
   "onboarding_welcomeMessage": {
     "message": "Bem-vindo!"
   },
+  "onboarding_welcomeIntroduction": {
+    "message": "Primeiro, conheça três formas úteis de o utilizar."
+  },
   "onboarding_welcomeContinue": {
     "message": "Clique para continuar"
   },

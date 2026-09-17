@@ -1317,6 +1317,9 @@
   "onboarding_welcomeMessage": {
     "message": "欢迎！"
   },
+  "onboarding_welcomeIntroduction": {
+    "message": "首先，为您介绍三种实用的使用方法。"
+  },
   "onboarding_welcomeContinue": {
     "message": "点击继续"
   },

@@ -1317,6 +1317,9 @@
   "onboarding_welcomeMessage": {
     "message": "Bienvenue !"
   },
+  "onboarding_welcomeIntroduction": {
+    "message": "Commençons par découvrir trois façons pratiques de l’utiliser."
+  },
   "onboarding_welcomeContinue": {
     "message": "Cliquez pour continuer"
   },

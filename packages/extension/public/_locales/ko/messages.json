@@ -1317,6 +1317,9 @@
   "onboarding_welcomeMessage": {
     "message": "환영합니다!"
   },
+  "onboarding_welcomeIntroduction": {
+    "message": "먼저, 유용한 사용법 세 가지를 소개합니다."
+  },
   "onboarding_welcomeContinue": {
     "message": "클릭하여 계속하기"
   },

@@ -1317,6 +1317,9 @@
   "onboarding_welcomeMessage": {
     "message": "स्वागत है!"
   },
+  "onboarding_welcomeIntroduction": {
+    "message": "सबसे पहले, आइए इसे इस्तेमाल करने के तीन उपयोगी तरीके जानें।"
+  },
   "onboarding_welcomeContinue": {
     "message": "जारी रखने के लिए क्लिक करें"
   },

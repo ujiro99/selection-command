@@ -66,7 +66,7 @@ export function OnboardingWelcome({ onDone }: Props) {
         exiting && "animate-onboarding-blur-out motion-reduce:animate-none",
       )}
     >
-      <OnboardingFadeIn effect="blur" delay={100}>
+      <OnboardingFadeIn effect="blur" delay={100} className="-mt-10">
         <img
           src={ICON_URL}
           className="block h-[50px]"
@@ -77,6 +77,11 @@ export function OnboardingWelcome({ onDone }: Props) {
       <OnboardingFadeIn effect="blur" delay={300}>
         <p className="text-3xl font-bold tracking-tight text-slate-900">
           {t("onboarding_welcomeMessage")}
+        </p>
+      </OnboardingFadeIn>
+      <OnboardingFadeIn effect="blur" delay={600}>
+        <p className="text-2xl font-semibold text-slate-900">
+          {t("onboarding_welcomeIntroduction")}
         </p>
       </OnboardingFadeIn>
     </button>

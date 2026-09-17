@@ -1340,6 +1340,10 @@
     "message": "Welcome!",
     "description": "Onboarding variant B welcome overlay, shown for a moment before the first step."
   },
+  "onboarding_welcomeIntroduction": {
+    "message": "First, let's explore three useful ways to use it.",
+    "description": "Introduces the three usage examples that follow the onboarding welcome message."
+  },
   "onboarding_welcomeContinue": {
     "message": "Click to continue",
     "description": "Accessible label for the onboarding variant B welcome overlay, which advances on click."

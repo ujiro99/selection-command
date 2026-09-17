@@ -1320,6 +1320,9 @@
   "onboarding_welcomeMessage": {
     "message": "Selamat datang!"
   },
+  "onboarding_welcomeIntroduction": {
+    "message": "Mula-mula, mari kenali tiga cara praktikal untuk menggunakannya."
+  },
   "onboarding_welcomeContinue": {
     "message": "Klik untuk teruskan"
   },
