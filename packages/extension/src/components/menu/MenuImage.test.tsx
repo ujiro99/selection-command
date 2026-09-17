@@ -53,7 +53,10 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
     expect(container.querySelector("img")).toBeNull()
   })
 
-  it("keeps original <img> for website favicons even when global icon color is enabled", () => {
+  // Which icons keep their own colors is decided by the caller (the resolver
+  // behind BgCommand.resolveIconColors), never by MenuImage itself, so without
+  // that prop the icon is recolored like any other.
+  it("recolors a website favicon the caller did not mark as preserved", () => {
     const { container } = renderWithContext(
       <MenuImage
         src={testFaviconUrl}
@@ -62,38 +65,10 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
       />,
       { hasIconColor: true },
     )
-    const img = container.querySelector("img")
-    expect(img).not.toBeNull()
-    expect(img?.getAttribute("src")).toBe(testFaviconUrl)
-    expect(container.querySelector("span[role='img']")).toBeNull()
-  })
-
-  it("keeps original <img> for detected favicons when manual excludeFromGlobalIconColor is absent", () => {
-    const { container } = renderWithContext(
-      <MenuImage src={testFaviconUrl} alt="google-favicon" />,
-      { hasIconColor: true },
-    )
-    const img = container.querySelector("img")
-    expect(img).not.toBeNull()
-    expect(img?.getAttribute("src")).toBe(testFaviconUrl)
-    expect(container.querySelector("span[role='img']")).toBeNull()
-  })
-
-  it("keeps original <img> for Google service icons detected as favicons even when excludeFromGlobalIconColor is false", () => {
-    const googleServiceIcon =
-      "https://www.gstatic.com/images/branding/product/2x/calendar_2020q4_32dp.png"
-    const { container } = renderWithContext(
-      <MenuImage
-        src={googleServiceIcon}
-        alt="google-calendar"
-        excludeFromGlobalIconColor={false}
-      />,
-      { hasIconColor: true },
-    )
-    const img = container.querySelector("img")
-    expect(img).not.toBeNull()
-    expect(img?.getAttribute("src")).toBe(googleServiceIcon)
-    expect(container.querySelector("span[role='img']")).toBeNull()
+    const span = container.querySelector("span[role='img']")
+    expect(span).not.toBeNull()
+    expect(span?.getAttribute("style")).toContain(testFaviconUrl)
+    expect(container.querySelector("img")).toBeNull()
   })
 
   it("renders a masked <span> for non-favicon UI icon when manual setting is absent", () => {

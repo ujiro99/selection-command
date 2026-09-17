@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { isEmpty, cn } from "@/lib/utils"
-import { shouldPreserveIconColor } from "@/lib/favicon"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
 
@@ -10,6 +9,11 @@ type MenuImageProps = {
   alt?: string
   className?: string
   excludeFromGlobalIconColor?: boolean
+  /**
+   * Whether the icon keeps its own colors. Decided by the caller, which knows
+   * the icon's origin: deciding it here would mean importing the Public Suffix
+   * List into every page the content script runs on.
+   */
   preserveOriginalColor?: boolean
 }
 
@@ -26,13 +30,10 @@ export function MenuImage(props: MenuImageProps): JSX.Element {
   const { src, svg, alt, className } = props
   const { hasIconColor } = usePopupContext()
 
-  // Callers that know the icon's origin pass the result in; otherwise fall back
-  // to detecting it from the URL being rendered.
-  const preserveOriginalColor =
-    props.preserveOriginalColor ?? shouldPreserveIconColor({ url: src })
-
   const recolor = Boolean(
-    hasIconColor && !props.excludeFromGlobalIconColor && !preserveOriginalColor,
+    hasIconColor &&
+      !props.excludeFromGlobalIconColor &&
+      !props.preserveOriginalColor,
   )
 
   if (!isEmpty(src)) {

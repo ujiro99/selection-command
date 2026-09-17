@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
-import { renderHook, act } from "@testing-library/react"
+import { renderHook, waitFor } from "@testing-library/react"
 import { useSettingsWithImageCache } from "./useSettingsWithImageCache"
 import { enhancedSettings } from "../services/settings/enhancedSettings"
 import { settingsCache } from "../services/settings/settingsCache"
@@ -9,6 +9,24 @@ import type { SettingsType, Command, Caches } from "@/types"
 // Mock dependencies
 vi.mock("../services/settings/enhancedSettings")
 vi.mock("../services/settings/settingsCache")
+
+// The recoloring decision is answered by the service worker; stand in for it
+// with the real check so the hook is exercised end to end.
+vi.mock("@/services/ipc", async (importOriginal) => {
+  const original = await importOriginal<typeof import("@/services/ipc")>()
+  const { shouldPreserveIconColor } = await import("@/lib/favicon")
+  return {
+    ...original,
+    Ipc: {
+      ...original.Ipc,
+      send: vi.fn(async (_command: unknown, queries: unknown) =>
+        (queries as Array<{ url?: string; targetUrl?: string }>).map((query) =>
+          shouldPreserveIconColor(query),
+        ),
+      ),
+    },
+  }
+})
 
 const mockEnhancedSettings = vi.mocked(enhancedSettings)
 const mockSettingsCache = vi.mocked(settingsCache)
@@ -36,9 +54,7 @@ const mockSections = (
 const renderSettings = async () => {
   const rendered = renderHook(() => useSettingsWithImageCache())
 
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 0))
-  })
+  await waitFor(() => expect(rendered.result.current.loading).toBe(false))
 
   return rendered
 }
@@ -167,6 +183,31 @@ describe("useSettingsWithImageCache", () => {
         preserveOriginalColor: false,
       },
     ])
+  })
+
+  it("US-27-a: should preserve the colors of an icon served by the command's own site", async () => {
+    const siteCommand = {
+      id: "cmd1",
+      title: "Example",
+      openMode: OPEN_MODE.POPUP,
+      searchUrl: "https://example.com/search?q=%s",
+      iconUrl: "https://cdn.example.com/images/logo.png",
+    }
+    const otherCommand = {
+      id: "cmd2",
+      title: "Example",
+      openMode: OPEN_MODE.POPUP,
+      searchUrl: "https://example.com/search?q=%s",
+      iconUrl: "https://cdn.other.com/images/logo.png",
+    }
+
+    mockSections({ folders: [] }, [siteCommand, otherCommand] as Command[])
+
+    const { result } = await renderSettings()
+
+    expect(
+      result.current.commands.map((c) => c.preserveOriginalColor),
+    ).toEqual([true, false])
   })
 
   it("US-28: should use original URLs when cache is not available", async () => {
