@@ -97,7 +97,7 @@ const GlobalIconColorToggle = ({
   const isAutoPreserved = shouldPreserveIconColor({ url: iconUrl })
 
   return (
-    <div className="flex items-center justify-between gap-2 border-t t-2">
+    <div className="flex items-center justify-between gap-2 py-1">
       <div className="flex items-center gap-1.5">
         <FormLabel
           htmlFor={name}
