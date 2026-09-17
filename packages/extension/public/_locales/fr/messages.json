@@ -1354,7 +1354,7 @@
     "message": "Et voilà — vous pouvez désormais rechercher instantanément tout ce que vous sélectionnez"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Ajoutez votre moteur de recherche préféré pour rendre vos recherches quotidiennes encore plus rapides."
+    "message": "Ajoutez les moteurs de recherche que vous utilisez souvent pour y accéder instantanément."
   },
   "onboarding_step2Explain": {
     "message": "Ensuite, interrogeons l'IA à propos du texte ci-dessous."
@@ -1375,7 +1375,7 @@
     "message": "Vous pouvez désormais interroger l'IA sur tout ce que vous sélectionnez, directement depuis la page que vous lisez"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Demandez instantanément à l'IA des choses comme « résume ceci » ou « analyse cette entreprise ».\nVous pouvez personnaliser le prompt librement."
+    "message": "Donnez instantanément à l’IA des instructions comme « résume ceci » ou « analyse cette entreprise ».\nVous pouvez personnaliser le prompt comme vous le souhaitez."
   },
   "onboarding_step3Explain": {
     "message": "Prévisualisons un lien sans ouvrir un nouvel onglet."
@@ -1399,7 +1399,7 @@
     "message": "Et voilà — vous pouvez désormais prévisualiser des liens sans quitter la page"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Vous avez obtenu l'information et êtes revenu aussitôt !\nCela réduit la gestion des onglets, pour que vous puissiez vous concentrer sur l'essentiel."
+    "message": "Vous avez consulté la page et êtes revenu aussitôt !\nPassez moins de temps à gérer les onglets et concentrez-vous sur ce que vous avez à faire."
   },
   "onboarding_nextButton": {
     "message": "Suivant"

@@ -1357,7 +1357,7 @@
     "message": "Pronto — agora você pode pesquisar instantaneamente qualquer coisa que selecionar"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Adicione seu mecanismo de busca favorito para tornar as buscas do dia a dia ainda mais rápidas."
+    "message": "Adicione os mecanismos de busca que você mais usa para acessá-los na hora."
   },
   "onboarding_step2Explain": {
     "message": "A seguir, vamos perguntar à IA sobre o texto abaixo."
@@ -1378,7 +1378,7 @@
     "message": "Agora você pode perguntar à IA sobre qualquer coisa que selecionar, direto da página que está lendo"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Peça à IA coisas como \"resuma isso\" ou \"analise esta empresa\" instantaneamente.\nVocê pode personalizar o prompt livremente."
+    "message": "Dê instruções à IA, como \"resuma isso\" ou \"analise esta empresa\", na hora.\nPersonalize o prompt como quiser."
   },
   "onboarding_step3Explain": {
     "message": "Vamos pré-visualizar um link sem abrir uma nova aba."
@@ -1402,7 +1402,7 @@
     "message": "Pronto — agora você pode pré-visualizar links sem sair da página"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Você obteve a informação e voltou na hora!\nIsso reduz o trabalho de trocar de abas, para você focar no que importa."
+    "message": "Você viu a página e voltou na hora!\nGaste menos tempo gerenciando abas e mantenha o foco no que precisa fazer."
   },
   "onboarding_nextButton": {
     "message": "Próximo"

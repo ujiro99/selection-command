@@ -1354,7 +1354,7 @@
     "message": "이제 궁금했던 정보를 바로 검색할 수 있게 되었습니다"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "좋아하는 검색 엔진을 추가하면 평소 검색을 더 빠르게 할 수 있어요."
+    "message": "자주 사용하는 검색 엔진을 등록해 바로 불러올 수 있어요."
   },
   "onboarding_step2Explain": {
     "message": "다음으로 아래 텍스트에 대해 AI에게 물어봅시다."
@@ -1375,7 +1375,7 @@
     "message": "이제 페이지를 읽으면서 바로 AI에게 무엇이든 물어볼 수 있습니다"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "\"요약해줘\", \"이 기업을 분석해줘\" 같은 요청을 AI에 바로 할 수 있어요.\n프롬프트는 자유롭게 커스터마이징할 수 있습니다."
+    "message": "AI에 \"요약해줘\", \"이 기업을 분석해줘\" 같은 지시를 바로 내릴 수 있어요.\n프롬프트는 원하는 대로 설정할 수 있습니다."
   },
   "onboarding_step3Explain": {
     "message": "새 탭을 열지 않고 링크를 미리 볼까요?"
@@ -1399,7 +1399,7 @@
     "message": "이제 페이지를 벗어나지 않고 링크를 미리 볼 수 있습니다"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "정보를 얻고 바로 돌아올 수 있었어요!\n탭 전환의 번거로움을 줄여, 해야 할 일에 집중할 수 있습니다."
+    "message": "페이지를 확인하고 바로 돌아왔어요!\n탭을 조작하는 수고를 줄이고 해야 할 일에 집중할 수 있습니다."
   },
   "onboarding_nextButton": {
     "message": "다음"

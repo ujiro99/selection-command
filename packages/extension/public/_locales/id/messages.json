@@ -1357,7 +1357,7 @@
     "message": "Selesai — sekarang Anda bisa langsung mencari apa pun yang Anda pilih"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Tambahkan mesin pencari favorit Anda untuk membuat pencarian sehari-hari lebih cepat."
+    "message": "Tambahkan mesin pencari yang sering Anda gunakan agar dapat dibuka seketika."
   },
   "onboarding_step2Explain": {
     "message": "Selanjutnya, mari tanyakan ke AI tentang teks di bawah ini."
@@ -1378,7 +1378,7 @@
     "message": "Sekarang Anda bisa bertanya ke AI tentang apa pun yang Anda pilih, langsung dari halaman yang sedang Anda baca"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Segera minta AI melakukan hal seperti \"ringkas ini\" atau \"analisis perusahaan ini\".\nPrompt dapat disesuaikan secara bebas."
+    "message": "Langsung beri AI perintah seperti \"ringkas ini\" atau \"analisis perusahaan ini\".\nSesuaikan prompt sesuka Anda."
   },
   "onboarding_step3Explain": {
     "message": "Mari pratinjau sebuah tautan tanpa membuka tab baru."
@@ -1402,7 +1402,7 @@
     "message": "Selesai — sekarang Anda bisa melihat pratinjau tautan tanpa meninggalkan halaman"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Anda mendapatkan informasinya dan langsung kembali!\nIni mengurangi repotnya berpindah tab, sehingga Anda bisa fokus pada hal yang penting."
+    "message": "Anda melihat halaman tersebut lalu langsung kembali!\nKurangi waktu mengelola tab dan tetap fokus pada tugas Anda."
   },
   "onboarding_nextButton": {
     "message": "Berikutnya"
