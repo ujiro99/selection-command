@@ -4,6 +4,7 @@ import { FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { MenuImage } from "@/components/menu/MenuImage"
+import { InfoTooltip } from "./InfoTooltip"
 import { useFavicon } from "@/hooks/option/useFavicon"
 import { isEmpty, isValidSVG, cn } from "@/lib/utils"
 import { shouldPreserveIconColor } from "@/lib/favicon"
@@ -96,34 +97,35 @@ const GlobalIconColorToggle = ({
   const isAutoPreserved = shouldPreserveIconColor({ url: iconUrl })
 
   return (
-    <div className="flex items-center justify-between gap-2 border-t pt-2">
-      <div className="space-y-0.5">
-        <div className="flex items-center gap-1.5">
-          <FormLabel
-            htmlFor={name}
-            className={cn(
-              "text-sm font-normal",
-              isAutoPreserved
-                ? "cursor-default text-muted-foreground"
-                : "cursor-pointer",
-            )}
-          >
-            {t("excludeFromGlobalIconColor")}
-          </FormLabel>
-          {isAutoPreserved && (
-            <span
-              data-testid="favicon-automatic-badge"
-              className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium leading-none"
-            >
-              {t("excludeFromGlobalIconColor_automatic")}
-            </span>
+    <div className="flex items-center justify-between gap-2 border-t t-2">
+      <div className="flex items-center gap-1.5">
+        <FormLabel
+          htmlFor={name}
+          className={cn(
+            "text-sm font-normal",
+            isAutoPreserved
+              ? "cursor-default text-muted-foreground"
+              : "cursor-pointer",
           )}
-        </div>
-        <FormDescription className="text-xs">
-          {isAutoPreserved
-            ? t("excludeFromGlobalIconColor_favicon_desc")
-            : t("excludeFromGlobalIconColor_desc")}
-        </FormDescription>
+        >
+          {t("excludeFromGlobalIconColor")}
+        </FormLabel>
+        {isAutoPreserved && (
+          <span
+            data-testid="favicon-automatic-badge"
+            className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium leading-none"
+          >
+            {t("excludeFromGlobalIconColor_automatic")}
+          </span>
+        )}
+        <InfoTooltip
+          testId="exclude-icon-color-info"
+          text={
+            isAutoPreserved
+              ? t("excludeFromGlobalIconColor_favicon_desc")
+              : t("excludeFromGlobalIconColor_desc")
+          }
+        />
       </div>
       <Switch
         id={name}

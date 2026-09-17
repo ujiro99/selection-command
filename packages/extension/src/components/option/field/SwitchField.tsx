@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Switch } from "@/components/ui/switch"
 
 import {
@@ -9,8 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Info } from "lucide-react"
-import { Tooltip } from "@/components/Tooltip"
+import { InfoTooltip } from "./InfoTooltip"
 import { cn } from "@/lib/utils"
 
 type SwitchFieldType = {
@@ -28,8 +26,6 @@ export const SwitchField = ({
   description,
   tooltip,
 }: SwitchFieldType) => {
-  const [spanEl, setSpanEl] = useState<HTMLSpanElement | null>(null)
-
   return (
     <FormField
       control={control}
@@ -41,24 +37,9 @@ export const SwitchField = ({
               <FormLabel>
                 <span>{formLabel}</span>
               </FormLabel>
-              {tooltip && (
-                <span
-                  ref={setSpanEl}
-                  className="cursor-pointer p-1 rounded hover:bg-gray-100 transition-background"
-                >
-                  <Info className="size-4 text-foreground/60" />
-                </span>
-              )}
+              {tooltip && <InfoTooltip text={tooltip} />}
             </div>
             {description && <FormDescription>{description}</FormDescription>}
-            {tooltip && (
-              <Tooltip
-                positionElm={spanEl}
-                text={tooltip}
-                className="max-w-64 whitespace-pre-wrap"
-                delay={200}
-              />
-            )}
           </div>
           <div className="w-4/6 px-1">
             <FormControl>

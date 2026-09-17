@@ -57,6 +57,12 @@ function TestWrapper({
   )
 }
 
+/** The explanation now lives in a tooltip, revealed by hovering the info icon. */
+const findTooltipText = (text: string) => {
+  fireEvent.mouseEnter(screen.getByTestId("exclude-icon-color-info"))
+  return screen.findByText(text)
+}
+
 describe("IconField - Global Icon Color Exclusion", () => {
   const faviconUrl = "https://www.google.com/favicon.ico"
   const nonFaviconUrl = "https://cdn3.iconfinder.com/icon.png"
@@ -90,7 +96,7 @@ describe("IconField - Global Icon Color Exclusion", () => {
   })
 
   describe("Automatic favicon exclusion", () => {
-    it("disables manual toggle and shows automatic status for a website favicon", () => {
+    it("disables manual toggle and shows automatic status for a website favicon", async () => {
       render(
         <TestWrapper
           initialValues={{
@@ -107,15 +113,17 @@ describe("IconField - Global Icon Color Exclusion", () => {
       // Automatic badge should be present
       const badge = screen.getByTestId("favicon-automatic-badge")
       expect(badge).toBeDefined()
-      expect(badge.textContent).toBe("Option_excludeFromGlobalIconColor_automatic")
+      expect(badge.textContent).toBe(
+        "Option_excludeFromGlobalIconColor_automatic",
+      )
 
       // Explanation for automatic favicon exclusion
       expect(
-        screen.getByText("Option_excludeFromGlobalIconColor_favicon_desc"),
+        await findTooltipText("Option_excludeFromGlobalIconColor_favicon_desc"),
       ).toBeDefined()
     })
 
-    it("disables manual toggle and shows automatic status for a Google service icon", () => {
+    it("disables manual toggle and shows automatic status for a Google service icon", async () => {
       render(
         <TestWrapper
           initialValues={{
@@ -131,11 +139,11 @@ describe("IconField - Global Icon Color Exclusion", () => {
 
       expect(screen.getByTestId("favicon-automatic-badge")).toBeDefined()
       expect(
-        screen.getByText("Option_excludeFromGlobalIconColor_favicon_desc"),
+        await findTooltipText("Option_excludeFromGlobalIconColor_favicon_desc"),
       ).toBeDefined()
     })
 
-    it("enables manual toggle and shows default description for non-favicon icon", () => {
+    it("enables manual toggle and shows default description for non-favicon icon", async () => {
       render(
         <TestWrapper
           initialValues={{
@@ -151,7 +159,7 @@ describe("IconField - Global Icon Color Exclusion", () => {
 
       expect(screen.queryByTestId("favicon-automatic-badge")).toBeNull()
       expect(
-        screen.getByText("Option_excludeFromGlobalIconColor_desc"),
+        await findTooltipText("Option_excludeFromGlobalIconColor_desc"),
       ).toBeDefined()
     })
   })
@@ -251,4 +259,3 @@ describe("IconField - Global Icon Color Exclusion", () => {
     })
   })
 })
-
