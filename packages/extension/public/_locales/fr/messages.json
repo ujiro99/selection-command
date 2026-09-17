@@ -719,6 +719,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Spécifier la couleur de police. Par défaut: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Couleur de l'icône"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Spécifier la couleur de l'icône. Par défaut: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Exclure de la couleur d'icône globale"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Conserve la couleur d'origine de cette icône même lorsqu'une couleur d'icône globale est définie."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Les favicons sont automatiquement exclus de la couleur d'icône globale et conservent leurs couleurs d'origine."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automatique"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Échelle de taille de police"
   },

@@ -30,6 +30,7 @@ import {
 } from "@/services/analytics"
 import * as HubBackground from "@/services/hub/background"
 import { ensureOnboardingAssignment } from "@/services/experiments"
+import * as IconColorBackground from "@/services/iconColor/background"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -314,6 +315,7 @@ const commandFuncs = {
   [BgCommand.getTabId]: getTabId,
   [BgCommand.getActiveTabId]: getActiveTabId,
   [BgCommand.closeTab]: closeTab,
+  [BgCommand.resolveIconColors]: IconColorBackground.resolveIconColors,
 
   //
   // Hub

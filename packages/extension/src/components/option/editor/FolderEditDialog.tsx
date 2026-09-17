@@ -28,6 +28,34 @@ const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 import type { CommandFolder } from "@/types"
 import { calcLevel } from "@/services/option/commandTree"
 
+const DEFAULT_FOLDER_ICON =
+  "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png"
+
+/**
+ * A neutral value for every schema key. react-hook-form keeps the value a field
+ * was first mounted with whenever reset() omits that key, so an existing folder
+ * has to be merged over a complete set of keys - and over neutral ones rather
+ * than over the new-folder defaults, which would give a folder that stores only
+ * an iconSvg the default iconUrl.
+ */
+const EmptyValue = {
+  id: "",
+  title: "",
+  iconUrl: "",
+  iconSvg: "",
+  excludeFromGlobalIconColor: false,
+  onlyIcon: false,
+  parentFolderId: ROOT_FOLDER,
+  style: FOLDER_STYLE.INHERIT,
+}
+
+/** The values a newly created folder starts from. */
+const DefaultValue = {
+  ...EmptyValue,
+  iconUrl: DEFAULT_FOLDER_ICON,
+  onlyIcon: true,
+}
+
 type FolderEditDialog = {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -43,16 +71,6 @@ export const FolderEditDialog = ({
   folder,
   folders,
 }: FolderEditDialog) => {
-  const DefaultValue = {
-    id: "",
-    title: "",
-    iconUrl:
-      "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/folder-archive-document-archives-fold-1024.png",
-    onlyIcon: true,
-    parentFolderId: ROOT_FOLDER,
-    style: FOLDER_STYLE.INHERIT,
-  }
-
   const form = useForm<z.infer<typeof folderSchema>>({
     resolver: zodResolver(folderSchema),
     mode: "onChange",
@@ -60,7 +78,7 @@ export const FolderEditDialog = ({
   })
 
   useEffect(() => {
-    form.reset(folder ?? DefaultValue)
+    form.reset(folder ? { ...EmptyValue, ...folder } : DefaultValue)
   }, [folder])
 
   const isUpdate = folder != null

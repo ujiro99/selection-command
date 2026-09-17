@@ -18,6 +18,7 @@
   font-size: var(--sc-font-size);
   font-family: var(--font-family);
   transition: ease-out 0.15s background;
+  color: var(--sc-font-color);
 
   &:disabled {
     opacity: 0.4;
@@ -36,10 +37,24 @@
   height: var(--sc-image-size, 16px);
 }
 
+.itemImgMasked {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  background-color: var(--sc-icon-color);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+
 .itemTitle {
   margin-left: calc(0.4em + var(--sc-padding) / 2);
   margin-right: calc(0.4em + var(--sc-padding) / 2);
   text-align: left;
+  color: inherit;
 }
 
 .itemHorizontal {
@@ -82,6 +97,7 @@
   cursor: default;
   padding-right: calc(var(--sc-padding) / 2);
   transition: ease-out 0.15s background;
+  color: var(--sc-font-color);
 }
 
 .title {

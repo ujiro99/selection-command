@@ -9,7 +9,10 @@ import { HoverArea } from "@/components/menu/HoverArea"
 import { MenuImage } from "@/components/menu/MenuImage"
 import { usePopupContext } from "@/hooks/usePopupContext"
 import css from "./Menu.module.css"
-import type { Command, CommandFolder } from "@/types"
+import type {
+  ResolvedCommand,
+  ResolvedFolder,
+} from "@/hooks/useSettingsWithImageCache"
 import { cn, onHover } from "@/lib/utils"
 import { type CommandTreeNode } from "@/services/option/commandTree"
 
@@ -41,13 +44,13 @@ export const MenuTreeNode = (props: MenuTreeNodeProps): JSX.Element => {
       <MenuItem
         menuRef={menuRef}
         onlyIcon={isHorizontal}
-        command={node.content as Command}
+        command={node.content as ResolvedCommand}
       />
     )
   } else {
     return (
       <MenuFolder
-        folder={node.content as CommandFolder}
+        folder={node.content as ResolvedFolder}
         children={node.children}
         isHorizontal={isHorizontal}
         side={side}
@@ -62,7 +65,7 @@ export const MenuTreeNode = (props: MenuTreeNodeProps): JSX.Element => {
 }
 
 export const MenuFolder = (props: {
-  folder: CommandFolder
+  folder: ResolvedFolder
   children?: CommandTreeNode[]
   isHorizontal: boolean
   side: SIDE
@@ -129,7 +132,8 @@ export const MenuFolder = (props: {
             [css.itemOnlyIcon]: folder.onlyIcon && isHorizontal,
             [css.folderHorizontal]: isHorizontal,
             "pointer-events-none": inTransition,
-            "bg-accent text-accent-foreground": isOpen,
+            "bg-accent": isOpen,
+            "hover:bg-accent": !inTransition,
           })}
           ref={anchorRef}
           role="menuitem"
@@ -143,6 +147,8 @@ export const MenuFolder = (props: {
             src={folder.iconUrl}
             svg={folder.iconSvg}
             alt={folder.title}
+            excludeFromGlobalIconColor={folder.excludeFromGlobalIconColor}
+            preserveOriginalColor={folder.preserveOriginalColor}
           />
           {!(folder.onlyIcon && isHorizontal) && (
             <span className={cn(css.itemTitle, css.title)}>{folder.title}</span>
