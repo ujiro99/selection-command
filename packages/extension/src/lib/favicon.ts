@@ -1,5 +1,5 @@
 import { parse } from "tldts"
-import { isPageActionCommand } from "@/lib/utils"
+import { getCommandTargetUrl } from "@/lib/utils"
 import type { Command } from "@/types"
 
 /** Favicon delivery services and well-known favicon endpoints. */
@@ -73,22 +73,11 @@ function isFaviconUrl(lowerUrl: string): boolean {
   )
 }
 
-/** Returns the website a command targets, or undefined when it has none. */
-function getCommandTargetUrl(command: Command): string | undefined {
-  if (isPageActionCommand(command)) {
-    return command.searchUrl || command.pageActionOption?.startUrl
-  }
-  return command.searchUrl
-}
-
 /**
  * Checks whether the icon is served from the same registrable domain as the
- * website the command targets, which makes it that site's own brand icon.
+ * website it belongs to, which makes it that site's own brand icon.
  */
-function isSameSiteIcon(url: string, command: Command): boolean {
-  const targetUrl = getCommandTargetUrl(command)
-  if (!targetUrl) return false
-
+function isSameSiteIcon(url: string, targetUrl: string): boolean {
   let iconHost: string
   let targetHost: string
   try {
@@ -113,8 +102,10 @@ function isSameSiteIcon(url: string, command: Command): boolean {
 export function shouldPreserveIconColor(options: {
   url?: string
   command?: Command
+  /** The website the icon belongs to, when no command object is at hand. */
+  targetUrl?: string
 }): boolean {
-  const { url, command } = options
+  const { url, command, targetUrl } = options
   if (!url) return false
 
   // Base64 data URLs carry no recognizable URL pattern.
@@ -125,5 +116,7 @@ export function shouldPreserveIconColor(options: {
     return true
   }
 
-  return command != null && isSameSiteIcon(url, command)
+  const target =
+    targetUrl || (command != null ? getCommandTargetUrl(command) : undefined)
+  return !!target && isSameSiteIcon(url, target)
 }

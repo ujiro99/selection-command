@@ -40,12 +40,14 @@ type TestWrapperProps = {
     customExcludeField?: boolean
   }
   nameExclude?: string
+  targetUrl?: string
   onSubmit?: (data: any) => void
 }
 
 function TestWrapper({
   initialValues,
   nameExclude,
+  targetUrl,
   onSubmit,
 }: TestWrapperProps) {
   const methods = useForm({
@@ -66,6 +68,7 @@ function TestWrapper({
           nameUrl="iconUrl"
           nameSvg="iconSvg"
           nameExclude={nameExclude}
+          targetUrl={targetUrl}
           formLabel="Icon"
         />
         <button type="submit" data-testid="submit-btn">
@@ -160,6 +163,35 @@ describe("IconField - Global Icon Color Exclusion", () => {
       expect(
         await findTooltipText("Option_excludeFromGlobalIconColor_favicon_desc"),
       ).toBeDefined()
+    })
+
+    it("disables manual toggle for an icon served by the command's own site", () => {
+      const siteIcon = "https://cdn.example.com/images/logo.png"
+      render(
+        <TestWrapper
+          initialValues={{ iconUrl: siteIcon }}
+          targetUrl="https://example.com/search?q=%s"
+        />,
+      )
+
+      const toggle = screen.getByRole("switch")
+      expect(toggle).toBeDisabled()
+      expect(toggle).toBeChecked()
+      expect(screen.getByTestId("favicon-automatic-badge")).toBeDefined()
+    })
+
+    it("leaves the toggle available when the icon is from an unrelated site", () => {
+      render(
+        <TestWrapper
+          initialValues={{ iconUrl: "https://cdn.other.com/images/logo.png" }}
+          targetUrl="https://example.com/search?q=%s"
+        />,
+      )
+
+      const toggle = screen.getByRole("switch")
+      expect(toggle).toBeEnabled()
+      expect(toggle).not.toBeChecked()
+      expect(screen.queryByTestId("favicon-automatic-badge")).toBeNull()
     })
 
     it("enables manual toggle and shows default description for non-favicon icon", async () => {
@@ -313,6 +345,19 @@ describe("IconField - Icon preview", () => {
     setGlobalIconColor(iconColor)
     render(<TestWrapper initialValues={{ iconUrl: faviconUrl }} />)
     expect(previewImg()?.getAttribute("src")).toBe(faviconUrl)
+    expect(previewMask()).toBeNull()
+  })
+
+  it("keeps the original colors of an icon served by the command's own site", () => {
+    const siteIcon = "https://cdn.example.com/images/logo.png"
+    setGlobalIconColor(iconColor)
+    render(
+      <TestWrapper
+        initialValues={{ iconUrl: siteIcon }}
+        targetUrl="https://example.com/search?q=%s"
+      />,
+    )
+    expect(previewImg()?.getAttribute("src")).toBe(siteIcon)
     expect(previewMask()).toBeNull()
   })
 

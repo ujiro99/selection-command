@@ -826,6 +826,7 @@ const CommandEditDialogInner = ({
                       control={form.control}
                       nameUrl="iconUrl"
                       nameSvg="iconSvg"
+                      targetUrl={iconUrlSrc}
                       formLabel={t("iconUrl")}
                       description={
                         isSearchOpenMode(openMode) || openMode === OPEN_MODE.API

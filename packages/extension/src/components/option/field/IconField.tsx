@@ -27,6 +27,8 @@ type IconField = {
   formLabel: string
   placeholder?: string
   description?: string
+  /** The website the edited command targets, used to detect its own icons. */
+  targetUrl?: string
 }
 
 export const IconField = ({
@@ -37,6 +39,7 @@ export const IconField = ({
   formLabel,
   description,
   placeholder,
+  targetUrl,
 }: IconField) => {
   const { field: fieldUrl, formState: stateUrl } = useController({
     name: nameUrl,
@@ -53,6 +56,12 @@ export const IconField = ({
   const errUrl = stateUrl.errors[nameUrl]
   const errSvg = stateSvg.errors[nameSvg]
 
+  // Resolved once here so the toggle and the preview always agree with the menu.
+  const preserveOriginalColor = shouldPreserveIconColor({
+    url: fieldUrl?.value,
+    targetUrl,
+  })
+
   return (
     <div className="flex items-start gap-1">
       <div className="w-2/6 pt-2">
@@ -64,6 +73,7 @@ export const IconField = ({
           fieldUrl={fieldUrl}
           fieldSvg={fieldSvg}
           excludeFromGlobalIconColor={!!fieldExclude?.value}
+          preserveOriginalColor={preserveOriginalColor}
           placeholder={placeholder}
         />
         <FormMessage />
@@ -76,7 +86,7 @@ export const IconField = ({
         <GlobalIconColorToggle
           name={nameExclude}
           field={fieldExclude}
-          iconUrl={fieldUrl?.value}
+          isAutoPreserved={preserveOriginalColor}
         />
       </div>
     </div>
@@ -86,20 +96,19 @@ export const IconField = ({
 type GlobalIconColorToggleProps = {
   name: string
   field: { value?: boolean; onChange: (value: boolean) => void }
-  iconUrl?: string
+  isAutoPreserved: boolean
 }
 
 /**
- * Lets the user keep an icon's original colors. Icons detected as favicons or
- * brand assets are preserved automatically and cannot be toggled off.
+ * Lets the user keep an icon's original colors. Icons detected as favicons,
+ * brand assets, or the target site's own assets are preserved automatically and
+ * cannot be toggled off.
  */
 const GlobalIconColorToggle = ({
   name,
   field,
-  iconUrl,
+  isAutoPreserved,
 }: GlobalIconColorToggleProps) => {
-  const isAutoPreserved = shouldPreserveIconColor({ url: iconUrl })
-
   return (
     <div className="flex items-center justify-between gap-2 py-1">
       <div className="flex items-center gap-1.5">
@@ -146,6 +155,7 @@ type IconUrlInputType = {
   fieldUrl: any
   fieldSvg: any
   excludeFromGlobalIconColor?: boolean
+  preserveOriginalColor?: boolean
   placeholder?: string
   onAutoFill?: (value: string) => void
 }
@@ -154,6 +164,7 @@ const IconUrlInput = ({
   fieldUrl,
   fieldSvg,
   excludeFromGlobalIconColor,
+  preserveOriginalColor,
   placeholder,
 }: IconUrlInputType) => {
   const { isLoading } = useFavicon()
@@ -175,6 +186,7 @@ const IconUrlInput = ({
           svg={fieldSvg.value}
           alt="Preview of image"
           excludeFromGlobalIconColor={excludeFromGlobalIconColor}
+          preserveOriginalColor={preserveOriginalColor}
         />
       </popupContext.Provider>
       <UrlOrSvgInput

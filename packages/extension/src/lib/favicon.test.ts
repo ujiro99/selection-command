@@ -353,6 +353,37 @@ describe("shouldPreserveIconColor", () => {
   })
 })
 
+describe("shouldPreserveIconColor - targetUrl option", () => {
+  it("accepts the target website directly, without a command object", () => {
+    expect(
+      shouldPreserveIconColor({
+        url: "https://cdn.example.com/images/logo.png",
+        targetUrl: "https://example.com/search?q=%s",
+      }),
+    ).toBe(true)
+    expect(
+      shouldPreserveIconColor({
+        url: "https://cdn.other.com/images/logo.png",
+        targetUrl: "https://example.com/search?q=%s",
+      }),
+    ).toBe(false)
+  })
+
+  it("does not preserve anything when no target is known", () => {
+    expect(
+      shouldPreserveIconColor({
+        url: "https://cdn.example.com/images/logo.png",
+      }),
+    ).toBe(false)
+    expect(
+      shouldPreserveIconColor({
+        url: "https://cdn.example.com/images/logo.png",
+        targetUrl: "",
+      }),
+    ).toBe(false)
+  })
+})
+
 describe("getRegistrableDomain", () => {
   it("extracts registrable domain for standard single TLDs", () => {
     expect(getRegistrableDomain("example.com")).toBe("example.com")
