@@ -17,6 +17,7 @@ import {
   FOLDER_STYLE,
   COMMAND_SOURCE_TYPE,
   COMMAND_SOURCE_ID,
+  NEW_HUB_URL,
 } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { createOnboardingAiPromptCommands } from "@/components/onboarding/onboardingCommand"
@@ -434,7 +435,7 @@ function createCommandSearchCommand(title: string, hubLocale: string): Command {
     iconUrl,
     openMode: OPEN_MODE.POPUP,
     openModeSecondary: OPEN_MODE.TAB,
-    searchUrl: `https://selection-command.com/${hubLocale}?q=%pageUrl`,
+    searchUrl: `${NEW_HUB_URL}/${hubLocale}/commands?q=%pageUrl`,
     popupOption: {
       width: PopupOption.width,
       height: PopupOption.height,
