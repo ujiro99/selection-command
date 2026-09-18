@@ -1350,6 +1350,15 @@
   "onboarding_skipButton": {
     "message": "跳过"
   },
+  "onboarding_welcomeMessage": {
+    "message": "欢迎！"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "首先，为您介绍三种实用的使用方法。"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "点击继续"
+  },
   "onboarding_step1Explain": {
     "message": "选择下面的文本，立即试试搜索功能。"
   },
@@ -1381,7 +1390,7 @@
     "message": "就是这样——现在您可以立即搜索所选的任何内容"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "添加您喜欢的搜索引擎，让日常搜索更快捷。"
+    "message": "添加常用搜索引擎，即可随时快速调用。"
   },
   "onboarding_step2Explain": {
     "message": "接下来，让我们向 AI 询问下面这段文字。"
@@ -1402,7 +1411,7 @@
     "message": "现在，您可以在阅读网页的同时，就您选择的任何内容向 AI 提问"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "立即向 AI 请求「总结一下」「分析这家公司」等操作。\n提示词可以自由自定义。"
+    "message": "立即向 AI 发出「总结一下」「分析这家公司」等指令。\n提示词可按需自由设置。"
   },
   "onboarding_step3Explain": {
     "message": "让我们在不打开新标签页的情况下预览链接。"
@@ -1426,7 +1435,7 @@
     "message": "就是这样——现在您可以在不离开当前页面的情况下预览链接"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "获取信息后立即返回！\n这减少了切换标签页的麻烦，让你可以专注于真正重要的事情。"
+    "message": "查看页面后立即返回！\n减少标签页操作，将注意力集中在要做的事情上。"
   },
   "onboarding_nextButton": {
     "message": "下一步"

@@ -220,7 +220,7 @@ export function StepSearchCommand({ onboarding }: Props) {
             key="value-submessage"
             delay={phaseDelays.valueSubmessage}
           >
-            <p className="max-w-xl text-base text-slate-700 text-pretty">
+            <p className="max-w-xl text-lg text-slate-700 text-pretty">
               {t("onboarding_step1ValueSubmessage")}
             </p>
           </OnboardingFadeIn>

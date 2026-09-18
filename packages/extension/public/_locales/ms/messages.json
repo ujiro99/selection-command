@@ -1353,6 +1353,15 @@
   "onboarding_skipButton": {
     "message": "Langkau"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Selamat datang!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Mula-mula, mari kenali tiga cara praktikal untuk menggunakannya."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Klik untuk teruskan"
+  },
   "onboarding_step1Explain": {
     "message": "Pilih teks di bawah untuk cuba carian dengan segera."
   },
@@ -1384,7 +1393,7 @@
     "message": "Selesai — kini anda boleh mencari dengan segera apa sahaja yang anda pilih"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Tambahkan enjin carian kegemaran anda untuk menjadikan carian harian lebih pantas."
+    "message": "Tambahkan enjin carian yang kerap anda gunakan untuk membukanya serta-merta."
   },
   "onboarding_step2Explain": {
     "message": "Seterusnya, mari tanya AI tentang teks di bawah ini."
@@ -1405,7 +1414,7 @@
     "message": "Kini anda boleh bertanya kepada AI tentang apa sahaja yang anda pilih, terus daripada halaman yang sedang anda baca"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Minta AI melakukan perkara seperti \"ringkaskan ini\" atau \"analisis syarikat ini\" dengan segera.\nGesaan boleh disesuaikan mengikut citarasa anda."
+    "message": "Beri AI arahan seperti \"ringkaskan ini\" atau \"analisis syarikat ini\" dengan segera.\nSesuaikan gesaan mengikut kehendak anda."
   },
   "onboarding_step3Explain": {
     "message": "Mari pratonton pautan tanpa membuka tab baharu."
@@ -1429,7 +1438,7 @@
     "message": "Selesai — kini anda boleh pratonton pautan tanpa meninggalkan halaman"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Anda mendapat maklumat dan terus kembali!\nIni mengurangkan kerumitan menukar tab, supaya anda boleh fokus pada perkara yang penting."
+    "message": "Anda melihat halaman tersebut dan terus kembali!\nLuangkan lebih sedikit masa mengurus tab dan kekal fokus pada tugas anda."
   },
   "onboarding_nextButton": {
     "message": "Seterusnya"

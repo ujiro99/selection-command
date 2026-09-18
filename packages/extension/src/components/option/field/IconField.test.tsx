@@ -67,7 +67,7 @@ function TestWrapper({
           control={methods.control}
           nameUrl="iconUrl"
           nameSvg="iconSvg"
-          nameExclude={nameExclude}
+          nameExclude={nameExclude ?? "excludeFromGlobalIconColor"}
           targetUrl={targetUrl}
           formLabel="Icon"
         />

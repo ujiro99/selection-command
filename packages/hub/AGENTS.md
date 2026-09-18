@@ -18,7 +18,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 （Next.js 15 フル機能アプリ）でしたが、そのアプリケーションは新しいリポジトリ
 （https://github.com/ujiro99/selection-command-hub、selection-command.com へデプロイ）に移行しました。
 
-このパッケージに残っているのは、以下の2つの責務のみです。
+このパッケージに残っているのは、以下の3つの責務のみです。
 
 1. **ai-services.json の静的ホスティング**
    - `public/data/ai-services.json` を GitHub Pages で静的配信する
@@ -30,7 +30,26 @@ This file provides guidance to AI Agent when working with code in this repositor
    - このファイルを変更・削除する際は、必ず Extension 側のこれら2箇所への
      影響を確認すること
 
-2. **e2e テスト用ページの配信**
+2. **experiments.json の静的ホスティング（ABテスト配信制御）**
+   - `public/data/experiments.json` を GitHub Pages で静的配信する
+   - Extension が実行時に `${HUB_URL}/data/experiments.json` へ fetch し、
+     ABテストの variant 配分比率を決定する
+     （`packages/extension/src/services/experiments/experimentConfig.ts`）
+   - このファイルを編集して hub をデプロイするだけで、Chrome Web Store への
+     再申請なしに配分比率の変更・実験の停止（`enabled: false`）ができる
+   - 形式:
+     ```json
+     {
+       "<experiment_id>": { "enabled": true, "allocation": 0.5 }
+     }
+     ```
+     `allocation` は variant B に割り当てるユーザーの比率（0..1）
+   - Extension 側には hub 障害時用のフォールバック値が
+     `packages/extension/src/services/experiments/experimentConfig.ts` の
+     `DEFAULT_CONFIGS` に定義されている。配分比率を恒久的に変更する場合は、
+     こちらも合わせて更新しないと hub 障害時だけ古い比率で割り当てられる
+
+3. **e2e テスト用ページの配信**
    - `src/app/[lang]/test/page.tsx`（`/en/test` など）は、Extension の
      Playwright e2e テストが実際にデプロイされたページにアクセスして
      動作確認するためのテストページ
@@ -49,7 +68,8 @@ This file provides guidance to AI Agent when working with code in this repositor
 
 ## プロジェクト構造（縮小後）
 
-- `public/data/ai-services.json` - Extension が参照する唯一のデータファイル
+- `public/data/ai-services.json` - Extension が参照するデータファイル
+- `public/data/experiments.json` - Extension のABテスト配分設定
 - `src/app/[lang]/test/` - e2e テストページ本体（`page.tsx`, `QuillWrapper.tsx`）
 - `src/app/[lang]/layout.tsx`, `src/app/layout.tsx` - App Router の必須レイアウト（Header/Footer/LanguageProvider を保持）
 - `src/features/locale/` - 14言語分の辞書ファイル（layout.tsx が

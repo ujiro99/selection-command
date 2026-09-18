@@ -110,6 +110,7 @@ export const FolderEditDialog = ({
                 control={form.control}
                 nameUrl="iconUrl"
                 nameSvg="iconSvg"
+                nameExclude="excludeFromGlobalIconColor"
                 formLabel={t("iconUrl_folder")}
                 placeholder={t("icon_placeholder")}
                 description={t("icon_desc")}
