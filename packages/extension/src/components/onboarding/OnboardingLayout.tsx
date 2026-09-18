@@ -1,12 +1,13 @@
 import { ReactNode } from "react"
 import { t } from "@/services/i18n"
 import { getProgress, showsSkip } from "./onboardingProgress"
-import type { OnboardingStep } from "@/types/onboarding"
+import type { OnboardingStep, StepPhase } from "@/types/onboarding"
 
 const ICON_URL = chrome.runtime.getURL("SelectionCommandLogo.png")
 
 type Props = {
   step: OnboardingStep
+  phase: StepPhase
   onSkip: () => void
   children: ReactNode
 }
@@ -17,8 +18,8 @@ type Props = {
 // a header with the brand mark and a 4-segment progress indicator, and a
 // Skip button fixed to the bottom-right corner. Individual step components
 // now render only their own content.
-export function OnboardingLayout({ step, onSkip, children }: Props) {
-  const progress = getProgress(step)
+export function OnboardingLayout({ step, phase, onSkip, children }: Props) {
+  const progress = getProgress(step, phase)
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-white">
@@ -61,7 +62,7 @@ export function OnboardingLayout({ step, onSkip, children }: Props) {
         {children}
       </div>
 
-      {showsSkip(step) && (
+      {showsSkip(step, phase) && (
         <button
           type="button"
           onClick={onSkip}

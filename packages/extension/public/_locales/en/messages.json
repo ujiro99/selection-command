@@ -1375,6 +1375,18 @@
     "message": "Skip",
     "description": "Button shown on every onboarding step to end the onboarding early."
   },
+  "onboarding_welcomeMessage": {
+    "message": "Welcome!",
+    "description": "Onboarding variant B welcome overlay, shown for a moment before the first step."
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "First, let's explore three useful ways to use it.",
+    "description": "Introduces the three usage examples that follow the onboarding welcome message."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Click to continue",
+    "description": "Accessible label for the onboarding variant B welcome overlay, which advances on click."
+  },
   "onboarding_step1Explain": {
     "message": "Select the text below to try a search right away.",
     "description": "Onboarding Step1 (Search command) instruction shown before the user selects the sample text."
@@ -1416,7 +1428,7 @@
     "description": "Onboarding Step1 value message shown after the user runs the search command and returns to the onboarding tab."
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Add your favorite search engine to make everyday searches even faster.",
+    "message": "Add the search engines you use most and open them in an instant.",
     "description": "Onboarding Step1 value sub-message, shown under the main value message once the search result has been seen."
   },
   "onboarding_step2Explain": {
@@ -1444,7 +1456,7 @@
     "description": "Onboarding Step2 value message shown after the user runs the AiPrompt command."
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Instantly ask AI things like \"summarize this\" or \"analyze this company.\"\nYou can freely customize the prompt.",
+    "message": "Instantly tell AI to \"summarize this\" or \"analyze this company.\"\nYou can customize the prompt however you like.",
     "description": "Onboarding Step2 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
   },
   "onboarding_step3Explain": {
@@ -1476,7 +1488,7 @@
     "description": "Onboarding Step3 value message shown after the user triggers Link Preview."
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "You got the info and came right back!\nThis cuts down on tab-switching, so you can stay focused on what you need to do.",
+    "message": "You viewed the page and came right back!\nSpend less time managing tabs and stay focused on what you need to do.",
     "description": "Onboarding Step3 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
   },
   "onboarding_nextButton": {

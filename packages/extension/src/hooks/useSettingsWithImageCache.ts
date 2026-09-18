@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
+import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { useSection, useUserSettings } from "./useSettings"
 import { Ipc, BgCommand } from "@/services/ipc"
 import type { IconColorQuery } from "@/services/ipc"
-import { getCommandTargetUrl, isEmpty } from "@/lib/utils"
+import { getCommandTargetUrl, isAiPromptCommand, isEmpty } from "@/lib/utils"
 import type { Command, CommandFolder } from "@/types"
 
 /**
@@ -48,15 +49,21 @@ const answerCache = new Map<string, boolean>()
 const queryKey = (query: IconColorQuery) =>
   `${query.url ?? ""}\n${query.targetUrl ?? ""}`
 
+const aiServiceUrlById = new Map(
+  getAiServicesFallback().map((service) => [service.id, service.url]),
+)
+
+const getIconTargetUrl = (command: Command) =>
+  isAiPromptCommand(command)
+    ? aiServiceUrlById.get(command.aiPromptOption.serviceId)
+    : getCommandTargetUrl(command)
+
 /**
  * Resolves every query, asking the service worker only about the ones it has
  * not answered yet. Returns null until the answers for `queries` are in.
  */
 function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
-  const [answers, setAnswers] = useState<{
-    queries: IconColorQuery[]
-    values: boolean[]
-  } | null>(null)
+  const [, setResolvedVersion] = useState(0)
 
   useEffect(() => {
     let active = true
@@ -69,6 +76,11 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
             BgCommand.resolveIconColors,
             unknown,
           )
+          if (results.length !== unknown.length) {
+            throw new Error(
+              `Unexpected icon color response length: expected ${unknown.length}, got ${results.length}`,
+            )
+          }
           unknown.forEach((q, i) => answerCache.set(queryKey(q), results[i]))
         } catch (e) {
           // Leave them uncached so the next menu retries instead of sticking
@@ -77,10 +89,10 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
         }
       }
       if (!active) return
-      setAnswers({
-        queries,
-        values: queries.map((q) => answerCache.get(queryKey(q)) ?? false),
-      })
+      if (queries.some((q) => !answerCache.has(queryKey(q)))) {
+        return
+      }
+      setResolvedVersion((version) => version + 1)
     }
     resolve()
 
@@ -89,7 +101,11 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
     }
   }, [queries])
 
-  return answers?.queries === queries ? answers.values : null
+  if (queries.some((q) => !answerCache.has(queryKey(q)))) {
+    return null
+  }
+
+  return queries.map((q) => answerCache.get(queryKey(q)) as boolean)
 }
 
 /**
@@ -116,7 +132,7 @@ export function useSettingsWithImageCache() {
     return [
       ...commands.map((c) => ({
         url: c.iconUrl,
-        targetUrl: getCommandTargetUrl(c),
+        targetUrl: getIconTargetUrl(c),
       })),
       ...folders.map((f) => ({ url: f.iconUrl })),
     ]

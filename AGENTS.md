@@ -118,7 +118,8 @@ yarn dev                   # watch モード
 
 1. **型システム共有**: SharedパッケージでBaseCommandなどの基本型を定義し、ExtensionとHubで拡張
 2. **AIサービス定義**: `packages/hub/public/data/ai-services.json` を Extension がビルド時/実行時の両方で参照
-3. **e2eテスト**: `packages/hub` がデプロイする `/en/test` ページを Extension の Playwright テストが利用
+3. **ABテスト配分設定**: `packages/hub/public/data/experiments.json` を Extension が実行時に参照し、オンボーディング等のABテストの配分比率を制御
+4. **e2eテスト**: `packages/hub` がデプロイする `/en/test` ページを Extension の Playwright テストが利用
 
 ### Chrome拡張機能の構造 (packages/extension)
 
@@ -188,7 +189,7 @@ interface PageActionOption {
 **Hub開発:**
 
 - Hub は縮小版のため新機能は追加しない。コマンド共有プラットフォームとしての機能拡張は新リポジトリ（selection-command-hub）側で行う
-- `ai-services.json` とテストページの変更時は Extension 側への影響を確認すること
+- `ai-services.json` / `experiments.json` とテストページの変更時は Extension 側への影響を確認すること
 
 **テスト:**
 

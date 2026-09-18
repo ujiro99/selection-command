@@ -1350,6 +1350,15 @@
   "onboarding_skipButton": {
     "message": "スキップ"
   },
+  "onboarding_welcomeMessage": {
+    "message": "ようこそ！"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "まずは、3つの便利な使い方をご紹介します"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "クリックして続ける"
+  },
   "onboarding_step1Explain": {
     "message": "気になるテキストを選択して、すぐに検索してみましょう。"
   },
@@ -1381,7 +1390,7 @@
     "message": "これで、気になった情報をすぐに検索できました"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "好きな検索エンジンを追加すれば、いつもの検索をもっと高速にできます。"
+    "message": "よく使う検索エンジンを登録すれば、すぐに呼び出せます。"
   },
   "onboarding_step2Explain": {
     "message": "次は、選択したテキストをAIに聞いてみましょう。"
@@ -1402,7 +1411,7 @@
     "message": "Webページを読みながら、その場でAIに質問できました"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "「要約して」「この企業を分析」などをすぐにAIへ依頼できます。\nプロンプトは自由にカスタマイズができます。"
+    "message": "「要約して」「この企業を分析」などをすぐにAIへ指示できます。\nプロンプトは自由にカスタマイズができます。"
   },
   "onboarding_step3Explain": {
     "message": "リンク先をタブを開かずに確認してみましょう。"
@@ -1426,7 +1435,7 @@
     "message": "これで、リンク先をその場で確認できました"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "情報を入手して、すぐに戻って来れました！\nこれでタブ操作の手間を削減し、やるべきことに集中できます。"
+    "message": "ページを見て、すぐに戻って来れました！\nタブ操作の手間を減らし、やるべきことに集中できます。"
   },
   "onboarding_nextButton": {
     "message": "次へ"

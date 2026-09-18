@@ -180,7 +180,7 @@ export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
  */
 export function getCommandTargetUrl(command: Command): string | undefined {
   if (isPageActionCommand(command)) {
-    return command.searchUrl || command.pageActionOption?.startUrl
+    return command.pageActionOption?.startUrl
   }
   return command.searchUrl
 }
