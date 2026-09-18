@@ -32,7 +32,6 @@ export const runViaPort = (
     clipboardText,
     pageHtml,
     selectionHtml,
-    prompt,
     userVariables,
   } = param
 
@@ -55,7 +54,6 @@ export const runViaPort = (
       userVariables: userVariables || [],
       pageHtml: stepPageHtml,
       selectionHtml: stepSelectionHtml,
-      prompt,
     }
 
     return new Promise<ExecPageAction.Return>((resolve, reject) => {
@@ -271,7 +269,6 @@ export const handleSidePanelOpened = async (): Promise<void> => {
     selectedText: pending.selectedText,
     srcUrl: pending.srcUrl,
     clipboardText: pending.clipboardText,
-    prompt: pending.prompt,
     userVariables: pending.userVariables,
   })
 }

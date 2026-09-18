@@ -18,6 +18,7 @@ import {
   convReadableKeysToSymbols,
 } from "@/services/pageAction"
 import { t } from "@/services/i18n"
+import type { UserVariable } from "@/types"
 
 type InputEditorProps = {
   open: boolean
@@ -25,6 +26,7 @@ type InputEditorProps = {
   value: string | null
   onSubmit: (value: string) => void
   portal?: boolean
+  userVariables?: Array<UserVariable>
 }
 
 export function InputEditor(props: InputEditorProps) {
@@ -53,7 +55,7 @@ export function InputEditor(props: InputEditorProps) {
               targetElm={textarea}
               className="w-fit relative left-[100%] -translate-x-[100%] -top-1"
               hideFilePaste
-              showPrompt
+              userVariables={props.userVariables}
             />
             <Textarea
               id="input-action"

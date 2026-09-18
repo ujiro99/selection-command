@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "Tempo di attesa"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prompt"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Modello di prompt da inserire. Puoi aggiungere variabili dal menu."
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Inserisci variabili dinamiche come il testo selezionato e fai riferimento ad esse nei passaggi con {{Prompt}}."
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "es., Riassumi il seguente testo:\n{{Testo selezionato}}"
-  },
   "Option_aiPrompt_service": {
     "message": "Servizio AI"
   },
@@ -533,14 +521,32 @@
   "Option_userVariable_value": {
     "message": "Valore"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(senza nome)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Rimuovi variabile"
+  },
   "Option_userVariable_add": {
     "message": "Aggiungi variabile"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Consigliato – spesso usato con $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Il nome della variabile è richiesto"
   },
   "Option_userVariable_name_invalid": {
     "message": "Il nome della variabile deve iniziare con una lettera e contenere solo lettere, numeri e trattini bassi"
+  },
+  "Option_userVariable_name_reserved": {
+    "message": "Questo nome è riservato a una variabile integrata"
   },
   "Option_userVariable_name_duplicate": {
     "message": "Il nome della variabile esiste già"
@@ -836,6 +842,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Il nome della variabile deve iniziare con una lettera e contenere solo lettere, numeri e trattini bassi"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "Questo nome è riservato a una variabile integrata"
+  },
   "Option_zod_string_min": {
     "message": "Inserisci una stringa con almeno $key$ caratteri.",
     "placeholders": {
@@ -885,9 +894,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "Verrà allegato come file l'HTML dell'intervallo selezionato"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "Verrà inserito il prompt"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserisci testo"
   },
@@ -896,9 +902,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Testo selezionato"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "URL originale"

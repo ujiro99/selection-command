@@ -129,39 +129,49 @@ describe("hasCommandChanged", () => {
       ).toBe(false)
     })
 
-    it("returns false when prompt is unchanged or empty/undefined equivalent", () => {
+    it("returns false when userVariables are unchanged or empty/undefined equivalent", () => {
       const cmd = makePageActionCommand()
       expect(
         hasCommandChanged(
           cmd,
           "",
-          { ...cmd.pageActionOption, prompt: "" },
+          { ...cmd.pageActionOption, userVariables: [] },
           "",
         ),
       ).toBe(false)
 
-      const cmdWithPrompt = makePageActionCommand({
-        pageActionOption: { prompt: "Summarize" },
+      const cmdWithVariables = makePageActionCommand({
+        pageActionOption: {
+          userVariables: [{ name: "Prompt", value: "Summarize" }],
+        },
       })
       expect(
         hasCommandChanged(
-          cmdWithPrompt,
+          cmdWithVariables,
           "",
-          { ...cmdWithPrompt.pageActionOption, prompt: "Summarize" },
+          {
+            ...cmdWithVariables.pageActionOption,
+            userVariables: [{ name: "Prompt", value: "Summarize" }],
+          },
           "",
         ),
       ).toBe(false)
     })
 
-    it("returns true when prompt is changed", () => {
+    it("returns true when a user variable value is changed", () => {
       const cmd = makePageActionCommand({
-        pageActionOption: { prompt: "Original prompt" },
+        pageActionOption: {
+          userVariables: [{ name: "Prompt", value: "Original prompt" }],
+        },
       })
       expect(
         hasCommandChanged(
           cmd,
           "",
-          { ...cmd.pageActionOption, prompt: "Updated prompt" },
+          {
+            ...cmd.pageActionOption,
+            userVariables: [{ name: "Prompt", value: "Updated prompt" }],
+          },
           "",
         ),
       ).toBe(true)

@@ -1,6 +1,12 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Control, useFieldArray, useFormContext } from "react-hook-form"
-import { Plus, Trash2 } from "lucide-react"
+import { Plus, Trash2, ChevronRight, Braces, Sparkles } from "lucide-react"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import collapsibleCss from "@/components/ui/collapsible.module.css"
 import {
   FormControl,
   FormField,
@@ -9,19 +15,39 @@ import {
   FormDescription,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { cn, isValidVariableName } from "@/lib/utils"
+import { InputMenu } from "@/components/pageAction/InputPopup"
+import {
+  convSymbolsToReadableKeys,
+  convReadableKeysToSymbols,
+} from "@/services/pageAction"
+import { cn, isValidVariableName, isReservedVariableName } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
-const MAX_VARIABLES = 3
+export const MAX_VARIABLES = 5
+
+/**
+ * A variable the surrounding context suggests creating, such as `Prompt` when
+ * the page action starts on an AI service.
+ */
+export type VariableSuggestion = {
+  /** Name given to the variable when the suggestion is accepted. */
+  name: string
+  /** Display name of what recommends it; absent when merely offered. */
+  recommendedBy?: string | null
+  /** Identity of the recommender, used to detect that it changed. */
+  recommendKey?: string | null
+}
 
 type UserVariablesFieldProps = {
   control: Control<any>
   name: string
   formLabel: string
   description?: string
+  suggestion?: VariableSuggestion
 }
 
 export const UserVariablesField = ({
@@ -29,74 +55,55 @@ export const UserVariablesField = ({
   name,
   formLabel,
   description,
+  suggestion,
 }: UserVariablesFieldProps) => {
   const { watch, setValue } = useFormContext()
-  const variableArray = useFieldArray({
-    name,
-    control,
-  })
-
-  const [errors, setErrors] = useState<Record<number, string>>({})
+  const variableArray = useFieldArray({ name, control })
+  const [openId, setOpenId] = useState<string | null>(null)
   const watchedFields = watch(name) || []
+  const isFull = variableArray.fields.length >= MAX_VARIABLES
 
-  const addVariable = () => {
-    if (variableArray.fields.length < MAX_VARIABLES) {
-      variableArray.append({ name: "", value: "" })
-    }
-  }
-
-  const removeVariable = (index: number) => {
-    variableArray.remove(index)
-    // Remove error for this index
-    const newErrors = { ...errors }
-    delete newErrors[index]
-    // Adjust error indexes
-    Object.keys(newErrors).forEach((key) => {
-      const numKey = parseInt(key)
-      if (numKey > index) {
-        newErrors[numKey - 1] = newErrors[numKey]
-        delete newErrors[numKey]
-      }
-    })
-    setErrors(newErrors)
-  }
-
-  const validateVariableName = (name: string, index: number) => {
-    if (!name) {
-      setErrors((prev) => ({
-        ...prev,
-        [index]: t("userVariable_name_required"),
-      }))
-      return false
-    }
-    if (!isValidVariableName(name)) {
-      setErrors((prev) => ({
-        ...prev,
-        [index]: t("userVariable_name_invalid"),
-      }))
-      return false
-    }
-    // Check for duplicates
-    const allNames = watchedFields.map((field: any, i: number) =>
-      i === index ? name : field?.name,
+  const suggestionPresent =
+    suggestion != null &&
+    watchedFields.some(
+      (field: { name?: string }) => field?.name === suggestion.name,
     )
-    const duplicateCount = allNames.filter(
-      (n: string) => n === name && n,
-    ).length
-    if (duplicateCount > 1) {
-      setErrors((prev) => ({
-        ...prev,
-        [index]: t("userVariable_name_duplicate"),
-      }))
-      return false
+
+  const addVariable = (initialName = "") => {
+    if (isFull) return
+    variableArray.append({ name: initialName, value: "" })
+    const appended = variableArray.fields.length
+    setOpenId(variableArray.fields[appended]?.id ?? null)
+  }
+
+  // Add the recommended variable when a new recommender appears, so the editor
+  // is already open on an AI service. Tracked per recommender so dismissing it
+  // sticks, while leaving and coming back offers it again.
+  const autoAddedFor = useRef<string | null>(null)
+  useEffect(() => {
+    const key = suggestion?.recommendKey
+    if (!key) {
+      autoAddedFor.current = null
+      return
     }
-    // Clear error if valid
-    setErrors((prev) => {
-      const newErrors = { ...prev }
-      delete newErrors[index]
-      return newErrors
-    })
-    return true
+    if (autoAddedFor.current === key) return
+    autoAddedFor.current = key
+    if (suggestionPresent || isFull || !suggestion) return
+    addVariable(suggestion.name)
+    // addVariable is recreated every render; the guarded key drives this effect.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [suggestion?.recommendKey])
+
+  const validateName = (value: string, index: number): string | null => {
+    if (!value) return t("userVariable_name_required")
+    if (!isValidVariableName(value)) return t("userVariable_name_invalid")
+    if (isReservedVariableName(value)) return t("userVariable_name_reserved")
+    const duplicated = watchedFields.some(
+      (field: { name?: string }, i: number) =>
+        i !== index && field?.name === value,
+    )
+    if (duplicated) return t("userVariable_name_duplicate")
+    return null
   }
 
   return (
@@ -111,64 +118,63 @@ export const UserVariablesField = ({
           </div>
           <div className="w-4/6 space-y-2">
             {variableArray.fields.map((field, index) => (
-              <div key={field.id} className="flex items-center gap-2">
-                <div className="flex-1 space-y-1">
-                  <div className="grid grid-cols-2 gap-2">
-                    <FormControl>
-                      <Input
-                        placeholder={t("userVariable_name")}
-                        value={watchedFields[index]?.name || ""}
-                        onChange={(e) => {
-                          const value = e.target.value
-                          setValue(`${name}.${index}.name`, value)
-                          validateVariableName(value, index)
-                        }}
-                        className={cn(errors[index] && "border-red-500")}
-                        inputClassName="text-sm lg:text-sm"
-                      />
-                    </FormControl>
-                    <FormControl>
-                      <Input
-                        placeholder={t("userVariable_value")}
-                        value={watchedFields[index]?.value || ""}
-                        onChange={(e) => {
-                          setValue(`${name}.${index}.value`, e.target.value)
-                        }}
-                        inputClassName="text-sm lg:text-sm"
-                      />
-                    </FormControl>
-                  </div>
-                  {errors[index] && (
-                    <p className="text-sm text-red-500">{errors[index]}</p>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeVariable(index)}
-                  className="p-2 rounded-md transition hover:bg-red-100 hover:scale-125 group/remove-button"
-                >
-                  <Trash2
-                    className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
-                    size={16}
-                  />
-                </button>
-              </div>
+              <VariableRow
+                key={field.id}
+                fieldName={`${name}.${index}`}
+                variableName={watchedFields[index]?.name ?? ""}
+                value={watchedFields[index]?.value ?? ""}
+                error={
+                  watchedFields[index]?.name !== undefined
+                    ? validateName(watchedFields[index]?.name ?? "", index)
+                    : null
+                }
+                open={openId === field.id}
+                onOpenChange={(open) => setOpenId(open ? field.id : null)}
+                onChangeName={(v) => setValue(`${name}.${index}.name`, v)}
+                onChangeValue={(v) => setValue(`${name}.${index}.value`, v)}
+                onRemove={() => {
+                  if (openId === field.id) setOpenId(null)
+                  variableArray.remove(index)
+                }}
+                // Only variables defined earlier resolve inside this one, so the
+                // insert menu offers exactly those.
+                precedingVariables={watchedFields
+                  .slice(0, index)
+                  .filter((v: { name?: string }) => v?.name)}
+              />
             ))}
 
-            {variableArray.fields.length < MAX_VARIABLES && (
+            {suggestion && !suggestionPresent && !isFull && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => addVariable(suggestion.name)}
+                  className="flex items-center gap-1 rounded-md border border-dashed px-2 py-1.5 font-mono text-sm text-gray-600 transition hover:border-gray-400 hover:bg-gray-50"
+                >
+                  <Plus size={14} />
+                  {suggestion.name}
+                </button>
+                {suggestion.recommendedBy && (
+                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs text-emerald-700">
+                    <Sparkles size={12} className="stroke-emerald-600" />
+                    {t("userVariable_recommended", [suggestion.recommendedBy])}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {!isFull ? (
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={addVariable}
+                onClick={() => addVariable()}
                 className="relative py-4 text-xs mx-auto left-[50%] -translate-x-[50%]"
               >
                 <Plus size={16} className="mr-1" />
                 {t("userVariable_add")}
               </Button>
-            )}
-
-            {variableArray.fields.length >= MAX_VARIABLES && (
+            ) : (
               <p className="text-sm text-gray-500 text-center">
                 {t("userVariable_max_reached", [`${MAX_VARIABLES}`])}
               </p>
@@ -177,5 +183,114 @@ export const UserVariablesField = ({
         </FormItem>
       )}
     />
+  )
+}
+
+type VariableRowProps = {
+  fieldName: string
+  variableName: string
+  value: string
+  error: string | null
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onChangeName: (value: string) => void
+  onChangeValue: (value: string) => void
+  onRemove: () => void
+  precedingVariables: Array<{ name: string; value: string }>
+}
+
+const VariableRow = ({
+  fieldName,
+  variableName,
+  value,
+  error,
+  open,
+  onOpenChange,
+  onChangeName,
+  onChangeValue,
+  onRemove,
+  precedingVariables,
+}: VariableRowProps) => {
+  const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
+
+  return (
+    <Collapsible
+      open={open}
+      onOpenChange={onOpenChange}
+      className={cn(collapsibleCss.collapse, "rounded-md border bg-white")}
+    >
+      <div className="flex items-center gap-1 px-2 py-1.5">
+        <CollapsibleTrigger
+          type="button"
+          className="flex flex-1 items-center gap-1.5 text-left"
+        >
+          <ChevronRight
+            size={16}
+            className={cn(collapsibleCss.iconRight, "stroke-gray-500 shrink-0")}
+          />
+          <Braces size={14} className="stroke-gray-500 shrink-0" />
+          <span
+            className={cn(
+              "font-mono text-sm truncate",
+              variableName ? "text-gray-700" : "text-gray-400",
+            )}
+          >
+            {variableName ? `{{${variableName}}}` : t("userVariable_unnamed")}
+          </span>
+          {!open && value && (
+            <span className="text-xs text-gray-400 truncate">
+              {convSymbolsToReadableKeys(value)}
+            </span>
+          )}
+        </CollapsibleTrigger>
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={t("userVariable_remove")}
+          className="p-1.5 rounded-md transition hover:bg-red-100 group/remove-button"
+        >
+          <Trash2
+            size={16}
+            className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
+          />
+        </button>
+      </div>
+
+      <CollapsibleContent className={collapsibleCss.CollapsibleContent}>
+        <div className="space-y-2 border-t px-2 py-2">
+          <FormControl>
+            <Input
+              placeholder={t("userVariable_name")}
+              value={variableName}
+              onChange={(e) => onChangeName(e.target.value)}
+              className={cn(error && "border-red-500")}
+              inputClassName="text-sm lg:text-sm font-mono"
+            />
+          </FormControl>
+          {error && <p className="text-sm text-red-500">{error}</p>}
+          <div className="relative">
+            <InputMenu
+              targetElm={textarea}
+              className="w-fit absolute -top-9 right-0"
+              hideFilePaste
+              userVariables={precedingVariables}
+            />
+            <FormControl>
+              <Textarea
+                id={fieldName}
+                placeholder={t("userVariable_value")}
+                rows={5}
+                value={convSymbolsToReadableKeys(value)}
+                onChange={(e) =>
+                  onChangeValue(convReadableKeysToSymbols(e.target.value))
+                }
+                ref={setTextarea}
+                className="max-h-80 text-sm"
+              />
+            </FormControl>
+          </div>
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
   )
 }

@@ -38,11 +38,7 @@ export type Point = {
 export type Command = SelectionCommand | LinkCommand
 
 export type SelectionCommand =
-  | SearchCommand
-  | CopyCommand
-  | ApiCommand
-  | PageActionCommand
-  | AiPromptCommand
+  SearchCommand | CopyCommand | ApiCommand | PageActionCommand | AiPromptCommand
 
 export type SearchCommand = {
   id: string
@@ -269,7 +265,6 @@ export type PageActionOption = {
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
   userVariables?: Array<UserVariable>
-  prompt?: string
 }
 
 export type PageActionRecorderOption = {

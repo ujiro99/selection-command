@@ -14,6 +14,9 @@ import { normalizeObject } from "@shared/utils/common"
 // Re-export for other files to use
 export { cn, isSearchCommand, capitalize, isEmpty, sleep, normalizeObject }
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
+// Imported from the standalone module (not the barrel) to avoid a cycle back
+// into this file through @/services/pageAction.
+import { InsertSymbol } from "@/services/pageAction/insertSymbols"
 import type {
   Version,
   Command,
@@ -417,6 +420,16 @@ export function isValidVariableName(name: string): boolean {
 }
 
 /**
+ * Check if the variable name collides with a built-in placeholder.
+ * Placeholders are substituted by exact name, so only an exact match collides.
+ * @param {string} name The variable name to check.
+ * @returns {boolean} True if the name is reserved for a built-in placeholder.
+ */
+export function isReservedVariableName(name: string): boolean {
+  return Object.values(InsertSymbol).includes(name)
+}
+
+/**
  * Validate user variables array.
  * @param {UserVariable[]} variables The user variables to validate.
  * @returns {boolean} True if the variables are valid (max 5, valid names and values).
@@ -424,7 +437,10 @@ export function isValidVariableName(name: string): boolean {
 export function validateUserVariables(variables: UserVariable[]): boolean {
   if (variables.length > 5) return false
   return variables.every(
-    (v) => isValidVariableName(v.name) && typeof v.value === "string",
+    (v) =>
+      isValidVariableName(v.name) &&
+      !isReservedVariableName(v.name) &&
+      typeof v.value === "string",
   )
 }
 

@@ -95,7 +95,6 @@ export const PageActionDispatcher = {
       selectedText,
       clipboardText,
       userVariables,
-      prompt,
     } = param
     const user = userEvent.setup()
 
@@ -107,7 +106,6 @@ export const PageActionDispatcher = {
         srcUrl,
         clipboardText,
         userVariables,
-        prompt,
       })
       if (!isEmpty(value)) {
         // For select elements: set value directly and dispatch change event

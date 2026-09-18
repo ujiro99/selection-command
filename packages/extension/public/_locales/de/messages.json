@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "Verzögerungszeit"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prompt"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Vorlage für den einzufügenden Prompt. Sie können Variablen aus dem Menü hinzufügen."
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Fügen Sie dynamische Variablen wie markierten Text ein und verweisen Sie in Schritten mit {{Prompt}} darauf."
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "z. B.: Fassen Sie folgenden Text zusammen:\n{{Ausgewählter Text}}"
-  },
   "Option_aiPrompt_service": {
     "message": "KI-Dienst"
   },
@@ -533,14 +521,32 @@
   "Option_userVariable_value": {
     "message": "Wert"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(unbenannt)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Variable entfernen"
+  },
   "Option_userVariable_add": {
     "message": "Variable hinzufügen"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Empfohlen – bei $service$ häufig verwendet",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Variablenname ist erforderlich"
   },
   "Option_userVariable_name_invalid": {
     "message": "Variablenname muss mit Buchstabe beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
+  },
+  "Option_userVariable_name_reserved": {
+    "message": "Dieser Name ist für eine integrierte Variable reserviert"
   },
   "Option_userVariable_name_duplicate": {
     "message": "Variablenname bereits vorhanden"
@@ -836,6 +842,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Variablenname muss mit einem Buchstaben beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "Dieser Name ist für eine integrierte Variable reserviert"
+  },
   "Option_zod_string_min": {
     "message": "Bitte geben Sie eine Zeichenkette mit $key$ oder mehr Zeichen ein.",
     "placeholders": {
@@ -885,9 +894,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "Das HTML des ausgewählten Bereichs wird als Datei angehängt"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "Prompt wird eingefügt"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Text einfügen"
   },
@@ -896,9 +902,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Ausgewählter Text"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "Original-URL"
