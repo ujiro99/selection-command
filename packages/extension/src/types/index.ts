@@ -49,6 +49,8 @@ export type SearchCommand = {
   title: string
   revision?: number
   iconUrl: string
+  /** When true, excludes this command's icon from being recolored by the global icon color setting. */
+  excludeFromGlobalIconColor?: boolean
   sourceType?: COMMAND_SOURCE_TYPE
   sourceId?: string
   openMode: OPEN_MODE
@@ -121,6 +123,8 @@ export type CommandFolder = {
   title: string
   iconUrl?: string
   iconSvg?: string
+  /** When true, excludes this folder's icon from being recolored by the global icon color setting. */
+  excludeFromGlobalIconColor?: boolean
   onlyIcon?: boolean
   parentFolderId?: string
   style?: FOLDER_STYLE
@@ -265,6 +269,7 @@ export type PageActionOption = {
   openMode: PAGE_ACTION_OPEN_MODE
   steps: Array<PageActionStep>
   userVariables?: Array<UserVariable>
+  prompt?: string
 }
 
 export type PageActionRecorderOption = {

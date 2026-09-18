@@ -2,8 +2,8 @@ import userEvent from "@testing-library/user-event"
 import { isEditable, inputContentEditable } from "@/services/dom"
 import { safeInterpolate, isMac, isEmpty } from "@/lib/utils"
 import { INSERT, InsertSymbol } from "@/services/pageAction"
-import { getUILanguage } from "@/services/i18n"
 import { waitForElement, resolveClickCondition } from "./elementWait"
+import { resolveActionVariables } from "./helper"
 
 export type { PageAction, ActionReturn } from "./pageActionTypes"
 import type { PageAction, ActionReturn } from "./pageActionTypes"
@@ -95,27 +95,20 @@ export const PageActionDispatcher = {
       selectedText,
       clipboardText,
       userVariables,
+      prompt,
     } = param
     const user = userEvent.setup()
 
     const element = await waitForElement(selector, selectorType)
     if (element) {
-      // Inserts variables.
-      const variables = {
-        [InsertSymbol[INSERT.SELECTED_TEXT]]: selectedText,
-        [InsertSymbol[INSERT.URL]]: srcUrl,
-        [InsertSymbol[INSERT.CLIPBOARD]]: clipboardText,
-        [InsertSymbol[INSERT.LANG]]: getUILanguage(),
-        // Add user variables
-        ...(userVariables?.reduce(
-          (acc, variable) => {
-            acc[variable.name] = variable.value
-            return acc
-          },
-          {} as Record<string, string>,
-        ) || {}),
-      }
-      let value = safeInterpolate(param.value, variables)
+      let value = resolveActionVariables({
+        value: param.value,
+        selectedText,
+        srcUrl,
+        clipboardText,
+        userVariables,
+        prompt,
+      })
       if (!isEmpty(value)) {
         // For select elements: set value directly and dispatch change event
         if (element instanceof HTMLSelectElement) {

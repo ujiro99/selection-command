@@ -28,6 +28,7 @@ import type { AiPromptCommand } from "@/types"
 const commandSourceSchema = {
   sourceType: z.nativeEnum(COMMAND_SOURCE_TYPE).optional(),
   sourceId: z.string().optional(),
+  excludeFromGlobalIconColor: z.boolean().optional(),
 }
 
 const searchSchema = z.object({
@@ -265,6 +266,7 @@ export const PageActionOption = z
     openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
     steps: z.array(PageActionStepSchema),
     userVariables: z.array(userVariableSchema).max(5).optional(),
+    prompt: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && !data.pageUrl) {
@@ -373,6 +375,7 @@ export const folderSchema = z
     title: z.string().min(1, { message: t("Option_zod_string_min", ["1"]) }),
     iconUrl: z.string().optional(),
     iconSvg: z.string().optional(),
+    excludeFromGlobalIconColor: z.boolean().optional(),
     onlyIcon: z.boolean().optional(),
     parentFolderId: z.string().optional(),
     style: z.nativeEnum(FOLDER_STYLE).optional(),

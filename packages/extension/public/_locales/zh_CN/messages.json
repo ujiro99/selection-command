@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "等待时间"
   },
+  "Option_pageAction_prompt": {
+    "message": "提示词"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "这是要输入的提示词模板。可以从菜单中添加变量。"
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "可以插入选中文本等动态变量，并在步骤中通过 {{提示词}} 引用。"
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "例：请概括以下文本：\n{{将插入选中的文本}}"
+  },
   "Option_aiPrompt_service": {
     "message": "AI服务"
   },
@@ -719,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "指定字体颜色。默认值：#0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "图标颜色"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "指定图标颜色。默认值：#0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "从全局图标颜色中排除"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "即使设置了全局图标颜色，也保留此图标的原始颜色。"
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "网站图标（favicon）会自动从全局图标颜色中排除，并保留其原始颜色。"
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "自动"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "字体大小缩放"
   },
@@ -855,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "将以文件形式附加所选范围的HTML"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "将插入提示词"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "插入文本"
   },
@@ -863,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "选中的文本"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "提示词"
   },
   "PageAction_InputMenu_url": {
     "message": "原始URL"
@@ -1314,6 +1350,15 @@
   "onboarding_skipButton": {
     "message": "跳过"
   },
+  "onboarding_welcomeMessage": {
+    "message": "欢迎！"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "首先，为您介绍三种实用的使用方法。"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "点击继续"
+  },
   "onboarding_step1Explain": {
     "message": "选择下面的文本，立即试试搜索功能。"
   },
@@ -1345,7 +1390,7 @@
     "message": "就是这样——现在您可以立即搜索所选的任何内容"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "添加您喜欢的搜索引擎，让日常搜索更快捷。"
+    "message": "添加常用搜索引擎，即可随时快速调用。"
   },
   "onboarding_step2Explain": {
     "message": "接下来，让我们向 AI 询问下面这段文字。"
@@ -1366,7 +1411,7 @@
     "message": "现在，您可以在阅读网页的同时，就您选择的任何内容向 AI 提问"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "立即向 AI 请求「总结一下」「分析这家公司」等操作。\n提示词可以自由自定义。"
+    "message": "立即向 AI 发出「总结一下」「分析这家公司」等指令。\n提示词可按需自由设置。"
   },
   "onboarding_step3Explain": {
     "message": "让我们在不打开新标签页的情况下预览链接。"
@@ -1390,7 +1435,7 @@
     "message": "就是这样——现在您可以在不离开当前页面的情况下预览链接"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "获取信息后立即返回！\n这减少了切换标签页的麻烦，让你可以专注于真正重要的事情。"
+    "message": "查看页面后立即返回！\n减少标签页操作，将注意力集中在要做的事情上。"
   },
   "onboarding_nextButton": {
     "message": "下一步"

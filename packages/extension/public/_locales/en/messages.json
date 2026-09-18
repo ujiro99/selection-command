@@ -494,6 +494,22 @@
   "Option_pageAction_delay": {
     "message": "Delay time"
   },
+  "Option_pageAction_prompt": {
+    "message": "Prompt",
+    "description": "Label for prompt input field in Page Action"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Prompt template to be inserted. You can add variables from the menu.",
+    "description": "Description for prompt input field in Page Action"
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Insert dynamic variables like selected text, and reference them in steps with {{Prompt}}.",
+    "description": "Detailed description for prompt usage"
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "e.g., Summarize the following text:\n{{Selected text}}",
+    "description": "Placeholder for prompt input field in Page Action"
+  },
   "Option_aiPrompt_service": {
     "message": "AI Service"
   },
@@ -723,6 +739,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Specify font color. Default: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Icon Color"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Specify icon color. Default: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Exclude from global icon color"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Keep this icon's original color even when a global icon color is set."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Favicons are automatically excluded from the global icon color and keep their original colors."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automatic"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Font size scaling"
   },
@@ -865,6 +899,10 @@
     "message": "The HTML of the selected range will be attached as a file",
     "description": "for INSERT.SELECTION_HTML — placeholder {{SelectionHtml}} in prompt templates"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "Prompt will be inserted",
+    "description": "for INSERT.PROMPT"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Insert Text"
   },
@@ -874,6 +912,10 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Selected text"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Prompt",
+    "description": "Menu item for inserting prompt variable"
   },
   "PageAction_InputMenu_url": {
     "message": "Origin URL"
@@ -1336,6 +1378,18 @@
     "message": "Skip",
     "description": "Button shown on every onboarding step to end the onboarding early."
   },
+  "onboarding_welcomeMessage": {
+    "message": "Welcome!",
+    "description": "Onboarding variant B welcome overlay, shown for a moment before the first step."
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "First, let's explore three useful ways to use it.",
+    "description": "Introduces the three usage examples that follow the onboarding welcome message."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Click to continue",
+    "description": "Accessible label for the onboarding variant B welcome overlay, which advances on click."
+  },
   "onboarding_step1Explain": {
     "message": "Select the text below to try a search right away.",
     "description": "Onboarding Step1 (Search command) instruction shown before the user selects the sample text."
@@ -1377,7 +1431,7 @@
     "description": "Onboarding Step1 value message shown after the user runs the search command and returns to the onboarding tab."
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Add your favorite search engine to make everyday searches even faster.",
+    "message": "Add the search engines you use most and open them in an instant.",
     "description": "Onboarding Step1 value sub-message, shown under the main value message once the search result has been seen."
   },
   "onboarding_step2Explain": {
@@ -1405,7 +1459,7 @@
     "description": "Onboarding Step2 value message shown after the user runs the AiPrompt command."
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Instantly ask AI things like \"summarize this\" or \"analyze this company.\"\nYou can freely customize the prompt.",
+    "message": "Instantly tell AI to \"summarize this\" or \"analyze this company.\"\nYou can customize the prompt however you like.",
     "description": "Onboarding Step2 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
   },
   "onboarding_step3Explain": {
@@ -1437,7 +1491,7 @@
     "description": "Onboarding Step3 value message shown after the user triggers Link Preview."
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "You got the info and came right back!\nThis cuts down on tab-switching, so you can stay focused on what you need to do.",
+    "message": "You viewed the page and came right back!\nSpend less time managing tabs and stay focused on what you need to do.",
     "description": "Onboarding Step3 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
   },
   "onboarding_nextButton": {

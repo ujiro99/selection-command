@@ -32,6 +32,8 @@ export const runViaPort = (
     clipboardText,
     pageHtml,
     selectionHtml,
+    prompt,
+    userVariables,
   } = param
 
   const executeStep = (
@@ -44,6 +46,18 @@ export const runViaPort = (
     const stepPageHtml = isFilePaste ? pageHtml : undefined
     const stepSelectionHtml = isFilePaste ? selectionHtml : undefined
 
+    const messageParam = {
+      step,
+      srcUrl,
+      selectedText,
+      clipboardText,
+      openMode: PAGE_ACTION_OPEN_MODE.TAB,
+      userVariables: userVariables || [],
+      pageHtml: stepPageHtml,
+      selectionHtml: stepSelectionHtml,
+      prompt,
+    }
+
     return new Promise<ExecPageAction.Return>((resolve, reject) => {
       const id = generateRandomID()
 
@@ -52,16 +66,7 @@ export const runViaPort = (
         port.postMessage({
           command: TabCommand.execPageAction,
           id,
-          param: {
-            step,
-            srcUrl,
-            selectedText,
-            clipboardText,
-            openMode: PAGE_ACTION_OPEN_MODE.TAB,
-            userVariables: [],
-            pageHtml: stepPageHtml,
-            selectionHtml: stepSelectionHtml,
-          },
+          param: messageParam,
         })
         resolve({ result: true })
         return
@@ -87,16 +92,7 @@ export const runViaPort = (
       port.postMessage({
         command: TabCommand.execPageAction,
         id,
-        param: {
-          step,
-          srcUrl,
-          selectedText,
-          clipboardText,
-          openMode: PAGE_ACTION_OPEN_MODE.TAB,
-          userVariables: [],
-          pageHtml: stepPageHtml,
-          selectionHtml: stepSelectionHtml,
-        },
+        param: messageParam,
       })
     })
   }
@@ -275,5 +271,7 @@ export const handleSidePanelOpened = async (): Promise<void> => {
     selectedText: pending.selectedText,
     srcUrl: pending.srcUrl,
     clipboardText: pending.clipboardText,
+    prompt: pending.prompt,
+    userVariables: pending.userVariables,
   })
 }

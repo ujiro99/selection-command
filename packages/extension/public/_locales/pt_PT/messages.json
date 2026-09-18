@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "Tempo de atraso"
   },
+  "Option_pageAction_prompt": {
+    "message": "Prompt"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Modelo de prompt a ser inserido. Pode adicionar variáveis a partir do menu."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Insira variáveis dinâmicas como o texto selecionado e faça referência a elas nos passos com {{Prompt}}."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "ex.: Resuma o seguinte texto:\n{{Texto selecionado}}"
+  },
   "Option_aiPrompt_service": {
     "message": "Serviço de IA"
   },
@@ -719,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Especificar a cor do tipo de letra. Predefinido: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Cor do Ícone"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Especificar a cor do ícone. Predefinido: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Excluir da cor de ícone global"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Mantém a cor original deste ícone mesmo quando está definida uma cor de ícone global."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Os favicons são automaticamente excluídos da cor de ícone global e mantêm as suas cores originais."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automático"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Escala do tamanho da fonte"
   },
@@ -855,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "O HTML do intervalo selecionado será anexado como ficheiro"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "O prompt será inserido"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserir Texto"
   },
@@ -863,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texto selecionado"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "URL de origem"
@@ -1317,6 +1353,15 @@
   "onboarding_skipButton": {
     "message": "Ignorar"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Bem-vindo!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Primeiro, conheça três formas úteis de o utilizar."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Clique para continuar"
+  },
   "onboarding_step1Explain": {
     "message": "Selecione o texto abaixo para experimentar uma pesquisa de imediato."
   },
@@ -1348,7 +1393,7 @@
     "message": "Pronto — agora já pode pesquisar instantaneamente tudo o que selecionar"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Adicione o seu motor de pesquisa preferido para tornar as pesquisas do dia a dia ainda mais rápidas."
+    "message": "Adicione os motores de pesquisa que mais utiliza para lhes aceder de imediato."
   },
   "onboarding_step2Explain": {
     "message": "De seguida, vamos perguntar à IA sobre o texto abaixo."
@@ -1369,7 +1414,7 @@
     "message": "Agora já pode perguntar à IA sobre o que selecionar, diretamente a partir da página que está a ler"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Peça à IA coisas como \"resume isto\" ou \"analisa esta empresa\" instantaneamente.\nPode personalizar o prompt livremente."
+    "message": "Dê instruções à IA, como \"resume isto\" ou \"analisa esta empresa\", de imediato.\nPersonalize o prompt como preferir."
   },
   "onboarding_step3Explain": {
     "message": "Vamos pré-visualizar uma ligação sem abrir um novo separador."
@@ -1393,7 +1438,7 @@
     "message": "Pronto — agora já pode pré-visualizar ligações sem sair da página"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Obteve a informação e voltou de imediato!\nIsto reduz o incómodo de mudar de separadores, para que se possa concentrar no que importa."
+    "message": "Viu a página e voltou de imediato!\nPasse menos tempo a gerir separadores e concentre-se no que tem de fazer."
   },
   "onboarding_nextButton": {
     "message": "Seguinte"

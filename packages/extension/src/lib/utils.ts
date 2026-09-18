@@ -170,6 +170,18 @@ export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
   return _isPageActionCommand(cmd)
 }
 
+/**
+ * Returns the website a command targets, or undefined when it has none.
+ * Lives here rather than in favicon.ts so callers can name a command's target
+ * without pulling in the Public Suffix List that module carries.
+ */
+export function getCommandTargetUrl(command: Command): string | undefined {
+  if (isPageActionCommand(command)) {
+    return command.pageActionOption?.startUrl
+  }
+  return command.searchUrl
+}
+
 export function isAiPromptCommand(cmd: unknown): cmd is AiPromptCommand {
   if (!cmd || typeof cmd !== "object") {
     return false

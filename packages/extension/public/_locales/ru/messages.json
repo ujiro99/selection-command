@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "Время ожидания"
   },
+  "Option_pageAction_prompt": {
+    "message": "Промпт"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Шаблон промпта для ввода. Вы можете добавлять переменные из меню."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Вставляйте динамические переменные, такие как выбранный текст, и ссылайтесь на них в шагах с помощью {{Промпт}}."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "напр.: Сократите следующий текст:\n{{Выбранный текст}}"
+  },
   "Option_aiPrompt_service": {
     "message": "Сервис ИИ"
   },
@@ -719,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Укажите цвет шрифта. По умолчанию: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Цвет иконок"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Укажите цвет иконок. По умолчанию: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Исключить из глобального цвета иконок"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Сохраняет исходный цвет этой иконки, даже если задан глобальный цвет иконок."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Фавиконки автоматически исключаются из глобального цвета иконок и сохраняют свои исходные цвета."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Автоматически"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Масштаб размера шрифта"
   },
@@ -855,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "HTML выбранного диапазона будет прикреплён в виде файла"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "Будет вставлен промпт"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Вставить текст"
   },
@@ -863,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Выбранный текст"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Промпт"
   },
   "PageAction_InputMenu_url": {
     "message": "Оригинальный URL"
@@ -1314,6 +1350,15 @@
   "onboarding_skipButton": {
     "message": "Пропустить"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Добро пожаловать!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Для начала познакомимся с тремя полезными способами использования."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Нажмите, чтобы продолжить"
+  },
   "onboarding_step1Explain": {
     "message": "Выделите текст ниже, чтобы сразу попробовать поиск."
   },
@@ -1345,7 +1390,7 @@
     "message": "Готово — теперь вы можете мгновенно искать всё, что выделите"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Добавьте любимую поисковую систему, чтобы делать повседневный поиск ещё быстрее."
+    "message": "Добавьте часто используемые поисковые системы, чтобы мгновенно открывать их."
   },
   "onboarding_step2Explain": {
     "message": "Далее давайте спросим ИИ о тексте ниже."
@@ -1366,7 +1411,7 @@
     "message": "Теперь вы можете спрашивать ИИ о чём угодно прямо на странице, которую читаете"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Мгновенно просите ИИ о таких вещах, как «сделай краткое содержание» или «проанализируй эту компанию».\nПромпт можно свободно настраивать."
+    "message": "Сразу давайте ИИ команды «сделай краткое содержание» или «проанализируй эту компанию».\nНастройте промпт так, как вам удобно."
   },
   "onboarding_step3Explain": {
     "message": "Давайте просмотрим ссылку без открытия новой вкладки."
@@ -1390,7 +1435,7 @@
     "message": "Готово — теперь вы можете просматривать ссылки, не покидая страницу"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Вы получили нужную информацию и сразу вернулись обратно!\nЭто снижает необходимость переключаться между вкладками, позволяя сосредоточиться на главном."
+    "message": "Вы просмотрели страницу и сразу вернулись!\nТратьте меньше времени на управление вкладками и сосредоточьтесь на своих задачах."
   },
   "onboarding_nextButton": {
     "message": "Далее"

@@ -15,7 +15,7 @@ import type {
   UserSettings,
   PageRule,
 } from "@/types"
-import { isEmpty, findMatchingPageRule } from "@/lib/utils"
+import { findMatchingPageRule } from "@/lib/utils"
 import { INHERIT } from "@/const"
 
 // Apply page rule to settings, modifying popupPlacement if needed
@@ -172,54 +172,5 @@ export function useUserSettings() {
     loading,
     error,
     refetch,
-  }
-}
-
-// Settings hook with image cache applied
-export function useSettingsWithImageCache() {
-  const { userSettings: settings, loading: loading1 } = useUserSettings()
-  const { data: commands, loading: loading2 } = useSection(
-    CACHE_SECTIONS.COMMANDS,
-  )
-  const { data: caches, loading: loading3 } = useSection(CACHE_SECTIONS.CACHES)
-  const loading = loading1 || loading2 || loading3
-
-  const { commandsWithCache, foldersWithCache, iconUrls } = useMemo(() => {
-    if (loading || !commands) {
-      return { commandsWithCache: [], foldersWithCache: [], iconUrls: {} }
-    }
-
-    // Commands with cache
-    const commandsWithCache = commands.map((c) => {
-      if (!caches || !caches.images) return c
-      const cache = caches.images[c.iconUrl]
-      const iconUrl = !isEmpty(cache) ? cache : c.iconUrl
-      return { ...c, iconUrl }
-    })
-
-    // Folders with cache
-    const foldersWithCache = (settings.folders || []).map((f) => {
-      if (!f.iconUrl) return f
-      if (!caches || !caches.images) return f
-      const cache = caches.images[f.iconUrl]
-      const iconUrl = !isEmpty(cache) ? cache : f.iconUrl
-      return { ...f, iconUrl }
-    })
-
-    // IconUrls map - contains original URLs before cache application
-    const iconUrls = commands.reduce(
-      (acc, cur) => ({ ...acc, [cur.id]: cur.iconUrl }),
-      {} as Record<string, string>,
-    )
-
-    return { commandsWithCache, foldersWithCache, iconUrls }
-  }, [settings, loading, caches, commands])
-
-  return {
-    userSettings: settings,
-    commands: commandsWithCache,
-    folders: foldersWithCache,
-    iconUrls,
-    loading,
   }
 }

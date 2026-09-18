@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "प्रतीक्षा समय"
   },
+  "Option_pageAction_prompt": {
+    "message": "प्रॉम्प्ट"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "सम्मिलित किए जाने वाले प्रॉम्प्ट का टेम्पलेट। आप मेनू से चर जोड़ सकते हैं।"
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "चयनित टेक्स्ट जैसे गतिशील चर डालें, और चरणों में {{प्रॉम्प्ट}} के साथ उनका संदर्भ लें।"
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "उदा.: निम्नलिखित पाठ का सारांश प्रस्तुत करें:\n{{चयनित पाठ}}"
+  },
   "Option_aiPrompt_service": {
     "message": "AI सेवा"
   },
@@ -719,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "फ़ॉन्ट का रंग निर्दिष्ट करें। डिफ़ॉल्ट: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "आइकन का रंग"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "आइकन का रंग निर्दिष्ट करें। डिफ़ॉल्ट: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "वैश्विक आइकन रंग से बाहर रखें"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "वैश्विक आइकन रंग सेट होने पर भी इस आइकन का मूल रंग बनाए रखें।"
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "फ़ेविकॉन स्वचालित रूप से वैश्विक आइकन रंग से बाहर रखे जाते हैं और अपने मूल रंग बनाए रखते हैं।"
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "स्वचालित"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "फ़ॉन्ट साइज़ स्केल"
   },
@@ -855,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "चुने गए भाग का HTML फ़ाइल के रूप में संलग्न किया जाएगा"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "प्रॉम्प्ट डाला जाएगा"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "टेक्स्ट डालें"
   },
@@ -863,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "चयनित टेक्स्ट"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "प्रॉम्प्ट"
   },
   "PageAction_InputMenu_url": {
     "message": "मूल URL"
@@ -1314,6 +1350,15 @@
   "onboarding_skipButton": {
     "message": "छोड़ें"
   },
+  "onboarding_welcomeMessage": {
+    "message": "स्वागत है!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "सबसे पहले, आइए इसे इस्तेमाल करने के तीन उपयोगी तरीके जानें।"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "जारी रखने के लिए क्लिक करें"
+  },
   "onboarding_step1Explain": {
     "message": "तुरंत सर्च आज़माने के लिए नीचे दिए गए टेक्स्ट को चुनें।"
   },
@@ -1345,7 +1390,7 @@
     "message": "बस इतना ही — अब आप जो भी टेक्स्ट चुनें, उसे तुरंत सर्च कर सकते हैं"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "अपना पसंदीदा सर्च इंजन जोड़कर रोज़मर्रा की खोज को और तेज़ बनाएं।"
+    "message": "अपने अक्सर इस्तेमाल किए जाने वाले सर्च इंजन जोड़ें और उन्हें तुरंत खोलें।"
   },
   "onboarding_step2Explain": {
     "message": "अब, नीचे दिए गए टेक्स्ट के बारे में AI से पूछते हैं।"
@@ -1366,7 +1411,7 @@
     "message": "अब आप जो पेज पढ़ रहे हैं, वहीं से चुनी हुई किसी भी चीज़ के बारे में AI से पूछ सकते हैं"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "\"इसका सारांश दें\" या \"इस कंपनी का विश्लेषण करें\" जैसी बातें तुरंत AI से पूछें।\nप्रॉम्प्ट को अपनी इच्छानुसार अनुकूलित किया जा सकता है।"
+    "message": "AI को तुरंत \"इसका सारांश दें\" या \"इस कंपनी का विश्लेषण करें\" जैसे निर्देश दें।\nप्रॉम्प्ट को अपनी पसंद के अनुसार बदलें।"
   },
   "onboarding_step3Explain": {
     "message": "बिना नया टैब खोले किसी लिंक का पूर्वावलोकन करते हैं।"
@@ -1390,7 +1435,7 @@
     "message": "बस इतना ही — अब आप पेज छोड़े बिना लिंक का पूर्वावलोकन कर सकते हैं"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "आपको जानकारी मिल गई और आप तुरंत वापस आ गए!\nइससे टैब बदलने की झंझट कम होती है, ताकि आप ज़रूरी काम पर ध्यान दे सकें।"
+    "message": "आपने पेज देखा और तुरंत वापस आ गए!\nटैब संभालने में कम समय लगाएं और अपने ज़रूरी काम पर ध्यान दें।"
   },
   "onboarding_nextButton": {
     "message": "आगे"

@@ -122,10 +122,12 @@ const getDefault = (
     ? {
         sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
         sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
+        excludeFromGlobalIconColor: base?.excludeFromGlobalIconColor ?? false,
       }
     : {
         sourceType: base?.sourceType,
         sourceId: base?.sourceId,
+        excludeFromGlobalIconColor: base?.excludeFromGlobalIconColor ?? false,
       }
 
   if (isSearchOpenMode(openMode)) {
@@ -194,6 +196,7 @@ const getDefault = (
         pageUrl: "",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         steps: [],
+        prompt: "",
       },
     }
   }
@@ -412,6 +415,7 @@ const CommandEditDialogInner = ({
         openMode: getValues("pageActionOption.openMode"),
         size: getValues("popupOption") ?? POPUP_OPTION,
         steps: getValues("pageActionOption.steps"),
+        prompt: getValues("pageActionOption.prompt"),
       },
     )
     await Ipc.send(BgCommand.startPageActionRecorder, {
@@ -824,6 +828,8 @@ const CommandEditDialogInner = ({
                       control={form.control}
                       nameUrl="iconUrl"
                       nameSvg="iconSvg"
+                      nameExclude="excludeFromGlobalIconColor"
+                      targetUrl={iconUrlSrc}
                       formLabel={t("iconUrl")}
                       description={
                         isSearchOpenMode(openMode) || openMode === OPEN_MODE.API

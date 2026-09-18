@@ -491,6 +491,18 @@
   "Option_pageAction_delay": {
     "message": "Tempo de atraso"
   },
+  "Option_pageAction_prompt": {
+    "message": "Prompt"
+  },
+  "Option_pageAction_prompt_desc": {
+    "message": "Modelo de prompt a ser inserido. Você pode adicionar variáveis pelo menu."
+  },
+  "Option_pageAction_prompt_desc_2": {
+    "message": "Insira variáveis dinâmicas como o texto selecionado e faça referência a elas nas etapas com {{Prompt}}."
+  },
+  "Option_pageAction_prompt_placeholder": {
+    "message": "ex.: Resuma o seguinte texto:\n{{Texto selecionado}}"
+  },
   "Option_aiPrompt_service": {
     "message": "Serviço de IA"
   },
@@ -719,6 +731,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Especificar a cor da fonte. Padrão: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Cor do Ícone"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Especificar a cor do ícone. Padrão: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Excluir da cor de ícone global"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Mantém a cor original deste ícone mesmo quando uma cor de ícone global está definida."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Favicons são automaticamente excluídos da cor de ícone global e mantêm suas cores originais."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automático"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Escala do tamanho da fonte"
   },
@@ -855,6 +885,9 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "O HTML do intervalo selecionado será anexado como arquivo"
   },
+  "PageAction_InputMenu_mark_prompt": {
+    "message": "O prompt será inserido"
+  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserir Texto"
   },
@@ -863,6 +896,9 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texto selecionado"
+  },
+  "PageAction_InputMenu_prompt": {
+    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "URL de origem"
@@ -1317,6 +1353,15 @@
   "onboarding_skipButton": {
     "message": "Pular"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Bem-vindo!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Primeiro, conheça três formas úteis de usá-lo."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Clique para continuar"
+  },
   "onboarding_step1Explain": {
     "message": "Selecione o texto abaixo para testar uma pesquisa agora mesmo."
   },
@@ -1348,7 +1393,7 @@
     "message": "Pronto — agora você pode pesquisar instantaneamente qualquer coisa que selecionar"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Adicione seu mecanismo de busca favorito para tornar as buscas do dia a dia ainda mais rápidas."
+    "message": "Adicione os mecanismos de busca que você mais usa para acessá-los na hora."
   },
   "onboarding_step2Explain": {
     "message": "A seguir, vamos perguntar à IA sobre o texto abaixo."
@@ -1369,7 +1414,7 @@
     "message": "Agora você pode perguntar à IA sobre qualquer coisa que selecionar, direto da página que está lendo"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Peça à IA coisas como \"resuma isso\" ou \"analise esta empresa\" instantaneamente.\nVocê pode personalizar o prompt livremente."
+    "message": "Dê instruções à IA, como \"resuma isso\" ou \"analise esta empresa\", na hora.\nPersonalize o prompt como quiser."
   },
   "onboarding_step3Explain": {
     "message": "Vamos pré-visualizar um link sem abrir uma nova aba."
@@ -1393,7 +1438,7 @@
     "message": "Pronto — agora você pode pré-visualizar links sem sair da página"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Você obteve a informação e voltou na hora!\nIsso reduz o trabalho de trocar de abas, para você focar no que importa."
+    "message": "Você viu a página e voltou na hora!\nGaste menos tempo gerenciando abas e mantenha o foco no que precisa fazer."
   },
   "onboarding_nextButton": {
     "message": "Próximo"

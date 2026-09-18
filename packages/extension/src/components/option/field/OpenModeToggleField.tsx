@@ -15,8 +15,10 @@ import { cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
 
 const isEdge =
-  Bowser.getParser(window.navigator.userAgent).getBrowserName() ===
-  "Microsoft Edge"
+  typeof window !== "undefined" && Boolean(window.navigator?.userAgent)
+    ? Bowser.getParser(window.navigator.userAgent).getBrowserName() ===
+      "Microsoft Edge"
+    : false
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -40,14 +42,17 @@ const getIconForMode = (mode: string) => {
   if (mode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB) {
     return "/setting/open_mode/currentTab.png"
   }
-  if (mode === OPEN_MODE.SIDE_PANEL) {
+  if (
+    mode === OPEN_MODE.SIDE_PANEL ||
+    mode === PAGE_ACTION_OPEN_MODE.SIDE_PANEL
+  ) {
     return "/setting/open_mode/side_panel.png"
   }
   return "/setting/open_mode/popup.png"
 }
 
 // Order of options (SidePanel is not supported on Microsoft Edge)
-const SEARCH_MODES = [
+export const SEARCH_MODES = [
   OPEN_MODE.POPUP,
   OPEN_MODE.WINDOW,
   OPEN_MODE.TAB,
@@ -55,13 +60,14 @@ const SEARCH_MODES = [
   ...(isEdge ? [] : [OPEN_MODE.SIDE_PANEL]),
 ]
 
-const PAGE_ACTION_MODES = [
+export const PAGE_ACTION_MODES = [
   PAGE_ACTION_OPEN_MODE.POPUP,
   PAGE_ACTION_OPEN_MODE.WINDOW,
   PAGE_ACTION_OPEN_MODE.TAB,
   PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
   PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
-] as const
+  ...(isEdge ? [] : [PAGE_ACTION_OPEN_MODE.SIDE_PANEL]),
+]
 
 type OpenModeToggleFieldProps = {
   control: any
@@ -105,7 +111,10 @@ export const OpenModeToggleField = ({
                 onValueChange={(val) => {
                   if (val) field.onChange(val)
                 }}
-                className="grid grid-cols-5 gap-2 py-1"
+                className={cn(
+                  "grid gap-2 py-1",
+                  modes.length >= 6 ? "grid-cols-6" : "grid-cols-5",
+                )}
               >
                 {modes.map((mode) => {
                   const iconSrc = getIconForMode(mode)

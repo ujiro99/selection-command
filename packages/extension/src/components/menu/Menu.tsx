@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 
 import { STYLE, SIDE } from "@/const"
 import { TEST_IDS } from "@/testIds"
-import { useSettingsWithImageCache } from "@/hooks/useSettings"
+import { useSettingsWithImageCache } from "@/hooks/useSettingsWithImageCache"
 import { cn, isMenuCommand } from "@/lib/utils"
 import { toCommandTree } from "@/services/option/commandTree"
 import css from "./Menu.module.css"

@@ -31,6 +31,7 @@ export enum BgCommand {
   getActiveTabId = "getActiveTabId",
   setClipboard = "setClipboard",
   closeTab = "closeTab",
+  resolveIconColors = "resolveIconColors",
   // Hub
   shareCommandToHub = "shareCommandToHub",
   editCommandToHub = "editCommandToHub",
@@ -66,6 +67,15 @@ export type ClickElementProps = {
   selector: string
 }
 
+/**
+ * One icon whose recoloring decision the service worker resolves.
+ * `targetUrl` is the website the icon belongs to, when there is one.
+ */
+export type IconColorQuery = {
+  url?: string
+  targetUrl?: string
+}
+
 export type ClipboardResult = {
   data: string | undefined
   err?: string
@@ -86,6 +96,7 @@ export type RunPageAction = {
   userVariables?: Array<UserVariable>
   pageHtml?: string
   selectionHtml?: string
+  prompt?: string
 }
 
 /**
@@ -102,6 +113,8 @@ export type SidePanelPendingAction = {
   useClipboard?: boolean
   pageHtml?: string
   selectionHtml?: string
+  prompt?: string
+  userVariables?: Array<UserVariable>
 }
 
 export namespace ExecPageAction {
@@ -114,6 +127,7 @@ export namespace ExecPageAction {
     userVariables?: Array<UserVariable>
     pageHtml?: string
     selectionHtml?: string
+    prompt?: string
   }
   export type Return = {
     result: boolean
