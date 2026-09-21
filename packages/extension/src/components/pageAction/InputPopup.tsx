@@ -279,11 +279,9 @@ export function InputMenu(props: MenuProps): JSX.Element {
     }
   }
 
-  // User variables have no readable label to translate, so their placeholder is
-  // inserted verbatim and round-trips through the symbol conversions unchanged.
   const onClickVariable = async (name: string) => {
     if (props.targetElm) {
-      insertText(props.targetElm, `{{${name}}}`)
+      insertText(props.targetElm, name)
     }
   }
 
@@ -353,7 +351,7 @@ export function InputMenu(props: MenuProps): JSX.Element {
           {userVariables.map((variable) => (
             <MenubarItem
               key={variable.name}
-              className="cursor-pointer"
+              className="m-0.5 px-2.5 py-2 text-sm font-normal font-sans text-gray-700 cursor-pointer"
               onClick={() => onClickVariable(variable.name)}
             >
               <Braces size={16} className="mr-2 stroke-gray-600" />
