@@ -557,9 +557,6 @@
   "Option_userVariable_name_invalid": {
     "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
   },
-  "Option_userVariable_name_reserved": {
-    "message": "이 이름은 기본 제공 변수용으로 예약되어 있습니다"
-  },
   "Option_userVariable_name_duplicate": {
     "message": "변수 이름이 이미 존재합니다"
   },

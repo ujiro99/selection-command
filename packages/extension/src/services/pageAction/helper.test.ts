@@ -206,4 +206,13 @@ describe("templateReferencesInsert", () => {
       ]),
     ).toBe(false)
   })
+
+  it("TR-07: does not follow a forward reference", () => {
+    expect(
+      templateReferencesInsert("{{A}}", INSERT.CLIPBOARD, [
+        { name: "A", value: "uses {{C}}" },
+        { name: "C", value: "{{Clipboard}}" },
+      ]),
+    ).toBe(false)
+  })
 })

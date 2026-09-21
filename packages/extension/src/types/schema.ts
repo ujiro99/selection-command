@@ -272,13 +272,30 @@ export const userVariableSchema = z.object({
 })
 export type UserVariableType = z.infer<typeof userVariableSchema>
 
+const userVariablesSchema = z
+  .array(userVariableSchema)
+  .max(5)
+  .superRefine((variables, ctx) => {
+    const seenNames = new Set<string>()
+    variables.forEach((variable, index) => {
+      if (seenNames.has(variable.name)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [index, "name"],
+          message: t("Option_userVariable_name_duplicate"),
+        })
+      }
+      seenNames.add(variable.name)
+    })
+  })
+
 export const PageActionOption = z
   .object({
     startUrl: z.string(),
     pageUrl: z.string().optional(), // URL pattern for command enablement (currentTab only)
     openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
     steps: z.array(PageActionStepSchema),
-    userVariables: z.array(userVariableSchema).max(5).optional(),
+    userVariables: userVariablesSchema.optional(),
   })
   .superRefine((data, ctx) => {
     if (data.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && !data.pageUrl) {

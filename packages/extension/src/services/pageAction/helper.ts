@@ -98,27 +98,31 @@ export function resolveUserVariables(
  * Checks whether a template contains the given placeholder, following
  * references into user variables. A step that uses `{{MyVar}}` needs the
  * clipboard when `MyVar`'s own value uses `{{Clipboard}}`, so the caller can
- * decide up front whether reading the clipboard is necessary. Names already
- * examined are skipped, which also makes malformed cyclic data terminate.
+ * decide up front whether reading the clipboard is necessary. References
+ * inside each user variable follow the same definition-order rules as
+ * `resolveUserVariables`: only variables defined before it are available.
  */
 export function templateReferencesInsert(
   value: string,
   insert: INSERT,
   userVariables?: Array<UserVariable>,
-  visited: Set<string> = new Set(),
 ): boolean {
   if (value.includes(toInsertTemplate(insert))) return true
+
+  const referencesByName = new Map<string, boolean>()
   for (const variable of userVariables ?? []) {
-    if (visited.has(variable.name)) continue
-    if (!value.includes(`{{${variable.name}}}`)) continue
-    visited.add(variable.name)
-    if (
-      templateReferencesInsert(variable.value, insert, userVariables, visited)
-    ) {
-      return true
-    }
+    const referencesInsert =
+      variable.value.includes(toInsertTemplate(insert)) ||
+      Array.from(referencesByName).some(
+        ([name, references]) =>
+          references && variable.value.includes(`{{${name}}}`),
+      )
+    referencesByName.set(variable.name, referencesInsert)
   }
-  return false
+
+  return Array.from(referencesByName).some(
+    ([name, references]) => references && value.includes(`{{${name}}}`),
+  )
 }
 
 /**

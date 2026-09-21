@@ -192,6 +192,20 @@ describe("PageActionOption in schemas", () => {
     expect(res.success).toBe(false)
   })
 
+  it("SC-17: rejects duplicate user variable names", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        userVariables: [
+          { name: "Prompt", value: "first" },
+          { name: "Prompt", value: "second" },
+        ],
+      },
+    })
+    expect(res.success).toBe(false)
+  })
+
   it("SC-11: accepts PageAction command with openMode SIDE_PANEL", () => {
     const res = commandSchema.safeParse({
       ...basePageActionCmd,

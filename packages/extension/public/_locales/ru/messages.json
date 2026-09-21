@@ -557,9 +557,6 @@
   "Option_userVariable_name_invalid": {
     "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
   },
-  "Option_userVariable_name_reserved": {
-    "message": "Это имя зарезервировано для встроенной переменной"
-  },
   "Option_userVariable_name_duplicate": {
     "message": "Имя переменной уже существует"
   },

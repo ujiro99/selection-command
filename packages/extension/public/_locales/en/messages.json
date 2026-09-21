@@ -560,9 +560,6 @@
   "Option_userVariable_name_invalid": {
     "message": "Variable name must start with letter and contain only letters, numbers, and underscores"
   },
-  "Option_userVariable_name_reserved": {
-    "message": "This name is reserved for a built-in variable"
-  },
   "Option_userVariable_name_duplicate": {
     "message": "Variable name already exists"
   },

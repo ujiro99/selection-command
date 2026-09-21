@@ -557,9 +557,6 @@
   "Option_userVariable_name_invalid": {
     "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
   },
-  "Option_userVariable_name_reserved": {
-    "message": "Nama ini dikhaskan untuk pemboleh ubah terbina dalam"
-  },
   "Option_userVariable_name_duplicate": {
     "message": "Nama pembolehubah sudah wujud"
   },

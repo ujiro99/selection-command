@@ -557,9 +557,6 @@
   "Option_userVariable_name_invalid": {
     "message": "Variablenname muss mit Buchstabe beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
   },
-  "Option_userVariable_name_reserved": {
-    "message": "Dieser Name ist für eine integrierte Variable reserviert"
-  },
   "Option_userVariable_name_duplicate": {
     "message": "Variablenname bereits vorhanden"
   },

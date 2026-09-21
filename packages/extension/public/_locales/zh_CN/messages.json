@@ -557,9 +557,6 @@
   "Option_userVariable_name_invalid": {
     "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
   },
-  "Option_userVariable_name_reserved": {
-    "message": "此名称已被内置变量占用"
-  },
   "Option_userVariable_name_duplicate": {
     "message": "变量名已存在"
   },

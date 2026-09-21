@@ -557,9 +557,6 @@
   "Option_userVariable_name_invalid": {
     "message": "El nombre de variable debe comenzar con letra y contener solo letras, números y guiones bajos"
   },
-  "Option_userVariable_name_reserved": {
-    "message": "Este nombre está reservado para una variable integrada"
-  },
   "Option_userVariable_name_duplicate": {
     "message": "El nombre de variable ya existe"
   },

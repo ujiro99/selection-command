@@ -25,7 +25,6 @@ import type {
   PageActionCommand,
   AiPromptCommand,
   UrlParam,
-  UserVariable,
   PageRule,
 } from "@/types"
 
@@ -427,21 +426,6 @@ export function isValidVariableName(name: string): boolean {
  */
 export function isReservedVariableName(name: string): boolean {
   return Object.values(InsertSymbol).includes(name)
-}
-
-/**
- * Validate user variables array.
- * @param {UserVariable[]} variables The user variables to validate.
- * @returns {boolean} True if the variables are valid (max 5, valid names and values).
- */
-export function validateUserVariables(variables: UserVariable[]): boolean {
-  if (variables.length > 5) return false
-  return variables.every(
-    (v) =>
-      isValidVariableName(v.name) &&
-      !isReservedVariableName(v.name) &&
-      typeof v.value === "string",
-  )
 }
 
 /**

@@ -557,9 +557,6 @@
   "Option_userVariable_name_invalid": {
     "message": "変数名は英字で始まり、英数字とアンダースコアのみ使用できます"
   },
-  "Option_userVariable_name_reserved": {
-    "message": "この名前は組み込み変数で予約されています"
-  },
   "Option_userVariable_name_duplicate": {
     "message": "変数名が重複しています"
   },
