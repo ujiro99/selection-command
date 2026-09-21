@@ -67,9 +67,7 @@ async function runActionCommand(
 
   const [actionPage] = await Promise.all([
     context.waitForEvent("page", { timeout: 5000 }),
-    page
-      .locator(`[role='menuitem'][aria-label='${commandTitle}']`)
-      .click(),
+    page.locator(`[role='menuitem'][aria-label='${commandTitle}']`).click(),
   ])
   await actionPage.waitForLoadState("domcontentloaded")
 
