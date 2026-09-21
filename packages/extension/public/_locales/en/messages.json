@@ -518,6 +518,15 @@
   "Option_userVariables_desc": {
     "message": "Define custom variables for input fields (max 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Define a custom variable for input fields."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Use this name as a key in PageAction input steps."
+  },
+  "Option_userVariable_value_desc": {
+    "message": "This value is expanded when the PageAction runs."
+  },
   "Option_userVariable_name": {
     "message": "Variable name"
   },

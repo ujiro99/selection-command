@@ -515,6 +515,15 @@
   "Option_userVariables_desc": {
     "message": "为输入字段定义自定义变量（最多 5 个）"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "为输入字段定义自定义变量。"
+  },
+  "Option_userVariable_name_desc": {
+    "message": "可在 PageAction 输入步骤中将此名称用作键。"
+  },
+  "Option_userVariable_value_desc": {
+    "message": "运行 PageAction 时会展开此值。"
+  },
   "Option_userVariable_name": {
     "message": "变量名"
   },

@@ -515,6 +515,15 @@
   "Option_userVariables_desc": {
     "message": "入力時に使用できる独自の変数を定義します（最大5個）"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "入力時に使用できる独自の変数を定義します。"
+  },
+  "Option_userVariable_name_desc": {
+    "message": "PageActionの入力ステップ内でキー名として使用できます。"
+  },
+  "Option_userVariable_value_desc": {
+    "message": "PageActionの実行時にこの値が展開されます。"
+  },
   "Option_userVariable_name": {
     "message": "変数名"
   },

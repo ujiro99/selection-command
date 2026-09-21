@@ -515,6 +515,15 @@
   "Option_userVariables_desc": {
     "message": "Определить пользовательские переменные для полей ввода (макс 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Определите пользовательскую переменную для полей ввода."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Используйте это имя как ключ в шагах ввода PageAction."
+  },
+  "Option_userVariable_value_desc": {
+    "message": "Это значение раскрывается при выполнении PageAction."
+  },
   "Option_userVariable_name": {
     "message": "Имя переменной"
   },

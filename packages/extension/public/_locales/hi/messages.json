@@ -515,6 +515,15 @@
   "Option_userVariables_desc": {
     "message": "इनपुट फ़ील्ड के लिए कस्टम वेरिएबल परिभाषित करें (अधिकतम 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "इनपुट फ़ील्ड के लिए एक कस्टम वेरिएबल परिभाषित करें।"
+  },
+  "Option_userVariable_name_desc": {
+    "message": "PageAction इनपुट चरणों में इस नाम को कुंजी के रूप में उपयोग करें।"
+  },
+  "Option_userVariable_value_desc": {
+    "message": "PageAction चलने पर यह मान विस्तारित होता है।"
+  },
   "Option_userVariable_name": {
     "message": "वेरिएबल नाम"
   },

@@ -515,6 +515,15 @@
   "Option_userVariables_desc": {
     "message": "Définir des variables personnalisées pour les champs de saisie (max 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Définissez une variable personnalisée pour les champs de saisie."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Utilisez ce nom comme clé dans les étapes de saisie PageAction."
+  },
+  "Option_userVariable_value_desc": {
+    "message": "Cette valeur est développée lors de l’exécution de PageAction."
+  },
   "Option_userVariable_name": {
     "message": "Nom de variable"
   },

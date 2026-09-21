@@ -331,9 +331,6 @@ const CommandEditDialogInner = ({
   const isEdit = mode === "edit" || mode === "hubEdit"
   const isHubEdit = mode === "hubEdit"
 
-  // Determine if open mode selection should be shown
-  const shouldShowOpenModeSelect = selectedType === COMMAND_TYPE.SEARCH
-
   // Process form data before submit: apply coercions and clean up unused fields.
   const processFormData = (data: CommandSchemaType): CommandSchemaType => {
     const d = { ...data }
@@ -645,7 +642,7 @@ const CommandEditDialogInner = ({
                   />
                 )}
 
-                {selectedType === COMMAND_TYPE.SEARCH ? (
+                {selectedType === COMMAND_TYPE.SEARCH && (
                   <OpenModeToggleField
                     control={form.control}
                     name="openMode"
@@ -653,24 +650,6 @@ const CommandEditDialogInner = ({
                     type="search"
                     description={t("displayMode_desc")}
                   />
-                ) : (
-                  shouldShowOpenModeSelect && (
-                    <SelectField
-                      control={form.control}
-                      name="openMode"
-                      formLabel="Open Mode"
-                      options={e2a(OPEN_MODE)
-                        .filter(
-                          (mode) =>
-                            mode !== OPEN_MODE.ADD_PAGE_RULE &&
-                            mode !== OPEN_MODE.OPTION,
-                        )
-                        .map((mode) => ({
-                          name: t(`openMode_${mode}`),
-                          value: mode,
-                        }))}
-                    />
-                  )
                 )}
 
                 {isSearchOpenMode(openMode) && (

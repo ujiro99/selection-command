@@ -515,6 +515,15 @@
   "Option_userVariables_desc": {
     "message": "Benutzerdefinierte Variablen für Eingabefelder definieren (max. 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Definieren Sie eine benutzerdefinierte Variable für Eingabefelder."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Verwenden Sie diesen Namen als Schlüssel in PageAction-Eingabeschritten."
+  },
+  "Option_userVariable_value_desc": {
+    "message": "Dieser Wert wird bei der Ausführung der PageAction eingesetzt."
+  },
   "Option_userVariable_name": {
     "message": "Variablenname"
   },

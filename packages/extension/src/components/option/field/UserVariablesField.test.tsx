@@ -84,7 +84,12 @@ describe("UserVariablesField suggestions", () => {
 
     await user.click(screen.getByRole("button", { name: "Prompt" }))
     expect(screen.getByRole("dialog")).toBeInTheDocument()
-    const input = screen.getByPlaceholderText("Option_userVariable_name")
+    expect(screen.getByText("Option_userVariable_dialog_desc")).toBeInTheDocument()
+    expect(screen.getByText("Option_userVariable_name_desc")).toBeInTheDocument()
+    expect(screen.getByText("Option_userVariable_value_desc")).toBeInTheDocument()
+    expect(screen.queryByText("Option_userVariables_desc")).toBeNull()
+    const input = screen.getByLabelText("Option_userVariable_name")
+    expect(screen.getByLabelText("Option_userVariable_value")).toBeInTheDocument()
 
     expect(input).toHaveAttribute("maxLength", `${MAX_VARIABLE_NAME_LENGTH}`)
     await user.clear(input)

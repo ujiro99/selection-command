@@ -515,6 +515,15 @@
   "Option_userVariables_desc": {
     "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Defina uma variável personalizada para os campos de entrada."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Utilize este nome como chave nos passos de entrada do PageAction."
+  },
+  "Option_userVariable_value_desc": {
+    "message": "Este valor é expandido quando o PageAction é executado."
+  },
   "Option_userVariable_name": {
     "message": "Nome da variável"
   },

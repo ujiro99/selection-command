@@ -99,7 +99,7 @@ export const UserVariablesField = ({
       control={control}
       name={name}
       render={() => (
-        <FormItem className="flex items-start gap-1">
+        <FormItem className="flex items-center gap-1">
           <div className="w-2/6">
             <FormLabel>{formLabel}</FormLabel>
             {description && <FormDescription>{description}</FormDescription>}
@@ -276,20 +276,27 @@ const VariableBadge = ({
               <Pencil size={18} />
               {t("userVariables")}
             </DialogTitle>
-            <DialogDescription>{t("userVariables_desc")}</DialogDescription>
+            <DialogDescription>
+              {t("userVariable_dialog_desc")}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <div className="flex justify-end">
+              <div className="flex items-center justify-between gap-4">
+                <FormLabel htmlFor={`${fieldName}.name`}>
+                  {t("userVariable_name")}
+                </FormLabel>
                 <span className="text-xs tabular-nums text-gray-500">
-                  {t("userVariable_name_remaining")}: {Math.max(
-                    0,
-                    MAX_VARIABLE_NAME_LENGTH - draftName.length,
-                  )}
+                  {t("userVariable_name_remaining")}:{" "}
+                  {Math.max(0, MAX_VARIABLE_NAME_LENGTH - draftName.length)}
                 </span>
               </div>
+              <FormDescription>
+                {t("userVariable_name_desc")}
+              </FormDescription>
               <FormControl>
                 <Input
+                  id={`${fieldName}.name`}
                   placeholder={t("userVariable_name")}
                   value={draftName}
                   onChange={(event) => setDraftName(event.target.value)}
@@ -300,16 +307,24 @@ const VariableBadge = ({
               </FormControl>
               {error && <p className="text-sm text-red-500">{error}</p>}
             </div>
-            <div className="relative pt-7">
-              <InputMenu
-                targetElm={textarea}
-                className="absolute right-0 top-0 w-fit"
-                hideFilePaste
-                userVariables={precedingVariables}
-              />
+            <div className="space-y-1.5">
+              <FormLabel htmlFor={`${fieldName}.value`}>
+                {t("userVariable_value")}
+              </FormLabel>
+              <FormDescription>
+                {t("userVariable_value_desc")}
+              </FormDescription>
+              <div className="flex justify-end pb-1">
+                <InputMenu
+                  targetElm={textarea}
+                  className="w-fit"
+                  hideFilePaste
+                  userVariables={precedingVariables}
+                />
+              </div>
               <FormControl>
                 <Textarea
-                  id={fieldName}
+                  id={`${fieldName}.value`}
                   placeholder={t("userVariable_value")}
                   rows={5}
                   value={convSymbolsToReadableKeys(draftValue)}
@@ -328,7 +343,11 @@ const VariableBadge = ({
                 {t("labelCancel")}
               </Button>
             </DialogClose>
-            <Button type="button" onClick={handleSubmit} disabled={error != null}>
+            <Button
+              type="button"
+              onClick={handleSubmit}
+              disabled={error != null}
+            >
               <Save size={16} className="mr-0.5" />
               {t("labelSave")}
             </Button>

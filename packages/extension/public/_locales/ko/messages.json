@@ -515,6 +515,15 @@
   "Option_userVariables_desc": {
     "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "입력 필드에 사용할 사용자 변수를 정의합니다."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "PageAction 입력 단계에서 이 이름을 키로 사용할 수 있습니다."
+  },
+  "Option_userVariable_value_desc": {
+    "message": "PageAction 실행 시 이 값이 펼쳐집니다."
+  },
   "Option_userVariable_name": {
     "message": "변수 이름"
   },
