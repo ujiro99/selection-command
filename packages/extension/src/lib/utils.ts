@@ -409,16 +409,6 @@ export function isServiceWorker(): boolean {
 }
 
 /**
- * Check if the variable name is valid.
- * Variable names must start with a letter and contain only letters, numbers, and underscores.
- * @param {string} name The variable name to check.
- * @returns {boolean} True if the variable name is valid.
- */
-export function isValidVariableName(name: string): boolean {
-  return /^[a-zA-Z][a-zA-Z0-9_]*$/.test(name)
-}
-
-/**
  * Check if the variable name collides with a built-in placeholder.
  * Placeholders are substituted by exact name, so only an exact match collides.
  * @param {string} name The variable name to check.
