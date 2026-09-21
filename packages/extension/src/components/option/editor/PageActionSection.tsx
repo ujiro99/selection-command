@@ -154,22 +154,20 @@ export const PageActionSection = ({
         type="pageAction"
       />
 
-      <div className="pt-10">
-        <UserVariablesField
-          control={form.control}
-          name="pageActionOption.userVariables"
-          formLabel={t("userVariables")}
-          description={t("userVariables_desc")}
-          suggestion={
-            aiService
-              ? {
-                name: PROMPT_VARIABLE_NAME,
-                recommendedBy: aiService.name,
-              }
-              : undefined
-          }
-        />
-      </div>
+      <UserVariablesField
+        control={form.control}
+        name="pageActionOption.userVariables"
+        formLabel={t("userVariables")}
+        description={t("userVariables_desc")}
+        suggestion={
+          aiService
+            ? {
+              name: PROMPT_VARIABLE_NAME,
+              recommendedBy: aiService.name,
+            }
+            : undefined
+        }
+      />
 
       <div className="w-full flex items-center gap-1 pt-4">
         <div className="w-2/6">
@@ -188,7 +186,7 @@ export const PageActionSection = ({
             className={cn(
               "relative left-[50%] -translate-x-[50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg",
               !recDisabled &&
-                "group/record transition hover:opacity-80 hover:scale-[1.05]",
+              "group/record transition hover:opacity-80 hover:scale-[1.05]",
               recDisabled && "opacity-50 cursor-not-allowed bg-gray-400",
             )}
             disabled={recDisabled}

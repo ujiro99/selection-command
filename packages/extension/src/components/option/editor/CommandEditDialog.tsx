@@ -120,15 +120,15 @@ const getDefault = (
 ) => {
   const sourceDefaults = isEmpty(base?.id)
     ? {
-        sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
-        sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
-        excludeFromGlobalIconColor: base?.excludeFromGlobalIconColor ?? false,
-      }
+      sourceType: base?.sourceType ?? COMMAND_SOURCE_TYPE.SELF_CREATED,
+      sourceId: base?.sourceId ?? COMMAND_SOURCE_ID.SELF_CREATED,
+      excludeFromGlobalIconColor: base?.excludeFromGlobalIconColor ?? false,
+    }
     : {
-        sourceType: base?.sourceType,
-        sourceId: base?.sourceId,
-        excludeFromGlobalIconColor: base?.excludeFromGlobalIconColor ?? false,
-      }
+      sourceType: base?.sourceType,
+      sourceId: base?.sourceId,
+      excludeFromGlobalIconColor: base?.excludeFromGlobalIconColor ?? false,
+    }
 
   if (isSearchOpenMode(openMode)) {
     if (isSearchOpenMode(preOpenMode)) {
@@ -526,7 +526,12 @@ const CommandEditDialogInner = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogContent className="max-w-3xl pr-2">
+        <DialogContent
+          className={cn(
+            "max-w-3xl pr-2",
+            selectedType === COMMAND_TYPE.PAGE_ACTION && "max-w-4xl",
+          )}
+        >
           <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />
