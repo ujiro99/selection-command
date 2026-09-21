@@ -70,14 +70,23 @@ type MaskedImageProps = {
 }
 
 /**
+ * Wraps a URL in a quoted CSS url() token. The URL comes from user-editable
+ * command settings, so characters that would end the string early (quotes,
+ * backslashes) or break it (newlines) are escaped.
+ */
+const toCssUrl = (src: string) =>
+  `url("${src.replace(/[\\"]/g, "\\$&").replace(/\n/g, "\\a ")}")`
+
+/**
  * Renders the icon as a mask so it is painted in the global icon color.
  * Sizing comes from className, like the plain <img> branch.
  */
 function MaskedImage({ src, alt, className }: MaskedImageProps): JSX.Element {
+  const maskImage = toCssUrl(src)
   return (
     <span
       className={cn(css.itemImgMasked, className)}
-      style={{ WebkitMaskImage: `url("${src}")`, maskImage: `url("${src}")` }}
+      style={{ WebkitMaskImage: maskImage, maskImage }}
       {...imageRoleProps(alt)}
     />
   )

@@ -53,6 +53,21 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
     expect(container.querySelector("img")).toBeNull()
   })
 
+  it("escapes quotes and backslashes in the icon URL so the CSS url() string stays intact", () => {
+    const { container } = renderWithContext(
+      <MenuImage
+        src={'https://example.com/a".png?x=\\y'}
+        alt="test-icon"
+        excludeFromGlobalIconColor={false}
+        preserveOriginalColor={false}
+      />,
+      { hasIconColor: true },
+    )
+    const span = container.querySelector("span[role='img']") as HTMLElement
+    const style = span.getAttribute("style") ?? ""
+    expect(style).toContain('a\\".png?x=\\\\y')
+  })
+
   // Which icons keep their own colors is decided by the caller (the resolver
   // behind BgCommand.resolveIconColors), never by MenuImage itself, so without
   // that prop the icon is recolored like any other.

@@ -46,6 +46,19 @@ function applyImageCache<T extends HasIconUrl>(
  */
 const answerCache = new Map<string, boolean>()
 
+/** Upper bound of `answerCache`, so a long-lived page cannot grow it forever. */
+const ANSWER_CACHE_LIMIT = 1000
+
+/** Stores an answer, evicting the oldest one (insertion order) when full. */
+const rememberAnswer = (key: string, value: boolean) => {
+  answerCache.delete(key)
+  if (answerCache.size >= ANSWER_CACHE_LIMIT) {
+    const oldest = answerCache.keys().next().value
+    if (oldest !== undefined) answerCache.delete(oldest)
+  }
+  answerCache.set(key, value)
+}
+
 const queryKey = (query: IconColorQuery) =>
   `${query.url ?? ""}\n${query.targetUrl ?? ""}`
 
@@ -81,7 +94,7 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
               `Unexpected icon color response length: expected ${unknown.length}, got ${results.length}`,
             )
           }
-          unknown.forEach((q, i) => answerCache.set(queryKey(q), results[i]))
+          unknown.forEach((q, i) => rememberAnswer(queryKey(q), results[i]))
         } catch (e) {
           // Leave them uncached so the next menu retries instead of sticking
           // with a decision that failed to arrive.

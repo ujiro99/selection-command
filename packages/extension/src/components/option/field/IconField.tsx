@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import type { CSSProperties } from "react"
 import { useController } from "react-hook-form"
 import { FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
@@ -52,10 +52,11 @@ export const IconField = ({
   const errSvg = stateSvg.errors[nameSvg]
 
   // Resolved once here so the toggle and the preview always agree with the menu.
-  const preserveOriginalColor = shouldPreserveIconColor({
-    url: fieldUrl?.value,
-    targetUrl,
-  })
+  const iconUrl = fieldUrl?.value
+  const preserveOriginalColor = useMemo(
+    () => shouldPreserveIconColor({ url: iconUrl, targetUrl }),
+    [iconUrl, targetUrl],
+  )
 
   return (
     <div className="flex items-start gap-1">
