@@ -23,36 +23,49 @@ export const countHtmlAttachments = (prompt: string): number => {
   )
 }
 
+/**
+ * Matches a single `{{...}}` placeholder. The inner name is captured as-is
+ * because readable labels contain spaces, unlike the `\w+` names that
+ * `safeInterpolate` resolves at runtime.
+ */
+const PLACEHOLDER_PATTERN = /\{\{([^{}]*)\}\}/g
+
+/**
+ * Rewrites the name inside each `{{...}}` placeholder using the given map.
+ * Only a whole placeholder name is looked up, so a user variable whose name
+ * merely contains a built-in symbol (e.g. `Language`, `MyUrl`) is left alone.
+ */
+function convPlaceholderNames(
+  value: string | null | undefined,
+  names: Record<string, string>,
+): string {
+  return (value ?? "").replace(PLACEHOLDER_PATTERN, (match, name: string) =>
+    Object.prototype.hasOwnProperty.call(names, name)
+      ? `{{${names[name]}}}`
+      : match,
+  )
+}
+
 export function convReadableKeysToSymbols(value?: string | null): string {
-  let normalizedValue = value ?? ""
-  const symbols = {
+  return convPlaceholderNames(value, {
     [t(LocaleKey + INSERT.SELECTED_TEXT)]: InsertSymbol[INSERT.SELECTED_TEXT],
     [t(LocaleKey + INSERT.URL)]: InsertSymbol[INSERT.URL],
     [t(LocaleKey + INSERT.CLIPBOARD)]: InsertSymbol[INSERT.CLIPBOARD],
     [t(LocaleKey + INSERT.LANG)]: InsertSymbol[INSERT.LANG],
     [t(LocaleKey + INSERT.PAGE_HTML)]: InsertSymbol[INSERT.PAGE_HTML],
     [t(LocaleKey + INSERT.SELECTION_HTML)]: InsertSymbol[INSERT.SELECTION_HTML],
-  }
-  Object.entries(symbols).forEach(([key, val]) => {
-    normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
   })
-  return normalizedValue
 }
 
 export function convSymbolsToReadableKeys(value?: string | null): string {
-  let normalizedValue = value ?? ""
-  const symbols = {
+  return convPlaceholderNames(value, {
     [InsertSymbol[INSERT.SELECTED_TEXT]]: t(LocaleKey + INSERT.SELECTED_TEXT),
     [InsertSymbol[INSERT.URL]]: t(LocaleKey + INSERT.URL),
     [InsertSymbol[INSERT.CLIPBOARD]]: t(LocaleKey + INSERT.CLIPBOARD),
     [InsertSymbol[INSERT.LANG]]: t(LocaleKey + INSERT.LANG),
     [InsertSymbol[INSERT.PAGE_HTML]]: t(LocaleKey + INSERT.PAGE_HTML),
     [InsertSymbol[INSERT.SELECTION_HTML]]: t(LocaleKey + INSERT.SELECTION_HTML),
-  }
-  Object.entries(symbols).forEach(([key, val]) => {
-    normalizedValue = normalizedValue.replace(new RegExp(key, "g"), val)
   })
-  return normalizedValue
 }
 
 export type ResolveActionVariablesParams = {
@@ -123,6 +136,19 @@ export function templateReferencesInsert(
   return Array.from(referencesByName).some(
     ([name, references]) => references && value.includes(`{{${name}}}`),
   )
+}
+
+/**
+ * Checks whether a template contains a `{{name}}` placeholder for the given
+ * user variable. Used by the editor to warn before a rename or a removal
+ * leaves those references unresolved.
+ */
+export function templateReferencesVariable(
+  value: string,
+  name: string,
+): boolean {
+  if (!name) return false
+  return value.includes(`{{${name}}}`)
 }
 
 /**

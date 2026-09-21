@@ -27,22 +27,42 @@ describe("pageAction helper conversion", () => {
   })
 
   it("converts symbols to readable keys", () => {
-    const value = `A ${InsertSymbol[INSERT.SELECTED_TEXT]} B ${InsertSymbol[INSERT.URL]}`
+    const value = `A {{${InsertSymbol[INSERT.SELECTED_TEXT]}}} B {{${InsertSymbol[INSERT.URL]}}}`
     expect(convSymbolsToReadableKeys(value)).toBe(
-      `A ${LocaleKey}${INSERT.SELECTED_TEXT} B ${LocaleKey}${INSERT.URL}`,
+      `A {{${LocaleKey}${INSERT.SELECTED_TEXT}}} B {{${LocaleKey}${INSERT.URL}}}`,
     )
   })
 
   it("converts readable keys to symbols", () => {
-    const value = `A ${LocaleKey}${INSERT.CLIPBOARD} B ${LocaleKey}${INSERT.LANG}`
+    const value = `A {{${LocaleKey}${INSERT.CLIPBOARD}}} B {{${LocaleKey}${INSERT.LANG}}}`
     expect(convReadableKeysToSymbols(value)).toBe(
-      `A ${InsertSymbol[INSERT.CLIPBOARD]} B ${InsertSymbol[INSERT.LANG]}`,
+      `A {{${InsertSymbol[INSERT.CLIPBOARD]}}} B {{${InsertSymbol[INSERT.LANG]}}}`,
     )
   })
 
   it("leaves a user variable placeholder untouched in both directions", () => {
     expect(convSymbolsToReadableKeys("A {{MyVar}}")).toBe("A {{MyVar}}")
     expect(convReadableKeysToSymbols("A {{MyVar}}")).toBe("A {{MyVar}}")
+  })
+
+  it("only converts whole placeholder names, not substrings", () => {
+    // A user variable whose name merely contains a built-in symbol must survive
+    // a round trip; substring replacement used to mangle these.
+    for (const name of [
+      "Language",
+      "MyUrl",
+      "ClipboardNote",
+      "SelectedTextA",
+    ]) {
+      const value = `A {{${name}}} B`
+      expect(convSymbolsToReadableKeys(value)).toBe(value)
+      expect(convReadableKeysToSymbols(value)).toBe(value)
+    }
+  })
+
+  it("leaves symbols outside of a placeholder untouched", () => {
+    const prose = `Open the ${InsertSymbol[INSERT.URL]} then paste`
+    expect(convSymbolsToReadableKeys(prose)).toBe(prose)
   })
 })
 
