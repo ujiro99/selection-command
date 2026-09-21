@@ -521,8 +521,8 @@
   "Option_userVariable_name_desc": {
     "message": "可在 PageAction 输入步骤中将此名称用作键。"
   },
-  "Option_userVariable_value_desc": {
-    "message": "运行 PageAction 时会展开此值。"
+  "Option_userVariable_value_label": {
+    "message": "运行时展开的文本"
   },
   "Option_userVariable_name": {
     "message": "变量名"

@@ -170,6 +170,28 @@ describe("PageActionOption in schemas", () => {
     expect(res.success).toBe(false)
   })
 
+  it("SC-15: rejects an empty user variable name", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        userVariables: [{ name: "", value: "x" }],
+      },
+    })
+    expect(res.success).toBe(false)
+  })
+
+  it("SC-16: rejects a user variable name longer than 20 characters", () => {
+    const res = commandSchema.safeParse({
+      ...basePageActionCmd,
+      pageActionOption: {
+        ...basePageActionCmd.pageActionOption,
+        userVariables: [{ name: "A12345678901234567890", value: "x" }],
+      },
+    })
+    expect(res.success).toBe(false)
+  })
+
   it("SC-11: accepts PageAction command with openMode SIDE_PANEL", () => {
     const res = commandSchema.safeParse({
       ...basePageActionCmd,

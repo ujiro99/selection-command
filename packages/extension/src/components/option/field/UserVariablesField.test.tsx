@@ -86,10 +86,14 @@ describe("UserVariablesField suggestions", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument()
     expect(screen.getByText("Option_userVariable_dialog_desc")).toBeInTheDocument()
     expect(screen.getByText("Option_userVariable_name_desc")).toBeInTheDocument()
-    expect(screen.getByText("Option_userVariable_value_desc")).toBeInTheDocument()
+    expect(
+      screen.getByText("Option_userVariable_value_label"),
+    ).toBeInTheDocument()
     expect(screen.queryByText("Option_userVariables_desc")).toBeNull()
     const input = screen.getByLabelText("Option_userVariable_name")
-    expect(screen.getByLabelText("Option_userVariable_value")).toBeInTheDocument()
+    expect(
+      screen.getByLabelText("Option_userVariable_value_label"),
+    ).toBeInTheDocument()
 
     expect(input).toHaveAttribute("maxLength", `${MAX_VARIABLE_NAME_LENGTH}`)
     await user.clear(input)
@@ -159,5 +163,24 @@ describe("UserVariablesField suggestions", () => {
     expect(screen.getByTestId("form-state")).toHaveTextContent(
       '[{"name":"Existing","value":"Original"}]',
     )
+  })
+
+  it("UV-08: shows validation errors only after the user starts editing", async () => {
+    const user = userEvent.setup()
+    render(<Wrapper suggested={false} />)
+
+    await user.click(
+      screen.getByRole("button", { name: "Option_userVariable_add" }),
+    )
+    expect(screen.queryByText("Option_userVariable_name_required")).toBeNull()
+
+    await user.type(
+      screen.getByLabelText("Option_userVariable_value_label"),
+      "Some value",
+    )
+
+    expect(
+      screen.getByText("Option_userVariable_name_required"),
+    ).toBeInTheDocument()
   })
 })

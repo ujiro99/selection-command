@@ -521,8 +521,8 @@
   "Option_userVariable_name_desc": {
     "message": "Используйте это имя как ключ в шагах ввода PageAction."
   },
-  "Option_userVariable_value_desc": {
-    "message": "Это значение раскрывается при выполнении PageAction."
+  "Option_userVariable_value_label": {
+    "message": "Текст при выполнении"
   },
   "Option_userVariable_name": {
     "message": "Имя переменной"

@@ -18,6 +18,7 @@ import {
   FormItem,
   FormLabel,
   FormDescription,
+  FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -27,13 +28,17 @@ import {
   convSymbolsToReadableKeys,
   convReadableKeysToSymbols,
 } from "@/services/pageAction"
-import { cn, isValidVariableName, isReservedVariableName } from "@/lib/utils"
+import { cn } from "@/lib/utils"
+import {
+  userVariableSchema,
+  USER_VARIABLE_NAME_MAX_LENGTH,
+} from "@/types/schema"
 import { t as _t } from "@/services/i18n"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 export const MAX_VARIABLES = 5
-export const MAX_VARIABLE_NAME_LENGTH = 20
+export const MAX_VARIABLE_NAME_LENGTH = USER_VARIABLE_NAME_MAX_LENGTH
 
 /**
  * A variable the surrounding context suggests creating, such as `Prompt` when
@@ -83,9 +88,13 @@ export const UserVariablesField = ({
   }
 
   const validateName = (value: string, index: number): string | null => {
-    if (!value) return t("userVariable_name_required")
-    if (!isValidVariableName(value)) return t("userVariable_name_invalid")
-    if (isReservedVariableName(value)) return t("userVariable_name_reserved")
+    const result = userVariableSchema.safeParse({ name: value, value: "" })
+    if (!result.success) {
+      const nameIssue = result.error.issues.find(
+        (issue) => issue.path[0] === "name",
+      )
+      if (nameIssue) return nameIssue.message
+    }
     const duplicated = watchedFields.some(
       (field: { name?: string }, i: number) =>
         i !== index && field?.name === value,
@@ -224,12 +233,15 @@ const VariableBadge = ({
   const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
   const [draftName, setDraftName] = useState(variableName)
   const [draftValue, setDraftValue] = useState(value)
+  const [hasInteracted, setHasInteracted] = useState(false)
   const error = validateName(draftName)
+  const visibleError = hasInteracted ? error : null
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (nextOpen) {
       setDraftName(variableName)
       setDraftValue(value)
+      setHasInteracted(false)
     } else {
       onDismiss()
       return
@@ -299,25 +311,25 @@ const VariableBadge = ({
                   id={`${fieldName}.name`}
                   placeholder={t("userVariable_name")}
                   value={draftName}
-                  onChange={(event) => setDraftName(event.target.value)}
+                  onChange={(event) => {
+                    setDraftName(event.target.value)
+                    setHasInteracted(true)
+                  }}
                   maxLength={MAX_VARIABLE_NAME_LENGTH}
-                  className={cn(error && "border-red-500")}
+                  className={cn(visibleError && "border-red-500")}
                   inputClassName="text-sm lg:text-sm font-mono"
                 />
               </FormControl>
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              <FormMessage>{visibleError}</FormMessage>
             </div>
             <div className="space-y-1.5">
-              <FormLabel htmlFor={`${fieldName}.value`}>
-                {t("userVariable_value")}
-              </FormLabel>
-              <FormDescription>
-                {t("userVariable_value_desc")}
-              </FormDescription>
-              <div className="flex justify-end pb-1">
+              <div className="flex items-center justify-between gap-3 pb-1">
+                <FormLabel htmlFor={`${fieldName}.value`} className="min-w-0">
+                  {t("userVariable_value_label")}
+                </FormLabel>
                 <InputMenu
                   targetElm={textarea}
-                  className="w-fit"
+                  className="w-fit shrink-0"
                   hideFilePaste
                   userVariables={precedingVariables}
                 />
@@ -328,9 +340,10 @@ const VariableBadge = ({
                   placeholder={t("userVariable_value")}
                   rows={5}
                   value={convSymbolsToReadableKeys(draftValue)}
-                  onChange={(event) =>
+                  onChange={(event) => {
                     setDraftValue(convReadableKeysToSymbols(event.target.value))
-                  }
+                    setHasInteracted(true)
+                  }}
                   ref={setTextarea}
                   className="max-h-80 text-sm"
                 />

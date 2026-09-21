@@ -521,8 +521,8 @@
   "Option_userVariable_name_desc": {
     "message": "Usa questo nome come chiave nei passaggi di input di PageAction."
   },
-  "Option_userVariable_value_desc": {
-    "message": "Questo valore viene espanso durante l’esecuzione di PageAction."
+  "Option_userVariable_value_label": {
+    "message": "Testo in fase di esecuzione"
   },
   "Option_userVariable_name": {
     "message": "Nome variabile"

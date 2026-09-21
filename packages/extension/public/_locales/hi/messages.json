@@ -521,8 +521,8 @@
   "Option_userVariable_name_desc": {
     "message": "PageAction इनपुट चरणों में इस नाम को कुंजी के रूप में उपयोग करें।"
   },
-  "Option_userVariable_value_desc": {
-    "message": "PageAction चलने पर यह मान विस्तारित होता है।"
+  "Option_userVariable_value_label": {
+    "message": "रनटाइम पर विस्तारित टेक्स्ट"
   },
   "Option_userVariable_name": {
     "message": "वेरिएबल नाम"

@@ -251,9 +251,17 @@ const PageActionStepSchema = z.object({
 })
 export type PageActionStep = z.infer<typeof PageActionStepSchema>
 
+export const USER_VARIABLE_NAME_MAX_LENGTH = 20
+
 export const userVariableSchema = z.object({
   name: z
     .string()
+    .min(1, { message: t("Option_userVariable_name_required") })
+    .max(USER_VARIABLE_NAME_MAX_LENGTH, {
+      message: t("Option_zod_string_max", [
+        `${USER_VARIABLE_NAME_MAX_LENGTH}`,
+      ]),
+    })
     .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
       message: t("Option_zod_invalid_variable_name"),
     })

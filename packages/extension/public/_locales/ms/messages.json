@@ -521,8 +521,8 @@
   "Option_userVariable_name_desc": {
     "message": "Gunakan nama ini sebagai kunci dalam langkah input PageAction."
   },
-  "Option_userVariable_value_desc": {
-    "message": "Nilai ini dikembangkan apabila PageAction dijalankan."
+  "Option_userVariable_value_label": {
+    "message": "Teks masa jalan"
   },
   "Option_userVariable_name": {
     "message": "Nama pembolehubah"

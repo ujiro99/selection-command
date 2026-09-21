@@ -521,8 +521,8 @@
   "Option_userVariable_name_desc": {
     "message": "PageActionの入力ステップ内でキー名として使用できます。"
   },
-  "Option_userVariable_value_desc": {
-    "message": "PageActionの実行時にこの値が展開されます。"
+  "Option_userVariable_value_label": {
+    "message": "実行時に展開される文字列"
   },
   "Option_userVariable_name": {
     "message": "変数名"

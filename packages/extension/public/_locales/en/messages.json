@@ -524,8 +524,8 @@
   "Option_userVariable_name_desc": {
     "message": "Use this name as a key in PageAction input steps."
   },
-  "Option_userVariable_value_desc": {
-    "message": "This value is expanded when the PageAction runs."
+  "Option_userVariable_value_label": {
+    "message": "String expanded at runtime"
   },
   "Option_userVariable_name": {
     "message": "Variable name"
