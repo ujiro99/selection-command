@@ -9,14 +9,7 @@ import type { UserVariable } from "@/types"
 
 export namespace PageAction {
   export type Parameter =
-    | Start
-    | End
-    | Navigate
-    | Click
-    | Input
-    | FilePaste
-    | Keyboard
-    | Scroll
+    Start | End | Navigate | Click | Input | FilePaste | Keyboard | Scroll
 
   export type Start = {
     type: PAGE_ACTION_CONTROL.start
@@ -73,7 +66,6 @@ export namespace PageAction {
     userVariables?: UserVariable[]
     pageHtml?: string
     selectionHtml?: string
-    prompt?: string
   }
 
   export type Keyboard = {

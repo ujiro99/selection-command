@@ -77,3 +77,26 @@ export const findAiService = async (
   const services = await getAiServices()
   return services.find((s) => s.id === id)
 }
+
+const originOf = (url: string): string | null => {
+  try {
+    return new URL(url).origin
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Find an AI service whose site the given URL belongs to.
+ * Matching is by origin, so any page within the service (e.g. a specific
+ * conversation) still resolves to it. Because the service list is fetched from
+ * the hub, services added there are recognized without an extension release.
+ */
+export const findAiServiceByUrl = async (
+  url: string,
+): Promise<AiService | undefined> => {
+  const origin = originOf(url)
+  if (!origin) return undefined
+  const services = await getAiServices()
+  return services.find((s) => originOf(s.url) === origin)
+}

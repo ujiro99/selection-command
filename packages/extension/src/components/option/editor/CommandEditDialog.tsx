@@ -196,7 +196,7 @@ const getDefault = (
         pageUrl: "",
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         steps: [],
-        prompt: "",
+        userVariables: [],
       },
     }
   }
@@ -331,9 +331,6 @@ const CommandEditDialogInner = ({
   const isEdit = mode === "edit" || mode === "hubEdit"
   const isHubEdit = mode === "hubEdit"
 
-  // Determine if open mode selection should be shown
-  const shouldShowOpenModeSelect = selectedType === COMMAND_TYPE.SEARCH
-
   // Process form data before submit: apply coercions and clean up unused fields.
   const processFormData = (data: CommandSchemaType): CommandSchemaType => {
     const d = { ...data }
@@ -415,7 +412,7 @@ const CommandEditDialogInner = ({
         openMode: getValues("pageActionOption.openMode"),
         size: getValues("popupOption") ?? POPUP_OPTION,
         steps: getValues("pageActionOption.steps"),
-        prompt: getValues("pageActionOption.prompt"),
+        userVariables: getValues("pageActionOption.userVariables"),
       },
     )
     await Ipc.send(BgCommand.startPageActionRecorder, {
@@ -529,7 +526,12 @@ const CommandEditDialogInner = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogContent className="max-w-3xl pr-2">
+        <DialogContent
+          className={cn(
+            "max-w-3xl pr-2",
+            selectedType === COMMAND_TYPE.PAGE_ACTION && "max-w-4xl",
+          )}
+        >
           <DialogHeader className="relative">
             <DialogTitle>
               <SquareTerminal />
@@ -645,7 +647,7 @@ const CommandEditDialogInner = ({
                   />
                 )}
 
-                {selectedType === COMMAND_TYPE.SEARCH ? (
+                {selectedType === COMMAND_TYPE.SEARCH && (
                   <OpenModeToggleField
                     control={form.control}
                     name="openMode"
@@ -653,24 +655,6 @@ const CommandEditDialogInner = ({
                     type="search"
                     description={t("displayMode_desc")}
                   />
-                ) : (
-                  shouldShowOpenModeSelect && (
-                    <SelectField
-                      control={form.control}
-                      name="openMode"
-                      formLabel="Open Mode"
-                      options={e2a(OPEN_MODE)
-                        .filter(
-                          (mode) =>
-                            mode !== OPEN_MODE.ADD_PAGE_RULE &&
-                            mode !== OPEN_MODE.OPTION,
-                        )
-                        .map((mode) => ({
-                          name: t(`openMode_${mode}`),
-                          value: mode,
-                        }))}
-                    />
-                  )
                 )}
 
                 {isSearchOpenMode(openMode) && (

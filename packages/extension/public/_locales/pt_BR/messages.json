@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "Tempo de atraso"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prompt"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Modelo de prompt a ser inserido. Você pode adicionar variáveis pelo menu."
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Insira variáveis dinâmicas como o texto selecionado e faça referência a elas nas etapas com {{Prompt}}."
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "ex.: Resuma o seguinte texto:\n{{Texto selecionado}}"
-  },
   "Option_aiPrompt_service": {
     "message": "Serviço de IA"
   },
@@ -527,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Defina uma variável personalizada para os campos de entrada."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Use este nome como chave nas etapas de entrada do PageAction."
+  },
+  "Option_userVariable_value_label": {
+    "message": "Texto em tempo de execução"
+  },
   "Option_userVariable_name": {
     "message": "Nome da variável"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Restantes"
   },
   "Option_userVariable_value": {
     "message": "Valor"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(sem nome)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Remover variável"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "Esta variável é usada em $count$ lugar(es). Essas referências deixarão de ser substituídas.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Renomear deixará $count$ referência(s) existente(s) sem substituição.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Adicionar variável"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Recomendado – muito usado com $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Nome da variável é obrigatório"
@@ -836,6 +869,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "Este nome é reservado para uma variável integrada"
+  },
   "Option_zod_string_min": {
     "message": "Por favor, insira uma string de $key$ caracteres ou mais.",
     "placeholders": {
@@ -885,9 +921,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "O HTML do intervalo selecionado será anexado como arquivo"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "O prompt será inserido"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Inserir Texto"
   },
@@ -896,9 +929,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Texto selecionado"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prompt"
   },
   "PageAction_InputMenu_url": {
     "message": "URL de origem"

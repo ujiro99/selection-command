@@ -7,7 +7,7 @@ import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import type { ExecuteCommandParams, UrlParam } from "@/types"
 import type { OpenAndRunProps } from "@/services/pageAction/background"
-import { INSERT, toInsertTemplate } from "@/services/pageAction"
+import { INSERT, templateReferencesInsert } from "@/services/pageAction"
 
 type PageActionParams = {
   userVariables?: Array<{ name: string; value: string }>
@@ -33,25 +33,19 @@ export const PageAction = {
       return
     }
 
-    // Checks if any input step references the given insert symbol
-    const stepsReferenceInsert = (insert: INSERT) =>
-      command.pageActionOption.steps.some(
-        (step) =>
-          step.param.type === PAGE_ACTION_EVENT.input &&
-          step.param.value.includes(toInsertTemplate(insert)),
-      )
+    const effectiveUserVariables =
+      userVariables ?? command.pageActionOption.userVariables
 
-    // Checks if any step directly or indirectly requires clipboard data
-    const hasPromptStep = stepsReferenceInsert(INSERT.PROMPT)
-    const promptNeedsClipboard =
-      hasPromptStep &&
-      (command.pageActionOption.prompt?.includes(
-        toInsertTemplate(INSERT.CLIPBOARD),
-      ) ??
-        false)
-
-    const needClipboard =
-      promptNeedsClipboard || stepsReferenceInsert(INSERT.CLIPBOARD)
+    // Checks if any step needs clipboard data, directly or through a user variable
+    const needClipboard = command.pageActionOption.steps.some(
+      (step) =>
+        step.param.type === PAGE_ACTION_EVENT.input &&
+        templateReferencesInsert(
+          step.param.value,
+          INSERT.CLIPBOARD,
+          effectiveUserVariables,
+        ),
+    )
 
     // Handle side panel mode: store pending steps in session storage, then open
     // the side panel. The background onConnect handler will pick up the pending
@@ -66,8 +60,7 @@ export const PageAction = {
         srcUrl: pageUrl ?? "",
         clipboardText: "",
         useClipboard: needClipboard || (useClipboard ?? false),
-        prompt: command.pageActionOption.prompt,
-        userVariables: userVariables ?? command.pageActionOption.userVariables,
+        userVariables: effectiveUserVariables,
       }
       try {
         await Storage.set<SidePanelPendingAction>(
@@ -118,8 +111,7 @@ export const PageAction = {
       selectedText: selectionText,
       srcUrl: pageUrl ?? "",
       openMode,
-      userVariables: userVariables ?? command.pageActionOption.userVariables,
-      prompt: command.pageActionOption.prompt,
+      userVariables: effectiveUserVariables,
     })
   },
 }

@@ -245,11 +245,10 @@ describe("background.ts - Side Panel Connection", () => {
       )
     })
 
-    it("SP-08d: Includes prompt and userVariables in the message when provided in pending action", async () => {
+    it("SP-08d: Includes userVariables in the message when provided in pending action", async () => {
       const port = createMockPort("https://chatgpt.com")
       const pending = {
         ...createPendingAction(),
-        prompt: "Summarize this: {{SelectedText}}",
         userVariables: [{ name: "myVar", value: "myVal" }],
       }
       mockStorage.get.mockResolvedValue(pending)
@@ -262,7 +261,6 @@ describe("background.ts - Side Panel Connection", () => {
           command: "execPageAction",
           param: expect.objectContaining({
             step: pending.steps[0],
-            prompt: "Summarize this: {{SelectedText}}",
             userVariables: [{ name: "myVar", value: "myVal" }],
           }),
         }),
@@ -399,7 +397,7 @@ describe("background.ts - Side Panel Connection", () => {
       )
     })
 
-    it("SP-15: Passes prompt and userVariables when handleSidePanelOpened navigates", async () => {
+    it("SP-15: Passes userVariables when handleSidePanelOpened navigates", async () => {
       const port = createMockPort("https://chatgpt.com")
       const tabId = 42
       registerSidePanelTab(tabId, "https://chatgpt.com")
@@ -412,7 +410,6 @@ describe("background.ts - Side Panel Connection", () => {
         selectedText: "test selection",
         srcUrl: "https://src.example.com",
         clipboardText: "test clipboard",
-        prompt: "Explain: {{SelectedText}}",
         userVariables: [{ name: "var1", value: "val1" }],
       })
 
@@ -422,7 +419,6 @@ describe("background.ts - Side Panel Connection", () => {
         expect.objectContaining({
           command: "execPageAction",
           param: expect.objectContaining({
-            prompt: "Explain: {{SelectedText}}",
             userVariables: [{ name: "var1", value: "val1" }],
           }),
         }),

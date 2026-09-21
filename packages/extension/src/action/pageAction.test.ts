@@ -51,11 +51,11 @@ describe("PageAction.execute", () => {
           },
         },
       ],
-      prompt: "Summarize: {{SelectedText}}",
+      userVariables: [{ name: "Prompt", value: "Summarize: {{SelectedText}}" }],
     },
   }
 
-  it("PA-01: sends prompt in openAndRunPageAction payload", async () => {
+  it("PA-01: sends userVariables in openAndRunPageAction payload", async () => {
     await PageAction.execute({
       command: baseCommand as any,
       selectionText: "Selected content",
@@ -67,7 +67,9 @@ describe("PageAction.execute", () => {
       expect.objectContaining({
         commandId: "pa-cmd-1",
         selectedText: "Selected content",
-        prompt: "Summarize: {{SelectedText}}",
+        userVariables: [
+          { name: "Prompt", value: "Summarize: {{SelectedText}}" },
+        ],
         url: expect.objectContaining({
           searchUrl: "https://ai.example.com",
           selectionText: "Selected content",
@@ -77,17 +79,19 @@ describe("PageAction.execute", () => {
     )
   })
 
-  it("PA-02: detects indirect clipboard usage when step has {{Prompt}} and prompt has {{Clipboard}}", async () => {
-    const commandWithClipboardPrompt = {
+  it("PA-02: detects clipboard usage reached through a user variable", async () => {
+    const commandWithClipboardVariable = {
       ...baseCommand,
       pageActionOption: {
         ...baseCommand.pageActionOption,
-        prompt: "Translate clipboard: {{Clipboard}}",
+        userVariables: [
+          { name: "Prompt", value: "Translate clipboard: {{Clipboard}}" },
+        ],
       },
     }
 
     await PageAction.execute({
-      command: commandWithClipboardPrompt as any,
+      command: commandWithClipboardVariable as any,
       selectionText: "",
       position: { x: 50, y: 50 },
     })
@@ -102,8 +106,8 @@ describe("PageAction.execute", () => {
     )
   })
 
-  it("PA-03: does not request clipboard if prompt has {{Clipboard}} but no step uses {{Prompt}}", async () => {
-    const commandWithoutPromptStep = {
+  it("PA-03: does not request clipboard when no step references the variable holding it", async () => {
+    const commandWithoutVariableStep = {
       ...baseCommand,
       pageActionOption: {
         ...baseCommand.pageActionOption,
@@ -118,12 +122,14 @@ describe("PageAction.execute", () => {
             },
           },
         ],
-        prompt: "Translate clipboard: {{Clipboard}}",
+        userVariables: [
+          { name: "Prompt", value: "Translate clipboard: {{Clipboard}}" },
+        ],
       },
     }
 
     await PageAction.execute({
-      command: commandWithoutPromptStep as any,
+      command: commandWithoutVariableStep as any,
       selectionText: "hello",
       position: { x: 50, y: 50 },
     })
@@ -171,7 +177,7 @@ describe("PageAction.execute", () => {
       BgCommand.openAndRunPageAction,
       expect.objectContaining({
         commandId: "legacy-cmd",
-        prompt: undefined,
+        userVariables: undefined,
         url: expect.objectContaining({
           searchUrl: "https://example.com",
           selectionText: "sample",
@@ -206,7 +212,9 @@ describe("PageAction.execute", () => {
         srcUrl: "https://origin.example.com",
         clipboardText: "",
         useClipboard: false,
-        prompt: "Summarize: {{SelectedText}}",
+        userVariables: [
+          { name: "Prompt", value: "Summarize: {{SelectedText}}" },
+        ],
       }),
     )
 
@@ -251,7 +259,9 @@ describe("PageAction.execute", () => {
       pageActionOption: {
         ...baseCommand.pageActionOption,
         openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
-        prompt: "Translate clipboard: {{Clipboard}}",
+        userVariables: [
+          { name: "Prompt", value: "Translate clipboard: {{Clipboard}}" },
+        ],
       },
     }
 
@@ -265,12 +275,14 @@ describe("PageAction.execute", () => {
       SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING,
       expect.objectContaining({
         useClipboard: true,
-        prompt: "Translate clipboard: {{Clipboard}}",
+        userVariables: [
+          { name: "Prompt", value: "Translate clipboard: {{Clipboard}}" },
+        ],
       }),
     )
   })
 
-  it("PA-08: executes in side panel mode without prompt (backward compatibility)", async () => {
+  it("PA-08: executes in side panel mode without user variables (backward compatibility)", async () => {
     const sidePanelLegacyCommand = {
       ...baseCommand,
       pageActionOption: {
@@ -301,7 +313,7 @@ describe("PageAction.execute", () => {
       expect.objectContaining({
         url: "https://ai.example.com",
         selectedText: "legacy text",
-        prompt: undefined,
+        userVariables: undefined,
       }),
     )
     expect(Ipc.send).toHaveBeenCalledWith(BgCommand.openSidePanel, {
@@ -309,4 +321,3 @@ describe("PageAction.execute", () => {
     })
   })
 })
-

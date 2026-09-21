@@ -442,6 +442,110 @@
         ]
       },
       "revision": 0
+    },
+    {
+      "id": "cmd-test-pa-user-variable-builtins",
+      "title": "User Variable with Built-ins",
+      "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "pageActionOption": {
+        "openMode": "tab",
+        "startUrl": "https://ujiro99.github.io/selection-command/en/test",
+        "userVariables": [
+          {
+            "name": "Prompt",
+            "value": "Selected: {{SelectedText}} / Source: {{Url}}"
+          }
+        ],
+        "steps": [
+          {
+            "delayMs": 0,
+            "id": "pa-user-builtins-s1",
+            "param": {
+              "label": "Start",
+              "type": "start",
+              "url": "https://ujiro99.github.io/selection-command/en/test"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 500,
+            "id": "pa-user-builtins-s2",
+            "param": {
+              "label": "Text input",
+              "selector": "//input[@placeholder='text input']",
+              "selectorType": "xpath",
+              "type": "input",
+              "value": "{{Prompt}}"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 0,
+            "id": "pa-user-builtins-s3",
+            "param": {
+              "label": "End",
+              "type": "end"
+            },
+            "skipRenderWait": false
+          }
+        ]
+      },
+      "revision": 0
+    },
+    {
+      "id": "cmd-test-pa-nested-user-variables",
+      "title": "Nested User Variables",
+      "openMode": "pageAction",
+      "parentFolderId": "0f2167ab-2e1b-4972-954c-71eec058ab14",
+      "pageActionOption": {
+        "openMode": "tab",
+        "startUrl": "https://ujiro99.github.io/selection-command/en/test",
+        "userVariables": [
+          {
+            "name": "Topic",
+            "value": "Topic: {{SelectedText}}"
+          },
+          {
+            "name": "Prompt",
+            "value": "Explain {{Topic}}"
+          }
+        ],
+        "steps": [
+          {
+            "delayMs": 0,
+            "id": "pa-nested-user-variables-s1",
+            "param": {
+              "label": "Start",
+              "type": "start",
+              "url": "https://ujiro99.github.io/selection-command/en/test"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 500,
+            "id": "pa-nested-user-variables-s2",
+            "param": {
+              "label": "Text input",
+              "selector": "//input[@placeholder='text input']",
+              "selectorType": "xpath",
+              "type": "input",
+              "value": "{{Prompt}}"
+            },
+            "skipRenderWait": false
+          },
+          {
+            "delayMs": 0,
+            "id": "pa-nested-user-variables-s3",
+            "param": {
+              "label": "End",
+              "type": "end"
+            },
+            "skipRenderWait": false
+          }
+        ]
+      },
+      "revision": 0
     }
   ],
   "folders": [

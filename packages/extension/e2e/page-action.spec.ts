@@ -53,6 +53,27 @@ async function openRecorder(
   return { optionsPage, recorderPage, completeButton }
 }
 
+async function runActionCommand(
+  context: BrowserContext,
+  page: Page,
+  commandTitle: string,
+): Promise<Page> {
+  const testPage = new TestPage(page)
+  await testPage.open()
+  await testPage.selectText("//h2[contains(text(), 'Browser')]")
+
+  const menubar = await testPage.getMenuBar()
+  await menubar.locator('[title="Action"]').hover()
+
+  const [actionPage] = await Promise.all([
+    context.waitForEvent("page", { timeout: 5000 }),
+    page.locator(`[role='menuitem'][aria-label='${commandTitle}']`).click(),
+  ])
+  await actionPage.waitForLoadState("domcontentloaded")
+
+  return actionPage
+}
+
 test.describe("PageAction Commands", () => {
   test.beforeEach(async ({ context, extensionId, getCommands }) => {
     const optionsPage = new OptionsPage(context, extensionId, getCommands)
@@ -289,5 +310,45 @@ test.describe("PageAction Commands", () => {
       timeout: 10_000,
       waitUntil: "domcontentloaded",
     })
+  })
+
+  /**
+   * E2E-47: Verify that built-in variables referenced by a user variable are
+   * expanded when the PageAction input step executes.
+   */
+  test("E2E-47: PageAction expands built-in variables in a user variable", async ({
+    context,
+    page,
+  }) => {
+    const actionPage = await runActionCommand(
+      context,
+      page,
+      "User Variable with Built-ins",
+    )
+
+    await expect(
+      actionPage.locator('input[placeholder="text input"]'),
+    ).toHaveValue(`Selected: Browser / Source: ${TEST_URL}`, {
+      timeout: 10_000,
+    })
+  })
+
+  /**
+   * E2E-48: Verify that a user variable can reference user variables defined
+   * before it and that the fully expanded value reaches the input step.
+   */
+  test("E2E-48: PageAction expands preceding user variables", async ({
+    context,
+    page,
+  }) => {
+    const actionPage = await runActionCommand(
+      context,
+      page,
+      "Nested User Variables",
+    )
+
+    await expect(
+      actionPage.locator('input[placeholder="text input"]'),
+    ).toHaveValue("Explain Topic: Browser", { timeout: 10_000 })
   })
 })

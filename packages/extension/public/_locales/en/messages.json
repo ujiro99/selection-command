@@ -494,22 +494,6 @@
   "Option_pageAction_delay": {
     "message": "Delay time"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prompt",
-    "description": "Label for prompt input field in Page Action"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Prompt template to be inserted. You can add variables from the menu.",
-    "description": "Description for prompt input field in Page Action"
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Insert dynamic variables like selected text, and reference them in steps with {{Prompt}}.",
-    "description": "Detailed description for prompt usage"
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "e.g., Summarize the following text:\n{{Selected text}}",
-    "description": "Placeholder for prompt input field in Page Action"
-  },
   "Option_aiPrompt_service": {
     "message": "AI Service"
   },
@@ -534,14 +518,59 @@
   "Option_userVariables_desc": {
     "message": "Define custom variables for input fields (max 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Define a custom variable for input fields."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Use this name as a key in PageAction input steps."
+  },
+  "Option_userVariable_value_label": {
+    "message": "String expanded at runtime"
+  },
   "Option_userVariable_name": {
     "message": "Variable name"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Remaining"
   },
   "Option_userVariable_value": {
     "message": "Value"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(unnamed)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Remove variable"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "This variable is used in $count$ place(s). Those references will stop being replaced.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Renaming leaves $count$ existing reference(s) unreplaced.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Add variable"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Recommended – commonly used with $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Variable name is required"
@@ -846,6 +875,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Variable name must start with a letter and contain only letters, numbers, and underscores"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "This name is reserved for a built-in variable"
+  },
   "Option_zod_string_min": {
     "message": "Please enter a string of $key$ characters or more.",
     "placeholders": {
@@ -899,10 +931,6 @@
     "message": "The HTML of the selected range will be attached as a file",
     "description": "for INSERT.SELECTION_HTML — placeholder {{SelectionHtml}} in prompt templates"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "Prompt will be inserted",
-    "description": "for INSERT.PROMPT"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Insert Text"
   },
@@ -912,10 +940,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Selected text"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prompt",
-    "description": "Menu item for inserting prompt variable"
   },
   "PageAction_InputMenu_url": {
     "message": "Origin URL"

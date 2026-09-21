@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "Masa kelewatan"
   },
-  "Option_pageAction_prompt": {
-    "message": "Prom"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "Templat prom yang akan dimasukkan. Anda boleh menambah pemboleh ubah daripada menu."
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "Sisipkan pemboleh ubah dinamik seperti teks yang dipilih, dan rujuk dalam langkah dengan {{Prom}}."
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "cth., Ringkaskan teks berikut:\n{{Teks yang dipilih}}"
-  },
   "Option_aiPrompt_service": {
     "message": "Perkhidmatan AI"
   },
@@ -527,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "Takrifkan pembolehubah tersuai untuk medan input (maks 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Takrifkan pemboleh ubah tersuai untuk medan input."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Gunakan nama ini sebagai kunci dalam langkah input PageAction."
+  },
+  "Option_userVariable_value_label": {
+    "message": "Teks masa jalan"
+  },
   "Option_userVariable_name": {
     "message": "Nama pembolehubah"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Baki"
   },
   "Option_userVariable_value": {
     "message": "Nilai"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(tanpa nama)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Buang pemboleh ubah"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "Pemboleh ubah ini digunakan di $count$ tempat. Rujukan tersebut tidak akan diganti lagi.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Menamakan semula menyebabkan $count$ rujukan sedia ada tidak diganti.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Tambah pembolehubah"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Disyorkan – kerap digunakan dengan $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Nama pembolehubah diperlukan"
@@ -836,6 +869,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "Nama ini dikhaskan untuk pemboleh ubah terbina dalam"
+  },
   "Option_zod_string_min": {
     "message": "Sila masukkan rentetan $key$ aksara atau lebih.",
     "placeholders": {
@@ -885,9 +921,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "HTML julat yang dipilih akan dilampirkan sebagai fail"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "Prom akan dimasukkan"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "Masukkan Teks"
   },
@@ -896,9 +929,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "Teks yang dipilih"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "Prom"
   },
   "PageAction_InputMenu_url": {
     "message": "URL Asal"

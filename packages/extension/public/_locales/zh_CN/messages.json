@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "等待时间"
   },
-  "Option_pageAction_prompt": {
-    "message": "提示词"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "这是要输入的提示词模板。可以从菜单中添加变量。"
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "可以插入选中文本等动态变量，并在步骤中通过 {{提示词}} 引用。"
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "例：请概括以下文本：\n{{将插入选中的文本}}"
-  },
   "Option_aiPrompt_service": {
     "message": "AI服务"
   },
@@ -527,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "为输入字段定义自定义变量（最多 5 个）"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "为输入字段定义自定义变量。"
+  },
+  "Option_userVariable_name_desc": {
+    "message": "可在 PageAction 输入步骤中将此名称用作键。"
+  },
+  "Option_userVariable_value_label": {
+    "message": "运行时展开的文本"
+  },
   "Option_userVariable_name": {
     "message": "变量名"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "剩余"
   },
   "Option_userVariable_value": {
     "message": "值"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(未命名)"
+  },
+  "Option_userVariable_remove": {
+    "message": "删除变量"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "该变量在 $count$ 处被使用。这些引用将不再被替换。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "重命名后，现有的 $count$ 处引用将不再被替换。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "添加变量"
+  },
+  "Option_userVariable_recommended": {
+    "message": "推荐 · 在 $service$ 中很常用",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "变量名是必需的"
@@ -836,6 +869,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "变量名必须以字母开头，且只能包含字母、数字和下划线"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "此名称已被内置变量占用"
+  },
   "Option_zod_string_min": {
     "message": "请输入至少$key$个字符的字符串。",
     "placeholders": {
@@ -885,9 +921,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "将以文件形式附加所选范围的HTML"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "将插入提示词"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "插入文本"
   },
@@ -896,9 +929,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "选中的文本"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "提示词"
   },
   "PageAction_InputMenu_url": {
     "message": "原始URL"

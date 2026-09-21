@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "प्रतीक्षा समय"
   },
-  "Option_pageAction_prompt": {
-    "message": "प्रॉम्प्ट"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "सम्मिलित किए जाने वाले प्रॉम्प्ट का टेम्पलेट। आप मेनू से चर जोड़ सकते हैं।"
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "चयनित टेक्स्ट जैसे गतिशील चर डालें, और चरणों में {{प्रॉम्प्ट}} के साथ उनका संदर्भ लें।"
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "उदा.: निम्नलिखित पाठ का सारांश प्रस्तुत करें:\n{{चयनित पाठ}}"
-  },
   "Option_aiPrompt_service": {
     "message": "AI सेवा"
   },
@@ -527,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "इनपुट फ़ील्ड के लिए कस्टम वेरिएबल परिभाषित करें (अधिकतम 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "इनपुट फ़ील्ड के लिए एक कस्टम वेरिएबल परिभाषित करें।"
+  },
+  "Option_userVariable_name_desc": {
+    "message": "PageAction इनपुट चरणों में इस नाम को कुंजी के रूप में उपयोग करें।"
+  },
+  "Option_userVariable_value_label": {
+    "message": "रनटाइम पर विस्तारित टेक्स्ट"
+  },
   "Option_userVariable_name": {
     "message": "वेरिएबल नाम"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "शेष"
   },
   "Option_userVariable_value": {
     "message": "मान"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(अनाम)"
+  },
+  "Option_userVariable_remove": {
+    "message": "चर हटाएँ"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "यह वेरिएबल $count$ जगह उपयोग हो रहा है। वे संदर्भ अब प्रतिस्थापित नहीं होंगे।",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "नाम बदलने पर $count$ मौजूदा संदर्भ प्रतिस्थापित नहीं होंगे।",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "वेरिएबल जोड़ें"
+  },
+  "Option_userVariable_recommended": {
+    "message": "अनुशंसित – $service$ के साथ अक्सर उपयोग किया जाता है",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "वेरिएबल नाम आवश्यक है"
@@ -836,6 +869,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "वेरिएबल नाम अक्षर से शुरू होना चाहिए और केवल अक्षर, संख्या और अंडरस्कोर हो सकते हैं"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "यह नाम एक अंतर्निहित चर के लिए आरक्षित है"
+  },
   "Option_zod_string_min": {
     "message": "कम से कम $key$ वर्णों की स्ट्रिंग दर्ज करें।",
     "placeholders": {
@@ -885,9 +921,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "चुने गए भाग का HTML फ़ाइल के रूप में संलग्न किया जाएगा"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "प्रॉम्प्ट डाला जाएगा"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "टेक्स्ट डालें"
   },
@@ -896,9 +929,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "चयनित टेक्स्ट"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "प्रॉम्प्ट"
   },
   "PageAction_InputMenu_url": {
     "message": "मूल URL"

@@ -491,18 +491,6 @@
   "Option_pageAction_delay": {
     "message": "지연 시간"
   },
-  "Option_pageAction_prompt": {
-    "message": "프롬프트"
-  },
-  "Option_pageAction_prompt_desc": {
-    "message": "입력할 프롬프트 템플릿입니다. 메뉴에서 변수를 추가할 수 있습니다."
-  },
-  "Option_pageAction_prompt_desc_2": {
-    "message": "선택한 텍스트와 같은 동적 변수를 삽입하고 단계에서 {{프롬프트}}로 참조할 수 있습니다."
-  },
-  "Option_pageAction_prompt_placeholder": {
-    "message": "예: 다음 텍스트 요약:\n{{선택한 텍스트}}"
-  },
   "Option_aiPrompt_service": {
     "message": "AI 서비스"
   },
@@ -527,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "입력 필드에 대한 사용자 정의 변수 정의 (최대 5개)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "입력 필드에 사용할 사용자 변수를 정의합니다."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "PageAction 입력 단계에서 이 이름을 키로 사용할 수 있습니다."
+  },
+  "Option_userVariable_value_label": {
+    "message": "실행 시 확장되는 텍스트"
+  },
   "Option_userVariable_name": {
     "message": "변수 이름"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "남은 글자 수"
   },
   "Option_userVariable_value": {
     "message": "값"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(이름 없음)"
+  },
+  "Option_userVariable_remove": {
+    "message": "변수 삭제"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "이 변수는 $count$곳에서 사용 중입니다. 해당 참조는 더 이상 치환되지 않습니다.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "이름을 바꾸면 기존 $count$곳의 참조가 치환되지 않습니다.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "변수 추가"
+  },
+  "Option_userVariable_recommended": {
+    "message": "추천 – $service$에서 자주 사용됩니다",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "변수 이름이 필요합니다"
@@ -836,6 +869,9 @@
   "Option_zod_invalid_variable_name": {
     "message": "변수 이름은 문자로 시작하고 문자, 숫자, 언더스코어만 포함해야 합니다"
   },
+  "Option_zod_reserved_variable_name": {
+    "message": "이 이름은 기본 제공 변수용으로 예약되어 있습니다"
+  },
   "Option_zod_string_min": {
     "message": "$key$자 이상의 문자열을 입력하세요.",
     "placeholders": {
@@ -885,9 +921,6 @@
   "PageAction_InputMenu_mark_selectionHtml": {
     "message": "선택한 범위의 HTML이 파일로 첨부됩니다"
   },
-  "PageAction_InputMenu_mark_prompt": {
-    "message": "프롬프트가 삽입됩니다"
-  },
   "PageAction_InputMenu_insertText": {
     "message": "텍스트 삽입"
   },
@@ -896,9 +929,6 @@
   },
   "PageAction_InputMenu_selectedText": {
     "message": "선택한 텍스트"
-  },
-  "PageAction_InputMenu_prompt": {
-    "message": "프롬프트"
   },
   "PageAction_InputMenu_url": {
     "message": "원본 URL"
