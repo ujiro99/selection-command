@@ -59,10 +59,9 @@ describe("UserVariablesField suggestions", () => {
   it("UV-02: shows a recommendation without automatically creating a variable", () => {
     render(<Wrapper />)
 
-    expect(screen.getByText("Prompt")).toBeInTheDocument()
-    expect(
-      screen.getByText("Option_userVariable_recommended"),
-    ).toBeInTheDocument()
+    const suggestionButton = screen.getByRole("button", { name: "Prompt" })
+    const recommendation = screen.getByText("Option_userVariable_recommended")
+    expect(suggestionButton.parentElement).toContainElement(recommendation)
     expect(screen.getByTestId("form-state")).toHaveTextContent("[]")
   })
 

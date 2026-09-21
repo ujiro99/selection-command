@@ -161,36 +161,36 @@ export const UserVariablesField = ({
               ))}
 
               {suggestion && !suggestionPresent && !isFull && (
-                <button
-                  type="button"
-                  onClick={() => addVariable(suggestion.name)}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed border-emerald-400 bg-emerald-50 px-3 font-mono text-sm text-emerald-700 transition hover:border-emerald-500 hover:bg-emerald-100"
-                >
-                  <Plus size={14} />
-                  {suggestion.name}
-                </button>
+                <div className="inline-flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => addVariable(suggestion.name)}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-50 px-3 font-mono text-sm text-emerald-700 transition hover:border-emerald-500 hover:bg-emerald-100"
+                  >
+                    <Plus size={14} />
+                    {suggestion.name}
+                  </button>
+                  {suggestion.recommendedBy && (
+                    <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs text-emerald-700">
+                      <Sparkles size={12} className="stroke-emerald-600" />
+                      {t("userVariable_recommended", [
+                        suggestion.recommendedBy,
+                      ])}
+                    </span>
+                  )}
+                </div>
               )}
 
               {!isFull && (
                 <button
                   type="button"
                   onClick={() => addVariable()}
-                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed border-sky-400 bg-sky-50 px-3 font-mono text-sm text-sky-700 transition hover:border-sky-500 hover:bg-sky-100"
+                  className="inline-flex h-9 items-center gap-1.5 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 px-3 font-mono text-sm text-gray-900 transition hover:border-gray-300 hover:bg-gray-100"
                 >
                   <Plus size={14} />
                   {t("userVariable_add")}
                 </button>
               )}
-
-              {suggestion &&
-                !suggestionPresent &&
-                !isFull &&
-                suggestion.recommendedBy && (
-                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs text-emerald-700">
-                    <Sparkles size={12} className="stroke-emerald-600" />
-                    {t("userVariable_recommended", [suggestion.recommendedBy])}
-                  </span>
-                )}
             </div>
 
             {isFull && (
@@ -256,12 +256,12 @@ const VariableBadge = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <div className="group/variable inline-flex h-8 max-w-full items-center rounded-full border border-gray-300 bg-white shadow-sm transition hover:border-gray-400 hover:shadow">
+      <div className="group/variable inline-flex h-9 px-1 max-w-full items-center rounded-xl border border-gray-300 bg-white shadow-sm transition hover:border-gray-400 hover:shadow">
         <DialogTrigger asChild>
           <button
             type="button"
             className={cn(
-              "min-w-0 truncate py-1 pl-3 font-mono text-sm",
+              "min-w-0 truncate py-1 pl-3 font-mono text-sm flex-1",
               variableName ? "text-gray-700" : "text-gray-400",
             )}
           >
@@ -275,7 +275,10 @@ const VariableBadge = ({
             onRemove()
           }}
           aria-label={t("userVariable_remove")}
-          className="mr-1 grid size-6 place-items-center rounded-full opacity-0 transition hover:bg-red-100 focus:opacity-100 group-hover/variable:opacity-100"
+          className={cn(
+            "grid size-6 place-items-center rounded-full opacity-0 transition hover:bg-red-100 focus:opacity-100 group-hover/variable:opacity-100 basis-[0%]",
+            "group-hover/variable:basis-auto",
+          )}
         >
           <Trash2 size={14} className="stroke-gray-500 hover:stroke-red-500" />
         </button>
