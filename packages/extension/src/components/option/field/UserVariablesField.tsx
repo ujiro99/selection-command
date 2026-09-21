@@ -294,18 +294,10 @@ const VariableBadge = ({
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between gap-4">
-                <FormLabel htmlFor={`${fieldName}.name`}>
-                  {t("userVariable_name")}
-                </FormLabel>
-                <span className="text-xs tabular-nums text-gray-500">
-                  {t("userVariable_name_remaining")}:{" "}
-                  {Math.max(0, MAX_VARIABLE_NAME_LENGTH - draftName.length)}
-                </span>
-              </div>
-              <FormDescription>
-                {t("userVariable_name_desc")}
-              </FormDescription>
+              <FormLabel htmlFor={`${fieldName}.name`}>
+                {t("userVariable_name")}
+              </FormLabel>
+              <FormDescription>{t("userVariable_name_desc")}</FormDescription>
               <FormControl>
                 <Input
                   id={`${fieldName}.name`}
@@ -316,6 +308,8 @@ const VariableBadge = ({
                     setHasInteracted(true)
                   }}
                   maxLength={MAX_VARIABLE_NAME_LENGTH}
+                  showRemainingCount
+                  remainingCountLabel={t("userVariable_name_remaining")}
                   className={cn(visibleError && "border-red-500")}
                   inputClassName="text-sm lg:text-sm font-mono"
                 />
@@ -323,7 +317,7 @@ const VariableBadge = ({
               <FormMessage>{visibleError}</FormMessage>
             </div>
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between gap-3 pb-1">
+              <div className="flex items-center justify-between gap-3">
                 <FormLabel htmlFor={`${fieldName}.value`} className="min-w-0">
                   {t("userVariable_value_label")}
                 </FormLabel>
