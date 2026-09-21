@@ -1,12 +1,17 @@
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import { Control, useFieldArray, useFormContext } from "react-hook-form"
-import { Plus, Trash2, ChevronRight, Braces, Sparkles } from "lucide-react"
+import { Pencil, Plus, Save, Sparkles, Trash2 } from "lucide-react"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import collapsibleCss from "@/components/ui/collapsible.module.css"
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   FormControl,
   FormField,
@@ -28,6 +33,7 @@ import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
 export const MAX_VARIABLES = 5
+export const MAX_VARIABLE_NAME_LENGTH = 20
 
 /**
  * A variable the surrounding context suggests creating, such as `Prompt` when
@@ -38,8 +44,6 @@ export type VariableSuggestion = {
   name: string
   /** Display name of what recommends it; absent when merely offered. */
   recommendedBy?: string | null
-  /** Identity of the recommender, used to detect that it changed. */
-  recommendKey?: string | null
 }
 
 type UserVariablesFieldProps = {
@@ -59,7 +63,8 @@ export const UserVariablesField = ({
 }: UserVariablesFieldProps) => {
   const { watch, setValue } = useFormContext()
   const variableArray = useFieldArray({ name, control })
-  const [openId, setOpenId] = useState<string | null>(null)
+  const [editIndex, setEditIndex] = useState<number | null>(null)
+  const [pendingNewIndex, setPendingNewIndex] = useState<number | null>(null)
   const watchedFields = watch(name) || []
   const isFull = variableArray.fields.length >= MAX_VARIABLES
 
@@ -71,28 +76,11 @@ export const UserVariablesField = ({
 
   const addVariable = (initialName = "") => {
     if (isFull) return
+    const appendedIndex = variableArray.fields.length
     variableArray.append({ name: initialName, value: "" })
-    const appended = variableArray.fields.length
-    setOpenId(variableArray.fields[appended]?.id ?? null)
+    setPendingNewIndex(appendedIndex)
+    setEditIndex(appendedIndex)
   }
-
-  // Add the recommended variable when a new recommender appears, so the editor
-  // is already open on an AI service. Tracked per recommender so dismissing it
-  // sticks, while leaving and coming back offers it again.
-  const autoAddedFor = useRef<string | null>(null)
-  useEffect(() => {
-    const key = suggestion?.recommendKey
-    if (!key) {
-      autoAddedFor.current = null
-      return
-    }
-    if (autoAddedFor.current === key) return
-    autoAddedFor.current = key
-    if (suggestionPresent || isFull || !suggestion) return
-    addVariable(suggestion.name)
-    // addVariable is recreated every render; the guarded key drives this effect.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [suggestion?.recommendKey])
 
   const validateName = (value: string, index: number): string | null => {
     if (!value) return t("userVariable_name_required")
@@ -116,65 +104,87 @@ export const UserVariablesField = ({
             <FormLabel>{formLabel}</FormLabel>
             {description && <FormDescription>{description}</FormDescription>}
           </div>
-          <div className="w-4/6 space-y-2">
-            {variableArray.fields.map((field, index) => (
-              <VariableRow
-                key={field.id}
-                fieldName={`${name}.${index}`}
-                variableName={watchedFields[index]?.name ?? ""}
-                value={watchedFields[index]?.value ?? ""}
-                error={
-                  watchedFields[index]?.name !== undefined
-                    ? validateName(watchedFields[index]?.name ?? "", index)
-                    : null
-                }
-                open={openId === field.id}
-                onOpenChange={(open) => setOpenId(open ? field.id : null)}
-                onChangeName={(v) => setValue(`${name}.${index}.name`, v)}
-                onChangeValue={(v) => setValue(`${name}.${index}.value`, v)}
-                onRemove={() => {
-                  if (openId === field.id) setOpenId(null)
-                  variableArray.remove(index)
-                }}
-                // Only variables defined earlier resolve inside this one, so the
-                // insert menu offers exactly those.
-                precedingVariables={watchedFields
-                  .slice(0, index)
-                  .filter((v: { name?: string }) => v?.name)}
-              />
-            ))}
+          <div className="w-4/6">
+            <div className="flex flex-wrap items-center gap-2">
+              {variableArray.fields.map((field, index) => (
+                <VariableBadge
+                  key={field.id}
+                  fieldName={`${name}.${index}`}
+                  variableName={watchedFields[index]?.name ?? ""}
+                  value={watchedFields[index]?.value ?? ""}
+                  open={editIndex === index}
+                  onOpenChange={(open) => setEditIndex(open ? index : null)}
+                  onDismiss={() => {
+                    setEditIndex(null)
+                    if (pendingNewIndex === index) {
+                      variableArray.remove(index)
+                      setPendingNewIndex(null)
+                    }
+                  }}
+                  validateName={(value) => validateName(value, index)}
+                  onSubmit={(variableName, value) => {
+                    setValue(`${name}.${index}.name`, variableName)
+                    setValue(`${name}.${index}.value`, value)
+                    setPendingNewIndex(null)
+                    setEditIndex(null)
+                  }}
+                  onRemove={() => {
+                    setEditIndex((currentIndex) => {
+                      if (currentIndex == null || currentIndex < index) {
+                        return currentIndex
+                      }
+                      return currentIndex === index ? null : currentIndex - 1
+                    })
+                    variableArray.remove(index)
+                    setPendingNewIndex((pendingIndex) => {
+                      if (pendingIndex == null || pendingIndex < index) {
+                        return pendingIndex
+                      }
+                      return pendingIndex === index ? null : pendingIndex - 1
+                    })
+                  }}
+                  // Only variables defined earlier resolve inside this one, so the
+                  // insert menu offers exactly those.
+                  precedingVariables={watchedFields
+                    .slice(0, index)
+                    .filter((v: { name?: string }) => v?.name)}
+                />
+              ))}
 
-            {suggestion && !suggestionPresent && !isFull && (
-              <div className="flex items-center gap-2">
+              {suggestion && !suggestionPresent && !isFull && (
                 <button
                   type="button"
                   onClick={() => addVariable(suggestion.name)}
-                  className="flex items-center gap-1 rounded-md border border-dashed px-2 py-1.5 font-mono text-sm text-gray-600 transition hover:border-gray-400 hover:bg-gray-50"
+                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed border-emerald-400 bg-emerald-50 px-3 font-mono text-sm text-emerald-700 transition hover:border-emerald-500 hover:bg-emerald-100"
                 >
                   <Plus size={14} />
                   {suggestion.name}
                 </button>
-                {suggestion.recommendedBy && (
+              )}
+
+              {!isFull && (
+                <button
+                  type="button"
+                  onClick={() => addVariable()}
+                  className="inline-flex h-8 items-center gap-1.5 rounded-full border border-dashed border-sky-400 bg-sky-50 px-3 font-mono text-sm text-sky-700 transition hover:border-sky-500 hover:bg-sky-100"
+                >
+                  <Plus size={14} />
+                  {t("userVariable_add")}
+                </button>
+              )}
+
+              {suggestion &&
+                !suggestionPresent &&
+                !isFull &&
+                suggestion.recommendedBy && (
                   <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-xs text-emerald-700">
                     <Sparkles size={12} className="stroke-emerald-600" />
                     {t("userVariable_recommended", [suggestion.recommendedBy])}
                   </span>
                 )}
-              </div>
-            )}
+            </div>
 
-            {!isFull ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => addVariable()}
-                className="relative py-4 text-xs mx-auto left-[50%] -translate-x-[50%]"
-              >
-                <Plus size={16} className="mr-1" />
-                {t("userVariable_add")}
-              </Button>
-            ) : (
+            {isFull && (
               <p className="text-sm text-gray-500 text-center">
                 {t("userVariable_max_reached", [`${MAX_VARIABLES}`])}
               </p>
@@ -186,111 +196,145 @@ export const UserVariablesField = ({
   )
 }
 
-type VariableRowProps = {
+type VariableBadgeProps = {
   fieldName: string
   variableName: string
   value: string
-  error: string | null
   open: boolean
   onOpenChange: (open: boolean) => void
-  onChangeName: (value: string) => void
-  onChangeValue: (value: string) => void
+  onDismiss: () => void
+  validateName: (value: string) => string | null
+  onSubmit: (name: string, value: string) => void
   onRemove: () => void
   precedingVariables: Array<{ name: string; value: string }>
 }
 
-const VariableRow = ({
+const VariableBadge = ({
   fieldName,
   variableName,
   value,
-  error,
   open,
   onOpenChange,
-  onChangeName,
-  onChangeValue,
+  onDismiss,
+  validateName,
+  onSubmit,
   onRemove,
   precedingVariables,
-}: VariableRowProps) => {
+}: VariableBadgeProps) => {
   const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
+  const [draftName, setDraftName] = useState(variableName)
+  const [draftValue, setDraftValue] = useState(value)
+  const error = validateName(draftName)
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      setDraftName(variableName)
+      setDraftValue(value)
+    } else {
+      onDismiss()
+      return
+    }
+    onOpenChange(nextOpen)
+  }
+
+  const handleSubmit = () => {
+    if (error) return
+    onSubmit(draftName, draftValue)
+  }
 
   return (
-    <Collapsible
-      open={open}
-      onOpenChange={onOpenChange}
-      className={cn(collapsibleCss.collapse, "rounded-md border bg-white")}
-    >
-      <div className="flex items-center gap-1 px-2 py-1.5">
-        <CollapsibleTrigger
-          type="button"
-          className="flex flex-1 items-center gap-1.5 text-left"
-        >
-          <ChevronRight
-            size={16}
-            className={cn(collapsibleCss.iconRight, "stroke-gray-500 shrink-0")}
-          />
-          <Braces size={14} className="stroke-gray-500 shrink-0" />
-          <span
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <div className="group/variable inline-flex h-8 max-w-full items-center rounded-full border border-gray-300 bg-white shadow-sm transition hover:border-gray-400 hover:shadow">
+        <DialogTrigger asChild>
+          <button
+            type="button"
             className={cn(
-              "font-mono text-sm truncate",
+              "min-w-0 truncate py-1 pl-3 font-mono text-sm",
               variableName ? "text-gray-700" : "text-gray-400",
             )}
           >
             {variableName ? `{{${variableName}}}` : t("userVariable_unnamed")}
-          </span>
-          {!open && value && (
-            <span className="text-xs text-gray-400 truncate">
-              {convSymbolsToReadableKeys(value)}
-            </span>
-          )}
-        </CollapsibleTrigger>
+          </button>
+        </DialogTrigger>
         <button
           type="button"
-          onClick={onRemove}
+          onClick={(event) => {
+            event.stopPropagation()
+            onRemove()
+          }}
           aria-label={t("userVariable_remove")}
-          className="p-1.5 rounded-md transition hover:bg-red-100 group/remove-button"
+          className="mr-1 grid size-6 place-items-center rounded-full opacity-0 transition hover:bg-red-100 focus:opacity-100 group-hover/variable:opacity-100"
         >
-          <Trash2
-            size={16}
-            className="stroke-gray-500 group-hover/remove-button:stroke-red-500"
-          />
+          <Trash2 size={14} className="stroke-gray-500 hover:stroke-red-500" />
         </button>
       </div>
 
-      <CollapsibleContent className={collapsibleCss.CollapsibleContent}>
-        <div className="space-y-2 border-t px-2 py-2">
-          <FormControl>
-            <Input
-              placeholder={t("userVariable_name")}
-              value={variableName}
-              onChange={(e) => onChangeName(e.target.value)}
-              className={cn(error && "border-red-500")}
-              inputClassName="text-sm lg:text-sm font-mono"
-            />
-          </FormControl>
-          {error && <p className="text-sm text-red-500">{error}</p>}
-          <div className="relative">
-            <InputMenu
-              targetElm={textarea}
-              className="w-fit absolute -top-9 right-0"
-              hideFilePaste
-              userVariables={precedingVariables}
-            />
-            <FormControl>
-              <Textarea
-                id={fieldName}
-                placeholder={t("userVariable_value")}
-                rows={5}
-                value={convSymbolsToReadableKeys(value)}
-                onChange={(e) =>
-                  onChangeValue(convReadableKeysToSymbols(e.target.value))
-                }
-                ref={setTextarea}
-                className="max-h-80 text-sm"
+      <DialogPortal portal>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              <Pencil size={18} />
+              {t("userVariables")}
+            </DialogTitle>
+            <DialogDescription>{t("userVariables_desc")}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <div className="flex justify-end">
+                <span className="text-xs tabular-nums text-gray-500">
+                  {t("userVariable_name_remaining")}: {Math.max(
+                    0,
+                    MAX_VARIABLE_NAME_LENGTH - draftName.length,
+                  )}
+                </span>
+              </div>
+              <FormControl>
+                <Input
+                  placeholder={t("userVariable_name")}
+                  value={draftName}
+                  onChange={(event) => setDraftName(event.target.value)}
+                  maxLength={MAX_VARIABLE_NAME_LENGTH}
+                  className={cn(error && "border-red-500")}
+                  inputClassName="text-sm lg:text-sm font-mono"
+                />
+              </FormControl>
+              {error && <p className="text-sm text-red-500">{error}</p>}
+            </div>
+            <div className="relative pt-7">
+              <InputMenu
+                targetElm={textarea}
+                className="absolute right-0 top-0 w-fit"
+                hideFilePaste
+                userVariables={precedingVariables}
               />
-            </FormControl>
+              <FormControl>
+                <Textarea
+                  id={fieldName}
+                  placeholder={t("userVariable_value")}
+                  rows={5}
+                  value={convSymbolsToReadableKeys(draftValue)}
+                  onChange={(event) =>
+                    setDraftValue(convReadableKeysToSymbols(event.target.value))
+                  }
+                  ref={setTextarea}
+                  className="max-h-80 text-sm"
+                />
+              </FormControl>
+            </div>
           </div>
-        </div>
-      </CollapsibleContent>
-    </Collapsible>
+          <DialogFooter className="flex flex-row justify-end gap-2">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                {t("labelCancel")}
+              </Button>
+            </DialogClose>
+            <Button type="button" onClick={handleSubmit} disabled={error != null}>
+              <Save size={16} className="mr-0.5" />
+              {t("labelSave")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </DialogPortal>
+    </Dialog>
   )
 }

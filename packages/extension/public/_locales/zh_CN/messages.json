@@ -518,6 +518,9 @@
   "Option_userVariable_name": {
     "message": "变量名"
   },
+  "Option_userVariable_name_remaining": {
+    "message": "剩余"
+  },
   "Option_userVariable_value": {
     "message": "值"
   },

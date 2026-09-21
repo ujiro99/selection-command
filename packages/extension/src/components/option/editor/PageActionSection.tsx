@@ -160,11 +160,14 @@ export const PageActionSection = ({
           name="pageActionOption.userVariables"
           formLabel={t("userVariables")}
           description={t("userVariables_desc")}
-          suggestion={{
-            name: PROMPT_VARIABLE_NAME,
-            recommendedBy: aiService?.name,
-            recommendKey: aiService?.id,
-          }}
+          suggestion={
+            aiService
+              ? {
+                name: PROMPT_VARIABLE_NAME,
+                recommendedBy: aiService.name,
+              }
+              : undefined
+          }
         />
       </div>
 

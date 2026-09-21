@@ -518,6 +518,9 @@
   "Option_userVariable_name": {
     "message": "변수 이름"
   },
+  "Option_userVariable_name_remaining": {
+    "message": "남은 글자 수"
+  },
   "Option_userVariable_value": {
     "message": "값"
   },

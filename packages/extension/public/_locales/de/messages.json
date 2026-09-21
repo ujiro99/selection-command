@@ -518,6 +518,9 @@
   "Option_userVariable_name": {
     "message": "Variablenname"
   },
+  "Option_userVariable_name_remaining": {
+    "message": "Verbleibend"
+  },
   "Option_userVariable_value": {
     "message": "Wert"
   },

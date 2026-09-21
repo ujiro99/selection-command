@@ -518,6 +518,9 @@
   "Option_userVariable_name": {
     "message": "Nama variabel"
   },
+  "Option_userVariable_name_remaining": {
+    "message": "Tersisa"
+  },
   "Option_userVariable_value": {
     "message": "Nilai"
   },

@@ -518,6 +518,9 @@
   "Option_userVariable_name": {
     "message": "Nama pembolehubah"
   },
+  "Option_userVariable_name_remaining": {
+    "message": "Baki"
+  },
   "Option_userVariable_value": {
     "message": "Nilai"
   },

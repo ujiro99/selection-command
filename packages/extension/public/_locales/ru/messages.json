@@ -518,6 +518,9 @@
   "Option_userVariable_name": {
     "message": "Имя переменной"
   },
+  "Option_userVariable_name_remaining": {
+    "message": "Осталось"
+  },
   "Option_userVariable_value": {
     "message": "Значение"
   },

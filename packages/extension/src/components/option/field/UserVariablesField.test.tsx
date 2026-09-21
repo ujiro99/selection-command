@@ -1,0 +1,158 @@
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
+import { FormProvider, useForm, useWatch } from "react-hook-form"
+import { describe, expect, it } from "vitest"
+import {
+  MAX_VARIABLE_NAME_LENGTH,
+  UserVariablesField,
+} from "./UserVariablesField"
+
+type FormValues = {
+  userVariables: Array<{ name: string; value: string }>
+}
+
+const FormState = () => {
+  const userVariables = useWatch<FormValues>({ name: "userVariables" })
+  return <output data-testid="form-state">{JSON.stringify(userVariables)}</output>
+}
+
+const Wrapper = ({
+  suggested = true,
+  defaultVariables = [],
+}: {
+  suggested?: boolean
+  defaultVariables?: FormValues["userVariables"]
+}) => {
+  // Match the intentionally untyped form contract exposed by the component.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const methods = useForm<any>({
+    defaultValues: { userVariables: defaultVariables },
+  })
+
+  return (
+    <FormProvider {...methods}>
+      <UserVariablesField
+        control={methods.control}
+        name="userVariables"
+        formLabel="User variables"
+        suggestion={
+          suggested
+            ? { name: "Prompt", recommendedBy: "ChatGPT" }
+            : undefined
+        }
+      />
+      <FormState />
+    </FormProvider>
+  )
+}
+
+describe("UserVariablesField suggestions", () => {
+  it("UV-01: does not show a suggestion when none is provided", () => {
+    render(<Wrapper suggested={false} />)
+
+    expect(screen.queryByRole("button", { name: "Prompt" })).toBeNull()
+    expect(
+      screen.queryByText("Option_userVariable_recommended"),
+    ).toBeNull()
+  })
+
+  it("UV-02: shows a recommendation without automatically creating a variable", () => {
+    render(<Wrapper />)
+
+    expect(screen.getByText("Prompt")).toBeInTheDocument()
+    expect(
+      screen.getByText("Option_userVariable_recommended"),
+    ).toBeInTheDocument()
+    expect(screen.getByTestId("form-state")).toHaveTextContent("[]")
+  })
+
+  it("UV-03: creates the suggested variable only after it is saved", async () => {
+    const user = userEvent.setup()
+    render(<Wrapper />)
+
+    await user.click(screen.getByRole("button", { name: "Prompt" }))
+    await user.click(screen.getByRole("button", { name: "Option_labelSave" }))
+
+    expect(screen.getByTestId("form-state")).toHaveTextContent(
+      '[{"name":"Prompt","value":""}]',
+    )
+  })
+
+  it("UV-04: limits variable names to 20 characters and shows the remaining count", async () => {
+    const user = userEvent.setup()
+    render(<Wrapper />)
+
+    await user.click(screen.getByRole("button", { name: "Prompt" }))
+    expect(screen.getByRole("dialog")).toBeInTheDocument()
+    const input = screen.getByPlaceholderText("Option_userVariable_name")
+
+    expect(input).toHaveAttribute("maxLength", `${MAX_VARIABLE_NAME_LENGTH}`)
+    await user.clear(input)
+    expect(
+      screen.getByText("Option_userVariable_name_remaining: 20"),
+    ).toBeInTheDocument()
+
+    await user.type(input, "abcdefghijklmnopqrstu")
+
+    expect(input).toHaveValue("abcdefghijklmnopqrst")
+    expect(
+      screen.getByText("Option_userVariable_name_remaining: 0"),
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: "Option_labelSave" }))
+    expect(screen.getByTestId("form-state")).toHaveTextContent(
+      '[{"name":"abcdefghijklmnopqrst","value":""}]',
+    )
+
+    await user.click(
+      screen.getByRole("button", { name: "{{abcdefghijklmnopqrst}}" }),
+    )
+    expect(screen.getByRole("dialog")).toBeInTheDocument()
+  })
+
+  it("UV-05: discards a new variable when the dialog is cancelled", async () => {
+    const user = userEvent.setup()
+    render(<Wrapper />)
+
+    await user.click(screen.getByRole("button", { name: "Prompt" }))
+    await user.click(screen.getByRole("button", { name: "Option_labelCancel" }))
+
+    expect(screen.getByTestId("form-state")).toHaveTextContent("[]")
+    expect(screen.queryByRole("button", { name: "{{Prompt}}" })).toBeNull()
+  })
+
+  it("UV-06: discards a new variable when the dialog is dismissed", async () => {
+    const user = userEvent.setup()
+    render(<Wrapper />)
+
+    await user.click(
+      screen.getByRole("button", { name: "Option_userVariable_add" }),
+    )
+    await user.keyboard("{Escape}")
+
+    expect(screen.getByTestId("form-state")).toHaveTextContent("[]")
+  })
+
+  it("UV-07: discards changes to an existing variable when cancelled", async () => {
+    const user = userEvent.setup()
+    render(
+      <Wrapper
+        suggested={false}
+        defaultVariables={[{ name: "Existing", value: "Original" }]}
+      />,
+    )
+
+    await user.click(screen.getByRole("button", { name: "{{Existing}}" }))
+    const nameInput = screen.getByPlaceholderText("Option_userVariable_name")
+    const valueInput = screen.getByPlaceholderText("Option_userVariable_value")
+    await user.clear(nameInput)
+    await user.type(nameInput, "Changed")
+    await user.clear(valueInput)
+    await user.type(valueInput, "Updated")
+    await user.click(screen.getByRole("button", { name: "Option_labelCancel" }))
+
+    expect(screen.getByTestId("form-state")).toHaveTextContent(
+      '[{"name":"Existing","value":"Original"}]',
+    )
+  })
+})
