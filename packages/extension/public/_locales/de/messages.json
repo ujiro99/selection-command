@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "Variable entfernen"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "Diese Variable wird an $count$ Stelle(n) verwendet. Diese Verweise werden nicht mehr ersetzt.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Beim Umbenennen bleiben $count$ vorhandene Verweise unersetzt.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Variable hinzufügen"
   },

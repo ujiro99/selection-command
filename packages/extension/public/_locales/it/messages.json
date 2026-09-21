@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "Rimuovi variabile"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "Questa variabile è usata in $count$ punto/i. Tali riferimenti non verranno più sostituiti.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Rinominando, $count$ riferimento/i esistente/i non verranno sostituiti.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Aggiungi variabile"
   },

@@ -61,6 +61,12 @@ export const PageActionSection = ({
   const steps = pageActionArray.fields as unknown as PageActionStep[]
   const recDisabled = !getValues("pageActionOption.startUrl")
 
+  // Step values are the templates that expand user variables, so the variables
+  // field checks them before a removal or a rename orphans a placeholder.
+  const stepTemplates = steps.map(
+    (step) => (step.param as Partial<PageAction.Input>).value ?? "",
+  )
+
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
   const editStep = steps.find((a) => a.id === editId)
@@ -159,12 +165,13 @@ export const PageActionSection = ({
         name="pageActionOption.userVariables"
         formLabel={t("userVariables")}
         description={t("userVariables_desc")}
+        referencingTemplates={stepTemplates}
         suggestion={
           aiService
             ? {
-              name: PROMPT_VARIABLE_NAME,
-              recommendedBy: aiService.name,
-            }
+                name: PROMPT_VARIABLE_NAME,
+                recommendedBy: aiService.name,
+              }
             : undefined
         }
       />
@@ -186,7 +193,7 @@ export const PageActionSection = ({
             className={cn(
               "relative left-[50%] -translate-x-[50%] mt-4 px-3 py-1 bg-rose-600 font-mono text-base font-medium text-white inline-flex items-center justify-center gap-0.5 rounded-lg",
               !recDisabled &&
-              "group/record transition hover:opacity-80 hover:scale-[1.05]",
+                "group/record transition hover:opacity-80 hover:scale-[1.05]",
               recDisabled && "opacity-50 cursor-not-allowed bg-gray-400",
             )}
             disabled={recDisabled}

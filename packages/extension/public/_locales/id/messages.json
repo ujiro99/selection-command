@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "Hapus variabel"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "Variabel ini digunakan di $count$ tempat. Referensi tersebut tidak akan diganti lagi.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Mengganti nama membuat $count$ referensi yang ada tidak diganti.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Tambah variabel"
   },

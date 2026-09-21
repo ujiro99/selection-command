@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "Eliminar variable"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "Esta variable se usa en $count$ lugar(es). Esas referencias dejarán de sustituirse.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Al cambiar el nombre, $count$ referencia(s) existente(s) dejarán de sustituirse.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Agregar variable"
   },

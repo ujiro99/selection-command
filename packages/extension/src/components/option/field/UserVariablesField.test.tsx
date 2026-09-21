@@ -13,15 +13,19 @@ type FormValues = {
 
 const FormState = () => {
   const userVariables = useWatch<FormValues>({ name: "userVariables" })
-  return <output data-testid="form-state">{JSON.stringify(userVariables)}</output>
+  return (
+    <output data-testid="form-state">{JSON.stringify(userVariables)}</output>
+  )
 }
 
 const Wrapper = ({
   suggested = true,
   defaultVariables = [],
+  referencingTemplates,
 }: {
   suggested?: boolean
   defaultVariables?: FormValues["userVariables"]
+  referencingTemplates?: Array<string>
 }) => {
   // Match the intentionally untyped form contract exposed by the component.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,10 +39,9 @@ const Wrapper = ({
         control={methods.control}
         name="userVariables"
         formLabel="User variables"
+        referencingTemplates={referencingTemplates}
         suggestion={
-          suggested
-            ? { name: "Prompt", recommendedBy: "ChatGPT" }
-            : undefined
+          suggested ? { name: "Prompt", recommendedBy: "ChatGPT" } : undefined
         }
       />
       <FormState />
@@ -51,9 +54,7 @@ describe("UserVariablesField suggestions", () => {
     render(<Wrapper suggested={false} />)
 
     expect(screen.queryByRole("button", { name: "Prompt" })).toBeNull()
-    expect(
-      screen.queryByText("Option_userVariable_recommended"),
-    ).toBeNull()
+    expect(screen.queryByText("Option_userVariable_recommended")).toBeNull()
   })
 
   it("UV-02: shows a recommendation without automatically creating a variable", () => {
@@ -83,8 +84,12 @@ describe("UserVariablesField suggestions", () => {
 
     await user.click(screen.getByRole("button", { name: "Prompt" }))
     expect(screen.getByRole("dialog")).toBeInTheDocument()
-    expect(screen.getByText("Option_userVariable_dialog_desc")).toBeInTheDocument()
-    expect(screen.getByText("Option_userVariable_name_desc")).toBeInTheDocument()
+    expect(
+      screen.getByText("Option_userVariable_dialog_desc"),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText("Option_userVariable_name_desc"),
+    ).toBeInTheDocument()
     expect(
       screen.getByText("Option_userVariable_value_label"),
     ).toBeInTheDocument()
@@ -180,6 +185,95 @@ describe("UserVariablesField suggestions", () => {
 
     expect(
       screen.getByText("Option_userVariable_name_required"),
+    ).toBeInTheDocument()
+  })
+})
+
+describe("UserVariablesField references", () => {
+  it("UV-09: removes an unreferenced variable without confirming", async () => {
+    const user = userEvent.setup()
+    render(
+      <Wrapper
+        suggested={false}
+        defaultVariables={[{ name: "Unused", value: "" }]}
+        referencingTemplates={["plain step value"]}
+      />,
+    )
+
+    await user.click(
+      screen.getByRole("button", { name: "Option_userVariable_remove" }),
+    )
+
+    expect(screen.queryByText("Option_remove_title")).toBeNull()
+    expect(screen.getByTestId("form-state")).toHaveTextContent("[]")
+  })
+
+  it("UV-10: confirms before removing a variable a step still references", async () => {
+    const user = userEvent.setup()
+    render(
+      <Wrapper
+        suggested={false}
+        defaultVariables={[{ name: "Prompt", value: "" }]}
+        referencingTemplates={["Summarize {{Prompt}}"]}
+      />,
+    )
+
+    await user.click(
+      screen.getByRole("button", { name: "Option_userVariable_remove" }),
+    )
+
+    expect(
+      screen.getByText("Option_userVariable_remove_inUse"),
+    ).toBeInTheDocument()
+    expect(screen.getByTestId("form-state")).toHaveTextContent(
+      '[{"name":"Prompt","value":""}]',
+    )
+
+    await user.click(screen.getByRole("button", { name: "Option_remove_ok" }))
+
+    expect(screen.getByTestId("form-state")).toHaveTextContent("[]")
+  })
+
+  it("UV-11: confirms before removing a variable another variable references", async () => {
+    const user = userEvent.setup()
+    render(
+      <Wrapper
+        suggested={false}
+        defaultVariables={[
+          { name: "Base", value: "hello" },
+          { name: "Derived", value: "{{Base}} world" },
+        ]}
+      />,
+    )
+
+    await user.click(
+      screen.getAllByRole("button", { name: "Option_userVariable_remove" })[0],
+    )
+
+    expect(
+      screen.getByText("Option_userVariable_remove_inUse"),
+    ).toBeInTheDocument()
+  })
+
+  it("UV-12: warns when renaming a referenced variable", async () => {
+    const user = userEvent.setup()
+    render(
+      <Wrapper
+        suggested={false}
+        defaultVariables={[{ name: "Prompt", value: "" }]}
+        referencingTemplates={["Summarize {{Prompt}}"]}
+      />,
+    )
+
+    await user.click(screen.getByRole("button", { name: "{{Prompt}}" }))
+    expect(screen.queryByText("Option_userVariable_rename_inUse")).toBeNull()
+
+    const nameInput = screen.getByPlaceholderText("Option_userVariable_name")
+    await user.clear(nameInput)
+    await user.type(nameInput, "Question")
+
+    expect(
+      screen.getByText("Option_userVariable_rename_inUse"),
     ).toBeInTheDocument()
   })
 })

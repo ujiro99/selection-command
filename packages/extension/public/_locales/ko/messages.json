@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "변수 삭제"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "이 변수는 $count$곳에서 사용 중입니다. 해당 참조는 더 이상 치환되지 않습니다.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "이름을 바꾸면 기존 $count$곳의 참조가 치환되지 않습니다.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "변수 추가"
   },

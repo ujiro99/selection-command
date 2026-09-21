@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "変数を削除"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "この変数は $count$ 箇所で使用されています。それらの参照は置換されなくなります。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "名前を変更すると、既存の $count$ 箇所の参照が置換されなくなります。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "変数を追加"
   },

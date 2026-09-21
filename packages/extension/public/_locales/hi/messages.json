@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "चर हटाएँ"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "यह वेरिएबल $count$ जगह उपयोग हो रहा है। वे संदर्भ अब प्रतिस्थापित नहीं होंगे।",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "नाम बदलने पर $count$ मौजूदा संदर्भ प्रतिस्थापित नहीं होंगे।",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "वेरिएबल जोड़ें"
   },

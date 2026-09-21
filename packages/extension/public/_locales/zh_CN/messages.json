@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "删除变量"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "该变量在 $count$ 处被使用。这些引用将不再被替换。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "重命名后，现有的 $count$ 处引用将不再被替换。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "添加变量"
   },

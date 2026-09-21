@@ -1,6 +1,13 @@
 import { useState } from "react"
 import { Control, useFieldArray, useFormContext } from "react-hook-form"
-import { Pencil, Plus, Save, Sparkles, Trash2 } from "lucide-react"
+import {
+  Pencil,
+  Plus,
+  Save,
+  Sparkles,
+  Trash2,
+  TriangleAlert,
+} from "lucide-react"
 import {
   Dialog,
   DialogClose,
@@ -24,9 +31,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { InputMenu } from "@/components/pageAction/InputPopup"
+import { RemoveDialog } from "@/components/option/RemoveDialog"
 import {
   convSymbolsToReadableKeys,
   convReadableKeysToSymbols,
+  templateReferencesVariable,
 } from "@/services/pageAction"
 import { cn } from "@/lib/utils"
 import {
@@ -57,6 +66,13 @@ type UserVariablesFieldProps = {
   formLabel: string
   description?: string
   suggestion?: VariableSuggestion
+  /**
+   * Templates outside this field that may reference the variables, such as the
+   * page action step values. References are left as literal `{{Name}}` at
+   * runtime, so removing or renaming a referenced variable silently breaks
+   * them unless the user is warned first.
+   */
+  referencingTemplates?: Array<string>
 }
 
 export const UserVariablesField = ({
@@ -65,11 +81,13 @@ export const UserVariablesField = ({
   formLabel,
   description,
   suggestion,
+  referencingTemplates,
 }: UserVariablesFieldProps) => {
   const { watch, setValue } = useFormContext()
   const variableArray = useFieldArray({ name, control })
   const [editIndex, setEditIndex] = useState<number | null>(null)
   const [pendingNewIndex, setPendingNewIndex] = useState<number | null>(null)
+  const [removeIndex, setRemoveIndex] = useState<number | null>(null)
   const watchedFields = watch(name) || []
   const isFull = variableArray.fields.length >= MAX_VARIABLES
 
@@ -102,6 +120,53 @@ export const UserVariablesField = ({
     if (duplicated) return t("userVariable_name_duplicate")
     return null
   }
+
+  /**
+   * Counts the places that reference `{{variableName}}`: the surrounding
+   * templates plus every other variable's value.
+   */
+  const countReferences = (variableName: string, index: number): number => {
+    if (!variableName) return 0
+    const templates = [
+      ...(referencingTemplates ?? []),
+      ...watchedFields
+        .filter((_: unknown, i: number) => i !== index)
+        .map((field: { value?: string }) => field?.value ?? ""),
+    ]
+    return templates.filter((template) =>
+      templateReferencesVariable(template, variableName),
+    ).length
+  }
+
+  const removeVariable = (index: number) => {
+    setEditIndex((currentIndex) => {
+      if (currentIndex == null || currentIndex < index) {
+        return currentIndex
+      }
+      return currentIndex === index ? null : currentIndex - 1
+    })
+    variableArray.remove(index)
+    setPendingNewIndex((pendingIndex) => {
+      if (pendingIndex == null || pendingIndex < index) {
+        return pendingIndex
+      }
+      return pendingIndex === index ? null : pendingIndex - 1
+    })
+  }
+
+  // Removing a referenced variable is confirmed first; an unused one goes away
+  // straight away.
+  const requestRemove = (index: number) => {
+    if (countReferences(watchedFields[index]?.name ?? "", index) > 0) {
+      setRemoveIndex(index)
+    } else {
+      removeVariable(index)
+    }
+  }
+
+  const removeName = removeIndex != null ? watchedFields[removeIndex]?.name : ""
+  const removeCount =
+    removeIndex != null ? countReferences(removeName ?? "", removeIndex) : 0
 
   return (
     <FormField
@@ -137,21 +202,11 @@ export const UserVariablesField = ({
                     setPendingNewIndex(null)
                     setEditIndex(null)
                   }}
-                  onRemove={() => {
-                    setEditIndex((currentIndex) => {
-                      if (currentIndex == null || currentIndex < index) {
-                        return currentIndex
-                      }
-                      return currentIndex === index ? null : currentIndex - 1
-                    })
-                    variableArray.remove(index)
-                    setPendingNewIndex((pendingIndex) => {
-                      if (pendingIndex == null || pendingIndex < index) {
-                        return pendingIndex
-                      }
-                      return pendingIndex === index ? null : pendingIndex - 1
-                    })
-                  }}
+                  onRemove={() => requestRemove(index)}
+                  referenceCount={countReferences(
+                    watchedFields[index]?.name ?? "",
+                    index,
+                  )}
                   // Only variables defined earlier resolve inside this one, so the
                   // insert menu offers exactly those.
                   precedingVariables={watchedFields
@@ -198,6 +253,19 @@ export const UserVariablesField = ({
                 {t("userVariable_max_reached", [`${MAX_VARIABLES}`])}
               </p>
             )}
+
+            <RemoveDialog
+              open={removeIndex != null}
+              onOpenChange={(open) => !open && setRemoveIndex(null)}
+              onRemove={() => {
+                if (removeIndex != null) removeVariable(removeIndex)
+                setRemoveIndex(null)
+              }}
+              description={t("userVariable_remove_inUse", [`${removeCount}`])}
+              portal
+            >
+              <p className="font-mono text-base text-gray-700">{`{{${removeName}}}`}</p>
+            </RemoveDialog>
           </div>
         </FormItem>
       )}
@@ -216,6 +284,8 @@ type VariableBadgeProps = {
   onSubmit: (name: string, value: string) => void
   onRemove: () => void
   precedingVariables: Array<{ name: string; value: string }>
+  /** How many templates reference this variable under its current name. */
+  referenceCount: number
 }
 
 const VariableBadge = ({
@@ -229,6 +299,7 @@ const VariableBadge = ({
   onSubmit,
   onRemove,
   precedingVariables,
+  referenceCount,
 }: VariableBadgeProps) => {
   const [textarea, setTextarea] = useState<HTMLTextAreaElement | null>(null)
   const [draftName, setDraftName] = useState(variableName)
@@ -236,6 +307,11 @@ const VariableBadge = ({
   const [hasInteracted, setHasInteracted] = useState(false)
   const error = validateName(draftName)
   const visibleError = hasInteracted ? error : null
+  // Existing references keep the old name, so renaming leaves them unresolved.
+  const renameWarning =
+    !error && draftName !== variableName && referenceCount > 0
+      ? t("userVariable_rename_inUse", [`${referenceCount}`])
+      : null
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (nextOpen) {
@@ -318,6 +394,12 @@ const VariableBadge = ({
                 />
               </FormControl>
               <FormMessage>{visibleError}</FormMessage>
+              {renameWarning && (
+                <p className="flex items-start gap-1.5 text-sm text-amber-600">
+                  <TriangleAlert size={16} className="mt-0.5 shrink-0" />
+                  {renameWarning}
+                </p>
+              )}
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center justify-between gap-3">

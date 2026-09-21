@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "Buang pemboleh ubah"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "Pemboleh ubah ini digunakan di $count$ tempat. Rujukan tersebut tidak akan diganti lagi.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Menamakan semula menyebabkan $count$ rujukan sedia ada tidak diganti.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Tambah pembolehubah"
   },

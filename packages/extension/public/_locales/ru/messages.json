@@ -539,6 +539,24 @@
   "Option_userVariable_remove": {
     "message": "Удалить переменную"
   },
+  "Option_userVariable_remove_inUse": {
+    "message": "Эта переменная используется в $count$ мест(ах). Эти ссылки перестанут подставляться.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "После переименования $count$ существующих ссылок перестанут подставляться.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Добавить переменную"
   },
