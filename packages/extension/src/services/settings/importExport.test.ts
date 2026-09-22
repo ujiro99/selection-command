@@ -387,15 +387,17 @@ describe("importExport", () => {
       expect(result).toEqual(statusMap(NONE, NONE, NONE))
     })
 
-    it("IE-19: should treat empty commands array as AVAILABLE", async () => {
-      mockStorage.get.mockResolvedValue(backup(0))
-      backupMocks.daily.getLastBackupData.mockResolvedValue(null)
-      backupMocks.weekly.getLastBackupData.mockResolvedValue(null)
+    it("IE-19: should treat empty commands array as NONE", async () => {
+      mockStorage.get.mockResolvedValue(backup(0, [{ id: "f1" }]))
+      backupMocks.daily.getLastBackupData.mockResolvedValue(backup(0))
+      backupMocks.weekly.getLastBackupData.mockResolvedValue(backup(1))
 
       const result = await checkBackupStatus()
 
-      expect(result[BACKUP_TYPES.LEGACY].status).toBe(AVAILABLE)
-      expect(result[BACKUP_TYPES.LEGACY].info?.commandCount).toBe(0)
+      expect(result[BACKUP_TYPES.LEGACY]).toEqual(entry(NONE))
+      expect(result[BACKUP_TYPES.DAILY]).toEqual(entry(NONE))
+      expect(result[BACKUP_TYPES.WEEKLY].status).toBe(AVAILABLE)
+      expect(getDefaultBackupType(result)).toBe(BACKUP_TYPES.WEEKLY)
     })
 
     it("IE-20: should return NONE for all when an error occurs", async () => {

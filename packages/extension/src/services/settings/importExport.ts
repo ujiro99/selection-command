@@ -162,7 +162,8 @@ export async function importSettings(importJson: UserSettings): Promise<void> {
 }
 
 const toBackupEntry = (backup: BackupData | null | undefined): BackupEntry => {
-  if (backup && backup.commands && Array.isArray(backup.commands)) {
+  // A backup without commands cannot be restored, so treat it as NONE.
+  if (backup && Array.isArray(backup.commands) && backup.commands.length > 0) {
     return {
       status: BACKUP_STATUS.AVAILABLE,
       info: {
