@@ -55,10 +55,8 @@ export const ANALYTICS_EVENTS = {
   ONBOARDING_COMMAND_EXECUTE: "onboarding_command_execute",
   ONBOARDING_VALUE_REACHED: "onboarding_value_reached",
   ONBOARDING_COMPLETE: "onboarding_complete",
-  // No "uninstall" entry: the service worker is already torn down when the
-  // extension is removed, so that event is sent by the Hub instead, from the
-  // uninstall URL set in background_script.ts, using the client_id and
-  // version carried on it (selection-command-hub#275).
+  // No "uninstall": the service worker is gone by then, so the Hub sends it
+  // from the uninstall URL instead (selection-command-hub#275).
 } as const
 
 export type AnalyticsEventName =
