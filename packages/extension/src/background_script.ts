@@ -498,8 +498,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       details.reason === chrome.runtime.OnInstalledReason.UPDATE
     ) {
       // Set uninstall survey URL with client_id for analysis. The version
-      // rides along so the Hub can put `app_version` on the GA4 `uninstall`
-      // event it sends on our behalf - by then this service worker is gone
+      // rides along for the `uninstall` event the Hub sends on our behalf
       // (selection-command-hub#275).
       // Wrapped in its own try/catch so a failure here (e.g. storage quota
       // error) does not skip the backup checks below.
