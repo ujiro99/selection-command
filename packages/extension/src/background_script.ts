@@ -5,6 +5,7 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   NEW_HUB_URL,
   SCREEN,
+  VERSION,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
@@ -496,13 +497,16 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
       details.reason === chrome.runtime.OnInstalledReason.UPDATE
     ) {
-      // Set uninstall survey URL with client_id for analysis.
+      // Set uninstall survey URL with client_id for analysis. The version
+      // rides along so the Hub can put `app_version` on the GA4 `uninstall`
+      // event it sends on our behalf - by then this service worker is gone
+      // (selection-command-hub#275).
       // Wrapped in its own try/catch so a failure here (e.g. storage quota
       // error) does not skip the backup checks below.
       try {
         const clientId = await getOrCreateClientId()
         chrome.runtime.setUninstallURL(
-          `${NEW_HUB_URL}/uninstall?client_id=${clientId}`,
+          `${NEW_HUB_URL}/uninstall?client_id=${clientId}&v=${VERSION}`,
         )
       } catch (error) {
         console.error("Failed to set uninstall URL with client_id:", error)
