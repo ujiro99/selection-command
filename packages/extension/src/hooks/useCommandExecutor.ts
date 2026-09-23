@@ -14,7 +14,7 @@ type ExecuteCommandParams = {
   selectionText: string
   target: Element | null
   useSecondary?: boolean
-  useClipboard?: boolean
+  allowClipboardFallback?: boolean
 }
 
 export function useCommandExecutor() {
@@ -33,7 +33,7 @@ export function useCommandExecutor() {
     selectionText,
     target,
     useSecondary = false,
-    useClipboard = false,
+    allowClipboardFallback = false,
   }: ExecuteCommandParams) => {
     if (itemState.state !== ExecState.NONE) {
       return
@@ -45,7 +45,7 @@ export function useCommandExecutor() {
       selectionText,
       target,
       useSecondary,
-      useClipboard,
+      allowClipboardFallback,
       changeState: onChangeState,
     })
 

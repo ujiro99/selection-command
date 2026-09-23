@@ -37,7 +37,7 @@ export async function execute({
   selectionText,
   target,
   useSecondary = false,
-  useClipboard = false,
+  allowClipboardFallback = false,
   changeState,
 }: ExecuteCommandParams) {
   return executeAction({
@@ -46,7 +46,7 @@ export async function execute({
     selectionText,
     target,
     useSecondary,
-    useClipboard,
+    allowClipboardFallback,
     changeState,
     // This module only ever runs in the content script's page context, so
     // location.href here correctly reflects the visited page.

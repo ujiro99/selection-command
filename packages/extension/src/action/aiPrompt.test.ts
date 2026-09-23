@@ -485,14 +485,14 @@ describe("AiPrompt.execute", () => {
       expect(sentArgs.url.clipboardTemplate).toEqual({ urlToMarkdown: false })
     })
 
-    it("AP-08b: should leave {{SelectedText}} for the clipboard when there is no selection and useClipboard is true", async () => {
+    it("AP-08b: should leave {{SelectedText}} for the clipboard when there is no selection and allowClipboardFallback is true", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeQueryService())
 
       await AiPrompt.execute({
         selectionText: "",
         command: baseCommand as any, // prompt: "Explain: {{SelectedText}}"
         position: { x: 0, y: 0 },
-        useClipboard: true,
+        allowClipboardFallback: true,
       })
 
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
@@ -503,14 +503,14 @@ describe("AiPrompt.execute", () => {
       expect(sentArgs.url.clipboardTemplate).toEqual({ urlToMarkdown: false })
     })
 
-    it("AP-08c: should expand the selection and not read the clipboard when a selection exists even if useClipboard is true", async () => {
+    it("AP-08c: should expand the selection and not read the clipboard when a selection exists even if allowClipboardFallback is true", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeQueryService())
 
       await AiPrompt.execute({
         selectionText: "hello",
         command: baseCommand as any,
         position: { x: 0, y: 0 },
-        useClipboard: true,
+        allowClipboardFallback: true,
       })
 
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
@@ -519,7 +519,7 @@ describe("AiPrompt.execute", () => {
       expect(sentArgs.url.clipboardTemplate).toBeUndefined()
     })
 
-    it("AP-08d: should not read the clipboard when useClipboard is true but the prompt has no {{SelectedText}}", async () => {
+    it("AP-08d: should not read the clipboard when allowClipboardFallback is true but the prompt has no {{SelectedText}}", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeQueryService())
 
       await AiPrompt.execute({
@@ -532,7 +532,7 @@ describe("AiPrompt.execute", () => {
           },
         } as any,
         position: { x: 0, y: 0 },
-        useClipboard: true,
+        allowClipboardFallback: true,
         pageUrl: "https://example.com",
       })
 
@@ -554,7 +554,7 @@ describe("AiPrompt.execute", () => {
           },
         } as any,
         position: { x: 0, y: 0 },
-        useClipboard: true,
+        allowClipboardFallback: true,
       })
 
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
@@ -563,7 +563,7 @@ describe("AiPrompt.execute", () => {
   })
 
   describe("DOM input approach with clipboard", () => {
-    it("AP-08f: should request the clipboard when there is no selection and useClipboard is true", async () => {
+    it("AP-08f: should request the clipboard when there is no selection and allowClipboardFallback is true", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeDomService())
 
       await AiPrompt.execute({
@@ -576,7 +576,7 @@ describe("AiPrompt.execute", () => {
           },
         } as any,
         position: { x: 0, y: 0 },
-        useClipboard: true,
+        allowClipboardFallback: true,
       })
 
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any

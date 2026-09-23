@@ -245,7 +245,12 @@ export type ExecuteCommandParams = {
   selectionText: string
   target?: Element | null
   useSecondary?: boolean
-  useClipboard?: boolean
+  /**
+   * Allows the clipboard text to be used in place of an empty selection
+   * (e.g. a shortcut key run without a selection). Each action decides whether
+   * it actually needs the clipboard, and requests it via UrlParam.useClipboard.
+   */
+  allowClipboardFallback?: boolean
   changeState?: (state: ExecState, message?: string) => void
   pageUrl?: string
 }

@@ -19,7 +19,7 @@ export const PageAction = {
     command,
     position,
     useSecondary,
-    useClipboard,
+    allowClipboardFallback,
     userVariables,
     pageUrl,
   }: ExecuteCommandParams & PageActionParams) {
@@ -59,7 +59,7 @@ export const PageAction = {
         selectedText: selectionText,
         srcUrl: pageUrl ?? "",
         clipboardText: "",
-        useClipboard: needClipboard || (useClipboard ?? false),
+        useClipboard: needClipboard || (allowClipboardFallback ?? false),
         userVariables: effectiveUserVariables,
       }
       try {
@@ -85,7 +85,7 @@ export const PageAction = {
     const url: UrlParam = {
       searchUrl: command.pageActionOption.startUrl,
       selectionText,
-      useClipboard: needClipboard || (useClipboard ?? false),
+      useClipboard: needClipboard || (allowClipboardFallback ?? false),
       pageUrl: pageUrl ?? "",
     }
 

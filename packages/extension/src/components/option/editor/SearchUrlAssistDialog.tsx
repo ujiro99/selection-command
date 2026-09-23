@@ -87,7 +87,7 @@ export const SearchUrlAssistDialog = ({
         command,
         position: { x: 0, y: 0 },
         useSecondary: false,
-        useClipboard: false,
+        allowClipboardFallback: false,
         userVariables: [
           { name: "search_keyword", value: data.searchKeyword },
           { name: "search_result_url", value: data.searchResultUrl },

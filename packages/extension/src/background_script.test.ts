@@ -353,7 +353,7 @@ describe("Background Script Migration", () => {
         position: { x: 10000, y: 10000 },
         selectionText: "test selection text",
         target: null,
-        useClipboard: false,
+        allowClipboardFallback: false,
         pageUrl: "https://example.com",
       }),
     )

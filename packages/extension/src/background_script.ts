@@ -618,7 +618,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     )
 
     // If no text is selected, handle according to noSelectionBehavior
-    let useClipboard = false
+    let allowClipboardFallback = false
     if (isEmpty(selectionText)) {
       if (
         shortcut.noSelectionBehavior ===
@@ -629,7 +629,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         shortcut.noSelectionBehavior ===
         SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
       ) {
-        useClipboard = true
+        allowClipboardFallback = true
       }
     }
 
@@ -648,7 +648,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         TabCommand.executeAction,
         {
           command,
-          useClipboard,
+          allowClipboardFallback,
         },
       )
     }
@@ -660,7 +660,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         position: { x: 10000, y: 10000 },
         selectionText,
         target: null,
-        useClipboard,
+        allowClipboardFallback,
         pageUrl: tab?.url ?? "",
       })
     }

@@ -91,12 +91,12 @@ const analyzePromptRequirements = (
   aiPromptOption: AiPromptOption,
   service: AiService,
   selectionText: string,
-  useClipboard: boolean,
+  allowClipboardFallback: boolean,
 ): PromptRequirements => {
   // {{SelectedText}} falls back to the clipboard text when the command is run
   // without a selection and the caller allows it (e.g. from a shortcut key).
   const selectionFromClipboard =
-    useClipboard &&
+    allowClipboardFallback &&
     isEmpty(selectionText) &&
     aiPromptOption.prompt.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
 
@@ -462,7 +462,7 @@ export const AiPrompt = {
     command,
     position,
     useSecondary,
-    useClipboard,
+    allowClipboardFallback,
     pageUrl,
   }: ExecuteCommandParams) {
     if (!isAiPromptType(command)) {
@@ -496,7 +496,7 @@ export const AiPrompt = {
       aiPromptOption,
       service,
       selectionText,
-      useClipboard ?? false,
+      allowClipboardFallback ?? false,
     )
 
     const { steps, urlParam, serviceUrl } = useQueryUrl
