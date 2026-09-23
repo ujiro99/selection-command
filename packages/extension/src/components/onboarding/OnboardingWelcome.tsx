@@ -70,7 +70,7 @@ export function OnboardingWelcome({ onDone }: Props) {
         <img
           src={ICON_URL}
           className="block h-[50px]"
-          alt="Logo of selection command"
+          alt=""
           aria-hidden
         />
       </OnboardingFadeIn>
