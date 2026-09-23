@@ -11,14 +11,39 @@ import {
 
 const SYNC_DEBOUNCE_DELAY = 10
 
-let syncSetTimeout: NodeJS.Timeout | null
+let syncSetTimeout: NodeJS.Timeout | null = null
 let syncSetResolves: (() => void)[] = []
-const syncSetData = new Map<string, unknown>()
+let syncSetData = new Map<string, unknown>()
+// Serializes writes so that a later batch never lands before an earlier one.
+let syncSetLastWrite: Promise<void> = Promise.resolve()
 
 export const cmdSyncKey = (idx: number): CMD_KEY => `${CMD_PREFIX}${idx}`
 
 export const cmdLocalKey = (idx: number): CMD_LOCAL_KEY =>
   `${CMD_PREFIX}local-${idx}`
+
+const flushSyncSet = () => {
+  // Detach the current batch so that data added during the write
+  // is kept for the next batch instead of being cleared.
+  const dataToSet = Object.fromEntries(syncSetData)
+  const resolves = syncSetResolves
+  syncSetData = new Map()
+  syncSetResolves = []
+  syncSetTimeout = null
+
+  syncSetLastWrite = syncSetLastWrite.then(
+    () =>
+      new Promise<void>((done) => {
+        chrome.storage.sync.set(dataToSet, () => {
+          if (chrome.runtime.lastError != null) {
+            console.error(chrome.runtime.lastError)
+          }
+          resolves.forEach((res) => res())
+          done()
+        })
+      }),
+  )
+}
 
 export const debouncedSyncSet = (
   data: Record<string, unknown>,
@@ -32,19 +57,8 @@ export const debouncedSyncSet = (
       syncSetData.set(key, value)
     })
 
-    syncSetTimeout = setTimeout(async () => {
-      const dataToSet = Object.fromEntries(syncSetData)
-      chrome.storage.sync.set(dataToSet, () => {
-        if (chrome.runtime.lastError != null) {
-          console.error(chrome.runtime.lastError)
-        }
-        syncSetData.clear()
-        syncSetTimeout = null
-        syncSetResolves.forEach((res) => res())
-        syncSetResolves = []
-      })
-    }, SYNC_DEBOUNCE_DELAY)
     syncSetResolves.push(resolve)
+    syncSetTimeout = setTimeout(flushSyncSet, SYNC_DEBOUNCE_DELAY)
   })
 }
 

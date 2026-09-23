@@ -207,6 +207,95 @@ describe("debouncedSyncSet", () => {
       )
     })
   })
+
+  describe("Calls during an in-flight write", () => {
+    // Make sync.set hold its callback until the test completes it manually.
+    const deferSyncSet = () => {
+      const callbacks: (() => void)[] = []
+      mockChromeStorageSync.set.mockImplementation((_data, callback) => {
+        callbacks.push(callback)
+      })
+      return callbacks
+    }
+
+    afterEach(() => {
+      mockChromeStorageSync.set.mockImplementation((_data, callback) => {
+        callback?.()
+      })
+    })
+
+    it("DS-10: Keep data added during a write for the next write", async () => {
+      const callbacks = deferSyncSet()
+
+      const promise1 = debouncedSyncSet({ key1: "value1" })
+      await vi.advanceTimersByTimeAsync(10)
+      expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(1)
+
+      // Add data while the first write is in flight
+      const promise2 = debouncedSyncSet({ key2: "value2" })
+      callbacks[0]()
+      await promise1
+
+      await vi.advanceTimersByTimeAsync(10)
+      expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(2)
+      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(
+        2,
+        { key2: "value2" },
+        expect.any(Function),
+      )
+
+      callbacks[1]()
+      await promise2
+    })
+
+    it("DS-11: Do not resolve a call until its own data is written", async () => {
+      const callbacks = deferSyncSet()
+
+      const promise1 = debouncedSyncSet({ key1: "value1" })
+      await vi.advanceTimersByTimeAsync(10)
+
+      let resolved2 = false
+      const promise2 = debouncedSyncSet({ key2: "value2" }).then(() => {
+        resolved2 = true
+      })
+
+      // Completing the first write must not resolve the second call
+      callbacks[0]()
+      await promise1
+      await vi.advanceTimersByTimeAsync(0)
+      expect(resolved2).toBe(false)
+
+      await vi.advanceTimersByTimeAsync(10)
+      callbacks[1]()
+      await promise2
+      expect(resolved2).toBe(true)
+    })
+
+    it("DS-12: Start the next write only after the previous one completes", async () => {
+      const callbacks = deferSyncSet()
+
+      const promise1 = debouncedSyncSet({ key1: "value1" })
+      await vi.advanceTimersByTimeAsync(10)
+
+      // The next batch's timer fires while the first write is still in flight
+      const promise2 = debouncedSyncSet({ key1: "value2" })
+      await vi.advanceTimersByTimeAsync(10)
+      expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(1)
+
+      callbacks[0]()
+      await promise1
+      await vi.advanceTimersByTimeAsync(0)
+      expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(2)
+      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(
+        2,
+        { key1: "value2" },
+        expect.any(Function),
+      )
+
+      callbacks[1]()
+      await promise2
+    })
+  })
 })
 
 describe("BaseStorage.get", () => {
