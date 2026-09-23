@@ -41,7 +41,14 @@ export function useImportExport() {
   }
 
   const selectImportFile = async (file: File) => {
-    setImportJson(await readSettingsFile(file))
+    try {
+      setImportJson(await readSettingsFile(file))
+    } catch (error) {
+      // Clear the previously selected file so that it is not imported by mistake.
+      setImportJson(undefined)
+      console.error("Failed to read settings file:", error)
+      alert("Failed to read settings file.")
+    }
   }
 
   const runImport = async () => {
