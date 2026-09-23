@@ -2,9 +2,11 @@ import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
 import { getWindowPosition } from "@/services/screen"
 import {
   isValidString,
+  isEmpty,
   generateRandomID,
   safeInterpolate,
   toUrl,
+  convertUrlsToMarkdown,
 } from "@/lib/utils"
 import {
   OPEN_MODE,
@@ -33,26 +35,8 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
 import { getSelectionHtml, getPageHtml } from "@/services/dom"
 
-/**
- * Convert bare URLs in text to Markdown link format [URL](URL).
- * URLs already in Markdown link format ([text](url)) are returned unchanged.
- * Trailing punctuation characters that are unlikely to be part of the URL are
- * excluded from the link and preserved in the surrounding text.
- */
-export const convertUrlsToMarkdown = (text: string): string => {
-  // The alternation tries the markdown link pattern first; if matched, leave it
-  // unchanged. Otherwise, convert bare URLs to [URL](URL) format.
-  return text.replace(
-    /\[[^\]]*\]\(([^)]*)\)|https?:\/\/[^\s<>"')\]]+/g,
-    (match) => {
-      if (match.startsWith("[")) return match
-      // Strip trailing punctuation that is unlikely to be part of the URL
-      const trimmed = match.replace(/[.,!?;:)'"]+$/, "")
-      const trailing = match.slice(trimmed.length)
-      return `[${trimmed}](${trimmed})${trailing}`
-    },
-  )
-}
+// Moved to lib/utils so that toUrl() can reuse it in the background.
+export { convertUrlsToMarkdown }
 
 // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
 const toPageActionMode = (mode: OPEN_MODE): PAGE_ACTION_OPEN_MODE => {
@@ -92,6 +76,7 @@ const createEndStep = (): PageActionStep =>
 
 type PromptRequirements = {
   needClipboard: boolean
+  selectionFromClipboard: boolean
   needPageHtml: boolean
   pageHtml: string | undefined
   needSelectionHtml: boolean
@@ -105,11 +90,20 @@ type PromptRequirements = {
 const analyzePromptRequirements = (
   aiPromptOption: AiPromptOption,
   service: AiService,
+  selectionText: string,
+  useClipboard: boolean,
 ): PromptRequirements => {
-  // Checks if any step requires clipboard data
-  const needClipboard = aiPromptOption.prompt.includes(
-    toInsertTemplate(INSERT.CLIPBOARD),
-  )
+  // {{SelectedText}} falls back to the clipboard text when the command is run
+  // without a selection and the caller allows it (e.g. from a shortcut key).
+  const selectionFromClipboard =
+    useClipboard &&
+    isEmpty(selectionText) &&
+    aiPromptOption.prompt.includes(toInsertTemplate(INSERT.SELECTED_TEXT))
+
+  // Checks if the prompt requires clipboard data
+  const needClipboard =
+    aiPromptOption.prompt.includes(toInsertTemplate(INSERT.CLIPBOARD)) ||
+    selectionFromClipboard
 
   // Detect HTML placeholders that require file-paste upload instead of text embedding.
   // File paste cannot be used with queryUrl mode (URL length limit), so these force
@@ -128,14 +122,20 @@ const analyzePromptRequirements = (
 
   const needFilePaste = needPageHtml || needSelectionHtml
 
-  // Use URL query input when the service supports it and neither clipboard nor
-  // file-paste content is needed. Both clipboard and HTML content require the DOM
-  // input path since they can't be embedded in a URL safely.
+  // Use URL query input when the service supports it and no file-paste content
+  // is needed, since HTML content can't be embedded in a URL safely.
+  // Clipboard content is resolved into the URL by the background after it reads
+  // the clipboard, except in side panel mode: the side panel must be opened
+  // directly from the user gesture, before the clipboard can be read, so there
+  // the DOM input path (which reads the clipboard afterwards) is used instead.
   const useQueryUrl =
-    isValidString(service.queryUrl) && !needClipboard && !needFilePaste
+    isValidString(service.queryUrl) &&
+    !needFilePaste &&
+    !(needClipboard && aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL)
 
   return {
     needClipboard,
+    selectionFromClipboard,
     needPageHtml,
     pageHtml,
     needSelectionHtml,
@@ -220,17 +220,22 @@ const buildQueryUrlSteps = (
   aiPromptOption: AiPromptOption,
   selectionText: string,
   pageUrl: string | undefined,
+  needClipboard: boolean,
+  selectionFromClipboard: boolean,
 ): { steps: PageActionStep[]; urlParam: UrlParam; serviceUrl: string } => {
   // Pre-expand the prompt template with synchronously available variables.
-  // INSERT.CLIPBOARD is intentionally excluded here: clipboard text is not
-  // available in the content script context and must be read asynchronously
-  // in the background. When the prompt contains {{Clipboard}}, useQueryUrl
-  // is false and the DOM input approach is used instead.
-  const expandedPrompt = safeInterpolate(aiPromptOption.prompt, {
-    [InsertSymbol[INSERT.SELECTED_TEXT]]: selectionText,
+  // INSERT.CLIPBOARD (and INSERT.SELECTED_TEXT when it falls back to the
+  // clipboard) is intentionally left unresolved here: clipboard text is not
+  // available in the content script context. The background reads the
+  // clipboard and resolves the remaining placeholders in toUrl().
+  const variables: Record<string, string> = {
     [InsertSymbol[INSERT.URL]]: pageUrl ?? "",
     [InsertSymbol[INSERT.LANG]]: getUILanguage(),
-  })
+  }
+  if (!selectionFromClipboard) {
+    variables[InsertSymbol[INSERT.SELECTED_TEXT]] = selectionText
+  }
+  const expandedPrompt = safeInterpolate(aiPromptOption.prompt, variables)
 
   const finalPrompt = service.urlToMarkdown
     ? convertUrlsToMarkdown(expandedPrompt)
@@ -239,7 +244,10 @@ const buildQueryUrlSteps = (
   const urlParam: UrlParam = {
     searchUrl: service.queryUrl!,
     selectionText: finalPrompt,
-    useClipboard: false,
+    useClipboard: needClipboard,
+    clipboardTemplate: needClipboard
+      ? { urlToMarkdown: service.urlToMarkdown ?? false }
+      : undefined,
   }
   // Resolve the final URL for cases that require a plain string (e.g. side panel).
   const serviceUrl = toUrl(urlParam) as string
@@ -318,7 +326,6 @@ const buildDomInputSteps = (
   aiPromptOption: AiPromptOption,
   selectionText: string,
   needClipboard: boolean,
-  useClipboard: boolean | undefined,
   needPageHtml: boolean,
   needSelectionHtml: boolean,
   needFilePaste: boolean,
@@ -330,7 +337,7 @@ const buildDomInputSteps = (
   const urlParam: UrlParam = {
     searchUrl: service.url,
     selectionText,
-    useClipboard: needClipboard || (useClipboard ?? false),
+    useClipboard: needClipboard,
   }
 
   // When HTML placeholders are present, build filePaste steps that upload
@@ -396,9 +403,7 @@ const runSidePanelAction = async (params: {
   steps: PageActionStep[]
   selectionText: string
   pageUrl: string | undefined
-  useQueryUrl: boolean
   needClipboard: boolean
-  useClipboard: boolean | undefined
   pageHtml: string | undefined
   selectionHtml: string | undefined
 }): Promise<void> => {
@@ -407,9 +412,7 @@ const runSidePanelAction = async (params: {
     steps,
     selectionText,
     pageUrl,
-    useQueryUrl,
     needClipboard,
-    useClipboard,
     pageHtml,
     selectionHtml,
   } = params
@@ -420,7 +423,8 @@ const runSidePanelAction = async (params: {
     selectedText: selectionText,
     srcUrl: pageUrl ?? "",
     clipboardText: "",
-    useClipboard: !useQueryUrl && (needClipboard || (useClipboard ?? false)),
+    // Always false with the query URL approach: see analyzePromptRequirements.
+    useClipboard: needClipboard,
     pageHtml,
     selectionHtml,
   }
@@ -481,22 +485,34 @@ export const AiPrompt = {
 
     const {
       needClipboard,
+      selectionFromClipboard,
       needPageHtml,
       pageHtml,
       needSelectionHtml,
       selectionHtml,
       needFilePaste,
       useQueryUrl,
-    } = analyzePromptRequirements(aiPromptOption, service)
+    } = analyzePromptRequirements(
+      aiPromptOption,
+      service,
+      selectionText,
+      useClipboard ?? false,
+    )
 
     const { steps, urlParam, serviceUrl } = useQueryUrl
-      ? buildQueryUrlSteps(service, aiPromptOption, selectionText, pageUrl)
+      ? buildQueryUrlSteps(
+          service,
+          aiPromptOption,
+          selectionText,
+          pageUrl,
+          needClipboard,
+          selectionFromClipboard,
+        )
       : buildDomInputSteps(
           service,
           aiPromptOption,
           selectionText,
           needClipboard,
-          useClipboard,
           needPageHtml,
           needSelectionHtml,
           needFilePaste,
@@ -511,9 +527,7 @@ export const AiPrompt = {
         steps,
         selectionText,
         pageUrl,
-        useQueryUrl,
         needClipboard,
-        useClipboard,
         pageHtml,
         selectionHtml,
       })

@@ -315,6 +315,15 @@ export type UrlParam = {
   spaceEncoding?: SPACE_ENCODING
   useClipboard?: boolean
   pageUrl?: string
+  /**
+   * Set when selectionText is a prompt template (AI prompt query URL) that
+   * still contains {{Clipboard}} / {{SelectedText}} placeholders. They are
+   * resolved with the clipboard text read in the background, since the
+   * clipboard is not available when the template is built.
+   */
+  clipboardTemplate?: {
+    urlToMarkdown?: boolean
+  }
 }
 
 export type ShowToastParam = {

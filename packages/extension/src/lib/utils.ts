@@ -16,7 +16,7 @@ export { cn, isSearchCommand, capitalize, isEmpty, sleep, normalizeObject }
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
 // Imported from the standalone module (not the barrel) to avoid a cycle back
 // into this file through @/services/pageAction.
-import { InsertSymbol } from "@/services/pageAction/insertSymbols"
+import { INSERT, InsertSymbol } from "@/services/pageAction/insertSymbols"
 import type {
   Version,
   Command,
@@ -53,6 +53,28 @@ export const isUrlParam = (url: string | UrlParam): url is UrlParam => {
 }
 
 /**
+ * Convert bare URLs in text to Markdown link format [URL](URL).
+ * URLs already in Markdown link format ([text](url)) are returned unchanged,
+ * so applying this to already-converted text is a no-op.
+ * Trailing punctuation characters that are unlikely to be part of the URL are
+ * excluded from the link and preserved in the surrounding text.
+ */
+export function convertUrlsToMarkdown(text: string): string {
+  // The alternation tries the markdown link pattern first; if matched, leave it
+  // unchanged. Otherwise, convert bare URLs to [URL](URL) format.
+  return text.replace(
+    /\[[^\]]*\]\(([^)]*)\)|https?:\/\/[^\s<>"')\]]+/g,
+    (match) => {
+      if (match.startsWith("[")) return match
+      // Strip trailing punctuation that is unlikely to be part of the URL
+      const trimmed = match.replace(/[.,!?;:)'"]+$/, "")
+      const trailing = match.slice(trimmed.length)
+      return `[${trimmed}](${trimmed})${trailing}`
+    },
+  )
+}
+
+/**
  * Convert a string or UrlParam to a URL.
  * @param param The string or UrlParam to convert.
  * @param clipboardText The clipboard text to use if the UrlParam has useClipboard set to true.
@@ -72,7 +94,19 @@ export function toUrl(
     useClipboard = false,
   } = param
   let text = selectionText
-  if (useClipboard && isEmpty(text)) {
+  if (useClipboard && param.clipboardTemplate) {
+    // selectionText is a pre-expanded prompt whose clipboard-dependent
+    // placeholders were left unresolved, because the clipboard can only be
+    // read here in the background.
+    const clipboard = clipboardText ?? ""
+    text = safeInterpolate(text, {
+      [InsertSymbol[INSERT.CLIPBOARD]]: clipboard,
+      [InsertSymbol[INSERT.SELECTED_TEXT]]: clipboard,
+    })
+    if (param.clipboardTemplate.urlToMarkdown) {
+      text = convertUrlsToMarkdown(text)
+    }
+  } else if (useClipboard && isEmpty(text)) {
     text = clipboardText ?? ""
   }
   // URL encode the text
