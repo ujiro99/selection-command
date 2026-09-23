@@ -2,9 +2,7 @@ import { beforeEach, afterEach, describe, it, expect, vi } from "vitest"
 
 // Mock Chrome API
 const mockChromeStorageSync = {
-  set: vi.fn().mockImplementation((_data, callback) => {
-    callback?.()
-  }),
+  set: vi.fn().mockResolvedValue(undefined),
 }
 
 const mockChromeStorageLocal = {
@@ -61,10 +59,7 @@ describe("debouncedSyncSet", () => {
       await promise
 
       expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(1)
-      expect(mockChromeStorageSync.set).toHaveBeenCalledWith(
-        testData,
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenCalledWith(testData)
     })
 
     it("DS-02: Debounce with multiple consecutive calls", async () => {
@@ -78,10 +73,11 @@ describe("debouncedSyncSet", () => {
 
       // Verify it's called only once
       expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(1)
-      expect(mockChromeStorageSync.set).toHaveBeenCalledWith(
-        { key1: "value1", key2: "value2", key3: "value3" },
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenCalledWith({
+        key1: "value1",
+        key2: "value2",
+        key3: "value3",
+      })
     })
 
     it("DS-03: Data merge operation", async () => {
@@ -95,10 +91,10 @@ describe("debouncedSyncSet", () => {
       vi.advanceTimersByTime(10)
       await Promise.all([promise1, promise2, promise3])
 
-      expect(mockChromeStorageSync.set).toHaveBeenCalledWith(
-        { key1: "updated_value1", key2: "value2" },
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenCalledWith({
+        key1: "updated_value1",
+        key2: "value2",
+      })
     })
   })
 
@@ -118,9 +114,8 @@ describe("debouncedSyncSet", () => {
 
     it("DS-05: Error handling", async () => {
       const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
-
-      // Set Chrome runtime error
-      mockChromeRuntime.lastError = { message: "Storage error" }
+      const error = new Error("Storage error")
+      mockChromeStorageSync.set.mockRejectedValueOnce(error)
 
       const promise = debouncedSyncSet({ key1: "value1" })
       vi.advanceTimersByTime(10)
@@ -129,7 +124,29 @@ describe("debouncedSyncSet", () => {
       await expect(promise).resolves.toBeUndefined()
 
       // Verify error is logged to console
-      expect(consoleSpy).toHaveBeenCalledWith({ message: "Storage error" })
+      expect(consoleSpy).toHaveBeenCalledWith(error)
+
+      consoleSpy.mockRestore()
+    })
+
+    it("DS-13: Keep writing after a failed write", async () => {
+      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+      mockChromeStorageSync.set.mockRejectedValueOnce(
+        new Error("Storage error"),
+      )
+
+      const promise1 = debouncedSyncSet({ key1: "value1" })
+      vi.advanceTimersByTime(10)
+      await promise1
+
+      const promise2 = debouncedSyncSet({ key2: "value2" })
+      vi.advanceTimersByTime(10)
+      await promise2
+
+      expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(2)
+      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(2, {
+        key2: "value2",
+      })
 
       consoleSpy.mockRestore()
     })
@@ -149,10 +166,11 @@ describe("debouncedSyncSet", () => {
       // Verify all Promises resolve successfully
       expect(promises).toEqual([undefined, undefined, undefined])
       expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(1)
-      expect(mockChromeStorageSync.set).toHaveBeenCalledWith(
-        { key1: "value1", key2: "value2", key3: "value3" },
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenCalledWith({
+        key1: "value1",
+        key2: "value2",
+        key3: "value3",
+      })
     })
 
     it("DS-07: Internal state cleanup", async () => {
@@ -167,11 +185,9 @@ describe("debouncedSyncSet", () => {
       await promise2
 
       expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(2)
-      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(
-        2,
-        { key2: "value2" },
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(2, {
+        key2: "value2",
+      })
     })
   })
 
@@ -182,10 +198,7 @@ describe("debouncedSyncSet", () => {
       vi.advanceTimersByTime(10)
       await promise
 
-      expect(mockChromeStorageSync.set).toHaveBeenCalledWith(
-        {},
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenCalledWith({})
     })
 
     it("DS-09: Additional calls during timeout", async () => {
@@ -201,27 +214,25 @@ describe("debouncedSyncSet", () => {
 
       // Verify called only once and both data are merged
       expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(1)
-      expect(mockChromeStorageSync.set).toHaveBeenCalledWith(
-        { key1: "value1", key2: "value2" },
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenCalledWith({
+        key1: "value1",
+        key2: "value2",
+      })
     })
   })
 
   describe("Calls during an in-flight write", () => {
-    // Make sync.set hold its callback until the test completes it manually.
+    // Make sync.set stay pending until the test completes it manually.
     const deferSyncSet = () => {
       const callbacks: (() => void)[] = []
-      mockChromeStorageSync.set.mockImplementation((_data, callback) => {
-        callbacks.push(callback)
-      })
+      mockChromeStorageSync.set.mockImplementation(
+        () => new Promise<void>((resolve) => callbacks.push(resolve)),
+      )
       return callbacks
     }
 
     afterEach(() => {
-      mockChromeStorageSync.set.mockImplementation((_data, callback) => {
-        callback?.()
-      })
+      mockChromeStorageSync.set.mockResolvedValue(undefined)
     })
 
     it("DS-10: Keep data added during a write for the next write", async () => {
@@ -238,11 +249,9 @@ describe("debouncedSyncSet", () => {
 
       await vi.advanceTimersByTimeAsync(10)
       expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(2)
-      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(
-        2,
-        { key2: "value2" },
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(2, {
+        key2: "value2",
+      })
 
       callbacks[1]()
       await promise2
@@ -286,11 +295,9 @@ describe("debouncedSyncSet", () => {
       await promise1
       await vi.advanceTimersByTimeAsync(0)
       expect(mockChromeStorageSync.set).toHaveBeenCalledTimes(2)
-      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(
-        2,
-        { key1: "value2" },
-        expect.any(Function),
-      )
+      expect(mockChromeStorageSync.set).toHaveBeenNthCalledWith(2, {
+        key1: "value2",
+      })
 
       callbacks[1]()
       await promise2

@@ -22,6 +22,19 @@ export const cmdSyncKey = (idx: number): CMD_KEY => `${CMD_PREFIX}${idx}`
 export const cmdLocalKey = (idx: number): CMD_LOCAL_KEY =>
   `${CMD_PREFIX}local-${idx}`
 
+const writeSyncBatch = async (
+  data: Record<string, unknown>,
+  resolves: (() => void)[],
+) => {
+  try {
+    await chrome.storage.sync.set(data)
+  } catch (error) {
+    console.error(error)
+  } finally {
+    resolves.forEach((res) => res())
+  }
+}
+
 const flushSyncSet = () => {
   // Detach the current batch so that data added during the write
   // is kept for the next batch instead of being cleared.
@@ -31,17 +44,9 @@ const flushSyncSet = () => {
   syncSetResolves = []
   syncSetTimeout = null
 
-  syncSetLastWrite = syncSetLastWrite.then(
-    () =>
-      new Promise<void>((done) => {
-        chrome.storage.sync.set(dataToSet, () => {
-          if (chrome.runtime.lastError != null) {
-            console.error(chrome.runtime.lastError)
-          }
-          resolves.forEach((res) => res())
-          done()
-        })
-      }),
+  // writeSyncBatch never rejects, so the chain keeps running after a failure.
+  syncSetLastWrite = syncSetLastWrite.then(() =>
+    writeSyncBatch(dataToSet, resolves),
   )
 }
 
