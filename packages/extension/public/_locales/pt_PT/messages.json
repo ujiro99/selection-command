@@ -515,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "Definir variáveis personalizadas para campos de entrada (máx 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Defina uma variável personalizada para os campos de entrada."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Utilize este nome como chave nos passos de entrada do PageAction."
+  },
+  "Option_userVariable_value_label": {
+    "message": "Texto em tempo de execução"
+  },
   "Option_userVariable_name": {
     "message": "Nome da variável"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Restantes"
   },
   "Option_userVariable_value": {
     "message": "Valor"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(sem nome)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Remover variável"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "Esta variável é usada em $count$ local(is). Essas referências deixarão de ser substituídas.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Mudar o nome deixará $count$ referência(s) existente(s) sem substituição.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Adicionar variável"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Recomendado – muito usado com $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Nome da variável é obrigatório"
@@ -719,6 +764,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Especificar a cor do tipo de letra. Predefinido: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Cor do Ícone"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Especificar a cor do ícone. Predefinido: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Excluir da cor de ícone global"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Mantém a cor original deste ícone mesmo quando está definida uma cor de ícone global."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Os favicons são automaticamente excluídos da cor de ícone global e mantêm as suas cores originais."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automático"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Escala do tamanho da fonte"
   },
@@ -805,6 +868,9 @@
   },
   "Option_zod_invalid_variable_name": {
     "message": "Nome da variável deve começar com letra e conter apenas letras, números e sublinhados"
+  },
+  "Option_zod_reserved_variable_name": {
+    "message": "Este nome está reservado para uma variável integrada"
   },
   "Option_zod_string_min": {
     "message": "Por favor, insira uma string de $key$ caracteres ou mais.",
@@ -1317,6 +1383,15 @@
   "onboarding_skipButton": {
     "message": "Ignorar"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Bem-vindo!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Primeiro, conheça três formas úteis de o utilizar."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Clique para continuar"
+  },
   "onboarding_step1Explain": {
     "message": "Selecione o texto abaixo para experimentar uma pesquisa de imediato."
   },
@@ -1348,7 +1423,7 @@
     "message": "Pronto — agora já pode pesquisar instantaneamente tudo o que selecionar"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Adicione o seu motor de pesquisa preferido para tornar as pesquisas do dia a dia ainda mais rápidas."
+    "message": "Adicione os motores de pesquisa que mais utiliza para lhes aceder de imediato."
   },
   "onboarding_step2Explain": {
     "message": "De seguida, vamos perguntar à IA sobre o texto abaixo."
@@ -1369,7 +1444,7 @@
     "message": "Agora já pode perguntar à IA sobre o que selecionar, diretamente a partir da página que está a ler"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Peça à IA coisas como \"resume isto\" ou \"analisa esta empresa\" instantaneamente.\nPode personalizar o prompt livremente."
+    "message": "Dê instruções à IA, como \"resume isto\" ou \"analisa esta empresa\", de imediato.\nPersonalize o prompt como preferir."
   },
   "onboarding_step3Explain": {
     "message": "Vamos pré-visualizar uma ligação sem abrir um novo separador."
@@ -1393,7 +1468,7 @@
     "message": "Pronto — agora já pode pré-visualizar ligações sem sair da página"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Obteve a informação e voltou de imediato!\nIsto reduz o incómodo de mudar de separadores, para que se possa concentrar no que importa."
+    "message": "Viu a página e voltou de imediato!\nPasse menos tempo a gerir separadores e concentre-se no que tem de fazer."
   },
   "onboarding_nextButton": {
     "message": "Seguinte"

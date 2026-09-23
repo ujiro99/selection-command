@@ -429,7 +429,14 @@ export const openAndRun = (
     const steps = param.steps
     const userVariables = param.userVariables || []
     run(
-      { ...param, tabId, steps, selectedText, clipboardText, userVariables },
+      {
+        ...param,
+        tabId,
+        steps,
+        selectedText,
+        clipboardText,
+        userVariables,
+      },
       sender,
       response,
     )
@@ -462,7 +469,14 @@ export const preview = (
       await chrome.tabs.update(tabId, { url: option.startUrl })
     }
 
-    run(param, sender, response)
+    run(
+      {
+        ...param,
+        userVariables: param.userVariables ?? option?.userVariables,
+      },
+      sender,
+      response,
+    )
   }
 
   func()

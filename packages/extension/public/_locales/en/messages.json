@@ -518,14 +518,59 @@
   "Option_userVariables_desc": {
     "message": "Define custom variables for input fields (max 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Define a custom variable for input fields."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Use this name as a key in PageAction input steps."
+  },
+  "Option_userVariable_value_label": {
+    "message": "String expanded at runtime"
+  },
   "Option_userVariable_name": {
     "message": "Variable name"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Remaining"
   },
   "Option_userVariable_value": {
     "message": "Value"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(unnamed)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Remove variable"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "This variable is used in $count$ place(s). Those references will stop being replaced.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Renaming leaves $count$ existing reference(s) unreplaced.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Add variable"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Recommended – commonly used with $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Variable name is required"
@@ -723,6 +768,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Specify font color. Default: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Icon Color"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Specify icon color. Default: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Exclude from global icon color"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Keep this icon's original color even when a global icon color is set."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Favicons are automatically excluded from the global icon color and keep their original colors."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automatic"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Font size scaling"
   },
@@ -811,6 +874,9 @@
   },
   "Option_zod_invalid_variable_name": {
     "message": "Variable name must start with a letter and contain only letters, numbers, and underscores"
+  },
+  "Option_zod_reserved_variable_name": {
+    "message": "This name is reserved for a built-in variable"
   },
   "Option_zod_string_min": {
     "message": "Please enter a string of $key$ characters or more.",
@@ -1336,6 +1402,18 @@
     "message": "Skip",
     "description": "Button shown on every onboarding step to end the onboarding early."
   },
+  "onboarding_welcomeMessage": {
+    "message": "Welcome!",
+    "description": "Onboarding variant B welcome overlay, shown for a moment before the first step."
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "First, let's explore three useful ways to use it.",
+    "description": "Introduces the three usage examples that follow the onboarding welcome message."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Click to continue",
+    "description": "Accessible label for the onboarding variant B welcome overlay, which advances on click."
+  },
   "onboarding_step1Explain": {
     "message": "Select the text below to try a search right away.",
     "description": "Onboarding Step1 (Search command) instruction shown before the user selects the sample text."
@@ -1377,7 +1455,7 @@
     "description": "Onboarding Step1 value message shown after the user runs the search command and returns to the onboarding tab."
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Add your favorite search engine to make everyday searches even faster.",
+    "message": "Add the search engines you use most and open them in an instant.",
     "description": "Onboarding Step1 value sub-message, shown under the main value message once the search result has been seen."
   },
   "onboarding_step2Explain": {
@@ -1405,7 +1483,7 @@
     "description": "Onboarding Step2 value message shown after the user runs the AiPrompt command."
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Instantly ask AI things like \"summarize this\" or \"analyze this company.\"\nYou can freely customize the prompt.",
+    "message": "Instantly tell AI to \"summarize this\" or \"analyze this company.\"\nYou can customize the prompt however you like.",
     "description": "Onboarding Step2 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
   },
   "onboarding_step3Explain": {
@@ -1437,7 +1515,7 @@
     "description": "Onboarding Step3 value message shown after the user triggers Link Preview."
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "You got the info and came right back!\nThis cuts down on tab-switching, so you can stay focused on what you need to do.",
+    "message": "You viewed the page and came right back!\nSpend less time managing tabs and stay focused on what you need to do.",
     "description": "Onboarding Step3 value sub-message. Contains a \\n line break rendered as <br> at display time - keep it as a literal \\n rather than an HTML tag."
   },
   "onboarding_nextButton": {

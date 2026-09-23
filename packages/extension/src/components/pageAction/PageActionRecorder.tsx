@@ -20,12 +20,14 @@ import type {
   PopupOption,
   Point,
   DeepPartial,
+  UserVariable,
 } from "@/types"
 import { isEmpty, capitalize } from "@/lib/utils"
 
 export function PageActionRecorder(): JSX.Element {
   const { isRecording } = usePageActionContext()
   const [steps, setSteps] = useState<PageActionStep[]>([])
+  const [userVariables, setUserVariables] = useState<UserVariable[]>([])
   const [windowSize, setWindowSize] = useState<PopupOption>({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -85,6 +87,7 @@ export function PageActionRecorder(): JSX.Element {
   useEffect(() => {
     const update = (data: PageActionRecordingData) => {
       data?.steps && setSteps(data.steps ?? [])
+      setUserVariables(data?.userVariables ?? [])
     }
     const update2 = (opt: PageActionRecorderOption) => {
       opt?.controllerPosition && setPosition(opt.controllerPosition)
@@ -156,12 +159,13 @@ export function PageActionRecorder(): JSX.Element {
             ref={setControllerElm}
           />
         </Draggable>
-        {!editorOpen && <InputPopup />}
+        {!editorOpen && <InputPopup userVariables={userVariables} />}
         <InputEditor
           open={editorOpen}
           onOpenChange={(o) => !o && setEditId(null)}
           value={editorValue}
           onSubmit={editInputAction}
+          userVariables={userVariables}
         />
         <RemoveDialog
           open={removeOpen}

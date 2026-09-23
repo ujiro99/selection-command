@@ -6,12 +6,13 @@ import { Command } from "@/types"
 
 export function useContextMenu() {
   const [command, setCommand] = useState<Command | null>(null)
-  const [useClipboard, setUseClipboard] = useState<boolean>(false)
+  const [allowClipboardFallback, setAllowClipboardFallback] =
+    useState<boolean>(false)
 
   useEffect(() => {
     Ipc.addListener(TabCommand.executeAction, ((param: executeActionProps) => {
       setCommand(param.command)
-      setUseClipboard(param.useClipboard ?? false)
+      setAllowClipboardFallback(param.allowClipboardFallback ?? false)
       return false
     }) as IpcCallback)
     return () => {
@@ -19,5 +20,5 @@ export function useContextMenu() {
     }
   }, [])
 
-  return { command, setCommand, useClipboard }
+  return { command, setCommand, allowClipboardFallback }
 }

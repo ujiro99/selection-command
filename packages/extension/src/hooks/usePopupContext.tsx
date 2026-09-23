@@ -7,6 +7,7 @@ export type ContextType = {
   inOnboarding?: boolean
   side: SIDE
   align: ALIGN
+  hasIconColor?: boolean
 }
 
 export const popupContext = createContext<ContextType>({} as ContextType)

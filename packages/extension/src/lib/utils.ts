@@ -14,6 +14,9 @@ import { normalizeObject } from "@shared/utils/common"
 // Re-export for other files to use
 export { cn, isSearchCommand, capitalize, isEmpty, sleep, normalizeObject }
 import { APP_ID, SPACE_ENCODING, OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
+// Imported from the standalone module (not the barrel) to avoid a cycle back
+// into this file through @/services/pageAction.
+import { INSERT, InsertSymbol } from "@/services/pageAction/insertSymbols"
 import type {
   Version,
   Command,
@@ -22,7 +25,6 @@ import type {
   PageActionCommand,
   AiPromptCommand,
   UrlParam,
-  UserVariable,
   PageRule,
 } from "@/types"
 
@@ -51,6 +53,28 @@ export const isUrlParam = (url: string | UrlParam): url is UrlParam => {
 }
 
 /**
+ * Convert bare URLs in text to Markdown link format [URL](URL).
+ * URLs already in Markdown link format ([text](url)) are returned unchanged,
+ * so applying this to already-converted text is a no-op.
+ * Trailing punctuation characters that are unlikely to be part of the URL are
+ * excluded from the link and preserved in the surrounding text.
+ */
+export function convertUrlsToMarkdown(text: string): string {
+  // The alternation tries the markdown link pattern first; if matched, leave it
+  // unchanged. Otherwise, convert bare URLs to [URL](URL) format.
+  return text.replace(
+    /\[[^\]]*\]\(([^)]*)\)|https?:\/\/[^\s<>"')\]]+/g,
+    (match) => {
+      if (match.startsWith("[")) return match
+      // Strip trailing punctuation that is unlikely to be part of the URL
+      const trimmed = match.replace(/[.,!?;:)'"]+$/, "")
+      const trailing = match.slice(trimmed.length)
+      return `[${trimmed}](${trimmed})${trailing}`
+    },
+  )
+}
+
+/**
  * Convert a string or UrlParam to a URL.
  * @param param The string or UrlParam to convert.
  * @param clipboardText The clipboard text to use if the UrlParam has useClipboard set to true.
@@ -70,7 +94,19 @@ export function toUrl(
     useClipboard = false,
   } = param
   let text = selectionText
-  if (useClipboard && isEmpty(text)) {
+  if (useClipboard && param.clipboardTemplate) {
+    // selectionText is a pre-expanded prompt whose clipboard-dependent
+    // placeholders were left unresolved, because the clipboard can only be
+    // read here in the background.
+    const clipboard = clipboardText ?? ""
+    text = safeInterpolate(text, {
+      [InsertSymbol[INSERT.CLIPBOARD]]: clipboard,
+      [InsertSymbol[INSERT.SELECTED_TEXT]]: clipboard,
+    })
+    if (param.clipboardTemplate.urlToMarkdown) {
+      text = convertUrlsToMarkdown(text)
+    }
+  } else if (useClipboard && isEmpty(text)) {
     text = clipboardText ?? ""
   }
   // URL encode the text
@@ -168,6 +204,18 @@ export function isLinkCommand(command: Command): command is LinkCommand {
  */
 export function isPageActionCommand(cmd: unknown): cmd is PageActionCommand {
   return _isPageActionCommand(cmd)
+}
+
+/**
+ * Returns the website a command targets, or undefined when it has none.
+ * Lives here rather than in favicon.ts so callers can name a command's target
+ * without pulling in the Public Suffix List that module carries.
+ */
+export function getCommandTargetUrl(command: Command): string | undefined {
+  if (isPageActionCommand(command)) {
+    return command.pageActionOption?.startUrl
+  }
+  return command.searchUrl
 }
 
 export function isAiPromptCommand(cmd: unknown): cmd is AiPromptCommand {
@@ -395,25 +443,13 @@ export function isServiceWorker(): boolean {
 }
 
 /**
- * Check if the variable name is valid.
- * Variable names must start with a letter and contain only letters, numbers, and underscores.
+ * Check if the variable name collides with a built-in placeholder.
+ * Placeholders are substituted by exact name, so only an exact match collides.
  * @param {string} name The variable name to check.
- * @returns {boolean} True if the variable name is valid.
+ * @returns {boolean} True if the name is reserved for a built-in placeholder.
  */
-export function isValidVariableName(name: string): boolean {
-  return /^[a-zA-Z][a-zA-Z0-9_]*$/.test(name)
-}
-
-/**
- * Validate user variables array.
- * @param {UserVariable[]} variables The user variables to validate.
- * @returns {boolean} True if the variables are valid (max 5, valid names and values).
- */
-export function validateUserVariables(variables: UserVariable[]): boolean {
-  if (variables.length > 5) return false
-  return variables.every(
-    (v) => isValidVariableName(v.name) && typeof v.value === "string",
-  )
+export function isReservedVariableName(name: string): boolean {
+  return Object.values(InsertSymbol).includes(name)
 }
 
 /**

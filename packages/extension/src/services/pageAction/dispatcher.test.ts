@@ -28,6 +28,7 @@ vi.mock("@/services/pageAction", () => ({
     LANG: "lang",
     PAGE_HTML: "pageHtml",
     SELECTION_HTML: "selectionHtml",
+    PROMPT: "prompt",
   },
   InsertSymbol: {
     selectedText: "{{selectedText}}",
@@ -36,6 +37,7 @@ vi.mock("@/services/pageAction", () => ({
     lang: "{{lang}}",
     pageHtml: "{{pageHtml}}",
     selectionHtml: "{{selectionHtml}}",
+    prompt: "{{prompt}}",
   },
 }))
 
@@ -776,6 +778,43 @@ describe("PageActionDispatcher", () => {
         "{{myVar}}",
         expect.objectContaining({
           myVar: "custom value",
+        }),
+      )
+    })
+
+    it("PDI-12: Should resolve a user variable in an input step", async () => {
+      const mockElement = mockElements.input
+      mockDocument.querySelector.mockReturnValue(mockElement)
+      mockIsEditable.mockReturnValue(false)
+
+      const param = {
+        type: PAGE_ACTION_EVENT.input,
+        selector: ".input",
+        selectorType: SelectorType.css,
+        label: "Input",
+        value: "{{Prompt}}",
+        srcUrl: "https://example.com",
+        selectedText: "test selection",
+        clipboardText: "",
+        userVariables: [
+          { name: "Prompt", value: "Summarize: {{selectedText}}" },
+        ],
+      }
+
+      await PageActionDispatcher.input(param as any)
+
+      // The user variable's own value is resolved against the built-ins first.
+      expect(mockSafeInterpolate).toHaveBeenCalledWith(
+        "Summarize: {{selectedText}}",
+        expect.objectContaining({
+          "{{selectedText}}": "test selection",
+        }),
+      )
+      // The step value is then resolved with that variable available.
+      expect(mockSafeInterpolate).toHaveBeenCalledWith(
+        "{{Prompt}}",
+        expect.objectContaining({
+          Prompt: expect.any(String),
         }),
       )
     })

@@ -515,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "Benutzerdefinierte Variablen für Eingabefelder definieren (max. 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Definieren Sie eine benutzerdefinierte Variable für Eingabefelder."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Verwenden Sie diesen Namen als Schlüssel in PageAction-Eingabeschritten."
+  },
+  "Option_userVariable_value_label": {
+    "message": "Text zur Laufzeit"
+  },
   "Option_userVariable_name": {
     "message": "Variablenname"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Verbleibend"
   },
   "Option_userVariable_value": {
     "message": "Wert"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(unbenannt)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Variable entfernen"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "Diese Variable wird an $count$ Stelle(n) verwendet. Diese Verweise werden nicht mehr ersetzt.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Beim Umbenennen bleiben $count$ vorhandene Verweise unersetzt.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Variable hinzufügen"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Empfohlen – bei $service$ häufig verwendet",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Variablenname ist erforderlich"
@@ -719,6 +764,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Geben Sie die Schriftfarbe an. Standard: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Symbolfarbe"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Geben Sie die Symbolfarbe an. Standard: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Von globaler Symbolfarbe ausschließen"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Behält die ursprüngliche Farbe dieses Symbols bei, auch wenn eine globale Symbolfarbe festgelegt ist."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Favicons werden automatisch von der globalen Symbolfarbe ausgeschlossen und behalten ihre ursprünglichen Farben."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automatisch"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Schriftgrößen-Skalierung"
   },
@@ -805,6 +868,9 @@
   },
   "Option_zod_invalid_variable_name": {
     "message": "Variablenname muss mit einem Buchstaben beginnen und darf nur Buchstaben, Zahlen und Unterstriche enthalten"
+  },
+  "Option_zod_reserved_variable_name": {
+    "message": "Dieser Name ist für eine integrierte Variable reserviert"
   },
   "Option_zod_string_min": {
     "message": "Bitte geben Sie eine Zeichenkette mit $key$ oder mehr Zeichen ein.",
@@ -1314,6 +1380,15 @@
   "onboarding_skipButton": {
     "message": "Überspringen"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Willkommen!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Lernen Sie zunächst drei praktische Anwendungsmöglichkeiten kennen."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Zum Fortfahren klicken"
+  },
   "onboarding_step1Explain": {
     "message": "Markiere den folgenden Text, um sofort eine Suche auszuprobieren."
   },
@@ -1345,7 +1420,7 @@
     "message": "Fertig – jetzt kannst du alles, was du markierst, sofort durchsuchen"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Füge deine bevorzugte Suchmaschine hinzu, um alltägliche Suchen noch schneller zu machen."
+    "message": "Registriere häufig verwendete Suchmaschinen, um sie sofort aufzurufen."
   },
   "onboarding_step2Explain": {
     "message": "Als Nächstes fragen wir die KI zum folgenden Text."
@@ -1366,7 +1441,7 @@
     "message": "Jetzt kannst du die KI direkt auf der Seite, die du liest, zu allem fragen, was du markierst"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Frag die KI sofort Dinge wie „Fasse das zusammen\" oder „Analysiere dieses Unternehmen\".\nDen Prompt kannst du frei anpassen."
+    "message": "Gib der KI sofort Anweisungen wie „Fasse das zusammen\" oder „Analysiere dieses Unternehmen\".\nDen Prompt kannst du frei anpassen."
   },
   "onboarding_step3Explain": {
     "message": "Schauen wir uns einen Link an, ohne einen neuen Tab zu öffnen."
@@ -1390,7 +1465,7 @@
     "message": "Fertig – jetzt kannst du Links in der Vorschau ansehen, ohne die Seite zu verlassen"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Du hast die Information erhalten und bist sofort zurückgekehrt!\nDas reduziert den Aufwand für Tab-Wechsel, damit du dich auf das Wesentliche konzentrieren kannst."
+    "message": "Du hast dir die Seite angesehen und bist sofort zurückgekehrt!\nSo musst du weniger mit Tabs hantieren und kannst dich auf deine Aufgaben konzentrieren."
   },
   "onboarding_nextButton": {
     "message": "Weiter"

@@ -5,6 +5,7 @@ import {
   SHORTCUT_NO_SELECTION_BEHAVIOR,
   NEW_HUB_URL,
   SCREEN,
+  VERSION,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
 import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
@@ -29,6 +30,8 @@ import {
   getOrCreateClientId,
 } from "@/services/analytics"
 import * as HubBackground from "@/services/hub/background"
+import { ensureOnboardingAssignment } from "@/services/experiments"
+import * as IconColorBackground from "@/services/iconColor/background"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -313,6 +316,7 @@ const commandFuncs = {
   [BgCommand.getTabId]: getTabId,
   [BgCommand.getActiveTabId]: getActiveTabId,
   [BgCommand.closeTab]: closeTab,
+  [BgCommand.resolveIconColors]: IconColorBackground.resolveIconColors,
 
   //
   // Hub
@@ -471,6 +475,15 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
       await Settings.reset()
       sendEvent(ANALYTICS_EVENTS.INSTALLED, {}, SCREEN.SERVICE_WORKER)
+      // Assign the onboarding A/B variant before the tab is created, so the
+      // page can render its first frame from storage without fetching the
+      // remote config itself. A failure here must never block onboarding -
+      // the page assigns on its own if no assignment is stored yet.
+      try {
+        await ensureOnboardingAssignment()
+      } catch (error) {
+        console.error("Failed to assign onboarding variant:", error)
+      }
       chrome.tabs.create({ url: ONBOARDING_PAGE_PATH })
     }
 
@@ -484,13 +497,15 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       details.reason === chrome.runtime.OnInstalledReason.INSTALL ||
       details.reason === chrome.runtime.OnInstalledReason.UPDATE
     ) {
-      // Set uninstall survey URL with client_id for analysis.
+      // Set uninstall survey URL with client_id for analysis. The version
+      // rides along for the `uninstall` event the Hub sends on our behalf
+      // (selection-command-hub#275).
       // Wrapped in its own try/catch so a failure here (e.g. storage quota
       // error) does not skip the backup checks below.
       try {
         const clientId = await getOrCreateClientId()
         chrome.runtime.setUninstallURL(
-          `${NEW_HUB_URL}/uninstall?client_id=${clientId}`,
+          `${NEW_HUB_URL}/uninstall?client_id=${clientId}&v=${VERSION}`,
         )
       } catch (error) {
         console.error("Failed to set uninstall URL with client_id:", error)
@@ -603,7 +618,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     )
 
     // If no text is selected, handle according to noSelectionBehavior
-    let useClipboard = false
+    let allowClipboardFallback = false
     if (isEmpty(selectionText)) {
       if (
         shortcut.noSelectionBehavior ===
@@ -614,7 +629,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         shortcut.noSelectionBehavior ===
         SHORTCUT_NO_SELECTION_BEHAVIOR.USE_CLIPBOARD
       ) {
-        useClipboard = true
+        allowClipboardFallback = true
       }
     }
 
@@ -633,7 +648,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         TabCommand.executeAction,
         {
           command,
-          useClipboard,
+          allowClipboardFallback,
         },
       )
     }
@@ -645,7 +660,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
         position: { x: 10000, y: 10000 },
         selectionText,
         target: null,
-        useClipboard,
+        allowClipboardFallback,
         pageUrl: tab?.url ?? "",
       })
     }

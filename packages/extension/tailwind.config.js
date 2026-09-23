@@ -47,6 +47,20 @@ module.exports = {
           from: { opacity: "0", transform: "translateY(10px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        // Linear-style enter/exit used by the variant B welcome overlay:
+        // content resolves out of a blur instead of just sliding up.
+        "onboarding-blur-in": {
+          from: {
+            opacity: "0",
+            filter: "blur(8px)",
+            transform: "translateY(6px)",
+          },
+          to: { opacity: "1", filter: "blur(0px)", transform: "translateY(0)" },
+        },
+        "onboarding-blur-out": {
+          from: { opacity: "1", filter: "blur(0px)" },
+          to: { opacity: "0", filter: "blur(8px)" },
+        },
         "onboarding-ring": {
           "0%, 100%": { boxShadow: "0 0 0 0 var(--onboarding-ring-color)" },
           "50%": { boxShadow: "0 0 0 6px var(--onboarding-ring-color)" },
@@ -94,6 +108,10 @@ module.exports = {
         popup: "popup 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both",
         "onboarding-rise":
           "onboarding-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "onboarding-blur-in":
+          "onboarding-blur-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "onboarding-blur-out":
+          "onboarding-blur-out 0.32s cubic-bezier(0.4, 0, 1, 1) both",
         "onboarding-ring": "onboarding-ring 2.4s ease-in-out 0.6s infinite",
         "onboarding-blink": "onboarding-blink 1.5s ease-in-out 0.3s infinite",
         "onboarding-highlight": "onboarding-highlight 4s ease-in-out infinite",

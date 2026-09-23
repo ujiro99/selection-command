@@ -116,6 +116,65 @@ describe("hasCommandChanged", () => {
           "",
         ),
       ).toBe(false)
+      expect(
+        hasCommandChanged(
+          cmd,
+          "",
+          {
+            ...cmd.pageActionOption,
+            openMode: PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+          },
+          "",
+        ),
+      ).toBe(false)
+    })
+
+    it("returns false when userVariables are unchanged or empty/undefined equivalent", () => {
+      const cmd = makePageActionCommand()
+      expect(
+        hasCommandChanged(
+          cmd,
+          "",
+          { ...cmd.pageActionOption, userVariables: [] },
+          "",
+        ),
+      ).toBe(false)
+
+      const cmdWithVariables = makePageActionCommand({
+        pageActionOption: {
+          userVariables: [{ name: "Prompt", value: "Summarize" }],
+        },
+      })
+      expect(
+        hasCommandChanged(
+          cmdWithVariables,
+          "",
+          {
+            ...cmdWithVariables.pageActionOption,
+            userVariables: [{ name: "Prompt", value: "Summarize" }],
+          },
+          "",
+        ),
+      ).toBe(false)
+    })
+
+    it("returns true when a user variable value is changed", () => {
+      const cmd = makePageActionCommand({
+        pageActionOption: {
+          userVariables: [{ name: "Prompt", value: "Original prompt" }],
+        },
+      })
+      expect(
+        hasCommandChanged(
+          cmd,
+          "",
+          {
+            ...cmd.pageActionOption,
+            userVariables: [{ name: "Prompt", value: "Updated prompt" }],
+          },
+          "",
+        ),
+      ).toBe(true)
     })
 
     it("does not throw when currentPageActionOption is null, returns true (differs from saved)", () => {

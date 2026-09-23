@@ -84,4 +84,50 @@ describe("InputMenu file attach menu", () => {
       screen.queryByText("PageAction_InputMenu_selectedText"),
     ).not.toBeInTheDocument()
   })
+
+  it("IM-07: uses the standard menu item spacing for user variables", () => {
+    render(
+      <InputMenu
+        targetElm={null}
+        hideFilePaste
+        userVariables={[{ name: "Prompt", value: "" }]}
+      />,
+    )
+
+    const trigger = screen
+      .getByText("PageAction_InputMenu_insertText")
+      .closest("button")!
+    fireEvent.mouseEnter(trigger)
+
+    expect(screen.getByRole("menuitem", { name: "Prompt" })).toHaveClass(
+      "m-0.5",
+      "px-2.5",
+      "py-2",
+    )
+  })
+
+  it("IM-08: inserts a user variable with one pair of placeholder brackets", () => {
+    const target = document.createElement("textarea")
+    document.body.appendChild(target)
+
+    try {
+      render(
+        <InputMenu
+          targetElm={target}
+          hideFilePaste
+          userVariables={[{ name: "test", value: "" }]}
+        />,
+      )
+
+      const trigger = screen
+        .getByText("PageAction_InputMenu_insertText")
+        .closest("button")!
+      fireEvent.mouseEnter(trigger)
+      fireEvent.click(screen.getByRole("menuitem", { name: "test" }))
+
+      expect(target).toHaveValue("{{test}}")
+    } finally {
+      target.remove()
+    }
+  })
 })

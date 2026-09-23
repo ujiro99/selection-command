@@ -25,7 +25,7 @@ export async function execute({
   selectionText,
   target,
   useSecondary = false,
-  useClipboard = false,
+  allowClipboardFallback = false,
   changeState,
   pageUrl,
 }: ExecuteCommandParams) {
@@ -35,7 +35,7 @@ export async function execute({
     selectionText,
     target,
     useSecondary,
-    useClipboard,
+    allowClipboardFallback,
     changeState,
     pageUrl,
     actions: actionsForBackground,

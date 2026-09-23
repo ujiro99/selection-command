@@ -515,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "入力時に使用できる独自の変数を定義します（最大5個）"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "入力時に使用できる独自の変数を定義します。"
+  },
+  "Option_userVariable_name_desc": {
+    "message": "PageActionの入力ステップ内でキー名として使用できます。"
+  },
+  "Option_userVariable_value_label": {
+    "message": "実行時に展開される文字列"
+  },
   "Option_userVariable_name": {
     "message": "変数名"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "残り"
   },
   "Option_userVariable_value": {
     "message": "値"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(名前未設定)"
+  },
+  "Option_userVariable_remove": {
+    "message": "変数を削除"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "この変数は $count$ 箇所で使用されています。それらの参照は置換されなくなります。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "名前を変更すると、既存の $count$ 箇所の参照が置換されなくなります。",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "変数を追加"
+  },
+  "Option_userVariable_recommended": {
+    "message": "おすすめ・$service$ ではよく使われます",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "変数名は必須です"
@@ -719,6 +764,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "文字の色を指定します。デフォルト: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "アイコンの色"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "アイコンの色を指定します。デフォルト: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "全体のアイコン色を適用しない"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "全体のアイコン色が設定されている場合でも、このアイコン本来の色を保持します。"
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "このアイコンは全体のアイコン色設定から自動的に除外され、本来の色を保持します。"
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "自動"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "文字サイズの倍率"
   },
@@ -805,6 +868,9 @@
   },
   "Option_zod_invalid_variable_name": {
     "message": "変数名は文字で始まり、文字、数字、アンダースコアのみを含む必要があります"
+  },
+  "Option_zod_reserved_variable_name": {
+    "message": "この名前は組み込み変数で予約されています"
   },
   "Option_zod_string_min": {
     "message": "長さ$key$文字以上で入力してください。",
@@ -1311,6 +1377,15 @@
   "onboarding_skipButton": {
     "message": "スキップ"
   },
+  "onboarding_welcomeMessage": {
+    "message": "ようこそ！"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "まずは、3つの便利な使い方をご紹介します"
+  },
+  "onboarding_welcomeContinue": {
+    "message": "クリックして続ける"
+  },
   "onboarding_step1Explain": {
     "message": "気になるテキストを選択して、すぐに検索してみましょう。"
   },
@@ -1342,7 +1417,7 @@
     "message": "これで、気になった情報をすぐに検索できました"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "好きな検索エンジンを追加すれば、いつもの検索をもっと高速にできます。"
+    "message": "よく使う検索エンジンを登録すれば、すぐに呼び出せます。"
   },
   "onboarding_step2Explain": {
     "message": "次は、選択したテキストをAIに聞いてみましょう。"
@@ -1363,7 +1438,7 @@
     "message": "Webページを読みながら、その場でAIに質問できました"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "「要約して」「この企業を分析」などをすぐにAIへ依頼できます。\nプロンプトは自由にカスタマイズができます。"
+    "message": "「要約して」「この企業を分析」などをすぐにAIへ指示できます。\nプロンプトは自由にカスタマイズができます。"
   },
   "onboarding_step3Explain": {
     "message": "リンク先をタブを開かずに確認してみましょう。"
@@ -1387,7 +1462,7 @@
     "message": "これで、リンク先をその場で確認できました"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "情報を入手して、すぐに戻って来れました！\nこれでタブ操作の手間を削減し、やるべきことに集中できます。"
+    "message": "ページを見て、すぐに戻って来れました！\nタブ操作の手間を減らし、やるべきことに集中できます。"
   },
   "onboarding_nextButton": {
     "message": "次へ"

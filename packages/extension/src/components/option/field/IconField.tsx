@@ -1,9 +1,16 @@
-import React, { useState, useRef } from "react"
+import React, { useMemo, useState } from "react"
+import type { CSSProperties } from "react"
 import { useController } from "react-hook-form"
 import { FormLabel, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 import { MenuImage } from "@/components/menu/MenuImage"
-import { isEmpty, isValidSVG } from "@/lib/utils"
+import { InfoTooltip } from "./InfoTooltip"
+import { useFavicon } from "@/hooks/option/useFavicon"
+import { useGlobalIconColor } from "@/hooks/option/useGlobalIconColor"
+import { popupContext, usePopupContext } from "@/hooks/usePopupContext"
+import { isEmpty, isValidSVG, cn } from "@/lib/utils"
+import { shouldPreserveIconColor } from "@/lib/favicon"
 import { t as _t } from "@/services/i18n"
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -11,20 +18,23 @@ type IconField = {
   control: any
   nameUrl: string
   nameSvg: string
+  nameExclude: string
   formLabel: string
   placeholder?: string
   description?: string
+  /** The website the edited command targets, used to detect its own icons. */
+  targetUrl?: string
 }
-
-import { useFavicon } from "@/hooks/option/useFavicon"
 
 export const IconField = ({
   control,
   nameUrl,
   nameSvg,
+  nameExclude,
   formLabel,
   description,
   placeholder,
+  targetUrl,
 }: IconField) => {
   const { field: fieldUrl, formState: stateUrl } = useController({
     name: nameUrl,
@@ -34,19 +44,32 @@ export const IconField = ({
     name: nameSvg,
     control,
   })
+  const { field: fieldExclude } = useController({
+    name: nameExclude,
+    control,
+  })
   const errUrl = stateUrl.errors[nameUrl]
   const errSvg = stateSvg.errors[nameSvg]
 
+  // Resolved once here so the toggle and the preview always agree with the menu.
+  const iconUrl = fieldUrl?.value
+  const preserveOriginalColor = useMemo(
+    () => shouldPreserveIconColor({ url: iconUrl, targetUrl }),
+    [iconUrl, targetUrl],
+  )
+
   return (
-    <div className="flex items-center gap-1">
-      <div className="w-2/6">
+    <div className="flex items-start gap-1">
+      <div className="w-2/6 pt-2">
         <FormLabel>{formLabel}</FormLabel>
         {description && <FormDescription>{description}</FormDescription>}
       </div>
-      <div className="w-4/6 relative">
+      <div className="w-4/6 relative space-y-2">
         <IconUrlInput
           fieldUrl={fieldUrl}
           fieldSvg={fieldSvg}
+          excludeFromGlobalIconColor={!!fieldExclude?.value}
+          preserveOriginalColor={preserveOriginalColor}
           placeholder={placeholder}
         />
         <FormMessage />
@@ -56,7 +79,70 @@ export const IconField = ({
             {errSvg && <span>{`${errSvg.message}`}</span>}
           </p>
         )}
+        <GlobalIconColorToggle
+          name={nameExclude}
+          field={fieldExclude}
+          isAutoPreserved={preserveOriginalColor}
+        />
       </div>
+    </div>
+  )
+}
+
+type GlobalIconColorToggleProps = {
+  name: string
+  field: { value?: boolean; onChange: (value: boolean) => void }
+  isAutoPreserved: boolean
+}
+
+/**
+ * Lets the user keep an icon's original colors. Icons detected as favicons,
+ * brand assets, or the target site's own assets are preserved automatically and
+ * cannot be toggled off.
+ */
+const GlobalIconColorToggle = ({
+  name,
+  field,
+  isAutoPreserved,
+}: GlobalIconColorToggleProps) => {
+  return (
+    <div className="flex items-center justify-between gap-2 py-1">
+      <div className="flex items-center gap-1.5">
+        <FormLabel
+          htmlFor={name}
+          className={cn(
+            "text-sm font-normal",
+            isAutoPreserved
+              ? "cursor-default text-muted-foreground"
+              : "cursor-pointer",
+          )}
+        >
+          {t("excludeFromGlobalIconColor")}
+        </FormLabel>
+        {isAutoPreserved && (
+          <span
+            data-testid="favicon-automatic-badge"
+            className="text-[11px] bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded font-medium leading-none"
+          >
+            {t("excludeFromGlobalIconColor_automatic")}
+          </span>
+        )}
+        <InfoTooltip
+          testId="exclude-icon-color-info"
+          text={
+            isAutoPreserved
+              ? t("excludeFromGlobalIconColor_favicon_desc")
+              : t("excludeFromGlobalIconColor_desc")
+          }
+        />
+      </div>
+      <Switch
+        id={name}
+        aria-label={t("excludeFromGlobalIconColor")}
+        disabled={isAutoPreserved}
+        checked={isAutoPreserved || !!field?.value}
+        onCheckedChange={field?.onChange}
+      />
     </div>
   )
 }
@@ -64,6 +150,8 @@ export const IconField = ({
 type IconUrlInputType = {
   fieldUrl: any
   fieldSvg: any
+  excludeFromGlobalIconColor?: boolean
+  preserveOriginalColor?: boolean
   placeholder?: string
   onAutoFill?: (value: string) => void
 }
@@ -71,27 +159,32 @@ type IconUrlInputType = {
 const IconUrlInput = ({
   fieldUrl,
   fieldSvg,
+  excludeFromGlobalIconColor,
+  preserveOriginalColor,
   placeholder,
 }: IconUrlInputType) => {
   const { isLoading } = useFavicon()
-  const svgRef = useRef<HTMLDivElement | null>(null)
+  const popup = usePopupContext()
+  const { iconColor, hasIconColor } = useGlobalIconColor()
   const hasUrl = !isEmpty(fieldUrl.value)
   const value = hasUrl ? fieldUrl.value : fieldSvg.value
-
-  if (svgRef.current) {
-    svgRef.current.innerHTML = fieldSvg.value
-  }
 
   return isLoading ? (
     <Loading />
   ) : (
-    <div>
-      <MenuImage
-        className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
-        src={fieldUrl.value}
-        svg={fieldSvg.value}
-        alt="Preview of image"
-      />
+    // The preview is rendered outside the popup, so the icon color variable
+    // MenuImage paints with has to be provided here.
+    <div style={{ "--sc-icon-color": iconColor } as CSSProperties}>
+      <popupContext.Provider value={{ ...popup, hasIconColor }}>
+        <MenuImage
+          className="absolute top-[0.7em] left-[0.8em] w-6 h-6 rounded"
+          src={fieldUrl.value}
+          svg={fieldSvg.value}
+          alt="Preview of image"
+          excludeFromGlobalIconColor={excludeFromGlobalIconColor}
+          preserveOriginalColor={preserveOriginalColor}
+        />
+      </popupContext.Provider>
       <UrlOrSvgInput
         value={value}
         placeholder={placeholder}

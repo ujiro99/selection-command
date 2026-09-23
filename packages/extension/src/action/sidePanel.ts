@@ -9,7 +9,7 @@ export const SidePanel = {
   async execute({
     selectionText,
     command,
-    useClipboard,
+    allowClipboardFallback,
     pageUrl,
   }: ExecuteCommandParams) {
     if (!isValidString(command.searchUrl)) {
@@ -19,7 +19,7 @@ export const SidePanel = {
     // Read clipboard text for interpolation, but don't block execution if it fails.
     let clipboardText: string = ""
     try {
-      if (useClipboard && isEmpty(selectionText)) {
+      if (allowClipboardFallback && isEmpty(selectionText)) {
         clipboardText = await navigator.clipboard.readText()
       }
     } catch (e) {
@@ -39,7 +39,7 @@ export const SidePanel = {
           searchUrl: command.searchUrl,
           spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,
           selectionText,
-          useClipboard: useClipboard ?? false,
+          useClipboard: allowClipboardFallback ?? false,
           pageUrl: pageUrl ?? "",
         },
         clipboardText,

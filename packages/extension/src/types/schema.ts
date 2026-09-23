@@ -20,7 +20,7 @@ import {
 } from "@/const"
 
 import { t } from "@/services/i18n"
-import { isEmpty } from "@/lib/utils"
+import { isEmpty, isReservedVariableName } from "@/lib/utils"
 import { SEARCH_OPEN_MODE } from "@shared/constants/open-mode"
 import { countHtmlAttachments } from "@/services/pageAction"
 import type { AiPromptCommand } from "@/types"
@@ -28,6 +28,7 @@ import type { AiPromptCommand } from "@/types"
 const commandSourceSchema = {
   sourceType: z.nativeEnum(COMMAND_SOURCE_TYPE).optional(),
   sourceId: z.string().optional(),
+  excludeFromGlobalIconColor: z.boolean().optional(),
 }
 
 const searchSchema = z.object({
@@ -250,13 +251,41 @@ const PageActionStepSchema = z.object({
 })
 export type PageActionStep = z.infer<typeof PageActionStepSchema>
 
+export const USER_VARIABLE_NAME_MAX_LENGTH = 20
+
 export const userVariableSchema = z.object({
-  name: z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
-    message: t("Option_zod_invalid_variable_name"),
-  }),
+  name: z
+    .string()
+    .min(1, { message: t("Option_userVariable_name_required") })
+    .max(USER_VARIABLE_NAME_MAX_LENGTH, {
+      message: t("Option_zod_string_max", [`${USER_VARIABLE_NAME_MAX_LENGTH}`]),
+    })
+    .regex(/^[a-zA-Z][a-zA-Z0-9_]*$/, {
+      message: t("Option_zod_invalid_variable_name"),
+    })
+    .refine((name) => !isReservedVariableName(name), {
+      message: t("Option_zod_reserved_variable_name"),
+    }),
   value: z.string(),
 })
 export type UserVariableType = z.infer<typeof userVariableSchema>
+
+const userVariablesSchema = z
+  .array(userVariableSchema)
+  .max(5)
+  .superRefine((variables, ctx) => {
+    const seenNames = new Set<string>()
+    variables.forEach((variable, index) => {
+      if (seenNames.has(variable.name)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [index, "name"],
+          message: t("Option_userVariable_name_duplicate"),
+        })
+      }
+      seenNames.add(variable.name)
+    })
+  })
 
 export const PageActionOption = z
   .object({
@@ -264,7 +293,7 @@ export const PageActionOption = z
     pageUrl: z.string().optional(), // URL pattern for command enablement (currentTab only)
     openMode: z.nativeEnum(PAGE_ACTION_OPEN_MODE),
     steps: z.array(PageActionStepSchema),
-    userVariables: z.array(userVariableSchema).max(5).optional(),
+    userVariables: userVariablesSchema.optional(),
   })
   .superRefine((data, ctx) => {
     if (data.openMode === PAGE_ACTION_OPEN_MODE.CURRENT_TAB && !data.pageUrl) {
@@ -373,6 +402,7 @@ export const folderSchema = z
     title: z.string().min(1, { message: t("Option_zod_string_min", ["1"]) }),
     iconUrl: z.string().optional(),
     iconSvg: z.string().optional(),
+    excludeFromGlobalIconColor: z.boolean().optional(),
     onlyIcon: z.boolean().optional(),
     parentFolderId: z.string().optional(),
     style: z.nativeEnum(FOLDER_STYLE).optional(),

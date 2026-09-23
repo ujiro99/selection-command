@@ -40,7 +40,7 @@ export const CommandTypeSelectionDialog = ({
   const hubButtonLink = withUtmParams(
     hubUser
       ? `${NEW_HUB_URL}/${locale}/dashboard/commands`
-      : `${NEW_HUB_URL}/${locale}`,
+      : `${NEW_HUB_URL}/${locale}/commands`,
     UTM_PARAMS,
   )
 

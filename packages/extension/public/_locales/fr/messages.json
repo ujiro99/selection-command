@@ -515,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "Définir des variables personnalisées pour les champs de saisie (max 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Définissez une variable personnalisée pour les champs de saisie."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Utilisez ce nom comme clé dans les étapes de saisie PageAction."
+  },
+  "Option_userVariable_value_label": {
+    "message": "Texte à l’exécution"
+  },
   "Option_userVariable_name": {
     "message": "Nom de variable"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Restants"
   },
   "Option_userVariable_value": {
     "message": "Valeur"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(sans nom)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Supprimer la variable"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "Cette variable est utilisée à $count$ endroit(s). Ces références ne seront plus remplacées.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Le renommage laissera $count$ référence(s) existante(s) non remplacée(s).",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Ajouter une variable"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Recommandé – souvent utilisé avec $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Le nom de variable est requis"
@@ -719,6 +764,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Spécifier la couleur de police. Par défaut: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Couleur de l'icône"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Spécifier la couleur de l'icône. Par défaut: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Exclure de la couleur d'icône globale"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Conserve la couleur d'origine de cette icône même lorsqu'une couleur d'icône globale est définie."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Les favicons sont automatiquement exclus de la couleur d'icône globale et conservent leurs couleurs d'origine."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automatique"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Échelle de taille de police"
   },
@@ -805,6 +868,9 @@
   },
   "Option_zod_invalid_variable_name": {
     "message": "Le nom de variable doit commencer par une lettre et ne contenir que des lettres, chiffres et traits de soulignement"
+  },
+  "Option_zod_reserved_variable_name": {
+    "message": "Ce nom est réservé à une variable intégrée"
   },
   "Option_zod_string_min": {
     "message": "Veuillez saisir une chaîne de $key$ caractères ou plus.",
@@ -1314,6 +1380,15 @@
   "onboarding_skipButton": {
     "message": "Passer"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Bienvenue !"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Commençons par découvrir trois façons pratiques de l’utiliser."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Cliquez pour continuer"
+  },
   "onboarding_step1Explain": {
     "message": "Sélectionnez le texte ci-dessous pour essayer une recherche immédiatement."
   },
@@ -1345,7 +1420,7 @@
     "message": "Et voilà — vous pouvez désormais rechercher instantanément tout ce que vous sélectionnez"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Ajoutez votre moteur de recherche préféré pour rendre vos recherches quotidiennes encore plus rapides."
+    "message": "Ajoutez les moteurs de recherche que vous utilisez souvent pour y accéder instantanément."
   },
   "onboarding_step2Explain": {
     "message": "Ensuite, interrogeons l'IA à propos du texte ci-dessous."
@@ -1366,7 +1441,7 @@
     "message": "Vous pouvez désormais interroger l'IA sur tout ce que vous sélectionnez, directement depuis la page que vous lisez"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Demandez instantanément à l'IA des choses comme « résume ceci » ou « analyse cette entreprise ».\nVous pouvez personnaliser le prompt librement."
+    "message": "Donnez instantanément à l’IA des instructions comme « résume ceci » ou « analyse cette entreprise ».\nVous pouvez personnaliser le prompt comme vous le souhaitez."
   },
   "onboarding_step3Explain": {
     "message": "Prévisualisons un lien sans ouvrir un nouvel onglet."
@@ -1390,7 +1465,7 @@
     "message": "Et voilà — vous pouvez désormais prévisualiser des liens sans quitter la page"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Vous avez obtenu l'information et êtes revenu aussitôt !\nCela réduit la gestion des onglets, pour que vous puissiez vous concentrer sur l'essentiel."
+    "message": "Vous avez consulté la page et êtes revenu aussitôt !\nPassez moins de temps à gérer les onglets et concentrez-vous sur ce que vous avez à faire."
   },
   "onboarding_nextButton": {
     "message": "Suivant"

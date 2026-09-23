@@ -49,6 +49,7 @@ const Units: UnitMap = {
   [STYLE_VARIABLE.BORDER_COLOR]: undefined,
   [STYLE_VARIABLE.FONT_SCALE]: undefined,
   [STYLE_VARIABLE.FONT_COLOR]: undefined,
+  [STYLE_VARIABLE.ICON_COLOR]: undefined,
   [STYLE_VARIABLE.IMAGE_SCALE]: undefined,
   [STYLE_VARIABLE.PADDING_SCALE]: undefined,
   [STYLE_VARIABLE.POPUP_DELAY]: "ms",

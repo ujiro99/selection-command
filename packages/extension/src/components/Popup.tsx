@@ -8,7 +8,12 @@ import { useSidePanelNavigation } from "@/hooks/useSidePanelNavigation"
 import { useSidePanelAutoClose } from "@/hooks/useSidePanelAutoClose"
 import { useSelectContext } from "@/hooks/useSelectContext"
 import { popupContext } from "@/hooks/usePopupContext"
-import { hexToHsl, isMac, onHover, cn } from "@/lib/utils"
+import { isMac, onHover, cn } from "@/lib/utils"
+import {
+  findUserStyleValue,
+  hasUserStyle,
+  toCssVariables,
+} from "@/services/option/userStyles"
 import { t } from "@/services/i18n"
 import { STYLE_VARIABLE, EXIT_DURATION, SIDE, ALIGN } from "@/const"
 
@@ -44,22 +49,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
     const sideOffset = isPreview ? 0 : (placement?.sideOffset ?? 0)
     const alignOffset = isPreview ? 0 : (placement?.alignOffset ?? 0)
 
-    const userStyles =
-      userSettings?.userStyles &&
-      userSettings.userStyles.reduce((acc: any, cur: any) => {
-        if (cur.value == null) return acc
-        if (cur.name === "background-color" || cur.name === "border-color") {
-          const hsl = hexToHsl(cur.value)
-          return {
-            ...acc,
-            [`--sc-${cur.name}`]: cur.value,
-            [`--sc-${cur.name}-h`]: `${hsl[0]}deg`,
-            [`--sc-${cur.name}-s`]: `${hsl[1]}%`,
-            [`--sc-${cur.name}-l`]: `${hsl[2]}%`,
-          }
-        }
-        return { ...acc, [`--sc-${cur.name}`]: cur.value }
-      }, {})
+    const userStyles = toCssVariables(userSettings?.userStyles)
 
     useEffect(() => {
       let transitionTimer: NodeJS.Timeout
@@ -75,16 +65,17 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
         }, EXIT_DURATION)
       } else {
         // Enter transition
-        const popupDuration = userSettings?.userStyles?.find(
-          (s: any) => s.name === STYLE_VARIABLE.POPUP_DURATION,
+        const styles = userSettings?.userStyles
+        const durationValue = findUserStyleValue(
+          styles,
+          STYLE_VARIABLE.POPUP_DURATION,
         )
-        const popupDelay = userSettings?.userStyles?.find(
-          (s: any) => s.name === STYLE_VARIABLE.POPUP_DELAY,
+        const delayValue = findUserStyleValue(
+          styles,
+          STYLE_VARIABLE.POPUP_DELAY,
         )
-        const duration =
-          popupDuration?.value != null ? parseInt(popupDuration.value) : 150
-        const delay =
-          popupDelay?.value != null ? parseInt(popupDelay.value) : 250
+        const duration = durationValue != null ? parseInt(durationValue) : 150
+        const delay = delayValue != null ? parseInt(delayValue) : 250
         setInTransition(true)
         transitionTimer = setTimeout(() => {
           setInTransition(false)
@@ -110,6 +101,11 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
       setDetectSelectionEnabled(!hover)
     }
 
+    const hasIconColor = hasUserStyle(
+      userSettings?.userStyles,
+      STYLE_VARIABLE.ICON_COLOR,
+    )
+
     return (
       <popupContext.Provider
         value={{
@@ -118,6 +114,7 @@ export const Popup = forwardRef<HTMLDivElement, PopupProps>(
           inOnboarding: props.inOnboarding,
           side,
           align,
+          hasIconColor,
         }}
       >
         {isPreview && <PreviewDesc {...props} />}

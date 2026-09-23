@@ -38,17 +38,15 @@ export type Point = {
 export type Command = SelectionCommand | LinkCommand
 
 export type SelectionCommand =
-  | SearchCommand
-  | CopyCommand
-  | ApiCommand
-  | PageActionCommand
-  | AiPromptCommand
+  SearchCommand | CopyCommand | ApiCommand | PageActionCommand | AiPromptCommand
 
 export type SearchCommand = {
   id: string
   title: string
   revision?: number
   iconUrl: string
+  /** When true, excludes this command's icon from being recolored by the global icon color setting. */
+  excludeFromGlobalIconColor?: boolean
   sourceType?: COMMAND_SOURCE_TYPE
   sourceId?: string
   openMode: OPEN_MODE
@@ -121,6 +119,8 @@ export type CommandFolder = {
   title: string
   iconUrl?: string
   iconSvg?: string
+  /** When true, excludes this folder's icon from being recolored by the global icon color setting. */
+  excludeFromGlobalIconColor?: boolean
   onlyIcon?: boolean
   parentFolderId?: string
   style?: FOLDER_STYLE
@@ -245,7 +245,12 @@ export type ExecuteCommandParams = {
   selectionText: string
   target?: Element | null
   useSecondary?: boolean
-  useClipboard?: boolean
+  /**
+   * Allows the clipboard text to be used in place of an empty selection
+   * (e.g. a shortcut key run without a selection). Each action decides whether
+   * it actually needs the clipboard, and requests it via UrlParam.useClipboard.
+   */
+  allowClipboardFallback?: boolean
   changeState?: (state: ExecState, message?: string) => void
   pageUrl?: string
 }
@@ -315,6 +320,15 @@ export type UrlParam = {
   spaceEncoding?: SPACE_ENCODING
   useClipboard?: boolean
   pageUrl?: string
+  /**
+   * Set when selectionText is a prompt template (AI prompt query URL) that
+   * still contains {{Clipboard}} / {{SelectedText}} placeholders. They are
+   * resolved with the clipboard text read in the background, since the
+   * clipboard is not available when the template is built.
+   */
+  clipboardTemplate?: {
+    urlToMarkdown?: boolean
+  }
 }
 
 export type ShowToastParam = {

@@ -245,6 +245,28 @@ describe("background.ts - Side Panel Connection", () => {
       )
     })
 
+    it("SP-08d: Includes userVariables in the message when provided in pending action", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const pending = {
+        ...createPendingAction(),
+        userVariables: [{ name: "myVar", value: "myVal" }],
+      }
+      mockStorage.get.mockResolvedValue(pending)
+      mockStorage.set.mockResolvedValue(undefined)
+
+      await handleSidePanelConnect(port as any)
+
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            step: pending.steps[0],
+            userVariables: [{ name: "myVar", value: "myVal" }],
+          }),
+        }),
+      )
+    })
+
     it("SP-12: Does not call readClipboard when useClipboard is false", async () => {
       const port = createMockPort("https://chatgpt.com")
       const pending = { ...createPendingAction(), useClipboard: false }
@@ -370,6 +392,34 @@ describe("background.ts - Side Panel Connection", () => {
                 url: targetUrl,
               }),
             }),
+          }),
+        }),
+      )
+    })
+
+    it("SP-15: Passes userVariables when handleSidePanelOpened navigates", async () => {
+      const port = createMockPort("https://chatgpt.com")
+      const tabId = 42
+      registerSidePanelTab(tabId, "https://chatgpt.com")
+      await handleSidePanelConnect(port as any)
+
+      const targetUrl = "https://gemini.google.com"
+      mockStorage.get.mockResolvedValue({
+        url: targetUrl,
+        steps: [{ id: "s", param: { type: "click" }, delayMs: 0 }],
+        selectedText: "test selection",
+        srcUrl: "https://src.example.com",
+        clipboardText: "test clipboard",
+        userVariables: [{ name: "var1", value: "val1" }],
+      })
+
+      await handleSidePanelOpened()
+
+      expect(port.postMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          command: "execPageAction",
+          param: expect.objectContaining({
+            userVariables: [{ name: "var1", value: "val1" }],
           }),
         }),
       )

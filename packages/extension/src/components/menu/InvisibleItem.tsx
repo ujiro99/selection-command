@@ -17,7 +17,7 @@ type InvisibleItemProps = {
 
 export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
   const { selectionText, target } = useSelectContext()
-  const { command, setCommand, useClipboard } = useContextMenu()
+  const { command, setCommand, allowClipboardFallback } = useContextMenu()
   const { itemState, result, executeCommand, clearResult } =
     useCommandExecutor()
   const elmRef = useRef<HTMLDivElement>(null)
@@ -68,7 +68,7 @@ export function InvisibleItem(props: InvisibleItemProps): React.ReactNode {
       position,
       selectionText,
       target,
-      useClipboard,
+      allowClipboardFallback,
     })
     setCommand(null)
   }
@@ -108,9 +108,7 @@ function IconWithState(props: ImageProps): JSX.Element {
       )}
     >
       {status === ExecState.EXECUTING && (
-        <RefreshCw
-          className={`${css.itemImg} ${css.apiIconLoading} rotate`}
-        />
+        <RefreshCw className={`${css.itemImg} ${css.apiIconLoading} rotate`} />
       )}
       {status === ExecState.SUCCESS && (
         <Check className={`${css.itemImg} ${css.apiIconSuccess}`} />

@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest"
-import { parseGeminiUrl, toUrl, matchesPageActionUrl } from "./utils"
-import { SPACE_ENCODING } from "@/const"
+import {
+  parseGeminiUrl,
+  toUrl,
+  matchesPageActionUrl,
+  getCommandTargetUrl,
+} from "./utils"
+import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, SPACE_ENCODING } from "@/const"
 import type { UrlParam } from "@/types"
 
 describe("parseGeminiMarkdownUrl", () => {
@@ -150,6 +155,69 @@ describe("toUrl", () => {
       useClipboard: true,
     }
     expect(toUrl(param)).toBe("https://example.com/search?q=")
+  })
+
+  it("TU-08-a: resolves {{Clipboard}} and {{SelectedText}} in a clipboard template", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/?prompt=%s",
+      selectionText: "Explain: {{SelectedText}} / {{Clipboard}}",
+      useClipboard: true,
+      clipboardTemplate: {},
+    }
+    expect(toUrl(param, "clip")).toBe(
+      "https://example.com/?prompt=Explain%3A+clip+%2F+clip",
+    )
+  })
+
+  it("TU-08-b: leaves the other placeholders and text in a clipboard template as-is", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/?prompt=%s",
+      selectionText: "{{Unknown}} {{Clipboard}}",
+      useClipboard: true,
+      clipboardTemplate: {},
+    }
+    expect(toUrl(param, "clip")).toBe(
+      "https://example.com/?prompt=%7B%7BUnknown%7D%7D+clip",
+    )
+  })
+
+  it("TU-08-c: resolves a clipboard template with empty text when clipboard is undefined", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/?prompt=%s",
+      selectionText: "Explain: {{SelectedText}}",
+      useClipboard: true,
+      clipboardTemplate: {},
+    }
+    expect(toUrl(param)).toBe("https://example.com/?prompt=Explain%3A+")
+  })
+
+  it("TU-08-d: converts URLs in the resolved clipboard template to Markdown when urlToMarkdown is true", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/?q=%s",
+      selectionText: "[https://a.com](https://a.com) {{Clipboard}}",
+      spaceEncoding: SPACE_ENCODING.PERCENT,
+      useClipboard: true,
+      clipboardTemplate: { urlToMarkdown: true },
+    }
+    // Already-converted links in the template are not converted twice.
+    expect(toUrl(param, "https://b.com")).toBe(
+      "https://example.com/?q=" +
+        encodeURIComponent(
+          "[https://a.com](https://a.com) [https://b.com](https://b.com)",
+        ),
+    )
+  })
+
+  it("TU-08-e: ignores clipboardTemplate when useClipboard is false", () => {
+    const param: UrlParam = {
+      searchUrl: "https://example.com/?prompt=%s",
+      selectionText: "{{Clipboard}}",
+      useClipboard: false,
+      clipboardTemplate: {},
+    }
+    expect(toUrl(param, "clip")).toBe(
+      "https://example.com/?prompt=%7B%7BClipboard%7D%7D",
+    )
   })
 
   it("TU-09: URL encodes special characters", () => {
@@ -310,5 +378,36 @@ describe("matchesPageActionUrl", () => {
         "https://example.com/path",
       ),
     ).toBe(true)
+  })
+})
+
+describe("getCommandTargetUrl", () => {
+  it("returns the page action startUrl instead of searchUrl", () => {
+    expect(
+      getCommandTargetUrl({
+        id: "page-action",
+        title: "Page Action",
+        iconUrl: "",
+        openMode: OPEN_MODE.PAGE_ACTION,
+        searchUrl: "https://example.com/search?q=%s",
+        pageActionOption: {
+          startUrl: "https://example.com/start",
+          openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
+          steps: [],
+        },
+      }),
+    ).toBe("https://example.com/start")
+  })
+
+  it("returns searchUrl for non-page-action commands", () => {
+    expect(
+      getCommandTargetUrl({
+        id: "search",
+        title: "Search",
+        iconUrl: "",
+        openMode: OPEN_MODE.TAB,
+        searchUrl: "https://example.com/search?q=%s",
+      }),
+    ).toBe("https://example.com/search?q=%s")
   })
 })

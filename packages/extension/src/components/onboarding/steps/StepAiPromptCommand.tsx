@@ -174,7 +174,7 @@ export function StepAiPromptCommand({ onboarding }: Props) {
             key="value-submessage"
             delay={phaseDelays.valueSubmessage}
           >
-            <p className="max-w-xl text-base text-slate-700 text-pretty">
+            <p className="max-w-xl text-lg text-slate-700 text-pretty">
               {renderMultiline(t("onboarding_step2ValueSubmessage"))}
             </p>
           </OnboardingFadeIn>

@@ -19,7 +19,11 @@ import { StepList } from "@/components/pageAction/StepList"
 import { InputEditor } from "@/components/pageAction/InputEditor"
 import { RemoveDialog } from "@/components/option/RemoveDialog"
 import { TypeIcon } from "@/components/pageAction/TypeIcon"
-// import { UserVariablesField } from "@/components/option/field/UserVariablesField"
+import { UserVariablesField } from "@/components/option/field/UserVariablesField"
+import { useAiServiceForUrl } from "@/hooks/option/useAiServiceForUrl"
+
+/** Variable name suggested for prompt templates on AI services. */
+const PROMPT_VARIABLE_NAME = "Prompt"
 
 type PageActionSectionProps = {
   form: any
@@ -32,6 +36,9 @@ export const PageActionSection = ({
 }: PageActionSectionProps) => {
   const { register, getValues, watch, setValue } = form
   const openMode = watch("pageActionOption.openMode")
+  // Starting on an AI service means the steps almost always paste a prompt, so
+  // that variable is recommended up front.
+  const aiService = useAiServiceForUrl(watch("pageActionOption.startUrl"))
 
   // When openMode changes to CURRENT_TAB, copy startUrl to pageUrl if pageUrl is empty
   useEffect(() => {
@@ -53,6 +60,12 @@ export const PageActionSection = ({
   })
   const steps = pageActionArray.fields as unknown as PageActionStep[]
   const recDisabled = !getValues("pageActionOption.startUrl")
+
+  // Step values are the templates that expand user variables, so the variables
+  // field checks them before a removal or a rename orphans a placeholder.
+  const stepTemplates = steps.map(
+    (step) => (step.param as Partial<PageAction.Input>).value ?? "",
+  )
 
   // for Editor
   const [editId, setEditId] = useState<string | null>(null)
@@ -147,14 +160,22 @@ export const PageActionSection = ({
         type="pageAction"
       />
 
-      {/*
       <UserVariablesField
         control={form.control}
         name="pageActionOption.userVariables"
         formLabel={t("userVariables")}
-        description={t("userVariables_tooltip")}
+        description={t("userVariables_desc")}
+        referencingTemplates={stepTemplates}
+        suggestion={
+          aiService
+            ? {
+                name: PROMPT_VARIABLE_NAME,
+                recommendedBy: aiService.name,
+              }
+            : undefined
+        }
       />
-      */}
+
       <div className="w-full flex items-center gap-1 pt-4">
         <div className="w-2/6">
           <FormLabel>{t("pageAction_title")}</FormLabel>
@@ -193,6 +214,7 @@ export const PageActionSection = ({
         value={editorValue}
         onSubmit={editAction}
         portal={true}
+        userVariables={watch("pageActionOption.userVariables")}
       />
       <RemoveDialog
         open={removeOpen}

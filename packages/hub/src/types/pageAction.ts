@@ -32,9 +32,9 @@ export type End = {
 
 export type Click = {
   type:
-  | PAGE_ACTION_EVENT.click
-  | PAGE_ACTION_EVENT.doubleClick
-  | PAGE_ACTION_EVENT.tripleClick
+    | PAGE_ACTION_EVENT.click
+    | PAGE_ACTION_EVENT.doubleClick
+    | PAGE_ACTION_EVENT.tripleClick
   label: string
   selector: string
   selectorType: SelectorType

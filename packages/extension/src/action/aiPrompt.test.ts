@@ -459,7 +459,7 @@ describe("AiPrompt.execute", () => {
       expect(sentArgs.url.selectionText).toBe("Explain: hello world")
     })
 
-    it("AP-08: should fall back to DOM input when prompt contains {{Clipboard}}", async () => {
+    it("AP-08: should keep {{Clipboard}} unresolved for the background when prompt contains {{Clipboard}}", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeQueryService())
 
       await AiPrompt.execute({
@@ -474,12 +474,116 @@ describe("AiPrompt.execute", () => {
         position: { x: 0, y: 0 },
       })
 
-      // Should fall back to DOM approach: input step should be present
+      // Should still use the query URL approach: no input step
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      const stepTypes = sentArgs.steps.map((s: any) => s.param.type)
+      expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.input)
+      expect(sentArgs.url.searchUrl).toBe("https://chatgpt.com/?prompt=%s")
+      // {{SelectedText}} is expanded, {{Clipboard}} is left for the background
+      expect(sentArgs.url.selectionText).toBe("{{Clipboard}} + hello")
+      expect(sentArgs.url.useClipboard).toBe(true)
+      expect(sentArgs.url.clipboardTemplate).toEqual({ urlToMarkdown: false })
+    })
+
+    it("AP-08b: should leave {{SelectedText}} for the clipboard when there is no selection and allowClipboardFallback is true", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeQueryService())
+
+      await AiPrompt.execute({
+        selectionText: "",
+        command: baseCommand as any, // prompt: "Explain: {{SelectedText}}"
+        position: { x: 0, y: 0 },
+        allowClipboardFallback: true,
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      const stepTypes = sentArgs.steps.map((s: any) => s.param.type)
+      expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.input)
+      expect(sentArgs.url.selectionText).toBe("Explain: {{SelectedText}}")
+      expect(sentArgs.url.useClipboard).toBe(true)
+      expect(sentArgs.url.clipboardTemplate).toEqual({ urlToMarkdown: false })
+    })
+
+    it("AP-08c: should expand the selection and not read the clipboard when a selection exists even if allowClipboardFallback is true", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeQueryService())
+
+      await AiPrompt.execute({
+        selectionText: "hello",
+        command: baseCommand as any,
+        position: { x: 0, y: 0 },
+        allowClipboardFallback: true,
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      expect(sentArgs.url.selectionText).toBe("Explain: hello")
+      expect(sentArgs.url.useClipboard).toBe(false)
+      expect(sentArgs.url.clipboardTemplate).toBeUndefined()
+    })
+
+    it("AP-08d: should not read the clipboard when allowClipboardFallback is true but the prompt has no {{SelectedText}}", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeQueryService())
+
+      await AiPrompt.execute({
+        selectionText: "",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            prompt: "Summarize {{Url}}",
+          },
+        } as any,
+        position: { x: 0, y: 0 },
+        allowClipboardFallback: true,
+        pageUrl: "https://example.com",
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      expect(sentArgs.url.selectionText).toBe("Summarize https://example.com")
+      expect(sentArgs.url.useClipboard).toBe(false)
+    })
+
+    it("AP-08e: should pass urlToMarkdown to the background when the clipboard is needed", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeAutoSubmitService())
+
+      await AiPrompt.execute({
+        selectionText: "",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "perplexity",
+          },
+        } as any,
+        position: { x: 0, y: 0 },
+        allowClipboardFallback: true,
+      })
+
+      const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
+      expect(sentArgs.url.clipboardTemplate).toEqual({ urlToMarkdown: true })
+    })
+  })
+
+  describe("DOM input approach with clipboard", () => {
+    it("AP-08f: should request the clipboard when there is no selection and allowClipboardFallback is true", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeDomService())
+
+      await AiPrompt.execute({
+        selectionText: "",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            serviceId: "gemini",
+          },
+        } as any,
+        position: { x: 0, y: 0 },
+        allowClipboardFallback: true,
+      })
+
       const sentArgs = vi.mocked(Ipc.send).mock.calls[0][1] as any
       const stepTypes = sentArgs.steps.map((s: any) => s.param.type)
       expect(stepTypes).toContain(PAGE_ACTION_EVENT.input)
-      // searchUrl should be the plain service URL, not queryUrl
-      expect(sentArgs.url.searchUrl).toBe("https://chatgpt.com")
+      expect(sentArgs.url.useClipboard).toBe(true)
+      expect(sentArgs.url.clipboardTemplate).toBeUndefined()
     })
   })
 
@@ -523,6 +627,31 @@ describe("AiPrompt.execute", () => {
       const storedPending = vi.mocked(Storage.set).mock.calls[0][1] as any
       const stepTypes = storedPending.steps.map((s: any) => s.param.type)
       expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.input)
+    })
+
+    it("AP-10b: should fall back to DOM input in side panel mode when the prompt contains {{Clipboard}}", async () => {
+      vi.mocked(findAiService).mockResolvedValue(makeQueryService())
+
+      await AiPrompt.execute({
+        selectionText: "hello",
+        command: {
+          ...baseCommand,
+          aiPromptOption: {
+            ...baseCommand.aiPromptOption,
+            prompt: "{{Clipboard}} + {{SelectedText}}",
+            openMode: OPEN_MODE.SIDE_PANEL,
+          },
+        } as any,
+        position: null,
+      })
+
+      // The side panel is opened before the clipboard can be read, so the
+      // clipboard must be read afterwards and typed via the DOM input path.
+      const storedPending = vi.mocked(Storage.set).mock.calls[0][1] as any
+      const stepTypes = storedPending.steps.map((s: any) => s.param.type)
+      expect(stepTypes).toContain(PAGE_ACTION_EVENT.input)
+      expect(storedPending.url).toBe("https://chatgpt.com")
+      expect(storedPending.useClipboard).toBe(true)
     })
   })
 

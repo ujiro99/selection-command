@@ -515,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "Takrifkan pembolehubah tersuai untuk medan input (maks 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Takrifkan pemboleh ubah tersuai untuk medan input."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Gunakan nama ini sebagai kunci dalam langkah input PageAction."
+  },
+  "Option_userVariable_value_label": {
+    "message": "Teks masa jalan"
+  },
   "Option_userVariable_name": {
     "message": "Nama pembolehubah"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Baki"
   },
   "Option_userVariable_value": {
     "message": "Nilai"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(tanpa nama)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Buang pemboleh ubah"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "Pemboleh ubah ini digunakan di $count$ tempat. Rujukan tersebut tidak akan diganti lagi.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "Menamakan semula menyebabkan $count$ rujukan sedia ada tidak diganti.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Tambah pembolehubah"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Disyorkan – kerap digunakan dengan $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Nama pembolehubah diperlukan"
@@ -719,6 +764,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Tentukan warna fon. Lalai: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Warna Ikon"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Tentukan warna ikon. Lalai: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Kecualikan daripada warna ikon global"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Mengekalkan warna asal ikon ini walaupun warna ikon global ditetapkan."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Favicon dikecualikan secara automatik daripada warna ikon global dan mengekalkan warna asalnya."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Automatik"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Penskalaan saiz fon"
   },
@@ -805,6 +868,9 @@
   },
   "Option_zod_invalid_variable_name": {
     "message": "Nama pembolehubah mesti bermula dengan huruf dan hanya mengandungi huruf, nombor dan garis bawah"
+  },
+  "Option_zod_reserved_variable_name": {
+    "message": "Nama ini dikhaskan untuk pemboleh ubah terbina dalam"
   },
   "Option_zod_string_min": {
     "message": "Sila masukkan rentetan $key$ aksara atau lebih.",
@@ -1317,6 +1383,15 @@
   "onboarding_skipButton": {
     "message": "Langkau"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Selamat datang!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Mula-mula, mari kenali tiga cara praktikal untuk menggunakannya."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Klik untuk teruskan"
+  },
   "onboarding_step1Explain": {
     "message": "Pilih teks di bawah untuk cuba carian dengan segera."
   },
@@ -1348,7 +1423,7 @@
     "message": "Selesai — kini anda boleh mencari dengan segera apa sahaja yang anda pilih"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Tambahkan enjin carian kegemaran anda untuk menjadikan carian harian lebih pantas."
+    "message": "Tambahkan enjin carian yang kerap anda gunakan untuk membukanya serta-merta."
   },
   "onboarding_step2Explain": {
     "message": "Seterusnya, mari tanya AI tentang teks di bawah ini."
@@ -1369,7 +1444,7 @@
     "message": "Kini anda boleh bertanya kepada AI tentang apa sahaja yang anda pilih, terus daripada halaman yang sedang anda baca"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Minta AI melakukan perkara seperti \"ringkaskan ini\" atau \"analisis syarikat ini\" dengan segera.\nGesaan boleh disesuaikan mengikut citarasa anda."
+    "message": "Beri AI arahan seperti \"ringkaskan ini\" atau \"analisis syarikat ini\" dengan segera.\nSesuaikan gesaan mengikut kehendak anda."
   },
   "onboarding_step3Explain": {
     "message": "Mari pratonton pautan tanpa membuka tab baharu."
@@ -1393,7 +1468,7 @@
     "message": "Selesai — kini anda boleh pratonton pautan tanpa meninggalkan halaman"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Anda mendapat maklumat dan terus kembali!\nIni mengurangkan kerumitan menukar tab, supaya anda boleh fokus pada perkara yang penting."
+    "message": "Anda melihat halaman tersebut dan terus kembali!\nLuangkan lebih sedikit masa mengurus tab dan kekal fokus pada tugas anda."
   },
   "onboarding_nextButton": {
     "message": "Seterusnya"

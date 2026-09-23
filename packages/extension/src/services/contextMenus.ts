@@ -11,7 +11,8 @@ import {
 
 export type executeActionProps = {
   command: Command
-  useClipboard?: boolean
+  /** See ExecuteCommandParams.allowClipboardFallback. */
+  allowClipboardFallback?: boolean
 }
 
 type Callback = () => void

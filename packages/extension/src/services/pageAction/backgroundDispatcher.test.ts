@@ -25,12 +25,14 @@ vi.mock("@/services/pageAction", () => ({
     URL: "url",
     CLIPBOARD: "clipboard",
     LANG: "lang",
+    PROMPT: "prompt",
   },
   InsertSymbol: {
     selectedText: "{{selectedText}}",
     url: "{{url}}",
     clipboard: "{{clipboard}}",
     lang: "{{lang}}",
+    prompt: "{{prompt}}",
   },
 }))
 

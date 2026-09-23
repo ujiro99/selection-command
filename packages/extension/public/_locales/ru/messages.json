@@ -515,14 +515,59 @@
   "Option_userVariables_desc": {
     "message": "Определить пользовательские переменные для полей ввода (макс 5)"
   },
+  "Option_userVariable_dialog_desc": {
+    "message": "Определите пользовательскую переменную для полей ввода."
+  },
+  "Option_userVariable_name_desc": {
+    "message": "Используйте это имя как ключ в шагах ввода PageAction."
+  },
+  "Option_userVariable_value_label": {
+    "message": "Текст при выполнении"
+  },
   "Option_userVariable_name": {
     "message": "Имя переменной"
+  },
+  "Option_userVariable_name_remaining": {
+    "message": "Осталось"
   },
   "Option_userVariable_value": {
     "message": "Значение"
   },
+  "Option_userVariable_unnamed": {
+    "message": "(без имени)"
+  },
+  "Option_userVariable_remove": {
+    "message": "Удалить переменную"
+  },
+  "Option_userVariable_remove_inUse": {
+    "message": "Эта переменная используется в $count$ мест(ах). Эти ссылки перестанут подставляться.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "Option_userVariable_rename_inUse": {
+    "message": "После переименования $count$ существующих ссылок перестанут подставляться.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
   "Option_userVariable_add": {
     "message": "Добавить переменную"
+  },
+  "Option_userVariable_recommended": {
+    "message": "Рекомендуется — часто используется с $service$",
+    "placeholders": {
+      "service": {
+        "content": "$1",
+        "example": "ChatGPT"
+      }
+    }
   },
   "Option_userVariable_name_required": {
     "message": "Имя переменной обязательно"
@@ -719,6 +764,24 @@
   "Option_userStyles_desc_font_color": {
     "message": "Укажите цвет шрифта. По умолчанию: #0F172A"
   },
+  "Option_userStyles_option_icon_color": {
+    "message": "Цвет иконок"
+  },
+  "Option_userStyles_desc_icon_color": {
+    "message": "Укажите цвет иконок. По умолчанию: #0F172A"
+  },
+  "Option_excludeFromGlobalIconColor": {
+    "message": "Исключить из глобального цвета иконок"
+  },
+  "Option_excludeFromGlobalIconColor_desc": {
+    "message": "Сохраняет исходный цвет этой иконки, даже если задан глобальный цвет иконок."
+  },
+  "Option_excludeFromGlobalIconColor_favicon_desc": {
+    "message": "Фавиконки автоматически исключаются из глобального цвета иконок и сохраняют свои исходные цвета."
+  },
+  "Option_excludeFromGlobalIconColor_automatic": {
+    "message": "Автоматически"
+  },
   "Option_userStyles_option_font_scale": {
     "message": "Масштаб размера шрифта"
   },
@@ -805,6 +868,9 @@
   },
   "Option_zod_invalid_variable_name": {
     "message": "Имя переменной должно начинаться с буквы и содержать только буквы, цифры и подчеркивания"
+  },
+  "Option_zod_reserved_variable_name": {
+    "message": "Это имя зарезервировано для встроенной переменной"
   },
   "Option_zod_string_min": {
     "message": "Введите строку длиной не менее $key$ символов.",
@@ -1314,6 +1380,15 @@
   "onboarding_skipButton": {
     "message": "Пропустить"
   },
+  "onboarding_welcomeMessage": {
+    "message": "Добро пожаловать!"
+  },
+  "onboarding_welcomeIntroduction": {
+    "message": "Для начала познакомимся с тремя полезными способами использования."
+  },
+  "onboarding_welcomeContinue": {
+    "message": "Нажмите, чтобы продолжить"
+  },
   "onboarding_step1Explain": {
     "message": "Выделите текст ниже, чтобы сразу попробовать поиск."
   },
@@ -1345,7 +1420,7 @@
     "message": "Готово — теперь вы можете мгновенно искать всё, что выделите"
   },
   "onboarding_step1ValueSubmessage": {
-    "message": "Добавьте любимую поисковую систему, чтобы делать повседневный поиск ещё быстрее."
+    "message": "Добавьте часто используемые поисковые системы, чтобы мгновенно открывать их."
   },
   "onboarding_step2Explain": {
     "message": "Далее давайте спросим ИИ о тексте ниже."
@@ -1366,7 +1441,7 @@
     "message": "Теперь вы можете спрашивать ИИ о чём угодно прямо на странице, которую читаете"
   },
   "onboarding_step2ValueSubmessage": {
-    "message": "Мгновенно просите ИИ о таких вещах, как «сделай краткое содержание» или «проанализируй эту компанию».\nПромпт можно свободно настраивать."
+    "message": "Сразу давайте ИИ команды «сделай краткое содержание» или «проанализируй эту компанию».\nНастройте промпт так, как вам удобно."
   },
   "onboarding_step3Explain": {
     "message": "Давайте просмотрим ссылку без открытия новой вкладки."
@@ -1390,7 +1465,7 @@
     "message": "Готово — теперь вы можете просматривать ссылки, не покидая страницу"
   },
   "onboarding_step3ValueSubmessage": {
-    "message": "Вы получили нужную информацию и сразу вернулись обратно!\nЭто снижает необходимость переключаться между вкладками, позволяя сосредоточиться на главном."
+    "message": "Вы просмотрели страницу и сразу вернулись!\nТратьте меньше времени на управление вкладками и сосредоточьтесь на своих задачах."
   },
   "onboarding_nextButton": {
     "message": "Далее"

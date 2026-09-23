@@ -615,7 +615,9 @@ export const openTab = async (param: OpenTabProps): Promise<OpenResult> => {
     })
 
     const result = await readClipboardContent(tab.id as number)
-    await chrome.tabs.update(tab.id as number, { url: toUrl(url) })
+    await chrome.tabs.update(tab.id as number, {
+      url: toUrl(url, result.data ?? ""),
+    })
 
     if (result.err) {
       await Ipc.ensureConnection(tab.id as number)

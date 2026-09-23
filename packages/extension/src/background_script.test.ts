@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { BgCommand } from "@/services/ipc"
-import { NEW_HUB_URL } from "@/const"
+import { NEW_HUB_URL, VERSION } from "@/const"
 
 // Mock dependencies
 vi.mock("@/services/settings/enhancedSettings")
@@ -353,7 +353,7 @@ describe("Background Script Migration", () => {
         position: { x: 10000, y: 10000 },
         selectionText: "test selection text",
         target: null,
-        useClipboard: false,
+        allowClipboardFallback: false,
         pageUrl: "https://example.com",
       }),
     )
@@ -675,7 +675,7 @@ describe("Uninstall URL (onInstalled)", () => {
     vi.clearAllMocks()
   })
 
-  it("UN-01: should set uninstall URL with client_id on install", async () => {
+  it("UN-01: should set uninstall URL with client_id and version on install", async () => {
     const mockGetOrCreateClientId = vi.fn().mockResolvedValue("test-client-id")
     vi.doMock("@/services/analytics", () => ({
       ANALYTICS_EVENTS: { INSTALLED: "installed" },
@@ -698,7 +698,7 @@ describe("Uninstall URL (onInstalled)", () => {
 
     expect(mockGetOrCreateClientId).toHaveBeenCalled()
     expect(chrome.runtime.setUninstallURL).toHaveBeenCalledWith(
-      `${NEW_HUB_URL}/uninstall?client_id=test-client-id`,
+      `${NEW_HUB_URL}/uninstall?client_id=test-client-id&v=${VERSION}`,
     )
   })
 
