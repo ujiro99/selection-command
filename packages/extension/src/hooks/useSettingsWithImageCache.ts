@@ -74,9 +74,16 @@ const getIconTargetUrl = (command: Command) =>
 /**
  * Resolves every query, asking the service worker only about the ones it has
  * not answered yet. Returns null until the answers for `queries` are in.
+ *
+ * When the service worker fails to answer (e.g. an outdated worker that does
+ * not know the command), the unanswered queries fall back to `false` so the
+ * menu still renders with the default (recolored) icons.
  */
 function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
   const [, setResolvedVersion] = useState(0)
+  const [failedQueries, setFailedQueries] = useState<IconColorQuery[] | null>(
+    null,
+  )
 
   useEffect(() => {
     let active = true
@@ -89,6 +96,9 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
             BgCommand.resolveIconColors,
             unknown,
           )
+          if (!Array.isArray(results)) {
+            throw new Error(`Unexpected icon color response: ${results}`)
+          }
           if (results.length !== unknown.length) {
             throw new Error(
               `Unexpected icon color response length: expected ${unknown.length}, got ${results.length}`,
@@ -103,6 +113,8 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
       }
       if (!active) return
       if (queries.some((q) => !answerCache.has(queryKey(q)))) {
+        // Render with the default colors rather than blocking the menu.
+        setFailedQueries(queries)
         return
       }
       setResolvedVersion((version) => version + 1)
@@ -115,10 +127,10 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
   }, [queries])
 
   if (queries.some((q) => !answerCache.has(queryKey(q)))) {
-    return null
+    if (failedQueries !== queries) return null
   }
 
-  return queries.map((q) => answerCache.get(queryKey(q)) as boolean)
+  return queries.map((q) => answerCache.get(queryKey(q)) ?? false)
 }
 
 /**

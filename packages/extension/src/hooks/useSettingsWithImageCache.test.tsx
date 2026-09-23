@@ -298,9 +298,12 @@ describe("useSettingsWithImageCache", () => {
     mockIpcSend.mockResolvedValueOnce([]).mockResolvedValueOnce([false])
 
     const firstRender = renderHook(() => useSettingsWithImageCache())
-    await waitFor(() => expect(mockIpcSend).toHaveBeenCalledTimes(1))
-    expect(firstRender.result.current.loading).toBe(true)
-    expect(firstRender.result.current.commands).toEqual([])
+    await waitFor(() => expect(firstRender.result.current.loading).toBe(false))
+    expect(mockIpcSend).toHaveBeenCalledTimes(1)
+    // Falls back to the default colors instead of blocking the menu.
+    expect(firstRender.result.current.commands).toEqual([
+      { ...command, preserveOriginalColor: false },
+    ])
     firstRender.unmount()
 
     const secondRender = renderHook(() => useSettingsWithImageCache())
@@ -309,6 +312,33 @@ describe("useSettingsWithImageCache", () => {
     expect(mockIpcSend).toHaveBeenCalledTimes(2)
     expect(secondRender.result.current.commands).toEqual([
       { ...command, preserveOriginalColor: false },
+    ])
+  })
+
+  it("US-30-a: should fall back to the default colors when IPC returns null", async () => {
+    const command = {
+      id: "null-response",
+      openMode: OPEN_MODE.POPUP,
+      title: "Null response",
+      iconUrl: "http://null.example.com/icon.png",
+    }
+    const folder = {
+      id: "null-folder",
+      title: "Null folder",
+      iconUrl: "http://null.example.com/folder.png",
+    }
+
+    mockSections({ folders: [folder] }, [command as Command])
+    mockIpcSend.mockResolvedValueOnce(null as any)
+
+    const { result } = renderHook(() => useSettingsWithImageCache())
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    expect(result.current.commands).toEqual([
+      { ...command, preserveOriginalColor: false },
+    ])
+    expect(result.current.folders).toEqual([
+      { ...folder, preserveOriginalColor: false },
     ])
   })
 
