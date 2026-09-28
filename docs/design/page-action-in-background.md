@@ -85,9 +85,9 @@ export enum PAGE_ACTION_OPEN_MODE {
 }
 
 interface PageActionOptions {
-  openMode: PAGE_ACTION_OPEN_MODE
-  waitForVisibility?: boolean // 要素の可視性を待つか
-  enableVisualFeedback?: boolean // 視覚的フィードバックを有効にするか
+  openMode: PAGE_ACTION_OPEN_MODE;
+  waitForVisibility?: boolean; // 要素の可視性を待つか
+  enableVisualFeedback?: boolean; // 視覚的フィードバックを有効にするか
 }
 ```
 
@@ -104,19 +104,19 @@ interface PageActionOptions {
 ```typescript
 // 現在の構造
 interface PageActiontStatus {
-  tabId: number
-  stepId: string
-  results: PageActiontResult[]
+  tabId: number;
+  stepId: string;
+  results: PageActiontResult[];
 }
 
 // 提案する新構造
 interface MultiTabPageActionStatus {
-  [tabId: number]: PageActiontStatus
+  [tabId: number]: PageActiontStatus;
 }
 
 // 実行制御のメタデータ
 interface PageActionExecutionMeta {
-  activeExecutions: number[] // 実行中のタブIDリスト
+  activeExecutions: number[]; // 実行中のタブIDリスト
 }
 ```
 

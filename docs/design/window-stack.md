@@ -51,26 +51,28 @@
 ```typescript
 class WindowStackManager {
   // ServiceWorkerDataと連携してスタック状態を永続化
-  private static async saveStack(stack: WindowLayer[]): Promise<void>
-  private static async loadStack(): Promise<WindowLayer[]>
+  private static async saveStack(stack: WindowLayer[]): Promise<void>;
+  private static async loadStack(): Promise<WindowLayer[]>;
 
   // ウィンドウ追加（新しいレイヤーまたは既存レイヤーに）
   static async addWindow(
     window: WindowType,
     parentWindowId?: number,
-  ): Promise<void>
+  ): Promise<void>;
 
   // ウィンドウ削除
-  static async removeWindow(windowId: number): Promise<void>
+  static async removeWindow(windowId: number): Promise<void>;
 
   // フォーカス変更時のクローズ対象を特定
-  static async getWindowsToClose(focusedWindowId: number): Promise<WindowType[]>
+  static async getWindowsToClose(
+    focusedWindowId: number,
+  ): Promise<WindowType[]>;
 
   // スタック状態の取得
-  static async getStack(): Promise<WindowLayer[]>
+  static async getStack(): Promise<WindowLayer[]>;
 
   // 空になったレイヤーをクリーンアップ
-  static async cleanupEmptyLayers(): Promise<void>
+  static async cleanupEmptyLayers(): Promise<void>;
 }
 ```
 
@@ -103,7 +105,7 @@ class WindowStackManager {
 
 ```typescript
 // WindowStackManagerから呼び出される更新処理
-ServiceWorkerData.update((data) => ({ windowStack: newStack }))
+ServiceWorkerData.update((data) => ({ windowStack: newStack }));
 ```
 
 ## ユニットテスト設計

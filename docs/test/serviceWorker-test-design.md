@@ -231,7 +231,7 @@ global.chrome = {
     create: vi.fn(),
     onBoundsChanged: { addListener: vi.fn() },
   },
-}
+};
 ```
 
 ### サービスモック
@@ -244,8 +244,10 @@ vi.mock("@/services/storage", () => ({
     update: vi.fn(),
     getCommands: vi.fn(),
   },
-  SESSION_STORAGE_KEY: {/* 定数モック */},
-}))
+  SESSION_STORAGE_KEY: {
+    /* 定数モック */
+  },
+}));
 
 vi.mock("@/services/ipc", () => ({
   Ipc: {
@@ -253,13 +255,13 @@ vi.mock("@/services/ipc", () => ({
     sendTab: vi.fn(),
   },
   TabCommand: { execPageAction: "execPageAction" },
-}))
+}));
 
 vi.mock("@/services/chrome", () => ({
   openPopupWindow: vi.fn(),
   openTab: vi.fn(),
   getCurrentTab: vi.fn(),
-}))
+}));
 
 vi.mock("@/services/serviceWorkerData", () => ({
   ServiceWorkerData: {
@@ -268,7 +270,7 @@ vi.mock("@/services/serviceWorkerData", () => ({
     get: vi.fn(),
     set: vi.fn(),
   },
-}))
+}));
 
 vi.mock("@/services/pageAction", () => ({
   RunningStatus: {
@@ -276,7 +278,7 @@ vi.mock("@/services/pageAction", () => ({
     initTab: vi.fn(),
     clearTab: vi.fn(),
   },
-}))
+}));
 ```
 
 ### ユーティリティモック
@@ -289,18 +291,18 @@ vi.mock("@/lib/utils", () => ({
   isUrl: vi.fn(),
   isUrlParam: vi.fn(),
   sleep: vi.fn(),
-}))
+}));
 
 vi.mock("@/services/commandMetrics", () => ({
   incrementCommandExecutionCount: vi.fn(),
-}))
+}));
 ```
 
 ## テストファイル構造
 
 ### ファイル分割方針
 
-`background.ts`の単体テストは機能別に3つのファイルに分割されています：
+`serviceWorker.ts`の単体テストは機能別に3つのファイルに分割されています：
 
 #### 1. `serviceWorker-crud.test.ts` (SWD-01〜SWD-35)
 
