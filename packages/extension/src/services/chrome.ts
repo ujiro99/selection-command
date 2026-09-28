@@ -14,8 +14,6 @@ import { getScreenSize } from "@/services/screen"
 import { Ipc } from "@/services/ipc"
 import { t } from "@/services/i18n"
 
-ServiceWorkerData.init()
-
 /**
  * Check if a window exists
  * @param {number} windowId - The ID of the window to check

@@ -50,6 +50,7 @@ describe("Connection Service", () => {
     // Setup default mocks
     mockRuntimeConnect.mockReturnValue(mockPort)
     mockIpc.getTabId.mockResolvedValue(123)
+    mockServiceWorkerData.ready.mockResolvedValue(undefined)
     mockServiceWorkerData.get.mockReturnValue({
       connectedTabs: [],
     } as any)
@@ -109,6 +110,35 @@ describe("Connection Service", () => {
       expect(mockRuntimeConnect).toHaveBeenCalledWith({
         name: "app",
       })
+    })
+
+    it("CN-01-d: should read connectedTabs only after ServiceWorkerData is ready", async () => {
+      // Arrange
+      let resolveReady!: () => void
+      mockServiceWorkerData.ready.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveReady = resolve
+        }),
+      )
+      mockServiceWorkerData.get.mockReturnValue({
+        connectedTabs: [123], // tab is already connected
+      } as any)
+
+      // Act
+      await import("@/services/connection")
+      await vi.waitFor(() => {
+        expect(mockServiceWorkerData.ready).toHaveBeenCalledOnce()
+      })
+
+      // Assert: state is not read until it has been loaded
+      expect(mockServiceWorkerData.init).toHaveBeenCalledOnce()
+      expect(mockServiceWorkerData.get).not.toHaveBeenCalled()
+
+      resolveReady()
+      await vi.waitFor(() => {
+        expect(mockServiceWorkerData.get).toHaveBeenCalledOnce()
+      })
+      expect(mockRuntimeConnect).not.toHaveBeenCalled()
     })
   })
 

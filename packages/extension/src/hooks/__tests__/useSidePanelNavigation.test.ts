@@ -3,6 +3,7 @@ import { renderHook, waitFor } from "@testing-library/react"
 import { useSidePanelNavigation } from "../useSidePanelNavigation"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { isSidePanel } from "@/services/sidePanelDetector"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 
 // Mock dependencies
 vi.mock("@/services/ipc", () => ({
@@ -19,6 +20,12 @@ vi.mock("@/services/sidePanelDetector", () => ({
   isSidePanel: vi.fn(),
 }))
 
+vi.mock("@/services/serviceWorkerData", () => ({
+  ServiceWorkerData: {
+    ready: vi.fn(),
+  },
+}))
+
 vi.mock("@/hooks/useTabContext", () => ({
   useTabContext: () => ({ tabId: 123 }),
 }))
@@ -26,6 +33,7 @@ vi.mock("@/hooks/useTabContext", () => ({
 describe("useSidePanelNavigation", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.mocked(ServiceWorkerData.ready).mockResolvedValue(undefined)
   })
 
   it("SPN-01: Should not attach click listener when not in SidePanel", async () => {
@@ -228,5 +236,29 @@ describe("useSidePanelNavigation", () => {
     )
 
     document.body.removeChild(link)
+  })
+
+  it("SPN-08: Should not detect SidePanel until ServiceWorkerData is ready", async () => {
+    let resolveReady!: () => void
+    vi.mocked(ServiceWorkerData.ready).mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveReady = resolve
+      }),
+    )
+    vi.mocked(isSidePanel).mockReturnValue(false)
+
+    renderHook(() => useSidePanelNavigation())
+
+    await waitFor(() => {
+      expect(ServiceWorkerData.ready).toHaveBeenCalled()
+    })
+    // Only the initial render (activeTabId not yet set) has been evaluated
+    expect(isSidePanel).not.toHaveBeenCalledWith(123, 123)
+
+    resolveReady()
+
+    await waitFor(() => {
+      expect(isSidePanel).toHaveBeenCalledWith(123, 123)
+    })
   })
 })
