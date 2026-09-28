@@ -109,9 +109,9 @@ interface GetSettingsOptions {
 
 ### 既存テストの確認
 
-- `src/services/settings/settings.test.ts` - Settings.get() のテスト
-- `src/services/settings/enhancedSettings.test.ts` - EnhancedSettings.get() のテスト
-- `src/hooks/useSettings.test.tsx` - useSettings フックのテスト
+- `src/services/settings/__tests__/settings.test.ts` - Settings.get() のテスト
+- `src/services/settings/__tests__/enhancedSettings.test.ts` - EnhancedSettings.get() のテスト
+- `src/hooks/__tests__/useSettings.test.tsx` - useSettings フックのテスト
 
 ### 移行テスト項目
 

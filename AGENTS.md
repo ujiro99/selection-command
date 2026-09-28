@@ -193,8 +193,9 @@ interface PageActionOption {
 
 **テスト:**
 
+- テスト方針・配置ルール・命名規則は [docs/testing.md](docs/testing.md) を参照すること
+- ユニットテストはテスト対象ファイルと同階層の `__tests__/` ディレクトリに `*.test.{ts,tsx}` として配置
 - Extensionでは Chrome API のモック使用
-- テストファイルは`src/**/*.{test,spec}.{ts,tsx}`パターン
 - カバレッジ測定は`yarn test:coverage`
 
 **ビルド・配布:**
