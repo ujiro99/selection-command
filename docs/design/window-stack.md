@@ -113,7 +113,7 @@ BgData.update((data) => ({ windowStack: newStack }));
 ### テストファイル構成
 
 ```
-packages/extension/src/services/windowStackManager.test.ts
+packages/extension/src/services/__tests__/windowStackManager.test.ts
 ```
 
 ### テストケース一覧

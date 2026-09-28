@@ -20,7 +20,7 @@ This file provides guidance to AI Agent when working with code in this repositor
 - `yarn test` - Vitestを使用したテストの実行
 - `yarn test:ui` - VitestのUIモードでテストを実行
 - `yarn test:coverage` - テストカバレッジを測定
-- `yarn test src/path/to/file.test.ts` - 単一テストファイルの実行
+- `yarn test src/path/to/__tests__/file.test.ts` - 単一テストファイルの実行
 - `yarn test:e2e` - playwrightを使用したE2Eテストの実行
 - `yarn pretty-quick` - Prettierによるコード整形
 - `yarn zip` - ビルドされたdistフォルダから配布可能な拡張機能のzipファイルを作成
@@ -52,8 +52,9 @@ This file provides guidance to AI Agent when working with code in this repositor
 - **Hooks** (`src/hooks/`) - 状態管理とChrome拡張機能APIのためのカスタムReactフック
 - **Testing** (`src/test/`) - テスト環境のセットアップとモック設定
   - `setup.ts` - Vitestのセットアップファイル（Chrome拡張機能APIのモック、jsdom環境設定）
-  - `**/*.test.{ts,tsx}` - コンポーネントとサービスのユニットテスト
-  - `**/*.spec.{ts,tsx}` - 統合テストとE2Eテスト
+  - `**/__tests__/*.test.{ts,tsx}` - コンポーネントとサービスのユニットテスト（テスト対象と同階層の `__tests__/` に配置）
+  - `e2e/*.spec.ts` - PlaywrightによるE2Eテスト
+  - テスト方針の詳細は [docs/testing.md](../../docs/testing.md) を参照
 
 **主要機能:**
 
