@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { PageAction } from "../pageAction"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 
 vi.mock("@/services/ipc", () => ({
   Ipc: {
     send: vi.fn(),
   },
-  BgCommand: {
+  ServiceWorkerCommand: {
     openAndRunPageAction: "openAndRunPageAction",
     openSidePanel: "openSidePanel",
   },
@@ -63,7 +63,7 @@ describe("PageAction.execute", () => {
     })
 
     expect(Ipc.send).toHaveBeenCalledWith(
-      BgCommand.openAndRunPageAction,
+      ServiceWorkerCommand.openAndRunPageAction,
       expect.objectContaining({
         commandId: "pa-cmd-1",
         selectedText: "Selected content",
@@ -97,7 +97,7 @@ describe("PageAction.execute", () => {
     })
 
     expect(Ipc.send).toHaveBeenCalledWith(
-      BgCommand.openAndRunPageAction,
+      ServiceWorkerCommand.openAndRunPageAction,
       expect.objectContaining({
         url: expect.objectContaining({
           useClipboard: true,
@@ -135,7 +135,7 @@ describe("PageAction.execute", () => {
     })
 
     expect(Ipc.send).toHaveBeenCalledWith(
-      BgCommand.openAndRunPageAction,
+      ServiceWorkerCommand.openAndRunPageAction,
       expect.objectContaining({
         url: expect.objectContaining({
           useClipboard: false,
@@ -174,7 +174,7 @@ describe("PageAction.execute", () => {
     })
 
     expect(Ipc.send).toHaveBeenCalledWith(
-      BgCommand.openAndRunPageAction,
+      ServiceWorkerCommand.openAndRunPageAction,
       expect.objectContaining({
         commandId: "legacy-cmd",
         userVariables: undefined,
@@ -218,11 +218,11 @@ describe("PageAction.execute", () => {
       }),
     )
 
-    expect(Ipc.send).toHaveBeenCalledWith(BgCommand.openSidePanel, {
+    expect(Ipc.send).toHaveBeenCalledWith(ServiceWorkerCommand.openSidePanel, {
       url: "https://ai.example.com",
     })
     expect(Ipc.send).not.toHaveBeenCalledWith(
-      BgCommand.openAndRunPageAction,
+      ServiceWorkerCommand.openAndRunPageAction,
       expect.anything(),
     )
   })
@@ -248,7 +248,7 @@ describe("PageAction.execute", () => {
         selectedText: "context menu invocation",
       }),
     )
-    expect(Ipc.send).toHaveBeenCalledWith(BgCommand.openSidePanel, {
+    expect(Ipc.send).toHaveBeenCalledWith(ServiceWorkerCommand.openSidePanel, {
       url: "https://ai.example.com",
     })
   })
@@ -316,7 +316,7 @@ describe("PageAction.execute", () => {
         userVariables: undefined,
       }),
     )
-    expect(Ipc.send).toHaveBeenCalledWith(BgCommand.openSidePanel, {
+    expect(Ipc.send).toHaveBeenCalledWith(ServiceWorkerCommand.openSidePanel, {
       url: "https://ai.example.com",
     })
   })

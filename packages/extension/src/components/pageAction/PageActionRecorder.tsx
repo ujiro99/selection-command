@@ -12,7 +12,7 @@ import { Draggable } from "@/components/pageAction/Draggable"
 
 import type { PageAction } from "@/services/pageAction"
 import { Storage, SESSION_STORAGE_KEY as STORAGE_KEY } from "@/services/storage"
-import { Ipc, BgCommand, TabCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand, TabCommand } from "@/services/ipc"
 import type {
   PageActionRecorderOption,
   PageActionRecordingData,
@@ -48,7 +48,7 @@ export function PageActionRecorder(): JSX.Element {
   const hasLabel = !isEmpty(removeStep?.param.label)
 
   const editInputAction = (value: string) => {
-    Ipc.send(BgCommand.updatePageAction, {
+    Ipc.send(ServiceWorkerCommand.updatePageAction, {
       id: editId,
       partial: { param: { value } },
     })
@@ -59,12 +59,12 @@ export function PageActionRecorder(): JSX.Element {
     id: string,
     partial: DeepPartial<PageActionStep>,
   ) => {
-    Ipc.send(BgCommand.updatePageAction, { id, partial })
+    Ipc.send(ServiceWorkerCommand.updatePageAction, { id, partial })
   }
 
   const removeAction = (id: string | null) => {
     if (id == null) return
-    Ipc.send(BgCommand.removePageAction, { id })
+    Ipc.send(ServiceWorkerCommand.removePageAction, { id })
   }
 
   const handleDragEnd = async (event: DragEndEvent) => {

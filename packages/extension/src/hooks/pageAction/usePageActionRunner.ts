@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import {
   PageActionDispatcher,
-  BackgroundPageActionDispatcher,
+  BackgroundTabPageActionDispatcher,
   PageAction,
 } from "@/services/pageAction"
 import type { ExecPageAction } from "@/services/ipc"
@@ -54,7 +54,7 @@ export function usePageActionRunner() {
     // Select dispatcher based on openMode
     const dispatcher =
       openMode === PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB
-        ? BackgroundPageActionDispatcher
+        ? BackgroundTabPageActionDispatcher
         : PageActionDispatcher
 
     // Wait for the DOM to be updated.

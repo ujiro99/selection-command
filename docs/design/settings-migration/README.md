@@ -38,7 +38,7 @@
 
 **影響箇所**: 5ファイル、12箇所の使用箇所
 
-- `src/background_script.ts` (4箇所) - 最重要
+- `src/service_worker.ts` (4箇所) - 最重要
 - `src/services/contextMenus.ts` (1箇所)
 - `src/services/commandMetrics.ts` (1箇所)
 - `src/components/option/SettingForm.tsx` (2箇所)

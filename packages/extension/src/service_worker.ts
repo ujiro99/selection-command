@@ -8,19 +8,24 @@ import {
   VERSION,
 } from "@/const"
 import { executeActionProps } from "@/services/contextMenus"
-import { Ipc, BgCommand, TabCommand, CONNECTION_APP } from "@/services/ipc"
+import {
+  Ipc,
+  ServiceWorkerCommand,
+  TabCommand,
+  CONNECTION_APP,
+} from "@/services/ipc"
 import type { IpcCallback } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
-import * as PageActionBackground from "@/services/pageAction/background"
-import { BgData } from "@/services/backgroundData"
+import * as PageActionServiceWorker from "@/services/pageAction/serviceWorker"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { ContextMenu } from "@/services/contextMenus"
 import { closeWindow, windowExists, getCurrentTab } from "@/services/chrome"
 import { WindowStackManager } from "@/services/windowStackManager"
 import { PopupAutoClose } from "@/services/popupAutoClose"
 import { findMatchingPageRule, isEmpty } from "@/lib/utils"
-import { execute } from "@/action/background"
+import { execute } from "@/action/serviceWorker"
 import * as ActionHelper from "@/action/helper"
 import type { WindowType } from "@/types"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
@@ -29,14 +34,14 @@ import {
   sendEvent,
   getOrCreateClientId,
 } from "@/services/analytics"
-import * as HubBackground from "@/services/hub/background"
+import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import { ensureOnboardingAssignment } from "@/services/experiments"
-import * as IconColorBackground from "@/services/iconColor/background"
+import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
 
-BgData.init()
+ServiceWorkerData.init()
 
 type Sender = chrome.runtime.MessageSender
 
@@ -62,7 +67,7 @@ const getActiveTabId = (
   return true
 }
 
-// Closes the sender's own tab. Routed through the background script (rather
+// Closes the sender's own tab. Routed through the service worker (rather
 // than the page calling chrome.tabs.remove() on itself) since a page closing
 // its own tab is the more robust pattern - it keeps tab lifecycle decisions
 // in one place alongside the rest of the extension's tab management.
@@ -91,12 +96,12 @@ const onConnect = async function (port: chrome.runtime.Port) {
   port.onDisconnect.addListener(() => onDisconnect(port))
   const tabId = port.sender?.tab?.id
   if (tabId) {
-    BgData.update((data) => ({
+    ServiceWorkerData.update((data) => ({
       connectedTabs: [...data.connectedTabs, tabId],
     }))
   } else {
     // Side panel pages have no tab.id (port.sender.origin is set instead).
-    await PageActionBackground.handleSidePanelConnect(port)
+    await PageActionServiceWorker.handleSidePanelConnect(port)
   }
 }
 const onDisconnect = async function (port: chrome.runtime.Port) {
@@ -110,7 +115,7 @@ const onDisconnect = async function (port: chrome.runtime.Port) {
   }
   const tabId = port.sender?.tab?.id
   if (tabId) {
-    BgData.update((data) => ({
+    ServiceWorkerData.update((data) => ({
       connectedTabs: data.connectedTabs.filter((id) => id !== tabId),
     }))
   }
@@ -118,11 +123,11 @@ const onDisconnect = async function (port: chrome.runtime.Port) {
 chrome.runtime.onConnect.addListener(onConnect)
 
 const commandFuncs = {
-  [BgCommand.openPopup]: ActionHelper.openPopup,
-  [BgCommand.openPopups]: ActionHelper.openPopups,
-  [BgCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
-  [BgCommand.openTab]: ActionHelper.openTab,
-  [BgCommand.openSidePanel]: (
+  [ServiceWorkerCommand.openPopup]: ActionHelper.openPopup,
+  [ServiceWorkerCommand.openPopups]: ActionHelper.openPopups,
+  [ServiceWorkerCommand.openPopupAndClick]: ActionHelper.openPopupAndClick,
+  [ServiceWorkerCommand.openTab]: ActionHelper.openTab,
+  [ServiceWorkerCommand.openSidePanel]: (
     param: Parameters<typeof ActionHelper.openSidePanel>[0],
     sender: Sender,
     response: (res: unknown) => void,
@@ -134,31 +139,31 @@ const commandFuncs = {
         // If the side panel was already open (port retained), execute pending action
         // via the existing port without waiting for a new onConnect event.
         if (result === true) {
-          await PageActionBackground.handleSidePanelOpened()
+          await PageActionServiceWorker.handleSidePanelOpened()
         }
         response(result)
       },
     )
   },
-  [BgCommand.closeSidePanel]: ActionHelper.closeSidePanel,
-  [BgCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
-  [BgCommand.execApi]: ActionHelper.execApi,
+  [ServiceWorkerCommand.closeSidePanel]: ActionHelper.closeSidePanel,
+  [ServiceWorkerCommand.navigateSidePanel]: ActionHelper.navigateSidePanel,
+  [ServiceWorkerCommand.execApi]: ActionHelper.execApi,
 
-  [BgCommand.openOption]: (): boolean => {
+  [ServiceWorkerCommand.openOption]: (): boolean => {
     chrome.tabs.create({
       url: OPTION_PAGE_PATH,
     })
     return false
   },
 
-  [BgCommand.openShortcuts]: (): boolean => {
+  [ServiceWorkerCommand.openShortcuts]: (): boolean => {
     chrome.tabs.create({
       url: "chrome://extensions/shortcuts",
     })
     return false
   },
 
-  [BgCommand.addPageRule]: (param: addPageRuleProps): boolean => {
+  [ServiceWorkerCommand.addPageRule]: (param: addPageRuleProps): boolean => {
     const add = async () => {
       const settings = await enhancedSettings.get()
       const pageRules = settings.pageRules ?? []
@@ -177,7 +182,7 @@ const commandFuncs = {
     return false
   },
 
-  [BgCommand.canOpenInTab]: (
+  [ServiceWorkerCommand.canOpenInTab]: (
     _: unknown,
     sender: Sender,
     response: (res: unknown) => void,
@@ -197,7 +202,7 @@ const commandFuncs = {
     return true
   },
 
-  [BgCommand.openInTab]: (
+  [ServiceWorkerCommand.openInTab]: (
     _: unknown,
     sender: Sender,
     response: (res: unknown) => void,
@@ -250,7 +255,7 @@ const commandFuncs = {
     return true
   },
 
-  [BgCommand.onHidden]: (
+  [ServiceWorkerCommand.onHidden]: (
     _param: any,
     sender: Sender,
     response: (res: unknown) => void,
@@ -291,7 +296,7 @@ const commandFuncs = {
     return true
   },
 
-  [BgCommand.toggleStar]: (
+  [ServiceWorkerCommand.toggleStar]: (
     param: { id: string },
     _: Sender,
     response: (res: unknown) => void,
@@ -313,39 +318,44 @@ const commandFuncs = {
     return true
   },
 
-  [BgCommand.getTabId]: getTabId,
-  [BgCommand.getActiveTabId]: getActiveTabId,
-  [BgCommand.closeTab]: closeTab,
-  [BgCommand.resolveIconColors]: IconColorBackground.resolveIconColors,
+  [ServiceWorkerCommand.getTabId]: getTabId,
+  [ServiceWorkerCommand.getActiveTabId]: getActiveTabId,
+  [ServiceWorkerCommand.closeTab]: closeTab,
+  [ServiceWorkerCommand.resolveIconColors]:
+    IconColorServiceWorker.resolveIconColors,
 
   //
   // Hub
   //
-  [BgCommand.shareCommandToHub]: HubBackground.shareCommandToHub,
-  [BgCommand.editCommandToHub]: HubBackground.editCommandToHub,
-  [BgCommand.pushEditToHub]: HubBackground.pushEditToHub,
-  [BgCommand.getSharedCommandIds]: HubBackground.getSharedCommandIds,
+  [ServiceWorkerCommand.shareCommandToHub]: HubServiceWorker.shareCommandToHub,
+  [ServiceWorkerCommand.editCommandToHub]: HubServiceWorker.editCommandToHub,
+  [ServiceWorkerCommand.pushEditToHub]: HubServiceWorker.pushEditToHub,
+  [ServiceWorkerCommand.getSharedCommandIds]:
+    HubServiceWorker.getSharedCommandIds,
 
   //
   // PageAction
   //
-  [BgCommand.addPageAction]: PageActionBackground.add,
-  [BgCommand.updatePageAction]: PageActionBackground.update,
-  [BgCommand.removePageAction]: PageActionBackground.remove,
-  [BgCommand.resetPageAction]: PageActionBackground.reset,
-  [BgCommand.startPageActionRecorder]: PageActionBackground.openRecorder,
-  [BgCommand.finishPageActionRecorder]: PageActionBackground.closeRecorder,
-  [BgCommand.previewPageAction]: PageActionBackground.preview,
-  [BgCommand.stopPageAction]: PageActionBackground.stopRunner,
-  [BgCommand.openAndRunPageAction]: PageActionBackground.openAndRun,
+  [ServiceWorkerCommand.addPageAction]: PageActionServiceWorker.add,
+  [ServiceWorkerCommand.updatePageAction]: PageActionServiceWorker.update,
+  [ServiceWorkerCommand.removePageAction]: PageActionServiceWorker.remove,
+  [ServiceWorkerCommand.resetPageAction]: PageActionServiceWorker.reset,
+  [ServiceWorkerCommand.startPageActionRecorder]:
+    PageActionServiceWorker.openRecorder,
+  [ServiceWorkerCommand.finishPageActionRecorder]:
+    PageActionServiceWorker.closeRecorder,
+  [ServiceWorkerCommand.previewPageAction]: PageActionServiceWorker.preview,
+  [ServiceWorkerCommand.stopPageAction]: PageActionServiceWorker.stopRunner,
+  [ServiceWorkerCommand.openAndRunPageAction]:
+    PageActionServiceWorker.openAndRun,
 } as { [key: string]: IpcCallback }
 
-for (const key in BgCommand) {
-  const command = BgCommand[key as keyof typeof BgCommand]
+for (const key in ServiceWorkerCommand) {
+  const command = ServiceWorkerCommand[key as keyof typeof ServiceWorkerCommand]
   Ipc.addListener(command, commandFuncs[key])
 }
 
-HubBackground.initHubExternalListener()
+HubServiceWorker.initHubExternalListener()
 
 const updateWindowSize = async (
   commandId: string,
@@ -371,7 +381,7 @@ const updateActiveTabId = async (activeTabId?: number) => {
     activeTabId = activeTab?.id
   }
   if (activeTabId != null) {
-    await BgData.update({ activeTabId })
+    await ServiceWorkerData.update({ activeTabId })
   }
 }
 
@@ -413,13 +423,13 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
 })
 
 chrome.windows.onRemoved.addListener((windowId: number) => {
-  const data = BgData.get()
+  const data = ServiceWorkerData.get()
   const normalWindows = data.normalWindows ?? []
   const idx = normalWindows.findIndex((w) => w.id === windowId)
 
   if (idx >= 0) {
     normalWindows.splice(idx, 1)
-    BgData.set((data) => ({
+    ServiceWorkerData.set((data) => ({
       ...data,
       normalWindows,
     }))
@@ -427,7 +437,7 @@ chrome.windows.onRemoved.addListener((windowId: number) => {
 })
 
 chrome.windows.onBoundsChanged.addListener(async (window) => {
-  const data = BgData.get()
+  const data = ServiceWorkerData.get()
   const windowStack = await WindowStackManager.getStack()
   for (const layer of [...windowStack, data.normalWindows]) {
     const w = layer.find((v) => v.id === window.id)
@@ -654,7 +664,7 @@ chrome.commands.onCommand.addListener(async (commandName) => {
     }
 
     if (!enableSendTab || ret instanceof Error) {
-      // Execute command directly in background
+      // Execute command directly in the service worker
       await execute({
         command,
         position: { x: 10000, y: 10000 },

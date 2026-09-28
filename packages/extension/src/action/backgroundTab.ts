@@ -1,4 +1,4 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { isValidString } from "@/lib/utils"
 import { SPACE_ENCODING } from "@/const"
 import type { ExecuteCommandParams } from "@/types"
@@ -16,7 +16,7 @@ export const BackgroundTab = {
       return
     }
 
-    Ipc.send<OpenTabProps>(BgCommand.openTab, {
+    Ipc.send<OpenTabProps>(ServiceWorkerCommand.openTab, {
       url: {
         searchUrl: command.searchUrl,
         spaceEncoding: command.spaceEncoding ?? SPACE_ENCODING.PLUS,

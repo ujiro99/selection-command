@@ -7,11 +7,11 @@ import {
   type MockedFunction,
 } from "vitest"
 import { WindowStackManager } from "../windowStackManager"
-import { BgData } from "../backgroundData"
+import { ServiceWorkerData } from "../serviceWorkerData"
 import type { WindowType } from "@/types"
 
-// Mock BgData
-vi.mock("../backgroundData")
+// Mock ServiceWorkerData
+vi.mock("../serviceWorkerData")
 
 const createTestWindow = (
   id: number, // Chrome window ID
@@ -24,11 +24,13 @@ const createTestWindow = (
 })
 
 describe("WindowStackManager", () => {
-  let mockBgDataGet: MockedFunction<typeof BgData.get>
-  let mockBgDataUpdate: MockedFunction<typeof BgData.update>
+  let mockServiceWorkerDataGet: MockedFunction<typeof ServiceWorkerData.get>
+  let mockServiceWorkerDataUpdate: MockedFunction<
+    typeof ServiceWorkerData.update
+  >
 
   // Helper functions to reduce repetition
-  const createBgData = (windowStack: any[] = []) => ({
+  const createServiceWorkerData = (windowStack: any[] = []) => ({
     windowStack,
     normalWindows: [],
     pageActionStop: false,
@@ -43,20 +45,22 @@ describe("WindowStackManager", () => {
     expectedStack: any[],
     initialStack: any[] = [],
   ) => {
-    expect(mockBgDataUpdate).toHaveBeenCalledTimes(1)
-    const updateCall = mockBgDataUpdate.mock.calls[0][0] as (data: any) => any
-    const updatedData = updateCall(createBgData(initialStack))
+    expect(mockServiceWorkerDataUpdate).toHaveBeenCalledTimes(1)
+    const updateCall = mockServiceWorkerDataUpdate.mock.calls[0][0] as (
+      data: any,
+    ) => any
+    const updatedData = updateCall(createServiceWorkerData(initialStack))
     expect(updatedData.windowStack).toEqual(expectedStack)
   }
 
   beforeEach(() => {
     vi.clearAllMocks()
-    mockBgDataGet = vi.mocked(BgData.get)
-    mockBgDataUpdate = vi.mocked(BgData.update)
+    mockServiceWorkerDataGet = vi.mocked(ServiceWorkerData.get)
+    mockServiceWorkerDataUpdate = vi.mocked(ServiceWorkerData.update)
 
     // Default mock implementation
-    mockBgDataGet.mockReturnValue(createBgData())
-    mockBgDataUpdate.mockResolvedValue(true)
+    mockServiceWorkerDataGet.mockReturnValue(createServiceWorkerData())
+    mockServiceWorkerDataUpdate.mockResolvedValue(true)
   })
 
   describe("Basic Window Operations", () => {
@@ -66,7 +70,9 @@ describe("WindowStackManager", () => {
         const childWindow1 = createTestWindow(2, "cmd2", 1)
         const childWindow2 = createTestWindow(3, "cmd3", 1)
 
-        mockBgDataGet.mockReturnValue(createBgData([[parentWindow]]))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData([[parentWindow]]),
+        )
 
         await WindowStackManager.addWindows([
           { window: childWindow1, parentWindowId: 1 },
@@ -74,11 +80,13 @@ describe("WindowStackManager", () => {
         ])
 
         // Should be called only once since it's a batch operation
-        expect(mockBgDataUpdate).toHaveBeenCalledTimes(1)
-        const updateCall = mockBgDataUpdate.mock.calls[0][0] as (
+        expect(mockServiceWorkerDataUpdate).toHaveBeenCalledTimes(1)
+        const updateCall = mockServiceWorkerDataUpdate.mock.calls[0][0] as (
           data: any,
         ) => any
-        const updatedData = updateCall(createBgData([[parentWindow]]))
+        const updatedData = updateCall(
+          createServiceWorkerData([[parentWindow]]),
+        )
         expect(updatedData.windowStack).toEqual([
           [parentWindow],
           [childWindow1, childWindow2],
@@ -91,8 +99,8 @@ describe("WindowStackManager", () => {
         const childWindow1 = createTestWindow(3, "cmd3", 1)
         const childWindow2 = createTestWindow(4, "cmd4", 2)
 
-        mockBgDataGet.mockReturnValue(
-          createBgData([[parentWindow1], [parentWindow2]]),
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData([[parentWindow1], [parentWindow2]]),
         )
 
         await WindowStackManager.addWindows([
@@ -100,12 +108,12 @@ describe("WindowStackManager", () => {
           { window: childWindow2, parentWindowId: 2 },
         ])
 
-        expect(mockBgDataUpdate).toHaveBeenCalledTimes(1)
-        const updateCall = mockBgDataUpdate.mock.calls[0][0] as (
+        expect(mockServiceWorkerDataUpdate).toHaveBeenCalledTimes(1)
+        const updateCall = mockServiceWorkerDataUpdate.mock.calls[0][0] as (
           data: any,
         ) => any
         const updatedData = updateCall(
-          createBgData([[parentWindow1], [parentWindow2]]),
+          createServiceWorkerData([[parentWindow1], [parentWindow2]]),
         )
         expect(updatedData.windowStack).toEqual([
           [parentWindow1],
@@ -120,7 +128,9 @@ describe("WindowStackManager", () => {
         const childWindow2 = createTestWindow(3, "cmd3", 1)
         const independentWindow = createTestWindow(4, "cmd4", 0)
 
-        mockBgDataGet.mockReturnValue(createBgData([[parentWindow]]))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData([[parentWindow]]),
+        )
 
         await WindowStackManager.addWindows([
           { window: childWindow1, parentWindowId: 1 },
@@ -128,11 +138,13 @@ describe("WindowStackManager", () => {
           { window: independentWindow }, // No parent
         ])
 
-        expect(mockBgDataUpdate).toHaveBeenCalledTimes(1)
-        const updateCall = mockBgDataUpdate.mock.calls[0][0] as (
+        expect(mockServiceWorkerDataUpdate).toHaveBeenCalledTimes(1)
+        const updateCall = mockServiceWorkerDataUpdate.mock.calls[0][0] as (
           data: any,
         ) => any
-        const updatedData = updateCall(createBgData([[parentWindow]]))
+        const updatedData = updateCall(
+          createServiceWorkerData([[parentWindow]]),
+        )
         expect(updatedData.windowStack).toEqual([
           [parentWindow],
           [childWindow1, childWindow2],
@@ -148,7 +160,9 @@ describe("WindowStackManager", () => {
         const window3 = createTestWindow(3, "cmd3", 1)
         const initialStack = [[window1], [window2, window3]]
 
-        mockBgDataGet.mockReturnValue(createBgData(initialStack))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData(initialStack),
+        )
 
         await WindowStackManager.removeWindow(2)
 
@@ -160,7 +174,9 @@ describe("WindowStackManager", () => {
         const window2 = createTestWindow(2, "cmd2", 1)
         const initialStack = [[window1], [window2]]
 
-        mockBgDataGet.mockReturnValue(createBgData(initialStack))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData(initialStack),
+        )
 
         await WindowStackManager.removeWindow(2)
 
@@ -171,7 +187,9 @@ describe("WindowStackManager", () => {
         const window1 = createTestWindow(1, "cmd1", 0)
         const initialStack = [[window1]]
 
-        mockBgDataGet.mockReturnValue(createBgData(initialStack))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData(initialStack),
+        )
 
         await WindowStackManager.removeWindow(999)
 
@@ -187,7 +205,9 @@ describe("WindowStackManager", () => {
         const window1 = createTestWindow(1, "cmd1", 0)
         const window2 = createTestWindow(2, "cmd2", 0)
 
-        mockBgDataGet.mockReturnValue(createBgData([[window1, window2]]))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData([[window1, window2]]),
+        )
 
         const result = await WindowStackManager.getWindowsToClose(2)
 
@@ -199,8 +219,8 @@ describe("WindowStackManager", () => {
         const window2 = createTestWindow(2, "cmd2", 1)
         const window3 = createTestWindow(3, "cmd3", 2)
 
-        mockBgDataGet.mockReturnValue(
-          createBgData([[window1], [window2], [window3]]),
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData([[window1], [window2], [window3]]),
         )
 
         const result = await WindowStackManager.getWindowsToClose(1)
@@ -212,7 +232,9 @@ describe("WindowStackManager", () => {
         const window1 = createTestWindow(1, "cmd1", 0)
         const window2 = createTestWindow(2, "cmd2", 1)
 
-        mockBgDataGet.mockReturnValue(createBgData([[window1], [window2]]))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData([[window1], [window2]]),
+        )
 
         const result = await WindowStackManager.getWindowsToClose(999)
 
@@ -227,8 +249,8 @@ describe("WindowStackManager", () => {
         const windowE = createTestWindow(5, "cmdE", 4)
         const windowF = createTestWindow(6, "cmdF", 4)
 
-        mockBgDataGet.mockReturnValue(
-          createBgData([
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData([
             [windowA],
             [windowB, windowC],
             [windowD],
@@ -251,7 +273,9 @@ describe("WindowStackManager", () => {
         const window2 = createTestWindow(2, "cmd2", 1)
         const expectedStack = [[window1], [window2]]
 
-        mockBgDataGet.mockReturnValue(createBgData(expectedStack))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData(expectedStack),
+        )
 
         const result = await WindowStackManager.getStack()
 
@@ -264,7 +288,9 @@ describe("WindowStackManager", () => {
         const window1 = createTestWindow(1, "cmd1", 0)
         const initialStack = [[window1], [], []]
 
-        mockBgDataGet.mockReturnValue(createBgData(initialStack))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData(initialStack),
+        )
 
         await WindowStackManager.cleanupEmptyLayers()
 
@@ -276,15 +302,17 @@ describe("WindowStackManager", () => {
         const window2 = createTestWindow(2, "cmd2", 1)
         const initialStack = [[window1], [window2]]
 
-        mockBgDataGet.mockReturnValue(createBgData(initialStack))
+        mockServiceWorkerDataGet.mockReturnValue(
+          createServiceWorkerData(initialStack),
+        )
 
         await WindowStackManager.cleanupEmptyLayers()
 
-        expect(mockBgDataUpdate).toHaveBeenCalledTimes(1)
-        const updateCall = mockBgDataUpdate.mock.calls[0][0] as (
+        expect(mockServiceWorkerDataUpdate).toHaveBeenCalledTimes(1)
+        const updateCall = mockServiceWorkerDataUpdate.mock.calls[0][0] as (
           data: any,
         ) => any
-        const updatedData = updateCall(createBgData(initialStack))
+        const updatedData = updateCall(createServiceWorkerData(initialStack))
         expect(updatedData.windowStack).toBeUndefined()
       })
     })
@@ -296,8 +324,8 @@ describe("WindowStackManager", () => {
       const windowB = createTestWindow(2, "cmdB", 1)
       const windowC = createTestWindow(3, "cmdC", 2)
 
-      mockBgDataGet.mockReturnValue(
-        createBgData([[windowA], [windowB], [windowC]]),
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData([[windowA], [windowB], [windowC]]),
       )
 
       // C -> A should close B and C
@@ -316,7 +344,9 @@ describe("WindowStackManager", () => {
       const windowD = createTestWindow(4, "cmdD", 2)
       const initialStack = [[windowA], [windowB, windowC], [windowD]]
 
-      mockBgDataGet.mockReturnValue(createBgData(initialStack))
+      mockServiceWorkerDataGet.mockReturnValue(
+        createServiceWorkerData(initialStack),
+      )
 
       await WindowStackManager.removeWindow(2)
 
@@ -324,17 +354,17 @@ describe("WindowStackManager", () => {
     })
   })
 
-  describe("BgData not initialized", () => {
-    it("should return empty array when BgData.get() returns undefined", async () => {
-      mockBgDataGet.mockReturnValue(undefined as any)
+  describe("ServiceWorkerData not initialized", () => {
+    it("should return empty array when ServiceWorkerData.get() returns undefined", async () => {
+      mockServiceWorkerDataGet.mockReturnValue(undefined as any)
 
       const result = await WindowStackManager.getStack()
 
       expect(result).toEqual([])
     })
 
-    it("should treat stack as empty when BgData.get() returns undefined on addWindow", async () => {
-      mockBgDataGet.mockReturnValue(undefined as any)
+    it("should treat stack as empty when ServiceWorkerData.get() returns undefined on addWindow", async () => {
+      mockServiceWorkerDataGet.mockReturnValue(undefined as any)
       const window = createTestWindow(1, "cmd1", 0)
 
       await WindowStackManager.addWindow(window)
@@ -344,12 +374,12 @@ describe("WindowStackManager", () => {
   })
 
   describe("ServiceWorker Persistence", () => {
-    it("should load stack from BgData for read operations", async () => {
-      mockBgDataGet.mockReturnValue(createBgData([]))
+    it("should load stack from ServiceWorkerData for read operations", async () => {
+      mockServiceWorkerDataGet.mockReturnValue(createServiceWorkerData([]))
 
       await WindowStackManager.getStack()
 
-      expect(mockBgDataGet).toHaveBeenCalledTimes(1)
+      expect(mockServiceWorkerDataGet).toHaveBeenCalledTimes(1)
     })
 
     it("should update the stack atomically for addWindow", async () => {
@@ -357,10 +387,10 @@ describe("WindowStackManager", () => {
 
       await WindowStackManager.addWindow(window)
 
-      expect(mockBgDataUpdate).toHaveBeenCalledTimes(1)
+      expect(mockServiceWorkerDataUpdate).toHaveBeenCalledTimes(1)
     })
 
-    it("should save stack to BgData after modifications", async () => {
+    it("should save stack to ServiceWorkerData after modifications", async () => {
       const window = createTestWindow(1, "cmd1", 0)
 
       await WindowStackManager.addWindow(window)

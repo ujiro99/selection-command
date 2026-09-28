@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Ipc, TabCommand } from "@/services/ipc"
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 
 // Mock dependencies
 vi.mock("@/services/ipc")
-vi.mock("@/services/backgroundData")
+vi.mock("@/services/serviceWorkerData")
 
 const mockIpc = vi.mocked(Ipc)
-const mockBgData = vi.mocked(BgData)
+const mockServiceWorkerData = vi.mocked(ServiceWorkerData)
 
 // Mock Chrome APIs
 const mockRuntimeConnect = vi.fn()
@@ -50,7 +50,7 @@ describe("Connection Service", () => {
     // Setup default mocks
     mockRuntimeConnect.mockReturnValue(mockPort)
     mockIpc.getTabId.mockResolvedValue(123)
-    mockBgData.get.mockReturnValue({
+    mockServiceWorkerData.get.mockReturnValue({
       connectedTabs: [],
     } as any)
   })
@@ -62,7 +62,7 @@ describe("Connection Service", () => {
   describe("CN-01: Initial Connection Process", () => {
     it("CN-01-a: should establish initial connection when tab is not connected", async () => {
       // Arrange
-      mockBgData.get.mockReturnValue({
+      mockServiceWorkerData.get.mockReturnValue({
         connectedTabs: [], // tab is not connected
       } as any)
 
@@ -71,7 +71,7 @@ describe("Connection Service", () => {
 
       // Assert
       expect(mockIpc.getTabId).toHaveBeenCalledOnce()
-      expect(mockBgData.get).toHaveBeenCalledOnce()
+      expect(mockServiceWorkerData.get).toHaveBeenCalledOnce()
       expect(mockAddEventListener).toHaveBeenCalledWith(
         "pageshow",
         expect.any(Function),
@@ -83,7 +83,7 @@ describe("Connection Service", () => {
 
     it("CN-01-b: should not connect when tab is already connected", async () => {
       // Arrange
-      mockBgData.get.mockReturnValue({
+      mockServiceWorkerData.get.mockReturnValue({
         connectedTabs: [123], // tab is already connected
       } as any)
 
@@ -92,20 +92,20 @@ describe("Connection Service", () => {
 
       // Assert
       expect(mockIpc.getTabId).toHaveBeenCalledOnce()
-      expect(mockBgData.get).toHaveBeenCalledOnce()
+      expect(mockServiceWorkerData.get).toHaveBeenCalledOnce()
       expect(mockRuntimeConnect).not.toHaveBeenCalled()
     })
 
-    it("CN-01-c: should handle undefined bgData gracefully", async () => {
+    it("CN-01-c: should handle undefined serviceWorkerData gracefully", async () => {
       // Arrange
-      mockBgData.get.mockReturnValue(undefined as any)
+      mockServiceWorkerData.get.mockReturnValue(undefined as any)
 
       // Act
       await import("@/services/connection")
 
       // Assert
       expect(mockIpc.getTabId).toHaveBeenCalledOnce()
-      expect(mockBgData.get).toHaveBeenCalledOnce()
+      expect(mockServiceWorkerData.get).toHaveBeenCalledOnce()
       expect(mockRuntimeConnect).toHaveBeenCalledWith({
         name: "app",
       })
@@ -115,7 +115,7 @@ describe("Connection Service", () => {
   describe("CN-02: BFCache Handling", () => {
     it("CN-02-a: should reconnect when coming from bfcache", async () => {
       // Arrange
-      mockBgData.get.mockReturnValue({
+      mockServiceWorkerData.get.mockReturnValue({
         connectedTabs: [], // not connected initially
       } as any)
 
@@ -144,7 +144,7 @@ describe("Connection Service", () => {
 
     it("CN-02-b: should not reconnect when not coming from bfcache", async () => {
       // Arrange
-      mockBgData.get.mockReturnValue({
+      mockServiceWorkerData.get.mockReturnValue({
         connectedTabs: [],
       } as any)
 
@@ -173,7 +173,7 @@ describe("Connection Service", () => {
   describe("CN-03: Connect Function", () => {
     it("CN-03-a: should successfully establish Chrome extension connection", async () => {
       // Arrange
-      mockBgData.get.mockReturnValue({
+      mockServiceWorkerData.get.mockReturnValue({
         connectedTabs: [],
       } as any)
 
@@ -191,7 +191,7 @@ describe("Connection Service", () => {
 
     it("CN-03-b: should handle connected message properly", async () => {
       // Arrange
-      mockBgData.get.mockReturnValue({
+      mockServiceWorkerData.get.mockReturnValue({
         connectedTabs: [],
       } as any)
 
@@ -216,7 +216,7 @@ describe("Connection Service", () => {
       mockRuntimeConnect.mockImplementation(() => {
         throw connectionError
       })
-      mockBgData.get.mockReturnValue({
+      mockServiceWorkerData.get.mockReturnValue({
         connectedTabs: [],
       } as any)
 

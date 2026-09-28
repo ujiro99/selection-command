@@ -11,7 +11,7 @@ import {
   handleSetSession,
   handleClearSession,
   pushEditToHub,
-} from "../background"
+} from "../serviceWorker"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import { Settings } from "@/services/settings/settings"
 import { sendEvent, getOrCreateClientId } from "@/services/analytics"

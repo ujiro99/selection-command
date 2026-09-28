@@ -1,4 +1,4 @@
-import { OPEN_MODE_BG } from "@/const"
+import { OPEN_MODE_SERVICE_WORKER } from "@/const"
 import { Popup } from "./popup"
 import { Window } from "./window"
 import { Tab } from "./tab"
@@ -9,14 +9,14 @@ import { AiPrompt } from "./aiPrompt"
 import { executeAction } from "./executor"
 import type { ExecuteCommandParams } from "@/types"
 
-const actionsForBackground = {
-  [OPEN_MODE_BG.POPUP]: Popup,
-  [OPEN_MODE_BG.WINDOW]: Window,
-  [OPEN_MODE_BG.TAB]: Tab,
-  [OPEN_MODE_BG.BACKGROUND_TAB]: BackgroundTab,
-  [OPEN_MODE_BG.API]: Api,
-  [OPEN_MODE_BG.PAGE_ACTION]: PageAction,
-  [OPEN_MODE_BG.AI_PROMPT]: AiPrompt,
+const actionsForServiceWorker = {
+  [OPEN_MODE_SERVICE_WORKER.POPUP]: Popup,
+  [OPEN_MODE_SERVICE_WORKER.WINDOW]: Window,
+  [OPEN_MODE_SERVICE_WORKER.TAB]: Tab,
+  [OPEN_MODE_SERVICE_WORKER.BACKGROUND_TAB]: BackgroundTab,
+  [OPEN_MODE_SERVICE_WORKER.API]: Api,
+  [OPEN_MODE_SERVICE_WORKER.PAGE_ACTION]: PageAction,
+  [OPEN_MODE_SERVICE_WORKER.AI_PROMPT]: AiPrompt,
 }
 
 export async function execute({
@@ -38,6 +38,6 @@ export async function execute({
     allowClipboardFallback,
     changeState,
     pageUrl,
-    actions: actionsForBackground,
+    actions: actionsForServiceWorker,
   })
 }

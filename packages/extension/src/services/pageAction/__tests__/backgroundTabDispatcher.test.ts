@@ -49,7 +49,7 @@ vi.mock("@/const", async () => {
 })
 
 // Import modules after mocking
-import { BackgroundPageActionDispatcher } from "../backgroundDispatcher"
+import { BackgroundTabPageActionDispatcher } from "../backgroundTabDispatcher"
 import {
   getElementByXPath,
   isValidXPath,
@@ -148,7 +148,7 @@ const mockWindow = {
   })),
 }
 
-describe("backgroundDispatcher", () => {
+describe("backgroundTabDispatcher", () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     vi.clearAllMocks()
@@ -181,7 +181,7 @@ describe("backgroundDispatcher", () => {
     vi.useRealTimers()
   })
 
-  describe("waitForElementBackground", () => {
+  describe("waitForElementInBackgroundTab", () => {
     // We need to access the private function for testing
     // Since it's not exported, we'll test it through the public methods
     // But first let's create a helper to test the waiting logic
@@ -197,7 +197,7 @@ describe("backgroundDispatcher", () => {
         label: "Test Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.click(
+      const result = await BackgroundTabPageActionDispatcher.click(
         clickParam as any,
       )
 
@@ -218,7 +218,7 @@ describe("backgroundDispatcher", () => {
         label: "Test Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.click(
+      const result = await BackgroundTabPageActionDispatcher.click(
         clickParam as any,
       )
 
@@ -245,7 +245,7 @@ describe("backgroundDispatcher", () => {
         label: "Delayed Button",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
         clickParam as any,
       )
 
@@ -269,7 +269,7 @@ describe("backgroundDispatcher", () => {
         label: "Nonexistent Button",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
         clickParam as any,
       )
 
@@ -295,7 +295,7 @@ describe("backgroundDispatcher", () => {
       }
 
       await expect(
-        BackgroundPageActionDispatcher.click(clickParam as any),
+        BackgroundTabPageActionDispatcher.click(clickParam as any),
       ).rejects.toThrow("Invalid XPath: invalid-xpath")
       expect(mockIsValidXPath).toHaveBeenCalledWith("invalid-xpath")
       expect(mockGetElementByXPath).not.toHaveBeenCalled()
@@ -309,7 +309,7 @@ describe("backgroundDispatcher", () => {
         label: "Empty Selector",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
         clickParam as any,
       )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
@@ -335,7 +335,7 @@ describe("backgroundDispatcher", () => {
         label: "Test",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
         clickParam as any,
       )
 
@@ -370,7 +370,7 @@ describe("backgroundDispatcher", () => {
         label: "Found Button",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
         clickParam as any,
       )
 
@@ -389,7 +389,7 @@ describe("backgroundDispatcher", () => {
     })
   })
 
-  describe("BackgroundPageActionDispatcher.click", () => {
+  describe("BackgroundTabPageActionDispatcher.click", () => {
     it("BDC-01: Should execute click with CSS selector successfully", async () => {
       const mockElement = mockElements.div
       mockDocument.querySelector.mockReturnValue(mockElement)
@@ -401,7 +401,7 @@ describe("backgroundDispatcher", () => {
         label: "Click Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.click(param as any)
+      const result = await BackgroundTabPageActionDispatcher.click(param as any)
 
       expect(result).toEqual([true])
       expect(mockDocument.querySelector).toHaveBeenCalledWith(".click-button")
@@ -427,7 +427,7 @@ describe("backgroundDispatcher", () => {
         label: "Click Button XPath",
       }
 
-      const result = await BackgroundPageActionDispatcher.click(param as any)
+      const result = await BackgroundTabPageActionDispatcher.click(param as any)
 
       expect(result).toEqual([true])
       expect(mockIsValidXPath).toHaveBeenCalledWith("//button[@id='click-btn']")
@@ -455,7 +455,7 @@ describe("backgroundDispatcher", () => {
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.click(param as any)
+      await BackgroundTabPageActionDispatcher.click(param as any)
 
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -477,7 +477,9 @@ describe("backgroundDispatcher", () => {
         label: "Not Found Button",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
+        param as any,
+      )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
 
       const result = await resultPromise
@@ -509,7 +511,7 @@ describe("backgroundDispatcher", () => {
         },
       }
 
-      const result = await BackgroundPageActionDispatcher.click(param as any)
+      const result = await BackgroundTabPageActionDispatcher.click(param as any)
 
       expect(result).toEqual([true])
       expect(mockElements.div.dispatchEvent).not.toHaveBeenCalled()
@@ -536,7 +538,7 @@ describe("backgroundDispatcher", () => {
         },
       }
 
-      const result = await BackgroundPageActionDispatcher.click(param as any)
+      const result = await BackgroundTabPageActionDispatcher.click(param as any)
 
       expect(result).toEqual([true])
       expect(mockElements.div.dispatchEvent).toHaveBeenCalledTimes(1)
@@ -562,7 +564,9 @@ describe("backgroundDispatcher", () => {
         },
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
+        param as any,
+      )
 
       // First poll tick sees the element still disabled.
       vi.advanceTimersByTime(100)
@@ -597,7 +601,9 @@ describe("backgroundDispatcher", () => {
         },
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
+        param as any,
+      )
       vi.advanceTimersByTime(1100)
       const result = await resultPromise
 
@@ -623,7 +629,9 @@ describe("backgroundDispatcher", () => {
         },
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
+        param as any,
+      )
       vi.advanceTimersByTime(1100)
       const result = await resultPromise
 
@@ -651,7 +659,9 @@ describe("backgroundDispatcher", () => {
         },
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.click(param as any)
+      const resultPromise = BackgroundTabPageActionDispatcher.click(
+        param as any,
+      )
       vi.advanceTimersByTime(1100)
       const result = await resultPromise
 
@@ -660,7 +670,7 @@ describe("backgroundDispatcher", () => {
     })
   })
 
-  describe("BackgroundPageActionDispatcher.doubleClick", () => {
+  describe("BackgroundTabPageActionDispatcher.doubleClick", () => {
     it("BDD-01: Should execute double click successfully", async () => {
       const mockElement = mockElements.div
       mockDocument.querySelector.mockReturnValue(mockElement)
@@ -672,7 +682,7 @@ describe("backgroundDispatcher", () => {
         label: "Double Click Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.doubleClick(
+      const result = await BackgroundTabPageActionDispatcher.doubleClick(
         param as any,
       )
 
@@ -695,7 +705,7 @@ describe("backgroundDispatcher", () => {
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.doubleClick(param as any)
+      await BackgroundTabPageActionDispatcher.doubleClick(param as any)
 
       expect(dispatchedEvents).toEqual(["click", "dblclick"])
     })
@@ -715,7 +725,7 @@ describe("backgroundDispatcher", () => {
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.doubleClick(param as any)
+      await BackgroundTabPageActionDispatcher.doubleClick(param as any)
 
       expect(eventDetails).toEqual([1, 2])
     })
@@ -730,7 +740,7 @@ describe("backgroundDispatcher", () => {
         label: "Not Found",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.doubleClick(
+      const resultPromise = BackgroundTabPageActionDispatcher.doubleClick(
         param as any,
       )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
@@ -744,7 +754,7 @@ describe("backgroundDispatcher", () => {
     })
   })
 
-  describe("BackgroundPageActionDispatcher.tripleClick", () => {
+  describe("BackgroundTabPageActionDispatcher.tripleClick", () => {
     it("BDT-01: Should execute triple click successfully", async () => {
       const mockElement = mockElements.div
       mockDocument.querySelector.mockReturnValue(mockElement)
@@ -756,7 +766,7 @@ describe("backgroundDispatcher", () => {
         label: "Triple Click Button",
       }
 
-      const result = await BackgroundPageActionDispatcher.tripleClick(
+      const result = await BackgroundTabPageActionDispatcher.tripleClick(
         param as any,
       )
 
@@ -779,7 +789,7 @@ describe("backgroundDispatcher", () => {
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.tripleClick(param as any)
+      await BackgroundTabPageActionDispatcher.tripleClick(param as any)
 
       expect(dispatchedEvents).toEqual(["click", "click", "click"])
     })
@@ -799,7 +809,7 @@ describe("backgroundDispatcher", () => {
         label: "Test",
       }
 
-      await BackgroundPageActionDispatcher.tripleClick(param as any)
+      await BackgroundTabPageActionDispatcher.tripleClick(param as any)
 
       expect(eventDetails).toEqual([1, 2, 3])
     })
@@ -814,7 +824,7 @@ describe("backgroundDispatcher", () => {
         label: "Not Found",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.tripleClick(
+      const resultPromise = BackgroundTabPageActionDispatcher.tripleClick(
         param as any,
       )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
@@ -828,7 +838,7 @@ describe("backgroundDispatcher", () => {
     })
   })
 
-  describe("BackgroundPageActionDispatcher.keyboard", () => {
+  describe("BackgroundTabPageActionDispatcher.keyboard", () => {
     it("BDK-01: Should execute basic keyboard event successfully", async () => {
       const mockElement = mockElements.div
       mockDocument.querySelector.mockReturnValue(mockElement)
@@ -847,7 +857,9 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const result = await BackgroundPageActionDispatcher.keyboard(param as any)
+      const result = await BackgroundTabPageActionDispatcher.keyboard(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
@@ -881,7 +893,9 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const result = await BackgroundPageActionDispatcher.keyboard(param as any)
+      const result = await BackgroundTabPageActionDispatcher.keyboard(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
@@ -911,7 +925,9 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const result = await BackgroundPageActionDispatcher.keyboard(param as any)
+      const result = await BackgroundTabPageActionDispatcher.keyboard(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
@@ -940,7 +956,9 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const result = await BackgroundPageActionDispatcher.keyboard(param as any)
+      const result = await BackgroundTabPageActionDispatcher.keyboard(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
@@ -974,7 +992,7 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      await BackgroundPageActionDispatcher.keyboard(param as any)
+      await BackgroundTabPageActionDispatcher.keyboard(param as any)
 
       expect(mockElement.dispatchEvent).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1002,7 +1020,7 @@ describe("backgroundDispatcher", () => {
         altKey: false,
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.keyboard(
+      const resultPromise = BackgroundTabPageActionDispatcher.keyboard(
         param as any,
       )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
@@ -1016,7 +1034,7 @@ describe("backgroundDispatcher", () => {
     })
   })
 
-  describe("BackgroundPageActionDispatcher.input", () => {
+  describe("BackgroundTabPageActionDispatcher.input", () => {
     it("BDI-01: Should input text into HTMLInputElement", async () => {
       const mockElement = mockElements.input
       mockElement.value = "existing"
@@ -1033,7 +1051,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.value).toBe("existingtest text")
@@ -1058,7 +1076,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.value).toBe("existingtest text")
@@ -1099,7 +1117,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.innerText).toBe("existingtest text")
@@ -1143,7 +1161,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.innerText).toBe("existingline1\nline2\nline3")
@@ -1176,7 +1194,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -1208,7 +1226,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -1240,7 +1258,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "copied text",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -1276,7 +1294,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "clipboard",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -1306,7 +1324,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      await BackgroundPageActionDispatcher.input(param as any)
+      await BackgroundTabPageActionDispatcher.input(param as any)
 
       // The value should be escaped after interpolation
       expect(mockElement.value).toContain("test {value}")
@@ -1328,7 +1346,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.value).toBe("existing text appended")
@@ -1350,7 +1368,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      await BackgroundPageActionDispatcher.input(param as any)
+      await BackgroundTabPageActionDispatcher.input(param as any)
 
       const expectedLength = "existing text".length
       expect(mockElement.selectionStart).toBe(expectedLength)
@@ -1378,7 +1396,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      await BackgroundPageActionDispatcher.input(param as any)
+      await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(eventTypes).toEqual(["input", "change"])
       expect(mockElement.dispatchEvent).toHaveBeenCalledTimes(2)
@@ -1401,7 +1419,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockElement.value).toBe("existing") // Should remain unchanged
@@ -1422,7 +1440,9 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const resultPromise = BackgroundPageActionDispatcher.input(param as any)
+      const resultPromise = BackgroundTabPageActionDispatcher.input(
+        param as any,
+      )
       vi.advanceTimersByTime(1100) // Advance beyond timeout (1000ms)
 
       const result = await resultPromise
@@ -1450,7 +1470,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      await BackgroundPageActionDispatcher.input(param as any)
+      await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
         "{{lang}}",
@@ -1486,7 +1506,7 @@ describe("backgroundDispatcher", () => {
         clipboardText: "",
       }
 
-      const result = await BackgroundPageActionDispatcher.input(param as any)
+      const result = await BackgroundTabPageActionDispatcher.input(param as any)
 
       expect(result).toEqual([true])
       expect(mockSafeInterpolate).toHaveBeenCalledWith(
@@ -1500,7 +1520,7 @@ describe("backgroundDispatcher", () => {
     })
   })
 
-  describe("BackgroundPageActionDispatcher.scroll", () => {
+  describe("BackgroundTabPageActionDispatcher.scroll", () => {
     it("BDS-01: Should execute scroll successfully", async () => {
       const param = {
         type: PAGE_ACTION_EVENT.click,
@@ -1509,7 +1529,9 @@ describe("backgroundDispatcher", () => {
         label: "Scroll",
       }
 
-      const result = await BackgroundPageActionDispatcher.scroll(param as any)
+      const result = await BackgroundTabPageActionDispatcher.scroll(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockWindow.scrollTo).toHaveBeenCalledWith({
@@ -1526,7 +1548,9 @@ describe("backgroundDispatcher", () => {
         label: "Scroll to top",
       }
 
-      const result = await BackgroundPageActionDispatcher.scroll(param as any)
+      const result = await BackgroundTabPageActionDispatcher.scroll(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockWindow.scrollTo).toHaveBeenCalledWith({
@@ -1543,7 +1567,9 @@ describe("backgroundDispatcher", () => {
         label: "Large scroll",
       }
 
-      const result = await BackgroundPageActionDispatcher.scroll(param as any)
+      const result = await BackgroundTabPageActionDispatcher.scroll(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockWindow.scrollTo).toHaveBeenCalledWith({
@@ -1560,7 +1586,9 @@ describe("backgroundDispatcher", () => {
         label: "Negative scroll",
       }
 
-      const result = await BackgroundPageActionDispatcher.scroll(param as any)
+      const result = await BackgroundTabPageActionDispatcher.scroll(
+        param as any,
+      )
 
       expect(result).toEqual([true])
       expect(mockWindow.scrollTo).toHaveBeenCalledWith({

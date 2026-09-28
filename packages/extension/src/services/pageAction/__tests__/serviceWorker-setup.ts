@@ -34,8 +34,8 @@ vi.mock("@/services/chrome", () => ({
   readClipboard: vi.fn(),
 }))
 
-vi.mock("@/services/backgroundData", () => ({
-  BgData: {
+vi.mock("@/services/serviceWorkerData", () => ({
+  ServiceWorkerData: {
     init: vi.fn(),
     update: vi.fn(),
     get: vi.fn(),
@@ -111,7 +111,7 @@ import {
   getCurrentTab,
   readClipboard,
 } from "@/services/chrome"
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { RunningStatus } from "@/services/pageAction"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import {
@@ -123,12 +123,12 @@ import {
   matchesPageActionUrl,
   sleep,
 } from "@/lib/utils"
-import { resetLastUrl } from "./background"
+import { resetLastUrl } from "../serviceWorker"
 
 // Get references to mocked functions
 export const mockStorage = Storage as any
 export const mockIpc = Ipc as any
-export const mockBgData = BgData as any
+export const mockServiceWorkerData = ServiceWorkerData as any
 export const mockRunningStatus = RunningStatus as any
 export const mockOpenPopupWindow = openPopupWindow as any
 export const mockOpenTab = openTab as any
@@ -152,7 +152,7 @@ export const mockConsole = {
 }
 
 // Setup and cleanup functions
-export const setupBackgroundTestEnvironment = () => {
+export const setupServiceWorkerTestEnvironment = () => {
   beforeEach(() => {
     vi.useFakeTimers()
     vi.clearAllMocks()
@@ -177,10 +177,10 @@ export const setupBackgroundTestEnvironment = () => {
     mockRunningStatus.updateTab.mockResolvedValue(undefined)
     mockRunningStatus.initTab.mockResolvedValue(undefined)
     mockRunningStatus.clearTab.mockResolvedValue(undefined)
-    mockBgData.init.mockReturnValue(undefined)
-    mockBgData.update.mockResolvedValue(true)
-    mockBgData.get.mockReturnValue({ pageActionStop: false })
-    mockBgData.set.mockResolvedValue(undefined)
+    mockServiceWorkerData.init.mockReturnValue(undefined)
+    mockServiceWorkerData.update.mockResolvedValue(true)
+    mockServiceWorkerData.get.mockReturnValue({ pageActionStop: false })
+    mockServiceWorkerData.set.mockResolvedValue(undefined)
 
     // Setup Chrome tabs API mocks
     global.chrome.tabs.query = vi.fn()

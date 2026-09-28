@@ -1,7 +1,7 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 
 export const Option = {
   async execute() {
-    Ipc.send(BgCommand.openOption)
+    Ipc.send(ServiceWorkerCommand.openOption)
   },
 }

@@ -69,7 +69,7 @@ describe("MenuImage - Global Icon Color Exclusion", () => {
   })
 
   // Which icons keep their own colors is decided by the caller (the resolver
-  // behind BgCommand.resolveIconColors), never by MenuImage itself, so without
+  // behind ServiceWorkerCommand.resolveIconColors), never by MenuImage itself, so without
   // that prop the icon is recolored like any other.
   it("recolors a website favicon the caller did not mark as preserved", () => {
     const { container } = renderWithContext(

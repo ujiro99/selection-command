@@ -17,8 +17,8 @@ function readVariantOverride(): ExperimentVariant | null {
 
 /**
  * Resolve which onboarding variant to render, returning null until it is
- * known. The background script assigns the variant on install before opening
- * this tab (see background_script.ts), so this is normally just a single
+ * known. The service worker assigns the variant on install before opening
+ * this tab (see service_worker.ts), so this is normally just a single
  * chrome.storage.local read; the fetch path only runs if that assignment is
  * missing (page reopened manually, or the install-time assignment failed).
  */

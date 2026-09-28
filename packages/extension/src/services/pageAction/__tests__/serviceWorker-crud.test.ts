@@ -1,20 +1,20 @@
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import {
-  setupBackgroundTestEnvironment,
+  setupServiceWorkerTestEnvironment,
   mockStorage,
-} from "../background-shared"
-import { add, update, remove, reset } from "../background"
+} from "./serviceWorker-setup"
+import { add, update, remove, reset } from "../serviceWorker"
 
 // Setup test environment
-setupBackgroundTestEnvironment()
+setupServiceWorkerTestEnvironment()
 
-describe("background.ts - CRUD Operations", () => {
+describe("serviceWorker.ts - CRUD Operations", () => {
   describe("add() function", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
     describe("Basic functionality", () => {
-      it("BGD-01: Normal case: Basic step addition succeeds", async () => {
+      it("SWD-01: Normal case: Basic step addition succeeds", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -47,7 +47,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(mockResponse).toHaveBeenCalledWith(true)
       })
 
-      it("BGD-02: Normal case: Adding first step to empty array auto-inserts StartAction", async () => {
+      it("SWD-02: Normal case: Adding first step to empty array auto-inserts StartAction", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -78,7 +78,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.type).toBe("end")
       })
 
-      it("BGD-03: Normal case: EndAction is automatically added", async () => {
+      it("SWD-03: Normal case: EndAction is automatically added", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -111,7 +111,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.type).toBe("end")
       })
 
-      it("BGD-04: Boundary: Handling when maximum step count is reached (PAGE_ACTION_MAX - 1)", async () => {
+      it("SWD-04: Boundary: Handling when maximum step count is reached (PAGE_ACTION_MAX - 1)", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -141,7 +141,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(mockStorage.set).not.toHaveBeenCalled()
       })
 
-      it("BGD-05: Normal case: URL change flag is reset", async () => {
+      it("SWD-05: Normal case: URL change flag is reset", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -188,7 +188,7 @@ describe("background.ts - CRUD Operations", () => {
         })
       })
 
-      it("BGD-06: Integration: Click is skipped when click + input on same element", async () => {
+      it("SWD-06: Integration: Click is skipped when click + input on same element", async () => {
         const existingStep = {
           id: "input-1",
           param: { type: "input", selector: ".test-input", label: "Input" },
@@ -220,7 +220,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(mockStorage.set).not.toHaveBeenCalled()
       })
 
-      it("BGD-07: Integration: Previous click is removed when click → doubleClick", async () => {
+      it("SWD-07: Integration: Previous click is removed when click → doubleClick", async () => {
         const existingStep = {
           id: "click-1",
           param: { type: "click", selector: ".test-button", label: "Click" },
@@ -251,7 +251,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0]).toBe(newStep)
       })
 
-      it("BGD-08: Integration: Previous doubleClick is removed when doubleClick → doubleClick", async () => {
+      it("SWD-08: Integration: Previous doubleClick is removed when doubleClick → doubleClick", async () => {
         const existingStep = {
           id: "double-1",
           param: {
@@ -286,7 +286,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0]).toBe(newStep)
       })
 
-      it("BGD-09: Integration: Previous doubleClick is removed when doubleClick → tripleClick", async () => {
+      it("SWD-09: Integration: Previous doubleClick is removed when doubleClick → tripleClick", async () => {
         const existingStep = {
           id: "double-1",
           param: {
@@ -321,7 +321,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0]).toBe(newStep)
       })
 
-      it("BGD-10: Integration: Previous tripleClick is removed when tripleClick → tripleClick", async () => {
+      it("SWD-10: Integration: Previous tripleClick is removed when tripleClick → tripleClick", async () => {
         const existingStep = {
           id: "triple-1",
           param: {
@@ -356,7 +356,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0]).toBe(newStep)
       })
 
-      it("BGD-11: Integration: Previous scroll is removed and delayMs inherited when scroll → scroll", async () => {
+      it("SWD-11: Integration: Previous scroll is removed and delayMs inherited when scroll → scroll", async () => {
         const existingStep = {
           id: "scroll-1",
           param: { type: "scroll", label: "Scroll 1" },
@@ -385,7 +385,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0].delayMs).toBe(500) // Inherited delay
       })
 
-      it("BGD-12: Integration: DELAY_AFTER_URL_CHANGED is set for scroll after URL change", async () => {
+      it("SWD-12: Integration: DELAY_AFTER_URL_CHANGED is set for scroll after URL change", async () => {
         const newStep = {
           id: "scroll-1",
           param: { type: "scroll", label: "Scroll after URL change" },
@@ -411,7 +411,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[1].delayMs).toBe(100) // DELAY_AFTER_URL_CHANGED
       })
 
-      it("BGD-13: Integration: DELAY_AFTER_URL_CHANGED is set for keyboard after URL change", async () => {
+      it("SWD-13: Integration: DELAY_AFTER_URL_CHANGED is set for keyboard after URL change", async () => {
         const newStep = {
           id: "keyboard-1",
           param: { type: "keyboard", label: "Keyboard after URL change" },
@@ -437,7 +437,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[1].delayMs).toBe(100) // DELAY_AFTER_URL_CHANGED
       })
 
-      it("BGD-14: Integration: Consecutive inputs on same element are merged (label inherited)", async () => {
+      it("SWD-14: Integration: Consecutive inputs on same element are merged (label inherited)", async () => {
         const existingStep = {
           id: "input-1",
           param: {
@@ -474,7 +474,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[0].param.label).toBe("Original Label") // Label inherited
       })
 
-      it("BGD-15: Integration: Previous input value is removed from new value on same element", async () => {
+      it("SWD-15: Integration: Previous input value is removed from new value on same element", async () => {
         const existingStep = {
           id: "input-1",
           param: {
@@ -514,7 +514,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.value).toBe(" world") // "hello" removed
       })
 
-      it("BGD-15-b: Integration: Previous input value is removed from new value even with Shift-Enter operation in between", async () => {
+      it("SWD-15-b: Integration: Previous input value is removed from new value even with Shift-Enter operation in between", async () => {
         const existingStep = {
           id: "input-1",
           param: {
@@ -554,7 +554,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.value).toBe(" world") // "hello" removed despite keyboard step
       })
 
-      it("BGD-15-c: Integration: Previous input values are removed from new value", async () => {
+      it("SWD-15-c: Integration: Previous input values are removed from new value", async () => {
         const existingStep1 = {
           id: "input-1",
           param: {
@@ -609,7 +609,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[4].param.value).toBe("3")
       })
 
-      it("BGD-15-d: Integration: Previous input values are removed from new value", async () => {
+      it("SWD-15-d: Integration: Previous input values are removed from new value", async () => {
         const existingStep1 = {
           id: "input-1",
           param: {
@@ -651,7 +651,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.value).toBe("aaabbb")
       })
 
-      it("BGD-15-e: Integration: Previous input value that includes line-break is removed from new value", async () => {
+      it("SWD-15-e: Integration: Previous input value that includes line-break is removed from new value", async () => {
         const existingStep1 = {
           id: "input-1",
           param: {
@@ -693,7 +693,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.value).toBe("bbb")
       })
 
-      it("BGD-15-f: Integration: Previous click is removed when click → input on same element", async () => {
+      it("SWD-15-f: Integration: Previous click is removed when click → input on same element", async () => {
         const existingStep = {
           id: "click-1",
           param: { type: "click", selector: ".test-input", label: "Click" },
@@ -727,7 +727,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[1].param.type).toBe("end")
       })
 
-      it("BGD-15-g: Integration: Previous doubleClick is removed when doubleClick → input on same element", async () => {
+      it("SWD-15-g: Integration: Previous doubleClick is removed when doubleClick → input on same element", async () => {
         const existingStep = {
           id: "double-1",
           param: {
@@ -765,7 +765,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[1].param.type).toBe("end")
       })
 
-      it("BGD-15-h: Integration: Previous tripleClick is not removed", async () => {
+      it("SWD-15-h: Integration: Previous tripleClick is not removed", async () => {
         const existingStep = {
           id: "triple-1",
           param: {
@@ -804,7 +804,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(savedData.steps[2].param.type).toBe("end")
       })
 
-      it("BGD-15-i: Boundary: Previous click is NOT removed when click → input on different element", async () => {
+      it("SWD-15-i: Boundary: Previous click is NOT removed when click → input on different element", async () => {
         const existingStep = {
           id: "click-1",
           param: {
@@ -848,11 +848,11 @@ describe("background.ts - CRUD Operations", () => {
       const mockSender = { tab: { id: 123 } }
       const mockResponse = vi.fn()
 
-      // BGD-16: Skipped - add() function doesn't handle Storage.get errors, causing unhandled rejections
+      // SWD-16: Skipped - add() function doesn't handle Storage.get errors, causing unhandled rejections
 
-      // BGD-17: Skipped - add() function doesn't handle Storage.set errors, causing unhandled rejections
+      // SWD-17: Skipped - add() function doesn't handle Storage.set errors, causing unhandled rejections
 
-      it("BGD-18: Error case: When Storage.update error occurs", async () => {
+      it("SWD-18: Error case: When Storage.update error occurs", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -876,7 +876,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(result).toBe(true)
       })
 
-      it("BGD-19: Boundary: When step.param is null/undefined", async () => {
+      it("SWD-19: Boundary: When step.param is null/undefined", async () => {
         const mockStep = {
           id: "step-1",
           param: null,
@@ -898,7 +898,7 @@ describe("background.ts - CRUD Operations", () => {
         expect(mockResponse).toHaveBeenCalledWith(false)
       })
 
-      it("BGD-20: Boundary: When context is null/undefined", async () => {
+      it("SWD-20: Boundary: When context is null/undefined", async () => {
         const mockStep = {
           id: "step-1",
           param: { type: "click", label: "Test Click" },
@@ -926,7 +926,7 @@ describe("background.ts - CRUD Operations", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
-    it("BGD-21: Normal case: Partial update of existing step succeeds", async () => {
+    it("SWD-21: Normal case: Partial update of existing step succeeds", async () => {
       const existingSteps = [
         {
           id: "step-1",
@@ -974,7 +974,7 @@ describe("background.ts - CRUD Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-22: Normal case: Nested param object update is performed correctly", async () => {
+    it("SWD-22: Normal case: Nested param object update is performed correctly", async () => {
       const existingSteps = [
         {
           id: "step-1",
@@ -1013,7 +1013,7 @@ describe("background.ts - CRUD Operations", () => {
       )
     })
 
-    it("BGD-23: Boundary: Update with non-existent ID does nothing", async () => {
+    it("SWD-23: Boundary: Update with non-existent ID does nothing", async () => {
       const existingSteps = [
         { id: "step-1", param: { type: "click", label: "Original" } },
       ]
@@ -1033,9 +1033,9 @@ describe("background.ts - CRUD Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    // BGD-24: Skipped - update() function doesn't handle Storage errors, causing unhandled rejections
+    // SWD-24: Skipped - update() function doesn't handle Storage errors, causing unhandled rejections
 
-    it("BGD-25: Boundary: When partial is empty object", async () => {
+    it("SWD-25: Boundary: When partial is empty object", async () => {
       const existingSteps = [
         {
           id: "step-1",
@@ -1077,7 +1077,7 @@ describe("background.ts - CRUD Operations", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
-    it("BGD-26: Normal case: Step deletion with specified ID succeeds", async () => {
+    it("SWD-26: Normal case: Step deletion with specified ID succeeds", async () => {
       const existingSteps = [
         { id: "step-1", param: { type: "click", label: "Click" } },
         { id: "step-2", param: { type: "input", label: "Input" } },
@@ -1103,7 +1103,7 @@ describe("background.ts - CRUD Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-27: Normal case: Only specific ID is deleted from multiple steps", async () => {
+    it("SWD-27: Normal case: Only specific ID is deleted from multiple steps", async () => {
       const existingSteps = [
         { id: "step-1", param: { type: "click", label: "Click 1" } },
         { id: "step-2", param: { type: "click", label: "Click 2" } },
@@ -1132,9 +1132,9 @@ describe("background.ts - CRUD Operations", () => {
       )
     })
 
-    // BGD-30: Skipped - remove() function doesn't handle Storage errors, causing unhandled rejections
+    // SWD-30: Skipped - remove() function doesn't handle Storage errors, causing unhandled rejections
 
-    it("BGD-28: Boundary: Deletion with non-existent ID does nothing", async () => {
+    it("SWD-28: Boundary: Deletion with non-existent ID does nothing", async () => {
       const existingSteps = [
         { id: "step-1", param: { type: "click", label: "Click" } },
       ]
@@ -1153,7 +1153,7 @@ describe("background.ts - CRUD Operations", () => {
       )
     })
 
-    it("BGD-29: Boundary: Deletion processing with empty steps array", async () => {
+    it("SWD-29: Boundary: Deletion processing with empty steps array", async () => {
       const mockRecordingData = { steps: [] }
       mockStorage.get.mockResolvedValue(mockRecordingData)
 
@@ -1171,7 +1171,7 @@ describe("background.ts - CRUD Operations", () => {
   })
 
   describe("reset() function", () => {
-    it("BGD-31: Normal case: Step array reset succeeds", async () => {
+    it("SWD-31: Normal case: Step array reset succeeds", async () => {
       const mockSender = { tab: { id: 123 } }
       const mockRecordingData = {
         steps: [{ id: "step-1", param: { type: "click" } }],
@@ -1194,7 +1194,7 @@ describe("background.ts - CRUD Operations", () => {
       )
     })
 
-    it("BGD-32: Normal case: Tab returns to URL when startUrl exists", async () => {
+    it("SWD-32: Normal case: Tab returns to URL when startUrl exists", async () => {
       const mockSender = { tab: { id: 123 } }
       const mockRecordingData = {
         steps: [{ id: "step-1" }],
@@ -1213,7 +1213,7 @@ describe("background.ts - CRUD Operations", () => {
       })
     })
 
-    it("BGD-33: Boundary: When startUrl does not exist", async () => {
+    it("SWD-33: Boundary: When startUrl does not exist", async () => {
       const mockSender = { tab: { id: 123 } }
       const mockRecordingData = {
         steps: [{ id: "step-1" }],
@@ -1230,7 +1230,7 @@ describe("background.ts - CRUD Operations", () => {
       expect(global.chrome.tabs.update).not.toHaveBeenCalled()
     })
 
-    it("BGD-34: Boundary: When tabId does not exist", async () => {
+    it("SWD-34: Boundary: When tabId does not exist", async () => {
       const mockSender = { tab: null }
       const mockRecordingData = {
         steps: [{ id: "step-1" }],
@@ -1248,7 +1248,7 @@ describe("background.ts - CRUD Operations", () => {
       expect(mockStorage.set).toHaveBeenCalled() // Still resets steps
     })
 
-    it("BGD-35: Error case: When chrome.tabs.update error occurs", async () => {
+    it("SWD-35: Error case: When chrome.tabs.update error occurs", async () => {
       const mockSender = { tab: { id: 123 } }
       const mockRecordingData = {
         steps: [{ id: "step-1", param: { type: "click" } }],

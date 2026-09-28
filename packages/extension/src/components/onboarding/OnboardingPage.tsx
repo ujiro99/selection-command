@@ -22,7 +22,7 @@ export function OnboardingPage() {
   const variant = useOnboardingVariant()
 
   // Hold a blank canvas until the A/B assignment is known (normally a single
-  // chrome.storage.local read, since the background script assigns on
+  // chrome.storage.local read, since the service worker assigns on
   // install). Rendering a default arm first would flash variant A's INTRO
   // screen at variant B users.
   if (variant == null) {

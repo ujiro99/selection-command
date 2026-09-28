@@ -323,7 +323,7 @@ export type UrlParam = {
   /**
    * Set when selectionText is a prompt template (AI prompt query URL) that
    * still contains {{Clipboard}} / {{SelectedText}} placeholders. They are
-   * resolved with the clipboard text read in the background, since the
+   * resolved with the clipboard text read in the service worker, since the
    * clipboard is not available when the template is built.
    */
   clipboardTemplate?: {

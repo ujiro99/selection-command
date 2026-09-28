@@ -94,7 +94,7 @@ yarn dev                   # watch モード
 │   (packages/ext)       │◄──►│   (packages/hub)    │
 │                        │    │                     │
 │ • コンテンツスクリプト │    │ • ai-services.json  │
-│ • バックグラウンド     │    │   配信              │
+│ • Service Worker       │    │   配信              │
 │ • オプションページ     │    │ • e2eテストページ   │
 │ • ページアクション     │    │                     │
 └────────────────────────┘    └─────────────────────┘
@@ -127,12 +127,12 @@ yarn dev                   # watch モード
 
 - **ページアクション**: ブラウザ自動化シーケンスの記録と再生
 - **コンテキストメニュー**: 選択テキストに対する右クリックアクション
-- **IPC通信**: content script ↔ background script ↔ options page
+- **IPC通信**: content script ↔ service worker ↔ options page
 - **設定管理**: Chrome Storage API使用、インポート/エクスポート対応
 
 **主要コンポーネント:**
 
-- `src/background_script.ts` - サービスワーカー（Manifest V3）
+- `src/service_worker.ts` - サービスワーカー（Manifest V3）
 - `src/content_script.tsx` - Webページ注入スクリプト
 - `src/options_page.tsx` - 設定UI
 - `src/services/ipc.ts` - プロセス間通信の中核

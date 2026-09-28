@@ -4,14 +4,14 @@
 - 実装対象:
   - side panel 内で動作する content script
   - service worker（background）
-  - side panel 表示状態を持つ BgData（状態管理層）
+  - side panel 表示状態を持つ ServiceWorkerData（状態管理層）
 
 ---
 
 ## 2. side panel 上かどうかの判定要件
 
 - 「この content script が side panel 上で動いているか」を判定するための条件:
-  - BgData が保持する「side panel を表示中の tabId リスト」に、現在のタブ ID が含まれていること。
+  - ServiceWorkerData が保持する「side panel を表示中の tabId リスト」に、現在のタブ ID が含まれていること。
   - かつ、以下のいずれかを満たすこと:
     - 現在の URL が「side panel 用 URL」であると判定できる。
     - side panel とメインコンテンツが同じ URL を表示している場合は、ウィンドウ位置やレイアウト情報から「side panel 側」であることを判定すること。
@@ -36,12 +36,12 @@
   - 対象 tabId が「side panel 表示中タブリスト」に含まれていることを確認する。
   - 対象の side panel の URL を更新するための API を呼び出し、side panel の表示内容を遷移先 URL に切り替える。
 - URL 更新後の状態管理:
-  - BgData 上で、その tabId の side panel に紐づく「現在 URL」を更新する。
+  - ServiceWorkerData 上で、その tabId の side panel に紐づく「現在 URL」を更新する。
   - 必要に応じて、履歴やその他の管理情報も更新できるようにしておく。
 
 ---
 
-## 5. 状態管理要件（BgData）
+## 5. 状態管理要件（ServiceWorkerData）
 
 - 少なくとも以下の情報を持つ:
   - side panel を表示中の tabId の集合（リストまたはセット）。

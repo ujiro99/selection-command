@@ -19,7 +19,7 @@ Selection Commandは、ユーザーがWebページ上で選択したテキスト
 ## 主要コンポーネント
 
 - `manifest.json` - 拡張機能のマニフェスト
-- `src/background_script.ts` - サービスワーカー
+- `src/service_worker.ts` - サービスワーカー
 - `src/content_script.tsx` - メインのコンテンツスクリプト
 - `src/options_page.tsx` - 拡張機能のオプション/設定ページ
 

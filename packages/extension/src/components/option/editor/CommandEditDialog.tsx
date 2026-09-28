@@ -79,7 +79,7 @@ import { FaviconContextProvider } from "@/providers/faviconContextProvider"
 import { useFavicon } from "@/hooks/option/useFavicon"
 import { usePrevious } from "@/hooks/usePrevious"
 
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { ANALYTICS_EVENTS, sendEvent } from "@/services/analytics"
@@ -415,7 +415,7 @@ const CommandEditDialogInner = ({
         userVariables: getValues("pageActionOption.userVariables"),
       },
     )
-    await Ipc.send(BgCommand.startPageActionRecorder, {
+    await Ipc.send(ServiceWorkerCommand.startPageActionRecorder, {
       startUrl,
       openMode: getValues("pageActionOption.openMode"),
       size: getValues("popupOption") ?? POPUP_OPTION,

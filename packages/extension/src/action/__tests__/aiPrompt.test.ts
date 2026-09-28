@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { AiPrompt, convertUrlsToMarkdown } from "../aiPrompt"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { findAiService } from "@/services/aiPrompt"
 import { Storage } from "@/services/storage"
 import {
@@ -19,7 +19,7 @@ vi.mock("@/services/ipc", () => ({
   Ipc: {
     send: vi.fn(),
   },
-  BgCommand: {
+  ServiceWorkerCommand: {
     openAndRunPageAction: "openAndRunPageAction",
     openSidePanel: "openSidePanel",
   },
@@ -128,7 +128,7 @@ describe("AiPrompt.execute", () => {
       })
 
       expect(Ipc.send).toHaveBeenCalledWith(
-        BgCommand.openAndRunPageAction,
+        ServiceWorkerCommand.openAndRunPageAction,
         expect.objectContaining({
           steps: expect.arrayContaining([
             expect.objectContaining({
@@ -187,7 +187,7 @@ describe("AiPrompt.execute", () => {
       })
 
       expect(Ipc.send).toHaveBeenCalledWith(
-        BgCommand.openAndRunPageAction,
+        ServiceWorkerCommand.openAndRunPageAction,
         expect.objectContaining({
           steps: expect.arrayContaining([
             expect.objectContaining({
@@ -221,7 +221,9 @@ describe("AiPrompt.execute", () => {
 
       const call = vi
         .mocked(Ipc.send)
-        .mock.calls.find(([cmd]) => cmd === BgCommand.openAndRunPageAction)
+        .mock.calls.find(
+          ([cmd]) => cmd === ServiceWorkerCommand.openAndRunPageAction,
+        )
       const payload = call?.[1] as any
       const steps = payload.steps
 
@@ -274,7 +276,9 @@ describe("AiPrompt.execute", () => {
 
         const call = vi
           .mocked(Ipc.send)
-          .mock.calls.find(([cmd]) => cmd === BgCommand.openAndRunPageAction)
+          .mock.calls.find(
+            ([cmd]) => cmd === ServiceWorkerCommand.openAndRunPageAction,
+          )
         const payload = call?.[1] as any
 
         expect(payload.pageHtml).not.toContain(`id="${APP_ID}"`)
@@ -303,7 +307,9 @@ describe("AiPrompt.execute", () => {
 
       const call = vi
         .mocked(Ipc.send)
-        .mock.calls.find(([cmd]) => cmd === BgCommand.openAndRunPageAction)
+        .mock.calls.find(
+          ([cmd]) => cmd === ServiceWorkerCommand.openAndRunPageAction,
+        )
       const payload = call?.[1] as any
       const steps = payload.steps
 
@@ -334,7 +340,7 @@ describe("AiPrompt.execute", () => {
       })
 
       expect(Ipc.send).toHaveBeenCalledWith(
-        BgCommand.openAndRunPageAction,
+        ServiceWorkerCommand.openAndRunPageAction,
         expect.objectContaining({
           url: expect.objectContaining({
             searchUrl: "https://gemini.google.com/app",
@@ -459,7 +465,7 @@ describe("AiPrompt.execute", () => {
       expect(sentArgs.url.selectionText).toBe("Explain: hello world")
     })
 
-    it("AP-08: should keep {{Clipboard}} unresolved for the background when prompt contains {{Clipboard}}", async () => {
+    it("AP-08: should keep {{Clipboard}} unresolved for the service worker when prompt contains {{Clipboard}}", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeQueryService())
 
       await AiPrompt.execute({
@@ -479,7 +485,7 @@ describe("AiPrompt.execute", () => {
       const stepTypes = sentArgs.steps.map((s: any) => s.param.type)
       expect(stepTypes).not.toContain(PAGE_ACTION_EVENT.input)
       expect(sentArgs.url.searchUrl).toBe("https://chatgpt.com/?prompt=%s")
-      // {{SelectedText}} is expanded, {{Clipboard}} is left for the background
+      // {{SelectedText}} is expanded, {{Clipboard}} is left for the service worker
       expect(sentArgs.url.selectionText).toBe("{{Clipboard}} + hello")
       expect(sentArgs.url.useClipboard).toBe(true)
       expect(sentArgs.url.clipboardTemplate).toEqual({ urlToMarkdown: false })
@@ -541,7 +547,7 @@ describe("AiPrompt.execute", () => {
       expect(sentArgs.url.useClipboard).toBe(false)
     })
 
-    it("AP-08e: should pass urlToMarkdown to the background when the clipboard is needed", async () => {
+    it("AP-08e: should pass urlToMarkdown to the service worker when the clipboard is needed", async () => {
       vi.mocked(findAiService).mockResolvedValue(makeAutoSubmitService())
 
       await AiPrompt.execute({

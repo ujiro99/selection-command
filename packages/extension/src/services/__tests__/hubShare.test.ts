@@ -5,7 +5,7 @@ import {
   shareCommandToHub,
   isHubShareable,
 } from "../hubShare"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, COMMAND_SOURCE_TYPE } from "@/const"
 import type { SearchCommand, PageActionCommand, AiPromptCommand } from "@/types"
 
@@ -14,7 +14,7 @@ vi.mock("@/services/ipc", () => ({
   Ipc: {
     send: vi.fn().mockResolvedValue(true),
   },
-  BgCommand: {
+  ServiceWorkerCommand: {
     shareCommandToHub: "shareCommandToHub",
   },
 }))
@@ -240,7 +240,7 @@ describe("shareCommandToHub", () => {
     const result = shareCommandToHub(makeSearchCmd())
     expect(result).toBe(true)
     expect(Ipc.send).toHaveBeenCalledWith(
-      BgCommand.shareCommandToHub,
+      ServiceWorkerCommand.shareCommandToHub,
       expect.objectContaining({ locale: "en" }),
     )
   })
@@ -255,7 +255,7 @@ describe("shareCommandToHub", () => {
     const result = shareCommandToHub(makeAiPromptCmd())
     expect(result).toBe(true)
     expect(Ipc.send).toHaveBeenCalledWith(
-      BgCommand.shareCommandToHub,
+      ServiceWorkerCommand.shareCommandToHub,
       expect.objectContaining({
         openMode: OPEN_MODE.AI_PROMPT,
         targetUrl: "https://gemini.google.com/app",
@@ -267,7 +267,7 @@ describe("shareCommandToHub", () => {
     const result = shareCommandToHub(makePageActionCmd())
     expect(result).toBe(true)
     expect(Ipc.send).toHaveBeenCalledWith(
-      BgCommand.shareCommandToHub,
+      ServiceWorkerCommand.shareCommandToHub,
       expect.objectContaining({
         openMode: OPEN_MODE.PAGE_ACTION,
         targetUrl: "https://example.com",

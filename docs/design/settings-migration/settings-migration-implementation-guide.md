@@ -2,7 +2,7 @@
 
 ## 直接置換による移行実装手順
 
-### 1. 高優先度: background_script.ts の移行
+### 1. 高優先度: service_worker.ts の移行
 
 **現在の使用箇所:**
 
@@ -67,7 +67,7 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 
 ### ファイル別移行チェック
 
-#### background_script.ts
+#### service_worker.ts
 
 - [ ] Line 77: addPageRule 関数の移行
 - [ ] Line 272: toggleStar 関数の移行

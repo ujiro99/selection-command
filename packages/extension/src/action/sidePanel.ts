@@ -2,7 +2,7 @@ import { isValidString, toUrl, isEmpty } from "@/lib/utils"
 import { SPACE_ENCODING } from "@/const"
 import type { ExecuteCommandParams, ShowToastParam } from "@/types"
 import type { OpenSidePanelProps } from "@/services/chrome"
-import { Ipc, BgCommand, TabCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand, TabCommand } from "@/services/ipc"
 import { t } from "@/services/i18n"
 
 export const SidePanel = {
@@ -45,7 +45,7 @@ export const SidePanel = {
         clipboardText,
       )
 
-      Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+      Ipc.send<OpenSidePanelProps>(ServiceWorkerCommand.openSidePanel, {
         url,
       })
     } catch (error) {

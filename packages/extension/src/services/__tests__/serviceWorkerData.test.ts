@@ -3,13 +3,13 @@ import { SESSION_STORAGE_KEY } from "@/services/storage/const"
 
 type OnChangedCallback = (val: any) => void
 
-describe("BgData", () => {
+describe("ServiceWorkerData", () => {
   let mockGet: ReturnType<typeof vi.fn>
   let mockSet: ReturnType<typeof vi.fn>
   let mockAddListener: ReturnType<typeof vi.fn>
   let lastOnChanged: OnChangedCallback | undefined
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let BgData: any
+  let ServiceWorkerData: any
 
   beforeEach(async () => {
     vi.resetModules()
@@ -30,15 +30,15 @@ describe("BgData", () => {
       },
       SESSION_STORAGE_KEY,
     }))
-    ;({ BgData } = await import("../backgroundData"))
+    ;({ ServiceWorkerData } = await import("../serviceWorkerData"))
   })
 
   describe("init", () => {
     it("synchronously provides a safe default so get() never returns undefined", () => {
       // Storage.get() has not resolved yet at this point.
-      BgData.init()
+      ServiceWorkerData.init()
 
-      const data = BgData.get()
+      const data = ServiceWorkerData.get()
 
       expect(data).toBeDefined()
       expect(data.windowStack).toEqual([])
@@ -51,31 +51,31 @@ describe("BgData", () => {
         activeTabId: 5,
       })
 
-      BgData.init()
-      await BgData.ready()
+      ServiceWorkerData.init()
+      await ServiceWorkerData.ready()
 
-      expect(BgData.get().windowStack).toEqual([
+      expect(ServiceWorkerData.get().windowStack).toEqual([
         [{ id: 1, commandId: "c", srcWindowId: 0 }],
       ])
-      expect(BgData.get().activeTabId).toBe(5)
+      expect(ServiceWorkerData.get().activeTabId).toBe(5)
     })
 
     it("normalizes legacy numeric sidePanelTabs entries into SidePanelTab objects", async () => {
       mockGet.mockResolvedValue({ sidePanelTabs: [1, 2] })
 
-      BgData.init()
-      await BgData.ready()
+      ServiceWorkerData.init()
+      await ServiceWorkerData.ready()
 
-      expect(BgData.get().sidePanelTabs).toEqual([
+      expect(ServiceWorkerData.get().sidePanelTabs).toEqual([
         { tabId: 1, isLinkCommand: false },
         { tabId: 2, isLinkCommand: false },
       ])
     })
 
     it("is idempotent and only registers the storage listener once", () => {
-      BgData.init()
-      BgData.init()
-      BgData.init()
+      ServiceWorkerData.init()
+      ServiceWorkerData.init()
+      ServiceWorkerData.init()
 
       expect(mockAddListener).toHaveBeenCalledTimes(1)
     })
@@ -84,28 +84,28 @@ describe("BgData", () => {
   describe("update", () => {
     it("merges a partial object onto the current instance and persists it", async () => {
       mockGet.mockResolvedValue({})
-      BgData.init()
-      await BgData.ready()
+      ServiceWorkerData.init()
+      await ServiceWorkerData.ready()
 
-      await BgData.update({ activeTabId: 42 })
+      await ServiceWorkerData.update({ activeTabId: 42 })
 
-      expect(BgData.get().activeTabId).toBe(42)
+      expect(ServiceWorkerData.get().activeTabId).toBe(42)
       expect(mockSet).toHaveBeenCalledWith(
-        SESSION_STORAGE_KEY.BG,
+        SESSION_STORAGE_KEY.SERVICE_WORKER_DATA,
         expect.objectContaining({ activeTabId: 42 }),
       )
     })
 
     it("supports an updater function that reads the current instance", async () => {
       mockGet.mockResolvedValue({ connectedTabs: [1] })
-      BgData.init()
-      await BgData.ready()
+      ServiceWorkerData.init()
+      await ServiceWorkerData.ready()
 
-      await BgData.update((data: any) => ({
+      await ServiceWorkerData.update((data: any) => ({
         connectedTabs: [...data.connectedTabs, 2],
       }))
 
-      expect(BgData.get().connectedTabs).toEqual([1, 2])
+      expect(ServiceWorkerData.get().connectedTabs).toEqual([1, 2])
     })
 
     it("waits for the initial load before applying an update", async () => {
@@ -116,8 +116,8 @@ describe("BgData", () => {
         }),
       )
 
-      BgData.init()
-      const updatePromise = BgData.update({ activeTabId: 1 })
+      ServiceWorkerData.init()
+      const updatePromise = ServiceWorkerData.update({ activeTabId: 1 })
 
       // Still pending: the persisted load hasn't resolved yet.
       let settled = false
@@ -133,20 +133,20 @@ describe("BgData", () => {
 
       // The update was applied on top of the loaded state, not the
       // synchronous empty default.
-      expect(BgData.get().windowStack).toEqual([
+      expect(ServiceWorkerData.get().windowStack).toEqual([
         [{ id: 9, commandId: "c", srcWindowId: 0 }],
       ])
-      expect(BgData.get().activeTabId).toBe(1)
+      expect(ServiceWorkerData.get().activeTabId).toBe(1)
     })
   })
 
   describe("set", () => {
     it("replaces the whole instance and persists it", async () => {
       mockGet.mockResolvedValue({})
-      BgData.init()
-      await BgData.ready()
+      ServiceWorkerData.init()
+      await ServiceWorkerData.ready()
 
-      await BgData.set({
+      await ServiceWorkerData.set({
         windowStack: [],
         normalWindows: [],
         pageActionStop: true,
@@ -156,32 +156,32 @@ describe("BgData", () => {
         sidePanelUrls: {},
       })
 
-      expect(BgData.get().pageActionStop).toBe(true)
-      expect(BgData.get().activeTabId).toBe(7)
+      expect(ServiceWorkerData.get().pageActionStop).toBe(true)
+      expect(ServiceWorkerData.get().activeTabId).toBe(7)
     })
 
     it("supports an updater function that returns the full next state", async () => {
       mockGet.mockResolvedValue({ activeTabId: 1 })
-      BgData.init()
-      await BgData.ready()
+      ServiceWorkerData.init()
+      await ServiceWorkerData.ready()
 
-      await BgData.set((data: any) => ({ ...data, activeTabId: 2 }))
+      await ServiceWorkerData.set((data: any) => ({ ...data, activeTabId: 2 }))
 
-      expect(BgData.get().activeTabId).toBe(2)
+      expect(ServiceWorkerData.get().activeTabId).toBe(2)
     })
   })
 
   describe("chrome.storage.onChanged handling", () => {
     it("ignores a stale echo that a newer local update already superseded", async () => {
       mockGet.mockResolvedValue({ windowStack: [] })
-      BgData.init()
-      await BgData.ready()
+      ServiceWorkerData.init()
+      await ServiceWorkerData.ready()
 
       // A local write adds a popup window to the stack (revision advances).
-      await BgData.update({
+      await ServiceWorkerData.update({
         windowStack: [[{ id: 1, commandId: "c", srcWindowId: 0 }]],
       })
-      expect(BgData.get().windowStack).toEqual([
+      expect(ServiceWorkerData.get().windowStack).toEqual([
         [{ id: 1, commandId: "c", srcWindowId: 0 }],
       ])
 
@@ -190,21 +190,21 @@ describe("BgData", () => {
       // it would silently wipe out the windowStack we just added.
       lastOnChanged?.({ windowStack: [], revision: 0 })
 
-      expect(BgData.get().windowStack).toEqual([
+      expect(ServiceWorkerData.get().windowStack).toEqual([
         [{ id: 1, commandId: "c", srcWindowId: 0 }],
       ])
     })
 
     it("applies a newer change (e.g. written by another context)", async () => {
       mockGet.mockResolvedValue({})
-      BgData.init()
-      await BgData.ready()
+      ServiceWorkerData.init()
+      await ServiceWorkerData.ready()
 
-      await BgData.update({ activeTabId: 1 })
+      await ServiceWorkerData.update({ activeTabId: 1 })
 
       lastOnChanged?.({ activeTabId: 99, windowStack: [], revision: 1000 })
 
-      expect(BgData.get().activeTabId).toBe(99)
+      expect(ServiceWorkerData.get().activeTabId).toBe(99)
     })
   })
 
@@ -212,9 +212,12 @@ describe("BgData", () => {
     it("subscribes via Storage.addListener and returns the unsubscribe function", () => {
       const cb = vi.fn()
 
-      const result = BgData.watch(cb)
+      const result = ServiceWorkerData.watch(cb)
 
-      expect(mockAddListener).toHaveBeenCalledWith(SESSION_STORAGE_KEY.BG, cb)
+      expect(mockAddListener).toHaveBeenCalledWith(
+        SESSION_STORAGE_KEY.SERVICE_WORKER_DATA,
+        cb,
+      )
       expect(typeof result).toBe("function")
     })
   })

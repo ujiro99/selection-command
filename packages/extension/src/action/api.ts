@@ -1,4 +1,4 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { sleep, toUrl, isValidString } from "@/lib/utils"
 import type { ExecuteCommandParams, ApiCommand } from "@/types"
 import { OPEN_MODE, ExecState, SPACE_ENCODING } from "@/const"
@@ -40,7 +40,7 @@ export const Api = {
       console.warn("Failed to get current tab info:", error)
     }
 
-    Ipc.send(BgCommand.execApi, {
+    Ipc.send(ServiceWorkerCommand.execApi, {
       url: toUrl({
         searchUrl: command.searchUrl,
         selectionText: selectionText,

@@ -8,7 +8,7 @@ import {
 } from "@/const"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { isAiPromptCommand, isPageActionCommand } from "@/lib/utils"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { Storage, LOCAL_STORAGE_KEY } from "@/services/storage"
 import type { SelectionCommand, SearchCommand } from "@/types"
 
@@ -114,7 +114,7 @@ export function shareCommandToHub(command: SelectionCommand): boolean {
     return false
   }
 
-  void Ipc.send(BgCommand.shareCommandToHub, input).catch((err) => {
+  void Ipc.send(ServiceWorkerCommand.shareCommandToHub, input).catch((err) => {
     console.error("[HubShare] Failed to share command:", err)
   })
   return true
@@ -129,7 +129,7 @@ export function editCommandToHub(command: SelectionCommand): boolean {
     return false
   }
 
-  void Ipc.send(BgCommand.editCommandToHub, input).catch((err) => {
+  void Ipc.send(ServiceWorkerCommand.editCommandToHub, input).catch((err) => {
     console.error("[HubShare] Failed to edit command:", err)
   })
   return true
@@ -144,7 +144,7 @@ export function pushEditToHub(command: SelectionCommand): boolean {
     return false
   }
 
-  void Ipc.send(BgCommand.pushEditToHub, input).catch((err) => {
+  void Ipc.send(ServiceWorkerCommand.pushEditToHub, input).catch((err) => {
     console.error("[HubShare] Failed to push edit to Hub:", err)
   })
   return true
@@ -153,7 +153,7 @@ export function pushEditToHub(command: SelectionCommand): boolean {
 export async function getSharedCommandIds(): Promise<string[]> {
   try {
     const ids = await Ipc.send<undefined, string[]>(
-      BgCommand.getSharedCommandIds,
+      ServiceWorkerCommand.getSharedCommandIds,
     )
     return Array.isArray(ids) ? ids : []
   } catch (err) {

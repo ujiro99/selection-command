@@ -17,8 +17,11 @@ export type PollOptions = {
   useAnimationFrame: boolean
 }
 
-const FOREGROUND_POLL: PollOptions = { intervalMs: 50, useAnimationFrame: true }
-export const BACKGROUND_POLL: PollOptions = {
+const FOREGROUND_TAB_POLL: PollOptions = {
+  intervalMs: 50,
+  useAnimationFrame: true,
+}
+export const BACKGROUND_TAB_POLL: PollOptions = {
   intervalMs: 100,
   useAnimationFrame: false,
 }
@@ -125,7 +128,7 @@ export async function waitForCondition(
   selector: string,
   selectorType: SelectorType,
   timeout: number = TIMEOUT,
-  poll: PollOptions = FOREGROUND_POLL,
+  poll: PollOptions = FOREGROUND_TAB_POLL,
 ): Promise<ConditionResult> {
   const startTime = Date.now()
   return new Promise((resolve) => {
@@ -179,7 +182,7 @@ export async function resolveWaitUntilCondition(
   selectorType: SelectorType,
   label: string,
   timeout?: number,
-  poll: PollOptions = FOREGROUND_POLL,
+  poll: PollOptions = FOREGROUND_TAB_POLL,
 ): Promise<string | undefined> {
   const { satisfied, reasons } = await waitForCondition(
     conditionType,
@@ -195,13 +198,13 @@ export async function resolveWaitUntilCondition(
 }
 
 // Resolves a PageAction.Click's condition, shared by the foreground and
-// background dispatchers (they only differ in polling strategy, via `poll`).
+// background-tab dispatchers (they only differ in polling strategy, via `poll`).
 // `skip: true` means the click should be skipped entirely; a defined `error`
 // means the click should be treated as failed.
 export async function resolveClickCondition(
   condition: PageAction.ClickCondition,
   label: string,
-  poll: PollOptions = FOREGROUND_POLL,
+  poll: PollOptions = FOREGROUND_TAB_POLL,
 ): Promise<{ skip: boolean; error?: string }> {
   const { actionType, conditionType, selector, selectorType, timeout } =
     condition

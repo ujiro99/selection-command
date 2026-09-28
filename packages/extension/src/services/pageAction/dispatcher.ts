@@ -139,7 +139,7 @@ export const PageActionDispatcher = {
         } else {
           value = value.replace(/{/g, "{{") // escape
           // Ensure focus before typing, since preceding click may have been
-          // removed by recording optimization in background.ts.
+          // removed by recording optimization in serviceWorker.ts.
           element.focus()
           await user.type(element, value, { skipClick: true })
         }

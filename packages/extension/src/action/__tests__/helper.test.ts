@@ -5,7 +5,7 @@ import {
   closeSidePanel,
   sidePanelClosed,
 } from "../helper"
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import {
   openSidePanel as _openSidePanel,
   closeSidePanel as _closeSidePanel,
@@ -15,8 +15,8 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 
 // Mock dependencies
-vi.mock("@/services/backgroundData", () => ({
-  BgData: {
+vi.mock("@/services/serviceWorkerData", () => ({
+  ServiceWorkerData: {
     get: vi.fn(),
     update: vi.fn(),
   },
@@ -57,7 +57,7 @@ describe("helper", () => {
       const param = { url: "not-a-valid-url", tabId: 123 }
       const sender = {} as any
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
       } as any)
 
@@ -70,7 +70,7 @@ describe("helper", () => {
       const param = { url: "javascript:alert('test')", tabId: 123 }
       const sender = {} as any
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
       } as any)
 
@@ -83,7 +83,7 @@ describe("helper", () => {
       const param = { url: "data:text/html,<h1>Test</h1>", tabId: 123 }
       const sender = {} as any
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
       } as any)
 
@@ -96,7 +96,7 @@ describe("helper", () => {
       const param = { url: "https://example.com", tabId: 123 }
       const sender = {} as any
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [
           { tabId: 456, isLinkCommand: false },
           { tabId: 789, isLinkCommand: false },
@@ -114,13 +114,13 @@ describe("helper", () => {
       const param = { url, tabId }
       const sender = {} as any
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId, isLinkCommand: false }],
         sidePanelUrls: {},
       } as any)
 
       vi.mocked(updateSidePanelUrl).mockResolvedValue(undefined)
-      vi.mocked(BgData.update).mockResolvedValue(true)
+      vi.mocked(ServiceWorkerData.update).mockResolvedValue(true)
 
       const result = navigateSidePanel(param, sender)
 
@@ -138,7 +138,7 @@ describe("helper", () => {
       const param = { url, tabId }
       const sender = {} as any
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId, isLinkCommand: false }],
         sidePanelUrls: {},
       } as any)
@@ -166,7 +166,7 @@ describe("helper", () => {
       consoleErrorSpy.mockRestore()
     })
 
-    it("NSP-08: Should update BgData.sidePanelUrls after successful URL update", async () => {
+    it("NSP-08: Should update ServiceWorkerData.sidePanelUrls after successful URL update", async () => {
       const tabId = 123
       const url = "https://example.com"
       const param = { url, tabId }
@@ -177,10 +177,10 @@ describe("helper", () => {
         sidePanelUrls: {},
       } as any
 
-      vi.mocked(BgData.get).mockReturnValue(mockData)
+      vi.mocked(ServiceWorkerData.get).mockReturnValue(mockData)
 
       vi.mocked(updateSidePanelUrl).mockResolvedValue(undefined)
-      vi.mocked(BgData.update).mockImplementation((updater) => {
+      vi.mocked(ServiceWorkerData.update).mockImplementation((updater) => {
         if (typeof updater === "function") {
           const result = updater(mockData)
           expect(result.sidePanelUrls?.[tabId]).toBe(url)
@@ -193,7 +193,9 @@ describe("helper", () => {
       // Wait for async operations
       await new Promise((resolve) => setTimeout(resolve, 100))
 
-      expect(BgData.update).toHaveBeenCalledWith(expect.any(Function))
+      expect(ServiceWorkerData.update).toHaveBeenCalledWith(
+        expect.any(Function),
+      )
     })
   })
 
@@ -203,13 +205,13 @@ describe("helper", () => {
       const param = { url: "https://example.com", isLinkCommand: false }
       const sender = { tab: { id: tabId } } as any
       const response = vi.fn()
-      const mockBgData = { sidePanelTabs: [] } as any
+      const mockServiceWorkerData = { sidePanelTabs: [] } as any
 
       vi.mocked(_openSidePanel).mockResolvedValue({ tabId } as any)
       vi.mocked(incrementCommandExecutionCount).mockResolvedValue(undefined)
-      vi.mocked(BgData.update).mockImplementation((updater) => {
+      vi.mocked(ServiceWorkerData.update).mockImplementation((updater) => {
         if (typeof updater === "function") {
-          updater(mockBgData)
+          updater(mockServiceWorkerData)
         }
         return Promise.resolve(true)
       })
@@ -223,19 +225,19 @@ describe("helper", () => {
       expect(_openSidePanel).toHaveBeenCalledWith({ ...param, tabId })
     })
 
-    it("OSP-02: Should fall back to bgData.activeTabId when sender.tab.id is null", async () => {
+    it("OSP-02: Should fall back to serviceWorkerData.activeTabId when sender.tab.id is null", async () => {
       const activeTabId = 456
       const param = { url: "https://example.com", isLinkCommand: false }
       const sender = {} as any // No tab.id
       const response = vi.fn()
-      const mockBgData = { activeTabId, sidePanelTabs: [] } as any
+      const mockServiceWorkerData = { activeTabId, sidePanelTabs: [] } as any
 
-      vi.mocked(BgData.get).mockReturnValue(mockBgData)
+      vi.mocked(ServiceWorkerData.get).mockReturnValue(mockServiceWorkerData)
       vi.mocked(_openSidePanel).mockResolvedValue({ tabId: activeTabId } as any)
       vi.mocked(incrementCommandExecutionCount).mockResolvedValue(undefined)
-      vi.mocked(BgData.update).mockImplementation((updater) => {
+      vi.mocked(ServiceWorkerData.update).mockImplementation((updater) => {
         if (typeof updater === "function") {
-          updater(mockBgData)
+          updater(mockServiceWorkerData)
         }
         return Promise.resolve(true)
       })
@@ -253,12 +255,12 @@ describe("helper", () => {
       expect(response).toHaveBeenCalledWith(true)
     })
 
-    it("OSP-03: Should return false when both sender.tab.id and bgData.activeTabId are null", () => {
+    it("OSP-03: Should return false when both sender.tab.id and serviceWorkerData.activeTabId are null", () => {
       const param = { url: "https://example.com", isLinkCommand: false }
       const sender = {} as any
       const response = vi.fn()
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         activeTabId: null,
         sidePanelTabs: [],
       } as any)
@@ -276,18 +278,18 @@ describe("helper", () => {
       consoleWarnSpy.mockRestore()
     })
 
-    it("OSP-04: Should register tab in BgData.sidePanelTabs with correct isLinkCommand after openSidePanel succeeds", async () => {
+    it("OSP-04: Should register tab in ServiceWorkerData.sidePanelTabs with correct isLinkCommand after openSidePanel succeeds", async () => {
       const tabId = 123
       const param = { url: "https://example.com", isLinkCommand: true }
       const sender = { tab: { id: tabId } } as any
       const response = vi.fn()
-      const mockBgData = { sidePanelTabs: [] } as any
+      const mockServiceWorkerData = { sidePanelTabs: [] } as any
 
       vi.mocked(_openSidePanel).mockResolvedValue({ tabId } as any)
       vi.mocked(incrementCommandExecutionCount).mockResolvedValue(undefined)
-      vi.mocked(BgData.update).mockImplementation((updater) => {
+      vi.mocked(ServiceWorkerData.update).mockImplementation((updater) => {
         if (typeof updater === "function") {
-          const result = updater(mockBgData)
+          const result = updater(mockServiceWorkerData)
           expect(result.sidePanelTabs).toContainEqual({
             tabId,
             isLinkCommand: true,
@@ -301,7 +303,9 @@ describe("helper", () => {
       await new Promise((resolve) => setTimeout(resolve, 10))
 
       expect(response).toHaveBeenCalledWith(true)
-      expect(BgData.update).toHaveBeenCalledWith(expect.any(Function))
+      expect(ServiceWorkerData.update).toHaveBeenCalledWith(
+        expect.any(Function),
+      )
     })
 
     it("OSP-05: Should call response(false) when _openSidePanel rejects", async () => {
@@ -347,7 +351,7 @@ describe("helper", () => {
         windowOption: { sidePanelAutoHide: false },
       } as any)
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId, isLinkCommand: true }],
       } as any)
 
@@ -373,7 +377,7 @@ describe("helper", () => {
         windowOption: { sidePanelAutoHide: true },
       } as any)
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId, isLinkCommand: true }],
       } as any)
 
@@ -397,7 +401,7 @@ describe("helper", () => {
         windowOption: { sidePanelAutoHide: true },
       } as any)
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId, isLinkCommand: false }],
       } as any)
 
@@ -423,7 +427,7 @@ describe("helper", () => {
         windowOption: { sidePanelAutoHide: false },
       } as any)
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId, isLinkCommand: false }],
       } as any)
 
@@ -447,7 +451,7 @@ describe("helper", () => {
         windowOption: { sidePanelAutoHide: true },
       } as any)
 
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [], // Tab not found
       } as any)
 
@@ -487,10 +491,10 @@ describe("helper", () => {
   })
 
   describe("sidePanelClosed", () => {
-    it("SPC-01: Should return early without calling BgData.update when tabId is undefined", async () => {
+    it("SPC-01: Should return early without calling ServiceWorkerData.update when tabId is undefined", async () => {
       await sidePanelClosed(undefined)
 
-      expect(BgData.update).not.toHaveBeenCalled()
+      expect(ServiceWorkerData.update).not.toHaveBeenCalled()
     })
 
     it("SPC-02: Should remove tab from sidePanelTabs and sidePanelUrls when tabId is provided", async () => {
@@ -506,7 +510,7 @@ describe("helper", () => {
         },
       } as any
 
-      vi.mocked(BgData.update).mockImplementation((updater) => {
+      vi.mocked(ServiceWorkerData.update).mockImplementation((updater) => {
         if (typeof updater === "function") {
           const result = updater(mockData)
           expect(result.sidePanelTabs).not.toContainEqual({
@@ -525,13 +529,17 @@ describe("helper", () => {
 
       await sidePanelClosed(tabId)
 
-      expect(BgData.update).toHaveBeenCalledWith(expect.any(Function))
+      expect(ServiceWorkerData.update).toHaveBeenCalledWith(
+        expect.any(Function),
+      )
     })
 
-    it("SPC-03: Should catch and log warning when BgData.update throws", async () => {
+    it("SPC-03: Should catch and log warning when ServiceWorkerData.update throws", async () => {
       const tabId = 123
 
-      vi.mocked(BgData.update).mockRejectedValue(new Error("Update failed"))
+      vi.mocked(ServiceWorkerData.update).mockRejectedValue(
+        new Error("Update failed"),
+      )
 
       const consoleWarnSpy = vi
         .spyOn(console, "warn")

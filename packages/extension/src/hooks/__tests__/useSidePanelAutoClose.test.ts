@@ -1,21 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { renderHook, waitFor, act } from "@testing-library/react"
 import { useSidePanelAutoClose } from "../useSidePanelAutoClose"
-import { Ipc, BgCommand } from "@/services/ipc"
-import { BgData } from "@/services/backgroundData"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 
 // Mock dependencies
 vi.mock("@/services/ipc", () => ({
   Ipc: {
     send: vi.fn(),
   },
-  BgCommand: {
+  ServiceWorkerCommand: {
     closeSidePanel: "closeSidePanel",
   },
 }))
 
-vi.mock("@/services/backgroundData", () => ({
-  BgData: {
+vi.mock("@/services/serviceWorkerData", () => ({
+  ServiceWorkerData: {
     get: vi.fn(),
     watch: vi.fn(),
   },
@@ -31,8 +31,8 @@ vi.mock("@/hooks/useSettings", () => ({
 
 import { useUserSettings } from "@/hooks/useSettings"
 
-const mockBgDataGet = vi.mocked(BgData.get)
-const mockBgDataWatch = vi.mocked(BgData.watch)
+const mockServiceWorkerDataGet = vi.mocked(ServiceWorkerData.get)
+const mockServiceWorkerDataWatch = vi.mocked(ServiceWorkerData.watch)
 const mockUseUserSettings = vi.mocked(useUserSettings)
 
 const makeSettings = (windowAutoHide = false, linkCommandAutoHide = false) => ({
@@ -43,20 +43,20 @@ const makeSettings = (windowAutoHide = false, linkCommandAutoHide = false) => ({
 })
 
 describe("useSidePanelAutoClose", () => {
-  let watchCallback: ((data: BgData) => void) | null = null
+  let watchCallback: ((data: ServiceWorkerData) => void) | null = null
 
   beforeEach(() => {
     vi.clearAllMocks()
     watchCallback = null
 
     // Default: side panel not visible
-    mockBgDataGet.mockReturnValue({
+    mockServiceWorkerDataGet.mockReturnValue({
       sidePanelTabs: [],
-    } as unknown as BgData)
+    } as unknown as ServiceWorkerData)
 
-    // Capture the watch callback so tests can trigger BgData updates
-    mockBgDataWatch.mockImplementation((cb) => {
-      watchCallback = cb as (data: BgData) => void
+    // Capture the watch callback so tests can trigger ServiceWorkerData updates
+    mockServiceWorkerDataWatch.mockImplementation((cb) => {
+      watchCallback = cb as (data: ServiceWorkerData) => void
       return () => {}
     })
 
@@ -67,27 +67,27 @@ describe("useSidePanelAutoClose", () => {
     const addSpy = vi.spyOn(window, "addEventListener")
     renderHook(() => useSidePanelAutoClose())
     await waitFor(() => {
-      expect(mockBgDataGet).toHaveBeenCalled()
+      expect(mockServiceWorkerDataGet).toHaveBeenCalled()
     })
     expect(addSpy).not.toHaveBeenCalledWith("click", expect.any(Function))
   })
 
   it("SPAC-02: Should not register click listener when sidePanelAutoHide is false (windowOption)", async () => {
-    mockBgDataGet.mockReturnValue({
+    mockServiceWorkerDataGet.mockReturnValue({
       sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
-    } as unknown as BgData)
+    } as unknown as ServiceWorkerData)
     mockUseUserSettings.mockReturnValue(makeSettings(false, false) as any)
 
     const addSpy = vi.spyOn(window, "addEventListener")
     renderHook(() => useSidePanelAutoClose())
-    await waitFor(() => expect(mockBgDataGet).toHaveBeenCalled())
+    await waitFor(() => expect(mockServiceWorkerDataGet).toHaveBeenCalled())
     expect(addSpy).not.toHaveBeenCalledWith("click", expect.any(Function))
   })
 
   it("SPAC-03: Should register click listener when sidePanelAutoHide is true (windowOption, non-link-command)", async () => {
-    mockBgDataGet.mockReturnValue({
+    mockServiceWorkerDataGet.mockReturnValue({
       sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
-    } as unknown as BgData)
+    } as unknown as ServiceWorkerData)
     mockUseUserSettings.mockReturnValue(makeSettings(true, false) as any)
 
     const addSpy = vi.spyOn(window, "addEventListener")
@@ -98,9 +98,9 @@ describe("useSidePanelAutoClose", () => {
   })
 
   it("SPAC-04: Should use linkCommand.sidePanelAutoHide when isLinkCommand is true", async () => {
-    mockBgDataGet.mockReturnValue({
+    mockServiceWorkerDataGet.mockReturnValue({
       sidePanelTabs: [{ tabId: 123, isLinkCommand: true }],
-    } as unknown as BgData)
+    } as unknown as ServiceWorkerData)
     // windowOption.sidePanelAutoHide is false, linkCommand.sidePanelAutoHide is true
     mockUseUserSettings.mockReturnValue(makeSettings(false, true) as any)
 
@@ -112,22 +112,22 @@ describe("useSidePanelAutoClose", () => {
   })
 
   it("SPAC-05: Should not register click listener when isLinkCommand but linkCommand.sidePanelAutoHide is false", async () => {
-    mockBgDataGet.mockReturnValue({
+    mockServiceWorkerDataGet.mockReturnValue({
       sidePanelTabs: [{ tabId: 123, isLinkCommand: true }],
-    } as unknown as BgData)
+    } as unknown as ServiceWorkerData)
     // windowOption.sidePanelAutoHide is true, but linkCommand.sidePanelAutoHide is false
     mockUseUserSettings.mockReturnValue(makeSettings(true, false) as any)
 
     const addSpy = vi.spyOn(window, "addEventListener")
     renderHook(() => useSidePanelAutoClose())
-    await waitFor(() => expect(mockBgDataGet).toHaveBeenCalled())
+    await waitFor(() => expect(mockServiceWorkerDataGet).toHaveBeenCalled())
     expect(addSpy).not.toHaveBeenCalledWith("click", expect.any(Function))
   })
 
   it("SPAC-06: Should send closeSidePanel when click occurs and auto-close is enabled", async () => {
-    mockBgDataGet.mockReturnValue({
+    mockServiceWorkerDataGet.mockReturnValue({
       sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
-    } as unknown as BgData)
+    } as unknown as ServiceWorkerData)
     mockUseUserSettings.mockReturnValue(makeSettings(true, false) as any)
 
     renderHook(() => useSidePanelAutoClose())
@@ -139,28 +139,28 @@ describe("useSidePanelAutoClose", () => {
     )
 
     window.dispatchEvent(new MouseEvent("click"))
-    expect(Ipc.send).toHaveBeenCalledWith(BgCommand.closeSidePanel)
+    expect(Ipc.send).toHaveBeenCalledWith(ServiceWorkerCommand.closeSidePanel)
   })
 
-  it("SPAC-07: Should update listener when BgData.watch fires with new data", async () => {
+  it("SPAC-07: Should update listener when ServiceWorkerData.watch fires with new data", async () => {
     // Initially side panel is not visible
-    mockBgDataGet.mockReturnValue({
+    mockServiceWorkerDataGet.mockReturnValue({
       sidePanelTabs: [],
-    } as unknown as BgData)
+    } as unknown as ServiceWorkerData)
     mockUseUserSettings.mockReturnValue(makeSettings(true, false) as any)
 
     const addSpy = vi.spyOn(window, "addEventListener")
     renderHook(() => useSidePanelAutoClose())
-    await waitFor(() => expect(mockBgDataWatch).toHaveBeenCalled())
+    await waitFor(() => expect(mockServiceWorkerDataWatch).toHaveBeenCalled())
 
     // Listener should NOT be added yet
     expect(addSpy).not.toHaveBeenCalledWith("click", expect.any(Function))
 
-    // Now simulate BgData update making the side panel visible
+    // Now simulate ServiceWorkerData update making the side panel visible
     await act(async () => {
       watchCallback?.({
         sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
-      } as unknown as BgData)
+      } as unknown as ServiceWorkerData)
     })
 
     await waitFor(() =>
@@ -169,9 +169,9 @@ describe("useSidePanelAutoClose", () => {
   })
 
   it("SPAC-08: Should remove click listener on cleanup", async () => {
-    mockBgDataGet.mockReturnValue({
+    mockServiceWorkerDataGet.mockReturnValue({
       sidePanelTabs: [{ tabId: 123, isLinkCommand: false }],
-    } as unknown as BgData)
+    } as unknown as ServiceWorkerData)
     mockUseUserSettings.mockReturnValue(makeSettings(true, false) as any)
 
     const removeSpy = vi.spyOn(window, "removeEventListener")

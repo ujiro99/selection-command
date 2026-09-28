@@ -1,4 +1,4 @@
-import { ClipboardResult, BgCommand } from "@/services/ipc"
+import { ClipboardResult, ServiceWorkerCommand } from "@/services/ipc"
 
 /**
  * Read text from clipboard with retry mechanism
@@ -34,11 +34,11 @@ port.onDisconnect.addListener(function (port) {
 
 readClipboardWithRetry()
   .then((ret: ClipboardResult) => {
-    port.postMessage({ command: BgCommand.setClipboard, data: ret })
+    port.postMessage({ command: ServiceWorkerCommand.setClipboard, data: ret })
   })
   .catch((error: Error) => {
     port.postMessage({
-      command: BgCommand.setClipboard,
+      command: ServiceWorkerCommand.setClipboard,
       data: { data: undefined, err: error.message },
     })
   })

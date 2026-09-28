@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { ExternalLink } from "lucide-react"
 import "./OpenInTab.css"
 
@@ -9,11 +9,11 @@ export function OpenInTab(): JSX.Element {
   const [enableOpenInTab, setEnableOpenInTab] = useState(false)
 
   const onClickOpenTab = () => {
-    Ipc.send(BgCommand.openInTab)
+    Ipc.send(ServiceWorkerCommand.openInTab)
   }
 
   useEffect(() => {
-    Ipc.send(BgCommand.canOpenInTab).then((result) => {
+    Ipc.send(ServiceWorkerCommand.canOpenInTab).then((result) => {
       setEnableOpenInTab(result)
     })
   }, [])
@@ -26,7 +26,7 @@ export function OpenInTab(): JSX.Element {
     const onHidden = () => {
       setTimeout(() => {
         if (document.hidden && !isPageUnloading) {
-          Ipc.send(BgCommand.onHidden)
+          Ipc.send(ServiceWorkerCommand.onHidden)
         }
       }, 50)
     }

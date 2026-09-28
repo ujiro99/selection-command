@@ -3,7 +3,7 @@ import { isMac, isEmpty } from "@/lib/utils"
 import { PageAction, ActionReturn } from "./dispatcher"
 import { queryElement } from "./queryElement"
 import { SelectorType, PAGE_ACTION_TIMEOUT as TIMEOUT } from "@/const"
-import { resolveClickCondition, BACKGROUND_POLL } from "./elementWait"
+import { resolveClickCondition, BACKGROUND_TAB_POLL } from "./elementWait"
 import { resolveActionVariables } from "./helper"
 
 /**
@@ -15,7 +15,7 @@ import { resolveActionVariables } from "./helper"
  * @param timeout - Maximum waiting time (milliseconds)
  * @returns Promise<HTMLElement | null> - Found element (null if not found)
  */
-async function waitForElementBackground(
+async function waitForElementInBackgroundTab(
   selector: string,
   selectorType: SelectorType,
   timeout: number = TIMEOUT,
@@ -56,7 +56,7 @@ async function waitForElementBackground(
  * Background tab dispatcher for PageAction execution
  * Uses direct DOM event dispatching instead of userEvent for better compatibility in background tabs
  */
-export const BackgroundPageActionDispatcher = {
+export const BackgroundTabPageActionDispatcher = {
   navigate: async (param: PageAction.Navigate): ActionReturn => {
     window.location.href = param.url
     return [true]
@@ -69,14 +69,14 @@ export const BackgroundPageActionDispatcher = {
       const { skip, error } = await resolveClickCondition(
         param.condition,
         param.label,
-        BACKGROUND_POLL,
+        BACKGROUND_TAB_POLL,
       )
       if (skip) return [true]
       if (error) return [false, error]
     }
 
     // Background tab element resolution (no visibility check)
-    const element = await waitForElementBackground(selector, selectorType)
+    const element = await waitForElementInBackgroundTab(selector, selectorType)
     if (element) {
       // Direct event dispatch instead of userEvent
       const clickEvent = new MouseEvent("click", {
@@ -96,7 +96,7 @@ export const BackgroundPageActionDispatcher = {
   doubleClick: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
 
-    const element = await waitForElementBackground(selector, selectorType)
+    const element = await waitForElementInBackgroundTab(selector, selectorType)
     if (element) {
       // Double click via two consecutive click events
       const clickEvent1 = new MouseEvent("click", {
@@ -124,7 +124,7 @@ export const BackgroundPageActionDispatcher = {
   tripleClick: async (param: PageAction.Click): ActionReturn => {
     const { selector, selectorType } = param
 
-    const element = await waitForElementBackground(selector, selectorType)
+    const element = await waitForElementInBackgroundTab(selector, selectorType)
     if (element) {
       // Triple click simulation
       for (let i = 0; i < 3; i++) {
@@ -146,7 +146,10 @@ export const BackgroundPageActionDispatcher = {
 
   keyboard: async (param: PageAction.Keyboard): ActionReturn => {
     const { label, targetSelector, selectorType, ...p } = param
-    const element = await waitForElementBackground(targetSelector, selectorType)
+    const element = await waitForElementInBackgroundTab(
+      targetSelector,
+      selectorType,
+    )
     if (element == null) {
       console.warn(`Element not found for: ${targetSelector}`)
       return [false, `Element not found: ${label}`]
@@ -182,7 +185,7 @@ export const BackgroundPageActionDispatcher = {
       userVariables,
     } = param
 
-    const element = await waitForElementBackground(selector, selectorType)
+    const element = await waitForElementInBackgroundTab(selector, selectorType)
     if (element) {
       const value = resolveActionVariables({
         value: param.value,

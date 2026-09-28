@@ -3,15 +3,17 @@
 ## 概要
 
 PageActionは、ユーザーのブラウザ操作を記録・再生する機能を提供するモジュールです。
-Chrome拡張機能のバックグラウンドスクリプトとして動作し、ユーザーの操作を
+Chrome拡張機能のService Workerとして動作し、ユーザーの操作を
 効率的にキャプチャし、後で自動実行することができます。
 
 ## アーキテクチャ
 
 ### ファイル構成
 
-- `background.ts`: バックグラウンド処理のメイン実装（記録・実行・タブ管理）
+- `serviceWorker.ts`: Service Worker 側のメイン実装（記録・実行・タブ管理）
+- `serviceWorker-sidePanel.ts`: Service Worker 側のサイドパネル連携処理
 - `dispatcher.ts`: アクション実行エンジン（ユーザー操作のシミュレーション）
+- `backgroundTabDispatcher.ts`: 非アクティブタブ（バックグラウンドタブ）向けのアクション実行エンジン
 - `listener.ts`: イベントキャプチャエンジン（ユーザー操作の検知・記録）
 - `status.ts`: 実行ステータス管理（リアルタイム進捗追跡）
 - `helper.ts`: ユーティリティ関数群（文字列変換・国際化対応）
@@ -124,7 +126,7 @@ Chrome拡張機能のバックグラウンドスクリプトとして動作し�
 
 ## 技術的詳細
 
-- **通信**: IPCを使用したbackground ↔ content_script間の通信
+- **通信**: IPCを使用したservice worker ↔ content_script間の通信
 - **ストレージ**: Chrome extension storage APIによる永続化
 - **並行性**: async/awaitによる非同期処理の制御
 - **型安全性**: TypeScriptによる型定義と検証
@@ -227,7 +229,7 @@ Chrome拡張機能のバックグラウンドスクリプトとして動作し�
 
 ```
 ┌─────────────────┐
-│   background.ts │  ← コントローラー層（記録管理・実行制御）
+│ serviceWorker.ts│  ← コントローラー層（記録管理・実行制御）
 ├─────────────────┤
 │   listener.ts   │  ← キャプチャ層（イベント検知）
 │   dispatcher.ts │  ← 実行層（DOM操作実行）

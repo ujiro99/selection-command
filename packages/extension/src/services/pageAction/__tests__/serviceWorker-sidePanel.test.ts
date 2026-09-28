@@ -1,18 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import {
-  setupBackgroundTestEnvironment,
+  setupServiceWorkerTestEnvironment,
   mockStorage,
   mockReadClipboard,
-} from "../background-shared"
+} from "./serviceWorker-setup"
 import {
   handleSidePanelConnect,
   handleSidePanelOpened,
   registerSidePanelTab,
   resetSidePanelState,
-} from "../background-sidePanel"
+} from "../serviceWorker-sidePanel"
 
-// Setup test environment (applies vi.mock calls from background-shared.ts)
-setupBackgroundTestEnvironment()
+// Setup test environment (applies vi.mock calls from serviceWorker-setup.ts)
+setupServiceWorkerTestEnvironment()
 
 beforeEach(() => {
   resetSidePanelState()
@@ -66,7 +66,7 @@ const createPendingAction = () => ({
 // Tests
 // -------------------------------------------------------------------------
 
-describe("background.ts - Side Panel Connection", () => {
+describe("serviceWorker.ts - Side Panel Connection", () => {
   describe("handleSidePanelConnect()", () => {
     it("SP-01: Registers a disconnect listener on the port when tabId is queued", async () => {
       const port = createMockPort("https://chatgpt.com")
@@ -278,7 +278,7 @@ describe("background.ts - Side Panel Connection", () => {
       expect(mockReadClipboard).not.toHaveBeenCalled()
     })
 
-    it("SP-13: Reads clipboard from background context when useClipboard is true", async () => {
+    it("SP-13: Reads clipboard from service worker context when useClipboard is true", async () => {
       const port = createMockPort("https://chatgpt.com")
       const pending = {
         ...createPendingAction(),
@@ -295,7 +295,7 @@ describe("background.ts - Side Panel Connection", () => {
 
       expect(mockReadClipboard).toHaveBeenCalledTimes(1)
 
-      // The step should be posted with the clipboard text from background
+      // The step should be posted with the clipboard text from service worker
       expect(port.postMessage).toHaveBeenCalledWith(
         expect.objectContaining({
           command: "execPageAction",

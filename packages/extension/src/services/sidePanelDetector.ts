@@ -1,4 +1,4 @@
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 
 /**
  * Detect if the current context is a side panel.
@@ -16,9 +16,10 @@ export const isSidePanel = (
   if (!activeTabId) return false
 
   // Check if tab is in sidePanelTabs
-  const bgData = BgData.get()
-  if (bgData?.sidePanelTabs == null) return false
-  if (!bgData.sidePanelTabs.some((t) => t.tabId === activeTabId)) return false
+  const serviceWorkerData = ServiceWorkerData.get()
+  if (serviceWorkerData?.sidePanelTabs == null) return false
+  if (!serviceWorkerData.sidePanelTabs.some((t) => t.tabId === activeTabId))
+    return false
 
   return true
 }

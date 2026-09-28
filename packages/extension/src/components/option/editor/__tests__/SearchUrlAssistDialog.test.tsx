@@ -152,7 +152,7 @@ vi.mock("@/services/ipc", () => ({
   Ipc: {
     send: vi.fn().mockResolvedValue({}),
   },
-  BgCommand: {
+  ServiceWorkerCommand: {
     openAndRunPageAction: "openAndRunPageAction",
   },
 }))

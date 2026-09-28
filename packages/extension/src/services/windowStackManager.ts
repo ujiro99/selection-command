@@ -1,4 +1,4 @@
-import { BgData } from "./backgroundData"
+import { ServiceWorkerData } from "./serviceWorkerData"
 import type { WindowType, WindowLayer } from "@/types"
 
 /**
@@ -49,7 +49,7 @@ const insertWindow = (
 }
 
 // Deep-copies the layers (but not the window objects) so mutations never
-// affect the array BgData.instance was still referencing.
+// affect the array ServiceWorkerData.instance was still referencing.
 const cloneStack = (stack: WindowLayer[]): WindowLayer[] =>
   stack.map((layer) => [...layer])
 
@@ -59,25 +59,25 @@ const cloneStack = (stack: WindowLayer[]): WindowLayer[] =>
  */
 export class WindowStackManager {
   /**
-   * Load stack from BgData
+   * Load stack from ServiceWorkerData
    */
   private static async loadStack(): Promise<WindowLayer[]> {
-    await BgData.ready()
-    const data = BgData.get()
+    await ServiceWorkerData.ready()
+    const data = ServiceWorkerData.get()
     return data?.windowStack ?? []
   }
 
   /**
    * Add window to stack.
    *
-   * Reads and writes atomically via BgData.update() so a concurrent update
+   * Reads and writes atomically via ServiceWorkerData.update() so a concurrent update
    * (e.g. activeTabId tracking) can't cause this addition to be lost.
    */
   static async addWindow(
     window: WindowType,
     parentWindowId?: number,
   ): Promise<void> {
-    await BgData.update((data) => ({
+    await ServiceWorkerData.update((data) => ({
       windowStack: insertWindow(
         cloneStack(data.windowStack ?? []),
         window,
@@ -95,7 +95,7 @@ export class WindowStackManager {
       parentWindowId?: number
     }>,
   ): Promise<void> {
-    await BgData.update((data) => {
+    await ServiceWorkerData.update((data) => {
       let stack = cloneStack(data.windowStack ?? [])
       for (const { window, parentWindowId } of windowsToAdd) {
         stack = insertWindow(stack, window, parentWindowId)
@@ -108,7 +108,7 @@ export class WindowStackManager {
    * Remove window from stack
    */
   static async removeWindow(windowId: number): Promise<void> {
-    await BgData.update((data) => {
+    await ServiceWorkerData.update((data) => {
       const stack = cloneStack(data.windowStack ?? [])
 
       for (let layerIndex = 0; layerIndex < stack.length; layerIndex++) {
@@ -169,7 +169,7 @@ export class WindowStackManager {
    * Clean up empty layers
    */
   static async cleanupEmptyLayers(): Promise<void> {
-    await BgData.update((data) => {
+    await ServiceWorkerData.update((data) => {
       const stack = data.windowStack ?? []
       const cleanedStack = stack.filter((layer) => layer.length > 0)
       return cleanedStack.length !== stack.length

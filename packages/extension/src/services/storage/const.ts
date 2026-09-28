@@ -23,7 +23,8 @@ export enum LOCAL_STORAGE_KEY {
 }
 
 export enum SESSION_STORAGE_KEY {
-  BG = "bg",
+  // Keep the persisted key value for compatibility.
+  SERVICE_WORKER_DATA = "bg",
   SELECTION_TEXT = "selectionText ",
   SESSION_DATA = "sessionData",
   MESSAGE_QUEUE = "messageQueue",

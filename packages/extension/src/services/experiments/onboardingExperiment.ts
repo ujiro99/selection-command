@@ -53,7 +53,7 @@ const readAssignment = async (): Promise<ExperimentAssignment | null> => {
 
 /**
  * Resolve this user's onboarding variant, assigning (and persisting) one on
- * first call. Normally called from the background script's onInstalled
+ * first call. Normally called from the service worker's onInstalled
  * handler before the onboarding tab is opened, so the page itself only has
  * to read the stored value; calling it again is a no-op that returns the
  * same assignment, which keeps every onboarding_* event of a given user on

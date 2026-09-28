@@ -1,6 +1,6 @@
 import { useEffect } from "react"
-import { Ipc, BgCommand } from "@/services/ipc"
-import { BgData } from "@/services/backgroundData"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { useTabContext } from "./useTabContext"
 import { useUserSettings } from "./useSettings"
 
@@ -13,7 +13,7 @@ export function useSidePanelAutoClose() {
 
     let cleanupClickListener: (() => void) | undefined
 
-    const setup = (data: BgData) => {
+    const setup = (data: ServiceWorkerData) => {
       cleanupClickListener?.()
       cleanupClickListener = undefined
 
@@ -26,13 +26,13 @@ export function useSidePanelAutoClose() {
 
       if (!autoHideEnabled) return
 
-      const close = () => Ipc.send(BgCommand.closeSidePanel)
+      const close = () => Ipc.send(ServiceWorkerCommand.closeSidePanel)
       window.addEventListener("click", close)
       cleanupClickListener = () => window.removeEventListener("click", close)
     }
 
-    setup(BgData.get())
-    const unwatch = BgData.watch((newVal) => setup(newVal))
+    setup(ServiceWorkerData.get())
+    const unwatch = ServiceWorkerData.watch((newVal) => setup(newVal))
 
     return () => {
       cleanupClickListener?.()

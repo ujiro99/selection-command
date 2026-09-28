@@ -1,5 +1,5 @@
 import { Storage } from "@/services/storage"
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { SESSION_STORAGE_KEY } from "@/services/storage/const"
 import { PAGE_ACTION_OPEN_MODE } from "@/const"
 import type { PageActionStep, UserVariable } from "@/types"
@@ -10,7 +10,7 @@ const CONNECTION_TIMEOUT = 3000
 const CONNECTION_CHECK_INTERVAL = 50
 export const CONNECTION_APP = "app"
 
-export enum BgCommand {
+export enum ServiceWorkerCommand {
   connected = "connected",
   openPopup = "openPopup",
   openPopups = "openPopups",
@@ -100,7 +100,7 @@ export type RunPageAction = {
 
 /**
  * Pending page action data for side panel execution.
- * Stored in session storage so the background can retrieve it when the side
+ * Stored in session storage so the service worker can retrieve it when the side
  * panel content script connects via port (side panels have no tab.id).
  */
 export type SidePanelPendingAction = {
@@ -137,7 +137,7 @@ export type SendWindowSize = {
   height: number
 }
 
-type IpcCommand = BgCommand | TabCommand
+type IpcCommand = ServiceWorkerCommand | TabCommand
 
 type Request = {
   command: IpcCommand
@@ -212,7 +212,7 @@ export const Ipc = {
    * @throws {Error} When connection to the tab fails or times out
    */
   async ensureConnection(tabId: number): Promise<void> {
-    if (BgData.get()?.connectedTabs.includes(tabId)) {
+    if (ServiceWorkerData.get()?.connectedTabs.includes(tabId)) {
       // If already connected, resolve immediately
       return
     }
@@ -221,8 +221,8 @@ export const Ipc = {
       await Promise.any([
         // Strategy 1: Wait for content script to initiate connection
         this._waitForContentScriptConnection(tabId),
-        // Strategy 2: Background initiates connection (requires tab to be ready)
-        this._backgroundConnectionFlow(tabId),
+        // Strategy 2: Service worker initiates connection (requires tab to be ready)
+        this._serviceWorkerConnectionFlow(tabId),
       ])
     } catch (error) {
       console.error(`Failed to ensure connection to tab ${tabId}:`, error)
@@ -268,14 +268,14 @@ export const Ipc = {
   },
 
   /**
-   * Background-initiated connection flow: wait for tab ready then initiate connection
+   * Service-worker-initiated connection flow: wait for tab ready then initiate connection
    * @private
    */
-  async _backgroundConnectionFlow(tabId: number): Promise<string> {
+  async _serviceWorkerConnectionFlow(tabId: number): Promise<string> {
     // Wait for tab to be ready first
     await this._waitForTabReady(tabId)
-    // Then initiate connection from background
-    return await this._initiateBackgroundConnection(tabId)
+    // Then initiate connection from service worker
+    return await this._initiateServiceWorkerConnection(tabId)
   },
 
   /**
@@ -327,10 +327,10 @@ export const Ipc = {
   },
 
   /**
-   * Initiate connection from background script to content script
+   * Initiate connection from service worker to content script
    * @private
    */
-  async _initiateBackgroundConnection(tabId: number): Promise<string> {
+  async _initiateServiceWorkerConnection(tabId: number): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const cleanup = () => {
         if (interval) clearInterval(interval)
@@ -350,7 +350,7 @@ export const Ipc = {
         const ret = await ping()
         if (ret) {
           cleanup()
-          resolve("from background script")
+          resolve("from service worker")
         }
       }, CONNECTION_CHECK_INTERVAL)
 
@@ -459,7 +459,7 @@ export const Ipc = {
   /**
    * Register a port for bidirectional communication with a side panel.
    * Routes incoming port messages to the same listeners registered via addListener,
-   * allowing the background script to reach side panel content scripts
+   * allowing the service worker to reach side panel content scripts
    * (which cannot be reached via chrome.tabs.sendMessage).
    * @param port - The port established by chrome.runtime.connect
    */
@@ -513,11 +513,11 @@ export const Ipc = {
   },
 
   async getTabId() {
-    return Ipc.send(BgCommand.getTabId)
+    return Ipc.send(ServiceWorkerCommand.getTabId)
   },
 
   async getActiveTabId() {
-    return Ipc.send(BgCommand.getActiveTabId)
+    return Ipc.send(ServiceWorkerCommand.getActiveTabId)
   },
 
   async sendQueue(tabId: number, command: IpcCommand, param?: unknown) {

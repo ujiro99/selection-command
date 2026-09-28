@@ -61,7 +61,7 @@ export const ShareButton = ({
     }
 
     // Users who have never signed in to the hub are redirected to the
-    // sign-up page instead (see shareCommandToHub in services/hub/background.ts);
+    // sign-up page instead (see shareCommandToHub in services/hub/serviceWorker.ts);
     // nothing is actually shared yet, so leave the button idle and skip
     // the share analytics event for this case.
     const registered = await isHubRegistered()
