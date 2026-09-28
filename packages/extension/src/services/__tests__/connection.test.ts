@@ -122,7 +122,7 @@ describe("Connection Service", () => {
       )
       mockServiceWorkerData.get.mockReturnValue({
         connectedTabs: [123], // tab is already connected
-      } as any)
+      } as unknown as ServiceWorkerData)
 
       // Act
       await import("@/services/connection")
