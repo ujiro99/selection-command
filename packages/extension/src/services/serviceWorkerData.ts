@@ -14,6 +14,13 @@ export type SidePanelTab = {
   isLinkCommand: boolean
 }
 
+/**
+ * State owned by the service worker, persisted in chrome.storage.session.
+ *
+ * Only the service worker writes this state (set/update). Other contexts
+ * such as content scripts may read or watch it (e.g. connectedTabs,
+ * sidePanelTabs), but must treat it as read-only.
+ */
 export class ServiceWorkerData {
   private static instance: ServiceWorkerData
   // Resolves once the persisted state has been loaded at least once.
