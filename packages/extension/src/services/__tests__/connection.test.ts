@@ -140,6 +140,24 @@ describe("Connection Service", () => {
       })
       expect(mockRuntimeConnect).not.toHaveBeenCalled()
     })
+
+    it("CN-01-e: should log and still connect when ServiceWorkerData fails to load", async () => {
+      // Arrange
+      const error = new Error("storage error")
+      mockServiceWorkerData.ready.mockRejectedValue(error)
+
+      // Act
+      await import("@/services/connection")
+
+      // Assert
+      await vi.waitFor(() => {
+        expect(mockRuntimeConnect).toHaveBeenCalledWith({ name: "app" })
+      })
+      expect(mockConsoleError).toHaveBeenCalledWith(
+        "Failed to load service worker data:",
+        error,
+      )
+    })
   })
 
   describe("CN-02: BFCache Handling", () => {

@@ -22,6 +22,7 @@ vi.mock("@/services/sidePanelDetector", () => ({
 
 vi.mock("@/services/serviceWorkerData", () => ({
   ServiceWorkerData: {
+    init: vi.fn(),
     ready: vi.fn(),
   },
 }))
@@ -260,5 +261,16 @@ describe("useSidePanelNavigation", () => {
     await waitFor(() => {
       expect(isSidePanel).toHaveBeenCalledWith(123, 123)
     })
+  })
+
+  it("SPN-09: Should initialize ServiceWorkerData before waiting for it", async () => {
+    vi.mocked(isSidePanel).mockReturnValue(false)
+
+    renderHook(() => useSidePanelNavigation())
+
+    await waitFor(() => {
+      expect(ServiceWorkerData.ready).toHaveBeenCalled()
+    })
+    expect(ServiceWorkerData.init).toHaveBeenCalled()
   })
 })

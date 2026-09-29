@@ -12,7 +12,13 @@ ServiceWorkerData.init()
 Ipc.getTabId().then(async (tabId) => {
   // Wait for the persisted state; otherwise get() returns the empty default
   // and an already-connected tab would be treated as disconnected.
-  await ServiceWorkerData.ready()
+  try {
+    await ServiceWorkerData.ready()
+  } catch (error) {
+    // Fall back to treating the tab as disconnected: an extra connection is
+    // harmless, while skipping it would leave the content script unreachable.
+    console.error("Failed to load service worker data:", error)
+  }
   const serviceWorkerData = ServiceWorkerData.get()
   const isConnected = serviceWorkerData?.connectedTabs?.includes(tabId) ?? false
 
