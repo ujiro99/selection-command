@@ -5,7 +5,20 @@ import { ServiceWorkerData } from "@/services/serviceWorkerData"
  * Establish a port connection from the Content Script to the Service Worker.
  */
 
-Ipc.getTabId().then((tabId) => {
+// Initialize here as well (idempotent) so this module does not depend on
+// import order to have the state loaded.
+ServiceWorkerData.init()
+
+Ipc.getTabId().then(async (tabId) => {
+  // Wait for the persisted state; otherwise get() returns the empty default
+  // and an already-connected tab would be treated as disconnected.
+  try {
+    await ServiceWorkerData.ready()
+  } catch (error) {
+    // Fall back to treating the tab as disconnected: an extra connection is
+    // harmless, while skipping it would leave the content script unreachable.
+    console.error("Failed to load service worker data:", error)
+  }
   const serviceWorkerData = ServiceWorkerData.get()
   const isConnected = serviceWorkerData?.connectedTabs?.includes(tabId) ?? false
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { useTabContext } from "@/hooks/useTabContext"
 import { isSidePanel } from "@/services/sidePanelDetector"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 
 /**
  * Find the closest anchor element from the click event target
@@ -49,13 +50,23 @@ export function useSidePanelNavigation() {
 
   // Detect if current context is a SidePanel
   useEffect(() => {
+    let cancelled = false
+    // Idempotent; ensures ready() actually waits for the persisted state
+    // instead of relying on another module having called init().
+    ServiceWorkerData.init()
     Ipc.getActiveTabId()
-      .then((id) => {
-        setActiveTabId(id)
+      .then(async (id) => {
+        // isSidePanel() reads sidePanelTabs from ServiceWorkerData, so wait
+        // until the persisted state is loaded before triggering detection.
+        await ServiceWorkerData.ready()
+        if (!cancelled) setActiveTabId(id)
       })
       .catch((e) => {
         console.error("Failed to get active tab ID:", e)
       })
+    return () => {
+      cancelled = true
+    }
   }, [tabId])
 
   // Hook link clicks
