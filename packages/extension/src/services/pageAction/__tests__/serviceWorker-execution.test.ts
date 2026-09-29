@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from "vitest"
 import {
-  setupBackgroundTestEnvironment,
+  setupServiceWorkerTestEnvironment,
   mockStorage,
   mockIpc,
-  mockBgData,
+  mockServiceWorkerData,
   mockOpenTab,
   mockOpenPopupWindow,
   mockGetCurrentTab,
@@ -14,14 +14,14 @@ import {
   mockIsUrl,
   mockIsUrlParam,
   mockConsole,
-} from "../background-shared"
-import { openAndRun, preview, stopRunner } from "../background"
+} from "./serviceWorker-setup"
+import { openAndRun, preview, stopRunner } from "../serviceWorker"
 import { PAGE_ACTION_OPEN_MODE, POPUP_TYPE } from "@/const"
 
 // Setup test environment
-setupBackgroundTestEnvironment()
+setupServiceWorkerTestEnvironment()
 
-describe("background.ts - Execution Operations", () => {
+describe("serviceWorker.ts - Execution Operations", () => {
   describe("openAndRun() function", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
@@ -37,7 +37,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-36: Normal case: Execution in new tab with TAB mode", async () => {
+    it("SWD-36: Normal case: Execution in new tab with TAB mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: "https://example.com",
@@ -72,7 +72,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockIncrementCommandExecutionCount).toHaveBeenCalled()
     })
 
-    it("BGD-37: Normal case: Execution in background tab with BACKGROUND_TAB mode", async () => {
+    it("SWD-37: Normal case: Execution in background tab with BACKGROUND_TAB mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
         url: "https://example.com",
@@ -98,7 +98,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-37b: Normal case: pageHtml/selectionHtml are only sent with the filePaste step's message", async () => {
+    it("SWD-37b: Normal case: pageHtml/selectionHtml are only sent with the filePaste step's message", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: "https://example.com",
@@ -138,7 +138,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-38: Normal case: Execution in popup window with POPUP mode", async () => {
+    it("SWD-38: Normal case: Execution in popup window with POPUP mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.POPUP,
         url: "https://example.com",
@@ -168,7 +168,7 @@ describe("background.ts - Execution Operations", () => {
       )
     })
 
-    it("BGD-39: Normal case: Execution in normal window with WINDOW mode", async () => {
+    it("SWD-39: Normal case: Execution in normal window with WINDOW mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.WINDOW,
         url: "https://example.com",
@@ -195,7 +195,7 @@ describe("background.ts - Execution Operations", () => {
       )
     })
 
-    it("BGD-40: Normal case: Execution in current tab with CURRENT_TAB mode", async () => {
+    it("SWD-40: Normal case: Execution in current tab with CURRENT_TAB mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
         url: "https://example.com",
@@ -234,7 +234,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockIncrementCommandExecutionCount).toHaveBeenCalled()
     })
 
-    it("BGD-41: Normal case: Execution proceeds when pageUrl pattern matches current tab URL", async () => {
+    it("SWD-41: Normal case: Execution proceeds when pageUrl pattern matches current tab URL", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
         url: "https://example.com",
@@ -273,7 +273,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
     })
 
-    it("BGD-42: Error case: response(false) when no active tab found in CURRENT_TAB mode", async () => {
+    it("SWD-42: Error case: response(false) when no active tab found in CURRENT_TAB mode", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
         url: "https://example.com",
@@ -295,7 +295,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-43: Error case: response(false) when current tab URL does not match pageUrl pattern", async () => {
+    it("SWD-43: Error case: response(false) when current tab URL does not match pageUrl pattern", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
         url: "https://example.com",
@@ -329,7 +329,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockOpenTab).not.toHaveBeenCalled()
     })
 
-    it("BGD-45: Normal case: Clipboard is fetched in CURRENT_TAB mode when useClipboard is true", async () => {
+    it("SWD-45: Normal case: Clipboard is fetched in CURRENT_TAB mode when useClipboard is true", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
         url: { url: "https://example.com", useClipboard: true },
@@ -368,7 +368,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
     })
 
-    it("BGD-46: Normal case: Clipboard is NOT fetched in CURRENT_TAB mode when useClipboard is false", async () => {
+    it("SWD-46: Normal case: Clipboard is NOT fetched in CURRENT_TAB mode when useClipboard is false", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
         url: { url: "https://example.com", useClipboard: false },
@@ -403,7 +403,7 @@ describe("background.ts - Execution Operations", () => {
       expect(mockIpc.ensureConnection).toHaveBeenCalledWith(555)
     })
 
-    it("BGD-44: Normal case: Use clipboardText when selectedText is empty and useClipboard is true", async () => {
+    it("SWD-44: Normal case: Use clipboardText when selectedText is empty and useClipboard is true", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: { url: "https://example.com", useClipboard: true },
@@ -433,7 +433,7 @@ describe("background.ts - Execution Operations", () => {
       )
     })
 
-    it("BGD-47: Error case: When tabId retrieval fails", async () => {
+    it("SWD-47: Error case: When tabId retrieval fails", async () => {
       const mockParam = {
         openMode: PAGE_ACTION_OPEN_MODE.TAB,
         url: "https://example.com",
@@ -457,7 +457,7 @@ describe("background.ts - Execution Operations", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
-    it("BGD-51: Normal case: Preview execution succeeds", async () => {
+    it("SWD-51: Normal case: Preview execution succeeds", async () => {
       const mockParam = {
         tabId: 123,
         steps: [{ id: "step-1", param: { type: "click" } }],
@@ -485,7 +485,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-52: Normal case: Execute after tab returns to URL when startUrl exists", async () => {
+    it("SWD-52: Normal case: Execute after tab returns to URL when startUrl exists", async () => {
       const mockParam = {
         steps: [{ id: "step-1", param: { type: "click" } }],
         selectedText: "selected",
@@ -507,7 +507,7 @@ describe("background.ts - Execution Operations", () => {
       })
     })
 
-    it("BGD-53: Boundary: When startUrl is invalid", async () => {
+    it("SWD-53: Boundary: When startUrl is invalid", async () => {
       const mockParam = {
         steps: [{ id: "step-1", param: { type: "click" } }],
         selectedText: "selected",
@@ -528,7 +528,7 @@ describe("background.ts - Execution Operations", () => {
       expect(global.chrome.tabs.update).not.toHaveBeenCalled()
     })
 
-    it("BGD-54: Boundary: When tabId does not exist", async () => {
+    it("SWD-54: Boundary: When tabId does not exist", async () => {
       const mockParam = { steps: [] }
       const mockSenderNoTab = { tab: null }
 
@@ -549,30 +549,34 @@ describe("background.ts - Execution Operations", () => {
   // Note: run() function's internal behavior is complex and depends on asynchronous
   // execution flow that is difficult to test reliably. The function is tested
   // indirectly through openAndRun() and preview() functions above.
-  // BGD-56 to BGD-70: Skipped - run() internal testing is complex and unreliable
+  // SWD-56 to SWD-70: Skipped - run() internal testing is complex and unreliable
 
   describe("stopRunner() function", () => {
     const mockSender = { tab: { id: 123 } }
     const mockResponse = vi.fn()
 
-    it("BGD-71: Normal case: Stop flag setting succeeds", async () => {
-      mockBgData.set.mockImplementation((updateFn: (data: any) => any) => {
-        const result = updateFn({ pageActionStop: false })
-        expect(result.pageActionStop).toBe(true)
-        return Promise.resolve(undefined)
-      })
+    it("SWD-71: Normal case: Stop flag setting succeeds", async () => {
+      mockServiceWorkerData.set.mockImplementation(
+        (updateFn: (data: any) => any) => {
+          const result = updateFn({ pageActionStop: false })
+          expect(result.pageActionStop).toBe(true)
+          return Promise.resolve(undefined)
+        },
+      )
 
       const result = stopRunner({}, mockSender as any, mockResponse)
       expect(result).toBe(true)
 
       await vi.runAllTimersAsync()
 
-      expect(mockBgData.set).toHaveBeenCalled()
+      expect(mockServiceWorkerData.set).toHaveBeenCalled()
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-73: Error case: When BgData.set error occurs", async () => {
-      mockBgData.set.mockRejectedValue(new Error("BgData error"))
+    it("SWD-73: Error case: When ServiceWorkerData.set error occurs", async () => {
+      mockServiceWorkerData.set.mockRejectedValue(
+        new Error("ServiceWorkerData error"),
+      )
 
       stopRunner({}, mockSender as any, mockResponse)
       await vi.runAllTimersAsync()
@@ -584,12 +588,14 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(false)
     })
 
-    it("BGD-72: Normal case: pageActionStop is set to true in BgData.set", async () => {
+    it("SWD-72: Normal case: pageActionStop is set to true in ServiceWorkerData.set", async () => {
       let capturedData: any
-      mockBgData.set.mockImplementation((updateFn: (data: any) => any) => {
-        capturedData = updateFn({ pageActionStop: false })
-        return Promise.resolve(undefined)
-      })
+      mockServiceWorkerData.set.mockImplementation(
+        (updateFn: (data: any) => any) => {
+          capturedData = updateFn({ pageActionStop: false })
+          return Promise.resolve(undefined)
+        },
+      )
 
       const result = stopRunner({}, mockSender as any, mockResponse)
       await vi.runAllTimersAsync()
@@ -599,11 +605,13 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-74: Normal case: response returns true", async () => {
-      mockBgData.set.mockImplementation((updateFn: (data: any) => any) => {
-        updateFn({ pageActionStop: false })
-        return Promise.resolve(undefined)
-      })
+    it("SWD-74: Normal case: response returns true", async () => {
+      mockServiceWorkerData.set.mockImplementation(
+        (updateFn: (data: any) => any) => {
+          updateFn({ pageActionStop: false })
+          return Promise.resolve(undefined)
+        },
+      )
 
       const result = stopRunner({}, mockSender as any, mockResponse)
       await vi.runAllTimersAsync()
@@ -612,8 +620,8 @@ describe("background.ts - Execution Operations", () => {
       expect(mockResponse).toHaveBeenCalledWith(true)
     })
 
-    it("BGD-75: Error case: response returns false on error", async () => {
-      mockBgData.set.mockRejectedValue(new Error("Test error"))
+    it("SWD-75: Error case: response returns false on error", async () => {
+      mockServiceWorkerData.set.mockRejectedValue(new Error("Test error"))
 
       const result = stopRunner({}, mockSender as any, mockResponse)
       await vi.runAllTimersAsync()

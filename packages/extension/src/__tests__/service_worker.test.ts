@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
-import { BgCommand } from "@/services/ipc"
+import { ServiceWorkerCommand } from "@/services/ipc"
 import { NEW_HUB_URL, VERSION } from "@/const"
 
 // Mock dependencies
@@ -10,11 +10,11 @@ vi.mock("@/services/settings/settings")
 vi.mock("@/services/settings/settingsCache")
 vi.mock("@/services/storage")
 vi.mock("@/services/chrome")
-vi.mock("@/services/backgroundData")
+vi.mock("@/services/serviceWorkerData")
 vi.mock("@/services/contextMenus")
-vi.mock("@/action/background")
+vi.mock("@/action/serviceWorker")
 vi.mock("@/action/helper")
-vi.mock("@/services/pageAction/background")
+vi.mock("@/services/pageAction/serviceWorker")
 vi.mock("@import-if", () => ({
   importIf: vi.fn(),
 }))
@@ -22,7 +22,7 @@ vi.mock("@import-if", () => ({
 const mockEnhancedSettings = vi.mocked(enhancedSettings)
 const mockSettings = vi.mocked(Settings)
 
-describe("Background Script Migration", () => {
+describe("Service Worker Migration", () => {
   // Common test data factory
   const createTestSettings = (overrides = {}) => ({
     commands: [
@@ -110,12 +110,12 @@ describe("Background Script Migration", () => {
     const initialSettings = createTestSettings()
     mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
 
-    const { testExports } = await import("../background_script")
+    const { testExports } = await import("../service_worker")
 
     const mockSender = {} as chrome.runtime.MessageSender
     const newUrl = "https://example.com"
 
-    testExports.commandFuncs[BgCommand.addPageRule](
+    testExports.commandFuncs[ServiceWorkerCommand.addPageRule](
       { url: newUrl },
       mockSender,
       vi.fn(),
@@ -142,7 +142,7 @@ describe("Background Script Migration", () => {
     mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
 
     // Import the module and get test exports
-    const { testExports } = await import("../background_script")
+    const { testExports } = await import("../service_worker")
 
     // Call the updateWindowSize function with new dimensions
     const newWidth = 800
@@ -180,13 +180,13 @@ describe("Background Script Migration", () => {
     mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
 
     // Import the module and get test exports
-    const { testExports } = await import("../background_script")
+    const { testExports } = await import("../service_worker")
 
     // Call the toggleStar function to add a new star
     const mockResponse = vi.fn()
     const mockSender = {} as chrome.runtime.MessageSender
 
-    testExports.commandFuncs[BgCommand.toggleStar](
+    testExports.commandFuncs[ServiceWorkerCommand.toggleStar](
       { id: testId },
       mockSender,
       mockResponse,
@@ -225,13 +225,13 @@ describe("Background Script Migration", () => {
     mockEnhancedSettings.get.mockResolvedValue(initialSettings as any)
 
     // Import the module and get test exports
-    const { testExports } = await import("../background_script")
+    const { testExports } = await import("../service_worker")
 
     // Call the toggleStar function to remove an existing star
     const mockResponse = vi.fn()
     const mockSender = {} as chrome.runtime.MessageSender
 
-    testExports.commandFuncs[BgCommand.toggleStar](
+    testExports.commandFuncs[ServiceWorkerCommand.toggleStar](
       { id: existingStarId },
       mockSender,
       mockResponse,
@@ -263,7 +263,7 @@ describe("Background Script Migration", () => {
     )
   })
 
-  it("MG-01-d: should call enhancedSettings.get() in onCommand function and pass correct command to action/background.execute", async () => {
+  it("MG-01-d: should call enhancedSettings.get() in onCommand function and pass correct command to action/serviceWorker.execute", async () => {
     // Setup test data
     const testShortcutId = "test-shortcut-cmd"
     const testCommandId = "test-command-123"
@@ -290,13 +290,13 @@ describe("Background Script Migration", () => {
       },
     }))
 
-    // Mock the execute function from action/background
+    // Mock the execute function from action/serviceWorker
     const mockExecute = vi.fn().mockResolvedValue(true)
-    vi.doMock("@/action/background", () => ({
+    vi.doMock("@/action/serviceWorker", () => ({
       execute: mockExecute,
     }))
 
-    // Mock Ipc.sendTab to simulate tab execution failure (to force background execution)
+    // Mock Ipc.sendTab to simulate tab execution failure (to force service worker execution)
     const mockIpcSendTab = vi
       .fn()
       .mockResolvedValue(new Error("Tab execution failed"))
@@ -305,7 +305,7 @@ describe("Background Script Migration", () => {
         sendTab: mockIpcSendTab,
         addListener: vi.fn(),
       },
-      BgCommand: {
+      ServiceWorkerCommand: {
         addPageRule: "addPageRule",
         toggleStar: "toggleStar",
       },
@@ -318,7 +318,7 @@ describe("Background Script Migration", () => {
     vi.resetModules()
 
     // Import the module to trigger the listener setup
-    await import("../background_script")
+    await import("../service_worker")
 
     // Get the registered listener function
     const listenerCalls = (chrome.commands.onCommand.addListener as any).mock
@@ -341,7 +341,7 @@ describe("Background Script Migration", () => {
     // 1. Call enhancedSettings.get() to get current settings
     // 2. Find the shortcut by commandName (testShortcutId)
     // 3. Find the command by shortcut.commandId (testCommandId)
-    // 4. Call execute() from action/background with the found command
+    // 4. Call execute() from action/serviceWorker with the found command
     expect(mockExecute).toHaveBeenCalledWith(
       expect.objectContaining({
         command: expect.objectContaining({
@@ -412,7 +412,7 @@ describe("Popup Auto-Close Delay", () => {
 
     // Clear module cache and re-import
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     // Get the registered listener
     const listenerCalls = (chrome.windows.onFocusChanged.addListener as any)
@@ -475,7 +475,7 @@ describe("Popup Auto-Close Delay", () => {
 
     // Clear module cache and re-import
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     // Get the registered listener
     const listenerCalls = (chrome.windows.onFocusChanged.addListener as any)
@@ -541,7 +541,7 @@ describe("Popup Auto-Close Delay", () => {
 
     // Clear module cache and re-import
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     // Get the registered listener
     const listenerCalls = (chrome.windows.onFocusChanged.addListener as any)
@@ -583,7 +583,7 @@ describe("onInstalled: installed analytics event", () => {
     }))
 
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
       .calls
@@ -606,7 +606,7 @@ describe("onInstalled: installed analytics event", () => {
     }))
 
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
       .calls
@@ -631,7 +631,7 @@ describe("onInstalled: installed analytics event", () => {
     }))
 
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
       .calls
@@ -654,7 +654,7 @@ describe("onInstalled: installed analytics event", () => {
     }))
 
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
       .calls
@@ -684,7 +684,7 @@ describe("Uninstall URL (onInstalled)", () => {
     }))
 
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
       .calls
@@ -716,7 +716,7 @@ describe("Uninstall URL (onInstalled)", () => {
     }))
 
     vi.resetModules()
-    await import("../background_script")
+    await import("../service_worker")
 
     const listenerCalls = (chrome.runtime.onInstalled.addListener as any).mock
       .calls

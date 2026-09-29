@@ -32,12 +32,12 @@ src/test/
 
 ### 移行テスト
 
-#### MG-01: background_script.ts 移行テスト
+#### MG-01: service_worker.ts 移行テスト
 
-**テストファイル**: 既存の`src/__tests__/background_script.test.ts`を拡張
+**テストファイル**: 既存の`src/__tests__/service_worker.test.ts`を拡張
 
 ```typescript
-// background_script.ts の各関数でenhancedSettings.get()が使用されることを確認
+// service_worker.ts の各関数でenhancedSettings.get()が使用されることを確認
 describe("Background Script Migration", () => {
   it("MG-01-a: addPageRule関数でenhancedSettings.get()が呼ばれる", async () => {
     const spy = jest.spyOn(enhancedSettings, "get")

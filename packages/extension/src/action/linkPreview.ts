@@ -1,4 +1,4 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import {
   findAnchorElementFromParent,
   findClickableElement,
@@ -21,7 +21,7 @@ export const LinkPreview = {
 
       if (command.openMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL) {
         if (!isEmpty(href)) {
-          Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+          Ipc.send<OpenSidePanelProps>(ServiceWorkerCommand.openSidePanel, {
             url: href,
             isLinkCommand: true,
           })
@@ -35,7 +35,7 @@ export const LinkPreview = {
           : POPUP_TYPE.NORMAL
 
       if (!isEmpty(href)) {
-        Ipc.send<OpenPopupsProps>(BgCommand.openPopups, {
+        Ipc.send<OpenPopupsProps>(ServiceWorkerCommand.openPopups, {
           commandId: command.id,
           urls: [href],
           top: Math.floor(position.y),
@@ -53,16 +53,19 @@ export const LinkPreview = {
 
       if (clickElm) {
         const selector = getSelectorFromElement(clickElm)
-        Ipc.send<OpenPopupAndClickProps>(BgCommand.openPopupAndClick, {
-          commandId: command.id,
-          url: location.href,
-          top: Math.floor(position.y),
-          left: Math.floor(position.x),
-          height: command.popupOption?.height,
-          width: command.popupOption?.width,
-          selector,
-          type,
-        })
+        Ipc.send<OpenPopupAndClickProps>(
+          ServiceWorkerCommand.openPopupAndClick,
+          {
+            commandId: command.id,
+            url: location.href,
+            top: Math.floor(position.y),
+            left: Math.floor(position.x),
+            height: command.popupOption?.height,
+            width: command.popupOption?.width,
+            selector,
+            type,
+          },
+        )
         return
       }
     }

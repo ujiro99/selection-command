@@ -15,10 +15,10 @@ import { SelectContextProvider } from "@/providers/SelectContextProvider"
 import { TabContextProvider } from "@/providers/TabContextProvider"
 import { Ipc, TabCommand } from "@/services/ipc"
 import { Settings } from "@/services/settings/settings"
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import type { ShowToastParam } from "@/types"
 
-BgData.init()
+ServiceWorkerData.init()
 
 type Props = {
   rootElm: HTMLElement

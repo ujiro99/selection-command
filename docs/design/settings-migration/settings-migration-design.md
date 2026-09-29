@@ -17,7 +17,7 @@
 | ---------------------------------------- | ------------------ | ---------------------------------------------- | ------ |
 | `src/services/commandMetrics.ts`         | 12                 | `const settings = await Settings.get()`        | 中     |
 | `src/services/contextMenus.ts`           | 21                 | `const settings = await Settings.get()`        | 中     |
-| `src/background_script.ts`               | 77, 272, 358, 552  | `const settings = await Settings.get()`        | 高     |
+| `src/service_worker.ts`                  | 77, 272, 358, 552  | `const settings = await Settings.get()`        | 高     |
 | `src/components/option/SettingForm.tsx`  | 138, 193           | `const settings = await Settings.get(true)`    | 中     |
 | `src/components/option/ImportExport.tsx` | 271, 303, 317, 332 | `const currentSettings = await Settings.get()` | 中     |
 
@@ -63,7 +63,7 @@ interface GetSettingsOptions {
 
 #### 優先順位付き移行
 
-1. **高優先度**: `src/background_script.ts` （4箇所）
+1. **高優先度**: `src/service_worker.ts` （4箇所）
 2. **中優先度**: `src/services/contextMenus.ts`, `src/services/commandMetrics.ts`
 3. **中優先度**: `src/components/option/SettingForm.tsx` （2箇所）
 4. **中優先度**: `src/components/option/ImportExport.tsx` （4箇所）
@@ -87,10 +87,10 @@ interface GetSettingsOptions {
 
 ### 高リスク
 
-| リスク                            | 影響                   | 対策                                      |
-| --------------------------------- | ---------------------- | ----------------------------------------- |
-| background_script.ts での動作不良 | 拡張機能全体の機能停止 | 段階的移行、十分なテスト                  |
-| キャッシュによる予期しない動作    | データ不整合           | `forceFresh: true` オプションの適切な使用 |
+| リスク                         | 影響                   | 対策                                      |
+| ------------------------------ | ---------------------- | ----------------------------------------- |
+| service_worker.ts での動作不良 | 拡張機能全体の機能停止 | 段階的移行、十分なテスト                  |
+| キャッシュによる予期しない動作 | データ不整合           | `forceFresh: true` オプションの適切な使用 |
 
 ### 中リスク
 
@@ -125,7 +125,7 @@ interface GetSettingsOptions {
 
 #### 統合テスト
 
-- [ ] MG-06: background_script.ts での全体動作
+- [ ] MG-06: service_worker.ts での全体動作
 - [ ] MG-07: contextMenus での設定反映
 - [ ] MG-08: commandMetrics でのカウント処理
 

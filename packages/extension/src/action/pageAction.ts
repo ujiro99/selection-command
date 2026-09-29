@@ -1,4 +1,8 @@
-import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
+import {
+  Ipc,
+  ServiceWorkerCommand,
+  SidePanelPendingAction,
+} from "@/services/ipc"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getWindowPosition } from "@/services/screen"
@@ -6,7 +10,7 @@ import { isValidString, isPageActionCommand } from "@/lib/utils"
 import { PAGE_ACTION_OPEN_MODE, PAGE_ACTION_EVENT } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
 import type { ExecuteCommandParams, UrlParam } from "@/types"
-import type { OpenAndRunProps } from "@/services/pageAction/background"
+import type { OpenAndRunProps } from "@/services/pageAction/serviceWorker"
 import { INSERT, templateReferencesInsert } from "@/services/pageAction"
 
 type PageActionParams = {
@@ -48,7 +52,7 @@ export const PageAction = {
     )
 
     // Handle side panel mode: store pending steps in session storage, then open
-    // the side panel. The background onConnect handler will pick up the pending
+    // the side panel. The service worker onConnect handler will pick up the pending
     // steps when the side panel content script establishes a port connection.
     if (
       command.pageActionOption.openMode === PAGE_ACTION_OPEN_MODE.SIDE_PANEL
@@ -71,7 +75,7 @@ export const PageAction = {
         console.error("Failed to store pending side panel action:", e)
         return
       }
-      Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+      Ipc.send<OpenSidePanelProps>(ServiceWorkerCommand.openSidePanel, {
         url: command.pageActionOption.startUrl,
       })
       return
@@ -99,7 +103,7 @@ export const PageAction = {
 
     const windowPosition = await getWindowPosition()
 
-    Ipc.send<OpenAndRunProps>(BgCommand.openAndRunPageAction, {
+    Ipc.send<OpenAndRunProps>(ServiceWorkerCommand.openAndRunPageAction, {
       commandId: command.id,
       url,
       pageUrl: command.pageActionOption.pageUrl,

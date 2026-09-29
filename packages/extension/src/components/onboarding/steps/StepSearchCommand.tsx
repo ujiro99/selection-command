@@ -140,7 +140,7 @@ export function StepSearchCommand({ onboarding }: Props) {
   }, [phase])
 
   // The search command opens in a separate browser window (see
-  // Popup.execute -> BgCommand.openPopup -> chrome.windows.create), not a
+  // Popup.execute -> ServiceWorkerCommand.openPopup -> chrome.windows.create), not a
   // tab in this same window. Switching focus between two on-screen windows
   // doesn't reliably fire `visibilitychange` (that API tracks tab
   // occlusion/minimization, not window focus), so a `focus` listener on

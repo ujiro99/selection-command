@@ -43,9 +43,9 @@ import type {
   ShowToastParam,
 } from "@/types"
 import { t } from "@/services/i18n"
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 
-BgData.init()
+ServiceWorkerData.init()
 
 const StartAction = {
   id: generateRandomID(),
@@ -563,10 +563,12 @@ const run = (
       // Update running status
       await RunningStatus.initTab(tabId, steps)
 
-      // Enhanced BgData update with error handling
-      const updateResult = await BgData.update({ pageActionStop: false })
+      // Enhanced ServiceWorkerData update with error handling
+      const updateResult = await ServiceWorkerData.update({
+        pageActionStop: false,
+      })
       if (!updateResult) {
-        console.warn("Failed to update BgData, continuing execution")
+        console.warn("Failed to update ServiceWorkerData, continuing execution")
       }
 
       // Run steps
@@ -574,7 +576,7 @@ const run = (
         await RunningStatus.updateTab(tabId, step.id, EXEC_STATE.Start)
 
         // Check stop flag
-        const stop = BgData.get().pageActionStop
+        const stop = ServiceWorkerData.get().pageActionStop
         if (stop) {
           // Cancel the execution
           await RunningStatus.updateTab(tabId, step.id, EXEC_STATE.Stop)
@@ -633,7 +635,7 @@ export const stopRunner = (
   __: Sender,
   response: (res: unknown) => void,
 ): boolean => {
-  BgData.set((data) => ({ ...data, pageActionStop: true }))
+  ServiceWorkerData.set((data) => ({ ...data, pageActionStop: true }))
     .then(() => {
       response(true)
     })
@@ -792,4 +794,4 @@ export {
   handleSidePanelConnect,
   handleSidePanelOpened,
   registerSidePanelTab,
-} from "./background-sidePanel"
+} from "./serviceWorker-sidePanel"

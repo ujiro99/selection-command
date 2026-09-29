@@ -3,14 +3,18 @@ import type { ScreenSize } from "@/services/dom"
 import type { ShowToastParam, UrlParam, WindowLayer } from "@/types"
 import { POPUP_OFFSET, POPUP_TYPE, WINDOW_STATE } from "@/const"
 import { PopupOption } from "@/services/option/defaultSettings"
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import { WindowStackManager } from "@/services/windowStackManager"
-import { BgCommand, ClipboardResult, TabCommand } from "@/services/ipc"
+import {
+  ServiceWorkerCommand,
+  ClipboardResult,
+  TabCommand,
+} from "@/services/ipc"
 import { getScreenSize } from "@/services/screen"
 import { Ipc } from "@/services/ipc"
 import { t } from "@/services/i18n"
 
-BgData.init()
+ServiceWorkerData.init()
 
 /**
  * Check if a window exists
@@ -188,13 +192,13 @@ const adjustWindowPosition = (
 }
 
 /**
- * Update background data with window information
+ * Update service worker data with window information
  * @param {chrome.windows.Window[]} windows - Array of windows to update
  * @param {string} commandId - Command ID
  * @param {number | undefined} currentWindowId - Current window ID
  * @param {POPUP_TYPE} type - Popup type
  */
-const updateBackgroundData = async (
+const updateServiceWorkerData = async (
   windows: chrome.windows.Window[],
   commandId: string,
   currentWindowId: number | undefined,
@@ -225,7 +229,7 @@ const updateBackgroundData = async (
         srcWindowId: currentWindowId,
       })) as WindowLayer
 
-      await BgData.update(() => ({
+      await ServiceWorkerData.update(() => ({
         normalWindows: layer,
       }))
     }
@@ -349,7 +353,7 @@ const readClipboardContent = async (
           return
         }
         const onMessage = (msg: { command: string; data: ClipboardResult }) => {
-          if (msg.command === BgCommand.setClipboard) {
+          if (msg.command === ServiceWorkerCommand.setClipboard) {
             port.onMessage.removeListener(onMessage)
             chrome.runtime.onConnect.removeListener(onConnect)
             resolve(msg.data)
@@ -530,7 +534,7 @@ export const openPopupWindow = async (
     }
   }
 
-  await updateBackgroundData([window], param.commandId, current.id, type)
+  await updateServiceWorkerData([window], param.commandId, current.id, type)
   if (window.tabs?.[0]?.id) {
     updateRules([window.tabs[0].id])
   }
@@ -580,7 +584,7 @@ export const openPopupWindowMultiple = async (
       .filter((p): p is Promise<chrome.windows.Window> => p !== null),
   )
 
-  await updateBackgroundData(windows, param.commandId, current.id, type)
+  await updateServiceWorkerData(windows, param.commandId, current.id, type)
 
   const tabIds = windows.reduce((tabIds, w) => {
     w.tabs?.forEach((t) => t.id && tabIds.push(t.id))
@@ -689,7 +693,7 @@ export type UpdateSidePanelUrlProps = {
 }
 
 /**
- * Open a side panel with the specified URL (background script context only)
+ * Open a side panel with the specified URL (service worker context only)
  * @param {OpenSidePanelProps} param - Parameters for opening the side panel
  * @returns {Promise<OpenResult>} Result containing tab ID and clipboard text
  */

@@ -76,7 +76,7 @@ function showHubShareToastNow(
 
               // Users who have never signed in to the hub are redirected to
               // the sign-up page instead (see shareCommandToHub in
-              // services/hub/background.ts); nothing is actually shared yet,
+              // services/hub/serviceWorker.ts); nothing is actually shared yet,
               // so skip the share analytics event for this case.
               const registered = await isHubRegistered()
               if (registered) {

@@ -18,7 +18,7 @@ export function dispatchCommandExecuted(
   detail: OnboardingCommandExecutedDetail,
 ): void {
   // executeAction() (the sole caller) also runs in the service worker
-  // (background.ts), where `window` does not exist. No-op there; the
+  // (service worker), where `window` does not exist. No-op there; the
   // onboarding page always runs in a normal window context.
   if (typeof window === "undefined") return
 

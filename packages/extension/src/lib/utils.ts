@@ -97,7 +97,7 @@ export function toUrl(
   if (useClipboard && param.clipboardTemplate) {
     // selectionText is a pre-expanded prompt whose clipboard-dependent
     // placeholders were left unresolved, because the clipboard can only be
-    // read here in the background.
+    // read here in the service worker.
     const clipboard = clipboardText ?? ""
     text = safeInterpolate(text, {
       [InsertSymbol[INSERT.CLIPBOARD]]: clipboard,

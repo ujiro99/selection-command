@@ -1,4 +1,4 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { isValidString } from "@/lib/utils"
 import { getWindowPosition } from "@/services/screen"
 import { POPUP_TYPE, SPACE_ENCODING } from "@/const"
@@ -25,7 +25,7 @@ export const Window = {
 
     const windowPosition = await getWindowPosition()
 
-    Ipc.send<OpenPopupProps>(BgCommand.openPopup, {
+    Ipc.send<OpenPopupProps>(ServiceWorkerCommand.openPopup, {
       commandId: command.id,
       url: {
         searchUrl: command.searchUrl,

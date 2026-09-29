@@ -11,7 +11,7 @@ import {
 import { StepList } from "@/components/pageAction/StepList"
 import { usePageActionContext } from "@/hooks/pageAction/usePageActionContext"
 import { PageActionListener as Listener } from "@/services/pageAction"
-import { Ipc, BgCommand, RunPageAction } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand, RunPageAction } from "@/services/ipc"
 import { t } from "@/services/i18n"
 import type { PageActionStep, PageActiontResult, DeepPartial } from "@/types"
 import { cn } from "@/lib/utils"
@@ -48,7 +48,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     const preview = () => {
       setTimeout(() => {
         // Start preview.
-        Ipc.send<RunPageAction>(BgCommand.previewPageAction, {
+        Ipc.send<RunPageAction>(ServiceWorkerCommand.previewPageAction, {
           steps: props.steps,
           openMode: PAGE_ACTION_OPEN_MODE.NONE,
           srcUrl: `{{${t("PageAction_InputMenu_url")}}}`,
@@ -70,12 +70,12 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
     }
 
     const reset = () => {
-      Ipc.send(BgCommand.resetPageAction)
+      Ipc.send(ServiceWorkerCommand.resetPageAction)
     }
 
     const finish = () => {
       Listener.stop()
-      Ipc.send(BgCommand.finishPageActionRecorder)
+      Ipc.send(ServiceWorkerCommand.finishPageActionRecorder)
     }
 
     useEffect(() => {
@@ -159,7 +159,7 @@ export const Controller = forwardRef<HTMLDivElement, Props>(
             {isRunning ? (
               <button
                 className={css.button}
-                onClick={() => Ipc.send(BgCommand.stopPageAction)}
+                onClick={() => Ipc.send(ServiceWorkerCommand.stopPageAction)}
               >
                 <Square size={iconSize} className="stroke-gray-600" />
                 <span className={css.buttonLabel}>

@@ -39,18 +39,18 @@
 
 ### WindowStackManagerクラス
 
-ウィンドウスタックの論理的な管理を担当するクラス。ServiceWorkerでの状態揮発に対応するため、backgroundData.tsと連携してセッション永続化を行う。
+ウィンドウスタックの論理的な管理を担当するクラス。ServiceWorkerでの状態揮発に対応するため、serviceWorkerData.tsと連携してセッション永続化を行う。
 
 #### 責任分離
 
 - **WindowStackManager**: スタック構造の管理と論理処理のみ
-- **呼び出し元（background_script.ts）**: 実際のChromeウィンドウの操作（削除等）
+- **呼び出し元（service_worker.ts）**: 実際のChromeウィンドウの操作（削除等）
 
 #### クラス設計
 
 ```typescript
 class WindowStackManager {
-  // BgDataと連携してスタック状態を永続化
+  // ServiceWorkerDataと連携してスタック状態を永続化
   private static async saveStack(stack: WindowLayer[]): Promise<void>;
   private static async loadStack(): Promise<WindowLayer[]>;
 
@@ -90,22 +90,22 @@ class WindowStackManager {
    - フォーカスされたウィンドウがスタック外の場合は、すべてのウィンドウをクローズ対象とする
 
 3. **状態永続化**
-   - すべてのスタック変更操作後、自動的にBgDataにスタック状態を保存
-   - ServiceWorker再起動時も、BgDataからスタック状態を復元可能
+   - すべてのスタック変更操作後、自動的にServiceWorkerDataにスタック状態を保存
+   - ServiceWorker再起動時も、ServiceWorkerDataからスタック状態を復元可能
 
 #### ServiceWorker対応
 
-- すべてのメソッドを非同期化（BgDataとの連携のため）
-- インスタンス変数は持たず、常にBgDataから最新状態を取得
-- メソッド実行時にBgDataから状態をロード、処理後に保存
+- すべてのメソッドを非同期化（ServiceWorkerDataとの連携のため）
+- インスタンス変数は持たず、常にServiceWorkerDataから最新状態を取得
+- メソッド実行時にServiceWorkerDataから状態をロード、処理後に保存
 
-### backgroundData.tsとの連携
+### serviceWorkerData.tsとの連携
 
 既存の`windowStack`プロパティを活用し、WindowStackManagerからの更新を受け取る。
 
 ```typescript
 // WindowStackManagerから呼び出される更新処理
-BgData.update((data) => ({ windowStack: newStack }));
+ServiceWorkerData.update((data) => ({ windowStack: newStack }));
 ```
 
 ## ユニットテスト設計
@@ -152,7 +152,7 @@ packages/extension/src/services/__tests__/windowStackManager.test.ts
 
 6. **永続化テスト**
    - スタック状態の保存・復元
-   - BgDataとの連携動作確認
+   - ServiceWorkerDataとの連携動作確認
    - 状態の整合性保証
 
 ### テストデータ構造
@@ -180,5 +180,5 @@ const testScenarios = [
 
 ### モック対象
 
-- `BgData.get()`, `BgData.update()` - スタック状態の取得・更新
-- 必要に応じてChrome Storage API関連（BgData経由で使用される）
+- `ServiceWorkerData.get()`, `ServiceWorkerData.update()` - スタック状態の取得・更新
+- 必要に応じてChrome Storage API関連（ServiceWorkerData経由で使用される）

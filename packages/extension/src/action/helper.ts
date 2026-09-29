@@ -12,11 +12,11 @@ import {
   OpenTabProps,
   OpenSidePanelProps,
 } from "@/services/chrome"
-import { registerSidePanelTab } from "@/services/pageAction/background-sidePanel"
+import { registerSidePanelTab } from "@/services/pageAction/serviceWorker-sidePanel"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
-import { BgData } from "@/services/backgroundData"
+import { ServiceWorkerData } from "@/services/serviceWorkerData"
 import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
@@ -109,13 +109,13 @@ export const openSidePanel = (
 ): boolean => {
   let tabId = sender.tab?.id
   if (tabId == null) {
-    const bgData = BgData.get()
-    if (bgData.activeTabId == null) {
+    const serviceWorkerData = ServiceWorkerData.get()
+    if (serviceWorkerData.activeTabId == null) {
       console.warn("No active tab ID available for opening side panel")
       response(false)
       return false
     }
-    tabId = bgData.activeTabId
+    tabId = serviceWorkerData.activeTabId
   }
 
   // Since it needs to be tied to a user action, avoid asynchronous processing
@@ -131,7 +131,7 @@ export const openSidePanel = (
       // Register the tab ID for tracking
       if (tabId) {
         const newEntry = { tabId, isLinkCommand: param.isLinkCommand ?? false }
-        return BgData.update((data) => ({
+        return ServiceWorkerData.update((data) => ({
           sidePanelTabs: data.sidePanelTabs.some((t) => t.tabId === tabId)
             ? data.sidePanelTabs.map((t) => (t.tabId === tabId ? newEntry : t))
             : [...data.sidePanelTabs, newEntry],
@@ -164,8 +164,8 @@ export const closeSidePanel = (
   enhancedSettings
     .get()
     .then(async (settings) => {
-      const bgData = BgData.get()
-      const tab = bgData.sidePanelTabs.find((t) => t.tabId === tabId)
+      const serviceWorkerData = ServiceWorkerData.get()
+      const tab = serviceWorkerData.sidePanelTabs.find((t) => t.tabId === tabId)
       if (tab) {
         const autoHideEnabled = tab.isLinkCommand
           ? settings.linkCommand.sidePanelAutoHide
@@ -193,7 +193,7 @@ export const closeSidePanel = (
 export const sidePanelClosed = async (tabId?: number): Promise<void> => {
   if (tabId == null) return
   try {
-    await BgData.update((data) => {
+    await ServiceWorkerData.update((data) => {
       const { [tabId]: _, ...rest } = data.sidePanelUrls
       return {
         sidePanelTabs: data.sidePanelTabs.filter((t) => t.tabId !== tabId),
@@ -230,8 +230,8 @@ export const navigateSidePanel = (
   }
 
   // Check if tab is in sidePanelTabs
-  const bgData = BgData.get()
-  if (!bgData.sidePanelTabs.some((t) => t.tabId === tabId)) {
+  const serviceWorkerData = ServiceWorkerData.get()
+  if (!serviceWorkerData.sidePanelTabs.some((t) => t.tabId === tabId)) {
     console.warn("[navigateSidePanel] Tab is not in sidePanelTabs:", tabId)
     return false
   }
@@ -239,8 +239,8 @@ export const navigateSidePanel = (
   // Fire-and-forget: update URL in the background
   _updateSidePanelUrl({ url, tabId })
     .then(() => {
-      // Update BgData's sidePanelUrls
-      return BgData.update((data) => ({
+      // Update ServiceWorkerData's sidePanelUrls
+      return ServiceWorkerData.update((data) => ({
         sidePanelUrls: {
           ...data.sidePanelUrls,
           [tabId]: url,

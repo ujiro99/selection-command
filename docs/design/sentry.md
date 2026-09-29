@@ -8,7 +8,7 @@
   - エラーの内容
 - 読み込む対象の機能は、以下の通り。
   - content_script
-  - background_script
+  - service_worker
   - options_page
 - デバッグビルドの場合hは、Sentryの初期化を行わない。
 
@@ -29,7 +29,7 @@
 
 #### 1. コンテキスト別初期化
 
-- **Service Worker (background_script)**: 拡張機能のライフサイクル管理とバックグラウンド処理のエラー監視
+- **Service Worker (service_worker)**: 拡張機能のライフサイクル管理とバックグラウンド処理のエラー監視
 - **Content Script**: Webページ上でのUI操作とDOM操作のエラー監視
 - **Options Page**: 設定画面でのフォーム処理とユーザー操作のエラー監視
 

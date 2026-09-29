@@ -30,18 +30,25 @@ This file provides guidance to AI Agent when working with code in this repositor
 これは**Selection Command**と呼ばれるChrome拡張機能（Manifest V3）で、
 ユーザーがWebページ上で選択したテキストに対してさまざまなアクションを実行できます。
 
+### 命名ルール: Service Worker とバックグラウンドタブ
+
+「background」が Service Worker と非アクティブタブのどちらを指すのか曖昧にならないよう、以下のルールで命名すること。
+
+- **Service Worker で動作する処理**: `serviceWorker` / `ServiceWorker` を用いる（例: `service_worker.ts`、`services/pageAction/serviceWorker.ts`、`ServiceWorkerData`、`ServiceWorkerCommand`）。`background` や `Bg` という略称は使わない
+- **非アクティブタブ（`active: false`）で動作する処理**: `backgroundTab` / `BackgroundTab` と省略せずに記述する（例: `backgroundTabDispatcher.ts`、`BACKGROUND_TAB_POLL`）
+
 ### 主要コンポーネント
 
 **Chrome拡張機能の構造:**
 
-- `manifest.json` - 権限、コンテンツスクリプト、バックグラウンドワーカーを定義する拡張機能マニフェスト
-- `src/background_script.ts` - 拡張機能のライフサイクルとバックグラウンド操作を処理するサービスワーカー
+- `manifest.json` - 権限、コンテンツスクリプト、Service Workerを定義する拡張機能マニフェスト
+- `src/service_worker.ts` - 拡張機能のライフサイクルとService Worker側の処理を担うエントリーポイント
 - `src/content_script.tsx` - Webページに注入されるメインのコンテンツスクリプト
 - `src/options_page.tsx` - 拡張機能のオプション/設定ページ
 
 **コアアーキテクチャ:**
 
-- **Actions** (`src/action/`) - バックグラウンド操作、ポップアップ処理、ページアクション、コマンド実行を含むコア機能モジュール
+- **Actions** (`src/action/`) - Service Worker からの実行、ポップアップ処理、ページアクション、コマンド実行を含むコア機能モジュール
 - **Components** (`src/components/`) - 機能別に整理されたReactコンポーネント:
   - `menu/` - コンテキストメニューとメニューアイテムコンポーネント
   - `option/` - 設定と構成UI

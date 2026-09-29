@@ -30,14 +30,14 @@
 
 ### 対象
 
-| 種別             | 対象                       | 例                                           |
-| ---------------- | -------------------------- | -------------------------------------------- |
-| サービス         | `src/services/`            | 設定管理、ストレージ、ページアクション処理   |
-| アクション       | `src/action/`              | コマンド実行、AIプロンプト、リンクプレビュー |
-| ユーティリティ   | `src/lib/`                 | `cn()`、Robula+ などのヘルパー               |
-| フック           | `src/hooks/`               | `useSettings` などのカスタムフック           |
-| コンポーネント   | `src/components/`          | メニュー、オプション画面、オンボーディング   |
-| バックグラウンド | `src/background_script.ts` | Service Worker のメッセージハンドリング      |
+| 種別           | 対象                    | 例                                           |
+| -------------- | ----------------------- | -------------------------------------------- |
+| サービス       | `src/services/`         | 設定管理、ストレージ、ページアクション処理   |
+| アクション     | `src/action/`           | コマンド実行、AIプロンプト、リンクプレビュー |
+| ユーティリティ | `src/lib/`              | `cn()`、Robula+ などのヘルパー               |
+| フック         | `src/hooks/`            | `useSettings` などのカスタムフック           |
+| コンポーネント | `src/components/`       | メニュー、オプション画面、オンボーディング   |
+| Service Worker | `src/service_worker.ts` | Service Worker のメッセージハンドリング      |
 
 ### ファイル配置
 
@@ -61,7 +61,7 @@ src/
 ```
 
 - ファイル名は `<テスト対象ファイル名>.test.ts(x)` とする
-- 1 ファイルが大きくなる場合は観点ごとに分割してよい（例: `CommandList.analytics.test.tsx`、`background-crud.test.ts`）
+- 1 ファイルが大きくなる場合は観点ごとに分割してよい（例: `CommandList.analytics.test.tsx`、`serviceWorker-crud.test.ts`）
 - テスト対象モジュールは相対パス（`../settings`）または `@/` エイリアスで import する
 
 ### テストケースの命名規則

@@ -1,4 +1,8 @@
-import { Ipc, BgCommand, SidePanelPendingAction } from "@/services/ipc"
+import {
+  Ipc,
+  ServiceWorkerCommand,
+  SidePanelPendingAction,
+} from "@/services/ipc"
 import { getWindowPosition } from "@/services/screen"
 import {
   isValidString,
@@ -26,7 +30,7 @@ import type {
   AiService,
   AiPromptOption,
 } from "@/types"
-import type { OpenAndRunProps } from "@/services/pageAction/background"
+import type { OpenAndRunProps } from "@/services/pageAction/serviceWorker"
 import type { OpenSidePanelProps } from "@/services/chrome"
 import { findAiService } from "@/services/aiPrompt"
 import { isAiPromptType } from "@/types/schema"
@@ -35,7 +39,7 @@ import { Storage, SESSION_STORAGE_KEY } from "@/services/storage"
 import { getUILanguage } from "@/services/i18n"
 import { getSelectionHtml, getPageHtml } from "@/services/dom"
 
-// Moved to lib/utils so that toUrl() can reuse it in the background.
+// Moved to lib/utils so that toUrl() can reuse it in the service worker.
 export { convertUrlsToMarkdown }
 
 // Map OPEN_MODE to PAGE_ACTION_OPEN_MODE for openAndRun
@@ -124,7 +128,7 @@ const analyzePromptRequirements = (
 
   // Use URL query input when the service supports it and no file-paste content
   // is needed, since HTML content can't be embedded in a URL safely.
-  // Clipboard content is resolved into the URL by the background after it reads
+  // Clipboard content is resolved into the URL by the service worker after it reads
   // the clipboard, except in side panel mode: the side panel must be opened
   // directly from the user gesture, before the clipboard can be read, so there
   // the DOM input path (which reads the clipboard afterwards) is used instead.
@@ -226,7 +230,7 @@ const buildQueryUrlSteps = (
   // Pre-expand the prompt template with synchronously available variables.
   // INSERT.CLIPBOARD (and INSERT.SELECTED_TEXT when it falls back to the
   // clipboard) is intentionally left unresolved here: clipboard text is not
-  // available in the content script context. The background reads the
+  // available in the content script context. The service worker reads the
   // clipboard and resolves the remaining placeholders in toUrl().
   const variables: Record<string, string> = {
     [InsertSymbol[INSERT.URL]]: pageUrl ?? "",
@@ -394,9 +398,9 @@ const buildDomInputSteps = (
 }
 
 // Handles side panel mode: stores pending steps in session storage, then opens
-// the side panel. The background onConnect handler will pick up the pending
+// the side panel. The service worker onConnect handler will pick up the pending
 // steps when the side panel content script establishes a port connection.
-// Clipboard reading is deferred to the background script context to avoid
+// Clipboard reading is deferred to the service worker context to avoid
 // browser security restrictions on navigator.clipboard in content scripts.
 const runSidePanelAction = async (params: {
   serviceUrl: string
@@ -437,7 +441,7 @@ const runSidePanelAction = async (params: {
     console.error("Failed to store pending side panel action:", e)
     return
   }
-  Ipc.send<OpenSidePanelProps>(BgCommand.openSidePanel, {
+  Ipc.send<OpenSidePanelProps>(ServiceWorkerCommand.openSidePanel, {
     url: serviceUrl,
   })
 }
@@ -519,7 +523,7 @@ export const AiPrompt = {
         )
 
     // Handle side panel mode: store pending steps in session storage, then open
-    // the side panel. The background onConnect handler will pick up the pending
+    // the side panel. The service worker onConnect handler will pick up the pending
     // steps when the side panel content script establishes a port connection.
     if (aiPromptOption.openMode === OPEN_MODE.SIDE_PANEL) {
       await runSidePanelAction({
@@ -543,7 +547,7 @@ export const AiPrompt = {
     const openMode = resolveOpenMode(aiPromptOption.openMode, useSecondary)
     const windowPosition = await getWindowPosition()
 
-    Ipc.send<OpenAndRunProps>(BgCommand.openAndRunPageAction, {
+    Ipc.send<OpenAndRunProps>(ServiceWorkerCommand.openAndRunPageAction, {
       commandId: command.id,
       url: urlParam,
       steps,

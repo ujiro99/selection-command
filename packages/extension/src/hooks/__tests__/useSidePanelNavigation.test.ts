@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { renderHook, waitFor } from "@testing-library/react"
 import { useSidePanelNavigation } from "../useSidePanelNavigation"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { isSidePanel } from "@/services/sidePanelDetector"
 
 // Mock dependencies
@@ -10,7 +10,7 @@ vi.mock("@/services/ipc", () => ({
     send: vi.fn(),
     getActiveTabId: vi.fn().mockResolvedValue(123),
   },
-  BgCommand: {
+  ServiceWorkerCommand: {
     navigateSidePanel: "navigateSidePanel",
   },
 }))
@@ -73,10 +73,13 @@ describe("useSidePanelNavigation", () => {
     })
     link.dispatchEvent(clickEvent)
 
-    expect(sendSpy).toHaveBeenCalledWith(BgCommand.navigateSidePanel, {
-      url: "https://example.com/",
-      tabId: 123,
-    })
+    expect(sendSpy).toHaveBeenCalledWith(
+      ServiceWorkerCommand.navigateSidePanel,
+      {
+        url: "https://example.com/",
+        tabId: 123,
+      },
+    )
 
     document.body.removeChild(link)
   })
@@ -216,10 +219,13 @@ describe("useSidePanelNavigation", () => {
     })
     span.dispatchEvent(clickEvent)
 
-    expect(sendSpy).toHaveBeenCalledWith(BgCommand.navigateSidePanel, {
-      url: "https://example.com/",
-      tabId: 123,
-    })
+    expect(sendSpy).toHaveBeenCalledWith(
+      ServiceWorkerCommand.navigateSidePanel,
+      {
+        url: "https://example.com/",
+        tabId: 123,
+      },
+    )
 
     document.body.removeChild(link)
   })

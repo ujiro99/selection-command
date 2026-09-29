@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { CACHE_SECTIONS } from "@/services/settings/settingsCache"
 import { getAiServicesFallback } from "@/services/aiPromptFallback"
 import { useSection, useUserSettings } from "./useSettings"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import type { IconColorQuery } from "@/services/ipc"
 import { getCommandTargetUrl, isAiPromptCommand, isEmpty } from "@/lib/utils"
 import type { Command, CommandFolder } from "@/types"
@@ -93,7 +93,7 @@ function usePreservedIconColors(queries: IconColorQuery[]): boolean[] | null {
       if (unknown.length > 0) {
         try {
           const results = await Ipc.send<IconColorQuery[], boolean[]>(
-            BgCommand.resolveIconColors,
+            ServiceWorkerCommand.resolveIconColors,
             unknown,
           )
           if (!Array.isArray(results)) {

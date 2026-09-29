@@ -40,7 +40,7 @@
     }
   ],
   "background": {
-    "service_worker": "src/background_script.ts"
+    "service_worker": "src/service_worker.ts"
   },
   "externally_connectable": {
     "matches": [

@@ -266,7 +266,7 @@ background scriptでの実行制御ロジック：
 
 - [ ] OPEN_MODE.BACKGROUND_TAB enum値追加
 - [ ] PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB enum値追加
-- [ ] BackgroundPageActionDispatcher実装
+- [ ] BackgroundTabPageActionDispatcher実装
 - [ ] バックグラウンド用要素解決ロジック
 - [ ] openAndRun関数でのBACKGROUND_TABモード対応
 - [ ] 国際化メッセージ追加

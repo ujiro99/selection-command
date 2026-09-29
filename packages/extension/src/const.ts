@@ -130,10 +130,10 @@ export const COMMAND_TYPE_GROUPS = [
 ] as const
 
 /**
- * Background script only supports the following modes.
+ * Service worker only supports the following modes.
  * Modes that can operate without text selection.
  */
-export enum OPEN_MODE_BG {
+export enum OPEN_MODE_SERVICE_WORKER {
   POPUP = OPEN_MODE.POPUP,
   WINDOW = OPEN_MODE.WINDOW,
   TAB = OPEN_MODE.TAB,

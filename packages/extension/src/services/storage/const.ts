@@ -23,7 +23,7 @@ export enum LOCAL_STORAGE_KEY {
 }
 
 export enum SESSION_STORAGE_KEY {
-  BG = "bg",
+  SERVICE_WORKER_DATA = "serviceWorkerData",
   SELECTION_TEXT = "selectionText ",
   SESSION_DATA = "sessionData",
   MESSAGE_QUEUE = "messageQueue",

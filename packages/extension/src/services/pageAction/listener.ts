@@ -1,6 +1,6 @@
 import getXPath from "get-xpath"
 import { RobulaPlus } from "@/lib/robula-plus"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { PageAction, convReadableKeysToSymbols } from "@/services/pageAction"
 import {
   isTextNode,
@@ -100,7 +100,7 @@ let lastInputTarget: HTMLElement | null = null
  * editor div while it is empty and removes it on the first keystroke. Because
  * RobulaPlus includes class names in generated XPaths, consecutive `input`
  * events on the very same DOM element can produce different XPath strings,
- * which prevents background.ts from recognising them as the same element and
+ * which prevents serviceWorker.ts from recognising them as the same element and
  * combining them into a single step.
  *
  * To solve this we compute the XPath once (on the first `input` event, after
@@ -249,7 +249,7 @@ export const PageActionListener = (() => {
         return func.tripleClick(xpath, label, stepId)
       }
 
-      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+      Ipc.send<PageActionStep>(ServiceWorkerCommand.addPageAction, {
         id: stepId,
         timestamp: getTimeStamp(),
         delayMs: 0,
@@ -263,7 +263,7 @@ export const PageActionListener = (() => {
       })
     },
     doubleClick(xpath: string, label: string, id: string) {
-      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+      Ipc.send<PageActionStep>(ServiceWorkerCommand.addPageAction, {
         id,
         timestamp: getTimeStamp(),
         delayMs: 0,
@@ -277,7 +277,7 @@ export const PageActionListener = (() => {
       })
     },
     tripleClick(xpath: string, label: string, id: string) {
-      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+      Ipc.send<PageActionStep>(ServiceWorkerCommand.addPageAction, {
         id,
         timestamp: getTimeStamp(),
         delayMs: 0,
@@ -303,7 +303,7 @@ export const PageActionListener = (() => {
 
       const stepId = generateRandomID()
       const xpath = getXPathM(e.target as HTMLElement, e.type)
-      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+      Ipc.send<PageActionStep>(ServiceWorkerCommand.addPageAction, {
         id: stepId,
         timestamp: getTimeStamp(),
         delayMs: 0,
@@ -355,7 +355,7 @@ export const PageActionListener = (() => {
       // computed on the first input event. This prevents selector mismatches
       // caused by WYSIWYG editors mutating class names (e.g. Quill's `ql-blank`)
       // between the empty state and the editing state, which would otherwise
-      // make background.ts treat consecutive events as different elements and
+      // make serviceWorker.ts treat consecutive events as different elements and
       // skip combining them into a single step.
       let xpath: string
       if (isEditable(target) && target === focusElm) {
@@ -371,7 +371,7 @@ export const PageActionListener = (() => {
       }
       if (value != null) {
         value = convReadableKeysToSymbols(value)
-        Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+        Ipc.send<PageActionStep>(ServiceWorkerCommand.addPageAction, {
           id: stepId,
           timestamp: getTimeStamp(),
           delayMs: 0,
@@ -396,7 +396,7 @@ export const PageActionListener = (() => {
       const y = Math.trunc(window.scrollY)
       const stepId = generateRandomID()
       if (x < 10 && y < 10) return
-      Ipc.send<PageActionStep>(BgCommand.addPageAction, {
+      Ipc.send<PageActionStep>(ServiceWorkerCommand.addPageAction, {
         id: stepId,
         timestamp: getTimeStamp(),
         delayMs: 0,

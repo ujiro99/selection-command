@@ -4,11 +4,11 @@ import { Keyboard, SquareArrowOutUpRight } from "lucide-react"
 import { SelectField } from "@/components/option/field/SelectField"
 import type { SelectOptionType } from "@/components/option/field/SelectField"
 import { t as _t } from "@/services/i18n"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import type { Command, CommandFolder, ShortcutCommand } from "@/types"
 import {
   OPEN_MODE,
-  OPEN_MODE_BG,
+  OPEN_MODE_SERVICE_WORKER,
   PAGE_ACTION_OPEN_MODE,
   SHORTCUT_PLACEHOLDER,
   SHORTCUT_NO_SELECTION_BEHAVIOR,
@@ -91,7 +91,7 @@ const isTextSelectionOnly = (command: Command) => {
     )
   }
 
-  return !Object.values(OPEN_MODE_BG).includes(openMode as any)
+  return !Object.values(OPEN_MODE_SERVICE_WORKER).includes(openMode as any)
 }
 
 const referencesSelection = (command: Command): boolean =>
@@ -274,7 +274,7 @@ export function ShortcutList({ control }: ShortcutListProps) {
           {t("shortcuts_settings_desc")}{" "}
           <button
             type="button"
-            onClick={() => Ipc.send(BgCommand.openShortcuts)}
+            onClick={() => Ipc.send(ServiceWorkerCommand.openShortcuts)}
             className="text-blue-600 hover:underline h-4"
           >
             <SquareArrowOutUpRight

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest"
-import { resolveIconColors } from "../background"
+import { resolveIconColors } from "../serviceWorker"
 import type { IconColorQuery, Sender } from "@/services/ipc"
 
 const resolve = (queries: IconColorQuery[]): boolean[] => {

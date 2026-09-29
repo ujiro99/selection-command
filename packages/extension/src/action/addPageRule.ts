@@ -1,8 +1,8 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 
 export const AddPageRule = {
   async execute() {
-    Ipc.send(BgCommand.addPageRule, {
+    Ipc.send(ServiceWorkerCommand.addPageRule, {
       url: window.location.origin,
     })
   },

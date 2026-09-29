@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { isSidePanel } from "../sidePanelDetector"
-import { BgData } from "../backgroundData"
+import { ServiceWorkerData } from "../serviceWorkerData"
 
 // Mock dependencies
-vi.mock("../backgroundData", () => ({
-  BgData: {
+vi.mock("../serviceWorkerData", () => ({
+  ServiceWorkerData: {
     get: vi.fn(),
   },
 }))
@@ -19,12 +19,12 @@ describe("sidePanelDetector", () => {
       const result = isSidePanel(123, 456)
 
       expect(result).toBe(false)
-      // BgData.get should NOT be called because we can early-return
-      expect(BgData.get).not.toHaveBeenCalled()
+      // ServiceWorkerData.get should NOT be called because we can early-return
+      expect(ServiceWorkerData.get).not.toHaveBeenCalled()
     })
 
     it("SPD-01-a: Should continue checking when tabId is undefined (treated same as null)", () => {
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId: 789, isLinkCommand: false }],
       } as any)
 
@@ -40,18 +40,18 @@ describe("sidePanelDetector", () => {
     })
 
     it("SPD-03: Should return false when activeTabId is not in sidePanelTabs", () => {
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId: 789, isLinkCommand: false }], // activeTabId not in list
       } as any)
 
       const result = isSidePanel(null, 456)
 
       expect(result).toBe(false)
-      expect(BgData.get).toHaveBeenCalledTimes(1)
+      expect(ServiceWorkerData.get).toHaveBeenCalledTimes(1)
     })
 
     it("SPD-04: Should return true when all conditions are met", () => {
-      vi.mocked(BgData.get).mockReturnValue({
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
         sidePanelTabs: [{ tabId: 456, isLinkCommand: false }],
       } as any)
 

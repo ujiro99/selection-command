@@ -1,4 +1,4 @@
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { linksInSelection } from "@/services/dom"
 import { OpenPopupsProps } from "@/services/chrome"
 import { POPUP_TYPE } from "@/const"
@@ -7,7 +7,7 @@ import type { ExecuteCommandParams } from "@/types"
 export const SelectedLinkPopup = {
   async execute({ command, position }: ExecuteCommandParams) {
     if (position) {
-      Ipc.send<OpenPopupsProps>(BgCommand.openPopups, {
+      Ipc.send<OpenPopupsProps>(ServiceWorkerCommand.openPopups, {
         commandId: command.id,
         urls: linksInSelection(),
         top: Math.floor(window.screenTop + position.y),

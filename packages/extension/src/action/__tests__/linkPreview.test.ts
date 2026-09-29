@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { LinkPreview } from "../linkPreview"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { findAnchorElementFromParent } from "@/services/dom"
 import { getScreenSize } from "@/services/screen"
 import { DRAG_OPEN_MODE } from "@/const"
@@ -10,7 +10,7 @@ vi.mock("@/services/ipc", () => ({
   Ipc: {
     send: vi.fn(),
   },
-  BgCommand: {
+  ServiceWorkerCommand: {
     openSidePanel: "openSidePanel",
     openPopups: "openPopups",
     openPopupAndClick: "openPopupAndClick",
@@ -55,10 +55,13 @@ describe("LinkPreview", () => {
         selectionText: "",
       })
 
-      expect(Ipc.send).toHaveBeenCalledWith(BgCommand.openSidePanel, {
-        url: href,
-        isLinkCommand: true,
-      })
+      expect(Ipc.send).toHaveBeenCalledWith(
+        ServiceWorkerCommand.openSidePanel,
+        {
+          url: href,
+          isLinkCommand: true,
+        },
+      )
     })
 
     it("LP-02: Should NOT send openSidePanel when openMode is PREVIEW_SIDE_PANEL and href is empty", async () => {
@@ -100,7 +103,7 @@ describe("LinkPreview", () => {
 
       expect(Ipc.send).toHaveBeenCalledTimes(1)
       expect(Ipc.send).not.toHaveBeenCalledWith(
-        BgCommand.openPopups,
+        ServiceWorkerCommand.openPopups,
         expect.any(Object),
       )
     })

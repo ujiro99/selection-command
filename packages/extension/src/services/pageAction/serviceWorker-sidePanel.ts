@@ -209,7 +209,7 @@ const runPendingSidePanelAction = async (
  * Handle a new side panel port connection.
  * If a tabId is queued for this origin, registers the port in sidePanelPorts and
  * attaches a disconnect listener. Always runs any pending page action steps.
- * Called from background_script.ts onConnect when port.sender.tab.id is absent.
+ * Called from service_worker.ts onConnect when port.sender.tab.id is absent.
  */
 export const handleSidePanelConnect = async (
   port: chrome.runtime.Port,

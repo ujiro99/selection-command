@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Ipc, BgCommand } from "@/services/ipc"
+import { Ipc, ServiceWorkerCommand } from "@/services/ipc"
 import { useTabContext } from "@/hooks/useTabContext"
 import { isSidePanel } from "@/services/sidePanelDetector"
 
@@ -81,8 +81,11 @@ export function useSidePanelNavigation() {
       e.preventDefault()
       e.stopPropagation()
 
-      // Notify background script
-      Ipc.send(BgCommand.navigateSidePanel, { url: href, tabId: activeTabId })
+      // Notify service worker
+      Ipc.send(ServiceWorkerCommand.navigateSidePanel, {
+        url: href,
+        tabId: activeTabId,
+      })
     }
 
     // Register in capture phase (executes before other handlers)

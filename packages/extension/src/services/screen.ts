@@ -43,7 +43,7 @@ export async function getScreenSize(hint?: {
 }): Promise<ScreenSize> {
   if (isServiceWorker()) {
     try {
-      // For background_script.ts
+      // For service_worker.ts
       const displays = await chrome.system.display.getInfo()
 
       let hintTop = hint?.top
