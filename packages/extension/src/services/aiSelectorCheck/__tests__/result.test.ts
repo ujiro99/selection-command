@@ -29,6 +29,18 @@ describe("isGroupPassed", () => {
     )
   })
 
+  it("fails when any selector is invalid even if another matches", () => {
+    expect(
+      isGroupPassed({
+        kind: SELECTOR_KIND.SUBMIT,
+        matches: [
+          { selector: "a:has(", found: false, invalid: true },
+          { selector: "#ok", found: true },
+        ],
+      }),
+    ).toBe(false)
+  })
+
   it("passes an empty group (service without selectors)", () => {
     expect(isGroupPassed(group(SELECTOR_KIND.SUBMIT, []))).toBe(true)
   })

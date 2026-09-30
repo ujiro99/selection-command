@@ -10,6 +10,8 @@ export type SelectorKind = (typeof SELECTOR_KIND)[keyof typeof SELECTOR_KIND]
 export type SelectorMatch = {
   selector: string
   found: boolean
+  /** The selector is not valid CSS (querySelector throws). */
+  invalid?: boolean
 }
 
 export type SelectorGroupResult = {
@@ -42,10 +44,12 @@ export type ServiceCheckResult = {
 
 /**
  * A group passes when any of its selectors matches, because the extension
- * joins each list into a single selector (`a, b, c`) at runtime.
+ * joins each list into a single selector (`a, b, c`) at runtime. For the
+ * same reason, a single invalid selector breaks the whole group.
  */
 export const isGroupPassed = (group: SelectorGroupResult): boolean =>
-  group.matches.length === 0 || group.matches.some((m) => m.found)
+  group.matches.length === 0 ||
+  (group.matches.some((m) => m.found) && !group.matches.some((m) => m.invalid))
 
 export const decideVerdict = (
   pageState: PageState,
@@ -94,7 +98,8 @@ export const toMarkdown = (results: ServiceCheckResult[]): string => {
       for (const g of r.groups) {
         lines.push(`- \`${g.kind}\`${isGroupPassed(g) ? "" : " ❌"}`)
         for (const m of g.matches) {
-          lines.push(`  - ${m.found ? "✅" : "❌"} \`${m.selector}\``)
+          const mark = m.invalid ? "⛔ invalid" : m.found ? "✅" : "❌"
+          lines.push(`  - ${mark} \`${m.selector}\``)
         }
       }
     }

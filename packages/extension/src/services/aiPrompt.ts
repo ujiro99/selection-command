@@ -10,7 +10,7 @@ import {
 export { getAiServicesFallback }
 
 /** External endpoint URL for AI service config data. */
-const AI_SERVICES_URL = `${HUB_URL}/data/ai-services.json`
+export const AI_SERVICES_URL = `${HUB_URL}/data/ai-services.json`
 
 /** Today's date string "YYYY-MM-DD" used as cache TTL key. */
 const todayStr = (): string => new Date().toISOString().slice(0, 10)

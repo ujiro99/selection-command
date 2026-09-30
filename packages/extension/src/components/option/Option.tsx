@@ -12,6 +12,7 @@ import { TableOfContents } from "@/components/option/TableOfContents"
 import { ImportExport } from "@/components/option/ImportExport"
 import { UserSupport } from "@/components/option/UserSupport"
 import { DeveloperSupport } from "@/components/option/DeveloperSupport"
+import { DevTools } from "@/components/option/DevTools"
 import { HubBanner } from "@/components/option/HubBanner"
 import { HubUserInfo } from "@/components/option/HubUserInfo"
 import { SettingForm } from "@/components/option/SettingForm"
@@ -83,6 +84,7 @@ export function Option() {
             <ImportExport />
             <UserSupport />
             <DeveloperSupport />
+            <DevTools />
           </div>
         </aside>
         <main>

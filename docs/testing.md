@@ -206,3 +206,21 @@ yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リスト
 ```
 
 結果は `packages/extension/selector-check-results/`（`result.json` / `summary.md` / スクリーンショット）に出力される。
+
+### 開発者向け: ブラウザ上での一括チェック
+
+ログインが必要なサービス（claude 等）や、CI で Bot 判定されるサービスは、開発者が普段使っているブラウザ（ログイン済み）で確認する。
+
+1. 設定画面を開き、DevTools のコンソールで以下を実行してリロードする
+
+   ```js
+   localStorage.setItem("selectionCommand.devTools", "true")
+   ```
+
+2. 左メニューに表示される **Developer Tools > AI Selector Check** を開き、`Run check` を押す
+   - `ai-services.json` の取得元は `Hub (latest)`（デプロイ済みの最新）/ `Bundled (build time)`（ビルド時に同梱。ローカル編集の確認用）から選択
+   - 全サービスをバックグラウンドタブで開き、各タブの content script がセレクタを判定する（判定ロジックは CI と共通）
+   - 送信ボタンが入力後にしか出現しない場合、空の入力欄に一時的にダミーテキストを入力して確認し、直後に削除する（送信はしない）
+3. 結果はダイアログに一覧表示される。サービス名クリックで該当タブへ移動、`Copy as Markdown` で issue 用の表をコピー、`Close tabs` で開いたタブを閉じる
+
+無効化する場合は `localStorage.removeItem("selectionCommand.devTools")`。

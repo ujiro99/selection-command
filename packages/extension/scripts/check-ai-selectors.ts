@@ -74,35 +74,50 @@ const parseArgs = () => {
   return { only, headless: args.includes("--headless") }
 }
 
-/** Wait until any selector of the list matches, like the extension does. */
+/**
+ * Wait until any selector of the list matches.
+ * document.querySelector is used instead of Playwright locators so that the
+ * selectors are evaluated exactly as the extension does at runtime (the
+ * list joined into `a, b, c`).
+ */
 const waitForAny = async (
   page: Page,
   selectors: string[],
-  state: "visible" | "attached",
   timeout: number,
 ): Promise<boolean> => {
   if (selectors.length === 0) return false
   try {
-    await page.locator(selectors.join(", ")).first().waitFor({ state, timeout })
+    await page.waitForFunction(
+      (sels) => {
+        try {
+          return document.querySelector(sels.join(", ")) != null
+        } catch {
+          return false
+        }
+      },
+      selectors,
+      { timeout, polling: 500 },
+    )
     return true
   } catch {
     return false
   }
 }
 
-const matchEach = async (
+const matchEach = (
   page: Page,
   selectors: string[],
 ): Promise<SelectorGroupResult["matches"]> =>
-  Promise.all(
-    selectors.map(async (selector) => ({
-      selector,
-      found:
-        (await page
-          .locator(selector)
-          .count()
-          .catch(() => 0)) > 0,
-    })),
+  page.evaluate(
+    (sels) =>
+      sels.map((selector) => {
+        try {
+          return { selector, found: document.querySelector(selector) != null }
+        } catch {
+          return { selector, found: false, invalid: true }
+        }
+      }),
+    selectors,
   )
 
 const checkService = async (
@@ -119,14 +134,9 @@ const checkService = async (
   })
 
   // Give the SPA a chance to render the composer before judging.
-  const inputFound = await waitForAny(
-    page,
-    inputSelectors,
-    "visible",
-    INPUT_TIMEOUT_MS,
-  )
+  const inputFound = await waitForAny(page, inputSelectors, INPUT_TIMEOUT_MS)
 
-  // A visible composer means the page is usable, so only classify the page
+  // A found composer means the page is usable, so only classify the page
   // (challenge / login wall) when the input could not be found.
   const pageState = inputFound
     ? PAGE_STATE.OK
@@ -147,11 +157,13 @@ const checkService = async (
   }
 
   if (inputFound) {
-    // Type into the first visible input so that the submit button appears.
-    const input = page.locator(inputSelectors.join(", ")).first()
-    await input.click()
+    // Type into the input so that the submit button appears.
+    await page.evaluate(
+      (sel) => (document.querySelector(sel) as HTMLElement | null)?.focus(),
+      inputSelectors.join(", "),
+    )
     await page.keyboard.type(DUMMY_TEXT)
-    await waitForAny(page, submitSelectors, "attached", SUBMIT_TIMEOUT_MS)
+    await waitForAny(page, submitSelectors, SUBMIT_TIMEOUT_MS)
   }
 
   const groups: SelectorGroupResult[] = [
