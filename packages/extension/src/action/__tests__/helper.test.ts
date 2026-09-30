@@ -13,6 +13,7 @@ import {
 } from "@/services/chrome"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
+import { isSidePanelSupported } from "@/services/sidePanelSupport"
 
 // Mock dependencies
 vi.mock("@/services/serviceWorkerData", () => ({
@@ -32,6 +33,10 @@ vi.mock("@/services/settings/enhancedSettings", () => ({
   enhancedSettings: {
     get: vi.fn(),
   },
+}))
+
+vi.mock("@/services/sidePanelSupport", () => ({
+  isSidePanelSupported: vi.fn(() => true),
 }))
 
 vi.mock("@/services/commandMetrics", () => ({
@@ -327,6 +332,26 @@ describe("helper", () => {
       expect(response).toHaveBeenCalledWith(false)
 
       consoleErrorSpy.mockRestore()
+    })
+
+    it("OSP-06: Should return false without opening when side panel API is not supported", () => {
+      const param = { url: "https://example.com", isLinkCommand: false }
+      const sender = { tab: { id: 123 } } as any
+      const response = vi.fn()
+
+      vi.mocked(isSidePanelSupported).mockReturnValueOnce(false)
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
+
+      const result = openSidePanel(param, sender, response)
+
+      expect(result).toBe(false)
+      expect(response).toHaveBeenCalledWith(false)
+      expect(_openSidePanel).not.toHaveBeenCalled()
+      expect(ServiceWorkerData.update).not.toHaveBeenCalled()
+
+      consoleWarnSpy.mockRestore()
     })
   })
 

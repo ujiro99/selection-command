@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, vi, afterEach } from "vitest"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { PAGE_ACTION_MODES, SEARCH_MODES } from "../OpenModeToggleField"
 
@@ -29,5 +29,26 @@ describe("OpenModeToggleField modes", () => {
   it("OM-03: PAGE_ACTION_OPEN_MODE.SIDE_PANEL equals OPEN_MODE.SIDE_PANEL", () => {
     expect(PAGE_ACTION_OPEN_MODE.SIDE_PANEL).toBe(OPEN_MODE.SIDE_PANEL)
     expect(PAGE_ACTION_OPEN_MODE.SIDE_PANEL).toBe("sidePanel")
+  })
+
+  describe("when side panel API is not supported", () => {
+    const originalSidePanel = chrome.sidePanel
+
+    afterEach(() => {
+      ;(chrome as any).sidePanel = originalSidePanel
+      vi.resetModules()
+    })
+
+    it("OM-04: SEARCH_MODES and PAGE_ACTION_MODES exclude SIDE_PANEL", async () => {
+      ;(chrome as any).sidePanel = undefined
+      vi.resetModules()
+
+      const mod = await import("../OpenModeToggleField")
+
+      expect(mod.SEARCH_MODES).not.toContain(OPEN_MODE.SIDE_PANEL)
+      expect(mod.PAGE_ACTION_MODES).not.toContain(
+        PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
+      )
+    })
   })
 })

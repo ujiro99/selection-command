@@ -13,6 +13,10 @@ import {
 import { getScreenSize } from "@/services/screen"
 import { Ipc } from "@/services/ipc"
 import { t } from "@/services/i18n"
+import {
+  isSidePanelSupported,
+  isSidePanelCloseSupported,
+} from "@/services/sidePanelSupport"
 
 /**
  * Check if a window exists
@@ -700,6 +704,10 @@ export const openSidePanel = async (
 ): Promise<{ tabId: number | undefined }> => {
   const { url, tabId } = param
 
+  if (!isSidePanelSupported()) {
+    throw new Error("Side panel API is not supported in this browser")
+  }
+
   if (!tabId) {
     console.warn("No valid tab ID for side panel")
     return {
@@ -734,10 +742,13 @@ const SIDE_PANEL_CLOSE_ANIMATION = 1000
  * @returns {Promise<void>} A promise that resolves when the side panel is closed
  */
 export const closeSidePanel = async (tabId: number): Promise<void> => {
-  try {
-    await chrome.sidePanel.close({ tabId: tabId })
-  } catch (e) {
-    console.warn("Failed to close side panel:", e)
+  if (!isSidePanelSupported()) return
+  if (isSidePanelCloseSupported()) {
+    try {
+      await chrome.sidePanel.close({ tabId: tabId })
+    } catch (e) {
+      console.warn("Failed to close side panel:", e)
+    }
   }
   // Wait for the side panel close animation to finish before disabling it to prevent visual glitches.
   await sleep(SIDE_PANEL_CLOSE_ANIMATION)
@@ -760,6 +771,10 @@ export const updateSidePanelUrl = async (
   param: UpdateSidePanelUrlProps,
 ): Promise<void> => {
   const { url, tabId } = param
+
+  if (!isSidePanelSupported()) {
+    throw new Error("Side panel API is not supported in this browser")
+  }
 
   try {
     // Update the side panel URL

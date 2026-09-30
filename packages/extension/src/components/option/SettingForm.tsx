@@ -52,6 +52,7 @@ import { toCommandTree, toFlatten } from "@/services/option/commandTree"
 import { isCommand, removeUnstoredParam } from "@/services/option/commandUtils"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
+import { isSidePanelSupported } from "@/services/sidePanelSupport"
 import DefaultSettings, {
   emptySettings,
   POPUP_DELAY_DEFAULT,
@@ -65,6 +66,9 @@ import {
   shortcutSettingsSchema,
   userStyleSchema,
 } from "@/types/schema"
+
+// Side panel is an optional capability (e.g. not available on Opera).
+const sidePanelSupported = isSidePanelSupported()
 
 const formSchema = z
   .object({
@@ -531,10 +535,16 @@ export function SettingForm({ className }: { className?: string }) {
             control={form.control}
             name="linkCommand.openMode"
             formLabel={t("openMode")}
-            options={e2a(DRAG_OPEN_MODE).map((opt) => ({
-              name: t(`openMode_${opt}`),
-              value: opt,
-            }))}
+            options={e2a(DRAG_OPEN_MODE)
+              .filter(
+                (opt) =>
+                  sidePanelSupported ||
+                  opt !== DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL,
+              )
+              .map((opt) => ({
+                name: t(`openMode_${opt}`),
+                value: opt,
+              }))}
           />
           <SelectField
             control={form.control}
@@ -603,14 +613,15 @@ export function SettingForm({ className }: { className?: string }) {
             formLabel={t("showIndicator")}
             description={t("showIndicator_desc")}
           />
-          {linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL && (
-            <SwitchField
-              control={form.control}
-              name="linkCommand.sidePanelAutoHide"
-              formLabel={t("sidePanelAutoHide_link")}
-              tooltip={t("sidePanelAutoHide_link_desc")}
-            />
-          )}
+          {sidePanelSupported &&
+            linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL && (
+              <SwitchField
+                control={form.control}
+                name="linkCommand.sidePanelAutoHide"
+                formLabel={t("sidePanelAutoHide_link")}
+                tooltip={t("sidePanelAutoHide_link_desc")}
+              />
+            )}
         </section>
         <hr />
 
@@ -639,12 +650,14 @@ export function SettingForm({ className }: { className?: string }) {
             }}
           />
 
-          <SwitchField
-            control={form.control}
-            name="windowOption.sidePanelAutoHide"
-            formLabel={t("sidePanelAutoHide")}
-            tooltip={t("sidePanelAutoHide_desc")}
-          />
+          {sidePanelSupported && (
+            <SwitchField
+              control={form.control}
+              name="windowOption.sidePanelAutoHide"
+              formLabel={t("sidePanelAutoHide")}
+              tooltip={t("sidePanelAutoHide_desc")}
+            />
+          )}
         </section>
         <hr />
 

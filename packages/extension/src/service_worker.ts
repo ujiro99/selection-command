@@ -37,6 +37,7 @@ import {
 import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import { ensureOnboardingAssignment } from "@/services/experiments"
 import * as IconColorServiceWorker from "@/services/iconColor/serviceWorker"
+import { getSidePanelEvent } from "@/services/sidePanelSupport"
 
 import { importIf } from "@import-if"
 importIf("production", "./lib/sentry/initialize")
@@ -686,26 +687,22 @@ chrome.commands.onCommand.addListener(async (commandName) => {
   }
 })
 
-try {
-  chrome.sidePanel.onOpened.addListener(async () => {
-    const settings = await enhancedSettings.getSection(
-      CACHE_SECTIONS.USER_SETTINGS,
-    )
-    if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
-      // Force close the menu
-      try {
-        const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
-        ret.filter((v) => v).forEach((v) => console.debug(v))
-      } catch (error) {
-        console.error("Failed to close menu:", error)
-      }
+// Side panel is an optional capability (e.g. not available on Opera), so
+// each event is feature-detected individually.
+getSidePanelEvent("onOpened")?.addListener(async () => {
+  const settings = await enhancedSettings.getSection(
+    CACHE_SECTIONS.USER_SETTINGS,
+  )
+  if (!settings.startupMethod?.keepMenuOpenOnFocusChange) {
+    // Force close the menu
+    try {
+      const ret = await Ipc.sendAllTab(TabCommand.closeMenu)
+      ret.filter((v) => v).forEach((v) => console.debug(v))
+    } catch (error) {
+      console.error("Failed to close menu:", error)
     }
-  })
-} catch (error) {
-  // Ignore errors during initialization (e.g., in test environment, or on
-  // Chrome versions without chrome.sidePanel.onOpened)
-  console.debug("Failed to initialize sidePanel onOpened listener:", error)
-}
+  }
+})
 
 // SidePanel auto-hide functionality
 // Track tabs with active side panels
@@ -713,7 +710,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   ActionHelper.sidePanelClosed(tabId)
   updateActiveTabId()
 })
-chrome.sidePanel.onClosed.addListener(({ tabId }) =>
+getSidePanelEvent("onClosed")?.addListener(({ tabId }) =>
   ActionHelper.sidePanelClosed(tabId),
 )
 

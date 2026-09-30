@@ -13,12 +13,17 @@ import { Tooltip } from "@/components/Tooltip"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
+import { isSidePanelSupported } from "@/services/sidePanelSupport"
 
 const isEdge =
   typeof window !== "undefined" && Boolean(window.navigator?.userAgent)
     ? Bowser.getParser(window.navigator.userAgent).getBrowserName() ===
       "Microsoft Edge"
     : false
+
+// SidePanel is not offered on Microsoft Edge, nor on browsers without the
+// chrome.sidePanel API (e.g. Opera).
+const canUseSidePanel = !isEdge && isSidePanelSupported()
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -51,13 +56,13 @@ const getIconForMode = (mode: string) => {
   return "/setting/open_mode/popup.png"
 }
 
-// Order of options (SidePanel is not supported on Microsoft Edge)
+// Order of options
 export const SEARCH_MODES = [
   OPEN_MODE.POPUP,
   OPEN_MODE.WINDOW,
   OPEN_MODE.TAB,
   OPEN_MODE.BACKGROUND_TAB,
-  ...(isEdge ? [] : [OPEN_MODE.SIDE_PANEL]),
+  ...(canUseSidePanel ? [OPEN_MODE.SIDE_PANEL] : []),
 ]
 
 export const PAGE_ACTION_MODES = [
@@ -66,7 +71,7 @@ export const PAGE_ACTION_MODES = [
   PAGE_ACTION_OPEN_MODE.TAB,
   PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
   PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
-  ...(isEdge ? [] : [PAGE_ACTION_OPEN_MODE.SIDE_PANEL]),
+  ...(canUseSidePanel ? [PAGE_ACTION_OPEN_MODE.SIDE_PANEL] : []),
 ]
 
 type OpenModeToggleFieldProps = {

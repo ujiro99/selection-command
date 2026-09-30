@@ -17,6 +17,7 @@ import { incrementCommandExecutionCount } from "@/services/commandMetrics"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Ipc, TabCommand, NavigateSidePanelProps } from "@/services/ipc"
 import { ServiceWorkerData } from "@/services/serviceWorkerData"
+import { isSidePanelSupported } from "@/services/sidePanelSupport"
 import type { CommandVariable } from "@/types"
 
 type Sender = chrome.runtime.MessageSender
@@ -107,6 +108,12 @@ export const openSidePanel = (
   sender: Sender,
   response: (res: unknown) => void,
 ): boolean => {
+  if (!isSidePanelSupported()) {
+    console.warn("Side panel is not supported in this browser")
+    response(false)
+    return false
+  }
+
   let tabId = sender.tab?.id
   if (tabId == null) {
     const serviceWorkerData = ServiceWorkerData.get()
