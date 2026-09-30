@@ -748,15 +748,131 @@ describe("Uninstall URL (onInstalled)", () => {
   })
 })
 
-describe("Side panel optional capability", () => {
-  const originalSidePanel = chrome.sidePanel
+describe("Window listeners: ServiceWorkerData readiness", () => {
+  // Load service_worker with a controllable ServiceWorkerData mock and
+  // return the last registered listener for the given window event.
+  const setup = async (
+    event: "onRemoved" | "onBoundsChanged",
+    initialData: Record<string, unknown>,
+  ) => {
+    let resolveReady!: () => void
+    const ready = vi.fn().mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveReady = resolve
+      }),
+    )
+    let data = initialData
+    const get = vi.fn(() => data)
+    const update = vi.fn().mockResolvedValue(true)
+    vi.doMock("@/services/serviceWorkerData", () => ({
+      ServiceWorkerData: { init: vi.fn(), ready, get, update, set: vi.fn() },
+    }))
+    vi.doMock("@/services/windowStackManager", () => ({
+      WindowStackManager: { getStack: vi.fn().mockResolvedValue([]) },
+    }))
+
+    vi.resetModules()
+    await import("../service_worker")
+
+    const calls = vi.mocked(chrome.windows[event].addListener).mock.calls
+    const listener = calls[calls.length - 1][0] as (
+      arg: unknown,
+    ) => Promise<void>
+    return {
+      listener,
+      get,
+      update,
+      resolveReady: (loaded: Record<string, unknown>) => {
+        data = loaded
+        resolveReady()
+      },
+    }
+  }
 
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   afterEach(() => {
+    vi.doUnmock("@/services/serviceWorkerData")
+    vi.doUnmock("@/services/windowStackManager")
+  })
+
+  it("SWR-01: onRemoved should remove the window using the loaded state", async () => {
+    const { listener, get, update, resolveReady } = await setup("onRemoved", {
+      normalWindows: [], // Empty default before the state is loaded
+    })
+
+    const done = listener(10)
+    await Promise.resolve()
+    expect(get).not.toHaveBeenCalled()
+
+    const loaded = {
+      normalWindows: [
+        { id: 10, commandId: "a", srcWindowId: 1 },
+        { id: 20, commandId: "b", srcWindowId: 1 },
+      ],
+    }
+    resolveReady(loaded)
+    await done
+
+    expect(update).toHaveBeenCalledWith(expect.any(Function))
+    const updater = update.mock.calls[0][0]
+    expect(updater(loaded)).toEqual({
+      normalWindows: [{ id: 20, commandId: "b", srcWindowId: 1 }],
+    })
+  })
+
+  it("SWR-02: onRemoved should not write when the window is not a normal window", async () => {
+    const { listener, update, resolveReady } = await setup("onRemoved", {
+      normalWindows: [],
+    })
+
+    const done = listener(99)
+    resolveReady({
+      normalWindows: [{ id: 10, commandId: "a", srcWindowId: 1 }],
+    })
+    await done
+
+    expect(update).not.toHaveBeenCalled()
+  })
+
+  it("SWR-03: onBoundsChanged should read normalWindows only after the state is loaded", async () => {
+    const { listener, get, resolveReady } = await setup("onBoundsChanged", {
+      normalWindows: [],
+    })
+
+    const done = listener({ id: 10, width: 800, height: 600 })
+    await Promise.resolve()
+    expect(get).not.toHaveBeenCalled()
+
+    resolveReady({ normalWindows: [] })
+    await done
+
+    expect(get).toHaveBeenCalled()
+  })
+})
+
+describe("Side panel optional capability", () => {
+  const originalSidePanel = chrome.sidePanel
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // Re-mock explicitly since preceding suites may doUnmock this module.
+    vi.doMock("@/services/serviceWorkerData", () => ({
+      ServiceWorkerData: {
+        init: vi.fn(),
+        ready: vi.fn().mockResolvedValue(undefined),
+        get: vi.fn(() => ({ normalWindows: [], sidePanelTabs: [] })),
+        update: vi.fn().mockResolvedValue(true),
+        set: vi.fn(),
+      },
+    }))
+  })
+
+  afterEach(() => {
     setSidePanel(originalSidePanel)
+    vi.doUnmock("@/services/serviceWorkerData")
   })
 
   it("SP-01: registers onOpened/onClosed listeners when side panel API is available", async () => {

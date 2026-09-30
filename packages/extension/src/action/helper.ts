@@ -114,48 +114,61 @@ export const openSidePanel = (
     return false
   }
 
-  let tabId = sender.tab?.id
-  if (tabId == null) {
-    const serviceWorkerData = ServiceWorkerData.get()
-    if (serviceWorkerData.activeTabId == null) {
-      console.warn("No active tab ID available for opening side panel")
-      response(false)
-      return false
-    }
-    tabId = serviceWorkerData.activeTabId
-  }
-
-  // Since it needs to be tied to a user action, avoid asynchronous processing
-  // and open the side panel immediately.
-  _openSidePanel({
-    ...param,
-    tabId,
-  })
-    .then(() => {
-      incrementCommandExecutionCount(tabId)
+  const open = (tabId: number) => {
+    _openSidePanel({
+      ...param,
+      tabId,
     })
-    .then(() => {
-      // Register the tab ID for tracking
-      if (tabId) {
+      .then(() => {
+        incrementCommandExecutionCount(tabId)
+      })
+      .then(() => {
+        // Register the tab ID for tracking
         const newEntry = { tabId, isLinkCommand: param.isLinkCommand ?? false }
         return ServiceWorkerData.update((data) => ({
           sidePanelTabs: data.sidePanelTabs.some((t) => t.tabId === tabId)
             ? data.sidePanelTabs.map((t) => (t.tabId === tabId ? newEntry : t))
             : [...data.sidePanelTabs, newEntry],
         }))
+      })
+      .then(() => {
+        registerSidePanelTab(tabId, toUrl(param.url))
+      })
+      .then(() => {
+        response(true)
+      })
+      .catch((error) => {
+        console.error("Error during side panel operations:", error)
+        response(false)
+      })
+  }
+
+  // Since it needs to be tied to a user action, avoid asynchronous processing
+  // and open the side panel immediately whenever a tab ID is available.
+  const tabId = sender.tab?.id ?? ServiceWorkerData.get().activeTabId
+  if (tabId != null) {
+    open(tabId)
+    return true
+  }
+
+  // activeTabId may still be the empty default right after the service worker
+  // restarts. Wait for the persisted state and retry. This path is
+  // asynchronous and may lose the user gesture, but it is only taken when no
+  // tab ID is available synchronously, which would fail anyway.
+  ServiceWorkerData.ready()
+    .then(() => {
+      const activeTabId = ServiceWorkerData.get().activeTabId
+      if (activeTabId == null) {
+        console.warn("No active tab ID available for opening side panel")
+        response(false)
+        return
       }
-    })
-    .then(() => {
-      registerSidePanelTab(tabId, toUrl(param.url))
-    })
-    .then(() => {
-      response(true)
+      open(activeTabId)
     })
     .catch((error) => {
-      console.error("Error during side panel operations:", error)
+      console.error("Failed to load service worker data:", error)
       response(false)
     })
-
   return true
 }
 
@@ -171,6 +184,8 @@ export const closeSidePanel = (
   enhancedSettings
     .get()
     .then(async (settings) => {
+      // Make sure sidePanelTabs is loaded, not the empty default.
+      await ServiceWorkerData.ready()
       const serviceWorkerData = ServiceWorkerData.get()
       const tab = serviceWorkerData.sidePanelTabs.find((t) => t.tabId === tabId)
       if (tab) {
@@ -236,23 +251,24 @@ export const navigateSidePanel = (
     return false
   }
 
-  // Check if tab is in sidePanelTabs
-  const serviceWorkerData = ServiceWorkerData.get()
-  if (!serviceWorkerData.sidePanelTabs.some((t) => t.tabId === tabId)) {
-    console.warn("[navigateSidePanel] Tab is not in sidePanelTabs:", tabId)
-    return false
-  }
-
-  // Fire-and-forget: update URL in the background
-  _updateSidePanelUrl({ url, tabId })
+  // Fire-and-forget: update URL without blocking the message handler
+  ServiceWorkerData.ready()
     .then(() => {
-      // Update ServiceWorkerData's sidePanelUrls
-      return ServiceWorkerData.update((data) => ({
-        sidePanelUrls: {
-          ...data.sidePanelUrls,
-          [tabId]: url,
-        },
-      }))
+      // Check if tab is in sidePanelTabs (after the persisted state is loaded)
+      const serviceWorkerData = ServiceWorkerData.get()
+      if (!serviceWorkerData.sidePanelTabs.some((t) => t.tabId === tabId)) {
+        console.warn("[navigateSidePanel] Tab is not in sidePanelTabs:", tabId)
+        return
+      }
+      return _updateSidePanelUrl({ url, tabId }).then(() => {
+        // Update ServiceWorkerData's sidePanelUrls
+        return ServiceWorkerData.update((data) => ({
+          sidePanelUrls: {
+            ...data.sidePanelUrls,
+            [tabId]: url,
+          },
+        }))
+      })
     })
     .catch((error) => {
       console.error("[navigateSidePanel] Error:", error)

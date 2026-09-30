@@ -423,21 +423,20 @@ chrome.windows.onFocusChanged.addListener(async (windowId: number) => {
   await clearSelectionTextUnlessKeepOpen()
 })
 
-chrome.windows.onRemoved.addListener((windowId: number) => {
-  const data = ServiceWorkerData.get()
-  const normalWindows = data.normalWindows ?? []
-  const idx = normalWindows.findIndex((w) => w.id === windowId)
+chrome.windows.onRemoved.addListener(async (windowId: number) => {
+  // Wait for the persisted state so we never write back the empty default.
+  await ServiceWorkerData.ready()
+  const normalWindows = ServiceWorkerData.get().normalWindows ?? []
+  if (!normalWindows.some((w) => w.id === windowId)) return
 
-  if (idx >= 0) {
-    normalWindows.splice(idx, 1)
-    ServiceWorkerData.set((data) => ({
-      ...data,
-      normalWindows,
-    }))
-  }
+  // Compute from the latest state inside the updater.
+  await ServiceWorkerData.update((data) => ({
+    normalWindows: (data.normalWindows ?? []).filter((w) => w.id !== windowId),
+  }))
 })
 
 chrome.windows.onBoundsChanged.addListener(async (window) => {
+  await ServiceWorkerData.ready()
   const data = ServiceWorkerData.get()
   const windowStack = await WindowStackManager.getStack()
   for (const layer of [...windowStack, data.normalWindows]) {

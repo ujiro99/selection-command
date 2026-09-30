@@ -212,6 +212,13 @@ export const Ipc = {
    * @throws {Error} When connection to the tab fails or times out
    */
   async ensureConnection(tabId: number): Promise<void> {
+    try {
+      // Wait for the persisted state so connectedTabs is not the empty default.
+      await ServiceWorkerData.ready()
+    } catch (error) {
+      // Fall back to connecting; a redundant connection attempt is harmless.
+      console.error("Failed to load service worker data:", error)
+    }
     if (ServiceWorkerData.get()?.connectedTabs.includes(tabId)) {
       // If already connected, resolve immediately
       return

@@ -20,6 +20,7 @@ vi.mock("@/services/serviceWorkerData", () => ({
   ServiceWorkerData: {
     get: vi.fn(),
     update: vi.fn(),
+    ready: vi.fn(),
   },
 }))
 
@@ -46,6 +47,7 @@ vi.mock("@/services/commandMetrics", () => ({
 describe("helper", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.mocked(ServiceWorkerData.ready).mockResolvedValue(undefined)
   })
 
   describe("navigateSidePanel", () => {
@@ -97,7 +99,7 @@ describe("helper", () => {
       expect(result).toBe(false)
     })
 
-    it("NSP-05: Should return false when tab is not in sidePanelTabs", () => {
+    it("NSP-05: Should return false when tab is not in sidePanelTabs", async () => {
       const param = { url: "https://example.com", tabId: 123 }
       const sender = {} as any
 
@@ -107,10 +109,22 @@ describe("helper", () => {
           { tabId: 789, isLinkCommand: false },
         ], // Different tab IDs
       } as any)
+      const consoleWarnSpy = vi
+        .spyOn(console, "warn")
+        .mockImplementation(() => {})
 
       const result = navigateSidePanel(param, sender)
 
       expect(result).toBe(false)
+      await vi.waitFor(() => {
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          "[navigateSidePanel] Tab is not in sidePanelTabs:",
+          123,
+        )
+      })
+      expect(updateSidePanelUrl).not.toHaveBeenCalled()
+
+      consoleWarnSpy.mockRestore()
     })
 
     it("NSP-06: Should update URL when all conditions are met", async () => {
@@ -202,6 +216,34 @@ describe("helper", () => {
         expect.any(Function),
       )
     })
+
+    it("NSP-09: Should check sidePanelTabs only after ServiceWorkerData is ready", async () => {
+      const tabId = 123
+      const url = "https://example.com"
+      let resolveReady!: () => void
+      vi.mocked(ServiceWorkerData.ready).mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveReady = resolve
+        }),
+      )
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
+        sidePanelTabs: [{ tabId, isLinkCommand: false }],
+        sidePanelUrls: {},
+      } as unknown as ServiceWorkerData)
+      vi.mocked(updateSidePanelUrl).mockResolvedValue(undefined)
+      vi.mocked(ServiceWorkerData.update).mockResolvedValue(true)
+
+      navigateSidePanel({ url, tabId }, {} as chrome.runtime.MessageSender)
+      await Promise.resolve()
+      expect(ServiceWorkerData.get).not.toHaveBeenCalled()
+      expect(updateSidePanelUrl).not.toHaveBeenCalled()
+
+      resolveReady()
+
+      await vi.waitFor(() => {
+        expect(updateSidePanelUrl).toHaveBeenCalledWith({ url, tabId })
+      })
+    })
   })
 
   describe("openSidePanel", () => {
@@ -260,7 +302,7 @@ describe("helper", () => {
       expect(response).toHaveBeenCalledWith(true)
     })
 
-    it("OSP-03: Should return false when both sender.tab.id and serviceWorkerData.activeTabId are null", () => {
+    it("OSP-03: Should respond false when no tab ID is available even after ServiceWorkerData is ready", async () => {
       const param = { url: "https://example.com", isLinkCommand: false }
       const sender = {} as any
       const response = vi.fn()
@@ -276,8 +318,11 @@ describe("helper", () => {
 
       const result = openSidePanel(param, sender, response)
 
-      expect(result).toBe(false)
-      expect(response).toHaveBeenCalledWith(false)
+      expect(result).toBe(true)
+      await vi.waitFor(() => {
+        expect(response).toHaveBeenCalledWith(false)
+      })
+      expect(ServiceWorkerData.ready).toHaveBeenCalled()
       expect(_openSidePanel).not.toHaveBeenCalled()
 
       consoleWarnSpy.mockRestore()
@@ -333,15 +378,101 @@ describe("helper", () => {
 
       consoleErrorSpy.mockRestore()
     })
-
-    it("OSP-06: Should return false without opening when side panel API is not supported", () => {
+    it("OSP-06: Should open immediately without waiting for ServiceWorkerData when a tab ID is available", () => {
       const param = { url: "https://example.com", isLinkCommand: false }
-      const sender = { tab: { id: 123 } } as any
+      const sender = { tab: { id: 123 } } as chrome.runtime.MessageSender
+      const response = vi.fn()
+
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
+        activeTabId: null,
+        sidePanelTabs: [],
+      } as unknown as ServiceWorkerData)
+      vi.mocked(_openSidePanel).mockResolvedValue({
+        tabId: 123,
+      } as unknown as Awaited<ReturnType<typeof _openSidePanel>>)
+
+      openSidePanel(param, sender, response)
+
+      // Called synchronously to keep the user gesture
+      expect(_openSidePanel).toHaveBeenCalledWith({ ...param, tabId: 123 })
+      expect(ServiceWorkerData.ready).not.toHaveBeenCalled()
+    })
+
+    it("OSP-07: Should wait for ServiceWorkerData and use the loaded activeTabId", async () => {
+      const activeTabId = 456
+      const param = { url: "https://example.com", isLinkCommand: false }
+      const sender = {} as chrome.runtime.MessageSender
+      const response = vi.fn()
+      const loadedData = {
+        activeTabId,
+        sidePanelTabs: [],
+      } as unknown as ServiceWorkerData
+
+      let resolveReady!: () => void
+      vi.mocked(ServiceWorkerData.ready).mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveReady = resolve
+        }),
+      )
+      // Empty default before the persisted state is loaded
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
+        activeTabId: null,
+        sidePanelTabs: [],
+      } as unknown as ServiceWorkerData)
+      vi.mocked(_openSidePanel).mockResolvedValue({
+        tabId: activeTabId,
+      } as unknown as Awaited<ReturnType<typeof _openSidePanel>>)
+      vi.mocked(ServiceWorkerData.update).mockResolvedValue(true)
+
+      openSidePanel(param, sender, response)
+      expect(_openSidePanel).not.toHaveBeenCalled()
+
+      vi.mocked(ServiceWorkerData.get).mockReturnValue(loadedData)
+      resolveReady()
+
+      await vi.waitFor(() => {
+        expect(response).toHaveBeenCalledWith(true)
+      })
+      expect(_openSidePanel).toHaveBeenCalledWith({
+        ...param,
+        tabId: activeTabId,
+      })
+    })
+
+    it("OSP-08: Should respond false when ServiceWorkerData fails to load", async () => {
+      const param = { url: "https://example.com", isLinkCommand: false }
+      const sender = {} as chrome.runtime.MessageSender
+      const response = vi.fn()
+
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
+        activeTabId: null,
+        sidePanelTabs: [],
+      } as unknown as ServiceWorkerData)
+      vi.mocked(ServiceWorkerData.ready).mockRejectedValue(
+        new Error("storage error"),
+      )
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {})
+
+      openSidePanel(param, sender, response)
+
+      await vi.waitFor(() => {
+        expect(response).toHaveBeenCalledWith(false)
+      })
+      expect(_openSidePanel).not.toHaveBeenCalled()
+
+      consoleErrorSpy.mockRestore()
+    })
+
+    it("OSP-09: Should return false without opening when side panel API is not supported", () => {
+      const param = { url: "https://example.com", isLinkCommand: false }
+      const sender = { tab: { id: 123 } } as chrome.runtime.MessageSender
       const response = vi.fn()
 
       vi.mocked(isSidePanelSupported).mockReturnValueOnce(false)
-      const consoleWarnSpy = vi
-        .spyOn(console, "warn")
+      const consoleDebugSpy = vi
+        .spyOn(console, "debug")
         .mockImplementation(() => {})
 
       const result = openSidePanel(param, sender, response)
@@ -351,7 +482,7 @@ describe("helper", () => {
       expect(_openSidePanel).not.toHaveBeenCalled()
       expect(ServiceWorkerData.update).not.toHaveBeenCalled()
 
-      consoleWarnSpy.mockRestore()
+      consoleDebugSpy.mockRestore()
     })
   })
 
@@ -512,6 +643,39 @@ describe("helper", () => {
       expect(response).toHaveBeenCalledWith(false)
 
       consoleWarnSpy.mockRestore()
+    })
+
+    it("CSP-08: Should read sidePanelTabs only after ServiceWorkerData is ready", async () => {
+      const tabId = 123
+      const sender = { tab: { id: tabId } } as chrome.runtime.MessageSender
+      const response = vi.fn()
+      let resolveReady!: () => void
+      vi.mocked(ServiceWorkerData.ready).mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveReady = resolve
+        }),
+      )
+      vi.mocked(enhancedSettings.get).mockResolvedValue({
+        linkCommand: { sidePanelAutoHide: false },
+        windowOption: { sidePanelAutoHide: true },
+      } as unknown as Awaited<ReturnType<typeof enhancedSettings.get>>)
+      vi.mocked(ServiceWorkerData.get).mockReturnValue({
+        sidePanelTabs: [{ tabId, isLinkCommand: false }],
+      } as unknown as ServiceWorkerData)
+      vi.mocked(_closeSidePanel).mockResolvedValue(undefined)
+
+      closeSidePanel(undefined, sender, response)
+      await vi.waitFor(() => {
+        expect(ServiceWorkerData.ready).toHaveBeenCalled()
+      })
+      expect(ServiceWorkerData.get).not.toHaveBeenCalled()
+
+      resolveReady()
+
+      await vi.waitFor(() => {
+        expect(response).toHaveBeenCalledWith(true)
+      })
+      expect(_closeSidePanel).toHaveBeenCalledWith(tabId)
     })
   })
 
