@@ -1,16 +1,5 @@
-import Bowser from "bowser"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE, DRAG_OPEN_MODE } from "@/const"
 import { isSidePanelSupported } from "@/services/sidePanelSupport"
-
-const isEdge =
-  typeof window !== "undefined" && Boolean(window.navigator?.userAgent)
-    ? Bowser.getParser(window.navigator.userAgent).getBrowserName() ===
-      "Microsoft Edge"
-    : false
-
-// SidePanel is not offered on Microsoft Edge, nor on browsers without the
-// chrome.sidePanel API (e.g. Opera).
-export const canUseSidePanel = (): boolean => !isEdge && isSidePanelSupported()
 
 export const isSidePanelMode = (mode: string): boolean =>
   mode === OPEN_MODE.SIDE_PANEL || mode === PAGE_ACTION_OPEN_MODE.SIDE_PANEL
@@ -25,7 +14,7 @@ const withSidePanel = <T extends string>(
   sidePanelMode: T,
   currentValue?: string,
 ): T[] =>
-  canUseSidePanel() || currentValue === sidePanelMode
+  isSidePanelSupported() || currentValue === sidePanelMode
     ? [...modes, sidePanelMode]
     : modes
 
@@ -59,8 +48,8 @@ export const getPageActionModes = (
 
 /**
  * Open modes for the link command.
- * Unlike the command open modes, Edge is not excluded here; only the
- * chrome.sidePanel API availability matters.
+ * PREVIEW_SIDE_PANEL is kept on unsupported browsers only when it is the
+ * current value.
  */
 export const getDragOpenModes = (currentValue?: string): DRAG_OPEN_MODE[] =>
   isSidePanelSupported() || currentValue === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL

@@ -20,7 +20,7 @@ describe("openModes", () => {
     setSidePanel(originalSidePanel)
   })
 
-  it("OM-01: getPageActionModes includes SIDE_PANEL in non-Edge environment", () => {
+  it("OM-01: getPageActionModes includes SIDE_PANEL when side panel API is supported", () => {
     expect(getPageActionModes()).toEqual([
       PAGE_ACTION_OPEN_MODE.POPUP,
       PAGE_ACTION_OPEN_MODE.WINDOW,
@@ -31,7 +31,7 @@ describe("openModes", () => {
     ])
   })
 
-  it("OM-02: getSearchModes includes SIDE_PANEL in non-Edge environment", () => {
+  it("OM-02: getSearchModes includes SIDE_PANEL when side panel API is supported", () => {
     expect(getSearchModes()).toEqual([
       OPEN_MODE.POPUP,
       OPEN_MODE.WINDOW,

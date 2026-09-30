@@ -12,8 +12,8 @@ import { Tooltip } from "@/components/Tooltip"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
+import { isSidePanelSupported } from "@/services/sidePanelSupport"
 import {
-  canUseSidePanel,
   getPageActionModes,
   getSearchModes,
   isSidePanelMode,
@@ -80,7 +80,7 @@ export const OpenModeToggleField = ({
           type === "search"
             ? getSearchModes(field.value)
             : getPageActionModes(field.value)
-        const sidePanelAvailable = canUseSidePanel()
+        const sidePanelAvailable = isSidePanelSupported()
         return (
           <FormItem className="flex items-start gap-1">
             <div className="w-2/6">
