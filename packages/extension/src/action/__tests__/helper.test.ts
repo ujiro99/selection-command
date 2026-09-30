@@ -244,6 +244,24 @@ describe("helper", () => {
         expect(updateSidePanelUrl).toHaveBeenCalledWith({ url, tabId })
       })
     })
+
+    it("NSP-10: Should return false without updating when side panel API is not supported", async () => {
+      vi.mocked(isSidePanelSupported).mockReturnValueOnce(false)
+      const consoleDebugSpy = vi
+        .spyOn(console, "debug")
+        .mockImplementation(() => {})
+
+      const result = navigateSidePanel(
+        { url: "https://example.com", tabId: 123 },
+        {} as chrome.runtime.MessageSender,
+      )
+
+      expect(result).toBe(false)
+      expect(ServiceWorkerData.ready).not.toHaveBeenCalled()
+      expect(updateSidePanelUrl).not.toHaveBeenCalled()
+
+      consoleDebugSpy.mockRestore()
+    })
   })
 
   describe("openSidePanel", () => {

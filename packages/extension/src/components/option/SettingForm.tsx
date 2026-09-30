@@ -68,6 +68,10 @@ import {
   userStyleSchema,
 } from "@/types/schema"
 
+// Side panel is an optional capability (e.g. not available on Opera).
+// API availability does not change at runtime, so evaluate it once.
+const sidePanelSupported = isSidePanelSupported()
+
 const formSchema = z
   .object({
     startupMethod: z
@@ -174,8 +178,6 @@ export function SettingForm({ className }: { className?: string }) {
     defaultValue: DRAG_OPEN_MODE.PREVIEW_POPUP,
   })
 
-  // Side panel is an optional capability (e.g. not available on Opera).
-  const sidePanelSupported = isSidePanelSupported()
   const linkCommandSidePanelUnsupported =
     !sidePanelSupported &&
     linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL
@@ -594,25 +596,25 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {linkCommandMethod ===
             LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
-              <InputField
-                control={form.control}
-                name="linkCommand.startupMethod.leftClickHoldParam"
-                formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
-                description={t(
-                  "linkCommandStartupMethod_leftClickHoldParam_desc",
-                )}
-                unit="ms"
-                inputProps={{
-                  type: "number",
-                  min: 50,
-                  max: 500,
-                  step: 10,
-                  ...register("linkCommand.startupMethod.leftClickHoldParam", {
-                    valueAsNumber: true,
-                  }),
-                }}
-              />
-            )}
+            <InputField
+              control={form.control}
+              name="linkCommand.startupMethod.leftClickHoldParam"
+              formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
+              description={t(
+                "linkCommandStartupMethod_leftClickHoldParam_desc",
+              )}
+              unit="ms"
+              inputProps={{
+                type: "number",
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register("linkCommand.startupMethod.leftClickHoldParam", {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
           <SwitchField
             control={form.control}
             name="linkCommand.showIndicator"

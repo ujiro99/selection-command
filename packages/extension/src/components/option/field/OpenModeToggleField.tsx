@@ -98,7 +98,9 @@ export const OpenModeToggleField = ({
                   }}
                   className={cn(
                     "grid gap-2 py-1",
-                    modes.length >= 6 ? "grid-cols-6" : "grid-cols-5",
+                    // Fixed per type so the layout does not shift when the
+                    // side panel mode is hidden on unsupported browsers.
+                    type === "search" ? "grid-cols-5" : "grid-cols-6",
                   )}
                 >
                   {modes.map((mode) => {

@@ -233,6 +233,11 @@ export const navigateSidePanel = (
 ): boolean => {
   const { url, tabId } = param
 
+  if (!isSidePanelSupported()) {
+    console.debug("[navigateSidePanel] Side panel is not supported")
+    return false
+  }
+
   // URL validation
   try {
     const urlObj = new URL(url)
