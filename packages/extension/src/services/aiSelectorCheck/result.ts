@@ -1,4 +1,9 @@
-import { PAGE_STATE, type PageState } from "./pageState"
+import {
+  PAGE_STATE,
+  type PageClassification,
+  type PageSnapshot,
+  type PageState,
+} from "./pageState"
 
 /** Which selector list of an AI service a group corresponds to. */
 export const SELECTOR_KIND = {
@@ -37,6 +42,10 @@ export type ServiceCheckResult = {
   url: string
   finalUrl?: string
   pageState?: PageState
+  /** How pageState was decided (set when the input was not found). */
+  classification?: PageClassification
+  /** Page snapshot, taken only when the input was not found. */
+  snapshot?: PageSnapshot
   groups: SelectorGroupResult[]
   verdict: Verdict
   error?: string
@@ -78,7 +87,10 @@ export const toMarkdown = (results: ServiceCheckResult[]): string => {
   for (const r of results) {
     const detail =
       r.verdict === VERDICT.BLOCKED
-        ? `page state: \`${r.pageState}\` (${r.finalUrl ?? r.url})`
+        ? `page state: \`${r.pageState}\` (${r.finalUrl ?? r.url})` +
+          (r.classification
+            ? ` — ${r.classification.classifiedBy}: ${r.classification.reason.replace(/\|/g, "\\|")}`
+            : "")
         : r.verdict === VERDICT.ERROR
           ? (r.error ?? "").replace(/\|/g, "\\|").split("\n")[0]
           : r.groups

@@ -60,6 +60,16 @@ describe("checkSelectorsInDocument", () => {
 
     expect(result.verdict).toBe(VERDICT.BLOCKED)
     expect(result.pageState).toBe(PAGE_STATE.BLOCKED)
+    // A snapshot is attached for re-classification by the caller.
+    expect(result.snapshot?.hasChallengeElement).toBe(true)
+  })
+
+  it("does not attach a snapshot when the input is found", async () => {
+    document.body.innerHTML = `<textarea id="prompt"></textarea><button id="send"></button>`
+
+    const result = await checkSelectorsInDocument(target, options)
+
+    expect(result.snapshot).toBeUndefined()
   })
 
   it("types a dummy text when the submit button appears only on input, then clears it", async () => {

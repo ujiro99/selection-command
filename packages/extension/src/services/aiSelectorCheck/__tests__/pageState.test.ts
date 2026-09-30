@@ -1,36 +1,69 @@
 import { describe, it, expect } from "vitest"
-import { detectPageState, PAGE_STATE } from "../pageState"
+import {
+  detectPageStateByRules,
+  PAGE_STATE,
+  takePageSnapshot,
+} from "../pageState"
 
 const snapshot = (
-  overrides: Partial<Parameters<typeof detectPageState>[0]>,
+  overrides: Partial<Parameters<typeof detectPageStateByRules>[0]>,
 ) => ({
   url: "https://chatgpt.com/",
   title: "ChatGPT",
   hasChallengeElement: false,
+  text: "",
   ...overrides,
 })
 
-describe("detectPageState", () => {
+describe("takePageSnapshot", () => {
+  it("collects url, title, challenge marker and normalized text", () => {
+    document.title = "Just a moment..."
+    document.body.innerHTML = `<form id="challenge-form"></form><p>Verify   you\n are human</p>`
+    // jsdom does not implement innerText.
+    Object.defineProperty(document.body, "innerText", {
+      value: "Verify   you\n are human",
+      configurable: true,
+    })
+
+    const snapshot = takePageSnapshot({
+      challengeSelectors: ["#challenge-form", "invalid[["],
+      textLength: 10,
+    })
+
+    expect(snapshot).toEqual({
+      url: location.href,
+      title: "Just a moment...",
+      hasChallengeElement: true,
+      text: "Verify you",
+    })
+  })
+})
+
+describe("detectPageStateByRules", () => {
   it("returns ok for a normal page", () => {
-    expect(detectPageState(snapshot({}))).toBe(PAGE_STATE.OK)
+    expect(detectPageStateByRules(snapshot({}))).toBe(PAGE_STATE.OK)
   })
 
   it("returns blocked when a challenge element exists", () => {
-    expect(detectPageState(snapshot({ hasChallengeElement: true }))).toBe(
-      PAGE_STATE.BLOCKED,
-    )
+    expect(
+      detectPageStateByRules(snapshot({ hasChallengeElement: true })),
+    ).toBe(PAGE_STATE.BLOCKED)
   })
 
   it.each(["Just a moment...", "Attention Required! | Cloudflare"])(
     "returns blocked for challenge title '%s'",
     (title) => {
-      expect(detectPageState(snapshot({ title }))).toBe(PAGE_STATE.BLOCKED)
+      expect(detectPageStateByRules(snapshot({ title }))).toBe(
+        PAGE_STATE.BLOCKED,
+      )
     },
   )
 
   it("returns blocked for Google's unusual traffic page", () => {
     expect(
-      detectPageState(snapshot({ url: "https://www.google.com/sorry/index" })),
+      detectPageStateByRules(
+        snapshot({ url: "https://www.google.com/sorry/index" }),
+      ),
     ).toBe(PAGE_STATE.BLOCKED)
   })
 
@@ -39,18 +72,22 @@ describe("detectPageState", () => {
     "https://auth.openai.com/log-in",
     "https://claude.ai/login?returnTo=%2Fnew",
   ])("returns login_required for '%s'", (url) => {
-    expect(detectPageState(snapshot({ url }))).toBe(PAGE_STATE.LOGIN_REQUIRED)
+    expect(detectPageStateByRules(snapshot({ url }))).toBe(
+      PAGE_STATE.LOGIN_REQUIRED,
+    )
   })
 
   it("does not treat paths merely starting with 'login' words as login pages", () => {
     expect(
-      detectPageState(snapshot({ url: "https://example.com/loginless-mode" })),
+      detectPageStateByRules(
+        snapshot({ url: "https://example.com/loginless-mode" }),
+      ),
     ).toBe(PAGE_STATE.OK)
   })
 
   it("prefers blocked over login_required", () => {
     expect(
-      detectPageState(
+      detectPageStateByRules(
         snapshot({ url: "https://claude.ai/login", hasChallengeElement: true }),
       ),
     ).toBe(PAGE_STATE.BLOCKED)

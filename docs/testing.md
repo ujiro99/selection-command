@@ -197,11 +197,22 @@ yarn test:e2e              # E2E テスト実行
 - `copySelectors` は回答生成後にしか出現しないため対象外
 - ログイン必須の `claude` は対象外（スクリプト内 `EXCLUDED_SERVICE_IDS`）
 
+### ページ状態の判定（Gemini）
+
+入力欄が見つからなかった場合のみ、それが「セレクタの破損」なのか「Bot チャレンジ / ログイン画面」なのかを判定する（`geminiClassifier.ts`）。
+
+- Gemini API（`gemini-3.1-flash-lite`、構造化出力）に URL・タイトル・表示テキスト先頭（CI ではスクリーンショットも）を渡し、`ok` / `blocked` / `login_required` を返させる。呼び出し形式は selection-command-hub の `src/infrastructure/gemini/content-classifier.ts` に準拠
+- API キー未設定・API エラー時は `pageState.ts` のルール（URL / タイトル / Cloudflare 要素）にフォールバックする
+- API キーの設定
+  - CI / ローカルスクリプト: 環境変数 `GEMINI_API_KEY`（GitHub Actions では Secrets の `GEMINI_API_KEY`）
+  - 拡張機能内チェック: 設定画面の `localStorage` の `selectionCommand.geminiApiKey`
+
 ### ローカル実行
 
 ```bash
 # packages/extension 内で
-yarn check:ai-selectors --headless           # 全サービス
+GEMINI_API_KEY=xxx yarn check:ai-selectors --headless  # 全サービス（Gemini 判定あり）
+yarn check:ai-selectors --headless           # 全サービス（ルール判定）
 yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リストより優先）
 ```
 
@@ -215,12 +226,15 @@ yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リスト
 
    ```js
    localStorage.setItem("selectionCommand.devTools", "true")
+   // 任意: ページ状態を Gemini で判定する
+   localStorage.setItem("selectionCommand.geminiApiKey", "<API key>")
    ```
 
-2. 左メニューに表示される **Developer Tools > AI Selector Check** を開き、`Run check` を押す
-   - `ai-services.json` の取得元は `Hub (latest)`（デプロイ済みの最新）/ `Bundled (build time)`（ビルド時に同梱。ローカル編集の確認用）から選択
+2. 左メニューに表示される **Developer Tools > AI Selector Check** を押す
+   - Hub にデプロイ済みの最新 `ai-services.json`（キャッシュ無視。取得失敗時はビルド時同梱のもの）を使う
    - 全サービスをバックグラウンドタブで開き、各タブの content script がセレクタを判定する（判定ロジックは CI と共通）
    - 送信ボタンが入力後にしか出現しない場合、空の入力欄に一時的にダミーテキストを入力して確認し、直後に削除する（送信はしない）
-3. 結果はダイアログに一覧表示される。サービス名クリックで該当タブへ移動、`Copy as Markdown` で issue 用の表をコピー、`Close tabs` で開いたタブを閉じる
+3. 結果はすべて設定画面の DevTools コンソールに出力される（サマリーの `console.table`、サービスごとのセレクタ一致結果、issue 用の Markdown）
+   - `pass` のタブは自動で閉じ、それ以外のタブは確認用に開いたままにする
 
 無効化する場合は `localStorage.removeItem("selectionCommand.devTools")`。

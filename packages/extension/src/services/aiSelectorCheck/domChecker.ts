@@ -5,7 +5,13 @@
  */
 import { sleep } from "@/lib/utils"
 import type { AiService } from "@/types"
-import { CHALLENGE_SELECTORS, detectPageState, PAGE_STATE } from "./pageState"
+import {
+  CHALLENGE_SELECTORS,
+  detectPageStateByRules,
+  PAGE_STATE,
+  SNAPSHOT_TEXT_LENGTH,
+  takePageSnapshot,
+} from "./pageState"
 import {
   decideVerdict,
   SELECTOR_KIND,
@@ -134,19 +140,6 @@ export const checkSelectorsInDocument = async (
       pollIntervalMs,
     )
 
-    // A found composer means the page is usable; classify the page only
-    // when it could not be found.
-    const pageState = input
-      ? PAGE_STATE.OK
-      : detectPageState({
-          url: location.href,
-          title: document.title,
-          hasChallengeElement: queryAny(CHALLENGE_SELECTORS) != null,
-        })
-    if (pageState !== PAGE_STATE.OK) {
-      return { ...base(), pageState, groups: [], verdict: VERDICT.BLOCKED }
-    }
-
     // Record the submit matches while the dummy text is still present,
     // since some buttons are removed again once the input is emptied.
     const submitMatches =
@@ -168,9 +161,29 @@ export const checkSelectorsInDocument = async (
       },
       { kind: SELECTOR_KIND.SUBMIT, matches: submitMatches },
     ]
+
+    if (input) {
+      // A found composer means the page is usable.
+      return {
+        ...base(),
+        pageState: PAGE_STATE.OK,
+        groups,
+        verdict: decideVerdict(PAGE_STATE.OK, groups),
+      }
+    }
+
+    // The input was not found: attach a snapshot so that the caller can
+    // tell a broken selector from a challenge / login page (with Gemini,
+    // see geminiClassifier.ts). The rule-based state is provisional.
+    const snapshot = takePageSnapshot({
+      challengeSelectors: CHALLENGE_SELECTORS,
+      textLength: SNAPSHOT_TEXT_LENGTH,
+    })
+    const pageState = detectPageStateByRules(snapshot)
     return {
       ...base(),
       pageState,
+      snapshot,
       groups,
       verdict: decideVerdict(pageState, groups),
     }

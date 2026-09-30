@@ -4,10 +4,13 @@
  * the live AI service pages.
  *
  * For each service:
- *   1. Open `url` and classify the page (ok / blocked / login_required).
- *   2. Wait for any of `inputSelectors` to become visible.
- *   3. Type a dummy text (never submitted) and check `submitSelectors`,
+ *   1. Open `url` and wait for any of `inputSelectors`.
+ *   2. Type a dummy text (never submitted) and check `submitSelectors`,
  *      since submit buttons usually appear / enable only after input.
+ *   3. When the input was not found, classify the page (ok / blocked /
+ *      login_required) with Gemini from its text and screenshot, so that a
+ *      challenge or login page is not reported as a broken selector.
+ *      Set GEMINI_API_KEY to enable it; rule-based otherwise.
  *
  * `copySelectors` are not checked because they only appear after a response
  * has been generated, which requires actually sending a prompt.
@@ -27,9 +30,12 @@ import { fileURLToPath } from "url"
 import { chromium, type Page } from "@playwright/test"
 import {
   CHALLENGE_SELECTORS,
-  detectPageState,
+  detectPageStateByRules,
   PAGE_STATE,
+  SNAPSHOT_TEXT_LENGTH,
+  takePageSnapshot,
 } from "@/services/aiSelectorCheck/pageState"
+import { classifyResult } from "@/services/aiSelectorCheck/geminiClassifier"
 import {
   decideVerdict,
   toMarkdown,
@@ -136,26 +142,6 @@ const checkService = async (
   // Give the SPA a chance to render the composer before judging.
   const inputFound = await waitForAny(page, inputSelectors, INPUT_TIMEOUT_MS)
 
-  // A found composer means the page is usable, so only classify the page
-  // (challenge / login wall) when the input could not be found.
-  const pageState = inputFound
-    ? PAGE_STATE.OK
-    : detectPageState({
-        url: page.url(),
-        title: await page.title(),
-        hasChallengeElement:
-          (await page.locator(CHALLENGE_SELECTORS.join(", ")).count()) > 0,
-      })
-  if (pageState !== PAGE_STATE.OK) {
-    return {
-      ...base,
-      finalUrl: page.url(),
-      pageState,
-      groups: [],
-      verdict: VERDICT.BLOCKED,
-    }
-  }
-
   if (inputFound) {
     // Type into the input so that the submit button appears.
     await page.evaluate(
@@ -177,13 +163,40 @@ const checkService = async (
     },
   ]
 
-  return {
-    ...base,
-    finalUrl: page.url(),
-    pageState,
-    groups,
-    verdict: decideVerdict(pageState, groups),
+  if (inputFound) {
+    return {
+      ...base,
+      finalUrl: page.url(),
+      pageState: PAGE_STATE.OK,
+      groups,
+      verdict: decideVerdict(PAGE_STATE.OK, groups),
+    }
   }
+
+  // The input was not found: classify the page to tell a broken selector
+  // from a challenge / login page.
+  const snapshot = await page.evaluate(takePageSnapshot, {
+    challengeSelectors: CHALLENGE_SELECTORS,
+    textLength: SNAPSHOT_TEXT_LENGTH,
+  })
+  const pageState = detectPageStateByRules(snapshot)
+  return classifyResult(
+    {
+      ...base,
+      finalUrl: page.url(),
+      pageState,
+      snapshot,
+      groups,
+      verdict: decideVerdict(pageState, groups),
+    },
+    {
+      apiKey: process.env.GEMINI_API_KEY,
+      screenshot: {
+        mimeType: "image/png",
+        data: (await page.screenshot()).toString("base64"),
+      },
+    },
+  )
 }
 
 const writeGithubOutput = (results: ServiceCheckResult[]) => {
@@ -207,6 +220,9 @@ const writeGithubOutput = (results: ServiceCheckResult[]) => {
 
 const main = async () => {
   const { only, headless } = parseArgs()
+  console.log(
+    `Page classification: ${process.env.GEMINI_API_KEY ? "Gemini" : "rules (set GEMINI_API_KEY to use Gemini)"}`,
+  )
   const services = (
     JSON.parse(fs.readFileSync(AI_SERVICES_PATH, "utf-8")) as AiServiceJson[]
   ).filter((s) =>

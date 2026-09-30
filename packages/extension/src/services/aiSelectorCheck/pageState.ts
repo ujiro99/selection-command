@@ -1,10 +1,14 @@
 /**
- * Shared rules for classifying an AI service page before checking selectors.
+ * Classification of an AI service page before checking selectors.
  *
  * Used by both the CI selector check script (scripts/check-ai-selectors.ts)
  * and the in-extension developer check, so that "the page could not be
  * inspected" (bot challenge / login wall) is never reported as a broken
  * selector.
+ *
+ * The primary classifier is Gemini (see geminiClassifier.ts); the rules in
+ * this file are only a fallback for when no API key is configured or the API
+ * call fails.
  */
 
 export const PAGE_STATE = {
@@ -23,7 +27,20 @@ export type PageSnapshot = {
   title: string
   /** Whether a known challenge element exists in the DOM. */
   hasChallengeElement: boolean
+  /** Beginning of the visible text of the page. */
+  text: string
 }
+
+export type PageClassification = {
+  state: PageState
+  reason: string
+  /** Which classifier decided the state. */
+  classifiedBy: "gemini" | "rules"
+  confidence?: number
+}
+
+/** Max length of PageSnapshot.text, to keep the Gemini prompt small. */
+export const SNAPSHOT_TEXT_LENGTH = 3000
 
 /** Elements that only exist on bot challenge pages (Cloudflare etc.). */
 export const CHALLENGE_SELECTORS = [
@@ -32,6 +49,30 @@ export const CHALLENGE_SELECTORS = [
   "#cf-challenge-running",
   "iframe[src*='challenges.cloudflare.com']",
 ]
+
+/**
+ * Take a snapshot of the current document.
+ * Self-contained (no outer references) so that the CI script can run it in
+ * the page via Playwright's page.evaluate().
+ */
+export const takePageSnapshot = (args: {
+  challengeSelectors: string[]
+  textLength: number
+}): PageSnapshot => ({
+  url: location.href,
+  title: document.title,
+  hasChallengeElement: args.challengeSelectors.some((s) => {
+    try {
+      return document.querySelector(s) != null
+    } catch {
+      return false
+    }
+  }),
+  text: (document.body?.innerText ?? "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, args.textLength),
+})
 
 const BLOCKED_TITLE_PATTERNS = [
   /just a moment/i,
@@ -50,9 +91,9 @@ const LOGIN_URL_PATTERNS = [
 ]
 
 /**
- * Classify a page by its final URL, title and DOM markers.
+ * Rule-based fallback classification by the final URL, title and DOM markers.
  */
-export const detectPageState = (snapshot: PageSnapshot): PageState => {
+export const detectPageStateByRules = (snapshot: PageSnapshot): PageState => {
   if (
     snapshot.hasChallengeElement ||
     BLOCKED_TITLE_PATTERNS.some((p) => p.test(snapshot.title)) ||
