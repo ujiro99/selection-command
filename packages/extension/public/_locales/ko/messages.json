@@ -329,6 +329,9 @@
   "Option_openMode_sidePanel_desc": {
     "message": "사이드 패널에서 열기."
   },
+  "Option_openMode_sidePanel_unsupported_desc": {
+    "message": "이 브라우저는 사이드 패널을 지원하지 않습니다."
+  },
   "Option_openMode_api": {
     "message": "API"
   },

@@ -13,6 +13,7 @@ import {
 } from "@/services/chrome"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { incrementCommandExecutionCount } from "@/services/commandMetrics"
+import { isSidePanelSupported } from "@/services/sidePanelSupport"
 
 // Mock dependencies
 vi.mock("@/services/serviceWorkerData", () => ({
@@ -33,6 +34,10 @@ vi.mock("@/services/settings/enhancedSettings", () => ({
   enhancedSettings: {
     get: vi.fn(),
   },
+}))
+
+vi.mock("@/services/sidePanelSupport", () => ({
+  isSidePanelSupported: vi.fn(() => true),
 }))
 
 vi.mock("@/services/commandMetrics", () => ({
@@ -238,6 +243,24 @@ describe("helper", () => {
       await vi.waitFor(() => {
         expect(updateSidePanelUrl).toHaveBeenCalledWith({ url, tabId })
       })
+    })
+
+    it("NSP-10: Should return false without updating when side panel API is not supported", async () => {
+      vi.mocked(isSidePanelSupported).mockReturnValueOnce(false)
+      const consoleDebugSpy = vi
+        .spyOn(console, "debug")
+        .mockImplementation(() => {})
+
+      const result = navigateSidePanel(
+        { url: "https://example.com", tabId: 123 },
+        {} as chrome.runtime.MessageSender,
+      )
+
+      expect(result).toBe(false)
+      expect(ServiceWorkerData.ready).not.toHaveBeenCalled()
+      expect(updateSidePanelUrl).not.toHaveBeenCalled()
+
+      consoleDebugSpy.mockRestore()
     })
   })
 
@@ -458,6 +481,26 @@ describe("helper", () => {
       expect(_openSidePanel).not.toHaveBeenCalled()
 
       consoleErrorSpy.mockRestore()
+    })
+
+    it("OSP-09: Should return false without opening when side panel API is not supported", () => {
+      const param = { url: "https://example.com", isLinkCommand: false }
+      const sender = { tab: { id: 123 } } as chrome.runtime.MessageSender
+      const response = vi.fn()
+
+      vi.mocked(isSidePanelSupported).mockReturnValueOnce(false)
+      const consoleDebugSpy = vi
+        .spyOn(console, "debug")
+        .mockImplementation(() => {})
+
+      const result = openSidePanel(param, sender, response)
+
+      expect(result).toBe(false)
+      expect(response).toHaveBeenCalledWith(false)
+      expect(_openSidePanel).not.toHaveBeenCalled()
+      expect(ServiceWorkerData.update).not.toHaveBeenCalled()
+
+      consoleDebugSpy.mockRestore()
     })
   })
 

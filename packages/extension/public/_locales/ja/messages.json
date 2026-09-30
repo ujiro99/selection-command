@@ -329,6 +329,9 @@
   "Option_openMode_sidePanel_desc": {
     "message": "サイドパネルで開く。"
   },
+  "Option_openMode_sidePanel_unsupported_desc": {
+    "message": "このブラウザはサイドパネルに対応していません。"
+  },
   "Option_openMode_api": {
     "message": "API"
   },

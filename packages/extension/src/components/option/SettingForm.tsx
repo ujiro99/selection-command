@@ -17,6 +17,7 @@ import { LoadingIcon } from "@/components/option/LoadingIcon"
 import { InputField } from "@/components/option/field/InputField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { SwitchField } from "@/components/option/field/SwitchField"
+import { getDragOpenModes } from "@/components/option/field/openModes"
 import { PopupPlacement } from "@/components/option/editor/PopupPlacement"
 import { PopupAnimation } from "@/components/option/editor/PopupAnimation"
 import { CommandList } from "@/components/option/editor/CommandList"
@@ -52,6 +53,7 @@ import { toCommandTree, toFlatten } from "@/services/option/commandTree"
 import { isCommand, removeUnstoredParam } from "@/services/option/commandUtils"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
+import { isSidePanelSupported } from "@/services/sidePanelSupport"
 import DefaultSettings, {
   emptySettings,
   POPUP_DELAY_DEFAULT,
@@ -65,6 +67,10 @@ import {
   shortcutSettingsSchema,
   userStyleSchema,
 } from "@/types/schema"
+
+// Side panel is an optional capability (e.g. not available on Opera).
+// API availability does not change at runtime, so evaluate it once.
+const sidePanelSupported = isSidePanelSupported()
 
 const formSchema = z
   .object({
@@ -171,6 +177,10 @@ export function SettingForm({ className }: { className?: string }) {
     name: "linkCommand.openMode",
     defaultValue: DRAG_OPEN_MODE.PREVIEW_POPUP,
   })
+
+  const linkCommandSidePanelUnsupported =
+    !sidePanelSupported &&
+    linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL
 
   // Common function to load and transform settings data
   const loadSettingsData = async () => {
@@ -531,9 +541,17 @@ export function SettingForm({ className }: { className?: string }) {
             control={form.control}
             name="linkCommand.openMode"
             formLabel={t("openMode")}
-            options={e2a(DRAG_OPEN_MODE).map((opt) => ({
+            description={
+              linkCommandSidePanelUnsupported
+                ? t("openMode_sidePanel_unsupported_desc")
+                : undefined
+            }
+            options={getDragOpenModes(linkCommandOpenMode).map((opt) => ({
               name: t(`openMode_${opt}`),
               value: opt,
+              disabled:
+                !sidePanelSupported &&
+                opt === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL,
             }))}
           />
           <SelectField
@@ -578,39 +596,40 @@ export function SettingForm({ className }: { className?: string }) {
           )}
           {linkCommandMethod ===
             LINK_COMMAND_STARTUP_METHOD.LEFT_CLICK_HOLD && (
-              <InputField
-                control={form.control}
-                name="linkCommand.startupMethod.leftClickHoldParam"
-                formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
-                description={t(
-                  "linkCommandStartupMethod_leftClickHoldParam_desc",
-                )}
-                unit="ms"
-                inputProps={{
-                  type: "number",
-                  min: 50,
-                  max: 500,
-                  step: 10,
-                  ...register("linkCommand.startupMethod.leftClickHoldParam", {
-                    valueAsNumber: true,
-                  }),
-                }}
-              />
-            )}
+            <InputField
+              control={form.control}
+              name="linkCommand.startupMethod.leftClickHoldParam"
+              formLabel={t("linkCommandStartupMethod_leftClickHoldParam")}
+              description={t(
+                "linkCommandStartupMethod_leftClickHoldParam_desc",
+              )}
+              unit="ms"
+              inputProps={{
+                type: "number",
+                min: 50,
+                max: 500,
+                step: 10,
+                ...register("linkCommand.startupMethod.leftClickHoldParam", {
+                  valueAsNumber: true,
+                }),
+              }}
+            />
+          )}
           <SwitchField
             control={form.control}
             name="linkCommand.showIndicator"
             formLabel={t("showIndicator")}
             description={t("showIndicator_desc")}
           />
-          {linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL && (
-            <SwitchField
-              control={form.control}
-              name="linkCommand.sidePanelAutoHide"
-              formLabel={t("sidePanelAutoHide_link")}
-              tooltip={t("sidePanelAutoHide_link_desc")}
-            />
-          )}
+          {sidePanelSupported &&
+            linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL && (
+              <SwitchField
+                control={form.control}
+                name="linkCommand.sidePanelAutoHide"
+                formLabel={t("sidePanelAutoHide_link")}
+                tooltip={t("sidePanelAutoHide_link_desc")}
+              />
+            )}
         </section>
         <hr />
 
@@ -639,12 +658,14 @@ export function SettingForm({ className }: { className?: string }) {
             }}
           />
 
-          <SwitchField
-            control={form.control}
-            name="windowOption.sidePanelAutoHide"
-            formLabel={t("sidePanelAutoHide")}
-            tooltip={t("sidePanelAutoHide_desc")}
-          />
+          {sidePanelSupported && (
+            <SwitchField
+              control={form.control}
+              name="windowOption.sidePanelAutoHide"
+              formLabel={t("sidePanelAutoHide")}
+              tooltip={t("sidePanelAutoHide_desc")}
+            />
+          )}
         </section>
         <hr />
 

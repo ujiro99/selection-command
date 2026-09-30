@@ -329,6 +329,9 @@
   "Option_openMode_sidePanel_desc": {
     "message": "在侧边栏中打开。"
   },
+  "Option_openMode_sidePanel_unsupported_desc": {
+    "message": "此浏览器不支持侧边栏。"
+  },
   "Option_openMode_api": {
     "message": "API"
   },

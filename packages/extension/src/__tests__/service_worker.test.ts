@@ -4,6 +4,11 @@ import { Settings } from "@/services/settings/settings"
 import { ServiceWorkerCommand } from "@/services/ipc"
 import { NEW_HUB_URL, VERSION } from "@/const"
 
+// Replace chrome.sidePanel to emulate browsers with/without the API.
+const setSidePanel = (value: unknown) => {
+  ;(chrome as unknown as { sidePanel: unknown }).sidePanel = value
+}
+
 // Mock dependencies
 vi.mock("@/services/settings/enhancedSettings")
 vi.mock("@/services/settings/settings")
@@ -845,5 +850,59 @@ describe("Window listeners: ServiceWorkerData readiness", () => {
     await done
 
     expect(get).toHaveBeenCalled()
+  })
+})
+
+describe("Side panel optional capability", () => {
+  const originalSidePanel = chrome.sidePanel
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // Re-mock explicitly since preceding suites may doUnmock this module.
+    vi.doMock("@/services/serviceWorkerData", () => ({
+      ServiceWorkerData: {
+        init: vi.fn(),
+        ready: vi.fn().mockResolvedValue(undefined),
+        get: vi.fn(() => ({ normalWindows: [], sidePanelTabs: [] })),
+        update: vi.fn().mockResolvedValue(true),
+        set: vi.fn(),
+      },
+    }))
+  })
+
+  afterEach(() => {
+    setSidePanel(originalSidePanel)
+    vi.doUnmock("@/services/serviceWorkerData")
+  })
+
+  it("SP-01: registers onOpened/onClosed listeners when side panel API is available", async () => {
+    vi.resetModules()
+    await import("../service_worker")
+
+    expect(chrome.sidePanel.onOpened.addListener).toHaveBeenCalledTimes(1)
+    expect(chrome.sidePanel.onClosed.addListener).toHaveBeenCalledTimes(1)
+  })
+
+  it("SP-02: initializes without error when chrome.sidePanel is not available", async () => {
+    setSidePanel(undefined)
+
+    vi.resetModules()
+    const mod = await import("../service_worker")
+
+    expect(mod.testExports.commandFuncs).toBeDefined()
+    // Other listeners must still be registered.
+    expect(chrome.runtime.onInstalled.addListener).toHaveBeenCalled()
+  })
+
+  it("SP-03: initializes without error when only side panel events are missing", async () => {
+    setSidePanel({
+      open: vi.fn(),
+      setOptions: vi.fn(),
+    })
+
+    vi.resetModules()
+    const mod = await import("../service_worker")
+
+    expect(mod.testExports.commandFuncs).toBeDefined()
   })
 })

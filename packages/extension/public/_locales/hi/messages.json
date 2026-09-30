@@ -329,6 +329,9 @@
   "Option_openMode_sidePanel_desc": {
     "message": "साइड पैनल में खोलें।"
   },
+  "Option_openMode_sidePanel_unsupported_desc": {
+    "message": "यह ब्राउज़र साइड पैनल का समर्थन नहीं करता है।"
+  },
   "Option_openMode_api": {
     "message": "API"
   },

@@ -362,6 +362,9 @@ global.chrome = {
     },
   },
   sidePanel: {
+    open: vi.fn().mockResolvedValue(undefined),
+    close: vi.fn().mockResolvedValue(undefined),
+    setOptions: vi.fn().mockResolvedValue(undefined),
     onClosed: {
       addListener: vi.fn(),
       removeListener: vi.fn(),
