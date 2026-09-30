@@ -329,6 +329,9 @@
   "Option_openMode_sidePanel_desc": {
     "message": "Ouvrir dans le panneau latéral."
   },
+  "Option_openMode_sidePanel_unsupported_desc": {
+    "message": "Le panneau latéral n'est pas pris en charge par ce navigateur."
+  },
   "Option_openMode_api": {
     "message": "API"
   },

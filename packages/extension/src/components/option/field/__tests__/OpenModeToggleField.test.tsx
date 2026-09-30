@@ -1,54 +1,60 @@
-import { describe, it, expect, vi, afterEach } from "vitest"
-import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
-import { PAGE_ACTION_MODES, SEARCH_MODES } from "../OpenModeToggleField"
+import { describe, it, expect, afterEach } from "vitest"
+import { render, screen } from "@testing-library/react"
+import { useForm } from "react-hook-form"
+import { Form } from "@/components/ui/form"
+import { OPEN_MODE } from "@/const"
+import { OpenModeToggleField } from "../OpenModeToggleField"
 
-describe("OpenModeToggleField modes", () => {
-  it("OM-01: PAGE_ACTION_MODES includes SIDE_PANEL in non-Edge environment", () => {
-    expect(PAGE_ACTION_MODES).toContain(PAGE_ACTION_OPEN_MODE.SIDE_PANEL)
-    expect(PAGE_ACTION_MODES).toEqual([
-      PAGE_ACTION_OPEN_MODE.POPUP,
-      PAGE_ACTION_OPEN_MODE.WINDOW,
-      PAGE_ACTION_OPEN_MODE.TAB,
-      PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
-      PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
-      PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
-    ])
+const originalSidePanel = chrome.sidePanel
+
+// Replace chrome.sidePanel to emulate browsers with/without the API.
+const setSidePanel = (value: unknown) => {
+  ;(chrome as unknown as { sidePanel: unknown }).sidePanel = value
+}
+
+const disableSidePanelApi = () => setSidePanel(undefined)
+
+describe("OpenModeToggleField rendering", () => {
+  const TestForm = ({ openMode }: { openMode: string }) => {
+    const form = useForm({ defaultValues: { openMode } })
+    return (
+      <Form {...form}>
+        <OpenModeToggleField
+          control={form.control}
+          name="openMode"
+          formLabel="Open mode"
+          type="search"
+        />
+      </Form>
+    )
+  }
+
+  const getSidePanelItem = () =>
+    screen.queryByRole("radio", { name: "Option_openMode_sidePanel" })
+
+  afterEach(() => {
+    setSidePanel(originalSidePanel)
   })
 
-  it("OM-02: SEARCH_MODES includes SIDE_PANEL in non-Edge environment", () => {
-    expect(SEARCH_MODES).toContain(OPEN_MODE.SIDE_PANEL)
-    expect(SEARCH_MODES).toEqual([
-      OPEN_MODE.POPUP,
-      OPEN_MODE.WINDOW,
-      OPEN_MODE.TAB,
-      OPEN_MODE.BACKGROUND_TAB,
-      OPEN_MODE.SIDE_PANEL,
-    ])
+  it("OM-09: SIDE_PANEL item is enabled when supported", () => {
+    render(<TestForm openMode={OPEN_MODE.POPUP} />)
+
+    expect(getSidePanelItem()).not.toBeNull()
+    expect(getSidePanelItem()).not.toBeDisabled()
   })
 
-  it("OM-03: PAGE_ACTION_OPEN_MODE.SIDE_PANEL equals OPEN_MODE.SIDE_PANEL", () => {
-    expect(PAGE_ACTION_OPEN_MODE.SIDE_PANEL).toBe(OPEN_MODE.SIDE_PANEL)
-    expect(PAGE_ACTION_OPEN_MODE.SIDE_PANEL).toBe("sidePanel")
+  it("OM-10: SIDE_PANEL item is hidden when not supported and not selected", () => {
+    disableSidePanelApi()
+    render(<TestForm openMode={OPEN_MODE.POPUP} />)
+
+    expect(getSidePanelItem()).toBeNull()
   })
 
-  describe("when side panel API is not supported", () => {
-    const originalSidePanel = chrome.sidePanel
+  it("OM-11: SIDE_PANEL item is shown as disabled when not supported but selected", () => {
+    disableSidePanelApi()
+    render(<TestForm openMode={OPEN_MODE.SIDE_PANEL} />)
 
-    afterEach(() => {
-      ;(chrome as any).sidePanel = originalSidePanel
-      vi.resetModules()
-    })
-
-    it("OM-04: SEARCH_MODES and PAGE_ACTION_MODES exclude SIDE_PANEL", async () => {
-      ;(chrome as any).sidePanel = undefined
-      vi.resetModules()
-
-      const mod = await import("../OpenModeToggleField")
-
-      expect(mod.SEARCH_MODES).not.toContain(OPEN_MODE.SIDE_PANEL)
-      expect(mod.PAGE_ACTION_MODES).not.toContain(
-        PAGE_ACTION_OPEN_MODE.SIDE_PANEL,
-      )
-    })
+    expect(getSidePanelItem()).not.toBeNull()
+    expect(getSidePanelItem()).toBeDisabled()
   })
 })

@@ -329,6 +329,9 @@
   "Option_openMode_sidePanel_desc": {
     "message": "Открыть в боковой панели."
   },
+  "Option_openMode_sidePanel_unsupported_desc": {
+    "message": "Боковая панель не поддерживается в этом браузере."
+  },
   "Option_openMode_api": {
     "message": "API"
   },

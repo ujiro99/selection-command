@@ -27,6 +27,7 @@ export type SelectOptionType = {
   level?: number
   isGroup?: boolean
   tooltip?: string
+  disabled?: boolean
 }
 
 export type SelectFieldType = {
@@ -68,6 +69,7 @@ const renderOption = (opt: SelectOptionType) => {
     <SelectItem
       value={opt.value}
       key={opt.value}
+      disabled={opt.disabled}
       className={`${opt.isGroup ? "pointer-events-none" : "hover:bg-gray-100"}`}
       style={{ paddingLeft }}
       data-testid={TEST_IDS.selectItem(`${opt.value}`)}

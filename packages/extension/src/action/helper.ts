@@ -109,7 +109,7 @@ export const openSidePanel = (
   response: (res: unknown) => void,
 ): boolean => {
   if (!isSidePanelSupported()) {
-    console.warn("Side panel is not supported in this browser")
+    console.debug("Side panel is not supported in this browser")
     response(false)
     return false
   }

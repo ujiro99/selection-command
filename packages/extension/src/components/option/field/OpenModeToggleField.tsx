@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Check } from "lucide-react"
-import Bowser from "bowser"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   FormControl,
@@ -13,17 +12,12 @@ import { Tooltip } from "@/components/Tooltip"
 import { OPEN_MODE, PAGE_ACTION_OPEN_MODE } from "@/const"
 import { cn } from "@/lib/utils"
 import { t as _t } from "@/services/i18n"
-import { isSidePanelSupported } from "@/services/sidePanelSupport"
-
-const isEdge =
-  typeof window !== "undefined" && Boolean(window.navigator?.userAgent)
-    ? Bowser.getParser(window.navigator.userAgent).getBrowserName() ===
-      "Microsoft Edge"
-    : false
-
-// SidePanel is not offered on Microsoft Edge, nor on browsers without the
-// chrome.sidePanel API (e.g. Opera).
-const canUseSidePanel = !isEdge && isSidePanelSupported()
+import {
+  canUseSidePanel,
+  getPageActionModes,
+  getSearchModes,
+  isSidePanelMode,
+} from "./openModes"
 
 const t = (key: string, p?: string[]) => _t(`Option_${key}`, p)
 
@@ -56,24 +50,6 @@ const getIconForMode = (mode: string) => {
   return "/setting/open_mode/popup.png"
 }
 
-// Order of options
-export const SEARCH_MODES = [
-  OPEN_MODE.POPUP,
-  OPEN_MODE.WINDOW,
-  OPEN_MODE.TAB,
-  OPEN_MODE.BACKGROUND_TAB,
-  ...(canUseSidePanel ? [OPEN_MODE.SIDE_PANEL] : []),
-]
-
-export const PAGE_ACTION_MODES = [
-  PAGE_ACTION_OPEN_MODE.POPUP,
-  PAGE_ACTION_OPEN_MODE.WINDOW,
-  PAGE_ACTION_OPEN_MODE.TAB,
-  PAGE_ACTION_OPEN_MODE.BACKGROUND_TAB,
-  PAGE_ACTION_OPEN_MODE.CURRENT_TAB,
-  ...(canUseSidePanel ? [PAGE_ACTION_OPEN_MODE.SIDE_PANEL] : []),
-]
-
 type OpenModeToggleFieldProps = {
   control: any
   name: string
@@ -95,52 +71,65 @@ export const OpenModeToggleField = ({
   disabledModes,
   disabledReason,
 }: OpenModeToggleFieldProps) => {
-  const modes = type === "search" ? SEARCH_MODES : PAGE_ACTION_MODES
-
   return (
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
-        <FormItem className="flex items-start gap-1">
-          <div className="w-2/6">
-            <FormLabel>{formLabel}</FormLabel>
-            {description && <FormDescription>{description}</FormDescription>}
-          </div>
-          <div className="w-4/6">
-            <FormControl>
-              <ToggleGroup
-                type="single"
-                variant="outline"
-                value={field.value}
-                onValueChange={(val) => {
-                  if (val) field.onChange(val)
-                }}
-                className={cn(
-                  "grid gap-2 py-1",
-                  modes.length >= 6 ? "grid-cols-6" : "grid-cols-5",
-                )}
-              >
-                {modes.map((mode) => {
-                  const iconSrc = getIconForMode(mode)
-                  const checked = mode === field.value
-                  const disabled = disabledModes?.includes(mode) ?? false
-                  return (
-                    <OpenModeItem
-                      key={mode}
-                      mode={mode}
-                      iconSrc={iconSrc}
-                      checked={checked}
-                      disabled={disabled}
-                      disabledReason={disabledReason}
-                    />
-                  )
-                })}
-              </ToggleGroup>
-            </FormControl>
-          </div>
-        </FormItem>
-      )}
+      render={({ field }) => {
+        const modes =
+          type === "search"
+            ? getSearchModes(field.value)
+            : getPageActionModes(field.value)
+        const sidePanelAvailable = canUseSidePanel()
+        return (
+          <FormItem className="flex items-start gap-1">
+            <div className="w-2/6">
+              <FormLabel>{formLabel}</FormLabel>
+              {description && <FormDescription>{description}</FormDescription>}
+            </div>
+            <div className="w-4/6">
+              <FormControl>
+                <ToggleGroup
+                  type="single"
+                  variant="outline"
+                  value={field.value}
+                  onValueChange={(val) => {
+                    if (val) field.onChange(val)
+                  }}
+                  className={cn(
+                    "grid gap-2 py-1",
+                    modes.length >= 6 ? "grid-cols-6" : "grid-cols-5",
+                  )}
+                >
+                  {modes.map((mode) => {
+                    const iconSrc = getIconForMode(mode)
+                    const checked = mode === field.value
+                    const sidePanelUnsupported =
+                      isSidePanelMode(mode) && !sidePanelAvailable
+                    const disabled =
+                      sidePanelUnsupported ||
+                      (disabledModes?.includes(mode) ?? false)
+                    return (
+                      <OpenModeItem
+                        key={mode}
+                        mode={mode}
+                        iconSrc={iconSrc}
+                        checked={checked}
+                        disabled={disabled}
+                        disabledReason={
+                          sidePanelUnsupported
+                            ? t("openMode_sidePanel_unsupported_desc")
+                            : disabledReason
+                        }
+                      />
+                    )
+                  })}
+                </ToggleGroup>
+              </FormControl>
+            </div>
+          </FormItem>
+        )
+      }}
     />
   )
 }

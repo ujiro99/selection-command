@@ -17,6 +17,7 @@ import { LoadingIcon } from "@/components/option/LoadingIcon"
 import { InputField } from "@/components/option/field/InputField"
 import { SelectField } from "@/components/option/field/SelectField"
 import { SwitchField } from "@/components/option/field/SwitchField"
+import { getDragOpenModes } from "@/components/option/field/openModes"
 import { PopupPlacement } from "@/components/option/editor/PopupPlacement"
 import { PopupAnimation } from "@/components/option/editor/PopupAnimation"
 import { CommandList } from "@/components/option/editor/CommandList"
@@ -66,9 +67,6 @@ import {
   shortcutSettingsSchema,
   userStyleSchema,
 } from "@/types/schema"
-
-// Side panel is an optional capability (e.g. not available on Opera).
-const sidePanelSupported = isSidePanelSupported()
 
 const formSchema = z
   .object({
@@ -175,6 +173,12 @@ export function SettingForm({ className }: { className?: string }) {
     name: "linkCommand.openMode",
     defaultValue: DRAG_OPEN_MODE.PREVIEW_POPUP,
   })
+
+  // Side panel is an optional capability (e.g. not available on Opera).
+  const sidePanelSupported = isSidePanelSupported()
+  const linkCommandSidePanelUnsupported =
+    !sidePanelSupported &&
+    linkCommandOpenMode === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL
 
   // Common function to load and transform settings data
   const loadSettingsData = async () => {
@@ -535,16 +539,18 @@ export function SettingForm({ className }: { className?: string }) {
             control={form.control}
             name="linkCommand.openMode"
             formLabel={t("openMode")}
-            options={e2a(DRAG_OPEN_MODE)
-              .filter(
-                (opt) =>
-                  sidePanelSupported ||
-                  opt !== DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL,
-              )
-              .map((opt) => ({
-                name: t(`openMode_${opt}`),
-                value: opt,
-              }))}
+            description={
+              linkCommandSidePanelUnsupported
+                ? t("openMode_sidePanel_unsupported_desc")
+                : undefined
+            }
+            options={getDragOpenModes(linkCommandOpenMode).map((opt) => ({
+              name: t(`openMode_${opt}`),
+              value: opt,
+              disabled:
+                !sidePanelSupported &&
+                opt === DRAG_OPEN_MODE.PREVIEW_SIDE_PANEL,
+            }))}
           />
           <SelectField
             control={form.control}

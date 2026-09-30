@@ -1,8 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { ServiceWorkerCommand } from "@/services/ipc"
 import { NEW_HUB_URL, VERSION } from "@/const"
+
+// Replace chrome.sidePanel to emulate browsers with/without the API.
+const setSidePanel = (value: unknown) => {
+  ;(chrome as unknown as { sidePanel: unknown }).sidePanel = value
+}
 
 // Mock dependencies
 vi.mock("@/services/settings/enhancedSettings")
@@ -740,5 +745,48 @@ describe("Uninstall URL (onInstalled)", () => {
     )
 
     consoleErrorSpy.mockRestore()
+  })
+})
+
+describe("Side panel optional capability", () => {
+  const originalSidePanel = chrome.sidePanel
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  afterEach(() => {
+    setSidePanel(originalSidePanel)
+  })
+
+  it("SP-01: registers onOpened/onClosed listeners when side panel API is available", async () => {
+    vi.resetModules()
+    await import("../service_worker")
+
+    expect(chrome.sidePanel.onOpened.addListener).toHaveBeenCalledTimes(1)
+    expect(chrome.sidePanel.onClosed.addListener).toHaveBeenCalledTimes(1)
+  })
+
+  it("SP-02: initializes without error when chrome.sidePanel is not available", async () => {
+    setSidePanel(undefined)
+
+    vi.resetModules()
+    const mod = await import("../service_worker")
+
+    expect(mod.testExports.commandFuncs).toBeDefined()
+    // Other listeners must still be registered.
+    expect(chrome.runtime.onInstalled.addListener).toHaveBeenCalled()
+  })
+
+  it("SP-03: initializes without error when only side panel events are missing", async () => {
+    setSidePanel({
+      open: vi.fn(),
+      setOptions: vi.fn(),
+    })
+
+    vi.resetModules()
+    const mod = await import("../service_worker")
+
+    expect(mod.testExports.commandFuncs).toBeDefined()
   })
 })

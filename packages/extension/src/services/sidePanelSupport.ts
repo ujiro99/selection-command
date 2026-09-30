@@ -7,13 +7,8 @@
  * No fallback to browser specific APIs (e.g. Opera's sidebarAction) is done.
  */
 
-const getSidePanel = (): typeof chrome.sidePanel | undefined => {
-  try {
-    return typeof chrome !== "undefined" ? chrome.sidePanel : undefined
-  } catch {
-    return undefined
-  }
-}
+// chrome.sidePanel is undefined on browsers that do not support it.
+const getSidePanel = (): typeof chrome.sidePanel | undefined => chrome.sidePanel
 
 /**
  * Check whether the side panel API required to open a panel is available.

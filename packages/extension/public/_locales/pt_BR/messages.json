@@ -329,6 +329,9 @@
   "Option_openMode_sidePanel_desc": {
     "message": "Abrir no painel lateral."
   },
+  "Option_openMode_sidePanel_unsupported_desc": {
+    "message": "O painel lateral não é compatível com este navegador."
+  },
   "Option_openMode_api": {
     "message": "API"
   },

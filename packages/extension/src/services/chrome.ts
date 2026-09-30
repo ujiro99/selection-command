@@ -743,15 +743,18 @@ const SIDE_PANEL_CLOSE_ANIMATION = 1000
  */
 export const closeSidePanel = async (tabId: number): Promise<void> => {
   if (!isSidePanelSupported()) return
+  // close() is detected separately because it is newer than open(). When it
+  // is unavailable, setOptions({ enabled: false }) below closes the panel by
+  // itself, so there is no close animation to wait for.
   if (isSidePanelCloseSupported()) {
     try {
       await chrome.sidePanel.close({ tabId: tabId })
     } catch (e) {
       console.warn("Failed to close side panel:", e)
     }
+    // Wait for the side panel close animation to finish before disabling it to prevent visual glitches.
+    await sleep(SIDE_PANEL_CLOSE_ANIMATION)
   }
-  // Wait for the side panel close animation to finish before disabling it to prevent visual glitches.
-  await sleep(SIDE_PANEL_CLOSE_ANIMATION)
   try {
     await chrome.sidePanel.setOptions({
       tabId: tabId,
