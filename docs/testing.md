@@ -174,3 +174,35 @@ yarn test:e2e              # E2E テスト実行
 
 - `packages/extension/playwright.config.ts` — テストディレクトリ・リトライ・ワーカー数の設定
 - `packages/extension/.env.e2e` — E2E 用の環境変数（任意。存在する場合に `dotenv` で読み込まれる）
+
+## AI サービスのセレクタチェック
+
+`packages/hub/public/data/ai-services.json` に定義された各 AI サービスのセレクタ（`inputSelectors` / `submitSelectors`）が実サイトで有効かを確認する仕組み。
+
+- スクリプト: `packages/extension/scripts/check-ai-selectors.ts`
+- 判定ロジック（CI と拡張機能内チェックで共有）: `packages/extension/src/services/aiSelectorCheck/`
+- ワークフロー: `.github/workflows/check-ai-selectors.yml`（毎日 09:00 JST + 手動実行）
+
+### 判定
+
+| verdict   | 意味                                                    | CI での扱い                                              |
+| --------- | ------------------------------------------------------- | -------------------------------------------------------- |
+| `pass`    | 各セレクタ配列のいずれかが一致                          | —                                                        |
+| `fail`    | いずれかの配列で一致するセレクタが無い                  | issue 作成（既存 open issue へは追記）+ ワークフロー失敗 |
+| `blocked` | Bot チャレンジ / ログイン画面によりページを検査できない | ワークフロー失敗（通知メールのみ）                       |
+| `error`   | ナビゲーションタイムアウト等                            | ワークフロー失敗（通知メールのみ）                       |
+
+- 拡張機能は各配列を `a, b, c` と連結して使うため、配列内のいずれか 1 つが一致すれば合格とする
+- `submitSelectors` は入力後に出現するため、入力欄にダミーテキストを入力してから確認する（送信はしない）
+- `copySelectors` は回答生成後にしか出現しないため対象外
+- ログイン必須の `claude` は対象外（スクリプト内 `EXCLUDED_SERVICE_IDS`）
+
+### ローカル実行
+
+```bash
+# packages/extension 内で
+yarn check:ai-selectors --headless           # 全サービス
+yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リストより優先）
+```
+
+結果は `packages/extension/selector-check-results/`（`result.json` / `summary.md` / スクリーンショット）に出力される。
