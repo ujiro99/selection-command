@@ -33,6 +33,7 @@ export enum SESSION_STORAGE_KEY {
   PA_CONTEXT = "pageActionContext",
   PA_RECORDER_OPTION = "pageActionRecorderOption",
   PA_SIDE_PANEL_PENDING = "pageActionSidePanelPending",
+  DEV_TOOLS_ENABLED = "devToolsEnabled",
 }
 
 export type KEY =

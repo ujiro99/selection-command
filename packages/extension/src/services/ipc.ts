@@ -61,6 +61,8 @@ export enum TabCommand {
   // PageAction
   sendWindowSize = "sendWindowSize",
   execPageAction = "execPageAction",
+  // Developer tools
+  checkAiSelectors = "checkAiSelectors",
 }
 
 export type ClickElementProps = {

@@ -43,6 +43,7 @@ yarn-error.log*
 # Playwright
 **/playwright-report
 **/test-results
+**/selector-check-results
 **/playwright/.cache
 
 # Serena

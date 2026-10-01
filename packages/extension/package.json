@@ -15,6 +15,7 @@
     "test:run": "vitest run",
     "test:coverage": "vitest --coverage",
     "test:e2e": "playwright test",
+    "check:ai-selectors": "vite-node --config scripts/vite.config.ts scripts/check-ai-selectors.ts --",
     "pretty-quick": "pretty-quick",
     "precommit": "pretty-quick --staged",
     "zip": "npm-build-zip --source=dist --destination=build"

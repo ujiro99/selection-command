@@ -107,6 +107,7 @@ const DEFAULTS = {
   [SESSION_STORAGE_KEY.TMP_CAPTURES]: {},
   [SESSION_STORAGE_KEY.SELECTION_TEXT]: "",
   [SESSION_STORAGE_KEY.PA_SIDE_PANEL_PENDING]: null,
+  [SESSION_STORAGE_KEY.DEV_TOOLS_ENABLED]: false,
 } as const
 
 const isContextInvalidated = (error: unknown): boolean =>

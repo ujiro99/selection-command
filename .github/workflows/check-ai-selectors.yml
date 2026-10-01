@@ -1,0 +1,141 @@
+name: Check AI Service Selectors
+
+# Daily check that the selectors in packages/hub/public/data/ai-services.json
+# still match the live AI service pages.
+#
+# - Selector not found  -> open (or comment on) an issue, and fail the run.
+# - Blocked / error     -> only fail the run. GitHub emails a failure
+#                          notification to the user who last changed the
+#                          schedule (or triggered the run manually).
+#
+# Jobs:
+#   check   : runs the check (read-only). It succeeds even when selectors
+#             are broken, so that the following jobs get its outputs.
+#   report  : opens / comments on the issue (the only job that can write).
+#   verdict : fails the run when something is broken or blocked.
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # 09:00 JST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-ai-selectors
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # A hanging external site must not keep the job running for hours.
+    timeout-minutes: 30
+    container:
+      # Must match the @playwright/test version resolved in yarn.lock;
+      # otherwise the bundled browsers don't match and launching fails.
+      # Keep it in sync with .github/workflows/test.yml.
+      image: mcr.microsoft.com/playwright:v1.62.1-jammy
+    outputs:
+      broken: ${{ steps.check.outputs.broken }}
+      blocked: ${{ steps.check.outputs.blocked }}
+      broken_services: ${{ steps.check.outputs.broken_services }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Check selectors
+        id: check
+        working-directory: packages/extension
+        run: yarn check:ai-selectors --headless
+        env:
+          # Classifies pages whose input was not found (challenge / login
+          # page vs. broken selector). When not set, such pages are reported
+          # as "unclassified" (no issue, only a failed run).
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Write job summary
+        if: always()
+        run: cat packages/extension/selector-check-results/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-selector-check-results
+          path: packages/extension/selector-check-results/
+          retention-days: 14
+
+  report:
+    needs: check
+    if: needs.check.outputs.broken == 'true'
+    # gh is preinstalled on the GitHub-hosted runner.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      issues: write
+    env:
+      ISSUE_LABEL: ai-selector-broken
+
+    steps:
+      - name: Download results
+        uses: actions/download-artifact@v4
+        with:
+          name: ai-selector-check-results
+          path: results
+
+      - name: Create or update issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BROKEN_SERVICES: ${{ needs.check.outputs.broken_services }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          {
+            echo "The daily selector check found selectors in \`packages/hub/public/data/ai-services.json\` that no longer match."
+            echo "Please update the selectors."
+            echo
+            echo "- Broken services: \`${BROKEN_SERVICES}\`"
+            echo "- Run: ${RUN_URL} (screenshots are in the run artifacts)"
+            echo
+            cat results/summary.md
+          } > issue-body.md
+
+          gh label create "$ISSUE_LABEL" --color d73a4a \
+            --description "ai-services.json selectors need to be fixed" 2>/dev/null || true
+
+          # Reuse an open issue so that a long-lasting breakage doesn't
+          # create a new issue every day.
+          number=$(gh issue list --label "$ISSUE_LABEL" --state open \
+            --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file issue-body.md
+          else
+            gh issue create --label "$ISSUE_LABEL" \
+              --title "ai-services.json のセレクタ修正が必要です (${BROKEN_SERVICES})" \
+              --body-file issue-body.md
+          fi
+
+  verdict:
+    needs: [check, report]
+    # Run even when report was skipped (nothing broken) or failed.
+    if: ${{ !cancelled() && needs.check.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Fail on broken or blocked
+        if: needs.check.outputs.broken == 'true' || needs.check.outputs.blocked == 'true'
+        run: |
+          echo "broken=${{ needs.check.outputs.broken }} blocked=${{ needs.check.outputs.blocked }}"
+          exit 1

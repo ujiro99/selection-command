@@ -174,3 +174,81 @@ yarn test:e2e              # E2E テスト実行
 
 - `packages/extension/playwright.config.ts` — テストディレクトリ・リトライ・ワーカー数の設定
 - `packages/extension/.env.e2e` — E2E 用の環境変数（任意。存在する場合に `dotenv` で読み込まれる）
+
+## AI サービスのセレクタチェック
+
+`packages/hub/public/data/ai-services.json` に定義された各 AI サービスのセレクタ（`inputSelectors` / `submitSelectors`）が実サイトで有効かを確認する仕組み。
+
+- スクリプト: `packages/extension/scripts/check-ai-selectors.ts`
+- 判定ロジック（CI と拡張機能内チェックで共有）: `packages/extension/src/services/aiSelectorCheck/`
+- ワークフロー: `.github/workflows/check-ai-selectors.yml`（毎日 09:00 JST + 手動実行）
+
+### 判定
+
+| verdict   | 意味                                                                                      | CI での扱い                                              |
+| --------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `pass`    | 各セレクタ配列のいずれかが一致                                                            | —                                                        |
+| `fail`    | いずれかの配列で一致するセレクタが無い                                                    | issue 作成（既存 open issue へは追記）+ ワークフロー失敗 |
+| `blocked` | Bot チャレンジ / ログイン画面、または判定不能（`unclassified`）によりページを検査できない | ワークフロー失敗（通知メールのみ）                       |
+| `error`   | ナビゲーションタイムアウト等                                                              | ワークフロー失敗（通知メールのみ）                       |
+
+- 拡張機能は各配列を `a, b, c` と連結して使うため、配列内のいずれか 1 つが一致すれば合格とする
+- `submitSelectors` は入力によってボタンが変化する（例: 音声モードボタン → 送信ボタン）ため、①初回表示後（`submitSelectors (initial)`）と ②入力欄へダミーテキストを入力した後（`submitSelectors (after input)`、送信はしない）の 2 状態で照合し、**両方でいずれかのセレクタが一致**すれば合格とする
+  - 観測できない状態は `skipped` として判定から除外する（入力欄が見つからない場合の ②、拡張機能内チェックで入力欄に下書きがある場合の ①）
+- `copySelectors` は回答生成後にしか出現しないため対象外
+- ログイン必須の `claude` は対象外（スクリプト内 `EXCLUDED_SERVICE_IDS`）
+
+### ページ状態の判定（Gemini）
+
+入力欄が見つからなかった場合のみ、それが「セレクタの破損」なのか「Bot チャレンジ / ログイン画面」なのかを判定する（`geminiClassifier.ts`）。
+
+- Gemini API（`gemini-3.1-flash-lite`、構造化出力）に URL・タイトル・表示テキスト先頭（CI ではスクリーンショットも）を渡し、`ok` / `blocked` / `login_required` を返させる。呼び出し形式は selection-command-hub の `src/infrastructure/gemini/content-classifier.ts` に準拠
+- `blocked` / `login_required` でも confidence が 0.7 未満の場合は信用せず `ok`（セレクタ破損として issue 化）に倒す。誤判定で本来の破損が見逃されるより、誤 issue を閉じる方が低コストなため
+- ページ本文は信頼できない入力として区切り（`<visible_text>`）付きで渡し、本文内の指示に従わないよう SYSTEM_PROMPT で指示している
+- API キー未設定・API エラー時は推測せず `pageState: "unclassified"` とし、`blocked` と同様に扱う（issue は作らず、ワークフロー失敗の通知メールのみ）。そのため CI では `GEMINI_API_KEY` の登録が実質必須
+- API キーの設定
+  - CI / ローカルスクリプト: 環境変数 `GEMINI_API_KEY`（GitHub Actions では Secrets の `GEMINI_API_KEY`）
+  - 拡張機能内チェック: 設定画面の `localStorage` の `selectionCommand.geminiApiKey`
+
+### ローカル実行
+
+```bash
+# packages/extension 内で
+GEMINI_API_KEY=xxx yarn check:ai-selectors --headless  # 全サービス（Gemini 判定あり）
+yarn check:ai-selectors --headless           # 全サービス（入力欄が無いページは unclassified）
+yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リストより優先）
+```
+
+結果は `packages/extension/selector-check-results/`（`result.json` / `summary.md` / スクリーンショット）に出力される。
+
+### 開発者向け: ブラウザ上での一括チェック
+
+ログインが必要なサービス（claude 等）や、CI で Bot 判定されるサービスは、開発者が普段使っているブラウザ（ログイン済み）で確認する。
+
+1. 設定画面を開き、DevTools のコンソールで以下を実行してリロードする
+
+   ```js
+   localStorage.setItem("selectionCommand.devTools", "true")
+   // 任意: ページ状態を Gemini で判定する
+   localStorage.setItem("selectionCommand.geminiApiKey", "<API key>")
+   ```
+
+2. 左メニューに表示される **Developer Tools** のボタンを押す
+   - **AI Selector Check**: 現在のウィンドウ（ログイン済みのセッション）で確認する
+   - **AI Selector Check (Incognito)**: 新しいシークレットウィンドウ（ログインセッション無し）で確認する
+     - 事前に拡張機能の詳細画面（`chrome://extensions`）で「シークレット モードでの実行を許可する」を有効にすること（無効の場合は Console にエラーを出して終了する）
+     - シークレットウィンドウ同士はセッションを共有するため、他のシークレットウィンドウが開いていると未ログイン状態にならない（開いている場合は Console に警告を出す）
+     - 拡張機能は manifest の既定（`incognito: "spanning"`）で動作するため、通常ウィンドウの設定画面からシークレットタブの content script へ `tabs.sendMessage` で通信できる
+   - Hub にデプロイ済みの最新 `ai-services.json`（キャッシュ無視。取得失敗時はビルド時同梱のもの）を使う
+   - 全サービスをバックグラウンドタブで開き、各タブの content script がセレクタを判定する（判定ロジックは CI と共通）
+   - 空の入力欄に一時的にダミーテキストを入力して入力後の状態を確認し、直後に削除する（送信はしない。下書きがある場合は触らない）
+     - 入力はページアクションと同じ `inputContentEditable`（contenteditable）/ プロトタイプの `value` セッター + `input` イベント（textarea）で行う。`execCommand` はドキュメントのフォーカスが必要で、バックグラウンドタブでは Lexical（Perplexity）等に無視されるため使わない
+     - 削除はテキストノードを空にして `input` イベントを送る（Lexical は選択範囲への `execCommand("delete")` を無視するため）
+3. 結果はすべて設定画面の DevTools コンソールに出力される（サマリーの `console.table`、サービスごとのセレクタ一致結果、issue 用の Markdown）
+   - `pass` のタブは自動で閉じ、それ以外のタブは確認用に開いたままにする（シークレットの場合、全サービスが `pass` ならウィンドウごと閉じてセッションも破棄される）
+
+無効化する場合は `localStorage.removeItem("selectionCommand.devTools")` して設定画面をリロードする。
+
+- content script の `checkAiSelectors` リスナーは、このフラグが有効な場合のみ登録される（入力欄へダミーテキストを入れる副作用があるため、一般ユーザーには登録しない）
+- content script からは設定画面の `localStorage` を読めないため、フラグは設定画面を開いた時とチェック開始時に `chrome.storage.session`（メモリ上のみ・ブラウザ再起動で消える・同期/エクスポート対象外）へ反映される
+- ダミーテキストの入力に失敗した場合（入力欄が編集不可、またはエディタに反映されない）は、入力後の状態を観測できないため `error` とする
