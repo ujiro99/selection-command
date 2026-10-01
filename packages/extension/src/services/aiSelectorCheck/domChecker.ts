@@ -25,6 +25,8 @@ type DomCheckOptions = {
   submitTimeoutMs?: number
   /** Time for the page to react to the dummy text before matching again. */
   settleMs?: number
+  /** How long to wait for the dummy text to show up in the input. */
+  reflectTimeoutMs?: number
   pollIntervalMs?: number
 }
 
@@ -83,6 +85,27 @@ const selectAll = (el: Element) => {
   selection?.addRange(range)
 }
 
+/** The dummy text could not be typed, so the "after input" state is unknown. */
+class DummyTextError extends Error {
+  constructor() {
+    super("Could not type a dummy text into the input")
+  }
+}
+
+const waitUntilEntered = async (
+  el: Element,
+  { reflectTimeoutMs, pollIntervalMs }: DummyTextOptions,
+): Promise<boolean> => {
+  const deadline = Date.now() + reflectTimeoutMs
+  for (;;) {
+    if (!isEmptyInput(el)) return true
+    if (Date.now() >= deadline) return false
+    await sleep(pollIntervalMs)
+  }
+}
+
+type DummyTextOptions = { reflectTimeoutMs: number; pollIntervalMs: number }
+
 /**
  * Temporarily type a dummy text so that the submit button switches to its
  * "after input" state, then remove it again.
@@ -91,15 +114,25 @@ const selectAll = (el: Element) => {
  */
 const withDummyText = async <T>(
   el: Element,
+  options: DummyTextOptions,
   fn: () => Promise<T>,
 ): Promise<T> => {
-  ;(el as HTMLElement).focus()
-  document.execCommand("insertText", false, DUMMY_TEXT)
   try {
+    ;(el as HTMLElement).focus()
+    const inserted = document.execCommand("insertText", false, DUMMY_TEXT)
+    // execCommand may report success while the editor ignored the input, and
+    // some editors (e.g. Lexical on Perplexity) update the DOM only in a
+    // later task, so wait for the text to show up.
+    if (!inserted || !(await waitUntilEntered(el, options))) {
+      throw new DummyTextError()
+    }
     return await fn()
   } finally {
-    selectAll(el)
-    document.execCommand("delete")
+    // Only called for an empty input, so anything in it now is ours.
+    if (!isEmptyInput(el)) {
+      selectAll(el)
+      document.execCommand("delete")
+    }
   }
 }
 
@@ -117,6 +150,7 @@ export const checkSelectorsInDocument = async (
     inputTimeoutMs = 15_000,
     submitTimeoutMs = 5_000,
     settleMs = 1_000,
+    reflectTimeoutMs = 1_000,
     pollIntervalMs = 500,
   } = options
   const { inputSelectors, submitSelectors } = target
@@ -160,6 +194,10 @@ export const checkSelectorsInDocument = async (
       }
     }
 
+    const inputGroup: SelectorGroupResult = {
+      kind: SELECTOR_KIND.INPUT,
+      matches: matchEach(inputSelectors),
+    }
     let initial: SelectorGroupResult
     let afterInput: SelectorGroupResult
     if (isEmptyInput(input)) {
@@ -167,15 +205,32 @@ export const checkSelectorsInDocument = async (
         kind: SELECTOR_KIND.SUBMIT_INITIAL,
         matches: await matchSubmit(),
       }
-      // Match while the dummy text is still present, since the button
-      // switches back once the input is emptied.
-      afterInput = await withDummyText(input, async () => {
-        await sleep(settleMs)
+      try {
+        // Match while the dummy text is still present, since the button
+        // switches back once the input is emptied.
+        afterInput = await withDummyText(
+          input,
+          { reflectTimeoutMs, pollIntervalMs: Math.min(pollIntervalMs, 50) },
+          async () => {
+            await sleep(settleMs)
+            return {
+              kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT,
+              matches: await matchSubmit(),
+            }
+          },
+        )
+      } catch (e) {
+        if (!(e instanceof DummyTextError)) throw e
+        // Not "skipped": that would let the service pass without ever
+        // observing the button after input.
         return {
-          kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT,
-          matches: await matchSubmit(),
+          ...base(),
+          pageState: PAGE_STATE.OK,
+          groups: [inputGroup, initial],
+          verdict: VERDICT.ERROR,
+          error: e.message,
         }
-      })
+      }
     } else {
       // The composer already has a draft (developer's own browser): the
       // initial state can't be observed, and the draft is left untouched.
@@ -190,11 +245,7 @@ export const checkSelectorsInDocument = async (
       }
     }
 
-    const groups: SelectorGroupResult[] = [
-      { kind: SELECTOR_KIND.INPUT, matches: matchEach(inputSelectors) },
-      initial,
-      afterInput,
-    ]
+    const groups = [inputGroup, initial, afterInput]
     return {
       ...base(),
       pageState: PAGE_STATE.OK,

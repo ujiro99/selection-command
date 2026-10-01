@@ -192,6 +192,76 @@ describe("checkSelectorsInDocument", () => {
     expect(execCommand).not.toHaveBeenCalled()
   })
 
+  it("waits for an editor that reflects the input asynchronously", async () => {
+    // Lexical (Perplexity) updates the DOM in a later task.
+    document.body.innerHTML = `<textarea id="prompt"></textarea><div id="actions"><button id="voice"></button></div>`
+    const textarea = document.querySelector("textarea") as HTMLTextAreaElement
+    const actions = document.querySelector("#actions") as HTMLElement
+    execCommand.mockImplementation((command: string, _ui, value?: string) => {
+      if (command === "insertText") {
+        setTimeout(() => {
+          textarea.value = value ?? ""
+          actions.innerHTML = `<button id="send"></button>`
+        }, 20)
+      }
+      if (command === "delete") textarea.value = ""
+      return true
+    })
+
+    const result = await checkSelectorsInDocument(target, {
+      ...options,
+      reflectTimeoutMs: 500,
+    })
+
+    expect(result.verdict).toBe(VERDICT.PASS)
+    expect(textarea.value).toBe("")
+  })
+
+  describe("when the dummy text can't be typed", () => {
+    beforeEach(() => {
+      document.body.innerHTML = `<textarea id="prompt"></textarea><button id="voice"></button>`
+    })
+
+    it.each([
+      ["execCommand returns false", () => false],
+      // The editor ignored the input although execCommand succeeded.
+      ["nothing is entered", () => true],
+    ])("returns an error when %s", async (_label, impl) => {
+      execCommand.mockImplementation(impl)
+
+      const result = await checkSelectorsInDocument(target, options)
+
+      // Not "skipped": the service must not pass without the after-input state.
+      expect(result.verdict).toBe(VERDICT.ERROR)
+      expect(result.error).toBe("Could not type a dummy text into the input")
+      expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.matches).toEqual([
+        { selector: "button#voice", found: true },
+        { selector: "button#send", found: false },
+      ])
+      expect(groupOf(result, SELECTOR_KIND.SUBMIT_AFTER_INPUT)).toBeUndefined()
+      // Nothing was typed, so nothing is deleted.
+      expect(execCommand).not.toHaveBeenCalledWith("delete")
+    })
+
+    it("still removes the dummy text when typing throws", async () => {
+      const textarea = document.querySelector("textarea") as HTMLTextAreaElement
+      execCommand.mockImplementation((command: string, _ui, value?: string) => {
+        if (command === "insertText") {
+          textarea.value = value ?? ""
+          throw new Error("editor crashed")
+        }
+        if (command === "delete") textarea.value = ""
+        return true
+      })
+
+      const result = await checkSelectorsInDocument(target, options)
+
+      expect(result.verdict).toBe(VERDICT.ERROR)
+      expect(execCommand).toHaveBeenCalledWith("delete")
+      expect(textarea.value).toBe("")
+    })
+  })
+
   it("fails a group containing an invalid selector", async () => {
     setUpComposer(`<button id="voice"></button>`, `<button id="send"></button>`)
 

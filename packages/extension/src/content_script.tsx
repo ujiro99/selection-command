@@ -3,7 +3,10 @@ import { APP_ID, isDebug, isE2E } from "./const"
 import { App } from "./components/App"
 import { initSentry, Sentry, ErrorBoundary } from "@/lib/sentry"
 import "@/services/connection"
-import "@/services/aiSelectorCheck/listener"
+import { registerAiSelectorCheckListener } from "@/services/aiSelectorCheck/listener"
+
+// Developer-only: registered only while the dev tools are enabled.
+registerAiSelectorCheckListener()
 
 // Initialize Sentry for content script
 initSentry().catch((error) => {

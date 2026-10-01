@@ -12,7 +12,7 @@ import {
 import { sleep } from "@/lib/utils"
 import type { AiService } from "@/types"
 import type { CheckAiSelectorsParam } from "./listener"
-import { getGeminiApiKey } from "./devFlag"
+import { getGeminiApiKey, syncDevToolsFlag } from "./devFlag"
 import { classifyResult } from "./geminiClassifier"
 import {
   isGroupPassed,
@@ -85,12 +85,14 @@ const isCheckResult = (value: unknown): value is ServiceCheckResult =>
   "groups" in value
 
 /**
- * Send the check request, retrying only while the content script is not
- * ready yet (sendMessage rejects as there is no receiver).
- * A response that is not a check result is an error and is not retried,
- * since every request types a dummy text into the page again.
+ * Send the check request, retrying only while the content script has not
+ * answered yet: sendMessage rejects while there is no content script, and
+ * resolves with undefined while it is loaded but hasn't registered the
+ * listener yet (that waits for the dev tools flag).
+ * Any other response that is not a check result is an error and is not
+ * retried, since every handled request types a dummy text into the page.
  * chrome.tabs.sendMessage is used directly instead of Ipc.sendTab, which
- * swallows the rejection and makes the two cases indistinguishable.
+ * swallows the rejection and makes these cases indistinguishable.
  */
 const requestCheck = async (
   tabId: number,
@@ -108,15 +110,20 @@ const requestCheck = async (
   }
   for (;;) {
     let response: unknown
+    let noAnswer: unknown
     try {
       response = await chrome.tabs.sendMessage(tabId, {
         command: TabCommand.checkAiSelectors,
         param,
       })
+      if (response === undefined) noAnswer = "no listener responded"
     } catch (e) {
+      noAnswer = e
+    }
+    if (noAnswer !== undefined) {
       // Not ready yet: retry until the deadline.
       if (Date.now() >= deadline) {
-        throw new Error(`The content script did not respond: ${e}`)
+        throw new Error(`The content script did not respond: ${noAnswer}`)
       }
       await sleep(RETRY_INTERVAL_MS)
       continue
@@ -231,6 +238,9 @@ const openIncognitoWindow = async (): Promise<
 export const runAiSelectorCheck = async (
   options: { incognito?: boolean } = {},
 ): Promise<void> => {
+  // The content scripts of the tabs opened below register their listener
+  // only when this flag is set.
+  await syncDevToolsFlag()
   const apiKey = getGeminiApiKey()
   console.info(
     LOG_PREFIX,

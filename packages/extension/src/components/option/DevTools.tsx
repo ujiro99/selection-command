@@ -1,6 +1,9 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ScanSearch, VenetianMask } from "lucide-react"
-import { isDevToolsEnabled } from "@/services/aiSelectorCheck/devFlag"
+import {
+  isDevToolsEnabled,
+  syncDevToolsFlag,
+} from "@/services/aiSelectorCheck/devFlag"
 import { runAiSelectorCheck } from "@/services/aiSelectorCheck/runner"
 
 import css from "./Option.module.css"
@@ -15,6 +18,13 @@ import css from "./Option.module.css"
 export function DevTools() {
   const [enabled] = useState(isDevToolsEnabled)
   const [running, setRunning] = useState(false)
+
+  // Mirror the flag for content scripts, also to turn it off after the flag
+  // was removed from localStorage.
+  useEffect(() => {
+    syncDevToolsFlag().catch(() => {})
+  }, [])
+
   if (!enabled) return null
 
   const run = async (incognito: boolean) => {

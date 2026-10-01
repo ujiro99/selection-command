@@ -148,19 +148,22 @@ describe("runAiSelectorCheck", () => {
       onlyGemini()
       const respond = sendMessage.getMockImplementation()!
       sendMessage
+        // No content script yet.
         .mockRejectedValueOnce(new Error("Receiving end does not exist."))
+        // Loaded, but the listener isn't registered yet.
+        .mockResolvedValueOnce(undefined)
         .mockImplementation(respond)
 
       await runAiSelectorCheck()
 
-      expect(sendMessage).toHaveBeenCalledTimes(2)
+      expect(sendMessage).toHaveBeenCalledTimes(3)
       // Passed, so the tab was closed.
       expect(tabsRemove).toHaveBeenCalledWith([10])
     })
 
     it("does not retry on an invalid response", async () => {
       onlyGemini()
-      sendMessage.mockResolvedValue(undefined)
+      sendMessage.mockResolvedValue({ unexpected: true })
 
       await runAiSelectorCheck()
 

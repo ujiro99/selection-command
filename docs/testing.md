@@ -203,6 +203,8 @@ yarn test:e2e              # E2E テスト実行
 入力欄が見つからなかった場合のみ、それが「セレクタの破損」なのか「Bot チャレンジ / ログイン画面」なのかを判定する（`geminiClassifier.ts`）。
 
 - Gemini API（`gemini-3.1-flash-lite`、構造化出力）に URL・タイトル・表示テキスト先頭（CI ではスクリーンショットも）を渡し、`ok` / `blocked` / `login_required` を返させる。呼び出し形式は selection-command-hub の `src/infrastructure/gemini/content-classifier.ts` に準拠
+- `blocked` / `login_required` でも confidence が 0.7 未満の場合は信用せず `ok`（セレクタ破損として issue 化）に倒す。誤判定で本来の破損が見逃されるより、誤 issue を閉じる方が低コストなため
+- ページ本文は信頼できない入力として区切り（`<visible_text>`）付きで渡し、本文内の指示に従わないよう SYSTEM_PROMPT で指示している
 - API キー未設定・API エラー時は推測せず `pageState: "unclassified"` とし、`blocked` と同様に扱う（issue は作らず、ワークフロー失敗の通知メールのみ）。そのため CI では `GEMINI_API_KEY` の登録が実質必須
 - API キーの設定
   - CI / ローカルスクリプト: 環境変数 `GEMINI_API_KEY`（GitHub Actions では Secrets の `GEMINI_API_KEY`）
@@ -243,4 +245,8 @@ yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リスト
 3. 結果はすべて設定画面の DevTools コンソールに出力される（サマリーの `console.table`、サービスごとのセレクタ一致結果、issue 用の Markdown）
    - `pass` のタブは自動で閉じ、それ以外のタブは確認用に開いたままにする（シークレットの場合、全サービスが `pass` ならウィンドウごと閉じてセッションも破棄される）
 
-無効化する場合は `localStorage.removeItem("selectionCommand.devTools")`。
+無効化する場合は `localStorage.removeItem("selectionCommand.devTools")` して設定画面をリロードする。
+
+- content script の `checkAiSelectors` リスナーは、このフラグが有効な場合のみ登録される（入力欄へダミーテキストを入れる副作用があるため、一般ユーザーには登録しない）
+- content script からは設定画面の `localStorage` を読めないため、フラグは設定画面を開いた時とチェック開始時に `chrome.storage.session`（メモリ上のみ・ブラウザ再起動で消える・同期/エクスポート対象外）へ反映される
+- ダミーテキストの入力に失敗した場合（`execCommand` の失敗、またはエディタに反映されない）は、入力後の状態を観測できないため `error` とする
