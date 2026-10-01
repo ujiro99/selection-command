@@ -90,6 +90,18 @@ This file provides guidance to AI Agent when working with code in this repositor
 - コンテンツスクリプトのスタイリング分離にShadow DOMを使用
 - 堅牢なXPathセレクター生成のためのRobula+アルゴリズムを実装（`src/lib/robula-plus/`）
 
+### コーディング時の注意事項
+
+- export は必要最低限にすること。
+  - どうしてもテストのために export する場合は、`__tests__/` 内のテストコードからのみアクセスされることを明示するために、以下のようなexportをすること。ただしこの場合も、実装詳細のテストにならないよう注意すること。
+    ```ts
+    /** Test-only exports. Do not use in production code. */
+    export const __test = {
+      foo,
+      bar,
+    }
+    ```
+
 ### CSSビルドの重要な仕様
 
 **`@crxjs/vite-plugin` の CSS 自動注入問題**
