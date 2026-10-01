@@ -193,7 +193,8 @@ yarn test:e2e              # E2E テスト実行
 | `error`   | ナビゲーションタイムアウト等                                                              | ワークフロー失敗（通知メールのみ）                       |
 
 - 拡張機能は各配列を `a, b, c` と連結して使うため、配列内のいずれか 1 つが一致すれば合格とする
-- `submitSelectors` は入力後に出現するため、入力欄にダミーテキストを入力してから確認する（送信はしない）
+- `submitSelectors` は入力によってボタンが変化する（例: 音声モードボタン → 送信ボタン）ため、①初回表示後（`submitSelectors (initial)`）と ②入力欄へダミーテキストを入力した後（`submitSelectors (after input)`、送信はしない）の 2 状態で照合し、**両方でいずれかのセレクタが一致**すれば合格とする
+  - 観測できない状態は `skipped` として判定から除外する（入力欄が見つからない場合の ②、拡張機能内チェックで入力欄に下書きがある場合の ①）
 - `copySelectors` は回答生成後にしか出現しないため対象外
 - ログイン必須の `claude` は対象外（スクリプト内 `EXCLUDED_SERVICE_IDS`）
 
@@ -230,11 +231,16 @@ yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リスト
    localStorage.setItem("selectionCommand.geminiApiKey", "<API key>")
    ```
 
-2. 左メニューに表示される **Developer Tools > AI Selector Check** を押す
+2. 左メニューに表示される **Developer Tools** のボタンを押す
+   - **AI Selector Check**: 現在のウィンドウ（ログイン済みのセッション）で確認する
+   - **AI Selector Check (Incognito)**: 新しいシークレットウィンドウ（ログインセッション無し）で確認する
+     - 事前に拡張機能の詳細画面（`chrome://extensions`）で「シークレット モードでの実行を許可する」を有効にすること（無効の場合は Console にエラーを出して終了する）
+     - シークレットウィンドウ同士はセッションを共有するため、他のシークレットウィンドウが開いていると未ログイン状態にならない（開いている場合は Console に警告を出す）
+     - 拡張機能は manifest の既定（`incognito: "spanning"`）で動作するため、通常ウィンドウの設定画面からシークレットタブの content script へ `tabs.sendMessage` で通信できる
    - Hub にデプロイ済みの最新 `ai-services.json`（キャッシュ無視。取得失敗時はビルド時同梱のもの）を使う
    - 全サービスをバックグラウンドタブで開き、各タブの content script がセレクタを判定する（判定ロジックは CI と共通）
    - 送信ボタンが入力後にしか出現しない場合、空の入力欄に一時的にダミーテキストを入力して確認し、直後に削除する（送信はしない）
 3. 結果はすべて設定画面の DevTools コンソールに出力される（サマリーの `console.table`、サービスごとのセレクタ一致結果、issue 用の Markdown）
-   - `pass` のタブは自動で閉じ、それ以外のタブは確認用に開いたままにする
+   - `pass` のタブは自動で閉じ、それ以外のタブは確認用に開いたままにする（シークレットの場合、全サービスが `pass` ならウィンドウごと閉じてセッションも破棄される）
 
 無効化する場合は `localStorage.removeItem("selectionCommand.devTools")`。

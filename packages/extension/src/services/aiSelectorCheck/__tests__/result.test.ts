@@ -32,7 +32,7 @@ describe("isGroupPassed", () => {
   it("fails when any selector is invalid even if another matches", () => {
     expect(
       isGroupPassed({
-        kind: SELECTOR_KIND.SUBMIT,
+        kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT,
         matches: [
           { selector: "a:has(", found: false, invalid: true },
           { selector: "#ok", found: true },
@@ -41,8 +41,20 @@ describe("isGroupPassed", () => {
     ).toBe(false)
   })
 
+  it("passes a skipped group regardless of its matches", () => {
+    expect(
+      isGroupPassed({
+        kind: SELECTOR_KIND.SUBMIT_INITIAL,
+        matches: [],
+        skipped: true,
+      }),
+    ).toBe(true)
+  })
+
   it("passes an empty group (service without selectors)", () => {
-    expect(isGroupPassed(group(SELECTOR_KIND.SUBMIT, []))).toBe(true)
+    expect(isGroupPassed(group(SELECTOR_KIND.SUBMIT_AFTER_INPUT, []))).toBe(
+      true,
+    )
   })
 })
 
@@ -55,7 +67,7 @@ describe("decideVerdict", () => {
     expect(
       decideVerdict(PAGE_STATE.OK, [
         group(SELECTOR_KIND.INPUT, [true]),
-        group(SELECTOR_KIND.SUBMIT, [false, true]),
+        group(SELECTOR_KIND.SUBMIT_AFTER_INPUT, [false, true]),
       ]),
     ).toBe(VERDICT.PASS)
   })
@@ -64,7 +76,7 @@ describe("decideVerdict", () => {
     expect(
       decideVerdict(PAGE_STATE.OK, [
         group(SELECTOR_KIND.INPUT, [true]),
-        group(SELECTOR_KIND.SUBMIT, [false]),
+        group(SELECTOR_KIND.SUBMIT_AFTER_INPUT, [false]),
       ]),
     ).toBe(VERDICT.FAIL)
   })
@@ -85,7 +97,7 @@ describe("toMarkdown", () => {
       url: "https://chatgpt.com",
       groups: [
         group(SELECTOR_KIND.INPUT, [false]),
-        group(SELECTOR_KIND.SUBMIT, [true]),
+        group(SELECTOR_KIND.SUBMIT_AFTER_INPUT, [true]),
       ],
       verdict: VERDICT.FAIL,
     },
@@ -104,6 +116,26 @@ describe("toMarkdown", () => {
     expect(md).toContain("| Gemini (`gemini`) | ✅ pass |")
     expect(md).toContain("`inputSelectors` not found")
     expect(md).toContain("page state: `blocked`")
+  })
+
+  it("marks skipped groups in the selector details", () => {
+    const md = toMarkdown([
+      {
+        id: "chatgpt",
+        name: "ChatGPT",
+        url: "https://chatgpt.com",
+        groups: [
+          group(SELECTOR_KIND.INPUT, [false]),
+          {
+            kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT,
+            matches: [],
+            skipped: true,
+          },
+        ],
+        verdict: VERDICT.FAIL,
+      },
+    ])
+    expect(md).toContain("- `submitSelectors (after input)` (skipped)")
   })
 
   it("lists selector details only for failed services", () => {

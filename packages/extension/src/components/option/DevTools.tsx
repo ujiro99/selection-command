@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { ScanSearch } from "lucide-react"
+import { ScanSearch, VenetianMask } from "lucide-react"
 import { isDevToolsEnabled } from "@/services/aiSelectorCheck/devFlag"
 import { runAiSelectorCheck } from "@/services/aiSelectorCheck/runner"
 
@@ -17,10 +17,10 @@ export function DevTools() {
   const [running, setRunning] = useState(false)
   if (!enabled) return null
 
-  const run = async () => {
+  const run = async (incognito: boolean) => {
     setRunning(true)
     try {
-      await runAiSelectorCheck()
+      await runAiSelectorCheck({ incognito })
     } catch (e) {
       console.error("[AI Selector Check]", e)
     } finally {
@@ -35,13 +35,23 @@ export function DevTools() {
       </p>
       <button
         className={css.menuButton}
-        onClick={run}
+        onClick={() => run(false)}
         disabled={running}
         title="Results are logged to the console"
       >
         <ScanSearch size={18} className="mr-2 stroke-gray-600" />
-        {running ? "Checking…" : "AI Selector Check"}
+        AI Selector Check
       </button>
+      <button
+        className={css.menuButton}
+        onClick={() => run(true)}
+        disabled={running}
+        title="Checks in a new incognito window (no login session). Results are logged to the console"
+      >
+        <VenetianMask size={18} className="mr-2 stroke-gray-600" />
+        AI Selector Check (Incognito)
+      </button>
+      {running && <p className="text-sm text-gray-600 ml-2">Checking…</p>}
     </div>
   )
 }

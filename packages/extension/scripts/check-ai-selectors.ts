@@ -5,8 +5,9 @@
  *
  * For each service:
  *   1. Open `url` and wait for any of `inputSelectors`.
- *   2. Type a dummy text (never submitted) and check `submitSelectors`,
- *      since submit buttons usually appear / enable only after input.
+ *   2. Check `submitSelectors` on the initial page, then type a dummy text
+ *      (never submitted) and check them again, since the button often
+ *      changes on input (e.g. voice mode button -> send button).
  *   3. When the input was not found, classify the page (ok / blocked /
  *      login_required) with Gemini from its text and screenshot, so that a
  *      challenge or login page is not reported as a broken selector.
@@ -60,6 +61,8 @@ const EXCLUDED_SERVICE_IDS = ["claude"]
 const NAVIGATION_TIMEOUT_MS = 30_000
 const INPUT_TIMEOUT_MS = 15_000
 const SUBMIT_TIMEOUT_MS = 5_000
+/** Time for the page to react to the dummy text before matching again. */
+const SETTLE_MS = 1_000
 const DUMMY_TEXT = "selector check"
 
 type AiServiceJson = {
@@ -140,29 +143,32 @@ const checkService = async (
 
   // Give the SPA a chance to render the composer before judging.
   const inputFound = await waitForAny(page, inputSelectors, INPUT_TIMEOUT_MS)
+  const inputGroup: SelectorGroupResult = {
+    kind: SELECTOR_KIND.INPUT,
+    matches: await matchEach(page, inputSelectors),
+  }
+  const matchSubmit = async () => {
+    await waitForAny(page, submitSelectors, SUBMIT_TIMEOUT_MS)
+    return matchEach(page, submitSelectors)
+  }
 
   if (inputFound) {
-    // Type into the input so that the submit button appears.
+    const initial: SelectorGroupResult = {
+      kind: SELECTOR_KIND.SUBMIT_INITIAL,
+      matches: await matchSubmit(),
+    }
+    // Type into the input so that the submit button switches its state.
     await page.evaluate(
       (sel) => (document.querySelector(sel) as HTMLElement | null)?.focus(),
       inputSelectors.join(", "),
     )
     await page.keyboard.type(DUMMY_TEXT)
-    await waitForAny(page, submitSelectors, SUBMIT_TIMEOUT_MS)
-  }
-
-  const groups: SelectorGroupResult[] = [
-    {
-      kind: SELECTOR_KIND.INPUT,
-      matches: await matchEach(page, inputSelectors),
-    },
-    {
-      kind: SELECTOR_KIND.SUBMIT,
-      matches: await matchEach(page, submitSelectors),
-    },
-  ]
-
-  if (inputFound) {
+    await page.waitForTimeout(SETTLE_MS)
+    const afterInput: SelectorGroupResult = {
+      kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT,
+      matches: await matchSubmit(),
+    }
+    const groups = [inputGroup, initial, afterInput]
     return {
       ...base,
       finalUrl: page.url(),
@@ -171,6 +177,15 @@ const checkService = async (
       verdict: decideVerdict(PAGE_STATE.OK, groups),
     }
   }
+
+  const groups: SelectorGroupResult[] = [
+    inputGroup,
+    {
+      kind: SELECTOR_KIND.SUBMIT_INITIAL,
+      matches: await matchEach(page, submitSelectors),
+    },
+    { kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT, matches: [], skipped: true },
+  ]
 
   // The input was not found: classify the page to tell a broken selector
   // from a challenge / login page.

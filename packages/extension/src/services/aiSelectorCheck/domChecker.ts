@@ -22,6 +22,8 @@ export type CheckTarget = Pick<
 type DomCheckOptions = {
   inputTimeoutMs?: number
   submitTimeoutMs?: number
+  /** Time for the page to react to the dummy text before matching again. */
+  settleMs?: number
   pollIntervalMs?: number
 }
 
@@ -53,9 +55,7 @@ const waitForAny = async (
 }
 
 /** Match each selector with querySelector, as the extension does. */
-const matchEach = (
-  selectors: string[],
-): SelectorGroupResult["matches"] =>
+const matchEach = (selectors: string[]): SelectorGroupResult["matches"] =>
   selectors.map((selector) => {
     try {
       return { selector, found: document.querySelector(selector) != null }
@@ -86,8 +86,8 @@ const selectAll = (el: Element) => {
 }
 
 /**
- * Temporarily type a dummy text so that submit buttons that only appear on
- * input can be found, then remove it again.
+ * Temporarily type a dummy text so that the submit button switches to its
+ * "after input" state, then remove it again.
  * execCommand is used because it fires the input events that frameworks
  * (React, ProseMirror, Quill) listen to.
  */
@@ -107,8 +107,9 @@ const withDummyText = async <T>(
 
 /**
  * Check the input / submit selectors of a service on the current page.
- * The submit selectors are first checked as is; only when none matches and
- * the input is empty, a dummy text is typed temporarily (never submitted).
+ * submitSelectors are matched both on the initial page and after a dummy
+ * text was typed into the input (never submitted), because the button often
+ * changes on input (e.g. voice mode button -> send button).
  */
 export const checkSelectorsInDocument = async (
   target: CheckTarget,
@@ -117,8 +118,10 @@ export const checkSelectorsInDocument = async (
   const {
     inputTimeoutMs = 15_000,
     submitTimeoutMs = 5_000,
+    settleMs = 1_000,
     pollIntervalMs = 500,
   } = options
+  const { inputSelectors, submitSelectors } = target
   // Evaluated on return, since SPAs may redirect while waiting.
   const base = () => ({
     id: target.id,
@@ -126,55 +129,79 @@ export const checkSelectorsInDocument = async (
     url: target.url,
     finalUrl: location.href,
   })
+  const matchSubmit = async () => {
+    await waitForAny(submitSelectors, submitTimeoutMs, pollIntervalMs)
+    return matchEach(submitSelectors)
+  }
 
   try {
     const input = await waitForAny(
-      target.inputSelectors,
+      inputSelectors,
       inputTimeoutMs,
       pollIntervalMs,
     )
 
-    // Record the submit matches while the dummy text is still present,
-    // since some buttons are removed again once the input is emptied.
-    const submitMatches =
-      input && !queryAny(target.submitSelectors) && isEmptyInput(input)
-        ? await withDummyText(input, async () => {
-            await waitForAny(
-              target.submitSelectors,
-              submitTimeoutMs,
-              pollIntervalMs,
-            )
-            return matchEach(target.submitSelectors)
-          })
-        : matchEach(target.submitSelectors)
-
-    const groups: SelectorGroupResult[] = [
-      {
-        kind: SELECTOR_KIND.INPUT,
-        matches: matchEach(target.inputSelectors),
-      },
-      { kind: SELECTOR_KIND.SUBMIT, matches: submitMatches },
-    ]
-
-    if (input) {
-      // A found composer means the page is usable.
+    if (!input) {
+      // The input was not found: attach a snapshot so that the caller can
+      // tell a broken selector from a challenge / login page with Gemini
+      // (see geminiClassifier.ts). Until then the page is "unclassified".
+      const groups: SelectorGroupResult[] = [
+        { kind: SELECTOR_KIND.INPUT, matches: matchEach(inputSelectors) },
+        {
+          kind: SELECTOR_KIND.SUBMIT_INITIAL,
+          matches: matchEach(submitSelectors),
+        },
+        { kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT, matches: [], skipped: true },
+      ]
       return {
         ...base(),
-        pageState: PAGE_STATE.OK,
+        pageState: PAGE_STATE.UNCLASSIFIED,
+        snapshot: takePageSnapshot(SNAPSHOT_TEXT_LENGTH),
         groups,
-        verdict: decideVerdict(PAGE_STATE.OK, groups),
+        verdict: decideVerdict(PAGE_STATE.UNCLASSIFIED, groups),
       }
     }
 
-    // The input was not found: attach a snapshot so that the caller can
-    // tell a broken selector from a challenge / login page with Gemini
-    // (see geminiClassifier.ts). Until then the page is "unclassified".
+    let initial: SelectorGroupResult
+    let afterInput: SelectorGroupResult
+    if (isEmptyInput(input)) {
+      initial = {
+        kind: SELECTOR_KIND.SUBMIT_INITIAL,
+        matches: await matchSubmit(),
+      }
+      // Match while the dummy text is still present, since the button
+      // switches back once the input is emptied.
+      afterInput = await withDummyText(input, async () => {
+        await sleep(settleMs)
+        return {
+          kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT,
+          matches: await matchSubmit(),
+        }
+      })
+    } else {
+      // The composer already has a draft (developer's own browser): the
+      // initial state can't be observed, and the draft is left untouched.
+      initial = {
+        kind: SELECTOR_KIND.SUBMIT_INITIAL,
+        matches: [],
+        skipped: true,
+      }
+      afterInput = {
+        kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT,
+        matches: await matchSubmit(),
+      }
+    }
+
+    const groups: SelectorGroupResult[] = [
+      { kind: SELECTOR_KIND.INPUT, matches: matchEach(inputSelectors) },
+      initial,
+      afterInput,
+    ]
     return {
       ...base(),
-      pageState: PAGE_STATE.UNCLASSIFIED,
-      snapshot: takePageSnapshot(SNAPSHOT_TEXT_LENGTH),
+      pageState: PAGE_STATE.OK,
       groups,
-      verdict: decideVerdict(PAGE_STATE.UNCLASSIFIED, groups),
+      verdict: decideVerdict(PAGE_STATE.OK, groups),
     }
   } catch (e) {
     return {

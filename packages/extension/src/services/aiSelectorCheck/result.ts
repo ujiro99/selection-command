@@ -5,10 +5,18 @@ import {
   type PageState,
 } from "./pageState"
 
-/** Which selector list of an AI service a group corresponds to. */
+/**
+ * Which selector list of an AI service a group corresponds to, and when it
+ * was matched. submitSelectors are matched twice because the button often
+ * changes on input (e.g. voice mode button -> send button), and the list has
+ * to cover both states.
+ */
 export const SELECTOR_KIND = {
   INPUT: "inputSelectors",
-  SUBMIT: "submitSelectors",
+  /** submitSelectors on the initial page, before typing. */
+  SUBMIT_INITIAL: "submitSelectors (initial)",
+  /** submitSelectors after a dummy text was typed into the input. */
+  SUBMIT_AFTER_INPUT: "submitSelectors (after input)",
 } as const
 type SelectorKind = (typeof SELECTOR_KIND)[keyof typeof SELECTOR_KIND]
 
@@ -22,6 +30,11 @@ type SelectorMatch = {
 export type SelectorGroupResult = {
   kind: SelectorKind
   matches: SelectorMatch[]
+  /**
+   * The state could not be observed (e.g. the composer already had a draft,
+   * or the input was not found), so the group is excluded from the verdict.
+   */
+  skipped?: boolean
 }
 
 export const VERDICT = {
@@ -57,6 +70,7 @@ export type ServiceCheckResult = {
  * same reason, a single invalid selector breaks the whole group.
  */
 export const isGroupPassed = (group: SelectorGroupResult): boolean =>
+  group.skipped === true ||
   group.matches.length === 0 ||
   (group.matches.some((m) => m.found) && !group.matches.some((m) => m.invalid))
 
@@ -108,6 +122,10 @@ export const toMarkdown = (results: ServiceCheckResult[]): string => {
     for (const r of failed) {
       lines.push("", `#### ${r.name} (${r.finalUrl ?? r.url})`)
       for (const g of r.groups) {
+        if (g.skipped) {
+          lines.push(`- \`${g.kind}\` (skipped)`)
+          continue
+        }
         lines.push(`- \`${g.kind}\`${isGroupPassed(g) ? "" : " ❌"}`)
         for (const m of g.matches) {
           const mark = m.invalid ? "⛔ invalid" : m.found ? "✅" : "❌"

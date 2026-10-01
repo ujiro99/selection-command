@@ -162,6 +162,10 @@ const logResults = (results: TabCheckResult[]) => {
     if (r.classification) console.log("classification:", r.classification)
     if (r.error) console.error(r.error)
     for (const g of r.groups) {
+      if (g.skipped) {
+        console.log(`${g.kind}: skipped`)
+        continue
+      }
       console.log(`${g.kind}: ${isGroupPassed(g) ? "passed" : "FAILED"}`)
       console.table(g.matches)
     }
@@ -171,11 +175,43 @@ const logResults = (results: TabCheckResult[]) => {
 }
 
 /**
+ * Open a new incognito window, to check the pages without the developer's
+ * login session. The extension runs in "spanning" incognito mode (the
+ * manifest has no "incognito" key), so the content scripts of incognito
+ * tabs are reachable from this options page with tabs.sendMessage.
+ * Returns undefined when the extension is not allowed in incognito.
+ */
+const openIncognitoWindow = async (): Promise<
+  chrome.windows.Window | undefined
+> => {
+  if (!(await chrome.extension.isAllowedIncognitoAccess())) {
+    console.error(
+      LOG_PREFIX,
+      "Enable 'Allow in Incognito' on the extension's details page (chrome://extensions) first.",
+    )
+    return undefined
+  }
+  const windows = await chrome.windows.getAll()
+  if (windows.some((w) => w.incognito)) {
+    console.warn(
+      LOG_PREFIX,
+      "Other incognito windows are open. Incognito windows share one session, so close them to check without any login session.",
+    )
+  }
+  return chrome.windows.create({ incognito: true, focused: false })
+}
+
+/**
  * Run the check for all services in parallel and log the results.
  * Tabs of passed services are closed; the others are left open so that the
  * developer can inspect them.
+ *
+ * @param options.incognito Open the services in a new incognito window
+ *   (no login session) instead of the current window.
  */
-export const runAiSelectorCheck = async (): Promise<void> => {
+export const runAiSelectorCheck = async (
+  options: { incognito?: boolean } = {},
+): Promise<void> => {
   const apiKey = getGeminiApiKey()
   console.info(
     LOG_PREFIX,
@@ -183,17 +219,33 @@ export const runAiSelectorCheck = async (): Promise<void> => {
       ? "Page classification: Gemini"
       : "Page classification: disabled (set localStorage 'selectionCommand.geminiApiKey' to use Gemini)",
   )
+
+  let windowId: number | undefined
+  // The new tab page a newly created window starts with.
+  let initialTabId: number | undefined
+  if (options.incognito) {
+    const incognitoWindow = await openIncognitoWindow()
+    if (!incognitoWindow) return
+    windowId = incognitoWindow.id
+    initialTabId = incognitoWindow.tabs?.[0]?.id
+    console.info(LOG_PREFIX, "Checking in a new incognito window")
+  } else {
+    windowId = (await chrome.windows.getCurrent()).id
+  }
+
   const services = await loadServices()
-  const { id: windowId } = await chrome.windows.getCurrent()
   const results = await Promise.all(
     services.map((s) => checkInNewTab(s, windowId, apiKey)),
   )
   logResults(results)
 
-  const passedTabIds = results.flatMap((r) =>
+  // When every service passed, this also closes the incognito window, which
+  // discards its session.
+  const tabIdsToClose = results.flatMap((r) =>
     r.verdict === VERDICT.PASS && r.tabId != null ? [r.tabId] : [],
   )
-  if (passedTabIds.length > 0) {
-    await chrome.tabs.remove(passedTabIds).catch(() => {})
+  if (initialTabId != null) tabIdsToClose.push(initialTabId)
+  if (tabIdsToClose.length > 0) {
+    await chrome.tabs.remove(tabIdsToClose).catch(() => {})
   }
 }
