@@ -2,6 +2,9 @@
  * Page state classification with the Gemini API.
  * The request format follows selection-command-hub
  * (src/infrastructure/gemini/content-classifier.ts).
+ *
+ * Public API: `classifyResult` and its option types (at the bottom).
+ * Everything else is internal; tests go through `classifyResult` too.
  */
 import {
   detectPageStateByRules,
@@ -12,7 +15,7 @@ import {
 } from "./pageState"
 import { decideVerdict, type ServiceCheckResult } from "./result"
 
-export const GEMINI_API_URL =
+const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent"
 
 const SYSTEM_PROMPT = `You are a classifier used by a browser extension that automates AI chat services (ChatGPT, Gemini, Claude, Perplexity, ...).
@@ -53,12 +56,6 @@ const RESPONSE_SCHEMA = {
   required: ["state", "confidence", "reason"],
 }
 
-export type Screenshot = {
-  mimeType: "image/png" | "image/jpeg"
-  /** Base64 encoded image data. */
-  data: string
-}
-
 const buildUserPrompt = (snapshot: PageSnapshot): string =>
   [
     "Input:",
@@ -71,7 +68,7 @@ const buildUserPrompt = (snapshot: PageSnapshot): string =>
 const isPageState = (value: unknown): value is PageState =>
   Object.values(PAGE_STATE).includes(value as PageState)
 
-export const classifyPageWithGemini = async (
+const classifyPageWithGemini = async (
   apiKey: string,
   snapshot: PageSnapshot,
   screenshot?: Screenshot,
@@ -132,9 +129,9 @@ export const classifyPageWithGemini = async (
  * Classify the page with Gemini when an API key is given, falling back to
  * the rule-based classification otherwise or on API errors.
  */
-export const classifyPage = async (
+const classifyPage = async (
   snapshot: PageSnapshot,
-  options: { apiKey?: string; screenshot?: Screenshot } = {},
+  options: ClassifyOptions,
 ): Promise<PageClassification> => {
   if (options.apiKey) {
     try {
@@ -154,13 +151,30 @@ export const classifyPage = async (
   }
 }
 
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+export type Screenshot = {
+  mimeType: "image/png" | "image/jpeg"
+  /** Base64 encoded image data. */
+  data: string
+}
+
+export type ClassifyOptions = {
+  /** Gemini API key. Rule-based classification is used when omitted. */
+  apiKey?: string
+  /** Screenshot of the page, sent to Gemini along with the snapshot. */
+  screenshot?: Screenshot
+}
+
 /**
  * Re-classify the page of a result whose input was not found, and update
  * its verdict accordingly. Results without a snapshot are returned as is.
  */
 export const classifyResult = async (
   result: ServiceCheckResult,
-  options: { apiKey?: string; screenshot?: Screenshot } = {},
+  options: ClassifyOptions = {},
 ): Promise<ServiceCheckResult> => {
   if (!result.snapshot) return result
   const classification = await classifyPage(result.snapshot, options)
