@@ -21,8 +21,8 @@
     "inputSelectors": [".ql-editor[contenteditable='true']"],
     "submitSelectors": [
       "[data-test-id='send-button-container'] button",
-      "button.send-button",
-      "button mat-icon[fonticon='send']"
+      "button mat-icon[fonticon='arrow_upward']",
+      "button mat-icon[fonticon='mic']"
     ],
     "copySelectors": [
       "copy-button button",
