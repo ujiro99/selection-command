@@ -1,4 +1,14 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+
+vi.mock("@/services/dom", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/services/dom")>()
+  return {
+    ...actual,
+    inputContentEditable: vi.fn(actual.inputContentEditable),
+  }
+})
+
+import { inputContentEditable } from "@/services/dom"
 import { checkSelectorsInDocument, type CheckTarget } from "../domChecker"
 import { PAGE_STATE } from "../pageState"
 import { SELECTOR_KIND, VERDICT, type ServiceCheckResult } from "../result"
@@ -8,7 +18,7 @@ const target: CheckTarget = {
   id: "svc",
   name: "Service",
   url: "https://example.com",
-  inputSelectors: ["#missing", "textarea#prompt"],
+  inputSelectors: ["#missing", "#prompt"],
   submitSelectors: ["button#voice", "button#send"],
 }
 
@@ -19,87 +29,104 @@ const options = {
   pollIntervalMs: 1,
 }
 
+const VOICE = `<button id="voice"></button>`
+const SEND = `<button id="send"></button>`
+
 const groupOf = (
   result: ServiceCheckResult,
   kind: (typeof SELECTOR_KIND)[keyof typeof SELECTOR_KIND],
 ) => result.groups.find((g) => g.kind === kind)
 
+/**
+ * Simulate a composer whose button depends on the input, updated on input
+ * events like real editors: `emptyButton` while empty, `filledButton` while
+ * it has text. Returns the input types the composer received.
+ */
+const setUpComposer = (
+  inputHtml: string,
+  emptyButton: string,
+  filledButton: string,
+) => {
+  document.body.innerHTML = `${inputHtml}<div id="actions">${emptyButton}</div>`
+  const input = document.querySelector("#prompt") as HTMLElement
+  // jsdom does not implement isContentEditable.
+  Object.defineProperty(input, "isContentEditable", {
+    value: input.getAttribute("contenteditable") === "true",
+  })
+  const actions = document.querySelector("#actions") as HTMLElement
+  const inputTypes: string[] = []
+  input.addEventListener("input", (e) => {
+    inputTypes.push((e as InputEvent).inputType)
+    const value =
+      input instanceof HTMLTextAreaElement ? input.value : input.textContent
+    actions.innerHTML = value?.trim() ? filledButton : emptyButton
+  })
+  return { input, inputTypes }
+}
+
+const TEXTAREA = `<textarea id="prompt"></textarea>`
+const EDITOR = `<div id="prompt" contenteditable="true"><p></p></div>`
+
 describe("checkSelectorsInDocument", () => {
-  let execCommand: ReturnType<typeof vi.fn>
-
-  /**
-   * Simulate a composer whose button depends on the input:
-   * `emptyButton` while empty, `filledButton` while it has text.
-   */
-  const setUpComposer = (emptyButton: string, filledButton: string) => {
-    document.body.innerHTML = `<textarea id="prompt"></textarea><div id="actions">${emptyButton}</div>`
-    const textarea = document.querySelector("textarea") as HTMLTextAreaElement
-    const actions = document.querySelector("#actions") as HTMLElement
-    execCommand.mockImplementation((command: string, _ui, value?: string) => {
-      if (command === "insertText") {
-        textarea.value = value ?? ""
-        actions.innerHTML = filledButton
-      }
-      if (command === "delete") {
-        textarea.value = ""
-        actions.innerHTML = emptyButton
-      }
-      return true
-    })
-    return textarea
-  }
-
   beforeEach(() => {
-    execCommand = vi.fn(() => true)
-    // jsdom does not implement execCommand.
-    Object.defineProperty(document, "execCommand", {
-      value: execCommand,
-      configurable: true,
-    })
     document.title = "Service"
+    vi.mocked(inputContentEditable).mockClear()
   })
 
   afterEach(() => {
     document.body.innerHTML = ""
   })
 
-  it("passes when the button matches both before and after input", async () => {
-    const textarea = setUpComposer(
-      `<button id="voice"></button>`,
-      `<button id="send"></button>`,
-    )
+  it.each([
+    ["a textarea", TEXTAREA],
+    ["a contenteditable", EDITOR],
+  ])(
+    "passes when the button of %s matches before and after input",
+    async (_label, inputHtml) => {
+      const { input, inputTypes } = setUpComposer(inputHtml, VOICE, SEND)
 
-    const result = await checkSelectorsInDocument(target, options)
+      const result = await checkSelectorsInDocument(target, options)
 
-    expect(result.verdict).toBe(VERDICT.PASS)
-    expect(result.snapshot).toBeUndefined()
-    expect(groupOf(result, SELECTOR_KIND.INPUT)?.matches).toEqual([
-      { selector: "#missing", found: false },
-      { selector: "textarea#prompt", found: true },
-    ])
-    expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.matches).toEqual([
-      { selector: "button#voice", found: true },
-      { selector: "button#send", found: false },
-    ])
-    expect(groupOf(result, SELECTOR_KIND.SUBMIT_AFTER_INPUT)?.matches).toEqual([
-      { selector: "button#voice", found: false },
-      { selector: "button#send", found: true },
-    ])
-    // The dummy text is typed and removed again.
-    expect(execCommand).toHaveBeenCalledWith(
-      "insertText",
-      false,
+      expect(result.verdict).toBe(VERDICT.PASS)
+      expect(result.snapshot).toBeUndefined()
+      expect(groupOf(result, SELECTOR_KIND.INPUT)?.matches).toEqual([
+        { selector: "#missing", found: false },
+        { selector: "#prompt", found: true },
+      ])
+      expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.matches).toEqual([
+        { selector: "button#voice", found: true },
+        { selector: "button#send", found: false },
+      ])
+      expect(
+        groupOf(result, SELECTOR_KIND.SUBMIT_AFTER_INPUT)?.matches,
+      ).toEqual([
+        { selector: "button#voice", found: false },
+        { selector: "button#send", found: true },
+      ])
+      // The dummy text is typed and removed again, notifying the editor.
+      expect(inputTypes).toEqual(["insertText", "deleteContentBackward"])
+      const left =
+        input instanceof HTMLTextAreaElement ? input.value : input.textContent
+      expect(left).toBe("")
+      expect(document.querySelector("#voice")).not.toBeNull()
+    },
+  )
+
+  it("types into a contenteditable with inputContentEditable", async () => {
+    const { input } = setUpComposer(EDITOR, VOICE, SEND)
+
+    await checkSelectorsInDocument(target, options)
+
+    expect(inputContentEditable).toHaveBeenCalledWith(
+      input,
       "selector check",
+      0,
+      null,
     )
-    expect(execCommand).toHaveBeenCalledWith("delete")
-    expect(textarea.value).toBe("")
   })
 
   it("fails when the button matches only before input", async () => {
-    setUpComposer(
-      `<button id="voice"></button>`,
-      `<button id="other"></button>`,
-    )
+    setUpComposer(TEXTAREA, VOICE, `<button id="other"></button>`)
 
     const result = await checkSelectorsInDocument(target, options)
 
@@ -111,7 +138,7 @@ describe("checkSelectorsInDocument", () => {
   })
 
   it("fails when the button matches only after input", async () => {
-    setUpComposer(`<button id="other"></button>`, `<button id="send"></button>`)
+    setUpComposer(TEXTAREA, `<button id="other"></button>`, SEND)
 
     const result = await checkSelectorsInDocument(target, options)
 
@@ -123,61 +150,50 @@ describe("checkSelectorsInDocument", () => {
     ).toBe(false)
   })
 
-  it("skips the initial state and leaves a draft untouched", async () => {
-    document.body.innerHTML = `<textarea id="prompt">draft</textarea><button id="send"></button>`
-
-    const result = await checkSelectorsInDocument(target, options)
-
-    expect(execCommand).not.toHaveBeenCalled()
-    expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.skipped).toBe(true)
-    expect(result.verdict).toBe(VERDICT.PASS)
-  })
-
   it.each([
+    ["a textarea", `<textarea id="prompt">draft</textarea>`],
     [
-      "a non-editable placeholder node",
-      `<p><span contenteditable="false">Ask anything</span><br></p>`,
-    ],
-    [
-      "a hidden placeholder node",
-      `<p><span aria-hidden="true">Ask anything</span></p>`,
+      "a contenteditable",
+      `<div id="prompt" contenteditable="true"><p>draft</p></div>`,
     ],
   ])(
-    "treats a contenteditable with %s as empty",
-    async (_label, placeholder) => {
-      document.body.innerHTML = `<div id="editor" contenteditable="true">${placeholder}</div><button id="voice"></button>`
+    "skips the initial state and leaves a draft in %s untouched",
+    async (_label, inputHtml) => {
+      const { inputTypes } = setUpComposer(inputHtml, SEND, SEND)
 
-      const result = await checkSelectorsInDocument(
-        { ...target, inputSelectors: ["#editor"] },
-        options,
-      )
+      const result = await checkSelectorsInDocument(target, options)
 
-      // Empty, so the dummy text is typed and the initial state is checked.
-      expect(execCommand).toHaveBeenCalledWith(
-        "insertText",
-        false,
-        "selector check",
-      )
-      expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.skipped).toBe(
-        undefined,
-      )
+      expect(inputTypes).toEqual([])
+      expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.skipped).toBe(true)
+      expect(result.verdict).toBe(VERDICT.PASS)
     },
   )
 
-  it("treats a contenteditable with typed text as a draft", async () => {
-    document.body.innerHTML = `<div id="editor" contenteditable="true"><p>draft</p></div><button id="send"></button>`
+  it.each([
+    ["non-editable", `<span contenteditable="false">Ask anything</span>`],
+    ["hidden", `<span aria-hidden="true">Ask anything</span>`],
+  ])(
+    "treats a %s placeholder node as empty and leaves it untouched",
+    async (_label, placeholder) => {
+      const { input } = setUpComposer(
+        `<div id="prompt" contenteditable="true"><p>${placeholder}</p></div>`,
+        VOICE,
+        SEND,
+      )
 
-    const result = await checkSelectorsInDocument(
-      { ...target, inputSelectors: ["#editor"] },
-      options,
-    )
+      const result = await checkSelectorsInDocument(target, options)
 
-    expect(execCommand).not.toHaveBeenCalled()
-    expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.skipped).toBe(true)
-  })
+      // Typed (initial state not skipped), and only the dummy text removed.
+      expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.skipped).toBe(
+        undefined,
+      )
+      expect(inputContentEditable).toHaveBeenCalled()
+      expect(input.textContent).toBe("Ask anything")
+    },
+  )
 
   it("leaves the page unclassified with a snapshot when no input matches", async () => {
-    document.body.innerHTML = `<button id="voice"></button>`
+    document.body.innerHTML = VOICE
 
     const result = await checkSelectorsInDocument(target, options)
 
@@ -189,23 +205,21 @@ describe("checkSelectorsInDocument", () => {
     expect(groupOf(result, SELECTOR_KIND.SUBMIT_AFTER_INPUT)?.skipped).toBe(
       true,
     )
-    expect(execCommand).not.toHaveBeenCalled()
+    expect(inputContentEditable).not.toHaveBeenCalled()
   })
 
   it("waits for an editor that reflects the input asynchronously", async () => {
-    // Lexical (Perplexity) updates the DOM in a later task.
-    document.body.innerHTML = `<textarea id="prompt"></textarea><div id="actions"><button id="voice"></button></div>`
-    const textarea = document.querySelector("textarea") as HTMLTextAreaElement
-    const actions = document.querySelector("#actions") as HTMLElement
-    execCommand.mockImplementation((command: string, _ui, value?: string) => {
-      if (command === "insertText") {
-        setTimeout(() => {
-          textarea.value = value ?? ""
-          actions.innerHTML = `<button id="send"></button>`
-        }, 20)
-      }
-      if (command === "delete") textarea.value = ""
-      return true
+    // Like Lexical: the editor re-renders the DOM from its own state in a
+    // later task, so the typed text disappears for a moment.
+    const { input } = setUpComposer(EDITOR, VOICE, SEND)
+    input.addEventListener("input", (e) => {
+      if ((e as InputEvent).inputType !== "insertText") return
+      const text = input.textContent ?? ""
+      input.innerHTML = "<p></p>"
+      setTimeout(() => {
+        input.innerHTML = `<p>${text}</p>`
+        document.querySelector("#actions")!.innerHTML = SEND
+      }, 20)
     })
 
     const result = await checkSelectorsInDocument(target, {
@@ -214,20 +228,15 @@ describe("checkSelectorsInDocument", () => {
     })
 
     expect(result.verdict).toBe(VERDICT.PASS)
-    expect(textarea.value).toBe("")
+    expect(input.textContent).toBe("")
   })
 
   describe("when the dummy text can't be typed", () => {
-    beforeEach(() => {
-      document.body.innerHTML = `<textarea id="prompt"></textarea><button id="voice"></button>`
-    })
-
-    it.each([
-      ["execCommand returns false", () => false],
-      // The editor ignored the input although execCommand succeeded.
-      ["nothing is entered", () => true],
-    ])("returns an error when %s", async (_label, impl) => {
-      execCommand.mockImplementation(impl)
+    it("returns an error when the editor rejects the input", async () => {
+      const { input } = setUpComposer(EDITOR, VOICE, SEND)
+      input.addEventListener("input", () => {
+        input.innerHTML = "<p></p>"
+      })
 
       const result = await checkSelectorsInDocument(target, options)
 
@@ -239,31 +248,36 @@ describe("checkSelectorsInDocument", () => {
         { selector: "button#send", found: false },
       ])
       expect(groupOf(result, SELECTOR_KIND.SUBMIT_AFTER_INPUT)).toBeUndefined()
-      // Nothing was typed, so nothing is deleted.
-      expect(execCommand).not.toHaveBeenCalledWith("delete")
+    })
+
+    it("returns an error when the input is not editable", async () => {
+      // Matches inputSelectors, but is neither a text control nor editable.
+      setUpComposer(`<div id="prompt"></div>`, VOICE, SEND)
+
+      const result = await checkSelectorsInDocument(target, options)
+
+      expect(result.verdict).toBe(VERDICT.ERROR)
+      await expect(
+        vi.mocked(inputContentEditable).mock.results[0].value,
+      ).resolves.toBe(false)
     })
 
     it("still removes the dummy text when typing throws", async () => {
-      const textarea = document.querySelector("textarea") as HTMLTextAreaElement
-      execCommand.mockImplementation((command: string, _ui, value?: string) => {
-        if (command === "insertText") {
-          textarea.value = value ?? ""
-          throw new Error("editor crashed")
-        }
-        if (command === "delete") textarea.value = ""
-        return true
+      const { input } = setUpComposer(EDITOR, VOICE, SEND)
+      vi.mocked(inputContentEditable).mockImplementationOnce(async (el) => {
+        el.querySelector("p")!.append("selector check")
+        throw new Error("editor crashed")
       })
 
       const result = await checkSelectorsInDocument(target, options)
 
       expect(result.verdict).toBe(VERDICT.ERROR)
-      expect(execCommand).toHaveBeenCalledWith("delete")
-      expect(textarea.value).toBe("")
+      expect(input.textContent).toBe("")
     })
   })
 
   it("fails a group containing an invalid selector", async () => {
-    setUpComposer(`<button id="voice"></button>`, `<button id="send"></button>`)
+    setUpComposer(TEXTAREA, VOICE, SEND)
 
     const result = await checkSelectorsInDocument(
       {

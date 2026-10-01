@@ -241,7 +241,9 @@ yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リスト
      - 拡張機能は manifest の既定（`incognito: "spanning"`）で動作するため、通常ウィンドウの設定画面からシークレットタブの content script へ `tabs.sendMessage` で通信できる
    - Hub にデプロイ済みの最新 `ai-services.json`（キャッシュ無視。取得失敗時はビルド時同梱のもの）を使う
    - 全サービスをバックグラウンドタブで開き、各タブの content script がセレクタを判定する（判定ロジックは CI と共通）
-   - 送信ボタンが入力後にしか出現しない場合、空の入力欄に一時的にダミーテキストを入力して確認し、直後に削除する（送信はしない）
+   - 空の入力欄に一時的にダミーテキストを入力して入力後の状態を確認し、直後に削除する（送信はしない。下書きがある場合は触らない）
+     - 入力はページアクションと同じ `inputContentEditable`（contenteditable）/ プロトタイプの `value` セッター + `input` イベント（textarea）で行う。`execCommand` はドキュメントのフォーカスが必要で、バックグラウンドタブでは Lexical（Perplexity）等に無視されるため使わない
+     - 削除はテキストノードを空にして `input` イベントを送る（Lexical は選択範囲への `execCommand("delete")` を無視するため）
 3. 結果はすべて設定画面の DevTools コンソールに出力される（サマリーの `console.table`、サービスごとのセレクタ一致結果、issue 用の Markdown）
    - `pass` のタブは自動で閉じ、それ以外のタブは確認用に開いたままにする（シークレットの場合、全サービスが `pass` ならウィンドウごと閉じてセッションも破棄される）
 
@@ -249,4 +251,4 @@ yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リスト
 
 - content script の `checkAiSelectors` リスナーは、このフラグが有効な場合のみ登録される（入力欄へダミーテキストを入れる副作用があるため、一般ユーザーには登録しない）
 - content script からは設定画面の `localStorage` を読めないため、フラグは設定画面を開いた時とチェック開始時に `chrome.storage.session`（メモリ上のみ・ブラウザ再起動で消える・同期/エクスポート対象外）へ反映される
-- ダミーテキストの入力に失敗した場合（`execCommand` の失敗、またはエディタに反映されない）は、入力後の状態を観測できないため `error` とする
+- ダミーテキストの入力に失敗した場合（入力欄が編集不可、またはエディタに反映されない）は、入力後の状態を観測できないため `error` とする

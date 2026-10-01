@@ -4,6 +4,7 @@
  * check (see runner.ts).
  */
 import { sleep } from "@/lib/utils"
+import { inputContentEditable } from "@/services/dom"
 import type { AiService } from "@/types"
 import { PAGE_STATE, SNAPSHOT_TEXT_LENGTH, takePageSnapshot } from "./pageState"
 import { hasAnyMatch, matchEach } from "./selectorMatch"
@@ -61,28 +62,102 @@ const isTextControl = (
  * are non-editable or hidden from assistive technology, so they are removed
  * before reading the text.
  */
-const enteredText = (el: Element): string => {
-  if (isTextControl(el)) return el.value
-  const clone = el.cloneNode(true) as Element
-  clone
-    .querySelectorAll("[contenteditable='false'], [aria-hidden='true']")
-    .forEach((node) => node.remove())
-  return clone.textContent ?? ""
+const PLACEHOLDER_SELECTOR = "[contenteditable='false'], [aria-hidden='true']"
+
+/** Text nodes of a contenteditable, excluding placeholder nodes. */
+const enteredTextNodes = (el: Element): Text[] => {
+  const nodes: Text[] = []
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const placeholder = n.parentElement?.closest(PLACEHOLDER_SELECTOR)
+    if (!placeholder || !el.contains(placeholder)) nodes.push(n as Text)
+  }
+  return nodes
 }
+
+const enteredText = (el: Element): string =>
+  isTextControl(el)
+    ? el.value
+    : enteredTextNodes(el)
+        .map((n) => n.data)
+        .join("")
 
 const isEmptyInput = (el: Element): boolean => enteredText(el).trim() === ""
 
-/** Select the whole content of the input so that it can be replaced. */
-const selectAll = (el: Element) => {
-  if (isTextControl(el)) {
-    el.select()
+/**
+ * Set the value through the prototype setter, which frameworks that track
+ * the instance property (React) notice, then notify them with an input
+ * event. Doesn't depend on focus, so it works in background tabs too.
+ */
+const setTextControlValue = (
+  el: HTMLTextAreaElement | HTMLInputElement,
+  value: string,
+) => {
+  const proto =
+    el instanceof HTMLTextAreaElement
+      ? HTMLTextAreaElement.prototype
+      : HTMLInputElement.prototype
+  Object.getOwnPropertyDescriptor(proto, "value")?.set?.call(el, value)
+  el.dispatchEvent(
+    new InputEvent("input", {
+      inputType: value ? "insertText" : "deleteContentBackward",
+      data: value || null,
+      bubbles: true,
+    }),
+  )
+}
+
+/** Put the caret into the editor unless the selection already is there. */
+const ensureCaretIn = (el: HTMLElement) => {
+  el.focus()
+  const selection = window.getSelection()
+  if (
+    selection?.rangeCount &&
+    el.contains(selection.getRangeAt(0).startContainer)
+  ) {
     return
   }
   const range = document.createRange()
   range.selectNodeContents(el)
-  const selection = window.getSelection()
+  range.collapse(true)
   selection?.removeAllRanges()
   selection?.addRange(range)
+}
+
+/**
+ * Type the dummy text the same way the extension's page actions do
+ * (inputContentEditable, also used in background tabs), rather than with
+ * execCommand, which needs the document to have focus and is ignored by
+ * some editors (e.g. Lexical on Perplexity) in a background tab.
+ */
+const typeDummyText = async (el: Element): Promise<boolean> => {
+  if (isTextControl(el)) {
+    setTextControlValue(el, DUMMY_TEXT)
+    return true
+  }
+  if (!(el instanceof HTMLElement)) return false
+  ensureCaretIn(el)
+  return inputContentEditable(el, DUMMY_TEXT, 0, null)
+}
+
+/**
+ * Remove the dummy text. execCommand("delete") on a selection is ignored by
+ * Lexical, so the text nodes are emptied directly and the editor is notified
+ * with an input event; editors sync their state from the DOM on it (verified
+ * on Perplexity). Placeholder nodes are left untouched.
+ */
+const clearDummyText = (el: Element) => {
+  if (isTextControl(el)) {
+    setTextControlValue(el, "")
+    return
+  }
+  for (const node of enteredTextNodes(el)) node.data = ""
+  el.dispatchEvent(
+    new InputEvent("input", {
+      inputType: "deleteContentBackward",
+      bubbles: true,
+    }),
+  )
 }
 
 /** The dummy text could not be typed, so the "after input" state is unknown. */
@@ -109,8 +184,6 @@ type DummyTextOptions = { reflectTimeoutMs: number; pollIntervalMs: number }
 /**
  * Temporarily type a dummy text so that the submit button switches to its
  * "after input" state, then remove it again.
- * execCommand is used because it fires the input events that frameworks
- * (React, ProseMirror, Quill) listen to.
  */
 const withDummyText = async <T>(
   el: Element,
@@ -118,21 +191,16 @@ const withDummyText = async <T>(
   fn: () => Promise<T>,
 ): Promise<T> => {
   try {
-    ;(el as HTMLElement).focus()
-    const inserted = document.execCommand("insertText", false, DUMMY_TEXT)
-    // execCommand may report success while the editor ignored the input, and
-    // some editors (e.g. Lexical on Perplexity) update the DOM only in a
-    // later task, so wait for the text to show up.
-    if (!inserted || !(await waitUntilEntered(el, options))) {
+    const typed = await typeDummyText(el)
+    // The editor may ignore the input, and some editors (e.g. Lexical) update
+    // the DOM only in a later task, so wait for the text to show up.
+    if (!typed || !(await waitUntilEntered(el, options))) {
       throw new DummyTextError()
     }
     return await fn()
   } finally {
     // Only called for an empty input, so anything in it now is ours.
-    if (!isEmptyInput(el)) {
-      selectAll(el)
-      document.execCommand("delete")
-    }
+    if (!isEmptyInput(el)) clearDummyText(el)
   }
 }
 
