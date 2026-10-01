@@ -7,6 +7,12 @@ name: Check AI Service Selectors
 # - Blocked / error     -> only fail the run. GitHub emails a failure
 #                          notification to the user who last changed the
 #                          schedule (or triggered the run manually).
+#
+# Jobs:
+#   check   : runs the check (read-only). It succeeds even when selectors
+#             are broken, so that the following jobs get its outputs.
+#   report  : opens / comments on the issue (the only job that can write).
+#   verdict : fails the run when something is broken or blocked.
 
 on:
   schedule:
@@ -15,7 +21,6 @@ on:
 
 permissions:
   contents: read
-  issues: write
 
 concurrency:
   group: check-ai-selectors
@@ -24,13 +29,17 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
+    # A hanging external site must not keep the job running for hours.
+    timeout-minutes: 30
     container:
       # Must match the @playwright/test version resolved in yarn.lock;
       # otherwise the bundled browsers don't match and launching fails.
       # Keep it in sync with .github/workflows/test.yml.
       image: mcr.microsoft.com/playwright:v1.62.1-jammy
-    env:
-      ISSUE_LABEL: ai-selector-broken
+    outputs:
+      broken: ${{ steps.check.outputs.broken }}
+      blocked: ${{ steps.check.outputs.blocked }}
+      broken_services: ${{ steps.check.outputs.broken_services }}
 
     steps:
       - name: Checkout code
@@ -59,7 +68,7 @@ jobs:
         if: always()
         run: cat packages/extension/selector-check-results/summary.md >> "$GITHUB_STEP_SUMMARY" || true
 
-      - name: Upload screenshots
+      - name: Upload results
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -67,22 +76,29 @@ jobs:
           path: packages/extension/selector-check-results/
           retention-days: 14
 
-      - name: Install GitHub CLI
-        if: steps.check.outputs.broken == 'true'
-        run: |
-          type gh >/dev/null 2>&1 && exit 0
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-            -o /usr/share/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-            > /etc/apt/sources.list.d/github-cli.list
-          apt-get update && apt-get install -y gh
+  report:
+    needs: check
+    if: needs.check.outputs.broken == 'true'
+    # gh is preinstalled on the GitHub-hosted runner.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      issues: write
+    env:
+      ISSUE_LABEL: ai-selector-broken
+
+    steps:
+      - name: Download results
+        uses: actions/download-artifact@v4
+        with:
+          name: ai-selector-check-results
+          path: results
 
       - name: Create or update issue
-        if: steps.check.outputs.broken == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          BROKEN_SERVICES: ${{ steps.check.outputs.broken_services }}
+          BROKEN_SERVICES: ${{ needs.check.outputs.broken_services }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           {
@@ -92,7 +108,7 @@ jobs:
             echo "- Broken services: \`${BROKEN_SERVICES}\`"
             echo "- Run: ${RUN_URL} (screenshots are in the run artifacts)"
             echo
-            cat packages/extension/selector-check-results/summary.md
+            cat results/summary.md
           } > issue-body.md
 
           gh label create "$ISSUE_LABEL" --color d73a4a \
@@ -110,8 +126,16 @@ jobs:
               --body-file issue-body.md
           fi
 
+  verdict:
+    needs: [check, report]
+    # Run even when report was skipped (nothing broken) or failed.
+    if: ${{ !cancelled() && needs.check.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
       - name: Fail on broken or blocked
-        if: steps.check.outputs.broken == 'true' || steps.check.outputs.blocked == 'true'
+        if: needs.check.outputs.broken == 'true' || needs.check.outputs.blocked == 'true'
         run: |
-          echo "broken=${{ steps.check.outputs.broken }} blocked=${{ steps.check.outputs.blocked }}"
+          echo "broken=${{ needs.check.outputs.broken }} blocked=${{ needs.check.outputs.blocked }}"
           exit 1
