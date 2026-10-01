@@ -4,6 +4,9 @@ import { Sentry } from "@/lib/sentry"
 interface ErrorBoundaryProps {
   children: React.ReactNode
   fallback?: React.ComponentType<{ message: string }>
+  // Called with the caught error, e.g. to report it where Sentry is not
+  // available.
+  onError?: (error: Error) => void
 }
 
 interface ErrorBoundaryState {
@@ -33,6 +36,7 @@ export class ErrorBoundary extends React.Component<
   componentDidCatch(error: Error): void {
     console.log("ErrorBoundary caught an error:", error)
     Sentry.captureException(error)
+    this.props.onError?.(error)
   }
 
   render(): React.ReactNode {

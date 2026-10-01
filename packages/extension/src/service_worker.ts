@@ -33,6 +33,8 @@ import {
   ANALYTICS_EVENTS,
   sendEvent,
   getOrCreateClientId,
+  getBrowserEnvironmentParams,
+  toErrorMessageParam,
 } from "@/services/analytics"
 import * as HubServiceWorker from "@/services/hub/serviceWorker"
 import { ensureOnboardingAssignment } from "@/services/experiments"
@@ -479,26 +481,81 @@ if (isDebug) {
   })
 }
 
-chrome.runtime.onInstalled.addListener(async (details) => {
+// Number of open browser windows, or -1 if it cannot be determined. A tab
+// cannot be created while no window is open (#479).
+const getWindowCount = async (): Promise<number> => {
   try {
-    // Initialize default settings on install
-    if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    return (await chrome.windows.getAll()).length
+  } catch {
+    return -1
+  }
+}
+
+// Open the onboarding page and report the result, so installs that never
+// send onboarding_start can be told apart from ones whose tab was never
+// created (#479).
+const openOnboardingTab = async () => {
+  try {
+    await chrome.tabs.create({ url: ONBOARDING_PAGE_PATH })
+    sendEvent(
+      ANALYTICS_EVENTS.ONBOARDING_TAB_OPENED,
+      { success: "true" },
+      SCREEN.SERVICE_WORKER,
+    )
+  } catch (error) {
+    console.error("Failed to open onboarding tab:", error)
+    sendEvent(
+      ANALYTICS_EVENTS.ONBOARDING_TAB_OPENED,
+      { success: "false", error_message: toErrorMessageParam(error) },
+      SCREEN.SERVICE_WORKER,
+    )
+  }
+}
+
+chrome.runtime.onInstalled.addListener(async (details) => {
+  const isInstall = details.reason === chrome.runtime.OnInstalledReason.INSTALL
+  // Last step reached, reported if the initialization fails on install.
+  let stage = "client_id"
+  try {
+    if (isInstall) {
+      // Settle the client_id before anything can report an event. Otherwise
+      // this worker and the onboarding page may each generate their own id
+      // and split one install into two GA4 clients (#479).
+      try {
+        await getOrCreateClientId()
+      } catch (error) {
+        console.error("Failed to create client_id:", error)
+      }
+
+      // Initialize default settings on install
+      stage = "settings_reset"
       await Settings.reset()
-      sendEvent(ANALYTICS_EVENTS.INSTALLED, {}, SCREEN.SERVICE_WORKER)
+      sendEvent(
+        ANALYTICS_EVENTS.INSTALLED,
+        {
+          ...getBrowserEnvironmentParams(),
+          window_count: await getWindowCount(),
+        },
+        SCREEN.SERVICE_WORKER,
+      )
       // Assign the onboarding A/B variant before the tab is created, so the
       // page can render its first frame from storage without fetching the
       // remote config itself. A failure here must never block onboarding -
       // the page assigns on its own if no assignment is stored yet.
+      stage = "onboarding_assignment"
       try {
         await ensureOnboardingAssignment()
       } catch (error) {
         console.error("Failed to assign onboarding variant:", error)
       }
-      chrome.tabs.create({ url: ONBOARDING_PAGE_PATH })
+      stage = "onboarding_tab"
+      await openOnboardingTab()
     }
 
+    stage = "context_menu"
     await ContextMenu.init()
 
+    stage = "post_init"
     chrome.storage.session.setAccessLevel({
       accessLevel: "TRUSTED_AND_UNTRUSTED_CONTEXTS",
     })
@@ -530,6 +587,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     await checkAndPerformWeeklyBackup()
   } catch (error) {
     console.error("Error during onInstalled initialization:", error)
+    if (isInstall) {
+      sendEvent(
+        ANALYTICS_EVENTS.INSTALL_INIT_ERROR,
+        { stage, error_message: toErrorMessageParam(error) },
+        SCREEN.SERVICE_WORKER,
+      )
+    }
   }
 })
 
