@@ -125,10 +125,27 @@ const ensureCaretIn = (el: HTMLElement) => {
 }
 
 /**
- * Type the dummy text the same way the extension's page actions do
- * (inputContentEditable, also used in background tabs), rather than with
- * execCommand, which needs the document to have focus and is ignored by
- * some editors (e.g. Lexical on Perplexity) in a background tab.
+ * Ask the editor to insert the text itself with a beforeinput event.
+ * Editors that keep their own model (e.g. Lexical on Perplexity) handle it
+ * and cancel the event, while they revert text nodes inserted into the DOM
+ * by others. Returns whether the editor handled it.
+ */
+const insertTextByBeforeInput = (el: HTMLElement, text: string): boolean =>
+  !el.dispatchEvent(
+    new InputEvent("beforeinput", {
+      inputType: "insertText",
+      data: text,
+      bubbles: true,
+      cancelable: true,
+    }),
+  )
+
+/**
+ * Type the dummy text without execCommand, which needs the document to have
+ * focus and is ignored by some editors in a background tab. Editors that
+ * handle beforeinput insert it themselves; for the others the text is typed
+ * the same way the extension's page actions do (inputContentEditable, also
+ * used in background tabs).
  */
 const typeDummyText = async (el: Element): Promise<boolean> => {
   if (isTextControl(el)) {
@@ -137,6 +154,7 @@ const typeDummyText = async (el: Element): Promise<boolean> => {
   }
   if (!(el instanceof HTMLElement)) return false
   ensureCaretIn(el)
+  if (insertTextByBeforeInput(el, DUMMY_TEXT)) return true
   return inputContentEditable(el, DUMMY_TEXT, 0, null)
 }
 

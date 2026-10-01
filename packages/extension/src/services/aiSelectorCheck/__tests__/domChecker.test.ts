@@ -125,6 +125,29 @@ describe("checkSelectorsInDocument", () => {
     )
   })
 
+  it("lets an editor that handles beforeinput insert the text itself", async () => {
+    // Like Lexical: the editor inserts the text into its own model on
+    // beforeinput, and reverts text nodes inserted into the DOM by others.
+    const { input } = setUpComposer(EDITOR, VOICE, SEND)
+    const beforeInputs: { inputType: string; data: string | null }[] = []
+    input.addEventListener("beforeinput", (e) => {
+      const { inputType, data } = e as InputEvent
+      beforeInputs.push({ inputType, data })
+      e.preventDefault()
+      input.innerHTML = `<p><span>${data}</span></p>`
+      input.dispatchEvent(new InputEvent("input", { inputType, data }))
+    })
+
+    const result = await checkSelectorsInDocument(target, options)
+
+    expect(beforeInputs).toEqual([
+      { inputType: "insertText", data: "selector check" },
+    ])
+    expect(inputContentEditable).not.toHaveBeenCalled()
+    expect(result.verdict).toBe(VERDICT.PASS)
+    expect(input.textContent).toBe("")
+  })
+
   it("fails when the button matches only before input", async () => {
     setUpComposer(TEXTAREA, VOICE, `<button id="other"></button>`)
 
