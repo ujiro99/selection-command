@@ -58,6 +58,7 @@ export const ANALYTICS_EVENTS = {
   // Diagnostics for installs that never report onboarding_start (#479):
   // whether the tab was created, whether the page script ran at all, and
   // whether rendering failed.
+  // TODO(#479): Remove these once the cause has been identified.
   ONBOARDING_TAB_OPENED: "onboarding_tab_opened",
   ONBOARDING_PAGE_LOADED: "onboarding_page_loaded",
   ONBOARDING_RENDER_ERROR: "onboarding_render_error",
@@ -216,9 +217,21 @@ const MAX_PARAM_LENGTH = 100
 const truncateParam = (value: string): string =>
   value.slice(0, MAX_PARAM_LENGTH)
 
-/** Format a caught error as a GA4 event parameter value. */
+// Matches URLs of any scheme (https:, chrome-extension:, file:, ...).
+const URL_PATTERN = /\b[a-z][a-z0-9+.-]*:\/\/\S+/gi
+
+/**
+ * Format a caught error as a GA4 event parameter value. URLs are masked so
+ * that page addresses, local file paths and the extension id do not leave
+ * the browser.
+ */
 export const toErrorMessageParam = (error: unknown): string =>
-  truncateParam(error instanceof Error ? error.message : String(error))
+  truncateParam(
+    (error instanceof Error ? error.message : String(error)).replace(
+      URL_PATTERN,
+      "<url>",
+    ),
+  )
 
 type NavigatorWithUAData = Navigator & {
   userAgentData?: { brands?: { brand: string; version: string }[] }
@@ -236,7 +249,8 @@ export function getBrowserEnvironmentParams(): {
 } {
   const nav = globalThis.navigator as NavigatorWithUAData | undefined
   const brands = (nav?.userAgentData?.brands ?? [])
-    // Skip GREASE entries such as "Not A(Brand".
+    // Skip GREASE entries such as "Not A(Brand" or "Not)A;Brand". Their
+    // spelling varies by version; a missed one only adds noise to the value.
     .filter(({ brand }) => !/not.a.brand/i.test(brand))
     .map(({ brand, version }) => `${brand}/${version}`)
     .join(",")

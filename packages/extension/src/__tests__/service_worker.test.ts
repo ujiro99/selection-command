@@ -3,6 +3,8 @@ import { enhancedSettings } from "@/services/settings/enhancedSettings"
 import { Settings } from "@/services/settings/settings"
 import { ServiceWorkerCommand } from "@/services/ipc"
 import { NEW_HUB_URL, VERSION } from "@/const"
+// Imported before any vi.doMock, so this is the real event name table.
+import { ANALYTICS_EVENTS } from "@/services/analytics"
 
 // Replace chrome.sidePanel to emulate browsers with/without the API.
 const setSidePanel = (value: unknown) => {
@@ -574,11 +576,6 @@ describe("Popup Auto-Close Delay", () => {
   })
 })
 
-const MOCK_ANALYTICS_EVENTS = {
-  INSTALLED: "installed",
-  ONBOARDING_TAB_OPENED: "onboarding_tab_opened",
-  INSTALL_INIT_ERROR: "install_init_error",
-}
 const mockGetBrowserEnvironmentParams = () => ({
   browser_brands: "Chromium/141",
   is_webdriver: "false",
@@ -589,10 +586,15 @@ describe("onInstalled: installed analytics event", () => {
     vi.clearAllMocks()
   })
 
+  afterEach(() => {
+    // clearAllMocks keeps implementations, which would leak between tests.
+    vi.mocked(chrome.tabs.create).mockReset()
+  })
+
   it("IN-01: sends the installed event when reason is install", async () => {
     const mockSendEvent = vi.fn()
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: MOCK_ANALYTICS_EVENTS,
+      ANALYTICS_EVENTS,
       getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
       toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: mockSendEvent,
@@ -618,6 +620,7 @@ describe("onInstalled: installed analytics event", () => {
         is_webdriver: "false",
         // chrome.windows.getAll is not mocked, so the count is unknown.
         window_count: -1,
+        client_id_ready: "true",
       },
       "ServiceWorker",
     )
@@ -626,7 +629,7 @@ describe("onInstalled: installed analytics event", () => {
   it("IN-02: does not send the installed event when reason is update", async () => {
     const mockSendEvent = vi.fn()
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: MOCK_ANALYTICS_EVENTS,
+      ANALYTICS_EVENTS,
       getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
       toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: mockSendEvent,
@@ -653,7 +656,7 @@ describe("onInstalled: installed analytics event", () => {
 
   it("IN-03: opens the onboarding page tab when reason is install", async () => {
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: MOCK_ANALYTICS_EVENTS,
+      ANALYTICS_EVENTS,
       getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
       toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: vi.fn(),
@@ -678,7 +681,7 @@ describe("onInstalled: installed analytics event", () => {
 
   it("IN-04: does not open the onboarding page tab when reason is update", async () => {
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: MOCK_ANALYTICS_EVENTS,
+      ANALYTICS_EVENTS,
       getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
       toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: vi.fn(),
@@ -707,6 +710,11 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
     vi.clearAllMocks()
   })
 
+  afterEach(() => {
+    // clearAllMocks keeps implementations, which would leak between tests.
+    vi.mocked(chrome.tabs.create).mockReset()
+  })
+
   // Load service_worker with the given analytics mocks and run its
   // onInstalled listener for a fresh install.
   const runInstall = async (
@@ -717,7 +725,7 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
     beforeImport?: () => Promise<void>,
   ) => {
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: MOCK_ANALYTICS_EVENTS,
+      ANALYTICS_EVENTS,
       getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
       toErrorMessageParam: (error: unknown) =>
         error instanceof Error ? error.message : String(error),
@@ -792,7 +800,6 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
     )
 
     consoleErrorSpy.mockRestore()
-    vi.mocked(chrome.tabs.create).mockReset()
   })
 
   it("IN-08: reports the failed stage when the install initialization throws", async () => {
@@ -818,6 +825,29 @@ describe("onInstalled: onboarding diagnostics (#479)", () => {
 
     consoleErrorSpy.mockRestore()
   })
+
+  it("IN-09: flags the installed event when the client_id could not be settled", async () => {
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {})
+    const sendEvent = vi.fn()
+    const getOrCreateClientId = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("storage error"))
+      .mockResolvedValue("test-client-id")
+
+    await runInstall({ sendEvent, getOrCreateClientId })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      "installed",
+      expect.objectContaining({ client_id_ready: "false" }),
+      "ServiceWorker",
+    )
+    // The failure is handled in place and the onboarding tab still opens.
+    expect(chrome.tabs.create).toHaveBeenCalled()
+
+    consoleErrorSpy.mockRestore()
+  })
 })
 
 describe("Uninstall URL (onInstalled)", () => {
@@ -828,7 +858,7 @@ describe("Uninstall URL (onInstalled)", () => {
   it("UN-01: should set uninstall URL with client_id and version on install", async () => {
     const mockGetOrCreateClientId = vi.fn().mockResolvedValue("test-client-id")
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: MOCK_ANALYTICS_EVENTS,
+      ANALYTICS_EVENTS,
       getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
       toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: vi.fn(),
@@ -862,7 +892,7 @@ describe("Uninstall URL (onInstalled)", () => {
       .fn()
       .mockRejectedValue(new Error("Quota exceeded"))
     vi.doMock("@/services/analytics", () => ({
-      ANALYTICS_EVENTS: MOCK_ANALYTICS_EVENTS,
+      ANALYTICS_EVENTS,
       getBrowserEnvironmentParams: mockGetBrowserEnvironmentParams,
       toErrorMessageParam: (error: unknown) => String(error),
       sendEvent: vi.fn(),

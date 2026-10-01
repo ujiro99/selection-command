@@ -148,6 +148,16 @@ describe("toErrorMessageParam", () => {
     expect(toErrorMessageParam(new Error("boom"))).toBe("boom")
   })
 
+  it("masks URLs such as page addresses and extension paths", () => {
+    expect(
+      toErrorMessageParam(
+        new Error(
+          "Failed at chrome-extension://abcdef/src/app.js and https://example.com/a?b=c",
+        ),
+      ),
+    ).toBe("Failed at <url> and <url>")
+  })
+
   it("truncates to the GA4 parameter length limit", () => {
     expect(toErrorMessageParam("x".repeat(150))).toHaveLength(100)
   })

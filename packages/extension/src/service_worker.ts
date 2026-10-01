@@ -514,27 +514,36 @@ const openOnboardingTab = async () => {
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   const isInstall = details.reason === chrome.runtime.OnInstalledReason.INSTALL
-  // Last step reached, reported if the initialization fails on install.
-  let stage = "client_id"
+  // Last step reached, reported as install_init_error if the initialization
+  // throws on install. Steps that catch their own errors (client_id,
+  // onboarding assignment and tab, uninstall URL, backups) never surface
+  // here, so everything after the context menu is reported as "post_init".
+  let stage = "settings_reset"
   try {
     if (isInstall) {
       // Settle the client_id before anything can report an event. Otherwise
       // this worker and the onboarding page may each generate their own id
       // and split one install into two GA4 clients (#479).
+      let clientIdReady = true
       try {
         await getOrCreateClientId()
       } catch (error) {
+        clientIdReady = false
         console.error("Failed to create client_id:", error)
       }
 
+      // Counted alongside the settings reset so it does not delay the tab.
+      const windowCount = getWindowCount()
+
       // Initialize default settings on install
-      stage = "settings_reset"
       await Settings.reset()
       sendEvent(
         ANALYTICS_EVENTS.INSTALLED,
         {
           ...getBrowserEnvironmentParams(),
-          window_count: await getWindowCount(),
+          window_count: await windowCount,
+          // "false" means the onboarding page may report under another id.
+          client_id_ready: String(clientIdReady),
         },
         SCREEN.SERVICE_WORKER,
       )
@@ -542,13 +551,11 @@ chrome.runtime.onInstalled.addListener(async (details) => {
       // page can render its first frame from storage without fetching the
       // remote config itself. A failure here must never block onboarding -
       // the page assigns on its own if no assignment is stored yet.
-      stage = "onboarding_assignment"
       try {
         await ensureOnboardingAssignment()
       } catch (error) {
         console.error("Failed to assign onboarding variant:", error)
       }
-      stage = "onboarding_tab"
       await openOnboardingTab()
     }
 

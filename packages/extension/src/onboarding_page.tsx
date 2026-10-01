@@ -18,7 +18,12 @@ import "@/components/Animation.css"
 // failures from installs whose onboarding tab never loaded (#479).
 sendEvent(ANALYTICS_EVENTS.ONBOARDING_PAGE_LOADED, {}, SCREEN.ONBOARDING)
 
+// componentDidCatch can fire repeatedly (StrictMode, re-render loops), so
+// report only the first render error of this page.
+let renderErrorReported = false
 const reportRenderError = (error: unknown) => {
+  if (renderErrorReported) return
+  renderErrorReported = true
   sendEvent(
     ANALYTICS_EVENTS.ONBOARDING_RENDER_ERROR,
     { error_message: toErrorMessageParam(error) },
