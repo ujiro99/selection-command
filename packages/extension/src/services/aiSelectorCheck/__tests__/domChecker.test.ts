@@ -44,24 +44,19 @@ describe("checkSelectorsInDocument", () => {
     expect(execCommand).not.toHaveBeenCalled()
   })
 
-  it("fails when no input selector matches", async () => {
+  it("leaves the page unclassified with a snapshot when no input matches", async () => {
     document.body.innerHTML = `<button id="send"></button>`
 
     const result = await checkSelectorsInDocument(target, options)
 
-    expect(result.pageState).toBe(PAGE_STATE.OK)
-    expect(result.verdict).toBe(VERDICT.FAIL)
-  })
-
-  it("returns blocked on a challenge page", async () => {
-    document.body.innerHTML = `<form id="challenge-form"></form>`
-
-    const result = await checkSelectorsInDocument(target, options)
-
+    // The caller classifies the page with Gemini; until then it is treated
+    // like blocked so that a challenge page is never reported as broken.
+    expect(result.pageState).toBe(PAGE_STATE.UNCLASSIFIED)
     expect(result.verdict).toBe(VERDICT.BLOCKED)
-    expect(result.pageState).toBe(PAGE_STATE.BLOCKED)
-    // A snapshot is attached for re-classification by the caller.
-    expect(result.snapshot?.hasChallengeElement).toBe(true)
+    expect(result.snapshot).toMatchObject({ title: "Service" })
+    expect(result.groups[1].matches).toEqual([
+      { selector: "button#send", found: true },
+    ])
   })
 
   it("does not attach a snapshot when the input is found", async () => {
@@ -108,6 +103,7 @@ describe("checkSelectorsInDocument", () => {
     const result = await checkSelectorsInDocument(target, options)
 
     expect(execCommand).not.toHaveBeenCalled()
+    expect(result.pageState).toBe(PAGE_STATE.OK)
     expect(result.verdict).toBe(VERDICT.FAIL)
   })
 

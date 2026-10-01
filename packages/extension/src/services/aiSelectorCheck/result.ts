@@ -10,9 +10,9 @@ export const SELECTOR_KIND = {
   INPUT: "inputSelectors",
   SUBMIT: "submitSelectors",
 } as const
-export type SelectorKind = (typeof SELECTOR_KIND)[keyof typeof SELECTOR_KIND]
+type SelectorKind = (typeof SELECTOR_KIND)[keyof typeof SELECTOR_KIND]
 
-export type SelectorMatch = {
+type SelectorMatch = {
   selector: string
   found: boolean
   /** The selector is not valid CSS (querySelector throws). */
@@ -34,7 +34,7 @@ export const VERDICT = {
   /** An unexpected error occurred (navigation timeout, crash, ...). */
   ERROR: "error",
 } as const
-export type Verdict = (typeof VERDICT)[keyof typeof VERDICT]
+type Verdict = (typeof VERDICT)[keyof typeof VERDICT]
 
 export type ServiceCheckResult = {
   id: string
@@ -89,7 +89,7 @@ export const toMarkdown = (results: ServiceCheckResult[]): string => {
       r.verdict === VERDICT.BLOCKED
         ? `page state: \`${r.pageState}\` (${r.finalUrl ?? r.url})` +
           (r.classification
-            ? ` — ${r.classification.classifiedBy}: ${r.classification.reason.replace(/\|/g, "\\|")}`
+            ? ` — ${r.classification.reason.replace(/\|/g, "\\|")}`
             : "")
         : r.verdict === VERDICT.ERROR
           ? (r.error ?? "").replace(/\|/g, "\\|").split("\n")[0]

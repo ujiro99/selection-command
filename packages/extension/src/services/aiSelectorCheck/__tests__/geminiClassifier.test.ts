@@ -6,7 +6,6 @@ import { SELECTOR_KIND, VERDICT, type ServiceCheckResult } from "../result"
 const snapshot: PageSnapshot = {
   url: "https://chatgpt.com/",
   title: "ChatGPT",
-  hasChallengeElement: false,
   text: "Log in to continue",
 }
 
@@ -21,8 +20,8 @@ const result: ServiceCheckResult = {
       matches: [{ selector: "#prompt", found: false }],
     },
   ],
-  verdict: VERDICT.FAIL,
-  pageState: PAGE_STATE.OK,
+  verdict: VERDICT.BLOCKED,
+  pageState: PAGE_STATE.UNCLASSIFIED,
   snapshot,
 }
 
@@ -55,28 +54,16 @@ describe("classifyResult", () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
-  describe("without an API key", () => {
-    it("classifies by the rules and keeps a broken selector as fail", async () => {
-      const ret = await classifyResult(result)
+  it("leaves the page unclassified without an API key", async () => {
+    const ret = await classifyResult(result)
 
-      expect(fetchMock).not.toHaveBeenCalled()
-      expect(ret.classification).toEqual({
-        state: PAGE_STATE.OK,
-        reason: "no Gemini API key",
-        classifiedBy: "rules",
-      })
-      expect(ret.verdict).toBe(VERDICT.FAIL)
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(ret.classification).toEqual({
+      state: PAGE_STATE.UNCLASSIFIED,
+      reason: "no Gemini API key",
     })
-
-    it("updates the verdict to blocked on a challenge page", async () => {
-      const ret = await classifyResult({
-        ...result,
-        snapshot: { ...snapshot, title: "Just a moment..." },
-      })
-
-      expect(ret.pageState).toBe(PAGE_STATE.BLOCKED)
-      expect(ret.verdict).toBe(VERDICT.BLOCKED)
-    })
+    // Treated like blocked: no issue is created for an unknown page.
+    expect(ret.verdict).toBe(VERDICT.BLOCKED)
   })
 
   describe("with an API key", () => {
@@ -98,9 +85,19 @@ describe("classifyResult", () => {
         state: PAGE_STATE.LOGIN_REQUIRED,
         reason: "login wall",
         confidence: 0.9,
-        classifiedBy: "gemini",
       })
       expect(ret.verdict).toBe(VERDICT.BLOCKED)
+    })
+
+    it("reports a broken selector when Gemini sees the normal chat UI", async () => {
+      fetchMock.mockResolvedValue(
+        geminiResponse({ state: "ok", confidence: 1, reason: "chat UI" }),
+      )
+
+      const ret = await classifyResult(result, { apiKey: "key" })
+
+      expect(ret.pageState).toBe(PAGE_STATE.OK)
+      expect(ret.verdict).toBe(VERDICT.FAIL)
     })
 
     it("sends the snapshot and the screenshot to the Gemini API", async () => {
@@ -125,29 +122,28 @@ describe("classifyResult", () => {
       })
     })
 
-    it("falls back to the rules when the API fails", async () => {
+    it("leaves the page unclassified when the API fails", async () => {
       fetchMock.mockResolvedValue(new Response("quota", { status: 429 }))
-
-      const ret = await classifyResult(
-        { ...result, snapshot: { ...snapshot, hasChallengeElement: true } },
-        { apiKey: "key" },
-      )
-
-      expect(ret.classification).toEqual({
-        state: PAGE_STATE.BLOCKED,
-        reason: "Gemini API failed",
-        classifiedBy: "rules",
-      })
-    })
-
-    it("falls back to the rules on an unknown state", async () => {
-      fetchMock.mockResolvedValue(
-        geminiResponse({ state: "maybe", confidence: 1, reason: "" }),
-      )
 
       const ret = await classifyResult(result, { apiKey: "key" })
 
-      expect(ret.classification?.classifiedBy).toBe("rules")
+      expect(ret.pageState).toBe(PAGE_STATE.UNCLASSIFIED)
+      expect(ret.classification?.reason).toMatch(/^Gemini API failed: .*429/)
+      expect(ret.verdict).toBe(VERDICT.BLOCKED)
     })
+
+    it.each(["maybe", PAGE_STATE.UNCLASSIFIED])(
+      "leaves the page unclassified when Gemini returns '%s'",
+      async (state) => {
+        fetchMock.mockResolvedValue(
+          geminiResponse({ state, confidence: 1, reason: "" }),
+        )
+
+        const ret = await classifyResult(result, { apiKey: "key" })
+
+        expect(ret.pageState).toBe(PAGE_STATE.UNCLASSIFIED)
+        expect(ret.classification?.reason).toMatch(/^Gemini API failed/)
+      },
+    )
   })
 })

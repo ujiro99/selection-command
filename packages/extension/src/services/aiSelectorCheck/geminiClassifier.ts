@@ -3,11 +3,10 @@
  * The request format follows selection-command-hub
  * (src/infrastructure/gemini/content-classifier.ts).
  *
- * Public API: `classifyResult` and its option types (at the bottom).
- * Everything else is internal; tests go through `classifyResult` too.
+ * Public API: `classifyResult` (at the bottom). Everything else is
+ * internal; tests go through `classifyResult` too.
  */
 import {
-  detectPageStateByRules,
   PAGE_STATE,
   type PageClassification,
   type PageSnapshot,
@@ -17,6 +16,13 @@ import { decideVerdict, type ServiceCheckResult } from "./result"
 
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent"
+
+/** States Gemini can return ("unclassified" is decided locally). */
+const GEMINI_STATES: PageState[] = [
+  PAGE_STATE.OK,
+  PAGE_STATE.BLOCKED,
+  PAGE_STATE.LOGIN_REQUIRED,
+]
 
 const SYSTEM_PROMPT = `You are a classifier used by a browser extension that automates AI chat services (ChatGPT, Gemini, Claude, Perplexity, ...).
 
@@ -38,7 +44,7 @@ const RESPONSE_SCHEMA = {
   properties: {
     state: {
       type: "STRING",
-      enum: [PAGE_STATE.OK, PAGE_STATE.BLOCKED, PAGE_STATE.LOGIN_REQUIRED],
+      enum: GEMINI_STATES,
       description: "State of the page",
       nullable: false,
     },
@@ -61,12 +67,11 @@ const buildUserPrompt = (snapshot: PageSnapshot): string =>
     "Input:",
     `- url: ${snapshot.url}`,
     `- title: ${snapshot.title}`,
-    `- has_known_challenge_element: ${snapshot.hasChallengeElement}`,
     `- visible_text: ${snapshot.text}`,
   ].join("\n")
 
-const isPageState = (value: unknown): value is PageState =>
-  Object.values(PAGE_STATE).includes(value as PageState)
+const isGeminiState = (value: unknown): value is PageState =>
+  GEMINI_STATES.includes(value as PageState)
 
 const classifyPageWithGemini = async (
   apiKey: string,
@@ -114,59 +119,58 @@ const classifyPageWithGemini = async (
     confidence: number
     reason: string
   }
-  if (!isPageState(raw.state)) {
+  if (!isGeminiState(raw.state)) {
     throw new Error(`Gemini API returned an unknown state: ${raw.state}`)
   }
   return {
     state: raw.state,
     reason: raw.reason,
     confidence: raw.confidence,
-    classifiedBy: "gemini",
   }
 }
 
 /**
- * Classify the page with Gemini when an API key is given, falling back to
- * the rule-based classification otherwise or on API errors.
+ * Classify the page with Gemini. Without an API key, or when the API fails,
+ * the page is left "unclassified" instead of guessing.
  */
 const classifyPage = async (
   snapshot: PageSnapshot,
   options: ClassifyOptions,
 ): Promise<PageClassification> => {
-  if (options.apiKey) {
-    try {
-      return await classifyPageWithGemini(
-        options.apiKey,
-        snapshot,
-        options.screenshot,
-      )
-    } catch (e) {
-      console.warn("Gemini classification failed, using rules instead:", e)
-    }
+  if (!options.apiKey) {
+    return { state: PAGE_STATE.UNCLASSIFIED, reason: "no Gemini API key" }
   }
-  return {
-    state: detectPageStateByRules(snapshot),
-    reason: options.apiKey ? "Gemini API failed" : "no Gemini API key",
-    classifiedBy: "rules",
+  try {
+    return await classifyPageWithGemini(
+      options.apiKey,
+      snapshot,
+      options.screenshot,
+    )
+  } catch (e) {
+    console.warn("Gemini classification failed:", e)
+    return {
+      state: PAGE_STATE.UNCLASSIFIED,
+      reason: `Gemini API failed: ${e instanceof Error ? e.message : String(e)}`,
+    }
   }
 }
 
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
-
-export type Screenshot = {
+type Screenshot = {
   mimeType: "image/png" | "image/jpeg"
   /** Base64 encoded image data. */
   data: string
 }
 
-export type ClassifyOptions = {
-  /** Gemini API key. Rule-based classification is used when omitted. */
+type ClassifyOptions = {
+  /** Gemini API key. The page is left "unclassified" when omitted. */
   apiKey?: string
   /** Screenshot of the page, sent to Gemini along with the snapshot. */
   screenshot?: Screenshot
 }
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
 
 /**
  * Re-classify the page of a result whose input was not found, and update

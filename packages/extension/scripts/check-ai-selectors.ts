@@ -10,7 +10,8 @@
  *   3. When the input was not found, classify the page (ok / blocked /
  *      login_required) with Gemini from its text and screenshot, so that a
  *      challenge or login page is not reported as a broken selector.
- *      Set GEMINI_API_KEY to enable it; rule-based otherwise.
+ *      Set GEMINI_API_KEY to enable it; otherwise such pages are reported
+ *      as "unclassified" (treated like blocked: no issue, only a failed run).
  *
  * `copySelectors` are not checked because they only appear after a response
  * has been generated, which requires actually sending a prompt.
@@ -29,8 +30,6 @@ import path from "path"
 import { fileURLToPath } from "url"
 import { chromium, type Page } from "@playwright/test"
 import {
-  CHALLENGE_SELECTORS,
-  detectPageStateByRules,
   PAGE_STATE,
   SNAPSHOT_TEXT_LENGTH,
   takePageSnapshot,
@@ -175,19 +174,15 @@ const checkService = async (
 
   // The input was not found: classify the page to tell a broken selector
   // from a challenge / login page.
-  const snapshot = await page.evaluate(takePageSnapshot, {
-    challengeSelectors: CHALLENGE_SELECTORS,
-    textLength: SNAPSHOT_TEXT_LENGTH,
-  })
-  const pageState = detectPageStateByRules(snapshot)
+  const snapshot = await page.evaluate(takePageSnapshot, SNAPSHOT_TEXT_LENGTH)
   return classifyResult(
     {
       ...base,
       finalUrl: page.url(),
-      pageState,
+      pageState: PAGE_STATE.UNCLASSIFIED,
       snapshot,
       groups,
-      verdict: decideVerdict(pageState, groups),
+      verdict: decideVerdict(PAGE_STATE.UNCLASSIFIED, groups),
     },
     {
       apiKey: process.env.GEMINI_API_KEY,
@@ -221,7 +216,7 @@ const writeGithubOutput = (results: ServiceCheckResult[]) => {
 const main = async () => {
   const { only, headless } = parseArgs()
   console.log(
-    `Page classification: ${process.env.GEMINI_API_KEY ? "Gemini" : "rules (set GEMINI_API_KEY to use Gemini)"}`,
+    `Page classification: ${process.env.GEMINI_API_KEY ? "Gemini" : "disabled (set GEMINI_API_KEY to use Gemini)"}`,
   )
   const services = (
     JSON.parse(fs.readFileSync(AI_SERVICES_PATH, "utf-8")) as AiServiceJson[]

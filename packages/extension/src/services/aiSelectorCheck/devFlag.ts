@@ -6,8 +6,8 @@
  *   localStorage.setItem("selectionCommand.devTools", "true")
  *   localStorage.setItem("selectionCommand.geminiApiKey", "<API key>")
  */
-export const DEV_TOOLS_FLAG_KEY = "selectionCommand.devTools"
-export const GEMINI_API_KEY_KEY = "selectionCommand.geminiApiKey"
+const DEV_TOOLS_FLAG_KEY = "selectionCommand.devTools"
+const GEMINI_API_KEY_KEY = "selectionCommand.geminiApiKey"
 
 const getItem = (key: string): string | null => {
   try {

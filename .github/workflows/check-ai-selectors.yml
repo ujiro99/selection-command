@@ -47,8 +47,9 @@ jobs:
         working-directory: packages/extension
         run: yarn check:ai-selectors --headless
         env:
-          # Optional: classifies pages whose input was not found (challenge /
-          # login page vs. broken selector). Rule-based when not set.
+          # Classifies pages whose input was not found (challenge / login
+          # page vs. broken selector). When not set, such pages are reported
+          # as "unclassified" (no issue, only a failed run).
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Write job summary

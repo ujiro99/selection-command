@@ -5,13 +5,7 @@
  */
 import { sleep } from "@/lib/utils"
 import type { AiService } from "@/types"
-import {
-  CHALLENGE_SELECTORS,
-  detectPageStateByRules,
-  PAGE_STATE,
-  SNAPSHOT_TEXT_LENGTH,
-  takePageSnapshot,
-} from "./pageState"
+import { PAGE_STATE, SNAPSHOT_TEXT_LENGTH, takePageSnapshot } from "./pageState"
 import {
   decideVerdict,
   SELECTOR_KIND,
@@ -25,7 +19,7 @@ export type CheckTarget = Pick<
   "id" | "name" | "url" | "inputSelectors" | "submitSelectors"
 >
 
-export type DomCheckOptions = {
+type DomCheckOptions = {
   inputTimeoutMs?: number
   submitTimeoutMs?: number
   pollIntervalMs?: number
@@ -59,7 +53,7 @@ const waitForAny = async (
 }
 
 /** Match each selector with querySelector, as the extension does. */
-export const matchEach = (
+const matchEach = (
   selectors: string[],
 ): SelectorGroupResult["matches"] =>
   selectors.map((selector) => {
@@ -173,19 +167,14 @@ export const checkSelectorsInDocument = async (
     }
 
     // The input was not found: attach a snapshot so that the caller can
-    // tell a broken selector from a challenge / login page (with Gemini,
-    // see geminiClassifier.ts). The rule-based state is provisional.
-    const snapshot = takePageSnapshot({
-      challengeSelectors: CHALLENGE_SELECTORS,
-      textLength: SNAPSHOT_TEXT_LENGTH,
-    })
-    const pageState = detectPageStateByRules(snapshot)
+    // tell a broken selector from a challenge / login page with Gemini
+    // (see geminiClassifier.ts). Until then the page is "unclassified".
     return {
       ...base(),
-      pageState,
-      snapshot,
+      pageState: PAGE_STATE.UNCLASSIFIED,
+      snapshot: takePageSnapshot(SNAPSHOT_TEXT_LENGTH),
       groups,
-      verdict: decideVerdict(pageState, groups),
+      verdict: decideVerdict(PAGE_STATE.UNCLASSIFIED, groups),
     }
   } catch (e) {
     return {

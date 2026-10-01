@@ -185,12 +185,12 @@ yarn test:e2e              # E2E テスト実行
 
 ### 判定
 
-| verdict   | 意味                                                    | CI での扱い                                              |
-| --------- | ------------------------------------------------------- | -------------------------------------------------------- |
-| `pass`    | 各セレクタ配列のいずれかが一致                          | —                                                        |
-| `fail`    | いずれかの配列で一致するセレクタが無い                  | issue 作成（既存 open issue へは追記）+ ワークフロー失敗 |
-| `blocked` | Bot チャレンジ / ログイン画面によりページを検査できない | ワークフロー失敗（通知メールのみ）                       |
-| `error`   | ナビゲーションタイムアウト等                            | ワークフロー失敗（通知メールのみ）                       |
+| verdict   | 意味                                                                                      | CI での扱い                                              |
+| --------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `pass`    | 各セレクタ配列のいずれかが一致                                                            | —                                                        |
+| `fail`    | いずれかの配列で一致するセレクタが無い                                                    | issue 作成（既存 open issue へは追記）+ ワークフロー失敗 |
+| `blocked` | Bot チャレンジ / ログイン画面、または判定不能（`unclassified`）によりページを検査できない | ワークフロー失敗（通知メールのみ）                       |
+| `error`   | ナビゲーションタイムアウト等                                                              | ワークフロー失敗（通知メールのみ）                       |
 
 - 拡張機能は各配列を `a, b, c` と連結して使うため、配列内のいずれか 1 つが一致すれば合格とする
 - `submitSelectors` は入力後に出現するため、入力欄にダミーテキストを入力してから確認する（送信はしない）
@@ -202,7 +202,7 @@ yarn test:e2e              # E2E テスト実行
 入力欄が見つからなかった場合のみ、それが「セレクタの破損」なのか「Bot チャレンジ / ログイン画面」なのかを判定する（`geminiClassifier.ts`）。
 
 - Gemini API（`gemini-3.1-flash-lite`、構造化出力）に URL・タイトル・表示テキスト先頭（CI ではスクリーンショットも）を渡し、`ok` / `blocked` / `login_required` を返させる。呼び出し形式は selection-command-hub の `src/infrastructure/gemini/content-classifier.ts` に準拠
-- API キー未設定・API エラー時は `pageState.ts` のルール（URL / タイトル / Cloudflare 要素）にフォールバックする
+- API キー未設定・API エラー時は推測せず `pageState: "unclassified"` とし、`blocked` と同様に扱う（issue は作らず、ワークフロー失敗の通知メールのみ）。そのため CI では `GEMINI_API_KEY` の登録が実質必須
 - API キーの設定
   - CI / ローカルスクリプト: 環境変数 `GEMINI_API_KEY`（GitHub Actions では Secrets の `GEMINI_API_KEY`）
   - 拡張機能内チェック: 設定画面の `localStorage` の `selectionCommand.geminiApiKey`
@@ -212,7 +212,7 @@ yarn test:e2e              # E2E テスト実行
 ```bash
 # packages/extension 内で
 GEMINI_API_KEY=xxx yarn check:ai-selectors --headless  # 全サービス（Gemini 判定あり）
-yarn check:ai-selectors --headless           # 全サービス（ルール判定）
+yarn check:ai-selectors --headless           # 全サービス（入力欄が無いページは unclassified）
 yarn check:ai-selectors --only=gemini,claude # 対象を指定（除外リストより優先）
 ```
 

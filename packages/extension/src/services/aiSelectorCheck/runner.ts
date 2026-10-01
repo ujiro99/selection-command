@@ -151,7 +151,7 @@ const logResults = (results: TabCheckResult[]) => {
       service: r.name,
       verdict: r.verdict,
       pageState: r.pageState,
-      classifiedBy: r.classification?.classifiedBy,
+      reason: r.classification?.reason,
       finalUrl: r.finalUrl,
     })),
   )
@@ -181,7 +181,7 @@ export const runAiSelectorCheck = async (): Promise<void> => {
     LOG_PREFIX,
     apiKey
       ? "Page classification: Gemini"
-      : "Page classification: rules (set localStorage 'selectionCommand.geminiApiKey' to use Gemini)",
+      : "Page classification: disabled (set localStorage 'selectionCommand.geminiApiKey' to use Gemini)",
   )
   const services = await loadServices()
   const { id: windowId } = await chrome.windows.getCurrent()
