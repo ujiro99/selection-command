@@ -25,6 +25,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     container:
+      # Must match the @playwright/test version resolved in yarn.lock;
+      # otherwise the bundled browsers don't match and launching fails.
+      # Keep it in sync with .github/workflows/test.yml.
       image: mcr.microsoft.com/playwright:v1.62.1-jammy
     env:
       ISSUE_LABEL: ai-selector-broken

@@ -6,6 +6,7 @@
 import { sleep } from "@/lib/utils"
 import type { AiService } from "@/types"
 import { PAGE_STATE, SNAPSHOT_TEXT_LENGTH, takePageSnapshot } from "./pageState"
+import { hasAnyMatch, matchEach } from "./selectorMatch"
 import {
   decideVerdict,
   SELECTOR_KIND,
@@ -29,18 +30,7 @@ type DomCheckOptions = {
 
 const DUMMY_TEXT = "selector check"
 
-const safeQuery = (selector: string): Element | null => {
-  try {
-    return document.querySelector(selector)
-  } catch {
-    // An invalid selector is treated as "not found".
-    return null
-  }
-}
-
-const queryAny = (selectors: string[]): Element | null =>
-  selectors.length === 0 ? null : safeQuery(selectors.join(", "))
-
+/** Wait until any selector of the list matches and return the element. */
 const waitForAny = async (
   selectors: string[],
   timeoutMs: number,
@@ -48,29 +38,37 @@ const waitForAny = async (
 ): Promise<Element | null> => {
   const deadline = Date.now() + timeoutMs
   for (;;) {
-    const el = queryAny(selectors)
-    if (el || Date.now() >= deadline) return el
+    if (hasAnyMatch(selectors)) {
+      return document.querySelector(selectors.join(", "))
+    }
+    if (Date.now() >= deadline) return null
     await sleep(intervalMs)
   }
 }
-
-/** Match each selector with querySelector, as the extension does. */
-const matchEach = (selectors: string[]): SelectorGroupResult["matches"] =>
-  selectors.map((selector) => {
-    try {
-      return { selector, found: document.querySelector(selector) != null }
-    } catch {
-      return { selector, found: false, invalid: true }
-    }
-  })
 
 const isTextControl = (
   el: Element,
 ): el is HTMLTextAreaElement | HTMLInputElement =>
   el instanceof HTMLTextAreaElement || el instanceof HTMLInputElement
 
-const isEmptyInput = (el: Element): boolean =>
-  (isTextControl(el) ? el.value : (el.textContent ?? "")).trim() === ""
+/**
+ * Text entered in the input, excluding placeholders.
+ * Placeholders drawn with CSS (Quill's `.ql-blank::before`, ProseMirror's
+ * `[data-placeholder]::before`, ...) are not part of textContent anyway;
+ * placeholder nodes that some editors render inside the editable element
+ * are non-editable or hidden from assistive technology, so they are removed
+ * before reading the text.
+ */
+const enteredText = (el: Element): string => {
+  if (isTextControl(el)) return el.value
+  const clone = el.cloneNode(true) as Element
+  clone
+    .querySelectorAll("[contenteditable='false'], [aria-hidden='true']")
+    .forEach((node) => node.remove())
+  return clone.textContent ?? ""
+}
+
+const isEmptyInput = (el: Element): boolean => enteredText(el).trim() === ""
 
 /** Select the whole content of the input so that it can be replaced. */
 const selectAll = (el: Element) => {

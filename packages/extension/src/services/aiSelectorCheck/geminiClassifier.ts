@@ -17,6 +17,12 @@ import { decideVerdict, type ServiceCheckResult } from "./result"
 const GEMINI_API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent"
 
+/**
+ * Without a timeout, an unresponsive API would hang the CI job and leave the
+ * developer check running. A timeout ends up as "unclassified".
+ */
+const GEMINI_TIMEOUT_MS = 30_000
+
 /** States Gemini can return ("unclassified" is decided locally). */
 const GEMINI_STATES: PageState[] = [
   PAGE_STATE.OK,
@@ -93,6 +99,7 @@ const classifyPageWithGemini = async (
       "Content-Type": "application/json",
       "x-goog-api-key": apiKey,
     },
+    signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
     body: JSON.stringify({
       system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents: [{ parts }],

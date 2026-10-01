@@ -20,7 +20,7 @@ export const SELECTOR_KIND = {
 } as const
 type SelectorKind = (typeof SELECTOR_KIND)[keyof typeof SELECTOR_KIND]
 
-type SelectorMatch = {
+export type SelectorMatch = {
   selector: string
   found: boolean
   /** The selector is not valid CSS (querySelector throws). */

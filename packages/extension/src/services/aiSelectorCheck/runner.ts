@@ -3,7 +3,7 @@
  * Opens every AI service in a background tab, asks the content script of
  * each tab to check its selectors and logs the results to the console.
  */
-import { Ipc, TabCommand } from "@/services/ipc"
+import { TabCommand } from "@/services/ipc"
 import { AI_SERVICES_URL } from "@/services/aiPrompt"
 import {
   AI_SERVICES_FALLBACK,
@@ -64,12 +64,18 @@ const waitForTabComplete = (tabId: number): Promise<void> =>
     }, TAB_LOAD_TIMEOUT_MS)
     chrome.tabs.onUpdated.addListener(onUpdated)
     // The tab may already be complete before the listener was attached.
-    chrome.tabs.get(tabId).then((tab) => {
-      if (tab.status === "complete") {
+    chrome.tabs.get(tabId).then(
+      (tab) => {
+        if (tab.status === "complete") {
+          cleanup()
+          resolve()
+        }
+      },
+      (e) => {
         cleanup()
-        resolve()
-      }
-    }, reject)
+        reject(e)
+      },
+    )
   })
 
 const isCheckResult = (value: unknown): value is ServiceCheckResult =>
@@ -79,9 +85,12 @@ const isCheckResult = (value: unknown): value is ServiceCheckResult =>
   "groups" in value
 
 /**
- * Send the check request, retrying until the content script is ready.
- * Ipc.sendTab returns the error instead of throwing when the receiver does
- * not exist yet.
+ * Send the check request, retrying only while the content script is not
+ * ready yet (sendMessage rejects as there is no receiver).
+ * A response that is not a check result is an error and is not retried,
+ * since every request types a dummy text into the page again.
+ * chrome.tabs.sendMessage is used directly instead of Ipc.sendTab, which
+ * swallows the rejection and makes the two cases indistinguishable.
  */
 const requestCheck = async (
   tabId: number,
@@ -98,16 +107,26 @@ const requestCheck = async (
     },
   }
   for (;;) {
-    const ret = await Ipc.sendTab<CheckAiSelectorsParam, unknown>(
-      tabId,
-      TabCommand.checkAiSelectors,
-      param,
-    )
-    if (isCheckResult(ret)) return ret
-    if (Date.now() >= deadline) {
-      throw new Error("The content script did not respond")
+    let response: unknown
+    try {
+      response = await chrome.tabs.sendMessage(tabId, {
+        command: TabCommand.checkAiSelectors,
+        param,
+      })
+    } catch (e) {
+      // Not ready yet: retry until the deadline.
+      if (Date.now() >= deadline) {
+        throw new Error(`The content script did not respond: ${e}`)
+      }
+      await sleep(RETRY_INTERVAL_MS)
+      continue
     }
-    await sleep(RETRY_INTERVAL_MS)
+    if (!isCheckResult(response)) {
+      throw new Error(
+        `Invalid response from the content script: ${JSON.stringify(response)}`,
+      )
+    }
+    return response
   }
 }
 

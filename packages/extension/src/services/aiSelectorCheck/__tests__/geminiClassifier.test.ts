@@ -122,6 +122,28 @@ describe("classifyResult", () => {
       })
     })
 
+    it("leaves the page unclassified when the API times out", async () => {
+      fetchMock.mockImplementation(
+        (_url: string, init: RequestInit) =>
+          new Promise((_resolve, reject) => {
+            init.signal?.addEventListener("abort", () =>
+              reject(init.signal?.reason),
+            )
+          }),
+      )
+      vi.useFakeTimers()
+      try {
+        const pending = classifyResult(result, { apiKey: "key" })
+        await vi.advanceTimersByTimeAsync(30_000)
+        const ret = await pending
+
+        expect(ret.pageState).toBe(PAGE_STATE.UNCLASSIFIED)
+        expect(ret.classification?.reason).toMatch(/^Gemini API failed/)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
     it("leaves the page unclassified when the API fails", async () => {
       fetchMock.mockResolvedValue(new Response("quota", { status: 429 }))
 

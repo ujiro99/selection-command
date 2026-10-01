@@ -133,6 +133,49 @@ describe("checkSelectorsInDocument", () => {
     expect(result.verdict).toBe(VERDICT.PASS)
   })
 
+  it.each([
+    [
+      "a non-editable placeholder node",
+      `<p><span contenteditable="false">Ask anything</span><br></p>`,
+    ],
+    [
+      "a hidden placeholder node",
+      `<p><span aria-hidden="true">Ask anything</span></p>`,
+    ],
+  ])(
+    "treats a contenteditable with %s as empty",
+    async (_label, placeholder) => {
+      document.body.innerHTML = `<div id="editor" contenteditable="true">${placeholder}</div><button id="voice"></button>`
+
+      const result = await checkSelectorsInDocument(
+        { ...target, inputSelectors: ["#editor"] },
+        options,
+      )
+
+      // Empty, so the dummy text is typed and the initial state is checked.
+      expect(execCommand).toHaveBeenCalledWith(
+        "insertText",
+        false,
+        "selector check",
+      )
+      expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.skipped).toBe(
+        undefined,
+      )
+    },
+  )
+
+  it("treats a contenteditable with typed text as a draft", async () => {
+    document.body.innerHTML = `<div id="editor" contenteditable="true"><p>draft</p></div><button id="send"></button>`
+
+    const result = await checkSelectorsInDocument(
+      { ...target, inputSelectors: ["#editor"] },
+      options,
+    )
+
+    expect(execCommand).not.toHaveBeenCalled()
+    expect(groupOf(result, SELECTOR_KIND.SUBMIT_INITIAL)?.skipped).toBe(true)
+  })
+
   it("leaves the page unclassified with a snapshot when no input matches", async () => {
     document.body.innerHTML = `<button id="voice"></button>`
 

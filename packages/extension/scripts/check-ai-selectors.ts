@@ -37,6 +37,10 @@ import {
 } from "@/services/aiSelectorCheck/pageState"
 import { classifyResult } from "@/services/aiSelectorCheck/geminiClassifier"
 import {
+  hasAnyMatch,
+  matchEach,
+} from "@/services/aiSelectorCheck/selectorMatch"
+import {
   decideVerdict,
   toMarkdown,
   SELECTOR_KIND,
@@ -82,12 +86,7 @@ const parseArgs = () => {
   return { only, headless: args.includes("--headless") }
 }
 
-/**
- * Wait until any selector of the list matches.
- * document.querySelector is used instead of Playwright locators so that the
- * selectors are evaluated exactly as the extension does at runtime (the
- * list joined into `a, b, c`).
- */
+/** Wait until any selector of the list matches (see selectorMatch.ts). */
 const waitForAny = async (
   page: Page,
   selectors: string[],
@@ -95,38 +94,21 @@ const waitForAny = async (
 ): Promise<boolean> => {
   if (selectors.length === 0) return false
   try {
-    await page.waitForFunction(
-      (sels) => {
-        try {
-          return document.querySelector(sels.join(", ")) != null
-        } catch {
-          return false
-        }
-      },
-      selectors,
-      { timeout, polling: 500 },
-    )
+    await page.waitForFunction(hasAnyMatch, selectors, {
+      timeout,
+      polling: 500,
+    })
     return true
   } catch {
     return false
   }
 }
 
-const matchEach = (
+const matchSelectors = (
   page: Page,
   selectors: string[],
 ): Promise<SelectorGroupResult["matches"]> =>
-  page.evaluate(
-    (sels) =>
-      sels.map((selector) => {
-        try {
-          return { selector, found: document.querySelector(selector) != null }
-        } catch {
-          return { selector, found: false, invalid: true }
-        }
-      }),
-    selectors,
-  )
+  page.evaluate(matchEach, selectors)
 
 const checkService = async (
   page: Page,
@@ -145,11 +127,11 @@ const checkService = async (
   const inputFound = await waitForAny(page, inputSelectors, INPUT_TIMEOUT_MS)
   const inputGroup: SelectorGroupResult = {
     kind: SELECTOR_KIND.INPUT,
-    matches: await matchEach(page, inputSelectors),
+    matches: await matchSelectors(page, inputSelectors),
   }
   const matchSubmit = async () => {
     await waitForAny(page, submitSelectors, SUBMIT_TIMEOUT_MS)
-    return matchEach(page, submitSelectors)
+    return matchSelectors(page, submitSelectors)
   }
 
   if (inputFound) {
@@ -182,7 +164,7 @@ const checkService = async (
     inputGroup,
     {
       kind: SELECTOR_KIND.SUBMIT_INITIAL,
-      matches: await matchEach(page, submitSelectors),
+      matches: await matchSelectors(page, submitSelectors),
     },
     { kind: SELECTOR_KIND.SUBMIT_AFTER_INPUT, matches: [], skipped: true },
   ]
@@ -242,7 +224,7 @@ const main = async () => {
   fs.rmSync(OUT_DIR, { recursive: true, force: true })
   fs.mkdirSync(OUT_DIR, { recursive: true })
 
-  // Headed mode (under xvfb on CI) is less likely to trigger bot challenges.
+  // CI always passes --headless; omit it locally to watch the browser.
   const browser = await chromium.launch({
     headless,
     // "chromium" channel uses the new headless mode (full browser), which is
@@ -252,9 +234,9 @@ const main = async () => {
   })
   // Headless Chromium advertises "HeadlessChrome" in its UA, which bot
   // protection (e.g. Cloudflare) blocks outright.
-  const userAgent = browser.version()
-    ? `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${browser.version()} Safari/537.36`
-    : undefined
+  // Real Chrome reports only the major version ("Chrome/151.0.0.0").
+  const majorVersion = browser.version().split(".")[0]
+  const userAgent = `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${majorVersion}.0.0.0 Safari/537.36`
   const context = await browser.newContext({
     userAgent,
     locale: "en-US",
